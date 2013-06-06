@@ -29,10 +29,13 @@ import java.util.Set;
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.InvalidValue;
 import org.libreplan.business.common.exceptions.ValidationException;
+import org.libreplan.business.costcategories.entities.CostCategory;
+import org.libreplan.business.costcategories.entities.ResourcesCostCategoryAssignment;
 import org.libreplan.web.common.IMessagesForUser;
 import org.libreplan.web.common.Level;
 import org.libreplan.web.common.MessagesForUser;
 import org.libreplan.web.common.Util;
+import org.libreplan.web.common.components.Autocomplete;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.DropEvent;
 import org.zkoss.zk.ui.event.Event;
@@ -41,6 +44,8 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
+import org.zkoss.zul.Comboitem;
+import org.zkoss.zul.Row;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.TreeModel;
 import org.zkoss.zul.Treecell;
@@ -179,10 +184,10 @@ public class CriterionTreeController extends GenericForwardComposer {
             tr.setDraggable("true");
             tr.setDroppable("true");
 
-            // Treecell with the code of the Criterion
+            // Treecell with the cost category of the Criterion
             Treecell cellForCostCategory = new Treecell();
-            Textbox costCategoryLabel = new Textbox("Cost category combo");
-            cellForCostCategory.appendChild(costCategoryLabel);
+            criterionForThisRow.getCriterion().getCostCategory();
+            cellForCostCategory.appendChild(appendAutocompleteType(item));
 
             // Treecell with the code of the Criterion
             Treecell cellForCode = new Treecell();
@@ -288,6 +293,44 @@ public class CriterionTreeController extends GenericForwardComposer {
                 }
             });
         }
+    }
+
+    private CostCategory getCostCategory(Treeitem listitem) {
+
+        return ((CriterionDTO) listitem.getValue()).getCriterion()
+                .getCostCategory();
+    }
+
+    private Autocomplete appendAutocompleteType(final Treeitem row) {
+        final Autocomplete autocomplete = new Autocomplete();
+        autocomplete.setAutodrop(true);
+        autocomplete.applyProperties();
+        autocomplete.setFinder("CostCategoryFinder");
+
+        // Getter, show type selected
+        if (getCostCategory(row) != null) {
+            autocomplete.setSelectedItem(getCostCategory(row));
+        }
+
+        // Setter, set type selected to HourCost.type
+        autocomplete.addEventListener("onSelect", new EventListener() {
+
+            @Override
+            public void onEvent(Event event) {
+                final Comboitem comboitem = autocomplete.getSelectedItem();
+
+                if (comboitem != null) {
+                    // Update resourcesCostCategoryAssignment
+                    CriterionDTO assignment = (CriterionDTO) row
+                            .getValue();
+                    assignment.getCriterion().setCostCategory(
+                            (CostCategory) comboitem
+                            .getValue());
+                    row.setValue(assignment);
+                }
+            }
+        });
+        return autocomplete;
     }
 
     private Button createButtonUnindent(){
