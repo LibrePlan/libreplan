@@ -4,4 +4,19 @@
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
 
+    <changeSet id="add-id_cost_category-column-to-criterion-table" author="ltilve">
+        <comment>Add column to criterion table to store the relationship with cost category</comment>
+        <addColumn tableName="criterion">
+            <column name="id_cost_category" type="BIGINT" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add-id_cost_category-fk-to-criterion-table" author="ltilve">
+        <comment>Add foreign key constraint to new id_cost_category column on cost_category id</comment>
+        <addForeignKeyConstraint constraintName="cost_category_fkey"
+            baseTableName="criterion" baseColumnNames="id_cost_category"
+            referencedTableName="cost_category" referencedColumnNames="id"
+            onDelete="SET NULL" />
+    </changeSet>
+
 </databaseChangeLog>
