@@ -180,6 +180,11 @@ public class CriterionTreeController extends GenericForwardComposer {
             tr.setDroppable("true");
 
             // Treecell with the code of the Criterion
+            Treecell cellForCostCategory = new Treecell();
+            Textbox costCategoryLabel = new Textbox("Cost category combo");
+            cellForCostCategory.appendChild(costCategoryLabel);
+
+            // Treecell with the code of the Criterion
             Treecell cellForCode = new Treecell();
             cellForCode.setStyle("center");
             Textbox codeLabel = new Textbox();
@@ -200,6 +205,7 @@ public class CriterionTreeController extends GenericForwardComposer {
             }));
 
             cellForName.setParent(tr);
+            cellForCostCategory.setParent(tr);
             cellForCode.setParent(tr);
             cellForActive.setParent(tr);
 
