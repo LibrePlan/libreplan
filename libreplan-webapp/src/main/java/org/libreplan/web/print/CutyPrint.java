@@ -60,10 +60,7 @@ public class CutyPrint {
     private static final String CUTYCAPT_COMMAND = "cutycapt";
     // Estimated maximum execution time (ms)
 
-    private static final int CUTYCAPT_TIMEOUT = 100000;
-
     private static final int CAPTURE_DELAY = 10000;
-
 
     // Taskdetails left padding
     private static int TASKDETAILS_BASE_WIDTH = 310;
