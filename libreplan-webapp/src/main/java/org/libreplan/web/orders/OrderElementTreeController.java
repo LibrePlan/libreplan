@@ -37,17 +37,22 @@ import java.util.logging.Filter;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.LogFactory;
+import org.aspectj.weaver.ICrossReferenceHandler;
+import org.libreplan.business.common.daos.IConfigurationDAO;
 import org.libreplan.business.common.daos.IConnectorDAO;
 import org.libreplan.business.common.entities.Connector;
 import org.libreplan.business.common.entities.EntitySequence;
 import org.libreplan.business.common.entities.PredefinedConnectorProperties;
 import org.libreplan.business.common.entities.PredefinedConnectors;
+import org.libreplan.business.orders.entities.HoursGroup;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderLine;
 import org.libreplan.business.orders.entities.OrderLineGroup;
 import org.libreplan.business.orders.entities.SchedulingState;
 import org.libreplan.business.requirements.entities.CriterionRequirement;
+import org.libreplan.business.resources.daos.ICriterionDAO;
 import org.libreplan.business.templates.entities.OrderElementTemplate;
 import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.web.common.FilterUtils;
@@ -59,12 +64,14 @@ import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
 import org.libreplan.web.common.components.finders.FilterPair;
 import org.libreplan.web.common.components.finders.OrderElementFilterEnum;
 import org.libreplan.web.common.components.finders.TaskElementFilterEnum;
+import org.libreplan.web.materials.UnitTypeModel;
 import org.libreplan.web.orders.assigntemplates.TemplateFinderPopup;
 import org.libreplan.web.orders.assigntemplates.TemplateFinderPopup.IOnResult;
 import org.libreplan.web.security.SecurityUtils;
 import org.libreplan.web.templates.IOrderTemplatesControllerEntryPoints;
 import org.libreplan.web.tree.TreeController;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.ganttz.IPredicate;
 import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.zk.ui.Component;
@@ -128,7 +135,13 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
     private Popup filterOptionsPopup;
 
     @Autowired
-    private IConnectorDAO                        connectorDAO;
+    private IConnectorDAO connectorDAO;
+
+    @Autowired
+    private ICriterionDAO criterionDAO;
+
+    private static final org.apache.commons.logging.Log LOG = LogFactory
+            .getLog(OrderElementTreeController.class);
 
     public List<org.libreplan.business.labels.entities.Label> getLabels() {
         return orderModel.getLabels();
@@ -609,14 +622,9 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
         }
 
         public void addAutoBudgetCell(OrderElement currentElement) {
-            String autobudget = " autobudget";
-            for (CriterionRequirement criterionRequirement : currentElement
-                    .getCriterionRequirements()) {
-                autobudget += criterionRequirement.getCriterion()
-                        .getCostCategory();
-                autobudget += currentElement.getHoursGroups().toString();
-            }
-            addCell(new Textbox(autobudget));
+            IOrderElementModel model = orderModel
+                    .getOrderElementModel(currentElement);
+            addCell(new Textbox(model.getTotalBudget()));
         }
 
     }

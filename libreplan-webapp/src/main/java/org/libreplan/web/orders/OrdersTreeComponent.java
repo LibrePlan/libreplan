@@ -25,11 +25,17 @@ import static org.libreplan.web.I18nHelper._;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.libreplan.business.common.daos.IConfigurationDAO;
+import org.libreplan.business.common.entities.Configuration;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.trees.ITreeNode;
 import org.libreplan.web.orders.OrderElementTreeController.OrderElementTreeitemRenderer;
 import org.libreplan.web.tree.TreeComponent;
 import org.libreplan.web.tree.TreeController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 import org.zkoss.zul.Treeitem;
 
 /**
@@ -37,6 +43,9 @@ import org.zkoss.zul.Treeitem;
  *
  */
 public class OrdersTreeComponent extends TreeComponent {
+
+    @Autowired
+    private IConfigurationDAO configurationDAO;
 
     abstract class OrdersTreeColumn extends Column {
         OrdersTreeColumn(String label, String cssClass, String tooltip) {
@@ -87,6 +96,8 @@ public class OrdersTreeComponent extends TreeComponent {
             }
 
         });
+
+        // Pending to add condition with configuration.isEnabledAutomaticBudget
         columns.add(new OrdersTreeColumn(_("autobudget"), "autobudget",
                 _("autobudget")) {
 
@@ -97,6 +108,7 @@ public class OrdersTreeComponent extends TreeComponent {
             }
 
         });
+
         columns.add(new OrdersTreeColumn(_("Must start after"),
                         "estimated_init",
                         _("Estimated start date for the task (press enter in textbox to open calendar popup or type in date directly)")) {
