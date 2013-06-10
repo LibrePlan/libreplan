@@ -23,6 +23,7 @@ package org.libreplan.business.costcategories.entities;
 
 import static org.libreplan.business.i18n.I18nHelper._;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -300,6 +301,22 @@ public class CostCategory extends IntegrationEntity implements IHumanIdentifiabl
                                 + hourCostCode);
             }
         }
+    }
+
+    public BigDecimal getPriceCostByTypeOfWorkHour(String code)
+            throws InstanceNotFoundException {
+
+        if (StringUtils.isBlank(code)) {
+            throw new InstanceNotFoundException(code, HourCost.class.getName());
+        }
+
+        for (HourCost c : this.hourCosts) {
+            if (c.getType().getCode().equalsIgnoreCase(StringUtils.trim(code))) {
+                return c.getPriceCost();
+            }
+        }
+
+        throw new InstanceNotFoundException(code, HourCost.class.getName());
     }
 
     public void incrementLastHourCostSequenceCode() {

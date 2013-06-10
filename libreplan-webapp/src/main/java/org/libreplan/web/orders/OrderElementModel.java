@@ -21,6 +21,7 @@
 
 package org.libreplan.web.orders;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +30,8 @@ import java.util.Set;
 
 import org.libreplan.business.common.daos.IConfigurationDAO;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
+import org.libreplan.business.costcategories.daos.ICostCategoryDAO;
+import org.libreplan.business.costcategories.entities.CostCategory;
 import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
 import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.daos.IOrderElementDAO;
@@ -62,10 +65,10 @@ public class OrderElementModel implements IOrderElementModel {
     private IOrderDAO orderDAO;
 
     @Autowired
-    private ICriterionTypeDAO criterionTypeDao;
+    private ICriterionTypeDAO criterionTypeDAO;
 
     @Autowired
-    private ICriterionTypeDAO criterionTypeDAO;
+    private ICostCategoryDAO costCategoryDAO;
 
     private Map<String, CriterionType> mapCriterionTypes = new HashMap<String, CriterionType>();
 
@@ -138,7 +141,7 @@ public class OrderElementModel implements IOrderElementModel {
     @Transactional(readOnly = true)
     public CriterionType getCriterionType(Criterion criterion) {
         CriterionType criterionType = criterion.getType();
-        criterionTypeDao.reattach(criterionType);
+        criterionTypeDAO.reattach(criterionType);
         criterionType.getName();
         return criterionType;
     }
@@ -165,24 +168,61 @@ public class OrderElementModel implements IOrderElementModel {
 
     @Override
     @Transactional(readOnly = true)
-    public String getTotalBudget() {
-        String autobudget = "";
+    public BigDecimal getTotalBudget() {
+        BigDecimal totalBudget = new BigDecimal(0);
+        BigDecimal costPerHour = new BigDecimal(0);
 
         TypeOfWorkHours typeofWorkHours = configurationDAO.getConfiguration()
                 .getBudgetDefaultTypeOfWorkHours();
-        for (CriterionRequirement criterionRequirement : getOrderElement()
+
+        if (typeofWorkHours == null) {
+            return totalBudget;
+        }
+
+        // FIXME: This workarounds LazyException when adding new
+        // criteria but disables the refresh on changes
+        for (CriterionRequirement requirement : getOrderElement()
                 .getCriterionRequirements()) {
+            BigDecimal hours = new BigDecimal(getOrderElement().getWorkHours());
             try {
-                autobudget += criterionRequirement.getCriterion()
-                        .getCostCategory().getName();
-                autobudget += typeofWorkHours.getName();
-                // getHourCostByCode(defaultCode)
-                // .getPriceCost().toBigInteger();
-            } catch (Exception e) {
+                totalBudget = totalBudget.add(costPerHour.multiply(hours));
+
+                costPerHour = requirement.getCriterion().getCostCategory()
+                        .getHourCostByCode(typeofWorkHours.getCode())
+                        .getPriceCost();
+                totalBudget = totalBudget.add(costPerHour.multiply(hours));
+
+            } catch (InstanceNotFoundException e) {
+                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
+            totalBudget = totalBudget.add(costPerHour.multiply(hours));
         }
-        return autobudget;
+
+        for (HoursGroup hoursGroup : getOrderElement().getHoursGroups()) {
+            BigDecimal hours = new BigDecimal(hoursGroup.getWorkingHours());
+
+            for (CriterionRequirement crit : hoursGroup
+                    .getCriterionRequirements()) {
+                CostCategory costcat = crit.getCriterion().getCostCategory();
+
+
+                    if (costcat != null) {
+                        try {
+                            costPerHour = costcat
+                                    .getPriceCostByTypeOfWorkHour(typeofWorkHours
+                                            .getCode());
+                        } catch (InstanceNotFoundException e) {
+                            // Default values to 0
+                            costPerHour = new BigDecimal(0);
+                        }
+                    }
+                }
+            totalBudget = totalBudget.add(costPerHour.multiply(hours));
+            }
+
+
+        return totalBudget;
     }
 
 }

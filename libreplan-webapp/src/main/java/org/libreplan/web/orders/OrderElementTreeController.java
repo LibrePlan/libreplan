@@ -84,6 +84,7 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Popup;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
@@ -624,7 +625,10 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
         public void addAutoBudgetCell(OrderElement currentElement) {
             IOrderElementModel model = orderModel
                     .getOrderElementModel(currentElement);
-            addCell(new Textbox(model.getTotalBudget()));
+            Textbox autoBudgetCell = new Textbox(Util.addCurrencySymbol(model
+                    .getTotalBudget()));
+            autoBudgetCell.setDisabled(true);
+            addCell(autoBudgetCell);
         }
 
     }
