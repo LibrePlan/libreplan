@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.lang.ProcessBuilder.Redirect;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -140,15 +139,6 @@ public class CutyPrint {
 
     private static class CutyCaptParameters {
 
-        private static String buildCaptureDestination(String extension) {
-            if (extension == null || extension.equals("")) {
-                extension = ".pdf";
-            }
-            return "/print/"
-                    + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date())
-                    + extension;
-        }
-
         private static final AtomicLong counter = new AtomicLong();
 
         private final HttpServletRequest request = (HttpServletRequest) Executions
@@ -188,6 +178,15 @@ public class CutyPrint {
 
         String getGeneratedSnapshotServerPath() {
             return generatedSnapshotServerPath;
+        }
+
+        private String buildCaptureDestination(String extension) {
+            if (extension == null || extension.equals("")) {
+                extension = ".pdf";
+            }
+            return String.format("/print/%tY%<tm%<td%<tH%<tM%<tS-%s%s",
+                    new Date(),
+                    recentUniqueToken, extension);
         }
 
         /**
