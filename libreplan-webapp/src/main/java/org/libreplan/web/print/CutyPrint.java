@@ -24,6 +24,7 @@ package org.libreplan.web.print;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.ProcessBuilder.Redirect;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
@@ -372,6 +373,8 @@ public class CutyPrint {
 
         ProcessBuilder capture = new ProcessBuilder(CUTYCAPT_COMMAND);
         params.fillParameters(capture);
+        capture.redirectOutput(Redirect.INHERIT)
+                .redirectError(Redirect.INHERIT);
         String generatedSnapshotServerPath = params
                 .getGeneratedSnapshotServerPath();
 
@@ -383,7 +386,10 @@ public class CutyPrint {
             // If there is a not real X server environment then use Xvfb
             if (System.getenv("DISPLAY") == null
                     || System.getenv("DISPLAY").equals("")) {
-                serverProcess = new ProcessBuilder("Xvfb", ":99").start();
+                ProcessBuilder s = new ProcessBuilder("Xvfb", ":99");
+                s.redirectOutput(Redirect.INHERIT).redirectError(
+                        Redirect.INHERIT);
+                serverProcess = s.start();
                 capture.environment().put("DISPLAY", ":99.0");
             }
             printProcess = capture.start();
