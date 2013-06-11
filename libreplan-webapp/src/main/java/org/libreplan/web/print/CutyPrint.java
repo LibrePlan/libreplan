@@ -34,6 +34,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.atomic.AtomicLong;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -148,6 +149,8 @@ public class CutyPrint {
                     + extension;
         }
 
+        private static final AtomicLong counter = new AtomicLong();
+
         private final HttpServletRequest request = (HttpServletRequest) Executions
                 .getCurrent().getNativeRequest();
         private final ServletContext context = request.getSession()
@@ -162,6 +165,8 @@ public class CutyPrint {
         private final int minWidthForTaskNameColumn;
 
         private final String generatedSnapshotServerPath;
+
+        private final int recentUniqueToken = (int) (counter.getAndIncrement() % 1000);
 
         public CutyCaptParameters(final String forwardURL,
                 final Map<String, String> entryPointsMap,
@@ -183,6 +188,17 @@ public class CutyPrint {
 
         String getGeneratedSnapshotServerPath() {
             return generatedSnapshotServerPath;
+        }
+
+        /**
+         * An unique recent display number for Xvfb. It's not truly unique
+         * across all the life of a libreplan application, but it's in the last
+         * period of time.
+         *
+         * @return the display number to use by Xvfb
+         */
+        public int getXvfbDisplayNumber() {
+            return recentUniqueToken + 1; // avoid display 0
         }
 
         void fillParameters(ProcessBuilder c) {
@@ -386,11 +402,13 @@ public class CutyPrint {
             // If there is a not real X server environment then use Xvfb
             if (System.getenv("DISPLAY") == null
                     || System.getenv("DISPLAY").equals("")) {
-                ProcessBuilder s = new ProcessBuilder("Xvfb", ":99");
+                ProcessBuilder s = new ProcessBuilder("Xvfb", ":"
+                        + params.getXvfbDisplayNumber());
                 s.redirectOutput(Redirect.INHERIT).redirectError(
                         Redirect.INHERIT);
                 serverProcess = s.start();
-                capture.environment().put("DISPLAY", ":99.0");
+                capture.environment().put("DISPLAY",
+                        ":" + params.getXvfbDisplayNumber() + ".0");
             }
             printProcess = capture.start();
             printProcess.waitFor();
