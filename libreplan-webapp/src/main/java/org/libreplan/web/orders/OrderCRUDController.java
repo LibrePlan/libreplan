@@ -23,6 +23,7 @@ package org.libreplan.web.orders;
 
 import static org.libreplan.web.I18nHelper._;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.ConcurrentModificationException;
@@ -40,6 +41,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.LogFactory;
 import org.joda.time.LocalDate;
 import org.libreplan.business.calendars.entities.BaseCalendar;
+import org.libreplan.business.common.IOnTransaction;
+import org.libreplan.business.common.Registry;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.externalcompanies.entities.DeadlineCommunication;
 import org.libreplan.business.externalcompanies.entities.DeliverDateComparator;
@@ -1316,7 +1319,8 @@ public class OrderCRUDController extends GenericForwardComposer {
             appendDate(row, order.getInitDate());
             appendDate(row, order.getDeadline());
             appendCustomer(row, order.getCustomer());
-            appendObject(row, Util.addCurrencySymbol(order.getTotalBudget()));
+            appendObject(row,
+                    Util.addCurrencySymbol(order.getTotalManualBudget()));
             appendObject(row, order.getTotalHours());
             appendObject(row, _(order.getState().toString()));
             appendOperations(row, order);
@@ -1893,4 +1897,20 @@ public class OrderCRUDController extends GenericForwardComposer {
         }
     }
 
+    public BigDecimal getResourcesBudget() {
+        return Registry.getTransactionService()
+                .runOnAnotherReadOnlyTransaction(
+                        new IOnTransaction<BigDecimal>() {
+
+                            @Override
+                            public BigDecimal execute() {
+                                return getOrderElementModel().getOrderElement()
+                                        .getResourcesBudget();
+                            }
+                        });
+    }
+
+    public BigDecimal getTotalBudget() {
+        return getOrder().getBudget().add(getResourcesBudget());
+    }
 }

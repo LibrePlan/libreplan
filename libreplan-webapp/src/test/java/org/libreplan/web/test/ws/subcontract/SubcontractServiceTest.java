@@ -212,7 +212,7 @@ public class SubcontractServiceTest {
         assertThat(order.getName(), equalTo(orderName));
         assertThat(order.getCustomerReference(),
                 equalTo(orderCustomerReference));
-        assertThat(order.getTotalBudget(), equalTo(orderBudget));
+        assertThat(order.getResourcesBudget(), equalTo(orderBudget));
 
         List<OrderElement> children = order.getChildren();
         assertThat(children.size(), equalTo(1));

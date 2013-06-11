@@ -156,7 +156,7 @@
                     </grid>
                 </groupbox>
                 <groupbox style="margin-top: 5px" sclass="assignedresources" closable="false">
-                    <caption label="${i18n:_('Cost')}" />
+                    <caption label="${i18n:_('Budget')}" />
 
                     <separator spacing="10px"/>
 
@@ -182,15 +182,28 @@
                                         format="@{controller.moneyFormat}"/>
                                     <separator bar="false" spacing="15px" orient="vertical"/>
                                     <label value=" ${i18n:_('Total')} :" />
-                                    <label id="txtTotalBudget" value="@{controller.order.totalBudget}"/>
+                                    <label id="txtTotalBudget" value="@{controller.order.totalManualBudget}"/>
                                     <label value="@{controller.currencySymbol}"/>
                                 </hbox>
                             </row>
                             <row>
-                                <label value="${i18n:_('Calculated budget')}" />
+                                <label value="${i18n:_('WBS calculated budget')}" />
                                 <hbox>
-                                    <label id="budget" value="@{controller.order.budget}" />
-                                    <label value="@{controller.currencySymbol}"/>
+                                    <hbox>
+                                        <label value="${i18n:_('Expenses')}:" />
+                                        <label id="budget" value="@{controller.order.budget}" />
+                                        <label value="@{controller.currencySymbol}"/>
+                                    </hbox>
+                                    <hbox>
+                                        <label value="${i18n:_('Resources')}:" />
+                                        <label id="resourcesBudget" value="@{controller.resourcesBudget}" />
+                                        <label value="@{controller.currencySymbol}"/>
+                                    </hbox>
+                                    <hbox>
+                                        <label value="${i18n:_('Total')}:" />
+                                        <label id="totalCalculated" value="@{controller.totalBudget}" />
+                                        <label value="@{controller.currencySymbol}"/>
+                                    </hbox>
                                 </hbox>
                             </row>
                             <row>

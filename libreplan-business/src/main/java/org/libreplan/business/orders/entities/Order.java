@@ -248,7 +248,7 @@ public class Order extends OrderLineGroup implements Comparable {
         this.materialsBudget = materialsBudget;
     }
 
-    public BigDecimal getTotalBudget() {
+    public BigDecimal getTotalManualBudget() {
         return getWorkBudget().add(getMaterialsBudget());
     }
 

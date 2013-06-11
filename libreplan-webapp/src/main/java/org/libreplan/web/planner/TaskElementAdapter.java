@@ -609,7 +609,7 @@ public class TaskElementAdapter {
             @Override
             public BigDecimal getMoneyCostBarPercentage() {
                 return MoneyCostCalculator.getMoneyCostProportion(
-                        getMoneyCost(), getBudget());
+                        getMoneyCost(), getTotalCalculatedBudget());
             }
 
             private BigDecimal getBudget() {
@@ -618,6 +618,30 @@ public class TaskElementAdapter {
                     return BigDecimal.ZERO;
                 }
                 return taskElement.getOrderElement().getBudget();
+            }
+
+            private BigDecimal getTotalCalculatedBudget() {
+                if ((taskElement == null)
+                        || (taskElement.getOrderElement() == null)) {
+                    return BigDecimal.ZERO;
+                }
+                return transactionService
+                        .runOnReadOnlyTransaction(new IOnTransaction<BigDecimal>() {
+
+                            @Override
+                            public BigDecimal execute() {
+                                return taskElement.getOrderElement()
+                                        .getTotalBudget();
+                            }
+                        });
+            }
+
+            private BigDecimal getTotalBudget() {
+                if ((taskElement == null)
+                        || (taskElement.getOrderElement() == null)) {
+                    return BigDecimal.ZERO;
+                }
+                return taskElement.getOrderElement().getResourcesBudget();
             }
 
             private BigDecimal getMoneyCost() {
@@ -895,7 +919,8 @@ public class TaskElementAdapter {
                 if (taskElement.getOrderElement() instanceof Order) {
                     result.append(_("State") + ": ").append(getOrderState());
                 } else {
-                    String budget = Util.addCurrencySymbol(getBudget());
+                    String budget = Util
+                            .addCurrencySymbol(getTotalCalculatedBudget());
                     String moneyCost = Util.addCurrencySymbol(getMoneyCost());
 
                     String costHours = Util.addCurrencySymbol(getHoursMoneyCost());

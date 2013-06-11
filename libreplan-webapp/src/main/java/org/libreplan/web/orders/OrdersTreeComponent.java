@@ -44,9 +44,6 @@ import org.zkoss.zul.Treeitem;
  */
 public class OrdersTreeComponent extends TreeComponent {
 
-    @Autowired
-    private IConfigurationDAO configurationDAO;
-
     abstract class OrdersTreeColumn extends Column {
         OrdersTreeColumn(String label, String cssClass, String tooltip) {
             super(label, cssClass, tooltip);
@@ -86,7 +83,7 @@ public class OrdersTreeComponent extends TreeComponent {
             }
 
         });
-        columns.add(new OrdersTreeColumn(_("Budget"), "budget",
+        columns.add(new OrdersTreeColumn(_("Expenses"), "budget",
                 _("Total task budget")) {
 
             @Override
@@ -98,13 +95,13 @@ public class OrdersTreeComponent extends TreeComponent {
         });
 
         // Pending to add condition with configuration.isEnabledAutomaticBudget
-        columns.add(new OrdersTreeColumn(_("autobudget"), "autobudget",
-                _("autobudget")) {
+        columns.add(new OrdersTreeColumn(_("Resources"), "autobudget",
+                _("resources")) {
 
             @Override
             protected void doCell(OrderElementTreeitemRenderer treeRenderer,
                     OrderElement currentElement) {
-                treeRenderer.addAutoBudgetCell(currentElement);
+                treeRenderer.addResourcesBudgetCell(currentElement);
             }
 
         });

@@ -39,13 +39,15 @@ import javax.annotation.Resource;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.LogFactory;
 import org.aspectj.weaver.ICrossReferenceHandler;
+import org.libreplan.business.common.IAdHocTransactionService;
+import org.libreplan.business.common.IOnTransaction;
+import org.libreplan.business.common.Registry;
 import org.libreplan.business.common.daos.IConfigurationDAO;
 import org.libreplan.business.common.daos.IConnectorDAO;
 import org.libreplan.business.common.entities.Connector;
 import org.libreplan.business.common.entities.EntitySequence;
 import org.libreplan.business.common.entities.PredefinedConnectorProperties;
 import org.libreplan.business.common.entities.PredefinedConnectors;
-import org.libreplan.business.orders.entities.HoursGroup;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderLine;
@@ -64,14 +66,12 @@ import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
 import org.libreplan.web.common.components.finders.FilterPair;
 import org.libreplan.web.common.components.finders.OrderElementFilterEnum;
 import org.libreplan.web.common.components.finders.TaskElementFilterEnum;
-import org.libreplan.web.materials.UnitTypeModel;
 import org.libreplan.web.orders.assigntemplates.TemplateFinderPopup;
 import org.libreplan.web.orders.assigntemplates.TemplateFinderPopup.IOnResult;
 import org.libreplan.web.security.SecurityUtils;
 import org.libreplan.web.templates.IOrderTemplatesControllerEntryPoints;
 import org.libreplan.web.tree.TreeController;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.ganttz.IPredicate;
 import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.zk.ui.Component;
@@ -84,7 +84,6 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
-import org.zkoss.zul.Label;
 import org.zkoss.zul.Popup;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
@@ -140,6 +139,9 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
 
     @Autowired
     private ICriterionDAO criterionDAO;
+
+    @Autowired
+    private IAdHocTransactionService transactionService;
 
     private static final org.apache.commons.logging.Log LOG = LogFactory
             .getLog(OrderElementTreeController.class);
@@ -622,11 +624,18 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
             super.removeCodeTextbox(key);
         }
 
-        public void addAutoBudgetCell(OrderElement currentElement) {
-            IOrderElementModel model = orderModel
-                    .getOrderElementModel(currentElement);
-            Textbox autoBudgetCell = new Textbox(Util.addCurrencySymbol(model
-                    .getTotalBudget()));
+        public void addResourcesBudgetCell(final OrderElement currentElement) {
+            BigDecimal value = Registry.getTransactionService()
+                    .runOnAnotherReadOnlyTransaction(
+                            new IOnTransaction<BigDecimal>() {
+
+                                @Override
+                                public BigDecimal execute() {
+                                    return currentElement.getResourcesBudget();
+                                }
+                            });
+            // BigDecimal value = currentElement.getResourcesBudget();
+            Textbox autoBudgetCell = new Textbox(Util.addCurrencySymbol(value));
             autoBudgetCell.setDisabled(true);
             addCell(autoBudgetCell);
         }
