@@ -50,6 +50,10 @@ public class ProjectStatusReportDTO {
 
     private BigDecimal budget;
 
+    private BigDecimal expensesBudget;
+
+    private BigDecimal resourcesBudget;
+
     private BigDecimal hoursCost;
 
     private BigDecimal expensesCost;
@@ -107,7 +111,11 @@ public class ProjectStatusReportDTO {
             imputedHours = sumChargedEffort.getTotalChargedEffort();
         }
 
-        setBudget(orderElement.getBudget());
+        setBudget(orderElement.getTotalBudget());
+
+        setExpensesBudget(orderElement.getBudget());
+        setResourcesBudget(orderElement.getResourcesBudget());
+
     }
 
     public String getCode() {
@@ -153,6 +161,22 @@ public class ProjectStatusReportDTO {
         return budget;
     }
 
+    public void setResourcesBudget(BigDecimal budget) {
+        this.resourcesBudget = budget;
+    }
+
+    public BigDecimal getResourcesBudget() {
+        return resourcesBudget;
+    }
+
+    public void setExpensesBudget(BigDecimal budget) {
+        this.expensesBudget = budget;
+    }
+
+    public BigDecimal getExpensesBudget() {
+        return expensesBudget;
+    }
+
     public void setBudget(BigDecimal budget) {
         this.budget = budget;
     }
@@ -187,6 +211,22 @@ public class ProjectStatusReportDTO {
 
     public BigDecimal getBudgetFractionalPart() {
         return Util.getFractionalPart(budget);
+    }
+
+    public BigDecimal getResourcesBudgetIntegerPart() {
+        return Util.getIntegerPart(resourcesBudget);
+    }
+
+    public BigDecimal getResourcesBudgetFractionalPart() {
+        return Util.getFractionalPart(resourcesBudget);
+    }
+
+    public BigDecimal getExpensesBudgetIntegerPart() {
+        return Util.getIntegerPart(expensesBudget);
+    }
+
+    public BigDecimal getExpensesBudgetFractionalPart() {
+        return Util.getFractionalPart(expensesBudget);
     }
 
     public BigDecimal getHoursCostIntegerPart() {
