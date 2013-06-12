@@ -199,7 +199,7 @@
                         <column />
                     </columns>
                     <rows>
-                        <row>
+                         <row>
                             <grid fixedLayout="true">
                                 <columns>
                                     <column width="20px" />
@@ -208,15 +208,39 @@
                                 </columns>
                                 <rows>
                                     <row>
-                                        <label/>
+                                        <detailrow open="true">
+                                            <grid fixedLayout="true">
+                                                <columns>
+                                                    <column width="200px" />
+                                                    <column align="right"/>
+                                                </columns>
+                                                <rows>
+                                                    <row>
+                                                        <label value="${i18n:_('Resources budget')}:" />
+                                                        <hbox>
+                                                            <label value="@{assignedHoursToOrderElementController.resourcesBudget}" />
+                                                            <label value="@{assignedHoursToOrderElementController.currencySymbol}" />
+                                                        </hbox>
+                                                    </row>
+                                                    <row>
+                                                        <label value="${i18n:_('Expenses budget')}:" />
+                                                        <hbox>
+                                                            <label value="@{assignedHoursToOrderElementController.budget}" />
+                                                            <label value="@{assignedHoursToOrderElementController.currencySymbol}" />
+                                                        </hbox>
+                                                    </row>
+                                                </rows>
+                                            </grid>
+                                        </detailrow>
                                         <label
-                                            value="${i18n:_('Budget in money')}:" />
+                                            value="${i18n:_('Total calculated budget')}:" />
                                         <hbox>
-                                            <label
-                                                value="@{assignedHoursToOrderElementController.budget}" />
+                                            <label value="@{assignedHoursToOrderElementController.totalBudget}" />
                                             <label value="@{assignedHoursToOrderElementController.currencySymbol}" />
                                         </hbox>
                                     </row>
+
+
                                     <row>
                                         <detailrow open="true">
                                             <grid fixedLayout="true">

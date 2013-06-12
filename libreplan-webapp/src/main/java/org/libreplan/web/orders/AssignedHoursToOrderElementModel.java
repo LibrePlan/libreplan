@@ -30,6 +30,8 @@ import java.util.List;
 
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
+import org.libreplan.business.common.Registry;
+import org.libreplan.business.common.daos.ConfigurationDAO;
 import org.libreplan.business.expensesheet.daos.IExpenseSheetLineDAO;
 import org.libreplan.business.expensesheet.entities.ExpenseSheetLine;
 import org.libreplan.business.expensesheet.entities.ExpenseSheetLineComparator;
@@ -244,6 +246,24 @@ public class AssignedHoursToOrderElementModel implements IAssignedHoursToOrderEl
 
     @Override
     @Transactional(readOnly = true)
+    public BigDecimal getTotalBudget() {
+        if (orderElement == null) {
+            return BigDecimal.ZERO;
+        }
+        return getBudget().add(getResourcesBudget());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public BigDecimal getResourcesBudget() {
+        if (orderElement == null) {
+            return BigDecimal.ZERO;
+        }
+        return orderElement.getResourcesBudget();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public BigDecimal getMoneyCost() {
         if (orderElement == null) {
             return BigDecimal.ZERO;
@@ -292,9 +312,8 @@ public class AssignedHoursToOrderElementModel implements IAssignedHoursToOrderEl
             return BigDecimal.ZERO;
         }
         return MoneyCostCalculator.getMoneyCostProportion(
-                moneyCostCalculator.getTotalMoneyCost(orderElement), orderElement.getBudget())
-                .multiply(
-                new BigDecimal(100));
+                moneyCostCalculator.getTotalMoneyCost(orderElement),
+                orderElement.getTotalBudget()).multiply(new BigDecimal(100));
     }
 
     @Override

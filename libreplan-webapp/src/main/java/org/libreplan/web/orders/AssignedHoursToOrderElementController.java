@@ -24,6 +24,8 @@ package org.libreplan.web.orders;
 import java.math.BigDecimal;
 import java.util.List;
 
+import org.libreplan.business.common.Registry;
+import org.libreplan.business.common.daos.ConfigurationDAO;
 import org.libreplan.business.expensesheet.entities.ExpenseSheetLine;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.reports.dtos.WorkReportLineDTO;
@@ -102,6 +104,14 @@ public class AssignedHoursToOrderElementController extends
 
     public BigDecimal getBudget() {
         return assignedHoursToOrderElementModel.getBudget();
+    }
+
+    public BigDecimal getResourcesBudget() {
+        return assignedHoursToOrderElementModel.getResourcesBudget();
+    }
+
+    public BigDecimal getTotalBudget() {
+        return assignedHoursToOrderElementModel.getTotalBudget();
     }
 
     public BigDecimal getMoneyCost() {
