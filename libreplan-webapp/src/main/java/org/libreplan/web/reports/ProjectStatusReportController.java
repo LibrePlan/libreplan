@@ -31,6 +31,9 @@ import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 import org.codehaus.plexus.util.StringUtils;
+import org.libreplan.business.common.entities.Configuration;
+import org.libreplan.business.common.Registry;
+import org.libreplan.business.common.daos.ConfigurationDAO;
 import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.reports.dtos.ProjectStatusReportDTO;
@@ -40,6 +43,7 @@ import org.libreplan.web.common.Level;
 import org.libreplan.web.common.MessagesForUser;
 import org.libreplan.web.common.Util;
 import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
+import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zul.Listbox;
@@ -84,7 +88,13 @@ public class ProjectStatusReportController extends LibrePlanReportController {
 
     @Override
     protected String getReportName() {
-        return REPORT_NAME;
+        Configuration configuration = Registry.getConfigurationDAO()
+                .getConfigurationWithReadOnlyTransaction();
+        if (configuration != null && configuration.isEnabledAutomaticBudget()) {
+            return REPORT_WITH_HOURS_BUDGET_NAME;
+        } else {
+            return REPORT_NAME;
+        }
     }
 
     @Override
