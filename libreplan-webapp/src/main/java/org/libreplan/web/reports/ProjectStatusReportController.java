@@ -56,6 +56,8 @@ public class ProjectStatusReportController extends LibrePlanReportController {
 
     private static final String REPORT_NAME = "projectStatusReport";
 
+    private static final String REPORT_WITH_HOURS_BUDGET_NAME = "projectStatusReportWithHoursBudget";
+
     private IProjectStatusReportModel projectStatusReportModel;
 
     private BandboxSearch bandboxSelectOrder;
