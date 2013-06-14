@@ -342,8 +342,10 @@ public class PlanningStateCreator {
 
             for (CriterionRequirement requirement : each
                     .getCriterionRequirements()) {
-                requirement.getCriterion().getCostCategory().getHourCosts()
-                        .size();
+                if (requirement.getCriterion().getCostCategory() != null) {
+                    requirement.getCriterion().getCostCategory().getHourCosts()
+                            .size();
+                }
             }
             for (HoursGroup hours : each.getHoursGroups()) {
                 for (CriterionRequirement requirement : hours
