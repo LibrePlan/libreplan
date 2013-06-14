@@ -25,6 +25,7 @@ import static org.libreplan.web.I18nHelper._;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.libreplan.business.common.Registry;
 import org.libreplan.business.common.daos.IConfigurationDAO;
 import org.libreplan.business.common.entities.Configuration;
 import org.libreplan.business.orders.entities.OrderElement;
@@ -94,7 +95,9 @@ public class OrdersTreeComponent extends TreeComponent {
 
         });
 
-        // Pending to add condition with configuration.isEnabledAutomaticBudget
+        if (Registry.getConfigurationDAO()
+                .getConfigurationWithReadOnlyTransaction()
+                .isEnabledAutomaticBudget()) {
         columns.add(new OrdersTreeColumn(_("Resources"), "autobudget",
                 _("resources")) {
 
@@ -105,6 +108,8 @@ public class OrdersTreeComponent extends TreeComponent {
             }
 
         });
+
+        }
 
         columns.add(new OrdersTreeColumn(_("Must start after"),
                         "estimated_init",
