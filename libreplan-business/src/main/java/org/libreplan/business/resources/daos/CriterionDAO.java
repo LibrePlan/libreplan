@@ -34,6 +34,7 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.libreplan.business.common.daos.IntegrationEntityDAO;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
+import org.libreplan.business.costcategories.entities.CostCategory;
 import org.libreplan.business.requirements.entities.CriterionRequirement;
 import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.resources.entities.CriterionSatisfaction;
@@ -199,6 +200,19 @@ public class CriterionDAO extends IntegrationEntityDAO<Criterion>
                 .add(Restrictions.eq("criterion", criterion)).setProjection(
                         Projections.rowCount());
         return Integer.valueOf(c.uniqueResult().toString()).intValue();
+    }
+
+    @Override
+    public boolean hasCostCategoryAssignments(CostCategory costCategory) {
+        for (Criterion crit: getAll()) {
+            if (crit.getCostCategory() != null) {
+                if (crit.getCostCategory().getCode().equals(costCategory
+                            .getCode())) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 }

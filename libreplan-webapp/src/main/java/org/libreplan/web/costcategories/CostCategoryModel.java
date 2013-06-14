@@ -37,6 +37,7 @@ import org.libreplan.business.costcategories.daos.ITypeOfWorkHoursDAO;
 import org.libreplan.business.costcategories.entities.CostCategory;
 import org.libreplan.business.costcategories.entities.HourCost;
 import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
+import org.libreplan.business.resources.daos.ICriterionDAO;
 import org.libreplan.web.common.IntegrationEntityModel;
 import org.libreplan.web.common.concurrentdetection.OnConcurrentModification;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,6 +62,9 @@ public class CostCategoryModel extends IntegrationEntityModel implements
 
     @Autowired
     private ICostCategoryDAO costCategoryDAO;
+
+    @Autowired
+    private ICriterionDAO criterionDAO;
 
     @Autowired
     private IResourcesCostCategoryAssignmentDAO resourcesCostCategoryAssignmentDAO;
@@ -177,8 +181,10 @@ public class CostCategoryModel extends IntegrationEntityModel implements
     @Override
     @Transactional(readOnly=true)
     public boolean canRemoveCostCategory(CostCategory category) {
-        return (resourcesCostCategoryAssignmentDAO.
-                getResourcesCostCategoryAssignmentsByCostCategory(category).size() == 0);
+        return (resourcesCostCategoryAssignmentDAO
+                .getResourcesCostCategoryAssignmentsByCostCategory(category)
+                .size() == 0)
+                && !criterionDAO.hasCostCategoryAssignments(category);
     }
 
     public EntityNameEnum getEntityName() {

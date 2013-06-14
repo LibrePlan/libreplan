@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.libreplan.business.common.daos.IIntegrationEntityDAO;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
+import org.libreplan.business.costcategories.entities.CostCategory;
 import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.resources.entities.ICriterionType;
 
@@ -64,5 +65,7 @@ public interface ICriterionDAO extends IIntegrationEntityDAO<Criterion> {
     public int numberOfRelatedRequirements(Criterion criterion);
 
     public int numberOfRelatedSatisfactions(Criterion criterion);
+
+    public boolean hasCostCategoryAssignments(CostCategory costCategory);
 
 }
