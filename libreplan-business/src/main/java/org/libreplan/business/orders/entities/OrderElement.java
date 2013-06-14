@@ -1726,37 +1726,37 @@ public abstract class OrderElement extends IntegrationEntity implements
 
     public BigDecimal calculateBudgetFromCriteriaAndCostCategories() {
         BigDecimal totalBudget = new BigDecimal(0);
-        BigDecimal costPerHour = new BigDecimal(0);
+
         Configuration configuration = Registry.getConfigurationDAO()
                 .getConfiguration();
         TypeOfWorkHours typeofWorkHours = configuration
                 .getBudgetDefaultTypeOfWorkHours();
-
-        if (typeofWorkHours == null) {
+        if (!configuration.isEnabledAutomaticBudget()
+                || (configuration.getBudgetDefaultTypeOfWorkHours() == null)) {
             return totalBudget;
         }
 
         // FIXME: This workarounds LazyException when adding new
         // criteria but disables the refresh on changes
-        for (CriterionRequirement requirement : getCriterionRequirements()) {
-            BigDecimal hours = new BigDecimal(getWorkHours());
-            try {
-                totalBudget = totalBudget.add(costPerHour.multiply(hours));
+        BigDecimal costPerHour = new BigDecimal(0);
+        BigDecimal hours = new BigDecimal(0);
 
+        for (CriterionRequirement requirement : getCriterionRequirements()) {
+            hours = new BigDecimal(getWorkHours());
+            try {
+                if (requirement.getCriterion().getCostCategory() != null) {
                 costPerHour = requirement.getCriterion().getCostCategory()
                         .getHourCostByCode(typeofWorkHours.getCode())
                         .getPriceCost();
                 totalBudget = totalBudget.add(costPerHour.multiply(hours));
-
+                }
             } catch (InstanceNotFoundException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                // Nothing to do, the budget is kept to 0
             }
-            totalBudget = totalBudget.add(costPerHour.multiply(hours));
         }
 
         for (HoursGroup hoursGroup : getHoursGroups()) {
-            BigDecimal hours = new BigDecimal(hoursGroup.getWorkingHours());
+            hours = new BigDecimal(hoursGroup.getWorkingHours());
 
             for (CriterionRequirement crit : hoursGroup
                     .getCriterionRequirements()) {
@@ -1772,8 +1772,8 @@ public abstract class OrderElement extends IntegrationEntity implements
                         costPerHour = new BigDecimal(0);
                     }
                 }
+                totalBudget = totalBudget.add(costPerHour.multiply(hours));
             }
-            totalBudget = totalBudget.add(costPerHour.multiply(hours));
         }
 
         return totalBudget;
