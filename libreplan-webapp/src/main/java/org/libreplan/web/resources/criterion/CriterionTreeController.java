@@ -330,6 +330,19 @@ public class CriterionTreeController extends GenericForwardComposer {
                 }
             }
         });
+
+        autocomplete.addEventListener("onBlur", new EventListener() {
+
+            @Override
+            public void onEvent(Event event) {
+                if (autocomplete.getText().isEmpty()) {
+                    autocomplete.clear();
+                    CriterionDTO assignment = (CriterionDTO) row.getValue();
+                    assignment.getCriterion().setCostCategory(null);
+                }
+            }
+        });
+
         return autocomplete;
     }
 
