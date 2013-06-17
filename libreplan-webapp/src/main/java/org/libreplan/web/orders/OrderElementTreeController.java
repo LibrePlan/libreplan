@@ -625,16 +625,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
         }
 
         public void addResourcesBudgetCell(final OrderElement currentElement) {
-            BigDecimal value = Registry.getTransactionService()
-                    .runOnAnotherReadOnlyTransaction(
-                            new IOnTransaction<BigDecimal>() {
-
-                                @Override
-                                public BigDecimal execute() {
-                                    return currentElement.getResourcesBudget();
-                                }
-                            });
-            // BigDecimal value = currentElement.getResourcesBudget();
+            BigDecimal value = currentElement.getResourcesBudget();
             Textbox autoBudgetCell = new Textbox(Util.addCurrencySymbol(value));
             autoBudgetCell.setDisabled(true);
             addCell(autoBudgetCell);

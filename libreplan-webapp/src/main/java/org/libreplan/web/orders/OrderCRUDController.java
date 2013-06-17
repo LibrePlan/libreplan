@@ -1898,8 +1898,7 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     public BigDecimal getResourcesBudget() {
-        return Registry.getTransactionService()
-                .runOnAnotherReadOnlyTransaction(
+        return Registry.getTransactionService().runOnReadOnlyTransaction(
                         new IOnTransaction<BigDecimal>() {
 
                             @Override
