@@ -27,8 +27,10 @@ import org.hibernate.Query;
 import org.joda.time.LocalDate;
 import org.libreplan.business.common.daos.IntegrationEntityDAO;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
+import org.libreplan.business.costcategories.entities.CostCategory;
 import org.libreplan.business.costcategories.entities.HourCost;
 import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
+import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.resources.entities.Resource;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -73,6 +75,20 @@ public class HourCostDAO extends IntegrationEntityDAO<HourCost> implements
         Query query = getSession().createQuery(strQuery);
         query.setParameter("resource", resource);
         query.setParameter("date", date);
+        query.setParameter("type", type);
+
+        return (BigDecimal) query.uniqueResult();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public BigDecimal getPriceCostFromCriterionAndType(CostCategory category,
+            TypeOfWorkHours type) {
+
+        String strQuery = "SELECT priceCost " + "FROM HourCost "
+                + "WHERE category = :category" + " AND type = :type ";
+        Query query = getSession().createQuery(strQuery);
+        query.setParameter("category", category);
         query.setParameter("type", type);
 
         return (BigDecimal) query.uniqueResult();

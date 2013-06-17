@@ -60,4 +60,6 @@ public interface IHourCostDAO extends IIntegrationEntityDAO<HourCost> {
     BigDecimal getPriceCostFromResourceDateAndType(Resource resource,
             LocalDate date, TypeOfWorkHours type);
 
+    public BigDecimal getPriceCostFromCriterionAndType(
+            CostCategory category, TypeOfWorkHours type);
 }

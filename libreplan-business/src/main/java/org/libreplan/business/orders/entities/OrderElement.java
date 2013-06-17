@@ -57,6 +57,7 @@ import org.libreplan.business.common.entities.Configuration;
 import org.libreplan.business.common.entities.PredefinedConnectorProperties;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
+import org.libreplan.business.costcategories.daos.IHourCostDAO;
 import org.libreplan.business.costcategories.entities.CostCategory;
 import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
 import org.libreplan.business.labels.entities.Label;
@@ -72,6 +73,7 @@ import org.libreplan.business.qualityforms.entities.TaskQualityForm;
 import org.libreplan.business.requirements.entities.CriterionRequirement;
 import org.libreplan.business.requirements.entities.DirectCriterionRequirement;
 import org.libreplan.business.requirements.entities.IndirectCriterionRequirement;
+import org.libreplan.business.resources.daos.ICriterionDAO;
 import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.scenarios.entities.OrderVersion;
 import org.libreplan.business.scenarios.entities.Scenario;
@@ -1705,8 +1707,7 @@ public abstract class OrderElement extends IntegrationEntity implements
 
     public BigDecimal getResourcesBudget() {
         BigDecimal result = new BigDecimal(0);
-        Configuration configuration = Registry
-                .getConfigurationDAO()
+        Configuration configuration = Registry.getConfigurationDAO()
                 .getConfiguration();
         if (configuration == null) {
             return result;
@@ -1736,23 +1737,20 @@ public abstract class OrderElement extends IntegrationEntity implements
             return totalBudget;
         }
 
-        // FIXME: This workarounds LazyException when adding new
-        // criteria but disables the refresh on changes
         BigDecimal costPerHour = new BigDecimal(0);
         BigDecimal hours = new BigDecimal(0);
 
         for (CriterionRequirement requirement : getCriterionRequirements()) {
             hours = new BigDecimal(getWorkHours());
-            try {
                 if (requirement.getCriterion().getCostCategory() != null) {
-                costPerHour = requirement.getCriterion().getCostCategory()
-                        .getHourCostByCode(typeofWorkHours.getCode())
-                        .getPriceCost();
+
+                IHourCostDAO hourCostDAO = Registry.getHourCostDAO();
+                costPerHour = hourCostDAO.getPriceCostFromCriterionAndType(
+                        requirement.getCriterion().getCostCategory(),
+                        typeofWorkHours);
+
                 totalBudget = totalBudget.add(costPerHour.multiply(hours));
                 }
-            } catch (InstanceNotFoundException e) {
-                // Nothing to do, the budget is kept to 0
-            }
         }
 
         for (HoursGroup hoursGroup : getHoursGroups()) {
@@ -1763,14 +1761,11 @@ public abstract class OrderElement extends IntegrationEntity implements
                 CostCategory costcat = crit.getCriterion().getCostCategory();
 
                 if (costcat != null) {
-                    try {
-                        costPerHour = costcat
-                                .getPriceCostByTypeOfWorkHour(typeofWorkHours
-                                        .getCode());
-                    } catch (InstanceNotFoundException e) {
-                        // Default values to 0
-                        costPerHour = new BigDecimal(0);
-                    }
+
+                    IHourCostDAO hourCostDAO = Registry.getHourCostDAO();
+                    costPerHour = hourCostDAO.getPriceCostFromCriterionAndType(
+                            costcat, typeofWorkHours);
+
                 }
                 totalBudget = totalBudget.add(costPerHour.multiply(hours));
             }
