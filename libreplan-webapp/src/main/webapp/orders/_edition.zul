@@ -152,6 +152,14 @@
                                 <checkbox
                                     checked="@{controller.order.dependenciesConstraintsHavePriority}" />
                             </row>
+                            <row>
+                                <label value="${i18n:_('Hours margin')}" />
+                                <hbox>
+                                    <intbox
+                                         value="@{controller.order.hoursMargin}" constraint="no negative" width="30px" />
+                                    <label value="%" />
+                                </hbox>
+                            </row>
                         </rows>
                     </grid>
                 </groupbox>
@@ -209,6 +217,14 @@
                             <row>
                                 <label value="${i18n:_('Total hours')}" />
                                 <label value="@{controller.order.totalHours}"/>
+                            </row>
+                            <row>
+                                <label value="${i18n:_('Budget margin')}" />
+                                <hbox>
+                                    <intbox
+                                         value="@{controller.order.budgetMargin}" constraint="no negative" width="30px" />
+                                    <label value="%" />
+                                </hbox>
                             </row>
                         </rows>
                     </grid>
