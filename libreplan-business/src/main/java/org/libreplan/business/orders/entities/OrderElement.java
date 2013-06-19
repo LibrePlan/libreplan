@@ -1706,23 +1706,14 @@ public abstract class OrderElement extends IntegrationEntity implements
     }
 
     public BigDecimal getResourcesBudget() {
-        BigDecimal result = new BigDecimal(0);
-        Configuration configuration = Registry.getConfigurationDAO()
-                .getConfiguration();
-        if (configuration == null) {
-            return result;
-        }
-        if (configuration.isEnabledAutomaticBudget()) {
-            result = Registry.getTransactionService().runOnReadOnlyTransaction(
-                    new IOnTransaction<BigDecimal>() {
+        return Registry.getTransactionService().runOnReadOnlyTransaction(
+                new IOnTransaction<BigDecimal>() {
 
-                        @Override
-                        public BigDecimal execute() {
-                            return calculateBudgetFromCriteriaAndCostCategories();
-                        }
-                    });
-        }
-        return result;
+                    @Override
+                    public BigDecimal execute() {
+                        return calculateBudgetFromCriteriaAndCostCategories();
+                    }
+                });
     }
 
     public BigDecimal calculateBudgetFromCriteriaAndCostCategories() {
@@ -1740,19 +1731,6 @@ public abstract class OrderElement extends IntegrationEntity implements
         BigDecimal costPerHour = new BigDecimal(0);
         BigDecimal hours = new BigDecimal(0);
 
-        for (CriterionRequirement requirement : getCriterionRequirements()) {
-            hours = new BigDecimal(getWorkHours());
-                if (requirement.getCriterion().getCostCategory() != null) {
-
-                IHourCostDAO hourCostDAO = Registry.getHourCostDAO();
-                costPerHour = hourCostDAO.getPriceCostFromCriterionAndType(
-                        requirement.getCriterion().getCostCategory(),
-                        typeofWorkHours);
-
-                totalBudget = totalBudget.add(costPerHour.multiply(hours));
-                }
-        }
-
         for (HoursGroup hoursGroup : getHoursGroups()) {
             hours = new BigDecimal(hoursGroup.getWorkingHours());
 
@@ -1768,6 +1746,10 @@ public abstract class OrderElement extends IntegrationEntity implements
 
                 }
                 totalBudget = totalBudget.add(costPerHour.multiply(hours));
+            }
+            if (hoursGroup.getCriterionRequirements().size() > 1) {
+                totalBudget = totalBudget.divide(new BigDecimal(hoursGroup
+                        .getCriterionRequirements().size()));
             }
         }
 
