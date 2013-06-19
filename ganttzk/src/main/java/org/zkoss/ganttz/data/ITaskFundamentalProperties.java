@@ -25,6 +25,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+import org.zkoss.ganttz.ProjectStatusEnum;
 import org.zkoss.ganttz.data.constraint.Constraint;
 
 /**
@@ -134,5 +135,51 @@ public interface ITaskFundamentalProperties {
     public String getCode();
 
     public String getProjectCode();
+
+    /**
+     * Calculates whether the project is within the estimated hours or not and
+     * returns alarm status(color) {@link ProjectStatusEnum} accordingly.
+     *
+     * Alarm status definition:
+     * <ul>
+     * <li>{@link ProjectStatusEnum#AS_PLANNED}: everything is OK, project is as
+     * planned</li>
+     * <li>{@link ProjectStatusEnum#WITHIN_MARGIN}: warning, project exceeded
+     * the estimated hours, but still within margin</li>
+     * <li>{@link ProjectStatusEnum#MARGIN_EXCEEDED}: Project exceeded the hours
+     * estimated with margin</li>
+     * </ul>
+     *
+     * @return {@link ProjectStatusEnum}
+     */
+    ProjectStatusEnum getProjectHoursStatus();
+
+    /**
+     * Calculates whether the project is within the estimated budget or not and
+     * returns alarm status(color) {@link ProjectStatusEnum} accordingly.
+     *
+     * Alarm status definition:
+     * <ul>
+     * <li>{@link ProjectStatusEnum#AS_PLANNED}: everything is OK, project is as
+     * planned</li>
+     * <li>{@link ProjectStatusEnum#WITHIN_MARGIN}: warning, project exceeded
+     * the estimated budget, but still within margin</li>
+     * <li>{@link ProjectStatusEnum#MARGIN_EXCEEDED}: Project exceeded the
+     * budget estimated with margin</li>
+     * </ul>
+     *
+     * @return {@link ProjectStatusEnum}
+     */
+    ProjectStatusEnum getProjectBudgetStatus();
+
+    /**
+     * creates and returns tooltiptext for the project's hours status
+     */
+    String getTooltipTextForProjectHoursStatus();
+
+    /**
+     * creates and returns tooltiptext for the project's budget status
+     */
+    String getTooltipTextForProjectBudgetStatus();
 
 }
