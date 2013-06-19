@@ -381,4 +381,18 @@
             onDelete="SET NULL"/>
     </changeSet>
 
+    <changeSet id="add-new-column-hours-margin" author="miciele" >
+        <comment>Add new column hours_margin in table order_table</comment>
+        <addColumn tableName="order_table">
+            <column name="hours_margin" type="INTEGER" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add-new-column-budget-margin" author="miciele" >
+        <comment>Add new column budget_margin in table order_table</comment>
+        <addColumn tableName="order_table">
+            <column name="budget_margin" type="INTEGER" />
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
