@@ -55,7 +55,6 @@ import org.libreplan.business.common.Registry;
 import org.libreplan.business.common.daos.IIntegrationEntityDAO;
 import org.libreplan.business.common.entities.Configuration;
 import org.libreplan.business.common.entities.PredefinedConnectorProperties;
-import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.costcategories.daos.IHourCostDAO;
 import org.libreplan.business.costcategories.entities.CostCategory;
@@ -73,7 +72,6 @@ import org.libreplan.business.qualityforms.entities.TaskQualityForm;
 import org.libreplan.business.requirements.entities.CriterionRequirement;
 import org.libreplan.business.requirements.entities.DirectCriterionRequirement;
 import org.libreplan.business.requirements.entities.IndirectCriterionRequirement;
-import org.libreplan.business.resources.daos.ICriterionDAO;
 import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.scenarios.entities.OrderVersion;
 import org.libreplan.business.scenarios.entities.Scenario;
@@ -1700,7 +1698,6 @@ public abstract class OrderElement extends IntegrationEntity implements
         return false;
     }
 
-
     public BigDecimal getTotalBudget() {
         return getBudget().add(getResourcesBudget());
     }
@@ -1758,6 +1755,62 @@ public abstract class OrderElement extends IntegrationEntity implements
         }
 
         return totalBudget;
+    }
+
+    /**
+     * Returns with margin calculated hours for this orderElement
+     */
+    public EffortDuration getWithMarginCalculatedHours() {
+        return calculateWorkHoursWithMargin();
+    }
+
+    /**
+     * Calculates the work hours with the margin {@link Order#getHoursMargin()}
+     * for this orderElement
+     *
+     * @return calculated work hours
+     */
+    private EffortDuration calculateWorkHoursWithMargin() {
+        BigDecimal margin = this.getOrder().getHoursMargin() != null ? new BigDecimal(
+                this.getOrder().getHoursMargin()).setScale(2) : BigDecimal.ZERO;
+
+        BigDecimal hundred = new BigDecimal(100);
+
+        BigDecimal estimatedHours = new BigDecimal(getWorkHours()).setScale(2);
+
+        BigDecimal marginHours = estimatedHours.multiply(margin).divide(
+                hundred, 2,
+                BigDecimal.ROUND_HALF_EVEN);
+
+        BigDecimal result = estimatedHours.add(marginHours);
+
+        return EffortDuration.fromHoursAsBigDecimal(result);
+    }
+
+    /**
+     * Returns with margin calculated budget for this orderElement
+     */
+    public BigDecimal getWithMarginCalculatedBudget() {
+        return calculateBudgetWithMargin();
+    }
+
+    /**
+     * Calculates the budget with the margin {@link Order#getBudgetMargin()} for
+     * this orderElement
+     *
+     * @return calculated budget
+     */
+    private BigDecimal calculateBudgetWithMargin() {
+        BigDecimal margin = this.getOrder().getBudgetMargin() != null ? new BigDecimal(
+                this.getOrder().getBudgetMargin()) : BigDecimal.ZERO;
+
+        BigDecimal hundred = new BigDecimal(100);
+
+        BigDecimal budget = getBudget();
+        BigDecimal marginBudget = budget.multiply(margin).divide(hundred, 2,
+                BigDecimal.ROUND_HALF_EVEN);
+
+        return budget.add(marginBudget);
     }
 
 }
