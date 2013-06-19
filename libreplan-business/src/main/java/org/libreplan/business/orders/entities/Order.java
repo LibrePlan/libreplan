@@ -138,6 +138,10 @@ public class Order extends OrderLineGroup implements Comparable {
 
     private boolean neededToRecalculateSumExpenses = false;
 
+    private Integer hoursMargin;
+
+    private Integer budgetMargin;
+
     public static class CurrentVersionInfo {
 
         private final OrderVersion orderVersion;
@@ -668,6 +672,22 @@ public class Order extends OrderLineGroup implements Comparable {
 
     public boolean isNeededToRecalculateSumExpenses() {
         return neededToRecalculateSumExpenses;
+    }
+
+    public Integer getHoursMargin() {
+        return hoursMargin;
+    }
+
+    public void setHoursMargin(Integer hoursMargin) {
+        this.hoursMargin = hoursMargin;
+    }
+
+    public Integer getBudgetMargin() {
+        return budgetMargin;
+    }
+
+    public void setBudgetMargin(Integer budgetMargin) {
+        this.budgetMargin = budgetMargin;
     }
 
     @Override
