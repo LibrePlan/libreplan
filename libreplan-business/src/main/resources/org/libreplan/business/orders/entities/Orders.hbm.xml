@@ -125,6 +125,9 @@
                         <param name="enumClass">org.libreplan.business.orders.entities.Order$SchedulingMode</param>
                     </type>
                 </property>
+                <!-- extra column to hold projects hours- and budget- margin -->
+                <property name="hoursMargin" column="hours_margin" access="field" />
+                <property name="budgetMargin" column="budget_margin" access="field" />
 
                 <!-- Not indexed -->
                 <many-to-one name="customer" access="field" class="org.libreplan.business.externalcompanies.entities.ExternalCompany"/>
