@@ -41,7 +41,6 @@ import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.util.Locales;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -51,6 +50,8 @@ import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Treecell;
+import org.zkoss.zul.api.Div;
+import org.zkoss.zul.api.Hlayout;
 import org.zkoss.zul.api.Label;
 import org.zkoss.zul.api.Treerow;
 
@@ -90,6 +91,10 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
     private DateFormat dateFormat;
 
     private Planner planner;
+
+    private Div hoursStatusDiv;
+
+    private Div budgetStatusDiv;
 
     private final ILeftTasksTreeNavigator leftTasksTreeNavigator;
 
@@ -275,10 +280,11 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
         List<Object> rowChildren = row.getChildren();
         List<Treecell> treeCells = ComponentsFinder.findComponentsOfType(Treecell.class,
                 rowChildren);
-        assert treeCells.size() == 3;
+        assert treeCells.size() == 4;
         findComponentsForNameCell(treeCells.get(0));
         findComponentsForStartDateCell(treeCells.get(1));
         findComponentsForEndDateCell(treeCells.get(2));
+        findComponentsForStatusCell(treeCells.get(3));
     }
 
     private static Textbox findTextBoxOfCell(Treecell treecell) {
@@ -363,6 +369,17 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
         }
     }
 
+    private void findComponentsForStatusCell(Treecell treecell) {
+        List<Object> children = treecell.getChildren();
+
+        Hlayout hlayout = ComponentsFinder.findComponentsOfType(Hlayout.class,
+                children).get(0);
+
+        hoursStatusDiv = (Div) hlayout.getChildren().get(0);
+        budgetStatusDiv = (Div) hlayout.getChildren().get(1);
+
+    }
+
     private void registerBlurListener(final Datebox datebox) {
         datebox.addEventListener("onBlur", new EventListener() {
 
@@ -438,6 +455,11 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
             endDateLabel.setValue(asString(task.getEndDate()
                     .toDayRoundedDate()));
         }
+        setHoursStatus(task.getProjectHoursStatus(),
+                task.getTooltipTextForProjectHoursStatus());
+
+        setBudgetStatus(task.getProjectBudgetStatus(),
+                task.getTooltipTextForProjectBudgetStatus());
     }
 
     private boolean canChangeStartDate() {
@@ -474,4 +496,45 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
         this.endDateTextBox = endDateTextBox;
     }
 
+    private void setHoursStatus(ProjectStatusEnum status, String tooltipText) {
+        hoursStatusDiv.setSclass(getProjectStatusSclass(status));
+        hoursStatusDiv.setTooltiptext(tooltipText);
+        onProjectStatusClick(hoursStatusDiv);
+    }
+
+    private void setBudgetStatus(ProjectStatusEnum status, String tooltipText) {
+        budgetStatusDiv.setSclass(getProjectStatusSclass(status));
+        budgetStatusDiv.setTooltiptext(tooltipText);
+        onProjectStatusClick(budgetStatusDiv);
+    }
+
+    private String getProjectStatusSclass(ProjectStatusEnum status) {
+        String cssClass;
+        switch (status) {
+        case MARGIN_EXCEEDED:
+            cssClass = "status-red";
+            break;
+        case WITHIN_MARGIN:
+            cssClass = "status-orange";
+            break;
+        case AS_PLANNED:
+        default:
+            cssClass = "status-green";
+        }
+        return cssClass;
+    }
+
+    private void onProjectStatusClick(Component statucComp) {
+        if (!disabilityConfiguration.isTreeEditable()) {
+            statucComp.addEventListener(Events.ON_CLICK, new EventListener() {
+                @Override
+                public void onEvent(Event arg0) throws Exception {
+                    Executions.getCurrent()
+                            .sendRedirect(
+                                    "/planner/index.zul;order="
+                                            + task.getProjectCode());
+                }
+            });
+        }
+    }
 }
