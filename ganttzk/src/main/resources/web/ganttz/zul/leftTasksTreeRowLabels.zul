@@ -32,4 +32,10 @@
     <treecell>
         <label class="order-enddate" />
     </treecell>
+    <treecell>
+        <hlayout class="projectstatus-layout">
+	        <div />
+	        <div />
+        </hlayout>
+    </treecell>
 </treerow>
