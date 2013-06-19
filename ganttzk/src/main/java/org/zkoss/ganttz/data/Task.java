@@ -36,6 +36,7 @@ import org.apache.commons.lang.Validate;
 import org.joda.time.Duration;
 import org.joda.time.LocalDate;
 import org.joda.time.ReadableDuration;
+import org.zkoss.ganttz.ProjectStatusEnum;
 import org.zkoss.ganttz.data.GanttDiagramGraph.IDependenciesEnforcerHook;
 import org.zkoss.ganttz.data.GanttDiagramGraph.IDependenciesEnforcerHookFactory;
 import org.zkoss.ganttz.data.GanttDiagramGraph.INotificationAfterDependenciesEnforcement;
@@ -577,4 +578,21 @@ public abstract class Task implements ITaskFundamentalProperties {
     public String getProjectCode() {
         return fundamentalProperties.getProjectCode();
     }
+
+    public ProjectStatusEnum getProjectHoursStatus() {
+        return fundamentalProperties.getProjectHoursStatus();
+    }
+
+    public ProjectStatusEnum getProjectBudgetStatus() {
+        return fundamentalProperties.getProjectBudgetStatus();
+    }
+
+    public String getTooltipTextForProjectHoursStatus() {
+        return fundamentalProperties.getTooltipTextForProjectHoursStatus();
+    }
+
+    public String getTooltipTextForProjectBudgetStatus() {
+        return fundamentalProperties.getTooltipTextForProjectBudgetStatus();
+    }
+
 }
