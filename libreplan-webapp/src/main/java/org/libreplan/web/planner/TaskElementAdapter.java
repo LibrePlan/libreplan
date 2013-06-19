@@ -57,6 +57,8 @@ import org.libreplan.business.orders.daos.IOrderElementDAO;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderStatusEnum;
+import org.libreplan.business.orders.entities.SumChargedEffort;
+import org.libreplan.business.orders.entities.SumExpenses;
 import org.libreplan.business.planner.daos.IResourceAllocationDAO;
 import org.libreplan.business.planner.daos.ITaskElementDAO;
 import org.libreplan.business.planner.entities.Dependency;
@@ -89,6 +91,7 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.zkoss.ganttz.IDatesMapper;
+import org.zkoss.ganttz.ProjectStatusEnum;
 import org.zkoss.ganttz.adapters.DomainDependency;
 import org.zkoss.ganttz.adapters.IAdapterToTaskFundamentalProperties;
 import org.zkoss.ganttz.data.DependencyType;
@@ -1103,6 +1106,246 @@ _(
                 return null;
             }
 
+            @Override
+            public ProjectStatusEnum getProjectHoursStatus() {
+
+                if (taskElement.isTask()) {
+                    return getProjectHourStatus(taskElement.getOrderElement());
+                }
+
+                List<TaskElement> taskElements = taskElement.getAllChildren();
+
+                ProjectStatusEnum status = ProjectStatusEnum.AS_PLANNED;
+                ProjectStatusEnum highestStatus = null;
+
+                for (TaskElement taskElement : taskElements) {
+
+                    if (!taskElement.isTask()) {
+                        continue;
+                    }
+
+                    status = getProjectHourStatus(taskElement.getOrderElement());
+
+                    if (status == ProjectStatusEnum.MARGIN_EXCEEDED) {
+                        highestStatus = ProjectStatusEnum.MARGIN_EXCEEDED;
+                        break;
+                    }
+
+                    if (status == ProjectStatusEnum.WITHIN_MARGIN) {
+                        highestStatus = ProjectStatusEnum.WITHIN_MARGIN;
+                    }
+
+                }
+
+                if (highestStatus != null) {
+                    status = highestStatus;
+                }
+
+                return status;
+            }
+
+            /**
+             * Returns {@link ProjectStatusEnum} for the specified
+             * <code>orderElement</code>
+             *
+             * @param orderElement
+             */
+            private ProjectStatusEnum getProjectHourStatus(OrderElement orderElement) {
+                EffortDuration sumChargedEffort = getSumChargedEffort(orderElement);
+                EffortDuration estimatedEffort = getEstimatedEffort(orderElement);
+                if (sumChargedEffort.isZero()
+                        || sumChargedEffort.compareTo(estimatedEffort) <= 0) {
+                    return ProjectStatusEnum.AS_PLANNED;
+                }
+
+                EffortDuration withMarginEstimatedHours = orderElement
+                        .getWithMarginCalculatedHours();
+
+                if (estimatedEffort.compareTo(sumChargedEffort) < 0
+                        && sumChargedEffort.compareTo(withMarginEstimatedHours) <= 0) {
+                    return ProjectStatusEnum.WITHIN_MARGIN;
+                }
+                return ProjectStatusEnum.MARGIN_EXCEEDED;
+
+            }
+
+            /**
+             * Returns sum charged effort for the specified
+             * <code>orderElement</code>
+             *
+             * @param orderElement
+             */
+            private EffortDuration getSumChargedEffort(OrderElement orderElement) {
+                SumChargedEffort sumChargedEffort = orderElement
+                        .getSumChargedEffort();
+                EffortDuration totalChargedEffort = sumChargedEffort != null ? sumChargedEffort
+                        .getTotalChargedEffort() : EffortDuration.zero();
+                return totalChargedEffort;
+            }
+
+            /**
+             * Returns the estimated effort for the specified
+             * <code>orderElement</code>
+             *
+             * @param orderElement
+             */
+            private EffortDuration getEstimatedEffort(OrderElement orderElement) {
+                return EffortDuration.fromHoursAsBigDecimal(new BigDecimal(
+                        orderElement.getWorkHours()).setScale(2));
+            }
+
+            @Override
+            public ProjectStatusEnum getProjectBudgetStatus() {
+
+                if (taskElement.isTask()) {
+                    return getProjectBudgetStatus(taskElement.getOrderElement());
+                }
+
+                List<TaskElement> taskElements = taskElement.getAllChildren();
+
+                ProjectStatusEnum status = ProjectStatusEnum.AS_PLANNED;
+                ProjectStatusEnum highestStatus = null;
+
+                for (TaskElement taskElement : taskElements) {
+
+                    if (!taskElement.isTask()) {
+                        continue;
+                    }
+
+                    status = getProjectBudgetStatus(taskElement
+                            .getOrderElement());
+
+                    if (status == ProjectStatusEnum.MARGIN_EXCEEDED) {
+                        highestStatus = ProjectStatusEnum.MARGIN_EXCEEDED;
+                        break;
+                    }
+
+                    if (status == ProjectStatusEnum.WITHIN_MARGIN) {
+                        highestStatus = ProjectStatusEnum.WITHIN_MARGIN;
+                    }
+
+                }
+
+                if (highestStatus != null) {
+                    status = highestStatus;
+                }
+
+                return status;
+            }
+
+            /**
+             * Returns {@link ProjectStatusEnum} for the specified
+             * <code>orderElement</code>
+             *
+             * @param orderElement
+             */
+            private ProjectStatusEnum getProjectBudgetStatus(
+                    OrderElement orderElement) {
+                BigDecimal budget = orderElement.getBudget();
+                BigDecimal totalExpense = getTotalExpense(orderElement);
+                BigDecimal withMarginCalculatedBudget = orderElement
+                        .getWithMarginCalculatedBudget();
+
+                if (totalExpense.compareTo(budget) <= 0) {
+                    return ProjectStatusEnum.AS_PLANNED;
+                }
+
+                if (budget.compareTo(totalExpense) < 0
+                        && totalExpense.compareTo(withMarginCalculatedBudget) <= 0) {
+                    return ProjectStatusEnum.WITHIN_MARGIN;
+                }
+
+                return ProjectStatusEnum.MARGIN_EXCEEDED;
+            }
+
+            /**
+             * Returns total expense for the specified <code>orderElement</code>
+             *
+             * @param orderElement
+             */
+            public BigDecimal getTotalExpense(OrderElement orderElement) {
+                BigDecimal total = BigDecimal.ZERO;
+
+                SumExpenses sumExpenses = orderElement.getSumExpenses();
+
+                if (sumExpenses != null) {
+                    BigDecimal directExpenes = sumExpenses
+                            .getTotalDirectExpenses();
+                    BigDecimal indirectExpense = sumExpenses
+                            .getTotalIndirectExpenses();
+
+                    if (directExpenes != null) {
+                        total = total.add(directExpenes);
+                    }
+
+                    if (indirectExpense != null) {
+                        total = total.add(indirectExpense);
+                    }
+                }
+                return total;
+            }
+
+            @Override
+            public String getTooltipTextForProjectHoursStatus() {
+                if (taskElement.isTask()) {
+                    return buildHoursTooltipText(taskElement.getOrderElement());
+                }
+                return null;
+            }
+
+            @Override
+            public String getTooltipTextForProjectBudgetStatus() {
+                if (taskElement.isTask()) {
+                    return buildBudgetTooltipText(taskElement.getOrderElement());
+                }
+                return null;
+            }
+
+            /**
+             * Builds hours tooltiptext for the specified
+             * <code>orderElement</code>
+             *
+             * @param orderElement
+             */
+            private String buildHoursTooltipText(OrderElement orderElement) {
+                StringBuilder result = new StringBuilder();
+                Integer margin = orderElement.getOrder().getHoursMargin() != null ? orderElement
+                        .getOrder().getHoursMargin() : 0;
+
+                result.append(_("Hours-status") + "\n");
+                result.append(_("Project margin: ")).append(margin)
+                        .append("% (").append(orderElement.getWorkHours())
+                        .append(" hours)=");
+                result.append(orderElement.getWithMarginCalculatedHours())
+                        .append(" hours");
+
+                String totalEffortHours = orderElement.getEffortAsString();
+
+                result.append(_(". Already registered: "))
+                        .append(totalEffortHours).append(" hours");
+                return result.toString();
+            }
+
+            private String buildBudgetTooltipText(OrderElement orderElement) {
+                StringBuilder result = new StringBuilder();
+                Integer margin = orderElement.getOrder().getBudgetMargin() != null ? orderElement
+                        .getOrder().getBudgetMargin() : 0;
+                result.append(_("Budget-status") + "\n");
+                result.append(_("Project margin: "))
+                        .append(margin)
+                        .append("% (")
+                        .append(Util.addCurrencySymbol(orderElement.getBudget()))
+                        .append(")=");
+                result.append(Util.addCurrencySymbol(orderElement
+                        .getWithMarginCalculatedBudget()));
+
+                BigDecimal totalExpense = getTotalExpense(orderElement);
+
+                result.append(_(". Already spent: ")).append(
+                        Util.addCurrencySymbol(totalExpense));
+
+                return result.toString();
+            }
         }
 
         @Override
