@@ -1328,6 +1328,42 @@ div.z-grid-header .second_level_ tr {
     padding: 3px 4px 4px 4px;
 }
 
+.projectstatus-layout  {
+    padding-left: 3px;
+}
+
+.status-green {
+    height: 16px;
+    width: 16px;
+    background-image: url("../../zkau/web/ganttz/img/status_green1.png");
+    background-repeat: no-repeat;
+}
+
+.status-green:hover {
+    background-image: url("../../zkau/web/ganttz/img/status_green.png") !important;
+}
+
+.status-orange {
+    height: 16px;
+    width: 16px;
+    background-image: url("../../zkau/web/ganttz/img/status_orange1.png");
+    background-repeat: no-repeat;
+}
+
+.status-orange:hover {
+    background-image: url("../../zkau/web/ganttz/img/status_orange.png") !important;
+}
+
+.status-red {
+    height: 16px;
+    width: 16px;
+    background-image: url("../../zkau/web/ganttz/img/status_red1.png");
+    background-repeat: no-repeat;
+}
+
+.status-red:hover {
+    background-image: url("../../zkau/web/ganttz/img/status_red.png") !important;
+}
 
 #ganttpanel .violated-dependency .start, #ganttpanel .violated-dependency .end {
     background-image: url("../../zkau/web/ganttz/img/solid-red-hor.png");
