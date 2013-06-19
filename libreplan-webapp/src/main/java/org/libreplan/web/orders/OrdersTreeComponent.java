@@ -45,6 +45,10 @@ import org.zkoss.zul.Treeitem;
  */
 public class OrdersTreeComponent extends TreeComponent {
 
+    protected boolean resourcesBudgetEnabled = Registry.getConfigurationDAO()
+            .getConfigurationWithReadOnlyTransaction()
+            .isEnabledAutomaticBudget();
+
     abstract class OrdersTreeColumn extends Column {
         OrdersTreeColumn(String label, String cssClass, String tooltip) {
             super(label, cssClass, tooltip);
@@ -95,10 +99,8 @@ public class OrdersTreeComponent extends TreeComponent {
 
         });
 
-        if (Registry.getConfigurationDAO()
-                .getConfigurationWithReadOnlyTransaction()
-                .isEnabledAutomaticBudget()) {
-        columns.add(new OrdersTreeColumn(_("Resources"), "autobudget",
+        if (resourcesBudgetEnabled) {
+            columns.add(new OrdersTreeColumn(_("Resources"), "budget",
                 _("resources")) {
 
             @Override
