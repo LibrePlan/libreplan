@@ -27,6 +27,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.joda.time.DateTime;
+import org.zkoss.ganttz.ProjectStatusEnum;
 import org.zkoss.ganttz.data.GanttDate.CustomDate;
 import org.zkoss.ganttz.data.GanttDate.ICases;
 import org.zkoss.ganttz.data.GanttDate.LocalDateBased;
@@ -331,6 +332,26 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
     @Override
     public String getProjectCode() {
         return "";
+    }
+
+    @Override
+    public ProjectStatusEnum getProjectHoursStatus() {
+        return ProjectStatusEnum.AS_PLANNED;
+    }
+
+    @Override
+    public ProjectStatusEnum getProjectBudgetStatus() {
+        return ProjectStatusEnum.AS_PLANNED;
+    }
+
+    @Override
+    public String getTooltipTextForProjectHoursStatus() {
+        return null;
+    }
+
+    @Override
+    public String getTooltipTextForProjectBudgetStatus() {
+        return null;
     }
 
 }
