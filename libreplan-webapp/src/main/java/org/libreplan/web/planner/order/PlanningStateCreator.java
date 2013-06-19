@@ -39,12 +39,6 @@ import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.daos.IEntitySequenceDAO;
 import org.libreplan.business.common.entities.EntityNameEnum;
-import org.libreplan.business.common.exceptions.InstanceNotFoundException;
-import org.libreplan.business.costcategories.daos.CostCategoryDAO;
-import org.libreplan.business.costcategories.daos.ICostCategoryDAO;
-import org.libreplan.business.costcategories.daos.IHourCostDAO;
-import org.libreplan.business.costcategories.entities.CostCategory;
-import org.libreplan.business.costcategories.entities.HourCost;
 import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.entities.HoursGroup;
@@ -175,12 +169,6 @@ public class PlanningStateCreator {
     private IEntitySequenceDAO entitySequenceDAO;
 
     @Autowired
-    private ICostCategoryDAO costCategoryDAO;
-
-    @Autowired
-    private IHourCostDAO hourCostDAO;
-
-    @Autowired
     private TaskElementAdapter taskElementAdapterCreator;
 
     @Autowired
@@ -284,17 +272,6 @@ public class PlanningStateCreator {
         final List<Resource> allResources = resourceDAO.list(Resource.class);
         criterionDAO.list(Criterion.class);
 
-        // Attaching cost categories with their hourcosts and types
-        for (CostCategory costCategory : costCategoryDAO
-                .list(CostCategory.class)) {
-            if (costCategory.getHourCosts() != null) {
-                for (HourCost hourCost : costCategory.getHourCosts()) {
-                    hourCost.getPriceCost();
-                    hourCost.getType().getDefaultPrice();
-                }
-            }
-        }
-
         forceLoadOfOrderAssociatedData(orderReloaded);
         TaskGroup rootTask = orderReloaded.getAssociatedTaskElement();
         if (rootTask != null) {
@@ -340,27 +317,14 @@ public class PlanningStateCreator {
                 }
             }
 
-            for (CriterionRequirement requirement : each
-                    .getCriterionRequirements()) {
-                if (requirement.getCriterion().getCostCategory() != null) {
-                    requirement.getCriterion().getCostCategory().getHourCosts()
-                            .size();
-                }
-            }
             for (HoursGroup hours : each.getHoursGroups()) {
                 for (CriterionRequirement requirement : hours
                         .getCriterionRequirements()) {
-
-                    // attach cost categories
-                    if (requirement.getCriterion().getCostCategory() != null) {
-                        requirement.getCriterion().getCostCategory()
-                                .getHourCosts().size();
 
                     requirement.ensureDataLoaded();
                 }
                 hours.getValidCriterions().size();
             }
-        }
         }
     }
 
