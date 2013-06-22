@@ -41,6 +41,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.UriBuilder;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.libreplan.business.orders.entities.Order;
@@ -180,7 +181,7 @@ public class CutyPrint {
         }
 
         private String buildCaptureDestination(String extension) {
-            if (extension == null || extension.equals("")) {
+            if (StringUtils.isEmpty(extension)) {
                 extension = ".pdf";
             }
             return String.format("/print/%tY%<tm%<td%<tH%<tM%<tS-%s%s",
@@ -396,8 +397,7 @@ public class CutyPrint {
             LOG.info("calling printing: " + capture.command());
 
             // If there is a not real X server environment then use Xvfb
-            if (System.getenv("DISPLAY") == null
-                    || System.getenv("DISPLAY").equals("")) {
+            if (StringUtils.isEmpty(System.getenv("DISPLAY"))) {
                 ProcessBuilder s = new ProcessBuilder("Xvfb", ":"
                         + params.getXvfbDisplayNumber());
                 serverProcess = s.start();
