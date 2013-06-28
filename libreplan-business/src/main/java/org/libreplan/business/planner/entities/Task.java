@@ -238,6 +238,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         return Collections.emptyList();
     }
 
+    @Override
     public Set<ResourceAllocation<?>> getSatisfiedResourceAllocations() {
         Set<ResourceAllocation<?>> result = new HashSet<ResourceAllocation<?>>();
 
@@ -275,6 +276,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         return Collections.unmodifiableSet(result);
     }
 
+    @Override
     public boolean isLimiting() {
         return !(getLimitingResourceAllocations().isEmpty());
     }
@@ -292,6 +294,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
                 .getLimitingResourceQueueElement();
     }
 
+    @Override
     public boolean isLimitingAndHasDayAssignments() {
         ResourceAllocation<?> resourceAllocation = getAssociatedLimitingResourceAllocation();
         return resourceAllocation != null
@@ -467,11 +470,13 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         }
     }
 
+    @Override
     public void explicityMoved(IntraDayDate startDate, IntraDayDate endDate) {
         getPositionConstraint().explicityMovedTo(startDate, endDate,
                 getOrderElement().getOrder().getSchedulingMode());
     }
 
+    @Override
     public TaskPositionConstraint getPositionConstraint() {
         if (positionConstraint == null) {
             positionConstraint = new TaskPositionConstraint();
@@ -956,6 +961,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         this.recurrenceInformation = recurrenceInformation;
     }
 
+    @Override
     public ExternalCompany getSubcontractedCompany() {
         return subcontractedTaskData.getExternalCompany();
     }
@@ -975,14 +981,17 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         }
     }
 
+    @Override
     public boolean isSubcontracted() {
         return (subcontractedTaskData != null);
     }
 
+    @Override
     public String getSubcontractionName() {
         return subcontractedTaskData.getExternalCompany().getName();
     }
 
+    @Override
     public boolean isSubcontractedAndWasAlreadySent() {
         return (subcontractedTaskData != null)
                 && (!subcontractedTaskData.getState()
@@ -1042,6 +1051,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
 
     }
 
+    @Override
     public boolean hasConsolidations() {
         return ((consolidation != null) && (!consolidation.isEmpty()));
     }

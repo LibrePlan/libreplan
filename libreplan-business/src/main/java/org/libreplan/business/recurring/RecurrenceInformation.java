@@ -21,14 +21,23 @@ package org.libreplan.business.recurring;
 
 /*
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
+ * @author Javier Moran Rua <jmoran@igalia.com>
  *
  */
 public class RecurrenceInformation {
 
     private int repetitions = 0;
+    private RecurrencePeriodicity recurrencePeriodicity;
 
     public RecurrenceInformation() {
         this.repetitions = 0;
+        this.recurrencePeriodicity = RecurrencePeriodicity.NO_PERIODICTY;
+    }
+
+    public RecurrenceInformation(int repetitions,
+            RecurrencePeriodicity periodicity) {
+        this.repetitions = repetitions;
+        this.recurrencePeriodicity = periodicity;
     }
 
     public int getRepetitions() {
@@ -37,6 +46,14 @@ public class RecurrenceInformation {
 
     public void setRepetitions(int repetitions) {
         this.repetitions = repetitions;
+    }
+
+    public RecurrencePeriodicity getPeriodicity() {
+        return recurrencePeriodicity;
+    }
+
+    public void setPeriodicity(RecurrencePeriodicity periodicity) {
+        this.recurrencePeriodicity = periodicity;
     }
 
 }

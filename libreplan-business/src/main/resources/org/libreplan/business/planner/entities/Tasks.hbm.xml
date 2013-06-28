@@ -104,6 +104,11 @@
         <component name="recurrenceInformation"
             class="org.libreplan.business.recurring.RecurrenceInformation">
             <property name="repetitions" column="repetitions" />
+            <property name="recurrencePeriodicity" column="recurrence_periodicity">
+                <type name="org.hibernate.type.EnumType">
+                    <param name="enumClass">org.libreplan.business.recurring.RecurrencePeriodicity</param>
+                </type>
+            </property>
         </component>
 
         </joined-subclass>

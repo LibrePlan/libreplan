@@ -81,6 +81,7 @@ import org.libreplan.business.workingday.ResourcesPerDay;
 /**
  * @author Diego Pino García <dpino@igalia.com>
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Javier Moran Rua <jmoran@igalia.com>
  *
  *         Resources are allocated to planner tasks.
  */
@@ -207,7 +208,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         abstract void limitAvailabilityOn(AvailabilityTimeLine availability,
                 IntraDayDate dateFromWhichToAllocate);
 
-    }
+}
 
     public static AllocationsSpecified allocating(
             List<ResourcesPerDayModification> resourceAllocations) {
@@ -1665,6 +1666,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             this.intraDayEnd = intraDayEnd;
         }
 
+        @Override
         protected void copyTransientPropertiesIfAppropiateTo(
                 DayAssignmentsState newStateForScenario) {
             newStateForScenario.resetTo(getUnorderedAssignments());
