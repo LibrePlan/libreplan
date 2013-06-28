@@ -55,4 +55,14 @@
             columnName="recurrence_appliance" defaultValueNumeric="0" />
     </changeSet>
 
+    <changeSet id="add-perodicity-column-to-task"
+        author="jmoran">
+        <comment>Adds recurrence periodicity column to task</comment>
+        <addColumn tableName="task">
+            <column name="recurrence_periodicity" type="INTEGER" />
+        </addColumn>
+        <addDefaultValue tableName="task"
+            columnName="recurrence_periodicity" defaultValueNumeric="0" />
+    </changeSet>
+
 </databaseChangeLog>
