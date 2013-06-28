@@ -23,6 +23,7 @@ package org.libreplan.web.planner.order;
 
 
 import org.libreplan.business.planner.entities.Task;
+import org.libreplan.business.recurring.RecurrencePeriodicity;
 
 /**
  * Contract for {@link RecurringTaskModel}.
@@ -39,5 +40,9 @@ public interface IRecurringTaskModel {
     int getRepetitions();
 
     void setRepetitions(int repetitions);
+
+    RecurrencePeriodicity getPeriodicity();
+
+    void setRecurrencePeriodicity(RecurrencePeriodicity periodicity);
 
 }

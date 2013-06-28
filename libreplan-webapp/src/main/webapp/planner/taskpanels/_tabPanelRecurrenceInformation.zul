@@ -23,8 +23,8 @@
     <groupbox style="margin-top: 5px" sclass="recurrence-pattern" closable="false">
         <caption label="${i18n:_('Recurrence pattern')}" />
         <hbox>
-            <radiogroup id="recurrencePattern">
-                <radio label="${i18n:_('Not recurrent')}" value="not-recurrent" />
+            <radiogroup id="recurrencePattern" onCheck="recurrenceInformationController.updateRecurrencePeriodicity()">
+                <radio label="${i18n:_('Not recurrent')}" value="not-recurrent" checked="true"/>
                 <radio label="${i18n:_('Daily')}" value="daily" />
                 <radio label="${i18n:_('Monthly')}" value="monthly" />
                 <radio label="${i18n:_('Weekly')}" value="weekly" />

@@ -23,6 +23,7 @@ package org.libreplan.web.planner.order;
 
 import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.recurring.RecurrenceInformation;
+import org.libreplan.business.recurring.RecurrencePeriodicity;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -42,11 +43,13 @@ public class RecurringTaskModel implements IRecurringTaskModel {
      */
     private Task task;
 
+    @Override
     @Transactional(readOnly = true)
     public void init(Task task) {
         this.task = task;
     }
 
+    @Override
     public int getRepetitions() {
         if ((task == null) || (task.getRecurrenceInformation() == null)) {
                 return 0;
@@ -54,13 +57,33 @@ public class RecurringTaskModel implements IRecurringTaskModel {
         return task.getRecurrenceInformation().getRepetitions();
     }
 
+    @Override
     public void setRepetitions(int repetitions) {
+        // TODO: The recurrence information should be created
+        // always and it is not. Fixme.
         if (task != null) {
             if (task.getRecurrenceInformation() == null) {
                 task.setRecurrenceInformation(new RecurrenceInformation());
             }
             task.getRecurrenceInformation().setRepetitions(repetitions);
         }
+    }
+
+    @Override
+    public void setRecurrencePeriodicity(RecurrencePeriodicity periodicity) {
+        // TODO: The recurrence information should be created
+        // always and it is not. Fixme.
+        if (task != null) {
+            if (task.getRecurrenceInformation() == null) {
+                task.setRecurrenceInformation(new RecurrenceInformation());
+            }
+            task.getRecurrenceInformation().setPeriodicity(periodicity);
+        }
+    }
+
+    @Override
+    public RecurrencePeriodicity getPeriodicity() {
+        return task.getRecurrenceInformation().getPeriodicity();
     }
 
 }

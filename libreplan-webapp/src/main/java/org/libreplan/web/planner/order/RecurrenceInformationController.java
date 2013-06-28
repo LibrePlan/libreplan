@@ -20,12 +20,15 @@
 package org.libreplan.web.planner.order;
 
 import org.libreplan.business.planner.entities.Task;
+import org.libreplan.business.recurring.RecurrencePeriodicity;
 import org.libreplan.web.common.IMessagesForUser;
 import org.libreplan.web.common.MessagesForUser;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.api.Radio;
+import org.zkoss.zul.api.Radiogroup;
 
 /**
  * Controller for subcontract a task.
@@ -39,6 +42,7 @@ public class RecurrenceInformationController extends GenericForwardComposer {
     protected IMessagesForUser messagesForUser;
 
     private Component messagesContainer;
+    private Radiogroup recurrencePattern;
 
     private IRecurringTaskModel recurringTaskModel;
 
@@ -48,8 +52,34 @@ public class RecurrenceInformationController extends GenericForwardComposer {
         messagesForUser = new MessagesForUser(messagesContainer);
     }
 
+    private void configurePeriodicity() {
+        switch (recurringTaskModel.getPeriodicity()) {
+        case NO_PERIODICTY:
+            setRadioSelectedWithValue("Not recurrent");
+            break;
+        case DAILY:
+            setRadioSelectedWithValue("daily");
+            break;
+        case WEEKLY:
+            setRadioSelectedWithValue("weekly");
+            break;
+        case MONTHLY:
+            setRadioSelectedWithValue("monthly");
+            break;
+        }
+    }
+
+    private void setRadioSelectedWithValue(String value) {
+        for (Object r : recurrencePattern.getItems()) {
+            if (((Radio) r).getValue().equals(value)) {
+                recurrencePattern.setSelectedItemApi((Radio) r);
+            }
+        }
+    }
+
     public void init(Task task) {
         recurringTaskModel.init(task);
+        configurePeriodicity();
     }
 
     public int getRepetitions() {
@@ -58,6 +88,28 @@ public class RecurrenceInformationController extends GenericForwardComposer {
 
     public void setRepetitions(int repetitions) {
         recurringTaskModel.setRepetitions(repetitions);
+    }
+
+    public void updateRecurrencePeriodicity() {
+        Radio selected = recurrencePattern.getSelectedItemApi();
+        if (selected.getValue().equals("Not recurrent")) {
+            recurringTaskModel
+                    .setRecurrencePeriodicity(
+                            RecurrencePeriodicity.NO_PERIODICTY);
+        } else if (selected.getValue().equals("daily")) {
+            recurringTaskModel
+                    .setRecurrencePeriodicity(RecurrencePeriodicity.DAILY);
+        } else if (selected.getValue().equals("monthly")) {
+            recurringTaskModel
+                    .setRecurrencePeriodicity(RecurrencePeriodicity.MONTHLY);
+
+        } else if (selected.getValue().equals("weekly")) {
+            recurringTaskModel
+                    .setRecurrencePeriodicity(RecurrencePeriodicity.WEEKLY);
+        } else {
+            // TODO: Probably an exception should be thrown in this
+            // case.
+        }
     }
 
 }
