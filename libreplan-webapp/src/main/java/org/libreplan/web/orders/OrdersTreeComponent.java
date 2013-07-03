@@ -100,7 +100,7 @@ public class OrdersTreeComponent extends TreeComponent {
         });
 
         if (resourcesBudgetEnabled) {
-            columns.add(new OrdersTreeColumn(_("Resources"), "budget",
+            columns.add(new OrdersTreeColumn(_("Budget"), "budget",
                 _("resources")) {
 
             @Override
