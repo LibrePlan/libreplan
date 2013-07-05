@@ -235,7 +235,7 @@
                                         <label
                                             value="${i18n:_('Total calculated budget')}:" />
                                         <hbox>
-                                            <label value="@{assignedHoursToOrderElementController.totalBudget}" />
+                                            <label value="@{assignedHoursToOrderElementController.calculatedBudget}" />
                                             <label value="@{assignedHoursToOrderElementController.currencySymbol}" />
                                         </hbox>
                                     </row>

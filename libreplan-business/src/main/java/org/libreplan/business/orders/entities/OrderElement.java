@@ -1705,6 +1705,10 @@ public abstract class OrderElement extends IntegrationEntity implements
         return getBudget().add(getResourcesBudget());
     }
 
+    public BigDecimal getSubstractedBudget() {
+        return getBudget().subtract(getResourcesBudget());
+    }
+
     public BigDecimal getResourcesBudget() {
         return Registry.getTransactionService().runOnReadOnlyTransaction(
                 new IOnTransaction<BigDecimal>() {

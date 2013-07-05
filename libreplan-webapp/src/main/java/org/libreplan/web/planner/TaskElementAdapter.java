@@ -609,7 +609,7 @@ public class TaskElementAdapter {
             @Override
             public BigDecimal getMoneyCostBarPercentage() {
                 return MoneyCostCalculator.getMoneyCostProportion(
-                        getMoneyCost(), getTotalCalculatedBudget());
+                        getMoneyCost(), getBudget());
             }
 
             private BigDecimal getBudget() {

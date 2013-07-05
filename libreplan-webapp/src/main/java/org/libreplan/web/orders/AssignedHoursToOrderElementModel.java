@@ -246,11 +246,11 @@ public class AssignedHoursToOrderElementModel implements IAssignedHoursToOrderEl
 
     @Override
     @Transactional(readOnly = true)
-    public BigDecimal getTotalBudget() {
+    public BigDecimal getCalculatedBudget() {
         if (orderElement == null) {
             return BigDecimal.ZERO;
         }
-        return getBudget().add(getResourcesBudget());
+        return getBudget().subtract(getResourcesBudget());
     }
 
     @Override

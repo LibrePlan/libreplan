@@ -111,7 +111,7 @@ public class ProjectStatusReportDTO {
             imputedHours = sumChargedEffort.getTotalChargedEffort();
         }
 
-        setBudget(orderElement.getTotalBudget());
+        setBudget(orderElement.getSubstractedBudget());
 
         setExpensesBudget(orderElement.getBudget());
         setResourcesBudget(orderElement.getResourcesBudget());

@@ -64,7 +64,7 @@ public interface IAssignedHoursToOrderElementModel{
 
     public BigDecimal getCostOfHours();
 
-    public BigDecimal getTotalBudget();
+    public BigDecimal getCalculatedBudget();
 
     public BigDecimal getResourcesBudget();
 

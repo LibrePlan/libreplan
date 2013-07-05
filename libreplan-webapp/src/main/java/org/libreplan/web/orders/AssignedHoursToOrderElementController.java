@@ -110,8 +110,8 @@ public class AssignedHoursToOrderElementController extends
         return assignedHoursToOrderElementModel.getResourcesBudget();
     }
 
-    public BigDecimal getTotalBudget() {
-        return assignedHoursToOrderElementModel.getTotalBudget();
+    public BigDecimal getCalculatedBudget() {
+        return assignedHoursToOrderElementModel.getCalculatedBudget();
     }
 
     public BigDecimal getMoneyCost() {

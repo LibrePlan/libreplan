@@ -88,7 +88,7 @@ public class OrdersTreeComponent extends TreeComponent {
             }
 
         });
-        columns.add(new OrdersTreeColumn(_("Expenses"), "budget",
+        columns.add(new OrdersTreeColumn(_("Budget"), "budget",
                 _("Total task budget")) {
 
             @Override
@@ -100,8 +100,8 @@ public class OrdersTreeComponent extends TreeComponent {
         });
 
         if (resourcesBudgetEnabled) {
-            columns.add(new OrdersTreeColumn(_("Budget"), "budget",
-                _("resources")) {
+            columns.add(new OrdersTreeColumn(_("Expenses"), "budget",
+                    _("Budget minus resources costs")) {
 
             @Override
             protected void doCell(OrderElementTreeitemRenderer treeRenderer,
