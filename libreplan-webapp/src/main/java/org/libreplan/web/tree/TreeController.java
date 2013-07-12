@@ -37,6 +37,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.validator.ClassValidator;
 import org.hibernate.validator.InvalidValue;
+import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.SchedulingState;
 import org.libreplan.business.orders.entities.SchedulingState.ITypeChangedListener;
 import org.libreplan.business.orders.entities.SchedulingState.Type;
@@ -629,6 +630,8 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
 
         private Map<T, Decimalbox> budgetDecimalboxByElement = new HashMap<T, Decimalbox>();
 
+        protected Map<T, Textbox> calculatedExpensesBoxByElement = new HashMap<T, Textbox>();
+
         private Map<T, DynamicDatebox> initDateDynamicDateboxByElement = new HashMap<T, DynamicDatebox>();
 
         private Map<T, DynamicDatebox> endDateDynamicDateboxByElement = new HashMap<T, DynamicDatebox>();
@@ -862,6 +865,14 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
             if (readOnly) {
                 decimalboxBudget.setDisabled(true);
             }
+
+            decimalboxBudget.addEventListener("onChange", new EventListener() {
+                @Override
+                public void onEvent(Event event) {
+                    refreshBudgetValueForThisNodeAndParents(getSelectedNode());
+                }
+            });
+
             addCell(decimalboxBudget);
         }
 
@@ -949,6 +960,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
                 Decimalbox decimalbox = budgetDecimalboxByElement.get(element);
                 decimalbox.invalidate();
                 refreshBudgetValueForThisNodeAndParents(element);
+                refreshCalculatedBudgetForNode(element);
             }
         }
 
@@ -984,11 +996,21 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         public void refreshBudgetValueForNodes(List<T> nodes) {
             for (T node : nodes) {
                 Decimalbox decimalbox = budgetDecimalboxByElement.get(node);
+                refreshCalculatedBudgetForNode(node);
                 // For the Order node there is no associated decimalbox
                 if (decimalbox != null) {
                     BigDecimal currentBudget = getBudgetHandler().getBudgetFor(node);
                     decimalbox.setValue(currentBudget);
                 }
+            }
+        }
+
+        public void refreshCalculatedBudgetForNode(T node) {
+            Textbox textbox = calculatedExpensesBoxByElement.get(node);
+            OrderElement e = (OrderElement) node;
+            if (textbox != null) {
+                textbox.setValue(Util.addCurrencySymbol(e
+                        .getSubstractedBudget()));
             }
         }
 
@@ -1017,6 +1039,13 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
                 intboxHours.setDisabled(true);
             }
             Treecell cellHours = addCell(intboxHours);
+            intboxHours.addEventListener("onChange", new EventListener() {
+                @Override
+                public void onEvent(Event event) {
+                    refreshCalculatedBudgetForNode(getSelectedNode());
+                }
+            });
+
             setReadOnlyHoursCell(currentElement, intboxHours, cellHours);
         }
 
