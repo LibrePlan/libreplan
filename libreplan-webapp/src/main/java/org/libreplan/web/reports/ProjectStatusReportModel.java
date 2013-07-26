@@ -178,6 +178,9 @@ public class ProjectStatusReportModel implements IProjectStatusReportModel {
         EffortDuration imputedHours = originalDto.getImputedHoursAsEffortDuration();
 
         BigDecimal budget = originalDto.getBudget();
+        BigDecimal resourcesBudget = originalDto.getResourcesBudget();
+        BigDecimal expensesBudget = originalDto.getExpensesBudget();
+
         BigDecimal hoursCost = originalDto.getHoursCost();
         BigDecimal expensesCost = originalDto.getExpensesCost();
         BigDecimal totalCost = originalDto.getTotalCost();
@@ -190,7 +193,11 @@ public class ProjectStatusReportModel implements IProjectStatusReportModel {
             imputedHours = subtractIfNotNull(imputedHours,
                     each.getImputedHoursAsEffortDuration());
 
+            resourcesBudget = subtractIfNotNull(budget,
+                    each.getResourcesBudget());
+            expensesBudget = subtractIfNotNull(budget, each.getExpensesBudget());
             budget = subtractIfNotNull(budget, each.getBudget());
+
             hoursCost = subtractIfNotNull(hoursCost, each.getHoursCost());
             expensesCost = subtractIfNotNull(expensesCost,
                     each.getExpensesCost());
@@ -199,7 +206,8 @@ public class ProjectStatusReportModel implements IProjectStatusReportModel {
 
         ProjectStatusReportDTO projectStatusReportDTO = new ProjectStatusReportDTO(
                 originalDto.getCode(), originalDto.getName(), estimatedHours,
-                plannedHours, imputedHours, budget, hoursCost, expensesCost,
+                plannedHours, imputedHours, resourcesBudget, expensesBudget,
+                budget, hoursCost, expensesCost,
                 totalCost);
         return projectStatusReportDTO;
     }
@@ -224,6 +232,9 @@ public class ProjectStatusReportModel implements IProjectStatusReportModel {
             EffortDuration imputedHours = EffortDuration.zero();
 
             BigDecimal budget = BigDecimal.ZERO.setScale(2);
+            BigDecimal hoursBudget = BigDecimal.ZERO.setScale(2);
+            BigDecimal expensesBudget = BigDecimal.ZERO.setScale(2);
+
             BigDecimal hoursCost = BigDecimal.ZERO.setScale(2);
             BigDecimal expensesCost = BigDecimal.ZERO.setScale(2);
             BigDecimal totalCost = BigDecimal.ZERO.setScale(2);
@@ -236,14 +247,18 @@ public class ProjectStatusReportModel implements IProjectStatusReportModel {
                 imputedHours = addIfNotNull(imputedHours,
                         dto.getImputedHoursAsEffortDuration());
 
+                hoursBudget = addIfNotNull(budget, dto.getResourcesBudget());
+                expensesBudget = addIfNotNull(budget, dto.getExpensesBudget());
                 budget = addIfNotNull(budget, dto.getBudget());
+
                 hoursCost = addIfNotNull(hoursCost, dto.getHoursCost());
                 expensesCost = addIfNotNull(expensesCost, dto.getExpensesCost());
                 totalCost = addIfNotNull(totalCost, dto.getTotalCost());
             }
 
             totalDTO = new ProjectStatusReportDTO(estimatedHours, plannedHours,
-                    imputedHours, budget, hoursCost, expensesCost, totalCost);
+                    imputedHours, hoursBudget, expensesBudget, budget,
+                    hoursCost, expensesCost, totalCost);
             totalDTO.calculateMarks();
         }
     }

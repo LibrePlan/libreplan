@@ -50,9 +50,9 @@ public class ProjectStatusReportDTO {
 
     private BigDecimal budget;
 
-    private BigDecimal expensesBudget;
-
     private BigDecimal resourcesBudget;
+
+    private BigDecimal expensesBudget;
 
     private BigDecimal hoursCost;
 
@@ -64,11 +64,14 @@ public class ProjectStatusReportDTO {
 
     public ProjectStatusReportDTO(EffortDuration estimatedHours,
             EffortDuration plannedHours, EffortDuration imputedHours,
+            BigDecimal resourcesBudget, BigDecimal expensesBudget,
             BigDecimal budget, BigDecimal hoursCost, BigDecimal expensesCost,
             BigDecimal totalCost) {
         this.estimatedHours = estimatedHours;
         this.plannedHours = plannedHours;
         this.imputedHours = imputedHours;
+        this.resourcesBudget = resourcesBudget;
+        this.expensesBudget = expensesBudget;
         this.budget = budget;
         this.hoursCost = hoursCost;
         this.expensesCost = expensesCost;
@@ -77,9 +80,11 @@ public class ProjectStatusReportDTO {
 
     public ProjectStatusReportDTO(String code, String name,
             EffortDuration estimatedHours, EffortDuration plannedHours,
-            EffortDuration imputedHours, BigDecimal budget,
+            EffortDuration imputedHours, BigDecimal resourcesBudget,
+            BigDecimal expensesBudget, BigDecimal budget,
             BigDecimal hoursCost, BigDecimal expensesCost, BigDecimal totalCost) {
-        this(estimatedHours, plannedHours, imputedHours, budget, hoursCost,
+        this(estimatedHours, plannedHours, imputedHours, resourcesBudget,
+                expensesBudget, budget, hoursCost,
                 expensesCost, totalCost);
         this.code = code;
         this.name = name;
@@ -291,8 +296,9 @@ public class ProjectStatusReportDTO {
      */
     private void calculateCostMark() {
         if (totalCost != null) {
-            if (budget != null && (budget.compareTo(BigDecimal.ZERO) > 0)) {
-                if (totalCost.compareTo(budget) > 0) {
+            if (expensesBudget != null
+                    && (expensesBudget.compareTo(BigDecimal.ZERO) > 0)) {
+                if (totalCost.compareTo(expensesBudget) > 0) {
                     costMark = EXCLAMATION_MARK;
                 }
             }
