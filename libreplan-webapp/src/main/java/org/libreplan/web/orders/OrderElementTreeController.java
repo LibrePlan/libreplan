@@ -631,7 +631,6 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
             BigDecimal value = currentElement.getSubstractedBudget();
             Textbox autoBudgetCell = new Textbox(Util.addCurrencySymbol(value));
             autoBudgetCell.setDisabled(true);
-            calculatedExpensesBoxByElement.put(currentElement, autoBudgetCell);
             addCell(autoBudgetCell);
         }
 
