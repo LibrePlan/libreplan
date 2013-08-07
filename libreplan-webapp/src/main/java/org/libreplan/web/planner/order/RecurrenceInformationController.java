@@ -19,6 +19,11 @@
 
 package org.libreplan.web.planner.order;
 
+import static org.libreplan.web.I18nHelper._;
+
+import java.util.List;
+
+import org.apache.commons.lang.Validate;
 import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.recurring.RecurrenceInformation;
 import org.libreplan.business.recurring.RecurrencePeriodicity;
@@ -29,7 +34,7 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
-import org.zkoss.zul.api.Radio;
+import org.zkoss.zul.Radio;
 import org.zkoss.zul.api.Radiogroup;
 import org.zkoss.zul.api.Spinner;
 
@@ -58,20 +63,12 @@ public class RecurrenceInformationController extends GenericForwardComposer {
         messagesForUser = new MessagesForUser(messagesContainer);
     }
 
-    private void setRadioSelectedWithValue(String value) {
-        for (Object r : recurrencePattern.getItems()) {
-            if (((Radio) r).getValue().equals(value)) {
-                recurrencePattern.setSelectedItemApi((Radio) r);
-            }
-        }
-    }
-
     public void init(Task task) {
         RecurrenceInformation recurrenceInformation = task
                 .getRecurrenceInformation();
         this.repetitions = recurrenceInformation.getRepetitions();
         this.recurrencePeriodicity = recurrenceInformation.getPeriodicity();
-        configurePeriodicity(this.recurrencePeriodicity);
+        prepareRadioBoxes(this.recurrencePeriodicity);
         enableOrDisableSpinner();
     }
 
@@ -86,20 +83,32 @@ public class RecurrenceInformationController extends GenericForwardComposer {
         Util.reloadBindings(recurrenceOccurences);
     }
 
-    private void configurePeriodicity(RecurrencePeriodicity periodicity) {
-        switch (periodicity) {
-        case NO_PERIODICTY:
-            setRadioSelectedWithValue("not-recurrent");
-            break;
-        case DAILY:
-            setRadioSelectedWithValue("daily");
-            break;
-        case WEEKLY:
-            setRadioSelectedWithValue("weekly");
-            break;
-        case MONTHLY:
-            setRadioSelectedWithValue("monthly");
-            break;
+    private void prepareRadioBoxes(
+            RecurrencePeriodicity currentPeriodicity) {
+        if (recurrencePattern.getChildren().isEmpty()) {
+            buildRadioBoxes(currentPeriodicity);
+        } else {
+            selectRadioBox(currentPeriodicity);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void selectRadioBox(RecurrencePeriodicity currentPeriodicity) {
+        Vlayout layout = (Vlayout) recurrencePattern.getChildren().get(0);
+        List<Radio> children = layout.getChildren();
+        for (Radio each : children) {
+            each.setSelected(Enum.valueOf(RecurrencePeriodicity.class,
+                    each.getValue()) == currentPeriodicity);
+        }
+    }
+
+    private void buildRadioBoxes(RecurrencePeriodicity currentPeriodicity) {
+        for (RecurrencePeriodicity each : RecurrencePeriodicity.values()) {
+            Radio radio = new Radio();
+            radio.setLabel(_(each.getLabel()));
+            radio.setValue(each.toString());
+            recurrencePattern.getChildren().add(radio);
+            radio.setSelected(currentPeriodicity == each);
         }
     }
 
@@ -112,19 +121,14 @@ public class RecurrenceInformationController extends GenericForwardComposer {
     }
 
     public void updateRecurrencePeriodicity() {
-        Radio selected = recurrencePattern.getSelectedItemApi();
-        if (selected.getValue().equals("not-recurrent")) {
-            this.recurrencePeriodicity = RecurrencePeriodicity.NO_PERIODICTY;
-        } else if (selected.getValue().equals("daily")) {
-            this.recurrencePeriodicity = RecurrencePeriodicity.DAILY;
-        } else if (selected.getValue().equals("monthly")) {
-            this.recurrencePeriodicity = RecurrencePeriodicity.MONTHLY;
-        } else if (selected.getValue().equals("weekly")) {
-            this.recurrencePeriodicity = RecurrencePeriodicity.WEEKLY;
-        } else {
-            throw new RuntimeException("Don't know how to handle: "
-                    + selected.getValue());
-        }
+        Radio selected = (Radio) recurrencePattern.getSelectedItemApi();
+
+        RecurrencePeriodicity p = Enum.valueOf(RecurrencePeriodicity.class,
+                selected.getValue());
+        Validate.notNull(p);
+
+        this.recurrencePeriodicity = p;
+
         enableOrDisableSpinner();
     }
 

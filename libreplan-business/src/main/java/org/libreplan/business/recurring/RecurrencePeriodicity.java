@@ -1,21 +1,29 @@
 package org.libreplan.business.recurring;
 
+import static org.libreplan.business.i18n.I18nHelper._;
+
+import org.apache.commons.lang.Validate;
+
 public enum RecurrencePeriodicity {
+    // the _ method used here it's just for marking for translation. The real
+    // translation, depending on the locale of the user, would happen in the web
+    // layer.
+    NO_PERIODICTY(_("Not Recurrent")), DAILY(_("Daily")), WEEKLY(_("Weekly")), MONTHLY(
+            _("Monthly"));
 
-    NO_PERIODICTY(0), DAILY(1), WEEKLY(7), MONTHLY(30);
+    private String label;
 
-    int numberOfDays;
-
-    private RecurrencePeriodicity(int numberOfDays) {
-        this.numberOfDays = numberOfDays;
-    }
-
-    public int getNumerOfDays() {
-        return numberOfDays;
+    private RecurrencePeriodicity(String label) {
+        Validate.notEmpty(label);
+        this.label = label;
     }
 
     public boolean isNoPeriodicity() {
         return this == NO_PERIODICTY;
+    }
+
+    public String getLabel() {
+        return label;
     }
 
     public int limitRepetitions(int repetitions) {
