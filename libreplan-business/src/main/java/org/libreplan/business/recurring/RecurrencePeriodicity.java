@@ -13,4 +13,19 @@ public enum RecurrencePeriodicity {
     public int getNumerOfDays() {
         return numberOfDays;
     }
+
+    public boolean isNoPeriodicity() {
+        return this == NO_PERIODICTY;
+    }
+
+    public int limitRepetitions(int repetitions) {
+        if (isNoPeriodicity()) {
+            return 0;
+        }
+        return repetitions;
+    }
+
+    public boolean isPeriodicity() {
+        return this != NO_PERIODICTY;
+    }
 }

@@ -18,8 +18,11 @@
  */
 package org.libreplan.business.recurring;
 
+import org.apache.commons.lang.Validate;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 
-/*
+/**
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  * @author Javier Moran Rua <jmoran@igalia.com>
  *
@@ -30,7 +33,7 @@ public class RecurrenceInformation {
         return new RecurrenceInformation(0, RecurrencePeriodicity.NO_PERIODICTY);
     }
 
-    private int repetitions = 0;
+    private int repetitions;
     private RecurrencePeriodicity recurrencePeriodicity;
 
     public RecurrenceInformation() {
@@ -38,26 +41,41 @@ public class RecurrenceInformation {
         this.recurrencePeriodicity = RecurrencePeriodicity.NO_PERIODICTY;
     }
 
-    public RecurrenceInformation(int repetitions,
-            RecurrencePeriodicity periodicity) {
-        this.repetitions = repetitions;
-        this.recurrencePeriodicity = periodicity;
+    public RecurrenceInformation(int numberRepetitions,
+            RecurrencePeriodicity recurrencePeriodicity) {
+        Validate.notNull(recurrencePeriodicity);
+        Validate.isTrue(numberRepetitions >= 0,
+                "the number of repetitions cannot be negative. It is: "
+                        + numberRepetitions);
+        this.recurrencePeriodicity = recurrencePeriodicity;
+        this.repetitions = recurrencePeriodicity
+                .limitRepetitions(numberRepetitions);
     }
 
     public int getRepetitions() {
         return repetitions;
     }
 
-    public void setRepetitions(int repetitions) {
-        this.repetitions = repetitions;
-    }
-
     public RecurrencePeriodicity getPeriodicity() {
         return recurrencePeriodicity;
     }
 
-    public void setPeriodicity(RecurrencePeriodicity periodicity) {
-        this.recurrencePeriodicity = periodicity;
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof RecurrenceInformation) {
+            RecurrenceInformation other = (RecurrenceInformation) obj;
+            return new EqualsBuilder().append(repetitions, other.repetitions)
+                    .append(recurrencePeriodicity, other.recurrencePeriodicity)
+                    .isEquals();
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder().append(repetitions)
+                .append(recurrencePeriodicity)
+                .toHashCode();
     }
 
 }

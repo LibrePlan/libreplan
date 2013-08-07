@@ -20,15 +20,18 @@
 package org.libreplan.web.planner.order;
 
 import org.libreplan.business.planner.entities.Task;
+import org.libreplan.business.recurring.RecurrenceInformation;
 import org.libreplan.business.recurring.RecurrencePeriodicity;
 import org.libreplan.web.common.IMessagesForUser;
 import org.libreplan.web.common.MessagesForUser;
+import org.libreplan.web.common.Util;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.api.Radio;
 import org.zkoss.zul.api.Radiogroup;
+import org.zkoss.zul.api.Spinner;
 
 /**
  * Controller for subcontract a task.
@@ -43,8 +46,11 @@ public class RecurrenceInformationController extends GenericForwardComposer {
 
     private Component messagesContainer;
     private Radiogroup recurrencePattern;
+    private Spinner recurrenceOccurences;
 
-    private IRecurringTaskModel recurringTaskModel;
+    private int repetitions = 0;
+
+    private RecurrencePeriodicity recurrencePeriodicity = RecurrencePeriodicity.NO_PERIODICTY;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -52,10 +58,38 @@ public class RecurrenceInformationController extends GenericForwardComposer {
         messagesForUser = new MessagesForUser(messagesContainer);
     }
 
-    private void configurePeriodicity() {
-        switch (recurringTaskModel.getPeriodicity()) {
+    private void setRadioSelectedWithValue(String value) {
+        for (Object r : recurrencePattern.getItems()) {
+            if (((Radio) r).getValue().equals(value)) {
+                recurrencePattern.setSelectedItemApi((Radio) r);
+            }
+        }
+    }
+
+    public void init(Task task) {
+        RecurrenceInformation recurrenceInformation = task
+                .getRecurrenceInformation();
+        this.repetitions = recurrenceInformation.getRepetitions();
+        this.recurrencePeriodicity = recurrenceInformation.getPeriodicity();
+        configurePeriodicity(this.recurrencePeriodicity);
+        enableOrDisableSpinner();
+    }
+
+    private void enableOrDisableSpinner() {
+        recurrenceOccurences.setDisabled(recurrencePeriodicity
+                .isNoPeriodicity());
+
+        this.repetitions = recurrencePeriodicity.limitRepetitions(repetitions);
+        if (repetitions == 0 && recurrencePeriodicity.isPeriodicity()) {
+            repetitions = 1;
+        }
+        Util.reloadBindings(recurrenceOccurences);
+    }
+
+    private void configurePeriodicity(RecurrencePeriodicity periodicity) {
+        switch (periodicity) {
         case NO_PERIODICTY:
-            setRadioSelectedWithValue("Not recurrent");
+            setRadioSelectedWithValue("not-recurrent");
             break;
         case DAILY:
             setRadioSelectedWithValue("daily");
@@ -69,47 +103,33 @@ public class RecurrenceInformationController extends GenericForwardComposer {
         }
     }
 
-    private void setRadioSelectedWithValue(String value) {
-        for (Object r : recurrencePattern.getItems()) {
-            if (((Radio) r).getValue().equals(value)) {
-                recurrencePattern.setSelectedItemApi((Radio) r);
-            }
-        }
-    }
-
-    public void init(Task task) {
-        recurringTaskModel.init(task);
-        configurePeriodicity();
-    }
-
     public int getRepetitions() {
-        return recurringTaskModel.getRepetitions();
+        return repetitions;
     }
 
     public void setRepetitions(int repetitions) {
-        recurringTaskModel.setRepetitions(repetitions);
+        this.repetitions = repetitions;
     }
 
     public void updateRecurrencePeriodicity() {
         Radio selected = recurrencePattern.getSelectedItemApi();
-        if (selected.getValue().equals("Not recurrent")) {
-            recurringTaskModel
-                    .setRecurrencePeriodicity(
-                            RecurrencePeriodicity.NO_PERIODICTY);
+        if (selected.getValue().equals("not-recurrent")) {
+            this.recurrencePeriodicity = RecurrencePeriodicity.NO_PERIODICTY;
         } else if (selected.getValue().equals("daily")) {
-            recurringTaskModel
-                    .setRecurrencePeriodicity(RecurrencePeriodicity.DAILY);
+            this.recurrencePeriodicity = RecurrencePeriodicity.DAILY;
         } else if (selected.getValue().equals("monthly")) {
-            recurringTaskModel
-                    .setRecurrencePeriodicity(RecurrencePeriodicity.MONTHLY);
-
+            this.recurrencePeriodicity = RecurrencePeriodicity.MONTHLY;
         } else if (selected.getValue().equals("weekly")) {
-            recurringTaskModel
-                    .setRecurrencePeriodicity(RecurrencePeriodicity.WEEKLY);
+            this.recurrencePeriodicity = RecurrencePeriodicity.WEEKLY;
         } else {
-            // TODO: Probably an exception should be thrown in this
-            // case.
+            throw new RuntimeException("Don't know how to handle: "
+                    + selected.getValue());
         }
+        enableOrDisableSpinner();
+    }
+
+    public RecurrenceInformation getModifiedRecurrenceInformation() {
+        return new RecurrenceInformation(repetitions, recurrencePeriodicity);
     }
 
 }
