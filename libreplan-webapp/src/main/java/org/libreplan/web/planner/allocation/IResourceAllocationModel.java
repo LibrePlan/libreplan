@@ -29,6 +29,7 @@ import org.libreplan.business.common.ProportionalDistributor;
 import org.libreplan.business.orders.entities.AggregatedHoursGroup;
 import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.planner.entities.TaskElement;
+import org.libreplan.business.recurring.RecurrenceInformation;
 import org.libreplan.web.planner.allocation.AllocationRowsHandler.Warnings;
 import org.libreplan.web.planner.order.PlanningStateCreator.PlanningState;
 import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
@@ -54,9 +55,14 @@ public interface IResourceAllocationModel extends INewAllocationsAdder {
     /**
      * Save task
      *
+     * @param recurrenceInformation
+     *            The new {@link RecurrenceInformation recurrence information}
+     *            to use.
+     *
      * @return
      */
-    Flagged<AllocationResult, Warnings> accept();
+    Flagged<AllocationResult, Warnings> accept(
+            RecurrenceInformation recurrenceInformation);
 
     /**
      * Starts the use case

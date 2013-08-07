@@ -438,17 +438,24 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
 
     }
 
-    public void mergeAllocation(Scenario scenario, final IntraDayDate start,
+    public void mergeAllocation(Scenario scenario,
+            RecurrenceInformation recurrenceInformation,
+            final IntraDayDate start,
             final IntraDayDate end, Integer newWorkableDays,
             CalculatedValue calculatedValue,
             List<ResourceAllocation<?>> newAllocations,
             List<ModifiedAllocation> modifications,
             Collection<? extends ResourceAllocation<?>> toRemove) {
-        this.calculatedValue = calculatedValue;
-        this.workableDays = calculatedValue == CalculatedValue.END_DATE ? null
-                : newWorkableDays;
-        setIntraDayStartDate(start);
-        setIntraDayEndDate(end);
+        Validate.notNull(recurrenceInformation);
+        this.recurrenceInformation = recurrenceInformation;
+        if (!newAllocations.isEmpty() || !modifications.isEmpty()) {
+            // otherwise dates could not be calculated correctly
+            this.calculatedValue = calculatedValue;
+            this.workableDays = calculatedValue == CalculatedValue.END_DATE ? null
+                    : newWorkableDays;
+            setIntraDayStartDate(start);
+            setIntraDayEndDate(end);
+        }
         for (ModifiedAllocation pair : modifications) {
             Validate.isTrue(resourceAllocations.contains(pair.getOriginal()));
             pair.getOriginal().mergeAssignmentsAndResourcesPerDay(scenario,
@@ -824,7 +831,8 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
             updateDerived(copied);
 
             List<ResourceAllocation<?>> newAllocations = emptyList(), removedAllocations = emptyList();
-            mergeAllocation(onScenario, getIntraDayStartDate(),
+            mergeAllocation(onScenario, getRecurrenceInformation(),
+                    getIntraDayStartDate(),
                     getIntraDayEndDate(), workableDays, calculatedValue,
                     newAllocations, copied, removedAllocations);
         } catch (Exception e) {

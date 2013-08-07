@@ -46,6 +46,7 @@ import org.libreplan.business.common.ProportionalDistributor;
 import org.libreplan.business.planner.entities.AggregateOfResourceAllocations;
 import org.libreplan.business.planner.entities.CalculatedValue;
 import org.libreplan.business.planner.entities.Task;
+import org.libreplan.business.recurring.RecurrenceInformation;
 import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.resources.entities.Resource;
 import org.libreplan.business.resources.entities.ResourceEnum;
@@ -522,17 +523,19 @@ public class FormBinder {
     }
 
     /**
-     *
+     * @param recurrenceInformation
+     *            The new {@link RecurrenceInformation recurrence information}
+     *            to use.
      * @return <code>true</code> if and only if operation completed and must
      *         exit the edition form
      */
-    public boolean accept() {
+    public boolean accept(RecurrenceInformation recurrenceInformation) {
         if (isTaskUpdatedFromTimesheets()) {
             return true;
         }
 
         Flagged<AllocationResult, Warnings> result = resourceAllocationModel
-                .accept();
+                .accept(recurrenceInformation);
 
         // result can be null when editing milestones
         if (result != null && result.isFlagged()) {
@@ -563,7 +566,7 @@ public class FormBinder {
     @SuppressWarnings("unchecked")
     private void loadSclassRowSatisfied() {
         try {
-            List<org.zkoss.zul.Row> rows = (List<org.zkoss.zul.Row>) allocationsGrid
+            List<org.zkoss.zul.Row> rows = allocationsGrid
                     .getRows().getChildren();
             for (org.zkoss.zul.Row row : rows) {
                 if (row.getValue() instanceof AllocationRow) {

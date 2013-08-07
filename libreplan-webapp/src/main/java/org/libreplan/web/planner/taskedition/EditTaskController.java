@@ -295,7 +295,8 @@ public class EditTaskController extends GenericForwardComposer {
                 editTaskTabbox.setSelectedPanelApi(resourceAllocationTabpanel);
                 RecurrenceInformation recurrenceInformation = recurrenceInformationController
                         .getModifiedRecurrenceInformation();
-                boolean mustNotExit = !resourceAllocationController.accept();
+                boolean mustNotExit = !resourceAllocationController
+                        .accept(recurrenceInformation);
                 if (mustNotExit) {
                     return;
                 }

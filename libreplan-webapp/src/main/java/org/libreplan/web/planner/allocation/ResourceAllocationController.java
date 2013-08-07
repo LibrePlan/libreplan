@@ -37,6 +37,7 @@ import org.libreplan.business.planner.entities.CalculatedValue;
 import org.libreplan.business.planner.entities.DerivedAllocation;
 import org.libreplan.business.planner.entities.ResourceAllocation;
 import org.libreplan.business.planner.entities.TaskElement;
+import org.libreplan.business.recurring.RecurrenceInformation;
 import org.libreplan.business.resources.entities.ResourceEnum;
 import org.libreplan.web.I18nHelper;
 import org.libreplan.web.common.EffortDurationBox;
@@ -565,12 +566,14 @@ public class ResourceAllocationController extends GenericForwardComposer {
     }
 
     /**
-     *
+     * @param recurrenceInformation
+     *            The new {@link RecurrenceInformation recurrence information}
+     *            to use.
      * @return <code>true</code> if it must exist <code>false</code> if exit
      *         must be prevented
      */
-    public boolean accept() {
-        boolean mustExit = formBinder.accept();
+    public boolean accept(RecurrenceInformation recurrenceInformation) {
+        boolean mustExit = formBinder.accept(recurrenceInformation);
         if (mustExit) {
             clear();
         }

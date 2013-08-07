@@ -39,6 +39,7 @@ import org.libreplan.business.planner.entities.DerivedAllocationGenerator.IWorke
 import org.libreplan.business.planner.entities.ResourceAllocation;
 import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.planner.entities.TaskElement;
+import org.libreplan.business.recurring.RecurrenceInformation;
 import org.libreplan.business.resources.daos.IResourceDAO;
 import org.libreplan.business.resources.daos.IResourcesSearcher;
 import org.libreplan.business.resources.entities.Criterion;
@@ -151,7 +152,8 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     }
 
     @Override
-    public Flagged<AllocationResult, Warnings> accept() {
+    public Flagged<AllocationResult, Warnings> accept(
+            final RecurrenceInformation recurrenceInformation) {
         if (context != null) {
             return applyDateChangesNotificationIfNoFlags(new IOnTransaction<Flagged<AllocationResult, Warnings>>() {
                 @Override
@@ -161,7 +163,8 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
                             .doAllocation();
                     if (!allocationResult.isFlagged()) {
                         allocationResult.getValue().applyTo(
-                                planningState.getCurrentScenario(), task);
+                                planningState.getCurrentScenario(),
+                                recurrenceInformation, task);
                     }
                     return allocationResult;
                 }
