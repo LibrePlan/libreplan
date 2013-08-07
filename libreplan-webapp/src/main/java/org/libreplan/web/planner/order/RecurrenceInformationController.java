@@ -133,7 +133,7 @@ public class RecurrenceInformationController extends GenericForwardComposer {
     }
 
     public RecurrenceInformation getModifiedRecurrenceInformation() {
-        return new RecurrenceInformation(repetitions, recurrencePeriodicity);
+        return new RecurrenceInformation(repetitions, recurrencePeriodicity, 1);
     }
 
 }

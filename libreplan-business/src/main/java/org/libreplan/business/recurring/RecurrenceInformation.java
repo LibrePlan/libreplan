@@ -30,19 +30,29 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 public class RecurrenceInformation {
 
     public static RecurrenceInformation noRecurrence() {
-        return new RecurrenceInformation(0, RecurrencePeriodicity.NO_PERIODICTY);
+        return new RecurrenceInformation(0,
+                RecurrencePeriodicity.NO_PERIODICTY, 0);
     }
 
     private int repetitions;
+
     private RecurrencePeriodicity recurrencePeriodicity;
+
+    private int amountOfPeriodsPerRepetition;
+
+    public int getAmountOfPeriodsPerRepetition() {
+        return amountOfPeriodsPerRepetition;
+    }
 
     public RecurrenceInformation() {
         this.repetitions = 0;
         this.recurrencePeriodicity = RecurrencePeriodicity.NO_PERIODICTY;
+        this.amountOfPeriodsPerRepetition = 0;
     }
 
     public RecurrenceInformation(int numberRepetitions,
-            RecurrencePeriodicity recurrencePeriodicity) {
+            RecurrencePeriodicity recurrencePeriodicity,
+            int amountOfPeriodsPerRepetition) {
         Validate.notNull(recurrencePeriodicity);
         Validate.isTrue(numberRepetitions >= 0,
                 "the number of repetitions cannot be negative. It is: "
@@ -50,6 +60,8 @@ public class RecurrenceInformation {
         this.recurrencePeriodicity = recurrencePeriodicity;
         this.repetitions = recurrencePeriodicity
                 .limitRepetitions(numberRepetitions);
+        this.amountOfPeriodsPerRepetition = recurrencePeriodicity
+                .limitAmountOfPeriods(amountOfPeriodsPerRepetition);
     }
 
     public int getRepetitions() {
@@ -66,6 +78,8 @@ public class RecurrenceInformation {
             RecurrenceInformation other = (RecurrenceInformation) obj;
             return new EqualsBuilder().append(repetitions, other.repetitions)
                     .append(recurrencePeriodicity, other.recurrencePeriodicity)
+                    .append(amountOfPeriodsPerRepetition,
+                            other.amountOfPeriodsPerRepetition)
                     .isEquals();
         }
         return false;
@@ -75,6 +89,7 @@ public class RecurrenceInformation {
     public int hashCode() {
         return new HashCodeBuilder().append(repetitions)
                 .append(recurrencePeriodicity)
+                .append(amountOfPeriodsPerRepetition)
                 .toHashCode();
     }
 

@@ -77,4 +77,14 @@
        <addNotNullConstraint tableName="task" columnName="repetitions"/>
     </changeSet>
 
+    <changeSet id="add-amount_of_periods_per_repetition-column-to-task"
+        author="ogonzalez">
+        <comment>Adds amount of periods column to task</comment>
+        <addColumn tableName="task">
+            <column name="amount_of_periods_per_repetition" type="INTEGER" defaultValueNumeric="0">
+              <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

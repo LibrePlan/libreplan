@@ -109,6 +109,7 @@
                     <param name="enumClass">org.libreplan.business.recurring.RecurrencePeriodicity</param>
                 </type>
             </property>
+            <property name="amountOfPeriodsPerRepetition" column="amount_of_periods_per_repetition" />
         </component>
 
         </joined-subclass>

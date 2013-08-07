@@ -33,6 +33,13 @@ public enum RecurrencePeriodicity {
         return repetitions;
     }
 
+    public int limitAmountOfPeriods(int amountOfPeriods) {
+        if (isNoPeriodicity()) {
+            return 0;
+        }
+        return amountOfPeriods;
+    }
+
     public boolean isPeriodicity() {
         return this != NO_PERIODICTY;
     }
