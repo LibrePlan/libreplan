@@ -59,16 +59,22 @@
         author="jmoran">
         <comment>Adds recurrence periodicity column to task</comment>
         <addColumn tableName="task">
-            <column name="recurrence_periodicity" type="INTEGER" />
+            <column name="recurrence_periodicity" type="INTEGER" defaultValueNumeric="0">
+              <constraints nullable="false"/>
+            </column>
         </addColumn>
-        <addDefaultValue tableName="task"
-            columnName="recurrence_periodicity" defaultValueNumeric="0" />
     </changeSet>
 
     <changeSet id="remove-recurrence_appliance-column-to-resource_allocation"
         author="ogonzalez">
         <comment>Remove recurrence_appliance column to resource_allocation</comment>
         <dropColumn tableName="resource_allocation" columnName="recurrence_appliance" />
+    </changeSet>
+
+    <changeSet id="improve-repetitions-column-to-task" author="ogonzalez">
+      <comment>Add default value and not null constraint so new tasks have a repetitions field with zero</comment>
+       <addDefaultValue tableName="task" columnName="repetitions"  defaultValueNumeric="0" />
+       <addNotNullConstraint tableName="task" columnName="repetitions"/>
     </changeSet>
 
 </databaseChangeLog>

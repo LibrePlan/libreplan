@@ -38,6 +38,7 @@ import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.validator.AssertTrue;
+import org.hibernate.validator.NotNull;
 import org.hibernate.validator.Valid;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
@@ -172,7 +173,8 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
 
     private SubcontractedTaskData subcontractedTaskData;
 
-    private RecurrenceInformation recurrenceInformation;
+    private RecurrenceInformation recurrenceInformation = RecurrenceInformation
+            .noRecurrence();
 
     private Integer priority;
 
@@ -952,6 +954,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         return subcontractedTaskData;
     }
 
+    @NotNull
     public RecurrenceInformation getRecurrenceInformation() {
         return recurrenceInformation;
     }

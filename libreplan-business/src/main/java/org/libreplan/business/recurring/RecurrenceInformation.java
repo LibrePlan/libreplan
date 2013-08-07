@@ -26,6 +26,10 @@ package org.libreplan.business.recurring;
  */
 public class RecurrenceInformation {
 
+    public static RecurrenceInformation noRecurrence() {
+        return new RecurrenceInformation(0, RecurrencePeriodicity.NO_PERIODICTY);
+    }
+
     private int repetitions = 0;
     private RecurrencePeriodicity recurrencePeriodicity;
 
