@@ -35,6 +35,8 @@ import org.springframework.context.annotation.Scope;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Radio;
+import org.zkoss.zul.Vlayout;
+import org.zkoss.zul.api.Box;
 import org.zkoss.zul.api.Radiogroup;
 import org.zkoss.zul.api.Spinner;
 
@@ -53,9 +55,14 @@ public class RecurrenceInformationController extends GenericForwardComposer {
     private Radiogroup recurrencePattern;
     private Spinner recurrenceOccurences;
 
+    private Box amountOfPeriodsGroup;
+    private Spinner amountOfPeriodsSpinner;
+
     private int repetitions = 0;
 
     private RecurrencePeriodicity recurrencePeriodicity = RecurrencePeriodicity.NO_PERIODICTY;
+
+    private int amountOfPeriods = 1;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -66,10 +73,22 @@ public class RecurrenceInformationController extends GenericForwardComposer {
     public void init(Task task) {
         RecurrenceInformation recurrenceInformation = task
                 .getRecurrenceInformation();
+
         this.repetitions = recurrenceInformation.getRepetitions();
-        this.recurrencePeriodicity = recurrenceInformation.getPeriodicity();
-        prepareRadioBoxes(this.recurrencePeriodicity);
+        RecurrencePeriodicity periodicity = recurrenceInformation
+                .getPeriodicity();
+        this.amountOfPeriods = recurrenceInformation
+                .getAmountOfPeriodsPerRepetition();
+
+        prepareRadioBoxes(periodicity);
+        setPeriodicity(periodicity);
+    }
+
+    private void setPeriodicity(RecurrencePeriodicity periodicity){
+        Validate.notNull(periodicity);
+        this.recurrencePeriodicity = periodicity;
         enableOrDisableSpinner();
+        enableOrDisableAmountOfPeriods();
     }
 
     private void enableOrDisableSpinner() {
@@ -81,6 +100,16 @@ public class RecurrenceInformationController extends GenericForwardComposer {
             repetitions = 1;
         }
         Util.reloadBindings(recurrenceOccurences);
+    }
+
+    private void enableOrDisableAmountOfPeriods() {
+        amountOfPeriodsGroup.setVisible(recurrencePeriodicity.isPeriodicity());
+        this.amountOfPeriods = recurrencePeriodicity
+                .limitAmountOfPeriods(amountOfPeriods);
+        if (amountOfPeriods == 0 && recurrencePeriodicity.isPeriodicity()) {
+            this.amountOfPeriods = 1;
+        }
+        Util.reloadBindings(amountOfPeriodsGroup);
     }
 
     private void prepareRadioBoxes(
@@ -102,12 +131,16 @@ public class RecurrenceInformationController extends GenericForwardComposer {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void buildRadioBoxes(RecurrencePeriodicity currentPeriodicity) {
+        Vlayout layout = new Vlayout();
+        recurrencePattern.getChildren().add(layout);
+        List<Component> children = layout.getChildren();
         for (RecurrencePeriodicity each : RecurrencePeriodicity.values()) {
             Radio radio = new Radio();
             radio.setLabel(_(each.getLabel()));
             radio.setValue(each.toString());
-            recurrencePattern.getChildren().add(radio);
+            children.add(radio);
             radio.setSelected(currentPeriodicity == each);
         }
     }
@@ -125,15 +158,28 @@ public class RecurrenceInformationController extends GenericForwardComposer {
 
         RecurrencePeriodicity p = Enum.valueOf(RecurrencePeriodicity.class,
                 selected.getValue());
-        Validate.notNull(p);
-
-        this.recurrencePeriodicity = p;
-
+        setPeriodicity(Enum.valueOf(RecurrencePeriodicity.class,
+                selected.getValue()));
         enableOrDisableSpinner();
+        enableOrDisableAmountOfPeriods();
+    }
+
+    public int getAmountOfPeriods() {
+        return amountOfPeriods;
+    }
+
+    public void setAmountOfPeriods(int amountOfPeriods) {
+        this.amountOfPeriods = amountOfPeriods;
+    }
+
+    public String getPeriodUnitLabel() {
+        return _(recurrencePeriodicity.getUnitLabel());
     }
 
     public RecurrenceInformation getModifiedRecurrenceInformation() {
-        return new RecurrenceInformation(repetitions, recurrencePeriodicity, 1);
+        return new RecurrenceInformation(repetitions, recurrencePeriodicity,
+                amountOfPeriods);
     }
+
 
 }

@@ -8,14 +8,17 @@ public enum RecurrencePeriodicity {
     // the _ method used here it's just for marking for translation. The real
     // translation, depending on the locale of the user, would happen in the web
     // layer.
-    NO_PERIODICTY(_("Not Recurrent")), DAILY(_("Daily")), WEEKLY(_("Weekly")), MONTHLY(
-            _("Monthly"));
+    NO_PERIODICTY(_("Not Recurrent"), null), DAILY(_("Daily"), _("day(s)")), WEEKLY(
+            _("Weekly"), _("week(s)")), MONTHLY(_("Monthly"), _("month(s)"));
 
-    private String label;
+    private final String label;
 
-    private RecurrencePeriodicity(String label) {
+    private final String unitLabel;
+
+    private RecurrencePeriodicity(String label, String unitLabel) {
         Validate.notEmpty(label);
         this.label = label;
+        this.unitLabel = unitLabel;
     }
 
     public boolean isNoPeriodicity() {
@@ -24,6 +27,10 @@ public enum RecurrencePeriodicity {
 
     public String getLabel() {
         return label;
+    }
+
+    public String getUnitLabel() {
+        return unitLabel;
     }
 
     public int limitRepetitions(int repetitions) {

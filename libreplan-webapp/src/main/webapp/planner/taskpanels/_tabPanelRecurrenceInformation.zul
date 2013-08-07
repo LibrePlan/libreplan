@@ -25,6 +25,11 @@
         <hbox>
             <radiogroup id="recurrencePattern" onCheck="recurrenceInformationController.updateRecurrencePeriodicity()">
             </radiogroup>
+            <hbox id="amountOfPeriodsGroup" spacing="0.5em" style="margin-left:16px; margin-top: 4px;">
+	            <label value="${i18n:_('Recur every')}" />
+	            <spinner constraint="no empty,min 1" id="amountOfPeriodsSpinner" width="40px" value="@{recurrenceInformationController.amountOfPeriods}" />
+	            <label value="@{recurrenceInformationController.periodUnitLabel}" />
+            </hbox>
         </hbox>
     </groupbox>
 
