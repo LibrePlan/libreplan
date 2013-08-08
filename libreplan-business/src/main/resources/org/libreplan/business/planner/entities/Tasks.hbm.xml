@@ -94,6 +94,12 @@
                 <one-to-many class="ResourceAllocation" />
             </set>
 
+            <list name="recurrences" cascade="all-delete-orphan">
+              <key column="task" not-null="true" />
+              <list-index column="position" base="0"/>
+              <one-to-many class="org.libreplan.business.recurring.Recurrence"/>
+            </list>
+
             <!-- Already indexed because it's unique -->
             <many-to-one name="subcontractedTaskData"
                 column="subcontrated_task_data_id"
@@ -148,6 +154,20 @@
 
     </class>
 
+    <class name="org.libreplan.business.recurring.Recurrence" table="recurrence">
+        <id name="id" column="id" type="long" access="property">
+            <generator class="hilo">
+                <param name="max_lo">100</param>
+            </generator>
+        </id>
+        <version name="version" access="property" type="long" />
+        <property name="date" column="date" not-null="true"
+                  type="org.joda.time.contrib.hibernate.PersistentLocalDate"/>
+        <set name="resourceAllocations" cascade="none">
+            <key column="recurrence" not-null="false"/>
+            <one-to-many class="ResourceAllocation" />
+        </set>
+    </class>
 
     <!-- PlanningData -->
     <class name="PlanningData" table="planning_data">

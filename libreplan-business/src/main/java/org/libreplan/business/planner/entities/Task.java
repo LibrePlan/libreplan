@@ -62,6 +62,7 @@ import org.libreplan.business.planner.entities.allocationalgorithms.EffortModifi
 import org.libreplan.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
 import org.libreplan.business.planner.entities.consolidations.Consolidation;
 import org.libreplan.business.planner.limiting.entities.LimitingResourceQueueElement;
+import org.libreplan.business.recurring.Recurrence;
 import org.libreplan.business.recurring.RecurrenceInformation;
 import org.libreplan.business.resources.daos.IResourcesSearcher;
 import org.libreplan.business.resources.entities.Criterion;
@@ -156,9 +157,16 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
 
     private Set<ResourceAllocation<?>> resourceAllocations = new HashSet<ResourceAllocation<?>>();
 
+    private List<Recurrence> recurrences = new ArrayList<Recurrence>();
+
     @Valid
     private Set<ResourceAllocation<?>> getResourceAlloations() {
         return new HashSet<ResourceAllocation<?>>(resourceAllocations);
+    }
+
+    @Valid
+    private List<Recurrence> getRecurrences() {
+        return new ArrayList<Recurrence>(recurrences);
     }
 
     @SuppressWarnings("unused")

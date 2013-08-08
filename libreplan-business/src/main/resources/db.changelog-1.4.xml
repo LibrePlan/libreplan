@@ -87,4 +87,39 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="add-recurrence-table" author="ogonzalez">
+      <comment>Add table for org.libreplan.business.recurring.Recurrence</comment>
+      <createTable tableName="recurrence">
+        <column name="id" type="BIGINT">
+         <constraints nullable="false" primaryKey="true" primaryKeyName="recurrence_pkey"/>
+        </column>
+        <column name="version" type="BIGINT">
+         <constraints nullable="false"/>
+        </column>
+        <column name="position" type="INTEGER">
+         <constraints nullable="false"/>
+        </column>
+        <column name="task" type="BIGINT">
+          <constraints nullable="false"/>
+        </column>
+        <column name="date" type="DATE">
+         <constraints nullable="false"/>
+        </column>
+      </createTable>
+      <addForeignKeyConstraint baseColumnNames="task" baseTableName="recurrence"
+        constraintName="fkrecurrence_to_task" deferrable="false"
+        onDelete="CASCADE" onUpdate="NO ACTION"
+        referencedColumnNames="task_element_id" referencedTableName="task" />
+    </changeSet>
+
+    <changeSet id="add-resource-allocations-relationship-to-recurrence" author="ogonzalez">
+        <addColumn tableName="resource_allocation">
+          <column name="recurrence" type="BIGINT"/>
+        </addColumn>
+        <addForeignKeyConstraint baseColumnNames="recurrence" baseTableName="resource_allocation"
+        constraintName="fkresource_allocation_to_recurrence" deferrable="false"
+        onDelete="NO ACTION" onUpdate="NO ACTION"
+        referencedColumnNames="id" referencedTableName="recurrence" />
+    </changeSet>
+
 </databaseChangeLog>
