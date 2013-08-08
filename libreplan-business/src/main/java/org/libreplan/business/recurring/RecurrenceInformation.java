@@ -18,9 +18,16 @@
  */
 package org.libreplan.business.recurring;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.joda.time.LocalDate;
+import org.joda.time.ReadablePeriod;
+import org.libreplan.business.planner.entities.ResourceAllocation.Direction;
 
 /**
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
@@ -57,6 +64,11 @@ public class RecurrenceInformation {
         Validate.isTrue(numberRepetitions >= 0,
                 "the number of repetitions cannot be negative. It is: "
                         + numberRepetitions);
+        Validate.isTrue(amountOfPeriodsPerRepetition >= 0,
+                "the amountOfPeriodsPerRepetition cannot be negative");
+        Validate.isTrue(recurrencePeriodicity.isNoPeriodicity()
+                        || amountOfPeriodsPerRepetition >= 1,
+                "if there are repetitions, the amount of periods per repetition must be greater than zero");
         this.recurrencePeriodicity = recurrencePeriodicity;
         this.repetitions = recurrencePeriodicity
                 .limitRepetitions(numberRepetitions);
@@ -91,6 +103,26 @@ public class RecurrenceInformation {
                 .append(recurrencePeriodicity)
                 .append(amountOfPeriodsPerRepetition)
                 .toHashCode();
+    }
+
+    public List<LocalDate> getRecurrences(Direction direction, LocalDate start) {
+        Validate.notNull(direction);
+        Validate.notNull(start);
+
+        if (recurrencePeriodicity.isNoPeriodicity()) {
+            return Collections.emptyList();
+        }
+
+        ReadablePeriod period = recurrencePeriodicity
+                .buildPeriod(amountOfPeriodsPerRepetition);
+        LocalDate current = start;
+        List<LocalDate> result = new ArrayList<LocalDate>();
+        for (int i = 0; i < repetitions; i++) {
+            current = direction == Direction.FORWARD ? current.plus(period)
+                    : current.minus(period);
+            result.add(current);
+        }
+        return result;
     }
 
 }
