@@ -835,7 +835,8 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
                 return;
             }
             setCustomAssignedEffortForResource(copied);
-            doAllocation(strategy, direction, toBeModified);
+            doAllocation(strategy, direction, new AllocationOnTaskDates(),
+                    toBeModified);
             updateDerived(copied);
 
             List<ResourceAllocation<?>> newAllocations = emptyList(), removedAllocations = emptyList();
@@ -867,8 +868,41 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         }
     }
 
+    public interface IAllocationDates {
+
+        IntraDayDate getAllocationStart();
+
+        IntraDayDate getAllocationEnd();
+
+        void newAllocationFinish(Direction direction, IntraDayDate finish);
+
+    }
+
+    private class AllocationOnTaskDates implements IAllocationDates {
+
+        @Override
+        public IntraDayDate getAllocationStart() {
+            return getIntraDayStartDate();
+        }
+
+        @Override
+        public IntraDayDate getAllocationEnd() {
+            return getIntraDayEndDate();
+        }
+
+        @Override
+        public void newAllocationFinish(Direction direction, IntraDayDate finish) {
+            if (direction == Direction.FORWARD) {
+                setIntraDayEndDate(finish);
+            } else {
+                setIntraDayStartDate(finish);
+            }
+        }
+    }
+
     private void doAllocation(WithPotentiallyNewResources strategy,
-            Direction direction, List<ResourceAllocation<?>> toBeModified) {
+            Direction direction, IAllocationDates allocationDates,
+            List<ResourceAllocation<?>> toBeModified) {
         ModificationsResult<ResourcesPerDayModification> modificationsResult = strategy
                 .getResourcesPerDayModified(toBeModified);
         markAsUnsatisfied(modificationsResult.getNoLongerValid());
@@ -886,11 +920,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         case END_DATE:
             IntraDayDate date = ResourceAllocation.allocating(allocations)
                     .untilAllocating(direction, getTotalNonConsolidatedEffort());
-            if (direction == Direction.FORWARD) {
-                setIntraDayEndDate(date);
-            } else {
-                setIntraDayStartDate(date);
-            }
+            allocationDates.newAllocationFinish(direction, date);
             break;
         case RESOURCES_PER_DAY:
             ModificationsResult<EffortModification> hoursModificationResult = strategy
@@ -903,7 +933,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
                 return;
             }
             ResourceAllocation.allocatingHours(hoursModified).allocateUntil(
-                    getIntraDayEndDate());
+                    allocationDates.getAllocationEnd());
             break;
         default:
             throw new RuntimeException("cant handle: " + calculatedValue);
