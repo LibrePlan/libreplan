@@ -343,6 +343,11 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             return untilAllocating(Direction.FORWARD, effort);
         }
 
+        public IntraDayDate untilAllocating(IntraDayDate from,
+                Direction direction, EffortDuration effort) {
+            return untilAllocating(direction, from, effort, doNothing());
+        }
+
         public IntraDayDate untilAllocating(Direction direction,
                 EffortDuration effort) {
             return untilAllocating(direction, effort, doNothing());
@@ -365,9 +370,16 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
         public IntraDayDate untilAllocating(Direction direction,
                 EffortDuration toAllocate, final INotFulfilledReceiver receiver) {
+            return untilAllocating(direction,
+                    direction.getDateFromWhichToAllocate(task), toAllocate,
+                    receiver);
+        }
+
+        public IntraDayDate untilAllocating(Direction direction,
+                IntraDayDate dateFromWhichToAllocate,
+                EffortDuration toAllocate, final INotFulfilledReceiver receiver) {
             UntilFillingHoursAllocator allocator = new UntilFillingHoursAllocator(
-                    direction,
-                    task, allocations) {
+                    direction, dateFromWhichToAllocate, allocations) {
 
                 @Override
                 protected <T extends DayAssignment> void setNewDataForAllocation(

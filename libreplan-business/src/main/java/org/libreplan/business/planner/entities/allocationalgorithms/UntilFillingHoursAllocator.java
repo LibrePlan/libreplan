@@ -39,7 +39,6 @@ import org.libreplan.business.common.ProportionalDistributor;
 import org.libreplan.business.planner.entities.DayAssignment;
 import org.libreplan.business.planner.entities.ResourceAllocation;
 import org.libreplan.business.planner.entities.ResourceAllocation.Direction;
-import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.util.Pair;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workingday.IntraDayDate;
@@ -50,17 +49,20 @@ public abstract class UntilFillingHoursAllocator {
 
     private final Direction direction;
 
-    private final Task task;
-
     private List<ResourcesPerDayModification> allocations;
 
     private Map<ResourcesPerDayModification, List<DayAssignment>> resultAssignments = new HashMap<ResourcesPerDayModification, List<DayAssignment>>();
 
+    private final IntraDayDate dateFromWhichToAllocate;
 
-    public UntilFillingHoursAllocator(Direction direction, Task task,
+    public UntilFillingHoursAllocator(Direction direction,
+            IntraDayDate dateFromWhichToAllocate,
             List<ResourcesPerDayModification> allocations) {
+        Validate.notNull(direction);
+        Validate.notNull(allocations);
+        Validate.notNull(dateFromWhichToAllocate);
         this.direction = direction;
-        this.task = task;
+        this.dateFromWhichToAllocate = dateFromWhichToAllocate;
         this.allocations = allocations;
         initializeResultsMap();
     }
@@ -72,8 +74,6 @@ public abstract class UntilFillingHoursAllocator {
     }
 
     public IntraDayDate untilAllocating(EffortDuration effortToAllocate) {
-        final IntraDayDate dateFromWhichToAllocate = direction
-                .getDateFromWhichToAllocate(task);
         List<EffortPerAllocation> effortPerAllocation = effortPerAllocation(
                 dateFromWhichToAllocate, effortToAllocate);
         if (effortPerAllocation.isEmpty()) {

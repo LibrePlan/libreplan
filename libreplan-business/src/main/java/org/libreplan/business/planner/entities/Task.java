@@ -879,6 +879,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
 
         Direction getDirection();
 
+        IntraDayDate allocateFrom();
     }
 
     private class InputDataBasedOnTask implements IAllocationParameters {
@@ -891,6 +892,12 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         @Override
         public IntraDayDate getAllocationEnd() {
             return getIntraDayEndDate();
+        }
+
+        @Override
+        public IntraDayDate allocateFrom() {
+            return getAllocationDirection() == Direction.FORWARD ? getAllocationStart()
+                    : getAllocationEnd();
         }
 
         @Override
@@ -936,7 +943,8 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
             break;
         case END_DATE:
             IntraDayDate date = ResourceAllocation.allocating(allocations)
-                    .untilAllocating(allocationParameters.getDirection(),
+                    .untilAllocating(allocationParameters.allocateFrom(),
+                            allocationParameters.getDirection(),
                             allocationParameters.getTotalEffortToAllocate());
             allocationParameters.newAllocationFinish(date);
             break;
