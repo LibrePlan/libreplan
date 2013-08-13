@@ -40,6 +40,13 @@ public class AllocatorForTaskDurationAndSpecifiedResourcesPerDay {
         }
     }
 
+    public void allocateOn(IntraDayDate startInclusive,
+            IntraDayDate endExclusive) {
+        for (ResourcesPerDayModification allocation : allocations) {
+            allocation.applyAllocationOn(startInclusive, endExclusive);
+        }
+    }
+
     public void allocateUntil(IntraDayDate endExclusive) {
         for (ResourcesPerDayModification allocation : allocations) {
             allocation.applyAllocationUntil(endExclusive);
@@ -51,4 +58,5 @@ public class AllocatorForTaskDurationAndSpecifiedResourcesPerDay {
             allocation.applyAllocationFromEndUntil(start);
         }
     }
+
 }

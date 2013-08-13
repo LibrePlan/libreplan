@@ -437,6 +437,13 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             allocator.allocateOnTaskLength();
         }
 
+        public void allocateOn(IntraDayDate startInclusive,
+                IntraDayDate endExclusive) {
+            AllocatorForTaskDurationAndSpecifiedResourcesPerDay allocator = new AllocatorForTaskDurationAndSpecifiedResourcesPerDay(
+                    allocations);
+            allocator.allocateOn(startInclusive, endExclusive);
+        }
+
         public void allocateUntil(IntraDayDate endExclusive) {
             AllocatorForTaskDurationAndSpecifiedResourcesPerDay allocator = new AllocatorForTaskDurationAndSpecifiedResourcesPerDay(
                     allocations);
@@ -760,6 +767,14 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                     currentTask.getIntraDayStartDate(),
                     currentTask.getIntraDayEndDate());
             allocator.allocate(resourcesPerDay);
+        }
+
+        @Override
+        public IAllocateResourcesPerDay resourcesPerDayOn(
+                IntraDayDate startInclusive,
+                IntraDayDate endExclusive) {
+            return new AllocateResourcesPerDayOnInterval(
+                    startInclusive, endExclusive);
         }
 
         private List<T> createAssignments(ResourcesPerDay resourcesPerDay,

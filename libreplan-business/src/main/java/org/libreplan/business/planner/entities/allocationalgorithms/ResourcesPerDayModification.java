@@ -44,7 +44,6 @@ import org.libreplan.business.planner.entities.ResourceAllocation.IEffortDistrib
 import org.libreplan.business.planner.entities.SpecificResourceAllocation;
 import org.libreplan.business.planner.entities.allocationalgorithms.UntilFillingHoursAllocator.IAssignmentsCreator;
 import org.libreplan.business.resources.daos.IResourcesSearcher;
-import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.resources.entities.Resource;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workingday.IntraDayDate;
@@ -72,6 +71,14 @@ public abstract class ResourcesPerDayModification extends
         }
 
         @Override
+        public void applyAllocationOn(IntraDayDate startInclusive,
+                IntraDayDate endExclusive) {
+            genericAllocation.forResources(getResources())
+                    .resourcesPerDayOn(startInclusive, endExclusive)
+                    .allocate(getGoal());
+        }
+
+        @Override
         public void applyAllocationUntil(IntraDayDate endExclusive) {
             genericAllocation.forResources(getResources())
                     .resourcesPerDayUntil(endExclusive).allocate(getGoal());
@@ -86,7 +93,7 @@ public abstract class ResourcesPerDayModification extends
         @Override
         public AvailabilityTimeLine getAvailability() {
             return AvailabilityCalculator.buildSumOfAvailabilitiesFor(
-                    (Collection<? extends Criterion>) genericAllocation
+                    genericAllocation
                             .getCriterions(), getResources());
         }
 
@@ -150,6 +157,13 @@ public abstract class ResourcesPerDayModification extends
         @Override
         public void applyAllocationOnAllTaskLength() {
             resourceAllocation.allocate(getGoal());
+        }
+
+        @Override
+        public void applyAllocationOn(IntraDayDate startInclusive,
+                IntraDayDate endExclusive) {
+            resourceAllocation.resourcesPerDayOn(startInclusive, endExclusive).allocate(
+                    getGoal());
         }
 
         @Override
@@ -271,6 +285,9 @@ public abstract class ResourcesPerDayModification extends
     public abstract ICalendar getResourcesCalendar();
 
     public abstract void applyAllocationOnAllTaskLength();
+
+    public abstract void applyAllocationOn(IntraDayDate startInclusive,
+            IntraDayDate endExclusive);
 
     public abstract void applyAllocationUntil(IntraDayDate endExclusive);
 

@@ -915,7 +915,9 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         }
         switch (calculatedValue) {
         case NUMBER_OF_HOURS:
-            ResourceAllocation.allocating(allocations).allocateOnTaskLength();
+            ResourceAllocation.allocating(allocations).allocateOn(
+                    allocationDates.getAllocationStart(),
+                    allocationDates.getAllocationEnd());
             break;
         case END_DATE:
             IntraDayDate date = ResourceAllocation.allocating(allocations)
