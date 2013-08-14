@@ -191,6 +191,13 @@ public class SpecificResourceAllocation extends
     }
 
     @Override
+    public IAllocateEffortOnInterval forWholeAllocationOn(IntraDayDate start,
+            IntraDayDate end) {
+        return new SpecificAssignmentsAllocator().forWholeAllocationOn(start,
+                end);
+    }
+
+    @Override
     public IAllocateEffortOnInterval fromEndUntil(IntraDayDate start) {
         return new SpecificAssignmentsAllocator().fromEndUntil(start);
     }

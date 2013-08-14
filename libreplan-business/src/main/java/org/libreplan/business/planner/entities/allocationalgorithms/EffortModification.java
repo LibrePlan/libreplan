@@ -66,6 +66,14 @@ public abstract class EffortModification extends AllocationModification {
         }
 
         @Override
+        public void forWholeAllocationOn(IntraDayDate allocationStart,
+                IntraDayDate allocationEnd) {
+            genericAllocation.forResources(getResources())
+                    .forWholeAllocationOn(allocationStart, allocationEnd)
+                    .allocate(getEffort());
+        }
+
+        @Override
         public boolean isSpecific() {
             return false;
         }
@@ -87,6 +95,13 @@ public abstract class EffortModification extends AllocationModification {
         }
 
         @Override
+        public void forWholeAllocationOn(IntraDayDate allocationStart,
+                IntraDayDate allocationEnd) {
+            specific.forWholeAllocationOn(allocationStart, allocationEnd)
+                    .allocate(getEffort());
+        }
+
+        @Override
         public void allocateFromEndUntil(IntraDayDate start) {
             specific.fromEndUntil(start).allocate(getEffort());
         }
@@ -95,6 +110,7 @@ public abstract class EffortModification extends AllocationModification {
         public boolean isSpecific() {
             return true;
         }
+
     }
 
     public static EffortModification create(
@@ -146,6 +162,9 @@ public abstract class EffortModification extends AllocationModification {
     public abstract void allocateUntil(IntraDayDate end);
 
     public abstract void allocateFromEndUntil(IntraDayDate start);
+
+    public abstract void forWholeAllocationOn(IntraDayDate allocationStart,
+            IntraDayDate allocationEnd);
 
     @Override
     public boolean satisfiesModificationRequested() {

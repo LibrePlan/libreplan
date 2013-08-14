@@ -102,4 +102,14 @@ public interface IAllocatable extends IAllocateResourcesPerDay {
      */
     public IAllocateEffortOnInterval fromEndUntil(IntraDayDate start);
 
+    /**
+     * It allocates the effort specified on the interval from the specified
+     * start, to the specified end. If the specified start is before the
+     * consolidations, it's posponed until the first not consolidated day. All
+     * previous assignments are removed, but the consolidated ones.
+     *
+     */
+    public IAllocateEffortOnInterval forWholeAllocationOn(IntraDayDate start,
+            IntraDayDate end);
+
 }

@@ -958,7 +958,8 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
                 LOG.warn("all allocations for task " + this + " can't be used");
                 return;
             }
-            ResourceAllocation.allocatingHours(hoursModified).allocateUntil(
+            ResourceAllocation.allocatingHours(hoursModified).forWholeAllocationOn(
+                    allocationParameters.getAllocationStart(),
                     allocationParameters.getAllocationEnd());
             break;
         default:
