@@ -507,8 +507,8 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         static <T extends AllocationModification> ModificationsResult<T> create(
                 List<ResourceAllocation<?>> original, List<T> canBeModified) {
 
-            List<ResourceAllocation<?>> beingModified = AllocationModification
-                    .getBeingModified(canBeModified);
+            Set<ResourceAllocation<?>> beingModified = new HashSet<ResourceAllocation<?>>(
+                    AllocationModification.getBeingModified(canBeModified));
             List<ResourceAllocation<?>> noLongerValid = new ArrayList<ResourceAllocation<?>>();
             for (ResourceAllocation<?> each : original) {
                 if (!beingModified.contains(each)) {
