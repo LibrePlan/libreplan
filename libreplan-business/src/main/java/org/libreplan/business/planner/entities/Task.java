@@ -22,6 +22,7 @@
 package org.libreplan.business.planner.entities;
 
 import static java.util.Collections.emptyList;
+import static org.libreplan.business.planner.entities.allocationalgorithms.AllocationModification.ofType;
 import static org.libreplan.business.workingday.EffortDuration.min;
 
 import java.math.BigDecimal;
@@ -835,7 +836,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
                 return;
             }
             setCustomAssignedEffortForResource(copied);
-            doAllocation(strategy, new InputDataBasedOnTask(), toBeModified);
+            doAllocation(new InputDataBasedOnTask(strategy, toBeModified));
             updateDerived(copied);
 
             List<ResourceAllocation<?>> newAllocations = emptyList(), removedAllocations = emptyList();
@@ -867,7 +868,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         }
     }
 
-    public interface IAllocationParameters {
+    public interface IAllocationInputs {
 
         IntraDayDate getAllocationStart();
 
@@ -880,9 +881,22 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         Direction getDirection();
 
         IntraDayDate allocateFrom();
+
+        ModificationsResult<EffortModification> getEffortsModified();
+
+        ModificationsResult<ResourcesPerDayModification> getResourcesPerDayModified();
     }
 
-    private class InputDataBasedOnTask implements IAllocationParameters {
+    private class InputDataBasedOnTask implements IAllocationInputs {
+
+        private WithPotentiallyNewResources strategy;
+        private List<ResourceAllocation<?>> toBeModified;
+
+        public InputDataBasedOnTask(WithPotentiallyNewResources strategy,
+                List<ResourceAllocation<?>> toBeModified) {
+            this.strategy = strategy;
+            this.toBeModified = toBeModified;
+        }
 
         @Override
         public IntraDayDate getAllocationStart() {
@@ -920,53 +934,64 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         public Direction getDirection() {
             return lastAllocationDirection;
         }
+
+        @Override
+        public ModificationsResult<EffortModification> getEffortsModified() {
+            return strategy.getHoursModified(toBeModified);
+        }
+
+        @Override
+        public ModificationsResult<ResourcesPerDayModification> getResourcesPerDayModified() {
+            return strategy.getResourcesPerDayModified(toBeModified);
+        }
     }
 
-    private void doAllocation(WithPotentiallyNewResources strategy,
-            IAllocationParameters allocationParameters,
-            List<ResourceAllocation<?>> toBeModified) {
-        ModificationsResult<ResourcesPerDayModification> modificationsResult = strategy
-                .getResourcesPerDayModified(toBeModified);
+    private void doAllocation(IAllocationInputs allocationInputs) {
+        final ModificationsResult<? extends AllocationModification> modificationsResult;
+        if (calculatedValue == CalculatedValue.RESOURCES_PER_DAY) {
+            modificationsResult = allocationInputs.getEffortsModified();
+        } else {
+            modificationsResult = allocationInputs.getResourcesPerDayModified();
+        }
+
         markAsUnsatisfied(modificationsResult.getNoLongerValid());
-        List<ResourcesPerDayModification> allocations = modificationsResult
+
+        List<? extends AllocationModification> allocations = modificationsResult
                 .getBeingModified();
         if (allocations.isEmpty()) {
             LOG.warn("all allocations for task " + this
                     + " have no valid data that could be used");
             return;
         }
+
         switch (calculatedValue) {
         case NUMBER_OF_HOURS:
-            ResourceAllocation.allocating(allocations).allocateOn(
-                    allocationParameters.getAllocationStart(),
-                    allocationParameters.getAllocationEnd());
+            ResourceAllocation.allocating(
+                    ofType(ResourcesPerDayModification.class, allocations))
+                    .allocateOn(allocationInputs.getAllocationStart(),
+                            allocationInputs.getAllocationEnd());
             break;
         case END_DATE:
-            IntraDayDate date = ResourceAllocation.allocating(allocations)
-                    .untilAllocating(allocationParameters.allocateFrom(),
-                            allocationParameters.getDirection(),
-                            allocationParameters.getTotalEffortToAllocate());
-            allocationParameters.newAllocationFinish(date);
+            IntraDayDate date = ResourceAllocation.allocating(
+                    ofType(ResourcesPerDayModification.class, allocations))
+                    .untilAllocating(allocationInputs.allocateFrom(),
+                            allocationInputs.getDirection(),
+                            allocationInputs.getTotalEffortToAllocate());
+            allocationInputs.newAllocationFinish(date);
             break;
         case RESOURCES_PER_DAY:
-            ModificationsResult<EffortModification> hoursModificationResult = strategy
-                    .getHoursModified(toBeModified);
-            markAsUnsatisfied(hoursModificationResult.getNoLongerValid());
-            List<EffortModification> hoursModified = hoursModificationResult
-                    .getBeingModified();
-            if (hoursModified.isEmpty()) {
-                LOG.warn("all allocations for task " + this + " can't be used");
-                return;
-            }
-            ResourceAllocation.allocatingHours(hoursModified).forWholeAllocationOn(
-                    allocationParameters.getAllocationStart(),
-                    allocationParameters.getAllocationEnd());
+            ResourceAllocation.allocatingHours(
+                    ofType(EffortModification.class, allocations))
+                    .forWholeAllocationOn(
+                            allocationInputs.getAllocationStart(),
+                            allocationInputs.getAllocationEnd());
             break;
         default:
             throw new RuntimeException("cant handle: " + calculatedValue);
         }
 
-        AssignmentFunction.applyAssignmentFunctionsIfAny(toBeModified);
+        AssignmentFunction.applyAssignmentFunctionsIfAny(AllocationModification
+                .getBeingModified(allocations));
     }
 
     private void markAsUnsatisfied(
