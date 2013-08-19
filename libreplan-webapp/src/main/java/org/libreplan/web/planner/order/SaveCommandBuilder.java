@@ -82,6 +82,7 @@ import org.libreplan.business.planner.entities.consolidations.NonCalculatedConso
 import org.libreplan.business.planner.limiting.daos.ILimitingResourceQueueDependencyDAO;
 import org.libreplan.business.planner.limiting.entities.LimitingResourceQueueDependency;
 import org.libreplan.business.planner.limiting.entities.LimitingResourceQueueElement;
+import org.libreplan.business.recurring.Recurrence;
 import org.libreplan.business.scenarios.daos.IScenarioDAO;
 import org.libreplan.business.scenarios.entities.Scenario;
 import org.libreplan.business.users.daos.IOrderAuthorizationDAO;
@@ -982,6 +983,7 @@ public class SaveCommandBuilder {
             if (taskElement instanceof Task) {
                 dontPoseAsTransient(((Task) taskElement).getConsolidation());
                 dontPoseAsTransient(((Task) taskElement).getSubcontractedTaskData());
+                dontPoseAsTransient(((Task) taskElement).getRecurrences());
             }
             if (taskElement instanceof TaskGroup) {
                 ((TaskGroup) taskElement).dontPoseAsTransientPlanningData();
@@ -1011,6 +1013,12 @@ public class SaveCommandBuilder {
                     //dontPoseAsTransient - DeliverDate
                     subDeliverDate.dontPoseAsTransientObjectAnymore();
                 }
+            }
+        }
+
+        private void dontPoseAsTransient(List<Recurrence> recurrences) {
+            for (Recurrence r : recurrences) {
+                r.dontPoseAsTransientObjectAnymore();
             }
         }
 
