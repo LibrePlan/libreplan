@@ -636,6 +636,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
 
         private Recurrence createRecurrenceAt(LocalDate date) {
             List<ResourceAllocation<?>> allocations = copyAllocations();
+            setCustomAssignedEffortForResourceFor(allocations);
             doAllocation(createInputs(date, allocations));
             return new Recurrence(date, allocations);
         }
@@ -777,7 +778,6 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
             }
             recurrences.removeAll(toRemove);
             for (Recurrence each : toRemove) {
-                // FIXME Tupdate sumEffort thing?
                 Set<ResourceAllocation<?>> recurrenceAllocations = each
                         .getResourceAllocations();
                 for (ResourceAllocation<?> r : recurrenceAllocations) {
@@ -1226,18 +1226,45 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         }
     }
 
+    /**
+     * @see #setCustomAssignedEffortForResource(List, List)
+     */
     private void setCustomAssignedEffortForResource(
             List<ModifiedAllocation> modifiedAllocations) {
-        List<ResourceAllocation<?>> originals = ModifiedAllocation
-                .originals(modifiedAllocations);
+        setCustomAssignedEffortForResource(ModifiedAllocation
+                .originals(modifiedAllocations), ModifiedAllocation
+                .modified(modifiedAllocations));
+    }
+
+    /**
+     * It configures the {@link GenericResourceAllocation generic allocations}
+     * to considerer the load added in the allocations being done currently.
+     *
+     * @see #setCustomAssignedEffortForResource(List, List)
+     */
+    private void setCustomAssignedEffortForResourceFor(
+            List<ResourceAllocation<?>> beingDone) {
+        setCustomAssignedEffortForResource(
+                Collections.<ResourceAllocation<?>> emptyList(), beingDone);
+    }
+
+    /**
+     * It configures the {@link GenericResourceAllocation generic allocations}
+     * such as they consider the true load of the resources when doing an
+     * allocation. The updated allocations load must be discounted since they
+     * are going to be removed/updated. The new load of the beingDone
+     * allocations must be considered.
+     *
+     */
+    private void setCustomAssignedEffortForResource(
+            List<ResourceAllocation<?>> updated,
+            List<ResourceAllocation<?>> beingDone) {
         IAssignedEffortForResource discounting = AssignedEffortForResource
-                .effortDiscounting(originals);
-        List<ResourceAllocation<?>> beingModified = ModifiedAllocation
-                .modified(modifiedAllocations);
+                .effortDiscounting(updated);
         WithTheLoadOf allNewLoad = AssignedEffortForResource
-                .withTheLoadOf(beingModified);
+                .withTheLoadOf(beingDone);
         List<GenericResourceAllocation> generic = ResourceAllocation.getOfType(
-                GenericResourceAllocation.class, beingModified);
+                GenericResourceAllocation.class, beingDone);
         for (GenericResourceAllocation each : generic) {
             each.setAssignedEffortForResource(AssignedEffortForResource.sum(
                     allNewLoad.withoutConsidering(each), discounting));
