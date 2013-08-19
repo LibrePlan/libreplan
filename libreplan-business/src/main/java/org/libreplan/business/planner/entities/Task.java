@@ -166,7 +166,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
     }
 
     @Valid
-    private List<Recurrence> getRecurrences() {
+    public List<Recurrence> getRecurrences() {
         return new ArrayList<Recurrence>(recurrences);
     }
 

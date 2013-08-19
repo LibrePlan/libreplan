@@ -68,6 +68,7 @@ import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.planner.entities.TaskGroup;
 import org.libreplan.business.planner.entities.TaskMilestone;
 import org.libreplan.business.planner.entities.consolidations.CalculatedConsolidation;
+import org.libreplan.business.recurring.Recurrence;
 import org.libreplan.business.requirements.entities.CriterionRequirement;
 import org.libreplan.business.resources.daos.ICriterionDAO;
 import org.libreplan.business.resources.daos.IResourceDAO;
@@ -346,8 +347,10 @@ public class PlanningStateCreator {
 
     private void forceLoadOfDataAssociatedTo(TaskElement each) {
         forceLoadOfResourceAllocationsResourcesAndAssignmentFunction(each);
+        forceLoadOfRecurrences(each);
         forceLoadOfCriterions(each);
         forceLoadOfSubcontractedTaskData(each);
+
 
         BaseCalendar calendar = each.getOwnCalendar();
         if (calendar == null) {
@@ -360,6 +363,15 @@ public class PlanningStateCreator {
             BaseCalendarModel.forceLoadBaseCalendar(calendar);
         }
         each.hasConsolidations();
+    }
+
+    private void forceLoadOfRecurrences(TaskElement each) {
+        if (each instanceof Task) {
+            Task t = (Task) each;
+            for (Recurrence r : t.getRecurrences()) {
+                r.getResourceAllocations().size();
+            }
+        }
     }
 
     /**
