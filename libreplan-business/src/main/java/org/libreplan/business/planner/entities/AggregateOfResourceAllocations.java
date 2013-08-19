@@ -135,7 +135,7 @@ public class AggregateOfResourceAllocations {
                 });
     }
 
-    private LocalDate getStartAsLocalDate() {
+    public LocalDate getStartAsLocalDate() {
         IntraDayDate start = getStart();
         return start != null ? start.getDate() : null;
     }
@@ -147,7 +147,7 @@ public class AggregateOfResourceAllocations {
         return getAllocationsSortedByStartDate().get(0).getIntraDayStartDate();
     }
 
-    private LocalDate getEndAsLocalDate() {
+    public LocalDate getEndAsLocalDate() {
         IntraDayDate end = getEnd();
         return end != null ? end.getDate() : null;
     }
