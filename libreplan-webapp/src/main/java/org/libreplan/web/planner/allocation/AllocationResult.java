@@ -66,9 +66,9 @@ public class AllocationResult {
         return AggregateOfResourceAllocations.createFromSatisfied(all);
     }
 
-    public static AllocationResult createCurrent(Scenario scenario, Task task) {
+    public static AllocationResult createNotRecurrentCurrent(Scenario scenario, Task task) {
         Set<ResourceAllocation<?>> resourceAllocations = task
-                .getSatisfiedResourceAllocations();
+                .getSatisfiedNotRecurrentResourceAllocations();
         List<ModifiedAllocation> modifiedAllocations = ModifiedAllocation.copy(
                 scenario, resourceAllocations);
         AggregateOfResourceAllocations aggregate = AggregateOfResourceAllocations

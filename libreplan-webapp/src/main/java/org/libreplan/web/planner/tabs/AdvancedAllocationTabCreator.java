@@ -78,7 +78,7 @@ public class AdvancedAllocationTabCreator {
                 Task task) {
             this.planningState = planningState;
             this.calculatedValue = task.getCalculatedValue();
-            this.allocationResult = AllocationResult.createCurrent(
+            this.allocationResult = AllocationResult.createNotRecurrentCurrent(
                     planningState.getCurrentScenario(), task);
             this.aggregate = this.allocationResult.getAggregate();
             this.task = task;

@@ -65,7 +65,7 @@ public class AdvancedAllocationTaskController extends GenericForwardComposer {
         this.context = context;
         this.planningState = planningState;
 
-        AllocationResult allocationResult = AllocationResult.createCurrent(
+        AllocationResult allocationResult = AllocationResult.createNotRecurrentCurrent(
                 planningState.getCurrentScenario(), task);
 
         if (allocationResult.getAggregate().isEmpty()) {

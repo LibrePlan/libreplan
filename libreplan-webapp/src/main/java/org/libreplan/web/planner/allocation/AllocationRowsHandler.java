@@ -391,7 +391,7 @@ public class AllocationRowsHandler {
     }
 
     public AllocationResult getInitialAllocation(Scenario currentScenario) {
-        return AllocationResult.createCurrent(currentScenario, task);
+        return AllocationResult.createNotRecurrentCurrent(currentScenario, task);
     }
 
 

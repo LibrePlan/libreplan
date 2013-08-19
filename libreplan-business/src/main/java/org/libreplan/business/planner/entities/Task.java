@@ -257,6 +257,18 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         return Collections.unmodifiableSet(result);
     }
 
+    public Set<ResourceAllocation<?>> getSatisfiedNotRecurrentResourceAllocations() {
+        Set<ResourceAllocation<?>> result = new HashSet<ResourceAllocation<?>>();
+
+        if (isLimiting()) {
+            result.addAll(getLimitingResourceAllocations());
+        } else {
+            result.addAll(ResourceAllocation
+                    .getSatisfied(getNotRecurrentResourceAllocations()));
+        }
+        return Collections.unmodifiableSet(result);
+    }
+
     public Set<ResourceAllocation<?>> getNotRecurrentResourceAllocations() {
         // FIXME not all
         return getAllResourceAllocations();
