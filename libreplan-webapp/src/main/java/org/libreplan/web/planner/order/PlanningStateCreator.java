@@ -59,7 +59,6 @@ import org.libreplan.business.planner.entities.GenericResourceAllocation;
 import org.libreplan.business.planner.entities.IMoneyCostCalculator;
 import org.libreplan.business.planner.entities.ResourceAllocation;
 import org.libreplan.business.planner.entities.ResourceAllocation.IVisitor;
-import org.libreplan.business.planner.entities.HoursCostCalculator;
 import org.libreplan.business.planner.entities.SpecificResourceAllocation;
 import org.libreplan.business.planner.entities.StretchesFunction;
 import org.libreplan.business.planner.entities.SubcontractorDeliverDate;
@@ -72,6 +71,7 @@ import org.libreplan.business.recurring.Recurrence;
 import org.libreplan.business.requirements.entities.CriterionRequirement;
 import org.libreplan.business.resources.daos.ICriterionDAO;
 import org.libreplan.business.resources.daos.IResourceDAO;
+import org.libreplan.business.resources.daos.IResourcesSearcher;
 import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.resources.entities.CriterionSatisfaction;
 import org.libreplan.business.resources.entities.IAssignmentsOnResourceCalculator;
@@ -165,6 +165,9 @@ public class PlanningStateCreator {
 
     @Autowired
     private ITaskSourceDAO taskSourceDAO;
+
+    @Autowired
+    private IResourcesSearcher resourcesSearcher;
 
     @Autowired
     private IEntitySequenceDAO entitySequenceDAO;
@@ -564,22 +567,27 @@ public class PlanningStateCreator {
             this.order = order;
         }
 
+        @Override
         public IAssignmentsOnResourceCalculator getAssignmentsCalculator() {
             return current.getAssignmentsCalculator();
         }
 
+        @Override
         public Scenario getCurrentScenario() {
             return current.getCurrentScenario();
         }
 
+        @Override
         public boolean isUsingTheOwnerScenario() {
             return current.isUsingTheOwnerScenario();
         }
 
+        @Override
         public void saveVersioningInfo() throws IllegalStateException {
             current.saveVersioningInfo();
 
         }
+        @Override
         public void afterCommit() {
             if (current instanceof ChangeScenarioInfoOnSave) {
                 current = new UsingOwnerScenario(current.getCurrentScenario(),
@@ -905,6 +913,10 @@ public class PlanningStateCreator {
             // ensuring no repeated instances of criterions
             reattachCriterions(getExistentCriterions(resources));
             addingNewlyCreated(resourceDAO);
+        }
+
+        public IResourcesSearcher getResourcesSearcher() {
+            return resourcesSearcher;
         }
 
         private Set<Criterion> getExistentCriterions(Set<Resource> resources) {

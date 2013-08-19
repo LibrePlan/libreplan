@@ -117,8 +117,14 @@ public class SpecificResourceAllocationTest {
         .andReturn(
                 Capacity.create(hours(hours))
                 .overAssignableWithoutLimit()).anyTimes();
-        expect(workerCalendar.getAvailability()).andReturn(
-                AvailabilityTimeLine.allValid()).anyTimes();
+        expect(workerCalendar.getAvailability()).andAnswer(
+                new IAnswer<AvailabilityTimeLine>() {
+
+                    @Override
+                    public AvailabilityTimeLine answer() throws Throwable {
+                        return AvailabilityTimeLine.allValid();
+                    }
+                }).anyTimes();
         replay(workerCalendar);
         return workerCalendar;
     }

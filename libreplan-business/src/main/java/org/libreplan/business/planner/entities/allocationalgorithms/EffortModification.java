@@ -140,6 +140,11 @@ public abstract class EffortModification extends AllocationModification {
     public static List<EffortModification> withNewResources(
             List<ResourceAllocation<?>> allocations, IResourcesSearcher searcher) {
         List<EffortModification> result = fromExistent(allocations, searcher);
+        return withNewResources(searcher, result);
+    }
+
+    public static List<EffortModification> withNewResources(
+            IResourcesSearcher searcher, List<EffortModification> result) {
         for (EffortModification each : result) {
             each.withNewResources(searcher);
         }

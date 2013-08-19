@@ -162,7 +162,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
                     Flagged<AllocationResult, Warnings> allocationResult = allocationRowsHandler
                             .doAllocation();
                     if (!allocationResult.isFlagged()) {
-                        allocationResult.getValue().applyTo(
+                        allocationResult.getValue().applyTo(searchModel,
                                 planningState.getCurrentScenario(),
                                 recurrenceInformation, task);
                     }
@@ -180,7 +180,8 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
                 @Override
                 public Flagged<Void, Void> execute() {
                     stepsBeforeDoingAllocation();
-                    modifiedAllocationResult.applyTo(planningState
+                    modifiedAllocationResult.applyTo(searchModel,
+                            planningState
                             .getCurrentScenario(), task);
 
                     return Flagged.justValue(null);
@@ -244,7 +245,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         planningState.reassociateResourcesWithSession();
         loadDerivedAllocations(this.task.getSatisfiedResourceAllocations());
         List<AllocationRow> initialRows = AllocationRow.toRows(
-                task.getNonLimitingResourceAllocations(), searchModel);
+                task.getNonLimitingAndNotRecurrentResourceAllocations(), searchModel);
         allocationRowsHandler = AllocationRowsHandler.create(task, initialRows,
                 createWorkerFinder());
         return allocationRowsHandler;

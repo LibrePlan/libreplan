@@ -284,7 +284,7 @@ public class GenericResourceAllocation extends
     }
 
     @Override
-    ResourceAllocation<GenericDayAssignment> createCopy(Scenario scenario) {
+    ResourceAllocation<GenericDayAssignment> createCopy() {
         GenericResourceAllocation allocation = create();
         allocation.criterions = new HashSet<Criterion>(criterions);
         return allocation;
@@ -360,8 +360,10 @@ public class GenericResourceAllocation extends
         if (origin != null) {
             List<GenericDayAssignment> originAssignments = origin
                     .getConsolidatedAssignments();
-            resetAssignmentsTo(GenericDayAssignment
-                    .copyToAssignmentsWithoutParent(originAssignments));
+            resetAllAllocationAssignmentsTo(
+                    GenericDayAssignment
+                            .copyToAssignmentsWithoutParent(originAssignments),
+                    getIntraDayStartDate(), getIntraDayEndDate());
         }
     }
 

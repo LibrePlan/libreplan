@@ -142,7 +142,8 @@ public class AdvancedAllocationTaskController extends GenericForwardComposer {
 
         @Override
         public void accepted(AggregateOfResourceAllocations aggregate) {
-            allocation.applyTo(planningState.getCurrentScenario(), task);
+            allocation.applyTo(planningState.getResourcesSearcher(),
+                    planningState.getCurrentScenario(), task);
             if (task.isManualAnyAllocation()) {
                 Task.convertOnStartInFixedDate(task);
             }

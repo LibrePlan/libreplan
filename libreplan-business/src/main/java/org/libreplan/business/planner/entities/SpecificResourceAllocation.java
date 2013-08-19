@@ -276,7 +276,7 @@ public class SpecificResourceAllocation extends
     }
 
     @Override
-    ResourceAllocation<SpecificDayAssignment> createCopy(Scenario scenario) {
+    ResourceAllocation<SpecificDayAssignment> createCopy() {
         SpecificResourceAllocation result = create(getTask());
         result.resource = getResource();
         return result;
@@ -392,8 +392,10 @@ public class SpecificResourceAllocation extends
         if (origin != null) {
             List<SpecificDayAssignment> originAssignments = origin
                     .getConsolidatedAssignments();
-            resetAssignmentsTo(SpecificDayAssignment
-                    .copyToAssignmentsWithoutParent(originAssignments));
+            resetAllAllocationAssignmentsTo(
+                    SpecificDayAssignment
+                    .copyToAssignmentsWithoutParent(originAssignments),
+                    getIntraDayStartDate(), getIntraDayEndDate());
         }
     }
 

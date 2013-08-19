@@ -233,6 +233,12 @@ public abstract class ResourcesPerDayModification extends
             IResourcesSearcher resourcesSearcher) {
         List<ResourcesPerDayModification> result = fromExistent(allocations,
                 resourcesSearcher);
+        return withNewResources(resourcesSearcher, result);
+    }
+
+    public static List<ResourcesPerDayModification> withNewResources(
+            IResourcesSearcher resourcesSearcher,
+            List<ResourcesPerDayModification> result) {
         for (ResourcesPerDayModification each : result) {
             each.withNewResources(resourcesSearcher);
         }

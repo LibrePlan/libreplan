@@ -37,6 +37,7 @@ import org.libreplan.business.planner.entities.SpecificResourceAllocation;
 import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.planner.entities.Task.ModifiedAllocation;
 import org.libreplan.business.recurring.RecurrenceInformation;
+import org.libreplan.business.resources.daos.IResourcesSearcher;
 import org.libreplan.business.scenarios.entities.Scenario;
 import org.libreplan.business.workingday.IntraDayDate;
 
@@ -129,14 +130,15 @@ public class AllocationResult {
         return calculatedValue;
     }
 
-    public void applyTo(Scenario scenario, Task task) {
-        applyTo(scenario, task.getRecurrenceInformation(), task);
+    public void applyTo(IResourcesSearcher searcher, Scenario scenario,
+            Task task) {
+        applyTo(searcher, scenario, task.getRecurrenceInformation(), task);
     }
 
-    public void applyTo(Scenario scenario,
+    public void applyTo(IResourcesSearcher searcher, Scenario scenario,
             RecurrenceInformation recurrenceInformation, Task task) {
         List<ModifiedAllocation> modified = getModified();
-        task.mergeAllocation(scenario, recurrenceInformation,
+        task.mergeAllocation(searcher, scenario, recurrenceInformation,
                 getIntraDayStart(), getIntraDayEnd(),
                 newWorkableDays,
                 getCalculatedValue(), getNew(), modified,

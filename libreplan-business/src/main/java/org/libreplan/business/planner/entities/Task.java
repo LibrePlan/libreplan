@@ -270,8 +270,12 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
     }
 
     public Set<ResourceAllocation<?>> getNotRecurrentResourceAllocations() {
-        // FIXME not all
-        return getAllResourceAllocations();
+        Set<ResourceAllocation<?>> result = new HashSet<ResourceAllocation<?>>(
+                resourceAllocations);
+        for (Recurrence each : recurrences) {
+            result.removeAll(each.getResourceAllocations());
+        }
+        return result;
     }
 
     @Override
@@ -289,9 +293,9 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         return Collections.unmodifiableSet(result);
     }
 
-    public Set<ResourceAllocation<?>> getNonLimitingResourceAllocations() {
+    public Set<ResourceAllocation<?>> getNonLimitingAndNotRecurrentResourceAllocations() {
         Set<ResourceAllocation<?>> result = new HashSet<ResourceAllocation<?>>();
-        for (ResourceAllocation<?> each: resourceAllocations) {
+        for (ResourceAllocation<?> each : getNotRecurrentResourceAllocations()) {
             if (!each.isLimiting()) {
                 result.add(each);
             }
@@ -459,7 +463,8 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
 
     }
 
-    public void mergeAllocation(Scenario scenario,
+    public void mergeAllocation(IResourcesSearcher searcher,
+            Scenario scenario,
             RecurrenceInformation recurrenceInformation,
             final IntraDayDate start,
             final IntraDayDate end, Integer newWorkableDays,
@@ -484,6 +489,318 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         }
         remove(toRemove);
         addAllocations(scenario, newAllocations);
+        new RecurrencesSynchronizer(scenario, searcher)
+                .synchronizeRecurrences();
+    }
+
+    private class RecurrencesSynchronizer {
+
+        private final List<Recurrence> somewhatConsolidated;
+
+        private final Recurrence partiallyConsolidated;
+
+        private final LocalDate firstAllocationReach;
+
+        private final List<ResourceAllocation<?>> notRecurrentResourceAllocations;
+
+        private final Scenario scenario;
+
+        private final IResourcesSearcher resourcesSearcher;
+
+        private final LocalDate consolidationReach;
+
+        public RecurrencesSynchronizer(Scenario scenario,
+                IResourcesSearcher resourcesSearcher) {
+            Validate.notNull(scenario);
+            Validate.notNull(resourcesSearcher);
+            this.scenario = scenario;
+            this.resourcesSearcher = resourcesSearcher;
+            this.somewhatConsolidated = onlyPartiallyOrCompletelyConsolidatedRecurrences();
+            this.consolidationReach = Recurrence
+                    .findMaxEndDate(somewhatConsolidated);
+            this.partiallyConsolidated = findPartiallyConsolidated();
+            this.notRecurrentResourceAllocations = new ArrayList<ResourceAllocation<?>>(
+                    getNotRecurrentResourceAllocations());
+            this.firstAllocationReach = getFirstAllocationReach(notRecurrentResourceAllocations);
+        }
+
+        private LocalDate getFirstAllocationReach(
+                List<ResourceAllocation<?>> notRecurrentResourceAllocations) {
+            AggregateOfResourceAllocations aggregate = AggregateOfResourceAllocations
+                    .createFromSatisfied(notRecurrentResourceAllocations);
+            if (aggregate.isEmpty()) {
+                return getAllocationDirection().getDateFromWhichToAllocate(
+                        Task.this).getDate();
+            }
+            if (isForward()) {
+                return aggregate.getEndAsLocalDate();
+            } else {
+                return aggregate.getStartAsLocalDate();
+            }
+        }
+
+        private List<Recurrence> onlyPartiallyOrCompletelyConsolidatedRecurrences() {
+            List<Recurrence> result = new ArrayList<Recurrence>();
+            if (!hasConsolidations()) {
+                return result;
+            }
+
+            LocalDate lastConsolidatedDay = consolidation
+                    .getConsolidatedUntil();
+            return Recurrence.findSomewhatConsolidated(recurrences,
+                    lastConsolidatedDay);
+        }
+
+        private Recurrence findPartiallyConsolidated() {
+            if (!hasConsolidations()) {
+                return null;
+            }
+            List<Recurrence> partiallyConsolidated = Recurrence
+                    .findPartiallyConsolidated(somewhatConsolidated,
+                            consolidation.getConsolidatedUntil());
+            if (partiallyConsolidated.isEmpty()) {
+                return null;
+            }
+            if (partiallyConsolidated.size() > 1) {
+                LOG.warn("there should only be one recurrence partially consolidated. There must be an overlap in the recurrences of "
+                        + Task.this + ". This shouldn't happen.");
+            }
+            return partiallyConsolidated.get(0);
+        }
+
+        void synchronizeRecurrences() {
+            clearPreviousNotConsolidatedRecurrences();
+
+            LocalDate reachInLastAllocation = firstAllocationReach;
+
+            List<LocalDate> recurrencesDates = recurrenceInformation
+                    .getRecurrences(getAllocationDirection(),
+                            isForward() ? getStartAsLocalDate()
+                                    : getEndAsLocalDate());
+            List<Recurrence> recurrencesToAdd = new ArrayList<Recurrence>();
+            for (LocalDate date : recurrencesDates) {
+                if (hasArrivedIntoConsolidatedZone(date)) {
+                    // we've entered the consolidated zone, no more
+                    // recurrences can be done
+                    break;
+                }
+                if (isForward() && date.compareTo(reachInLastAllocation) <= 0) {
+                    // this recurrence would overlap with the previous one, we
+                    // must try with the next
+                    continue;
+                }
+                if (isBackward() && date.compareTo(reachInLastAllocation) >= 0) {
+                    // this recurrence would overlap with the previous one, we
+                    // must try with the next
+                    continue;
+                }
+
+                Recurrence r = createRecurrenceAt(date);
+
+                if (hasArrivedIntoConsolidatedZone(r.getStart())) {
+                    // this recurrence enters the consolidated zone, it can't be
+                    // done.
+                    break;
+                }
+                recurrencesToAdd.add(r);
+                reachInLastAllocation = isForward() ? r.getEnd() : r.getStart();
+            }
+            addNewRecurrences(recurrencesToAdd);
+            updateTaskDates(recurrencesToAdd);
+        }
+
+        private void updateTaskDates(List<Recurrence> recurrencesAdded) {
+            if (recurrencesAdded.isEmpty()) {
+                return;
+            }
+            if (isForward()) {
+                IntraDayDate end = Recurrence
+                        .findMaxEndIntraDayDate(recurrencesAdded);
+                setIntraDayEndDate(end);
+            } else {
+                IntraDayDate start = Recurrence
+                        .findMinStartIntraDayDate(recurrencesAdded);
+                setIntraDayStartDate(start);
+            }
+        }
+
+        private boolean hasArrivedIntoConsolidatedZone(LocalDate date) {
+            if (isForward()) {
+                // when forward allocating the allocation distances from
+                // consolidated zone
+                return false;
+            }
+            return consolidationReach != null
+                    && date.compareTo(consolidationReach) <= 0;
+        }
+
+        private Recurrence createRecurrenceAt(LocalDate date) {
+            List<ResourceAllocation<?>> allocations = copyAllocations();
+            doAllocation(createInputs(date, allocations));
+            return new Recurrence(date, allocations);
+        }
+
+        private IAllocationInputs createInputs(LocalDate date,
+                final List<ResourceAllocation<?>> allocations) {
+            DurationBetweenDates durationBetweenDates = getDurationBetweenDates();
+            final IntraDayDate start;
+            final IntraDayDate end;
+            if (isForward()) {
+                start = IntraDayDate.startOfDay(date);
+                end = durationBetweenDates.fromStartToEnd(start);
+            } else {
+                end = IntraDayDate.startOfDay(date);
+                start = durationBetweenDates.fromEndToStart(end);
+            }
+            return new IAllocationInputs() {
+
+                @Override
+                public void newAllocationFinish(IntraDayDate finish) {
+                    // ignore
+                }
+
+                @Override
+                public EffortDuration getTotalEffortToAllocate() {
+                    EffortDuration result = EffortDuration.zero();
+                    for (ResourceAllocation<?> each : notRecurrentResourceAllocations) {
+                        result = result.plus(each
+                                .getIntendedNonConsolidatedEffort());
+                    }
+                    return result;
+                }
+
+                @Override
+                public ModificationsResult<ResourcesPerDayModification> getResourcesPerDayModified() {
+                    List<ResourcesPerDayModification> modifications = new ArrayList<ResourcesPerDayModification>();
+                    for (ResourceAllocation<?> each : allocations) {
+                        modifications.add(each.asResourcesPerDayModification());
+                    }
+                    List<ResourcesPerDayModification> withNewResources = ResourcesPerDayModification
+                            .withNewResources(
+                            resourcesSearcher, modifications);
+                    return ModificationsResult.create(allocations,
+                            withNewResources);
+                }
+
+                @Override
+                public ModificationsResult<EffortModification> getEffortsModified() {
+                    List<EffortModification> efforts = new ArrayList<EffortModification>();
+                    for (ResourceAllocation<?> a : allocations) {
+                        efforts.add(createEffortModificationFor(a));
+                    }
+
+                    List<EffortModification> withNewResources = EffortModification
+                            .withNewResources(resourcesSearcher, efforts);
+                    return ModificationsResult.create(allocations,
+                            withNewResources);
+                }
+
+                @Override
+                public Direction getDirection() {
+                    return lastAllocationDirection;
+                }
+
+                @Override
+                public IntraDayDate getAllocationStart() {
+                    return start;
+                }
+
+                @Override
+                public IntraDayDate getAllocationEnd() {
+                    return end;
+                }
+
+                @Override
+                public IntraDayDate allocateFrom() {
+                    if (isForward()) {
+                        return getAllocationStart();
+                    } else {
+                        return getAllocationEnd();
+                    }
+                }
+            };
+        }
+
+        private List<ResourceAllocation<?>> copyAllocations() {
+            List<ResourceAllocation<?>> result = new ArrayList<ResourceAllocation<?>>();
+            for (ResourceAllocation<?> each : notRecurrentResourceAllocations) {
+                result.add(each.copyWithoutAssignments());
+            }
+            return result;
+        }
+
+        private EffortModification createEffortModificationFor(
+                ResourceAllocation<?> allocation) {
+            return ResourceAllocation.visit(allocation,
+                    new ResourceAllocation.IVisitor<EffortModification>() {
+                        // FIXME when the recurrence is
+                        // partially consolidated, we don't
+                        // allocate all non consolidated effort
+                        @Override
+                        public EffortModification on(
+                                SpecificResourceAllocation s) {
+                            return EffortModification.create(s,
+                                    s.getIntendedTotalAssigment());
+                        }
+
+                        @Override
+                        public EffortModification on(GenericResourceAllocation g) {
+                            return EffortModification.create(g,
+                                    g.getIntendedTotalAssigment(),
+                                    Collections.<Resource> emptyList());
+                        }
+                    });
+        }
+
+        private boolean isForward() {
+            return !isBackward();
+        }
+
+        private boolean isBackward() {
+            return lastAllocationDirection == Direction.BACKWARD;
+        }
+
+        private void clearPreviousNotConsolidatedRecurrences() {
+            LocalDate lastConsolidatedDay;
+            if (!hasConsolidations()) {
+                lastConsolidatedDay = null;
+            } else {
+                lastConsolidatedDay = consolidation.getConsolidatedUntil();
+            }
+
+            List<Recurrence> toRemove;
+            if (lastConsolidatedDay == null) {
+                toRemove = new ArrayList<Recurrence>(recurrences);
+            } else {
+                toRemove = Recurrence.findWithoutConsolidations(recurrences,
+                        lastConsolidatedDay);
+            }
+            recurrences.removeAll(toRemove);
+            for (Recurrence each : toRemove) {
+                // FIXME Tupdate sumEffort thing?
+                Set<ResourceAllocation<?>> recurrenceAllocations = each
+                        .getResourceAllocations();
+                for (ResourceAllocation<?> r : recurrenceAllocations) {
+                    removeResourceAllocation(r);
+                }
+            }
+        }
+
+        private void addNewRecurrences(List<Recurrence> recurrencesToAdd) {
+            if (isForward()) {
+                recurrences.addAll(recurrencesToAdd);
+            } else {
+                // if backward the consolidated ones must be the last ones
+                recurrences.addAll(0, recurrencesToAdd);
+            }
+            for (Recurrence r : recurrencesToAdd) {
+                for (ResourceAllocation<?> each : r.getResourceAllocations()) {
+                    each.switchToScenario(scenario);
+                    addResourceAllocation(each);
+                }
+            }
+        }
+
     }
 
     private void remove(Collection<? extends ResourceAllocation<?>> toRemove) {
@@ -551,7 +868,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
 
     private static class WithPotentiallyNewResources {
 
-        protected final IResourcesSearcher searcher;
+        public final IResourcesSearcher searcher;
 
         public WithPotentiallyNewResources(IResourcesSearcher searcher) {
             Validate.notNull(searcher);
@@ -627,7 +944,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
 
             private void updateWorkableDays() {
                 assert calculatedValue != CalculatedValue.END_DATE;
-                workableDays = getWorkableDaysBetweenDates();
+                workableDays = getWorkableDaysBetweenDatesForNotRecurrent();
             }
 
         };
@@ -687,8 +1004,17 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
     }
 
     private DurationBetweenDates fromCurrentDuration() {
-        IntraDayDate start = getIntraDayStartDate();
-        IntraDayDate end = getIntraDayEndDate();
+        AggregateOfResourceAllocations notRecurrent = AggregateOfResourceAllocations
+                .createFromSatisfied(getNotRecurrentResourceAllocations());
+        final IntraDayDate start;
+        final IntraDayDate end;
+        if (notRecurrent.isEmpty()) {
+            start = getIntraDayStartDate();
+            end = getIntraDayEndDate();
+        } else {
+            start = notRecurrent.getStart();
+            end = notRecurrent.getEnd();
+        }
         int calculatedWorkableDays = getWorkableDaysFrom(start.roundUp(),
                 end.roundDown());
         EffortDuration extraDuration = getExtraDurationAtStart(start).plus(
@@ -876,8 +1202,8 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
             if (isLimiting()) {
                 return;
             }
-            List<ModifiedAllocation> copied = ModifiedAllocation.copy(onScenario,
-                    getResourceAlloations());
+            List<ModifiedAllocation> copied = ModifiedAllocation.copy(
+                    onScenario, getNotRecurrentResourceAllocations());
             List<ResourceAllocation<?>> toBeModified = ModifiedAllocation
                     .modified(copied);
             if (toBeModified.isEmpty()) {
@@ -889,7 +1215,8 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
             updateDerived(copied);
 
             List<ResourceAllocation<?>> newAllocations = emptyList(), removedAllocations = emptyList();
-            mergeAllocation(onScenario, getRecurrenceInformation(),
+            mergeAllocation(strategy.searcher, onScenario,
+                    getRecurrenceInformation(),
                     getIntraDayStartDate(),
                     getIntraDayEndDate(), workableDays, calculatedValue,
                     newAllocations, copied, removedAllocations);
@@ -1229,7 +1556,12 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
 
     public Integer getWorkableDays() {
         if (workableDays == null) {
-            return getWorkableDaysBetweenDates();
+            if (hasResourceAllocations()) {
+                return getWorkableDaysBetweenDatesForNotRecurrent();
+            } else {
+                return getWorkableDaysBetweenDates();
+            }
+
         }
         return workableDays;
     }
@@ -1247,6 +1579,13 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
     private Integer getWorkableDaysBetweenDates() {
         LocalDate end = getIntraDayEndDate().asExclusiveEnd();
         return getWorkableDaysUntil(end);
+    }
+
+    private Integer getWorkableDaysBetweenDatesForNotRecurrent() {
+        IntraDayDate start = getStartForNotRecurrent();
+        IntraDayDate endForNotRecurrent = getEndForNotRecurrent();
+        return getWorkableDaysFrom(start.getDate(),
+                endForNotRecurrent.asExclusiveEnd());
     }
 
     public Integer getWorkableDaysUntil(LocalDate end) {
@@ -1446,6 +1785,5 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
     public boolean isAnyTaskWithConstraint(PositionConstraintType type) {
         return getPositionConstraint().getConstraintType().equals(type);
     }
-
 
 }

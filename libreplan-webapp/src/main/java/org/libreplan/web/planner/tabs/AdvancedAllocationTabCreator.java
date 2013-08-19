@@ -133,7 +133,8 @@ public class AdvancedAllocationTabCreator {
         public void accepted(AggregateOfResourceAllocations modifiedAllocations) {
             Validate
                     .isTrue(allocationResult.getAggregate() == modifiedAllocations);
-            allocationResult.applyTo(planningState.getCurrentScenario(), task);
+            allocationResult.applyTo(planningState.getResourcesSearcher(),
+                    planningState.getCurrentScenario(), task);
             if (task.isManualAnyAllocation()) {
                 Task.convertOnStartInFixedDate(task);
             }

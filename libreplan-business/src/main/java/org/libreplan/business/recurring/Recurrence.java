@@ -41,6 +41,43 @@ import org.libreplan.business.workingday.IntraDayDate;
  */
 public class Recurrence extends BaseEntity {
 
+    @SuppressWarnings("unchecked")
+    public static LocalDate findMaxEndDate(
+            Collection<? extends Recurrence> recurrences) {
+        if (recurrences.isEmpty()) {
+            return null;
+        }
+        List<LocalDate> dates = new ArrayList<LocalDate>();
+        for (Recurrence each : recurrences) {
+            dates.add(each.getEnd());
+        }
+        return Collections.max(dates);
+    }
+
+    public static IntraDayDate findMaxEndIntraDayDate(
+            Collection<? extends Recurrence> recurrences) {
+        if (recurrences.isEmpty()) {
+            return null;
+        }
+        List<IntraDayDate> dates = new ArrayList<IntraDayDate>();
+        for (Recurrence each : recurrences) {
+            dates.add(each.getIntraDayDateEnd());
+        }
+        return Collections.max(dates);
+    }
+
+    public static IntraDayDate findMinStartIntraDayDate(
+            Collection<? extends Recurrence> recurrences) {
+        if (recurrences.isEmpty()) {
+            return null;
+        }
+        List<IntraDayDate> dates = new ArrayList<IntraDayDate>();
+        for (Recurrence each : recurrences) {
+            dates.add(each.getIntraDayDateStart());
+        }
+        return Collections.max(dates);
+    }
+
 
     private LocalDate date;
 
@@ -103,12 +140,58 @@ public class Recurrence extends BaseEntity {
         if (getSatisfied().isEmpty()) {
             return date;
         }
-        return Collections.max(asList(date, getSatisfied().getStart()));
+        return Collections.min(asList(date, getSatisfied().getStart()));
     }
 
     @NotNull
     private LocalDate getDate() {
         return date;
+    }
+
+    public static List<Recurrence> findSomewhatConsolidated(
+            Collection<? extends Recurrence> recurrences,
+            LocalDate lastConsolidatedDay) {
+        List<Recurrence> result = new ArrayList<Recurrence>();
+        for (Recurrence each : recurrences) {
+            if (each.isPartiallyOrTotallyConsolidated(lastConsolidatedDay)) {
+                result.add(each);
+            }
+        }
+        return result;
+    }
+
+    public static List<Recurrence> findPartiallyConsolidated(
+            Collection<? extends Recurrence> recurrences,
+            LocalDate lastConsolidatedDay) {
+        List<Recurrence> result = new ArrayList<Recurrence>();
+        for (Recurrence each : recurrences) {
+            if (each.isPartiallyConsolidated(lastConsolidatedDay)) {
+                result.add(each);
+            }
+        }
+        return result;
+    }
+
+    public static List<Recurrence> findWithoutConsolidations(
+            Collection<? extends Recurrence> recurrences,
+            LocalDate lastConsolidatedDay) {
+        List<Recurrence> result = new ArrayList<Recurrence>();
+        for (Recurrence each : recurrences) {
+            if (!each.isPartiallyOrTotallyConsolidated(lastConsolidatedDay)) {
+                result.add(each);
+            }
+        }
+        return result;
+    }
+
+    public boolean isPartiallyOrTotallyConsolidated(
+            LocalDate lastConsolidatedDay) {
+        return getStart().compareTo(lastConsolidatedDay) <= 0;
+    }
+
+    private boolean isPartiallyConsolidated(LocalDate lastConsolidatedDay) {
+        return isPartiallyOrTotallyConsolidated(lastConsolidatedDay)
+                && lastConsolidatedDay.compareTo(getEnd()) < 0;
     }
 
 }

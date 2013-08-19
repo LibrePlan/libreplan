@@ -376,7 +376,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         }
 
         public IntraDayDate untilAllocating(Direction direction,
-                IntraDayDate dateFromWhichToAllocate,
+                final IntraDayDate dateFromWhichToAllocate,
                 EffortDuration toAllocate, final INotFulfilledReceiver receiver) {
             UntilFillingHoursAllocator allocator = new UntilFillingHoursAllocator(
                     direction, dateFromWhichToAllocate, allocations) {
@@ -386,16 +386,15 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                         ResourceAllocation<T> allocation,
                         IntraDayDate resultDate,
                         ResourcesPerDay resourcesPerDay, List<T> dayAssignments) {
-                    Task task = AllocationsSpecified.this.task;
                     allocation.setIntendedResourcesPerDay(resourcesPerDay);
                     if (isForwardScheduling()) {
                         allocation.resetAllAllocationAssignmentsTo(
-                                dayAssignments,
-                                task.getIntraDayStartDate(), resultDate);
+                                dayAssignments, dateFromWhichToAllocate,
+                                resultDate);
                     } else {
                         allocation.resetAllAllocationAssignmentsTo(
-                                dayAssignments,
-                                resultDate, task.getIntraDayEndDate());
+                                dayAssignments, resultDate,
+                                dateFromWhichToAllocate);
                     }
                     allocation.updateResourcesPerDay();
                 }
@@ -439,6 +438,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                 // allocation could not be done
                 return direction == Direction.FORWARD ? task
                         .getIntraDayEndDate() : task.getIntraDayStartDate();
+
             }
             return result;
         }
@@ -1131,12 +1131,6 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     protected abstract void copyAssignments(Scenario from, Scenario to);
 
-    protected void resetAssignmentsTo(List<T> assignments) {
-        resetAllAllocationAssignmentsTo(assignments,
-                task.getIntraDayStartDate(),
-                task.getIntraDayEndDate());
-    }
-
     protected void allocateTheWholeAllocation(AllocationInterval interval,
             List<T> assignments) {
         resetAllAllocationAssignmentsTo(assignments,
@@ -1350,7 +1344,8 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     }
 
     public void removeLimitingDayAssignments() {
-        resetAssignmentsTo(Collections.<T> emptyList());
+        resetAllAllocationAssignmentsTo(Collections.<T> emptyList(),
+                getIntraDayStartDate(), getIntraDayEndDate());
     }
 
     @SuppressWarnings("unchecked")
@@ -1450,15 +1445,10 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     public ResourceAllocation<T> copy(Scenario scenario) {
         Validate.notNull(scenario);
-        ResourceAllocation<T> copy = createCopy(scenario);
+        ResourceAllocation<T> copy = copyWithoutAssignments();
         copy.assignmentsState = copy.toTransientStateWithInitial(
                 getUnorderedFor(scenario), getIntraDayStartDateFor(scenario),
                 getIntraDayEndFor(scenario));
-        copy.resourcesPerDay = resourcesPerDay;
-        copy.intendedTotalAssignment = intendedTotalAssignment;
-        copy.task = task;
-        copy.assignmentFunction = assignmentFunction;
-        copy.intendedResourcesPerDay = intendedResourcesPerDay;
         return copy;
     }
 
@@ -1469,6 +1459,18 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         result.setIntraDayStart(start);
         result.setIntraDayEnd(end);
         return result;
+    }
+
+    public ResourceAllocation<T> copyWithoutAssignments() {
+        ResourceAllocation<T> copy = createCopy();
+        copy.resourcesPerDay = resourcesPerDay;
+        copy.intendedTotalAssignment = intendedTotalAssignment;
+        copy.intendedNonConsolidatedEffort = intendedNonConsolidatedEffort;
+        copy.task = task;
+        copy.assignmentFunction = assignmentFunction;
+        copy.intendedResourcesPerDay = intendedResourcesPerDay;
+        copy.assignmentsState = copy.buildInitialTransientState();
+        return copy;
     }
 
     private Set<T> getUnorderedFor(Scenario scenario) {
@@ -1495,7 +1497,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         return container.getIntraDayEnd();
     }
 
-    abstract ResourceAllocation<T> createCopy(Scenario scenario);
+    abstract ResourceAllocation<T> createCopy();
 
     public AssignmentFunction getAssignmentFunction() {
         return assignmentFunction;
