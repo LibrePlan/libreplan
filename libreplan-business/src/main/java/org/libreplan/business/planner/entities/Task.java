@@ -586,7 +586,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
 
             private void doReassignment(Direction direction) {
                 reassign(scenario, direction, new WithPotentiallyNewResources(
-                        searcher));
+                        searcher), getIntraDayStartDate(), getIntraDayEndDate());
             }
 
             @Override
@@ -654,6 +654,24 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
     private DurationBetweenDates fromFixedDuration(int fixedNumberOfWorkableDays) {
         return new DurationBetweenDates(fixedNumberOfWorkableDays,
                 EffortDuration.zero());
+    }
+
+    public IntraDayDate getStartForNotRecurrent() {
+        AggregateOfResourceAllocations notRecurrent = AggregateOfResourceAllocations
+                .createFromSatisfied(getNotRecurrentResourceAllocations());
+        if (notRecurrent.isEmpty()) {
+            return getIntraDayStartDate();
+        }
+        return notRecurrent.getStart();
+    }
+
+    public IntraDayDate getEndForNotRecurrent() {
+        AggregateOfResourceAllocations notRecurrent = AggregateOfResourceAllocations
+                .createFromSatisfied(getNotRecurrentResourceAllocations());
+        if (notRecurrent.isEmpty()) {
+            return getIntraDayEndDate();
+        }
+        return notRecurrent.getEnd();
     }
 
     private DurationBetweenDates fromCurrentDuration() {
@@ -818,11 +836,29 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
     public void reassignAllocationsWithNewResources(Scenario scenario,
             IResourcesSearcher searcher) {
         reassign(scenario, getAllocationDirection(),
-                new WithPotentiallyNewResources(searcher));
+                new WithPotentiallyNewResources(searcher), null, null);
     }
 
+    /**
+     *
+     * @param onScenario
+     *            Scenario on which the Task must be reassigned.
+     * @param direction
+     *            The direction on which the allocation is done.
+     * @param strategy
+     *            The resources search strategy. For
+     *            {@link GenericResourceAllocation generic allocations} new
+     *            resources might be searched for.
+     * @param start
+     *            It can be <code>null</code>. If <code>null</code>, the current
+     *            start is used. Otherwise the allocation is done at the
+     *            specified start. This is needed for when the task is moved.
+     * @param end
+     *            The same semantics as start, but for end date.
+     */
     private void reassign(Scenario onScenario, Direction direction,
-            WithPotentiallyNewResources strategy) {
+            WithPotentiallyNewResources strategy, IntraDayDate start,
+            IntraDayDate end) {
         try {
             this.lastAllocationDirection = direction;
             if (isLimiting()) {
@@ -836,7 +872,8 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
                 return;
             }
             setCustomAssignedEffortForResource(copied);
-            doAllocation(new InputDataBasedOnTask(strategy, toBeModified));
+            doAllocation(new InputDataBasedOnTask(strategy, toBeModified,
+                    start, end));
             updateDerived(copied);
 
             List<ResourceAllocation<?>> newAllocations = emptyList(), removedAllocations = emptyList();
@@ -891,21 +928,26 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
 
         private WithPotentiallyNewResources strategy;
         private List<ResourceAllocation<?>> toBeModified;
+        private IntraDayDate start;
+        private IntraDayDate end;
 
         public InputDataBasedOnTask(WithPotentiallyNewResources strategy,
-                List<ResourceAllocation<?>> toBeModified) {
+                List<ResourceAllocation<?>> toBeModified, IntraDayDate start,
+                IntraDayDate end) {
             this.strategy = strategy;
             this.toBeModified = toBeModified;
+            this.start = start != null ? start : getStartForNotRecurrent();
+            this.end = end != null ? end : getEndForNotRecurrent();
         }
 
         @Override
         public IntraDayDate getAllocationStart() {
-            return getIntraDayStartDate();
+            return start;
         }
 
         @Override
         public IntraDayDate getAllocationEnd() {
-            return getIntraDayEndDate();
+            return end;
         }
 
         @Override
