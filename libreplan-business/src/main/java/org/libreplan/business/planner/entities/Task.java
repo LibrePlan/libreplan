@@ -638,6 +638,12 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
             List<ResourceAllocation<?>> allocations = copyAllocations();
             setCustomAssignedEffortForResourceFor(allocations);
             doAllocation(createInputs(date, allocations));
+
+            int i = 0;
+            for (ResourceAllocation<?> each : allocations) {
+                updateDerived(notRecurrentResourceAllocations.get(i), each);
+                i++;
+            }
             return new Recurrence(date, allocations);
         }
 
@@ -1412,10 +1418,16 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
     private void updateDerived(List<ModifiedAllocation> allocations) {
         for (ModifiedAllocation each : allocations) {
             ResourceAllocation<?> original = each.getOriginal();
-            if (!original.getDerivedAllocations().isEmpty()) {
-                IWorkerFinder workersFinder = createFromExistentDerivedAllocationsFinder(original);
-                each.getModification().createDerived(workersFinder);
-            }
+            ResourceAllocation<?> modification = each.getModification();
+            updateDerived(original, modification);
+        }
+    }
+
+    private void updateDerived(ResourceAllocation<?> original,
+            ResourceAllocation<?> modification) {
+        if (!original.getDerivedAllocations().isEmpty()) {
+            IWorkerFinder workersFinder = createFromExistentDerivedAllocationsFinder(original);
+            modification.createDerived(workersFinder);
         }
     }
 
