@@ -2,6 +2,10 @@ function(out){
     out.push('<div ',this.domAttrs_(),
             ' z.type="ganttz.task.Task" idTask="', this.id,'"',
             ' class="box" >');
+    
+        for(var w = this.firstChild; w; w = w.nextSibling)
+            w.redraw(out);
+
 
         out.push('<div class="task-labels" ',
                 this.parent._labelsHidden?'>':'style="display:block;">',

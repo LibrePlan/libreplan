@@ -126,6 +126,10 @@ public class Recurrence extends BaseEntity {
         return Collections.max(asList(date, getSatisfied().getEnd()));
     }
 
+    public boolean isAtLeastPartlySatisfied() {
+        return !getSatisfied().isEmpty();
+    }
+
     @SuppressWarnings("unchecked")
     public LocalDate getStart() {
         if (getSatisfied().isEmpty()) {

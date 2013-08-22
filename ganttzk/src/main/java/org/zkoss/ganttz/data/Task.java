@@ -577,4 +577,13 @@ public abstract class Task implements ITaskFundamentalProperties {
     public String getProjectCode() {
         return fundamentalProperties.getProjectCode();
     }
+
+    public boolean hasRecurrences() {
+        return !getRecurrences().isEmpty();
+    }
+
+    @Override
+    public List<GanttDate> getRecurrences() {
+        return fundamentalProperties.getRecurrences();
+    }
 }

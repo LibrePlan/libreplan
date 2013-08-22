@@ -24,7 +24,10 @@ package org.zkoss.ganttz;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -40,7 +43,6 @@ import org.zkoss.ganttz.data.ITaskFundamentalProperties.IUpdatablePosition;
 import org.zkoss.ganttz.data.Milestone;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.data.Task.IReloadResourcesTextRequested;
-import org.zkoss.ganttz.data.TaskContainer;
 import org.zkoss.ganttz.data.constraint.Constraint;
 import org.zkoss.ganttz.data.constraint.Constraint.IConstraintViolationListener;
 import org.zkoss.ganttz.util.WeakReferencedListeners.Mode;
@@ -85,7 +87,7 @@ public class TaskComponent extends Div implements AfterCompose {
             boolean isTopLevel) {
         final TaskComponent result;
         if (task.isContainer()) {
-            result = TaskContainerComponent.asTask((TaskContainer) task,
+            result = TaskContainerComponent.asTask(task,
                     disabilityConfiguration);
         } else if (task instanceof Milestone) {
             result = new MilestoneComponent(task, disabilityConfiguration);
@@ -109,6 +111,7 @@ public class TaskComponent extends Div implements AfterCompose {
         setContext("idContextMenuTaskAssignment");
         this.task = task;
         setClass(calculateCSSClass());
+        createRecurrences();
         setId(UUID.randomUUID().toString());
         this.disabilityConfiguration = disabilityConfiguration;
         taskViolationListener = Constraint
@@ -222,7 +225,10 @@ public class TaskComponent extends Div implements AfterCompose {
                 cssClass += " fixed";
             }
         }
-        cssClass += " " + task.getAssignedStatus();
+        if (!task.hasRecurrences()) {
+            // if has recurrences the assigned status goes into the boxes inside
+            cssClass += " " + task.getAssignedStatus();
+        }
         if (task.isLimiting()) {
             cssClass += task.isLimitingAndHasDayAssignments() ? " limiting-assigned "
                     : " limiting-unassigned ";
@@ -311,6 +317,71 @@ public class TaskComponent extends Div implements AfterCompose {
                 .addCriticalPathPropertyChangeListener(criticalPathPropertyListener);
 
         updateClass();
+    }
+
+    private List<Div> currentRecurrencesBoxes = new ArrayList<Div>();
+
+    private void createRecurrences() {
+        List<GanttDate> recurrences = task.getRecurrences();
+        int n = recurrences.size() / 2;
+        for (int i = 0; i < n; i++) {
+            this.currentRecurrencesBoxes.add(createRecurrenceBox());
+        }
+        getChildren().addAll(currentRecurrencesBoxes);
+    }
+
+    private Div createRecurrenceBox() {
+        Div d = new Div();
+        d.setHeight(HEIGHT_PER_TASK + "px");
+        d.setStyle("position: absolute;");
+        d.setTop("0px");
+        return d;
+    }
+
+    private void updateRecurrences() {
+        List<GanttDate> recurrences = task.getRecurrences();
+        assert recurrences.size() % 2 == 0;
+
+        int newRecurrencesSize = recurrences.size() / 2;
+        int recurrencesToAdd = newRecurrencesSize
+                - this.currentRecurrencesBoxes.size();
+        int recurrencesToRemove = this.currentRecurrencesBoxes.size()
+                - newRecurrencesSize;
+
+        for (int i = 0; i < recurrencesToAdd; i++) {
+            Div d = createRecurrenceBox();
+            this.currentRecurrencesBoxes.add(d);
+            getChildren().add(d);
+        }
+
+        for (int i = 0; i < recurrencesToRemove; i++) {
+            Div removed = this.currentRecurrencesBoxes
+                    .remove(currentRecurrencesBoxes.size() - 1);
+            removeChild(removed);
+        }
+
+        assert newRecurrencesSize == this.currentRecurrencesBoxes.size();
+
+        int taskBeginPixels = task.getBeginDate().toPixels(getMapper());
+
+        Iterator<GanttDate> iter = recurrences.iterator();
+        Iterator<Div> currentRecurrences = currentRecurrencesBoxes.iterator();
+        while (iter.hasNext()) {
+            GanttDate start = iter.next();
+            GanttDate end = iter.next();
+
+            int startPixels = start.toPixels(getMapper());
+            int endPixels = end.toPixels(getMapper());
+
+            Div d = currentRecurrences.next();
+            d.setClass("recurrence-box " + task.getAssignedStatus());
+            d.setLeft(startPixels - taskBeginPixels + "px");
+            d.setWidth((endPixels - startPixels) + "px");
+        }
+
+        if (recurrencesToAdd > 0 || recurrencesToRemove > 0) {
+            invalidate();
+        }
     }
 
     /**
@@ -471,6 +542,7 @@ public class TaskComponent extends Div implements AfterCompose {
         updateDeadline();
         updateCompletionIfPossible();
         updateClass();
+        updateRecurrences();
     }
 
     private void updateWidth() {

@@ -1177,6 +1177,33 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         return lastAllocationDirection;
     }
 
+    public List<IntraDayDate> getRecurrencesDates() {
+        List<Recurrence> recurrences = getRecurrences();
+        if (recurrences.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<IntraDayDate> result = new ArrayList<IntraDayDate>();
+
+        AggregateOfResourceAllocations aggregate = AggregateOfResourceAllocations
+                .createFromSatisfied(getNotRecurrentResourceAllocations());
+        if (!aggregate.isEmpty()) {
+            result.add(aggregate.getStart());
+            result.add(aggregate.getEnd());
+        }
+
+        if (lastAllocationDirection == Direction.BACKWARD) {
+            Collections.reverse(recurrences);
+        }
+        for (Recurrence each : recurrences) {
+            if (each.isAtLeastPartlySatisfied()) {
+                result.add(each.getIntraDayDateStart());
+                result.add(each.getIntraDayDateEnd());
+            }
+        }
+        return result;
+    }
+
     public void reassignAllocationsWithNewResources(Scenario scenario,
             IResourcesSearcher searcher) {
         reassign(scenario, getAllocationDirection(),

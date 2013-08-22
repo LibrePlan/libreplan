@@ -22,6 +22,7 @@
 package org.zkoss.ganttz.data;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -331,6 +332,11 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
     @Override
     public String getProjectCode() {
         return "";
+    }
+
+    @Override
+    public List<GanttDate> getRecurrences() {
+        return new ArrayList<GanttDate>();
     }
 
 }

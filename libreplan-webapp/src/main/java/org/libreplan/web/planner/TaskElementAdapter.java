@@ -1103,6 +1103,20 @@ _(
                 return null;
             }
 
+            @Override
+            public List<GanttDate> getRecurrences() {
+                if (taskElement instanceof Task) {
+                    Task t = (Task) taskElement;
+                    List<IntraDayDate> recurrences = t.getRecurrencesDates();
+                    List<GanttDate> result = new ArrayList<GanttDate>();
+                    for (IntraDayDate each : recurrences) {
+                        result.add(toGantt(each));
+                    }
+                    return result;
+                }
+                return Collections.emptyList();
+            }
+
         }
 
         @Override

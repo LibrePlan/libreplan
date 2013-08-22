@@ -60,6 +60,16 @@ public interface ITaskFundamentalProperties {
     public GanttDate getBeginDate();
 
     /**
+     * It returns the start and end date for each recurrence of the task. There
+     * might not be recurrences, in this case an empty list is returned. The
+     * returned list will have an even length. The odd positions will be
+     * beginnings and the even positions the ends.
+     *
+     * @return the dates of the recurrences.
+     */
+    List<GanttDate> getRecurrences();
+
+    /**
      * The deadline associated to the task. It can return null if has no
      * deadline associated
      */
