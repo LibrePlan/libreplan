@@ -569,6 +569,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         }
 
         void synchronizeRecurrences() {
+            recurrencesDatesCached = null;
             clearPreviousNotConsolidatedRecurrences();
 
             LocalDate reachInLastAllocation = firstAllocationReach;
@@ -1177,7 +1178,13 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         return lastAllocationDirection;
     }
 
+    private List<IntraDayDate> recurrencesDatesCached = null;
+
     public List<IntraDayDate> getRecurrencesDates() {
+        if (recurrencesDatesCached != null) {
+            return recurrencesDatesCached;
+        }
+
         List<Recurrence> recurrences = getRecurrences();
         if (recurrences.isEmpty()) {
             return Collections.emptyList();
@@ -1201,7 +1208,8 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
                 result.add(each.getIntraDayDateEnd());
             }
         }
-        return result;
+
+        return recurrencesDatesCached = result;
     }
 
     public void reassignAllocationsWithNewResources(Scenario scenario,
