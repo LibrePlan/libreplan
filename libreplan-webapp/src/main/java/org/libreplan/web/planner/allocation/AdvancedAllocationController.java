@@ -138,8 +138,8 @@ public class AdvancedAllocationController extends GenericForwardComposer {
             return task.getName();
         }
 
-        public void accepted(AggregateOfResourceAllocations modifiedAllocations) {
-            resultReceiver.accepted(modifiedAllocations);
+        public void accepted() {
+            resultReceiver.accepted();
         }
 
         public void cancel() {
@@ -208,7 +208,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     public interface IAdvanceAllocationResultReceiver {
         public Restriction createRestriction();
 
-        public void accepted(AggregateOfResourceAllocations modifiedAllocations);
+        public void accepted();
 
         public void cancel();
     }
@@ -701,7 +701,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         }
         back.goBack();
         for (AllocationInput allocationInput : allocationInputs) {
-            allocationInput.accepted(allocationInput.getAggregate());
+            allocationInput.accepted();
         }
     }
 
@@ -715,7 +715,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
             }
         }
         for (AllocationInput allocationInput : allocationInputs) {
-            allocationInput.accepted(allocationInput.getAggregate());
+            allocationInput.accepted();
         }
         try {
             Messagebox.show(_("Changes applied"), _("Information"),

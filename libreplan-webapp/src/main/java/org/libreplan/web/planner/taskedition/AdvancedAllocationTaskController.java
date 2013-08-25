@@ -23,7 +23,6 @@ import static org.libreplan.web.I18nHelper._;
 
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
-import org.libreplan.business.planner.entities.AggregateOfResourceAllocations;
 import org.libreplan.business.planner.entities.CalculatedValue;
 import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.planner.entities.TaskElement;
@@ -141,7 +140,7 @@ public class AdvancedAllocationTaskController extends GenericForwardComposer {
         }
 
         @Override
-        public void accepted(AggregateOfResourceAllocations aggregate) {
+        public void accepted() {
             allocation.applyTo(planningState.getResourcesSearcher(),
                     planningState.getCurrentScenario(), task);
             if (task.isManualAnyAllocation()) {

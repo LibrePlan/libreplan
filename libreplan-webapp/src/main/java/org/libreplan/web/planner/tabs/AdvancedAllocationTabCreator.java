@@ -130,9 +130,7 @@ public class AdvancedAllocationTabCreator {
         }
 
         @Override
-        public void accepted(AggregateOfResourceAllocations modifiedAllocations) {
-            Validate
-                    .isTrue(allocationResult.getAggregate() == modifiedAllocations);
+        public void accepted() {
             allocationResult.applyTo(planningState.getResourcesSearcher(),
                     planningState.getCurrentScenario(), task);
             if (task.isManualAnyAllocation()) {
