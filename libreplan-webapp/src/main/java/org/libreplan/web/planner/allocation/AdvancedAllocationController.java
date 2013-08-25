@@ -138,8 +138,16 @@ public class AdvancedAllocationController extends GenericForwardComposer {
             return task.getName();
         }
 
-        IAdvanceAllocationResultReceiver getResultReceiver() {
-            return resultReceiver;
+        public void accepted(AggregateOfResourceAllocations modifiedAllocations) {
+            resultReceiver.accepted(modifiedAllocations);
+        }
+
+        public void cancel() {
+            resultReceiver.cancel();
+        }
+
+        public Restriction createRestriction() {
+            return resultReceiver.createRestriction();
         }
 
         Interval calculateInterval() {
@@ -685,8 +693,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     public void onClick$acceptButton() {
         for (AllocationInput allocationInput : allocationInputs) {
             EffortDuration totalEffort = allocationInput.getTotalEffort();
-            Restriction restriction = allocationInput.getResultReceiver()
-                    .createRestriction();
+            Restriction restriction = allocationInput.createRestriction();
             if (restriction.isInvalidTotalEffort(totalEffort)) {
                 Row groupingRow = groupingRows.get(allocationInput);
                 restriction.markInvalidEffort(groupingRow, totalEffort);
@@ -694,24 +701,21 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         }
         back.goBack();
         for (AllocationInput allocationInput : allocationInputs) {
-            allocationInput.getResultReceiver().accepted(allocationInput
-                    .getAggregate());
+            allocationInput.accepted(allocationInput.getAggregate());
         }
     }
 
     public void onClick$saveButton() {
         for (AllocationInput allocationInput : allocationInputs) {
             EffortDuration totalEffort = allocationInput.getTotalEffort();
-            Restriction restriction = allocationInput.getResultReceiver()
-                    .createRestriction();
+            Restriction restriction = allocationInput.createRestriction();
             if (restriction.isInvalidTotalEffort(totalEffort)) {
                 Row groupingRow = groupingRows.get(allocationInput);
                 restriction.markInvalidEffort(groupingRow, totalEffort);
             }
         }
         for (AllocationInput allocationInput : allocationInputs) {
-            allocationInput.getResultReceiver().accepted(
-                    allocationInput.getAggregate());
+            allocationInput.accepted(allocationInput.getAggregate());
         }
         try {
             Messagebox.show(_("Changes applied"), _("Information"),
@@ -724,7 +728,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     public void onClick$cancelButton() {
         back.goBack();
         for (AllocationInput allocationInput : allocationInputs) {
-            allocationInput.getResultReceiver().cancel();
+            allocationInput.cancel();
         }
     }
 
@@ -876,7 +880,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         for (SpecificResourceAllocation specificResourceAllocation : allocationInput.getAggregate()
                 .getSpecificAllocations()) {
             result.add(createSpecificRow(specificResourceAllocation,
-                    allocationInput.getResultReceiver().createRestriction(), allocationInput.task));
+                    allocationInput.createRestriction(), allocationInput.task));
         }
         return result;
     }
@@ -897,7 +901,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         for (GenericResourceAllocation genericResourceAllocation : allocationInput.getAggregate()
                 .getGenericAllocations()) {
             result.add(buildGenericRow(genericResourceAllocation,
-                    allocationInput.getResultReceiver().createRestriction(), allocationInput.task));
+                    allocationInput.createRestriction(), allocationInput.task));
         }
         return result;
     }
@@ -912,8 +916,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     }
 
     private Row buildGroupingRow(AllocationInput allocationInput) {
-        Restriction restriction = allocationInput.getResultReceiver()
-                .createRestriction();
+        Restriction restriction = allocationInput.createRestriction();
         String taskName = allocationInput.getTaskName();
         Row groupingRow = Row.createRow(messages, restriction, taskName, 0,
                 allocationInput.getAllocationsSortedByStartDate(), false, allocationInput.task);
