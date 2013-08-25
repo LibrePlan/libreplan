@@ -195,7 +195,7 @@ public class FormBinder {
         this.resourceAllocationModel = resourceAllocationModel;
         this.lastAllocation = this.allocationRowsHandler
                 .getInitialAllocation(currentScenario);
-        this.aggregate = this.lastAllocation.getAggregate();
+        this.aggregate = this.lastAllocation.getNotRecurrentAllocationsAggregate();
     }
 
     public void setAssignedEffortComponent(
@@ -550,7 +550,7 @@ public class FormBinder {
 
     private void allocationProduced(AllocationResult allocationResult) {
         lastAllocation = allocationResult;
-        aggregate = lastAllocation.getAggregate();
+        aggregate = lastAllocation.getNotRecurrentAllocationsAggregate();
         allResourcesPerDayVisibilityRule();
         sumResourcesPerDayFromRowsAndAssignToAllResourcesPerDay();
         reloadValues();

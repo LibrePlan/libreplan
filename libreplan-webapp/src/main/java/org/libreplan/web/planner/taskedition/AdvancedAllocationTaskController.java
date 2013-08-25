@@ -67,7 +67,7 @@ public class AdvancedAllocationTaskController extends GenericForwardComposer {
         AllocationResult allocationResult = AllocationResult.createNotRecurrentCurrent(
                 planningState.getCurrentScenario(), task);
 
-        if (allocationResult.getAggregate().isEmpty()) {
+        if (allocationResult.getNotRecurrentAllocationsAggregate().isEmpty()) {
             try {
                 Messagebox.show(_("Some allocations needed"), _("Warning"),
                         Messagebox.OK, Messagebox.EXCLAMATION);
@@ -102,9 +102,9 @@ public class AdvancedAllocationTaskController extends GenericForwardComposer {
         private final IRestrictionSource restrictionSource;
 
         private AdvanceAllocationResultReceiver(AllocationResult allocation) {
-            Validate.isTrue(!allocation.getAggregate().isEmpty());
+            Validate.isTrue(!allocation.getNotRecurrentAllocationsAggregate().isEmpty());
             this.allocation = allocation;
-            final EffortDuration totalEffort = allocation.getAggregate()
+            final EffortDuration totalEffort = allocation.getNotRecurrentAllocationsAggregate()
                     .getTotalEffort();
             final IntraDayDate start = allocation.getIntraDayStart();
             final IntraDayDate end = allocation.getIntraDayEnd();

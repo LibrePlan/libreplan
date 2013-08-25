@@ -95,7 +95,7 @@ public class ViewSwitcher implements Composer {
             AllocationResult allocationResult,
             IAdvanceAllocationResultReceiver resultReceiver) {
         return Collections.singletonList(new AllocationInput(allocationResult
-                .getAggregate(), allocationResult.getTask(), resultReceiver));
+                .getNotRecurrentAllocationsAggregate(), allocationResult.getTask(), resultReceiver));
     }
 
     public void goToPlanningOrderView() {

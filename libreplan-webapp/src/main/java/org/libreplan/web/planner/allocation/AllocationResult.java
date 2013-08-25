@@ -82,7 +82,7 @@ public class AllocationResult {
 
     }
 
-    private final AggregateOfResourceAllocations aggregate;
+    private final AggregateOfResourceAllocations notRecurrentAllocations;
 
     private final CalculatedValue calculatedValue;
 
@@ -109,13 +109,13 @@ public class AllocationResult {
         this.task = task;
         this.newWorkableDays = newWorkableDays;
         this.calculatedValue = calculatedValue;
-        this.aggregate = aggregate;
+        this.notRecurrentAllocations = aggregate;
         this.newAllocations = newAllocations;
         this.modified = modified;
     }
 
-    public AggregateOfResourceAllocations getAggregate() {
-        return aggregate;
+    public AggregateOfResourceAllocations getNotRecurrentAllocationsAggregate() {
+        return notRecurrentAllocations;
     }
 
     private List<ResourceAllocation<?>> getNew() {
@@ -163,7 +163,7 @@ public class AllocationResult {
     }
 
     public List<ResourceAllocation<?>> getAllSortedByStartDate() {
-        return aggregate.getAllocationsSortedByStartDate();
+        return notRecurrentAllocations.getAllocationsSortedByStartDate();
     }
 
     public Task getTask() {
@@ -209,18 +209,18 @@ public class AllocationResult {
     }
 
     public IntraDayDate getIntraDayStart() {
-        if (isForwardsScheduled() || aggregate.isEmpty()) {
+        if (isForwardsScheduled() || notRecurrentAllocations.isEmpty()) {
             return task.getIntraDayStartDate();
         } else {
-            return aggregate.getStart();
+            return notRecurrentAllocations.getStart();
         }
     }
 
     public IntraDayDate getIntraDayEnd() {
-        if (!isForwardsScheduled() || aggregate.isEmpty()) {
+        if (!isForwardsScheduled() || notRecurrentAllocations.isEmpty()) {
             return task.getIntraDayEndDate();
         } else {
-            return aggregate.getEnd();
+            return notRecurrentAllocations.getEnd();
         }
     }
 
