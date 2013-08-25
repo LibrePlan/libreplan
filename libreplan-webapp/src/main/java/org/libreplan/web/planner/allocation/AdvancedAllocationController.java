@@ -123,15 +123,11 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         }
 
         List<ResourceAllocation<?>> getAllocationsSortedByStartDate() {
-            return getAggregate().getAllocationsSortedByStartDate();
+            return aggregate.getAllocationsSortedByStartDate();
         }
 
         EffortDuration getTotalEffort() {
-            return getAggregate().getTotalEffort();
-        }
-
-        AggregateOfResourceAllocations getAggregate() {
-            return aggregate;
+            return aggregate.getTotalEffort();
         }
 
         String getTaskName() {
@@ -201,6 +197,14 @@ public class AdvancedAllocationController extends GenericForwardComposer {
 
         private static Date asDate(LocalDate start) {
             return start.toDateMidnight().toDate();
+        }
+
+        public List<GenericResourceAllocation> getGenericAllocations() {
+            return aggregate.getGenericAllocations();
+        }
+
+        public List<SpecificResourceAllocation> getSpecificAllocations() {
+            return aggregate.getSpecificAllocations();
         }
 
     }
@@ -770,9 +774,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         rowsCached = new ArrayList<Row>();
         int position = 1;
         for (AllocationInput allocationInput : allocationInputs) {
-            if (allocationInput.getAggregate()
-                    .getAllocationsSortedByStartDate().isEmpty()) {
-            } else {
+            if (!allocationInput.getAllocationsSortedByStartDate().isEmpty()) {
                 Row groupingRow = buildGroupingRow(allocationInput);
                 groupingRow.setDescription(position + " " + allocationInput.getTaskName());
                 groupingRows.put(allocationInput, groupingRow);
@@ -877,7 +879,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
 
     private List<Row> specificRows(AllocationInput allocationInput) {
         List<Row> result = new ArrayList<Row>();
-        for (SpecificResourceAllocation specificResourceAllocation : allocationInput.getAggregate()
+        for (SpecificResourceAllocation specificResourceAllocation : allocationInput
                 .getSpecificAllocations()) {
             result.add(createSpecificRow(specificResourceAllocation,
                     allocationInput.createRestriction(), allocationInput.task));
@@ -898,7 +900,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
 
     private List<Row> genericRows(AllocationInput allocationInput) {
         List<Row> result = new ArrayList<Row>();
-        for (GenericResourceAllocation genericResourceAllocation : allocationInput.getAggregate()
+        for (GenericResourceAllocation genericResourceAllocation : allocationInput
                 .getGenericAllocations()) {
             result.add(buildGenericRow(genericResourceAllocation,
                     allocationInput.createRestriction(), allocationInput.task));
