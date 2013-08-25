@@ -157,6 +157,25 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         }
     }
 
+    public static Map<Object, List<ResourceAllocation<?>>> groupBy(
+            Collection<ResourceAllocation<?>> allocationsToGroup) {
+
+        Map<Object, List<ResourceAllocation<?>>> result = new HashMap<Object, List<ResourceAllocation<?>>>();
+
+        for (ResourceAllocation<?> each : allocationsToGroup) {
+            Object key = each.getKey();
+            if (!result.containsKey(key)) {
+                result.put(key, new ArrayList<ResourceAllocation<?>>());
+            }
+            result.get(key).add(each);
+        }
+
+        for (List<ResourceAllocation<?>> list : result.values()) {
+            Collections.sort(list, byStartDateComparator());
+        }
+        return result;
+    }
+
     private static Comparator<ResourceAllocation<?>> byStartDateComparator() {
         return new Comparator<ResourceAllocation<?>>() {
 
@@ -2297,5 +2316,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         setOnDayAssignmentRemoval(new DetachDayAssignmentOnRemoval());
         getDayAssignmentsState().removingAssignments(toRemove);
     }
+
+    public abstract Object getKey();
 
 }

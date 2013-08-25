@@ -382,4 +382,9 @@ public class GenericResourceAllocation extends
         return new GenericAllocation(resources);
     }
 
+    @Override
+    public Set<Criterion> getKey() {
+        return getCriterions();
+    }
+
 }

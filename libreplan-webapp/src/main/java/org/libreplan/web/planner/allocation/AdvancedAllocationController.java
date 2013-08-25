@@ -53,6 +53,7 @@ import org.libreplan.business.planner.entities.SigmoidFunction;
 import org.libreplan.business.planner.entities.SpecificResourceAllocation;
 import org.libreplan.business.planner.entities.StretchesFunctionTypeEnum;
 import org.libreplan.business.planner.entities.Task;
+import org.libreplan.business.planner.entities.Task.RecurrencesModification;
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.workingday.EffortDuration;
@@ -105,29 +106,59 @@ import org.zkoss.zul.api.Column;
 public class AdvancedAllocationController extends GenericForwardComposer {
 
     public static class AllocationInput {
-        private final AggregateOfResourceAllocations aggregate;
+        private final AggregateOfResourceAllocations notRecurrentAggregate;
+
+        private final AggregateOfResourceAllocations allAggregate;
 
         private final IAdvanceAllocationResultReceiver resultReceiver;
 
         private final TaskElement task;
 
-        public AllocationInput(AggregateOfResourceAllocations aggregate,
+        private final Map<Object, List<ResourceAllocation<?>>> recurrenceAllocations;
+
+        public AllocationInput(
+                AggregateOfResourceAllocations notRecurrentAggregate,
                 TaskElement task,
+                RecurrencesModification recurrencesModification,
                 IAdvanceAllocationResultReceiver resultReceiver) {
-            Validate.notNull(aggregate);
+            Validate.notNull(notRecurrentAggregate);
             Validate.notNull(resultReceiver);
             Validate.notNull(task);
-            this.aggregate = aggregate;
+            Validate.notNull(recurrencesModification);
+            this.notRecurrentAggregate = notRecurrentAggregate;
             this.task = task;
+            this.recurrenceAllocations = recurrencesModification
+                    .getRecurrenceAllocations();
+
+            this.allAggregate = withRecurrents(
+                    notRecurrentAggregate.getAllocationsSortedByStartDate(),
+                    recurrenceAllocations);
             this.resultReceiver = resultReceiver;
         }
 
+        private static AggregateOfResourceAllocations withRecurrents(
+                List<ResourceAllocation<?>> notRecurrentAllocations,
+                Map<Object, List<ResourceAllocation<?>>> recurrent) {
+
+            List<ResourceAllocation<?>> allAllocations = new ArrayList<ResourceAllocation<?>>(
+                    notRecurrentAllocations);
+            for (ResourceAllocation<?> each : notRecurrentAllocations) {
+                List<ResourceAllocation<?>> recurrences = recurrent.get(each
+                        .getKey());
+                if (recurrences != null) {
+                    allAllocations.addAll(recurrences);
+                }
+            }
+            return AggregateOfResourceAllocations
+                    .createFromSatisfied(allAllocations);
+        }
+
         List<ResourceAllocation<?>> getAllocationsSortedByStartDate() {
-            return aggregate.getAllocationsSortedByStartDate();
+            return notRecurrentAggregate.getAllocationsSortedByStartDate();
         }
 
         EffortDuration getTotalEffort() {
-            return aggregate.getTotalEffort();
+            return allAggregate.getTotalEffort();
         }
 
         String getTaskName() {
@@ -147,7 +178,8 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         }
 
         Interval calculateInterval() {
-            List<ResourceAllocation<?>> all = getAllocationsSortedByStartDate();
+            List<ResourceAllocation<?>> all = allAggregate
+                    .getAllocationsSortedByStartDate();
             if (all.isEmpty()) {
                 return new Interval(task.getStartDate(), task
                         .getEndDate());
@@ -186,7 +218,6 @@ public class AdvancedAllocationController extends GenericForwardComposer {
             return end;
         }
 
-
         private static ArrayList<ResourceAllocation<?>> reverse(
                 List<ResourceAllocation<?>> all) {
             ArrayList<ResourceAllocation<?>> reversed = new ArrayList<ResourceAllocation<?>>(
@@ -199,12 +230,38 @@ public class AdvancedAllocationController extends GenericForwardComposer {
             return start.toDateMidnight().toDate();
         }
 
-        public List<GenericResourceAllocation> getGenericAllocations() {
-            return aggregate.getGenericAllocations();
+        public List<List<SpecificResourceAllocation>> getSpecificAllocations() {
+            return getAllocationsWithRecurrences(
+                    SpecificResourceAllocation.class,
+                    notRecurrentAggregate.getSpecificAllocations());
         }
 
-        public List<SpecificResourceAllocation> getSpecificAllocations() {
-            return aggregate.getSpecificAllocations();
+        public List<List<GenericResourceAllocation>> getGenericAllocations() {
+            return getAllocationsWithRecurrences(
+                    GenericResourceAllocation.class,
+                    notRecurrentAggregate.getGenericAllocations());
+        }
+
+        private <T extends ResourceAllocation<?>> List<List<T>> getAllocationsWithRecurrences(
+                Class<T> klass, List<T> allocations) {
+            List<List<T>> result = new ArrayList<List<T>>();
+            for (T each : allocations) {
+                List<T> l = new ArrayList<T>();
+                l.add(each);
+                l.addAll(recurrencesFor(each, klass));
+                result.add(l);
+            }
+            return result;
+        }
+
+        private <T extends ResourceAllocation<?>> List<T> recurrencesFor(
+                T each, Class<T> klass) {
+            List<ResourceAllocation<?>> recurrences = recurrenceAllocations
+                    .get(each.getKey());
+            if (recurrences != null) {
+                return ResourceAllocation.getOfType(klass, recurrences);
+            }
+            return Collections.emptyList();
         }
 
     }
@@ -879,9 +936,9 @@ public class AdvancedAllocationController extends GenericForwardComposer {
 
     private List<Row> specificRows(AllocationInput allocationInput) {
         List<Row> result = new ArrayList<Row>();
-        for (SpecificResourceAllocation specificResourceAllocation : allocationInput
+        for (List<SpecificResourceAllocation> specifics : allocationInput
                 .getSpecificAllocations()) {
-            result.add(createSpecificRow(specificResourceAllocation,
+            result.add(createSpecificRow(specifics.get(0),
                     allocationInput.createRestriction(), allocationInput.task));
         }
         return result;
@@ -900,9 +957,9 @@ public class AdvancedAllocationController extends GenericForwardComposer {
 
     private List<Row> genericRows(AllocationInput allocationInput) {
         List<Row> result = new ArrayList<Row>();
-        for (GenericResourceAllocation genericResourceAllocation : allocationInput
+        for (List<GenericResourceAllocation> generics : allocationInput
                 .getGenericAllocations()) {
-            result.add(buildGenericRow(genericResourceAllocation,
+            result.add(buildGenericRow(generics.get(0),
                     allocationInput.createRestriction(), allocationInput.task));
         }
         return result;

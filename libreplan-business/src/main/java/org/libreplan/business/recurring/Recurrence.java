@@ -34,6 +34,8 @@ import org.joda.time.LocalDate;
 import org.libreplan.business.common.BaseEntity;
 import org.libreplan.business.planner.entities.AggregateOfResourceAllocations;
 import org.libreplan.business.planner.entities.ResourceAllocation;
+import org.libreplan.business.planner.entities.Task.ModifiedAllocation;
+import org.libreplan.business.scenarios.entities.Scenario;
 import org.libreplan.business.workingday.IntraDayDate;
 
 /**
@@ -196,6 +198,14 @@ public class Recurrence extends BaseEntity {
     private boolean isPartiallyConsolidated(LocalDate lastConsolidatedDay) {
         return isPartiallyOrTotallyConsolidated(lastConsolidatedDay)
                 && lastConsolidatedDay.compareTo(getEnd()) < 0;
+    }
+
+    public List<ModifiedAllocation> copyAllocations(Scenario onScenario) {
+        List<ModifiedAllocation> result = new ArrayList<ModifiedAllocation>();
+        for (ResourceAllocation<?> each : resourceAllocations) {
+            result.add(new ModifiedAllocation(each, each.copy(onScenario)));
+        }
+        return result;
     }
 
 }

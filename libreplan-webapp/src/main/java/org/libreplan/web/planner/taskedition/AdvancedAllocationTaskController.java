@@ -25,6 +25,7 @@ import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.libreplan.business.planner.entities.CalculatedValue;
 import org.libreplan.business.planner.entities.Task;
+import org.libreplan.business.planner.entities.Task.RecurrencesModification;
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workingday.IntraDayDate;
@@ -66,6 +67,8 @@ public class AdvancedAllocationTaskController extends GenericForwardComposer {
 
         AllocationResult allocationResult = AllocationResult.createNotRecurrentCurrent(
                 planningState.getCurrentScenario(), task);
+        RecurrencesModification recurrences = task
+                .copyRecurrencesToModify(planningState.getCurrentScenario());
 
         if (allocationResult.getNotRecurrentAllocationsAggregate().isEmpty()) {
             try {
@@ -78,7 +81,8 @@ public class AdvancedAllocationTaskController extends GenericForwardComposer {
         }
 
         getSwitcher().goToAdvancedAllocation(planningState.getOrder(),
-                allocationResult, createResultReceiver(allocationResult));
+                allocationResult, recurrences,
+                createResultReceiver(allocationResult));
     }
 
 

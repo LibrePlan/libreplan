@@ -292,7 +292,10 @@ public class AdvancedAllocationTabCreator {
     private AllocationInput createAllocationInputFor(
             PlanningState planningState, Task task) {
         ResultReceiver resultReceiver = new ResultReceiver(planningState, task);
-        return new AllocationInput(resultReceiver.getAggregate(), task,
+        return new AllocationInput(
+                resultReceiver.getAggregate(),
+                task,
+                task.copyRecurrencesToModify(planningState.getCurrentScenario()),
                 resultReceiver);
     }
 

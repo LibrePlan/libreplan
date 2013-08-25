@@ -30,9 +30,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
@@ -491,6 +493,59 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         addAllocations(scenario, newAllocations);
         new RecurrencesSynchronizer(scenario, searcher)
                 .synchronizeRecurrences();
+    }
+
+    public RecurrencesModification copyRecurrencesToModify(
+            Scenario onScenario) {
+        return new RecurrencesModification(getRecurrences(), onScenario);
+    }
+
+    private static Map<Object, List<ResourceAllocation<?>>> groupBy(
+            Collection<ResourceAllocation<?>> allocationsToGroupBy,
+            Collection<ResourceAllocation<?>> allocationsToGroup) {
+
+        Map<Object, List<ResourceAllocation<?>>> result = new HashMap<Object, List<ResourceAllocation<?>>>();
+
+        Map<Object, List<ResourceAllocation<?>>> groupBy = ResourceAllocation
+                .groupBy(allocationsToGroup);
+        for (ResourceAllocation<?> each : allocationsToGroupBy) {
+            List<ResourceAllocation<?>> list = new ArrayList<ResourceAllocation<?>>();
+            if (groupBy.containsKey(each.getKey())) {
+                list.addAll(groupBy.remove(each.getKey()));
+            }
+            result.put(each.getKey(), list);
+        }
+        return result;
+    }
+
+    public class RecurrencesModification {
+
+        private final Map<Recurrence, List<ModifiedAllocation>> allocationsPerRecurrence = new HashMap<Recurrence, List<ModifiedAllocation>>();
+
+        private final Map<Object, List<ResourceAllocation<?>>> recurrenceAllocations;
+
+        public RecurrencesModification(List<Recurrence> recurrences,
+                Scenario onScenario) {
+            List<ResourceAllocation<?>> allRecurrent = new ArrayList<ResourceAllocation<?>>();
+            for (Recurrence each : recurrences) {
+                List<ModifiedAllocation> copied = each
+                        .copyAllocations(onScenario);
+                this.allocationsPerRecurrence.put(each, copied);
+                allRecurrent.addAll(ModifiedAllocation.modified(copied));
+            }
+            this.recurrenceAllocations = groupBy(
+                    getNotRecurrentResourceAllocations(), allRecurrent);
+        }
+
+        public Map<Recurrence, List<ModifiedAllocation>> getAllocationsPerRecurrence() {
+            return new HashMap<Recurrence, List<ModifiedAllocation>>(
+                    allocationsPerRecurrence);
+        }
+
+        public Map<Object, List<ResourceAllocation<?>>> getRecurrenceAllocations() {
+            return new HashMap<Object, List<ResourceAllocation<?>>>(
+                    recurrenceAllocations);
+        }
     }
 
     private class RecurrencesSynchronizer {

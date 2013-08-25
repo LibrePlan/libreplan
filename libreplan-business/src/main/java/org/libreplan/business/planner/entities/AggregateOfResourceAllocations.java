@@ -58,6 +58,15 @@ public class AggregateOfResourceAllocations {
         return new AggregateOfResourceAllocations(allocations);
     }
 
+    public static AggregateOfResourceAllocations sum(
+            AggregateOfResourceAllocations... aggregates) {
+        Set<ResourceAllocation<?>> all = new HashSet<ResourceAllocation<?>>();
+        for (AggregateOfResourceAllocations each : aggregates) {
+            all.addAll(each.resourceAllocations);
+        }
+        return new AggregateOfResourceAllocations(all);
+    }
+
     private Set<ResourceAllocation<?>> resourceAllocations;
 
     private AggregateOfResourceAllocations(
