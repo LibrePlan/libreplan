@@ -891,40 +891,44 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         List<Row> result = new ArrayList<Row>();
         for (List<SpecificResourceAllocation> specifics : allocationInput
                 .getSpecificAllocations()) {
-            result.add(createSpecificRow(specifics.get(0),
+            result.add(buildSpecificRow(specifics,
                     allocationInput.createRestriction(), allocationInput.task));
         }
         return result;
     }
 
-    private Row createSpecificRow(
-            SpecificResourceAllocation specificResourceAllocation,
+    private Row buildSpecificRow(
+            List<SpecificResourceAllocation> specificAllocations,
             Restriction restriction, TaskElement task) {
-        return Row.createRow(restriction, specificResourceAllocation
-                .getResource().getName(), Mode.LEAF, Arrays
-                .asList(specificResourceAllocation), specificResourceAllocation
-                .getResource().getShortDescription(),
-                specificResourceAllocation.getResource().isLimitingResource(), task);
+        Validate.isTrue(specificAllocations.size() >= 1);
+
+        SpecificResourceAllocation notRecurrent = specificAllocations.get(0);
+        return Row.createRow(restriction, notRecurrent.getResource()
+                .getName(), Mode.LEAF, specificAllocations, notRecurrent
+                .getResource().getShortDescription(), notRecurrent
+                .getResource().isLimitingResource(), task);
     }
 
     private List<Row> genericRows(AllocationInput allocationInput) {
         List<Row> result = new ArrayList<Row>();
         for (List<GenericResourceAllocation> generics : allocationInput
                 .getGenericAllocations()) {
-            result.add(buildGenericRow(generics.get(0),
+            result.add(buildGenericRow(generics,
                     allocationInput.createRestriction(), allocationInput.task));
         }
         return result;
     }
 
     private Row buildGenericRow(
-            GenericResourceAllocation genericResourceAllocation,
+            List<GenericResourceAllocation> genericAllocations,
             Restriction restriction, TaskElement task) {
-        return Row.createRow(restriction, Criterion
-                .getCaptionFor(genericResourceAllocation.getCriterions()),
-                Mode.LEAF, Arrays
-                .asList(genericResourceAllocation), genericResourceAllocation
-                .isLimiting(), task);
+        Validate.isTrue(genericAllocations.size() >= 1);
+
+        GenericResourceAllocation notRecurrent = genericAllocations.get(0);
+        return Row.createRow(restriction,
+                Criterion.getCaptionFor(notRecurrent.getCriterions()),
+                Mode.LEAF, genericAllocations,
+                notRecurrent.isLimiting(), task);
     }
 
     private Row buildGroupingRow(AllocationInput allocationInput) {
