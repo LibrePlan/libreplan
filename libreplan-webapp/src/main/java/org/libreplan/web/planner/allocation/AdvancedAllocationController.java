@@ -1107,8 +1107,6 @@ class Row {
 
     private final AdvancedAllocationController.Restriction restriction;
 
-    private final String functionName;
-
     private TaskElement task;
 
     void listenTo(Collection<Row> rows) {
@@ -1625,23 +1623,6 @@ class Row {
         this.task = task;
         this.aggregate = AggregateOfResourceAllocations
                 .createFromSatisfied(new ArrayList<ResourceAllocation<?>>(allocations));
-        this.functionName = getAssignmentFunctionName(allocations);
-    }
-
-    private String getAssignmentFunctionName(
-            List<? extends ResourceAllocation<?>> allocations) {
-        AssignmentFunction function = getAssignmentFunction(allocations);
-        return (function != null) ? function.getName()
-                : AssignmentFunctionName.FLAT.toString();
-    }
-
-    private AssignmentFunction getAssignmentFunction(
-            List<? extends ResourceAllocation<?>> allocations) {
-        if (allocations != null) {
-            ResourceAllocation<?> allocation = allocations.iterator().next();
-            return allocation.getAssignmentFunction();
-        }
-        return null;
     }
 
     private EffortDuration getEffortForDetailItem(DetailItem item) {
