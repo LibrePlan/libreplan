@@ -27,7 +27,6 @@ import org.libreplan.business.planner.entities.CalculatedValue;
 import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.planner.entities.Task.RecurrencesModification;
 import org.libreplan.business.planner.entities.TaskElement;
-import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workingday.IntraDayDate;
 import org.libreplan.web.common.ViewSwitcher;
 import org.libreplan.web.planner.allocation.AdvancedAllocationController.IAdvanceAllocationResultReceiver;
@@ -108,18 +107,11 @@ public class AdvancedAllocationTaskController extends GenericForwardComposer {
         private AdvanceAllocationResultReceiver(AllocationResult allocation) {
             Validate.isTrue(!allocation.getNotRecurrentAllocationsAggregate().isEmpty());
             this.allocation = allocation;
-            final EffortDuration totalEffort = allocation.getNotRecurrentAllocationsAggregate()
-                    .getTotalEffort();
             final IntraDayDate start = allocation.getIntraDayStart();
             final IntraDayDate end = allocation.getIntraDayEnd();
             final CalculatedValue calculatedValue = allocation
                     .getCalculatedValue();
             restrictionSource = new IRestrictionSource() {
-
-                @Override
-                public EffortDuration getTotalEffort() {
-                    return totalEffort;
-                }
 
                 @Override
                 public LocalDate getStart() {

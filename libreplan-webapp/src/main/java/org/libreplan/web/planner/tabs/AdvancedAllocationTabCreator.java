@@ -40,7 +40,6 @@ import org.libreplan.business.planner.entities.CalculatedValue;
 import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.planner.entities.TaskGroup;
-import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.web.planner.allocation.AdvancedAllocationController;
 import org.libreplan.web.planner.allocation.AdvancedAllocationController.AllocationInput;
 import org.libreplan.web.planner.allocation.AdvancedAllocationController.IAdvanceAllocationResultReceiver;
@@ -91,11 +90,6 @@ public class AdvancedAllocationTabCreator {
 
         private IRestrictionSource createRestrictionSource() {
             return new IRestrictionSource() {
-
-                @Override
-                public EffortDuration getTotalEffort() {
-                    return aggregate.getTotalEffort();
-                }
 
                 @Override
                 public LocalDate getStart() {

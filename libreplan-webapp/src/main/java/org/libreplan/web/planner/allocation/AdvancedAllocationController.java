@@ -158,10 +158,6 @@ public class AdvancedAllocationController extends GenericForwardComposer {
             return notRecurrentAggregate.getAllocationsSortedByStartDate();
         }
 
-        EffortDuration getTotalEffort() {
-            return allAggregate.getTotalEffort();
-        }
-
         String getTaskName() {
             return task.getName();
         }
@@ -285,8 +281,6 @@ public class AdvancedAllocationController extends GenericForwardComposer {
 
         public interface IRestrictionSource {
 
-            EffortDuration getTotalEffort();
-
             LocalDate getStart();
 
             LocalDate getEnd();
@@ -325,13 +319,9 @@ public class AdvancedAllocationController extends GenericForwardComposer {
 
         abstract boolean isDisabledEditionOn(DetailItem item);
 
-        public abstract boolean isInvalidTotalEffort(EffortDuration totalEffort);
-
         public abstract void showInvalidEffort(IMessagesForUser messages,
                 EffortDuration totalEffort);
 
-        public abstract void markInvalidEffort(Row groupingRow,
-                EffortDuration currentEffort);
     }
 
     private static class OnlyOnIntervalRestriction extends Restriction {
@@ -358,11 +348,6 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         }
 
         @Override
-        public boolean isInvalidTotalEffort(EffortDuration totalEffort) {
-            return false;
-        }
-
-        @Override
         LocalDate limitEndDate(LocalDate argEnd) {
             return end.compareTo(argEnd) < 0 ? end : argEnd;
         }
@@ -377,23 +362,12 @@ public class AdvancedAllocationController extends GenericForwardComposer {
                 EffortDuration totalEffort) {
             throw new UnsupportedOperationException();
         }
-
-        @Override
-        public void markInvalidEffort(Row groupingRow,
-                EffortDuration currentEffort) {
-            throw new UnsupportedOperationException();
-        }
     }
 
     private static class NoRestriction extends Restriction {
 
         @Override
         boolean isDisabledEditionOn(DetailItem item) {
-            return false;
-        }
-
-        @Override
-        public boolean isInvalidTotalEffort(EffortDuration totalEffort) {
             return false;
         }
 
@@ -405,12 +379,6 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         @Override
         LocalDate limitStartDate(LocalDate startDate) {
             return startDate;
-        }
-
-        @Override
-        public void markInvalidEffort(Row groupingRow,
-                EffortDuration currentEffort) {
-            throw new UnsupportedOperationException();
         }
 
         @Override
@@ -753,14 +721,6 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     }
 
     public void onClick$acceptButton() {
-        for (AllocationInput allocationInput : allocationInputs) {
-            EffortDuration totalEffort = allocationInput.getTotalEffort();
-            Restriction restriction = allocationInput.createRestriction();
-            if (restriction.isInvalidTotalEffort(totalEffort)) {
-                Row groupingRow = groupingRows.get(allocationInput);
-                restriction.markInvalidEffort(groupingRow, totalEffort);
-            }
-        }
         back.goBack();
         for (AllocationInput allocationInput : allocationInputs) {
             allocationInput.accepted();
@@ -768,14 +728,6 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     }
 
     public void onClick$saveButton() {
-        for (AllocationInput allocationInput : allocationInputs) {
-            EffortDuration totalEffort = allocationInput.getTotalEffort();
-            Restriction restriction = allocationInput.createRestriction();
-            if (restriction.isInvalidTotalEffort(totalEffort)) {
-                Row groupingRow = groupingRows.get(allocationInput);
-                restriction.markInvalidEffort(groupingRow, totalEffort);
-            }
-        }
         for (AllocationInput allocationInput : allocationInputs) {
             allocationInput.accepted();
         }
@@ -948,8 +900,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     private Row createSpecificRow(
             SpecificResourceAllocation specificResourceAllocation,
             Restriction restriction, TaskElement task) {
-        return Row.createRow(messages, restriction,
- specificResourceAllocation
+        return Row.createRow(restriction, specificResourceAllocation
                 .getResource().getName(), Mode.LEAF, Arrays
                 .asList(specificResourceAllocation), specificResourceAllocation
                 .getResource().getShortDescription(),
@@ -969,7 +920,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     private Row buildGenericRow(
             GenericResourceAllocation genericResourceAllocation,
             Restriction restriction, TaskElement task) {
-        return Row.createRow(messages, restriction, Criterion
+        return Row.createRow(restriction, Criterion
                 .getCaptionFor(genericResourceAllocation.getCriterions()),
                 Mode.LEAF, Arrays
                 .asList(genericResourceAllocation), genericResourceAllocation
@@ -979,7 +930,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     private Row buildGroupingRow(AllocationInput allocationInput) {
         Restriction restriction = allocationInput.createRestriction();
         String taskName = allocationInput.getTaskName();
-        Row groupingRow = Row.createRow(messages, restriction, taskName,
+        Row groupingRow = Row.createRow(restriction, taskName,
                 Mode.GROUPING,
                 allocationInput.getAllocationsSortedByStartDate(), false, allocationInput.task);
         return groupingRow;
@@ -1116,21 +1067,21 @@ class Row {
         }
     }
 
-    static Row createRow(IMessagesForUser messages,
-            AdvancedAllocationController.Restriction restriction, String name,
+    static Row createRow(AdvancedAllocationController.Restriction restriction,
+            String name,
             Mode mode, List<? extends ResourceAllocation<?>> allocations,
             String description, boolean limiting, TaskElement task) {
-        Row newRow = new Row(messages, restriction, name, mode, allocations,
+        Row newRow = new Row(restriction, name, mode, allocations,
                 limiting, task);
         newRow.setDescription(description);
         return newRow;
     }
 
-    static Row createRow(IMessagesForUser messages,
-            AdvancedAllocationController.Restriction restriction, String name,
+    static Row createRow(AdvancedAllocationController.Restriction restriction,
+            String name,
             Mode mode, List<? extends ResourceAllocation<?>> allocations,
             boolean limiting, TaskElement task) {
-        return new Row(messages, restriction, name, mode, allocations,
+        return new Row(restriction, name, mode, allocations,
                 limiting, task);
     }
 
@@ -1155,8 +1106,6 @@ class Row {
     private final AggregateOfResourceAllocations aggregate;
 
     private final AdvancedAllocationController.Restriction restriction;
-
-    private final IMessagesForUser messages;
 
     private final String functionName;
 
@@ -1273,9 +1222,6 @@ class Row {
         Clients.closeErrorBox(allEffortInput);
         if (isEffortDurationBoxDisabled()) {
             allEffortInput.setDisabled(true);
-        }
-        if (restriction.isInvalidTotalEffort(allEffort)) {
-            restriction.showInvalidEffort(messages, allEffort);
         }
     }
 
@@ -1668,11 +1614,10 @@ class Row {
         return nameLabel;
     }
 
-    private Row(IMessagesForUser messages,
-            AdvancedAllocationController.Restriction restriction, String name,
+    private Row(AdvancedAllocationController.Restriction restriction,
+            String name,
             Mode mode, List<? extends ResourceAllocation<?>> allocations,
             boolean limiting, TaskElement task) {
-        this.messages = messages;
         this.restriction = restriction;
         this.name = name;
         this.mode = mode;
