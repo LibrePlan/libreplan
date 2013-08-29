@@ -38,6 +38,7 @@ import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.planner.entities.AggregateOfResourceAllocations;
 import org.libreplan.business.planner.entities.CalculatedValue;
 import org.libreplan.business.planner.entities.Task;
+import org.libreplan.business.planner.entities.Task.ManualRecurrencesModification;
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.planner.entities.TaskGroup;
 import org.libreplan.web.planner.allocation.AdvancedAllocationController;
@@ -72,10 +73,12 @@ public class AdvancedAllocationTabCreator {
         private AllocationResult allocationResult;
         private final Task task;
         private final PlanningState planningState;
+        private ManualRecurrencesModification recurrencesToModify;
 
-        public ResultReceiver(PlanningState planningState,
-                Task task) {
+        public ResultReceiver(PlanningState planningState, Task task,
+                ManualRecurrencesModification recurrencesToModify) {
             this.planningState = planningState;
+            this.recurrencesToModify = recurrencesToModify;
             this.calculatedValue = task.getCalculatedValue();
             this.allocationResult = AllocationResult.createNotRecurrentCurrent(
                     planningState.getCurrentScenario(), task);
@@ -126,7 +129,8 @@ public class AdvancedAllocationTabCreator {
         @Override
         public void accepted() {
             allocationResult.applyTo(planningState.getResourcesSearcher(),
-                    planningState.getCurrentScenario(), task);
+                    planningState.getCurrentScenario(), recurrencesToModify,
+                    task);
             if (task.isManualAnyAllocation()) {
                 Task.convertOnStartInFixedDate(task);
             }
@@ -285,11 +289,16 @@ public class AdvancedAllocationTabCreator {
 
     private AllocationInput createAllocationInputFor(
             PlanningState planningState, Task task) {
-        ResultReceiver resultReceiver = new ResultReceiver(planningState, task);
+
+        ManualRecurrencesModification recurrencesToModify = task
+                .copyRecurrencesToModify(planningState.getCurrentScenario());
+        ResultReceiver resultReceiver = new ResultReceiver(planningState, task,
+                recurrencesToModify);
+
         return new AllocationInput(
                 resultReceiver.getAggregate(),
                 task,
-                task.copyRecurrencesToModify(planningState.getCurrentScenario()),
+                recurrencesToModify,
                 resultReceiver);
     }
 

@@ -81,7 +81,7 @@ public class AdvancedAllocationTaskController extends GenericForwardComposer {
 
         getSwitcher().goToAdvancedAllocation(planningState.getOrder(),
                 allocationResult, recurrences,
-                createResultReceiver(allocationResult));
+                createResultReceiver(allocationResult, recurrences));
     }
 
 
@@ -94,8 +94,9 @@ public class AdvancedAllocationTaskController extends GenericForwardComposer {
     }
 
     private IAdvanceAllocationResultReceiver createResultReceiver(
-            final AllocationResult allocation) {
-        return new AdvanceAllocationResultReceiver(allocation);
+            final AllocationResult allocation,
+            ManualRecurrencesModification recurrences) {
+        return new AdvanceAllocationResultReceiver(allocation, recurrences);
     }
 
     private final class AdvanceAllocationResultReceiver implements
@@ -103,10 +104,14 @@ public class AdvancedAllocationTaskController extends GenericForwardComposer {
 
         private final AllocationResult allocation;
         private final IRestrictionSource restrictionSource;
+        private final ManualRecurrencesModification recurrences;
 
-        private AdvanceAllocationResultReceiver(AllocationResult allocation) {
+        private AdvanceAllocationResultReceiver(AllocationResult allocation,
+                ManualRecurrencesModification recurrences) {
             Validate.isTrue(!allocation.getNotRecurrentAllocationsAggregate().isEmpty());
             this.allocation = allocation;
+            this.recurrences = recurrences;
+
             final IntraDayDate start = allocation.getIntraDayStart();
             final IntraDayDate end = allocation.getIntraDayEnd();
             final CalculatedValue calculatedValue = allocation
@@ -138,7 +143,7 @@ public class AdvancedAllocationTaskController extends GenericForwardComposer {
         @Override
         public void accepted() {
             allocation.applyTo(planningState.getResourcesSearcher(),
-                    planningState.getCurrentScenario(), task);
+                    planningState.getCurrentScenario(), recurrences, task);
             if (task.isManualAnyAllocation()) {
                 Task.convertOnStartInFixedDate(task);
             }
