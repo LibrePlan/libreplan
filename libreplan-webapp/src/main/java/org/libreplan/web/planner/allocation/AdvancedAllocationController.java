@@ -63,6 +63,7 @@ import org.libreplan.web.common.IMessagesForUser;
 import org.libreplan.web.common.MessagesForUser;
 import org.libreplan.web.common.OnlyOneVisible;
 import org.libreplan.web.common.Util;
+import org.libreplan.web.planner.allocation.Row.Mode;
 import org.libreplan.web.planner.allocation.streches.StrechesFunctionConfiguration;
 import org.zkoss.ganttz.timetracker.ICellForDetailItemRenderer;
 import org.zkoss.ganttz.timetracker.IConvertibleToColumn;
@@ -948,8 +949,8 @@ public class AdvancedAllocationController extends GenericForwardComposer {
             SpecificResourceAllocation specificResourceAllocation,
             Restriction restriction, TaskElement task) {
         return Row.createRow(messages, restriction,
-                specificResourceAllocation.getResource()
-                        .getName(), 1, Arrays
+ specificResourceAllocation
+                .getResource().getName(), Mode.LEAF, Arrays
                 .asList(specificResourceAllocation), specificResourceAllocation
                 .getResource().getShortDescription(),
                 specificResourceAllocation.getResource().isLimitingResource(), task);
@@ -969,7 +970,8 @@ public class AdvancedAllocationController extends GenericForwardComposer {
             GenericResourceAllocation genericResourceAllocation,
             Restriction restriction, TaskElement task) {
         return Row.createRow(messages, restriction, Criterion
-                .getCaptionFor(genericResourceAllocation.getCriterions()), 1, Arrays
+                .getCaptionFor(genericResourceAllocation.getCriterions()),
+                Mode.LEAF, Arrays
                 .asList(genericResourceAllocation), genericResourceAllocation
                 .isLimiting(), task);
     }
@@ -977,7 +979,8 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     private Row buildGroupingRow(AllocationInput allocationInput) {
         Restriction restriction = allocationInput.createRestriction();
         String taskName = allocationInput.getTaskName();
-        Row groupingRow = Row.createRow(messages, restriction, taskName, 0,
+        Row groupingRow = Row.createRow(messages, restriction, taskName,
+                Mode.GROUPING,
                 allocationInput.getAllocationsSortedByStartDate(), false, allocationInput.task);
         return groupingRow;
     }
@@ -1099,12 +1102,25 @@ interface CellChangedListener {
 
 class Row {
 
+    enum Mode {
+        GROUPING(0), LEAF(1);
+
+        private final int level;
+
+        private Mode(int level) {
+            this.level = level;
+        }
+
+        public String getNameCssClass() {
+            return "level" + level;
+        }
+    }
+
     static Row createRow(IMessagesForUser messages,
-            AdvancedAllocationController.Restriction restriction,
-            String name, int level,
- List<? extends ResourceAllocation<?>> allocations,
+            AdvancedAllocationController.Restriction restriction, String name,
+            Mode mode, List<? extends ResourceAllocation<?>> allocations,
             String description, boolean limiting, TaskElement task) {
-        Row newRow = new Row(messages, restriction, name, level, allocations,
+        Row newRow = new Row(messages, restriction, name, mode, allocations,
                 limiting, task);
         newRow.setDescription(description);
         return newRow;
@@ -1112,9 +1128,9 @@ class Row {
 
     static Row createRow(IMessagesForUser messages,
             AdvancedAllocationController.Restriction restriction, String name,
-            int level, List<? extends ResourceAllocation<?>> allocations,
+            Mode mode, List<? extends ResourceAllocation<?>> allocations,
             boolean limiting, TaskElement task) {
-        return new Row(messages, restriction, name, level, allocations,
+        return new Row(messages, restriction, name, mode, allocations,
                 limiting, task);
     }
 
@@ -1134,7 +1150,7 @@ class Row {
 
     private String description;
 
-    private int level;
+    private Mode mode;
 
     private final AggregateOfResourceAllocations aggregate;
 
@@ -1647,19 +1663,19 @@ class Row {
                 nameLabel.setTooltiptext(name);
             }
 
-            nameLabel.setSclass("level" + level);
+            nameLabel.setSclass(mode.getNameCssClass());
         }
         return nameLabel;
     }
 
     private Row(IMessagesForUser messages,
             AdvancedAllocationController.Restriction restriction, String name,
-            int level, List<? extends ResourceAllocation<?>> allocations,
+            Mode mode, List<? extends ResourceAllocation<?>> allocations,
             boolean limiting, TaskElement task) {
         this.messages = messages;
         this.restriction = restriction;
         this.name = name;
-        this.level = level;
+        this.mode = mode;
         this.isLimiting = limiting;
         this.task = task;
         this.aggregate = AggregateOfResourceAllocations
@@ -1807,7 +1823,7 @@ class Row {
     }
 
     public boolean isGroupingRow() {
-        return level == 0;
+        return mode == Mode.GROUPING;
     }
 
     public String getDescription() {
