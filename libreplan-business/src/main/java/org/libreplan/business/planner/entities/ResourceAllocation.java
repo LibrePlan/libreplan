@@ -2093,7 +2093,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         return result;
     }
 
-    protected EffortDuration getAssignedDuration(IntraDayDate startInclusive,
+    public EffortDuration getAssignedDuration(IntraDayDate startInclusive,
             IntraDayDate endExclusive) {
         return getAssignedDuration(
                 getAssignments(startInclusive, endExclusive), startInclusive,

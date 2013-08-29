@@ -29,6 +29,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -41,6 +42,7 @@ import org.apache.commons.lang.Validate;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.Period;
+import org.libreplan.business.common.ProportionalDistributor;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.planner.entities.AggregateOfResourceAllocations;
 import org.libreplan.business.planner.entities.AssignmentFunction;
@@ -57,6 +59,7 @@ import org.libreplan.business.planner.entities.Task.RecurrencesModification;
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.workingday.EffortDuration;
+import org.libreplan.business.workingday.IntraDayDate;
 import org.libreplan.web.common.EffortDurationBox;
 import org.libreplan.web.common.FilterUtils;
 import org.libreplan.web.common.IMessagesForUser;
@@ -1089,6 +1092,48 @@ class Row {
                 limiting, task);
     }
 
+    static List<EffortDuration> distribute(
+            List<ResourceAllocation<?>> allocations,
+            EffortDuration effortToDistribute) {
+        return distribute(allocations, null, null, effortToDistribute);
+    }
+
+    static List<EffortDuration> distribute(
+            List<ResourceAllocation<?>> allocations, LocalDate startDate,
+            LocalDate endDate, EffortDuration effortToDistribute) {
+
+        Validate.isTrue(startDate == null && startDate == endDate
+                || startDate != null && endDate != null);
+
+        int[] shares = new int[allocations.size()];
+
+        int i = 0;
+        for (ResourceAllocation<?> each : allocations) {
+            if (startDate != null) {
+                shares[i] = each.getAssignedDuration(
+                        IntraDayDate.startOfDay(startDate),
+                        IntraDayDate.startOfDay(endDate)).getSeconds();
+            } else {
+                shares[i] = each.getAssignedEffort().getSeconds();
+            }
+
+            i++;
+        }
+        return distribute(effortToDistribute,
+                ProportionalDistributor.create(shares));
+    }
+
+    private static List<EffortDuration> distribute(
+            EffortDuration effortToDistribute,
+            ProportionalDistributor distributor) {
+        int[] seconds = distributor.distribute(effortToDistribute.getSeconds());
+        List<EffortDuration> result = new ArrayList<EffortDuration>();
+        for (int each : seconds) {
+            result.add(EffortDuration.seconds(each));
+        }
+        return result;
+    }
+
     public void markErrorOnTotal(String message) {
         throw new WrongValueException(allEffortInput, message);
     }
@@ -1184,23 +1229,33 @@ class Row {
                     public void onEvent(Event event) {
                         EffortDuration value = effortDurationBox
                                 .getEffortDurationValue();
+                        List<ResourceAllocation<?>> allocations = getAllocations();
+                        List<EffortDuration> newEfforts = distribute(
+                                allocations, value);
+                        assert newEfforts.size() == allocations.size();
 
-                        ResourceAllocation<?> resourceAllocation = getAllocation();
-                        resourceAllocation
-                                .withPreviousAssociatedResources()
-                                .onIntervalWithinTask(
-                                        resourceAllocation.getStartDate(),
-                                        resourceAllocation.getEndDate())
-                                .allocate(value);
-                        AssignmentFunction assignmentFunction = resourceAllocation.getAssignmentFunction();
-                        if (assignmentFunction != null) {
-                            assignmentFunction.applyTo(resourceAllocation);
+                        Iterator<EffortDuration> iterator = newEfforts
+                                .iterator();
+                        for (ResourceAllocation<?> allocation : allocations) {
+                            EffortDuration effortForAllocation = iterator
+                                    .next();
+                            allocation
+                                    .withPreviousAssociatedResources()
+                                    .onIntervalWithinTask(
+                                            allocation.getStartDate(),
+                                            allocation.getEndDate())
+                                    .allocate(effortForAllocation);
+                            AssignmentFunction assignmentFunction = allocation
+                                    .getAssignmentFunction();
+                            if (assignmentFunction != null) {
+                                assignmentFunction.applyTo(allocation);
+                            }
                         }
-
                         fireCellChanged();
                         reloadEffortsSameRowForDetailItems();
                         reloadAllEffort();
                     }
+
                 });
     }
 
@@ -1248,8 +1303,8 @@ class Row {
 
     private void initializeAssigmentFunctionsCombo() {
         hboxAssigmentFunctionsCombo = new Hbox();
-        assignmentFunctionsCombo = new AssignmentFunctionListbox(
-                functions, getAllocation().getAssignmentFunction());
+        assignmentFunctionsCombo = new AssignmentFunctionListbox(functions,
+                notRecurrentAllocation.getAssignmentFunction());
         hboxAssigmentFunctionsCombo.appendChild(assignmentFunctionsCombo);
         assignmentFunctionsConfigureButton = getAssignmentFunctionsConfigureButton(assignmentFunctionsCombo);
         hboxAssigmentFunctionsCombo.appendChild(assignmentFunctionsConfigureButton);
@@ -1306,9 +1361,8 @@ class Row {
                             .getValue();
 
                     // Cannot apply function if task contains consolidated day assignments
-                    final ResourceAllocation<?> resourceAllocation = getAllocation();
                     if (function.isSigmoid()
-                            && !resourceAllocation
+                            && !notRecurrentAllocation
                                     .getConsolidatedAssignments().isEmpty()) {
                         showCannotApplySigmoidFunction();
                         setSelectedItem(getPreviousListitem());
@@ -1322,7 +1376,9 @@ class Row {
                     // Apply assignment function
                     if (function != null) {
                         setPreviousListitem(getSelectedItem());
-                        function.applyOn(resourceAllocation);
+                        for (ResourceAllocation<?> each : getAllocations()) {
+                            function.applyOn(each);
+                        }
                         updateAssignmentFunctionsConfigureButton(
                                 assignmentFunctionsConfigureButton,
                                 function.isConfigurable());
@@ -1464,7 +1520,7 @@ class Row {
 
         @Override
         protected ResourceAllocation<?> getAllocation() {
-            return Row.this.getAllocation();
+            return notRecurrentAllocation;
         }
 
         @Override
@@ -1572,6 +1628,8 @@ class Row {
 
     private boolean isLimiting;
 
+    private final ResourceAllocation<?> notRecurrentAllocation;
+
     private Button getAssignmentFunctionsConfigureButton(
             final Listbox assignmentFunctionsListbox) {
         Button button = Util.createEditButton(new EventListener() {
@@ -1620,6 +1678,9 @@ class Row {
             String name,
             Mode mode, List<? extends ResourceAllocation<?>> allocations,
             boolean limiting, TaskElement task) {
+
+        Validate.isTrue(!allocations.isEmpty() || mode == Mode.GROUPING);
+
         this.restriction = restriction;
         this.name = name;
         this.mode = mode;
@@ -1627,6 +1688,8 @@ class Row {
         this.task = task;
         this.aggregate = AggregateOfResourceAllocations
                 .createFromSatisfied(new ArrayList<ResourceAllocation<?>>(allocations));
+        this.notRecurrentAllocation = allocations.isEmpty() ? null
+                : allocations.get(0);
     }
 
     private EffortDuration getEffortForDetailItem(DetailItem item) {
@@ -1672,23 +1735,41 @@ class Row {
                         .getStartDate().toLocalDate());
                 LocalDate endDate = restriction.limitEndDate(item.getEndDate()
                         .toLocalDate());
+                List<ResourceAllocation<?>> allocations = getAllocations();
+
+                List<EffortDuration> efforts = distribute(allocations,
+                        startDate, endDate, value);
+                assert efforts.size() == allocations.size();
+
                 changeAssignmentFunctionToManual();
-                getAllocation().withPreviousAssociatedResources()
-                                   .onIntervalWithinTask(startDate, endDate)
-                                   .allocate(value);
+
+                Iterator<EffortDuration> effortsIter = efforts.iterator();
+                for (ResourceAllocation<?> each : allocations) {
+                    EffortDuration effort = effortsIter.next();
+                    if (effort.isZero()) {
+                        continue;
+                    }
+                    each.withPreviousAssociatedResources()
+                            .onIntervalWithinTask(startDate, endDate)
+                            .allocate(effort);
+                }
+
                 fireCellChanged(item);
                 effortBox.setRawValue(getEffortForDetailItem(item));
                 reloadAllEffort();
             }
+
         });
     }
 
     private void changeAssignmentFunctionToManual() {
         assignmentFunctionsCombo
                 .setSelectedFunction(AssignmentFunctionName.MANUAL.toString());
-        ResourceAllocation<?> allocation = getAllocation();
-        if (!(allocation.getAssignmentFunction() instanceof ManualFunction)) {
-            allocation.setAssignmentFunctionAndApplyIfNotFlat(ManualFunction.create());
+        for (ResourceAllocation<?> each : getAllocations()) {
+            if (!(each.getAssignmentFunction() instanceof ManualFunction)) {
+                each.setAssignmentFunctionAndApplyIfNotFlat(ManualFunction
+                        .create());
+            }
         }
     }
 
@@ -1745,11 +1826,8 @@ class Row {
         return item.getStartDate().compareTo(firstDayNotConsolidated) < 0;
     }
 
-    private ResourceAllocation<?> getAllocation() {
-        if (isGroupingRow()) {
-            throw new IllegalStateException("is grouping row");
-        }
-        return aggregate.getAllocationsSortedByStartDate().get(0);
+    private List<ResourceAllocation<?>> getAllocations() {
+        return aggregate.getAllocationsSortedByStartDate();
     }
 
     public boolean isGroupingRow() {
