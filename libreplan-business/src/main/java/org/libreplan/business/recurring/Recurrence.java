@@ -208,4 +208,14 @@ public class Recurrence extends BaseEntity {
         return result;
     }
 
+    public void merge(Scenario onScenario,
+            List<ModifiedAllocation> allocationModifications) {
+        for (ModifiedAllocation each : allocationModifications) {
+            ResourceAllocation<?> original = each.getOriginal();
+            Validate.isTrue(resourceAllocations.contains(original));
+            original.mergeAssignmentsAndResourcesPerDay(onScenario,
+                    each.getModification());
+        }
+    }
+
 }

@@ -48,6 +48,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Resource;
@@ -81,7 +82,9 @@ import org.libreplan.business.planner.entities.ResourceAllocation;
 import org.libreplan.business.planner.entities.ResourceAllocation.Direction;
 import org.libreplan.business.planner.entities.SpecificResourceAllocation;
 import org.libreplan.business.planner.entities.Task;
+import org.libreplan.business.planner.entities.Task.ManualRecurrencesModification;
 import org.libreplan.business.planner.entities.Task.ModifiedAllocation;
+import org.libreplan.business.planner.entities.Task.RecurrencesModification;
 import org.libreplan.business.planner.entities.TaskDeadlineViolationStatusEnum;
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.planner.entities.TaskElement.IDatesHandler;
@@ -625,8 +628,9 @@ public class TaskTest {
             return null;
         }
 
-        RecurrenceInformation getCustomRecurrence() {
-            return RecurrenceInformation.noRecurrence();
+        RecurrencesModification getCustomRecurrence() {
+            return Task.changeRecurrenceInformation(RecurrenceInformation
+                    .noRecurrence());
         }
 
         public void allocateAndMerge(
@@ -700,8 +704,7 @@ public class TaskTest {
             }
 
             task.mergeAllocation(createNiceMock(IResourcesSearcher.class),
-                    mainScenario,
-                    Task.changeRecurrenceInformation(getCustomRecurrence()),
+                    mainScenario, getCustomRecurrence(),
                     start,
                     end, workableDays, getCalculatedValue(), newAllocations,
                     modifications, toRemove);
@@ -715,6 +718,12 @@ public class TaskTest {
 
     public AllocationConfiguration untilAllocating(final int hours,
             final RecurrenceInformation recurrence) {
+        return untilAllocating(hours,
+                Task.changeRecurrenceInformation(recurrence));
+    }
+
+    public AllocationConfiguration untilAllocating(final int hours,
+            final RecurrencesModification recurrenceModification) {
         return new AllocationConfiguration() {
 
             @Override
@@ -728,8 +737,8 @@ public class TaskTest {
             }
 
             @Override
-            RecurrenceInformation getCustomRecurrence() {
-                return recurrence;
+            RecurrencesModification getCustomRecurrence() {
+                return recurrenceModification;
             }
         };
     }
@@ -768,8 +777,8 @@ public class TaskTest {
             }
 
             @Override
-            RecurrenceInformation getCustomRecurrence() {
-                return recurrenceInformation;
+            RecurrencesModification getCustomRecurrence() {
+                return Task.changeRecurrenceInformation(recurrenceInformation);
             }
         };
     }
@@ -953,22 +962,112 @@ public class TaskTest {
                 .create(resourceAllocation, ResourcesPerDay.amount(1));
 
         untilAllocating(40,
-                new RecurrenceInformation(2, RecurrencePeriodicity.WEEKLY, 1))
+                new RecurrenceInformation(1, RecurrencePeriodicity.WEEKLY, 1))
                 .allocateAndMerge(asList(resourcePerDayModification));
 
-        assertThat(task, allAllocationsSatisfied());
-
-        assertThat(task.getRecurrences().size(), equalTo(2));
-        assertThat(task.getNotRecurrentResourceAllocations().size(), equalTo(1));
-        assertTrue(task.getNotRecurrentResourceAllocations().contains(
-                resourceAllocation));
-        assertThat(task.getAllResourceAllocations().size(), equalTo(3));
+        assertThat(task.getRecurrences().size(), equalTo(1));
 
         LocalDate start = task.getStartAsLocalDate();
         assertThat(
                 task.getRecurrences(),
-                matchesDates(start.plusDays(7), start.plusDays(7).plusDays(5),
-                        start.plusDays(14), start.plusDays(14).plusDays(5)));
+                matchesDates(start.plusDays(7), start.plusDays(7).plusDays(5)));
+
+        assertThat(task.getAssignedEffort(), equalTo(hours(80)));
+
+        ManualRecurrencesModification recurrencesModification = task
+                .copyRecurrencesToModify(mainScenario);
+
+        Map<Recurrence, List<ModifiedAllocation>> allocationsPerRecurrence = recurrencesModification
+                .getAllocationsPerRecurrence();
+        assertThat(allocationsPerRecurrence.size(), equalTo(1));
+        List<ModifiedAllocation> modifiedAllocations = allocationsPerRecurrence
+                .values().iterator().next();
+        assertThat(modifiedAllocations.size(), equalTo(1));
+        ModifiedAllocation modified = modifiedAllocations.get(0);
+
+        modified.getModification()
+                .withPreviousAssociatedResources()
+                .onIntervalWithinTask(start.plusDays(8), start.plusDays(9))
+                .allocate(hours(10));
+
+        assertThat(
+                "Changing the modification doesn't modify the original allocation",
+                task.getAssignedEffort(), equalTo(hours(80)));
+
+        untilAllocating(40, recurrencesModification)
+                .allocateAndMerge(asList(resourcePerDayModification));
+
+        assertThat(
+                "Once the merging is done, the original allocations are modified",
+                task.getAssignedEffort(), equalTo(hours(82)));
+    }
+
+    @Test
+    public void manualChangesOnTheRecurrenceCanModifyTheTaskDates() {
+        SpecificResourceAllocation resourceAllocation = SpecificResourceAllocation
+                .create(task);
+
+        givenWorker(8);
+        resourceAllocation.setResource(this.worker);
+
+        ResourcesPerDayModification resourcePerDayModification = ResourcesPerDayModification
+                .create(resourceAllocation, ResourcesPerDay.amount(1));
+
+        untilAllocating(40,
+                new RecurrenceInformation(1, RecurrencePeriodicity.WEEKLY, 1))
+                .allocateAndMerge(asList(resourcePerDayModification));
+
+        assertThat(task.getRecurrences().size(), equalTo(1));
+
+        LocalDate start = task.getStartAsLocalDate();
+        assertThat(task.getRecurrences(),
+                matchesDates(start.plusDays(7), start.plusDays(7).plusDays(5)));
+
+        assertThat(task.getIntraDayEndDate(),
+                equalTo(IntraDayDate.startOfDay(start.plusDays(7).plusDays(5))));
+
+        ManualRecurrencesModification manualRecurrencesModification = task
+                .copyRecurrencesToModify(mainScenario);
+
+        Map<Recurrence, List<ModifiedAllocation>> allocationsPerRecurrence = manualRecurrencesModification
+                .getAllocationsPerRecurrence();
+        List<ModifiedAllocation> modifiedAllocations = allocationsPerRecurrence
+                .values().iterator().next();
+
+        List<ResourcesPerDayModification> resourcesPerDayModifications = ResourcesPerDayModification
+                .fromExistent(ModifiedAllocation.modified(modifiedAllocations),
+                        createNiceMock(IResourcesSearcher.class));
+
+        ResourceAllocation.allocating(resourcesPerDayModifications)
+                .untilAllocating(IntraDayDate.startOfDay(start.plusDays(7)),
+                        Direction.FORWARD, hours(48));
+
+        untilAllocating(40, manualRecurrencesModification).allocateAndMerge(
+                asList(resourcePerDayModification));
+
+        assertThat(
+                "The end date is changed due to the recurrence taking more time",
+                task.getIntraDayEndDate(),
+                equalTo(IntraDayDate.startOfDay(start.plusDays(7).plusDays(6))));
+
+    }
+
+    @Test
+    public void recurrenceCanBeModifiedManually() {
+        SpecificResourceAllocation resourceAllocation = SpecificResourceAllocation
+                .create(task);
+
+        givenWorker(8);
+        resourceAllocation.setResource(this.worker);
+
+        ResourcesPerDayModification resourcePerDayModification = ResourcesPerDayModification
+                .create(resourceAllocation, ResourcesPerDay.amount(1));
+
+        untilAllocating(40,
+                new RecurrenceInformation(2, RecurrencePeriodicity.WEEKLY, 1))
+                .allocateAndMerge(asList(resourcePerDayModification));
+
+        assertThat(task, allAllocationsSatisfied());
     }
 
     @Test

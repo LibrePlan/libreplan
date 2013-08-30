@@ -35,6 +35,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
@@ -491,6 +492,8 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         }
         remove(toRemove);
         addAllocations(scenario, newAllocations);
+
+        recurrencesDatesCached = null;
         recurrencesModification.visit(new ICases<Void>() {
 
             @Override
@@ -504,8 +507,31 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
 
             @Override
             public Void onManual(ManualRecurrencesModification manual) {
-                // TODO merge the changes done to the copy of the recurrences
-                // allocations
+                Map<Recurrence, List<ModifiedAllocation>> allocationsPerRecurrence = manual
+                        .getAllocationsPerRecurrence();
+                for (Entry<Recurrence, List<ModifiedAllocation>> entry : allocationsPerRecurrence
+                        .entrySet()) {
+                    Recurrence recurrence = entry.getKey();
+                    Validate.isTrue(recurrences.contains(recurrence));
+                    recurrence.merge(scenario, entry.getValue());
+                }
+
+                List<Recurrence> recurrences = getRecurrences();
+                if (recurrences.isEmpty()) {
+                    return null;
+                }
+
+                IntraDayDate maxEndDate = Recurrence
+                        .findMaxEndIntraDayDate(recurrences);
+                if (maxEndDate.compareTo(getIntraDayEndDate()) > 0) {
+                    setIntraDayEndDate(maxEndDate);
+                }
+
+                IntraDayDate minStartDate = Recurrence
+                        .findMinStartIntraDayDate(recurrences);
+                if (minStartDate.compareTo(getIntraDayStartDate()) < 0) {
+                    setIntraDayStartDate(minStartDate);
+                }
 
                 return null;
             }
@@ -687,7 +713,6 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         }
 
         void synchronizeRecurrences() {
-            recurrencesDatesCached = null;
             clearPreviousNotConsolidatedRecurrences();
 
             LocalDate reachInLastAllocation = firstAllocationReach;
