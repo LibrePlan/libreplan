@@ -465,17 +465,17 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
 
     }
 
-    public void mergeAllocation(IResourcesSearcher searcher,
-            Scenario scenario,
-            RecurrenceInformation recurrenceInformation,
+    public void mergeAllocation(final IResourcesSearcher searcher,
+            final Scenario scenario,
+            RecurrencesModification recurrencesModification,
             final IntraDayDate start,
             final IntraDayDate end, Integer newWorkableDays,
             CalculatedValue calculatedValue,
             List<ResourceAllocation<?>> newAllocations,
             List<ModifiedAllocation> modifications,
             Collection<? extends ResourceAllocation<?>> toRemove) {
-        Validate.notNull(recurrenceInformation);
-        this.recurrenceInformation = recurrenceInformation;
+        Validate.notNull(recurrencesModification);
+
         if (!newAllocations.isEmpty() || !modifications.isEmpty()) {
             // otherwise dates could not be calculated correctly
             this.calculatedValue = calculatedValue;
@@ -491,13 +491,30 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         }
         remove(toRemove);
         addAllocations(scenario, newAllocations);
-        new RecurrencesSynchronizer(scenario, searcher)
-                .synchronizeRecurrences();
+        recurrencesModification.visit(new ICases<Void>() {
+
+            @Override
+            public Void onAutomatic(RecurrenceInformation recurrenceInformation) {
+                Task.this.recurrenceInformation = recurrenceInformation;
+                new RecurrencesSynchronizer(scenario, searcher)
+                        .synchronizeRecurrences();
+
+                return null;
+            }
+
+            @Override
+            public Void onManual(ManualRecurrencesModification manual) {
+                // TODO merge the changes done to the copy of the recurrences
+                // allocations
+
+                return null;
+            }
+        });
     }
 
-    public RecurrencesModification copyRecurrencesToModify(
+    public ManualRecurrencesModification copyRecurrencesToModify(
             Scenario onScenario) {
-        return new RecurrencesModification(getRecurrences(), onScenario);
+        return new ManualRecurrencesModification(getRecurrences(), onScenario);
     }
 
     private static Map<Object, List<ResourceAllocation<?>>> groupBy(
@@ -518,13 +535,54 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         return result;
     }
 
-    public class RecurrencesModification {
+    public static RecurrencesModification changeRecurrenceInformation(
+            RecurrenceInformation recurrenceInformation) {
+        return new AutomaticRecurrencesModification(recurrenceInformation);
+    }
+
+    public RecurrencesModification currentRecurrencesModification() {
+        return new AutomaticRecurrencesModification(getRecurrenceInformation());
+    }
+
+    public static abstract class RecurrencesModification {
+
+        public abstract <T> T visit(ICases<T> cases);
+    }
+
+    interface ICases<T> {
+
+        T onAutomatic(RecurrenceInformation recurrenceInformation);
+
+        T onManual(ManualRecurrencesModification manual);
+    }
+
+    public static class AutomaticRecurrencesModification extends
+            RecurrencesModification {
+
+        private final RecurrenceInformation recurrenceInformation;
+
+        AutomaticRecurrencesModification(
+                RecurrenceInformation recurrenceInformation) {
+            this.recurrenceInformation = recurrenceInformation;
+        }
+
+        public RecurrenceInformation getRecurrenceInformation() {
+            return recurrenceInformation;
+        }
+
+        @Override
+        public <T> T visit(ICases<T> cases) {
+            return cases.onAutomatic(recurrenceInformation);
+        }
+    }
+
+    public class ManualRecurrencesModification extends RecurrencesModification {
 
         private final Map<Recurrence, List<ModifiedAllocation>> allocationsPerRecurrence = new HashMap<Recurrence, List<ModifiedAllocation>>();
 
         private final Map<Object, List<ResourceAllocation<?>>> recurrenceAllocations;
 
-        public RecurrencesModification(List<Recurrence> recurrences,
+        public ManualRecurrencesModification(List<Recurrence> recurrences,
                 Scenario onScenario) {
             List<ResourceAllocation<?>> allRecurrent = new ArrayList<ResourceAllocation<?>>();
             for (Recurrence each : recurrences) {
@@ -545,6 +603,11 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         public Map<Object, List<ResourceAllocation<?>>> getRecurrenceAllocations() {
             return new HashMap<Object, List<ResourceAllocation<?>>>(
                     recurrenceAllocations);
+        }
+
+        @Override
+        public <T> T visit(ICases<T> cases) {
+            return cases.onManual(this);
         }
     }
 
@@ -1312,7 +1375,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
 
             List<ResourceAllocation<?>> newAllocations = emptyList(), removedAllocations = emptyList();
             mergeAllocation(strategy.searcher, onScenario,
-                    getRecurrenceInformation(),
+                    currentRecurrencesModification(),
                     getIntraDayStartDate(),
                     getIntraDayEndDate(), workableDays, calculatedValue,
                     newAllocations, copied, removedAllocations);

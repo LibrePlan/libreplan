@@ -700,7 +700,9 @@ public class TaskTest {
             }
 
             task.mergeAllocation(createNiceMock(IResourcesSearcher.class),
-                    mainScenario, getCustomRecurrence(), start,
+                    mainScenario,
+                    Task.changeRecurrenceInformation(getCustomRecurrence()),
+                    start,
                     end, workableDays, getCalculatedValue(), newAllocations,
                     modifications, toRemove);
         }

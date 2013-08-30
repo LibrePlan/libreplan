@@ -55,7 +55,7 @@ import org.libreplan.business.planner.entities.SigmoidFunction;
 import org.libreplan.business.planner.entities.SpecificResourceAllocation;
 import org.libreplan.business.planner.entities.StretchesFunctionTypeEnum;
 import org.libreplan.business.planner.entities.Task;
-import org.libreplan.business.planner.entities.Task.RecurrencesModification;
+import org.libreplan.business.planner.entities.Task.ManualRecurrencesModification;
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.workingday.EffortDuration;
@@ -123,7 +123,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         public AllocationInput(
                 AggregateOfResourceAllocations notRecurrentAggregate,
                 TaskElement task,
-                RecurrencesModification recurrencesModification,
+                ManualRecurrencesModification recurrencesModification,
                 IAdvanceAllocationResultReceiver resultReceiver) {
             Validate.notNull(notRecurrentAggregate);
             Validate.notNull(resultReceiver);

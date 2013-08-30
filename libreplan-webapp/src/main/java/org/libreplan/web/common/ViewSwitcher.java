@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.libreplan.business.orders.entities.Order;
-import org.libreplan.business.planner.entities.Task.RecurrencesModification;
+import org.libreplan.business.planner.entities.Task.ManualRecurrencesModification;
 import org.libreplan.web.planner.allocation.AdvancedAllocationController;
 import org.libreplan.web.planner.allocation.AdvancedAllocationController.AllocationInput;
 import org.libreplan.web.planner.allocation.AdvancedAllocationController.IAdvanceAllocationResultReceiver;
@@ -58,7 +58,7 @@ public class ViewSwitcher implements Composer {
 
     public void goToAdvancedAllocation(Order order,
             AllocationResult allocationResult,
-            RecurrencesModification recurrences,
+            ManualRecurrencesModification recurrences,
             IAdvanceAllocationResultReceiver resultReceiver) {
         planningOrder = ComponentsReplacer.replaceAllChildren(
                 parent,
@@ -70,7 +70,7 @@ public class ViewSwitcher implements Composer {
 
     private Map<String, Object> createArgsForAdvancedAllocation(Order order,
             AllocationResult allocationResult,
-            RecurrencesModification recurrences,
+            ManualRecurrencesModification recurrences,
             IAdvanceAllocationResultReceiver resultReceiver) {
         Map<String, Object> result = new HashMap<String, Object>();
         result.put("advancedAllocationController",
@@ -97,7 +97,7 @@ public class ViewSwitcher implements Composer {
 
     private List<AllocationInput> asAllocationInput(
             AllocationResult allocationResult,
-            RecurrencesModification recurrences,
+            ManualRecurrencesModification recurrences,
             IAdvanceAllocationResultReceiver resultReceiver) {
         return Collections.singletonList(new AllocationInput(allocationResult
                 .getNotRecurrentAllocationsAggregate(), allocationResult
