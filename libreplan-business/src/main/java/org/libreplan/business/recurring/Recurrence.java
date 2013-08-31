@@ -80,6 +80,10 @@ public class Recurrence extends BaseEntity {
         return Collections.max(dates);
     }
 
+    public static Recurrence createRecurrence(LocalDate date,
+            Collection<? extends ResourceAllocation<?>> allocations) {
+        return create(new Recurrence(date, allocations));
+    }
 
     private LocalDate date;
 
@@ -90,7 +94,7 @@ public class Recurrence extends BaseEntity {
     public Recurrence() {
     }
 
-    public Recurrence(LocalDate date,
+    private Recurrence(LocalDate date,
             Collection<? extends ResourceAllocation<?>> allocations) {
         Validate.notNull(date);
         Validate.notNull(allocations);

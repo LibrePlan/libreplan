@@ -788,7 +788,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
                 updateDerived(notRecurrentResourceAllocations.get(i), each);
                 i++;
             }
-            return new Recurrence(date, allocations);
+            return Recurrence.createRecurrence(date, allocations);
         }
 
         private IAllocationInputs createInputs(LocalDate date,
