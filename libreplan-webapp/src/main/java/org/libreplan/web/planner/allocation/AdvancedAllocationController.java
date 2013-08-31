@@ -161,6 +161,10 @@ public class AdvancedAllocationController extends GenericForwardComposer {
             return notRecurrentAggregate.getAllocationsSortedByStartDate();
         }
 
+        public List<? extends ResourceAllocation<?>> getAllAllocations() {
+            return allAggregate.getAllocationsSortedByStartDate();
+        }
+
         String getTaskName() {
             return task.getName();
         }
@@ -939,7 +943,8 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         String taskName = allocationInput.getTaskName();
         Row groupingRow = Row.createRow(restriction, taskName,
                 Mode.GROUPING,
-                allocationInput.getAllocationsSortedByStartDate(), false, allocationInput.task);
+                allocationInput.getAllAllocations(), false,
+                allocationInput.task);
         return groupingRow;
     }
 
