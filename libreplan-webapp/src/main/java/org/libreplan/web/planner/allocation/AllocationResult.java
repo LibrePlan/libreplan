@@ -164,7 +164,7 @@ public class AllocationResult {
     private Set<ResourceAllocation<?>> getNotModified(
             List<ResourceAllocation<?>> modified) {
         Set<ResourceAllocation<?>> all = new HashSet<ResourceAllocation<?>>(
-                task.getSatisfiedResourceAllocations());
+                task.getSatisfiedNotRecurrentResourceAllocations());
         all.removeAll(modified);
         return all;
     }
