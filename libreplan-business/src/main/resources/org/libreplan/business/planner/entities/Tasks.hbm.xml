@@ -116,6 +116,7 @@
                 </type>
             </property>
             <property name="amountOfPeriodsPerRepetition" column="amount_of_periods_per_repetition" />
+            <property name="repeatOnDay" column="repeat_on_day" />
         </component>
 
         </joined-subclass>

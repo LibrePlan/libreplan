@@ -122,4 +122,12 @@
         referencedColumnNames="id" referencedTableName="recurrence" />
     </changeSet>
 
+    <changeSet id="add-repeat-on-day-column-to-recurrence-information" author="ogonzalez">
+      <addColumn tableName="task">
+        <column name="repeat_on_day" type="INTEGER" defaultValue="NULL">
+          <constraints nullable="true"/>
+        </column>
+      </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

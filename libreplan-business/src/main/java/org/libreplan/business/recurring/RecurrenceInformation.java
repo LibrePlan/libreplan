@@ -47,6 +47,20 @@ public class RecurrenceInformation {
 
     private int amountOfPeriodsPerRepetition;
 
+    /**
+     * Only applicable to {@link RecurrencePeriodicity#WEEKLY} and
+     * {@link RecurrencePeriodicity#MONTHLY} . It's <code>null</code> if it
+     * doesn't have to repeat on a specific day.
+     *
+     * <p>
+     * If the recurrence is weekly {@link #repeatOnDay} can take values from 1
+     * to 7. If the recurrence is monthly it can take values from 1 to 31. If
+     * the month doesn't have that day it will repeat on the topmost day of that
+     * month.
+     * </p>
+     */
+    private Integer repeatOnDay;
+
     public int getAmountOfPeriodsPerRepetition() {
         return amountOfPeriodsPerRepetition;
     }
