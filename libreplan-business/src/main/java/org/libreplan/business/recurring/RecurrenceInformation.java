@@ -74,6 +74,13 @@ public class RecurrenceInformation {
     public RecurrenceInformation(int numberRepetitions,
             RecurrencePeriodicity recurrencePeriodicity,
             int amountOfPeriodsPerRepetition) {
+        this(numberRepetitions, recurrencePeriodicity,
+                amountOfPeriodsPerRepetition, null);
+    }
+
+    private RecurrenceInformation(int numberRepetitions,
+            RecurrencePeriodicity recurrencePeriodicity,
+            int amountOfPeriodsPerRepetition, Integer repeatOnDay) {
         Validate.notNull(recurrencePeriodicity);
         Validate.isTrue(numberRepetitions >= 0,
                 "the number of repetitions cannot be negative. It is: "
@@ -88,6 +95,13 @@ public class RecurrenceInformation {
                 .limitRepetitions(numberRepetitions);
         this.amountOfPeriodsPerRepetition = recurrencePeriodicity
                 .limitAmountOfPeriods(amountOfPeriodsPerRepetition);
+        this.repeatOnDay = repeatOnDay;
+    }
+
+    public RecurrenceInformation repeatOnDay(int day) {
+        recurrencePeriodicity.checkRepeatOnDay(day);
+        return new RecurrenceInformation(repetitions, recurrencePeriodicity,
+                amountOfPeriodsPerRepetition, day);
     }
 
     public int getRepetitions() {
@@ -106,6 +120,7 @@ public class RecurrenceInformation {
                     .append(recurrencePeriodicity, other.recurrencePeriodicity)
                     .append(amountOfPeriodsPerRepetition,
                             other.amountOfPeriodsPerRepetition)
+                    .append(repeatOnDay, other.repeatOnDay)
                     .isEquals();
         }
         return false;
@@ -115,7 +130,7 @@ public class RecurrenceInformation {
     public int hashCode() {
         return new HashCodeBuilder().append(repetitions)
                 .append(recurrencePeriodicity)
-                .append(amountOfPeriodsPerRepetition)
+                .append(amountOfPeriodsPerRepetition).append(repeatOnDay)
                 .toHashCode();
     }
 

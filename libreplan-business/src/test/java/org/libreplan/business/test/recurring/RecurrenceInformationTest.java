@@ -4,6 +4,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.EnumSet;
 import java.util.List;
@@ -127,6 +128,73 @@ public class RecurrenceInformationTest {
                             equalTo(plusTimes(start, each.getPeriod(), i)));
                     i++;
                 }
+            }
+        }
+    }
+
+    @Test
+    public void weeklyOrMonthlyRecurrenceCanHaveRepeatOnDayInformation() {
+        EnumSet<RecurrencePeriodicity> supportRepeatOnDay = EnumSet.of(
+                RecurrencePeriodicity.WEEKLY, RecurrencePeriodicity.MONTHLY);
+
+        for (RecurrencePeriodicity p : recurrentPeriods) {
+            RecurrenceInformation r = new RecurrenceInformation(1, p, 1);
+            boolean supported = supportRepeatOnDay.contains(p);
+            RecurrenceInformation other;
+            try {
+                other = r.repeatOnDay(2);
+                if (!supported) {
+                    fail("it should send exception");
+                }
+            } catch (IllegalArgumentException e) {
+                if (supported) {
+                    fail("it shouldn't send exception when supported");
+                }
+                continue;
+            }
+            assertTrue(other != r);
+            assertThat(other, not(equalTo(r)));
+            assertThat(other.hashCode(), not(equalTo(r.hashCode())));
+        }
+
+    }
+
+    @Test
+    public void monthlySupportsRepeatsOnDaysFrom1To31() {
+        RecurrenceInformation r = new RecurrenceInformation(1,
+                RecurrencePeriodicity.MONTHLY, 1);
+        for (int i = 1; i <= 31; i++) {
+            RecurrenceInformation other = r.repeatOnDay(i);
+            assertThat(other, not(equalTo(r)));
+        }
+    }
+
+    @Test
+    public void monthlySupportDoesntSupportMoreThan31AndLessThanOne() {
+        RecurrenceInformation r = new RecurrenceInformation(1,
+                RecurrencePeriodicity.MONTHLY, 1);
+        int[] days = { -2, -1, 0, 32, 33, 1000 };
+        for (int day : days) {
+            try {
+                r.repeatOnDay(day);
+                fail("It should fail");
+            } catch (IllegalArgumentException e) {
+                // ok
+            }
+        }
+    }
+
+    @Test
+    public void weeklySupportDoesntSupportMoreThan7AndLessThanOne() {
+        RecurrenceInformation r = new RecurrenceInformation(1,
+                RecurrencePeriodicity.WEEKLY, 1);
+        int[] days = { -2, -1, 0, 8, 9, 1000 };
+        for (int day : days) {
+            try {
+                r.repeatOnDay(day);
+                fail("It should fail");
+            } catch (IllegalArgumentException e) {
+                // ok
             }
         }
     }

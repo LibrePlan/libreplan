@@ -29,11 +29,28 @@ public enum RecurrencePeriodicity {
         public ReadablePeriod buildPeriod(int amount) {
             return Weeks.weeks(amount);
         }
+
+        @Override
+        public void checkRepeatOnDay(int day) {
+            if (day < 1 || day > 7) {
+                throw new IllegalArgumentException("day received: " + day
+                        + ". It must be within [1, 7]");
+            }
+
+        }
     },
     MONTHLY(_("Monthly"), _("month(s)")) {
         @Override
         public ReadablePeriod buildPeriod(int amount) {
             return Months.months(amount);
+        }
+
+        @Override
+        public void checkRepeatOnDay(int day) {
+            if(day < 1 || day > 31){
+                throw new IllegalArgumentException("day received: " + day
+                        + ". It must be within [1, 31]");
+            }
         }
     };
 
@@ -82,4 +99,9 @@ public enum RecurrencePeriodicity {
     }
 
     public abstract ReadablePeriod buildPeriod(int amount);
+
+    public void checkRepeatOnDay(int day) {
+        throw new IllegalArgumentException(this
+                + " doesn't support repeat on day");
+    }
 }
