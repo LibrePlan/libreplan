@@ -22,22 +22,23 @@
 
     <groupbox style="margin-top: 5px" sclass="recurrence-pattern" closable="false">
         <caption label="${i18n:_('Recurrence pattern')}" />
-        <hbox>
+        <hbox spacing="1em">
             <radiogroup id="recurrencePattern" onCheck="recurrenceInformationController.updateRecurrencePeriodicity()">
             </radiogroup>
-            <hbox id="amountOfPeriodsGroup" spacing="0.5em" style="margin-left:16px; margin-top: 4px;">
-	            <label value="${i18n:_('Recur every')}" />
-	            <spinner constraint="no empty,min 1" id="amountOfPeriodsSpinner" width="40px" value="@{recurrenceInformationController.amountOfPeriods}" />
-	            <label value="@{recurrenceInformationController.periodUnitLabel}" />
-            </hbox>
+            <vbox spacing="1em">
+	            <hbox id="amountOfPeriodsGroup" spacing="0.5em" style="margin-left:16px; margin-top: 4px;">
+		            <label value="${i18n:_('Recur every')}" />
+		            <spinner constraint="no empty,min 1" id="amountOfPeriodsSpinner" width="40px" value="@{recurrenceInformationController.amountOfPeriods}" />
+		            <label value="@{recurrenceInformationController.periodUnitLabel}" />
+	            </hbox>
+	            <radiogroup id="repeatOnDayWeekGroup" onCheck="recurrenceInformationController.updateRepeatOnDayOfWeek()" visible="false" />
+            </vbox>
         </hbox>
     </groupbox>
-
     <groupbox style="margin-top: 5px" sclass="recurrence-range" closable="false">
         <caption label="${i18n:_('Range of recurrence')}" />
         <label value="${i18n:_('End after')}" />
         <spinner constraint="no empty,min 1" id="recurrenceOccurences" width="40px" value="@{recurrenceInformationController.repetitions}" />
         <label value="${i18n:_('occurences')}" />
     </groupbox>
-
 </tabpanel>

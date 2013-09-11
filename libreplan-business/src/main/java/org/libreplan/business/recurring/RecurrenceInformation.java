@@ -158,4 +158,8 @@ public class RecurrenceInformation {
         return result;
     }
 
+    public Integer getRepeatOnDay() {
+        return repeatOnDay;
+    }
+
 }

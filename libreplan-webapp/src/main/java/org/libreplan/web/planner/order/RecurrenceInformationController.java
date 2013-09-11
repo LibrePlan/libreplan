@@ -21,6 +21,7 @@ package org.libreplan.web.planner.order;
 
 import static org.libreplan.web.I18nHelper._;
 
+import java.util.EnumSet;
 import java.util.List;
 
 import org.apache.commons.lang.Validate;
@@ -53,6 +54,7 @@ public class RecurrenceInformationController extends GenericForwardComposer {
 
     private Component messagesContainer;
     private Radiogroup recurrencePattern;
+    private Radiogroup repeatOnDayWeekGroup;
     private Spinner recurrenceOccurences;
 
     private Box amountOfPeriodsGroup;
@@ -63,6 +65,8 @@ public class RecurrenceInformationController extends GenericForwardComposer {
     private RecurrencePeriodicity recurrencePeriodicity = RecurrencePeriodicity.NO_PERIODICTY;
 
     private int amountOfPeriods = 1;
+
+    private Integer repeatOnDayForWeek;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -79,7 +83,8 @@ public class RecurrenceInformationController extends GenericForwardComposer {
                 .getPeriodicity();
         this.amountOfPeriods = recurrenceInformation
                 .getAmountOfPeriodsPerRepetition();
-
+        this.repeatOnDayForWeek = periodicity == RecurrencePeriodicity.WEEKLY ? recurrenceInformation
+                .getRepeatOnDay() : null;
         prepareRadioBoxes(periodicity);
         setPeriodicity(periodicity);
     }
@@ -89,6 +94,43 @@ public class RecurrenceInformationController extends GenericForwardComposer {
         this.recurrencePeriodicity = periodicity;
         enableOrDisableSpinner();
         enableOrDisableAmountOfPeriods();
+        visualizeOrHideRepeatOnDayWeek();
+        if (this.recurrencePeriodicity == RecurrencePeriodicity.WEEKLY) {
+            prepareRadioBoxesForRepeatOnDayForWeek(repeatOnDayForWeek);
+        }
+    }
+
+    private void visualizeOrHideRepeatOnDayWeek() {
+        repeatOnDayWeekGroup
+                .setVisible(this.recurrencePeriodicity == RecurrencePeriodicity.WEEKLY);
+    }
+
+    private void prepareRadioBoxesForRepeatOnDayForWeek(Integer repeatOnDay) {
+        repeatOnDay = repeatOnDay == null ? 0 : repeatOnDay;
+        List<Radio> children = repeatOnDayWeekGroup.getChildren();
+        if (children.isEmpty()) {
+            String[] labels = { _("Not specify"), _("Monday"), _("Tuesday"),
+                    _("Wednesday"), _("Thursday"), _("Friday"), _("Saturday"),
+                    _("Sunday") };
+            int i = 0;
+            for (String label : labels) {
+                Radio radio = new Radio(label);
+                radio.setValue(i + "");
+                children.add(radio);
+                radio.setSelected(i == repeatOnDay);
+                i++;
+            }
+        } else {
+            for (Radio each : children) {
+                each.setSelected(each.getValue().equals(repeatOnDay + ""));
+            }
+        }
+    }
+
+    public void updateRepeatOnDayOfWeek() {
+        int v = Integer.parseInt(repeatOnDayWeekGroup.getSelectedItemApi()
+                .getValue());
+        this.repeatOnDayForWeek = v == 0 ? null : v;
     }
 
     private void enableOrDisableSpinner() {
@@ -172,13 +214,26 @@ public class RecurrenceInformationController extends GenericForwardComposer {
         this.amountOfPeriods = amountOfPeriods;
     }
 
+    private static final EnumSet<RecurrencePeriodicity> supportRepeatOnDay = EnumSet
+            .of(RecurrencePeriodicity.WEEKLY, RecurrencePeriodicity.MONTHLY);
+
     public String getPeriodUnitLabel() {
-        return _(recurrencePeriodicity.getUnitLabel());
+        String unitLabel = _(recurrencePeriodicity.getUnitLabel());
+        String repeatOn = supportRepeatOnDay.contains(recurrencePeriodicity) ? " "
+                + _("on: ")
+                : "";
+        return unitLabel + repeatOn;
     }
 
     public RecurrenceInformation getModifiedRecurrenceInformation() {
-        return new RecurrenceInformation(repetitions, recurrencePeriodicity,
+        RecurrenceInformation result = new RecurrenceInformation(repetitions,
+                recurrencePeriodicity,
                 amountOfPeriods);
+        if (recurrencePeriodicity == RecurrencePeriodicity.WEEKLY
+                && repeatOnDayForWeek != null) {
+            result = result.repeatOnDay(repeatOnDayForWeek);
+        }
+        return result;
     }
 
 
