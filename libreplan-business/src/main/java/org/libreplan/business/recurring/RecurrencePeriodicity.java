@@ -4,6 +4,8 @@ import static org.libreplan.business.i18n.I18nHelper._;
 
 import org.apache.commons.lang.Validate;
 import org.joda.time.Days;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDate.Property;
 import org.joda.time.Months;
 import org.joda.time.ReadablePeriod;
 import org.joda.time.Weeks;
@@ -36,7 +38,12 @@ public enum RecurrencePeriodicity {
                 throw new IllegalArgumentException("day received: " + day
                         + ". It must be within [1, 7]");
             }
+        }
 
+        @Override
+        public LocalDate adjustToDay(LocalDate date, Integer repeatOnDay) {
+            checkRepeatOnDay(repeatOnDay);
+            return date.dayOfWeek().setCopy(repeatOnDay);
         }
     },
     MONTHLY(_("Monthly"), _("month(s)")) {
@@ -51,6 +58,15 @@ public enum RecurrencePeriodicity {
                 throw new IllegalArgumentException("day received: " + day
                         + ". It must be within [1, 31]");
             }
+        }
+
+        @Override
+        public LocalDate adjustToDay(LocalDate date, Integer onDay) {
+            checkRepeatOnDay(onDay);
+
+            Property dayOfMonth = date.dayOfMonth();
+            int maximumValue = dayOfMonth.getMaximumValue();
+            return dayOfMonth.setCopy(Math.min(maximumValue, onDay));
         }
     };
 
@@ -103,5 +119,9 @@ public enum RecurrencePeriodicity {
     public void checkRepeatOnDay(int day) {
         throw new IllegalArgumentException(this
                 + " doesn't support repeat on day");
+    }
+
+    public LocalDate adjustToDay(LocalDate date, Integer onDay) {
+        return date;
     }
 }

@@ -149,6 +149,10 @@ public class RecurrenceInformation {
         for (int i = 0; i < repetitions; i++) {
             current = direction == Direction.FORWARD ? current.plus(period)
                     : current.minus(period);
+            if (repeatOnDay != null) {
+                current = recurrencePeriodicity.adjustToDay(current,
+                        repeatOnDay);
+            }
             result.add(current);
         }
         return result;

@@ -9,6 +9,7 @@ import static org.junit.Assert.fail;
 import java.util.EnumSet;
 import java.util.List;
 
+import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalDate;
 import org.joda.time.ReadablePeriod;
 import org.junit.Test;
@@ -197,6 +198,68 @@ public class RecurrenceInformationTest {
                 // ok
             }
         }
+    }
+
+
+    @Test
+    public void itRespectsOnDayForWeeks() {
+        LocalDate wednesday = new LocalDate(2013, 9, 11);
+        int dayOfWeek = wednesday.getDayOfWeek();
+        assertThat(dayOfWeek, equalTo(DateTimeConstants.WEDNESDAY));
+
+        RecurrenceInformation r = new RecurrenceInformation(2,
+                RecurrencePeriodicity.WEEKLY, 1);
+
+        // repeat on monday
+        r = r.repeatOnDay(1);
+
+        List<LocalDate> recurrences = r.getRecurrences(
+                Direction.FORWARD, wednesday);
+        assertThat(recurrences.size(), equalTo(2));
+        assertThat(recurrences.get(0),
+                equalTo(wednesday.dayOfMonth().setCopy(16)));
+        assertThat(recurrences.get(0).getDayOfWeek(), equalTo(1));
+
+        assertThat(recurrences.get(1),
+                equalTo(wednesday.dayOfMonth().setCopy(23)));
+        assertThat(recurrences.get(1).getDayOfWeek(), equalTo(1));
+    }
+
+    @Test
+    public void itRespectsOnDayForMonths() {
+        LocalDate start = new LocalDate(2013, 9, 11);
+
+        RecurrenceInformation r = new RecurrenceInformation(2,
+                RecurrencePeriodicity.MONTHLY, 1);
+
+        final int day = 20;
+        r = r.repeatOnDay(day);
+        List<LocalDate> recurrences = r
+                .getRecurrences(Direction.FORWARD, start);
+
+        assertThat(recurrences.size(), equalTo(2));
+        assertThat(recurrences.get(0), equalTo(new LocalDate(2013, 10, day)));
+        assertThat(recurrences.get(1), equalTo(new LocalDate(2013, 11, day)));
+    }
+
+    @Test
+    public void ifTheMonthDoesntHaveThatDayItGoesToTheTopmostOne() {
+        LocalDate start = new LocalDate(2013, 1, 11);
+
+        final int numberOfRecurrences = 3;
+        RecurrenceInformation r = new RecurrenceInformation(
+                numberOfRecurrences,
+                RecurrencePeriodicity.MONTHLY, 1);
+
+        final int day = 31;
+        r = r.repeatOnDay(day);
+        List<LocalDate> recurrences = r
+                .getRecurrences(Direction.FORWARD, start);
+
+        assertThat(recurrences.size(), equalTo(numberOfRecurrences));
+        assertThat(recurrences.get(0), equalTo(new LocalDate(2013, 2, 28)));
+        assertThat(recurrences.get(1), equalTo(new LocalDate(2013, 3, 31)));
+        assertThat(recurrences.get(2), equalTo(new LocalDate(2013, 4, 30)));
     }
 
 }
