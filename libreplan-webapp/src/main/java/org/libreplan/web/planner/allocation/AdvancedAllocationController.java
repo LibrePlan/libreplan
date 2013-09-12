@@ -109,6 +109,14 @@ import org.zkoss.zul.api.Column;
  */
 public class AdvancedAllocationController extends GenericForwardComposer {
 
+    static LocalDate min(LocalDate... dates) {
+        return Collections.min(Arrays.asList(dates), null);
+    }
+
+    static LocalDate max(LocalDate... dates) {
+        return Collections.max(Arrays.asList(dates), null);
+    }
+
     public static class AllocationInput {
         private final AggregateOfResourceAllocations notRecurrentAggregate;
 
@@ -196,14 +204,6 @@ public class AdvancedAllocationController extends GenericForwardComposer {
                 LocalDate end = max(getEnd(all), taskEndDate);
                 return new Interval(asDate(start), asDate(end));
             }
-        }
-
-        private LocalDate min(LocalDate... dates) {
-            return Collections.min(Arrays.asList(dates), null);
-        }
-
-        private LocalDate max(LocalDate... dates) {
-            return Collections.max(Arrays.asList(dates), null);
         }
 
         private static LocalDate getEnd(List<ResourceAllocation<?>> all) {
@@ -1754,8 +1754,15 @@ class Row {
                     if (effort.isZero()) {
                         continue;
                     }
+                    LocalDate startForThis = AdvancedAllocationController
+                            .max(startDate, each.getStartDate());
+                    LocalDate endForThis = AdvancedAllocationController
+                            .min(endDate, each.getEndDate());
+                    if (startForThis.compareTo(endForThis) >= 0) {
+                        continue;
+                    }
                     each.withPreviousAssociatedResources()
-                            .onIntervalWithinTask(startDate, endDate)
+                            .onIntervalWithinTask(startForThis, endForThis)
                             .allocate(effort);
                 }
 
