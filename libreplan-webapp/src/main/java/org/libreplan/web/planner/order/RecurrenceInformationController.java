@@ -21,9 +21,11 @@ package org.libreplan.web.planner.order;
 
 import static org.libreplan.web.I18nHelper._;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.Validate;
 import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.recurring.RecurrenceInformation;
@@ -34,7 +36,13 @@ import org.libreplan.web.common.Util;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Div;
+import org.zkoss.zul.Hlayout;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Vlayout;
 import org.zkoss.zul.api.Box;
@@ -50,11 +58,26 @@ import org.zkoss.zul.api.Spinner;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class RecurrenceInformationController extends GenericForwardComposer {
 
+    private static <T extends Component> List<T> findDescendants(
+            Class<T> componentType, Component component) {
+        List<T> result = new ArrayList<T>();
+        @SuppressWarnings("unchecked")
+        List<Component> children = component.getChildren();
+        for (Component each : children) {
+            if (componentType.isInstance(each)) {
+                result.add(componentType.cast(each));
+            }
+            result.addAll(findDescendants(componentType, each));
+        }
+        return result;
+    }
+
     protected IMessagesForUser messagesForUser;
 
     private Component messagesContainer;
     private Radiogroup recurrencePattern;
     private Radiogroup repeatOnDayWeekGroup;
+    private Div repeatOnMonthDayDiv;
     private Spinner recurrenceOccurences;
 
     private Box amountOfPeriodsGroup;
@@ -67,6 +90,8 @@ public class RecurrenceInformationController extends GenericForwardComposer {
     private int amountOfPeriods = 1;
 
     private Integer repeatOnDayForWeek;
+
+    private Integer repeatOnDayForMonth;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -83,8 +108,12 @@ public class RecurrenceInformationController extends GenericForwardComposer {
                 .getPeriodicity();
         this.amountOfPeriods = recurrenceInformation
                 .getAmountOfPeriodsPerRepetition();
+
         this.repeatOnDayForWeek = periodicity == RecurrencePeriodicity.WEEKLY ? recurrenceInformation
                 .getRepeatOnDay() : null;
+        this.repeatOnDayForMonth = periodicity == RecurrencePeriodicity.MONTHLY ? recurrenceInformation
+                .getRepeatOnDay() : null;
+
         prepareRadioBoxes(periodicity);
         setPeriodicity(periodicity);
     }
@@ -95,8 +124,11 @@ public class RecurrenceInformationController extends GenericForwardComposer {
         enableOrDisableSpinner();
         enableOrDisableAmountOfPeriods();
         visualizeOrHideRepeatOnDayWeek();
+        visualizeOrHideRepeatOnDayMonth();
         if (this.recurrencePeriodicity == RecurrencePeriodicity.WEEKLY) {
             prepareRadioBoxesForRepeatOnDayForWeek(repeatOnDayForWeek);
+        } else if (this.recurrencePeriodicity == RecurrencePeriodicity.MONTHLY) {
+            prepareButtonsForRepeatOnDayForMonth(repeatOnDayForMonth);
         }
     }
 
@@ -105,8 +137,14 @@ public class RecurrenceInformationController extends GenericForwardComposer {
                 .setVisible(this.recurrencePeriodicity == RecurrencePeriodicity.WEEKLY);
     }
 
+    private void visualizeOrHideRepeatOnDayMonth() {
+        repeatOnMonthDayDiv
+                .setVisible(this.recurrencePeriodicity == RecurrencePeriodicity.MONTHLY);
+    }
+
     private void prepareRadioBoxesForRepeatOnDayForWeek(Integer repeatOnDay) {
         repeatOnDay = repeatOnDay == null ? 0 : repeatOnDay;
+        @SuppressWarnings("unchecked")
         List<Radio> children = repeatOnDayWeekGroup.getChildren();
         if (children.isEmpty()) {
             String[] labels = { _("Not specify"), _("Monday"), _("Tuesday"),
@@ -125,6 +163,58 @@ public class RecurrenceInformationController extends GenericForwardComposer {
                 each.setSelected(each.getValue().equals(repeatOnDay + ""));
             }
         }
+    }
+
+    private static final String dayOnMonthClass = "repeat-on-day-month";
+
+    @SuppressWarnings("unchecked")
+    private void prepareButtonsForRepeatOnDayForMonth(Integer repeatOnDay) {
+        List<Component> children = repeatOnMonthDayDiv.getChildren();
+        if (!children.isEmpty()) {
+            selectLabelForRepeatOnDayForMonth(repeatOnDay);
+            return;
+        }
+        Vlayout vlayout = new Vlayout();
+        vlayout.setSpacing("0");
+        children.add(vlayout);
+        int n = 1;
+        for (int i = 0; i < 5; i++) {
+            Hlayout hLayout = new Hlayout();
+            hLayout.setSpacing("0");
+            vlayout.getChildren().add(hLayout);
+            for (int j = 0; j < 7 && n <= 31; j++, n++) {
+                Label label = new Label();
+                label.setPre(true);
+                label.setValue(String.format("%2d", n));
+                final int thisN = n;
+                label.addEventListener(Events.ON_CLICK, new EventListener() {
+
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        selectLabelForRepeatOnDayForMonth(thisN);
+                    }
+                });
+                label.setSclass(dayOnMonthClass);
+                hLayout.getChildren().add(label);
+            }
+        }
+    }
+
+    private void selectLabelForRepeatOnDayForMonth(Integer repeatOnDay) {
+        if (ObjectUtils.equals(repeatOnDay, this.repeatOnDayForMonth)) {
+            this.repeatOnDayForMonth = null;
+        } else {
+            this.repeatOnDayForMonth = repeatOnDay;
+        }
+        List<Label> labels = findDescendants(Label.class, repeatOnMonthDayDiv);
+        for (Label each : labels) {
+            each.setSclass(dayOnMonthClass);
+        }
+        if (this.repeatOnDayForMonth == null) {
+            return;
+        }
+        Label label = labels.get(repeatOnDay - 1);
+        label.setSclass("repeat-on-day-month-day-selected");
     }
 
     public void updateRepeatOnDayOfWeek() {
@@ -165,9 +255,7 @@ public class RecurrenceInformationController extends GenericForwardComposer {
 
     @SuppressWarnings("unchecked")
     private void selectRadioBox(RecurrencePeriodicity currentPeriodicity) {
-        Vlayout layout = (Vlayout) recurrencePattern.getChildren().get(0);
-        List<Radio> children = layout.getChildren();
-        for (Radio each : children) {
+        for (Radio each : findDescendants(Radio.class, recurrencePattern)) {
             each.setSelected(Enum.valueOf(RecurrencePeriodicity.class,
                     each.getValue()) == currentPeriodicity);
         }
@@ -232,6 +320,9 @@ public class RecurrenceInformationController extends GenericForwardComposer {
         if (recurrencePeriodicity == RecurrencePeriodicity.WEEKLY
                 && repeatOnDayForWeek != null) {
             result = result.repeatOnDay(repeatOnDayForWeek);
+        } else if (recurrencePeriodicity == RecurrencePeriodicity.MONTHLY
+                && repeatOnDayForMonth != null) {
+            result = result.repeatOnDay(repeatOnDayForMonth);
         }
         return result;
     }

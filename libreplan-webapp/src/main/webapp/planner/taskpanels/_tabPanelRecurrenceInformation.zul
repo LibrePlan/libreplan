@@ -22,16 +22,17 @@
 
     <groupbox style="margin-top: 5px" sclass="recurrence-pattern" closable="false">
         <caption label="${i18n:_('Recurrence pattern')}" />
-        <hbox spacing="1em">
+        <hbox spacing="1.5em">
             <radiogroup id="recurrencePattern" onCheck="recurrenceInformationController.updateRecurrencePeriodicity()">
             </radiogroup>
             <vbox spacing="1em">
-	            <hbox id="amountOfPeriodsGroup" spacing="0.5em" style="margin-left:16px; margin-top: 4px;">
+	            <hbox id="amountOfPeriodsGroup" spacing="0.5em" style="margin-top: 4px;">
 		            <label value="${i18n:_('Recur every')}" />
 		            <spinner constraint="no empty,min 1" id="amountOfPeriodsSpinner" width="40px" value="@{recurrenceInformationController.amountOfPeriods}" />
 		            <label value="@{recurrenceInformationController.periodUnitLabel}" />
 	            </hbox>
 	            <radiogroup id="repeatOnDayWeekGroup" onCheck="recurrenceInformationController.updateRepeatOnDayOfWeek()" visible="false" />
+				<div id="repeatOnMonthDayDiv" />
             </vbox>
         </hbox>
     </groupbox>

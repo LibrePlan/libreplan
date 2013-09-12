@@ -159,6 +159,25 @@
 	z-index : 99 !important;
 }
 
+.repeat-on-day-month {
+	padding-right: 2px;
+	font-size: 0.9em !important;
+	color: gray;
+}
+
+.repeat-on-day-month-day-selected {
+	padding-right: 2px;
+	font-size: 0.9em !important;
+	font-weight: bold;
+	color: black;
+	background: #d9effa;
+	border-radius: 4px;
+}
+
+.repeat-on-day-month :HOVER {
+	font-style: italic;
+}
+
 /* Fixed box */
 .fixed {
     box-shadow: 3px 3px 3px #999;
