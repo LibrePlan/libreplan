@@ -128,7 +128,7 @@ public class RecurrenceInformationController extends GenericForwardComposer {
         if (this.recurrencePeriodicity == RecurrencePeriodicity.WEEKLY) {
             prepareRadioBoxesForRepeatOnDayForWeek(repeatOnDayForWeek);
         } else if (this.recurrencePeriodicity == RecurrencePeriodicity.MONTHLY) {
-            prepareButtonsForRepeatOnDayForMonth(repeatOnDayForMonth);
+            prepareButtonsForRepeatOnDayForMonth();
         }
     }
 
@@ -168,10 +168,10 @@ public class RecurrenceInformationController extends GenericForwardComposer {
     private static final String dayOnMonthClass = "repeat-on-day-month";
 
     @SuppressWarnings("unchecked")
-    private void prepareButtonsForRepeatOnDayForMonth(Integer repeatOnDay) {
+    private void prepareButtonsForRepeatOnDayForMonth() {
         List<Component> children = repeatOnMonthDayDiv.getChildren();
         if (!children.isEmpty()) {
-            selectLabelForRepeatOnDayForMonth(repeatOnDay);
+            updateSelectedLabelForRepeatOnDayForMonth();
             return;
         }
         Vlayout vlayout = new Vlayout();
@@ -191,7 +191,7 @@ public class RecurrenceInformationController extends GenericForwardComposer {
 
                     @Override
                     public void onEvent(Event event) throws Exception {
-                        selectLabelForRepeatOnDayForMonth(thisN);
+                        repeatOnDayMonthChosen(thisN);
                     }
                 });
                 label.setSclass(dayOnMonthClass);
@@ -200,12 +200,16 @@ public class RecurrenceInformationController extends GenericForwardComposer {
         }
     }
 
-    private void selectLabelForRepeatOnDayForMonth(Integer repeatOnDay) {
+    private void repeatOnDayMonthChosen(Integer repeatOnDay) {
         if (ObjectUtils.equals(repeatOnDay, this.repeatOnDayForMonth)) {
             this.repeatOnDayForMonth = null;
         } else {
             this.repeatOnDayForMonth = repeatOnDay;
         }
+        updateSelectedLabelForRepeatOnDayForMonth();
+    }
+
+    private void updateSelectedLabelForRepeatOnDayForMonth() {
         List<Label> labels = findDescendants(Label.class, repeatOnMonthDayDiv);
         for (Label each : labels) {
             each.setSclass(dayOnMonthClass);
@@ -213,7 +217,7 @@ public class RecurrenceInformationController extends GenericForwardComposer {
         if (this.repeatOnDayForMonth == null) {
             return;
         }
-        Label label = labels.get(repeatOnDay - 1);
+        Label label = labels.get(this.repeatOnDayForMonth - 1);
         label.setSclass("repeat-on-day-month-day-selected");
     }
 
