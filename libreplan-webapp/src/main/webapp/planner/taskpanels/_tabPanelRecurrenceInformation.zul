@@ -25,14 +25,15 @@
         <hbox spacing="1.5em">
             <radiogroup id="recurrencePattern" onCheck="recurrenceInformationController.updateRecurrencePeriodicity()">
             </radiogroup>
-            <vbox spacing="1em">
+            <vbox spacing="0">
 	            <hbox id="amountOfPeriodsGroup" spacing="0.5em" style="margin-top: 4px;">
 		            <label value="${i18n:_('Recur every')}" />
 		            <spinner constraint="no empty,min 1" id="amountOfPeriodsSpinner" width="40px" value="@{recurrenceInformationController.amountOfPeriods}" />
 		            <label value="@{recurrenceInformationController.periodUnitLabel}" />
 	            </hbox>
-	            <radiogroup id="repeatOnDayWeekGroup" onCheck="recurrenceInformationController.updateRepeatOnDayOfWeek()" visible="false" />
-				<div id="repeatOnMonthDayDiv" />
+	            <div style="padding-top: 0.6em;" />
+	            <radiogroup id="repeatOnDayWeekGroup" onCheck="recurrenceInformationController.updateRepeatOnDayOfWeek()" visible="false"/>
+				<div id="repeatOnMonthDayDiv"/>
             </vbox>
         </hbox>
     </groupbox>
