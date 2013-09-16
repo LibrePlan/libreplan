@@ -14,7 +14,7 @@ public enum RecurrencePeriodicity {
     // the _ method used here it's just for marking for translation. The real
     // translation, depending on the locale of the user, would happen in the web
     // layer.
-    NO_PERIODICTY(_("Not Recurrent"), null) {
+    NO_PERIODICTY(_("Not Recurrent"), "") {
         @Override
         public ReadablePeriod buildPeriod(int amount) {
             return Days.ZERO;
@@ -76,6 +76,7 @@ public enum RecurrencePeriodicity {
 
     private RecurrencePeriodicity(String label, String unitLabel) {
         Validate.notEmpty(label);
+        Validate.notNull(unitLabel);
         this.label = label;
         this.unitLabel = unitLabel;
     }
