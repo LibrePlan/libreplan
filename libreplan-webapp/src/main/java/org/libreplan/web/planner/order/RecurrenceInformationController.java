@@ -175,7 +175,7 @@ public class RecurrenceInformationController extends GenericForwardComposer {
             return;
         }
         Vlayout vlayout = new Vlayout();
-        vlayout.setSpacing("0");
+        vlayout.setSpacing("1px");
         children.add(vlayout);
         int n = 1;
         for (int i = 0; i < 5; i++) {
@@ -185,6 +185,7 @@ public class RecurrenceInformationController extends GenericForwardComposer {
             for (int j = 0; j < 7 && n <= 31; j++, n++) {
                 Label label = new Label();
                 label.setPre(true);
+                label.setStyle("font-family: monospace;");
                 label.setValue(String.format("%2d", n));
                 final int thisN = n;
                 label.addEventListener(Events.ON_CLICK, new EventListener() {
