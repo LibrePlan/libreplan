@@ -77,7 +77,7 @@ public class Recurrence extends BaseEntity {
         for (Recurrence each : recurrences) {
             dates.add(each.getIntraDayDateStart());
         }
-        return Collections.max(dates);
+        return Collections.min(dates);
     }
 
     public static Recurrence createRecurrence(LocalDate date,
