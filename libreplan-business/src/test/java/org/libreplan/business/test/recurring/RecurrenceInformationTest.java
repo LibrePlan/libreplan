@@ -30,15 +30,11 @@ public class RecurrenceInformationTest {
 
     @Test
     public void equalsAndHashCodeBasedOnContentsNotIdentity() {
-        RecurrenceInformation r1 = new RecurrenceInformation(2,
-                RecurrencePeriodicity.MONTHLY, 1);
-        RecurrenceInformation r2 = new RecurrenceInformation(2,
-                RecurrencePeriodicity.MONTHLY, 1);
+        RecurrenceInformation r1 = RecurrenceInformation.endAtNumberOfRepetitions(2, RecurrencePeriodicity.MONTHLY, 1);
+        RecurrenceInformation r2 = RecurrenceInformation.endAtNumberOfRepetitions(2, RecurrencePeriodicity.MONTHLY, 1);
 
-        RecurrenceInformation other = new RecurrenceInformation(1,
-                RecurrencePeriodicity.MONTHLY, 1);
-        RecurrenceInformation other2 = new RecurrenceInformation(2,
-                RecurrencePeriodicity.MONTHLY, 2);
+        RecurrenceInformation other = RecurrenceInformation.endAtNumberOfRepetitions(1, RecurrencePeriodicity.MONTHLY, 1);
+        RecurrenceInformation other2 = RecurrenceInformation.endAtNumberOfRepetitions(2, RecurrencePeriodicity.MONTHLY, 2);
 
         assertThat(r1, equalTo(r2));
         assertThat(r1, not(equalTo(other)));
@@ -49,8 +45,7 @@ public class RecurrenceInformationTest {
 
     @Test
     public void withNoPeriodicityItHasZeroRepetitions() {
-        RecurrenceInformation r = new RecurrenceInformation(10,
-                RecurrencePeriodicity.NO_PERIODICTY, 2);
+        RecurrenceInformation r = RecurrenceInformation.endAtNumberOfRepetitions(10, RecurrencePeriodicity.NO_PERIODICTY, 2);
         assertThat(r.getRepetitions(), equalTo(0));
         assertThat(r.getAmountOfPeriodsPerRepetition(), equalTo(0));
     }
@@ -67,7 +62,7 @@ public class RecurrenceInformationTest {
         int[] amounts = { 1, 2, 3 };
         for (int amount : amounts) {
             for (RecurrencePeriodicity each : recurrentPeriods) {
-                RecurrenceInformation r = new RecurrenceInformation(1, each,
+                RecurrenceInformation r = RecurrenceInformation.endAtNumberOfRepetitions(1, each,
                         amount);
                 List<LocalDate> recurrences = r.getRecurrences(
                         Direction.FORWARD, start);
@@ -92,7 +87,7 @@ public class RecurrenceInformationTest {
         int[] amounts = { 1, 2, 3 };
         for (int amount : amounts) {
             for (RecurrencePeriodicity each : recurrentPeriods) {
-                RecurrenceInformation r = new RecurrenceInformation(1, each,
+                RecurrenceInformation r = RecurrenceInformation.endAtNumberOfRepetitions(1, each,
                         amount);
                 List<LocalDate> recurrences = r.getRecurrences(
                         Direction.BACKWARD, start);
@@ -117,7 +112,7 @@ public class RecurrenceInformationTest {
         int[] repetitions = { 2, 3, 4 };
         for (int repetition : repetitions) {
             for (RecurrencePeriodicity each : recurrentPeriods) {
-                RecurrenceInformation r = new RecurrenceInformation(repetition,
+                RecurrenceInformation r = RecurrenceInformation.endAtNumberOfRepetitions(repetition,
                         each, 1);
                 List<LocalDate> recurrences = r.getRecurrences(
                         Direction.FORWARD, start);
@@ -139,7 +134,7 @@ public class RecurrenceInformationTest {
                 RecurrencePeriodicity.WEEKLY, RecurrencePeriodicity.MONTHLY);
 
         for (RecurrencePeriodicity p : recurrentPeriods) {
-            RecurrenceInformation r = new RecurrenceInformation(1, p, 1);
+            RecurrenceInformation r = RecurrenceInformation.endAtNumberOfRepetitions(1, p, 1);
             boolean supported = supportRepeatOnDay.contains(p);
             RecurrenceInformation other;
             try {
@@ -162,8 +157,7 @@ public class RecurrenceInformationTest {
 
     @Test
     public void monthlySupportsRepeatsOnDaysFrom1To31() {
-        RecurrenceInformation r = new RecurrenceInformation(1,
-                RecurrencePeriodicity.MONTHLY, 1);
+        RecurrenceInformation r = RecurrenceInformation.endAtNumberOfRepetitions(1, RecurrencePeriodicity.MONTHLY, 1);
         for (int i = 1; i <= 31; i++) {
             RecurrenceInformation other = r.repeatOnDay(i);
             assertThat(other, not(equalTo(r)));
@@ -172,8 +166,7 @@ public class RecurrenceInformationTest {
 
     @Test
     public void monthlySupportDoesntSupportMoreThan31AndLessThanOne() {
-        RecurrenceInformation r = new RecurrenceInformation(1,
-                RecurrencePeriodicity.MONTHLY, 1);
+        RecurrenceInformation r = RecurrenceInformation.endAtNumberOfRepetitions(1, RecurrencePeriodicity.MONTHLY, 1);
         int[] days = { -2, -1, 0, 32, 33, 1000 };
         for (int day : days) {
             try {
@@ -187,8 +180,7 @@ public class RecurrenceInformationTest {
 
     @Test
     public void weeklySupportDoesntSupportMoreThan7AndLessThanOne() {
-        RecurrenceInformation r = new RecurrenceInformation(1,
-                RecurrencePeriodicity.WEEKLY, 1);
+        RecurrenceInformation r = RecurrenceInformation.endAtNumberOfRepetitions(1, RecurrencePeriodicity.WEEKLY, 1);
         int[] days = { -2, -1, 0, 8, 9, 1000 };
         for (int day : days) {
             try {
@@ -207,8 +199,7 @@ public class RecurrenceInformationTest {
         int dayOfWeek = wednesday.getDayOfWeek();
         assertThat(dayOfWeek, equalTo(DateTimeConstants.WEDNESDAY));
 
-        RecurrenceInformation r = new RecurrenceInformation(2,
-                RecurrencePeriodicity.WEEKLY, 1);
+        RecurrenceInformation r = RecurrenceInformation.endAtNumberOfRepetitions(2, RecurrencePeriodicity.WEEKLY, 1);
 
         // repeat on monday
         r = r.repeatOnDay(1);
@@ -229,8 +220,7 @@ public class RecurrenceInformationTest {
     public void itRespectsOnDayForMonths() {
         LocalDate start = new LocalDate(2013, 9, 11);
 
-        RecurrenceInformation r = new RecurrenceInformation(2,
-                RecurrencePeriodicity.MONTHLY, 1);
+        RecurrenceInformation r = RecurrenceInformation.endAtNumberOfRepetitions(2, RecurrencePeriodicity.MONTHLY, 1);
 
         final int day = 20;
         r = r.repeatOnDay(day);
@@ -247,8 +237,7 @@ public class RecurrenceInformationTest {
         LocalDate start = new LocalDate(2013, 1, 11);
 
         final int numberOfRecurrences = 3;
-        RecurrenceInformation r = new RecurrenceInformation(
-                numberOfRecurrences,
+        RecurrenceInformation r = RecurrenceInformation.endAtNumberOfRepetitions(numberOfRecurrences,
                 RecurrencePeriodicity.MONTHLY, 1);
 
         final int day = 31;
@@ -260,6 +249,50 @@ public class RecurrenceInformationTest {
         assertThat(recurrences.get(0), equalTo(new LocalDate(2013, 2, 28)));
         assertThat(recurrences.get(1), equalTo(new LocalDate(2013, 3, 31)));
         assertThat(recurrences.get(2), equalTo(new LocalDate(2013, 4, 30)));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void endByDateIsRequiredIfThereIsPeriodicity() {
+        RecurrenceInformation.endBy(null, RecurrencePeriodicity.MONTHLY, 1);
+    }
+
+    @Test
+    public void endByDateAndItsTakingIntoAccountWhenCheckingEquality() {
+        RecurrenceInformation endBy = RecurrenceInformation.endBy(
+                new LocalDate(2013, 1, 11), RecurrencePeriodicity.MONTHLY, 2);
+        RecurrenceInformation another = RecurrenceInformation.endBy(
+                new LocalDate(2013, 2, 11),
+                RecurrencePeriodicity.MONTHLY, 2);
+        assertThat(endBy, not(equalTo(another)));
+        assertThat(endBy.hashCode(), not(equalTo(another.hashCode())));
+    }
+
+    @Test
+    public void endByDateIsEnforced() {
+        LocalDate start = new LocalDate(2013, 10, 20);
+
+        RecurrenceInformation r = RecurrenceInformation.endBy(new LocalDate(
+                2014, 1, 1), RecurrencePeriodicity.MONTHLY, 1);
+
+        List<LocalDate> recurrences = r
+                .getRecurrences(Direction.FORWARD, start);
+
+        assertThat(recurrences.size(), equalTo(2));
+        assertThat(recurrences.get(0), equalTo(new LocalDate(2013, 11, 20)));
+        assertThat(recurrences.get(1), equalTo(new LocalDate(2013, 12, 20)));
+    }
+
+    @Test
+    public void endByDateIsEnforcedWhenGoingBackwardsToo() {
+        RecurrenceInformation r = RecurrenceInformation.endBy(new LocalDate(
+                2014, 1, 1), RecurrencePeriodicity.MONTHLY, 1);
+
+        List<LocalDate> recurrences = r.getRecurrences(Direction.BACKWARD,
+                new LocalDate(2014, 3, 20));
+
+        assertThat(recurrences.size(), equalTo(2));
+        assertThat(recurrences.get(0), equalTo(new LocalDate(2014, 2, 20)));
+        assertThat(recurrences.get(1), equalTo(new LocalDate(2014, 1, 20)));
     }
 
 }

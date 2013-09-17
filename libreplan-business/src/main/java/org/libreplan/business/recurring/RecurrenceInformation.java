@@ -37,8 +37,22 @@ import org.libreplan.business.planner.entities.ResourceAllocation.Direction;
 public class RecurrenceInformation {
 
     public static RecurrenceInformation noRecurrence() {
-        return new RecurrenceInformation(0,
-                RecurrencePeriodicity.NO_PERIODICTY, 0);
+        return endAtNumberOfRepetitions(0, RecurrencePeriodicity.NO_PERIODICTY, 0);
+    }
+
+    public static RecurrenceInformation endAtNumberOfRepetitions(
+            int numberRepetitions, RecurrencePeriodicity recurrencePeriodicity,
+            int amountOfPeriodsPerRepetition) {
+        return new RecurrenceInformation(numberRepetitions, null,
+                recurrencePeriodicity, amountOfPeriodsPerRepetition, null);
+    }
+
+    public static RecurrenceInformation endBy(LocalDate endBy,
+            RecurrencePeriodicity recurrencePeriodicity,
+            int amountOfPeriodsPerRepetition) {
+        Validate.notNull(endBy);
+        return new RecurrenceInformation(0, endBy, recurrencePeriodicity,
+                amountOfPeriodsPerRepetition, null);
     }
 
     private int repetitions;
@@ -78,14 +92,7 @@ public class RecurrenceInformation {
         this.amountOfPeriodsPerRepetition = 0;
     }
 
-    public RecurrenceInformation(int numberRepetitions,
-            RecurrencePeriodicity recurrencePeriodicity,
-            int amountOfPeriodsPerRepetition) {
-        this(numberRepetitions, recurrencePeriodicity,
-                amountOfPeriodsPerRepetition, null);
-    }
-
-    private RecurrenceInformation(int numberRepetitions,
+    private RecurrenceInformation(int numberRepetitions, LocalDate endBy,
             RecurrencePeriodicity recurrencePeriodicity,
             int amountOfPeriodsPerRepetition, Integer repeatOnDay) {
         Validate.notNull(recurrencePeriodicity);
@@ -97,18 +104,27 @@ public class RecurrenceInformation {
         Validate.isTrue(recurrencePeriodicity.isNoPeriodicity()
                         || amountOfPeriodsPerRepetition >= 1,
                 "if there are repetitions, the amount of periods per repetition must be greater than zero");
+        if (numberRepetitions > 0) {
+            Validate.isTrue(endBy == null,
+                    "If number repetitions greater than zero, endBy must be null.");
+        }
+        if (endBy != null) {
+            Validate.isTrue(numberRepetitions == 0,
+                    "If endBy specified, the number of repetitions must be zero.");
+        }
         this.recurrencePeriodicity = recurrencePeriodicity;
         this.repetitions = recurrencePeriodicity
                 .limitRepetitions(numberRepetitions);
         this.amountOfPeriodsPerRepetition = recurrencePeriodicity
                 .limitAmountOfPeriods(amountOfPeriodsPerRepetition);
         this.repeatOnDay = repeatOnDay;
+        this.endBy = endBy;
     }
 
     public RecurrenceInformation repeatOnDay(int day) {
         recurrencePeriodicity.checkRepeatOnDay(day);
-        return new RecurrenceInformation(repetitions, recurrencePeriodicity,
-                amountOfPeriodsPerRepetition, day);
+        return new RecurrenceInformation(repetitions, endBy,
+                recurrencePeriodicity, amountOfPeriodsPerRepetition, day);
     }
 
     public int getRepetitions() {
@@ -124,6 +140,7 @@ public class RecurrenceInformation {
         if (obj instanceof RecurrenceInformation) {
             RecurrenceInformation other = (RecurrenceInformation) obj;
             return new EqualsBuilder().append(repetitions, other.repetitions)
+                    .append(endBy, other.endBy)
                     .append(recurrencePeriodicity, other.recurrencePeriodicity)
                     .append(amountOfPeriodsPerRepetition,
                             other.amountOfPeriodsPerRepetition)
@@ -135,7 +152,7 @@ public class RecurrenceInformation {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(repetitions)
+        return new HashCodeBuilder().append(repetitions).append(endBy)
                 .append(recurrencePeriodicity)
                 .append(amountOfPeriodsPerRepetition).append(repeatOnDay)
                 .toHashCode();
@@ -153,16 +170,30 @@ public class RecurrenceInformation {
                 .buildPeriod(amountOfPeriodsPerRepetition);
         LocalDate current = start;
         List<LocalDate> result = new ArrayList<LocalDate>();
-        for (int i = 0; i < repetitions; i++) {
+
+        for (int i = 0; i < repetitions || repetitions == 0 && endBy != null; i++) {
+
             current = direction == Direction.FORWARD ? current.plus(period)
                     : current.minus(period);
+
             if (repeatOnDay != null) {
                 current = recurrencePeriodicity.adjustToDay(current,
                         repeatOnDay);
             }
+            if (endBy != null && surpassedEndBy(direction, current)) {
+                break;
+            }
             result.add(current);
         }
         return result;
+    }
+
+    private boolean surpassedEndBy(Direction direction, LocalDate current) {
+        if (direction == Direction.FORWARD) {
+            return current.compareTo(endBy) > 0;
+        } else {
+            return current.compareTo(endBy) < 0;
+        }
     }
 
     public Integer getRepeatOnDay() {

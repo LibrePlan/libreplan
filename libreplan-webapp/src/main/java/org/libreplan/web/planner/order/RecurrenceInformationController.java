@@ -319,8 +319,7 @@ public class RecurrenceInformationController extends GenericForwardComposer {
     }
 
     public RecurrenceInformation getModifiedRecurrenceInformation() {
-        RecurrenceInformation result = new RecurrenceInformation(repetitions,
-                recurrencePeriodicity,
+        RecurrenceInformation result = RecurrenceInformation.endAtNumberOfRepetitions(repetitions, recurrencePeriodicity,
                 amountOfPeriods);
         if (recurrencePeriodicity == RecurrencePeriodicity.WEEKLY
                 && repeatOnDayForWeek != null) {

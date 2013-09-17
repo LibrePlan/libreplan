@@ -962,7 +962,8 @@ public class TaskTest {
                 .create(resourceAllocation, ResourcesPerDay.amount(1));
 
         untilAllocating(40,
-                new RecurrenceInformation(1, RecurrencePeriodicity.WEEKLY, 1))
+                RecurrenceInformation.endAtNumberOfRepetitions(1,
+                        RecurrencePeriodicity.WEEKLY, 1))
                 .allocateAndMerge(asList(resourcePerDayModification));
 
         assertThat(task.getRecurrences().size(), equalTo(1));
@@ -1014,7 +1015,8 @@ public class TaskTest {
                 .create(resourceAllocation, ResourcesPerDay.amount(1));
 
         untilAllocating(40,
-                new RecurrenceInformation(1, RecurrencePeriodicity.WEEKLY, 1))
+                RecurrenceInformation.endAtNumberOfRepetitions(1,
+                        RecurrencePeriodicity.WEEKLY, 1))
                 .allocateAndMerge(asList(resourcePerDayModification));
 
         assertThat(task.getRecurrences().size(), equalTo(1));
@@ -1064,7 +1066,8 @@ public class TaskTest {
                 .create(resourceAllocation, ResourcesPerDay.amount(1));
 
         untilAllocating(40,
-                new RecurrenceInformation(2, RecurrencePeriodicity.WEEKLY, 1))
+                RecurrenceInformation.endAtNumberOfRepetitions(2,
+                        RecurrencePeriodicity.WEEKLY, 1))
                 .allocateAndMerge(asList(resourcePerDayModification));
 
         assertThat(task, allAllocationsSatisfied());
@@ -1082,7 +1085,8 @@ public class TaskTest {
                 .create(resourceAllocation, ResourcesPerDay.amount(1));
 
         untilAllocating(80,
-                new RecurrenceInformation(2, RecurrencePeriodicity.WEEKLY, 1))
+                RecurrenceInformation.endAtNumberOfRepetitions(2,
+                        RecurrencePeriodicity.WEEKLY, 1))
                 .allocateAndMerge(asList(resourcePerDayModification));
 
         assertThat(task, allAllocationsSatisfied());
@@ -1114,7 +1118,8 @@ public class TaskTest {
                 .create(resourceAllocation, ResourcesPerDay.amount(1));
 
         untilAllocating(40,
-                new RecurrenceInformation(2, RecurrencePeriodicity.WEEKLY, 1))
+                RecurrenceInformation.endAtNumberOfRepetitions(2,
+                        RecurrencePeriodicity.WEEKLY, 1))
                 .allocateAndMerge(asList(resourcePerDayModification));
 
         assertThat(task, allAllocationsSatisfied());
@@ -1158,7 +1163,8 @@ public class TaskTest {
                 .create(resourceAllocation, ResourcesPerDay.amount(1));
 
         untilAllocating(80,
-                new RecurrenceInformation(2, RecurrencePeriodicity.WEEKLY, 1))
+                RecurrenceInformation.endAtNumberOfRepetitions(2,
+                        RecurrencePeriodicity.WEEKLY, 1))
                 .allocateAndMerge(asList(resourcePerDayModification));
 
         assertThat(task, allAllocationsSatisfied());
@@ -1195,7 +1201,8 @@ public class TaskTest {
         ResourcesPerDayModification resourcePerDayModification = ResourcesPerDayModification
                 .create(resourceAllocation, ResourcesPerDay.amount(1));
         calculateHoursOn(5, Direction.BACKWARD,
-                new RecurrenceInformation(2, RecurrencePeriodicity.WEEKLY, 1))
+                RecurrenceInformation.endAtNumberOfRepetitions(2,
+                        RecurrencePeriodicity.WEEKLY, 1))
                 .allocateAndMerge(asList(resourcePerDayModification));
 
         assertThat(task, allAllocationsSatisfied());
