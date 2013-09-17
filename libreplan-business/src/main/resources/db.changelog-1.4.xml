@@ -130,4 +130,11 @@
       </addColumn>
     </changeSet>
 
+    <changeSet id="add-end-by-column-to-recurrence-information" author="ogonzalez">
+      <addColumn tableName="task">
+        <column name="end_by" type="DATE" defaultValue="NULL">
+          <constraints nullable="true"/>
+        </column>
+      </addColumn>
+    </changeSet>
 </databaseChangeLog>

@@ -43,6 +43,13 @@ public class RecurrenceInformation {
 
     private int repetitions;
 
+    /**
+     * It can be <code>null</code>. If not <code>null</code>, repetitions must
+     * have value zero and recurrences must be generated as long as they start
+     * before this value; or after if the direction of allocation is backwards.
+     */
+    private LocalDate endBy;
+
     private RecurrencePeriodicity recurrencePeriodicity;
 
     private int amountOfPeriodsPerRepetition;
