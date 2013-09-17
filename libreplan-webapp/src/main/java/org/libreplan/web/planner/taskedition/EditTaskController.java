@@ -44,6 +44,7 @@ import org.springframework.context.annotation.Scope;
 import org.zkoss.ganttz.TaskComponent;
 import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Messagebox;
@@ -293,8 +294,15 @@ public class EditTaskController extends GenericForwardComposer {
             ResourceAllocationTypeEnum currentState = taskPropertiesController.getCurrentState();
             if (ResourceAllocationTypeEnum.NON_LIMITING_RESOURCES.equals(currentState)) {
                 editTaskTabbox.setSelectedPanelApi(resourceAllocationTabpanel);
-                RecurrenceInformation recurrenceInformation = recurrenceInformationController
-                        .getModifiedRecurrenceInformation();
+                RecurrenceInformation recurrenceInformation;
+                try {
+                    recurrenceInformation = recurrenceInformationController
+                            .getModifiedRecurrenceInformation();
+                } catch (WrongValueException e) {
+                    editTaskTabbox
+                            .setSelectedPanelApi(recurrenceInformationTabpanel);
+                    throw e;
+                }
                 boolean mustNotExit = !resourceAllocationController
                         .accept(recurrenceInformation);
                 if (mustNotExit) {

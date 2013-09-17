@@ -39,8 +39,19 @@
     </groupbox>
     <groupbox style="margin-top: 5px" sclass="recurrence-range" closable="false">
         <caption label="${i18n:_('Range of recurrence')}" />
-        <label value="${i18n:_('End after')}" />
-        <spinner constraint="no empty,min 1" id="recurrenceOccurences" width="40px" value="@{recurrenceInformationController.repetitions}" />
-        <label value="${i18n:_('occurences')}" />
+        <radiogroup id="typeOfConstraintRadioGroup" onCheck="recurrenceInformationController.updateTypeOfConstraintChanged()">
+            <hlayout spacing="2em">
+                <radio label="${i18n:_('End after:')}" value="NUMBER_OF_REPETITIONS"/>
+                <hlayout spacing="0.5em">
+                    <spinner constraint="no empty,min 1" id="recurrenceOccurences" width="40px" value="@{recurrenceInformationController.repetitions}" />
+                    <label value="${i18n:_('occurences')}" />
+                </hlayout>
+	        </hlayout>
+	        <div style="padding-top: 0.6em;" />
+	        <hlayout spacing="2em">
+                <radio label="${i18n:_('End By:')}" value="END_BY"/>
+                <datebox lenient="true" id="endByDatebox" value="@{recurrenceInformationController.endBy}" />
+	        </hlayout>
+	    </radiogroup>
     </groupbox>
 </tabpanel>

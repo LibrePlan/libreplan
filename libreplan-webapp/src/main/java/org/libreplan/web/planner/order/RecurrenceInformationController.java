@@ -22,11 +22,14 @@ package org.libreplan.web.planner.order;
 import static org.libreplan.web.I18nHelper._;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.EnumSet;
 import java.util.List;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.Validate;
+import org.joda.time.DateTimeZone;
+import org.joda.time.LocalDate;
 import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.recurring.RecurrenceInformation;
 import org.libreplan.business.recurring.RecurrencePeriodicity;
@@ -36,14 +39,17 @@ import org.libreplan.web.common.Util;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Radio;
+import org.zkoss.zul.SimpleConstraint;
 import org.zkoss.zul.Vlayout;
 import org.zkoss.zul.api.Box;
 import org.zkoss.zul.api.Radiogroup;
@@ -75,15 +81,27 @@ public class RecurrenceInformationController extends GenericForwardComposer {
     protected IMessagesForUser messagesForUser;
 
     private Component messagesContainer;
+
     private Radiogroup recurrencePattern;
     private Radiogroup repeatOnDayWeekGroup;
+    private Radiogroup typeOfConstraintRadioGroup;
+
     private Div repeatOnMonthDayDiv;
+
     private Spinner recurrenceOccurences;
+    private Datebox endByDatebox;
 
     private Box amountOfPeriodsGroup;
-    private Spinner amountOfPeriodsSpinner;
+
+    private enum StopConditionType {
+        NUMBER_OF_REPETITIONS, END_BY;
+    }
+
+    private StopConditionType stopCondition;
 
     private int repetitions = 0;
+
+    private LocalDate endBy;
 
     private RecurrencePeriodicity recurrencePeriodicity = RecurrencePeriodicity.NO_PERIODICTY;
 
@@ -97,6 +115,8 @@ public class RecurrenceInformationController extends GenericForwardComposer {
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         messagesForUser = new MessagesForUser(messagesContainer);
+        // ensure conversions from/to Joda time work correctly
+        endByDatebox.setTimeZone(DateTimeZone.getDefault().toTimeZone());
     }
 
     public void init(Task task) {
@@ -113,15 +133,29 @@ public class RecurrenceInformationController extends GenericForwardComposer {
                 .getRepeatOnDay() : null;
         this.repeatOnDayForMonth = periodicity == RecurrencePeriodicity.MONTHLY ? recurrenceInformation
                 .getRepeatOnDay() : null;
+        this.stopCondition = recurrenceInformation.getEndBy() != null ? StopConditionType.END_BY
+                : StopConditionType.NUMBER_OF_REPETITIONS;
+        this.endBy = recurrenceInformation.getEndBy();
 
         prepareRadioBoxes(periodicity);
+        selectTypeOfConstraint(typeOfConstraintRadioGroup);
         setPeriodicity(periodicity);
+    }
+
+    private void selectTypeOfConstraint(Radiogroup typeOfConstraintRadioGroup) {
+        List<Radio> radios = findDescendants(Radio.class,
+                typeOfConstraintRadioGroup);
+        for (Radio each : radios) {
+            each.setSelected(each.getValue().equalsIgnoreCase(
+                    this.stopCondition.toString()));
+        }
     }
 
     private void setPeriodicity(RecurrencePeriodicity periodicity){
         Validate.notNull(periodicity);
         this.recurrencePeriodicity = periodicity;
-        enableOrDisableSpinner();
+        enableOrDisableRepetitionsSpinner();
+        enableOrDisableEndByDateBox();
         enableOrDisableAmountOfPeriods();
         visualizeOrHideRepeatOnDayWeek();
         visualizeOrHideRepeatOnDayMonth();
@@ -222,21 +256,38 @@ public class RecurrenceInformationController extends GenericForwardComposer {
         label.setSclass("repeat-on-day-month-day-selected");
     }
 
+    public void updateTypeOfConstraintChanged() {
+        org.zkoss.zul.api.Radio selectedItem = typeOfConstraintRadioGroup
+                .getSelectedItemApi();
+        this.stopCondition = StopConditionType.valueOf(selectedItem.getValue());
+        enableOrDisableRepetitionsSpinner();
+        enableOrDisableEndByDateBox();
+    }
+
     public void updateRepeatOnDayOfWeek() {
         int v = Integer.parseInt(repeatOnDayWeekGroup.getSelectedItemApi()
                 .getValue());
         this.repeatOnDayForWeek = v == 0 ? null : v;
     }
 
-    private void enableOrDisableSpinner() {
+    private void enableOrDisableRepetitionsSpinner() {
         recurrenceOccurences.setDisabled(recurrencePeriodicity
-                .isNoPeriodicity());
+                .isNoPeriodicity()
+                || stopCondition != StopConditionType.NUMBER_OF_REPETITIONS);
 
         this.repetitions = recurrencePeriodicity.limitRepetitions(repetitions);
         if (repetitions == 0 && recurrencePeriodicity.isPeriodicity()) {
             repetitions = 1;
         }
         Util.reloadBindings(recurrenceOccurences);
+    }
+
+    private void enableOrDisableEndByDateBox() {
+        endByDatebox.setDisabled(recurrencePeriodicity.isNoPeriodicity()
+                || stopCondition != StopConditionType.END_BY);
+        endByDatebox.setConstraint(new SimpleConstraint(
+                SimpleConstraint.NO_EMPTY));
+        Util.reloadBindings(endByDatebox);
     }
 
     private void enableOrDisableAmountOfPeriods() {
@@ -258,7 +309,6 @@ public class RecurrenceInformationController extends GenericForwardComposer {
         }
     }
 
-    @SuppressWarnings("unchecked")
     private void selectRadioBox(RecurrencePeriodicity currentPeriodicity) {
         for (Radio each : findDescendants(Radio.class, recurrencePattern)) {
             each.setSelected(Enum.valueOf(RecurrencePeriodicity.class,
@@ -288,14 +338,20 @@ public class RecurrenceInformationController extends GenericForwardComposer {
         this.repetitions = repetitions;
     }
 
+    public Date getEndBy() {
+        return endBy != null ? endBy.toDateTimeAtStartOfDay().toDate() : null;
+    }
+
+    public void setEndBy(Date date) {
+        this.endBy = date == null ? null : LocalDate.fromDateFields(date);
+    }
+
     public void updateRecurrencePeriodicity() {
         Radio selected = (Radio) recurrencePattern.getSelectedItemApi();
 
-        RecurrencePeriodicity p = Enum.valueOf(RecurrencePeriodicity.class,
-                selected.getValue());
         setPeriodicity(Enum.valueOf(RecurrencePeriodicity.class,
                 selected.getValue()));
-        enableOrDisableSpinner();
+        enableOrDisableRepetitionsSpinner();
         enableOrDisableAmountOfPeriods();
     }
 
@@ -318,9 +374,21 @@ public class RecurrenceInformationController extends GenericForwardComposer {
         return unitLabel + repeatOn;
     }
 
-    public RecurrenceInformation getModifiedRecurrenceInformation() {
-        RecurrenceInformation result = RecurrenceInformation.endAtNumberOfRepetitions(repetitions, recurrencePeriodicity,
-                amountOfPeriods);
+    public RecurrenceInformation getModifiedRecurrenceInformation()
+            throws WrongValueException {
+
+        RecurrenceInformation result;
+        if (stopCondition == StopConditionType.NUMBER_OF_REPETITIONS) {
+            result = RecurrenceInformation.endAtNumberOfRepetitions(
+                    repetitions, recurrencePeriodicity, amountOfPeriods);
+        } else {
+            if (endBy == null) {
+                // check constraint
+                endByDatebox.getValue();
+            }
+            result = RecurrenceInformation.endBy(endBy, recurrencePeriodicity,
+                    amountOfPeriods);
+        }
         if (recurrencePeriodicity == RecurrencePeriodicity.WEEKLY
                 && repeatOnDayForWeek != null) {
             result = result.repeatOnDay(repeatOnDayForWeek);

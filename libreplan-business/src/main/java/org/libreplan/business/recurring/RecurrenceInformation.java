@@ -200,4 +200,8 @@ public class RecurrenceInformation {
         return repeatOnDay;
     }
 
+    public LocalDate getEndBy() {
+        return endBy;
+    }
+
 }
