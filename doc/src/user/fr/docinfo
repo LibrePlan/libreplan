@@ -1,0 +1,15 @@
+####################################
+LibrePlan: documentation utilisateur
+####################################
+
+.. image:: images/logo.png
+   :align: left
+
+Ce document a pour objet de fournir l'aide nécessaire pour utiliser LibrePlan, application web open source de planification de projets.
+
+Il comporte trois parties principales :
+
+* les objectifs et le mode de fonctionnement générique;
+* les informations principales des concepts de base nécessaires pour utiliser LibrePlan;
+* le mode d'emploi complet permettant de créer des projets, de les planifier, de leur affecter des ressources, y compris de manière avancée et de produire des rapports.
+
