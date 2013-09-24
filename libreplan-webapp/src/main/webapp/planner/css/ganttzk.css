@@ -156,7 +156,6 @@
 }
 
 .recurrence-box {
-	z-index : 99 !important;
 }
 
 .repeat-on-day-month {
@@ -295,6 +294,7 @@ div.box.limiting-unassigned {
 }
 
 .completion {
+    position: relative;
     width: 0%;
     height: 3px; /* zkTasklist.HEIGHT_PER_TASK / 2 */
     background-color: #F21CFF;
@@ -328,12 +328,14 @@ div.box.limiting-unassigned {
 }
 
 .completion2 {
+    position: relative;
     width: 0%;
     height: 6px;
     background-color: #004469;
     border: 0px;
     margin-top: 4px;
 }
+
 
 .taskcontainer_completion {
     margin-top: -20px;
