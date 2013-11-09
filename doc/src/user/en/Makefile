@@ -44,7 +44,7 @@ $(pdf_images):	pdf/images/%: images/%
 	$Q mkdir -p $(@D)
 	$Q cp $< $@
 
-$(main_pdf): $(pdf_imges)
+$(main_pdf): $(pdf_images)
 
 
 
