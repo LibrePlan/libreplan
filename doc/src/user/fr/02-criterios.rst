@@ -31,7 +31,7 @@ On accède à l'administration des critères depuis le menu *Ressources*, sous-m
 
 On accède au formulaire de création/modification en cliquant sur le bouton *Créer*. Un critère peut être modifié en cliquant sur l'icône de modification.
 
-.. figure:: images/edicion-criterio.png
+.. figure:: images/edicion_criterio.png
    :scale: 50
 
    Modifier un critère

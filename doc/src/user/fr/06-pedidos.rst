@@ -171,7 +171,7 @@ L'onglet "Coûts" permet de consulter les heures et les coûts dépensées pour 
 .. figure:: images/order-element-hours.png
    :scale: 50
 
-  Coûts d'une tâche
+   Coûts d'une tâche
 
 L'écran est divisé en deux parties :
 
