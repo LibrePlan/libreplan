@@ -43,8 +43,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.libreplan.business.IDataBootstrap;
-import org.libreplan.business.common.IAdHocTransactionService;
-import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.externalcompanies.daos.IExternalCompanyDAO;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.orders.daos.IOrderDAO;
@@ -212,7 +210,7 @@ public class SubcontractServiceTest {
         assertThat(order.getName(), equalTo(orderName));
         assertThat(order.getCustomerReference(),
                 equalTo(orderCustomerReference));
-        assertThat(order.getResourcesBudget(), equalTo(orderBudget));
+        assertThat(order.getTotalManualBudget(), equalTo(orderBudget));
 
         List<OrderElement> children = order.getChildren();
         assertThat(children.size(), equalTo(1));
