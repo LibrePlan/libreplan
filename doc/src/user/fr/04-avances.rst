@@ -5,7 +5,7 @@ Avancement
 
 L'avancement d'un projet ou d'une tâche permet d'estimer la façon dont sera respectée la date d'achèvement estimée.
 
-En général, l'avancement ne peut pas être mesuré automatiquement; le degré d'achèvement d'une tâche ou du projet pourra être déterminé en ayant recours à l'expertise d'un membre aguerri de l'équipe pour à l'aide d'une check-list.
+En général, l'avancement ne peut pas être mesuré automatiquement; le degré d'achèvement d'une tâche ou du projet pourra être déterminé en ayant recours à l'expertise d'un membre aguerri de l'équipe à l'aide d'une check-list.
 
 Il faut noter qu'il existe une différence significative entre la consommation des heures affectées à une tâche ou un projet et le degré d'avancement de cette tâche ou de ce projet. Même si le nombre d'heures consommées peut correspondre peu ou prou à ce qu'il devrait être, le projet peut être en avance ou en retard par rapport au degré d'avancement prévu le jour où il est évalué. Plusieurs situations peuvent être rencontrées :
 
@@ -27,12 +27,12 @@ Un type d'avancement reçoit un nom, une valeur maximum par défaut et une valeu
 
 * Nom : c'est un nom significatif qui permet aux utilisateurs de faire leur choix en fonction de ce qu'ils veulent mesurer.
 * Valeur maximum : c'est la valeur maximum d'avancement qui peut être affectée à une tâche ou un projet. Par exemple, en travaillant avec des *tonnes*, si le nombre maximal nominal de tonnes à produire est 4000, et qu'aucune tâche n'aura besoin de plus de 4000 tonnes d'un quelconque matériau, la valeur maximum sera fixée à 4000. 
-* Valeur de précision : la valeur des incréments autorisé pour le type d'avancement à créer. Par exemple, si l'avancement en *tonnes* doit être mesuré en valeurs arrondies, la valeur de précision devra être fixée à 1. A partir de ce moment, seules des mesures d'avancement avec des nombres entiers pourront être saisies, par exemple 1, 2, 300, etc.
+* Valeur de précision : la valeur des incréments autorisés pour le type d'avancement à créer. Par exemple, si l'avancement en *tonnes* doit être mesuré en valeurs arrondies, la valeur de précision devra être fixée à 1. A partir de ce moment, seules des mesures d'avancement avec des nombres entiers pourront être saisies, par exemple 1, 2, 300, etc.
 
 Il existe 3 types d'avancement par défaut:
 
 * Pourcentage : un type d'avancement général qui permet de mesurer l'avancement d'un projet ou d'une tâche sur la base d'un pourcentage d'achèvement estimé. Par exemple, une tâche est complétée à 30% sur les 100% estimés pour un jour donné.
-* Unité : un type d'avancement générique qui permet de mesurer l'avancement en unité sans avoir besoin de définir plus précisément ces unités. Par exemple, pour une tâche consistant à créer 3000 unités, l'avancement pourrait être de 500 unités sur un total de 3000.
+* Unité : un type d'avancement générique qui permet de mesurer l'avancement en unités sans avoir besoin de définir plus précisément ces unités. Par exemple, pour une tâche consistant à créer 3000 unités, l'avancement pourrait être de 500 unités sur un total de 3000.
 * Sous-traitant : mesure fournie par un sous-traitant.
 
 
@@ -49,8 +49,8 @@ Il est possible de créer de nouveaux types d'avancement de la façon suivante :
 * Un formulaire contenant les informations suivantes apparaît :
 
   * Nom du type d'avancement.
-  * Case à cocher ``Activé`` qui permet de supprimer un type d'avancement si elle est décochée. Ce type n'apparaît alors plus dans les choix proposé.
-  * valeur maximum par défaut acceptée par le type d'avancement.
+  * Case à cocher ``Activé`` qui permet de supprimer un type d'avancement si elle est décochée. Dans ce cas Ce type n'apparaît plus dans les choix proposés.
+  * Valeur maximum par défaut acceptée par le type d'avancement.
   * Valeur de précision pour le type d'avancement.
   * Une information non modifiable précisant s'il s'agit d'un avancement prédéfini par LibrePlan (predefined) ou créé par l'utilisateur (user). Seuls les seconds sont modifiables.
   * Une case à cocher indiquant que l'avancement doit figurer en pourcentages.
@@ -60,7 +60,7 @@ Saisir l'avancement à une date donnée
 
 Comme indiqué plus haut, les mesures d'avancement peuvent être saisies au niveau du projet ou des tâches. Le choix est de la responsabilité des utilisateurs.
 
-Avant de s'occuper des mesures d'avancement, il faut d'abord associer le type d'avancement choisi avec le projet considéré. Par exemple, un avancement en pourcentage pour mesurer les progrès faits sur la tâche entière ou un taux d'avancement entériné avec si les mesures d'avancement entérinées avec le client doivent être saisies dans le futur.
+Avant de s'occuper des mesures d'avancement, il faut d'abord associer le type d'avancement choisi avec le projet considéré. Par exemple, un avancement en pourcentage pour mesurer les progrès faits sur la tâche entière ou un taux d'avancement entériné avec le client si les mesures d'avancement entérinées avec le client doivent être saisies dans le futur.
 
 .. figure:: images/avance.png
    :scale: 40
@@ -74,7 +74,7 @@ Ce qui suit doit être fait pour saisir des mesures d'avancement :
 
 Ensuite, il faut :
 
-* Si nécessaire, cliquer sur *Ajouter un nouveau type d'avancement*, choisir le type et adapter les réglages si nécessaires.
+* Si nécessaire, cliquer sur *Ajouter un nouveau type d'avancement*, choisir le type et adapter les réglages si nécessaire.
 * Sélectionner l'avancement choisi dans le tableau s'il y en a plusieurs.
 * Cliquer sur *Ajouter une mesure*
 * Renseigner la valeur et modifier éventuellement la date.

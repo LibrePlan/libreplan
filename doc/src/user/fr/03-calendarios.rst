@@ -5,7 +5,7 @@ Calendriers
 
 Les calendriers sont des entités du programme qui définissent la capacité de charge des différentes ressources. Un calendrier comprend une série de jours de l'année, chaque jour étant divisé en heures de travail.
 
-Par exemple, un jour férié peut avoir 0 heures de disponibles et, si le nombre d'heures de travail d'un jour ouvré est 8, ce sera ce nombre d'heures qui sera indiqué comme temps disponible pour ce jour.
+Par exemple, un jour férié peut avoir 0 heures de disponibles tandis que si le nombre d'heures de travail d'un jour ouvré est 8, ce sera ce nombre d'heures qui sera indiqué comme temps disponible pour ce jour-là.
 
 Il existe deux façon d'informer le système du nombre d'heures disponibles pour un jour donné :
 
@@ -36,27 +36,27 @@ On peut accéder à la gestion des calendriers via le menu *Ressources*, sous-me
 Créer un nouveau calendrier
 ---------------------------
 
-De façon à créer un nouveau calendrier, cliquer sur le bouton "Créer". Le système affiche alors un formulaire dans lequel on renseigne le nom de calendrier choisi puis on choisit l'onglet sur lequel on veut travailler :
+De façon à créer un nouveau calendrier, cliquer sur le bouton "Créer". Le système affiche alors un formulaire dans lequel on renseigne le nom de calendrier choisi puis on sélectionne l'onglet sur lequel on veut travailler :
 
 * Exceptions : pour signaler des exceptions
 
    * Choisir un jour du calendrier (Date de début) soit en saisissant la date, soit en cliquant dans le calendrier à gauche
    * Choisir la date de fin de la période d'exception (qui peut être identique à celle de la date de début si l'exception ne dure qu'un seul jour).
    * Indiquer le nombre d'heures et minutes travaillés (Réservation / Effort normal)
-   * Indiquer le nombre d'heures supplémentaires autorisé si la case à cocher Illimité n'est pas cochée
+   * Indiquer le nombre d'heures supplémentaires autorisé si la case à cocher *Illimitée* n'est pas cochée
    * Choisir le type d'exception. Les types disponibles sont : vacances, maladie, grève, jour férié, demi-journée de vacances, jour de travail et jour non travaillé (RESOURCE_HOLIDAY, LEAVE, STRIKE, BANK_HOLIDAY, HALF_DAY_HOLIDAY, WORKING_DAY et NOT_WORKING_DAY). Le type NO_EXCEPTION ne peut pas être choisi.
    * Enregistrer en cliquant sur *Créer une exception*. Le calendrier à gauche et la liste en dessous sont mis à jour.
    * Supprimer jour par jour des exceptions existantes depuis la liste en cliquant sur l'icône poubelle. Le calendrier à gauche et la liste sont mis à jour.
 
 * *Semaine de travail* : pour choisir les heures travaillées par jour de la semaine
 
-   * indiquer les heures et minutes disponibles pour chaque jour de la semaine (lundi, mardi, mercredi, jeudi, vendredi, samedi et dimanche).
-   * indiquer les heures et minutes d'heures supplémentaires disponibles pour chaque jour de la semaine (lundi, mardi, mercredi, jeudi, vendredi, samedi et dimanche) si la case illimité n'est pas cochée.
+   * Indiquer les heures et minutes disponibles pour chaque jour de la semaine (lundi, mardi, mercredi, jeudi, vendredi, samedi et dimanche).
+   * Indiquer les heures et minutes d'heures supplémentaires disponibles pour chaque jour de la semaine (lundi, mardi, mercredi, jeudi, vendredi, samedi et dimanche) si la case *Illimitée* n'est pas cochée.
    * Enregistrer en cliquant sur *Créer une nouvelle semaine de travail* : renseigner au moins, soit la date de début d'applicabilité, soit la date de fin d'applicabilité puis cliquer sur *Créer* (ou *Annuler* éventuellement). La plage apparaît alors dans la liste en dessous.
    * Modifier les dates d'applicabilité dans les champs date de la liste.
-   * supprimer des listes de distributions d'heures existantes depuis la liste en cliquant sur l'icône poubelle.
+   * Supprimer des listes de distributions d'heures existantes depuis la liste en cliquant sur l'icône poubelle.
 
-De cette façon, il est possible de personnaliser totalement les calendriers selon ses besoins. Il faut cliquer sur le bouton *Enregistrer* ou *Enregistrer et continuer* pour conserver les modifications faires dans le formulaire.
+De cette façon, il est possible de personnaliser totalement les calendriers selon ses besoins. Il faut cliquer sur le bouton *Enregistrer* ou *Enregistrer et continuer* pour conserver les modifications faites dans le formulaire.
 
 .. figure:: images/calendar-edition.png
    :scale: 50
@@ -85,7 +85,7 @@ Il est important de signaler que toute modification faite dans le calendrier ori
 Pour créer un calendrier dérivé, il faut :
 
 * Aller dans le menu *Ressources*
-* cliquer le sous-menu *Calendriers* 
+* Cliquer le sous-menu *Calendriers* 
 * Choisir un des calendriers comme étant la base d'un calendrier dérivé et cliquer sur l'icône *Créer un calendrier dérivé* : s'affiche un formulaire de modification similaire à celui de création d'un calendrier sauf qu'il contient des exceptions et des heures par jour de la semaine identiques à ceux du calendrier originel.
 
 Créer un calendrier par copie
@@ -98,7 +98,7 @@ La différence entre un calendrier copié et un calendrier dérivé tient aux mo
 Pour créer un calendrier copié dans le programme, il faut faire ce qui suit :
 
 * Aller dans le menu *Ressources*
-* cliquer le sous-menu *Calendriers* 
+* Cliquer le sous-menu *Calendriers* 
 * Choisir un des calendriers à copier cliquer sur l'icône *Créer une copie* : s'affiche un formulaire de modification similaire à celui de création d'un calendrier sauf qu'il contient des exceptions et des heures par jour de la semaine identiques à ceux du calendrier copié.
 
 Calendrier par défaut
@@ -110,7 +110,7 @@ Ce qui suit doit être fait pour configurer un calendrier par défaut :
 
 * Aller au menu *Configuration*
 * Cliquer sur le sous-menu *Réglages principaux*
-* renseigner le champ *Calendrier par défaut* en saisissant le nom du calendrier et en s'aidant de la liste déroulante qui apparaît (ou en la faisant apparaître en cliquant sur l'icône loupe).
+* Renseigner le champ *Calendrier par défaut* en saisissant le nom du calendrier et en s'aidant de la liste déroulante qui apparaît (ou en la faisant apparaître en cliquant sur l'icône loupe).
 * Cliquer sur *Enregistrer*.
 
 .. figure:: images/default-calendar.png
@@ -157,7 +157,7 @@ Les projets peuvent avoir un calendrier différent du calendrier par défaut. Pr
    * Accéder à la liste des projets dans la vue globale de la compagnie.
    * Modifier le projet en question (en cliquant dessus ou sur l'icône Modifier).
    * Accéder à l'onglet *Informations générales*, zone "Configuration du calendrier" en haut à droite.
-   * Choisir le calendrier à affecté via le menu déroulant "Calendrier".
+   * Choisir le calendrier à affecter via le menu déroulant "Calendrier".
    * Cliquer sur l'icône en forme de disquette pour enregistrer la modification.
 
 

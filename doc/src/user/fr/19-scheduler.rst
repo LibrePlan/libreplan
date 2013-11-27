@@ -5,7 +5,7 @@ Ordonnanceur
 
 L'ordonnanceur est conçu pour programmer des tâches système dynamiquement. Il a été implémenté avec l'aide de *l'ordonnanceur Quartz du framework Spring*.
 
-De façon à utiliser cet ordonnanceur efficacement, les tâches système (jobs Quartz) qui doivent être programmés doivent être créés au préalable. Ensuite, ces tâches système pourront être ajoutées à la base de données puisque toutes les tâches système à programmer sont enregistrés en base de données.
+De façon à utiliser cet ordonnanceur efficacement, les tâches système (jobs Quartz) qui doivent être programmées doivent être créées au préalable. Ensuite, ces tâches système pourront être ajoutées à la base de données puisque toutes les tâches système à programmer sont enregistrées en base de données.
 
 Quand l'ordonnanceur démarre la première fois, il lit les tâches système à programmer/déprogrammer dans la base de données et les programme/supprime en conséquence. Après cela, des tâches système peuvent être ajoutées/mises à jour ou supprimées dynamiquement en utilisant l'interface utilisateur ``Ordonnancement de tâches système``.
 
@@ -16,6 +16,7 @@ Quand l'ordonnanceur démarre la première fois, il lit les tâches système à 
    Cet ordonnanceur ne gère que les ``expressions cron`` pour programmer les tâches système.
 
 Les critères que l'ordonnanceur utilise pour programmer/supprimer des tâches système quand il démarre la première fois :
+
 Pour toutes les tâches système :
 
 * Programmer
@@ -32,7 +33,7 @@ Pour toutes les tâches système :
 .. NOTE::
    Les tâches système ne peuvent pas être reprogrammées/déprogrammées si elles sont en cours d'exécution
    
-Vue de la liste de programmation de tâches systèmes
+Vue de la liste de programmation des tâches systèmes
 ===================================================
 La vue ``liste de programmation des tâches système`` permet aux utilisateurs de :
 
@@ -48,13 +49,13 @@ Ajouter ou modifier une tâche système
 * le bouton ``Créer`` pour ajouter une nouvelle tâche système, ou
 * le bouton ``Modifier`` pour modifier la tâche système choisie.
 
-Ces deux actions vous conduiront à un ``formulaire de tâche système`` de création/modification. Le ``formulaire`` affiche affiche les propriétés suivantes :
+Ces deux actions vous conduiront à un ``formulaire création/modification de tâches système``. Le ``formulaire`` affiche les propriétés suivantes :
 
 * Champs :
 
   * Groupe de tâches système : le nom du groupe de tâches système
   * Nom de tâche système : le nom de la tâche système
-  * Expression cron : champ en lecture seule avec un bouton ``Modifier`` pour ouvrir une fenêtre de saisie ``expression cron``
+  * Expression cron : champ en lecture seule avec un bouton ``Modifier`` pour ouvrir une fenêtre de saisie d'une ``expression cron``
   * Nom de classe de la tâche système : ``liste déroulante`` pour choisir un connecteur. Ce n'est pas obligatoire.
   * Programmation: case à cocher pour indiquer si vous voulez programmer la tâche système ou non
 
@@ -77,5 +78,5 @@ Cliquer sur le bouton ``Supprimer`` pour supprimer la tâche système à la fois
 
 Démarrer la tâche système manuellement
 ======================================
-Au lieu d'attendre jusqu'à ce que la tâche système soit exécutée comme programmée par l'ordonnanceur, vous pouvez cliquer ce bouton pour lancer le processus directement. A l'issue, l'information de réussite/d'échec sera affichée dans une ``fenêtre surgissante``.
+Au lieu d'attendre jusqu'à ce que la tâche système soit exécutée comme planifié par l'ordonnanceur, vous pouvez cliquer ce bouton pour lancer le processus directement. A l'issue, l'information de réussite/d'échec sera affichée dans une ``fenêtre surgissante``.
 

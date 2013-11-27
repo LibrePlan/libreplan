@@ -23,7 +23,7 @@ Quant aux champs facultatifs, ce sont :
 
    * **Filtrer par projet**. Ce filtre permet de choisir le ou les projets pour lesquels on veut limiter les données du rapport à extraire. Si aucun projet n'est ajouté au filtre, le rapport est affiché pour tous les projets dans la base de données. Il existe une liste déroulante pour trouver le projet désiré. Ils sont ajoutés au filtre en appuyant au bouton *Ajouter*.
 
-   * **Filtrer par catégories ou matériaux**. Ce filtre permet de restreindre le projet à un ou plusieurs matériaux ou catégories de matériaux. Pour sélectionner plusieurs éléments, utiliser la touche CTRL.
+   * **Filtrer par catégories ou matériaux**. Ce filtre permet de restreindre le rapport à un ou plusieurs matériaux ou catégories de matériaux. Pour sélectionner plusieurs éléments, utiliser la touche CTRL.
 
 Sortie
 ======

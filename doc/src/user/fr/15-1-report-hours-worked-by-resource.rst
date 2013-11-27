@@ -6,7 +6,7 @@ Rapport des heures travaillées par ressources
 Objet
 =====
 
-Ce rapport permet d'extraire la liste de tâches et le temps qui leur a été consacré par les ressources sur une période de temps. Il existe plusieurs filtres qui permettent d'ajuster la requête pour obtenir les informations souhaitées et éviter les données superflues.
+Ce rapport permet d'extraire la liste des tâches et le temps qui leur a été consacré par les ressources sur une période de temps. Il existe plusieurs filtres qui permettent d'ajuster la requête pour obtenir les informations souhaitées et éviter les données superflues.
 
 Paramètres en entrée et filtres
 ===============================
@@ -37,6 +37,7 @@ Dans l'en-tête du rapport, les filtres appliqués lors de l'extraction des donn
 
 Pied de page
 ------------
+
 La date à laquelle le rapport a été généré est indiquée.
 
 Corps

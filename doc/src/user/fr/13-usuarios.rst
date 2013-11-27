@@ -22,7 +22,7 @@ Il est nécessaire de réaliser les étapes suivantes pour gérer les utilisateu
 
 * Aller à "Comptes utilisateurs" dans le menu "Configuration".
 * Le programme affiche un formulaire avec la liste des utilisateurs.
-* Cliquer sur le bouton "Modifier" pour modifier un utilisateur choisis ou cliquer sur le bouton "Créer".
+* Cliquer sur le bouton "Modifier" pour modifier un utilisateur choisi ou cliquer sur le bouton "Créer".
 * Un formulaire va apparaître avec les champs suivants :
 
    * Nom d'utilisateur : l'identifiant de connexion
@@ -33,7 +33,7 @@ Il est nécessaire de réaliser les étapes suivantes pour gérer les utilisateu
    * Adresse de messagerie
    * Type d'authentification: choisir entre "Base de données" pour une gestion par LibrePlan et "LDAP" pour déléguer cette fonction à un annuaire LDAP (cf. le chapitre LDAP).
    * Ressource liée : nom d'employé éventuellement associé à cet utilisateur
-   * Liste des rôles associés : chercher l'un des rôles affichés dans la liste déroulante et cliquer sur "Ajouter un rôle" pour ajouter ce rôle à l'utilisateur.
+   * Liste des rôles associés : chercher l'un des rôles affichés dans la liste déroulante et cliquer sur "Ajouter un rôle" pour associer ce rôle à l'utilisateur.
    * Liste des profils associés : chercher l'un des profils affichés dans la liste déroulante et cliquer sur "Ajouter un profil" pour ajouter un nouveau profil.
 
 .. figure:: images/manage-user.png
@@ -55,7 +55,7 @@ Suivre les étapes suivantes pour gérer les profils du programme.
 * Un formulaire apparaît avec les champs suivants :
 
    * Nom : le nom du profil
-   * Liste des rôles (autorisations) associés au profil. Choisir un rôle dans la liste des rôles et cliquer sur "Ajouter un rôle" pour ajouter ce rôle comme associé au profil.
+   * Liste des rôles (autorisations) associés au profil. Choisir un rôle dans la liste des rôles et cliquer sur "Ajouter un rôle" pour ajouter ce rôle au profil.
 
 .. figure:: images/manage-user-profile.png
    :scale: 50

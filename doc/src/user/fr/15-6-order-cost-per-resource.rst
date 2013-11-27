@@ -16,12 +16,12 @@ Il y a plusieurs paramètres facultatifs disponibles. Ce sont :
    * **Filtrer par projet**. C'est le ou les projets pour les tâches duquel ou desquels on veut générer le rapport. Si aucun projet n'est renseigné, les coûts de tous les projets seront successivement indiqués.
 
    * **Dates**.
-      * *Travail effectué depuis* C'est la date minimum des rapports de travail qui sont demandés. Les rapports avec des dates antérieures à cette date de début sont ignorés. Si le paramètre n'est pas renseigné, il n'y a pas de date de filtrage d'antériorité.
-      * *Travail effectué jusqu'au* C'est la date maximum des rapports de travail qui seront inclus dans les résultats. Les rapports de travail avec une date postérieure à cette date ne seront pas pris en compte. Si le paramètre n'est pas renseigné, il n'y a pas de limite supérieure de filtrage des rapports de travail.
+      * *Travail effectué depuis*. C'est la date minimum des rapports de travail qui sont demandés. Les rapports avec des dates antérieures à cette date de début sont ignorés. Si le paramètre n'est pas renseigné, il n'y a pas de date de filtrage d'antériorité.
+      * *Travail effectué jusqu'au*. C'est la date maximum des rapports de travail qui seront inclus dans les résultats. Les rapports de travail avec une date postérieure à cette date ne seront pas pris en compte. Si le paramètre n'est pas renseigné, il n'y a pas de limite supérieure de filtrage des rapports de travail.
 
    * **Filtrer par critères**. Permet de ne retenir que les tâches disposant du ou des critères indiqués. Choisir un critère et cliquer sur le bouton *Ajouter*.
 
-   * **Filtrer par libellés**. Permet de ne retenir que les tâches disposant de la ou des étiquettes indiquées. Choisir une étiquette et cliquer sur le bouton *Ajouter*.
+   * **Filtrer par étiquettes**. Permet de ne retenir que les tâches disposant de la ou des étiquettes indiquées. Choisir une étiquette et cliquer sur le bouton *Ajouter*.
 
 Sortie
 ======
@@ -52,6 +52,7 @@ Enfin, dans chacune de ces sous-sections, on trouve un tableau par ressource ind
 
    * les noms et prénoms des employés ou le nom des machines.
    * un tableau comportant les colonnes suivantes :
+
       * *Date*. La date du relevé des heures de travail
       * *Type d'heures*. Le type d'heures concerné (par exemple: par défaut, heures supplémentaires ...).
       * *Salaire*. Le prix horaire de ce type d'heures.
@@ -75,6 +76,7 @@ En fin de chaque section de projet, on trouve le *Total projet* comportant :
 
    * Le *temps passé*. Somme des heures effectuées pour l'ensemble des tâches par toutes les ressources impliquées
    * L'*argent dépensé* qui présente successivement :
+
       * le *coût des heures*
       * le *coût des dépenses*
       * le *total* des 2 coûts précédents

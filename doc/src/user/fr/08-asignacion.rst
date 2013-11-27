@@ -4,7 +4,7 @@ Affectation des ressources
 .. asigacion_
 .. contents::
 
-L'affectation des ressources est l'une des fonctionnalités les plus importantes du programme,
+L'affectation des ressources est l'une des fonctionnalités les plus importantes du programme
 et peut être réalisée de deux façons différentes :
 
 * Affectation spécifique.
@@ -28,29 +28,29 @@ Pour réaliser l'un ou l'autre de ces deux types d'affectation de ressources, pr
 
   * Information de la tâche : 
 
-     * liste des critères que la tâche doit voir satisfaits avec le type et le nombre d'heures associés. 
+     * Liste des critères que la tâche doit voir satisfaits avec le type et le nombre d'heures associés. 
      * Affectation recommandée : cette option permet au programme de collecter les critères qui doivent être satisfaits et le nombre total d'heures de tous les groupes d'heures puis recommande une affectation générique. S'il existe une affectation antérieure, le système la supprime et la remplace avec la nouvelle.
 
   * Configuration d'affectation. Cet bloc contient :
 
-     * date de début et de fin de la tâche, 
-     * nombre de jours ouvrés,
+     * Date de début et de fin de la tâche, 
+     * Nombre de jours ouvrés,
      * Type de calcul : le système permet aux utilisateurs de choisir la stratégie à utiliser pour calculer les affectations :
 
         * calculer les jours de travail
         * calculer le nombre d'heures : calcule le nombre d'heures nécessaires à dédier aux ressources affectées étant donné la date de fin et le nombre de ressources disponibles par jour.
-        * Calculer le nombre de ressources par jour : calcule le nombre de ressources nécessaires pour finir la tâche à la date prévue et dédit à cette dernière le nombre d'heures correspondant.
+        * Calculer le nombre de ressources par jour : calcule le nombre de ressources nécessaires pour finir la tâche à la date prévue et dédie à cette dernière le nombre d'heures correspondant.
         
-  * Affectations : ce bloc contient :
+  * Affectations, bloc contenant : 
 
-     * un champ de recherche des critères et des ressources, un bouton *Ajouter* et un bouton *Recherche avancée* décrit plus loin.
+     * Un champ de recherche des critères et des ressources, un bouton *Ajouter* et un bouton *Recherche avancée* décrits plus loin.
      * Case à cocher *vue étendue*. En cochant cette case, la liste des affectations décrite ci-dessous est enrichie d'informations complémentaires : heures à l'origine, au total et consolidées et nombre de ressources total et consolidé.
-     * la liste des affectations qui ont été réalisées. Cette liste montre les affectations génériques avec le nombre non consolidé d'heures et de ressources par jour. Chaque affectation réalisée peut explicitement être retirée en cliquant sur le bouton supprimer correspondant.
+     * La liste des affectations qui ont été réalisées. Cette liste montre les affectations génériques avec le nombre non consolidé d'heures et de ressources par jour. Chaque affectation réalisée peut explicitement être retirée en cliquant sur le bouton supprimer correspondant.
 
      * Saisir tout ou partie du nom d'un critère ou d'une ressource
      * Cliquer sur *Ajouter*.
-     * En mode *Calculer les jours de travail*, il est alors possible de modifier le nombre total d'heures non consolidées et chaque nombre de ressource non consolidé par jour.
-     * En mode *Calculer le nombre d'heures*, seuls les nombres de ressources non consolidé est modifiable.
+     * En mode *Calculer les jours de travail*, il est alors possible de modifier le nombre total d'heures non consolidées et chaque nombre de ressources non consolidées par jour.
+     * En mode *Calculer le nombre d'heures*, seuls le nombre de ressources non consolidées est modifiable.
      * En mode *Calculer le nombre de ressources par jour*, seul le nombre d'heures non consolidé est modifiable.
 
 .. figure:: images/resource-assignment.png
@@ -75,9 +75,9 @@ Voir les sections "affectation générique" et "affectation spécifique" pour vo
 
    Recherche des affectations de ressource
 
-* Cliquer alors sur *Sélectionner*. Dans le cas d'une affectation spécifique, il faut obligatoirement choisir un ou plusieurs employé ou machine, sinon aucune affectation ne sera réalisée.
+* Cliquer alors sur *Sélectionner*. Dans le cas d'une affectation spécifique, il faut obligatoirement choisir un ou plusieurs employés ou machines, sinon aucune affectation ne sera réalisée.
 
-* Le programme affiche alors les ressources sélectionnés (par critère générique ou par valeurs spécifiques) dans la liste des affectations de l'écran originel d'affectation des ressources.
+* Le programme affiche alors les ressources sélectionnées (par critère générique ou par valeurs spécifiques) dans la liste des affectations de l'écran originel d'affectation des ressources.
 
 * On peut alors choisir les heures ou le nombre de ressources par jour comme indiqué précédemment selon le mode de calcul choisi.
 
@@ -85,7 +85,7 @@ Voir les sections "affectation générique" et "affectation spécifique" pour vo
 Affection spécifique
 ====================
 
-C'est l'affectation spécifique d'une ressource à une tâche projet, i.e. que l'on décide quel "nom et prénom(s)" ou "machine" doit être affecté à une tâche.
+C'est l'affectation spécifique d'une ressource à une tâche projet, i.e. on décide quel "nom et prénom(s)" ou "machine" doit être affecté à une tâche.
 
 L'affectation spécifique peut être réalisée sur l'écran affiché ci-après :
 
@@ -100,7 +100,7 @@ Quand une ressource est spécifiquement affectée, le programme crée des affect
 Affectation spécifique d'une machine
 ------------------------------------
 
-L'affectation spécifique d'une machine fonctionne de la même façon que pour les employés. Quand une machine est affectée à une tâche, le système enregistre une affectation spécifique d'heures pour la machine choisie. La principale différence est que le système recherche la liste des employés ou des critères affectés au moment où la machine est affectée :
+L'affectation spécifique d'une machine fonctionne de la même façon que celle d'un employé. Quand une machine est affectée à une tâche, le système enregistre une affectation spécifique d'heures pour la machine choisie. La principale différence est que le système recherche la liste des employés ou des critères affectés au moment où la machine est affectée :
 
 * Si la machine possède une liste d'employés affectés, le programme choisit parmi eux ce qui est nécessaire pour la machine pour le calendrier affecté. Par exemple, si le calendrier de la machine est de 16 heures par jour et que le calendrier des ressources est de 8 heures par jour, deux ressources sont affectées depuis la liste des ressources disponibles.
 
@@ -147,7 +147,7 @@ L'affectation générique de machine fonctionne de la même façon que celle des
 
   * On collecte les informations de configuration des machines : valeur alpha, employés affectés et critères.
 
-  * Si la machine possède une liste d'employés affectés, le programme choisit le nombre requis par la machine en fonction du calendrier affecté. Par exemple, si le calendrier de la machine est de 16 heures par jours et le calendrier des ressources est des 8 heures, le programme affecte deux ressources à partir de la liste des ressources disponibles.
+  * Si la machine possède une liste d'employés affectés, le programme choisit le nombre requis par la machine en fonction du calendrier affecté. Par exemple, si le calendrier de la machine est de 16 heures par jour et le calendrier des ressources est de 8 heures, le programme affecte deux ressources à partir de la liste des ressources disponibles.
 
   * Si la machine possède un ou plusieurs critères affectés, le programme fait des affectations génériques parmi les ressources qui remplissent ces critères affectés à la machine.
 
@@ -186,7 +186,7 @@ Les étapes à suivre pour gérer les affectations avancées sont :
      * par interpolations : configurable
      * sigmoïde
 
-  * Dans le cas des fonctions par extensions ou interpolation, s'affiche une nouvelle fenêtre quand on clique sur *Configurer*. On peut alors ajouter une extension via le bouton du même nom. La ligne ajoutée permet de configurer les éléments suivants :
+  * Dans le cas des fonctions par extension ou interpolations, s'affiche une nouvelle fenêtre quand on clique sur *Configurer*. On peut alors ajouter une extension via le bouton du même nom. La ligne ajoutée permet de configurer les éléments suivants :
 
     * Date : Date à laquelle le segment se termine. Si ce champ est modifié, la longueur (champ suivant) est automatiquement mis à jour, et vice-versa.
 
