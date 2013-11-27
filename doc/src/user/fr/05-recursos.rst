@@ -22,7 +22,7 @@ Les ressources machines sont les machines de l'entreprise. Leurs principales car
 * Elles sont dotées d'une valeur *alpha* configurable qui représente le ratio machine/employé à appliquer pour les mettre en oeuvre.
 
   * la valeur *alpha* représente le temps humain consommé pour faire fonctionner la machine. Par exemple, une valeur alpha de 0,5 signifie que 8 heures de fonctionnement de la machine nécessitent 4 heures du temps d'un employé.
-  * il est possible d'affecter spécifiquement une valeur *alpha* à un employé, i.e. en sélectionnant l'employé qui sera affecté à la machine pour ce pourcentage de temps.
+  * il est possible d'affecter spécifiquement une valeur *alpha* à un employé, c'est-à-dire en sélectionnant l'employé qui sera affecté à la machine pour ce pourcentage de temps.
   * il est également possible d'effectuer une affectation générique via un critère, de telle façon que le pourcentage d'utilisation sera affecté à tout employé qui remplit le critère et est disponible. Cette affectation générique fonctionne de la même façon que l'affectation générique des tâches qui a déjà été expliquée.
 
 Il est possible de créer, modifier et désactiver (jamais supprimer définitivement) des employés ou des machines en allant dans l'onglet "Ressources". Cet onglet possède les sous-menus suivants :
@@ -79,7 +79,7 @@ La case à cocher permet de limiter l'affichage des critères à ceux qui sont a
 
    Associer des critères à des employés
 
-3) Onglet *Calendrier*. Cet onglet peut être utilisé pour configurer un calendrier spécifique à employé. Tous les employés ont un calendrier affecté par défaut; cependant, il est possible d'affecter un calendrier spécifique à chacun en dérivant un calendrier existant puis en apportant les modifications nécessaires.
+3) Onglet *Calendrier*. Cet onglet peut être utilisé pour configurer un calendrier spécifique à l'employé. Tous les employés ont un calendrier affecté par défaut; cependant, il est possible d'affecter un calendrier spécifique à chacun en dérivant un calendrier existant puis en apportant les modifications nécessaires.
 
 .. figure:: images/worker-calendar.png
    :scale: 50
@@ -98,7 +98,7 @@ L'affectation de ressource est expliquée dans la section affectation des ressou
 Gestion des machines
 ====================
 
-Les machines sont des ressources permettant de remplir tout type d'objectif; de plus, comme pour les employés, les machines peuvent être gérées et affectées à des tâches. L'affectation de ressources est décrite dans la section affectation des ressources où les spécificités des machines sont expliquées.
+Les machines sont des ressources permettant de remplir tous types d'objectifs; de plus, comme pour les employés, les machines peuvent être gérées et affectées à des tâches. L'affectation de ressources est décrite dans la section affectation des ressources où les spécificités des machines sont expliquées.
 
 Les machines sont gérées via l'entrée de menu "Ressources", sous-menu "Machines". S'affiche alors la liste des machines de la compagnie. À partir de cette liste, il est possible de créer, de modifier ou de supprimer une machine.
 

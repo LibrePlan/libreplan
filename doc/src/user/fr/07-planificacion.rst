@@ -7,7 +7,7 @@ Planification des tâches
 Planification des tâches
 ========================
 
-La planification dans "LibrePlan" est un processus qui a été décrit dans tous les chapitres de ce guide utilisateur, les chapitres sur les projets et l'affectation de ressources étant particulièrement important à cet égard. Ce chapitre décrit les procédures de base de la planification une fois les projets et les diagrammes de Gantt correctement configurés.
+La planification dans "LibrePlan" est un processus qui a été décrit dans tous les chapitres de ce guide utilisateur, les chapitres sur les projets et l'affectation de ressources étant particulièrement importants à cet égard. Ce chapitre décrit les procédures de base de la planification une fois les projets et les diagrammes de Gantt correctement configurés.
 
 .. figure:: images/planning-view.png
    :scale: 35
@@ -60,14 +60,14 @@ Dans cette perspective *Planification de projet*, on peut réaliser les opérati
       * faire correspondre les achèvements des deux tâches
 
    * Créer un nouveau jalon. Faire un clic droit sur la tâche positionnée avant le jalon à créer puis choisir le menu "Ajouter un jalon". 
-   * Déplacer des tâches (ou des jalons) sans modifier les dépendances. Faire un clic droit sur le corps de la tâche et tirez la à la position désirée. Si aucune restriction ou dépendances n'a été perturbée, le système va mettre à jour l'affectation journalière des ressources de la tâche et placer la tâche à la date choisie.
-   * Affecter une contrainte à la tâche. Cliquer sur la tâche concernée et choisir l'option "Propriétés de la tâche". Dans la fenêtre qui apparaît se trouve une liste déroulante "Contrainte" qui peut être modifiée. Les contraintes peuvent entrer en conflit avec les dépendances, c'est pourquoi il existe une option de configuration des projet permettant d'indiquer qui des dépendances ou des contraintes aura priorité en cas de conflit. Les types de contrainte proposés sont :
+   * Déplacer des tâches (ou des jalons) sans modifier les dépendances. Faire un clic droit sur le corps de la tâche et tirez la à la position désirée. Si aucune restriction ou dépendance n'a été perturbée, le système va mettre à jour l'affectation journalière des ressources de la tâche et placer la tâche à la date choisie.
+   * Affecter une contrainte à la tâche. Cliquer sur la tâche concernée et choisir l'option "Propriétés de la tâche". Dans la fenêtre qui apparaît se trouve une liste déroulante "Contrainte" qui peut être modifiée. Les contraintes peuvent entrer en conflit avec les dépendances, c'est pourquoi il existe une option de configuration des projets permettant d'indiquer qui des dépendances ou des contraintes aura priorité en cas de conflit. Les types de contrainte proposés sont :
 
       * *démarre dès que possible* 
-      * *ne démarre pas avant le* : indique que la tâche ne doit pas démarrer avant la date qu'il faut indiqué dans le champ date qui apparaît alors.
-      * *démarre le* : indique que la tâche doit démarrer à la date qu'il faut indiqué dans le champ date qui apparaît alors.
+      * *ne démarre pas avant le* : indique que la tâche ne doit pas démarrer avant la date qu'il faut indiquer dans le champ date qui apparaît alors.
+      * *démarre le* : indique que la tâche doit démarrer à la date qu'il faut indiquer dans le champ date qui apparaît alors.
       * *démarre aussi tard que possible*
-      * *ne finit pas plus tard que le* : indique que la tâche ne doit pas finir après la date qu'il faut indiqué dans le champs date qui apparaît.
+      * *ne finit pas plus tard que le* : indique que la tâche ne doit pas finir après la date qu'il faut indiquer dans le champs date qui apparaît.
 
 La perspective offre également plusieurs options de visualisation :
 
@@ -106,7 +106,7 @@ La perspective détail du projet permet d'accéder aux options de modification d
 
 Perspective utilisation des ressources
 -------------------------------------------
-La perspective utilisation des ressources affiche la liste des ressources du projet avec, en regard, un graphique de leur utilisation dans le temps. Les tâches et les critères qui sont la cause de cette utilisation sont affichées avec leurs dates de début et de fin, qu'elles appartiennent au projet ou à d'autres. Des couleurs différentes sont utilisées selon que la ressource possède une charge supérieure ou inférieure à 100% :
+La perspective utilisation des ressources affiche la liste des ressources du projet avec, en regard, un graphique de leur utilisation dans le temps. Les tâches et les critères qui sont la cause de cette utilisation sont affichés avec leurs dates de début et de fin, qu'ils appartiennent au projet ou à d'autres. Des couleurs différentes sont utilisées selon que la ressource possède une charge supérieure ou inférieure à 100% :
 
 * Vert : charge inférieure à 100%
 * Orange : charge à 100%
@@ -117,7 +117,7 @@ La perspective utilisation des ressources affiche la liste des ressources du pro
 
    Vue de la charge des ressources pour un projet donné
 
-Si le pointeur de la souris est placé sur le diagramme de Gantt des ressources, le pourcentage d'utilisation de l'employé sera affiché.
+Si le pointeur de la souris est placé sur le diagramme de Gantt des ressources, le pourcentage d'utilisation de la ressource sera affiché.
 
 En dessus figure également le graphique récapitulatif de charge de l'ensemble des ressources en fonction du temps.
 
@@ -130,4 +130,4 @@ La perspective *affectation avancée* est expliquée en détail dans le chapitre
 Perspective tableau de bord
 ---------------------------
 
-Cette perspective affiche des informations relative au projet et à ses tâches selon 4 axes : avancement, coûts, ressources et temps.
+Cette perspective affiche des informations relatives au projet et à ses tâches selon 4 axes : avancement, coûts, ressources et temps.

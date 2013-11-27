@@ -20,7 +20,7 @@ La case *Utiliser les rôles LDAP*, quand elle est cochée, indique qu'un lien e
 Configuration
 =============
 
-Cette section contient les valeurs des paramètres pour accéder à LDAP. D'abord le nom ou l'adresse IP de l'*hôte* fournissant le service LDAP puis le *Port* à utiliser. *Base*, *UserDN* et *Mot de passe* sont les paramètres utilisés pour se connecter au LDAP et chercher des utilisateurs, donc l faut utiliser un compte ayant la permission de faire cette opération dans LDAP. Dans la partie basse de cette section, il y a un bouton pour vérifier que la connexion LDAP est possible avec les paramètres indiqués. C'est une bonne idée de l'essayer avant de continuer la configuration.
+Cette section contient les valeurs des paramètres pour accéder à LDAP. D'abord le nom ou l'adresse IP de l'*hôte* fournissant le service LDAP puis le *Port* à utiliser. *Base*, *UserDN* et *Mot de passe* sont les paramètres utilisés pour se connecter au LDAP et chercher des utilisateurs, donc il faut utiliser un compte ayant la permission de faire cette opération dans LDAP. Dans la partie basse de cette section, il y a un bouton pour vérifier que la connexion LDAP est possible avec les paramètres indiqués. C'est une bonne idée de l'essayer avant de continuer la configuration.
 
 .. NOTE::
 
@@ -42,7 +42,7 @@ La case à cocher *Sauvegarder les mots de passe en base de données* quand elle
 Permissions
 ===========
 
-Cette section permet de définir une stratégie pour faire correspondre les rôles LDAP avec les rôles LibrePLan. De fait, le premier choix à faire est celui de la stratégie à utiliser en fonction de l'implémentation LDAP.
+Cette section permet de définir une stratégie pour faire correspondre les rôles LDAP avec les rôles LibrePlan. De fait, le premier choix à faire est celui de la stratégie à utiliser en fonction de l'implémentation LDAP.
 
 Stratégie de groupe
 -------------------

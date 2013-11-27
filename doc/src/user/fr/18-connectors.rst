@@ -26,10 +26,10 @@ Connecteur JIRA
 JIRA est un système de suivi d'incidents et de projets. 
 
 Le connecteur JIRA est une application qui peut être utilisée pour récupérer depuis le serveur web JIRA des incidents et traiter les réponses.
-La requête est basée sur les ``étiquettes JIRA`` (``JIRA labels``). Dans JIRA? les étiquettes peuvent être utilisées pour catégoriser les incidents.
+La requête est basée sur les ``étiquettes JIRA`` (``JIRA labels``). Dans JIRA, les étiquettes peuvent être utilisées pour catégoriser les incidents.
 Aussi, la requête est aussi simple que : obtenir tous les incidents qui sont catégorisés par ce ``nom-d-etiquette``.
 
-Le connecteur obtient la réponse, dans ce cas les incidents puis les convertis en ``tâches`` et ``relevés des heures de travail`` de LibrePlan.
+Le connecteur obtient la réponse, dans ce cas les incidents puis les convertit en ``tâches`` et ``relevés des heures de travail`` de LibrePlan.
 
 Le *connecteur JIRA* doit être configuré correctement avant de pouvoir être utilisé.
 
@@ -63,11 +63,10 @@ Cliquer sur le bouton ``Synchroniser avec JIRA`` pour lancer la synchronisation.
 * Si l'étiquette est déjà synchronisée, la ``date de dernière synchronisation`` et l' ``étiquette`` sont affichées dans l'écran JIRA. Dans ce cas, aucune fenêtre ``surgissante`` de sélection des étiquettes ne sera affichée. À la place, le processus de synchronisation va démarrer directement pour l'étiquette (déjà synchronisée) affichée.
 
 .. NOTE::
-   La relation entre ``Commande`` et ``étiquette`` est de un pour un. Seule une seule ``étiquette`` est autorisée à se synchroniser avec une ``Commande``.
+   La relation entre ``projet`` et ``étiquette`` est de un pour un. Une Seule ``étiquette`` est autorisée à se synchroniser avec un ``Projet``.
 
 .. NOTE::
-   Pour une (re)synchronisation réussie, les informations seront écrites en base de données et l'écran JIRA sera mis à ajour avec les dernières ``dates`` et ``étiquettes`` synchronisées.
-
+   Pour une (re)synchronisation réussie, les informations seront écrites en base de données et l'écran JIRA sera mis à jour avec les dernières ``dates`` et ``étiquettes`` synchronisées.
 
 Le processus de (re)synchronisation est réalisé en deux phases :
 
@@ -88,7 +87,7 @@ Après l'achèvement avec succès d'une synchronisation, le résultat sera affic
 
 Programmation
 -------------
-La re-synchronisation des incidents JIRA peut également se faire via l'ordonnanceur. Allez à l'écran ``Ordonnancement des tâches``. Dans cet écran, vous pouvez configurer une ``tâche (job)`` JIRA pour faire la synchronisation. La ``tâche`` recherche les dernières ``étiquettes`` synchronisées dans la base de données et les resynchronise en conséquence. Voir également le manuel de l'ordonnanceur.
+La re-synchronisation des incidents JIRA peut également se faire via l'ordonnanceur. Allez à l'écran ``Ordonnancement des tâches``. Dans cet écran, vous pouvez configurer une ``tâche (job)`` JIRA pour faire la synchronisation. La ``tâche`` recherche les dernières ``étiquettes`` synchronisées dans la base de données et les resynchronise en conséquence. Voir également la section relative à l'ordonnanceur.
 
 Connecteur Tim Enterprise
 =========================
@@ -113,11 +112,11 @@ Dans cet écran, vous pouvez configurer les valeurs des propriétés suivantes :
 * ``URL du serveur``: le chemin d'accès absolu au serveur Tim Enterprise
 * ``Nom d'utilisateur`` et ``mot de passe`` : les informations de l'utilisateur pour se connecter
 * ``Nombre de relevés journaliers des heures de travail pour Tim``: le nombre de jours écoulés pour lesquels vous voulez exporter les relevés des heures de travail
-* ``Nombre de listes de jour provenant de Tim``: le nombre de jour à venir pour lesquels vous voulez importer les feuilles de service
+* ``Nombre de listes de jours provenant de Tim``: le nombre de jours à venir pour lesquels vous voulez importer les feuilles de service
 * ``Facteur de productivité`` : Heures de travail efficaces en pourcentage. La valeur par défaut est ``100%``
 * ``Liste des ID de département à importer``: identifiants des départements séparés par des virgules.
 
-Enfin, cliquer sur le bouton ``Tester la connexion`` pour vérifier que vous pouvez vous connecter au serveur Tim Enterprise et que votre configuration est correcte.
+Enfin, cliquez sur le bouton ``Tester la connexion`` pour vérifier que vous pouvez vous connecter au serveur Tim Enterprise et que votre configuration est correcte.
  
 Export
 ------
@@ -132,8 +131,8 @@ Le connecteur Tim ajoute les champs suivants avec le code produit :
 * l'effort, les heures passées sur la tâche
 * et une option indiquant si Tim Enterprise doit mettre à jour l'enregistrement ou en insérer un nouveau
 
-La *réponse* de Tim Enterprise ne contient qu'une liste d' ``identifiants d'enregistrement (entiers)``. C'est la parie difficile quand il s'agit de voir ce qui n'a pas fonctionné car la liste de réponse ne contient que des nombres qui ne sont pas reliés aux champs de la requête.
-La requête d' ``export`` a échoué pour les entrées qui contiennent des valeurs ``0``. Aussi vous ne pouvez pas voir ici quelle requête a échoué comme les entrées de la liste ne contiennent que la valeur ``0``. La seule façon de comprendre est de regarder le fichier journal du serveur Tim Enterprise.
+La *réponse* de Tim Enterprise ne contient qu'une liste d' ``identifiants d'enregistrement (entiers)``. Du coup, il est difficile de voir ce qui n'a pas fonctionné car la liste de réponse ne contient que des nombres qui ne sont pas reliés aux champs de la requête.
+La requête d' ``export`` a échoué pour les entrées qui contiennent des valeurs ``0``. Aussi vous ne pouvez pas voir ici quelle requête a échoué car les entrées de la liste ne contiennent que la valeur ``0``. La seule façon de comprendre est de regarder le fichier journal du serveur Tim Enterprise.
 
 .. NOTE::
    Pour un export réussi, les informations seront écrites dans la base de données et l'écran Tim sera mis à jour avec les dernières ``date`` - ``code produit`` exportés.
@@ -143,34 +142,34 @@ La requête d' ``export`` a échoué pour les entrées qui contiennent des valeu
 
 Export programmé
 ----------------
-Le processus d'export peut également se faire via l'ordonnanceur. Aller à l'écran ``Ordonnanceur de tâches``. Dans cet écran, vous pouvez configurer une ``tâche système`` d'export vers Tim. La ``tâche système`` recherche les dernièrs relevés des heures de travail exportés dans la base de données et les réexporte en conséquence. Voir également le manuel de l'ordonnanceur.
+Le processus d'export peut également se faire via l'ordonnanceur. Aller à l'écran ``Ordonnanceur de tâches``. Dans cet écran, vous pouvez configurer une ``tâche système`` d'export vers Tim. La ``tâche système`` recherche les derniers relevés des heures de travail exportés dans la base de données et les réexporte en conséquence. Voir également la section relative à l'ordonnanceur.
 
 Import
 ------
-L'import des listes de service ne fonctionne qu'avec l'aide de l'*ordonnanceur*. Il n'y a pas d'interface utilisateur conçue pour étant donné qu'aucune saisie de l'utilisateur n'est nécessaire. Aller à l'écran ``Ordonnancement des tâches`` et configurer la ``tâche`` d'import Tim. La ``tâche`` boucle sur tous les départements configurés dans la ``propriété des connecteurs`` et importe toutes les feuilles de service de chaque département. Vois également le manuel de l'ordonnanceur.
+L'import des listes de service ne fonctionne qu'avec l'aide de l'*ordonnanceur*. Il n'y a pas d'interface utilisateur dédiée étant donné qu'aucune saisie de l'utilisateur n'est nécessaire. Aller à l'écran ``Ordonnancement des tâches`` et configurer la ``tâche`` d'import Tim. La ``tâche`` boucle sur tous les départements configurés dans la ``propriété des connecteurs`` et importe toutes les feuilles de service de chaque département. Voir également la section relative à l'ordonnanceur.
 
 Pour l'import, le connecteur Tim ajoute les champs suivants dans la *requête* :
 
 * Période : la période (date à partir du - date jusqu'au) pour laquelle vous voulez importer les feuilles de service. Ceci peut être fourni sous forme de critères de filtrage.
-* département : pour quel département vous voulez importer la feuille de services. Les départements sont configurables.
-* Les champs qui vous intéressent (telles que informations personnelles, catégorie de feuille de service, etc.) et que le serveur Tim doit inclure dans sa réponse.
+* Département : pour quel département vous voulez importer la feuille de services. Les départements sont configurables.
+* Les champs qui vous intéressent (telles que informations personnelles, catégorie de feuilles de service, etc.) et que le serveur Tim doit inclure dans sa réponse.
 
 La *réponse* d'import contient les champs suivants qui sont suffisants pour gérer les ``jours exceptionnels`` dans LibrePlan :
 
 * Information personnelles : nom et nom du réseau
 * Département : le département dans lequel l'employé travaille
-* Catégorie de feuille de service : information sur la présence/l'absence de l'employé et le motif (type d'exception LibrePlan) dans le cas où l'employé est absent
+* Catégorie de feuilles de service : information sur la présence/l'absence de l'employé et le motif (type d'exception LibrePlan) dans le cas où l'employé est absent
 * Date: la date à laquelle l'employé est présent/absent
-* Temps : le temps de début d'absence/présence, par exemple 08:00
+* Temps : l'heure de début d'absence/présence, par exemple 08:00
 * Durée : nombre d'heures pendant lesquelles l'employé est présent / absent
   
-En convertissant la $réponse* d'import en ``jours exceptionnels`` de LibrePlan, les transformations suivantes sont prises en compte : 
+En convertissant la *réponse* d'import en ``jours exceptionnels`` de LibrePlan, les transformations suivantes sont prises en compte : 
 
-* Si la catégorie de feuille de service contient le nom ``Vakantie`` elle sera traduite en ``RESOURCE VACANCY`` (VACANCES DES RESSOURCES).
+* Si la catégorie de feuilles de service contient le nom ``Vakantie`` elle sera traduite en ``RESOURCE VACANCY`` (VACANCES DES RESSOURCES).
 * La catégorie ``Feestdag`` sera traduite en ``BANK HOLIDAY`` (jour férié)
-* Tous les autres comme ``Jus uren``, ``PLB uren``, etc. doivent être ajoutés manuellement au ``jours exceptionnels du calendrier``.
+* Toutes les autres comme ``Jus uren``, ``PLB uren``, etc. doivent être ajoutées manuellement aux ``jours exceptionnels du calendrier``.
    
-Au delà de la *réponse* d'import, la feuille de service est divisée en deux ou trois parties par jour : par exemple, roster-morning, roster-afternoon et roster-evening. Mais LibrePlan n'autorise qu'un seul ``type d'exception`` par jour. Le connecteur Tim est alors responsable de fusionner ces parties en un seul ``type d'exception``. Cela signifie que la catégorie de feuille de service avec la ``durée`` la plus longue est supposée être un ``type d'exception`` valide mais la durée totale est la somme de toutes les durées de ces parties de catégorie.
+Après la *réponse* d'import, la feuille de service est divisée en deux ou trois parties par jour : par exemple, roster-morning, roster-afternoon et roster-evening. Mais LibrePlan n'autorise qu'un seul ``type d'exception`` par jour. Le connecteur Tim est alors responsable de fusionner ces parties en un seul ``type d'exception``. Cela signifie que la catégorie de feuilles de service avec la ``durée`` la plus longue est supposée être un ``type d'exception`` valide mais la durée totale est la somme de toutes les durées de ces parties de catégorie.
 
-Contrairement à LibrePlan, dans Tim Enterprise, la ``durée totale`` dans le cas où l'employé est en vacances signifie que l'employé n'est pas disponible pour cette ``durée totale``. Dans LibrePlan au contraire, si l'employé est en vacances, la durée totale sera ``Zéro``. Le connecteur Tim prend également soin de cette transformation.
+Contrairement à LibrePlan, dans Tim Enterprise, la ``durée totale`` dans le cas où l'employé est en vacances signifie que l'employé n'est pas disponible pour cette ``durée totale``. Dans LibrePlan au contraire, si l'employé est en vacances, la durée totale sera ``Zéro``. Le connecteur Tim prend également en charge de cette transformation.
  
