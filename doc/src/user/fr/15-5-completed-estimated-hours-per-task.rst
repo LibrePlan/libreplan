@@ -21,7 +21,7 @@ Autre paramètre obligatoire :
 
 Il est possible de restreindre le rapport en utilisant les paramètres facultatifs suivants :
 
-   * **Filtrer par libellés**. Permet de ne retenir que les tâches disposant de la ou des étiquettes indiquées. Choisir une étiquette et cliquer sur le bouton *Ajouter*.
+   * **Filtrer par étiquettes**. Permet de ne retenir que les tâches disposant de la ou des étiquettes indiquées. Choisir une étiquette et cliquer sur le bouton *Ajouter*.
 
    * **Filtrer par critères**. Permet de ne retenir que les tâches disposant du ou des critères indiqués. Choisir un critère et cliquer sur le bouton *Ajouter*.
 
@@ -51,9 +51,9 @@ Corps
 Le corps contient un tableau contenant les colonnes suivantes:
 
    * **Nom de tâche**
-   * **Heures totales** : les heures totales de la tâche détaillant :
+   * **Heures totales**, les heures totales de la tâche détaillant :
       * **Estimées** : total des heures prévues
       * **Planifiées** : total des heures déjà planifiées
-   * **Heures à ce jour** : les heures comptabilisées jusqu'à la date de référence détaillant :
+   * **Heures à ce jour**, les heures comptabilisées jusqu'à la date de référence détaillant :
       * **Estimées** : total des heures prévues
       * **Planifiées** : total des heures déjà planifiées

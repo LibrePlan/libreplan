@@ -23,7 +23,7 @@ S.L.
 Licence
 ========
 
-Ce programme est un logiciel libre : vous pouvez le redistribuer et/ou le modifier sous les termes de la licence GNU Affero General Public telle que publiée par la Free Software Foundation, soit la version 3 de la licence, soit à votre convenance, toute version ultérieure.
+Ce programme est un logiciel libre : vous pouvez le redistribuer et/ou le modifier selon les termes de la licence GNU Affero General Public telle que publiée par la Free Software Foundation, soit la version 3 de la licence, soit à votre convenance, toute version ultérieure.
 
 Ce programme est distribué dans l'espoir qu'il sera utile mais SANS AUCUNE GARANTIE; y compris sans la garantie MARCHANDE ou D'ADÉQUATION A UN OBJECTIF PARTICULIER. Voir la licence GNU Affero General Public License pour davantage de détails.
 

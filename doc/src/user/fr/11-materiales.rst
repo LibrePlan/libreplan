@@ -31,7 +31,7 @@ Pour gérer les matériaux proprement dit, procéder comme suit :
 * Choisir la catégorie dans laquelle inclure les matériaux puis cliquer sur "Nouveau" en haut de la seconde liste.
 * Le programme ajoute une nouvelle ligne vide avec des champs pour saisir les détails relatifs à ce nouveau matériau :
 
-   * Code : code du type de matériau (qui peut être un code externe provenant d'un ERP ou un code généré automatiquement par le système - case "Générer le code" décochée dans l'arbre des catégories).
+   * Code : code du type de matériau (qui peut être un code externe provenant d'un ERP ou un code généré automatiquement par le système; dans le premier cas, la case "Générer le code" est décochée dans l'arbre des catégories).
    * Description : description du matériau.
    * Prix de l'unité : prix unitaire de chaque unité de matériau.
    * Unité : unité qui est utilisée pour mesurer la quantité de matériau.

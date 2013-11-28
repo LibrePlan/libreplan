@@ -11,11 +11,11 @@ Ce rapport vous permet de voir l'état des tâches d'un projet et/ou ayant certa
 Paramètres d'entrée et filtres
 ==============================
 
-Il faut qu'au moins un des paramètres suivants soient renseigné :
+Il faut qu'au moins un des paramètres suivants soit renseigné :
 
    * **Filtrer par projet**. C'est le projet pour les tâches duquel ou desquels on veut générer le rapport. Si aucun projet n'est renseigné, les tâches de tous les projets répondant aux critères ou aux étiquettes choisis seront successivement indiqués.
 
-   * **Filtrer par libellés**. Permet de ne retenir que les tâches disposant de la ou des étiquettes indiquées. Choisir une étiquette et cliquer sur le bouton *Ajouter*.
+   * **Filtrer par étiquettes**. Permet de ne retenir que les tâches disposant de la ou des étiquettes indiquées. Choisir une étiquette et cliquer sur le bouton *Ajouter*.
 
    * **Filtrer par critères**. Permet de ne retenir que les tâches disposant du ou des critères indiqués. Choisir un critère et cliquer sur le bouton *Ajouter*.
 
@@ -49,4 +49,4 @@ La date à laquelle le rapport a été généré est affichée.
 Corps
 -----
  
-Le corps contient un tableau contenant les colonnes détaillant tâche par tâche l'ensemble des valeurs indiquée précédemment. Chaque tâche est caractérisée par son code et son nom. L'arborescence des tâches est reproduite au moyen d'autant de décalages que nécessaires.
+Le corps contient un tableau contenant les colonnes détaillant tâche par tâche l'ensemble des valeurs indiquées précédemment. Chaque tâche est caractérisée par son code et son nom. L'arborescence des tâches est reproduite au moyen d'autant de décalages que nécessaire.

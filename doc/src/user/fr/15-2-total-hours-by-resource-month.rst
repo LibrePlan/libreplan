@@ -34,11 +34,11 @@ Pied de page
 La date pour laquelle le rapport a été demandé.
 
 Corps
-----*
+-----
 
 La zone des données du rapport comporte juste une section dans laquelle une table à 2 colonnes est affichée :
 
-   * une colonne appelée **Nom** pour le nom de la ressource.
+   * une colonne appelée *Nom* pour le nom de la ressource.
    * une colonne appelée *Heures* avec la somme de toutes les heures travaillées par cette ressource.
 
 Il y a une ligne finale agrégeant le total des heures consacrées par toutes les ressources dans le mois de l'année pour lequel le rapport a été fait.

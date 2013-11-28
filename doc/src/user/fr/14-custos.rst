@@ -13,7 +13,7 @@ La gestion des coûts permet aux utilisateurs d'estimer les coûts des ressource
 * type d'heures de travail : ceci indique le type d'heures de travail pour la ressource. On peut ajouter des types d'heures pour les machines et les employés. Un exemple de type d'heures pourrait être : heures supplémentaires, payées généralement 20€. Les champs suivant définissent les types d'heures de travail :
 
    * Code : code pour le type d'heures, modifiable s'il n'est pas généré automatiquement
-   * Nom : nom du type d'heure. Par exemple, "supplémentaire".
+   * Nom : nom du type d'heures. Par exemple, "supplémentaire".
    * Prix par défaut : prix par défaut pour le type d'heures.
    * Activé : indique si le type d'heures est activé ou pas.
 
@@ -21,7 +21,7 @@ La gestion des coûts permet aux utilisateurs d'estimer les coûts des ressource
 
    * Nom : nom de la catégorie de coûts.
    * Activé : indique si la catégorie de coûts est activée ou non.
-   * Liste des types d'heures affectés aux catégories de coûts. Elle contient plusieurs périodes et le prix associé pour ces types d'heures. Par exemple, comme les prix changent, on pourra trouver une période couvrant chaque année associé à un type d'heures et un prix horaire différent pour chacune (qui pourra être différent du prix par défaut associé au type d'heures concerné).
+   * Liste des types d'heures affectés aux catégories de coûts. Elle contient plusieurs périodes et le prix associé pour ces types d'heures. Par exemple, comme les prix changent, on pourra trouver une période couvrant chaque année associée à un type d'heures et un prix horaire différent pour chacune (qui pourra être différent du prix par défaut associé au type d'heures concerné).
 
 
 Gestion des types d'heures de travail
@@ -59,7 +59,7 @@ Catégories de coûts
 
 Procéder comme suit pour créer ou modifier une catégorie de coûts :
 
-* Choir le menu *Coûts*, sous-menu *Catégories de coûts*.
+* Choisir le menu *Coûts*, sous-menu *Catégories de coûts*.
 * Le programme affiche une liste des catégories de coûts existantes.
 
 .. figure:: images/category-cost-list.png
@@ -82,7 +82,7 @@ Procéder comme suit pour créer ou modifier une catégorie de coûts :
    * L'activation/désactivation de la catégorie de coût.
    * La liste des types d'heures inclus dans la catégorie. Tous les types d'heures possèdent les champs suivants :
 
-      * Type d'heures : choisir l'un des types d'heures existants dans le système. Il doit exister au moins un type avant de procéder (la création des types d'heures est expliquée dans la sous-section précédente).
+      * Type d'heures : choisir l'un des types d'heures existant dans le système. Il doit exister au moins un type avant de procéder (la création des types d'heures est expliquée dans la sous-section précédente).
       * Prix horaire associé.
       * Date de début et de fin (cette dernière est facultative) pour la période durant laquelle s'applique la catégorie de coûts.
 

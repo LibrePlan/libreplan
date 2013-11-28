@@ -23,9 +23,9 @@ Il s'agit d'un graphique où l'avancement global d'un projet est calculé et com
 L'avancement est représenté avec deux barres :
 
    * *Avancement actuel*. C'est l'avancement tel qu'il est réellement au moment où la mesure est faite.
-   * *Avancement attendu*. C'est l'avancement que le projet devrait avoir en ce moment selon la planifiée qui a été réalisée.
+   * *Avancement attendu*. C'est l'avancement que le projet devrait avoir en ce moment selon la planification qui a été réalisée.
 
-L'avancement global du projet est estimé de différentes façons car il n'y a pas une seule bonne méthode pour le faire :
+L'avancement global du projet est estimé de différentes façons car il n'y a pas qu'une seule bonne méthode pour le faire :
 
    * **Avancement étendu**. C'est le type d'avancement positionné comme avancement étendu au niveau projet. Dans ce cas, il n'y a aucun moyen de calculer une valeur attendue et seule la barre de la valeur actuelle est affichée.
    * **Par heures de toutes les tâches**. L'avancement de toutes les tâches du projet est moyenné pour calculer la valeur globale. C'est une moyenne pondérée prenant en compte le nombre d'heures affecté à chaque tâche.
@@ -48,7 +48,7 @@ Indicateurs de coût
 Il existe plusieurs indicateurs de coûts de *gestion de la valeur acquise* qui sont calculés :
 
    * **VC (Variance du coût) ou CV (Cost Variance)**. Différence entre la *courbe de la valeur acquise* et la *courbe du coût actuel* à un instant donné. Les valeurs positives indiquent un bénéfice et les négatives une perte.
-   * *CRTR (Coût réel du travail réalisé) ou ACWP (Actual Cost Work Performed)**. C'est le nombre total d'heures suivies dans le projet à un instant donné.
+   * **CRTR (Coût réel du travail réalisé) ou ACWP (Actual Cost Work Performed)**. C'est le nombre total d'heures suivies dans le projet à un instant donné.
    * **ICP (Indice de Coût Performance) ou CPI (Cost Performance Index)**. C'est le rapport *Valeur acquise / Coût actuel*.
 
      * > 100 est bon, signifie être sous le budget.
@@ -102,7 +102,7 @@ Avance ou retard d'achèvement des tâches
 
 Est calculée la différence en jours entre la date planifiée d'achèvement des tâches du projet et leur date de fin réelle. La date d'achèvement planifiée est tirée du *Gantt* et la date de fin réelle du dernier temps suivi pour la tâche.
 
-Le retard ou l'avance dans l'achèvement des tâches est représenté dans un histogramme. Sur l'axe vertical le nombre de tâche avec une différence de jours d'avance ou de retard correspondant aux intervalles de jours représentés en abscisse. Six intervalles dynamiques de dérive d'achèvement de tâches sont calculés.
+Le retard ou l'avance dans l'achèvement des tâches est représenté dans un histogramme. Sur l'axe vertical le nombre de tâches avec une différence de jours d'avance ou de retard correspondant aux intervalles de jours représentés en abscisse. Six intervalles dynamiques de dérive d'achèvement de tâches sont calculés.
 
    * Des valeurs négatives indiquent un achèvement en avance.
    * Des valeurs positives indiquent un achèvement en retard.
@@ -110,7 +110,7 @@ Le retard ou l'avance dans l'achèvement des tâches est représenté dans un hi
 Violation des échéances
 -----------------------
 
-D'un coté est calculé la marche avec l'échéance du projet, si elle est renseignée. De l'autre, un diagramme camembert avec le pourcentage de tâches atteignant l'échéance est dessiné. Trois types de valeurs sont inclus dans le diagramme :
+D'un coté est calculé l'écart avec l'échéance du projet, si elle est renseignée. De l'autre, un diagramme camembert avec le pourcentage de tâches atteignant l'échéance est dessiné. Trois types de valeurs sont inclus dans le diagramme :
 
 
    * Pourcentage des tâches sans échéance indiquée.
