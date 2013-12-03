@@ -37,21 +37,11 @@ build_images :=
 
 src_images := $(wildcard images/*)
 html_images := $(patsubst %,html/%,$(src_images))
-pdf_images  := $(patsubst %,pdf/%,$(src_images))
 
 $(html_images): html/images/%: images/%
 	$P copy-img $@
 	$Q mkdir -p $(@D)
 	$Q cp $< $@
-
-$(pdf_images):	pdf/images/%: images/%
-	$P copy-img $@
-	$Q mkdir -p $(@D)
-	$Q cp $< $@
-
-$(main_pdf): $(pdf_imges)
-
-
 
 ### End Xavi
 
