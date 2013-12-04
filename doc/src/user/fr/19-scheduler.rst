@@ -34,7 +34,7 @@ Pour toutes les tâches système :
    Les tâches système ne peuvent pas être reprogrammées/déprogrammées si elles sont en cours d'exécution
    
 Vue de la liste de programmation des tâches systèmes
-===================================================
+====================================================
 La vue ``liste de programmation des tâches système`` permet aux utilisateurs de :
 
 * ajouter une nouvelle tâche système
