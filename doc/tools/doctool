@@ -151,7 +151,7 @@ LATEX_SETTINGS = {
     "documentclass"      : "scrbook",
     "documentoptions"    : "11pt,oneside,a4paper",
     "table_style"        : "booktabs",
-    "use_latex_footnotes": 1,
+    "docutils_footnotes" : 1,
     "use_latex_citations": 1,
     "use_latex_toc"      : 1,
     "use_latex_docinfo"  : 0,
