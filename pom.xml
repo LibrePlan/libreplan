@@ -153,11 +153,6 @@
     -->
 
     <repositories>
-        <!-- Getttext commons -->
-        <repository>
-            <id>gettext-commons-site</id>
-            <url>http://gettext-commons.googlecode.com/svn/maven-repository</url>
-        </repository>
         <!-- LibrePlan repository -->
         <repository>
             <id>thirdparty</id>
@@ -166,10 +161,6 @@
     </repositories>
 
      <pluginRepositories>
-        <pluginRepository>
-          <id>gettext-commons-site</id>
-          <url>http://gettext-commons.googlecode.com/svn/maven-repository</url>
-        </pluginRepository>
         <!--
         <pluginRepository>
             <id>codehaus-plugin-repository</id>
@@ -214,10 +205,17 @@
             </dependency>
             <!-- Gettext commons -->
             <dependency>
+                <groupId>com.googlecode.gettext-commons</groupId>
+                <artifactId>gettext-commons</artifactId>
+                <version>0.9.8</version>
+            </dependency>
+            <!--
+            <dependency>
                 <groupId>org.xnap.commons</groupId>
                 <artifactId>gettext-commons</artifactId>
                 <version>0.9.6</version>
             </dependency>
+            -->
             <!-- JDBC driver -->
             <dependency>
                 <groupId>${jdbcDriver.groupId}</groupId>
@@ -907,9 +905,14 @@
             <!-- =========================================================== -->
             <!-- Gettext configuration -->
             <plugin>
+                <groupId>com.googlecode.gettext-commons</groupId>
+                <artifactId>gettext-maven-plugin</artifactId>
+                <version>1.2.4</version>
+                <!--
                 <groupId>org.xnap.commons</groupId>
                 <artifactId>maven-gettext-plugin</artifactId>
                 <version>1.2.0</version>
+                -->
                 <configuration>
                     <targetBundle>i18n.Messages</targetBundle>
                 </configuration>

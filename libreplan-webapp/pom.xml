@@ -196,8 +196,8 @@
                 -->
                 <plugins>
                     <plugin>
-                        <groupId>org.xnap.commons</groupId>
-                        <artifactId>maven-gettext-plugin</artifactId>
+                        <groupId>com.googlecode.gettext-commons</groupId>
+                        <artifactId>gettext-maven-plugin</artifactId>
                         <configuration>
                             <targetBundle>i18n.Messages</targetBundle>
                             <poDirectory>${project.build.sourceDirectory}/../resources/i18n</poDirectory>
@@ -258,9 +258,9 @@
                         </pluginExecution>
                         <pluginExecution>
                           <pluginExecutionFilter>
-                            <groupId>org.xnap.commons</groupId>
-                            <artifactId>maven-gettext-plugin</artifactId>
-                            <versionRange>[1.2.0,)</versionRange>
+                            <groupId>com.googlecode.gettext-commons</groupId>
+                            <artifactId>gettext-maven-plugin</artifactId>
+                            <versionRange>[1.2,)</versionRange>
                             <goals>
                               <goal>dist</goal>
                             </goals>
@@ -304,7 +304,7 @@
         </dependency>
         <!-- Gettext commons -->
         <dependency>
-            <groupId>org.xnap.commons</groupId>
+            <groupId>com.googlecode.gettext-commons</groupId>
             <artifactId>gettext-commons</artifactId>
         </dependency>
         <!-- JDBC driver -->
