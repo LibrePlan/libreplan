@@ -23,7 +23,7 @@ msgstr ""
 #: ganttzk/src/main/java/org/zkoss/ganttz/DependencyList.java:216
 #: ganttzk/src/main/java/org/zkoss/ganttz/DependencyList.java:235
 msgid "Erase"
-msgstr "抹去"
+msgstr "删除"
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/TaskList.java:299
 msgid "Add Dependency"
@@ -31,7 +31,7 @@ msgstr "添加依赖关系"
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/data/resourceload/TimeLineRole.java:58
 msgid "Worker"
-msgstr "工人"
+msgstr "雇员"
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:689
 msgid "Show money cost bar"
@@ -43,11 +43,11 @@ msgstr "开始"
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:668
 msgid "Show reported hours"
-msgstr "节目报道小时"
+msgstr "显示报表工时数"
 
 #: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:85
 msgid "Show/Hide reported hours"
-msgstr "报告显示/隐藏小时"
+msgstr "显示/隐藏报告工时数"
 
 #: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:35
 #: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:49
@@ -76,11 +76,11 @@ msgstr "可用的努力：{0}，分配的努力：{1}"
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/data/resourceload/TimeLineRole.java:64
 msgid "Criterion"
-msgstr "标准"
+msgstr "条件"
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:695
 msgid "Hide money cost bar"
-msgstr "隐藏资金成本吧"
+msgstr "隐藏资金成本条"
 
 #: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:44
 msgid "Print"
@@ -96,7 +96,7 @@ msgstr "过滤名称"
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourceLoadLeftPane.java:111
 msgid "See scheduling"
-msgstr "见调度"
+msgstr "参见调度"
 
 #: ganttzk/src/main/resources/web/ganttz/zul/leftTasksTree.zul:30
 msgid "End"
@@ -108,15 +108,15 @@ msgstr "资源"
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/timetracker/TimeTracker.java:243
 msgid "changing zoom"
-msgstr "改变变焦"
+msgstr "改变大小"
 
 #: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:91
 msgid "Show/Hide money cost bar"
-msgstr "显示/隐藏资金成本吧"
+msgstr "显示/隐藏资金成本条"
 
 #: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:47
 msgid "Group by"
-msgstr "集团通过"
+msgstr "分组"
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:90
 msgid "Generic allocation criteria"
@@ -136,7 +136,7 @@ msgstr "无"
 
 #: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:71
 msgid "Flatten/Unflatten tree"
-msgstr "拼合/ Unflatten树的"
+msgstr "平铺/树装显示"
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/data/resourceload/TimeLineRole.java:58
 msgid "Project"
@@ -193,7 +193,7 @@ msgstr "日"
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:675
 msgid "Hide reported hours"
-msgstr "隐藏报道小时"
+msgstr "隐藏报表工时"
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourceLoadComponent.java:193
 msgid "Load: {0}%"
