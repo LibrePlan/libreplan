@@ -1,0 +1,11 @@
+<Context antiJARLocking="true" path="${artifactId}">
+    <Resource name="jdbc/libreplan-ds" auth="Container"
+        type="javax.sql.DataSource"
+        maxActive="100" maxIdle="30" maxWait="10000"
+        username="${dataSource.user}" 
+        password="${dataSource.password}"
+        driverClassName="${jdbcDriver.className}"
+        url="${dataSource.url}" />
+</Context>
+
+
