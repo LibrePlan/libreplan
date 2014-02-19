@@ -22,7 +22,7 @@ msgstr ""
 
 #: libreplan-business/src/main/java/org/libreplan/business/common/entities/Configuration.java:452
 msgid "currency code not specified"
-msgstr "不指定货币代码"
+msgstr "未指定货币代码"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/resources/worker/WorkerCRUDController.java:495
 msgid "You do not have permissions to create new users"
@@ -177,7 +177,7 @@ msgstr "开始日期不能为空"
 #: libreplan-webapp/src/main/webapp/orders/_edition.zul:176
 #: libreplan-business/src/main/java/org/libreplan/business/users/entities/UserRole.java:57
 msgid "Materials"
-msgstr "物料"
+msgstr "原材料"
 
 #: libreplan-business/src/main/java/org/libreplan/business/calendars/entities/BaseCalendar.java:1106
 msgid "dates must be sorted and cannot overlap"
@@ -189,7 +189,7 @@ msgstr "重新分配"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/resources/worker/WorkerCRUDController.java:180
 msgid "Not bound"
-msgstr "不绑定"
+msgstr "未绑定"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/dashboard/GlobalProgressChart.java:62
 msgid "By critical path hours"
@@ -212,7 +212,7 @@ msgstr "项目计划"
 
 #: libreplan-business/src/main/java/org/libreplan/business/workreports/entities/WorkReportLabelTypeAssigment.java:61
 msgid "label type not specified"
-msgstr "不指定标签类型"
+msgstr "未指定标签类型"
 
 #: libreplan-webapp/src/main/webapp/workreports/_editWorkReportType.zul:29
 msgid "Managing fields and labels"
@@ -222,7 +222,7 @@ msgstr "字段和标签管理"
 msgid ""
 "Machine cannot be deleted. Machine is allocated to a project or contains "
 "imputed hours"
-msgstr "机器无法被删除。机分配到一个项目或包含估算小时"
+msgstr "设备无法被删除。设备已分配到项目或包含估算小时"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/resources/machine/MachineCRUDController.java:269
 msgid "Please, select a calendar"
@@ -263,7 +263,7 @@ msgstr "创建任务"
 
 #: libreplan-business/src/main/java/org/libreplan/business/users/entities/User.java:122
 msgid "username not specified"
-msgstr "用户名不指定"
+msgstr "用户名未指定"
 
 #: libreplan-webapp/src/main/webapp/planner/advance_allocation.zul:22
 msgid "LibrePlan: Advanced allocation"
@@ -300,7 +300,7 @@ msgstr "您的会话已过期，因为没有活动。请重新登录。"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/materials/MaterialsController.java:526
 msgid "Cannot delete that material because it is assigned to a project."
-msgstr "无法删除的材料，因为它被分配到一个项目。"
+msgstr "无法删除的原材料，因为它被分配到一个项目。"
 
 #: libreplan-business/src/main/java/org/libreplan/business/resources/entities/MachineWorkersConfigurationUnit.java:169
 msgid "Alpha must be greater than 0"
@@ -348,15 +348,15 @@ msgstr "创建{0}：{1}"
 
 #: libreplan-business/src/main/java/org/libreplan/business/common/entities/EntitySequence.java:192
 msgid "entity name not specified"
-msgstr "不指定实体名称"
+msgstr "未指定实体名称"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/users/UserCRUDController.java:445
 msgid "You do not have permissions to go to worker edition window"
-msgstr "您没有权限去工人的编辑窗口"
+msgstr "您没有权限编辑雇员"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/components/NewAllocationSelector.java:51
 msgid "generic workers allocation"
-msgstr "一般工人分配"
+msgstr "一般雇员分配"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/resourceload/ResourceLoadController.java:315
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/OrderCRUDController.java:895
@@ -371,7 +371,7 @@ msgstr "开始"
 
 #: libreplan-business/src/main/java/org/libreplan/business/costcategories/entities/ResourcesCostCategoryAssignment.java:119
 msgid "cost assignment's category not specified"
-msgstr "未指定成本分配的类别"
+msgstr "未指定成本分配类别"
 
 #: libreplan-webapp/src/main/webapp/common/configuration.zul:121
 msgid "Check for updates"
@@ -419,11 +419,11 @@ msgstr "无法添加这些授权，配置文件{0}，因为他们已经存在。
 #: libreplan-business/src/main/java/org/libreplan/business/calendars/entities/ResourceCalendar.java:78
 #: libreplan-business/src/main/java/org/libreplan/business/resources/entities/CriterionSatisfaction.java:216
 msgid "resource not specified"
-msgstr "资源不指定"
+msgstr "资源未指定"
 
 #: libreplan-business/src/main/java/org/libreplan/business/materials/entities/UnitType.java:76
 msgid "measure not specified"
-msgstr "测量不指定"
+msgstr "测量未指定"
 
 #: libreplan-webapp/src/main/webapp/common/configuration.zul:64
 msgid "Default calendar"
@@ -453,7 +453,7 @@ msgstr "点击"
 
 #: libreplan-business/src/main/java/org/libreplan/business/orders/entities/Order.java:423
 msgid "project calendar not specified"
-msgstr "不指定项目日历"
+msgstr "未指定项目日历"
 
 #: libreplan-webapp/src/main/webapp/workreports/workReportQuery.zul:104
 #: libreplan-webapp/src/main/webapp/templates/_historicalAssignment.zul:36
@@ -553,7 +553,7 @@ msgstr "LDAP连接成功"
 msgid ""
 "This resource allocation type is incompatible. The task has an associated "
 "order element which has a progress that is of type subcontractor. "
-msgstr "这种资源分配类型是不兼容的。任务有相关的Order元素，其中有一个进步，是类型的分包商。"
+msgstr "这种资源分配类型是未兼容的。任务有相关的Order元素，其中有一个进步，是类型的分包商。"
 
 #: libreplan-business/src/main/java/org/libreplan/business/qualityforms/entities/TaskQualityFormItem.java:87
 msgid "position not specified"
@@ -598,7 +598,7 @@ msgstr "会议纪要"
 
 #: libreplan-business/src/main/java/org/libreplan/business/scenarios/entities/OrderVersion.java:55
 msgid "owner scenario not specified"
-msgstr "不指定所有者的情况"
+msgstr "未指定所有者的情况"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/users/dashboard/ExpensesAreaController.java:98
 msgid "Expense sheet \"{0}\" deleted"
@@ -611,7 +611,7 @@ msgstr "费用表必须有至少一个牺牲片材生产线。"
 
 #: libreplan-webapp/src/main/webapp/orders/components/_listOrderElementMaterials.zul:91
 msgid "Available materials"
-msgstr "可用的材料"
+msgstr "可用的原材料"
 
 #: libreplan-webapp/src/main/webapp/templates/_historicalStatistics.zul:55
 msgid "Maximum/minimum of estimated hours"
@@ -659,7 +659,7 @@ msgstr "它已经存在一个交货日期相同的日期。"
 
 #: libreplan-business/src/main/java/org/libreplan/business/materials/entities/MaterialCategory.java:153
 msgid "material category name has to be unique. It is already used"
-msgstr "材料种类名称已在使用中。"
+msgstr "原材料种类名称已在使用中。"
 
 #: libreplan-webapp/src/main/webapp/orders/_listOrderElementHours.zul:169
 msgid "Imputed hours"
@@ -750,11 +750,11 @@ msgstr "看"
 
 #: libreplan-business/src/main/java/org/libreplan/business/planner/entities/SubcontractedTaskData.java:226
 msgid "subcontratation date not specified"
-msgstr "subcontratation不指定日期"
+msgstr "subcontratation未指定日期"
 
 #: libreplan-business/src/main/java/org/libreplan/business/common/entities/Configuration.java:180
 msgid "base not specified"
-msgstr "基地不指定"
+msgstr "基地未指定"
 
 #: libreplan-webapp/src/main/webapp/planner/taskpanels/_tabPanelSubcontract.zul:95
 msgid "New delivery date"
@@ -762,7 +762,7 @@ msgstr "新的交货日期"
 
 #: libreplan-webapp/src/main/webapp/orders/components/_listOrderElementMaterials.zul:60
 msgid "Required materials"
-msgstr "所需材料"
+msgstr "所需原材料"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/OrderCRUDController.java:312
 msgid "Backwards"
@@ -839,7 +839,7 @@ msgstr "LibrePlan：日历例外日"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/resources/worker/WorkerCRUDController.java:976
 msgid "Worker and bound user deleted"
-msgstr "工人和绑定用户已删除"
+msgstr "雇员和绑定用户已删除"
 
 #: libreplan-business/src/main/java/org/libreplan/business/resources/entities/Worker.java:271
 msgid "Bound user does not have the proper role"
@@ -893,7 +893,7 @@ msgstr "资源/标准"
 #: libreplan-business/src/main/java/org/libreplan/business/workreports/valueobjects/DescriptionField.java:71
 #: libreplan-business/src/main/java/org/libreplan/business/workreports/valueobjects/DescriptionValue.java:71
 msgid "field name not specified or empty"
-msgstr "字段名不在指定或为空"
+msgstr "字段名未在指定或为空"
 
 #: libreplan-webapp/src/main/webapp/workreports/_sortFieldsAndLabels.zul:44
 msgid "Lines"
@@ -1068,7 +1068,7 @@ msgstr "个人时间表"
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/CustomMenuController.java:493
 #: libreplan-webapp/src/main/webapp/reports/timeLineMaterialReport.zul:39
 msgid "Materials Needs At Date"
-msgstr "物料需求日期"
+msgstr "原材料交付日期"
 
 #: libreplan-webapp/src/main/webapp/common/configuration.zul:316
 msgid "UserDn"
@@ -1094,7 +1094,7 @@ msgstr "等级"
 msgid ""
 "This worker cannot be deleted because it has assignments to projects or "
 "imputed hours"
-msgstr "工人不能被删除，因为它有指定的项目或估算小时"
+msgstr "雇员不能被删除，因为它有指定的项目或估算小时"
 
 #: libreplan-webapp/src/main/webapp/reports/orderCostsPerResource.zul:64
 msgid "Work done until ending date"
@@ -1156,7 +1156,7 @@ msgstr "请选择一个用户结合"
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/CustomMenuController.java:301
 #: libreplan-business/src/main/java/org/libreplan/business/users/entities/UserRole.java:49
 msgid "Workers"
-msgstr "工人"
+msgstr "雇员"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/OrderCRUDController.java:862
 msgid ""
@@ -1399,7 +1399,7 @@ msgstr "公司标志URL"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/resources/machine/MachineConfigurationController.java:129
 msgid "No worker selected"
-msgstr "没有选择工人"
+msgstr "没有选择雇员"
 
 #: libreplan-webapp/src/main/webapp/common/configuration.zul:244
 #: libreplan-webapp/src/main/webapp/common/configuration.zul:262
@@ -1500,7 +1500,7 @@ msgstr "选择日期"
 
 #: libreplan-business/src/main/java/org/libreplan/business/planner/entities/SubcontractedTaskData.java:265
 msgid "state not specified"
-msgstr "状态不指定"
+msgstr "状态未指定"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/ManageOrderElementAdvancesController.java:1319
 msgid ""
@@ -1543,7 +1543,7 @@ msgstr "请尝试与任何管理员联系，以审查您的权限LibrePlan。"
 
 #: libreplan-business/src/main/java/org/libreplan/business/resources/entities/Machine.java:101
 msgid "machine name not specified"
-msgstr "没有指定的机器名"
+msgstr "没有指定的设备名"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/labels/AssignedLabelsController.java:93
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/labels/AssignedLabelsController.java:139
@@ -1622,7 +1622,7 @@ msgstr "有一个时间表，在另一个工作报告标记为完成同样的任
 
 #: libreplan-business/src/main/java/org/libreplan/business/resources/entities/Worker.java:122
 msgid "worker's first name not specified"
-msgstr "没有指定工人的名字"
+msgstr "没有指定雇员的名字"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/calendars/BaseCalendarEditionController.java:1411
 msgid "End date can only be deleted in the the last activation"
@@ -1798,7 +1798,7 @@ msgstr "标准努力"
 
 #: libreplan-webapp/src/main/webapp/common/configuration.zul:167
 msgid "Material categories"
-msgstr "材料类"
+msgstr "原材料类"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/ConfigurationController.java:285
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/ConfigurationController.java:588
@@ -1875,7 +1875,7 @@ msgstr "分配负载"
 
 #: libreplan-webapp/src/main/webapp/reports/hoursWorkedPerWorkerReport.zul:66
 msgid "Filter by workers"
-msgstr "过滤工人"
+msgstr "过滤雇员"
 
 #: libreplan-webapp/src/main/webapp/calendars/_edition.zul:154
 msgid "End Date"
@@ -2038,7 +2038,7 @@ msgstr "标准不能为空"
 
 #: libreplan-business/src/main/java/org/libreplan/business/common/entities/Configuration.java:147
 msgid "company code not specified"
-msgstr "不指定公司代码"
+msgstr "未指定公司代码"
 
 #: libreplan-business/src/main/java/org/libreplan/business/resources/entities/CriterionType.java:426
 msgid "criterion names must be unique inside a criterion  type"
@@ -2096,7 +2096,7 @@ msgstr "未绑定的资源"
 #: libreplan-business/src/main/java/org/libreplan/business/advance/entities/AdvanceType.java:212
 #: libreplan-business/src/main/java/org/libreplan/business/qualityforms/entities/TaskQualityForm.java:81
 msgid "quality form not specified"
-msgstr "优质形式，不指定"
+msgstr "优质形式，未指定"
 
 #: libreplan-webapp/src/main/webapp/reports/workingProgressPerTaskReport.zul:187
 #: libreplan-webapp/src/main/webapp/reports/completedEstimatedHoursPerTask.zul:188
@@ -2274,7 +2274,7 @@ msgstr "标准已经分配"
 
 #: libreplan-business/src/main/java/org/libreplan/business/qualityforms/entities/TaskQualityFormItem.java:100
 msgid "passed not specified"
-msgstr "通过不指定"
+msgstr "通过未指定"
 
 #: libreplan-webapp/src/main/webapp/limitingresources/manualAllocation.zul:54
 msgid "Select queue"
@@ -2324,7 +2324,7 @@ msgstr "下"
 
 #: libreplan-business/src/main/java/org/libreplan/business/templates/entities/OrderTemplate.java:71
 msgid "template calendar not specified"
-msgstr "不指定模板日历"
+msgstr "未指定模板日历"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/workreports/WorkReportTypeCRUDController.java:838
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/components/finders/OrderElementFilterEnum.java:36
@@ -2502,7 +2502,7 @@ msgstr "{0}前缀不能重复序列"
 
 #: libreplan-business/src/main/java/org/libreplan/business/labels/entities/Label.java:47
 msgid "type not specified"
-msgstr "键入不指定"
+msgstr "键入未指定"
 
 #: libreplan-webapp/src/main/webapp/orders/_edition.zul:40
 msgid "WBS (tasks)"
@@ -2531,7 +2531,7 @@ msgstr "LibrePlan：模板"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/resources/worker/WorkerCRUDController.java:417
 msgid "Edit Virtual Workers Group: {0}"
-msgstr "编辑虚拟工人组：{0}"
+msgstr "编辑虚拟雇员组：{0}"
 
 #: libreplan-webapp/src/main/webapp/myaccount/personalTimesheet.zul:88
 msgid "Total other"
@@ -2681,7 +2681,7 @@ msgstr "开始小时"
 
 #: libreplan-webapp/src/main/webapp/orders/components/_listOrderElementMaterials.zul:130
 msgid "Assign materials"
-msgstr "指定材料"
+msgstr "指定原材料"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/components/finders/ExternalCompanyBandboxFinder.java:51
 #: libreplan-webapp/src/main/webapp/resources/worker/_edition.zul:79
@@ -2782,7 +2782,7 @@ msgstr "必须在这之后启动"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/tree/TreeComponent.java:118
 msgid "Fully, Partially or Unscheduled. (Drag and drop to move tasks)"
-msgstr "完全，部分或不定期。（拖放移动任务）"
+msgstr "完全，部分或未定期。（拖放移动任务）"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/AdvancedAllocationController.java:1322
 msgid "Confirm change"
@@ -2825,7 +2825,7 @@ msgstr "用户"
 
 #: libreplan-webapp/src/main/webapp/materials/materials.zul:21
 msgid "LibrePlan: Materials"
-msgstr "LibrePlan：材料"
+msgstr "LibrePlan：原材料"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/OrderElementTreeModel.java:53
 #: libreplan-webapp/src/main/webapp/orders/components/_orderElementTree.zul:33
@@ -2903,7 +2903,7 @@ msgstr "无法分配选中的元素。没有任何相匹配的资源分配准则
 #: libreplan-webapp/src/main/java/org/libreplan/web/resources/worker/WorkerCRUDController.java:1034
 #: libreplan-webapp/src/main/webapp/workreports/workReport.zul:122
 msgid "Worker"
-msgstr "工人"
+msgstr "雇员"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/ManageOrderElementAdvancesController.java:1383
 msgid ""
@@ -2913,7 +2913,7 @@ msgstr "日期是无效的，它必须晚于上一次进度报给客户的"
 
 #: libreplan-business/src/main/java/org/libreplan/business/resources/entities/Worker.java:224
 msgid "User already bound to other worker"
-msgstr "用户已经绑定到其他工人"
+msgstr "用户已经绑定到其他雇员"
 
 #: libreplan-business/src/main/java/org/libreplan/business/resources/entities/Criterion.java:300
 msgid "criterion name not specified"
@@ -2925,7 +2925,7 @@ msgstr "端口没有指定"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/templates/OrderTemplatesController.java:263
 msgid "calendar not specified"
-msgstr "日历不指定"
+msgstr "日历未指定"
 
 #: libreplan-business/src/main/java/org/libreplan/business/workreports/entities/WorkReportLine.java:277
 msgid "Start hour cannot be greater than finish hour"
@@ -2952,7 +2952,7 @@ msgstr "角色属性"
 
 #: libreplan-business/src/main/java/org/libreplan/business/advance/entities/AdvanceAssignment.java:75
 msgid "progress type not specified"
-msgstr "不指定进步型"
+msgstr "未指定进步型"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/users/dashboard/ExpensesAreaController.java:108
 msgid "Expense sheet \"{1}\" could not be deleted, it was already removed"
@@ -2989,7 +2989,7 @@ msgstr "计算的进步不能被删除"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/materials/MaterialsController.java:375
 msgid "Materials saved"
-msgstr "材料保存"
+msgstr "原材料保存"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/CustomMenuController.java:458
 #: libreplan-webapp/src/main/webapp/reports/hoursWorkedPerWorkerInAMonthReport.zul:39
@@ -3144,7 +3144,7 @@ msgstr "未指定的最后一个值"
 #: libreplan-business/src/main/java/org/libreplan/business/qualityforms/entities/TaskQualityForm.java:72
 #: libreplan-business/src/main/java/org/libreplan/business/planner/entities/SubcontractedTaskData.java:121
 msgid "task not specified"
-msgstr "任务不指定"
+msgstr "任务未指定"
 
 #: libreplan-webapp/src/main/webapp/myaccount/changePassword.zul:43
 msgid "Change password"
@@ -3185,7 +3185,7 @@ msgstr "扩展视图"
 
 #: libreplan-business/src/main/java/org/libreplan/business/externalcompanies/entities/CustomerCommunication.java:132
 msgid "project not specified"
-msgstr "项目不指定"
+msgstr "项目未指定"
 
 #: libreplan-webapp/src/main/webapp/resources/worker/_edition.zul:34
 msgid "Work record"
@@ -3278,7 +3278,7 @@ msgstr "累计小时图"
 
 #: libreplan-webapp/src/main/webapp/resources/machine/_listMachines.zul:22
 msgid "Machines List"
-msgstr "机器分类"
+msgstr "设备分类"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/resourceload/ResourceLoadController.java:325
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/OrderCRUDController.java:691
@@ -3562,7 +3562,7 @@ msgstr "开始日期不能是空的，因为有一个约束的任务“尽快”
 
 #: libreplan-business/src/main/java/org/libreplan/business/materials/entities/MaterialCategory.java:290
 msgid "last material sequence code not specified"
-msgstr "最后材料未指定的序列码"
+msgstr "最后原材料未指定的序列码"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/ManageOrderElementAdvancesController.java:772
 msgid ""
@@ -3811,7 +3811,7 @@ msgstr "这个标准不能被删除，因为它是分配给项目或资源类型
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/resources/worker/WorkerCRUDController.java:959
 msgid "Confirm deleting this worker. Are you sure?"
-msgstr "确认删除这名工人。你确定吗？"
+msgstr "确认删除这名雇员。你确定吗？"
 
 #: libreplan-webapp/src/main/webapp/resources/worker/_edition.zul:67
 msgid "Group name"
@@ -3829,7 +3829,7 @@ msgstr "角色名称"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/resources/worker/WorkerCRUDController.java:984
 msgid "This worker was already removed by other user"
-msgstr "这名工人已经删除由其他用户"
+msgstr "这名雇员已经删除由其他用户"
 
 #: libreplan-webapp/src/main/webapp/typeofworkhours/_editTypeOfWorkHours.zul:27
 msgid "Work hour type data"
@@ -4173,7 +4173,7 @@ msgstr "默认情况下未更改密码"
 
 #: libreplan-webapp/src/main/webapp/unittypes/unitTypes.zul:21
 msgid "LibrePlan: Material Units"
-msgstr "LibrePlan：材料单位"
+msgstr "LibrePlan：原材料单位"
 
 #: libreplan-business/src/main/java/org/libreplan/business/resources/entities/Worker.java:256
 msgid "Virtual resources cannot be bound to any user"
@@ -4313,11 +4313,11 @@ msgstr "正常的资源分配"
 
 #: libreplan-business/src/main/java/org/libreplan/business/common/entities/Configuration.java:135
 msgid "default calendar not specified"
-msgstr "不指定默认日历"
+msgstr "未指定默认日历"
 
 #: libreplan-business/src/main/java/org/libreplan/business/orders/entities/OrderLineGroup.java:1146
 msgid "indirect progress assignments should have different types"
-msgstr "间接进度任务应该有不同的类型"
+msgstr "间接进度任务应该有未同的类型"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/AdvancedAllocationController.java:1469
 msgid "Stretches with Interpolation"
@@ -4330,7 +4330,7 @@ msgstr "工作时数资源"
 
 #: libreplan-business/src/main/java/org/libreplan/business/materials/entities/MaterialInfo.java:39
 msgid "material not specified"
-msgstr "材料不指定"
+msgstr "原材料未指定"
 
 #: libreplan-webapp/src/main/webapp/costcategories/_listCostCategories.zul:26
 #: libreplan-webapp/src/main/webapp/resources/_costCategoryAssignment.zul:36
@@ -4467,7 +4467,7 @@ msgstr "其他"
 
 #: libreplan-business/src/main/java/org/libreplan/business/resources/entities/Criterion.java:313
 msgid "criterion type not specified"
-msgstr "不指定标准型"
+msgstr "未指定标准型"
 
 #: libreplan-business/src/main/java/org/libreplan/business/costcategories/entities/TypeOfWorkHours.java:103
 msgid "default price not specified"
@@ -4620,7 +4620,7 @@ msgstr "END"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/resources/worker/WorkerCRUDController.java:272
 msgid "Worker saved"
-msgstr "工人保存"
+msgstr "雇员保存"
 
 #: libreplan-webapp/src/main/webapp/subcontract/subcontractedTasks.zul:35
 msgid "Communications To Subcontractors"
@@ -4640,7 +4640,7 @@ msgstr "请记住，只有保存的更改将被打印"
 
 #: libreplan-business/src/main/java/org/libreplan/business/materials/entities/MaterialCategory.java:254
 msgid "There are repeated material codes"
-msgstr "有重复的材料代码"
+msgstr "有重复的原材料代码"
 
 #: libreplan-webapp/src/main/webapp/templates/_editTemplate.zul:36
 msgid "Edit Template"
@@ -4660,7 +4660,7 @@ msgstr "标准类型列表"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/materials/AssignedMaterialsController.java:459
 msgid "Do you want to split the material assignment {0}?"
-msgstr "你想分裂材料的分配{0}？"
+msgstr "你想拆分原材料的分配{0}？"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/AssignedTaskQualityFormsToOrderElementController.java:528
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/AssignedTaskQualityFormsToOrderElementModel.java:274
@@ -4681,7 +4681,7 @@ msgstr "总任务预算"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/resources/worker/WorkerModel.java:245
 msgid "Worker must be not-null"
-msgstr "工人必须不能为空"
+msgstr "雇员必须不能为空"
 
 #: libreplan-business/src/main/java/org/libreplan/business/resources/entities/Resource.java:1063
 msgid "Some criterion satisfactions overlap in time"
@@ -4693,11 +4693,11 @@ msgstr "值最后的进步测量"
 
 #: libreplan-webapp/src/main/webapp/reports/timeLineMaterialReport.zul:21
 msgid "LibrePlan: Materials Needs At Date"
-msgstr "LibrePlan：材料需要在日期"
+msgstr "LibrePlan：原材料交付日期"
 
 #: libreplan-webapp/src/main/webapp/resources/machine/_machineConfigurationUnits.zul:44
 msgid "Worker assignments"
-msgstr "工人作业"
+msgstr "雇员作业"
 
 #: libreplan-business/src/main/java/org/libreplan/business/orders/entities/Order.java:435
 msgid "last task sequence code not specified"
@@ -4772,7 +4772,7 @@ msgstr "你即将离开的规划版本，未保存的更改将丢失。"
 
 #: libreplan-webapp/src/main/webapp/resources/machine/machines.zul:22
 msgid "LibrePlan: Machines"
-msgstr "LibrePlan：机"
+msgstr "LibrePlan：设备"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/users/dashboard/MyTasksAreaController.java:75
 #: libreplan-webapp/src/main/java/org/libreplan/web/dashboard/CostStatusController.java:118
@@ -4875,7 +4875,7 @@ msgstr "项目结束向导"
 #: libreplan-webapp/src/main/webapp/common/configuration.zul:173
 #: libreplan-business/src/main/java/org/libreplan/business/users/entities/UserRole.java:58
 msgid "Material Units"
-msgstr "材料单位"
+msgstr "原材料单位"
 
 #: libreplan-business/src/main/java/org/libreplan/business/planner/entities/StretchesFunction.java:351
 msgid ""
@@ -4914,7 +4914,7 @@ msgstr "开始日期"
 
 #: libreplan-business/src/main/java/org/libreplan/business/advance/entities/AdvanceMeasurement.java:111
 msgid "progress assignment not specified"
-msgstr "不指定任务分配"
+msgstr "未指定任务分配"
 
 #: libreplan-webapp/src/main/webapp/resources/worker/_listVirtualWorkers.zul:22
 msgid "Virtual Workers Groups List"
@@ -4976,7 +4976,7 @@ msgstr "勾选这个选项，如果你想发送反馈给有关程序使用的Lib
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/resources/machine/MachineCRUDController.java:554
 msgid "Machine was already removed"
-msgstr "机已经删除"
+msgstr "设备已经删除"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/expensesheet/ExpenseSheetCRUDController.java:232
 msgid "expense line of the "
@@ -5200,7 +5200,7 @@ msgstr "时间表保存"
 #: libreplan-webapp/src/main/java/org/libreplan/web/materials/MaterialsController.java:497
 #: libreplan-webapp/src/main/webapp/materials/materials.zul:73
 msgid "List of materials for all categories (select one to filter)"
-msgstr "适用于所有类别的材料清单（选择一个过滤器）"
+msgstr "适用于所有类别的原材料清单（选择一个过滤器）"
 
 #: libreplan-webapp/src/main/webapp/planner/taskpanels/_tabPanelTaskProperties.zul:74
 msgid "Resource allocation type"
@@ -5247,7 +5247,7 @@ msgstr "LibrePlan：设置"
 
 #: libreplan-business/src/main/java/org/libreplan/business/resources/entities/Worker.java:131
 msgid "worker's surname not specified"
-msgstr "工人的名字，没有指定"
+msgstr "雇员的名字，没有指定"
 
 #: libreplan-webapp/src/main/webapp/resources/worker/_calendar.zul:48
 #: libreplan-webapp/src/main/webapp/resources/machine/_calendar.zul:41
@@ -5276,7 +5276,7 @@ msgstr "标记为完成相同的任务由一个以上的时间表线"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/resources/worker/WorkerCRUDController.java:977
 msgid "Worker deleted"
-msgstr "工人被删除"
+msgstr "雇员被删除"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/ConfigurationController.java:745
 msgid "Select entity, please"
@@ -5292,7 +5292,7 @@ msgstr "完成一小时"
 
 #: libreplan-business/src/main/java/org/libreplan/business/expensesheet/entities/ExpenseSheet.java:112
 msgid "total not specified"
-msgstr "总不能指定"
+msgstr "总数未指定"
 
 #: libreplan-webapp/src/main/webapp/expensesheet/expenseSheet.zul:48
 #: libreplan-webapp/src/main/webapp/myaccount/_expensesArea.zul:38
@@ -5396,7 +5396,7 @@ msgstr "位置"
 
 #: libreplan-business/src/main/java/org/libreplan/business/advance/entities/DirectAdvanceAssignment.java:84
 msgid "maximum value not specified"
-msgstr "最大的价值不指定"
+msgstr "最大的价值未指定"
 
 #: libreplan-webapp/src/main/webapp/common/layout/login.zul:109
 msgid "Incorrect authentication"
@@ -5484,7 +5484,7 @@ msgstr "组态"
 
 #: libreplan-business/src/main/java/org/libreplan/business/costcategories/entities/HourCost.java:122
 msgid "cost category not specified"
-msgstr "成本不指定类别"
+msgstr "成本类别未指定"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/dashboard/DashboardController.java:181
 msgid "Violated deadline"
@@ -5576,7 +5576,7 @@ msgstr "没有指定的质量形式的项目位置"
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/CustomMenuController.java:306
 #: libreplan-business/src/main/java/org/libreplan/business/users/entities/UserRole.java:50
 msgid "Machines"
-msgstr "机"
+msgstr "设备"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/users/dashboard/PersonalTimesheetController.java:611
 msgid "My account"
@@ -5630,7 +5630,7 @@ msgstr "LibrePlan进展"
 #: libreplan-webapp/src/main/webapp/resources/search/allocation_selector.zul:79
 #: libreplan-business/src/main/java/org/libreplan/business/resources/entities/Criterion.java:203
 msgid "[generic all workers]"
-msgstr "[通用所有工人]"
+msgstr "[通用所有雇员]"
 
 #: libreplan-webapp/src/main/webapp/costcategories/_editCostCategory.zul:27
 msgid "Category data"
@@ -5650,7 +5650,7 @@ msgstr "有效期至"
 
 #: libreplan-business/src/main/java/org/libreplan/business/common/entities/ConfigurationRolesLDAP.java:51
 msgid "role ldap not specified"
-msgstr "角色LDAP不指定"
+msgstr "角色LDAP未指定"
 
 #: libreplan-webapp/src/main/webapp/workreports/_editWorkReportType.zul:128
 msgid "Add New Complementary Field"
@@ -5745,7 +5745,7 @@ msgstr "每个项目的工作及进展情况"
 
 #: libreplan-business/src/main/java/org/libreplan/business/common/entities/Configuration.java:497
 msgid "seconds planning warning not specified"
-msgstr "秒的规划警告，不指定"
+msgstr "秒的规划警告，未指定"
 
 #: libreplan-business/src/main/java/org/libreplan/business/expensesheet/entities/ExpenseSheet.java:111
 msgid "total must be greater or equal than 0"
@@ -5855,7 +5855,7 @@ msgstr "请设定日期"
 
 #: libreplan-business/src/main/java/org/libreplan/business/common/entities/EntitySequence.java:93
 msgid "prefix not specified"
-msgstr "前缀不指定"
+msgstr "前缀未指定"
 
 #: libreplan-business/src/main/java/org/libreplan/business/resources/entities/CriterionType.java:533
 msgid "last criterion sequence code not specified"
@@ -6075,7 +6075,7 @@ msgstr "开始"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/components/NewAllocationSelector.java:71
 msgid "generic machines allocation"
-msgstr "通用机分配"
+msgstr "通用设备分配"
 
 #: libreplan-webapp/src/main/webapp/subcontract/subcontractorCommunications.zul:53
 msgid "Subcontrated task"
@@ -6235,7 +6235,7 @@ msgstr "正常的资源分配"
 
 #: libreplan-webapp/src/main/webapp/resources/machine/_machineConfigurationUnits.zul:36
 msgid "Human hours per machine working hour within configuration unit"
-msgstr "人类的机器小时，每工作小时内配置单元"
+msgstr "人类的设备小时，每工作小时内配置单元"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/users/OrderAuthorizationController.java:109
 msgid ""
@@ -6299,7 +6299,7 @@ msgstr "标准类型名称已被使用"
 
 #: libreplan-business/src/main/java/org/libreplan/business/materials/entities/MaterialCategory.java:239
 msgid "There are repeated material category codes"
-msgstr "有重复的材料分类代码"
+msgstr "有重复的原材料分类代码"
 
 #: libreplan-webapp/src/main/webapp/resources/worker/_edition.zul:36
 #: libreplan-webapp/src/main/webapp/resources/_costCategoryAssignment.zul:25
@@ -6321,7 +6321,7 @@ msgstr "任务不能是空的，如果它是共享的线"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/TaskElementAdapter.java:843
 msgid "All workers"
-msgstr "所有工人"
+msgstr "所有雇员"
 
 #: libreplan-business/src/main/java/org/libreplan/business/resources/entities/Resource.java:1189
 msgid "You have exceeded the maximum limit of resources"
@@ -6347,7 +6347,7 @@ msgstr "时间表线"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/calendars/BaseCalendarEditionController.java:1521
 msgid "It cannot be empty"
-msgstr "它不能为空"
+msgstr "不能为空"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/ResourceAllocationController.java:394
 msgid "Calculate Resources per Day"
@@ -6414,7 +6414,7 @@ msgstr "未指定的工作时间"
 
 #: libreplan-business/src/main/java/org/libreplan/business/common/entities/EntitySequence.java:155
 msgid "format sequence code invalid. It must not contain '_'"
-msgstr "格式序列码无效。它不能包含'_'"
+msgstr "格式序列码无效。不能包含'_'"
 
 #: libreplan-webapp/src/main/webapp/excetiondays/_editExceptionDayType.zul:76
 #: libreplan-webapp/src/main/webapp/calendars/_edition.zul:200
@@ -6652,7 +6652,7 @@ msgstr "项目列表"
 #: libreplan-business/src/main/java/org/libreplan/business/templates/entities/OrderLineTemplate.java:235
 #: libreplan-business/src/main/java/org/libreplan/business/orders/entities/OrderLine.java:390
 msgid "budget not specified"
-msgstr "预算不指定"
+msgstr "预算未指定"
 
 #: libreplan-webapp/src/main/webapp/labels/_editLabelType.zul:56
 #: libreplan-webapp/src/main/webapp/excetiondays/_editExceptionDayType.zul:44
@@ -6749,7 +6749,7 @@ msgstr "结束日期不得早于开始日期"
 
 #: libreplan-webapp/src/main/webapp/users/_editUser.zul:115
 msgid "Go to worker edition window"
-msgstr "工人的编辑窗口"
+msgstr "雇员的编辑窗口"
 
 #: libreplan-webapp/src/main/webapp/templates/_historicalAssignment.zul:40
 msgid "Worked hours"
@@ -6767,7 +6767,7 @@ msgstr "传播值无效。的至少一个值应该是真实的"
 #: libreplan-business/src/main/java/org/libreplan/business/orders/entities/OrderElement.java:604
 #: libreplan-business/src/main/java/org/libreplan/business/common/IntegrationEntity.java:48
 msgid "code not specified"
-msgstr "代码不指定"
+msgstr "代码未指定"
 
 #: libreplan-webapp/src/main/webapp/orders/_list.zul:22
 msgid "Projects list"
@@ -6858,7 +6858,7 @@ msgstr "当前密码不正确"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/materials/MaterialsController.java:366
 msgid "Cannot insert material in general view. Please, select a category"
-msgstr "不能插入材料的普遍看法。请选择一个类别"
+msgstr "不能插入原材料的普遍看法。请选择一个类别"
 
 #: libreplan-webapp/src/main/webapp/expensesheet/expenseSheet.zul:125
 msgid "Expense lines"
@@ -6930,7 +6930,7 @@ msgstr "报告数据"
 #: libreplan-webapp/src/main/java/org/libreplan/web/materials/UnitTypeController.java:181
 #: libreplan-webapp/src/main/webapp/unittypes/_listUnitTypes.zul:27
 msgid "Material Unit"
-msgstr "材料单位"
+msgstr "原材料单位"
 
 #: libreplan-webapp/src/main/webapp/planner/_legendLoadChartOrder.zul:44
 msgid "External load"
@@ -7037,7 +7037,7 @@ msgstr "计算可作业天数"
 
 #: libreplan-business/src/main/java/org/libreplan/business/advance/entities/AdvanceType.java:116
 msgid "unit name not specified"
-msgstr "不指定单位名称"
+msgstr "未指定单位名称"
 
 #: libreplan-webapp/src/main/webapp/costcategories/_editCostCategory.zul:81
 #: libreplan-webapp/src/main/webapp/planner/montecarlo_function.zul:42
@@ -7058,7 +7058,7 @@ msgstr "更新异常"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/TreeElementOperationsController.java:257
 msgid "Operation cannot be done"
-msgstr "操作不能被做"
+msgstr "操作未完成"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/templates/TemplatesTreeComponent.java:90
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/OrdersTreeComponent.java:80
@@ -7076,7 +7076,7 @@ msgstr "单位名称"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/ManageOrderElementAdvancesController.java:750
 msgid "Progress that are reported by quality forms cannot be modified"
-msgstr "所报告的质量形式的进展，不能修改"
+msgstr "所报告的质量形式的进展，未能修改"
 
 #: libreplan-webapp/src/main/webapp/common/configuration.zul:23
 msgid "LibrePlan: Main Settings"
@@ -7109,7 +7109,7 @@ msgstr "队列自动分配单元"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/users/UserCRUDController.java:427
 msgid "Confirm worker edition"
-msgstr "确认工人版"
+msgstr "确认雇员版"
 
 #: libreplan-webapp/src/main/webapp/workreports/workReportQuery.zul:74
 msgid "type"
@@ -7313,7 +7313,7 @@ msgstr "Periocity不能改变，因为已经有存储任何个人时间表"
 
 #: libreplan-webapp/src/main/webapp/orders/components/_listOrderElementMaterials.zul:62
 msgid "Add materials"
-msgstr "添加材料"
+msgstr "添加原材料"
 
 #: libreplan-webapp/src/main/webapp/planner/_legendLoadChartCompany.zul:34
 msgid "Load 100%"
@@ -7574,7 +7574,7 @@ msgstr "没有"
 msgid ""
 "All machine worker assignments must have a start date earlier than the end "
 "date"
-msgstr "所有的机器的工人分配必须有一个起始日期早于结束日期"
+msgstr "所有的设备的雇员分配必须有一个起始日期早于结束日期"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/components/finders/OrderElementInExpenseSheetBandboxFinder.java:45
 msgid "Task name (Task code)"
@@ -7600,7 +7600,7 @@ msgstr "UNL"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/workreports/WorkReportCRUDController.java:1690
 msgid "Please select a worker"
-msgstr "请选择一个工人"
+msgstr "请选择一个雇员"
 
 #: libreplan-webapp/src/main/webapp/common/configuration.zul:329
 msgid "Test LDAP connection"
@@ -7755,7 +7755,7 @@ msgstr "任务"
 
 #: libreplan-webapp/src/main/webapp/reports/timeLineMaterialReport.zul:120
 msgid "Filter by categories or materials"
-msgstr "按类别或材料筛选"
+msgstr "按类别或原材料筛选"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/streches/StretchesFunctionController.java:389
 msgid "Amount work percentage should be between 0 and 100"
@@ -7763,7 +7763,7 @@ msgstr "金额的比例应是介于0和100之间"
 
 #: libreplan-webapp/src/main/webapp/resources/machine/_editMachine.zul:30
 msgid "Machine data"
-msgstr "机床数据"
+msgstr "设备数据"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/chart/EarnedValueChartFiller.java:253
 msgid "VAC"
@@ -7868,7 +7868,7 @@ msgstr "新标签"
 
 #: libreplan-business/src/main/java/org/libreplan/business/resources/entities/Worker.java:144
 msgid "Worker ID cannot be empty"
-msgstr "工人的ID不能为空"
+msgstr "雇员的ID不能为空"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/reassign/Type.java:31
 #: libreplan-webapp/src/main/java/org/libreplan/web/reports/OrderCostsPerResourceModel.java:306
@@ -8003,7 +8003,7 @@ msgstr "创建"
 
 #: libreplan-business/src/main/java/org/libreplan/business/requirements/entities/IndirectCriterionRequirement.java:77
 msgid "parent not specified"
-msgstr "家长不指定"
+msgstr "家长未指定"
 
 #: libreplan-webapp/src/main/webapp/orders/_listOrderElementAuthorizations.zul:43
 #: libreplan-webapp/src/main/webapp/orders/_listOrderElementAuthorizations.zul:67
@@ -8012,7 +8012,7 @@ msgstr "权限"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/materials/MaterialsController.java:491
 msgid "List of materials for category: {0}"
-msgstr "材料类列表：{0}"
+msgstr "原材料类列表：{0}"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/adaptplanning/AdaptPlanningCommand.java:60
 msgid "Adapt planning according to timesheets"
@@ -8033,7 +8033,7 @@ msgstr "标准代码必须是唯一的标准型内"
 
 #: libreplan-webapp/src/main/webapp/myaccount/personalTimesheet.zul:37
 msgid "Warning: Not editing from home page of bound users"
-msgstr "警告：不绑定的用户主页编辑"
+msgstr "警告：未绑定的用户主页编辑"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/users/dashboard/PersonalTimesheetController.java:212
 #: libreplan-webapp/src/main/java/org/libreplan/web/users/dashboard/PersonalTimesheetController.java:288
@@ -8255,7 +8255,7 @@ msgstr "有天在天的任务日历标记为可用。"
 
 #: libreplan-business/src/main/java/org/libreplan/business/planner/entities/allocationalgorithms/ResourcesPerDayModification.java:103
 msgid "Maybe the criteria are not satisfied in those days."
-msgstr "在那些日子里，也许不满意的标准。"
+msgstr "条件未满足日期。"
 
 #: libreplan-business/src/main/java/org/libreplan/business/planner/entities/allocationalgorithms/ResourcesPerDayModification.java:175
 msgid "Resource is not available from task's start"
@@ -8291,7 +8291,7 @@ msgstr "及早"
 
 #: libreplan-business/src/main/java/org/libreplan/business/planner/entities/PositionConstraintType.java:38
 msgid "start not earlier than"
-msgstr "开始不早于"
+msgstr "开始不得早于"
 
 #: libreplan-business/src/main/java/org/libreplan/business/planner/entities/PositionConstraintType.java:45
 msgid "start in fixed date"
@@ -8375,7 +8375,7 @@ msgstr "在项目报告中的任务调度状态"
 
 #: libreplan-business/src/main/java/org/libreplan/business/users/entities/UserRole.java:81
 msgid "Materials Needs At Date Report"
-msgstr "材料需要的日期报告"
+msgstr "原材料交付日期报告"
 
 #: libreplan-business/src/main/java/org/libreplan/business/users/entities/User.java:345
 msgid "Database"
@@ -8431,15 +8431,15 @@ msgstr "无限"
 
 #: libreplan-business/src/main/java/org/libreplan/business/resources/entities/Criterion.java:207
 msgid "[generic all machines]"
-msgstr "[通用机械]"
+msgstr "[通用设备]"
 
 #: libreplan-business/src/main/java/org/libreplan/business/resources/entities/ResourceEnum.java:32
 msgid "WORKER"
-msgstr "工人"
+msgstr "雇员"
 
 #: libreplan-business/src/main/java/org/libreplan/business/resources/entities/ResourceEnum.java:33
 msgid "MACHINE"
-msgstr "机"
+msgstr "设备"
 
 #: libreplan-business/src/main/java/org/libreplan/business/orders/entities/OrderStatusEnum.java:33
 msgid "PRE-SALES"
