@@ -18,24 +18,18 @@
  */
 package org.libreplan.web.users.services;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-
-import javax.naming.NamingException;
-import javax.naming.directory.Attribute;
-import javax.naming.directory.Attributes;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.libreplan.business.calendars.entities.ResourceCalendar;
 import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.daos.IConfigurationDAO;
 import org.libreplan.business.common.entities.ConfigurationRolesLDAP;
 import org.libreplan.business.common.entities.LDAPConfiguration;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
+import org.libreplan.business.resources.daos.IWorkerDAO;
+import org.libreplan.business.resources.entities.Worker;
 import org.libreplan.business.users.daos.IUserDAO;
 import org.libreplan.business.users.entities.User;
 import org.libreplan.business.users.entities.UserRole;
@@ -44,6 +38,7 @@ import org.springframework.ldap.core.AttributesMapper;
 import org.springframework.ldap.core.DirContextAdapter;
 import org.springframework.ldap.core.DistinguishedName;
 import org.springframework.ldap.core.LdapTemplate;
+import org.springframework.ldap.filter.AndFilter;
 import org.springframework.ldap.filter.EqualsFilter;
 import org.springframework.security.AuthenticationException;
 import org.springframework.security.BadCredentialsException;
@@ -53,6 +48,11 @@ import org.springframework.security.providers.dao.AbstractUserDetailsAuthenticat
 import org.springframework.security.userdetails.UserDetails;
 import org.springframework.security.userdetails.UserDetailsService;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.naming.NamingException;
+import javax.naming.directory.Attribute;
+import javax.naming.directory.Attributes;
+import java.util.*;
 
 /**
  * An extending from AbstractUserDetailsAuthenticationProvider class which is
@@ -80,6 +80,9 @@ public class LDAPCustomAuthenticationProvider extends
 
     @Autowired
     private IUserDAO userDAO;
+
+    @Autowired
+    private IWorkerDAO workerDAO;
 
     private LDAPConfiguration configuration;
 
@@ -191,8 +194,20 @@ public class LDAPCustomAuthenticationProvider extends
     }
 
     private User createLDAPUserWithRoles(String username, String encodedPassword) {
-        User user = User.create();
-        user.setLoginName(username);
+        User user = null;
+        AndFilter filter = new AndFilter();
+        filter.and(new EqualsFilter("objectclass", "person")).and(
+                new EqualsFilter(configuration.getLdapUserId(), username));
+        // TODO find better method to obtain attributes mapper.
+        List<User> users = ldapTemplate.search(DistinguishedName.EMPTY_PATH,
+                filter.encode(),
+                new LDAPMSActiveDirectoryAttributesMapper());
+        if (!users.isEmpty()) {
+            user = users.get(0);
+        } else {
+            return null;
+        }
+
         // we must check if it is needed to save LDAP
         // passwords in DB
         if (!configuration.isLdapSavePasswordsDB()) {
@@ -207,14 +222,26 @@ public class LDAPCustomAuthenticationProvider extends
 
     private LDAPConfiguration loadLDAPConfiguration() {
         return transactionService
-                .runOnReadOnlyTransaction(new IOnTransaction<LDAPConfiguration>() {
+            .runOnReadOnlyTransaction(new IOnTransaction<LDAPConfiguration>() {
 
-                    @Override
-                    public LDAPConfiguration execute() {
-                        return configurationDAO.getConfiguration()
-                                .getLdapConfiguration();
-                    }
-                });
+                @Override
+                public LDAPConfiguration execute() {
+                    return configurationDAO.getConfiguration()
+                            .getLdapConfiguration();
+                }
+            });
+    }
+
+    private ResourceCalendar loadDefaultCalendar() {
+        return transactionService
+            .runOnReadOnlyTransaction(new IOnTransaction<ResourceCalendar>() {
+
+                @Override
+                public ResourceCalendar execute() {
+                    return (ResourceCalendar) configurationDAO.getConfiguration().
+                        getDefaultCalendar().newCopyResourceCalendar();
+                }
+            });
     }
 
     private User getUserFromDB(String username) {
@@ -264,10 +291,23 @@ public class LDAPCustomAuthenticationProvider extends
 
     private void saveUserOnTransaction(User user) {
         final User userLibrePlan = user;
+        Worker worker = user.getWorker();
+
+        if (worker == null) {
+            worker = Worker.create();
+            worker.setUser(user);
+            worker.setCode("WORKER-" + UUID.randomUUID().toString());
+            worker.setNif(user.getLoginName());
+            worker.setCalendar(loadDefaultCalendar());
+        }
+        worker.setFirstName(user.getFirstName());
+        worker.setSurname(user.getLastName());
+        final Worker ldapWorker = worker;
         transactionService.runOnTransaction(new IOnTransaction<Void>() {
             @Override
             public Void execute() {
                 userDAO.save(userLibrePlan);
+                workerDAO.save(ldapWorker);
                 return null;
             }
         });
