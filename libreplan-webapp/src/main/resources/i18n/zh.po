@@ -5048,7 +5048,7 @@ msgstr "必须低于结束日期的"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/users/dashboard/PersonalTimesheetDTO.java:120
 msgid "Week {0}"
-msgstr "星期{0}"
+msgstr "第{0}周"
 
 #: libreplan-webapp/src/main/webapp/planner/taskpanels/_tabPanelSubcontract.zul:82
 msgid "Hours groups"
