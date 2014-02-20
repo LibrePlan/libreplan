@@ -6420,7 +6420,7 @@ msgstr "格式序列码无效。不能包含'_'"
 #: libreplan-webapp/src/main/webapp/calendars/_edition.zul:200
 #: libreplan-webapp/src/main/webapp/calendars/_edition.zul:227
 msgid "Extra Effort"
-msgstr "额外的努力"
+msgstr "加班"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/labels/LabelTypeModel.java:269
 msgid "Already exists other label with the same name"
