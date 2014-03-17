@@ -639,14 +639,6 @@ public class TaskElementAdapter {
                         });
             }
 
-            private BigDecimal getTotalBudget() {
-                if ((taskElement == null)
-                        || (taskElement.getOrderElement() == null)) {
-                    return BigDecimal.ZERO;
-                }
-                return taskElement.getOrderElement().getResourcesBudget();
-            }
-
             private BigDecimal getMoneyCost() {
                 if ((taskElement == null)
                         || (taskElement.getOrderElement() == null)) {
