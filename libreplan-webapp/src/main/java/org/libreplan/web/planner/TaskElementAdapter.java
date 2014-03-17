@@ -22,6 +22,7 @@
 package org.libreplan.web.planner;
 
 import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.common.Util.addCurrencySymbol;
 import static org.zkoss.ganttz.data.constraint.ConstraintOnComparableValues.biggerOrEqualThan;
 import static org.zkoss.ganttz.data.constraint.ConstraintOnComparableValues.equalTo;
 import static org.zkoss.ganttz.data.constraint.ConstraintOnComparableValues.lessOrEqualThan;
@@ -84,7 +85,6 @@ import org.libreplan.business.scenarios.entities.Scenario;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workingday.IntraDayDate;
 import org.libreplan.business.workingday.IntraDayDate.PartialDay;
-import org.libreplan.web.common.Util;
 import org.libreplan.web.planner.order.PlanningStateCreator.PlanningState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -922,12 +922,11 @@ public class TaskElementAdapter {
                 if (taskElement.getOrderElement() instanceof Order) {
                     result.append(_("State") + ": ").append(getOrderState());
                 } else {
-                    String budget = Util
-                            .addCurrencySymbol(getTotalCalculatedBudget());
-                    String moneyCost = Util.addCurrencySymbol(getMoneyCost());
+                    String budget = addCurrencySymbol(getTotalCalculatedBudget());
+                    String moneyCost = addCurrencySymbol(getMoneyCost());
 
-                    String costHours = Util.addCurrencySymbol(getHoursMoneyCost());
-                    String costExpenses = Util.addCurrencySymbol(getExpensesMoneyCost());
+                    String costHours = addCurrencySymbol(getHoursMoneyCost());
+                    String costExpenses = addCurrencySymbol(getExpensesMoneyCost());
                     result.append(
                             _("Budget: {0}, Consumed: {1} ({2}%)", budget, moneyCost,
                                     getMoneyCostBarPercentage().multiply(new BigDecimal(100))))
@@ -1313,16 +1312,13 @@ _(
                         .getOrder().getHoursMargin() : 0;
 
                 result.append(_("Hours-status") + "\n");
-                result.append(_("Project margin: ")).append(margin)
-                        .append("% (").append(orderElement.getWorkHours())
-                        .append(" hours)=");
-                result.append(orderElement.getWithMarginCalculatedHours())
-                        .append(" hours");
+                result.append(_("Project margin: {0}% ({1} hours)={2} hours",
+                                margin, orderElement.getWorkHours(),
+                        orderElement.getWithMarginCalculatedHours()));
 
                 String totalEffortHours = orderElement.getEffortAsString();
 
-                result.append(_(". Already registered: "))
-                        .append(totalEffortHours).append(" hours");
+                result.append(_(". Already registered: {0} hours", totalEffortHours));
                 return result.toString();
             }
 
@@ -1331,18 +1327,15 @@ _(
                 Integer margin = orderElement.getOrder().getBudgetMargin() != null ? orderElement
                         .getOrder().getBudgetMargin() : 0;
                 result.append(_("Budget-status") + "\n");
-                result.append(_("Project margin: "))
-                        .append(margin)
-                        .append("% (")
-                        .append(Util.addCurrencySymbol(orderElement.getBudget()))
-                        .append(")=");
-                result.append(Util.addCurrencySymbol(orderElement
-                        .getWithMarginCalculatedBudget()));
+                result.append(_("Project margin: {0}% ({1})={2}", margin,
+                        addCurrencySymbol(orderElement.getBudget()),
+                        addCurrencySymbol(orderElement
+                                .getWithMarginCalculatedBudget())));
 
                 BigDecimal totalExpense = getTotalExpense(orderElement);
 
-                result.append(_(". Already spent: ")).append(
-                        Util.addCurrencySymbol(totalExpense));
+                result.append(_(". Already spent: {0}",
+                        addCurrencySymbol(totalExpense)));
 
                 return result.toString();
             }
