@@ -28,7 +28,7 @@
         <treecol label="${ganttzk_i18n:_('Name')}" sclass="tree-text" />
         <treecol label="${ganttzk_i18n:_('Start')}" width="76px" />
         <treecol label="${ganttzk_i18n:_('End')}" width="76px" />
-        <treecol label="${ganttzk_i18n:_('Status')}" width="76px" />
+        <treecol label="${ganttzk_i18n:_('Status T/M')}" width="76px" />
     </treecols>
 </tree>
 </div>

@@ -34,8 +34,9 @@
     </treecell>
     <treecell>
         <hlayout class="projectstatus-layout">
-	        <div />
-	        <div />
+            <div />
+            <label>/</label>
+            <div />
         </hlayout>
     </treecell>
 </treerow>

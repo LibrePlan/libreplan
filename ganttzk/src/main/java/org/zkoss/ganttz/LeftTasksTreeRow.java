@@ -61,6 +61,7 @@ import org.zkoss.zul.api.Treerow;
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
+ * @author Jeroen Baten <jeroen@jeroenbaten.nl>
  */
 public class LeftTasksTreeRow extends GenericForwardComposer {
 
@@ -376,7 +377,8 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
                 children).get(0);
 
         hoursStatusDiv = (Div) hlayout.getChildren().get(0);
-        budgetStatusDiv = (Div) hlayout.getChildren().get(1);
+        // there is a <label> "/" between the divs
+        budgetStatusDiv = (Div) hlayout.getChildren().get(2);
 
     }
 
