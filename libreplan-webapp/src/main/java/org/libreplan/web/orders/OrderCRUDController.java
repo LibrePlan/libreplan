@@ -1107,16 +1107,6 @@ public class OrderCRUDController extends GenericForwardComposer {
         updateDisabilitiesOnInterface();
         setupOrderElementTreeController();
         selectDefaultTab();
-
-        if (editWindow == null) {
-            showEditWindow(title);
-        }
-    }
-
-    private void showEditWindow(String title) {
-        initializeTabs();
-        editWindow.setTitle(title);
-        getVisibility().showOnly(editWindow);
     }
 
     private void initializeCustomerComponent() {
@@ -1165,39 +1155,6 @@ public class OrderCRUDController extends GenericForwardComposer {
                 .getFellow("tabPanelGeneralData");
         Util.createBindingsFor(tabPanel);
         Util.reloadBindings(tabPanel);
-    }
-
-    private void initializeTabs() {
-        final IOrderElementModel orderElementModel = getOrderElementModel();
-
-        if (orderElementTreeController != null){
-            TreeComponent orderElementsTree = (TreeComponent) editWindow
-                    .getFellow("orderElementTree");
-            reloadTree(orderElementsTree);
-        }
-        if (assignedHoursController != null) {
-            assignedHoursController.openWindow(orderElementModel);
-        }
-        if (manageOrderElementAdvancesController != null) {
-            manageOrderElementAdvancesController.openWindow(orderElementModel);
-        }
-        if (assignedLabelsController != null) {
-            assignedLabelsController.openWindow(orderElementModel);
-        }
-        if (assignedCriterionRequirementController != null) {
-            assignedCriterionRequirementController
-                    .openWindow(orderElementModel);
-        }
-        if (assignedMaterialsController != null) {
-            assignedMaterialsController.openWindow(orderElementModel
-                    .getOrderElement());
-        }
-        if (assignedTaskQualityFormController != null) {
-            assignedTaskQualityFormController.openWindow(orderElementModel);
-        }
-        if (orderAuthorizationController != null) {
-            initOrderAuthorizations();
-        }
     }
 
     public void goToCreateForm() {
