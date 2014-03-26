@@ -112,7 +112,7 @@
                             </row>
                         </rows>
                     </grid>
-                    <button label="${i18n:_('Go to worker edition window')}"
+                    <button label="${i18n:_('Go to edit worker window')}"
                         onClick="controller.goToWorkerEdition();"
                         visible="@{controller.bound}"
                         disabled="@{controller.noRoleWorkers}"

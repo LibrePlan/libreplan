@@ -875,7 +875,7 @@ msgstr "Редактировать календарь"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/CustomMenuController.java:339
 #: libreplan-webapp/src/main/webapp/reports/timeLineMaterialReport.zul:41
-msgid "Materials Needs At Date"
+msgid "Materials Needed At Date"
 msgstr "Материалы требуемые на дату"
 
 #: libreplan-webapp/src/main/webapp/orders/_orderElementDetails.zul:35
@@ -4493,7 +4493,7 @@ msgid "must be greater than finish date"
 msgstr "Должно быть больше чем дата окончания"
 
 #: libreplan-webapp/src/main/webapp/reports/timeLineMaterialReport.zul:21
-msgid "LibrePlan: Materials Needs At Date"
+msgid "LibrePlan: Materials Needed At Date"
 msgstr "LibrePlan: Материалы требуются к дате"
 
 #: libreplan-webapp/src/main/webapp/costcategories/_editCostCategory.zul:26

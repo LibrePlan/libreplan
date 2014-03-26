@@ -217,7 +217,7 @@ public class MultipleTabsPlannerController implements Composer,
                         ConfirmCloseUtil
                                 .setConfirmClose(
                                         desktop,
-                                        _("You are about to leave the planning edition, unsaved changes will be lost."));
+                                        _("You are about to leave the planning editing. Unsaved changes will be lost!"));
                     }
                     break;
                 default:

@@ -424,7 +424,7 @@ public class UserCRUDController extends BaseCRUDController<User> implements
         try {
             return Messagebox
                     .show(_("Unsaved changes will be lost. Would you like to continue?"),
-                            _("Confirm worker edition"), Messagebox.OK
+                            _("Confirm edit worker"), Messagebox.OK
                                     | Messagebox.CANCEL, Messagebox.QUESTION);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
@@ -442,7 +442,7 @@ public class UserCRUDController extends BaseCRUDController<User> implements
 
     public String getWorkerEditionButtonTooltip() {
         if (isNoRoleWorkers()) {
-            return _("You do not have permissions to go to worker edition window");
+            return _("You do not have permissions to go to edit worker window");
         }
         return "";
     }
