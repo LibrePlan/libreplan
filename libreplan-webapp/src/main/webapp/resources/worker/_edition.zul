@@ -124,7 +124,7 @@
                                     </row>
                                 </rows>
                             </grid>
-                            <button label="${i18n:_('Go to user edition window')}"
+                            <button label="${i18n:_('Go to edit user window')}"
                                 onClick="controller.goToUserEdition();"
                                 visible="@{controller.userSelected}"
                                 disabled="@{controller.noRoleUserAccounts}"

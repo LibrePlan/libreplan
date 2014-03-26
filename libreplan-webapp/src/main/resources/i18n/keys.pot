@@ -360,7 +360,7 @@ msgid "entity name not specified"
 msgstr ""
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/users/UserCRUDController.java:445
-msgid "You do not have permissions to go to worker edition window"
+msgid "You do not have permissions to go to edit worker window"
 msgstr ""
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/components/NewAllocationSelector.java:55
@@ -1115,7 +1115,7 @@ msgstr ""
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/CustomMenuController.java:505
 #: libreplan-webapp/src/main/webapp/reports/timeLineMaterialReport.zul:39
-msgid "Materials Needs At Date"
+msgid "Materials Needed At Date"
 msgstr ""
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/users/dashboard/PersonalTimesheetController.java:615
@@ -2060,7 +2060,7 @@ msgid "Yes"
 msgstr ""
 
 #: libreplan-webapp/src/main/webapp/resources/worker/_edition.zul:127
-msgid "Go to user edition window"
+msgid "Go to edit user window"
 msgstr ""
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/CustomMenuController.java:397
@@ -4285,7 +4285,7 @@ msgid "Edit Worker: {0}"
 msgstr ""
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/resources/worker/WorkerCRUDController.java:1157
-msgid "You do not have permissions to go to user edition window"
+msgid "You do not have permissions to go to edit user window"
 msgstr ""
 
 #: libreplan-webapp/src/main/webapp/common/layout/login.zul:21
@@ -5095,7 +5095,7 @@ msgid "Value last progress measurement"
 msgstr ""
 
 #: libreplan-webapp/src/main/webapp/reports/timeLineMaterialReport.zul:21
-msgid "LibrePlan: Materials Needs At Date"
+msgid "LibrePlan: Materials Needed At Date"
 msgstr ""
 
 #: libreplan-webapp/src/main/webapp/resources/machine/_machineConfigurationUnits.zul:44
@@ -5170,7 +5170,7 @@ msgstr ""
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/tabs/MultipleTabsPlannerController.java:220
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/order/SaveCommandBuilder.java:375
 msgid ""
-"You are about to leave the planning edition, unsaved changes will be lost."
+"You are about to leave the planning editing. Unsaved changes will be lost!"
 msgstr ""
 
 #: libreplan-webapp/src/main/webapp/resources/machine/machines.zul:22
@@ -6409,7 +6409,7 @@ msgid "Timesheets Templates"
 msgstr ""
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/resources/worker/WorkerCRUDController.java:1143
-msgid "Confirm user edition"
+msgid "Confirm editing user"
 msgstr ""
 
 #: libreplan-webapp/src/main/webapp/reports/hoursWorkedPerWorkerReport.zul:117
@@ -7303,7 +7303,7 @@ msgid "The end date cannot be before the start date"
 msgstr ""
 
 #: libreplan-webapp/src/main/webapp/users/_editUser.zul:115
-msgid "Go to worker edition window"
+msgid "Go to edit worker window"
 msgstr ""
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/advance/AdvanceTypeCRUDController.java:95
@@ -7529,7 +7529,7 @@ msgid "Priority"
 msgstr ""
 
 #: libreplan-webapp/src/main/webapp/planner/advance_allocation.zul:47
-msgid "Apply changes and continue edition"
+msgid "Apply changes and continue editing"
 msgstr ""
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/calendars/BaseCalendarEditionController.java:221
@@ -7698,7 +7698,7 @@ msgid "Tim product code"
 msgstr ""
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/users/UserCRUDController.java:427
-msgid "Confirm worker edition"
+msgid "Confirm edit worker"
 msgstr ""
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/JiraSynchronizationController.java:302
@@ -8649,7 +8649,7 @@ msgid "Adapt planning according to timesheets"
 msgstr ""
 
 #: libreplan-webapp/src/main/webapp/orders/_ordersTab.zul:36
-msgid "Cancel edition"
+msgid "Cancel editing"
 msgstr ""
 
 #: libreplan-webapp/src/main/webapp/templates/_materialAssignmentsBox.zul:32
@@ -9116,7 +9116,7 @@ msgid "Task Scheduling Status In Project Report"
 msgstr ""
 
 #: libreplan-business/src/main/java/org/libreplan/business/users/entities/UserRole.java:83
-msgid "Materials Needs At Date Report"
+msgid "Materials Needed At Date Report"
 msgstr ""
 
 #: libreplan-business/src/main/java/org/libreplan/business/orders/entities/SchedulingState.java:366

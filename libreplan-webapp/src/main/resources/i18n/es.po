@@ -365,7 +365,7 @@ msgid "entity name not specified"
 msgstr "nombre de la entidad no especificado"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/users/UserCRUDController.java:445
-msgid "You do not have permissions to go to worker edition window"
+msgid "You do not have permissions to go to edit worker window"
 msgstr "No tiene permisos para ir a la ventana de edición de trabajadores"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/components/NewAllocationSelector.java:55
@@ -1120,7 +1120,7 @@ msgstr "o nombres"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/CustomMenuController.java:505
 #: libreplan-webapp/src/main/webapp/reports/timeLineMaterialReport.zul:39
-msgid "Materials Needs At Date"
+msgid "Materials Needed At Date"
 msgstr "Necesidades de materiales en fecha"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/users/dashboard/PersonalTimesheetController.java:615
@@ -2065,7 +2065,7 @@ msgid "Yes"
 msgstr "Sí"
 
 #: libreplan-webapp/src/main/webapp/resources/worker/_edition.zul:127
-msgid "Go to user edition window"
+msgid "Go to edit user window"
 msgstr "Ir a la ventana de edición de usuarios"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/CustomMenuController.java:397
@@ -4290,7 +4290,7 @@ msgid "Edit Worker: {0}"
 msgstr "Editar trabajador: {0}"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/resources/worker/WorkerCRUDController.java:1157
-msgid "You do not have permissions to go to user edition window"
+msgid "You do not have permissions to go to edit user window"
 msgstr "No tiene permisos para ir a la ventana de edición de usuarios"
 
 #: libreplan-webapp/src/main/webapp/common/layout/login.zul:21
@@ -5100,7 +5100,7 @@ msgid "Value last progress measurement"
 msgstr "Valor última medida de progreso"
 
 #: libreplan-webapp/src/main/webapp/reports/timeLineMaterialReport.zul:21
-msgid "LibrePlan: Materials Needs At Date"
+msgid "LibrePlan: Materials Needed At Date"
 msgstr "LibrePlan: Necesidad de materiales en fecha"
 
 #: libreplan-webapp/src/main/webapp/resources/machine/_machineConfigurationUnits.zul:44
@@ -5175,7 +5175,7 @@ msgstr "Error guardando un proyecto\n{0}"
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/tabs/MultipleTabsPlannerController.java:220
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/order/SaveCommandBuilder.java:375
 msgid ""
-"You are about to leave the planning edition, unsaved changes will be lost."
+"You are about to leave the planning editing. Unsaved changes will be lost!"
 msgstr "Estás a punto de salir de la edición de planificación, los cambios sin guardar se perderán."
 
 #: libreplan-webapp/src/main/webapp/resources/machine/machines.zul:22
@@ -6414,7 +6414,7 @@ msgid "Timesheets Templates"
 msgstr "Modelos de partes de trabajo"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/resources/worker/WorkerCRUDController.java:1143
-msgid "Confirm user edition"
+msgid "Confirm editing user"
 msgstr "Confirmar la edición del usuario"
 
 #: libreplan-webapp/src/main/webapp/reports/hoursWorkedPerWorkerReport.zul:117
@@ -7308,7 +7308,7 @@ msgid "The end date cannot be before the start date"
 msgstr "La fecha de fin no puede ser anterior a la fecha de inicio"
 
 #: libreplan-webapp/src/main/webapp/users/_editUser.zul:115
-msgid "Go to worker edition window"
+msgid "Go to edit worker window"
 msgstr "Ir a la ventana de edición de trabajadores"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/advance/AdvanceTypeCRUDController.java:95
@@ -7534,7 +7534,7 @@ msgid "Priority"
 msgstr "Prioridad"
 
 #: libreplan-webapp/src/main/webapp/planner/advance_allocation.zul:47
-msgid "Apply changes and continue edition"
+msgid "Apply changes and continue editing"
 msgstr "Aplicar cambios y continuar la edición"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/calendars/BaseCalendarEditionController.java:221
@@ -7703,7 +7703,7 @@ msgid "Tim product code"
 msgstr "Código de producto Tim"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/users/UserCRUDController.java:427
-msgid "Confirm worker edition"
+msgid "Confirm edit worker"
 msgstr "Confirmar edición del trabajador"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/JiraSynchronizationController.java:302
@@ -8655,7 +8655,7 @@ msgid "Adapt planning according to timesheets"
 msgstr "Adaptar la planificación según los partes de trabajo"
 
 #: libreplan-webapp/src/main/webapp/orders/_ordersTab.zul:36
-msgid "Cancel edition"
+msgid "Cancel editing"
 msgstr "Cancelar la edición"
 
 #: libreplan-webapp/src/main/webapp/templates/_materialAssignmentsBox.zul:32
@@ -9122,7 +9122,7 @@ msgid "Task Scheduling Status In Project Report"
 msgstr "Informe de estado de planificación de tareas en un proyecto"
 
 #: libreplan-business/src/main/java/org/libreplan/business/users/entities/UserRole.java:83
-msgid "Materials Needs At Date Report"
+msgid "Materials Needed At Date Report"
 msgstr "Informe de necesidades de materiales en fecha"
 
 #: libreplan-business/src/main/java/org/libreplan/business/orders/entities/SchedulingState.java:366

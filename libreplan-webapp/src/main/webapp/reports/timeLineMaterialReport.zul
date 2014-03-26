@@ -18,7 +18,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<?page title="${i18n:_('LibrePlan: Materials Needs At Date')}" id="reports"?>
+<?page title="${i18n:_('LibrePlan: Materials Needed At Date')}" id="reports"?>
 <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
 
@@ -36,7 +36,7 @@
 
     <window self="@{define(content)}"
         apply="org.libreplan.web.reports.TimeLineRequiredMaterialController"
-        title="${i18n:_('Materials Needs At Date')}"
+        title="${i18n:_('Materials Needed At Date')}"
         border="normal" >
 
 <hbox>

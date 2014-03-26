@@ -44,7 +44,7 @@
                 tooltiptext="${i18n:_('Cancel changes and back to scheduling')}" />
             <button label="${i18n:_('Apply')}" id="saveButton" image="/common/img/bt_ok.png"
                 if="${!(advancedAllocationController.advancedAllocationOfSingleTask)}"
-                tooltiptext="${i18n:_('Apply changes and continue edition')}" />
+                tooltiptext="${i18n:_('Apply changes and continue editing')}" />
             <separator/>
             <space bar="true" />
             <label>${i18n:_('Zoom level')}:</label>
