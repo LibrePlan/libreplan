@@ -5170,7 +5170,7 @@ msgstr "Travail"
 msgid ""
 "Error saving the project\n"
 "{0}"
-msgstr "Erreur lors de l'enregistrement du projet\n{0}"
+msgstr "Erreur lors de l''enregistrement du projet\n{0}"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/tabs/MultipleTabsPlannerController.java:220
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/order/SaveCommandBuilder.java:375
