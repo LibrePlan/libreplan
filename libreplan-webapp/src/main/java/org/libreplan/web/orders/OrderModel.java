@@ -931,7 +931,8 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
             OrderElement orderElement) {
         try {
             OrderLineGroup parent = orderElement.getParent();
-            if (!parent.isOrder() && parent.getChildren().size() == 1) {
+            if (!parent.isOrder() && !parent.isNewObject()
+                    && parent.getChildren().size() == 1) {
                 if (orderElementDAO.isAlreadyInUse(parent)) {
                     return true;
                 }
