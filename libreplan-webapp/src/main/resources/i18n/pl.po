@@ -341,7 +341,7 @@ msgstr "LibrePlan: Kalendarze"
 #: libreplan-webapp/src/main/java/org/libreplan/web/users/services/LDAPUserDetailsService.java:65
 #: libreplan-webapp/src/main/java/org/libreplan/web/users/services/DBUserDetailsService.java:66
 msgid "User with login name '{0}': not found"
-msgstr "Użytkownik o loginie '{0}': nie został znaleziony"
+msgstr "Użytkownik o loginie ''{0}'': nie został znaleziony"
 
 #: libreplan-webapp/src/main/webapp/planner/_legendLoadChartOrder.zul:37
 msgid "Resources capability"
@@ -1286,7 +1286,7 @@ msgstr ""
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/components/TwoWaySelector.java:110
 msgid "Unknown attribute '{0}' in class {1}"
-msgstr "Nieznany atrybut '{0}' w klasie {1}"
+msgstr "Nieznany atrybut ''{0}'' w klasie {1}"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/users/settings/PasswordController.java:96
 msgid "passwords can not be empty"

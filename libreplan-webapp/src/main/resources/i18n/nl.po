@@ -1628,7 +1628,7 @@ msgstr "Bedrijfscode"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/components/TwoWaySelector.java:110
 msgid "Unknown attribute '{0}' in class {1}"
-msgstr "Onbekende attribuut '{0}' in classe {1}"
+msgstr "Onbekende attribuut ''{0}'' in classe {1}"
 
 #: libreplan-webapp/src/main/webapp/orders/_listOrderElementHours.zul:62
 msgid "Sum of imputed hours in children tasks"
@@ -7996,7 +7996,7 @@ msgstr "LibrePlan: Project statusrapport"
 msgid ""
 "The planning of this task is not in the current scenenario.\n"
 "You should change to any of the following scenarios: {0}"
-msgstr "De planning van deze taak is niet in het actuele scenario. U moet overschakelen naar een van de volgende scenario's: {0}"
+msgstr "De planning van deze taak is niet in het actuele scenario. U moet overschakelen naar een van de volgende scenario''s: {0}"
 
 #: libreplan-webapp/src/main/webapp/orders/imports/projectImport.zul:47
 msgid "Gantt charts"

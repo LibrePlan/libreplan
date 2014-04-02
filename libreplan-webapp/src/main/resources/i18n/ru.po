@@ -326,7 +326,7 @@ msgstr "Консолидация хода работ"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/users/services/DBUserDetailsService.java:66
 msgid "User with login name '{0}': not found"
-msgstr "Пользователь '{0}': не найден"
+msgstr "Пользователь ''{0}'': не найден"
 
 #: libreplan-webapp/src/main/webapp/planner/_legendLoadChartOrder.zul:37
 msgid "Resources capability"
@@ -1288,7 +1288,7 @@ msgstr "Код компании"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/components/TwoWaySelector.java:110
 msgid "Unknown attribute '{0}' in class {1}"
-msgstr "Неопределенный атрибут '{0}' в классе {1}"
+msgstr "Неопределенный атрибут ''{0}'' в классе {1}"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/resources/worker/WorkerCRUDController.java:714
 msgid "NON LIMITING RESOURCE"
