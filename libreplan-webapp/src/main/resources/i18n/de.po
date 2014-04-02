@@ -1510,7 +1510,7 @@ msgstr "Firmenkennzeichen"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/components/TwoWaySelector.java:110
 msgid "Unknown attribute '{0}' in class {1}"
-msgstr "Unbekanntes Attribut '{0}' in Klasse {1}"
+msgstr "Unbekanntes Attribut ''{0}'' in Klasse {1}"
 
 #: libreplan-webapp/src/main/webapp/orders/_listOrderElementHours.zul:62
 msgid "Sum of imputed hours in children tasks"
