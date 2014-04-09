@@ -35,9 +35,13 @@ import org.apache.commons.logging.LogFactory;
 import org.hibernate.validator.InvalidValue;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.event.CheckEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.InputEvent;
+import org.zkoss.zk.ui.event.MouseEvent;
+import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.util.EventInterceptor;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Div;
@@ -45,7 +49,12 @@ import org.zkoss.zul.Image;
 import org.zkoss.zul.Label;
 
 /**
- * It shows messages to the user. <br />
+ * <p>
+ * It shows messages from the application to the user with different
+ * {@link Level levels} of severity. Once the user does some action in the page,
+ * like clicking a button or changing some input the messages automatically
+ * disappear.
+ *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public class MessagesForUser extends GenericForwardComposer implements
@@ -78,23 +87,30 @@ public class MessagesForUser extends GenericForwardComposer implements
         @Override
         public Event beforeProcessEvent(Event event) {
             MessagesForUser messagesForUser = messagesForUserRef.get();
-            if (messagesForUser == null) {
+
+            if (messagesForUser == null
+                    || messagesForUser.pendingToDetach.isEmpty()
+                    || !eventIndicatesUserActivity(event)) {
                 return event;
             }
 
-            if (event.getName().equals(DETACH_EVENT_NAME)
-                    || messagesForUser.pendingToDetach.isEmpty()) {
-                return event;
-            }
             long currentTime = System.currentTimeMillis();
             ComponentHolderTimestamped currrent = null;
             while ((currrent = messagesForUser.pendingToDetach.peek()) != null
-                    && currrent
-                            .minimumVisualizationTimeSurpased(currentTime)) {
+                    && currrent.minimumVisualizationTimeSurpased(currentTime)) {
                 currrent.component.detach();
                 messagesForUser.pendingToDetach.poll();
             }
             return event;
+        }
+
+        private boolean eventIndicatesUserActivity(Event event) {
+            if (event instanceof MouseEvent) {
+                MouseEvent e = (MouseEvent) event;
+                return e.getName().equals("onClick");
+            }
+            return event instanceof InputEvent || event instanceof CheckEvent
+                    || event instanceof SelectEvent;
         }
 
         @Override
