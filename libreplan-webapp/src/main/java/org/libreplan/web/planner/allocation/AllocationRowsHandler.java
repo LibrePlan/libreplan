@@ -252,7 +252,7 @@ public class AllocationRowsHandler {
             List<? extends AllocationModification> modificationsDone;
             modificationsDone = doSuitableAllocation();
 
-            AllocationRow.loadDataFromLast(currentRows, modificationsDone);
+            AllocationRow.updateUIWithModificationsDone(currentRows, modificationsDone);
 
             createDerived();
             AllocationResult result = createResult();
@@ -365,7 +365,7 @@ public class AllocationRowsHandler {
 
     private void createDerived() {
         List<ResourceAllocation<?>> lastFrom = AllocationRow
-                .getTemporalFrom(currentRows);
+                .getBeingModified(currentRows);
         for (ResourceAllocation<?> each : lastFrom) {
             each.createDerived(workersFinder);
         }
