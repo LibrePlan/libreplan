@@ -50,7 +50,7 @@ public class AllocationResult {
             Integer newWorkableDays) {
         List<ResourceAllocation<?>> newAllocations = AllocationRow
                 .getNewFrom(rows);
-        List<ModifiedAllocation> modified = AllocationRow.getModifiedFrom(rows);
+        List<ModifiedAllocation> modified = AllocationRow.getModificationsDone(rows);
         return new AllocationResult(task, newWorkableDays, calculatedValue,
                 createAggregate(newAllocations, modified), newAllocations,
                 modified);
