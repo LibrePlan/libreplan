@@ -486,13 +486,17 @@ public class FormBinder {
         List<AllocationRow> result = addListeners(allocationRowsHandler
                 .getCurrentRows());
         rows = result;
+        setupRows();
+        return result;
+    }
+
+    private void setupRows() {
         applyDisabledRulesOnRows();
         bindTotalHoursToHoursInputs();
         allHoursInputComponentDisabilityRule();
         bindAllResourcesPerDayToRows();
         allResourcesPerDayVisibilityRule();
         loadAggregatedCalculations();
-        return result;
     }
 
     private void bindAllResourcesPerDayToRows() {
@@ -522,7 +526,7 @@ public class FormBinder {
     }
 
     /**
-     *
+     * 
      * @return <code>true</code> if and only if operation completed and must
      *         exit the edition form
      */
@@ -544,20 +548,16 @@ public class FormBinder {
     private void allocationProduced(AllocationResult allocationResult) {
         lastAllocation = allocationResult;
         aggregate = lastAllocation.getAggregate();
-        allResourcesPerDayVisibilityRule();
-        sumResourcesPerDayFromRowsAndAssignToAllResourcesPerDay();
-        reloadValues();
-    }
 
-    private void reloadValues() {
         loadResourcesPerDay();
         loadEffortValues();
-        loadValueForEffortInput();
         loadDerivedAllocations();
         loadSclassRowSatisfied();
         loadAssignmentFunctionNames();
+
         workableDaysAndDatesBinder.afterApplicationReloadValues();
-        Util.reloadBindings(allocationsGrid);
+
+        setupRows();
     }
 
     @SuppressWarnings("unchecked")
