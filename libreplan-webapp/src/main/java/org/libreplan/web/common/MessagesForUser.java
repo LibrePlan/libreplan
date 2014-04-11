@@ -109,8 +109,11 @@ public class MessagesForUser extends GenericForwardComposer implements
                 MouseEvent e = (MouseEvent) event;
                 return e.getName().equals("onClick");
             }
-            return event instanceof InputEvent || event instanceof CheckEvent
-                    || event instanceof SelectEvent;
+            if (event instanceof InputEvent) {
+                InputEvent e = (InputEvent) event;
+                return !e.getName().equals("onBlur");
+            }
+            return event instanceof CheckEvent || event instanceof SelectEvent;
         }
 
         @Override
