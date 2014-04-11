@@ -798,6 +798,8 @@ public class FormBinder {
     private void deactivatingRecommendedAllocation() {
         this.recommendedAllocation = false;
         effortInput.removeEventListener(Events.ON_CHANGE, allHoursInputChange);
+        allResourcesPerDay.removeEventListener(Events.ON_CHANGE,
+                allResourcesPerDayChange);
         applyDisabledRules();
         disableIfNeededWorkerSearch();
     }
