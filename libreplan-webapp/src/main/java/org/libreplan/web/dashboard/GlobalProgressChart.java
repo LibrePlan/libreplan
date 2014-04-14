@@ -100,8 +100,9 @@ public class GlobalProgressChart {
     }
 
     private String jsonify(Object value) {
-        return (value.getClass().equals(String.class)) ? String.format("\"%s\"",
-                value.toString()) : String.format("%s", value.toString());
+        return String
+                .format((value instanceof String) ? "\"%s\"" : "%s", value)
+                .replaceAll("'", "\\\\'");
     }
 
     public String getSeries() {
