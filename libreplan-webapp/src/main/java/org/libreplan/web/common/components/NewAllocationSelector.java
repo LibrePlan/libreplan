@@ -21,9 +21,9 @@
 
 package org.libreplan.web.common.components;
 
-import java.util.Date;
 import java.util.List;
 
+import org.joda.time.LocalDate;
 import org.libreplan.business.resources.daos.IResourcesSearcher;
 import org.libreplan.business.resources.daos.IResourcesSearcher.IResourcesQuery;
 import org.libreplan.business.resources.entities.Criterion;
@@ -169,12 +169,12 @@ public class NewAllocationSelector extends AllocationSelector {
         this.behaviour = ResourceAllocationBehaviour.valueOf(behaviour);
     }
 
-    public void setEndFilteringDate(Date d) {
-        getController().setEndFilteringDate(d);
-    }
-
-    public void setStartFilteringDate(Date d) {
-        getController().setStartFilteringDate(d);
+    public void open(LocalDate start, LocalDate end) {
+        start = start
+                .minusDays(DAYS_LEAD_LAG_TO_TASK_LIMITS_DATES_FILTERING_INITIALIZATION);
+        end = end
+                .plusDays(DAYS_LEAD_LAG_TO_TASK_LIMITS_DATES_FILTERING_INITIALIZATION);
+        getController().open(start, end);
     }
 
 }
