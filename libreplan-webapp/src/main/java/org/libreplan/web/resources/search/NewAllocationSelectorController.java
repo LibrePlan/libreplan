@@ -38,6 +38,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
+import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.resources.daos.IResourceLoadRatiosCalculator.ILoadRatiosDataType;
 import org.libreplan.business.resources.daos.IResourcesSearcher.IResourcesQuery;
 import org.libreplan.business.resources.entities.Criterion;
@@ -394,14 +395,25 @@ public class NewAllocationSelectorController extends
     public void clearAll() {
     }
 
-    public void open(LocalDate start, LocalDate end) {
+    public void open(final LocalDate start, final LocalDate end) {
         setStartFilteringDate(start);
         setEndFilteringDate(end);
 
-        refreshListBoxResources();
         clearSelection(listBoxResources);
         clearSelection(criterionsTree);
-        criterionsTree.setModel(getCriterions());
+
+
+        adHocTransactionService
+                .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
+                    @Override
+                    public Void execute() {
+                        refreshListBoxResources();
+                        criterionsTree.setModel(getCriterions());
+
+                        return null;
+                    }
+                });
+
         doInitialSelection();
     }
 
