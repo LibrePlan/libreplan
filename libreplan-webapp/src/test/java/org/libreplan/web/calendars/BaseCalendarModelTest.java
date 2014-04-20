@@ -22,6 +22,7 @@
 package org.libreplan.web.calendars;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.libreplan.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.libreplan.business.workingday.EffortDuration.hours;
@@ -31,6 +32,8 @@ import static org.libreplan.web.test.WebappGlobalNames.WEBAPP_SPRING_CONFIG_TEST
 import static org.libreplan.web.test.WebappGlobalNames.WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.annotation.Resource;
@@ -44,6 +47,7 @@ import org.libreplan.business.calendars.daos.IBaseCalendarDAO;
 import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.calendars.entities.CalendarData.Days;
 import org.libreplan.business.calendars.entities.Capacity;
+import org.libreplan.business.common.BaseEntity;
 import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.exceptions.ValidationException;
@@ -102,12 +106,13 @@ public class BaseCalendarModelTest {
         Capacity capacity = Capacity.create(hours(8));
         setCapacity(baseCalendar, capacity);
         baseCalendarModel.confirmSave();
-        List<BaseCalendar> currentCalendars = baseCalendarModel
-                .getBaseCalendars();
+        Map<Long, Set<BaseCalendar>> currentCalendars = BaseEntity
+                .byId(baseCalendarModel.getBaseCalendars());
         assertThat(currentCalendars.size(), equalTo(previous + 1));
 
-        BaseCalendar createdCalendar = currentCalendars.get(previous);
-        assertThat(createdCalendar.getId(), equalTo(baseCalendar.getId()));
+        BaseCalendar createdCalendar = currentCalendars
+                .get(baseCalendar.getId()).iterator().next();
+        assertThat(createdCalendar, notNullValue());
         assertThat(createdCalendar.getCapacityConsideringCalendarDatasOn(
                 new LocalDate(), Days.MONDAY), equalTo(capacity));
     }
