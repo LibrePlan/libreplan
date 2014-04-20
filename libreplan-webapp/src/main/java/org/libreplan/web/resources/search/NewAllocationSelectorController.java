@@ -125,20 +125,10 @@ public class NewAllocationSelectorController extends
         initializeCriteriaTree();
         initializeListboxResources();
         initializeAllocationTypeSelector();
-        initializeFilteringDates();
+        initializeFilteringDatesConstraints();
     }
 
-    private void initializeFilteringDates() {
-        // Start and end filtering dates are initialized here because
-        // they cannot be empty and must have always a value. The
-        // task start date and task end date are not available at the first
-        // rendering. Thus, the current date and current date + 1 day are used
-        // as the value to initialize the components although will
-        // never be visible by the user.
-        Date initDate = new Date();
-        setStartFilteringDate(initDate);
-        setEndFilteringDate(LocalDate.fromDateFields(initDate).plusDays(1)
-                .toDateTimeAtStartOfDay().toDate());
+    private void initializeFilteringDatesConstraints() {
         startDateLoadRatiosDatebox
                 .setConstraint(checkConstraintFilteringDate());
         endDateLoadRatiosDatebox.setConstraint(checkConstraintFilteringDate());
@@ -237,22 +227,8 @@ public class NewAllocationSelectorController extends
     }
 
     private List<ResourceWithItsLoadRatios> getAllResources() {
-
-        List<ResourceWithItsLoadRatios> result = new ArrayList<ResourceWithItsLoadRatios>();
-
-        // The search is only done in case that the endFilteringDate and
-        // startFilteringDate are initialized. This happens when the
-        // user does the advanced search visible by clicking on the
-        // AdvancedSearch button
-        if ((startDateLoadRatiosDatebox.getValue() != null)
-                && (endDateLoadRatiosDatebox.getValue() != null)) {
-
-            List<? extends Resource> listResources = query().byResourceType(
-                    getType()).execute();
-
-            result = addLoadRatiosCalculations(listResources);
-        }
-        return result;
+        return addLoadRatiosCalculations(query().byResourceType(
+                getType()).execute());
     }
 
     private List<ResourceWithItsLoadRatios> addLoadRatiosCalculations(
@@ -416,10 +392,16 @@ public class NewAllocationSelectorController extends
 
     @Override
     public void clearAll() {
+    }
+
+    public void open(LocalDate start, LocalDate end) {
+        setStartFilteringDate(start);
+        setEndFilteringDate(end);
+
         refreshListBoxResources();
-        criterionsTree.setModel(getCriterions());
         clearSelection(listBoxResources);
         clearSelection(criterionsTree);
+        criterionsTree.setModel(getCriterions());
         doInitialSelection();
     }
 
@@ -710,12 +692,19 @@ public class NewAllocationSelectorController extends
         return listBoxResources.isMultiple();
     }
 
-    public void setEndFilteringDate(Date d) {
-        endDateLoadRatiosDatebox.setValue(d);
+    public void setEndFilteringDate(LocalDate d) {
+        endDateLoadRatiosDatebox.setValue(asDate(d));
     }
 
-    public void setStartFilteringDate(Date d) {
-        startDateLoadRatiosDatebox.setValue(d);
+    public void setStartFilteringDate(LocalDate date) {
+        startDateLoadRatiosDatebox.setValue(asDate(date));
+    }
+
+    private static Date asDate(LocalDate date) {
+        if (date == null) {
+            return null;
+        }
+        return date.toDateTimeAtStartOfDay().toDate();
     }
 
     public void updateLoadRatios() {
