@@ -23,6 +23,7 @@ package org.libreplan.web.resources.search;
 
 import java.util.List;
 
+import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.resources.daos.IResourceLoadRatiosCalculator;
 import org.libreplan.business.resources.daos.IResourcesSearcher;
 import org.libreplan.business.resources.entities.Criterion;
@@ -41,6 +42,9 @@ public abstract class AllocationSelectorController extends
 
     // injected by name
     protected IResourcesSearcher resourcesSearcher;
+
+    // injected by name
+    protected IAdHocTransactionService adHocTransactionService;
 
     // injected by name
     protected IResourceLoadRatiosCalculator resourceLoadRatiosCalculator;
