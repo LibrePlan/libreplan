@@ -30,6 +30,7 @@ import static org.libreplan.business.test.BusinessGlobalNames.BUSINESS_SPRING_CO
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 
 import javax.annotation.Resource;
 
@@ -90,8 +91,13 @@ public class MachineDAOTest {
     }
 
     private Machine createValidMachine() {
+        String code = UUID.randomUUID().toString();
+        return createValidMachine(code);
+    }
+
+    private Machine createValidMachine(String code) {
         Machine machine = Machine.create();
-        machine.setCode("code");
+        machine.setCode(code);
         machine.setName("name");
         machine.setDescription("description");
         return machine;
@@ -153,10 +159,11 @@ public class MachineDAOTest {
     @Test(expected = ValidationException.class)
     @NotTransactional
     public void testSaveTwoMachinesWithSameCodeForbidden() {
+        final String sameCode = UUID.randomUUID().toString();
         transactionService.runOnTransaction(new IOnTransaction<Void>() {
             @Override
             public Void execute() {
-                machineDAO.save(createValidMachine());
+                machineDAO.save(createValidMachine(sameCode));
                 return null;
             }
         });
@@ -164,7 +171,7 @@ public class MachineDAOTest {
         transactionService.runOnTransaction(new IOnTransaction<Void>() {
             @Override
             public Void execute() {
-                machineDAO.save(createValidMachine());
+                machineDAO.save(createValidMachine(sameCode));
                 return null;
             }
         });
