@@ -164,7 +164,6 @@ public class LimitingResourceAllocationController extends GenericForwardComposer
     }
 
     public void clear() {
-        limitingNewAllocationSelector.clearAll();
         limitingNewAllocationSelectorCombo.clearAll();
     }
 
