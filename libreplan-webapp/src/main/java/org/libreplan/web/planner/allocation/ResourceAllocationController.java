@@ -370,7 +370,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
     public void onCloseSelectWorkers() {
         tbResourceAllocation.setSelected(true);
         applyButton.setVisible(true);
-        newAllocationSelector.clearAll();
     }
 
     public enum CalculationTypeRadio {
@@ -551,7 +550,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
     }
 
     public void clear() {
-        newAllocationSelector.clearAll();
         allocationsGrid.setModel(new SimpleListModel(Collections.emptyList()));
     }
 
