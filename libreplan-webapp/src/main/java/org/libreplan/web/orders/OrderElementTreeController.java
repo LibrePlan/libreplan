@@ -32,17 +32,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Filter;
 
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.LogFactory;
-import org.aspectj.weaver.ICrossReferenceHandler;
 import org.libreplan.business.common.IAdHocTransactionService;
-import org.libreplan.business.common.IOnTransaction;
-import org.libreplan.business.common.Registry;
-import org.libreplan.business.common.daos.IConfigurationDAO;
 import org.libreplan.business.common.daos.IConnectorDAO;
 import org.libreplan.business.common.entities.Connector;
 import org.libreplan.business.common.entities.EntitySequence;
@@ -226,23 +221,15 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                                 .getRoot();
                         orderModel.createFrom(parent, template);
                         getModel().addNewlyAddedChildrenOf(parent);
-			// Force reload bindings after adding the new nodes
-                        Util.reloadBindings(tree);
 
+                        reloadTreeUIAfterChanges();
                     }
                 });
     }
 
-    protected void filterByPredicateIfAny() {
-        if (predicate != null) {
-            filterByPredicate();
-        }
-    }
-
-    private void filterByPredicate() {
-        OrderElementTreeModel orderElementTreeModel = orderModel
-                .getOrderElementsFilteredByPredicate(predicate);
-        tree.setModel(orderElementTreeModel.asTree());
+    @Override
+    protected void reloadTreeUIAfterChanges() {
+        tree.setModel(getFilteredTreeModel());
         tree.invalidate();
     }
 
