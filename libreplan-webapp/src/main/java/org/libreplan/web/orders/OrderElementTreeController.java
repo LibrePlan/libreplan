@@ -32,7 +32,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Filter;
 
 import javax.annotation.Resource;
 
@@ -210,20 +209,15 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                                 .getRoot();
                         orderModel.createFrom(parent, template);
                         getModel().addNewlyAddedChildrenOf(parent);
+
+                        reloadTreeUIAfterChanges();
                     }
                 });
     }
 
-    protected void filterByPredicateIfAny() {
-        if (predicate != null) {
-            filterByPredicate();
-        }
-    }
-
-    private void filterByPredicate() {
-        OrderElementTreeModel orderElementTreeModel = orderModel
-                .getOrderElementsFilteredByPredicate(predicate);
-        tree.setModel(orderElementTreeModel.asTree());
+    @Override
+    protected void reloadTreeUIAfterChanges() {
+        tree.setModel(getFilteredTreeModel());
         tree.invalidate();
     }
 
