@@ -21,6 +21,8 @@
 
 package org.libreplan.business.test.planner.entities;
 
+import static org.hamcrest.CoreMatchers.both;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -28,9 +30,8 @@ import java.util.List;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import org.hamcrest.core.CombinableMatcher;
 import org.joda.time.LocalDate;
-import org.junit.matchers.CombinableMatcher;
-import org.junit.matchers.JUnitMatchers;
 import org.libreplan.business.planner.entities.DayAssignment;
 import org.libreplan.business.planner.entities.GenericDayAssignment;
 import org.libreplan.business.planner.entities.ResourceAllocation;
@@ -75,7 +76,7 @@ public class DayAssignmentMatchers {
 
         public CombinableMatcher<List<? extends DayAssignment>> consecutiveDays(
                 int days) {
-            return JUnitMatchers.both(this).and(
+            return both(this).and(
                     DayAssignmentMatchers.consecutiveDays(days));
         }
 

@@ -21,10 +21,12 @@
 
 package org.libreplan.web.users.services;
 
+import java.util.Collection;
+
 import org.apache.commons.lang.Validate;
 import org.libreplan.business.scenarios.entities.Scenario;
-import org.springframework.security.GrantedAuthority;
-import org.springframework.security.userdetails.User;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 
 /**
  * Extended {@link User} class in order to add information about the current
@@ -38,7 +40,8 @@ public class CustomUser extends User {
 
     public CustomUser(String username, String password, boolean enabled,
             boolean accountNonExpired, boolean credentialsNonExpired,
-            boolean accountNonLocked, GrantedAuthority[] authorities,
+            boolean accountNonLocked,
+            Collection<? extends GrantedAuthority> authorities,
             Scenario scenario) throws IllegalArgumentException {
         super(username, password, enabled, accountNonExpired,
                 credentialsNonExpired, accountNonLocked, authorities);

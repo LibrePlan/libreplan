@@ -21,11 +21,14 @@
 
 package org.libreplan.web.users.services;
 
-import org.springframework.security.GrantedAuthority;
-import org.springframework.security.providers.dao.SaltSource;
-import org.springframework.security.providers.encoding.PasswordEncoder;
-import org.springframework.security.userdetails.User;
-import org.springframework.security.userdetails.UserDetails;
+import java.util.Collection;
+import java.util.Collections;
+
+import org.springframework.security.authentication.dao.SaltSource;
+import org.springframework.security.authentication.encoding.PasswordEncoder;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 
 /**
  * For maximum flexibility, the implementation uses the password encoder and
@@ -66,7 +69,7 @@ public class DBPasswordEncoderService implements IDBPasswordEncoderService {
          * the "user" passed as a parameter to "saltSource.getSalt".
          */
         UserDetails userDetails = new User(loginName, clearPassword, true,
-            true, true, true, new GrantedAuthority[0]);
+                true, true, true, Collections.<GrantedAuthority>emptyList());
 
         Object salt = null;
 

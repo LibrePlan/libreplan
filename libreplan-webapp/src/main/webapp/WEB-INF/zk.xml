@@ -29,7 +29,7 @@
     <preference>
         <name>ThreadLocal</name>
         <value>
-            org.springframework.security.context.ThreadLocalSecurityContextHolderStrategy=contextHolder
+            org.springframework.security.core.context.ThreadLocalSecurityContextHolderStrategy=contextHolder
         </value>
     </preference>
 

@@ -5,12 +5,12 @@
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
     <bean id="passwordEncoder"
-        class="org.springframework.security.providers.encoding.ShaPasswordEncoder">
+        class="org.springframework.security.authentication.encoding.ShaPasswordEncoder">
         <constructor-arg value="512" />
     </bean>
 
     <bean id="saltSource"
-        class="org.springframework.security.providers.dao.salt.ReflectionSaltSource"
+        class="org.springframework.security.authentication.dao.ReflectionSaltSource"
         p:userPropertyToUse="username" />
     <!-- <bean id="dbUserDetailsService" class="org.libreplan.web.users.services.DBUserDetailsService"/> -->
     <bean id="dbPasswordEncoderService"

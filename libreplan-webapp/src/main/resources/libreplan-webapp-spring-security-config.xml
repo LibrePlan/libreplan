@@ -4,13 +4,15 @@
     xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:p="http://www.springframework.org/schema/p"
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
-                        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-2.0.1.xsd">
+                        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.0.3.xsd">
 
     <!-- NOTE: see http://static.springsource.org/spring-security/site/docs/2.0.x/apidocs/org/springframework/security/vote/AuthenticatedVoter.html
         for an explanation of the meaning of IS_AUTHENTICATED_ANONYMOUSLY and IS_AUTHENTICATED_FULLY. -->
 
     <http auto-config="false" realm="LibrePlan Web Application"
         entry-point-ref="customAuthenticationEntryPoint">
+
+        <custom-filter position="FORM_LOGIN_FILTER" ref="customAuthenticationFilter"/>
 
         <!-- Web services -->
         <intercept-url pattern="/ws/rest/bounduser/**"
@@ -142,15 +144,20 @@
 
     </http>
 
+    <beans:bean id="customAuthenticationEntryPoint"
+        class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
+        <beans:property name="loginFormUrl" value="/common/layout/login.zul"/>
+    </beans:bean>
+
     <!-- Beans used by Spring Security (current configuration assumes users
         are registered in the database). -->
     <beans:bean id="passwordEncoder"
-        class="org.springframework.security.providers.encoding.ShaPasswordEncoder">
+        class="org.springframework.security.authentication.encoding.ShaPasswordEncoder">
         <beans:constructor-arg value="512" />
     </beans:bean>
 
     <beans:bean id="saltSource"
-        class="org.springframework.security.providers.dao.salt.ReflectionSaltSource"
+        class="org.springframework.security.authentication.dao.ReflectionSaltSource"
         p:userPropertyToUse="username" />
     <!-- <beans:bean id="realAuthenticationProvider" class="org.springframework.security.providers.dao.DaoAuthenticationProvider"
         p:passwordEncoder-ref="passwordEncoder" p:saltSource-ref="saltSource" p:userDetailsService-ref="dbUserDetailsService">
@@ -191,7 +198,6 @@
 
     <beans:bean id="authenticationProvider" class="org.libreplan.web.users.services.AuthenticationProviderLoggingDecorator">
         <beans:property name="decoratedProvider" ref="realAuthenticationProvider"></beans:property>
-        <custom-authentication-provider/>
     </beans:bean>
 
     <!-- This bean is used to implement UserDetailsService with LDAP authentication
@@ -202,24 +208,25 @@
     <!-- Configured a custom authentication filter:
         * This needs a custom authentication entry point
         * Also a custom target URL resolver is used to determine the URL depending on the user -->
-    <authentication-manager alias="authenticationManager" />
+    <authentication-manager alias="authenticationManager">
+        <authentication-provider ref="authenticationProvider"/>
+    </authentication-manager>
 
     <beans:bean id="customAuthenticationFilter"
-        class="org.springframework.security.ui.webapp.AuthenticationProcessingFilter" >
-        <custom-filter position="AUTHENTICATION_PROCESSING_FILTER" />
+        class="org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter" >
         <beans:property name="authenticationManager" ref="authenticationManager" />
-        <beans:property name="defaultTargetUrl" value="/planner/index.zul" />
-        <beans:property name="authenticationFailureUrl" value="/common/layout/login.zul?login_error=true" />
+        <beans:property name="authenticationFailureHandler" ref="urlAuthenticationFailureHandler" />
         <beans:property name="allowSessionCreation" value="true" />
-        <beans:property name="targetUrlResolver" ref="customTargetUrlResolver" />
+        <beans:property name="authenticationSuccessHandler" ref="customTargetUrlResolver" />
     </beans:bean>
 
-    <beans:bean id="customAuthenticationEntryPoint"
-        class="org.springframework.security.ui.webapp.AuthenticationProcessingFilterEntryPoint">
-        <beans:property name="loginFormUrl" value="/common/layout/login.zul"/>
+    <beans:bean id="urlAuthenticationFailureHandler" class="org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler">
+        <beans:property name="defaultFailureUrl" value="/common/layout/login.zul?login_error=true" />
     </beans:bean>
 
     <beans:bean id="customTargetUrlResolver"
-        class="org.libreplan.web.users.services.CustomTargetUrlResolver" />
+        class="org.libreplan.web.users.services.CustomTargetUrlResolver" >
+        <beans:property name="defaultTargetUrl" value="/planner/index.zul" />
+    </beans:bean>
 
 </beans:beans>

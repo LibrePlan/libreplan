@@ -19,6 +19,8 @@
 package org.libreplan.web.users.services;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
@@ -29,11 +31,11 @@ import org.libreplan.business.users.entities.User;
 import org.libreplan.business.users.entities.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.security.GrantedAuthority;
-import org.springframework.security.GrantedAuthorityImpl;
-import org.springframework.security.userdetails.UserDetails;
-import org.springframework.security.userdetails.UserDetailsService;
-import org.springframework.security.userdetails.UsernameNotFoundException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.GrantedAuthorityImpl;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -80,16 +82,11 @@ public class LDAPUserDetailsService implements UserDetailsService {
                 getGrantedAuthorities(user.getAllRoles()), scenario);
     }
 
-    private GrantedAuthority[] getGrantedAuthorities(Set<UserRole> roles) {
-
-        GrantedAuthority[] grantedAuthorities = new GrantedAuthority[roles
-                .size()];
-        int i = 0;
-
+    private List<GrantedAuthority> getGrantedAuthorities(Set<UserRole> roles) {
+        List<GrantedAuthority> result = new ArrayList<GrantedAuthority>();
         for (UserRole r : roles) {
-            grantedAuthorities[i++] = new GrantedAuthorityImpl(r.name());
+            result.add(new GrantedAuthorityImpl(r.name()));
         }
-
-        return grantedAuthorities;
+        return result;
     }
 }

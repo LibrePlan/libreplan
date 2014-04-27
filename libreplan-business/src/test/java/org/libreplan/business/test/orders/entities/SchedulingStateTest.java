@@ -21,6 +21,7 @@
 package org.libreplan.business.test.orders.entities;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.everyItem;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertFalse;
@@ -28,7 +29,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.junit.matchers.JUnitMatchers.each;
 
 import java.util.Arrays;
 import java.util.List;
@@ -148,13 +148,13 @@ public class SchedulingStateTest {
     public void whenSchedulingAElementItTurnsAllItsDescendantsIntoScheduledSubelements() {
         root.schedule();
         assertThat(allRootDescendants(),
-                each(hasType(Type.SCHEDULED_SUBELEMENT)));
+                everyItem(hasType(Type.SCHEDULED_SUBELEMENT)));
     }
 
     @Test
     public void aScheduledElementIsCompletelyScheduled() {
         root.schedule();
-        assertThat(all(), each(completelyScheduled()));
+        assertThat(all(), everyItem(completelyScheduled()));
     }
 
     @Test
@@ -179,12 +179,12 @@ public class SchedulingStateTest {
     @Test
     public void scheduledSubelementsCantBeScheduled() {
         root.schedule();
-        assertThat(allRootDescendants(), each(not(canBeScheduled())));
+        assertThat(allRootDescendants(), everyItem(not(canBeScheduled())));
     }
 
     @Test
     public void aNoScheduledElementCanBeScheduled() {
-        assertThat(all(), each(canBeScheduled()));
+        assertThat(all(), everyItem(canBeScheduled()));
     }
 
     @Test
@@ -269,14 +269,14 @@ public class SchedulingStateTest {
     @Test
     public void scheduledSubelementsCantBeUnScheduled() {
         root.schedule();
-        assertThat(allRootDescendants(), each(not(canBeUnsheduled())));
+        assertThat(allRootDescendants(), everyItem(not(canBeUnsheduled())));
     }
 
     @Test
     public void afterUnschedulingAllDescendantsAreNoScheduled() {
         root.schedule();
         root.unschedule();
-        assertThat(allRootDescendants(), each(hasType(Type.NO_SCHEDULED)));
+        assertThat(allRootDescendants(), everyItem(hasType(Type.NO_SCHEDULED)));
     }
 
     @Test

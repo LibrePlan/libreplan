@@ -65,7 +65,7 @@ import org.hibernate.validator.Valid;
 import org.hibernate.validator.Validator;
 import org.hibernate.validator.ValidatorClass;
 import org.hibernate.validator.Version;
-import org.hibernate.validator.interpolator.DefaultMessageInterpolatorAggerator;
+import org.hibernate.validator.interpolator.DefaultMessageInterpolatorAggregator;
 
 
 /**
@@ -113,7 +113,7 @@ public class LibrePlanClassValidator<T> implements Serializable {
     private transient List<Validator> memberValidators;
     private transient List<XMember> memberGetters;
     private transient List<XMember> childGetters;
-    private transient DefaultMessageInterpolatorAggerator defaultInterpolator;
+    private transient DefaultMessageInterpolatorAggregator defaultInterpolator;
     private transient MessageInterpolator userInterpolator;
     private static final Filter GET_ALL_FILTER = new Filter() {
         public boolean returnStatic() {
@@ -230,7 +230,7 @@ public class LibrePlanClassValidator<T> implements Serializable {
         memberValidators = new ArrayList<Validator>();
         memberGetters = new ArrayList<XMember>();
         childGetters = new ArrayList<XMember>();
-        defaultInterpolator = new DefaultMessageInterpolatorAggerator();
+        defaultInterpolator = new DefaultMessageInterpolatorAggregator();
         defaultInterpolator.initialize( messageBundle, defaultMessageBundle );
 
         //build the class hierarchy to look for members in

@@ -22,7 +22,7 @@
 package org.libreplan.business.test.planner.daos;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
@@ -253,7 +253,7 @@ public class TaskElementDAOTest {
             throw new RuntimeException(e);
         }
         assertThat(fromDB.getId(), equalTo(task.getId()));
-        assertThat(fromDB, is(Task.class));
+        assertThat(fromDB, instanceOf(Task.class));
         checkProperties(task, fromDB);
         HoursGroup reloaded = ((Task) fromDB).getHoursGroup();
         assertThat(reloaded.getId(), equalTo(reloaded.getId()));
@@ -271,7 +271,7 @@ public class TaskElementDAOTest {
             throw new RuntimeException(e);
         }
         assertThat(fromDB.getId(), equalTo(milestone.getId()));
-        assertThat(fromDB, is(TaskMilestone.class));
+        assertThat(fromDB, instanceOf(TaskMilestone.class));
     }
 
     @Test
@@ -295,7 +295,7 @@ public class TaskElementDAOTest {
             throw new RuntimeException(e);
         }
         assertThat(reloaded.getId(), equalTo(taskGroup.getId()));
-        assertThat(reloaded, is(TaskGroup.class));
+        assertThat(reloaded, instanceOf(TaskGroup.class));
         checkProperties(taskGroup, reloaded);
     }
 

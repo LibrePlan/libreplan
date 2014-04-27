@@ -20,15 +20,16 @@
  */
 package org.libreplan.business.util.deepcopy;
 
+import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.everyItem;
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.junit.matchers.Each.each;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -110,7 +111,7 @@ public class DeepCopyTest {
                 Integer.class, Short.class, Byte.class, Character.class,
                 LocalDate.class, Boolean.class, DateTime.class, double.class,
                 float.class, int.class, short.class, byte.class, char.class);
-        assertThat(immutableTypes, each(immutable()));
+        assertThat(immutableTypes, everyItem(immutable()));
     }
 
     private Matcher<Class<?>> immutable() {
@@ -149,7 +150,7 @@ public class DeepCopyTest {
     @Test
     public void setsAreCopied() {
         EntityA entityA = new EntityA();
-        HashSet<Object> originalSet = new HashSet<Object>(Arrays.asList("test",
+        HashSet<Object> originalSet = new HashSet<Object>(asList("test",
                 2, 3, new Date()));
         entityA.setSetProperty(originalSet);
         EntityA copy = new DeepCopy().copy(entityA);
@@ -160,19 +161,19 @@ public class DeepCopyTest {
     @Test
     public void theSetImplementationClassIsPreservedIfPossible() {
         EntityA entityA = new EntityA();
-        Set<Object> originalSet = new LinkedHashSet<Object>(Arrays.asList(
-                "test", 2, 3, new Date()));
+        Set<Object> originalSet = new LinkedHashSet<Object>(asList("test", 2,
+                3, new Date()));
         entityA.setSetProperty(originalSet);
         EntityA copy = new DeepCopy().copy(entityA);
-        assertThat(copy.getSetProperty(), is(LinkedHashSet.class));
+        assertThat(copy.getSetProperty(), instanceOf(LinkedHashSet.class));
     }
 
     @Test
     public void setsInsideSetsAreRecursivelyCopiedWithoutProblem() {
         EntityA entityA = new EntityA();
-        HashSet<Object> innerSet = new HashSet<Object>(Arrays.asList("bla", 3));
-        HashSet<Object> originalSet = new HashSet<Object>(Arrays.asList("test",
-                2, 3, new Date(), innerSet));
+        HashSet<Object> innerSet = new HashSet<Object>(asList("bla", 3));
+        HashSet<Object> originalSet = new HashSet<Object>(asList("test", 2, 3,
+                new Date(), innerSet));
         entityA.setSetProperty(originalSet);
         EntityA copy = new DeepCopy().copy(entityA);
         assertEquals(originalSet, copy.getSetProperty());
@@ -197,7 +198,7 @@ public class DeepCopyTest {
         mapProperty.put("ab", "abc");
         entityA.setMapProperty(mapProperty);
         EntityA copy = new DeepCopy().copy(entityA);
-        assertThat(copy.getMapProperty(), is(LinkedHashMap.class));
+        assertThat(copy.getMapProperty(), instanceOf(LinkedHashMap.class));
     }
 
     @Test
@@ -220,7 +221,7 @@ public class DeepCopyTest {
         originalList.add(2);
         entityA.setListProperty(originalList);
         EntityA copy = new DeepCopy().copy(entityA);
-        assertThat(copy.getListProperty(), is(LinkedList.class));
+        assertThat(copy.getListProperty(), instanceOf(LinkedList.class));
     }
 
     @Test
