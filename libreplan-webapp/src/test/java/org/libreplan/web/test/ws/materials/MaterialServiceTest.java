@@ -37,7 +37,6 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.hibernate.SessionFactory;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.libreplan.business.IDataBootstrap;
@@ -55,9 +54,9 @@ import org.libreplan.ws.materials.api.MaterialCategoryDTO;
 import org.libreplan.ws.materials.api.MaterialCategoryListDTO;
 import org.libreplan.ws.materials.api.MaterialDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.transaction.BeforeTransaction;
 import org.springframework.transaction.annotation.Transactional;
 /**
  * Tests for <code>IMaterialService</code>.
@@ -95,11 +94,7 @@ public class MaterialServiceTest {
     @Resource
     private IDataBootstrap unitTypeBootstrap;
 
-    private String unitTypeCodeA = "unitTypeCodeA";
-
-    private String unitTypeCodeB = "unitTypeCodeB";
-
-    @Before
+    @BeforeTransaction
     public void loadRequiredaData() {
         IOnTransaction<Void> load = new IOnTransaction<Void>() {
 
@@ -108,19 +103,26 @@ public class MaterialServiceTest {
                 configurationBootstrap.loadRequiredData();
                 materialCategoryBootstrap.loadRequiredData();
                 unitTypeBootstrap.loadRequiredData();
+                createUnitTypes();
+
                 return null;
             }
         };
 
         transactionService.runOnAnotherTransaction(load);
-
     }
 
-    @Test
-    @Rollback(false)
-    public void CreateUnitType() {
-        UnitType entityA = UnitType.create(unitTypeCodeA, getUniqueName());
-        UnitType entityB = UnitType.create(unitTypeCodeB, getUniqueName());
+    private UnitType entityA;
+
+    private String getUnitTypeCodeA() {
+        return entityA.getCode();
+    }
+
+    private UnitType entityB;
+
+    private void createUnitTypes() {
+        entityA = UnitType.create(getUniqueName(), getUniqueName());
+        entityB = UnitType.create(getUniqueName(), getUniqueName());
         unitTypeDAO.save(entityA);
         unitTypeDAO.save(entityB);
         unitTypeDAO.flush();
@@ -133,16 +135,16 @@ public class MaterialServiceTest {
         /* Build materialCategory (0 constraint violations). */
         // Missing material name and the unit type.
         MaterialDTO m1 = new MaterialDTO(null, new BigDecimal(13),
-                unitTypeCodeA, true);
+                getUnitTypeCodeA(), true);
         // Missing default unit price
-        MaterialDTO m2 = new MaterialDTO("material 2", null, unitTypeCodeA,
+        MaterialDTO m2 = new MaterialDTO("material 2", null, getUnitTypeCodeA(),
                 true);
         // Missing unit type
         MaterialDTO m3 = new MaterialDTO("material 3", new BigDecimal(13),
                 null, true);
         // Missing unit type, same name
         MaterialDTO m4 = new MaterialDTO("material 3", new BigDecimal(13),
-                unitTypeCodeA, null);
+                getUnitTypeCodeA(), null);
 
         List<MaterialDTO> materialDTOs = new ArrayList<MaterialDTO>();
         materialDTOs.add(m1);
@@ -166,9 +168,9 @@ public class MaterialServiceTest {
     public void testAddMaterialRepeatedCodes() {
         /* Build material with same code (1 constraint violations). */
         MaterialDTO m1 = new MaterialDTO("CodeA", "material1", new BigDecimal(
-                13), unitTypeCodeA, true);
+                13), getUnitTypeCodeA(), true);
         MaterialDTO m2 = new MaterialDTO("CodeA", "material2", new BigDecimal(
-                13), unitTypeCodeA, true);
+                13), getUnitTypeCodeA(), true);
 
         List<MaterialDTO> materialDTOs = new ArrayList<MaterialDTO>();
         materialDTOs.add(m1);
@@ -190,9 +192,9 @@ public class MaterialServiceTest {
     public void testAddValidMaterialCategory() {
         /* Build material (0 constraint violations). */
         MaterialDTO m1 = new MaterialDTO("CodeM1", "material1", new BigDecimal(
-                13), unitTypeCodeA, true);
+                13), getUnitTypeCodeA(), true);
         MaterialDTO m2 = new MaterialDTO("CodeM2", "material2", new BigDecimal(
-                13), unitTypeCodeA, true);
+                13), getUnitTypeCodeA(), true);
 
         List<MaterialDTO> materialDTOs1 = new ArrayList<MaterialDTO>();
         List<MaterialDTO> materialDTOs2 = new ArrayList<MaterialDTO>();
@@ -274,16 +276,6 @@ public class MaterialServiceTest {
 
     @Test
     public void testAddAndUpdateMaterialCategory() {
-
-        String unitTypeCodeA = getUniqueName();
-        String unitTypeCodeB = getUniqueName();
-        UnitType entityA = UnitType.create(unitTypeCodeA, "UnitTypeA");
-        UnitType entityB = UnitType.create(unitTypeCodeB, "UnitTypeB");
-        unitTypeDAO.save(entityA);
-        unitTypeDAO.save(entityB);
-        unitTypeDAO.flush();
-        sessionFactory.getCurrentSession().evict(entityA);
-        sessionFactory.getCurrentSession().evict(entityB);
 
         /* Build material (0 constraint violations). */
         MaterialDTO m1 = new MaterialDTO("M-1", "tornillos",
