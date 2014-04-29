@@ -30,14 +30,19 @@ import static org.libreplan.web.WebappGlobalNames.WEBAPP_SPRING_SECURITY_CONFIG_
 import static org.libreplan.web.test.WebappGlobalNames.WEBAPP_SPRING_CONFIG_TEST_FILE;
 import static org.libreplan.web.test.WebappGlobalNames.WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE;
 
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
 import javax.annotation.Resource;
+import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.hibernate.SessionFactory;
 import org.joda.time.LocalDate;
@@ -47,7 +52,8 @@ import org.junit.runner.RunWith;
 import org.libreplan.business.IDataBootstrap;
 import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.IOnTransaction;
-import org.libreplan.business.common.exceptions.InstanceNotFoundException;
+import org.libreplan.business.common.IntegrationEntity;
+import org.libreplan.business.common.daos.IIntegrationEntityDAO;
 import org.libreplan.business.costcategories.daos.ITypeOfWorkHoursDAO;
 import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
 import org.libreplan.business.labels.daos.ILabelDAO;
@@ -78,9 +84,9 @@ import org.libreplan.ws.workreports.api.WorkReportLineDTO;
 import org.libreplan.ws.workreports.api.WorkReportListDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.NotTransactional;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.transaction.BeforeTransaction;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -100,7 +106,7 @@ public class WorkReportServiceTest {
     private IWorkReportService workReportService;
 
     @Autowired
-    private IWorkerDAO workerDAO;
+    private IWorkerDAO dao;
 
     @Autowired
     private SessionFactory sessionFactory;
@@ -159,146 +165,184 @@ public class WorkReportServiceTest {
     @Resource
     private IDataBootstrap configurationBootstrap;
 
-    @Test
-    @Rollback(false)
-    public void loadRequiredaData() {
+    @BeforeTransaction
+    public void setup() {
+        transactionService.runOnTransaction(new IOnTransaction<Void>() {
+
+            @Override
+            public Void execute() {
+                loadRequiredaData();
+                givenWorkerStored();
+                givenOrderLineStored();
+                createAPairOfLabelTypes();
+
+                givenTypeOfWorkHoursStored();
+                givenWorkReportTypeStored();
+                givenWorkReportTypeStored2();
+                givenWorkReportTypeStored3();
+                givenWorkReportTypeStored4();
+                givenWorkReportTypeStored5();
+
+                return null;
+            }
+        });
+    }
+
+    private void loadRequiredaData() {
         configurationBootstrap.loadRequiredData();
     }
 
-    @Test
-    @Rollback(false)
-    public void givenWorkerStored() {
-        Worker worker = Worker.create("Firstname", "Surname", resourceCode);
-        worker.setCode(resourceCode);
-        workerDAO.save(worker);
-        workerDAO.flush();
-        sessionFactory.getCurrentSession().evict(worker);
-
-        worker.dontPoseAsTransientObjectAnymore();
+    private static <T extends IntegrationEntity> T findOrCreate(
+            IIntegrationEntityDAO<? super T> dao, Class<T> klass,
+            String code, Object... constructorArguments) {
+        if (dao.existsByCode(code)) {
+            return klass.cast(dao.findExistingEntityByCode(code));
+        } else {
+            try {
+                Method create = klass.getMethod("create",
+                        asClasses(constructorArguments));
+                T result = klass
+                        .cast(create.invoke(null, constructorArguments));
+                result.setCode(code);
+                return result;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
-    @Test
-    @Rollback(false)
-    public void givenOrderLineStored() {
-        OrderLine orderLine = OrderLine.create();
-        orderLine.setCode(orderElementCode);
-        orderLine.setName("order-line-name" + UUID.randomUUID());
-
-        orderElementDAO.save(orderLine);
-        orderElementDAO.flush();
-        sessionFactory.getCurrentSession().evict(orderLine);
-
-        orderLine.dontPoseAsTransientObjectAnymore();
+    private static Class<?>[] asClasses(Object[] constructorArguments) {
+        Class<?>[] result = new Class<?>[constructorArguments.length];
+        for (int i = 0; i < result.length; i++) {
+            result[i] = constructorArguments[i].getClass();
+        }
+        return result;
     }
 
-    @Test
-    @Rollback(false)
-    public void createAPairOfLabelTypes() {
-        LabelType labelType_A = LabelType.create(labelTypeA, labelTypeA);
-        LabelType labelType_B = LabelType.create(labelTypeB, labelTypeB);
-
-        Label label_A1 = Label.create(labelA1, labelA1);
-        Label label_A2 = Label.create(labelA2, labelA2);
-        Label label_B1 = Label.create(labelB1, labelB1);
-
-        labelType_A.addLabel(label_A1);
-        labelType_A.addLabel(label_A2);
-        labelType_B.addLabel(label_B1);
-
-        labelTypeDAO.save(labelType_A);
-        labelTypeDAO.save(labelType_B);
-        labelTypeDAO.flush();
-        sessionFactory.getCurrentSession().evict(labelType_A);
-        sessionFactory.getCurrentSession().evict(labelType_B);
-        labelType_A.dontPoseAsTransientObjectAnymore();
-        labelType_B.dontPoseAsTransientObjectAnymore();
+    private void givenWorkerStored() {
+        Worker worker = findOrCreate(dao, Worker.class, resourceCode,
+                "Firstname", "Surname", resourceCode);
+        if (worker.isNewObject()) {
+            dao.save(worker);
+        }
     }
 
-    @Test
-    @Rollback(false)
-    public void givenTypeOfWorkHoursStored() {
-        TypeOfWorkHours typeOfWorkHours = TypeOfWorkHours.create();
-        typeOfWorkHours.setCode(typeOfWorkHoursCode);
-        typeOfWorkHours.setName("type-of-work-hours-name-" + UUID.randomUUID());
-        typeOfWorkHours.setDefaultPrice(BigDecimal.TEN);
-
-        typeOfWorkHoursDAO.save(typeOfWorkHours);
-        typeOfWorkHoursDAO.flush();
-        sessionFactory.getCurrentSession().evict(typeOfWorkHours);
-
-        typeOfWorkHours.dontPoseAsTransientObjectAnymore();
+    private void givenOrderLineStored() {
+        OrderLine orderLine = findOrCreate(orderElementDAO, OrderLine.class,
+                orderElementCode);
+        if (orderLine.isNewObject()) {
+            orderLine.setName("order-line-name" + UUID.randomUUID());
+            orderElementDAO.save(orderLine);
+        }
     }
 
-    @Test
-    @Rollback(false)
-    public void givenWorkReportTypeStored() {
-        givenWorkReportTypeStored(false, false, false, null, workReportTypeCode);
+    private void createAPairOfLabelTypes() {
+        LabelType labelType_A = findOrCreate(labelTypeDAO, LabelType.class,
+                labelTypeA, labelTypeA, labelTypeA);
+        LabelType labelType_B = findOrCreate(labelTypeDAO, LabelType.class,
+                labelTypeB, labelTypeB, labelTypeB);
+
+        if (labelType_A.isNewObject()) {
+            Label label_A1 = Label.create(labelA1, labelA1);
+            Label label_A2 = Label.create(labelA2, labelA2);
+            Label label_B1 = Label.create(labelB1, labelB1);
+
+            labelType_A.addLabel(label_A1);
+            labelType_A.addLabel(label_A2);
+            labelType_B.addLabel(label_B1);
+
+            labelTypeDAO.save(labelType_A);
+            labelTypeDAO.save(labelType_B);
+        }
     }
 
-    @Test
-    @Rollback(false)
-    public void givenWorkReportTypeStored2() {
-        givenWorkReportTypeStored(true, false, false, null, workReportTypeCode2);
+    private void givenTypeOfWorkHoursStored() {
+        TypeOfWorkHours typeOfWorkHours = findOrCreate(typeOfWorkHoursDAO,
+                TypeOfWorkHours.class, typeOfWorkHoursCode);
+
+        if (typeOfWorkHours.isNewObject()) {
+            typeOfWorkHours.setCode(typeOfWorkHoursCode);
+            typeOfWorkHours.setName("type-of-work-hours-name-"
+                    + UUID.randomUUID());
+            typeOfWorkHours.setDefaultPrice(BigDecimal.TEN);
+
+            typeOfWorkHoursDAO.save(typeOfWorkHours);
+        }
     }
 
-    @Test
-    @Rollback(false)
-    public void givenWorkReportTypeStored3() {
-        givenWorkReportTypeStored(false, false, false,
+    private void givenWorkReportTypeStored() {
+        WorkReportType t = givenWorkReportTypeStored(false, false, false, null,
+                workReportTypeCode);
+        workReportTypeDAO.save(t);
+    }
+
+    private void givenWorkReportTypeStored2() {
+        WorkReportType t = givenWorkReportTypeStored(true, false, false, null,
+                workReportTypeCode2);
+        workReportTypeDAO.save(t);
+    }
+
+    private void givenWorkReportTypeStored3() {
+        WorkReportType t = givenWorkReportTypeStored(false, false, false,
                 HoursManagementEnum.HOURS_CALCULATED_BY_CLOCK,
                 workReportTypeCode3);
+        workReportTypeDAO.save(t);
     }
 
-    @Test
-    @Rollback(false)
-    public void givenWorkReportTypeStored4() {
+    private void givenWorkReportTypeStored4() {
         WorkReportType type = givenWorkReportTypeStored(false, false, false,
-                null,workReportTypeCode4);
-        type.addDescriptionFieldToEndHead(DescriptionField.create(field1, 10));
-        type.addDescriptionFieldToEndLine(DescriptionField.create(field2, 10));
+                null, workReportTypeCode4);
 
-        workReportTypeDAO.save(type);
-        workReportTypeDAO.flush();
-        sessionFactory.getCurrentSession().evict(type);
-        type.dontPoseAsTransientObjectAnymore();
+        if (type.isNewObject()) {
+            type.addDescriptionFieldToEndHead(DescriptionField.create(field1,
+                    10));
+            type.addDescriptionFieldToEndLine(DescriptionField.create(field2,
+                    10));
+
+            workReportTypeDAO.save(type);
+        }
     }
 
-    @Test
-    @Rollback(false)
-    public void givenWorkReportTypeStored5() {
+    private void givenWorkReportTypeStored5() {
         WorkReportType type = givenWorkReportTypeStored(false, false, false,
                 null, workReportTypeCode5);
+        if (!type.isNewObject()) {
+            return;
+        }
+
         WorkReportLabelTypeAssigment labelAssigment1 = WorkReportLabelTypeAssigment
                 .create(true);
         WorkReportLabelTypeAssigment labelAssigment2 = WorkReportLabelTypeAssigment
                 .create(false);
 
-        try {
-            labelAssigment1.setLabelType(labelTypeDAO.findByCode(labelTypeA));
-            labelAssigment1.setDefaultLabel(labelDAO.findByCode(labelA1));
-            labelAssigment1.setPositionNumber(0);
+        labelAssigment1.setLabelType(labelTypeDAO
+                .findExistingEntityByCode(labelTypeA));
+        labelAssigment1.setDefaultLabel(labelDAO
+                .findExistingEntityByCode(labelA1));
+        labelAssigment1.setPositionNumber(0);
 
-            labelAssigment2.setLabelType(labelTypeDAO.findByCode(labelTypeB));
-            labelAssigment2.setDefaultLabel(labelDAO.findByCode(labelB1));
-            labelAssigment2.setPositionNumber(0);
+        labelAssigment2.setLabelType(labelTypeDAO
+                .findExistingEntityByCode(labelTypeB));
+        labelAssigment2.setDefaultLabel(labelDAO
+                .findExistingEntityByCode(labelB1));
+        labelAssigment2.setPositionNumber(0);
 
-            type.addLabelAssigmentToEndHead(labelAssigment1);
-            type.addLabelAssigmentToEndLine(labelAssigment2);
+        type.addLabelAssigmentToEndHead(labelAssigment1);
+        type.addLabelAssigmentToEndLine(labelAssigment2);
 
-            workReportTypeDAO.save(type);
-            workReportTypeDAO.flush();
-            sessionFactory.getCurrentSession().evict(type);
-            type.dontPoseAsTransientObjectAnymore();
-
-        } catch (InstanceNotFoundException e) {
-            assertTrue(false);
-        }
+        workReportTypeDAO.save(type);
     }
 
     private WorkReportType givenWorkReportTypeStored(boolean dateShared,
             boolean orderElementShared, boolean resourceShared,
             HoursManagementEnum hoursManagement, String workReportTypeCode) {
-        WorkReportType workReportType = WorkReportType.create();
+
+        WorkReportType workReportType = findOrCreate(workReportTypeDAO,
+                WorkReportType.class, workReportTypeCode);
+        if (!workReportType.isNewObject()) {
+            return workReportType;
+        }
+
         workReportType.setCode(workReportTypeCode);
         workReportType.setName(workReportTypeCode);
 
@@ -309,11 +353,6 @@ public class WorkReportServiceTest {
         if (hoursManagement != null) {
             workReportType.setHoursManagement(hoursManagement);
         }
-
-        workReportTypeDAO.save(workReportType);
-        workReportTypeDAO.flush();
-        sessionFactory.getCurrentSession().evict(workReportType);
-        workReportType.dontPoseAsTransientObjectAnymore();
 
         return workReportType;
     }
@@ -522,15 +561,8 @@ public class WorkReportServiceTest {
     }
 
     @Test
-    @NotTransactional
     public void importValidWorkReportWithDateAtWorkReportLevel() {
-        int previous = transactionService
-                .runOnTransaction(new IOnTransaction<Integer>() {
-                    @Override
-                    public Integer execute() {
-                        return workReportDAO.getAll().size();
-                    }
-                });
+        int previous = workReportDAO.getAll().size();
 
         WorkReportDTO workReportDTO = createWorkReportDTO(workReportTypeCode2);
         Date date = new LocalDate().toDateTimeAtStartOfDay().toDate();
@@ -544,26 +576,36 @@ public class WorkReportServiceTest {
         assertThat(
                 instanceConstraintViolationsListDTO.instanceConstraintViolationsList
                         .size(), equalTo(0));
-        List<WorkReport> workReports = transactionService
-                .runOnTransaction(new IOnTransaction<List<WorkReport>>() {
-                    @Override
-                    public List<WorkReport> execute() {
-                        List<WorkReport> list = workReportDAO.getAll();
-                        for (WorkReport workReport : list) {
-                            Set<WorkReportLine> workReportLines = workReport
-                                    .getWorkReportLines();
-                            for (WorkReportLine line : workReportLines) {
-                                line.getDate();
-                            }
-                        }
-                        return list;
-                    }
-                });
+
+        List<WorkReport> workReports = workReportDAO.getAll();
         assertThat(workReports.size(), equalTo(previous + 1));
 
-        assertThat(workReports.get(previous).getDate(), equalTo(date));
-        assertThat(workReports.get(previous).getWorkReportLines().iterator()
-                .next().getDate(), equalTo(date));
+        WorkReport imported = workReportDAO
+                .findExistingEntityByCode(workReportDTO.code);
+        assertThat(imported.getDate(), equalTo(date));
+
+        List<WorkReportLine> importedLines = new ArrayList<WorkReportLine>(
+                imported.getWorkReportLines());
+        Collections.sort(importedLines);
+
+        List<WorkReportLineDTO> exportedLines = new ArrayList<WorkReportLineDTO>(
+                workReportDTO.workReportLines);
+        Collections.sort(exportedLines, new Comparator<WorkReportLineDTO>() {
+            @Override
+            public int compare(WorkReportLineDTO o1, WorkReportLineDTO o2) {
+                return o1.date.compare(o2.date);
+            }
+        });
+
+        for (WorkReportLineDTO each : exportedLines) {
+            WorkReportLine line = importedLines.remove(0);
+            assertThat(line.getDate().getTime(), equalTo(asTime(each.getDate())));
+        }
+    }
+
+    private long asTime(XMLGregorianCalendar date2) {
+        return date2
+                .toGregorianCalendar().getTime().getTime();
     }
 
     @Test
