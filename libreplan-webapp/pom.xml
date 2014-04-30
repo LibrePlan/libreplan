@@ -302,21 +302,7 @@
           <groupId>com.igalia.java.zk.components</groupId>
           <artifactId>customdetailrowcomponent</artifactId>
         </dependency>
-        <!-- Gettext commons -->
-        <dependency>
-            <groupId>org.xnap.commons</groupId>
-            <artifactId>gettext-commons</artifactId>
-        </dependency>
-        <!-- JDBC driver -->
-        <dependency>
-            <groupId>${jdbcDriver.groupId}</groupId>
-            <artifactId>${jdbcDriver.artifactId}</artifactId>
-        </dependency>
-        <!-- Spring -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context-support</artifactId>
-        </dependency>
+
         <dependency>
           <groupId>org.springframework</groupId>
           <artifactId>spring-web</artifactId>
@@ -334,14 +320,7 @@
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-ldap</artifactId>
          </dependency>
-        <dependency>
-            <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-jta_1.0.1B_spec</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-test</artifactId>
-        </dependency>
+
         <!--  Spring security -->
         <dependency>
             <groupId>org.springframework.security</groupId>
@@ -398,24 +377,26 @@
             <groupId>org.libreplan</groupId>
             <artifactId>libreplan-business</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.easymock</groupId>
             <artifactId>easymock</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.easymock</groupId>
             <artifactId>easymockclassextension</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-        </dependency>
-        <!-- datasource for testing -->
-        <dependency>
-           <groupId>com.jolbox</groupId>
-           <artifactId>bonecp</artifactId>
-        </dependency>
+
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
