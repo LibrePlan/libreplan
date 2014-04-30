@@ -9,10 +9,7 @@
     <!-- NOTE: see http://static.springsource.org/spring-security/site/docs/2.0.x/apidocs/org/springframework/security/vote/AuthenticatedVoter.html
         for an explanation of the meaning of IS_AUTHENTICATED_ANONYMOUSLY and IS_AUTHENTICATED_FULLY. -->
 
-    <http auto-config="false" realm="LibrePlan Web Application"
-        entry-point-ref="customAuthenticationEntryPoint">
-
-        <custom-filter position="FORM_LOGIN_FILTER" ref="customAuthenticationFilter"/>
+    <http auto-config="false" realm="LibrePlan Web Application">
 
         <!-- Web services -->
         <intercept-url pattern="/ws/rest/bounduser/**"
@@ -138,16 +135,14 @@
             to use a custom authentication filter.
             See: http://static.springsource.org/spring-security/site/docs/2.0.x/reference/ns-config.html#ns-auto-config -->
         <anonymous />
+        <form-login login-page="/common/layout/login.zul"
+            default-target-url="/common/index.zul"
+            authentication-failure-url="/common/layout/login.zul?login_error=true" />
         <http-basic />
         <logout />
         <remember-me />
 
     </http>
-
-    <beans:bean id="customAuthenticationEntryPoint"
-        class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
-        <beans:property name="loginFormUrl" value="/common/layout/login.zul"/>
-    </beans:bean>
 
     <!-- Beans used by Spring Security (current configuration assumes users
         are registered in the database). -->
@@ -205,28 +200,8 @@
     <beans:bean id="ldapUserDetailsService"
         class="org.libreplan.web.users.services.LDAPUserDetailsService" />
 
-    <!-- Configured a custom authentication filter:
-        * This needs a custom authentication entry point
-        * Also a custom target URL resolver is used to determine the URL depending on the user -->
-    <authentication-manager alias="authenticationManager">
+    <authentication-manager>
         <authentication-provider ref="authenticationProvider"/>
     </authentication-manager>
-
-    <beans:bean id="customAuthenticationFilter"
-        class="org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter" >
-        <beans:property name="authenticationManager" ref="authenticationManager" />
-        <beans:property name="authenticationFailureHandler" ref="urlAuthenticationFailureHandler" />
-        <beans:property name="allowSessionCreation" value="true" />
-        <beans:property name="authenticationSuccessHandler" ref="targetUrlResolver" />
-    </beans:bean>
-
-    <beans:bean id="urlAuthenticationFailureHandler" class="org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler">
-        <beans:property name="defaultFailureUrl" value="/common/layout/login.zul?login_error=true" />
-    </beans:bean>
-
-    <beans:bean id="targetUrlResolver"
-        class="org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler" >
-        <beans:property name="defaultTargetUrl" value="/common/index.zul" />
-    </beans:bean>
 
 </beans:beans>
