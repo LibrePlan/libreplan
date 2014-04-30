@@ -217,16 +217,16 @@
         <beans:property name="authenticationManager" ref="authenticationManager" />
         <beans:property name="authenticationFailureHandler" ref="urlAuthenticationFailureHandler" />
         <beans:property name="allowSessionCreation" value="true" />
-        <beans:property name="authenticationSuccessHandler" ref="customTargetUrlResolver" />
+        <beans:property name="authenticationSuccessHandler" ref="targetUrlResolver" />
     </beans:bean>
 
     <beans:bean id="urlAuthenticationFailureHandler" class="org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler">
         <beans:property name="defaultFailureUrl" value="/common/layout/login.zul?login_error=true" />
     </beans:bean>
 
-    <beans:bean id="customTargetUrlResolver"
-        class="org.libreplan.web.users.services.CustomTargetUrlResolver" >
-        <beans:property name="defaultTargetUrl" value="/planner/index.zul" />
+    <beans:bean id="targetUrlResolver"
+        class="org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler" >
+        <beans:property name="defaultTargetUrl" value="/common/index.zul" />
     </beans:bean>
 
 </beans:beans>

@@ -37,6 +37,7 @@ import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.web.common.IMessagesForUser;
+import org.libreplan.web.common.IndexController;
 import org.libreplan.web.common.Level;
 import org.libreplan.web.common.MessagesForUser;
 import org.libreplan.web.common.Util;
@@ -46,7 +47,6 @@ import org.libreplan.web.common.entrypoints.EntryPointsHandler.ICapture;
 import org.libreplan.web.common.entrypoints.IURLHandlerRegistry;
 import org.libreplan.web.common.entrypoints.MatrixParameters;
 import org.libreplan.web.security.SecurityUtils;
-import org.libreplan.web.users.services.CustomTargetUrlResolver;
 import org.springframework.util.Assert;
 import org.zkoss.util.Locales;
 import org.zkoss.zk.ui.Component;
@@ -729,7 +729,7 @@ public class PersonalTimesheetController extends GenericForwardComposer
 
     public void save() {
         personalTimesheetModel.save();
-        String url = CustomTargetUrlResolver.USER_DASHBOARD_URL
+        String url = IndexController.USER_DASHBOARD_URL
                 + "?timesheet_saved=" + personalTimesheetModel.getDate();
         if (!personalTimesheetModel.isCurrentUser()) {
             url = WORK_REPORTS_URL + "?timesheet_saved=true";
@@ -751,7 +751,7 @@ public class PersonalTimesheetController extends GenericForwardComposer
 
     public void cancel() {
         personalTimesheetModel.cancel();
-        String url = CustomTargetUrlResolver.USER_DASHBOARD_URL;
+        String url = IndexController.USER_DASHBOARD_URL;
         if (!personalTimesheetModel.isCurrentUser()) {
             url = WORK_REPORTS_URL;
         }

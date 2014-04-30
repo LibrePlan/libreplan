@@ -21,7 +21,6 @@ package org.libreplan.web.common;
 
 import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.web.security.SecurityUtils;
-import org.libreplan.web.users.services.CustomTargetUrlResolver;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
@@ -34,6 +33,12 @@ import org.zkoss.zk.ui.util.GenericForwardComposer;
 @SuppressWarnings("serial")
 public class IndexController extends GenericForwardComposer {
 
+    public final static String USER_DASHBOARD_URL = "/myaccount/userDashboard.zul";
+
+    public static final String PLANNING_URL = "/planner/index.zul";
+
+    public static final String SETTINGS_URL = "/myaccount/settings.zul";
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
@@ -44,18 +49,18 @@ public class IndexController extends GenericForwardComposer {
 
     private String getInitialPageURL() {
         if (SecurityUtils.isUserInRole(UserRole.ROLE_SUPERUSER)) {
-            return CustomTargetUrlResolver.PLANNING_URL;
+            return PLANNING_URL;
         }
 
         if (SecurityUtils.isUserInRole(UserRole.ROLE_BOUND_USER)) {
-            return CustomTargetUrlResolver.USER_DASHBOARD_URL;
+            return USER_DASHBOARD_URL;
         }
 
         if (SecurityUtils.isSuperuserOrRolePlanningOrHasAnyAuthorization()) {
-            return CustomTargetUrlResolver.PLANNING_URL;
+            return PLANNING_URL;
         }
 
-        return CustomTargetUrlResolver.SETTINGS_URL;
+        return SETTINGS_URL;
     }
 
 }

@@ -41,13 +41,13 @@ import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.resources.entities.Resource;
 import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.web.common.BaseCRUDController;
+import org.libreplan.web.common.IndexController;
 import org.libreplan.web.common.Level;
 import org.libreplan.web.common.Util;
 import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
 import org.libreplan.web.common.entrypoints.IURLHandlerRegistry;
 import org.libreplan.web.common.entrypoints.MatrixParameters;
 import org.libreplan.web.security.SecurityUtils;
-import org.libreplan.web.users.services.CustomTargetUrlResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -638,7 +638,7 @@ public class ExpenseSheetCRUDController extends
     @Override
     protected void showListWindow() {
         if (fromUserDashboard) {
-            String url = CustomTargetUrlResolver.USER_DASHBOARD_URL;
+            String url = IndexController.USER_DASHBOARD_URL;
             if (!cancel) {
                 url += "?expense_sheet_saved="
                         + expenseSheetModel.getExpenseSheet().getCode();
