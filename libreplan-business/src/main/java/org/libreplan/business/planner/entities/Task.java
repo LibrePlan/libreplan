@@ -34,11 +34,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import javax.validation.Valid;
+import javax.validation.constraints.AssertTrue;
+
 import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.validator.AssertTrue;
-import org.hibernate.validator.Valid;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.libreplan.business.calendars.entities.AvailabilityTimeLine;
@@ -187,7 +188,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
 
     @SuppressWarnings("unused")
     @AssertTrue(message = "element associated to a task must be not empty")
-    private boolean theOrderElementMustBeNotNull() {
+    private boolean isTheOrderElementMustBeNotNullConstraint() {
         return getOrderElement() != null;
     }
 

@@ -227,40 +227,41 @@
             <dependency>
               <groupId>org.springframework</groupId>
               <artifactId>spring-orm</artifactId>
-              <version>3.0.7.RELEASE</version>
+              <version>3.2.8.RELEASE</version>
             </dependency>
 
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-core</artifactId>
-                <version>3.3.1.GA</version>
+                <version>4.2.8.Final</version>
             </dependency>
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-annotations</artifactId>
-                <version>3.3.1.GA</version>
+                <version>3.4.0.GA</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-ehcache</artifactId>
+                <version>4.2.8.Final</version>
             </dependency>
 
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-validator</artifactId>
-                <version>3.1.0.GA</version>
+                <version>4.2.0.Final</version>
             </dependency>
 
             <dependency>
-                <groupId>joda-time</groupId>
-                <artifactId>joda-time-hibernate</artifactId>
-                <version>1.1</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>cglib</groupId>
-                        <artifactId>cglib-full</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>ehcache</groupId>
-                        <artifactId>ehcache</artifactId>
-                    </exclusion>
-                </exclusions>
+	      <groupId>org.jadira.usertype</groupId>
+	      <artifactId>usertype.core</artifactId>
+	      <version>3.2.0.GA</version>
+              <exclusions>
+                <exclusion>
+                  <groupId>org.hibernate</groupId>
+                  <artifactId>hibernate-entitymanager</artifactId>
+                </exclusion>
+              </exclusions>
             </dependency>
 
             <!-- JDBC driver -->
@@ -271,15 +272,22 @@
                 <scope>test</scope>
             </dependency>
             <dependency>
-            <groupId>org.apache.geronimo.specs</groupId>
-                <artifactId>geronimo-jta_1.0.1B_spec</artifactId>
-                <version>1.1.1</version>
+                <groupId>org.jboss.spec.javax.transaction</groupId>
+                <artifactId>jboss-transaction-api_1.1_spec</artifactId>
+                <version>1.0.1.Final</version>
+                <scope>compile</scope>
+                <exclusions>
+                  <exclusion>
+                    <artifactId>xml-apis</artifactId>
+                    <groupId>xml-apis</groupId>
+                  </exclusion>
+                </exclusions>
             </dependency>
 
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-web</artifactId>
-                <version>3.0.7.RELEASE</version>
+                <version>3.2.8.RELEASE</version>
             </dependency>
             <!--
              Various Application Context utilities, including EhCache, JavaMail, Quartz, and
@@ -289,51 +297,36 @@
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-context-support</artifactId>
-                <version>3.0.7.RELEASE</version>
+                <version>3.2.8.RELEASE</version>
             </dependency>
 
-            <!--
-                 Some optional Spring dependencies needed:
-            -->
-            <dependency>
-                <groupId>org.aspectj</groupId>
-                <artifactId>aspectjrt</artifactId>
-                <version>1.6.11</version>
-            </dependency>
             <dependency>
                 <groupId>org.aspectj</groupId>
                 <artifactId>aspectjweaver</artifactId>
-                <version>1.6.11</version>
+                <version>1.7.4</version>
             </dependency>
-
-            <dependency>
-                <groupId>javassist</groupId>
-                <artifactId>javassist</artifactId>
-                <version>3.4.GA</version>
-            </dependency>
-
 
             <!--  Spring security -->
             <dependency>
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-web</artifactId>
-                <version>3.0.8.RELEASE</version>
+                <version>3.2.3.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-config</artifactId>
-                <version>3.0.8.RELEASE</version>
+                <version>3.2.3.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-acl</artifactId>
-                <version>3.0.8.RELEASE</version>
+                <version>3.2.3.RELEASE</version>
             </dependency>
             <!-- Spring Dependency LDAP -->
             <dependency>
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-ldap</artifactId>
-                <version>3.0.8.RELEASE</version>
+                <version>3.2.3.RELEASE</version>
             </dependency>
 
             <!-- JUnit -->
@@ -354,7 +347,7 @@
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-test</artifactId>
-                <version>3.0.7.RELEASE</version>
+                <version>3.2.8.RELEASE</version>
                 <scope>test</scope>
             </dependency>
 
@@ -379,17 +372,18 @@
                 <version>2.2.3</version>
                 <classifier>jdk15</classifier>
             </dependency>
-            <dependency>
-                 <groupId>commons-collections</groupId>
-                 <artifactId>commons-collections</artifactId>
-                 <version>3.2</version>
-            </dependency>
+             <dependency>
+                  <groupId>commons-collections</groupId>
+                  <artifactId>commons-collections</artifactId>
+                  <version>3.2</version>
+             </dependency>
+
             <dependency>
                 <groupId>net.sf.ezmorph</groupId>
                 <artifactId>ezmorph</artifactId>
                 <version>1.0.6</version>
             </dependency>
-            <!-- Commons lang-->
+            <!-- Commons lang -->
             <dependency>
                 <groupId>commons-lang</groupId>
                 <artifactId>commons-lang</artifactId>
@@ -405,12 +399,17 @@
             <dependency>
                 <groupId>commons-logging</groupId>
                 <artifactId>commons-logging</artifactId>
-                <version>1.0.4</version>
+                <version>1.1.3</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>1.7.7</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-log4j12</artifactId>
-                <version>1.7.2</version>
+                <version>1.7.7</version>
             </dependency>
             <!-- BeanShell (required by ZK)-->
             <dependency>
@@ -469,7 +468,7 @@
             <dependency>
                 <groupId>joda-time</groupId>
                 <artifactId>joda-time</artifactId>
-                <version>1.6</version>
+                <version>2.3</version>
             </dependency>
             <!-- LibrePlan ZK Components -->
             <dependency>
@@ -572,11 +571,7 @@
                 </exclusion>
             </exclusions>
             </dependency>
-            <dependency>
-                <groupId>net.sf.ehcache</groupId>
-                <artifactId>ehcache</artifactId>
-                <version>1.6.2</version>
-            </dependency>
+
         <!-- LiquiBase -->
             <dependency>
                 <groupId>org.liquibase</groupId>

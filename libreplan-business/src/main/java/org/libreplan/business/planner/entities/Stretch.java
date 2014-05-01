@@ -27,7 +27,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.hibernate.validator.NotNull;
+import javax.validation.constraints.NotNull;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
 

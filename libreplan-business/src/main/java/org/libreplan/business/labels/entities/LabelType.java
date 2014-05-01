@@ -27,9 +27,9 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
-import org.hibernate.validator.AssertTrue;
-import org.hibernate.validator.NotEmpty;
-import org.hibernate.validator.NotNull;
+import javax.validation.constraints.AssertTrue;
+import org.hibernate.validator.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import org.libreplan.business.common.IHumanIdentifiable;
 import org.libreplan.business.common.IntegrationEntity;
 import org.libreplan.business.common.Registry;
@@ -108,7 +108,7 @@ public class LabelType extends IntegrationEntity implements Comparable,
     }
 
     @AssertTrue(message = "label names must be unique inside a label type")
-    public boolean checkConstraintNonRepeatedLabelNames() {
+    public boolean isNonRepeatedLabelNamesConstraint() {
         Set<String> labelNames = new HashSet<String>();
 
         for (Label label : labels) {
@@ -125,7 +125,7 @@ public class LabelType extends IntegrationEntity implements Comparable,
     }
 
     @AssertTrue(message = "label type name is already in use")
-    public boolean checkConstraintUniqueLabelTypeName() {
+    public boolean isUniqueLabelTypeNameConstraint() {
         if (!firstLevelValidationsPassed()) {
             return true;
         }
@@ -156,7 +156,7 @@ public class LabelType extends IntegrationEntity implements Comparable,
     }
 
     @AssertTrue(message = "label code is already being used")
-    public boolean checkConstraintNonRepeatedMaterialCodes() {
+    public boolean isNonRepeatedMaterialCodesConstraint() {
         return getFirstRepeatedCode(this.getLabels()) == null;
     }
 

@@ -22,11 +22,12 @@
 package org.libreplan.ws.common.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.hibernate.validator.InvalidValue;
 import org.libreplan.business.common.exceptions.ValidationException;
+import org.libreplan.business.common.exceptions.ValidationException.InvalidValue;
 import org.libreplan.ws.common.api.ConstraintViolationDTO;
 import org.libreplan.ws.common.api.InstanceConstraintViolationsDTO;
 import org.libreplan.ws.common.api.InstanceConstraintViolationsDTOId;
@@ -41,61 +42,25 @@ import org.libreplan.ws.common.api.RecoverableErrorDTO;
  */
 public class ConstraintViolationConverter {
 
-    private final static String CHECK_CONSTRAINT_METHOD_PREFIX =
-        "checkConstraint";
-
     private ConstraintViolationConverter() {}
 
-    public final static ConstraintViolationDTO toDTO(
-        InvalidValue invalidValue) {
-
-        String fieldName = null;
-
-        if ( (invalidValue.getPropertyName() != null) &&
-             (!invalidValue.getPropertyName().
-                 startsWith(CHECK_CONSTRAINT_METHOD_PREFIX))) {
-            final String rootObjectClassName = invalidValue.getRootBean()
-                    .getClass().getSimpleName();
-            final String propertyPath = invalidValue.getPropertyPath();
-            fieldName = rootObjectClassName + "::" + propertyPath;
-        }
-
-        return new ConstraintViolationDTO(fieldName,
-            invalidValue.getMessage());
-
+    public final static ConstraintViolationDTO toDTO(InvalidValue each) {
+        return new ConstraintViolationDTO(getFieldName(each), each.getMessage());
     }
 
-    @Deprecated
-    public final static InstanceConstraintViolationsDTO toDTO(String instanceId,
-        InvalidValue[] invalidValues) {
-
-        List<ConstraintViolationDTO> constraintViolationDTOs =
-            new ArrayList<ConstraintViolationDTO>();
-
-        for (InvalidValue i : invalidValues) {
-            constraintViolationDTOs.add(toDTO(i));
+    private static String getFieldName(InvalidValue invalidValue) {
+        String propertyPath = invalidValue.getPropertyPath();
+        if (invalidValue.getRootBean() == null || propertyPath == null
+                || isCheckConstraint(propertyPath)) {
+            return null;
         }
-
-        return new InstanceConstraintViolationsDTO(instanceId,
-            constraintViolationDTOs);
-
+        final String rootObjectClassName = invalidValue.getRootBean()
+                .getClass().getSimpleName();
+        return rootObjectClassName + "::" + invalidValue.getPropertyPath();
     }
 
-    @Deprecated
-    public final static InstanceConstraintViolationsDTO toDTO(
-        InstanceConstraintViolationsDTOId instanceId,
-        InvalidValue[] invalidValues) {
-
-        List<ConstraintViolationDTO> constraintViolationDTOs =
-            new ArrayList<ConstraintViolationDTO>();
-
-        for (InvalidValue i : invalidValues) {
-            constraintViolationDTOs.add(toDTO(i));
-        }
-
-        return new InstanceConstraintViolationsDTO(instanceId,
-            constraintViolationDTOs);
-
+    private static boolean isCheckConstraint(String property) {
+        return property.toString().contains("checkConstraint");
     }
 
     public final static InstanceConstraintViolationsDTO toDTO(
@@ -105,18 +70,33 @@ public class ConstraintViolationConverter {
         List<ConstraintViolationDTO> constraintViolationDTOs =
             new ArrayList<ConstraintViolationDTO>();
 
-        if (validationException.getInvalidValues().length == 0) {
+        if (validationException.getInvalidValues().isEmpty()) {
             constraintViolationDTOs.add(new ConstraintViolationDTO(null,
                 validationException.getMessage()));
         } else {
-            for (InvalidValue i : validationException.getInvalidValues()) {
-                constraintViolationDTOs.add(toDTO(i));
+            for (InvalidValue each : validationException
+                    .getInvalidValues()) {
+                constraintViolationDTOs.add(toDTO(each));
             }
         }
 
         return new InstanceConstraintViolationsDTO(instanceId,
             constraintViolationDTOs);
+    }
 
+    @Deprecated
+    public final static InstanceConstraintViolationsDTO toDTO(
+            String instanceId, Collection<? extends InvalidValue> invalidValues) {
+
+        List<ConstraintViolationDTO> constraintViolationDTOs =
+            new ArrayList<ConstraintViolationDTO>();
+
+        for (InvalidValue i : invalidValues) {
+            constraintViolationDTOs.add(toDTO(i));
+        }
+
+        return new InstanceConstraintViolationsDTO(instanceId,
+            constraintViolationDTOs);
     }
 
     public final static InstanceConstraintViolationsDTO toDTO(

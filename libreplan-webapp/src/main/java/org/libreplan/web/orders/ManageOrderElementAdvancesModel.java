@@ -529,7 +529,7 @@ public class ManageOrderElementAdvancesModel implements
     public boolean isPrecisionValid(AdvanceMeasurement advanceMeasurement) {
         if ((this.advanceAssignment != null)
                 && (this.advanceAssignment.getAdvanceType() != null)) {
-            return advanceMeasurement.checkConstraintValidPrecision();
+            return advanceMeasurement.isValidPrecisionConstraint();
         }
         return true;
     }
@@ -540,7 +540,7 @@ public class ManageOrderElementAdvancesModel implements
                 || this.advanceAssignment.getMaxValue() == null) {
             return false;
         }
-        return !(advanceMeasurement.checkConstraintValueIsLessThanMaxValue());
+        return !(advanceMeasurement.isValueIsLessThanMaxValueConstraint());
     }
 
     @Override
@@ -548,8 +548,7 @@ public class ManageOrderElementAdvancesModel implements
         if (this.advanceAssignment == null) {
             return false;
         }
-        return !(this.advanceAssignment
-                .checkConstraintValidAdvanceMeasurements());
+        return !(this.advanceAssignment.isValidAdvanceMeasurementsConstraint());
     }
 
     @Override

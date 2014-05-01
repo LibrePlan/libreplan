@@ -43,7 +43,7 @@ import org.libreplan.business.resources.entities.CriterionSatisfaction;
 import org.libreplan.business.resources.entities.CriterionType;
 import org.libreplan.business.resources.entities.Worker;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -109,7 +109,7 @@ public class CriterionSatisfactionDAOTest {
         criterion.setType(criterionType);
     }
 
-    @Test(expected = DataIntegrityViolationException.class)
+    @Test(expected = InvalidDataAccessApiUsageException.class)
     public void testNotSaveWithTransientCriterionAndWorker() {
         Criterion criterion = CriterionDAOTest.createValidCriterion();
         saveCriterionType(criterion);

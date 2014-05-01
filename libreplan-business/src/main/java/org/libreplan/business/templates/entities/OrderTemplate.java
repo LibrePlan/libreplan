@@ -22,7 +22,7 @@ package org.libreplan.business.templates.entities;
 
 import static org.libreplan.business.i18n.I18nHelper._;
 
-import org.hibernate.validator.NotNull;
+import javax.validation.constraints.NotNull;
 import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;

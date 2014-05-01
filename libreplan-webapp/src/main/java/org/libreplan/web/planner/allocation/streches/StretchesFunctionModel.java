@@ -163,16 +163,16 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
     @Override
     public void confirm() throws ValidationException {
         if (stretchesFunction != null) {
-            if (!stretchesFunction.checkNoEmpty()) {
+            if (!stretchesFunction.isNoEmptyConstraint()) {
                 throw new ValidationException(
                         _("At least one stretch is needed"));
             }
-            if (!stretchesFunction.checkStretchesOrder()) {
+            if (!stretchesFunction.isStretchesOrderConstraint()) {
                 throw new ValidationException(
                         _("Some stretch has higher or equal values than the "
                                 + "previous stretch"));
             }
-            if (!stretchesFunction.checkOneHundredPercent()) {
+            if (!stretchesFunction.isOneHundredPercentConstraint()) {
                 throw new ValidationException(
                         _("Last stretch should have 100% for length and amount of work"));
             }

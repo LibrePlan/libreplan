@@ -21,6 +21,7 @@
 
 package org.libreplan.web.calendars;
 
+import static org.libreplan.business.common.exceptions.ValidationException.invalidValue;
 import static org.libreplan.web.I18nHelper._;
 
 import java.util.Date;
@@ -29,7 +30,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
-import org.hibernate.validator.InvalidValue;
 import org.joda.time.LocalDate;
 import org.libreplan.business.calendars.daos.IBaseCalendarDAO;
 import org.libreplan.business.calendars.daos.ICalendarExceptionTypeDAO;
@@ -599,11 +599,9 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
     public void checkInvalidValuesCalendar(BaseCalendar entity)
             throws ValidationException {
         if (baseCalendarDAO.thereIsOtherWithSameName(entity)) {
-            InvalidValue[] invalidValues2 = { new InvalidValue(_(
-                    "{0} already exists", entity.getName()),
-                    BaseCalendar.class, "name", entity.getName(), entity) };
-            throw new ValidationException(invalidValues2,
-                    _("Could not save the new calendar"));
+            throw new ValidationException(_("Could not save the new calendar"),
+                    invalidValue(_("{0} already exists", entity.getName()),
+                            "name", entity.getName(), entity));
         }
     }
 

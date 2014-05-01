@@ -22,8 +22,8 @@
 package org.libreplan.business.materials.entities;
 
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.validator.AssertTrue;
-import org.hibernate.validator.NotEmpty;
+import javax.validation.constraints.AssertTrue;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.libreplan.business.common.IHumanIdentifiable;
 import org.libreplan.business.common.IntegrationEntity;
 import org.libreplan.business.common.Registry;
@@ -83,7 +83,7 @@ public class UnitType extends IntegrationEntity implements IHumanIdentifiable {
     }
 
     @AssertTrue(message = "the measure has to be unique")
-    public boolean checkConstraintUniqueName() {
+    public boolean isUniqueNameConstraint() {
         if (StringUtils.isBlank(measure)) {
             return true;
         }

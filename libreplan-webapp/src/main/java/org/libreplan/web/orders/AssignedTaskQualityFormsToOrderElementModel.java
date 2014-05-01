@@ -21,6 +21,7 @@
 
 package org.libreplan.web.orders;
 
+import static org.libreplan.business.common.exceptions.ValidationException.invalidValue;
 import static org.libreplan.web.I18nHelper._;
 
 import java.math.BigDecimal;
@@ -28,7 +29,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.hibernate.validator.InvalidValue;
 import org.joda.time.LocalDate;
 import org.libreplan.business.advance.daos.IAdvanceTypeDAO;
 import org.libreplan.business.advance.entities.AdvanceAssignment;
@@ -262,23 +262,22 @@ public class AssignedTaskQualityFormsToOrderElementModel implements
 
             if ((!taskQualityForm.isByItems())
                     && (!taskQualityForm.isCorrectConsecutivePassed(item))) {
-                throw new ValidationException(new InvalidValue(
+                throw new ValidationException(
+                        invalidValue(
                         _("cannot be checked until the previous item is checked before"),
-                        TaskQualityForm.class,
                         "passed", item.getName(), taskQualityForm));
 
             }
             if ((!taskQualityForm.isByItems())
                     && (!taskQualityForm.isCorrectConsecutiveDate(item))) {
-                throw new ValidationException(new InvalidValue(
+                throw new ValidationException(invalidValue(
                         _("must be after the previous date"),
-                        TaskQualityForm.class,
                         "date", item.getName(), taskQualityForm));
             }
 
-            if (!item.checkConstraintIfDateCanBeNull()) {
-                throw new ValidationException(new InvalidValue(
-                        _("date not specified"), TaskQualityForm.class, "date",
+            if (!item.isIfDateCanBeNullConstraint()) {
+                throw new ValidationException(invalidValue(
+                        _("date not specified"), "date",
                         item.getName(), taskQualityForm));
             }
         }

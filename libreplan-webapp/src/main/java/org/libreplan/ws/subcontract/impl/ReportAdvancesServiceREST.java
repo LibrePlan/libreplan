@@ -161,10 +161,12 @@ public class ReportAdvancesServiceREST implements IReportAdvancesService {
                 }
 
             } catch (ValidationException e) {
-                instanceConstraintViolationsDTO = ConstraintViolationConverter.toDTO(
-                        Util.generateInstanceId(1,
-                                orderElementWithAdvanceMeasurementsOrEndDateDTO.code), e
-                                .getInvalidValues());
+                instanceConstraintViolationsDTO = ConstraintViolationConverter
+                        .toDTO(Util
+                                .generateInstanceId(
+                                        1,
+                                        orderElementWithAdvanceMeasurementsOrEndDateDTO.code),
+                                e.getInvalidValues());
             } catch (InstanceNotFoundException e) {
                 return getErrorMessage(orderElementWithAdvanceMeasurementsOrEndDateDTO.code,
                         "instance not found");

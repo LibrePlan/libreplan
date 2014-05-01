@@ -165,7 +165,7 @@ public class TypeOfWorkHoursDAO extends IntegrationEntityDAO<TypeOfWorkHours>
                 .add(Restrictions.eq("typeOfWorkHours", type)).list();
         if (!workReportLines.isEmpty()) {
             throw ValidationException
-                    .invalidValue(
+                    .invalidValueException(
                             "Cannot delete type of work hours. It is being used at this moment in some timesheet line.",
                             type);
         }
@@ -176,7 +176,7 @@ public class TypeOfWorkHoursDAO extends IntegrationEntityDAO<TypeOfWorkHours>
                 .add(Restrictions.eq("type", type)).list();
         if (!hoursCost.isEmpty()) {
             throw ValidationException
-                    .invalidValue(
+                    .invalidValueException(
                             "Cannot delete type of work hours. It is being used at this moment in some cost category.",
                             type);
         }
@@ -187,7 +187,7 @@ public class TypeOfWorkHoursDAO extends IntegrationEntityDAO<TypeOfWorkHours>
         if (configuration.getPersonalTimesheetsTypeOfWorkHours().getId()
                 .equals(type.getId())) {
             throw ValidationException
-                    .invalidValue(
+                    .invalidValueException(
                             "Cannot delete the type of work hours. It is configured as type of work hours for personal timesheets.",
                             type);
         }
@@ -208,7 +208,7 @@ public class TypeOfWorkHoursDAO extends IntegrationEntityDAO<TypeOfWorkHours>
                     PredefinedConnectorProperties.JIRA_HOURS_TYPE);
             if (name.equals(type.getName())) {
                 throw ValidationException
-                        .invalidValue(
+                        .invalidValueException(
                                 "Cannot delete the type of work hours. It is configured as type of work hours for JIRA connector.",
                                 type);
             }

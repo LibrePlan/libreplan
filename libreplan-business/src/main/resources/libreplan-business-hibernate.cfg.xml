@@ -1,6 +1,6 @@
 <!DOCTYPE hibernate-configuration
     PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
-    "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+    "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
 
 <hibernate-configuration>
     <session-factory>
@@ -10,8 +10,20 @@
         <property name="hibernate.use_sql_comments">${hibernate.use_sql_comments}</property>
         <property name="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</property>
 
+        <!-- We explicitly call validation, otherwise infinite loops can happen.
+            Sometimes DAOs are queried when validating some constraints.
+            When the DAO does a query, the pending changes are flushed, causing
+            the validations to be run again.
+         -->
+        <property
+            name="javax.persistence.validation.mode">none</property>
+
+        <property name="jadira.usertype.autoRegisterUserTypes">true</property>
+        <property name="jadira.usertype.databaseZone">jvm</property>
+        <property name="jadira.usertype.javaZone">jvm</property>
+
         <!-- Configure second level cache -->
-        <property name="hibernate.cache.provider_class">net.sf.ehcache.hibernate.EhCacheProvider</property>
+        <property name="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory</property>
         <property name="hibernate.cache.use_second_level_cache">true</property>
         <property name="hibernate.cache.use_query_cache">false</property>
         <property name="hibernate.cache.provider_configuration_file_resource_path">classpath:ehcache.xml</property>

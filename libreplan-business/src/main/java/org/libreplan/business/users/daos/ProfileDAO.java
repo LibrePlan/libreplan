@@ -107,7 +107,7 @@ public class ProfileDAO extends GenericDAOHibernate<Profile, Long> implements
         query.setParameterList("profiles", Collections.singleton(profile));
         if (!query.list().isEmpty()) {
             throw ValidationException
-                    .invalidValue(
+                    .invalidValueException(
                             "Cannot delete profile. It is being used at this moment by some users.",
                             profile);
         }

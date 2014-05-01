@@ -32,8 +32,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.validator.InvalidValue;
 import org.libreplan.business.common.exceptions.ValidationException;
+import org.libreplan.business.common.exceptions.ValidationException.InvalidValue;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.CheckEvent;
 import org.zkoss.zk.ui.event.Event;
@@ -227,8 +227,8 @@ public class MessagesForUser extends GenericForwardComposer implements
             invalidValue(invalidValue, customLabelCreator);
         }
         if (!StringUtils.isEmpty(e.getMessage())
-                && e.getInvalidValues().length == 0) {
-                showMessage(Level.WARNING, e.getMessage());
+                && e.getInvalidValues().isEmpty()) {
+            showMessage(Level.WARNING, e.getMessage());
         }
         LOG.warn(e.getMessage());
     }

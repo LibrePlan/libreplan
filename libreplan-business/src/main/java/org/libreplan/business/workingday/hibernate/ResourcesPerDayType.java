@@ -28,8 +28,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 
-import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
+import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.usertype.UserType;
 import org.libreplan.business.workingday.ResourcesPerDay;
 
@@ -85,10 +86,11 @@ public class ResourcesPerDayType implements UserType {
     }
 
     @Override
-    public Object nullSafeGet(ResultSet rs, String[] names, Object owner)
+    public Object nullSafeGet(ResultSet rs, String[] names,
+            SessionImplementor session, Object owner)
             throws HibernateException, SQLException {
-        BigDecimal bigDecimal = (BigDecimal) Hibernate.BIG_DECIMAL.nullSafeGet(
-                rs, names[0]);
+        BigDecimal bigDecimal = (BigDecimal) StandardBasicTypes.BIG_DECIMAL
+                .nullSafeGet(rs, names[0], session);
         if (bigDecimal == null) {
             return null;
         }
@@ -96,13 +98,14 @@ public class ResourcesPerDayType implements UserType {
     }
 
     @Override
-    public void nullSafeSet(PreparedStatement st, Object value, int index)
-            throws HibernateException, SQLException {
+    public void nullSafeSet(PreparedStatement st, Object value, int index,
+            SessionImplementor session) throws HibernateException, SQLException {
         BigDecimal amount = null;
         if (value != null) {
             amount = ((ResourcesPerDay) value).getAmount();
         }
-        Hibernate.BIG_DECIMAL.nullSafeSet(st, amount, index);
+        StandardBasicTypes.BIG_DECIMAL.nullSafeSet(st, amount, index, session);
+
     }
 
     @Override
@@ -112,7 +115,7 @@ public class ResourcesPerDayType implements UserType {
     }
 
     @Override
-    public Class returnedClass() {
+    public Class<ResourcesPerDay> returnedClass() {
         return ResourcesPerDay.class;
     }
 

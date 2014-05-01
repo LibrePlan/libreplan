@@ -33,8 +33,8 @@ import java.util.Set;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
-import org.hibernate.validator.AssertTrue;
-import org.hibernate.validator.NotEmpty;
+import javax.validation.constraints.AssertTrue;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.joda.time.DateTime;
 import org.libreplan.business.common.BaseEntity;
 import org.libreplan.business.common.IHumanIdentifiable;
@@ -143,7 +143,7 @@ public class Scenario extends BaseEntity implements IHumanIdentifiable {
     }
 
     @AssertTrue(message = "name is already used")
-    public boolean checkConstraintUniqueName() {
+    public boolean isUniqueNameConstraint() {
         if (StringUtils.isBlank(name)) {
             return true;
         }

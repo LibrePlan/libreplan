@@ -22,7 +22,7 @@ package org.libreplan.business.planner.entities;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import org.hibernate.validator.AssertTrue;
+import javax.validation.constraints.AssertTrue;
 import org.libreplan.business.INewObject;
 
 /**
@@ -71,7 +71,7 @@ public class SubcontractorCommunicationValue implements INewObject {
 
     @SuppressWarnings("unused")
     @AssertTrue(message = "progress should be greater than 0% and less than 100%")
-    public boolean checkConstraintQualityFormItemPercentage() {
+    public boolean isQualityFormItemPercentageConstraint() {
         if (getProgress() == null) {
             return true;
         }

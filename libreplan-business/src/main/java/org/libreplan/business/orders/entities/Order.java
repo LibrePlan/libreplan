@@ -33,11 +33,12 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import javax.validation.Valid;
+import javax.validation.constraints.AssertTrue;
+import javax.validation.constraints.NotNull;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
-import org.hibernate.validator.AssertTrue;
-import org.hibernate.validator.NotNull;
-import org.hibernate.validator.Valid;
 import org.libreplan.business.advance.bootstrap.PredefinedAdvancedTypes;
 import org.libreplan.business.advance.entities.AdvanceType;
 import org.libreplan.business.advance.entities.DirectAdvanceAssignment;
@@ -351,27 +352,27 @@ public class Order extends OrderLineGroup implements Comparable {
 
     @SuppressWarnings("unused")
     @AssertTrue(message = "the project must have a start date")
-    private boolean ifSchedulingModeIsForwardOrderMustHaveStartDate() {
+    private boolean isIfSchedulingModeIsForwardOrderMustHaveStartDateConstraint() {
         return getSchedulingMode() != SchedulingMode.FORWARD
                 || getInitDate() != null;
     }
 
     @SuppressWarnings("unused")
     @AssertTrue(message = "the project must have a deadline")
-    private boolean ifSchedulingModeIsBackwardsOrderMustHaveDeadline() {
+    private boolean isIfSchedulingModeIsBackwardsOrderMustHaveDeadlineConstraint() {
         return getSchedulingMode() != SchedulingMode.BACKWARDS
                 || getDeadline() != null;
     }
 
     @SuppressWarnings("unused")
     @AssertTrue(message = "deadline must be after start date")
-    private boolean checkConstraintDeadlineMustBeAfterStart() {
+    private boolean isDeadlineMustBeAfterStartConstraint() {
         return getInitDate() == null || !this.isDeadlineBeforeStart();
     }
 
     @SuppressWarnings("unused")
     @AssertTrue(message = "At least one hours group is needed for each task")
-    private boolean checkConstraintAtLeastOneHoursGroupForEachOrderElement() {
+    private boolean isAtLeastOneHoursGroupForEachOrderElementConstraint() {
         for (OrderElement orderElement : this.getOrderElements()) {
             if (!orderElement.checkAtLeastOneHoursGroup()) {
                 return false;
@@ -578,7 +579,7 @@ public class Order extends OrderLineGroup implements Comparable {
     }
 
     @AssertTrue(message = "project name is already being used")
-    public boolean checkConstraintProjectUniqueName() {
+    public boolean isProjectUniqueNameConstraint() {
 
         IOrderDAO orderDAO = Registry.getOrderDAO();
 
@@ -696,7 +697,7 @@ public class Order extends OrderLineGroup implements Comparable {
     }
 
     @AssertTrue(message = "task code is repeated inside the project")
-    public boolean checkConstraintUniqueCodeInsideOrder() {
+    public boolean isUniqueCodeInsideOrderConstraint() {
         List<String> codes = new ArrayList<String>();
         codes.add(getCode());
 

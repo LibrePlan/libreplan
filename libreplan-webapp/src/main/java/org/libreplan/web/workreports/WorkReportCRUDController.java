@@ -32,9 +32,9 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.validator.InvalidValue;
 import org.joda.time.LocalDate;
 import org.libreplan.business.common.exceptions.ValidationException;
+import org.libreplan.business.common.exceptions.ValidationException.InvalidValue;
 import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
 import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.labels.entities.LabelType;
@@ -275,14 +275,14 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
      */
     private void showInvalidValues(ValidationException e) {
         for (InvalidValue invalidValue : e.getInvalidValues()) {
-            Object value = invalidValue.getBean();
+            Object value = invalidValue.getRootBean();
             if (value instanceof WorkReport) {
                 if (validateWorkReport()) {
                     messagesForUser.showInvalidValues(e);
                 }
             }
             if (value instanceof WorkReportLine) {
-                WorkReportLine workReportLine = (WorkReportLine) invalidValue.getBean();
+                WorkReportLine workReportLine = (WorkReportLine) invalidValue.getRootBean();
                 Row row = ComponentsFinder.findRowByValue(listWorkReportLines, workReportLine);
                 if (row == null) {
                     messagesForUser.showInvalidValues(e);
@@ -315,21 +315,21 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
     private boolean validateWorkReport() {
 
         if (!getWorkReport()
-                .checkConstraintDateMustBeNotNullIfIsSharedByLines()) {
+.isDateMustBeNotNullIfIsSharedByLinesConstraint()) {
             Datebox datebox = (Datebox) createWindow.getFellowIfAny("date");
             showInvalidMessage(datebox, _("cannot be empty"));
             return false;
         }
 
         if (!getWorkReport()
-                .checkConstraintResourceMustBeNotNullIfIsSharedByLines()) {
+                .isResourceMustBeNotNullIfIsSharedByLinesConstraint()) {
             showInvalidMessage(autocompleteResource,
                     _("cannot be empty"));
             return false;
         }
 
         if (!getWorkReport()
-                .checkConstraintOrderElementMustBeNotNullIfIsSharedByLines()) {
+                .isOrderElementMustBeNotNullIfIsSharedByLinesConstraint()) {
             showInvalidMessage(bandboxSelectOrderElementInHead,
                     _("cannot be empty"));
             return false;
@@ -395,7 +395,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         }
 
         if (!workReportLine
-                .checkConstraintClockStartMustBeNotNullIfIsCalculatedByClock()) {
+                .isClockStartMustBeNotNullIfIsCalculatedByClockConstraint()) {
             Timebox timeStart = getTimeboxStart(row);
             if (timeStart != null) {
                 String message = _("cannot be empty");
@@ -405,7 +405,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         }
 
         if (!workReportLine
-                .checkConstraintClockFinishMustBeNotNullIfIsCalculatedByClock()) {
+                .isClockFinishMustBeNotNullIfIsCalculatedByClockConstraint()) {
             Timebox timeFinish = getTimeboxFinish(row);
             if (timeFinish != null) {
                 String message = _("cannot be empty");
@@ -428,7 +428,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
             return false;
         }
 
-        if (!workReportLine.checkConstraintHoursCalculatedByClock()) {
+        if (!workReportLine.isHoursCalculatedByClockConstraint()) {
             Textbox effort = getEffort(row);
             if (effort != null) {
                 String message = _("effort is not properly calculated based on clock");
@@ -460,7 +460,8 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
             return false;
         }
 
-        if (!workReportLine.checkConstraintOrderElementFinishedInAnotherWorkReport()) {
+        if (!workReportLine
+                .isOrderElementFinishedInAnotherWorkReportConstraint()) {
             Checkbox checkboxFinished = getFinished(row);
             if (checkboxFinished != null) {
                 String message = _("task is already marked as finished in another timesheet");

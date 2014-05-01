@@ -25,7 +25,6 @@ import static org.libreplan.web.I18nHelper._;
 import java.math.BigDecimal;
 
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.validator.ClassValidator;
 import org.libreplan.business.orders.entities.SchedulingState;
 import org.libreplan.business.templates.entities.OrderElementTemplate;
 import org.libreplan.business.templates.entities.OrderLineTemplate;
@@ -62,9 +61,6 @@ public class TemplatesTreeController extends
     }
 
     final class TemplatesTreeRenderer extends Renderer {
-
-        private final ClassValidator<OrderElementTemplate> validator = new ClassValidator<OrderElementTemplate>(
-                OrderElementTemplate.class);
 
         @Override
         protected void addOperationsCell(Treeitem item,
@@ -129,7 +125,8 @@ public class TemplatesTreeController extends
 
                 @Override
                 public void set(Integer value) {
-                    checkInvalidValues(validator, "startAsDaysFromBeginning",
+                    checkInvalidValues(OrderElementTemplate.class,
+                            "startAsDaysFromBeginning",
                             value, intbox);
                     currentElement.setStartAsDaysFromBeginning(value);
                 }
@@ -149,7 +146,7 @@ public class TemplatesTreeController extends
 
                 @Override
                 public void set(Integer value) {
-                    checkInvalidValues(validator,
+                    checkInvalidValues(OrderElementTemplate.class,
                             "deadlineAsDaysFromBeginning", value, intbox);
                     currentElement.setDeadlineAsDaysFromBeginning(value);
                 }

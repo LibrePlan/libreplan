@@ -30,9 +30,10 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
 
+import javax.validation.Valid;
+import javax.validation.constraints.AssertTrue;
+
 import org.apache.commons.lang.Validate;
-import org.hibernate.validator.AssertTrue;
-import org.hibernate.validator.Valid;
 import org.libreplan.business.common.entities.ProgressType;
 import org.libreplan.business.orders.entities.TaskSource;
 import org.libreplan.business.resources.daos.IResourcesSearcher;
@@ -108,7 +109,7 @@ public class TaskGroup extends TaskElement {
 
     @SuppressWarnings("unused")
     @AssertTrue(message = "element associated to a task group have to be defined")
-    private boolean theOrderElementMustBeNotNull() {
+    private boolean isTheOrderElementMustBeNotNullConstraint() {
         return getOrderElement() != null;
     }
 

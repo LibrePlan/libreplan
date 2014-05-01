@@ -128,7 +128,7 @@ public class CostCategoryCRUDController extends BaseCRUDController<CostCategory>
     }
 
     private void showInvalidValues(ValidationException e) {
-        Object value = e.getInvalidValue().getBean();
+        Object value = e.getInvalidValue().getRootBean();
         if (value instanceof HourCost) {
             showInvalidValue((HourCost) value);
         }

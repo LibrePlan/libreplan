@@ -21,8 +21,8 @@
 
 package org.libreplan.business.workreports.valueobjects;
 
-import org.hibernate.validator.NotEmpty;
-import org.hibernate.validator.NotNull;
+import org.hibernate.validator.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import org.libreplan.business.INewObject;
 
 /**

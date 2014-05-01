@@ -27,10 +27,10 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.validator.InvalidValue;
 import org.libreplan.business.advance.exceptions.DuplicateAdvanceAssignmentForOrderElementException;
 import org.libreplan.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
 import org.libreplan.business.common.exceptions.ValidationException;
+import org.libreplan.business.common.exceptions.ValidationException.InvalidValue;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.qualityforms.entities.QualityForm;
 import org.libreplan.business.qualityforms.entities.TaskQualityForm;
@@ -515,7 +515,7 @@ public class AssignedTaskQualityFormsToOrderElementController extends
                     item.setDate((Date) value);
 
                     if (((Date) value == null)
-                            && (!item.checkConstraintIfDateCanBeNull())) {
+                            && (!item.isIfDateCanBeNullConstraint())) {
                         item.setDate(null);
                         throw new WrongValueException(comp,
                                 _("date not specified"));
@@ -584,7 +584,7 @@ public class AssignedTaskQualityFormsToOrderElementController extends
      */
     private void showInvalidValues(ValidationException e) {
         for (InvalidValue invalidValue : e.getInvalidValues()) {
-            Object value = invalidValue.getBean();
+            Object value = invalidValue.getRootBean();
             if (value instanceof TaskQualityForm) {
                 showInvalidValue(invalidValue, (TaskQualityForm) value);
             }
@@ -598,9 +598,9 @@ public class AssignedTaskQualityFormsToOrderElementController extends
             Row row = findRowOfTaskQualityForm(assignedTaskQualityForms
                     .getRows().getChildren(), taskQualityForm);
 
-            if (row != null) {
-                String itemName = (String) invalidValue.getValue();
-                String propertyName = invalidValue.getPropertyName();
+            if (row != null && invalidValue.getInvalidValue() instanceof String) {
+                String itemName = (String) invalidValue.getInvalidValue();
+                String propertyName = invalidValue.getPropertyPath();
                 Row rowItem = findRowOfTaskQualityFormItem(row, itemName);
 
                 if (rowItem != null) {

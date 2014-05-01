@@ -21,8 +21,8 @@
 
 package org.libreplan.business.calendars.entities;
 
-import org.hibernate.validator.AssertTrue;
-import org.hibernate.validator.NotNull;
+import javax.validation.constraints.AssertTrue;
+import javax.validation.constraints.NotNull;
 import org.joda.time.LocalDate;
 import org.libreplan.business.resources.entities.Resource;
 
@@ -71,7 +71,7 @@ public class ResourceCalendar extends BaseCalendar {
     }
 
     @AssertTrue(message = "Capacity must be a positive integer number")
-    public boolean checkCapacityPositiveIntegerNumber() {
+    public boolean isCapacityPositiveIntegerNumberConstraint() {
         return (capacity >= 1);
     }
 

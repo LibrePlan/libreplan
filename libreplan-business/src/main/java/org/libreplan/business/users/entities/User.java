@@ -27,8 +27,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.hibernate.validator.AssertTrue;
-import org.hibernate.validator.NotEmpty;
+import javax.validation.constraints.AssertTrue;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.libreplan.business.common.BaseEntity;
 import org.libreplan.business.common.IHumanIdentifiable;
 import org.libreplan.business.common.IOnTransaction;
@@ -246,7 +246,7 @@ public class User extends BaseEntity implements IHumanIdentifiable{
     }
 
     @AssertTrue(message = "username is already being used by another user")
-    public boolean checkConstraintUniqueLoginName() {
+    public boolean isUniqueLoginNameConstraint() {
 
         IUserDAO userDAO = Registry.getUserDAO();
 
@@ -378,7 +378,7 @@ public class User extends BaseEntity implements IHumanIdentifiable{
     }
 
     @AssertTrue(message = "You have exceeded the maximum limit of users")
-    public boolean checkMaxUsers() {
+    public boolean isMaxUsersConstraint() {
         return Registry.getTransactionService()
                 .runOnAnotherReadOnlyTransaction(new IOnTransaction<Boolean>() {
                     @Override

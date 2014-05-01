@@ -27,8 +27,9 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.validation.constraints.AssertTrue;
+
 import org.apache.commons.lang.Validate;
-import org.hibernate.validator.AssertTrue;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.libreplan.business.orders.entities.Order;
@@ -119,7 +120,7 @@ public class TaskMilestone extends TaskElement implements ITaskPositionConstrain
 
     @SuppressWarnings("unused")
     @AssertTrue(message = "a milestone cannot have a task associated")
-    private boolean theOrderElementMustBeNull() {
+    private boolean isTheOrderElementMustBeNullConstraint() {
         return getOrderElement() == null;
     }
 

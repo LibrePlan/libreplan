@@ -35,8 +35,9 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.hibernate.validator.AssertTrue;
-import org.hibernate.validator.Valid;
+import javax.validation.Valid;
+import javax.validation.constraints.AssertTrue;
+
 import org.joda.time.LocalDate;
 import org.libreplan.business.advance.bootstrap.PredefinedAdvancedTypes;
 import org.libreplan.business.advance.entities.AdvanceAssignment;
@@ -804,9 +805,8 @@ public class OrderLineGroup extends OrderElement implements
     private void checkAndSetValue(AdvanceMeasurement advanceMeasurement,
             BigDecimal previousResult) {
         advanceMeasurement.setValue(previousResult);
-        boolean checkPrecision = advanceMeasurement
-                .checkConstraintValidPrecision();
-        if (!checkPrecision) {
+        if (!advanceMeasurement
+                .isValidPrecisionConstraint()) {
             AdvanceAssignment advanceAssignment = advanceMeasurement
                     .getAdvanceAssignment();
             if ((previousResult == null) || (advanceAssignment == null)
@@ -1149,7 +1149,7 @@ public class OrderLineGroup extends OrderElement implements
     }
 
     @AssertTrue(message = "indirect progress assignments should have different types")
-    public boolean checkConstraintIndirectAdvanceAssignmentsWithDifferentType() {
+    public boolean isIndirectAdvanceAssignmentsWithDifferentTypeConstraint() {
         Set<String> types = new HashSet<String>();
         for (IndirectAdvanceAssignment each : indirectAdvanceAssignments) {
             String type = each.getAdvanceType().getUnitName();

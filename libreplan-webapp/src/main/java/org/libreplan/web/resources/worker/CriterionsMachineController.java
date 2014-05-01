@@ -32,8 +32,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.hibernate.validator.InvalidValue;
 import org.libreplan.business.common.exceptions.ValidationException;
+import org.libreplan.business.common.exceptions.ValidationException.InvalidValue;
 import org.libreplan.business.resources.entities.CriterionSatisfaction;
 import org.libreplan.business.resources.entities.CriterionWithItsType;
 import org.libreplan.business.resources.entities.Machine;
@@ -315,7 +315,7 @@ public class CriterionsMachineController extends GenericForwardComposer {
      */
     private void showInvalidValues(ValidationException e) {
         for (InvalidValue invalidValue : e.getInvalidValues()) {
-            Object value = invalidValue.getBean();
+            Object value = invalidValue.getRootBean();
             if (value instanceof CriterionSatisfactionDTO) {
                 validateCriterionSatisfactionDTO(invalidValue,
                         (CriterionSatisfactionDTO) value);
@@ -337,7 +337,7 @@ public class CriterionsMachineController extends GenericForwardComposer {
                     .getRows(), satisfactionDTO);
 
             if (row != null) {
-                String propertyName = invalidValue.getPropertyName();
+                String propertyName = invalidValue.getPropertyPath();
 
                 if (CriterionSatisfactionDTO.START_DATE.equals(propertyName)) {
                     // Locate TextboxResource

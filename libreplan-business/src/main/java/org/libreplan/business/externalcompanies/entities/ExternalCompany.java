@@ -22,8 +22,8 @@
 package org.libreplan.business.externalcompanies.entities;
 
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.validator.AssertTrue;
-import org.hibernate.validator.NotEmpty;
+import javax.validation.constraints.AssertTrue;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.libreplan.business.common.BaseEntity;
 import org.libreplan.business.common.IHumanIdentifiable;
 import org.libreplan.business.common.Registry;
@@ -147,7 +147,7 @@ public class ExternalCompany extends BaseEntity implements IHumanIdentifiable,
     }
 
     @AssertTrue(message="company name must be unique. Company name already used")
-    public boolean checkConstraintUniqueName() {
+    public boolean isUniqueNameConstraint() {
         IExternalCompanyDAO dao = Registry.getExternalCompanyDAO();
 
         if (isNewObject()) {
@@ -164,7 +164,7 @@ public class ExternalCompany extends BaseEntity implements IHumanIdentifiable,
     }
 
     @AssertTrue(message="Company ID already used. It must be unique")
-    public boolean checkConstraintUniqueNif() {
+    public boolean isUniqueNifConstraint() {
         IExternalCompanyDAO dao = Registry.getExternalCompanyDAO();
 
         if (isNewObject()) {
@@ -181,7 +181,7 @@ public class ExternalCompany extends BaseEntity implements IHumanIdentifiable,
     }
 
     @AssertTrue(message = "interaction fields are empty and company is marked as interact with applications")
-    public boolean checkConstraintInteractionFieldsNotEmptyIfNeeded() {
+    public boolean isInteractionFieldsNotEmptyIfNeededConstraint() {
         if (!interactsWithApplications) {
             return true;
         }

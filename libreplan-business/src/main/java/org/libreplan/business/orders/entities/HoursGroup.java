@@ -31,11 +31,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+
 import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.validator.NotNull;
-import org.hibernate.validator.Valid;
 import org.libreplan.business.common.IntegrationEntity;
 import org.libreplan.business.common.Registry;
 import org.libreplan.business.common.daos.IIntegrationEntityDAO;
@@ -399,7 +400,7 @@ public class HoursGroup extends IntegrationEntity implements Cloneable,
     }
 
     @Override
-    public boolean checkConstraintUniqueCode() {
+    public boolean isUniqueCodeConstraint() {
         // the automatic checking of this constraint is avoided because it uses
         // the wrong code property
         return true;

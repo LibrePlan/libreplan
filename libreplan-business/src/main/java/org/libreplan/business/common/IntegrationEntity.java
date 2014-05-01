@@ -26,8 +26,8 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.validator.AssertTrue;
-import org.hibernate.validator.NotEmpty;
+import javax.validation.constraints.AssertTrue;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.libreplan.business.common.daos.IIntegrationEntityDAO;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 
@@ -107,7 +107,7 @@ public abstract class IntegrationEntity extends BaseEntity {
      * calls on the abstract method <code>getIntegrationEntityDAO()</code>.
      */
     @AssertTrue(message="code is already used")
-    public boolean checkConstraintUniqueCode() {
+    public boolean isUniqueCodeConstraint() {
 
         /* Check if it makes sense to check the constraint .*/
         if (!iCodeSpecified()) {

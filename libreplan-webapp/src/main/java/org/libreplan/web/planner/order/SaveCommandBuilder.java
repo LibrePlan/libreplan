@@ -32,7 +32,6 @@ import java.util.SortedSet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.validator.InvalidValue;
 import org.joda.time.LocalDate;
 import org.libreplan.business.advance.bootstrap.PredefinedAdvancedTypes;
 import org.libreplan.business.advance.entities.AdvanceMeasurement;
@@ -48,6 +47,7 @@ import org.libreplan.business.common.daos.IEntitySequenceDAO;
 import org.libreplan.business.common.entities.EntityNameEnum;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
+import org.libreplan.business.common.exceptions.ValidationException.InvalidValue;
 import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.daos.IOrderElementDAO;
 import org.libreplan.business.orders.entities.HoursGroup;
@@ -333,7 +333,7 @@ public class SaveCommandBuilder {
                                         .getValue() + "\n";
                     }
 
-                    if (validationException.getInvalidValues().length == 0) {
+                    if (validationException.getInvalidValues().isEmpty()) {
                         message += validationException.getMessage();
                     }
 
@@ -1055,23 +1055,24 @@ public class SaveCommandBuilder {
         @Override
         public org.zkoss.zk.ui.Component createLabelFor(
                 InvalidValue invalidValue) {
-            if (invalidValue.getBean() instanceof OrderElement) {
+            if (invalidValue.getRootBean() instanceof OrderElement) {
                 Label result = new Label();
 
                 String orderElementName;
-                if (invalidValue.getBean() instanceof Order) {
+                if (invalidValue.getRootBean() instanceof Order) {
                     orderElementName = _("Project");
                 } else {
                     orderElementName = _("Task {0}",
-                            ((OrderElement) invalidValue.getBean()).getName());
+                            ((OrderElement) invalidValue.getRootBean())
+                                    .getName());
                 }
 
                 result.setValue(orderElementName + ": "
                         + _(invalidValue.getMessage()));
                 return result;
-            } else if (invalidValue.getBean() instanceof HoursGroup) {
+            } else if (invalidValue.getRootBean() instanceof HoursGroup) {
                 Label result = new Label();
-                HoursGroup hoursGroup = (HoursGroup) invalidValue.getBean();
+                HoursGroup hoursGroup = (HoursGroup) invalidValue.getRootBean();
                 result.setValue(_("Hours Group at {0}",
                         getParentName(hoursGroup))
                         + ": "

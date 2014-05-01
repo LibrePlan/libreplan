@@ -24,9 +24,9 @@ package org.libreplan.business.costcategories.entities;
 import java.math.BigDecimal;
 
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.validator.AssertTrue;
-import org.hibernate.validator.NotEmpty;
-import org.hibernate.validator.NotNull;
+import javax.validation.constraints.AssertTrue;
+import org.hibernate.validator.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import org.libreplan.business.common.IHumanIdentifiable;
 import org.libreplan.business.common.IntegrationEntity;
 import org.libreplan.business.common.Registry;
@@ -126,7 +126,7 @@ public class TypeOfWorkHours extends IntegrationEntity implements IHumanIdentifi
     }
 
     @AssertTrue(message = "the type of work hours name has to be unique. It is already used")
-    public boolean checkConstraintUniqueName() {
+    public boolean isUniqueNameConstraint() {
 
         if (StringUtils.isBlank(name)) {
             return true;
@@ -147,7 +147,7 @@ public class TypeOfWorkHours extends IntegrationEntity implements IHumanIdentifi
     }
 
     @AssertTrue(message = "type of work hours for personal timesheets cannot be disabled")
-    public boolean checkPersonalTimesheetsTypeOfWorkHoursNotDisabled() {
+    public boolean isPersonalTimesheetsTypeOfWorkHoursNotDisabledConstraint() {
         if (!isNewObject() && !getEnabled()) {
             TypeOfWorkHours typeOfWorkHours = Registry.getConfigurationDAO()
                     .getConfiguration().getPersonalTimesheetsTypeOfWorkHours();
@@ -169,7 +169,7 @@ public class TypeOfWorkHours extends IntegrationEntity implements IHumanIdentifi
     }
 
     @AssertTrue(message = "type of work hours for JIRA connector cannot be disabled")
-    public boolean checkJiraConnectorTypeOfWorkHoursNotDisabled() {
+    public boolean isJiraConnectorTypeOfWorkHoursNotDisabledConstraint() {
         if (!isNewObject() && !getEnabled()) {
             Connector connector = Registry.getConnectorDAO().findUniqueByName(
                     PredefinedConnectors.JIRA.getName());

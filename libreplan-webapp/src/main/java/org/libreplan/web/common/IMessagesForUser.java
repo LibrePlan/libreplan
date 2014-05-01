@@ -21,8 +21,8 @@
 
 package org.libreplan.web.common;
 
-import org.hibernate.validator.InvalidValue;
 import org.libreplan.business.common.exceptions.ValidationException;
+import org.libreplan.business.common.exceptions.ValidationException.InvalidValue;
 import org.zkoss.zk.ui.Component;
 
 /**

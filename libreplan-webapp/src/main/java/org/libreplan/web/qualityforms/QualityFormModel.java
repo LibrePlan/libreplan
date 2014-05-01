@@ -31,7 +31,6 @@ import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.qualityforms.daos.IQualityFormDAO;
 import org.libreplan.business.qualityforms.entities.QualityForm;
 import org.libreplan.business.qualityforms.entities.QualityFormItem;
-import org.libreplan.business.users.entities.Profile;
 import org.libreplan.web.common.concurrentdetection.OnConcurrentModification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -156,7 +155,7 @@ public class QualityFormModel implements IQualityFormModel {
     @Override
     public boolean checkConstraintUniqueQualityFormItemName() {
         if (getQualityForm() != null) {
-            return getQualityForm().checkConstraintUniqueQualityFormItemsName();
+            return getQualityForm().isUniqueQualityFormItemsNameConstraint();
         }
         return true;
     }
@@ -164,7 +163,7 @@ public class QualityFormModel implements IQualityFormModel {
     @Override
     public boolean checkConstraintUniqueQualityFormName() {
         if (getQualityForm() != null) {
-            return getQualityForm().checkConstraintUniqueQualityFormName();
+            return getQualityForm().isUniqueQualityFormNameConstraint();
         }
         return true;
     }
@@ -173,7 +172,7 @@ public class QualityFormModel implements IQualityFormModel {
     public boolean checkConstraintOutOfRangeQualityFormItemPercentage(
             QualityFormItem item) {
         if ((getQualityForm() != null) && (item != null)) {
-            return (!item.checkConstraintQualityFormItemPercentage());
+            return (!item.isQualityFormItemPercentageConstraint());
         }
         return true;
     }
@@ -182,7 +181,7 @@ public class QualityFormModel implements IQualityFormModel {
     public boolean checkConstraintUniqueQualityFormItemPercentage() {
         if (getQualityForm() != null) {
             return getQualityForm()
-                    .checkConstraintDuplicatesQualityFormItemPercentage();
+                    .isDuplicatesQualityFormItemPercentageConstraint();
         }
         return true;
     }

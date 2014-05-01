@@ -30,9 +30,9 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.hibernate.validator.AssertTrue;
-import org.hibernate.validator.NotNull;
-import org.hibernate.validator.Valid;
+import javax.validation.constraints.AssertTrue;
+import javax.validation.constraints.NotNull;
+import javax.validation.Valid;
 import org.joda.time.LocalDate;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.planner.entities.consolidations.NonCalculatedConsolidation;
@@ -193,7 +193,7 @@ public class DirectAdvanceAssignment extends AdvanceAssignment {
     }
 
     @AssertTrue(message = "Progress measurements must have a value lower than their following progress measurements.")
-    public boolean checkConstraintValidAdvanceMeasurements() {
+    public boolean isValidAdvanceMeasurementsConstraint() {
         if (advanceMeasurements.isEmpty()) {
             return true;
         }
@@ -224,7 +224,7 @@ public class DirectAdvanceAssignment extends AdvanceAssignment {
     }
 
     @AssertTrue(message = "maxixum value of percentage progress type must be 100")
-    public boolean checkConstraintMaxValueMustBe100ForPercentage() {
+    public boolean isMaxValueMustBe100ForPercentageConstraint() {
         AdvanceType advanceType = getAdvanceType();
         if ((advanceType != null) && (advanceType.getPercentage())) {
             if (maxValue.compareTo(new BigDecimal(100)) != 0) {
@@ -235,7 +235,7 @@ public class DirectAdvanceAssignment extends AdvanceAssignment {
     }
 
     @AssertTrue(message = "maximum value must be greater than zero")
-    public boolean checkConstraintMaxValueMustBeGreaterThanZero() {
+    public boolean isMaxValueMustBeGreaterThanZeroConstraint() {
         return maxValue.compareTo(BigDecimal.ZERO) > 0;
     }
 

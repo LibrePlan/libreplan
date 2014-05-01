@@ -21,9 +21,12 @@
 
 package org.zkoss.ganttz.timetracker.zoom;
 
+import static java.util.Arrays.asList;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -266,20 +269,15 @@ public abstract class TimeTrackerState {
 
     protected abstract Period getMinimumPeriod();
 
-    private Interval calculateIntervalWithMinimum(Interval interval) {
-        Period minimumPeriod = getMinimumPeriod();
-        BaseSingleFieldPeriod intervalAsPeriod = minimumPeriod
-                .asPeriod(interval);
-        if (intervalAsPeriod.compareTo(minimumPeriod.toPeriod()) >= 0) {
-            return interval;
-        }
-        LocalDate newEnd = new LocalDate(interval.getStart())
-                .plus(minimumPeriod.toPeriod());
-        return new Interval(interval.getStart(), newEnd);
+    private Interval ensureMinimumInterval(Interval interval) {
+        LocalDate newEnd = interval.getStart().plus(
+                getMinimumPeriod().toPeriod());
+        return new Interval(interval.getStart(), Collections.max(asList(newEnd,
+                interval.getFinish())));
     }
 
     public Interval getRealIntervalFor(Interval testInterval) {
-        return calculateForAtLeastMinimum(calculateIntervalWithMinimum(testInterval));
+        return calculateForAtLeastMinimum(ensureMinimumInterval(testInterval));
     }
 
     private Interval calculateForAtLeastMinimum(Interval atLeastMinimum) {

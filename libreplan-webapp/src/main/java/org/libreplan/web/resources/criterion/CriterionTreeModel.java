@@ -26,6 +26,7 @@
 
 package org.libreplan.web.resources.criterion;
 
+import static org.libreplan.business.common.exceptions.ValidationException.invalidValue;
 import static org.libreplan.web.I18nHelper._;
 
 import java.util.ArrayList;
@@ -34,7 +35,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.hibernate.validator.InvalidValue;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.resources.entities.CriterionType;
@@ -326,12 +326,10 @@ public class CriterionTreeModel implements ICriterionTreeModel {
         throws ValidationException{
         for(CriterionDTO criterion : criterions){
             if(criterion.getName().equals(name)){
-                InvalidValue[] invalidValues = {
-                    new InvalidValue(_("Already exists another " +
-                            "criterion with the same name"),
-                            Criterion.class, "name",
-                            criterion.getName(), criterion)};
-                throw new ValidationException(invalidValues);
+                throw new ValidationException(invalidValue(
+                        _("Already exists another "
+                                + "criterion with the same name"), "name",
+                        criterion.getName(), criterion));
             }
             thereIsOtherWithSameNameAndType(name,criterion.getChildren());
         }
@@ -340,11 +338,9 @@ public class CriterionTreeModel implements ICriterionTreeModel {
     public void validateNameNotEmpty(String name)
         throws ValidationException{
         if(name.isEmpty()){
-                InvalidValue[] invalidValues = {
-                    new InvalidValue(_("Name of criterion is empty."),
-                            CriterionType.class, "name",
-                            "",criterionType)};
-                throw new ValidationException(invalidValues);
+            throw new ValidationException(
+                    invalidValue(_("Name of criterion is empty."), "name",
+                        "",criterionType));
             }
     }
 

@@ -33,10 +33,10 @@ import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.NonUniqueResultException;
-import org.hibernate.validator.AssertTrue;
-import org.hibernate.validator.Min;
-import org.hibernate.validator.NotEmpty;
-import org.hibernate.validator.Valid;
+import javax.validation.constraints.AssertTrue;
+import javax.validation.constraints.Min;
+import org.hibernate.validator.constraints.NotEmpty;
+import javax.validation.Valid;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
@@ -63,7 +63,7 @@ import org.libreplan.business.requirements.entities.DirectCriterionRequirement;
 import org.libreplan.business.requirements.entities.IndirectCriterionRequirement;
 import org.libreplan.business.templates.daos.IOrderElementTemplateDAO;
 import org.libreplan.business.trees.ITreeNode;
-import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException;
+import org.springframework.orm.hibernate4.HibernateOptimisticLockingFailureException;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -481,7 +481,7 @@ public abstract class OrderElementTemplate extends BaseEntity implements
     }
 
     @AssertTrue(message = "template name is already in use")
-    public boolean checkConstraintUniqueRootTemplateName() {
+    public boolean isUniqueRootTemplateNameConstraint() {
         if (getParent() != null) {
             return true;
         }

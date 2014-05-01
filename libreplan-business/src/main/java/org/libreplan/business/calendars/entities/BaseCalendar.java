@@ -30,10 +30,10 @@ import java.util.Set;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
-import org.hibernate.validator.AssertTrue;
-import org.hibernate.validator.NotEmpty;
-import org.hibernate.validator.NotNull;
-import org.hibernate.validator.Valid;
+import javax.validation.constraints.AssertTrue;
+import org.hibernate.validator.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.Valid;
 import org.joda.time.LocalDate;
 import org.libreplan.business.calendars.daos.IBaseCalendarDAO;
 import org.libreplan.business.calendars.entities.AvailabilityTimeLine.IVetoer;
@@ -1104,7 +1104,7 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar,
 
     @SuppressWarnings("unused")
     @AssertTrue(message = "dates must be sorted and cannot overlap")
-    public boolean checkConstraintDateCouldNotOverlap() {
+    public boolean isDateCouldNotOverlapConstraint() {
 
         if (calendarDataVersions == null || calendarDataVersions.isEmpty()) {
             return true;
@@ -1216,7 +1216,7 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar,
     }
 
     @AssertTrue(message = "calendars with zero hours are not allowed")
-    public boolean checkConstraintZeroHours() {
+    public boolean isZeroHoursConstraint() {
         if ((calendarDataVersions != null) && (!calendarDataVersions.isEmpty())) {
             for (CalendarData each : calendarDataVersions) {
                 if (!each.isEmpty()) {

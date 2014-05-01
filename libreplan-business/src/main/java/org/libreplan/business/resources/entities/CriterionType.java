@@ -28,12 +28,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.validation.Valid;
+import javax.validation.constraints.AssertTrue;
+import javax.validation.constraints.NotNull;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
-import org.hibernate.validator.AssertTrue;
-import org.hibernate.validator.NotEmpty;
-import org.hibernate.validator.NotNull;
-import org.hibernate.validator.Valid;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.libreplan.business.advance.entities.AdvanceAssignment;
 import org.libreplan.business.common.IHumanIdentifiable;
 import org.libreplan.business.common.IntegrationEntity;
@@ -418,13 +419,13 @@ public class CriterionType extends IntegrationEntity implements
 
     @AssertTrue(message="criterion codes must be unique inside a criterion " +
         " type")
-    public boolean checkConstraintNonRepeatedCriterionCodes() {
+    public boolean isConstraintNonRepeatedCriterionCodesConstraint() {
         return getFirstRepeatedCode(criterions) == null;
     }
 
     @AssertTrue(message="criterion names must be unique inside a criterion " +
         " type")
-    public boolean checkConstraintNonRepeatedCriterionNames() {
+    public boolean isNonRepeatedCriterionNamesConstraint() {
 
         Set<String> criterionNames = new HashSet<String>();
 
@@ -443,7 +444,7 @@ public class CriterionType extends IntegrationEntity implements
     }
 
     @AssertTrue(message="Criterion Type name is already being used")
-    public boolean checkConstraintUniqueCriterionTypeName() {
+    public boolean isUniqueCriterionTypeNameConstraint() {
 
         /* Check if it makes sense to check the constraint .*/
         if (!isNameSpecified()) {
@@ -469,7 +470,7 @@ public class CriterionType extends IntegrationEntity implements
     }
 
     @AssertTrue(message="criterion type does not allow hierarchy")
-    public boolean checkConstraintAllowHierarchy() {
+    public boolean isAllowHierarchyConstraint() {
 
         if (!allowHierarchy) {
             for (Criterion c : criterions) {
@@ -484,7 +485,7 @@ public class CriterionType extends IntegrationEntity implements
     }
 
     @AssertTrue(message="resource type does not allow enabled criteria")
-    public boolean checkConstraintEnabled() {
+    public boolean isEnabledConstraint() {
 
         if (!enabled) {
             for (Criterion c : criterions) {
@@ -514,7 +515,7 @@ public class CriterionType extends IntegrationEntity implements
      * @throws ChangeTypeCriterionTypeException
      */
     @AssertTrue(message = "Criteria of this criterion type have been assigned to some resource.")
-    protected boolean checkConstraintChangeType() {
+    protected boolean isChangeTypeConstraint() {
         /* Check the constraint. */
         ICriterionTypeDAO criterionTypeDAO = Registry.getCriterionTypeDAO();
 

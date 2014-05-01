@@ -24,7 +24,7 @@ package org.libreplan.business.materials.entities;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import org.hibernate.validator.Valid;
+import javax.validation.Valid;
 import org.libreplan.business.common.BaseEntity;
 import org.libreplan.business.orders.entities.OrderElement;
 

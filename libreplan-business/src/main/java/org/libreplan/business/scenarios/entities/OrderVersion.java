@@ -22,7 +22,7 @@
 package org.libreplan.business.scenarios.entities;
 
 import org.apache.commons.lang.Validate;
-import org.hibernate.validator.NotNull;
+import javax.validation.constraints.NotNull;
 import org.joda.time.DateTime;
 import org.libreplan.business.common.BaseEntity;
 import org.libreplan.business.orders.entities.Order;

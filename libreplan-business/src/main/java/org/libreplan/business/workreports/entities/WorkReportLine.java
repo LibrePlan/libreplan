@@ -27,9 +27,9 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.validator.AssertTrue;
-import org.hibernate.validator.NotNull;
-import org.hibernate.validator.Valid;
+import javax.validation.constraints.AssertTrue;
+import javax.validation.constraints.NotNull;
+import javax.validation.Valid;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 import org.joda.time.Seconds;
@@ -249,7 +249,7 @@ public class WorkReportLine extends IntegrationEntity implements
     }
 
     @AssertTrue(message = "closckStart:the clockStart must be not null if number of hours is calcultate by clock")
-    public boolean checkConstraintClockStartMustBeNotNullIfIsCalculatedByClock() {
+    public boolean isClockStartMustBeNotNullIfIsCalculatedByClockConstraint() {
         if (!firstLevelValidationsPassed()) {
             return true;
         }
@@ -262,7 +262,7 @@ public class WorkReportLine extends IntegrationEntity implements
     }
 
     @AssertTrue(message = "clock finish cannot be empty if number of hours is calcultate by clock")
-    public boolean checkConstraintClockFinishMustBeNotNullIfIsCalculatedByClock() {
+    public boolean isClockFinishMustBeNotNullIfIsCalculatedByClockConstraint() {
         if (!firstLevelValidationsPassed()) {
             return true;
         }
@@ -275,7 +275,7 @@ public class WorkReportLine extends IntegrationEntity implements
     }
 
     @AssertTrue(message = "Start hour cannot be greater than finish hour")
-    public boolean checkCannotBeHigher() {
+    public boolean isCannotBeHigherConstraint() {
         if (!firstLevelValidationsPassed()) {
             return true;
         }
@@ -399,7 +399,7 @@ public class WorkReportLine extends IntegrationEntity implements
     }
 
     @AssertTrue(message = "fields should match with timesheet data if are shared by lines")
-    public boolean checkConstraintFieldsMatchWithWorkReportIfAreSharedByLines() {
+    public boolean isFieldsMatchWithWorkReportIfAreSharedByLinesConstraint() {
         if (!firstLevelValidationsPassed()) {
             return true;
         }
@@ -424,7 +424,7 @@ public class WorkReportLine extends IntegrationEntity implements
     }
 
     @AssertTrue(message = "Number of hours is not properly calculated according to start date and end date")
-    public boolean checkConstraintHoursCalculatedByClock() {
+    public boolean isHoursCalculatedByClockConstraint() {
         if (!firstLevelValidationsPassed()) {
             return true;
         }
@@ -445,7 +445,7 @@ public class WorkReportLine extends IntegrationEntity implements
     }
 
     @AssertTrue(message = "label type: the timesheet has not assigned this label type")
-    public boolean checkConstraintAssignedLabelTypes() {
+    public boolean isAssignedLabelTypesConstraint() {
         if (this.workReport == null
                 || this.workReport.getWorkReportType() == null) {
             return true;
@@ -468,7 +468,7 @@ public class WorkReportLine extends IntegrationEntity implements
     }
 
     @AssertTrue(message = "description value: the timesheet has not assigned the description field")
-    public boolean checkConstraintAssignedDescriptionValues() {
+    public boolean isAssignedDescriptionValuesConstraint() {
         if (this.workReport == null
                 || this.workReport.getWorkReportType() == null) {
             return true;
@@ -491,7 +491,7 @@ public class WorkReportLine extends IntegrationEntity implements
     }
 
     @AssertTrue(message = "there are repeated description values in the timesheet lines")
-    public boolean checkConstraintAssignedRepeatedDescriptionValues() {
+    public boolean isAssignedRepeatedDescriptionValuesConstraint() {
 
         Set<String> textFields = new HashSet<String>();
 
@@ -565,7 +565,7 @@ public class WorkReportLine extends IntegrationEntity implements
     }
 
     @AssertTrue(message = "there is a timesheet line in another work report marking as finished the same task")
-    public boolean checkConstraintOrderElementFinishedInAnotherWorkReport() {
+    public boolean isOrderElementFinishedInAnotherWorkReportConstraint() {
         if (!finished) {
             return true;
         }

@@ -32,7 +32,6 @@ import java.util.Set;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.validator.ClassValidator;
 import org.libreplan.business.calendars.daos.IBaseCalendarDAO;
 import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.calendars.entities.CalendarData;
@@ -116,9 +115,6 @@ public class MachineModel extends IntegrationEntityModel implements
 
     @Autowired
     private IScenarioManager scenarioManager;
-
-    private ClassValidator<Machine> validator = new ClassValidator<Machine>(
-            Machine.class);
 
     private void reattachCriterionsCache() {
         for (Criterion each: criterions.values()) {

@@ -27,9 +27,13 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.validator.InvalidValue;
 import org.libreplan.business.INewObject;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.util.deepcopy.AfterCopy;
@@ -66,6 +70,11 @@ public abstract class BaseEntity implements INewObject {
     }
 
     private static final Log LOG = LogFactory.getLog(BaseEntity.class);
+
+    private static final ValidatorFactory validatorFactory = Validation
+            .buildDefaultValidatorFactory();
+
+    private static final Validator validator = validatorFactory.getValidator();
 
     @OnCopy(Strategy.IGNORE)
     private Long id;
@@ -125,10 +134,10 @@ public abstract class BaseEntity implements INewObject {
 
     @SuppressWarnings("unchecked")
     public void validate() throws ValidationException {
-        LibrePlanClassValidator classValidator = new LibrePlanClassValidator(this.getClass());
-        InvalidValue[] invalidValues = classValidator.getInvalidValues(this);
-        if (invalidValues.length > 0) {
-            throw new ValidationException(invalidValues);
+        Set<ConstraintViolation<BaseEntity>> violations = validator
+                .validate(this);
+        if (!violations.isEmpty()) {
+            throw new ValidationException(violations);
         }
     }
 

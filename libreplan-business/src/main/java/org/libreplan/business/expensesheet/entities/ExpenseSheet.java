@@ -25,11 +25,11 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.validator.AssertTrue;
-import org.hibernate.validator.Min;
-import org.hibernate.validator.NotEmpty;
-import org.hibernate.validator.NotNull;
-import org.hibernate.validator.Valid;
+import javax.validation.constraints.AssertTrue;
+import javax.validation.constraints.Min;
+import org.hibernate.validator.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.Valid;
 import org.joda.time.LocalDate;
 import org.libreplan.business.common.IHumanIdentifiable;
 import org.libreplan.business.common.IntegrationEntity;
@@ -138,7 +138,7 @@ public class ExpenseSheet extends IntegrationEntity implements IHumanIdentifiabl
     }
 
     @AssertTrue(message = "The expense sheet line codes must be unique.")
-    public boolean checkConstraintNonRepeatedExpenseSheetLinesCodes() {
+    public boolean isNonRepeatedExpenseSheetLinesCodesConstraint() {
         return getFirstRepeatedCode(this.expenseSheetLines) == null;
     }
 
@@ -239,7 +239,7 @@ public class ExpenseSheet extends IntegrationEntity implements IHumanIdentifiabl
     }
 
     @AssertTrue(message = "a personal expense sheet must have the same resource in all the lines")
-    public boolean checkConstraintPersonalExpenseSheetMustHaveTheSameResourceInAllLines() {
+    public boolean isPersonalExpenseSheetMustHaveTheSameResourceInAllLinesConstraint() {
         if (!personal) {
             return true;
         }

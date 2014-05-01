@@ -27,9 +27,9 @@ import java.math.BigDecimal;
 
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.validator.AssertTrue;
-import org.hibernate.validator.NotEmpty;
-import org.hibernate.validator.NotNull;
+import javax.validation.constraints.AssertTrue;
+import org.hibernate.validator.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import org.libreplan.business.advance.daos.IAdvanceTypeDAO;
 import org.libreplan.business.common.BaseEntity;
 import org.libreplan.business.common.IHumanIdentifiable;
@@ -219,7 +219,7 @@ public class AdvanceType extends BaseEntity implements IHumanIdentifiable{
     }
 
     @AssertTrue(message = "progress type marked as quality form but is updatable")
-    public boolean checkConstraintIfIsQualityFormIsNotUpdatable() {
+    public boolean isIfIsQualityFormIsNotUpdatableConstraint() {
         if (isQualityForm()) {
             if (isUpdatable()) {
                 return false;
@@ -229,7 +229,7 @@ public class AdvanceType extends BaseEntity implements IHumanIdentifiable{
     }
 
     @AssertTrue(message = "default maximum value of percentage progress type must be 100")
-    public boolean checkConstraintDefaultMaxValueMustBe100ForPercentage() {
+    public boolean isDefaultMaxValueMustBe100ForPercentageConstraint() {
         if (percentage) {
             if (defaultMaxValue.compareTo(new BigDecimal(100)) != 0) {
                 return false;
@@ -244,7 +244,7 @@ public class AdvanceType extends BaseEntity implements IHumanIdentifiable{
     }
 
     @AssertTrue(message = "progress type name is already in use")
-    public boolean checkConstraintUniqueName() {
+    public boolean isUniqueNameConstraint() {
         if (StringUtils.isBlank(unitName)) {
             return true;
         }
@@ -266,7 +266,7 @@ public class AdvanceType extends BaseEntity implements IHumanIdentifiable{
     }
 
     @AssertTrue(message = "default maximum value must be greater than precision value")
-    public boolean checkDefaultMaxValueGreaterThanPrecision() {
+    public boolean isDefaultMaxValueGreaterThanPrecisionConstraint() {
         if (defaultMaxValue.compareTo(unitPrecision) == -1) {
             return false;
         }

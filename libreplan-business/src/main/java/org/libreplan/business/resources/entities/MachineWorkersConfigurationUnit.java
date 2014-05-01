@@ -27,8 +27,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.hibernate.validator.AssertTrue;
-import org.hibernate.validator.Valid;
+import javax.validation.constraints.AssertTrue;
+import javax.validation.Valid;
 import org.libreplan.business.common.BaseEntity;
 import org.libreplan.business.util.deepcopy.OnCopy;
 import org.libreplan.business.util.deepcopy.Strategy;
@@ -167,12 +167,12 @@ public class MachineWorkersConfigurationUnit extends BaseEntity implements
     }
 
     @AssertTrue(message = "Alpha must be greater than 0")
-    public boolean checkAlpha() {
+    public boolean isAlphaConstraint() {
         return (this.alpha.compareTo(new BigDecimal(0)) > 0);
     }
 
     @AssertTrue(message = "All machine worker assignments must have a start date earlier than the end date")
-    public boolean checkWorkerAssignmentsIntervalsProperlyDefined() {
+    public boolean isWorkerAssignmentsIntervalsProperlyDefinedConstraint() {
         boolean correctIntervals = true;
         for (MachineWorkerAssignment each : workerAssignments) {
             if (each.getStartDate() == null) {
@@ -186,7 +186,7 @@ public class MachineWorkersConfigurationUnit extends BaseEntity implements
     }
 
     @AssertTrue(message = "The same resource is assigned twice inside an interval")
-    public boolean checkConstraintUniqueWorkerAssignmentInInterval() {
+    public boolean isUniqueWorkerAssignmentInIntervalConstraint() {
         boolean unique = true;
         Interval range = null;
         for (MachineWorkerAssignment each : workerAssignments) {

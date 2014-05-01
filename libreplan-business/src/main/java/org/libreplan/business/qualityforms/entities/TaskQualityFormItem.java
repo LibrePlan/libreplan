@@ -24,10 +24,11 @@ package org.libreplan.business.qualityforms.entities;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import javax.validation.constraints.AssertTrue;
+import javax.validation.constraints.NotNull;
+
 import org.apache.commons.lang.Validate;
-import org.hibernate.validator.AssertTrue;
-import org.hibernate.validator.NotEmpty;
-import org.hibernate.validator.NotNull;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.libreplan.business.INewObject;
 
 public class TaskQualityFormItem implements INewObject {
@@ -122,9 +123,8 @@ public class TaskQualityFormItem implements INewObject {
         this.newObject = newObject;
     }
 
-    @SuppressWarnings("unused")
     @AssertTrue(message = "percentage should be greater than 0% and less than 100%")
-    public boolean checkConstraintQualityFormItemPercentage() {
+    public boolean isQualityFormItemPercentageConstraint() {
         if (percentage == null) {
             return true;
         }
@@ -135,9 +135,8 @@ public class TaskQualityFormItem implements INewObject {
         return false;
     }
 
-    @SuppressWarnings("unused")
     @AssertTrue(message = "date not specified")
-    public boolean checkConstraintIfDateCanBeNull() {
+    public boolean isIfDateCanBeNullConstraint() {
         if ((passed == null) || (!passed)) {
             return true;
         } else {

@@ -28,9 +28,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.validator.AssertTrue;
-import org.hibernate.validator.NotEmpty;
-import org.hibernate.validator.Valid;
+import javax.validation.constraints.AssertTrue;
+import org.hibernate.validator.constraints.NotEmpty;
+import javax.validation.Valid;
 import org.libreplan.business.common.BaseEntity;
 import org.libreplan.business.common.Registry;
 import org.libreplan.business.common.daos.IConnectorDAO;
@@ -98,7 +98,7 @@ public class Connector extends BaseEntity {
     }
 
     @AssertTrue(message = "connector name is already being used")
-    public boolean checkConstraintUniqueConnectorName() {
+    public boolean isUniqueConnectorNameConstraint() {
         if (StringUtils.isBlank(name)) {
             return true;
         }

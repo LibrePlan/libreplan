@@ -31,8 +31,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
-import org.hibernate.validator.NotNull;
-import org.hibernate.validator.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.Valid;
 import org.libreplan.business.orders.entities.HoursGroup;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderLine;

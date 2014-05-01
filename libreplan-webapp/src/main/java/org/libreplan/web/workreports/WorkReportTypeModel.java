@@ -409,7 +409,7 @@ public class WorkReportTypeModel extends IntegrationEntityModel implements
         }
 
         getWorkReportType().setName(name);
-        if (!getWorkReportType().checkConstraintUniqueWorkReportTypeName()) {
+        if (!getWorkReportType().isUniqueWorkReportTypeNameConstraint()) {
             throw new IllegalArgumentException(
                     _("There is another timesheet template with the same name"));
         }
@@ -428,7 +428,7 @@ public class WorkReportTypeModel extends IntegrationEntityModel implements
         }
 
         getWorkReportType().setCode(code);
-        if (!getWorkReportType().checkConstraintUniqueCode()) {
+        if (!getWorkReportType().isUniqueCodeConstraint()) {
             throw new IllegalArgumentException(
                     _("There is another timesheet template with the same code"));
         }
@@ -477,8 +477,9 @@ public class WorkReportTypeModel extends IntegrationEntityModel implements
     /* Operations to calculated the index position of the fields into workReport */
 
     public boolean validateTheIndexFieldsAndLabels() {
-        return ((getWorkReportType().checkConstraintTheIndexHeadingFieldsAndLabelMustBeUniqueAndConsecutive()) && (getWorkReportType()
-                .checkConstraintTheIndexLineFieldsAndLabelMustBeUniqueAndConsecutive()));
+        return ((getWorkReportType()
+                .isTheIndexHeadingFieldsAndLabelMustBeUniqueAndConsecutiveConstraint()) && (getWorkReportType()
+                .isTheIndexLineFieldsAndLabelMustBeUniqueAndConsecutiveConstraint()));
     }
 
     public List<Object> getOrderedListHeading() {

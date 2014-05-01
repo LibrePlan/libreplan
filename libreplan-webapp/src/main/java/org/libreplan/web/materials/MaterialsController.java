@@ -28,10 +28,11 @@ import java.util.Collection;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.validator.InvalidValue;
 import org.libreplan.business.common.exceptions.ValidationException;
+import org.libreplan.business.common.exceptions.ValidationException.InvalidValue;
 import org.libreplan.business.materials.entities.Material;
 import org.libreplan.business.materials.entities.MaterialCategory;
 import org.libreplan.business.materials.entities.UnitType;
@@ -321,7 +322,7 @@ public class MaterialsController extends
             reloadCategoriesTree(treeitem);
         } catch (ValidationException e) {
             for (InvalidValue invalidValue : e.getInvalidValues()) {
-                 Object value = invalidValue.getBean();
+                Object value = invalidValue.getRootBean();
                  if (value instanceof MaterialCategory) {
                      MaterialCategory materialCategory = (MaterialCategory) value;
                      Component comp = findInMaterialCategoryTree(materialCategory);
@@ -404,9 +405,10 @@ public class MaterialsController extends
     }
 
     private void showInvalidValues(ValidationException validationException) {
-        final InvalidValue[] invalidValues = validationException.getInvalidValues();
+        final Set<? extends InvalidValue> invalidValues = validationException
+                .getInvalidValues();
         for (InvalidValue each: invalidValues) {
-            final Object bean = each.getBean();
+            final Object bean = each.getRootBean();
             // Errors related with contraints in Material (not null, etc)
             if (bean instanceof Material) {
                 final Material material = (Material) bean;
@@ -417,12 +419,12 @@ public class MaterialsController extends
                 final MaterialCategory materialCategory = (MaterialCategory) bean;
                 final Treeitem treeitem = findTreeItemByMaterialCategory(categoriesTree, materialCategory);
                 if (treeitem != null) {
-                    if(each.getPropertyName().equals("name")) {
+                    if(each.getPropertyPath().equals("name")) {
                         throw new WrongValueException(
                                 getCategoryTextbox(treeitem),
                                 _(each.getMessage()));
                     }
-                    if(each.getPropertyName().equals("code")) {
+                    if(each.getPropertyPath().equals("code")) {
                         throw new WrongValueException(
                                 getCategoryCodeTextbox(treeitem),
                                 _(each.getMessage()));

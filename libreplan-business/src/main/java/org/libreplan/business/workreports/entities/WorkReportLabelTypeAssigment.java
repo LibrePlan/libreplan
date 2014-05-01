@@ -21,7 +21,7 @@
 
 package org.libreplan.business.workreports.entities;
 
-import org.hibernate.validator.NotNull;
+import javax.validation.constraints.NotNull;
 import org.libreplan.business.common.BaseEntity;
 import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.labels.entities.LabelType;

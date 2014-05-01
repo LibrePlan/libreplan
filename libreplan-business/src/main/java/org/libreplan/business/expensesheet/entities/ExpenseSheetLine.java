@@ -21,8 +21,8 @@ package org.libreplan.business.expensesheet.entities;
 
 import java.math.BigDecimal;
 
-import org.hibernate.validator.Min;
-import org.hibernate.validator.NotNull;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import org.joda.time.LocalDate;
 import org.libreplan.business.common.IntegrationEntity;
 import org.libreplan.business.common.Registry;

@@ -159,7 +159,7 @@ public class QualityFormDAO extends GenericDAOHibernate<QualityForm, Long>
         query.setParameterList("qualityForms", Collections.singleton(qualityForm));
         if (!query.list().isEmpty()) {
             throw ValidationException
-                    .invalidValue(
+                    .invalidValueException(
                             "Cannot delete quality form. It is being used at this moment by some task.",
                             qualityForm);
         }

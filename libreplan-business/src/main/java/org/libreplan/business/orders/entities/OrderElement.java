@@ -34,12 +34,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import javax.validation.Valid;
+import javax.validation.constraints.AssertTrue;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
-import org.hibernate.validator.AssertTrue;
-import org.hibernate.validator.InvalidValue;
-import org.hibernate.validator.NotEmpty;
-import org.hibernate.validator.Valid;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.joda.time.LocalDate;
 import org.libreplan.business.advance.bootstrap.PredefinedAdvancedTypes;
 import org.libreplan.business.advance.entities.AdvanceAssignment;
@@ -1160,22 +1160,22 @@ public abstract class OrderElement extends IntegrationEntity implements
         Validate.notNull(qualityForm);
         for (TaskQualityForm taskQualityForm : getTaskQualityForms()) {
             if (qualityForm.equals(taskQualityForm.getQualityForm())) {
-                throw new ValidationException(new InvalidValue(
-                        _("Quality form already exists"), QualityForm.class,
-                        "name", qualityForm.getName(), qualityForm));
+                throw new ValidationException(ValidationException.invalidValue(
+                        _("Quality form already exists"), "name",
+                        qualityForm.getName(), qualityForm));
             }
         }
     }
 
     @Override
-    public boolean checkConstraintUniqueCode() {
+    public boolean isUniqueCodeConstraint() {
         // the automatic checking of this constraint is avoided because it uses
         // the wrong code property
         return true;
     }
 
     @AssertTrue(message = "code is already used in another project")
-    public boolean checkConstraintCodeRepeatedInAnotherOrder() {
+    public boolean isCodeRepeatedInAnotherOrderConstraint() {
         if (StringUtils.isBlank(getCode())) {
             return true;
         }
@@ -1185,7 +1185,7 @@ public abstract class OrderElement extends IntegrationEntity implements
     }
 
     @AssertTrue(message = "a label can not be assigned twice in the same branch")
-    public boolean checkConstraintLabelNotRepeatedInTheSameBranch() {
+    public boolean isLabelNotRepeatedInTheSameBranchConstraint() {
         return checkConstraintLabelNotRepeatedInTheSameBranch(new HashSet<Label>());
     }
 
@@ -1501,7 +1501,7 @@ public abstract class OrderElement extends IntegrationEntity implements
     }
 
     @AssertTrue(message = "a quality form cannot be assigned twice to the same task")
-    public boolean checkConstraintUniqueQualityForm() {
+    public boolean isUniqueQualityFormConstraint() {
         Set<QualityForm> qualityForms = new HashSet<QualityForm>();
         for (TaskQualityForm each : taskQualityForms) {
             QualityForm qualityForm = each.getQualityForm();

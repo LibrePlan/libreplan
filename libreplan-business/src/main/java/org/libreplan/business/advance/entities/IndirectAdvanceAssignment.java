@@ -24,7 +24,7 @@ package org.libreplan.business.advance.entities;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.hibernate.validator.Valid;
+import javax.validation.Valid;
 import org.libreplan.business.orders.entities.OrderLineGroup;
 import org.libreplan.business.planner.entities.consolidations.CalculatedConsolidation;
 

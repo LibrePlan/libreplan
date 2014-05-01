@@ -515,7 +515,8 @@ public class ExpenseSheetCRUDController extends
                     } else {
                         String oldCode = line.getCode();
                         line.setCode(code);
-                        if (!getExpenseSheet().checkConstraintNonRepeatedExpenseSheetLinesCodes()) {
+                        if (!getExpenseSheet()
+                                .isNonRepeatedExpenseSheetLinesCodesConstraint()) {
                             line.setCode(oldCode);
                             throw new WrongValueException(comp, _("The code must be unique."));
                         }
@@ -534,7 +535,7 @@ public class ExpenseSheetCRUDController extends
                     if (code == null || code.isEmpty()) {
                         throw new WrongValueException(comp,
                                 _("The code cannot be empty and it must be unique."));
-                    } else if (!getExpenseSheet().checkConstraintUniqueCode()) {
+                    } else if (!getExpenseSheet().isUniqueCodeConstraint()) {
                         throw new WrongValueException(comp,
                                 _("it already exists another expense sheet with the same code."));
                     }

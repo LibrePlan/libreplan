@@ -23,9 +23,9 @@ package org.libreplan.business.resources.entities;
 
 
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.validator.AssertTrue;
-import org.hibernate.validator.NotEmpty;
-import org.hibernate.validator.Valid;
+import javax.validation.constraints.AssertTrue;
+import org.hibernate.validator.constraints.NotEmpty;
+import javax.validation.Valid;
 import org.libreplan.business.common.Registry;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.users.daos.IUserDAO;
@@ -159,7 +159,7 @@ public class Worker extends Resource {
     }
 
     @AssertTrue(message = "ID already used. It has to be be unique")
-    public boolean checkConstraintUniqueFiscalCode() {
+    public boolean isUniqueFiscalCodeConstraint() {
         if (!areFirstNameSurnameNifSpecified()) {
             return true;
         }
@@ -222,7 +222,7 @@ public class Worker extends Resource {
     }
 
     @AssertTrue(message = "User already bound to other worker")
-    public boolean checkConstraintUserNotBoundToOtherWorker() {
+    public boolean isUserNotBoundToOtherWorkerConstraint() {
         if (user == null || user.isNewObject()) {
             return true;
         }
@@ -246,7 +246,7 @@ public class Worker extends Resource {
     }
 
     @AssertTrue(message = "Queue-based resources cannot be bound to any user")
-    public boolean checkConstraintLimitingResourceNotBoundToUser() {
+    public boolean isLimitingResourceNotBoundToUserConstraint() {
         if (isLimitingResource()) {
             return user == null;
         }
@@ -254,7 +254,7 @@ public class Worker extends Resource {
     }
 
     @AssertTrue(message = "Virtual resources cannot be bound to any user")
-    public boolean checkConstraintVirtualResourceNotBoundToUser() {
+    public boolean isVirtualResourceNotBoundToUserConstraint() {
         if (isVirtual()) {
             return user == null;
         }
@@ -269,7 +269,7 @@ public class Worker extends Resource {
     }
 
     @AssertTrue(message = "Bound user does not have the proper role")
-    public boolean checkConstraintBoundUserHaveProperRole() {
+    public boolean isBoundUserHaveProperRoleConstraint() {
         if (user == null) {
             return true;
         }

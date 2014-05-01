@@ -19,11 +19,9 @@
    <!-- Letting Spring do automatically exception translation -->
    <bean  class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>
 
-   <bean id="hibernateDatabaseModificationsListener" class="org.libreplan.business.hibernate.notification.HibernateDatabaseModificationsListener" scope="singleton"/>
-
     <!-- Hibernate Session Factory. -->
     <bean id="sessionFactory"
-    class="org.springframework.orm.hibernate3.LocalSessionFactoryBean"
+    class="org.springframework.orm.hibernate4.LocalSessionFactoryBean"
         p:dataSource-ref="dataSource" p:configLocation="classpath:/libreplan-business-hibernate.cfg.xml">
         <property name="mappingResources">
             <list>
@@ -98,24 +96,11 @@
                 </value>
             </list>
         </property>
-            <property name="eventListeners">
-                <map>
-                    <entry key="post-insert">
-                        <ref bean="hibernateDatabaseModificationsListener"/>
-                    </entry>
-                    <entry key="post-delete">
-                        <ref bean="hibernateDatabaseModificationsListener"/>
-                    </entry>
-                    <entry key="post-update">
-                        <ref bean="hibernateDatabaseModificationsListener"/>
-                    </entry>
-                </map>
-            </property>
     </bean>
 
     <!-- Spring Transaction manager  -->
     <bean id="transactionManager"
-        class="org.springframework.orm.hibernate3.HibernateTransactionManager"
+        class="org.springframework.orm.hibernate4.HibernateTransactionManager"
         p:sessionFactory-ref="sessionFactory" />
 
     <!--

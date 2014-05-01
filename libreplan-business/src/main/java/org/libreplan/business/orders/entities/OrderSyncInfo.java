@@ -23,8 +23,8 @@ import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
-import org.hibernate.validator.AssertTrue;
-import org.hibernate.validator.NotNull;
+import javax.validation.constraints.AssertTrue;
+import javax.validation.constraints.NotNull;
 import org.libreplan.business.common.BaseEntity;
 import org.libreplan.business.common.Registry;
 import org.libreplan.business.common.entities.Connector;
@@ -111,7 +111,7 @@ public class OrderSyncInfo extends BaseEntity {
     }
 
     @AssertTrue(message = "project sync info is already being used")
-    public boolean checkConstraintUniqueOrderSyncInfo() {
+    public boolean isUniqueOrderSyncInfoConstraint() {
         if (StringUtils.isBlank(key) && order == null
                 && StringUtils.isBlank(connectorName)) {
             return true;

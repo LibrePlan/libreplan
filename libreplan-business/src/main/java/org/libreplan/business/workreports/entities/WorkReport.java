@@ -30,9 +30,9 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
-import org.hibernate.validator.AssertTrue;
-import org.hibernate.validator.NotNull;
-import org.hibernate.validator.Valid;
+import javax.validation.constraints.AssertTrue;
+import javax.validation.constraints.NotNull;
+import javax.validation.Valid;
 import org.joda.time.LocalDate;
 import org.libreplan.business.common.IntegrationEntity;
 import org.libreplan.business.common.Registry;
@@ -222,7 +222,7 @@ public class WorkReport extends IntegrationEntity implements
 
     @SuppressWarnings("unused")
     @AssertTrue(message = "date cannot be empty if it is shared by lines")
-    public boolean checkConstraintDateMustBeNotNullIfIsSharedByLines() {
+    public boolean isDateMustBeNotNullIfIsSharedByLinesConstraint() {
         if (!firstLevelValidationsPassed()) {
             return true;
         }
@@ -235,7 +235,7 @@ public class WorkReport extends IntegrationEntity implements
 
     @SuppressWarnings("unused")
     @AssertTrue(message = "resource cannot be empty if it is shared by lines")
-    public boolean checkConstraintResourceMustBeNotNullIfIsSharedByLines() {
+    public boolean isResourceMustBeNotNullIfIsSharedByLinesConstraint() {
         if (!firstLevelValidationsPassed()) {
             return true;
         }
@@ -248,7 +248,7 @@ public class WorkReport extends IntegrationEntity implements
 
     @SuppressWarnings("unused")
     @AssertTrue(message = "task cannot be empty if it is shared by lines")
-    public boolean checkConstraintOrderElementMustBeNotNullIfIsSharedByLines() {
+    public boolean isOrderElementMustBeNotNullIfIsSharedByLinesConstraint() {
         if (!firstLevelValidationsPassed()) {
             return true;
         }
@@ -261,7 +261,7 @@ public class WorkReport extends IntegrationEntity implements
 
     @SuppressWarnings("unused")
     @AssertTrue(message = "label type:the timesheet have not assigned this label type")
-    public boolean checkConstraintAssignedLabelTypes() {
+    public boolean isAssignedLabelTypesConstraint() {
         if (this.workReportType == null) {
             return true;
         }
@@ -283,7 +283,7 @@ public class WorkReport extends IntegrationEntity implements
 
     @SuppressWarnings("unused")
     @AssertTrue(message = "description value: the timesheet has some description field missing")
-    public boolean checkConstraintAssignedDescriptionValues() {
+    public boolean isAssignedDescriptionValuesConstraint() {
         if (this.workReportType == null) {
             return true;
         }
@@ -306,7 +306,7 @@ public class WorkReport extends IntegrationEntity implements
 
     @SuppressWarnings("unused")
     @AssertTrue(message = "There are repeated description values in the timesheet ")
-    public boolean checkConstraintAssignedRepeatedDescriptionValues() {
+    public boolean isAssignedRepeatedDescriptionValuesConstraint() {
 
         Set<String> textFields = new HashSet<String>();
 
@@ -434,7 +434,7 @@ public class WorkReport extends IntegrationEntity implements
     }
 
     @AssertTrue(message = "The timesheet line codes must be unique.")
-    public boolean checkConstraintNonRepeatedWorkReportLinesCodes() {
+    public boolean isNonRepeatedWorkReportLinesCodesConstraint() {
         return getFirstRepeatedCode(this.workReportLines) == null;
     }
 
@@ -472,7 +472,7 @@ public class WorkReport extends IntegrationEntity implements
     }
 
     @AssertTrue(message = "only one timesheet line per day and task is allowed in personal timesheets")
-    public boolean checkConstraintOnlyOneWorkReportLinePerDayAndOrderElementInPersonalTimesheet() {
+    public boolean isOnlyOneWorkReportLinePerDayAndOrderElementInPersonalTimesheetConstraint() {
         if (!getWorkReportType().isPersonalTimesheetsType()) {
             return true;
         }
@@ -494,7 +494,7 @@ public class WorkReport extends IntegrationEntity implements
     }
 
     @AssertTrue(message = "In personal timesheets, all timesheet lines should be in the same period")
-    public boolean checkConstraintAllWorkReportLinesInTheSamePeriodInPersonalTimesheet() {
+    public boolean isAllWorkReportLinesInTheSamePeriodInPersonalTimesheetConstraint() {
         if (!getWorkReportType().isPersonalTimesheetsType()) {
             return true;
         }
@@ -522,7 +522,7 @@ public class WorkReport extends IntegrationEntity implements
     }
 
     @AssertTrue(message = "resource has to be bound to a user in personal timesheets")
-    public boolean checkConstraintResourceIsBoundInPersonalTimesheet() {
+    public boolean isResourceIsBoundInPersonalTimesheetConstraint() {
         if (!getWorkReportType().isPersonalTimesheetsType()) {
             return true;
         }
@@ -540,7 +540,7 @@ public class WorkReport extends IntegrationEntity implements
     }
 
     @AssertTrue(message = "the same task is marked as finished by more than one timesheet line")
-    public boolean checkConstraintSameOrderElementFinishedBySeveralWorkReportLines() {
+    public boolean isSameOrderElementFinishedBySeveralWorkReportLinesConstraint() {
         Set<OrderElement> finishedOrderElements = new HashSet<OrderElement>();
 
         for (WorkReportLine line : workReportLines) {

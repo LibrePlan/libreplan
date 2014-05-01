@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.libreplan.business.planner.entities"
     default-access="field">
 
@@ -99,15 +99,15 @@
         <many-to-one name="scenario" />
 
         <component name="intraDayStart" class="org.libreplan.business.workingday.IntraDayDate">
-            <property name="date" column="start_date"
-                type="org.joda.time.contrib.hibernate.PersistentLocalDate" />
+            <property name="date" column="start_date" />
+
             <property name="effortDuration" column="duration_start_in_first_day"
                 type="org.libreplan.business.workingday.hibernate.EffortDurationType"/>
         </component>
 
         <component name="intraDayEnd" class="org.libreplan.business.workingday.IntraDayDate">
-            <property name="date" column="end_date"
-                type="org.joda.time.contrib.hibernate.PersistentLocalDate" />
+            <property name="date" column="end_date" />
+
             <property name="effortDuration" column="duration_in_last_day"
                 type="org.libreplan.business.workingday.hibernate.EffortDurationType"/>
         </component>
@@ -134,15 +134,15 @@
         <many-to-one name="scenario" />
 
         <component name="intraDayStart" class="org.libreplan.business.workingday.IntraDayDate">
-            <property name="date" column="start_date"
-                type="org.joda.time.contrib.hibernate.PersistentLocalDate" />
+            <property name="date" column="start_date" />
+
             <property name="effortDuration" column="duration_start_in_first_day"
                 type="org.libreplan.business.workingday.hibernate.EffortDurationType"/>
         </component>
 
         <component name="intraDayEnd" class="org.libreplan.business.workingday.IntraDayDate">
-            <property name="date" column="end_date"
-                type="org.joda.time.contrib.hibernate.PersistentLocalDate" />
+            <property name="date" column="end_date" />
+
             <property name="effortDuration" column="duration_in_last_day"
                 type="org.libreplan.business.workingday.hibernate.EffortDurationType"/>
         </component>
@@ -194,12 +194,12 @@
         <property name="creationTimestamp" column="creation_timestamp" />
 
         <component name="startQueuePosition" class="org.libreplan.business.planner.limiting.entities.QueuePosition">
-            <property name="date" column="start_date" type="org.joda.time.contrib.hibernate.PersistentLocalDate" />
+            <property name="date" column="start_date"/>
             <property name="hour" column="start_hour" />
         </component>
 
         <component name="endQueuePosition" class="org.libreplan.business.planner.limiting.entities.QueuePosition">
-            <property name="date" column="end_date" type="org.joda.time.contrib.hibernate.PersistentLocalDate" />
+            <property name="date" column="end_date"/>
             <property name="hour" column="end_hour" />
         </component>
 
@@ -273,7 +273,7 @@
 
         <property name="consolidated" access="field"/>
 
-        <property name="day" type="org.joda.time.contrib.hibernate.PersistentLocalDate" not-null="true"/>
+        <property name="day"/>
 
         <!-- Not indexed. It is not indexed because it is regarded that to navigate
         from a resource to all his DayAssigments is not useful -->
@@ -307,7 +307,7 @@
         <joined-subclass name="StretchesFunction" table="stretches_function">
             <key column="assignment_function_id" />
 
-            <list name="stretches">
+            <list name="stretches" table="stretches">
                 <key column="assignment_function_id" />
                 <list-index column="stretch_position" />
 

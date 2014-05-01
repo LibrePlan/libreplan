@@ -21,6 +21,7 @@
 
 package org.libreplan.web.labels;
 
+import static org.libreplan.business.common.exceptions.ValidationException.invalidValue;
 import static org.libreplan.web.I18nHelper._;
 
 import java.util.ArrayList;
@@ -29,12 +30,12 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
-import org.hibernate.validator.InvalidValue;
 import org.libreplan.business.common.IntegrationEntity;
 import org.libreplan.business.common.daos.IConfigurationDAO;
 import org.libreplan.business.common.entities.EntityNameEnum;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
+import org.libreplan.business.common.exceptions.ValidationException.InvalidValue;
 import org.libreplan.business.labels.daos.ILabelDAO;
 import org.libreplan.business.labels.daos.ILabelTypeDAO;
 import org.libreplan.business.labels.entities.Label;
@@ -150,9 +151,8 @@ public class LabelTypeModel extends IntegrationEntityModel implements
     }
 
     private InvalidValue createInvalidValue(LabelType labelType) {
-        return new InvalidValue(_(
-                "{0} already exists", labelType.getName()),
-                LabelType.class, "name", labelType.getName(), labelType);
+        return invalidValue(_("{0} already exists", labelType.getName()),
+                "name", labelType.getName(), labelType);
     }
 
     /**
@@ -172,15 +172,13 @@ public class LabelTypeModel extends IntegrationEntityModel implements
             }
         }
         if (!result.isEmpty()) {
-            throw new ValidationException(
-                    result.toArray(new InvalidValue[result.size()]));
+            throw new ValidationException(result);
         }
     }
 
     private InvalidValue createInvalidValue(Label label) {
-        return new InvalidValue(_(
-                "{0} already exists", label.getName()),
-                LabelType.class, "name", label.getName(), label);
+        return invalidValue(_("{0} already exists", label.getName()), "name",
+                label.getName(), label);
     }
 
     @Override
@@ -265,10 +263,10 @@ public class LabelTypeModel extends IntegrationEntityModel implements
             throws ValidationException {
         for (Label label : labelType.getLabels()) {
             if (name.equals(label.getName())) {
-                InvalidValue[] invalidValues = { new InvalidValue(
-                        _("Already exists other " + "label with the same name"),
-                        LabelType.class, "name", name, getLabelType()) };
-                throw new ValidationException(invalidValues);
+                throw new ValidationException(
+                        invalidValue(_("Already exists other "
+                                + "label with the same name"), "name", name,
+                                getLabelType()));
             }
         }
     }
@@ -276,10 +274,9 @@ public class LabelTypeModel extends IntegrationEntityModel implements
     @Override
     public void validateNameNotEmpty(String name) throws ValidationException {
         if (name.isEmpty()) {
-            InvalidValue[] invalidValues = { new InvalidValue(
-                    _("The name of the label is empty."), LabelType.class,
-                    "name", "", getLabelType()) };
-            throw new ValidationException(invalidValues);
+            throw new ValidationException(invalidValue(
+                    _("The name of the label is empty."),
+                    "name", "", getLabelType()));
         }
     }
 

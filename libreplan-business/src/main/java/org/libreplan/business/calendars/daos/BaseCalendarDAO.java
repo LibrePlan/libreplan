@@ -154,7 +154,7 @@ public class BaseCalendarDAO extends IntegrationEntityDAO<BaseCalendar>
                 .add(Restrictions.eq("calendarData.parent", calendar)).list();
         if (!calendars.isEmpty()) {
             throw ValidationException
-                    .invalidValue(
+                    .invalidValueException(
                             "Cannot delete calendar. It is being used at this moment by some resources.",
                             calendar);
         }
@@ -165,7 +165,7 @@ public class BaseCalendarDAO extends IntegrationEntityDAO<BaseCalendar>
                 .add(Restrictions.eq("calendar", calendar)).list();
         if (!orders.isEmpty()) {
             throw ValidationException
-                    .invalidValue(
+                    .invalidValueException(
                             "Cannot delete calendar. It is being used at this moment by some orders.",
                             calendar);
         }
@@ -176,7 +176,7 @@ public class BaseCalendarDAO extends IntegrationEntityDAO<BaseCalendar>
                 .add(Restrictions.eq("calendar", calendar)).list();
         if (!tasks.isEmpty()) {
             throw ValidationException
-                    .invalidValue(
+                    .invalidValueException(
                             "Cannot delete calendar. It is being used at this moment by some tasks.",
                             calendar);
         }
@@ -187,7 +187,7 @@ public class BaseCalendarDAO extends IntegrationEntityDAO<BaseCalendar>
                 .add(Restrictions.eq("calendar", calendar)).list();
         if (!templates.isEmpty()) {
             throw ValidationException
-                    .invalidValue(
+                    .invalidValueException(
                             "Cannot delete calendar. It is being used at this moment by some templates.",
                             calendar);
         }

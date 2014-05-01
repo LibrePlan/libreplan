@@ -24,7 +24,7 @@ package org.libreplan.business.calendars.entities;
 import java.util.Comparator;
 import java.util.Date;
 
-import org.hibernate.validator.NotNull;
+import javax.validation.constraints.NotNull;
 import org.joda.time.Interval;
 import org.joda.time.LocalDate;
 import org.libreplan.business.calendars.daos.ICalendarAvailabilityDAO;

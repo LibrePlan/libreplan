@@ -32,9 +32,10 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.validation.Valid;
+import javax.validation.constraints.AssertTrue;
+
 import org.apache.commons.lang.Validate;
-import org.hibernate.validator.AssertTrue;
-import org.hibernate.validator.Valid;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
 
@@ -307,14 +308,14 @@ public class StretchesFunction extends AssignmentFunction {
     }
 
     @AssertTrue(message = "At least one stretch is needed")
-    public boolean checkNoEmpty() {
+    public boolean isNoEmptyConstraint() {
         // first 0%-0% and last 100%-100% stretches are added automatically
         return getStretchesPlusConsolidated().size() > 2;
     }
 
     @AssertTrue(message = "A stretch has lower or equal values than the "
             + "previous stretch")
-    public boolean checkStretchesOrder() {
+    public boolean isStretchesOrderConstraint() {
         List<Stretch> stretchesPlusConsolidated = getStretchesPlusConsolidated();
         if (stretchesPlusConsolidated.isEmpty()) {
             return false;
@@ -349,7 +350,7 @@ public class StretchesFunction extends AssignmentFunction {
 
     @AssertTrue(message = "Last stretch should have one hundred percent "
             + "length and one hundred percent of work percentage")
-    public boolean checkOneHundredPercent() {
+    public boolean isOneHundredPercentConstraint() {
         List<Stretch> stretches = getStretchesPlusConsolidated();
         if (stretches.isEmpty()) {
             return false;

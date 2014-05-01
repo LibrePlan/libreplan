@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.libreplan.business.planner.entities"
     default-access="field">
     <class name="TaskElement" table="task_element">
@@ -13,18 +13,18 @@
         <property name="notes" type="text" />
         <component name="startDate"
             class="org.libreplan.business.workingday.IntraDayDate">
-            <property  name="date" column="start_date" not-null="true"
-                type="org.joda.time.contrib.hibernate.PersistentLocalDate"/>
+            <property  name="date" column="start_date" not-null="true" />
+
             <property name="effortDuration" column="start_day_duration"
                 type="org.libreplan.business.workingday.hibernate.EffortDurationType"/>
         </component>
         <component name="endDate" class="org.libreplan.business.workingday.IntraDayDate">
-            <property name="date" column="end_date" not-null="true"
-                type="org.joda.time.contrib.hibernate.PersistentLocalDate" />
+            <property name="date" column="end_date" not-null="true" />
+
             <property name="effortDuration" column="end_day_duration"
                 type="org.libreplan.business.workingday.hibernate.EffortDurationType"/>
         </component>
-        <property name="deadline" type="org.joda.time.contrib.hibernate.PersistentLocalDate" />
+        <property name="deadline"/>
         <property name="advancePercentage" column="advance_percentage" access="field" scale="4"/>
 
         <property name="sumOfAssignedEffort" column="sum_of_assigned_effort" access="field"
@@ -70,8 +70,8 @@
                 </property>
                 <component name="constraintDate"
                     class="org.libreplan.business.workingday.IntraDayDate">
-                    <property name="date" column="constraint_date"
-                        type="org.joda.time.contrib.hibernate.PersistentLocalDate"/>
+                    <property name="date" column="constraint_date" />
+
                     <property name="effortDuration" column="constraint_date_effort_duration"
                         type="org.libreplan.business.workingday.hibernate.EffortDurationType"/>
                 </component>
@@ -127,8 +127,8 @@
                 </property>
                 <component name="constraintDate"
                     class="org.libreplan.business.workingday.IntraDayDate">
-                    <property name="date" column="constraint_date"
-                        type="org.joda.time.contrib.hibernate.PersistentLocalDate"/>
+                    <property name="date" column="constraint_date" />
+
                     <property name="effortDuration" column="constraint_date_effort_duration"
                         type="org.libreplan.business.workingday.hibernate.EffortDurationType"/>
                 </component>
@@ -175,8 +175,8 @@
             cascade="all"
             name="queueDependency"
             column="queue_dependency"
-            unique="false"
-         />
+            unique="false" />
+
         <property name="type">
             <type name="org.hibernate.type.EnumType">
                 <param name="enumClass">org.libreplan.business.planner.entities.Dependency$Type</param>

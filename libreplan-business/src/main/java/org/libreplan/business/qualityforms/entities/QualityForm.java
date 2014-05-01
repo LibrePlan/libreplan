@@ -33,10 +33,10 @@ import java.util.List;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.Validate;
 import org.hibernate.NonUniqueResultException;
-import org.hibernate.validator.AssertTrue;
-import org.hibernate.validator.NotEmpty;
-import org.hibernate.validator.NotNull;
-import org.hibernate.validator.Valid;
+import javax.validation.constraints.AssertTrue;
+import org.hibernate.validator.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.Valid;
 import org.libreplan.business.advance.entities.AdvanceType;
 import org.libreplan.business.common.BaseEntity;
 import org.libreplan.business.common.IHumanIdentifiable;
@@ -190,7 +190,7 @@ public class QualityForm extends BaseEntity implements IHumanIdentifiable{
 
     @SuppressWarnings("unused")
     @AssertTrue(message = "Quality form name is already being used")
-    public boolean checkConstraintUniqueQualityFormName() {
+    public boolean isUniqueQualityFormNameConstraint() {
         IQualityFormDAO qualityFormDAO = Registry.getQualityFormDAO();
         if (isNewObject()) {
             return !qualityFormDAO.existsByNameAnotherTransaction(this);
@@ -208,13 +208,13 @@ public class QualityForm extends BaseEntity implements IHumanIdentifiable{
 
     @SuppressWarnings("unused")
     @AssertTrue(message = "Quality form item name must be unique")
-    public boolean checkConstraintUniqueQualityFormItemsName() {
+    public boolean isUniqueQualityFormItemsNameConstraint() {
         return (findQualityFormItemWithDuplicateName() == null);
     }
 
     @SuppressWarnings("unused")
     @AssertTrue(message = "The quality form item positions must be unique and consecutive.")
-    public boolean checkConstraintConsecutivesAndUniquesQualityFormItemPositions() {
+    public boolean isConsecutivesAndUniquesQualityFormItemPositionsConstraint() {
         List<QualityFormItem> result = getListToNull(qualityFormItems);
         for (QualityFormItem qualityFormItem : qualityFormItems) {
             // Check if index is out of range
@@ -246,7 +246,7 @@ public class QualityForm extends BaseEntity implements IHumanIdentifiable{
 
     @SuppressWarnings("unused")
     @AssertTrue(message = "The quality item positions must be correct in function to the percentage.")
-    public boolean checkConstraintCorrectPositionsQualityFormItemsByPercentage() {
+    public boolean isCorrectPositionsQualityFormItemsByPercentageConstraint() {
         // check the position is correct in function to the percentage.
         if ((qualityFormType != null)
                 && (qualityFormType.equals(QualityFormType.BY_PERCENTAGE))) {
@@ -264,7 +264,7 @@ public class QualityForm extends BaseEntity implements IHumanIdentifiable{
 
     @SuppressWarnings("unused")
     @AssertTrue(message = "percentages in quality form items must be unique")
-    public boolean checkConstraintDuplicatesQualityFormItemPercentage() {
+    public boolean isDuplicatesQualityFormItemPercentageConstraint() {
         if ((qualityFormType != null)
                 && (qualityFormType.equals(QualityFormType.BY_PERCENTAGE))
                 && (findQualityFormItemWithDuplicatePercentage() != null)) {
@@ -275,7 +275,7 @@ public class QualityForm extends BaseEntity implements IHumanIdentifiable{
 
     @SuppressWarnings("unused")
     @AssertTrue(message = "percentage should be greater than 0% and less than 100%")
-    public boolean checkConstraintQualityFormItemsPercentage() {
+    public boolean isQualityFormItemsPercentageConstraint() {
         if ((qualityFormItems.size() > 0) && (qualityFormType != null)
                 && (qualityFormType.equals(QualityFormType.BY_ITEMS))) {
             BigDecimal sum = new BigDecimal(0);
@@ -404,7 +404,7 @@ public class QualityForm extends BaseEntity implements IHumanIdentifiable{
     }
 
     @AssertTrue(message = "progress type should must be defined if quality form reports progress")
-    public boolean checkConstraintAdvanceTypeIsNotNullIfReportAdvance() {
+    public boolean isAdvanceTypeIsNotNullIfReportAdvanceConstraint() {
         if (advanceType == null) {
             return !isReportAdvance();
         }

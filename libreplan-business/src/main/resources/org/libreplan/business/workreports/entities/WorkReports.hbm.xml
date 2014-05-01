@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.libreplan.business.workreports.entities" default-access="field">
 
 <!-- WorkReportType -->
@@ -121,10 +121,13 @@
 
     <property name="effort" access="field" column="effort" type="org.libreplan.business.workingday.hibernate.EffortDurationType" />
     <property name="date" access="field"/>
-    <property name="clockStart" access="field" column="clock_start"
-        type="org.joda.time.contrib.hibernate.PersistentLocalTimeExact" />
-    <property name="clockFinish" access="field" column="clock_finish"
-        type="org.joda.time.contrib.hibernate.PersistentLocalTimeExact" />
+    <property name="clockStart" access="field"
+        type="org.jadira.usertype.dateandtime.joda.PersistentLocalTimeAsMillisInteger"
+        column="clock_start" />
+
+    <property name="clockFinish" access="field"
+        type="org.jadira.usertype.dateandtime.joda.PersistentLocalTimeAsMillisInteger"
+        column="clock_finish" />
 
     <!-- Indexed -->
     <many-to-one name="workReport" class="org.libreplan.business.workreports.entities.WorkReport"

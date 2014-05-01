@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
-import org.hibernate.validator.NotNull;
+import javax.validation.constraints.NotNull;
 import org.joda.time.LocalDate;
 import org.libreplan.business.common.BaseEntity;
 import org.libreplan.business.resources.entities.Resource;

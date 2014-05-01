@@ -21,7 +21,7 @@
 
 package org.libreplan.business.advance.entities;
 
-import org.hibernate.validator.NotNull;
+import javax.validation.constraints.NotNull;
 import org.libreplan.business.common.BaseEntity;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderLineGroup;

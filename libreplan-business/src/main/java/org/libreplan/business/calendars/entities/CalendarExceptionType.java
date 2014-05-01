@@ -29,9 +29,9 @@ import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.hibernate.NonUniqueResultException;
-import org.hibernate.validator.AssertTrue;
-import org.hibernate.validator.NotEmpty;
-import org.hibernate.validator.NotNull;
+import javax.validation.constraints.AssertTrue;
+import org.hibernate.validator.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import org.libreplan.business.calendars.daos.ICalendarExceptionTypeDAO;
 import org.libreplan.business.common.IHumanIdentifiable;
 import org.libreplan.business.common.IntegrationEntity;
@@ -39,7 +39,7 @@ import org.libreplan.business.common.Registry;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workingday.EffortDuration.Granularity;
-import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException;
+import org.springframework.orm.hibernate4.HibernateOptimisticLockingFailureException;
 
 /**
  * Type of an exception day.
@@ -180,7 +180,7 @@ public class CalendarExceptionType extends IntegrationEntity implements
     }
 
     @AssertTrue(message = "name is already used")
-    public boolean checkConstraintUniqueName() {
+    public boolean isUniqueNameConstraint() {
         if (StringUtils.isBlank(name)) {
             return true;
         }

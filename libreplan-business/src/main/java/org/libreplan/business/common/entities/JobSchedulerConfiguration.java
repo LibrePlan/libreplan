@@ -20,8 +20,8 @@
 package org.libreplan.business.common.entities;
 
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.validator.AssertTrue;
-import org.hibernate.validator.NotNull;
+import javax.validation.constraints.AssertTrue;
+import javax.validation.constraints.NotNull;
 import org.libreplan.business.common.BaseEntity;
 import org.libreplan.business.common.IHumanIdentifiable;
 import org.libreplan.business.common.Registry;
@@ -121,7 +121,7 @@ public class JobSchedulerConfiguration extends BaseEntity implements
     }
 
     @AssertTrue(message = "job group and name are already being used")
-    public boolean checkConstraintUniqueJobGroupAndName() {
+    public boolean isUniqueJobGroupAndNameConstraint() {
         if (StringUtils.isBlank(jobGroup) && StringUtils.isBlank(jobName)) {
             return true;
         }

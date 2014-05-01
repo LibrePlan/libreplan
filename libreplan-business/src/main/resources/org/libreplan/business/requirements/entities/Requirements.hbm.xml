@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.libreplan.business.requirements.entities">
   <class name="CriterionRequirement" table="criterion_requirement">
 
@@ -18,16 +18,16 @@
     <many-to-one class="org.libreplan.business.orders.entities.HoursGroup"
         column="hours_group_id"
         name="hoursGroup"
-        index="idx_criterion_requirement_on_hours_group"
-    />
+        index="idx_criterion_requirement_on_hours_group" />
+
 
     <!-- Inverse navigation from CriterionRequirement to OrderElement -->
     <!-- Indexed -->
     <many-to-one class="org.libreplan.business.orders.entities.OrderElement"
         column="order_element_id"
         name="orderElement"
-        index="idx_criterion_requirement_on_order_element"
-        />
+        index="idx_criterion_requirement_on_order_element" />
+
 
     <!-- Inverse navigation from CriterionRequirement to OrderTemplateElement -->
     <many-to-one class="org.libreplan.business.templates.entities.OrderElementTemplate" column="order_element_template_id" name="orderElementTemplate"/>

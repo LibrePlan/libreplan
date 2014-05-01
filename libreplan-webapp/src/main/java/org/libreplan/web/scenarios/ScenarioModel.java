@@ -21,14 +21,13 @@
 
 package org.libreplan.web.scenarios;
 
+import static org.libreplan.business.common.exceptions.ValidationException.invalidValue;
 import static org.libreplan.web.I18nHelper._;
 
 import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
-import org.hibernate.validator.InvalidValue;
-import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.orders.daos.IOrderDAO;
@@ -217,11 +216,9 @@ public class ScenarioModel implements IScenarioModel {
     @Transactional
     public void confirmSave() throws ValidationException {
         if (scenarioDAO.thereIsOtherWithSameName(scenario)) {
-            InvalidValue[] invalidValues = { new InvalidValue(_(
-                    "{0} already exists", scenario.getName()),
-                    BaseCalendar.class, "name", scenario.getName(), scenario) };
-            throw new ValidationException(invalidValues,
-                    _("Could not save the scenario"));
+            throw new ValidationException(_("Could not save the scenario"),
+                    invalidValue(_("{0} already exists", scenario.getName()),
+                            "name", scenario.getName(), scenario));
         }
 
         scenarioDAO.save(scenario);

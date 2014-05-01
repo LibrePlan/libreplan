@@ -29,10 +29,10 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.validator.AssertTrue;
-import org.hibernate.validator.NotEmpty;
-import org.hibernate.validator.NotNull;
-import org.hibernate.validator.Valid;
+import javax.validation.constraints.AssertTrue;
+import org.hibernate.validator.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.Valid;
 import org.libreplan.business.common.IntegrationEntity;
 import org.libreplan.business.common.Registry;
 import org.libreplan.business.common.entities.EntitySequence;
@@ -151,7 +151,7 @@ public class MaterialCategory extends IntegrationEntity {
     }
 
     @AssertTrue(message="material category name has to be unique. It is already used")
-    public boolean checkConstraintUniqueName() {
+    public boolean isUniqueNameConstraint() {
         boolean result;
         if (isNewObject()) {
             result = !existsMaterialCategoryWithTheName();
@@ -220,7 +220,7 @@ public class MaterialCategory extends IntegrationEntity {
 
     @SuppressWarnings("unused")
     @AssertTrue(message = "Subcategory names must be unique.")
-    public boolean checkConstraintUniqueSubcategoryName() {
+    public boolean isUniqueSubcategoryNameConstraint() {
         Set<String> subcategoriesNames = new HashSet<String>();
         for (MaterialCategory mc : this.getAllSubcategories()) {
             if (!StringUtils.isBlank(mc.getName())) {
@@ -237,7 +237,7 @@ public class MaterialCategory extends IntegrationEntity {
     }
 
     @AssertTrue(message = "There are repeated material category codes")
-    public boolean checkConstraintNonRepeatedMaterialCategoryCodes() {
+    public boolean isNonRepeatedMaterialCategoryCodesConstraint() {
         Set<MaterialCategory> allSubcategories = getAllSubcategories();
         allSubcategories.add(this);
         return getFirstRepeatedCode(allSubcategories) == null;
@@ -252,7 +252,7 @@ public class MaterialCategory extends IntegrationEntity {
     }
 
     @AssertTrue(message = "There are repeated material codes")
-    public boolean checkConstraintNonRepeatedMaterialCodes() {
+    public boolean isNonRepeatedMaterialCodesConstraint() {
         Set<Material> allMaterials = getAllMaterials();
         return getFirstRepeatedCode(allMaterials) == null;
     }

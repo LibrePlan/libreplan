@@ -29,10 +29,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.validation.Valid;
+import javax.validation.constraints.AssertTrue;
+import javax.validation.constraints.NotNull;
+
 import org.apache.commons.lang.Validate;
-import org.hibernate.validator.AssertTrue;
-import org.hibernate.validator.NotNull;
-import org.hibernate.validator.Valid;
 import org.joda.time.LocalDate;
 import org.libreplan.business.advance.entities.AdvanceAssignment;
 import org.libreplan.business.advance.entities.AdvanceType;
@@ -83,7 +84,6 @@ public class OrderLine extends OrderElement {
 
     }
 
-    @Valid
     private Set<HoursGroup> hoursGroups = new HashSet<HoursGroup>();
 
     private Integer lastHoursGroupSequenceCode = 0;
@@ -329,7 +329,7 @@ public class OrderLine extends OrderElement {
     }
 
     @AssertTrue(message = "Code already included in Hours Group codes")
-    public boolean checkConstraintHoursGroupsCodeNotRepeated() {
+    public boolean isHoursGroupsCodeNotRepeatedConstraint() {
         Set<String> codes = new HashSet<String>();
 
         for (HoursGroup hoursGroup : getHoursGroups()) {

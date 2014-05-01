@@ -21,6 +21,7 @@
 
 package org.libreplan.business.resources.entities;
 
+import static org.libreplan.business.common.exceptions.ValidationException.invalidValue;
 import static org.libreplan.business.workingday.EffortDuration.zero;
 
 import java.util.ArrayList;
@@ -35,12 +36,12 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
+import javax.validation.Valid;
+import javax.validation.constraints.AssertFalse;
+import javax.validation.constraints.AssertTrue;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
-import org.hibernate.validator.AssertFalse;
-import org.hibernate.validator.AssertTrue;
-import org.hibernate.validator.InvalidValue;
-import org.hibernate.validator.Valid;
 import org.joda.time.LocalDate;
 import org.libreplan.business.calendars.entities.AvailabilityTimeLine;
 import org.libreplan.business.calendars.entities.BaseCalendar;
@@ -989,9 +990,8 @@ public abstract class Resource extends IntegrationEntity implements
         if (!canAddSatisfaction(satisfaction, satisfactions)) {
             String message = getReasonForNotAddingSatisfaction(satisfaction
                     .getCriterion().getType());
-            final InvalidValue invalidValue = new InvalidValue(message,
-                    CriterionSatisfaction.class, "resource", this, satisfaction);
-            throw new ValidationException(invalidValue);
+            throw new ValidationException(invalidValue(message, "resource",
+                    this, satisfaction));
         }
     }
 
@@ -1063,7 +1063,7 @@ public abstract class Resource extends IntegrationEntity implements
     }
 
     @AssertTrue(message="Some criterion satisfactions overlap in time")
-    public boolean checkConstraintCriterionSatisfactionsOverlapping() {
+    public boolean isCriterionSatisfactionsOverlappingConstraint() {
 
         /*
          * Check if time intervals in criterion satisfactions are correct in
@@ -1072,8 +1072,8 @@ public abstract class Resource extends IntegrationEntity implements
          */
         for (CriterionSatisfaction i : getCriterionSatisfactions()) {
 
-            if (!(i.isStartDateSpecified() &&
-                  i.checkConstraintPositiveTimeInterval())) {
+            if (!(i.isStartDateSpecified() && i
+                    .isPositiveTimeInterval())) {
                 return true;
             }
 
@@ -1093,7 +1093,7 @@ public abstract class Resource extends IntegrationEntity implements
     }
 
     @AssertFalse(message="Some cost category assignments overlap in time")
-    public boolean checkConstraintAssignmentsOverlapping() {
+    public boolean isAssignmentsOverlappingConstraint() {
 
         /*
          * Check if time intervals in cost assignments are correct in isolation.
@@ -1101,7 +1101,7 @@ public abstract class Resource extends IntegrationEntity implements
          */
         for (ResourcesCostCategoryAssignment each : getResourcesCostCategoryAssignments()) {
             if (!(each.isInitDateSpecified() && each
-                    .checkConstraintPositiveTimeInterval())) {
+                    .isPositiveTimeInterval())) {
                 return false;
             }
         }
@@ -1130,7 +1130,7 @@ public abstract class Resource extends IntegrationEntity implements
 
     @AssertTrue(message="there exist criterion satisfactions referring to " +
         "criterion types not applicable to this resource")
-    public boolean checkConstraintCriterionSatisfactionsWithCorrectType() {
+    public boolean isCriterionSatisfactionsWithCorrectTypeConstraint() {
 
         for (CriterionSatisfaction c : getCriterionSatisfactions()) {
             if (!isCriterionSatisfactionOfCorrectType(c)) {
@@ -1144,13 +1144,13 @@ public abstract class Resource extends IntegrationEntity implements
 
     @AssertTrue(message="criterion satisfaction codes must be unique inside " +
         "a resource")
-    public boolean checkConstraintNonRepeatedCriterionSatisfactionCodes() {
+    public boolean isNonRepeatedCriterionSatisfactionCodesConstraint() {
         return getFirstRepeatedCode(criterionSatisfactions) == null;
     }
 
     @AssertTrue(message="resource cost category assignments codes must be " +
         "unique inside a resource")
-    public boolean checkConstraintNonRepeatedResourcesCostCategoryAssignmentCodes() {
+    public boolean isNonRepeatedResourcesCostCategoryAssignmentCodesConstraint() {
         return getFirstRepeatedCode(resourcesCostCategoryAssignments) == null;
     }
 
@@ -1189,7 +1189,7 @@ public abstract class Resource extends IntegrationEntity implements
     }
 
     @AssertTrue(message = "You have exceeded the maximum limit of resources")
-    public boolean checkMaxResources() {
+    public boolean isMaxResourcesConstraint() {
         return Registry.getTransactionService()
                 .runOnAnotherReadOnlyTransaction(new IOnTransaction<Boolean>() {
                     @Override

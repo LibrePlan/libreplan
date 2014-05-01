@@ -24,8 +24,8 @@ package org.libreplan.business.users.entities;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.hibernate.validator.AssertTrue;
-import org.hibernate.validator.NotEmpty;
+import javax.validation.constraints.AssertTrue;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.libreplan.business.common.BaseEntity;
 import org.libreplan.business.common.IHumanIdentifiable;
 import org.libreplan.business.common.Registry;
@@ -87,7 +87,7 @@ public class Profile extends BaseEntity implements IHumanIdentifiable{
     }
 
     @AssertTrue(message="profile name is already being used by another profile")
-    public boolean checkConstraintUniqueLoginName() {
+    public boolean isUniqueLoginNameConstraint() {
 
         IProfileDAO dao = Registry.getProfileDAO();
 

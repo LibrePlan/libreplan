@@ -19,7 +19,7 @@
 
 package org.libreplan.business.common.entities;
 
-import org.hibernate.validator.NotEmpty;
+import org.hibernate.validator.constraints.NotEmpty;
 
 /**
  * This class is intended to work as a Hibernate component. It's formed by two

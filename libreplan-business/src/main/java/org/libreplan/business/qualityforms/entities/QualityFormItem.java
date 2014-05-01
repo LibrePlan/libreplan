@@ -26,9 +26,9 @@ package org.libreplan.business.qualityforms.entities;
 
 import java.math.BigDecimal;
 
-import org.hibernate.validator.AssertTrue;
-import org.hibernate.validator.NotEmpty;
-import org.hibernate.validator.NotNull;
+import javax.validation.constraints.AssertTrue;
+import org.hibernate.validator.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import org.libreplan.business.INewObject;
 
 public class QualityFormItem implements INewObject {
@@ -110,7 +110,7 @@ public class QualityFormItem implements INewObject {
 
     @SuppressWarnings("unused")
     @AssertTrue(message = "percentage should be greater than 0% and less than 100%")
-    public boolean checkConstraintQualityFormItemPercentage() {
+    public boolean isQualityFormItemPercentageConstraint() {
         if (percentage == null) {
             return true;
         }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping default-access="field" package="org.libreplan.business.resources.entities">
 
   <class name="Resource" table="resource">
@@ -155,10 +155,10 @@
     </id>
     <version name="version" access="property" type="long" />
     <property name="code" access="property" not-null="true" unique="true"/>
-    <property access="field" name="startDate" not-null="true" column="start_date"
-        type="org.joda.time.contrib.hibernate.PersistentLocalDate"/>
-    <property access="field" name="finishDate" column="finish_date"
-        type="org.joda.time.contrib.hibernate.PersistentLocalDate"/>
+    <property access="field" name="startDate" not-null="true" column="start_date" />
+
+    <property access="field" name="finishDate" column="finish_date" />
+
     <property access="field" name="isDeleted" column="is_deleted" />
 
     <!-- Indexed. It is not probable to ask for the criterion satisfactions of a criterion -->

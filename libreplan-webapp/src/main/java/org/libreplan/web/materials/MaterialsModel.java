@@ -21,6 +21,7 @@
 
 package org.libreplan.web.materials;
 
+import static org.libreplan.business.common.exceptions.ValidationException.invalidValue;
 import static org.libreplan.web.I18nHelper._;
 
 import java.util.ArrayList;
@@ -34,7 +35,6 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
-import org.hibernate.validator.InvalidValue;
 import org.libreplan.business.common.IntegrationEntity;
 import org.libreplan.business.common.daos.IConfigurationDAO;
 import org.libreplan.business.common.entities.EntityNameEnum;
@@ -170,9 +170,9 @@ public class MaterialsModel extends IntegrationEntityModel implements
 
         final MaterialCategory materialCategory = findMaterialCategory(child);
         if (materialCategory != null) {
-            final InvalidValue invalidValue = new InvalidValue(_("{0} already exists", materialCategory.getName()),
-                    MaterialCategory.class, "name", materialCategory.getName(), materialCategory);
-            throw new ValidationException(invalidValue);
+            throw new ValidationException(invalidValue(
+                    _("{0} already exists", materialCategory.getName()),
+                    "name", materialCategory.getName(), materialCategory));
         }
 
         child.setParent(parent);

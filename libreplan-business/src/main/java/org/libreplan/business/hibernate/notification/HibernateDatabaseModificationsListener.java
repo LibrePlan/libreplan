@@ -33,25 +33,33 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import javax.annotation.PostConstruct;
 import javax.transaction.Status;
 import javax.transaction.Synchronization;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.event.AbstractEvent;
-import org.hibernate.event.PostDeleteEvent;
-import org.hibernate.event.PostDeleteEventListener;
-import org.hibernate.event.PostInsertEvent;
-import org.hibernate.event.PostInsertEventListener;
-import org.hibernate.event.PostUpdateEvent;
-import org.hibernate.event.PostUpdateEventListener;
+import org.hibernate.event.service.spi.EventListenerRegistry;
+import org.hibernate.event.spi.AbstractEvent;
+import org.hibernate.event.spi.EventType;
+import org.hibernate.event.spi.PostDeleteEvent;
+import org.hibernate.event.spi.PostDeleteEventListener;
+import org.hibernate.event.spi.PostInsertEvent;
+import org.hibernate.event.spi.PostInsertEventListener;
+import org.hibernate.event.spi.PostUpdateEvent;
+import org.hibernate.event.spi.PostUpdateEventListener;
+import org.hibernate.internal.SessionFactoryImpl;
 import org.hibernate.proxy.HibernateProxy;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * @author Óscar González Fernández
  *
  */
+@Component
 public class HibernateDatabaseModificationsListener implements
         PostInsertEventListener, PostUpdateEventListener,
         PostDeleteEventListener, ISnapshotRefresherService {
@@ -126,8 +134,25 @@ public class HibernateDatabaseModificationsListener implements
 
     }
 
+    @Autowired
+    private SessionFactory sessionFactory;
+
+    private volatile boolean hibernateListenersRegistered = false;
+
     public HibernateDatabaseModificationsListener() {
         interested = new ConcurrentHashMap<Class<?>, BlockingQueue<NotBlockingAutoUpdatedSnapshot<?>>>();
+    }
+
+    @PostConstruct
+    private void registerHibernateListeners() {
+        SessionFactoryImpl impl = (SessionFactoryImpl) sessionFactory;
+        EventListenerRegistry registry = impl.getServiceRegistry().getService(EventListenerRegistry.class);
+
+        registry.appendListeners(EventType.POST_INSERT, this);
+        registry.appendListeners(EventType.POST_UPDATE, this);
+        registry.appendListeners(EventType.POST_DELETE, this);
+
+        hibernateListenersRegistered = true;
     }
 
     @Override
@@ -202,6 +227,11 @@ public class HibernateDatabaseModificationsListener implements
     @Override
     public <T> IAutoUpdatedSnapshot<T> takeSnapshot(String name,
             Callable<T> callable, ReloadOn reloadOn) {
+        if (!hibernateListenersRegistered) {
+            throw new IllegalStateException(
+                    "The hibernate listeners has not been registered. There is some configuration problem.");
+        }
+
         final NotBlockingAutoUpdatedSnapshot<T> result;
         result = new NotBlockingAutoUpdatedSnapshot<T>(name, callable);
         for (Class<?> each : reloadOn.getClassesOnWhichToReload()) {

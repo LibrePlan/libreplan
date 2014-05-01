@@ -22,10 +22,10 @@
 package org.libreplan.business.common.entities;
 
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.validator.AssertTrue;
-import org.hibernate.validator.Min;
-import org.hibernate.validator.NotEmpty;
-import org.hibernate.validator.NotNull;
+import javax.validation.constraints.AssertTrue;
+import javax.validation.constraints.Min;
+import org.hibernate.validator.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.common.BaseEntity;
 import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
@@ -155,7 +155,7 @@ public class Configuration extends BaseEntity {
     }
 
     @AssertTrue(message = "company code cannot contain whitespaces")
-    public boolean checkConstraintCompanyCodeWithoutWhiteSpaces() {
+    public boolean isCompanyCodeWithoutWhiteSpacesConstraint() {
         if ((companyCode == null) || (companyCode.isEmpty())) {
             return false;
         }
@@ -163,7 +163,7 @@ public class Configuration extends BaseEntity {
     }
 
     @AssertTrue(message = "host not specified")
-    public boolean checkConstraintLdapHostWithoutWhiteSpaces() {
+    public boolean isLdapHostWithoutWhiteSpacesConstraint() {
         if (getLdapConfiguration().getLdapAuthEnabled()) {
             if (StringUtils.isBlank(getLdapConfiguration().getLdapHost())) {
                 return false;
@@ -173,7 +173,7 @@ public class Configuration extends BaseEntity {
     }
 
     @AssertTrue(message = "port not specified")
-    public boolean checkConstraintLdapPortWithoutWhiteSpaces() {
+    public boolean isLdapPortWithoutWhiteSpacesConstraint() {
         if (getLdapConfiguration().getLdapAuthEnabled()) {
             if (StringUtils.isBlank(getLdapConfiguration().getLdapPort())) {
                 return false;
@@ -183,7 +183,7 @@ public class Configuration extends BaseEntity {
     }
 
     @AssertTrue(message = "base not specified")
-    public boolean checkConstraintLdapBaseWithoutWhiteSpaces() {
+    public boolean isLdapBaseWithoutWhiteSpacesConstraint() {
         if (getLdapConfiguration().getLdapAuthEnabled()) {
             if (StringUtils.isBlank(getLdapConfiguration().getLdapBase())) {
                 return false;
@@ -193,7 +193,7 @@ public class Configuration extends BaseEntity {
     }
 
     @AssertTrue(message = "userId not specified")
-    public boolean checkConstraintLdapUserIdWithoutWhiteSpaces() {
+    public boolean isLdapUserIdWithoutWhiteSpacesConstraint() {
         if (getLdapConfiguration().getLdapAuthEnabled()) {
             if (StringUtils.isBlank(getLdapConfiguration().getLdapUserId())) {
                 return false;

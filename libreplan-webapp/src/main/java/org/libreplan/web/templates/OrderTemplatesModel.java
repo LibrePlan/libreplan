@@ -312,7 +312,7 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
         }
 
         getTemplate().setName(name);
-        if (!getTemplate().checkConstraintUniqueRootTemplateName()) {
+        if (!getTemplate().isUniqueRootTemplateNameConstraint()) {
             throw new IllegalArgumentException(
                     _("Already exists another template with the same name"));
         }

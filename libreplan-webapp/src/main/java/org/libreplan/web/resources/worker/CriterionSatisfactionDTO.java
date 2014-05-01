@@ -30,7 +30,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import org.hibernate.validator.NotNull;
+import javax.validation.constraints.NotNull;
 import org.joda.time.LocalDate;
 import org.libreplan.business.INewObject;
 import org.libreplan.business.resources.entities.Criterion;

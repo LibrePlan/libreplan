@@ -28,9 +28,9 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.NonUniqueResultException;
-import org.hibernate.validator.AssertTrue;
-import org.hibernate.validator.NotEmpty;
-import org.hibernate.validator.Valid;
+import javax.validation.constraints.AssertTrue;
+import org.hibernate.validator.constraints.NotEmpty;
+import javax.validation.Valid;
 import org.libreplan.business.common.IHumanIdentifiable;
 import org.libreplan.business.common.IntegrationEntity;
 import org.libreplan.business.common.Registry;
@@ -38,7 +38,7 @@ import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.labels.entities.LabelType;
 import org.libreplan.business.workreports.daos.IWorkReportTypeDAO;
 import org.libreplan.business.workreports.valueobjects.DescriptionField;
-import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException;
+import org.springframework.orm.hibernate4.HibernateOptimisticLockingFailureException;
 /**
  * @author Diego Pino García <dpino@igalia.com>
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
@@ -156,7 +156,7 @@ public class WorkReportType extends IntegrationEntity implements IHumanIdentifia
 
     @SuppressWarnings("unused")
     @AssertTrue(message = "Value is not valid.\n Code cannot contain chars like '_'.")
-    public boolean checkConstraintWorkReportTypeCodeWithoutIncorrectCharacter() {
+    public boolean isWorkReportTypeCodeWithoutIncorrectCharacterConstraint() {
         if ((getCode() == null) || (getCode().contains("_"))) {
             return false;
         }
@@ -165,7 +165,7 @@ public class WorkReportType extends IntegrationEntity implements IHumanIdentifia
 
     @SuppressWarnings("unused")
     @AssertTrue(message = "timesheet template name is already being used")
-    public boolean checkConstraintUniqueWorkReportTypeName() {
+    public boolean isUniqueWorkReportTypeNameConstraint() {
         IWorkReportTypeDAO workReportTypeDAO = Registry.getWorkReportTypeDAO();
         if (isNewObject()) {
             return !workReportTypeDAO.existsByNameAnotherTransaction(this);
@@ -185,7 +185,7 @@ public class WorkReportType extends IntegrationEntity implements IHumanIdentifia
 
     @SuppressWarnings("unused")
     @AssertTrue(message = "The field name must be unique.")
-    public boolean checkConstraintUniqueNamesDescriptionFields() {
+    public boolean isUniqueNamesDescriptionFieldsConstraint() {
         for (DescriptionField descriptionField : getDescriptionFields()) {
             if (existSameFieldName(descriptionField)) {
                 return false;
@@ -196,7 +196,7 @@ public class WorkReportType extends IntegrationEntity implements IHumanIdentifia
 
     @SuppressWarnings("unused")
     @AssertTrue(message = "Assigned Label Type cannot be repeated in a Timesheet Template.")
-    public boolean checkConstraintNotExistRepeatedLabelTypes() {
+    public boolean isNotExistRepeatedLabelTypesConstraint() {
         for (WorkReportLabelTypeAssigment assignedLabelType : this.workReportLabelTypeAssigments) {
             if (existRepeatedLabelType(assignedLabelType)) {
                 return false;
@@ -419,13 +419,13 @@ public class WorkReportType extends IntegrationEntity implements IHumanIdentifia
 
     @SuppressWarnings("unused")
     @AssertTrue(message = "In the heading part, index labels and fields must be unique and consecutive")
-    public boolean checkConstraintTheIndexHeadingFieldsAndLabelMustBeUniqueAndConsecutive() {
+    public boolean isTheIndexHeadingFieldsAndLabelMustBeUniqueAndConsecutiveConstraint() {
         return validateTheIndexFieldsAndLabels(getHeadingFieldsAndLabels());
     }
 
     @SuppressWarnings("unused")
     @AssertTrue(message = "In the lines part, index labels and fields must be unique and consecutive")
-    public boolean checkConstraintTheIndexLineFieldsAndLabelMustBeUniqueAndConsecutive() {
+    public boolean isTheIndexLineFieldsAndLabelMustBeUniqueAndConsecutiveConstraint() {
         return validateTheIndexFieldsAndLabels(getLineFieldsAndLabels());
     }
 

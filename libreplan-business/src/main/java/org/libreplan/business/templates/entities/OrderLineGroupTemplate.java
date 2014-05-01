@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.hibernate.validator.Valid;
+import javax.validation.Valid;
 import org.libreplan.business.i18n.I18nHelper;
 import org.libreplan.business.orders.entities.CriterionRequirementOrderElementHandler;
 import org.libreplan.business.orders.entities.HoursGroup;

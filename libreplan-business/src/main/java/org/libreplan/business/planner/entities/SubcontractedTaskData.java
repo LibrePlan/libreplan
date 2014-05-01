@@ -29,9 +29,9 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.hibernate.validator.AssertTrue;
-import org.hibernate.validator.NotEmpty;
-import org.hibernate.validator.NotNull;
+import javax.validation.constraints.AssertTrue;
+import org.hibernate.validator.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import org.libreplan.business.common.BaseEntity;
 import org.libreplan.business.externalcompanies.entities.DeliverDateComparator;
 import org.libreplan.business.externalcompanies.entities.EndDateCommunication;
@@ -246,7 +246,7 @@ public class SubcontractedTaskData extends BaseEntity {
     }
 
     @AssertTrue(message = "external company should be subcontractor")
-    public boolean checkConstraintExternalCompanyIsSubcontractor() {
+    public boolean isExternalCompanyIsSubcontractorConstraint() {
         if (!firstLevelValidationsPassed()) {
             return true;
         }

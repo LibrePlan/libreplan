@@ -35,10 +35,10 @@ import org.apache.commons.collections.ComparatorUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.EqualsBuilder;
-import org.hibernate.validator.AssertTrue;
-import org.hibernate.validator.NotEmpty;
-import org.hibernate.validator.NotNull;
-import org.hibernate.validator.Valid;
+import javax.validation.constraints.AssertTrue;
+import org.hibernate.validator.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.Valid;
 import org.joda.time.LocalDate;
 import org.libreplan.business.common.IntegrationEntity;
 import org.libreplan.business.common.Registry;
@@ -424,7 +424,7 @@ public class Criterion extends IntegrationEntity implements ICriterion,
     }
 
     @AssertTrue(message="a disabled resource has enabled subresources")
-    public boolean checkConstraintActive() {
+    public boolean isActiveConstraint() {
 
         if (!active) {
             for (Criterion c : children) {

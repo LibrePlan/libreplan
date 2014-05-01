@@ -26,7 +26,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.libreplan.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.libreplan.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 
@@ -42,13 +41,14 @@ import java.util.SortedSet;
 import java.util.UUID;
 
 import javax.annotation.Resource;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
 
 import org.apache.commons.lang.Validate;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
-import org.hibernate.validator.ClassValidator;
-import org.hibernate.validator.InvalidValue;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
@@ -140,8 +140,8 @@ public class OrderElementTest {
 
     private Division division = division(4);
 
-    private ClassValidator<OrderElement> orderElementValidator =
-            new ClassValidator<OrderElement>(OrderElement.class);
+    private Validator orderElementValidator = Validation
+            .buildDefaultValidatorFactory().getValidator();
 
     private static OrderLine givenOrderLine(String name, String code,
             Integer hours) {
@@ -255,15 +255,10 @@ public class OrderElementTest {
     public void checkValidPropagation()throws ValidationException{
         OrderElement orderElement = givenOrderLineGroupWithTwoOrderLines(1000,
                 2000);
-        try {
-            InvalidValue[] invalidValues =
-                    orderElementValidator.getInvalidValues(orderElement);
-            if (invalidValues.length > 0) {
-                throw new ValidationException(invalidValues);
-            }
-        } catch (ValidationException e) {
-             fail("It not should throw an exception");
-        }
+        Set<ConstraintViolation<OrderElement>> invalidValues = orderElementValidator
+                .validate(orderElement);
+        assertTrue(invalidValues.isEmpty());
+
         CriterionType type = CriterionType.create("", "");
         type.setResource(ResourceEnum.WORKER);
         Criterion criterion = Criterion.create(type);
@@ -271,15 +266,9 @@ public class OrderElementTest {
                 .create(criterion);
         requirement.setOrderElement(orderElement);
         orderElement.addDirectCriterionRequirement(requirement);
-        try {
-            InvalidValue[] invalidValues =
-                    orderElementValidator.getInvalidValues(orderElement);
-            if (invalidValues.length > 0) {
-                throw new ValidationException(invalidValues);
-            }
-        } catch (ValidationException e) {
-            fail("It no should throw an exception");
-        }
+
+        invalidValues = orderElementValidator.validate(orderElement);
+        assertTrue(invalidValues.isEmpty());
     }
 
     @Test

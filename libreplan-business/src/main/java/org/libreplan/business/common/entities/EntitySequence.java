@@ -25,9 +25,9 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
 import org.hibernate.NonUniqueResultException;
-import org.hibernate.validator.AssertTrue;
-import org.hibernate.validator.NotEmpty;
-import org.hibernate.validator.NotNull;
+import javax.validation.constraints.AssertTrue;
+import org.hibernate.validator.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import org.libreplan.business.common.BaseEntity;
 import org.libreplan.business.common.IntegrationEntity;
 import org.libreplan.business.common.Registry;
@@ -104,7 +104,7 @@ public class EntitySequence extends BaseEntity {
     }
 
     @AssertTrue(message = "Prefix cannot contain whitespaces")
-    public boolean checkConstraintPrefixWithoutWhiteSpaces() {
+    public boolean isPrefixWithoutWhiteSpacesConstraint() {
         if ((prefix == null) || (prefix.isEmpty())) {
             return false;
         }
@@ -143,7 +143,7 @@ public class EntitySequence extends BaseEntity {
     }
 
     @AssertTrue(message = "number of digits out of range")
-    public boolean checkConstraintNumberOfDigitsInRange() {
+    public boolean isNumberOfDigitsInRangeConstraint() {
         if ((numberOfDigits != null)
                 && (numberOfDigits >= MIN_NUMBER_OF_DIGITS)
                 && (numberOfDigits <= MAX_NUMBER_OF_DIGITS)) {
@@ -153,7 +153,7 @@ public class EntitySequence extends BaseEntity {
     }
 
     @AssertTrue(message = "format sequence code invalid. It must not contain '_'")
-    public boolean checkConstraintWithoutLowBar() {
+    public boolean isWithoutLowBarConstraint() {
         if ((prefix == null) || (prefix.isEmpty())) {
             return false;
         }
@@ -199,7 +199,7 @@ public class EntitySequence extends BaseEntity {
     }
 
     @AssertTrue(message = "Only one sequence per entity can be active at the same time.")
-    public boolean checkConstraintOnlyOneSequenceForEachEntityIsActive() {
+    public boolean isOnlyOneSequenceForEachEntityIsActiveConstraint() {
         if (!isActive()) {
             return true;
         }

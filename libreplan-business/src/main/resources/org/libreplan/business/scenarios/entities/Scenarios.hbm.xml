@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.libreplan.business.scenarios.entities"
     default-access="field">
 
@@ -15,7 +15,6 @@
         <property name="name" />
         <property name="description" />
         <property name="lastNotOwnedReassignationsTimeStamp"
-            type="org.joda.time.contrib.hibernate.PersistentDateTime"
             column="last_not_owned_reassignations_time_stamp" />
 
         <map name="orders" table="scenario_orders" lazy="false" cascade="save-update">
@@ -38,7 +37,6 @@
         </id>
         <version name="version" access="property" type="long" />
         <property name="modificationByOwnerTimestamp"
-            type="org.joda.time.contrib.hibernate.PersistentDateTime"
             column="modification_by_owner_timestamp" />
         <many-to-one name="ownerScenario" class="Scenario" />
     </class>

@@ -26,8 +26,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.validator.NotEmpty;
-import org.hibernate.validator.Valid;
+import org.hibernate.validator.constraints.NotEmpty;
+import javax.validation.Valid;
 
 /**
  * Entity

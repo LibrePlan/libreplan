@@ -41,7 +41,7 @@ import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.validator.NotNull;
+import javax.validation.constraints.NotNull;
 import org.joda.time.LocalDate;
 import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.common.BaseEntity;

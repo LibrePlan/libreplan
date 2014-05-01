@@ -28,9 +28,9 @@ import java.util.List;
 
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.Validate;
-import org.hibernate.validator.AssertTrue;
-import org.hibernate.validator.NotNull;
-import org.hibernate.validator.Valid;
+import javax.validation.constraints.AssertTrue;
+import javax.validation.constraints.NotNull;
+import javax.validation.Valid;
 import org.libreplan.business.common.BaseEntity;
 import org.libreplan.business.orders.entities.OrderElement;
 
@@ -99,7 +99,7 @@ public class TaskQualityForm extends BaseEntity {
 
     @SuppressWarnings("unused")
     @AssertTrue(message = "Each date must be greater than the dates of the previous task quality form items.")
-    public boolean checkConstraintCorrectConsecutivesDate() {
+    public boolean isCorrectConsecutivesDateConstraint() {
         if (!isByItems()) {
             for (TaskQualityFormItem item : taskQualityFormItems) {
                 if (!isCorrectConsecutiveDate(item)) {
@@ -112,7 +112,7 @@ public class TaskQualityForm extends BaseEntity {
 
     @SuppressWarnings("unused")
     @AssertTrue(message = "items cannot be checked until the previous items are checked before.")
-    public boolean checkConstraintConsecutivePassedItems() {
+    public boolean isConsecutivePassedItemsConstraint() {
         if (!isByItems()) {
             for (TaskQualityFormItem item : taskQualityFormItems) {
                 if (!isCorrectConsecutivePassed(item)) {

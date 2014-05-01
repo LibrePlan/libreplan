@@ -21,8 +21,16 @@
 
 package org.libreplan.business.common.exceptions;
 
+import static java.util.Collections.singleton;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.validation.ConstraintViolation;
+
 import org.apache.commons.lang.Validate;
-import org.hibernate.validator.InvalidValue;
 import org.libreplan.business.common.BaseEntity;
 
 /**
@@ -32,23 +40,114 @@ import org.libreplan.business.common.BaseEntity;
  */
 public class ValidationException extends RuntimeException {
 
+    public static abstract class InvalidValue {
+
+        public abstract String getMessage();
+
+        public abstract String getPropertyPath();
+
+        public abstract Object getInvalidValue();
+
+        public abstract Object getRootBean();
+
+    }
+
+    private static class BasedOnConstraintViolation extends InvalidValue {
+
+        private ConstraintViolation<?> violation;
+
+        public BasedOnConstraintViolation(ConstraintViolation<?> violation) {
+            Validate.notNull(violation);
+            this.violation = violation;
+        }
+
+        @Override
+        public String getMessage() {
+            return violation.getMessage();
+        }
+
+        @Override
+        public String getPropertyPath() {
+            if (violation.getPropertyPath() == null) {
+                return null;
+            }
+            return violation.getPropertyPath().toString();
+        }
+
+
+        @Override
+        public Object getRootBean() {
+            return violation.getRootBean();
+        }
+
+        @Override
+        public Object getInvalidValue() {
+            return violation.getInvalidValue();
+        }
+    }
+
+    private static class InstantiatedInvalidValue extends InvalidValue {
+
+        private final String message;
+        private final String propertyPath;
+        private final Object invalidValue;
+        private final Object rootBean;
+
+        private InstantiatedInvalidValue(String message, String propertyPath,
+                Object invalidValue, Object rootBean) {
+            super();
+            this.message = message;
+            this.propertyPath = propertyPath;
+            this.invalidValue = invalidValue;
+            this.rootBean = rootBean;
+        }
+
+        @Override
+        public String getMessage() {
+            return message;
+        }
+
+        @Override
+        public String getPropertyPath() {
+            return propertyPath;
+        }
+
+        @Override
+        public Object getInvalidValue() {
+            return invalidValue;
+        }
+
+        @Override
+        public Object getRootBean() {
+            return rootBean;
+        }
+    }
+
     private static String getValidationErrorSummary(
-            InvalidValue... invalidValues) {
+            Collection<? extends InvalidValue> violations) {
         StringBuilder builder = new StringBuilder();
-        for (InvalidValue each : invalidValues) {
+        for (InvalidValue each : violations) {
             builder.append(summaryFor(each));
             builder.append("; ");
         }
-        if (invalidValues.length > 0) {
+        if (builder.length() > 0) {
             builder.delete(builder.length() - 2, builder.length());
         }
         return builder.toString();
     }
 
-    private static String summaryFor(InvalidValue invalidValue) {
-        return "at " + asString(invalidValue.getBean()) + " "
-                + invalidValue.getPropertyPath() + ": "
-                + invalidValue.getMessage();
+    private static String summaryFor(InvalidValue invalid) {
+        Object bean = invalid.getRootBean();
+        Object propertyPath = invalid.getPropertyPath();
+
+        StringBuilder builder = new StringBuilder();
+        if (bean != null) {
+            builder = builder.append("at ").append(asString(bean));
+            if (propertyPath != null) {
+                builder = builder.append(" ").append(propertyPath).append(": ");
+            }
+        }
+        return builder.append(invalid.getMessage()).toString();
     }
 
     private static String asString(Object bean) {
@@ -64,61 +163,90 @@ public class ValidationException extends RuntimeException {
         return bean.toString();
     }
 
-    public static ValidationException invalidValue(String message, Object value) {
-        InvalidValue invalidValue = new InvalidValue(message, null, "", value,
-                null);
-        return new ValidationException(invalidValue);
+    public static ValidationException invalidValueException(String message,
+            Object bean) {
+        return new ValidationException(invalidValue(message, bean));
     }
 
-    private InvalidValue[] invalidValues;
+    private static InvalidValue invalidValue(String message, Object bean) {
+        return invalidValue(message, null, null, bean);
+    }
 
-    public InvalidValue[] getInvalidValues() {
-        return invalidValues.clone();
+    public static InvalidValue invalidValue(String message,
+            String propertyPath, Object invalidValue, Object rootBean) {
+        return new InstantiatedInvalidValue(message, propertyPath,
+                invalidValue, rootBean);
+    }
+
+    private final Set<? extends InvalidValue> invalidValues;
+
+    public Set<? extends InvalidValue> getInvalidValues() {
+        return invalidValues;
     }
 
     public InvalidValue getInvalidValue() {
-        return (invalidValues.length > 0) ? invalidValues.clone()[0] : null;
+        return invalidValues.isEmpty() ? null : invalidValues.iterator().next();
+    }
+
+    public ValidationException(ConstraintViolation<?> violation) {
+        super(getValidationErrorSummary(convert(violation)));
+        this.invalidValues = convert(violation);
     }
 
     public ValidationException(InvalidValue invalidValue) {
-        super(getValidationErrorSummary(invalidValue));
-        storeInvalidValues(toArray(invalidValue));
+        super(getValidationErrorSummary(singleton(invalidValue)));
+        this.invalidValues = singleton(invalidValue);
     }
 
-    private InvalidValue[] toArray(InvalidValue invalidValue) {
-        InvalidValue[] result = new InvalidValue[1];
-        result[0] = invalidValue;
-        return result;
-    }
-
-    public ValidationException(InvalidValue[] invalidValues) {
+    public ValidationException(Collection<? extends InvalidValue> invalidValues) {
         super(getValidationErrorSummary(invalidValues));
-        storeInvalidValues(invalidValues);
+        this.invalidValues = new HashSet<InvalidValue>(invalidValues);
     }
 
-    private void storeInvalidValues(InvalidValue[] invalidValues) {
-        Validate.noNullElements(invalidValues);
-        this.invalidValues = invalidValues.clone();
+    public ValidationException(String message, InvalidValue invalidValue) {
+        super(message);
+        this.invalidValues = singleton(invalidValue);
     }
 
-    public ValidationException(InvalidValue[] invalidValues, String message,
+    private static Set<? extends InvalidValue> convert(
+            ConstraintViolation<?> violation) {
+        return Collections.singleton(new BasedOnConstraintViolation(violation));
+    }
+
+    private static Set<? extends InvalidValue> convert(
+            Collection<? extends ConstraintViolation<?>> violations) {
+        Set<InvalidValue> result = new HashSet<InvalidValue>();
+        for (ConstraintViolation<?> each : violations) {
+            result.add(new BasedOnConstraintViolation(each));
+        }
+        return Collections.unmodifiableSet(result);
+    }
+
+    public ValidationException(Set<? extends ConstraintViolation<?>> violations) {
+        super(getValidationErrorSummary(convert(violations)));
+        this.invalidValues = convert(violations);
+    }
+
+
+    public ValidationException(
+            Set<? extends ConstraintViolation<?>> violations, String message,
             Throwable cause) {
         super(message, cause);
-        storeInvalidValues(invalidValues);
+        this.invalidValues = convert(violations);
     }
 
-    public ValidationException(InvalidValue[] invalidValues, String message) {
+    public ValidationException(Set<? extends ConstraintViolation<?>> violations, String message) {
         super(message);
-        storeInvalidValues(invalidValues);
+        this.invalidValues = convert(violations);
     }
 
-    public ValidationException(InvalidValue[] invalidValues, Throwable cause) {
-        super(cause);
-        storeInvalidValues(invalidValues);
+    public ValidationException(
+            Set<? extends ConstraintViolation<?>> violations, Throwable cause) {
+        this(violations, getValidationErrorSummary(convert(violations)), cause);
     }
 
     public ValidationException(String message) {
-        this(new InvalidValue[] {}, message);
+        this(Collections.<ConstraintViolation<?>> emptySet(), message);
     }
 
 }

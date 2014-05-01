@@ -382,10 +382,26 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
         </dependency>
+
+        <!-- datasource for testing -->
+        <dependency>
+           <groupId>com.jolbox</groupId>
+           <artifactId>bonecp</artifactId>
+           <scope>test</scope>
+        </dependency>
+
+        <!-- JDBC driver -->
+        <dependency>
+            <groupId>${jdbcDriver.groupId}</groupId>
+            <artifactId>${jdbcDriver.artifactId}</artifactId>
+            <scope>test</scope>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.easymock</groupId>
             <artifactId>easymock</artifactId>

@@ -19,7 +19,7 @@
 
 package org.libreplan.business.common.entities;
 
-import org.hibernate.validator.NotEmpty;
+import org.hibernate.validator.constraints.NotEmpty;
 
 /**
  * A class which is used to store the configuration of the matching between the

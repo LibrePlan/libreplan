@@ -32,15 +32,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.validator.ClassValidator;
-import org.hibernate.validator.InvalidValue;
 import org.libreplan.business.orders.entities.SchedulingState;
 import org.libreplan.business.orders.entities.SchedulingState.ITypeChangedListener;
 import org.libreplan.business.orders.entities.SchedulingState.Type;
-import org.libreplan.business.templates.entities.OrderElementTemplate;
 import org.libreplan.business.trees.ITreeNode;
 import org.libreplan.web.common.IMessagesForUser;
 import org.libreplan.web.common.Level;
@@ -77,6 +79,7 @@ import org.zkoss.zul.Treerow;
 import org.zkoss.zul.api.Hbox;
 import org.zkoss.zul.impl.api.InputElement;
 
+
 /**
  * Tree controller for project WBS structures
  *
@@ -87,6 +90,11 @@ import org.zkoss.zul.impl.api.InputElement;
  */
 public abstract class TreeController<T extends ITreeNode<T>> extends
         GenericForwardComposer {
+
+    private static final ValidatorFactory validatorFactory = Validation
+            .buildDefaultValidatorFactory();
+
+    private static final Validator validator = validatorFactory.getValidator();
 
     private static final Log LOG = LogFactory.getLog(TreeController.class);
 
@@ -736,14 +744,12 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
             onDropMoveFromDraggedToTarget();
         }
 
-        protected void checkInvalidValues(
-                ClassValidator<OrderElementTemplate> validator,
+        protected void checkInvalidValues(Class<?> beanType,
                 String property, Integer value, final Intbox component) {
-            InvalidValue[] invalidValues = validator.getPotentialInvalidValues(
-                    property, value);
-            if (invalidValues.length > 0) {
+            Set<ConstraintViolation<T>> violations = validator.validateValue(type, property, value);
+            if (!violations.isEmpty()) {
                 throw new WrongValueException(component,
-                        _(invalidValues[0].getMessage()));
+                        _(violations.iterator().next().getMessage()));
             }
         }
 

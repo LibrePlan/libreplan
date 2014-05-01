@@ -27,8 +27,9 @@ import java.sql.SQLException;
 import java.sql.Types;
 
 import org.apache.commons.lang.ObjectUtils;
-import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
+import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.usertype.UserType;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workingday.EffortDuration.Granularity;
@@ -58,9 +59,11 @@ public class EffortDurationType implements UserType {
     }
 
     @Override
-    public Object nullSafeGet(ResultSet rs, String[] names, Object owner)
+    public Object nullSafeGet(ResultSet rs, String[] names,
+            SessionImplementor session, Object owner)
             throws HibernateException, SQLException {
-        Integer seconds = (Integer) Hibernate.INTEGER.nullSafeGet(rs, names[0]);
+        Integer seconds = StandardBasicTypes.INTEGER.nullSafeGet(rs, names[0],
+                session);
         if (seconds == null) {
             return null;
         }
@@ -68,11 +71,11 @@ public class EffortDurationType implements UserType {
     }
 
     @Override
-    public void nullSafeSet(PreparedStatement st, Object value, int index)
-            throws HibernateException, SQLException {
+    public void nullSafeSet(PreparedStatement st, Object value, int index,
+            SessionImplementor session) throws HibernateException, SQLException {
         EffortDuration duration = (EffortDuration) value;
         Integer seconds = duration != null ? duration.getSeconds() : null;
-        Hibernate.INTEGER.nullSafeSet(st, seconds, index);
+        StandardBasicTypes.INTEGER.nullSafeSet(st, seconds, index, session);
     }
 
     @Override

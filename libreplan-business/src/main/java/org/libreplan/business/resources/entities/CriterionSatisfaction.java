@@ -26,8 +26,8 @@ import java.util.Comparator;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.ToStringBuilder;
-import org.hibernate.validator.AssertTrue;
-import org.hibernate.validator.NotNull;
+import javax.validation.constraints.AssertTrue;
+import javax.validation.constraints.NotNull;
 import org.joda.time.LocalDate;
 import org.libreplan.business.common.IntegrationEntity;
 import org.libreplan.business.common.Registry;
@@ -295,7 +295,7 @@ public class CriterionSatisfaction extends IntegrationEntity {
     }
 
     @AssertTrue(message = "criterion satisfaction with end date before start")
-    public boolean checkConstraintPositiveTimeInterval() {
+    public boolean isPositiveTimeInterval() {
 
         /* Check if it makes sense to check the constraint .*/
         if (!isStartDateSpecified()) {

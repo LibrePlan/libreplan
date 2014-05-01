@@ -102,40 +102,40 @@ public class StretchesFunctionTest {
     @Test
     public void stretchesFunctionCheckNoEmpty1() {
         givenStretchesFunction();
-        assertFalse(stretchesFunction.checkNoEmpty());
+        assertFalse(stretchesFunction.isNoEmptyConstraint());
     }
 
     @Test
     public void stretchesFunctionCheckNoEmpty2() {
         givenStretchesFunction();
         givenStretchAsChild();
-        assertTrue(stretchesFunction.checkNoEmpty());
+        assertTrue(stretchesFunction.isNoEmptyConstraint());
     }
 
     @Test
     public void stretchesFunctionCheckOneHundredPercent1() {
         givenStretchesFunction();
-        assertTrue(stretchesFunction.checkOneHundredPercent());
+        assertTrue(stretchesFunction.isOneHundredPercentConstraint());
     }
 
     @Test
     public void stretchesFunctionCheckOneHundredPercent2() {
         givenStretchesFunction();
         givenStretchAsChild();
-        assertTrue(stretchesFunction.checkOneHundredPercent());
+        assertTrue(stretchesFunction.isOneHundredPercentConstraint());
     }
 
     @Test
     public void stretchesFunctionCheckStretchesOrder1() {
         givenStretchesFunction();
-        assertTrue(stretchesFunction.checkStretchesOrder());
+        assertTrue(stretchesFunction.isStretchesOrderConstraint());
     }
 
     @Test
     public void stretchesFunctionCheckStretchesOrder2() {
         givenStretchesFunction();
         givenStretchAsChild();
-        assertFalse(stretchesFunction.checkStretchesOrder());
+        assertFalse(stretchesFunction.isStretchesOrderConstraint());
     }
 
     @Test
@@ -143,7 +143,7 @@ public class StretchesFunctionTest {
         givenStretchesFunction();
         givenStretchAsChild();
         givenStretchAsChild();
-        assertFalse(stretchesFunction.checkStretchesOrder());
+        assertFalse(stretchesFunction.isStretchesOrderConstraint());
     }
 
     @Test
@@ -151,7 +151,7 @@ public class StretchesFunctionTest {
         givenStretchesFunction();
         givenStretchAsChild();
         givenStretchAsChild(BigDecimal.ONE, BigDecimal.ONE);
-        assertFalse(stretchesFunction.checkStretchesOrder());
+        assertFalse(stretchesFunction.isStretchesOrderConstraint());
     }
 
     @Test
@@ -159,7 +159,7 @@ public class StretchesFunctionTest {
         givenStretchesFunction();
         givenStretchAsChild();
         givenStretchAsChild(BigDecimal.ZERO, BigDecimal.ZERO);
-        assertFalse(stretchesFunction.checkStretchesOrder());
+        assertFalse(stretchesFunction.isStretchesOrderConstraint());
     }
 
     @Test
@@ -167,7 +167,7 @@ public class StretchesFunctionTest {
         givenStretchesFunction();
         givenStretchAsChild();
         givenStretchAsChild(BigDecimal.ONE, BigDecimal.ONE);
-        assertFalse(stretchesFunction.checkStretchesOrder());
+        assertFalse(stretchesFunction.isStretchesOrderConstraint());
     }
 
     @Test
@@ -175,21 +175,21 @@ public class StretchesFunctionTest {
         givenStretchesFunction();
         givenStretchAsChild();
         givenStretchAsChild(BigDecimal.ONE, BigDecimal.ONE);
-        assertFalse(stretchesFunction.checkStretchesOrder());
+        assertFalse(stretchesFunction.isStretchesOrderConstraint());
     }
 
     @Test
     public void stretchesFunctionCheckStretchesOrder8() {
         givenStretchesFunction();
         givenStretchAsChild(BigDecimal.ONE, BigDecimal.ONE);
-        assertFalse(stretchesFunction.checkStretchesOrder());
+        assertFalse(stretchesFunction.isStretchesOrderConstraint());
     }
 
     @Test
     public void stretchesFunctionCheckStretchesOrder9() {
         givenStretchesFunction();
         givenStretchAsChild(BigDecimal.ZERO, BigDecimal.ZERO);
-        assertFalse(stretchesFunction.checkStretchesOrder());
+        assertFalse(stretchesFunction.isStretchesOrderConstraint());
     }
 
     @Test
