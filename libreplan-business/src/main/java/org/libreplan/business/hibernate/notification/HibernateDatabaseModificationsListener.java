@@ -51,6 +51,7 @@ import org.hibernate.event.spi.PostInsertEventListener;
 import org.hibernate.event.spi.PostUpdateEvent;
 import org.hibernate.event.spi.PostUpdateEventListener;
 import org.hibernate.internal.SessionFactoryImpl;
+import org.hibernate.persister.entity.EntityPersister;
 import org.hibernate.proxy.HibernateProxy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -156,6 +157,11 @@ public class HibernateDatabaseModificationsListener implements
     }
 
     @Override
+    public boolean requiresPostCommitHanding(EntityPersister persister) {
+        return false;
+    }
+
+    @Override
     public void onPostDelete(PostDeleteEvent event) {
         modificationOn(inferTransaction(event),
                 inferEntityClass(getEntityObject(event)));
@@ -172,6 +178,7 @@ public class HibernateDatabaseModificationsListener implements
         modificationOn(inferTransaction(event),
                 inferEntityClass(getEntityObject(event)));
     }
+
 
     private Transaction inferTransaction(AbstractEvent event) {
         return event.getSession().getTransaction();
