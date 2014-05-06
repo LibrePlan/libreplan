@@ -55,7 +55,6 @@ import org.springframework.transaction.annotation.Transactional;
         WEBAPP_SPRING_CONFIG_FILE, WEBAPP_SPRING_CONFIG_TEST_FILE,
         WEBAPP_SPRING_SECURITY_CONFIG_FILE,
         WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE })
-@Transactional
 public class CurrentUserScenarioAwareManagerTest {
 
     @Autowired
@@ -70,6 +69,7 @@ public class CurrentUserScenarioAwareManagerTest {
     }
 
     @Test
+    @Transactional
     public void ifNoUserAuthenticatedMainScenarioIsReturned() {
         Scenario current = scenarioManager.getCurrent();
         assertEquals(PredefinedScenarios.MASTER.getName(), current.getName());
@@ -77,6 +77,7 @@ public class CurrentUserScenarioAwareManagerTest {
     }
 
     @Test
+    @Transactional
     public void retrievesTheScenarioAssociatedWithTheAuthentication() {
         Scenario customScenario = mockScenario();
         givenUserAuthenticatedWith(customScenario);

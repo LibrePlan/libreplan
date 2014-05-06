@@ -71,7 +71,6 @@ import org.springframework.transaction.annotation.Transactional;
         WEBAPP_SPRING_CONFIG_FILE, WEBAPP_SPRING_CONFIG_TEST_FILE,
         WEBAPP_SPRING_SECURITY_CONFIG_FILE,
         WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE })
-@Transactional
 public class ScenarioModelTest {
 
     @Resource
@@ -181,12 +180,14 @@ public class ScenarioModelTest {
     }
 
     @Test
+    @Transactional
     @Rollback(false)
     public void testNotRollback() {
         // Just to do not make rollback in order to have the default scenario
     }
 
     @Test
+    @Transactional
     @Ignore("FIXME: test was causing problems in Debian Wheezy")
     public void testCreateAndSaveScenarioWithoutOrders() {
         int previous = scenarioModel.getScenarios().size();
@@ -204,6 +205,7 @@ public class ScenarioModelTest {
     }
 
     @Test
+    @Transactional
     @Ignore("FIXME: test was causing problems in Debian Wheezy")
     public void testCreateAndSaveScenarioWithOrders() {
         Order order = givenStoredOrderInDefaultScenario();
@@ -228,12 +230,14 @@ public class ScenarioModelTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @Transactional
     public void testRemoveDefaultScenario() {
         Scenario defaultScenario = PredefinedScenarios.MASTER.getScenario();
         scenarioModel.remove(defaultScenario);
     }
 
     @Test
+    @Transactional
     public void testRemoveScenarioWithoutOrders() {
         Scenario scenario = givenStoredScenario();
 
@@ -244,6 +248,7 @@ public class ScenarioModelTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @Transactional
     public void testRemoveScenarioWithDerivedScenraios() {
         Scenario scenario = givenStoredScenario();
         givenStoredScenario(scenario);
@@ -251,6 +256,7 @@ public class ScenarioModelTest {
     }
 
     @Test
+    @Transactional
     @Ignore("FIXME: test was causing problems in Debian Wheezy")
     public void testRemoveScenarioWithOrders() throws InstanceNotFoundException {
         Order order = givenStoredOrderInDefaultScenario();
@@ -268,6 +274,7 @@ public class ScenarioModelTest {
     }
 
     @Test
+    @Transactional
     public void testRemoveScenarioWithOrdersJustInThisScenario()
             throws InstanceNotFoundException {
         Scenario scenario = givenStoredScenario();

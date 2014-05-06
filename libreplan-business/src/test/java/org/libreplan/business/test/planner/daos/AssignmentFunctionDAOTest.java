@@ -46,13 +46,13 @@ import org.springframework.transaction.annotation.Transactional;
 /*
  * @author Diego Pino García <dpino@igalia.com>
  */
-@Transactional
 public class AssignmentFunctionDAOTest {
 
     @Autowired
     private IAssignmentFunctionDAO assignmentFunctionDAO;
 
     @Test
+    @Transactional
     public void testInSpringContainer() {
         assertTrue(assignmentFunctionDAO != null);
     }
@@ -62,6 +62,7 @@ public class AssignmentFunctionDAOTest {
     }
 
     @Test
+    @Transactional
     public void testSaveAssignmentFunction() {
         AssignmentFunction assignmentFunction = createValidAssignmentFunction();
         assignmentFunctionDAO.save(assignmentFunction);
@@ -69,6 +70,7 @@ public class AssignmentFunctionDAOTest {
     }
 
     @Test
+    @Transactional
     public void testRemoveAssignmentFunction()
             throws InstanceNotFoundException {
         AssignmentFunction assignmentFunction = createValidAssignmentFunction();
@@ -78,6 +80,7 @@ public class AssignmentFunctionDAOTest {
     }
 
     @Test
+    @Transactional
     public void testListAssignmentFunction() {
         int previous = assignmentFunctionDAO.list(AssignmentFunction.class).size();
 

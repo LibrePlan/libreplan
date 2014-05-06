@@ -56,7 +56,6 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  *
  */
-@Transactional
 public class MaterialAssignmentDAOTest {
 
     @Autowired
@@ -103,6 +102,7 @@ public class MaterialAssignmentDAOTest {
     }
 
     @Test
+    @Transactional
     public void testGetByMaterial() {
         MaterialAssignment assignment1 = createValidMaterialAssignment();
         MaterialAssignment assignment2 = createValidMaterialAssignment();

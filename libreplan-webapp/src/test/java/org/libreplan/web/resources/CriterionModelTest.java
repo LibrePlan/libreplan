@@ -23,7 +23,6 @@ package org.libreplan.web.resources;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
 import static org.libreplan.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.libreplan.web.WebappGlobalNames.WEBAPP_SPRING_CONFIG_FILE;
 import static org.libreplan.web.WebappGlobalNames.WEBAPP_SPRING_SECURITY_CONFIG_FILE;
@@ -45,7 +44,6 @@ import org.libreplan.business.resources.entities.ICriterionType;
 import org.libreplan.business.resources.entities.PredefinedCriterionTypes;
 import org.libreplan.web.resources.criterion.CriterionsModel;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.NotTransactional;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,7 +58,6 @@ import org.springframework.transaction.annotation.Transactional;
         WEBAPP_SPRING_CONFIG_FILE, WEBAPP_SPRING_CONFIG_TEST_FILE,
         WEBAPP_SPRING_SECURITY_CONFIG_FILE,
         WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE })
-@Transactional
 public class CriterionModelTest {
 
     @Autowired
@@ -78,6 +75,7 @@ public class CriterionModelTest {
     private Criterion criterion;
 
     @Test(expected = ValidationException.class)
+    @Transactional
     public void cantSaveCriterionWithoutName() {
         givenValidCriterion();
         criterion.setName("");
@@ -110,6 +108,7 @@ public class CriterionModelTest {
     }
 
     @Test
+    @Transactional
     public void savingCriterionIncreasesTheNumberOfCriterions()
             {
         givenValidCriterionFor(PredefinedCriterionTypes.CATEGORY);
@@ -143,7 +142,6 @@ public class CriterionModelTest {
     }
 
     /*@Test
-    @NotTransactional
     public void modificationsAreSaved() {
         adHocTransactionService.runOnTransaction(new IOnTransaction<Void>() {
 
@@ -173,6 +171,7 @@ public class CriterionModelTest {
     }*/
 
     @Test
+    @Transactional
     public void modifyingDontAlterTheNumberOfCriterions() {
         givenCreatedCriterionFor(PredefinedCriterionTypes.CATEGORY);
         int initial = getCriterionsNumber(PredefinedCriterionTypes.CATEGORY);
@@ -204,22 +203,22 @@ public class CriterionModelTest {
     }
 
     @Test
+    @Transactional
     public void theSameCriterionCanBeSavedTwice() throws ValidationException {
         givenValidCriterion();
         criterionDAO.save(criterion);
         criterionDAO.save(criterion);
     }
 
-    @NotTransactional
-    public void twoDifferentCriterionsWithSameNameAndTypeAreDetectedIfPossible()
-            throws ValidationException {
-        final String unique = UUID.randomUUID().toString();
+    @Test(expected = ValidationException.class)
+    public void twoDifferentCriterionsWithSameNameAndTypeAreDetectedIfPossible() {
+        final String repeatedName = UUID.randomUUID().toString();
         transactionService.runOnTransaction(new IOnTransaction<Void>() {
 
             @Override
             public Void execute() {
                 Criterion criterion = givenValidCriterionFor(
-                        PredefinedCriterionTypes.CATEGORY, unique);
+                        PredefinedCriterionTypes.CATEGORY, repeatedName);
                 try {
                     criterionDAO.save(criterion);
                 } catch (ValidationException e) {
@@ -234,12 +233,14 @@ public class CriterionModelTest {
             public Void execute() {
                 try {
                     Criterion criterion2 = givenValidCriterionFor(
-                            PredefinedCriterionTypes.CATEGORY, unique);
-                    criterionDAO.save(criterion2);
-                    fail("must send "
-                            + ValidationException.class.getSimpleName());
+                            PredefinedCriterionTypes.CATEGORY, repeatedName);
+                    CriterionType type = criterion2.getType();
+                    type.getCriterions().add(criterion2);
+                    criterionTypeDAO.save(type);
                 } catch (ValidationException e) {
-                    // ok
+                    assertThat(e.getInvalidValues().size(), equalTo(1));
+                    // ValidationException is expected
+                    throw e;
                 }
                 return null;
             }

@@ -55,7 +55,6 @@ import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.entities.HoursGroup;
 import org.libreplan.business.orders.entities.Order;
-import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderLine;
 import org.libreplan.business.orders.entities.SchedulingDataForVersion;
 import org.libreplan.business.orders.entities.TaskSource;
@@ -83,7 +82,6 @@ import org.libreplan.business.scenarios.entities.OrderVersion;
 import org.libreplan.business.test.externalcompanies.daos.ExternalCompanyDAOTest;
 import org.libreplan.business.workingday.IntraDayDate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.NotTransactional;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -96,7 +94,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
         BUSINESS_SPRING_CONFIG_TEST_FILE })
-@Transactional
 public class TaskElementDAOTest {
 
     @Resource
@@ -242,6 +239,7 @@ public class TaskElementDAOTest {
     }
 
     @Test
+    @Transactional
     public void canSaveTask() {
         Task task = createValidTask();
         taskElementDAO.save(task);
@@ -260,6 +258,7 @@ public class TaskElementDAOTest {
     }
 
     @Test
+    @Transactional
     public void canSaveMilestone() {
         TaskMilestone milestone = createValidTaskMilestone();
         taskElementDAO.save(milestone);
@@ -275,6 +274,7 @@ public class TaskElementDAOTest {
     }
 
     @Test
+    @Transactional
     public void afterSavingTheVersionIsIncreased() {
         Task task = createValidTask();
         assertNull(task.getVersion());
@@ -284,6 +284,7 @@ public class TaskElementDAOTest {
     }
 
     @Test
+    @Transactional
     public void canSaveTaskGroup() {
         TaskGroup taskGroup = createValidTaskGroup();
         taskElementDAO.save(taskGroup);
@@ -300,6 +301,7 @@ public class TaskElementDAOTest {
     }
 
     @Test
+    @Transactional
     public void theParentPropertyIsPresentWhenRetrievingTasks() {
         TaskGroup taskGroup = createValidTaskGroup();
         taskGroup.addTaskElement(createValidTask());
@@ -316,6 +318,7 @@ public class TaskElementDAOTest {
     }
 
     @Test
+    @Transactional
     public void savingGroupSavesAssociatedTaskElements() {
         Task child1 = createValidTask();
         Task child2 = createValidTask();
@@ -338,7 +341,6 @@ public class TaskElementDAOTest {
     }
 
     @Test
-    @NotTransactional
     public void savingTaskElementSavesAssociatedDependencies()
             throws InstanceNotFoundException {
         IOnTransaction<Task> createValidTask = new IOnTransaction<Task>() {
@@ -397,33 +399,7 @@ public class TaskElementDAOTest {
                 task.getId()));
     }
 
-    @NotTransactional
-    public void testInverseManyToOneRelationshipInOrderElementIsSavedCorrectly() {
-        final Task task = transactionService
-                .runOnTransaction(new IOnTransaction<Task>() {
-
-            @Override
-            public Task execute() {
-                return createValidTask();
-            }
-        });
-        transactionService.runOnReadOnlyTransaction(new IOnTransaction<Void>() {
-
-            @Override
-            public Void execute() {
-                TaskElement fromDB = taskElementDAO.findExistingEntity(task
-                        .getId());
-                OrderElement orderElement = fromDB.getOrderElement();
-                assertThat(orderElement.getTaskElements().size(), equalTo(1));
-                assertThat(orderElement.getTaskElements().iterator().next(),
-                        equalTo(fromDB));
-                return null;
-            }
-        });
-    }
-
     @Test
-    @NotTransactional
     public void aTaskCanBeRemovedFromItsTaskSource() {
         final Task task = transactionService.runOnTransaction(new IOnTransaction<Task>(){
 
@@ -450,7 +426,6 @@ public class TaskElementDAOTest {
     }
 
     @Test
-    @NotTransactional
     public void aTaskGroupCanBeRemovedFromItsTaskSourceIfBelowTasksSourcesAreRemovedFirst() {
         final TaskGroup taskGroupWithOneChild = transactionService
                 .runOnTransaction(new IOnTransaction<TaskGroup>() {
@@ -505,6 +480,7 @@ public class TaskElementDAOTest {
     }
 
     @Test
+    @Transactional
     public void testStoreSubcontractedTaskData()
             throws InstanceNotFoundException {
         Task task = createValidTask();
@@ -542,6 +518,7 @@ public class TaskElementDAOTest {
     }
 
     @Test
+    @Transactional
     public void testSaveTaskElementUpdatesSumOfHoursAllocatedAttribute()
             throws InstanceNotFoundException {
         IOnTransaction<Long> createTaskElement =

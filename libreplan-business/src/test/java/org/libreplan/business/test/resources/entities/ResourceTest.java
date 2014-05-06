@@ -70,7 +70,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
         BUSINESS_SPRING_CONFIG_TEST_FILE })
-@Transactional
 public class ResourceTest {
 
     @Autowired
@@ -85,6 +84,7 @@ public class ResourceTest {
     }
 
     @Test
+    @Transactional
     public void testGetSatisfactionsForCriterion() {
         Criterion criterion = CriterionDAOTest.createValidCriterion();
         Criterion other = CriterionDAOTest.createValidCriterion();
@@ -102,6 +102,7 @@ public class ResourceTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @Transactional
     public void getSatisfactionsForWrongIntervalThrowsException() {
         Worker worker = Worker.create("firstName", "surName", "2333232");
         worker.query().from(CriterionDAOTest.createValidCriterion())
@@ -109,6 +110,7 @@ public class ResourceTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @Transactional
     public void getSatisfactionsForWrongIntervalForCriterionTypeThrowsException() {
         Worker worker = Worker.create("firstName", "surName", "2333232");
         worker.query().from(createTypeThatMatches()).enforcedInAll(
@@ -116,6 +118,7 @@ public class ResourceTest {
     }
 
     @Test
+    @Transactional
     public void testRetrieveActiveCriterionsForCriterionType() {
         final Criterion criterion = CriterionDAOTest.createValidCriterion();
         Criterion otherCriterion = CriterionDAOTest.createValidCriterion();
@@ -136,6 +139,7 @@ public class ResourceTest {
     }
 
     @Test
+    @Transactional
     public void testActiveCriterions() {
         final Criterion criterion = CriterionDAOTest.createValidCriterion();
         Criterion otherCriterion = CriterionDAOTest.createValidCriterion();
@@ -195,6 +199,7 @@ public class ResourceTest {
     }
 
     @Test
+    @Transactional
     public void testRetrieveSatisfactionsInIntervalForCriterionType()
             {
         Criterion criterion = CriterionDAOTest.createValidCriterion();
@@ -226,6 +231,7 @@ public class ResourceTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @Transactional
     public void invalidadCriterionWithItsTypeNotAllowd() {
         Criterion criterion = CriterionDAOTest.createValidCriterion();
         Criterion otherCriterion = CriterionDAOTest.createValidCriterion();
@@ -234,6 +240,7 @@ public class ResourceTest {
     }
 
     @Test
+    @Transactional
     public void testAddAndRemoveSatisfactions() {
         Criterion criterion = CriterionDAOTest.createValidCriterion();
         Criterion otherCriterion = CriterionDAOTest.createValidCriterion();
@@ -272,6 +279,7 @@ public class ResourceTest {
     }
 
     @Test
+    @Transactional
     public void testAddAtDate() {
         Criterion criterion = CriterionDAOTest.createValidCriterion();
         Criterion otherCriterion = CriterionDAOTest.createValidCriterion();
@@ -311,6 +319,7 @@ public class ResourceTest {
     }
 
     @Test
+    @Transactional
     // when type doesnt allow multiple active criterions per resource
     public void addOnlyUntilNextCriterionIsActive() {
         Criterion criterion = CriterionDAOTest.createValidCriterion();
@@ -330,6 +339,7 @@ public class ResourceTest {
     }
 
     @Test(expected = IllegalStateException.class)
+    @Transactional
     // when type doesnt allow multiple active criterions per resource
     public void testCantAddOverlappingTotally() {
         Criterion criterion = CriterionDAOTest.createValidCriterion();
@@ -347,6 +357,7 @@ public class ResourceTest {
     }
 
     @Test(expected = IllegalStateException.class)
+    @Transactional
     public void testCantAddIfOverlapsPartially() {
         Criterion criterion = CriterionDAOTest.createValidCriterion();
         Criterion otherCriterion = CriterionDAOTest.createValidCriterion();
@@ -363,6 +374,7 @@ public class ResourceTest {
     }
 
     @Test
+    @Transactional
     public void testCantAddWrongCriterionSatisfaction() {
         Criterion criterion = CriterionDAOTest.createValidCriterion();
         Criterion otherCriterion = CriterionDAOTest.createValidCriterion();
@@ -391,6 +403,7 @@ public class ResourceTest {
     }
 
     @Test
+    @Transactional
     public void testCantAddCriterionSatisfactionWithOverlap() {
         Criterion criterion = CriterionDAOTest.createValidCriterion();
         Criterion otherCriterion = CriterionDAOTest.createValidCriterion();
@@ -417,6 +430,7 @@ public class ResourceTest {
     }
 
     @Test
+    @Transactional
     public void testCantAddCriterionSatisfactionWithTypeAllowMultipleResource() {
         Criterion criterion = CriterionDAOTest.createValidCriterion();
         Criterion otherCriterion = CriterionDAOTest.createValidCriterion();
@@ -461,6 +475,7 @@ public class ResourceTest {
     }
 
     @Test(expected = IllegalStateException.class)
+    @Transactional
     public void shouldntAdd() {
         Criterion criterion = CriterionDAOTest.createValidCriterion();
         Worker worker = Worker.create("firstName", "surName", "2333232");
@@ -500,12 +515,14 @@ public class ResourceTest {
     private List<DayAssignment> assignments;
 
     @Test(expected = IllegalArgumentException.class)
+    @Transactional
     public void addNewAssignmentsMustReceiveNotNullArgument() {
         givenWorker();
         worker.addNewAssignments(null);
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @Transactional
     public void mustHaveNoNullElements() {
         givenWorker();
         List<DayAssignment> list = new ArrayList<DayAssignment>();
@@ -514,6 +531,7 @@ public class ResourceTest {
     }
 
     @Test
+    @Transactional
     public void newAssignmentsImportsTheAssignments() {
         givenWorker();
         LocalDate today = new LocalDate();
@@ -531,6 +549,7 @@ public class ResourceTest {
     }
 
     @Test
+    @Transactional
     public void addingAdditionalAssignmentsKeepOld() {
         givenWorker();
         LocalDate today = new LocalDate();
@@ -548,6 +567,7 @@ public class ResourceTest {
     }
 
     @Test
+    @Transactional
     public void workerWithoutAssignmentsGivesNoAssignedHours() {
         givenWorker();
         LocalDate today = new LocalDate();
@@ -555,6 +575,7 @@ public class ResourceTest {
     }
 
     @Test
+    @Transactional
     public void workerWithAssignmentsGivesTheSumOfAssignedHoursForThatDay() {
         givenWorker();
         LocalDate today = new LocalDate();
@@ -570,6 +591,7 @@ public class ResourceTest {
     }
 
     @Test
+    @Transactional
     public void afterAddingAnotherDontReturnTheOldResult() {
         givenWorker();
         LocalDate today = new LocalDate();

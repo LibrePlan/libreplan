@@ -49,7 +49,6 @@ import org.libreplan.business.users.daos.IUserDAO;
 import org.libreplan.business.users.entities.User;
 import org.libreplan.business.users.entities.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.NotTransactional;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -63,7 +62,6 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  *
  */
-@Transactional
 public class ExternalCompanyDAOTest {
 
     @Autowired
@@ -84,11 +82,13 @@ public class ExternalCompanyDAOTest {
     }
 
     @Test
+    @Transactional
     public void testInSpringContainer() {
         assertNotNull(externalCompanyDAO);
     }
 
     @Test
+    @Transactional
     public void testSaveExternalCompany() {
         ExternalCompany externalCompany = createValidExternalCompany();
         externalCompanyDAO.save(externalCompany);
@@ -96,6 +96,7 @@ public class ExternalCompanyDAOTest {
     }
 
     @Test
+    @Transactional
     public void testRemoveExternalCompany() throws InstanceNotFoundException {
         ExternalCompany externalCompany = createValidExternalCompany();
         externalCompanyDAO.save(externalCompany);
@@ -104,6 +105,7 @@ public class ExternalCompanyDAOTest {
     }
 
     @Test
+    @Transactional
     public void testListExternalCompanies() {
         int previous = externalCompanyDAO.list(ExternalCompany.class).size();
         ExternalCompany externalCompany = createValidExternalCompany();
@@ -112,7 +114,6 @@ public class ExternalCompanyDAOTest {
     }
 
     @Test
-    @NotTransactional
     public void testRelationWithUser() throws InstanceNotFoundException {
         final User user = createValidUser();
         final ExternalCompany externalCompany = createValidExternalCompany();
@@ -147,6 +148,7 @@ public class ExternalCompanyDAOTest {
     }
 
     @Test
+    @Transactional
     public void testFindUniqueByName() throws InstanceNotFoundException {
         ExternalCompany externalCompany = createValidExternalCompany();
         externalCompanyDAO.save(externalCompany);
@@ -155,6 +157,7 @@ public class ExternalCompanyDAOTest {
     }
 
     @Test
+    @Transactional
     public void testExistsByName() throws InstanceNotFoundException {
         ExternalCompany externalCompany = createValidExternalCompany();
         assertFalse(externalCompanyDAO.existsByName(externalCompany.getName()));
@@ -163,7 +166,6 @@ public class ExternalCompanyDAOTest {
     }
 
     @Test(expected=ValidationException.class)
-    @NotTransactional
     public void testUniqueCompanyNameCheck() throws ValidationException {
         final ExternalCompany externalCompany1 = createValidExternalCompany();
 
@@ -181,7 +183,6 @@ public class ExternalCompanyDAOTest {
     }
 
     @Test(expected=ValidationException.class)
-    @NotTransactional
     public void testUniqueCompanyNifCheck() throws ValidationException {
         final ExternalCompany externalCompany1 = createValidExternalCompany();
 

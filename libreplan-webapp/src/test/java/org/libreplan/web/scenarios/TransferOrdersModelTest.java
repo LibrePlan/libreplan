@@ -48,7 +48,6 @@ import org.libreplan.business.scenarios.bootstrap.PredefinedScenarios;
 import org.libreplan.business.scenarios.daos.IScenarioDAO;
 import org.libreplan.business.scenarios.entities.Scenario;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.NotTransactional;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -63,7 +62,6 @@ import org.springframework.transaction.annotation.Transactional;
         WEBAPP_SPRING_CONFIG_FILE, WEBAPP_SPRING_CONFIG_TEST_FILE,
         WEBAPP_SPRING_SECURITY_CONFIG_FILE,
         WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE })
-@Transactional
 public class TransferOrdersModelTest {
 
     @Resource
@@ -128,7 +126,6 @@ public class TransferOrdersModelTest {
     }
 
     @Test
-    @NotTransactional
     public void testBasicTransferOrder() {
         final int numOrders = transactionService
                 .runOnReadOnlyTransaction(new IOnTransaction<Integer>() {
@@ -202,7 +199,6 @@ public class TransferOrdersModelTest {
     }
 
     @Test(expected = ValidationException.class)
-    @NotTransactional
     public void testTransferOrderWithTheSameVersion() {
         final Order order = transactionService
                 .runOnTransaction(new IOnTransaction<Order>() {

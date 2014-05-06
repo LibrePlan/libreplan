@@ -64,7 +64,6 @@ import org.springframework.transaction.annotation.Transactional;
         WEBAPP_SPRING_CONFIG_FILE, WEBAPP_SPRING_CONFIG_TEST_FILE,
         WEBAPP_SPRING_SECURITY_CONFIG_FILE,
         WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE })
-@Transactional
 public class CriterionServiceTest {
 
     @Autowired
@@ -74,6 +73,7 @@ public class CriterionServiceTest {
     private ICriterionTypeDAO criterionTypeDAO;
 
     @Test
+    @Transactional
     public void testAddCriterionWithSameCodeDistinctTypes() {
 
         /* Build criterion type "ct1" (5 constraint violations). */
@@ -100,6 +100,7 @@ public class CriterionServiceTest {
     }
 
     @Test
+    @Transactional
     public void testAddAndGetCriterionTypes() {
 
         /* Build criterion type "ct1" (5 constraint violations). */
@@ -241,6 +242,7 @@ public class CriterionServiceTest {
     }
 
     @Test
+    @Transactional
     public void testUpdateCriterionType() throws InstanceNotFoundException {
 
         /* Build criterion type with criteria: c1, c2->c2-1. */

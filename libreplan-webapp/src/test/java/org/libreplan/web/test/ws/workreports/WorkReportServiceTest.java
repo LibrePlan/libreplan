@@ -83,7 +83,6 @@ import org.libreplan.ws.workreports.api.WorkReportDTO;
 import org.libreplan.ws.workreports.api.WorkReportLineDTO;
 import org.libreplan.ws.workreports.api.WorkReportListDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.NotTransactional;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.BeforeTransaction;
@@ -99,7 +98,6 @@ import org.springframework.transaction.annotation.Transactional;
         WEBAPP_SPRING_CONFIG_FILE, WEBAPP_SPRING_CONFIG_TEST_FILE,
         WEBAPP_SPRING_SECURITY_CONFIG_FILE,
         WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE })
-@Transactional
 public class WorkReportServiceTest {
 
     @Autowired
@@ -490,7 +488,6 @@ public class WorkReportServiceTest {
     }
 
     @Test
-    @NotTransactional
     public void importValidWorkReport() {
         int previous = transactionService
                 .runOnTransaction(new IOnTransaction<Integer>() {
@@ -545,6 +542,7 @@ public class WorkReportServiceTest {
     }
 
     @Test
+    @Transactional
     public void importInvalidWorkReportWithoutDateAtWorkReportLevel() {
         int previous = workReportDAO.getAll().size();
 
@@ -561,6 +559,7 @@ public class WorkReportServiceTest {
     }
 
     @Test
+    @Transactional
     public void importValidWorkReportWithDateAtWorkReportLevel() {
         int previous = workReportDAO.getAll().size();
 
@@ -609,6 +608,7 @@ public class WorkReportServiceTest {
     }
 
     @Test
+    @Transactional
     public void importInvalidWorkReportCalculatedHours() {
         int previous = workReportDAO.getAll().size();
 
@@ -625,7 +625,6 @@ public class WorkReportServiceTest {
     }
 
     @Test
-    @NotTransactional
     public void importValidWorkReportCalculatedHours() {
         int previous = transactionService
                 .runOnTransaction(new IOnTransaction<Integer>() {
@@ -681,7 +680,6 @@ public class WorkReportServiceTest {
     }
 
     @Test
-    @NotTransactional
     public void importAndUpdateValidWorkReport() {
         int previous = transactionService
                 .runOnTransaction(new IOnTransaction<Integer>() {

@@ -72,7 +72,6 @@ import org.springframework.transaction.annotation.Transactional;
         WEBAPP_SPRING_CONFIG_FILE, WEBAPP_SPRING_CONFIG_TEST_FILE,
         WEBAPP_SPRING_SECURITY_CONFIG_FILE,
         WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE })
-@Transactional
 public class SubcontractServiceTest {
 
     @Resource
@@ -128,6 +127,7 @@ public class SubcontractServiceTest {
     }
 
     @Test
+    @Transactional
     @Rollback(false)
     public void testNotRollback() {
         // Just to do not make rollback in order to have the default
@@ -136,6 +136,7 @@ public class SubcontractServiceTest {
     }
 
     @Test
+    @Transactional
     public void invalidSubcontractedTaskDataWithoutExternalCompanyNif() {
         int previous = orderDAO.getOrders().size();
 
@@ -154,6 +155,7 @@ public class SubcontractServiceTest {
     }
 
     @Test
+    @Transactional
     public void invalidSubcontractedTaskDataWithoutOrderElement() {
         int previous = orderDAO.getOrders().size();
 
@@ -171,6 +173,7 @@ public class SubcontractServiceTest {
     }
 
     @Test
+    @Transactional
     public void validSubcontractedTaskData() {
         int previous = orderDAO.getOrders().size();
 

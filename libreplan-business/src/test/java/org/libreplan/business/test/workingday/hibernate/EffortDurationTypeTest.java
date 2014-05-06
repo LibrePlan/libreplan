@@ -42,7 +42,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
         BUSINESS_SPRING_CONFIG_TEST_FILE })
-@Transactional
 public class EffortDurationTypeTest {
 
     @Autowired
@@ -60,6 +59,7 @@ public class EffortDurationTypeTest {
     }
 
     @Test
+    @Transactional
     public void canBeSavedAndRetrieved() {
         EffortDuration duration = hours(2).and(30, Granularity.MINUTES);
         givenEntity(duration);

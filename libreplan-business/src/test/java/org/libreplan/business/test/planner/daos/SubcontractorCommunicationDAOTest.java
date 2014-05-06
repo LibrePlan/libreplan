@@ -74,7 +74,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
         BUSINESS_SPRING_CONFIG_TEST_FILE })
-@Transactional
 public class SubcontractorCommunicationDAOTest {
 
     @Autowired
@@ -208,11 +207,13 @@ public class SubcontractorCommunicationDAOTest {
     }
 
     @Test
+    @Transactional
     public void testSubcontractorCommunicationDAOInSpringContainer() {
         assertNotNull(subcontractorCommunicationDAO);
     }
 
     @Test
+    @Transactional
     public void testSaveSubcontractorCommunication() {
         SubcontractorCommunication subcontractorCommunication = createValidSubcontractorCommunication();
         subcontractorCommunicationDAO.save(subcontractorCommunication);
@@ -220,6 +221,7 @@ public class SubcontractorCommunicationDAOTest {
     }
 
     @Test
+    @Transactional
     public void testRemoveSubcontractorCommunication()
             throws InstanceNotFoundException {
         SubcontractorCommunication subcontractorCommunication = createValidSubcontractorCommunication();
@@ -246,6 +248,7 @@ public class SubcontractorCommunicationDAOTest {
     }
 
     @Test
+    @Transactional
     public void testSaveSubcontractorCommunicationWithoutSubcontratedTaskData()
             throws InstanceNotFoundException {
         SubcontractorCommunication subcontractorCommunication = createValidSubcontractorCommunication();

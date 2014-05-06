@@ -47,7 +47,6 @@ import org.libreplan.ws.unittypes.api.IUnitTypeService;
 import org.libreplan.ws.unittypes.api.UnitTypeDTO;
 import org.libreplan.ws.unittypes.api.UnitTypeListDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.NotTransactional;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -61,7 +60,6 @@ import org.springframework.transaction.annotation.Transactional;
         WEBAPP_SPRING_CONFIG_FILE, WEBAPP_SPRING_CONFIG_TEST_FILE,
         WEBAPP_SPRING_SECURITY_CONFIG_FILE,
         WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE })
-@Transactional
 public class UnitTypeServiceTest {
 
     @Autowired
@@ -88,6 +86,7 @@ public class UnitTypeServiceTest {
     }
 
     @Test
+    @Transactional
     public void testAddUnitTypeRepeatedMeasure() {
         loadRequiredaData();
 
@@ -111,7 +110,6 @@ public class UnitTypeServiceTest {
     }
 
     @Test
-    @NotTransactional
     public void testAddAndUpdateMaterialCategory() {
         transactionService.runOnTransaction(new IOnTransaction<Void>() {
             @Override

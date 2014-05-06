@@ -92,7 +92,6 @@ import org.springframework.transaction.annotation.Transactional;
         WEBAPP_SPRING_CONFIG_FILE, WEBAPP_SPRING_CONFIG_TEST_FILE,
         WEBAPP_SPRING_SECURITY_CONFIG_FILE,
         WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE })
-@Transactional
 public class OrderElementTreeModelTest {
 
     private static final BigDecimal HUNDRED = new BigDecimal(100);
@@ -293,6 +292,7 @@ public class OrderElementTreeModelTest {
     }
 
     @Test
+    @Transactional
     public void checkAddElementWithCriteriaAndAdvancesOnParent()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
@@ -340,6 +340,7 @@ public class OrderElementTreeModelTest {
     }
 
     @Test
+    @Transactional
     public void checkRemoveElementWithCriteriaAndAdvancesOnParent()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
@@ -358,6 +359,7 @@ public class OrderElementTreeModelTest {
     }
 
     @Test
+    @Transactional
     public void checkRemoveElementWithCriteriaAndAdvancesOnChild()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
@@ -377,6 +379,7 @@ public class OrderElementTreeModelTest {
     }
 
     @Test
+    @Transactional
     public void checkAddCriterionOnChild()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
@@ -398,6 +401,7 @@ public class OrderElementTreeModelTest {
     }
 
     @Test
+    @Transactional
     public void checkAddCriterionOnParent()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
@@ -420,6 +424,7 @@ public class OrderElementTreeModelTest {
     }
 
     @Test
+    @Transactional
     public void checkAddAssignmentOnChild()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
@@ -434,6 +439,7 @@ public class OrderElementTreeModelTest {
     }
 
     @Test
+    @Transactional
     public void checkAddAdvanceOnParent()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
@@ -448,6 +454,7 @@ public class OrderElementTreeModelTest {
     }
 
     @Test
+    @Transactional
     public void checkAddElementOnOrderLineWithCriteriaAndAdvances()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
@@ -503,6 +510,7 @@ public class OrderElementTreeModelTest {
     }
 
     @Test
+    @Transactional
     public void checkAddElementOnOrderLineGroupWithCriteriaAndAdvances()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
@@ -539,6 +547,7 @@ public class OrderElementTreeModelTest {
     }
 
     @Test
+    @Transactional
     public void checkRemoveElementOnOnlyOrderLineWithCriteriaAndAdvances()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
@@ -657,6 +666,7 @@ public class OrderElementTreeModelTest {
     }
 
     @Test
+    @Transactional
     public void checkPreservationOfInvalidatedIndirectCriterionRequirementInToLeaf()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
@@ -711,6 +721,7 @@ public class OrderElementTreeModelTest {
     }
 
     @Test
+    @Transactional
     public void checkIndentOrderLineWithCriteriaAndAdvances()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
@@ -759,6 +770,7 @@ public class OrderElementTreeModelTest {
     }
 
     @Test
+    @Transactional
     public void checkIndentOnOrderLineWithCriteriaAndAdvances()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
@@ -805,6 +817,7 @@ public class OrderElementTreeModelTest {
     }
 
     @Test
+    @Transactional
     public void checkIndentOnOrderLineGroupWithCriteriaAndAdvances()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
@@ -847,6 +860,7 @@ public class OrderElementTreeModelTest {
     }
 
     @Test
+    @Transactional
     public void checkUnindentOrderLineWithCriteriaAndAdvances()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
@@ -917,6 +931,7 @@ public class OrderElementTreeModelTest {
     }
 
     @Test
+    @Transactional
     public void checkMoveOrderLineWithCriteriaAndAdvancesToOrderLineWithCriteriaAndAdvances()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
@@ -1009,6 +1024,7 @@ public class OrderElementTreeModelTest {
     }
 
     @Test
+    @Transactional
     public void checkMoveOrderLineWithCriteriaAndAdvancesToOrderLineGroupWithCriteriaAndAdvances()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
@@ -1141,6 +1157,7 @@ public class OrderElementTreeModelTest {
     }
 
     @Test
+    @Transactional
     public void checkMoveOrderLineWithLabelToOrderLineGroupWithSameLabel() {
         createTreeWithContainerAndTask();
 
@@ -1162,6 +1179,7 @@ public class OrderElementTreeModelTest {
     }
 
     @Test
+    @Transactional
     public void checkMoveOrderLineWithLabelToOrderLineInGroupWithSameLabel() {
         createTreeWithContainerAndTask();
 
@@ -1237,6 +1255,7 @@ public class OrderElementTreeModelTest {
     }
 
     @Test
+    @Transactional
     public void checkMoveOrderGroupLineWithLabelToOrderLineGroupWithSameLabel() {
         createTreeWithContainerAndContainer();
 
@@ -1261,6 +1280,7 @@ public class OrderElementTreeModelTest {
     }
 
     @Test
+    @Transactional
     public void checkMoveOrderGroupLineWithLabelToOrderLineInGroupWithSameLabel() {
         createTreeWithContainerAndContainer();
 
@@ -1285,6 +1305,7 @@ public class OrderElementTreeModelTest {
     }
 
     @Test
+    @Transactional
     public void checkMoveOrderLineGroupWithLabelOnChildToOrderLineGroupWithSameLabel() {
         createTreeWithContainerAndContainer();
 
@@ -1309,6 +1330,7 @@ public class OrderElementTreeModelTest {
     }
 
     @Test
+    @Transactional
     public void checkMoveOrderLineGroupWithLabelOnChildToOrderLineInGroupWithSameLabel() {
         createTreeWithContainerAndContainer();
 
@@ -1333,6 +1355,7 @@ public class OrderElementTreeModelTest {
     }
 
     @Test
+    @Transactional
     public void checkMoveOrderLineWithAdvanceToOrderLineGroupWithSameAdvanceType()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
@@ -1366,6 +1389,7 @@ public class OrderElementTreeModelTest {
     }
 
     @Test
+    @Transactional
     public void checkMoveOrderLineWithAdvanceToOrderLineInGroupWithSameAdvanceType()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
@@ -1399,6 +1423,7 @@ public class OrderElementTreeModelTest {
     }
 
     @Test
+    @Transactional
     public void checkMoveOrderLineGroupWithAdvanceToOrderLineGroupWithSameAdvance()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
@@ -1442,6 +1467,7 @@ public class OrderElementTreeModelTest {
     }
 
     @Test
+    @Transactional
     public void checkMoveOrderLineGroupWithAdvanceToOrderLineInGroupWithSameAdvance()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
@@ -1485,6 +1511,7 @@ public class OrderElementTreeModelTest {
     }
 
     @Test
+    @Transactional
     public void checkMoveOrderLineGroupWithAdvanceOnChildToOrderLineGroupWithSameAdvance()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
@@ -1529,6 +1556,7 @@ public class OrderElementTreeModelTest {
     }
 
     @Test
+    @Transactional
     public void checkMoveOrderLineGroupWithAdvanceOnChildToOrderLineInGroupWithSameAdvance()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
@@ -1573,6 +1601,7 @@ public class OrderElementTreeModelTest {
     }
 
     @Test
+    @Transactional
     public void checkMoveOrderLineWithCriterionToOrderLineGroupWithSameCriterion() {
         createTreeWithContainerAndTask();
 
@@ -1622,6 +1651,7 @@ public class OrderElementTreeModelTest {
     }
 
     @Test
+    @Transactional
     public void checkMoveOrderLineWithCriterionToOrderLineInGroupWithSameCriterion() {
         createTreeWithContainerAndTask();
 
@@ -1671,6 +1701,7 @@ public class OrderElementTreeModelTest {
     }
 
     @Test
+    @Transactional
     public void checkMoveOrderGroupLineWithCriterionToOrderLineGroupWithSameCriterion() {
         createTreeWithContainerAndContainer();
 
@@ -1753,6 +1784,7 @@ public class OrderElementTreeModelTest {
     }
 
     @Test
+    @Transactional
     public void checkMoveOrderGroupLineWithCriterionToOrderLineInGroupWithSameCriterion() {
         createTreeWithContainerAndContainer();
 
@@ -1835,6 +1867,7 @@ public class OrderElementTreeModelTest {
     }
 
     @Test
+    @Transactional
     public void checkMoveOrderLineGroupWithCriterionOnChildToOrderLineGroupWithSameCriterion() {
         createTreeWithContainerAndContainer();
 
@@ -1898,6 +1931,7 @@ public class OrderElementTreeModelTest {
     }
 
     @Test
+    @Transactional
     public void checkMoveOrderLineGroupWithCriterionOnChildToOrderLineInGroupWithSameCriterion() {
         createTreeWithContainerAndContainer();
 
@@ -1989,6 +2023,7 @@ public class OrderElementTreeModelTest {
     }
 
     @Test
+    @Transactional
     public void checkRemoveElementWithAdvanceOnChildWhichSpread()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
@@ -2020,6 +2055,7 @@ public class OrderElementTreeModelTest {
     }
 
     @Test
+    @Transactional
     public void checkChildrenAdvanceIsCreatedAndMarkedAsSpreadInOrder()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {

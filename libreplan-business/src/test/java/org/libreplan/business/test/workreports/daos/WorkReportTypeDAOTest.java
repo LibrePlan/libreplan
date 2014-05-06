@@ -45,13 +45,13 @@ import org.springframework.transaction.annotation.Transactional;
 /*
  * @author Diego Pino García <dpino@igalia.com>
  */
-@Transactional
 public class WorkReportTypeDAOTest extends AbstractWorkReportTest {
 
     @Autowired
     private IWorkReportTypeDAO workReportTypeDAO;
 
     @Test
+    @Transactional
     public void testSaveWorkReportType() {
         WorkReportType workReportType = createValidWorkReportType();
         workReportTypeDAO.save(workReportType);
@@ -59,6 +59,7 @@ public class WorkReportTypeDAOTest extends AbstractWorkReportTest {
     }
 
     @Test
+    @Transactional
     public void testRemoveWorkReportType() throws InstanceNotFoundException {
         WorkReportType workReportType = createValidWorkReportType();
         workReportTypeDAO.save(workReportType);
@@ -67,6 +68,7 @@ public class WorkReportTypeDAOTest extends AbstractWorkReportTest {
     }
 
     @Test
+    @Transactional
     public void testListWorkReportType() {
         int previous = workReportTypeDAO.list(WorkReportType.class).size();
 

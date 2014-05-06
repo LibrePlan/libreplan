@@ -51,13 +51,13 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  *
  */
-@Transactional
 public class MaterialCategoryDAOTest {
 
     @Autowired
     IMaterialCategoryDAO materialCategoryDAO;
 
     @Test
+    @Transactional
     public void testInSpringContainer() {
         assertNotNull(materialCategoryDAO);
     }
@@ -68,6 +68,7 @@ public class MaterialCategoryDAOTest {
     }
 
     @Test
+    @Transactional
     public void testSaveMaterialCategory() {
         MaterialCategory materialCategory = createValidMaterialCategory();
         materialCategoryDAO.save(materialCategory);
@@ -75,6 +76,7 @@ public class MaterialCategoryDAOTest {
     }
 
     @Test
+    @Transactional
     public void testRemoveMaterialCategory() throws InstanceNotFoundException {
         MaterialCategory materialCategory = createValidMaterialCategory();
         materialCategoryDAO.save(materialCategory);
@@ -83,6 +85,7 @@ public class MaterialCategoryDAOTest {
     }
 
     @Test
+    @Transactional
     public void testListMaterialCategories() {
         int previous = materialCategoryDAO.list(MaterialCategory.class).size();
         MaterialCategory materialCategory = createValidMaterialCategory();
@@ -92,6 +95,7 @@ public class MaterialCategoryDAOTest {
     }
 
     @Test
+    @Transactional
     public void testListChildrenMaterialCategories() {
         MaterialCategory category = createValidMaterialCategory();
         MaterialCategory subcategory = createValidMaterialCategory();
@@ -103,6 +107,7 @@ public class MaterialCategoryDAOTest {
     }
 
     @Test
+    @Transactional
     public void testRemoveChildrenMaterialCategories() {
         MaterialCategory category = createValidMaterialCategory();
         MaterialCategory subcategory = createValidMaterialCategory();
@@ -117,6 +122,7 @@ public class MaterialCategoryDAOTest {
     }
 
     @Test
+    @Transactional
     public void testSaveMaterialSubcategoryTopDown() {
         MaterialCategory category = createValidMaterialCategory();
         MaterialCategory subcategory = createValidMaterialCategory();

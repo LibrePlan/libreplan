@@ -49,7 +49,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
         BUSINESS_SPRING_CONFIG_TEST_FILE })
-@Transactional
 public class EntitySequenceTest {
 
     @Autowired
@@ -67,6 +66,7 @@ public class EntitySequenceTest {
     }
 
     @Test
+    @Transactional
     public void testCreateActiveEntitySequence() {
         try {
             entitySequenceDAO.save(givenEntitySequence("prefix-"
@@ -80,6 +80,7 @@ public class EntitySequenceTest {
     }
 
     @Test
+    @Transactional
     public void testCreateEntitySequenceWithEmptyPrefix() {
         try {
             entitySequenceDAO.save(givenEntitySequence("",
@@ -92,6 +93,7 @@ public class EntitySequenceTest {
     }
 
     @Test
+    @Transactional
     public void testCreateEntitySequenceWithPrefixWithWhiteSpace() {
         try {
             entitySequenceDAO.save(givenEntitySequence(
@@ -104,6 +106,7 @@ public class EntitySequenceTest {
     }
 
     @Test
+    @Transactional
     public void testCreateEntitySequenceWithEmptyEntityName() {
         try {
             entitySequenceDAO.save(givenEntitySequence("prefix-"
@@ -116,6 +119,7 @@ public class EntitySequenceTest {
     }
 
     @Test
+    @Transactional
     public void testCreateEntitySequenceWithNumberOfDigitsNotSpecified() {
         try {
             EntitySequence entitySequence = givenEntitySequence("prefix-"
@@ -130,6 +134,7 @@ public class EntitySequenceTest {
     }
 
     @Test
+    @Transactional
     public void testCreateEntitySequenceWithNumberOfDigitsOutRange() {
         try {
             EntitySequence entitySequence = givenEntitySequence("prefix-"

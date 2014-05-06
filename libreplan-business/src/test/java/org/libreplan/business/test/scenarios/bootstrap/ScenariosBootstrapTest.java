@@ -57,7 +57,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
         BUSINESS_SPRING_CONFIG_TEST_FILE })
-@Transactional
 public class ScenariosBootstrapTest {
 
     @Autowired
@@ -119,6 +118,7 @@ public class ScenariosBootstrapTest {
     }
 
     @Test
+    @Transactional
     @Ignore("FIXME failing in MySQL")
     public void loadBasicData() throws InstanceNotFoundException {
         removeCurrentScenarios();
@@ -130,6 +130,7 @@ public class ScenariosBootstrapTest {
     }
 
     @Test
+    @Transactional
     @Ignore("FIXME failing in MySQL")
     public void loadBasicDataAssociatedWithCurrentOrders()
             throws InstanceNotFoundException {

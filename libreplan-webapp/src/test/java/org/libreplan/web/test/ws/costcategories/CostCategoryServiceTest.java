@@ -60,7 +60,6 @@ import org.libreplan.ws.costcategories.api.CostCategoryListDTO;
 import org.libreplan.ws.costcategories.api.HourCostDTO;
 import org.libreplan.ws.costcategories.api.ICostCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.NotTransactional;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -75,7 +74,6 @@ import org.springframework.transaction.annotation.Transactional;
         WEBAPP_SPRING_CONFIG_FILE, WEBAPP_SPRING_CONFIG_TEST_FILE,
         WEBAPP_SPRING_SECURITY_CONFIG_FILE,
         WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE })
-@Transactional
 public class CostCategoryServiceTest {
 
     @Autowired
@@ -101,6 +99,7 @@ public class CostCategoryServiceTest {
     private IAdHocTransactionService transactionService;
 
     @Test
+    @Transactional
     @Rollback(false)
     public void createAPairTypeOfWorkHours() {
         givenTypeOfWorkHours(typeOfWorkHoursCodeA);
@@ -122,6 +121,7 @@ public class CostCategoryServiceTest {
     }
 
     @Test
+    @Transactional
     public void testAddAndGetCostCategories() {
 
         /* Build cost category (5 constraint violations). */
@@ -186,7 +186,6 @@ public class CostCategoryServiceTest {
     }
 
     @Test
-    @NotTransactional
     public void testUpdateCostCategory() throws InstanceNotFoundException {
 
         // First one it creates Valid cost category DTO with a hour cost

@@ -46,7 +46,6 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
-@Transactional
 public class AdvanceAssignmentDAOTest {
 
     @Autowired
@@ -65,6 +64,7 @@ public class AdvanceAssignmentDAOTest {
     }
 
     @Test
+    @Transactional
     public void saveValidAdvanceAssignment() {
         AdvanceAssignment advance = DirectAdvanceAssignment.create(false,
                 BigDecimal.TEN);
@@ -74,6 +74,7 @@ public class AdvanceAssignmentDAOTest {
     }
 
     @Test(expected = ValidationException.class)
+    @Transactional
     public void saveAdvanceAssignmentWithZeroAsMaxValue() {
         AdvanceAssignment advance = DirectAdvanceAssignment.create(false,
                 BigDecimal.ZERO);
@@ -83,6 +84,7 @@ public class AdvanceAssignmentDAOTest {
     }
 
     @Test(expected = ValidationException.class)
+    @Transactional
     public void saveAdvanceAssignmentWithNegativeNumberAsMaxValue() {
         AdvanceAssignment advance = DirectAdvanceAssignment.create(false,
                 BigDecimal.valueOf(-10));

@@ -51,13 +51,13 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  *
  */
-@Transactional
 public class TypeOfWorkHoursDAOTest {
 
     @Autowired
     ITypeOfWorkHoursDAO typeOfWorkHoursDAO;
 
     @Test
+    @Transactional
     public void testInSpringContainer() {
         assertNotNull(typeOfWorkHoursDAO);
     }
@@ -70,6 +70,7 @@ public class TypeOfWorkHoursDAOTest {
     }
 
     @Test
+    @Transactional
     public void testSaveTypeOfWorkHours() {
         TypeOfWorkHours typeOfWorkHours = createValidTypeOfWorkHours();
         typeOfWorkHoursDAO.save(typeOfWorkHours);
@@ -77,6 +78,7 @@ public class TypeOfWorkHoursDAOTest {
     }
 
     @Test
+    @Transactional
     public void testRemoveTypeOfWorkHours() throws InstanceNotFoundException {
         TypeOfWorkHours typeOfWorkHours = createValidTypeOfWorkHours();
         typeOfWorkHoursDAO.save(typeOfWorkHours);
@@ -85,6 +87,7 @@ public class TypeOfWorkHoursDAOTest {
     }
 
     @Test
+    @Transactional
     public void testListTypesOfWorkHours() {
         int previous = typeOfWorkHoursDAO.list(TypeOfWorkHours.class).size();
         TypeOfWorkHours typeOfWorkHours = createValidTypeOfWorkHours();
@@ -94,6 +97,7 @@ public class TypeOfWorkHoursDAOTest {
     }
 
     @Test
+    @Transactional
     public void testFindTypesOfWorkHoursByCode() {
         TypeOfWorkHours typeOfWorkHours = createValidTypeOfWorkHours();
         typeOfWorkHoursDAO.save(typeOfWorkHours);
@@ -108,6 +112,7 @@ public class TypeOfWorkHoursDAOTest {
     }
 
     @Test(expected=InstanceNotFoundException.class)
+    @Transactional
     public void testFindTypesOfWorkHoursByCodeException() throws InstanceNotFoundException{
         TypeOfWorkHours typeOfWorkHours = createValidTypeOfWorkHours();
         typeOfWorkHoursDAO.save(typeOfWorkHours);

@@ -51,13 +51,13 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  *
  */
-@Transactional
 public class ProfileDAOTest {
 
     @Autowired
     IProfileDAO profileDAO;
 
     @Test
+    @Transactional
     public void testInSpringContainer() {
         assertNotNull(profileDAO);
     }
@@ -68,6 +68,7 @@ public class ProfileDAOTest {
     }
 
     @Test
+    @Transactional
     public void testSaveProfile() {
         Profile profile = createValidProfile();
         profileDAO.save(profile);
@@ -75,6 +76,7 @@ public class ProfileDAOTest {
     }
 
     @Test
+    @Transactional
     public void testRemoveProfile() throws InstanceNotFoundException {
         Profile profile = createValidProfile();
         profileDAO.save(profile);
@@ -83,6 +85,7 @@ public class ProfileDAOTest {
     }
 
     @Test
+    @Transactional
     public void testListProfiles() {
         int previous = profileDAO.list(Profile.class).size();
         Profile profile = createValidProfile();

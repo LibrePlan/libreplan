@@ -60,7 +60,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
         BUSINESS_SPRING_CONFIG_TEST_FILE })
-@Transactional
 public class OrderDAOTest {
 
     @Before
@@ -90,6 +89,7 @@ public class OrderDAOTest {
     private IAdHocTransactionService transactionService;
 
     @Test
+    @Transactional
     public void testInSpringContainer() {
         assertNotNull(orderDAO);
     }
@@ -125,6 +125,7 @@ public class OrderDAOTest {
     }
 
     @Test
+    @Transactional
     public void testSaveOrdersWithDeliveringDates() {
         Order order = createValidOrderWithDeadlineCommunications("test");
         orderDAO.save(order);
@@ -159,6 +160,7 @@ public class OrderDAOTest {
     }
 
     @Test
+    @Transactional
     public void testSaveTwoOrdersWithDifferentNames() {
         transactionService.runOnAnotherTransaction(new IOnTransaction<Void>() {
             @Override
@@ -182,6 +184,7 @@ public class OrderDAOTest {
     }
 
     @Test(expected = ValidationException.class)
+    @Transactional
     public void testSaveTwoOrdersWithSameNames() {
         transactionService.runOnAnotherTransaction(new IOnTransaction<Void>() {
             @Override

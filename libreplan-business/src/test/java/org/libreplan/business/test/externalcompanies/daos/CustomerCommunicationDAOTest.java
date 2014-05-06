@@ -61,7 +61,6 @@ import static org.junit.Assert.assertTrue;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
         BUSINESS_SPRING_CONFIG_TEST_FILE })
-@Transactional
 public class CustomerCommunicationDAOTest {
 
     @Autowired
@@ -100,16 +99,19 @@ public class CustomerCommunicationDAOTest {
     }
 
     @Test
+    @Transactional
     public void testOrderDAOInSpringContainer() {
         assertNotNull(orderDAO);
     }
 
     @Test
+    @Transactional
     public void testCustomerCommunicationDAOInSpringContainer() {
         assertNotNull(customerCommunicationDAO);
     }
 
     @Test
+    @Transactional
     public void testSaveCustomerCommunication() {
         CustomerCommunication customerCommunication = createValidCustomerCommunication();
         customerCommunicationDAO.save(customerCommunication);
@@ -117,6 +119,7 @@ public class CustomerCommunicationDAOTest {
     }
 
     @Test
+    @Transactional
     public void testRemoveCustomerCommunication()
             throws InstanceNotFoundException {
         CustomerCommunication customerCommunication = createValidCustomerCommunication();
@@ -128,6 +131,7 @@ public class CustomerCommunicationDAOTest {
     }
 
     @Test
+    @Transactional
     public void testSaveCustomerCommunicationWithoutOrder()
             throws InstanceNotFoundException {
         CustomerCommunication customerCommunication = createValidCustomerCommunication();

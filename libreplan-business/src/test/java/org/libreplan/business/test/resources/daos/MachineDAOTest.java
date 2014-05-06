@@ -50,7 +50,6 @@ import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.resources.entities.Machine;
 import org.libreplan.business.resources.entities.MachineWorkersConfigurationUnit;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.NotTransactional;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -64,7 +63,6 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Diego Pino Garcia <dpino@igalia.com>
  * @author Javier Moran Rua <jmoran@igalia.com>
  */
-@Transactional
 public class MachineDAOTest {
 
     @Autowired
@@ -104,11 +102,13 @@ public class MachineDAOTest {
     }
 
     @Test
+    @Transactional
     public void testInSpringContainer() {
         assertNotNull(machineDAO);
     }
 
     @Test
+    @Transactional
     public void testSaveMachine() {
         Machine machine = createValidMachine();
         machineDAO.save(machine);
@@ -116,6 +116,7 @@ public class MachineDAOTest {
     }
 
     @Test
+    @Transactional
     public void testRemoveMachine() throws InstanceNotFoundException {
         Machine machine = createValidMachine();
         machineDAO.save(machine);
@@ -124,6 +125,7 @@ public class MachineDAOTest {
     }
 
     @Test
+    @Transactional
     public void testListMachines() {
         int previous = machineDAO.list(Machine.class).size();
         Machine machine = createValidMachine();
@@ -133,7 +135,6 @@ public class MachineDAOTest {
     }
 
     @Test
-    @NotTransactional
     public void testSaveConfigurationUnits() throws InstanceNotFoundException {
         final Machine machine = createValidMachine();
         MachineWorkersConfigurationUnit configurationUnit = MachineWorkersConfigurationUnit
@@ -157,7 +158,6 @@ public class MachineDAOTest {
     }
 
     @Test(expected = ValidationException.class)
-    @NotTransactional
     public void testSaveTwoMachinesWithSameCodeForbidden() {
         final String sameCode = UUID.randomUUID().toString();
         transactionService.runOnTransaction(new IOnTransaction<Void>() {

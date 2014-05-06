@@ -47,13 +47,13 @@ import org.springframework.transaction.annotation.Transactional;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
         BUSINESS_SPRING_CONFIG_TEST_FILE })
-@Transactional
 public class QualityFormTest extends AbstractQualityFormTest {
 
     @Autowired
     IQualityFormDAO qualityFormDAO;
 
     @Test
+    @Transactional
     public void checkInvalidNameQualityForm() throws ValidationException {
         QualityForm qualityForm = createValidQualityForm();
         qualityForm.setName("");
@@ -74,6 +74,7 @@ public class QualityFormTest extends AbstractQualityFormTest {
     }
 
     @Test
+    @Transactional
     public void checkInvalidQualityFormType() throws ValidationException {
         QualityForm qualityForm = createValidQualityForm();
         try {
@@ -88,6 +89,7 @@ public class QualityFormTest extends AbstractQualityFormTest {
     }
 
     @Test
+    @Transactional
     public void checkInvalidRepeatedQualityFormItemPosition()
             throws ValidationException {
         QualityForm qualityForm = createValidQualityForm();
@@ -111,6 +113,7 @@ public class QualityFormTest extends AbstractQualityFormTest {
     }
 
     @Test
+    @Transactional
     public void checkInvalidNotConsecutivesQualityFormItemPosition()
             throws ValidationException {
         QualityForm qualityForm = createValidQualityForm();
@@ -134,6 +137,7 @@ public class QualityFormTest extends AbstractQualityFormTest {
     }
 
     @Test
+    @Transactional
     public void checkInvalidOutOfRangeQualityFormItemPosition()
             throws ValidationException {
         QualityForm qualityForm = createValidQualityForm();
@@ -158,6 +162,7 @@ public class QualityFormTest extends AbstractQualityFormTest {
     }
 
     @Test
+    @Transactional
     public void checkInvalidPercentageQualityFormItemPosition()
             throws ValidationException {
         QualityForm qualityForm = createValidQualityForm();
@@ -191,6 +196,7 @@ public class QualityFormTest extends AbstractQualityFormTest {
     }
 
     @Test
+    @Transactional
     public void checkInvalidQualityFormItemPositionByItems()
             throws ValidationException {
         QualityForm qualityForm = createValidQualityForm();
@@ -247,6 +253,7 @@ public class QualityFormTest extends AbstractQualityFormTest {
     }
 
      @Test
+    @Transactional
     public void checkInvalidQualityFormItemName() throws ValidationException {
         QualityForm qualityForm = createValidQualityForm();
         QualityFormItem qualityFormItem = createValidQualityFormItem();
@@ -275,6 +282,7 @@ public class QualityFormTest extends AbstractQualityFormTest {
     }
 
     @Test
+    @Transactional
     public void checkNotNullQualityFormItemPosition()
             throws ValidationException {
         QualityForm qualityForm = createValidQualityForm();
@@ -290,6 +298,7 @@ public class QualityFormTest extends AbstractQualityFormTest {
     }
 
     @Test
+    @Transactional
     public void checkNotNullQualityFormItemPercentage()
             throws ValidationException {
         QualityForm qualityForm = createValidQualityForm();
@@ -305,6 +314,7 @@ public class QualityFormTest extends AbstractQualityFormTest {
     }
 
     @Test
+    @Transactional
     public void checkIncorrectQualityFormItemPercentage()
             throws ValidationException {
         QualityForm qualityForm = createValidQualityForm();

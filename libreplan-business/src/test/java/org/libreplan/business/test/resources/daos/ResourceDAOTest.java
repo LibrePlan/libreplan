@@ -62,7 +62,6 @@ import org.libreplan.business.resources.entities.Worker;
 import org.libreplan.business.users.daos.IUserDAO;
 import org.libreplan.business.users.entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.NotTransactional;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -75,7 +74,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
         BUSINESS_SPRING_CONFIG_TEST_FILE })
-@Transactional
 public class ResourceDAOTest {
 
     @Autowired
@@ -108,6 +106,7 @@ public class ResourceDAOTest {
     }
 
     @Test
+    @Transactional
     public void saveResourceWithCalendar() throws InstanceNotFoundException {
         Resource resource = givenValidWorker();
         ResourceCalendar resourceCalendar = givenValidResourceCalendar();
@@ -140,6 +139,7 @@ public class ResourceDAOTest {
     }
 
     @Test
+    @Transactional
     public void testResourceIsRelatedWithAllCriterions() {
         Collection<Criterion> criterions = createCriterions();
         createAndSaveResourceSatisfyingAllCriterions(criterions);
@@ -150,7 +150,6 @@ public class ResourceDAOTest {
     }
 
     @Test
-    @NotTransactional
     public void theHierarchyOfCriterionsIsConsidered() {
         final Criterion[] parentCriteron = { null };
         Resource worker = transactionService
@@ -236,6 +235,7 @@ public class ResourceDAOTest {
     }
 
     @Test
+    @Transactional
     public void testResourceIsNotRelatedWithAllCriterions() {
         Collection<Criterion> criterions = createCriterions();
         createAndSaveResourceSatisfyingAllCriterions(criterions);
@@ -265,6 +265,7 @@ public class ResourceDAOTest {
     }
 
     @Test(expected = ValidationException.class)
+    @Transactional
     public void testWorkerBoundToUserAlreadyBound() {
         final User user = givenStoredUser();
 

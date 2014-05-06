@@ -53,7 +53,6 @@ import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.test.annotation.NotTransactional;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -69,7 +68,6 @@ import org.springframework.transaction.annotation.Transactional;
         WEBAPP_SPRING_CONFIG_FILE, WEBAPP_SPRING_CONFIG_TEST_FILE,
         WEBAPP_SPRING_SECURITY_CONFIG_FILE,
         WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE })
-@Transactional
 public class BaseCalendarModelTest {
 
     @Autowired
@@ -98,6 +96,7 @@ public class BaseCalendarModelTest {
     }
 
     @Test
+    @Transactional
     public void testCreateAndSave() {
         int previous = baseCalendarModel.getBaseCalendars().size();
         baseCalendarModel.initCreate();
@@ -124,7 +123,6 @@ public class BaseCalendarModelTest {
     }
 
     @Test
-    @NotTransactional
     public void testEditAndSave() throws ValidationException {
         final Capacity capacity = Capacity.create(hours(4));
         doEditsSaveAndThenAsserts(new IOnExistentCalendar() {
@@ -182,6 +180,7 @@ public class BaseCalendarModelTest {
     }
 
     @Test
+    @Transactional
     public void testEditAndNewVersion() {
         final Capacity capacity = Capacity.create(hours(4));
         final LocalDate date = new LocalDate().plusWeeks(1);
@@ -215,6 +214,7 @@ public class BaseCalendarModelTest {
     }
 
     @Test
+    @Transactional
     public void testRemove() {
         int previous = baseCalendarModel.getBaseCalendars().size();
         saveOneCalendar();
@@ -228,6 +228,7 @@ public class BaseCalendarModelTest {
     }
 
     @Test
+    @Transactional
     public void testPossibleParentCalendars() throws ValidationException {
         int previous = baseCalendarModel.getPossibleParentCalendars().size();
 

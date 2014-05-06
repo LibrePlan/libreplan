@@ -53,7 +53,6 @@ import org.libreplan.ws.labels.api.LabelDTO;
 import org.libreplan.ws.labels.api.LabelTypeDTO;
 import org.libreplan.ws.labels.api.LabelTypeListDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.NotTransactional;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -69,7 +68,6 @@ import org.springframework.transaction.annotation.Transactional;
         WEBAPP_SPRING_CONFIG_FILE, WEBAPP_SPRING_CONFIG_TEST_FILE,
         WEBAPP_SPRING_SECURITY_CONFIG_FILE,
         WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE })
-@Transactional
 public class LabelServiceTest {
 
     @Autowired
@@ -102,6 +100,7 @@ public class LabelServiceTest {
     }
 
     @Test
+    @Transactional
     public void exportLabelTypes() {
         int previous = labelTypeDAO.getAll().size();
         LabelTypeListDTO labelTypes = labelService.getLabelTypes();
@@ -109,6 +108,7 @@ public class LabelServiceTest {
     }
 
     @Test
+    @Transactional
     public void exportLabelTypes2() {
         int previous = labelTypeDAO.getAll().size();
 
@@ -127,6 +127,7 @@ public class LabelServiceTest {
     }
 
     @Test
+    @Transactional
     public void importInvalidLabelWithoutAttributes() {
         int previous = labelTypeDAO.getAll().size();
 
@@ -149,7 +150,6 @@ public class LabelServiceTest {
     }
 
     @Test
-    @NotTransactional
     public void importValidLabelType() {
         int previous = transactionService
                 .runOnTransaction(new IOnTransaction<Integer>() {
@@ -180,7 +180,6 @@ public class LabelServiceTest {
     }
 
     @Test
-    @NotTransactional
     public void importTwoValidLabelType() {
         int previous = transactionService
                 .runOnTransaction(new IOnTransaction<Integer>() {
@@ -235,7 +234,6 @@ public class LabelServiceTest {
     }
 
     @Test
-    @NotTransactional
     public void importTwoLabelTypeWithRepeatedName() {
         int previous = transactionService
                 .runOnTransaction(new IOnTransaction<Integer>() {
@@ -272,7 +270,6 @@ public class LabelServiceTest {
     }
 
     @Test
-    @NotTransactional
     public void importValidLabelTypeWithTwoValidLabels() {
         int previous = transactionService
                 .runOnTransaction(new IOnTransaction<Integer>() {
@@ -316,7 +313,6 @@ public class LabelServiceTest {
     }
 
     @Test
-    @NotTransactional
     public void importLabelTypeWithNameAlreadyOnDatabase() {
         int previous = transactionService
                 .runOnTransaction(new IOnTransaction<Integer>() {
@@ -365,6 +361,7 @@ public class LabelServiceTest {
     }
 
     @Test
+    @Transactional
     public void importValidLabelTypeWithTwoLabelsWithTheSameName() {
         int previous = labelTypeDAO.getAll().size();
 

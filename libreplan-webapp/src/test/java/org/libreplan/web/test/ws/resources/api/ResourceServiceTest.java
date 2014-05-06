@@ -97,7 +97,6 @@ import org.springframework.transaction.annotation.Transactional;
         WEBAPP_SPRING_CONFIG_FILE, WEBAPP_SPRING_CONFIG_TEST_FILE,
         WEBAPP_SPRING_SECURITY_CONFIG_FILE,
         WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE })
-@Transactional
 public class ResourceServiceTest {
 
     @Autowired
@@ -148,6 +147,7 @@ public class ResourceServiceTest {
     }
 
     @Test
+    @Transactional
     public void testAddResourcesWithBasicContraintViolations() {
 
         /* Create resource DTOs. */
@@ -186,6 +186,7 @@ public class ResourceServiceTest {
     }
 
     @Test
+    @Transactional
     public void testAddWorkerWithExistingFirstNameSurnameAndNif() {
 
         /* Create a worker. */
@@ -208,6 +209,7 @@ public class ResourceServiceTest {
     }
 
     @Test
+    @Transactional
     public void testAddResourceWithCriterionSatisfactions() {
 
         /* Create a criterion type. */
@@ -285,6 +287,7 @@ constraintViolations
     }
 
     @Test
+    @Transactional
     public void testAddResourceWithCriterionSatisfactionWithoutStartDate() {
 
         /* Create a criterion type. */
@@ -304,6 +307,7 @@ constraintViolations
     }
 
     @Test
+    @Transactional
     public void testAddResourceWithCriterionSatisfactionWithNegativeInterval() {
 
         /* Create a criterion type. */
@@ -323,6 +327,7 @@ constraintViolations
     }
 
     @Test
+    @Transactional
     public void testAddResourceWithOverlappingCriterionSatisfactionsAllowed() {
 
         /* Create a criterion type. */
@@ -345,6 +350,7 @@ constraintViolations
     }
 
     @Test
+    @Transactional
     public void testAddResourceWithOverlappingCriterionSatisfactions() {
 
         /* Create criterion types. */
@@ -386,6 +392,7 @@ constraintViolations
     }
 
     @Test
+    @Transactional
     public void testAddResourcesWithCriterionSatisfactionsWithIncorrectCriterionType() {
 
         /* Create two criterion types. */
@@ -415,6 +422,7 @@ constraintViolations
     }
 
     @Test
+    @Transactional
     public void testAddResourcesWithCriterionSatisfactionsWithMissingNames() {
 
         /* Create a criterion type. */
@@ -447,6 +455,7 @@ constraintViolations
     }
 
     @Test
+    @Transactional
     public void testAddResourceWithCriterionSatisfactionsWithNonExistentCriterionType() {
 
         /* Create a machine DTO. */
@@ -463,6 +472,7 @@ constraintViolations
     }
 
     @Test
+    @Transactional
     public void testAddResourceWithCriterionSatisfactionsWithNonExistentCriterion() {
 
         /* Create a criterion type. */
@@ -482,6 +492,7 @@ constraintViolations
     }
 
     @Test
+    @Transactional
     public void testAddResourceWithDefaultCalendar() {
 
         /* Create a machine DTO. */
@@ -497,6 +508,7 @@ constraintViolations
     }
 
     @Test
+    @Transactional
     public void testAddResourceWithSpecificCalendar() {
 
         /* Create a resource calendar DTO. */
@@ -520,6 +532,7 @@ constraintViolations
     }
 
     @Test
+    @Transactional
     public void testAddResourceWithNonExistentCalendar() {
 
         /* Create invalid calendar */
@@ -538,6 +551,7 @@ constraintViolations
     }
 
     @Test
+    @Transactional
     public void testAddResourceWithCostAssignments() {
 
         /* Create a CostCategory. */
@@ -600,6 +614,7 @@ constraintViolations
     }
 
     @Test
+    @Transactional
     public void testAddResourcesWithCostAssignmentWithMissingCostCategoryName() {
 
         /* Create a resource DTO. */
@@ -616,6 +631,7 @@ constraintViolations
     }
 
     @Test
+    @Transactional
     public void testAddResourcesWithCostAssignmentWithNonExistentCostCategory() {
 
         /* Create a resource DTO. */
@@ -632,6 +648,7 @@ constraintViolations
     }
 
     @Test
+    @Transactional
     public void testAddResourceWithCostAssignmentWithoutStartDate() {
 
         /* Create a CostCategory. */
@@ -652,6 +669,7 @@ constraintViolations
     }
 
     @Test
+    @Transactional
     public void testAddResourceWithCostAssignmentWithNegativeInterval() {
 
         /* Create a CostCategory. */
@@ -671,6 +689,7 @@ constraintViolations
     }
 
     @Test
+    @Transactional
     public void testAddResourcesWithOverlappingInCostAssignments() {
 
         /* Create a CostCategory. */
@@ -732,6 +751,7 @@ constraintViolations
     }
 
     @Test
+    @Transactional
     public void testUpdateResources() throws InstanceNotFoundException {
 
         CriterionType ctMachine = createCriterionType(ResourceEnum.MACHINE);

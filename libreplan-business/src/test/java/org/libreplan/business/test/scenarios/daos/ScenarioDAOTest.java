@@ -44,7 +44,6 @@ import org.libreplan.business.scenarios.daos.IScenarioDAO;
 import org.libreplan.business.scenarios.entities.OrderVersion;
 import org.libreplan.business.scenarios.entities.Scenario;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.NotTransactional;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -56,7 +55,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
         BUSINESS_SPRING_CONFIG_TEST_FILE })
-@Transactional
 public class ScenarioDAOTest {
 
     @Autowired
@@ -104,7 +102,6 @@ public class ScenarioDAOTest {
     }
 
     @Test
-    @NotTransactional
     public void afterSavingScenarioWithOrderNewlyRetrievedOrderHasScenariosInfo() {
         final Scenario scenario = createNewScenario();
         final Long orderId = transactionService

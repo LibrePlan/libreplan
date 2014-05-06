@@ -42,7 +42,6 @@ import org.libreplan.business.resources.daos.ICriterionTypeDAO;
 import org.libreplan.business.resources.entities.CriterionType;
 import org.libreplan.business.resources.entities.ResourceEnum;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.NotTransactional;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,7 +59,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
         BUSINESS_SPRING_CONFIG_TEST_FILE })
-@Transactional
 public class CriterionTypeDAOTest {
 
     @Autowired
@@ -82,6 +80,7 @@ public class CriterionTypeDAOTest {
     }
 
     @Test
+    @Transactional
     public void testSaveCriterionType() {
         CriterionType criterionType = createValidCriterionType();
         criterionTypeDAO.save(criterionType);
@@ -89,6 +88,7 @@ public class CriterionTypeDAOTest {
     }
 
     @Test
+    @Transactional
     public void testCriterionTypeCanBeSavedTwice() throws ValidationException {
         CriterionType criterionType = createValidCriterionType();
         criterionTypeDAO.save(criterionType);
@@ -99,7 +99,6 @@ public class CriterionTypeDAOTest {
     }
 
     @Test(expected = ValidationException.class)
-    @NotTransactional
     public void testCannotSaveTwoDifferentCriterionTypesWithTheSameName() {
         IOnTransaction<Void> createTypeWithRepeatedName = new IOnTransaction<Void>() {
 
@@ -116,7 +115,6 @@ public class CriterionTypeDAOTest {
     }
 
     @Test
-    @NotTransactional
     public void testUpdateWithExistingName() {
 
         final String name1 = getUniqueName();
@@ -157,7 +155,6 @@ public class CriterionTypeDAOTest {
     }
 
     @Test
-    @NotTransactional
     public void testUpdateWithTheSameName() {
 
         final String name1 = getUniqueName();
@@ -193,6 +190,7 @@ public class CriterionTypeDAOTest {
     }
 
     @Test
+    @Transactional
     public void testRemove() throws InstanceNotFoundException {
         CriterionType criterionType = createValidCriterionType();
         criterionTypeDAO.save(criterionType);
@@ -201,6 +199,7 @@ public class CriterionTypeDAOTest {
     }
 
     @Test
+    @Transactional
     public void testList() {
         int previous = criterionTypeDAO.list(CriterionType.class).size();
         CriterionType criterion1 = createValidCriterionType();
@@ -212,6 +211,7 @@ public class CriterionTypeDAOTest {
     }
 
     @Test
+    @Transactional
     public void testGetCriterionTypes() {
         int previous = criterionTypeDAO.list(CriterionType.class).size();
         CriterionType criterion1 = createValidCriterionType();
@@ -223,6 +223,7 @@ public class CriterionTypeDAOTest {
     }
 
     @Test
+    @Transactional
     public void testGetCriterionTypesByResourceType() {
         // Add RESOURCE criterionType
         CriterionType criterionType = createValidCriterionType();

@@ -67,7 +67,6 @@ import org.springframework.transaction.annotation.Transactional;
         WEBAPP_SPRING_CONFIG_FILE, WEBAPP_SPRING_CONFIG_TEST_FILE,
         WEBAPP_SPRING_SECURITY_CONFIG_FILE,
         WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE })
-@Transactional
 public class MaterialServiceTest {
 
     @Autowired
@@ -131,6 +130,7 @@ public class MaterialServiceTest {
     }
 
     @Test
+    @Transactional
     public void testAddAndGetMaterialCategories() {
         /* Build materialCategory (0 constraint violations). */
         // Missing material name and the unit type.
@@ -165,6 +165,7 @@ public class MaterialServiceTest {
     }
 
     @Test
+    @Transactional
     public void testAddMaterialRepeatedCodes() {
         /* Build material with same code (1 constraint violations). */
         MaterialDTO m1 = new MaterialDTO("CodeA", "material1", new BigDecimal(
@@ -189,6 +190,7 @@ public class MaterialServiceTest {
     }
 
     @Test
+    @Transactional
     public void testAddValidMaterialCategory() {
         /* Build material (0 constraint violations). */
         MaterialDTO m1 = new MaterialDTO("CodeM1", "material1", new BigDecimal(
@@ -224,6 +226,7 @@ public class MaterialServiceTest {
     }
 
     @Test
+    @Transactional
     public void testAddMaterialCategoryWithSameName() {
         /* Build material (0 constraint violations). */
         MaterialCategoryDTO mc1 = new MaterialCategoryDTO("subMC1",
@@ -249,6 +252,7 @@ public class MaterialServiceTest {
     }
 
     @Test
+    @Transactional
     public void testAddMaterialCategoryWithInconsistentParent() {
         /* Build material (0 constraint violations). */
         MaterialCategoryDTO mc1 = new MaterialCategoryDTO("subMCX1",
@@ -275,6 +279,7 @@ public class MaterialServiceTest {
     }
 
     @Test
+    @Transactional
     public void testAddAndUpdateMaterialCategory() {
 
         /* Build material (0 constraint violations). */

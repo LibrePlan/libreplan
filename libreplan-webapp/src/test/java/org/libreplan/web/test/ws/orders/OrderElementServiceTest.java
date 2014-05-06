@@ -96,7 +96,6 @@ import org.libreplan.ws.common.impl.DateConverter;
 import org.libreplan.ws.orders.api.IOrderElementService;
 import org.libreplan.ws.orders.api.OrderListDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.NotTransactional;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -111,7 +110,6 @@ import org.springframework.transaction.annotation.Transactional;
         WEBAPP_SPRING_CONFIG_FILE, WEBAPP_SPRING_CONFIG_TEST_FILE,
         WEBAPP_SPRING_SECURITY_CONFIG_FILE,
         WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE })
-@Transactional
 public class OrderElementServiceTest {
 
     @Resource
@@ -202,6 +200,7 @@ public class OrderElementServiceTest {
     }
 
     @Test
+    @Transactional
     public void invalidOrderWithoutCode() {
         int previous = orderDAO.getOrders().size();
 
@@ -224,6 +223,7 @@ public class OrderElementServiceTest {
     }
 
     @Test
+    @Transactional
     public void invalidOrderWithoutAttributes() {
         int previous = orderDAO.getOrders().size();
 
@@ -250,6 +250,7 @@ public class OrderElementServiceTest {
     }
 
     @Test
+    @Transactional
     public void invalidOrderWithoutNameAndInitDate() {
         int previous = orderDAO.getOrders().size();
 
@@ -273,6 +274,7 @@ public class OrderElementServiceTest {
     }
 
     @Test
+    @Transactional
     public void invalidOrderWithoutInitDate() {
         int previous = orderDAO.getOrders().size();
 
@@ -295,6 +297,7 @@ public class OrderElementServiceTest {
     }
 
     @Test
+    @Transactional
     public void invalidOrderWithoutName() {
         int previous = orderDAO.getOrders().size();
 
@@ -320,6 +323,7 @@ public class OrderElementServiceTest {
     }
 
     @Test
+    @Transactional
     public void validOrder() {
         String code = "order-code " + UUID.randomUUID().toString();
 
@@ -338,6 +342,7 @@ public class OrderElementServiceTest {
     }
 
     @Test
+    @Transactional
     public void orderWithInvalidOrderLine() {
         int previous = orderDAO.getOrders().size();
 
@@ -364,6 +369,7 @@ public class OrderElementServiceTest {
     }
 
     @Test
+    @Transactional
     public void orderWithOrderLineWithoutCode() {
         int previous = orderDAO.getOrders().size();
 
@@ -389,6 +395,7 @@ public class OrderElementServiceTest {
     }
 
     @Test
+    @Transactional
     public void orderWithOrderLineWithInvalidHoursGroup() {
         int previous = orderDAO.getOrders().size();
 
@@ -424,6 +431,7 @@ public class OrderElementServiceTest {
     }
 
     @Test
+    @Transactional
     public void validOrderWithOrderLine() {
         String code = "order-code " + UUID.randomUUID().toString();
 
@@ -450,6 +458,7 @@ public class OrderElementServiceTest {
     }
 
     @Test
+    @Transactional
     public void orderWithInvalidOrderLineGroup() {
         int previous = orderDAO.getOrders().size();
 
@@ -478,6 +487,7 @@ public class OrderElementServiceTest {
     }
 
     @Test
+    @Transactional
     public void orderWithOrderLineGroupWithoutCode() {
         int previous = orderDAO.getOrders().size();
 
@@ -505,6 +515,7 @@ public class OrderElementServiceTest {
     }
 
     @Test
+    @Transactional
     public void orderWithOrderLineGroupWithoutHoursGroup() {
         int previous = orderDAO.getOrders().size();
 
@@ -535,6 +546,7 @@ public class OrderElementServiceTest {
     }
 
     @Test
+    @Transactional
     public void validOrderWithOrderLineGroup() {
         String code = UUID.randomUUID().toString();
 
@@ -575,6 +587,7 @@ public class OrderElementServiceTest {
     }
 
     @Test
+    @Transactional
     public void removeOrderElement() {
         final String code = UUID.randomUUID().toString();
 
@@ -616,6 +629,7 @@ public class OrderElementServiceTest {
     }
 
     @Test
+    @Transactional
     public void orderWithInvalidMaterialAssignment() {
         int previous = orderDAO.getOrders().size();
 
@@ -642,6 +656,7 @@ public class OrderElementServiceTest {
     }
 
     @Test
+    @Transactional
     public void orderWithInvalidMaterialAssignmentWithoutUnitsAndUnitPrice() {
         int previous = orderDAO.getOrders().size();
 
@@ -674,6 +689,7 @@ public class OrderElementServiceTest {
     }
 
     @Test
+    @Transactional
     public void validOrderWithMaterialAssignment() {
         String code = "order-code " + UUID.randomUUID().toString();
 
@@ -699,6 +715,7 @@ public class OrderElementServiceTest {
     }
 
     @Test
+    @Transactional
     public void orderWithInvalidLabel() {
         int previous = orderDAO.getOrders().size();
 
@@ -723,7 +740,6 @@ public class OrderElementServiceTest {
     }
 
     @Test
-    @NotTransactional
     public void validOrderWithLabel() {
         final String code = "order-code " + UUID.randomUUID().toString();
 
@@ -768,7 +784,6 @@ public class OrderElementServiceTest {
     }
 
     @Test
-    @NotTransactional
     public void updateLabels() throws InstanceNotFoundException,
             IncompatibleTypeException {
         final String code = "order-code-" + UUID.randomUUID().toString();
@@ -861,7 +876,6 @@ public class OrderElementServiceTest {
     }
 
     @Test
-    @NotTransactional
     public void updateMaterialAssignment() throws InstanceNotFoundException,
             IncompatibleTypeException {
         final String code = "order-code" + UUID.randomUUID().toString();
@@ -970,7 +984,6 @@ public class OrderElementServiceTest {
     }
 
     @Test
-    @NotTransactional
     public void updateHoursGroup() throws InstanceNotFoundException,
             IncompatibleTypeException {
         final String code = "order-code" + UUID.randomUUID().toString();
@@ -1103,6 +1116,7 @@ public class OrderElementServiceTest {
     }
 
     @Test
+    @Transactional
     // FIXME move to subcontractors service when it exists
     public void invalidOrderWithInvalidAdvanceMeasurements()
             throws InstanceNotFoundException {
@@ -1145,7 +1159,6 @@ public class OrderElementServiceTest {
     }
 
     @Test
-    @NotTransactional
     // FIXME move to subcontractors service when it exists
     public void validOrderWithAdvanceMeasurements() {
         final String code = "order-code" + UUID.randomUUID().toString();
@@ -1201,7 +1214,6 @@ public class OrderElementServiceTest {
     }
 
     @Test
-    @NotTransactional
     // FIXME move to subcontractors service when it exists
     public void updateAdvanceMeasurements() throws InstanceNotFoundException,
             IncompatibleTypeException {
@@ -1312,6 +1324,7 @@ public class OrderElementServiceTest {
     }
 
     @Test
+    @Transactional
     public void invalidOrderWithCriterionRequirements()
             throws InstanceNotFoundException {
         String code = "order-code" + UUID.randomUUID().toString();
@@ -1346,7 +1359,6 @@ public class OrderElementServiceTest {
     }
 
     @Test
-    @NotTransactional
     public void validOrderWithCriterionRequirements()
             throws InstanceNotFoundException {
         final String code = "order-code" + UUID.randomUUID().toString();
@@ -1399,7 +1411,6 @@ public class OrderElementServiceTest {
     }
 
     @Test
-    @NotTransactional
     public void validOrderWithDirectCriterionRequirementsAndIndidirectCriterionRequirements()
             throws InstanceNotFoundException {
         final String code = "order-code" + UUID.randomUUID().toString();
@@ -1486,7 +1497,6 @@ public class OrderElementServiceTest {
     }
 
     @Test
-    @NotTransactional
     public void updateCriterionRequirements() throws InstanceNotFoundException,
             IncompatibleTypeException {
         final String code = "order-code" + UUID.randomUUID().toString();
@@ -1589,7 +1599,6 @@ public class OrderElementServiceTest {
     }
 
     @Test
-    @NotTransactional
     public void updateDirectCriterionRequirementsAndIndirectCriterionRequirements()
             throws InstanceNotFoundException, IncompatibleTypeException {
         final String code = "order-code" + UUID.randomUUID().toString();
@@ -1740,7 +1749,6 @@ public class OrderElementServiceTest {
     }
 
     @Test
-    @NotTransactional
     public void importDirectCriterionRequirementsAndIndirectCriterionRequirements()
             throws InstanceNotFoundException, IncompatibleTypeException {
         final String code = "order-code" + UUID.randomUUID().toString();
@@ -1841,6 +1849,7 @@ public class OrderElementServiceTest {
     }
 
     @Test
+    @Transactional
     public void testCannotExistTwoOrderElementsWithTheSameCode() {
         final String repeatedCode = "code1";
 
@@ -1858,6 +1867,7 @@ public class OrderElementServiceTest {
     }
 
     @Test
+    @Transactional
     public void testCannotExistTwoHoursGroupWithTheSameCode() {
         final String repeatedCode = "code1";
 

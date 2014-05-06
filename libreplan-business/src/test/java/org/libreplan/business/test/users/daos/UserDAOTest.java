@@ -47,7 +47,6 @@ import org.libreplan.business.users.entities.Profile;
 import org.libreplan.business.users.entities.User;
 import org.libreplan.business.users.entities.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.NotTransactional;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -62,7 +61,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
     BUSINESS_SPRING_CONFIG_TEST_FILE })
-@Transactional
 public class UserDAOTest {
 
     @Autowired
@@ -78,6 +76,7 @@ public class UserDAOTest {
     private IWorkerDAO workerDAO;
 
     @Test
+    @Transactional
     public void testBasicSave() throws InstanceNotFoundException {
 
         User user = createUser(getUniqueName());
@@ -90,7 +89,6 @@ public class UserDAOTest {
     }
 
     @Test
-    @NotTransactional
     public void testExistsByLoginNameAnotherTransaction() {
 
         final String loginName = getUniqueName();
@@ -114,7 +112,6 @@ public class UserDAOTest {
     }
 
     @Test
-    @NotTransactional
     public void testCreateWithExistingLoginName() {
 
         final String loginName = getUniqueName();
@@ -138,7 +135,6 @@ public class UserDAOTest {
     }
 
     @Test
-    @NotTransactional
     public void testUpdateWithExistingLoginName() {
 
         final String loginName1 = getUniqueName();
@@ -179,7 +175,6 @@ public class UserDAOTest {
     }
 
     @Test
-    @NotTransactional
     public void testUpdateWithTheSameLoginName() {
 
         final String loginName1 = getUniqueName();
@@ -214,6 +209,7 @@ public class UserDAOTest {
     }
 
     @Test
+    @Transactional
     public void testFindByName() throws InstanceNotFoundException {
         User user = createUser(getUniqueName());
         user.setDisabled(true);
@@ -230,6 +226,7 @@ public class UserDAOTest {
     }
 
     @Test
+    @Transactional
     public void testListNotDisabled() {
         User user1 = createUser(getUniqueName());
         user1.setDisabled(true);
@@ -244,6 +241,7 @@ public class UserDAOTest {
     }
 
     @Test
+    @Transactional
     public void testListProfiles() throws InstanceNotFoundException{
 
         User user = createUser(getUniqueName());
@@ -291,6 +289,7 @@ public class UserDAOTest {
     }
 
     @Test
+    @Transactional
     public void testUnoundUsers1() {
         int previous = transactionService
                 .runOnAnotherReadOnlyTransaction(new IOnTransaction<Integer>() {
@@ -340,6 +339,7 @@ public class UserDAOTest {
     }
 
     @Test
+    @Transactional
     public void testUnoundUsers2() {
         int previous = transactionService
                 .runOnAnotherReadOnlyTransaction(new IOnTransaction<Integer>() {
@@ -364,6 +364,7 @@ public class UserDAOTest {
     }
 
     @Test
+    @Transactional
     public void testUnoundUsers3() {
         int previous = transactionService
                 .runOnAnotherReadOnlyTransaction(new IOnTransaction<Integer>() {

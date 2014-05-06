@@ -69,7 +69,6 @@ import org.springframework.transaction.annotation.Transactional;
         WEBAPP_SPRING_CONFIG_FILE, WEBAPP_SPRING_CONFIG_TEST_FILE,
         WEBAPP_SPRING_SECURITY_CONFIG_FILE,
         WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE })
-@Transactional
 public class JiraOrderElementSynchronizerTest {
 
     @Resource
@@ -212,6 +211,7 @@ public class JiraOrderElementSynchronizerTest {
     }
 
     @Test
+    @Transactional
     @Ignore("Only working if you have a JIRA server configured")
     public void testSyncOrderElementsOfAnExistingOrderWithNoOrderLines() {
         Order order = givenOrder();
@@ -223,6 +223,7 @@ public class JiraOrderElementSynchronizerTest {
 
 
     @Test
+    @Transactional
     @Ignore("Only working if you have a JIRA server configured")
     public void testReSyncOrderElementsOfAnExistingOrderWithOrderLines() {
         Order order = givenOrderWithValidOrderLines();

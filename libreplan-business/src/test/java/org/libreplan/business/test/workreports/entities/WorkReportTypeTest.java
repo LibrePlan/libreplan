@@ -46,13 +46,13 @@ import org.springframework.transaction.annotation.Transactional;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
         BUSINESS_SPRING_CONFIG_TEST_FILE })
-@Transactional
 public class WorkReportTypeTest extends AbstractWorkReportTest {
 
     @Autowired
     IWorkReportTypeDAO workReportTypeDAO;
 
     @Test
+    @Transactional
     public void checkInvalidNameWorkReportType()
             throws ValidationException {
         WorkReportType workReportType = createValidWorkReportType();
@@ -75,6 +75,7 @@ public class WorkReportTypeTest extends AbstractWorkReportTest {
     }
 
     @Test
+    @Transactional
     public void checkInvalidCodeWorkReportType() throws ValidationException {
         WorkReportType workReportType = createValidWorkReportType();
         workReportType.setCode("");
@@ -105,6 +106,7 @@ public class WorkReportTypeTest extends AbstractWorkReportTest {
     }
 
     @Test
+    @Transactional
     public void checkIfCodeWorkReportTypeIsUnique() throws ValidationException {
         String code = new String("A");
         WorkReportType workReportTypeA = createValidWorkReportType();
@@ -125,6 +127,7 @@ public class WorkReportTypeTest extends AbstractWorkReportTest {
     }
 
     @Test
+    @Transactional
     public void checkIfNameWorkReportTypeIsUnique() throws ValidationException {
         WorkReportType workReportTypeA = createValidWorkReportType();
         workReportTypeA.setName("A");
@@ -144,6 +147,7 @@ public class WorkReportTypeTest extends AbstractWorkReportTest {
     }
 
     @Test
+    @Transactional
     public void checkSaveDescriptionFieldsWorkReportType() {
         WorkReportType workReportType = createValidWorkReportType();
 
@@ -161,6 +165,7 @@ public class WorkReportTypeTest extends AbstractWorkReportTest {
     }
 
     @Test
+    @Transactional
     public void checkIfFieldNameDescriptionFieldsIsUnique() {
         WorkReportType workReportType = createValidWorkReportType();
 
@@ -180,6 +185,7 @@ public class WorkReportTypeTest extends AbstractWorkReportTest {
     }
 
     @Test
+    @Transactional
     public void checkInvalidFieldNameDescriptionFields() {
         WorkReportType workReportType = createValidWorkReportType();
 
@@ -209,6 +215,7 @@ public class WorkReportTypeTest extends AbstractWorkReportTest {
     }
 
     @Test
+    @Transactional
     public void checkInvalidLenghtDescriptionFields() {
         WorkReportType workReportType = createValidWorkReportType();
 
@@ -238,6 +245,7 @@ public class WorkReportTypeTest extends AbstractWorkReportTest {
     }
 
     @Test
+    @Transactional
     public void checkSaveWorkReportLabelTypeAssigment() {
         WorkReportType workReportType = createValidWorkReportType();
 
@@ -255,6 +263,7 @@ public class WorkReportTypeTest extends AbstractWorkReportTest {
     }
 
     @Test
+    @Transactional
     public void checkIfLabelTypeWorkReportLabelTypeAssigmentIsNull() {
         WorkReportType workReportType = createValidWorkReportType();
         WorkReportLabelTypeAssigment labelAssigment = createValidWorkReportLabelTypeAssigment();
@@ -269,6 +278,7 @@ public class WorkReportTypeTest extends AbstractWorkReportTest {
     }
 
     @Test
+    @Transactional
     public void checkIfLabelWorkReportLabelTypeAssigmentIsNull() {
         WorkReportType workReportType = createValidWorkReportType();
         WorkReportLabelTypeAssigment labelAssigment = createValidWorkReportLabelTypeAssigment();
@@ -283,6 +293,7 @@ public class WorkReportTypeTest extends AbstractWorkReportTest {
     }
 
     @Test
+    @Transactional
     public void checkIfIndexLabelsAndFieldsAreConsecutive() {
         WorkReportType workReportType = createValidWorkReportType();
 
@@ -308,6 +319,7 @@ public class WorkReportTypeTest extends AbstractWorkReportTest {
     }
 
     @Test
+    @Transactional
     public void checkIfIndexLabelsAndFieldsInitInZero() {
         WorkReportType workReportType = createValidWorkReportType();
 
@@ -333,6 +345,7 @@ public class WorkReportTypeTest extends AbstractWorkReportTest {
     }
 
     @Test
+    @Transactional
     public void checkIfIndexLabelsAndFieldsAreUniques() {
         WorkReportType workReportType = createValidWorkReportType();
 

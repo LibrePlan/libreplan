@@ -50,7 +50,6 @@ import org.libreplan.ws.typeofworkhours.api.ITypeOfWorkHoursService;
 import org.libreplan.ws.typeofworkhours.api.TypeOfWorkHoursDTO;
 import org.libreplan.ws.typeofworkhours.api.TypeOfWorkHoursListDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.NotTransactional;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -64,7 +63,6 @@ import org.springframework.transaction.annotation.Transactional;
         WEBAPP_SPRING_CONFIG_FILE, WEBAPP_SPRING_CONFIG_TEST_FILE,
         WEBAPP_SPRING_SECURITY_CONFIG_FILE,
         WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE })
-@Transactional
 public class TypeOfWorkHoursServiceTest {
 
     @Autowired
@@ -103,6 +101,7 @@ public class TypeOfWorkHoursServiceTest {
     }
 
     @Test
+    @Transactional
     public void testAddAndGetTypeOfWorkHours() {
 
         // Missing TypeOfWorkHours name.
@@ -132,7 +131,6 @@ public class TypeOfWorkHoursServiceTest {
     }
 
     @Test
-    @NotTransactional
     public void testUpdateTypeOfWorkHours() throws InstanceNotFoundException {
 
         // First one it creates valid type of work hours

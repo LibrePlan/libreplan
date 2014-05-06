@@ -57,7 +57,6 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  *
  */
-@Transactional
 public class HourCostDAOTest {
 
     @Autowired
@@ -70,6 +69,7 @@ public class HourCostDAOTest {
     ICostCategoryDAO costCategoryDAO;
 
     @Test
+    @Transactional
     public void testInSpringContainer() {
         assertNotNull(hourCostDAO);
     }
@@ -91,6 +91,7 @@ public class HourCostDAOTest {
     }
 
     @Test
+    @Transactional
     public void testSaveHourCost() {
         HourCost hourCost = createValidHourCost();
         hourCostDAO.save(hourCost);
@@ -98,6 +99,7 @@ public class HourCostDAOTest {
     }
 
     @Test
+    @Transactional
     public void testRemoveHourCost() throws InstanceNotFoundException {
         HourCost hourCost = createValidHourCost();
         hourCostDAO.save(hourCost);
@@ -106,6 +108,7 @@ public class HourCostDAOTest {
     }
 
     @Test
+    @Transactional
     public void testListHourCost() {
         int previous = hourCostDAO.list(HourCost.class).size();
         HourCost hourCost = createValidHourCost();
@@ -115,12 +118,14 @@ public class HourCostDAOTest {
     }
 
     @Test
+    @Transactional
     public void testCategoryNavigation() {
         HourCost hourCost = createValidHourCost();
         assertTrue(hourCost.getCategory().getHourCosts().contains(hourCost));
     }
 
     @Test
+    @Transactional
     public void testHourCostNotInTwoCategories() {
         HourCost hourCost = createValidHourCost();
         CostCategory costCategory1 = CostCategory.create(UUID.randomUUID().toString());
@@ -142,6 +147,7 @@ public class HourCostDAOTest {
     }
 
     @Test(expected=ValidationException.class)
+    @Transactional
     public void testPositiveTimeInterval() {
         HourCost hourCost = createValidHourCost();
         hourCost.setInitDate(new LocalDate(2000,12,31));

@@ -57,7 +57,6 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  *
  */
-@Transactional
 public class CostCategoryDAOTest {
 
     @Autowired
@@ -67,6 +66,7 @@ public class CostCategoryDAOTest {
     ITypeOfWorkHoursDAO typeOfWorkHoursDAO;
 
     @Test
+    @Transactional
     public void testInSpringContainer() {
         assertNotNull(costCategoryDAO);
     }
@@ -77,6 +77,7 @@ public class CostCategoryDAOTest {
     }
 
     @Test
+    @Transactional
     public void testSaveCostCategory() {
         CostCategory costCategory = createValidCostCategory();
         costCategoryDAO.save(costCategory);
@@ -84,6 +85,7 @@ public class CostCategoryDAOTest {
     }
 
     @Test
+    @Transactional
     public void testRemoveCostCategory() throws InstanceNotFoundException {
         CostCategory costCategory = createValidCostCategory();
         costCategoryDAO.save(costCategory);
@@ -92,6 +94,7 @@ public class CostCategoryDAOTest {
     }
 
     @Test
+    @Transactional
     public void testListCostCategories() {
         int previous = costCategoryDAO.list(CostCategory.class).size();
         CostCategory costCategory = createValidCostCategory();
@@ -101,6 +104,7 @@ public class CostCategoryDAOTest {
     }
 
     @Test
+    @Transactional
     public void testCanAddHourCost() {
         CostCategory costCategory = createValidCostCategory();
         TypeOfWorkHours type1 = TypeOfWorkHours.create(UUID.randomUUID().toString(),
@@ -158,6 +162,7 @@ public class CostCategoryDAOTest {
     }
 
     @Test
+    @Transactional
     public void testListHourCosts() {
         CostCategory costCategory = createValidCostCategory();
         HourCost hourCost = HourCost.create(BigDecimal.ONE, new LocalDate(2009,11,1));
@@ -177,6 +182,7 @@ public class CostCategoryDAOTest {
     }
 
     @Test(expected=ValidationException.class)
+    @Transactional
     public void testHourCostsOverlap() {
         CostCategory costCategory = createValidCostCategory();
         TypeOfWorkHours type1 = TypeOfWorkHours.create(UUID.randomUUID().toString(),

@@ -84,7 +84,6 @@ import org.springframework.transaction.annotation.Transactional;
         WEBAPP_SPRING_CONFIG_FILE, WEBAPP_SPRING_CONFIG_TEST_FILE,
         WEBAPP_SPRING_SECURITY_CONFIG_FILE,
         WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE })
-@Transactional
 public class BaseCalendarServiceTest {
 
     @Autowired
@@ -221,6 +220,7 @@ public class BaseCalendarServiceTest {
     }
 
     @Test
+    @Transactional
     public void testAddValidBaseCalendar() throws InstanceNotFoundException {
 
         /* Build valid base calendar "bc1" (5 constraint violations). */
@@ -290,6 +290,7 @@ public class BaseCalendarServiceTest {
     }
 
     @Test
+    @Transactional
     public void testAddInvalidBaseCalendar() throws InstanceNotFoundException {
         /* Build valid base calendar "bc1" (5 constraint violations). */
         /* Build two calendar exception with the same date */
@@ -333,6 +334,7 @@ public class BaseCalendarServiceTest {
     }
 
     @Test
+    @Transactional
     public void testAddInvalidCalendarData() {
         /* Build a calendar data */
         HoursPerDayDTO hoursPerDayDTO_1 = new HoursPerDayDTO("XXX",

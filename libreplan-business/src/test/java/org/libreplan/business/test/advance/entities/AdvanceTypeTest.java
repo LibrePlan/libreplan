@@ -39,13 +39,13 @@ import org.springframework.transaction.annotation.Transactional;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
         BUSINESS_SPRING_CONFIG_TEST_FILE })
-@Transactional
 public class AdvanceTypeTest {
 
     @Autowired
     private IAdvanceTypeDAO dao;
 
     @Test(expected = DataIntegrityViolationException.class)
+    @Transactional
     public void typeNameMustBeUniqueInDB() {
         String repeatedName = "bla";
         AdvanceType advanceType = AdvanceType.create(repeatedName, new BigDecimal(

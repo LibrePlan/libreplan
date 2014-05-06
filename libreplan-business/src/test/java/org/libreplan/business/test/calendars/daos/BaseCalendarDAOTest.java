@@ -68,7 +68,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
         BUSINESS_SPRING_CONFIG_TEST_FILE })
-@Transactional
 public class BaseCalendarDAOTest {
 
     @Autowired
@@ -96,6 +95,7 @@ public class BaseCalendarDAOTest {
     }
 
     @Test
+    @Transactional
     public void saveBasicCalendar() {
         BaseCalendar calendar = BaseCalendarTest.createBasicCalendar();
         baseCalendarDAO.save(calendar);
@@ -103,6 +103,7 @@ public class BaseCalendarDAOTest {
     }
 
     @Test
+    @Transactional
     public void saveBasicCalendarWithExceptionDay() {
         BaseCalendar calendar = BaseCalendarTest.createBasicCalendar();
         addChristmasAsExceptionDay(calendar);
@@ -128,6 +129,7 @@ public class BaseCalendarDAOTest {
     }
 
     @Test
+    @Transactional
     public void saveDerivedCalendar() {
         BaseCalendar calendar = BaseCalendarTest.createBasicCalendar();
         baseCalendarDAO.save(calendar);
@@ -152,6 +154,7 @@ public class BaseCalendarDAOTest {
     }
 
     @Test
+    @Transactional
     public void saveNextCalendar() {
         BaseCalendar calendar = BaseCalendarTest.createBasicCalendar();
         baseCalendarDAO.save(calendar);
@@ -171,6 +174,7 @@ public class BaseCalendarDAOTest {
     }
 
     @Test(expected = DataIntegrityViolationException.class)
+    @Transactional
     public void notAllowRemoveCalendarWithChildren()
             throws InstanceNotFoundException {
         BaseCalendar calendar = BaseCalendarTest.createBasicCalendar();
@@ -188,6 +192,7 @@ public class BaseCalendarDAOTest {
     }
 
     @Test(expected = InstanceNotFoundException.class)
+    @Transactional
     public void removeVersions() throws InstanceNotFoundException {
         BaseCalendar calendar = BaseCalendarTest.createBasicCalendar();
         baseCalendarDAO.save(calendar);
@@ -204,6 +209,7 @@ public class BaseCalendarDAOTest {
     }
 
     @Test
+    @Transactional
     public void findChildrens() {
         BaseCalendar calendar = BaseCalendarTest.createBasicCalendar();
         baseCalendarDAO.save(calendar);
@@ -236,6 +242,7 @@ public class BaseCalendarDAOTest {
     }
 
     @Test(expected = DataIntegrityViolationException.class)
+    @Transactional
     public void notAllowRemoveCalendarWithChildrenInOtherVersions()
             throws InstanceNotFoundException {
         BaseCalendar parent1 = BaseCalendarTest.createBasicCalendar();
@@ -270,6 +277,7 @@ public class BaseCalendarDAOTest {
     }
 
     @Test(expected = ValidationException.class)
+    @Transactional
     public void notAllowTwoCalendarsWithNullName() {
         BaseCalendar calendar = BaseCalendarTest.createBasicCalendar();
         calendar.setName(null);
@@ -278,6 +286,7 @@ public class BaseCalendarDAOTest {
     }
 
     @Test(expected = ValidationException.class)
+    @Transactional
     public void notAllowTwoCalendarsWithEmptyName() {
         BaseCalendar calendar = BaseCalendarTest.createBasicCalendar();
         calendar.setName("");
@@ -286,6 +295,7 @@ public class BaseCalendarDAOTest {
     }
 
     @Test
+    @Transactional
     public void findByName() {
         BaseCalendar calendar = BaseCalendarTest.createBasicCalendar();
         baseCalendarDAO.save(calendar);
@@ -297,6 +307,7 @@ public class BaseCalendarDAOTest {
     }
 
     @Test
+    @Transactional
     public void getBaseCalendarsAndNotResourceCalendars() {
         List<BaseCalendar> baseCalendars = baseCalendarDAO.getBaseCalendars();
         int previous = baseCalendars.size();
@@ -323,6 +334,7 @@ public class BaseCalendarDAOTest {
     }
 
     @Test(expected = ValidationException.class)
+    @Transactional
     public void doNotAllowToSaveCalendarWithZeroHours() {
         BaseCalendar calendar = BaseCalendar.create("calendar-"
                 + UUID.randomUUID());
@@ -331,6 +343,7 @@ public class BaseCalendarDAOTest {
     }
 
     @Test
+    @Transactional
     public void testSaveAndRemoveCalendar() {
         BaseCalendar calendar = BaseCalendarTest.createBasicCalendar();
         baseCalendarDAO.save(calendar);
@@ -343,6 +356,7 @@ public class BaseCalendarDAOTest {
     }
 
     @Test
+    @Transactional
     public void testSaveAndRemoveResourceCalendar() {
         Worker worker = ResourceDAOTest.givenValidWorker();
         ResourceCalendar resourceCalendar = ResourceCalendar.create();

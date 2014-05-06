@@ -51,18 +51,19 @@ import org.springframework.transaction.annotation.Transactional;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
         BUSINESS_SPRING_CONFIG_TEST_FILE })
-@Transactional
 public class QualityFormDAOTest extends AbstractQualityFormTest {
 
     @Autowired
     IQualityFormDAO qualityFormDAO;
 
     @Test
+    @Transactional
     public void testInSpringContainer() {
         assertNotNull(qualityFormDAO);
     }
 
     @Test
+    @Transactional
     public void testSaveQualityForm() {
         QualityForm qualityForm = createValidQualityForm();
         qualityFormDAO.save(qualityForm);
@@ -70,6 +71,7 @@ public class QualityFormDAOTest extends AbstractQualityFormTest {
     }
 
     @Test
+    @Transactional
     public void testRemoveQualityForm() throws InstanceNotFoundException {
         QualityForm qualityForm = createValidQualityForm();
         qualityFormDAO.save(qualityForm);
@@ -78,6 +80,7 @@ public class QualityFormDAOTest extends AbstractQualityFormTest {
     }
 
     @Test
+    @Transactional
     public void testListQualityForm() {
         int previous = qualityFormDAO.list(QualityForm.class).size();
         QualityForm qualityForm = createValidQualityForm();
@@ -87,6 +90,7 @@ public class QualityFormDAOTest extends AbstractQualityFormTest {
     }
 
     @Test
+    @Transactional
     public void testSaveQualityFormItems() {
         QualityForm qualityForm = createValidQualityForm();
         QualityFormItem qualityFormItem = createValidQualityFormItem();
@@ -98,6 +102,7 @@ public class QualityFormDAOTest extends AbstractQualityFormTest {
     }
 
     @Test
+    @Transactional
     public void testSaveAndRemoveQualityFormItem()
             throws InstanceNotFoundException {
         QualityForm qualityForm = createValidQualityForm();

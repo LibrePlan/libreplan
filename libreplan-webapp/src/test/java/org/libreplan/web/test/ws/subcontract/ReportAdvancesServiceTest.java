@@ -99,7 +99,6 @@ import org.springframework.transaction.annotation.Transactional;
 @ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE, WEBAPP_SPRING_CONFIG_FILE,
         WEBAPP_SPRING_CONFIG_TEST_FILE, WEBAPP_SPRING_SECURITY_CONFIG_FILE,
         WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE })
-@Transactional
 public class ReportAdvancesServiceTest {
 
     @Autowired
@@ -193,6 +192,7 @@ public class ReportAdvancesServiceTest {
     }
 
     @Test
+    @Transactional
     public void validAdvancesReport() {
         Order order = givenOrder();
         String orderElementCode = order.getChildren().get(0).getCode();
@@ -225,6 +225,7 @@ public class ReportAdvancesServiceTest {
     }
 
     @Test
+    @Transactional
     public void validAdvancesReportToSubcontratedOrderElement() {
         final OrderLine orderLine = createOrderLine();
         final ExternalCompany externalCompany = getSubcontractorExternalCompanySaved();
@@ -287,6 +288,7 @@ public class ReportAdvancesServiceTest {
     }
 
     @Test
+    @Transactional
     public void validEndDateReportToSubcontratedOrderElement() {
         final OrderLine orderLine = createOrderLine();
         final ExternalCompany externalCompany = getSubcontractorExternalCompanySaved();
@@ -358,6 +360,7 @@ public class ReportAdvancesServiceTest {
     }
 
     @Test
+    @Transactional
     public void validAdvancesAndEndDateReportToSubcontratedOrderElement() {
         final OrderLine orderLine = createOrderLine();
         final ExternalCompany externalCompany = getSubcontractorExternalCompanySaved();
@@ -441,6 +444,7 @@ public class ReportAdvancesServiceTest {
     }
 
     @Test
+    @Transactional
     public void validAdvancesReportWithSeveralDates() {
         Order order = givenOrder();
         final Long idOrder = order.getId();

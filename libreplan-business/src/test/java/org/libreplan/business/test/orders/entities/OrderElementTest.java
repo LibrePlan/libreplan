@@ -87,7 +87,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
         BUSINESS_SPRING_CONFIG_TEST_FILE })
-@Transactional
 public class OrderElementTest {
 
     @Resource
@@ -252,6 +251,7 @@ public class OrderElementTest {
     }
 
     @Test
+    @Transactional
     public void checkValidPropagation()throws ValidationException{
         OrderElement orderElement = givenOrderLineGroupWithTwoOrderLines(1000,
                 2000);
@@ -272,12 +272,14 @@ public class OrderElementTest {
     }
 
     @Test
+    @Transactional
     public void checkAdvancePercentageEmptyOrderLine() {
         OrderLine orderLine = givenOrderLine("name", "code", 1000);
         assertThat(orderLine.getAdvancePercentage(), equalTo(BigDecimal.ZERO));
     }
 
     @Test
+    @Transactional
     public void checkAdvancePercentageOrderLineWithAdvanceAssignmentWithoutMesaurement()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
@@ -292,6 +294,7 @@ public class OrderElementTest {
     }
 
     @Test
+    @Transactional
     public void checkAdvancePercentageOrderLineWithTwoAssignments1()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
@@ -309,6 +312,7 @@ public class OrderElementTest {
     }
 
     @Test
+    @Transactional
     public void checkAdvancePercentageOrderLineWithFutureAdvanceMeasurement()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
@@ -324,6 +328,7 @@ public class OrderElementTest {
     }
 
     @Test
+    @Transactional
     public void checkAdvancePercentageOrderLineWithTwoAssignments3()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
@@ -342,6 +347,7 @@ public class OrderElementTest {
     }
 
     @Test
+    @Transactional
     public void checkAdvancePercentageOrderLineWithThreeAssignments()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
@@ -364,6 +370,7 @@ public class OrderElementTest {
     }
 
     @Test
+    @Transactional
     public void checkAdvancePercentageOrderGroupLine1()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
@@ -397,6 +404,7 @@ public class OrderElementTest {
     }
 
     @Test
+    @Transactional
     public void checkAdvancePercentageOrderGroupLine2()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
@@ -430,6 +438,7 @@ public class OrderElementTest {
     }
 
     @Test
+    @Transactional
     public void checkAdvancePercentageOrderGroupLine3()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
@@ -452,6 +461,7 @@ public class OrderElementTest {
     }
 
     @Test
+    @Transactional
     public void checkAdvancePercentageOrderGroupLineSameAdvanceType()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
@@ -483,6 +493,7 @@ public class OrderElementTest {
     }
 
     @Test
+    @Transactional
     public void checkAdvancePercentageOrderGroupLineSameAdvanceTypeChildren()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
@@ -515,6 +526,7 @@ public class OrderElementTest {
     }
 
     @Test
+    @Transactional
     public void checkAdvancePercentageOrderGroupLineWithAssignments1()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
@@ -540,6 +552,7 @@ public class OrderElementTest {
     }
 
     @Test
+    @Transactional
     public void checkAdvancePercentageOrderGroupLineWithAssignments2()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
@@ -562,6 +575,7 @@ public class OrderElementTest {
     }
 
     @Test
+    @Transactional
     public void checkAdvanceMeasurementMerge()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
@@ -673,6 +687,7 @@ public class OrderElementTest {
     }
 
     @Test
+    @Transactional
     public void checkGetAdvanceAssignmentsIdempotenet()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
@@ -715,6 +730,7 @@ public class OrderElementTest {
     }
 
     @Test
+    @Transactional
     public void checkAdvanceMeasurementMergeWithDifferentAdvanceTypes()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
@@ -796,6 +812,7 @@ public class OrderElementTest {
     }
 
     @Test
+    @Transactional
     public void checkGetAdvancePercentageTwoLevelOfDepth1()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
@@ -836,6 +853,7 @@ public class OrderElementTest {
     }
 
     @Test
+    @Transactional
     public void checkGetAdvancePercentageTwoLevelOfDepth2()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
@@ -873,6 +891,7 @@ public class OrderElementTest {
     }
 
     @Test
+    @Transactional
     public void checkAdvancePercentageOrderGroupLineWithPercentageAdvanceType()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
@@ -906,6 +925,7 @@ public class OrderElementTest {
     }
 
     @Test
+    @Transactional
     public void checkAdvanceMeasurementMergePercentageAdvanceType()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
@@ -990,6 +1010,7 @@ public class OrderElementTest {
     }
 
     @Test
+    @Transactional
     public void checkCalculateFakeOrderLineGroup1()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
@@ -1036,6 +1057,7 @@ public class OrderElementTest {
     }
 
     @Test
+    @Transactional
     public void checkCalculateFakeOrderLineGroup2()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
@@ -1095,6 +1117,7 @@ public class OrderElementTest {
     }
 
     @Test
+    @Transactional
     public  void checkChangeIndirectCriterionToInvalid() {
         Order order = Order.create();
         order.useSchedulingDataFor(mockedOrderVersion);
@@ -1139,6 +1162,7 @@ public class OrderElementTest {
     }
 
     @Test
+    @Transactional
     public void checkSpreadAdvanceInOrderLine()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
@@ -1165,6 +1189,7 @@ public class OrderElementTest {
     }
 
     @Test
+    @Transactional
     public void checkPositiveBudgetInOrderLine() {
         OrderLine line = givenOrderLine("task", "code", 10);
         line.setBudget(new BigDecimal(100));
@@ -1172,12 +1197,14 @@ public class OrderElementTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @Transactional
     public void checkNonNegativeBudgetInOrderLine() {
         OrderLine line = givenOrderLine("task", "code", 10);
         line.setBudget(new BigDecimal(-100));
     }
 
     @Test
+    @Transactional
     public void checkBudgetInOrderLineGroup() {
         OrderLineGroup group = givenOrderLineGroupWithTwoOrderLines(20, 30);
         ((OrderLine) group.getChildren().get(0)).setBudget(new BigDecimal(50));

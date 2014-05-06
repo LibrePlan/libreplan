@@ -49,7 +49,6 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Diego Pino Garcia <dpino@igalia.com>
  *
  */
-@Transactional
 public class LimitingResourceQueueElementDAOTest {
 
     @Autowired
@@ -59,6 +58,7 @@ public class LimitingResourceQueueElementDAOTest {
     private ILimitingResourceQueueElementDAO limitingResourceQueueElementDAO;
 
     @Test
+    @Transactional
     public void testInSpringContainer() {
         assertNotNull(limitingResourceQueueDAO);
     }
@@ -72,6 +72,7 @@ public class LimitingResourceQueueElementDAOTest {
     }
 
     @Test
+    @Transactional
     public void testSaveLimitingResourceQueue() {
         LimitingResourceQueue limitingResourceQueue = createValidLimitingResourceQueue();
         limitingResourceQueueDAO.save(limitingResourceQueue);
@@ -79,6 +80,7 @@ public class LimitingResourceQueueElementDAOTest {
     }
 
     @Test
+    @Transactional
     public void testRemoveLimitingResourceQueue() throws InstanceNotFoundException {
         LimitingResourceQueue limitingResourceQueue = createValidLimitingResourceQueue();
         limitingResourceQueueDAO.save(limitingResourceQueue);
@@ -87,6 +89,7 @@ public class LimitingResourceQueueElementDAOTest {
     }
 
     @Test
+    @Transactional
     public void testListLimitingResourceQueue() {
         int previous = limitingResourceQueueDAO.list(LimitingResourceQueue.class).size();
 
@@ -102,6 +105,7 @@ public class LimitingResourceQueueElementDAOTest {
     }
 
     @Test
+    @Transactional
     public void testLimitingResourceQueueHasElements() {
         LimitingResourceQueueElement element = createValidLimitingResourceQueueElement();
         LimitingResourceQueue queue = createValidLimitingResourceQueue();

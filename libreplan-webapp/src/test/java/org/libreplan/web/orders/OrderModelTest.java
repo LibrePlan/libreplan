@@ -78,7 +78,6 @@ import org.libreplan.web.calendars.BaseCalendarModel;
 import org.libreplan.web.planner.order.PlanningStateCreator;
 import org.libreplan.web.planner.order.PlanningStateCreator.PlanningState;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.NotTransactional;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -96,7 +95,6 @@ import org.zkoss.zk.ui.Desktop;
         WEBAPP_SPRING_CONFIG_FILE, WEBAPP_SPRING_CONFIG_TEST_FILE,
         WEBAPP_SPRING_SECURITY_CONFIG_FILE,
         WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE })
-@Transactional
 public class OrderModelTest {
 
     public static OrderVersion setupVersionUsing(
@@ -212,6 +210,7 @@ public class OrderModelTest {
     }
 
     @Test
+    @Transactional
     @Rollback(false)
     public void testNotRollback() {
         // Just to do not make rollback in order to have the default
@@ -220,6 +219,7 @@ public class OrderModelTest {
     }
 
     @Test
+    @Transactional
     @Ignore("FIXME pending review after rename to libreplan")
     public void testCreation() throws ValidationException {
         Order order = createValidOrder();
@@ -247,6 +247,7 @@ public class OrderModelTest {
     }
 
     @Test
+    @Transactional
     @Ignore("FIXME pending review after rename to libreplan")
     public void testCreationUsingPrepareForCreate() {
         Order order = givenOrderFromPrepareForCreate();
@@ -255,6 +256,7 @@ public class OrderModelTest {
     }
 
     @Test
+    @Transactional
     @Ignore("FIXME pending review after rename to libreplan")
     public void createOrderWithScheduledOrderLine() {
         Order order = givenOrderFromPrepareForCreate();
@@ -270,6 +272,7 @@ public class OrderModelTest {
     }
 
     @Test
+    @Transactional
     public void ifAnOrderLineIsScheduledItsTypeChanges() {
         Order order = givenOrderFromPrepareForCreate();
         OrderElement line = OrderLine.createOrderLineWithUnfixedPercentage(20);
@@ -284,6 +287,7 @@ public class OrderModelTest {
     @Ignore("Test ignored until having the possibility to have a user " +
             "session from tests")
     @Test
+    @Transactional
     public void testListing() {
         List<Order> list = orderModel.getOrders();
         Order order = createValidOrder();
@@ -294,6 +298,7 @@ public class OrderModelTest {
     }
 
     @Test
+    @Transactional
     @Ignore("FIXME pending review after rename to libreplan")
     public void testRemove() {
         Order order = createValidOrder();
@@ -305,6 +310,7 @@ public class OrderModelTest {
     }
 
     @Test(expected = ValidationException.class)
+    @Transactional
     @Ignore("FIXME pending review after rename to libreplan")
     public void shouldSendValidationExceptionIfEndDateIsBeforeThanStartingDate()
             throws ValidationException {
@@ -315,6 +321,7 @@ public class OrderModelTest {
     }
 
     @Test
+    @Transactional
     @Ignore("FIXME pending review after rename to libreplan")
     public void testFind() throws InstanceNotFoundException {
         Order order = createValidOrder();
@@ -324,7 +331,6 @@ public class OrderModelTest {
     }
 
     @Test
-    @NotTransactional
     @Ignore("FIXME pending review after rename to libreplan")
     public void testOrderPreserved() throws ValidationException,
             InstanceNotFoundException {
@@ -412,7 +418,6 @@ public class OrderModelTest {
     }
 
     @Test
-    @NotTransactional
     @Ignore("FIXME pending review after rename to libreplan")
     public void testAddingOrderElement() {
         final Order order = createValidOrder();
@@ -462,7 +467,6 @@ public class OrderModelTest {
     }
 
     @Test
-    @NotTransactional
     @Ignore("FIXME pending review after rename to libreplan")
     public void testManyToManyHoursGroupCriterionMapping() {
         givenCriterion();
@@ -549,6 +553,7 @@ public class OrderModelTest {
     }
 
     @Test(expected = ValidationException.class)
+    @Transactional
     @Ignore("FIXME pending review after rename to libreplan")
     public void testAtLeastOneHoursGroup() {
         Order order = createValidOrder();

@@ -72,7 +72,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
         BUSINESS_SPRING_CONFIG_TEST_FILE })
-@Transactional
 public class AddAdvanceAssignmentsToOrderElementTest {
 
     @Resource
@@ -158,6 +157,7 @@ public class AddAdvanceAssignmentsToOrderElementTest {
     }
 
     @Test
+    @Transactional
     public void savingTheOrderSavesAlsoTheAddedAssignments()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
@@ -190,6 +190,7 @@ public class AddAdvanceAssignmentsToOrderElementTest {
     }
 
     @Test
+    @Transactional
     public void addingSeveralAssignmentsOfDifferentTypes()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
@@ -213,6 +214,7 @@ public class AddAdvanceAssignmentsToOrderElementTest {
     }
 
     @Test
+    @Transactional
     public void cannotAddDuplicatedAssignment()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
@@ -237,6 +239,7 @@ public class AddAdvanceAssignmentsToOrderElementTest {
     }
 
     @Test
+    @Transactional
     public void cannotAddTwoAssignmetsWithGlobalReportValue()
             throws DuplicateAdvanceAssignmentForOrderElementException,
             DuplicateValueTrueReportGlobalAdvanceException {
@@ -262,6 +265,7 @@ public class AddAdvanceAssignmentsToOrderElementTest {
     }
 
     @Test
+    @Transactional
     public void addingAssignmentsOfAnotherTypeToSon()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
@@ -294,6 +298,7 @@ public class AddAdvanceAssignmentsToOrderElementTest {
     }
 
     @Test
+    @Transactional
     public void addingAnAdvanceAssignmentIncreasesTheNumberOfAdvanceAssignments()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
@@ -316,6 +321,7 @@ public class AddAdvanceAssignmentsToOrderElementTest {
     }
 
     @Test
+    @Transactional
     public void cannotAddDuplicatedAssignmentToSon()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
@@ -346,6 +352,7 @@ public class AddAdvanceAssignmentsToOrderElementTest {
     }
 
     @Test
+    @Transactional
     public void cannotAddDuplicateAssignmentToGrandParent()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
@@ -382,6 +389,7 @@ public class AddAdvanceAssignmentsToOrderElementTest {
     }
 
     @Test(expected = DuplicateAdvanceAssignmentForOrderElementException.class)
+    @Transactional
     public void addingAnotherAdvanceAssignmentWithAnEquivalentTypeButDifferentInstance()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
@@ -420,6 +428,7 @@ public class AddAdvanceAssignmentsToOrderElementTest {
     }
 
     @Test(expected = DuplicateValueTrueReportGlobalAdvanceException.class)
+    @Transactional
     public void cannotAddTwoAssignmetsDirectAndIndirectWithGlobalReportValue()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {

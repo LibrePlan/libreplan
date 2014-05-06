@@ -48,7 +48,6 @@ import org.libreplan.business.resources.entities.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
-import org.springframework.test.annotation.NotTransactional;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,7 +59,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
         BUSINESS_SPRING_CONFIG_TEST_FILE })
-@Transactional
 public class CriterionDAOTest {
 
     @Autowired
@@ -75,6 +73,7 @@ public class CriterionDAOTest {
     private Criterion criterion;
 
     @Test
+    @Transactional
     public void testInSpringContainer() {
         assertNotNull(criterionDAO);
     }
@@ -105,6 +104,7 @@ public class CriterionDAOTest {
     }
 
     @Test(expected = InvalidDataAccessApiUsageException.class)
+    @Transactional
     public void aCriterionRelatedToATransientTypeCannotBeSaved() {
         givenACriterionWithATransientCriterionType();
         criterionDAO.save(criterion);
@@ -115,6 +115,7 @@ public class CriterionDAOTest {
     }
 
     @Test
+    @Transactional
     public void afterSavingACriterionItExists() {
         givenACriterionWithAnExistentType();
         criterionDAO.save(criterion);
@@ -122,6 +123,7 @@ public class CriterionDAOTest {
     }
 
     @Test
+    @Transactional
     public void afterRemovingTheCriterionNoLongerExists()
             throws InstanceNotFoundException {
         givenACriterionWithAnExistentType();
@@ -143,6 +145,7 @@ public class CriterionDAOTest {
     }
 
     @Test
+    @Transactional
     public void listReturnsTheNewlyCreatedCriterions() {
         int previous = criterionDAO.list(Criterion.class).size();
         givenASavedCriterionWithAnExistentType();
@@ -158,6 +161,7 @@ public class CriterionDAOTest {
     }
 
     @Test(expected = DataIntegrityViolationException.class)
+    @Transactional
     public void schemaEnsuresCannotExistTwoDifferentCriterionsWithSameNameAndType()
             throws ValidationException {
         Criterion c = givenASavedCriterionWithAnExistentType();
@@ -171,6 +175,7 @@ public class CriterionDAOTest {
     }
 
     @Test
+    @Transactional
     public void findByTypeOnlyReturnsTheCriterionsMatchedByType() {
         givenASavedCriterionWithAnExistentType();
         // saving another
@@ -182,7 +187,6 @@ public class CriterionDAOTest {
     }
 
     @Test
-    @NotTransactional
     public void thereIsOtherWithSameNameAndTypeWorksIsolatedFromCurrentTransaction() {
         transactionService.runOnTransaction(new IOnTransaction<Void>() {
 
@@ -196,7 +200,6 @@ public class CriterionDAOTest {
     }
 
     @Test
-    @NotTransactional
     public void thereIsNoOtherIfItsTheSame() {
         Criterion c = transactionService
                 .runOnTransaction(new IOnTransaction<Criterion>() {
@@ -210,7 +213,6 @@ public class CriterionDAOTest {
     }
 
     @Test
-    @NotTransactional
     public void ifItsDifferentThereIsOther() {
         Criterion c = transactionService
                 .runOnTransaction(new IOnTransaction<Criterion>() {
@@ -225,6 +227,7 @@ public class CriterionDAOTest {
     }
 
     @Test
+    @Transactional
     public void noOtherIfTheCriterionDoesntExist() {
         Criterion criterion = givenUniquelyNamedCriterion();
         assertFalse(criterionDAO.thereIsOtherWithSameNameAndType(criterion));

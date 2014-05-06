@@ -57,7 +57,6 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  *
  */
-@Transactional
 public class ResourcesCostCategoryAssignmentDAOTest {
 
     @Autowired
@@ -70,6 +69,7 @@ public class ResourcesCostCategoryAssignmentDAOTest {
     IWorkerDAO workerDAO;
 
     @Test
+    @Transactional
     public void testInSpringContainer() {
         assertNotNull(resourcesCostCategoryAssignmentDAO);
     }
@@ -98,6 +98,7 @@ public class ResourcesCostCategoryAssignmentDAOTest {
     }
 
     @Test
+    @Transactional
     public void testSaveResourcesCostCategoryAssignment() {
         ResourcesCostCategoryAssignment assignment = createValidResourcesCostCategoryAssignment();
         resourcesCostCategoryAssignmentDAO.save(assignment);
@@ -105,6 +106,7 @@ public class ResourcesCostCategoryAssignmentDAOTest {
     }
 
     @Test
+    @Transactional
     public void testRemoveResourcesCostCategoryAssignment() throws InstanceNotFoundException {
         ResourcesCostCategoryAssignment assignment = createValidResourcesCostCategoryAssignment();
         resourcesCostCategoryAssignmentDAO.save(assignment);
@@ -113,6 +115,7 @@ public class ResourcesCostCategoryAssignmentDAOTest {
     }
 
     @Test
+    @Transactional
     public void testListResourcesCostCategoryAssignments() {
         int previous = resourcesCostCategoryAssignmentDAO.list(ResourcesCostCategoryAssignment.class).size();
         ResourcesCostCategoryAssignment assignment = createValidResourcesCostCategoryAssignment();
@@ -122,6 +125,7 @@ public class ResourcesCostCategoryAssignmentDAOTest {
     }
 
     @Test
+    @Transactional
     public void testNavigateRelations() {
         ResourcesCostCategoryAssignment assignment = createValidResourcesCostCategoryAssignment();
         resourcesCostCategoryAssignmentDAO.save(assignment);
@@ -135,6 +139,7 @@ public class ResourcesCostCategoryAssignmentDAOTest {
     }
 
     @Test(expected=ValidationException.class)
+    @Transactional
     public void testPositiveTimeInterval() {
         ResourcesCostCategoryAssignment assignment = createValidResourcesCostCategoryAssignment();
         assignment.setInitDate(new LocalDate(2000,12,31));
@@ -144,6 +149,7 @@ public class ResourcesCostCategoryAssignmentDAOTest {
     }
 
     @Test
+    @Transactional
     public void testGetResourcesCostCategoryAssignmentsByCostCategory() {
         ResourcesCostCategoryAssignment assignment1 = createValidResourcesCostCategoryAssignment();
         ResourcesCostCategoryAssignment assignment2 = createValidResourcesCostCategoryAssignment();

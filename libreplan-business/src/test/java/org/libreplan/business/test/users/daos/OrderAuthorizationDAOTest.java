@@ -67,7 +67,6 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  *
  */
-@Transactional
 public class OrderAuthorizationDAOTest {
 
     @Autowired
@@ -124,11 +123,13 @@ public class OrderAuthorizationDAOTest {
     }
 
     @Test
+    @Transactional
     public void testInSpringContainer() {
         assertNotNull(orderAuthorizationDAO);
     }
 
     @Test
+    @Transactional
     public void testSaveOrderAuthorization() {
         UserOrderAuthorization userOrderAuthorization = createValidUserOrderAuthorization();
         orderAuthorizationDAO.save(userOrderAuthorization);
@@ -140,6 +141,7 @@ public class OrderAuthorizationDAOTest {
     }
 
     @Test
+    @Transactional
     public void testRemoveOrderAuthorization() throws InstanceNotFoundException {
         UserOrderAuthorization userOrderAuthorization = createValidUserOrderAuthorization();
         orderAuthorizationDAO.save(userOrderAuthorization);
@@ -153,6 +155,7 @@ public class OrderAuthorizationDAOTest {
     }
 
     @Test
+    @Transactional
     public void testListOrderAuthorizations() {
         int previous = orderAuthorizationDAO.list(OrderAuthorization.class).size();
         UserOrderAuthorization userOrderAuthorization = createValidUserOrderAuthorization();
@@ -163,6 +166,7 @@ public class OrderAuthorizationDAOTest {
     }
 
     @Test
+    @Transactional
     public void testListOrderAuthorizationsByOrder() {
         int previous = orderAuthorizationDAO.list(OrderAuthorization.class).size();
 
@@ -185,6 +189,7 @@ public class OrderAuthorizationDAOTest {
    }
 
     @Test
+    @Transactional
     public void testNavigateFromOrderAuthorizationToUser() {
         User user = createValidUser();
         userDAO.save(user);
@@ -195,6 +200,7 @@ public class OrderAuthorizationDAOTest {
     }
 
     @Test
+    @Transactional
     public void testNavigateFromOrderAuthorizationToProfile() {
         Profile profile = createValidProfile();
         profileDAO.save(profile);
@@ -205,6 +211,7 @@ public class OrderAuthorizationDAOTest {
     }
 
     @Test
+    @Transactional
     public void testNavigateFromOrderAuthorizationToOrder() {
         Order order = createValidOrder();
         orderDAO.save(order);

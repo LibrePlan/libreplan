@@ -71,7 +71,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
         BUSINESS_SPRING_CONFIG_TEST_FILE })
-@Transactional
 public class TaskElementTest {
 
     @Resource
@@ -92,22 +91,26 @@ public class TaskElementTest {
     }
 
     @Test
+    @Transactional
     public void initiallyAssociatedDependenciesAreEmpty() {
         assertTrue(task.getDependenciesWithThisDestination().isEmpty());
         assertTrue(task.getDependenciesWithThisOrigin().isEmpty());
     }
 
     @Test(expected = UnsupportedOperationException.class)
+    @Transactional
     public void dependenciesWithThisOriginCollectionCannotBeModified() {
         task.getDependenciesWithThisOrigin().add(exampleDependency);
     }
 
     @Test(expected = UnsupportedOperationException.class)
+    @Transactional
     public void dependenciesWithThisDestinationCollectionCannotBeModified() {
         task.getDependenciesWithThisDestination().add(exampleDependency);
     }
 
     @Test
+    @Transactional
     public void taskElementHasStartDatePropertyAndItIsRoundedToTheStartOfTheDay() {
         Date now = new Date();
         task.setStartDate(now);
@@ -122,6 +125,7 @@ public class TaskElementTest {
     }
 
     @Test
+    @Transactional
     public void aDependencyWithThisOriginCanBeRemoved() {
         Task origin = new Task();
         Task destination = new Task();
@@ -162,6 +166,7 @@ public class TaskElementTest {
     }
 
     @Test
+    @Transactional
     public void detachRemovesTaskFromParent() {
         TaskGroup parent = TaskGroupTest.createValidTaskGroup();
         Task child = (Task) TaskTest.createValidTask();
@@ -173,12 +178,14 @@ public class TaskElementTest {
     }
 
     @Test
+    @Transactional
     public void MilestoneOrderElementIsNull() {
         TaskMilestone milestone = TaskMilestone.create(new Date());
         assertThat(milestone.getOrderElement(), nullValue());
     }
 
     @Test
+    @Transactional
     public void theDeadlineOfTheOrderElementIsCopied() {
         OrderLine orderLine = OrderLine.create();
         addOrderTo(orderLine);
@@ -220,6 +227,7 @@ public class TaskElementTest {
     }
 
     @Test
+    @Transactional
     public void ifNoParentWithStartDateThePositionConstraintIsSoonAsPossible() {
         OrderLine orderLine = OrderLine.create();
         addOrderTo(orderLine);
@@ -237,6 +245,7 @@ public class TaskElementTest {
     }
 
     @Test
+    @Transactional
     @SuppressWarnings("unchecked")
     public void ifSomeParentHasInitDateThePositionConstraintIsNotEarlierThan() {
         LocalDate initDate = new LocalDate(2005, 10, 5);
@@ -253,6 +262,7 @@ public class TaskElementTest {
     }
 
     @Test
+    @Transactional
     public void unlessTheOnlyParentWithInitDateNotNullIsTheOrder() {
         OrderLine orderLine = OrderLine.create();
         addOrderTo(orderLine);

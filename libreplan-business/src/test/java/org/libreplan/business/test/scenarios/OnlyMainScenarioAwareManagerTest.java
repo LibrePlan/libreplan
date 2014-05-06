@@ -41,7 +41,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
         BUSINESS_SPRING_CONFIG_TEST_FILE })
-@Transactional
 public class OnlyMainScenarioAwareManagerTest {
 
     @Autowired
@@ -51,6 +50,7 @@ public class OnlyMainScenarioAwareManagerTest {
     private IScenarioManager onlyMainScenarioAware;
 
     @Test
+    @Transactional
     public void theCurrentScenarioIsTheMain() {
         scenariosBootstrap.loadRequiredData();
         Scenario current = onlyMainScenarioAware.getCurrent();

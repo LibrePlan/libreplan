@@ -72,7 +72,6 @@ import org.springframework.transaction.annotation.Transactional;
 /*
  * @author Diego Pino García <dpino@igalia.com>
  */
-@Transactional
 public class ResourceAllocationDAOTest {
 
     public static OrderVersion setupVersionUsing(
@@ -191,6 +190,7 @@ public class ResourceAllocationDAOTest {
     }
 
     @Test
+    @Transactional
     public void testInSpringContainer() {
         assertNotNull(resourceAllocationDAO);
         assertNotNull(orderElementDAO);
@@ -201,6 +201,7 @@ public class ResourceAllocationDAOTest {
     }
 
     @Test
+    @Transactional
     public void testSaveSpecificResourceAllocation() {
         SpecificResourceAllocation resourceAllocation = createValidSpecificResourceAllocation();
         resourceAllocationDAO.save(resourceAllocation);
@@ -208,6 +209,7 @@ public class ResourceAllocationDAOTest {
     }
 
     @Test
+    @Transactional
     public void testSaveGenericResourceAllocation() {
         GenericResourceAllocation resourceAllocation = createValidGenericResourceAllocation();
         resourceAllocationDAO.save(resourceAllocation);
@@ -215,6 +217,7 @@ public class ResourceAllocationDAOTest {
     }
 
     @Test
+    @Transactional
     public void testRemoveSpecificResourceAllocation()
             throws InstanceNotFoundException {
         SpecificResourceAllocation resourceAllocation = createValidSpecificResourceAllocation();
@@ -224,6 +227,7 @@ public class ResourceAllocationDAOTest {
     }
 
     @Test
+    @Transactional
     public void testRemoveGenericResourceAllocation()
             throws InstanceNotFoundException {
         GenericResourceAllocation resourceAllocation = createValidGenericResourceAllocation();
@@ -233,6 +237,7 @@ public class ResourceAllocationDAOTest {
     }
 
     @Test
+    @Transactional
     public void testListSpecificResourceAllocation() {
         int previous = resourceAllocationDAO.list(ResourceAllocation.class).size();
 
@@ -248,6 +253,7 @@ public class ResourceAllocationDAOTest {
     }
 
     @Test
+    @Transactional
     public void testListGenericResourceAllocation() {
         int previous = resourceAllocationDAO.list(ResourceAllocation.class)
                 .size();
@@ -264,6 +270,7 @@ public class ResourceAllocationDAOTest {
     }
 
     @Test
+    @Transactional
     public void testFindAllocationsRelatedToResourcesWithDateFilter() {
         Scenario current = scenarioManager.getCurrent();
         ResourceAllocation<?> resourceAllocation1 = createValidSpecificResourceAllocation();

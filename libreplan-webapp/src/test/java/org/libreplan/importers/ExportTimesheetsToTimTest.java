@@ -66,7 +66,6 @@ import org.springframework.transaction.annotation.Transactional;
         WEBAPP_SPRING_CONFIG_FILE, WEBAPP_SPRING_CONFIG_TEST_FILE,
         WEBAPP_SPRING_SECURITY_CONFIG_FILE,
         WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE })
-@Transactional
 public class ExportTimesheetsToTimTest {
 
     private Properties properties = null;
@@ -158,6 +157,7 @@ public class ExportTimesheetsToTimTest {
     }
 
     @Test
+    @Transactional
     @Ignore("Only working if you have a Tim server configured")
     public void testExportTimesheetsToTimWithValidCodeAndOrder()
             throws ConnectorException {
@@ -172,6 +172,7 @@ public class ExportTimesheetsToTimTest {
     }
 
     @Test(expected = ConnectorException.class)
+    @Transactional
     public void testExportTimesheetsToTimWithInvalidCode()
             throws ConnectorException {
         Order order = givenOrder();
@@ -179,6 +180,7 @@ public class ExportTimesheetsToTimTest {
     }
 
     @Test(expected = ConnectorException.class)
+    @Transactional
     public void testExportTimesheetsToTimWithOrderNull()
             throws ConnectorException {
         exportTimesheetsToTim.exportTimesheets("5160", null);

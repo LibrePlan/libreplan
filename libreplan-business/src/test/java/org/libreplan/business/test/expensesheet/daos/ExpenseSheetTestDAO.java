@@ -70,7 +70,6 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  *
  */
-@Transactional
 public class ExpenseSheetTestDAO {
 
     @Before
@@ -112,6 +111,7 @@ public class ExpenseSheetTestDAO {
     private IScenarioManager scenarioManager;
 
     @Test
+    @Transactional
     public void testInSpringContainer() {
         assertNotNull(orderDAO);
         assertNotNull(calendarDAO);
@@ -151,6 +151,7 @@ public class ExpenseSheetTestDAO {
     }
 
     @Test(expected = ValidationException.class)
+    @Transactional
     public void invalidExpenseSheetWithoutLines() {
         ExpenseSheet expense = ExpenseSheet.create();
         expense.setCode("UUID.randomUUID().toString()");
@@ -170,6 +171,7 @@ public class ExpenseSheetTestDAO {
     }
 
     @Test(expected = ValidationException.class)
+    @Transactional
     public void validExpenseSheetWithInvalidExpenseSheetLineData() {
         // check out the expenseSheet without lines
         ExpenseSheet expense = ExpenseSheet.create();
@@ -191,6 +193,7 @@ public class ExpenseSheetTestDAO {
     }
 
     @Test
+    @Transactional
     public void validExpenseSheetWithInvalidValuesInLines() {
         // create the expenseSheet without lines
         ExpenseSheet expense = ExpenseSheet.create();
@@ -246,6 +249,7 @@ public class ExpenseSheetTestDAO {
     }
 
     @Test
+    @Transactional
     public void validExpenseSheetWithInvalidDateInLines() {
         // create the expenseSheet without lines
         ExpenseSheet expense = ExpenseSheet.create();
@@ -292,6 +296,7 @@ public class ExpenseSheetTestDAO {
     }
 
     @Test
+    @Transactional
     public void validExpenseSheetData() {
         // check out the expenseSheet without lines
         int previousExpenses = expenseSheetDAO.getAll().size();
@@ -373,6 +378,7 @@ public class ExpenseSheetTestDAO {
     }
 
     @Test
+    @Transactional
     public void testSaveTwoExpenseSheetWithTheSameCode() {
         int previousExpenses = expenseSheetDAO.getAll().size();
 
@@ -421,6 +427,7 @@ public class ExpenseSheetTestDAO {
     }
 
     @Test
+    @Transactional
     public void testSaveTwoValidExpenseSheets() {
         int previousExpenses = expenseSheetDAO.getAll().size();
 
@@ -466,6 +473,7 @@ public class ExpenseSheetTestDAO {
     }
 
     @Test(expected = ValidationException.class)
+    @Transactional
     public void testSaveExpenseSheetWithoutCode() {
         ExpenseSheet expense = ExpenseSheet.create();
         expense.setCode(null);
@@ -477,6 +485,7 @@ public class ExpenseSheetTestDAO {
     }
 
     @Test
+    @Transactional
     public void testRemoveExpenseSheet() throws InstanceNotFoundException {
         int previousExpenses = expenseSheetDAO.getAll().size();
         int previousExpenseLines = expenseSheetLineDAO.findAll().size();
@@ -504,6 +513,7 @@ public class ExpenseSheetTestDAO {
     }
 
     @Test
+    @Transactional
     public void testRemoveExpenseSheetLine() {
         int previousExpenseLines = expenseSheetLineDAO.findAll().size();
         int previousExpenses = expenseSheetDAO.getAll().size();

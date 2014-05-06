@@ -62,13 +62,13 @@ import org.springframework.transaction.annotation.Transactional;
         WEBAPP_SPRING_CONFIG_FILE, WEBAPP_SPRING_CONFIG_TEST_FILE,
         WEBAPP_SPRING_SECURITY_CONFIG_FILE,
         WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE })
-@Transactional
 public class WorkerModelTest {
 
     @Autowired
     private IResourceDAO resourceDAO;
 
     @Test
+    @Transactional
     public void testWorkerValid() throws ValidationException,
             InstanceNotFoundException {
 
@@ -99,6 +99,7 @@ public class WorkerModelTest {
 
     @Ignore
     @Test(expected = IllegalStateException.class)
+    @Transactional
     public void testWorkerInvalid() throws ValidationException,
             InstanceNotFoundException, IllegalStateException {
 

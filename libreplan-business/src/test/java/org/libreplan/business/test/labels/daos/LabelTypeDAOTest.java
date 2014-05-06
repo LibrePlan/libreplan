@@ -50,18 +50,19 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Diego Pino Garcia <dpino@igalia.com>
  *
  */
-@Transactional
 public class LabelTypeDAOTest {
 
     @Autowired
     ILabelTypeDAO labelTypeDAO;
 
     @Test
+    @Transactional
     public void testInSpringContainer() {
         assertNotNull(labelTypeDAO);
     }
 
     @Test
+    @Transactional
     public void testSaveLabelType() {
         LabelType labelType = LabelType.create(UUID.randomUUID().toString());
         labelTypeDAO.save(labelType);
@@ -69,6 +70,7 @@ public class LabelTypeDAOTest {
     }
 
     @Test
+    @Transactional
     public void testRemoveLabelType() throws InstanceNotFoundException {
         LabelType labelType = LabelType.create(UUID.randomUUID().toString());
         labelTypeDAO.save(labelType);
@@ -77,6 +79,7 @@ public class LabelTypeDAOTest {
     }
 
     @Test
+    @Transactional
     public void testListLabelTypes() {
         int previous = labelTypeDAO.list(LabelType.class).size();
         LabelType labelType = LabelType.create(UUID.randomUUID().toString());

@@ -49,7 +49,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
         BUSINESS_SPRING_CONFIG_TEST_FILE })
-@Transactional
 public class OrderTest {
 
     private static OrderVersion mockedOrderVersion = TaskTest.mockOrderVersion();
@@ -63,6 +62,7 @@ public class OrderTest {
     }
 
     @Test
+    @Transactional
     public void testAddingOrderElement() {
         Order order = Order.create();
         order.useSchedulingDataFor(mockedOrderVersion);
@@ -74,6 +74,7 @@ public class OrderTest {
     }
 
     @Test
+    @Transactional
     public void testPreservesOrder() {
         OrderLineGroup container = OrderLineGroup.create();
         container.useSchedulingDataFor(mockedOrderVersion);

@@ -42,7 +42,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
         BUSINESS_SPRING_CONFIG_TEST_FILE })
-@Transactional
 public class ResourcesPerDayTypeTest {
 
     @Autowired
@@ -60,6 +59,7 @@ public class ResourcesPerDayTypeTest {
     }
 
     @Test
+    @Transactional
     public void canBeSavedAndRetrieved() {
         ResourcesPerDay resourcesPerDay = ResourcesPerDay
                 .amount(new BigDecimal(2.7));

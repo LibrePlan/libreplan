@@ -53,7 +53,6 @@ import org.springframework.transaction.annotation.Transactional;
         WEBAPP_SPRING_CONFIG_FILE, WEBAPP_SPRING_CONFIG_TEST_FILE,
         WEBAPP_SPRING_SECURITY_CONFIG_FILE,
         WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE })
-@Transactional
 public class CalendarServiceTest {
 
     @Autowired
@@ -78,6 +77,7 @@ public class CalendarServiceTest {
     }
 
     @Test
+    @Transactional
     public void exportBaseCalendars() {
         int previous = baseCalendarDAO.getBaseCalendars().size();
 
@@ -86,6 +86,7 @@ public class CalendarServiceTest {
     }
 
     @Test
+    @Transactional
     public void exportBaseCalendars2() {
         int previous = baseCalendarDAO.getBaseCalendars().size();
 

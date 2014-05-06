@@ -55,7 +55,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
         BUSINESS_SPRING_CONFIG_TEST_FILE })
-@Transactional
 public class CriterionSatisfactionDAOTest {
 
     @Autowired
@@ -79,6 +78,7 @@ public class CriterionSatisfactionDAOTest {
     }
 
     @Test
+    @Transactional
     public void testSaveCriterions() {
         CriterionSatisfaction criterionSatisfaction = createValidCriterionSatisfaction(2007);
         satisfactionDAO.save(criterionSatisfaction);
@@ -110,6 +110,7 @@ public class CriterionSatisfactionDAOTest {
     }
 
     @Test(expected = InvalidDataAccessApiUsageException.class)
+    @Transactional
     public void testNotSaveWithTransientCriterionAndWorker() {
         Criterion criterion = CriterionDAOTest.createValidCriterion();
         saveCriterionType(criterion);
@@ -127,6 +128,7 @@ public class CriterionSatisfactionDAOTest {
     }
 
     @Test
+    @Transactional
     public void testRemove() throws InstanceNotFoundException {
         CriterionSatisfaction satisfaction = createValidCriterionSatisfaction(2008);
         satisfactionDAO.save(satisfaction);
@@ -136,6 +138,7 @@ public class CriterionSatisfactionDAOTest {
     }
 
     @Test
+    @Transactional
     public void testList() {
         int previous = satisfactionDAO.list(CriterionSatisfaction.class).size();
         CriterionSatisfaction satisfaction1 = createValidCriterionSatisfaction(2007);

@@ -93,7 +93,6 @@ import org.springframework.transaction.annotation.Transactional;
 /*
  * @author Diego Pino García <dpino@igalia.com>
  */
-@Transactional
 public class OrderElementDAOTest {
 
     @Resource
@@ -137,6 +136,7 @@ public class OrderElementDAOTest {
     }
 
     @Test
+    @Transactional
     public void testInSpringContainer() {
         assertNotNull(orderElementDAO);
     }
@@ -201,6 +201,7 @@ public class OrderElementDAOTest {
     }
 
     @Test
+    @Transactional
     public void testSaveOrderLine() {
         OrderLine orderLine = createValidOrderLine();
         orderElementDAO.save(orderLine);
@@ -208,6 +209,7 @@ public class OrderElementDAOTest {
     }
 
     @Test
+    @Transactional
     public void testFindUniqueByCode() throws InstanceNotFoundException {
         OrderLine orderLine = createValidOrderLine();
         orderElementDAO.save(orderLine);
@@ -221,6 +223,7 @@ public class OrderElementDAOTest {
     }
 
     @Test
+    @Transactional
     public void testFindUniqueByCodeAndOrderLineGroup()
             throws InstanceNotFoundException {
         // Create OrderLineGroupLine
@@ -244,6 +247,7 @@ public class OrderElementDAOTest {
     }
 
     @Test
+    @Transactional
     public void testFindByCodeInRoot() throws InstanceNotFoundException {
         // Create OrderLineGroupLine
         Order order = createValidOrder();
@@ -254,6 +258,7 @@ public class OrderElementDAOTest {
     }
 
     @Test
+    @Transactional
     public void testSaveOrderLineWithAdvanceAssignments()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException,
@@ -282,6 +287,7 @@ public class OrderElementDAOTest {
     }
 
     @Test
+    @Transactional
     public void testSaveOrderLineGroupWithAdvanceAssignments()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException,
@@ -332,6 +338,7 @@ public class OrderElementDAOTest {
     }
 
     @Test
+    @Transactional
     public void testRemoveOrderLineWithAdvanceAssignments()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException,
@@ -361,6 +368,7 @@ public class OrderElementDAOTest {
     }
 
     @Test
+    @Transactional
     public void testRemoveOrderLineGroupWithAdvanceAssignments()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException,
@@ -403,6 +411,7 @@ public class OrderElementDAOTest {
     }
 
     @Test
+    @Transactional
     public void testSaveAndRemoveTaskQualityForm() {
         OrderElement orderElement = OrderElementTest
                 .givenOrderLineGroupWithTwoOrderLines(2000, 3000);
@@ -418,6 +427,7 @@ public class OrderElementDAOTest {
     }
 
     @Test
+    @Transactional
     public void testCheckUniqueQualityForm() {
         OrderElement orderElement = OrderElementTest
                 .givenOrderLineGroupWithTwoOrderLines(2000, 3000);
@@ -443,6 +453,7 @@ public class OrderElementDAOTest {
     }
 
     @Test
+    @Transactional
     public void testSumChargedHoursRelation() throws InstanceNotFoundException {
         OrderLine orderLine = createValidOrderLine();
         orderLine.setSumChargedEffort(SumChargedEffort.create(orderLine));
@@ -475,6 +486,7 @@ public class OrderElementDAOTest {
     }
 
     @Test
+    @Transactional
     public void testFindByLabels1() throws InstanceNotFoundException {
         Label label = givenStoredLabel();
 
@@ -494,6 +506,7 @@ public class OrderElementDAOTest {
     }
 
     @Test
+    @Transactional
     public void testFindByLabels2() throws InstanceNotFoundException {
         Label label1 = givenStoredLabel();
         Label label2 = givenStoredLabel();
@@ -528,6 +541,7 @@ public class OrderElementDAOTest {
     }
 
     @Test
+    @Transactional
     public void testFindByLabelsOnTree() throws InstanceNotFoundException {
         Label label1 = givenStoredLabel();
         Label label2 = givenStoredLabel();
@@ -568,6 +582,7 @@ public class OrderElementDAOTest {
     }
 
     @Test
+    @Transactional
     public void testFindByCriteria1() throws InstanceNotFoundException {
         Criterion criterion = givenStoredCriterion();
 
@@ -588,6 +603,7 @@ public class OrderElementDAOTest {
     }
 
     @Test
+    @Transactional
     public void testFindByCriteria2() throws InstanceNotFoundException {
         Criterion criterion1 = givenStoredCriterion();
         Criterion criterion2 = givenStoredCriterion();
@@ -626,6 +642,7 @@ public class OrderElementDAOTest {
     }
 
     @Test
+    @Transactional
     public void testFindByCriteriaOnTree() throws InstanceNotFoundException {
         Criterion criterion1 = givenStoredCriterion();
         Criterion criterion2 = givenStoredCriterion();
@@ -654,6 +671,7 @@ public class OrderElementDAOTest {
     }
 
     @Test
+    @Transactional
     public void testFindByLabelsAndCriteria1() throws InstanceNotFoundException {
         Label label = givenStoredLabel();
         Criterion criterion = givenStoredCriterion();
@@ -680,6 +698,7 @@ public class OrderElementDAOTest {
     }
 
     @Test
+    @Transactional
     public void testFindByLabelsAndCriteria2() throws InstanceNotFoundException {
         Label label1 = givenStoredLabel();
         Label label2 = givenStoredLabel();

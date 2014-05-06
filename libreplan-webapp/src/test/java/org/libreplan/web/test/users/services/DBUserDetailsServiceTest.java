@@ -60,7 +60,6 @@ import org.springframework.transaction.annotation.Transactional;
         WEBAPP_SPRING_CONFIG_FILE, WEBAPP_SPRING_CONFIG_TEST_FILE,
         WEBAPP_SPRING_SECURITY_CONFIG_FILE,
         WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE })
-@Transactional
 public class DBUserDetailsServiceTest {
 
     @Autowired
@@ -102,6 +101,7 @@ public class DBUserDetailsServiceTest {
     }
 
     @Test
+    @Transactional
     public void testLoadUserByUsername() {
         usersBootstrap.loadRequiredData();
 

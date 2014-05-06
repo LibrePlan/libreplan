@@ -58,7 +58,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
         BUSINESS_SPRING_CONFIG_TEST_FILE })
-@Transactional
 public class MaterialDAOTest {
 
     @Autowired
@@ -68,6 +67,7 @@ public class MaterialDAOTest {
     private IMaterialCategoryDAO materialCategoryDAO;
 
     @Test
+    @Transactional
     public void testInSpringContainer() {
         assertNotNull(materialDAO);
     }
@@ -103,6 +103,7 @@ public class MaterialDAOTest {
     }
 
     @Test
+    @Transactional
     public void testSaveMaterial() {
         Material material = createValidMaterial();
         materialDAO.save(material);
@@ -110,6 +111,7 @@ public class MaterialDAOTest {
     }
 
     @Test(expected = ValidationException.class)
+    @Transactional
     public void testSaveMaterialWithoutDescription() {
         Material material = createValidMaterial();
         material.setDescription(null);
@@ -117,6 +119,7 @@ public class MaterialDAOTest {
     }
 
     @Test
+    @Transactional
     public void testRemoveMaterial() throws InstanceNotFoundException {
         Material material = createValidMaterial();
         materialDAO.save(material);
@@ -125,6 +128,7 @@ public class MaterialDAOTest {
     }
 
     @Test
+    @Transactional
     public void testListMaterials() {
         int previous = materialDAO.list(Material.class).size();
         Material material = createValidMaterial();
@@ -134,6 +138,7 @@ public class MaterialDAOTest {
     }
 
     @Test
+    @Transactional
     public void testListMaterialsFromCategory() {
         MaterialCategory category = createValidMaterialCategory();
         int previous = category.getMaterials().size();
