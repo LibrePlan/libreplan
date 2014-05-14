@@ -526,7 +526,7 @@ public class FormBinder {
     }
 
     /**
-     * 
+     *
      * @return <code>true</code> if and only if operation completed and must
      *         exit the edition form
      */
@@ -557,7 +557,7 @@ public class FormBinder {
 
         workableDaysAndDatesBinder.afterApplicationReloadValues();
 
-        setupRows();
+        Util.reloadBindings(allocationsGrid);
     }
 
     @SuppressWarnings("unchecked")
