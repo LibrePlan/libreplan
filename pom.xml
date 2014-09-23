@@ -111,7 +111,7 @@
         <profile>
             <id>postgresql</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
+                <activeByDefault>false</activeByDefault>
             </activation>
             <properties>
                 <!-- JDBC driver properties -->
@@ -131,6 +131,9 @@
         <!-- MySQL profile -->
         <profile>
             <id>mysql</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
             <properties>
                 <!-- JDBC driver properties -->
                 <jdbcDriver.groupId>mysql</jdbcDriver.groupId>

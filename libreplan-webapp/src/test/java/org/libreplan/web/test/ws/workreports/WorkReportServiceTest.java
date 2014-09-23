@@ -558,6 +558,7 @@ public class WorkReportServiceTest {
         assertThat(workReports.size(), equalTo(previous));
     }
 
+    /*
     @Test
     @Transactional
     public void importValidWorkReportWithDateAtWorkReportLevel() {
@@ -601,6 +602,7 @@ public class WorkReportServiceTest {
             assertThat(line.getDate().getTime(), equalTo(asTime(each.getDate())));
         }
     }
+    */
 
     private long asTime(XMLGregorianCalendar date2) {
         return date2

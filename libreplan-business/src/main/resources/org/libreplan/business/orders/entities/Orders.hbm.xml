@@ -93,7 +93,7 @@
 
             <!-- Indexed the other side -->
             <set name="indirectAdvanceAssignments" access="field" cascade="all,delete-orphan" inverse="true" batch-size="10">
-                <key column="indirect_order_element_id" />
+                <key column="indirect_order_element_id" foreign-key="FK_ces86fv716d5k61cmwqlue6hda" />
                 <one-to-many class="org.libreplan.business.advance.entities.IndirectAdvanceAssignment" />
             </set>
 
