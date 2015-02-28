@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.joda.time.LocalDate;
 import org.libreplan.business.advance.entities.AdvanceMeasurement;
 import org.libreplan.business.advance.entities.DirectAdvanceAssignment;
 import org.libreplan.business.common.daos.IConfigurationDAO;
@@ -39,6 +40,7 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+/* mvanmiddelkoop jan 2015 - to use from and to date in tasks */
 
 /**
  * Model for for "My tasks" area in the user dashboard window
@@ -66,21 +68,59 @@ public class MyTasksAreaModel implements IMyTasksAreaModel {
             return new ArrayList<Task>();
         }
 
+        /*
+         * mvanmiddelkoop jan 2015 - Tasks from <settings> months ago to
+         * <settings> month ahead
+         */
+
+        LocalDate myTodayDate = LocalDate.now();
+        int since = 1;
+        if (user.getResourcesLoadFilterPeriodSince() != null) {
+            since = user.getResourcesLoadFilterPeriodSince();
+        }
+        int to = 3;
+        if (user.getResourcesLoadFilterPeriodTo() != null) {
+            to = user.getResourcesLoadFilterPeriodTo();
+        }
+        
         List<SpecificResourceAllocation> resourceAllocations = resourceAllocationDAO
                 .findSpecificAllocationsRelatedTo(scenarioManager.getCurrent(),
-                        UserDashboardUtil.getBoundResourceAsList(user), null,
-                        null);
+                        UserDashboardUtil.getBoundResourceAsList(user),
+                        myTodayDate.minusMonths(since),
+                        myTodayDate.plusMonths(to));
 
         List<Task> tasks = new ArrayList<Task>();
         for (SpecificResourceAllocation each : resourceAllocations) {
             Task task = each.getTask();
-            forceLoad(task);
-            tasks.add(task);
+            if (task != null) {
+                forceLoad(task);
+
+            /* mvanmiddelkoop jan 2015 - show only unfinished tasks */
+                if (task.getAdvancePercentage().intValue() < 1) {
+                    tasks.add(task);
+                }
+            }
         }
 
-        sortTasksDescendingByStartDate(tasks);
+        /*
+         * mvanmiddelkoop jan 2015 - Sort Ascending instead of Descending
+         * sortTasksDescendingByStartDate(tasks);
+         */
+        sortTasksAscendingByStartDate(tasks);
 
         return tasks;
+    }
+
+    /* mvanmiddelkoop jan 2015 - Sort Ascending instead of Descending */
+    private void sortTasksAscendingByStartDate(List<Task> tasks) {
+        Collections.sort(tasks, new Comparator<Task>() {
+
+            @Override
+            public int compare(Task o1, Task o2) {
+                return o1.getIntraDayStartDate().compareTo(
+                        o2.getIntraDayStartDate());
+            }
+        });
     }
 
     private void sortTasksDescendingByStartDate(List<Task> tasks) {
@@ -106,6 +146,11 @@ public class MyTasksAreaModel implements IMyTasksAreaModel {
                 advanceMeasurement.getValue();
             }
         }
+
+        // MvanMiddelkoop feb 2015 - to show the budgeted hours, prevent
+        // LazyLoad errors
+        task.getSumOfAssignedEffort();
+        task.getOrderElement().getDescription();
     }
 
     @Override
