@@ -26,9 +26,9 @@
 <tree id="tasksTree" fixedLayout="true" sclass="taskTreeCols">
     <treecols sizable="false" height="33px">
         <treecol label="${ganttzk_i18n:_('Name')}" sclass="tree-text" />
-        <treecol label="${ganttzk_i18n:_('Start')}" width="76px" />
-        <treecol label="${ganttzk_i18n:_('End')}" width="76px" />
-        <treecol label="${ganttzk_i18n:_('Status T/M')}" width="76px" />
+        <treecol label="${ganttzk_i18n:_('Start')}" width="60px" />
+        <treecol label="${ganttzk_i18n:_('End')}" width="60px" />
+        <treecol label="${ganttzk_i18n:_('T / M')}" width="55px" />
     </treecols>
 </tree>
 </div>
