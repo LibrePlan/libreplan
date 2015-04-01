@@ -58,22 +58,28 @@ public class MyTasksAreaController extends GenericForwardComposer {
 
         @Override
         public void render(Row row, Object data) throws Exception {
+            // MvanMiddelkoop feb 2015 - changed columns: added total budgeted
+            // hours for resource, added Notes, removed Code (not of any use,
+            // technical code)
+
             Task task = (Task) data;
             row.setValue(task);
 
-            Util.appendLabel(row, task.getName());
-
             OrderElement orderElement = task.getOrderElement();
-            Util.appendLabel(row, orderElement.getCode());
+
             Util.appendLabel(row, orderElement.getOrder().getName());
+            Util.appendLabel(row, task.getName());
+            Util.appendLabel(row, orderElement.getDescription());
 
             Util.appendLabel(row, task.getStartAsLocalDate().toString());
             Util.appendLabel(row, task.getEndAsLocalDate().toString());
 
-            Util.appendLabel(row, getProgress(orderElement));
-
+            Util.appendLabel(
+                    row,
+                    _("{0} h", task.getSumOfAssignedEffort()
+                    .toHoursAsDecimalWithScale(0).toString()));
             Util.appendLabel(row, _("{0} h", orderElement.getEffortAsString()));
-
+            Util.appendLabel(row, getProgress(orderElement));
             appendTimeTrackingButton(row, task);
         }
 
