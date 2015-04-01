@@ -492,7 +492,7 @@ msgstr "Kan niet later zijn dan einddatum"
 msgid ""
 "Roles of LDAP users cannot be managed because LDAP is enabled and LDAP roles"
 " are being used."
-msgstr "Rollen van LDAP gebruikers kunnen niet beheert worden omdat LDAP aan staat en LDAP rollen worden gebruikt."
+msgstr "Rollen van LDAP gebruikers kunnen niet beheerd worden omdat LDAP aan staat en LDAP rollen worden gebruikt."
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/resources/criterion/CriterionTreeController.java:306
 msgid "Indent"
