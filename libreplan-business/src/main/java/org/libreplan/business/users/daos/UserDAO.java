@@ -65,6 +65,7 @@ public class UserDAO extends GenericDAOHibernate<User, Long>
             throw new InstanceNotFoundException(loginName,
                 User.class.getName());
         } else {
+            user.getProfiles().size();
             return user;
         }
 
