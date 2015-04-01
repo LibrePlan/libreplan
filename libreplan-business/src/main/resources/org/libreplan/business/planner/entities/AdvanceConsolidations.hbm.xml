@@ -81,7 +81,7 @@
                 cascade="all,delete-orphan"
                 inverse="true"
                 sort="org.libreplan.business.planner.entities.consolidations.ConsolidatedValueComparator">
-                <key column="consolidation_id" />
+                <key column="consolidation_id" foreign-key="FK_m796gbgh0ogjnhxtsx4ftdf99a"/>
                 <one-to-many class="org.libreplan.business.planner.entities.consolidations.CalculatedConsolidatedValue" />
             </set>
 

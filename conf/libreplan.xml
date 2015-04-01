@@ -5,6 +5,6 @@
         type="javax.sql.DataSource"
         maxActive="100" maxIdle="30" maxWait="10000"
         username="libreplan" password="libreplan"
-        driverClassName="org.postgresql.Driver"
-        url="jdbc:postgresql://localhost/libreplan" />
+        driverClassName="com.mysql.jdbc.Driver"
+        url="jdbc:mysql://localhost/libreplan" />
 </Context>

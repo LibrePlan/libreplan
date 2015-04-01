@@ -59,7 +59,7 @@
              inverse="true"
              access="field"
              sort="org.libreplan.business.advance.entities.AdvanceMeasurementComparator" >
-                <key column="advance_assignment_id" />
+                <key column="advance_assignment_id" foreign-key="FK_higk7dlmr304xs53mjqydnmp6a"/>
                 <one-to-many class="org.libreplan.business.advance.entities.AdvanceMeasurement"></one-to-many>
         </set>
 
