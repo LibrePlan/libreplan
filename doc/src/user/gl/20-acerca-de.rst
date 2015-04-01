@@ -88,6 +88,7 @@ Traductores
   Joaquim Rocha <jrocha@igalia.com>
 * [ru] Pavel Rudensky <prudensky@gmail.com>
 * [zh] Swanson Chan <lacidophilin@yahoo.com>
+* [nb] Kent Thoresen <kt@norwegianoceanpower.com>
 
 Contribuidores
 --------------
