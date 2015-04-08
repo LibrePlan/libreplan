@@ -131,7 +131,7 @@
                                 <arg value="html"/>
                             </exec>
                             <copy todir="src/main/webapp/help/fr" failonerror="false">
-                                <fileset dir="../doc/src/user/en/html"/>
+                                <fileset dir="../doc/src/user/fr/html"/>
                             </copy>
                             <copy todir="src/main/webapp/help/nl" failonerror="false">
                                 <fileset dir="../doc/src/user/en/html"/>
@@ -179,6 +179,11 @@
                             <exec executable="make" failifexecutionfails="false">
                                 <arg value="-C"/>
                                 <arg value="../doc/src/user/en/"/>
+                                <arg value="clean"/>
+                            </exec>
+                             <exec executable="make" failifexecutionfails="false">
+                                <arg value="-C"/>
+                                <arg value="../doc/src/user/fr/"/>
                                 <arg value="clean"/>
                             </exec>
                             <delete dir="src/main/webapp/help" failonerror="false" />
