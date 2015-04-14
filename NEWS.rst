@@ -1,6 +1,100 @@
 NEWS
 ====
 
+Version 1.4.1 (14 apr 2015)
+---------------------------
+
+Summary
+~~~~~~~
+
+We are very proud to release version 1.4.1 of LibrePlan.
+The big changes are:
+
+-more than 35 bugs fixed
+-added Norwegian Bokmal language (thanks to Kent Thoresen)
+
+Contributors
+~~~~~~~~~~~~
+
+Thanks to all the contributors to this new version:
+
+* Oscar Gonzalez Fernandez
+* Jeroen Baten
+* Philippe Poumaroux
+* Kris Buytaert
+* mvanmiddelkoop
+
+Translators
+~~~~~~~~~~~
+
+Thanks to all the translators in this new version:
+
+* [ca] Daniel Díaz Sañudo
+* [es] Lorenzo Tilve Álvaro
+* [fr] Philippe Poumaroux
+* [gl] Lorenzo Tilve Álvaro
+* [it] Giuseppe Zizza
+* [nl] Jeroen Baten
+* [pt] Thiago Cangussu
+* [zn] Swanson Chan
+* [no] Kent Thoresen
+
+Changes
+~~~~~~~
+
+* i18n: fixed small thing on french help pages.
+* Fix for #1655 : display french help
+* Autofocus on username field at login
+* Update nl.po
+* doc: Update AUTHORS file info about new Norwegian translator
+* i18n: Add Norwegian Bokmal language to enum and modify pom.xml to use English userguide
+* i18n: Adding Norwegian Bokmal language
+* Bindings must be reloaded
+* Make tests independent of tests order execution
+* Fix bug #1646
+* Remove unnecessary clearAll calls
+* Improve test
+* Improve test to avoid spurious errors
+* Performance improvement
+* Declare transaction declaratively
+* Fix performance regression
+* Fix bug #1645
+* Fix bug #1644
+* Remove the listener allResourcesPerDay
+* Be more restrictive when discarding messages
+* Some renamings and documentation added
+* Fix issue with messages for users
+* Escape ' characters used along with positional parameters
+* Fix bug #1643
+* Fix bug #1642
+* A script to change strings in the whole source tree. Use with care!
+* Batch of changed english strings, including in po files
+* Remove dead code
+* Fix little title typo
+* Fix use_latex_footnotes warning
+* Remove unused part in build
+* Extract repeated Makefile
+* Fix bug #1635
+* Fix typos detected during manual review
+* Add note about how to generate documentation
+* Fix typo which cause french pdf manual generation to fail
+* Massive fix for french i18n: - global coherence within the program - coherence with user manual
+* Execute tests in alphabetical order
+* Use utility method
+* Remove use of class introduced in JDK 1.7
+* Fix potential problem
+* Don't use the same display number always
+* Show output from printing process
+* Remove unused constant
+* Move helper methods closer
+* Refactor to the creation of css file
+* Encode correctly http parameters
+* Introduce parameter object
+* Use ProcessBuilder to construct program calls
+* Use a connection data pool when running tests
+* Use newest postgresql driver
+* Use connection pooling in Jetty too
+
 Version 1.4.0 (29 Apr 2013)
 ---------------------------
 
