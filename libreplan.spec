@@ -1,5 +1,5 @@
 Name:           libreplan
-Version:        1.4.0
+Version:        1.4.1
 Release:        1
 Summary:        Web application for project planning, monitoring and control
 License:        AGPLv3
@@ -23,7 +23,7 @@ BuildArch:      noarch
 %if 0%{?fedora} || 0%{?centos}
 Requires:       postgresql-jdbc
 %endif
-%if 0%{?fedora} >= 17
+%if 0%{?fedora} >= 17 || 0%{?suse_version} >=122
 Requires:	java-1.7.0-openjdk
 %else
 Requires:       java-1.6.0-openjdk
@@ -105,6 +105,8 @@ rm -rf ${RPM_BUILD_ROOT}
 %{_datadir}/%{name}/conf/*
 
 %changelog
+* di apr 14 2015 Jeroen Baten <jeroen@libreplan.com> - 1.4.1-1
+- Released LibrePlan 1.4.1
 * Mon Apr 29 2012 Manuel Rego Casasnovas <rego@igalia.com> - 1.4.0-1
 - Released LibrePlan 1.4.0
 * Fri Dec 21 2012 Manuel Rego Casasnovas <rego@igalia.com> - 1.3.3-1
