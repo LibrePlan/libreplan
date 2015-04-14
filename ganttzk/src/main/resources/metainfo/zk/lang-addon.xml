@@ -6,9 +6,9 @@
 
     <!-- When the version is changed, the browser will reload the
         JavaScript modules. -->
-    <javascript-module name="ganttz" version="1.4.0" />
-    <javascript-module name="ganttz.resourceload" version="1.4.0" />
-    <javascript-module name="common" version="1.4.0" />
+    <javascript-module name="ganttz" version="1.4.1" />
+    <javascript-module name="ganttz.resourceload" version="1.4.1" />
+    <javascript-module name="common" version="1.4.1" />
 
     <extension>zul</extension>
     <extension>xul</extension>
