@@ -151,7 +151,7 @@ LATEX_SETTINGS = {
     "documentclass"      : "scrbook",
     "documentoptions"    : "11pt,oneside,a4paper",
     "table_style"        : "booktabs",
-    "use_latex_footnotes": 1,
+    "docutils_footnotes" : 1,
     "use_latex_citations": 1,
     "use_latex_toc"      : 1,
     "use_latex_docinfo"  : 0,
@@ -214,6 +214,19 @@ class LaTeXCustomWriter(latex2e.Writer):
 
 
 
+def docutils_bug_workaround(acc, x):
+    """
+
+    Workarounds this bug: http://sourceforge.net/p/docutils/bugs/215/
+    """
+    problematic_parameter = '--stylesheet-path'
+    if str.find(x, problematic_parameter) == -1:
+        acc.append(x)
+    else:
+        acc.append(problematic_parameter)
+        acc.append([x[str.find(x,'=') + 1:]])
+    return acc
+
 class DocTool(object):
 
     def main(self, argv=None):
@@ -271,7 +284,7 @@ class DocTool(object):
         publish_cmdline(writer_name="html",
                 settings_overrides=HTML_SETTINGS,
                 description=description,
-                argv=list(args),
+                argv=reduce(docutils_bug_workaround, list(args), []),
                 )
 
     def cmd_toplevel(self, cmd, *args):

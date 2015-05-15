@@ -345,7 +345,7 @@ msgid "entity name not specified"
 msgstr "není zadán název objektu"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/users/UserCRUDController.java:424
-msgid "You do not have permissions to go to worker edition window"
+msgid "You do not have permissions to go to edit worker window"
 msgstr "Nemáte oprávnění k přístupu do okna úprav pracovníka"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/components/NewAllocationSelector.java:51
@@ -1056,7 +1056,7 @@ msgstr ""
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/CustomMenuController.java:493
 #: libreplan-webapp/src/main/webapp/reports/timeLineMaterialReport.zul:39
-msgid "Materials Needs At Date"
+msgid "Materials Needed At Date"
 msgstr "Potřeby materiálů k datu"
 
 #: libreplan-webapp/src/main/webapp/common/configuration.zul:305
@@ -1509,7 +1509,7 @@ msgstr "Kód společnosti"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/components/TwoWaySelector.java:110
 msgid "Unknown attribute '{0}' in class {1}"
-msgstr "Neznámá vlastnost '{0}' ve třídě {1}"
+msgstr "Neznámá vlastnost ''{0}'' ve třídě {1}"
 
 #: libreplan-webapp/src/main/webapp/orders/_listOrderElementHours.zul:62
 msgid "Sum of imputed hours in children tasks"
@@ -1917,7 +1917,7 @@ msgid "Yes"
 msgstr "Ano"
 
 #: libreplan-webapp/src/main/webapp/resources/worker/_edition.zul:127
-msgid "Go to user edition window"
+msgid "Go to edit user window"
 msgstr "Přejít do okna úprav uživatele"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/CustomMenuController.java:392
@@ -3916,7 +3916,7 @@ msgid "Edit Worker: {0}"
 msgstr "Upravit pracovníka: {0}"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/resources/worker/WorkerCRUDController.java:1143
-msgid "You do not have permissions to go to user edition window"
+msgid "You do not have permissions to go to edit user window"
 msgstr "Nemáte oprávnění ke vstupu do okna úprav uživatele"
 
 #: libreplan-webapp/src/main/webapp/common/layout/login.zul:21
@@ -4651,7 +4651,7 @@ msgid "Value last progress measurement"
 msgstr "Hodnota posledního měření postupu"
 
 #: libreplan-webapp/src/main/webapp/reports/timeLineMaterialReport.zul:21
-msgid "LibrePlan: Materials Needs At Date"
+msgid "LibrePlan: Materials Needed At Date"
 msgstr "LibrePlan: Potřeby materiálů k datu"
 
 #: libreplan-webapp/src/main/webapp/resources/machine/_machineConfigurationUnits.zul:44
@@ -5860,7 +5860,7 @@ msgid "Any"
 msgstr ""
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/resources/worker/WorkerCRUDController.java:1129
-msgid "Confirm user edition"
+msgid "Confirm editing user"
 msgstr ""
 
 #: libreplan-webapp/src/main/webapp/planner/_legendLoadChartOrder.zul:47
@@ -6666,7 +6666,7 @@ msgid "The end date cannot be before the start date"
 msgstr ""
 
 #: libreplan-webapp/src/main/webapp/users/_editUser.zul:114
-msgid "Go to worker edition window"
+msgid "Go to edit worker window"
 msgstr ""
 
 #: libreplan-webapp/src/main/webapp/templates/_historicalAssignment.zul:40
@@ -6868,7 +6868,7 @@ msgid "Priority"
 msgstr "Priorita"
 
 #: libreplan-webapp/src/main/webapp/planner/advance_allocation.zul:47
-msgid "Apply changes and continue edition"
+msgid "Apply changes and continue editing"
 msgstr "Použít změny a pokračovat v úpravách"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/calendars/BaseCalendarEditionController.java:221
@@ -7025,7 +7025,7 @@ msgid "Assign element to queue automatically"
 msgstr "Prvek přidělovat do fronty automaticky"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/users/UserCRUDController.java:406
-msgid "Confirm worker edition"
+msgid "Confirm edit worker"
 msgstr ""
 
 #: libreplan-webapp/src/main/webapp/workreports/workReportQuery.zul:74
@@ -7913,7 +7913,7 @@ msgid "List of materials for category: {0}"
 msgstr "Seznam materiálů pro kategorii: {0}"
 
 #: libreplan-webapp/src/main/webapp/orders/_ordersTab.zul:36
-msgid "Cancel edition"
+msgid "Cancel editing"
 msgstr "Zrušit úpravu"
 
 #: libreplan-webapp/src/main/webapp/templates/_materialAssignmentsBox.zul:32
@@ -8269,7 +8269,7 @@ msgid "Task Scheduling Status In Project Report"
 msgstr ""
 
 #: libreplan-business/src/main/java/org/libreplan/business/users/entities/UserRole.java:81
-msgid "Materials Needs At Date Report"
+msgid "Materials Needed At Date Report"
 msgstr ""
 
 #: libreplan-business/src/main/java/org/libreplan/business/users/entities/User.java:344

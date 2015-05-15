@@ -115,7 +115,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
     public void indent(T element) {
         viewStateSnapshot = TreeViewStateSnapshot.takeSnapshot(tree);
         getModel().indent(element);
-        filterByPredicateIfAny();
+        reloadTreeUIAfterChanges();
         updateControlButtons();
     }
 
@@ -140,7 +140,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
     public void unindent(T element) {
         viewStateSnapshot = TreeViewStateSnapshot.takeSnapshot(tree);
         getModel().unindent(element);
-        filterByPredicateIfAny();
+        reloadTreeUIAfterChanges();
         updateControlButtons();
     }
 
@@ -154,7 +154,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
     public void up(T element) {
         viewStateSnapshot = TreeViewStateSnapshot.takeSnapshot(tree);
         getModel().up(element);
-        filterByPredicateIfAny();
+        reloadTreeUIAfterChanges();
         updateControlButtons();
     }
 
@@ -167,7 +167,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
     public void down(T element) {
         viewStateSnapshot = TreeViewStateSnapshot.takeSnapshot(tree);
         getModel().down(element);
-        filterByPredicateIfAny();
+        reloadTreeUIAfterChanges();
         updateControlButtons();
     }
 
@@ -206,7 +206,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
 
             getModel().move(fromNode, toNode);
         }
-        filterByPredicateIfAny();
+        reloadTreeUIAfterChanges();
     }
 
     public void addElement() {
@@ -217,7 +217,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
             } else {
                 getModel().addElement();
             }
-            filterByPredicateIfAny();
+            reloadTreeUIAfterChanges();
         } catch (IllegalStateException e) {
             LOG.warn("exception ocurred adding element", e);
             messagesForUser.showMessage(Level.ERROR, e.getMessage());
@@ -252,7 +252,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
 
                 // Moved here in order to have items already renderer in order
                 // to select the proper element to focus
-                filterByPredicateIfAny();
+                reloadTreeUIAfterChanges();
 
                 if (node.isLeaf() && !node.isEmptyLeaf()) {
                     // Then a new container will be created
@@ -267,7 +267,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
 
                 // This is needed in both parts of the if, but it's repeated in
                 // order to simplify the code
-                filterByPredicateIfAny();
+                reloadTreeUIAfterChanges();
             }
         } catch (IllegalStateException e) {
             LOG.warn("exception ocurred adding element", e);
@@ -284,7 +284,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         }
     }
 
-    protected abstract void filterByPredicateIfAny();
+    protected abstract void reloadTreeUIAfterChanges();
 
     protected static class TreeViewStateSnapshot {
         private final Set<Object> all;
@@ -344,7 +344,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         for (Treeitem treeItem : selectedItems) {
             remove(type.cast(treeItem.getValue()));
         }
-        filterByPredicateIfAny();
+        reloadTreeUIAfterChanges();
     }
 
     public void remove(T element) {
@@ -1156,7 +1156,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
                 @Override
                 public void onEvent(Event event) {
                     remove(currentElement);
-                    filterByPredicateIfAny();
+                    reloadTreeUIAfterChanges();
                 }
             };
             final Button result;

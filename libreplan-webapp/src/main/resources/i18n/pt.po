@@ -353,7 +353,7 @@ msgid "entity name not specified"
 msgstr "Nome da entidade não especificado"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/users/UserCRUDController.java:445
-msgid "You do not have permissions to go to worker edition window"
+msgid "You do not have permissions to go to edit worker window"
 msgstr "Você não tem permissão para ir à janela de edição de trabalhadores"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/components/NewAllocationSelector.java:51
@@ -1069,7 +1069,7 @@ msgstr ""
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/CustomMenuController.java:493
 #: libreplan-webapp/src/main/webapp/reports/timeLineMaterialReport.zul:39
-msgid "Materials Needs At Date"
+msgid "Materials Needed At Date"
 msgstr "Necesidades de Materiais para Data"
 
 #: libreplan-webapp/src/main/webapp/common/configuration.zul:316
@@ -1523,7 +1523,7 @@ msgstr "Código da empresa"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/components/TwoWaySelector.java:110
 msgid "Unknown attribute '{0}' in class {1}"
-msgstr "Atributo desconhecido '{0}' na classe {1}"
+msgstr "Atributo desconhecido ''{0}'' na classe {1}"
 
 #: libreplan-webapp/src/main/webapp/orders/_listOrderElementHours.zul:62
 msgid "Sum of imputed hours in children tasks"
@@ -1939,7 +1939,7 @@ msgid "Yes"
 msgstr "Sim"
 
 #: libreplan-webapp/src/main/webapp/resources/worker/_edition.zul:127
-msgid "Go to user edition window"
+msgid "Go to edit user window"
 msgstr "Ir para a janela de edição de usuário"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/CustomMenuController.java:392
@@ -3952,7 +3952,7 @@ msgid "Edit Worker: {0}"
 msgstr "Editar Trabalhador: {0}"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/resources/worker/WorkerCRUDController.java:1143
-msgid "You do not have permissions to go to user edition window"
+msgid "You do not have permissions to go to edit user window"
 msgstr "Você não tem permissão para ir à janela de edição de usuários"
 
 #: libreplan-webapp/src/main/webapp/common/layout/login.zul:21
@@ -4694,7 +4694,7 @@ msgid "Value last progress measurement"
 msgstr "Valor da última medida de progresso"
 
 #: libreplan-webapp/src/main/webapp/reports/timeLineMaterialReport.zul:21
-msgid "LibrePlan: Materials Needs At Date"
+msgid "LibrePlan: Materials Needed At Date"
 msgstr "LibrePlan: Necessidades de Materiais para Data"
 
 #: libreplan-webapp/src/main/webapp/resources/machine/_machineConfigurationUnits.zul:44
@@ -4769,7 +4769,7 @@ msgstr "Erro ao guardar o projeto\n{0}"
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/order/SaveCommandBuilder.java:375
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/tabs/MultipleTabsPlannerController.java:220
 msgid ""
-"You are about to leave the planning edition, unsaved changes will be lost."
+"You are about to leave the planning editing. Unsaved changes will be lost!"
 msgstr ""
 
 #: libreplan-webapp/src/main/webapp/resources/machine/machines.zul:22
@@ -5937,7 +5937,7 @@ msgid "Any"
 msgstr "Algum"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/resources/worker/WorkerCRUDController.java:1129
-msgid "Confirm user edition"
+msgid "Confirm editing user"
 msgstr "Confirmar edição do usuário"
 
 #: libreplan-webapp/src/main/webapp/planner/_legendLoadChartOrder.zul:47
@@ -6750,7 +6750,7 @@ msgid "The end date cannot be before the start date"
 msgstr ""
 
 #: libreplan-webapp/src/main/webapp/users/_editUser.zul:115
-msgid "Go to worker edition window"
+msgid "Go to edit worker window"
 msgstr ""
 
 #: libreplan-webapp/src/main/webapp/templates/_historicalAssignment.zul:40
@@ -6953,7 +6953,7 @@ msgid "Priority"
 msgstr "Prioridade"
 
 #: libreplan-webapp/src/main/webapp/planner/advance_allocation.zul:47
-msgid "Apply changes and continue edition"
+msgid "Apply changes and continue editing"
 msgstr "Aplicar as alterações e continuar a edição"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/calendars/BaseCalendarEditionController.java:221
@@ -7110,7 +7110,7 @@ msgid "Assign element to queue automatically"
 msgstr "Atribuir elemento à fila automaticamente"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/users/UserCRUDController.java:427
-msgid "Confirm worker edition"
+msgid "Confirm edit worker"
 msgstr "Confirmar edição de trabalhadores"
 
 #: libreplan-webapp/src/main/webapp/workreports/workReportQuery.zul:74
@@ -8021,7 +8021,7 @@ msgid "Adapt planning according to timesheets"
 msgstr ""
 
 #: libreplan-webapp/src/main/webapp/orders/_ordersTab.zul:36
-msgid "Cancel edition"
+msgid "Cancel editing"
 msgstr "Cancelar edição"
 
 #: libreplan-webapp/src/main/webapp/templates/_materialAssignmentsBox.zul:32
@@ -8376,7 +8376,7 @@ msgid "Task Scheduling Status In Project Report"
 msgstr ""
 
 #: libreplan-business/src/main/java/org/libreplan/business/users/entities/UserRole.java:81
-msgid "Materials Needs At Date Report"
+msgid "Materials Needed At Date Report"
 msgstr ""
 
 #: libreplan-business/src/main/java/org/libreplan/business/users/entities/User.java:345

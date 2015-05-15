@@ -52,7 +52,8 @@ import org.libreplan.business.workreports.valueobjects.DescriptionValue;
  * @author Diego Pino García <dpino@igalia.com>
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
-public class WorkReportLine extends IntegrationEntity implements Comparable,
+public class WorkReportLine extends IntegrationEntity implements
+        Comparable<WorkReportLine>,
         IWorkReportsElements {
 
     public static WorkReportLine create(WorkReport workReport) {
@@ -240,9 +241,8 @@ public class WorkReportLine extends IntegrationEntity implements Comparable,
     }
 
     @Override
-    public int compareTo(Object arg0) {
+    public int compareTo(WorkReportLine workReportLine) {
         if (date != null) {
-            final WorkReportLine workReportLine = (WorkReportLine) arg0;
             return date.compareTo(workReportLine.getDate());
         }
         return -1;

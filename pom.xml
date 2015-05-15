@@ -5,7 +5,7 @@
     <groupId>org.libreplan</groupId>
     <artifactId>libreplan</artifactId>
     <packaging>pom</packaging>
-    <version>1.4.0</version>
+    <version>1.4.1</version>
     <name>LibrePlan</name>
 
     <!--
@@ -37,6 +37,8 @@
 
         <default.passwordsControl>true</default.passwordsControl>
         <default.exampleUsersDisabled>true</default.exampleUsersDisabled>
+
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <!--
@@ -113,9 +115,9 @@
             </activation>
             <properties>
                 <!-- JDBC driver properties -->
-                <jdbcDriver.groupId>postgresql</jdbcDriver.groupId>
+                <jdbcDriver.groupId>org.postgresql</jdbcDriver.groupId>
                 <jdbcDriver.artifactId>postgresql</jdbcDriver.artifactId>
-                <jdbcDriver.version>8.3-603.jdbc4</jdbcDriver.version>
+                <jdbcDriver.version>9.2-1003-jdbc4</jdbcDriver.version>
                 <jdbcDriver.className>org.postgresql.Driver</jdbcDriver.className>
                 <!-- Data source properties -->
                 <dataSource.url>jdbc:postgresql://localhost/libreplan${libreplan.mode}</dataSource.url>
@@ -260,6 +262,13 @@
                 <artifactId>junit</artifactId>
                 <version>4.4</version>
                 <scope>test</scope>
+            </dependency>
+            <!-- datasource for testing -->
+            <dependency>
+              <groupId>com.jolbox</groupId>
+              <artifactId>bonecp</artifactId>
+              <version>0.7.1.RELEASE</version>
+              <scope>test</scope>
             </dependency>
 
             <!-- Easy mock -->
@@ -949,6 +958,15 @@
                 </configuration>
             </plugin>
 
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.10</version>
+                <configuration>
+                   <runOrder>alphabetical</runOrder>
+                </configuration>
+            </plugin>
+
             <!-- =========================================================== -->
             <!-- Jetty configuration -->
             <plugin>
@@ -980,11 +998,33 @@
                 </configuration>
 
                 <dependencies>
-                    <dependency>
-                        <groupId>${jdbcDriver.groupId}</groupId>
-                        <artifactId>${jdbcDriver.artifactId}</artifactId>
-                        <version>${jdbcDriver.version}</version>
-                    </dependency>
+                  <dependency>
+                    <groupId>${jdbcDriver.groupId}</groupId>
+                    <artifactId>${jdbcDriver.artifactId}</artifactId>
+                    <version>${jdbcDriver.version}</version>
+                  </dependency>
+                  <!-- connection pooling -->
+                  <dependency>
+                    <groupId>com.jolbox</groupId>
+                    <artifactId>bonecp</artifactId>
+                    <version>0.7.1.RELEASE</version>
+                  </dependency>
+                  <!-- connection pooling dependencies -->
+                  <dependency>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                    <version>1.5.5</version>
+                  </dependency>
+                  <dependency>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-simple</artifactId>
+                    <version>1.5.5</version>
+                  </dependency>
+                  <dependency>
+                    <groupId>com.google.guava</groupId>
+                    <artifactId>guava</artifactId>
+                    <version>14.0.1</version>
+                  </dependency>
                 </dependencies>
             </plugin>
 

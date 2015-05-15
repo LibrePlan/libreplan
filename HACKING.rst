@@ -275,6 +275,44 @@ openSUSE
 
     # cp CutyCapt /user/bin/cutycapt
 
+LibrePlan documentation generation
+----------------------------------
+
+In the doc/src folder you'll find several types of documentation
+available: technical documentation, user manual, some training
+documentation and training exercises. This documentation is available
+in several languages.
+
+The supported outputs are HTML and PDF.
+
+Debian/Ubuntu
+~~~~~~~~~~~~~
+
+* Install requirements if generating HTML::
+
+    # apt-get install make python-docutils
+
+* Install requirements if generating PDF::
+
+    # apt-get install make python-docutils texlive-latex-base texlive-latex-recommended texlive-latex-extra textlive-fonts-recommended
+
+* Go to the directory where the documentation you want to generate
+  is. For example, if you want to generate the user manual in
+  English::
+
+   # cd doc/src/user/en
+
+* Generate HTML::
+
+    # make html
+
+* Generate PDF::
+
+    # make pdf
+
+* Generate both formats::
+
+    # make
 
 Compilation profiles
 --------------------

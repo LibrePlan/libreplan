@@ -1140,7 +1140,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         try {
             return Messagebox
                     .show(_("Unsaved changes will be lost. Would you like to continue?"),
-                            _("Confirm user edition"), Messagebox.OK
+                            _("Confirm editing user"), Messagebox.OK
                                     | Messagebox.CANCEL, Messagebox.QUESTION);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
@@ -1154,7 +1154,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
 
     public String getUserEditionButtonTooltip() {
         if (isNoRoleUserAccounts()) {
-            return _("You do not have permissions to go to user edition window");
+            return _("You do not have permissions to go to edit user window");
         }
         return "";
     }

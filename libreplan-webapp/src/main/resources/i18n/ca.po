@@ -351,7 +351,7 @@ msgid "entity name not specified"
 msgstr "Nom de l'entitat no especificat"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/users/UserCRUDController.java:445
-msgid "You do not have permissions to go to worker edition window"
+msgid "You do not have permissions to go to edit worker window"
 msgstr "No té permisos per a treballar amb la finestra d'edició"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/components/NewAllocationSelector.java:51
@@ -413,7 +413,7 @@ msgstr "Mitjana d'hores estimades"
 msgid ""
 "Could not add those authorizations to profile {0} because they were already "
 "present."
-msgstr "No s'ha pogut afegir les autoritzacions per al perfil {0} perquè ja estaven."
+msgstr "No s''ha pogut afegir les autoritzacions per al perfil {0} perquè ja estaven."
 
 #: libreplan-business/src/main/java/org/libreplan/business/workreports/entities/WorkReportLine.java:163
 #: libreplan-business/src/main/java/org/libreplan/business/calendars/entities/ResourceCalendar.java:78
@@ -639,7 +639,7 @@ msgstr "Client"
 msgid ""
 "there are no resources for required criteria: {0}. So the generic allocation"
 " can't be added"
-msgstr "No n'hi ha recursos pels criteris: {0}. L'assignació genèrica no es pot afegir"
+msgstr "No n''hi ha recursos pels criteris: {0}. L''assignació genèrica no es pot afegir"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/workreports/WorkReportCRUDController.java:1565
 msgid "must be later than start date"
@@ -729,7 +729,7 @@ msgstr "LibrePlan: enviar a subcontractista"
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/AssignedTaskQualityFormsToOrderElementController.java:200
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/OrderCRUDController.java:826
 msgid "Confirm deleting {0}. Are you sure?"
-msgstr "Confirmació d'esborrat {0}, estàs segur?"
+msgstr "Confirmació d''esborrat {0}, estàs segur?"
 
 #: libreplan-webapp/src/main/webapp/orders/components/_orderElementTree.zul:51
 msgid "Edit selected task"
@@ -1067,7 +1067,7 @@ msgstr "Full de treball personal"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/CustomMenuController.java:493
 #: libreplan-webapp/src/main/webapp/reports/timeLineMaterialReport.zul:39
-msgid "Materials Needs At Date"
+msgid "Materials Needed At Date"
 msgstr "Material necessari a la data"
 
 #: libreplan-webapp/src/main/webapp/common/configuration.zul:316
@@ -1182,7 +1182,7 @@ msgstr "Any"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/BaseCRUDController.java:327
 msgid "{0} \"{1}\" could not be deleted, it was already removed"
-msgstr "{0} \"{1}\" no pot ser eliminat, ja s'havia fet"
+msgstr "{0} \"{1}\" no pot ser eliminat, ja s''havia fet"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/CustomMenuController.java:429
 #: libreplan-business/src/main/java/org/libreplan/business/users/entities/UserRole.java:70
@@ -1265,7 +1265,7 @@ msgstr "Llista del tipus de progrés"
 msgid ""
 "The {0} can not be assigned to this resource. Its interval overlaps with "
 "other criterion"
-msgstr "El {0} no pot ser assignat a aquest recurs. L'interval sobrepassa amb "
+msgstr "El {0} no pot ser assignat a aquest recurs. L''interval sobrepassa amb "
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/chart/EarnedValueChartFiller.java:257
 msgid "Schedule Performance Index"
@@ -1521,7 +1521,7 @@ msgstr "Codi d'empresa"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/components/TwoWaySelector.java:110
 msgid "Unknown attribute '{0}' in class {1}"
-msgstr "Atribut desconegut '{0}' en la classe {1}"
+msgstr "Atribut desconegut ''{0}'' en la classe {1}"
 
 #: libreplan-webapp/src/main/webapp/orders/_listOrderElementHours.zul:62
 msgid "Sum of imputed hours in children tasks"
@@ -1804,7 +1804,7 @@ msgstr "Categories dels materials"
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/ConfigurationController.java:588
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/ConfigurationController.java:686
 msgid "number of digits must be between {0} and {1}"
-msgstr "El número ha d'estar entre  {0} i {1}"
+msgstr "El número ha d''estar entre  {0} i {1}"
 
 #: libreplan-business/src/main/java/org/libreplan/business/materials/entities/UnitType.java:85
 msgid "the measure has to be unique"
@@ -1937,7 +1937,7 @@ msgid "Yes"
 msgstr "Sí"
 
 #: libreplan-webapp/src/main/webapp/resources/worker/_edition.zul:127
-msgid "Go to user edition window"
+msgid "Go to edit user window"
 msgstr "Anar a la finestra d'edició d'usuari"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/CustomMenuController.java:392
@@ -2364,7 +2364,7 @@ msgstr "Formulari de qualitat"
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/order/SaveCommandBuilder.java:552
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/order/SaveCommandBuilder.java:562
 msgid "Repeated Hours Group code {0} in Project {1}"
-msgstr "Codi d'hores de grup repetit {0} al projecte {1}"
+msgstr "Codi d''hores de grup repetit {0} al projecte {1}"
 
 #: libreplan-webapp/src/main/webapp/orders/_listOrderElementCriterionRequirements.zul:144
 msgid "Hours group"
@@ -2863,7 +2863,7 @@ msgstr "Manual"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/scenarios/ScenarioModel.java:118
 msgid "You cannot remove the default scenario \"{0}\""
-msgstr "No es pot eliminar l'escenari per defecte \"{0}\""
+msgstr "No es pot eliminar l''escenari per defecte \"{0}\""
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/dashboard/DashboardController.java:179
 #: libreplan-business/src/main/java/org/libreplan/business/planner/entities/TaskDeadlineViolationStatusEnum.java:36
@@ -2956,7 +2956,7 @@ msgstr "Tipus de progrés no especificat"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/users/dashboard/ExpensesAreaController.java:108
 msgid "Expense sheet \"{1}\" could not be deleted, it was already removed"
-msgstr "Full de despeses \"{1}\" no pot ser eliminat perquè ja s'havia esborrat"
+msgstr "Full de despeses \"{1}\" no pot ser eliminat perquè ja s''havia esborrat"
 
 #: libreplan-webapp/src/main/webapp/planner/_legendLoadChartOrder.zul:29
 msgid "External overload"
@@ -3022,7 +3022,7 @@ msgstr "Plantilla no pot ser eliminada perquè té assignacions"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/ConfigurationModel.java:187
 msgid "At least one {0} sequence must be active"
-msgstr "Al menys una {0} seqüència ha d'estar activa"
+msgstr "Al menys una {0} seqüència ha d''estar activa"
 
 #: libreplan-webapp/src/main/webapp/users/_editUser.zul:160
 #: libreplan-webapp/src/main/webapp/profiles/_listProfiles.zul:26
@@ -3950,7 +3950,7 @@ msgid "Edit Worker: {0}"
 msgstr "Editar treballador: {0}"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/resources/worker/WorkerCRUDController.java:1143
-msgid "You do not have permissions to go to user edition window"
+msgid "You do not have permissions to go to edit user window"
 msgstr "No té permís per a editar usuaris"
 
 #: libreplan-webapp/src/main/webapp/common/layout/login.zul:21
@@ -4660,7 +4660,7 @@ msgstr "Llist de tipus de criteri"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/materials/AssignedMaterialsController.java:459
 msgid "Do you want to split the material assignment {0}?"
-msgstr "Voleu dividir l'assignació de material {0}?"
+msgstr "Voleu dividir l''assignació de material {0}?"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/AssignedTaskQualityFormsToOrderElementController.java:528
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/AssignedTaskQualityFormsToOrderElementModel.java:274
@@ -4692,7 +4692,7 @@ msgid "Value last progress measurement"
 msgstr "Últim valor del mesurament de progrés"
 
 #: libreplan-webapp/src/main/webapp/reports/timeLineMaterialReport.zul:21
-msgid "LibrePlan: Materials Needs At Date"
+msgid "LibrePlan: Materials Needed At Date"
 msgstr "LibrePlan: Materials necessaris a la data"
 
 #: libreplan-webapp/src/main/webapp/resources/machine/_machineConfigurationUnits.zul:44
@@ -4762,12 +4762,12 @@ msgstr "Treball"
 msgid ""
 "Error saving the project\n"
 "{0}"
-msgstr "S'ha produït un error desant el projecte⏎ {0}"
+msgstr "S''ha produït un error desant el projecte⏎ {0}"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/order/SaveCommandBuilder.java:375
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/tabs/MultipleTabsPlannerController.java:220
 msgid ""
-"You are about to leave the planning edition, unsaved changes will be lost."
+"You are about to leave the planning editing. Unsaved changes will be lost!"
 msgstr "Vostè està a punt de sortir de l'edició de planificació, es perdran els canvis que no s'han guardat."
 
 #: libreplan-webapp/src/main/webapp/resources/machine/machines.zul:22
@@ -4954,7 +4954,7 @@ msgstr "Invalidar"
 msgid ""
 "User is bound to resource \"{0}\" and it will be unbound. Do you want to "
 "continue with user removal?"
-msgstr "L'usuari està limitat al recurs \"{0}\" i quedarà sense limitació. Voleu continuar?"
+msgstr "L''usuari està limitat al recurs \"{0}\" i quedarà sense limitació. Voleu continuar?"
 
 #: libreplan-webapp/src/main/webapp/orders/_listOrderElementHours.zul:163
 msgid "Budget hours"
@@ -5428,7 +5428,7 @@ msgstr "codi de tasca repetit en el projecte"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/montecarlo/MonteCarloController.java:163
 msgid "Number of iterations should be between 1 and {0}"
-msgstr "El nombre d'iteracions ha d'estar entre 1 i {0}"
+msgstr "El nombre d''iteracions ha d''estar entre 1 i {0}"
 
 #: libreplan-webapp/src/main/webapp/orders/_listOrderElementAdvances.zul:44
 msgid "Current value"
@@ -5826,7 +5826,7 @@ msgstr "Si us plau, seleccioneu un data de finalització per l'Excepció"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/exceptionDays/CalendarExceptionTypeModel.java:102
 msgid "Cannot remove {0}, since it is being used by some exception day"
-msgstr "No es pot eliminar {0}, perquè s'està utilitzant per alguan excepció de dia"
+msgstr "No es pot eliminar {0}, perquè s''està utilitzant per alguan excepció de dia"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/components/NewAllocationSelector.java:94
 msgid "specific allocation"
@@ -5935,7 +5935,7 @@ msgid "Any"
 msgstr "Qualsevol"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/resources/worker/WorkerCRUDController.java:1129
-msgid "Confirm user edition"
+msgid "Confirm editing user"
 msgstr "Confirmar edició d'usuari"
 
 #: libreplan-webapp/src/main/webapp/planner/_legendLoadChartOrder.zul:47
@@ -6241,7 +6241,7 @@ msgstr "Hores humanes per hora laborable de màquina dins la unitat de configura
 msgid ""
 "Could not add those authorizations to user {0} because they were already "
 "present."
-msgstr "No s'ha pogut afegir aquesta autorització a l'usuari {0} perquè ja la té assignada."
+msgstr "No s''ha pogut afegir aquesta autorització a l''usuari {0} perquè ja la té assignada."
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/calendars/BaseCalendarEditionController.java:306
 msgid "Root calendar"
@@ -6748,7 +6748,7 @@ msgid "The end date cannot be before the start date"
 msgstr "La data de finalització no pot ser abans de la data d'inici"
 
 #: libreplan-webapp/src/main/webapp/users/_editUser.zul:115
-msgid "Go to worker edition window"
+msgid "Go to edit worker window"
 msgstr "Anar a la finestra d'edició de treballadors"
 
 #: libreplan-webapp/src/main/webapp/templates/_historicalAssignment.zul:40
@@ -6827,7 +6827,7 @@ msgstr "Editar projecte"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/TaskElementAdapter.java:909
 msgid "Hours cost: {0}, Expenses cost: {1}"
-msgstr "Cost d'hores: {0}, Cost de despesa: {1}"
+msgstr "Cost d''hores: {0}, Cost de despesa: {1}"
 
 #: libreplan-webapp/src/main/webapp/templates/_advances.zul:27
 #: libreplan-webapp/src/main/webapp/orders/_listOrderElementAdvances.zul:25
@@ -6845,7 +6845,7 @@ msgstr "Mes"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/FormBinder.java:919
 msgid "{0} could not be allocated. Cannot allocate more than one resource"
-msgstr "{0} no es pot assignar. No es pot assignar més d'un recurs"
+msgstr "{0} no es pot assignar. No es pot assignar més d''un recurs"
 
 #: libreplan-webapp/src/main/webapp/excetiondays/_listExceptionDayTypes.zul:32
 #: libreplan-webapp/src/main/webapp/excetiondays/_editExceptionDayType.zul:58
@@ -6870,7 +6870,7 @@ msgstr "Eliminar {0} \"{1}\". Estàs segur?"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/AllocationRow.java:441
 msgid "Only {0} resources per day were achieved for current allocation"
-msgstr "Només {0} recursos per dia es van aconseguir per a l'assignació actual"
+msgstr "Només {0} recursos per dia es van aconseguir per a l''assignació actual"
 
 #: libreplan-webapp/src/main/webapp/planner/editTask.zul:81
 #: libreplan-webapp/src/main/webapp/planner/reassign.zul:48
@@ -6951,7 +6951,7 @@ msgid "Priority"
 msgstr "Prioritat"
 
 #: libreplan-webapp/src/main/webapp/planner/advance_allocation.zul:47
-msgid "Apply changes and continue edition"
+msgid "Apply changes and continue editing"
 msgstr "Aplicar modificacions i continuar editant"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/calendars/BaseCalendarEditionController.java:221
@@ -7108,7 +7108,7 @@ msgid "Assign element to queue automatically"
 msgstr "Assignar elements a les cues automàticament"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/users/UserCRUDController.java:427
-msgid "Confirm worker edition"
+msgid "Confirm edit worker"
 msgstr "Confirmar l'edició de treballadors"
 
 #: libreplan-webapp/src/main/webapp/workreports/workReportQuery.zul:74
@@ -7182,7 +7182,7 @@ msgstr "Aplicar"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/resources/worker/WorkerCRUDController.java:969
 msgid "Do you want to remove bound user \"{0}\" too?"
-msgstr "Vols eliminar l'usuari limitat  \"{0}\"?"
+msgstr "Vols eliminar l''usuari limitat  \"{0}\"?"
 
 #: libreplan-webapp/src/main/webapp/subcontract/customerCommunications.zul:52
 #: libreplan-webapp/src/main/webapp/subcontract/subcontractorCommunications.zul:52
@@ -7282,7 +7282,7 @@ msgstr "si us plau, seleccioneu un projecte"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/exceptionDays/CalendarExceptionTypeCRUDController.java:200
 msgid "Cannot remove the predefined calendar exception day \"{0}\""
-msgstr "No es pot eliminar l'excepció de dia del calendari predefinit \"{0}\""
+msgstr "No es pot eliminar l''excepció de dia del calendari predefinit \"{0}\""
 
 #: libreplan-webapp/src/main/webapp/common/layout/login.zul:123
 msgid "Supported Chrome, Firefox, Safari and Epiphany browsers"
@@ -7393,7 +7393,7 @@ msgstr "Nova paraula de pas"
 msgid ""
 "The planning of this task is not in the current scenenario.\n"
 "You should change to any of the following scenarios: {0}"
-msgstr "La planificació d'aquesta tasca no existeix a l'escenari actual.⏎ S'ha de canviar a un dels següents escenaris: {0}"
+msgstr "La planificació d''aquesta tasca no existeix a l''escenari actual.⏎ S''ha de canviar a un dels següents escenaris: {0}"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/users/dashboard/PersonalTimesheetDTO.java:124
 msgid "{0} 2nd fortnight"
@@ -7459,7 +7459,7 @@ msgstr "Reassignant"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/FormBinder.java:651
 msgid "{0} already assigned to resource allocation list"
-msgstr "{0} ja està assignat a la llista d'assignació de recursos"
+msgstr "{0} ja està assignat a la llista d''assignació de recursos"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/subcontract/FilterCommunicationEnum.java:28
 msgid "Not Reviewed"
@@ -7731,7 +7731,7 @@ msgstr "Recursos basats en cues"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/order/SaveCommandBuilder.java:1084
 msgid "Hours Group at {0}"
-msgstr "Grups d'hores a {0}"
+msgstr "Grups d''hores a {0}"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/OrdersTreeComponent.java:103
 #: libreplan-webapp/src/main/webapp/planner/taskpanels/_tabPanelTaskProperties.zul:46
@@ -8019,7 +8019,7 @@ msgid "Adapt planning according to timesheets"
 msgstr "Adaptar planificació segons fulls de treballs"
 
 #: libreplan-webapp/src/main/webapp/orders/_ordersTab.zul:36
-msgid "Cancel edition"
+msgid "Cancel editing"
 msgstr "Cancel·lar edició"
 
 #: libreplan-webapp/src/main/webapp/templates/_materialAssignmentsBox.zul:32
@@ -8374,7 +8374,7 @@ msgid "Task Scheduling Status In Project Report"
 msgstr "Informe de projecte de l'estat de tasques planificades"
 
 #: libreplan-business/src/main/java/org/libreplan/business/users/entities/UserRole.java:81
-msgid "Materials Needs At Date Report"
+msgid "Materials Needed At Date Report"
 msgstr "Materials necessaris a la data de l'informe"
 
 #: libreplan-business/src/main/java/org/libreplan/business/users/entities/User.java:345

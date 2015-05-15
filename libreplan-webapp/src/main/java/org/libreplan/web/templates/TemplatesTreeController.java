@@ -190,7 +190,7 @@ public class TemplatesTreeController extends
     }
 
     @Override
-    protected void filterByPredicateIfAny() {
+    protected void reloadTreeUIAfterChanges() {
     }
 
     @Override

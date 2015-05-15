@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.libreplan</groupId>
         <artifactId>libreplan</artifactId>
-        <version>1.4.0</version>
+        <version>1.4.1</version>
     </parent>
     <artifactId>libreplan-webapp</artifactId>
     <packaging>war</packaging>
@@ -125,8 +125,13 @@
                             <copy todir="src/main/webapp/help/it" failonerror="false">
                                 <fileset dir="../doc/src/user/en/html"/>
                             </copy>
+                             <exec executable="make" failifexecutionfails="false">
+                                <arg value="-C"/>
+                                <arg value="../doc/src/user/fr/"/>
+                                <arg value="html"/>
+                            </exec>
                             <copy todir="src/main/webapp/help/fr" failonerror="false">
-                                <fileset dir="../doc/src/user/en/html"/>
+                                <fileset dir="../doc/src/user/fr/html"/>
                             </copy>
                             <copy todir="src/main/webapp/help/nl" failonerror="false">
                                 <fileset dir="../doc/src/user/en/html"/>
@@ -144,6 +149,9 @@
                                 <fileset dir="../doc/src/user/es/html"/>
                             </copy>
                             <copy todir="src/main/webapp/help/zh" failonerror="false">
+                                <fileset dir="../doc/src/user/en/html"/>
+                            </copy>
+                            <copy todir="src/main/webapp/help/nb" failonerror="false">
                                 <fileset dir="../doc/src/user/en/html"/>
                             </copy>
                           </tasks>
@@ -171,6 +179,11 @@
                             <exec executable="make" failifexecutionfails="false">
                                 <arg value="-C"/>
                                 <arg value="../doc/src/user/en/"/>
+                                <arg value="clean"/>
+                            </exec>
+                             <exec executable="make" failifexecutionfails="false">
+                                <arg value="-C"/>
+                                <arg value="../doc/src/user/fr/"/>
                                 <arg value="clean"/>
                             </exec>
                             <delete dir="src/main/webapp/help" failonerror="false" />
@@ -426,6 +439,11 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
+        </dependency>
+        <!-- datasource for testing -->
+        <dependency>
+           <groupId>com.jolbox</groupId>
+           <artifactId>bonecp</artifactId>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>

@@ -362,7 +362,7 @@ msgid "entity name not specified"
 msgstr "naam van entiteit niet gespecificeerd"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/users/UserCRUDController.java:445
-msgid "You do not have permissions to go to worker edition window"
+msgid "You do not have permissions to go to edit worker window"
 msgstr "U heeft geen rechten om naar het werker wijzigingsscherm te gaan"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/components/NewAllocationSelector.java:55
@@ -492,7 +492,7 @@ msgstr "Kan niet later zijn dan einddatum"
 msgid ""
 "Roles of LDAP users cannot be managed because LDAP is enabled and LDAP roles"
 " are being used."
-msgstr "Rollen van LDAP gebruikers kunnen niet beheert worden omdat LDAP aan staat en LDAP rollen worden gebruikt."
+msgstr "Rollen van LDAP gebruikers kunnen niet beheerd worden omdat LDAP aan staat en LDAP rollen worden gebruikt."
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/resources/criterion/CriterionTreeController.java:306
 msgid "Indent"
@@ -1117,7 +1117,7 @@ msgstr "of namen"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/CustomMenuController.java:505
 #: libreplan-webapp/src/main/webapp/reports/timeLineMaterialReport.zul:39
-msgid "Materials Needs At Date"
+msgid "Materials Needed At Date"
 msgstr "Benodigde materialen op datum"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/users/dashboard/PersonalTimesheetController.java:615
@@ -1628,7 +1628,7 @@ msgstr "Bedrijfscode"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/components/TwoWaySelector.java:110
 msgid "Unknown attribute '{0}' in class {1}"
-msgstr "Onbekende attribuut '{0}' in classe {1}"
+msgstr "Onbekende attribuut ''{0}'' in classe {1}"
 
 #: libreplan-webapp/src/main/webapp/orders/_listOrderElementHours.zul:62
 msgid "Sum of imputed hours in children tasks"
@@ -2062,7 +2062,7 @@ msgid "Yes"
 msgstr "Ja"
 
 #: libreplan-webapp/src/main/webapp/resources/worker/_edition.zul:127
-msgid "Go to user edition window"
+msgid "Go to edit user window"
 msgstr "Ga naar gebruiker wijzigingsvenster"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/CustomMenuController.java:397
@@ -4287,7 +4287,7 @@ msgid "Edit Worker: {0}"
 msgstr "Wijzig werker: {0}"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/resources/worker/WorkerCRUDController.java:1157
-msgid "You do not have permissions to go to user edition window"
+msgid "You do not have permissions to go to edit user window"
 msgstr "U heeft geen rechten om naar het gebruikerswijzigenscherm te gaan"
 
 #: libreplan-webapp/src/main/webapp/common/layout/login.zul:21
@@ -5097,7 +5097,7 @@ msgid "Value last progress measurement"
 msgstr "Waarde laatste voortgangsmeting"
 
 #: libreplan-webapp/src/main/webapp/reports/timeLineMaterialReport.zul:21
-msgid "LibrePlan: Materials Needs At Date"
+msgid "LibrePlan: Materials Needed At Date"
 msgstr "LibrePlan: Materiaal nodig op datum"
 
 #: libreplan-webapp/src/main/webapp/resources/machine/_machineConfigurationUnits.zul:44
@@ -5172,7 +5172,7 @@ msgstr "Fout bij opslaan van het project⏎\n{0}"
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/tabs/MultipleTabsPlannerController.java:220
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/order/SaveCommandBuilder.java:375
 msgid ""
-"You are about to leave the planning edition, unsaved changes will be lost."
+"You are about to leave the planning editing. Unsaved changes will be lost!"
 msgstr "U gaat het planningsscherm verlaten, niet-opgeslagen wijzigingen zullen verloren gaan."
 
 #: libreplan-webapp/src/main/webapp/resources/machine/machines.zul:22
@@ -6411,7 +6411,7 @@ msgid "Timesheets Templates"
 msgstr "Urenstaat sjablonen"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/resources/worker/WorkerCRUDController.java:1143
-msgid "Confirm user edition"
+msgid "Confirm editing user"
 msgstr "Bevestig wijzigen gebruiker"
 
 #: libreplan-webapp/src/main/webapp/reports/hoursWorkedPerWorkerReport.zul:117
@@ -7305,7 +7305,7 @@ msgid "The end date cannot be before the start date"
 msgstr "De einddatum kan niet voor de startdatum liggen"
 
 #: libreplan-webapp/src/main/webapp/users/_editUser.zul:115
-msgid "Go to worker edition window"
+msgid "Go to edit worker window"
 msgstr "Ga naar werker wijzigen scherm"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/advance/AdvanceTypeCRUDController.java:95
@@ -7531,7 +7531,7 @@ msgid "Priority"
 msgstr "Prioriteit"
 
 #: libreplan-webapp/src/main/webapp/planner/advance_allocation.zul:47
-msgid "Apply changes and continue edition"
+msgid "Apply changes and continue editing"
 msgstr "Voer wijzigingen door en ga verder met wijzigen"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/calendars/BaseCalendarEditionController.java:221
@@ -7700,7 +7700,7 @@ msgid "Tim product code"
 msgstr "Tim productcode"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/users/UserCRUDController.java:427
-msgid "Confirm worker edition"
+msgid "Confirm edit worker"
 msgstr "Bevestig wijzigen werker"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/JiraSynchronizationController.java:302
@@ -7996,7 +7996,7 @@ msgstr "LibrePlan: Project statusrapport"
 msgid ""
 "The planning of this task is not in the current scenenario.\n"
 "You should change to any of the following scenarios: {0}"
-msgstr "De planning van deze taak is niet in het actuele scenario. U moet overschakelen naar een van de volgende scenario's: {0}"
+msgstr "De planning van deze taak is niet in het actuele scenario. U moet overschakelen naar een van de volgende scenario''s: {0}"
 
 #: libreplan-webapp/src/main/webapp/orders/imports/projectImport.zul:47
 msgid "Gantt charts"
@@ -8652,7 +8652,7 @@ msgid "Adapt planning according to timesheets"
 msgstr "Pas planning aan op basis van urenstaten"
 
 #: libreplan-webapp/src/main/webapp/orders/_ordersTab.zul:36
-msgid "Cancel edition"
+msgid "Cancel editing"
 msgstr "Afbreken editie"
 
 #: libreplan-webapp/src/main/webapp/templates/_materialAssignmentsBox.zul:32
@@ -9119,7 +9119,7 @@ msgid "Task Scheduling Status In Project Report"
 msgstr "Taakplanningsstatus in Project Rapport"
 
 #: libreplan-business/src/main/java/org/libreplan/business/users/entities/UserRole.java:83
-msgid "Materials Needs At Date Report"
+msgid "Materials Needed At Date Report"
 msgstr "Benodigde materialen op rapportdatum"
 
 #: libreplan-business/src/main/java/org/libreplan/business/orders/entities/SchedulingState.java:366

@@ -362,7 +362,7 @@ msgid "entity name not specified"
 msgstr "nome entità non specificato"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/users/UserCRUDController.java:445
-msgid "You do not have permissions to go to worker edition window"
+msgid "You do not have permissions to go to edit worker window"
 msgstr "Non hai i permessi per entrare nella finestra per modificare il lavoratore"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/components/NewAllocationSelector.java:55
@@ -664,7 +664,7 @@ msgstr "Cliente"
 msgid ""
 "there are no resources for required criteria: {0}. So the generic allocation"
 " can't be added"
-msgstr "non ci sono risorse per il criterio richiesto: {0}. quindi l'allocazione generica non può essere aggiunta"
+msgstr "non ci sono risorse per il criterio richiesto: {0}. quindi l''allocazione generica non può essere aggiunta"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/workreports/WorkReportCRUDController.java:1565
 msgid "must be later than start date"
@@ -940,7 +940,7 @@ msgstr "Aggiungi un nuovo assegnamento di progresso"
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/ManageOrderElementAdvancesController.java:1342
 msgid ""
 "Value must be a multiple of the precision value of the progress type: {0}"
-msgstr "Il valore dev'essere un multiplo del valore di precisione del tipo di progresso: {0}"
+msgstr "Il valore dev''essere un multiplo del valore di precisione del tipo di progresso: {0}"
 
 #: libreplan-webapp/src/main/webapp/orders/_orderElementTreeFilter.zul:32
 msgid "Set Filter Options"
@@ -1117,7 +1117,7 @@ msgstr "o nomi"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/CustomMenuController.java:505
 #: libreplan-webapp/src/main/webapp/reports/timeLineMaterialReport.zul:39
-msgid "Materials Needs At Date"
+msgid "Materials Needed At Date"
 msgstr "Materiali necessari alla data"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/users/dashboard/PersonalTimesheetController.java:615
@@ -1221,7 +1221,7 @@ msgstr "Si prega di selezionare un utente da collegare"
 msgid ""
 "You can not remove the project \"{0}\" because it has time tracked at some "
 "of its tasks"
-msgstr "Non puoi rimuovere il progetto \"{0}\" perché c'è del tempo tracciato in acluni dei suoi compiti"
+msgstr "Non puoi rimuovere il progetto \"{0}\" perché c''è del tempo tracciato in acluni dei suoi compiti"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/CustomMenuController.java:306
 #: libreplan-business/src/main/java/org/libreplan/business/users/entities/UserRole.java:50
@@ -1525,7 +1525,7 @@ msgstr "Progetti dal"
 msgid ""
 "You cannot remove the task \"{0}\" because it has work reported on it or any"
 " of its children"
-msgstr "Non puoi eliminare il compito \"{0}\" perché c'è del lavoro riportato in esso o in qualcuno dei suoi derivati"
+msgstr "Non puoi eliminare il compito \"{0}\" perché c''è del lavoro riportato in esso o in qualcuno dei suoi derivati"
 
 #: libreplan-webapp/src/main/webapp/calendars/_edition.zul:169
 #: libreplan-webapp/src/main/webapp/calendars/_edition.zul:198
@@ -1628,7 +1628,7 @@ msgstr "Codice azienda"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/components/TwoWaySelector.java:110
 msgid "Unknown attribute '{0}' in class {1}"
-msgstr "Attributo '{0}' sconosciuto nella classe {1}"
+msgstr "Attributo ''{0}'' sconosciuto nella classe {1}"
 
 #: libreplan-webapp/src/main/webapp/orders/_listOrderElementHours.zul:62
 msgid "Sum of imputed hours in children tasks"
@@ -1933,7 +1933,7 @@ msgstr "Categorie dei materiali"
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/ConfigurationController.java:711
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/ConfigurationController.java:809
 msgid "number of digits must be between {0} and {1}"
-msgstr "il numero di cifre dev'essere compreso tra {0} e {1}"
+msgstr "il numero di cifre dev''essere compreso tra {0} e {1}"
 
 #: libreplan-business/src/main/java/org/libreplan/business/materials/entities/UnitType.java:85
 msgid "the measure has to be unique"
@@ -2062,7 +2062,7 @@ msgid "Yes"
 msgstr "Si"
 
 #: libreplan-webapp/src/main/webapp/resources/worker/_edition.zul:127
-msgid "Go to user edition window"
+msgid "Go to edit user window"
 msgstr "Vai alla finestra di modifica utente"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/CustomMenuController.java:397
@@ -3104,7 +3104,7 @@ msgstr "Manuale"
 
 #: libreplan-webapp/src/main/java/org/libreplan/importers/JiraOrderElementSynchronizer.java:402
 msgid "Duplicate value AdvanceAssignment for order element of \"{0}\""
-msgstr "Valore duplicato di AdvanceAssignment per l'elemento di ordine di \"{0}\""
+msgstr "Valore duplicato di AdvanceAssignment per l''elemento di ordine di \"{0}\""
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/scenarios/ScenarioModel.java:118
 msgid "You cannot remove the default scenario \"{0}\""
@@ -3284,7 +3284,7 @@ msgstr "Ordine di sincronizzazione {0}"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/ConfigurationModel.java:211
 msgid "At least one {0} sequence must be active"
-msgstr "Almeno una sequenza {0} dev'essere attiva"
+msgstr "Almeno una sequenza {0} dev''essere attiva"
 
 #: libreplan-webapp/src/main/webapp/common/_editJobScheduling.zul:35
 #: libreplan-webapp/src/main/webapp/common/_listJobScheduling.zul:28
@@ -3915,7 +3915,7 @@ msgstr "Disabilitato"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/dashboard/DashboardController.java:166
 msgid "There is a margin of {0} days with the project global deadline ({1}%)."
-msgstr "C'è un margine di {0} giorni con la scadenza globale del progetto ({1}%)"
+msgstr "C''è un margine di {0} giorni con la scadenza globale del progetto ({1}%)"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/company/CompanyPlanningModel.java:353
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/order/OrderPlanningModel.java:737
@@ -4269,7 +4269,7 @@ msgstr "Deviazione stimata sui compiti completati"
 
 #: libreplan-webapp/src/main/java/org/libreplan/importers/JiraTimesheetSynchronizer.java:130
 msgid "Key for Order \"{0}\" is empty"
-msgstr "La chiave per l'ordine \"{0}\" è vuota"
+msgstr "La chiave per l''ordine \"{0}\" è vuota"
 
 #: libreplan-webapp/src/main/webapp/planner/taskpanels/_tabPanelNonLimitingResourceAllocation.zul:93
 #: libreplan-webapp/src/main/webapp/planner/taskpanels/_tabPanelNonLimitingResourceAllocation.zul:96
@@ -4287,7 +4287,7 @@ msgid "Edit Worker: {0}"
 msgstr "Modifica Lavoratore: {0}"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/resources/worker/WorkerCRUDController.java:1157
-msgid "You do not have permissions to go to user edition window"
+msgid "You do not have permissions to go to edit user window"
 msgstr "Non hai i permessi per accedere alla finestra di modifica degli utenti"
 
 #: libreplan-webapp/src/main/webapp/common/layout/login.zul:21
@@ -5066,7 +5066,7 @@ msgstr "dev'essere successivo alla data precedente"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/materials/AssignedMaterialsController.java:459
 msgid "Do you want to split the material assignment {0}?"
-msgstr "Vuoi dividere l'assegnamento di materiale {0}?"
+msgstr "Vuoi dividere l''assegnamento di materiale {0}?"
 
 #: libreplan-webapp/src/main/webapp/resources/criterions/_list.zul:22
 msgid "Criterion Types List"
@@ -5097,7 +5097,7 @@ msgid "Value last progress measurement"
 msgstr "Valore dell'ultimo progresso misurato"
 
 #: libreplan-webapp/src/main/webapp/reports/timeLineMaterialReport.zul:21
-msgid "LibrePlan: Materials Needs At Date"
+msgid "LibrePlan: Materials Needed At Date"
 msgstr "LibrePlan: Materiali necessari alla data"
 
 #: libreplan-webapp/src/main/webapp/resources/machine/_machineConfigurationUnits.zul:44
@@ -5172,7 +5172,7 @@ msgstr "Errore durante il salvataggio del progetto\n{0}"
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/tabs/MultipleTabsPlannerController.java:220
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/order/SaveCommandBuilder.java:375
 msgid ""
-"You are about to leave the planning edition, unsaved changes will be lost."
+"You are about to leave the planning editing. Unsaved changes will be lost!"
 msgstr "Stai per uscire dalla modalità di modifica della pianificazione, i cambiamenti non salvati saranno persi."
 
 #: libreplan-webapp/src/main/webapp/resources/machine/machines.zul:22
@@ -5379,7 +5379,7 @@ msgstr "Invalida"
 msgid ""
 "User is bound to resource \"{0}\" and it will be unbound. Do you want to "
 "continue with user removal?"
-msgstr "L'utente è collegato alla risorsa \"{0}\" e non sarà scollegato. Vuoi continuare con la rimozione?"
+msgstr "L''utente è collegato alla risorsa \"{0}\" e non sarà scollegato. Vuoi continuare con la rimozione?"
 
 #: libreplan-webapp/src/main/webapp/orders/_listOrderElementHours.zul:163
 msgid "Budget hours"
@@ -5864,7 +5864,7 @@ msgstr "il codice del compito è ripetuto all'interno del progetto"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/montecarlo/MonteCarloController.java:163
 msgid "Number of iterations should be between 1 and {0}"
-msgstr "Il numero d'iterazioni dev'essere compreso tra 1 e {0}"
+msgstr "Il numero d''iterazioni dev''essere compreso tra 1 e {0}"
 
 #: libreplan-webapp/src/main/webapp/orders/_listOrderElementAdvances.zul:44
 msgid "Current value"
@@ -6293,7 +6293,7 @@ msgstr "nome del tipo d'etichetta già in uso"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/exceptionDays/CalendarExceptionTypeModel.java:102
 msgid "Cannot remove {0}, since it is being used by some exception day"
-msgstr "Impossibile rimuovere {0}, poiché è utilizzato da qualche giorno d'eccezione"
+msgstr "Impossibile rimuovere {0}, poiché è utilizzato da qualche giorno d''eccezione"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/calendars/BaseCalendarEditionController.java:635
 #: libreplan-webapp/src/main/java/org/libreplan/web/calendars/BaseCalendarEditionController.java:1271
@@ -6327,7 +6327,7 @@ msgstr "Modello salvato"
 
 #: libreplan-webapp/src/main/java/org/libreplan/importers/ExportTimesheetsToTim.java:185
 msgid "No work reportlines are found for order: \"{0}\""
-msgstr "Non è stata trovata nessuna linea nel report di lavoro per l'ordine: \"{0}\""
+msgstr "Non è stata trovata nessuna linea nel report di lavoro per l''ordine: \"{0}\""
 
 #: libreplan-business/src/main/java/org/libreplan/business/common/entities/EntitySequence.java:93
 msgid "prefix not specified"
@@ -6411,7 +6411,7 @@ msgid "Timesheets Templates"
 msgstr "Modelli dei fogli d'ore"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/resources/worker/WorkerCRUDController.java:1143
-msgid "Confirm user edition"
+msgid "Confirm editing user"
 msgstr "Conferma modifica utente"
 
 #: libreplan-webapp/src/main/webapp/reports/hoursWorkedPerWorkerReport.zul:117
@@ -6604,7 +6604,7 @@ msgstr "Configurazione Pianificazione"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/materials/AssignedMaterialsController.java:388
 msgid "Delete item {0}. Are you sure?"
-msgstr "Eliminare l'oggetto {0}. Sei sicuro?"
+msgstr "Eliminare l''oggetto {0}. Sei sicuro?"
 
 #: libreplan-webapp/src/main/webapp/orders/_edition.zul:190
 msgid "Calculated budget"
@@ -6733,7 +6733,7 @@ msgstr "Ore umane per ore lavorative della macchina nella unità di configurazio
 msgid ""
 "Could not add those authorizations to user {0} because they were already "
 "present."
-msgstr "Impossibile aggiungere queste autorizzazioni all'utente {0} perchè sono già presenti."
+msgstr "Impossibile aggiungere queste autorizzazioni all''utente {0} perchè sono già presenti."
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/resources/machine/MachineCRUDController.java:578
 #: libreplan-webapp/src/main/java/org/libreplan/web/resources/worker/WorkerCRUDController.java:1023
@@ -7305,7 +7305,7 @@ msgid "The end date cannot be before the start date"
 msgstr "La data di fine non può essere precedente a quella d'inizio"
 
 #: libreplan-webapp/src/main/webapp/users/_editUser.zul:115
-msgid "Go to worker edition window"
+msgid "Go to edit worker window"
 msgstr "Vai alla finestra di modifica lavoratore"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/advance/AdvanceTypeCRUDController.java:95
@@ -7438,7 +7438,7 @@ msgstr "Cancellare {0} \"{1}\". Sei sicuro?"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/AllocationRow.java:441
 msgid "Only {0} resources per day were achieved for current allocation"
-msgstr "Solo {0} risorse per giorno sono state utilizzate con l'allocazione corrente"
+msgstr "Solo {0} risorse per giorno sono state utilizzate con l''allocazione corrente"
 
 #: libreplan-webapp/src/main/webapp/planner/stretches_function.zul:89
 #: libreplan-webapp/src/main/webapp/planner/main.zul:66
@@ -7531,7 +7531,7 @@ msgid "Priority"
 msgstr "Priorità"
 
 #: libreplan-webapp/src/main/webapp/planner/advance_allocation.zul:47
-msgid "Apply changes and continue edition"
+msgid "Apply changes and continue editing"
 msgstr "Applica le modifiche e continua a modificare"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/calendars/BaseCalendarEditionController.java:221
@@ -7700,7 +7700,7 @@ msgid "Tim product code"
 msgstr "Codice prodotto di Tim"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/users/UserCRUDController.java:427
-msgid "Confirm worker edition"
+msgid "Confirm edit worker"
 msgstr "Conferma modifica lavoratore"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/JiraSynchronizationController.java:302
@@ -7778,7 +7778,7 @@ msgstr "Applica"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/resources/worker/WorkerCRUDController.java:983
 msgid "Do you want to remove bound user \"{0}\" too?"
-msgstr "Vuoi eliminare anche l'utente collegato \"{0}\"?"
+msgstr "Vuoi eliminare anche l''utente collegato \"{0}\"?"
 
 #: libreplan-webapp/src/main/webapp/subcontract/subcontractorCommunications.zul:52
 #: libreplan-webapp/src/main/webapp/subcontract/customerCommunications.zul:52
@@ -7791,7 +7791,7 @@ msgstr "Nodo selezionato"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/FormBinder.java:682
 msgid "already exists an allocation for criteria {0}"
-msgstr "esiste già un'allocazione per il criterio {0}"
+msgstr "esiste già un''allocazione per il criterio {0}"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/expensesheet/ExpenseSheetCRUDController.java:514
 msgid "Code cannot be empty."
@@ -7862,7 +7862,7 @@ msgstr "Dividi"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/exceptionDays/CalendarExceptionTypeCRUDController.java:211
 msgid "Cannot remove the predefined calendar exception day \"{0}\""
-msgstr "Non posso eliminare il giorno d'eccezione \"{0}\" del calendario predefinito"
+msgstr "Non posso eliminare il giorno d''eccezione \"{0}\" del calendario predefinito"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/CustomMenuController.java:455
 msgid "Communications"
@@ -7924,7 +7924,7 @@ msgstr "Funzione"
 
 #: libreplan-webapp/src/main/java/org/libreplan/importers/JiraTimesheetSynchronizer.java:159
 msgid "Order element \"{0}\" not found"
-msgstr "Elemento d'Ordine \"{0}\" not found"
+msgstr "Elemento d''Ordine \"{0}\" not found"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/order/SaveCommandBuilder.java:900
 msgid "New project version"
@@ -7996,7 +7996,7 @@ msgstr "LibrePlan: Rapporto Stato Progetto"
 msgid ""
 "The planning of this task is not in the current scenenario.\n"
 "You should change to any of the following scenarios: {0}"
-msgstr "la pianificazione di questo compito non fa parte dello scenario corrente.\nDevi spostarti s'uno dei seguenti scenari: {0}"
+msgstr "la pianificazione di questo compito non fa parte dello scenario corrente.\nDevi spostarti s''uno dei seguenti scenari: {0}"
 
 #: libreplan-webapp/src/main/webapp/orders/imports/projectImport.zul:47
 msgid "Gantt charts"
@@ -8073,7 +8073,7 @@ msgstr "I dati importati sono progetti di Gantt con i loro compiti, limiti e dip
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/FormBinder.java:655
 msgid "{0} already assigned to resource allocation list"
-msgstr "{0} già assegnati alla lista d'allocazione risorse"
+msgstr "{0} già assegnati alla lista d''allocazione risorse"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/subcontract/FilterCommunicationEnum.java:28
 msgid "Not Reviewed"
@@ -8520,7 +8520,7 @@ msgstr "Configurazione d'allocazione"
 msgid ""
 "You cannot remove the task \"{0}\" because it is the only child of its "
 "parent and its parent has tracked time or imputed expenses"
-msgstr "Non puoi rimuovere il compito \"{0}\" perché è l'unico derivato di questa origine e l'origine contiene del tempo tracciato o delle spese imputate"
+msgstr "Non puoi rimuovere il compito \"{0}\" perché è l''unico derivato di questa origine e l''origine contiene del tempo tracciato o delle spese imputate"
 
 #: libreplan-webapp/src/main/webapp/planner/taskpanels/_tabPanelSubcontract.zul:61
 msgid "Subcontract price"
@@ -8652,7 +8652,7 @@ msgid "Adapt planning according to timesheets"
 msgstr "Adatto la pianificazione in accordo col foglio ore"
 
 #: libreplan-webapp/src/main/webapp/orders/_ordersTab.zul:36
-msgid "Cancel edition"
+msgid "Cancel editing"
 msgstr "Annulla le modifiche"
 
 #: libreplan-webapp/src/main/webapp/templates/_materialAssignmentsBox.zul:32
@@ -9119,7 +9119,7 @@ msgid "Task Scheduling Status In Project Report"
 msgstr "Rapporto Stato della Pianificazione dei Compiti nel Progetto"
 
 #: libreplan-business/src/main/java/org/libreplan/business/users/entities/UserRole.java:83
-msgid "Materials Needs At Date Report"
+msgid "Materials Needed At Date Report"
 msgstr "Rapporto Materiali Necessari Alla Data"
 
 #: libreplan-business/src/main/java/org/libreplan/business/orders/entities/SchedulingState.java:366

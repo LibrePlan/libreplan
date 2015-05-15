@@ -77,7 +77,7 @@
         <n:tr>
           <n:td><label> </label>
               <div align="center">
-                <n:input name="j_username" type="text" class="campotexto" id="textfield" size="30" value="${controller.loginValue}" />
+                <n:input name="j_username" type="text" class="campotexto" id="textfield" size="30" value="${controller.loginValue}" autofocus="autofocus"/>
             </div></n:td>
         </n:tr>
         <n:tr>

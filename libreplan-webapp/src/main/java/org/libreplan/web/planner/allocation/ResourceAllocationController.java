@@ -323,23 +323,14 @@ public class ResourceAllocationController extends GenericForwardComposer {
     }
 
     public void goToAdvancedSearch() {
-        newAllocationSelector
-                .setStartFilteringDate(LocalDate
-                        .fromDateFields(resourceAllocationModel.getTaskStart())
-                        .minusDays(
-                                NewAllocationSelector.DAYS_LEAD_LAG_TO_TASK_LIMITS_DATES_FILTERING_INITIALIZATION)
-                        .toDateTimeAtStartOfDay().toDate());
-        newAllocationSelector
-                .setEndFilteringDate(LocalDate
-                        .fromDateFields(resourceAllocationModel.getTaskEnd())
-                        .plusDays(
-                                NewAllocationSelector.DAYS_LEAD_LAG_TO_TASK_LIMITS_DATES_FILTERING_INITIALIZATION)
-                        .toDateTimeAtStartOfDay().toDate());
         applyButton.setVisible(false);
         workerSearchTab.setSelected(true);
-        // The initial search and ratio load calculations is raised
-        // on going to advanced search
-        newAllocationSelector.clearAll();
+
+        LocalDate start = LocalDate
+                .fromDateFields(resourceAllocationModel.getTaskStart());
+        LocalDate end = LocalDate
+                .fromDateFields(resourceAllocationModel.getTaskEnd());
+        newAllocationSelector.open(start, end);
     }
 
     /**
@@ -379,7 +370,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
     public void onCloseSelectWorkers() {
         tbResourceAllocation.setSelected(true);
         applyButton.setVisible(true);
-        newAllocationSelector.clearAll();
     }
 
     public enum CalculationTypeRadio {
@@ -560,7 +550,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
     }
 
     public void clear() {
-        newAllocationSelector.clearAll();
         allocationsGrid.setModel(new SimpleListModel(Collections.emptyList()));
     }
 

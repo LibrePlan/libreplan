@@ -351,7 +351,7 @@ msgid "entity name not specified"
 msgstr "不指定实体名称"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/users/UserCRUDController.java:445
-msgid "You do not have permissions to go to worker edition window"
+msgid "You do not have permissions to go to edit worker window"
 msgstr "您没有权限去工人的编辑窗口"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/components/NewAllocationSelector.java:51
@@ -1067,7 +1067,7 @@ msgstr "个人时间表"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/CustomMenuController.java:493
 #: libreplan-webapp/src/main/webapp/reports/timeLineMaterialReport.zul:39
-msgid "Materials Needs At Date"
+msgid "Materials Needed At Date"
 msgstr "物料需求日期"
 
 #: libreplan-webapp/src/main/webapp/common/configuration.zul:316
@@ -1937,7 +1937,7 @@ msgid "Yes"
 msgstr "是"
 
 #: libreplan-webapp/src/main/webapp/resources/worker/_edition.zul:127
-msgid "Go to user edition window"
+msgid "Go to edit user window"
 msgstr "用户编辑窗口"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/CustomMenuController.java:392
@@ -3950,7 +3950,7 @@ msgid "Edit Worker: {0}"
 msgstr "编辑工作者：{0}"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/resources/worker/WorkerCRUDController.java:1143
-msgid "You do not have permissions to go to user edition window"
+msgid "You do not have permissions to go to edit user window"
 msgstr "您没有权限去用户编辑窗口"
 
 #: libreplan-webapp/src/main/webapp/common/layout/login.zul:21
@@ -4692,7 +4692,7 @@ msgid "Value last progress measurement"
 msgstr "值最后的进步测量"
 
 #: libreplan-webapp/src/main/webapp/reports/timeLineMaterialReport.zul:21
-msgid "LibrePlan: Materials Needs At Date"
+msgid "LibrePlan: Materials Needed At Date"
 msgstr "LibrePlan：材料需要在日期"
 
 #: libreplan-webapp/src/main/webapp/resources/machine/_machineConfigurationUnits.zul:44
@@ -4767,7 +4767,7 @@ msgstr "错误保存项目⏎ {0}"
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/order/SaveCommandBuilder.java:375
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/tabs/MultipleTabsPlannerController.java:220
 msgid ""
-"You are about to leave the planning edition, unsaved changes will be lost."
+"You are about to leave the planning editing. Unsaved changes will be lost!"
 msgstr "你即将离开的规划版本，未保存的更改将丢失。"
 
 #: libreplan-webapp/src/main/webapp/resources/machine/machines.zul:22
@@ -5935,7 +5935,7 @@ msgid "Any"
 msgstr "任何"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/resources/worker/WorkerCRUDController.java:1129
-msgid "Confirm user edition"
+msgid "Confirm editing user"
 msgstr "确认用户版"
 
 #: libreplan-webapp/src/main/webapp/planner/_legendLoadChartOrder.zul:47
@@ -6748,7 +6748,7 @@ msgid "The end date cannot be before the start date"
 msgstr "结束日期不得早于开始日期"
 
 #: libreplan-webapp/src/main/webapp/users/_editUser.zul:115
-msgid "Go to worker edition window"
+msgid "Go to edit worker window"
 msgstr "工人的编辑窗口"
 
 #: libreplan-webapp/src/main/webapp/templates/_historicalAssignment.zul:40
@@ -6951,7 +6951,7 @@ msgid "Priority"
 msgstr "优先"
 
 #: libreplan-webapp/src/main/webapp/planner/advance_allocation.zul:47
-msgid "Apply changes and continue edition"
+msgid "Apply changes and continue editing"
 msgstr "应用更改并继续编辑"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/calendars/BaseCalendarEditionController.java:221
@@ -7108,7 +7108,7 @@ msgid "Assign element to queue automatically"
 msgstr "队列自动分配单元"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/users/UserCRUDController.java:427
-msgid "Confirm worker edition"
+msgid "Confirm edit worker"
 msgstr "确认工人版"
 
 #: libreplan-webapp/src/main/webapp/workreports/workReportQuery.zul:74
@@ -8019,7 +8019,7 @@ msgid "Adapt planning according to timesheets"
 msgstr "根据时间表，适应规划"
 
 #: libreplan-webapp/src/main/webapp/orders/_ordersTab.zul:36
-msgid "Cancel edition"
+msgid "Cancel editing"
 msgstr "取消版"
 
 #: libreplan-webapp/src/main/webapp/templates/_materialAssignmentsBox.zul:32
@@ -8374,7 +8374,7 @@ msgid "Task Scheduling Status In Project Report"
 msgstr "在项目报告中的任务调度状态"
 
 #: libreplan-business/src/main/java/org/libreplan/business/users/entities/UserRole.java:81
-msgid "Materials Needs At Date Report"
+msgid "Materials Needed At Date Report"
 msgstr "材料需要的日期报告"
 
 #: libreplan-business/src/main/java/org/libreplan/business/users/entities/User.java:345

@@ -502,7 +502,7 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
         }
         if (SecurityUtils
                 .isSuperuserOrUserInRoles(UserRole.ROLE_MATERIALS_NEED_AT_DATE_REPORT)) {
-            reportsItems.add(subItem(_("Materials Needs At Date"),
+            reportsItems.add(subItem(_("Materials Needed At Date"),
                     "/reports/timeLineMaterialReport.zul", "15-informes.html"));
         }
         if (SecurityUtils
