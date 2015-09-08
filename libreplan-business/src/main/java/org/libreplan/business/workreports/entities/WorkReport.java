@@ -440,19 +440,23 @@ public class WorkReport extends IntegrationEntity implements
 
     public void generateWorkReportLineCodes(int numberOfDigits) {
         for (WorkReportLine line : this.getWorkReportLines()) {
-            if ((line.getCode() == null) || (line.getCode().isEmpty())
-                    || (!line.getCode().startsWith(this.getCode()))) {
+
+            if ((line.getCode() == null) || (line.getCode().isEmpty()) ||
+                    (!line.getCode().startsWith(this.getCode()))) {
+
                 this.incrementLastWorkReportLineSequenceCode();
-                String lineCode = EntitySequence.formatValue(numberOfDigits,
-                        this.getLastWorkReportLineSequenceCode());
-                line.setCode(this.getCode()
-                        + EntitySequence.CODE_SEPARATOR_CHILDREN + lineCode);
+
+                String lineCode = EntitySequence.formatValue(
+                        numberOfDigits, this.getLastWorkReportLineSequenceCode());
+
+                line.setCode(this.getCode() +
+                        EntitySequence.CODE_SEPARATOR_CHILDREN + lineCode);
             }
         }
     }
 
     public void incrementLastWorkReportLineSequenceCode() {
-        if(lastWorkReportLineSequenceCode==null){
+        if(lastWorkReportLineSequenceCode == null){
             lastWorkReportLineSequenceCode = 0;
         }
         lastWorkReportLineSequenceCode++;
