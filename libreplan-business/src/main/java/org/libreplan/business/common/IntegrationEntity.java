@@ -105,6 +105,7 @@ public abstract class IntegrationEntity extends BaseEntity {
      * with the same code. This method is a Template method that calls on
      * the private method <code>findIntegrationEntityDAO</code>, which in turn
      * calls on the abstract method <code>getIntegrationEntityDAO()</code>.
+     * Code of entity looks like: "WORK_REPORT_0001"
      */
     @AssertTrue(message="code is already used")
     public boolean isUniqueCodeConstraint() {
