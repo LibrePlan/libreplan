@@ -23,16 +23,9 @@ package org.libreplan.web.common;
 
 import static org.libreplan.web.I18nHelper._;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.ConcurrentModificationException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
+import javax.mail.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -97,6 +90,7 @@ import org.zkoss.zul.impl.InputElement;
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  * @author Cristina Alavarino Perez <cristina.alvarino@comtecsf.es>
  * @author Ignacio Diaz Teijido <ignacio.diaz@comtecsf.es>
+ * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
  */
 public class ConfigurationController extends GenericForwardComposer {
 
@@ -251,6 +245,7 @@ public class ConfigurationController extends GenericForwardComposer {
 
     public void cancel() throws InterruptedException {
         configurationModel.cancel();
+        messages.clearMessages();
         messages.showMessage(Level.INFO, _("Changes have been canceled"));
         reloadWindow();
         reloadEntitySequences();
@@ -305,12 +300,18 @@ public class ConfigurationController extends GenericForwardComposer {
         String password = properties
                 .get(PredefinedConnectorProperties.PASSWORD);
 
-        if (selectedConnector.getName().equals(
-                PredefinedConnectors.TIM.getName())) {
+        if ( selectedConnector.getName().equals(
+                PredefinedConnectors.TIM.getName()) ) {
             testTimConnection(url, username, password);
-        } else if (selectedConnector.getName().equals(
-                PredefinedConnectors.JIRA.getName())) {
+        } else if ( selectedConnector.getName().equals(
+                PredefinedConnectors.JIRA.getName()) ) {
             testJiraConnection(url, username, password);
+        } else if( selectedConnector.getName().equals(
+                PredefinedConnectors.EMAIL.getName()) ){
+            String host = properties.get(PredefinedConnectorProperties.HOST);
+            String email = properties.get(PredefinedConnectorProperties.USER_EMAIL);
+            String port = properties.get(PredefinedConnectorProperties.PORT);
+            testEmailConnection(host, port, email, password);
         } else {
             throw new RuntimeException("Unknown connector");
         }
@@ -370,6 +371,65 @@ public class ConfigurationController extends GenericForwardComposer {
             LOG.error(e);
             messages.showMessage(Level.ERROR,
                     _("Cannot connect to JIRA server"));
+        }
+    }
+
+    /**
+     * Test E-mail connection
+     *
+     * @param host
+     *            the host
+     * @param port
+     *            the port
+     * @param email
+     *            the email
+     * @param password
+     *            the password
+     */
+    private void testEmailConnection(String host, String port, String email, String password){
+
+        String[] hostWords = host.split("\\.");
+
+        // + "s" means that protocol coming with SSL
+        String protocol = hostWords[0] + "s";
+
+        Properties props = System.getProperties();
+
+        if ( hostWords[0].equals("pop") ){
+            protocol = "pop3s";
+            props.setProperty("mail.pop3s.port", port);
+        }
+        else if ( hostWords[0].equals("smtp") ){ props.setProperty("mail.smtps.port", port); }
+        else if ( hostWords[0].equals("imap") ){ props.setProperty("mail.imaps.port", port); }
+
+        try {
+            Session session = Session.getInstance(props, null);
+            session.setDebug(true);
+
+            if ( hostWords[0].equals("pop") || hostWords[0].equals("imap") ){
+                Store store = session.getStore(protocol);
+                store.connect(host, email, password);
+                messages.clearMessages();
+                if ( store.isConnected() ) messages.showMessage(Level.INFO, _("Connection successful!"));
+            }
+            else if ( hostWords[0].equals("smtp") ){
+                Transport transport = session.getTransport(protocol);
+                transport.connect(host, email, password);
+                messages.clearMessages();
+                if ( transport.isConnected() ) messages.showMessage(Level.INFO, _("Connection successful!"));
+            }
+        }
+        catch (AuthenticationFailedException e){
+            LOG.error(e);
+            messages.showMessage(Level.ERROR, _("Invalid credentials"));
+        }
+        catch (MessagingException e){
+            LOG.error(e);
+            messages.showMessage(Level.ERROR, _("Cannot connect"));
+        }
+        catch (Exception e){
+            LOG.error(e);
+            messages.showMessage(Level.ERROR, _("Failed to connect"));
         }
     }
 

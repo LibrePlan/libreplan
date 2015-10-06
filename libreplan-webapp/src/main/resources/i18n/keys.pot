@@ -889,6 +889,7 @@ msgstr ""
 #: libreplan-webapp/src/main/webapp/resources/worker/_edition.zul:122
 #: libreplan-webapp/src/main/webapp/resources/worker/_edition.zul:158
 #: libreplan-webapp/src/main/webapp/users/_editUser.zul:84
+#: libreplan-business/src/main/java/org/libreplan/business/common/entities/PredefinedConnectorProperties.java:56
 msgid "E-mail"
 msgstr ""
 
@@ -1363,6 +1364,7 @@ msgid "First expense"
 msgstr ""
 
 #: libreplan-webapp/src/main/webapp/common/configuration.zul:296
+#: libreplan-business/src/main/java/org/libreplan/business/common/entities/PredefinedConnectorProperties.java:55
 msgid "Host"
 msgstr ""
 
@@ -9211,4 +9213,20 @@ msgstr ""
 
 #: libreplan-business/src/main/java/org/libreplan/business/settings/entities/Language.java:36
 msgid "Use browser language configuration"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/templates/entities/EmailTemplateEnum.java:17
+msgid "Task assigned to resource"
+msgstr ""
+
+#: libreplan-webapp/src/main/java/org/libreplan/web/common/CustomMenuController.java:425
+msgid "Edit E-mail Templates"
+msgstr ""
+
+#: libreplan-webapp/src/main/java/org/libreplan/web/templates/EmailTemplateController.java:72
+msgid "E-mail template saved"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/common/entities/PredefinedConnectorProperties.java:57
+msgid "Port"
 msgstr ""

@@ -205,6 +205,79 @@ openSUSE
 * Go to http://localhost:8080/libreplan-webapp/
 
 
+Microsoft Windows
+~~~~~~~~
+
+* Download and install latest Java Development Kit 7u80 (JDK7u80)::
+
+    # http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html
+
+* Download and install latest PostgreSQL database::
+
+    # http://www.enterprisedb.com/products-services-training/pgdownload#windows
+
+* Download and install Git
+
+    # https://git-scm.com/download/win
+
+* Download Maven
+
+    # https://maven.apache.org/download.cgi
+
+.. WARNING::
+
+    Check if latest Maven version is compatible with your JDK
+
+* Connect to database::
+
+    # Go to PostgreSQL bin folder and command window from here
+    # psql -U postgres
+
+* Use SQL sentences::
+
+    CREATE DATABASE libreplandev;
+    CREATE DATABASE libreplandevtest;
+
+    CREATE USER libreplan WITH PASSWORD 'libreplan';
+
+    REVOKE ALL
+    ON ALL TABLES IN SCHEMA public
+    FROM PUBLIC;
+
+    GRANT ALL PRIVILEGES ON DATABASE libreplan TO libreplan;
+
+    GRANT SELECT, INSERT, UPDATE, DELETE
+    ON ALL TABLES IN SCHEMA public
+    TO libreplan;
+
+* Restore PostgreSQL dump - scripts/database/postgresql_1.4.1.backup
+
+* Download source code::
+
+    # Open GitBash
+    # git clone https://github.com/LibrePlan/libreplan.git
+
+* Set JAVA_HOME environment variable::
+
+    # You need to set it to your JDK installed directory (e.g. C:\Program Files\Java\jdk1.7.0_80)
+
+* Add path of unpacked distributions bin directory of Maven to 'Path' environment variable
+
+    # (e.g. C:\Program Files\apache-maven-3.3.3\bin)
+
+* Compile project::
+
+    # cd libreplan
+    # mvn clean install
+
+* Launch application::
+
+    # cd libreplan-webapp
+    # mvn jetty:run
+
+* Go to http://localhost:8080/libreplan-webapp/
+
+
 CutyCapt compilation
 --------------------
 
