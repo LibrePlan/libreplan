@@ -110,16 +110,13 @@ public class EntitySequenceDAO extends
         for (int i = 0; i < 5; i++) {
             try {
                 String code;
-                Integer cont = 0;
                 EntitySequence entitySequence = getActiveEntitySequence(entityName);
 
                 do {
                     entitySequence.incrementLastValue();
                     code = entitySequence.getCode();
-                    cont++;
                 } while (entityName.getIntegrationEntityDAO()
-                        .existsByCode(code)
-                        && cont < 100);
+                        .existsByCode(code));
 
                 save(entitySequence);
                 return code;
