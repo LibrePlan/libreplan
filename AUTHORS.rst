@@ -6,6 +6,15 @@ Authors
 LibrePlan Team
 --------------
 
+* Jeroen Baten <jeroen@libreplan-enterprise.com>
+* Bjørn Vos <bjorn@libreplan-enterprise.com>
+* Vova Perebykivskiy <vova@libreplan-enterprise.com>
+* Міша Гожда <misha@libreplan-enterprise.com>
+
+
+Previous Team Members
+---------------------
+
 * Jacobo Aragunde Pérez <jaragunde@igalia.com>
 * Xavier Castaño García <xcastanho@igalia.com>
 * Ignacio Díaz Teijido <ignacio.diaz@cafedered.es>
@@ -14,11 +23,6 @@ LibrePlan Team
 * Diego Pino García <dpino@igalia.com>
 * Manuel Rego Casasnovas <rego@igalia.com>
 * Lorenzo Tilve Álvaro <ltilve@igalia.com>
-
-
-Previous Team Members
----------------------
-
 * Cristina Alvariño Pérez <cristina.alvarino@cafedered.es>
 * Nacho Barrientos Arias <nacho@igalia.com>
 * Fernando Bellas Permuy <fbellas@udc.es>
