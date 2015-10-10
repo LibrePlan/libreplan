@@ -205,6 +205,82 @@ openSUSE
 * Go to http://localhost:8080/libreplan-webapp/
 
 
+Microsoft Windows
+~~~~~~~~
+
+* Download and install latest Java Runtime Environment 7u79 (JRE7u79)::
+
+    # http://www.oracle.com/technetwork/java/javase/downloads/jre7-downloads-1880261.html
+
+* Download and install latest Java Development Kit 7u80 (JDK7u80)::
+
+    # http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html
+
+* Download and install latest PostgreSQL database::
+
+    # http://www.enterprisedb.com/products-services-training/pgdownload#windows
+
+* Download and install Apache Tomcat 6::
+
+    # http://tomcat.apache.org/download-60.cgi
+    # Note: in JDK folder there is JRE folder
+
+* Set up JDBC41 PostgreSQL Driver::
+
+    # Download latest driver: https://jdbc.postgresql.org/download.html
+    # Copy downloaded *.jar file to JRE location: (e.g. C:\Program Files\Java\jre7\lib\ext)
+    # Copy downloaded *.jar file to JAVA_HOME location: (e.g. C:\Program Files\Java\jdk1.7.0_80\jre\lib\ext)
+    # Put downloaded *.jar file to Tomcat lib location: (e.g. C:\Program Files\Apache Software Foundation\Tomcat 6.0\lib)
+
+* Download latest ``.war`` file from SourceForge.net (for PostgreSQL) and rename it to libreplan.war::
+
+   # http://sourceforge.net/projects/libreplan/files/LibrePlan/
+
+* Create database::
+
+    CREATE DATABASE libreplan;
+
+* Use SQL sentences::
+
+    CREATE USER libreplan WITH PASSWORD 'libreplan';
+    GRANT ALL PRIVILEGES ON DATABASE libreplan TO libreplan;
+
+    REVOKE ALL
+    ON ALL TABLES IN SCHEMA public
+    FROM PUBLIC;
+    GRANT SELECT, INSERT, UPDATE, DELETE
+    ON ALL TABLES IN SCHEMA public
+    TO libreplan;
+
+* Restore PostgreSQL dump - scripts/database/postgresql_1.4.1.backup::
+
+* Create an Environment Variable JAVA_HOME
+
+    # You need to set it to your JDK installed directory
+
+* Configure Apache Tomcat Server
+
+    # Put your libreplan.war file to Apache Tomcat webapps folder (e.g. C:\Program Files\Apache Software Foundation\Tomcat 6.0\webapps\)
+    # Go to (e.g. C:\Program Files\Apache Software Foundation\Tomcat 6.0\conf\Catalina\localhost\) and create there libreplan.xml file with this lines of code:
+
+    <?xml version="1.0" encoding="UTF-8"?>
+
+    <Context antiJARLocking="true" path="">
+        <Resource name="jdbc/libreplan-ds" auth="Container"
+            type="javax.sql.DataSource"
+            maxActive="100" maxIdle="30" maxWait="10000"
+            username="libreplan" password="libreplan"
+            driverClassName="org.postgresql.Driver"
+            url="jdbc:postgresql://localhost/libreplan" />
+    </Context>
+
+* Start Apache Tomcat server
+
+    # Possible location: C:\Program Files\Apache Software Foundation\Tomcat 6.0\bin\Tomcat6.exe
+
+* Go to http://localhost:8080/libreplan
+
+
 CutyCapt compilation
 --------------------
 
