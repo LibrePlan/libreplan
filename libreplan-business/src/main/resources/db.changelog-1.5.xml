@@ -16,11 +16,11 @@
         </createTable>
         <addUniqueConstraint 
           constraintName="email_template_type_lang_key" 
-          columnNames="type,lang" 
+          columnNames="type,language" 
           deferrable="false" 
           disabled="false" 
           initiallyDeferred="false" 
-          tableName="criterion"
+          tableName="email_template"
         />
     </changeSet>
 
