@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+
+    <changeSet id="adding-email_template_table" author="vova/jeroen">
+        <createTable tableName="email_template">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" primaryKeyName="email_templates_pkey"/>
+            </column>
+            <column name="type" type="int"/>
+            <column name="language" type="int"/>
+            <column name="content" type="varchar(2048)"/>
+        </createTable>
+        <addUniqueConstraint 
+          constraintName="email_template_type_lang_key" 
+          columnNames="type,lang" 
+          deferrable="false" 
+          disabled="false" 
+          initiallyDeferred="false" 
+          tableName="criterion"
+        />
+    </changeSet>
+
+</databaseChangeLog>
+
