@@ -91,4 +91,14 @@
         </joined-subclass>
     </class>
 
+    <class name="EmailTemplate" abstract="true" table="email_template">
+        <id name="id" access="property" type="long">
+            <generator class="hilo" >
+                <param name="max_lo">100</param>
+            </generator>
+        </id>
+        <property name="type" column="type" type="int"/>
+        <property name="language" column="language" type="int"/>
+        <property name="content" column="content" />
+    </class>
 </hibernate-mapping>
