@@ -1,0 +1,60 @@
+<?page id="editEmailTemplate" title="${i18n:_('LibrePlan: Email Templates')}" ?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
+
+<?link rel="shortcut icon" href="/common/img/favicon.ico" type="image/x-icon"?>
+<?link rel="stylesheet" type="text/css" href="/common/css/libreplan.css"?>
+<?link rel="stylesheet" type="text/css" href="/common/css/libreplan_zk.css"?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+
+<zk>
+    <window self="@{define(content)}" apply="org.libreplan.web.templates.EmailTemplateController"
+            title="${i18n:_('Edit E-mail template')}">
+        <vbox id="messagesContainer" />
+            <tabbox>
+                <tabs>
+                    <tab label="${i18n:_('Template data')}"/>
+                </tabs>
+                <tabpanels>
+                    <tabpanel>
+                        <groupbox>
+                            <caption label="General user data" />
+                            <grid>
+                                <columns>
+                                    <column width="220px"></column>
+                                </columns>
+                                <rows>
+                                    <row>
+                                        <label value="Select template language"/>
+                                        <listbox mold="select"
+                                                 id="templateLanguageListbox"
+                                                 model="@{emailTemplateController.languages}"
+                                                 itemRenderer="@{emailTemplateController.languagesRenderer}"
+                                                 selectedItem="@{emailTemplateController.selectedLanguage}">
+                                        </listbox>
+                                    </row>
+                                    <row>
+                                        <label value="Select template type"/>
+                                        <listbox id="emailTemplateTypeListbox"
+                                                 mold="select"
+                                                 model="@{emailTemplateController.emailTemplateEnum}"
+                                                 itemRenderer="@{emailTemplateController.emailTemplateEnumRenderer}"
+                                                 selectedItem="@{emailTemplateController.selectedEmailTemplateEnum}"/>
+                                    </row>
+                                    <row>
+                                        <label value="${i18n:_('Template contents')}"/>
+                                        <textbox id="contentsTextbox"
+                                                 rows="15" width="600px;"
+                                                 tabindex="11"/>
+                                    </row>
+                                </rows>
+                            </grid>
+                        </groupbox>
+                    </tabpanel>
+                </tabpanels>
+            </tabbox>
+        <button onClick="emailTemplateController.save()" autodisable="self" label="${i18n:_('Save')}" sclass="save-button global-action"/>
+        <button onClick="emailTemplateController.cancel()" label="${i18n:_('Cancel')}" sclass="cancel-button global-action"/>
+    </window>
+</zk>
