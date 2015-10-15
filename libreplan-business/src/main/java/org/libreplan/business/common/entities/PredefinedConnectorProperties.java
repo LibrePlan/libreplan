@@ -53,8 +53,10 @@ public class PredefinedConnectorProperties {
     public static final String JIRA_CODE_PREFIX = "JIRA-";
 
     // Specific for E-mail
+    public static String PROTOCOL = _("Protocol");
     public static String HOST = _("Host");
-    public static String USER_EMAIL = _("E-mail");
     public static String PORT = _("Port");
+    public static String EMAIL_USERNAME = _("Username (optional)");
+    public static String EMAIL_PASSWORD = _("Password (optional)");
 
 }

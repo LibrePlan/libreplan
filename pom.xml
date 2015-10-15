@@ -600,7 +600,7 @@
            <dependency>
               <groupId>org.quartz-scheduler</groupId>
               <artifactId>quartz</artifactId>
-              <version>1.8.0</version>
+              <version>1.8.6</version>
               <exclusions>
                 <exclusion>
                   <groupId>org.slf4j</groupId>

@@ -54,10 +54,12 @@ public enum PredefinedConnectors {
                  PredefinedConnectorProperties.JIRA_HOURS_TYPE, "Default")),
     EMAIL("E-mail",
             ConnectorProperty.create(PredefinedConnectorProperties.ACTIVATED, "N"),
+            ConnectorProperty.create(PredefinedConnectorProperties.PROTOCOL, ""),
             ConnectorProperty.create(PredefinedConnectorProperties.HOST, ""),
             ConnectorProperty.create(PredefinedConnectorProperties.PORT, ""),
-            ConnectorProperty.create(PredefinedConnectorProperties.USER_EMAIL, ""),
-            ConnectorProperty.create(PredefinedConnectorProperties.PASSWORD, "")
+            ConnectorProperty.create(PredefinedConnectorProperties.EMAIL_USERNAME, ""),
+            ConnectorProperty.create(PredefinedConnectorProperties.EMAIL_PASSWORD, "")
+
     );
 
     private String name;

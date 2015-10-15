@@ -227,9 +227,8 @@ public abstract class BaseCRUDController<T extends IHumanIdentifiable> extends
      */
     private void saveCommonActions() throws ValidationException {
         beforeSaving();
-
+        messagesForUser.clearMessages();
         save();
-
         messagesForUser.showMessage(
                 Level.INFO,
                 _("{0} \"{1}\" saved", getEntityType(), getEntityBeingEdited()

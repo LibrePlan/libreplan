@@ -9230,3 +9230,7 @@ msgstr ""
 #: libreplan-business/src/main/java/org/libreplan/business/common/entities/PredefinedConnectorProperties.java:57
 msgid "Port"
 msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/common/entities/PredefinedConnectorProperties.java:56
+msgid "Protocol"
+msgstr ""

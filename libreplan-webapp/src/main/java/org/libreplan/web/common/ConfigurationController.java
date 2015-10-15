@@ -65,6 +65,7 @@ import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Intbox;
@@ -130,6 +131,8 @@ public class ConfigurationController extends GenericForwardComposer {
     private Grid connectorPropertriesGrid;
 
     private Connector selectedConnector;
+
+    private Combobox protocolsCombobox;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -309,9 +312,10 @@ public class ConfigurationController extends GenericForwardComposer {
         } else if( selectedConnector.getName().equals(
                 PredefinedConnectors.EMAIL.getName()) ){
             String host = properties.get(PredefinedConnectorProperties.HOST);
-            String email = properties.get(PredefinedConnectorProperties.USER_EMAIL);
+            username = properties.get(PredefinedConnectorProperties.EMAIL_USERNAME);
+            password = properties.get(PredefinedConnectorProperties.EMAIL_PASSWORD);
             String port = properties.get(PredefinedConnectorProperties.PORT);
-            testEmailConnection(host, port, email, password);
+            testEmailConnection(host, port, username, password);
         } else {
             throw new RuntimeException("Unknown connector");
         }
@@ -381,43 +385,36 @@ public class ConfigurationController extends GenericForwardComposer {
      *            the host
      * @param port
      *            the port
-     * @param email
-     *            the email
+     * @param username
+     *            the username
      * @param password
      *            the password
      */
-    private void testEmailConnection(String host, String port, String email, String password){
-
-        String[] hostWords = host.split("\\.");
-
-        // + "s" means that protocol coming with SSL
-        String protocol = hostWords[0] + "s";
+    private void testEmailConnection(String host, String port, String username, String password){
 
         Properties props = System.getProperties();
-
-        if ( hostWords[0].equals("pop") ){
-            protocol = "pop3s";
-            props.setProperty("mail.pop3s.port", port);
-        }
-        else if ( hostWords[0].equals("smtp") ){ props.setProperty("mail.smtps.port", port); }
-        else if ( hostWords[0].equals("imap") ){ props.setProperty("mail.imaps.port", port); }
+        Transport transport = null;
 
         try {
-            Session session = Session.getInstance(props, null);
-            session.setDebug(true);
+            if ( protocolsCombobox.getSelectedItem().getLabel().equals("SMTP") ){
+                props.setProperty("mail.smtp.port", port);
+                props.setProperty("mail.smtp.host", host);
+                Session session = Session.getInstance(props, null);
 
-            if ( hostWords[0].equals("pop") || hostWords[0].equals("imap") ){
-                Store store = session.getStore(protocol);
-                store.connect(host, email, password);
-                messages.clearMessages();
-                if ( store.isConnected() ) messages.showMessage(Level.INFO, _("Connection successful!"));
+                transport = session.getTransport("smtp");
+                if ( username.equals("") && password == null ) transport.connect();
             }
-            else if ( hostWords[0].equals("smtp") ){
-                Transport transport = session.getTransport(protocol);
-                transport.connect(host, email, password);
-                messages.clearMessages();
-                if ( transport.isConnected() ) messages.showMessage(Level.INFO, _("Connection successful!"));
+            else if ( protocolsCombobox.getSelectedItem().getLabel().equals("STARTTLS") ) {
+                props.setProperty("mail.smtps.port", port);
+                props.setProperty("mail.smtps.host", host);
+                Session session = Session.getInstance(props, null);
+
+                transport = session.getTransport("smtps");
+                if ( !username.equals("") && password != null ) transport.connect(host, username, password);
             }
+
+            messages.clearMessages();
+            if ( transport.isConnected() ) messages.showMessage(Level.INFO, _("Connection successful!"));
         }
         catch (AuthenticationFailedException e){
             LOG.error(e);
@@ -1155,6 +1152,28 @@ public class ConfigurationController extends GenericForwardComposer {
 
             private void appendValueTextbox(Row row,
                     final ConnectorProperty property) {
+                if (property.getKey().equals(
+                        PredefinedConnectorProperties.PROTOCOL
+                )){
+                    final Combobox combobox = new Combobox();
+                    combobox.setWidth("400px");
+
+                    Comboitem comboitem = new Comboitem();
+                    comboitem.setLabel("SMTP");
+
+                    Comboitem comboitem1 = new Comboitem();
+                    comboitem1.setLabel("STARTTLS");
+
+                    combobox.getItems().add(comboitem);
+                    combobox.getItems().add(comboitem1);
+                    combobox.setSelectedIndex(0);
+
+                    row.appendChild(combobox);
+
+                    // Need for testing E-mail connection
+                    protocolsCombobox= combobox;
+                    }
+
                 final Textbox textbox = new Textbox();
                 textbox.setWidth("400px");
                 textbox.setConstraint(checkPropertyValue(property));
@@ -1172,8 +1191,10 @@ public class ConfigurationController extends GenericForwardComposer {
                         property.setValue(value);
                     }
                 });
-                if (property.getKey().equals(
-                        PredefinedConnectorProperties.PASSWORD)) {
+                if ( property.getKey().equals(
+                        PredefinedConnectorProperties.PASSWORD) ||
+                    property.getKey().equals(
+                        PredefinedConnectorProperties.EMAIL_PASSWORD) ) {
                     textbox.setType("password");
                 }
 

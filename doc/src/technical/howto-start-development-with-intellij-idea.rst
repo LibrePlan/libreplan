@@ -84,7 +84,7 @@ Configure project to run
   http://localhost:8080/libreplan-webapp/
 
 Develop LibrePlan in Intellij IDEA using MySQL
-----------------------------------------
+----------------------------------------------
 
 * This tutorial works properly with PostgreSQL, but if you want to develop
   LibrePlan using MySQL you have to do 2 small changes:

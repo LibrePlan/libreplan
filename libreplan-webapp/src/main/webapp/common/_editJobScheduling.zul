@@ -97,39 +97,51 @@
                 <columns>
                    <column label="${i18n:_('Field')}" width="150px"/>
                    <column label="${i18n:_('Allowed values')}" />
+                    <column label="${i18n:_('Allowed Special Characters')}" />
                 </columns>
                 <rows>
                     <row>
                         <label value="${i18n:_('Seconds')}"/>
                         <label value="0-59"/>
+                        <label value=", - * /"/>
                     </row>
                     <row>
                         <label value="${i18n:_('Minutes')}"/>
                         <label value="0-59"/>
+                        <label value=", - * /"/>
                     </row>
                     <row>
                         <label value="${i18n:_('Hours')}"/>
                         <label value="0-23"/>
+                        <label value=", - * /"/>
                     </row>
                     <row>
                         <label value="${i18n:_('Day of month')}"/>
                         <label value="1-31"/>
+                        <label value=", - * ? / L W"/>
                     </row>
                     <row>
                         <label value="${i18n:_('Month')}"/>
                         <span>1-12 (<label value="${i18n:_('or names')}"/> [JAN-DEC])</span>
+                        <label value=", - *"/>
                     </row>
                     <row>
                         <label value="${i18n:_('Day of week')}"/>
-                        <span>0-7 (<label value="${i18n:_('0 or 7 is Sunday, or use names')}"/> [SUN-SAT])</span>
+                        <span>1-7 (<label value="${i18n:_('1 or 7 is Sunday, or use names')}"/> [SUN-SAT])</span>
+                        <label value=", - * ? / L #"/>
                     </row>
                     <row>
                         <label value="${i18n:_('Year (optional)')}"/>
                         <label value="1970-2099"/>
+                        <label value=", - *"/>
                     </row>
                 </rows>
             </grid>
             <div>
+                <div>
+                    ${i18n:_("The '?' character is allowed for the day-of-month and day-of-week fields. It is used to specify “no specific value”. ")}
+                </div>
+
                 ${i18n:_("For more details on cron expression click")}
                 <a href="http://www.manpagez.com/man/5/crontab/">${i18n:_('here')}.</a>
             </div>
