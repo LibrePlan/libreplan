@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.libreplan.business.email.entities" default-access="field">
+
+    <class name="org.libreplan.business.email.entities.EmailTemplate" abstract="true" table="email_template">
+        <id name="id" access="property" type="long">
+            <generator class="hilo" >
+                <param name="max_lo">100</param>
+            </generator>
+        </id>
+        <property name="type" column="type" type="int"/>
+        <property name="language" column="language" type="int"/>
+        <property name="content" column="content" />
+    </class>
+
+    <class name="org.libreplan.business.email.entities.NotificationQueue" abstract="true" table="notification_queue">
+        <id name="id" access="property" type="long">
+            <generator class="hilo">
+                <param name="max_lo">100</param>
+            </generator>
+        </id>
+        <property name="type" column="type" type="int"/>
+        <property name="updated" column="updated"/>
+        <property name="resource" column="resource" type="long"/>
+        <property name="task" column="task" type="long"/>
+        <property name="project" column="project" type="long"/>
+    </class>
+
+</hibernate-mapping>

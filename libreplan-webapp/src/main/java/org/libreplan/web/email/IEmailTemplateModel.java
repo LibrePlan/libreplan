@@ -1,8 +1,8 @@
-package org.libreplan.web.templates;
+package org.libreplan.web.email;
 
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.settings.entities.Language;
-import org.libreplan.business.templates.entities.EmailTemplateEnum;
+import org.libreplan.business.email.entities.EmailTemplateEnum;
 
 /**
  * Model E-mail Templates

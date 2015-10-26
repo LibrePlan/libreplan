@@ -94,6 +94,9 @@
                 <value>
                     org/libreplan/business/common/entities/JobSchedulerConfiguration.hbm.xml
                 </value>
+                <value>
+                    org/libreplan/business/email/entities/Email.hbm.xml
+                </value>
             </list>
         </property>
     </bean>

@@ -1,9 +1,7 @@
-package org.libreplan.business.templates.daos;
+package org.libreplan.business.email.daos;
 
 import org.libreplan.business.common.daos.IGenericDAO;
-import org.libreplan.business.templates.entities.EmailTemplate;
-
-import java.util.List;
+import org.libreplan.business.email.entities.EmailTemplate;
 
 /**
  * DAO interface for the <code>EmailTemplate</code> entity.

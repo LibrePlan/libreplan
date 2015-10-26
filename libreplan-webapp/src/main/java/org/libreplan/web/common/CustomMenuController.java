@@ -423,7 +423,7 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
         }
         if (SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_EDIT_EMAIL_TEMPLATES)) {
             configurationItems.add(subItem(_("Edit E-mail Templates"),
-                    "/templates/email_templates.zul",
+                    "/email/email_templates.zul",
                     "email-templates.html"));
         }
 

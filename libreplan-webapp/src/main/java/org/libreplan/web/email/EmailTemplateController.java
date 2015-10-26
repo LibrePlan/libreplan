@@ -1,11 +1,10 @@
-package org.libreplan.web.templates;
+package org.libreplan.web.email;
 
 import org.libreplan.business.common.exceptions.ValidationException;
+import org.libreplan.business.email.entities.NotificationQueue;
 import org.libreplan.business.settings.entities.Language;
 
-import org.libreplan.business.templates.daos.EmailTemplateDAO;
-
-import org.libreplan.business.templates.entities.EmailTemplateEnum;
+import org.libreplan.business.email.entities.EmailTemplateEnum;
 import org.libreplan.web.common.IMessagesForUser;
 import org.libreplan.web.common.Level;
 import org.libreplan.web.common.MessagesForUser;
@@ -31,8 +30,6 @@ import static org.libreplan.web.I18nHelper._;
 public class EmailTemplateController extends GenericForwardComposer{
 
     private IEmailTemplateModel emailTemplateModel;
-
-    private EmailTemplateDAO emailTemplateDAO;
 
 
     private IMessagesForUser messages;

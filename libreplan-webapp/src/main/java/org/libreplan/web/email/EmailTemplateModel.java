@@ -1,9 +1,9 @@
-package org.libreplan.web.templates;
+package org.libreplan.web.email;
 
 import org.libreplan.business.settings.entities.Language;
-import org.libreplan.business.templates.daos.IEmailTemplateDAO;
-import org.libreplan.business.templates.entities.EmailTemplate;
-import org.libreplan.business.templates.entities.EmailTemplateEnum;
+import org.libreplan.business.email.daos.IEmailTemplateDAO;
+import org.libreplan.business.email.entities.EmailTemplate;
+import org.libreplan.business.email.entities.EmailTemplateEnum;
 import org.libreplan.web.common.concurrentdetection.OnConcurrentModification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
-@OnConcurrentModification(goToPage = "/templates/email_templates.zul")
+@OnConcurrentModification(goToPage = "/email/email_templates.zul")
 public class EmailTemplateModel implements IEmailTemplateModel {
 
     @Autowired
@@ -49,6 +49,7 @@ public class EmailTemplateModel implements IEmailTemplateModel {
     public Language getLanguage() {
         return language;
     }
+
     @Override
     public void setLanguage(Language language){ this.language = language; }
 
@@ -56,6 +57,7 @@ public class EmailTemplateModel implements IEmailTemplateModel {
     public EmailTemplateEnum getEmailTemplateEnum() {
         return emailTemplateEnum;
     }
+
     @Override
     public void setEmailTemplateEnum(EmailTemplateEnum emailTemplateEnum) {
         this.emailTemplateEnum = emailTemplateEnum;
@@ -65,10 +67,12 @@ public class EmailTemplateModel implements IEmailTemplateModel {
     public String getContent() {
         return content;
     }
+
     @Override
     public void setContent(String content) {
         this.content = content;
     }
+
     @Override
     @Transactional
     public String initializeContent() {
@@ -80,6 +84,7 @@ public class EmailTemplateModel implements IEmailTemplateModel {
     public String getContentBySelectedLanguage(int languageOrdinal, int emailTemplateTypeOrdinal) {
         return emailTemplateDAO.getContentBySelectedLanguage(languageOrdinal, emailTemplateTypeOrdinal);
     }
+
     @Override
     @Transactional
     public String getContentBySelectedTemplate(int emailTemplateTypeOrdinal, int languageOrdinal) {

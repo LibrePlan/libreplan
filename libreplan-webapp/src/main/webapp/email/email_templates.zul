@@ -9,7 +9,7 @@
 <?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
 
 <zk>
-    <window self="@{define(content)}" apply="org.libreplan.web.templates.EmailTemplateController"
+    <window self="@{define(content)}" apply="org.libreplan.web.email.EmailTemplateController"
             title="${i18n:_('Edit E-mail template')}">
         <vbox id="messagesContainer" />
             <tabbox>

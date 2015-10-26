@@ -523,6 +523,8 @@ public class FormBinder {
                     }
                 });
         allocationProduced(allocationResult);
+
+        TaskPropertiesController.allocationResult = allocationResult;
     }
 
     /**

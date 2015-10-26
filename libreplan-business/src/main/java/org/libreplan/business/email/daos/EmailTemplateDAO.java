@@ -1,7 +1,7 @@
-package org.libreplan.business.templates.daos;
+package org.libreplan.business.email.daos;
 
 import org.libreplan.business.common.daos.GenericDAOHibernate;
-import org.libreplan.business.templates.entities.EmailTemplate;
+import org.libreplan.business.email.entities.EmailTemplate;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -14,8 +14,9 @@ public class EmailTemplateDAO extends GenericDAOHibernate<EmailTemplate, Long> i
 
     @Override
     public String initializeContent() {
-        for ( int i = 0; i < list(EmailTemplate.class ).size(); i++)
-            if ( list(EmailTemplate.class).get(i).getType() == 1 && list(EmailTemplate.class).get(i).getLanguage() == 3) return list(EmailTemplate.class).get(i).getContent();
+        for ( int i = 0; i < list(EmailTemplate.class).size(); i++)
+            if ( list(EmailTemplate.class).get(i).getType() == 1 && list(EmailTemplate.class).get(i).getLanguage() == 3)
+                return list(EmailTemplate.class).get(i).getContent();
         return " ";
     }
 

@@ -33,6 +33,7 @@ import org.libreplan.business.advance.bootstrap.PredefinedAdvancedTypes;
 import org.libreplan.business.advance.entities.AdvanceType;
 import org.libreplan.business.advance.entities.DirectAdvanceAssignment;
 import org.libreplan.business.advance.exceptions.DuplicateAdvanceAssignmentForOrderElementException;
+import org.libreplan.business.email.entities.EmailTemplateEnum;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.planner.entities.ITaskPositionConstrained;
@@ -40,10 +41,16 @@ import org.libreplan.business.planner.entities.PositionConstraintType;
 import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.planner.entities.TaskPositionConstraint;
+import org.libreplan.business.resources.entities.Worker;
 import org.libreplan.business.scenarios.IScenarioManager;
+import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.business.workingday.IntraDayDate;
 import org.libreplan.web.I18nHelper;
 import org.libreplan.web.common.Util;
+import org.libreplan.web.email.INotificationQueueModel;
+import org.libreplan.web.orders.IOrderModel;
+import org.libreplan.web.planner.allocation.AllocationResult;
+import org.libreplan.web.resources.worker.IWorkerModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -116,6 +123,16 @@ public class TaskPropertiesController extends GenericForwardComposer {
     private ResourceAllocationTypeEnum originalState;
 
     private boolean disabledConstraintsAndAllocations = false;
+
+    public static AllocationResult allocationResult;
+
+    private INotificationQueueModel notificationQueueModel;
+
+    private IOrderModel orderModel;
+
+    private IWorkerModel workerModel;
+
+
 
     public void init(final EditTaskController editTaskController,
             IContextWithPlannerTask<TaskElement> context,
@@ -414,6 +431,8 @@ public class TaskPropertiesController extends GenericForwardComposer {
     }
 
     public void accept() {
+        addNewRowToNotificationQueueWithEmailTemplateTypeOne();
+
         boolean ok = true;
         if (currentTaskElement instanceof ITaskPositionConstrained) {
             ok = saveConstraintChanges();
@@ -707,6 +726,51 @@ public class TaskPropertiesController extends GenericForwardComposer {
 
     public String getMoneyFormat() {
         return Util.getMoneyFormat();
+    }
+
+
+    private void addNewRowToNotificationQueueWithEmailTemplateTypeOne(){
+
+        if ( allocationResult != null ) {
+
+            /* Check if resources in allocation are bound by user and are in role ROLE_EMAIL_TASK_ASSIGNED_TO_RESOURCE
+             * setUser method calling manually because, after initialization user will be null
+             * Then send valid data to notification_queue table */
+
+            List<Worker> workersList = workerModel.getWorkers();
+
+            for (int i = 0; i < workersList.size(); i++)
+
+                for (int j = 0; j < allocationResult.getSpecificAllocations().size(); j++)
+
+                    if ( workersList.get(i).getId().equals(allocationResult.getSpecificAllocations().get(j).getResource().getId()) ){
+
+                        workersList.get(i).setUser(workerModel.getBoundUserFromDB(workersList.get(i)));
+
+                        if ( workersList.get(i).getUser() != null &&
+                                workersList.get(i).getUser().isInRole(UserRole.ROLE_EMAIL_TASK_ASSIGNED_TO_RESOURCE) == true ) {
+
+                            notificationQueueModel.setType(EmailTemplateEnum.TEMPLATE_TASK_ASSIGNED_TO_RESOURCE);
+
+                            notificationQueueModel.setUpdated(new Date());
+
+                            notificationQueueModel.setResource(allocationResult.getSpecificAllocations().get(i).getResource());
+
+                            notificationQueueModel.setTask(currentTaskElement.getTaskSource().getTask());
+
+                            List<Order> orderList = orderModel.getOrders();
+
+                            for (int k = 0; k < orderList.size(); k++)
+
+                                if ( orderList.get(k).getCode().equals(currentTaskElement.getProjectCode()) )
+
+                                    notificationQueueModel.setProject(orderList.get(k).getId());
+
+                            notificationQueueModel.confirmSave();
+
+                        }
+                    }
+        }
     }
 
 }

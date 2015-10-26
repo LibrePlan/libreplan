@@ -88,7 +88,9 @@ public enum UserRole {
     ROLE_MATERIALS_NEED_AT_DATE_REPORT(_("Materials Needed At Date Report")),
     ROLE_PROJECT_STATUS_REPORT(_("Project Status Report")),
 
-    ROLE_EDIT_EMAIL_TEMPLATES(_("Edit E-mail Templates"));
+    ROLE_EDIT_EMAIL_TEMPLATES(_("Edit E-mail Templates")),
+
+    ROLE_EMAIL_TASK_ASSIGNED_TO_RESOURCE(_("Email task assigned to resource"));
 
     private final String displayName;
 

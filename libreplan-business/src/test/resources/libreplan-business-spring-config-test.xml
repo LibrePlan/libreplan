@@ -41,9 +41,6 @@
                     org/libreplan/business/orders/entities/Orders.hbm.xml
                 </value>
                 <value>
-                    org/libreplan/business/templates/entities/Templates.hbm.xml
-                </value>
-                <value>
                     org/libreplan/business/planner/entities/Tasks.hbm.xml
                 </value>
                 <value>

@@ -1,4 +1,4 @@
-package org.libreplan.business.templates.entities;
+package org.libreplan.business.email.entities;
 
 import static org.libreplan.business.i18n.I18nHelper._;
 
