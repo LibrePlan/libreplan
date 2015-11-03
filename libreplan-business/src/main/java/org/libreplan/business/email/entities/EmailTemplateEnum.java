@@ -14,8 +14,7 @@ import static org.libreplan.business.i18n.I18nHelper._;
  */
 public enum EmailTemplateEnum {
 
-    TEMPLATE_TASK_ASSIGNED_TO_RESOURCE(_("Task assigned to resource")),
-    TEMPLATE_TEMPLATE_1("Test template");
+    TEMPLATE_TASK_ASSIGNED_TO_RESOURCE(_("Task assigned to resource"));
 
     private final String templateType;
 

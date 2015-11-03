@@ -3,27 +3,55 @@
 <hibernate-mapping package="org.libreplan.business.email.entities" default-access="field">
 
     <class name="org.libreplan.business.email.entities.EmailTemplate" abstract="true" table="email_template">
+
         <id name="id" access="property" type="long">
             <generator class="hilo" >
                 <param name="max_lo">100</param>
             </generator>
         </id>
-        <property name="type" column="type" type="int"/>
-        <property name="language" column="language" type="int"/>
+
+        <property name="type" column="type">
+            <type name="org.hibernate.type.EnumType">
+                <param name="enumClass">org.libreplan.business.email.entities.EmailTemplateEnum</param>
+            </type>
+        </property>
+
+        <property name="language" column="language">
+            <type name="org.hibernate.type.EnumType">
+                <param name="enumClass">org.libreplan.business.settings.entities.Language</param>
+            </type>
+        </property>
+
         <property name="content" column="content" />
+        <property name="subject" column="subject" />
+
     </class>
 
-    <class name="org.libreplan.business.email.entities.NotificationQueue" abstract="true" table="notification_queue">
+    <class name="EmailNotification" abstract="true" table="notification_queue">
+
         <id name="id" access="property" type="long">
             <generator class="hilo">
                 <param name="max_lo">100</param>
             </generator>
         </id>
-        <property name="type" column="type" type="int"/>
+
+        <property name="type" column="type">
+            <type name="org.hibernate.type.EnumType">
+                <param name="enumClass">org.libreplan.business.email.entities.EmailTemplateEnum</param>
+            </type>
+        </property>
+
         <property name="updated" column="updated"/>
-        <property name="resource" column="resource" type="long"/>
-        <property name="task" column="task" type="long"/>
-        <property name="project" column="project" type="long"/>
+
+        <many-to-one name="resource"
+                     class="org.libreplan.business.resources.entities.Resource" column="resource" lazy="false"/>
+
+        <many-to-one name="task"
+                     class="org.libreplan.business.planner.entities.TaskElement" column="task" lazy="false"/>
+
+        <many-to-one name="project"
+                     class="org.libreplan.business.planner.entities.TaskElement" column="project" lazy="false"/>
+
     </class>
 
 </hibernate-mapping>

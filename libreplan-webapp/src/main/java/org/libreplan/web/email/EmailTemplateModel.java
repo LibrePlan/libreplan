@@ -1,5 +1,6 @@
 package org.libreplan.web.email;
 
+import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.settings.entities.Language;
 import org.libreplan.business.email.daos.IEmailTemplateDAO;
 import org.libreplan.business.email.entities.EmailTemplate;
@@ -10,6 +11,8 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * Created by
@@ -30,47 +33,86 @@ public class EmailTemplateModel implements IEmailTemplateModel {
 
     private String content;
 
-    private EmailTemplate emailTemplate;
+    private String subject;
+
+    private EmailTemplate emailTemplate = new EmailTemplate();
 
     @Override
     @Transactional
-    public void confirmSave(){
-        emailTemplate = new EmailTemplate();
+    public void confirmSave() throws InstanceNotFoundException {
 
-        // + 1 because first ordinal = 0
-        emailTemplate.setType(emailTemplateEnum.ordinal() + 1);
-        emailTemplate.setLanguage(language.ordinal());
-        emailTemplate.setContent(content);
+        /* If current EmailTemplate entity (id) is existing in DB than it needs to update.
+        *  Else current EmailTemplate entity (id) is creating and getting new values from form.
+        */
+        List<EmailTemplate> emailTemplates = emailTemplateDAO.getAll();
+        EmailTemplate emailTemplateFromDatabase = null;
+
+        for (int i = 0; i < emailTemplates.size(); i++) {
+            if ( emailTemplate.getLanguage() == emailTemplates.get(i).getLanguage() &&
+                    emailTemplate.getType() == emailTemplates.get(i).getType() ) {
+                emailTemplateFromDatabase = emailTemplateDAO.find(emailTemplates.get(i).getId());
+            }
+        }
+
+        if ( emailTemplateFromDatabase != null ){
+            EmailTemplate temporaryEntity = emailTemplate;
+            emailTemplate = emailTemplateFromDatabase;
+
+            emailTemplate.setType(temporaryEntity.getType());
+            emailTemplate.setLanguage(temporaryEntity.getLanguage());
+            emailTemplate.setContent(temporaryEntity.getContent());
+            emailTemplate.setSubject(temporaryEntity.getSubject());
+        } else {
+            EmailTemplate temporaryEntity = emailTemplate;
+            emailTemplate = new EmailTemplate();
+
+            emailTemplate.setType(temporaryEntity.getType());
+            emailTemplate.setLanguage(temporaryEntity.getLanguage());
+            emailTemplate.setContent(temporaryEntity.getContent());
+            emailTemplate.setSubject(temporaryEntity.getSubject());
+        }
 
         emailTemplateDAO.save(emailTemplate);
     }
 
     @Override
-    public Language getLanguage() {
-        return language;
+    @Transactional
+    public List<EmailTemplate> getAll() {
+        return emailTemplateDAO.getAll();
     }
 
     @Override
-    public void setLanguage(Language language){ this.language = language; }
+    public Language getLanguage() {
+        return this.emailTemplate.getLanguage();
+    }
+    @Override
+    public void setLanguage(Language language){ this.emailTemplate.setLanguage(language);}
 
     @Override
     public EmailTemplateEnum getEmailTemplateEnum() {
-        return emailTemplateEnum;
+        return this.emailTemplate.getType();
     }
-
     @Override
     public void setEmailTemplateEnum(EmailTemplateEnum emailTemplateEnum) {
-        this.emailTemplateEnum = emailTemplateEnum;
+        this.emailTemplate.setType(emailTemplateEnum);
     }
 
     @Override
     public String getContent() {
-        return content;
+        return this.emailTemplate.getContent();
+    }
+    @Override
+    public void setContent(String content) {
+        this.emailTemplate.setContent(content);
     }
 
     @Override
-    public void setContent(String content) {
-        this.content = content;
+    public String getSubject() {
+        return this.emailTemplate.getSubject();
+    }
+    @Override
+    public void setSubject(String subject) {
+        this.emailTemplate.setSubject(subject);
     }
 
     @Override
@@ -78,6 +120,10 @@ public class EmailTemplateModel implements IEmailTemplateModel {
     public String initializeContent() {
         return emailTemplateDAO.initializeContent();
     }
+
+    @Override
+    @Transactional
+    public String initializeSubject() { return emailTemplateDAO.initializeSubject(); }
 
     @Override
     @Transactional

@@ -1,7 +1,7 @@
 package org.libreplan.business.email.daos;
 
 import org.libreplan.business.common.daos.IGenericDAO;
-import org.libreplan.business.email.entities.NotificationQueue;
+import org.libreplan.business.email.entities.EmailNotification;
 
 import java.util.List;
 
@@ -11,6 +11,6 @@ import java.util.List;
  * on 19.10.15.
  *
  */
-public interface INotificationQueueDAO extends IGenericDAO<NotificationQueue, Long> {
-    List<NotificationQueue> getAll();
+public interface IEmailNotificationDAO extends IGenericDAO<EmailNotification, Long> {
+    List<EmailNotification> getAll();
 }

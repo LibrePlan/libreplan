@@ -1,12 +1,14 @@
 package org.libreplan.web.email;
 
 import org.libreplan.business.common.exceptions.ValidationException;
-import org.libreplan.business.email.daos.INotificationQueueDAO;
+import org.libreplan.business.email.daos.EmailNotificationDAO;
+import org.libreplan.business.email.daos.IEmailNotificationDAO;
+import org.libreplan.business.email.entities.EmailTemplate;
 import org.libreplan.business.email.entities.EmailTemplateEnum;
-import org.libreplan.business.email.entities.NotificationQueue;
+import org.libreplan.business.email.entities.EmailNotification;
+import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.resources.entities.Resource;
-import org.libreplan.web.common.concurrentdetection.OnConcurrentModification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -25,10 +27,10 @@ import java.util.List;
 
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
-public class NotificationQueueModel implements INotificationQueueModel {
+public class EmailNotificationModel implements IEmailNotificationModel {
 
     @Autowired
-    private INotificationQueueDAO notificationQueueDAO;
+    private IEmailNotificationDAO emailNotificationDAO;
 
     private EmailTemplateEnum type;
 
@@ -38,54 +40,45 @@ public class NotificationQueueModel implements INotificationQueueModel {
 
     private TaskElement task;
 
-    private Long project;
+    private TaskElement project;
 
-    private NotificationQueue notificationQueue;
+    private EmailNotification emailNotification = new EmailNotification();
 
     @Override
     @Transactional
     public void confirmSave() throws ValidationException {
-        notificationQueue = new NotificationQueue();
-
-        // + 1 because first ordinal = 0
-        notificationQueue.setType(type.ordinal() + 1);
-        notificationQueue.setUpdated(updated);
-        notificationQueue.setResource(resource.getId());
-        notificationQueue.setTask(task.getId());
-        notificationQueue.setProject(project);
-
-        notificationQueueDAO.save(notificationQueue);
+        emailNotificationDAO.save(emailNotification);
     }
 
     @Override
     @Transactional
-    public List<NotificationQueue> getAll() {
-        return notificationQueueDAO.getAll();
+    public List<EmailNotification> getAll() {
+        return emailNotificationDAO.getAll();
     }
 
     @Override
     public void setType(EmailTemplateEnum type) {
-        this.type = type;
+        this.emailNotification.setType(type);
     }
 
     @Override
     public void setUpdated(Date updated) {
-        this.updated = updated;
+        this.emailNotification.setUpdated(updated);
     }
 
     @Override
     public void setResource(Resource resource) {
-        this.resource = resource;
+        this.emailNotification.setResource(resource);
     }
 
     @Override
     public void setTask(TaskElement task) {
-        this.task = task;
+        this.emailNotification.setTask(task);
     }
 
     @Override
-    public void setProject(Long project) {
-        this.project = project;
+    public void setProject(TaskElement project) {
+        this.emailNotification.setProject(project);
     }
 
 }

@@ -1,7 +1,7 @@
 package org.libreplan.business.email.daos;
 
 import org.libreplan.business.common.daos.GenericDAOHibernate;
-import org.libreplan.business.email.entities.NotificationQueue;
+import org.libreplan.business.email.entities.EmailNotification;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -12,10 +12,10 @@ import java.util.List;
  * on 19.10.15.
  */
 @Repository
-public class NotificationQueueDAO extends GenericDAOHibernate<NotificationQueue, Long> implements INotificationQueueDAO {
+public class EmailNotificationDAO extends GenericDAOHibernate<EmailNotification, Long> implements IEmailNotificationDAO {
 
     @Override
-    public List<NotificationQueue> getAll() {
-        return list(NotificationQueue.class);
+    public List<EmailNotification> getAll() {
+        return list(EmailNotification.class);
     }
 }

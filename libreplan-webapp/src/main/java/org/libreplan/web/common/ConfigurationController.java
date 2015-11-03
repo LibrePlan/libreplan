@@ -24,7 +24,7 @@ package org.libreplan.web.common;
 import static org.libreplan.web.I18nHelper._;
 
 import java.util.*;
-
+// TODO not importing all packages
 import javax.mail.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -63,24 +63,8 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
-import org.zkoss.zul.Button;
-import org.zkoss.zul.Combobox;
-import org.zkoss.zul.Comboitem;
-import org.zkoss.zul.Constraint;
-import org.zkoss.zul.Grid;
-import org.zkoss.zul.Intbox;
-import org.zkoss.zul.Label;
-import org.zkoss.zul.Listbox;
-import org.zkoss.zul.Listitem;
-import org.zkoss.zul.ListitemRenderer;
-import org.zkoss.zul.Messagebox;
-import org.zkoss.zul.Radio;
-import org.zkoss.zul.Radiogroup;
-import org.zkoss.zul.Row;
-import org.zkoss.zul.RowRenderer;
-import org.zkoss.zul.Rows;
-import org.zkoss.zul.SimpleListModel;
-import org.zkoss.zul.Textbox;
+// TODO not importing all packages
+import org.zkoss.zul.*;
 import org.zkoss.zul.api.Window;
 import org.zkoss.zul.impl.InputElement;
 
@@ -391,7 +375,6 @@ public class ConfigurationController extends GenericForwardComposer {
      *            the password
      */
     private void testEmailConnection(String host, String port, String username, String password){
-
         Properties props = System.getProperties();
         Transport transport = null;
 
@@ -402,7 +385,7 @@ public class ConfigurationController extends GenericForwardComposer {
                 Session session = Session.getInstance(props, null);
 
                 transport = session.getTransport("smtp");
-                if ( username.equals("") && password == null ) transport.connect();
+                if ( username.equals("") && password.equals("")) transport.connect();
             }
             else if ( protocolsCombobox.getSelectedItem().getLabel().equals("STARTTLS") ) {
                 props.setProperty("mail.smtps.port", port);
@@ -415,6 +398,7 @@ public class ConfigurationController extends GenericForwardComposer {
 
             messages.clearMessages();
             if ( transport.isConnected() ) messages.showMessage(Level.INFO, _("Connection successful!"));
+            else if ( transport.isConnected() == false ) messages.showMessage(Level.WARNING, _("Connection unsuccessful"));
         }
         catch (AuthenticationFailedException e){
             LOG.error(e);
@@ -1147,32 +1131,14 @@ public class ConfigurationController extends GenericForwardComposer {
                 row.setValue(property);
 
                 Util.appendLabel(row, _(property.getKey()));
-                appendValueTextbox(row, property);
+
+                // FIXME this is not perfect solution for future
+                if ( property.getKey().equals("Protocol") ) appendValueCombobox(row, property);
+                else appendValueTextbox(row, property);
             }
 
             private void appendValueTextbox(Row row,
                     final ConnectorProperty property) {
-                if (property.getKey().equals(
-                        PredefinedConnectorProperties.PROTOCOL
-                )){
-                    final Combobox combobox = new Combobox();
-                    combobox.setWidth("400px");
-
-                    Comboitem comboitem = new Comboitem();
-                    comboitem.setLabel("SMTP");
-
-                    Comboitem comboitem1 = new Comboitem();
-                    comboitem1.setLabel("STARTTLS");
-
-                    combobox.getItems().add(comboitem);
-                    combobox.getItems().add(comboitem1);
-                    combobox.setSelectedIndex(0);
-
-                    row.appendChild(combobox);
-
-                    // Need for testing E-mail connection
-                    protocolsCombobox= combobox;
-                    }
 
                 final Textbox textbox = new Textbox();
                 textbox.setWidth("400px");
@@ -1199,6 +1165,102 @@ public class ConfigurationController extends GenericForwardComposer {
                 }
 
                 row.appendChild(textbox);
+            }
+
+            private void appendValueCombobox(Row row,
+                    final ConnectorProperty property){
+
+                final Combobox combobox = new Combobox();
+                combobox.setWidth("400px");
+                final List<String> protocols = new ArrayList<String>();
+                protocols.add("SMTP");
+                protocols.add("STARTTLS");
+
+                for (String item : protocols){
+                    Comboitem comboitem = new Comboitem();
+                    comboitem.setValue(item);
+                    comboitem.setLabel(item);
+                    comboitem.setParent(combobox);
+
+                    if ( (!property.getValue().equals("")) &&
+                            (item.equals(property.getValue())) ){
+                        combobox.setSelectedItem(comboitem);
+                    }
+                }
+
+                combobox.addEventListener(Events.ON_SELECT,
+                        new EventListener() {
+                            @Override
+                            public void onEvent(Event event) throws Exception {
+                                if (combobox.getSelectedItem() != null){
+                                    property.setValue(combobox.getSelectedItem().getValue().toString());
+                                }
+                            }
+                        });
+
+                Util.bind(combobox, new Util.Getter<Comboitem>() {
+                    @Override
+                    public Comboitem get() {
+                        return combobox.getSelectedItem();
+                    }
+                }, new Util.Setter<Comboitem>(){
+
+                    @Override
+                    public void set(Comboitem item) {
+                        if ( (item != null) && (item.getValue() != null) &&
+                                (item.getValue() instanceof String) ){
+                            property.setValue(combobox.getSelectedItem().getValue().toString());
+                        }
+                    }
+                });
+
+
+                row.appendChild(combobox);
+
+                // Need for testing E-mail connection
+                protocolsCombobox= combobox;
+
+
+
+
+                    /*final Combobox combobox = new Combobox();
+                    combobox.setWidth("400px");
+
+
+                    // TODO make get/set
+
+                    Util.bind(combobox, new Util.Getter<Comboitem>() {
+
+                        @Override
+                        public Comboitem get() {
+                            Comboitem comboitem = new Comboitem();
+                            comboitem.setLabel("SMTP");
+                            return comboitem;
+                        }
+                    }, new Util.Setter<Comboitem>() {
+
+                        @Override
+                        public void set(Comboitem value) {
+                            property.setValue("comboitem" *//*value.getLabel()*//*);
+                            value.setLabel(property.getValue());
+                        }
+                    });
+
+
+                    Comboitem comboitem = new Comboitem();
+                    comboitem.setLabel("SMTP");
+
+                    Comboitem comboitem1 = new Comboitem();
+                    comboitem1.setLabel("STARTTLS");
+
+                    combobox.getItems().add(comboitem);
+                    combobox.getItems().add(comboitem1);
+                    combobox.setSelectedIndex(0);
+
+                    row.appendChild(combobox);
+
+                    // Need for testing E-mail connection
+                    protocolsCombobox= combobox;*/
             }
 
             public Constraint checkPropertyValue(

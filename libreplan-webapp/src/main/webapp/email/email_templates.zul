@@ -23,6 +23,7 @@
                             <grid>
                                 <columns>
                                     <column width="220px"></column>
+                                    <column width="420px"></column>
                                 </columns>
                                 <rows>
                                     <row>
@@ -43,10 +44,28 @@
                                                  selectedItem="@{emailTemplateController.selectedEmailTemplateEnum}"/>
                                     </row>
                                     <row>
+                                        <label value="${i18n:_('E-mail subject')}"/>
+                                        <textbox id="subjectTextbox"
+                                                 width="400px;" />
+                                    </row>
+                                    <row>
                                         <label value="${i18n:_('Template contents')}"/>
+
                                         <textbox id="contentsTextbox"
-                                                 rows="15" width="600px;"
+                                                 rows="15" width="400px;"
                                                  tabindex="11"/>
+                                        <vbox>
+                                            <!--//TODO i18n-->
+                                            <label value="${i18n:_('Possible content values:')}"/>
+                                            <label value="${i18n:_('{username}')}"/>
+                                            <label value="${i18n:_('{firstname}')}"/>
+                                            <label value="${i18n:_('{lastname}')}"/>
+                                            <label value="${i18n:_('{project}')}"/>
+                                            <label value="${i18n:_('{resource}')}"/>
+                                            <label value="${i18n:_('{task}')}"/>
+                                            <label value="${i18n:_('{url}')}"/>
+                                        </vbox>
+
                                     </row>
                                 </rows>
                             </grid>

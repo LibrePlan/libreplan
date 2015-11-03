@@ -67,6 +67,7 @@ import org.zkoss.ganttz.extensions.TabProxy;
 import org.zkoss.ganttz.util.LongOperationFeedback;
 import org.zkoss.ganttz.util.LongOperationFeedback.ILongOperation;
 import org.zkoss.zk.ui.Desktop;
+import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -83,6 +84,9 @@ import org.zkoss.zk.ui.util.Composer;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class MultipleTabsPlannerController implements Composer,
         IGlobalViewEntryPoints {
+
+    // TODO i18n
+    public static String WELCOME_URL = "-- no URL provided --";
 
     private final class TabWithLoadingFeedback extends TabProxy {
         private boolean feedback = true;
@@ -419,6 +423,10 @@ public class MultipleTabsPlannerController implements Composer,
     @Override
     @Transactional(readOnly=true)
     public void doAfterCompose(org.zkoss.zk.ui.Component comp) {
+
+        Execution execution = Executions.getCurrent();
+        WELCOME_URL = "http://" + execution.getServerName() + ":" + execution.getServerPort() + Executions.encodeURL("/planner/index.zul");
+
         tabsSwitcher = (TabSwitcher) comp;
         breadcrumbs = comp.getPage().getFellow("breadcrumbs");
         tabsSwitcher

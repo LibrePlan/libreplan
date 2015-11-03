@@ -41,13 +41,15 @@ import org.libreplan.business.planner.entities.PositionConstraintType;
 import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.planner.entities.TaskPositionConstraint;
+import org.libreplan.business.resources.entities.Resource;
 import org.libreplan.business.resources.entities.Worker;
 import org.libreplan.business.scenarios.IScenarioManager;
+import org.libreplan.business.users.entities.User;
 import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.business.workingday.IntraDayDate;
 import org.libreplan.web.I18nHelper;
 import org.libreplan.web.common.Util;
-import org.libreplan.web.email.INotificationQueueModel;
+import org.libreplan.web.email.IEmailNotificationModel;
 import org.libreplan.web.orders.IOrderModel;
 import org.libreplan.web.planner.allocation.AllocationResult;
 import org.libreplan.web.resources.worker.IWorkerModel;
@@ -126,7 +128,7 @@ public class TaskPropertiesController extends GenericForwardComposer {
 
     public static AllocationResult allocationResult;
 
-    private INotificationQueueModel notificationQueueModel;
+    private IEmailNotificationModel emailNotificationModel;
 
     private IOrderModel orderModel;
 
@@ -431,7 +433,7 @@ public class TaskPropertiesController extends GenericForwardComposer {
     }
 
     public void accept() {
-        addNewRowToNotificationQueueWithEmailTemplateTypeOne();
+        addNewRowToEmailNotificationeWithEmailTemplateTypeOne();
 
         boolean ok = true;
         if (currentTaskElement instanceof ITaskPositionConstrained) {
@@ -729,7 +731,7 @@ public class TaskPropertiesController extends GenericForwardComposer {
     }
 
 
-    private void addNewRowToNotificationQueueWithEmailTemplateTypeOne(){
+    private void addNewRowToEmailNotificationeWithEmailTemplateTypeOne(){
 
         if ( allocationResult != null ) {
 
@@ -738,38 +740,40 @@ public class TaskPropertiesController extends GenericForwardComposer {
              * Then send valid data to notification_queue table */
 
             List<Worker> workersList = workerModel.getWorkers();
+            Worker currentWorker;
+            Resource currentResource;
+            User currentUser;
 
             for (int i = 0; i < workersList.size(); i++)
 
-                for (int j = 0; j < allocationResult.getSpecificAllocations().size(); j++)
+                for (int j = 0; j < allocationResult.getSpecificAllocations().size(); j++){
 
-                    if ( workersList.get(i).getId().equals(allocationResult.getSpecificAllocations().get(j).getResource().getId()) ){
+                    currentWorker = workersList.get(i);
+                    currentResource = allocationResult.getSpecificAllocations().get(j).getResource();
 
-                        workersList.get(i).setUser(workerModel.getBoundUserFromDB(workersList.get(i)));
+                    if ( currentWorker.getId().equals(currentResource.getId()) ){
 
-                        if ( workersList.get(i).getUser() != null &&
-                                workersList.get(i).getUser().isInRole(UserRole.ROLE_EMAIL_TASK_ASSIGNED_TO_RESOURCE) == true ) {
+                        workersList.get(i).setUser(workerModel.getBoundUserFromDB(currentWorker));
+                        currentUser = currentWorker.getUser();
 
-                            notificationQueueModel.setType(EmailTemplateEnum.TEMPLATE_TASK_ASSIGNED_TO_RESOURCE);
+                        if ( currentUser != null &&
+                                currentUser.isInRole(UserRole.ROLE_EMAIL_TASK_ASSIGNED_TO_RESOURCE) ) {
 
-                            notificationQueueModel.setUpdated(new Date());
+                            emailNotificationModel.setType(EmailTemplateEnum.TEMPLATE_TASK_ASSIGNED_TO_RESOURCE);
 
-                            notificationQueueModel.setResource(allocationResult.getSpecificAllocations().get(i).getResource());
+                            emailNotificationModel.setUpdated(new Date());
 
-                            notificationQueueModel.setTask(currentTaskElement.getTaskSource().getTask());
+                            emailNotificationModel.setResource(allocationResult.getSpecificAllocations().get(j).getResource());
 
-                            List<Order> orderList = orderModel.getOrders();
+                            emailNotificationModel.setTask(currentTaskElement.getTaskSource().getTask());
 
-                            for (int k = 0; k < orderList.size(); k++)
+                            emailNotificationModel.setProject(currentTaskElement.getParent().getTaskSource().getTask());
 
-                                if ( orderList.get(k).getCode().equals(currentTaskElement.getProjectCode()) )
-
-                                    notificationQueueModel.setProject(orderList.get(k).getId());
-
-                            notificationQueueModel.confirmSave();
-
+                            emailNotificationModel.confirmSave();
                         }
+
                     }
+                }
         }
     }
 

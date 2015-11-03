@@ -1,7 +1,7 @@
 package org.libreplan.web.email;
 
+import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
-import org.libreplan.business.email.entities.NotificationQueue;
 import org.libreplan.business.settings.entities.Language;
 
 import org.libreplan.business.email.entities.EmailTemplateEnum;
@@ -18,6 +18,7 @@ import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Textbox;
 
+// TODO not importing all packages
 import java.util.*;
 
 import static org.libreplan.web.I18nHelper._;
@@ -37,6 +38,8 @@ public class EmailTemplateController extends GenericForwardComposer{
     private Component messagesContainer;
 
     private Textbox contentsTextbox;
+
+    private Textbox subjectTextbox;
 
 
     public static ListitemRenderer languagesRenderer = new ListitemRenderer() {
@@ -58,18 +61,20 @@ public class EmailTemplateController extends GenericForwardComposer{
         comp.setVariable("emailTemplateController", this, true);
         messages = new MessagesForUser(messagesContainer);
         contentsTextbox.setValue(getInitialContentData());
+        subjectTextbox.setValue(getInitialSubjectData());
     }
 
     public boolean save(){
         try {
             setSelectedContent();
+            setSelectedSubject();
             emailTemplateModel.confirmSave();
             messages.clearMessages();
             messages.showMessage(Level.INFO, _("E-mail template saved"));
             return true;
         } catch (ValidationException e) {
             messages.showInvalidValues(e);
-        }
+        } catch (InstanceNotFoundException e) {}
         return false;
     }
 
@@ -136,6 +141,13 @@ public class EmailTemplateController extends GenericForwardComposer{
     }
     public String getInitialContentData(){
         return emailTemplateModel.initializeContent();
+    }
+
+    public void setSelectedSubject(){
+        emailTemplateModel.setSubject(subjectTextbox.getValue());
+    }
+    public String getInitialSubjectData(){
+        return emailTemplateModel.initializeSubject();
     }
 
     private void getContentDataBySelectedLanguage(){

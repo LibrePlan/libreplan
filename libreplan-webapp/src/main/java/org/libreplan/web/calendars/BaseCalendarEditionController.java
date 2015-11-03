@@ -835,8 +835,8 @@ public abstract class BaseCalendarEditionController extends
                 comboItem.setLabel(parent.getName());
                 comboItem.setParent(comboParents);
 
-                if ((version.getParent()) != null
-                        && (parent.getId().equals(version.getParent().getId()))) {
+                if ( (version.getParent() ) != null &&
+                        (parent.getId().equals(version.getParent().getId())) ) {
                     comboParents.setSelectedItem(comboItem);
                 }
             }
@@ -845,7 +845,7 @@ public abstract class BaseCalendarEditionController extends
                     new EventListener() {
                         @Override
                         public void onEvent(Event event) throws Exception {
-                            if (comboParents.getSelectedItem() != null) {
+                            if ( comboParents.getSelectedItem() != null ) {
                                 BaseCalendar parent = (BaseCalendar) comboParents
                                         .getSelectedItem().getValue();
                                 version.setParent(parent);
@@ -861,7 +861,7 @@ public abstract class BaseCalendarEditionController extends
             }, new Util.Setter<Comboitem>() {
                 @Override
                 public void set(Comboitem comboItem) {
-                    if (((comboItem != null)) && (comboItem.getValue() != null)
+                    if ( ((comboItem != null)) && (comboItem.getValue() != null )
                             && (comboItem.getValue() instanceof BaseCalendar)) {
                         BaseCalendar parent = (BaseCalendar) comboItem
                                 .getValue();

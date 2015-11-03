@@ -59,7 +59,7 @@
       <property name="surname"/>
       <property name="nif"/>
 
-        <many-to-one name="user" cascade="save-update"
+        <many-to-one name="user" cascade="save-update" access="property" lazy="false"
             class="org.libreplan.business.users.entities.User"
             column="user_id" unique="true" />
 
