@@ -23,9 +23,23 @@ package org.libreplan.web.common;
 
 import static org.libreplan.web.I18nHelper._;
 
-import java.util.*;
-// TODO not importing all packages
-import javax.mail.*;
+import java.util.List;
+import java.util.ConcurrentModificationException;
+import java.util.Comparator;
+import java.util.Properties;
+import java.util.ArrayList;
+import java.util.Set;
+import java.util.Map;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Arrays;
+
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.AuthenticationFailedException;
+import javax.mail.MessagingException;
+
+
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -63,8 +77,27 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
-// TODO not importing all packages
-import org.zkoss.zul.*;
+
+
+import org.zkoss.zul.ListitemRenderer;
+import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Grid;
+import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Intbox;
+import org.zkoss.zul.Textbox;
+import org.zkoss.zul.Radiogroup;
+import org.zkoss.zul.Listitem;
+import org.zkoss.zul.Row;
+import org.zkoss.zul.Constraint;
+import org.zkoss.zul.RowRenderer;
+import org.zkoss.zul.Comboitem;
+import org.zkoss.zul.Radio;
+import org.zkoss.zul.Button;
+import org.zkoss.zul.Label;
+import org.zkoss.zul.Rows;
+import org.zkoss.zul.SimpleListModel;
+import org.zkoss.zul.Messagebox;
+
 import org.zkoss.zul.api.Window;
 import org.zkoss.zul.impl.InputElement;
 
@@ -117,6 +150,10 @@ public class ConfigurationController extends GenericForwardComposer {
     private Connector selectedConnector;
 
     private Combobox protocolsCombobox;
+
+    private Textbox emailUsernameTextbox;
+
+    private Textbox emailPasswordTextbox;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -202,32 +239,38 @@ public class ConfigurationController extends GenericForwardComposer {
     }
 
     public void save() throws InterruptedException {
-        ConstraintChecker.isValid(configurationWindow);
-        if (checkValidEntitySequenceRows()) {
-            try {
-                configurationModel.confirm();
-                configurationModel.init();
-                messages.showMessage(Level.INFO, _("Changes saved"));
-                if (getSelectedConnector() != null
-                        && !configurationModel
-                        .scheduleOrUnscheduleJobs(getSelectedConnector())) {
-                    messages.showMessage(
-                            Level.ERROR,
-                            _("Scheduling or unscheduling of jobs for this connector is not completed"));
+
+        if ( getSelectedConnector().getName().equals("E-mail") && emailUsernamePasswordIsEmpty() == true) {
+            messages.showMessage(Level.ERROR, _("E-mail username/password - empty"));
+        } else {
+                ConstraintChecker.isValid(configurationWindow);
+                if (checkValidEntitySequenceRows()) {
+                    try {
+                        configurationModel.confirm();
+                        configurationModel.init();
+                        messages.showMessage(Level.INFO, _("Changes saved"));
+                        if (getSelectedConnector() != null
+                                && !configurationModel
+                                .scheduleOrUnscheduleJobs(getSelectedConnector())) {
+                            messages.showMessage(
+                                    Level.ERROR,
+                                    _("Scheduling or unscheduling of jobs for this connector is not completed"));
+                        }
+                    reloadWindow();
+                    reloadEntitySequences();
+                    reloadConnectors();
+                } catch (ValidationException e) {
+                    messages.showInvalidValues(e);
+                } catch (ConcurrentModificationException e) {
+                    messages.showMessage(Level.ERROR, e.getMessage());
+                    configurationModel.init();
+                    reloadWindow();
+                    reloadEntitySequences();
+                    reloadConnectors();
                 }
-                reloadWindow();
-                reloadEntitySequences();
-                reloadConnectors();
-            } catch (ValidationException e) {
-                messages.showInvalidValues(e);
-            } catch (ConcurrentModificationException e) {
-                messages.showMessage(Level.ERROR, e.getMessage());
-                configurationModel.init();
-                reloadWindow();
-                reloadEntitySequences();
-                reloadConnectors();
             }
         }
+
     }
 
     public void cancel() throws InterruptedException {
@@ -1132,7 +1175,7 @@ public class ConfigurationController extends GenericForwardComposer {
 
                 Util.appendLabel(row, _(property.getKey()));
 
-                // FIXME this is not perfect solution for future
+                // FIXME this is not perfect solution
                 if ( property.getKey().equals("Protocol") ) appendValueCombobox(row, property);
                 else appendValueTextbox(row, property);
             }
@@ -1157,12 +1200,20 @@ public class ConfigurationController extends GenericForwardComposer {
                         property.setValue(value);
                     }
                 });
+
                 if ( property.getKey().equals(
                         PredefinedConnectorProperties.PASSWORD) ||
                     property.getKey().equals(
                         PredefinedConnectorProperties.EMAIL_PASSWORD) ) {
                     textbox.setType("password");
                 }
+
+                // Need for method emailUsernamePasswordIsEmpty()
+                if ( property.getKey().equals(
+                        PredefinedConnectorProperties.EMAIL_USERNAME) ) emailUsernameTextbox = textbox;
+
+                if ( property.getKey().equals(
+                        PredefinedConnectorProperties.EMAIL_PASSWORD) ) emailPasswordTextbox = textbox;
 
                 row.appendChild(textbox);
             }
@@ -1218,49 +1269,7 @@ public class ConfigurationController extends GenericForwardComposer {
                 row.appendChild(combobox);
 
                 // Need for testing E-mail connection
-                protocolsCombobox= combobox;
-
-
-
-
-                    /*final Combobox combobox = new Combobox();
-                    combobox.setWidth("400px");
-
-
-                    // TODO make get/set
-
-                    Util.bind(combobox, new Util.Getter<Comboitem>() {
-
-                        @Override
-                        public Comboitem get() {
-                            Comboitem comboitem = new Comboitem();
-                            comboitem.setLabel("SMTP");
-                            return comboitem;
-                        }
-                    }, new Util.Setter<Comboitem>() {
-
-                        @Override
-                        public void set(Comboitem value) {
-                            property.setValue("comboitem" *//*value.getLabel()*//*);
-                            value.setLabel(property.getValue());
-                        }
-                    });
-
-
-                    Comboitem comboitem = new Comboitem();
-                    comboitem.setLabel("SMTP");
-
-                    Comboitem comboitem1 = new Comboitem();
-                    comboitem1.setLabel("STARTTLS");
-
-                    combobox.getItems().add(comboitem);
-                    combobox.getItems().add(comboitem1);
-                    combobox.setSelectedIndex(0);
-
-                    row.appendChild(combobox);
-
-                    // Need for testing E-mail connection
-                    protocolsCombobox= combobox;*/
+                protocolsCombobox = combobox;
             }
 
             public Constraint checkPropertyValue(
@@ -1269,27 +1278,33 @@ public class ConfigurationController extends GenericForwardComposer {
                 return new Constraint() {
                     @Override
                     public void validate(Component comp, Object value) {
-                        if (key.equals(PredefinedConnectorProperties.ACTIVATED)) {
-                            if (!((String) value).equalsIgnoreCase("Y")
-                                    && !((String) value).equalsIgnoreCase("N")) {
+                        if ( key.equals(PredefinedConnectorProperties.ACTIVATED) ) {
+                            if ( !((String) value).equalsIgnoreCase("Y")
+                                    && !((String) value).equalsIgnoreCase("N") ) {
                                 throw new WrongValueException(comp, _(
                                         "Only {0} allowed", "Y/N"));
                             }
-                        } else if (key
+                        } else if ( key
                                 .equals(PredefinedConnectorProperties.SERVER_URL)
                                 || key.equals(PredefinedConnectorProperties.USERNAME)
                                 || key.equals(PredefinedConnectorProperties.PASSWORD)
-                                || key.equals(PredefinedConnectorProperties.JIRA_HOURS_TYPE)) {
+                                || key.equals(PredefinedConnectorProperties.JIRA_HOURS_TYPE) ) {
                             ((InputElement) comp).setConstraint("no empty:"
                                     + _("cannot be empty"));
-                        } else if (key
+                        } else if ( key
                                 .equals(PredefinedConnectorProperties.TIM_NR_DAYS_TIMESHEET)
-                                || key.equals(PredefinedConnectorProperties.TIM_NR_DAYS_ROSTER)) {
-                            if (!isNumeric((String) value)) {
+                                || key.equals(PredefinedConnectorProperties.TIM_NR_DAYS_ROSTER) ) {
+                            if ( !isNumeric((String) value) ) {
                                 throw new WrongValueException(comp,
                                         _("Only digits allowed"));
                             }
                         }
+
+                        // Validate E-mail connector
+                        if ( key.equals(PredefinedConnectorProperties.HOST) ||
+                                key.equals(PredefinedConnectorProperties.PORT) ||
+                                key.equals(PredefinedConnectorProperties.EMAIL_SENDER) )
+                            ((InputElement) comp).setConstraint("no empty:" + _("cannot be empty"));
                     }
                 };
             }
@@ -1304,6 +1319,18 @@ public class ConfigurationController extends GenericForwardComposer {
             }
 
         };
+    }
+
+    private boolean emailUsernamePasswordIsEmpty(){
+
+        if ( protocolsCombobox.getSelectedItem().getLabel().equals("STARTTLS") &&
+                emailUsernameTextbox.getValue() != null &&
+                emailPasswordTextbox.getValue() != null &&
+                emailUsernameTextbox.getValue().length() != 0 &&
+                emailPasswordTextbox.getValue().length() != 0 )
+            return false;
+
+        else return true;
     }
 
 }

@@ -11,6 +11,7 @@
     <name>LibrePlan Web Client Module</name>
 
     <profiles>
+
         <profile>
             <id>reports</id>
             <activation>
@@ -71,6 +72,7 @@
                 </plugins>
             </build>
         </profile>
+
         <profile>
             <id>userguide</id>
             <activation>
@@ -195,6 +197,7 @@
                 </plugins>
             </build>
         </profile>
+
         <profile>
             <id>i18n</id>
             <activation>

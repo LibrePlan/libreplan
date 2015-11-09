@@ -85,7 +85,6 @@ import org.zkoss.zk.ui.util.Composer;
 public class MultipleTabsPlannerController implements Composer,
         IGlobalViewEntryPoints {
 
-    // TODO i18n
     public static String WELCOME_URL = "-- no URL provided --";
 
     private final class TabWithLoadingFeedback extends TabProxy {

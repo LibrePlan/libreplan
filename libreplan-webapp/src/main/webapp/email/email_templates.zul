@@ -1,3 +1,23 @@
+ <!--
+    This file is part of LibrePlan
+
+    Copyright (C) 2015 LibrePlan
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+-->
+
+
 <?page id="editEmailTemplate" title="${i18n:_('LibrePlan: Email Templates')}" ?>
 <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
@@ -55,7 +75,6 @@
                                                  rows="15" width="400px;"
                                                  tabindex="11"/>
                                         <vbox>
-                                            <!--//TODO i18n-->
                                             <label value="${i18n:_('Possible content values:')}"/>
                                             <label value="${i18n:_('{username}')}"/>
                                             <label value="${i18n:_('{firstname}')}"/>

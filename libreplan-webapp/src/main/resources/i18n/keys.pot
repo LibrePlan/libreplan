@@ -9234,3 +9234,11 @@ msgstr ""
 #: libreplan-business/src/main/java/org/libreplan/business/common/entities/PredefinedConnectorProperties.java:56
 msgid "Protocol"
 msgstr ""
+
+#: libreplan-webapp/src/main/webapp/email/email_templates.zul:56
+msgid "Possible content values:"
+msgstr ""
+
+#: libreplan-webapp/src/main/webapp/java/org/libreplan/web/planner/tabs/MultipleTabsPlannerController:90
+msgid "-- no URL provided --"
+msgstr ""

@@ -433,7 +433,7 @@ public class TaskPropertiesController extends GenericForwardComposer {
     }
 
     public void accept() {
-        addNewRowToEmailNotificationeWithEmailTemplateTypeOne();
+        EmailNotificationAddNewWithTaskAssignedToResource();
 
         boolean ok = true;
         if (currentTaskElement instanceof ITaskPositionConstrained) {
@@ -730,8 +730,7 @@ public class TaskPropertiesController extends GenericForwardComposer {
         return Util.getMoneyFormat();
     }
 
-
-    private void addNewRowToEmailNotificationeWithEmailTemplateTypeOne(){
+    private void EmailNotificationAddNewWithTaskAssignedToResource(){
 
         if ( allocationResult != null ) {
 
@@ -771,7 +770,6 @@ public class TaskPropertiesController extends GenericForwardComposer {
 
                             emailNotificationModel.confirmSave();
                         }
-
                     }
                 }
         }

@@ -1,5 +1,23 @@
-package org.libreplan.importers;
+/*
+ * This file is part of LibrePlan
+ *
+ * Copyright (C) 2015 LibrePlan
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
 
+package org.libreplan.importers;
 
 import org.libreplan.business.common.daos.IConnectorDAO;
 import org.libreplan.business.common.entities.Connector;
@@ -21,15 +39,21 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-// TODO not importing all packages
-import javax.mail.*;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Transport;
+import javax.mail.Session;
+import javax.mail.PasswordAuthentication;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-// TODO not importing all packages
-import java.util.*;
+import java.util.List;
+import java.util.Locale;
+import java.util.Properties;
 
 /**
+ * Sends E-mail to users with data that storing in notification_queue table
+ *
  * Created by
  * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
  * on 13.10.15.
@@ -54,16 +78,8 @@ public class SendEmail implements ISendEmail {
     private List<EmailTemplate> emailTemplates;
 
 
-
-
     @Override
     public void sendEmail() {
-        /*
-        // TODO
-        1. check all added classes to identity (Licenses, annotations, comments, ...)
-        2. the mvn compile flags -Ddefault.passwordsControl=false -Ddefault.exampleUsersDisabled=false are used to compile the demo version of LibrePlan.
-           There must also be a flag like "sendingEmail" that can be set to false to make sure that the demo edition will not become the worlds biggest spammer.
-        */
 
         notifications = emailNotificationModel.getAll();
 
@@ -90,7 +106,6 @@ public class SendEmail implements ISendEmail {
 
 
         // Modify text that will be composed
-        //List<String> predefinedCommandsForTemplateTaskAssignedToResource;
         String text = currentEmailTemplate.getContent();
 
         if ( type.equals(EmailTemplateEnum.TEMPLATE_TASK_ASSIGNED_TO_RESOURCE) ){
@@ -115,7 +130,6 @@ public class SendEmail implements ISendEmail {
         String psswrd = null;
 
         for (int i = 0; i < emailConnectorProperties.size(); i++){
-            if (emailConnectorProperties.get(i).getValue() != null)
             switch (i){
                 case 1: {
                     protocol = emailConnectorProperties.get(1).getValue();
@@ -148,15 +162,14 @@ public class SendEmail implements ISendEmail {
         Properties properties = new Properties();
 
         if ( protocol.equals("STARTTLS") ) {
+            properties.put("mail.smtp.starttls.enable", "true");
             properties.put("mail.smtp.host", host);
-            properties.put("mail.smtp.socketFactory.port", "465");
+            properties.put("mail.smtp.socketFactory.port", port);
             properties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
             properties.put("mail.smtp.auth", "true");
-            properties.put("mail.smtp.port", "465");
+            properties.put("mail.smtp.port", port);
         }
         else if ( protocol.equals("SMTP") ) {
-            properties.put("mail.smtp.auth", "true");
-            properties.put("mail.smtp.starttls.enable", "true");
             properties.put("mail.smtp.host", host);
             properties.put("mail.smtp.port", port);
         }
@@ -164,7 +177,8 @@ public class SendEmail implements ISendEmail {
         final String username = usrnme;
         final String password = psswrd;
 
-        Session mailSession = Session.getDefaultInstance(properties,
+        /* It is very important to use Session.getInstance instead of Session.getDefaultInstance  */
+        Session mailSession = Session.getInstance(properties,
                 new javax.mail.Authenticator() {
                     protected PasswordAuthentication getPasswordAuthentication() {
                         return new PasswordAuthentication(username, password);
@@ -172,28 +186,27 @@ public class SendEmail implements ISendEmail {
                 });
 
         // Send message
-        try{
-            MimeMessage message = new MimeMessage(mailSession);
-            // TODO check from field
-            message.setFrom(new InternetAddress(sender));
-            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(receiver));
+            try{
+                MimeMessage message = new MimeMessage(mailSession);
 
-            String subject = currentEmailTemplate.getSubject();
-            message.setSubject(subject);
+                message.setFrom(new InternetAddress(sender));
+                message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(receiver));
 
-            message.setText(text);
+                String subject = currentEmailTemplate.getSubject();
+                message.setSubject(subject);
 
-            // TODO delete me
-            mailSession.setDebug(true);
+                message.setText(text);
 
-            Transport.send(message);
+                Transport.send(message);
 
-        }catch (MessagingException e){throw new RuntimeException(e);}
+            }catch (MessagingException e){throw new RuntimeException(e);}
 
     }
+
     private void deleteAllNotificationsAfterSending(){
-
+        emailNotificationModel.deleteAll();
     }
+
     private List<ConnectorProperty> getEmailConnectorProperties() {
 
         Connector connector = connectorDAO.findUniqueByName("E-mail");
@@ -202,6 +215,7 @@ public class SendEmail implements ISendEmail {
 
         return properties;
     }
+
     private EmailTemplate findCurrentEmailTemplate(EmailTemplateEnum templateEnum, Locale locale){
         emailTemplates = emailTemplateModel.getAll();
         for (EmailTemplate item : emailTemplates)
@@ -209,6 +223,7 @@ public class SendEmail implements ISendEmail {
                 return item;
         return null;
     }
+
     private Worker getCurrentWorker(Long resourceID){
         List<Worker> workerList = workerModel.getWorkers();
         for(int i = 0; i < workerList.size(); i++)
