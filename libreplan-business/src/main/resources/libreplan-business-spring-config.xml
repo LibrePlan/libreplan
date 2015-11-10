@@ -146,6 +146,9 @@
         <property name="exampleUsersDisabled">
             <value>${default.exampleUsersDisabled}</value>
         </property>
+        <property name="emailSendingDisabled">
+            <value>${default.emailSendingDisabled}</value>
+        </property>
     </bean>
 
     <bean id="scenarioManager"

@@ -26,16 +26,19 @@ import org.apache.commons.lang.BooleanUtils;
 /**
  * This is a singleton that contains the compilation options passed from Maven.
  *
- * Currently we have two options:
+ * Currently we have three options:
  * <ul>
  * <li>Enable/Disable the warning changing default password</li>
  * <li>Enable/Disable default users (such as wsreader, wswriter,
  * wssubcontracting, manager, hresources, outsourcing and reports)</li>
+ * <li>Enable/Disable E-mail sending functionality</li>
  * </ul>
  *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  * @author Manuel Rego Casasnovas <rego@igalia.com>
+ * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
  */
+
 public class Configuration {
 
     private static final Configuration singleton = new Configuration();
@@ -43,6 +46,8 @@ public class Configuration {
     private Boolean defaultPasswordsControl;
 
     private Boolean exampleUsersDisabled;
+
+    private Boolean emailSendingDisabled;
 
     private Configuration() {
     }
@@ -59,28 +64,39 @@ public class Configuration {
         return singleton.getDefaultPasswordsControl() != null ? singleton
                 .getDefaultPasswordsControl() : true;
     }
-
+    public Boolean getDefaultPasswordsControl() {
+        return defaultPasswordsControl;
+    }
     public void setDefaultPasswordsControl(Boolean defaultPasswordsControl) {
         this.defaultPasswordsControl = defaultPasswordsControl;
     }
 
-    public Boolean getDefaultPasswordsControl() {
-        return defaultPasswordsControl;
-    }
-
-    public void setExampleUsersDisabled(Boolean exampleUsersDisabled) {
-        this.exampleUsersDisabled = exampleUsersDisabled;
-    }
-
-    public Boolean getExampleUsersDisabled() {
-        return exampleUsersDisabled;
-    }
 
     /**
      * Returns the value of example users disabled compilation option
      */
     public static boolean isExampleUsersDisabled() {
         return BooleanUtils.isNotFalse(singleton.getExampleUsersDisabled());
+    }
+    public Boolean getExampleUsersDisabled() {
+        return exampleUsersDisabled;
+    }
+    public void setExampleUsersDisabled(Boolean exampleUsersDisabled) {
+        this.exampleUsersDisabled = exampleUsersDisabled;
+    }
+
+
+    /**
+     * Returns the value of E-mail sending disabled compilation option
+     */
+    public static boolean isEmailSendingDisabled(){
+        return BooleanUtils.isNotFalse(singleton.getEmailSendingDisabled());
+    }
+    public Boolean getEmailSendingDisabled(){
+        return emailSendingDisabled;
+    }
+    public void setEmailSendingDisabled(Boolean emailSendingDisabled){
+        this.emailSendingDisabled = emailSendingDisabled;
     }
 
 }

@@ -19,6 +19,7 @@
 
 package org.libreplan.importers;
 
+import org.libreplan.business.common.Configuration;
 import org.libreplan.business.common.daos.IConnectorDAO;
 import org.libreplan.business.common.entities.Connector;
 import org.libreplan.business.common.entities.ConnectorProperty;
@@ -80,12 +81,11 @@ public class SendEmail implements ISendEmail {
 
     @Override
     public void sendEmail() {
-
-        notifications = emailNotificationModel.getAll();
-
-        for (int i = 0; i < notifications.size(); i++) composeMessageForUser(notifications.get(i));
-
-        deleteAllNotificationsAfterSending();
+        if ( !Configuration.isEmailSendingDisabled() ){
+            notifications = emailNotificationModel.getAll();
+            for (int i = 0; i < notifications.size(); i++) composeMessageForUser(notifications.get(i));
+            deleteAllNotificationsAfterSending();
+        }
     }
 
     private void composeMessageForUser(EmailNotification notification){
