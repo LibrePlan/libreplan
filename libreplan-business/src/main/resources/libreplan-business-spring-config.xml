@@ -146,8 +146,8 @@
         <property name="exampleUsersDisabled">
             <value>${default.exampleUsersDisabled}</value>
         </property>
-        <property name="emailSendingDisabled">
-            <value>${default.emailSendingDisabled}</value>
+        <property name="emailSendingEnabled">
+            <value>${default.emailSendingEnabled}</value>
         </property>
     </bean>
 

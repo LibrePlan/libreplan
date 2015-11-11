@@ -97,7 +97,7 @@
                 <columns>
                    <column label="${i18n:_('Field')}" width="150px"/>
                    <column label="${i18n:_('Allowed values')}" />
-                    <column label="${i18n:_('Allowed Special Characters')}" />
+                   <column label="${i18n:_('Allowed Special Characters')}" />
                 </columns>
                 <rows>
                     <row>

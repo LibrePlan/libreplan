@@ -155,6 +155,8 @@ public class ConfigurationController extends GenericForwardComposer {
 
     private Textbox emailPasswordTextbox;
 
+    private Textbox emailSenderTextbox;
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
@@ -240,8 +242,8 @@ public class ConfigurationController extends GenericForwardComposer {
 
     public void save() throws InterruptedException {
 
-        if ( getSelectedConnector().getName().equals("E-mail") && emailUsernamePasswordIsEmpty() == true) {
-            messages.showMessage(Level.ERROR, _("E-mail username/password - empty"));
+        if ( getSelectedConnector().getName().equals("E-mail") && isEmailFieldsValid() == false) {
+            messages.showMessage(Level.ERROR, _("Check username/password/sender fields"));
         } else {
                 ConstraintChecker.isValid(configurationWindow);
                 if (checkValidEntitySequenceRows()) {
@@ -1208,12 +1210,15 @@ public class ConfigurationController extends GenericForwardComposer {
                     textbox.setType("password");
                 }
 
-                // Need for method emailUsernamePasswordIsEmpty()
+                // Need for method validateEmailFields()
                 if ( property.getKey().equals(
                         PredefinedConnectorProperties.EMAIL_USERNAME) ) emailUsernameTextbox = textbox;
 
                 if ( property.getKey().equals(
                         PredefinedConnectorProperties.EMAIL_PASSWORD) ) emailPasswordTextbox = textbox;
+
+                if ( property.getKey().equals(
+                        PredefinedConnectorProperties.EMAIL_SENDER) ) emailSenderTextbox = textbox;
 
                 row.appendChild(textbox);
             }
@@ -1285,26 +1290,24 @@ public class ConfigurationController extends GenericForwardComposer {
                                         "Only {0} allowed", "Y/N"));
                             }
                         } else if ( key
-                                .equals(PredefinedConnectorProperties.SERVER_URL)
-                                || key.equals(PredefinedConnectorProperties.USERNAME)
-                                || key.equals(PredefinedConnectorProperties.PASSWORD)
-                                || key.equals(PredefinedConnectorProperties.JIRA_HOURS_TYPE) ) {
+                                .equals(PredefinedConnectorProperties.SERVER_URL) ||
+                                key.equals(PredefinedConnectorProperties.USERNAME) ||
+                                key.equals(PredefinedConnectorProperties.PASSWORD) ||
+                                key.equals(PredefinedConnectorProperties.JIRA_HOURS_TYPE) ||
+                                key.equals(PredefinedConnectorProperties.HOST) ||
+                                key.equals(PredefinedConnectorProperties.PORT) ||
+                                key.equals(PredefinedConnectorProperties.EMAIL_SENDER) ) {
                             ((InputElement) comp).setConstraint("no empty:"
                                     + _("cannot be empty"));
                         } else if ( key
-                                .equals(PredefinedConnectorProperties.TIM_NR_DAYS_TIMESHEET)
-                                || key.equals(PredefinedConnectorProperties.TIM_NR_DAYS_ROSTER) ) {
+                                .equals(PredefinedConnectorProperties.TIM_NR_DAYS_TIMESHEET) ||
+                                key.equals(PredefinedConnectorProperties.TIM_NR_DAYS_ROSTER) ||
+                                key.equals(PredefinedConnectorProperties.PORT) ) {
                             if ( !isNumeric((String) value) ) {
                                 throw new WrongValueException(comp,
                                         _("Only digits allowed"));
                             }
                         }
-
-                        // Validate E-mail connector
-                        if ( key.equals(PredefinedConnectorProperties.HOST) ||
-                                key.equals(PredefinedConnectorProperties.PORT) ||
-                                key.equals(PredefinedConnectorProperties.EMAIL_SENDER) )
-                            ((InputElement) comp).setConstraint("no empty:" + _("cannot be empty"));
                     }
                 };
             }
@@ -1321,16 +1324,17 @@ public class ConfigurationController extends GenericForwardComposer {
         };
     }
 
-    private boolean emailUsernamePasswordIsEmpty(){
+    private boolean isEmailFieldsValid(){
 
         if ( protocolsCombobox.getSelectedItem().getLabel().equals("STARTTLS") &&
                 emailUsernameTextbox.getValue() != null &&
                 emailPasswordTextbox.getValue() != null &&
                 emailUsernameTextbox.getValue().length() != 0 &&
-                emailPasswordTextbox.getValue().length() != 0 )
-            return false;
+                emailPasswordTextbox.getValue().length() != 0 &&
+                emailSenderTextbox.getValue().matches("^\\S+@\\S+\\.\\S+$") )
+            return true;
 
-        else return true;
+        else return false;
     }
 
 }

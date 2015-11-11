@@ -506,9 +506,9 @@ example:
 
     mvn -Ddefault.passwordsControl=false -Ddefault.exampleUsersDisabled=false clean install
 
-* Set *default.emailSendingDisabled* to true::
+* Set *default.emailSendingEnabled* to false::
 
-    mvn -Ddefault.emailSendingDisabled=true clean install
+    mvn -Ddefault.emailSendingEnabled=false clean install
 
 Tests
 -----

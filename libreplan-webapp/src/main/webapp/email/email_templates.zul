@@ -74,17 +74,53 @@
                                         <textbox id="contentsTextbox"
                                                  rows="15" width="400px;"
                                                  tabindex="11"/>
-                                        <vbox>
-                                            <label value="${i18n:_('Possible content values:')}"/>
-                                            <label value="${i18n:_('{username}')}"/>
-                                            <label value="${i18n:_('{firstname}')}"/>
-                                            <label value="${i18n:_('{lastname}')}"/>
-                                            <label value="${i18n:_('{project}')}"/>
-                                            <label value="${i18n:_('{resource}')}"/>
-                                            <label value="${i18n:_('{task}')}"/>
-                                            <label value="${i18n:_('{url}')}"/>
-                                        </vbox>
+                                        <groupbox closable="false" width="270px">
+                                            <caption label="${i18n:_('Possible content keywords')}"/>
+                                            <grid width="250px">
+                                                <columns>
+                                                    <column label="${i18n:_('Keyword')}"/>
+                                                    <column label="${i18n:_('Description')}"/>
+                                                </columns>
 
+                                                <rows>
+                                                    <row>
+                                                        <label value="{username}"/>
+                                                        <label value="${i18n:_('Username of user')}"/>
+                                                    </row>
+
+                                                    <row>
+                                                        <label value="{firstname}"/>
+                                                        <label value="${i18n:_('First name of user')}"/>
+                                                    </row>
+
+                                                    <row>
+                                                        <label value="{lastname}"/>
+                                                        <label value="${i18n:_('Last name of user')}"/>
+                                                    </row>
+
+                                                    <row>
+                                                        <label value="{project}"/>
+                                                        <label value="${i18n:_('Name of project')}"/>
+                                                    </row>
+
+                                                    <row>
+                                                        <label value="{resource}"/>
+                                                        <label value="${i18n:_('Name of resource')}"/>
+                                                    </row>
+
+                                                    <row>
+                                                        <label value="{task}"/>
+                                                        <label value="${i18n:_('Name of task')}"/>
+                                                    </row>
+
+                                                    <row>
+                                                        <label value="{url}"/>
+                                                        <label value="${i18n:_('Welcome page')}"/>
+                                                    </row>
+                                                </rows>
+
+                                            </grid>
+                                        </groupbox>
                                     </row>
                                 </rows>
                             </grid>

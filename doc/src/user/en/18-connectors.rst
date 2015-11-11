@@ -4,7 +4,7 @@ Connectors
 .. contents::
 
 Connectors are Libreplan client applications that could be used to communicate with (web) servers to get 
-data, process and store them. At this moment there are two connectors, JIRA connector and Tim Enterprise Connector.
+data, process and store them. At this moment there are three connectors, JIRA connector, Tim Enterprise Connector and E-mail Connector.
 
 Configuration
 =============
@@ -171,9 +171,9 @@ in Tim Enterprise server.
 
 Scheduling export
 ------------------
-Export process can also take place through the scheduler. Go to ``Job scheduling`` screen. 
+Export process can also take place through the scheduler. Go to ``Job Scheduling`` screen.
 In that screen you can configure a Tim Export ``job``. The ``job`` searches for last exported 
-time sheets in the database and re-export them accordingly. see also the Scheduler manual.  
+time sheets in the database and re-export them accordingly. See also the Scheduler manual.
 
 Import
 ------
@@ -211,5 +211,66 @@ assumed to be a valid ``Exception type`` but the total duration is the sum of al
 
 Contrary to the Libreplan, in Tim Enterprise, the ``total duration`` in case that the worker is on holiday means the worker is 
 not available for that ``total duration``. But in Libreplan if the worker is on holiday the total duration should be ``Zero``. 
-The Tim connector also takes care of this translation.  
+The Tim connector also takes care of this translation.
+
+E-mail connector
+==============
  
+E-mail is a method of exchanging digital messages from an author to one or more recipients.
+
+E-mail connector can be used to set Simple Main Transfer Protocol (SMTP) server connection properties.
+
+The *E-mail connector* should be configured properly before being used.
+
+Configuration
+-------------
+
+From the configuration's ``Main Settings`` screen choose the tab ``Connectors``.
+In the connectors screen select the E-mail connector from the ``pull-down`` list. A ``property editor screen``
+is displayed now.
+
+In this screen you can configure the following property values:
+
+* ``Activated``: Y/N, whether you want to use the E-mail connector or not. Default is ``N``.
+* ``Protocol``: type of SMTP protocol.
+* ``Host``: the absolute path to SMTP server.
+* ``Port``: port of SMTP server.
+* ``From address``: e-mail address of messages sender.
+* ``Username``: username for SMTP server.
+* ``Password``: password for SMTP server.
+
+Finally click the ``Test connection`` button to test if you are able to connect to
+SMTP server and that your configurations are right.
+
+Edit E-mail template
+--------------------
+
+From the project window ``Configuration`` and then ``Edit E-mail Templates`` you are able to modify E-mail templates of
+messages.
+
+You are able to choose:
+
+* Template language
+* Template type
+* E-mail subject
+* Template contents
+
+You need to specify language because web application will send e-mail to user in language that user have chosen in
+preferences.
+You need to choose template type, type is user role, it means that this e-mail will be send only to users who are in\
+selected role (type).
+You need to set e-mail subject. Subject - a brief summary of the topic of the message.
+You need to set e-mail contents. Any information that you want to send to user. Also there are some keywords that you
+may use in message; web application will parse it and set a new value instead of keyword.
+
+Scheduling e-mails
+------------------
+
+Sending e-mails process can take place only through the scheduler. Go to ``Configuration`` then ``Job Scheduling``
+screen.
+In that screen you can configure a e-mail sending ``job``. The ``job`` is taking a list of e-mail notifications,
+gathering data and sending it to user`s e-mail. See also the Scheduler manual.
+
+
+.. NOTE::
+The success or failure information would be displayed in pop-up window.

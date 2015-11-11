@@ -77,6 +77,7 @@ public class EmailNotificationModel implements IEmailNotificationModel {
     }
 
     @Override
+    @Transactional
     public boolean deleteAll() {
         return emailNotificationDAO.deleteAll();
     }

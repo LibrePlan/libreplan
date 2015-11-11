@@ -47,7 +47,7 @@ public class Configuration {
 
     private Boolean exampleUsersDisabled;
 
-    private Boolean emailSendingDisabled;
+    private Boolean emailSendingEnabled;
 
     private Configuration() {
     }
@@ -89,14 +89,14 @@ public class Configuration {
     /**
      * Returns the value of E-mail sending disabled compilation option
      */
-    public static boolean isEmailSendingDisabled(){
-        return BooleanUtils.isNotFalse(singleton.getEmailSendingDisabled());
+    public static boolean isEmailSendingEnabled(){
+        return BooleanUtils.isNotFalse(singleton.getEmailSendingEnabled());
     }
-    public Boolean getEmailSendingDisabled(){
-        return emailSendingDisabled;
+    public Boolean getEmailSendingEnabled(){
+        return emailSendingEnabled;
     }
-    public void setEmailSendingDisabled(Boolean emailSendingDisabled){
-        this.emailSendingDisabled = emailSendingDisabled;
+    public void setEmailSendingEnabled(Boolean emailSendingEnabled){
+        this.emailSendingEnabled = emailSendingEnabled;
     }
 
 }

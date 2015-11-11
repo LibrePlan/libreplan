@@ -41,6 +41,7 @@ import java.util.List;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedList;
 
 import static org.libreplan.web.I18nHelper._;
 
@@ -69,9 +70,6 @@ public class EmailTemplateController extends GenericForwardComposer{
                 throws Exception {
             Language language = (Language) data;
             String displayName = language.getDisplayName();
-            if (language.equals(Language.BROWSER_LANGUAGE)) {
-                displayName = _(language.getDisplayName());
-            }
             item.setLabel(displayName);
         }
     };
@@ -117,7 +115,7 @@ public class EmailTemplateController extends GenericForwardComposer{
         return languagesRenderer;
     }
     public List<Language> getLanguages() {
-        List<Language> languages = Arrays.asList(Language.values());
+        List<Language> languages = new LinkedList<Language>(Arrays.asList(Language.values()));
         Collections.sort(languages, new Comparator<Language>() {
             @Override
             public int compare(Language o1, Language o2) {
@@ -130,6 +128,7 @@ public class EmailTemplateController extends GenericForwardComposer{
                 return o1.getDisplayName().compareTo(o2.getDisplayName());
             }
         });
+        languages.remove(0);
         return languages;
     }
 

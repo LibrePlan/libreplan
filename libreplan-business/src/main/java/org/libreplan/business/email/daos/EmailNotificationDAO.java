@@ -46,7 +46,6 @@ public class EmailNotificationDAO extends GenericDAOHibernate<EmailNotification,
         for (Object item : notifications){
             getSession().delete(item);
         }
-        getSession().getTransaction().commit();
 
         if ( list(EmailNotification.class).size() == 0 ) return true;
         return false;

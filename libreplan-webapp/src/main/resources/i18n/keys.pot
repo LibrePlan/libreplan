@@ -7764,6 +7764,7 @@ msgstr ""
 #: libreplan-webapp/src/main/webapp/orders/_orderElementDetails.zul:59
 #: libreplan-webapp/src/main/webapp/qualityforms/_listQualityForm.zul:37
 #: libreplan-webapp/src/main/webapp/qualityforms/_editQualityForm.zul:49
+#: libreplan-webapp/src/main/webapp/email/email_templates.zul:83
 msgid "Description"
 msgstr ""
 
@@ -9235,10 +9236,46 @@ msgstr ""
 msgid "Protocol"
 msgstr ""
 
-#: libreplan-webapp/src/main/webapp/email/email_templates.zul:56
-msgid "Possible content values:"
+#: libreplan-webapp/src/main/webapp/email/email_templates.zul:79
+msgid "Possible content keywords"
 msgstr ""
 
 #: libreplan-webapp/src/main/webapp/java/org/libreplan/web/planner/tabs/MultipleTabsPlannerController:90
 msgid "-- no URL provided --"
+msgstr ""
+
+#: libreplan-webapp/src/main/java/org/libreplan/web/common/ConfigurationController.java:1307
+msgid "Not correct E-mail address"
+msgstr ""
+
+#: libreplan-webapp/src/main/webapp/email/email_templates.zul:82
+msgid "Keyword"
+msgstr ""
+
+#: libreplan-webapp/src/main/webapp/email/email_templates.zul:89
+msgid "Username of user"
+msgstr ""
+
+#: libreplan-webapp/src/main/webapp/email/email_templates.zul:94
+msgid "First name of user"
+msgstr ""
+
+#: libreplan-webapp/src/main/webapp/email/email_templates.zul:99
+msgid "Last name of user"
+msgstr ""
+
+#: libreplan-webapp/src/main/webapp/email/email_templates.zul:104
+msgid "Name of project"
+msgstr ""
+
+#: libreplan-webapp/src/main/webapp/email/email_templates.zul:109
+msgid "Name of resource"
+msgstr ""
+
+#: libreplan-webapp/src/main/webapp/email/email_templates.zul:114
+msgid "Name of task"
+msgstr ""
+
+#: libreplan-webapp/src/main/webapp/email/email_templates.zul:119
+msgid "Welcome page"
 msgstr ""
