@@ -999,7 +999,7 @@ span.z-dottree-line {
 }
 
 span.perspective, span.perspective-active {
-    margin: 0 2px;
+    margin: 4px 2px;
 }
 
 .perspectives-label {
@@ -1060,10 +1060,19 @@ span.perspective, span.perspective-active {
 .perspective-active.montecarlo-simulation .z-button-cm {
     background-image: url(../img/ico_montecarlo-simulation.png);
 }
-.perspective.order-dashboard .z-button-cm,
-.perspective-active.order-dashboard .z-button-cm {
+.perspective.global-dashboard .z-button-cm{
+    background-image: url(../img/ico_global-dashboard.png);
+}
+.perspective-active.global-dashboard .z-button-cm{
+    background-image: url(../img/ico_global-dashboard.png);
+}
+.perspective.order-dashboard .z-button-cm{
     background-image: url(../img/ico_order-dashboard.png);
 }
+.perspective-active.order-dashboard .z-button-cm{
+    background-image: url(../img/ico_order-dashboard.png);
+}
+
 
 
 .perspectives-column {

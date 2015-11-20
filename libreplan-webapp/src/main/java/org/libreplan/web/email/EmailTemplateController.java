@@ -21,12 +21,15 @@ package org.libreplan.web.email;
 
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
+import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.settings.entities.Language;
 
 import org.libreplan.business.email.entities.EmailTemplateEnum;
 import org.libreplan.web.common.IMessagesForUser;
 import org.libreplan.web.common.Level;
 import org.libreplan.web.common.MessagesForUser;
+import org.libreplan.web.orders.IOrderModel;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.Component;
 
 
@@ -176,5 +179,11 @@ public class EmailTemplateController extends GenericForwardComposer{
     }
     private void getContentDataBySelectedTemplate(){
         contentsTextbox.setValue( emailTemplateModel.getContentBySelectedTemplate( getSelectedEmailTemplateEnum().ordinal(), getSelectedLanguage().ordinal() ) );
+    }
+
+    @Autowired
+    private IOrderModel orderModel;
+    public List<Order> getOrder(){
+        return orderModel.getOrders();
     }
 }

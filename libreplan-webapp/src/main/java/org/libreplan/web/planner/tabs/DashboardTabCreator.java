@@ -33,6 +33,7 @@ import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.resources.daos.IResourcesSearcher;
 import org.libreplan.web.dashboard.DashboardController;
+import org.libreplan.web.dashboard.DashboardControllerGlobal;
 import org.libreplan.web.planner.order.OrderPlanningController;
 import org.libreplan.web.planner.order.PlanningStateCreator;
 import org.libreplan.web.planner.order.PlanningStateCreator.PlanningState;
@@ -55,17 +56,19 @@ public class DashboardTabCreator {
     public static ITab create(Mode mode,
             PlanningStateCreator planningStateCreator,
             DashboardController dashboardController,
+            DashboardControllerGlobal dashboardControllerGlobal,
             OrderPlanningController orderPlanningController,
             Component breadcrumbs,
             IResourcesSearcher resourcesSearcher) {
         return new DashboardTabCreator(mode, planningStateCreator,
-                dashboardController, orderPlanningController, breadcrumbs,
-                resourcesSearcher).build();
+                dashboardController, dashboardControllerGlobal, orderPlanningController,
+                breadcrumbs, resourcesSearcher).build();
     }
 
     private final PlanningStateCreator planningStateCreator;
     private final Mode mode;
     private final DashboardController dashboardController;
+    private final DashboardControllerGlobal dashboardControllerGlobal;
     private final OrderPlanningController orderPlanningController;
     private final Component breadcrumbs;
     private final IResourcesSearcher resourcesSearcher;
@@ -73,12 +76,14 @@ public class DashboardTabCreator {
     private DashboardTabCreator(Mode mode,
             PlanningStateCreator planningStateCreator,
             DashboardController dashboardController,
+            DashboardControllerGlobal dashboardControllerGlobal,
             OrderPlanningController orderPlanningController,
             Component breadcrumbs,
             IResourcesSearcher resourcesSearcher) {
         this.mode = mode;
         this.planningStateCreator = planningStateCreator;
         this.dashboardController = dashboardController;
+        this.dashboardControllerGlobal = dashboardControllerGlobal;
         this.orderPlanningController = orderPlanningController;
         this.breadcrumbs = breadcrumbs;
         this.resourcesSearcher = resourcesSearcher;
@@ -86,7 +91,7 @@ public class DashboardTabCreator {
 
     private ITab build() {
         return TabOnModeType.forMode(mode)
-            .forType(ModeType.GLOBAL, createDashboardTab())
+            .forType(ModeType.GLOBAL, createDashboardGlobalTab())
             .forType(ModeType.ORDER, createDashboardTab())
             .create();
     }
@@ -128,6 +133,34 @@ public class DashboardTabCreator {
                 breadcrumbs.appendChild(new Label(currentOrder.getName()));
             }
         };
+    }
+    private ITab createDashboardGlobalTab(){
+        IComponentCreator componentCreator = new IComponentCreator() {
+
+            @Override
+            public org.zkoss.zk.ui.Component create(
+                    org.zkoss.zk.ui.Component parent) {
+                Map<String, Object> arguments = new HashMap<String, Object>();
+                arguments.put("dashboardControllerGlobal", dashboardControllerGlobal);
+                return Executions.createComponents(
+                        "/dashboard/_dashboardforglobal.zul", parent,
+                        arguments);
+            }
+
+        };
+        return new CreatedOnDemandTab(_("Dashboard"), "global-dashboard",
+                componentCreator) {
+
+            @Override
+            protected void afterShowAction() {
+                breadcrumbs.getChildren().clear();
+                breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
+                breadcrumbs.appendChild(new Label(getSchedulingLabel()));
+                breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
+                breadcrumbs.appendChild(new Label(_("Dashboard")));
+            }
+        };
+
     }
 
     private List<TaskElement> getCriticalPath(final Order order, final Desktop desktop) {

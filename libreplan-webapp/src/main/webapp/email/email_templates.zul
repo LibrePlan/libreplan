@@ -130,5 +130,19 @@
             </tabbox>
         <button onClick="emailTemplateController.save()" autodisable="self" label="${i18n:_('Save')}" sclass="save-button global-action"/>
         <button onClick="emailTemplateController.cancel()" label="${i18n:_('Cancel')}" sclass="cancel-button global-action"/>
+
+        <grid style="margin:20px">
+            <columns>
+                <column>
+                    <label value="Subject"/>
+                </column>
+            </columns>
+            <rows>
+                <row>
+                    <label value="@{emailTemplateController.order}"/>
+                </row>
+            </rows>
+        </grid>
+
     </window>
 </zk>

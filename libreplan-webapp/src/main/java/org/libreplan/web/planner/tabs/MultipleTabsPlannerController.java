@@ -40,6 +40,7 @@ import org.libreplan.web.common.ConfirmCloseUtil;
 import org.libreplan.web.common.entrypoints.EntryPointsHandler;
 import org.libreplan.web.common.entrypoints.URLHandlerRegistry;
 import org.libreplan.web.dashboard.DashboardController;
+import org.libreplan.web.dashboard.DashboardControllerGlobal;
 import org.libreplan.web.limitingresources.LimitingResourcesController;
 import org.libreplan.web.montecarlo.MonteCarloController;
 import org.libreplan.web.orders.OrderCRUDController;
@@ -186,6 +187,9 @@ public class MultipleTabsPlannerController implements Composer,
     @Autowired
     private DashboardController dashboardController;
 
+    @Autowired
+    private DashboardControllerGlobal dashboardControllerGlobal;
+
     private org.zkoss.zk.ui.Component breadcrumbs;
 
     @Autowired
@@ -296,7 +300,7 @@ public class MultipleTabsPlannerController implements Composer,
                 }, parameters);
 
         dashboardTab = DashboardTabCreator.create(mode, planningStateCreator,
-                dashboardController, orderPlanningController, breadcrumbs,
+                dashboardController, dashboardControllerGlobal, orderPlanningController, breadcrumbs,
                 resourcesSearcher);
 
         final boolean isMontecarloVisible = isMonteCarloVisible();
@@ -324,7 +328,7 @@ public class MultipleTabsPlannerController implements Composer,
                     resourceLoadTab, typeChanged));
         }
         tabsConfiguration.add(visibleOnlyAtOrderMode(advancedAllocationTab))
-            .add(visibleOnlyAtOrderMode(dashboardTab));
+            .add(tabWithNameReloading(dashboardTab, typeChanged));
 
         if (isMontecarloVisible) {
             tabsConfiguration.add(visibleOnlyAtOrderMode(monteCarloTab));
