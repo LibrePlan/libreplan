@@ -18,45 +18,22 @@
 -->
 
 <?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n"?>
+<?component name="pipeline" inline="true" macroURI="_pipeline.zul"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" root="./wnd" ?>
+
 
 <zk>
     <div height="100%" style="overflow:visible">
         <div height="30px" sclass="toolbar-box" />
 
-        <window self="@{define(content)}" vflex="1">
+        <window id="wnd" self="@{define(content)}" vflex="1">
             <tabbox width="100%">
                 <tabs>
                     <tab label="${i18n:_('Pipeline')}"/>
                 </tabs>
                 <tabpanels>
                     <tabpanel>
-                        <grid>
-                            <columns>
-                                <column label="${i18n:_('PRE-SALES')}"/>
-                                <column label="${i18n:_('OFFERED')}"/>
-                                <column label="${i18n:_('OUTSOURCED')}"/>
-                                <column label="${i18n:_('ACCEPTED')}"/>
-                                <column label="${i18n:_('STARTED')}"/>
-                                <column label="${i18n:_('ON HOLD')}"/>
-                                <column label="${i18n:_('FINISHED')}"/>
-                                <column label="${i18n:_('CANCELLED')}"/>
-                                <column label="${i18n:_('STORED')}"/>
-                            </columns>
-                            <rows>
-                                <row>
-                                    <label value="Project 1"/>
-                                    <label value="Project 2"/>
-                                    <label value="Project 3"/>
-                                    <label value="Project 4"/>
-                                    <label value="Project 5"/>
-                                    <label value="Project 6"/>
-                                    <label value="Project 7"/>
-                                    <label value="Project 8"/>
-                                    <label value="Project 9"/>
-                                </row>
-                            </rows>
-
-                        </grid>
+                        <pipeline/>
                     </tabpanel>
                 </tabpanels>
             </tabbox>

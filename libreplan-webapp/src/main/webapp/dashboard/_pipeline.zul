@@ -1,0 +1,17 @@
+<window apply="org.libreplan.web.dashboard.DashboardControllerGlobal" contentStyle="overflow:auto;">
+        <grid id="pipelineGrid">
+                <columns>
+                        <column label="${i18n:_('PRE-SALES')}"/>
+                        <column label="${i18n:_('OFFERED')}"/>
+                        <column label="${i18n:_('OUTSOURCED')}"/>
+                        <column label="${i18n:_('ACCEPTED')}"/>
+                        <column label="${i18n:_('STARTED')}"/>
+                        <column label="${i18n:_('ON HOLD')}"/>
+                        <column label="${i18n:_('FINISHED')}"/>
+                        <column label="${i18n:_('CANCELLED')}"/>
+                        <column label="${i18n:_('STORED')}"/>
+                </columns>
+        </grid>
+</window>
+
+
