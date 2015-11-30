@@ -36,13 +36,13 @@
 
     <window self="@{define(content)}" id="logWindow" apply="${logsController}" vflex="1">
         <borderlayout sclass="orderslayout" height="100%">
-            <center border="0" class="orderslayout-area">
+            <center border="0" sclass="orderslayout-area">
                 <tabbox id="tabboxLog">
                     <tabs>
                         <tab id="tabIssueLogs" label="${i18n:_('Issue logs')}" selected="true"
-                             onSelect = "logsController.setupIssueLogController();"/>
+                             onClick = "logsController.setupIssueLogController();"/>
                         <tab id="tabRiskLogs" label="${i18n:_('Risk logs')}"
-                             onSelect = "logsController.setupRiskLogController();"/>
+                             onClick = "logsController.setupRiskLogController();"/>
                     </tabs>
                     <tabpanels>
                         <tabpanel sclass="orderelements-tab" id="tabpanelLog">

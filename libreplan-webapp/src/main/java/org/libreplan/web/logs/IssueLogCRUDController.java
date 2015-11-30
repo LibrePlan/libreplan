@@ -77,6 +77,7 @@ public class IssueLogCRUDController extends BaseCRUDController<IssueLog> {
         showListWindow();
         initializeOrderComponent();
         initializeUserComponent();
+        bdProjectIssueLog.setDisabled(!LogsController.getProjectNameVisibility());
 
     }
 
@@ -376,10 +377,12 @@ public class IssueLogCRUDController extends BaseCRUDController<IssueLog> {
     }
 
     public Order getOrder() {
-        if (LogsController.getProjectNameVisibility() == false)
-            return LogsController.getOrder();
+        if (LogsController.getProjectNameVisibility() == false){
+            this.getIssueLog().setOrder(LogsController.getOrder());
+            return getIssueLog().getOrder();
+        }
         else
-            return issueLogModel.getIssueLog().getOrder();
+            return getIssueLog().getOrder();
     }
 
     @Override

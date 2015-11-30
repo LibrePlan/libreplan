@@ -29,7 +29,7 @@
             <column label="${i18n:_('Priority')}" sort="auto(lower(priority))"/>
             <column label="${i18n:_('Severity')}" sort="auto(lower(severity))"/>
             <column label="${i18n:_('Date raised')}" sort="auto(lower(dateRaised))"/>
-            <column label="${i18n:_('Created By')}" sort="auto(lower(createdBy))" hflex="min" />
+            <column label="${i18n:_('Created By')}" sort="auto(lower(createdBy.loginName))" hflex="min" />
             <column label="${i18n:_('Assigned To')}" sort="auto(lower(assignedTo))"/>
             <column label="${i18n:_('Deadline')}" sort="auto(lower(deadline))"/>
             <column label="${i18n:_('Date Resolved')}" sort="auto(lower(dateResolved))"/>

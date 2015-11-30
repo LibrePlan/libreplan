@@ -48,7 +48,11 @@ public class RiskLog extends ProjectLog {
     private RiskScoreStatesEnum score = RiskScoreStatesEnum.getDefault();
 
     public static RiskLog create() {
-        return create(new RiskLog());
+        return create(new RiskLog(new Date()));
+    }
+
+    private RiskLog(Date date) {
+        this.dateCreated = date;
     }
 
     /**
