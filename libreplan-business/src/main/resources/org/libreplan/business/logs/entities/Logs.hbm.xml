@@ -49,6 +49,9 @@
         <property name="dateResolved" column="date_resolved"/>
 
         <property name="notes" column="notes" access="field"/>
+
+        <property name="status" column="status" access="field"/>
+
     </class>
 
     <class name="RiskLog" table="risk_log">

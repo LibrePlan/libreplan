@@ -35,7 +35,7 @@ import org.libreplan.business.users.entities.User;
 public class IssueLog extends ProjectLog {
 
     private IssueTypeEnum type = IssueTypeEnum.getDefault();
-    private IssueStatusEnum status = IssueStatusEnum.getDefault();
+    private String status;
     private LowMediumHighEnum priority = LowMediumHighEnum.getDefault();
     private LowMediumHighEnum severity = LowMediumHighEnum.getDefault();
     private Date dateRaised;
@@ -69,11 +69,11 @@ public class IssueLog extends ProjectLog {
         this.type = type;
     }
 
-    public IssueStatusEnum getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(IssueStatusEnum status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 

@@ -29,7 +29,6 @@ import org.apache.commons.logging.LogFactory;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.logs.entities.IssueLog;
-import org.libreplan.business.logs.entities.IssueStatusEnum;
 import org.libreplan.business.logs.entities.IssueTypeEnum;
 import org.libreplan.business.logs.entities.LowMediumHighEnum;
 import org.libreplan.business.orders.entities.Order;
@@ -46,9 +45,6 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.*;
-import org.zkoss.zk.ui.Executions;
-
-import javax.swing.*;
 
 /**
  * Controller for IssueLog CRUD actions
@@ -70,15 +66,17 @@ public class IssueLogCRUDController extends BaseCRUDController<IssueLog> {
 
     private BandboxSearch bdUserIssueLog;
 
+    private Listbox status;
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
+        status = (Listbox)comp.getFellow("editWindow").getFellow("listIssueLogStatus");
         comp.setVariable("issueLogController", this, true);
         showListWindow();
         initializeOrderComponent();
         initializeUserComponent();
         bdProjectIssueLog.setDisabled(!LogsController.getProjectNameVisibility());
-
     }
 
     /**
@@ -145,15 +143,8 @@ public class IssueLogCRUDController extends BaseCRUDController<IssueLog> {
             item.setLabel(displayName);
         }
     };
-    public static ListitemRenderer issueStatusRenderer = new ListitemRenderer() {
-        @Override
-        public void render(org.zkoss.zul.Listitem item, Object data)
-                throws Exception {
-            IssueStatusEnum issueStatusEnum = (IssueStatusEnum) data;
-            String displayName = issueStatusEnum.getDisplayName();
-            item.setLabel(displayName);
-        }
-    };
+
+
 
     public static ListitemRenderer lowMediumHighEnumRenderer = new ListitemRenderer() {
         @Override
@@ -272,10 +263,35 @@ public class IssueLogCRUDController extends BaseCRUDController<IssueLog> {
     }
 
     /**
-     * Returns {@link IssueStatusEnum} values
+     * Returns {@link ArrayList} values
      */
-    public IssueStatusEnum[] getIssueStatusEnum() {
-        return IssueStatusEnum.values();
+    public ArrayList<String> getIssueStatusEnum() {
+        ArrayList<String> result = new ArrayList<String>();
+        if (getIssueLog().getType() == IssueTypeEnum.REQUEST_FOR_CHANGE){
+            result.add(_("ESSENTIAL"));
+            result.add(_("IMPORTANT"));
+            result.add(_("USEFUL"));
+            result.add(_("NOT IMPORTANT FOR NOW"));
+            return result;
+        }
+        if (getIssueLog().getType() == IssueTypeEnum.PROBLEM_OR_CONCERN) {
+            result.add(_("MINOR"));
+            result.add(_("SIGNIFICANT"));
+            result.add(_("MAJOR"));
+            result.add(_("CRITICAL"));
+            return result;
+        }
+
+        result.add(_("LOW"));
+        result.add(_("MEDIUM"));
+        result.add(_("HIGH"));
+        return result;
+    }
+
+    public void updateStatus() {
+        ListModelList model = new ListModelList(getIssueStatusEnum());
+        status.setModel(model);
+        status.setSelectedItem(status.getItemAtIndex(0));
     }
 
     /**
