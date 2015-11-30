@@ -1069,6 +1069,13 @@ span.perspective, span.perspective-active {
     background-image: url(../img/ico_order-dashboard.png);
 }
 
+.label-highlight:hover{
+    background-color: #aacbff;
+}
+
+.global-dashboard-grid{
+    margin-top: 5px;
+}
 
 
 .perspectives-column {

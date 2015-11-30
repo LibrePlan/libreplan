@@ -9006,8 +9006,8 @@ msgid "CANCELLED"
 msgstr "AVLYST"
 
 #: libreplan-business/src/main/java/org/libreplan/business/orders/entities/OrderStatusEnum.java:43
-msgid "STORED"
-msgstr "LAGRET"
+msgid "ARCHIVED"
+msgstr ""
 
 #: libreplan-business/src/main/java/org/libreplan/business/orders/entities/SchedulingState.java:366
 msgid "Fully scheduled"

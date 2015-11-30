@@ -8474,8 +8474,8 @@ msgid "CANCELLED"
 msgstr "已取消"
 
 #: libreplan-business/src/main/java/org/libreplan/business/orders/entities/OrderStatusEnum.java:41
-msgid "STORED"
-msgstr "STORED"
+msgid "ARCHIVED"
+msgstr ""
 
 #: libreplan-business/src/main/java/org/libreplan/business/orders/entities/SchedulingState.java:366
 msgid "Fully scheduled"
