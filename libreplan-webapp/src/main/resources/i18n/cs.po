@@ -8361,8 +8361,8 @@ msgid "SUBCONTRACTED PENDING PROJECT"
 msgstr "SUBKONTRAKTOVANÝ NEVYŘÍZENÝ PROJEKT"
 
 #: libreplan-business/src/main/java/org/libreplan/business/orders/entities/OrderStatusEnum.java:35
-msgid "STORED"
-msgstr "ULOŽENO"
+msgid "ARCHIVED"
+msgstr ""
 
 #: libreplan-business/src/main/java/org/libreplan/business/orders/entities/SchedulingState.java:366
 msgid "Fully scheduled"

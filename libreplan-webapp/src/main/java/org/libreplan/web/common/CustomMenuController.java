@@ -59,6 +59,7 @@ import org.zkoss.zul.Vbox;
  * Controller for customMenu <br />
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  * @author Fernando Bellas Permuy <fbellas@udc.es>
+ * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
  */
 public class CustomMenuController extends Div implements IMenuItemsRegister {
 
@@ -419,6 +420,11 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
             configurationItems.add(subItem(_("Job Scheduling"),
                     "/common/job_scheduling.zul",
                     "19-scheduler.html"));
+        }
+        if (SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_EDIT_EMAIL_TEMPLATES)) {
+            configurationItems.add(subItem(_("Edit E-mail Templates"),
+                    "/email/email_templates.zul",
+                    "email-templates.html"));
         }
 
         if (!configurationItems.isEmpty()) {

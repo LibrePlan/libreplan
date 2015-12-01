@@ -40,7 +40,7 @@ public enum OrderStatusEnum {
     ON_HOLD(_("ON HOLD")),
     FINISHED(_("FINISHED")),
     CANCELLED(_("CANCELLED")),
-    STORED(_("STORED"));
+    STORED(_("ARCHIVED"));
 
     private String description;
 

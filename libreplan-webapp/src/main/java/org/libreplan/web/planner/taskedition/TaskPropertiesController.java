@@ -33,6 +33,7 @@ import org.libreplan.business.advance.bootstrap.PredefinedAdvancedTypes;
 import org.libreplan.business.advance.entities.AdvanceType;
 import org.libreplan.business.advance.entities.DirectAdvanceAssignment;
 import org.libreplan.business.advance.exceptions.DuplicateAdvanceAssignmentForOrderElementException;
+import org.libreplan.business.email.entities.EmailTemplateEnum;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.planner.entities.ITaskPositionConstrained;
@@ -40,10 +41,18 @@ import org.libreplan.business.planner.entities.PositionConstraintType;
 import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.planner.entities.TaskPositionConstraint;
+import org.libreplan.business.resources.entities.Resource;
+import org.libreplan.business.resources.entities.Worker;
 import org.libreplan.business.scenarios.IScenarioManager;
+import org.libreplan.business.users.entities.User;
+import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.business.workingday.IntraDayDate;
 import org.libreplan.web.I18nHelper;
 import org.libreplan.web.common.Util;
+import org.libreplan.web.email.IEmailNotificationModel;
+import org.libreplan.web.orders.IOrderModel;
+import org.libreplan.web.planner.allocation.AllocationResult;
+import org.libreplan.web.resources.worker.IWorkerModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -116,6 +125,16 @@ public class TaskPropertiesController extends GenericForwardComposer {
     private ResourceAllocationTypeEnum originalState;
 
     private boolean disabledConstraintsAndAllocations = false;
+
+    public static AllocationResult allocationResult;
+
+    private IEmailNotificationModel emailNotificationModel;
+
+    private IOrderModel orderModel;
+
+    private IWorkerModel workerModel;
+
+
 
     public void init(final EditTaskController editTaskController,
             IContextWithPlannerTask<TaskElement> context,
@@ -414,6 +433,8 @@ public class TaskPropertiesController extends GenericForwardComposer {
     }
 
     public void accept() {
+        EmailNotificationAddNewWithTaskAssignedToResource();
+
         boolean ok = true;
         if (currentTaskElement instanceof ITaskPositionConstrained) {
             ok = saveConstraintChanges();
@@ -707,6 +728,51 @@ public class TaskPropertiesController extends GenericForwardComposer {
 
     public String getMoneyFormat() {
         return Util.getMoneyFormat();
+    }
+
+    private void EmailNotificationAddNewWithTaskAssignedToResource(){
+
+        if ( allocationResult != null ) {
+
+            /* Check if resources in allocation are bound by user and are in role ROLE_EMAIL_TASK_ASSIGNED_TO_RESOURCE
+             * setUser method calling manually because, after initialization user will be null
+             * Then send valid data to notification_queue table */
+
+            List<Worker> workersList = workerModel.getWorkers();
+            Worker currentWorker;
+            Resource currentResource;
+            User currentUser;
+
+            for (int i = 0; i < workersList.size(); i++)
+
+                for (int j = 0; j < allocationResult.getSpecificAllocations().size(); j++){
+
+                    currentWorker = workersList.get(i);
+                    currentResource = allocationResult.getSpecificAllocations().get(j).getResource();
+
+                    if ( currentWorker.getId().equals(currentResource.getId()) ){
+
+                        workersList.get(i).setUser(workerModel.getBoundUserFromDB(currentWorker));
+                        currentUser = currentWorker.getUser();
+
+                        if ( currentUser != null &&
+                                currentUser.isInRole(UserRole.ROLE_EMAIL_TASK_ASSIGNED_TO_RESOURCE) ) {
+
+                            emailNotificationModel.setType(EmailTemplateEnum.TEMPLATE_TASK_ASSIGNED_TO_RESOURCE);
+
+                            emailNotificationModel.setUpdated(new Date());
+
+                            emailNotificationModel.setResource(allocationResult.getSpecificAllocations().get(j).getResource());
+
+                            emailNotificationModel.setTask(currentTaskElement.getTaskSource().getTask());
+
+                            emailNotificationModel.setProject(currentTaskElement.getParent().getTaskSource().getTask());
+
+                            emailNotificationModel.confirmSave();
+                        }
+                    }
+                }
+        }
     }
 
 }

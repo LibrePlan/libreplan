@@ -40,6 +40,7 @@ import org.libreplan.web.common.ConfirmCloseUtil;
 import org.libreplan.web.common.entrypoints.EntryPointsHandler;
 import org.libreplan.web.common.entrypoints.URLHandlerRegistry;
 import org.libreplan.web.dashboard.DashboardController;
+import org.libreplan.web.dashboard.DashboardControllerGlobal;
 import org.libreplan.web.limitingresources.LimitingResourcesController;
 import org.libreplan.web.montecarlo.MonteCarloController;
 import org.libreplan.web.orders.OrderCRUDController;
@@ -67,6 +68,7 @@ import org.zkoss.ganttz.extensions.TabProxy;
 import org.zkoss.ganttz.util.LongOperationFeedback;
 import org.zkoss.ganttz.util.LongOperationFeedback.ILongOperation;
 import org.zkoss.zk.ui.Desktop;
+import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -83,6 +85,8 @@ import org.zkoss.zk.ui.util.Composer;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class MultipleTabsPlannerController implements Composer,
         IGlobalViewEntryPoints {
+
+    public static String WELCOME_URL = "-- no URL provided --";
 
     private final class TabWithLoadingFeedback extends TabProxy {
         private boolean feedback = true;
@@ -182,6 +186,9 @@ public class MultipleTabsPlannerController implements Composer,
 
     @Autowired
     private DashboardController dashboardController;
+
+    @Autowired
+    private DashboardControllerGlobal dashboardControllerGlobal;
 
     private org.zkoss.zk.ui.Component breadcrumbs;
 
@@ -293,7 +300,7 @@ public class MultipleTabsPlannerController implements Composer,
                 }, parameters);
 
         dashboardTab = DashboardTabCreator.create(mode, planningStateCreator,
-                dashboardController, orderPlanningController, breadcrumbs,
+                dashboardController, dashboardControllerGlobal, orderPlanningController, breadcrumbs,
                 resourcesSearcher);
 
         final boolean isMontecarloVisible = isMonteCarloVisible();
@@ -321,7 +328,7 @@ public class MultipleTabsPlannerController implements Composer,
                     resourceLoadTab, typeChanged));
         }
         tabsConfiguration.add(visibleOnlyAtOrderMode(advancedAllocationTab))
-            .add(visibleOnlyAtOrderMode(dashboardTab));
+            .add(tabWithNameReloading(dashboardTab, typeChanged));
 
         if (isMontecarloVisible) {
             tabsConfiguration.add(visibleOnlyAtOrderMode(monteCarloTab));
@@ -419,6 +426,10 @@ public class MultipleTabsPlannerController implements Composer,
     @Override
     @Transactional(readOnly=true)
     public void doAfterCompose(org.zkoss.zk.ui.Component comp) {
+
+        Execution execution = Executions.getCurrent();
+        WELCOME_URL = "http://" + execution.getServerName() + ":" + execution.getServerPort() + Executions.encodeURL("/planner/index.zul");
+
         tabsSwitcher = (TabSwitcher) comp;
         breadcrumbs = comp.getPage().getFellow("breadcrumbs");
         tabsSwitcher

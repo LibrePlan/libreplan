@@ -8362,7 +8362,7 @@ msgid "SUBCONTRACTED PENDING PROJECT"
 msgstr "UNTERVERGEBENES, AUSTEHENDES PROJEKT "
 
 #: libreplan-business/src/main/java/org/libreplan/business/orders/entities/OrderStatusEnum.java:35
-msgid "STORED"
+msgid "ARCHIVED"
 msgstr "GESPEICHERT"
 
 #: libreplan-business/src/main/java/org/libreplan/business/orders/entities/SchedulingState.java:366

@@ -28,6 +28,7 @@ import java.util.List;
  *
  * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
  * @author Manuel Rego Casasnovas <rego@igalia.com>
+ * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
  */
 public enum PredefinedConnectors {
 
@@ -50,7 +51,16 @@ public enum PredefinedConnectors {
          ConnectorProperty
                  .create(PredefinedConnectorProperties.JIRA_LABELS, ""),
          ConnectorProperty.create(
-                 PredefinedConnectorProperties.JIRA_HOURS_TYPE, "Default"));
+                 PredefinedConnectorProperties.JIRA_HOURS_TYPE, "Default")),
+    EMAIL("E-mail",
+            ConnectorProperty.create(PredefinedConnectorProperties.ACTIVATED, "N"),
+            ConnectorProperty.create(PredefinedConnectorProperties.PROTOCOL, ""),
+            ConnectorProperty.create(PredefinedConnectorProperties.HOST, ""),
+            ConnectorProperty.create(PredefinedConnectorProperties.PORT, ""),
+            ConnectorProperty.create(PredefinedConnectorProperties.EMAIL_USERNAME, ""),
+            ConnectorProperty.create(PredefinedConnectorProperties.EMAIL_PASSWORD, "")
+
+    );
 
     private String name;
     private List<ConnectorProperty> properties;

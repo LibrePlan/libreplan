@@ -37,6 +37,7 @@
 
         <default.passwordsControl>true</default.passwordsControl>
         <default.exampleUsersDisabled>true</default.exampleUsersDisabled>
+        <default.emailSendingEnabled>true</default.emailSendingEnabled>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
@@ -233,18 +234,18 @@
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-core</artifactId>
-                <version>4.3.4.Final</version>
+                <version>4.3.11.Final</version>
             </dependency>
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-ehcache</artifactId>
-                <version>4.3.4.Final</version>
+                <version>4.3.11.Final</version>
             </dependency>
 
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-validator</artifactId>
-                <version>4.2.0.Final</version>
+                <version>4.3.2.Final</version>
             </dependency>
 
             <dependency>
@@ -328,7 +329,7 @@
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
-                <version>4.11</version>
+                <version>4.12</version>
                 <scope>test</scope>
             </dependency>
             <!-- datasource for testing -->
@@ -600,7 +601,7 @@
            <dependency>
               <groupId>org.quartz-scheduler</groupId>
               <artifactId>quartz</artifactId>
-              <version>1.8.0</version>
+              <version>1.8.6</version>
               <exclusions>
                 <exclusion>
                   <groupId>org.slf4j</groupId>

@@ -27,6 +27,7 @@ import static org.libreplan.business.i18n.I18nHelper._;
  *
  * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
  * @author Manuel Rego Casasnovas <rego@igalia.com>
+ * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
  */
 public class PredefinedConnectorProperties {
 
@@ -50,5 +51,13 @@ public class PredefinedConnectorProperties {
      * Code prefix for different entities integrated with JIRA.
      */
     public static final String JIRA_CODE_PREFIX = "JIRA-";
+
+    // Specific for E-mail
+    public static String PROTOCOL = _("Protocol");
+    public static String HOST = _("Host");
+    public static String PORT = _("Port");
+    public static String EMAIL_SENDER = _("From address (no reply)");
+    public static String EMAIL_USERNAME = _("Username (optional)");
+    public static String EMAIL_PASSWORD = _("Password (optional)");
 
 }

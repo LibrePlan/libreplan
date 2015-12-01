@@ -19,6 +19,7 @@
 
 package org.libreplan.web.common;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.libreplan.business.common.daos.IConnectorDAO;
@@ -34,6 +35,7 @@ import org.libreplan.importers.IImportRosterFromTim;
 import org.libreplan.importers.IJiraOrderElementSynchronizer;
 import org.libreplan.importers.ISchedulerManager;
 import org.libreplan.importers.SynchronizationInfo;
+import org.libreplan.importers.ISendEmail;
 import org.libreplan.web.common.concurrentdetection.OnConcurrentModification;
 import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +43,8 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static org.libreplan.web.I18nHelper._;
 
 /**
  * Model for UI operations related to {@link JobSchedulerConfiguration}.
@@ -75,6 +79,9 @@ public class JobSchedulerModel implements IJobSchedulerModel {
 
     private List<SynchronizationInfo> synchronizationInfos;
 
+    @Autowired
+    private ISendEmail email;
+
     @Override
     @Transactional(readOnly = true)
     public List<JobSchedulerConfiguration> getJobSchedulerConfigurations() {
@@ -105,6 +112,13 @@ public class JobSchedulerModel implements IJobSchedulerModel {
                     .syncOrderElementsWithJiraIssues();
             return;
         }
+        if ( name.equals(JobClassNameEnum.SEND_EMAIL_JOB.getName()) ) {
+            synchronizationInfos = new ArrayList<SynchronizationInfo>();
+            synchronizationInfos.add(new SynchronizationInfo(_("Send E-mail")));
+            email.sendEmail();
+            return;
+        }
+
         throw new RuntimeException("Unknown action");
     }
 
