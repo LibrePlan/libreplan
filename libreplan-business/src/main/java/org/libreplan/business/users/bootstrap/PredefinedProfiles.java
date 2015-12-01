@@ -18,47 +18,6 @@
  */
 package org.libreplan.business.users.bootstrap;
 
-import static org.libreplan.business.users.entities.UserRole.ROLE_CALENDARS;
-import static org.libreplan.business.users.entities.UserRole.ROLE_CALENDAR_EXCEPTION_DAYS;
-import static org.libreplan.business.users.entities.UserRole.ROLE_COMPANIES;
-import static org.libreplan.business.users.entities.UserRole.ROLE_COST_CATEGORIES;
-import static org.libreplan.business.users.entities.UserRole.ROLE_CREATE_PROJECTS;
-import static org.libreplan.business.users.entities.UserRole.ROLE_CRITERIA;
-import static org.libreplan.business.users.entities.UserRole.ROLE_EDIT_ALL_PROJECTS;
-import static org.libreplan.business.users.entities.UserRole.ROLE_ESTIMATED_PLANNED_HOURS_PER_TASK_REPORT;
-import static org.libreplan.business.users.entities.UserRole.ROLE_EXPENSES;
-import static org.libreplan.business.users.entities.UserRole.ROLE_HOURS_TYPES;
-import static org.libreplan.business.users.entities.UserRole.ROLE_HOURS_WORKED_PER_RESOURCE_REPORT;
-import static org.libreplan.business.users.entities.UserRole.ROLE_JOB_SCHEDULING;
-import static org.libreplan.business.users.entities.UserRole.ROLE_LABELS;
-import static org.libreplan.business.users.entities.UserRole.ROLE_MACHINES;
-import static org.libreplan.business.users.entities.UserRole.ROLE_MAIN_SETTINGS;
-import static org.libreplan.business.users.entities.UserRole.ROLE_MATERIALS;
-import static org.libreplan.business.users.entities.UserRole.ROLE_MATERIALS_NEED_AT_DATE_REPORT;
-import static org.libreplan.business.users.entities.UserRole.ROLE_MATERIAL_UNITS;
-import static org.libreplan.business.users.entities.UserRole.ROLE_PLANNING;
-import static org.libreplan.business.users.entities.UserRole.ROLE_PROFILES;
-import static org.libreplan.business.users.entities.UserRole.ROLE_PROGRESS_TYPES;
-import static org.libreplan.business.users.entities.UserRole.ROLE_PROJECT_COSTS_REPORT;
-import static org.libreplan.business.users.entities.UserRole.ROLE_PROJECT_STATUS_REPORT;
-import static org.libreplan.business.users.entities.UserRole.ROLE_QUALITY_FORMS;
-import static org.libreplan.business.users.entities.UserRole.ROLE_READ_ALL_PROJECTS;
-import static org.libreplan.business.users.entities.UserRole.ROLE_RECEIVED_FROM_CUSTOMERS;
-import static org.libreplan.business.users.entities.UserRole.ROLE_RECEIVED_FROM_SUBCONTRACTORS;
-import static org.libreplan.business.users.entities.UserRole.ROLE_SEND_TO_CUSTOMERS;
-import static org.libreplan.business.users.entities.UserRole.ROLE_SEND_TO_SUBCONTRACTORS;
-import static org.libreplan.business.users.entities.UserRole.ROLE_TASK_SCHEDULING_STATUS_IN_PROJECT_REPORT;
-import static org.libreplan.business.users.entities.UserRole.ROLE_TEMPLATES;
-import static org.libreplan.business.users.entities.UserRole.ROLE_TIMESHEETS;
-import static org.libreplan.business.users.entities.UserRole.ROLE_TIMESHEETS_TEMPLATES;
-import static org.libreplan.business.users.entities.UserRole.ROLE_TIMESHEET_LINES_LIST;
-import static org.libreplan.business.users.entities.UserRole.ROLE_TOTAL_WORKED_HOURS_BY_RESOURCE_IN_A_MONTH_REPORT;
-import static org.libreplan.business.users.entities.UserRole.ROLE_USER_ACCOUNTS;
-import static org.libreplan.business.users.entities.UserRole.ROLE_VIRTUAL_WORKERS;
-import static org.libreplan.business.users.entities.UserRole.ROLE_WORKERS;
-import static org.libreplan.business.users.entities.UserRole.ROLE_WORK_AND_PROGRESS_PER_PROJECT_REPORT;
-import static org.libreplan.business.users.entities.UserRole.ROLE_WORK_AND_PROGRESS_PER_TASK_REPORT;
-
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -66,16 +25,18 @@ import java.util.Set;
 import org.libreplan.business.users.entities.Profile;
 import org.libreplan.business.users.entities.UserRole;
 
+import static org.libreplan.business.users.entities.UserRole.*;
 /**
  * Defines the default {@link org.libreplan.business.users.entities.Profile
  * Profiles}
  *
  * @author Manuel Rego Casasnovas <rego@igalia.com>
+ * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
  */
 public enum PredefinedProfiles {
 
     SYSTEMS_ADMINISTRATOR("Systems Administrator", ROLE_MAIN_SETTINGS,
-            ROLE_USER_ACCOUNTS, ROLE_PROFILES, ROLE_JOB_SCHEDULING),
+            ROLE_USER_ACCOUNTS, ROLE_PROFILES, ROLE_JOB_SCHEDULING, ROLE_EDIT_EMAIL_TEMPLATES),
 
     PROJECT_MANAGER("Project Manager", ROLE_READ_ALL_PROJECTS,
             ROLE_EDIT_ALL_PROJECTS, ROLE_CREATE_PROJECTS, ROLE_PLANNING,

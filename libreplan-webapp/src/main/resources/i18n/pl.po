@@ -7109,8 +7109,8 @@ msgid "SUBCONTRACTED PENDING PROJECT"
 msgstr "Nierozstrzygnięty pracowany"
 
 #: libreplan-business/src/main/java/org/libreplan/business/orders/entities/OrderStatusEnum.java:35
-msgid "STORED"
-msgstr "Przechowywane"
+msgid "ARCHIVED"
+msgstr ""
 
 #: libreplan-business/src/main/java/org/libreplan/business/orders/entities/SchedulingState.java:215
 msgid "it's already somewhat scheduled"

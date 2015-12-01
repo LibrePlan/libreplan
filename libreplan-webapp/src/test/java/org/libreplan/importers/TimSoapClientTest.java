@@ -34,7 +34,6 @@ import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.libreplan.importers.TimSoapClient;
 import org.libreplan.importers.tim.DataDTO;
 import org.libreplan.importers.tim.DepartmentDTO;
 import org.libreplan.importers.tim.DurationDTO;
@@ -95,7 +94,7 @@ public class TimSoapClientTest {
         return timeRegistrationDTO;
     }
 
-    private RosterRequestDTO createtRosterRequest() {
+    private RosterRequestDTO createRosterRequest() {
         RosterDTO rosterDTO = new RosterDTO();
         rosterDTO.setStartDate(new LocalDate());
         rosterDTO.setEndDate(new LocalDate().plusDays(7));
@@ -186,7 +185,7 @@ public class TimSoapClientTest {
                 .sendRequestReceiveResponse(properties.getProperty("url"),
                         properties.getProperty("username"),
                         properties.getProperty("password"),
-                        createtRosterRequest(), RosterResponseDTO.class);
+                        createRosterRequest(), RosterResponseDTO.class);
         if (rosterResponseDTO == null) {
             fail("Roster Response is null");
         }

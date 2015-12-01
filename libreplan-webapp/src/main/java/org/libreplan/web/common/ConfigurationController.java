@@ -23,15 +23,22 @@ package org.libreplan.web.common;
 
 import static org.libreplan.web.I18nHelper._;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.ConcurrentModificationException;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.ConcurrentModificationException;
+import java.util.Comparator;
+import java.util.Properties;
+import java.util.ArrayList;
 import java.util.Set;
+import java.util.Map;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Arrays;
+
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.AuthenticationFailedException;
+import javax.mail.MessagingException;
+
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -70,23 +77,27 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
-import org.zkoss.zul.Button;
-import org.zkoss.zul.Combobox;
-import org.zkoss.zul.Constraint;
-import org.zkoss.zul.Grid;
-import org.zkoss.zul.Intbox;
-import org.zkoss.zul.Label;
-import org.zkoss.zul.Listbox;
-import org.zkoss.zul.Listitem;
+
+
 import org.zkoss.zul.ListitemRenderer;
-import org.zkoss.zul.Messagebox;
-import org.zkoss.zul.Radio;
+import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Grid;
+import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Intbox;
+import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Radiogroup;
+import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Row;
+import org.zkoss.zul.Constraint;
 import org.zkoss.zul.RowRenderer;
+import org.zkoss.zul.Comboitem;
+import org.zkoss.zul.Radio;
+import org.zkoss.zul.Button;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Rows;
 import org.zkoss.zul.SimpleListModel;
-import org.zkoss.zul.Textbox;
+import org.zkoss.zul.Messagebox;
+
 import org.zkoss.zul.api.Window;
 import org.zkoss.zul.impl.InputElement;
 
@@ -97,6 +108,7 @@ import org.zkoss.zul.impl.InputElement;
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  * @author Cristina Alavarino Perez <cristina.alvarino@comtecsf.es>
  * @author Ignacio Diaz Teijido <ignacio.diaz@comtecsf.es>
+ * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
  */
 public class ConfigurationController extends GenericForwardComposer {
 
@@ -136,6 +148,14 @@ public class ConfigurationController extends GenericForwardComposer {
     private Grid connectorPropertriesGrid;
 
     private Connector selectedConnector;
+
+    private Combobox protocolsCombobox;
+
+    private Textbox emailUsernameTextbox;
+
+    private Textbox emailPasswordTextbox;
+
+    private Textbox emailSenderTextbox;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -221,36 +241,43 @@ public class ConfigurationController extends GenericForwardComposer {
     }
 
     public void save() throws InterruptedException {
-        ConstraintChecker.isValid(configurationWindow);
-        if (checkValidEntitySequenceRows()) {
-            try {
-                configurationModel.confirm();
-                configurationModel.init();
-                messages.showMessage(Level.INFO, _("Changes saved"));
-                if (getSelectedConnector() != null
-                        && !configurationModel
-                        .scheduleOrUnscheduleJobs(getSelectedConnector())) {
-                    messages.showMessage(
-                            Level.ERROR,
-                            _("Scheduling or unscheduling of jobs for this connector is not completed"));
+
+        if ( getSelectedConnector().getName().equals("E-mail") && isEmailFieldsValid() == false) {
+            messages.showMessage(Level.ERROR, _("Check username/password/sender fields"));
+        } else {
+                ConstraintChecker.isValid(configurationWindow);
+                if (checkValidEntitySequenceRows()) {
+                    try {
+                        configurationModel.confirm();
+                        configurationModel.init();
+                        messages.showMessage(Level.INFO, _("Changes saved"));
+                        if (getSelectedConnector() != null
+                                && !configurationModel
+                                .scheduleOrUnscheduleJobs(getSelectedConnector())) {
+                            messages.showMessage(
+                                    Level.ERROR,
+                                    _("Scheduling or unscheduling of jobs for this connector is not completed"));
+                        }
+                    reloadWindow();
+                    reloadEntitySequences();
+                    reloadConnectors();
+                } catch (ValidationException e) {
+                    messages.showInvalidValues(e);
+                } catch (ConcurrentModificationException e) {
+                    messages.showMessage(Level.ERROR, e.getMessage());
+                    configurationModel.init();
+                    reloadWindow();
+                    reloadEntitySequences();
+                    reloadConnectors();
                 }
-                reloadWindow();
-                reloadEntitySequences();
-                reloadConnectors();
-            } catch (ValidationException e) {
-                messages.showInvalidValues(e);
-            } catch (ConcurrentModificationException e) {
-                messages.showMessage(Level.ERROR, e.getMessage());
-                configurationModel.init();
-                reloadWindow();
-                reloadEntitySequences();
-                reloadConnectors();
             }
         }
+
     }
 
     public void cancel() throws InterruptedException {
         configurationModel.cancel();
+        messages.clearMessages();
         messages.showMessage(Level.INFO, _("Changes have been canceled"));
         reloadWindow();
         reloadEntitySequences();
@@ -305,12 +332,19 @@ public class ConfigurationController extends GenericForwardComposer {
         String password = properties
                 .get(PredefinedConnectorProperties.PASSWORD);
 
-        if (selectedConnector.getName().equals(
-                PredefinedConnectors.TIM.getName())) {
+        if ( selectedConnector.getName().equals(
+                PredefinedConnectors.TIM.getName()) ) {
             testTimConnection(url, username, password);
-        } else if (selectedConnector.getName().equals(
-                PredefinedConnectors.JIRA.getName())) {
+        } else if ( selectedConnector.getName().equals(
+                PredefinedConnectors.JIRA.getName()) ) {
             testJiraConnection(url, username, password);
+        } else if( selectedConnector.getName().equals(
+                PredefinedConnectors.EMAIL.getName()) ){
+            String host = properties.get(PredefinedConnectorProperties.HOST);
+            username = properties.get(PredefinedConnectorProperties.EMAIL_USERNAME);
+            password = properties.get(PredefinedConnectorProperties.EMAIL_PASSWORD);
+            String port = properties.get(PredefinedConnectorProperties.PORT);
+            testEmailConnection(host, port, username, password);
         } else {
             throw new RuntimeException("Unknown connector");
         }
@@ -370,6 +404,58 @@ public class ConfigurationController extends GenericForwardComposer {
             LOG.error(e);
             messages.showMessage(Level.ERROR,
                     _("Cannot connect to JIRA server"));
+        }
+    }
+
+    /**
+     * Test E-mail connection
+     *
+     * @param host
+     *            the host
+     * @param port
+     *            the port
+     * @param username
+     *            the username
+     * @param password
+     *            the password
+     */
+    private void testEmailConnection(String host, String port, String username, String password){
+        Properties props = System.getProperties();
+        Transport transport = null;
+
+        try {
+            if ( protocolsCombobox.getSelectedItem().getLabel().equals("SMTP") ){
+                props.setProperty("mail.smtp.port", port);
+                props.setProperty("mail.smtp.host", host);
+                Session session = Session.getInstance(props, null);
+
+                transport = session.getTransport("smtp");
+                if ( username.equals("") && password.equals("")) transport.connect();
+            }
+            else if ( protocolsCombobox.getSelectedItem().getLabel().equals("STARTTLS") ) {
+                props.setProperty("mail.smtps.port", port);
+                props.setProperty("mail.smtps.host", host);
+                Session session = Session.getInstance(props, null);
+
+                transport = session.getTransport("smtps");
+                if ( !username.equals("") && password != null ) transport.connect(host, username, password);
+            }
+
+            messages.clearMessages();
+            if ( transport.isConnected() ) messages.showMessage(Level.INFO, _("Connection successful!"));
+            else if ( transport.isConnected() == false ) messages.showMessage(Level.WARNING, _("Connection unsuccessful"));
+        }
+        catch (AuthenticationFailedException e){
+            LOG.error(e);
+            messages.showMessage(Level.ERROR, _("Invalid credentials"));
+        }
+        catch (MessagingException e){
+            LOG.error(e);
+            messages.showMessage(Level.ERROR, _("Cannot connect"));
+        }
+        catch (Exception e){
+            LOG.error(e);
+            messages.showMessage(Level.ERROR, _("Failed to connect"));
         }
     }
 
@@ -1090,11 +1176,15 @@ public class ConfigurationController extends GenericForwardComposer {
                 row.setValue(property);
 
                 Util.appendLabel(row, _(property.getKey()));
-                appendValueTextbox(row, property);
+
+                // FIXME this is not perfect solution
+                if ( property.getKey().equals("Protocol") ) appendValueCombobox(row, property);
+                else appendValueTextbox(row, property);
             }
 
             private void appendValueTextbox(Row row,
                     final ConnectorProperty property) {
+
                 final Textbox textbox = new Textbox();
                 textbox.setWidth("400px");
                 textbox.setConstraint(checkPropertyValue(property));
@@ -1112,12 +1202,79 @@ public class ConfigurationController extends GenericForwardComposer {
                         property.setValue(value);
                     }
                 });
-                if (property.getKey().equals(
-                        PredefinedConnectorProperties.PASSWORD)) {
+
+                if ( property.getKey().equals(
+                        PredefinedConnectorProperties.PASSWORD) ||
+                    property.getKey().equals(
+                        PredefinedConnectorProperties.EMAIL_PASSWORD) ) {
                     textbox.setType("password");
                 }
 
+                // Need for method validateEmailFields()
+                if ( property.getKey().equals(
+                        PredefinedConnectorProperties.EMAIL_USERNAME) ) emailUsernameTextbox = textbox;
+
+                if ( property.getKey().equals(
+                        PredefinedConnectorProperties.EMAIL_PASSWORD) ) emailPasswordTextbox = textbox;
+
+                if ( property.getKey().equals(
+                        PredefinedConnectorProperties.EMAIL_SENDER) ) emailSenderTextbox = textbox;
+
                 row.appendChild(textbox);
+            }
+
+            private void appendValueCombobox(Row row,
+                    final ConnectorProperty property){
+
+                final Combobox combobox = new Combobox();
+                combobox.setWidth("400px");
+                final List<String> protocols = new ArrayList<String>();
+                protocols.add("SMTP");
+                protocols.add("STARTTLS");
+
+                for (String item : protocols){
+                    Comboitem comboitem = new Comboitem();
+                    comboitem.setValue(item);
+                    comboitem.setLabel(item);
+                    comboitem.setParent(combobox);
+
+                    if ( (!property.getValue().equals("")) &&
+                            (item.equals(property.getValue())) ){
+                        combobox.setSelectedItem(comboitem);
+                    }
+                }
+
+                combobox.addEventListener(Events.ON_SELECT,
+                        new EventListener() {
+                            @Override
+                            public void onEvent(Event event) throws Exception {
+                                if (combobox.getSelectedItem() != null){
+                                    property.setValue(combobox.getSelectedItem().getValue().toString());
+                                }
+                            }
+                        });
+
+                Util.bind(combobox, new Util.Getter<Comboitem>() {
+                    @Override
+                    public Comboitem get() {
+                        return combobox.getSelectedItem();
+                    }
+                }, new Util.Setter<Comboitem>(){
+
+                    @Override
+                    public void set(Comboitem item) {
+                        if ( (item != null) && (item.getValue() != null) &&
+                                (item.getValue() instanceof String) ){
+                            property.setValue(combobox.getSelectedItem().getValue().toString());
+                        }
+                    }
+                });
+
+
+                row.appendChild(combobox);
+
+                // Need for testing E-mail connection
+                protocolsCombobox = combobox;
             }
 
             public Constraint checkPropertyValue(
@@ -1126,23 +1283,27 @@ public class ConfigurationController extends GenericForwardComposer {
                 return new Constraint() {
                     @Override
                     public void validate(Component comp, Object value) {
-                        if (key.equals(PredefinedConnectorProperties.ACTIVATED)) {
-                            if (!((String) value).equalsIgnoreCase("Y")
-                                    && !((String) value).equalsIgnoreCase("N")) {
+                        if ( key.equals(PredefinedConnectorProperties.ACTIVATED) ) {
+                            if ( !((String) value).equalsIgnoreCase("Y")
+                                    && !((String) value).equalsIgnoreCase("N") ) {
                                 throw new WrongValueException(comp, _(
                                         "Only {0} allowed", "Y/N"));
                             }
-                        } else if (key
-                                .equals(PredefinedConnectorProperties.SERVER_URL)
-                                || key.equals(PredefinedConnectorProperties.USERNAME)
-                                || key.equals(PredefinedConnectorProperties.PASSWORD)
-                                || key.equals(PredefinedConnectorProperties.JIRA_HOURS_TYPE)) {
+                        } else if ( key
+                                .equals(PredefinedConnectorProperties.SERVER_URL) ||
+                                key.equals(PredefinedConnectorProperties.USERNAME) ||
+                                key.equals(PredefinedConnectorProperties.PASSWORD) ||
+                                key.equals(PredefinedConnectorProperties.JIRA_HOURS_TYPE) ||
+                                key.equals(PredefinedConnectorProperties.HOST) ||
+                                key.equals(PredefinedConnectorProperties.PORT) ||
+                                key.equals(PredefinedConnectorProperties.EMAIL_SENDER) ) {
                             ((InputElement) comp).setConstraint("no empty:"
                                     + _("cannot be empty"));
-                        } else if (key
-                                .equals(PredefinedConnectorProperties.TIM_NR_DAYS_TIMESHEET)
-                                || key.equals(PredefinedConnectorProperties.TIM_NR_DAYS_ROSTER)) {
-                            if (!isNumeric((String) value)) {
+                        } else if ( key
+                                .equals(PredefinedConnectorProperties.TIM_NR_DAYS_TIMESHEET) ||
+                                key.equals(PredefinedConnectorProperties.TIM_NR_DAYS_ROSTER) ||
+                                key.equals(PredefinedConnectorProperties.PORT) ) {
+                            if ( !isNumeric((String) value) ) {
                                 throw new WrongValueException(comp,
                                         _("Only digits allowed"));
                             }
@@ -1161,6 +1322,19 @@ public class ConfigurationController extends GenericForwardComposer {
             }
 
         };
+    }
+
+    private boolean isEmailFieldsValid(){
+
+        if ( protocolsCombobox.getSelectedItem().getLabel().equals("STARTTLS") &&
+                emailUsernameTextbox.getValue() != null &&
+                emailPasswordTextbox.getValue() != null &&
+                emailUsernameTextbox.getValue().length() != 0 &&
+                emailPasswordTextbox.getValue().length() != 0 &&
+                emailSenderTextbox.getValue().matches("^\\S+@\\S+\\.\\S+$") )
+            return true;
+
+        else return false;
     }
 
 }

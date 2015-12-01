@@ -1,3 +1,4 @@
+======================================================
 How To Start Development With JetBrains Intellij IDEA
 ======================================================
 
@@ -100,4 +101,3 @@ Develop LibrePlan in Intellij IDEA using MySQL
 
 
 .. _LibrePlan: http://www.libreplan.com/
-.. _JetBrains Intellij IDEA: https://www.jetbrains.com/idea/

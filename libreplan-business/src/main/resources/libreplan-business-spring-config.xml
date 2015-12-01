@@ -94,6 +94,9 @@
                 <value>
                     org/libreplan/business/common/entities/JobSchedulerConfiguration.hbm.xml
                 </value>
+                <value>
+                    org/libreplan/business/email/entities/Email.hbm.xml
+                </value>
             </list>
         </property>
     </bean>
@@ -142,6 +145,9 @@
         </property>
         <property name="exampleUsersDisabled">
             <value>${default.exampleUsersDisabled}</value>
+        </property>
+        <property name="emailSendingEnabled">
+            <value>${default.emailSendingEnabled}</value>
         </property>
     </bean>
 

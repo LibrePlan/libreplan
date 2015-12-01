@@ -55,6 +55,8 @@
         <!-- Pages -->
         <intercept-url pattern="/templates/*"
             access="ROLE_SUPERUSER,ROLE_TEMPLATES" />
+        <intercept-url pattern="/email/*"
+            access="ROLE_SUPERUSER"/>
         <intercept-url pattern="/resources/worker/worker.zul"
             access="ROLE_SUPERUSER,ROLE_WORKERS" />
         <intercept-url pattern="/resources/machine/*"

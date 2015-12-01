@@ -28,6 +28,7 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.libreplan.business.common.IntegrationEntity;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 

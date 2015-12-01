@@ -1,0 +1,135 @@
+ <!--
+    This file is part of LibrePlan
+
+    Copyright (C) 2015 LibrePlan
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+-->
+
+
+<?page id="editEmailTemplate" title="${i18n:_('LibrePlan: Email Templates')}" ?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
+
+<?link rel="shortcut icon" href="/common/img/favicon.ico" type="image/x-icon"?>
+<?link rel="stylesheet" type="text/css" href="/common/css/libreplan.css"?>
+<?link rel="stylesheet" type="text/css" href="/common/css/libreplan_zk.css"?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+
+<zk>
+    <window self="@{define(content)}" apply="org.libreplan.web.email.EmailTemplateController"
+            title="${i18n:_('Edit E-mail template')}">
+        <vbox id="messagesContainer" />
+            <tabbox>
+                <tabs>
+                    <tab label="${i18n:_('Template data')}"/>
+                </tabs>
+                <tabpanels>
+                    <tabpanel>
+                        <groupbox>
+                            <caption label="General user data" />
+                            <grid>
+                                <columns>
+                                    <column width="220px"></column>
+                                    <column width="420px"></column>
+                                </columns>
+                                <rows>
+                                    <row>
+                                        <label value="Select template language"/>
+                                        <listbox mold="select"
+                                                 id="templateLanguageListbox"
+                                                 model="@{emailTemplateController.languages}"
+                                                 itemRenderer="@{emailTemplateController.languagesRenderer}"
+                                                 selectedItem="@{emailTemplateController.selectedLanguage}">
+                                        </listbox>
+                                    </row>
+                                    <row>
+                                        <label value="Select template type"/>
+                                        <listbox id="emailTemplateTypeListbox"
+                                                 mold="select"
+                                                 model="@{emailTemplateController.emailTemplateEnum}"
+                                                 itemRenderer="@{emailTemplateController.emailTemplateEnumRenderer}"
+                                                 selectedItem="@{emailTemplateController.selectedEmailTemplateEnum}"/>
+                                    </row>
+                                    <row>
+                                        <label value="${i18n:_('E-mail subject')}"/>
+                                        <textbox id="subjectTextbox"
+                                                 width="400px;" />
+                                    </row>
+                                    <row>
+                                        <label value="${i18n:_('Template contents')}"/>
+
+                                        <textbox id="contentsTextbox"
+                                                 rows="15" width="400px;"
+                                                 tabindex="11"/>
+                                        <groupbox closable="false" width="270px">
+                                            <caption label="${i18n:_('Possible content keywords')}"/>
+                                            <grid width="250px">
+                                                <columns>
+                                                    <column label="${i18n:_('Keyword')}"/>
+                                                    <column label="${i18n:_('Description')}"/>
+                                                </columns>
+
+                                                <rows>
+                                                    <row>
+                                                        <label value="{username}"/>
+                                                        <label value="${i18n:_('Username of user')}"/>
+                                                    </row>
+
+                                                    <row>
+                                                        <label value="{firstname}"/>
+                                                        <label value="${i18n:_('First name of user')}"/>
+                                                    </row>
+
+                                                    <row>
+                                                        <label value="{lastname}"/>
+                                                        <label value="${i18n:_('Last name of user')}"/>
+                                                    </row>
+
+                                                    <row>
+                                                        <label value="{project}"/>
+                                                        <label value="${i18n:_('Name of project')}"/>
+                                                    </row>
+
+                                                    <row>
+                                                        <label value="{resource}"/>
+                                                        <label value="${i18n:_('Name of resource')}"/>
+                                                    </row>
+
+                                                    <row>
+                                                        <label value="{task}"/>
+                                                        <label value="${i18n:_('Name of task')}"/>
+                                                    </row>
+
+                                                    <row>
+                                                        <label value="{url}"/>
+                                                        <label value="${i18n:_('Welcome page')}"/>
+                                                    </row>
+                                                </rows>
+
+                                            </grid>
+                                        </groupbox>
+                                    </row>
+                                </rows>
+                            </grid>
+                        </groupbox>
+                    </tabpanel>
+                </tabpanels>
+            </tabbox>
+        <button onClick="emailTemplateController.save()" autodisable="self" label="${i18n:_('Save')}" sclass="save-button global-action"/>
+        <button onClick="emailTemplateController.cancel()" label="${i18n:_('Cancel')}" sclass="cancel-button global-action"/>
+
+    </window>
+</zk>
