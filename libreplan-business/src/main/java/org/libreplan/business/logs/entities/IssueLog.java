@@ -35,7 +35,7 @@ import org.libreplan.business.users.entities.User;
 public class IssueLog extends ProjectLog {
 
     private IssueTypeEnum type = IssueTypeEnum.getDefault();
-    private String status;
+    private String status = "LOW";
     private LowMediumHighEnum priority = LowMediumHighEnum.getDefault();
     private LowMediumHighEnum severity = LowMediumHighEnum.getDefault();
     private Date dateRaised;

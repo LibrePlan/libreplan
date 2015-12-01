@@ -288,10 +288,19 @@ public class IssueLogCRUDController extends BaseCRUDController<IssueLog> {
         return result;
     }
 
-    public void updateStatus() {
+    public void updateStatusList(boolean ifNew) {
         ListModelList model = new ListModelList(getIssueStatusEnum());
         status.setModel(model);
-        status.setSelectedItem(status.getItemAtIndex(0));
+        if(ifNew)
+            status.setSelectedItem(status.getItemAtIndex(0));
+        else {
+            for(int i = 0; i < status.getItems().size(); i++) {
+                if (status.getModel().getElementAt(i).toString().equals(getIssueLog().getStatus())) {
+                    status.setSelectedItem(status.getItemAtIndex(i));
+                    break;
+                }
+            }
+        }
     }
 
     /**
@@ -414,11 +423,13 @@ public class IssueLogCRUDController extends BaseCRUDController<IssueLog> {
     @Override
     protected void initCreate() {
         issueLogModel.initCreate();
+        updateStatusList(true);
     }
 
     @Override
     protected void initEdit(IssueLog entity) {
         issueLogModel.initEdit(entity);
+        updateStatusList(false);
     }
 
     @Override
@@ -432,6 +443,7 @@ public class IssueLogCRUDController extends BaseCRUDController<IssueLog> {
             throw new WrongValueException(bdUserIssueLog,
                     _("please select an author"));
         }
+        getIssueLog().setStatus(status.getSelectedItem().getLabel());
         issueLogModel.confirmSave();
     }
 

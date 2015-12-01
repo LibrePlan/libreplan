@@ -54,17 +54,17 @@
                                      model="@{issueLogController.issueTypeEnum}"
                                      selectedItem="@{issueLogController.issueLog.type}"
                                      itemRenderer="@{issueLogController.issueTypeRenderer}"
-                                     onSelect="issueLogController.updateStatus()"/>
+                                     onSelect="issueLogController.updateStatusList(true)"/>
 
                             <label value="${i18n:_('Status')}" />
-                            <listbox id="listIssueLogStatus" mold="select" rows="1" width="230px" >
-                                    <listitem label="LOW" value="LOW" selected="true"></listitem>
-                                    <listitem label="MEDIUM" value="MEDIUM"></listitem>
-                                    <listitem label="HIGH" value="HIGH"></listitem>
+                            <listbox id="listIssueLogStatus" mold="select" rows="1" width="230px">
+
                             </listbox>
                                      <!--model="@{issueLogController.issueStatusEnum}"
                                      selectedItem="@{issueLogController.issueLog.status}"
-                                     itemRenderer="@{issueLogController.issueStatusRenderer}" -->
+                                     itemRenderer="@{issueLogController.issueStatusRenderer}"  <listitem label="LOW" value="LOW" selected="true"></listitem>
+                                    <listitem label="MEDIUM" value="MEDIUM"></listitem>
+                                    <listitem label="HIGH" value="HIGH"></listitem>-->
                         </row>
                     </rows>
                 </grid>
