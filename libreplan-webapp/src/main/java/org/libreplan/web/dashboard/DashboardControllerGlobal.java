@@ -231,34 +231,12 @@ public class DashboardControllerGlobal extends GenericForwardComposer {
             }
     }
 
+    // Remove time, timezone from full-date string
     private String getOrderInitDate(Order order) throws ParseException {
-        // Remove time, timezone from full-date string
-        DateFormat inputFormatter = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
-        DateFormat outputFormatter = new SimpleDateFormat("EEE MMM dd yyyy");
-        String input = "";
-        String outputInit = "";
-        String outputDeadline = "";
-        Date date = null;
-
-        input = order.getInitDate().toString();
-        date = inputFormatter.parse(input);
-
-        return outputInit = outputFormatter.format(date);
+        return new SimpleDateFormat("EEE MMM dd yyyy").format(order.getInitDate());
     }
-
     private String getOrderDeadline(Order order) throws ParseException {
-        // Remove time, timezone from full-date string
-        DateFormat inputFormatter = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
-        DateFormat outputFormatter = new SimpleDateFormat("EEE MMM dd yyyy");
-        String input = "";
-        String outputInit = "";
-        String outputDeadline = "";
-        Date date = null;
-
-        input = order.getDeadline().toString();
-        date = inputFormatter.parse(input);
-
-        return outputDeadline = outputFormatter.format(date);
+        return new SimpleDateFormat("EEE MMM dd yyyy").format(order.getDeadline());
     }
 
     public void showStoredColumn() throws ParseException {
