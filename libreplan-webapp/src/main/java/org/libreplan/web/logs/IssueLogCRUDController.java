@@ -24,6 +24,7 @@ import static org.libreplan.web.I18nHelper._;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.commons.logging.LogFactory;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
@@ -45,6 +46,9 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.*;
+
+import javax.swing.*;
+import javax.swing.table.TableCellEditor;
 
 /**
  * Controller for IssueLog CRUD actions
@@ -182,8 +186,26 @@ public class IssueLogCRUDController extends BaseCRUDController<IssueLog> {
                 appendDate(row, issueLog.getDateResolved());
                 appendLabel(row, issueLog.getNotes());
                 appendOperations(row, issueLog);
+                setPriorityColor(row, issueLog.getPriority());
             }
         };
+    }
+
+    private void setPriorityColor(Row row, LowMediumHighEnum priority) {
+        if (priority == LowMediumHighEnum.LOW) {
+            Cell cell = (Cell) row.getChildren().get(5);
+            cell.setClass("Issuelog-priority-color-green");
+        }
+
+        if (priority == LowMediumHighEnum.MEDIUM) {
+            Cell cell = (Cell) row.getChildren().get(5);
+            cell.setClass("Issuelog-priority-color-yellow");
+        }
+
+        if (priority == LowMediumHighEnum.HIGH) {
+            Cell cell = (Cell) row.getChildren().get(5);
+            cell.setClass("Issuelog-priority-color-red");
+        }
     }
 
     /**
@@ -210,7 +232,9 @@ public class IssueLogCRUDController extends BaseCRUDController<IssueLog> {
      */
     private void appendLabel(final Row row, String value) {
         Label label = new Label(value);
-        row.appendChild(label);
+        Cell cell = new Cell();
+        cell.appendChild(label);
+        row.appendChild(cell);
     }
 
     /**

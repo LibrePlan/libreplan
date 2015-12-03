@@ -21,9 +21,9 @@
         pageSize="15" span="0" sizedByContent="false"
         rowRenderer="@{issueLogController.issueLogsRowRenderer}">
         <columns sizable="true">
-            <column label="${i18n:_('Code')}" sort="auto(lower(code))" />
+            <column label="${i18n:_('Code')}" sort="auto(lower(code))" id="code"/>
             <column label="${i18n:_('Projectname')}" visible="@{logsController.projectNameVisibility}" sort="auto(lower(order))" />
-            <column label="${i18n:_('Type')}" sort="auto(lower(type))"/>
+            <column label="${i18n:_('Type')}" sort="auto(lower(type))" width="9%"/>
             <column label="${i18n:_('Status')}" sort="auto(lower(status))"/>
             <column label="${i18n:_('Description')}" sort="auto(lower(description))"/>
             <column label="${i18n:_('Priority')}" sort="auto(lower(priority))"/>

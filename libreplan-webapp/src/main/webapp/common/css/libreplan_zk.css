@@ -1940,3 +1940,15 @@ select {
 .z-menu-popup a:focus {
     text-decoration: none !important;
 }
+
+.Issuelog-priority-color-red {
+    background: red !important;
+}
+
+.Issuelog-priority-color-yellow {
+    background: yellow !important;
+}
+
+.Issuelog-priority-color-green {
+    background: green !important;
+}
