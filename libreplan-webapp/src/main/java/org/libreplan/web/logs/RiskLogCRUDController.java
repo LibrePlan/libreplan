@@ -21,6 +21,7 @@ package org.libreplan.web.logs;
 
 import static org.libreplan.web.I18nHelper._;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -371,7 +372,17 @@ public class RiskLogCRUDController extends BaseCRUDController<RiskLog> {
      * Returns a list of {@link RiskLog} objects
      */
     public List<RiskLog> getRiskLogs() {
-        return riskLogModel.getRiskLogs();
+        if (LogsController.getProjectNameVisibility() == true)
+            return riskLogModel.getRiskLogs();
+        else{
+            List<RiskLog> riskLogs = new ArrayList<RiskLog>();
+            Order order = LogsController.getOrder();
+            for (RiskLog issueLog : riskLogModel.getRiskLogs()) {
+                if (issueLog.getOrder().equals(order))
+                    riskLogs.add(issueLog);
+            }
+            return riskLogs;
+        }
     }
 
     public Order getOrder() {

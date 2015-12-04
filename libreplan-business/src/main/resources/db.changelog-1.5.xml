@@ -7,21 +7,48 @@
 
     <changeSet id="adding-email_template_table" author="vova/jeroen">
         <createTable tableName="email_template">
-            <column name="id" type="int" autoIncrement="true">
+            <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false" primaryKeyName="email_templates_pkey"/>
             </column>
             <column name="type" type="int"/>
             <column name="language" type="int"/>
             <column name="content" type="varchar(2048)"/>
+            <column name="subject" type="varchar(1024)"/>
         </createTable>
+
         <addUniqueConstraint
-                constraintName="email_template_type_lang_key"
-                columnNames="type,language"
+                constraintName="email_template_type_language"
+                columnNames="type, language"
                 deferrable="false"
                 disabled="false"
                 initiallyDeferred="false"
                 tableName="email_template"
                 />
+        <createIndex tableName="email_template" indexName="language_index">
+            <column name="language"></column>
+        </createIndex>
+        <createIndex tableName="email_template" indexName="type_index">
+            <column name="type"></column>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="adding-notification_notification_queue" author="vova">
+        <createTable tableName="notification_queue">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" primaryKeyName="notification_queue_pkey"/>
+            </column>
+            <column name="type" type="int"/>
+            <column name="updated" type="timestamp with time zone"/>
+            <column name="resource" type="BIGINT"/>
+            <column name="task" type="BIGINT"/>
+            <column name="project" type="BIGINT"/>
+        </createTable>
+        <addUniqueConstraint
+                tableName="notification_queue"
+                columnNames="resource, task, project"
+                deferrable="false"
+                disabled="false"
+                initiallyDeferred="false"/>
     </changeSet>
 
     <changeSet id="adding-issue_log_table" author="misha">
