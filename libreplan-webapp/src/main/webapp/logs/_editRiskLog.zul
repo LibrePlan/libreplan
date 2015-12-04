@@ -62,22 +62,24 @@
                             <listbox id="listRiskLogProbability" mold="select" rows="1" width="135px"
                                      model="@{riskLogController.lowMediumHighEnums}"
                                      selectedItem="@{riskLogController.riskLog.probability}"
-                                     itemRenderer="@{riskLogController.lowMediumHighEnumRenderer}" />
+                                     itemRenderer="@{riskLogController.lowMediumHighEnumRenderer}"
+                                     onSelect="riskLogController.setUpdateScore()"/>
 
                             <label value="${i18n:_('Impact')}" />
                             <listbox id="listRiskLogImpact" mold="select" rows="1" width="135px"
                                      model="@{riskLogController.lowMediumHighEnums}"
                                      selectedItem="@{riskLogController.riskLog.impact}"
-                                     itemRenderer="@{riskLogController.lowMediumHighEnumRenderer}" />
+                                     itemRenderer="@{riskLogController.lowMediumHighEnumRenderer}"
+                                     onSelect="riskLogController.setUpdateScore()" />
 
                             <label value="${i18n:_('Risk score')}" />
-                            <textbox value="@{riskLogController.riskLog.riskScore}" width="95px" rows="1" disabled="true" />
+                            <textbox id="riskScore" value="@{riskLogController.riskLog.riskScore}" width="95px" rows="1" disabled="true" />
                         </row>
                     </rows>
                 </grid>
             </row>
             <row>
-            <label value="${i18n:_('Creation info')}" />
+                <label value="${i18n:_('Creation info')}" />
                 <grid>
                     <columns>
                         <column width="80px"/>
@@ -108,7 +110,7 @@
             </row>
             <row>
                 <label value="${i18n:_('Counter measures (CM)')}" />
-                <textbox id="counterMeasuresTextbox" width="605px" rows="1"
+                <textbox id="counterMeasuresTextbox" width="605px" rows="3"
                          value="@{riskLogController.riskLog.counterMeasures}"/>
             </row>
             <row>
@@ -124,30 +126,43 @@
                          value="@{riskLogController.riskLog.contingency}"/>
             </row>
             <row>
-                <label value="${i18n:_('Responsible')}" />
-                <textbox id="responsibleBox" width="605px" rows="1"
-                         value="@{riskLogController.riskLog.responsible}"/>
-            </row>
-            <row>
-                <label value="${i18n:_('Action When')}" />
-                <datebox id="ActionWhenDateBox" width="110px"
-                         constraint="no empty:${i18n:_('cannot be empty')}"
-                         value="@{riskLogController.actionWhen}" />
+                <label value="${i18n:_('Prevention')}" />
+                <grid>
+                    <columns>
+                        <column width="80px"/>
+                        <column width="120px"/>
+                        <column width="80px"/>
+                        <column width="330px"/>
+                    </columns>
+                    <rows>
+                        <row>
+
+                            <label value="${i18n:_('Action When')}" />
+                            <datebox id="actionWhenDateBox" width="110px"
+                                     constraint="no empty:${i18n:_('cannot be empty')}"
+                                     value="@{riskLogController.actionWhen}" />
+
+                            <label value="${i18n:_('Responsible')}" />
+                            <textbox id="responsibleBox" width="315px" rows="1"
+                                     value="@{riskLogController.riskLog.responsible}"/>
+                        </row>
+                    </rows>
+                </grid>
             </row>
             <row>
                 <label value="${i18n:_('Notes')}" />
-                <textbox value="@{riskLogController.riskLog.notes}" width="605px" rows="3" multiline="true" />
+                <textbox value="@{riskLogController.riskLog.notes}" width="605px" rows="5" multiline="true" />
             </row>
         </rows>
     </grid>
-        <!-- Control buttons -->
+    <!-- Control buttons -->
     <button onClick="riskLogController.saveAndExit()"
-        label="${i18n:_('Save')}"
-        sclass="save-button global-action" />
+            label="${i18n:_('Save')}"
+            sclass="save-button global-action" />
     <button onClick="riskLogController.saveAndContinue()"
-        label="${i18n:_('Save and Continue')}"
-        sclass="save-button global-action" />
+            label="${i18n:_('Save and Continue')}"
+            sclass="save-button global-action" />
     <button onClick="riskLogController.cancelForm()"
-        label="${i18n:_('Cancel')}"
-        sclass="cancel-button global-action" />
+            label="${i18n:_('Cancel')}"
+            sclass="cancel-button global-action" />
 </window>
