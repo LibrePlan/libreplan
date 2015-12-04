@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.libreplan.business.logs.entities" default-access="field">
+    <class name="IssueLog" table="issue_log">
+        <id name="id" column="id" type="long" access="property">
+            <generator class="hilo">
+                <param name="max_lo">100</param>
+            </generator>
+        </id>
+
+        <property name="code" access="property" not-null="true" unique="true"/>
+
+        <many-to-one name="project" class="org.libreplan.business.orders.entities.Order" lazy="false">
+            <column name="project" not-null="true"/>
+        </many-to-one>
+
+        <property name="type" access="field" not-null="true" >
+            <type name="org.hibernate.type.EnumType" >
+                <param name="enumClass">org.libreplan.business.logs.entities.IssueTypeEnum</param>
+            </type>
+        </property>
+
+        <property name="description" column="description" access="field"/>
+
+        <property name="priority" access="field" not-null="true">
+            <type name="org.hibernate.type.EnumType">
+                <param name="enumClass">org.libreplan.business.logs.entities.LowMediumHighEnum</param>
+            </type>
+        </property>
+
+        <property name="severity" access="field" not-null="true">
+            <type name="org.hibernate.type.EnumType">
+                <param name="enumClass">org.libreplan.business.logs.entities.LowMediumHighEnum</param>
+            </type>
+        </property>
+
+        <property name="dateRaised" column="date_raised" access="field" not-null="true">
+
+        </property>
+
+        <property name="assignedTo" column="assigned_to" access="field"/>
+
+        <many-to-one name="createdBy" class="org.libreplan.business.users.entities.User" lazy="false">
+            <column name="created_by" not-null="true"/>
+       </many-to-one>
+
+        <property name="deadline" column="deadline" />
+
+        <property name="dateResolved" column="date_resolved"/>
+
+        <property name="notes" column="notes" access="field"/>
+    </class>
+
+    <class name="RiskLog" table="risk_log">
+        <id name="id" column="id" type="long" access="property">
+            <generator class="hilo">
+                <param name="max_lo">100</param>
+            </generator>
+        </id>
+
+        <property name="code" access="property" not-null="true" unique="true"/>
+
+        <many-to-one name="project" class="org.libreplan.business.orders.entities.Order" lazy="false">
+            <column name="project" not-null="true"/>
+        </many-to-one>
+
+            <property name="probability" access="field" not-null="true">
+                <type name="org.hibernate.type.EnumType">
+                    <param name="enumClass">org.libreplan.business.logs.entities.LowMediumHighEnum</param>
+                </type>
+            </property>
+            
+            <property name="impact" access="field" not-null="true">
+                <type name="org.hibernate.type.EnumType">
+                    <param name="enumClass">org.libreplan.business.logs.entities.LowMediumHighEnum</param>
+                </type>
+            </property>
+
+            <property name="dateCreated" column="date_created" access="field" not-null="true"/>
+
+            <many-to-one name="createdBy" class="org.libreplan.business.users.entities.User" lazy="false">
+                <column name="created_by" />
+            </many-to-one>
+
+            <property name="counterMeasures" column="counter_measures" access="field"/>
+
+            <property name="contingency" column="contingency" access="field"/>
+
+            <property name="responsible" column="responsible" access="field"/>
+
+            <property name="actionWhen" column="action_when" access="field"/>
+
+            <property name="notes" column="notes" access="field"/>
+
+            <property name="description" column="description" access="field"/>
+
+            <property name="status" column="status" access="field"/>
+
+            <property name="score" access="field" not-null="true">
+                <type name="org.hibernate.type.EnumType">
+                    <param name="enumClass">org.libreplan.business.logs.entities.RiskScoreStatesEnum</param>
+                </type>
+            </property>
+
+        </class>
+
+</hibernate-mapping>

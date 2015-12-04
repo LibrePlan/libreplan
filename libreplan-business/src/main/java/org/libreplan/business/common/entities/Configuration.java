@@ -48,6 +48,8 @@ public class Configuration extends BaseEntity {
 
     private String companyCode;
 
+    private Boolean generateCodeForProjectLog = true;
+
     private Boolean generateCodeForCriterion = true;
 
     private Boolean generateCodeForLabel = true;
@@ -201,6 +203,12 @@ public class Configuration extends BaseEntity {
         }
         return true;
     }
+
+    //TODO 2 added methods follow below
+    public void setGeneratedCodeForProjectLog(Boolean generateCodeForProjectLog) {
+        this.generateCodeForProjectLog = generateCodeForProjectLog;
+    }
+    public Boolean getGenerateCodeForProjectLog(){ return generateCodeForProjectLog;}
 
     public void setGenerateCodeForCriterion(Boolean generateCodeForCriterion) {
         this.generateCodeForCriterion = generateCodeForCriterion;

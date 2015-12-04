@@ -1,0 +1,366 @@
+/*
+ * This file is part of LibrePlan
+ *
+ * Copyright (C) 2013 St. Antoniusziekenhuis
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package org.libreplan.web.logs;
+
+import static org.libreplan.web.I18nHelper._;
+
+import java.util.Date;
+import java.util.List;
+
+import org.apache.commons.logging.LogFactory;
+import org.libreplan.business.common.exceptions.InstanceNotFoundException;
+import org.libreplan.business.common.exceptions.ValidationException;
+import org.libreplan.business.logs.entities.LowMediumHighEnum;
+import org.libreplan.business.logs.entities.RiskLog;
+import org.libreplan.business.logs.entities.RiskScoreStatesEnum;
+import org.libreplan.business.orders.entities.Order;
+import org.libreplan.business.users.entities.User;
+import org.libreplan.web.common.BaseCRUDController;
+import org.libreplan.web.common.Util;
+import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.Scope;
+import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.WrongValueException;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zul.*;
+
+/**
+ * Controller for RiskLog CRUD actions
+ *
+ * @author Misha Gozhda <misha@libreplan-enterprise.com>
+ */
+@SuppressWarnings("serial")
+@org.springframework.stereotype.Component
+@Scope(BeanDefinition.SCOPE_PROTOTYPE)
+public class RiskLogCRUDController extends BaseCRUDController<RiskLog> {
+
+    private static final org.apache.commons.logging.Log LOG = LogFactory
+            .getLog(RiskLogCRUDController.class);
+
+    @Autowired
+    private IRiskLogModel riskLogModel;
+
+    private BandboxSearch bdProjectRiskLog;
+
+    private BandboxSearch bdUserRiskLog;
+
+    @Override
+    public void doAfterCompose(Component comp) throws Exception {
+        super.doAfterCompose(comp);
+        comp.setVariable("riskLogController", this, true);
+        showListWindow();
+        initializeOrderComponent();
+        initializeUserComponent();
+    }
+
+    /**
+     * Initializes order component
+     */
+    private void initializeOrderComponent() {
+        bdProjectRiskLog = (BandboxSearch) editWindow
+                .getFellow("bdProjectRiskLog");
+        Util.createBindingsFor(bdProjectRiskLog);
+        bdProjectRiskLog.setListboxEventListener(Events.ON_SELECT,
+                new EventListener() {
+                    @Override
+                    public void onEvent(Event event) {
+                        final Object object = bdProjectRiskLog.getSelectedElement();
+                        riskLogModel.setOrder((Order) object);
+                    }
+                });
+        bdProjectRiskLog.setListboxEventListener(Events.ON_OK, new EventListener() {
+            @Override
+            public void onEvent(Event event) {
+                final Object object = bdProjectRiskLog.getSelectedElement();
+                riskLogModel.setOrder((Order) object);
+                bdProjectRiskLog.close();
+            }
+        });
+    }
+
+    /**
+     * Initializes user component
+     */
+    private void initializeUserComponent() {
+        bdUserRiskLog = (BandboxSearch) editWindow.getFellow("bdUserRiskLog");
+        Util.createBindingsFor(bdUserRiskLog);
+        bdUserRiskLog.setListboxEventListener(Events.ON_SELECT,
+                new EventListener() {
+                    @Override
+                    public void onEvent(Event event) {
+                        final Object object = bdUserRiskLog
+                                .getSelectedElement();
+                        riskLogModel.setCreatedBy((User) object);
+                    }
+                });
+        bdUserRiskLog.setListboxEventListener(Events.ON_OK,
+                new EventListener() {
+                    @Override
+                    public void onEvent(Event event) {
+                        final Object object = bdUserRiskLog
+                                .getSelectedElement();
+                        riskLogModel.setCreatedBy((User) object);
+                        bdUserRiskLog.close();
+                    }
+                });
+    }
+
+    /**
+     * Renders risk logs
+     *
+     * @return {@link RowRenderer}
+     */
+    public RowRenderer getRiskLogsRowRenderer() {
+        return new RowRenderer() {
+
+            @Override
+            public void render(Row row, Object data) throws Exception {
+                final RiskLog riskLog = (RiskLog) data;
+                row.setValue(riskLog);
+                appendObject(row, riskLog.getCode());
+                appendLabel(row, riskLog.getOrder().getName());
+                appendObject(row, riskLog.getProbability());
+                appendObject(row, riskLog.getImpact());
+                appendObject(row, riskLog.getRiskScore());
+                appendLabel(row, riskLog.getStatus());
+                appendLabel(row, riskLog.getDescription());
+                appendDate(row, riskLog.getDateCreated());
+                appendLabel(row, riskLog.getCreatedBy().getFullName() + riskLog.getCreatedBy().getLoginName());
+                appendLabel(row, riskLog.getCounterMeasures());
+                appendLabel(row, "4");
+                appendLabel(row, riskLog.getContingency());
+                appendLabel(row, riskLog.getResponsible());
+                appendDate(row, riskLog.getActionWhen());
+                appendLabel(row, riskLog.getNotes());
+                appendOperations(row, riskLog);
+            }
+        };
+    }
+
+    public static ListitemRenderer lowMediumHighEnumRenderer = new ListitemRenderer() {
+        @Override
+        public void render(org.zkoss.zul.Listitem item, Object data)
+                throws Exception {
+            LowMediumHighEnum lowMediumHighEnum = (LowMediumHighEnum) data;
+            String displayName = lowMediumHighEnum.getDisplayName();
+            item.setLabel(displayName);
+        }
+    };
+    public static ListitemRenderer riskScoreStatesEnumRenderer = new ListitemRenderer() {
+        @Override
+        public void render(org.zkoss.zul.Listitem item, Object data)
+                throws Exception {
+            RiskScoreStatesEnum riskScoreStatesEnum = (RiskScoreStatesEnum) data;
+            String displayName = riskScoreStatesEnum.getDisplayName();
+            item.setLabel(displayName);
+        }
+    };
+
+    /**
+     * Appends the specified <code>object</code> to the specified
+     * <code>row</code>
+     *
+     * @param row
+     * @param object
+     */
+    private void appendObject(final Row row, Object object) {
+        String text = new String("");
+        if (object != null) {
+            text = object.toString();
+        }
+        appendLabel(row, text);
+    }
+
+    /**
+     * Creates {@link Label} bases on the specified <code>value</code> and
+     * appends to the specified <code>row</code>
+     *
+     * @param row
+     * @param value
+     */
+    private void appendLabel(final Row row, String value) {
+        Label label = new Label(value);
+        row.appendChild(label);
+    }
+
+    /**
+     * Appends the specified <code>date</code> to the specified <code>row</code>
+     *
+     * @param row
+     * @param date
+     */
+    private void appendDate(final Row row, Date date) {
+        String labelDate = new String("");
+        if (date != null) {
+            labelDate = Util.formatDate(date);
+        }
+        appendLabel(row, labelDate);
+    }
+
+    /**
+     * Appends operation(edit and remove) to the specified <code>row</code>
+     *
+     * @param row
+     * @param riskLog
+     */
+    private void appendOperations(final Row row, final RiskLog riskLog) {
+        Hbox hbox = new Hbox();
+        hbox.appendChild(Util.createEditButton(new EventListener() {
+            @Override
+            public void onEvent(Event event) {
+                goToEditForm(riskLog);
+            }
+        }));
+        hbox.appendChild(Util.createRemoveButton(new EventListener() {
+            @Override
+            public void onEvent(Event event) {
+                confirmDelete(riskLog);
+            }
+        }));
+        row.appendChild(hbox);
+    }
+
+    /**
+     * Returns {@link LowMediumHighEnum} values
+     */
+    public LowMediumHighEnum[] getLowMediumHighEnums() {
+        return LowMediumHighEnum.values();
+    }
+    /**
+     * Returns {@link org.libreplan.business.logs.entities.RiskScoreStatesEnum} values
+     */
+    public RiskScoreStatesEnum[] getRiskScoreStatesEnums() {
+        return RiskScoreStatesEnum.values();
+    }
+
+    /**
+     * Returns a list of {@link Order} objects
+     */
+    public List<Order> getOrders() {
+        return riskLogModel.getOrders();
+    }
+
+    /**
+     * Returns a list of {@link User} objects
+     */
+    public List<User> getUsers() {
+        return riskLogModel.getUsers();
+    }
+
+    /**
+     * Returns registration date
+     */
+    public Date getDateCreated() {
+        if (riskLogModel.getRiskLog() == null) {
+            return null;
+        }
+        return (riskLogModel.getRiskLog().getDateCreated() != null) ? riskLogModel
+                .getRiskLog().getDateCreated()
+                : null;
+    }
+
+    /**
+     * Sets the registration date
+     *
+     * @param date
+     *            registration date
+     */
+    public void setDateCreated(Date date) {
+        riskLogModel.getRiskLog().setDateCreated(date);
+    }
+
+    public void setActionWhen(Date date) {
+        riskLogModel.getRiskLog().setActionWhen(date);
+    }
+
+    public Date getActionWhen() {
+        if (riskLogModel.getRiskLog() == null) {
+            return null;
+        }
+        return (riskLogModel.getRiskLog().getActionWhen() != null) ? riskLogModel
+                .getRiskLog().getActionWhen()
+                : null;
+    }
+
+    /**
+     * Returns the {@link RiskLog} object
+     */
+    public RiskLog getRiskLog() {
+        return riskLogModel.getRiskLog();
+    }
+
+    /**
+     * Returns a list of {@link RiskLog} objects
+     */
+    public List<RiskLog> getRiskLogs() {
+        return riskLogModel.getRiskLogs();
+    }
+
+    @Override
+    protected String getEntityType() {
+        return _("Issue log");
+    }
+
+    @Override
+    protected String getPluralEntityType() {
+        return _("Issue logs");
+    }
+
+    @Override
+    protected void initCreate() {
+        riskLogModel.initCreate();
+    }
+
+    @Override
+    protected void initEdit(RiskLog entity) {
+        riskLogModel.initEdit(entity);
+    }
+
+    @Override
+    protected void save() throws ValidationException {
+        if (getRiskLog().getOrder() == null) {
+            throw new WrongValueException(bdProjectRiskLog,
+                    _("please select a project"));
+        }
+
+        if (getRiskLog().getCreatedBy() == null) {
+            throw new WrongValueException(bdUserRiskLog,
+                    _("please select an author"));
+        }
+
+        riskLogModel.confirmSave();
+    }
+
+    @Override
+    protected RiskLog getEntityBeingEdited() {
+        return riskLogModel.getRiskLog();
+    }
+
+    @Override
+    protected void delete(RiskLog entity) throws InstanceNotFoundException {
+        riskLogModel.remove(entity);
+
+    }
+
+}

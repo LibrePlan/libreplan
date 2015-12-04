@@ -1,0 +1,62 @@
+<!--
+  This file is part of LibrePlan
+
+  Copyright (C) 2013 St. Antoniusziekenhuis
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+
+<?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n"?>
+<?component name="listIssueLogs" inline="true" macroURI="issue_log.zul"?>
+<?component name="listRiskLogs" inline="true" macroURI="risk_log.zul"?>
+
+<zk>
+<zscript><![CDATA[
+    logsController = arg.get("logsController");
+]]>
+</zscript>
+
+<div self="@{define(content)}" height="100%" style="overflow:visible">
+    <style src="/dashboard/css/dashboard.css" dynamic="true" />
+
+    <div height="30px" sclass="toolbar-box">
+        <hbox id="logsFilter" visible="false" />
+    </div>
+
+    <window self="@{define(content)}" id="logWindow" apply="${logsController}" vflex="1">
+        <borderlayout sclass="orderslayout" height="100%">
+            <center border="0" class="orderslayout-area">
+                <tabbox id="tabboxLog">
+                    <tabs>
+                        <tab id="tabIssueLogs" label="${i18n:_('Issue logs')}" selected="true"
+                             onSelect = "logsController.setupIssueLogController();"/>
+                        <tab id="tabRiskLogs" label="${i18n:_('Risk logs')}"
+                             onSelect = "logsController.setupRiskLogController();"/>
+                    </tabs>
+                    <tabpanels>
+                        <tabpanel sclass="orderelements-tab" id="tabpanelLog">
+                            <listIssueLogs id="issueLogs" fulfill="tabIssueLogs.onSelect"/>
+                        </tabpanel>
+                        <tabpanel sclass="orderelements-tab" id="tabpanelLog2">
+                            <listRiskLogs id="riskLogs" fulfill="tabRiskLogs.onSelect"/>
+                        </tabpanel>
+                    </tabpanels>
+                </tabbox>
+            </center>
+        </borderlayout>
+    </window>
+
+</div>
+
+</zk>

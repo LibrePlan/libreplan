@@ -1077,6 +1077,19 @@ span.perspective, span.perspective-active {
     margin-top: 5px;
 }
 
+.perspective.logs-global .z-button-cm {
+    background-image: url(../img/ico_logs-global.png);
+}
+.perspective-active.logs-global .z-button-cm {
+    background-image: url(../img/ico_logs-global.png);
+}
+
+.perspective.logs-order .z-button-cm {
+    background-image: url(../img/ico_logs-order.png);
+}
+.perspective-active.logs-order .z-button-cm {
+    background-image: url(../img/ico_logs-order.png);
+}
 
 .perspectives-column {
     display:none;

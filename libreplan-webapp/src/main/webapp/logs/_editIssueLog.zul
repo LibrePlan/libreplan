@@ -1,0 +1,169 @@
+<!--
+  This file is part of LibrePlan
+
+  Copyright (C) 2013 St. Antoniusziekenhuis
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+
+<window id="editWindow">
+    <caption id="caption" sclass="caption-title" />
+    <grid id="issueLogGrid">
+        <columns>
+           <column width="160px" />
+           <column/>
+        </columns>
+        <rows>
+            <row>
+               <label value="${i18n:_('Issue number')}" />
+               <textbox id="issueNumberTextBox" width="605px"
+                  value="@{issueLogController.issueLog.code}" disabled="true"/>
+           </row>
+           <row>
+               <label value="${i18n:_('Project')}" />
+               <bandboxSearch id="bdProjectIssueLog" widthBandbox="610px" widthListbox="610px"
+                  constraint="no empty:${i18n:_('cannot be empty')}"
+                  finder="OrderBandboxFinder"
+                  model="@{issueLogController.orders}"
+                  selectedElement="@{issueLogController.issueLog.order}"/>
+           </row>
+            <row>
+                <label value="${i18n:_('Type and status')}" />
+                <grid>
+                    <columns>
+                        <column width="80px"/>
+                        <column width="235px"/>
+                        <column width="60px"/>
+                        <column width="235px"/>
+                    </columns>
+                    <rows>
+                        <row>
+                            <label value="${i18n:_('Type')}" />
+                            <listbox id="listIssueLogType" mold="select" rows="1" width="230px"
+                                     model="@{issueLogController.issueTypeEnum}"
+                                     selectedItem="@{issueLogController.issueLog.type}"
+                                     itemRenderer="@{issueLogController.issueTypeRenderer}" />
+
+                            <label value="${i18n:_('Status')}" />
+                            <listbox id="listIssueLogStatus" mold="select" rows="1" width="230px"
+                                     model="@{issueLogController.issueStatusEnum}"
+                                     selectedItem="@{issueLogController.issueLog.status}"
+                                     itemRenderer="@{issueLogController.issueStatusRenderer}" />
+                        </row>
+                    </rows>
+                </grid>
+            </row>
+
+            <row>
+                <label value="${i18n:_('Creation info')}" />
+                <grid>
+                    <columns>
+                        <column width="80px"/>
+                        <column width="120px"/>
+                        <column width="80px"/>
+                        <column width="330px"/>
+                    </columns>
+                    <rows>
+                        <row>
+                            <label value="${i18n:_('Date raised')}" />
+                            <datebox id="dateRaisedBox" width="110px"
+                                     constraint="no empty:${i18n:_('cannot be empty')}"
+                                     value="@{issueLogController.dateRaised}" />
+
+                            <label value="${i18n:_('Created by')}" />
+                            <bandboxSearch id="bdUserIssueLog" widthBandbox="320px" widthListbox="340px"
+                                           finder="UserBandboxFinder"
+                                           model="@{issueLogController.users}"
+                                           selectedElement="@{issueLogController.issueLog.createdBy}"/>
+                        </row>
+                    </rows>
+                </grid>
+            </row>
+            <row>
+                <label value="${i18n:_('Description')}" />
+                <textbox id="descriptionNameTextBox" width="605px" rows="4"
+                         value="@{issueLogController.issueLog.description}"/>
+            </row>
+            <row>
+                <label value="${i18n:_('Categories')}" />
+                <grid>
+                    <columns>
+                        <column width="150px"/>
+                        <column width="155px"/>
+                        <column width="150px"/>
+                        <column width="155px"/>
+                    </columns>
+                    <rows>
+                        <row>
+                            <label value="${i18n:_('Priority')}" />
+                            <listbox id="listIssueLogPriority" mold="select" rows="1" width="150px"
+                                     model="@{issueLogController.lowMediumHighEnum}"
+                                     selectedItem="@{issueLogController.issueLog.priority}"
+                                     itemRenderer="@{issueLogController.lowMediumHighEnumRenderer}" />
+
+                            <label value="${i18n:_('Severity')}"/>
+                            <listbox id="listIssueLogSeverity" mold="select" rows="1" width="150px"
+                                     model="@{issueLogController.lowMediumHighEnum}"
+                                     selectedItem="@{issueLogController.issueLog.severity}"
+                                     itemRenderer="@{issueLogController.lowMediumHighEnumRenderer}" />
+                        </row>
+                    </rows>
+                </grid>
+            </row>
+            <row>
+               <label value="${i18n:_('Assigned to')}" />
+               <textbox id="assignedToTextBox" width="605px"
+                  value="@{issueLogController.issueLog.assignedTo}"/>
+           </row>
+           <row>
+              <label value="${i18n:_('Timing')}" />
+               <hbox>
+               <grid id="timing">
+                   <columns>
+                       <column width="150px"/>
+                       <column width="155px"/>
+                       <column width="150px"/>
+                       <column width="155px"/>
+                   </columns>
+                   <rows>
+                       <row>
+                           <label value="${i18n:_('Deadline')}"/>
+                           <datebox id="deadline" width="145px"
+                                     value="@{issueLogController.deadline}" />
+
+                           <label value="${i18n:_('Date resolved')}" />
+                           <datebox id="dateResolved" width="145px"
+                                     value="@{issueLogController.dateResolved}" />
+                       </row>
+                   </rows>
+               </grid>
+               </hbox>
+           </row>
+           <row>
+             <label value="${i18n:_('Notes')}" />
+             <textbox value="@{issueLogController.issueLog.notes}" width="605px" rows="8" multiline="true" />
+           </row>
+        </rows>
+    </grid>
+        <!-- Control buttons -->
+    <button onClick="issueLogController.saveAndExit()"
+        label="${i18n:_('Save')}"
+        sclass="save-button global-action" />
+    <button onClick="issueLogController.saveAndContinue()"
+        label="${i18n:_('Save and Continue')}"
+        sclass="save-button global-action" />
+    <button onClick="issueLogController.cancelForm()"
+        label="${i18n:_('Cancel')}"
+        sclass="cancel-button global-action" />
+</window>

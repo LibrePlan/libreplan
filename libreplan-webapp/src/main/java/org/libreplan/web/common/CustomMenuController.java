@@ -275,6 +275,12 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
                 }
             }, "01-introducion.html#id2"));
         }
+/*        planningItems.add(subItem(_("RiskLog"), new ICapture() {
+            @Override
+            public void capture() {
+                globalView.g
+            }
+        }*/
         if (SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_PLANNING)) {
             planningItems.add(subItem(_("Resources Load"), new ICapture() {
                 @Override
@@ -298,6 +304,13 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
         planningItems.add(subItem(_("Import project"),
                 "/orders/imports/projectImport.zul", ""));
         }
+
+        if (SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_CRITERIA)) {
+            planningItems.add(subItem(_("RiskLog"),
+                    "/logs/issue_log.zul",
+                    "02-criterios.html#id1"));
+        }
+
         if (!planningItems.isEmpty()) {
             topItem(_("Planning"), "/planner/index.zul", "", planningItems);
         }
