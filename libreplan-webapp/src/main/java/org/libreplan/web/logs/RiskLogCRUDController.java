@@ -65,13 +65,17 @@ public class RiskLogCRUDController extends BaseCRUDController<RiskLog> {
 
     private BandboxSearch bdUserRiskLog;
 
+    private Textbox riskScore;
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
+        riskScore = (Textbox)comp.getFellow("editWindow").getFellow("riskScore");
         comp.setVariable("riskLogController", this, true);
         showListWindow();
         initializeOrderComponent();
         initializeUserComponent();
+        bdProjectRiskLog.setDisabled(!LogsController.getProjectNameVisibility());
     }
 
     /**
@@ -148,17 +152,33 @@ public class RiskLogCRUDController extends BaseCRUDController<RiskLog> {
                 appendDate(row, riskLog.getDateCreated());
                 appendLabel(row, riskLog.getCreatedBy().getFullName() + riskLog.getCreatedBy().getLoginName());
                 appendLabel(row, riskLog.getCounterMeasures());
-                appendLabel(row, "4");
+                appendLabel(row, riskLog.getScoreAfterCM().getDisplayName());
                 appendLabel(row, riskLog.getContingency());
                 appendLabel(row, riskLog.getResponsible());
                 appendDate(row, riskLog.getActionWhen());
                 appendLabel(row, riskLog.getNotes());
                 appendOperations(row, riskLog);
+                setScoreCellColor(row, riskLog.getRiskScore());
             }
         };
     }
 
-    public static ListitemRenderer lowMediumHighEnumRenderer = new ListitemRenderer() {
+    private void setScoreCellColor(Row row, int priority) {
+        Cell cell = (Cell) row.getChildren().get(4);
+        if (priority == 1 || priority == 2) {
+            cell.setClass("logs-priority-color-green");
+        }
+
+        if (priority == 3 || priority == 4) {
+            cell.setClass("logs-priority-color-yellow");
+        }
+
+        if (priority == 6 || priority == 9) {
+            cell.setClass("logs-priority-color-red");
+        }
+    }
+
+    public  ListitemRenderer lowMediumHighEnumRenderer = new ListitemRenderer() {
         @Override
         public void render(org.zkoss.zul.Listitem item, Object data)
                 throws Exception {
@@ -167,7 +187,7 @@ public class RiskLogCRUDController extends BaseCRUDController<RiskLog> {
             item.setLabel(displayName);
         }
     };
-    public static ListitemRenderer riskScoreStatesEnumRenderer = new ListitemRenderer() {
+    public  ListitemRenderer riskScoreStatesEnumRenderer = new ListitemRenderer() {
         @Override
         public void render(org.zkoss.zul.Listitem item, Object data)
                 throws Exception {
@@ -176,6 +196,24 @@ public class RiskLogCRUDController extends BaseCRUDController<RiskLog> {
             item.setLabel(displayName);
         }
     };
+
+    /**
+     * Renders LOW, MEDIUM, HIGH enums
+     *
+     * @return {@link ListitemRenderer}
+     */
+    public ListitemRenderer getLowMediumHighEnumRenderer() {
+        return lowMediumHighEnumRenderer;
+    }
+
+    /**
+     * Renders riskScoreState enums
+     *
+     * @return {@link ListitemRenderer}
+     */
+    public ListitemRenderer getRiskScoreStatesEnumRenderer() {
+        return riskScoreStatesEnumRenderer;
+    }
 
     /**
      * Appends the specified <code>object</code> to the specified
@@ -201,7 +239,9 @@ public class RiskLogCRUDController extends BaseCRUDController<RiskLog> {
      */
     private void appendLabel(final Row row, String value) {
         Label label = new Label(value);
-        row.appendChild(label);
+        Cell cell = new Cell();
+        cell.appendChild(label);
+        row.appendChild(cell);
     }
 
     /**
@@ -269,7 +309,7 @@ public class RiskLogCRUDController extends BaseCRUDController<RiskLog> {
     }
 
     /**
-     * Returns registration date
+     * Returns {@link Date} value
      */
     public Date getDateCreated() {
         if (riskLogModel.getRiskLog() == null) {
@@ -281,19 +321,28 @@ public class RiskLogCRUDController extends BaseCRUDController<RiskLog> {
     }
 
     /**
-     * Sets the registration date
+     * Sets the date created
      *
      * @param date
-     *            registration date
+     *            date created
      */
     public void setDateCreated(Date date) {
         riskLogModel.getRiskLog().setDateCreated(date);
     }
 
+    /**
+     * Sets the Action When
+     *
+     * @param date
+     *            date created
+     */
     public void setActionWhen(Date date) {
         riskLogModel.getRiskLog().setActionWhen(date);
     }
 
+    /**
+     * Returns {@link Date} value
+     */
     public Date getActionWhen() {
         if (riskLogModel.getRiskLog() == null) {
             return null;
@@ -301,6 +350,14 @@ public class RiskLogCRUDController extends BaseCRUDController<RiskLog> {
         return (riskLogModel.getRiskLog().getActionWhen() != null) ? riskLogModel
                 .getRiskLog().getActionWhen()
                 : null;
+    }
+
+    /**
+     * Sets the Score for risk
+     *
+     */
+    public void setUpdateScore() {
+        riskScore.setValue(String.valueOf(getRiskLog().getRiskScore()));
     }
 
     /**
@@ -315,6 +372,15 @@ public class RiskLogCRUDController extends BaseCRUDController<RiskLog> {
      */
     public List<RiskLog> getRiskLogs() {
         return riskLogModel.getRiskLogs();
+    }
+
+    public Order getOrder() {
+        if (LogsController.getProjectNameVisibility() == false) {
+            getRiskLog().setOrder(LogsController.getOrder());
+            return getRiskLog().getOrder();
+        }
+        else
+            return riskLogModel.getRiskLog().getOrder();
     }
 
     @Override

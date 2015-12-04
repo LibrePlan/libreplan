@@ -77,7 +77,6 @@ public class IssueLog extends ProjectLog {
         this.status = status;
     }
 
-    @NotNull(message = "priority is not specified")
     public LowMediumHighEnum getPriority() {
         return priority;
     }

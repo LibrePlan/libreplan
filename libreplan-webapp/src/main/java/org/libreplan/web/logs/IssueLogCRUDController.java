@@ -293,7 +293,7 @@ public class IssueLogCRUDController extends BaseCRUDController<IssueLog> {
     }
 
     /**
-     * Returns date entered
+     * Returns {@link Date}
      */
     public Date getDateRaised() {
         if (issueLogModel.getIssueLog() == null) {
@@ -305,17 +305,17 @@ public class IssueLogCRUDController extends BaseCRUDController<IssueLog> {
     }
 
     /**
-     * Sets the date entered
+     * Sets the date raised
      *
      * @param date
-     *            date eneted
+     *            date raised
      */
     public void setDateRaised(Date date) {
         issueLogModel.getIssueLog().setDateRaised(date);
     }
 
     /**
-     * Returns date resolved
+     * Returns {@link Date}
      */
     public Date getDateResolved() {
         if (issueLogModel.getIssueLog() == null) {
@@ -335,6 +335,9 @@ public class IssueLogCRUDController extends BaseCRUDController<IssueLog> {
         issueLogModel.getIssueLog().setDateResolved(date);
     }
 
+    /**
+     * Returns {@link Date}
+     */
     public Date getDeadline() {
         if (issueLogModel.getIssueLog() == null) {
             return null;
@@ -370,6 +373,13 @@ public class IssueLogCRUDController extends BaseCRUDController<IssueLog> {
             }
             return issueLogs;
         }
+    }
+
+    public Order getOrder() {
+        if (LogsController.getProjectNameVisibility() == false)
+            return LogsController.getOrder();
+        else
+            return issueLogModel.getIssueLog().getOrder();
     }
 
     @Override

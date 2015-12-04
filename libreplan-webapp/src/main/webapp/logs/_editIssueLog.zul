@@ -36,7 +36,7 @@
                   constraint="no empty:${i18n:_('cannot be empty')}"
                   finder="OrderBandboxFinder"
                   model="@{issueLogController.orders}"
-                  selectedElement="@{issueLogController.issueLog.order}"/>
+                  selectedElement="@{issueLogController.order}"/>
            </row>
             <row>
                 <label value="${i18n:_('Type and status')}" />

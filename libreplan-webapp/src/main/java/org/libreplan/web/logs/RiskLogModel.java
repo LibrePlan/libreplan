@@ -47,8 +47,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Model for UI operations related to {@link RiskLog}
- * 
- * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
+ *
+ * @author Misha Gozhda <misha@libreplan-enterprise.com>
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -69,9 +69,6 @@ public class RiskLogModel extends IntegrationEntityModel implements
 
     @Autowired
     private IOrderDAO orderDAO;
-
-    @Autowired
-    private IScenarioManager scenarioManager;
 
     @Autowired
     private IConfigurationDAO configurationDAO;

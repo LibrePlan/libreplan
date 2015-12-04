@@ -18,37 +18,30 @@
  */
 
 package org.libreplan.web.logs;
-
-import java.util.HashMap;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.web.common.Util;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
-import org.zkoss.zul.api.Hbox;
 import org.zkoss.zul.api.Window;
+
+import javax.swing.*;
+
 
 /**
  * Controller for Logs(issue and risk logs)
- * 
+ *
  * @author Misha Gozhda <misha@libreplan-enterprise.com>
  */
 @org.springframework.stereotype.Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class LogsController extends GenericForwardComposer {
 
-    private static final Log LOG = LogFactory.getLog(LogsController.class);
 
     private Window issueLogWindow;
     private Window riskLogWindow;
     private Window logWindow;
-
-    private Hbox logsFilter;
 
     private IssueLogCRUDController issueLogController;
     private RiskLogCRUDController riskLogController;
@@ -59,17 +52,9 @@ public class LogsController extends GenericForwardComposer {
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         comp.setVariable("logsController", this, true);
-        Component filterComponent = Executions.createComponents(
-                "/logs/_logsFilter.zul", logsFilter,
-                new HashMap<String, String>());
-        filterComponent.setVariable("logsFilterController", this, true);
-        logsFilter.setVisible(true);
         logWindow = (Window) comp.getFellowIfAny("logWindow");
         Util.createBindingsFor(logWindow);
         setupIssueLogController();
-    }
-
-    public void onApplyFilter() {
     }
 
     public void setupIssueLogController() {

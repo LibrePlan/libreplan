@@ -37,7 +37,7 @@
                                constraint="no empty:${i18n:_('cannot be empty')}"
                                finder="OrderBandboxFinder"
                                model="@{riskLogController.orders}"
-                               selectedElement="@{riskLogController.riskLog.order}"/>
+                               selectedElement="@{riskLogController.order}"/>
             </row>
 
             <row>
