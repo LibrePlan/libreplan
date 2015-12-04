@@ -1941,14 +1941,14 @@ select {
     text-decoration: none !important;
 }
 
-.Issuelog-priority-color-red {
-    background: red !important;
+.logs-priority-color-red {
+    background: #FF4000 !important;
 }
 
-.Issuelog-priority-color-yellow {
-    background: yellow !important;
+.logs-priority-color-yellow {
+    background: #FFA500 !important;
 }
 
-.Issuelog-priority-color-green {
-    background: green !important;
+.logs-priority-color-green {
+    background: #AAFFAA !important;
 }

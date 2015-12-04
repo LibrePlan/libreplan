@@ -186,25 +186,23 @@ public class IssueLogCRUDController extends BaseCRUDController<IssueLog> {
                 appendDate(row, issueLog.getDateResolved());
                 appendLabel(row, issueLog.getNotes());
                 appendOperations(row, issueLog);
-                setPriorityColor(row, issueLog.getPriority());
+                setPriorityCellColor(row, issueLog.getPriority());
             }
         };
     }
 
-    private void setPriorityColor(Row row, LowMediumHighEnum priority) {
+    private void setPriorityCellColor(Row row, LowMediumHighEnum priority) {
+        Cell cell = (Cell) row.getChildren().get(5);
         if (priority == LowMediumHighEnum.LOW) {
-            Cell cell = (Cell) row.getChildren().get(5);
-            cell.setClass("Issuelog-priority-color-green");
+            cell.setClass("logs-priority-color-green");
         }
 
         if (priority == LowMediumHighEnum.MEDIUM) {
-            Cell cell = (Cell) row.getChildren().get(5);
-            cell.setClass("Issuelog-priority-color-yellow");
+            cell.setClass("logs-priority-color-yellow");
         }
 
         if (priority == LowMediumHighEnum.HIGH) {
-            Cell cell = (Cell) row.getChildren().get(5);
-            cell.setClass("Issuelog-priority-color-red");
+            cell.setClass("logs-priority-color-red");
         }
     }
 
