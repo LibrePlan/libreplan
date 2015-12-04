@@ -57,6 +57,7 @@ public enum PredefinedConnectors {
             ConnectorProperty.create(PredefinedConnectorProperties.PROTOCOL, ""),
             ConnectorProperty.create(PredefinedConnectorProperties.HOST, ""),
             ConnectorProperty.create(PredefinedConnectorProperties.PORT, ""),
+            ConnectorProperty.create(PredefinedConnectorProperties.EMAIL_SENDER, ""),
             ConnectorProperty.create(PredefinedConnectorProperties.EMAIL_USERNAME, ""),
             ConnectorProperty.create(PredefinedConnectorProperties.EMAIL_PASSWORD, "")
 

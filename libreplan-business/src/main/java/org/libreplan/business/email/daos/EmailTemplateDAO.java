@@ -59,7 +59,7 @@ public class EmailTemplateDAO extends GenericDAOHibernate<EmailTemplate, Long> i
             List<EmailTemplate> emailTemplates = list(EmailTemplate.class);
             for ( int i = 0; i < emailTemplates.size(); i++)
                 // language.ordinal.equals(3) - English
-                if ( emailTemplates.get(i).getType().ordinal() == 0 && emailTemplates.get(i).getLanguage().ordinal() == 3)
+                if ( emailTemplates.get(i).getType().ordinal() == 0 && emailTemplates.get(i).getLanguage().ordinal() == 3 )
                     return emailTemplates.get(i).getSubject();
         }catch (Exception e){}
 
@@ -70,9 +70,8 @@ public class EmailTemplateDAO extends GenericDAOHibernate<EmailTemplate, Long> i
     @Override
     public String getContentBySelectedLanguage(int languageOrdinal, int emailTemplateTypeOrdinal) {
         for (int i = 0; i < list(EmailTemplate.class).size(); i++)
-            if (list(EmailTemplate.class).get(i).getLanguage().ordinal() == languageOrdinal &&
-                    // emailTemplateTypeOrdinal + 1, because first value is 0
-                    list(EmailTemplate.class).get(i).getType().ordinal() == emailTemplateTypeOrdinal + 1)
+            if ( list(EmailTemplate.class).get(i).getLanguage().ordinal() == languageOrdinal &&
+                    list(EmailTemplate.class).get(i).getType().ordinal() == emailTemplateTypeOrdinal )
                 return list(EmailTemplate.class).get(i).getContent();
         return "";
     }
@@ -80,10 +79,27 @@ public class EmailTemplateDAO extends GenericDAOHibernate<EmailTemplate, Long> i
     @Override
     public String getContentBySelectedTemplate(int emailTemplateTypeOrdinal, int languageOrdinal) {
         for (int i = 0; i < list(EmailTemplate.class).size(); i++)
-            // emailTemplateTypeOrdinal + 1, because first value is 0
-            if ( list(EmailTemplate.class).get(i).getType().ordinal() == emailTemplateTypeOrdinal + 1 &&
+            if ( list(EmailTemplate.class).get(i).getType().ordinal() == emailTemplateTypeOrdinal &&
                     list(EmailTemplate.class).get(i).getLanguage().ordinal() == languageOrdinal )
                 return list(EmailTemplate.class).get(i).getContent();
+        return "";
+    }
+
+    @Override
+    public String getSubjectBySelectedLanguage(int languageOrdinal, int emailTemplateTypeOrdinal) {
+        for (int i = 0; i < list(EmailTemplate.class).size(); i++)
+            if ( list(EmailTemplate.class).get(i).getLanguage().ordinal() == languageOrdinal &&
+                    list(EmailTemplate.class).get(i).getType().ordinal() == emailTemplateTypeOrdinal )
+                return list(EmailTemplate.class).get(i).getSubject();
+        return "";
+    }
+
+    @Override
+    public String getSubjectBySelectedTemplate(int emailTemplateTypeOrdinal, int languageOrdinal) {
+        for (int i = 0; i < list(EmailTemplate.class).size(); i++)
+            if ( list(EmailTemplate.class).get(i).getType().ordinal() == emailTemplateTypeOrdinal &&
+                    list(EmailTemplate.class).get(i).getLanguage().ordinal() == languageOrdinal )
+                return list(EmailTemplate.class).get(i).getSubject();
         return "";
     }
 

@@ -108,6 +108,7 @@ public class EmailTemplateController extends GenericForwardComposer{
     public void setSelectedLanguage(Language language){
         emailTemplateModel.setLanguage(language);
 
+        getSubjectDataBySelectedLanguage();
         getContentDataBySelectedLanguage();
     }
 
@@ -139,6 +140,7 @@ public class EmailTemplateController extends GenericForwardComposer{
     public void setSelectedEmailTemplateEnum(EmailTemplateEnum emailTemplateEnum){
         emailTemplateModel.setEmailTemplateEnum(emailTemplateEnum);
 
+        getSubjectDataBySelectedTemplate();
         getContentDataBySelectedTemplate();
     }
 
@@ -176,5 +178,12 @@ public class EmailTemplateController extends GenericForwardComposer{
     }
     private void getContentDataBySelectedTemplate(){
         contentsTextbox.setValue( emailTemplateModel.getContentBySelectedTemplate( getSelectedEmailTemplateEnum().ordinal(), getSelectedLanguage().ordinal() ) );
+    }
+
+    private void getSubjectDataBySelectedLanguage(){
+        subjectTextbox.setValue(emailTemplateModel.getSubjectBySelectedLanguage(getSelectedLanguage().ordinal(), getSelectedEmailTemplateEnum().ordinal()));
+    }
+    private void getSubjectDataBySelectedTemplate(){
+        subjectTextbox.setValue( emailTemplateModel.getContentBySelectedTemplate( getSelectedEmailTemplateEnum().ordinal(), getSelectedLanguage().ordinal() ) );
     }
 }

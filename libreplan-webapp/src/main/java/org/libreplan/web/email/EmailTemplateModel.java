@@ -157,6 +157,18 @@ public class EmailTemplateModel implements IEmailTemplateModel {
     public String getContentBySelectedTemplate(int emailTemplateTypeOrdinal, int languageOrdinal) {
         return emailTemplateDAO.getContentBySelectedTemplate(emailTemplateTypeOrdinal, languageOrdinal);
     }
+
+    @Override
+    @Transactional
+    public String getSubjectBySelectedLanguage(int languageOrdinal, int emailTemplateTypeOrdinal) {
+        return emailTemplateDAO.getSubjectBySelectedLanguage(languageOrdinal, emailTemplateTypeOrdinal);
+    }
+
+    @Override
+    @Transactional
+    public String getSubjectBySelectedTemplate(int emailTemplateTypeOrdinal, int languageOrdinal) {
+        return emailTemplateDAO.getSubjectBySelectedTemplate(emailTemplateTypeOrdinal, languageOrdinal);
+    }
 }
 
 

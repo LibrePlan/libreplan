@@ -1325,7 +1325,6 @@ public class ConfigurationController extends GenericForwardComposer {
     }
 
     private boolean isEmailFieldsValid(){
-
         if ( protocolsCombobox.getSelectedItem().getLabel().equals("STARTTLS") &&
                 emailUsernameTextbox.getValue() != null &&
                 emailPasswordTextbox.getValue() != null &&
@@ -1336,5 +1335,4 @@ public class ConfigurationController extends GenericForwardComposer {
 
         else return false;
     }
-
 }
