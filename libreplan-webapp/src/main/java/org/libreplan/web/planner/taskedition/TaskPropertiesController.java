@@ -732,7 +732,7 @@ public class TaskPropertiesController extends GenericForwardComposer {
 
     private void EmailNotificationAddNewWithTaskAssignedToResource(){
 
-        if ( allocationResult != null ) {
+        if ( allocationResult.getSpecificAllocations().size() != 0 ) {
 
             /* Check if resources in allocation are bound by user and are in role ROLE_EMAIL_TASK_ASSIGNED_TO_RESOURCE
              * setUser method calling manually because, after initialization user will be null
