@@ -36,9 +36,9 @@ public interface IEmailTemplateDAO extends IGenericDAO<EmailTemplate, Long>{
 
     List<EmailTemplate> getAll();
 
-    String initializeContent();
-    String initializeSubject();
-
     String getContentBySelectedLanguage(int languageOrdinal, int emailTemplateTypeOrdinal);
     String getContentBySelectedTemplate(int emailTemplateTypeOrdinal, int languageOrdinal);
+
+    String getSubjectBySelectedLanguage(int languageOrdinal, int emailTemplateTypeOrdinal);
+    String getSubjectBySelectedTemplate(int emailTemplateTypeOrdinal, int languageOrdinal);
 }

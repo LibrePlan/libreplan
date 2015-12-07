@@ -242,7 +242,8 @@ public class ConfigurationController extends GenericForwardComposer {
 
     public void save() throws InterruptedException {
 
-        if ( getSelectedConnector().getName().equals("E-mail") && isEmailFieldsValid() == false) {
+        if ( getSelectedConnector() != null && getSelectedConnector().getName().equals("E-mail") &&
+                isEmailFieldsValid() == false ) {
             messages.showMessage(Level.ERROR, _("Check username/password/sender fields"));
         } else {
                 ConstraintChecker.isValid(configurationWindow);
@@ -1325,7 +1326,6 @@ public class ConfigurationController extends GenericForwardComposer {
     }
 
     private boolean isEmailFieldsValid(){
-
         if ( protocolsCombobox.getSelectedItem().getLabel().equals("STARTTLS") &&
                 emailUsernameTextbox.getValue() != null &&
                 emailPasswordTextbox.getValue() != null &&
@@ -1336,5 +1336,4 @@ public class ConfigurationController extends GenericForwardComposer {
 
         else return false;
     }
-
 }
