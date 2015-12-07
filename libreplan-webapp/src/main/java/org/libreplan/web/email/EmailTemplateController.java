@@ -24,9 +24,14 @@ import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.settings.entities.Language;
 
 import org.libreplan.business.email.entities.EmailTemplateEnum;
+import org.libreplan.business.users.daos.IUserDAO;
+import org.libreplan.business.users.entities.User;
 import org.libreplan.web.common.IMessagesForUser;
 import org.libreplan.web.common.Level;
 import org.libreplan.web.common.MessagesForUser;
+import org.libreplan.web.security.SecurityUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.zk.ui.Component;
 
 
@@ -52,8 +57,12 @@ import static org.libreplan.web.I18nHelper._;
  */
 public class EmailTemplateController extends GenericForwardComposer{
 
-    private IEmailTemplateModel emailTemplateModel;
+    @Autowired
+    private IUserDAO userDAO;
 
+    private User user;
+
+    private IEmailTemplateModel emailTemplateModel;
 
     private IMessagesForUser messages;
 
@@ -79,8 +88,14 @@ public class EmailTemplateController extends GenericForwardComposer{
         super.doAfterCompose(comp);
         comp.setVariable("emailTemplateController", this, true);
         messages = new MessagesForUser(messagesContainer);
-        contentsTextbox.setValue(getInitialContentData());
-        subjectTextbox.setValue(getInitialSubjectData());
+
+        // Set default template and language for user
+        // And content and subject for it
+        setUser();
+        setSelectedLanguage(user.getApplicationLanguage());
+
+        getContentDataBySelectedLanguage();
+        getSubjectDataBySelectedLanguage();
     }
 
     public boolean save(){
@@ -162,28 +177,31 @@ public class EmailTemplateController extends GenericForwardComposer{
     public void setSelectedContent(){
         emailTemplateModel.setContent(contentsTextbox.getValue());
     }
-    public String getInitialContentData(){
-        return emailTemplateModel.initializeContent();
-    }
 
     public void setSelectedSubject(){
         emailTemplateModel.setSubject(subjectTextbox.getValue());
-    }
-    public String getInitialSubjectData(){
-        return emailTemplateModel.initializeSubject();
     }
 
     private void getContentDataBySelectedLanguage(){
         contentsTextbox.setValue(emailTemplateModel.getContentBySelectedLanguage(getSelectedLanguage().ordinal(), getSelectedEmailTemplateEnum().ordinal()));
     }
     private void getContentDataBySelectedTemplate(){
-        contentsTextbox.setValue( emailTemplateModel.getContentBySelectedTemplate( getSelectedEmailTemplateEnum().ordinal(), getSelectedLanguage().ordinal() ) );
+        contentsTextbox.setValue( emailTemplateModel.getContentBySelectedTemplate(getSelectedEmailTemplateEnum().ordinal(), getSelectedLanguage().ordinal()) );
     }
 
     private void getSubjectDataBySelectedLanguage(){
         subjectTextbox.setValue(emailTemplateModel.getSubjectBySelectedLanguage(getSelectedLanguage().ordinal(), getSelectedEmailTemplateEnum().ordinal()));
     }
     private void getSubjectDataBySelectedTemplate(){
-        subjectTextbox.setValue( emailTemplateModel.getContentBySelectedTemplate( getSelectedEmailTemplateEnum().ordinal(), getSelectedLanguage().ordinal() ) );
+        subjectTextbox.setValue( emailTemplateModel.getContentBySelectedTemplate(getSelectedEmailTemplateEnum().ordinal(), getSelectedLanguage().ordinal()) );
+    }
+
+    @Transactional
+    private void setUser(){
+        try {
+            user = userDAO.findByLoginName(SecurityUtils.getSessionUserLoginName());
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

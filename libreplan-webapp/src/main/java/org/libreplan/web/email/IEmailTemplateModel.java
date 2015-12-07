@@ -40,9 +40,6 @@ public interface IEmailTemplateModel {
 
     List<EmailTemplate> getAll();
 
-    String initializeContent();
-    String initializeSubject();
-
     String getContentBySelectedLanguage(int languageOrdinal, int emailTemplateTypeOrdinal);
     String getContentBySelectedTemplate(int emailTemplateTypeOrdinal, int languageOrdinal);
 

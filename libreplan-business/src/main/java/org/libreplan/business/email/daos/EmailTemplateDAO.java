@@ -41,33 +41,6 @@ public class EmailTemplateDAO extends GenericDAOHibernate<EmailTemplate, Long> i
     }
 
     @Override
-    public String initializeContent() {
-        try{
-            List<EmailTemplate> emailTemplates = list(EmailTemplate.class);
-            for ( int i = 0; i < emailTemplates.size(); i++)
-                // language.ordinal.equals(3) - English
-                if ( emailTemplates.get(i).getType().ordinal() == 0 && emailTemplates.get(i).getLanguage().ordinal() == 3)
-                    return emailTemplates.get(i).getContent();
-        }catch (Exception e){}
-
-        return " ";
-    }
-
-    @Override
-    public String initializeSubject() {
-        try{
-            List<EmailTemplate> emailTemplates = list(EmailTemplate.class);
-            for ( int i = 0; i < emailTemplates.size(); i++)
-                // language.ordinal.equals(3) - English
-                if ( emailTemplates.get(i).getType().ordinal() == 0 && emailTemplates.get(i).getLanguage().ordinal() == 3 )
-                    return emailTemplates.get(i).getSubject();
-        }catch (Exception e){}
-
-        return " ";
-    }
-
-
-    @Override
     public String getContentBySelectedLanguage(int languageOrdinal, int emailTemplateTypeOrdinal) {
         for (int i = 0; i < list(EmailTemplate.class).size(); i++)
             if ( list(EmailTemplate.class).get(i).getLanguage().ordinal() == languageOrdinal &&
@@ -102,5 +75,4 @@ public class EmailTemplateDAO extends GenericDAOHibernate<EmailTemplate, Long> i
                 return list(EmailTemplate.class).get(i).getSubject();
         return "";
     }
-
 }

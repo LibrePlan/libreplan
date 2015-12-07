@@ -24,7 +24,10 @@ import org.libreplan.business.settings.entities.Language;
 import org.libreplan.business.email.daos.IEmailTemplateDAO;
 import org.libreplan.business.email.entities.EmailTemplate;
 import org.libreplan.business.email.entities.EmailTemplateEnum;
+import org.libreplan.business.users.daos.IUserDAO;
+import org.libreplan.business.users.entities.User;
 import org.libreplan.web.common.concurrentdetection.OnConcurrentModification;
+import org.libreplan.web.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -48,6 +51,9 @@ public class EmailTemplateModel implements IEmailTemplateModel {
     @Autowired
     private IEmailTemplateDAO emailTemplateDAO;
 
+    @Autowired
+    private IUserDAO userDAO;
+
     private Language language = Language.ENGLISH_LANGUAGE;
 
     private EmailTemplateEnum emailTemplateEnum = EmailTemplateEnum.TEMPLATE_TASK_ASSIGNED_TO_RESOURCE;
@@ -55,6 +61,8 @@ public class EmailTemplateModel implements IEmailTemplateModel {
     private String content;
 
     private String subject;
+
+    private User user;
 
     private EmailTemplate emailTemplate = new EmailTemplate();
 
@@ -103,11 +111,14 @@ public class EmailTemplateModel implements IEmailTemplateModel {
     }
 
     @Override
+    @Transactional
     public Language getLanguage() {
         return this.emailTemplate.getLanguage();
     }
     @Override
-    public void setLanguage(Language language){ this.emailTemplate.setLanguage(language);}
+    public void setLanguage(Language language){
+        this.emailTemplate.setLanguage(language);
+    }
 
     @Override
     public EmailTemplateEnum getEmailTemplateEnum() {
@@ -135,16 +146,6 @@ public class EmailTemplateModel implements IEmailTemplateModel {
     public void setSubject(String subject) {
         this.emailTemplate.setSubject(subject);
     }
-
-    @Override
-    @Transactional
-    public String initializeContent() {
-        return emailTemplateDAO.initializeContent();
-    }
-
-    @Override
-    @Transactional
-    public String initializeSubject() { return emailTemplateDAO.initializeSubject(); }
 
     @Override
     @Transactional
