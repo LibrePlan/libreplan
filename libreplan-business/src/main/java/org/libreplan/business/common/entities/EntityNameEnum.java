@@ -31,6 +31,8 @@ import org.libreplan.business.costcategories.entities.ResourcesCostCategoryAssig
 import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
 import org.libreplan.business.expensesheet.entities.ExpenseSheet;
 import org.libreplan.business.labels.entities.LabelType;
+import org.libreplan.business.logs.entities.IssueLog;
+import org.libreplan.business.logs.entities.RiskLog;
 import org.libreplan.business.materials.entities.MaterialCategory;
 import org.libreplan.business.materials.entities.UnitType;
 import org.libreplan.business.orders.entities.Order;
@@ -56,7 +58,7 @@ public enum EntityNameEnum {
             "Calendar exception day", true), COST_CATEGORY("Cost category",
             true), RESOURCE_CALENDAR("Resource calendar", true), CRITERION_SATISFACTION(
             "Criterion satisfaction", true), RESOURCE_COST_CATEGORY_ASSIGNMENT(
-            "Resource cost category assignment", true), EXPENSE_SHEET("Expense sheet", true);
+            "Resource cost category assignment", true), EXPENSE_SHEET("Expense sheet", true), ISSUE_LOG("Issue log", true), RISK_LOG("Risk log", true);
 
     private String description;
 
@@ -121,6 +123,13 @@ public enum EntityNameEnum {
                     .getResourcesCostCategoryAssignmentDAO();
         case EXPENSE_SHEET:
             return (IIntegrationEntityDAO<ExpenseSheet>) Registry.getExpenseSheetDAO();
+
+        case ISSUE_LOG:
+            return (IIntegrationEntityDAO<IssueLog>) Registry.getIssueLogDAO();
+
+        case RISK_LOG:
+            return (IIntegrationEntityDAO<RiskLog>) Registry.getRiskLogDAO();
+
         default:
             throw new RuntimeException("can't handle the code sequence of the "
                     + description);

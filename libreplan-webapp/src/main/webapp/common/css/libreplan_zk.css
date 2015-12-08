@@ -1077,6 +1077,19 @@ span.perspective, span.perspective-active {
     margin-top: 5px;
 }
 
+.perspective.logs-global .z-button-cm {
+    background-image: url(../img/ico_logs-global.png);
+}
+.perspective-active.logs-global .z-button-cm {
+    background-image: url(../img/ico_logs-global.png);
+}
+
+.perspective.logs-order .z-button-cm {
+    background-image: url(../img/ico_logs-order.png);
+}
+.perspective-active.logs-order .z-button-cm {
+    background-image: url(../img/ico_logs-order.png);
+}
 
 .perspectives-column {
     display:none;
@@ -1926,4 +1939,16 @@ select {
 
 .z-menu-popup a:focus {
     text-decoration: none !important;
+}
+
+.logs-priority-color-red {
+    background: #FF4000 !important;
+}
+
+.logs-priority-color-yellow {
+    background: #FFA500 !important;
+}
+
+.logs-priority-color-green {
+    background: #AAFFAA !important;
 }

@@ -97,6 +97,9 @@
                 <value>
                     org/libreplan/business/email/entities/Email.hbm.xml
                 </value>
+                <value>
+                    org/libreplan/business/logs/entities/Logs.hbm.xml
+                </value>
             </list>
         </property>
     </bean>
