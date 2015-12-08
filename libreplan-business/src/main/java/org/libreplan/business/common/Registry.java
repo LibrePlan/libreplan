@@ -40,6 +40,8 @@ import org.libreplan.business.expensesheet.daos.IExpenseSheetLineDAO;
 import org.libreplan.business.externalcompanies.daos.IExternalCompanyDAO;
 import org.libreplan.business.labels.daos.ILabelDAO;
 import org.libreplan.business.labels.daos.ILabelTypeDAO;
+import org.libreplan.business.logs.daos.IIssueLogDAO;
+import org.libreplan.business.logs.daos.IRiskLogDAO;
 import org.libreplan.business.materials.daos.IMaterialCategoryDAO;
 import org.libreplan.business.materials.daos.IMaterialDAO;
 import org.libreplan.business.materials.daos.IUnitTypeDAO;
@@ -199,6 +201,12 @@ public class Registry {
 
     @Autowired
     private IExpenseSheetDAO expenseSheetDAO;
+
+    @Autowired
+    private IIssueLogDAO issueLogDAO;
+
+    @Autowired
+    private IRiskLogDAO riskLogDAO;
 
     @Autowired
     private IExpenseSheetLineDAO expenseSheetLineDAO;
@@ -382,6 +390,12 @@ public class Registry {
     public static IExpenseSheetDAO getExpenseSheetDAO() {
         return getInstance().expenseSheetDAO;
     }
+
+    public static IIssueLogDAO getIssueLogDAO() {
+        return getInstance().issueLogDAO;
+    }
+
+    public static IRiskLogDAO getRiskLogDAO() {return getInstance().riskLogDAO;}
 
     public static IExpenseSheetLineDAO getExpenseSheetLineDAO() {
         return getInstance().expenseSheetLineDAO;

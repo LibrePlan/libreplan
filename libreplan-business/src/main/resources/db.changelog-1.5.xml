@@ -51,4 +51,79 @@
                 initiallyDeferred="false"/>
     </changeSet>
 
+    <changeSet id="adding-issue_log_table" author="misha">
+        <createTable tableName="issue_log">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" primaryKeyName="issue_log_pkey"/>
+            </column>
+            <column name="code" type="varchar(25)"/>
+            <column name="project" type="BIGINT"/>
+            <column name="type" type="integer"/>
+            <column name="description" type="varchar"/>
+            <column name="priority" type="integer"/>
+            <column name="severity" type="integer"/>
+            <column name="created_by" type="BIGINT"/>
+            <column name="assigned_to" type="varchar(50)"/>
+            <column name="status" type="varchar(50)"/>
+            <column name="date_raised" type="timestamp with time zone"/>
+            <column name="deadline" type="timestamp with time zone"/>
+            <column name="date_resolved" type="timestamp with time zone"/>
+            <column name="notes" type="varchar"/>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="issue_log" baseColumnNames="project"
+                                 constraintName="issue_log_project_order_element_table"
+                                 referencedTableName="order_element"
+                                 referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="issue_log" baseColumnNames="created_by"
+                                 constraintName="issue_log_user_user_table"
+                                 referencedTableName="user_table"
+                                 referencedColumnNames="id"/>
+        <addUniqueConstraint
+                constraintName="issue_log_unique_code"
+                columnNames="code"
+                deferrable="false"
+                disabled="false"
+                initiallyDeferred="false"
+                tableName="issue_log"
+                />
+    </changeSet>
+
+    <changeSet id="adding-risk_log_table" author="misha">
+        <createTable tableName="risk_log">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" primaryKeyName="risk_log_pkey"/>
+            </column>
+            <column name="code" type="varchar(25)"/>
+            <column name="project" type="BIGINT"/>
+            <column name="description" type="varchar"/>
+            <column name="probability" type="integer"/>
+            <column name="impact" type="integer"/>
+            <column name="score" type="integer"/>
+            <column name="created_by" type="BIGINT"/>
+            <column name="responsible" type="varchar(25)"/>
+            <column name="status" type="varchar(25)"/>
+            <column name="contingency" type="varchar(50)"/>
+            <column name="counter_measures" type="varchar(50)"/>
+            <column name="action_when" type="timestamp with time zone"/>
+            <column name="date_created" type="timestamp with time zone"/>
+            <column name="notes" type="varchar"/>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="risk_log" baseColumnNames="project"
+                                 constraintName="project_order_element_table"
+                                 referencedTableName="order_element"
+                                 referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="risk_log" baseColumnNames="created_by"
+                                 constraintName="risk_log_user_user_table"
+                                 referencedTableName="user_table"
+                                 referencedColumnNames="id"/>
+        <addUniqueConstraint
+                constraintName="risk_log_unique_code"
+                columnNames="code"
+                deferrable="false"
+                disabled="false"
+                initiallyDeferred="false"
+                tableName="risk_log"
+                />
+    </changeSet>
+
 </databaseChangeLog>
