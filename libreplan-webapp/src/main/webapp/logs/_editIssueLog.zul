@@ -50,14 +50,14 @@
                     <rows>
                         <row>
                             <label value="${i18n:_('Type')}" />
-                            <listbox id="listIssueLogType" mold="select" rows="1" width="230px"
+                            <listbox id="listIssueLogType" mold="select" rows="1" width="225px"
                                      model="@{issueLogController.issueTypeEnum}"
                                      selectedItem="@{issueLogController.issueLog.type}"
                                      itemRenderer="@{issueLogController.issueTypeRenderer}"
                                      onSelect="issueLogController.updateStatusList(true)"/>
 
                             <label value="${i18n:_('Status')}" />
-                            <listbox id="listIssueLogStatus" mold="select" rows="1" width="230px">
+                            <listbox id="listIssueLogStatus" mold="select" rows="1" width="225px">
 
                             </listbox>
                         </row>
@@ -107,13 +107,13 @@
                     <rows>
                         <row>
                             <label value="${i18n:_('Priority')}" />
-                            <listbox id="listIssueLogPriority" mold="select" rows="1" width="150px"
+                            <listbox id="listIssueLogPriority" mold="select" rows="1" width="145px"
                                      model="@{issueLogController.lowMediumHighEnum}"
                                      selectedItem="@{issueLogController.issueLog.priority}"
                                      itemRenderer="@{issueLogController.lowMediumHighEnumRenderer}" />
 
                             <label value="${i18n:_('Severity')}"/>
-                            <listbox id="listIssueLogSeverity" mold="select" rows="1" width="150px"
+                            <listbox id="listIssueLogSeverity" mold="select" rows="1" width="145px"
                                      model="@{issueLogController.lowMediumHighEnum}"
                                      selectedItem="@{issueLogController.issueLog.severity}"
                                      itemRenderer="@{issueLogController.lowMediumHighEnumRenderer}" />

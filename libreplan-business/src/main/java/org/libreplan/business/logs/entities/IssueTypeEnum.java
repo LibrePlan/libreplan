@@ -10,7 +10,7 @@ import static org.libreplan.business.i18n.I18nHelper._;
  * @author Misha Gozhda <misha@libreplan-enterprise.com>
  */
 public enum IssueTypeEnum {
-    PROBLEM_OR_CONCERN(_("PROBLEM OR CONCERN")), REQUEST_FOR_CHANGE(_("REQUEST FOR CHANGE")), OFF_SPECIFICATION(_("OFF SPECIFICATON"));
+    PROBLEM_OR_CONCERN(_("Problem or concern")), REQUEST_FOR_CHANGE(_("Request for change")), OFF_SPECIFICATION(_("Off specification"));
 
     private final String issueTypeEnum;
 

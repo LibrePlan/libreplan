@@ -177,8 +177,8 @@ public class IssueLogCRUDController extends BaseCRUDController<IssueLog> {
                 appendObject(row, issueLog.getType());
                 appendObject(row, issueLog.getStatus());
                 appendLabel(row, issueLog.getDescription());
-                appendObject(row, issueLog.getPriority());
-                appendObject(row, issueLog.getSeverity());
+                appendLabel(row, issueLog.getPriority().getDisplayName());
+                appendLabel(row, issueLog.getSeverity().getDisplayName());
                 appendDate(row, issueLog.getDateRaised());
                 appendLabel(row, issueLog.getCreatedBy().getLoginName());
                 appendLabel(row, issueLog.getAssignedTo());
@@ -194,15 +194,15 @@ public class IssueLogCRUDController extends BaseCRUDController<IssueLog> {
     private void setPriorityCellColor(Row row, LowMediumHighEnum priority) {
         Cell cell = (Cell) row.getChildren().get(5);
         if (priority == LowMediumHighEnum.LOW) {
-            cell.setClass("logs-priority-color-green");
+            cell.setClass("issueLog-priority-color-green");
         }
 
         if (priority == LowMediumHighEnum.MEDIUM) {
-            cell.setClass("logs-priority-color-yellow");
+            cell.setClass("issueLog-priority-color-yellow");
         }
 
         if (priority == LowMediumHighEnum.HIGH) {
-            cell.setClass("logs-priority-color-red");
+            cell.setClass("issueLog-priority-color-red");
         }
     }
 
@@ -290,23 +290,23 @@ public class IssueLogCRUDController extends BaseCRUDController<IssueLog> {
     public ArrayList<String> getIssueStatusEnum() {
         ArrayList<String> result = new ArrayList<String>();
         if (getIssueLog().getType() == IssueTypeEnum.REQUEST_FOR_CHANGE){
-            result.add(_("ESSENTIAL"));
-            result.add(_("IMPORTANT"));
-            result.add(_("USEFUL"));
-            result.add(_("NOT IMPORTANT FOR NOW"));
+            result.add(_("Must have"));
+            result.add(_("Should have"));
+            result.add(_("Could have"));
+            result.add(_("Won't have"));
             return result;
         }
         if (getIssueLog().getType() == IssueTypeEnum.PROBLEM_OR_CONCERN) {
-            result.add(_("MINOR"));
-            result.add(_("SIGNIFICANT"));
-            result.add(_("MAJOR"));
-            result.add(_("CRITICAL"));
+            result.add(_("Minor"));
+            result.add(_("Significant"));
+            result.add(_("Major"));
+            result.add(_("Critical"));
             return result;
         }
 
-        result.add(_("LOW"));
-        result.add(_("MEDIUM"));
-        result.add(_("HIGH"));
+        result.add(_("Low"));
+        result.add(_("Medium"));
+        result.add(_("High"));
         return result;
     }
 

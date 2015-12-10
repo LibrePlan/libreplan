@@ -29,7 +29,7 @@ import static org.libreplan.business.i18n.I18nHelper._;
  */
 public enum LowMediumHighEnum {
 
-    LOW(_("LOW")), MEDIUM(_("MEDIUM")), HIGH(_("HIGH"));
+    LOW(_("Low")), MEDIUM(_("Medium")), HIGH(_("High"));
 
     private final String lowMediumHighEnum;
 

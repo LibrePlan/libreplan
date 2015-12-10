@@ -49,31 +49,31 @@
                 <label value="${i18n:_('Estimations')}" />
                 <grid>
                     <columns>
-                        <column width="80px"/>
-                        <column width="140px"/>
-                        <column width="60px"/>
-                        <column width="140px"/>
-                        <column width="80px"/>
                         <column width="110px"/>
+                        <column width="120px"/>
+                        <column width="90px"/>
+                        <column width="120px"/>
+                        <column width="80px"/>
+                        <column width="90px"/>
                     </columns>
                     <rows>
                         <row>
                             <label value="${i18n:_('Probability')}" />
-                            <listbox id="listRiskLogProbability" mold="select" rows="1" width="135px"
+                            <listbox id="listRiskLogProbability" mold="select" rows="1" width="110px"
                                      model="@{riskLogController.lowMediumHighEnums}"
                                      selectedItem="@{riskLogController.riskLog.probability}"
                                      itemRenderer="@{riskLogController.lowMediumHighEnumRenderer}"
                                      onSelect="riskLogController.setUpdateScore()"/>
 
                             <label value="${i18n:_('Impact')}" />
-                            <listbox id="listRiskLogImpact" mold="select" rows="1" width="135px"
+                            <listbox id="listRiskLogImpact" mold="select" rows="1" width="110px"
                                      model="@{riskLogController.lowMediumHighEnums}"
                                      selectedItem="@{riskLogController.riskLog.impact}"
                                      itemRenderer="@{riskLogController.lowMediumHighEnumRenderer}"
                                      onSelect="riskLogController.setUpdateScore()" />
 
                             <label value="${i18n:_('Risk score')}" />
-                            <textbox id="riskScore" value="@{riskLogController.riskLog.riskScore}" width="95px" rows="1" disabled="true" />
+                            <textbox id="riskScore" value="@{riskLogController.riskLog.riskScore}" width="75px" rows="1" disabled="true" />
                         </row>
                     </rows>
                 </grid>
