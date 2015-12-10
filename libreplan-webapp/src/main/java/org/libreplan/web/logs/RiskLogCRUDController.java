@@ -78,6 +78,7 @@ public class RiskLogCRUDController extends BaseCRUDController<RiskLog> {
         initializeOrderComponent();
         initializeUserComponent();
         bdProjectRiskLog.setDisabled(!LogsController.getProjectNameVisibility());
+        bdUserRiskLog.setDisabled(true);
     }
 
     /**

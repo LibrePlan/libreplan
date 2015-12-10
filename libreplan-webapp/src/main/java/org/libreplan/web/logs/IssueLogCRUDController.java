@@ -81,6 +81,7 @@ public class IssueLogCRUDController extends BaseCRUDController<IssueLog> {
         initializeOrderComponent();
         initializeUserComponent();
         bdProjectIssueLog.setDisabled(!LogsController.getProjectNameVisibility());
+        bdUserIssueLog.setDisabled(true);
     }
 
     /**
