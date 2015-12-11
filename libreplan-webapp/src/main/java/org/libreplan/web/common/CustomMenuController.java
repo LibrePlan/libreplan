@@ -305,11 +305,12 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
                 "/orders/imports/projectImport.zul", ""));
         }
 
-        if (SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_CRITERIA)) {
-            planningItems.add(subItem(_("RiskLog"),
-                    "/logs/issue_log.zul",
-                    "02-criterios.html#id1"));
-        }
+        planningItems.add(subItem(_("Logs"), new ICapture() {
+            @Override
+            public void capture() {
+                globalView.goToLogs();
+            }
+        }, "01-asd"));
 
         if (!planningItems.isEmpty()) {
             topItem(_("Planning"), "/planner/index.zul", "", planningItems);

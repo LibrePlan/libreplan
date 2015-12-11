@@ -47,6 +47,9 @@ public interface IGlobalViewEntryPoints {
     @EntryPoint("limiting_resources")
     public void goToLimitingResources();
 
+    @EntryPoint("asd")
+    public void goToLogs();
+
     @EntryPoint("orders_list")
     public void goToOrdersList();
 

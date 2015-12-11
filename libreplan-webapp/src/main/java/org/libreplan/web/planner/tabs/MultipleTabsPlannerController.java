@@ -517,6 +517,11 @@ public class
     }
 
     @Override
+    public void goToLogs() {
+        getTabsRegistry().show(logsTab);
+    }
+
+    @Override
     public void goToCompanyLimitingResources() {
         getTabsRegistry().show(limitingResourcesTab);
     }

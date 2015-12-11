@@ -159,7 +159,7 @@ body .advancedallocationlayout .icono .z-button-cm {
 }
 
 .global-action.z-button .z-button-cm {
-    padding: 4px 25px;
+    padding: 4px 25px !important;
     background-position: 5px;
     background-repeat: no-repeat;
     margin-right: 1px;
@@ -172,11 +172,11 @@ body .advancedallocationlayout .icono .z-button-cm {
 }
 
 .save-button.z-button .z-button-cm {
-    background-image: url(../img/bt_ok.png);
+    background-image: url(../img/bt_ok.png) !important;
 }
 
 .create-button.z-button .z-button-cm {
-    background-image: url(../img/bt_create.png);
+    background-image: url(../img/bt_create.png) !important;
 }
 
 .saveandcontinue-button.z-button .z-button-cm {
@@ -184,7 +184,7 @@ body .advancedallocationlayout .icono .z-button-cm {
 }
 
 .cancel-button.z-button .z-button-cm {
-    background-image: url(../img/bt_cancel.png);
+    background-image: url(../img/bt_cancel.png) !important;
 }
 
 .back-button.z-button .z-button-cm {
