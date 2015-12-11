@@ -516,10 +516,10 @@ public class
         getTabsRegistry().show(resourceLoadTab);
     }
 
-    @Override
+    /*@Override
     public void goToLogs() {
         getTabsRegistry().show(logsTab);
-    }
+    }*/
 
     @Override
     public void goToCompanyLimitingResources() {

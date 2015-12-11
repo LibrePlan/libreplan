@@ -275,12 +275,7 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
                 }
             }, "01-introducion.html#id2"));
         }
-/*        planningItems.add(subItem(_("RiskLog"), new ICapture() {
-            @Override
-            public void capture() {
-                globalView.g
-            }
-        }*/
+
         if (SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_PLANNING)) {
             planningItems.add(subItem(_("Resources Load"), new ICapture() {
                 @Override
@@ -305,12 +300,14 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
                 "/orders/imports/projectImport.zul", ""));
         }
 
-        planningItems.add(subItem(_("Logs"), new ICapture() {
+
+        //TODO There is some problem here!
+        /*planningItems.add(subItem(_("Logs"), new ICapture() {
             @Override
             public void capture() {
                 globalView.goToLogs();
             }
-        }, "01-asd"));
+        }, "01-asd"));*/
 
         if (!planningItems.isEmpty()) {
             topItem(_("Planning"), "/planner/index.zul", "", planningItems);
