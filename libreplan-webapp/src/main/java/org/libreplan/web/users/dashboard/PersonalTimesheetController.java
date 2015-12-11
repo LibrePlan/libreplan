@@ -177,13 +177,15 @@ public class PersonalTimesheetController extends GenericForwardComposer
             Util.appendLabel(row, personalTimesheetModel.getOrder(orderElement)
                     .getName());
             Util.appendLabel(row, orderElement.getName());
+            Util.appendLabel(row, orderElement.getDescription());
 
             appendInputsForDays(row, orderElement);
 
             if (personalTimesheetModel.hasOtherReports()) {
                 appendOtherColumn(row, orderElement);
             }
-
+        
+            row.setTooltiptext(orderElement.getDescription());
             appendTotalColumn(row, orderElement);
         }
 
@@ -365,7 +367,7 @@ public class PersonalTimesheetController extends GenericForwardComposer
 
         private void appendLabelSpaningTwoColumns(Row row, String text) {
             Cell cell = new Cell();
-            cell.setColspan(2);
+            cell.setColspan(3);
             Label label = new Label(text);
             label.setStyle("font-weight: bold;");
             cell.appendChild(label);
@@ -399,7 +401,7 @@ public class PersonalTimesheetController extends GenericForwardComposer
         private void appendTotalColumn(Row row) {
             Cell totalCell = getCenteredCell(getDisabledTextbox(getTotalTextboxId()));
             if (personalTimesheetModel.hasOtherReports()) {
-                totalCell.setColspan(2);
+                totalCell.setColspan(3);
             }
             row.appendChild(totalCell);
             updateTotalColumn();
@@ -644,7 +646,7 @@ public class PersonalTimesheetController extends GenericForwardComposer
         createColumns(date);
 
         Frozen frozen = new Frozen();
-        frozen.setColumns(2);
+        frozen.setColumns(3);
         timesheet.appendChild(frozen);
 
         adjustFrozenWidth();
@@ -666,9 +668,13 @@ public class PersonalTimesheetController extends GenericForwardComposer
 
         Column task = new Column(_("Task"));
         task.setStyle("min-width:100px");
+ 
+        Column description = new Column(_("Description"));
+        description.setStyle("max-width:70px");//doesn't work. It recalculates automatically. Should be worked around somehow
 
         columns.appendChild(project);
         columns.appendChild(task);
+        columns.appendChild(description);
     }
 
     private void createColumnsForDays(LocalDate date) {
