@@ -30,7 +30,7 @@ import java.util.List;
  *
  * Created by
  * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
- * on 29.09.15.
+ * on 29.09.2015.
  */
 public interface IEmailTemplateDAO extends IGenericDAO<EmailTemplate, Long>{
 

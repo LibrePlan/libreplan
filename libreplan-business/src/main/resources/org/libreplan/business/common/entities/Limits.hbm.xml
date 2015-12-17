@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.libreplan.business.email.entities" default-access="field">
+
+    <class name="org.libreplan.business.common.entities.Limits" abstract="true" table="limits">
+
+        <id name="id" access="property" type="long">
+            <generator class="hilo" >
+                <param name="max_lo">100</param>
+            </generator>
+        </id>
+
+        <property name="type" column="type"/>
+        <property name="value" column="value" type="long"/>
+
+    </class>
+
+</hibernate-mapping>

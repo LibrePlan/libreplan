@@ -32,6 +32,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.apache.commons.logging.LogFactory;
+import org.libreplan.business.common.entities.Limits;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.resources.entities.Worker;
@@ -40,12 +41,14 @@ import org.libreplan.business.users.entities.User;
 import org.libreplan.business.users.entities.User.UserAuthenticationType;
 import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.web.common.BaseCRUDController;
+import org.libreplan.web.common.ILimitsModel;
 import org.libreplan.web.common.Util;
 import org.libreplan.web.common.entrypoints.EntryPointsHandler;
 import org.libreplan.web.common.entrypoints.IURLHandlerRegistry;
 import org.libreplan.web.resources.worker.IWorkerCRUDControllerEntryPoints;
 import org.libreplan.web.security.SecurityUtils;
 import org.libreplan.web.users.bootstrap.PredefinedUsers;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
@@ -67,6 +70,7 @@ import org.zkoss.zul.api.Groupbox;
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  * @author Manuel Rego Casasnovas <rego@igalia.com>
  * @author Javier Moran Rua <jmoran@igalia.com>
+ * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
  */
 @SuppressWarnings("serial")
 public class UserCRUDController extends BaseCRUDController<User> implements
@@ -77,6 +81,10 @@ public class UserCRUDController extends BaseCRUDController<User> implements
     @Resource
     private IWorkerCRUDControllerEntryPoints workerCRUD;
 
+    @Autowired
+    private ILimitsModel limitsModel;
+
+    @Autowired
     private IUserModel userModel;
 
     private Textbox passwordBox;
@@ -491,4 +499,11 @@ public class UserCRUDController extends BaseCRUDController<User> implements
         }
     }
 
+    public boolean isCreateButtonDisabled(){
+        Limits usersTypeLimit = limitsModel.getUsersType();
+        Long usersCount = (Long) userModel.getRowCount();
+        if (usersTypeLimit != null)
+            if ( usersCount >= usersTypeLimit.getValue() ) return true;
+        return false;
+    }
 }

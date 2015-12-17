@@ -35,6 +35,7 @@ import org.libreplan.business.users.entities.User;
  *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  * @author Manuel Rego Casasnovas <rego@igalia.com>
+ * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
  */
 public interface IUserDAO extends IGenericDAO<User, Long>{
 
@@ -102,4 +103,5 @@ public interface IUserDAO extends IGenericDAO<User, Long>{
 
     List<User> findAll();
 
+    Number getRowCount();
 }

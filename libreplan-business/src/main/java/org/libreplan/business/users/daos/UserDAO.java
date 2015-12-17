@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.libreplan.business.common.daos.GenericDAOHibernate;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
@@ -179,4 +180,8 @@ public class UserDAO extends GenericDAOHibernate<User, Long>
         return list(User.class);
     }
 
+    @Override
+    public Number getRowCount() {
+        return (Number) getSession().createCriteria(User.class).setProjection(Projections.rowCount()).uniqueResult();
+    }
 }
