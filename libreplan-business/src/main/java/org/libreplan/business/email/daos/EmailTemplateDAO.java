@@ -30,7 +30,7 @@ import java.util.List;
  *
  * Created by
  * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
- * on 24.09.15.
+ * on 24.09.2015.
  */
 @Repository
 public class EmailTemplateDAO extends GenericDAOHibernate<EmailTemplate, Long> implements IEmailTemplateDAO{
