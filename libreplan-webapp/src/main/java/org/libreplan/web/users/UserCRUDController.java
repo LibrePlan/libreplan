@@ -64,6 +64,8 @@ import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.api.Groupbox;
 
+import static org.libreplan.web.I18nHelper._;
+
 /**
  * Controller for CRUD actions over a {@link User}
  *
@@ -96,6 +98,8 @@ public class UserCRUDController extends BaseCRUDController<User> implements
     private Groupbox boundResourceGroupbox;
 
     private Combobox profilesCombo;
+
+    private Button showCreateForm;
 
     private IURLHandlerRegistry URLHandlerRegistry;
 
@@ -503,7 +507,18 @@ public class UserCRUDController extends BaseCRUDController<User> implements
         Limits usersTypeLimit = limitsModel.getUsersType();
         Long usersCount = (Long) userModel.getRowCount();
         if (usersTypeLimit != null)
-            if ( usersCount >= usersTypeLimit.getValue() ) return true;
+            if ( usersCount >= usersTypeLimit.getValue() )
+                return true;
         return false;
+    }
+
+    public String getShowCreateFormLabel(){
+        Limits usersTypeLimit = limitsModel.getUsersType();
+        Long usersCount = (Long) userModel.getRowCount();
+        if (usersTypeLimit != null)
+            if ( usersCount >= usersTypeLimit.getValue() )
+                return _("User limit reached");
+
+        return _("Create");
     }
 }

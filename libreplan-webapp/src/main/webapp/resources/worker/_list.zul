@@ -42,6 +42,7 @@
     </newdatasortablegrid>
 
     <button id="show_create_form" onClick="controller.goToCreateForm();"
-        label="${i18n:_('Create')}" sclass="create-button global-action">
+        label="@{controller.getShowCreateFormLabel}" sclass="create-button global-action"
+        disabled="@{controller.isCreateButtonDisabled}">
     </button>
 </window>

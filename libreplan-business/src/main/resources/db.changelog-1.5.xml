@@ -69,6 +69,11 @@
                 disabled="false"
                 initiallyDeferred="false"
                 tableName="limits"/>
+        <sql>
+            INSERT INTO limits VALUES(0, 'users', 5);
+            INSERT INTO limits VALUES(1, 'workers', 5);
+            INSERT INTO limits VALUES(2, 'machines', 5);
+        </sql>
     </changeSet>
 
 </databaseChangeLog>

@@ -17,4 +17,5 @@ public interface ILimitsDAO extends IGenericDAO<Limits, Long> {
 
     Limits getUsersType();
     Limits getWorkersType();
+    Limits getMachinesType();
 }
