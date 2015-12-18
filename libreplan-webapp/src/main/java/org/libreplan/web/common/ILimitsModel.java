@@ -16,4 +16,5 @@ public interface ILimitsModel {
 
     Limits getUsersType();
     Limits getWorkersType();
+    Limits getMachinesType();
 }

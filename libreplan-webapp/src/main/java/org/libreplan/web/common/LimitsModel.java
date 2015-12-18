@@ -42,4 +42,10 @@ public class LimitsModel implements ILimitsModel {
     public Limits getWorkersType() {
         return limitsDAO.getWorkersType();
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Limits getMachinesType() {
+        return limitsDAO.getMachinesType();
+    }
 }

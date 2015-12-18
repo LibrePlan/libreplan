@@ -37,4 +37,12 @@ public class LimitsDAO extends GenericDAOHibernate<Limits, Long> implements ILim
         return null;
     }
 
+    @Override
+    public Limits getMachinesType() {
+        List<Limits> list = list(Limits.class);
+        for (Limits item : list)
+            if (item.getType().equals("machines")) return item;
+        return null;
+    }
+
 }

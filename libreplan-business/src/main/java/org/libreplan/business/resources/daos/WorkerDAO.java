@@ -26,6 +26,7 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Query;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.libreplan.business.common.daos.IntegrationEntityDAO;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
@@ -43,7 +44,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  * @author Diego Pino Garcia <dpino@igalia.com>
- *
+ * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
  */
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
@@ -197,6 +198,11 @@ public class WorkerDAO extends IntegrationEntityDAO<Worker>
         Criteria criteria = getSession().createCriteria(Worker.class);
         criteria.add(Restrictions.isNotNull("user"));
         return criteria.list();
+    }
+
+    @Override
+    public Number getRowCount() {
+        return (Number) getSession().createCriteria(Worker.class).setProjection(Projections.rowCount()).uniqueResult();
     }
 
 }
