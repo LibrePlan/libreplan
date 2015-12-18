@@ -32,6 +32,7 @@ import static org.libreplan.web.test.WebappGlobalNames.WEBAPP_SPRING_SECURITY_CO
 
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -44,7 +45,13 @@ import java.util.UUID;
 import javax.annotation.Resource;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import org.hibernate.CacheMode;
+import org.hibernate.Hibernate;
 import org.hibernate.SessionFactory;
+import org.hibernate.StatelessSession;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 import org.junit.Test;
@@ -576,11 +583,25 @@ public class WorkReportServiceTest {
                 instanceConstraintViolationsListDTO.instanceConstraintViolationsList
                         .size(), equalTo(0));
 
-        List<WorkReport> workReports = workReportDAO.getAll();
+        /**
+        * Default code that was before was not working with MySQL
+        * and works perfect with PostgreSQL
+        * For example: List<WorkReport> workReports = workReportDAO.getAll();
+        * was returning 0 but COUNT in DB was 1
+        * Also set workReportLines in WorkReports.hbm.xml has been changed to fetch='join'
+        * Possible reason: Hibernate 4.3.11.Final bug / caching
+        */
+
+        StatelessSession statelessSession = sessionFactory.openStatelessSession();
+
+        List<WorkReport> workReports = statelessSession.createCriteria(WorkReport.class)
+                .addOrder(Order.asc("code")).list();
+
         assertThat(workReports.size(), equalTo(previous + 1));
 
-        WorkReport imported = workReportDAO
-                .findExistingEntityByCode(workReportDTO.code);
+        WorkReport imported = (WorkReport) statelessSession.createCriteria(WorkReport.class)
+                .add(Restrictions.eq("code", workReportDTO.code.trim()).ignoreCase()).uniqueResult();
+
         assertThat(imported.getDate(), equalTo(date));
 
         List<WorkReportLine> importedLines = new ArrayList<WorkReportLine>(
@@ -600,6 +621,7 @@ public class WorkReportServiceTest {
             WorkReportLine line = importedLines.remove(0);
             assertThat(line.getDate().getTime(), equalTo(asTime(each.getDate())));
         }
+        statelessSession.close();
     }
 
     private long asTime(XMLGregorianCalendar date2) {
