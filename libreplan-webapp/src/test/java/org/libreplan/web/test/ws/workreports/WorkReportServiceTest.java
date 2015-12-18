@@ -32,7 +32,6 @@ import static org.libreplan.web.test.WebappGlobalNames.WEBAPP_SPRING_SECURITY_CO
 
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
-import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -45,12 +44,9 @@ import java.util.UUID;
 import javax.annotation.Resource;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-import org.hibernate.CacheMode;
-import org.hibernate.Hibernate;
 import org.hibernate.SessionFactory;
 import org.hibernate.StatelessSession;
 import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
@@ -99,6 +95,7 @@ import org.springframework.transaction.annotation.Transactional;
  * Tests for {@link IWorkReportService}.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
