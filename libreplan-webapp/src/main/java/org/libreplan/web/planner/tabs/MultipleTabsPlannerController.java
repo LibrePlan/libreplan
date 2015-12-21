@@ -42,6 +42,7 @@ import org.libreplan.web.common.entrypoints.URLHandlerRegistry;
 import org.libreplan.web.dashboard.DashboardController;
 import org.libreplan.web.dashboard.DashboardControllerGlobal;
 import org.libreplan.web.limitingresources.LimitingResourcesController;
+import org.libreplan.web.logs.LogsController;
 import org.libreplan.web.montecarlo.MonteCarloController;
 import org.libreplan.web.orders.OrderCRUDController;
 import org.libreplan.web.planner.allocation.AdvancedAllocationController.IBack;
@@ -75,6 +76,8 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Composer;
 
+import javax.swing.*;
+
 /**
  * Creates and handles several tabs
  *
@@ -83,7 +86,8 @@ import org.zkoss.zk.ui.util.Composer;
  */
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
-public class MultipleTabsPlannerController implements Composer,
+public class
+        MultipleTabsPlannerController implements Composer,
         IGlobalViewEntryPoints {
 
     public static String WELCOME_URL = "-- no URL provided --";
@@ -164,6 +168,8 @@ public class MultipleTabsPlannerController implements Composer,
 
     private ITab dashboardTab;
 
+    private ITab logsTab;
+
     private TabSwitcher tabsSwitcher;
 
     @Autowired
@@ -189,6 +195,12 @@ public class MultipleTabsPlannerController implements Composer,
 
     @Autowired
     private DashboardControllerGlobal dashboardControllerGlobal;
+
+    @Autowired
+    private LogsController logsController;
+
+    @Autowired
+    private  LogsController logsControllerGlobal;
 
     private org.zkoss.zk.ui.Component breadcrumbs;
 
@@ -254,7 +266,7 @@ public class MultipleTabsPlannerController implements Composer,
 
                     @Override
                     public void goToTaskResourceAllocation(Order order,
-                            TaskElement task) {
+                                                           TaskElement task) {
                         orderPlanningController.setShowedTask(task);
                         orderPlanningController.setCurrentControllerToShow(orderPlanningController.getEditTaskController());
                         getTabsRegistry()
@@ -303,6 +315,32 @@ public class MultipleTabsPlannerController implements Composer,
                 dashboardController, dashboardControllerGlobal, orderPlanningController, breadcrumbs,
                 resourcesSearcher);
 
+        logsTab = LogsTabCreator.create(mode, logsController, logsControllerGlobal, breadcrumbs, new IOrderPlanningGate() {
+
+            @Override
+            public void goToScheduleOf(Order order) {
+                getTabsRegistry()
+                        .show(planningTab, changeModeTo(order));
+            }
+
+            @Override
+            public void goToOrderDetails(Order order) {
+                getTabsRegistry().show(ordersTab, changeModeTo(order));
+            }
+
+            @Override
+            public void goToTaskResourceAllocation(Order order,
+                                                   TaskElement task) {
+                // do nothing
+            }
+
+            @Override
+            public void goToDashboard(Order order) {
+                // do nothing
+            }
+
+        }, parameters);
+
         final boolean isMontecarloVisible = isMonteCarloVisible();
         if (isMontecarloVisible) {
             monteCarloTab = MonteCarloTabCreator.create(mode,
@@ -333,6 +371,8 @@ public class MultipleTabsPlannerController implements Composer,
         if (isMontecarloVisible) {
             tabsConfiguration.add(visibleOnlyAtOrderMode(monteCarloTab));
         }
+
+        tabsConfiguration.add(tabWithNameReloading(logsTab, typeChanged));
 
         return tabsConfiguration;
     }
@@ -467,6 +507,7 @@ public class MultipleTabsPlannerController implements Composer,
 
     @Override
     public void goToCompanyScheduling() {
+        LogsController.goToGlobalMode();
         getTabsRegistry().show(planningTab);
     }
 
@@ -474,6 +515,11 @@ public class MultipleTabsPlannerController implements Composer,
     public void goToCompanyLoad() {
         getTabsRegistry().show(resourceLoadTab);
     }
+
+    /*@Override
+    public void goToLogs() {
+        getTabsRegistry().show(logsTab);
+    }*/
 
     @Override
     public void goToCompanyLimitingResources() {
@@ -541,6 +587,7 @@ public class MultipleTabsPlannerController implements Composer,
     }
 
     private IBeforeShowAction changeModeTo(final Order order) {
+        logsController.goToOrderMode(order);
         return new IBeforeShowAction() {
             @Override
             public void doAction() {

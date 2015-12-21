@@ -6,18 +6,18 @@
  * to integrate the custom appearance of the web application.
  */
 
-    /* ----- Predefined Height dependent styles ----- */
-    .scheduling-graphics {
-        height:200px;
-    }
+/* ----- Predefined Height dependent styles ----- */
+.scheduling-graphics {
+    height:200px;
+}
 
-    .main-layout {
-        height: 560px;
-    }
+.main-layout {
+    height: 560px;
+}
 
-    .taskheaders-border {
-        width: 300px;
-    }
+.taskheaders-border {
+    width: 300px;
+}
 
 .plannerlayout #watermark {
     height: 99999px !important;
@@ -108,12 +108,12 @@ body .advancedallocationlayout .icono .z-button-cm {
 }
 
 .toolbar-box .z-button {
-   padding: 1px 2px 2px 2px;
+    padding: 1px 2px 2px 2px;
 }
 
 .planner-command .z-button-cm,
 .planner-icon .z-button-cm {
-   padding: 2px;
+    padding: 2px;
 }
 
 .toolbar-box .z-button .z-button-cm,
@@ -159,7 +159,7 @@ body .advancedallocationlayout .icono .z-button-cm {
 }
 
 .global-action.z-button .z-button-cm {
-    padding: 4px 25px;
+    padding: 4px 25px !important;
     background-position: 5px;
     background-repeat: no-repeat;
     margin-right: 1px;
@@ -172,11 +172,11 @@ body .advancedallocationlayout .icono .z-button-cm {
 }
 
 .save-button.z-button .z-button-cm {
-    background-image: url(../img/bt_ok.png);
+    background-image: url(../img/bt_ok.png) !important;
 }
 
 .create-button.z-button .z-button-cm {
-    background-image: url(../img/bt_create.png);
+    background-image: url(../img/bt_create.png) !important;
 }
 
 .saveandcontinue-button.z-button .z-button-cm {
@@ -184,7 +184,7 @@ body .advancedallocationlayout .icono .z-button-cm {
 }
 
 .cancel-button.z-button .z-button-cm {
-    background-image: url(../img/bt_cancel.png);
+    background-image: url(../img/bt_cancel.png) !important;
 }
 
 .back-button.z-button .z-button-cm {
@@ -400,7 +400,7 @@ div.z-row-cnt {
 }
 
 .z-window-embedded-tr,.z-window-highlighted-tr,.z-window-overlapped-tr,.z-window-popup-tr
-    {
+{
     background: none;
 }
 
@@ -581,7 +581,7 @@ div.z-grid {
 }
 
 .listdetails .z-tree .z-datebox-inp {
-padding-top: 3px;
+    padding-top: 3px;
 }
 
 .listdetails input {
@@ -722,7 +722,7 @@ padding-top: 3px;
     border: 0;
 }
 .perspectives-column {
-/*    border-right: solid 1px; */
+    /*    border-right: solid 1px; */
 }
 
 /* Legend colors:
@@ -893,19 +893,19 @@ span.z-dottree-line {
 }
 
 .z-menu-body {
-   background-color: #d4e1ef;
-   border-radius: 10px 10px 0 0;
+    background-color: #d4e1ef;
+    border-radius: 10px 10px 0 0;
 }
 
 .z-menu-inner-m .z-menu-btn {
-   font-weight: normal;
-   color: #005782;
+    font-weight: normal;
+    color: #005782;
 }
 
 .z-menu-body-over .z-menu-inner-m .z-menu-btn,
 .z-menu-body-seld .z-menu-inner-m .z-menu-btn,
 .current-section .z-menu-body .z-menu-inner-m .z-menu-btn {
-   color: #FFFFFF;
+    color: #FFFFFF;
 }
 
 .z-menu-body-over, .z-menu-body-seld, .current-section .z-menu-body {
@@ -916,7 +916,7 @@ span.z-dottree-line {
 .z-menu-body-over .z-menu-inner-l,
 .z-menu-body-over .z-menu-inner-m,
 .z-menu-body-over .z-menu-inner-r {
-   background-image:none;
+    background-image:none;
 }
 
 .z-menu-body-seld .z-menu-inner-l,
@@ -1077,6 +1077,19 @@ span.perspective, span.perspective-active {
     margin-top: 5px;
 }
 
+.perspective.logs-global .z-button-cm {
+    background-image: url(../img/ico_logs-global.png);
+}
+.perspective-active.logs-global .z-button-cm {
+    background-image: url(../img/ico_logs-global.png);
+}
+
+.perspective.logs-order .z-button-cm {
+    background-image: url(../img/ico_logs-order.png);
+}
+.perspective-active.logs-order .z-button-cm {
+    background-image: url(../img/ico_logs-order.png);
+}
 
 .perspectives-column {
     display:none;
@@ -1137,7 +1150,7 @@ span.perspective, span.perspective-active {
 }
 
 .main-area > .z-center-body:first-child {
-/*    height: auto !important; */
+    /*    height: auto !important; */
     width: auto !important;
 }
 
@@ -1175,18 +1188,18 @@ tr.z-treerow-seld input {
 
 tr.z-treerow-over input {
     background-color: #eff2f6; /* Soft blue */
-        background-image: none;
+    background-image: none;
 }
 
 tr.z-treerow-over input {
     background-color: #eff2f6; /* Soft blue */
-        background-image: none;
+    background-image: none;
 }
 
 .timeplot-canvas {
     position:relative;
     overflow:hidden;
- }
+}
 
 .resourcesload .timetracker-secondlevel {
     height: 2000px;
@@ -1268,15 +1281,15 @@ tr.z-treerow-over input {
 }
 
 .timeTrackedTableWithLeftPane input[value="0"] {
-  color: #DDDDDD;
+    color: #DDDDDD;
 }
 
 /* for horizontal scrolling */
 .timeTrackedTableWithLeftPane .z-grid-body table {
-   position:relative;
+    position:relative;
 }
 .timeTrackedTableWithLeftPane div.z-grid-body {
-overflow: visible;
+    overflow: visible;
 }
 
 .advancedallocationlayout #timeTracker .z-vbox {
@@ -1323,7 +1336,7 @@ overflow: visible;
 }
 
 .advancedallocationlayout .timetrackergap {
-     overflow: visible;
+    overflow: visible;
 }
 
 .timeTrackedTableWithLeftPane .z-grid-body .z-row-inner {
@@ -1412,7 +1425,7 @@ tr.z-tree-row-seld .z-row-cnt {
 }
 
 .edit-task-window .z-tab-accordion {
-display:none;
+    display:none;
 }
 
 .edit-task-window .z-tabpanel-accordion {
@@ -1485,7 +1498,7 @@ display:none;
 }
 
 #ganttpanel .second_level_ #watermark .bankHoliday {
-border-right: solid 1px #F2D8D8 !important;
+    border-right: solid 1px #F2D8D8 !important;
 }
 
 
@@ -1584,7 +1597,7 @@ border-right: solid 1px #F2D8D8 !important;
 .advanced-assignment-area td .limiting.z-textbox {
     height: 20px;
     background: #61B598; // LIMITING_ASSIGNED
-    color: #555555;
+color: #555555;
     border-right: solid 1px white;
     opacity: 1;
     -moz-opacity: 1;
@@ -1594,7 +1607,7 @@ border-right: solid 1px #F2D8D8 !important;
 .advanced-assignment-area td .limiting.z-intbox[value="0"],
 .advanced-assignment-area td .limiting.z-textbox[value="0"] {
     background: #C1D9D1;  // LIMITING_UNNASSIGNED
-    color: #555555;
+color: #555555;
 }
 
 .advanced-assignment-area > .z-center-body {
@@ -1655,7 +1668,7 @@ input.z-datebox-text-disd {
     display: none;
 }
 
-.toolbar-box .z-button tbody, 
+.toolbar-box .z-button tbody,
 .toolbar-box .z-button tbody:hover,
 .toolbar-box .z-button tbody:active {
     background-color: transparent;
@@ -1716,7 +1729,7 @@ input.z-datebox-text-disd {
     background-color: #A1D586;
 }
 
-.z-button .z-button-tl, .z-button .z-button-tr, 
+.z-button .z-button-tl, .z-button .z-button-tr,
 .z-button .z-button-bl, .z-button .z-button-br {
     background-image: url(../img/btn-corner-green.gif);
 }
@@ -1888,7 +1901,7 @@ select {
 }
 
 .scheduling-graphics {
-       width: auto !important;
+    width: auto !important;
 }
 
 .scheduling-graphics .z-tabs-ver-space {
@@ -1927,3 +1940,41 @@ select {
 .z-menu-popup a:focus {
     text-decoration: none !important;
 }
+
+.issueLog-priority-color-red {
+    background: #FF4000 !important;
+}
+
+.issueLog-priority-color-yellow {
+    background: #FFA500 !important;
+}
+
+.issueLog-priority-color-green {
+    background: #AAFFAA !important;
+}
+
+.riskLog-score-color-1 {
+    background: #BAF109 !important;
+}
+
+.riskLog-score-color-2 {
+    background: #A3D307 !important;
+}
+
+.riskLog-score-color-3 {
+    background: #FFAF04 !important;
+}
+
+.riskLog-score-color-4 {
+    background: #FF9000 !important;
+}
+
+.riskLog-score-color-6 {
+    background: #FF4B00 !important;
+}
+
+.riskLog-score-color-9 {
+    background: #EA0024 !important;
+}
+
+

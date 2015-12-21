@@ -1,0 +1,44 @@
+<!--
+  This file is part of LibrePlan
+
+  Copyright (C) 2013 St. Antoniusziekenhuis
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<window id="listWindow"> 
+    <grid id="listRiskLog" model="@{riskLogController.riskLogs}" mold="paging"
+        pageSize="15" span="0" sizedByContent="false"
+        rowRenderer="@{riskLogController.riskLogsRowRenderer}">
+        <columns sizable="true">
+            <column label="${i18n:_('Code')}" sort="auto(lower(code))" />
+            <column label="${i18n:_('Projectname')}" visible="@{logsController.projectNameVisibility}" sort="auto(lower(order))" />
+            <column label="${i18n:_('Probability')}" sort="auto(lower(probability))"/>
+            <column label="${i18n:_('Impact')}" sort="auto(lower(impact))"/>
+            <column label="${i18n:_('Risk score')}" sort="auto(lower(riskScore))"/>
+            <column label="${i18n:_('Status')}" sort="auto(lower(status))"/>
+            <column label="${i18n:_('Description')}" sort="auto(lower(code))"/>
+            <column label="${i18n:_('Date created')}" sclass="date" hflex="min" sort="auto(lower(dateCreated))"/>
+            <column label="${i18n:_('CreatedBy')}" sort="auto(createdBy.loginName)" />
+            <column label="${i18n:_('Counter measures')}" sort="auto(counterMeasures)"/>
+            <column label="${i18n:_('New risk score')}" sort="auto(scoreAfterCM)"/>
+            <column label="${i18n:_('Contingency')}" sort="auto(contingency)"/>
+            <column label="${i18n:_('Responsible')}" sort="auto(responsible)"/>
+            <column label="${i18n:_('ActionWhen')}" sclass="date" hflex="min" sort="auto(lower(actionWhen))"/>
+            <column label="${i18n:_('Notes')}" hflex="min" sort="auto(notes)"/>
+            <column label="${i18n:_('Operations')}" sclass="operations" hflex="min"/>
+        </columns>
+    </grid>
+     <button id="show_create_form" onClick='riskLogController.goToCreateForm()'
+             label="${i18n:_('Create')}" sclass="create-button global-action"/>
+</window>

@@ -1,0 +1,42 @@
+<!--
+  This file is part of LibrePlan
+
+  Copyright (C) 2013 St. Antoniusziekenhuis
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<window id="listWindow"> 
+    <grid id="listIssueLog" model="@{issueLogController.issueLogs}" mold="paging"
+        pageSize="15" span="0" sizedByContent="false"
+        rowRenderer="@{issueLogController.issueLogsRowRenderer}">
+        <columns sizable="true">
+            <column label="${i18n:_('Code')}" sort="auto(lower(code))" id="code"/>
+            <column label="${i18n:_('Projectname')}" visible="@{logsController.projectNameVisibility}" sort="auto(lower(order))" />
+            <column label="${i18n:_('Type')}" sort="auto(lower(type))" width="9%"/>
+            <column label="${i18n:_('Status')}" sort="auto(lower(status))"/>
+            <column label="${i18n:_('Description')}" sort="auto(lower(description))"/>
+            <column label="${i18n:_('Priority')}" sort="auto(lower(priority))"/>
+            <column label="${i18n:_('Severity')}" sort="auto(lower(severity))"/>
+            <column label="${i18n:_('Date raised')}" sort="auto(lower(dateRaised))"/>
+            <column label="${i18n:_('Created By')}" sort="auto(lower(createdBy.loginName))" hflex="min" />
+            <column label="${i18n:_('Assigned To')}" sort="auto(lower(assignedTo))"/>
+            <column label="${i18n:_('Deadline')}" sort="auto(lower(deadline))"/>
+            <column label="${i18n:_('Date Resolved')}" sort="auto(lower(dateResolved))"/>
+            <column label="${i18n:_('Notes')}" sort="auto(lower(notes))"/>
+            <column label="${i18n:_('Operations')}" sclass="operations" hflex="min"/>
+        </columns>
+    </grid>
+    <button id="show_create_form" onClick='issueLogController.goToCreateForm()'
+            label="${i18n:_('Create')}" sclass="create-button global-action"/>
+</window>

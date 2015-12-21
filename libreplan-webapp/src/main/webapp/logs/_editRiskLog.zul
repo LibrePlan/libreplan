@@ -1,0 +1,168 @@
+<!--
+  This file is part of LibrePlan
+
+  Copyright (C) 2013 St. Antoniusziekenhuis
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+
+<window id="editWindow" height="100%">
+    <caption id="caption" sclass="caption-title" />
+    <grid id="riskLogGrid" >
+        <columns>
+            <column width="160px" />
+            <column/>
+        </columns>
+        <rows>
+            <row>
+                <label value="${i18n:_('Code')}" />
+                <textbox id="riskNumberTextBox" width="605px"
+                         value="@{riskLogController.riskLog.code}" disabled="true"/>
+            </row>
+
+            <row>
+                <label value="${i18n:_('Project')}" />
+                <bandboxSearch id="bdProjectRiskLog" widthBandbox="610px" widthListbox="610px"
+                               constraint="no empty:${i18n:_('cannot be empty')}"
+                               finder="OrderBandboxFinder"
+                               model="@{riskLogController.orders}"
+                               selectedElement="@{riskLogController.order}"/>
+            </row>
+
+            <row>
+                <label value="${i18n:_('Status')}" />
+                <textbox value="@{riskLogController.riskLog.status}" width="605px" rows="1" multiline="false" />
+            </row>
+
+            <row>
+                <label value="${i18n:_('Estimations')}" />
+                <grid>
+                    <columns>
+                        <column width="110px"/>
+                        <column width="120px"/>
+                        <column width="90px"/>
+                        <column width="120px"/>
+                        <column width="80px"/>
+                        <column width="90px"/>
+                    </columns>
+                    <rows>
+                        <row>
+                            <label value="${i18n:_('Probability')}" />
+                            <listbox id="listRiskLogProbability" mold="select" rows="1" width="110px"
+                                     model="@{riskLogController.lowMediumHighEnums}"
+                                     selectedItem="@{riskLogController.riskLog.probability}"
+                                     itemRenderer="@{riskLogController.lowMediumHighEnumRenderer}"
+                                     onSelect="riskLogController.setUpdateScore()"/>
+
+                            <label value="${i18n:_('Impact')}" />
+                            <listbox id="listRiskLogImpact" mold="select" rows="1" width="110px"
+                                     model="@{riskLogController.lowMediumHighEnums}"
+                                     selectedItem="@{riskLogController.riskLog.impact}"
+                                     itemRenderer="@{riskLogController.lowMediumHighEnumRenderer}"
+                                     onSelect="riskLogController.setUpdateScore()" />
+
+                            <label value="${i18n:_('Risk score')}" />
+                            <textbox id="riskScore" value="@{riskLogController.riskLog.riskScore}" width="75px" rows="1" disabled="true" />
+                        </row>
+                    </rows>
+                </grid>
+            </row>
+            <row>
+                <label value="${i18n:_('Creation info')}" />
+                <grid>
+                    <columns>
+                        <column width="80px"/>
+                        <column width="120px"/>
+                        <column width="80px"/>
+                        <column width="330px"/>
+                    </columns>
+                    <rows>
+                        <row>
+                            <label value="${i18n:_('Date created')}" />
+                            <datebox id="dateCreatedBox" width="110px"
+                                     constraint="no empty:${i18n:_('cannot be empty')}"
+                                     value="@{riskLogController.dateCreated}" />
+
+                            <label value="${i18n:_('Created by')}" />
+                            <bandboxSearch id="bdUserRiskLog" widthBandbox="320px" widthListbox="340px"
+                                           finder="UserBandboxFinder"
+                                           model="@{riskLogController.users}"
+                                           selectedElement="@{riskLogController.riskLog.createdBy}"/>
+                        </row>
+                    </rows>
+                </grid>
+            </row>
+            <row>
+                <label value="${i18n:_('Description')}" />
+                <textbox id="descriptionNameTextBox" width="605px" rows="3"
+                         value="@{riskLogController.riskLog.description}"/>
+            </row>
+            <row>
+                <label value="${i18n:_('Counter measures (CM)')}" />
+                <textbox id="counterMeasuresTextbox" width="605px" rows="3"
+                         value="@{riskLogController.riskLog.counterMeasures}"/>
+            </row>
+            <row>
+                <label value="${i18n:_('Risk Score After CM')}" />
+                <listbox id="listRiskScores" mold="select" rows="1" width="135px"
+                         model="@{riskLogController.riskScoreStatesEnums}"
+                         selectedItem="@{riskLogController.riskLog.scoreAfterCM}"
+                         itemRenderer="@{riskLogController.riskScoreStatesEnumRenderer}" />/>
+            </row>
+            <row>
+                <label value="${i18n:_('Contingency')}" />
+                <textbox id="contingencyBox" width="605px" rows="3"
+                         value="@{riskLogController.riskLog.contingency}"/>
+            </row>
+            <row>
+                <label value="${i18n:_('Prevention')}" />
+                <grid>
+                    <columns>
+                        <column width="80px"/>
+                        <column width="120px"/>
+                        <column width="80px"/>
+                        <column width="330px"/>
+                    </columns>
+                    <rows>
+                        <row>
+
+                            <label value="${i18n:_('Action When')}" />
+                            <datebox id="actionWhenDateBox" width="110px"
+                                     constraint="no empty:${i18n:_('cannot be empty')}"
+                                     value="@{riskLogController.actionWhen}" />
+
+                            <label value="${i18n:_('Responsible')}" />
+                            <textbox id="responsibleBox" width="315px" rows="1"
+                                     value="@{riskLogController.riskLog.responsible}"/>
+                        </row>
+                    </rows>
+                </grid>
+            </row>
+            <row>
+                <label value="${i18n:_('Notes')}" />
+                <textbox value="@{riskLogController.riskLog.notes}" width="605px" rows="5" multiline="true" />
+            </row>
+        </rows>
+    </grid>
+    <!-- Control buttons -->
+    <button onClick="riskLogController.saveAndExit()"
+            label="${i18n:_('Save')}"
+            sclass="save-button global-action" />
+    <button onClick="riskLogController.saveAndContinue()"
+            label="${i18n:_('Save and Continue')}"
+            sclass="save-button global-action" />
+    <button onClick="riskLogController.cancelForm()"
+            label="${i18n:_('Cancel')}"
+            sclass="cancel-button global-action" />
+</window>
