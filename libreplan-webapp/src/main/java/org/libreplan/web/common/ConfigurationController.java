@@ -244,7 +244,8 @@ public class ConfigurationController extends GenericForwardComposer {
 
         if ( getSelectedConnector() != null && getSelectedConnector().getName().equals("E-mail") &&
                 isEmailFieldsValid() == false ) {
-            messages.showMessage(Level.ERROR, _("Check username/password/sender fields"));
+            messages.showMessage(Level.ERROR, _("Check all fields"));
+
         } else {
                 ConstraintChecker.isValid(configurationWindow);
                 if (checkValidEntitySequenceRows()) {
@@ -1297,7 +1298,8 @@ public class ConfigurationController extends GenericForwardComposer {
                                 key.equals(PredefinedConnectorProperties.JIRA_HOURS_TYPE) ||
                                 key.equals(PredefinedConnectorProperties.HOST) ||
                                 key.equals(PredefinedConnectorProperties.PORT) ||
-                                key.equals(PredefinedConnectorProperties.EMAIL_SENDER) ) {
+                                key.equals(PredefinedConnectorProperties.EMAIL_SENDER) ||
+                                key.equals(PredefinedConnectorProperties.PROTOCOL) ) {
                             ((InputElement) comp).setConstraint("no empty:"
                                     + _("cannot be empty"));
                         } else if ( key
@@ -1326,14 +1328,15 @@ public class ConfigurationController extends GenericForwardComposer {
     }
 
     private boolean isEmailFieldsValid(){
-        if ( protocolsCombobox.getSelectedItem().getLabel().equals("STARTTLS") &&
-                emailUsernameTextbox.getValue() != null &&
-                emailPasswordTextbox.getValue() != null &&
-                emailUsernameTextbox.getValue().length() != 0 &&
-                emailPasswordTextbox.getValue().length() != 0 &&
-                emailSenderTextbox.getValue().matches("^\\S+@\\S+\\.\\S+$") )
-            return true;
-
-        else return false;
+        if ( protocolsCombobox != null && protocolsCombobox.getSelectedItem() != null ){
+            if ( protocolsCombobox.getSelectedItem().getLabel().equals("STARTTLS") &&
+                    emailUsernameTextbox.getValue() != null &&
+                    emailPasswordTextbox.getValue() != null &&
+                    emailUsernameTextbox.getValue().length() != 0 &&
+                    emailPasswordTextbox.getValue().length() != 0 &&
+                    emailSenderTextbox.getValue().matches("^\\S+@\\S+\\.\\S+$") )
+                return true;
+        }
+        return false;
     }
 }

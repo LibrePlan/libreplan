@@ -9299,3 +9299,7 @@ msgstr ""
 #: libreplan-webapp/src/main/java/org/libreplan/web/resources/machine/MachineCRUDController.java:631
 msgid "Machines limit reached"
 msgstr ""
+
+#: libreplan-webapp/src/main/java/org/libreplan/web/common/ConfigurationController.java:247
+msgid "Check fields"
+msgstr ""
