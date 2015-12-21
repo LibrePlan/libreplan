@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.libreplan.business.common.daos.GenericDAOHibernate;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
@@ -44,6 +45,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  * @author Manuel Rego Casasnovas <rego@igalia.com>
+ * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
  */
 @Repository
 public class UserDAO extends GenericDAOHibernate<User, Long>
@@ -179,4 +181,8 @@ public class UserDAO extends GenericDAOHibernate<User, Long>
         return list(User.class);
     }
 
+    @Override
+    public Number getRowCount() {
+        return (Number) getSession().createCriteria(User.class).setProjection(Projections.rowCount()).uniqueResult();
+    }
 }

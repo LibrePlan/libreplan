@@ -36,7 +36,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  * @author Diego Pino Garcia <dpino@igalia.com>
- *
+ * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
  */
 public interface IWorkerDAO extends IIntegrationEntityDAO<Worker> {
 
@@ -127,4 +127,6 @@ public interface IWorkerDAO extends IIntegrationEntityDAO<Worker> {
      * Return the list of {@link Worker Workers} bound to any {@link User}.
      */
     List<Worker> getBound();
+
+    Number getRowCount();
 }

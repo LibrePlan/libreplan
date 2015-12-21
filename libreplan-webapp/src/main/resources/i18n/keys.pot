@@ -9287,3 +9287,19 @@ msgstr ""
 #: libreplan-webapp/src/main/webapp/dashboard/_pipeline.zul:2
 msgid "Show archived column data"
 msgstr ""
+
+#: libreplan-webapp/src/main/java/org/libreplan/web/users/UserCRUDController.java:520
+msgid "User limit reached"
+msgstr ""
+
+#: libreplan-webapp/src/main/java/org/libreplan/web/resources/worker/UserCRUDController.java:1178
+msgid "Workers limit reached"
+msgstr ""
+
+#: libreplan-webapp/src/main/java/org/libreplan/web/resources/machine/MachineCRUDController.java:631
+msgid "Machines limit reached"
+msgstr ""
+
+#: libreplan-webapp/src/main/java/org/libreplan/web/common/ConfigurationController.java:247
+msgid "Check fields"
+msgstr ""

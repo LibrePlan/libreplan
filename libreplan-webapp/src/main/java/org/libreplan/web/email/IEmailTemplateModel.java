@@ -32,7 +32,7 @@ import java.util.List;
  *
  * Created by
  * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
- * on 28.09.15.
+ * on 28.09.2015.
  */
 public interface IEmailTemplateModel {
 

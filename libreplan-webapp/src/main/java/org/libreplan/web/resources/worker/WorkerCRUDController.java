@@ -35,6 +35,7 @@ import org.apache.commons.lang.StringUtils;
 import org.joda.time.LocalDate;
 import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.calendars.entities.ResourceCalendar;
+import org.libreplan.business.common.entities.Limits;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.resources.entities.ResourceType;
@@ -44,13 +45,14 @@ import org.libreplan.business.users.entities.User;
 import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.web.calendars.BaseCalendarEditionController;
 import org.libreplan.web.calendars.IBaseCalendarModel;
-import org.libreplan.web.common.BaseCRUDController.CRUDControllerState;
 import org.libreplan.web.common.ConstraintChecker;
 import org.libreplan.web.common.IMessagesForUser;
 import org.libreplan.web.common.Level;
 import org.libreplan.web.common.MessagesForUser;
 import org.libreplan.web.common.OnlyOneVisible;
 import org.libreplan.web.common.Util;
+import org.libreplan.web.common.ILimitsModel;
+import org.libreplan.web.common.BaseCRUDController.CRUDControllerState;
 import org.libreplan.web.common.components.bandboxsearch.BandboxMultipleSearch;
 import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
 import org.libreplan.web.common.components.finders.FilterPair;
@@ -98,6 +100,7 @@ import org.zkoss.zul.api.Window;
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  * @author Manuel Rego Casasnovas <rego@igalia.com>
+ * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
  */
 public class WorkerCRUDController extends GenericForwardComposer implements
         IWorkerCRUDControllerEntryPoints {
@@ -105,14 +108,18 @@ public class WorkerCRUDController extends GenericForwardComposer implements
     @Autowired
     private IDBPasswordEncoderService dbPasswordEncoderService;
 
+    @Autowired
+    private ILimitsModel limitsModel;
+
+    @Autowired
+    private IWorkerModel workerModel;
+
     @Resource
     private IUserCRUDController userCRUD;
 
     private Window listWindow;
 
     private Window editWindow;
-
-    private IWorkerModel workerModel;
 
     private IURLHandlerRegistry URLHandlerRegistry;
 
@@ -1157,6 +1164,26 @@ public class WorkerCRUDController extends GenericForwardComposer implements
             return _("You do not have permissions to go to edit user window");
         }
         return "";
+    }
+
+    public boolean isCreateButtonDisabled(){
+        Limits workersTypeLimit = limitsModel.getWorkersType();
+        Long workersCount = (Long) workerModel.getRowCount();
+        if ( workersTypeLimit != null )
+            if ( workersCount >= workersTypeLimit.getValue() )
+                return true;
+
+        return false;
+    }
+
+    public String getShowCreateFormLabel(){
+        Limits workersTypeLimit = limitsModel.getWorkersType();
+        Long workersCount = (Long) workerModel.getRowCount();
+        if ( workersTypeLimit != null )
+            if ( workersCount >= workersTypeLimit.getValue() )
+                return _("Workers limit reached");
+
+        return _("Create");
     }
 
 }

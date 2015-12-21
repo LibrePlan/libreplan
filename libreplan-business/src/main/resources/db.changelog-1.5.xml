@@ -51,4 +51,29 @@
                 initiallyDeferred="false"/>
     </changeSet>
 
+    <changeSet id="adding-limits" author="vova/jeroen">
+        <createTable tableName="limits">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" primaryKeyName="limits_pkey"/>
+            </column>
+
+            <column name="type" type="varchar(20)"/>
+
+            <column name="value" type="BIGINT"/>
+
+        </createTable>
+        <addUniqueConstraint
+                constraintName="type"
+                columnNames="type"
+                deferrable="false"
+                disabled="false"
+                initiallyDeferred="false"
+                tableName="limits"/>
+        <sql>
+            INSERT INTO limits VALUES(0, 'users', 5);
+            INSERT INTO limits VALUES(1, 'workers', 5);
+            INSERT INTO limits VALUES(2, 'machines', 5);
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

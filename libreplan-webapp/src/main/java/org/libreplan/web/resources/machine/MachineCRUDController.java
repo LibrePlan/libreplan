@@ -31,6 +31,7 @@ import java.util.Set;
 import org.joda.time.LocalDate;
 import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.calendars.entities.ResourceCalendar;
+import org.libreplan.business.common.entities.Limits;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.resources.entities.Machine;
@@ -40,6 +41,7 @@ import org.libreplan.web.common.BaseCRUDController;
 import org.libreplan.web.common.ConstraintChecker;
 import org.libreplan.web.common.Level;
 import org.libreplan.web.common.Util;
+import org.libreplan.web.common.ILimitsModel;
 import org.libreplan.web.common.components.bandboxsearch.BandboxMultipleSearch;
 import org.libreplan.web.common.components.finders.FilterPair;
 import org.libreplan.web.costcategories.ResourcesCostCategoryAssignmentController;
@@ -47,6 +49,7 @@ import org.libreplan.web.resources.search.ResourcePredicate;
 import org.libreplan.web.resources.worker.CriterionsController;
 import org.libreplan.web.resources.worker.CriterionsMachineController;
 import org.libreplan.web.resources.worker.WorkerCRUDController.LimitingResourceEnum;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.CheckEvent;
@@ -75,9 +78,14 @@ import org.zkoss.zul.api.Window;
  * Controller for {@link Machine} resource <br />
  * @author Diego Pino Garcia <dpino@igalia.com>
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
+ * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
  */
 public class MachineCRUDController extends BaseCRUDController<Machine> {
 
+    @Autowired
+    private ILimitsModel limitsModel;
+
+    @Autowired
     private IMachineModel machineModel;
 
     private Component configurationUnits;
@@ -609,6 +617,26 @@ public class MachineCRUDController extends BaseCRUDController<Machine> {
     @Override
     protected Machine getEntityBeingEdited() {
         return machineModel.getMachine();
+    }
+
+    public boolean isCreateButtonDisabled(){
+        Limits machinesTypeLimit = limitsModel.getMachinesType();
+        Long machinesCount = (Long) machineModel.getRowCount();
+        if ( machinesTypeLimit != null )
+            if ( machinesCount >= machinesTypeLimit.getValue() )
+                return true;
+
+        return false;
+    }
+
+    public String getShowCreateFormLabel(){
+        Limits machinesTypeLimit = limitsModel.getMachinesType();
+        Long machinesCount = (Long) machineModel.getRowCount();
+        if ( machinesTypeLimit != null )
+            if ( machinesCount >= machinesTypeLimit.getValue() )
+                return _("Machines limit reached");
+
+        return _("Create");
     }
 
 }

@@ -17,28 +17,37 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.libreplan.business.email.daos;
+package org.libreplan.business.common.entities;
 
-import org.libreplan.business.common.daos.IGenericDAO;
-import org.libreplan.business.email.entities.EmailTemplate;
-
-import java.util.List;
+import org.libreplan.business.common.BaseEntity;
 
 /**
- * DAO interface for the <code>EmailTemplate</code> entity.
- * Contract for {@link EmailTemplateDAO}
+ * Limits entity, represents a limits for any functionality.
+ * This class is intended to work as a Hibernate component.
+ * It represents the limit that can be modified only in database.
  *
  * Created by
  * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
- * on 29.09.2015.
+ * on 17.12.2015.
  */
-public interface IEmailTemplateDAO extends IGenericDAO<EmailTemplate, Long>{
+public class Limits extends BaseEntity{
 
-    List<EmailTemplate> getAll();
+    private String type;
 
-    String getContentBySelectedLanguage(int languageOrdinal, int emailTemplateTypeOrdinal);
-    String getContentBySelectedTemplate(int emailTemplateTypeOrdinal, int languageOrdinal);
+    private Long value;
 
-    String getSubjectBySelectedLanguage(int languageOrdinal, int emailTemplateTypeOrdinal);
-    String getSubjectBySelectedTemplate(int emailTemplateTypeOrdinal, int languageOrdinal);
+
+    public String getType() {
+        return type;
+    }
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public Long getValue() {
+        return value;
+    }
+    public void setValue(Long value) {
+        this.value = value;
+    }
 }
