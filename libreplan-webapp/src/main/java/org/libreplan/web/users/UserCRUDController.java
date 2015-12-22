@@ -515,10 +515,11 @@ public class UserCRUDController extends BaseCRUDController<User> implements
     public String getShowCreateFormLabel(){
         Limits usersTypeLimit = limitsModel.getUsersType();
         Integer usersCount = (Integer) userModel.getRowCount();
+        int usersLeft = usersTypeLimit.getValue() - usersCount;
         if (usersTypeLimit != null)
             if ( usersCount >= usersTypeLimit.getValue() )
                 return _("User limit reached");
 
-        return _("Create");
+        return _("Create") + " ( " + usersLeft  + " " + _("left") + " )";
     }
 }

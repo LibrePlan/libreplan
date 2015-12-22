@@ -38,6 +38,7 @@ import org.libreplan.business.calendars.entities.ResourceCalendar;
 import org.libreplan.business.common.entities.Limits;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
+import org.libreplan.business.resources.daos.IResourceDAO;
 import org.libreplan.business.resources.entities.ResourceType;
 import org.libreplan.business.resources.entities.VirtualWorker;
 import org.libreplan.business.resources.entities.Worker;
@@ -113,6 +114,9 @@ public class WorkerCRUDController extends GenericForwardComposer implements
 
     @Autowired
     private IWorkerModel workerModel;
+
+    @Autowired
+    private IResourceDAO resourceDAO;
 
     @Resource
     private IUserCRUDController userCRUD;
@@ -1167,23 +1171,26 @@ public class WorkerCRUDController extends GenericForwardComposer implements
     }
 
     public boolean isCreateButtonDisabled(){
-        Limits workersTypeLimit = limitsModel.getWorkersType();
-        Integer workersCount = (Integer) workerModel.getRowCount();
-        if ( workersTypeLimit != null )
-            if ( workersCount >= workersTypeLimit.getValue() )
+        Limits resourcesTypeLimit = limitsModel.getResourcesType();
+        Integer resourcesCount = (Integer) resourceDAO.getRowCount();
+
+        if ( resourcesTypeLimit != null )
+            if ( resourcesCount >= resourcesTypeLimit.getValue() )
                 return true;
 
         return false;
     }
 
     public String getShowCreateFormLabel(){
-        Limits workersTypeLimit = limitsModel.getWorkersType();
-        Integer workersCount = (Integer) workerModel.getRowCount();
-        if ( workersTypeLimit != null )
-            if ( workersCount >= workersTypeLimit.getValue() )
+        Limits resourcesTypeLimit = limitsModel.getResourcesType();
+        Integer resourcesCount = (Integer) resourceDAO.getRowCount();
+
+        int resourcesLeft = resourcesTypeLimit.getValue() - resourcesCount;
+        if ( resourcesTypeLimit != null )
+            if ( resourcesCount >= resourcesTypeLimit.getValue() )
                 return _("Workers limit reached");
 
-        return _("Create");
+        return _("Create") + " ( " + resourcesLeft  + " " + _("left") + " )";
     }
 
 }

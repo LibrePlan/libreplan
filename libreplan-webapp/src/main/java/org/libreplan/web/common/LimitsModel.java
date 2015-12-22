@@ -58,13 +58,7 @@ public class LimitsModel implements ILimitsModel {
 
     @Override
     @Transactional(readOnly = true)
-    public Limits getWorkersType() {
-        return limitsDAO.getWorkersType();
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Limits getMachinesType() {
-        return limitsDAO.getMachinesType();
+    public Limits getResourcesType() {
+        return limitsDAO.getResourcesType();
     }
 }

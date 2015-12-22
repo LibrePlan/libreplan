@@ -33,7 +33,6 @@ import org.libreplan.business.resources.entities.Machine;
  * @author Diego Pino Garcia <dpino@igalia.com>
  * @author Javier Moran Rua <jmoran@igalia.com>
  * @author Fernando Bellas Permuy <fbellas@udc.es>
- * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
  */
 public interface IMachineDAO extends IIntegrationEntityDAO<Machine> {
 
@@ -83,9 +82,4 @@ public interface IMachineDAO extends IIntegrationEntityDAO<Machine> {
      * code as the one passed as parameter
      */
     boolean existsMachineWithCodeInAnotherTransaction(String code);
-
-    /**
-     * Return a number of rows in database table
-     */
-    Number getRowCount();
 }

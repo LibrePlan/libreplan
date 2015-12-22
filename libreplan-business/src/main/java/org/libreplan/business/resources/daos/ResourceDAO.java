@@ -27,6 +27,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.hibernate.Query;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.libreplan.business.common.daos.IntegrationEntityDAO;
 import org.libreplan.business.labels.entities.Label;
@@ -246,6 +247,11 @@ public class ResourceDAO extends IntegrationEntityDAO<Resource> implements
 
         List<HoursWorkedPerWorkerInAMonthDTO> result = toDTO(query.list());
         return result;
+    }
+
+    @Override
+    public Number getRowCount() {
+        return (Number) getSession().createCriteria(Resource.class).setProjection(Projections.rowCount()).uniqueResult();
     }
 
     private List<HoursWorkedPerWorkerInAMonthDTO> toDTO(List<Object> rows) {

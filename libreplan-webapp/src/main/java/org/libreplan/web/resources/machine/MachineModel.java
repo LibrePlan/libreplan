@@ -70,7 +70,6 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * @author Diego Pino Garcia <dpino@igalia.com>
  * @author Javier Moran Rua <jmoran@igalia.com>
- * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -403,12 +402,4 @@ public class MachineModel extends IntegrationEntityModel implements
         calendarToRemove = machine.getCalendar();
         machine.setCalendar(null);
     }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Number getRowCount() {
-        return machineDAO.getRowCount();
-    }
-
-
 }
