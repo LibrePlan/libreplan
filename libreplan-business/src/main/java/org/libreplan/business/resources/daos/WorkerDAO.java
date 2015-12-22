@@ -44,7 +44,6 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  * @author Diego Pino Garcia <dpino@igalia.com>
- * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
  */
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
@@ -199,10 +198,4 @@ public class WorkerDAO extends IntegrationEntityDAO<Worker>
         criteria.add(Restrictions.isNotNull("user"));
         return criteria.list();
     }
-
-    @Override
-    public Number getRowCount() {
-        return (Number) getSession().createCriteria(Worker.class).setProjection(Projections.rowCount()).uniqueResult();
-    }
-
 }

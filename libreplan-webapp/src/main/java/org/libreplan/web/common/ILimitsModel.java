@@ -34,6 +34,5 @@ public interface ILimitsModel {
     List<Limits> getAll();
 
     Limits getUsersType();
-    Limits getWorkersType();
-    Limits getMachinesType();
+    Limits getResourcesType();
 }

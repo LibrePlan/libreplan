@@ -38,6 +38,7 @@ import org.libreplan.business.calendars.entities.ResourceCalendar;
 import org.libreplan.business.common.entities.Limits;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
+import org.libreplan.business.resources.daos.IResourceDAO;
 import org.libreplan.business.resources.entities.ResourceType;
 import org.libreplan.business.resources.entities.VirtualWorker;
 import org.libreplan.business.resources.entities.Worker;
@@ -113,6 +114,9 @@ public class WorkerCRUDController extends GenericForwardComposer implements
 
     @Autowired
     private IWorkerModel workerModel;
+
+    @Autowired
+    private IResourceDAO resourceDAO;
 
     @Resource
     private IUserCRUDController userCRUD;
@@ -207,10 +211,10 @@ public class WorkerCRUDController extends GenericForwardComposer implements
     }
 
     public WorkerCRUDController(Window listWindow, Window editWindow,
-            Window editCalendarWindow,
-            IWorkerModel workerModel,
-            IMessagesForUser messages,
-            IWorkerCRUDControllerEntryPoints workerCRUD) {
+                                Window editCalendarWindow,
+                                IWorkerModel workerModel,
+                                IMessagesForUser messages,
+                                IWorkerCRUDControllerEntryPoints workerCRUD) {
         this.listWindow = listWindow;
         this.editWindow = editWindow;
         this.workerModel = workerModel;
@@ -511,7 +515,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
             Radio radio = new Radio(_(option.label));
             if (option.equals(UserBindingOption.CREATE_NEW_USER)
                     && !SecurityUtils
-                            .isSuperuserOrUserInRoles(UserRole.ROLE_USER_ACCOUNTS)) {
+                    .isSuperuserOrUserInRoles(UserRole.ROLE_USER_ACCOUNTS)) {
                 radio.setDisabled(true);
                 radio.setTooltiptext(_("You do not have permissions to create new users"));
             }
@@ -531,7 +535,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         this.filterStartDate = (Datebox) listWindow
                 .getFellowIfAny("filterStartDate");
         this.filterLimitingResource = (Listbox) listWindow
-            .getFellowIfAny("filterLimitingResource");
+                .getFellowIfAny("filterLimitingResource");
         this.bdFilters = (BandboxMultipleSearch) listWindow
                 .getFellowIfAny("bdFilters");
         this.txtfilter = (Textbox) listWindow.getFellowIfAny("txtfilter");
@@ -541,9 +545,9 @@ public class WorkerCRUDController extends GenericForwardComposer implements
 
     private void setupResourcesCostCategoryAssignmentController(Component comp) {
         Component costCategoryAssignmentContainer =
-            editWindow.getFellowIfAny("costCategoryAssignmentContainer");
+                editWindow.getFellowIfAny("costCategoryAssignmentContainer");
         resourcesCostCategoryAssignmentController = (ResourcesCostCategoryAssignmentController)
-            costCategoryAssignmentContainer.getVariable("assignmentController", true);
+                costCategoryAssignmentContainer.getVariable("assignmentController", true);
     }
 
     private void editAsignedCriterions() {
@@ -653,7 +657,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
     }
 
     private Window getCurrentWindow() {
-            return editWindow;
+        return editWindow;
     }
 
     private void updateCalendarController() {
@@ -919,7 +923,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
 
     private void setupFilterLimitingResourceListbox() {
         for(LimitingResourceEnum resourceEnum :
-            LimitingResourceEnum.getLimitingResourceFilterOptionList()) {
+                LimitingResourceEnum.getLimitingResourceFilterOptionList()) {
             Listitem item = new Listitem();
             item.setParent(filterLimitingResource);
             item.setValue(resourceEnum);
@@ -1017,7 +1021,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
                 row.addEventListener(Events.ON_CLICK,
                         new EventListener() {
                             @Override
-                    public void onEvent(Event event) {
+                            public void onEvent(Event event) {
                                 goToEditForm(worker);
                             }
                         });
@@ -1061,19 +1065,19 @@ public class WorkerCRUDController extends GenericForwardComposer implements
 
             String title;
             switch (state) {
-            case CREATE:
-                if (StringUtils.isEmpty(humanId)) {
-                    title = _("Create {0}", entityType);
-                } else {
-                    title = _("Create {0}: {1}", entityType, humanId);
-                }
-                break;
-            case EDIT:
-                title = _("Edit {0}: {1}", entityType, humanId);
-                break;
-            default:
-                throw new IllegalStateException(
-                        "You should be in creation or edition mode to use this method");
+                case CREATE:
+                    if (StringUtils.isEmpty(humanId)) {
+                        title = _("Create {0}", entityType);
+                    } else {
+                        title = _("Create {0}: {1}", entityType, humanId);
+                    }
+                    break;
+                case EDIT:
+                    title = _("Edit {0}: {1}", entityType, humanId);
+                    break;
+                default:
+                    throw new IllegalStateException(
+                            "You should be in creation or edition mode to use this method");
             }
             ((Caption) editWindow.getFellow("caption")).setLabel(title);
         }
@@ -1167,23 +1171,26 @@ public class WorkerCRUDController extends GenericForwardComposer implements
     }
 
     public boolean isCreateButtonDisabled(){
-        Limits workersTypeLimit = limitsModel.getWorkersType();
-        Long workersCount = (Long) workerModel.getRowCount();
-        if ( workersTypeLimit != null )
-            if ( workersCount >= workersTypeLimit.getValue() )
+        Limits resourcesTypeLimit = limitsModel.getResourcesType();
+        Integer resourcesCount = (Integer) resourceDAO.getRowCount();
+
+        if ( resourcesTypeLimit != null )
+            if ( resourcesCount >= resourcesTypeLimit.getValue() )
                 return true;
 
         return false;
     }
 
     public String getShowCreateFormLabel(){
-        Limits workersTypeLimit = limitsModel.getWorkersType();
-        Long workersCount = (Long) workerModel.getRowCount();
-        if ( workersTypeLimit != null )
-            if ( workersCount >= workersTypeLimit.getValue() )
+        Limits resourcesTypeLimit = limitsModel.getResourcesType();
+        Integer resourcesCount = (Integer) resourceDAO.getRowCount();
+
+        int resourcesLeft = resourcesTypeLimit.getValue() - resourcesCount;
+        if ( resourcesTypeLimit != null )
+            if ( resourcesCount >= resourcesTypeLimit.getValue() )
                 return _("Workers limit reached");
 
-        return _("Create");
+        return _("Create") + " ( " + resourcesLeft  + " " + _("left") + " )";
     }
 
 }

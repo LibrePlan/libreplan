@@ -228,8 +228,6 @@ Microsoft Windows
     # Copy downloaded *.jar file to JAVA_HOME location: (e.g. C:\Program Files\Java\jdk1.7.0_80\jre\lib\ext)
     # Put downloaded *.jar file to Tomcat lib location: (e.g. C:\Program Files\Apache Software Foundation\Tomcat 6.0\lib)
 
-* Download latest ``.war`` file from SourceForge.net (for PostgreSQL) and rename it to libreplan.war::
-
    # http://sourceforge.net/projects/libreplan/files/LibrePlan/
 
 * Create database::
@@ -266,15 +264,12 @@ Microsoft Windows
 
     GRANT ALL PRIVILEGES ON DATABASE libreplan TO libreplan;
 
-* Restore PostgreSQL dump - scripts/database/postgresql_1.4.1.backup::
-
 * Create an Environment Variable JAVA_HOME
 
     # You need to set it to your JDK installed directory
 
 * Configure Apache Tomcat Server
 
-    # Put your libreplan.war file to Apache Tomcat webapps folder (e.g. C:\Program Files\Apache Software Foundation\Tomcat 6.0\webapps\)
     # Go to (e.g. C:\Program Files\Apache Software Foundation\Tomcat 6.0\conf\Catalina\localhost\) and create there libreplan.xml file with this lines of code:
 
     <?xml version="1.0" encoding="UTF-8"?>
@@ -288,13 +283,7 @@ Microsoft Windows
             url="jdbc:postgresql://localhost/libreplan" />
     </Context>
 
-* Start Apache Tomcat server
-
-    # Possible location: C:\Program Files\Apache Software Foundation\Tomcat 6.0\bin\Tomcat6.exe
-
-* Go to http://localhost:8080/libreplan
 =======
-* Restore PostgreSQL dump - scripts/database/postgresql_1.4.1.backup
 
 * Download source code::
 
@@ -316,8 +305,12 @@ Microsoft Windows
 
 * Launch application::
 
-    # cd libreplan-webapp
-    # mvn jetty:run
+    * Get *.war file from project folder (e.g ../libreplan/libreplan-webapp/target/libreplan-webapp.war)
+    * Rename it to libreplan.war
+    * Put your libreplan.war file to Apache Tomcat webapps folder (e.g. C:\Program Files\Apache Software Foundation\Tomcat 6.0\webapps\)
+    * Start Apache Tomcat server
+
+    # Possible location: C:\Program Files\Apache Software Foundation\Tomcat 6.0\bin\Tomcat6.exe
 
 * Go to http://localhost:8080/libreplan-webapp/
 

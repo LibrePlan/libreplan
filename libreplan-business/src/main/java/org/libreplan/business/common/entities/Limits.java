@@ -34,7 +34,7 @@ public class Limits extends BaseEntity{
 
     private String type;
 
-    private Long value;
+    private Integer value;
 
 
     public String getType() {
@@ -44,10 +44,10 @@ public class Limits extends BaseEntity{
         this.type = type;
     }
 
-    public Long getValue() {
+    public Integer getValue() {
         return value;
     }
-    public void setValue(Long value) {
+    public void setValue(Integer value) {
         this.value = value;
     }
 }

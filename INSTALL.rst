@@ -326,7 +326,7 @@ Microsoft Windows
 
 Instructions:
 
-* Download and install latest Java Runtime Environment 7u79 (JRE7u79)::
+* Download and install latest Java Runtime Environment 7u80 (JRE7u79)::
 
     # http://www.oracle.com/technetwork/java/javase/downloads/jre7-downloads-1880261.html
 
@@ -367,7 +367,7 @@ Instructions:
     ON ALL TABLES IN SCHEMA public
     TO libreplan;
 
-* Restore PostgreSQL dump - scripts/database/postgresql_1.4.1.backup::
+* Restore PostgreSQL / MySQL dump::
 
 * Create an Environment Variable JRE_HOME
 

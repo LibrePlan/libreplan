@@ -119,16 +119,16 @@ public class UserCRUDController extends BaseCRUDController<User> implements
 
             Button[] buttons = Util.appendOperationsAndOnClickEvent(row,
                     new EventListener() {
-                @Override
-                public void onEvent(Event event) throws Exception {
-                    goToEditForm(user);
-                }
-            }, new EventListener() {
-                @Override
-                public void onEvent(Event event) throws Exception {
-                    confirmDelete(user);
-                }
-            });
+                        @Override
+                        public void onEvent(Event event) throws Exception {
+                            goToEditForm(user);
+                        }
+                    }, new EventListener() {
+                        @Override
+                        public void onEvent(Event event) throws Exception {
+                            confirmDelete(user);
+                        }
+                    });
 
             // Disable remove button for default admin as it's mandatory
             if (isDefaultAdmin(user)) {
@@ -260,7 +260,7 @@ public class UserCRUDController extends BaseCRUDController<User> implements
         userModel.setPassword(password);
         //update the constraint on the confirmation password box
         ((Textbox)editWindow.getFellowIfAny("passwordConfirmation")).
-            clearErrorMessage(true);
+                clearErrorMessage(true);
     }
 
     public Constraint validatePasswordConfirmation() {
@@ -382,11 +382,11 @@ public class UserCRUDController extends BaseCRUDController<User> implements
 
                 Button removeButton = Util
                         .createRemoveButton(new EventListener() {
-                    @Override
-                    public void onEvent(Event event) throws Exception {
-                        removeRole(role);
-                    }
-                });
+                            @Override
+                            public void onEvent(Event event) throws Exception {
+                                removeRole(role);
+                            }
+                        });
                 removeButton.setDisabled(areRolesAndProfilesDisabled()
                         || role.equals(UserRole.ROLE_BOUND_USER)
                         || isUserDefaultAdmin());
@@ -505,7 +505,7 @@ public class UserCRUDController extends BaseCRUDController<User> implements
 
     public boolean isCreateButtonDisabled(){
         Limits usersTypeLimit = limitsModel.getUsersType();
-        Long usersCount = (Long) userModel.getRowCount();
+        Integer usersCount = (Integer) userModel.getRowCount();
         if (usersTypeLimit != null)
             if ( usersCount >= usersTypeLimit.getValue() )
                 return true;
@@ -514,11 +514,12 @@ public class UserCRUDController extends BaseCRUDController<User> implements
 
     public String getShowCreateFormLabel(){
         Limits usersTypeLimit = limitsModel.getUsersType();
-        Long usersCount = (Long) userModel.getRowCount();
+        Integer usersCount = (Integer) userModel.getRowCount();
+        int usersLeft = usersTypeLimit.getValue() - usersCount;
         if (usersTypeLimit != null)
             if ( usersCount >= usersTypeLimit.getValue() )
                 return _("User limit reached");
 
-        return _("Create");
+        return _("Create") + " ( " + usersLeft  + " " + _("left") + " )";
     }
 }

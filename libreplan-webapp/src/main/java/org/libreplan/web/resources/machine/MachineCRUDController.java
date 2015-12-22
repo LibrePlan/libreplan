@@ -34,6 +34,7 @@ import org.libreplan.business.calendars.entities.ResourceCalendar;
 import org.libreplan.business.common.entities.Limits;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
+import org.libreplan.business.resources.daos.IResourceDAO;
 import org.libreplan.business.resources.entities.Machine;
 import org.libreplan.web.calendars.BaseCalendarEditionController;
 import org.libreplan.web.calendars.IBaseCalendarModel;
@@ -48,6 +49,7 @@ import org.libreplan.web.costcategories.ResourcesCostCategoryAssignmentControlle
 import org.libreplan.web.resources.search.ResourcePredicate;
 import org.libreplan.web.resources.worker.CriterionsController;
 import org.libreplan.web.resources.worker.CriterionsMachineController;
+import org.libreplan.web.resources.worker.IWorkerModel;
 import org.libreplan.web.resources.worker.WorkerCRUDController.LimitingResourceEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.Component;
@@ -87,6 +89,9 @@ public class MachineCRUDController extends BaseCRUDController<Machine> {
 
     @Autowired
     private IMachineModel machineModel;
+
+    @Autowired
+    private IResourceDAO resourceDAO;
 
     private Component configurationUnits;
 
@@ -157,9 +162,9 @@ public class MachineCRUDController extends BaseCRUDController<Machine> {
 
     private void setupResourcesCostCategoryAssignmentController(Component comp) {
         Component costCategoryAssignmentContainer =
-            editWindow.getFellowIfAny("costCategoryAssignmentContainer");
+                editWindow.getFellowIfAny("costCategoryAssignmentContainer");
         resourcesCostCategoryAssignmentController = (ResourcesCostCategoryAssignmentController)
-            costCategoryAssignmentContainer.getVariable("assignmentController", true);
+                costCategoryAssignmentContainer.getVariable("assignmentController", true);
     }
 
     @Override
@@ -455,11 +460,11 @@ public class MachineCRUDController extends BaseCRUDController<Machine> {
         LocalDate finishDate = null;
         if (filterStartDate.getValue() != null) {
             startDate = LocalDate.fromDateFields(filterStartDate
-                .getValue());
+                    .getValue());
         }
         if (filterFinishDate.getValue() != null) {
             finishDate = LocalDate.fromDateFields(filterFinishDate
-                .getValue());
+                    .getValue());
         }
 
         final Listitem item = filterLimitingResource.getSelectedItem();
@@ -496,7 +501,7 @@ public class MachineCRUDController extends BaseCRUDController<Machine> {
 
     private void setupFilterLimitingResourceListbox() {
         for(LimitingResourceEnum resourceEnum :
-            LimitingResourceEnum.getLimitingResourceFilterOptionList()) {
+                LimitingResourceEnum.getLimitingResourceFilterOptionList()) {
             Listitem item = new Listitem();
             item.setParent(filterLimitingResource);
             item.setValue(resourceEnum);
@@ -574,7 +579,7 @@ public class MachineCRUDController extends BaseCRUDController<Machine> {
                 row.addEventListener(Events.ON_CLICK,
                         new EventListener() {
                             @Override
-                    public void onEvent(Event event) {
+                            public void onEvent(Event event) {
                                 goToEditForm(machine);
                             }
                         });
@@ -620,23 +625,26 @@ public class MachineCRUDController extends BaseCRUDController<Machine> {
     }
 
     public boolean isCreateButtonDisabled(){
-        Limits machinesTypeLimit = limitsModel.getMachinesType();
-        Long machinesCount = (Long) machineModel.getRowCount();
-        if ( machinesTypeLimit != null )
-            if ( machinesCount >= machinesTypeLimit.getValue() )
+        Limits resourcesTypeLimit = limitsModel.getResourcesType();
+        Integer resourcesCount = (Integer) resourceDAO.getRowCount();
+
+        if ( resourcesTypeLimit != null )
+            if ( resourcesCount >= resourcesTypeLimit.getValue() )
                 return true;
 
         return false;
     }
 
     public String getShowCreateFormLabel(){
-        Limits machinesTypeLimit = limitsModel.getMachinesType();
-        Long machinesCount = (Long) machineModel.getRowCount();
-        if ( machinesTypeLimit != null )
-            if ( machinesCount >= machinesTypeLimit.getValue() )
+        Limits resourcesTypeLimit = limitsModel.getResourcesType();
+        Integer resourcesCount = (Integer) resourceDAO.getRowCount();
+
+        int resourcesLeft = resourcesTypeLimit.getValue() - resourcesCount;
+        if ( resourcesTypeLimit != null )
+            if ( resourcesCount >= resourcesTypeLimit.getValue() )
                 return _("Machines limit reached");
 
-        return _("Create");
+        return _("Create") + " ( " + resourcesLeft  + " " + _("left") + " )";
     }
 
 }
