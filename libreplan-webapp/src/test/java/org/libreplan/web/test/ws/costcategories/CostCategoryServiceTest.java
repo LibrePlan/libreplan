@@ -129,6 +129,7 @@ public class CostCategoryServiceTest {
         // Missing cost category name and enabled.
         CostCategoryDTO cc1 = new CostCategoryDTO(null, true,
                 new HashSet<HourCostDTO>());
+
         // Valid cost category DTO without hour cost
         CostCategoryDTO cc2 = new CostCategoryDTO("cc2",
                 true, new HashSet<HourCostDTO>());
@@ -161,6 +162,7 @@ public class CostCategoryServiceTest {
 
         assertTrue(instanceConstraintViolationsList.toString(),
                 instanceConstraintViolationsList.size() == 2);
+
         assertTrue(instanceConstraintViolationsList.get(0).constraintViolations
                 .toString(),
                 instanceConstraintViolationsList.get(0).constraintViolations

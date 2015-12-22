@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet id="add-id_cost_category-column-to-criterion-table" author="ltilve">
+        <comment>Add column to criterion table to store the relationship with cost category</comment>
+        <addColumn tableName="criterion">
+            <column name="id_cost_category" type="BIGINT" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add-id_cost_category-fk-to-criterion-table" author="ltilve">
+        <comment>Add foreign key constraint to new id_cost_category column on cost_category id</comment>
+        <addForeignKeyConstraint constraintName="cost_category_fkey"
+                                 baseTableName="criterion" baseColumnNames="id_cost_category"
+                                 referencedTableName="cost_category" referencedColumnNames="id"
+                                 onDelete="SET NULL" />
+    </changeSet>
+
+    <changeSet id="add-new-column-automatic_budget_enabled" author="ltilve">
+        <comment>Add new column automatic_budget_enabled with default value FALSE to configuration table</comment>
+        <addColumn tableName="configuration">
+            <column name="automatic_budget_enabled" type="BOOLEAN" />
+        </addColumn>
+        <addDefaultValue tableName="configuration" columnName="automatic_budget_enabled"
+                         defaultValueBoolean="FALSE" />
+        <addNotNullConstraint tableName="configuration"
+                              columnName="automatic_budget_enabled"
+                              defaultNullValue="FALSE"
+                              columnDataType="BOOLEAN" />
+    </changeSet>
+
+    <changeSet id="add-automatic_budget_type_of_work_hours-to-configuration" author="ltilve">
+        <comment>
+            Add new column automatic_budget_type_of_work_hours to
+            configuration table.
+        </comment>
+        <addColumn tableName="configuration">
+            <column name="automatic_budget_type_of_work_hours" type="BIGINT" />
+        </addColumn>
+        <addForeignKeyConstraint constraintName="automatic_budget_type_of_work_hours_fkey"
+                                 baseTableName="configuration" baseColumnNames="automatic_budget_type_of_work_hours"
+                                 referencedTableName="type_of_work_hours" referencedColumnNames="id" />
+    </changeSet>
+
+    <changeSet id="adding-limits" author="vova/jeroen">
+        <createTable tableName="limits">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" primaryKeyName="limits_pkey"/>
+            </column>
+
+            <column name="type" type="varchar(20)"/>
+
+            <column name="value" type="BIGINT"/>
+
+        </createTable>
+        <addUniqueConstraint
+                constraintName="type"
+                columnNames="type"
+                deferrable="false"
+                disabled="false"
+                initiallyDeferred="false"
+                tableName="limits"/>
+        <sql>
+            INSERT INTO limits VALUES(0, 'users', 5);
+            INSERT INTO limits VALUES(1, 'workers', 5);
+            INSERT INTO limits VALUES(2, 'machines', 5);
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>
