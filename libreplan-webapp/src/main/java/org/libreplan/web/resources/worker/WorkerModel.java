@@ -702,11 +702,4 @@ public class WorkerModel extends IntegrationEntityModel implements IWorkerModel 
         }
         return null;
     }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Number getRowCount() {
-        return workerDAO.getRowCount();
-    }
-
 }

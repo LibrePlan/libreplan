@@ -120,4 +120,6 @@ public interface IResourceDAO extends IIntegrationEntityDAO<Resource> {
      */
     List<HoursWorkedPerWorkerInAMonthDTO> getWorkingHoursPerWorker(Integer year, Integer month);
 
+    Number getRowCount();
+
 }

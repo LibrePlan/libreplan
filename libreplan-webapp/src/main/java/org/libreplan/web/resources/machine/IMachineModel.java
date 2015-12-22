@@ -63,7 +63,6 @@ import org.libreplan.web.resources.search.ResourcePredicate;
  *
  * @author Diego Pino Garcia <dpino@igalia.com>
  * @author Javier Moran Rua <jmoran@igalia.com>
- * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
  */
 public interface IMachineModel extends IIntegrationEntityModel {
     // Initial conversational steps
@@ -108,7 +107,4 @@ public interface IMachineModel extends IIntegrationEntityModel {
     void confirmRemove(Machine machine) throws InstanceNotFoundException;
 
     void removeCalendar();
-
-    Number getRowCount();
-
 }
