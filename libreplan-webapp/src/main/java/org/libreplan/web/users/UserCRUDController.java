@@ -32,6 +32,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.apache.commons.logging.LogFactory;
+import org.libreplan.business.common.entities.Limits;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.resources.entities.Worker;
@@ -40,12 +41,14 @@ import org.libreplan.business.users.entities.User;
 import org.libreplan.business.users.entities.User.UserAuthenticationType;
 import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.web.common.BaseCRUDController;
+import org.libreplan.web.common.ILimitsModel;
 import org.libreplan.web.common.Util;
 import org.libreplan.web.common.entrypoints.EntryPointsHandler;
 import org.libreplan.web.common.entrypoints.IURLHandlerRegistry;
 import org.libreplan.web.resources.worker.IWorkerCRUDControllerEntryPoints;
 import org.libreplan.web.security.SecurityUtils;
 import org.libreplan.web.users.bootstrap.PredefinedUsers;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
@@ -61,12 +64,15 @@ import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.api.Groupbox;
 
+import static org.libreplan.web.I18nHelper._;
+
 /**
  * Controller for CRUD actions over a {@link User}
  *
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  * @author Manuel Rego Casasnovas <rego@igalia.com>
  * @author Javier Moran Rua <jmoran@igalia.com>
+ * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
  */
 @SuppressWarnings("serial")
 public class UserCRUDController extends BaseCRUDController<User> implements
@@ -77,6 +83,10 @@ public class UserCRUDController extends BaseCRUDController<User> implements
     @Resource
     private IWorkerCRUDControllerEntryPoints workerCRUD;
 
+    @Autowired
+    private ILimitsModel limitsModel;
+
+    @Autowired
     private IUserModel userModel;
 
     private Textbox passwordBox;
@@ -88,6 +98,8 @@ public class UserCRUDController extends BaseCRUDController<User> implements
     private Groupbox boundResourceGroupbox;
 
     private Combobox profilesCombo;
+
+    private Button showCreateForm;
 
     private IURLHandlerRegistry URLHandlerRegistry;
 
@@ -107,16 +119,16 @@ public class UserCRUDController extends BaseCRUDController<User> implements
 
             Button[] buttons = Util.appendOperationsAndOnClickEvent(row,
                     new EventListener() {
-                @Override
-                public void onEvent(Event event) throws Exception {
-                    goToEditForm(user);
-                }
-            }, new EventListener() {
-                @Override
-                public void onEvent(Event event) throws Exception {
-                    confirmDelete(user);
-                }
-            });
+                        @Override
+                        public void onEvent(Event event) throws Exception {
+                            goToEditForm(user);
+                        }
+                    }, new EventListener() {
+                        @Override
+                        public void onEvent(Event event) throws Exception {
+                            confirmDelete(user);
+                        }
+                    });
 
             // Disable remove button for default admin as it's mandatory
             if (isDefaultAdmin(user)) {
@@ -248,7 +260,7 @@ public class UserCRUDController extends BaseCRUDController<User> implements
         userModel.setPassword(password);
         //update the constraint on the confirmation password box
         ((Textbox)editWindow.getFellowIfAny("passwordConfirmation")).
-            clearErrorMessage(true);
+                clearErrorMessage(true);
     }
 
     public Constraint validatePasswordConfirmation() {
@@ -370,11 +382,11 @@ public class UserCRUDController extends BaseCRUDController<User> implements
 
                 Button removeButton = Util
                         .createRemoveButton(new EventListener() {
-                    @Override
-                    public void onEvent(Event event) throws Exception {
-                        removeRole(role);
-                    }
-                });
+                            @Override
+                            public void onEvent(Event event) throws Exception {
+                                removeRole(role);
+                            }
+                        });
                 removeButton.setDisabled(areRolesAndProfilesDisabled()
                         || role.equals(UserRole.ROLE_BOUND_USER)
                         || isUserDefaultAdmin());
@@ -491,4 +503,23 @@ public class UserCRUDController extends BaseCRUDController<User> implements
         }
     }
 
+    public boolean isCreateButtonDisabled(){
+        Limits usersTypeLimit = limitsModel.getUsersType();
+        Integer usersCount = (Integer) userModel.getRowCount();
+        if (usersTypeLimit != null)
+            if ( usersCount >= usersTypeLimit.getValue() )
+                return true;
+        return false;
+    }
+
+    public String getShowCreateFormLabel(){
+        Limits usersTypeLimit = limitsModel.getUsersType();
+        Integer usersCount = (Integer) userModel.getRowCount();
+        int usersLeft = usersTypeLimit.getValue() - usersCount;
+        if (usersTypeLimit != null)
+            if ( usersCount >= usersTypeLimit.getValue() )
+                return _("User limit reached");
+
+        return _("Create") + " ( " + usersLeft  + " " + _("left") + " )";
+    }
 }

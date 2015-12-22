@@ -402,5 +402,4 @@ public class MachineModel extends IntegrationEntityModel implements
         calendarToRemove = machine.getCalendar();
         machine.setCalendar(null);
     }
-
 }

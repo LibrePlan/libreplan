@@ -29,7 +29,7 @@ import org.libreplan.business.settings.entities.Language;
  *
  * Created by
  * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
- * on 29.09.15.
+ * on 29.09.2015.
  */
 public class EmailTemplate extends BaseEntity {
 

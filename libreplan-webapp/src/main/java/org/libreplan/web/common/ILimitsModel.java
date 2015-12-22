@@ -17,28 +17,22 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.libreplan.business.email.daos;
+package org.libreplan.web.common;
 
-import org.libreplan.business.common.daos.IGenericDAO;
-import org.libreplan.business.email.entities.EmailTemplate;
+import org.libreplan.business.common.entities.Limits;
 
 import java.util.List;
 
 /**
- * DAO interface for the <code>EmailTemplate</code> entity.
- * Contract for {@link EmailTemplateDAO}
+ * Contract for {@link Limits}
  *
  * Created by
  * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
- * on 29.09.2015.
+ * on 17.12.2015.
  */
-public interface IEmailTemplateDAO extends IGenericDAO<EmailTemplate, Long>{
+public interface ILimitsModel {
+    List<Limits> getAll();
 
-    List<EmailTemplate> getAll();
-
-    String getContentBySelectedLanguage(int languageOrdinal, int emailTemplateTypeOrdinal);
-    String getContentBySelectedTemplate(int emailTemplateTypeOrdinal, int languageOrdinal);
-
-    String getSubjectBySelectedLanguage(int languageOrdinal, int emailTemplateTypeOrdinal);
-    String getSubjectBySelectedTemplate(int emailTemplateTypeOrdinal, int languageOrdinal);
+    Limits getUsersType();
+    Limits getResourcesType();
 }

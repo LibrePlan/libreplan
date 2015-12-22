@@ -93,7 +93,7 @@
     </set>
 
     <!-- Indexed on the other side -->
-    <set name="workReportLines" cascade="all-delete-orphan" inverse="true" batch-size="10">
+    <set name="workReportLines" cascade="all-delete-orphan" inverse="true" batch-size="10" fetch="join">
         <key column="work_report_id"/>
         <one-to-many class="WorkReportLine"/>
     </set>

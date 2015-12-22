@@ -49,6 +49,8 @@ import org.libreplan.business.planner.daos.IDayAssignmentDAO;
 import org.libreplan.business.planner.daos.IResourceAllocationDAO;
 import org.libreplan.business.resources.daos.ICriterionDAO;
 import org.libreplan.business.resources.daos.IResourceDAO;
+import org.libreplan.business.resources.daos.IWorkerDAO;
+import org.libreplan.business.resources.daos.WorkerDAO;
 import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.resources.entities.CriterionSatisfaction;
 import org.libreplan.business.resources.entities.CriterionWithItsType;
@@ -81,6 +83,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  * @author Diego Pino García <dpino@igalia.com>
  * @author Manuel Rego Casasnovas <rego@igalia.com>
+ * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -95,6 +98,9 @@ public class WorkerModel extends IntegrationEntityModel implements IWorkerModel 
 
     @Autowired
     private IBaseCalendarDAO baseCalendarDAO;
+
+    @Autowired
+    private IWorkerDAO workerDAO;
 
     private final ICriterionType<?>[] laboralRelatedTypes = {
             PredefinedCriterionTypes.LOCATION,
@@ -696,5 +702,4 @@ public class WorkerModel extends IntegrationEntityModel implements IWorkerModel 
         }
         return null;
     }
-
 }

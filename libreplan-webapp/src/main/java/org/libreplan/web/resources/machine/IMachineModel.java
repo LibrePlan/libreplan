@@ -34,7 +34,7 @@ import org.libreplan.business.resources.entities.Worker;
 import org.libreplan.web.common.IIntegrationEntityModel;
 import org.libreplan.web.resources.search.ResourcePredicate;
 
-/*
+/**
  * This interface contains the operations to create/edit a machine.
  *
  * Conversation state: the Machine instance and associated entities.
@@ -107,5 +107,4 @@ public interface IMachineModel extends IIntegrationEntityModel {
     void confirmRemove(Machine machine) throws InstanceNotFoundException;
 
     void removeCalendar();
-
 }

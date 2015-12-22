@@ -36,7 +36,6 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  * @author Diego Pino Garcia <dpino@igalia.com>
- *
  */
 public interface IWorkerDAO extends IIntegrationEntityDAO<Worker> {
 

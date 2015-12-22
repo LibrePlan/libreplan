@@ -17,28 +17,42 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.libreplan.business.email.daos;
+package org.libreplan.business.common.daos;
 
-import org.libreplan.business.common.daos.IGenericDAO;
-import org.libreplan.business.email.entities.EmailTemplate;
+import org.libreplan.business.common.entities.Limits;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 /**
- * DAO interface for the <code>EmailTemplate</code> entity.
- * Contract for {@link EmailTemplateDAO}
+ * DAO for {@link Limits}
  *
  * Created by
  * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
- * on 29.09.2015.
+ * on 24.09.15.
  */
-public interface IEmailTemplateDAO extends IGenericDAO<EmailTemplate, Long>{
 
-    List<EmailTemplate> getAll();
+@Repository
+public class LimitsDAO extends GenericDAOHibernate<Limits, Long> implements ILimitsDAO {
 
-    String getContentBySelectedLanguage(int languageOrdinal, int emailTemplateTypeOrdinal);
-    String getContentBySelectedTemplate(int emailTemplateTypeOrdinal, int languageOrdinal);
+    @Override
+    public List<Limits> getAll() {
+        return list(Limits.class);
+    }
 
-    String getSubjectBySelectedLanguage(int languageOrdinal, int emailTemplateTypeOrdinal);
-    String getSubjectBySelectedTemplate(int emailTemplateTypeOrdinal, int languageOrdinal);
+    @Override
+    public Limits getUsersType() {
+        List<Limits> list = list(Limits.class);
+        for (Limits item : list)
+            if (item.getType().equals("users")) return item;
+        return null;
+    }
+
+    @Override
+    public Limits getResourcesType() {
+        List<Limits> list = list(Limits.class);
+        for (Limits item : list)
+            if (item.getType().equals("workers+machines")) return item;
+        return null;
+    }
 }

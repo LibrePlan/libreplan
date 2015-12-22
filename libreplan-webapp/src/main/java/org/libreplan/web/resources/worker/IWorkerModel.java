@@ -146,5 +146,4 @@ public interface IWorkerModel extends IIntegrationEntityModel {
     void setBoundUser(User user);
 
     User getBoundUserFromDB(Worker worker);
-
 }
