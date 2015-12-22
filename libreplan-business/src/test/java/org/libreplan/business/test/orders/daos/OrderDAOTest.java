@@ -126,7 +126,7 @@ public class OrderDAOTest {
 
     @Test
     public void testSaveOrdersWithDeliveringDates() {
-        Order order = createValidOrderWithDeadlineCommunications("test");
+        Order order = createValidOrderWithDeadlineCommunications("new-test");
         orderDAO.save(order);
         orderDAO.flush();
 
