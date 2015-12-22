@@ -23,6 +23,7 @@ package org.libreplan.business.resources.daos;
 
 import java.util.List;
 
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.libreplan.business.common.daos.IntegrationEntityDAO;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
@@ -40,11 +41,12 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Diego Pino Garcia <dpino@igalia.com>
  * @author Javier Moran Rua <jmoran@igalia.com>
  * @author Fernando Bellas Permuy <fbellas@udc.es>
+ * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
  */
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
 public class MachineDAO extends IntegrationEntityDAO<Machine>
-    implements IMachineDAO {
+        implements IMachineDAO {
 
     @Override
     public List<Machine> getAll() {
@@ -80,6 +82,11 @@ public class MachineDAO extends IntegrationEntityDAO<Machine>
         } catch (InstanceNotFoundException e) {
             return false;
         }
+    }
+
+    @Override
+    public Number getRowCount() {
+        return (Number) getSession().createCriteria(Machine.class).setProjection(Projections.rowCount()).uniqueResult();
     }
 
     @Override

@@ -32,7 +32,6 @@ import java.util.Set;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.validator.ClassValidator;
 import org.libreplan.business.calendars.daos.IBaseCalendarDAO;
 import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.calendars.entities.CalendarData;
@@ -71,6 +70,7 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * @author Diego Pino Garcia <dpino@igalia.com>
  * @author Javier Moran Rua <jmoran@igalia.com>
+ * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -116,9 +116,6 @@ public class MachineModel extends IntegrationEntityModel implements
 
     @Autowired
     private IScenarioManager scenarioManager;
-
-    private ClassValidator<Machine> validator = new ClassValidator<Machine>(
-            Machine.class);
 
     private void reattachCriterionsCache() {
         for (Criterion each: criterions.values()) {
@@ -248,7 +245,7 @@ public class MachineModel extends IntegrationEntityModel implements
     public void addWorkerAssigmentToConfigurationUnit(
             MachineWorkersConfigurationUnit unit, Worker worker) {
         for (MachineWorkersConfigurationUnit each:
-            machine.getConfigurationUnits()) {
+                machine.getConfigurationUnits()) {
             if (each == unit) {
                 each.addNewWorkerAssignment(worker);
             }
@@ -260,7 +257,7 @@ public class MachineModel extends IntegrationEntityModel implements
     public void addCriterionRequirementToConfigurationUnit(
             MachineWorkersConfigurationUnit unit, Criterion criterion) {
         HashSet<ResourceEnum> appliableToMachine =
-            new HashSet<ResourceEnum>();
+                new HashSet<ResourceEnum>();
         appliableToMachine.add(ResourceEnum.MACHINE);
         unit.addRequiredCriterion(criterion);
     }
@@ -380,7 +377,7 @@ public class MachineModel extends IntegrationEntityModel implements
         return dayAssignmentDAO.findByResources(resourcesList).isEmpty()
                 && workReportLineDAO.findByResources(resourcesList).isEmpty()
                 && resourceAllocationDAO.findAllocationsRelatedToAnyOf(
-                        scenarioManager.getCurrent(), resourcesList).isEmpty();
+                scenarioManager.getCurrent(), resourcesList).isEmpty();
     }
 
     @Override
@@ -406,5 +403,12 @@ public class MachineModel extends IntegrationEntityModel implements
         calendarToRemove = machine.getCalendar();
         machine.setCalendar(null);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Number getRowCount() {
+        return machineDAO.getRowCount();
+    }
+
 
 }

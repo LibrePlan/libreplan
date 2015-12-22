@@ -29,8 +29,8 @@
     <separator bar="false" spacing="5px" orient="horizontal"/>
 
     <newdatasortablegrid id="listing" model="@{controller.machines}" mold="paging"
-        rowRenderer="@{controller.machinesRenderer}"
-        pageSize="10" fixedLayout="true" sclass="clickable-rows">
+                         rowRenderer="@{controller.machinesRenderer}"
+                         pageSize="10" fixedLayout="true" sclass="clickable-rows">
         <columns>
             <newdatasortablecolumn label="${i18n:_('Name')}" sort="auto(lower(name))" sortDirection="ascending" />
             <newdatasortablecolumn label="${i18n:_('Description')}" sort="auto(lower(description))" />
@@ -40,6 +40,7 @@
         </columns>
     </newdatasortablegrid>
     <button id="show_create_form" onClick="controller.goToCreateForm();"
-        label="${i18n:_('Create')}" sclass="create-button global-action">
+            label="@{controller.getShowCreateFormLabel}" sclass="create-button global-action"
+            disabled="@{controller.isCreateButtonDisabled}">
     </button>
 </window>

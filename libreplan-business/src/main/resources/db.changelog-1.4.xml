@@ -53,7 +53,7 @@
 
             <column name="type" type="varchar(20)"/>
 
-            <column name="value" type="BIGINT"/>
+            <column name="value" type="INTEGER"/>
 
         </createTable>
         <addUniqueConstraint
