@@ -36,7 +36,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  * @author Diego Pino Garcia <dpino@igalia.com>
- *
+ * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
  */
 public interface IWorkerDAO extends IIntegrationEntityDAO<Worker> {
 
@@ -106,19 +106,19 @@ public interface IWorkerDAO extends IIntegrationEntityDAO<Worker> {
      * @return The list of {@link Worker} entities found
      */
     List<Worker> findByFirstNameSecondNameAndNif(String firstname,
-            String surname, String nif);
+                                                 String surname, String nif);
 
     List<Worker> findByFirstNameSecondNameAndNifAnotherTransaction(
             String firstname, String surname, String nif);
 
     List<Object[]> getWorkingHoursGroupedPerWorker(List<String> workerCodes,
-            Date startingDate, Date endingDate);
+                                                   Date startingDate, Date endingDate);
 
     Worker findByNifAnotherTransaction(String nif)
             throws InstanceNotFoundException;
 
     public List<Worker> findByFirstNameSecondName(String firstname,
-            String secondname);
+                                                  String secondname);
 
     public List<Worker> findByFirstNameSecondNameAnotherTransaction(
             String firstname, String secondname);
@@ -127,4 +127,6 @@ public interface IWorkerDAO extends IIntegrationEntityDAO<Worker> {
      * Return the list of {@link Worker Workers} bound to any {@link User}.
      */
     List<Worker> getBound();
+
+    Number getRowCount();
 }

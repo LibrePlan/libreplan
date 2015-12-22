@@ -9212,3 +9212,15 @@ msgstr ""
 #: libreplan-business/src/main/java/org/libreplan/business/settings/entities/Language.java:36
 msgid "Use browser language configuration"
 msgstr ""
+
+#: libreplan-webapp/src/main/java/org/libreplan/web/users/UserCRUDController.java:520
+msgid "User limit reached"
+msgstr ""
+
+#: libreplan-webapp/src/main/java/org/libreplan/web/resources/worker/UserCRUDController.java:1178
+msgid "Workers limit reached"
+msgstr ""
+
+#: libreplan-webapp/src/main/java/org/libreplan/web/resources/machine/MachineCRUDController.java:631
+msgid "Machines limit reached"
+msgstr ""

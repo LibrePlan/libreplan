@@ -74,6 +74,7 @@ import org.libreplan.web.resources.search.ResourcePredicate;
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  * @author Manuel Rego Casasnovas <rego@igalia.com>
+ * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
  */
 public interface IWorkerModel extends IIntegrationEntityModel {
 
@@ -106,8 +107,8 @@ public interface IWorkerModel extends IIntegrationEntityModel {
     }
 
     AddingSatisfactionResult addSatisfaction(ICriterionType<?> type,
-            CriterionSatisfaction originalSatisfaction,
-            CriterionSatisfaction edited);
+                                             CriterionSatisfaction originalSatisfaction,
+                                             CriterionSatisfaction edited);
 
     void removeSatisfaction(CriterionSatisfaction satisfaction);
 
@@ -146,5 +147,7 @@ public interface IWorkerModel extends IIntegrationEntityModel {
     void setBoundUser(User user);
 
     User getBoundUserFromDB(Worker worker);
+
+    Number getRowCount();
 
 }

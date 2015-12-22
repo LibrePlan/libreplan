@@ -96,6 +96,9 @@
                 <value>
                     org/libreplan/business/common/entities/JobSchedulerConfiguration.hbm.xml
                 </value>
+                <value>
+                    org/libreplan/business/common/entities/Limits.hbm.xml
+                </value>
             </list>
         </property>
             <property name="eventListeners">

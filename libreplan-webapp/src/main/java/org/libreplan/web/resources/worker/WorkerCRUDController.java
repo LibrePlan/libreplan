@@ -35,6 +35,7 @@ import org.apache.commons.lang.StringUtils;
 import org.joda.time.LocalDate;
 import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.calendars.entities.ResourceCalendar;
+import org.libreplan.business.common.entities.Limits;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.resources.entities.ResourceType;
@@ -44,13 +45,14 @@ import org.libreplan.business.users.entities.User;
 import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.web.calendars.BaseCalendarEditionController;
 import org.libreplan.web.calendars.IBaseCalendarModel;
-import org.libreplan.web.common.BaseCRUDController.CRUDControllerState;
 import org.libreplan.web.common.ConstraintChecker;
 import org.libreplan.web.common.IMessagesForUser;
 import org.libreplan.web.common.Level;
 import org.libreplan.web.common.MessagesForUser;
 import org.libreplan.web.common.OnlyOneVisible;
 import org.libreplan.web.common.Util;
+import org.libreplan.web.common.ILimitsModel;
+import org.libreplan.web.common.BaseCRUDController.CRUDControllerState;
 import org.libreplan.web.common.components.bandboxsearch.BandboxMultipleSearch;
 import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
 import org.libreplan.web.common.components.finders.FilterPair;
@@ -98,6 +100,7 @@ import org.zkoss.zul.api.Window;
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  * @author Manuel Rego Casasnovas <rego@igalia.com>
+ * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
  */
 public class WorkerCRUDController extends GenericForwardComposer implements
         IWorkerCRUDControllerEntryPoints {
@@ -105,14 +108,18 @@ public class WorkerCRUDController extends GenericForwardComposer implements
     @Autowired
     private IDBPasswordEncoderService dbPasswordEncoderService;
 
+    @Autowired
+    private ILimitsModel limitsModel;
+
+    @Autowired
+    private IWorkerModel workerModel;
+
     @Resource
     private IUserCRUDController userCRUD;
 
     private Window listWindow;
 
     private Window editWindow;
-
-    private IWorkerModel workerModel;
 
     private IURLHandlerRegistry URLHandlerRegistry;
 
@@ -200,10 +207,10 @@ public class WorkerCRUDController extends GenericForwardComposer implements
     }
 
     public WorkerCRUDController(Window listWindow, Window editWindow,
-            Window editCalendarWindow,
-            IWorkerModel workerModel,
-            IMessagesForUser messages,
-            IWorkerCRUDControllerEntryPoints workerCRUD) {
+                                Window editCalendarWindow,
+                                IWorkerModel workerModel,
+                                IMessagesForUser messages,
+                                IWorkerCRUDControllerEntryPoints workerCRUD) {
         this.listWindow = listWindow;
         this.editWindow = editWindow;
         this.workerModel = workerModel;
@@ -504,7 +511,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
             Radio radio = new Radio(_(option.label));
             if (option.equals(UserBindingOption.CREATE_NEW_USER)
                     && !SecurityUtils
-                            .isSuperuserOrUserInRoles(UserRole.ROLE_USER_ACCOUNTS)) {
+                    .isSuperuserOrUserInRoles(UserRole.ROLE_USER_ACCOUNTS)) {
                 radio.setDisabled(true);
                 radio.setTooltiptext(_("You do not have permissions to create new users"));
             }
@@ -524,7 +531,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         this.filterStartDate = (Datebox) listWindow
                 .getFellowIfAny("filterStartDate");
         this.filterLimitingResource = (Listbox) listWindow
-            .getFellowIfAny("filterLimitingResource");
+                .getFellowIfAny("filterLimitingResource");
         this.bdFilters = (BandboxMultipleSearch) listWindow
                 .getFellowIfAny("bdFilters");
         this.txtfilter = (Textbox) listWindow.getFellowIfAny("txtfilter");
@@ -534,9 +541,9 @@ public class WorkerCRUDController extends GenericForwardComposer implements
 
     private void setupResourcesCostCategoryAssignmentController(Component comp) {
         Component costCategoryAssignmentContainer =
-            editWindow.getFellowIfAny("costCategoryAssignmentContainer");
+                editWindow.getFellowIfAny("costCategoryAssignmentContainer");
         resourcesCostCategoryAssignmentController = (ResourcesCostCategoryAssignmentController)
-            costCategoryAssignmentContainer.getVariable("assignmentController", true);
+                costCategoryAssignmentContainer.getVariable("assignmentController", true);
     }
 
     private void editAsignedCriterions() {
@@ -646,7 +653,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
     }
 
     private Window getCurrentWindow() {
-            return editWindow;
+        return editWindow;
     }
 
     private void updateCalendarController() {
@@ -912,7 +919,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
 
     private void setupFilterLimitingResourceListbox() {
         for(LimitingResourceEnum resourceEnum :
-            LimitingResourceEnum.getLimitingResourceFilterOptionList()) {
+                LimitingResourceEnum.getLimitingResourceFilterOptionList()) {
             Listitem item = new Listitem();
             item.setParent(filterLimitingResource);
             item.setValue(resourceEnum);
@@ -1010,7 +1017,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
                 row.addEventListener(Events.ON_CLICK,
                         new EventListener() {
                             @Override
-                    public void onEvent(Event event) {
+                            public void onEvent(Event event) {
                                 goToEditForm(worker);
                             }
                         });
@@ -1054,19 +1061,19 @@ public class WorkerCRUDController extends GenericForwardComposer implements
 
             String title;
             switch (state) {
-            case CREATE:
-                if (StringUtils.isEmpty(humanId)) {
-                    title = _("Create {0}", entityType);
-                } else {
-                    title = _("Create {0}: {1}", entityType, humanId);
-                }
-                break;
-            case EDIT:
-                title = _("Edit {0}: {1}", entityType, humanId);
-                break;
-            default:
-                throw new IllegalStateException(
-                        "You should be in creation or edition mode to use this method");
+                case CREATE:
+                    if (StringUtils.isEmpty(humanId)) {
+                        title = _("Create {0}", entityType);
+                    } else {
+                        title = _("Create {0}: {1}", entityType, humanId);
+                    }
+                    break;
+                case EDIT:
+                    title = _("Edit {0}: {1}", entityType, humanId);
+                    break;
+                default:
+                    throw new IllegalStateException(
+                            "You should be in creation or edition mode to use this method");
             }
             ((Caption) editWindow.getFellow("caption")).setLabel(title);
         }
@@ -1157,6 +1164,26 @@ public class WorkerCRUDController extends GenericForwardComposer implements
             return _("You do not have permissions to go to edit user window");
         }
         return "";
+    }
+
+    public boolean isCreateButtonDisabled(){
+        Limits workersTypeLimit = limitsModel.getWorkersType();
+        Integer workersCount = (Integer) workerModel.getRowCount();
+        if ( workersTypeLimit != null )
+            if ( workersCount >= workersTypeLimit.getValue() )
+                return true;
+
+        return false;
+    }
+
+    public String getShowCreateFormLabel(){
+        Limits workersTypeLimit = limitsModel.getWorkersType();
+        Integer workersCount = (Integer) workerModel.getRowCount();
+        if ( workersTypeLimit != null )
+            if ( workersCount >= workersTypeLimit.getValue() )
+                return _("Workers limit reached");
+
+        return _("Create");
     }
 
 }
