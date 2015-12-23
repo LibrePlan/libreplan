@@ -24,7 +24,6 @@ import static org.libreplan.web.I18nHelper._;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 import org.apache.commons.logging.LogFactory;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
@@ -45,10 +44,16 @@ import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zul.*;
+import org.zkoss.zul.ListitemRenderer;
+import org.zkoss.zul.Row;
+import org.zkoss.zul.RowRenderer;
+import org.zkoss.zul.Cell;
+import org.zkoss.zul.Label;
+import org.zkoss.zul.Hbox;
+import org.zkoss.zul.ListModelList;
+import org.zkoss.zul.Listbox;
 
-import javax.swing.*;
-import javax.swing.table.TableCellEditor;
+
 
 /**
  * Controller for IssueLog CRUD actions
