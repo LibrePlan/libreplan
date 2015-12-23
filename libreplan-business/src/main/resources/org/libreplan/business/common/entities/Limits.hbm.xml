@@ -11,7 +11,7 @@
         </id>
 
         <property name="type" column="type"/>
-        <property name="value" column="value" type="long"/>
+        <property name="value" column="value" type="integer"/>
 
     </class>
 

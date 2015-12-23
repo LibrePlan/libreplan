@@ -64,8 +64,8 @@
                 initiallyDeferred="false"
                 tableName="limits"/>
         <sql>
-            INSERT INTO limits VALUES(0, 'users', 5);
-            INSERT INTO limits VALUES(1, 'workers+machines', 10);
+            INSERT INTO limits VALUES(1, 'users', 5);
+            INSERT INTO limits VALUES(2, 'workers+machines', 10);
         </sql>
     </changeSet>
 
