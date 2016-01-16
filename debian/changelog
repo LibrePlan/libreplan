@@ -1,3 +1,10 @@
+libreplan (1.4.1-1) UNRELEASED; urgency=low
+
+  * New upstream version.
+  * First upload to Debian. Closes: #810650
+
+ -- Geert Stappers <stappers@debian.org>  Wed, 13 Jan 2016 22:13:47 +0100
+
 libreplan (1.4.0-1) squeeze; urgency=low
 
   * Released LibrePlan 1.4.0
