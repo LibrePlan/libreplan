@@ -8,7 +8,7 @@ utildir := SELF_DIR
 # Adrian Perez, 2009-05-15 11:20
 #
 
-RST_HTML_FLAGS = --link-stylesheet --stylesheet-path=html/lsr.css
+RST_HTML_FLAGS = --link-stylesheet --stylesheet=html/lsr.css
 RST_TEX_FLAGS  = --documentclass=igaliabk --font-encoding=OT1  --output-encoding=utf-8
 OUTPUT_BASE    = output
 
