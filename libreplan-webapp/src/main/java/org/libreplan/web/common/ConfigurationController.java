@@ -42,6 +42,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.libreplan.business.calendars.entities.BaseCalendar;
+import org.libreplan.business.common.daos.IConfigurationDAO;
 import org.libreplan.business.common.entities.Configuration;
 import org.libreplan.business.common.entities.Connector;
 import org.libreplan.business.common.entities.ConnectorProperty;
@@ -54,10 +55,12 @@ import org.libreplan.business.common.entities.PredefinedConnectors;
 import org.libreplan.business.common.entities.ProgressType;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
+import org.libreplan.business.users.daos.IUserDAO;
 import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.importers.JiraRESTClient;
 import org.libreplan.importers.TimSoapClient;
 import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
+import org.libreplan.web.orders.IOrderModel;
 import org.springframework.ldap.core.DistinguishedName;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.core.support.DefaultDirObjectFactory;
@@ -97,6 +100,7 @@ import org.zkoss.zul.impl.InputElement;
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  * @author Cristina Alavarino Perez <cristina.alvarino@comtecsf.es>
  * @author Ignacio Diaz Teijido <ignacio.diaz@comtecsf.es>
+ * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
  */
 public class ConfigurationController extends GenericForwardComposer {
 
@@ -112,6 +116,12 @@ public class ConfigurationController extends GenericForwardComposer {
     private Listbox lbTypeProgress;
 
     private IConfigurationModel configurationModel;
+
+    private IConfigurationDAO configurationDAO;
+
+    private IUserDAO userDAO;
+
+    private IOrderModel orderModel;
 
     private IMessagesForUser messages;
 
@@ -136,6 +146,8 @@ public class ConfigurationController extends GenericForwardComposer {
     private Grid connectorPropertriesGrid;
 
     private Connector selectedConnector;
+
+    private boolean isGatheredStatsAlreadySent = false;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -227,6 +239,16 @@ public class ConfigurationController extends GenericForwardComposer {
                 configurationModel.confirm();
                 configurationModel.init();
                 messages.showMessage(Level.INFO, _("Changes saved"));
+
+                // Send data to server
+                if ( !isGatheredStatsAlreadySent && configurationDAO.getConfigurationWithReadOnlyTransaction()
+                        .isAllowToGatherUsageStatsEnabled() ){
+                    GatheredUsageStats gatheredUsageStats = new GatheredUsageStats();
+                    gatheredUsageStats.setupNotAutowiredClasses(userDAO, orderModel);
+                    gatheredUsageStats.sendGatheredUsageStatsToServer();
+                    isGatheredStatsAlreadySent = true;
+                }
+
                 if (getSelectedConnector() != null
                         && !configurationModel
                         .scheduleOrUnscheduleJobs(getSelectedConnector())) {
@@ -377,30 +399,30 @@ public class ConfigurationController extends GenericForwardComposer {
         Rows rows = entitySequencesGrid.getRows();
         for (Row row : (List<Row>) rows.getChildren()) {
 
-                EntitySequence seq = (EntitySequence) row.getValue();
-                if (seq != null) {
+            EntitySequence seq = (EntitySequence) row.getValue();
+            if (seq != null) {
                 Textbox prefixBox = (Textbox) row.getChildren().get(2);
-                    if (!seq.isAlreadyInUse()) {
-                        String errorMessage = this.validPrefix(seq,
-                                prefixBox.getValue());
-                        if (errorMessage != null) {
-                            throw new WrongValueException(prefixBox,
-                                    errorMessage);
-                        }
-                    }
-
-                Intbox digitsBox = (Intbox) row.getChildren().get(3);
-                    try {
-                        if (!seq.isAlreadyInUse()) {
-                            seq.setNumberOfDigits(digitsBox.getValue());
-                        }
-                    } catch (IllegalArgumentException e) {
-                        throw new WrongValueException(digitsBox, _(
-                                "number of digits must be between {0} and {1}",
-                                EntitySequence.MIN_NUMBER_OF_DIGITS,
-                                EntitySequence.MAX_NUMBER_OF_DIGITS));
+                if (!seq.isAlreadyInUse()) {
+                    String errorMessage = this.validPrefix(seq,
+                            prefixBox.getValue());
+                    if (errorMessage != null) {
+                        throw new WrongValueException(prefixBox,
+                                errorMessage);
                     }
                 }
+
+                Intbox digitsBox = (Intbox) row.getChildren().get(3);
+                try {
+                    if (!seq.isAlreadyInUse()) {
+                        seq.setNumberOfDigits(digitsBox.getValue());
+                    }
+                } catch (IllegalArgumentException e) {
+                    throw new WrongValueException(digitsBox, _(
+                            "number of digits must be between {0} and {1}",
+                            EntitySequence.MIN_NUMBER_OF_DIGITS,
+                            EntitySequence.MAX_NUMBER_OF_DIGITS));
+                }
+            }
 
         }
         return true;
@@ -623,143 +645,143 @@ public class ConfigurationController extends GenericForwardComposer {
 
             if ((row.getPreviousSibling() != null)
                     && !((EntitySequence) ((Row) row.getPreviousSibling())
-                            .getValue()).getEntityName().equals(entityName)) {
+                    .getValue()).getEntityName().equals(entityName)) {
                 row.setClass("separator");
             }
         }
     }
 
-        private void appendActiveRadiobox(final Row row,
-                final EntitySequence entitySequence) {
+    private void appendActiveRadiobox(final Row row,
+                                      final EntitySequence entitySequence) {
 
-            final Radio radiobox = Util.bind(new Radio(),
-                    new Util.Getter<Boolean>() {
+        final Radio radiobox = Util.bind(new Radio(),
+                new Util.Getter<Boolean>() {
 
-                        @Override
-                        public Boolean get() {
-                            return entitySequence.isActive();
-                        }
-                    }, new Util.Setter<Boolean>() {
-
-                        @Override
-                        public void set(Boolean value) {
-                            updateOtherSequences(entitySequence);
-                            entitySequence.setActive(value);
-                            Util.reloadBindings(entitySequencesGrid);
-                            reloadEntitySequences();
-                        }
-                    });
-
-            row.appendChild(radiobox);
-        }
-
-        private void updateOtherSequences(final EntitySequence activeSequence) {
-            for (EntitySequence sequence : getEntitySequences(activeSequence
-                    .getEntityName())) {
-                sequence.setActive(false);
-            }
-        }
-
-        private void appendPrefixTextbox(Row row,
-                final EntitySequence entitySequence) {
-            final Textbox tempTextbox = new Textbox();
-            tempTextbox.setWidth("200px");
-            Textbox textbox = Util.bind(tempTextbox, new Util.Getter<String>() {
-
-                @Override
-                public String get() {
-                    return entitySequence.getPrefix();
-                }
-            }, new Util.Setter<String>() {
-
-                @Override
-                public void set(String value) {
-                    try {
-                        entitySequence.setPrefix(value);
-                    } catch (IllegalArgumentException e) {
-                        throw new WrongValueException(tempTextbox, e
-                                .getMessage());
+                    @Override
+                    public Boolean get() {
+                        return entitySequence.isActive();
                     }
-                }
-            });
-            textbox.setConstraint(checkConstraintFormatPrefix());
+                }, new Util.Setter<Boolean>() {
 
-            if (entitySequence.isAlreadyInUse()) {
-                textbox.setDisabled(true);
-            }
-
-            row.appendChild(textbox);
-        }
-
-        private void appendNumberOfDigitsInbox(Row row,
-                final EntitySequence entitySequence) {
-            final Intbox tempIntbox = new Intbox();
-            Intbox intbox = Util.bind(tempIntbox, new Util.Getter<Integer>() {
-
-                @Override
-                public Integer get() {
-                    return entitySequence.getNumberOfDigits();
-                }
-            }, new Util.Setter<Integer>() {
-
-                @Override
-                public void set(Integer value) {
-                    try {
-                        entitySequence.setNumberOfDigits(value);
-                    } catch (IllegalArgumentException e) {
-                        throw new WrongValueException(tempIntbox, _(
-                                "number of digits must be between {0} and {1}",
-                                EntitySequence.MIN_NUMBER_OF_DIGITS,
-                                EntitySequence.MAX_NUMBER_OF_DIGITS));
+                    @Override
+                    public void set(Boolean value) {
+                        updateOtherSequences(entitySequence);
+                        entitySequence.setActive(value);
+                        Util.reloadBindings(entitySequencesGrid);
+                        reloadEntitySequences();
                     }
+                });
+
+        row.appendChild(radiobox);
+    }
+
+    private void updateOtherSequences(final EntitySequence activeSequence) {
+        for (EntitySequence sequence : getEntitySequences(activeSequence
+                .getEntityName())) {
+            sequence.setActive(false);
+        }
+    }
+
+    private void appendPrefixTextbox(Row row,
+                                     final EntitySequence entitySequence) {
+        final Textbox tempTextbox = new Textbox();
+        tempTextbox.setWidth("200px");
+        Textbox textbox = Util.bind(tempTextbox, new Util.Getter<String>() {
+
+            @Override
+            public String get() {
+                return entitySequence.getPrefix();
+            }
+        }, new Util.Setter<String>() {
+
+            @Override
+            public void set(String value) {
+                try {
+                    entitySequence.setPrefix(value);
+                } catch (IllegalArgumentException e) {
+                    throw new WrongValueException(tempTextbox, e
+                            .getMessage());
                 }
-            });
-            intbox.setConstraint(checkConstraintNumberOfDigits());
-
-            if (entitySequence.isAlreadyInUse()) {
-                intbox.setDisabled(true);
             }
+        });
+        textbox.setConstraint(checkConstraintFormatPrefix());
 
-            row.appendChild(intbox);
+        if (entitySequence.isAlreadyInUse()) {
+            textbox.setDisabled(true);
         }
 
-        private void appendLastValueInbox(Row row,
-                final EntitySequence entitySequence) {
-            Textbox textbox = Util.bind(new Textbox(),
-                    new Util.Getter<String>() {
+        row.appendChild(textbox);
+    }
 
-                        @Override
-                        public String get() {
-                            return EntitySequence.formatValue(
-                                    entitySequence.getNumberOfDigits(),
-                                    entitySequence.getLastValue());
-                        }
-                    });
+    private void appendNumberOfDigitsInbox(Row row,
+                                           final EntitySequence entitySequence) {
+        final Intbox tempIntbox = new Intbox();
+        Intbox intbox = Util.bind(tempIntbox, new Util.Getter<Integer>() {
 
-            row.appendChild(textbox);
-        }
-
-        private void appendOperations(final Row row,
-                final EntitySequence entitySequence) {
-            final Button removeButton = Util
-                    .createRemoveButton(new EventListener() {
-
-                        @Override
-                        public void onEvent(Event event) {
-                            if (isLastOne(entitySequence)) {
-                                showMessageNotDelete();
-                            } else {
-                                removeEntitySequence(entitySequence);
-                            }
-                        }
-                    });
-
-            if (entitySequence.isAlreadyInUse()) {
-                removeButton.setDisabled(true);
+            @Override
+            public Integer get() {
+                return entitySequence.getNumberOfDigits();
             }
+        }, new Util.Setter<Integer>() {
 
-            row.appendChild(removeButton);
+            @Override
+            public void set(Integer value) {
+                try {
+                    entitySequence.setNumberOfDigits(value);
+                } catch (IllegalArgumentException e) {
+                    throw new WrongValueException(tempIntbox, _(
+                            "number of digits must be between {0} and {1}",
+                            EntitySequence.MIN_NUMBER_OF_DIGITS,
+                            EntitySequence.MAX_NUMBER_OF_DIGITS));
+                }
+            }
+        });
+        intbox.setConstraint(checkConstraintNumberOfDigits());
+
+        if (entitySequence.isAlreadyInUse()) {
+            intbox.setDisabled(true);
         }
+
+        row.appendChild(intbox);
+    }
+
+    private void appendLastValueInbox(Row row,
+                                      final EntitySequence entitySequence) {
+        Textbox textbox = Util.bind(new Textbox(),
+                new Util.Getter<String>() {
+
+                    @Override
+                    public String get() {
+                        return EntitySequence.formatValue(
+                                entitySequence.getNumberOfDigits(),
+                                entitySequence.getLastValue());
+                    }
+                });
+
+        row.appendChild(textbox);
+    }
+
+    private void appendOperations(final Row row,
+                                  final EntitySequence entitySequence) {
+        final Button removeButton = Util
+                .createRemoveButton(new EventListener() {
+
+                    @Override
+                    public void onEvent(Event event) {
+                        if (isLastOne(entitySequence)) {
+                            showMessageNotDelete();
+                        } else {
+                            removeEntitySequence(entitySequence);
+                        }
+                    }
+                });
+
+        if (entitySequence.isAlreadyInUse()) {
+            removeButton.setDisabled(true);
+        }
+
+        row.appendChild(removeButton);
+    }
 
 
     public Constraint checkConstraintFormatPrefix() {
@@ -816,7 +838,7 @@ public class ConfigurationController extends GenericForwardComposer {
     }
 
     public void addEntitySequence(EntityNameEnum entityName, String prefix,
-            Integer digits) {
+                                  Integer digits) {
         configurationModel.addEntitySequence(entityName, prefix, digits);
         reloadEntitySequences();
     }
@@ -875,7 +897,7 @@ public class ConfigurationController extends GenericForwardComposer {
 
             try {
                 addEntitySequence((EntityNameEnum) entityCombo
-                        .getSelectedItem().getValue(), prefixBox.getValue(),
+                                .getSelectedItem().getValue(), prefixBox.getValue(),
                         numDigitBox.getValue());
             } catch (IllegalArgumentException e) {
                 throw new WrongValueException(numDigitBox, e.getMessage());
@@ -909,20 +931,20 @@ public class ConfigurationController extends GenericForwardComposer {
                     @Override
                     public String get() {
                         List<String> listRoles = configurationModel.
-                            getLdapConfiguration().getMapMatchingRoles().get(role.name());
+                                getLdapConfiguration().getMapMatchingRoles().get(role.name());
                         Collections.sort(listRoles);
                         return StringUtils.join(listRoles, ";");
                     }
                 }, new Util.Setter<String>() {
                     @Override
                     public void set(String value) {
-                                // Created a set in order to avoid duplicates
-                                Set<String> rolesLdap = new HashSet<String>(
-                                        Arrays.asList(StringUtils.split(value,
-                                                ";")));
-                                configurationModel.getLdapConfiguration()
-                                        .setConfigurationRolesLdap(role.name(),
-                                                rolesLdap);
+                        // Created a set in order to avoid duplicates
+                        Set<String> rolesLdap = new HashSet<String>(
+                                Arrays.asList(StringUtils.split(value,
+                                        ";")));
+                        configurationModel.getLdapConfiguration()
+                                .setConfigurationRolesLdap(role.name(),
+                                        rolesLdap);
                     }
                 });
                 textbox.setWidth("300px");
@@ -1078,7 +1100,7 @@ public class ConfigurationController extends GenericForwardComposer {
             }
 
             private void appendValueTextbox(Row row,
-                    final ConnectorProperty property) {
+                                            final ConnectorProperty property) {
                 final Textbox textbox = new Textbox();
                 textbox.setWidth("400px");
                 textbox.setConstraint(checkPropertyValue(property));

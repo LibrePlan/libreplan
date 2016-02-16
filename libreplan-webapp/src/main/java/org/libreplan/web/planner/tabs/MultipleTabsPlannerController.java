@@ -35,13 +35,16 @@ import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.resources.daos.IResourcesSearcher;
 import org.libreplan.business.templates.entities.OrderTemplate;
+import org.libreplan.business.users.daos.IUserDAO;
 import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.web.common.ConfirmCloseUtil;
+import org.libreplan.web.common.GatheredUsageStats;
 import org.libreplan.web.common.entrypoints.EntryPointsHandler;
 import org.libreplan.web.common.entrypoints.URLHandlerRegistry;
 import org.libreplan.web.dashboard.DashboardController;
 import org.libreplan.web.limitingresources.LimitingResourcesController;
 import org.libreplan.web.montecarlo.MonteCarloController;
+import org.libreplan.web.orders.IOrderModel;
 import org.libreplan.web.orders.OrderCRUDController;
 import org.libreplan.web.planner.allocation.AdvancedAllocationController.IBack;
 import org.libreplan.web.planner.company.CompanyPlanningController;
@@ -78,6 +81,7 @@ import org.zkoss.zk.ui.util.Composer;
  *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
+ * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
  */
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -102,18 +106,18 @@ public class MultipleTabsPlannerController implements Composer,
 
         private void showWithFeedback() {
             LongOperationFeedback.execute(tabsSwitcher,
-                new ILongOperation() {
+                    new ILongOperation() {
 
-                    @Override
-                    public String getName() {
-                        return _("changing perspective");
-                    }
+                        @Override
+                        public String getName() {
+                            return _("changing perspective");
+                        }
 
-                    @Override
-                    public void doAction() {
-                        proxiedTab.show();
-                    }
-                });
+                        @Override
+                        public void doAction() {
+                            proxiedTab.show();
+                        }
+                    });
         }
 
         private void showWithoutFeedback() {
@@ -200,6 +204,15 @@ public class MultipleTabsPlannerController implements Composer,
     @Autowired
     private URLHandlerRegistry registry;
 
+    // Cannot Autowire it in GatheredUsageStats class
+    @Autowired
+    private IUserDAO userDAO;
+
+    @Autowired
+    private IOrderModel orderModel;
+
+    private boolean isGatheredStatsAlreadySent = false;
+
     private TabsConfiguration buildTabsConfiguration(final Desktop desktop) {
 
         Map<String, String[]> parameters = getURLQueryParametersMap();
@@ -209,19 +222,19 @@ public class MultipleTabsPlannerController implements Composer,
             @Override
             public void typeChanged(ModeType oldType, ModeType newType) {
                 switch (newType) {
-                case GLOBAL:
-                    ConfirmCloseUtil.resetConfirmClose();
-                    break;
-                case ORDER:
-                    if (SecurityUtils.loggedUserCanWrite(mode.getOrder())) {
-                        ConfirmCloseUtil
-                                .setConfirmClose(
-                                        desktop,
-                                        _("You are about to leave the planning editing. Unsaved changes will be lost!"));
-                    }
-                    break;
-                default:
-                    break;
+                    case GLOBAL:
+                        ConfirmCloseUtil.resetConfirmClose();
+                        break;
+                    case ORDER:
+                        if (SecurityUtils.loggedUserCanWrite(mode.getOrder())) {
+                            ConfirmCloseUtil
+                                    .setConfirmClose(
+                                            desktop,
+                                            _("You are about to leave the planning editing. Unsaved changes will be lost!"));
+                        }
+                        break;
+                    default:
+                        break;
                 }
             }
         });
@@ -247,7 +260,7 @@ public class MultipleTabsPlannerController implements Composer,
 
                     @Override
                     public void goToTaskResourceAllocation(Order order,
-                            TaskElement task) {
+                                                           TaskElement task) {
                         orderPlanningController.setShowedTask(task);
                         orderPlanningController.setCurrentControllerToShow(orderPlanningController.getEditTaskController());
                         getTabsRegistry()
@@ -281,7 +294,7 @@ public class MultipleTabsPlannerController implements Composer,
 
                     @Override
                     public void goToTaskResourceAllocation(Order order,
-                            TaskElement task) {
+                                                           TaskElement task) {
                         // do nothing
                     }
 
@@ -310,8 +323,8 @@ public class MultipleTabsPlannerController implements Composer,
                         returnToPlanningTab(), breadcrumbs));
 
         TabsConfiguration tabsConfiguration = TabsConfiguration.create()
-            .add(tabWithNameReloading(planningTab, typeChanged))
-            .add(tabWithNameReloading(ordersTab, typeChanged));
+                .add(tabWithNameReloading(planningTab, typeChanged))
+                .add(tabWithNameReloading(ordersTab, typeChanged));
         if (SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_PLANNING)) {
             tabsConfiguration.add(
                     tabWithNameReloading(resourceLoadTab, typeChanged)).add(
@@ -321,7 +334,7 @@ public class MultipleTabsPlannerController implements Composer,
                     resourceLoadTab, typeChanged));
         }
         tabsConfiguration.add(visibleOnlyAtOrderMode(advancedAllocationTab))
-            .add(visibleOnlyAtOrderMode(dashboardTab));
+                .add(visibleOnlyAtOrderMode(dashboardTab));
 
         if (isMontecarloVisible) {
             tabsConfiguration.add(visibleOnlyAtOrderMode(monteCarloTab));
@@ -377,7 +390,7 @@ public class MultipleTabsPlannerController implements Composer,
     }
 
     private ChangeableTab tabWithNameReloading(ITab tab,
-            final State<Void> typeChanged) {
+                                               final State<Void> typeChanged) {
         return configure(tab).reloadNameOn(typeChanged);
     }
 
@@ -398,7 +411,7 @@ public class MultipleTabsPlannerController implements Composer,
     }
 
     private ChangeableTab visibleOnlyAtOrderModeWithNameReloading(ITab tab,
-            final State<Void> typeChanged) {
+                                                                  final State<Void> typeChanged) {
         final State<Boolean> state = State.create(mode.isOf(ModeType.ORDER));
         ChangeableTab result;
         if (typeChanged == null) {
@@ -436,17 +449,24 @@ public class MultipleTabsPlannerController implements Composer,
                 .isSuperuserOrUserInRoles(UserRole.ROLE_CREATE_PROJECTS)) {
             org.zkoss.zk.ui.Component createOrderButton = comp.getPage()
                     .getFellowIfAny(
-                "createOrderButton");
+                            "createOrderButton");
             if (createOrderButton != null) {
                 createOrderButton.addEventListener(Events.ON_CLICK,
-                new EventListener() {
-                    @Override
-                    public void onEvent(Event event) throws Exception {
-                        goToCreateForm();
-                    }
-                });
+                        new EventListener() {
+                            @Override
+                            public void onEvent(Event event) throws Exception {
+                                goToCreateForm();
+                            }
+                        });
 
             }
+        }
+
+        if ( !isGatheredStatsAlreadySent && configurationDAO.getConfiguration().isAllowToGatherUsageStatsEnabled() ){
+            GatheredUsageStats gatheredUsageStats = new GatheredUsageStats();
+            gatheredUsageStats.setupNotAutowiredClasses(userDAO, orderModel);
+            gatheredUsageStats.sendGatheredUsageStatsToServer();
+            isGatheredStatsAlreadySent = true;
         }
     }
 
