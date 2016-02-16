@@ -10,7 +10,7 @@ ganttzk/target
 .project
 .settings/
 
-# ignore IDEA configuration files
+# ignore Intellij IDEA configuration files
 .idea
 *.iml
 
