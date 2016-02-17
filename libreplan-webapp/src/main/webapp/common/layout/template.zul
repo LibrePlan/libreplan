@@ -25,14 +25,14 @@
 <?link rel="stylesheet" type="text/css" href="/common/css/perspectives.css"?>
 <?component name="customMenu" inline="true" macroURI="_customMenu.zul"?>
 <?xel-method prefix="project" name="passwd_control" class="org.libreplan.business.common.Configuration"
-signature="java.lang.Boolean isDefaultPasswordsControl()"?>
+        signature="java.lang.Boolean isDefaultPasswordsControl()"?>
 
 <?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
 <?component name="button" extends="button" mold="trendy"?>
 
 <zk>
-<zscript>
-<![CDATA[
+    <zscript>
+        <![CDATA[
     contextPath = Executions.getCurrent().getContextPath();
     templateCtrl = templateController;
     idAdminUser = templateController.getIdAdminUser();
@@ -44,152 +44,152 @@ signature="java.lang.Boolean isDefaultPasswordsControl()"?>
     idOutsourcing = templateController.getIdOutsourcingUser();
     idReports = templateController.getIdReportsUser();
 ]]>
-</zscript>
+    </zscript>
 
 
-<div xmlns:n="http://www.zkoss.org/2005/zk/native" apply="${templateCtrl}" height="100%">
+    <div xmlns:n="http://www.zkoss.org/2005/zk/native" apply="${templateCtrl}" height="100%">
 
-<timer repeats="true" running="true" delay="20000" onTimer=""/>
-<borderlayout height="100%" width="100%" >
-<north border="none">
-<n:div>
+        <timer repeats="true" running="true" delay="20000" onTimer=""/>
+        <borderlayout height="100%" width="100%">
+            <north border="none">
+                <n:div>
 
-<n:table width="100%" border="0" cellpadding="0" cellspacing="0">
-  <n:tr>
-    <n:td valign="center" class="logo-area">
-        <n:a href="${contextPath}/">
-            <n:img src="${templateCtrl.companyLogoURL}" if="${templateCtrl.companyLogoURL!=''}" />
-            <n:img src="${contextPath}/common/img/logo.png" if="${templateCtrl.companyLogoURL==''}" />
-        </n:a></n:td>
-  <n:td valign="top">
-  <n:table width="100%"  border="0" cellspacing="0" cellpadding="0">
-    <n:tr>
-      <n:td>
+                    <n:table width="100%" border="0" cellpadding="0" cellspacing="0">
+                        <n:tr>
+                            <n:td valign="center" class="logo-area">
+                                <n:a href="${contextPath}/">
+                                    <n:img src="${templateCtrl.companyLogoURL}" if="${templateCtrl.companyLogoURL!=''}" />
+                                    <n:img src="${contextPath}/common/img/logo.png" if="${templateCtrl.companyLogoURL==''}" />
+                                </n:a></n:td>
+                            <n:td valign="top">
+                                <n:table width="100%"  border="0" cellspacing="0" cellpadding="0">
+                                    <n:tr>
+                                        <n:td>
 
-        <customMenu top_id="customMenu" title="${i18n:_('Main menu')}"/>
+                                            <customMenu top_id="customMenu" title="${i18n:_('Main menu')}"/>
 
-        </n:td>
-    </n:tr>
-  </n:table></n:td>
-  </n:tr>
-</n:table>
+                                        </n:td>
+                                    </n:tr>
+                                </n:table></n:td>
+                        </n:tr>
+                    </n:table>
 
-      <n:div class="user-area">
-          <n:table width="100%" border="0" cellspacing="0" cellpadding="0">
-            <n:tr>
-              <n:td class="usuario">
-              <div if="${templateCtrl.scenariosVisible}">
-                ${i18n:_('scenario')}:
-                <button onClick="templateCtrl.changeScenario();"
-                    label="${templateCtrl.scenario.name}" />
-                <window id="changeScenarioWindow" visible="false"
-                    title="${i18n:_('Change scenario')}"
-                    style="width : 240px;">
-                    <div id="messagesContainer" />
-                    <grid>
-                        <rows>
-                            <row>
-                                <label value="${i18n:_('Select scenario')}" />
-                                <bandboxSearch
-                                    id="scenarioBandboxSearch"
-                                    finder="ScenarioBandboxFinder"
-                                    model="@{templateCtrl.scenarios}"
-                                    selectedElement="@{templateCtrl.scenario}" />
-                            </row>
-                        </rows>
-                    </grid>
-                    <button onClick="templateCtrl.accept();"
-                        label="${i18n:_('Accept')}" />
-                    <button onClick="templateCtrl.cancel();"
-                        label="${i18n:_('Cancel')}" />
-                </window>
-              </div>
-              </n:td>
-              <n:td class="usuario">${i18n:_('user')}: ${templateCtrl.username}</n:td>
-              <n:td><n:a href="${contextPath}/j_spring_security_logout" class="cerrar_sesion">[${i18n:_('Log out')}]</n:a></n:td>
-            </n:tr>
-          </n:table>
-        </n:div>
-</n:div>
-</north>
+                    <n:div class="user-area">
+                        <n:table width="100%" border="0" cellspacing="0" cellpadding="0">
+                            <n:tr>
+                                <n:td class="usuario">
+                                    <div if="${templateCtrl.scenariosVisible}">
+                                        ${i18n:_('scenario')}:
+                                        <button onClick="templateCtrl.changeScenario();"
+                                                label="${templateCtrl.scenario.name}" />
+                                        <window id="changeScenarioWindow" visible="false"
+                                                title="${i18n:_('Change scenario')}"
+                                                style="width : 240px;">
+                                            <div id="messagesContainer" />
+                                            <grid>
+                                                <rows>
+                                                    <row>
+                                                        <label value="${i18n:_('Select scenario')}" />
+                                                        <bandboxSearch
+                                                                id="scenarioBandboxSearch"
+                                                                finder="ScenarioBandboxFinder"
+                                                                model="@{templateCtrl.scenarios}"
+                                                                selectedElement="@{templateCtrl.scenario}" />
+                                                    </row>
+                                                </rows>
+                                            </grid>
+                                            <button onClick="templateCtrl.accept();"
+                                                    label="${i18n:_('Accept')}" />
+                                            <button onClick="templateCtrl.cancel();"
+                                                    label="${i18n:_('Cancel')}" />
+                                        </window>
+                                    </div>
+                                </n:td>
+                                <n:td class="usuario">${i18n:_('user')}: ${templateCtrl.username}</n:td>
+                                <n:td><n:a href="${contextPath}/j_spring_security_logout" class="cerrar_sesion">[${i18n:_('Log out')}]</n:a></n:td>
+                            </n:tr>
+                        </n:table>
+                    </n:div>
+                </n:div>
+            </north>
 
-<center border="none">
-    <borderlayout width="auto" height="100%">
-    <!-- borderlayout class="main-layout" height="2000px" width="2000px"-->
-    <west class="perspectives-column" width="90px" >
-        <vbox vflex="1" height="100%">
-            <hbox id="perspectiveButtonsInsertionPoint" sclass="toolbar-box global-commands" height="30px" width="100%">
-                <button id="createOrderButton" image="/common/img/ico_add.png" sclass="planner-icon"
-                     tooltiptext="${i18n:_('Create New Project')}" />
-            </hbox>
-            <vbox id="registeredItemsInsertionPoint" width="90px" style="overflow-y:auto;overflow-x:hidden;display:block" vflex="1" />
-        </vbox>
-    </west>
-    <center self="@{insert(content)}" class="main-area" autoscroll="true" />
+            <center border="none">
+                <borderlayout width="auto" height="100%">
+                    <!-- borderlayout class="main-layout" height="2000px" width="2000px"-->
+                    <west class="perspectives-column" width="90px" >
+                        <vbox vflex="1" height="100%">
+                            <hbox id="perspectiveButtonsInsertionPoint" sclass="toolbar-box global-commands" height="30px" width="100%">
+                                <button id="createOrderButton" image="/common/img/ico_add.png" sclass="planner-icon"
+                                        tooltiptext="${i18n:_('Create New Project')}" />
+                            </hbox>
+                            <vbox id="registeredItemsInsertionPoint" width="90px" style="overflow-y:auto;overflow-x:hidden;display:block" vflex="1" />
+                        </vbox>
+                    </west>
+                    <center self="@{insert(content)}" class="main-area" autoscroll="true" />
 
-    </borderlayout>
+                </borderlayout>
 
-</center>
-<south border="none" if="${templateCtrl.userAdmin}">
-<n:table width="100%">
-  <n:tr class="footer">
-    <n:td  valign="center">
-        <n:div if="${project:passwd_control()}" id="warningDefaultPasswdadmin"
-            class="footer-messages-area"
-            style="display:${templateCtrl.defaultPasswdAdminVisible}">
-            <div>
-                <n:span>${i18n:_("The admin's account password remains the default one. This is insecure")}.</n:span>
-                <n:a class="command" href="${contextPath}/users/users.zul#edit%3D${idAdminUser}">[${i18n:_('Change the password')}]</n:a>
-            </div>
-        </n:div>
-        <n:div if="${project:passwd_control()}" id="warningDefaultPasswdOthers"
-            class="footer-messages-area"
-            style="display:${templateCtrl.defaultPasswdVisible}">
-            <div>
-                <n:a href="${contextPath}/users/users.zul#edit%3D${idWsreader}"
-                    id="warningDefaultPasswdWsreader"
-                    style="display:${templateCtrl.defaultPasswdWsreaderVisible}">[wsreader]</n:a>
-                <n:a href="${contextPath}/users/users.zul#edit%3D${idWswriter}"
-                    id="warningDefaultPasswdWswriter"
-                    style="display:${templateCtrl.defaultPasswdWswriterVisible}">[wswriter]</n:a>
-                <n:a href="${contextPath}/users/users.zul#edit%3D${idWssubcontracting}"
-                    id="warningDefaultPasswdWssubcontracting"
-                    style="display:${templateCtrl.defaultPasswdWssubcontractingVisible}">[wssubcontracting]</n:a>
-                <n:a href="${contextPath}/users/users.zul#edit%3D${idManager}"
-                    id="warningDefaultPasswdManager"
-                    style="display:${templateCtrl.defaultPasswdManagerVisible}">[manager]</n:a>
-                <n:a href="${contextPath}/users/users.zul#edit%3D${idHresources}"
-                    id="warningDefaultPasswdHresources"
-                    style="display:${templateCtrl.defaultPasswdHresourcesVisible}">[hresources]</n:a>
-                <n:a href="${contextPath}/users/users.zul#edit%3D${idOutsourcing}"
-                    id="warningDefaultPasswdOutsourcing"
-                    style="display:${templateCtrl.defaultPasswdOutsourcingVisible}">[outsourcing]</n:a>
-                <n:a href="${contextPath}/users/users.zul#edit%3D${idReports}"
-                    id="warningDefaultPasswdReports"
-                    style="display:${templateCtrl.defaultPasswdReportsVisible}">[reports]</n:a>
-                <n:span class="footer-messages-area">
-                    ${i18n:_('default password was not changed')}.
-                </n:span>
-            </div>
-        </n:div>
-        <n:div if="${templateCtrl.newVersionAvailable}" id="warningNewVersion"
-            class="footer-messages-area">
-            <div>
-                <n:span>
-                    ${i18n:_("A new version of LibrePlan is available. Please check next link for more information:")}
-                    <n:strong><n:a href="http://www.libreplan.com/download/" target="_blank">http://www.libreplan.com/download/</n:a></n:strong>
-                </n:span>
-            </div>
-        </n:div>
-    </n:td>
-    <n:td height="40" align="right" valign="bottom">
-    </n:td>
-  </n:tr>
-</n:table>
-</south>
+            </center>
+            <south border="none" if="${templateCtrl.userAdmin}">
+                <n:table width="100%">
+                    <n:tr class="footer">
+                        <n:td  valign="center">
+                            <n:div if="${project:passwd_control()}" id="warningDefaultPasswdadmin"
+                                   class="footer-messages-area"
+                                   style="display:${templateCtrl.defaultPasswdAdminVisible}">
+                                <div>
+                                    <n:span>${i18n:_("The admin's account password remains the default one. This is insecure")}.</n:span>
+                                    <n:a class="command" href="${contextPath}/users/users.zul#edit%3D${idAdminUser}">[${i18n:_('Change the password')}]</n:a>
+                                </div>
+                            </n:div>
+                            <n:div if="${project:passwd_control()}" id="warningDefaultPasswdOthers"
+                                   class="footer-messages-area"
+                                   style="display:${templateCtrl.defaultPasswdVisible}">
+                                <div>
+                                    <n:a href="${contextPath}/users/users.zul#edit%3D${idWsreader}"
+                                         id="warningDefaultPasswdWsreader"
+                                         style="display:${templateCtrl.defaultPasswdWsreaderVisible}">[wsreader]</n:a>
+                                    <n:a href="${contextPath}/users/users.zul#edit%3D${idWswriter}"
+                                         id="warningDefaultPasswdWswriter"
+                                         style="display:${templateCtrl.defaultPasswdWswriterVisible}">[wswriter]</n:a>
+                                    <n:a href="${contextPath}/users/users.zul#edit%3D${idWssubcontracting}"
+                                         id="warningDefaultPasswdWssubcontracting"
+                                         style="display:${templateCtrl.defaultPasswdWssubcontractingVisible}">[wssubcontracting]</n:a>
+                                    <n:a href="${contextPath}/users/users.zul#edit%3D${idManager}"
+                                         id="warningDefaultPasswdManager"
+                                         style="display:${templateCtrl.defaultPasswdManagerVisible}">[manager]</n:a>
+                                    <n:a href="${contextPath}/users/users.zul#edit%3D${idHresources}"
+                                         id="warningDefaultPasswdHresources"
+                                         style="display:${templateCtrl.defaultPasswdHresourcesVisible}">[hresources]</n:a>
+                                    <n:a href="${contextPath}/users/users.zul#edit%3D${idOutsourcing}"
+                                         id="warningDefaultPasswdOutsourcing"
+                                         style="display:${templateCtrl.defaultPasswdOutsourcingVisible}">[outsourcing]</n:a>
+                                    <n:a href="${contextPath}/users/users.zul#edit%3D${idReports}"
+                                         id="warningDefaultPasswdReports"
+                                         style="display:${templateCtrl.defaultPasswdReportsVisible}">[reports]</n:a>
+                                    <n:span class="footer-messages-area">
+                                        ${i18n:_('default password was not changed')}.
+                                    </n:span>
+                                </div>
+                            </n:div>
+                            <n:div if="${templateCtrl.newVersionAvailable}" id="warningNewVersion"
+                                   class="footer-messages-area">
+                                <div>
+                                    <n:span>
+                                        ${templateCtrl.versionMessage}
+                                        <n:strong><n:a href="http://www.libreplan.com/download/" target="_blank">http://www.libreplan.com/download/</n:a></n:strong>
+                                    </n:span>
+                                </div>
+                            </n:div>
+                        </n:td>
+                        <n:td height="40" align="right" valign="bottom">
+                        </n:td>
+                    </n:tr>
+                </n:table>
+            </south>
 
-</borderlayout>
+        </borderlayout>
 
-</div>
+    </div>
 
 </zk>
