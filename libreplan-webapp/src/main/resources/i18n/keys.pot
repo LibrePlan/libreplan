@@ -5594,10 +5594,12 @@ msgstr ""
 msgid "Original"
 msgstr ""
 
-#: libreplan-webapp/src/main/webapp/common/layout/template.zul:179
-msgid ""
-"A new version of LibrePlan is available. Please check next link for more "
-"information:"
+#: libreplan-webapp/src/main/java/org/libreplan/web/common/TemplateController.java:245
+msgid "A new version "
+msgstr ""
+
+#: libreplan-webapp/src/main/java/org/libreplan/web/common/TemplateController.java:246
+msgid " of LibrePlan is available. Please check next link for more information:"
 msgstr ""
 
 #: libreplan-webapp/src/main/webapp/planner/stretches_function.zul:31
@@ -9188,7 +9190,7 @@ msgid "CANCELLED"
 msgstr ""
 
 #: libreplan-business/src/main/java/org/libreplan/business/orders/entities/OrderStatusEnum.java:43
-msgid "STORED"
+msgid "ARCHIVED"
 msgstr ""
 
 #: libreplan-business/src/main/java/org/libreplan/business/orders/entities/CriterionRequirementHandler.java:539
@@ -9214,6 +9216,78 @@ msgstr ""
 
 #: libreplan-business/src/main/java/org/libreplan/business/settings/entities/Language.java:36
 msgid "Use browser language configuration"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/templates/entities/EmailTemplateEnum.java:17
+msgid "Task assigned to resource"
+msgstr ""
+
+#: libreplan-webapp/src/main/java/org/libreplan/web/common/CustomMenuController.java:425
+msgid "Edit E-mail Templates"
+msgstr ""
+
+#: libreplan-webapp/src/main/java/org/libreplan/web/templates/EmailTemplateController.java:72
+msgid "E-mail template saved"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/common/entities/PredefinedConnectorProperties.java:57
+msgid "Port"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/common/entities/PredefinedConnectorProperties.java:56
+msgid "Protocol"
+msgstr ""
+
+#: libreplan-webapp/src/main/webapp/email/email_templates.zul:79
+msgid "Possible content keywords"
+msgstr ""
+
+#: libreplan-webapp/src/main/webapp/java/org/libreplan/web/planner/tabs/MultipleTabsPlannerController:90
+msgid "-- no URL provided --"
+msgstr ""
+
+#: libreplan-webapp/src/main/java/org/libreplan/web/common/ConfigurationController.java:1307
+msgid "Not correct E-mail address"
+msgstr ""
+
+#: libreplan-webapp/src/main/webapp/email/email_templates.zul:82
+msgid "Keyword"
+msgstr ""
+
+#: libreplan-webapp/src/main/webapp/email/email_templates.zul:89
+msgid "Username of user"
+msgstr ""
+
+#: libreplan-webapp/src/main/webapp/email/email_templates.zul:94
+msgid "First name of user"
+msgstr ""
+
+#: libreplan-webapp/src/main/webapp/email/email_templates.zul:99
+msgid "Last name of user"
+msgstr ""
+
+#: libreplan-webapp/src/main/webapp/email/email_templates.zul:104
+msgid "Name of project"
+msgstr ""
+
+#: libreplan-webapp/src/main/webapp/email/email_templates.zul:109
+msgid "Name of resource"
+msgstr ""
+
+#: libreplan-webapp/src/main/webapp/email/email_templates.zul:114
+msgid "Name of task"
+msgstr ""
+
+#: libreplan-webapp/src/main/webapp/email/email_templates.zul:119
+msgid "Welcome page"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/orders/entities/OrderStatusEnum.java:43
+msgid "ARCHIVED"
+msgstr ""
+
+#: libreplan-webapp/src/main/webapp/dashboard/_pipeline.zul:2
+msgid "Show archived column data"
 msgstr ""
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/users/UserCRUDController.java:520

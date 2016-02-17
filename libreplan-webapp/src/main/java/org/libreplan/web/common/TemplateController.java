@@ -49,6 +49,7 @@ import org.zkoss.zul.Window;
  * Controller to manage UI operations from main template.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
  */
 @org.springframework.stereotype.Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -66,13 +67,14 @@ public class TemplateController extends GenericForwardComposer {
 
     private IMessagesForUser windowMessages;
 
+    private String lastVersionNumber = "";
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        if (templateModel.isScenariosVisible()) {
+        if ( templateModel.isScenariosVisible() ) {
             window = (Window) comp.getFellow("changeScenarioWindow");
-            windowMessages = new MessagesForUser(window
-                    .getFellow("messagesContainer"));
+            windowMessages = new MessagesForUser(window.getFellow("messagesContainer"));
         }
     }
 
@@ -219,11 +221,14 @@ public class TemplateController extends GenericForwardComposer {
     }
 
     public boolean isNewVersionAvailable() {
-        if ( !templateModel.isCheckNewVersionEnabled() ) {
-            return false;
+        if ( templateModel.isCheckNewVersionEnabled() ) {
+            if ( VersionInformation.isNewVersionAvailable() ){
+                lastVersionNumber = VersionInformation.getLastVersion();
+                return true;
+            }
         }
 
-        return VersionInformation.isNewVersionAvailable(templateModel.isCheckNewVersionEnabled());
+        return false;
     }
 
     public String getUsername() {
@@ -232,6 +237,11 @@ public class TemplateController extends GenericForwardComposer {
             return "";
         }
         return user.getUsername();
+    }
+
+    public String getVersionMessage(){
+        return _("A new version ") + lastVersionNumber +
+                _(" of LibrePlan is available. Please check next link for more information:");
     }
 
 }

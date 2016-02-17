@@ -67,10 +67,10 @@ public class VersionInformation {
     private VersionInformation() {
     }
 
-    private void loadNewVersionFromURL(boolean allowToGatherUsageStatsEnabled) {
+    private void loadNewVersionFromURL() {
         lastVersionCachedDate = new Date();
         try {
-            URL url = getURL(allowToGatherUsageStatsEnabled);
+            URL url = getURL();
             String lastVersion = (new BufferedReader(new InputStreamReader(
                     url.openStream()))).readLine();
             if (projectVersion != null && lastVersion != null) {
@@ -86,13 +86,8 @@ public class VersionInformation {
         }
     }
 
-    private URL getURL(boolean allowToGatherUsageStatsEnabled)
-            throws MalformedURLException {
+    private URL getURL() throws MalformedURLException {
         String url = LIBREPLAN_VERSION_URL;
-        if (allowToGatherUsageStatsEnabled) {
-            url += "?" + LIBREPLAN_USAGE_STATS_PARAM + "=1";
-            url += "&" + LIBREPLAN_VERSION_PARAM + "=" + projectVersion;
-        }
         return new URL(url);
     }
 
@@ -113,18 +108,14 @@ public class VersionInformation {
 
     public void setProjectVersion(String argVersion) {
         projectVersion = argVersion;
-        loadNewVersionFromURL(false);
+        loadNewVersionFromURL();
     }
 
     /**
      * Returns true if a new version of the project is published.
-     *
-     * @param isCheckNewVersionEnabled
-     *            If true LibrePlan developers will process the requests to check
-     *            the new versions to generate usages statistics
      */
-    public static boolean isNewVersionAvailable(boolean isCheckNewVersionEnabled) {
-        return singleton.checkIsNewVersionAvailable(isCheckNewVersionEnabled);
+    public static boolean isNewVersionAvailable() {
+        return singleton.checkIsNewVersionAvailable();
     }
 
     /**
@@ -132,15 +123,28 @@ public class VersionInformation {
      * Otherwise, during one day it returns the cached value. And it checks it
      * again after that time.
      */
-    private boolean checkIsNewVersionAvailable(boolean isCheckNewVersionEnabled) {
+    private boolean checkIsNewVersionAvailable() {
         if ( !newVersionCached ) {
             long oneDayLater = lastVersionCachedDate.getTime()
                     + DELAY_TO_CHECK_URL;
             if ( oneDayLater < new Date().getTime() ) {
-                loadNewVersionFromURL(isCheckNewVersionEnabled);
+                loadNewVersionFromURL();
             }
         }
         return newVersionCached;
     }
 
+    public static String getLastVersion() {
+        String lastVersion = "";
+        try {
+            URL url = new URL(LIBREPLAN_VERSION_URL);
+            lastVersion = (new BufferedReader(new InputStreamReader(
+                    url.openStream()))).readLine();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return lastVersion;
+    }
 }
