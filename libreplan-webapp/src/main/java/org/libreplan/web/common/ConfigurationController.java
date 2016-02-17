@@ -31,6 +31,8 @@ import java.util.ArrayList;
 import java.util.Set;
 import java.util.Map;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.ConcurrentModificationException;
 import java.util.HashSet;
 import java.util.Arrays;
 
@@ -49,6 +51,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.libreplan.business.calendars.entities.BaseCalendar;
+import org.libreplan.business.common.daos.IConfigurationDAO;
 import org.libreplan.business.common.entities.Configuration;
 import org.libreplan.business.common.entities.Connector;
 import org.libreplan.business.common.entities.ConnectorProperty;
@@ -61,10 +64,12 @@ import org.libreplan.business.common.entities.PredefinedConnectors;
 import org.libreplan.business.common.entities.ProgressType;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
+import org.libreplan.business.users.daos.IUserDAO;
 import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.importers.JiraRESTClient;
 import org.libreplan.importers.TimSoapClient;
 import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
+import org.libreplan.web.orders.IOrderModel;
 import org.springframework.ldap.core.DistinguishedName;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.core.support.DefaultDirObjectFactory;
@@ -125,6 +130,12 @@ public class ConfigurationController extends GenericForwardComposer {
 
     private IConfigurationModel configurationModel;
 
+    private IConfigurationDAO configurationDAO;
+
+    private IUserDAO userDAO;
+
+    private IOrderModel orderModel;
+
     private IMessagesForUser messages;
 
     private Component messagesContainer;
@@ -156,6 +167,8 @@ public class ConfigurationController extends GenericForwardComposer {
     private Textbox emailPasswordTextbox;
 
     private Textbox emailSenderTextbox;
+
+    private boolean isGatheredStatsAlreadySent = false;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -242,24 +255,34 @@ public class ConfigurationController extends GenericForwardComposer {
 
     public void save() throws InterruptedException {
 
-        if ( getSelectedConnector() != null && getSelectedConnector().getName().equals("E-mail") &&
-                isEmailFieldsValid() == false ) {
+        if (getSelectedConnector() != null && getSelectedConnector().getName().equals("E-mail") &&
+                isEmailFieldsValid() == false) {
             messages.showMessage(Level.ERROR, _("Check all fields"));
 
         } else {
-                ConstraintChecker.isValid(configurationWindow);
-                if (checkValidEntitySequenceRows()) {
-                    try {
-                        configurationModel.confirm();
-                        configurationModel.init();
-                        messages.showMessage(Level.INFO, _("Changes saved"));
-                        if (getSelectedConnector() != null
-                                && !configurationModel
-                                .scheduleOrUnscheduleJobs(getSelectedConnector())) {
-                            messages.showMessage(
-                                    Level.ERROR,
-                                    _("Scheduling or unscheduling of jobs for this connector is not completed"));
-                        }
+            ConstraintChecker.isValid(configurationWindow);
+            if (checkValidEntitySequenceRows()) {
+                try {
+                    configurationModel.confirm();
+                    configurationModel.init();
+                    messages.showMessage(Level.INFO, _("Changes saved"));
+
+                    // Send data to server
+                    if (!isGatheredStatsAlreadySent && configurationDAO.getConfigurationWithReadOnlyTransaction()
+                            .isAllowToGatherUsageStatsEnabled()) {
+                        GatheredUsageStats gatheredUsageStats = new GatheredUsageStats();
+                        gatheredUsageStats.setupNotAutowiredClasses(userDAO, orderModel);
+                        gatheredUsageStats.sendGatheredUsageStatsToServer();
+                        isGatheredStatsAlreadySent = true;
+                    }
+
+                    if (getSelectedConnector() != null
+                            && !configurationModel
+                            .scheduleOrUnscheduleJobs(getSelectedConnector())) {
+                        messages.showMessage(
+                                Level.ERROR,
+                                _("Scheduling or unscheduling of jobs for this connector is not completed"));
+                    }
                     reloadWindow();
                     reloadEntitySequences();
                     reloadConnectors();
@@ -274,7 +297,6 @@ public class ConfigurationController extends GenericForwardComposer {
                 }
             }
         }
-
     }
 
     public void cancel() throws InterruptedException {
@@ -1186,7 +1208,6 @@ public class ConfigurationController extends GenericForwardComposer {
 
             private void appendValueTextbox(Row row,
                     final ConnectorProperty property) {
-
                 final Textbox textbox = new Textbox();
                 textbox.setWidth("400px");
                 textbox.setConstraint(checkPropertyValue(property));

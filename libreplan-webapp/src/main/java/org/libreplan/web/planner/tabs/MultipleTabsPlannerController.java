@@ -35,8 +35,10 @@ import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.resources.daos.IResourcesSearcher;
 import org.libreplan.business.templates.entities.OrderTemplate;
+import org.libreplan.business.users.daos.IUserDAO;
 import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.web.common.ConfirmCloseUtil;
+import org.libreplan.web.common.GatheredUsageStats;
 import org.libreplan.web.common.entrypoints.EntryPointsHandler;
 import org.libreplan.web.common.entrypoints.URLHandlerRegistry;
 import org.libreplan.web.dashboard.DashboardController;
@@ -44,6 +46,7 @@ import org.libreplan.web.dashboard.DashboardControllerGlobal;
 import org.libreplan.web.limitingresources.LimitingResourcesController;
 import org.libreplan.web.logs.LogsController;
 import org.libreplan.web.montecarlo.MonteCarloController;
+import org.libreplan.web.orders.IOrderModel;
 import org.libreplan.web.orders.OrderCRUDController;
 import org.libreplan.web.planner.allocation.AdvancedAllocationController.IBack;
 import org.libreplan.web.planner.company.CompanyPlanningController;
@@ -76,18 +79,16 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Composer;
 
-import javax.swing.*;
-
 /**
  * Creates and handles several tabs
  *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
+ * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
  */
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
-public class
-        MultipleTabsPlannerController implements Composer,
+public class MultipleTabsPlannerController implements Composer,
         IGlobalViewEntryPoints {
 
     public static String WELCOME_URL = "-- no URL provided --";
@@ -219,6 +220,15 @@ public class
     @Autowired
     private URLHandlerRegistry registry;
 
+    // Cannot Autowire it in GatheredUsageStats class
+    @Autowired
+    private IUserDAO userDAO;
+
+    @Autowired
+    private IOrderModel orderModel;
+
+    private boolean isGatheredStatsAlreadySent = false;
+
     private TabsConfiguration buildTabsConfiguration(final Desktop desktop) {
 
         Map<String, String[]> parameters = getURLQueryParametersMap();
@@ -266,7 +276,7 @@ public class
 
                     @Override
                     public void goToTaskResourceAllocation(Order order,
-                                                           TaskElement task) {
+                            TaskElement task) {
                         orderPlanningController.setShowedTask(task);
                         orderPlanningController.setCurrentControllerToShow(orderPlanningController.getEditTaskController());
                         getTabsRegistry()
@@ -499,6 +509,13 @@ public class
 
             }
         }
+
+        if ( !isGatheredStatsAlreadySent && configurationDAO.getConfiguration().isAllowToGatherUsageStatsEnabled() ){
+            GatheredUsageStats gatheredUsageStats = new GatheredUsageStats();
+            gatheredUsageStats.setupNotAutowiredClasses(userDAO, orderModel);
+            gatheredUsageStats.sendGatheredUsageStatsToServer();
+            isGatheredStatsAlreadySent = true;
+        }
     }
 
     private TabsRegistry getTabsRegistry() {
@@ -515,11 +532,6 @@ public class
     public void goToCompanyLoad() {
         getTabsRegistry().show(resourceLoadTab);
     }
-
-    /*@Override
-    public void goToLogs() {
-        getTabsRegistry().show(logsTab);
-    }*/
 
     @Override
     public void goToCompanyLimitingResources() {
