@@ -182,6 +182,7 @@ public class UserDAO extends GenericDAOHibernate<User, Long>
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Number getRowCount() {
         return (Number) getSession().createCriteria(User.class).setProjection(Projections.rowCount()).uniqueResult();
     }

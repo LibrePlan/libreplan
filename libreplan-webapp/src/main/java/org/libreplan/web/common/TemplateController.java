@@ -72,7 +72,7 @@ public class TemplateController extends GenericForwardComposer {
         if (templateModel.isScenariosVisible()) {
             window = (Window) comp.getFellow("changeScenarioWindow");
             windowMessages = new MessagesForUser(window
-                .getFellow("messagesContainer"));
+                    .getFellow("messagesContainer"));
         }
     }
 
@@ -219,12 +219,11 @@ public class TemplateController extends GenericForwardComposer {
     }
 
     public boolean isNewVersionAvailable() {
-        if (!templateModel.isCheckNewVersionEnabled()) {
+        if ( !templateModel.isCheckNewVersionEnabled() ) {
             return false;
         }
 
-        return VersionInformation.isNewVersionAvailable(templateModel
-                .isAllowToGatherUsageStatsEnabled());
+        return VersionInformation.isNewVersionAvailable(templateModel.isCheckNewVersionEnabled());
     }
 
     public String getUsername() {

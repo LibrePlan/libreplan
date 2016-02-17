@@ -36,6 +36,7 @@ import org.apache.commons.logging.LogFactory;
  * published. It checks the last version against a URL.
  *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
+ * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
  */
 public class VersionInformation {
 
@@ -118,14 +119,12 @@ public class VersionInformation {
     /**
      * Returns true if a new version of the project is published.
      *
-     * @param allowToGatherUsageStatsEnabled
+     * @param isCheckNewVersionEnabled
      *            If true LibrePlan developers will process the requests to check
      *            the new versions to generate usages statistics
      */
-    public static boolean isNewVersionAvailable(
-            boolean allowToGatherUsageStatsEnabled) {
-        return singleton
-                .checkIsNewVersionAvailable(allowToGatherUsageStatsEnabled);
+    public static boolean isNewVersionAvailable(boolean isCheckNewVersionEnabled) {
+        return singleton.checkIsNewVersionAvailable(isCheckNewVersionEnabled);
     }
 
     /**
@@ -133,13 +132,12 @@ public class VersionInformation {
      * Otherwise, during one day it returns the cached value. And it checks it
      * again after that time.
      */
-    private boolean checkIsNewVersionAvailable(
-            boolean allowToGatherUsageStatsEnabled) {
-        if (!newVersionCached) {
+    private boolean checkIsNewVersionAvailable(boolean isCheckNewVersionEnabled) {
+        if ( !newVersionCached ) {
             long oneDayLater = lastVersionCachedDate.getTime()
                     + DELAY_TO_CHECK_URL;
-            if (oneDayLater < new Date().getTime()) {
-                loadNewVersionFromURL(allowToGatherUsageStatsEnabled);
+            if ( oneDayLater < new Date().getTime() ) {
+                loadNewVersionFromURL(isCheckNewVersionEnabled);
             }
         }
         return newVersionCached;
