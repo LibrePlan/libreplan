@@ -5596,10 +5596,12 @@ msgstr ""
 msgid "Original"
 msgstr ""
 
-#: libreplan-webapp/src/main/webapp/common/layout/template.zul:179
-msgid ""
-"A new version of LibrePlan is available. Please check next link for more "
-"information:"
+#: libreplan-webapp/src/main/java/org/libreplan/web/common/TemplateController.java:245
+msgid "A new version "
+msgstr ""
+
+#: libreplan-webapp/src/main/java/org/libreplan/web/common/TemplateController.java:246
+msgid " of LibrePlan is available. Please check next link for more information:"
 msgstr ""
 
 #: libreplan-webapp/src/main/webapp/planner/stretches_function.zul:31
