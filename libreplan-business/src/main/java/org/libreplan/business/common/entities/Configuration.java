@@ -135,6 +135,8 @@ public class Configuration extends BaseEntity {
      */
     private Integer maxResources = 0;
 
+    private String repositoryLocation;
+
 
     public void setDefaultCalendar(BaseCalendar defaultCalendar) {
         this.defaultCalendar = defaultCalendar;
@@ -531,6 +533,13 @@ public class Configuration extends BaseEntity {
 
     public void setEnabledAutomaticBudget(Boolean enabledAutomaticBudget) {
         this.enabledAutomaticBudget = enabledAutomaticBudget;
+    }
+
+    public String getRepositoryLocation() {
+        return repositoryLocation;
+    }
+    public void setRepositoryLocation(String repositoryLocation) {
+        this.repositoryLocation = repositoryLocation;
     }
 
 }

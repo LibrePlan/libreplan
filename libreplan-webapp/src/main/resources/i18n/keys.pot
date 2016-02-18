@@ -145,6 +145,7 @@ msgstr ""
 #: libreplan-webapp/src/main/webapp/qualityforms/_listQualityForm.zul:38
 #: libreplan-webapp/src/main/webapp/qualityforms/_editQualityForm.zul:87
 #: libreplan-webapp/src/main/webapp/limitingresources/limitingResourcesLayout.zul:143
+#: libreplan-webapp/src/main/webapp/orders/_listOrderElementFiles.zul:40
 msgid "Operations"
 msgstr ""
 
@@ -3547,6 +3548,7 @@ msgid "Unschedule"
 msgstr ""
 
 #: libreplan-webapp/src/main/webapp/users/_editUser.zul:36
+#: libreplan-webapp/src/main/webapp/email/email_template.zul:42
 msgid "General user data"
 msgstr ""
 
@@ -4648,6 +4650,7 @@ msgstr ""
 #: libreplan-webapp/src/main/webapp/qualityforms/_editQualityForm.zul:42
 #: libreplan-webapp/src/main/webapp/qualityforms/_editQualityForm.zul:83
 #: libreplan-webapp/src/main/webapp/limitingresources/limitingResourcesLayout.zul:96
+#: libreplan-webapp/src/main/webapp/orders/_listOrderElementFiles.zul:36
 msgid "Name"
 msgstr ""
 
@@ -8129,6 +8132,7 @@ msgstr ""
 #: libreplan-webapp/src/main/webapp/orders/_listOrderElementCriterionRequirements.zul:47
 #: libreplan-webapp/src/main/webapp/orders/_listOrderElementCriterionRequirements.zul:153
 #: libreplan-webapp/src/main/webapp/advance/_editAdvanceTypes.zul:62
+#: libreplan-webapp/src/main/webapp/orders/_listOrderElementFiles.zul:37
 msgid "Type"
 msgstr ""
 
@@ -8760,6 +8764,7 @@ msgstr ""
 #: libreplan-webapp/src/main/webapp/orders/_listOrderElementCriterionRequirements.zul:212
 #: libreplan-webapp/src/main/webapp/qualityforms/_listQualityForm.zul:52
 #: libreplan-webapp/src/main/webapp/qualityforms/_editQualityForm.zul:116
+#: libreplan-webapp/src/main/java/org/libreplan/web/orders/files/OrderFilesController.java:148
 msgid "Delete"
 msgstr ""
 
@@ -9226,6 +9231,7 @@ msgid "Task assigned to resource"
 msgstr ""
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/CustomMenuController.java:425
+#: libreplan-business/src/main/java/org/libreplan/business/users/entities/UserRole.java:91
 msgid "Edit E-mail Templates"
 msgstr ""
 
@@ -9313,4 +9319,44 @@ msgstr ""
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/ConfigurationController.java:247
 msgid "Check fields"
+msgstr ""
+
+#: libreplan-webapp/src/main/webapp/orders/_edition.zul:59
+msgid "Files"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/users/entities/UserRole.java:92
+msgid "Use files for order"
+msgstr ""
+
+#: libreplan-webapp/src/main/java/org/libreplan/web/orders/files/OrderFilesController.java:252
+msgid "Please, make repository"
+msgstr ""
+
+#: libreplan-webapp/src/main/java/org/libreplan/web/orders/files/OrderFilesController.java:148
+msgid "Confirm deleting this file. Are you sure?"
+msgstr ""
+
+#: libreplan-webapp/src/main/webapp/orders/_listOrderElementFiles.zul:26
+msgid "Upload"
+msgstr ""
+
+#: libreplan-webapp/src/main/webapp/orders/_listOrderElementFiles.zul:38
+msgid "Upload date"
+msgstr ""
+
+#: libreplan-webapp/src/main/webapp/orders/_listOrderElementFiles.zul:39
+msgid "Uploaded by"
+msgstr ""
+
+#: libreplan-webapp/src/main/webapp/email/email_template.zul:50
+msgid "Select template language"
+msgstr ""
+
+#: libreplan-webapp/src/main/webapp/email/email_template.zul:59
+msgid "Select template type"
+msgstr ""
+
+#: libreplan-webapp/src/main/webapp/common/configuration.zul:240
+msgid "Local document repository location"
 msgstr ""

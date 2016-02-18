@@ -75,8 +75,7 @@ public class EmailTemplateController extends GenericForwardComposer{
 
     public static ListitemRenderer languagesRenderer = new ListitemRenderer() {
         @Override
-        public void render(org.zkoss.zul.Listitem item, Object data)
-                throws Exception {
+        public void render(Listitem item, Object data) throws Exception {
             Language language = (Language) data;
             String displayName = language.getDisplayName();
             item.setLabel(displayName);
@@ -90,7 +89,7 @@ public class EmailTemplateController extends GenericForwardComposer{
         messages = new MessagesForUser(messagesContainer);
 
         // Set default template and language for user
-        // And content and subject for it
+        // And content and subject for that language & template
         setUser();
         setSelectedLanguage(user.getApplicationLanguage());
 
@@ -108,7 +107,9 @@ public class EmailTemplateController extends GenericForwardComposer{
             return true;
         } catch (ValidationException e) {
             messages.showInvalidValues(e);
-        } catch (InstanceNotFoundException e) {}
+        } catch (InstanceNotFoundException e) {
+            e.printStackTrace();
+        }
         return false;
     }
 
@@ -193,7 +194,7 @@ public class EmailTemplateController extends GenericForwardComposer{
         subjectTextbox.setValue(emailTemplateModel.getSubjectBySelectedLanguage(getSelectedLanguage().ordinal(), getSelectedEmailTemplateEnum().ordinal()));
     }
     private void getSubjectDataBySelectedTemplate(){
-        subjectTextbox.setValue( emailTemplateModel.getContentBySelectedTemplate(getSelectedEmailTemplateEnum().ordinal(), getSelectedLanguage().ordinal()) );
+        subjectTextbox.setValue( emailTemplateModel.getSubjectBySelectedTemplate(getSelectedEmailTemplateEnum().ordinal(), getSelectedLanguage().ordinal()) );
     }
 
     @Transactional

@@ -63,6 +63,7 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  * @author Cristina Alvarino Perez <cristina.alvarino@comtecsf.es>
+ * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -538,8 +539,7 @@ public class ConfigurationModel implements IConfigurationModel {
         return entitySequences.get(entityName);
     }
 
-    public void addEntitySequence(EntityNameEnum entityName, String prefix,
-            Integer digits) {
+    public void addEntitySequence(EntityNameEnum entityName, String prefix, Integer digits) {
         List<EntitySequence> sequences = entitySequences.get(entityName);
         EntitySequence entitySequence = EntitySequence.create(prefix,
                 entityName, digits);
@@ -690,6 +690,16 @@ public class ConfigurationModel implements IConfigurationModel {
     @Override
     public void setSecondsPlanningWarning(Integer secondsPlanningWarning) {
         configuration.setSecondsPlanningWarning(secondsPlanningWarning);
+    }
+
+    @Override
+    public String getRepositoryLocation() {
+        return configuration.getRepositoryLocation();
+    }
+
+    @Override
+    public void setRepositoryLocation(String location) {
+        configuration.setRepositoryLocation(location);
     }
 
     private void saveConnectors() {

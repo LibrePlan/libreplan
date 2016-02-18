@@ -626,7 +626,7 @@ public class MachineCRUDController extends BaseCRUDController<Machine> {
 
     public boolean isCreateButtonDisabled(){
         Limits resourcesTypeLimit = limitsModel.getResourcesType();
-        Integer resourcesCount = (Integer) resourceDAO.getRowCount();
+        Integer resourcesCount = resourceDAO.getRowCount().intValue();
 
         if ( resourcesTypeLimit != null )
             if ( resourcesCount >= resourcesTypeLimit.getValue() )
@@ -637,7 +637,7 @@ public class MachineCRUDController extends BaseCRUDController<Machine> {
 
     public String getShowCreateFormLabel(){
         Limits resourcesTypeLimit = limitsModel.getResourcesType();
-        Integer resourcesCount = (Integer) resourceDAO.getRowCount();
+        Integer resourcesCount = resourceDAO.getRowCount().intValue();
 
         int resourcesLeft = resourcesTypeLimit.getValue() - resourcesCount;
         if ( resourcesTypeLimit != null )

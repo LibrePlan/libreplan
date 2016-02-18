@@ -32,6 +32,7 @@
     macroURI="/orders/components/_listOrderElementMaterials.zul"?>
 <?component name="listOrderElementTaskQualityForms" inline="true" macroURI="_listOrderElementTaskQualityForms.zul"?>
 <?component name="listOrderElementAuthorizations" inline="true" macroURI="_listOrderElementAuthorizations.zul"?>
+<?component name="listOrderElementFiles" inline="true" macroURI="_listOrderElementFiles.zul"?>
 <?component name="jiraOrderElementSynchronizer" inline="true" macroURI="components/_jiraOrderElementSync.zul"?>
 <?component name="timOrderTimesheetSynchronizer" inline="true" macroURI="components/_timOrderTimesheetSync.zul"?>
 
@@ -56,6 +57,8 @@
                 onSelect = "controller.setupAssignedMaterialsToOrderElementController();"/>
             <tab id="tabTaskQualityForm" label="${i18n:_('Task quality forms')}"
                 onSelect = "controller.setupAssignedTaskQualityFormsToOrderElementController();"/>
+            <tab id="tabFiles" label="${i18n:_('Files')}"
+                 onSelect="controller.setupOrderFilesController();"/>
             <tab id="tabAuthorizations" label="${i18n:_('Authorizations')}"
                 onSelect = "controller.setupOrderAuthorizationController();"/>
         </tabs>
@@ -333,6 +336,9 @@
             </tabpanel>
             <tabpanel>
                 <listOrderElementTaskQualityForms id="orderElementTaskQualityForms" fulfill="tabTaskQualityForm.onSelect"/>
+            </tabpanel>
+            <tabpanel>
+                <listOrderElementFiles id="orderElementFiles" fulfill="tabFiles.onSelect"/>
             </tabpanel>
             <tabpanel>
                 <listOrderElementAuthorizations id="orderElementAuthorizations" fulfill="tabAuthorizations.onSelect"/>

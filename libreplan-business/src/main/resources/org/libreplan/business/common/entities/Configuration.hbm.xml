@@ -126,6 +126,8 @@
             </set>
 
         </component>
+
+        <property name="repositoryLocation" column="repository_location"/>
     </class>
 
 </hibernate-mapping>

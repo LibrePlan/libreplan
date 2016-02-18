@@ -52,17 +52,7 @@ public class EmailNotificationModel implements IEmailNotificationModel {
     @Autowired
     private IEmailNotificationDAO emailNotificationDAO;
 
-    private EmailTemplateEnum type;
-
-    private Date updated;
-
-    private Resource resource;
-
-    private TaskElement task;
-
-    private TaskElement project;
-
-    private EmailNotification emailNotification = new EmailNotification();
+    private EmailNotification emailNotification;
 
     @Override
     @Transactional
@@ -78,8 +68,25 @@ public class EmailNotificationModel implements IEmailNotificationModel {
 
     @Override
     @Transactional
+    public List<EmailNotification> getAllByType(EmailTemplateEnum enumeration) {
+        return emailNotificationDAO.getAllByType(enumeration);
+    }
+
+    @Override
+    @Transactional
     public boolean deleteAll() {
         return emailNotificationDAO.deleteAll();
+    }
+
+    @Override
+    public boolean deleteAllByType(EmailTemplateEnum enumeration) {
+        return emailNotificationDAO.deleteAllByType(enumeration);
+    }
+
+    @Override
+    @Transactional
+    public boolean deleteById(EmailNotification notification){
+        return emailNotificationDAO.deleteById(notification);
     }
 
     @Override
@@ -105,6 +112,15 @@ public class EmailNotificationModel implements IEmailNotificationModel {
     @Override
     public void setProject(TaskElement project) {
         this.emailNotification.setProject(project);
+    }
+
+
+    public EmailNotification getEmailNotification() {
+        return emailNotification;
+    }
+
+    public void setNewObject(){
+        this.emailNotification = new EmailNotification();
     }
 
 }

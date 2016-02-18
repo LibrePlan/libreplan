@@ -39,7 +39,7 @@
                 <tabpanels>
                     <tabpanel>
                         <groupbox>
-                            <caption label="General user data" />
+                            <caption label="${i18n:_('General user data')}" />
                             <grid>
                                 <columns>
                                     <column width="220px"></column>
@@ -47,7 +47,7 @@
                                 </columns>
                                 <rows>
                                     <row>
-                                        <label value="Select template language"/>
+                                        <label value="${i18n:_('Select template language')}"/>
                                         <listbox mold="select"
                                                  id="templateLanguageListbox"
                                                  model="@{emailTemplateController.languages}"
@@ -56,7 +56,7 @@
                                         </listbox>
                                     </row>
                                     <row>
-                                        <label value="Select template type"/>
+                                        <label value="${i18n:_('Select template type')}"/>
                                         <listbox id="emailTemplateTypeListbox"
                                                  mold="select"
                                                  model="@{emailTemplateController.emailTemplateEnum}"
