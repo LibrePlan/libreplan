@@ -294,6 +294,7 @@
     </build>
 
     <dependencies>
+
         <!-- Jasper Reports -->
         <dependency>
           <groupId>net.sf.jasperreports</groupId>
@@ -303,16 +304,19 @@
             <groupId>net.sf.jasperreports</groupId>
             <artifactId>jasperreports-fonts</artifactId>
         </dependency>
+
         <!-- GPL Jasperreport Component for ZK -->
         <dependency>
           <groupId>com.igalia.java.zk.components</groupId>
           <artifactId>jasperreportcomponent</artifactId>
         </dependency>
+
         <!-- GPL Jasperreport Component for ZK -->
         <dependency>
           <groupId>com.igalia.java.zk.components</groupId>
           <artifactId>jfreechartengine</artifactId>
         </dependency>
+
         <!-- GPL detailrow Component for ZK -->
         <dependency>
           <groupId>com.igalia.java.zk.components</groupId>
@@ -331,6 +335,7 @@
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-acl</artifactId>
         </dependency>
+
         <!-- Spring Dependency LDAP -->
         <dependency>
             <groupId>org.springframework.security</groupId>
@@ -365,11 +370,13 @@
             <groupId>jfree</groupId>
             <artifactId>jcommon</artifactId>
         </dependency>
+
         <!-- Apache Commons Fileupload (required by ZK) -->
         <dependency>
             <groupId>commons-fileupload</groupId>
             <artifactId>commons-fileupload</artifactId>
         </dependency>
+
         <!-- ZK  -->
         <dependency>
             <groupId>org.zkoss.zk</groupId>
@@ -383,11 +390,13 @@
             <groupId>org.zkoss.zk</groupId>
             <artifactId>zk</artifactId>
         </dependency>
+
         <!-- LibrePlan ZK Components  -->
         <dependency>
             <groupId>org.libreplan</groupId>
             <artifactId>ganttzk</artifactId>
         </dependency>
+
         <!-- LibrePlan Business  -->
         <dependency>
             <groupId>org.libreplan</groupId>
@@ -434,7 +443,7 @@
             <artifactId>servlet-api</artifactId>
         </dependency>
 
-        <!--Java mail-->
+        <!-- Java mail -->
         <dependency>
             <groupId>javax.mail</groupId>
             <artifactId>mail</artifactId>
@@ -446,6 +455,7 @@
             <groupId>javax.ws.rs</groupId>
             <artifactId>jsr311-api</artifactId>
         </dependency>
+
         <!-- CXF -->
         <dependency>
             <groupId>org.apache.cxf</groupId>
@@ -463,6 +473,7 @@
             <groupId>org.codehaus.jackson</groupId>
             <artifactId>jackson-xc</artifactId>
         </dependency>
+
         <!-- ZK Timeplot -->
         <dependency>
             <groupId>org.zkoss.zkforge</groupId>
@@ -472,26 +483,31 @@
             <groupId>org.zkoss.zkforge</groupId>
             <artifactId>timeplotz</artifactId>
         </dependency>
+
         <!-- JGraphT  -->
         <dependency>
             <groupId>org.jgrapht</groupId>
             <artifactId>jgrapht-jdk1.5</artifactId>
         </dependency>
+
         <!-- jqPlot -->
         <dependency>
             <groupId>br.com.digilabs.jqplot</groupId>
             <artifactId>jqplot4java</artifactId>
         </dependency>
+
         <!-- MPXJ Library -->
         <dependency>
             <groupId>net.sourceforge</groupId>
             <artifactId>mpxj</artifactId>
         </dependency>
+
         <!-- ZK fileupload -->
         <dependency>
           <groupId>commons-io</groupId>
           <artifactId>commons-io</artifactId>
         </dependency>
+
         <!-- Quartz framework -->
         <dependency>
            <groupId>org.quartz-scheduler</groupId>

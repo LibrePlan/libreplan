@@ -72,6 +72,7 @@ import org.libreplan.web.common.components.finders.FilterPair;
 import org.libreplan.web.common.components.finders.OrderFilterEnum;
 import org.libreplan.web.common.components.finders.TaskGroupFilterEnum;
 import org.libreplan.web.orders.criterionrequirements.AssignedCriterionRequirementToOrderElementController;
+import org.libreplan.web.orders.files.OrderFilesController;
 import org.libreplan.web.orders.labels.AssignedLabelsToOrderElementController;
 import org.libreplan.web.orders.labels.LabelsAssignmentToOrderElementComponent;
 import org.libreplan.web.orders.materials.AssignedMaterialsToOrderElementController;
@@ -278,17 +279,17 @@ public class OrderCRUDController extends GenericForwardComposer {
         List<FilterPair> sessionFilters = FilterUtils
                 .readProjectsParameters();
         // Allow labels when list is empty
-        if (sessionFilters != null) {
+        if ( sessionFilters != null ) {
             bdFilters.addSelectedElements(toOrderFilterEnum(sessionFilters));
             return;
         }
 
         User user = orderModel.getUser();
         // Calculate filter based on user preferences
-        if ((user != null) && (user.getProjectsFilterLabel() != null)) {
+        if ( (user != null) && (user.getProjectsFilterLabel() != null) ) {
             bdFilters.addSelectedElement(new FilterPair(OrderFilterEnum.Label,
-                    user.getProjectsFilterLabel().getFinderPattern(), user
-                            .getProjectsFilterLabel()));
+                    user.getProjectsFilterLabel().getFinderPattern(),
+                    user.getProjectsFilterLabel()));
         }
     }
 
@@ -298,23 +299,23 @@ public class OrderCRUDController extends GenericForwardComposer {
             TaskGroupFilterEnum type = (TaskGroupFilterEnum) filterPair
                     .getType();
             switch (type) {
-            case Label:
-                result.add(new FilterPair(OrderFilterEnum.Label, filterPair
-                        .getPattern(), filterPair.getValue()));
-                break;
-            case Criterion:
-                result.add(new FilterPair(OrderFilterEnum.Criterion, filterPair
-                        .getPattern(), filterPair.getValue()));
-                break;
-            case ExternalCompany:
-                result.add(new FilterPair(OrderFilterEnum.ExternalCompany,
-                        filterPair.getPattern(), filterPair.getValue()));
-                break;
-            case State:
-                result.add(new FilterPair(OrderFilterEnum.State, filterPair
-                        .getPattern(), filterPair.getValue()));
-                break;
-            default:
+                case Label:
+                    result.add(new FilterPair(OrderFilterEnum.Label, filterPair
+                            .getPattern(), filterPair.getValue()));
+                    break;
+                case Criterion:
+                    result.add(new FilterPair(OrderFilterEnum.Criterion, filterPair
+                            .getPattern(), filterPair.getValue()));
+                    break;
+                case ExternalCompany:
+                    result.add(new FilterPair(OrderFilterEnum.ExternalCompany,
+                            filterPair.getPattern(), filterPair.getValue()));
+                    break;
+                case State:
+                    result.add(new FilterPair(OrderFilterEnum.State, filterPair
+                            .getPattern(), filterPair.getValue()));
+                    break;
+                default:
             }
         }
         return result;
@@ -452,8 +453,7 @@ public class OrderCRUDController extends GenericForwardComposer {
                     });
         }
 
-        private Comboitem createCombo(Object value, String label,
-                String description) {
+        private Comboitem createCombo(Object value, String label, String description) {
             Comboitem result = new Comboitem();
             result.setValue(value);
             result.setLabel(label);
@@ -646,7 +646,7 @@ public class OrderCRUDController extends GenericForwardComposer {
 
         if (assignedLabelsController == null) {
             LabelsAssignmentToOrderElementComponent labelsAssignment = (LabelsAssignmentToOrderElementComponent) editWindow
-                .getFellow("orderElementLabels");
+                    .getFellow("orderElementLabels");
             assignedLabelsController = labelsAssignment.getController();
 
             final IOrderElementModel orderElementModel = getOrderElementModel();
@@ -664,9 +664,9 @@ public class OrderCRUDController extends GenericForwardComposer {
 
         if (assignedCriterionRequirementController == null) {
             Component orderElementCriterionRequirements = editWindow
-                .getFellowIfAny("orderElementCriterionRequirements");
+                    .getFellowIfAny("orderElementCriterionRequirements");
             assignedCriterionRequirementController = (AssignedCriterionRequirementToOrderElementController) orderElementCriterionRequirements
-                .getVariable("assignedCriterionRequirementController", true);
+                    .getVariable("assignedCriterionRequirementController", true);
 
             final IOrderElementModel orderElementModel = getOrderElementModel();
             assignedCriterionRequirementController
@@ -686,7 +686,7 @@ public class OrderCRUDController extends GenericForwardComposer {
 
         if (assignedMaterialsController == null) {
             OrderElementMaterialAssignmentsComponent assignmentsComponent = (OrderElementMaterialAssignmentsComponent) editWindow
-                .getFellowIfAny("orderElementMaterials");
+                    .getFellowIfAny("orderElementMaterials");
             assignedMaterialsController = assignmentsComponent.getController();
 
             final IOrderElementModel orderElementModel = getOrderElementModel();
@@ -707,12 +707,35 @@ public class OrderCRUDController extends GenericForwardComposer {
                 .getFellowIfAny("orderElementTaskQualityForms");
         if (assignedTaskQualityFormController == null) {
             assignedTaskQualityFormController = (AssignedTaskQualityFormsToOrderElementController) orderElementTaskQualityForms
-                .getVariable("assignedTaskQualityFormsController", true);
+                    .getVariable("assignedTaskQualityFormsController", true);
             final IOrderElementModel orderElementModel = getOrderElementModel();
             assignedTaskQualityFormController.openWindow(orderElementModel);
         } else {
             Util.createBindingsFor(orderElementTaskQualityForms);
             Util.reloadBindings(orderElementTaskQualityForms);
+        }
+    }
+
+    private OrderFilesController orderFilesController;
+
+    public void setupOrderFilesController(){
+        if ( !confirmLastTab() ){
+            return;
+        }
+        setCurrentTab();
+
+        Component orderFiles = editWindow.getFellowIfAny("orderElementFiles");
+
+        if ( orderFilesController == null ){
+            orderFilesController = (OrderFilesController) orderFiles
+                    .getVariable("orderFilesController", true);
+
+            final IOrderElementModel orderElementModel = getOrderElementModel();
+
+            orderFilesController.openWindow(orderElementModel);
+
+        } else {
+
         }
     }
 
@@ -771,29 +794,29 @@ public class OrderCRUDController extends GenericForwardComposer {
                 .getSelectedElements()) {
             OrderFilterEnum type = (OrderFilterEnum) filterPair.getType();
             switch (type) {
-            case Label:
-                labels.add((org.libreplan.business.labels.entities.Label) filterPair
-                        .getValue());
-                break;
-            case Criterion:
-                criteria.add((Criterion) filterPair.getValue());
-                break;
-            case ExternalCompany:
-                if (customer != null) {
-                    // It's impossible to have an Order associated to more than
-                    // 1 customer
-                    return Collections.emptyList();
-                }
-                customer = (ExternalCompany) filterPair.getValue();
-                break;
-            case State:
-                if (state != null) {
-                    // It's impossible to have an Order associated with more
-                    // than 1 state
-                    return Collections.emptyList();
-                }
-                state = (OrderStatusEnum) filterPair.getValue();
-                break;
+                case Label:
+                    labels.add((org.libreplan.business.labels.entities.Label) filterPair
+                            .getValue());
+                    break;
+                case Criterion:
+                    criteria.add((Criterion) filterPair.getValue());
+                    break;
+                case ExternalCompany:
+                    if (customer != null) {
+                        // It's impossible to have an Order associated to more than
+                        // 1 customer
+                        return Collections.emptyList();
+                    }
+                    customer = (ExternalCompany) filterPair.getValue();
+                    break;
+                case State:
+                    if (state != null) {
+                        // It's impossible to have an Order associated with more
+                        // than 1 state
+                        return Collections.emptyList();
+                    }
+                    state = (OrderStatusEnum) filterPair.getValue();
+                    break;
             }
         }
 
@@ -862,7 +885,7 @@ public class OrderCRUDController extends GenericForwardComposer {
     private void refreshCodeTextboxesOnly() {
         if (orderElementTreeController != null) {
             Map<OrderElement, Textbox> orderElementCodeTextBoxes =
-                orderElementTreeController.getOrderElementCodeTextboxes();
+                    orderElementTreeController.getOrderElementCodeTextboxes();
 
             for (OrderElement element : orderElementCodeTextBoxes.keySet()) {
                 if (element.getId() != null) {
@@ -1423,10 +1446,9 @@ public class OrderCRUDController extends GenericForwardComposer {
             public void validate(Component comp, Object value)
                     throws WrongValueException {
                 Date finishDate = (Date) value;
-                if ((finishDate != null)
+                if ( (finishDate != null)
                         && (filterStartDate.getRawValue() != null)
-                        && (finishDate.compareTo((Date) filterStartDate
-                                .getRawValue()) < 0)) {
+                        && (finishDate.compareTo((Date) filterStartDate.getRawValue()) < 0) ) {
                     throw new WrongValueException(comp,
                             _("must be after start date"));
                 }
@@ -1440,11 +1462,9 @@ public class OrderCRUDController extends GenericForwardComposer {
             public void validate(Component comp, Object value)
                     throws WrongValueException {
                 Date startDate = (Date) value;
-                if ((startDate != null)
+                if ( (startDate != null)
                         && (filterFinishDate.getRawValue() != null)
-                        && (startDate.compareTo((Date) filterFinishDate
-                                .getRawValue()) > 0)) {
-                    // filterStartDate.setValue(null);
+                        && (startDate.compareTo((Date) filterFinishDate.getRawValue()) > 0) ) {
                     throw new WrongValueException(comp,
                             _("must be lower than end date"));
                 }
@@ -1480,26 +1500,26 @@ public class OrderCRUDController extends GenericForwardComposer {
             OrderFilterEnum type = (OrderFilterEnum) filterPair
                     .getType();
             switch (type) {
-            case Label:
-                result.add(new FilterPair(TaskGroupFilterEnum.Label, filterPair
-                        .getPattern(), filterPair.getValue()));
-                break;
-            case Criterion:
-                result.add(new FilterPair(TaskGroupFilterEnum.Criterion,
-                        filterPair.getPattern(), filterPair.getValue()));
-                break;
-            case ExternalCompany:
-                result.add(new FilterPair(TaskGroupFilterEnum.ExternalCompany,
-                        filterPair.getPattern(), filterPair.getValue()));
-                break;
-            case State:
-                result.add(new FilterPair(TaskGroupFilterEnum.State, filterPair
-                        .getPattern(), filterPair.getValue()));
-                break;
-            default:
-                result.add(new FilterPair(OrderFilterEnum.Label, filterPair
-                        .getPattern(), filterPair.getValue()));
-                break;
+                case Label:
+                    result.add(new FilterPair(TaskGroupFilterEnum.Label, filterPair
+                            .getPattern(), filterPair.getValue()));
+                    break;
+                case Criterion:
+                    result.add(new FilterPair(TaskGroupFilterEnum.Criterion,
+                            filterPair.getPattern(), filterPair.getValue()));
+                    break;
+                case ExternalCompany:
+                    result.add(new FilterPair(TaskGroupFilterEnum.ExternalCompany,
+                            filterPair.getPattern(), filterPair.getValue()));
+                    break;
+                case State:
+                    result.add(new FilterPair(TaskGroupFilterEnum.State, filterPair
+                            .getPattern(), filterPair.getValue()));
+                    break;
+                default:
+                    result.add(new FilterPair(OrderFilterEnum.Label, filterPair
+                            .getPattern(), filterPair.getValue()));
+                    break;
             }
         }
         return result;
@@ -1582,7 +1602,7 @@ public class OrderCRUDController extends GenericForwardComposer {
                 if (!(orderElement instanceof Order)
                         && orderElementTreeController != null) {
                     final Treeitem item = orderElementTreeController
-                    .getTreeitemByOrderElement(orderElement);
+                            .getTreeitemByOrderElement(orderElement);
 
                     if (item != null) {
                         orderElementTreeController
@@ -1641,7 +1661,7 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     public SortedSet<DeadlineCommunication> getDeliverDates() {
         if(getOrder() != null){
-               return getOrder().getDeliveringDates();
+            return getOrder().getDeliveringDates();
         }
         return new TreeSet<DeadlineCommunication>(new DeliverDateComparator());
     }
@@ -1870,12 +1890,10 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     public BigDecimal getResourcesBudget() {
         return Registry.getTransactionService().runOnReadOnlyTransaction(
-                        new IOnTransaction<BigDecimal>() {
-
-                            @Override
-                            public BigDecimal execute() {
-                                return getOrderElementModel().getOrderElement()
-                                        .getResourcesBudget();
+                new IOnTransaction<BigDecimal>() {
+                    @Override
+                    public BigDecimal execute() {
+                        return getOrderElementModel().getOrderElement().getResourcesBudget();
                             }
                         });
     }

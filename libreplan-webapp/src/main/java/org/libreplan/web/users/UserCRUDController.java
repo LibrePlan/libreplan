@@ -505,7 +505,7 @@ public class UserCRUDController extends BaseCRUDController<User> implements
 
     public boolean isCreateButtonDisabled(){
         Limits usersTypeLimit = limitsModel.getUsersType();
-        Integer usersCount = (Integer) userModel.getRowCount();
+        Integer usersCount = userModel.getRowCount().intValue();
         if (usersTypeLimit != null)
             if ( usersCount >= usersTypeLimit.getValue() )
                 return true;
@@ -514,7 +514,7 @@ public class UserCRUDController extends BaseCRUDController<User> implements
 
     public String getShowCreateFormLabel(){
         Limits usersTypeLimit = limitsModel.getUsersType();
-        Integer usersCount = (Integer) userModel.getRowCount();
+        Integer usersCount = userModel.getRowCount().intValue();
         int usersLeft = usersTypeLimit.getValue() - usersCount;
         if (usersTypeLimit != null)
             if ( usersCount >= usersTypeLimit.getValue() )

@@ -326,7 +326,7 @@ Microsoft Windows
 
 Instructions:
 
-* Download and install latest Java Runtime Environment 7u80 (JRE7u79)::
+* Download and install latest Java Runtime Environment 7u80 (JRE7u80)::
 
     # http://www.oracle.com/technetwork/java/javase/downloads/jre7-downloads-1880261.html
 

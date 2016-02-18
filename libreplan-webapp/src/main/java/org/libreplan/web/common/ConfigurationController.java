@@ -1172,6 +1172,14 @@ public class ConfigurationController extends GenericForwardComposer {
         configurationModel.setSecondsPlanningWarning(secondsPlanningWarning);
     }
 
+    public String getRepositoryLocation(){
+        return configurationModel.getRepositoryLocation();
+    }
+
+    public void setRepositoryLocation(String location){
+        configurationModel.setRepositoryLocation(location);
+    }
+
     public List<Connector> getConnectors() {
         return configurationModel.getConnectors();
     }

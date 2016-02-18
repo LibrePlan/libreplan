@@ -17,26 +17,25 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.libreplan.business.email.daos;
+package org.libreplan.business.orders.daos;
 
 import org.libreplan.business.common.daos.IGenericDAO;
-import org.libreplan.business.email.entities.EmailNotification;
-import org.libreplan.business.email.entities.EmailTemplateEnum;
+import org.libreplan.business.orders.entities.OrderElement;
+import org.libreplan.business.orders.entities.OrderFile;
 
 import java.util.List;
 
 /**
- * Contract for {@link EmailNotificationDAO}
- *
  * Created by
  * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
- * on 19.10.15.
+ * on 12.24.2015.
  */
-public interface IEmailNotificationDAO extends IGenericDAO<EmailNotification, Long> {
-    List<EmailNotification> getAll();
-    List<EmailNotification> getAllByType(EmailTemplateEnum enumeration);
 
-    boolean deleteAll();
-    boolean deleteAllByType(EmailTemplateEnum enumeration);
-    boolean deleteById(EmailNotification notification);
+public interface IOrderFileDAO extends IGenericDAO<OrderFile, Long> {
+
+    List<OrderFile> getAll();
+
+    void delete(OrderFile file);
+
+    List<OrderFile> findByParent(OrderElement parent);
 }

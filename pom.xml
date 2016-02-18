@@ -159,6 +159,7 @@
             <id>gettext-commons-site</id>
             <url>http://gettext-commons.googlecode.com/svn/maven-repository</url>
         </repository>
+
         <!-- LibrePlan repository -->
         <repository>
             <id>thirdparty</id>
@@ -184,6 +185,7 @@
     <!-- Dependency management -->
     <dependencyManagement>
         <dependencies>
+
             <!-- Jasper Reports -->
             <dependency>
               <groupId>net.sf.jasperreports</groupId>
@@ -195,24 +197,28 @@
                 <artifactId>jasperreports-fonts</artifactId>
                 <version>4.0.0</version>
             </dependency>
+
             <!-- GPL Jasperreport Component for ZK -->
             <dependency>
               <groupId>com.igalia.java.zk.components</groupId>
               <artifactId>jasperreportcomponent</artifactId>
               <version>1.0</version>
             </dependency>
+
             <!-- GPL JFreechartEngine for ZK -->
             <dependency>
                 <groupId>com.igalia.java.zk.components</groupId>
                 <artifactId>jfreechartengine</artifactId>
                 <version>1.1</version>
             </dependency>
+
             <!-- GPL detailrow Component for ZK -->
             <dependency>
                 <groupId>com.igalia.java.zk.components</groupId>
                 <artifactId>customdetailrowcomponent</artifactId>
                 <version>1.0.0</version>
             </dependency>
+
             <!-- Gettext commons -->
             <dependency>
                 <groupId>org.xnap.commons</groupId>
@@ -318,6 +324,7 @@
                 <artifactId>spring-security-acl</artifactId>
                 <version>3.2.3.RELEASE</version>
             </dependency>
+
             <!-- Spring Dependency LDAP -->
             <dependency>
                 <groupId>org.springframework.security</groupId>
@@ -332,6 +339,7 @@
                 <version>4.12</version>
                 <scope>test</scope>
             </dependency>
+
             <!-- datasource for testing -->
             <dependency>
               <groupId>com.jolbox</groupId>
@@ -379,18 +387,21 @@
                 <artifactId>ezmorph</artifactId>
                 <version>1.0.6</version>
             </dependency>
+
             <!-- Commons lang -->
             <dependency>
                 <groupId>commons-lang</groupId>
                 <artifactId>commons-lang</artifactId>
                 <version>2.4</version>
             </dependency>
+
             <!-- Commons Math-->
             <dependency>
                 <groupId>commons-math</groupId>
                 <artifactId>commons-math</artifactId>
                 <version>1.2</version>
             </dependency>
+
             <!-- Commons Logging (required by many frameworks)-->
             <dependency>
                 <groupId>commons-logging</groupId>
@@ -407,6 +418,7 @@
                 <artifactId>slf4j-log4j12</artifactId>
                 <version>1.7.7</version>
             </dependency>
+
             <!-- BeanShell (required by ZK)-->
             <dependency>
                 <groupId>org.beanshell</groupId>
@@ -414,6 +426,7 @@
                 <version>2.0b4</version>
                 <scope>runtime</scope>
             </dependency>
+
             <!-- Apache Commons Fileupload (required by ZK) -->
             <dependency>
                 <groupId>commons-fileupload</groupId>
@@ -421,6 +434,7 @@
                 <version>1.2.1</version>
                 <scope>runtime</scope>
             </dependency>
+
             <!-- ZK  -->
             <dependency>
                 <groupId>org.zkoss.zk</groupId>
@@ -443,12 +457,14 @@
                     </exclusion>
                 </exclusions>
             </dependency>
+
             <!-- JGraphT -->
             <dependency>
                 <groupId>org.jgrapht</groupId>
                 <artifactId>jgrapht-jdk1.5</artifactId>
                 <version>0.7.3</version>
             </dependency>
+
             <!-- Jfreechart  -->
             <dependency>
                 <groupId>jfree</groupId>
@@ -460,18 +476,21 @@
                 <artifactId>jcommon</artifactId>
                 <version>1.0.16</version>
             </dependency>
+
             <!-- Joda Time -->
             <dependency>
                 <groupId>joda-time</groupId>
                 <artifactId>joda-time</artifactId>
                 <version>2.3</version>
             </dependency>
+
             <!-- LibrePlan ZK Components -->
             <dependency>
                 <groupId>org.libreplan</groupId>
                 <artifactId>ganttzk</artifactId>
                 <version>${project.version}</version>
             </dependency>
+
             <!-- LibrePlan Business -->
             <dependency>
                 <groupId>org.libreplan</groupId>
@@ -490,12 +509,14 @@
                 <type>jar</type>
                 <scope>provided</scope>
             </dependency>
+
             <!-- JAX-RS API -->
             <dependency>
                 <groupId>javax.ws.rs</groupId>
                 <artifactId>jsr311-api</artifactId>
                 <version>1.0</version>
             </dependency>
+
             <!-- CXF -->
             <dependency>
                 <groupId>org.apache.cxf</groupId>
@@ -539,6 +560,7 @@
                     </exclusion>
                 </exclusions>
             </dependency>
+
             <!-- jackson provider -->
             <dependency>
                 <groupId>org.codehaus.jackson</groupId>
@@ -550,6 +572,7 @@
                 <artifactId>jackson-xc</artifactId>
                 <version>1.9.9</version>
             </dependency>
+
             <!-- ZK Timeplot -->
             <dependency>
                 <groupId>org.zkoss.zkforge</groupId>
@@ -579,24 +602,28 @@
                 <artifactId>liquibase-maven-plugin</artifactId>
                 <version>2.0.5</version>
             </dependency>
+
             <!-- jqPlot -->
             <dependency>
                 <groupId>br.com.digilabs.jqplot</groupId>
                 <artifactId>jqplot4java</artifactId>
                 <version>1.2.3-javascript</version>
             </dependency>
+
             <!-- MPXJ Library -->
             <dependency>
                 <groupId>net.sourceforge</groupId>
                 <artifactId>mpxj</artifactId>
                 <version>4.3.0</version>
             </dependency>
+
             <!-- ZK fileupload -->
             <dependency>
               <groupId>commons-io</groupId>
               <artifactId>commons-io</artifactId>
               <version>1.4</version>
             </dependency>
+
             <!-- Quartz framework -->
            <dependency>
               <groupId>org.quartz-scheduler</groupId>
@@ -811,12 +838,14 @@
                     <artifactId>${jdbcDriver.artifactId}</artifactId>
                     <version>${jdbcDriver.version}</version>
                   </dependency>
+
                   <!-- connection pooling -->
                   <dependency>
                     <groupId>com.jolbox</groupId>
                     <artifactId>bonecp</artifactId>
                     <version>0.7.1.RELEASE</version>
                   </dependency>
+
                   <!-- connection pooling dependencies -->
                   <dependency>
                     <groupId>org.slf4j</groupId>

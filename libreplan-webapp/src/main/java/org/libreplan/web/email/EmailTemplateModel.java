@@ -24,10 +24,7 @@ import org.libreplan.business.settings.entities.Language;
 import org.libreplan.business.email.daos.IEmailTemplateDAO;
 import org.libreplan.business.email.entities.EmailTemplate;
 import org.libreplan.business.email.entities.EmailTemplateEnum;
-import org.libreplan.business.users.daos.IUserDAO;
-import org.libreplan.business.users.entities.User;
 import org.libreplan.web.common.concurrentdetection.OnConcurrentModification;
-import org.libreplan.web.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -51,26 +48,13 @@ public class EmailTemplateModel implements IEmailTemplateModel {
     @Autowired
     private IEmailTemplateDAO emailTemplateDAO;
 
-    @Autowired
-    private IUserDAO userDAO;
-
-    private Language language = Language.ENGLISH_LANGUAGE;
-
-    private EmailTemplateEnum emailTemplateEnum = EmailTemplateEnum.TEMPLATE_TASK_ASSIGNED_TO_RESOURCE;
-
-    private String content;
-
-    private String subject;
-
-    private User user;
-
     private EmailTemplate emailTemplate = new EmailTemplate();
 
     @Override
     @Transactional
     public void confirmSave() throws InstanceNotFoundException {
 
-        /* If current EmailTemplate entity (id) is existing in DB than it needs to update.
+        /* If current EmailTemplate entity (id) is existing in DB than it needs to be updated.
         *  Else current EmailTemplate entity (id) is creating and getting new values from form.
         */
         List<EmailTemplate> emailTemplates = emailTemplateDAO.getAll();

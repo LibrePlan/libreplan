@@ -40,8 +40,11 @@ public interface IEmailNotificationModel {
     void confirmSave() throws ValidationException;
 
     List<EmailNotification> getAll();
+    List<EmailNotification> getAllByType(EmailTemplateEnum enumeration);
 
     boolean deleteAll();
+    boolean deleteAllByType(EmailTemplateEnum enumeration);
+    boolean deleteById(EmailNotification notification);
 
     void setType(EmailTemplateEnum type);
     void setUpdated(Date date);
@@ -49,4 +52,7 @@ public interface IEmailNotificationModel {
     void setTask(TaskElement task);
     void setProject(TaskElement project);
 
+    EmailNotification getEmailNotification();
+
+    void setNewObject();
 }

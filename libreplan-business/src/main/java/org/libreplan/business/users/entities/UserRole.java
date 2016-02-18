@@ -89,8 +89,14 @@ public enum UserRole {
     ROLE_PROJECT_STATUS_REPORT(_("Project Status Report")),
 
     ROLE_EDIT_EMAIL_TEMPLATES(_("Edit E-mail Templates")),
+    ROLE_USE_FILES(_("Use files for order")),
 
-    ROLE_EMAIL_TASK_ASSIGNED_TO_RESOURCE(_("Email task assigned to resource"));
+    ROLE_EMAIL_TASK_ASSIGNED_TO_RESOURCE(_("Email: task assigned to resource")),
+    ROLE_EMAIL_RESOURCE_REMOVED_FROM_TASK(_("Email: resource removed from task")),
+    ROLE_EMAIL_MILESTONE_REACHED(_("Email: milestone reached")),
+    ROLE_EMAIL_TASK_SHOULD_FINISH(_("Email: task should finish")),
+    ROLE_EMAIL_TASK_SHOULD_START(_("Email: task should start")),
+    ROLE_EMAIL_TIMESHEET_DATA_MISSING(_("Email: timesheet data missing"));
 
     private final String displayName;
 

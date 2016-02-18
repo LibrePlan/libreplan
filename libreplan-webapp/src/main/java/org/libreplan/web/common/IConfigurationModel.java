@@ -37,6 +37,7 @@ import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
  * Contract for {@link ConfigurationModel}.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
  */
 public interface IConfigurationModel {
 
@@ -102,8 +103,7 @@ public interface IConfigurationModel {
 
     List<EntitySequence> getEntitySequences(EntityNameEnum entityName);
 
-    void addEntitySequence(EntityNameEnum entityName, String prefix,
-            Integer digits);
+    void addEntitySequence(EntityNameEnum entityName, String prefix, Integer digits);
 
     void removeEntitySequence(EntitySequence entitySequence)
             throws IllegalArgumentException;
@@ -185,6 +185,10 @@ public interface IConfigurationModel {
 
     void setSecondsPlanningWarning(
             Integer planningWarningExitWithoutSavingSeconds);
+
+    String getRepositoryLocation();
+
+    void setRepositoryLocation(String location);
 
     List<Connector> getConnectors();
 
