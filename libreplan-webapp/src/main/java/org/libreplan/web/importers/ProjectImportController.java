@@ -82,7 +82,6 @@ public class ProjectImportController extends GenericForwardComposer {
                 }
 
             } else if (importTasks.isChecked()) {
-
                 importProject(media.getStreamData(), file);
 
                 messages.showMessage(Level.INFO, _(file
@@ -107,7 +106,7 @@ public class ProjectImportController extends GenericForwardComposer {
 
         } else {
             messages.showMessage(Level.ERROR,
-                    _("The only current suported formats are mpp and planner."));
+                    _("The only current supported formats are mpp and planner."));
         }
 
     }
@@ -121,8 +120,7 @@ public class ProjectImportController extends GenericForwardComposer {
      *            Name of the file that we want to import.
      */
     @Transactional
-    private void importAll(InputStream streamData, String file)
-            throws InstanceNotFoundException, ValidationException {
+    private void importAll(InputStream streamData, String file) throws InstanceNotFoundException, ValidationException {
 
         List<CalendarDTO> calendarDTOs = calendarImporterMPXJ.getCalendarDTOs(
                 streamData, file);
@@ -139,8 +137,7 @@ public class ProjectImportController extends GenericForwardComposer {
 
         TaskGroup taskGroup = orderImporterMPXJ.createTask(importData, true);
 
-        List<Dependency> dependencies = orderImporterMPXJ
-                .createDependencies(importData);
+        List<Dependency> dependencies = orderImporterMPXJ.createDependencies(importData);
 
         orderImporterMPXJ.storeOrder(order, taskGroup, dependencies);
 
@@ -155,8 +152,7 @@ public class ProjectImportController extends GenericForwardComposer {
      *            Name of the file that we want to import.
      */
     @Transactional
-    private void importCalendar(InputStream streamData, String file)
-            throws InstanceNotFoundException, ValidationException {
+    private void importCalendar(InputStream streamData, String file) throws InstanceNotFoundException, ValidationException {
 
         List<CalendarDTO> calendarDTOs = calendarImporterMPXJ.getCalendarDTOs(
                 streamData, file);
@@ -181,13 +177,11 @@ public class ProjectImportController extends GenericForwardComposer {
 
         OrderDTO importData = orderImporterMPXJ.getImportData(streamData, file);
 
-        Order order = orderImporterMPXJ.convertImportDataToOrder(importData,
-                false);
+        Order order = orderImporterMPXJ.convertImportDataToOrder(importData, false);
 
         TaskGroup taskGroup = orderImporterMPXJ.createTask(importData, false);
 
-        List<Dependency> dependencies = orderImporterMPXJ
-                .createDependencies(importData);
+        List<Dependency> dependencies = orderImporterMPXJ.createDependencies(importData);
 
         orderImporterMPXJ.storeOrder(order, taskGroup, dependencies);
 

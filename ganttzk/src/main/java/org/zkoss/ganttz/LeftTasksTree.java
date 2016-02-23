@@ -69,7 +69,9 @@ public class LeftTasksTree extends HtmlMacroComponent {
         public void render(final Treeitem item, Object data) throws Exception {
             Task task = (Task) data;
             item.setOpen(isOpened(task));
-            if (task instanceof TaskContainer) {
+
+            if ( task instanceof TaskContainer ) {
+
                 final TaskContainer container = (TaskContainer) task;
                 IExpandListener expandListener = new IExpandListener() {
 
@@ -82,14 +84,13 @@ public class LeftTasksTree extends HtmlMacroComponent {
                 container.addExpandListener(expandListener);
 
             }
-            LeftTasksTreeRow leftTasksTreeRow = LeftTasksTreeRow.create(
-                    disabilityConfiguration, task, new TreeNavigator(
-                            tasksTreeModel, task), planner);
-            if (task.isContainer()) {
+            LeftTasksTreeRow leftTasksTreeRow = LeftTasksTreeRow
+                    .create(disabilityConfiguration, task, new TreeNavigator(tasksTreeModel, task), planner);
+            if ( task.isContainer() ) {
                 expandWhenOpened((TaskContainer) task, item);
             }
             Component row;
-            if (disabilityConfiguration.isTreeEditable()) {
+            if ( disabilityConfiguration.isTreeEditable() ) {
                 row = Executions.getCurrent().createComponents(
                         "~./ganttz/zul/leftTasksTreeRow.zul", item, null);
             } else {
@@ -97,15 +98,11 @@ public class LeftTasksTree extends HtmlMacroComponent {
                         "~./ganttz/zul/leftTasksTreeRowLabels.zul", item, null);
             }
             leftTasksTreeRow.doAfterCompose(row);
-            List<Object> rowChildren = row.getChildren();
-            List<Treecell> treeCells = ComponentsFinder.findComponentsOfType(
-                    Treecell.class, rowChildren);
             detailsForBeans.put(task, leftTasksTreeRow);
             deferredFiller.isBeingRendered(task, item);
         }
 
-        private void expandWhenOpened(final TaskContainer taskBean,
-                Treeitem item) {
+        private void expandWhenOpened(final TaskContainer taskBean, Treeitem item) {
             item.addEventListener("onOpen", new EventListener() {
                 @Override
                 public void onEvent(Event event) {

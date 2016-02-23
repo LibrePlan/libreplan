@@ -123,8 +123,8 @@ public class TaskGroup extends TaskElement {
             setIntraDayEndDate(newPossibleEndDate);
         }
         IntraDayDate newPossibleStart = task.getIntraDayStartDate();
-        if (getIntraDayStartDate() == null
-                || getIntraDayStartDate().compareTo(newPossibleStart) > 0) {
+        if ( getIntraDayStartDate() == null
+                || getIntraDayStartDate().compareTo(newPossibleStart) > 0 ) {
             setIntraDayStartDate(newPossibleStart);
         }
     }

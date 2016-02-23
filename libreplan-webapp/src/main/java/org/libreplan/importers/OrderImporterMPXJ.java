@@ -72,6 +72,7 @@ import org.springframework.transaction.annotation.Transactional;
  * into Libreplan using MPXJ.
  *
  * @author Alba Carro Pérez <alba.carro@gmail.com>
+ * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>>
  */
 @Component
 @Scope(BeanDefinition.SCOPE_SINGLETON)
@@ -91,9 +92,6 @@ public class OrderImporterMPXJ implements IOrderImporter {
 
     @Autowired
     private IOrderDAO orderDAO;
-
-    @Autowired
-    private IOrderElementDAO orderElementDAO;
 
     @Autowired
     private IDependencyDAO dependencyDAO;
@@ -124,11 +122,9 @@ public class OrderImporterMPXJ implements IOrderImporter {
     public OrderDTO getImportData(InputStream file, String filename) {
         try {
 
-            ProjectReader reader = ProjectReaderUtility
-                    .getProjectReader(filename);
+            ProjectReader reader = ProjectReaderUtility.getProjectReader(filename);
 
-                return MPXJProjectFileConversor
-                        .convert(reader.read(file), filename);
+            return MPXJProjectFileConverter.convert(reader.read(file), filename);
 
         } catch (Exception e) {
 
@@ -160,8 +156,7 @@ public class OrderImporterMPXJ implements IOrderImporter {
      */
     @Override
     @Transactional(readOnly = true)
-    public Order convertImportDataToOrder(OrderDTO project,
-            boolean importCalendar) {
+    public Order convertImportDataToOrder(OrderDTO project, boolean importCalendar) {
 
         String code = getCode(EntityNameEnum.ORDER);
 
@@ -184,9 +179,8 @@ public class OrderImporterMPXJ implements IOrderImporter {
         BaseCalendar calendar = configurationDAO.getConfiguration()
                 .getDefaultCalendar();
 
-        if (importCalendar & project.calendarName != null) {
-            ((Order) orderElement).setCalendar(findBaseCalendar(
-project.calendarName));
+        if ( importCalendar & project.calendarName != null ) {
+            ((Order) orderElement).setCalendar(findBaseCalendar(project.calendarName));
         } else {
             ((Order) orderElement).setCalendar(calendar);
         }
@@ -232,25 +226,22 @@ project.calendarName));
      *            Number of version.
      * @return OrderElement OrderElement that represent the data.
      */
-    private OrderElement convertImportTaskToOrderElement(
-            OrderVersion orderVersion, OrderElementDTO task) {
+    private OrderElement convertImportTaskToOrderElement(OrderVersion orderVersion, OrderElementDTO task) {
 
         Validate.notNull(orderVersion);
         OrderElement orderElement;
 
-        if (task.children.size() == 0) {
-            orderElement = OrderLine.createUnvalidatedWithUnfixedPercentage(
-                    UUID.randomUUID().toString(), task.totalHours);
+        if ( task.children.size() == 0 ) {
+            orderElement = OrderLine
+                    .createUnvalidatedWithUnfixedPercentage(UUID.randomUUID().toString(), task.totalHours);
 
-            if (!orderElement.getHoursGroups().isEmpty()) {
-                orderElement.getHoursGroups().get(0)
-                        .setCode(UUID.randomUUID().toString());
+            if ( !orderElement.getHoursGroups().isEmpty() ) {
+                orderElement.getHoursGroups().get(0).setCode(UUID.randomUUID().toString());
             }
 
         } else {
 
-            orderElement = OrderLineGroup.createUnvalidated(UUID.randomUUID()
-                    .toString());
+            orderElement = OrderLineGroup.createUnvalidated(UUID.randomUUID().toString());
 
             orderElement.useSchedulingDataFor(orderVersion);
         }
@@ -258,8 +249,7 @@ project.calendarName));
         List<OrderElement> children = new ArrayList<OrderElement>();
 
         for (OrderElementDTO childrenTask : task.children) {
-            children.add(convertImportTaskToOrderElement(orderVersion,
-                    childrenTask));
+            children.add(convertImportTaskToOrderElement(orderVersion, childrenTask));
         }
 
         for (OrderElement child : children) {
@@ -290,14 +280,11 @@ project.calendarName));
 
         Order order = project.order;
 
-        TaskSource taskSource = TaskSource.createForGroup(order
-                .getCurrentSchedulingDataForVersion());
+        TaskSource taskSource = TaskSource.createForGroup(order.getCurrentSchedulingDataForVersion());
 
-        TaskGroup taskGroup = taskSource
-                .createTaskGroupWithoutDatesInitializedAndLinkItToTaskSource();
+        TaskGroup taskGroup = taskSource.createTaskGroupWithoutDatesInitializedAndLinkItToTaskSource();
 
-        BaseCalendar calendar = configurationDAO.getConfiguration()
-                .getDefaultCalendar();
+        BaseCalendar calendar = configurationDAO.getConfiguration().getDefaultCalendar();
 
         taskGroup.setCalendar(calendar);
 
@@ -367,12 +354,10 @@ project.calendarName));
 
         if (task.children.size() == 0) {
 
-            taskSource = TaskSource.create(
-                    orderElement.getCurrentSchedulingDataForVersion(),
-                    orderElement.getHoursGroups());
+            taskSource = TaskSource
+                    .create(orderElement.getCurrentSchedulingDataForVersion(), orderElement.getHoursGroups());
 
-            taskElement = taskSource
-                    .createTaskWithoutDatesInitializedAndLinkItToTaskSource();
+            taskElement = taskSource.createTaskWithoutDatesInitializedAndLinkItToTaskSource();
 
             if (importCalendar && task.calendarName != null) {
                 taskElement.setCalendar(findBaseCalendar(task.calendarName));
@@ -396,11 +381,12 @@ project.calendarName));
 
             }
 
-            for (MilestoneDTO milestone : task.milestones) {
+            if ( task.milestones != null )
+                for (MilestoneDTO milestone : task.milestones) {
 
-                taskElements.add(createTaskMilestone(milestone));
+                    taskElements.add(createTaskMilestone(milestone));
 
-            }
+                }
 
             for (TaskElement childTaskElement : taskElements) {
                 ((TaskGroup) taskElement).addTaskElement(childTaskElement);
@@ -430,41 +416,41 @@ project.calendarName));
 
         switch (importTask.constraint) {
 
-        case AS_SOON_AS_POSSIBLE:
+            case AS_SOON_AS_POSSIBLE:
 
-            task.getPositionConstraint().asSoonAsPossible();
+                task.getPositionConstraint().asSoonAsPossible();
 
-            return;
+                return;
 
-        case AS_LATE_AS_POSSIBLE:
+            case AS_LATE_AS_POSSIBLE:
 
-            task.getPositionConstraint().asLateAsPossible();
+                task.getPositionConstraint().asLateAsPossible();
 
-            return;
+                return;
 
-        case START_IN_FIXED_DATE:
+            case START_IN_FIXED_DATE:
 
-            task.setIntraDayStartDate(IntraDayDate.startOfDay(LocalDate
-                    .fromDateFields(importTask.constraintDate)));
+                task.setIntraDayStartDate(IntraDayDate.startOfDay(LocalDate
+                        .fromDateFields(importTask.constraintDate)));
 
-            Task.convertOnStartInFixedDate(task);
+                Task.convertOnStartInFixedDate(task);
 
-            return;
+                return;
 
-        case START_NOT_EARLIER_THAN:
+            case START_NOT_EARLIER_THAN:
 
-            task.getPositionConstraint().notEarlierThan(
-                    IntraDayDate.startOfDay(LocalDate
-                            .fromDateFields(importTask.constraintDate)));
+                task.getPositionConstraint().notEarlierThan(
+                        IntraDayDate.startOfDay(LocalDate
+                                .fromDateFields(importTask.constraintDate)));
 
-            return;
+                return;
 
-        case FINISH_NOT_LATER_THAN:
+            case FINISH_NOT_LATER_THAN:
 
-            task.getPositionConstraint().finishNotLaterThan(
-                    IntraDayDate.startOfDay(LocalDate
-                            .fromDateFields(importTask.constraintDate)));
-            return;
+                task.getPositionConstraint().finishNotLaterThan(
+                        IntraDayDate.startOfDay(LocalDate
+                                .fromDateFields(importTask.constraintDate)));
+                return;
         }
 
     }
@@ -483,40 +469,40 @@ project.calendarName));
 
         switch (milestone.constraint) {
 
-        case AS_SOON_AS_POSSIBLE:
+            case AS_SOON_AS_POSSIBLE:
 
-            taskMilestone.getPositionConstraint().asSoonAsPossible();
+                taskMilestone.getPositionConstraint().asSoonAsPossible();
 
-            return;
+                return;
 
-        case AS_LATE_AS_POSSIBLE:
+            case AS_LATE_AS_POSSIBLE:
 
-            taskMilestone.getPositionConstraint().asLateAsPossible();
+                taskMilestone.getPositionConstraint().asLateAsPossible();
 
-            return;
+                return;
 
-        case START_IN_FIXED_DATE:
+            case START_IN_FIXED_DATE:
 
-            taskMilestone.getPositionConstraint().notEarlierThan(
-                    IntraDayDate.startOfDay(LocalDate
-                            .fromDateFields(milestone.constraintDate)));
+                taskMilestone.getPositionConstraint().notEarlierThan(
+                        IntraDayDate.startOfDay(LocalDate
+                                .fromDateFields(milestone.constraintDate)));
 
-            return;
+                return;
 
-        case START_NOT_EARLIER_THAN:
+            case START_NOT_EARLIER_THAN:
 
-            taskMilestone.getPositionConstraint().notEarlierThan(
-                    IntraDayDate.startOfDay(LocalDate
-                            .fromDateFields(milestone.constraintDate)));
+                taskMilestone.getPositionConstraint().notEarlierThan(
+                        IntraDayDate.startOfDay(LocalDate
+                                .fromDateFields(milestone.constraintDate)));
 
-            return;
+                return;
 
-        case FINISH_NOT_LATER_THAN:
+            case FINISH_NOT_LATER_THAN:
 
-            taskMilestone.getPositionConstraint().finishNotLaterThan(
-                    IntraDayDate.startOfDay(LocalDate
-                            .fromDateFields(milestone.constraintDate)));
-            return;
+                taskMilestone.getPositionConstraint().finishNotLaterThan(
+                        IntraDayDate.startOfDay(LocalDate
+                                .fromDateFields(milestone.constraintDate)));
+                return;
         }
 
     }
@@ -534,8 +520,7 @@ project.calendarName));
      */
     @Override
     @Transactional
-    public void storeOrder(final Order order, final TaskGroup taskGroup,
-            final List<Dependency> dependencies) {
+    public void storeOrder(final Order order, final TaskGroup taskGroup, final List<Dependency> dependencies) {
 
         final List<TaskSource> taskSources = new ArrayList<TaskSource>();
 
@@ -543,7 +528,7 @@ project.calendarName));
 
         for (TaskElement taskElement : taskGroup.getAllChildren()) {
 
-            if (!taskElement.isMilestone()) {
+            if ( !taskElement.isMilestone() ) {
 
                 taskSources.add(taskElement.getTaskSource());
 
@@ -585,13 +570,18 @@ project.calendarName));
 
         for(DependencyDTO dependencyDTO: importData.dependencies){
 
-            TaskElement origin = dependencyDTO.origin.getTaskAssociated();
+            TaskElement origin = null;
+            TaskElement destination = null;
 
-            TaskElement destination = dependencyDTO.destination
-                    .getTaskAssociated();
+            if ( dependencyDTO.origin != null && dependencyDTO.origin.getTaskAssociated() != null )
+                origin = dependencyDTO.origin.getTaskAssociated();
 
-            dependencies.add(Dependency.create(origin, destination,
-                    toLPType(dependencyDTO.type)));
+            if ( dependencyDTO.destination != null && dependencyDTO.destination.getTaskAssociated() != null )
+                destination = dependencyDTO.destination.getTaskAssociated();
+
+            if ( origin != null && destination != null ){
+                dependencies.add(Dependency.create(origin, destination, toLPType(dependencyDTO.type)));
+            }
         }
 
         return dependencies;
@@ -610,25 +600,23 @@ project.calendarName));
 
         switch (type) {
 
-        case END_START:
+            case END_START:
 
-            return Type.END_START;
+                return Type.END_START;
 
-        case START_START:
+            case START_START:
 
-            return Type.START_START;
+                return Type.START_START;
 
-        case END_END:
+            case END_END:
 
-            return Type.END_END;
+                return Type.END_END;
 
-        case START_END:
-            //TODO LP doesn't support START_END dependency at this moment. Fix this when it does.
-            //Returns a END_START instead.
-            return Type.END_START;
+            case START_END:
+                return Type.START_END;
 
-        default:
-            return null;
+            default:
+                return null;
 
         }
     }
@@ -649,7 +637,7 @@ project.calendarName));
         BaseCalendar calendar = null;
 
         for (BaseCalendar baseCalendar : baseCalendars) {
-            if (baseCalendar.getName().equals(name)) {
+            if ( baseCalendar.getName().equals(name) ) {
 
                 calendar = baseCalendar;
                 return calendar;

@@ -45,8 +45,7 @@ import org.libreplan.business.util.deepcopy.Strategy;
  */
 public class TaskSource extends BaseEntity {
 
-    public static TaskSource create(SchedulingDataForVersion schedulingState,
-            List<HoursGroup> hoursGroups) {
+    public static TaskSource create(SchedulingDataForVersion schedulingState, List<HoursGroup> hoursGroups) {
         TaskSource result = create(new TaskSource(schedulingState));
         result.setHoursGroups(new HashSet<HoursGroup>(hoursGroups));
         return result;
@@ -336,8 +335,7 @@ public class TaskSource extends BaseEntity {
         return create(new TaskSource(schedulingState));
     }
 
-    public static TaskSource createForGroup(
-            SchedulingDataForVersion schedulingState) {
+    public static TaskSource createForGroup(SchedulingDataForVersion schedulingState) {
         return create(new TaskSource(schedulingState));
     }
 

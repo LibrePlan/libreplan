@@ -36,12 +36,13 @@ import net.sf.mpxj.ProjectCalendarDateRanges;
 import net.sf.mpxj.ProjectCalendarException;
 import net.sf.mpxj.ProjectCalendarWeek;
 import net.sf.mpxj.ProjectFile;
-import net.sf.mpxj.ProjectHeader;
+import net.sf.mpxj.ProjectProperties;
 import net.sf.mpxj.Relation;
 import net.sf.mpxj.RelationType;
 import net.sf.mpxj.Task;
 import net.sf.mpxj.TimeUnit;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
@@ -50,16 +51,15 @@ import org.libreplan.importers.CalendarDayHoursDTO.CalendarTypeDayDTO;
 import org.libreplan.importers.DependencyDTO.TypeOfDependencyDTO;
 
 /**
- * Class that is a conversor from the MPXJ format File to {@link OrderDTO}.
- *
- * At these moment it only converts the tasks and its subtasks with the dates.
+ * Class that is a converter from the MPXJ format File to {@link OrderDTO}.
  *
  * @author Alba Carro Pérez <alba.carro@gmail.com>
+ * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
  * @todo It last relationships. resources, calendars, hours, etc.
  */
-public class MPXJProjectFileConversor {
+public class MPXJProjectFileConverter {
 
-    private static ProjectHeader header;
+    private static ProjectProperties properties;
 
     /**
      * Map between the MPXJ Task and the OrderElemenDTO or MilestoneDTO that represent it.
@@ -79,19 +79,12 @@ public class MPXJProjectFileConversor {
      */
     public static OrderDTO convert(ProjectFile file, String filename) {
 
-        OrderDTO importData;
+        OrderDTO importData = null;
 
-        switch (file.getMppFileType()) {
-
-        case 0:
+        if ( FilenameUtils.getExtension(filename).equals("planner") )
             importData = getImportDataFromPlanner(file, filename);
-            break;
-        default:
+        else if ( FilenameUtils.getExtension(filename).equals("mpp") )
             importData = getImportDataFromMPP(file, filename);
-            break;
-
-        }
-
         return importData;
     }
 
@@ -106,8 +99,8 @@ public class MPXJProjectFileConversor {
 
         List<CalendarDTO> calendarDTOs = new ArrayList<CalendarDTO>();
 
-        for (ProjectCalendar projectCalendar : file.getBaseCalendars()) {
-            if (StringUtils.isBlank(projectCalendar.getName())) {
+        for (ProjectCalendar projectCalendar : file.getCalendars()) {
+            if ( StringUtils.isBlank(projectCalendar.getName()) ) {
                 String name = "calendar-" + UUID.randomUUID();
                 projectCalendar.setName(name);
             }
@@ -137,9 +130,8 @@ public class MPXJProjectFileConversor {
 
                 if (projectCalendar.getName() != null
                         && projectCalendar.getName().length() != 0) {
-                calendarDTOs.add(toCalendarDTO(projectCalendar));
-                calendarDTOs.addAll(getDerivedCalendars(projectCalendar
-                        .getDerivedCalendars()));
+                    calendarDTOs.add(toCalendarDTO(projectCalendar));
+                    calendarDTOs.addAll(getDerivedCalendars(projectCalendar.getDerivedCalendars()));
                 }
             }
         }
@@ -291,9 +283,7 @@ public class MPXJProjectFileConversor {
      *            boolean to express it is a working exception or not
      * @return CalendarExceptionDTO  with the calendar exceptions that we want to import.
      */
-    private static CalendarExceptionDTO toCalendarExceptionDTO(Date fromDate,
-            int hours,
-            int minutes, boolean working) {
+    private static CalendarExceptionDTO toCalendarExceptionDTO(Date fromDate, int hours, int minutes, boolean working) {
 
         CalendarExceptionDTO calendarExceptionDTO = new CalendarExceptionDTO();
 
@@ -330,10 +320,8 @@ public class MPXJProjectFileConversor {
         Date endCalendarDate;
 
         if (projectCalendar.getDateRange() == null) {
-            startCalendarDate = projectCalendar.getParentFile()
-                    .getProjectHeader().getStartDate();
-            endCalendarDate = projectCalendar.getParentFile()
-                    .getProjectHeader().getFinishDate();
+            startCalendarDate = projectCalendar.getParentFile().getProjectProperties().getStartDate();
+            endCalendarDate = projectCalendar.getParentFile().getProjectProperties().getFinishDate();
 
         } else {
             startCalendarDate = projectCalendar.getDateRange().getStart();
@@ -427,9 +415,8 @@ public class MPXJProjectFileConversor {
      *            ProjectCalendarWeek to extract data from.
      * @return CalendarDataDTO  with the calendar data that we want to import.
      */
-    private static CalendarWeekDTO toCalendarWeekDTO(
-Date parentStartDate,
-            Date parentEndDate, ProjectCalendarWeek projectCalendarWeek) {
+    private static CalendarWeekDTO toCalendarWeekDTO(Date parentStartDate, Date parentEndDate,
+                                                     ProjectCalendarWeek projectCalendarWeek) {
 
         CalendarWeekDTO calendarDataDTO = new CalendarWeekDTO();
 
@@ -489,21 +476,21 @@ Date parentStartDate,
     private static CalendarTypeDayDTO toCalendarTypeDayDTO(DayType dayType) {
 
         switch (dayType) {
-        case DEFAULT:
+            case DEFAULT:
 
-            return CalendarTypeDayDTO.DEFAULT;
+                return CalendarTypeDayDTO.DEFAULT;
 
-        case NON_WORKING:
+            case NON_WORKING:
 
-            return CalendarTypeDayDTO.NOT_WORKING;
+                return CalendarTypeDayDTO.NOT_WORKING;
 
-        case WORKING:
+            case WORKING:
 
-            return CalendarTypeDayDTO.WORKING;
+                return CalendarTypeDayDTO.WORKING;
 
-        default:
+            default:
 
-            return null;
+                return null;
 
         }
 
@@ -568,8 +555,7 @@ Date parentStartDate,
      *            ProjectFile to extract data from.
      * @return ImportData with the data that we want to import.
      */
-    private static OrderDTO getImportDataFromPlanner(ProjectFile file,
-            String filename) {
+    private static OrderDTO getImportDataFromPlanner(ProjectFile file, String filename) {
 
         OrderDTO importData = new OrderDTO();
 
@@ -578,9 +564,9 @@ Date parentStartDate,
         importData.name = filename
                 .substring(0, filename.length() - 8/* ".planner" */);
 
-        header = file.getProjectHeader();
+        properties = file.getProjectProperties();
 
-        importData.startDate = header.getStartDate();
+        importData.startDate = properties.getStartDate();
 
         importData.tasks = getImportTasks(file.getChildTasks());
 
@@ -588,11 +574,11 @@ Date parentStartDate,
 
         // MPXJ don't provide a deadline for the project so we take the finish
         // date
-        importData.deadline = header.getFinishDate();
+        importData.deadline = properties.getFinishDate();
 
         importData.dependencies = createDependencies();
 
-        importData.calendarName = file.getCalendar().getName();
+        importData.calendarName = file.getBaselineCalendar().getName();
 
         return importData;
 
@@ -630,8 +616,7 @@ Date parentStartDate,
 
                     dependencyDTO.origin = mapEntry.getValue();
 
-                    dependencyDTO.destination = mapTask.get(successor
-                            .getTargetTask());
+                    dependencyDTO.destination = mapTask.get(successor.getTargetTask());
 
                     dependencyDTO.type = toDependencyDTOType(successor
                             .getType());
@@ -663,25 +648,25 @@ Date parentStartDate,
 
         switch (type) {
 
-        case FINISH_FINISH:
+            case FINISH_FINISH:
 
-            return TypeOfDependencyDTO.END_END;
+                return TypeOfDependencyDTO.END_END;
 
-        case FINISH_START:
+            case FINISH_START:
 
-            return TypeOfDependencyDTO.END_START;
+                return TypeOfDependencyDTO.END_START;
 
-        case START_FINISH:
+            case START_FINISH:
 
-            return TypeOfDependencyDTO.START_END;
+                return TypeOfDependencyDTO.START_END;
 
-        case START_START:
+            case START_START:
 
-            return TypeOfDependencyDTO.START_START;
+                return TypeOfDependencyDTO.START_START;
 
-        default:
+            default:
 
-            return null;
+                return null;
 
         }
     }
@@ -696,31 +681,30 @@ Date parentStartDate,
      *            ProjectFile to extract data from.
      * @return ImportData with the data that we want to import.
      */
-    private static OrderDTO getImportDataFromMPP(ProjectFile file,
-            String filename) {
+    private static OrderDTO getImportDataFromMPP(ProjectFile file, String filename) {
 
         OrderDTO importData = new OrderDTO();
 
         mapTask = new HashMap<Task, IHasTaskAssociated>();
 
-        header = file.getProjectHeader();
+        properties = file.getProjectProperties();
 
-        importData.startDate = header.getStartDate();
+        importData.startDate = properties.getStartDate();
 
         // MPXJ don't provide a deadline for the project so we take the finish
         // date
-        importData.deadline = header.getFinishDate();
+        importData.deadline = properties.getFinishDate();
 
         for (Task task : file.getChildTasks()) {
             // Projects are represented as a level 0 task with all
             // real task as its children. Ignore all other top level tasks.
             // See
             // http://mpxj.sourceforge.net/faq.html#extra-tasks-and-resources
-            if (task.getChildTasks().size() != 0) {
+            if ( task.getChildTasks().size() != 0 ) {
 
                 String name = task.getName();
 
-                if (name != null) {
+                if ( name != null ) {
 
                     importData.name = name;
 
@@ -733,10 +717,9 @@ Date parentStartDate,
 
                 importData.tasks = getImportTasks(task.getChildTasks());
 
-                importData.milestones = getImportMilestones(task
-                        .getChildTasks());
+                importData.milestones = getImportMilestones(task.getChildTasks());
 
-                importData.calendarName = file.getCalendar().getName();
+                importData.calendarName = file.getDefaultCalendar().getName();
 
                 break;
             }
@@ -762,7 +745,7 @@ Date parentStartDate,
 
         for (Task task : childTasks) {
 
-            if (task.getMilestone()) {
+            if ( task.getMilestone() ) {
 
                 MilestoneDTO milestone = getMilestoneData(task);
 
@@ -771,7 +754,6 @@ Date parentStartDate,
                 milestones.add(milestone);
 
             }
-
         }
 
         return milestones;
@@ -810,15 +792,15 @@ Date parentStartDate,
      *
      * @param duration
      *            Duration to convert.
-     * @param header
-     *            ProjectHeader needed to convert
+     * @param properties
+     *            ProjectProperties needed to convert
      * @return int Integer with the rounded duration in hours
      */
     private static int durationToIntHours(Duration duration,
-            ProjectHeader header) {
+                                          ProjectProperties properties) {
 
         Duration durationInHours = duration
-                .convertUnits(TimeUnit.HOURS, header);
+                .convertUnits(TimeUnit.HOURS, properties);
 
         return (int) Math.floor(durationInHours.getDuration());
     }
@@ -837,16 +819,16 @@ Date parentStartDate,
 
         for (Task task : tasks) {
 
-            if (!task.getMilestone()) {
+
+            if ( !task.getMilestone() ) {
 
                 OrderElementDTO importTask = getTaskData(task);
 
                 importTask.children = getImportTasks(task.getChildTasks());
 
-                importTask.milestones = getImportMilestones(task
-                        .getChildTasks());
+                importTask.milestones = getImportMilestones(task.getChildTasks());
                 // This is because in MPXJ only MPP9 files have this atribute.
-                if (task.getCalendar() != null) {
+                if ( task.getCalendar() != null ) {
 
                     importTask.calendarName = task.getCalendar().getName();
 
@@ -884,7 +866,7 @@ Date parentStartDate,
 
         importTask.endDate = task.getFinish();
 
-        importTask.totalHours = durationToIntHours(task.getDuration(), header);
+        importTask.totalHours = durationToIntHours(task.getDuration(), properties);
 
         importTask.deadline = task.getDeadline();
 
@@ -918,70 +900,70 @@ Date parentStartDate,
 
         switch (task.getConstraintType()) {
 
-        case AS_SOON_AS_POSSIBLE:
+            case AS_SOON_AS_POSSIBLE:
 
-            constraint = ConstraintDTO.AS_SOON_AS_POSSIBLE;
+                constraint = ConstraintDTO.AS_SOON_AS_POSSIBLE;
 
-            constraintDate = task.getConstraintDate();
+                constraintDate = task.getConstraintDate();
 
-            return;
+                return;
 
-        case AS_LATE_AS_POSSIBLE:
+            case AS_LATE_AS_POSSIBLE:
 
-            constraint = ConstraintDTO.AS_LATE_AS_POSSIBLE;
+                constraint = ConstraintDTO.AS_LATE_AS_POSSIBLE;
 
-            constraintDate = task.getConstraintDate();
+                constraintDate = task.getConstraintDate();
 
-            return;
+                return;
 
-        case MUST_START_ON:
+            case MUST_START_ON:
 
-            constraint = ConstraintDTO.START_IN_FIXED_DATE;
+                constraint = ConstraintDTO.START_IN_FIXED_DATE;
 
-            constraintDate = task.getConstraintDate();
+                constraintDate = task.getConstraintDate();
 
-            return;
+                return;
 
-        case MUST_FINISH_ON:
+            case MUST_FINISH_ON:
 
-            constraint = ConstraintDTO.START_IN_FIXED_DATE;
+                constraint = ConstraintDTO.START_IN_FIXED_DATE;
 
-            constraintDate = recalculateConstraintDateMin(task);
+                constraintDate = recalculateConstraintDateMin(task);
 
-            return;
+                return;
 
-        case START_NO_EARLIER_THAN:
+            case START_NO_EARLIER_THAN:
 
-            constraint = ConstraintDTO.START_NOT_EARLIER_THAN;
+                constraint = ConstraintDTO.START_NOT_EARLIER_THAN;
 
-            constraintDate = task.getConstraintDate();
+                constraintDate = task.getConstraintDate();
 
-            return;
+                return;
 
-        case START_NO_LATER_THAN:
+            case START_NO_LATER_THAN:
 
-            constraint = ConstraintDTO.FINISH_NOT_LATER_THAN;
+                constraint = ConstraintDTO.FINISH_NOT_LATER_THAN;
 
-            constraintDate = recalculateConstraintDateSum(task);
+                constraintDate = recalculateConstraintDateSum(task);
 
-            return;
+                return;
 
-        case FINISH_NO_EARLIER_THAN:
+            case FINISH_NO_EARLIER_THAN:
 
-            constraint = ConstraintDTO.START_NOT_EARLIER_THAN;
+                constraint = ConstraintDTO.START_NOT_EARLIER_THAN;
 
-            constraintDate = recalculateConstraintDateMin(task);
+                constraintDate = recalculateConstraintDateMin(task);
 
 
-            return;
+                return;
 
-        case FINISH_NO_LATER_THAN:
+            case FINISH_NO_LATER_THAN:
 
-            constraint = ConstraintDTO.FINISH_NOT_LATER_THAN;
+                constraint = ConstraintDTO.FINISH_NOT_LATER_THAN;
 
-            constraintDate = task.getConstraintDate();
+                constraintDate = task.getConstraintDate();
 
-            return;
+                return;
 
         }
 
@@ -999,9 +981,8 @@ Date parentStartDate,
      */
     private static Date recalculateConstraintDateSum(Task task) {
 
-        return new Date(
-                    task.getConstraintDate().getTime()
-                            + (durationToIntHours(task.getDuration(), header) * 60 * 60 * 1000));
+        return new Date(task.getConstraintDate().getTime()
+                + (durationToIntHours(task.getDuration(), properties) * 60 * 60 * 1000));
     }
 
     /**
@@ -1016,8 +997,7 @@ Date parentStartDate,
      */
     private static Date recalculateConstraintDateMin(Task task) {
 
-        return new Date(
-                    task.getConstraintDate().getTime()
-                            - (durationToIntHours(task.getDuration(), header) * 60 * 60 * 1000));
+        return new Date(task.getConstraintDate().getTime() -
+                (durationToIntHours(task.getDuration(), properties) * 60 * 60 * 1000));
     }
 }
