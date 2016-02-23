@@ -9360,3 +9360,7 @@ msgstr ""
 #: libreplan-webapp/src/main/webapp/common/configuration.zul:240
 msgid "Local document repository location"
 msgstr ""
+
+#: libreplan-webapp/src/main/webapp/orders/imports/projectImport.zul:42
+msgid "Your project could only partially be imported"
+msgstr ""

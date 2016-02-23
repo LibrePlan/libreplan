@@ -33,8 +33,6 @@ import java.io.InputStream;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.libreplan.importers.IOrderImporter;
-import org.libreplan.importers.OrderDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;

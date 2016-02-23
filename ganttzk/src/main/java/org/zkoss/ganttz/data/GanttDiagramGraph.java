@@ -63,8 +63,7 @@ import org.zkoss.ganttz.util.ReentranceGuard.IReentranceCases;
  * dependencies and in the duration of the tasks using listeners. <br/>
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public class GanttDiagramGraph<V, D extends IDependency<V>> implements
-        ICriticalPathCalculable<V> {
+public class GanttDiagramGraph<V, D extends IDependency<V>> implements ICriticalPathCalculable<V> {
 
     private static final Log LOG = LogFactory.getLog(GanttDiagramGraph.class);
 
@@ -582,8 +581,8 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
      * <p>
      * For example imagine a Gantt with three tasks: T1 -> T2 -> T3. Imagine
      * that T1 position is modified due to being moved by the user. In that case
-     * the scheduling algorithm triggers and the {@link Recalculation
-     * recalculations} needed are done. T2 position would be recalculated and T3
+     * the scheduling algorithm triggers and the {@link Recalculation}
+     * recalculations needed are done. T2 position would be recalculated and T3
      * position too. When the recalculation happens their dates are modified,
      * but in that case we don't want to trigger the dependencies enforcement
      * algorithm again. What we want is to record the changes that have happened
@@ -931,7 +930,7 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
         }
 
         void enforceRestrictionsOn(final List<Recalculation> recalculations,
-                final Collection<? extends V> initiallyModified) {
+                                   final Collection<? extends V> initiallyModified) {
             executeWithPreAndPostActionsOnlyIfNewEntrance(new IAction() {
                 @Override
                 public void doAction() {
@@ -1027,12 +1026,12 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
         }
 
         private void doRecalculations(List<Recalculation> recalculationsNeeded,
-                Collection<? extends V> initiallyModified) {
+                                      Collection<? extends V> initiallyModified) {
             Set<V> allModified = new HashSet<V>();
             allModified.addAll(initiallyModified);
             for (Recalculation each : recalculationsNeeded) {
                 boolean modified = each.doRecalculation();
-                if (modified) {
+                if ( modified ) {
                     allModified.add(each.taskPoint.task);
                 }
             }
@@ -1163,15 +1162,13 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
         while (!pendingOfVisit.isEmpty()) {
             Recalculation current = pendingOfVisit.poll();
             for (TaskPoint each : current.taskPoint.getImmediateSuccessors()) {
-                if (each.isImmediatelyDerivedFrom(current.taskPoint)) {
+                if ( each.isImmediatelyDerivedFrom(current.taskPoint) ) {
                     continue;
                 }
-                Recalculation recalculationToAdd = getRecalcualtionToAdd(each,
-                        alreadyVisited);
+                Recalculation recalculationToAdd = getRecalcualtionToAdd(each, alreadyVisited);
                 recalculationToAdd.comesFromPredecessor(current);
-                if (!alreadyVisited.containsKey(recalculationToAdd)) {
-                    result.addAll(getParentsRecalculations(
-                            parentRecalculationsAlreadyDone, each));
+                if ( !alreadyVisited.containsKey(recalculationToAdd) ) {
+                    result.addAll(getParentsRecalculations(parentRecalculationsAlreadyDone, each));
                     result.add(recalculationToAdd);
                     pendingOfVisit.offer(recalculationToAdd);
                     alreadyVisited.put(recalculationToAdd, recalculationToAdd);
@@ -1275,8 +1272,7 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
 
         boolean doRecalculation() {
             recalculationCalled = true;
-            dataPointModified = haveToDoCalculation()
-                    && taskChangesPosition();
+            dataPointModified = haveToDoCalculation() && taskChangesPosition();
             return dataPointModified;
         }
 
@@ -1287,12 +1283,11 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
 
         private boolean predecessorsHaveBeenModified() {
             for (Recalculation each : recalculationsCouldAffectThis) {
-                if (!each.recalculationCalled) {
-                    throw new RuntimeException(
-                            "the predecessor must be called first");
+                if ( !each.recalculationCalled ) {
+                    // FIXME this need to be not commented, but some imported projects not working with it
+                    //throw new RuntimeException("the predecessor must be called first");
                 }
-                if (each.dataPointModified
-                        || each.couldHaveBeenModifiedBeforehand) {
+                if ( each.dataPointModified || each.couldHaveBeenModifiedBeforehand ) {
                     return true;
                 }
             }

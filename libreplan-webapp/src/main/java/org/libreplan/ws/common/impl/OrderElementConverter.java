@@ -383,17 +383,14 @@ public final class OrderElementConverter {
             checkOrderElementDTOCode(orderElementDTO, "OrderLineDTO");
             if ((configuration.isHoursGroups())
                     && (!((OrderLineDTO) orderElementDTO).hoursGroups.isEmpty())) {
-                orderElement = OrderLine
-                        .createUnvalidated(orderElementDTO.code);
+                orderElement = OrderLine.createUnvalidated(orderElementDTO.code);
                 for (HoursGroupDTO hoursGroupDTO : ((OrderLineDTO) orderElementDTO).hoursGroups) {
                     HoursGroup hoursGroup = toEntity(hoursGroupDTO,
                             configuration);
                     ((OrderLine) orderElement).addHoursGroup(hoursGroup);
                 }
             } else {
-                orderElement = OrderLine
-                        .createUnvalidatedWithUnfixedPercentage(
-                                orderElementDTO.code, 0);
+                orderElement = OrderLine.createUnvalidatedWithUnfixedPercentage(orderElementDTO.code, 0);
                 if (!orderElement.getHoursGroups().isEmpty()) {
                     orderElement.getHoursGroups().get(0).setCode(
                             UUID.randomUUID().toString());
@@ -572,15 +569,11 @@ public final class OrderElementConverter {
 
             if (configuration.isHoursGroups()) {
                 for (HoursGroupDTO hoursGroupDTO : ((OrderLineDTO) orderElementDTO).hoursGroups) {
-                    if (((OrderLine) orderElement)
-                            .containsHoursGroup(hoursGroupDTO.code)) {
-                        update(((OrderLine) orderElement)
-                                .getHoursGroup(hoursGroupDTO.code),
-                                hoursGroupDTO, configuration);
+                    if ( ((OrderLine) orderElement).containsHoursGroup(hoursGroupDTO.code) ) {
+                        update( ((OrderLine) orderElement)
+                                .getHoursGroup(hoursGroupDTO.code), hoursGroupDTO, configuration);
                     } else {
-                        ((OrderLine) orderElement)
-                                .addHoursGroup(toEntity(
-                                hoursGroupDTO, configuration));
+                        ((OrderLine) orderElement).addHoursGroup(toEntity(hoursGroupDTO, configuration));
                     }
                 }
             }

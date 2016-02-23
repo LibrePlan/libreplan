@@ -206,8 +206,7 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
      * @param parent
      * @return
      */
-    private Task buildAndRegister(Position position,
-            List<DomainDependency<T>> accumulatedDependencies, T data) {
+    private Task buildAndRegister(Position position, List<DomainDependency<T>> accumulatedDependencies, T data) {
         accumulatedDependencies.addAll(adapter.getOutcomingDependencies(data));
         accumulatedDependencies.addAll(adapter.getIncomingDependencies(data));
 
@@ -236,13 +235,12 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
 
     private Task build(T data) {
         ITaskFundamentalProperties adapted = adapter.adapt(data);
-        if (navigator.isMilestone(data)) {
+        if ( navigator.isMilestone(data) ) {
             return new Milestone(adapted);
-        } else if (navigator.isLeaf(data)) {
+        } else if ( navigator.isLeaf(data) ) {
             return new TaskLeaf(adapted);
         } else {
-            return new TaskContainer(adapted,
-                    planner.areContainersExpandedByDefault());
+            return new TaskContainer(adapted, planner.areContainersExpandedByDefault());
         }
     }
 

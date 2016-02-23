@@ -96,7 +96,7 @@ public class CalendarImporterMPXJ implements ICalendarImporter {
             // In case that orders are imported too
             projectFile = reader.read(file);
 
-            return MPXJProjectFileConversor.convertCalendars(projectFile);
+            return MPXJProjectFileConverter.convertCalendars(projectFile);
 
         } catch (Exception e) {
 
@@ -119,7 +119,7 @@ public class CalendarImporterMPXJ implements ICalendarImporter {
     public OrderDTO getOrderDTO(String filename) {
         try {
 
-            return MPXJProjectFileConversor.convert(projectFile, filename);
+            return MPXJProjectFileConverter.convert(projectFile, filename);
 
         } catch (Exception e) {
 
