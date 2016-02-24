@@ -31,8 +31,6 @@ import java.util.ArrayList;
 import java.util.Set;
 import java.util.Map;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.ConcurrentModificationException;
 import java.util.HashSet;
 import java.util.Arrays;
 
@@ -1365,6 +1363,11 @@ public class ConfigurationController extends GenericForwardComposer {
                     emailPasswordTextbox.getValue().length() != 0 &&
                     emailSenderTextbox.getValue().matches("^\\S+@\\S+\\.\\S+$") )
                 return true;
+
+            if ( protocolsCombobox != null && protocolsCombobox.getSelectedItem() != null ){
+                if ( protocolsCombobox.getSelectedItem().getLabel().equals("SMTP") )
+                    return true;
+            }
         }
         return false;
     }

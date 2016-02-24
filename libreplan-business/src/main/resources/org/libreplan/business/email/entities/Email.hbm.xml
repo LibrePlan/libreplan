@@ -27,7 +27,7 @@
 
     </class>
 
-    <class name="EmailNotification" abstract="true" table="notification_queue">
+    <class name="EmailNotification" abstract="true" table="notification_queue" dynamic-insert="true">
 
         <id name="id" access="property" type="long">
             <generator class="hilo">

@@ -42,6 +42,7 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Jacobo Aragunde Pérez <jaragunde@igalia.com>
+ * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
  */
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
@@ -130,6 +131,25 @@ public class TaskElementDAO extends GenericDAOHibernate<TaskElement, Long>
     public List<TaskElement> getTaskElementsNoMilestonesWithoutTaskSource() {
         String strQuery = "FROM TaskElement "
                 + "WHERE id NOT IN (SELECT id FROM TaskSource) AND "
+                + "id NOT IN (SELECT id FROM TaskMilestone)";
+        Query query = getSession().createQuery(strQuery);
+        return query.list();
+    }
+
+    @Override
+    @Transactional
+    public List<TaskElement> getTaskElementsWithMilestones(){
+        String strQuery = "FROM TaskElement "
+                + "WHERE id IN (SELECT id FROM TaskMilestone)";
+        Query query = getSession().createQuery(strQuery);
+        return query.list();
+    }
+
+    @Override
+    @Transactional
+    public List<TaskElement> getTaskElementsWithParentsWithoutMilestones() {
+        String strQuery = "FROM TaskElement "
+                + "WHERE parent IS NOT NULL AND "
                 + "id NOT IN (SELECT id FROM TaskMilestone)";
         Query query = getSession().createQuery(strQuery);
         return query.list();

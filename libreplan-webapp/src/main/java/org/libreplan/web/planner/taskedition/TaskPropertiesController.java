@@ -50,12 +50,13 @@ import org.libreplan.business.workingday.IntraDayDate;
 import org.libreplan.web.I18nHelper;
 import org.libreplan.web.common.Util;
 import org.libreplan.web.email.IEmailNotificationModel;
-import org.libreplan.web.orders.IOrderModel;
 import org.libreplan.web.planner.allocation.AllocationResult;
+import org.libreplan.web.planner.order.SaveCommandBuilder;
 import org.libreplan.web.resources.worker.IWorkerModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.zkoss.ganttz.TaskEditFormComposer;
 import org.zkoss.ganttz.TaskEditFormComposer.TaskDTO;
 import org.zkoss.ganttz.data.TaskContainer;
@@ -82,6 +83,7 @@ import org.zkoss.zul.api.Tabpanel;
  * Controller for edit {@link Task} popup.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
  */
 @org.springframework.stereotype.Component("taskPropertiesController")
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -130,10 +132,9 @@ public class TaskPropertiesController extends GenericForwardComposer {
 
     private IEmailNotificationModel emailNotificationModel;
 
-    private IOrderModel orderModel;
-
     private IWorkerModel workerModel;
 
+    private boolean isResourcesAdded = false;
 
 
     public void init(final EditTaskController editTaskController,
@@ -433,7 +434,9 @@ public class TaskPropertiesController extends GenericForwardComposer {
     }
 
     public void accept() {
-        EmailNotificationAddNewWithTaskAssignedToResource();
+        if ( !isResourcesAdded ) listToAdd.clear();
+
+        SaveCommandBuilder.taskPropertiesController = getObject();
 
         boolean ok = true;
         if (currentTaskElement instanceof ITaskPositionConstrained) {
@@ -730,49 +733,88 @@ public class TaskPropertiesController extends GenericForwardComposer {
         return Util.getMoneyFormat();
     }
 
-    private void EmailNotificationAddNewWithTaskAssignedToResource(){
+    public List<Resource> listToDelete = new ArrayList<Resource>();
+    public List<Resource> listToAdd = new ArrayList<Resource>();
 
-        if ( allocationResult.getSpecificAllocations().size() != 0 ) {
+    public void emailNotificationAddNew(){
 
-            /* Check if resources in allocation are bound by user and are in role ROLE_EMAIL_TASK_ASSIGNED_TO_RESOURCE
-             * setUser method calling manually because, after initialization user will be null
-             * Then send valid data to notification_queue table */
+        /**
+         * Check if resources in allocation are bound by user and in what ROLE they are
+         * setUser method calling manually because, after initialization user will be null
+         * Then send valid data to notification_queue table
+         */
 
+        proceedList(EmailTemplateEnum.TEMPLATE_TASK_ASSIGNED_TO_RESOURCE, listToAdd);
+        proceedList(EmailTemplateEnum.TEMPLATE_RESOURCE_REMOVED_FROM_TASK, listToDelete);
+        listToAdd.clear();
+        listToDelete.clear();
+    }
+
+    private void proceedList(EmailTemplateEnum enumeration, List<Resource> list){
+        if ( list.size() != 0 ){
             List<Worker> workersList = workerModel.getWorkers();
             Worker currentWorker;
             Resource currentResource;
-            User currentUser;
 
             for (int i = 0; i < workersList.size(); i++)
 
-                for (int j = 0; j < allocationResult.getSpecificAllocations().size(); j++){
+                for (int j = 0; j < list.size(); j++){
 
                     currentWorker = workersList.get(i);
-                    currentResource = allocationResult.getSpecificAllocations().get(j).getResource();
+                    currentResource = list.get(j);
 
                     if ( currentWorker.getId().equals(currentResource.getId()) ){
 
                         workersList.get(i).setUser(workerModel.getBoundUserFromDB(currentWorker));
-                        currentUser = currentWorker.getUser();
+                        User currentUser = currentWorker.getUser();
 
-                        if ( currentUser != null &&
-                                currentUser.isInRole(UserRole.ROLE_EMAIL_TASK_ASSIGNED_TO_RESOURCE) ) {
-
-                            emailNotificationModel.setType(EmailTemplateEnum.TEMPLATE_TASK_ASSIGNED_TO_RESOURCE);
-
-                            emailNotificationModel.setUpdated(new Date());
-
-                            emailNotificationModel.setResource(allocationResult.getSpecificAllocations().get(j).getResource());
-
-                            emailNotificationModel.setTask(currentTaskElement.getTaskSource().getTask());
-
-                            emailNotificationModel.setProject(currentTaskElement.getParent().getTaskSource().getTask());
-
-                            emailNotificationModel.confirmSave();
-                        }
+                        if ( currentUser != null
+                                && (currentUser.isInRole(UserRole.ROLE_EMAIL_TASK_ASSIGNED_TO_RESOURCE)
+                                || currentUser.isInRole(UserRole.ROLE_EMAIL_RESOURCE_REMOVED_FROM_TASK)) )
+                            setEmailNotificationEntity(enumeration, currentResource);
+                        break;
                     }
                 }
         }
+    }
+    private void setEmailNotificationEntity(EmailTemplateEnum enumeration, Resource resource){
+        try{
+            emailNotificationModel.setNewObject();
+
+            if ( enumeration.equals(EmailTemplateEnum.TEMPLATE_TASK_ASSIGNED_TO_RESOURCE) )
+                emailNotificationModel.setType(EmailTemplateEnum.TEMPLATE_TASK_ASSIGNED_TO_RESOURCE);
+            else if ( enumeration.equals(EmailTemplateEnum.TEMPLATE_RESOURCE_REMOVED_FROM_TASK) )
+                emailNotificationModel.setType(EmailTemplateEnum.TEMPLATE_RESOURCE_REMOVED_FROM_TASK);
+
+            emailNotificationModel.setUpdated(new Date());
+
+            emailNotificationModel.setResource(resource);
+
+            emailNotificationModel.setTask(currentTaskElement.getTaskSource().getTask());
+
+            emailNotificationModel.setProject(currentTaskElement.getParent().getTaskSource().getTask());
+
+            emailNotificationModel.confirmSave();
+        } catch (DataIntegrityViolationException e){
+            try {
+                Messagebox.show(_("You cannot email user twice with the same info"), _("Error"),
+                        Messagebox.OK, Messagebox.ERROR);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
+        }
+    }
+
+    public List<Resource> getListToDelete() {
+        return listToDelete;
+    }
+
+    public void setResourcesAdded(boolean resourcesAdded) {
+        isResourcesAdded = resourcesAdded;
+    }
+
+    private TaskPropertiesController getObject(){
+        return this;
     }
 
 }

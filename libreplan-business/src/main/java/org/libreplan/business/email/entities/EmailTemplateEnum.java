@@ -26,14 +26,19 @@ import static org.libreplan.business.i18n.I18nHelper._;
  *
  * Created by
  * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
- * on 28.09.15.
+ * on 28.09.2015.
  *
  * TEMPLATE_N(_("Template N")) - for i18n
  * TEMPLATE_A("Template A") - for general use (no internationalizing)
  */
 public enum EmailTemplateEnum {
 
-    TEMPLATE_TASK_ASSIGNED_TO_RESOURCE(_("Task assigned to resource"));
+    TEMPLATE_TASK_ASSIGNED_TO_RESOURCE(_("Task assigned to resource")),
+    TEMPLATE_RESOURCE_REMOVED_FROM_TASK(_("Resource removed from task")),
+    TEMPLATE_MILESTONE_REACHED(_("Milestone reached")),
+    TEMPLATE_TODAY_TASK_SHOULD_START(_("Task should start")),
+    TEMPLATE_TODAY_TASK_SHOULD_FINISH(_("Task should finish")),
+    TEMPLATE_ENTER_DATA_IN_TIMESHEET(_("Enter data in timesheet"));
 
     private final String templateType;
 

@@ -24,13 +24,13 @@
             column="last_sequence_code" />
 
         <!-- Index created in a database-object section -->
-        <set name="exceptions" access="field" cascade="all-delete-orphan" batch-size="10">
+        <set name="exceptions" access="field" cascade="all-delete-orphan" batch-size="10" lazy="false">
             <key column="base_calendar_id" />
             <one-to-many class="CalendarException" />
         </set>
 
         <!-- Index created in a database-object section -->
-        <list name="calendarDataVersions" access="field" cascade="all-delete-orphan" batch-size="10">
+        <list name="calendarDataVersions" access="field" cascade="all-delete-orphan" batch-size="10" lazy="false">
             <key column="base_calendar_id" />
             <index column="position_in_calendar" />
             <one-to-many class="CalendarData" />
@@ -43,7 +43,7 @@
             <one-to-many class="CalendarAvailability" />
         </list>
 
-        <joined-subclass name="ResourceCalendar" table="resource_calendar">
+        <joined-subclass name="ResourceCalendar" table="resource_calendar" lazy="false">
             <key column="base_calendar_id" />
             <property name="capacity" not-null="true" />
             <one-to-one name="resource"

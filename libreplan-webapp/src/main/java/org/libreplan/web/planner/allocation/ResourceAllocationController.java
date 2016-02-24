@@ -87,6 +87,7 @@ import org.zkoss.zul.Window;
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  * @author Diego Pino Garcia <dpino@igalia.com>
  * @author Javier Moran Rua <jmoran@igalia.com>
+ * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
  */
 @org.springframework.stereotype.Component("resourceAllocationController")
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -315,6 +316,12 @@ public class ResourceAllocationController extends GenericForwardComposer {
         try {
             allocationSelector.addChoosen();
         } finally {
+            // For email notification feature
+            int rowsSize = allocationRows.getCurrentRows().size();
+            editTaskController.getTaskPropertiesController().listToAdd
+                    .add(allocationRows.getCurrentRows().get(rowsSize - 1).getAssociatedResources().get(0));
+            editTaskController.getTaskPropertiesController().setResourcesAdded(true);
+
             tbResourceAllocation.setSelected(true);
             applyButton.setVisible(true);
             allocationSelector.clearAll();
@@ -618,6 +625,8 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
                 @Override
                 public void onEvent(Event event) {
+                    editTaskController.getTaskPropertiesController().getListToDelete()
+                            .add(data.getAssociatedResources().get(0));
                     removeAllocation(data);
                 }
             });

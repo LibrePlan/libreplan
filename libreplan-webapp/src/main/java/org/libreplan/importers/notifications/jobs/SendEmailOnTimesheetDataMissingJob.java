@@ -1,7 +1,7 @@
 /*
  * This file is part of LibrePlan
  *
- * Copyright (C) 2015 LibrePlan
+ * Copyright (C) 2016 LibrePlan
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,8 +17,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.libreplan.importers;
+package org.libreplan.importers.notifications.jobs;
 
+import org.libreplan.importers.notifications.IEmailNotificationJob;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.context.ApplicationContext;
@@ -26,22 +27,24 @@ import org.springframework.scheduling.quartz.QuartzJobBean;
 
 /**
  * Sends E-mail to users with data that storing in notification_queue table
+ * and that are treat to {@link EmailTemplateEnum.TEMPLATE_ENTER_DATA_IN_TIMESHEET}
  *
  * Created by
  * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
- * on 13.10.15.
+ * on 20.01.2016.
  *
  */
-
-public class SendEmailJob extends QuartzJobBean {
+public class SendEmailOnTimesheetDataMissingJob extends QuartzJobBean {
 
     @Override
     protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
         ApplicationContext applicationContext = (ApplicationContext) context.getJobDetail().
                 getJobDataMap().get("applicationContext");
 
-        ISendEmail sendEmail = (ISendEmail) applicationContext.getBean("sendEmail");
-        sendEmail.sendEmail();
+        IEmailNotificationJob timesheetMissing = (IEmailNotificationJob) applicationContext
+                .getBean("SendEmailOnTimesheetDataMissing");
+
+        timesheetMissing.sendEmail();
     }
 
 }

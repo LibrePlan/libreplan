@@ -34,7 +34,7 @@ import java.util.List;
  *
  * Created by
  * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
- * on 17.12.15.
+ * on 17.12.2015.
  */
 
 @Service
