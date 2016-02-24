@@ -32,10 +32,11 @@ import java.util.List;
  *
  * Created by
  * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
- * on 19.10.15.
+ * on 19.10.2015.
  */
 @Repository
-public class EmailNotificationDAO extends GenericDAOHibernate<EmailNotification, Long> implements IEmailNotificationDAO {
+public class EmailNotificationDAO extends GenericDAOHibernate<EmailNotification, Long>
+        implements IEmailNotificationDAO {
 
     @Override
     public List<EmailNotification> getAll() {

@@ -93,6 +93,7 @@ import org.libreplan.web.common.MessagesForUser;
 import org.libreplan.web.common.concurrentdetection.ConcurrentModificationHandling;
 import org.libreplan.web.planner.TaskElementAdapter;
 import org.libreplan.web.planner.order.PlanningStateCreator.PlanningState;
+import org.libreplan.web.planner.taskedition.TaskPropertiesController;
 import org.libreplan.web.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -121,6 +122,7 @@ import org.zkoss.zul.Messagebox;
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Javier Moran Rua <jmoran@igalia.com>
  * @author Manuel Rego Casasnovas <rego@igalia.com>
+ * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
  */
 @Component
 @Scope(BeanDefinition.SCOPE_SINGLETON)
@@ -217,6 +219,9 @@ public class SaveCommandBuilder {
     @Autowired
     private ISumExpensesRecalculator sumExpensesRecalculator;
 
+    public static TaskPropertiesController taskPropertiesController;
+
+
     private class SaveCommand implements ISaveCommand {
 
         private PlanningState state;
@@ -263,6 +268,10 @@ public class SaveCommandBuilder {
 
                 @Override
                 public void doActions() {
+                    // A little bit hack
+                    if (taskPropertiesController != null)
+                        taskPropertiesController.emailNotificationAddNew();
+
                     notifyUserThatSavingIsDone();
                 }
             });

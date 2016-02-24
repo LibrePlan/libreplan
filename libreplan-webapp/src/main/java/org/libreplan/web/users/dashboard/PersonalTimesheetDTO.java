@@ -61,7 +61,7 @@ public class PersonalTimesheetDTO {
      * @param tasksNumber
      *            Number of tasks in the personal timesheet
      */
-    PersonalTimesheetDTO(LocalDate date, WorkReport workReport,
+    public PersonalTimesheetDTO(LocalDate date, WorkReport workReport,
             EffortDuration resourceCapacity, EffortDuration totalHours,
             int tasksNumber) {
         this.date = date;

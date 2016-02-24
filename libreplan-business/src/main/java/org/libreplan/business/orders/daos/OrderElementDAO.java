@@ -37,9 +37,7 @@ import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
-import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
-import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.daos.IntegrationEntityDAO;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.expensesheet.daos.IExpenseSheetLineDAO;
@@ -87,15 +85,6 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
 
     @Autowired
     private ITaskSourceDAO taskSourceDAO;
-
-    @Autowired
-    private IOrderDAO orderDAO;
-
-    @Autowired
-    private IAdHocTransactionService transactionService;
-
-    @Autowired
-    private SessionFactory sessionFactory;
 
     @Override
     public List<OrderElement> findWithoutParent() {
@@ -260,6 +249,7 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
     }
 
     @Override
+    @Transactional
     public List<OrderElement> getAll() {
         return list(OrderElement.class);
     }

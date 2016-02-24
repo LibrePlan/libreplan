@@ -17,17 +17,20 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.libreplan.importers;
+package org.libreplan.importers.notifications;
 
+import org.libreplan.business.email.entities.EmailNotification;
 
 /**
  * Sends E-mail to users with data that storing in notification_queue table
  *
  * Created by
  * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
- * on 13.10.15.
+ * on 13.10.2015.
  */
 
-public interface ISendEmail {
+public interface IEmailNotificationJob {
     void sendEmail();
+    boolean composeMessageForUser(EmailNotification notification);
+
 }

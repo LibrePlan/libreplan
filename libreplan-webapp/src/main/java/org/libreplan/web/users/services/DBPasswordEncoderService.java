@@ -21,7 +21,6 @@
 
 package org.libreplan.web.users.services;
 
-import java.util.Collection;
 import java.util.Collections;
 
 import org.springframework.security.authentication.dao.SaltSource;

@@ -59,7 +59,6 @@ import org.libreplan.business.planner.entities.GenericResourceAllocation;
 import org.libreplan.business.planner.entities.IMoneyCostCalculator;
 import org.libreplan.business.planner.entities.ResourceAllocation;
 import org.libreplan.business.planner.entities.ResourceAllocation.IVisitor;
-import org.libreplan.business.planner.entities.HoursCostCalculator;
 import org.libreplan.business.planner.entities.SpecificResourceAllocation;
 import org.libreplan.business.planner.entities.StretchesFunction;
 import org.libreplan.business.planner.entities.SubcontractorDeliverDate;
@@ -103,6 +102,7 @@ import org.zkoss.zk.ui.Desktop;
  *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
+ * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
  */
 @Component
 @Scope(BeanDefinition.SCOPE_SINGLETON)
@@ -233,7 +233,8 @@ public class PlanningStateCreator {
             }
         }
         PlanningState result = createPlanning(reload(order));
-        result.onRetrieval();
+        // It was called before, no need to do it one more
+        //result.onRetrieval();
         if (desktop != null) {
             desktop.setAttribute(ATTRIBUTE_NAME, result);
         }

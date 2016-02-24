@@ -9364,3 +9364,55 @@ msgstr ""
 #: libreplan-webapp/src/main/webapp/orders/imports/projectImport.zul:42
 msgid "Your project could only partially be imported"
 msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/email/entities/EmailTemplateEnum.java:37
+msgid "Resource removed from task"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/email/entities/EmailTemplateEnum.java:38
+msgid "Milestone reached"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/email/entities/EmailTemplateEnum.java:39
+msgid "Task should start"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/email/entities/EmailTemplateEnum.java:40
+msgid "Task should finish"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/email/entities/EmailTemplateEnum.java:41
+msgid "Enter data in timesheet"
+msgstr ""
+
+
+
+#: libreplan-business/src/main/java/org/libreplan/business/users/entities/UserRole.java:96
+msgid "Email: task assigned to resource"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/users/entities/UserRole.java:97
+msgid "Email: resource removed from task"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/users/entities/UserRole.java:98
+msgid "Email: milestone reached"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/users/entities/UserRole.java:99
+msgid "Email: task should finish"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/users/entities/UserRole.java:100
+msgid "Email: task should start"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/users/entities/UserRole.java:101
+msgid "Email: timesheet data missing"
+msgstr ""
+
+
+
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/taskedition/TaskPropertiesController.java:804
+msgid "You cannot email user twice with the same info"
+msgstr ""

@@ -30,6 +30,7 @@ import org.libreplan.business.planner.entities.TaskGroup;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
  */
 public interface ITaskElementDAO extends IGenericDAO<TaskElement, Long> {
 
@@ -38,5 +39,9 @@ public interface ITaskElementDAO extends IGenericDAO<TaskElement, Long> {
     List<TaskElement> listFilteredByDate(Date start, Date end);
 
     List<TaskElement> getTaskElementsNoMilestonesWithoutTaskSource();
+
+    List<TaskElement> getTaskElementsWithMilestones();
+
+    List<TaskElement> getTaskElementsWithParentsWithoutMilestones();
 
 }

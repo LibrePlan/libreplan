@@ -35,10 +35,11 @@ import org.libreplan.importers.IImportRosterFromTim;
 import org.libreplan.importers.IJiraOrderElementSynchronizer;
 import org.libreplan.importers.ISchedulerManager;
 import org.libreplan.importers.SynchronizationInfo;
-import org.libreplan.importers.ISendEmail;
+import org.libreplan.importers.notifications.IEmailNotificationJob;
 import org.libreplan.web.common.concurrentdetection.OnConcurrentModification;
 import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -51,6 +52,7 @@ import static org.libreplan.web.I18nHelper._;
  *
  * @author Manuel Rego Casasnovas <rego@igalia.com>
  * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
+ * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -79,8 +81,30 @@ public class JobSchedulerModel implements IJobSchedulerModel {
 
     private List<SynchronizationInfo> synchronizationInfos;
 
+    @Qualifier("sendEmailOnTaskAssignedToResource")
     @Autowired
-    private ISendEmail email;
+    private IEmailNotificationJob taskAssignedToResource;
+
+    @Qualifier("sendEmailOnMilestoneReached")
+    @Autowired
+    private IEmailNotificationJob milestoneReached;
+
+    @Qualifier("sendEmailOnResourceRemovedFromTask")
+    @Autowired
+    private IEmailNotificationJob resourceRemovedFromTask;
+
+    @Qualifier("sendEmailOnTaskShouldStart")
+    @Autowired
+    private IEmailNotificationJob taskShouldStart;
+
+    @Qualifier("sendEmailOnTaskShouldFinish")
+    @Autowired
+    private IEmailNotificationJob taskShouldFinish;
+
+    @Qualifier("sendEmailOnTimesheetDataMissing")
+    @Autowired
+    private IEmailNotificationJob timesheetDataMissing;
+
 
     @Override
     @Transactional(readOnly = true)
@@ -112,10 +136,40 @@ public class JobSchedulerModel implements IJobSchedulerModel {
                     .syncOrderElementsWithJiraIssues();
             return;
         }
-        if ( name.equals(JobClassNameEnum.SEND_EMAIL_JOB.getName()) ) {
+        if ( name.equals(JobClassNameEnum.SEND_EMAIL_TASK_ASSIGNED_TO_RESOURCE.getName()) ) {
             synchronizationInfos = new ArrayList<SynchronizationInfo>();
-            synchronizationInfos.add(new SynchronizationInfo(_("Send E-mail")));
-            email.sendEmail();
+            synchronizationInfos.add(new SynchronizationInfo(_("Task assigned to resource emails")));
+            taskAssignedToResource.sendEmail();
+            return;
+        }
+        if ( name.equals(JobClassNameEnum.SEND_EMAIL_RESOURCE_REMOVED_FROM_TASK.getName()) ) {
+            synchronizationInfos = new ArrayList<SynchronizationInfo>();
+            synchronizationInfos.add(new SynchronizationInfo(_("Resource removed from task")));
+            resourceRemovedFromTask.sendEmail();
+            return;
+        }
+        if ( name.equals(JobClassNameEnum.SEND_EMAIL_MILESTONE_REACHED.getName()) ) {
+            synchronizationInfos = new ArrayList<SynchronizationInfo>();
+            synchronizationInfos.add(new SynchronizationInfo(_("Milestone reached")));
+            milestoneReached.sendEmail();
+            return;
+        }
+        if ( name.equals(JobClassNameEnum.SEND_EMAIL_TASK_SHOULD_START.getName()) ) {
+            synchronizationInfos = new ArrayList<SynchronizationInfo>();
+            synchronizationInfos.add(new SynchronizationInfo(_("Task should start")));
+            taskShouldStart.sendEmail();
+            return;
+        }
+        if ( name.equals(JobClassNameEnum.SEND_EMAIL_TASK_SHOULD_FINISH.getName()) ) {
+            synchronizationInfos = new ArrayList<SynchronizationInfo>();
+            synchronizationInfos.add(new SynchronizationInfo(_("Task should finish")));
+            taskShouldFinish.sendEmail();
+            return;
+        }
+        if ( name.equals(JobClassNameEnum.SEND_EMAIL_TIMESHEET_DATA_MISSING.getName()) ) {
+            synchronizationInfos = new ArrayList<SynchronizationInfo>();
+            synchronizationInfos.add(new SynchronizationInfo(_("Timesheet data missing")));
+            timesheetDataMissing.sendEmail();
             return;
         }
 
