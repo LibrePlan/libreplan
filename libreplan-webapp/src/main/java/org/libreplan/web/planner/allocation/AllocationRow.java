@@ -92,19 +92,17 @@ import com.igalia.java.zk.components.customdetailrowcomponent.Detail;
  */
 public abstract class AllocationRow {
 
-    private static final ResourcesPerDay RESOURCES_PER_DAY_DEFAULT_VALUE = ResourcesPerDay
-            .amount(1);
+    private static final ResourcesPerDay RESOURCES_PER_DAY_DEFAULT_VALUE = ResourcesPerDay.amount(1);
 
-    public static final SimpleConstraint CONSTRAINT_FOR_RESOURCES_PER_DAY = new SimpleConstraint(
-            SimpleConstraint.NO_EMPTY | SimpleConstraint.NO_NEGATIVE);
+    public static final SimpleConstraint CONSTRAINT_FOR_RESOURCES_PER_DAY =
+            new SimpleConstraint(SimpleConstraint.NO_EMPTY | SimpleConstraint.NO_NEGATIVE);
 
-    private static final SimpleConstraint CONSTRAINT_FOR_HOURS_INPUT = new SimpleConstraint(
-            SimpleConstraint.NO_EMPTY | SimpleConstraint.NO_NEGATIVE);
+    private static final SimpleConstraint CONSTRAINT_FOR_HOURS_INPUT =
+            new SimpleConstraint(SimpleConstraint.NO_EMPTY | SimpleConstraint.NO_NEGATIVE);
 
     private static final Log LOG = LogFactory.getLog(AllocationRow.class);
 
-    public static EffortDuration sumAllConsolidatedEffort(
-            Collection<? extends AllocationRow> rows) {
+    public static EffortDuration sumAllConsolidatedEffort(Collection<? extends AllocationRow> rows) {
         return EffortDuration.sum(rows, new IEffortFrom<AllocationRow>() {
 
             @Override
@@ -114,8 +112,7 @@ public abstract class AllocationRow {
         });
     }
 
-    public static EffortDuration sumAllTotalEffort(
-            Collection<? extends AllocationRow> rows) {
+    public static EffortDuration sumAllTotalEffort(Collection<? extends AllocationRow> rows) {
         return EffortDuration.sum(rows, new IEffortFrom<AllocationRow>() {
 
             @Override
@@ -126,8 +123,7 @@ public abstract class AllocationRow {
         });
     }
 
-    public static EffortDuration sumAllOriginalEffort(
-            Collection<? extends AllocationRow> rows) {
+    public static EffortDuration sumAllOriginalEffort(Collection<? extends AllocationRow> rows) {
         return EffortDuration.sum(rows, new IEffortFrom<AllocationRow>() {
             @Override
             public EffortDuration from(AllocationRow each) {
@@ -136,8 +132,7 @@ public abstract class AllocationRow {
         });
     }
 
-    public static EffortDuration sumAllEffortFromInputs(
-            Collection<? extends AllocationRow> rows) {
+    public static EffortDuration sumAllEffortFromInputs(Collection<? extends AllocationRow> rows) {
         return EffortDuration.sum(rows, new IEffortFrom<AllocationRow>() {
 
             @Override
@@ -147,8 +142,7 @@ public abstract class AllocationRow {
         });
     }
 
-    public static void assignEfforts(List<AllocationRow> rows,
-            EffortDuration[] efforts) {
+    public static void assignEfforts(List<AllocationRow> rows, EffortDuration[] efforts) {
         int i = 0;
         for (AllocationRow each : rows) {
             each.effortInput.setValue(efforts[i++]);
@@ -162,7 +156,7 @@ public abstract class AllocationRow {
     }
 
     public static void assignResourcesPerDay(List<AllocationRow> rows,
-            ResourcesPerDay[] resourcesPerDay) {
+                                             ResourcesPerDay[] resourcesPerDay) {
         int i = 0;
         for (AllocationRow each : rows) {
             each.setResourcesPerDayEditedValue(resourcesPerDay[i++]);
@@ -171,7 +165,8 @@ public abstract class AllocationRow {
     }
 
     public static void updateUIWithModificationsDone(List<? extends AllocationRow> rows,
-            List<? extends AllocationModification> modifications) {
+                                                     List<? extends AllocationModification> modifications) {
+
         Validate.isTrue(rows.size() == modifications.size());
         Iterator<? extends AllocationModification> iterator = modifications
                 .iterator();
@@ -191,8 +186,7 @@ public abstract class AllocationRow {
             Collection<? extends ResourceAllocation<?>> requestedToRemove) {
         List<ResourcesPerDayModification> result = new ArrayList<ResourcesPerDayModification>();
         for (AllocationRow each : rows) {
-            ResourcesPerDayModification modification = each
-                    .toResourcesPerDayModification(task);
+            ResourcesPerDayModification modification = each.toResourcesPerDayModification(task);
             result.add(modification);
             each.associateAllocationToModify(modification.getBeingModified());
         }
@@ -232,8 +226,10 @@ public abstract class AllocationRow {
         return result;
     }
 
-    public static AllocationRow find(Collection<? extends AllocationRow> rows,
+    public static AllocationRow find(
+            Collection<? extends AllocationRow> rows,
             ResourceAllocation<?> allocationBeingModified) {
+
         for (AllocationRow each : rows) {
             if (each.transientAllocationBeingModified == allocationBeingModified) {
                 return each;
@@ -361,10 +357,11 @@ public abstract class AllocationRow {
         this.original = origin;
         this.currentCalculatedValue = origin.getTask().getCalculatedValue();
         setResourcesPerDayEditedValue(resourcesPerDayForInputFrom(origin));
-        if (origin != null && !origin.areIntendedResourcesPerDaySatisfied()) {
-            onDifferentRealResourcesPerDay(origin
-                    .getNonConsolidatedResourcePerDay());
+
+        if ( origin != null && !origin.areIntendedResourcesPerDaySatisfied() ) {
+            onDifferentRealResourcesPerDay(origin.getNonConsolidatedResourcePerDay());
         }
+
         loadEffort();
         initialize();
     }
@@ -379,8 +376,7 @@ public abstract class AllocationRow {
     }
 
     private void initializeResourcesPerDayInput() {
-        intendedResourcesPerDayInput
-                .setConstraint(CONSTRAINT_FOR_RESOURCES_PER_DAY);
+        intendedResourcesPerDayInput.setConstraint(CONSTRAINT_FOR_RESOURCES_PER_DAY);
         intendedResourcesPerDayInput.setSclass("assigned-resources-input");
         Util.bind(intendedResourcesPerDayInput, new Util.Getter<BigDecimal>() {
 
@@ -394,8 +390,7 @@ public abstract class AllocationRow {
             @Override
             public void set(BigDecimal value) {
                 BigDecimal amount = value == null ? new BigDecimal(0) : value;
-                setResourcesPerDayEditedValue(ResourcesPerDay
-                        .amount(amount));
+                setResourcesPerDayEditedValue(ResourcesPerDay.amount(amount));
             }
         });
     }
@@ -451,15 +446,12 @@ public abstract class AllocationRow {
         return original;
     }
 
-    private void onDifferentRealResourcesPerDay(
-            ResourcesPerDay realResourcesPerDay) {
+    private void onDifferentRealResourcesPerDay(ResourcesPerDay realResourcesPerDay) {
         this.realResourcesPerDay.setSclass("assigned-resources-label");
         this.realResourcesPerDay
-                .setTooltiptext(_(
-                        "Only {0} resources per day were achieved for current allocation",
+                .setTooltiptext(_("Only {0} resources per day were achieved for current allocation",
                         realResourcesPerDay.getAmount().toPlainString()));
-        this.realResourcesPerDay.setValue(realResourcesPerDay.getAmount()
-                .toPlainString());
+        this.realResourcesPerDay.setValue(realResourcesPerDay.getAmount().toPlainString());
     }
 
     private void clearRealResourcesPerDay() {
@@ -471,14 +463,10 @@ public abstract class AllocationRow {
     }
 
     public List<DerivedAllocation> getDerivedAllocations() {
-        if (transientAllocationBeingModified != null) {
-            return new ArrayList<DerivedAllocation>(
-                    transientAllocationBeingModified
-                    .getDerivedAllocations());
-        } else if (original != null) {
-            return new ArrayList<DerivedAllocation>(
-                    original
-                    .getDerivedAllocations());
+        if ( transientAllocationBeingModified != null ) {
+            return new ArrayList<DerivedAllocation>(transientAllocationBeingModified.getDerivedAllocations());
+        } else if ( original != null ) {
+            return new ArrayList<DerivedAllocation>(original.getDerivedAllocations());
         } else {
             return Collections.emptyList();
         }
@@ -575,19 +563,21 @@ public abstract class AllocationRow {
         return zero();
     }
 
-    public void applyDisabledRules(CalculatedValue calculatedValue,
-            boolean recommendedAllocation, boolean isAnyManual) {
+    public void applyDisabledRules(CalculatedValue calculatedValue, boolean recommendedAllocation, boolean isAnyManual) {
         this.currentCalculatedValue = calculatedValue;
+
         effortInput
-                .setDisabled(calculatedValue !=CalculatedValue.RESOURCES_PER_DAY                        || recommendedAllocation || isAnyManual);
+                .setDisabled(calculatedValue != CalculatedValue.RESOURCES_PER_DAY || recommendedAllocation || isAnyManual);
+
         effortInput.setConstraint(constraintForHoursInput());
-        intendedResourcesPerDayInput
-                .setDisabled(calculatedValue == CalculatedValue.RESOURCES_PER_DAY                        || recommendedAllocation || isAnyManual);
-        if (intendedResourcesPerDayInput.isDisabled()) {
+
+        intendedResourcesPerDayInput.setDisabled(calculatedValue ==
+                CalculatedValue.RESOURCES_PER_DAY || recommendedAllocation || isAnyManual);
+
+        if ( intendedResourcesPerDayInput.isDisabled() ) {
             clearRealResourcesPerDay();
         }
-        intendedResourcesPerDayInput
-                .setConstraint(constraintForResourcesPerDayInput());
+        intendedResourcesPerDayInput.setConstraint(constraintForResourcesPerDayInput());
     }
 
     private AssignmentFunction getAssignmentFunction() {

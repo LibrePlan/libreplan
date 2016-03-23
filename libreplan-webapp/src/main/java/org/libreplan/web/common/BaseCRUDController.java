@@ -46,8 +46,7 @@ import org.zkoss.zul.api.Window;
  * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 @SuppressWarnings("serial")
-public abstract class BaseCRUDController<T extends IHumanIdentifiable> extends
-        GenericForwardComposer {
+public abstract class BaseCRUDController<T extends IHumanIdentifiable> extends GenericForwardComposer {
 
     private OnlyOneVisible visibility;
 
@@ -309,16 +308,19 @@ public abstract class BaseCRUDController<T extends IHumanIdentifiable> extends
         }
 
         try {
-            if (Messagebox.show(
-                    _("Delete {0} \"{1}\". Are you sure?", getEntityType(),
-                            entity.getHumanId()),
-                    _("Confirm"), Messagebox.OK | Messagebox.CANCEL,
-                    Messagebox.QUESTION) == Messagebox.OK) {
+            if ( Messagebox.show(
+                    _("Delete {0} \"{1}\". Are you sure?", getEntityType(), entity.getHumanId()),
+                    _("Confirm"),
+                    Messagebox.OK | Messagebox.CANCEL,
+                    Messagebox.QUESTION) == Messagebox.OK ) {
+
                 delete(entity);
+                messagesForUser.clearMessages();
+
                 messagesForUser.showMessage(
                         Level.INFO,
-                        _("{0} \"{1}\" deleted", getEntityType(),
-                                entity.getHumanId()));
+                        _("{0} \"{1}\" deleted", getEntityType(), entity.getHumanId()));
+
                 Util.reloadBindings(listWindow);
             }
         } catch (InterruptedException e) {
@@ -326,8 +328,7 @@ public abstract class BaseCRUDController<T extends IHumanIdentifiable> extends
         } catch (InstanceNotFoundException ie) {
             messagesForUser.showMessage(
                     Level.ERROR,
-                    _("{0} \"{1}\" could not be deleted, it was already removed", getEntityType(),
-                            entity.getHumanId()));
+                    _("{0} \"{1}\" could not be deleted, it was already removed", getEntityType(), entity.getHumanId()));
         }
     }
 

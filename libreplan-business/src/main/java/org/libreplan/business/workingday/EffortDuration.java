@@ -162,8 +162,7 @@ public class EffortDuration implements Comparable<EffortDuration> {
 
     public static EffortDuration fromHoursAsBigDecimal(BigDecimal hours) {
         BigDecimal secondsPerHour = new BigDecimal(3600);
-        return elapsing(hours.multiply(secondsPerHour).intValue(),
-                Granularity.SECONDS);
+        return elapsing(hours.multiply(secondsPerHour).intValue(), Granularity.SECONDS);
     }
 
     private final int seconds;
@@ -333,10 +332,8 @@ public class EffortDuration implements Comparable<EffortDuration> {
         BigDecimal result = BigDecimal.ZERO;
         final BigDecimal secondsPerHour = new BigDecimal(3600);
         for (Entry<Granularity, Integer> each : decompose().entrySet()) {
-            BigDecimal seconds = new BigDecimal(each.getKey().toSeconds(
-                    each.getValue()));
-            result = result.add(seconds.divide(secondsPerHour, scale,
-                    BigDecimal.ROUND_HALF_UP));
+            BigDecimal seconds = new BigDecimal(each.getKey().toSeconds(each.getValue()));
+            result = result.add(seconds.divide(secondsPerHour, scale, BigDecimal.ROUND_HALF_UP));
         }
         return result;
     }
@@ -397,11 +394,10 @@ public class EffortDuration implements Comparable<EffortDuration> {
     }
 
     public String toFormattedString() {
-        EnumMap<Granularity, Integer> byGranularity = this.atNearestMinute()
-                .decompose();
+        EnumMap<Granularity, Integer> byGranularity = this.atNearestMinute().decompose();
         int hours = byGranularity.get(Granularity.HOURS);
         int minutes = byGranularity.get(Granularity.MINUTES);
-        if (minutes == 0) {
+        if ( minutes == 0 ) {
             return String.format("%d", hours);
         } else {
             return String.format("%d:%02d", hours, minutes);

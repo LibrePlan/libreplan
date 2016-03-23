@@ -85,8 +85,7 @@ public abstract class Resource extends IntegrationEntity implements
         }
     }
 
-    public static List<Machine> machines(
-            Collection<? extends Resource> resources) {
+    public static List<Machine> machines(Collection<? extends Resource> resources) {
         return filter(Machine.class, resources);
     }
 
@@ -94,11 +93,10 @@ public abstract class Resource extends IntegrationEntity implements
         return filter(Worker.class, resources);
     }
 
-    public static <T extends Resource> List<T> filter(Class<T> klass,
-            Collection<? extends Resource> resources) {
+    public static <T extends Resource> List<T> filter(Class<T> klass, Collection<? extends Resource> resources) {
         List<T> result = new ArrayList<T>();
         for (Resource each : resources) {
-            if (klass.isInstance(each)) {
+            if ( klass.isInstance(each) ) {
                 result.add(klass.cast(each));
             }
         }
@@ -149,11 +147,11 @@ public abstract class Resource extends IntegrationEntity implements
     }
 
     private List<DayAssignment> getAssignmentsForDay(LocalDate date) {
-        if (assignmentsByDayCached == null) {
+        if ( assignmentsByDayCached == null ) {
             assignmentsByDayCached = DayAssignment.byDay(getAssignments());
         }
         List<DayAssignment> list = assignmentsByDayCached.get(date);
-        if (list == null){
+        if ( list == null ){
             return Collections.emptyList();
         }
         return list;
@@ -166,7 +164,7 @@ public abstract class Resource extends IntegrationEntity implements
         abstract List<DayAssignment> calculateAssignments();
 
         List<DayAssignment> getAssignments() {
-            if (cachedAssignments != null) {
+            if ( cachedAssignments != null ) {
                 return cachedAssignments;
             }
             return cachedAssignments = calculateAssignments();
@@ -184,8 +182,7 @@ public abstract class Resource extends IntegrationEntity implements
             List<DayAssignment> result = new ArrayList<DayAssignment>();
             Scenario current = Registry.getScenarioManager().getCurrent();
             for (DayAssignment each : dayAssignments) {
-                if (each.getScenario() != null
-                        && each.getScenario().equals(current)) {
+                if ( each.getScenario() != null && each.getScenario().equals(current) ) {
                     result.add(each);
                 }
             }
@@ -205,8 +202,7 @@ public abstract class Resource extends IntegrationEntity implements
         List<DayAssignment> calculateAssignments() {
             List<DayAssignment> result = new ArrayList<DayAssignment>();
             for (DayAssignment each : dayAssignments) {
-                if (isTransient(each)
-                        || each.getScenario().equals(currentScenario)) {
+                if ( isTransient(each) || each.getScenario().equals(currentScenario) ) {
                     result.add(each);
                 }
             }
@@ -222,32 +218,28 @@ public abstract class Resource extends IntegrationEntity implements
 
     @Valid
     public Set<CriterionSatisfaction> getCriterionSatisfactions() {
-        Set<CriterionSatisfaction> satisfactionActives =
-                new HashSet<CriterionSatisfaction>();
+        Set<CriterionSatisfaction> satisfactionActives = new HashSet<CriterionSatisfaction>();
         for(CriterionSatisfaction satisfaction:criterionSatisfactions){
-            if(!satisfaction.isIsDeleted()) {
+            if( !satisfaction.isIsDeleted() ) {
                 satisfactionActives.add(satisfaction);
             }
         }
         return satisfactionActives;
     }
 
-    public CriterionSatisfaction getCriterionSatisfactionByCode(String code)
-        throws InstanceNotFoundException {
+    public CriterionSatisfaction getCriterionSatisfactionByCode(String code) throws InstanceNotFoundException {
 
-        if (StringUtils.isBlank(code)) {
-            throw new InstanceNotFoundException(code,
-                 CriterionSatisfaction.class.getName());
+        if ( StringUtils.isBlank(code) ) {
+            throw new InstanceNotFoundException(code, CriterionSatisfaction.class.getName());
         }
 
         for (CriterionSatisfaction i : criterionSatisfactions) {
-            if (i.getCode().equalsIgnoreCase(StringUtils.trim(code))) {
+            if ( i.getCode().equalsIgnoreCase(StringUtils.trim(code)) ) {
                 return i;
             }
         }
 
-        throw new InstanceNotFoundException(code,
-            CriterionSatisfaction.class.getName());
+        throw new InstanceNotFoundException(code, CriterionSatisfaction.class.getName());
 
     }
 
@@ -857,11 +849,11 @@ public abstract class Resource extends IntegrationEntity implements
     public EffortDuration getAssignedDurationDiscounting(
             Map<Long, Set<BaseEntity>> allocationsFromWhichDiscountHours,
             LocalDate day) {
+
         EffortDuration result = zero();
         for (DayAssignment dayAssignment : getAssignmentsForDay(day)) {
 
-            if (!dayAssignment
-                    .belongsToSomeOf(allocationsFromWhichDiscountHours)) {
+            if ( !dayAssignment.belongsToSomeOf(allocationsFromWhichDiscountHours) ) {
                 result = result.plus(dayAssignment.getDuration());
             }
         }
@@ -875,8 +867,7 @@ public abstract class Resource extends IntegrationEntity implements
         this.dayAssignments.addAll(assignments);
     }
 
-    public void removeAssignments(
-            Collection<? extends DayAssignment> assignments) {
+    public void removeAssignments(Collection<? extends DayAssignment> assignments) {
         Validate.noNullElements(assignments);
         clearCachedData();
         this.dayAssignments.removeAll(assignments);

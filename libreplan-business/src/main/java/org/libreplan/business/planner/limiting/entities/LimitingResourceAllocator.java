@@ -88,8 +88,7 @@ public class LimitingResourceAllocator {
 
     }
 
-    private final static ResourcesPerDay ONE_RESOURCE_PER_DAY = ResourcesPerDay
-            .amount(new BigDecimal(1));
+    private final static ResourcesPerDay ONE_RESOURCE_PER_DAY = ResourcesPerDay.amount(new BigDecimal(1));
 
     /**
      * Returns first valid gap in queue for element
@@ -103,12 +102,10 @@ public class LimitingResourceAllocator {
      * @param element element to fit into queue
      * @return
      */
-    public static Gap getFirstValidGap(
-            LimitingResourceQueue queue, LimitingResourceQueueElement element) {
+    public static Gap getFirstValidGap(LimitingResourceQueue queue, LimitingResourceQueueElement element) {
 
         final Resource resource = queue.getResource();
-        final List<LimitingResourceQueueElement> elements = new LinkedList<LimitingResourceQueueElement>(
-                queue.getLimitingResourceQueueElements());
+        final List<LimitingResourceQueueElement> elements = new LinkedList<LimitingResourceQueueElement>(queue.getLimitingResourceQueueElements());
         final int size = elements.size();
         final DateAndHour startTime = getStartTimeBecauseOfGantt(element);
 
@@ -116,12 +113,10 @@ public class LimitingResourceAllocator {
 
         // Iterate through queue elements
         while (pos <= size) {
-            Gap gap = getGapInQueueAtPosition(
-                    resource, elements, startTime, pos++);
+            Gap gap = getGapInQueueAtPosition(resource, elements, startTime, pos++);
 
-            if (gap != null) {
-                List<Gap> subgaps = getFittingSubgaps(
-                        element, gap, resource);
+            if ( gap != null ) {
+                List<Gap> subgaps = getFittingSubgaps(element, gap, resource);
                 if (!subgaps.isEmpty()) {
                     return subgaps.get(0);
                 }

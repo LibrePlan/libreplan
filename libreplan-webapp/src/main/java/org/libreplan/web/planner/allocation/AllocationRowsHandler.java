@@ -311,12 +311,15 @@ public class AllocationRowsHandler {
     }
 
     private List<ResourcesPerDayModification> calculateEndDateOrStartDateAllocation() {
-        List<ResourcesPerDayModification> allocations = AllocationRow
-                .createAndAssociate(task, currentRows, requestedToRemove);
+
+        List<ResourcesPerDayModification> allocations =
+                AllocationRow.createAndAssociate(task, currentRows, requestedToRemove);
+
         ResourceAllocation.allocating(allocations).untilAllocating(
                 task.getAllocationDirection(),
                 formBinder.getAssignedEffort(),
                 notFullfiledReceiver());
+
         return allocations;
     }
 

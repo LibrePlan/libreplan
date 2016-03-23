@@ -85,8 +85,7 @@ import org.zkoss.zk.ui.util.Composer;
  */
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
-public class MultipleTabsPlannerController implements Composer,
-        IGlobalViewEntryPoints {
+public class MultipleTabsPlannerController implements Composer, IGlobalViewEntryPoints {
 
     private final class TabWithLoadingFeedback extends TabProxy {
         private boolean feedback = true;
@@ -97,7 +96,7 @@ public class MultipleTabsPlannerController implements Composer,
 
         @Override
         public void show() {
-            if (feedback) {
+            if ( feedback ) {
                 showWithFeedback();
             } else {
                 showWithoutFeedback();

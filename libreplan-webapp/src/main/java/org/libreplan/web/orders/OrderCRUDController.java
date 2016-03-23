@@ -123,6 +123,7 @@ import org.zkoss.zul.api.Window;
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  * @author Manuel Rego Casasnovas <rego@igalia.com>
+ * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
  */
 @org.springframework.stereotype.Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -130,8 +131,7 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private static final String DEFAULT_TAB = "tabOrderElements";
 
-    private static final org.apache.commons.logging.Log LOG = LogFactory
-            .getLog(OrderCRUDController.class);
+    private static final org.apache.commons.logging.Log LOG = LogFactory.getLog(OrderCRUDController.class);
 
     @Autowired
     private IOrderModel orderModel;
@@ -1019,21 +1019,25 @@ public class OrderCRUDController extends GenericForwardComposer {
 
             orderModel.remove(order);
             Util.reloadBindings(self);
-            messagesForUser.showMessage(Level.INFO, _("Removed {0}", order
-                    .getName()));
+
+            messagesForUser.clearMessages();
+            messagesForUser.showMessage(Level.INFO, _("Removed {0}", order.getName()));
         }
     }
 
     public void schedule(Order order) {
         orderModel.useSchedulingDataForCurrentScenario(order);
-        if(orderModel.userCanRead(order, SecurityUtils.getSessionUserLoginName())) {
-            if (order.isScheduled()) {
+        if( orderModel.userCanRead(order, SecurityUtils.getSessionUserLoginName()) ) {
+            if ( order.isScheduled() ) {
                 planningControllerEntryPoints.goToScheduleOf(order);
                 showCreateButtons(false);
             } else {
                 try {
-                    Messagebox.show(_("The project has no scheduled elements"),
-                            _("Information"), Messagebox.OK, Messagebox.INFORMATION);
+                    Messagebox.show(
+                            _("The project has no scheduled elements"),
+                            _("Information"),
+                            Messagebox.OK, Messagebox.INFORMATION);
+
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }

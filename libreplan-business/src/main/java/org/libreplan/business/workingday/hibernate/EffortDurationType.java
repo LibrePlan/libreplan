@@ -58,18 +58,16 @@ public class EffortDurationType implements UserType {
     }
 
     @Override
-    public Object nullSafeGet(ResultSet rs, String[] names, Object owner)
-            throws HibernateException, SQLException {
+    public Object nullSafeGet(ResultSet rs, String[] names, Object owner) throws HibernateException, SQLException {
         Integer seconds = (Integer) Hibernate.INTEGER.nullSafeGet(rs, names[0]);
-        if (seconds == null) {
+        if ( seconds == null ) {
             return null;
         }
         return EffortDuration.elapsing(seconds, Granularity.SECONDS);
     }
 
     @Override
-    public void nullSafeSet(PreparedStatement st, Object value, int index)
-            throws HibernateException, SQLException {
+    public void nullSafeSet(PreparedStatement st, Object value, int index) throws HibernateException, SQLException {
         EffortDuration duration = (EffortDuration) value;
         Integer seconds = duration != null ? duration.getSeconds() : null;
         Hibernate.INTEGER.nullSafeSet(st, seconds, index);
@@ -92,14 +90,12 @@ public class EffortDurationType implements UserType {
     }
 
     @Override
-    public Object assemble(Serializable cached, Object owner)
-            throws HibernateException {
+    public Object assemble(Serializable cached, Object owner) throws HibernateException {
         return EffortDuration.seconds((Integer) cached);
     }
 
     @Override
-    public Object replace(Object original, Object target, Object owner)
-            throws HibernateException {
+    public Object replace(Object original, Object target, Object owner) throws HibernateException {
         return original;
     }
 

@@ -54,14 +54,14 @@ import org.libreplan.business.workingday.ResourcesPerDay;
 public abstract class ResourcesPerDayModification extends
         AllocationModification {
 
-    private static class OnGenericAllocation extends
-            ResourcesPerDayModification {
+    private static class OnGenericAllocation extends ResourcesPerDayModification {
         private final GenericResourceAllocation genericAllocation;
 
         OnGenericAllocation(
                 GenericResourceAllocation resourceAllocation,
                 ResourcesPerDay resourcesPerDay,
                 Collection<? extends Resource> resources) {
+
             super(resourceAllocation, resourcesPerDay, resources);
             this.genericAllocation = resourceAllocation;
         }
@@ -73,14 +73,12 @@ public abstract class ResourcesPerDayModification extends
 
         @Override
         public void applyAllocationUntil(IntraDayDate endExclusive) {
-            genericAllocation.forResources(getResources())
-                    .resourcesPerDayUntil(endExclusive).allocate(getGoal());
+            genericAllocation.forResources(getResources()).resourcesPerDayUntil(endExclusive).allocate(getGoal());
         }
 
         @Override
         public void applyAllocationFromEndUntil(IntraDayDate start) {
-            genericAllocation.forResources(getResources())
-                    .resourcesPerDayFromEndUntil(start).allocate(getGoal());
+            genericAllocation.forResources(getResources()).resourcesPerDayFromEndUntil(start).allocate(getGoal());
         }
 
         @Override
@@ -284,19 +282,19 @@ public abstract class ResourcesPerDayModification extends
 
             @Override
             public List<? extends DayAssignment> createAssignmentsAtDay(
-                    PartialDay day, EffortDuration limit,
+                    PartialDay day,
+                    EffortDuration limit,
                     ResourcesPerDay resourcesPerDay) {
-                EffortDuration toDistribute = getResourceAllocation()
-                        .calculateTotalToDistribute(day, getGoal());
+
+                EffortDuration toDistribute = getResourceAllocation().calculateTotalToDistribute(day, getGoal());
                 EffortDuration effortLimited = min(limit, toDistribute);
                 PartialDay distributeOn = day;
-                if (effortLimited.equals(limit)) {
+                if ( effortLimited.equals(limit) ) {
                     IntraDayDate start = day.getStart();
-                    distributeOn = new PartialDay(start, start.increaseBy(
-                            resourcesPerDay, effortLimited));
+                    distributeOn = new PartialDay(start, start.increaseBy(resourcesPerDay, effortLimited));
                 }
-                return effortDistributor.distributeForDay(distributeOn,
-                        effortLimited);
+
+                return effortDistributor.distributeForDay(distributeOn, effortLimited);
             }
         };
     }
@@ -313,20 +311,20 @@ public abstract class ResourcesPerDayModification extends
 
     public boolean thereAreMoreSpaceAvailableAt(IntraDayDate date) {
         LocalDate day = date.getDate();
-        EffortDuration dayDuration = getBeingModified().getAllocationCalendar()
-                .asDurationOn(PartialDay.wholeDay(day), goal);
+
+        EffortDuration dayDuration =
+                getBeingModified().getAllocationCalendar().asDurationOn(PartialDay.wholeDay(day), goal);
+
         return dayDuration.compareTo(date.getEffortDuration()) > 0;
     }
 
     public EffortDuration durationAtDay(PartialDay day) {
-        return getBeingModified().getAllocationCalendar().asDurationOn(day,
-                goal);
+        return getBeingModified().getAllocationCalendar().asDurationOn(day, goal);
     }
 
     @Override
     public boolean satisfiesModificationRequested() {
-        return getGoal().equals(
-                getBeingModified().getNonConsolidatedResourcePerDay());
+        return getGoal().equals(getBeingModified().getNonConsolidatedResourcePerDay());
     }
 
 }

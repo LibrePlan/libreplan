@@ -61,28 +61,24 @@ public abstract class Consolidation extends BaseEntity {
 
     public LocalDate getConsolidatedUntil() {
         SortedSet<? extends ConsolidatedValue> consolidatedValues = getConsolidatedValues();
-        return (consolidatedValues.isEmpty()) ? null : consolidatedValues
-                .last().getDate();
+        return (consolidatedValues.isEmpty()) ? null : consolidatedValues.last().getDate();
     }
 
     public EffortDuration getNotConsolidated(EffortDuration total) {
         BigDecimal notConsolidatedProportion = getNotConsolidatedProportion();
-        int notConsolidatedSecons = notConsolidatedProportion.multiply(
-                new BigDecimal(total.getSeconds())).intValue();
+        int notConsolidatedSecons = notConsolidatedProportion.multiply(new BigDecimal(total.getSeconds())).intValue();
         return EffortDuration.seconds(notConsolidatedSecons);
     }
 
-    public EffortDuration getTotalFromNotConsolidated(
-            EffortDuration notConsolidated) {
-        if (isCompletelyConsolidated()) {
-            throw new IllegalStateException(
-                    "Can't calculate the total using a completely consolidated consolidation");
+    public EffortDuration getTotalFromNotConsolidated(EffortDuration notConsolidated) {
+        if ( isCompletelyConsolidated() ) {
+            throw new IllegalStateException("Can't calculate the total using a completely consolidated consolidation");
         }
-        BigDecimal notConsolidatedDecimal = new BigDecimal(
-                notConsolidated.getSeconds()).setScale(2);
-        int totalSeconds = notConsolidatedDecimal
-                .divide(getNotConsolidatedProportion(), RoundingMode.DOWN)
-                .intValue();
+
+        BigDecimal notConsolidatedDecimal = new BigDecimal(notConsolidated.getSeconds()).setScale(2);
+
+        int totalSeconds = notConsolidatedDecimal.divide(getNotConsolidatedProportion(), RoundingMode.DOWN).intValue();
+
         return EffortDuration.seconds(totalSeconds);
     }
 
@@ -95,13 +91,11 @@ public abstract class Consolidation extends BaseEntity {
     }
 
     private BigDecimal getConsolidatedProportion() {
-        return getConsolidatedPercentage().setScale(2).divide(
-                new BigDecimal(100), RoundingMode.DOWN);
+        return getConsolidatedPercentage().setScale(2).divide(new BigDecimal(100), RoundingMode.DOWN);
     }
 
     private BigDecimal getConsolidatedPercentage() {
-        return getConsolidatedValues().isEmpty() ? BigDecimal.ZERO
-                : getConsolidatedValues().last().getValue();
+        return getConsolidatedValues().isEmpty() ? BigDecimal.ZERO : getConsolidatedValues().last().getValue();
     }
 
 }

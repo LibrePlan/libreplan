@@ -72,8 +72,7 @@ import org.zkoss.zul.Textbox;
  *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
-public class ExpenseSheetCRUDController extends
-        BaseCRUDController<ExpenseSheet> implements IExpenseSheetCRUDController {
+public class ExpenseSheetCRUDController extends BaseCRUDController<ExpenseSheet> implements IExpenseSheetCRUDController {
 
     private static final org.apache.commons.logging.Log LOG = LogFactory
             .getLog(ExpenseSheetCRUDController.class);
@@ -208,10 +207,12 @@ public class ExpenseSheetCRUDController extends
     public void confirmRemove(ExpenseSheetLine expenseSheetLine) {
         try {
             int status = Messagebox.show(
-                    _("Confirm deleting {0}. Are you sure?",
-                            getExpenseSheetLineName(expenseSheetLine)), _("Delete"), Messagebox.OK
-                            | Messagebox.CANCEL, Messagebox.QUESTION);
-            if (Messagebox.OK == status) {
+                    _("Confirm deleting {0}. Are you sure?", getExpenseSheetLineName(expenseSheetLine)),
+                    _("Delete"),
+                    Messagebox.OK | Messagebox.CANCEL,
+                    Messagebox.QUESTION);
+
+            if ( Messagebox.OK == status ) {
                 removeExpenseSheetLine(expenseSheetLine);
             }
         } catch (InterruptedException e) {
@@ -225,10 +226,10 @@ public class ExpenseSheetCRUDController extends
     }
 
     private String getExpenseSheetLineName(ExpenseSheetLine expenseSheetLine) {
-        if (expenseSheetLine != null) {
+        if ( expenseSheetLine != null ) {
             LocalDate date = expenseSheetLine.getDate();
             OrderElement task = expenseSheetLine.getOrderElement();
-            if (date != null && task != null) {
+            if ( date != null && task != null ) {
                 return _("expense line of the ") + task.getName() + " - " + date;
             }
         }
