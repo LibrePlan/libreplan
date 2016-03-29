@@ -687,16 +687,17 @@ public class OrderCRUDController extends GenericForwardComposer {
     private AssignedTaskQualityFormsToOrderElementController assignedTaskQualityFormController;
 
     public void setupAssignedTaskQualityFormsToOrderElementController() {
-        if (!confirmLastTab()) {
+        if ( !confirmLastTab() ) {
             return;
         }
         setCurrentTab();
 
-        Component orderElementTaskQualityForms = editWindow
-                .getFellowIfAny("orderElementTaskQualityForms");
-        if (assignedTaskQualityFormController == null) {
-            assignedTaskQualityFormController = (AssignedTaskQualityFormsToOrderElementController) orderElementTaskQualityForms
-                .getVariable("assignedTaskQualityFormsController", true);
+        Component orderElementTaskQualityForms = editWindow.getFellowIfAny("orderElementTaskQualityForms");
+        if ( assignedTaskQualityFormController == null ) {
+
+            assignedTaskQualityFormController = (AssignedTaskQualityFormsToOrderElementController)
+                    orderElementTaskQualityForms.getVariable("assignedTaskQualityFormsController", true);
+
             final IOrderElementModel orderElementModel = getOrderElementModel();
             assignedTaskQualityFormController.openWindow(orderElementModel);
         } else {

@@ -37,8 +37,7 @@ public class TaskQualityFormItem implements INewObject {
     public final static String propertyPassed = "passed";
 
     static TaskQualityFormItem create(QualityFormItem qualityFormItem) {
-        TaskQualityFormItem taskQualityFormItem = new TaskQualityFormItem(
-                qualityFormItem);
+        TaskQualityFormItem taskQualityFormItem = new TaskQualityFormItem(qualityFormItem);
         taskQualityFormItem.setNewObject(true);
         return taskQualityFormItem;
     }
@@ -125,11 +124,11 @@ public class TaskQualityFormItem implements INewObject {
     @SuppressWarnings("unused")
     @AssertTrue(message = "percentage should be greater than 0% and less than 100%")
     public boolean checkConstraintQualityFormItemPercentage() {
-        if (percentage == null) {
+        if ( percentage == null ) {
             return true;
         }
-        if ((percentage.compareTo(new BigDecimal(100).setScale(2)) <= 0)
-                && (percentage.compareTo(new BigDecimal(0).setScale(2)) > 0)) {
+        if ( (percentage.compareTo(new BigDecimal(100).setScale(2)) <= 0 ) &&
+                ( percentage.compareTo(new BigDecimal(0).setScale(2)) > 0) ) {
             return true;
         }
         return false;
@@ -138,7 +137,7 @@ public class TaskQualityFormItem implements INewObject {
     @SuppressWarnings("unused")
     @AssertTrue(message = "date not specified")
     public boolean checkConstraintIfDateCanBeNull() {
-        if ((passed == null) || (!passed)) {
+        if ( (passed == null) || (!passed) ) {
             return true;
         } else {
             return (date != null);
