@@ -31,7 +31,6 @@ import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.qualityforms.daos.IQualityFormDAO;
 import org.libreplan.business.qualityforms.entities.QualityForm;
 import org.libreplan.business.qualityforms.entities.QualityFormItem;
-import org.libreplan.business.users.entities.Profile;
 import org.libreplan.web.common.concurrentdetection.OnConcurrentModification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -136,7 +135,7 @@ public class QualityFormModel implements IQualityFormModel {
     public List<QualityFormItem> getQualityFormItems() {
         // Safe copy
         List<QualityFormItem> items = new ArrayList<QualityFormItem>();
-        if (qualityForm != null) {
+        if ( qualityForm != null ) {
             items.addAll(qualityForm.getQualityFormItems());
         }
         return items;
