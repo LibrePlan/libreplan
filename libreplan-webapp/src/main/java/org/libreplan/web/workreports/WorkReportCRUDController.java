@@ -98,11 +98,9 @@ import org.zkoss.zul.api.Window;
  * @author Diego Pino García <dpino@igalia.com>
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  *
- *         Controller for CRUD actions over a {@link WorkReport}
- *
+ * Controller for CRUD actions over a {@link WorkReport}
  */
-public class WorkReportCRUDController extends GenericForwardComposer implements
-        IWorkReportCRUDControllerEntryPoints {
+public class WorkReportCRUDController extends GenericForwardComposer implements IWorkReportCRUDControllerEntryPoints {
 
     private static final org.apache.commons.logging.Log LOG = LogFactory.getLog(WorkReportCRUDController.class);
 
@@ -172,29 +170,30 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        listWorkReportLines = (NewDataSortableGrid) createWindow
-                .getFellowIfAny("listWorkReportLines");
+        listWorkReportLines = (NewDataSortableGrid) createWindow.getFellowIfAny("listWorkReportLines");
         messagesForUser = new MessagesForUser(messagesContainer);
         showMessageIfPersonalTimesheetWasSaved();
 
         comp.setAttribute("controller", this);
         goToList();
-        if(listType != null) {
+
+        if ( listType != null ) {
             //listType is null in reports -> work report lines
             listType.setSelectedIndex(0);
         }
+
         initializeHoursType();
-        final EntryPointsHandler<IWorkReportCRUDControllerEntryPoints> handler = URLHandlerRegistry
-                .getRedirectorFor(IWorkReportCRUDControllerEntryPoints.class);
+
+        final EntryPointsHandler<IWorkReportCRUDControllerEntryPoints> handler =
+                URLHandlerRegistry.getRedirectorFor(IWorkReportCRUDControllerEntryPoints.class);
+
         handler.register(this, page);
     }
 
     private void showMessageIfPersonalTimesheetWasSaved() {
-        String timesheetSave = Executions.getCurrent().getParameter(
-                "timesheet_saved");
-        if (!StringUtils.isBlank(timesheetSave)) {
-            messagesForUser.showMessage(Level.INFO,
-                    _("Personal timesheet saved"));
+        String timesheetSave = Executions.getCurrent().getParameter("timesheet_saved");
+        if ( !StringUtils.isBlank(timesheetSave) ) {
+            messagesForUser.showMessage(Level.INFO, _("Personal timesheet saved"));
         }
     }
 
@@ -212,12 +211,19 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         try {
 
             final String workReportName = formatWorkReportName(workReport);
-            int status = Messagebox.show(_("Confirm deleting {0}. Are you sure?", workReportName), "Delete",
-                    Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION);
-            if (Messagebox.OK == status) {
+
+            int status = Messagebox.show(
+                    _("Confirm deleting {0}. Are you sure?", workReportName),
+                    "Delete",
+                    Messagebox.OK | Messagebox.CANCEL,
+                    Messagebox.QUESTION);
+
+            if ( Messagebox.OK == status ) {
                 workReportModel.remove(workReport);
-                messagesForUser.showMessage(Level.INFO,
-                        _("Timesheet removed successfully"));
+
+                messagesForUser.clearMessages();
+                messagesForUser.showMessage(Level.INFO, _("Timesheet removed successfully"));
+
                 loadComponentslist(listWindow);
                 Util.reloadBindings(listWindow);
             }

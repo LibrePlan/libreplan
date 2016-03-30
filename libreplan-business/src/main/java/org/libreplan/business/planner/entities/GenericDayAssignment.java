@@ -119,14 +119,13 @@ public class GenericDayAssignment extends DayAssignment {
         }
     }
 
-    public static GenericDayAssignment create(LocalDate day,
-            EffortDuration duration, Resource resource) {
+    public static GenericDayAssignment create(LocalDate day, EffortDuration duration, Resource resource) {
         return create(new GenericDayAssignment(day, duration, resource));
     }
 
-    public static Set<GenericDayAssignment> copy(
-            GenericDayAssignmentsContainer newParent,
+    public static Set<GenericDayAssignment> copy(GenericDayAssignmentsContainer newParent,
             Collection<? extends GenericDayAssignment> assignemnts) {
+
         Set<GenericDayAssignment> result = new HashSet<GenericDayAssignment>();
         for (GenericDayAssignment a : assignemnts) {
             GenericDayAssignment created = copy(newParent, a);
@@ -136,9 +135,7 @@ public class GenericDayAssignment extends DayAssignment {
         return result;
     }
 
-    private static GenericDayAssignment copy(
-            GenericDayAssignmentsContainer newParent,
-            GenericDayAssignment toBeCopied) {
+    private static GenericDayAssignment copy(GenericDayAssignmentsContainer newParent, GenericDayAssignment toBeCopied) {
         GenericDayAssignment result = copyFromWithoutParent(toBeCopied);
         result.setConsolidated(toBeCopied.isConsolidated());
         result.parentState = result.parentState.setParent(newParent);
@@ -146,10 +143,8 @@ public class GenericDayAssignment extends DayAssignment {
         return result;
     }
 
-    private static GenericDayAssignment copyFromWithoutParent(
-            GenericDayAssignment toBeCopied) {
-        GenericDayAssignment copy = create(toBeCopied.getDay(),
-                toBeCopied.getDuration(), toBeCopied.getResource());
+    private static GenericDayAssignment copyFromWithoutParent(GenericDayAssignment toBeCopied) {
+        GenericDayAssignment copy = create(toBeCopied.getDay(), toBeCopied.getDuration(), toBeCopied.getResource());
         copy.setConsolidated(toBeCopied.isConsolidated());
         return copy;
     }
@@ -163,8 +158,7 @@ public class GenericDayAssignment extends DayAssignment {
         return result;
     }
 
-    private GenericDayAssignment(LocalDate day, EffortDuration duration,
-            Resource resource) {
+    private GenericDayAssignment(LocalDate day, EffortDuration duration, Resource resource) {
         super(day, duration, resource);
         parentState = new ContainerNotSpecified();
     }
@@ -212,11 +206,10 @@ public class GenericDayAssignment extends DayAssignment {
     }
 
     public DayAssignment withDuration(EffortDuration newDuration) {
-        GenericDayAssignment result = create(getDay(), newDuration,
-                getResource());
-        if (container != null) {
+        GenericDayAssignment result = create(getDay(), newDuration, getResource());
+        if ( container != null ) {
             result.parentState.setParent(container);
-        } else if (this.getGenericResourceAllocation() != null) {
+        } else if ( this.getGenericResourceAllocation() != null ) {
             result.parentState.setParent(this.getGenericResourceAllocation());
         }
         return result;

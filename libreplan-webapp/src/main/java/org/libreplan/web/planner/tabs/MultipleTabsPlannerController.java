@@ -102,7 +102,7 @@ public class MultipleTabsPlannerController implements Composer, IGlobalViewEntry
 
         @Override
         public void show() {
-            if (feedback) {
+            if ( feedback ) {
                 showWithFeedback();
             } else {
                 showWithoutFeedback();

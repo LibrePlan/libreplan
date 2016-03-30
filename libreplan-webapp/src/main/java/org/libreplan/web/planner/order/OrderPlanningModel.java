@@ -154,11 +154,9 @@ public class OrderPlanningModel implements IOrderPlanningModel {
 
     private static final Log LOG = LogFactory.getLog(OrderPlanningModel.class);
 
-    private static final Log PROFILING_LOG = ProfilingLogFactory
-            .getLog(OrderPlanningModel.class);
+    private static final Log PROFILING_LOG = ProfilingLogFactory.getLog(OrderPlanningModel.class);
 
-    public static <T extends Collection<Resource>> T loadRequiredDataFor(
-            T resources) {
+    public static <T extends Collection<Resource>> T loadRequiredDataFor(T resources) {
         for (Resource each : resources) {
             reattachCalendarFor(each);
             // loading criterions so there are no repeated instances
@@ -168,23 +166,21 @@ public class OrderPlanningModel implements IOrderPlanningModel {
     }
 
     private static void reattachCalendarFor(Resource each) {
-        if (each.getCalendar() != null) {
+        if ( each.getCalendar() != null ) {
             BaseCalendarModel.forceLoadBaseCalendar(each.getCalendar());
         }
     }
 
     static void forceLoadOfCriterions(Resource resource) {
-        Set<CriterionSatisfaction> criterionSatisfactions = resource
-                .getCriterionSatisfactions();
+        Set<CriterionSatisfaction> criterionSatisfactions = resource.getCriterionSatisfactions();
         for (CriterionSatisfaction each : criterionSatisfactions) {
             each.getCriterion().getName();
             each.getCriterion().getType();
         }
     }
 
-    public static ZoomLevel calculateDefaultLevel(
-            PlannerConfiguration<TaskElement> configuration) {
-        if (configuration.getData().isEmpty()) {
+    public static ZoomLevel calculateDefaultLevel(PlannerConfiguration<TaskElement> configuration) {
+        if ( configuration.getData().isEmpty() ) {
             return ZoomLevel.DETAIL_ONE;
         }
         TaskElement earliest = Collections.min(configuration.getData(),
@@ -474,8 +470,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         return result;
     }
 
-    private void appendLoadChartAndLegend(Tabpanel loadChartPannel,
-            Timeplot loadChart) {
+    private void appendLoadChartAndLegend(Tabpanel loadChartPannel, Timeplot loadChart) {
         Hbox hbox = new Hbox();
         hbox.appendChild(getLoadChartLegend());
         hbox.setSclass("load-chart");
@@ -489,8 +484,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
     }
 
     private OrderEarnedValueChartFiller createOrderEarnedValueChartFiller(TimeTracker timeTracker) {
-        OrderEarnedValueChartFiller result = new OrderEarnedValueChartFiller(
-                planningState.getOrder());
+        OrderEarnedValueChartFiller result = new OrderEarnedValueChartFiller(planningState.getOrder());
         result.calculateValues(timeTracker.getRealInterval());
         return result;
     }
@@ -498,9 +492,9 @@ public class OrderPlanningModel implements IOrderPlanningModel {
     private Tabpanel createEarnedValueTab(
             Timeplot chartEarnedValueTimeplot,
             OrderEarnedValueChartFiller earnedValueChartFiller) {
+
         Tabpanel result = new Tabpanel();
-        appendEarnedValueChartAndLegend(result, chartEarnedValueTimeplot,
-                earnedValueChartFiller);
+        appendEarnedValueChartAndLegend(result, chartEarnedValueTimeplot, earnedValueChartFiller);
         return result;
     }
 
@@ -508,8 +502,10 @@ public class OrderPlanningModel implements IOrderPlanningModel {
     private Datebox earnedValueChartLegendDatebox;
 
     private void appendEarnedValueChartAndLegend(
-            Tabpanel earnedValueChartPannel, Timeplot chartEarnedValueTimeplot,
+            Tabpanel earnedValueChartPannel,
+            Timeplot chartEarnedValueTimeplot,
             final OrderEarnedValueChartFiller earnedValueChartFiller) {
+
         Vbox vbox = new Vbox();
         this.earnedValueChartLegendContainer = vbox;
         vbox.setClass("legend-container");
@@ -519,19 +515,18 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         Hbox dateHbox = new Hbox();
         dateHbox.appendChild(new Label(_("Select date")));
 
-        LocalDate initialDateForIndicatorValues =
-                earnedValueChartFiller.initialDateForIndicatorValues();
-        this.earnedValueChartLegendDatebox = new Datebox(initialDateForIndicatorValues
-                .toDateTimeAtStartOfDay().toDate());
-        this.earnedValueChartLegendDatebox.setConstraint(
-                dateMustBeInsideVisualizationArea(earnedValueChartFiller));
+        LocalDate initialDateForIndicatorValues = earnedValueChartFiller.initialDateForIndicatorValues();
+
+        this.earnedValueChartLegendDatebox =
+                new Datebox(initialDateForIndicatorValues.toDateTimeAtStartOfDay().toDate());
+
+        this.earnedValueChartLegendDatebox.setConstraint(dateMustBeInsideVisualizationArea(earnedValueChartFiller));
         dateHbox.appendChild(this.earnedValueChartLegendDatebox);
 
         appendEventListenerToDateboxIndicators(earnedValueChartFiller, vbox);
         vbox.appendChild(dateHbox);
 
-        vbox.appendChild(getEarnedValueChartConfigurableLegend(
-                earnedValueChartFiller, initialDateForIndicatorValues));
+        vbox.appendChild(getEarnedValueChartConfigurableLegend(earnedValueChartFiller, initialDateForIndicatorValues));
 
         Hbox hbox = new Hbox();
         hbox.setSclass("earned-value-chart");
@@ -547,21 +542,26 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         earnedValueChartPannel.appendChild(hbox);
     }
 
-    private void setupLoadChart(Timeplot chartLoadTimeplot, Planner planner,
-            ChangeHooker changeHooker) {
-        Chart loadChart = setupChart(planningState.getOrder(),
+    private void setupLoadChart(Timeplot chartLoadTimeplot, Planner planner, ChangeHooker changeHooker) {
+        Chart loadChart = setupChart(
+                planningState.getOrder(),
                 new OrderLoadChartFiller(planningState.getOrder()),
                 chartLoadTimeplot, planner);
+
         refillLoadChartWhenNeeded(changeHooker, planner, loadChart, false);
     }
 
     private Chart earnedValueChart;
 
-    private void setupEarnedValueChart(Timeplot chartEarnedValueTimeplot,
+    private void setupEarnedValueChart(
+            Timeplot chartEarnedValueTimeplot,
             OrderEarnedValueChartFiller earnedValueChartFiller,
-            Planner planner, ChangeHooker changeHooker) {
-        earnedValueChart = setupChart(planningState.getOrder(),
-                earnedValueChartFiller, chartEarnedValueTimeplot, planner);
+            Planner planner,
+            ChangeHooker changeHooker) {
+
+        earnedValueChart =
+                setupChart(planningState.getOrder(), earnedValueChartFiller, chartEarnedValueTimeplot, planner);
+
         refillLoadChartWhenNeeded(changeHooker, planner, earnedValueChart, true);
         setEventListenerConfigurationCheckboxes(earnedValueChart);
     }
@@ -1339,8 +1339,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         @Override
         protected void calculateBudgetedCostWorkScheduled(Interval interval) {
             setIndicatorInInterval(EarnedValueType.BCWS, interval,
-                    earnedValueCalculator
-                            .calculateBudgetedCostWorkScheduled(order));
+                    earnedValueCalculator.calculateBudgetedCostWorkScheduled(order));
         }
 
         @Override

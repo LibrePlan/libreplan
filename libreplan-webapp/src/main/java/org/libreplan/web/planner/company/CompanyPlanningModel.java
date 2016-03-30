@@ -331,7 +331,6 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
                 try {
                     earnedValueTabpanel.redraw(out);
                 } catch (IOException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
 
@@ -905,9 +904,10 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
 
         @Override
         protected void calculateBudgetedCostWorkScheduled(Interval interval) {
-            setIndicatorInInterval(EarnedValueType.BCWS, interval,
-                    earnedValueCalculator
-                            .calculateBudgetedCostWorkScheduled(getFilterInterval()));
+            setIndicatorInInterval(
+                    EarnedValueType.BCWS,
+                    interval,
+                    earnedValueCalculator.calculateBudgetedCostWorkScheduled(getFilterInterval()));
         }
 
         @Override

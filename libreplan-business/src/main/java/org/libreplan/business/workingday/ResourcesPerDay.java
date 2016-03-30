@@ -49,15 +49,12 @@ public class ResourcesPerDay {
 
     }
 
-    public static ResourcesPerDayDistributor distributor(
-            ResourcesPerDay... resourcesPerDay) {
-        ProportionalDistributor distributor = ProportionalDistributor
-                .create(asInts(resourcesPerDay));
+    public static ResourcesPerDayDistributor distributor(ResourcesPerDay... resourcesPerDay) {
+        ProportionalDistributor distributor = ProportionalDistributor.create(asInts(resourcesPerDay));
         return new ResourcesPerDayDistributor(distributor);
     }
 
-    public static ResourcesPerDayDistributor distributor(
-            ProportionalDistributor distributor) {
+    public static ResourcesPerDayDistributor distributor(ProportionalDistributor distributor) {
         return new ResourcesPerDayDistributor(distributor);
     }
 
@@ -77,11 +74,9 @@ public class ResourcesPerDay {
         return amount(new BigDecimal(integerFormat).movePointLeft(4));
     }
 
-    public static ResourcesPerDay calculateFrom(EffortDuration durationWorking,
-            EffortDuration durationWorkable) {
-        return amount(new BigDecimal(durationWorking.getSeconds()).divide(
-                new BigDecimal(durationWorkable.getSeconds()), 4,
-                RoundingMode.HALF_UP));
+    public static ResourcesPerDay calculateFrom(EffortDuration durationWorking, EffortDuration durationWorkable) {
+        return amount(new BigDecimal(durationWorking.getSeconds())
+                .divide(new BigDecimal(durationWorkable.getSeconds()), 4, RoundingMode.HALF_UP));
     }
 
     public static ResourcesPerDay amount(int amount) {
@@ -103,13 +98,13 @@ public class ResourcesPerDay {
         return amount;
     }
 
-    public EffortDuration asDurationGivenWorkingDayOf(
-            EffortDuration resourceWorkingDayDuration) {
-        BigDecimal multiply = getAmount().multiply(
-                new BigDecimal(resourceWorkingDayDuration.getSeconds()));
-        if (multiply.compareTo(BigDecimal.ZERO) > 0) {
-            return EffortDuration.elapsing(Math.max(1,
-                    multiply.setScale(0, RoundingMode.HALF_UP).intValue()),
+    public EffortDuration asDurationGivenWorkingDayOf(EffortDuration resourceWorkingDayDuration) {
+
+        BigDecimal multiply = getAmount().multiply(new BigDecimal(resourceWorkingDayDuration.getSeconds()));
+        if ( multiply.compareTo(BigDecimal.ZERO) > 0 ) {
+
+            return EffortDuration.elapsing(
+                    Math.max(1, multiply.setScale(0, RoundingMode.HALF_UP).intValue()),
                     Granularity.SECONDS);
         } else {
             return EffortDuration.zero();
@@ -123,10 +118,10 @@ public class ResourcesPerDay {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == this) {
+        if ( obj == this ) {
             return true;
         }
-        if (obj instanceof ResourcesPerDay) {
+        if ( obj instanceof ResourcesPerDay ) {
             ResourcesPerDay other = (ResourcesPerDay) obj;
             return amount.equals(other.getAmount());
         }

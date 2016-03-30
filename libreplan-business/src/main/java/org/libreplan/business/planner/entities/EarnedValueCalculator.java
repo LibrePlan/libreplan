@@ -36,8 +36,8 @@ import org.springframework.stereotype.Component;
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  * @author Diego Pino García <dpino@igalia.com>
  *
- *         Calculates generic 'Earned Value' indicators (those calculated out of
- *         BCWP, ACWP and BCWS
+ * Calculates generic 'Earned Value' indicators (those calculated out of
+ * BCWP, ACWP and BCWS
  */
 @Component
 @Scope(BeanDefinition.SCOPE_SINGLETON)
@@ -58,8 +58,7 @@ public class EarnedValueCalculator implements IEarnedValueCalculator {
     }
 
     @Override
-    public SortedMap<LocalDate, BigDecimal> calculateBudgetAtCompletion(
-            SortedMap<LocalDate, BigDecimal> bcws) {
+    public SortedMap<LocalDate, BigDecimal> calculateBudgetAtCompletion(SortedMap<LocalDate, BigDecimal> bcws) {
         SortedMap<LocalDate, BigDecimal> result = new TreeMap<LocalDate, BigDecimal>();
         BigDecimal value = Collections.max(bcws.values());
         for (LocalDate day : bcws.keySet()) {

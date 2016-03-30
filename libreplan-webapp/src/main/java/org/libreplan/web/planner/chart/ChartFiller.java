@@ -108,20 +108,17 @@ public abstract class ChartFiller implements IChartFiller {
         return sum;
     }
 
-    protected static EffortDuration calendarCapacityFor(Resource resource,
-            PartialDay day) {
+    protected static EffortDuration calendarCapacityFor(Resource resource, PartialDay day) {
         return resource.getCalendarOrDefault().getCapacityOn(day);
     }
 
-    protected abstract class GraphicSpecificationCreator implements
-            IServletRequestHandler {
+    protected abstract class GraphicSpecificationCreator implements IServletRequestHandler {
 
         private final LocalDate finish;
         private final SortedMap<LocalDate, BigDecimal> map;
         private final LocalDate start;
 
-        protected GraphicSpecificationCreator(LocalDate finish,
-                SortedMap<LocalDate, BigDecimal> map, LocalDate start) {
+        protected GraphicSpecificationCreator(LocalDate finish, SortedMap<LocalDate, BigDecimal> map, LocalDate start) {
             this.finish = new LocalDate(finish);
             this.map = map;
             this.start = new LocalDate(start);
@@ -132,9 +129,7 @@ public abstract class ChartFiller implements IChartFiller {
         }
 
         @Override
-        public void handle(HttpServletRequest request,
-                HttpServletResponse response) throws ServletException,
-                IOException {
+        public void handle(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
             PrintWriter writer = response.getWriter();
             fillValues(writer);
             writer.close();
@@ -146,8 +141,7 @@ public abstract class ChartFiller implements IChartFiller {
             fillZeroValueToFinish(writer);
         }
 
-        protected abstract void fillInnerValues(PrintWriter writer,
-                LocalDate firstDay, LocalDate lastDay);
+        protected abstract void fillInnerValues(PrintWriter writer, LocalDate firstDay, LocalDate lastDay);
 
         protected LocalDate nextDay(LocalDate date) {
             if (isZoomByDayOrWeek()) {
@@ -179,16 +173,14 @@ public abstract class ChartFiller implements IChartFiller {
             return map.get(day) != null ? map.get(day) : BigDecimal.ZERO;
         }
 
-        protected void printLine(PrintWriter writer, DateTime day,
-                BigDecimal hours) {
+        protected void printLine(PrintWriter writer, DateTime day, BigDecimal hours) {
             // using ISO 8601 format [YYYY][MM][DD]T[hh][mm][ss]Z.
             String position = day.toString("yyyyMMdd") + "T"
                     + day.toString("HHmmss") + "Z";
             writer.println(position + " " + hours);
         }
 
-        protected void printIntervalLine(PrintWriter writer, LocalDate day,
-                BigDecimal hours, boolean isZoomByDay) {
+        protected void printIntervalLine(PrintWriter writer, LocalDate day, BigDecimal hours, boolean isZoomByDay) {
             // using ISO 8601 format [YYYY][MM][DD]T[hh][mm][ss]Z.
             DateTime initOfInterval = getInitOfInterval(day, isZoomByDay);
             DateTime finishOfInterval = getFinishOfInterval(day, isZoomByDay);
@@ -197,8 +189,7 @@ public abstract class ChartFiller implements IChartFiller {
             printLine(writer, finishOfInterval, hours);
         }
 
-        protected DateTime getInitOfInterval(LocalDate day,
-                boolean isZoomByDayOrWeek) {
+        protected DateTime getInitOfInterval(LocalDate day, boolean isZoomByDayOrWeek) {
             if (isZoomByDayOrWeek) {
                 return day.toDateTimeAtStartOfDay();
             } else {
@@ -207,8 +198,7 @@ public abstract class ChartFiller implements IChartFiller {
             }
         }
 
-        protected DateTime getFinishOfInterval(LocalDate day,
-                boolean isZoomByDayOrWeek) {
+        protected DateTime getFinishOfInterval(LocalDate day, boolean isZoomByDayOrWeek) {
             if (isZoomByDayOrWeek) {
                 return day.plusDays(1).toDateTimeAtStartOfDay().minusSeconds(1);
             } else {
@@ -233,9 +223,7 @@ public abstract class ChartFiller implements IChartFiller {
         }
 
         private boolean startIsPreviousToPreviousDayToFirstAssignment() {
-            return !map.isEmpty()
-                    && start.compareTo(previousDayToFirstAssignment()
-                            .toLocalDate()) < 0;
+            return !map.isEmpty() && start.compareTo(previousDayToFirstAssignment().toLocalDate()) < 0;
         }
 
         private DateTime previousDayToFirstAssignment() {
@@ -260,9 +248,7 @@ public abstract class ChartFiller implements IChartFiller {
         }
 
         private boolean finishIsPosteriorToNextDayToLastAssignment() {
-            return !map.isEmpty()
-                    && finish
-                            .compareTo(nextDayToLastAssignment().toLocalDate()) > 0;
+            return !map.isEmpty() && finish.compareTo(nextDayToLastAssignment().toLocalDate()) > 0;
         }
 
         private DateTime nextDayToLastAssignment() {
@@ -274,14 +260,16 @@ public abstract class ChartFiller implements IChartFiller {
     protected class DefaultGraphicSpecificationCreator extends
             GraphicSpecificationCreator {
 
-        private DefaultGraphicSpecificationCreator(LocalDate finish,
-                SortedMap<LocalDate, BigDecimal> map, LocalDate start) {
+        private DefaultGraphicSpecificationCreator(
+                LocalDate finish,
+                SortedMap<LocalDate, BigDecimal> map,
+                LocalDate start) {
+
             super(finish, map, start);
         }
 
         @Override
-        protected void fillInnerValues(PrintWriter writer, LocalDate firstDay,
-                LocalDate lastDay) {
+        protected void fillInnerValues(PrintWriter writer, LocalDate firstDay, LocalDate lastDay) {
             for (LocalDate day = firstDay; day.compareTo(lastDay) <= 0; day = nextDay(day)) {
                 BigDecimal hours = getHoursForDay(day);
                 printIntervalLine(writer, day, hours, isZoomByDayOrWeek());
@@ -300,8 +288,7 @@ public abstract class ChartFiller implements IChartFiller {
         }
 
         @Override
-        protected void fillInnerValues(PrintWriter writer, LocalDate firstDay,
-                LocalDate lastDay) {
+        protected void fillInnerValues(PrintWriter writer, LocalDate firstDay, LocalDate lastDay) {
             for (LocalDate day : getDays()) {
                 BigDecimal hours = getHoursForDay(day);
                 printLine(writer, day.toDateTimeAtStartOfDay(), hours);
@@ -322,8 +309,7 @@ public abstract class ChartFiller implements IChartFiller {
     private BigDecimal maximumValueForChart = BigDecimal.ZERO;
 
     @Override
-    public abstract void fillChart(Timeplot chart, Interval interval,
-            Integer size);
+    public abstract void fillChart(Timeplot chart, Interval interval, Integer size);
 
     private void setMinimumValueForChartIfLess(BigDecimal min) {
         if (minimumValueForChart.compareTo(min) > 0) {
@@ -468,8 +454,7 @@ public abstract class ChartFiller implements IChartFiller {
         return map;
     }
 
-    protected void addCost(SortedMap<LocalDate, BigDecimal> currentCost,
-            SortedMap<LocalDate, BigDecimal> additionalCost) {
+    protected void addCost(SortedMap<LocalDate, BigDecimal> currentCost, SortedMap<LocalDate, BigDecimal> additionalCost) {
         for (LocalDate day : additionalCost.keySet()) {
             if (!currentCost.containsKey(day)) {
                 currentCost.put(day, BigDecimal.ZERO);
@@ -544,8 +529,10 @@ public abstract class ChartFiller implements IChartFiller {
         return result;
     }
 
-    private void fillValues(SortedMap<LocalDate, BigDecimal> map,
-            LocalDate firstDay, LocalDate lastDay, BigDecimal firstValue,
+    private void fillValues(
+            SortedMap<LocalDate, BigDecimal> map,
+            LocalDate firstDay, LocalDate lastDay,
+            BigDecimal firstValue,
             BigDecimal lastValue) {
 
         Integer days = Days.daysBetween(firstDay, lastDay).getDays();
@@ -563,8 +550,7 @@ public abstract class ChartFiller implements IChartFiller {
         }
     }
 
-    protected Plotinfo createPlotinfoFromDurations(SortedMap<LocalDate, EffortDuration> map,
-            Interval interval) {
+    protected Plotinfo createPlotinfoFromDurations(SortedMap<LocalDate, EffortDuration> map, Interval interval) {
         return createPlotinfo(toHoursDecimal(map), interval);
     }
 
@@ -578,13 +564,15 @@ public abstract class ChartFiller implements IChartFiller {
         return result;
     }
 
-    protected Plotinfo createPlotinfo(SortedMap<LocalDate, BigDecimal> map,
-            Interval interval) {
+    protected Plotinfo createPlotinfo(SortedMap<LocalDate, BigDecimal> map, Interval interval) {
         return createPlotinfo(map, interval, false);
     }
 
-    protected Plotinfo createPlotinfo(SortedMap<LocalDate, BigDecimal> map,
-            Interval interval, boolean justDaysWithInformation) {
+    protected Plotinfo createPlotinfo(
+            SortedMap<LocalDate, BigDecimal> map,
+            Interval interval,
+            boolean justDaysWithInformation) {
+
         if (!map.isEmpty()) {
             setMinimumValueForChartIfLess(Collections.min(map.values()));
             setMaximumValueForChartIfGreater(Collections.max(map.values()));
@@ -633,8 +621,11 @@ public abstract class ChartFiller implements IChartFiller {
         return plotinfo;
     }
 
-    protected void appendPlotinfo(Timeplot chart, Plotinfo plotinfo,
-            ValueGeometry valueGeometry, TimeGeometry timeGeometry) {
+    protected void appendPlotinfo(
+            Timeplot chart, Plotinfo plotinfo,
+            ValueGeometry valueGeometry,
+            TimeGeometry timeGeometry) {
+
         plotinfo.setValueGeometry(valueGeometry);
         plotinfo.setTimeGeometry(timeGeometry);
         plotinfo.setShowValues(true);

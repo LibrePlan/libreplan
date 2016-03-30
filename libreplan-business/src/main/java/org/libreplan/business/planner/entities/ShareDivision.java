@@ -55,7 +55,7 @@ public class ShareDivision {
 
         @Override
         public boolean equals(Object obj) {
-            if (obj instanceof ShareWrapper) {
+            if ( obj instanceof ShareWrapper ) {
                 ShareWrapper other = (ShareWrapper) obj;
                 return getHours() == other.getHours();
             }
@@ -119,12 +119,11 @@ public class ShareDivision {
         Collections.sort(wrapped);
         int i = 0;
         while (i < wrapped.size()) {
-            if (remainderIncrease == 0) {
+            if ( remainderIncrease == 0 ) {
                 break;
             }
             int nextBigger = findNextBigger(wrapped, i);
-            FillingBucket bucket = fillingBuckectFor(wrapped, nextBigger,
-                    remainderIncrease);
+            FillingBucket bucket = fillingBuckectFor(wrapped, nextBigger, remainderIncrease);
             bucket.doTheDistribution();
             i = nextBigger;
             remainderIncrease = remainderIncrease - bucket.getIncreaseDone();
@@ -158,13 +157,13 @@ public class ShareDivision {
         public void doTheDistribution() {
             int incrementPerShare = increment / bucket.size();
             int remainder = increment % bucket.size();
-            if (remainder > 0) {
+            if ( remainder > 0 ) {
                 ShareWrapper.sortByOriginalPosition(this.bucket);
                 // so the first original elements receive the remainder
             }
             for (ShareWrapper wrapper : bucket) {
                 wrapper.add(incrementPerShare + Math.min(1, remainder));
-                if (remainder > 0) {
+                if ( remainder > 0 ) {
                     remainder--;
                 }
             }
@@ -179,22 +178,21 @@ public class ShareDivision {
         ShareWrapper startWrapper = wrappers.get(start);
         for (int i = start + 1; i < wrappers.size(); i++) {
             ShareWrapper current = wrappers.get(i);
-            if (!startWrapper.haveSameHours(current)) {
+            if ( !startWrapper.haveSameHours(current) ) {
                 return i;
             }
         }
         return wrappers.size();
     }
 
-    private static FillingBucket fillingBuckectFor(List<ShareWrapper> wrappers,
-            int end, int remaining) {
-        int hoursToDistribute = end == wrappers.size() ? remaining : (int) Math
-                .min(hoursNeededToBeEqual(wrappers, 0, end), remaining);
+    private static FillingBucket fillingBuckectFor(List<ShareWrapper> wrappers, int end, int remaining) {
+        int hoursToDistribute =
+                (end == wrappers.size()) ? remaining : (int) Math.min(hoursNeededToBeEqual(wrappers, 0, end), remaining);
+
         return new FillingBucket(wrappers.subList(0, end), hoursToDistribute);
     }
 
-    private static long hoursNeededToBeEqual(List<ShareWrapper> wrappers,
-            int startInclusive, int endExclusive) {
+    private static long hoursNeededToBeEqual(List<ShareWrapper> wrappers, int startInclusive, int endExclusive) {
         ShareWrapper nextLevel = wrappers.get(endExclusive);
         ShareWrapper currentLevel = wrappers.get(startInclusive);
         long currentLevelHours = (long) currentLevel.getHours();
@@ -213,8 +211,7 @@ public class ShareDivision {
         Validate.isTrue(shares.size() == newDivison.shares.size());
         int[] result = new int[shares.size()];
         for (int i = 0; i < result.length; i++) {
-            result[i] = newDivison.shares.get(i).getHours()
-                    - shares.get(i).getHours();
+            result[i] = newDivison.shares.get(i).getHours() - shares.get(i).getHours();
         }
         return result;
     }

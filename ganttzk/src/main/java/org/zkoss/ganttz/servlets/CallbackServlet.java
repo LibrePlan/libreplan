@@ -161,7 +161,7 @@ public class CallbackServlet extends HttpServlet {
             IServletRequestHandler handler, boolean withContextPath,
             DisposalMode disposalMode) {
         Validate.notNull(disposalMode);
-        // theoretically could be an infinite loop, could be improved.
+        // FIXME theoretically could be an infinite loop, could be improved.
         String generatedKey = "";
         IHandler toBeRegistered = disposalMode.create(handler);
         do {

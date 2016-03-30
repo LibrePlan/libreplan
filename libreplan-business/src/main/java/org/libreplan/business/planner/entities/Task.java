@@ -822,62 +822,61 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         }
     }
 
-    private void setCustomAssignedEffortForResource(
-            List<ModifiedAllocation> modifiedAllocations) {
-        List<ResourceAllocation<?>> originals = ModifiedAllocation
-                .originals(modifiedAllocations);
-        IAssignedEffortForResource discounting = AssignedEffortForResource
-                .effortDiscounting(originals);
-        List<ResourceAllocation<?>> beingModified = ModifiedAllocation
-                .modified(modifiedAllocations);
-        WithTheLoadOf allNewLoad = AssignedEffortForResource
-                .withTheLoadOf(beingModified);
-        List<GenericResourceAllocation> generic = ResourceAllocation.getOfType(
-                GenericResourceAllocation.class, beingModified);
+    private void setCustomAssignedEffortForResource(List<ModifiedAllocation> modifiedAllocations) {
+
+        List<ResourceAllocation<?>> originals = ModifiedAllocation.originals(modifiedAllocations);
+        IAssignedEffortForResource discounting = AssignedEffortForResource.effortDiscounting(originals);
+        List<ResourceAllocation<?>> beingModified = ModifiedAllocation.modified(modifiedAllocations);
+        WithTheLoadOf allNewLoad = AssignedEffortForResource.withTheLoadOf(beingModified);
+
+        List<GenericResourceAllocation> generic =
+                ResourceAllocation.getOfType(GenericResourceAllocation.class, beingModified);
+
         for (GenericResourceAllocation each : generic) {
-            each.setAssignedEffortForResource(AssignedEffortForResource.sum(
-                    allNewLoad.withoutConsidering(each), discounting));
+            each.setAssignedEffortForResource(
+                    AssignedEffortForResource.sum(allNewLoad.withoutConsidering(each), discounting));
         }
     }
 
-    private void doAllocation(WithPotentiallyNewResources strategy,
-            Direction direction, List<ResourceAllocation<?>> toBeModified) {
-        ModificationsResult<ResourcesPerDayModification> modificationsResult = strategy
-                .getResourcesPerDayModified(toBeModified);
+    private void doAllocation(
+            WithPotentiallyNewResources strategy, Direction direction, List<ResourceAllocation<?>> toBeModified) {
+
+        ModificationsResult<ResourcesPerDayModification> modificationsResult =
+                strategy.getResourcesPerDayModified(toBeModified);
+
         markAsUnsatisfied(modificationsResult.getNoLongerValid());
-        List<ResourcesPerDayModification> allocations = modificationsResult
-                .getBeingModified();
-        if (allocations.isEmpty()) {
-            LOG.warn("all allocations for task " + this
-                    + " have no valid data that could be used");
+        List<ResourcesPerDayModification> allocations = modificationsResult.getBeingModified();
+        if ( allocations.isEmpty() ) {
+            LOG.warn("all allocations for task " + this + " have no valid data that could be used");
             return;
         }
         switch (calculatedValue) {
+
         case NUMBER_OF_HOURS:
             ResourceAllocation.allocating(allocations).allocateOnTaskLength();
             break;
+
         case END_DATE:
-            IntraDayDate date = ResourceAllocation.allocating(allocations)
-                    .untilAllocating(direction, getTotalNonConsolidatedEffort());
-            if (direction == Direction.FORWARD) {
+            IntraDayDate date =
+                    ResourceAllocation.allocating(allocations).untilAllocating(direction, getTotalNonConsolidatedEffort());
+            if ( direction == Direction.FORWARD ) {
                 setIntraDayEndDate(date);
             } else {
                 setIntraDayStartDate(date);
             }
             break;
+
         case RESOURCES_PER_DAY:
-            ModificationsResult<EffortModification> hoursModificationResult = strategy
-                    .getHoursModified(toBeModified);
+            ModificationsResult<EffortModification> hoursModificationResult = strategy.getHoursModified(toBeModified);
             markAsUnsatisfied(hoursModificationResult.getNoLongerValid());
-            List<EffortModification> hoursModified = hoursModificationResult
-                    .getBeingModified();
-            if (hoursModified.isEmpty()) {
+            List<EffortModification> hoursModified = hoursModificationResult.getBeingModified();
+            if ( hoursModified.isEmpty() ) {
                 LOG.warn("all allocations for task " + this + " can't be used");
                 return;
             }
-            ResourceAllocation.allocatingHours(hoursModified).allocateUntil(
-                    getIntraDayEndDate());
+            ResourceAllocation.allocatingHours(hoursModified).allocateUntil(getIntraDayEndDate());
             break;
+
         default:
             throw new RuntimeException("cant handle: " + calculatedValue);
         }
@@ -885,8 +884,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         AssignmentFunction.applyAssignmentFunctionsIfAny(toBeModified);
     }
 
-    private void markAsUnsatisfied(
-            Collection<? extends ResourceAllocation<?>> noLongerValid) {
+    private void markAsUnsatisfied(Collection<? extends ResourceAllocation<?>> noLongerValid) {
         for (ResourceAllocation<?> each : noLongerValid) {
             each.markAsUnsatisfied();
         }

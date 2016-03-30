@@ -131,10 +131,9 @@ public class GenericAllocationRow extends AllocationRow {
     }
 
     private GenericResourceAllocation createGenericAllocation(Task task) {
-        GenericResourceAllocation result = GenericResourceAllocation.create(
-                task, resourceType, criterions);
+        GenericResourceAllocation result = GenericResourceAllocation.create(task, resourceType, criterions);
         GenericResourceAllocation origin = (GenericResourceAllocation) getOrigin();
-        if (origin != null) {
+        if ( origin != null ) {
             result.overrideConsolidatedDayAssignments(origin);
             result.setAssignmentFunctionWithoutApply(origin.getAssignmentFunction());
         }

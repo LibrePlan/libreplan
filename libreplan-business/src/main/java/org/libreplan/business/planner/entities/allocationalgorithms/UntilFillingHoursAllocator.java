@@ -57,8 +57,7 @@ public abstract class UntilFillingHoursAllocator {
     private Map<ResourcesPerDayModification, List<DayAssignment>> resultAssignments = new HashMap<ResourcesPerDayModification, List<DayAssignment>>();
 
 
-    public UntilFillingHoursAllocator(Direction direction, Task task,
-            List<ResourcesPerDayModification> allocations) {
+    public UntilFillingHoursAllocator(Direction direction, Task task, List<ResourcesPerDayModification> allocations) {
         this.direction = direction;
         this.task = task;
         this.allocations = allocations;
@@ -72,31 +71,28 @@ public abstract class UntilFillingHoursAllocator {
     }
 
     public IntraDayDate untilAllocating(EffortDuration effortToAllocate) {
-        final IntraDayDate dateFromWhichToAllocate = direction
-                .getDateFromWhichToAllocate(task);
-        List<EffortPerAllocation> effortPerAllocation = effortPerAllocation(
-                dateFromWhichToAllocate, effortToAllocate);
-        if (effortPerAllocation.isEmpty()) {
+        final IntraDayDate dateFromWhichToAllocate = direction.getDateFromWhichToAllocate(task);
+        List<EffortPerAllocation> effortPerAllocation = effortPerAllocation(dateFromWhichToAllocate, effortToAllocate);
+        if ( effortPerAllocation.isEmpty() ) {
             return null;
         }
         return untilAllocating(dateFromWhichToAllocate, effortPerAllocation);
     }
 
-    private IntraDayDate untilAllocating(final IntraDayDate dateFromWhichToAllocate,
-            List<EffortPerAllocation> effortPerAllocation) {
+    private IntraDayDate untilAllocating(
+            final IntraDayDate dateFromWhichToAllocate, List<EffortPerAllocation> effortPerAllocation) {
+
         IntraDayDate currentResult = dateFromWhichToAllocate;
         for (EffortPerAllocation each : effortPerAllocation) {
-            IntraDayDate candidate = untilAllocating(dateFromWhichToAllocate,
-                    each.allocation, each.duration);
+            IntraDayDate candidate = untilAllocating(dateFromWhichToAllocate, each.allocation, each.duration);
             currentResult = pickCurrentOrCandidate(currentResult, candidate);
         }
         setAssignmentsForEachAllocation(currentResult);
         return currentResult;
     }
 
-    private IntraDayDate pickCurrentOrCandidate(IntraDayDate current,
-            IntraDayDate candidate) {
-        if (direction == Direction.BACKWARD) {
+    private IntraDayDate pickCurrentOrCandidate(IntraDayDate current, IntraDayDate candidate) {
+        if ( direction == Direction.BACKWARD ) {
             return IntraDayDate.min(current, candidate);
         }
         return IntraDayDate.max(current, candidate);
@@ -104,9 +100,9 @@ public abstract class UntilFillingHoursAllocator {
 
     private List<EffortPerAllocation> effortPerAllocation(
             IntraDayDate dateFromWhichToAllocate, EffortDuration toBeAssigned) {
+
         return new HoursPerAllocationCalculator(allocations)
-                .calculateEffortsPerAllocation(dateFromWhichToAllocate,
-                        toBeAssigned);
+                .calculateEffortsPerAllocation(dateFromWhichToAllocate, toBeAssigned);
     }
 
     public interface IAssignmentsCreator {
@@ -122,33 +118,35 @@ public abstract class UntilFillingHoursAllocator {
      * @param effortRemaining
      * @return the moment on which the allocation would be completed
      */
-    private IntraDayDate untilAllocating(IntraDayDate dateFromWhichToAllocate,
+    private IntraDayDate untilAllocating(
+            IntraDayDate dateFromWhichToAllocate,
             ResourcesPerDayModification resourcesPerDayModification,
             EffortDuration effortRemaining) {
+        
         EffortDuration taken = zero();
         EffortDuration biggestLastAssignment = zero();
         IntraDayDate current = dateFromWhichToAllocate;
-        IAssignmentsCreator assignmentsCreator = resourcesPerDayModification
-                .createAssignmentsCreator();
+        IAssignmentsCreator assignmentsCreator = resourcesPerDayModification.createAssignmentsCreator();
+
         while (effortRemaining.compareTo(zero()) > 0) {
             PartialDay day = calculateDay(current);
-            Pair<EffortDuration, EffortDuration> pair = assignForDay(
-                    resourcesPerDayModification, assignmentsCreator, day,
-                    effortRemaining);
+
+            Pair<EffortDuration, EffortDuration> pair =
+                    assignForDay(resourcesPerDayModification, assignmentsCreator, day, effortRemaining);
+
             taken = pair.getFirst();
             biggestLastAssignment = pair.getSecond();
             effortRemaining = effortRemaining.minus(taken);
 
-            if (effortRemaining.compareTo(zero()) > 0) {
+            if ( effortRemaining.compareTo(zero()) > 0 ) {
                 current = nextDay(current);
             }
         }
-        IntraDayDate finish = adjustFinish(resourcesPerDayModification, taken,
-                biggestLastAssignment, current);
+        IntraDayDate finish = adjustFinish(resourcesPerDayModification, taken, biggestLastAssignment, current);
         // We have to do it now, so the other allocations take it into account.
         // At the end it's done again with the right end date.
-        setNewDataForAllocation(resourcesPerDayModification, resultAssignments
-                .get(resourcesPerDayModification), finish);
+        setNewDataForAllocation(resourcesPerDayModification, resultAssignments.get(resourcesPerDayModification), finish);
+
         return finish;
     }
 
@@ -218,26 +216,22 @@ public abstract class UntilFillingHoursAllocator {
                 taken.plus(current.getEffortDuration()));
     }
 
-    private IntraDayDate minusEffort(IntraDayDate current,
-            EffortDuration taken, ICalendar calendar, ResourcesPerDay adjustBy) {
-        if (!current.isStartOfDay()) {
-            return current.decreaseBy(adjustBy,
-                    taken);
+    private IntraDayDate minusEffort(
+            IntraDayDate current, EffortDuration taken, ICalendar calendar, ResourcesPerDay adjustBy) {
+
+        if ( !current.isStartOfDay() ) {
+            return current.decreaseBy(adjustBy, taken);
         } else {
             LocalDate day = current.getDate().minusDays(1);
-            EffortDuration effortAtDay = calendar
-                    .asDurationOn(PartialDay.wholeDay(day),
-                            ResourcesPerDay.amount(1));
-            return IntraDayDate.create(day, effortAtDay).decreaseBy(adjustBy,
-                    taken);
+            EffortDuration effortAtDay = calendar.asDurationOn(PartialDay.wholeDay(day), ResourcesPerDay.amount(1));
+
+            return IntraDayDate.create(day, effortAtDay).decreaseBy(adjustBy, taken);
         }
     }
 
     private void setAssignmentsForEachAllocation(IntraDayDate resultDate) {
-        for (Entry<ResourcesPerDayModification, List<DayAssignment>> entry : resultAssignments
-                .entrySet()) {
-            setNewDataForAllocation(entry.getKey(), entry.getValue(),
-                    resultDate);
+        for (Entry<ResourcesPerDayModification, List<DayAssignment>> entry : resultAssignments.entrySet()) {
+            setNewDataForAllocation(entry.getKey(), entry.getValue(), resultDate);
         }
     }
 
@@ -245,12 +239,11 @@ public abstract class UntilFillingHoursAllocator {
             ResourcesPerDayModification modification,
             List<T> value,
             IntraDayDate resultDate) {
+
         @SuppressWarnings("unchecked")
-        ResourceAllocation<T> allocation = (ResourceAllocation<T>) modification
-                .getBeingModified();
+        ResourceAllocation<T> allocation = (ResourceAllocation<T>) modification.getBeingModified();
         ResourcesPerDay resourcesPerDay = modification.getGoal();
-        setNewDataForAllocation(allocation, resultDate,
-                resourcesPerDay, value);
+        setNewDataForAllocation(allocation, resultDate, resourcesPerDay, value);
     }
 
     protected Direction getDirection() {
@@ -258,17 +251,16 @@ public abstract class UntilFillingHoursAllocator {
     }
 
     protected abstract <T extends DayAssignment> void setNewDataForAllocation(
-            ResourceAllocation<T> allocation, IntraDayDate resultDate,
-            ResourcesPerDay resourcesPerDay, List<T> dayAssignments);
+            ResourceAllocation<T> allocation,
+            IntraDayDate resultDate, ResourcesPerDay resourcesPerDay,
+            List<T> dayAssignments);
 
     protected abstract CapacityResult thereAreAvailableHoursFrom(
             IntraDayDate dateFromWhichToAllocate,
             ResourcesPerDayModification resourcesPerDayModification,
             EffortDuration remainingDuration);
 
-    protected abstract void markUnsatisfied(
-            ResourcesPerDayModification allocationAttempt,
-            CapacityResult capacityResult);
+    protected abstract void markUnsatisfied(ResourcesPerDayModification allocationAttempt, CapacityResult capacityResult);
 
     /**
      *
@@ -279,23 +271,21 @@ public abstract class UntilFillingHoursAllocator {
     private Pair<EffortDuration, EffortDuration> assignForDay(
             ResourcesPerDayModification resourcesPerDayModification,
             IAssignmentsCreator assignmentsCreator,
-            PartialDay day, EffortDuration remaining) {
-        List<? extends DayAssignment> newAssignments = assignmentsCreator
-                .createAssignmentsAtDay(day, remaining,
-                        resourcesPerDayModification.getGoal());
-        resultAssignments.get(resourcesPerDayModification).addAll(
-                newAssignments);
-        return Pair.create(DayAssignment.sum(newAssignments),
-                getMaxAssignment(newAssignments));
+            PartialDay day,
+            EffortDuration remaining) {
+
+        List<? extends DayAssignment> newAssignments =
+                assignmentsCreator.createAssignmentsAtDay(day, remaining, resourcesPerDayModification.getGoal());
+
+        resultAssignments.get(resourcesPerDayModification).addAll(newAssignments);
+        return Pair.create(DayAssignment.sum(newAssignments), getMaxAssignment(newAssignments));
     }
 
-    private EffortDuration getMaxAssignment(
-            List<? extends DayAssignment> newAssignments) {
-        if (newAssignments.isEmpty()) {
+    private EffortDuration getMaxAssignment(List<? extends DayAssignment> newAssignments) {
+        if ( newAssignments.isEmpty() ) {
             return zero();
         }
-        DayAssignment max = Collections.max(newAssignments,
-                DayAssignment.byDurationComparator());
+        DayAssignment max = Collections.max(newAssignments, DayAssignment.byDurationComparator());
         return max.getDuration();
     }
 
@@ -304,21 +294,19 @@ public abstract class UntilFillingHoursAllocator {
 
         final ResourcesPerDayModification allocation;
 
-        private EffortPerAllocation(EffortDuration duration,
-                ResourcesPerDayModification allocation) {
+        private EffortPerAllocation(EffortDuration duration, ResourcesPerDayModification allocation) {
             this.duration = duration;
             this.allocation = allocation;
         }
 
         public static List<EffortPerAllocation> wrap(
-                List<ResourcesPerDayModification> allocations,
-                List<EffortDuration> durations) {
+                List<ResourcesPerDayModification> allocations, List<EffortDuration> durations) {
+
             Validate.isTrue(durations.size() == allocations.size());
             int i = 0;
             List<EffortPerAllocation> result = new ArrayList<EffortPerAllocation>();
             for(i = 0; i < allocations.size(); i++){
-                result.add(new EffortPerAllocation(durations.get(i),
-                        allocations.get(i)));
+                result.add(new EffortPerAllocation(durations.get(i), allocations.get(i)));
             }
             return result;
         }
@@ -327,36 +315,39 @@ public abstract class UntilFillingHoursAllocator {
     private class HoursPerAllocationCalculator {
         private List<ResourcesPerDayModification> allocations;
 
-        private HoursPerAllocationCalculator(
-                List<ResourcesPerDayModification> allocations) {
-            this.allocations = new ArrayList<ResourcesPerDayModification>(
-                    allocations);
+        private HoursPerAllocationCalculator(List<ResourcesPerDayModification> allocations) {
+            this.allocations = new ArrayList<ResourcesPerDayModification>(allocations);
         }
 
         public List<EffortPerAllocation> calculateEffortsPerAllocation(
                 IntraDayDate dateFromWhichToAllocate, EffortDuration toAssign) {
+
             do {
                 List<EffortDuration> durations = divideEffort(toAssign);
-                List<EffortPerAllocation> result = EffortPerAllocation.wrap(
-                        allocations, durations);
-                List<ResourcesPerDayModification> unsatisfied = getUnsatisfied(
-                        dateFromWhichToAllocate, result);
-                if (unsatisfied.isEmpty()) {
+                List<EffortPerAllocation> result = EffortPerAllocation.wrap(allocations, durations);
+                List<ResourcesPerDayModification> unsatisfied = getUnsatisfied(dateFromWhichToAllocate, result);
+
+                if ( unsatisfied.isEmpty() ) {
                     return result;
                 }
+
                 allocations.removeAll(unsatisfied);
-            } while (!allocations.isEmpty());
+
+            } while ( !allocations.isEmpty() );
+
             return Collections.emptyList();
         }
 
         private List<ResourcesPerDayModification> getUnsatisfied(
-                IntraDayDate dateFromWhichToAllocate,
-                List<EffortPerAllocation> hoursPerAllocations) {
+                IntraDayDate dateFromWhichToAllocate, List<EffortPerAllocation> hoursPerAllocations) {
+
             List<ResourcesPerDayModification> cannotSatisfy = new ArrayList<ResourcesPerDayModification>();
             for (EffortPerAllocation each : hoursPerAllocations) {
-                CapacityResult capacityResult = thereAreAvailableHoursFrom(
-                        dateFromWhichToAllocate, each.allocation, each.duration);
-                if (!capacityResult.thereIsCapacityAvailable()) {
+
+                CapacityResult capacityResult =
+                        thereAreAvailableHoursFrom(dateFromWhichToAllocate, each.allocation, each.duration);
+
+                if ( !capacityResult.thereIsCapacityAvailable() ) {
                     cannotSatisfy.add(each.allocation);
                     markUnsatisfied(each.allocation, capacityResult);
                 }
@@ -365,19 +356,18 @@ public abstract class UntilFillingHoursAllocator {
         }
 
         private List<EffortDuration> divideEffort(EffortDuration toBeDivided) {
-            ProportionalDistributor distributor = ProportionalDistributor
-                    .create(createShares());
-            int[] secondsDivided = distributor.distribute(toBeDivided
-                    .getSeconds());
+            ProportionalDistributor distributor = ProportionalDistributor.create(createShares());
+            int[] secondsDivided = distributor.distribute(toBeDivided.getSeconds());
+
             return asDurations(secondsDivided);
         }
 
         private int[] createShares() {
             int[] result = new int[allocations.size()];
             for (int i = 0; i < result.length; i++) {
-                result[i] = normalize(allocations.get(i).getGoal()
-                        .getAmount());
+                result[i] = normalize(allocations.get(i).getGoal().getAmount());
             }
+
             return result;
         }
 
@@ -386,6 +376,7 @@ public abstract class UntilFillingHoursAllocator {
             for (int each : secondsDivided) {
                 result.add(EffortDuration.seconds(each));
             }
+
             return result;
         }
 

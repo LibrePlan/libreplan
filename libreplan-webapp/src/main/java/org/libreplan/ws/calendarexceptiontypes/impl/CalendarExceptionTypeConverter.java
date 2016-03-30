@@ -51,19 +51,18 @@ public final class CalendarExceptionTypeConverter {
                 seconds);
     }
 
-    public final static CalendarExceptionType toEntity(
-            CalendarExceptionTypeDTO entityDTO) {
-        return CalendarExceptionType.create(entityDTO.code, entityDTO.name,
+    public final static CalendarExceptionType toEntity(CalendarExceptionTypeDTO entityDTO) {
+        return CalendarExceptionType.create(
+                entityDTO.code,
+                entityDTO.name,
                 CalendarExceptionTypeColorConverter.toEntity(entityDTO.color),
                 entityDTO.overAssignable,
                 EffortDuration.seconds(entityDTO.duration));
     }
 
-    public static void updateCalendarExceptionType(
-            CalendarExceptionType entity, CalendarExceptionTypeDTO entityDTO) {
+    public static void updateCalendarExceptionType(CalendarExceptionType entity, CalendarExceptionTypeDTO entityDTO) {
         entity.setName(entityDTO.name);
-        entity.setColor(CalendarExceptionTypeColorConverter
-                .toEntity(entityDTO.color));
+        entity.setColor(CalendarExceptionTypeColorConverter.toEntity(entityDTO.color));
         entity.setOverAssignable(entityDTO.overAssignable);
         entity.setDuration(EffortDuration.seconds(entityDTO.duration));
     }

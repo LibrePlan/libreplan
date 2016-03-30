@@ -48,8 +48,7 @@ public class SpecificDayAssignment extends DayAssignment {
     private abstract class ParentState {
         abstract SpecificResourceAllocation getResourceAllocation();
 
-        abstract ParentState setParent(
-                SpecificResourceAllocation genericResourceAllocation);
+        abstract ParentState setParent(SpecificResourceAllocation genericResourceAllocation);
 
         abstract ParentState setParent(SpecificDayAssignmentsContainer container);
 
@@ -158,13 +157,11 @@ public class SpecificDayAssignment extends DayAssignment {
     @NotNull
     private SpecificDayAssignmentsContainer container;
 
-    public static SpecificDayAssignment create(LocalDate day,
-            EffortDuration duration, Resource resource) {
+    public static SpecificDayAssignment create(LocalDate day, EffortDuration duration, Resource resource) {
         return create(new SpecificDayAssignment(day, duration, resource));
     }
 
-    public SpecificDayAssignment(LocalDate day, EffortDuration duration,
-            Resource resource) {
+    public SpecificDayAssignment(LocalDate day, EffortDuration duration, Resource resource) {
         super(day, duration, resource);
         this.parentState = new ContainerNotSpecified();
     }
@@ -180,10 +177,8 @@ public class SpecificDayAssignment extends DayAssignment {
         return parentState.getResourceAllocation();
     }
 
-    public void setSpecificResourceAllocation(
-            SpecificResourceAllocation specificResourceAllocation) {
-        this.parentState = this.parentState
-                .setParent(specificResourceAllocation);
+    public void setSpecificResourceAllocation(SpecificResourceAllocation specificResourceAllocation) {
+        this.parentState = this.parentState.setParent(specificResourceAllocation);
     }
 
     @Override
@@ -198,11 +193,10 @@ public class SpecificDayAssignment extends DayAssignment {
 
     @Override
     public DayAssignment withDuration(EffortDuration newDuration) {
-        SpecificDayAssignment result = create(getDay(), newDuration,
-                getResource());
-        if (container != null) {
+        SpecificDayAssignment result = create(getDay(), newDuration, getResource());
+        if ( container != null ) {
             result.parentState.setParent(container);
-        } else if (this.getSpecificResourceAllocation() != null) {
+        } else if ( this.getSpecificResourceAllocation() != null ) {
             result.parentState.setParent(this.getSpecificResourceAllocation());
         }
         return result;
