@@ -76,12 +76,14 @@ public class IntraDayDateTest {
         LocalDate tomorrow = today.plusDays(1);
         EffortDuration oneHour = EffortDuration.hours(1);
         EffortDuration halfHour = EffortDuration.minutes(30);
-        assertEquals(IntraDayDate.create(today, halfHour),
-                IntraDayDate.create(tomorrow.minusDays(1), halfHour));
-        assertEquals(IntraDayDate.create(today, halfHour).hashCode(), IntraDayDate
-                .create(tomorrow.minusDays(1), halfHour).hashCode());
-        assertThat(IntraDayDate.create(today, halfHour),
-                not(equalTo(IntraDayDate.create(today, oneHour))));
+
+        assertEquals(IntraDayDate.create(today, halfHour), IntraDayDate.create(tomorrow.minusDays(1), halfHour));
+
+        assertEquals(
+                IntraDayDate.create(today, halfHour).hashCode(),
+                IntraDayDate.create(tomorrow.minusDays(1), halfHour).hashCode());
+
+        assertThat(IntraDayDate.create(today, halfHour), not(equalTo(IntraDayDate.create(today, oneHour))));
     }
 
     @Test
@@ -94,18 +96,15 @@ public class IntraDayDateTest {
 
     @Test
     public void canGetDateTimeAtStartOfDay() {
-        DateTime dateTime = IntraDayDate.create(today, halfHour)
-                .toDateTimeAtStartOfDay();
+        DateTime dateTime = IntraDayDate.create(today, halfHour).toDateTimeAtStartOfDay();
         assertThat(dateTime, equalTo(today.toDateTimeAtStartOfDay()));
     }
 
     @Test
     public void implementsComparable() {
         assertTrue(Comparable.class.isAssignableFrom(IntraDayDate.class));
-        assertTrue(IntraDayDate.create(today, halfHour).compareTo(
-                IntraDayDate.create(today, oneHour)) < 0);
-        assertTrue(IntraDayDate.create(today, oneHour).compareTo(
-                IntraDayDate.create(tomorrow, halfHour)) < 0);
+        assertTrue(IntraDayDate.create(today, halfHour).compareTo(IntraDayDate.create(today, oneHour)) < 0);
+        assertTrue(IntraDayDate.create(today, oneHour).compareTo(IntraDayDate.create(tomorrow, halfHour)) < 0);
     }
 
     @Test
@@ -118,8 +117,7 @@ public class IntraDayDateTest {
 
     @Test
     public void untilTheSameDayReturnsZeroPartialDays() {
-        Iterable<PartialDay> days = IntraDayDate.create(today, zero())
-                .daysUntil(IntraDayDate.create(today, zero()));
+        Iterable<PartialDay> days = IntraDayDate.create(today, zero()).daysUntil(IntraDayDate.create(today, zero()));
         assertFalse(days.iterator().hasNext());
     }
 
@@ -151,22 +149,26 @@ public class IntraDayDateTest {
     public void canNowTheNumberOfDaysBetweenTwoDates() {
         IntraDayDate start = IntraDayDate.create(today, zero());
         IntraDayDate end = IntraDayDate.create(today.plusDays(1), zero());
+
         assertThat(start.numberOfDaysUntil(end), equalTo(1));
-        assertThat(
-                start.numberOfDaysUntil(IntraDayDate.create(today, hours(8))),
+
+        assertThat(start.numberOfDaysUntil(IntraDayDate.create(today, hours(8))), equalTo(0));
+
+        assertThat(IntraDayDate.create(today, hours(4))
+                .numberOfDaysUntil(IntraDayDate.create(tomorrow, hours(3))),
                 equalTo(0));
+
+        assertThat(IntraDayDate.create(today, hours(4))
+                .numberOfDaysUntil(IntraDayDate.create(tomorrow, hours(4))),
+                equalTo(1));
+
+        assertThat(IntraDayDate.create(today, hours(4))
+                .numberOfDaysUntil(IntraDayDate.create(tomorrow, hours(5))),
+                equalTo(1));
+
         assertThat(
-                IntraDayDate.create(today, hours(4)).numberOfDaysUntil(
-                        IntraDayDate.create(tomorrow, hours(3))), equalTo(0));
-        assertThat(
-                IntraDayDate.create(today, hours(4)).numberOfDaysUntil(
-                        IntraDayDate.create(tomorrow, hours(4))), equalTo(1));
-        assertThat(
-                IntraDayDate.create(today, hours(4)).numberOfDaysUntil(
-                        IntraDayDate.create(tomorrow, hours(5))), equalTo(1));
-        assertThat(
-                IntraDayDate.create(today, hours(4)).numberOfDaysUntil(
-                        IntraDayDate.create(tomorrow.plusDays(1), hours(3))),
+                IntraDayDate.create(today, hours(4))
+                        .numberOfDaysUntil(IntraDayDate.create(tomorrow.plusDays(1), hours(3))),
                 equalTo(1));
     }
 
@@ -188,9 +190,10 @@ public class IntraDayDateTest {
         IntraDayDate end = IntraDayDate.create(today, oneHour);
         IntraDayDate anotherEnd = IntraDayDate.create(tomorrow, halfHour);
         assertThat(IntraDayDate.toList(start.daysUntil(end)), delimitedBy(start, end));
-        assertThat(IntraDayDate.toList(start.daysUntil(anotherEnd)),
-                delimitedBy(start, IntraDayDate.create(tomorrow, zero()),
-                        anotherEnd));
+
+        assertThat(
+                IntraDayDate.toList(start.daysUntil(anotherEnd)),
+                delimitedBy(start, IntraDayDate.create(tomorrow, zero()), anotherEnd));
     }
 
     @Test
@@ -212,35 +215,28 @@ public class IntraDayDateTest {
 
     @Test
     public void aPartialDayCanLimitAWorkingDayDuration() {
-        PartialDay day = new PartialDay(IntraDayDate.create(today,
-                halfHour), IntraDayDate.create(today, oneHour));
+        PartialDay day = new PartialDay(IntraDayDate.create(today, halfHour), IntraDayDate.create(today, oneHour));
         assertThat(day.limitWorkingDay(hours(10)), equalTo(minutes(30)));
         assertThat(day.limitWorkingDay(minutes(40)), equalTo(minutes(10)));
-        PartialDay completeDay = new PartialDay(IntraDayDate.startOfDay(today),
-                IntraDayDate.startOfDay(tomorrow));
+
+        PartialDay completeDay = new PartialDay(IntraDayDate.startOfDay(today), IntraDayDate.startOfDay(tomorrow));
         assertThat(completeDay.limitWorkingDay(hours(10)), equalTo(hours(10)));
-        PartialDay startsInTheMiddle = new PartialDay(IntraDayDate.create(
-                today, EffortDuration.hours(3)),
-                IntraDayDate.startOfDay(tomorrow));
-        assertThat(startsInTheMiddle.limitWorkingDay(hours(10)),
-                equalTo(hours(7)));
+
+        PartialDay startsInTheMiddle =
+                new PartialDay(IntraDayDate.create(today, EffortDuration.hours(3)), IntraDayDate.startOfDay(tomorrow));
+        assertThat(startsInTheMiddle.limitWorkingDay(hours(10)), equalTo(hours(7)));
         assertThat(startsInTheMiddle.limitWorkingDay(hours(3)), equalTo(zero()));
         assertThat(startsInTheMiddle.limitWorkingDay(hours(2)), equalTo(zero()));
-        PartialDay startAndEndInSameDay = new PartialDay(IntraDayDate.create(
-                today, EffortDuration.hours(3)), IntraDayDate.create(today,
-                EffortDuration.hours(6)));
-        assertThat(startAndEndInSameDay.limitWorkingDay(hours(4)),
-                equalTo(hours(1)));
-        assertThat(startAndEndInSameDay.limitWorkingDay(hours(5)),
-                equalTo(hours(2)));
-        assertThat(startAndEndInSameDay.limitWorkingDay(hours(6)),
-                equalTo(hours(3)));
-        assertThat(startAndEndInSameDay.limitWorkingDay(hours(10)),
-                equalTo(hours(3)));
+
+        PartialDay startAndEndInSameDay = new PartialDay(IntraDayDate.create(today, EffortDuration.hours(3)),
+                IntraDayDate.create(today, EffortDuration.hours(6)));
+        assertThat(startAndEndInSameDay.limitWorkingDay(hours(4)), equalTo(hours(1)));
+        assertThat(startAndEndInSameDay.limitWorkingDay(hours(5)), equalTo(hours(2)));
+        assertThat(startAndEndInSameDay.limitWorkingDay(hours(6)), equalTo(hours(3)));
+        assertThat(startAndEndInSameDay.limitWorkingDay(hours(10)), equalTo(hours(3)));
     }
 
-    private Matcher<Iterable<PartialDay>> delimitedBy(
-            final IntraDayDate... dates) {
+    private Matcher<Iterable<PartialDay>> delimitedBy(final IntraDayDate... dates) {
         return new BaseMatcher<Iterable<PartialDay>>() {
 
             @Override
@@ -261,7 +257,7 @@ public class IntraDayDateTest {
                     result.add(each.getStart());
                     last = each;
                 }
-                if (last != null) {
+                if ( last != null ) {
                     result.add(last.getEnd());
                 }
                 return result;
@@ -269,8 +265,7 @@ public class IntraDayDateTest {
 
             @Override
             public void describeTo(Description description) {
-                description.appendText(Arrays.asList(group(dates))
-                        .toString());
+                description.appendText(Arrays.asList(group(dates)).toString());
             }
 
             private Object group(IntraDayDate[] dates) {
@@ -285,16 +280,14 @@ public class IntraDayDateTest {
 
     @Test
     public void roundsUpGoesToTheNextLocalDateOrKeepsTheSame() {
-        assertThat(IntraDayDate.create(today, halfHour).roundUp(),
-                equalTo(today.plusDays(1)));
+        assertThat(IntraDayDate.create(today, halfHour).roundUp(), equalTo(today.plusDays(1)));
 
         assertThat(IntraDayDate.startOfDay(today).roundUp(), equalTo(today));
     }
 
     @Test
     public void roundDownGoesToPreviousLocalDateOrKeepsTheSame() {
-        assertThat(IntraDayDate.create(today, halfHour).roundDown(),
-                equalTo(today));
+        assertThat(IntraDayDate.create(today, halfHour).roundDown(), equalTo(today));
 
         assertThat(IntraDayDate.startOfDay(today).roundDown(), equalTo(today));
     }
@@ -303,15 +296,12 @@ public class IntraDayDateTest {
     public void canIncreaseAnIntraDayDayBySomeEffort() {
         LocalDate today = new LocalDate();
         IntraDayDate intraDate = IntraDayDate.create(today, hours(2));
-        EffortDuration[] efforts = { hours(4), hours(8), hours(12), hours(0),
-                hours(16) };
+        EffortDuration[] efforts = { hours(4), hours(8), hours(12), hours(0), hours(16) };
         for (EffortDuration effort : efforts) {
-            IntraDayDate newDay = intraDate.increaseBy(
-                    ResourcesPerDay.amount(1), effort);
+            IntraDayDate newDay = intraDate.increaseBy(ResourcesPerDay.amount(1), effort);
 
             assertThat(newDay.getDate(), equalTo(today));
-            assertThat(newDay.getEffortDuration(), equalTo(hours(2)
-                    .plus(effort)));
+            assertThat(newDay.getEffortDuration(), equalTo(hours(2).plus(effort)));
         }
     }
 
@@ -322,16 +312,17 @@ public class IntraDayDateTest {
 
         EffortDuration effort = hours(6);
 
-        ResourcesPerDay half = ResourcesPerDay.amount(new BigDecimal(BigInteger
-                .valueOf(5), 1));
-        ResourcesPerDay oneQuarter = ResourcesPerDay.amount(new BigDecimal(
-                BigInteger.valueOf(25), 2));
-        ResourcesPerDay[] resourcesPerDays = { ResourcesPerDay.amount(2),
-                ResourcesPerDay.amount(3), half, oneQuarter,
+        ResourcesPerDay half = ResourcesPerDay.amount(new BigDecimal(BigInteger.valueOf(5), 1));
+        ResourcesPerDay oneQuarter = ResourcesPerDay.amount(new BigDecimal(BigInteger.valueOf(25), 2));
+
+        ResourcesPerDay[] resourcesPerDays = {
+                ResourcesPerDay.amount(2),
+                ResourcesPerDay.amount(3),
+                half,
+                oneQuarter,
                 ResourcesPerDay.amount(4) };
 
-        EffortDuration[] ends = { hours(3), hours(2), hours(12), hours(24),
-                hours(1).and(30, Granularity.MINUTES) };
+        EffortDuration[] ends = { hours(3), hours(2), hours(12), hours(24), hours(1).and(30, Granularity.MINUTES) };
 
         for (int i = 0; i < resourcesPerDays.length; i++) {
             ResourcesPerDay r = resourcesPerDays[i];
@@ -347,15 +338,12 @@ public class IntraDayDateTest {
     public void canDecreaseAnIntraDayBySomeEffort() {
         LocalDate today = new LocalDate();
         IntraDayDate intraDate = IntraDayDate.create(today, hours(10));
-        EffortDuration[] efforts = { hours(4), hours(8), hours(5), hours(10),
-                hours(1) };
+        EffortDuration[] efforts = { hours(4), hours(8), hours(5), hours(10), hours(1) };
         for (EffortDuration effort : efforts) {
-            IntraDayDate newDay = intraDate.decreaseBy(
-                    ResourcesPerDay.amount(1), effort);
+            IntraDayDate newDay = intraDate.decreaseBy(ResourcesPerDay.amount(1), effort);
 
             assertThat(newDay.getDate(), equalTo(today));
-            assertThat(newDay.getEffortDuration(),
-                    equalTo(hours(10).minus(effort)));
+            assertThat(newDay.getEffortDuration(), equalTo(hours(10).minus(effort)));
         }
     }
 
@@ -363,8 +351,7 @@ public class IntraDayDateTest {
     public void theDateAlwaysKeepsBeingTheSameWhenDecreasing() {
         LocalDate today = new LocalDate();
         IntraDayDate intraDate = IntraDayDate.create(today, hours(10));
-        assertThat(intraDate.decreaseBy(ResourcesPerDay.amount(1), hours(12))
-                .getDate(), equalTo(today));
+        assertThat(intraDate.decreaseBy(ResourcesPerDay.amount(1), hours(12)).getDate(), equalTo(today));
     }
 
     @Test
@@ -388,58 +375,43 @@ public class IntraDayDateTest {
         assertThat(start.effortUntil(end), equalTo(hours(8 * 2 + 5 + 6)));
 
         end = IntraDayDate.create(today.plusDays(3), minutes(30));
-        assertThat(start.effortUntil(end),
-                equalTo(hours(8 * 2 + 5).plus(minutes(30))));
+        assertThat(start.effortUntil(end), equalTo(hours(8 * 2 + 5).plus(minutes(30))));
 
         start = IntraDayDate.create(today, hours(5).plus(minutes(40)));
-        assertThat(start.effortUntil(end),
-                equalTo(hours(8 * 2 + 2).plus(minutes(50))));
+        assertThat(start.effortUntil(end), equalTo(hours(8 * 2 + 2).plus(minutes(50))));
     }
 
     @Test
     public void calculateAddEffort() {
         IntraDayDate start = IntraDayDate.create(today, zero());
 
-        assertThat(start.addEffort(hours(24)),
-                equalTo(IntraDayDate.create(today.plusDays(3), hours(0))));
+        assertThat(start.addEffort(hours(24)), equalTo(IntraDayDate.create(today.plusDays(3), hours(0))));
 
-        assertThat(start.addEffort(hours(20)),
-                equalTo(IntraDayDate.create(today.plusDays(2), hours(4))));
+        assertThat(start.addEffort(hours(20)), equalTo(IntraDayDate.create(today.plusDays(2), hours(4))));
 
-        assertThat(
-                start.addEffort(hours(20).plus(minutes(20))),
-                equalTo(IntraDayDate.create(today.plusDays(2),
-                        hours(4).plus(minutes(20)))));
+        assertThat(start.addEffort(hours(20).plus(minutes(20))),
+                equalTo(IntraDayDate.create(today.plusDays(2), hours(4).plus(minutes(20)))));
 
         start = IntraDayDate.create(today, hours(3));
-        assertThat(start.addEffort(hours(24)),
-                equalTo(IntraDayDate.create(today.plusDays(3), hours(3))));
+        assertThat(start.addEffort(hours(24)), equalTo(IntraDayDate.create(today.plusDays(3), hours(3))));
 
-        assertThat(start.addEffort(hours(20)),
-                equalTo(IntraDayDate.create(today.plusDays(2), hours(7))));
+        assertThat(start.addEffort(hours(20)), equalTo(IntraDayDate.create(today.plusDays(2), hours(7))));
 
         assertThat(start.addEffort(hours(20).plus(minutes(20))),
-                equalTo(IntraDayDate.create(today.plusDays(2),
-                        hours(7).plus(minutes(20)))));
+                equalTo(IntraDayDate.create(today.plusDays(2), hours(7).plus(minutes(20)))));
 
         start = IntraDayDate.create(today, hours(3).plus(minutes(40)));
-        assertThat(
-                start.addEffort(hours(24)),
-                equalTo(IntraDayDate.create(today.plusDays(3),
-                        hours(3).plus(minutes(40)))));
+        assertThat(start.addEffort(hours(24)),
+                equalTo(IntraDayDate.create(today.plusDays(3), hours(3).plus(minutes(40)))));
 
-        assertThat(
-                start.addEffort(hours(20)),
-                equalTo(IntraDayDate.create(today.plusDays(2),
-                        hours(7).plus(minutes(40)))));
+        assertThat(start.addEffort(hours(20)),
+                equalTo(IntraDayDate.create(today.plusDays(2), hours(7).plus(minutes(40)))));
 
         assertThat(start.addEffort(hours(20).plus(minutes(20))),
                 equalTo(IntraDayDate.create(today.plusDays(3), hours(0))));
 
-        assertThat(
-                start.addEffort(hours(20).plus(minutes(10))),
-                equalTo(IntraDayDate.create(today.plusDays(2),
-                        hours(7).plus(minutes(50)))));
+        assertThat(start.addEffort(hours(20).plus(minutes(10))),
+                equalTo(IntraDayDate.create(today.plusDays(2), hours(7).plus(minutes(50)))));
     }
 
 }

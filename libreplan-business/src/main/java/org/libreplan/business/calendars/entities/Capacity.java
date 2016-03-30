@@ -148,14 +148,11 @@ public class Capacity {
         return overAssignableWithoutLimit(false);
     }
 
-    public Capacity overAssignableWithoutLimit(
-            boolean overAssignableWithoutLimit) {
-        if (overAssignableWithoutLimit) {
+    public Capacity overAssignableWithoutLimit(boolean overAssignableWithoutLimit) {
+        if ( overAssignableWithoutLimit ) {
             return new Capacity(standardEffort, null);
         } else {
-            return new Capacity(standardEffort,
-                    allowedExtraEffort == null ? EffortDuration.zero()
-                            : allowedExtraEffort);
+            return new Capacity(standardEffort, allowedExtraEffort == null ? EffortDuration.zero() : allowedExtraEffort);
         }
     }
 

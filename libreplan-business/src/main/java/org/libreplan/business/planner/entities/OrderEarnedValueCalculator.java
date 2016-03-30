@@ -63,10 +63,9 @@ public class OrderEarnedValueCalculator extends EarnedValueCalculator implements
         return accumulateResult(result);
     }
 
-    private SortedMap<LocalDate, BigDecimal> accumulateResult(
-            SortedMap<LocalDate, BigDecimal> map) {
+    private SortedMap<LocalDate, BigDecimal> accumulateResult(SortedMap<LocalDate, BigDecimal> map) {
         SortedMap<LocalDate, BigDecimal> result = new TreeMap<LocalDate, BigDecimal>();
-        if (map.isEmpty()) {
+        if ( map.isEmpty() ) {
             return result;
         }
 
@@ -79,14 +78,12 @@ public class OrderEarnedValueCalculator extends EarnedValueCalculator implements
         return result;
     }
 
-    private void addCost(SortedMap<LocalDate, BigDecimal> currentCost,
-            SortedMap<LocalDate, BigDecimal> additionalCost) {
+    private void addCost(SortedMap<LocalDate, BigDecimal> currentCost, SortedMap<LocalDate, BigDecimal> additionalCost) {
         for (LocalDate day : additionalCost.keySet()) {
-            if (!currentCost.containsKey(day)) {
+            if ( !currentCost.containsKey(day) ) {
                 currentCost.put(day, BigDecimal.ZERO);
             }
-            currentCost.put(day,
-                    currentCost.get(day).add(additionalCost.get(day)));
+            currentCost.put(day, currentCost.get(day).add(additionalCost.get(day)));
         }
     }
 
@@ -104,17 +101,15 @@ public class OrderEarnedValueCalculator extends EarnedValueCalculator implements
     @Transactional(readOnly = true)
     public BigDecimal getBudgetAtCompletion(Order order) {
 		SortedMap<LocalDate, BigDecimal> budgedtedCost = calculateBudgetedCostWorkScheduled(order);
-		return !budgedtedCost.isEmpty() ? budgedtedCost.get(budgedtedCost
-				.lastKey()) : BigDecimal.ZERO;
+		return !budgedtedCost.isEmpty() ? budgedtedCost.get(budgedtedCost.lastKey()) : BigDecimal.ZERO;
     }
 
     @Override
     @Transactional(readOnly = true)
-    public SortedMap<LocalDate, BigDecimal> calculateBudgetedCostWorkScheduled(
-            Order order) {
+    public SortedMap<LocalDate, BigDecimal> calculateBudgetedCostWorkScheduled(Order order) {
         SortedMap<LocalDate, BigDecimal> result = new TreeMap<LocalDate, BigDecimal>();
         for (TaskElement taskElement : getAllTaskElements(order)) {
-            if (taskElement instanceof Task) {
+            if ( taskElement instanceof Task ) {
                 addCost(result, getEstimatedCost((Task) taskElement));
             }
         }
@@ -158,7 +153,7 @@ public class OrderEarnedValueCalculator extends EarnedValueCalculator implements
             Order order) {
         SortedMap<LocalDate, BigDecimal> estimatedCost = new TreeMap<LocalDate, BigDecimal>();
         for (TaskElement taskElement : getAllTaskElements(order)) {
-            if (taskElement instanceof Task) {
+            if ( taskElement instanceof Task ) {
                 addCost(estimatedCost, getAdvanceCost((Task) taskElement));
             }
         }
@@ -172,7 +167,7 @@ public class OrderEarnedValueCalculator extends EarnedValueCalculator implements
     @Override
     public BigDecimal getCostPerformanceIndex(BigDecimal budgetedCost,
             BigDecimal actualCost) {
-        if (BigDecimal.ZERO.compareTo(actualCost) == 0) {
+        if ( BigDecimal.ZERO.compareTo(actualCost) == 0 ) {
             return BigDecimal.ZERO;
         }
         return budgetedCost.setScale(4)
@@ -188,9 +183,8 @@ public class OrderEarnedValueCalculator extends EarnedValueCalculator implements
     }
 
     @Override
-    public BigDecimal getEstimateAtCompletion(BigDecimal budgetAtCompletion,
-            BigDecimal costPerformanceIndex) {
-        if (BigDecimal.ZERO.compareTo(costPerformanceIndex) == 0) {
+    public BigDecimal getEstimateAtCompletion(BigDecimal budgetAtCompletion, BigDecimal costPerformanceIndex) {
+        if ( BigDecimal.ZERO.compareTo(costPerformanceIndex) == 0 ) {
             return BigDecimal.ZERO;
         }
         return budgetAtCompletion.setScale(2)
@@ -199,8 +193,7 @@ public class OrderEarnedValueCalculator extends EarnedValueCalculator implements
     }
 
     @Override
-    public BigDecimal getEstimateToComplete(BigDecimal estimateAtCompletion,
-            BigDecimal actualCostWorkPerformed) {
+    public BigDecimal getEstimateToComplete(BigDecimal estimateAtCompletion, BigDecimal actualCostWorkPerformed) {
         return estimateAtCompletion.subtract(actualCostWorkPerformed);
     }
 

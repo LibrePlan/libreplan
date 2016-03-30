@@ -44,8 +44,7 @@ import org.zkoss.ganttz.util.Interval;
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  * @author Diego Pino García <dpino@igalia.com>
  *
- *         Abstract class with the common functionality for the earned value
- *         chart.
+ * Abstract class with the common functionality for the earned value chart.
  */
 public abstract class EarnedValueChartFiller extends ChartFiller {
 
@@ -65,8 +64,7 @@ public abstract class EarnedValueChartFiller extends ChartFiller {
         this.earnedValueCalculator = earnedValueCalculator;
     }
 
-    protected Plotinfo createPlotInfo(SortedMap<LocalDate, BigDecimal> map,
-            Interval interval, String lineColor) {
+    protected Plotinfo createPlotInfo(SortedMap<LocalDate, BigDecimal> map, Interval interval, String lineColor) {
         Plotinfo plotInfo = createPlotinfo(map, interval, true);
         plotInfo.setLineColor(lineColor);
         return plotInfo;
@@ -74,27 +72,37 @@ public abstract class EarnedValueChartFiller extends ChartFiller {
 
     public void calculateValues(Interval interval) {
         this.indicatorsInterval = interval;
+
         // BCWS
         calculateBudgetedCostWorkScheduled(interval);
+
         // ACWP
         calculateActualCostWorkPerformed(interval);
+
         // BCWP
         calculateBudgetedCostWorkPerformed(interval);
 
         // CV
         calculateCostVariance();
+
         // SV
         calculateScheduleVariance();
+
         // BAC
         calculateBudgetAtCompletion();
+
         // EAC
         calculateEstimateAtCompletion();
+
         // VAC
         calculateVarianceAtCompletion();
+
         // ETC
         calculateEstimatedToComplete();
+
         // CPI
         calculateCostPerformanceIndex();
+
         // SPI
         calculateSchedulePerformanceIndex();
     }
@@ -129,10 +137,8 @@ public abstract class EarnedValueChartFiller extends ChartFiller {
     }
 
     private void calculateBudgetAtCompletion() {
-        setIndicator(
-                EarnedValueType.BAC,
-                earnedValueCalculator
-                        .calculateBudgetAtCompletion(getIndicator(EarnedValueType.BCWS)));
+        setIndicator(EarnedValueType.BAC,
+                earnedValueCalculator.calculateBudgetAtCompletion(getIndicator(EarnedValueType.BCWS)));
     }
 
     private void calculateEstimateAtCompletion() {
@@ -176,8 +182,7 @@ public abstract class EarnedValueChartFiller extends ChartFiller {
         indicators.put(type, values);
     }
 
-    public void setIndicatorInInterval(EarnedValueType type,
-            Interval interval, SortedMap<LocalDate, BigDecimal> values) {
+    public void setIndicatorInInterval(EarnedValueType type, Interval interval, SortedMap<LocalDate, BigDecimal> values) {
         addZeroBeforeTheFirstValue(values);
         indicators.put(type, calculatedValueForEveryDay(values, interval));
     }
@@ -244,18 +249,17 @@ public abstract class EarnedValueChartFiller extends ChartFiller {
      */
     public enum EarnedValueType {
 
-        BCWS(_("BCWS"), _("Budgeted Cost Work Scheduled"), "#0000FF"), ACWP(
-                _("ACWP"), _("Actual Cost Work Performed"), "#FF0000"), BCWP(
-                _("BCWP"), _("Budgeted Cost Work Performed"), "#00FF00"), CV(
-                _("CV"), _("Cost Variance"), "#FF8800"), SV(_("SV"),
-                _("Schedule Variance"), "#00FFFF"), BAC(_("BAC"),
-                _("Budget At Completion"), "#FF00FF"), EAC(_("EAC"),
-                _("Estimate At Completion"), "#880000"), VAC(_("VAC"),
-                _("Variance At Completion"), "#000088"), ETC(_("ETC"),
-                _("Estimate To Complete"), "#008800"), CPI(_("CPI"),
-                _("Cost Performance Index"), "#888800"), SPI(_("SPI"),
-                _("Schedule Performance Index"), "#008888")
-        ;
+        BCWS(_("BCWS"), _("Budgeted Cost Work Scheduled"), "#0000FF"),
+        ACWP(_("ACWP"), _("Actual Cost Work Performed"), "#FF0000"),
+        BCWP(_("BCWP"), _("Budgeted Cost Work Performed"), "#00FF00"),
+        CV(_("CV"), _("Cost Variance"), "#FF8800"),
+        SV(_("SV"), _("Schedule Variance"), "#00FFFF"),
+        BAC(_("BAC"), _("Budget At Completion"), "#FF00FF"),
+        EAC(_("EAC"), _("Estimate At Completion"), "#880000"),
+        VAC(_("VAC"), _("Variance At Completion"), "#000088"),
+        ETC(_("ETC"), _("Estimate To Complete"), "#008800"),
+        CPI(_("CPI"), _("Cost Performance Index"), "#888800"),
+        SPI(_("SPI"), _("Schedule Performance Index"), "#008888");
 
         /**
          * Forces to mark the string as needing translation
@@ -268,7 +272,7 @@ public abstract class EarnedValueChartFiller extends ChartFiller {
         private String name;
         private String color;
 
-        private EarnedValueType(String acronym, String name, String color) {
+        EarnedValueType(String acronym, String name, String color) {
             this.acronym = acronym;
             this.name = name;
             this.color = color;

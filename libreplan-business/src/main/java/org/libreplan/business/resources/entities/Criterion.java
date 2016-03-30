@@ -51,8 +51,7 @@ import org.libreplan.business.resources.daos.ICriterionDAO;
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
-public class Criterion extends IntegrationEntity implements ICriterion,
-        Comparable<Criterion> {
+public class Criterion extends IntegrationEntity implements ICriterion, Comparable<Criterion> {
 
     public static Criterion createUnvalidated(String code, String name,
         CriterionType type, Criterion parent, Boolean active) {
@@ -71,8 +70,7 @@ public class Criterion extends IntegrationEntity implements ICriterion,
 
     }
 
-    public static Set<Criterion> withAllDescendants(
-            Collection<? extends Criterion> originalCriteria) {
+    public static Set<Criterion> withAllDescendants(Collection<? extends Criterion> originalCriteria) {
         Set<Criterion> result = new HashSet<Criterion>();
         for (Criterion each : originalCriteria) {
             result.add(each);
@@ -85,14 +83,13 @@ public class Criterion extends IntegrationEntity implements ICriterion,
 
         @Override
         public int compare(Criterion o1, Criterion o2) {
-            if (o1.getName() == null) {
+            if ( o1.getName() == null ) {
                 return 1;
             }
-            if (o2.getName() == null) {
+            if ( o2.getName() == null ) {
                 return -1;
             }
-            return o1.getName().toLowerCase()
-                    .compareTo(o2.getName().toLowerCase());
+            return o1.getName().toLowerCase().compareTo(o2.getName().toLowerCase());
         }
     };
 
@@ -126,30 +123,23 @@ public class Criterion extends IntegrationEntity implements ICriterion,
         }
     };
 
-    public static List<Criterion> sortByName(
-            Collection<? extends Criterion> criterions) {
+    public static List<Criterion> sortByName(Collection<? extends Criterion> criterions) {
         List<Criterion> result = new ArrayList<Criterion>(criterions);
         Collections.sort(result, byName);
         return result;
     }
 
     @SuppressWarnings("unchecked")
-    public static List<Criterion> sortByTypeAndName(
-            Collection<? extends Criterion> criterions) {
+    public static List<Criterion> sortByTypeAndName(Collection<? extends Criterion> criterions) {
         List<Criterion> result = new ArrayList<Criterion>(criterions);
-        Collections.sort(result,
-                ComparatorUtils.chainedComparator(byType, byName));
+        Collections.sort(result, ComparatorUtils.chainedComparator(byType, byName));
         return result;
     }
 
     @SuppressWarnings("unchecked")
-    public static List<Criterion> sortByInclusionTypeAndName(
-            Collection<? extends Criterion> criterions) {
+    public static List<Criterion> sortByInclusionTypeAndName(Collection<? extends Criterion> criterions) {
         List<Criterion> result = new ArrayList<Criterion>(criterions);
-        Collections.sort(
-                result,
-                ComparatorUtils.chainedComparator(new Comparator[] {
-                        byInclusion, byType, byName }));
+        Collections.sort(result, ComparatorUtils.chainedComparator(new Comparator[] {byInclusion, byType, byName }));
         return result;
     }
 
@@ -164,10 +154,8 @@ public class Criterion extends IntegrationEntity implements ICriterion,
         return getCaptionFor(ResourceEnum.WORKER, criteria);
     }
 
-    public static String getCaptionFor(
-            GenericResourceAllocation allocation) {
-        return getCaptionFor(allocation.getResourceType(),
-                allocation.getCriterions());
+    public static String getCaptionFor(GenericResourceAllocation allocation) {
+        return getCaptionFor(allocation.getResourceType(), allocation.getCriterions());
     }
 
     /**
@@ -176,9 +164,8 @@ public class Criterion extends IntegrationEntity implements ICriterion,
      * @param criteria
      * @return
      */
-    public static String getCaptionFor(ResourceEnum resourceType,
-            Collection<? extends Criterion> criteria) {
-        if (criteria.isEmpty()) {
+    public static String getCaptionFor(ResourceEnum resourceType, Collection<? extends Criterion> criteria) {
+        if ( criteria.isEmpty() ) {
             return allCaptionFor(resourceType);
         }
         List<String> result = new ArrayList<String>();

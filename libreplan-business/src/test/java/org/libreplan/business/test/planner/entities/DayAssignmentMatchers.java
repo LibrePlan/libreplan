@@ -86,19 +86,18 @@ public class DayAssignmentMatchers {
         }
     }
 
-    public static final Matcher<List<? extends DayAssignment>> haveHours(
-            final int... hours) {
+    public static final Matcher<List<? extends DayAssignment>> haveHours(final int... hours) {
         return new BaseMatcher<List<? extends DayAssignment>>() {
 
             @Override
             public boolean matches(Object value) {
-                if (value instanceof List) {
+                if ( value instanceof List ) {
                     List<? extends DayAssignment> assignments = (List<? extends DayAssignment>) value;
-                    if (assignments.size() != hours.length) {
+                    if ( assignments.size() != hours.length ) {
                         return false;
                     }
                     for (int i = 0; i < hours.length; i++) {
-                        if (hours[i] != assignments.get(i).getHours()) {
+                        if ( hours[i] != assignments.get(i).getHours() ) {
                             return false;
                         }
                     }
@@ -109,8 +108,7 @@ public class DayAssignmentMatchers {
 
             @Override
             public void describeTo(Description description) {
-                description.appendText("must have hours: "
-                        + Arrays.toString(hours));
+                description.appendText("must have hours: " + Arrays.toString(hours));
             }
         };
     }

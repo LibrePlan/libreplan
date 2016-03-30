@@ -47,8 +47,7 @@ public class AssignedEffortForResource {
      */
     public interface IAssignedEffortForResource {
 
-        public EffortDuration getAssignedDurationAt(Resource resource,
-                LocalDate day);
+        public EffortDuration getAssignedDurationAt(Resource resource, LocalDate day);
     }
 
     private AssignedEffortForResource() {
@@ -83,18 +82,16 @@ public class AssignedEffortForResource {
      * @return a {@link IAssignedEffortForResource} that returns the sum of
      *         calling all provided <code>assignedEffortForResources</code>.
      */
-    public static IAssignedEffortForResource sum(
-            final IAssignedEffortForResource... assignedEffortForResources) {
+    public static IAssignedEffortForResource sum(final IAssignedEffortForResource... assignedEffortForResources) {
         return new IAssignedEffortForResource() {
 
             @Override
-            public EffortDuration getAssignedDurationAt(Resource resource,
-                    LocalDate day) {
+            public EffortDuration getAssignedDurationAt(Resource resource, LocalDate day) {
                 EffortDuration result = EffortDuration.zero();
+
                 for (IAssignedEffortForResource each : assignedEffortForResources) {
-                    EffortDuration e = each
-                            .getAssignedDurationAt(resource, day);
-                    if (e != null) {
+                    EffortDuration e = each.getAssignedDurationAt(resource, day);
+                    if ( e != null ) {
                         result = result.plus(e);
                     }
                 }
@@ -108,8 +105,8 @@ public class AssignedEffortForResource {
      */
     public static IAssignedEffortForResource sum(
             Collection<? extends IAssignedEffortForResource> assignedEffortForResources) {
-        return sum(assignedEffortForResources
-                .toArray(new IAssignedEffortForResource[0]));
+
+        return sum(assignedEffortForResources.toArray(new IAssignedEffortForResource[0]));
     }
 
     public static WithTheLoadOf withTheLoadOf(
@@ -128,15 +125,13 @@ public class AssignedEffortForResource {
         private final Set<? extends ResourceAllocation<?>> allocations;
         private final IAssignedEffortForResource implementation;
 
-        public WithTheLoadOf(
-                Collection<? extends ResourceAllocation<?>> allocations) {
+        public WithTheLoadOf(Collection<? extends ResourceAllocation<?>> allocations) {
             this.allocations = new HashSet<ResourceAllocation<?>>(allocations);
             this.implementation = sum(this.allocations);
         }
 
         @Override
-        public EffortDuration getAssignedDurationAt(Resource resource,
-                LocalDate day) {
+        public EffortDuration getAssignedDurationAt(Resource resource, LocalDate day) {
             return implementation.getAssignedDurationAt(resource, day);
         }
 
@@ -164,8 +159,7 @@ public class AssignedEffortForResource {
             this.allocations = BaseEntity.byId(discountFrom);
         }
 
-        public EffortDuration getAssignedDurationAt(Resource resource,
-                LocalDate day) {
+        public EffortDuration getAssignedDurationAt(Resource resource, LocalDate day) {
             return resource.getAssignedDurationDiscounting(allocations, day);
         }
     }

@@ -80,11 +80,9 @@ public class SpecificResourceAllocation extends
      * @param task
      * @return
      */
-    public static SpecificResourceAllocation createForLimiting(Resource resource,
-            Task task) {
+    public static SpecificResourceAllocation createForLimiting(Resource resource, Task task) {
         assert resource.isLimitingResource();
-        SpecificResourceAllocation result = create(new SpecificResourceAllocation(
-                task));
+        SpecificResourceAllocation result = create(new SpecificResourceAllocation(task));
         result.setResource(resource);
         result.setResourcesPerDayToAmount(1);
         return result;
@@ -97,41 +95,34 @@ public class SpecificResourceAllocation extends
 
     @Valid
     private Set<SpecificDayAssignmentsContainer> getSpecificDayAssignmentsContainers() {
-        return new HashSet<SpecificDayAssignmentsContainer>(
-                specificDayAssignmentsContainers);
+        return new HashSet<SpecificDayAssignmentsContainer>(specificDayAssignmentsContainers);
     }
 
-    public static SpecificResourceAllocation createForTesting(
-            ResourcesPerDay resourcesPerDay, Task task) {
-        return create(new SpecificResourceAllocation(
-                resourcesPerDay, task));
+    public static SpecificResourceAllocation createForTesting(ResourcesPerDay resourcesPerDay, Task task) {
+        return create(new SpecificResourceAllocation(resourcesPerDay, task));
     }
 
     public SpecificResourceAllocation() {
     }
 
     @Override
-    protected SpecificDayAssignmentsContainer retrieveOrCreateContainerFor(
-            Scenario scenario) {
+    protected SpecificDayAssignmentsContainer retrieveOrCreateContainerFor(Scenario scenario) {
         SpecificDayAssignmentsContainer retrieved = retrieveContainerFor(scenario);
-        if (retrieved != null) {
+        if ( retrieved != null ) {
             return retrieved;
         }
-        SpecificDayAssignmentsContainer result = SpecificDayAssignmentsContainer
-                .create(this, scenario);
+        SpecificDayAssignmentsContainer result = SpecificDayAssignmentsContainer.create(this, scenario);
         specificDayAssignmentsContainers.add(result);
         return result;
     }
 
     @Override
-    protected SpecificDayAssignmentsContainer retrieveContainerFor(
-            Scenario scenario) {
+    protected SpecificDayAssignmentsContainer retrieveContainerFor(Scenario scenario) {
         Map<Scenario, SpecificDayAssignmentsContainer> containers = containersByScenario();
         return containers.get(scenario);
     }
 
-    private SpecificResourceAllocation(ResourcesPerDay resourcesPerDay,
-            Task task) {
+    private SpecificResourceAllocation(ResourcesPerDay resourcesPerDay, Task task) {
         super(resourcesPerDay, task);
     }
 
@@ -165,15 +156,12 @@ public class SpecificResourceAllocation extends
     }
 
     @Override
-    public IAllocateResourcesPerDay resourcesPerDayUntil(
-            IntraDayDate endExclusive) {
-        return new SpecificAssignmentsAllocator()
-                .resourcesPerDayUntil(endExclusive);
+    public IAllocateResourcesPerDay resourcesPerDayUntil(IntraDayDate endExclusive) {
+        return new SpecificAssignmentsAllocator().resourcesPerDayUntil(endExclusive);
     }
 
     @Override
-    public IAllocateResourcesPerDay resourcesPerDayFromEndUntil(
-            IntraDayDate start) {
+    public IAllocateResourcesPerDay resourcesPerDayFromEndUntil(IntraDayDate start) {
         SpecificAssignmentsAllocator allocator = new SpecificAssignmentsAllocator();
         return allocator.resourcesPerDayFromEndUntil(start);
     }
@@ -192,10 +180,8 @@ public class SpecificResourceAllocation extends
             AssignmentsAllocator {
 
         @Override
-        public List<SpecificDayAssignment> distributeForDay(PartialDay day,
-                EffortDuration effort) {
-            return Arrays.asList(SpecificDayAssignment.create(day.getDate(),
-                    effort, resource));
+        public List<SpecificDayAssignment> distributeForDay(PartialDay day, EffortDuration effort) {
+            return Arrays.asList(SpecificDayAssignment.create(day.getDate(), effort, resource));
         }
 
         @Override

@@ -958,13 +958,13 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar,
     @Override
     public EffortDuration asDurationOn(PartialDay day, ResourcesPerDay amount) {
         Capacity capacity = findCapacityAt(day.getDate());
-        EffortDuration oneResourcePerDayWorkingDuration = day
-                .limitWorkingDay(capacity.getStandardEffort());
-        EffortDuration amountRequestedDuration = amount
-                .asDurationGivenWorkingDayOf(oneResourcePerDayWorkingDuration);
 
-        EffortDuration duration = multiplyByCalendarUnits(capacity)
-                .limitDuration(amountRequestedDuration);
+        EffortDuration oneResourcePerDayWorkingDuration = day.limitWorkingDay(capacity.getStandardEffort());
+
+        EffortDuration amountRequestedDuration = amount.asDurationGivenWorkingDayOf(oneResourcePerDayWorkingDuration);
+
+        EffortDuration duration = multiplyByCalendarUnits(capacity).limitDuration(amountRequestedDuration);
+
         return duration.atNearestMinute();
     }
 
