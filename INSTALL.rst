@@ -326,7 +326,7 @@ Microsoft Windows
 
 Instructions:
 
-* Download and install latest Java Runtime Environment 7u80 (JRE7u80)::
+* Download and install latest Java Runtime Environment 7uXX (JRE7uXX)::
 
     # http://www.oracle.com/technetwork/java/javase/downloads/jre7-downloads-1880261.html
 
@@ -375,10 +375,13 @@ Instructions:
 
 * Configure Apache Tomcat Server
 
-    # Put libreplan.war file to Apache Tomcat webapps folder (e.g. C:\Program Files\Apache Software Foundation\Tomcat 6.0\webapps\)
-    # Go to localhost folder (e.g. C:\Program Files\Apache Software Foundation\Tomcat 6.0\conf\Catalina\localhost\) and create there libreplan.xml file with this lines of code:
+* Put libreplan.war file to Apache Tomcat webapps folder (e.g. C:/Program Files/Apache Software Foundation/Tomcat 6.0/webapps/)
+
+* Go to localhost folder (e.g. C:/Program Files/Apache Software Foundation/Tomcat 6.0/conf/Catalina/localhost/)
+  and create there libreplan.xml file with this lines of code::
 
     <?xml version="1.0" encoding="UTF-8"?>
+
     <Context antiJARLocking="true" path="">
         <Resource name="jdbc/libreplan-ds" auth="Container"
             type="javax.sql.DataSource"
@@ -390,7 +393,7 @@ Instructions:
 
 * Start Apache Tomcat server
 
-    # Example location: C:\Program Files\Apache Software Foundation\Tomcat 6.0\bin\Tomcat6.exe
+    # Example location: C:/Program Files/Apache Software Foundation/Tomcat 6.0/bin/Tomcat6.exe
 
 * Go to http://localhost:8080/libreplan
 

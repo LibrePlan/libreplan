@@ -208,7 +208,7 @@ openSUSE
 Microsoft Windows
 ~~~~~~~~
 
-* Download and install latest Java Development Kit 7u80 (JDK7u80)::
+* Download and install latest Java Development Kit 7uXX (JDK7uXX)::
 
     # http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html
 
@@ -227,8 +227,6 @@ Microsoft Windows
     # Copy downloaded *.jar file to JRE location: (e.g. C:\Program Files\Java\jre7\lib\ext)
     # Copy downloaded *.jar file to JAVA_HOME location: (e.g. C:\Program Files\Java\jdk1.7.0_80\jre\lib\ext)
     # Put downloaded *.jar file to Tomcat lib location: (e.g. C:\Program Files\Apache Software Foundation\Tomcat 6.0\lib)
-
-   # http://sourceforge.net/projects/libreplan/files/LibrePlan/
 
 * Create database::
 
@@ -270,7 +268,8 @@ Microsoft Windows
 
 * Configure Apache Tomcat Server
 
-    # Go to (e.g. C:\Program Files\Apache Software Foundation\Tomcat 6.0\conf\Catalina\localhost\) and create there libreplan.xml file with this lines of code:
+* Go to (e.g. C:/Program Files/Apache Software Foundation/Tomcat 6.0/conf/Catalina/localhost/)
+  and create there libreplan.xml file with this lines of code::
 
     <?xml version="1.0" encoding="UTF-8"?>
 
@@ -294,9 +293,9 @@ Microsoft Windows
 
     # You need to set it to your JDK installed directory (e.g. C:\Program Files\Java\jdk1.7.0_80)
 
-* Add path of unpacked distributions bin directory of Maven to 'Path' environment variable
+* Add path of unpacked distributions bin directory of Maven to 'Path' environment variable
 
-    # (e.g. C:\Program Files\apache-maven-3.3.3\bin)
+    # (e.g. C:/Program Files/apache-maven-3.3.3/bin)
 
 * Compile project::
 
