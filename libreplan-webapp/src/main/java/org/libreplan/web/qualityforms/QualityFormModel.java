@@ -135,7 +135,7 @@ public class QualityFormModel implements IQualityFormModel {
     public List<QualityFormItem> getQualityFormItems() {
         // Safe copy
         List<QualityFormItem> items = new ArrayList<QualityFormItem>();
-        if (qualityForm != null) {
+        if ( qualityForm != null ) {
             items.addAll(qualityForm.getQualityFormItems());
         }
         return items;

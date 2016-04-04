@@ -46,8 +46,12 @@ import org.zkoss.zk.ui.Executions;
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  * @author Cristina Alvarino Perez <cristina.alvarino@comtecsf.es>
+ * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
  */
 public final class SecurityUtils {
+
+    // Related to the data that is sending to LibrePlan server
+    public static boolean isGatheredStatsAlreadySent = false;
 
     private SecurityUtils() {}
 

@@ -66,11 +66,10 @@ import com.igalia.java.zk.components.customdetailrowcomponent.Detail;
  * Controller for showing OrderElement assigned task quality forms
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
-public class AssignedTaskQualityFormsToOrderElementController extends
-        GenericForwardComposer {
+public class AssignedTaskQualityFormsToOrderElementController extends GenericForwardComposer {
 
-    private static final org.apache.commons.logging.Log LOG = LogFactory
-            .getLog(AssignedTaskQualityFormsToOrderElementController.class);
+    private static final org.apache.commons.logging.Log LOG =
+            LogFactory.getLog(AssignedTaskQualityFormsToOrderElementController.class);
 
     private IMessagesForUser messagesForUser;
 
@@ -123,9 +122,8 @@ public class AssignedTaskQualityFormsToOrderElementController extends
     }
 
     private void setOrderModel(IOrderModel orderModel) {
-        if (assignedTaskQualityFormsToOrderElementModel != null) {
-            assignedTaskQualityFormsToOrderElementModel
-                    .setOrderModel(orderModel);
+        if ( assignedTaskQualityFormsToOrderElementModel != null ) {
+            assignedTaskQualityFormsToOrderElementModel.setOrderModel(orderModel);
         }
     }
 
@@ -229,8 +227,7 @@ public class AssignedTaskQualityFormsToOrderElementController extends
     }
 
     public List<TaskQualityForm> getTaskQualityForms() {
-        return assignedTaskQualityFormsToOrderElementModel
-                .getTaskQualityForms();
+        return assignedTaskQualityFormsToOrderElementModel.getTaskQualityForms();
     }
 
     public List<QualityForm> getNotAssignedQualityForms() {

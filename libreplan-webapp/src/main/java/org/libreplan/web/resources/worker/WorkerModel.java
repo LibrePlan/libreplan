@@ -50,7 +50,6 @@ import org.libreplan.business.planner.daos.IResourceAllocationDAO;
 import org.libreplan.business.resources.daos.ICriterionDAO;
 import org.libreplan.business.resources.daos.IResourceDAO;
 import org.libreplan.business.resources.daos.IWorkerDAO;
-import org.libreplan.business.resources.daos.WorkerDAO;
 import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.resources.entities.CriterionSatisfaction;
 import org.libreplan.business.resources.entities.CriterionWithItsType;
@@ -90,17 +89,13 @@ import org.springframework.transaction.annotation.Transactional;
 @OnConcurrentModification(goToPage = "/resources/worker/worker.zul")
 public class WorkerModel extends IntegrationEntityModel implements IWorkerModel {
 
-    private static final org.apache.commons.logging.Log LOG = LogFactory
-            .getLog(WorkerModel.class);
+    private static final org.apache.commons.logging.Log LOG = LogFactory.getLog(WorkerModel.class);
 
     @Autowired
     private IResourceDAO resourceDAO;
 
     @Autowired
     private IBaseCalendarDAO baseCalendarDAO;
-
-    @Autowired
-    private IWorkerDAO workerDAO;
 
     private final ICriterionType<?>[] laboralRelatedTypes = {
             PredefinedCriterionTypes.LOCATION,
