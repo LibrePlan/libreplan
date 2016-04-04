@@ -127,6 +127,7 @@ import org.zkoss.zul.api.Window;
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  * @author Manuel Rego Casasnovas <rego@igalia.com>
+ * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
  */
 @org.springframework.stereotype.Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -134,8 +135,7 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private static final String DEFAULT_TAB = "tabOrderElements";
 
-    private static final org.apache.commons.logging.Log LOG = LogFactory
-            .getLog(OrderCRUDController.class);
+    private static final org.apache.commons.logging.Log LOG = LogFactory.getLog(OrderCRUDController.class);
 
     @Autowired
     private IOrderModel orderModel;
@@ -698,16 +698,17 @@ public class OrderCRUDController extends GenericForwardComposer {
     private AssignedTaskQualityFormsToOrderElementController assignedTaskQualityFormController;
 
     public void setupAssignedTaskQualityFormsToOrderElementController() {
-        if (!confirmLastTab()) {
+        if ( !confirmLastTab() ) {
             return;
         }
         setCurrentTab();
 
-        Component orderElementTaskQualityForms = editWindow
-                .getFellowIfAny("orderElementTaskQualityForms");
-        if (assignedTaskQualityFormController == null) {
+        Component orderElementTaskQualityForms = editWindow.getFellowIfAny("orderElementTaskQualityForms");
+        if ( assignedTaskQualityFormController == null ) {
+
             assignedTaskQualityFormController = (AssignedTaskQualityFormsToOrderElementController) orderElementTaskQualityForms
                     .getVariable("assignedTaskQualityFormsController", true);
+
             final IOrderElementModel orderElementModel = getOrderElementModel();
             assignedTaskQualityFormController.openWindow(orderElementModel);
         } else {
@@ -1018,9 +1019,8 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private void remove(Order order) {
         boolean hasImputedExpenseSheets = orderModel.hasImputedExpenseSheetsThisOrAnyOfItsChildren(order);
-        if (hasImputedExpenseSheets) {
-            messagesForUser
-                    .showMessage(
+        if ( hasImputedExpenseSheets ) {
+            messagesForUser.showMessage(
                             Level.ERROR,
                             _("You can not remove the project \"{0}\" because this one has imputed expense sheets.",
                                     order.getName()));
@@ -1028,22 +1028,19 @@ public class OrderCRUDController extends GenericForwardComposer {
         }
 
         boolean alreadyInUse = orderModel.isAlreadyInUseAndIsOnlyInCurrentScenario(order);
-        if (alreadyInUse) {
-            messagesForUser
-                    .showMessage(
+        if ( alreadyInUse ) {
+            messagesForUser.showMessage(
                             Level.ERROR,
-                            _(
-                                    "You can not remove the project \"{0}\" because it has time tracked at some of its tasks",
+                            _("You can not remove the project \"{0}\" because it has time tracked at some of its tasks",
                                     order.getName()));
         } else {
-            if (!StringUtils.isBlank(order.getExternalCode())) {
+            if ( !StringUtils.isBlank(order.getExternalCode()) ) {
                 try {
-                    if (Messagebox
-                            .show(
-                                    _("This project is a subcontracted project. If you delete it, you won't be able to report progress anymore. Are you sure?"),
-                                    _("Confirm"), Messagebox.OK
-                                            | Messagebox.CANCEL,
-                                    Messagebox.QUESTION) == Messagebox.CANCEL) {
+                    if ( Messagebox.show(
+                                    _("This project is a subcontracted project. If you delete it, " +
+                                            "you won't be able to report progress anymore. Are you sure?"),
+                                    _("Confirm"),
+                                    Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION) == Messagebox.CANCEL ) {
                         return;
                     }
                 } catch (InterruptedException e) {
@@ -1053,20 +1050,22 @@ public class OrderCRUDController extends GenericForwardComposer {
 
             orderModel.remove(order);
             Util.reloadBindings(self);
-            messagesForUser.showMessage(Level.INFO, _("Removed {0}", order
-                    .getName()));
+
+            messagesForUser.clearMessages();
+            messagesForUser.showMessage(Level.INFO, _("Removed {0}", order.getName()));
         }
     }
 
     public void schedule(Order order) {
         orderModel.useSchedulingDataForCurrentScenario(order);
-        if(orderModel.userCanRead(order, SecurityUtils.getSessionUserLoginName())) {
-            if (order.isScheduled()) {
+        if( orderModel.userCanRead(order, SecurityUtils.getSessionUserLoginName()) ) {
+            if ( order.isScheduled() ) {
                 planningControllerEntryPoints.goToScheduleOf(order);
                 showCreateButtons(false);
             } else {
                 try {
-                    Messagebox.show(_("The project has no scheduled elements"),
+                    Messagebox.show(
+                            _("The project has no scheduled elements"),
                             _("Information"), Messagebox.OK, Messagebox.INFORMATION);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
@@ -1075,7 +1074,8 @@ public class OrderCRUDController extends GenericForwardComposer {
         }
         else {
             try {
-                Messagebox.show(_("You don't have read access to this project"),
+                Messagebox.show(
+                        _("You don't have read access to this project"),
                         _("Information"), Messagebox.OK, Messagebox.INFORMATION);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);

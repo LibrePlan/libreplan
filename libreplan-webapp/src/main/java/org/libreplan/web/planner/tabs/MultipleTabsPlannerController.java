@@ -43,9 +43,12 @@ import org.libreplan.web.common.entrypoints.EntryPointsHandler;
 import org.libreplan.web.common.entrypoints.URLHandlerRegistry;
 import org.libreplan.web.dashboard.DashboardController;
 import org.libreplan.web.dashboard.DashboardControllerGlobal;
+import org.libreplan.web.expensesheet.IExpenseSheetModel;
 import org.libreplan.web.limitingresources.LimitingResourcesController;
 import org.libreplan.web.logs.LogsController;
+import org.libreplan.web.materials.IMaterialsModel;
 import org.libreplan.web.montecarlo.MonteCarloController;
+import org.libreplan.web.orders.IAssignedTaskQualityFormsToOrderElementModel;
 import org.libreplan.web.orders.IOrderModel;
 import org.libreplan.web.orders.OrderCRUDController;
 import org.libreplan.web.planner.allocation.AdvancedAllocationController.IBack;
@@ -55,7 +58,10 @@ import org.libreplan.web.planner.order.OrderPlanningController;
 import org.libreplan.web.planner.order.PlanningStateCreator;
 import org.libreplan.web.planner.tabs.Mode.ModeTypeChangedListener;
 import org.libreplan.web.resourceload.ResourceLoadController;
+import org.libreplan.web.resources.machine.IMachineModel;
+import org.libreplan.web.resources.worker.IWorkerModel;
 import org.libreplan.web.security.SecurityUtils;
+import org.libreplan.web.workreports.IWorkReportModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -88,8 +94,7 @@ import org.zkoss.zk.ui.util.Composer;
  */
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
-public class MultipleTabsPlannerController implements Composer,
-        IGlobalViewEntryPoints {
+public class MultipleTabsPlannerController implements Composer, IGlobalViewEntryPoints {
 
     public static String WELCOME_URL = "-- no URL provided --";
 
@@ -102,7 +107,7 @@ public class MultipleTabsPlannerController implements Composer,
 
         @Override
         public void show() {
-            if (feedback) {
+            if ( feedback ) {
                 showWithFeedback();
             } else {
                 showWithoutFeedback();
@@ -151,6 +156,8 @@ public class MultipleTabsPlannerController implements Composer,
 
     @Autowired
     private OrderCRUDController orderCRUDController;
+
+
 
     @Autowired
     private PlanningStateCreator planningStateCreator;
@@ -220,14 +227,30 @@ public class MultipleTabsPlannerController implements Composer,
     @Autowired
     private URLHandlerRegistry registry;
 
-    // Cannot Autowire it in GatheredUsageStats class
     @Autowired
     private IUserDAO userDAO;
 
     @Autowired
     private IOrderModel orderModel;
 
-    private boolean isGatheredStatsAlreadySent = false;
+    @Autowired
+    private IWorkReportModel workReportModel;
+
+    @Autowired
+    private IWorkerModel workerModel;
+
+    @Autowired
+    private IMachineModel machineModel;
+
+    @Autowired
+    private IExpenseSheetModel expenseSheetModel;
+
+    @Autowired
+    private IMaterialsModel materialsModel;
+
+    @Autowired
+    private IAssignedTaskQualityFormsToOrderElementModel assignedQualityFormsModel;
+
 
     private TabsConfiguration buildTabsConfiguration(final Desktop desktop) {
 
@@ -238,17 +261,19 @@ public class MultipleTabsPlannerController implements Composer,
             @Override
             public void typeChanged(ModeType oldType, ModeType newType) {
                 switch (newType) {
+
                 case GLOBAL:
                     ConfirmCloseUtil.resetConfirmClose();
                     break;
+
                 case ORDER:
-                    if (SecurityUtils.loggedUserCanWrite(mode.getOrder())) {
-                        ConfirmCloseUtil
-                                .setConfirmClose(
-                                        desktop,
-                                        _("You are about to leave the planning editing. Unsaved changes will be lost!"));
+                    if ( SecurityUtils.loggedUserCanWrite(mode.getOrder()) ) {
+                        ConfirmCloseUtil.setConfirmClose(
+                                desktop,
+                                _("You are about to leave the planning editing. Unsaved changes will be lost!"));
                     }
                     break;
+
                 default:
                     break;
                 }
@@ -510,12 +535,20 @@ public class MultipleTabsPlannerController implements Composer,
             }
         }
 
-        if ( !isGatheredStatsAlreadySent && configurationDAO.getConfiguration().isAllowToGatherUsageStatsEnabled() ){
-            GatheredUsageStats gatheredUsageStats = new GatheredUsageStats();
-            gatheredUsageStats.setupNotAutowiredClasses(userDAO, orderModel);
-            gatheredUsageStats.sendGatheredUsageStatsToServer();
-            isGatheredStatsAlreadySent = true;
-        }
+        // Send data to server
+        if ( !SecurityUtils.isGatheredStatsAlreadySent &&
+                configurationDAO.getConfiguration().isAllowToGatherUsageStatsEnabled() )
+            sendDataToServer();
+    }
+
+    private void sendDataToServer(){
+        GatheredUsageStats gatheredUsageStats = new GatheredUsageStats();
+
+        gatheredUsageStats.setupNotAutowiredClasses(userDAO, orderModel, workReportModel, workerModel, machineModel,
+                expenseSheetModel, materialsModel, assignedQualityFormsModel);
+
+        gatheredUsageStats.sendGatheredUsageStatsToServer();
+        SecurityUtils.isGatheredStatsAlreadySent = true;
     }
 
     private TabsRegistry getTabsRegistry() {

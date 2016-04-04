@@ -68,6 +68,14 @@ import org.libreplan.importers.JiraRESTClient;
 import org.libreplan.importers.TimSoapClient;
 import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
 import org.libreplan.web.orders.IOrderModel;
+import org.libreplan.web.expensesheet.IExpenseSheetModel;
+import org.libreplan.web.materials.IMaterialsModel;
+import org.libreplan.web.orders.IAssignedTaskQualityFormsToOrderElementModel;
+import org.libreplan.web.resources.machine.IMachineModel;
+import org.libreplan.web.resources.worker.IWorkerModel;
+import org.libreplan.web.security.SecurityUtils;
+import org.libreplan.web.workreports.IWorkReportModel;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ldap.core.DistinguishedName;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.core.support.DefaultDirObjectFactory;
@@ -115,8 +123,7 @@ import org.zkoss.zul.impl.InputElement;
  */
 public class ConfigurationController extends GenericForwardComposer {
 
-    private static final Log LOG = LogFactory
-            .getLog(ConfigurationController.class);
+    private static final Log LOG = LogFactory.getLog(ConfigurationController.class);
 
     private final ProgressTypeRenderer progressTypeRenderer = new ProgressTypeRenderer();
 
@@ -133,6 +140,24 @@ public class ConfigurationController extends GenericForwardComposer {
     private IUserDAO userDAO;
 
     private IOrderModel orderModel;
+
+    @Autowired
+    private IWorkReportModel workReportModel;
+
+    @Autowired
+    private IWorkerModel workerModel;
+
+    @Autowired
+    private IMachineModel machineModel;
+
+    @Autowired
+    private IExpenseSheetModel expenseSheetModel;
+
+    @Autowired
+    private IMaterialsModel materialsModel;
+
+    @Autowired
+    private IAssignedTaskQualityFormsToOrderElementModel assignedQualityFormsModel;
 
     private IMessagesForUser messages;
 
@@ -165,8 +190,6 @@ public class ConfigurationController extends GenericForwardComposer {
     private Textbox emailPasswordTextbox;
 
     private Textbox emailSenderTextbox;
-
-    private boolean isGatheredStatsAlreadySent = false;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -266,13 +289,9 @@ public class ConfigurationController extends GenericForwardComposer {
                     messages.showMessage(Level.INFO, _("Changes saved"));
 
                     // Send data to server
-                    if (!isGatheredStatsAlreadySent && configurationDAO.getConfigurationWithReadOnlyTransaction()
-                            .isAllowToGatherUsageStatsEnabled()) {
-                        GatheredUsageStats gatheredUsageStats = new GatheredUsageStats();
-                        gatheredUsageStats.setupNotAutowiredClasses(userDAO, orderModel);
-                        gatheredUsageStats.sendGatheredUsageStatsToServer();
-                        isGatheredStatsAlreadySent = true;
-                    }
+                    if ( !SecurityUtils.isGatheredStatsAlreadySent &&
+                            configurationDAO.getConfigurationWithReadOnlyTransaction().isAllowToGatherUsageStatsEnabled() )
+                        sendDataToServer();
 
                     if (getSelectedConnector() != null
                             && !configurationModel
@@ -295,6 +314,16 @@ public class ConfigurationController extends GenericForwardComposer {
                 }
             }
         }
+    }
+
+    private void sendDataToServer(){
+        GatheredUsageStats gatheredUsageStats = new GatheredUsageStats();
+
+        gatheredUsageStats.setupNotAutowiredClasses(userDAO, orderModel, workReportModel, workerModel, machineModel,
+                expenseSheetModel, materialsModel, assignedQualityFormsModel);
+
+        gatheredUsageStats.sendGatheredUsageStatsToServer();
+        SecurityUtils.isGatheredStatsAlreadySent = true;
     }
 
     public void cancel() throws InterruptedException {

@@ -83,8 +83,7 @@ import org.libreplan.business.workingday.IntraDayDate;
 import org.libreplan.business.workreports.daos.IWorkReportLineDAO;
 import org.libreplan.business.workreports.entities.WorkReportLine;
 
-public abstract class OrderElement extends IntegrationEntity implements
-        ICriterionRequirable, ITreeNode<OrderElement> {
+public abstract class OrderElement extends IntegrationEntity implements ICriterionRequirable, ITreeNode<OrderElement> {
 
     protected InfoComponentWithCode infoComponent = new InfoComponentWithCode();
 
@@ -1119,7 +1118,7 @@ public abstract class OrderElement extends IntegrationEntity implements
     }
 
     public Order getOrder() {
-        if (parent == null) {
+        if ( parent == null ) {
             return null;
         }
         return parent.getOrder();
@@ -1142,11 +1141,9 @@ public abstract class OrderElement extends IntegrationEntity implements
         this.taskQualityForms = taskQualityForms;
     }
 
-    public TaskQualityForm addTaskQualityForm(QualityForm qualityForm)
-            throws ValidationException {
+    public TaskQualityForm addTaskQualityForm(QualityForm qualityForm) throws ValidationException {
         ckeckUniqueQualityForm(qualityForm);
-        TaskQualityForm taskQualityForm = TaskQualityForm.create(this,
-                qualityForm);
+        TaskQualityForm taskQualityForm = TaskQualityForm.create(this, qualityForm);
         this.taskQualityForms.add(taskQualityForm);
         return taskQualityForm;
     }
@@ -1155,14 +1152,15 @@ public abstract class OrderElement extends IntegrationEntity implements
         this.taskQualityForms.remove(taskQualityForm);
     }
 
-    private void ckeckUniqueQualityForm(QualityForm qualityForm)
-            throws ValidationException, IllegalArgumentException {
+    private void ckeckUniqueQualityForm(QualityForm qualityForm) throws ValidationException, IllegalArgumentException {
         Validate.notNull(qualityForm);
         for (TaskQualityForm taskQualityForm : getTaskQualityForms()) {
-            if (qualityForm.equals(taskQualityForm.getQualityForm())) {
+            if ( qualityForm.equals(taskQualityForm.getQualityForm()) ) {
                 throw new ValidationException(ValidationException.invalidValue(
-                        _("Quality form already exists"), "name",
-                        qualityForm.getName(), qualityForm));
+                        _("Quality form already exists"),
+                        "name",
+                        qualityForm.getName(),
+                        qualityForm));
             }
         }
     }

@@ -33,6 +33,7 @@ import org.libreplan.business.qualityforms.entities.TaskQualityFormItem;
 
 /**
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
+ * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
  */
 public interface IAssignedTaskQualityFormsToOrderElementModel {
 
@@ -61,6 +62,11 @@ public interface IAssignedTaskQualityFormsToOrderElementModel {
      * @return
      */
     List<QualityForm> getNotAssignedQualityForms();
+
+    /**
+     * Returns all the allocated {@link QualityForm} needed for gathering usage statistics.
+     */
+    List<QualityForm> getAssignedQualityForms();
 
     /**
      * Returns {@link OrderElement}

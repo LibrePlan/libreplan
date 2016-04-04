@@ -3,6 +3,12 @@ package org.libreplan.web.common;
 import org.libreplan.business.common.VersionInformation;
 import org.libreplan.business.users.daos.IUserDAO;
 import org.libreplan.web.orders.IOrderModel;
+import org.libreplan.web.expensesheet.IExpenseSheetModel;
+import org.libreplan.web.materials.IMaterialsModel;
+import org.libreplan.web.orders.IAssignedTaskQualityFormsToOrderElementModel;
+import org.libreplan.web.resources.machine.IMachineModel;
+import org.libreplan.web.resources.worker.IWorkerModel;
+import org.libreplan.web.workreports.IWorkReportModel;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.zkoss.json.JSONObject;
@@ -28,7 +34,7 @@ import java.util.Properties;
  *
  * Created by
  * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
- * on 02/08/2016.
+ * on 02.08.2016.
  */
 
 public class GatheredUsageStats {
@@ -37,9 +43,22 @@ public class GatheredUsageStats {
 
     private IOrderModel orderModel;
 
+    private IWorkReportModel workReportModel;
 
-    // Version of this statistics implementation
-    private int jsonObjectVersion = 1;
+    private IWorkerModel workerModel;
+
+    private IMachineModel machineModel;
+
+    private IExpenseSheetModel expenseSheetModel;
+
+    private IMaterialsModel materialsModel;
+
+    private IAssignedTaskQualityFormsToOrderElementModel assignedQualityFormModel;
+
+
+    // Version of this statistics implementation.
+    // Just increment it, if you will change something related to JSON object.
+    private int jsonObjectVersion = 2;
 
     // Unique system identifier (MD5 - ip + hostname)
     private String id;
@@ -53,9 +72,24 @@ public class GatheredUsageStats {
     // Number of projects in application
     private int projects;
 
-    private Number getUserRows(){
-        return userDAO.getRowCount();
-    }
+    // Number of timesheets in application
+    private int timesheets;
+
+    // Number of workers in application
+    private int workers;
+
+    // Number of machines in application
+    private int machines;
+
+    // Number of expense sheets in application
+    private int expensesheets;
+
+    // Number of materials in application
+    private int materials;
+
+    // Number of assigned quality forms in application
+    private int assignedQualityForms;
+
 
     private String generateID(){
         // Make hash of ip + hostname
@@ -77,8 +111,8 @@ public class GatheredUsageStats {
 
             // Convert bytes to hex format
             sb = new StringBuffer();
-            for (int i = 0; i < encoded.length; i++) sb.append(Integer.toString((encoded[i] & 0xff) + 0x100, 16)
-                    .substring(1));
+            for (int i = 0; i < encoded.length; i++)
+                sb.append(Integer.toString((encoded[i] & 0xff) + 0x100, 16).substring(1));
 
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
@@ -93,6 +127,12 @@ public class GatheredUsageStats {
         setId(generateID());
         setUsers(getUserRows());
         setProjects(orderModel.getOrders().size());
+        setTimesheets(workReportModel.getWorkReportDTOs().size());
+        setWorkers(workerModel.getWorkers().size());
+        setMachines(machineModel.getMachines().size());
+        setExpensesheets(expenseSheetModel.getExpenseSheets().size());
+        setMaterials(materialsModel.getMaterials().size());
+        setQualityForms(assignedQualityFormModel.getAssignedQualityForms().size());
     }
 
     public void sendGatheredUsageStatsToServer(){
@@ -103,6 +143,12 @@ public class GatheredUsageStats {
         json.put("version", version);
         json.put("users", users);
         json.put("projects", projects);
+        json.put("timesheets", timesheets);
+        json.put("workers", workers);
+        json.put("machines", machines);
+        json.put("expensesheets", expensesheets);
+        json.put("materials", materials);
+        json.put("assigned-quality-forms", assignedQualityForms);
 
         HttpURLConnection connection = null;
 
@@ -110,6 +156,7 @@ public class GatheredUsageStats {
         InputStream inputStream = null;
 
         try {
+            // You can find it in libreplan-business/src/main/resouces
             String filename = "libreplan.properties";
             inputStream = GatheredUsageStats.class.getClassLoader().getResourceAsStream(filename);
             properties.load(inputStream);
@@ -132,7 +179,7 @@ public class GatheredUsageStats {
             dataOutputStream.flush();
             dataOutputStream.close();
 
-            // No needed code, but it is not working without id
+            // No needed code, but it is not working without it
             connection.getInputStream();
 
         } catch (MalformedURLException e) {
@@ -147,39 +194,65 @@ public class GatheredUsageStats {
         }
     }
 
-    public void setupNotAutowiredClasses(IUserDAO userDAO, IOrderModel orderModel){
+    public void setupNotAutowiredClasses(
+            IUserDAO userDAO,
+            IOrderModel orderModel,
+            IWorkReportModel workReportModel,
+            IWorkerModel workerModel,
+            IMachineModel machineModel,
+            IExpenseSheetModel expenseSheetModel,
+            IMaterialsModel materialsModel,
+            IAssignedTaskQualityFormsToOrderElementModel assignedQualityFormModel){
+
         this.userDAO = userDAO;
         this.orderModel = orderModel;
+        this.workReportModel = workReportModel;
+        this.workerModel = workerModel;
+        this.machineModel = machineModel;
+        this.expenseSheetModel = expenseSheetModel;
+        this.materialsModel = materialsModel;
+        this.assignedQualityFormModel = assignedQualityFormModel;
+
         myConstructor();
     }
 
-    public int getJsonObjectVersion() {
-        return jsonObjectVersion;
-    }
-
-    public String getId() {
-        return id;
+    private Number getUserRows(){
+        return userDAO.getRowCount();
     }
 
     public void setId(String id) {
         this.id = id;
     }
 
-    public String getVersion() {
-        return version;
-    }
-
-    public Number getUsers() {
-        return users;
-    }
     public void setUsers(Number users) {
         this.users = users;
     }
 
-    public int getProjects() {
-        return projects;
-    }
     public void setProjects(int projects) {
         this.projects = projects;
+    }
+
+    public void setTimesheets(int timesheets) {
+        this.timesheets = timesheets;
+    }
+
+    public void setWorkers(int workers) {
+        this.workers = workers;
+    }
+
+    public void setMachines(int machines) {
+        this.machines = machines;
+    }
+
+    public void setExpensesheets(int expensesheets) {
+        this.expensesheets = expensesheets;
+    }
+
+    public void setMaterials(int materials) {
+        this.materials = materials;
+    }
+
+    public void setQualityForms(int qualityForms) {
+        this.assignedQualityForms = qualityForms;
     }
 }

@@ -185,7 +185,7 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
     private LabelsOnConversation labelsOnConversation;
 
     private LabelsOnConversation getLabelsOnConversation() {
-        if (labelsOnConversation == null) {
+        if ( labelsOnConversation == null ) {
             labelsOnConversation = new LabelsOnConversation(labelDAO);
         }
         return labelsOnConversation;
@@ -194,9 +194,8 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
     private QualityFormsOnConversation qualityFormsOnConversation;
 
     private QualityFormsOnConversation getQualityFormsOnConversation() {
-        if (qualityFormsOnConversation == null) {
-            qualityFormsOnConversation = new QualityFormsOnConversation(
-                    qualityFormDAO);
+        if ( qualityFormsOnConversation == null ) {
+            qualityFormsOnConversation = new QualityFormsOnConversation(qualityFormDAO);
         }
         return qualityFormsOnConversation;
     }

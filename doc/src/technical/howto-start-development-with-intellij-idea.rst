@@ -8,11 +8,11 @@ How To Start Development With JetBrains Intellij IDEA
 :Contact: vova@libreplan-enterprise.com
 :Date: 09/09/2015
 :Copyright:
-  Some rights reserved. This document is distributed under the Creative
-  Commons Attribution-ShareAlike 3.0 licence, available in
-  http://creativecommons.org/licenses/by-sa/3.0/.
+      Some rights reserved. This document is distributed under the Creative
+      Commons Attribution-ShareAlike 3.0 licence, available in
+      http://creativecommons.org/licenses/by-sa/3.0/.
 :Abstract:
-  Quick guide to start the development of LibrePlan_ using JetBrains Intellij IDEA_ IDE.
+      Quick guide to start the development of LibrePlan_ using JetBrains Intellij IDEA_ IDE.
   As this is the most common way of work among LibrePlan developers team.
 
 .. contents:: Table of Contents
@@ -20,8 +20,7 @@ How To Start Development With JetBrains Intellij IDEA
 Download LibrePlan source code
 ------------------------------
 
-* You need to download LibrePlan_ source code to start hacking on it. You have two
-options:
+* You need to download LibrePlan_ source code to start hacking on it. You have two options:
 
 a) Clone Git repository (recommended)::
 
@@ -46,7 +45,7 @@ Import LibrePlan project
 
 * Select directory with source code of Libreplan
 
-    # e.g. C\Users\PC-User\IdeaProjects\libreplan
+    # e.g. C/Users/PC-User/IdeaProjects/libreplan
 
 * Select *Import project from external model* > *Maven* and click *Next*
 
