@@ -1,6 +1,7 @@
 package org.libreplan.web.common;
 
 import org.libreplan.business.common.VersionInformation;
+import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.users.daos.IUserDAO;
 import org.libreplan.web.orders.IOrderModel;
 import org.libreplan.web.expensesheet.IExpenseSheetModel;
@@ -24,6 +25,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -34,6 +38,7 @@ import java.util.Properties;
  *
  * Created by
  * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
+ * @author Bogdan Bodnarjuk <bogdan@libreplan-enterprise.com>
  * on 02.08.2016.
  */
 
@@ -58,7 +63,7 @@ public class GatheredUsageStats {
 
     // Version of this statistics implementation.
     // Just increment it, if you will change something related to JSON object.
-    private int jsonObjectVersion = 2;
+    private int jsonObjectVersion = 3;
 
     // Unique system identifier (MD5 - ip + hostname)
     private String id;
@@ -90,6 +95,8 @@ public class GatheredUsageStats {
     // Number of assigned quality forms in application
     private int assignedQualityForms;
 
+    // The oldestDate in the projects
+    private String oldestDate;
 
     private String generateID(){
         // Make hash of ip + hostname
@@ -111,8 +118,8 @@ public class GatheredUsageStats {
 
             // Convert bytes to hex format
             sb = new StringBuffer();
-            for (int i = 0; i < encoded.length; i++)
-                sb.append(Integer.toString((encoded[i] & 0xff) + 0x100, 16).substring(1));
+            for (int i = 0; i < encoded.length; i++) sb.append(Integer.toString((encoded[i] & 0xff) + 0x100, 16)
+                    .substring(1));
 
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
@@ -133,6 +140,7 @@ public class GatheredUsageStats {
         setExpensesheets(expenseSheetModel.getExpenseSheets().size());
         setMaterials(materialsModel.getMaterials().size());
         setQualityForms(assignedQualityFormModel.getAssignedQualityForms().size());
+        setOldestDate(orderModel.getOrders());
     }
 
     public void sendGatheredUsageStatsToServer(){
@@ -149,6 +157,8 @@ public class GatheredUsageStats {
         json.put("expensesheets", expensesheets);
         json.put("materials", materials);
         json.put("assigned-quality-forms", assignedQualityForms);
+        json.put("oldestDate", oldestDate);
+
 
         HttpURLConnection connection = null;
 
@@ -216,6 +226,7 @@ public class GatheredUsageStats {
         myConstructor();
     }
 
+
     private Number getUserRows(){
         return userDAO.getRowCount();
     }
@@ -254,5 +265,19 @@ public class GatheredUsageStats {
 
     public void setQualityForms(int qualityForms) {
         this.assignedQualityForms = qualityForms;
+    }
+
+    private void setOldestDate(List<Order> list){
+        if(!list.isEmpty()) {
+            Date date = list.get(0).getInitDate();
+            for (int i = 1; i < list.size(); i++) {
+                if (list.get(i).getInitDate().compareTo(date) < 0) {
+                    date = list.get(i).getInitDate();
+                }
+            }
+            this.oldestDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.S'Z'").format(date);
+        } else {
+            this.oldestDate = "0";
+        }
     }
 }
