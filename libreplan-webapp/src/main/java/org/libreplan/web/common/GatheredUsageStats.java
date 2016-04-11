@@ -1,6 +1,7 @@
 package org.libreplan.web.common;
 
 import org.libreplan.business.common.VersionInformation;
+import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.users.daos.IUserDAO;
 import org.libreplan.web.expensesheet.IExpenseSheetModel;
 import org.libreplan.web.materials.IMaterialsModel;
@@ -24,6 +25,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -58,7 +62,7 @@ public class GatheredUsageStats {
 
     // Version of this statistics implementation.
     // Just increment it, if you will change something related to JSON object.
-    private int jsonObjectVersion = 2;
+    private int jsonObjectVersion = 3;
 
     // Unique system identifier (MD5 - ip + hostname)
     private String id;
@@ -89,6 +93,9 @@ public class GatheredUsageStats {
 
     // Number of assigned quality forms in application
     private int assignedQualityForms;
+
+    // The oldestDate in the projects
+    private String oldestDate;
 
     private String generateID(){
         // Make hash of ip + hostname
@@ -132,6 +139,7 @@ public class GatheredUsageStats {
         setExpensesheets(expenseSheetModel.getExpenseSheets().size());
         setMaterials(materialsModel.getMaterials().size());
         setQualityForms(assignedQualityFormModel.getAssignedQualityForms().size());
+        setOldestDate(orderModel.getOrders());
     }
 
     public void sendGatheredUsageStatsToServer(){
@@ -148,6 +156,8 @@ public class GatheredUsageStats {
         json.put("expensesheets", expensesheets);
         json.put("materials", materials);
         json.put("assigned-quality-forms", assignedQualityForms);
+        json.put("oldestDate", oldestDate);
+
 
         HttpURLConnection connection = null;
 
@@ -254,5 +264,19 @@ public class GatheredUsageStats {
 
     public void setQualityForms(int qualityForms) {
         this.assignedQualityForms = qualityForms;
+    }
+
+    public void setOldestDate(List<Order> list){
+        if(!list.isEmpty()) {
+            Date date = list.get(0).getInitDate();
+            for (int i = 1; i < list.size(); i++) {
+                if (list.get(i).getInitDate().compareTo(date) < 0) {
+                    date = list.get(i).getInitDate();
+                }
+            }
+            this.oldestDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.S'Z'").format(date);
+        } else {
+            this.oldestDate = "0";
+        }
     }
 }
