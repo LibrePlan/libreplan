@@ -58,8 +58,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @param <PK>
  *            Primary key class
  */
-public class GenericDAOHibernate<E extends BaseEntity,
-        PK extends Serializable> implements IGenericDAO<E, PK> {
+public class GenericDAOHibernate<E extends BaseEntity, PK extends Serializable> implements IGenericDAO<E, PK> {
 
     private Class<E> entityClass;
 
@@ -68,8 +67,8 @@ public class GenericDAOHibernate<E extends BaseEntity,
 
     @SuppressWarnings("unchecked")
     public GenericDAOHibernate() {
-        this.entityClass = (Class<E>) ((ParameterizedType) getClass()
-                .getGenericSuperclass()).getActualTypeArguments()[0];
+        this.entityClass =
+                (Class<E>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
     }
 
     public GenericDAOHibernate(Class<E> entityClass) {
@@ -101,7 +100,7 @@ public class GenericDAOHibernate<E extends BaseEntity,
    }
 
     public void reattachUnmodifiedEntity(E entity) {
-        if (Hibernate.isInitialized(entity) && entity.isNewObject()) {
+        if ( Hibernate.isInitialized(entity) && entity.isNewObject() ) {
             return;
         }
         getSession().lock(entity, LockMode.NONE);
@@ -125,14 +124,14 @@ public class GenericDAOHibernate<E extends BaseEntity,
             Method getIdMethod = entityClass.getMethod("getId");
             id = (Serializable) getIdMethod.invoke(entity);
 
-            if (id == null) {
+            if ( id == null ) {
                 return;
             }
 
             Method getVersionMethod = entityClass.getMethod("getVersion");
             versionValueInMemory = (Long) getVersionMethod.invoke(entity);
 
-            if (versionValueInMemory == null) {
+            if ( versionValueInMemory == null ) {
                 return;
             }
 
@@ -142,14 +141,14 @@ public class GenericDAOHibernate<E extends BaseEntity,
 
         /* Check version. */
         Long versionValueInDB = (Long) getSession().createCriteria(entityClass)
-                .add(Restrictions.idEq(id)).setProjection(
-                        Projections.property("version")).uniqueResult();
+                .add(Restrictions.idEq(id))
+                .setProjection(Projections.property("version")).uniqueResult();
 
-        if (versionValueInDB == null) {
+        if ( versionValueInDB == null ) {
             return;
         }
 
-        if (!versionValueInMemory.equals(versionValueInDB)) {
+        if ( !versionValueInMemory.equals(versionValueInDB) ) {
             throw new StaleObjectStateException(entityClass.getName(), id);
         }
 
@@ -171,7 +170,7 @@ public class GenericDAOHibernate<E extends BaseEntity,
 
         E entity = (E) getSession().get(entityClass, id);
 
-        if (entity == null) {
+        if ( entity == null ) {
             throw new InstanceNotFoundException(id, entityClass.getName());
         }
 

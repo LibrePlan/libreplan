@@ -29,10 +29,9 @@ package org.libreplan.web.test;
  */
 public class WebappGlobalNames {
 
-    public final static String WEBAPP_SPRING_CONFIG_TEST_FILE =
-        "classpath:/libreplan-webapp-spring-config-test.xml";
+    public final static String WEBAPP_SPRING_CONFIG_TEST_FILE = "classpath:/libreplan-webapp-spring-config-test.xml";
 
     public final static String WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE =
-        "classpath:/libreplan-webapp-spring-security-config-test.xml";
+            "classpath:/libreplan-webapp-spring-security-config-test.xml";
 
 }

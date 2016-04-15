@@ -39,10 +39,8 @@ public class SchedulingDataForVersion extends BaseEntity {
 
     public static class Data {
 
-        private static Data from(SchedulingDataForVersion version,
-                OrderVersion orderVersion) {
-            return new Data(orderVersion, version, version
-                    .getTaskSource(), version.getSchedulingStateType());
+        private static Data from(SchedulingDataForVersion version, OrderVersion orderVersion) {
+            return new Data(orderVersion, version, version.getTaskSource(), version.getSchedulingStateType());
         }
 
         private SchedulingDataForVersion originVersion;
@@ -58,9 +56,10 @@ public class SchedulingDataForVersion extends BaseEntity {
         private final Type initialSchedulingStateType;
 
         private Data(OrderVersion orderVersion,
-                SchedulingDataForVersion version,
-                TaskSource taskSource,
-                Type schedulingStateType) {
+                     SchedulingDataForVersion version,
+                     TaskSource taskSource,
+                     Type schedulingStateType) {
+
             Validate.notNull(schedulingStateType);
             this.originOrderVersion = orderVersion;
             this.originVersion = version;
@@ -77,8 +76,7 @@ public class SchedulingDataForVersion extends BaseEntity {
             return schedulingStateType;
         }
 
-        private void setSchedulingStateType(
-                SchedulingState.Type schedulingStateType) {
+        private void setSchedulingStateType(SchedulingState.Type schedulingStateType) {
             this.schedulingStateType = schedulingStateType;
             hasPendingChanges = true;
         }
@@ -109,14 +107,12 @@ public class SchedulingDataForVersion extends BaseEntity {
         }
 
         public void requestedCreationOf(TaskSource taskSource) {
-            Validate.isTrue(this.getTaskSource() == null,
-                    "there must be no task source");
+            Validate.isTrue(this.getTaskSource() == null, "there must be no task source");
             this.setTaskSource(taskSource);
         }
 
         public void replaceCurrentTaskSourceWith(TaskSource newTaskSource) {
-            Validate.isTrue(this.getTaskSource() != null,
-                    "there must be a task source to replace");
+            Validate.isTrue(this.getTaskSource() != null, "there must be a task source to replace");
             this.setTaskSource(newTaskSource);
         }
 
@@ -162,8 +158,7 @@ public class SchedulingDataForVersion extends BaseEntity {
     }
 
     private static Type defaultTypeFor(OrderElement orderElement) {
-        return orderElement.isLeaf() ? Type.SCHEDULING_POINT
-                : Type.NO_SCHEDULED;
+        return orderElement.isLeaf() ? Type.SCHEDULING_POINT : Type.NO_SCHEDULED;
     }
 
     @NotNull
@@ -193,7 +188,8 @@ public class SchedulingDataForVersion extends BaseEntity {
 
     void removeSpuriousDayAssignments(Scenario scenario) {
         TaskSource taskSource = getTaskSource();
-        if (taskSource != null) {
+
+        if ( taskSource != null ) {
             TaskElement task = taskSource.getTask();
             task.removeDayAssignmentsFor(scenario);
         }

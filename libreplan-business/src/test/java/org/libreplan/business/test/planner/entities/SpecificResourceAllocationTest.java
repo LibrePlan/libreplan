@@ -69,24 +69,19 @@ import org.libreplan.business.workingday.ResourcesPerDay;
 public class SpecificResourceAllocationTest {
 
     public static IntraDayDate date(int year, int monthOfYear, int dayOfMonth) {
-        return IntraDayDate.startOfDay(new LocalDate(year, monthOfYear,
-                dayOfMonth));
+        return IntraDayDate.startOfDay(new LocalDate(year, monthOfYear, dayOfMonth));
     }
 
     public static IntraDayDate plusDays(IntraDayDate date, int days) {
-        return IntraDayDate.create(date.getDate().plusDays(days),
-                date.getEffortDuration());
+        return IntraDayDate.create(date.getDate().plusDays(days), date.getEffortDuration());
     }
 
     public static IntraDayDate minusDays(IntraDayDate date, int days) {
-        return IntraDayDate.create(date.getDate().minusDays(days),
-                date.getEffortDuration());
+        return IntraDayDate.create(date.getDate().minusDays(days), date.getEffortDuration());
     }
 
-    public static IntraDayDate plusDaysAndEffort(IntraDayDate date, int days,
-            EffortDuration effort) {
-        return IntraDayDate.create(date.getDate().plusDays(days), date
-                .getEffortDuration().plus(effort));
+    public static IntraDayDate plusDaysAndEffort(IntraDayDate date, int days, EffortDuration effort) {
+        return IntraDayDate.create(date.getDate().plusDays(days), date.getEffortDuration().plus(effort));
     }
 
     private BaseCalendar baseCalendar;
@@ -109,92 +104,79 @@ public class SpecificResourceAllocationTest {
         expect(workerCalendar.getCapacityOn(isA(PartialDay.class)))
         .andReturn(EffortDuration.hours(hours)).anyTimes();
         IAnswer<? extends EffortDuration> asDurationAnswer = asDurationOnAnswer(hours(hours));
-        expect(
-                workerCalendar.asDurationOn(isA(PartialDay.class),
-                        isA(ResourcesPerDay.class)))
-                        .andAnswer(asDurationAnswer).anyTimes();
+
+        expect(workerCalendar.asDurationOn(isA(PartialDay.class), isA(ResourcesPerDay.class)))
+                .andAnswer(asDurationAnswer).anyTimes();
+
         expect(workerCalendar.getCapacityWithOvertime(isA(LocalDate.class)))
-        .andReturn(
-                Capacity.create(hours(hours))
-                .overAssignableWithoutLimit()).anyTimes();
-        expect(workerCalendar.getAvailability()).andReturn(
-                AvailabilityTimeLine.allValid()).anyTimes();
+                .andReturn(Capacity.create(hours(hours)).overAssignableWithoutLimit()).anyTimes();
+
+        expect(workerCalendar.getAvailability()).andReturn(AvailabilityTimeLine.allValid()).anyTimes();
         replay(workerCalendar);
         return workerCalendar;
     }
 
-    private static IAnswer<? extends EffortDuration> asDurationOnAnswer(
-            final EffortDuration duration) {
+    private static IAnswer<? extends EffortDuration> asDurationOnAnswer(final EffortDuration duration) {
         return new IAnswer<EffortDuration>() {
 
             @Override
             public EffortDuration answer() throws Throwable {
-                ResourcesPerDay perDay = (ResourcesPerDay) EasyMock
-                        .getCurrentArguments()[1];
+                ResourcesPerDay perDay = (ResourcesPerDay) EasyMock.getCurrentArguments()[1];
                 return perDay.asDurationGivenWorkingDayOf(duration);
             }
         };
     }
 
-    private void givenResourceCalendar(final Capacity defaultAnswer,
-            final Map<LocalDate, Capacity> answersForDates) {
+    private void givenResourceCalendar(final Capacity defaultAnswer, final Map<LocalDate, Capacity> answersForDates) {
         this.calendar = createNiceMock(ResourceCalendar.class);
-        expect(this.calendar.getCapacityOn(isA(PartialDay.class)))
-                .andAnswer(new IAnswer<EffortDuration>() {
+        expect(this.calendar.getCapacityOn(isA(PartialDay.class))).andAnswer(new IAnswer<EffortDuration>() {
 
                     @Override
                     public EffortDuration answer() throws Throwable {
-                        PartialDay day = (PartialDay) EasyMock
-                                .getCurrentArguments()[0];
+                        PartialDay day = (PartialDay) EasyMock.getCurrentArguments()[0];
                         LocalDate date = day.getDate();
-                        if (answersForDates.containsKey(date)) {
-                            return day.limitWorkingDay(answersForDates
-                                    .get(date).getStandardEffort());
+                        if ( answersForDates.containsKey(date) ) {
+                            return day.limitWorkingDay(answersForDates.get(date).getStandardEffort());
                         }
-                        return day.limitWorkingDay(defaultAnswer
-                                .getStandardEffort());
+                        return day.limitWorkingDay(defaultAnswer.getStandardEffort());
                     }
                 }).anyTimes();
 
-        expect(this.calendar.getCapacityWithOvertime(isA(LocalDate.class)))
-                .andAnswer(new IAnswer<Capacity>() {
+        expect(this.calendar.getCapacityWithOvertime(isA(LocalDate.class))).andAnswer(new IAnswer<Capacity>() {
 
                     @Override
                     public Capacity answer() throws Throwable {
-                        LocalDate date = (LocalDate) EasyMock
-                                .getCurrentArguments()[0];
-                        if (answersForDates.containsKey(date)) {
+                        LocalDate date = (LocalDate) EasyMock.getCurrentArguments()[0];
+                        if ( answersForDates.containsKey(date) ) {
                             return answersForDates.get(date);
                         }
                         return defaultAnswer;
                     }
                 }).anyTimes();
+
         final IAnswer<EffortDuration> effortAnswer = new IAnswer<EffortDuration>() {
 
             @Override
             public EffortDuration answer() throws Throwable {
-                PartialDay day = (PartialDay) EasyMock
-                        .getCurrentArguments()[0];
-                ResourcesPerDay resourcesPerDay = (ResourcesPerDay) EasyMock
-                        .getCurrentArguments()[1];
+                PartialDay day = (PartialDay) EasyMock.getCurrentArguments()[0];
+                ResourcesPerDay resourcesPerDay = (ResourcesPerDay) EasyMock.getCurrentArguments()[1];
 
                 LocalDate date = day.getDate();
-                Capacity capacity = answersForDates.containsKey(date) ? answersForDates
-                        .get(date) : defaultAnswer;
+                Capacity capacity = answersForDates.containsKey(date) ? answersForDates.get(date) : defaultAnswer;
 
-                EffortDuration oneResourcePerDayWorkingDuration = day
-                        .limitWorkingDay(capacity.getStandardEffort());
-                EffortDuration amountRequestedDuration = resourcesPerDay
-                        .asDurationGivenWorkingDayOf(oneResourcePerDayWorkingDuration);
+                EffortDuration oneResourcePerDayWorkingDuration = day.limitWorkingDay(capacity.getStandardEffort());
+
+                EffortDuration amountRequestedDuration =
+                        resourcesPerDay.asDurationGivenWorkingDayOf(oneResourcePerDayWorkingDuration);
+
                 return capacity.limitDuration(amountRequestedDuration);
             }
         };
-        expect(
-                this.calendar.asDurationOn(isA(PartialDay.class),
-                        isA(ResourcesPerDay.class))).andAnswer(effortAnswer)
-                .anyTimes();
-        expect(this.calendar.getAvailability()).andReturn(
-                AvailabilityTimeLine.allValid()).anyTimes();
+
+        expect(this.calendar.asDurationOn(isA(PartialDay.class), isA(ResourcesPerDay.class)))
+                .andAnswer(effortAnswer).anyTimes();
+
+        expect(this.calendar.getAvailability()).andReturn(AvailabilityTimeLine.allValid()).anyTimes();
         replay(this.calendar);
     }
 
@@ -207,18 +189,15 @@ public class SpecificResourceAllocationTest {
     private void givenTask(IntraDayDate start, IntraDayDate end) {
         task = createNiceMock(Task.class);
         expect(task.getCalendar()).andReturn(baseCalendar).anyTimes();
-        expect(task.getStartDate()).andReturn(
-                start.toDateTimeAtStartOfDay().toDate()).anyTimes();
+        expect(task.getStartDate()).andReturn(start.toDateTimeAtStartOfDay().toDate()).anyTimes();
         expect(task.getIntraDayStartDate()).andReturn(start).anyTimes();
-        expect(task.getEndDate()).andReturn(
-                end.toDateTimeAtStartOfDay().toDate()).anyTimes();
+        expect(task.getEndDate()).andReturn(end.toDateTimeAtStartOfDay().toDate()).anyTimes();
         expect(task.getIntraDayEndDate()).andReturn(end).anyTimes();
         expect(task.getFirstDayNotConsolidated()).andReturn(start).anyTimes();
         replay(task);
     }
 
-    private void givenSpecificResourceAllocation(IntraDayDate start,
-            IntraDayDate end) {
+    private void givenSpecificResourceAllocation(IntraDayDate start, IntraDayDate end) {
         givenWorker();
         givenTask(start, end);
         specificResourceAllocation = SpecificResourceAllocation.create(task);

@@ -73,11 +73,9 @@ public class EffortDuration implements Comparable<EffortDuration> {
         }
     }
 
-    private static final Pattern lenientEffortDurationSpecification = Pattern
-            .compile("(\\d+)(\\s*:\\s*\\d+\\s*)*");
+    private static final Pattern lenientEffortDurationSpecification = Pattern.compile("(\\d+)(\\s*:\\s*\\d+\\s*)*");
 
-    private static final Pattern contiguousDigitsPattern = Pattern
-            .compile("\\d+");
+    private static final Pattern contiguousDigitsPattern = Pattern.compile("\\d+");
 
     /**
      * If an {@link EffortDuration} can't be parsed <code>null</code> is
@@ -379,11 +377,9 @@ public class EffortDuration implements Comparable<EffortDuration> {
         return EffortDuration.seconds(total.seconds / items);
     }
 
-    private static int roundHalfUpToHours(
-            EnumMap<Granularity, Integer> components) {
+    private static int roundHalfUpToHours(EnumMap<Granularity, Integer> components) {
         int seconds = components.get(Granularity.SECONDS);
-        int minutes = components.get(Granularity.MINUTES)
-                + (seconds < 30 ? 0 : 1);
+        int minutes = components.get(Granularity.MINUTES) + (seconds < 30 ? 0 : 1);
         int hours = components.get(Granularity.HOURS) + (minutes < 30 ? 0 : 1);
         return hours;
     }

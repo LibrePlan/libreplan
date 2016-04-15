@@ -56,11 +56,9 @@ import org.libreplan.business.workingday.ResourcesPerDay;
  * some exceptions of its parent calendar.
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public class BaseCalendar extends IntegrationEntity implements ICalendar,
-        IHumanIdentifiable, Comparable<BaseCalendar> {
+public class BaseCalendar extends IntegrationEntity implements ICalendar, IHumanIdentifiable, Comparable<BaseCalendar> {
 
-    private static final Capacity DEFAULT_VALUE = Capacity.zero()
-            .overAssignableWithoutLimit();
+    private static final Capacity DEFAULT_VALUE = Capacity.zero().overAssignableWithoutLimit();
 
     public static BaseCalendar create() {
         return create(new BaseCalendar(CalendarData.create()));
@@ -84,7 +82,7 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar,
 
     private static void resetDefaultCapacities(BaseCalendar calendar) {
         CalendarData calendarData = calendar.getLastCalendarData();
-        if (calendarData != null) {
+        if ( calendarData != null ) {
             CalendarData.resetDefaultCapacities(calendarData);
         }
     }

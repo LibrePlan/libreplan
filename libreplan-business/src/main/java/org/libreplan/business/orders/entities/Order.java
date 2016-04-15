@@ -328,7 +328,7 @@ public class Order extends OrderLineGroup implements Comparable {
 
         for (OrderElement orderElement : getAllChildren()) {
             TaskElement taskElement = orderElement.getAssociatedTaskElement();
-            if (taskElement != null) {
+            if ( taskElement != null ) {
                 result.add(taskElement);
             }
         }
@@ -340,7 +340,7 @@ public class Order extends OrderLineGroup implements Comparable {
     public List<TaskElement> getAssociatedTasks() {
         ArrayList<TaskElement> result = new ArrayList<TaskElement>();
         TaskGroup taskGroup = getAssociatedTaskElement();
-        if (taskGroup != null) {
+        if ( taskGroup != null ) {
             result.addAll(taskGroup.getChildren());
         }
         return result;
@@ -353,15 +353,13 @@ public class Order extends OrderLineGroup implements Comparable {
     @SuppressWarnings("unused")
     @AssertTrue(message = "the project must have a start date")
     private boolean isIfSchedulingModeIsForwardOrderMustHaveStartDateConstraint() {
-        return getSchedulingMode() != SchedulingMode.FORWARD
-                || getInitDate() != null;
+        return getSchedulingMode() != SchedulingMode.FORWARD || getInitDate() != null;
     }
 
     @SuppressWarnings("unused")
     @AssertTrue(message = "the project must have a deadline")
     private boolean isIfSchedulingModeIsBackwardsOrderMustHaveDeadlineConstraint() {
-        return getSchedulingMode() != SchedulingMode.BACKWARDS
-                || getDeadline() != null;
+        return getSchedulingMode() != SchedulingMode.BACKWARDS || getDeadline() != null;
     }
 
     @SuppressWarnings("unused")

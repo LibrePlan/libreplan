@@ -89,13 +89,13 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     private static final Log LOG = LogFactory.getLog(ResourceAllocation.class);
 
-    public static <T extends ResourceAllocation<?>> List<T> getSatisfied(
-            Collection<T> resourceAllocations) {
+    public static <T extends ResourceAllocation<?>> List<T> getSatisfied(Collection<T> resourceAllocations) {
         Validate.notNull(resourceAllocations);
         Validate.noNullElements(resourceAllocations);
         List<T> result = new ArrayList<T>();
+
         for (T each : resourceAllocations) {
-            if (each.isSatisfied()) {
+            if ( each.isSatisfied() ) {
                 result.add(each);
             }
         }
@@ -107,7 +107,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             Collection<? extends ResourceAllocation<?>> resourceAllocations) {
         List<T> result = new ArrayList<T>();
         for (ResourceAllocation<?> allocation : resourceAllocations) {
-            if (type.isInstance(allocation)) {
+            if ( type.isInstance(allocation) ) {
                 result.add(type.cast(allocation));
             }
         }
@@ -116,11 +116,12 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     public static <R extends ResourceAllocation<?>> Map<Resource, List<R>> byResource(
             Collection<? extends R> allocations) {
+
         Map<Resource, List<R>> result = new HashMap<Resource, List<R>>();
         for (R resourceAllocation : allocations) {
-            for (Resource resource : resourceAllocation
-                    .getAssociatedResources()) {
-                if (!result.containsKey(resource)) {
+
+            for (Resource resource : resourceAllocation.getAssociatedResources()) {
+                if ( !result.containsKey(resource) ) {
                     result.put(resource, new ArrayList<R>());
                 }
                 result.get(resource).add(resourceAllocation);
@@ -129,18 +130,16 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         return result;
     }
 
-    public static <R extends ResourceAllocation<?>> List<R> sortedByStartDate(
-            Collection<? extends R> allocations) {
+    public static <R extends ResourceAllocation<?>> List<R> sortedByStartDate(Collection<? extends R> allocations) {
         List<R> result = new ArrayList<R>(allocations);
         Collections.sort(result, byStartDateComparator());
         return result;
     }
 
-    public static <R extends ResourceAllocation<?>> Map<Task, List<R>> byTask(
-            List<? extends R> allocations) {
+    public static <R extends ResourceAllocation<?>> Map<Task, List<R>> byTask(List<? extends R> allocations) {
         Map<Task, List<R>> result = new LinkedHashMap<Task, List<R>>();
         for (R resourceAllocation : allocations) {
-            if (resourceAllocation.getTask() != null) {
+            if ( resourceAllocation.getTask() != null ) {
                 Task task = resourceAllocation.getTask();
                 initializeIfNeeded(result, task);
                 result.get(task).add(resourceAllocation);
@@ -149,9 +148,8 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         return result;
     }
 
-    private static <E extends ResourceAllocation<?>> void initializeIfNeeded(
-            Map<Task, List<E>> result, Task task) {
-        if (!result.containsKey(task)) {
+    private static <E extends ResourceAllocation<?>> void initializeIfNeeded(Map<Task, List<E>> result, Task task) {
+        if ( !result.containsKey(task) ) {
             result.put(task, new ArrayList<E>());
         }
     }
@@ -160,16 +158,14 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         return new Comparator<ResourceAllocation<?>>() {
 
             @Override
-            public int compare(ResourceAllocation<?> o1,
-                    ResourceAllocation<?> o2) {
-                if (o1.getIntraDayStartDate() == null) {
+            public int compare(ResourceAllocation<?> o1, ResourceAllocation<?> o2) {
+                if ( o1.getIntraDayStartDate() == null ) {
                     return -1;
                 }
-                if (o2.getIntraDayStartDate() == null) {
+                if ( o2.getIntraDayStartDate() == null ) {
                     return 1;
                 }
-                return o1.getIntraDayStartDate().compareTo(
-                        o2.getIntraDayStartDate());
+                return o1.getIntraDayStartDate().compareTo(o2.getIntraDayStartDate());
             }
         };
     }
@@ -178,15 +174,12 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         FORWARD {
             @Override
             public IntraDayDate getDateFromWhichToAllocate(Task task) {
-                return IntraDayDate.max(task.getFirstDayNotConsolidated(),
-                        task.getIntraDayStartDate());
+                return IntraDayDate.max(task.getFirstDayNotConsolidated(), task.getIntraDayStartDate());
             }
 
             @Override
-            void limitAvailabilityOn(AvailabilityTimeLine availability,
-                    IntraDayDate dateFromWhichToAllocate) {
-                availability.invalidUntil(dateFromWhichToAllocate
-                        .asExclusiveEnd());
+            void limitAvailabilityOn(AvailabilityTimeLine availability, IntraDayDate dateFromWhichToAllocate) {
+                availability.invalidUntil(dateFromWhichToAllocate.asExclusiveEnd());
             }
         },
         BACKWARD {
@@ -196,23 +189,19 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             }
 
             @Override
-            void limitAvailabilityOn(AvailabilityTimeLine availability,
-                    IntraDayDate dateFromWhichToAllocate) {
+            void limitAvailabilityOn(AvailabilityTimeLine availability, IntraDayDate dateFromWhichToAllocate) {
                 availability.invalidFrom(dateFromWhichToAllocate.getDate());
             }
         };
 
         public abstract IntraDayDate getDateFromWhichToAllocate(Task task);
 
-        abstract void limitAvailabilityOn(AvailabilityTimeLine availability,
-                IntraDayDate dateFromWhichToAllocate);
+        abstract void limitAvailabilityOn(AvailabilityTimeLine availability, IntraDayDate dateFromWhichToAllocate);
 
     }
 
-    public static AllocationsSpecified allocating(
-            List<ResourcesPerDayModification> resourceAllocations) {
-        resourceAllocations = new ArrayList<ResourcesPerDayModification>(
-                resourceAllocations);
+    public static AllocationsSpecified allocating(List<ResourcesPerDayModification> resourceAllocations) {
+        resourceAllocations = new ArrayList<ResourcesPerDayModification>(resourceAllocations);
         sortBySpecificFirst(resourceAllocations);
         return new AllocationsSpecified(resourceAllocations);
     }
@@ -225,21 +214,19 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
      * @param resourceAllocations
      *            Sorted with specific allocations before generic ones
      */
-    private static <T extends AllocationModification> void sortBySpecificFirst(
-            List<T> resourceAllocations) {
+    private static <T extends AllocationModification> void sortBySpecificFirst(List<T> resourceAllocations) {
         Collections.sort(resourceAllocations,
                 new Comparator<AllocationModification>() {
 
                     @Override
-                    public int compare(AllocationModification o1,
-                            AllocationModification o2) {
-                        if (o1.isSpecific() && o2.isSpecific()) {
+                    public int compare(AllocationModification o1, AllocationModification o2) {
+                        if ( o1.isSpecific() && o2.isSpecific() ) {
                             return 0;
                         }
-                        if (o1.isSpecific()) {
+                        if ( o1.isSpecific() ) {
                             return -1;
                         }
-                        if (o2.isSpecific()) {
+                        if ( o2.isSpecific() ) {
                             return 1;
                         }
                         return 0;
@@ -247,16 +234,12 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                 });
     }
 
-    private static void checkStartLessOrEqualToEnd(IntraDayDate startInclusive,
-            IntraDayDate endExclusive) {
-        Validate.isTrue(startInclusive.compareTo(endExclusive) <= 0,
-                "the end must be equal or posterior to the start");
+    private static void checkStartLessOrEqualToEnd(IntraDayDate startInclusive, IntraDayDate endExclusive) {
+        Validate.isTrue(startInclusive.compareTo(endExclusive) <= 0, "the end must be equal or posterior to the start");
     }
 
-    private static void checkStartLessOrEqualToEnd(LocalDate start,
-            LocalDate end) {
-        Validate.isTrue(start.compareTo(end) <= 0,
-                "the end must be equal or posterior to the start");
+    private static void checkStartLessOrEqualToEnd(LocalDate start, LocalDate end) {
+        Validate.isTrue(start.compareTo(end) <= 0, "the end must be equal or posterior to the start");
     }
 
     /**
@@ -333,9 +316,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         }
 
         public interface INotFulfilledReceiver {
-            public void cantFulfill(
-                    ResourcesPerDayModification allocationAttempt,
-                    CapacityResult capacityResult);
+            public void cantFulfill(ResourcesPerDayModification allocationAttempt, CapacityResult capacityResult);
         }
 
         public IntraDayDate untilAllocating(EffortDuration effort) {
@@ -350,39 +331,35 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         private static INotFulfilledReceiver doNothing() {
             return new INotFulfilledReceiver() {
                 @Override
-                public void cantFulfill(
-                        ResourcesPerDayModification allocationAttempt,
-                        CapacityResult capacityResult) {
+                public void cantFulfill(ResourcesPerDayModification allocationAttempt, CapacityResult capacityResult) {
                 }
             };
         }
 
-        public IntraDayDate untilAllocating(EffortDuration effort,
-                final INotFulfilledReceiver receiver) {
+        public IntraDayDate untilAllocating(EffortDuration effort, final INotFulfilledReceiver receiver) {
             return untilAllocating(Direction.FORWARD, effort, receiver);
         }
 
-        public IntraDayDate untilAllocating(Direction direction,
-                EffortDuration toAllocate, final INotFulfilledReceiver receiver) {
-            UntilFillingHoursAllocator allocator = new UntilFillingHoursAllocator(
-                    direction,
-                    task, allocations) {
+        public IntraDayDate untilAllocating(
+                Direction direction,
+                EffortDuration toAllocate,
+                final INotFulfilledReceiver receiver) {
+
+            UntilFillingHoursAllocator allocator = new UntilFillingHoursAllocator(direction, task, allocations) {
 
                 @Override
                 protected <T extends DayAssignment> void setNewDataForAllocation(
                         ResourceAllocation<T> allocation,
                         IntraDayDate resultDate,
-                        ResourcesPerDay resourcesPerDay, List<T> dayAssignments) {
+                        ResourcesPerDay resourcesPerDay,
+                        List<T> dayAssignments) {
+
                     Task task = AllocationsSpecified.this.task;
                     allocation.setIntendedResourcesPerDay(resourcesPerDay);
-                    if (isForwardScheduling()) {
-                        allocation.resetAllAllocationAssignmentsTo(
-                                dayAssignments,
-                                task.getIntraDayStartDate(), resultDate);
+                    if ( isForwardScheduling() ) {
+                        allocation.resetAllAllocationAssignmentsTo(dayAssignments, task.getIntraDayStartDate(), resultDate);
                     } else {
-                        allocation.resetAllAllocationAssignmentsTo(
-                                dayAssignments,
-                                resultDate, task.getIntraDayEndDate());
+                        allocation.resetAllAllocationAssignmentsTo(dayAssignments, resultDate, task.getIntraDayEndDate());
                     }
                     allocation.updateResourcesPerDay();
                 }
@@ -392,23 +369,21 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                         IntraDayDate dateFromWhichToAllocate,
                         ResourcesPerDayModification resourcesPerDayModification,
                         EffortDuration effortToAllocate) {
+
                     ICalendar calendar = getCalendar(resourcesPerDayModification);
-                    ResourcesPerDay resourcesPerDay = resourcesPerDayModification
-                            .getGoal();
-                    AvailabilityTimeLine availability = resourcesPerDayModification
-                            .getAvailability();
-                    getDirection().limitAvailabilityOn(availability,
-                            dateFromWhichToAllocate);
-                    return ThereAreHoursOnWorkHoursCalculator
-                            .thereIsAvailableCapacityFor(calendar,
-                                    availability, resourcesPerDay,
-                                    effortToAllocate);
+                    ResourcesPerDay resourcesPerDay = resourcesPerDayModification.getGoal();
+                    AvailabilityTimeLine availability = resourcesPerDayModification.getAvailability();
+                    getDirection().limitAvailabilityOn(availability, dateFromWhichToAllocate);
+                    return ThereAreHoursOnWorkHoursCalculator.thereIsAvailableCapacityFor(
+                            calendar,
+                            availability,
+                            resourcesPerDay,
+                            effortToAllocate);
                 }
 
-                private CombinedWorkHours getCalendar(
-                        ResourcesPerDayModification resourcesPerDayModification) {
-                    return CombinedWorkHours.minOf(resourcesPerDayModification
-                            .getBeingModified().getTaskCalendar(),
+                private CombinedWorkHours getCalendar(ResourcesPerDayModification resourcesPerDayModification) {
+                    return CombinedWorkHours.minOf(
+                            resourcesPerDayModification.getBeingModified().getTaskCalendar(),
                             resourcesPerDayModification.getResourcesCalendar());
                 }
 
@@ -590,7 +565,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     }
 
     protected void updateResourcesPerDay() {
-        if (!isSatisfied()) {
+        if ( !isSatisfied() ) {
             return;
         }
         ResourcesPerDay resourcesPerDay = calculateResourcesPerDayFromAssignments(getAssignments());
@@ -618,7 +593,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     private ResourcesPerDay getReassignationResourcesPerDay() {
         ResourcesPerDay intended = getIntendedResourcesPerDay();
-        if (intended != null) {
+        if ( intended != null ) {
             return intended;
         }
         return getResourcesPerDay();
@@ -626,9 +601,8 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     public boolean areIntendedResourcesPerDaySatisfied() {
         CalculatedValue calculatedValue = getTask().getCalculatedValue();
-        return calculatedValue == CalculatedValue.RESOURCES_PER_DAY
-                || ObjectUtils.equals(getNonConsolidatedResourcePerDay(),
-                        getIntendedResourcesPerDay());
+        return calculatedValue == CalculatedValue.RESOURCES_PER_DAY ||
+                ObjectUtils.equals(getNonConsolidatedResourcePerDay(), getIntendedResourcesPerDay());
     }
 
     public ResourceAllocation(Task task) {
@@ -654,14 +628,14 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     }
 
     private void updateOriginalTotalAssigment() {
-        if (!isSatisfied()) {
+        if ( !isSatisfied() ) {
             return;
         }
         intendedNonConsolidatedEffort = getNonConsolidatedEffort();
         Consolidation consolidation = task.getConsolidation();
-        if (consolidation == null) {
+        if ( consolidation == null ) {
             intendedTotalAssignment = intendedNonConsolidatedEffort;
-        } else if (consolidation.isCompletelyConsolidated()) {
+        } else if ( consolidation.isCompletelyConsolidated() ) {
             intendedTotalAssignment = getConsolidatedEffort();
         } else {
             intendedTotalAssignment = consolidation.getTotalFromNotConsolidated(getNonConsolidatedEffort());
@@ -698,22 +672,20 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             ResourcesPerDay resourcesPerDay);
 
     public final ResourcesPerDayModification asResourcesPerDayModification() {
-        if (getReassignationResourcesPerDay().isZero()) {
+        if ( getReassignationResourcesPerDay().isZero() ) {
             return null;
         }
         return visit(this, new IVisitor<ResourcesPerDayModification>() {
 
             @Override
-            public ResourcesPerDayModification on(
-                    SpecificResourceAllocation specificAllocation) {
-                return ResourcesPerDayModification.create(specificAllocation,
-                        getReassignationResourcesPerDay());
+            public ResourcesPerDayModification on(SpecificResourceAllocation specificAllocation) {
+                return ResourcesPerDayModification.create(specificAllocation, getReassignationResourcesPerDay());
             }
 
             @Override
-            public ResourcesPerDayModification on(
-                    GenericResourceAllocation genericAllocation) {
-                return ResourcesPerDayModification.create(genericAllocation,
+            public ResourcesPerDayModification on(GenericResourceAllocation genericAllocation) {
+                return ResourcesPerDayModification.create(
+                        genericAllocation,
                         getReassignationResourcesPerDay(),
                         getAssociatedResources());
             }
@@ -725,15 +697,12 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
             @Override
             public EffortModification on(GenericResourceAllocation genericAllocation) {
-                return EffortModification.create(genericAllocation,
-                        getEffortForReassignation(),
-                        getAssociatedResources());
+                return EffortModification.create(genericAllocation, getEffortForReassignation(), getAssociatedResources());
             }
 
             @Override
             public EffortModification on(SpecificResourceAllocation specificAllocation) {
-                return EffortModification.create(specificAllocation,
-                        getEffortForReassignation());
+                return EffortModification.create(specificAllocation, getEffortForReassignation());
             }
         });
     }
@@ -749,26 +718,28 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         List<T> distributeForDay(PartialDay day, EffortDuration effort);
     }
 
-    protected abstract class AssignmentsAllocator implements IAllocatable,
-            IEffortDistributor<T> {
+    protected abstract class AssignmentsAllocator implements IAllocatable, IEffortDistributor<T> {
 
         @Override
         public final void allocate(ResourcesPerDay resourcesPerDay) {
             Task currentTask = getTask();
+
             AllocateResourcesPerDayOnInterval allocator = new AllocateResourcesPerDayOnInterval(
                     currentTask.getIntraDayStartDate(),
                     currentTask.getIntraDayEndDate());
+
             allocator.allocate(resourcesPerDay);
         }
 
-        private List<T> createAssignments(ResourcesPerDay resourcesPerDay,
-                IntraDayDate startInclusive, IntraDayDate endExclusive) {
+        private List<T> createAssignments(
+                ResourcesPerDay resourcesPerDay,
+                IntraDayDate startInclusive,
+                IntraDayDate endExclusive) {
+
             List<T> assignmentsCreated = new ArrayList<T>();
             for (PartialDay day : getDays(startInclusive, endExclusive)) {
-                EffortDuration durationForDay = calculateTotalToDistribute(day,
-                        resourcesPerDay);
-                assignmentsCreated
-                        .addAll(distributeForDay(day, durationForDay));
+                EffortDuration durationForDay = calculateTotalToDistribute(day, resourcesPerDay);
+                assignmentsCreated.addAll(distributeForDay(day, durationForDay));
             }
             return onlyNonZeroHours(assignmentsCreated);
         }
@@ -780,89 +751,67 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         }
 
         @Override
-        public IAllocateResourcesPerDay resourcesPerDayFromEndUntil(
-                IntraDayDate start) {
-            IntraDayDate startInclusive = IntraDayDate.max(start,
-                    getStartSpecifiedByTask());
+        public IAllocateResourcesPerDay resourcesPerDayFromEndUntil(IntraDayDate start) {
+            IntraDayDate startInclusive = IntraDayDate.max(start, getStartSpecifiedByTask());
             IntraDayDate endDate = task.getIntraDayEndDate();
-            return new AllocateResourcesPerDayOnInterval(startInclusive,
-                    endDate);
+            return new AllocateResourcesPerDayOnInterval(startInclusive, endDate);
         }
 
-        private Iterable<PartialDay> getDays(IntraDayDate startInclusive,
-                IntraDayDate endExclusive) {
+        private Iterable<PartialDay> getDays(IntraDayDate startInclusive, IntraDayDate endExclusive) {
             checkStartLessOrEqualToEnd(startInclusive, endExclusive);
-            Iterable<PartialDay> daysUntil = startInclusive
-                    .daysUntil(endExclusive);
+            Iterable<PartialDay> daysUntil = startInclusive.daysUntil(endExclusive);
             return daysUntil;
         }
 
-        private final class AllocateResourcesPerDayOnInterval implements
-                IAllocateResourcesPerDay {
+        private final class AllocateResourcesPerDayOnInterval implements IAllocateResourcesPerDay {
 
             private final IntraDayDate startInclusive;
 
             private final IntraDayDate endExclusive;
 
-            private AllocateResourcesPerDayOnInterval(
-                    IntraDayDate startInclusive, IntraDayDate endExclusive) {
+            private AllocateResourcesPerDayOnInterval(IntraDayDate startInclusive, IntraDayDate endExclusive) {
                 this.startInclusive = startInclusive;
-                this.endExclusive = IntraDayDate.max(startInclusive,
-                        endExclusive);
+                this.endExclusive = IntraDayDate.max(startInclusive, endExclusive);
             }
 
             @Override
             public void allocate(ResourcesPerDay resourcesPerDay) {
                 setIntendedResourcesPerDay(resourcesPerDay);
-                List<T> assignmentsCreated = createAssignments(resourcesPerDay,
-                        startInclusive, endExclusive);
-                resetAllAllocationAssignmentsTo(assignmentsCreated,
-                        startInclusive,
-                        endExclusive);
+                List<T> assignmentsCreated = createAssignments(resourcesPerDay, startInclusive, endExclusive);
+                resetAllAllocationAssignmentsTo(assignmentsCreated, startInclusive, endExclusive);
                 updateResourcesPerDay();
             }
         }
 
         @Override
-        public IAllocateEffortOnInterval onIntervalWithinTask(
-                final LocalDate start, final LocalDate end) {
+        public IAllocateEffortOnInterval onIntervalWithinTask(final LocalDate start, final LocalDate end) {
             checkStartLessOrEqualToEnd(start, end);
-            return new OnSubIntervalAllocator(
-                    new AllocationIntervalInsideTask(start, end));
+            return new OnSubIntervalAllocator(new AllocationIntervalInsideTask(start, end));
         }
 
         @Override
-        public IAllocateEffortOnInterval onIntervalWithinTask(
-                IntraDayDate start, IntraDayDate end) {
+        public IAllocateEffortOnInterval onIntervalWithinTask(IntraDayDate start, IntraDayDate end) {
             checkStartLessOrEqualToEnd(start, end);
-            return new OnSubIntervalAllocator(new AllocationIntervalInsideTask(
-                    start, end));
+            return new OnSubIntervalAllocator(new AllocationIntervalInsideTask(start, end));
         }
 
         @Override
-        public IAllocateEffortOnInterval onInterval(
-                final LocalDate startInclusive, final LocalDate endExclusive) {
+        public IAllocateEffortOnInterval onInterval(final LocalDate startInclusive, final LocalDate endExclusive) {
             checkStartLessOrEqualToEnd(startInclusive, endExclusive);
-            return new OnSubIntervalAllocator(new AllocationInterval(
-                    startInclusive, endExclusive));
+            return new OnSubIntervalAllocator(new AllocationInterval(startInclusive, endExclusive));
         }
 
         @Override
-        public IAllocateEffortOnInterval onInterval(IntraDayDate start,
-                IntraDayDate end) {
+        public IAllocateEffortOnInterval onInterval(IntraDayDate start, IntraDayDate end) {
             checkStartLessOrEqualToEnd(start, end);
-            return new OnSubIntervalAllocator(
-                    new AllocationInterval(start,
-                    end));
+            return new OnSubIntervalAllocator(new AllocationInterval(start, end));
         }
 
-        private class OnSubIntervalAllocator implements
-                IAllocateEffortOnInterval {
+        private class OnSubIntervalAllocator implements IAllocateEffortOnInterval {
 
             private final AllocationInterval allocationInterval;
 
-            private OnSubIntervalAllocator(
-                    AllocationInterval allocationInterval) {
+            private OnSubIntervalAllocator(AllocationInterval allocationInterval) {
                 this.allocationInterval = allocationInterval;
             }
 
@@ -873,8 +822,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
             @Override
             public void allocate(EffortDuration duration) {
-                List<T> assignmentsCreated = createAssignments(
-                        allocationInterval, duration);
+                List<T> assignmentsCreated = createAssignments(allocationInterval, duration);
                 allocationInterval.resetAssignments(assignmentsCreated);
             }
 
@@ -885,25 +833,23 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
         }
 
-        private void allocateDurationsByDay(AllocationInterval interval,
-                List<EffortDuration> durationsByDay) {
-            List<EffortDuration> rightSlice = interval
-                    .getRightSlice(durationsByDay);
+        private void allocateDurationsByDay(AllocationInterval interval, List<EffortDuration> durationsByDay) {
+            List<EffortDuration> rightSlice = interval.getRightSlice(durationsByDay);
             AvailabilityTimeLine availability = getAvailability();
-            List<T> assignments = createAssignments(interval, availability,
-                    rightSlice.toArray(new EffortDuration[rightSlice.size()]));
+
+            List<T> assignments =
+                    createAssignments(interval, availability, rightSlice.toArray(new EffortDuration[rightSlice.size()]));
+
             interval.resetAssignments(assignments);
         }
 
         @Override
         public IAllocateEffortOnInterval fromStartUntil(final IntraDayDate end) {
-            final AllocationInterval interval = new AllocationInterval(
-                    getStartSpecifiedByTask(), end);
+            final AllocationInterval interval = new AllocationInterval(getStartSpecifiedByTask(), end);
             return getIAllocateEffortOnInterval(interval);
         }
 
-        private IAllocateEffortOnInterval getIAllocateEffortOnInterval(
-                final AllocationInterval interval) {
+        private IAllocateEffortOnInterval getIAllocateEffortOnInterval(final AllocationInterval interval) {
             return new IAllocateEffortOnInterval() {
 
                 @Override
@@ -918,12 +864,9 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
                 @Override
                 public void allocate(List<EffortDuration> durationsByDay) {
-                    List<EffortDuration> rightSlice = interval
-                            .getRightSlice(durationsByDay);
+                    List<EffortDuration> rightSlice = interval.getRightSlice(durationsByDay);
                     AvailabilityTimeLine availability = getAvailability();
-                    createAssignments(interval, availability,
-                            rightSlice.toArray(new EffortDuration[rightSlice
-                                    .size()]));
+                    createAssignments(interval, availability, rightSlice.toArray(new EffortDuration[rightSlice.size()]));
                 }
 
             };
@@ -931,8 +874,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
         @Override
         public IAllocateEffortOnInterval fromEndUntil(IntraDayDate start) {
-            final AllocationInterval interval = new AllocationInterval(start,
-                    task.getIntraDayEndDate());
+            final AllocationInterval interval = new AllocationInterval(start, task.getIntraDayEndDate());
             return new IAllocateEffortOnInterval() {
 
                 @Override
@@ -953,37 +895,33 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             };
         }
 
-        private void allocateTheWholeAllocation(AllocationInterval interval,
-                EffortDuration durationToAssign) {
-            List<T> assignmentsCreated = createAssignments(interval,
-                    durationToAssign);
-            ResourceAllocation.this.allocateTheWholeAllocation(interval,
-                    assignmentsCreated);
+        private void allocateTheWholeAllocation(AllocationInterval interval, EffortDuration durationToAssign) {
+            List<T> assignmentsCreated = createAssignments(interval, durationToAssign);
+            ResourceAllocation.this.allocateTheWholeAllocation(interval, assignmentsCreated);
         }
 
         protected abstract AvailabilityTimeLine getResourcesAvailability();
 
-        private List<T> createAssignments(AllocationInterval interval,
-                EffortDuration durationToAssign) {
+        private List<T> createAssignments(AllocationInterval interval, EffortDuration durationToAssign) {
             AvailabilityTimeLine availability = getAvailability();
 
-            Iterable<PartialDay> days = getDays(interval.getStartInclusive(),
-                    interval.getEndExclusive());
-            EffortDuration[] durationsEachDay = secondsDistribution(
-                    availability, days, durationToAssign);
+            Iterable<PartialDay> days = getDays(interval.getStartInclusive(), interval.getEndExclusive());
+            EffortDuration[] durationsEachDay = secondsDistribution(availability, days, durationToAssign);
             return createAssignments(interval, availability, durationsEachDay);
         }
 
-        private List<T> createAssignments(AllocationInterval interval,
+        private List<T> createAssignments(
+                AllocationInterval interval,
                 AvailabilityTimeLine availability,
                 EffortDuration[] durationsEachDay) {
+
             List<T> result = new ArrayList<T>();
             int i = 0;
             for (PartialDay day : getDays(interval.getStartInclusive(),
                     interval.getEndExclusive())) {
                 // if all days are not available, it would try to assign
                 // them anyway, preventing it with a check
-                if (availability.isValid(day.getDate())) {
+                if ( availability.isValid(day.getDate()) ) {
                     result.addAll(distributeForDay(day, durationsEachDay[i]));
                 }
                 i++;
@@ -994,9 +932,8 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         private AvailabilityTimeLine getAvailability() {
             AvailabilityTimeLine resourcesAvailability = getResourcesAvailability();
             BaseCalendar taskCalendar = getTask().getCalendar();
-            if (taskCalendar != null) {
-                return taskCalendar.getAvailability()
-                        .and(resourcesAvailability);
+            if ( taskCalendar != null ) {
+                return taskCalendar.getAvailability().and(resourcesAvailability);
             } else {
                 return resourcesAvailability;
             }
@@ -1005,7 +942,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         private List<T> onlyNonZeroHours(List<T> assignmentsCreated) {
             List<T> result = new ArrayList<T>();
             for (T each : assignmentsCreated) {
-                if (!each.getDuration().isZero()) {
+                if ( !each.getDuration().isZero() ) {
                     result.add(each);
                 }
             }
@@ -1013,34 +950,31 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         }
 
         private EffortDuration[] secondsDistribution(
-                AvailabilityTimeLine availability, Iterable<PartialDay> days,
+                AvailabilityTimeLine availability,
+                Iterable<PartialDay> days,
                 EffortDuration duration) {
+
             List<Capacity> capacities = new ArrayList<Capacity>();
             for (PartialDay each : days) {
                 capacities.add(getCapacity(availability, each));
             }
             Distributor distributor = Distributor.among(capacities);
-            return distributor.distribute(duration).toArray(
-                    new EffortDuration[0]);
+            return distributor.distribute(duration).toArray(new EffortDuration[0]);
         }
 
-        private Capacity getCapacity(AvailabilityTimeLine availability,
-                PartialDay day) {
-            if (availability.isValid(day.getDate())) {
+        private Capacity getCapacity(AvailabilityTimeLine availability, PartialDay day) {
+            if ( availability.isValid(day.getDate()) ) {
                 return getCapacityAt(day);
             } else {
-                return Capacity.create(zero())
-                        .notOverAssignableWithoutLimit();
+                return Capacity.create(zero()).notOverAssignableWithoutLimit();
             }
         }
 
         protected abstract Capacity getCapacityAt(PartialDay each);
 
-        private Share getShareAt(PartialDay day,
-                AvailabilityTimeLine availability) {
-            if (availability.isValid(day.getDate())) {
-                EffortDuration capacityAtDay = getAllocationCalendar()
-                        .getCapacityOn(day);
+        private Share getShareAt(PartialDay day, AvailabilityTimeLine availability) {
+            if ( availability.isValid(day.getDate()) ) {
+                EffortDuration capacityAtDay = getAllocationCalendar().getCapacityOn(day);
                 return new Share(-capacityAtDay.getSeconds());
             } else {
                 return new Share(Integer.MAX_VALUE);
@@ -1089,21 +1023,19 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     protected abstract void copyAssignments(Scenario from, Scenario to);
 
     protected void resetAssignmentsTo(List<T> assignments) {
-        resetAllAllocationAssignmentsTo(assignments,
-                task.getIntraDayStartDate(),
-                task.getIntraDayEndDate());
+        resetAllAllocationAssignmentsTo(assignments, task.getIntraDayStartDate(), task.getIntraDayEndDate());
     }
 
-    protected void allocateTheWholeAllocation(AllocationInterval interval,
-            List<T> assignments) {
-        resetAllAllocationAssignmentsTo(assignments,
-                interval.getStartInclusive(), interval.getEndExclusive());
+    protected void allocateTheWholeAllocation(AllocationInterval interval, List<T> assignments) {
+        resetAllAllocationAssignmentsTo(assignments, interval.getStartInclusive(), interval.getEndExclusive());
         updateResourcesPerDay();
     }
 
-    protected void resetAllAllocationAssignmentsTo(List<T> assignments,
+    protected void resetAllAllocationAssignmentsTo(
+            List<T> assignments,
             IntraDayDate intraDayStart,
             IntraDayDate intraDayEnd) {
+
         removingAssignments(withoutConsolidated(getAssignments()));
         addingAssignments(assignments);
         updateOriginalTotalAssigment();
@@ -1121,13 +1053,12 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
         private final IntraDayDate end;
 
-        AllocationInterval(IntraDayDate originalStart,
-                IntraDayDate originalEnd, IntraDayDate start, IntraDayDate end) {
+        AllocationInterval(IntraDayDate originalStart, IntraDayDate originalEnd, IntraDayDate start, IntraDayDate end) {
             this.originalStart = originalStart;
             this.originalEnd = originalEnd;
-            IntraDayDate startConsideringConsolidated = task
-                    .hasConsolidations() ? IntraDayDate
-                    .max(task.getFirstDayNotConsolidated(), start) : start;
+
+            IntraDayDate startConsideringConsolidated =
+                    task.hasConsolidations() ? IntraDayDate.max(task.getFirstDayNotConsolidated(), start) : start;
 
             this.start = IntraDayDate.min(startConsideringConsolidated, end);
             this.end = IntraDayDate.max(this.start, end);
@@ -1138,26 +1069,23 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         }
 
         AllocationInterval(LocalDate startInclusive, LocalDate endExclusive) {
-            this(IntraDayDate.startOfDay(startInclusive), IntraDayDate
-                    .startOfDay(endExclusive));
+            this(IntraDayDate.startOfDay(startInclusive), IntraDayDate.startOfDay(endExclusive));
         }
 
         public List<EffortDuration> getRightSlice(List<EffortDuration> original) {
-            List<EffortDuration> result = new ArrayList<EffortDuration>(
-                    original);
-            final int numberOfDaysToFill = originalStart
-                    .numberOfDaysUntil(originalEnd);
+            List<EffortDuration> result = new ArrayList<EffortDuration>(original);
+            final int numberOfDaysToFill = originalStart.numberOfDaysUntil(originalEnd);
             for (int i = 0; i < numberOfDaysToFill - original.size(); i++) {
                 result.add(zero());
             }
-            return result.subList(originalStart.numberOfDaysUntil(start),
+            return result.subList(
+                    originalStart.numberOfDaysUntil(start),
                     result.size() - end.numberOfDaysUntil(originalEnd));
         }
 
 
         public void resetAssignments(List<T> assignmentsCreated) {
-            resetAssigmentsFittingAllocationDatesToResultingAssignments(this,
-                    assignmentsCreated);
+            resetAssigmentsFittingAllocationDatesToResultingAssignments(this, assignmentsCreated);
         }
 
         public IntraDayDate getStartInclusive() {
@@ -1169,35 +1097,30 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         }
 
         public List<DayAssignment> getAssignmentsOnInterval() {
-            return getAssignments(this.start.getDate(),
-                    this.end.asExclusiveEnd());
+            return getAssignments(this.start.getDate(), this.end.asExclusiveEnd());
         }
 
         public List<DayAssignment> getNoConsolidatedAssignmentsOnInterval() {
-            return DayAssignment.withConsolidatedValue(
-                    getAssignmentsOnInterval(), false);
+            return DayAssignment.withConsolidatedValue(getAssignmentsOnInterval(), false);
         }
 
         public List<DayAssignment> getConsolidatedAssignmentsOnInterval() {
-            return DayAssignment.withConsolidatedValue(
-                    getAssignmentsOnInterval(), true);
+            return DayAssignment.withConsolidatedValue(getAssignmentsOnInterval(), true);
         }
     }
 
     class AllocationIntervalInsideTask extends AllocationInterval {
 
-        AllocationIntervalInsideTask(LocalDate startInclusive,
-                LocalDate endExclusive) {
-            this(IntraDayDate.startOfDay(startInclusive), IntraDayDate
-                    .startOfDay(endExclusive));
+        AllocationIntervalInsideTask(LocalDate startInclusive, LocalDate endExclusive) {
+            this(IntraDayDate.startOfDay(startInclusive), IntraDayDate.startOfDay(endExclusive));
         }
 
-        AllocationIntervalInsideTask(IntraDayDate startInclusive,
-                IntraDayDate endExclusive) {
-            super(startInclusive, endExclusive, IntraDayDate.max(
-                    startInclusive, getTask()
-                    .getFirstDayNotConsolidated()), IntraDayDate.min(
-                    endExclusive, task.getIntraDayEndDate()));
+        AllocationIntervalInsideTask(IntraDayDate startInclusive, IntraDayDate endExclusive) {
+            super(
+                    startInclusive,
+                    endExclusive,
+                    IntraDayDate.max(startInclusive, getTask().getFirstDayNotConsolidated()),
+                    IntraDayDate.min(endExclusive, task.getIntraDayEndDate()));
         }
 
         @Override
@@ -1206,9 +1129,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         }
     }
 
-    protected void resetAssigmentsForInterval(
-            AllocationIntervalInsideTask interval,
-            List<T> assignmentsCreated) {
+    protected void resetAssigmentsForInterval(AllocationIntervalInsideTask interval, List<T> assignmentsCreated) {
         IntraDayDate originalStart = getIntraDayStartDate();
         IntraDayDate originalEnd = getIntraDayEndDate();
 
@@ -1218,21 +1139,17 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         // This
         // is guaranteed by IntervalInsideTask. It also cannot shrink from the
         // original size, this is guaranteed by originalStart
-        getDayAssignmentsState().setIntraDayStart(
-                IntraDayDate.min(originalStart, interval.getStartInclusive()));
+        getDayAssignmentsState().setIntraDayStart(IntraDayDate.min(originalStart, interval.getStartInclusive()));
 
         // The resource allocation cannot grow beyond the end of the task. This
         // is guaranteed by IntervalInsideTask. It also cannot shrink from the
         // original size, this is guaranteed by originalEnd
-        getDayAssignmentsState().setIntraDayEnd(
-                IntraDayDate.max(originalEnd, interval.getEndExclusive()));
+        getDayAssignmentsState().setIntraDayEnd(IntraDayDate.max(originalEnd, interval.getEndExclusive()));
     }
 
-    private void updateAssignments(AllocationInterval interval,
-            List<T> assignmentsCreated) {
+    private void updateAssignments(AllocationInterval interval, List<T> assignmentsCreated) {
 
-        removingAssignments(withoutConsolidated(interval
-                .getAssignmentsOnInterval()));
+        removingAssignments(withoutConsolidated(interval.getAssignmentsOnInterval()));
         addingAssignments(assignmentsCreated);
 
         updateOriginalTotalAssigment();
@@ -1240,8 +1157,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     }
 
     void updateAssignmentsConsolidatedValues() {
-        LocalDate firstNotConsolidated = task.getFirstDayNotConsolidated()
-                .getDate();
+        LocalDate firstNotConsolidated = task.getFirstDayNotConsolidated().getDate();
         for (T each : getAssignments()) {
             each.setConsolidated(each.getDay().isBefore(firstNotConsolidated));
         }
@@ -1249,30 +1165,28 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     private void resetAssigmentsFittingAllocationDatesToResultingAssignments(
             AllocationInterval interval, List<T> assignmentsCreated) {
+
         updateAssignments(interval, assignmentsCreated);
 
         LocalDate startConsideringAssignments = getStartConsideringAssignments();
-        IntraDayDate start = IntraDayDate
-                .startOfDay(startConsideringAssignments);
-        if (interval.getStartInclusive()
-                .areSameDay(startConsideringAssignments)) {
+        IntraDayDate start = IntraDayDate.startOfDay(startConsideringAssignments);
+        if ( interval.getStartInclusive().areSameDay(startConsideringAssignments) ) {
             start = interval.getStartInclusive();
         }
         getDayAssignmentsState().setIntraDayStart(start);
 
         LocalDate endConsideringAssignments = getEndDateGiven(getAssignments());
         IntraDayDate end = IntraDayDate.startOfDay(endConsideringAssignments);
-        if (interval.getEndExclusive().areSameDay(endConsideringAssignments)) {
+        if ( interval.getEndExclusive().areSameDay(endConsideringAssignments) ) {
             end = interval.getEndExclusive();
         }
         getDayAssignmentsState().setIntraDayEnd(end);
     }
 
-    private static <T extends DayAssignment> List<T> withoutConsolidated(
-            List<? extends T> assignments) {
+    private static <T extends DayAssignment> List<T> withoutConsolidated(List<? extends T> assignments) {
         List<T> result = new ArrayList<T>();
         for (T each : assignments) {
-            if (!each.isConsolidated()) {
+            if ( !each.isConsolidated() ) {
                 result.add(each);
             }
         }
@@ -1280,26 +1194,21 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     }
 
     protected final void addingAssignments(Collection<? extends T> assignments) {
-        getDayAssignmentsState().addingAssignments(
-                withoutAlreadyPresent(assignments));
+        getDayAssignmentsState().addingAssignments(withoutAlreadyPresent(assignments));
     }
 
-    private List<? extends T> withoutAlreadyPresent(
-            Collection<? extends T> assignments) {
-        if(assignments.isEmpty()){
+    private List<? extends T> withoutAlreadyPresent(Collection<? extends T> assignments) {
+        if( assignments.isEmpty() ){
             return Collections.emptyList();
         }
 
-        LocalDate min = Collections.min(assignments,
-                DayAssignment.byDayComparator()).getDay();
-        LocalDate max = Collections.max(assignments,
-                DayAssignment.byDayComparator()).getDay();
-        Set<LocalDate> daysPresent = DayAssignment.byDay(
-                getAssignments(min, max.plusDays(1))).keySet();
+        LocalDate min = Collections.min(assignments, DayAssignment.byDayComparator()).getDay();
+        LocalDate max = Collections.max(assignments, DayAssignment.byDayComparator()).getDay();
+        Set<LocalDate> daysPresent = DayAssignment.byDay(getAssignments(min, max.plusDays(1))).keySet();
 
         List<T> result = new ArrayList<T>();
         for (T each : assignments) {
-            if (!daysPresent.contains(each.getDay())) {
+            if ( !daysPresent.contains(each.getDay()) ) {
                 result.add(each);
             }
         }
@@ -1312,19 +1221,17 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     @SuppressWarnings("unchecked")
     public void allocateLimitingDayAssignments(
-            List<? extends DayAssignment> assignments, IntraDayDate start,
-            IntraDayDate end) {
+            List<? extends DayAssignment> assignments, IntraDayDate start, IntraDayDate end) {
+
         assert isLimiting();
         resetAllAllocationAssignmentsTo((List<T>) assignments, start, end);
     }
 
-    private void removingAssignments(
-            List<? extends DayAssignment> assignments) {
+    private void removingAssignments(List<? extends DayAssignment> assignments) {
         getDayAssignmentsState().removingAssignments(assignments);
     }
 
-    public final EffortDuration calculateTotalToDistribute(PartialDay day,
-            ResourcesPerDay resourcesPerDay) {
+    public final EffortDuration calculateTotalToDistribute(PartialDay day, ResourcesPerDay resourcesPerDay) {
         return getAllocationCalendar().asDurationOn(day, resourcesPerDay);
     }
 
@@ -1332,39 +1239,38 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         return calculateResourcesPerDayFromAssignments(getAssignments());
     }
 
-    private ResourcesPerDay calculateResourcesPerDayFromAssignments(
-            Collection<? extends T> assignments) {
-        if (assignments.isEmpty()) {
+    private ResourcesPerDay calculateResourcesPerDayFromAssignments(Collection<? extends T> assignments) {
+        if ( assignments.isEmpty() ) {
             return ResourcesPerDay.amount(0);
         }
 
         Map<LocalDate, List<T>> byDay = DayAssignment.byDay(assignments);
         LocalDate min = Collections.min(byDay.keySet());
         LocalDate max = Collections.max(byDay.keySet());
-        Iterable<PartialDay> daysToIterate = startFor(min).daysUntil(
-                endFor(max));
+        Iterable<PartialDay> daysToIterate = startFor(min).daysUntil(endFor(max));
 
         EffortDuration sumTotalEffort = zero();
         EffortDuration sumWorkableEffort = zero();
         final ResourcesPerDay ONE_RESOURCE_PER_DAY = ResourcesPerDay.amount(1);
 
         for (PartialDay day : daysToIterate) {
-            List<T> assignmentsAtDay = avoidNull(byDay.get(day.getDate()),
-                    Collections.<T> emptyList());
-            EffortDuration incrementWorkable = getAllocationCalendar()
-                    .asDurationOn(day, ONE_RESOURCE_PER_DAY);
+            List<T> assignmentsAtDay =  avoidNull(byDay.get(day.getDate()), Collections.<T> emptyList());
+
+            EffortDuration incrementWorkable = getAllocationCalendar().asDurationOn(day, ONE_RESOURCE_PER_DAY);
             sumWorkableEffort = sumWorkableEffort.plus(incrementWorkable);
+
             sumTotalEffort = sumTotalEffort.plus(sumDuration(assignmentsAtDay));
         }
-        if (sumWorkableEffort.equals(zero())) {
+        if ( sumWorkableEffort.equals(zero()) ) {
             return ResourcesPerDay.amount(0);
         }
+
         return ResourcesPerDay.calculateFrom(sumTotalEffort, sumWorkableEffort);
     }
 
     private IntraDayDate startFor(LocalDate dayDate) {
         IntraDayDate start = getIntraDayStartDate();
-        if (start.getDate().equals(dayDate)) {
+        if ( start.getDate().equals(dayDate) ) {
             return start;
         } else {
             return IntraDayDate.startOfDay(dayDate);
@@ -1373,7 +1279,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     private IntraDayDate endFor(LocalDate assignmentDate) {
         IntraDayDate end = getIntraDayEndDate();
-        if (end.getDate().equals(assignmentDate)) {
+        if ( end.getDate().equals(assignmentDate) ) {
             return end;
         } else {
             return IntraDayDate.startOfDay(assignmentDate).nextDayAtStart();
@@ -1381,7 +1287,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     }
 
     private static <T> T avoidNull(T value, T defaultValue) {
-        if (value != null) {
+        if ( value != null ) {
             return value;
         } else {
             return defaultValue;
@@ -1393,7 +1299,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     }
 
     private ICalendar getTaskCalendar() {
-        if (getTask().getCalendar() == null) {
+        if ( getTask().getCalendar() == null ) {
             return SameWorkHoursEveryDay.getDefaultWorkingDay();
         } else {
             return getTask().getCalendar();
@@ -1408,9 +1314,12 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     public ResourceAllocation<T> copy(Scenario scenario) {
         Validate.notNull(scenario);
         ResourceAllocation<T> copy = createCopy(scenario);
+
         copy.assignmentsState = copy.toTransientStateWithInitial(
-                getUnorderedFor(scenario), getIntraDayStartDateFor(scenario),
+                getUnorderedFor(scenario),
+                getIntraDayStartDateFor(scenario),
                 getIntraDayEndFor(scenario));
+
         copy.resourcesPerDay = resourcesPerDay;
         copy.intendedTotalAssignment = intendedTotalAssignment;
         copy.task = task;
@@ -1420,8 +1329,10 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     }
 
     private DayAssignmentsState toTransientStateWithInitial(
-            Collection<? extends T> initialAssignments, IntraDayDate start,
+            Collection<? extends T> initialAssignments,
+            IntraDayDate start,
             IntraDayDate end) {
+
         TransientState result = new TransientState(initialAssignments);
         result.setIntraDayStart(start);
         result.setIntraDayEnd(end);
@@ -1430,7 +1341,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     private Set<T> getUnorderedFor(Scenario scenario) {
         IDayAssignmentsContainer<T> container = retrieveContainerFor(scenario);
-        if (container == null) {
+        if ( container == null ) {
             return new HashSet<T>();
         }
         return container.getDayAssignments();
@@ -1438,7 +1349,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     private IntraDayDate getIntraDayStartDateFor(Scenario scenario) {
         IDayAssignmentsContainer<T> container = retrieveContainerFor(scenario);
-        if (container == null) {
+        if ( container == null ) {
             return null;
         }
         return container.getIntraDayStart();
@@ -1446,7 +1357,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     private IntraDayDate getIntraDayEndFor(Scenario scenario) {
         IDayAssignmentsContainer<T> container = retrieveContainerFor(scenario);
-        if (container == null) {
+        if ( container == null ) {
             return null;
         }
         return container.getIntraDayEnd();
@@ -1466,7 +1377,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
      */
     public void setAssignmentFunctionAndApplyIfNotFlat(AssignmentFunction assignmentFunction) {
         this.assignmentFunction = assignmentFunction;
-        if (this.assignmentFunction != null) {
+        if ( this.assignmentFunction != null ) {
             this.assignmentFunction.applyTo(this);
         }
     }
@@ -1507,9 +1418,8 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         private List<T> dayAssignmentsOrdered = null;
 
         protected List<T> getOrderedDayAssignments() {
-            if (dayAssignmentsOrdered == null) {
-                dayAssignmentsOrdered = DayAssignment
-                        .orderedByDay(getUnorderedAssignments());
+            if ( dayAssignmentsOrdered == null ) {
+                dayAssignmentsOrdered = DayAssignment.orderedByDay(getUnorderedAssignments());
             }
             return dayAssignmentsOrdered;
         }
@@ -1563,8 +1473,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             }
         }
 
-        protected void removingAssignments(
-                List<? extends DayAssignment> assignments){
+        protected void removingAssignments(List<? extends DayAssignment> assignments){
             removeAssignments(assignments);
             clearCachedData();
             for (DayAssignment each : assignments) {
@@ -1572,11 +1481,9 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             }
         }
 
-        protected abstract void removeAssignments(
-                List<? extends DayAssignment> assignments);
+        protected abstract void removeAssignments(List<? extends DayAssignment> assignments);
 
-        protected abstract void addAssignments(
-                Collection<? extends T> assignments);
+        protected abstract void addAssignments(Collection<? extends T> assignments);
 
         @SuppressWarnings("unchecked")
         public void mergeAssignments(ResourceAllocation<?> modification) {
@@ -1678,11 +1585,9 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         return new ExplicitlySpecifiedScenarioState(container);
     }
 
-    protected abstract IDayAssignmentsContainer<T> retrieveContainerFor(
-            Scenario scenario);
+    protected abstract IDayAssignmentsContainer<T> retrieveContainerFor(Scenario scenario);
 
-    protected abstract IDayAssignmentsContainer<T> retrieveOrCreateContainerFor(
-            Scenario scenario);
+    protected abstract IDayAssignmentsContainer<T> retrieveOrCreateContainerFor(Scenario scenario);
     /**
      * It uses the current scenario retrieved from {@link IScenarioManager} in
      * order to return the assignments for that scenario. This state doesn't
@@ -1691,12 +1596,10 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
      * is changed since the assignments are cached and the assignments for the
      * previous one would be returned<br />
      */
-    private class NoExplicitlySpecifiedScenario extends
-            DayAssignmentsState {
+    private class NoExplicitlySpecifiedScenario extends DayAssignmentsState {
 
         @Override
-        protected final void removeAssignments(
-                List<? extends DayAssignment> assignments) {
+        protected final void removeAssignments(List<? extends DayAssignment> assignments) {
             modificationsNotAllowed();
         }
 
@@ -1716,9 +1619,8 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         }
 
         private void modificationsNotAllowed() {
-            throw new IllegalStateException(
-                    "modifications to assignments can't be done "
-                            + "if the scenario on which to work on is not explicitly specified");
+            throw new IllegalStateException("modifications to assignments can't be done " +
+                    "if the scenario on which to work on is not explicitly specified");
         }
 
         @Override
@@ -1738,8 +1640,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
         @Override
         IntraDayDate getIntraDayEnd() {
-            return retrieveOrCreateContainerFor(currentScenario())
-                    .getIntraDayEnd();
+            return retrieveOrCreateContainerFor(currentScenario()).getIntraDayEnd();
         }
 
         @Override
@@ -1754,8 +1655,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     }
 
-    private class ExplicitlySpecifiedScenarioState extends
-            DayAssignmentsState {
+    private class ExplicitlySpecifiedScenarioState extends DayAssignmentsState {
 
         private final IDayAssignmentsContainer<T> container;
 
@@ -1775,8 +1675,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         }
 
         @Override
-        protected void removeAssignments(
-                List<? extends DayAssignment> assignments) {
+        protected void removeAssignments(List<? extends DayAssignment> assignments) {
             container.removeAll(assignments);
         }
 

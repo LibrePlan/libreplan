@@ -42,29 +42,30 @@ import org.springframework.dao.OptimisticLockingFailureException;
 @Order(0)
 public class ConcurrentModificationHandling {
 
-    public static <T> T addHandling(final String goToPage,
-            Class<T> interfaceKlass, T toBeWraped) {
+    public static <T> T addHandling(final String goToPage, Class<T> interfaceKlass, T toBeWraped) {
         Class<?>[] classesToProxy = { interfaceKlass };
-        Object result = Proxy.newProxyInstance(interfaceKlass.getClassLoader(),
-                classesToProxy, handler(toBeWraped, goToPage));
+
+        Object result =
+                Proxy.newProxyInstance(interfaceKlass.getClassLoader(), classesToProxy, handler(toBeWraped, goToPage));
+
         return interfaceKlass.cast(result);
     }
 
-    private static InvocationHandler handler(final Object toBeWraped,
-            final String goToPage) {
+    private static InvocationHandler handler(final Object toBeWraped, final String goToPage) {
         return new InvocationHandler() {
 
             @Override
-            public Object invoke(Object proxy, Method method,
-                    Object[] args) throws Throwable {
+            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
                 try {
                     return method.invoke(toBeWraped, args);
                 } catch (InvocationTargetException e) {
                     Throwable cause = e.getCause();
-                    if (cause instanceof OptimisticLockingFailureException) {
-                        OptimisticLockingFailureException optimisticLockingFailureException = (OptimisticLockingFailureException) cause;
-                        ConcurrentModificationController.showException(
-                                optimisticLockingFailureException, goToPage);
+                    if ( cause instanceof OptimisticLockingFailureException ) {
+
+                        OptimisticLockingFailureException optimisticLockingFailureException =
+                                (OptimisticLockingFailureException) cause;
+
+                        ConcurrentModificationController.showException(optimisticLockingFailureException, goToPage);
                     }
                     throw cause;
                 }
@@ -77,8 +78,7 @@ public class ConcurrentModificationHandling {
 
     @SuppressWarnings("unused")
     @Pointcut("@within(onConcurrentModification))")
-    private void methodWithinConcurrentModificationMarkedType(
-            OnConcurrentModification onConcurrentModification) {
+    private void methodWithinConcurrentModificationMarkedType(OnConcurrentModification onConcurrentModification) {
     }
 
     /**
@@ -92,15 +92,14 @@ public class ConcurrentModificationHandling {
      *            the annotation applied to object's type
      * @return the object that would be originally returned
      */
-    @Around("methodWithinConcurrentModificationMarkedType(onConcurrentModification)"
-            + " && execution(public * * (..))")
+    @Around("methodWithinConcurrentModificationMarkedType(onConcurrentModification)" + " && execution(public * * (..))")
     public Object whenConcurrentModification(ProceedingJoinPoint jointPoint,
-            OnConcurrentModification onConcurrentModification) throws Throwable {
+                                             OnConcurrentModification onConcurrentModification) throws Throwable {
+
         try {
             return jointPoint.proceed(jointPoint.getArgs());
         } catch (OptimisticLockingFailureException e) {
-            ConcurrentModificationController.showException(e,
-                    onConcurrentModification.goToPage());
+            ConcurrentModificationController.showException(e, onConcurrentModification.goToPage());
             throw e;
         }
     }

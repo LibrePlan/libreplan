@@ -68,8 +68,7 @@ public class AssignedEffortForResource {
      * @return A {@link IAssignedEffortForResource} that calculates the load
      *         associated for all allocations but the provided ones.
      */
-    public static IAssignedEffortForResource effortDiscounting(
-            Collection<? extends BaseEntity> allocations) {
+    public static IAssignedEffortForResource effortDiscounting(Collection<? extends BaseEntity> allocations) {
         return new AssignedEffortDiscounting(allocations);
     }
 

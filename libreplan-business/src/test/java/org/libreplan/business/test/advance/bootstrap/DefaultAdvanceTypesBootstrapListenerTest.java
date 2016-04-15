@@ -52,10 +52,8 @@ public class DefaultAdvanceTypesBootstrapListenerTest {
     private IAdvanceTypeDAO advanceTypeDAO;
 
     private IDataBootstrap getAdvanceTypeBootstrap() {
-        String simpleName = DefaultAdvanceTypesBootstrapListener.class
-                .getSimpleName();
-        return dataBootstraps.get(simpleName.substring(0, 1).toLowerCase()
-                + simpleName.substring(1));
+        String simpleName = DefaultAdvanceTypesBootstrapListener.class.getSimpleName();
+        return dataBootstraps.get(simpleName.substring(0, 1).toLowerCase() + simpleName.substring(1));
     }
 
     @Test

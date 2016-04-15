@@ -130,32 +130,33 @@ public class SaveCommandBuilder {
 
     private static final Log LOG = LogFactory.getLog(SaveCommandBuilder.class);
 
-    public ISaveCommand build(PlanningState planningState,
-            PlannerConfiguration<TaskElement> plannerConfiguration) {
-        SaveCommand result = new SaveCommand(planningState,
-                plannerConfiguration);
+    public ISaveCommand build(PlanningState planningState, PlannerConfiguration<TaskElement> plannerConfiguration) {
+        SaveCommand result = new SaveCommand(planningState, plannerConfiguration);
+
         return ConcurrentModificationHandling.addHandling(
-                "/planner/index.zul;company_scheduling", ISaveCommand.class,
-                result);
+                "/planner/index.zul;company_scheduling", ISaveCommand.class, result);
     }
 
     public static void dontPoseAsTransientAndChildrenObjects(
             Collection<? extends ResourceAllocation<?>> resourceAllocations) {
+
         for (ResourceAllocation<?> each : resourceAllocations) {
             each.dontPoseAsTransientObjectAnymore();
             each.makeAssignmentsContainersDontPoseAsTransientAnyMore();
+
             for (DayAssignment eachAssignment : each.getAssignments()) {
                 eachAssignment.dontPoseAsTransientObjectAnymore();
             }
+
             for (DerivedAllocation eachDerived : each.getDerivedAllocations()) {
                 eachDerived.dontPoseAsTransientObjectAnymore();
-                Collection<DerivedDayAssignmentsContainer> containers = eachDerived
-                        .getContainers();
+                Collection<DerivedDayAssignmentsContainer> containers = eachDerived.getContainers();
+
                 for (DerivedDayAssignmentsContainer eachContainer : containers) {
                     eachContainer.dontPoseAsTransientObjectAnymore();
                 }
-                for (DerivedDayAssignment eachAssignment : eachDerived
-                        .getAssignments()) {
+
+                for (DerivedDayAssignment eachAssignment : eachDerived.getAssignments()) {
                     eachAssignment.dontPoseAsTransientObjectAnymore();
                 }
             }
@@ -164,13 +165,11 @@ public class SaveCommandBuilder {
     }
 
     private static void dontPoseAsTransient(LimitingResourceQueueElement element) {
-        if (element != null) {
-            for (LimitingResourceQueueDependency d : element
-                    .getDependenciesAsOrigin()) {
+        if ( element != null ) {
+            for (LimitingResourceQueueDependency d : element.getDependenciesAsOrigin()) {
                 d.dontPoseAsTransientObjectAnymore();
             }
-            for (LimitingResourceQueueDependency d : element
-                    .getDependenciesAsDestiny()) {
+            for (LimitingResourceQueueDependency d : element.getDependenciesAsDestiny()) {
                 d.dontPoseAsTransientObjectAnymore();
             }
             element.dontPoseAsTransientObjectAnymore();
@@ -236,31 +235,27 @@ public class SaveCommandBuilder {
 
         private boolean disabled = false;
 
-        public SaveCommand(PlanningState planningState,
-                PlannerConfiguration<TaskElement> configuration) {
+        public SaveCommand(PlanningState planningState, PlannerConfiguration<TaskElement> configuration) {
             this.state = planningState;
             this.configuration = configuration;
             this.adapter = configuration.getAdapter();
-            this.constraintCalculator = new ConstraintCalculator<TaskElement>(
-                    configuration.isScheduleBackwards()) {
+            this.constraintCalculator = new ConstraintCalculator<TaskElement>(configuration.isScheduleBackwards()) {
 
                 @Override
                 protected GanttDate getStartDate(TaskElement vertex) {
-                    return TaskElementAdapter.toGantt(vertex
-                            .getIntraDayStartDate());
+                    return TaskElementAdapter.toGantt(vertex.getIntraDayStartDate());
                 }
 
                 @Override
                 protected GanttDate getEndDate(TaskElement vertex) {
-                    return TaskElementAdapter.toGantt(vertex
-                            .getIntraDayEndDate());
+                    return TaskElementAdapter.toGantt(vertex.getIntraDayEndDate());
                 }
             };
         }
 
         @Override
         public void doAction(IContext<TaskElement> context) {
-            if (disabled) {
+            if ( disabled ) {
                 return;
             }
 
@@ -269,7 +264,7 @@ public class SaveCommandBuilder {
                 @Override
                 public void doActions() {
                     // A little bit hack
-                    if (taskPropertiesController != null)
+                    if ( taskPropertiesController != null )
                         taskPropertiesController.emailNotificationAddNew();
 
                     notifyUserThatSavingIsDone();
@@ -289,44 +284,39 @@ public class SaveCommandBuilder {
         }
 
         @Override
-        public void save(final IBeforeSaveActions beforeSaveActions,
-                IAfterSaveActions afterSaveActions) {
+        public void save(final IBeforeSaveActions beforeSaveActions, IAfterSaveActions afterSaveActions) {
             try {
-                if (state.getScenarioInfo().isUsingTheOwnerScenario()
-                        || userAcceptsCreateANewOrderVersion()) {
-                    transactionService
-                            .runOnTransaction(new IOnTransaction<Void>() {
-                                @Override
-                                public Void execute() {
-                                    if (beforeSaveActions != null) {
-                                        beforeSaveActions.doActions();
-                                    }
-                                    doTheSaving();
-                                    return null;
-                                }
-                            });
+                if ( state.getScenarioInfo().isUsingTheOwnerScenario() || userAcceptsCreateANewOrderVersion() ) {
+                    transactionService.runOnTransaction(new IOnTransaction<Void>() {
+                        @Override
+                        public Void execute() {
+                            if (beforeSaveActions != null) {
+                                beforeSaveActions.doActions();
+                            }
+                            doTheSaving();
+                            return null;
+                        }
+                    });
+
                     dontPoseAsTransientObjectAnymore(state.getOrder());
-                    dontPoseAsTransientObjectAnymore(state.getOrder()
-                            .getEndDateCommunicationToCustomer());
+                    dontPoseAsTransientObjectAnymore(state.getOrder().getEndDateCommunicationToCustomer());
                     state.getScenarioInfo().afterCommit();
 
-                    if (state.getOrder()
-                            .isNeededToRecalculateSumChargedEfforts()) {
-                        sumChargedEffortRecalculator.recalculate(state
-                                .getOrder().getId());
+                    if ( state.getOrder().isNeededToRecalculateSumChargedEfforts() ) {
+                        sumChargedEffortRecalculator.recalculate(state.getOrder().getId());
                     }
 
-                    if (state.getOrder().isNeededToRecalculateSumExpenses()) {
+                    if ( state.getOrder().isNeededToRecalculateSumExpenses() ) {
                         sumExpensesRecalculator.recalculate(state.getOrder().getId());
                     }
 
                     fireAfterSave();
-                    if (afterSaveActions != null) {
+                    if ( afterSaveActions != null ) {
                         afterSaveActions.doActions();
                     }
                 }
             } catch (ValidationException validationException) {
-                if (Executions.getCurrent() == null) {
+                if ( Executions.getCurrent() == null ) {
                     throw validationException;
                 }
 
@@ -334,22 +324,21 @@ public class SaveCommandBuilder {
                     String message = "";
 
                     LabelCreatorForInvalidValues labelCreator = new LabelCreatorForInvalidValues();
-                    for (InvalidValue invalidValue : validationException
-                            .getInvalidValues()) {
-                        message += "* "
-                                + ((Label) labelCreator
-                                        .createLabelFor(invalidValue))
-                                        .getValue() + "\n";
+
+                    for (InvalidValue invalidValue : validationException.getInvalidValues()) {
+                        message += "* " + ((Label) labelCreator.createLabelFor(invalidValue)).getValue() + "\n";
                     }
 
-                    if (validationException.getInvalidValues().isEmpty()) {
+                    if ( validationException.getInvalidValues().isEmpty() ) {
                         message += validationException.getMessage();
                     }
 
                     LOG.warn("Error saving the project", validationException);
+
                     Messagebox.show(
                             _("Error saving the project\n{0}", message),
                             _("Error"), Messagebox.OK, Messagebox.ERROR);
+
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
@@ -364,23 +353,20 @@ public class SaveCommandBuilder {
         }
 
         private void notifyUserThatSavingIsDone() {
-            if (Executions.getCurrent() == null) {
+            if ( Executions.getCurrent() == null ) {
                 // test environment
                 return;
             }
             try {
-                Messagebox.show(_("Project saved"), _("Information"),
-                        Messagebox.OK, Messagebox.INFORMATION);
+                Messagebox.show(_("Project saved"), _("Information"), Messagebox.OK, Messagebox.INFORMATION);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-            if (Executions.getCurrent() != null) {
+            if ( Executions.getCurrent() != null ) {
                 // Reset timer of warning on leaving page
                 ConfirmCloseUtil.resetConfirmClose();
-                if (SecurityUtils.loggedUserCanWrite(state.getOrder())) {
-                    ConfirmCloseUtil
-                            .setConfirmClose(
-                                    Executions.getCurrent().getDesktop(),
+                if ( SecurityUtils.loggedUserCanWrite(state.getOrder()) ) {
+                    ConfirmCloseUtil.setConfirmClose(Executions.getCurrent().getDesktop(),
                                     _("You are about to leave the planning editing. Unsaved changes will be lost!"));
                 }
             }
@@ -398,7 +384,7 @@ public class SaveCommandBuilder {
 
             TaskGroup rootTask = state.getRootTask();
 
-            if (rootTask != null) {
+            if ( rootTask != null ) {
                 // This reattachment is needed to ensure that the root task in
                 // the state is the one associated to the transaction's session.
                 // Otherwise if some order element has been removed, when doing
@@ -416,7 +402,7 @@ public class SaveCommandBuilder {
             removeTasksToRemove();
             loadDataAccessedWithNotPosedAsTransientInOrder(state.getOrder());
             loadDataAccessedWithNotPosedAsTransient(state.getOrder());
-            if (state.getRootTask() != null) {
+            if ( state.getRootTask() != null ) {
                 loadDependenciesCollectionsForTaskRoot(state.getRootTask());
             }
             subcontractedTaskDataDAO.removeOrphanedSubcontractedTaskData();
@@ -1064,16 +1050,15 @@ public class SaveCommandBuilder {
         @Override
         public org.zkoss.zk.ui.Component createLabelFor(
                 InvalidValue invalidValue) {
-            if (invalidValue.getRootBean() instanceof OrderElement) {
+            if ( invalidValue.getRootBean() instanceof OrderElement ) {
                 Label result = new Label();
 
                 String orderElementName;
-                if (invalidValue.getRootBean() instanceof Order) {
+                if ( invalidValue.getRootBean() instanceof Order ) {
                     orderElementName = _("Project");
                 } else {
                     orderElementName = _("Task {0}",
-                            ((OrderElement) invalidValue.getRootBean())
-                                    .getName());
+                            ((OrderElement) invalidValue.getRootBean()).getName());
                 }
 
                 result.setValue(orderElementName + ": "

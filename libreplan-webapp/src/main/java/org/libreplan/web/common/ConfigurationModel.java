@@ -255,14 +255,12 @@ public class ConfigurationModel implements IConfigurationModel {
 
     public void removeEntitySequences(final List<EntitySequence> sequences) {
         // first one is necessary to remove the deleted sequences.
-        List<EntitySequence> toRemove = entitySequenceDAO
-                .findEntitySquencesNotIn(sequences);
+        List<EntitySequence> toRemove = entitySequenceDAO.findEntitySquencesNotIn(sequences);
         for (final EntitySequence entitySequence : toRemove) {
             try {
                 entitySequenceDAO.remove(entitySequence);
             } catch (InstanceNotFoundException e) {
-                throw new ValidationException(
-                        _("Some sequences to be removed do not exist"));
+                throw new ValidationException(_("Some sequences to be removed do not exist"));
             } catch (IllegalArgumentException e) {
                 throw new ValidationException(e.getMessage());
             }
@@ -273,7 +271,7 @@ public class ConfigurationModel implements IConfigurationModel {
         // it updates the sequences that are not active first
         List<EntitySequence> toSaveAfter = new ArrayList<EntitySequence>();
         for (EntitySequence entitySequence : sequences) {
-            if (entitySequence.isActive()) {
+            if ( entitySequence.isActive() ) {
                 toSaveAfter.add(entitySequence);
             } else {
                 entitySequenceDAO.save(entitySequence);

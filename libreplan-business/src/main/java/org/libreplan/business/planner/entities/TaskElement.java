@@ -135,14 +135,13 @@ public abstract class TaskElement extends BaseEntity {
         return this.getEndAsLocalDate();
     }
 
-    protected static <T extends TaskElement> T create(T taskElement,
-            TaskSource taskSource) {
+    protected static <T extends TaskElement> T create(T taskElement, TaskSource taskSource) {
         taskElement.setTaskSource(taskSource);
         taskElement.updateDeadlineFromOrderElement();
         taskElement.setName(taskElement.getOrderElement().getName());
         taskElement.updateAdvancePercentageFromOrderElement();
         Order order = taskElement.getOrderElement().getOrder();
-        if (order.isScheduleBackwards()) {
+        if ( order.isScheduleBackwards() ) {
             taskElement.setEndDate(order.getDeadline());
         } else {
             taskElement.setStartDate(order.getInitDate());
@@ -317,35 +316,31 @@ public abstract class TaskElement extends BaseEntity {
     }
 
     public void setStartDate(Date startDate) {
-        setIntraDayStartDate(IntraDayDate.startOfDay(LocalDate
-                .fromDateFields(startDate)));
+        setIntraDayStartDate(IntraDayDate.startOfDay(LocalDate.fromDateFields(startDate)));
     }
 
     public void setIntraDayStartDate(IntraDayDate startDate) {
-        if (startDate == null) {
+        if ( startDate == null ) {
             LOG.error(doNotProvideNullsDiscouragingMessage());
         }
         IntraDayDate previousStart = getIntraDayStartDate();
         IntraDayDate previousEnd = getIntraDayEndDate();
         this.startDate = startDate;
-        datesInterceptor.setStartDate(previousStart, previousEnd,
-                getIntraDayStartDate());
+        datesInterceptor.setStartDate(previousStart, previousEnd, getIntraDayStartDate());
     }
 
     @NotNull
     public Date getEndDate() {
-        return endDate != null ? endDate.toDateTimeAtStartOfDay().toDate()
-                : null;
+        return (endDate != null) ? endDate.toDateTimeAtStartOfDay().toDate() : null;
     }
 
     public void setEndDate(Date endDate) {
-        setIntraDayEndDate(endDate != null ? IntraDayDate.create(
-                LocalDate.fromDateFields(endDate), EffortDuration.zero())
-                : null);
+        setIntraDayEndDate( (endDate != null) ?
+                IntraDayDate.create(LocalDate.fromDateFields(endDate), EffortDuration.zero()) : null);
     }
 
     public void setIntraDayEndDate(IntraDayDate endDate) {
-        if (endDate == null) {
+        if ( endDate == null ) {
             LOG.error(doNotProvideNullsDiscouragingMessage());
         }
         IntraDayDate previousEnd = getIntraDayEndDate();
@@ -576,20 +571,19 @@ public abstract class TaskElement extends BaseEntity {
         return result;
     }
 
-    private void addToResult(SortedMap<LocalDate, EffortDuration> result,
-            LocalDate date, EffortDuration duration) {
-        EffortDuration current = result.get(date) != null ? result.get(date)
-                : zero();
+    private void addToResult(SortedMap<LocalDate, EffortDuration> result, LocalDate date, EffortDuration duration) {
+        EffortDuration current = result.get(date) != null ? result.get(date) : zero();
         result.put(date, current.plus(duration));
     }
 
     public List<DayAssignment> getDayAssignments(DayAssignment.FilterType filter) {
         List<DayAssignment> dayAssignments = new ArrayList<DayAssignment>();
         Set<ResourceAllocation<?>> resourceAllocations = getSatisfiedResourceAllocations();
+
         for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
             dayAssignments.addAll(resourceAllocation.getAssignments());
-            Set<DerivedAllocation> derivedAllocations = resourceAllocation
-                    .getDerivedAllocations();
+            Set<DerivedAllocation> derivedAllocations = resourceAllocation.getDerivedAllocations();
+
             for (DerivedAllocation each : derivedAllocations) {
                 dayAssignments.addAll(each.getAssignments());
             }

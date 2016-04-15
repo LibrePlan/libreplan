@@ -75,8 +75,7 @@ import org.libreplan.business.workingday.IntraDayDate.PartialDay;
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  */
-public abstract class Resource extends IntegrationEntity implements
-        IHumanIdentifiable, Comparable<Resource> {
+public abstract class Resource extends IntegrationEntity implements IHumanIdentifiable, Comparable<Resource> {
 
     public static class AllResourceAssignments implements IAssignmentsOnResourceCalculator {
 
@@ -86,8 +85,7 @@ public abstract class Resource extends IntegrationEntity implements
         }
     }
 
-    public static List<Machine> machines(
-            Collection<? extends Resource> resources) {
+    public static List<Machine> machines(Collection<? extends Resource> resources) {
         return filter(Machine.class, resources);
     }
 
@@ -95,11 +93,10 @@ public abstract class Resource extends IntegrationEntity implements
         return filter(Worker.class, resources);
     }
 
-    public static <T extends Resource> List<T> filter(Class<T> klass,
-            Collection<? extends Resource> resources) {
+    public static <T extends Resource> List<T> filter(Class<T> klass, Collection<? extends Resource> resources) {
         List<T> result = new ArrayList<T>();
         for (Resource each : resources) {
-            if (klass.isInstance(each)) {
+            if ( klass.isInstance(each) ) {
                 result.add(klass.cast(each));
             }
         }
@@ -150,11 +147,11 @@ public abstract class Resource extends IntegrationEntity implements
     }
 
     private List<DayAssignment> getAssignmentsForDay(LocalDate date) {
-        if (assignmentsByDayCached == null) {
+        if ( assignmentsByDayCached == null ) {
             assignmentsByDayCached = DayAssignment.byDay(getAssignments());
         }
         List<DayAssignment> list = assignmentsByDayCached.get(date);
-        if (list == null){
+        if ( list == null ){
             return Collections.emptyList();
         }
         return list;
@@ -167,7 +164,7 @@ public abstract class Resource extends IntegrationEntity implements
         abstract List<DayAssignment> calculateAssignments();
 
         List<DayAssignment> getAssignments() {
-            if (cachedAssignments != null) {
+            if ( cachedAssignments != null ) {
                 return cachedAssignments;
             }
             return cachedAssignments = calculateAssignments();
@@ -185,8 +182,7 @@ public abstract class Resource extends IntegrationEntity implements
             List<DayAssignment> result = new ArrayList<DayAssignment>();
             Scenario current = Registry.getScenarioManager().getCurrent();
             for (DayAssignment each : dayAssignments) {
-                if (each.getScenario() != null
-                        && each.getScenario().equals(current)) {
+                if ( each.getScenario() != null && each.getScenario().equals(current) ) {
                     result.add(each);
                 }
             }
@@ -206,8 +202,7 @@ public abstract class Resource extends IntegrationEntity implements
         List<DayAssignment> calculateAssignments() {
             List<DayAssignment> result = new ArrayList<DayAssignment>();
             for (DayAssignment each : dayAssignments) {
-                if (isTransient(each)
-                        || each.getScenario().equals(currentScenario)) {
+                if ( isTransient(each) || each.getScenario().equals(currentScenario) ) {
                     result.add(each);
                 }
             }
@@ -223,32 +218,28 @@ public abstract class Resource extends IntegrationEntity implements
 
     @Valid
     public Set<CriterionSatisfaction> getCriterionSatisfactions() {
-        Set<CriterionSatisfaction> satisfactionActives =
-                new HashSet<CriterionSatisfaction>();
+        Set<CriterionSatisfaction> satisfactionActives = new HashSet<CriterionSatisfaction>();
         for(CriterionSatisfaction satisfaction:criterionSatisfactions){
-            if(!satisfaction.isIsDeleted()) {
+            if( !satisfaction.isIsDeleted() ) {
                 satisfactionActives.add(satisfaction);
             }
         }
         return satisfactionActives;
     }
 
-    public CriterionSatisfaction getCriterionSatisfactionByCode(String code)
-        throws InstanceNotFoundException {
+    public CriterionSatisfaction getCriterionSatisfactionByCode(String code) throws InstanceNotFoundException {
 
-        if (StringUtils.isBlank(code)) {
-            throw new InstanceNotFoundException(code,
-                 CriterionSatisfaction.class.getName());
+        if ( StringUtils.isBlank(code) ) {
+            throw new InstanceNotFoundException(code, CriterionSatisfaction.class.getName());
         }
 
         for (CriterionSatisfaction i : criterionSatisfactions) {
-            if (i.getCode().equalsIgnoreCase(StringUtils.trim(code))) {
+            if ( i.getCode().equalsIgnoreCase(StringUtils.trim(code)) ) {
                 return i;
             }
         }
 
-        throw new InstanceNotFoundException(code,
-            CriterionSatisfaction.class.getName());
+        throw new InstanceNotFoundException(code, CriterionSatisfaction.class.getName());
 
     }
 
@@ -858,11 +849,11 @@ public abstract class Resource extends IntegrationEntity implements
     public EffortDuration getAssignedDurationDiscounting(
             Map<Long, Set<BaseEntity>> allocationsFromWhichDiscountHours,
             LocalDate day) {
+        
         EffortDuration result = zero();
         for (DayAssignment dayAssignment : getAssignmentsForDay(day)) {
 
-            if (!dayAssignment
-                    .belongsToSomeOf(allocationsFromWhichDiscountHours)) {
+            if ( !dayAssignment.belongsToSomeOf(allocationsFromWhichDiscountHours) ) {
                 result = result.plus(dayAssignment.getDuration());
             }
         }
@@ -876,8 +867,7 @@ public abstract class Resource extends IntegrationEntity implements
         this.dayAssignments.addAll(assignments);
     }
 
-    public void removeAssignments(
-            Collection<? extends DayAssignment> assignments) {
+    public void removeAssignments(Collection<? extends DayAssignment> assignments) {
         Validate.noNullElements(assignments);
         clearCachedData();
         this.dayAssignments.removeAll(assignments);
@@ -957,24 +947,25 @@ public abstract class Resource extends IntegrationEntity implements
         //Create a newList with new Satisfactions and the old satisfactions
         Set<CriterionSatisfaction> newList = new HashSet<CriterionSatisfaction>(addlist);
         for(CriterionSatisfaction satisfaction : criterionSatisfactions){
-            if(!newList.contains(satisfaction)){
+            if( !newList.contains(satisfaction) ){
                 newList.add(satisfaction);
             }
         }
+
         //Create a activeList with not eliminated Satifaction
         Set<CriterionSatisfaction> activeList = new HashSet<CriterionSatisfaction>();
         for(CriterionSatisfaction satisfaction : addlist){
-            if(!satisfaction.isIsDeleted()){
+            if( !satisfaction.isIsDeleted() ){
                 activeList.add(satisfaction);
             }
         }
+
         validateSatisfactions(activeList);
         criterionSatisfactions.clear();
         criterionSatisfactions.addAll(newList);
     }
 
-    private void validateSatisfactions(Set<CriterionSatisfaction> satisfactions)
-    throws ValidationException {
+    private void validateSatisfactions(Set<CriterionSatisfaction> satisfactions) throws ValidationException {
         for (CriterionSatisfaction satisfaction : satisfactions) {
             final Set<CriterionSatisfaction> remainingSatisfactions = new HashSet<CriterionSatisfaction>();
             remainingSatisfactions.addAll(satisfactions);
@@ -983,15 +974,12 @@ public abstract class Resource extends IntegrationEntity implements
         }
     }
 
-    private void validateSatisfaction(CriterionSatisfaction satisfaction,
-            Set<CriterionSatisfaction> satisfactions)
+    private void validateSatisfaction(CriterionSatisfaction satisfaction, Set<CriterionSatisfaction> satisfactions)
     throws ValidationException {
 
-        if (!canAddSatisfaction(satisfaction, satisfactions)) {
-            String message = getReasonForNotAddingSatisfaction(satisfaction
-                    .getCriterion().getType());
-            throw new ValidationException(invalidValue(message, "resource",
-                    this, satisfaction));
+        if ( !canAddSatisfaction(satisfaction, satisfactions) ) {
+            String message = getReasonForNotAddingSatisfaction(satisfaction.getCriterion().getType());
+            throw new ValidationException(invalidValue(message, "resource", this, satisfaction));
         }
     }
 
@@ -1001,15 +989,12 @@ public abstract class Resource extends IntegrationEntity implements
     }
 
     public boolean satisfiesCriterions(Collection<? extends ICriterion> criterions) {
-        ICriterion compositedCriterion = CriterionCompounder.buildAnd(
-                criterions).getResult();
+        ICriterion compositedCriterion = CriterionCompounder.buildAnd(criterions).getResult();
         return compositedCriterion.isSatisfiedBy(this);
     }
 
-    public boolean satisfiesCriterionsAtSomePoint(
-            Collection<? extends Criterion> criterions) {
-        AvailabilityTimeLine availability = AvailabilityCalculator
-                .getCriterionsAvailabilityFor(criterions, this);
+    public boolean satisfiesCriterionsAtSomePoint(Collection<? extends Criterion> criterions) {
+        AvailabilityTimeLine availability = AvailabilityCalculator.getCriterionsAvailabilityFor(criterions, this);
         return !availability.getValidPeriods().isEmpty();
     }
 
@@ -1072,8 +1057,7 @@ public abstract class Resource extends IntegrationEntity implements
          */
         for (CriterionSatisfaction i : getCriterionSatisfactions()) {
 
-            if (!(i.isStartDateSpecified() && i
-                    .isPositiveTimeInterval())) {
+            if ( !(i.isStartDateSpecified() && i.isPositiveTimeInterval()) ) {
                 return true;
             }
 
@@ -1100,8 +1084,7 @@ public abstract class Resource extends IntegrationEntity implements
          * If not, it does not make sense to check assignment overlapping.
          */
         for (ResourcesCostCategoryAssignment each : getResourcesCostCategoryAssignments()) {
-            if (!(each.isInitDateSpecified() && each
-                    .isPositiveTimeInterval())) {
+            if ( !(each.isInitDateSpecified() && each.isPositiveTimeInterval()) ) {
                 return false;
             }
         }
@@ -1190,25 +1173,25 @@ public abstract class Resource extends IntegrationEntity implements
 
     @AssertTrue(message = "You have exceeded the maximum limit of resources")
     public boolean isMaxResourcesConstraint() {
-        return Registry.getTransactionService()
-                .runOnAnotherReadOnlyTransaction(new IOnTransaction<Boolean>() {
+        return Registry.getTransactionService().runOnAnotherReadOnlyTransaction(new IOnTransaction<Boolean>() {
                     @Override
                     public Boolean execute() {
-                        Configuration configuration = Registry
-                                .getConfigurationDAO().getConfiguration();
-                        if (configuration == null) {
+                        Configuration configuration = Registry.getConfigurationDAO().getConfiguration();
+                        if ( configuration == null ) {
                             return true;
                         }
 
                         Integer maxResources = configuration.getMaxResources();
-                        if (maxResources != null && maxResources > 0) {
-                            List<Resource> resources = Registry
-                                    .getResourceDAO().findAll();
+                        
+                        if ( maxResources != null && maxResources > 0 ) {
+                            List<Resource> resources = Registry.getResourceDAO().findAll();
                             int resourcesNumber = resources.size();
-                            if (isNewObject()) {
+                            
+                            if ( isNewObject() ) {
                                 resourcesNumber++;
                             }
-                            if (resourcesNumber > maxResources) {
+                            
+                            if ( resourcesNumber > maxResources ) {
                                 return false;
                             }
                         }
