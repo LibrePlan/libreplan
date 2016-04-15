@@ -159,8 +159,7 @@ public interface IBaseCalendarModel extends IIntegrationEntityModel {
 
     CalendarExceptionType getCalendarExceptionType(LocalDate date);
 
-    void updateException(CalendarExceptionType type, LocalDate startDate,
-            LocalDate endDate, Capacity capacity);
+    void updateException(CalendarExceptionType type, LocalDate startDate, LocalDate endDate, Capacity capacity);
 
     void removeCalendarData(CalendarData calendarData);
 
@@ -176,11 +175,9 @@ public interface IBaseCalendarModel extends IIntegrationEntityModel {
 
     void createCalendarAvailability();
 
-    void setStartDate(CalendarAvailability calendarAvailability,
-            LocalDate startDate) throws IllegalArgumentException;
+    void setStartDate(CalendarAvailability calendarAvailability, LocalDate startDate) throws IllegalArgumentException;
 
-    void setEndDate(CalendarAvailability calendarAvailability, LocalDate endDate)
-            throws IllegalArgumentException;
+    void setEndDate(CalendarAvailability calendarAvailability, LocalDate endDate) throws IllegalArgumentException;
 
     /*
      * Final conversation steps
@@ -212,11 +209,9 @@ public interface IBaseCalendarModel extends IIntegrationEntityModel {
 
     Date getCurrentExpiringDate();
 
-    void checkChangeExpiringDate(CalendarData version, Date date)
-            throws ValidationException;
+    void checkChangeExpiringDate(CalendarData version, Date date) throws ValidationException;
 
-    void checkAndChangeStartDate(CalendarData version, Date date)
-            throws ValidationException;
+    void checkAndChangeStartDate(CalendarData version, Date date) throws ValidationException;
 
     boolean isOwnExceptionDay();
 

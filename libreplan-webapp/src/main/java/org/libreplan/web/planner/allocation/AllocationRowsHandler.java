@@ -53,8 +53,9 @@ import org.libreplan.business.workingday.EffortDuration.IEffortFrom;
 
 public class AllocationRowsHandler {
 
-    public static AllocationRowsHandler create(Task task,
-            List<AllocationRow> initialAllocations, IWorkerFinder workerFinder) {
+    public static AllocationRowsHandler create(Task task, List<AllocationRow> initialAllocations,
+                                               IWorkerFinder workerFinder) {
+
         return new AllocationRowsHandler(task, initialAllocations, workerFinder);
     }
 
@@ -248,7 +249,7 @@ public class AllocationRowsHandler {
 
     public Flagged<AllocationResult, Warnings> doAllocation() {
         checkInvalidValues();
-        if (!currentRows.isEmpty()) {
+        if ( !currentRows.isEmpty() ) {
             List<? extends AllocationModification> modificationsDone;
             modificationsDone = doSuitableAllocation();
 
@@ -256,20 +257,20 @@ public class AllocationRowsHandler {
 
             createDerived();
             AllocationResult result = createResult();
-            if (AllocationModification.allFullfiled(AllocationModification
-                    .ofType(EffortModification.class, modificationsDone))) {
+
+            if ( AllocationModification.allFullfiled(AllocationModification
+                    .ofType(EffortModification.class, modificationsDone)) ) {
+
                 return Flagged.justValue(result);
             } else {
-                return Flagged.withFlags(result,
-                        Warnings.SOME_GOALS_NOT_FULFILLED);
+                return Flagged.withFlags(result, Warnings.SOME_GOALS_NOT_FULFILLED);
             }
         }
         return Flagged.justValue(createResult());
     }
 
     private AllocationResult createResult() {
-        return AllocationResult.create(task,
-                calculatedValue, currentRows, getWorkableDaysIfApplyable());
+        return AllocationResult.create(task, calculatedValue, currentRows, getWorkableDaysIfApplyable());
     }
 
     private List<? extends AllocationModification> doSuitableAllocation() {
@@ -278,30 +279,34 @@ public class AllocationRowsHandler {
         case NUMBER_OF_HOURS:
             allocationModifications = calculateNumberOfHoursAllocation();
             break;
+
         case END_DATE:
             allocationModifications = calculateEndDateOrStartDateAllocation();
             break;
+
         case RESOURCES_PER_DAY:
             allocationModifications = calculateResourcesPerDayAllocation();
             break;
+
         default:
             throw new RuntimeException("cant handle: " + calculatedValue);
         }
 
-        AssignmentFunction.applyAssignmentFunctionsIfAny(AllocationModification
-                .getBeingModified(allocationModifications));
+        AssignmentFunction
+                .applyAssignmentFunctionsIfAny(AllocationModification.getBeingModified(allocationModifications));
+
         return allocationModifications;
     }
 
     private List<ResourcesPerDayModification> calculateNumberOfHoursAllocation() {
-        List<ResourcesPerDayModification> allocations = AllocationRow
-                .createAndAssociate(task, currentRows, requestedToRemove);
-        if (isForwardsAllocation()) {
-            ResourceAllocation.allocating(allocations).allocateUntil(
-                    formBinder.getAllocationEnd());
+
+        List<ResourcesPerDayModification> allocations =
+                AllocationRow.createAndAssociate(task, currentRows, requestedToRemove);
+
+        if ( isForwardsAllocation() ) {
+            ResourceAllocation.allocating(allocations).allocateUntil(formBinder.getAllocationEnd());
         } else {
-            ResourceAllocation.allocating(allocations).allocateFromEndUntil(
-                    formBinder.getAllocationStart());
+            ResourceAllocation.allocating(allocations).allocateFromEndUntil(formBinder.getAllocationStart());
         }
         return allocations;
     }
@@ -340,48 +345,45 @@ public class AllocationRowsHandler {
     }
 
     private List<EffortModification> calculateResourcesPerDayAllocation() {
-        List<EffortModification> hours = AllocationRow
-                .createHoursModificationsAndAssociate(task, currentRows,
-                        requestedToRemove);
-        if (isForwardsAllocation()) {
-            ResourceAllocation.allocatingHours(hours).allocateUntil(
-                    formBinder.getAllocationEnd());
+        List<EffortModification> hours =
+                AllocationRow.createHoursModificationsAndAssociate(task, currentRows, requestedToRemove);
+
+        if ( isForwardsAllocation() ) {
+            ResourceAllocation.allocatingHours(hours).allocateUntil(formBinder.getAllocationEnd());
         } else {
-            ResourceAllocation.allocatingHours(hours).allocateFromEndUntil(
-                    formBinder.getAllocationStart());
+            ResourceAllocation.allocatingHours(hours).allocateFromEndUntil(formBinder.getAllocationStart());
         }
         return hours;
     }
 
     private Integer getWorkableDaysIfApplyable() {
         switch (calculatedValue) {
+
         case NUMBER_OF_HOURS:
+
         case RESOURCES_PER_DAY:
             return formBinder.getWorkableDays();
+
         case END_DATE:
             return null;
+
         default:
-            throw new RuntimeException("unexpected calculatedValue: "
-                    + calculatedValue);
+            throw new RuntimeException("unexpected calculatedValue: " + calculatedValue);
         }
     }
 
     private void createDerived() {
-        List<ResourceAllocation<?>> lastFrom = AllocationRow
-                .getBeingModified(currentRows);
+        List<ResourceAllocation<?>> lastFrom = AllocationRow.getBeingModified(currentRows);
         for (ResourceAllocation<?> each : lastFrom) {
             each.createDerived(workersFinder);
         }
     }
 
-    public FormBinder createFormBinder(Scenario currentScenario,
-            IResourceAllocationModel resourceAllocationModel) {
-        if (formBinder != null) {
-            throw new IllegalStateException(
-                    "there is already a binder associated with this object");
+    public FormBinder createFormBinder(Scenario currentScenario, IResourceAllocationModel resourceAllocationModel) {
+        if ( formBinder != null ) {
+            throw new IllegalStateException("there is already a binder associated with this object");
         }
-        formBinder = new FormBinder(currentScenario, this,
-                resourceAllocationModel);
+        formBinder = new FormBinder(currentScenario, this, resourceAllocationModel);
         return formBinder;
     }
 

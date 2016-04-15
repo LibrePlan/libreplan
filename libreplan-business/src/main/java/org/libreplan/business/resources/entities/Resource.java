@@ -74,8 +74,7 @@ import org.libreplan.business.workingday.IntraDayDate.PartialDay;
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  */
-public abstract class Resource extends IntegrationEntity implements
-        IHumanIdentifiable, Comparable<Resource> {
+public abstract class Resource extends IntegrationEntity implements IHumanIdentifiable, Comparable<Resource> {
 
     public static class AllResourceAssignments implements IAssignmentsOnResourceCalculator {
 
@@ -947,24 +946,25 @@ public abstract class Resource extends IntegrationEntity implements
         //Create a newList with new Satisfactions and the old satisfactions
         Set<CriterionSatisfaction> newList = new HashSet<CriterionSatisfaction>(addlist);
         for(CriterionSatisfaction satisfaction : criterionSatisfactions){
-            if(!newList.contains(satisfaction)){
+            if( !newList.contains(satisfaction) ){
                 newList.add(satisfaction);
             }
         }
+
         //Create a activeList with not eliminated Satifaction
         Set<CriterionSatisfaction> activeList = new HashSet<CriterionSatisfaction>();
         for(CriterionSatisfaction satisfaction : addlist){
-            if(!satisfaction.isIsDeleted()){
+            if( !satisfaction.isIsDeleted() ){
                 activeList.add(satisfaction);
             }
         }
+
         validateSatisfactions(activeList);
         criterionSatisfactions.clear();
         criterionSatisfactions.addAll(newList);
     }
 
-    private void validateSatisfactions(Set<CriterionSatisfaction> satisfactions)
-    throws ValidationException {
+    private void validateSatisfactions(Set<CriterionSatisfaction> satisfactions) throws ValidationException {
         for (CriterionSatisfaction satisfaction : satisfactions) {
             final Set<CriterionSatisfaction> remainingSatisfactions = new HashSet<CriterionSatisfaction>();
             remainingSatisfactions.addAll(satisfactions);
@@ -973,15 +973,15 @@ public abstract class Resource extends IntegrationEntity implements
         }
     }
 
-    private void validateSatisfaction(CriterionSatisfaction satisfaction,
-            Set<CriterionSatisfaction> satisfactions)
+    private void validateSatisfaction(CriterionSatisfaction satisfaction, Set<CriterionSatisfaction> satisfactions)
     throws ValidationException {
 
-        if (!canAddSatisfaction(satisfaction, satisfactions)) {
-            String message = getReasonForNotAddingSatisfaction(satisfaction
-                    .getCriterion().getType());
-            final InvalidValue invalidValue = new InvalidValue(message,
-                    CriterionSatisfaction.class, "resource", this, satisfaction);
+        if ( !canAddSatisfaction(satisfaction, satisfactions) ) {
+            String message = getReasonForNotAddingSatisfaction(satisfaction.getCriterion().getType());
+
+            final InvalidValue invalidValue =
+                    new InvalidValue(message, CriterionSatisfaction.class, "resource", this, satisfaction);
+
             throw new ValidationException(invalidValue);
         }
     }
@@ -992,15 +992,12 @@ public abstract class Resource extends IntegrationEntity implements
     }
 
     public boolean satisfiesCriterions(Collection<? extends ICriterion> criterions) {
-        ICriterion compositedCriterion = CriterionCompounder.buildAnd(
-                criterions).getResult();
+        ICriterion compositedCriterion = CriterionCompounder.buildAnd(criterions).getResult();
         return compositedCriterion.isSatisfiedBy(this);
     }
 
-    public boolean satisfiesCriterionsAtSomePoint(
-            Collection<? extends Criterion> criterions) {
-        AvailabilityTimeLine availability = AvailabilityCalculator
-                .getCriterionsAvailabilityFor(criterions, this);
+    public boolean satisfiesCriterionsAtSomePoint(Collection<? extends Criterion> criterions) {
+        AvailabilityTimeLine availability = AvailabilityCalculator.getCriterionsAvailabilityFor(criterions, this);
         return !availability.getValidPeriods().isEmpty();
     }
 

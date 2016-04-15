@@ -50,11 +50,9 @@ import org.springframework.test.context.transaction.TransactionalTestExecutionLi
  * @author Bob McCune
  * @version 1.0
  */
-public class DBUnitTestExecutionListener extends
-        TransactionalTestExecutionListener {
+public class DBUnitTestExecutionListener extends TransactionalTestExecutionListener {
 
-    private static final Log logger = LogFactory
-            .getLog(DBUnitTestExecutionListener.class);
+    private static final Log logger = LogFactory.getLog(DBUnitTestExecutionListener.class);
 
     private static final String DEFAULT_DATASOURCE_NAME = "dataSource";
     private static final String TABLE_TYPES[] = { "TABLE", "ALIAS" };

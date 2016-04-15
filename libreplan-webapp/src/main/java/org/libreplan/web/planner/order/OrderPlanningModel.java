@@ -263,8 +263,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
 
     private String tabSelected = "load_tab";
 
-    private static class NullSeparatorCommandOnTask<T> implements
-            ICommandOnTask<T> {
+    private static class NullSeparatorCommandOnTask<T> implements ICommandOnTask<T> {
 
         @Override
         public String getName() {
@@ -290,37 +289,36 @@ public class OrderPlanningModel implements IOrderPlanningModel {
 
     @Override
     @Transactional(readOnly = true)
-    public void setConfigurationToPlanner(final Planner planner, Order order,
-            ViewSwitcher switcher,
-            EditTaskController editTaskController,
-            AdvancedAllocationTaskController advancedAllocationTaskController,
-            AdvanceAssignmentPlanningController advanceAssignmentPlanningController,
-            AdvanceConsolidationController advanceConsolidationController,
-            CalendarAllocationController calendarAllocationController,
-            List<ICommand<TaskElement>> additional) {
+    public void setConfigurationToPlanner(final Planner planner,
+                                          Order order,
+                                          ViewSwitcher switcher,
+                                          EditTaskController editTaskController,
+                                          AdvancedAllocationTaskController advancedAllocationTaskController,
+                                          AdvanceAssignmentPlanningController advanceAssignmentPlanningController,
+                                          AdvanceConsolidationController advanceConsolidationController,
+                                          CalendarAllocationController calendarAllocationController,
+                                          List<ICommand<TaskElement>> additional) {
+
         long time = System.currentTimeMillis();
         this.planner = planner;
         planningState = createPlanningStateFor(order);
-        PlannerConfiguration<TaskElement> configuration = planningState
-                .getConfiguration();
-        PROFILING_LOG.debug("load data and create configuration took: "
-                + (System.currentTimeMillis() - time) + " ms");
+        PlannerConfiguration<TaskElement> configuration = planningState.getConfiguration();
+        PROFILING_LOG.debug("load data and create configuration took: " + (System.currentTimeMillis() - time) + " ms");
         User user;
+
         try {
-            user = this.userDAO.findByLoginName(SecurityUtils
-                    .getSessionUserLoginName());
+            user = this.userDAO.findByLoginName(SecurityUtils.getSessionUserLoginName());
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }
-        configuration.setExpandPlanningViewCharts(user
-                .isExpandOrderPlanningViewCharts());
+
+        configuration.setExpandPlanningViewCharts(user.isExpandOrderPlanningViewCharts());
         addAdditional(additional, configuration);
 
         planner.setInitialZoomLevel(getZoomLevel(configuration, order));
 
         final boolean writingAllowed = isWritingAllowedOnOrder();
-        ISaveCommand saveCommand = setupSaveCommand(configuration,
-                writingAllowed);
+        ISaveCommand saveCommand = setupSaveCommand(configuration, writingAllowed);
         setupEditingCapabilities(configuration, writingAllowed);
 
         configuration.addGlobalCommand(buildReassigningCommand());
@@ -331,25 +329,21 @@ public class OrderPlanningModel implements IOrderPlanningModel {
 
         final IResourceAllocationCommand resourceAllocationCommand = buildResourceAllocationCommand(editTaskController);
 
-        final IAdvanceAssignmentPlanningCommand advanceAssignmentPlanningCommand = buildAdvanceAssignmentPlanningCommand(advanceAssignmentPlanningController);
+        final IAdvanceAssignmentPlanningCommand advanceAssignmentPlanningCommand =
+                buildAdvanceAssignmentPlanningCommand(advanceAssignmentPlanningController);
 
         // Build context menu
         configuration.addCommandOnTask(buildMilestoneCommand());
         configuration.addCommandOnTask(buildDeleteMilestoneCommand());
         configuration.addCommandOnTask(separator);
-        configuration
-                .addCommandOnTask(buildTaskPropertiesCommand(editTaskController));
+        configuration.addCommandOnTask(buildTaskPropertiesCommand(editTaskController));
         configuration.addCommandOnTask(resourceAllocationCommand);
-        configuration
-                .addCommandOnTask(buildAdvancedAllocationCommand(advancedAllocationTaskController));
-        configuration
-                .addCommandOnTask(buildSubcontractCommand(editTaskController));
-        configuration
-                .addCommandOnTask(buildCalendarAllocationCommand(calendarAllocationController));
+        configuration.addCommandOnTask(buildAdvancedAllocationCommand(advancedAllocationTaskController));
+        configuration.addCommandOnTask(buildSubcontractCommand(editTaskController));
+        configuration.addCommandOnTask(buildCalendarAllocationCommand(calendarAllocationController));
         configuration.addCommandOnTask(separator);
         configuration.addCommandOnTask(advanceAssignmentPlanningCommand);
-        configuration
-                .addCommandOnTask(buildAdvanceConsolidationCommand(advanceConsolidationController));
+        configuration.addCommandOnTask(buildAdvanceConsolidationCommand(advanceConsolidationController));
 
         configuration.setDoubleClickCommand(resourceAllocationCommand);
         addPrintSupport(configuration, order);
@@ -362,8 +356,10 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         configureModificators(planningState.getOrder(), configuration);
         long setConfigurationTime = System.currentTimeMillis();
         planner.setConfiguration(configuration);
-        PROFILING_LOG.debug("setConfiguration on planner took: "
-                + (System.currentTimeMillis() - setConfigurationTime) + " ms");
+
+        PROFILING_LOG.debug("setConfiguration on planner took: " +
+                        (System.currentTimeMillis() - setConfigurationTime) + " ms");
+
         long preparingChartsAndMisc = System.currentTimeMillis();
 
         setupZoomLevelListener(planner, order);
@@ -385,37 +381,31 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         ChangeHooker changeHooker = new ChangeHooker(configuration, saveCommand);
 
         setupLoadChart(chartLoadTimeplot, planner, changeHooker);
-        setupEarnedValueChart(chartEarnedValueTimeplot, earnedValueChartFiller,
-                planner, changeHooker);
+        setupEarnedValueChart(chartEarnedValueTimeplot, earnedValueChartFiller, planner, changeHooker);
         setupAdvanceAssignmentPlanningController(planner, advanceAssignmentPlanningController);
-        PROFILING_LOG
-                .debug("preparing charts and miscellaneous took: "
-                        + (System.currentTimeMillis() - preparingChartsAndMisc)
-                        + " ms");
+
+        PROFILING_LOG.debug("preparing charts and miscellaneous took: " +
+                (System.currentTimeMillis() - preparingChartsAndMisc) + " ms");
 
         // Calculate critical path progress, needed for 'Project global progress' chart in Dashboard view
         planner.addGraphChangeListenersFromConfiguration(configuration);
         long overalProgressContentTime = System.currentTimeMillis();
-        PROFILING_LOG.debug("overalProgressContent took: "
-                + (System.currentTimeMillis() - overalProgressContentTime));
+        PROFILING_LOG.debug("overalProgressContent took: " + (System.currentTimeMillis() - overalProgressContentTime));
     }
 
-    private ZoomLevel getZoomLevel(
-            PlannerConfiguration<TaskElement> configuration, Order order) {
+    private ZoomLevel getZoomLevel(PlannerConfiguration<TaskElement> configuration, Order order) {
         ZoomLevel sessionZoom = FilterUtils.readZoomLevel(order);
-        if (sessionZoom != null) {
+        if ( sessionZoom != null ) {
             return sessionZoom;
         }
         return OrderPlanningModel.calculateDefaultLevel(configuration);
     }
 
     private void setupZoomLevelListener(Planner planner, Order order) {
-        planner.getTimeTracker().addZoomListener(
-                getSessionZoomLevelListener(order));
+        planner.getTimeTracker().addZoomListener(getSessionZoomLevelListener(order));
     }
 
-    private IZoomLevelChangedListener getSessionZoomLevelListener(
-            final Order order) {
+    private IZoomLevelChangedListener getSessionZoomLevelListener(final Order order) {
         IZoomLevelChangedListener zoomListener = new IZoomLevelChangedListener() {
 
             @Override
@@ -430,7 +420,8 @@ public class OrderPlanningModel implements IOrderPlanningModel {
 
     private OrderEarnedValueChartFiller earnedValueChartFiller;
 
-    private void setupAdvanceAssignmentPlanningController(final Planner planner,
+    private void setupAdvanceAssignmentPlanningController(
+            final Planner planner,
             AdvanceAssignmentPlanningController advanceAssignmentPlanningController) {
 
         advanceAssignmentPlanningController.setReloadEarnedValueListener(new IReloadChartListener() {
@@ -441,12 +432,13 @@ public class OrderPlanningModel implements IOrderPlanningModel {
 
                     @Override
                     public Void execute() {
-                        if (isExecutingOutsideZKExecution()) {
+                        if ( isExecutingOutsideZKExecution() ) {
                             return null;
                         }
-                        if (planner.isVisibleChart()) {
+                        if ( planner.isVisibleChart() ) {
                             //update earned value chart
                             earnedValueChart.fillChart();
+
                             //update earned value legend
                             updateEarnedValueChartLegend();
                         }
@@ -591,31 +583,26 @@ public class OrderPlanningModel implements IOrderPlanningModel {
             return result;
         }
 
-        void hookInto(EnumSet<ChangeTypes> reloadOn,
-                IReloadChartListener reloadChart) {
+        void hookInto(EnumSet<ChangeTypes> reloadOn, IReloadChartListener reloadChart) {
             Validate.notNull(reloadChart);
             hookIntoImpl(wrapIfNeeded(reloadChart), reloadOn);
         }
 
-        private IReloadChartListener wrapIfNeeded(
-                IReloadChartListener reloadChart) {
-            if (!wrapOnReadOnlyTransaction) {
+        private IReloadChartListener wrapIfNeeded(IReloadChartListener reloadChart) {
+            if ( !wrapOnReadOnlyTransaction ) {
                 return reloadChart;
             }
-            return AdHocTransactionService.readOnlyProxy(transactionService,
-                    IReloadChartListener.class, reloadChart);
+            return AdHocTransactionService.readOnlyProxy(transactionService, IReloadChartListener.class, reloadChart);
         }
 
-        private void hookIntoImpl(IReloadChartListener reloadChart,
-                EnumSet<ChangeTypes> reloadOn) {
-            if (saveCommand != null
-                    && reloadOn.contains(ChangeTypes.ON_GRAPH_CHANGED)) {
+        private void hookIntoImpl(IReloadChartListener reloadChart, EnumSet<ChangeTypes> reloadOn) {
+            if ( saveCommand != null && reloadOn.contains(ChangeTypes.ON_GRAPH_CHANGED) ) {
                 hookIntoSaveCommand(reloadChart);
             }
-            if (reloadOn.contains(ChangeTypes.ON_RELOAD_CHART_REQUESTED)) {
+            if ( reloadOn.contains(ChangeTypes.ON_RELOAD_CHART_REQUESTED) ) {
                 hookIntoReloadChartRequested(reloadChart);
             }
-            if (reloadOn.contains(ChangeTypes.ON_GRAPH_CHANGED)) {
+            if ( reloadOn.contains(ChangeTypes.ON_GRAPH_CHANGED) ) {
                 hookIntoGraphChanged(reloadChart);
             }
         }
@@ -630,14 +617,12 @@ public class OrderPlanningModel implements IOrderPlanningModel {
             saveCommand.addListener(afterSaveListener);
         }
 
-        private void hookIntoReloadChartRequested(
-                IReloadChartListener reloadChart) {
+        private void hookIntoReloadChartRequested(IReloadChartListener reloadChart) {
             configuration.addReloadChartListener(reloadChart);
         }
 
         private void hookIntoGraphChanged(final IReloadChartListener reloadChart) {
-            configuration
-                    .addPostGraphChangeListener(new IGraphChangeListener() {
+            configuration.addPostGraphChangeListener(new IGraphChangeListener() {
 
                         @Override
                         public void execute() {
@@ -648,8 +633,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
 
     }
 
-    private void addPrintSupport(
-            PlannerConfiguration<TaskElement> configuration, final Order order) {
+    private void addPrintSupport(PlannerConfiguration<TaskElement> configuration, final Order order) {
         configuration.setPrintAction(new IPrintAction() {
             @Override
             public void doPrint() {
@@ -662,8 +646,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
             }
 
             @Override
-            public void doPrint(HashMap<String, String> parameters,
-                    Planner planner) {
+            public void doPrint(HashMap<String, String> parameters, Planner planner) {
                 CutyPrint.print(order, parameters, planner);
 
             }
@@ -676,8 +659,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         return deleteMilestoneCommand;
     }
 
-    private void configureModificators(Order orderReloaded,
-            PlannerConfiguration<TaskElement> configuration) {
+    private void configureModificators(Order orderReloaded, PlannerConfiguration<TaskElement> configuration) {
         // Either InitDate or DeadLine must be set, depending on forwards or
         // backwards planning
         configuration.setSecondLevelModificators(SeveralModificators.create(
@@ -743,7 +725,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
     private Tab createTab(String name, final String id) {
         Tab tab = new Tab(name);
         tab.setId(id);
-        if (id.equals(tabSelected)) {
+        if ( id.equals(tabSelected) ) {
             tab.setSelected(true);
         }
         tab.addEventListener("onClick", new EventListener() {
@@ -761,13 +743,11 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         hbox.setClass("legend-container");
         hbox.setAlign("center");
         hbox.setPack("center");
-        Executions.createComponents("/planner/_legendLoadChartOrder.zul", hbox,
-                null);
+        Executions.createComponents("/planner/_legendLoadChartOrder.zul", hbox, null);
         return hbox;
     }
 
-    private Constraint dateMustBeInsideVisualizationArea(
-            final OrderEarnedValueChartFiller earnedValueChartFiller) {
+    private Constraint dateMustBeInsideVisualizationArea(final OrderEarnedValueChartFiller earnedValueChartFiller) {
         return new Constraint() {
 
             @Override
@@ -775,13 +755,12 @@ public class OrderPlanningModel implements IOrderPlanningModel {
                     Object valueObject)
                     throws WrongValueException {
                 Date value = (Date) valueObject;
-                if (value != null
-                        && !EarnedValueChartFiller.includes(
-                                earnedValueChartFiller
-                        .getIndicatorsDefinitionInterval(), LocalDate
-                        .fromDateFields(value))) {
-                    throw new WrongValueException(comp,
-                            _("Date must be inside visualization area"));
+
+                if ( value != null && !EarnedValueChartFiller.includes(
+                        earnedValueChartFiller.getIndicatorsDefinitionInterval(),
+                        LocalDate.fromDateFields(value)) ) {
+
+                    throw new WrongValueException(comp, _("Date must be inside visualization area"));
                 }
 
             }
@@ -790,16 +769,15 @@ public class OrderPlanningModel implements IOrderPlanningModel {
 
     private void dateInfutureMessage(Datebox datebox) {
         Date value = datebox.getValue();
-        Date today = LocalDate.fromDateFields(new Date())
-                .toDateTimeAtStartOfDay().toDate();
-        if (value != null && (value.compareTo(today) > 0)) {
+        Date today = LocalDate.fromDateFields(new Date()).toDateTimeAtStartOfDay().toDate();
+        if ( value != null && (value.compareTo(today) > 0) ) {
             throw new WrongValueException(datebox, _("date in the future"));
         }
     }
 
-    private void appendEventListenerToDateboxIndicators(
-            final OrderEarnedValueChartFiller earnedValueChartFiller,
-            final Vbox vbox) {
+    private void appendEventListenerToDateboxIndicators(final OrderEarnedValueChartFiller earnedValueChartFiller,
+                                                        final Vbox vbox) {
+
         earnedValueChartLegendDatebox.addEventListener(Events.ON_CHANGE,
                 new EventListener() {
 
@@ -816,33 +794,29 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         try {
             //force the validation again (getValue alone doesn't work because
             //the result of the validation is cached)
-            earnedValueChartLegendDatebox.setValue(
-                    earnedValueChartLegendDatebox.getValue());
+            earnedValueChartLegendDatebox.setValue(earnedValueChartLegendDatebox.getValue());
         }
         catch (WrongValueException e) {
             //the user moved the gantt and the legend became out of the
             //visualization area, reset to a correct date
-            earnedValueChartLegendDatebox.setValue(earnedValueChartFiller.
-                    initialDateForIndicatorValues().toDateTimeAtStartOfDay()
-                    .toDate());
+            earnedValueChartLegendDatebox.setValue(earnedValueChartFiller.initialDateForIndicatorValues().
+                    toDateTimeAtStartOfDay().toDate());
         }
         LocalDate date = new LocalDate(earnedValueChartLegendDatebox.getRawValue());
-        org.zkoss.zk.ui.Component child = earnedValueChartLegendContainer
-                .getFellow("indicatorsTable");
+        org.zkoss.zk.ui.Component child = earnedValueChartLegendContainer.getFellow("indicatorsTable");
         updateEarnedValueChartLegend(date);
     }
 
     private void updateEarnedValueChartLegend(LocalDate date) {
         for (EarnedValueType type : EarnedValueType.values()) {
-            Label valueLabel = (Label) earnedValueChartLegendContainer
-                    .getFellow(type.toString());
-            valueLabel.setValue(getLabelTextEarnedValueType(
-                    earnedValueChartFiller, type, date));
+            Label valueLabel = (Label) earnedValueChartLegendContainer.getFellow(type.toString());
+            valueLabel.setValue(getLabelTextEarnedValueType(earnedValueChartFiller, type, date));
         }
     }
 
     private org.zkoss.zk.ui.Component getEarnedValueChartConfigurableLegend(
             OrderEarnedValueChartFiller earnedValueChartFiller, LocalDate date) {
+
         Hbox mainhbox = new Hbox();
         mainhbox.setId("indicatorsTable");
 
@@ -864,8 +838,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
             checkbox.setAttribute("indicator", type);
             checkbox.setStyle("color: " + type.getColor());
 
-            Label valueLabel = new Label(getLabelTextEarnedValueType(
-                    earnedValueChartFiller, type, date));
+            Label valueLabel = new Label(getLabelTextEarnedValueType(earnedValueChartFiller, type, date));
             valueLabel.setId(type.toString());
 
             Hbox hbox = new Hbox();
@@ -874,9 +847,11 @@ public class OrderPlanningModel implements IOrderPlanningModel {
 
             columnNumber = columnNumber + 1;
             switch (columnNumber) {
+
             case 1:
                 column1.appendChild(hbox);
                 break;
+
             case 2:
                 column2.appendChild(hbox);
                 columnNumber = 0;
@@ -897,13 +872,12 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         return mainhbox;
     }
 
-    private String getLabelTextEarnedValueType(
-            OrderEarnedValueChartFiller earnedValueChartFiller,
-            EarnedValueType type, LocalDate date) {
+    private String getLabelTextEarnedValueType(OrderEarnedValueChartFiller earnedValueChartFiller,
+                                               EarnedValueType type, LocalDate date) {
+
         BigDecimal value = earnedValueChartFiller.getIndicator(type, date);
         String units = _("h");
-        if (type.equals(EarnedValueType.CPI)
-                || type.equals(EarnedValueType.SPI)) {
+        if ( type.equals(EarnedValueType.CPI) || type.equals(EarnedValueType.SPI) ) {
             value = value.multiply(new BigDecimal(100));
             units = "%";
         }
@@ -912,11 +886,12 @@ public class OrderPlanningModel implements IOrderPlanningModel {
 
     private void markAsSelectedDefaultIndicators() {
         for (Checkbox checkbox : earnedValueChartConfigurationCheckboxes) {
-            EarnedValueType type = (EarnedValueType) checkbox
-                    .getAttribute("indicator");
+            EarnedValueType type = (EarnedValueType) checkbox.getAttribute("indicator");
             switch (type) {
             case BCWS:
+
             case ACWP:
+
             case BCWP:
                 checkbox.setChecked(true);
                 break;
@@ -931,17 +906,15 @@ public class OrderPlanningModel implements IOrderPlanningModel {
     private Set<EarnedValueType> getEarnedValueSelectedIndicators() {
         Set<EarnedValueType> result = new HashSet<EarnedValueType>();
         for (Checkbox checkbox : earnedValueChartConfigurationCheckboxes) {
-            if (checkbox.isChecked()) {
-                EarnedValueType type = (EarnedValueType) checkbox
-                        .getAttribute("indicator");
+            if ( checkbox.isChecked() ) {
+                EarnedValueType type = (EarnedValueType) checkbox.getAttribute("indicator");
                 result.add(type);
             }
         }
         return result;
     }
 
-    private void setEventListenerConfigurationCheckboxes(
-            final Chart earnedValueChart) {
+    private void setEventListenerConfigurationCheckboxes(final Chart earnedValueChart) {
         for (Checkbox checkbox : earnedValueChartConfigurationCheckboxes) {
             checkbox.addEventListener(Events.ON_CHECK, new EventListener() {
 
@@ -962,25 +935,22 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         }
     }
 
-    private void refillLoadChartWhenNeeded(ChangeHooker changeHooker,
-            final Planner planner, final Chart loadChart,
-            final boolean updateEarnedValueChartLegend) {
-        planner.getTimeTracker().addZoomListener(
-                fillOnZoomChange(loadChart, planner, updateEarnedValueChartLegend));
-        planner
-                .addChartVisibilityListener(fillOnChartVisibilityChange(loadChart));
+    private void refillLoadChartWhenNeeded(ChangeHooker changeHooker, final Planner planner, final Chart loadChart,
+                                           final boolean updateEarnedValueChartLegend) {
 
-        changeHooker.withReadOnlyTransactionWraping().hookInto(
-                EnumSet.allOf(ChangeTypes.class), new IReloadChartListener() {
+        planner.getTimeTracker().addZoomListener(fillOnZoomChange(loadChart, planner, updateEarnedValueChartLegend));
+        planner.addChartVisibilityListener(fillOnChartVisibilityChange(loadChart));
+
+        changeHooker.withReadOnlyTransactionWraping().hookInto(EnumSet.allOf(ChangeTypes.class), new IReloadChartListener() {
 
                     @Override
                     public void reloadChart() {
-                        if (isExecutingOutsideZKExecution()) {
+                        if ( isExecutingOutsideZKExecution() ) {
                             return;
                         }
-                        if (planner.isVisibleChart()) {
+                        if ( planner.isVisibleChart() ) {
                             loadChart.fillChart();
-                            if(updateEarnedValueChartLegend) {
+                            if( updateEarnedValueChartLegend ) {
                                 updateEarnedValueChartLegend();
                             }
                         }
@@ -993,20 +963,21 @@ public class OrderPlanningModel implements IOrderPlanningModel {
     }
 
     private void addAdditional(List<ICommand<TaskElement>> additional,
-            PlannerConfiguration<TaskElement> configuration) {
+                               PlannerConfiguration<TaskElement> configuration) {
+
         for (ICommand<TaskElement> c : additional) {
             configuration.addGlobalCommand(c);
         }
     }
 
     private boolean isWritingAllowedOnOrder() {
-        if (planningState.getSavedOrderState() == OrderStatusEnum.STORED
-                && planningState.getOrder().getState() == OrderStatusEnum.STORED) {
+        if ( planningState.getSavedOrderState() == OrderStatusEnum.STORED &&
+                planningState.getOrder().getState() == OrderStatusEnum.STORED ) {
+
             // STORED orders can't be saved, independently of user permissions
             return false;
         }
-        if (SecurityUtils
-                .isSuperuserOrUserInRoles(UserRole.ROLE_EDIT_ALL_PROJECTS)) {
+        if ( SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_EDIT_ALL_PROJECTS) ) {
             return true;
         }
         return thereIsWriteAuthorizationFor(planningState.getOrder());
@@ -1016,9 +987,8 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         String loginName = SecurityUtils.getSessionUserLoginName();
         try {
             User user = userDAO.findByLoginName(loginName);
-            for (OrderAuthorization authorization : orderAuthorizationDAO
-                    .listByOrderUserAndItsProfiles(order, user)) {
-                if (authorization.getAuthorizationType() == OrderAuthorizationType.WRITE_AUTHORIZATION) {
+            for (OrderAuthorization authorization : orderAuthorizationDAO.listByOrderUserAndItsProfiles(order, user)) {
+                if ( authorization.getAuthorizationType() == OrderAuthorizationType.WRITE_AUTHORIZATION ) {
                     return true;
                 }
             }
@@ -1363,8 +1333,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
 
     }
 
-    private ISubcontractCommand buildSubcontractCommand(
-            EditTaskController editTaskController) {
+    private ISubcontractCommand buildSubcontractCommand(EditTaskController editTaskController) {
         subcontractCommand.initialize(editTaskController, planningState);
         return subcontractCommand;
     }
@@ -1389,7 +1358,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
 
     private void forceLoadLabels(OrderElement orderElement) {
         orderElement.getLabels().size();
-        if (!orderElement.isLeaf()) {
+        if ( !orderElement.isLeaf() ) {
             for (OrderElement element : orderElement.getChildren()) {
                 forceLoadLabels(element);
             }
@@ -1402,7 +1371,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
             hoursGroup.getCriterionRequirements().size();
         }
 
-        if (!orderElement.isLeaf()) {
+        if ( !orderElement.isLeaf() ) {
             for (OrderElement element : orderElement.getChildren()) {
                 forceLoadCriterionRequirements(element);
             }

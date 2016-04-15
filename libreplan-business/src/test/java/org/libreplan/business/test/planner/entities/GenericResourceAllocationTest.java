@@ -111,18 +111,13 @@ public class GenericResourceAllocationTest {
     private Task givenTaskWithStartAndEnd(Interval interval) {
         Task task = createNiceMock(Task.class);
         setupCriterions(task);
-        IntraDayDate start = IntraDayDate.startOfDay(interval.getStart()
-                .toLocalDate());
-        IntraDayDate end = IntraDayDate.startOfDay(interval.getEnd()
-                .toLocalDate());
-        expect(task.getStartDate()).andReturn(interval.getStart().toDate())
-                .anyTimes();
+        IntraDayDate start = IntraDayDate.startOfDay(interval.getStart().toLocalDate());
+        IntraDayDate end = IntraDayDate.startOfDay(interval.getEnd().toLocalDate());
+        expect(task.getStartDate()).andReturn(interval.getStart().toDate()).anyTimes();
         expect(task.getIntraDayStartDate()).andReturn(start).anyTimes();
-        expect(task.getEndDate()).andReturn(interval.getEnd().toDate())
-                .anyTimes();
+        expect(task.getEndDate()).andReturn(interval.getEnd().toDate()).anyTimes();
         expect(task.getIntraDayEndDate()).andReturn(end).anyTimes();
-        expect(task.getFirstDayNotConsolidated()).andReturn(start)
-                .anyTimes();
+        expect(task.getFirstDayNotConsolidated()).andReturn(start).anyTimes();
         expect(task.getCalendar()).andReturn(baseCalendar).anyTimes();
         replay(task);
         return this.task = task;
@@ -137,8 +132,7 @@ public class GenericResourceAllocationTest {
     }
 
     private void setupCriterions(Task task) {
-        expect(task.getCriterions()).andReturn(givenPredefinedCriterions())
-                .anyTimes();
+        expect(task.getCriterions()).andReturn(givenPredefinedCriterions()).anyTimes();
     }
 
     private void givenGenericResourceAllocationForTask(Task task) {
@@ -159,9 +153,7 @@ public class GenericResourceAllocationTest {
     }
 
     private void setupIsSatisfiedByAll(Criterion criterion) {
-        expect(
-                criterion.isSatisfiedBy(isA(Resource.class),
-                        isA(LocalDate.class))).andReturn(true).anyTimes();
+        expect(criterion.isSatisfiedBy(isA(Resource.class), isA(LocalDate.class))).andReturn(true).anyTimes();
     }
 
     private void givenWorkersWithoutLoadAndWithoutCalendar() {
@@ -175,9 +167,8 @@ public class GenericResourceAllocationTest {
 
     public static void mockZeroLoad(Resource... resources) {
         for (Resource each : resources) {
-            expect(
-                    each.getAssignedDurationDiscounting(isA(Map.class),
-                            isA(LocalDate.class))).andReturn(zero()).anyTimes();
+            expect(each.getAssignedDurationDiscounting(isA(Map.class), isA(LocalDate.class)))
+                    .andReturn(zero()).anyTimes();
         }
     }
 
@@ -211,7 +202,7 @@ public class GenericResourceAllocationTest {
         }
 
         EffortDuration getLoad(LocalDate date) {
-            if (exceptions.containsKey(date)) {
+            if ( exceptions.containsKey(date) ) {
                 return exceptions.get(date);
             }
             return defaultLoad;
@@ -219,37 +210,33 @@ public class GenericResourceAllocationTest {
 
     }
 
-    private Worker createWorkerWithLoad(ResourceCalendar resourceCalendar,
-            int hours) {
-        return createWorkerWithLoad(resourceCalendar,
-                new LoadSpec(hours(hours)));
+    private Worker createWorkerWithLoad(ResourceCalendar resourceCalendar, int hours) {
+        return createWorkerWithLoad(resourceCalendar, new LoadSpec(hours(hours)));
     }
 
-    private Worker createWorkerWithLoad(ResourceCalendar resourceCalendar,
-            final LoadSpec loadSpec) {
+    private Worker createWorkerWithLoad(ResourceCalendar resourceCalendar, final LoadSpec loadSpec) {
         Worker result = createNiceMock(Worker.class);
         expect(result.getCalendar()).andReturn(resourceCalendar).anyTimes();
-        expect(
-                result.getAssignedDurationDiscounting(isA(Map.class),
-                        isA(LocalDate.class))).andAnswer(
+
+        expect(result.getAssignedDurationDiscounting(isA(Map.class), isA(LocalDate.class))).andAnswer(
                 new IAnswer<EffortDuration>() {
 
                     @Override
                     public EffortDuration answer() throws Throwable {
-                        Object[] currentArguments = EasyMock
-                                .getCurrentArguments();
+                        Object[] currentArguments = EasyMock.getCurrentArguments();
                         LocalDate date = (LocalDate) currentArguments[1];
                         return loadSpec.getLoad(date);
                     }
                 }).anyTimes();
-        expect(result.getSatisfactionsFor(isA(Criterion.class))).andReturn(
-                satisfactionsForPredefinedCriterions(result)).anyTimes();
+
+        expect(result.getSatisfactionsFor(isA(Criterion.class)))
+                .andReturn(satisfactionsForPredefinedCriterions(result)).anyTimes();
+
         replay(result);
         return result;
     }
 
-    private List<CriterionSatisfaction> satisfactionsForPredefinedCriterions(
-            Resource resource) {
+    private List<CriterionSatisfaction> satisfactionsForPredefinedCriterions(Resource resource) {
         List<CriterionSatisfaction> result = new ArrayList<CriterionSatisfaction>();
         for (Criterion each : criterions) {
             result.add(CriterionSatisfaction.create(each, resource,
@@ -259,8 +246,7 @@ public class GenericResourceAllocationTest {
     }
 
     private org.libreplan.business.resources.entities.Interval fromVeryEarlyTime() {
-        return org.libreplan.business.resources.entities.Interval
-                .from(new LocalDate(0, 1, 1));
+        return org.libreplan.business.resources.entities.Interval.from(new LocalDate(0, 1, 1));
     }
 
     private void givenCalendarsForResources(int capacity1, int capacity2, int capacity3) {
@@ -279,18 +265,16 @@ public class GenericResourceAllocationTest {
     }
 
     private void givenWorkersWithLoads(int hours1, int hours2, int hours3) {
-        givenWorkersWithLoads(LoadSpec.withHours(hours1),
-                LoadSpec.withHours(hours2), LoadSpec.withHours(hours3));
+        givenWorkersWithLoads(LoadSpec.withHours(hours1), LoadSpec.withHours(hours2), LoadSpec.withHours(hours3));
     }
 
-    private void givenWorkersWithLoads(LoadSpec load1, LoadSpec load2,
-            LoadSpec load3) {
+    private void givenWorkersWithLoads(LoadSpec load1, LoadSpec load2, LoadSpec load3) {
         ResourceCalendar[] calendars;
-        if (workerCalendars == null) {
+        if ( workerCalendars == null ) {
             calendars = new ResourceCalendar[] { null, null, null };
         } else {
-            calendars = new ResourceCalendar[] { workerCalendars.get(0),
-                    workerCalendars.get(1), workerCalendars.get(2) };
+            calendars =
+                    new ResourceCalendar[] { workerCalendars.get(0), workerCalendars.get(1), workerCalendars.get(2) };
         }
         worker1 = createWorkerWithLoad(calendars[0], load1);
         worker2 = createWorkerWithLoad(calendars[1], load2);
@@ -299,15 +283,13 @@ public class GenericResourceAllocationTest {
     }
 
     private void givenBaseCalendarWithoutExceptions(int hoursPerDay) {
-        BaseCalendar baseCalendar = createCalendar(
-                BaseCalendar.class,
-                Capacity.create(hours(hoursPerDay)).overAssignableWithoutLimit());
+        BaseCalendar baseCalendar =
+                createCalendar(BaseCalendar.class, Capacity.create(hours(hoursPerDay)).overAssignableWithoutLimit());
 
         this.baseCalendar = baseCalendar;
     }
 
-    private <T extends BaseCalendar> T createCalendar(Class<T> klass,
-            final Capacity capacity) {
+    private <T extends BaseCalendar> T createCalendar(Class<T> klass, final Capacity capacity) {
         return createCalendar(klass, capacity, 1);
     }
 
@@ -690,8 +672,6 @@ public class GenericResourceAllocationTest {
 
         genericResourceAllocation.forResources(workers).allocate(ResourcesPerDay.amount(1));
 
-        // worker 1/2/3 allocations == 1 hour and workers.get(3) allocations == 5 hours
-
         List<GenericDayAssignment> assignmentsWorker3 = genericResourceAllocation.getOrderedAssignmentsFor(worker3);
         assertThat(assignmentsWorker3, haveHours(1, 1, 1, 1));
 
@@ -742,8 +722,8 @@ public class GenericResourceAllocationTest {
         givenWorkersWithLoads(8, 6, 2);
 
         IntraDayDate end = ResourceAllocation.allocating(Arrays.asList(ResourcesPerDayModification.create(
-                        genericResourceAllocation,
-                        ResourcesPerDay.amount(new BigDecimal(1)), workers))).untilAllocating(hours(12));
+                genericResourceAllocation,
+                ResourcesPerDay.amount(new BigDecimal(1)), workers))).untilAllocating(hours(12));
 
         assertThat(end.getDate(), equalTo(start.plusDays(1)));
 
@@ -762,17 +742,15 @@ public class GenericResourceAllocationTest {
         givenWorkersWithLoads(8, 2, 6);
 
         IntraDayDate end = ResourceAllocation.allocating(Arrays.asList(ResourcesPerDayModification.create(
-                        genericResourceAllocation,
-                        ResourcesPerDay.amount(1),
-                        workers))).untilAllocating(hours(16));
+                genericResourceAllocation,
+                ResourcesPerDay.amount(1),
+                workers))).untilAllocating(hours(16));
 
         assertThat(end.getDate(), equalTo(start.plusDays(2)));
     }
 
-    private void givenVirtualWorkerWithCapacityAndLoad(
-            Capacity capacityPerDayAndUnit,
-            int capacityUnits,
-            EffortDuration load) {
+    private void givenVirtualWorkerWithCapacityAndLoad(Capacity capacityPerDayAndUnit, int capacityUnits,
+                                                       EffortDuration load) {
 
         VirtualWorker worker = createNiceMock(VirtualWorker.class);
         expect(worker.getAssignedDurationDiscounting(isA(Map.class), isA(LocalDate.class))).andReturn(load).anyTimes();

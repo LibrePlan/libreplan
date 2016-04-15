@@ -76,8 +76,7 @@ public class ExportTimesheetsToTimTest {
 
     @Before
     public void loadProperties() throws FileNotFoundException, IOException {
-        String filename = System.getProperty("user.dir")
-                + "/../scripts/tim-connector/tim-conn.properties";
+        String filename = System.getProperty("user.dir") + "/../scripts/tim-connector/tim-conn.properties";
         properties = new Properties();
         properties.load(new FileInputStream(filename));
     }
@@ -159,28 +158,24 @@ public class ExportTimesheetsToTimTest {
 
     @Test
     @Ignore("Only working if you have a Tim server configured")
-    public void testExportTimesheetsToTimWithValidCodeAndOrder()
-            throws ConnectorException {
+    public void testExportTimesheetsToTimWithValidCodeAndOrder() throws ConnectorException {
         Order order = givenOrder();
         exportTimesheetsToTim.exportTimesheets("5160", order);
-        boolean result = exportTimesheetsToTim.getSynchronizationInfo()
-                .isSuccessful();
-        if (!result) {
+        boolean result = exportTimesheetsToTim.getSynchronizationInfo().isSuccessful();
+        if ( !result ) {
             fail("Export timesheets to tim failed");
         }
         assertTrue(result);
     }
 
     @Test(expected = ConnectorException.class)
-    public void testExportTimesheetsToTimWithInvalidCode()
-            throws ConnectorException {
+    public void testExportTimesheetsToTimWithInvalidCode() throws ConnectorException {
         Order order = givenOrder();
         exportTimesheetsToTim.exportTimesheets("", order);
     }
 
     @Test(expected = ConnectorException.class)
-    public void testExportTimesheetsToTimWithOrderNull()
-            throws ConnectorException {
+    public void testExportTimesheetsToTimWithOrderNull() throws ConnectorException {
         exportTimesheetsToTim.exportTimesheets("5160", null);
     }
 }

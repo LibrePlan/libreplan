@@ -29,8 +29,7 @@ package org.libreplan.business;
  */
 public class BusinessGlobalNames {
 
-    public final static String BUSINESS_SPRING_CONFIG_FILE =
-        "classpath:/libreplan-business-spring-config.xml";
+    public final static String BUSINESS_SPRING_CONFIG_FILE = "classpath:/libreplan-business-spring-config.xml";
 
     private BusinessGlobalNames () {}
 

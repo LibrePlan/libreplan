@@ -74,7 +74,7 @@ public abstract class TreeNodeOnListWithSchedulingState<T extends ITreeNode<T>>
 
     protected void removeFromPreviousSchedulingState(T node) {
         SchedulingState schedulingState = getSchedulingStateFrom(node);
-        if (!schedulingState.isRoot()) {
+        if ( !schedulingState.isRoot() ) {
             schedulingState.getParent().removeChild(schedulingState);
         }
     }

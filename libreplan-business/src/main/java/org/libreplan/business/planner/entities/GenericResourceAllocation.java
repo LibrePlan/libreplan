@@ -70,10 +70,11 @@ public class GenericResourceAllocation extends ResourceAllocation<GenericDayAssi
 
     public static Map<Set<Criterion>, List<GenericResourceAllocation>> byCriterions(
             Collection<GenericResourceAllocation> genericAllocations) {
+
         Map<Set<Criterion>, List<GenericResourceAllocation>> result = new HashMap<Set<Criterion>, List<GenericResourceAllocation>>();
         for (GenericResourceAllocation genericResourceAllocation : genericAllocations) {
             Set<Criterion> criterions = genericResourceAllocation.getCriterions();
-            if(! result.containsKey(criterions)){
+            if( !result.containsKey(criterions) ){
                 result.put(criterions, new ArrayList<GenericResourceAllocation>());
             }
             result.get(criterions).add(genericResourceAllocation);
@@ -122,8 +123,8 @@ public class GenericResourceAllocation extends ResourceAllocation<GenericDayAssi
         return first.getType().getResource();
     }
 
-    public static GenericResourceAllocation create(Task task,
-            ResourceEnum resourceType, Collection<? extends Criterion> criterions) {
+    public static GenericResourceAllocation create(Task task, ResourceEnum resourceType,
+                                                   Collection<? extends Criterion> criterions) {
         Validate.notNull(resourceType);
         GenericResourceAllocation result = new GenericResourceAllocation(task);
         result.criterions = new HashSet<Criterion>(criterions);
@@ -196,8 +197,7 @@ public class GenericResourceAllocation extends ResourceAllocation<GenericDayAssi
 
         public GenericAllocation(List<Resource> resources) {
             this.resources = resources;
-            hoursDistributor = new EffortDistributor(resources,
-                    getAssignedEffortForResource(),
+            hoursDistributor = new EffortDistributor(resources, getAssignedEffortForResource(),
                     new ResourcesSatisfyingCriterionsSelector());
         }
 
@@ -212,8 +212,7 @@ public class GenericResourceAllocation extends ResourceAllocation<GenericDayAssi
 
         @Override
         protected AvailabilityTimeLine getResourcesAvailability() {
-            return AvailabilityCalculator.buildSumOfAvailabilitiesFor(
-                    getCriterions(), resources);
+            return AvailabilityCalculator.buildSumOfAvailabilitiesFor(getCriterions(), resources);
         }
 
         @Override

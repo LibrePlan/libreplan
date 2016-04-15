@@ -18,13 +18,10 @@ public class DistributorTest {
 
     @Test
     public void theEffortIsDistributedEvenly() {
-        Distributor distributor = Distributor.among(Capacity.create(hours(8)),
-                Capacity.create(hours(8)));
+        Distributor distributor = Distributor.among(Capacity.create(hours(8)), Capacity.create(hours(8)));
 
-        assertThat(distributor.distribute(hours(16)),
-                hasEfforts(hours(8), hours(8)));
-        assertThat(distributor.distribute(hours(8)),
-                hasEfforts(hours(4), hours(4)));
+        assertThat(distributor.distribute(hours(16)), hasEfforts(hours(8), hours(8)));
+        assertThat(distributor.distribute(hours(8)), hasEfforts(hours(4), hours(4)));
     }
 
     @Test
@@ -33,8 +30,7 @@ public class DistributorTest {
                 .notOverAssignableWithoutLimit(), Capacity.create(hours(8))
                 .notOverAssignableWithoutLimit());
 
-        assertThat(distributor.distribute(hours(18)),
-                hasEfforts(hours(8), hours(8)));
+        assertThat(distributor.distribute(hours(18)), hasEfforts(hours(8), hours(8)));
     }
 
     @Test
@@ -43,13 +39,10 @@ public class DistributorTest {
                 .notOverAssignableWithoutLimit(), Capacity.create(hours(8))
                 .overAssignableWithoutLimit());
 
-        assertThat(distributor.distribute(hours(14)),
-                hasEfforts(hours(7), hours(7)));
-        assertThat(distributor.distribute(hours(16)),
-                hasEfforts(hours(8), hours(8)));
+        assertThat(distributor.distribute(hours(14)), hasEfforts(hours(7), hours(7)));
+        assertThat(distributor.distribute(hours(16)), hasEfforts(hours(8), hours(8)));
 
-        assertThat(distributor.distribute(hours(18)),
-                hasEfforts(hours(8), hours(10)));
+        assertThat(distributor.distribute(hours(18)), hasEfforts(hours(8), hours(10)));
     }
 
     @Test
@@ -58,25 +51,19 @@ public class DistributorTest {
                 .withAllowedExtraEffort(hours(2)), Capacity.create(hours(8))
                 .notOverAssignableWithoutLimit());
 
-        assertThat(distributor.distribute(hours(16)),
-                hasEfforts(hours(8), hours(8)));
-        assertThat(distributor.distribute(hours(17)),
-                hasEfforts(hours(9), hours(8)));
-        assertThat(distributor.distribute(hours(18)),
-                hasEfforts(hours(10), hours(8)));
-        assertThat(distributor.distribute(hours(19)),
-                hasEfforts(hours(10), hours(8)));
+        assertThat(distributor.distribute(hours(16)), hasEfforts(hours(8), hours(8)));
+        assertThat(distributor.distribute(hours(17)), hasEfforts(hours(9), hours(8)));
+        assertThat(distributor.distribute(hours(18)), hasEfforts(hours(10), hours(8)));
+        assertThat(distributor.distribute(hours(19)), hasEfforts(hours(10), hours(8)));
     }
 
     @Test
     public void ifNoCapacityItReturnsZeroHours() {
-        Distributor distributor = Distributor.among(Capacity.create(hours(0))
-                .notOverAssignableWithoutLimit());
+        Distributor distributor = Distributor.among(Capacity.create(hours(0)).notOverAssignableWithoutLimit());
         assertThat(distributor.distribute(hours(4)), hasEfforts(hours(0)));
     }
 
-    private Matcher<List<EffortDuration>> hasEfforts(
-            final EffortDuration... efforts) {
+    private Matcher<List<EffortDuration>> hasEfforts(final EffortDuration... efforts) {
         return new BaseMatcher<List<EffortDuration>>() {
 
             @Override
@@ -85,10 +72,10 @@ public class DistributorTest {
             }
 
             private EffortDuration[] toArray(Object value) {
-                if (value instanceof EffortDuration[]) {
+                if ( value instanceof EffortDuration[] ) {
                     return (EffortDuration[]) value;
                 }
-                if (value instanceof List) {
+                if ( value instanceof List ) {
                     List<?> list = (List<?>) value;
                     return list.toArray(new EffortDuration[0]);
                 }

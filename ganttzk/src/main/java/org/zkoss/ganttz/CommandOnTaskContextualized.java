@@ -33,11 +33,10 @@ import org.zkoss.zk.ui.event.Event;
 
 public class CommandOnTaskContextualized<T> {
 
-    public static <T> CommandOnTaskContextualized<T> create(
-            ICommandOnTask<T> commandOnTask, IDomainAndBeansMapper<T> mapper,
-            IContext<T> context) {
-        return new CommandOnTaskContextualized<T>(commandOnTask, mapper,
-                context);
+    public static <T> CommandOnTaskContextualized<T> create(ICommandOnTask<T> commandOnTask,
+                                                            IDomainAndBeansMapper<T> mapper, IContext<T> context) {
+
+        return new CommandOnTaskContextualized<T>(commandOnTask, mapper, context);
     }
 
     private final ICommandOnTask<T> commandOnTask;
@@ -46,16 +45,17 @@ public class CommandOnTaskContextualized<T> {
 
     private final IDomainAndBeansMapper<T> mapper;
 
-    private CommandOnTaskContextualized(ICommandOnTask<T> commandOnTask,
-            IDomainAndBeansMapper<T> mapper, IContext<T> context) {
+    private CommandOnTaskContextualized(ICommandOnTask<T> commandOnTask, IDomainAndBeansMapper<T> mapper,
+                                        IContext<T> context) {
         this.commandOnTask = commandOnTask;
         this.mapper = mapper;
         this.context = context;
     }
 
     public void doAction(TaskComponent taskComponent) {
-        doAction(ContextRelativeToOtherComponent.makeRelativeTo(context,
-                taskComponent), domainObjectFor(taskComponent.getTask()));
+        doAction(
+                ContextRelativeToOtherComponent.makeRelativeTo(context, taskComponent),
+                domainObjectFor(taskComponent.getTask()));
     }
 
     public void doAction(Task task) {
@@ -67,8 +67,9 @@ public class CommandOnTaskContextualized<T> {
     }
 
     private void doAction(IContext<T> context, T domainObject) {
-        IContextWithPlannerTask<T> contextWithTask = ContextWithPlannerTask
-                .create(context, mapper.findAssociatedBean(domainObject));
+        IContextWithPlannerTask<T> contextWithTask =
+                ContextWithPlannerTask.create(context, mapper.findAssociatedBean(domainObject));
+
         commandOnTask.doAction(contextWithTask, domainObject);
     }
 
