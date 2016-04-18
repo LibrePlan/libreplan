@@ -46,6 +46,7 @@ import org.libreplan.business.workingday.EffortDuration;
 public class SpecificDayAssignment extends DayAssignment {
 
     private abstract class ParentState {
+
         abstract SpecificResourceAllocation getResourceAllocation();
 
         abstract ParentState setParent(SpecificResourceAllocation genericResourceAllocation);
@@ -65,11 +66,9 @@ public class SpecificDayAssignment extends DayAssignment {
         }
 
         @Override
-        ParentState setParent(
-                SpecificResourceAllocation specificResourceAllocation) {
-            if (parent != null && parent != specificResourceAllocation) {
-                throw new IllegalStateException(
-                        "the allocation cannot be changed once it has been set");
+        ParentState setParent(SpecificResourceAllocation specificResourceAllocation) {
+            if ( parent != null && parent != specificResourceAllocation ) {
+                throw new IllegalStateException("the allocation cannot be changed once it has been set");
             }
             this.parent = specificResourceAllocation;
             return this;
@@ -120,9 +119,9 @@ public class SpecificDayAssignment extends DayAssignment {
     }
 
 
-    public static Set<SpecificDayAssignment> copy(
-            SpecificDayAssignmentsContainer container,
-            Collection<? extends SpecificDayAssignment> specificDaysAssignment) {
+    public static Set<SpecificDayAssignment> copy(SpecificDayAssignmentsContainer container,
+                                                  Collection<? extends SpecificDayAssignment> specificDaysAssignment) {
+
         Set<SpecificDayAssignment> result = new HashSet<SpecificDayAssignment>();
         for (SpecificDayAssignment s : specificDaysAssignment) {
             SpecificDayAssignment created = copyFromWithoutParent(s);
@@ -134,16 +133,15 @@ public class SpecificDayAssignment extends DayAssignment {
         return result;
     }
 
-    private static SpecificDayAssignment copyFromWithoutParent(
-            SpecificDayAssignment assignment) {
-        SpecificDayAssignment copy = create(assignment.getDay(),
-                assignment.getDuration(), assignment.getResource());
+    private static SpecificDayAssignment copyFromWithoutParent(SpecificDayAssignment assignment) {
+        SpecificDayAssignment copy = create(assignment.getDay(), assignment.getDuration(), assignment.getResource());
         copy.setConsolidated(assignment.isConsolidated());
         return copy;
     }
 
     public static List<SpecificDayAssignment> copyToAssignmentsWithoutParent(
             Collection<? extends SpecificDayAssignment> assignments) {
+
         List<SpecificDayAssignment> result = new ArrayList<SpecificDayAssignment>();
         for (SpecificDayAssignment each : assignments) {
             result.add(copyFromWithoutParent(each));

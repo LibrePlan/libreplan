@@ -377,8 +377,7 @@ public class IntraDayDate implements Comparable<IntraDayDate> {
         return result;
     }
 
-    private static Iterator<PartialDay> createIterator(
-            final IntraDayDate start, final IterationPredicate predicate) {
+    private static Iterator<PartialDay> createIterator(final IntraDayDate start, final IterationPredicate predicate) {
 
         return new Iterator<IntraDayDate.PartialDay>() {
             private IntraDayDate current = start;
@@ -390,7 +389,7 @@ public class IntraDayDate implements Comparable<IntraDayDate> {
 
             @Override
             public PartialDay next() {
-                if (!hasNext()) {
+                if ( !hasNext() ) {
                     throw new NoSuchElementException();
                 }
                 IntraDayDate start = current;
@@ -399,8 +398,7 @@ public class IntraDayDate implements Comparable<IntraDayDate> {
             }
 
             private IntraDayDate calculateNext(IntraDayDate date) {
-                IntraDayDate nextDay = IntraDayDate.startOfDay(date.date
-                        .plusDays(1));
+                IntraDayDate nextDay = IntraDayDate.startOfDay(date.date.plusDays(1));
                 return predicate.limitNext(nextDay);
             }
 
@@ -452,18 +450,13 @@ public class IntraDayDate implements Comparable<IntraDayDate> {
      * @return a new {@link IntraDayDate}
      */
     public IntraDayDate increaseBy(ResourcesPerDay resourcesPerDay, EffortDuration effort) {
-        EffortDuration newEnd = this.getEffortDuration().plus(
-                calculateProportionalDuration(resourcesPerDay,
-                        effort));
+        EffortDuration newEnd = this.getEffortDuration().plus(calculateProportionalDuration(resourcesPerDay, effort));
         return IntraDayDate.create(getDate(), newEnd);
     }
 
-    private EffortDuration calculateProportionalDuration(
-            ResourcesPerDay resourcesPerDay, EffortDuration effort) {
+    private EffortDuration calculateProportionalDuration(ResourcesPerDay resourcesPerDay, EffortDuration effort) {
         int seconds = effort.getSeconds();
-        BigDecimal end = new BigDecimal(seconds).divide(
-                resourcesPerDay.getAmount(),
-                RoundingMode.HALF_UP);
+        BigDecimal end = new BigDecimal(seconds).divide(resourcesPerDay.getAmount(), RoundingMode.HALF_UP);
         return seconds(end.intValue());
     }
 
@@ -478,22 +471,18 @@ public class IntraDayDate implements Comparable<IntraDayDate> {
      * @param effort
      * @return a new {@link IntraDayDate}
      */
-    public IntraDayDate decreaseBy(ResourcesPerDay resourcesPerDay,
-            EffortDuration effort) {
-        EffortDuration proportionalDuration = calculateProportionalDuration(
-                resourcesPerDay, effort);
-        if (getEffortDuration().compareTo(proportionalDuration) > 0) {
-            return IntraDayDate.create(getDate(),
-                    getEffortDuration().minus(proportionalDuration));
+    public IntraDayDate decreaseBy(ResourcesPerDay resourcesPerDay, EffortDuration effort) {
+        EffortDuration proportionalDuration = calculateProportionalDuration(resourcesPerDay, effort);
+        if ( getEffortDuration().compareTo(proportionalDuration) > 0 ) {
+            return IntraDayDate.create(getDate(), getEffortDuration().minus(proportionalDuration));
         } else {
             return IntraDayDate.startOfDay(getDate());
         }
     }
 
-    public static IntraDayDate convert(LocalDate date,
-            IntraDayDate morePreciseAlternative) {
+    public static IntraDayDate convert(LocalDate date, IntraDayDate morePreciseAlternative) {
         LocalDate morePreciseDate = morePreciseAlternative.getDate();
-        if (morePreciseDate.equals(date)) {
+        if ( morePreciseDate.equals(date) ) {
             return morePreciseAlternative;
         }
         return startOfDay(date);
@@ -512,13 +501,12 @@ public class IntraDayDate implements Comparable<IntraDayDate> {
 
         EffortDuration result = EffortDuration.hours(days * 8);
 
-        if (!getEffortDuration().isZero()) {
+        if ( !getEffortDuration().isZero()) {
             result = result.minus(EffortDuration.hours(8));
-            result = result.plus(EffortDuration.hours(8).minus(
-                    getEffortDuration()));
+            result = result.plus(EffortDuration.hours(8).minus(getEffortDuration()));
         }
 
-        if (!end.getEffortDuration().isZero()) {
+        if ( !end.getEffortDuration().isZero() ) {
             result = result.plus(end.getEffortDuration());
         }
 

@@ -85,8 +85,7 @@ import org.zkoss.zul.impl.api.InputElement;
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  * @author Diego Pino García <dpino@igalia.com>
  */
-public abstract class TreeController<T extends ITreeNode<T>> extends
-        GenericForwardComposer {
+public abstract class TreeController<T extends ITreeNode<T>> extends GenericForwardComposer {
 
     private static final Log LOG = LogFactory.getLog(TreeController.class);
 
@@ -230,11 +229,11 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         Textbox name = (Textbox) cmp.getFellow("newOrderElementName");
         Intbox hours = (Intbox) cmp.getFellow("newOrderElementHours");
 
-        if (StringUtils.isEmpty(name.getValue())) {
+        if ( StringUtils.isEmpty(name.getValue()) ) {
             throw new WrongValueException(name, _("cannot be empty"));
         }
 
-        if (hours.getValue() == null) {
+        if ( hours.getValue() == null ) {
             hours.setValue(0);
         }
 
@@ -242,11 +241,10 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
 
         // Parse hours
         try {
-            if (tree.getSelectedCount() == 1) {
+            if ( tree.getSelectedCount() == 1 ) {
                 T node = getSelectedNode();
 
-                T newNode = getModel().addElementAt(node, name.getValue(),
-                        hours.getValue());
+                T newNode = getModel().addElementAt(node, name.getValue(), hours.getValue());
                 getRenderer().refreshHoursValueForThisNodeAndParents(newNode);
                 getRenderer().refreshBudgetValueForThisNodeAndParents(newNode);
 
@@ -254,13 +252,12 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
                 // to select the proper element to focus
                 reloadTreeUIAfterChanges();
 
-                if (node.isLeaf() && !node.isEmptyLeaf()) {
+                if ( node.isLeaf() && !node.isEmptyLeaf() ) {
                     // Then a new container will be created
                     nameTextbox = getRenderer().getNameTextbox(node);
                 } else {
                     // select the parent row to add new children ASAP
-                    tree.setSelectedItem(getRenderer().getTreeitemForNode(
-                            newNode.getParent().getThis()));
+                    tree.setSelectedItem(getRenderer().getTreeitemForNode(newNode.getParent().getThis()));
                 }
             } else {
                 getModel().addElement(name.getValue(), hours.getValue());
@@ -277,7 +274,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         name.setValue("");
         hours.setValue(0);
 
-        if (nameTextbox != null) {
+        if ( nameTextbox != null ) {
             nameTextbox.focus();
         } else {
             name.focus();

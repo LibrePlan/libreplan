@@ -51,10 +51,11 @@ public class CompanyEarnedValueCalculator extends EarnedValueCalculator implemen
     @Override
     @Transactional(readOnly = true)
     public SortedMap<LocalDate, BigDecimal> calculateBudgetedCostWorkScheduled(AvailabilityTimeLine.Interval interval) {
-        Map<TaskElement, SortedMap<LocalDate, BigDecimal>> estimatedCostPerTask = databaseSnapshots
-                .snapshotEstimatedCostPerTask();
-        Collection<TaskElement> list = filterTasksByDate(
-                estimatedCostPerTask.keySet(), interval);
+
+        Map<TaskElement, SortedMap<LocalDate, BigDecimal>> estimatedCostPerTask =
+                databaseSnapshots.snapshotEstimatedCostPerTask();
+
+        Collection<TaskElement> list = filterTasksByDate(estimatedCostPerTask.keySet(), interval);
         SortedMap<LocalDate, BigDecimal> estimatedCost = new TreeMap<LocalDate, BigDecimal>();
 
         for (TaskElement each : list) {
@@ -63,25 +64,21 @@ public class CompanyEarnedValueCalculator extends EarnedValueCalculator implemen
         return accumulateResult(estimatedCost);
     }
 
-    private List<TaskElement> filterTasksByDate(
-            Collection<TaskElement> tasks,
-            AvailabilityTimeLine.Interval interval) {
+    private List<TaskElement> filterTasksByDate(Collection<TaskElement> tasks, AvailabilityTimeLine.Interval interval) {
         List<TaskElement> result = new ArrayList<TaskElement>();
         for(TaskElement task : tasks) {
-            if (interval.includes(task.getStartAsLocalDate())
-                    || interval.includes(task.getEndAsLocalDate())) {
+            if ( interval.includes(task.getStartAsLocalDate()) || interval.includes(task.getEndAsLocalDate()) ) {
                 result.add(task);
             }
         }
         return result;
     }
 
-    private List<WorkReportLine> filterWorkReportLinesByDate(
-            Collection<WorkReportLine> lines,
-            AvailabilityTimeLine.Interval interval) {
+    private List<WorkReportLine> filterWorkReportLinesByDate(Collection<WorkReportLine> lines,
+                                                             AvailabilityTimeLine.Interval interval) {
         List<WorkReportLine> result = new ArrayList<WorkReportLine>();
         for(WorkReportLine line: lines) {
-            if (interval.includes(line.getLocalDate())) {
+            if ( interval.includes(line.getLocalDate()) ) {
                 result.add(line);
             }
         }
@@ -89,13 +86,13 @@ public class CompanyEarnedValueCalculator extends EarnedValueCalculator implemen
     }
 
     private void addCost(SortedMap<LocalDate, BigDecimal> currentCost,
-            SortedMap<LocalDate, BigDecimal> additionalCost) {
+                         SortedMap<LocalDate, BigDecimal> additionalCost) {
+
         for (LocalDate day : additionalCost.keySet()) {
-            if (!currentCost.containsKey(day)) {
+            if ( !currentCost.containsKey(day) ) {
                 currentCost.put(day, BigDecimal.ZERO);
             }
-            currentCost.put(day, currentCost.get(day).add(
-                    additionalCost.get(day)));
+            currentCost.put(day, currentCost.get(day).add(additionalCost.get(day)));
         }
     }
 

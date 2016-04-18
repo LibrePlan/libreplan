@@ -67,8 +67,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 @Qualifier("main")
 @OnConcurrentModification(goToPage = "/calendars/calendars.zul")
-public class BaseCalendarModel extends IntegrationEntityModel implements
-        IBaseCalendarModel {
+public class BaseCalendarModel extends IntegrationEntityModel implements IBaseCalendarModel {
 
     /**
      * Conversation state

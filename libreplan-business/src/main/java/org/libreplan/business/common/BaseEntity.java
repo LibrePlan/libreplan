@@ -57,7 +57,7 @@ public abstract class BaseEntity implements INewObject {
             Collection<? extends T> entities) {
         Map<Long, Set<T>> result = new HashMap<Long, Set<T>>();
         for (T each : entities) {
-            if (!result.containsKey(each.getId())) {
+            if ( !result.containsKey(each.getId()) ) {
                 result.put(each.getId(), new HashSet<T>());
             }
             result.get(each.getId()).add(each);
@@ -127,7 +127,7 @@ public abstract class BaseEntity implements INewObject {
     public void validate() throws ValidationException {
         LibrePlanClassValidator classValidator = new LibrePlanClassValidator(this.getClass());
         InvalidValue[] invalidValues = classValidator.getInvalidValues(this);
-        if (invalidValues.length > 0) {
+        if ( invalidValues.length > 0 ) {
             throw new ValidationException(invalidValues);
         }
     }
@@ -144,8 +144,7 @@ public abstract class BaseEntity implements INewObject {
     }
 
     public String getExtraInformation() {
-        return "[ id: " + getId() + ", newObject: "
-                + isNewObject() + "]";
+        return "[ id: " + getId() + ", newObject: " + isNewObject() + "]";
     }
 
 }

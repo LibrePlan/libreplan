@@ -137,7 +137,7 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
     private SchedulingDataForVersion.Data current = null;
 
     public SchedulingDataForVersion.Data getCurrentSchedulingData() {
-        if (current == null) {
+        if ( current == null ) {
             throw new IllegalStateException(
                     "in order to use scheduling state related data "
                             + "useSchedulingDataFor(OrderVersion orderVersion) "
@@ -146,19 +146,15 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
         return current;
     }
 
-    private void schedulingDataNowPointsTo(DeepCopy deepCopy,
-            OrderVersion version) {
-        current = getCurrentSchedulingData().pointsTo(deepCopy, version,
-                schedulingVersionFor(version));
+    private void schedulingDataNowPointsTo(DeepCopy deepCopy, OrderVersion version) {
+        current = getCurrentSchedulingData().pointsTo(deepCopy, version, schedulingVersionFor(version));
         for (OrderElement each : getChildren()) {
             each.schedulingDataNowPointsTo(deepCopy, version);
         }
     }
 
-    protected void addNeededReplaces(DeepCopy deepCopy,
-            OrderVersion newOrderVersion) {
-        SchedulingDataForVersion currentVersion = getCurrentSchedulingData()
-                .getVersion();
+    protected void addNeededReplaces(DeepCopy deepCopy, OrderVersion newOrderVersion) {
+        SchedulingDataForVersion currentVersion = getCurrentSchedulingData().getVersion();
         SchedulingDataForVersion newSchedulingVersion = schedulingVersionFor(newOrderVersion);
         deepCopy.replace(currentVersion, newSchedulingVersion);
         for (OrderElement each : getChildren()) {
@@ -167,7 +163,7 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
     }
 
     public SchedulingState getSchedulingState() {
-        if (schedulingState == null) {
+        if ( schedulingState == null ) {
             ensureSchedulingStateInitializedFromTop();
             initializeSchedulingState(); // maybe this order element was added
                                          // later
@@ -184,11 +180,10 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
     }
 
     private SchedulingState initializeSchedulingState() {
-        if (schedulingState != null) {
+        if ( schedulingState != null ) {
             return schedulingState;
         }
-        return schedulingState = SchedulingState.createSchedulingState(
-                getSchedulingStateType(), getChildrenStates(),
+        return schedulingState = SchedulingState.createSchedulingState(getSchedulingStateType(), getChildrenStates(),
                 getCurrentSchedulingData().onTypeChangeListener());
     }
 
@@ -222,11 +217,10 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
         useSchedulingDataFor(orderVersion, true);
     }
 
-    public void useSchedulingDataFor(OrderVersion orderVersion,
-            boolean recursive) {
+    public void useSchedulingDataFor(OrderVersion orderVersion, boolean recursive) {
         Validate.notNull(orderVersion);
         SchedulingDataForVersion schedulingVersion = schedulingVersionFor(orderVersion);
-        if (recursive) {
+        if ( recursive ) {
             for (OrderElement each : getChildren()) {
                 each.useSchedulingDataFor(orderVersion);
             }
@@ -515,7 +509,7 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
     }
 
     public TaskElement getAssociatedTaskElement() {
-        if (getTaskSource() == null) {
+        if ( getTaskSource() == null ) {
             return null;
         } else {
             return getTaskSource().getTask();
@@ -536,7 +530,7 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
     }
 
     public void setName(String name) {
-        if (name != null && name.length() > 255) {
+        if ( name != null && name.length() > 255 ) {
             name = name.substring(0, 255);
         }
         this.getInfoComponent().setName(name);
@@ -713,32 +707,28 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
      * @throws DuplicateValueTrueReportGlobalAdvanceException
      * @throws DuplicateAdvanceAssignmentForOrderElementException
      */
-    public void addAdvanceAssignment(
-            DirectAdvanceAssignment newAdvanceAssignment)
-            throws DuplicateValueTrueReportGlobalAdvanceException,
-            DuplicateAdvanceAssignmentForOrderElementException {
-        checkNoOtherGlobalAdvanceAssignment(newAdvanceAssignment);
-        checkAncestorsNoOtherAssignmentWithSameAdvanceType(this,
-                newAdvanceAssignment);
-        checkChildrenNoOtherAssignmentWithSameAdvanceType(this,
-                newAdvanceAssignment);
+    public void addAdvanceAssignment(DirectAdvanceAssignment newAdvanceAssignment)
+            throws DuplicateValueTrueReportGlobalAdvanceException, DuplicateAdvanceAssignmentForOrderElementException {
 
-        if (getReportGlobalAdvanceAssignment() == null) {
+        checkNoOtherGlobalAdvanceAssignment(newAdvanceAssignment);
+        checkAncestorsNoOtherAssignmentWithSameAdvanceType(this, newAdvanceAssignment);
+        checkChildrenNoOtherAssignmentWithSameAdvanceType(this, newAdvanceAssignment);
+
+        if ( getReportGlobalAdvanceAssignment() == null ) {
             newAdvanceAssignment.setReportGlobalAdvance(true);
         }
 
         newAdvanceAssignment.setOrderElement(this);
         this.directAdvanceAssignments.add(newAdvanceAssignment);
 
-        if (this.getParent() != null) {
+        if ( this.getParent() != null ) {
             addChildrenAdvanceInParents(this.getParent());
-            this.getParent().addIndirectAdvanceAssignment(
-                    newAdvanceAssignment.createIndirectAdvanceFor(this.getParent()));
+            this.getParent().addIndirectAdvanceAssignment(newAdvanceAssignment.createIndirectAdvanceFor(this.getParent()));
         }
     }
 
     public void addChildrenAdvanceInParents(OrderLineGroup parent) {
-        if ((parent != null) && (!parent.existChildrenAdvance())) {
+        if ( (parent != null) && (!parent.existChildrenAdvance()) ) {
             parent.addChildrenAdvanceOrderLineGroup();
             addChildrenAdvanceInParents(parent.getParent());
         }
@@ -746,7 +736,7 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
     }
 
     public void removeChildrenAdvanceInParents(OrderLineGroup parent) {
-        if ((parent != null) && (parent.existChildrenAdvance())
+        if ( (parent != null) && (parent.existChildrenAdvance() )
                 && (!itsChildsHasAdvances(parent))) {
             parent.removeChildrenAdvanceOrderLineGroup();
             removeChildrenAdvanceInParents(parent.getParent());
@@ -755,25 +745,26 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
 
     private boolean itsChildsHasAdvances(OrderElement orderElement) {
         for (OrderElement child : orderElement.getChildren()) {
-            if ((!child.getIndirectAdvanceAssignments().isEmpty())
-                    || (!child.getDirectAdvanceAssignments().isEmpty())) {
+
+            if ( (!child.getIndirectAdvanceAssignments().isEmpty()) ||
+                    (!child.getDirectAdvanceAssignments().isEmpty()) ) {
                 return true;
             }
-            if (itsChildsHasAdvances(child)) {
+            if ( itsChildsHasAdvances(child) ) {
                 return true;
             }
         }
         return false;
     }
 
-    protected void checkNoOtherGlobalAdvanceAssignment(
-            DirectAdvanceAssignment newAdvanceAssignment)
+    protected void checkNoOtherGlobalAdvanceAssignment(DirectAdvanceAssignment newAdvanceAssignment)
             throws DuplicateValueTrueReportGlobalAdvanceException {
-        if (!newAdvanceAssignment.getReportGlobalAdvance()) {
+
+        if ( !newAdvanceAssignment.getReportGlobalAdvance() ) {
             return;
         }
         for (DirectAdvanceAssignment directAdvanceAssignment : directAdvanceAssignments) {
-            if (directAdvanceAssignment.getReportGlobalAdvance()) {
+            if ( directAdvanceAssignment.getReportGlobalAdvance() ) {
                 throw new DuplicateValueTrueReportGlobalAdvanceException(
                         _("Cannot spread two progress in the same task"),
                         this, OrderElement.class);
@@ -1017,14 +1008,14 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
 
     public TaskElement getTaskElement() {
         TaskSource taskSource = getTaskSource();
-        if (taskSource == null) {
+        if ( taskSource == null ) {
             return null;
         }
         return taskSource.getTask();
     }
 
     public Set<TaskElement> getTaskElements() {
-        if (getTaskSource() == null) {
+        if ( getTaskSource() == null ) {
             return Collections.emptySet();
         }
         return Collections.singleton(getTaskSource().getTask());
@@ -1048,8 +1039,7 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
         return result;
     }
 
-    private void schedulingDataForVersionFromBottomToTop(
-            List<SchedulingDataForVersion> result) {
+    private void schedulingDataForVersionFromBottomToTop(List<SchedulingDataForVersion> result) {
         for (OrderElement each : getChildren()) {
             each.schedulingDataForVersionFromBottomToTop(result);
         }
@@ -1060,7 +1050,7 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
         for (OrderElement each : getChildren()) {
             each.taskSourcesFromBottomToTop(result);
         }
-        if (getTaskSource() != null) {
+        if ( getTaskSource() != null ) {
             result.add(getTaskSource());
         }
     }
@@ -1482,16 +1472,16 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
     }
 
     public void setCodeAutogenerated(Boolean codeAutogenerated) {
-        if (getOrder().equals(this)) {
+        if ( getOrder().equals(this) ) {
             super.setCodeAutogenerated(codeAutogenerated);
         }
     }
 
     public Boolean isCodeAutogenerated() {
-        if (getOrder().equals(this)) {
+        if ( getOrder().equals(this) ) {
             return super.isCodeAutogenerated();
         }
-        return getOrder() != null ? getOrder().isCodeAutogenerated() : false;
+        return (getOrder() != null) ? getOrder().isCodeAutogenerated() : false;
     }
 
     @AssertTrue(message = "a quality form cannot be assigned twice to the same task")
@@ -1499,7 +1489,7 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
         Set<QualityForm> qualityForms = new HashSet<QualityForm>();
         for (TaskQualityForm each : taskQualityForms) {
             QualityForm qualityForm = each.getQualityForm();
-            if (qualityForms.contains(qualityForm)) {
+            if ( qualityForms.contains(qualityForm) ) {
                 return false;
             }
             qualityForms.add(qualityForm);
@@ -1507,11 +1497,9 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
         return true;
     }
 
-    public void removeDirectAdvancesInList(
-            Set<DirectAdvanceAssignment> directAdvanceAssignments) {
+    public void removeDirectAdvancesInList(Set<DirectAdvanceAssignment> directAdvanceAssignments) {
         for (DirectAdvanceAssignment each : directAdvanceAssignments) {
-            removeAdvanceAssignment(getAdvanceAssignmentByType(each
-                    .getAdvanceType()));
+            removeAdvanceAssignment(getAdvanceAssignmentByType(each.getAdvanceType()));
         }
 
         for (OrderElement each : getChildren()) {
@@ -1524,31 +1512,29 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
 
         result.addAll(directAdvanceAssignments);
 
-        if (getParent() != null) {
-            result.addAll(getParent()
-                    .getDirectAdvanceAssignmentsAndAllInAncest());
+        if ( getParent() != null ) {
+            result.addAll(getParent().getDirectAdvanceAssignmentsAndAllInAncest());
         }
 
         return result;
     }
 
     protected void updateSpreadAdvance() {
-        if (getReportGlobalAdvanceAssignment() == null) {
+        if ( getReportGlobalAdvanceAssignment() == null ) {
             // Set PERCENTAGE type as spread if any
             String type = PredefinedAdvancedTypes.PERCENTAGE.getTypeName();
             for (DirectAdvanceAssignment each : directAdvanceAssignments) {
-                if (each.getAdvanceType() != null
-                        && each.getAdvanceType().getType() != null
-                        && each.getAdvanceType().getType().equals(type)) {
+                if ( each.getAdvanceType() != null &&
+                        each.getAdvanceType().getType() != null &&
+                        each.getAdvanceType().getType().equals(type) ) {
                     each.setReportGlobalAdvance(true);
                     return;
                 }
             }
 
             // Otherwise, set first advance assignment
-            if (!directAdvanceAssignments.isEmpty()) {
-                directAdvanceAssignments.iterator().next()
-                        .setReportGlobalAdvance(true);
+            if ( !directAdvanceAssignments.isEmpty() ) {
+                directAdvanceAssignments.iterator().next().setReportGlobalAdvance(true);
                 return;
             }
         }

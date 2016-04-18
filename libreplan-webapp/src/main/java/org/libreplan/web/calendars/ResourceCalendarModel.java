@@ -41,8 +41,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 @Qualifier("subclass")
-public class ResourceCalendarModel extends BaseCalendarModel implements
-        IBaseCalendarModel {
+public class ResourceCalendarModel extends BaseCalendarModel implements IBaseCalendarModel {
 
     @Override
     public void initCreate() {

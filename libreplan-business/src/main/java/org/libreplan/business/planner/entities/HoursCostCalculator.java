@@ -64,8 +64,8 @@ public class HoursCostCalculator implements ICostCalculator {
 
     @Override
     public SortedMap<LocalDate, BigDecimal> getAdvanceCost(Task task, LocalDate filterStartDate, LocalDate filterEndDate) {
-        DirectAdvanceAssignment advanceAssignment = (task.getOrderElement() != null) ? task
-                .getOrderElement().getReportGlobalAdvanceAssignment() : null;
+        DirectAdvanceAssignment advanceAssignment =
+                (task.getOrderElement() != null) ? task.getOrderElement().getReportGlobalAdvanceAssignment() : null;
 
         if ( advanceAssignment == null ) {
             return new TreeMap<LocalDate, BigDecimal>();
@@ -129,24 +129,8 @@ public class HoursCostCalculator implements ICostCalculator {
 
         for (DayAssignment dayAssignment : dayAssignments) {
             LocalDate day = dayAssignment.getDay();
-            if( ( (filterStartDate == null) || day.compareTo(filterStartDate) >= 0) &&
+            if ( ( (filterStartDate == null) || day.compareTo(filterStartDate) >= 0) &&
                     ( (filterEndDate == null) || day.compareTo(filterEndDate) <= 0) ) {
-
-                /**
-                 * Fixed bug 1681
-                 * User said that BAC value was incorrect.
-                 * If they put in Project 2 tasks with e.g. 10 hours and 40 hours,
-                 * BAC value was approximately 35-39, but it must be 40,
-                 * according to formula that BAC = max (BCWS).
-                 *
-                 * So before in result SortedMap there were values from this method:
-                 * dayAssignment.getHours() - depricated
-                 * It takes only number of hours from value: "06:56:12",
-                 * so value will be - 6.
-                 * But it is not good if there are few assignments and you need to multiply them
-                 * so 6 + getHours from "01:04:48" (1) will be 6 + 1 = 7.
-                 * But work effort per day usually is 8, so it is not correct, app needs to count minutes also!
-                 */
 
                 String currentTime = dayAssignment.getDuration().toFormattedString();
 
