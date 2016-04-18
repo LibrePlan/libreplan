@@ -29,8 +29,7 @@ import org.apache.commons.lang.Validate;
  * Implementation of {@link ITreeParentNode} that mutates a list <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public abstract class TreeNodeOnList<T extends ITreeNode<T>> implements
-        ITreeParentNode<T> {
+public abstract class TreeNodeOnList<T extends ITreeNode<T>> implements ITreeParentNode<T> {
 
     private final List<T> children;
 
@@ -73,7 +72,7 @@ public abstract class TreeNodeOnList<T extends ITreeNode<T>> implements
     @Override
     public void down(T existentChild) {
         int position = children.indexOf(existentChild);
-        if (position < children.size() - 1) {
+        if ( position < children.size() - 1 ) {
             children.remove(position);
             children.add(position + 1, existentChild);
         }

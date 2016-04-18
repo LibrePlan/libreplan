@@ -63,8 +63,7 @@ import org.zkoss.zul.Tab;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class LimitingResourceAllocationController extends GenericForwardComposer {
 
-    private static final Log LOG = LogFactory
-            .getLog(LimitingResourceAllocationController.class);
+    private static final Log LOG = LogFactory.getLog(LimitingResourceAllocationController.class);
 
     @Autowired
     private ILimitingResourceAllocationModel resourceAllocationModel;

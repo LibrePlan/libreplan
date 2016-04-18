@@ -45,8 +45,7 @@ import org.libreplan.business.templates.entities.OrderLineTemplate;
 
 public class OrderLine extends OrderElement {
 
-    private HoursGroupOrderLineHandler hoursGroupOrderLineHandler = HoursGroupOrderLineHandler
-            .getInstance();
+    private HoursGroupOrderLineHandler hoursGroupOrderLineHandler = HoursGroupOrderLineHandler.getInstance();
 
     public static OrderLine create() {
         OrderLine result = new OrderLine();
@@ -59,8 +58,7 @@ public class OrderLine extends OrderElement {
         return orderLine;
     }
 
-    public static OrderLine createUnvalidatedWithUnfixedPercentage(String code,
-            int hours) {
+    public static OrderLine createUnvalidatedWithUnfixedPercentage(String code, int hours) {
         OrderLine orderLine = createOrderLineWithUnfixedPercentage(hours);
         return create(orderLine, code);
     }
@@ -400,4 +398,8 @@ public class OrderLine extends OrderElement {
         return convertedToContainer;
     }
 
+    @Override
+    public void setParent(OrderLineGroup parent) {
+        super.setParent(parent);
+    }
 }

@@ -537,7 +537,7 @@ public class TaskPropertiesController extends GenericForwardComposer {
     }
 
     public ResourceAllocationTypeEnum getResourceAllocationType(TaskElement taskElement) {
-        if (taskElement == null || !isTask(taskElement)) {
+        if ( taskElement == null || !isTask(taskElement) ) {
             return null;
         }
         return getResourceAllocationType(asTask(currentTaskElement));

@@ -38,6 +38,7 @@ import org.libreplan.business.planner.entities.DerivedAllocation;
 import org.libreplan.business.planner.entities.ResourceAllocation;
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.resources.entities.ResourceEnum;
+import org.libreplan.business.planner.entities.Task;
 import org.libreplan.web.I18nHelper;
 import org.libreplan.web.common.EffortDurationBox;
 import org.libreplan.web.common.IMessagesForUser;
@@ -93,8 +94,7 @@ import org.zkoss.zul.Window;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class ResourceAllocationController extends GenericForwardComposer {
 
-    private static final Log LOG = LogFactory
-            .getLog(ResourceAllocationController.class);
+    private static final Log LOG = LogFactory.getLog(ResourceAllocationController.class);
 
     private IResourceAllocationModel resourceAllocationModel;
 
@@ -177,18 +177,15 @@ public class ResourceAllocationController extends GenericForwardComposer {
      * @param ganttTask
      * @param planningState
      */
-    public void init(IContextWithPlannerTask<TaskElement> context,
-            org.libreplan.business.planner.entities.Task task,
-            PlanningState planningState, IMessagesForUser messagesForUser) {
+    public void init(IContextWithPlannerTask<TaskElement> context, Task task, PlanningState planningState,
+                     IMessagesForUser messagesForUser) {
         try {
-            if (formBinder != null) {
+            if ( formBinder != null ) {
                 formBinder.detach();
             }
-            allocationRows = resourceAllocationModel.initAllocationsFor(task,
-                    context, planningState);
+            allocationRows = resourceAllocationModel.initAllocationsFor(task, context, planningState);
 
-            formBinder = allocationRows.createFormBinder(planningState
-                    .getCurrentScenario(), resourceAllocationModel);
+            formBinder = allocationRows.createFormBinder(planningState.getCurrentScenario(), resourceAllocationModel);
             formBinder.setBehaviour(ResourceAllocationBehaviour.NON_LIMITING);
             formBinder.setAllOriginalEffort(allOriginalEffort);
             formBinder.setAllTotalEffort(allTotalEffort);
@@ -196,21 +193,17 @@ public class ResourceAllocationController extends GenericForwardComposer {
             formBinder.setAssignedEffortComponent(assignedEffortComponent);
 
             formBinder.setAllTotalResourcesPerDay(allTotalResourcesPerDay);
-            formBinder
-                    .setAllConsolidatedResourcesPerDay(allConsolidatedResourcesPerDay);
+            formBinder.setAllConsolidatedResourcesPerDay(allConsolidatedResourcesPerDay);
             formBinder.setAllResourcesPerDay(allResourcesPerDay);
 
-            TaskPropertiesController taskPropertiesController = editTaskController
-                    .getTaskPropertiesController();
-            formBinder.setWorkableDays(getTaskWorkableDays(),
-                    taskPropertiesController, getTaskStart(), getTaskEnd());
+            TaskPropertiesController taskPropertiesController = editTaskController.getTaskPropertiesController();
+            formBinder.setWorkableDays(getTaskWorkableDays(), taskPropertiesController, getTaskStart(), getTaskEnd());
 
             formBinder.setApplyButton(applyButton);
             formBinder.setAllocationsGrid(allocationsGrid);
             formBinder.setMessagesForUser(messagesForUser);
             formBinder.setWorkerSearchTab(workerSearchTab);
-            formBinder
-                    .setNewAllocationSelectorCombo(newAllocationSelectorCombo);
+            formBinder.setNewAllocationSelectorCombo(newAllocationSelectorCombo);
 
             initializeTaskInformationComponent();
             initializeAllocationConfigurationComponent();
@@ -219,8 +212,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
             tbResourceAllocation.setSelected(true);
 
             newAllocationSelector.setAllocationsAdder(resourceAllocationModel);
-            newAllocationSelectorCombo
-                    .setAllocationsAdder(resourceAllocationModel);
+            newAllocationSelectorCombo.setAllocationsAdder(resourceAllocationModel);
 
             Util.reloadBindings(allocationsGrid);
         } catch (WrongValueException e) {
@@ -234,13 +226,11 @@ public class ResourceAllocationController extends GenericForwardComposer {
     }
 
     public Label getTaskStart() {
-        return (allocationConfiguration != null) ? allocationConfiguration
-                .getTaskStart() : null;
+        return (allocationConfiguration != null) ? allocationConfiguration.getTaskStart() : null;
     }
 
     public Label getTaskEnd() {
-        return (allocationConfiguration != null) ? allocationConfiguration
-                .getTaskEnd() : null;
+        return (allocationConfiguration != null) ? allocationConfiguration.getTaskEnd() : null;
     }
 
     private Radiogroup getCalculationTypeSelector() {
@@ -248,10 +238,8 @@ public class ResourceAllocationController extends GenericForwardComposer {
     }
 
     private void initializeTaskInformationComponent() {
-        taskInformation.initializeGridTaskRows(resourceAllocationModel
-                .getHoursAggregatedByCriterions());
-        formBinder.setRecommendedAllocation(taskInformation
-                .getBtnRecommendedAllocation());
+        taskInformation.initializeGridTaskRows(resourceAllocationModel.getHoursAggregatedByCriterions());
+        formBinder.setRecommendedAllocation(taskInformation.getBtnRecommendedAllocation());
         taskInformation.onCalculateTotalHours(new ITotalHoursCalculationListener() {
 
             @Override
@@ -269,23 +257,20 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
         CRITERIONS {
             @Override
-            public Component cell(HoursRendererColumn column,
-                    AggregatedHoursGroup data) {
+            public Component cell(HoursRendererColumn column, AggregatedHoursGroup data) {
                 return new Label(data.getCriterionsJoinedByComma());
             }
         },
         RESOURCE_TYPE{
 
             @Override
-            public Component cell(HoursRendererColumn column,
-                    AggregatedHoursGroup data) {
+            public Component cell(HoursRendererColumn column, AggregatedHoursGroup data) {
                 return new Label(asString(data.getResourceType()));
             }
         },
         HOURS {
             @Override
-            public Component cell(HoursRendererColumn column,
-                    AggregatedHoursGroup data) {
+            public Component cell(HoursRendererColumn column, AggregatedHoursGroup data) {
                 Label result = new Label(Integer.toString(data.getHours()));
                 return result;
             }
@@ -293,17 +278,19 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
         private static String asString(ResourceEnum resourceType) {
             switch (resourceType) {
+
             case MACHINE:
+
             case WORKER:
                 return _(resourceType.getDisplayName());
+
             default:
                 LOG.warn("no i18n for " + resourceType.name());
                 return resourceType.name();
             }
         }
 
-        public abstract Component cell(HoursRendererColumn column,
-                AggregatedHoursGroup data);
+        public abstract Component cell(HoursRendererColumn column, AggregatedHoursGroup data);
     }
 
     /**

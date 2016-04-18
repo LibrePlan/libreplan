@@ -47,8 +47,7 @@ import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.resources.entities.ResourceEnum;
 import org.libreplan.business.templates.entities.OrderLineTemplate;
 
-public class HoursGroup extends IntegrationEntity implements Cloneable,
-        ICriterionRequirable {
+public class HoursGroup extends IntegrationEntity implements Cloneable, ICriterionRequirable {
 
     private static final Log LOG = LogFactory.getLog(HoursGroup.class);
 
@@ -197,22 +196,19 @@ public class HoursGroup extends IntegrationEntity implements Cloneable,
      *             if the new sum of percentages in the parent {@link OrderLine}
      *             surpasses one
      */
-    public void setPercentage(BigDecimal proportion)
-            throws IllegalArgumentException {
+    public void setPercentage(BigDecimal proportion) throws IllegalArgumentException {
         BigDecimal oldPercentage = this.percentage;
 
         this.percentage = proportion;
 
-        if (!isPercentageValidForParent()) {
+        if ( !isPercentageValidForParent() ) {
             this.percentage = oldPercentage;
-            throw new IllegalArgumentException(
-                    _("Total percentage should be less than 100%"));
+            throw new IllegalArgumentException(_("Total percentage should be less than 100%"));
         }
     }
 
     private boolean isPercentageValidForParent() {
-        return (parentOrderLine != null) ? parentOrderLine.isPercentageValid()
-                : orderLineTemplate.isPercentageValid();
+        return (parentOrderLine != null) ? parentOrderLine.isPercentageValid() : orderLineTemplate.isPercentageValid();
     }
 
     public BigDecimal getPercentage() {
@@ -243,7 +239,7 @@ public class HoursGroup extends IntegrationEntity implements Cloneable,
             criterions.add(criterionRequirement.getCriterion());
         }
         for (IndirectCriterionRequirement requirement : getIndirectCriterionRequirement()) {
-            if (requirement.isValid()) {
+            if ( requirement.isValid() ) {
                 criterions.add(requirement.getCriterion());
             }
         }
@@ -252,11 +248,11 @@ public class HoursGroup extends IntegrationEntity implements Cloneable,
 
     @Override
     public void addCriterionRequirement(CriterionRequirement requirement) {
-        if (!isValidResourceType(requirement)) {
+        if ( !isValidResourceType(requirement) ) {
             throw new IllegalStateException(
                     "Criterion cannot be assigned to this Hours Group. Criterion Resource Type is of a different type");
         }
-        if (existSameCriterionRequirement(requirement)) {
+        if ( existSameCriterionRequirement(requirement) ) {
             throw new IllegalStateException(
                     "Criterion cannot be assigned to this Hours Group. Criterion already exist within Hours Group");
 
@@ -265,10 +261,8 @@ public class HoursGroup extends IntegrationEntity implements Cloneable,
         criterionRequirements.add(requirement);
     }
 
-    public boolean canAddCriterionRequirement(
-            CriterionRequirement newRequirement) {
-        if ((isValidResourceType(newRequirement))
-                && (!existSameCriterionRequirement(newRequirement))) {
+    public boolean canAddCriterionRequirement(CriterionRequirement newRequirement) {
+        if ( (isValidResourceType(newRequirement)) && (!existSameCriterionRequirement(newRequirement)) ) {
             return false;
         }
         return true;
@@ -277,10 +271,8 @@ public class HoursGroup extends IntegrationEntity implements Cloneable,
     @Override
     public void removeCriterionRequirement(CriterionRequirement requirement) {
         criterionRequirements.remove(requirement);
-        if (requirement instanceof IndirectCriterionRequirement) {
-            ((IndirectCriterionRequirement) requirement).getParent()
-                    .getChildren().remove(
-                            (IndirectCriterionRequirement) requirement);
+        if ( requirement instanceof IndirectCriterionRequirement ) {
+            ((IndirectCriterionRequirement) requirement).getParent().getChildren().remove(requirement);
         }
         requirement.setCriterion(null);
         requirement.setHoursGroup(null);

@@ -29,11 +29,11 @@ package org.libreplan.web;
  */
 public class WebappGlobalNames {
 
-    private WebappGlobalNames() {
-    }
+    private WebappGlobalNames() {}
 
     public final static String WEBAPP_SPRING_CONFIG_FILE = "classpath:/libreplan-webapp-spring-config.xml";
 
-    public final static String WEBAPP_SPRING_SECURITY_CONFIG_FILE = "classpath:/libreplan-webapp-spring-security-config.xml";
+    public final static String WEBAPP_SPRING_SECURITY_CONFIG_FILE =
+            "classpath:/libreplan-webapp-spring-security-config.xml";
 
 }

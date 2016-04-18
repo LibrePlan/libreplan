@@ -57,8 +57,7 @@ public class AdvanceAssignmentDAOTest {
     private AdvanceType givenAdvanceType() {
         BigDecimal value = new BigDecimal(100);
         BigDecimal precision = BigDecimal.ONE;
-        AdvanceType advanceType = AdvanceType.create("advance-type", value,
-                true, precision, true, false);
+        AdvanceType advanceType = AdvanceType.create("advance-type", value, true, precision, true, false);
         advanceTypeDAO.save(advanceType);
         return advanceType;
     }
@@ -66,8 +65,7 @@ public class AdvanceAssignmentDAOTest {
     @Test
     @Transactional
     public void saveValidAdvanceAssignment() {
-        AdvanceAssignment advance = DirectAdvanceAssignment.create(false,
-                BigDecimal.TEN);
+        AdvanceAssignment advance = DirectAdvanceAssignment.create(false, BigDecimal.TEN);
         advance.setAdvanceType(givenAdvanceType());
         advanceAssignmentDAO.save(advance);
         assertTrue(advance.getId() != null);
@@ -76,8 +74,7 @@ public class AdvanceAssignmentDAOTest {
     @Test(expected = ValidationException.class)
     @Transactional
     public void saveAdvanceAssignmentWithZeroAsMaxValue() {
-        AdvanceAssignment advance = DirectAdvanceAssignment.create(false,
-                BigDecimal.ZERO);
+        AdvanceAssignment advance = DirectAdvanceAssignment.create(false, BigDecimal.ZERO);
         advance.setAdvanceType(givenAdvanceType());
         advanceAssignmentDAO.save(advance);
         assertTrue(advance.getId() != null);
@@ -86,8 +83,7 @@ public class AdvanceAssignmentDAOTest {
     @Test(expected = ValidationException.class)
     @Transactional
     public void saveAdvanceAssignmentWithNegativeNumberAsMaxValue() {
-        AdvanceAssignment advance = DirectAdvanceAssignment.create(false,
-                BigDecimal.valueOf(-10));
+        AdvanceAssignment advance = DirectAdvanceAssignment.create(false, BigDecimal.valueOf(-10));
         advance.setAdvanceType(givenAdvanceType());
         advanceAssignmentDAO.save(advance);
         assertTrue(advance.getId() != null);

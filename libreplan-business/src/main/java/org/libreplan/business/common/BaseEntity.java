@@ -61,7 +61,7 @@ public abstract class BaseEntity implements INewObject {
             Collection<? extends T> entities) {
         Map<Long, Set<T>> result = new HashMap<Long, Set<T>>();
         for (T each : entities) {
-            if (!result.containsKey(each.getId())) {
+            if ( !result.containsKey(each.getId()) ) {
                 result.put(each.getId(), new HashSet<T>());
             }
             result.get(each.getId()).add(each);
@@ -71,8 +71,7 @@ public abstract class BaseEntity implements INewObject {
 
     private static final Log LOG = LogFactory.getLog(BaseEntity.class);
 
-    private static final ValidatorFactory validatorFactory = Validation
-            .buildDefaultValidatorFactory();
+    private static final ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
 
     private static final Validator validator = validatorFactory.getValidator();
 
@@ -134,9 +133,8 @@ public abstract class BaseEntity implements INewObject {
 
     @SuppressWarnings("unchecked")
     public void validate() throws ValidationException {
-        Set<ConstraintViolation<BaseEntity>> violations = validator
-                .validate(this);
-        if (!violations.isEmpty()) {
+        Set<ConstraintViolation<BaseEntity>> violations = validator.validate(this);
+        if ( !violations.isEmpty() ) {
             throw new ValidationException(violations);
         }
     }
@@ -153,8 +151,7 @@ public abstract class BaseEntity implements INewObject {
     }
 
     public String getExtraInformation() {
-        return "[ id: " + getId() + ", newObject: "
-                + isNewObject() + "]";
+        return "[ id: " + getId() + ", newObject: " + isNewObject() + "]";
     }
 
 }

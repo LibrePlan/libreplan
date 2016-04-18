@@ -38,37 +38,31 @@ public class ProportionalDistributorTest {
 
     @Test
     public void mustGiveTheSameDistributionForSameTotal() {
-        ProportionalDistributor distributor = ProportionalDistributor.create(
-                100, 200);
+        ProportionalDistributor distributor = ProportionalDistributor.create(100, 200);
         assertThat(distributor.distribute(300), equalToDistribution(100, 200));
     }
 
     @Test
     public void exactDivisionsWorkOk() {
-        ProportionalDistributor distributor = ProportionalDistributor.create(
-                100, 100, 100);
-        assertThat(distributor.distribute(600), equalToDistribution(200, 200,
-                200));
+        ProportionalDistributor distributor = ProportionalDistributor.create(100, 100, 100);
+        assertThat(distributor.distribute(600), equalToDistribution(200, 200, 200));
     }
 
     @Test
     public void distributingZeroGivesZeroShares() {
-        ProportionalDistributor distributor = ProportionalDistributor.create(
-                100, 100, 100);
+        ProportionalDistributor distributor = ProportionalDistributor.create(100, 100, 100);
         assertThat(distributor.distribute(0), equalToDistribution(0, 0, 0));
     }
 
     @Test
     public void ifOneOfTheProportionsIsZeroAlwaysGivesZeros() {
-        ProportionalDistributor distributor = ProportionalDistributor.create(
-                100, 100, 0);
+        ProportionalDistributor distributor = ProportionalDistributor.create(100, 100, 0);
         assertThat(distributor.distribute(100), equalToDistribution(50, 50, 0));
     }
 
     @Test
     public void ifEmptySharesProvidedItDistributesEqually() {
-        ProportionalDistributor distributor = ProportionalDistributor.create(0,
-                0, 0, 0);
+        ProportionalDistributor distributor = ProportionalDistributor.create(0, 0, 0, 0);
         assertThat(distributor.distribute(4), equalToDistribution(1, 1, 1, 1));
         assertThat(distributor.distribute(5), equalToDistribution(2, 1, 1, 1));
         assertThat(distributor.distribute(6), equalToDistribution(2, 2, 1, 1));
@@ -84,15 +78,13 @@ public class ProportionalDistributorTest {
 
     @Test
     public void disputedPartGoesToFirstIfEqualWeight() {
-        ProportionalDistributor distributor = ProportionalDistributor.create(
-                10, 10, 10);
+        ProportionalDistributor distributor = ProportionalDistributor.create(10, 10, 10);
         assertThat(distributor.distribute(10), equalToDistribution(4, 3, 3));
     }
 
     @Test
     public void distributionIsKept() {
-        ProportionalDistributor distributor = ProportionalDistributor.create(2,
-                3, 5);
+        ProportionalDistributor distributor = ProportionalDistributor.create(2, 3, 5);
         assertThat(distributor.distribute(1), equalToDistribution(0, 0, 1));
         assertThat(distributor.distribute(2), equalToDistribution(0, 1, 1));
         assertThat(distributor.distribute(3), equalToDistribution(1, 1, 1));
@@ -105,8 +97,7 @@ public class ProportionalDistributorTest {
 
     @Test
     public void addingOneEachTime() {
-        ProportionalDistributor distributor = ProportionalDistributor.create(
-                99, 101, 800);
+        ProportionalDistributor distributor = ProportionalDistributor.create(99, 101, 800);
         assertThat(distributor.distribute(1), equalToDistribution(0, 0, 1));
         assertThat(distributor.distribute(3), equalToDistribution(0, 0, 3));
         assertThat(distributor.distribute(6), equalToDistribution(0, 1, 5));
@@ -129,7 +120,7 @@ public class ProportionalDistributorTest {
 
             @Override
             public boolean matches(Object object) {
-                if (object instanceof int[]) {
+                if ( object instanceof int[] ) {
                     int[] arg = (int[]) object;
                     return Arrays.equals(arg, distribution);
                 }
@@ -138,8 +129,7 @@ public class ProportionalDistributorTest {
 
             @Override
             public void describeTo(Description description) {
-                description.appendText("must equal "
-                        + Arrays.toString(distribution));
+                description.appendText("must equal " + Arrays.toString(distribution));
             }
         };
     }
@@ -151,8 +141,7 @@ public class ProportionalDistributorTest {
 
     @Test
     public void notThrowDivisionByZeroExceptionAtDistributeMehtod() {
-        ProportionalDistributor distributor = ProportionalDistributor
-                .create(100);
+        ProportionalDistributor distributor = ProportionalDistributor.create(100);
         distributor.distribute(0);
     }
 

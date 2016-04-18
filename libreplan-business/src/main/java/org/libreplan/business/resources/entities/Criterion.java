@@ -55,8 +55,8 @@ import org.libreplan.business.resources.daos.ICriterionDAO;
 public class Criterion extends IntegrationEntity implements ICriterion,
         Comparable<Criterion> {
 
-    public static Criterion createUnvalidated(String code, String name,
-        CriterionType type, Criterion parent, Boolean active) {
+    public static Criterion createUnvalidated(String code, String name, CriterionType type, Criterion parent,
+                                              Boolean active) {
 
         Criterion criterion = create(new Criterion(), code);
 
@@ -64,7 +64,7 @@ public class Criterion extends IntegrationEntity implements ICriterion,
         criterion.type = type;
         criterion.parent = parent;
 
-        if (active != null) {
+        if ( active != null ) {
             criterion.active = active;
         }
 

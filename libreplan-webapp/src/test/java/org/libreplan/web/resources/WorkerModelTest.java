@@ -68,9 +68,7 @@ public class WorkerModelTest {
     private IResourceDAO resourceDAO;
 
     @Test
-    @Transactional
-    public void testWorkerValid() throws ValidationException,
-            InstanceNotFoundException {
+    public void testWorkerValid() throws ValidationException, InstanceNotFoundException {
 
         IResourceDAO resourceDAOMock = createMock(IResourceDAO.class);
         ICriterionDAO criterionServiceMock = createMock(ICriterionDAO.class);
@@ -78,20 +76,17 @@ public class WorkerModelTest {
         workerToReturn.setFirstName("firstName");
         workerToReturn.setSurname("surname");
         workerToReturn.setNif("232344243");
+
         // expectations
         List<Criterion> criterions = new ArrayList<Criterion>();
-        expect(
-                criterionServiceMock
-                        .findByType(PredefinedCriterionTypes.LOCATION))
-                .andReturn(criterions).anyTimes();
-        expect(resourceDAOMock.find(workerToReturn.getId()))
-                .andReturn(workerToReturn);
+        expect(criterionServiceMock.findByType(PredefinedCriterionTypes.LOCATION)).andReturn(criterions).anyTimes();
+        expect(resourceDAOMock.find(workerToReturn.getId())).andReturn(workerToReturn);
         resourceDAOMock.save(workerToReturn);
         workerToReturn.checkNotOverlaps();
         replay(resourceDAOMock, criterionServiceMock);
+
         // perform actions
-        WorkerModel workerModel = new WorkerModel(resourceDAOMock,
-                criterionServiceMock);
+        WorkerModel workerModel = new WorkerModel(resourceDAOMock, criterionServiceMock);
 
         workerModel.prepareEditFor(workerToReturn);
         workerModel.save();
@@ -100,20 +95,16 @@ public class WorkerModelTest {
     @Ignore
     @Test(expected = IllegalStateException.class)
     @Transactional
-    public void testWorkerInvalid() throws ValidationException,
-            InstanceNotFoundException, IllegalStateException {
+    public void testWorkerInvalid() throws ValidationException, InstanceNotFoundException, IllegalStateException {
 
         IResourceDAO resourceDAOMock = createMock(IResourceDAO.class);
         ICriterionDAO criterionServiceMock = createMock(ICriterionDAO.class);
         final Worker workerToReturn = Worker.create();
+
         // expectations
         List<Criterion> criterions = new ArrayList<Criterion>();
-        expect(
-                criterionServiceMock
-                        .findByType(PredefinedCriterionTypes.LOCATION))
-                .andReturn(criterions).anyTimes();
-        expect(resourceDAOMock.find(workerToReturn.getId())).andReturn(
-                workerToReturn);
+        expect(criterionServiceMock.findByType(PredefinedCriterionTypes.LOCATION)).andReturn(criterions).anyTimes();
+        expect(resourceDAOMock.find(workerToReturn.getId())).andReturn(workerToReturn);
         resourceDAOMock.save(workerToReturn);
         expectLastCall().andAnswer(new IAnswer<Object>() {
             @Override
@@ -124,9 +115,9 @@ public class WorkerModelTest {
             }
         });
         replay(resourceDAOMock, criterionServiceMock);
+
         // perform actions
-        WorkerModel workerModel = new WorkerModel(resourceDAOMock,
-                criterionServiceMock);
+        WorkerModel workerModel = new WorkerModel(resourceDAOMock, criterionServiceMock);
         workerModel.prepareEditFor(workerToReturn);
         workerModel.save();
     }
