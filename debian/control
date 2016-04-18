@@ -2,7 +2,7 @@ Source: libreplan
 Section: web
 Priority: optional
 Maintainer: Adrian Perez <aperez@igalia.com>
-Build-Depends: debhelper (>= 7.0.50), maven2, python-docutils,
+Build-Depends: debhelper (>= 7.0.50), maven, python-docutils,
  gettext (>= 0.17), default-jdk
 Standards-Version: 3.8.4
 Homepage: http://www.libreplan.com/
@@ -21,15 +21,3 @@ Description: Web application for project planning, monitoring and control.
  interact to carry out the work inside a company. Besides, it makes possible
  the communication with other company tools providing a wide set of web
  services to import and export data.
-
-Package: navalplan
-Architecture: all
-Pre-Depends: libreplan (>= 1.2.0-1)
-Depends: ${misc:Depends}
-Description: Web application for project management (transitional package)
- NavalPlan is a planning tool for users based on some concepts: company and
- multi-project overview, criteria assignments, tasks tagging, resources
- management, resource allocation (specific and generic), company load control,
- external integration, etc.
- .
- This package can be safely deleted after Libreplan is successfully installed.
