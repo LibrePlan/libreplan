@@ -52,11 +52,10 @@ public class OrderEarnedValueCalculator extends EarnedValueCalculator implements
 
     @Transactional(readOnly = true)
     @Override
-    public SortedMap<LocalDate, BigDecimal> calculateActualCostWorkPerformed(
-            Order order) {
+    public SortedMap<LocalDate, BigDecimal> calculateActualCostWorkPerformed(Order order) {
         SortedMap<LocalDate, BigDecimal> result = new TreeMap<LocalDate, BigDecimal>();
         for (TaskElement taskElement : getAllTaskElements(order)) {
-            if (taskElement instanceof Task) {
+            if ( taskElement instanceof Task ) {
                 addCost(result, getWorkReportCost((Task) taskElement));
             }
         }
@@ -78,7 +77,9 @@ public class OrderEarnedValueCalculator extends EarnedValueCalculator implements
         return result;
     }
 
-    private void addCost(SortedMap<LocalDate, BigDecimal> currentCost, SortedMap<LocalDate, BigDecimal> additionalCost) {
+    private void addCost(SortedMap<LocalDate, BigDecimal> currentCost,
+                         SortedMap<LocalDate, BigDecimal> additionalCost) {
+
         for (LocalDate day : additionalCost.keySet()) {
             if ( !currentCost.containsKey(day) ) {
                 currentCost.put(day, BigDecimal.ZERO);
@@ -127,21 +128,20 @@ public class OrderEarnedValueCalculator extends EarnedValueCalculator implements
         return getValueAt(budgetedCost, date);
     }
 
-    private BigDecimal getValueAt(SortedMap<LocalDate, BigDecimal> map,
-            LocalDate date) {
-        if (map.isEmpty()) {
+    private BigDecimal getValueAt(SortedMap<LocalDate, BigDecimal> map, LocalDate date) {
+        if ( map.isEmpty() ) {
             return BigDecimal.ZERO;
         }
         BigDecimal result = map.get(date);
-        if (result != null) {
+        if ( result != null ) {
             return result;
         }
         for (LocalDate each : map.keySet()) {
-            if (date.isBefore(each)) {
+            if ( date.isBefore(each) ) {
                 return map.get(each);
             }
         }
-        if (date.isAfter(map.lastKey())) {
+        if ( date.isAfter(map.lastKey()) ) {
             return map.get(map.lastKey());
         }
         return BigDecimal.ZERO;
@@ -149,8 +149,7 @@ public class OrderEarnedValueCalculator extends EarnedValueCalculator implements
 
     @Override
     @Transactional(readOnly = true)
-    public SortedMap<LocalDate, BigDecimal> calculateBudgetedCostWorkPerformed(
-            Order order) {
+    public SortedMap<LocalDate, BigDecimal> calculateBudgetedCostWorkPerformed(Order order) {
         SortedMap<LocalDate, BigDecimal> estimatedCost = new TreeMap<LocalDate, BigDecimal>();
         for (TaskElement taskElement : getAllTaskElements(order)) {
             if ( taskElement instanceof Task ) {
@@ -165,8 +164,7 @@ public class OrderEarnedValueCalculator extends EarnedValueCalculator implements
     }
 
     @Override
-    public BigDecimal getCostPerformanceIndex(BigDecimal budgetedCost,
-            BigDecimal actualCost) {
+    public BigDecimal getCostPerformanceIndex(BigDecimal budgetedCost, BigDecimal actualCost) {
         if ( BigDecimal.ZERO.compareTo(actualCost) == 0 ) {
             return BigDecimal.ZERO;
         }
@@ -177,8 +175,7 @@ public class OrderEarnedValueCalculator extends EarnedValueCalculator implements
     }
 
     @Override
-    public BigDecimal getCostVariance(BigDecimal budgetedCost,
-            BigDecimal actualCost) {
+    public BigDecimal getCostVariance(BigDecimal budgetedCost, BigDecimal actualCost) {
         return budgetedCost.subtract(actualCost);
     }
 

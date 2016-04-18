@@ -72,21 +72,21 @@ public class WorkRelationshipsController extends GenericForwardComposer {
     private final IMessagesForUser messagesForUser;
 
     public WorkRelationshipsController(IWorkerModel workerModel,
-            WorkerCRUDController workerCRUDController,
-            IMessagesForUser messagesForUser) {
+                                       WorkerCRUDController workerCRUDController,
+                                       IMessagesForUser messagesForUser) {
+
         this.workerModel = workerModel;
         this.workerCRUDController = workerCRUDController;
         this.messagesForUser = messagesForUser;
         this.workCriterions = new ArrayList<Criterion>();
-        Map<ICriterionType<?>, Collection<Criterion>> map = workerModel
-                .getLaboralRelatedCriterions();
+        Map<ICriterionType<?>, Collection<Criterion>> map = workerModel.getLaboralRelatedCriterions();
         this.fromCriterionToType = new HashMap<Criterion, CriterionWithItsType>();
-        for (Entry<ICriterionType<?>, Collection<Criterion>> entry : map
-                .entrySet()) {
+
+        for (Entry<ICriterionType<?>, Collection<Criterion>> entry : map.entrySet()) {
             this.workCriterions.addAll(entry.getValue());
+
             for (Criterion criterion : entry.getValue()) {
-                this.fromCriterionToType.put(criterion,
-                        new CriterionWithItsType(entry.getKey(), criterion));
+                this.fromCriterionToType.put(criterion, new CriterionWithItsType(entry.getKey(), criterion));
             }
         }
     }

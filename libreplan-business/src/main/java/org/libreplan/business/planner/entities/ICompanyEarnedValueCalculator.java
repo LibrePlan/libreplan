@@ -32,13 +32,10 @@ import org.libreplan.business.calendars.entities.AvailabilityTimeLine;
  */
 public interface ICompanyEarnedValueCalculator extends IEarnedValueCalculator {
 
-    SortedMap<LocalDate, BigDecimal> calculateBudgetedCostWorkScheduled(
-            AvailabilityTimeLine.Interval interval);
+    SortedMap<LocalDate, BigDecimal> calculateBudgetedCostWorkScheduled(AvailabilityTimeLine.Interval interval);
 
-    SortedMap<LocalDate, BigDecimal> calculateActualCostWorkPerformed(
-            AvailabilityTimeLine.Interval interval);
+    SortedMap<LocalDate, BigDecimal> calculateActualCostWorkPerformed(AvailabilityTimeLine.Interval interval);
 
-    SortedMap<LocalDate, BigDecimal> calculateBudgetedCostWorkPerformed(
-            AvailabilityTimeLine.Interval interval);
+    SortedMap<LocalDate, BigDecimal> calculateBudgetedCostWorkPerformed(AvailabilityTimeLine.Interval interval);
 
 }

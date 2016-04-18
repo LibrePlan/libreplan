@@ -70,14 +70,13 @@ import org.zkoss.zk.ui.Executions;
 public abstract class ChartFiller implements IChartFiller {
 
     protected abstract class EffortByDayCalculator<T> {
-        public SortedMap<LocalDate, EffortDuration> calculate(
-                Collection<? extends T> elements) {
+        public SortedMap<LocalDate, EffortDuration> calculate(Collection<? extends T> elements) {
             SortedMap<LocalDate, EffortDuration> result = new TreeMap<LocalDate, EffortDuration>();
-            if (elements.isEmpty()) {
+            if ( elements.isEmpty() ) {
                 return result;
             }
             for (T element : elements) {
-                if (included(element)) {
+                if ( included(element) ) {
                     EffortDuration duration = getDurationFor(element);
                     LocalDate day = getDayFor(element);
                     EffortDuration previous = result.get(day);

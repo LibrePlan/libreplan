@@ -133,14 +133,15 @@ public class EditTaskController extends GenericForwardComposer {
         return subcontractController;
     }
 
-    private void showEditForm(IContextWithPlannerTask<TaskElement> context,
-            TaskElement taskElement, PlanningState planningState) {
+    private void showEditForm(IContextWithPlannerTask<TaskElement> context, TaskElement taskElement,
+                              PlanningState planningState) {
+
         showEditForm(context, taskElement, planningState, false);
     }
 
-    private void showEditForm(IContextWithPlannerTask<TaskElement> context,
-            TaskElement taskElement, PlanningState planningState,
-            boolean fromLimitingResourcesView) {
+    private void showEditForm(IContextWithPlannerTask<TaskElement> context, TaskElement taskElement,
+                              PlanningState planningState, boolean fromLimitingResourcesView) {
+
         this.taskElement = taskElement;
         this.context = context;
         this.planningState = planningState;
@@ -152,7 +153,7 @@ public class EditTaskController extends GenericForwardComposer {
             showSelectedTabPanel();
             Util.createBindingsFor(window);
             Util.reloadBindings(window);
-            if (fromLimitingResourcesView) {
+            if ( fromLimitingResourcesView ) {
                 window.doModal();
             } else {
                 window.setMode("modal");
@@ -163,30 +164,22 @@ public class EditTaskController extends GenericForwardComposer {
     }
 
     private void showSelectedTabPanel() {
-        showTabPanel(taskPropertiesController
-                .getResourceAllocationType(taskElement));
+        showTabPanel(taskPropertiesController.getResourceAllocationType(taskElement));
     }
 
-    public void showTabPanel(
-            ResourceAllocationTypeEnum resourceAllocationType) {
+    public void showTabPanel(ResourceAllocationTypeEnum resourceAllocationType) {
         subcontractTab.setVisible(false);
         resourceAllocationTab.setVisible(false);
         limitingResourceAllocationTab.setVisible(false);
 
-        if (ResourceAllocationTypeEnum.SUBCONTRACT
-                .equals(resourceAllocationType)) {
-
-            subcontractController.init(asTask(taskElement), context,
-                    taskPropertiesController.getTaskEditFormComposer());
+        if ( ResourceAllocationTypeEnum.SUBCONTRACT.equals(resourceAllocationType) ) {
+            subcontractController.init(asTask(taskElement), context, taskPropertiesController.getTaskEditFormComposer());
             showSubcontractTab();
-        } else if (ResourceAllocationTypeEnum.NON_LIMITING_RESOURCES
-                .equals(resourceAllocationType)) {
+        } else if ( ResourceAllocationTypeEnum.NON_LIMITING_RESOURCES.equals(resourceAllocationType) ) {
             resourceAllocationController.init(context, asTask(taskElement), planningState, messagesForUser);
             showNonLimitingResourcesTab();
-        } else if (ResourceAllocationTypeEnum.LIMITING_RESOURCES
-                .equals(resourceAllocationType)) {
-            limitingResourceAllocationController.init(context, asTask(taskElement),
-                    planningState, messagesForUser);
+        } else if ( ResourceAllocationTypeEnum.LIMITING_RESOURCES.equals(resourceAllocationType) ) {
+            limitingResourceAllocationController.init(context, asTask(taskElement), planningState, messagesForUser);
             showLimitingResourcesTab();
         }
     }
@@ -205,9 +198,9 @@ public class EditTaskController extends GenericForwardComposer {
         limitingResourceAllocationTab.setVisible(true);
     }
 
-    public void showEditFormTaskProperties(
-            IContextWithPlannerTask<TaskElement> context,
-            TaskElement taskElement, PlanningState planningState) {
+    public void showEditFormTaskProperties(IContextWithPlannerTask<TaskElement> context, TaskElement taskElement,
+                                           PlanningState planningState) {
+
         editTaskTabbox.setSelectedPanelApi(taskPropertiesTabpanel);
         showEditForm(context, taskElement, planningState);
     }
@@ -218,21 +211,17 @@ public class EditTaskController extends GenericForwardComposer {
         showEditFormResourceAllocation(null, taskElement, null, true);
     }
 
-    public void showEditFormResourceAllocation(
-            IContextWithPlannerTask<TaskElement> context,
-            TaskElement taskElement, PlanningState planningState) {
-        showEditFormResourceAllocation(context, taskElement, planningState,
-                false);
+    public void showEditFormResourceAllocation(IContextWithPlannerTask<TaskElement> context, TaskElement taskElement,
+                                               PlanningState planningState) {
+        showEditFormResourceAllocation(context, taskElement, planningState, false);
     }
 
-    public void showEditFormResourceAllocation(
-            IContextWithPlannerTask<TaskElement> context,
-            TaskElement taskElement, PlanningState planningState,
-            boolean fromLimitingResourcesView) {
+    public void showEditFormResourceAllocation(IContextWithPlannerTask<TaskElement> context, TaskElement taskElement,
+                                               PlanningState planningState, boolean fromLimitingResourcesView) {
 
-        if (isTask(taskElement)) {
+        if ( isTask(taskElement) ) {
             Task task = asTask(taskElement);
-            if (task.isLimiting()) {
+            if ( task.isLimiting() ) {
                 editTaskTabbox.setSelectedPanelApi(limitingResourceAllocationTabpanel);
             } else {
                 editTaskTabbox.setSelectedPanelApi(resourceAllocationTabpanel);
@@ -240,18 +229,17 @@ public class EditTaskController extends GenericForwardComposer {
         } else {
             editTaskTabbox.setSelectedPanelApi(taskPropertiesTabpanel);
         }
-        showEditForm(context, taskElement, planningState,
-                fromLimitingResourcesView);
+        showEditForm(context, taskElement, planningState, fromLimitingResourcesView);
     }
 
     public void selectAssignmentTab(int index) {
         editTaskTabbox.setSelectedIndex(index);
     }
 
-    public void showEditFormSubcontract(
-            IContextWithPlannerTask<TaskElement> context,
-            TaskElement taskElement, PlanningState planningState) {
-        if (isSubcontractedAndIsTask(taskElement)) {
+    public void showEditFormSubcontract(IContextWithPlannerTask<TaskElement> context, TaskElement taskElement,
+                                        PlanningState planningState) {
+
+        if ( isSubcontractedAndIsTask(taskElement) ) {
             editTaskTabbox.setSelectedPanelApi(subcontractTabpanel);
         } else {
             editTaskTabbox.setSelectedPanelApi(taskPropertiesTabpanel);
@@ -261,7 +249,7 @@ public class EditTaskController extends GenericForwardComposer {
 
     public void accept() {
         try {
-            if (taskPropertiesController.stateHasChanged()) {
+            if ( taskPropertiesController.stateHasChanged() ) {
                 ResourceAllocationTypeEnum oldState = taskPropertiesController.getOriginalState();
                 removeAssociatedData(oldState);
             }
@@ -270,16 +258,16 @@ public class EditTaskController extends GenericForwardComposer {
             taskPropertiesController.accept();
 
             ResourceAllocationTypeEnum currentState = taskPropertiesController.getCurrentState();
-            if (ResourceAllocationTypeEnum.NON_LIMITING_RESOURCES.equals(currentState)) {
+            if ( ResourceAllocationTypeEnum.NON_LIMITING_RESOURCES.equals(currentState) ) {
                 editTaskTabbox.setSelectedPanelApi(resourceAllocationTabpanel);
                 boolean mustNotExit = !resourceAllocationController.accept();
-                if (mustNotExit) {
+                if ( mustNotExit ) {
                     return;
                 }
-            } else if (ResourceAllocationTypeEnum.SUBCONTRACT.equals(currentState)) {
+            } else if ( ResourceAllocationTypeEnum.SUBCONTRACT.equals(currentState) ) {
                 editTaskTabbox.setSelectedPanelApi(subcontractTabpanel);
                 subcontractController.accept();
-            } else if (ResourceAllocationTypeEnum.LIMITING_RESOURCES.equals(currentState)) {
+            } else if ( ResourceAllocationTypeEnum.LIMITING_RESOURCES.equals(currentState) ) {
                 editTaskTabbox.setSelectedPanelApi(limitingResourceAllocationTabpanel);
                 limitingResourceAllocationController.accept();
             }

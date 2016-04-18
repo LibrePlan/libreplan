@@ -187,9 +187,8 @@ public abstract class EarnedValueChartFiller extends ChartFiller {
         indicators.put(type, calculatedValueForEveryDay(values, interval));
     }
 
-    protected void addZeroBeforeTheFirstValue(
-            SortedMap<LocalDate, BigDecimal> map) {
-        if (!map.isEmpty()) {
+    protected void addZeroBeforeTheFirstValue(SortedMap<LocalDate, BigDecimal> map) {
+        if ( !map.isEmpty() ) {
             map.put(map.firstKey().minusDays(1), BigDecimal.ZERO);
         }
     }
@@ -209,7 +208,7 @@ public abstract class EarnedValueChartFiller extends ChartFiller {
             plotinfos.add(plotinfo);
         }
 
-        if (plotinfos.isEmpty()) {
+        if ( plotinfos.isEmpty() ) {
             // If user doesn't select any indicator, it is needed to create
             // a default Plotinfo in order to avoid errors on Timemplot
             plotinfos.add(new Plotinfo());
@@ -238,8 +237,7 @@ public abstract class EarnedValueChartFiller extends ChartFiller {
     public LocalDate initialDateForIndicatorValues() {
         Interval chartInterval = getIndicatorsDefinitionInterval();
         LocalDate today = new LocalDate();
-        return includes(chartInterval, today) ? today : chartInterval
-                .getFinish().minusDays(1);
+        return includes(chartInterval, today) ? today : chartInterval.getFinish().minusDays(1);
     }
 
     /**

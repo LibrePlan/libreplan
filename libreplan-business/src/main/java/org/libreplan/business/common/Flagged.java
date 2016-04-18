@@ -82,7 +82,7 @@ public class Flagged<T, F> {
 
     public boolean isFlaggedWithSomeOf(F... flags) {
         for (F each : flags) {
-            if (this.isFlaggedWith(each)) {
+            if ( this.isFlaggedWith(each) ) {
                 return true;
             }
         }

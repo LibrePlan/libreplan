@@ -93,8 +93,9 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         Validate.notNull(resourceAllocations);
         Validate.noNullElements(resourceAllocations);
         List<T> result = new ArrayList<T>();
+
         for (T each : resourceAllocations) {
-            if (each.isSatisfied()) {
+            if ( each.isSatisfied() ) {
                 result.add(each);
             }
         }
@@ -119,8 +120,8 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
         Map<Resource, List<R>> result = new HashMap<Resource, List<R>>();
         for (R resourceAllocation : allocations) {
-            for (Resource resource : resourceAllocation
-                    .getAssociatedResources()) {
+
+            for (Resource resource : resourceAllocation.getAssociatedResources()) {
                 if ( !result.containsKey(resource) ) {
                     result.put(resource, new ArrayList<R>());
                 }
@@ -628,14 +629,14 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     }
 
     private void updateOriginalTotalAssigment() {
-        if (!isSatisfied()) {
+        if ( !isSatisfied() ) {
             return;
         }
         intendedNonConsolidatedEffort = getNonConsolidatedEffort();
         Consolidation consolidation = task.getConsolidation();
-        if (consolidation == null) {
+        if ( consolidation == null ) {
             intendedTotalAssignment = intendedNonConsolidatedEffort;
-        } else if (consolidation.isCompletelyConsolidated()) {
+        } else if ( consolidation.isCompletelyConsolidated() ) {
             intendedTotalAssignment = getConsolidatedEffort();
         } else {
             intendedTotalAssignment = consolidation.getTotalFromNotConsolidated(getNonConsolidatedEffort());
@@ -1585,11 +1586,9 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         return new ExplicitlySpecifiedScenarioState(container);
     }
 
-    protected abstract IDayAssignmentsContainer<T> retrieveContainerFor(
-            Scenario scenario);
+    protected abstract IDayAssignmentsContainer<T> retrieveContainerFor(Scenario scenario);
 
-    protected abstract IDayAssignmentsContainer<T> retrieveOrCreateContainerFor(
-            Scenario scenario);
+    protected abstract IDayAssignmentsContainer<T> retrieveOrCreateContainerFor(Scenario scenario);
     /**
      * It uses the current scenario retrieved from {@link IScenarioManager} in
      * order to return the assignments for that scenario. This state doesn't
@@ -1598,12 +1597,10 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
      * is changed since the assignments are cached and the assignments for the
      * previous one would be returned<br />
      */
-    private class NoExplicitlySpecifiedScenario extends
-            DayAssignmentsState {
+    private class NoExplicitlySpecifiedScenario extends DayAssignmentsState {
 
         @Override
-        protected final void removeAssignments(
-                List<? extends DayAssignment> assignments) {
+        protected final void removeAssignments(List<? extends DayAssignment> assignments) {
             modificationsNotAllowed();
         }
 
@@ -1623,9 +1620,8 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         }
 
         private void modificationsNotAllowed() {
-            throw new IllegalStateException(
-                    "modifications to assignments can't be done "
-                            + "if the scenario on which to work on is not explicitly specified");
+            throw new IllegalStateException("modifications to assignments can't be done " +
+                    "if the scenario on which to work on is not explicitly specified");
         }
 
         @Override
@@ -1645,8 +1641,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
         @Override
         IntraDayDate getIntraDayEnd() {
-            return retrieveOrCreateContainerFor(currentScenario())
-                    .getIntraDayEnd();
+            return retrieveOrCreateContainerFor(currentScenario()).getIntraDayEnd();
         }
 
         @Override
@@ -1661,8 +1656,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     }
 
-    private class ExplicitlySpecifiedScenarioState extends
-            DayAssignmentsState {
+    private class ExplicitlySpecifiedScenarioState extends DayAssignmentsState {
 
         private final IDayAssignmentsContainer<T> container;
 
@@ -1682,8 +1676,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         }
 
         @Override
-        protected void removeAssignments(
-                List<? extends DayAssignment> assignments) {
+        protected void removeAssignments(List<? extends DayAssignment> assignments) {
             container.removeAll(assignments);
         }
 

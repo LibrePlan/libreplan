@@ -154,7 +154,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
     private Set<ResourceAllocation<?>> resourceAllocations = new HashSet<ResourceAllocation<?>>();
 
     @Valid
-    private Set<ResourceAllocation<?>> getResourceAlloations() {
+    private Set<ResourceAllocation<?>> getResourceAllocations() {
         return new HashSet<ResourceAllocation<?>>(resourceAllocations);
     }
 
@@ -237,11 +237,10 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
     public Set<ResourceAllocation<?>> getSatisfiedResourceAllocations() {
         Set<ResourceAllocation<?>> result = new HashSet<ResourceAllocation<?>>();
 
-        if (isLimiting()) {
+        if ( isLimiting() ) {
             result.addAll(getLimitingResourceAllocations());
         } else {
-            result.addAll(ResourceAllocation
-                    .getSatisfied(resourceAllocations));
+            result.addAll(ResourceAllocation.getSatisfied(resourceAllocations));
         }
         return Collections.unmodifiableSet(result);
     }
@@ -281,31 +280,27 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
     }
 
     public LimitingResourceQueueElement getAssociatedLimitingResourceQueueElementIfAny() {
-        if (!isLimiting()) {
+        if ( !isLimiting() ) {
             throw new IllegalStateException("this is not a limiting task");
         }
-        return getAssociatedLimitingResourceAllocation()
-                .getLimitingResourceQueueElement();
+        return getAssociatedLimitingResourceAllocation().getLimitingResourceQueueElement();
     }
 
     public boolean isLimitingAndHasDayAssignments() {
         ResourceAllocation<?> resourceAllocation = getAssociatedLimitingResourceAllocation();
-        return resourceAllocation != null
-                && resourceAllocation.isLimitingAndHasDayAssignments();
+        return resourceAllocation != null && resourceAllocation.isLimitingAndHasDayAssignments();
     }
 
     public void addResourceAllocation(ResourceAllocation<?> resourceAllocation) {
         addResourceAllocation(resourceAllocation, true);
     }
 
-    public void addResourceAllocation(ResourceAllocation<?> resourceAllocation,
-            boolean generateDayAssignments) {
-        if (!resourceAllocation.getTask().equals(this)) {
-            throw new IllegalArgumentException(
-                    "the resourceAllocation's task must be this task");
+    public void addResourceAllocation(ResourceAllocation<?> resourceAllocation, boolean generateDayAssignments) {
+        if ( !resourceAllocation.getTask().equals(this) ) {
+            throw new IllegalArgumentException("the resourceAllocation's task must be this task");
         }
         resourceAllocations.add(resourceAllocation);
-        if (generateDayAssignments) {
+        if ( generateDayAssignments ) {
             resourceAllocation.associateAssignmentsToResource();
         }
     }
@@ -794,18 +789,15 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
                 new WithPotentiallyNewResources(searcher));
     }
 
-    private void reassign(Scenario onScenario, Direction direction,
-            WithPotentiallyNewResources strategy) {
+    private void reassign(Scenario onScenario, Direction direction, WithPotentiallyNewResources strategy) {
         try {
             this.lastAllocationDirection = direction;
-            if (isLimiting()) {
+            if ( isLimiting() ) {
                 return;
             }
-            List<ModifiedAllocation> copied = ModifiedAllocation.copy(onScenario,
-                    getResourceAlloations());
-            List<ResourceAllocation<?>> toBeModified = ModifiedAllocation
-                    .modified(copied);
-            if (toBeModified.isEmpty()) {
+            List<ModifiedAllocation> copied = ModifiedAllocation.copy(onScenario, getResourceAllocations());
+            List<ResourceAllocation<?>> toBeModified = ModifiedAllocation.modified(copied);
+            if ( toBeModified.isEmpty() ) {
                 return;
             }
             setCustomAssignedEffortForResource(copied);
@@ -813,12 +805,12 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
             updateDerived(copied);
 
             List<ResourceAllocation<?>> newAllocations = emptyList(), removedAllocations = emptyList();
-            mergeAllocation(onScenario, getIntraDayStartDate(),
-                    getIntraDayEndDate(), workableDays, calculatedValue,
+
+            mergeAllocation(onScenario, getIntraDayStartDate(), getIntraDayEndDate(), workableDays, calculatedValue,
                     newAllocations, copied, removedAllocations);
+
         } catch (Exception e) {
-            LOG.error("reassignment for task: " + this
-                    + " couldn't be completed", e);
+            LOG.error("reassignment for task: " + this + " couldn't be completed", e);
         }
     }
 
@@ -1183,7 +1175,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         if (this.currentStatus != null) {
             return this.currentStatus == TaskStatusEnum.IN_PROGRESS;
         } else {
-            boolean advanceBetweenZeroAndOne = this.advancePertentageIsGreaterThanZero() &&
+            boolean advanceBetweenZeroAndOne = this.advancePercentageIsGreaterThanZero() &&
                     !advancePercentageIsOne();
             boolean outcome = advanceBetweenZeroAndOne || this.hasAttachedWorkReports();
             if (outcome == true) {
@@ -1194,19 +1186,18 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
     }
 
     public boolean isReadyToStart() {
-        if (!this.advancePercentageIsZero() || this.hasAttachedWorkReports()) {
+        if ( !this.advancePercentageIsZero() || this.hasAttachedWorkReports() ) {
             return false;
         }
         Set<Dependency> dependencies = getDependenciesWithThisDestinationAndAllParents();
         for (Dependency dependency: dependencies) {
             Type dependencyType = dependency.getType();
-            if (dependencyType.equals(Type.END_START)) {
-                if (!dependency.getOrigin().isFinished()) {
+            if ( dependencyType.equals(Type.END_START) ) {
+                if ( !dependency.getOrigin().isFinished() ) {
                     return false;
                 }
-            } else if (dependencyType.equals(Type.START_START)) {
-                if (!dependency.getOrigin().isFinished() &&
-                        !dependency.getOrigin().isInProgress()) {
+            } else if ( dependencyType.equals(Type.START_START) ) {
+                if ( !dependency.getOrigin().isFinished() && !dependency.getOrigin().isInProgress() ) {
                     return false;
                 }
             }
@@ -1215,19 +1206,18 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
     }
 
     public boolean isBlocked() {
-        if (!this.advancePercentageIsZero() || this.hasAttachedWorkReports()) {
+        if ( !this.advancePercentageIsZero() || this.hasAttachedWorkReports() ) {
             return false;
         }
         Set<Dependency> dependencies = getDependenciesWithThisDestinationAndAllParents();
         for (Dependency dependency: dependencies) {
             Type dependencyType = dependency.getType();
-            if (dependencyType.equals(Type.END_START)) {
-                if (!dependency.getOrigin().isFinished()) {
+            if ( dependencyType.equals(Type.END_START) ) {
+                if ( !dependency.getOrigin().isFinished() ) {
                     return true;
                 }
-            } else if (dependencyType.equals(Type.START_START)) {
-                if (!dependency.getOrigin().isFinished() &&
-                        !dependency.getOrigin().isInProgress()) {
+            } else if ( dependencyType.equals(Type.START_START) ) {
+                if ( !dependency.getOrigin().isFinished() && !dependency.getOrigin().isInProgress() ) {
                     return true;
                 }
             }
@@ -1235,7 +1225,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         return false;
      }
 
-    private boolean advancePertentageIsGreaterThanZero() {
+    private boolean advancePercentageIsGreaterThanZero() {
         return this.getAdvancePercentage().compareTo(BigDecimal.ZERO) > 0;
     }
 
@@ -1267,4 +1257,13 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         return getPositionConstraint().getConstraintType().equals(type);
     }
 
+    @Override
+    public void setParent(TaskGroup taskGroup) {
+        super.setParent(taskGroup);
+    }
+
+    @Override
+    public void setTaskSource(TaskSource taskSource) {
+        super.setTaskSource(taskSource);
+    }
 }

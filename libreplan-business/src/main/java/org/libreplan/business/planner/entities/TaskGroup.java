@@ -193,17 +193,21 @@ public class TaskGroup extends TaskElement {
     public void setTaskChildrenTo(List<TaskElement> children) {
         Validate.noNullElements(children);
         int positionOnTaskElements = 0;
+
         for (int i = 0; i < children.size(); i++) {
             TaskElement element = children.get(i);
             element.setParent(this);
-            if (positionOnTaskElements >= taskElements.size()) {
+
+            if ( positionOnTaskElements >= taskElements.size() ) {
                 taskElements.add(element);
             } else {
-                while (positionOnTaskElements < taskElements.size()
-                        && isMilestone(taskElements.get(positionOnTaskElements))) {
+                while (positionOnTaskElements < taskElements.size() &&
+                        isMilestone(taskElements.get(positionOnTaskElements))) {
+
                     positionOnTaskElements++;
                 }
-                if (positionOnTaskElements >= taskElements.size()) {
+
+                if ( positionOnTaskElements >= taskElements.size() ) {
                     taskElements.add(element);
                 } else {
                     taskElements.set(positionOnTaskElements, element);
@@ -211,11 +215,10 @@ public class TaskGroup extends TaskElement {
             }
             positionOnTaskElements++;
         }
-        ListIterator<TaskElement> listIterator = taskElements
-                .listIterator(positionOnTaskElements);
+        ListIterator<TaskElement> listIterator = taskElements.listIterator(positionOnTaskElements);
         while (listIterator.hasNext()) {
             TaskElement current = listIterator.next();
-            if (!isMilestone(current)) {
+            if ( !isMilestone(current) ) {
                 listIterator.remove();
             }
         }
@@ -343,10 +346,10 @@ public class TaskGroup extends TaskElement {
 
     @Override
     public boolean isFinished() {
-        if (this.isFinished == null) {
+        if ( this.isFinished == null ) {
             this.isFinished = new Boolean(true);
             for (TaskElement each: taskElements) {
-                if (!each.isFinished()) {
+                if ( !each.isFinished() ) {
                     this.isFinished = new Boolean(false);
                     break;
                 }
@@ -389,4 +392,8 @@ public class TaskGroup extends TaskElement {
         return false;
     }
 
+    @Override
+    public void setTaskSource(TaskSource taskSource) {
+        super.setTaskSource(taskSource);
+    }
 }

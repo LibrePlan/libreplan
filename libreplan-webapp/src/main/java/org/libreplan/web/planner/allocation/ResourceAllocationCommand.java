@@ -53,18 +53,15 @@ public class ResourceAllocationCommand implements IResourceAllocationCommand {
     }
 
     @Override
-    public void doAction(IContextWithPlannerTask<TaskElement> context,
-            TaskElement taskElement) {
+    public void doAction(IContextWithPlannerTask<TaskElement> context, TaskElement taskElement) {
         editTaskUtilities.reattach(taskElement);
 
-        if (isApplicableTo(taskElement)) {
+        if ( isApplicableTo(taskElement) ) {
             Task task = (Task) taskElement;
-            if (task.isSubcontracted()) {
-                editTaskController.showEditFormSubcontract(context, task,
-                        planningState);
+            if ( task.isSubcontracted() ) {
+                editTaskController.showEditFormSubcontract(context, task, planningState);
             } else {
-                editTaskController.showEditFormResourceAllocation(context,
-                        task, planningState);
+                editTaskController.showEditFormResourceAllocation(context, task, planningState);
             }
         }
     }
@@ -75,8 +72,7 @@ public class ResourceAllocationCommand implements IResourceAllocationCommand {
     }
 
     @Override
-    public void initialize(EditTaskController editTaskController,
-            PlanningState planningState) {
+    public void initialize(EditTaskController editTaskController, PlanningState planningState) {
         this.editTaskController = editTaskController;
         this.planningState = planningState;
     }

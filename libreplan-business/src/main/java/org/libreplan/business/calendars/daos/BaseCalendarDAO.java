@@ -53,8 +53,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
-public class BaseCalendarDAO extends IntegrationEntityDAO<BaseCalendar>
-        implements IBaseCalendarDAO {
+public class BaseCalendarDAO extends IntegrationEntityDAO<BaseCalendar> implements IBaseCalendarDAO {
 
     @Override
     public List<BaseCalendar> getBaseCalendars() {
@@ -65,10 +64,9 @@ public class BaseCalendarDAO extends IntegrationEntityDAO<BaseCalendar>
     }
 
     private void removeResourceCalendarInstances(List<BaseCalendar> list) {
-        for (Iterator<BaseCalendar> iterator = list.iterator(); iterator
-                .hasNext();) {
+        for (Iterator<BaseCalendar> iterator = list.iterator(); iterator.hasNext();) {
             BaseCalendar baseCalendar = iterator.next();
-            if (baseCalendar instanceof ResourceCalendar) {
+            if ( baseCalendar instanceof ResourceCalendar ) {
                 iterator.remove();
             }
         }

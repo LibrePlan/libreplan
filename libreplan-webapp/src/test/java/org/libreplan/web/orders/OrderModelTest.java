@@ -99,8 +99,7 @@ import org.zkoss.zk.ui.Desktop;
 @Transactional
 public class OrderModelTest {
 
-    public static OrderVersion setupVersionUsing(
-            IScenarioManager scenarioManager, Order order) {
+    public static OrderVersion setupVersionUsing(IScenarioManager scenarioManager, Order order) {
         Scenario current = scenarioManager.getCurrent();
         OrderVersion result = OrderVersion.createInitialVersion(current);
         order.setVersionForScenario(current, result);
@@ -170,13 +169,11 @@ public class OrderModelTest {
     }
 
     private PlanningState createPlanningStateFor(final Order newOrder) {
-        return adHocTransaction
-                .runOnAnotherReadOnlyTransaction(new IOnTransaction<PlanningState>() {
+        return adHocTransaction.runOnAnotherReadOnlyTransaction(new IOnTransaction<PlanningState>() {
 
                     @Override
                     public PlanningState execute() {
-                        return planningStateCreator.createOn(mockDesktop(),
-                                newOrder);
+                        return planningStateCreator.createOn(mockDesktop(), newOrder);
                     }
                 });
     }
@@ -188,25 +185,29 @@ public class OrderModelTest {
         order.setName("name");
         order.setResponsible("responsible");
         order.setCode("code-" + UUID.randomUUID());
-        BaseCalendar calendar = adHocTransaction
-                .runOnReadOnlyTransaction(new IOnTransaction<BaseCalendar>() {
+
+        BaseCalendar calendar = adHocTransaction.runOnReadOnlyTransaction(new IOnTransaction<BaseCalendar>() {
 
                     @Override
                     public BaseCalendar execute() {
-                        BaseCalendar result = configurationDAO
-                                .getConfigurationWithReadOnlyTransaction()
-                                .getDefaultCalendar();
+
+                        BaseCalendar result =
+                                configurationDAO.getConfigurationWithReadOnlyTransaction().getDefaultCalendar();
+
                         BaseCalendarModel.forceLoadBaseCalendar(result);
                         return result;
                     }
                 });
+
         order.setCalendar(calendar);
         return order;
     }
 
     private ExternalCompany createValidExternalCompany() {
-        ExternalCompany externalCompany = ExternalCompany.create(UUID
-                .randomUUID().toString(), UUID.randomUUID().toString());
+        ExternalCompany externalCompany = ExternalCompany.create(
+                UUID.randomUUID().toString(),
+                UUID.randomUUID().toString());
+
         externalCompanyDAO.save(externalCompany);
         return externalCompany;
     }
@@ -306,8 +307,7 @@ public class OrderModelTest {
 
     @Test(expected = ValidationException.class)
     @Ignore("FIXME pending review after rename to libreplan")
-    public void shouldSendValidationExceptionIfEndDateIsBeforeThanStartingDate()
-            throws ValidationException {
+    public void shouldSendValidationExceptionIfEndDateIsBeforeThanStartingDate() throws ValidationException {
         Order order = createValidOrder();
         order.setDeadline(year(0));
         orderModel.setPlanningState(createPlanningStateFor(order));
@@ -326,19 +326,17 @@ public class OrderModelTest {
     @Test
     @NotTransactional
     @Ignore("FIXME pending review after rename to libreplan")
-    public void testOrderPreserved() throws ValidationException,
-            InstanceNotFoundException {
+    public void testOrderPreserved() throws ValidationException, InstanceNotFoundException {
         final Order order = createValidOrder();
         orderModel.setPlanningState(createPlanningStateFor(order));
         final OrderElement[] containers = new OrderLineGroup[10];
         for (int i = 0; i < containers.length; i++) {
-            containers[i] = adHocTransaction
-                    .runOnTransaction(new IOnTransaction<OrderLineGroup>() {
-                        @Override
-                        public OrderLineGroup execute() {
-                            return OrderLineGroup.create();
-                        }
-                    });
+            containers[i] = adHocTransaction.runOnTransaction(new IOnTransaction<OrderLineGroup>() {
+                @Override
+                public OrderLineGroup execute() {
+                    return OrderLineGroup.create();
+                }
+            });
             containers[i].setName("bla");
             containers[i].setCode("code-" + UUID.randomUUID());
             order.add(containers[i]);
@@ -366,26 +364,24 @@ public class OrderModelTest {
                 try {
                     Order reloaded = orderDAO.find(order.getId());
                     List<OrderElement> elements = reloaded.getOrderElements();
+
                     for (OrderElement orderElement : elements) {
-                        assertThat(((OrderLineGroup) orderElement)
-                                .getIndirectAdvanceAssignments().size(),
-                                equalTo(2));
+                        assertThat(orderElement.getIndirectAdvanceAssignments().size(), equalTo(2));
                     }
+
                     for (int i = 0; i < containers.length; i++) {
-                        assertThat(elements.get(i).getId(),
-                                equalTo(containers[i].getId()));
+                        assertThat(elements.get(i).getId(), equalTo(containers[i].getId()));
                     }
-                    OrderLineGroup container = (OrderLineGroup) reloaded
-                            .getOrderElements().iterator().next();
+                    OrderLineGroup container = (OrderLineGroup) reloaded.getOrderElements().iterator().next();
                     List<OrderElement> children = container.getChildren();
+
                     for (int i = 0; i < orderElements.length; i++) {
-                        assertThat(children.get(i).getId(),
-                                equalTo(orderElements[i].getId()));
+                        assertThat(children.get(i).getId(), equalTo(orderElements[i].getId()));
                     }
+
                     for (int i = 1; i < containers.length; i++) {
                         OrderLineGroup orderLineGroup = (OrderLineGroup) containers[i];
-                        assertThat(orderLineGroup.getChildren().size(),
-                                equalTo(1));
+                        assertThat(orderLineGroup.getChildren().size(), equalTo(1));
                     }
                     return null;
                 } catch (Exception e) {
