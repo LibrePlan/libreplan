@@ -26,10 +26,6 @@
         </addColumn>
         <addDefaultValue tableName="configuration" columnName="automatic_budget_enabled"
                          defaultValueBoolean="FALSE" />
-        <addNotNullConstraint tableName="configuration"
-                              columnName="automatic_budget_enabled"
-                              defaultNullValue="FALSE"
-                              columnDataType="BOOLEAN" />
     </changeSet>
 
     <changeSet id="add-automatic_budget_type_of_work_hours-to-configuration" author="ltilve">
@@ -64,8 +60,8 @@
                 initiallyDeferred="false"
                 tableName="limits"/>
         <sql>
-            INSERT INTO limits VALUES(0, 'users', 5);
-            INSERT INTO limits VALUES(1, 'workers+machines', 10);
+            INSERT INTO limits VALUES(1, 'users', 5);
+            INSERT INTO limits VALUES(2, 'workers+machines', 10);
         </sql>
     </changeSet>
 
