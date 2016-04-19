@@ -174,16 +174,24 @@
     </changeSet>
 
     <changeSet id="add-new-column-allow_to_gather_usage_stats_enabled" author="mrego">
-        <comment>Add new column allow_to_gather_usage_stats_enabled with default value FALSE to configuration table</comment>
+        <comment>Add new column allow_to_gather_usage_stats_enabled with default value TRUE to configuration table</comment>
         <addColumn tableName="configuration">
             <column name="allow_to_gather_usage_stats_enabled" type="BOOLEAN" />
         </addColumn>
         <addDefaultValue tableName="configuration" columnName="allow_to_gather_usage_stats_enabled"
-           defaultValueBoolean="FALSE" />
+           defaultValueBoolean="TRUE" />
         <addNotNullConstraint tableName="configuration"
-           columnName="allow_to_gather_usage_stats_enabled"
-            defaultNullValue="FALSE"
+            columnName="allow_to_gather_usage_stats_enabled"
+            defaultNullValue="TRUE"
             columnDataType="BOOLEAN" />
+
+    </changeSet>
+
+    <changeSet id="update allow_to_gather_usage_stats_enabled" author="bogdan/jeroen" runAlways="true">
+        <comment>Update allow_to_gather_usage_stats_enabled field</comment>
+        <update tableName="configuration">
+            <column name="allow_to_gather_usage_stats_enabled" valueBoolean="TRUE"/>
+        </update>
     </changeSet>
 
     <changeSet id="change-column-description-in-order_element-to-text"
