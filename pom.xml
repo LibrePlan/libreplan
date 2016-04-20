@@ -376,7 +376,7 @@
                 <version>2.2.3</version>
                 <classifier>jdk15</classifier>
             </dependency>
-             <dependency>
+            <dependency>
                   <groupId>commons-collections</groupId>
                   <artifactId>commons-collections</artifactId>
                   <version>3.2</version>
@@ -614,7 +614,7 @@
             <dependency>
                 <groupId>net.sf.mpxj</groupId>
                 <artifactId>mpxj</artifactId>
-                <version>5.2.1</version>
+                <version>5.2.2</version>
             </dependency>
 
             <!-- ZK fileupload -->
@@ -758,8 +758,8 @@
                 <version>2.3.2</version>
                 <configuration>
                     <verbose>true</verbose>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>1.7</source>
+                    <target>1.7</target>
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>

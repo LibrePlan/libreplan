@@ -39,11 +39,11 @@ public class SendEmailOnMilestoneReachedJob extends QuartzJobBean {
 
     @Override
     protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
-        ApplicationContext applicationContext = (ApplicationContext) context.getJobDetail().
-                getJobDataMap().get("applicationContext");
+        ApplicationContext applicationContext =
+                (ApplicationContext) context.getJobDetail().getJobDataMap().get("applicationContext");
 
-        IEmailNotificationJob milestoneReached = (SendEmailOnMilestoneReached) applicationContext
-                .getBean("SendEmailOnMilestoneReached");
+        IEmailNotificationJob milestoneReached =
+                (SendEmailOnMilestoneReached) applicationContext.getBean("SendEmailOnMilestoneReached");
 
         milestoneReached.sendEmail();
     }
