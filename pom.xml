@@ -84,8 +84,8 @@
                 <libreplan.mode>dev</libreplan.mode>
                 <!-- Hibernate properties -->
                 <hibernate.show_sql>false</hibernate.show_sql>
-                <hibernate.format_sql>true</hibernate.format_sql>
-                <hibernate.use_sql_comments>true</hibernate.use_sql_comments>
+                <hibernate.format_sql>false</hibernate.format_sql>
+                <hibernate.use_sql_comments>false</hibernate.use_sql_comments>
                 <hibernate.hbm2ddl.auto>validate</hibernate.hbm2ddl.auto>
 
                 <!-- Enable example users (wsreader, wswriter, wssubcontracting,
@@ -843,24 +843,24 @@
                   <dependency>
                     <groupId>com.jolbox</groupId>
                     <artifactId>bonecp</artifactId>
-                    <version>0.7.1.RELEASE</version>
+                    <version>0.8.0.RELEASE</version>
                   </dependency>
 
                   <!-- connection pooling dependencies -->
                   <dependency>
                     <groupId>org.slf4j</groupId>
                     <artifactId>slf4j-api</artifactId>
-                    <version>1.5.5</version>
+                    <version>1.7.21</version>
                   </dependency>
                   <dependency>
                     <groupId>org.slf4j</groupId>
                     <artifactId>slf4j-simple</artifactId>
-                    <version>1.5.5</version>
+                    <version>1.7.21</version>
                   </dependency>
                   <dependency>
                     <groupId>com.google.guava</groupId>
                     <artifactId>guava</artifactId>
-                    <version>14.0.1</version>
+                    <version>19.0</version>
                   </dependency>
                 </dependencies>
             </plugin>
@@ -889,6 +889,7 @@
                         <format>html</format>
                     </formats>
                     <maxmem>512M</maxmem>
+                    <check/>
                 </configuration>
             </plugin>
 
@@ -897,7 +898,7 @@
         <plugin>
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-maven-plugin</artifactId>
-                <version>2.0.5</version>
+                <version>3.4.2</version>
             </plugin>
 
         </plugins>
