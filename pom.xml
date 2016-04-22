@@ -84,8 +84,8 @@
                 <libreplan.mode>dev</libreplan.mode>
                 <!-- Hibernate properties -->
                 <hibernate.show_sql>false</hibernate.show_sql>
-                <hibernate.format_sql>true</hibernate.format_sql>
-                <hibernate.use_sql_comments>true</hibernate.use_sql_comments>
+                <hibernate.format_sql>false</hibernate.format_sql>
+                <hibernate.use_sql_comments>false</hibernate.use_sql_comments>
                 <hibernate.hbm2ddl.auto>validate</hibernate.hbm2ddl.auto>
 
                 <!-- Enable example users (wsreader, wswriter, wssubcontracting,
@@ -889,6 +889,7 @@
                         <format>html</format>
                     </formats>
                     <maxmem>512M</maxmem>
+                    <check/>
                 </configuration>
             </plugin>
 
@@ -897,7 +898,7 @@
         <plugin>
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-maven-plugin</artifactId>
-                <version>2.0.5</version>
+                <version>3.4.2</version>
             </plugin>
 
         </plugins>
