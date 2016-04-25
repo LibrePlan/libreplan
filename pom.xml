@@ -742,9 +742,9 @@
             <!-- =========================================================== -->
             <!-- Gettext configuration -->
             <plugin>
-                <groupId>org.xnap.commons</groupId>
-                <artifactId>maven-gettext-plugin</artifactId>
-                <version>1.2.0</version>
+                <groupId>com.googlecode.gettext-commons</groupId>
+                <artifactId>gettext-maven-plugin</artifactId>
+                <version>1.2.4</version>
                 <configuration>
                     <targetBundle>i18n.Messages</targetBundle>
                 </configuration>
@@ -898,7 +898,7 @@
         <plugin>
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-maven-plugin</artifactId>
-                <version>3.4.2</version>
+                <version>3.5.0</version>
             </plugin>
 
         </plugins>
