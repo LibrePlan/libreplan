@@ -38,8 +38,7 @@ import org.libreplan.business.common.daos.IJobSchedulerConfigurationDAO;
  *
  * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
  */
-public class JobSchedulerConfiguration extends BaseEntity implements
-        IHumanIdentifiable {
+public class JobSchedulerConfiguration extends BaseEntity implements IHumanIdentifiable {
 
     public static JobSchedulerConfiguration create() {
         return create(new JobSchedulerConfiguration());
@@ -122,18 +121,16 @@ public class JobSchedulerConfiguration extends BaseEntity implements
 
     @AssertTrue(message = "job group and name are already being used")
     public boolean isUniqueJobGroupAndNameConstraint() {
-        if (StringUtils.isBlank(jobGroup) && StringUtils.isBlank(jobName)) {
+        if ( StringUtils.isBlank(jobGroup) && StringUtils.isBlank(jobName) ) {
             return true;
         }
-        IJobSchedulerConfigurationDAO jobSchedulerConfigurationDAO = Registry
-                .getJobSchedulerConfigurationDAO();
-        if (isNewObject()) {
-            return !jobSchedulerConfigurationDAO
-                    .existsByJobGroupAndJobNameAnotherTransaction(this);
+        IJobSchedulerConfigurationDAO jobSchedulerConfigurationDAO = Registry.getJobSchedulerConfigurationDAO();
+        if ( isNewObject() ) {
+            return !jobSchedulerConfigurationDAO.existsByJobGroupAndJobNameAnotherTransaction(this);
         } else {
-            JobSchedulerConfiguration found = jobSchedulerConfigurationDAO
-                    .findUniqueByJobGroupAndJobNameAnotherTransaction(jobGroup,
-                            jobName);
+            JobSchedulerConfiguration found =
+                    jobSchedulerConfigurationDAO.findUniqueByJobGroupAndJobNameAnotherTransaction(jobGroup, jobName);
+
             return found == null || found.getId().equals(getId());
         }
     }

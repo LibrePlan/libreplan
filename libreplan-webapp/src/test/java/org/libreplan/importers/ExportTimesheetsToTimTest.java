@@ -28,7 +28,6 @@ import static org.libreplan.web.test.WebappGlobalNames.WEBAPP_SPRING_CONFIG_TEST
 import static org.libreplan.web.test.WebappGlobalNames.WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Properties;
@@ -62,8 +61,12 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
-        WEBAPP_SPRING_CONFIG_FILE, WEBAPP_SPRING_CONFIG_TEST_FILE,
+@ContextConfiguration(locations = {
+        BUSINESS_SPRING_CONFIG_FILE,
+
+        WEBAPP_SPRING_CONFIG_FILE,
+        WEBAPP_SPRING_CONFIG_TEST_FILE,
+
         WEBAPP_SPRING_SECURITY_CONFIG_FILE,
         WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE })
 public class ExportTimesheetsToTimTest {
@@ -74,7 +77,7 @@ public class ExportTimesheetsToTimTest {
     IExportTimesheetsToTim exportTimesheetsToTim;
 
     @Before
-    public void loadProperties() throws FileNotFoundException, IOException {
+    public void loadProperties() throws IOException {
         String filename = System.getProperty("user.dir") + "/../scripts/tim-connector/tim-conn.properties";
         properties = new Properties();
         properties.load(new FileInputStream(filename));
@@ -119,8 +122,7 @@ public class ExportTimesheetsToTimTest {
     }
 
     private Order givenOrder() {
-        return transactionService
-                .runOnAnotherTransaction(new IOnTransaction<Order>() {
+        return transactionService.runOnAnotherTransaction(new IOnTransaction<Order>() {
                     @Override
                     public Order execute() {
                         return givenValidOrderAlreadyStored();
@@ -133,8 +135,7 @@ public class ExportTimesheetsToTimTest {
         order.setCode(UUID.randomUUID().toString());
         order.setName("Order name " + UUID.randomUUID());
         order.setInitDate(new Date());
-        order.setCalendar(configurationDAO.getConfiguration()
-                .getDefaultCalendar());
+        order.setCalendar(configurationDAO.getConfiguration().getDefaultCalendar());
         OrderVersion version = setupVersionUsing(scenarioManager, order);
         order.useSchedulingDataFor(version);
 
@@ -147,8 +148,7 @@ public class ExportTimesheetsToTimTest {
         }
     }
 
-    private OrderVersion setupVersionUsing(IScenarioManager scenarioManager,
-            Order order) {
+    private OrderVersion setupVersionUsing(IScenarioManager scenarioManager, Order order) {
         Scenario current = scenarioManager.getCurrent();
         OrderVersion result = OrderVersion.createInitialVersion(current);
         order.setVersionForScenario(current, result);
