@@ -26,10 +26,10 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import org.apache.commons.lang.StringUtils;
 import org.apache.cxf.jaxrs.client.WebClient;
-import org.codehaus.jackson.jaxrs.JacksonJaxbJsonProvider;
-import org.codehaus.jackson.map.DeserializationConfig.Feature;
+import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 import org.libreplan.importers.jira.IssueDTO;
 import org.libreplan.importers.jira.SearchResultDTO;
 import org.libreplan.ws.cert.NaiveTrustProvider;
@@ -131,12 +131,10 @@ public class JiraRESTClient {
     private static WebClient createClient(String url) {
 
         JacksonJaxbJsonProvider jacksonJaxbJsonProvider = new JacksonJaxbJsonProvider();
-        jacksonJaxbJsonProvider.configure(Feature.FAIL_ON_UNKNOWN_PROPERTIES,
-                false);
+        jacksonJaxbJsonProvider.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-        return WebClient.create(url,
-                Collections.singletonList(jacksonJaxbJsonProvider)).accept(
-                mediaTypes);
+          return WebClient.create(url,
+                Collections.singletonList(jacksonJaxbJsonProvider)).accept(mediaTypes);
 
     }
 
