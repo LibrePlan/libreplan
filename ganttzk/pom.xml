@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.libreplan</groupId>
         <artifactId>libreplan</artifactId>
-        <version>1.4.1</version>
+        <version>1.6.0</version>
     </parent>
     <artifactId>ganttzk</artifactId>
     <packaging>jar</packaging>
@@ -95,6 +95,7 @@
             <groupId>org.xnap.commons</groupId>
             <artifactId>gettext-commons</artifactId>
         </dependency>
+
         <!-- Commons Math-->
         <dependency>
             <groupId>commons-math</groupId>
@@ -104,6 +105,7 @@
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
         </dependency>
+
         <!-- Commons Logging -->
         <dependency>
             <groupId>commons-logging</groupId>
@@ -113,7 +115,7 @@
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
         </dependency>
-         <dependency>
+        <dependency>
            <groupId>commons-collections</groupId>
            <artifactId>commons-collections</artifactId>
          </dependency>
@@ -131,16 +133,19 @@
             <groupId>org.zkoss.zk</groupId>
             <artifactId>zk</artifactId>
         </dependency>
+
         <!-- JGraphT  -->
         <dependency>
             <groupId>org.jgrapht</groupId>
             <artifactId>jgrapht-jdk1.5</artifactId>
         </dependency>
+
         <!-- Junit -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
         </dependency>
+
         <!-- Easy mock -->
         <dependency>
             <groupId>org.easymock</groupId>
@@ -162,7 +167,7 @@
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
+            <artifactId>javax.servlet-api</artifactId>
         </dependency>
     </dependencies>
 

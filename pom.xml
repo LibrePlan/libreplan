@@ -5,7 +5,7 @@
     <groupId>org.libreplan</groupId>
     <artifactId>libreplan</artifactId>
     <packaging>pom</packaging>
-    <version>1.4.1</version>
+    <version>1.6.0</version>
     <name>LibrePlan</name>
 
     <!--
@@ -504,8 +504,8 @@
             </dependency>
             <dependency>
                 <groupId>javax.servlet</groupId>
-                <artifactId>servlet-api</artifactId>
-                <version>2.5</version>
+                <artifactId>javax.servlet-api</artifactId>
+                <version>3.1.0</version>
                 <type>jar</type>
                 <scope>provided</scope>
             </dependency>

@@ -82,48 +82,43 @@ public class TemplateController extends GenericForwardComposer {
         return scenarioManager.getCurrent();
     }
 
-    public void changeScenario() throws SuspendNotAllowedException,
-            InterruptedException {
+    public void changeScenario() throws SuspendNotAllowedException, InterruptedException {
         window.doModal();
     }
 
     public List<Scenario> getScenarios() {
-        if (templateModel == null) {
+        if ( templateModel == null ) {
             return Collections.emptyList();
         }
+
         return templateModel.getScenarios();
     }
 
     public String getCompanyLogoURL() {
-        if (templateModel == null || templateModel.getCompanyLogoURL() == null) {
+        if ( templateModel == null || templateModel.getCompanyLogoURL() == null ) {
             return "";
         }
+
         return templateModel.getCompanyLogoURL().trim();
     }
 
     public void accept() {
-        BandboxSearch scenarioBandboxSearch = (BandboxSearch) window
-                .getFellow("scenarioBandboxSearch");
-        Scenario scenario = (Scenario) scenarioBandboxSearch
-                .getSelectedElement();
+        BandboxSearch scenarioBandboxSearch = (BandboxSearch) window.getFellow("scenarioBandboxSearch");
+        Scenario scenario = (Scenario) scenarioBandboxSearch.getSelectedElement();
 
-        templateModel.setScenario(SecurityUtils.getSessionUserLoginName(),
-                scenario, new IOnFinished() {
-                    @Override
-                    public void onWithoutErrorFinish() {
-                        window.setVisible(false);
-                        Executions.sendRedirect("/");
-                    }
+        templateModel.setScenario(SecurityUtils.getSessionUserLoginName(), scenario, new IOnFinished() {
+            @Override
+            public void onWithoutErrorFinish() {
+                window.setVisible(false);
+                Executions.sendRedirect("/");
+            }
 
-                    @Override
-                    public void errorHappened(Exception exceptionHappened) {
-                        LOG.error("error doing reassignation",
-                                exceptionHappened);
-                        windowMessages.showMessage(Level.ERROR, _(
-                                "error doing reassignment: {0}",
-                                exceptionHappened));
-                    }
-                });
+            @Override
+            public void errorHappened(Exception exceptionHappened) {
+                LOG.error("error doing reassignation", exceptionHappened);
+                windowMessages.showMessage(Level.ERROR, _("error doing reassignment: {0}", exceptionHappened));
+            }
+        });
     }
 
     public void cancel() {
@@ -166,10 +161,8 @@ public class TemplateController extends GenericForwardComposer {
         return notChangedPasswordWarningDisplayPropertyFor(PredefinedUsers.REPORTS);
     }
 
-    private String notChangedPasswordWarningDisplayPropertyFor(
-            PredefinedUsers mandatoryUser) {
-        return asDisplayProperty(templateModel
-                .hasChangedDefaultPassword(mandatoryUser));
+    private String notChangedPasswordWarningDisplayPropertyFor(PredefinedUsers mandatoryUser) {
+        return asDisplayProperty(templateModel.hasChangedDefaultPassword(mandatoryUser));
     }
 
 
@@ -178,8 +171,7 @@ public class TemplateController extends GenericForwardComposer {
     }
 
     public String getDefaultPasswdVisible() {
-        return asDisplayProperty(!templateModel
-                .adminPasswordChangedAndSomeOtherNotChanged());
+        return asDisplayProperty(!templateModel.adminPasswordChangedAndSomeOtherNotChanged());
     }
 
     public String getIdAdminUser() {
@@ -195,8 +187,7 @@ public class TemplateController extends GenericForwardComposer {
     }
 
     public String getIdWssubcontractingUser() {
-        return templateModel.getIdUser(PredefinedUsers.WSSUBCONTRACTING
-                .getLoginName());
+        return templateModel.getIdUser(PredefinedUsers.WSSUBCONTRACTING.getLoginName());
     }
 
     public String getIdManagerUser() {
@@ -208,8 +199,7 @@ public class TemplateController extends GenericForwardComposer {
     }
 
     public String getIdOutsourcingUser() {
-        return templateModel
-                .getIdUser(PredefinedUsers.OUTSOURCING.getLoginName());
+        return templateModel.getIdUser(PredefinedUsers.OUTSOURCING.getLoginName());
     }
 
     public String getIdReportsUser() {
@@ -222,6 +212,7 @@ public class TemplateController extends GenericForwardComposer {
 
     public boolean isNewVersionAvailable() {
         if ( templateModel.isCheckNewVersionEnabled() ) {
+
             if ( VersionInformation.isNewVersionAvailable() ){
                 lastVersionNumber = VersionInformation.getLastVersion();
                 return true;
@@ -233,10 +224,8 @@ public class TemplateController extends GenericForwardComposer {
 
     public String getUsername() {
         CustomUser user = SecurityUtils.getLoggedUser();
-        if (user == null) {
-            return "";
-        }
-        return user.getUsername();
+
+        return (user == null) ? "" : user.getUsername();
     }
 
     public String getVersionMessage(){
