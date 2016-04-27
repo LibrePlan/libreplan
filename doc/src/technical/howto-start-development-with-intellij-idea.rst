@@ -4,7 +4,7 @@ How To Start Development With JetBrains Intellij IDEA
 
 .. sectnum::
 
-:Author: Perebykivskiy Vova
+:Author: Perebykivskyi Vova
 :Contact: vova@libreplan-enterprise.com
 :Date: 09/09/2015
 :Copyright:
@@ -55,9 +55,11 @@ Import LibrePlan project
 
 * Then leave all by default
 
-* Then choose your JDK(SDK), 1.7 strongly prefered
+* Then choose your JDK(SDK), 1.7 strongly preferred
 
 * Then define project name or leave default name
+
+* Make "mvn clean install" in command line
 
 
 Configure project to run
@@ -79,8 +81,6 @@ Configure project to run
 * Resolve Workspace artifacts
 
 * In "Before launch" section choose "+" and add Build Artifact (war file)
-
-    By the next compilation you may remove this Build Artifact from configuration
 
 * Click *Run* and application will be available at
   http://localhost:8080/libreplan-webapp/
