@@ -26,7 +26,7 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
         </dependency>
-       <dependency>
+        <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-ehcache</artifactId>
         </dependency>
@@ -99,8 +99,8 @@
 
         <!-- Commons Math-->
         <dependency>
-            <groupId>commons-math</groupId>
-            <artifactId>commons-math</artifactId>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-math3</artifactId>
         </dependency>
         <dependency>
           <groupId>org.slf4j</groupId>
