@@ -40,23 +40,21 @@ public class I18nHelper {
 
     private static Locale defaultLang = Locale.ENGLISH;
 
-    private static HashMap<Locale, I18n> localesCache = new HashMap<Locale, I18n>();
+    private static HashMap<Locale, I18n> localesCache = new HashMap<>();
 
     public static I18n getI18n() {
         setPreferredLocale();
 
         Locale locale = Locales.getCurrent();
 
-        if (localesCache.keySet().contains(locale)) {
+        if ( localesCache.keySet().contains(locale) ) {
             return localesCache.get(locale);
         }
 
-        I18n i18n = I18nFactory.getI18n(I18nHelper.class, locale,
-                org.xnap.commons.i18n.I18nFactory.FALLBACK);
+        I18n i18n = I18nFactory.getI18n(I18nHelper.class, locale, org.xnap.commons.i18n.I18nFactory.FALLBACK);
 
         // The language returned is not the same as the requested by the user
-        if (!locale.getLanguage().equals(
-                i18n.getResources().getLocale().getLanguage())) {
+        if ( !locale.getLanguage().equals(i18n.getResources().getLocale().getLanguage()) ) {
             // Force it to be default language
             i18n = getDefaultI18n();
         }
@@ -67,11 +65,10 @@ public class I18nHelper {
 
     private static void setPreferredLocale() {
         Execution execution = Executions.getCurrent();
-        if (execution != null) {
+        if ( execution != null ) {
             Locale userLocale = getUserLocale();
-            Charsets.setPreferredLocale((HttpSession) execution.getSession()
-                    .getNativeSession(), userLocale);
-            if (userLocale != null) {
+            Charsets.setPreferredLocale((HttpSession) execution.getSession().getNativeSession(), userLocale);
+            if ( userLocale != null ) {
                 Locales.setThreadLocal(userLocale);
             }
         }
@@ -79,18 +76,17 @@ public class I18nHelper {
 
     private static Locale getUserLocale() {
         User user = UserUtil.getUserFromSession();
-        if (user != null) {
-            return user.getApplicationLanguage().getLocale();
-        }
-        return null;
+
+        return (user != null) ? user.getApplicationLanguage().getLocale() : null;
     }
 
     private static I18n getDefaultI18n() {
         I18n i18n = localesCache.get(defaultLang);
-        if (i18n == null) {
-            i18n = I18nFactory.getI18n(I18nHelper.class, defaultLang,
-                    org.xnap.commons.i18n.I18nFactory.FALLBACK);
+
+        if ( i18n == null ) {
+            i18n = I18nFactory.getI18n(I18nHelper.class, defaultLang, org.xnap.commons.i18n.I18nFactory.FALLBACK);
         }
+
         return i18n;
     }
 
@@ -114,8 +110,7 @@ public class I18nHelper {
         return getI18n().tr(text, o1, o2, o3);
     }
 
-    public static String _(String text, Object o1, Object o2, Object o3,
-            Object o4) {
+    public static String _(String text, Object o1, Object o2, Object o3, Object o4) {
         return getI18n().tr(text, o1, o2, o3, o4);
     }
 

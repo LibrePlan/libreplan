@@ -73,62 +73,70 @@ public class QueuesState {
 
     private final Map<Long, LimitingResourceQueue> queuesByResourceId;
 
-    private static <T extends BaseEntity> Map<Long, T> byId(
-            Collection<? extends T> entities) {
-        Map<Long, T> result = new HashMap<Long, T>();
+    private static <T extends BaseEntity> Map<Long, T> byId(Collection<? extends T> entities) {
+        Map<Long, T> result = new HashMap<>();
         for (T each : entities) {
             result.put(each.getId(), each);
         }
+
         return result;
     }
 
     private static Map<Long, LimitingResourceQueue> byResourceId(
             Collection<? extends LimitingResourceQueue> limitingResourceQueues) {
-        Map<Long, LimitingResourceQueue> result = new HashMap<Long, LimitingResourceQueue>();
+
+        Map<Long, LimitingResourceQueue> result = new HashMap<>();
         for (LimitingResourceQueue each : limitingResourceQueues) {
             result.put(each.getResource().getId(), each);
         }
+
         return result;
     }
 
     public QueuesState(
             List<LimitingResourceQueue> limitingResourceQueues,
             List<LimitingResourceQueueElement> unassignedLimitingResourceQueueElements) {
-        this.queues = new ArrayList<LimitingResourceQueue>(
-                limitingResourceQueues);
-        this.unassignedElements = new ArrayList<LimitingResourceQueueElement>(
-                unassignedLimitingResourceQueueElements);
+
+        this.queues = new ArrayList<>(limitingResourceQueues);
+        this.unassignedElements = new ArrayList<>(unassignedLimitingResourceQueueElements);
         this.queuesById = byId(queues);
-        this.elementsById = byId(allElements(limitingResourceQueues,
-                unassignedLimitingResourceQueueElements));
+        this.elementsById = byId(allElements(limitingResourceQueues, unassignedLimitingResourceQueueElements));
         this.queuesByResourceId = byResourceId(limitingResourceQueues);
         this.graph = buildGraph(getAllElements(unassignedElements, queues));
     }
 
     private static DirectedGraph<LimitingResourceQueueElement, LimitingResourceQueueDependency> buildGraph(
             List<LimitingResourceQueueElement> allElements) {
-        DirectedGraph<LimitingResourceQueueElement, LimitingResourceQueueDependency> result = instantiateDirectedGraph();
+
+        DirectedGraph<LimitingResourceQueueElement, LimitingResourceQueueDependency> result =
+                instantiateDirectedGraph();
+
         for (LimitingResourceQueueElement each : allElements) {
             result.addVertex(each);
         }
+
         for (LimitingResourceQueueElement each : allElements) {
-            Set<LimitingResourceQueueDependency> dependenciesAsOrigin = each
-                    .getDependenciesAsOrigin();
+            Set<LimitingResourceQueueDependency> dependenciesAsOrigin = each.getDependenciesAsOrigin();
+
             for (LimitingResourceQueueDependency eachDependency : dependenciesAsOrigin) {
                 addDependency(result, eachDependency);
             }
         }
+
         return result;
     }
 
-    private static SimpleDirectedGraph<LimitingResourceQueueElement, LimitingResourceQueueDependency> instantiateDirectedGraph() {
-        return new SimpleDirectedGraph<LimitingResourceQueueElement, LimitingResourceQueueDependency>(
-                LimitingResourceQueueDependency.class);
+    private static SimpleDirectedGraph<LimitingResourceQueueElement, LimitingResourceQueueDependency>
+    instantiateDirectedGraph() {
+
+        return new SimpleDirectedGraph<>(LimitingResourceQueueDependency.class);
     }
 
     private static void addDependency(
-            DirectedGraph<LimitingResourceQueueElement, LimitingResourceQueueDependency> result,
+            DirectedGraph<LimitingResourceQueueElement,
+                    LimitingResourceQueueDependency> result,
             LimitingResourceQueueDependency dependency) {
+
         LimitingResourceQueueElement origin = dependency.getHasAsOrigin();
         LimitingResourceQueueElement destination = dependency.getHasAsDestiny();
         result.addVertex(origin);
@@ -139,22 +147,27 @@ public class QueuesState {
     private static List<LimitingResourceQueueElement> getAllElements(
             List<LimitingResourceQueueElement> unassigned,
             List<LimitingResourceQueue> queues) {
-        List<LimitingResourceQueueElement> result = new ArrayList<LimitingResourceQueueElement>();
+
+        List<LimitingResourceQueueElement> result = new ArrayList<>();
         result.addAll(unassigned);
+
         for (LimitingResourceQueue each : queues) {
             result.addAll(each.getLimitingResourceQueueElements());
         }
+
         return result;
     }
 
     private List<LimitingResourceQueueElement> allElements(
             List<LimitingResourceQueue> queues,
             List<LimitingResourceQueueElement> unassigned) {
-        List<LimitingResourceQueueElement> result = new ArrayList<LimitingResourceQueueElement>();
+
+        List<LimitingResourceQueueElement> result = new ArrayList<>();
         for (LimitingResourceQueue each : queues) {
             result.addAll(each.getLimitingResourceQueueElements());
         }
         result.addAll(unassigned);
+
         return result;
     }
 
@@ -163,26 +176,26 @@ public class QueuesState {
     }
 
     public ArrayList<LimitingResourceQueue> getQueuesOrderedByResourceName() {
-        ArrayList<LimitingResourceQueue> result = new ArrayList<LimitingResourceQueue>(
-                queues);
+        ArrayList<LimitingResourceQueue> result = new ArrayList<>(queues);
         Collections.sort(result, new Comparator<LimitingResourceQueue>() {
 
             @Override
-            public int compare(LimitingResourceQueue arg0,
-                    LimitingResourceQueue arg1) {
+            public int compare(LimitingResourceQueue arg0, LimitingResourceQueue arg1) {
 
-                if ((arg0 == null) || (arg0.getResource().getName() == null)) {
+                if ( (arg0 == null) || (arg0.getResource().getName() == null) ) {
                     return -1;
                 }
 
-                if ((arg1 == null) || (arg1.getResource().getName() == null)) {
+                if ( (arg1 == null) || (arg1.getResource().getName() == null) ) {
                     return 1;
                 }
+
                 return (arg0.getResource().getName().toLowerCase()
                         .compareTo(arg1.getResource().getName().toLowerCase()));
             }
 
         });
+
         return result;
 
     }
@@ -191,8 +204,7 @@ public class QueuesState {
         return Collections.unmodifiableList(unassignedElements);
     }
 
-    public void assignedToQueue(LimitingResourceQueueElement element,
-            LimitingResourceQueue queue) {
+    public void assignedToQueue(LimitingResourceQueueElement element, LimitingResourceQueue queue) {
         Validate.isTrue(unassignedElements.contains(element));
         queue.addLimitingResourceQueueElement(element);
         unassignedElements.remove(element);
@@ -202,15 +214,15 @@ public class QueuesState {
         return queuesById.get(queue.getId());
     }
 
-    public LimitingResourceQueueElement getEquivalent(
-            LimitingResourceQueueElement element) {
+    public LimitingResourceQueueElement getEquivalent(LimitingResourceQueueElement element) {
         return elementsById.get(element.getId());
     }
 
     public void unassingFromQueue(LimitingResourceQueueElement externalElement) {
         LimitingResourceQueueElement queueElement = getEquivalent(externalElement);
         LimitingResourceQueue queue = queueElement.getLimitingResourceQueue();
-        if (queue != null) {
+
+        if ( queue != null ) {
             queue.removeLimitingResourceQueueElement(queueElement);
             unassignedElements.add(queueElement);
         }
@@ -220,20 +232,19 @@ public class QueuesState {
         unassignedElements.remove(queueElement);
     }
 
-    public List<LimitingResourceQueue> getAssignableQueues(
-            LimitingResourceQueueElement element) {
-        final ResourceAllocation<?> resourceAllocation = element
-                .getResourceAllocation();
-        if (resourceAllocation instanceof SpecificResourceAllocation) {
-            LimitingResourceQueue queue = getQueueFor(element
-                    .getResource());
+    public List<LimitingResourceQueue> getAssignableQueues(LimitingResourceQueueElement element) {
+        final ResourceAllocation<?> resourceAllocation = element.getResourceAllocation();
+
+        if ( resourceAllocation instanceof SpecificResourceAllocation ) {
+            LimitingResourceQueue queue = getQueueFor(element.getResource());
             Validate.notNull(queue);
             return Collections.singletonList(queue);
-        } else if (resourceAllocation instanceof GenericResourceAllocation) {
-            final GenericResourceAllocation generic = (GenericResourceAllocation) element
-                    .getResourceAllocation();
+
+        } else if ( resourceAllocation instanceof GenericResourceAllocation ) {
+            final GenericResourceAllocation generic = (GenericResourceAllocation) element.getResourceAllocation();
             return findQueuesMatchingCriteria(generic);
         }
+
         throw new RuntimeException("unexpected type of: " + resourceAllocation);
     }
 
@@ -241,34 +252,33 @@ public class QueuesState {
         return queuesByResourceId.get(resource.getId());
     }
 
-    public InsertionRequirements getRequirementsFor(
-            LimitingResourceQueueElement element) {
-        List<LimitingResourceQueueDependency> dependenciesStart = new ArrayList<LimitingResourceQueueDependency>();
-        List<LimitingResourceQueueDependency> dependenciesEnd = new ArrayList<LimitingResourceQueueDependency>();
+    public InsertionRequirements getRequirementsFor(LimitingResourceQueueElement element) {
+        List<LimitingResourceQueueDependency> dependenciesStart = new ArrayList<>();
+        List<LimitingResourceQueueDependency> dependenciesEnd = new ArrayList<>();
         fillIncoming(element, dependenciesStart, dependenciesEnd);
-        return InsertionRequirements.forElement(getEquivalent(element),
-                dependenciesStart, dependenciesEnd);
+
+        return InsertionRequirements.forElement(getEquivalent(element), dependenciesStart, dependenciesEnd);
     }
 
-    public InsertionRequirements getRequirementsFor(
-            LimitingResourceQueueElement element, DateAndHour startAt) {
-        List<LimitingResourceQueueDependency> dependenciesStart = new ArrayList<LimitingResourceQueueDependency>();
-        List<LimitingResourceQueueDependency> dependenciesEnd = new ArrayList<LimitingResourceQueueDependency>();
+    public InsertionRequirements getRequirementsFor(LimitingResourceQueueElement element, DateAndHour startAt) {
+        List<LimitingResourceQueueDependency> dependenciesStart = new ArrayList<>();
+        List<LimitingResourceQueueDependency> dependenciesEnd = new ArrayList<>();
         fillIncoming(element, dependenciesStart, dependenciesEnd);
-        return InsertionRequirements.forElement(getEquivalent(element),
-                dependenciesStart, dependenciesEnd, startAt);
+
+        return InsertionRequirements.forElement(getEquivalent(element), dependenciesStart, dependenciesEnd, startAt);
     }
 
     private void fillIncoming(LimitingResourceQueueElement element,
             List<LimitingResourceQueueDependency> dependenciesStart,
             List<LimitingResourceQueueDependency> dependenciesEnd) {
-        Set<LimitingResourceQueueDependency> incoming = graph
-                .incomingEdgesOf(element);
+
+        Set<LimitingResourceQueueDependency> incoming = graph.incomingEdgesOf(element);
         for (LimitingResourceQueueDependency each : incoming) {
-            List<LimitingResourceQueueDependency> addingTo = each
-                    .modifiesDestinationStart() ? dependenciesStart
-                    : dependenciesEnd;
-            if (each.isOriginNotDetached()) {
+
+            List<LimitingResourceQueueDependency> addingTo =
+                    each.modifiesDestinationStart() ? dependenciesStart : dependenciesEnd;
+
+            if ( each.isOriginNotDetached() ) {
                 addingTo.add(each);
             } else {
                 fillIncoming(each, addingTo);
@@ -276,13 +286,14 @@ public class QueuesState {
         }
     }
 
-    private void fillIncoming(LimitingResourceQueueDependency next,
-            List<LimitingResourceQueueDependency> result) {
-        Set<LimitingResourceQueueDependency> incoming = graph
-                .incomingEdgesOf(next.getHasAsOrigin());
+    private void fillIncoming(LimitingResourceQueueDependency next, List<LimitingResourceQueueDependency> result) {
+        Set<LimitingResourceQueueDependency> incoming = graph.incomingEdgesOf(next.getHasAsOrigin());
+
         for (LimitingResourceQueueDependency each : incoming) {
-            if (each.propagatesThrough(next)) {
-                if (each.isOriginNotDetached()) {
+
+            if ( each.propagatesThrough(next) ) {
+
+                if ( each.isOriginNotDetached() ) {
                     result.add(each);
                 } else {
                     fillIncoming(each, result);
@@ -295,36 +306,36 @@ public class QueuesState {
      * @return all the gaps that could potentially fit <code>element</code>
      *         ordered by start date
      */
-    public List<GapOnQueue> getPotentiallyValidGapsFor(
-            InsertionRequirements requirements) {
-        List<LimitingResourceQueue> assignableQueues = getAssignableQueues(requirements
-                .getElement());
+    public List<GapOnQueue> getPotentiallyValidGapsFor(InsertionRequirements requirements) {
+        List<LimitingResourceQueue> assignableQueues = getAssignableQueues(requirements.getElement());
         List<List<GapOnQueue>> allGaps = gapsFor(assignableQueues, requirements);
+
         return GapsMergeSort.sort(allGaps);
     }
 
-    private List<List<GapOnQueue>> gapsFor(
-            List<LimitingResourceQueue> assignableQueues,
-            InsertionRequirements requirements) {
-        List<List<GapOnQueue>> result = new ArrayList<List<GapOnQueue>>();
+    private List<List<GapOnQueue>> gapsFor(List<LimitingResourceQueue> assignableQueues,
+                                           InsertionRequirements requirements) {
+
+        List<List<GapOnQueue>> result = new ArrayList<>();
         for (LimitingResourceQueue each : assignableQueues) {
             result.add(each.getGapsPotentiallyValidFor(requirements));
         }
+
         return result;
     }
 
     private List<LimitingResourceQueue> findQueuesMatchingCriteria(GenericResourceAllocation generic) {
-        List<LimitingResourceQueue> result = new ArrayList<LimitingResourceQueue>();
+        List<LimitingResourceQueue> result = new ArrayList<>();
         ResourceEnum resourceType = generic.getResourceType();
         Set<Criterion> criteria = generic.getCriterions();
 
         for (LimitingResourceQueue each : queues) {
             Resource resource = each.getResource();
-            if (resource.getType().equals(resourceType)
-                    && resource.satisfiesCriterionsAtSomePoint(criteria)) {
+            if ( resource.getType().equals(resourceType) && resource.satisfiesCriterionsAtSomePoint(criteria) ) {
                 result.add(each);
             }
         }
+
         return result;
     }
 
@@ -336,19 +347,19 @@ public class QueuesState {
         public final QueueDependencyType type;
 
         public static Edge from(LimitingResourceQueueDependency dependency) {
-            return new Edge(dependency.getHasAsOrigin(),
-                    dependency.getHasAsDestiny(), dependency.getType());
+            return new Edge(dependency.getHasAsOrigin(), dependency.getHasAsDestiny(), dependency.getType());
         }
 
-        public static Edge insertionOrder(
-                LimitingResourceQueueElement element,
-                LimitingResourceQueueElement contiguousNext) {
-            return new Edge(element, contiguousNext,
-                    QueueDependencyType.END_START);
+        public static Edge insertionOrder(LimitingResourceQueueElement element,
+                                          LimitingResourceQueueElement contiguousNext) {
+
+            return new Edge(element, contiguousNext, QueueDependencyType.END_START);
         }
 
         private Edge(LimitingResourceQueueElement source,
-                LimitingResourceQueueElement target, QueueDependencyType type) {
+                     LimitingResourceQueueElement target,
+                     QueueDependencyType type) {
+
             Validate.notNull(source);
             Validate.notNull(target);
             Validate.notNull(type);
@@ -359,18 +370,20 @@ public class QueuesState {
 
         @Override
         public int hashCode() {
-            return new HashCodeBuilder().append(source).append(target)
-                    .append(type).toHashCode();
+            return new HashCodeBuilder().append(source).append(target).append(type).toHashCode();
         }
 
         @Override
         public boolean equals(Object obj) {
-            if (obj instanceof Edge) {
+            if ( obj instanceof Edge ) {
                 Edge another = (Edge) obj;
-                return new EqualsBuilder().append(source, another.source)
+
+                return new EqualsBuilder()
+                        .append(source, another.source)
                         .append(target, another.target)
                         .append(type, another.type).isEquals();
             }
+
             return false;
         }
 
@@ -378,36 +391,41 @@ public class QueuesState {
 
     public DirectedGraph<LimitingResourceQueueElement, Edge> getPotentiallyAffectedByInsertion(
             LimitingResourceQueueElement element) {
+
         DirectedMultigraph<LimitingResourceQueueElement, Edge> result;
         result = asEdges(onQueues(buildOutgoingGraphFor(getEquivalent(element))));
-        Map<LimitingResourceQueue, LimitingResourceQueueElement> earliestForEachQueue = earliest(byQueue(result
-                .vertexSet()));
-        for (Entry<LimitingResourceQueue, LimitingResourceQueueElement> each : earliestForEachQueue
-                .entrySet()) {
+
+        Map<LimitingResourceQueue, LimitingResourceQueueElement> earliestForEachQueue =
+                earliest(byQueue(result.vertexSet()));
+
+        for (Entry<LimitingResourceQueue, LimitingResourceQueueElement> each : earliestForEachQueue.entrySet()) {
             LimitingResourceQueue queue = each.getKey();
             LimitingResourceQueueElement earliest = each.getValue();
-            addInsertionOrderOnQueueEdges(result, earliest,
-                    queue.getElementsAfter(earliest));
+            addInsertionOrderOnQueueEdges(result, earliest, queue.getElementsAfter(earliest));
         }
+
         return result;
 
     }
 
     private DirectedGraph<LimitingResourceQueueElement, LimitingResourceQueueDependency> onQueues(
             DirectedGraph<LimitingResourceQueueElement, LimitingResourceQueueDependency> graph) {
+
         SimpleDirectedGraph<LimitingResourceQueueElement, LimitingResourceQueueDependency> result;
         result = instantiateDirectedGraph();
+
         for (LimitingResourceQueueDependency each : graph.edgeSet()) {
-            if (!each.getHasAsOrigin().isDetached()
-                    && !each.getHasAsDestiny().isDetached()) {
+            if ( !each.getHasAsOrigin().isDetached() && !each.getHasAsDestiny().isDetached() ) {
                 addDependency(result, each);
             }
         }
+
         return result;
     }
 
     private DirectedMultigraph<LimitingResourceQueueElement, Edge> asEdges(
             DirectedGraph<LimitingResourceQueueElement, LimitingResourceQueueDependency> graph) {
+
         DirectedMultigraph<LimitingResourceQueueElement, Edge> result = instantiateMultiGraph();
         for (LimitingResourceQueueDependency each : graph.edgeSet()) {
             Edge edge = Edge.from(each);
@@ -415,48 +433,53 @@ public class QueuesState {
             result.addVertex(edge.target);
             result.addEdge(edge.source, edge.target, edge);
         }
+
         return result;
     }
 
     private DirectedMultigraph<LimitingResourceQueueElement, Edge> instantiateMultiGraph() {
-        return new DirectedMultigraph<LimitingResourceQueueElement, Edge>(
-                Edge.class);
+        return new DirectedMultigraph<>(Edge.class);
     }
 
     private Map<LimitingResourceQueue, List<LimitingResourceQueueElement>> byQueue(
             Collection<? extends LimitingResourceQueueElement> vertexSet) {
-        Map<LimitingResourceQueue, List<LimitingResourceQueueElement>> result = new HashMap<LimitingResourceQueue, List<LimitingResourceQueueElement>>();
+
+        Map<LimitingResourceQueue, List<LimitingResourceQueueElement>> result = new HashMap<>();
         for (LimitingResourceQueueElement each : vertexSet) {
             assert each.getLimitingResourceQueue() != null;
             forQueue(result, each.getLimitingResourceQueue()).add(each);
         }
+
         return result;
     }
 
     private List<LimitingResourceQueueElement> forQueue(
             Map<LimitingResourceQueue, List<LimitingResourceQueueElement>> map,
             LimitingResourceQueue queue) {
+
         List<LimitingResourceQueueElement> result = map.get(queue);
-        if (result == null) {
-            result = new ArrayList<LimitingResourceQueueElement>();
+        if ( result == null ) {
+            result = new ArrayList<>();
             map.put(queue, result);
         }
+
         return result;
     }
 
     private static Map<LimitingResourceQueue, LimitingResourceQueueElement> earliest(
             Map<LimitingResourceQueue, List<LimitingResourceQueueElement>> byQueue) {
-        Map<LimitingResourceQueue, LimitingResourceQueueElement> result = new HashMap<LimitingResourceQueue, LimitingResourceQueueElement>();
-        for (Entry<LimitingResourceQueue, List<LimitingResourceQueueElement>> each : byQueue
-                .entrySet()) {
+
+        Map<LimitingResourceQueue, LimitingResourceQueueElement> result = new HashMap<>();
+        for (Entry<LimitingResourceQueue, List<LimitingResourceQueueElement>> each : byQueue.entrySet()) {
             result.put(each.getKey(), earliest(each.getValue()));
         }
+
         return result;
     }
 
-    private static LimitingResourceQueueElement earliest(
-            List<LimitingResourceQueueElement> list) {
+    private static LimitingResourceQueueElement earliest(List<LimitingResourceQueueElement> list) {
         Validate.isTrue(!list.isEmpty());
+
         return Collections.min(list, LimitingResourceQueueElement.byStartTimeComparator());
     }
 
@@ -464,16 +487,17 @@ public class QueuesState {
             DirectedGraph<LimitingResourceQueueElement, Edge> result,
             LimitingResourceQueueElement first,
             List<LimitingResourceQueueElement> elements) {
+
         LimitingResourceQueueElement previous = first;
         for (LimitingResourceQueueElement each : elements) {
 
-            // FIXME: Fixs bug #553, "No such vertex in graph". It seems that
-            // , for some reason, some of the vertexs (queue elements) are not in graph
-            // at this point
-            if (!result.containsVertex(previous)) {
+            // Fixes bug #553, "No such vertex in graph".
+            // It seems that, for some reason, some of the vertexes (queue elements) are not in graph at this point
+            if ( !result.containsVertex(previous) ) {
                 result.addVertex(previous);
             }
-            if (!result.containsVertex(each)) {
+
+            if ( !result.containsVertex(each) ) {
                 result.addVertex(each);
             }
 
@@ -490,32 +514,45 @@ public class QueuesState {
      */
     public List<LimitingResourceQueueElement> getInsertionsToBeDoneFor(
             LimitingResourceQueueElement externalQueueElement) {
+
         LimitingResourceQueueElement queueElement = getEquivalent(externalQueueElement);
-        DirectedGraph<LimitingResourceQueueElement, LimitingResourceQueueDependency> subGraph = buildOutgoingGraphFor(queueElement);
-        CycleDetector<LimitingResourceQueueElement, LimitingResourceQueueDependency> cycleDetector = cycleDetector(subGraph);
-        if (cycleDetector.detectCycles()) {
+
+        DirectedGraph<LimitingResourceQueueElement, LimitingResourceQueueDependency> subGraph =
+                buildOutgoingGraphFor(queueElement);
+
+        CycleDetector<LimitingResourceQueueElement, LimitingResourceQueueDependency> cycleDetector =
+                cycleDetector(subGraph);
+
+        if ( cycleDetector.detectCycles() ) {
             throw new IllegalStateException("subgraph has cycles");
         }
-        List<LimitingResourceQueueElement> result = new ArrayList<LimitingResourceQueueElement>();
+
+        List<LimitingResourceQueueElement> result = new ArrayList<>();
         result.add(queueElement);
         result.addAll(getElementsOrderedTopologically(subGraph));
         unassignFromQueues(result);
+
         return result;
     }
 
     private DirectedGraph<LimitingResourceQueueElement, LimitingResourceQueueDependency> buildOutgoingGraphFor(
             LimitingResourceQueueElement queueElement) {
-        SimpleDirectedGraph<LimitingResourceQueueElement, LimitingResourceQueueDependency> result = instantiateDirectedGraph();
+
+        SimpleDirectedGraph<LimitingResourceQueueElement, LimitingResourceQueueDependency> result =
+                instantiateDirectedGraph();
+
         buildOutgoingGraphFor(result, queueElement);
+
         return result;
     }
 
     private void buildOutgoingGraphFor(
             DirectedGraph<LimitingResourceQueueElement, LimitingResourceQueueDependency> result,
             LimitingResourceQueueElement element) {
-        Set<LimitingResourceQueueDependency> outgoingEdgesOf = graph
-                .outgoingEdgesOf(element);
+
+        Set<LimitingResourceQueueDependency> outgoingEdgesOf = graph.outgoingEdgesOf(element);
         result.addVertex(element);
+
         for (LimitingResourceQueueDependency each : outgoingEdgesOf) {
             addDependency(result, each);
             buildOutgoingGraphFor(result, each.getHasAsDestiny());
@@ -524,18 +561,18 @@ public class QueuesState {
 
     private CycleDetector<LimitingResourceQueueElement, LimitingResourceQueueDependency> cycleDetector(
             DirectedGraph<LimitingResourceQueueElement, LimitingResourceQueueDependency> subGraph) {
-        return new CycleDetector<LimitingResourceQueueElement, LimitingResourceQueueDependency>(
-                subGraph);
+
+        return new CycleDetector<>(subGraph);
     }
 
     private List<LimitingResourceQueueElement> getElementsOrderedTopologically(
             DirectedGraph<LimitingResourceQueueElement, LimitingResourceQueueDependency> subGraph) {
+
         return onlyAssigned(toList(topologicalIterator(subGraph)));
     }
 
-    public static <V, E> TopologicalOrderIterator<V, E> topologicalIterator(
-            DirectedGraph<V, E> subGraph) {
-        return new TopologicalOrderIterator<V, E>(subGraph);
+    public static <V, E> TopologicalOrderIterator<V, E> topologicalIterator(DirectedGraph<V, E> subGraph) {
+        return new TopologicalOrderIterator<>(subGraph);
     }
 
     public static <T> List<T> toList(final Iterator<T> iterator) {
@@ -543,23 +580,24 @@ public class QueuesState {
         while (iterator.hasNext()) {
             result.add(iterator.next());
         }
+
         return result;
     }
 
-    private List<LimitingResourceQueueElement> onlyAssigned(
-            List<LimitingResourceQueueElement> list) {
-        List<LimitingResourceQueueElement> result = new ArrayList<LimitingResourceQueueElement>();
+    private List<LimitingResourceQueueElement> onlyAssigned(List<LimitingResourceQueueElement> list) {
+        List<LimitingResourceQueueElement> result = new ArrayList<>();
         for (LimitingResourceQueueElement each : list) {
-            if (!each.isDetached()) {
+            if ( !each.isDetached() ) {
                 result.add(each);
             }
         }
+
         return result;
     }
 
     private void unassignFromQueues(List<LimitingResourceQueueElement> result) {
         for (LimitingResourceQueueElement each : result) {
-            if (!each.isDetached()) {
+            if ( !each.isDetached() ) {
                 unassingFromQueue(each);
             }
         }
@@ -569,13 +607,13 @@ public class QueuesState {
             LimitingResourceQueueElement oldElement,
             LimitingResourceQueueElement newElement) {
 
-        if (oldElement.isNewObject()) {
+        if ( oldElement.isNewObject() ) {
             elementsById.put(oldElement.getId(), oldElement);
         }
 
         LimitingResourceQueueElement element = getEquivalent(oldElement);
 
-        if (element.hasDayAssignments()) {
+        if ( element.hasDayAssignments() ) {
             unassingFromQueue(element);
         }
 
@@ -586,17 +624,18 @@ public class QueuesState {
         unassignedElements.add(newElement);
         elementsById.put(newElement.getId(), newElement);
         graph.addVertex(newElement);
+
         for (LimitingResourceQueueDependency each: newElement.getDependenciesAsOrigin()) {
             graph.addEdge(each.getHasAsOrigin(), each.getHasAsDestiny(), each);
         }
+
         for (LimitingResourceQueueDependency each: newElement.getDependenciesAsDestiny()) {
             graph.addEdge(each.getHasAsOrigin(), each.getHasAsDestiny(), each);
         }
 
     }
 
-    public void idChangedFor(Long previousId,
-            LimitingResourceQueueElement element) {
+    public void idChangedFor(Long previousId, LimitingResourceQueueElement element) {
         elementsById.remove(previousId);
         elementsById.put(element.getId(), element);
     }
@@ -613,21 +652,25 @@ public class QueuesState {
      */
     private DirectedGraph<LimitingResourceQueueElement, LimitingResourceQueueDependency> buildSubgraphFor(
             List<LimitingResourceQueueElement> queueElements) {
-        SimpleDirectedGraph<LimitingResourceQueueElement, LimitingResourceQueueDependency> result = instantiateDirectedGraph();
+
+        SimpleDirectedGraph<LimitingResourceQueueElement, LimitingResourceQueueDependency> result =
+                instantiateDirectedGraph();
 
         // Iterate through elements and construct graph
         for (LimitingResourceQueueElement each : queueElements) {
             result.addVertex(each);
-            for (LimitingResourceQueueDependency dependency : each
-                    .getDependenciesAsOrigin()) {
-                LimitingResourceQueueElement destiny = dependency
-                        .getHasAsDestiny();
-                if (queueElements.contains(destiny)) {
+
+            for (LimitingResourceQueueDependency dependency : each.getDependenciesAsOrigin()) {
+
+                LimitingResourceQueueElement destiny = dependency.getHasAsDestiny();
+
+                if ( queueElements.contains(destiny) ) {
                     // Add source, destiny and edge between them
                     addDependency(result, dependency);
                 }
             }
         }
+
         return result;
     }
 
@@ -644,30 +687,34 @@ public class QueuesState {
      */
     public List<GapOnQueueWithQueueElement> getGapsWithQueueElementsOnQueueSince(
             LimitingResourceQueue queue, DateAndHour allocationTime) {
+
         return gapsWithQueueElementsFor(queue, allocationTime);
     }
 
     private List<GapOnQueueWithQueueElement> gapsWithQueueElementsFor(
             LimitingResourceQueue queue, DateAndHour allocationTime) {
 
-        List<GapOnQueueWithQueueElement> result = new ArrayList<GapOnQueueWithQueueElement>();
+        List<GapOnQueueWithQueueElement> result = new ArrayList<>();
 
         DateAndHour previousEnd = null;
-        for (LimitingResourceQueueElement each : queue
-                .getLimitingResourceQueueElements()) {
+        for (LimitingResourceQueueElement each : queue.getLimitingResourceQueueElements()) {
+
             DateAndHour startTime = each.getStartTime();
-            if (!startTime.isBefore(allocationTime)) {
-                if (previousEnd == null || startTime.isAfter(previousEnd)) {
-                    Gap gap = Gap.create(queue.getResource(), previousEnd,
-                            startTime);
-                    result.add(GapOnQueueWithQueueElement.create(
-                            gap.onQueue(queue), each));
+
+            if ( !startTime.isBefore(allocationTime) ) {
+
+                if ( previousEnd == null || startTime.isAfter(previousEnd) ) {
+                    Gap gap = Gap.create(queue.getResource(), previousEnd, startTime);
+                    result.add(GapOnQueueWithQueueElement.create(gap.onQueue(queue), each));
                 }
             }
+
             previousEnd = each.getEndTime();
         }
+
         Gap gap = Gap.create(queue.getResource(), previousEnd, null);
         result.add(GapOnQueueWithQueueElement.create(gap.onQueue(queue), null));
+
         return result;
     }
 

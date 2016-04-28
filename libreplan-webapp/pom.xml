@@ -444,6 +444,7 @@
             <artifactId>javax.servlet-api</artifactId>
         </dependency>
 
+        <!-- TODO put it to main pom? -->
         <!-- Java mail -->
         <dependency>
             <groupId>javax.mail</groupId>
@@ -488,7 +489,7 @@
         <!-- JGraphT  -->
         <dependency>
             <groupId>org.jgrapht</groupId>
-            <artifactId>jgrapht-jdk1.5</artifactId>
+            <artifactId>jgrapht-core</artifactId>
         </dependency>
 
         <!-- jqPlot -->
