@@ -50,7 +50,7 @@ public enum StretchesFunctionTypeEnum {
                           LocalDate startInclusive, LocalDate endExclusive,
                           int totalHours) {
 
-            Interval.apply(allocation, intervalsDefinedByStreches, startInclusive, endExclusive, totalHours);
+            Interval.apply(allocation, intervalsDefinedByStreches, startInclusive, totalHours);
         }
     },
     INTERPOLATED {

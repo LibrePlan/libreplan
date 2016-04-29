@@ -24,7 +24,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.joda.time.LocalDate;
 import org.zkoss.ganttz.IDatesMapper;
 
@@ -60,16 +60,18 @@ import org.zkoss.ganttz.IDatesMapper;
 public abstract class GanttDate implements Comparable<GanttDate> {
 
     public static LocalDateBased createFrom(Date date) {
-        if (date == null) {
+        if ( date == null ) {
             return null;
         }
+
         return createFrom(LocalDate.fromDateFields(date));
     }
 
     public static LocalDateBased createFrom(LocalDate localDate) {
-        if (localDate == null) {
+        if ( localDate == null ) {
             return null;
         }
+
         return new LocalDateBased(localDate);
     }
 
@@ -83,13 +85,15 @@ public abstract class GanttDate implements Comparable<GanttDate> {
 
     @Override
     public final boolean equals(Object obj) {
-        if (obj == this) {
+        if ( obj == this ) {
             return true;
         }
-        if (obj instanceof GanttDate) {
+
+        if ( obj instanceof GanttDate ) {
             GanttDate other = (GanttDate) obj;
             return isEqualsTo(other);
         }
+
         return false;
     }
 
@@ -99,13 +103,12 @@ public abstract class GanttDate implements Comparable<GanttDate> {
     public abstract int hashCode();
 
     public interface ICases<R> {
-        public R on(LocalDateBased localDateBased);
+        R on(LocalDateBased localDateBased);
 
-        public R on(CustomDate customType);
+        R on(CustomDate customType);
     }
 
-    public static abstract class Cases<T extends CustomDate, R> implements
-            ICases<R> {
+    public static abstract class Cases<T extends CustomDate, R> implements ICases<R> {
 
         private final Class<T> klass;
 
@@ -243,6 +246,7 @@ public abstract class GanttDate implements Comparable<GanttDate> {
         @Override
         public int compareTo(GanttDate o) {
             return o.byCases(new ICases<Integer>() {
+
                 @Override
                 public Integer on(LocalDateBased localDateBased) {
                     return compareToLocalDate(localDateBased.localDate);

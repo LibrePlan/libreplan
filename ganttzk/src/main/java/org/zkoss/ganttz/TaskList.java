@@ -33,7 +33,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 
-import org.apache.commons.lang.math.Fraction;
+import org.apache.commons.lang3.math.Fraction;
 import org.joda.time.LocalDate;
 import org.zkoss.ganttz.adapters.IDisabilityConfiguration;
 import org.zkoss.ganttz.data.Dependency;
@@ -75,7 +75,7 @@ public class TaskList extends XulElement implements AfterCompose {
 
     private FilterAndParentExpandedPredicates predicate;
 
-    private Set<Task> visibleTasks = new HashSet<Task>();
+    private Set<Task> visibleTasks = new HashSet<>();
 
     private Map<Task, TaskComponent> taskComponentByTask;
 
@@ -86,9 +86,10 @@ public class TaskList extends XulElement implements AfterCompose {
             List<? extends CommandOnTaskContextualized<?>> commandsOnTasksContextualized,
             IDisabilityConfiguration disabilityConfiguration,
             FilterAndParentExpandedPredicates predicate) {
+
         this.context = context;
         this.doubleClickCommand = doubleClickCommand;
-        this.currentTotalTasks = new ArrayList<Task>(tasks);
+        this.currentTotalTasks = new ArrayList<>(tasks);
         this.commandsOnTasksContextualized = commandsOnTasksContextualized;
         this.disabilityConfiguration = disabilityConfiguration;
         this.predicate = predicate;
@@ -103,7 +104,7 @@ public class TaskList extends XulElement implements AfterCompose {
     }
 
     public List<Task> getAllTasks() {
-        return new ArrayList<Task>(currentTotalTasks);
+        return new ArrayList<>(currentTotalTasks);
     }
 
     public static TaskList createFor(
@@ -112,20 +113,26 @@ public class TaskList extends XulElement implements AfterCompose {
             List<? extends CommandOnTaskContextualized<?>> commandsOnTasksContextualized,
             IDisabilityConfiguration disabilityConfiguration,
             FilterAndParentExpandedPredicates predicate) {
-        TaskList result = new TaskList(context, doubleClickCommand, context
-                .getDiagramGraph().getTopLevelTasks(),
-                commandsOnTasksContextualized, disabilityConfiguration,
+
+        TaskList result = new TaskList(
+                context,
+                doubleClickCommand,
+                context.getDiagramGraph().getTopLevelTasks(),
+                commandsOnTasksContextualized,
+                disabilityConfiguration,
                 predicate);
+
         return result;
     }
 
     public List<DependencyComponent> asDependencyComponents(Collection<? extends Dependency> dependencies) {
-        List<DependencyComponent> result = new ArrayList<DependencyComponent>();
+        List<DependencyComponent> result = new ArrayList<>();
         for (Dependency dependency : dependencies) {
-            result.add(new DependencyComponent(taskComponentByTask
-                    .get(dependency.getSource()), taskComponentByTask
-                    .get(dependency.getDestination()), dependency));
+            result.add(new DependencyComponent(
+                    taskComponentByTask.get(dependency.getSource()),
+                    taskComponentByTask.get(dependency.getDestination()), dependency));
         }
+
         return result;
     }
 
@@ -133,11 +140,14 @@ public class TaskList extends XulElement implements AfterCompose {
         return asDependencyComponents(Arrays.asList(dependency)).get(0);
     }
 
-    private synchronized void addTaskComponent(TaskRow beforeThis, final TaskComponent taskComponent, boolean relocate) {
+    private synchronized void addTaskComponent(TaskRow beforeThis, final TaskComponent taskComponent,
+                                               boolean relocate) {
+
         insertBefore(taskComponent.getRow(), beforeThis);
         addContextMenu(taskComponent);
         addListenerForTaskComponentEditForm(taskComponent);
         taskComponent.afterCompose();
+
         if ( relocate ) {
             getGanttPanel().adjustZoomColumnsHeight();
         }
@@ -145,12 +155,14 @@ public class TaskList extends XulElement implements AfterCompose {
 
     public void addTasks(Position position, Collection<? extends Task> newTasks) {
         createAndPublishComponentsIfNeeded(newTasks);
-        if (position.isAppendToTop()) {
+
+        if ( position.isAppendToTop() ) {
             currentTotalTasks.addAll(newTasks);
-        } else if (position.isAtTop()) {
+        } else if ( position.isAtTop() ) {
             final int insertionPosition = position.getInsertionPosition();
             currentTotalTasks.addAll(insertionPosition, newTasks);
         }
+
         // if the position is children of some already existent task when
         // reloading it will be added if the predicate tells so
         reload(true);
@@ -159,7 +171,7 @@ public class TaskList extends XulElement implements AfterCompose {
     public TaskComponent find(Task task) {
         List<TaskComponent> taskComponents = getTaskComponents();
         for (TaskComponent taskComponent : taskComponents) {
-            if (taskComponent.getTask().equals(task)) {
+            if ( taskComponent.getTask().equals(task) ) {
                 return taskComponent;
             }
         }
@@ -196,13 +208,14 @@ public class TaskList extends XulElement implements AfterCompose {
     }
 
     protected List<TaskComponent> getTaskComponents() {
-        ArrayList<TaskComponent> result = new ArrayList<TaskComponent>();
+        ArrayList<TaskComponent> result = new ArrayList<>();
         for (Object child : getChildren()) {
-            if (child instanceof TaskRow) {
+            if ( child instanceof TaskRow ) {
                 TaskRow row = (TaskRow) child;
                 result.add(row.getChild());
             }
         }
+
         return result;
     }
 
@@ -218,42 +231,44 @@ public class TaskList extends XulElement implements AfterCompose {
     }
 
     private void publishOriginalTasksAsComponents() {
-        taskComponentByTask = new HashMap<Task, TaskComponent>();
+        taskComponentByTask = new HashMap<>();
         createAndPublishComponentsIfNeeded(currentTotalTasks);
     }
 
-    private List<TaskComponent> createAndPublishComponentsIfNeeded(
-            Collection<? extends Task> newTasks) {
-        if (predicate.isFilterContainers()) {
-            List<Task> taskLeafs = new ArrayList<Task>();
+    private List<TaskComponent> createAndPublishComponentsIfNeeded(Collection<? extends Task> newTasks) {
+        if ( predicate.isFilterContainers() ) {
+            List<Task> taskLeafs = new ArrayList<>();
             for (Task task : newTasks) {
                 taskLeafs.addAll(task.getAllTaskLeafs());
             }
             newTasks = taskLeafs;
         }
 
-        List<TaskComponent> result = new ArrayList<TaskComponent>();
+        List<TaskComponent> result = new ArrayList<>();
         for (Task task : newTasks) {
             TaskComponent taskComponent = taskComponentByTask.get(task);
-            if (taskComponent == null) {
-                taskComponent = TaskComponent.asTaskComponent(task,
-                        disabilityConfiguration);
+
+            if ( taskComponent == null ) {
+                taskComponent = TaskComponent.asTaskComponent(task, disabilityConfiguration);
                 taskComponent.publishTaskComponents(taskComponentByTask);
             }
-            if (task.isContainer()) {
+
+            if ( task.isContainer() ) {
                 addExpandListenerTo((TaskContainer) task);
             }
             result.add(taskComponent);
         }
+
         return result;
     }
 
-    private Map<TaskContainer, IExpandListener> autoRemovedListers = new WeakHashMap<TaskContainer, IExpandListener>();
+    private Map<TaskContainer, IExpandListener> autoRemovedListers = new WeakHashMap<>();
 
     private void addExpandListenerTo(TaskContainer container) {
-        if (autoRemovedListers.containsKey(container)) {
+        if ( autoRemovedListers.containsKey(container) ) {
             return;
         }
+
         IExpandListener expandListener = new IExpandListener() {
 
             @Override
@@ -261,12 +276,13 @@ public class TaskList extends XulElement implements AfterCompose {
                 reload(true);
             }
         };
+
         container.addExpandListener(expandListener);
         autoRemovedListers.put(container, expandListener);
     }
 
     private void registerZoomLevelChangedListener() {
-        if (zoomLevelChangedListener == null) {
+        if ( zoomLevelChangedListener == null ) {
             zoomLevelChangedListener = new IZoomLevelChangedListener() {
                 @Override
                 public void zoomLevelChanged(ZoomLevel detailLevel) {
@@ -281,12 +297,11 @@ public class TaskList extends XulElement implements AfterCompose {
     }
 
     public LocalDate toDate(int pixels, Fraction pixelsPerDay, Interval interval) {
-        int daysInto = Fraction.getFraction(pixels, 1).divideBy(pixelsPerDay)
-                .intValue();
+        int daysInto = Fraction.getFraction(pixels, 1).divideBy(pixelsPerDay).intValue();
         return interval.getStart().plusDays(daysInto);
     }
 
-    private Map<TaskComponent, Menupopup> contextMenus = new HashMap<TaskComponent, Menupopup>();
+    private Map<TaskComponent, Menupopup> contextMenus = new HashMap<>();
 
     private Menupopup getContextMenuFor(TaskComponent taskComponent) {
         if ( contextMenus.get(taskComponent) == null ) {
@@ -295,7 +310,6 @@ public class TaskList extends XulElement implements AfterCompose {
             if ( disabilityConfiguration.isAddingDependenciesEnabled() ) {
                 menuBuilder.item(_("Add Dependency"), "/common/img/ico_dependency.png",
                         new ItemAction<TaskComponent>() {
-
                             @Override
                             public void onEvent(TaskComponent choosen, Event event) {
                                 choosen.addDependency();
@@ -308,10 +322,13 @@ public class TaskList extends XulElement implements AfterCompose {
                         menuBuilder.item(command.getName(), command.getIcon(), command.toItemAction());
                 }
             }
+
             Menupopup result = menuBuilder.createWithoutSettingContext();
             contextMenus.put(taskComponent, result);
+
             return result;
         }
+
         return contextMenus.get(taskComponent);
     }
 
@@ -330,16 +347,16 @@ public class TaskList extends XulElement implements AfterCompose {
     public void remove(Task task) {
         currentTotalTasks.remove(task);
         for (TaskComponent taskComponent : getTaskComponents()) {
-            if (taskComponent.getTask().equals(task)) {
+            if ( taskComponent.getTask().equals(task) ) {
                 taskComponent.remove();
+
                 return;
             }
         }
     }
 
     public void addDependency(TaskComponent source, TaskComponent destination) {
-        context.addDependency(new Dependency(source.getTask(), destination
-                .getTask(), DependencyType.END_START));
+        context.addDependency(new Dependency(source.getTask(), destination.getTask(), DependencyType.END_START));
     }
 
     public IDisabilityConfiguration getDisabilityConfiguration() {
@@ -347,7 +364,7 @@ public class TaskList extends XulElement implements AfterCompose {
     }
 
     private void reload(boolean relocate) {
-        ArrayList<Task> tasksPendingToAdd = new ArrayList<Task>();
+        ArrayList<Task> tasksPendingToAdd = new ArrayList<>();
         reload(currentTotalTasks, tasksPendingToAdd, relocate);
         addPendingTasks(tasksPendingToAdd, null, relocate);
         getGanttPanel().getDependencyList().redrawDependencies();
@@ -358,6 +375,7 @@ public class TaskList extends XulElement implements AfterCompose {
             if ( visibleTasks.contains(task) ) {
                 addPendingTasks(tasksPendingToAdd, rowFor(task), relocate);
             }
+
             final boolean isShown = visibleTasks.contains(task);
 
             if ( predicate.accepts(task) != isShown ) {
@@ -367,6 +385,7 @@ public class TaskList extends XulElement implements AfterCompose {
                     tasksPendingToAdd.add(task);
                 }
             }
+
             if ( task instanceof TaskContainer ) {
                 reload(task.getTasks(), tasksPendingToAdd, relocate);
             }
@@ -389,6 +408,7 @@ public class TaskList extends XulElement implements AfterCompose {
         if ( tasksPendingToAdd.isEmpty() ) {
             return;
         }
+
         for (TaskComponent each : createAndPublishComponentsIfNeeded(tasksPendingToAdd)) {
             addTaskComponent(insertBefore, each, relocate);
             visibleTasks.add(each.getTask());

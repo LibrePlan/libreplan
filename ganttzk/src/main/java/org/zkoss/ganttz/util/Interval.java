@@ -19,9 +19,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- *
- */
 package org.zkoss.ganttz.util;
 
 import static java.util.Arrays.asList;
@@ -29,8 +26,8 @@ import static java.util.Arrays.asList;
 import java.util.Collections;
 import java.util.Date;
 
-import org.apache.commons.lang.Validate;
-import org.apache.commons.lang.math.Fraction;
+import org.apache.commons.lang3.Validate;
+import org.apache.commons.lang3.math.Fraction;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.joda.time.Duration;
@@ -54,13 +51,15 @@ public class Interval {
         Validate.notNull(startInclusive);
         Validate.notNull(endExclusive);
         Validate.isTrue(endExclusive.isAfter(startInclusive));
+
         this.startInclusive = startInclusive;
         this.endExclusive = endExclusive;
+
         this.lengthBetween = new Duration(
                 this.startInclusive.toDateTimeAtStartOfDay(),
                 this.endExclusive.toDateTimeAtStartOfDay());
-        this.daysBetween = Days.daysBetween(this.startInclusive,
-                this.endExclusive);
+
+        this.daysBetween = Days.daysBetween(this.startInclusive, this.endExclusive);
     }
 
     public Days getDaysBetween() {
@@ -80,10 +79,9 @@ public class Interval {
     }
 
     public Fraction getProportion(DateTime date) {
-        Days fromStartToDate = Days.daysBetween(startInclusive,
-                date.toLocalDate());
-        Fraction result = Fraction.getFraction(fromStartToDate.getDays(),
-                this.daysBetween.getDays());
+        Days fromStartToDate = Days.daysBetween(startInclusive, date.toLocalDate());
+        Fraction result = Fraction.getFraction(fromStartToDate.getDays(), this.daysBetween.getDays());
+
         try {
             return result.add(inTheDayIncrement(date));
         } catch (ArithmeticException e) {
@@ -94,18 +92,17 @@ public class Interval {
     private Fraction inTheDayIncrement(DateTime date) {
         DateTime atStartOfDay = date.toLocalDate().toDateTimeAtStartOfDay();
         Duration duration = new Duration(atStartOfDay, date);
-        double result = ((double) duration.getMillis())
-                / lengthBetween.getMillis();
+        double result = ((double) duration.getMillis()) / lengthBetween.getMillis();
+
         return Fraction.getFraction(result);
     }
 
     @SuppressWarnings("unchecked")
     public Interval coalesce(Interval otherInterval) {
         Validate.notNull(otherInterval);
-        LocalDate minStart = Collections.min(asList(startInclusive,
-                otherInterval.startInclusive));
-        LocalDate maxEnd = Collections.max(asList(endExclusive,
-                otherInterval.endExclusive));
+        LocalDate minStart = Collections.min(asList(startInclusive, otherInterval.startInclusive));
+        LocalDate maxEnd = Collections.max(asList(endExclusive, otherInterval.endExclusive));
+
         return new Interval(minStart, maxEnd);
     }
 }

@@ -28,7 +28,7 @@ import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
 
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.joda.time.Duration;
@@ -40,7 +40,6 @@ import org.zkoss.ganttz.data.ITaskFundamentalProperties.IUpdatablePosition;
 import org.zkoss.ganttz.data.Milestone;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.data.Task.IReloadResourcesTextRequested;
-import org.zkoss.ganttz.data.TaskContainer;
 import org.zkoss.ganttz.data.constraint.Constraint;
 import org.zkoss.ganttz.data.constraint.Constraint.IConstraintViolationListener;
 import org.zkoss.ganttz.util.WeakReferencedListeners.Mode;
@@ -81,88 +80,91 @@ public class TaskComponent extends Div implements AfterCompose {
     private PropertyChangeListener showingMoneyCostBarPropertyListener;
 
     public static TaskComponent asTaskComponent(Task task,
-            IDisabilityConfiguration disabilityConfiguration,
-            boolean isTopLevel) {
+                                                IDisabilityConfiguration disabilityConfiguration,
+                                                boolean isTopLevel) {
         final TaskComponent result;
-        if (task.isContainer()) {
-            result = TaskContainerComponent.asTask((TaskContainer) task,
-                    disabilityConfiguration);
-        } else if (task instanceof Milestone) {
+
+        if ( task.isContainer() ) {
+            result = TaskContainerComponent.asTask(task, disabilityConfiguration);
+
+        } else if ( task instanceof Milestone ) {
             result = new MilestoneComponent(task, disabilityConfiguration);
+
         } else {
             result = new TaskComponent(task, disabilityConfiguration);
         }
         result.isTopLevel = isTopLevel;
+
         return TaskRow.wrapInRow(result);
     }
 
-    public static TaskComponent asTaskComponent(Task task,
-            IDisabilityConfiguration disabilityConfiguration) {
+    public static TaskComponent asTaskComponent(Task task, IDisabilityConfiguration disabilityConfiguration) {
         return asTaskComponent(task, disabilityConfiguration, true);
     }
 
     private IReloadResourcesTextRequested reloadResourcesTextRequested;
 
-    public TaskComponent(Task task,
-            IDisabilityConfiguration disabilityConfiguration) {
+    public TaskComponent(Task task, IDisabilityConfiguration disabilityConfiguration) {
         setHeight(HEIGHT_PER_TASK + "px");
         setContext("idContextMenuTaskAssignment");
         this.task = task;
         setClass(calculateCSSClass());
         setId(UUID.randomUUID().toString());
         this.disabilityConfiguration = disabilityConfiguration;
-        taskViolationListener = Constraint
-                .onlyOnZKExecution(new IConstraintViolationListener<GanttDate>() {
+        taskViolationListener = Constraint.onlyOnZKExecution(new IConstraintViolationListener<GanttDate>() {
 
             @Override
-            public void constraintViolated(Constraint<GanttDate> constraint,
-                    GanttDate value) {
+            public void constraintViolated(Constraint<GanttDate> constraint, GanttDate value) {
                 // TODO mark graphically task as violated
             }
 
             @Override
-            public void constraintSatisfied(Constraint<GanttDate> constraint,
-                    GanttDate value) {
+            public void constraintSatisfied(Constraint<GanttDate> constraint, GanttDate value) {
                 // TODO mark graphically dependency as not violated
             }
-                });
-        this.task.addConstraintViolationListener(taskViolationListener,
-                Mode.RECEIVE_PENDING);
+        });
+
+        this.task.addConstraintViolationListener(taskViolationListener, Mode.RECEIVE_PENDING);
         reloadResourcesTextRequested = new IReloadResourcesTextRequested() {
 
             @Override
             public void reloadResourcesTextRequested() {
-                if (canShowResourcesText()) {
+                if ( canShowResourcesText() ) {
                     smartUpdate("resourcesText", getResourcesText());
                 }
+
                 String cssClass = calculateCSSClass();
 
-                response("setClass", new AuInvoke(TaskComponent.this,
-                        "setClass", cssClass));
+                response("setClass", new AuInvoke(TaskComponent.this, "setClass", cssClass));
 
-                // FIXME: Refactorize to another listener
+                // FIXME: Refactor to another listener
                 updateDeadline();
                 invalidate();
             }
 
         };
+
         this.task.addReloadListener(reloadResourcesTextRequested);
+
         setAuService(new AuService(){
+
             public boolean service(AuRequest request, boolean everError){
                 String command = request.getCommand();
                 final TaskComponent ta;
 
-                if (command.equals("onUpdatePosition")){
+                if ( command.equals("onUpdatePosition") ){
                     ta = retrieveTaskComponent(request);
 
                     ta.doUpdatePosition(
-                            toInteger(retrieveData(request, "left")),
-                            toInteger(retrieveData(request, "top")));
+                            toInteger(retrieveData(request, "left"))
+                    );
+
                     Events.postEvent(new Event(getId(), ta, request.getData()));
 
                     return true;
                 }
-                if (command.equals("onUpdateWidth")){
+
+                if ( command.equals("onUpdateWidth") ){
                     ta = retrieveTaskComponent(request);
 
                     ta.doUpdateSize(toInteger(retrieveData(request, "width")));
@@ -170,7 +172,8 @@ public class TaskComponent extends Div implements AfterCompose {
 
                     return true;
                 }
-                if (command.equals("onAddDependency")){
+
+                if ( command.equals("onAddDependency") ){
                     ta = retrieveTaskComponent(request);
 
                     ta.doAddDependency((String) retrieveData(request, "dependencyId"));
@@ -178,6 +181,7 @@ public class TaskComponent extends Div implements AfterCompose {
 
                     return true;
                 }
+
                 return false;
             }
 
@@ -188,9 +192,8 @@ public class TaskComponent extends Div implements AfterCompose {
             private TaskComponent retrieveTaskComponent(AuRequest request){
                 final TaskComponent ta = (TaskComponent) request.getComponent();
 
-                if (ta == null) {
-                    throw new UiException(MZk.ILLEGAL_REQUEST_COMPONENT_REQUIRED,
-                            this);
+                if ( ta == null ) {
+                    throw new UiException(MZk.ILLEGAL_REQUEST_COMPONENT_REQUIRED, this);
                 }
 
                 return ta;
@@ -198,9 +201,8 @@ public class TaskComponent extends Div implements AfterCompose {
 
             private Object retrieveData(AuRequest request, String key){
                 Object value = request.getData().get(key);
-                if ( value == null)
-                    throw new UiException(MZk.ILLEGAL_REQUEST_WRONG_DATA,
-                            new Object[] { key, this });
+                if ( value == null )
+                    throw new UiException(MZk.ILLEGAL_REQUEST_WRONG_DATA, new Object[] { key, this });
 
                 return value;
             }
@@ -209,27 +211,29 @@ public class TaskComponent extends Div implements AfterCompose {
 
     /* Generate CSS class attribute depending on task properties */
     protected String calculateCSSClass() {
-        String cssClass = isSubcontracted() ? "box subcontracted-task"
-                : "box standard-task";
+        String cssClass = isSubcontracted() ? "box subcontracted-task" : "box standard-task";
         cssClass += isResizingTasksEnabled() ? " yui-resize" : "";
-        if (isContainer()) {
+
+        if ( isContainer() ) {
             cssClass += task.isExpanded() ? " expanded" : " closed ";
-            cssClass += task.isInCriticalPath() && !task.isExpanded() ? " critical"
-                    : "";
+            cssClass += task.isInCriticalPath() && !task.isExpanded() ? " critical" : "";
+
         } else {
             cssClass += task.isInCriticalPath() ? " critical" : "";
-            if (!task.canBeExplicitlyMoved()) {
+            if ( !task.canBeExplicitlyMoved() ) {
                 cssClass += " fixed";
             }
         }
+
         cssClass += " " + task.getAssignedStatus();
-        if (task.isLimiting()) {
-            cssClass += task.isLimitingAndHasDayAssignments() ? " limiting-assigned "
-                    : " limiting-unassigned ";
+        if ( task.isLimiting() ) {
+            cssClass += task.isLimitingAndHasDayAssignments() ? " limiting-assigned " : " limiting-unassigned ";
         }
-        if (task.isRoot() && task.belongsClosedProject()) {
+
+        if ( task.isRoot() && task.belongsClosedProject() ) {
             cssClass += " project-closed ";
         }
+
         return cssClass;
     }
 
@@ -243,7 +247,7 @@ public class TaskComponent extends Div implements AfterCompose {
 
     public final void afterCompose() {
         updateProperties();
-        if (propertiesListener == null) {
+        if ( propertiesListener == null ) {
             propertiesListener = new PropertyChangeListener() {
 
                 @Override
@@ -252,52 +256,52 @@ public class TaskComponent extends Div implements AfterCompose {
                 }
             };
         }
-        this.task
-                .addFundamentalPropertiesChangeListener(propertiesListener);
 
-        if (showingAdvancePropertyListener == null) {
+        this.task.addFundamentalPropertiesChangeListener(propertiesListener);
+
+        if ( showingAdvancePropertyListener == null ) {
             showingAdvancePropertyListener = new PropertyChangeListener() {
 
                 @Override
                 public void propertyChange(PropertyChangeEvent evt) {
-                    if (isInPage() && !(task instanceof Milestone)) {
+                    if ( isInPage() && !(task instanceof Milestone) ) {
                         updateCompletionAdvance();
                     }
                 }
             };
         }
-        this.task
-                .addAdvancesPropertyChangeListener(showingAdvancePropertyListener);
 
-        if (showingReportedHoursPropertyListener == null) {
+        this.task.addAdvancesPropertyChangeListener(showingAdvancePropertyListener);
+
+        if ( showingReportedHoursPropertyListener == null ) {
             showingReportedHoursPropertyListener = new PropertyChangeListener() {
 
                 @Override
                 public void propertyChange(PropertyChangeEvent evt) {
-                    if (isInPage() && !(task instanceof Milestone)) {
+                    if ( isInPage() && !(task instanceof Milestone) ) {
                         updateCompletionReportedHours();
                     }
                 }
             };
         }
-        this.task
-                .addReportedHoursPropertyChangeListener(showingReportedHoursPropertyListener);
 
-        if (showingMoneyCostBarPropertyListener == null) {
+        this.task.addReportedHoursPropertyChangeListener(showingReportedHoursPropertyListener);
+
+        if ( showingMoneyCostBarPropertyListener == null ) {
             showingMoneyCostBarPropertyListener = new PropertyChangeListener() {
 
                 @Override
                 public void propertyChange(PropertyChangeEvent evt) {
-                    if (isInPage() && !(task instanceof Milestone)) {
+                    if ( isInPage() && !(task instanceof Milestone) ) {
                         updateCompletionMoneyCostBar();
                     }
                 }
             };
         }
-        this.task
-                .addMoneyCostBarPropertyChangeListener(showingMoneyCostBarPropertyListener);
 
-        if (criticalPathPropertyListener == null) {
+        this.task.addMoneyCostBarPropertyChangeListener(showingMoneyCostBarPropertyListener);
+
+        if ( criticalPathPropertyListener == null ) {
             criticalPathPropertyListener = new PropertyChangeListener() {
 
                 @Override
@@ -307,8 +311,8 @@ public class TaskComponent extends Div implements AfterCompose {
 
             };
         }
-        this.task
-                .addCriticalPathPropertyChangeListener(criticalPathPropertyListener);
+
+        this.task.addCriticalPathPropertyChangeListener(criticalPathPropertyListener);
 
         updateClass();
     }
@@ -328,15 +332,14 @@ public class TaskComponent extends Div implements AfterCompose {
     private transient PropertyChangeListener propertiesListener;
     private IConstraintViolationListener<GanttDate> taskViolationListener;
 
-    // FIXME Bug #1270
     private String progressType;
 
     public TaskRow getRow() {
-        if (getParent() == null) {
+        if ( getParent() == null ) {
             throw new IllegalStateException(
-                    "the TaskComponent should have been wraped by a "
-                            + TaskRow.class.getName());
+                    "the TaskComponent should have been wraped by a " + TaskRow.class.getName());
         }
+
         return (TaskRow) getParent();
     }
 
@@ -353,19 +356,19 @@ public class TaskComponent extends Div implements AfterCompose {
     }
 
     public boolean isResizingTasksEnabled() {
-        return (disabilityConfiguration != null)
-                && disabilityConfiguration.isResizingTasksEnabled()
-                && !task.isSubcontracted() && task.canBeExplicitlyResized();
+        return (disabilityConfiguration != null) &&
+                disabilityConfiguration.isResizingTasksEnabled() &&
+                !task.isSubcontracted() && task.canBeExplicitlyResized();
     }
 
     public boolean isMovingTasksEnabled() {
-        return (disabilityConfiguration != null)
-                && disabilityConfiguration.isMovingTasksEnabled()
-                && task.canBeExplicitlyMoved();
+        return (disabilityConfiguration != null) &&
+                disabilityConfiguration.isMovingTasksEnabled() &&
+                task.canBeExplicitlyMoved();
     }
 
 
-    void doUpdatePosition(int leftX, int topY) {
+    void doUpdatePosition(int leftX) {
         GanttDate startBeforeMoving = this.task.getBeginDate();
         final LocalDate newPosition = getMapper().toDate(leftX);
         this.task.doPositionModifications(new IModifications() {
@@ -375,24 +378,23 @@ public class TaskComponent extends Div implements AfterCompose {
                 position.moveTo(GanttDate.createFrom(newPosition));
             }
         });
-        boolean remainsInOriginalPosition = this.task.getBeginDate().equals(
-                startBeforeMoving);
-        if (remainsInOriginalPosition) {
+
+        boolean remainsInOriginalPosition = this.task.getBeginDate().equals(startBeforeMoving);
+        if ( remainsInOriginalPosition ) {
             updateProperties();
         }
     }
 
     void doUpdateSize(int size) {
-        DateTime end = new DateTime(this.task.getBeginDate()
-                .toDayRoundedDate().getTime()).plus(getMapper().toDuration(
-                size));
+        DateTime end =
+                new DateTime(this.task.getBeginDate().toDayRoundedDate().getTime()).plus(getMapper().toDuration(size));
+
         this.task.resizeTo(end.toLocalDate());
         updateProperties();
     }
 
     void doAddDependency(String destinyTaskId) {
-        getTaskList().addDependency(this,
-                ((TaskComponent) getFellow(destinyTaskId)));
+        getTaskList().addDependency(this, ((TaskComponent) getFellow(destinyTaskId)));
     }
 
     public String getColor() {
@@ -401,11 +403,11 @@ public class TaskComponent extends Div implements AfterCompose {
 
     public void setColor(String color) {
 
-        if ((color != null) && (color.length() == 0)) {
+        if ( (color != null) && (color.length() == 0) ) {
             color = null;
         }
 
-        if (!Objects.equals(_color, color)) {
+        if ( !Objects.equals(_color, color) ) {
             _color = color;
         }
     }
@@ -415,13 +417,12 @@ public class TaskComponent extends Div implements AfterCompose {
      * of the style
      */
     protected void renderProperties(ContentRenderer renderer) throws IOException{
-        if(getColor() != null)
-            setStyle("background-color : " +  getColor());
+        if( getColor() != null ) setStyle("background-color : " +  getColor());
 
-        setWidgetAttribute("movingTasksEnabled",((Boolean)isMovingTasksEnabled()).toString());
+        setWidgetAttribute("movingTasksEnabled", ((Boolean)isMovingTasksEnabled()).toString());
         setWidgetAttribute("resizingTasksEnabled", ((Boolean)isResizingTasksEnabled()).toString());
 
-        /*We can't use setStyle because of restrictions
+        /* We can't use setStyle because of restrictions
          * involved with UiVisualizer#getResponses and the
          * smartUpdate method (when the request is asynchronous) */
         render(renderer, "style", "position : absolute");
@@ -461,9 +462,10 @@ public class TaskComponent extends Div implements AfterCompose {
     }
 
     public void updateProperties() {
-        if (!isInPage()) {
+        if ( !isInPage() ) {
             return;
         }
+
         setLeft("0");
         setLeft(this.task.getBeginDate().toPixels(getMapper()) + "px");
         updateWidth();
@@ -483,23 +485,27 @@ public class TaskComponent extends Div implements AfterCompose {
 
     private void updateDeadline() {
         // Task mark is placed after midnight date of the deadline day
-        if (task.getDeadline() != null) {
+        if ( task.getDeadline() != null ) {
+
             String position = (getMapper().toPixels(
-                    LocalDate.fromDateFields(task.getDeadline()).plusDays(1)) - HALF_DEADLINE_MARK)
-                    + "px";
+                    LocalDate.fromDateFields(task.getDeadline()).plusDays(1)) - HALF_DEADLINE_MARK) + "px";
+
             response(null, new AuInvoke(this, "moveDeadline", position));
+
         } else {
             // Move deadline out of visible area
             response(null, new AuInvoke(this, "moveDeadline","-100px"));
         }
 
-        if (task.getConsolidatedline() != null) {
-            int pixels = getMapper().toPixels(
-                    LocalDate.fromDateFields(task.getConsolidatedline()
-                            .toDayRoundedDate()))
+        if ( task.getConsolidatedline() != null ) {
+
+            int pixels = getMapper()
+                    .toPixels(LocalDate.fromDateFields(task.getConsolidatedline().toDayRoundedDate()))
                     - CONSOLIDATED_MARK_HALF_WIDTH;
+
             String position = pixels + "px";
             response(null, new AuInvoke(this, "moveConsolidatedline", position));
+
         } else {
             // Move consolidated line out of visible area
             response(null, new AuInvoke(this, "moveConsolidatedline", "-100px"));
@@ -507,43 +513,45 @@ public class TaskComponent extends Div implements AfterCompose {
     }
 
     public void updateCompletionIfPossible() {
-        if (task instanceof Milestone) {
+        if ( task instanceof Milestone ) {
             return;
         }
+
         updateCompletionReportedHours();
         updateCompletionMoneyCostBar();
         updateCompletionAdvance();
     }
 
     public void updateCompletionReportedHours() {
-        if (task.isShowingReportedHours()) {
+        if ( task.isShowingReportedHours() ) {
             int startPixels = this.task.getBeginDate().toPixels(getMapper());
-            String widthHoursAdvancePercentage = pixelsFromStartUntil(
-                    startPixels,
-                this.task.getHoursAdvanceBarEndDate()) + "px";
-            response(null, new AuInvoke(this, "resizeCompletionAdvance",
-                widthHoursAdvancePercentage));
+
+            String widthHoursAdvancePercentage =
+                    pixelsFromStartUntil(startPixels, this.task.getHoursAdvanceBarEndDate()) + "px";
+
+            response(null, new AuInvoke(this, "resizeCompletionAdvance", widthHoursAdvancePercentage));
 
             Date firstTimesheetDate = task.getFirstTimesheetDate();
             Date lastTimesheetDate = task.getLastTimesheetDate();
-            if (firstTimesheetDate != null && lastTimesheetDate != null) {
+
+            if ( firstTimesheetDate != null && lastTimesheetDate != null ) {
+
                 Duration firstDuration = Days.daysBetween(
                         task.getBeginDateAsLocalDate(),
-                        LocalDate.fromDateFields(firstTimesheetDate))
-                        .toStandardDuration();
+                        LocalDate.fromDateFields(firstTimesheetDate)).toStandardDuration();
+
                 int pixelsFirst = getMapper().toPixels(firstDuration);
                 String positionFirst = pixelsFirst + "px";
 
-                Duration lastDuration = Days
-                        .daysBetween(
-                                task.getBeginDateAsLocalDate(),
-                                LocalDate.fromDateFields(lastTimesheetDate)
-                                        .plusDays(1)).toStandardDuration();
+                Duration lastDuration = Days.daysBetween(
+                        task.getBeginDateAsLocalDate(),
+                        LocalDate.fromDateFields(lastTimesheetDate).plusDays(1)).toStandardDuration();
+
                 int pixelsLast = getMapper().toPixels(lastDuration);
                 String positionLast = pixelsLast + "px";
 
-                response(null, new AuInvoke(this, "showTimsheetDateMarks",
-                        positionFirst, positionLast));
+                response(null, new AuInvoke(this, "showTimsheetDateMarks", positionFirst, positionLast));
+
             } else {
                 response(null, new AuInvoke(this, "hideTimsheetDateMarks"));
             }
@@ -555,44 +563,38 @@ public class TaskComponent extends Div implements AfterCompose {
     }
 
     public void updateCompletionMoneyCostBar() {
-        if (task.isShowingMoneyCostBar()) {
+        if ( task.isShowingMoneyCostBar() ) {
             int startPixels = this.task.getBeginDate().toPixels(getMapper());
             int endPixels = this.task.getEndDate().toPixels(getMapper());
-            int widthPixels = (int) ((endPixels - startPixels) * this.task
-                    .getMoneyCostBarPercentage().doubleValue());
+            int widthPixels = (int) ((endPixels - startPixels) * this.task.getMoneyCostBarPercentage().doubleValue());
             String widthMoneyCostBar = widthPixels + "px";
-            response(null, new AuInvoke(this, "resizeCompletionMoneyCostBar",
-                    widthMoneyCostBar));
+            response(null, new AuInvoke(this, "resizeCompletionMoneyCostBar", widthMoneyCostBar));
+
         } else {
-            response(null, new AuInvoke(this, "resizeCompletionMoneyCostBar",
-                    "0px"));
+            response(null, new AuInvoke(this, "resizeCompletionMoneyCostBar", "0px"));
         }
     }
 
     private void updateCompletionAdvance() {
-        if (task.isShowingAdvances()) {
+        if ( task.isShowingAdvances() ) {
             int startPixels = this.task.getBeginDate().toPixels(getMapper());
-            String widthAdvancePercentage = pixelsFromStartUntil(startPixels,
-                this.task.getAdvanceBarEndDate()) + "px";
-            response(null, new AuInvoke(this, "resizeCompletion2Advance",
-                    widthAdvancePercentage));
+            String widthAdvancePercentage = pixelsFromStartUntil(startPixels, this.task.getAdvanceBarEndDate()) + "px";
+            response(null, new AuInvoke(this, "resizeCompletion2Advance", widthAdvancePercentage));
         } else {
-            response(null,
-                    new AuInvoke(this, "resizeCompletion2Advance", "0px"));
+            response(null, new AuInvoke(this, "resizeCompletion2Advance", "0px"));
         }
     }
 
     public void updateCompletion(String progressType) {
-        if (task.isShowingAdvances()) {
+        if ( task.isShowingAdvances() ) {
             int startPixels = this.task.getBeginDate().toPixels(getMapper());
 
-            String widthAdvancePercentage = pixelsFromStartUntil(startPixels,
-                    this.task.getAdvanceBarEndDate(progressType)) + "px";
-            response(null, new AuInvoke(this, "resizeCompletion2Advance",
-                    widthAdvancePercentage));
+            String widthAdvancePercentage =
+                    pixelsFromStartUntil(startPixels, this.task.getAdvanceBarEndDate(progressType)) + "px";
+
+            response(null, new AuInvoke(this, "resizeCompletion2Advance", widthAdvancePercentage));
         } else {
-            response(null,
-                    new AuInvoke(this, "resizeCompletion2Advance", "0px"));
+            response(null, new AuInvoke(this, "resizeCompletion2Advance", "0px"));
         }
     }
 
@@ -603,12 +605,10 @@ public class TaskComponent extends Div implements AfterCompose {
     }
 
     public void updateTooltipText() {
-        // FIXME Bug #1270
         this.progressType = null;
     }
 
     public void updateTooltipText(String progressType) {
-        // FIXME Bug #1270
         this.progressType = progressType;
     }
 
@@ -635,8 +635,7 @@ public class TaskComponent extends Div implements AfterCompose {
     }
 
     public String getTooltipText() {
-        // FIXME Bug #1270
-        if (progressType == null) {
+        if ( progressType == null ) {
             return task.getTooltipText();
         } else {
             return task.updateTooltipText(progressType);

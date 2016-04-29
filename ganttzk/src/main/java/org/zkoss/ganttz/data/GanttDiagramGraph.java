@@ -38,9 +38,9 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
-import org.apache.commons.lang.Validate;
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang3.Validate;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jgrapht.DirectedGraph;
@@ -197,7 +197,6 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements ICritical
         @Override
         public void setEndDateFor(Task task, final GanttDate newEnd) {
             task.doPositionModifications(new IModifications() {
-
                 @Override
                 public void doIt(IUpdatablePosition position) {
                     position.setEndDate(newEnd);
@@ -213,7 +212,6 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements ICritical
         @Override
         public void setStartDateFor(Task task, final GanttDate newStart) {
             task.doPositionModifications(new IModifications() {
-
                 @Override
                 public void doIt(IUpdatablePosition position) {
                     position.setBeginDate(newStart);
@@ -247,8 +245,11 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements ICritical
 
     public static class GanttZKDiagramGraph extends GanttDiagramGraph<Task, Dependency> {
 
-        private GanttZKDiagramGraph(boolean scheduleBackwards, List<Constraint<GanttDate>> globalStartConstraints,
-                List<Constraint<GanttDate>> globalEndConstraints, boolean dependenciesConstraintsHavePriority) {
+        private GanttZKDiagramGraph(
+                boolean scheduleBackwards,
+                List<Constraint<GanttDate>> globalStartConstraints,
+                List<Constraint<GanttDate>> globalEndConstraints,
+                boolean dependenciesConstraintsHavePriority) {
 
             super(scheduleBackwards, GANTTZK_ADAPTER, globalStartConstraints, globalEndConstraints,
                     dependenciesConstraintsHavePriority);

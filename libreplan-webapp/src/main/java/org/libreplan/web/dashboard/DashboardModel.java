@@ -60,7 +60,7 @@ import org.springframework.stereotype.Component;
  * @author Diego Pino García <dpino@igalia.com>
  * @author Manuel Rego Casasnovas <rego@igalia.com>
  *
- *         Model for UI operations related to Order Dashboard View
+ * Model for UI operations related to Order Dashboard View
  *
  */
 @Component
@@ -70,43 +70,35 @@ public class DashboardModel implements IDashboardModel {
     @Autowired
     private IOrderResourceLoadCalculator resourceLoadCalculator;
 
-    /* Parameters */
-    public final static int EA_STRETCHES_PERCENTAGE_STEP = 10;
-    public final static int EA_STRETCHES_MIN_VALUE = -100;
-    public final static int EA_STRETCHES_MAX_VALUE = 150;
-    public final static int LTC_NUMBER_OF_INTERVALS = 10;
-
-    /* To be calculated */
-    public static double LTC_STRETCHES_STEP = 0;
-    public static double LTC_STRETCHES_MIN_VALUE = 0;
-    public static double LTC_STRETCHES_MAX_VALUE = 0;
-
     private Order currentOrder;
+
     private List<TaskElement> criticalPath;
+
     private Integer taskCount = null;
 
     private final Map<TaskStatusEnum, BigDecimal> taskStatusStats;
+
     private final Map<TaskDeadlineViolationStatusEnum, BigDecimal> taskDeadlineViolationStatusStats;
+
     private BigDecimal marginWithDeadLine;
+
     private Integer absoluteMarginWithDeadLine;
 
     public DashboardModel() {
-        taskStatusStats = new EnumMap<TaskStatusEnum, BigDecimal>(
-                TaskStatusEnum.class);
-        taskDeadlineViolationStatusStats = new EnumMap<TaskDeadlineViolationStatusEnum, BigDecimal>(
-                TaskDeadlineViolationStatusEnum.class);
+        taskStatusStats = new EnumMap<>(TaskStatusEnum.class);
+        taskDeadlineViolationStatusStats = new EnumMap<>(TaskDeadlineViolationStatusEnum.class);
     }
 
     @Override
     public void setCurrentOrder(PlanningState planningState, List<TaskElement> criticalPath) {
         final Order order = planningState.getOrder();
 
-        resourceLoadCalculator.setOrder(order,
-                planningState.getAssignmentsCalculator());
+        resourceLoadCalculator.setOrder(order, planningState.getAssignmentsCalculator());
         this.currentOrder = order;
         this.criticalPath = criticalPath;
         this.taskCount = null;
-        if (tasksAvailable()) {
+
+        if ( tasksAvailable() ) {
             this.calculateGlobalProgress();
             this.calculateTaskStatusStatistics();
             this.calculateTaskViolationStatusStatistics();
@@ -139,26 +131,23 @@ public class DashboardModel implements IDashboardModel {
     /* Progress KPI: "Deadline violation" */
     @Override
     public BigDecimal getPercentageOfOnScheduleTasks() {
-        return taskDeadlineViolationStatusStats
-                .get(TaskDeadlineViolationStatusEnum.ON_SCHEDULE);
+        return taskDeadlineViolationStatusStats.get(TaskDeadlineViolationStatusEnum.ON_SCHEDULE);
     }
 
     @Override
     public BigDecimal getPercentageOfTasksWithViolatedDeadline() {
-        return taskDeadlineViolationStatusStats
-                .get(TaskDeadlineViolationStatusEnum.DEADLINE_VIOLATED);
+        return taskDeadlineViolationStatusStats.get(TaskDeadlineViolationStatusEnum.DEADLINE_VIOLATED);
     }
 
     @Override
     public BigDecimal getPercentageOfTasksWithNoDeadline() {
-        return taskDeadlineViolationStatusStats
-                .get(TaskDeadlineViolationStatusEnum.NO_DEADLINE);
+        return taskDeadlineViolationStatusStats.get(TaskDeadlineViolationStatusEnum.NO_DEADLINE);
     }
 
     /* Progress KPI: "Global Progress of the Project" */
     private void calculateGlobalProgress() {
         TaskGroup rootTask = getRootTask();
-        if (rootTask == null) {
+        if ( rootTask == null ) {
             throw new RuntimeException("Root task is null");
         }
         rootTask.updateCriticalPathProgress(criticalPath);
@@ -170,8 +159,7 @@ public class DashboardModel implements IDashboardModel {
     }
 
     private BigDecimal asPercentage(BigDecimal value) {
-        return value != null ? value.multiply(BigDecimal.valueOf(100))
-                : BigDecimal.ZERO;
+        return value != null ? value.multiply(BigDecimal.valueOf(100)) : BigDecimal.ZERO;
     }
 
     @Override
@@ -181,8 +169,7 @@ public class DashboardModel implements IDashboardModel {
 
     @Override
     public BigDecimal getExpectedAdvancePercentageByHours() {
-        return asPercentage(getRootTask()
-                .getTheoreticalProgressByNumHoursForAllTasksUntilNow());
+        return asPercentage(getRootTask().getTheoreticalProgressByNumHoursForAllTasksUntilNow());
     }
 
     @Override
@@ -192,8 +179,7 @@ public class DashboardModel implements IDashboardModel {
 
     @Override
     public BigDecimal getExpectedCriticalPathProgressByNumHours() {
-        return asPercentage(getRootTask()
-                .getTheoreticalProgressByNumHoursForCriticalPathUntilNow());
+        return asPercentage(getRootTask().getTheoreticalProgressByNumHoursForCriticalPathUntilNow());
     }
 
     @Override
@@ -203,8 +189,7 @@ public class DashboardModel implements IDashboardModel {
 
     @Override
     public BigDecimal getExpectedCriticalPathProgressByDuration() {
-        return asPercentage(getRootTask()
-                .getTheoreticalProgressByDurationForCriticalPathUntilNow());
+        return asPercentage(getRootTask().getTheoreticalProgressByDurationForCriticalPathUntilNow());
     }
 
     /* Time KPI: Margin with deadline */
@@ -214,29 +199,26 @@ public class DashboardModel implements IDashboardModel {
     }
 
     private void calculateMarginWithDeadLine() {
-        if (this.getRootTask() == null) {
+        if ( this.getRootTask() == null ) {
             throw new RuntimeException("Root task is null");
         }
-        if (this.currentOrder.getDeadline() == null) {
+
+        if ( this.currentOrder.getDeadline() == null ) {
             this.marginWithDeadLine = null;
             return;
         }
+
         TaskGroup rootTask = getRootTask();
-        LocalDate endDate = TaskElement.maxDate(rootTask.getChildren())
-                .asExclusiveEnd();
-        Days orderDuration = Days.daysBetween(
-                TaskElement.minDate(rootTask.getChildren()).getDate(), endDate);
+        LocalDate endDate = TaskElement.maxDate(rootTask.getChildren()).asExclusiveEnd();
+        Days orderDuration = Days.daysBetween(TaskElement.minDate(rootTask.getChildren()).getDate(), endDate);
 
-        LocalDate deadLineAsLocalDate = LocalDate.fromDateFields(currentOrder
-                .getDeadline());
-        Days deadlineOffset = Days.daysBetween(endDate,
-                deadLineAsLocalDate.plusDays(1));
+        LocalDate deadLineAsLocalDate = LocalDate.fromDateFields(currentOrder.getDeadline());
+        Days deadlineOffset = Days.daysBetween(endDate, deadLineAsLocalDate.plusDays(1));
 
-        BigDecimal outcome = new BigDecimal(deadlineOffset.getDays(),
-                MathContext.DECIMAL32);
-        this.marginWithDeadLine = outcome.divide(
-                new BigDecimal(orderDuration.getDays()), 8,
-                BigDecimal.ROUND_HALF_EVEN);
+        BigDecimal outcome = new BigDecimal(deadlineOffset.getDays(), MathContext.DECIMAL32);
+
+        this.marginWithDeadLine =
+                outcome.divide(new BigDecimal(orderDuration.getDays()), 8, BigDecimal.ROUND_HALF_EVEN);
     }
 
     @Override
@@ -248,13 +230,15 @@ public class DashboardModel implements IDashboardModel {
         TaskElement rootTask = getRootTask();
         Date deadline = currentOrder.getDeadline();
 
-        if (rootTask == null) {
+        if ( rootTask == null ) {
             throw new RuntimeException("Root task is null");
         }
-        if (deadline == null) {
+
+        if ( deadline == null ) {
             this.absoluteMarginWithDeadLine = null;
             return;
         }
+
         absoluteMarginWithDeadLine = daysBetween(
                 TaskElement.maxDate(rootTask.getChildren()).asExclusiveEnd(),
                 LocalDate.fromDateFields(deadline).plusDays(1));
@@ -277,16 +261,19 @@ public class DashboardModel implements IDashboardModel {
     @Override
     public Map<Interval, Integer> calculateTaskCompletion() {
         List<Double> deviations = getTaskLagDeviations();
+
         return calculateHistogramIntervals(deviations, 6, 1);
     }
 
     private List<Double> getTaskLagDeviations() {
-        if (this.getRootTask() == null) {
+        if ( this.getRootTask() == null ) {
             throw new RuntimeException("Root task is null");
         }
+
         CalculateFinishedTasksLagInCompletionVisitor visitor = new CalculateFinishedTasksLagInCompletionVisitor();
         TaskElement rootTask = getRootTask();
         rootTask.acceptVisitor(visitor);
+
         return visitor.getDeviations();
     }
 
@@ -318,18 +305,19 @@ public class DashboardModel implements IDashboardModel {
     @Override
     public Map<Interval, Integer> calculateEstimationAccuracy() {
         List<Double> deviations = getEstimationAccuracyDeviations();
+
         return calculateHistogramIntervals(deviations, 6, 10);
     }
 
-    private Map<Interval, Integer> calculateHistogramIntervals(
-            List<Double> values, int intervalsNumber, int intervalMinimumSize) {
-        Map<Interval, Integer> result = new LinkedHashMap<Interval, Integer>();
+    private Map<Interval, Integer> calculateHistogramIntervals(List<Double> values, int intervalsNumber,
+                                                               int intervalMinimumSize) {
+        Map<Interval, Integer> result = new LinkedHashMap<>();
 
         int totalMinimumSize = intervalsNumber * intervalMinimumSize;
         int halfSize = totalMinimumSize / 2;
 
         double maxDouble, minDouble;
-        if (values.isEmpty()) {
+        if ( values.isEmpty() ) {
             minDouble = -halfSize;
             maxDouble = halfSize;
         } else {
@@ -339,39 +327,34 @@ public class DashboardModel implements IDashboardModel {
 
         // If min and max are between -halfSize and +halfSize, set -halfSize as
         // min and +halfSize as max
-        if (minDouble >= -halfSize && maxDouble <= halfSize) {
+        if ( minDouble >= -halfSize && maxDouble <= halfSize ) {
             minDouble = -halfSize;
             maxDouble = halfSize;
         }
 
         // If the difference between min and max is less than totalMinimumSize,
         // decrease min
-        // and increase max till get that difference
-        boolean changeMin = true;
         while (maxDouble - minDouble < totalMinimumSize) {
-            if (changeMin) {
-                minDouble -= intervalMinimumSize;
-            } else {
-                maxDouble += intervalMinimumSize;
-            }
+            minDouble -= intervalMinimumSize;
         }
 
         // Round min and max properly depending on decimal part or not
         int min;
         double minDecimalPart = minDouble - (int) minDouble;
-        if (minDouble >= 0) {
+        if ( minDouble >= 0 ) {
             min = (int) (minDouble - minDecimalPart);
         } else {
             min = (int) (minDouble - minDecimalPart);
-            if (minDecimalPart != 0) {
+            if ( minDecimalPart != 0 ) {
                 min--;
             }
         }
+
         int max;
         double maxDecimalPart = maxDouble - (int) maxDouble;
-        if (maxDouble >= 0) {
+        if ( maxDouble >= 0 ) {
             max = (int) (maxDouble - maxDecimalPart);
-            if (maxDecimalPart != 0) {
+            if ( maxDecimalPart != 0 ) {
                 max++;
             }
         } else {
@@ -387,10 +370,11 @@ public class DashboardModel implements IDashboardModel {
         for (int i = 0; i < intervalsNumber; i++) {
             int to = from + (int) delta;
             // Fix to depending on decimal part if it's not the last interval
-            if (deltaDecimalPart == 0 && i != (intervalsNumber - 1)) {
+            if ( deltaDecimalPart == 0 && i != (intervalsNumber - 1) ) {
                 to--;
             }
-            result.put(new Interval(from, to), Integer.valueOf(0));
+
+            result.put(new Interval(from, to), 0);
 
             from = to + 1;
         }
@@ -398,23 +382,25 @@ public class DashboardModel implements IDashboardModel {
         // Construct map with number of tasks for each interval
         final Set<Interval> intervals = result.keySet();
         for (Double each : values) {
-            Interval interval = Interval.containingValue(
-                    intervals, each);
-            if (interval != null) {
+            Interval interval = Interval.containingValue(intervals, each);
+            if ( interval != null ) {
                 Integer value = result.get(interval);
                 result.put(interval, value + 1);
             }
         }
+
         return result;
     }
 
     private List<Double> getEstimationAccuracyDeviations() {
-        if (this.getRootTask() == null) {
+        if ( this.getRootTask() == null ) {
             throw new RuntimeException("Root task is null");
         }
+
         CalculateFinishedTasksEstimationDeviationVisitor visitor = new CalculateFinishedTasksEstimationDeviationVisitor();
         TaskElement rootTask = getRootTask();
         rootTask.acceptVisitor(visitor);
+
         return visitor.getDeviations();
     }
 
@@ -427,13 +413,13 @@ public class DashboardModel implements IDashboardModel {
             this.max = max;
         }
 
-        public static Interval containingValue(
-                Collection<Interval> intervals, double value) {
+        public static Interval containingValue(Collection<Interval> intervals, double value) {
             for (Interval each : intervals) {
-                if (each.includes(value)) {
+                if ( each.includes(value) ) {
                     return each;
                 }
             }
+
             return null;
         }
 
@@ -452,20 +438,25 @@ public class DashboardModel implements IDashboardModel {
     public Map<TaskStatusEnum, Integer> calculateTaskStatus() {
         AccumulateTasksStatusVisitor visitor = new AccumulateTasksStatusVisitor();
         TaskElement rootTask = getRootTask();
-        if (this.getRootTask() == null) {
+
+        if ( this.getRootTask() == null ) {
             throw new RuntimeException("Root task is null");
         }
+
         resetTasksStatusInGraph();
         rootTask.acceptVisitor(visitor);
+
         return visitor.getTaskStatusData();
     }
 
     private void calculateTaskStatusStatistics() {
         AccumulateTasksStatusVisitor visitor = new AccumulateTasksStatusVisitor();
         TaskElement rootTask = getRootTask();
-        if (this.getRootTask() == null) {
+
+        if ( this.getRootTask() == null ) {
             throw new RuntimeException("Root task is null");
         }
+
         resetTasksStatusInGraph();
         rootTask.acceptVisitor(visitor);
         Map<TaskStatusEnum, Integer> count = visitor.getTaskStatusData();
@@ -475,21 +466,21 @@ public class DashboardModel implements IDashboardModel {
     private void calculateTaskViolationStatusStatistics() {
         AccumulateTasksDeadlineStatusVisitor visitor = new AccumulateTasksDeadlineStatusVisitor();
         TaskElement rootTask = getRootTask();
-        if (this.getRootTask() == null) {
+
+        if ( this.getRootTask() == null ) {
             throw new RuntimeException("Root task is null");
         }
+
         rootTask.acceptVisitor(visitor);
-        Map<TaskDeadlineViolationStatusEnum, Integer> count = visitor
-                .getTaskDeadlineViolationStatusData();
+        Map<TaskDeadlineViolationStatusEnum, Integer> count = visitor.getTaskDeadlineViolationStatusData();
         mapAbsoluteValuesToPercentages(count, taskDeadlineViolationStatusStats);
     }
 
-    private <T> void mapAbsoluteValuesToPercentages(Map<T, Integer> source,
-            Map<T, BigDecimal> dest) {
+    private <T> void mapAbsoluteValuesToPercentages(Map<T, Integer> source, Map<T, BigDecimal> dest) {
         int totalTasks = countTasksInAResultMap(source);
         for (Map.Entry<T, Integer> entry : source.entrySet()) {
             BigDecimal percentage;
-            if (totalTasks == 0) {
+            if ( totalTasks == 0 ) {
                 percentage = BigDecimal.ZERO;
 
             } else {
@@ -511,18 +502,18 @@ public class DashboardModel implements IDashboardModel {
     }
 
     private int countTasksInAResultMap(Map<? extends Object, Integer> map) {
-        /*
-         * It's only needed to count the number of tasks once each time setOrder
-         * is called.
-         */
-        if (this.taskCount != null) {
+
+         // It's only needed to count the number of tasks once each time setOrder is called.
+        if ( this.taskCount != null ) {
             return this.taskCount.intValue();
         }
+
         int sum = 0;
         for (Object count : map.values()) {
             sum += (Integer) count;
         }
-        this.taskCount = new Integer(sum);
+        this.taskCount = sum;
+
         return sum;
     }
 
@@ -534,36 +525,32 @@ public class DashboardModel implements IDashboardModel {
     @Override
     public BigDecimal getOvertimeRatio() {
         EffortDuration totalLoad = sumAll(resourceLoadCalculator.getAllLoad());
-        EffortDuration overload = sumAll(resourceLoadCalculator
-                .getAllOverload());
-        return overload.dividedByAndResultAsBigDecimal(totalLoad).setScale(2,
-                RoundingMode.HALF_UP);
+        EffortDuration overload = sumAll(resourceLoadCalculator.getAllOverload());
+
+        return overload.dividedByAndResultAsBigDecimal(totalLoad).setScale(2, RoundingMode.HALF_UP);
     }
 
-    private EffortDuration sumAll(
-            ContiguousDaysLine<EffortDuration> contiguousDays) {
+    private EffortDuration sumAll(ContiguousDaysLine<EffortDuration> contiguousDays) {
         EffortDuration result = EffortDuration.zero();
-        Iterator<OnDay<EffortDuration>> iterator = contiguousDays
-                .iterator();
+        Iterator<OnDay<EffortDuration>> iterator = contiguousDays.iterator();
+
         while (iterator.hasNext()) {
             OnDay<EffortDuration> value = iterator.next();
             EffortDuration effort = value.getValue();
             result = EffortDuration.sum(result, effort);
         }
+
         return result;
     }
 
     @Override
     public BigDecimal getAvailabilityRatio() {
         EffortDuration totalLoad = sumAll(resourceLoadCalculator.getAllLoad());
-        EffortDuration overload = sumAll(resourceLoadCalculator
-                .getAllOverload());
+        EffortDuration overload = sumAll(resourceLoadCalculator.getAllOverload());
         EffortDuration load = totalLoad.minus(overload);
+        EffortDuration capacity = sumAll(resourceLoadCalculator.getMaxCapacityOnResources());
 
-        EffortDuration capacity = sumAll(resourceLoadCalculator
-                .getMaxCapacityOnResources());
-        return BigDecimal.ONE.setScale(2, RoundingMode.HALF_UP).subtract(
-                load.dividedByAndResultAsBigDecimal(capacity));
+        return BigDecimal.ONE.setScale(2, RoundingMode.HALF_UP).subtract(load.dividedByAndResultAsBigDecimal(capacity));
     }
 
 }

@@ -31,7 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.zkoss.ganttz.Planner;
 import org.zkoss.ganttz.data.GanttDate;
 import org.zkoss.ganttz.data.GanttDiagramGraph.IGraphChangeListener;
@@ -53,15 +53,15 @@ import org.zkoss.zk.ui.Component;
 public class PlannerConfiguration<T> implements IDisabilityConfiguration {
 
     public interface IPrintAction {
-        public void doPrint();
+        void doPrint();
 
-        public void doPrint(Map<String, String> parameters);
+        void doPrint(Map<String, String> parameters);
 
-        public void doPrint(HashMap<String, String> parameters, Planner planner);
+        void doPrint(HashMap<String, String> parameters, Planner planner);
     }
 
     public interface IReloadChartListener {
-        public void reloadChart();
+        void reloadChart();
     }
 
     private static class NullCommand<T> implements ICommand<T> {
@@ -123,13 +123,13 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
 
     private List<? extends T> data;
 
-    private List<ICommand<T>> globalCommands = new ArrayList<ICommand<T>>();
+    private List<ICommand<T>> globalCommands = new ArrayList<>();
 
-    private List<ICommandOnTask<T>> commandsOnTasks = new ArrayList<ICommandOnTask<T>>();
+    private List<ICommandOnTask<T>> commandsOnTasks = new ArrayList<>();
 
-    private ICommand<T> goingDownInLastArrowCommand = new NullCommand<T>();
+    private ICommand<T> goingDownInLastArrowCommand = new NullCommand<>();
 
-    private ICommandOnTask<T> doubleClickCommand = new NullCommandOnTask<T>();
+    private ICommandOnTask<T> doubleClickCommand = new NullCommandOnTask<>();
 
     private Component chartComponent;
 
@@ -167,26 +167,25 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
 
     // private String identifier = null;
 
-    private IDetailItemModificator firstLevelModificators = SeveralModificators
-            .empty();
+    private IDetailItemModificator firstLevelModificators = SeveralModificators.empty();
 
-    private IDetailItemModificator secondLevelModificators = SeveralModificators
-            .empty();
+    private IDetailItemModificator secondLevelModificators = SeveralModificators.empty();
 
-    private List<IReloadChartListener> reloadChartListeners = new ArrayList<IReloadChartListener>();
+    private List<IReloadChartListener> reloadChartListeners = new ArrayList<>();
 
     private IPrintAction printAction;
 
     private boolean expandPlanningViewCharts;
 
-    private final List<IGraphChangeListener> preGraphChangeListeners = new ArrayList<IGraphChangeListener>();
+    private final List<IGraphChangeListener> preGraphChangeListeners = new ArrayList<>();
 
-    private final List<IGraphChangeListener> postGraphChangeListeners = new ArrayList<IGraphChangeListener>();
+    private final List<IGraphChangeListener> postGraphChangeListeners = new ArrayList<>();
 
     private boolean scheduleBackwards = false;
 
     public PlannerConfiguration(IAdapterToTaskFundamentalProperties<T> adapter,
-            IStructureNavigator<T> navigator, List<? extends T> data) {
+                                IStructureNavigator<T> navigator,
+                                List<? extends T> data) {
         this.adapter = adapter;
         this.navigator = navigator;
         this.data = data;
@@ -234,8 +233,7 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
         this.notAfterThan = GanttDate.createFrom(notAfterThan);
     }
 
-    public void setGoingDownInLastArrowCommand(
-            ICommand<T> goingDownInLastArrowCommand) {
+    public void setGoingDownInLastArrowCommand(ICommand<T> goingDownInLastArrowCommand) {
         Validate.notNull(goingDownInLastArrowCommand);
         this.goingDownInLastArrowCommand = goingDownInLastArrowCommand;
     }
@@ -293,11 +291,11 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
         this.editingDatesEnabled = editingDatesEnabled;
     }
 
-    public static List<Constraint<GanttDate>> getStartConstraintsGiven(
-            GanttDate notBeforeThan) {
-        if (notBeforeThan != null) {
+    public static List<Constraint<GanttDate>> getStartConstraintsGiven(GanttDate notBeforeThan) {
+        if ( notBeforeThan != null ) {
             return Collections.singletonList(biggerOrEqualThan(notBeforeThan));
         }
+
         return Collections.emptyList();
     }
 
@@ -305,11 +303,11 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
         return getStartConstraintsGiven(notBeforeThan);
     }
 
-    public static List<Constraint<GanttDate>> getEndConstraintsGiven(
-            GanttDate notAfterThan) {
-        if (notAfterThan != null) {
+    public static List<Constraint<GanttDate>> getEndConstraintsGiven(GanttDate notAfterThan) {
+        if ( notAfterThan != null ) {
             return Collections.singletonList(lessOrEqualThan(notAfterThan));
         }
+
         return Collections.emptyList();
     }
 
@@ -401,20 +399,16 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
         return secondLevelModificators;
     }
 
-    public void setSecondLevelModificators(
-            IDetailItemModificator... secondLevelModificators) {
-        this.secondLevelModificators = SeveralModificators
-                .create(secondLevelModificators);
+    public void setSecondLevelModificators(IDetailItemModificator... secondLevelModificators) {
+        this.secondLevelModificators = SeveralModificators.create(secondLevelModificators);
     }
 
     public IDetailItemModificator getFirstLevelModificators() {
         return firstLevelModificators;
     }
 
-    public void setFirstLevelModificators(
-            IDetailItemModificator... firstLevelModificators) {
-        this.firstLevelModificators = SeveralModificators
-                .create(firstLevelModificators);
+    public void setFirstLevelModificators(IDetailItemModificator... firstLevelModificators) {
+        this.firstLevelModificators = SeveralModificators.create(firstLevelModificators);
     }
 
     public void addReloadChartListener(IReloadChartListener reloadChartListener) {
@@ -437,21 +431,21 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
     }
 
     public void print() {
-        if (!isPrintEnabled()) {
+        if ( !isPrintEnabled() ) {
             throw new UnsupportedOperationException("print not supported");
         }
         printAction.doPrint();
     }
 
     public void print(Map<String, String> parameters) {
-        if (!isPrintEnabled()) {
+        if ( !isPrintEnabled() ) {
             throw new UnsupportedOperationException("print not supported");
         }
         printAction.doPrint(parameters);
     }
 
     public void print(HashMap<String, String> parameters, Planner planner) {
-        if (!isPrintEnabled()) {
+        if ( !isPrintEnabled() ) {
             throw new UnsupportedOperationException("print not supported");
         }
         printAction.doPrint(parameters, planner);
@@ -466,18 +460,16 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
         return expandPlanningViewCharts;
     }
 
-    public void addPreGraphChangeListener(
-            IGraphChangeListener preGraphChangeListener) {
+    public void addPreGraphChangeListener(IGraphChangeListener preGraphChangeListener) {
         Validate.notNull(preGraphChangeListener);
-        if (!preGraphChangeListeners.contains(preGraphChangeListener)) {
+        if ( !preGraphChangeListeners.contains(preGraphChangeListener) ) {
             preGraphChangeListeners.add(preGraphChangeListener);
         }
     }
 
-    public void addPostGraphChangeListener(
-            IGraphChangeListener postGraphChangeListener) {
+    public void addPostGraphChangeListener(IGraphChangeListener postGraphChangeListener) {
         Validate.notNull(postGraphChangeListener);
-        if (!postGraphChangeListeners.contains(postGraphChangeListener)) {
+        if ( !postGraphChangeListeners.contains(postGraphChangeListener) ) {
             postGraphChangeListeners.add(postGraphChangeListener);
         }
     }

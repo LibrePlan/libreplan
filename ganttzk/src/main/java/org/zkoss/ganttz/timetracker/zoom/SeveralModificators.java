@@ -26,7 +26,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -35,26 +35,22 @@ import org.apache.commons.lang.Validate;
 public class SeveralModificators implements IDetailItemModificator {
 
     public static IDetailItemModificator empty() {
-        return new SeveralModificators(Collections
-                .<IDetailItemModificator> emptyList());
+        return new SeveralModificators(Collections.<IDetailItemModificator> emptyList());
     }
 
-    public static IDetailItemModificator create(
-            IDetailItemModificator... modificators) {
+    public static IDetailItemModificator create(IDetailItemModificator... modificators) {
         return new SeveralModificators(Arrays.asList(modificators));
     }
 
-    public static IDetailItemModificator create(
-            Collection<? extends IDetailItemModificator> modificators) {
+    public static IDetailItemModificator create(Collection<? extends IDetailItemModificator> modificators) {
         return new SeveralModificators(modificators);
     }
 
     private final List<IDetailItemModificator> modificators;
 
-    private SeveralModificators(
-            Collection<? extends IDetailItemModificator> modificators) {
+    private SeveralModificators(Collection<? extends IDetailItemModificator> modificators) {
         Validate.noNullElements(modificators);
-        this.modificators = new ArrayList<IDetailItemModificator>(modificators);
+        this.modificators = new ArrayList<>(modificators);
     }
 
     @Override
@@ -63,6 +59,7 @@ public class SeveralModificators implements IDetailItemModificator {
         for (IDetailItemModificator each : modificators) {
             result = each.applyModificationsTo(result, z);
         }
+
         return result;
     }
 

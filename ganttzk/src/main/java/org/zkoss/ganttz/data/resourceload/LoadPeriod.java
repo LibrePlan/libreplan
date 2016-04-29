@@ -27,8 +27,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.apache.commons.lang.Validate;
-import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang3.Validate;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.zkoss.ganttz.data.GanttDate;
@@ -47,14 +47,20 @@ public class LoadPeriod {
 
     private final String assignedEffort;
 
-    public LoadPeriod(GanttDate start, GanttDate end, String availableEffort,
-            String assignedEffort, LoadLevel loadLevel) {
+    public LoadPeriod(
+            GanttDate start,
+            GanttDate end,
+            String availableEffort,
+            String assignedEffort,
+            LoadLevel loadLevel) {
+
         Validate.notNull(start);
         Validate.notNull(end);
         Validate.notNull(loadLevel);
         Validate.notNull(availableEffort);
         Validate.notNull(assignedEffort);
         Validate.isTrue(start.compareTo(end) <= 0);
+
         this.start = start;
         this.end = end;
         this.loadLevel = loadLevel;
@@ -80,27 +86,28 @@ public class LoadPeriod {
      * @throws IllegalArgumentException
      *             if some of the LoadPeriod overlaps
      */
-    public static List<LoadPeriod> sort(
-            Collection<? extends LoadPeriod> notOverlappingPeriods)
+    public static List<LoadPeriod> sort(Collection<? extends LoadPeriod> notOverlappingPeriods)
             throws IllegalArgumentException {
-        ArrayList<LoadPeriod> result = new ArrayList<LoadPeriod>(
-                notOverlappingPeriods);
+
+        ArrayList<LoadPeriod> result = new ArrayList<>(notOverlappingPeriods);
         Collections.sort(result, new Comparator<LoadPeriod>() {
 
             @Override
             public int compare(LoadPeriod o1, LoadPeriod o2) {
-                if (o1.overlaps(o2)) {
+                if ( o1.overlaps(o2) ) {
                     LOG.warn(o1 + " overlaps with " + o2);
-                    throw new IllegalArgumentException(o1 + " overlaps with "
-                            + o2);
+                    throw new IllegalArgumentException(o1 + " overlaps with " + o2);
                 }
+
                 int comparison = o1.start.compareTo(o2.start);
-                if (comparison != 0) {
+                if ( comparison != 0 ) {
                     return comparison;
                 }
+
                 return o1.end.compareTo(o2.end);
             }
         });
+
         return result;
     }
 
