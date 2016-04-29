@@ -59,6 +59,7 @@ import org.libreplan.business.resources.entities.MachineWorkersConfigurationUnit
 import org.libreplan.business.resources.entities.Resource;
 import org.libreplan.business.resources.entities.Worker;
 import org.libreplan.business.scenarios.bootstrap.IScenariosBootstrap;
+import org.libreplan.business.workingday.EffortDuration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -67,8 +68,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
-        BUSINESS_SPRING_CONFIG_TEST_FILE })
+@ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE, BUSINESS_SPRING_CONFIG_TEST_FILE })
 public class DerivedAllocationGeneratorTest {
 
     @Autowired
@@ -95,7 +95,7 @@ public class DerivedAllocationGeneratorTest {
     @SuppressWarnings("unchecked")
     private void givenFinder(Worker... workers) {
         IWorkerFinder result = createNiceMock(IWorkerFinder.class);
-        Collection<? extends Criterion> argument = (Collection<? extends Criterion>) anyObject();
+        Collection<? extends Criterion> argument = anyObject();
         expect(result.findWorkersMatching(argument)).andReturn(
                 Arrays.asList(workers)).anyTimes();
         replay(result);
@@ -118,36 +118,34 @@ public class DerivedAllocationGeneratorTest {
         configurationUnit = result;
     }
 
-    private Set<MachineWorkerAssignment> assignmentsFor(
-            MachineWorkersConfigurationUnit unit, Worker[] workers) {
-        Set<MachineWorkerAssignment> result = new HashSet<MachineWorkerAssignment>();
+    private Set<MachineWorkerAssignment> assignmentsFor(MachineWorkersConfigurationUnit unit, Worker[] workers) {
+        Set<MachineWorkerAssignment> result = new HashSet<>();
         for (Worker each : workers) {
             MachineWorkerAssignment assignment = workerAssignment(unit,each);
             result.add(assignment);
         }
+
         return result;
     }
 
-    private MachineWorkerAssignment workerAssignment(
-            MachineWorkersConfigurationUnit unit, Worker each) {
+    private MachineWorkerAssignment workerAssignment(MachineWorkersConfigurationUnit unit, Worker each) {
         MachineWorkerAssignment result = createNiceMock(MachineWorkerAssignment.class);
-        expect(result.getMachineWorkersConfigurationUnit()).andReturn(unit)
-                .anyTimes();
+        expect(result.getMachineWorkersConfigurationUnit()).andReturn(unit).anyTimes();
         expect(result.getWorker()).andReturn(each);
-        expect(result.getStartDate()).andReturn(
-                asDate(new LocalDate(2000, 1, 1))).anyTimes();
+        expect(result.getStartDate()).andReturn(asDate(new LocalDate(2000, 1, 1))).anyTimes();
         expect(result.getFinishDate()).andReturn(null).anyTimes();
         replay(result);
+
         return result;
     }
 
     private Worker workerWithAlwaysAssignedHours(int assignedHours){
         Worker result = createNiceMock(Worker.class);
-        expect(
-                result.getAssignedDurationDiscounting(isA(Map.class),
-                        isA(LocalDate.class))).andReturn(hours(assignedHours))
+        expect(result.getAssignedDurationDiscounting(isA(Map.class), isA(LocalDate.class)))
+                .andReturn(hours(assignedHours))
                 .anyTimes();
         replay(result);
+
         return result;
     }
 
@@ -156,26 +154,28 @@ public class DerivedAllocationGeneratorTest {
     }
 
     private void givenDayAssignments() {
-        dayAssignments = new ArrayList<DayAssignment>();
+        dayAssignments = new ArrayList<>();
     }
 
     private void givenDayAssignments(LocalDate start, int... hours) {
-        dayAssignments = new ArrayList<DayAssignment>();
+        dayAssignments = new ArrayList<>();
         for (int i = 0; i < hours.length; i++) {
             dayAssignments.add(createAssignment(start.plusDays(i), machine,
                     hours[i]));
         }
     }
 
-    private DayAssignment createAssignment(LocalDate day, Machine machine,
-            int hours) {
+    private DayAssignment createAssignment(LocalDate day, Machine machine, int hours) {
         DayAssignment dayAssignment = createNiceMock(DayAssignment.class);
-        expect(dayAssignment.getHours()).andReturn(hours).anyTimes();
+
+    //    expect(dayAssignment.getHours()).andReturn(hours).anyTimes();
         expect(dayAssignment.getDuration()).andReturn(hours(hours)).anyTimes();
         expect(dayAssignment.getResource()).andReturn(machine).anyTimes();
         expect(dayAssignment.getDay()).andReturn(day).anyTimes();
         expect(dayAssignment.isAssignedTo(machine)).andReturn(true).anyTimes();
+
         replay(dayAssignment);
+
         return dayAssignment;
     }
 
@@ -184,8 +184,7 @@ public class DerivedAllocationGeneratorTest {
         givenFinder();
         givenConfigurationUnit();
         givenDayAssignments();
-        DerivedAllocationGenerator.generate(derivedFrom, finder,
-                configurationUnit, dayAssignments);
+        DerivedAllocationGenerator.generate(derivedFrom, finder, configurationUnit, dayAssignments);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -193,8 +192,7 @@ public class DerivedAllocationGeneratorTest {
         givenDerivedFrom();
         givenConfigurationUnit();
         givenDayAssignments();
-        DerivedAllocationGenerator.generate(derivedFrom, finder,
-                configurationUnit, dayAssignments);
+        DerivedAllocationGenerator.generate(derivedFrom, finder, configurationUnit, dayAssignments);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -202,8 +200,7 @@ public class DerivedAllocationGeneratorTest {
         givenDerivedFrom();
         givenFinder();
         givenDayAssignments();
-        DerivedAllocationGenerator.generate(derivedFrom, finder,
-                configurationUnit, dayAssignments);
+        DerivedAllocationGenerator.generate(derivedFrom, finder, configurationUnit, dayAssignments);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -211,8 +208,7 @@ public class DerivedAllocationGeneratorTest {
         givenDerivedFrom();
         givenFinder();
         givenConfigurationUnit();
-        DerivedAllocationGenerator.generate(derivedFrom, finder,
-                configurationUnit, dayAssignments);
+        DerivedAllocationGenerator.generate(derivedFrom, finder, configurationUnit, dayAssignments);
     }
 
     @Test
@@ -222,10 +218,8 @@ public class DerivedAllocationGeneratorTest {
         givenConfigurationUnit(new BigDecimal(1.5), new Worker());
         givenDayAssignments(new LocalDate(2009, 10, 20), 8, 8, 8, 4);
         DerivedAllocation derivedAllocation = DerivedAllocationGenerator
-                .generate(derivedFrom, finder, configurationUnit,
-                        dayAssignments);
-        List<DerivedDayAssignment> assignments = derivedAllocation
-                .getAssignments();
+                .generate(derivedFrom, finder, configurationUnit, dayAssignments);
+        List<DerivedDayAssignment> assignments = derivedAllocation.getAssignments();
         assertThat(assignments, haveHours(12, 12, 12, 6));
     }
 
@@ -238,14 +232,11 @@ public class DerivedAllocationGeneratorTest {
         givenDayAssignments(start, 8, 8, 8, 4);
 
         Machine otherMachine = Machine.create();
-        dayAssignments
-                .add(createAssignment(start.plusDays(5), otherMachine, 8));
+        dayAssignments.add(createAssignment(start.plusDays(5), otherMachine, 8));
 
         DerivedAllocation derivedAllocation = DerivedAllocationGenerator
-                .generate(derivedFrom, finder, configurationUnit,
-                        dayAssignments);
-        List<DerivedDayAssignment> assignments = derivedAllocation
-                .getAssignments();
+                .generate(derivedFrom, finder, configurationUnit, dayAssignments);
+        List<DerivedDayAssignment> assignments = derivedAllocation.getAssignments();
         assertThat(assignments.size(), equalTo(4));
     }
 
@@ -258,12 +249,9 @@ public class DerivedAllocationGeneratorTest {
         givenConfigurationUnit(new BigDecimal(1.5));
         givenDayAssignments(new LocalDate(2009, 10, 20), 8, 8, 8, 4);
         DerivedAllocation derivedAllocation = DerivedAllocationGenerator
-                .generate(derivedFrom, finder, configurationUnit,
-                        dayAssignments);
-        List<DerivedDayAssignment> assignments = derivedAllocation
-                .getAssignments();
-        Map<Resource, List<DerivedDayAssignment>> byResource = DayAssignment
-                .byResourceAndOrdered(assignments);
+                .generate(derivedFrom, finder, configurationUnit, dayAssignments);
+        List<DerivedDayAssignment> assignments = derivedAllocation.getAssignments();
+        Map<Resource, List<DerivedDayAssignment>> byResource = DayAssignment.byResourceAndOrdered(assignments);
         assertThat(byResource.get(worker1), haveHours(7, 7, 7, 4));
         assertThat(byResource.get(worker2), haveHours(5, 5, 5, 2));
     }

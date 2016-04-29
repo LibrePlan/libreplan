@@ -200,10 +200,9 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
 
     @Override
     @Transactional(readOnly = true)
-    public void setConfigurationToPlanner(final Planner planner,
-            Collection<ICommandOnTask<TaskElement>> additional,
-            ICommandOnTask<TaskElement> doubleClickCommand,
-            TaskGroupPredicate predicate) {
+    public void setConfigurationToPlanner(final Planner planner, Collection<ICommandOnTask<TaskElement>> additional,
+                                            ICommandOnTask<TaskElement> doubleClickCommand,
+                                            TaskGroupPredicate predicate) {
         currentScenario = scenarioManager.getCurrent();
         final PlannerConfiguration<TaskElement> configuration = createConfiguration(predicate);
 
