@@ -47,8 +47,7 @@ public class OnColumnsRowRendererTest {
 
     }
 
-    private static class CellRenderer implements
-            ICellForDetailItemRenderer<DetailItem, Data> {
+    private static class CellRenderer implements ICellForDetailItemRenderer<DetailItem, Data> {
 
         @Override
         public Component cellFor(DetailItem item, Data data) {
@@ -57,8 +56,7 @@ public class OnColumnsRowRendererTest {
 
     }
 
-    private static class CellRendererNotInferable<T> implements
-            ICellForDetailItemRenderer<DetailItem, T> {
+    private static class CellRendererNotInferable<T> implements ICellForDetailItemRenderer<DetailItem, T> {
 
         @Override
         public Component cellFor(DetailItem item, T data) {
@@ -75,20 +73,19 @@ public class OnColumnsRowRendererTest {
 
     private List<Data> data;
 
-    private void givenOnDetailItemsRowRenderer(
-            ICellForDetailItemRenderer<DetailItem, Data> cellRenderer) {
-        if (detailItems == null) {
+    private void givenOnDetailItemsRowRenderer(ICellForDetailItemRenderer<DetailItem, Data> cellRenderer) {
+        if ( detailItems == null ) {
             givenDetailItems();
         }
-        rowRenderer = OnColumnsRowRenderer.create(Data.class, cellRenderer,
-                detailItems);
+        rowRenderer = OnColumnsRowRenderer.create(Data.class, cellRenderer, detailItems);
     }
 
     private void givenDetailItems() {
-        detailItems = new ArrayList<DetailItem>();
+        detailItems = new ArrayList<>();
         start = new LocalDate(2010, 1, 1).toDateMidnight().toDateTime();
         DateTime current = start;
         Period period = Period.months(2);
+
         for (int i = 1; i <= 10; i++) {
             DateTime end = current.plus(period);
             DetailItem detail = new DetailItem(200, i + "", current, end);
@@ -98,62 +95,55 @@ public class OnColumnsRowRendererTest {
     }
 
     private void givenData() {
-        data = new ArrayList<Data>();
+        data = new ArrayList<>();
         data.add(new Data());
         data.add(new Data());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void itNeedsNotNullDetailItems() {
         OnColumnsRowRenderer.create(Data.class, createStub(), null);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void itNeedsNotNullCellRenderer() {
-        OnColumnsRowRenderer.create(Data.class, null,
-                new ArrayList<DetailItem>());
+        OnColumnsRowRenderer.create(Data.class, null, new ArrayList<DetailItem>());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void itNeedsTheTypeAsClass() {
-        OnColumnsRowRenderer.create(null, createStub(),
-                new ArrayList<DetailItem>());
+        OnColumnsRowRenderer.create(null, createStub(), new ArrayList<DetailItem>());
     }
 
     @Test
     public void itCanHaveEmptyDetailItems() {
-        OnColumnsRowRenderer.create(Data.class, createStub(),
-                new ArrayList<DetailItem>());
+        OnColumnsRowRenderer.create(Data.class, createStub(), new ArrayList<DetailItem>());
     }
 
     @Test
     public void itCanInferTheGenericType() {
-        OnColumnsRowRenderer.create(new CellRenderer(),
-                new ArrayList<DetailItem>());
+        OnColumnsRowRenderer.create(new CellRenderer(), new ArrayList<DetailItem>());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void ifComesFromRawTypeIsNotInferrable() {
-        OnColumnsRowRenderer.create(createStub(),
-                new ArrayList<DetailItem>());
+        OnColumnsRowRenderer.create(createStub(), new ArrayList<DetailItem>());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void ifItNotShowsTheActualTypeIsNotInferrable() {
-        OnColumnsRowRenderer.create(new CellRendererNotInferable<Data>(),
-                new ArrayList<DetailItem>());
+        OnColumnsRowRenderer.create(new CellRendererNotInferable<Data>(), new ArrayList<DetailItem>());
     }
 
     @SuppressWarnings("serial")
     @Test(expected = IllegalArgumentException.class)
     public void noDetailItemCanBeNull() {
-        OnColumnsRowRenderer.create(Data.class, createStub(),
-                new ArrayList<DetailItem>() {
-                    {
-                        add(new DetailItem(300, "bla"));
-                        add(null);
-                    }
-                });
+        OnColumnsRowRenderer.create(Data.class, createStub(), new ArrayList<DetailItem>() {
+            {
+                add(new DetailItem(300, "bla"));
+                add(null);
+            }
+        });
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -193,6 +183,7 @@ public class OnColumnsRowRendererTest {
             }
         }
         replay(mock);
+
         return mock;
     }
 
@@ -209,17 +200,16 @@ public class OnColumnsRowRendererTest {
         verify(labelMock);
     }
 
-    private Label expectTheCreatedLabelIsAddedToTheRow(
-            ICellForDetailItemRenderer<DetailItem, Data> mock) {
+    private Label expectTheCreatedLabelIsAddedToTheRow(ICellForDetailItemRenderer<DetailItem, Data> mock) {
         Label labelMock = createStrictMock(Label.class);
-        for (Data d : data) {
-            for (DetailItem item : detailItems) {
-                expect(mock.cellFor(isA(DetailItem.class), isA(Data.class)))
-                        .andReturn(labelMock);
+        for (Data ignored1 : data) {
+            for (DetailItem ignored2 : detailItems) {
+                expect(mock.cellFor(isA(DetailItem.class), isA(Data.class))).andReturn(labelMock);
                 labelMock.setParent(isA(Row.class));
             }
         }
         replay(mock, labelMock);
+
         return labelMock;
     }
 

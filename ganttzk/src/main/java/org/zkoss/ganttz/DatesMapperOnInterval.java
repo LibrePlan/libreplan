@@ -19,15 +19,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- *
- */
+
 package org.zkoss.ganttz;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-import org.apache.commons.lang.math.Fraction;
+import org.apache.commons.lang3.math.Fraction;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.LocalDate;
@@ -43,16 +41,13 @@ public class DatesMapperOnInterval implements IDatesMapper {
     public DatesMapperOnInterval(int horizontalSize, Interval interval) {
         this.horizontalSize = horizontalSize;
         this.interval = interval;
-        this.millisecondsPerPixel = interval.getLengthBetween().getMillis()
-                / horizontalSize;
-        this.pixelsPerDay = Fraction.getFraction(horizontalSize, interval
-                .getDaysBetween().getDays());
+        this.millisecondsPerPixel = interval.getLengthBetween().getMillis() / horizontalSize;
+        this.pixelsPerDay = Fraction.getFraction(horizontalSize, interval.getDaysBetween().getDays());
     }
 
     @Override
     public LocalDate toDate(int pixels) {
-        int daysInto = Fraction.getFraction(pixels, 1).divideBy(pixelsPerDay)
-                .intValue();
+        int daysInto = Fraction.getFraction(pixels, 1).divideBy(pixelsPerDay).intValue();
         return getInterval().getStart().plusDays(daysInto);
     }
 
@@ -71,29 +66,29 @@ public class DatesMapperOnInterval implements IDatesMapper {
 
     private int toPixels(Fraction proportion) {
         try {
-            return proportion.multiplyBy(Fraction.getFraction(horizontalSize, 1))
-                    .intValue();
+            return proportion.multiplyBy(Fraction.getFraction(horizontalSize, 1)).intValue();
         } catch (ArithmeticException e) {
             double d = Math.log10(horizontalSize);
             int scale = (int) d + 1;
+
             BigDecimal quotient = new BigDecimal(proportion.getNumerator())
-                    .divide(new BigDecimal(proportion.getDenominator()), scale,
-                            RoundingMode.HALF_UP);
-            return quotient.multiply(new BigDecimal(horizontalSize))
-                    .intValue();
+                    .divide(new BigDecimal(proportion.getDenominator()), scale, RoundingMode.HALF_UP);
+
+            return quotient.multiply(new BigDecimal(horizontalSize)).intValue();
         }
     }
 
     @Override
     public int toPixels(ReadableDuration duration) {
-        DateTime end = getInterval().getStart().toDateTimeAtStartOfDay()
-                .plus(duration);
+        DateTime end = getInterval().getStart().toDateTimeAtStartOfDay().plus(duration);
+
         return toPixels(getProportion(end));
     }
 
     @Override
     public int toPixelsAbsolute(long milliseconds) {
         DateTime date = new DateTime(milliseconds);
+
         return this.toPixels(getProportion(date));
     }
 

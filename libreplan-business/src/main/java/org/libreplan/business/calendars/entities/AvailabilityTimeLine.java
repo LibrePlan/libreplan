@@ -53,12 +53,15 @@ public class AvailabilityTimeLine {
         @Override
         public final int compareTo(DatePoint obj) {
             Validate.notNull(obj);
-            if (obj instanceof FixedPoint) {
+            if ( obj instanceof FixedPoint ) {
                 return compareTo((FixedPoint) obj);
-            } else if (obj instanceof EndOfTime) {
+
+            } else if ( obj instanceof EndOfTime ) {
                 return compareTo((EndOfTime) obj);
-            } else if (obj instanceof StartOfTime) {
+
+            } else if ( obj instanceof StartOfTime ) {
                 return compareTo((StartOfTime) obj);
+
             } else {
                 throw new RuntimeException("unknown subclass for " + obj);
             }
@@ -69,15 +72,19 @@ public class AvailabilityTimeLine {
 
         @Override
         public final boolean equals(Object obj) {
-            if (!(obj instanceof DatePoint)) {
+            if ( !(obj instanceof DatePoint) ) {
                 return false;
             }
-            if (obj instanceof FixedPoint) {
+
+            if ( obj instanceof FixedPoint ) {
                 return equalTo((FixedPoint) obj);
-            } else if (obj instanceof EndOfTime) {
+
+            } else if ( obj instanceof EndOfTime ) {
                 return equalTo((EndOfTime) obj);
-            } else if (obj instanceof StartOfTime) {
+
+            } else if ( obj instanceof StartOfTime ) {
                 return equalTo((StartOfTime) obj);
+
             } else {
                 throw new RuntimeException("unknown subclass for " + obj);
             }
@@ -142,6 +149,7 @@ public class AvailabilityTimeLine {
 
         public static LocalDate tryExtract(DatePoint start) {
             FixedPoint point = (FixedPoint) start;
+
             return point.getDate();
         }
     }
@@ -243,8 +251,7 @@ public class AvailabilityTimeLine {
         }
     }
 
-    public static class Interval implements
-            Comparable<Interval> {
+    public static class Interval implements Comparable<Interval> {
 
         /**
          * Creates an interval. Null values can be provided.
@@ -256,10 +263,9 @@ public class AvailabilityTimeLine {
          * @return an interval from start to end
          */
         public static Interval create(LocalDate start, LocalDate end) {
-            DatePoint startPoint = start == null ? new StartOfTime()
-                    : new FixedPoint(start);
-            DatePoint endPoint = end == null ? new EndOfTime()
-                    : new FixedPoint(end);
+            DatePoint startPoint = start == null ? new StartOfTime() : new FixedPoint(start);
+            DatePoint endPoint = end == null ? new EndOfTime() : new FixedPoint(end);
+
             return new Interval(startPoint, endPoint);
         }
 
@@ -272,13 +278,11 @@ public class AvailabilityTimeLine {
         }
 
         public static Interval to(LocalDate date) {
-            return new Interval(StartOfTime.create(), new FixedPoint(
-                    date));
+            return new Interval(StartOfTime.create(), new FixedPoint(date));
         }
 
         static Interval point(LocalDate start) {
-            return new Interval(new FixedPoint(start), new FixedPoint(start
-                    .plusDays(1)));
+            return new Interval(new FixedPoint(start), new FixedPoint(start.plusDays(1)));
         }
 
         private final DatePoint start;
@@ -300,17 +304,17 @@ public class AvailabilityTimeLine {
 
         @Override
         public int compareTo(Interval other) {
-            return this.start.compareTo(other.start) * 2
-                    - this.end.compareTo(other.end);
+            return this.start.compareTo(other.start) * 2 - this.end.compareTo(other.end);
         }
 
         @Override
         public boolean equals(Object obj) {
-            if (obj instanceof Interval) {
+            if ( obj instanceof Interval ) {
                 Interval other = (Interval) obj;
-                return start.equals(other.getStart())
-                        && end.equals(other.getEnd());
+
+                return start.equals(other.getStart()) && end.equals(other.getEnd());
             }
+
             return false;
         }
 
@@ -324,35 +328,32 @@ public class AvailabilityTimeLine {
         }
 
         private boolean includes(FixedPoint point) {
-            return start.equals(point) || start.compareTo(point) <= 0
-                    && point.compareTo(end) < 0;
+            return start.equals(point) || start.compareTo(point) <= 0 && point.compareTo(end) < 0;
         }
 
         public boolean overlaps(Interval other) {
-            return start.compareTo(other.end) <= 0
-                    && end.compareTo(other.start) >= 0;
+            return start.compareTo(other.end) <= 0 && end.compareTo(other.start) >= 0;
         }
 
         public Interval intersect(Interval other) {
             Validate.isTrue(overlaps(other));
+
             return new Interval(max(start, other.start), min(end, other.end));
         }
 
         public Interval coalesce(Interval other) {
-            if (!overlaps(other)) {
-                throw new IllegalArgumentException(
-                        "in order to coalesce two intervals must overlap");
+            if ( !overlaps(other) ) {
+                throw new IllegalArgumentException("in order to coalesce two intervals must overlap");
             }
-            return new Interval(min(start, other.start), max(end,
-                    other.end));
+            return new Interval(min(start, other.start), max(end, other.end));
         }
 
         private DatePoint min(DatePoint... values) {
-            return (DatePoint) Collections.min(Arrays.asList(values));
+            return Collections.min(Arrays.asList(values));
         }
 
         private DatePoint max(DatePoint... values) {
-            return (DatePoint) Collections.max(Arrays.asList(values));
+            return Collections.max(Arrays.asList(values));
         }
 
         @Override
@@ -362,7 +363,7 @@ public class AvailabilityTimeLine {
     }
 
     public interface IVetoer {
-        public boolean isValid(LocalDate date);
+        boolean isValid(LocalDate date);
     }
 
     public static AvailabilityTimeLine allValid() {
@@ -372,6 +373,7 @@ public class AvailabilityTimeLine {
     public static AvailabilityTimeLine createAllInvalid() {
         AvailabilityTimeLine result = new AvailabilityTimeLine();
         result.allInvalid();
+
         return result;
     }
 
@@ -385,7 +387,7 @@ public class AvailabilityTimeLine {
 
     private IVetoer vetoer = NO_VETOER;
 
-    private List<Interval> invalids = new ArrayList<Interval>();
+    private List<Interval> invalids = new ArrayList<>();
 
     private AvailabilityTimeLine() {
     }
@@ -395,23 +397,27 @@ public class AvailabilityTimeLine {
     }
 
     private boolean isValidBasedOnInvaidIntervals(LocalDate date) {
-        if (invalids.isEmpty()) {
+        if ( invalids.isEmpty() ) {
             return true;
         }
+
         Interval possibleInterval = findPossibleIntervalFor(date);
+
         return possibleInterval == null || !possibleInterval.includes(date);
     }
 
     private Interval findPossibleIntervalFor(LocalDate date) {
         Interval point = Interval.point(date);
         int binarySearch = Collections.binarySearch(invalids, point);
-        if (binarySearch >= 0) {
+
+        if ( binarySearch >= 0)  {
             return invalids.get(binarySearch);
         } else {
             int insertionPoint = insertionPoint(binarySearch);
-            if (insertionPoint == 0) {
+            if ( insertionPoint == 0 ) {
                 return null;
             }
+
             return invalids.get(insertionPoint - 1);
         }
     }
@@ -439,10 +445,11 @@ public class AvailabilityTimeLine {
     }
 
     private void insert(Interval toBeInserted) {
-        if (invalids.isEmpty()) {
+        if ( invalids.isEmpty() ) {
             invalids.add(toBeInserted);
             return;
         }
+
         toBeInserted = coalesceWithAdjacent(toBeInserted);
         int insertionPoint = insertBeforeAllAdjacent(toBeInserted);
         removeAdjacent(insertionPoint, toBeInserted);
@@ -456,12 +463,14 @@ public class AvailabilityTimeLine {
      */
     private int findInsertionPosition(Interval interval) {
         int binarySearch = Collections.binarySearch(invalids, interval);
+
         return insertionPoint(binarySearch);
     }
 
     private int insertBeforeAllAdjacent(Interval toBeInserted) {
         int insertionPoint = findInsertionPosition(toBeInserted);
         invalids.add(insertionPoint, toBeInserted);
+
         return insertionPoint;
     }
 
@@ -471,39 +480,43 @@ public class AvailabilityTimeLine {
         for (Interval each : adjacent) {
             result = result.coalesce(each);
         }
+
         return result;
     }
 
     private List<Interval> getAdjacent(Interval toBeInserted) {
         final int insertionPoint = findInsertionPosition(toBeInserted);
-        List<Interval> result = new ArrayList<Interval>();
+        List<Interval> result = new ArrayList<>();
         assert insertionPoint <= invalids.size();
+
         for (int i = insertionPoint - 1; i >= 0 && at(i).overlaps(toBeInserted); i--) {
             result.add(at(i));
         }
-        for (int i = insertionPoint; i < invalids.size()
-                && at(i).overlaps(toBeInserted); i++) {
+
+        for (int i = insertionPoint; i < invalids.size() && at(i).overlaps(toBeInserted); i++) {
             result.add(at(i));
         }
+
         return result;
     }
 
     private List<Interval> intersectWithAdjacent(Interval interval) {
-        List<Interval> result = new ArrayList<Interval>();
+        List<Interval> result = new ArrayList<>();
         List<Interval> adjacent = getAdjacent(interval);
+
         for (Interval each : adjacent) {
             assert interval.overlaps(each);
             result.add(interval.intersect(each));
         }
+
         return result;
     }
 
     private void removeAdjacent(int insertionPoint, Interval inserted) {
-        ListIterator<Interval> listIterator = invalids
-                .listIterator(insertionPoint + 1);
+        ListIterator<Interval> listIterator = invalids.listIterator(insertionPoint + 1);
         while (listIterator.hasNext()) {
             Interval next = listIterator.next();
-            if (!next.overlaps(inserted)) {
+            if ( !next.overlaps(inserted) ) {
                 break;
             }
             listIterator.remove();
@@ -515,14 +528,12 @@ public class AvailabilityTimeLine {
     }
 
     private int insertionPoint(int binarySearchResult) {
-        return binarySearchResult < 0 ? (-binarySearchResult) - 1
-                : binarySearchResult;
+        return binarySearchResult < 0 ? (-binarySearchResult) - 1 : binarySearchResult;
     }
 
     public void invalidAt(LocalDate intervalStart, LocalDate intervalEnd) {
-        if (intervalStart.isAfter(intervalEnd)) {
-            throw new IllegalArgumentException(
-                    "end must be equal or after start");
+        if ( intervalStart.isAfter(intervalEnd) ) {
+            throw new IllegalArgumentException("end must be equal or after start");
         }
         insert(Interval.create(intervalStart, intervalEnd));
     }
@@ -540,11 +551,11 @@ public class AvailabilityTimeLine {
         inserting(result, invalids);
         inserting(result, another.invalids);
         result.setVetoer(and(this.vetoer, another.vetoer));
+
         return result;
     }
 
-    private static IVetoer and(final IVetoer a,
-            final IVetoer b) {
+    private static IVetoer and(final IVetoer a, final IVetoer b) {
         return new IVetoer() {
             @Override
             public boolean isValid(LocalDate date) {
@@ -556,27 +567,30 @@ public class AvailabilityTimeLine {
     public AvailabilityTimeLine or(AvailabilityTimeLine another) {
         List<Interval> intersections = doIntersections(this, another);
         AvailabilityTimeLine result = AvailabilityTimeLine.allValid();
+
         for (Interval each : intersections) {
-            boolean fromStartOfTime = each.getStart().equals(
-                    StartOfTime.create());
+            boolean fromStartOfTime = each.getStart().equals(StartOfTime.create());
             boolean untilEndOfTime = each.getEnd().equals(EndOfTime.create());
-            if (fromStartOfTime && untilEndOfTime) {
+
+            if ( fromStartOfTime && untilEndOfTime ) {
                 result.allInvalid();
-            } else if (fromStartOfTime) {
+
+            } else if ( fromStartOfTime ) {
                 result.invalidUntil(FixedPoint.tryExtract(each.getEnd()));
-            } else if (untilEndOfTime) {
+
+            } else if ( untilEndOfTime ) {
                 result.invalidFrom(FixedPoint.tryExtract(each.getStart()));
+
             } else {
-                result.invalidAt(FixedPoint.tryExtract(each.getStart()),
-                        FixedPoint.tryExtract(each.getEnd()));
+                result.invalidAt(FixedPoint.tryExtract(each.getStart()), FixedPoint.tryExtract(each.getEnd()));
             }
         }
         result.setVetoer(or(this.vetoer, another.vetoer));
+
         return result;
     }
 
-    private static IVetoer or(final IVetoer a,
-            final IVetoer b) {
+    private static IVetoer or(final IVetoer a, final IVetoer b) {
         return new IVetoer() {
             @Override
             public boolean isValid(LocalDate date) {
@@ -585,12 +599,12 @@ public class AvailabilityTimeLine {
         };
     }
 
-    private static List<Interval> doIntersections(AvailabilityTimeLine one,
-            AvailabilityTimeLine another) {
-        List<Interval> result = new ArrayList<Interval>();
+    private static List<Interval> doIntersections(AvailabilityTimeLine one, AvailabilityTimeLine another) {
+        List<Interval> result = new ArrayList<>();
         for (Interval each : one.invalids) {
             result.addAll(another.intersectWithAdjacent(each));
         }
+
         return result;
     }
 
@@ -601,19 +615,22 @@ public class AvailabilityTimeLine {
     }
 
     public List<Interval> getValidPeriods() {
-        List<Interval> result = new ArrayList<Interval>();
+        List<Interval> result = new ArrayList<>();
         DatePoint previous = StartOfTime.create();
+
         for (Interval each : invalids) {
             DatePoint invalidStart = each.start;
-            if (!invalidStart.equals(StartOfTime.create())
-                    && !invalidStart.equals(EndOfTime.create())) {
+            if ( !invalidStart.equals(StartOfTime.create()) && !invalidStart.equals(EndOfTime.create()) ) {
                 result.add(new Interval(previous, invalidStart));
             }
+
             previous = each.getEnd();
         }
-        if (!previous.equals(EndOfTime.create())) {
+
+        if ( !previous.equals(EndOfTime.create()) ) {
             result.add(new Interval(previous, EndOfTime.create()));
         }
+
         return result;
     }
 

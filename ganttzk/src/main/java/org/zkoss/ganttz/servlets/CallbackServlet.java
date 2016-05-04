@@ -37,7 +37,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.zkoss.web.servlet.http.HttpServlet;
 
 /**
@@ -49,20 +49,16 @@ public class CallbackServlet extends HttpServlet {
 
     private static final String MAPPING = "/callback/";
 
-    private static final long CLEANING_PERIOD_MILLIS = 1000 * 60 * 1; // one
-                                                                      // minute
-    // minutes
+    private static final long CLEANING_PERIOD_MILLIS = 1000 * 60; // one minute
 
     private static Random random = new Random();
 
-    private static ConcurrentMap<String, IHandler> handlersCallbacks = new ConcurrentHashMap<String, IHandler>();
+    private static ConcurrentMap<String, IHandler> handlersCallbacks = new ConcurrentHashMap<>();
 
     private static Timer cleaningTimer = new Timer(true);
 
     public interface IServletRequestHandler {
-        public void handle(HttpServletRequest request,
-                HttpServletResponse response) throws ServletException,
-                IOException;
+        void handle(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException;
     }
 
     public enum DisposalMode {
@@ -72,26 +68,24 @@ public class CallbackServlet extends HttpServlet {
                 return new WeakReferencedHandler(handler);
             }
         },
+
         AFTER_TEN_MINUTES {
             @Override
             public IHandler create(IServletRequestHandler handler) {
-                return new BasedOnExpirationTimeHandler(handler,
-                        tenMinutesInMillis);
+                return new BasedOnExpirationTimeHandler(handler, tenMinutesInMillis);
             }
         };
 
-        private static final long tenMinutesInMillis = TimeUnit.MILLISECONDS
-                .convert(10, TimeUnit.MINUTES);
+        private static final long tenMinutesInMillis = TimeUnit.MILLISECONDS.convert(10, TimeUnit.MINUTES);
 
-        public abstract IHandler create(
-                IServletRequestHandler handler);
+        public abstract IHandler create(IServletRequestHandler handler);
     }
 
     private interface IHandler {
 
-        abstract boolean hasExpired();
+        boolean hasExpired();
 
-        abstract IServletRequestHandler getHandler();
+        IServletRequestHandler getHandler();
     }
 
     private static class BasedOnExpirationTimeHandler implements IHandler {
@@ -101,9 +95,9 @@ public class CallbackServlet extends HttpServlet {
         private final long creationTime;
         private final long expirationTimeMilliseconds;
 
-        public BasedOnExpirationTimeHandler(IServletRequestHandler handler,
-                long expirationTimeMilliseconds) {
+        public BasedOnExpirationTimeHandler(IServletRequestHandler handler, long expirationTimeMilliseconds) {
             Validate.notNull(handler);
+
             this.handler = handler;
             this.creationTime = System.currentTimeMillis();
             this.expirationTimeMilliseconds = expirationTimeMilliseconds;
@@ -125,7 +119,7 @@ public class CallbackServlet extends HttpServlet {
         private final WeakReference<IServletRequestHandler> handler;
 
         WeakReferencedHandler(IServletRequestHandler handler) {
-            this.handler = new WeakReference<IServletRequestHandler>(handler);
+            this.handler = new WeakReference<>(handler);
         }
 
         @Override
@@ -140,40 +134,44 @@ public class CallbackServlet extends HttpServlet {
 
     }
 
-    public static String registerAndCreateURLFor(HttpServletRequest request,
-            IServletRequestHandler handler) {
-        return registerAndCreateURLFor(request, handler,
-                DisposalMode.AFTER_TEN_MINUTES);
+    public static String registerAndCreateURLFor(HttpServletRequest request, IServletRequestHandler handler) {
+        return registerAndCreateURLFor(request, handler, DisposalMode.AFTER_TEN_MINUTES);
     }
 
-    public static String registerAndCreateURLFor(HttpServletRequest request,
-            IServletRequestHandler handler, DisposalMode disposalMode) {
+    public static String registerAndCreateURLFor(HttpServletRequest request, IServletRequestHandler handler,
+                                                 DisposalMode disposalMode) {
+
         return registerAndCreateURLFor(request, handler, true, disposalMode);
     }
 
-    public static String registerAndCreateURLFor(HttpServletRequest request,
-            IServletRequestHandler handler, boolean withContextPath) {
-        return registerAndCreateURLFor(request, handler, withContextPath,
-                DisposalMode.AFTER_TEN_MINUTES);
+    public static String registerAndCreateURLFor(HttpServletRequest request, IServletRequestHandler handler,
+                                                 boolean withContextPath) {
+
+        return registerAndCreateURLFor(request, handler, withContextPath, DisposalMode.AFTER_TEN_MINUTES);
     }
 
     public static String registerAndCreateURLFor(HttpServletRequest request,
-            IServletRequestHandler handler, boolean withContextPath,
-            DisposalMode disposalMode) {
+                                                 IServletRequestHandler handler,
+                                                 boolean withContextPath,
+                                                 DisposalMode disposalMode) {
         Validate.notNull(disposalMode);
+
         // theoretically could be an infinite loop, could be improved.
-        String generatedKey = "";
+        String generatedKey;
+
         IHandler toBeRegistered = disposalMode.create(handler);
         do {
             generatedKey = generateKey();
         } while (handlersCallbacks.putIfAbsent(generatedKey, toBeRegistered) != null);
+
         return buildURLFromKey(request, generatedKey, withContextPath);
     }
 
-    private static synchronized String buildURLFromKey(
-            HttpServletRequest request, String generatedKey,
-            boolean withContextPath) {
+    private static synchronized String buildURLFromKey(HttpServletRequest request, String generatedKey,
+                                                       boolean withContextPath) {
+
         String contextPath = withContextPath ? request.getContextPath() : "";
+
         return contextPath + MAPPING + generatedKey;
     }
 
@@ -182,9 +180,10 @@ public class CallbackServlet extends HttpServlet {
     }
 
     private static String getId(String pathInfo) {
-        if (pathInfo.startsWith("/")) {
+        if ( pathInfo.startsWith("/") ) {
             return pathInfo.substring(1);
         }
+
         return pathInfo;
     }
 
@@ -199,14 +198,15 @@ public class CallbackServlet extends HttpServlet {
     }
 
     private static List<String> findExpired() {
-        ArrayList<Entry<String, IHandler>> handlersList = new ArrayList<Entry<String, IHandler>>(
-                handlersCallbacks.entrySet());
-        List<String> expired = new ArrayList<String>();
+        ArrayList<Entry<String, IHandler>> handlersList = new ArrayList<>(handlersCallbacks.entrySet());
+        List<String> expired = new ArrayList<>();
+
         for (Entry<String, IHandler> entry : handlersList) {
-            if (entry.getValue().hasExpired()) {
+            if ( entry.getValue().hasExpired() ) {
                 expired.add(entry.getKey());
             }
         }
+
         return expired;
     }
 
@@ -217,8 +217,7 @@ public class CallbackServlet extends HttpServlet {
     }
 
     private void scheduleTimer() {
-        cleaningTimer.schedule(cleaningTask(), CLEANING_PERIOD_MILLIS,
-                CLEANING_PERIOD_MILLIS);
+        cleaningTimer.schedule(cleaningTask(), CLEANING_PERIOD_MILLIS, CLEANING_PERIOD_MILLIS);
     }
 
     private TimerTask cleaningTask() {
@@ -231,11 +230,11 @@ public class CallbackServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-            throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String callbackId = getId(req.getPathInfo());
         IServletRequestHandler handler = handlerFor(callbackId);
-        if (handler == null) {
+
+        if ( handler == null ) {
             resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
         } else {
             handler.handle(req, resp);
@@ -244,6 +243,7 @@ public class CallbackServlet extends HttpServlet {
 
     private IServletRequestHandler handlerFor(String callbackId) {
         IHandler h = handlersCallbacks.get(callbackId);
+
         return h != null ? h.getHandler() : null;
     }
 

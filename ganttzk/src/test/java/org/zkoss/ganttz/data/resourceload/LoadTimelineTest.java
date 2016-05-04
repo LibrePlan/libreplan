@@ -39,7 +39,7 @@ public class LoadTimelineTest {
     private LoadTimeLine loadTimeLine;
     private String conceptName;
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void aLoadTimelineMustHaveANotNullName() {
         new LoadTimeLine(null, Collections.<LoadPeriod> emptyList(), null);
     }
@@ -49,7 +49,7 @@ public class LoadTimelineTest {
         new LoadTimeLine("", Collections.<LoadPeriod> emptyList(), null);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void aLoadTimelineCannotHaveNullLoadPeriods() {
         new LoadTimeLine("bla", null, null);
     }
@@ -62,30 +62,34 @@ public class LoadTimelineTest {
 
     private void givenValidLoadTimeLine() {
         conceptName = "bla";
-        loadTimeLine = new LoadTimeLine(conceptName,
+        loadTimeLine = new LoadTimeLine(
+                conceptName,
                 Arrays.asList(new LoadPeriod(GanttDate
                         .createFrom(new LocalDate(2009, 10, 5)), GanttDate
                         .createFrom(new LocalDate(2009, 10, 11)), "100", "20",
-                        new LoadLevel(20))), null);
+                        new LoadLevel(20))),
+                null);
     }
 
     @Test
     public void aLoadTimelineWithZeroLoadPeriodsIsEmpty() {
-        LoadTimeLine timeline = new LoadTimeLine("bla", Collections
-                .<LoadPeriod> emptyList(), null);
+        LoadTimeLine timeline = new LoadTimeLine("bla", Collections.<LoadPeriod> emptyList(), null);
         assertTrue(timeline.isEmpty());
     }
 
     @Test
     public void aLoadTimelineSortsItsReceivedPeriods() {
-        LoadPeriod l1 = new LoadPeriod(GanttDate.createFrom(new LocalDate(2009,
-                10, 5)), GanttDate.createFrom(new LocalDate(2009, 10, 11)),
+        LoadPeriod l1 = new LoadPeriod(
+                GanttDate.createFrom(new LocalDate(2009, 10, 5)),
+                GanttDate.createFrom(new LocalDate(2009, 10, 11)),
                 "100", "20", new LoadLevel(20));
-        LoadPeriod l2 = new LoadPeriod(GanttDate.createFrom(new LocalDate(2009,
-                5, 3)), GanttDate.createFrom(new LocalDate(2009, 6, 3)), "100",
-                "20", new LoadLevel(20));
-        LoadTimeLine loadTimeLine = new LoadTimeLine("bla", Arrays.asList(l1,
-                l2), null);
+
+        LoadPeriod l2 = new LoadPeriod(
+                GanttDate.createFrom(new LocalDate(2009, 5, 3)),
+                GanttDate.createFrom(new LocalDate(2009, 6, 3)),
+                "100", "20", new LoadLevel(20));
+
+        LoadTimeLine loadTimeLine = new LoadTimeLine("bla", Arrays.asList(l1, l2), null);
 
         List<LoadPeriod> loadPeriods = loadTimeLine.getLoadPeriods();
         assertThat(loadPeriods.get(0), sameInstance(l2));
@@ -94,12 +98,16 @@ public class LoadTimelineTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void theLoadPeriodsMustNotOverlap() {
-        LoadPeriod l1 = new LoadPeriod(GanttDate.createFrom(new LocalDate(2009,
-                10, 5)), GanttDate.createFrom(new LocalDate(2009, 10, 11)),
+        LoadPeriod l1 = new LoadPeriod(
+                GanttDate.createFrom(new LocalDate(2009, 10, 5)),
+                GanttDate.createFrom(new LocalDate(2009, 10, 11)),
                 "100", "20", new LoadLevel(20));
-        LoadPeriod l2 = new LoadPeriod(GanttDate.createFrom(new LocalDate(2009,
-                5, 3)), GanttDate.createFrom(new LocalDate(2009, 10, 10)),
+
+        LoadPeriod l2 = new LoadPeriod(
+                GanttDate.createFrom(new LocalDate(2009, 5, 3)),
+                GanttDate.createFrom(new LocalDate(2009, 10, 10)),
                 "100", "20", new LoadLevel(20));
+
         new LoadTimeLine("bla", Arrays.asList(l1, l2), null);
     }
 

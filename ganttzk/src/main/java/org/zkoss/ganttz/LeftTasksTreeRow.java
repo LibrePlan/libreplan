@@ -29,7 +29,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.joda.time.LocalDate;
@@ -71,8 +71,6 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
         LeftTasksTreeRow getAboveRow();
     }
 
-    private static final Log LOG = LogFactory.getLog(LeftTasksTreeRow.class);
-
     private final Task task;
 
     private Label nameLabel;
@@ -101,20 +99,22 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
 
     private final IDisabilityConfiguration disabilityConfiguration;
 
-    public static LeftTasksTreeRow create(
-            IDisabilityConfiguration disabilityConfiguration, Task bean,
-            ILeftTasksTreeNavigator taskDetailnavigator, Planner planner) {
-        return new LeftTasksTreeRow(disabilityConfiguration, bean,
-                taskDetailnavigator, planner);
+    public static LeftTasksTreeRow create(IDisabilityConfiguration disabilityConfiguration,
+                                          Task bean,
+                                          ILeftTasksTreeNavigator taskDetailnavigator,
+                                          Planner planner) {
+
+        return new LeftTasksTreeRow(disabilityConfiguration, bean, taskDetailnavigator, planner);
     }
 
     private LeftTasksTreeRow(IDisabilityConfiguration disabilityConfiguration,
-            Task task, ILeftTasksTreeNavigator leftTasksTreeNavigator,
-            Planner planner) {
+                             Task task,
+                             ILeftTasksTreeNavigator leftTasksTreeNavigator,
+                             Planner planner) {
+
         this.disabilityConfiguration = disabilityConfiguration;
         this.task = task;
-        this.dateFormat = DateFormat.getDateInstance(DateFormat.SHORT, Locales
-                .getCurrent());
+        this.dateFormat = DateFormat.getDateInstance(DateFormat.SHORT, Locales.getCurrent());
         this.leftTasksTreeNavigator = leftTasksTreeNavigator;
         this.planner = planner;
     }
@@ -143,13 +143,14 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
      *            the component that has received focus
      */
     public void userWantsDateBox(Component component) {
-        if (component == startDateTextBox) {
-            if (canChangeStartDate()) {
+        if ( component == startDateTextBox ) {
+            if ( canChangeStartDate() ) {
                 createDateBox(startDateTextBox);
             }
         }
-        if (component == endDateTextBox) {
-            if (canChangeEndDate()) {
+
+        if ( component == endDateTextBox ) {
+            if ( canChangeEndDate() ) {
                 createDateBox(endDateTextBox);
             }
         }
@@ -185,7 +186,7 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
 
     public void focusGoUp(int position) {
         LeftTasksTreeRow aboveDetail = leftTasksTreeNavigator.getAboveRow();
-        if (aboveDetail != null) {
+        if ( aboveDetail != null ) {
             aboveDetail.receiveFocus(position);
         }
     }
@@ -200,7 +201,7 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
 
     public void focusGoDown(int position) {
         LeftTasksTreeRow belowDetail = leftTasksTreeNavigator.getBelowRow();
-        if (belowDetail != null) {
+        if ( belowDetail != null ) {
             belowDetail.receiveFocus(position);
         } else {
             getListDetails().getGoingDownInLastArrowCommand().doAction();
@@ -212,6 +213,7 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
         while (!(current instanceof LeftTasksTree)) {
             current = current.getParent();
         }
+
         return (LeftTasksTree) current;
     }
 
@@ -220,13 +222,15 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
         List<Textbox> textBoxes = getTextBoxes();
         int position = textBoxes.indexOf(textbox);
         switch (navigation) {
-        case UP:
+            case UP:
             focusGoUp(position);
             break;
-        case DOWN:
+
+            case DOWN:
             focusGoDown(position);
             break;
-        default:
+
+            default:
             throw new RuntimeException("case not covered: " + navigation);
         }
     }
@@ -261,7 +265,7 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
     }
 
     private void registerTextboxesListeners() {
-        if (disabilityConfiguration.isTreeEditable()) {
+        if ( disabilityConfiguration.isTreeEditable() ) {
             registerKeyboardListener(nameBox);
             registerOnChange(nameBox);
             registerKeyboardListener(startDateTextBox);
@@ -275,9 +279,9 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
 
     private void findComponents(Treerow row) {
         List<Object> rowChildren = row.getChildren();
-        List<Treecell> treeCells = ComponentsFinder.findComponentsOfType(Treecell.class,
-                rowChildren);
+        List<Treecell> treeCells = ComponentsFinder.findComponentsOfType(Treecell.class, rowChildren);
         assert treeCells.size() == 4;
+
         findComponentsForNameCell(treeCells.get(0));
         findComponentsForStartDateCell(treeCells.get(1));
         findComponentsForEndDateCell(treeCells.get(2));
@@ -286,12 +290,11 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
 
     private static Textbox findTextBoxOfCell(Treecell treecell) {
         List<Object> children = treecell.getChildren();
-        return ComponentsFinder.findComponentsOfType(Textbox.class, children)
-                .get(0);
+        return ComponentsFinder.findComponentsOfType(Textbox.class, children).get(0);
     }
 
     private void findComponentsForNameCell(Treecell treecell) {
-        if (disabilityConfiguration.isTreeEditable()) {
+        if ( disabilityConfiguration.isTreeEditable() ) {
             nameBox = (Textbox) treecell.getChildren().get(0);
         } else {
             nameLabel = (Label) treecell.getChildren().get(0);
@@ -318,8 +321,7 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
         });
     }
 
-    private void registerOnChangeDatebox(final Datebox datebox,
-            final Textbox textbox) {
+    private void registerOnChangeDatebox(final Datebox datebox, final Textbox textbox) {
         datebox.addEventListener("onChange", new EventListener() {
 
             @Override
@@ -351,7 +353,7 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
     }
 
     private void findComponentsForStartDateCell(Treecell treecell) {
-        if (disabilityConfiguration.isTreeEditable()) {
+        if ( disabilityConfiguration.isTreeEditable() ) {
             startDateTextBox = findTextBoxOfCell(treecell);
         } else {
             startDateLabel = (Label) treecell.getChildren().get(0);
@@ -359,7 +361,7 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
     }
 
     private void findComponentsForEndDateCell(Treecell treecell) {
-        if (disabilityConfiguration.isTreeEditable()) {
+        if ( disabilityConfiguration.isTreeEditable() ) {
             endDateTextBox = findTextBoxOfCell(treecell);
         } else {
             endDateLabel = (Label) treecell.getChildren().get(0);
@@ -369,8 +371,7 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
     private void findComponentsForStatusCell(Treecell treecell) {
         List<Object> children = treecell.getChildren();
 
-        Hlayout hlayout = ComponentsFinder.findComponentsOfType(Hlayout.class,
-                children).get(0);
+        Hlayout hlayout = ComponentsFinder.findComponentsOfType(Hlayout.class, children).get(0);
 
         hoursStatusDiv = (Div) hlayout.getChildren().get(0);
         // there is a <label> "/" between the divs
@@ -389,15 +390,18 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
     }
 
     public void updateBean(Component updatedComponent) {
-        if (updatedComponent == getNameBox()) {
+        if ( updatedComponent == getNameBox() ) {
+
             task.setName(getNameBox().getValue());
-            if (StringUtils.isEmpty(getNameBox().getValue())) {
+
+            if ( StringUtils.isEmpty(getNameBox().getValue()) ) {
                 getNameBox().setValue(task.getName());
             }
-        } else if (updatedComponent == getStartDateTextBox()) {
+
+        } else if ( updatedComponent == getStartDateTextBox() ) {
+
             try {
-                final Date begin = dateFormat.parse(getStartDateTextBox()
-                        .getValue());
+                final Date begin = dateFormat.parse(getStartDateTextBox().getValue());
                 task.doPositionModifications(new IModifications() {
 
                     @Override
@@ -408,23 +412,26 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
             } catch (ParseException e) {
                 // Do nothing as textbox is rested in the next sentence
             }
-            getStartDateTextBox().setValue(
-                    dateFormat.format(task.getBeginDate().toDayRoundedDate()));
-        } else if (updatedComponent == getEndDateTextBox()) {
+
+            getStartDateTextBox().setValue(dateFormat.format(task.getBeginDate().toDayRoundedDate()));
+
+        } else if ( updatedComponent == getEndDateTextBox() ) {
+
             try {
                 Date newEnd = dateFormat.parse(getEndDateTextBox().getValue());
                 task.resizeTo(LocalDate.fromDateFields(newEnd));
             } catch (ParseException e) {
                 // Do nothing as textbox is rested in the next sentence
             }
-            getEndDateTextBox().setValue(
-                    asString(task.getEndDate().toDayRoundedDate()));
+
+            getEndDateTextBox().setValue(asString(task.getEndDate().toDayRoundedDate()));
         }
+
         planner.updateTooltips();
     }
 
     private void updateComponents() {
-        if (disabilityConfiguration.isTreeEditable()) {
+        if ( disabilityConfiguration.isTreeEditable() ) {
             getNameBox().setValue(task.getName());
             getNameBox().setDisabled(!canRenameTask());
             getNameBox().setTooltiptext(task.getName());
@@ -432,42 +439,35 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
             getStartDateTextBox().setDisabled(!canChangeStartDate());
             getEndDateTextBox().setDisabled(!canChangeEndDate());
 
-            getStartDateTextBox().setValue(
-                    asString(task.getBeginDate().toDayRoundedDate()));
-            getEndDateTextBox().setValue(
-                    asString(task.getEndDate().toDayRoundedDate()));
+            getStartDateTextBox().setValue(asString(task.getBeginDate().toDayRoundedDate()));
+            getEndDateTextBox().setValue(asString(task.getEndDate().toDayRoundedDate()));
         } else {
             nameLabel.setValue(task.getName());
             nameLabel.setTooltiptext(task.getName());
             nameLabel.setSclass("clickable-rows");
+
             nameLabel.addEventListener(Events.ON_CLICK, new EventListener() {
                 @Override
                 public void onEvent(Event arg0) throws Exception {
-                    Executions.getCurrent().sendRedirect(
-                                    "/planner/index.zul;order="
-                                            + task.getProjectCode());
+                    Executions.getCurrent().sendRedirect("/planner/index.zul;order=" + task.getProjectCode());
                 }
             });
-            startDateLabel.setValue(asString(task.getBeginDate()
-                    .toDayRoundedDate()));
-            endDateLabel.setValue(asString(task.getEndDate()
-                    .toDayRoundedDate()));
-        }
-        setHoursStatus(task.getProjectHoursStatus(),
-                task.getTooltipTextForProjectHoursStatus());
 
-        setBudgetStatus(task.getProjectBudgetStatus(),
-                task.getTooltipTextForProjectBudgetStatus());
+            startDateLabel.setValue(asString(task.getBeginDate().toDayRoundedDate()));
+            endDateLabel.setValue(asString(task.getEndDate().toDayRoundedDate()));
+        }
+
+        setHoursStatus(task.getProjectHoursStatus(), task.getTooltipTextForProjectHoursStatus());
+
+        setBudgetStatus(task.getProjectBudgetStatus(), task.getTooltipTextForProjectBudgetStatus());
     }
 
     private boolean canChangeStartDate() {
-        return disabilityConfiguration.isMovingTasksEnabled()
-                && task.canBeExplicitlyMoved();
+        return disabilityConfiguration.isMovingTasksEnabled() && task.canBeExplicitlyMoved();
     }
 
     private boolean canChangeEndDate() {
-        return disabilityConfiguration.isResizingTasksEnabled()
-                && task.canBeExplicitlyResized();
+        return disabilityConfiguration.isResizingTasksEnabled() && task.canBeExplicitlyResized();
     }
 
     private boolean canRenameTask() {
@@ -508,29 +508,31 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
 
     private String getProjectStatusSclass(ProjectStatusEnum status) {
         String cssClass;
+
         switch (status) {
-        case MARGIN_EXCEEDED:
+            case MARGIN_EXCEEDED:
             cssClass = "status-red";
             break;
-        case WITHIN_MARGIN:
+
+            case WITHIN_MARGIN:
             cssClass = "status-orange";
             break;
-        case AS_PLANNED:
-        default:
+
+            case AS_PLANNED:
+
+            default:
             cssClass = "status-green";
         }
+
         return cssClass;
     }
 
     private void onProjectStatusClick(Component statucComp) {
-        if (!disabilityConfiguration.isTreeEditable()) {
+        if ( !disabilityConfiguration.isTreeEditable() ) {
             statucComp.addEventListener(Events.ON_CLICK, new EventListener() {
                 @Override
                 public void onEvent(Event arg0) throws Exception {
-                    Executions.getCurrent()
-                            .sendRedirect(
-                                    "/planner/index.zul;order="
-                                            + task.getProjectCode());
+                    Executions.getCurrent().sendRedirect("/planner/index.zul;order=" + task.getProjectCode());
                 }
             });
         }

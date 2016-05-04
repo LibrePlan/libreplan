@@ -20,7 +20,7 @@
  */
 package org.zkoss.ganttz.util;
 
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -38,7 +38,7 @@ public abstract class PreAndPostNotReentrantActionsWrapper {
 
     public void doAction(IAction action) {
         Validate.notNull(action);
-        if (inside.get()) {
+        if ( inside.get() ) {
             action.doAction();
         } else {
             executeWithPreAndPostActions(action);

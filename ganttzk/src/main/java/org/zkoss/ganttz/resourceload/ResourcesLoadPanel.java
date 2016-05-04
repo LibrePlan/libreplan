@@ -25,7 +25,7 @@ import static org.zkoss.ganttz.i18n.I18nHelper._;
 
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.LocalDate;
 import org.zkoss.ganttz.IChartVisibilityChangedListener;
 import org.zkoss.ganttz.data.resourceload.LoadTimeLine;
@@ -53,14 +53,15 @@ import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.api.Combobox;
 import org.zkoss.zul.api.Listbox;
 import org.zkoss.zul.api.South;
+
 public class ResourcesLoadPanel extends HtmlMacroComponent {
 
     public interface IToolbarCommand {
-        public void doAction();
+        void doAction();
 
-        public String getLabel();
+        String getLabel();
 
-        public String getImage();
+        String getImage();
     }
 
     private TimeTrackerComponent timeTrackerComponent;
@@ -81,8 +82,7 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
 
     private final Component componentOnWhichGiveFeedback;
 
-    private WeakReferencedListeners<IFilterChangedListener> zoomListeners = WeakReferencedListeners
-            .create();
+    private WeakReferencedListeners<IFilterChangedListener> zoomListeners = WeakReferencedListeners.create();
 
     private Listbox listZoomLevels;
 
@@ -98,14 +98,14 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
     private final PaginationType paginationType;
 
     private WeakReferencedListeners<IPaginationFilterChangedListener> nameFilterListener =
-        WeakReferencedListeners.create();
+            WeakReferencedListeners.create();
 
     private Component loadChart;
 
     private boolean visibleChart = true;
 
-    private WeakReferencedListeners<IChartVisibilityChangedListener> chartVisibilityListeners = WeakReferencedListeners
-            .create();
+    private WeakReferencedListeners<IChartVisibilityChangedListener> chartVisibilityListeners =
+            WeakReferencedListeners.create();
 
     private final boolean expandResourceLoadViewCharts;
 
@@ -113,12 +113,17 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
 
     private Component secondOptionalFilter;
 
-    public ResourcesLoadPanel(List<LoadTimeLine> groups,
-            TimeTracker timeTracker, Component componentOnWhichGiveFeedback,
-            boolean expandResourceLoadViewCharts, PaginationType paginationType) {
+    public ResourcesLoadPanel(
+            List<LoadTimeLine> groups,
+            TimeTracker timeTracker,
+            Component componentOnWhichGiveFeedback,
+            boolean expandResourceLoadViewCharts,
+            PaginationType paginationType) {
+
         this.componentOnWhichGiveFeedback = componentOnWhichGiveFeedback;
         this.expandResourceLoadViewCharts = expandResourceLoadViewCharts;
         this.paginationType = paginationType;
+
         init(groups, timeTracker);
     }
 
@@ -138,17 +143,19 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
 
     public ListModel getFilters() {
         String[] filters = new String[] { FILTER_RESOURCES, FILTER_CRITERIA };
+
         return new SimpleListModel(filters);
     }
 
     public void setFilter(String filterby) {
-        if (filterby.equals(FILTER_RESOURCES)) {
+        if ( filterby.equals(FILTER_RESOURCES) ) {
             this.filterbyResources = true;
             this.feedBackMessage = _("showing resources");
         } else {
             this.filterbyResources = false;
             this.feedBackMessage = _("showing criteria");
         }
+
         refreshNameFilter = true;
         filterByNamePosition = 0;
         invalidatingChangeHappenedWithFeedback();
@@ -159,19 +166,17 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
     }
 
     private void invalidatingChangeHappenedWithFeedback() {
-        LongOperationFeedback.execute(componentOnWhichGiveFeedback,
-                new ILongOperation() {
+        LongOperationFeedback.execute(componentOnWhichGiveFeedback, new ILongOperation() {
+            @Override
+            public void doAction() {
+                applyFilter();
+            }
 
-                    @Override
-                    public void doAction() {
-                        applyFilter();
-                    }
-
-                    @Override
-                    public String getName() {
-                        return getFeedBackMessage();
-                    }
-                });
+            @Override
+            public String getName() {
+                return getFeedBackMessage();
+            }
+        });
     }
 
     private String getFeedBackMessage() {
@@ -179,13 +184,12 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
     }
 
     private void applyFilter() {
-        zoomListeners
-                .fireEvent(new IListenerNotification<IFilterChangedListener>() {
-                    @Override
-                    public void doNotify(IFilterChangedListener listener) {
-                        listener.filterChanged(getFilter());
-                    }
-                });
+        zoomListeners.fireEvent(new IListenerNotification<IFilterChangedListener>() {
+            @Override
+            public void doNotify(IFilterChangedListener listener) {
+                listener.filterChanged(getFilter());
+            }
+        });
     }
 
     public void addFilterListener(IFilterChangedListener listener) {
@@ -193,9 +197,13 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
     }
 
     public ListModel getZoomLevels() {
-        ZoomLevel[] selectableZoomlevels = { ZoomLevel.DETAIL_ONE,
-                ZoomLevel.DETAIL_TWO, ZoomLevel.DETAIL_THREE,
-                ZoomLevel.DETAIL_FOUR, ZoomLevel.DETAIL_FIVE };
+        ZoomLevel[] selectableZoomlevels = {
+                ZoomLevel.DETAIL_ONE,
+                ZoomLevel.DETAIL_TWO,
+                ZoomLevel.DETAIL_THREE,
+                ZoomLevel.DETAIL_FOUR,
+                ZoomLevel.DETAIL_FIVE };
+
         return new SimpleListModel(selectableZoomlevels);
     }
 
@@ -239,6 +247,7 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
         Component toolbar = getToolbar();
         resetToolbar(toolbar);
         Separator separator = getSeparator();
+
         for (IToolbarCommand c : commands) {
             toolbar.insertBefore(asButton(c), separator);
         }
@@ -246,8 +255,8 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
 
     private void resetToolbar(Component toolbar) {
         List<Component> children = toolbar.getChildren();
-        List<Button> buttons = ComponentsFinder.findComponentsOfType(
-                Button.class, children);
+        List<Button> buttons = ComponentsFinder.findComponentsOfType(Button.class, children);
+
         for (Button b : buttons) {
             toolbar.removeChild(b);
         }
@@ -255,63 +264,66 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
 
     private Button asButton(final IToolbarCommand c) {
         Button result = new Button();
+
         result.addEventListener(Events.ON_CLICK, new EventListener() {
             @Override
             public void onEvent(Event event) {
                 c.doAction();
             }
         });
-        if (!StringUtils.isEmpty(c.getImage())) {
+
+        if ( !StringUtils.isEmpty(c.getImage()) ) {
             result.setImage(c.getImage());
             result.setTooltiptext(c.getLabel());
         } else {
             result.setLabel(c.getLabel());
         }
+
         return result;
     }
 
     @SuppressWarnings("unchecked")
     private Separator getSeparator() {
         List<Component> children = getToolbar().getChildren();
-        Separator separator = ComponentsFinder.findComponentsOfType(
-                Separator.class, children).get(0);
+        Separator separator = ComponentsFinder.findComponentsOfType(Separator.class, children).get(0);
+
         return separator;
     }
 
     private Component getToolbar() {
         Component toolbar = getFellow("toolbar");
+
         return toolbar;
     }
 
     private MutableTreeModel<LoadTimeLine> createModelForTree() {
-        MutableTreeModel<LoadTimeLine> result = MutableTreeModel
-                .create(LoadTimeLine.class);
+        MutableTreeModel<LoadTimeLine> result = MutableTreeModel.create(LoadTimeLine.class);
         for (LoadTimeLine loadTimeLine : this.getGroupsToShow()) {
             result.addToRoot(loadTimeLine);
             result = addNodes(result, loadTimeLine);
         }
+
         return result;
     }
 
 
-    private MutableTreeModel<LoadTimeLine> addNodes(
-            MutableTreeModel<LoadTimeLine> tree, LoadTimeLine parent) {
-        if (!parent.getChildren().isEmpty()) {
+    private MutableTreeModel<LoadTimeLine> addNodes(MutableTreeModel<LoadTimeLine> tree, LoadTimeLine parent) {
+        if ( !parent.getChildren().isEmpty() ) {
             tree.add(parent, parent.getChildren());
+
             for (LoadTimeLine loadTimeLine : parent.getChildren()) {
                 tree = addNodes(tree, loadTimeLine);
             }
         }
+
         return tree;
     }
 
-    private TimeTrackerComponent timeTrackerForResourcesLoadPanel(
-            TimeTracker timeTracker) {
+    private TimeTrackerComponent timeTrackerForResourcesLoadPanel(TimeTracker timeTracker) {
         return new TimeTrackerComponent(timeTracker) {
             @Override
             protected void scrollHorizontalPercentage(int daysDisplacement) {
-                response("", new AuInvoke(resourceLoadList,
-                        "scroll_horizontal", daysDisplacement + ""));
+                response("", new AuInvoke(resourceLoadList, "scroll_horizontal", daysDisplacement + ""));
                 moveCurrentPositionScroll();
             }
 
@@ -321,20 +333,18 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
                 LocalDate previousStart = getPreviousStart();
 
                 // get the current data
-                int diffDays = getTimeTrackerComponent().getDiffDays(
-                        previousStart);
+                int diffDays = getTimeTrackerComponent().getDiffDays(previousStart);
                 double pixelPerDay = getTimeTrackerComponent().getPixelPerDay();
 
-                response("move_scroll", new AuInvoke(resourceLoadList,
-                        "move_scroll", "" + diffDays, "" + pixelPerDay));
+                response("move_scroll", new AuInvoke(resourceLoadList, "move_scroll", "" + diffDays, "" + pixelPerDay));
             }
 
             protected void updateCurrentDayScroll() {
-                double previousPixelPerDay = getTimeTracker().getMapper()
-                        .getPixelsPerDay().doubleValue();
+                double previousPixelPerDay = getTimeTracker().getMapper().getPixelsPerDay().doubleValue();
 
-                response("update_day_scroll", new AuInvoke(resourceLoadList,
-                        "update_day_scroll", "" + previousPixelPerDay));
+                response(
+                        "update_day_scroll",
+                        new AuInvoke(resourceLoadList, "update_day_scroll", "" + previousPixelPerDay));
 
             }
         };
@@ -354,11 +364,12 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
 
         // Insert additional filters if any
         Component additionalFilter = getFirstOptionalFilter();
-        if(additionalFilter != null) {
+        if( additionalFilter != null ) {
             getFellow("additionalFilterInsertionPoint1").appendChild(additionalFilter);
         }
+
         additionalFilter = getSecondOptionalFilter();
-        if(additionalFilter != null) {
+        if( additionalFilter != null ) {
             getFellow("additionalFilterInsertionPoint2").appendChild(additionalFilter);
         }
 
@@ -367,10 +378,10 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
         listZoomLevels = (Listbox) getFellow("listZoomLevels");
         listZoomLevels.setSelectedIndex(timeTracker.getDetailLevel().ordinal());
 
-        if(paginationType == PaginationType.INTERNAL_PAGINATION && refreshNameFilter) {
+        if( paginationType == PaginationType.INTERNAL_PAGINATION && refreshNameFilter ) {
             setupNameFilter();
         }
-        else if(paginationType == PaginationType.NONE) {
+        else if( paginationType == PaginationType.NONE ) {
             getFellow("filterByNameCombo").setVisible(false);
             getFellow("filterByNameLabel").setVisible(false);
         }
@@ -406,8 +417,7 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
     }
 
     private TimeTrackerComponent createTimeTrackerHeader() {
-        return new TimeTrackerComponent(
-                timeTracker) {
+        return new TimeTrackerComponent(timeTracker) {
 
          @Override
          protected void scrollHorizontalPercentage(int pixelsDisplacement) {
@@ -415,20 +425,15 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
 
             @Override
             protected void moveCurrentPositionScroll() {
-                // TODO Auto-generated method stub
-
             }
 
             @Override
             protected void updateCurrentDayScroll() {
-                // TODO Auto-generated method stub
-
             }
         };
     }
 
-    public void addSeeScheduledOfListener(
-            ISeeScheduledOfListener seeScheduledOfListener) {
+    public void addSeeScheduledOfListener(ISeeScheduledOfListener seeScheduledOfListener) {
         leftPane.addSeeScheduledOfListener(seeScheduledOfListener);
         resourceLoadList.addSeeScheduledOfListener(seeScheduledOfListener);
     }
@@ -438,19 +443,19 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
         filterByNameCombo.getChildren().clear();
         int size = groups.size();
 
-        if(size > numberOfGroupsByName) {
+        if( size > numberOfGroupsByName ) {
             int position = 0;
+
             while(position < size) {
                 String firstName = groups.get(position).getConceptName();
                 String lastName;
                 int newPosition = position + numberOfGroupsByName;
-                if(newPosition - 1 < size) {
-                    lastName = groups.get(newPosition - 1)
-                    .getConceptName();
+
+                if( newPosition - 1 < size ) {
+                    lastName = groups.get(newPosition - 1).getConceptName();
                 }
                 else {
-                    lastName = groups.get(size - 1)
-                    .getConceptName();
+                    lastName = groups.get(size - 1).getConceptName();
                 }
 
                 Comboitem item = new Comboitem();
@@ -478,34 +483,34 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
      * @return
      */
     private List<LoadTimeLine> getGroupsToShow() {
-        if(paginationType != PaginationType.INTERNAL_PAGINATION ||
-                filterByNamePosition == -1) {
+        if( paginationType != PaginationType.INTERNAL_PAGINATION || filterByNamePosition == -1 ) {
             return groups;
         }
-        int endPosition =
-            (filterByNamePosition + numberOfGroupsByName < groups.size())?
-                filterByNamePosition + numberOfGroupsByName :
-                groups.size();
+
+        boolean condition = (filterByNamePosition + numberOfGroupsByName < groups.size());
+        int endPosition = condition ? filterByNamePosition + numberOfGroupsByName : groups.size();
+
         return groups.subList(filterByNamePosition, endPosition);
     }
 
     public void onSelectFilterByName(Combobox comboByName) {
-        if (comboByName.getSelectedItemApi() == null) {
+        if ( comboByName.getSelectedItemApi() == null ) {
             resetComboByName(comboByName);
         } else {
-            Integer filterByNamePosition = (Integer) comboByName
-                    .getSelectedItemApi().getValue();
-            if (paginationType != PaginationType.NONE) {
-                this.filterByNamePosition = filterByNamePosition.intValue();
+            Integer filterByNamePosition = (Integer) comboByName.getSelectedItemApi().getValue();
+
+            if ( paginationType != PaginationType.NONE ) {
+                this.filterByNamePosition = filterByNamePosition;
                 this.lastSelectedName = comboByName.getSelectedIndex();
                 this.feedBackMessage = _("filtering by name");
+
                 changeNameFilterWithFeedback();
             }
         }
     }
 
     private void resetComboByName(Combobox comboByName) {
-        if (this.lastSelectedName == -1) {
+        if ( this.lastSelectedName == -1 ) {
             comboByName.setSelectedIndex(0);
         } else {
             comboByName.setSelectedIndex(this.lastSelectedName);
@@ -514,24 +519,26 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
     }
 
     private void changeNameFilterWithFeedback() {
-        LongOperationFeedback.execute(componentOnWhichGiveFeedback,
-                new ILongOperation() {
-
+        LongOperationFeedback.execute(componentOnWhichGiveFeedback, new ILongOperation() {
             @Override
             public void doAction() {
-                if(paginationType == PaginationType.INTERNAL_PAGINATION) {
+                if( paginationType == PaginationType.INTERNAL_PAGINATION ) {
+
                     //if the pagination is internal, we are in charge of repainting the graph
                     treeModel = createModelForTree();
+
                     timeTrackerComponent = timeTrackerForResourcesLoadPanel(timeTracker);
                     resourceLoadList = new ResourceLoadList(timeTracker, treeModel);
                     leftPane = new ResourceLoadLeftPane(treeModel, resourceLoadList);
                 }
+
                 nameFilterListener.fireEvent(new IListenerNotification<IPaginationFilterChangedListener>() {
                     @Override
                     public void doNotify(IPaginationFilterChangedListener listener) {
                         listener.filterChanged(filterByNamePosition);
                     }
                 });
+
                 afterCompose();
             }
 
@@ -544,36 +551,31 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
 
     public void setInternalPaginationDisabled(boolean disabled) {
         Combobox combo = ((Combobox) getFellow("filterByNameCombo"));
-        if (combo != null && combo.isDisabled() != disabled) {
-            filterByNamePosition = disabled? -1 :
-                ((Integer)combo.getSelectedItemApi().getValue()).intValue();
+        if ( combo != null && combo.isDisabled() != disabled ) {
+            filterByNamePosition = disabled? -1 : (Integer) combo.getSelectedItemApi().getValue();
             combo.setDisabled(disabled);
         }
     }
 
-    public void addPaginationFilterListener(
-            IPaginationFilterChangedListener iFilterChangedListener) {
+    public void addPaginationFilterListener(IPaginationFilterChangedListener iFilterChangedListener) {
         nameFilterListener.addListener(iFilterChangedListener);
     }
 
     public void changeChartVisibility(boolean visible) {
         visibleChart = visible;
-        chartVisibilityListeners
-                .fireEvent(new IListenerNotification<IChartVisibilityChangedListener>() {
-                    @Override
-                    public void doNotify(
-                            IChartVisibilityChangedListener listener) {
-                        listener.chartVisibilityChanged(visibleChart);
-                    }
-                });
+        chartVisibilityListeners.fireEvent(new IListenerNotification<IChartVisibilityChangedListener>() {
+            @Override
+            public void doNotify(IChartVisibilityChangedListener listener) {
+                listener.chartVisibilityChanged(visibleChart);
+            }
+        });
     }
 
     public boolean isVisibleChart() {
         return visibleChart;
     }
 
-    public void addChartVisibilityListener(
-            IChartVisibilityChangedListener chartVisibilityChangedListener) {
+    public void addChartVisibilityListener(IChartVisibilityChangedListener chartVisibilityChangedListener) {
         chartVisibilityListeners.addListener(chartVisibilityChangedListener);
     }
 
@@ -586,9 +588,10 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
     }
 
     public Combobox getPaginationFilterCombobox() {
-        if(paginationType == PaginationType.EXTERNAL_PAGINATION) {
+        if( paginationType == PaginationType.EXTERNAL_PAGINATION ) {
             return (Combobox) getFellow("filterByNameCombo");
         }
+
         return null;
     }
 
@@ -606,7 +609,7 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
         /**
          * Disables pagination. Shows all the LoadTimeLine objects received.
          */
-        NONE;
+        NONE
     }
 
 }

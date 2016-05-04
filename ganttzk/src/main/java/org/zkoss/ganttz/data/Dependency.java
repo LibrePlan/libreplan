@@ -25,8 +25,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.zkoss.ganttz.data.DependencyType.Point;
 import org.zkoss.ganttz.data.constraint.Constraint;
 import org.zkoss.ganttz.data.constraint.Constraint.IConstraintViolationListener;
@@ -42,12 +42,14 @@ public class Dependency implements IDependency<Task> {
 
     public static List<Constraint<GanttDate>> getConstraintsFor(
             ConstraintCalculator<Task> calculator,
-            Collection<Dependency> dependencies, Point pointBeingModified) {
-        List<Constraint<GanttDate>> result = new ArrayList<Constraint<GanttDate>>();
+            Collection<Dependency> dependencies,
+            Point pointBeingModified) {
+
+        List<Constraint<GanttDate>> result = new ArrayList<>();
         for (Dependency each : dependencies) {
-            result.addAll(each.withViolationNotification(calculator
-                    .getConstraints(each, pointBeingModified)));
+            result.addAll(each.withViolationNotification(calculator.getConstraints(each, pointBeingModified)));
         }
+
         return result;
     }
 
@@ -59,60 +61,62 @@ public class Dependency implements IDependency<Task> {
 
     private final boolean visible;
 
-    private ConstraintViolationNotificator<GanttDate> violationsNotificator = ConstraintViolationNotificator
-            .create();
+    private ConstraintViolationNotificator<GanttDate> violationsNotificator = ConstraintViolationNotificator.create();
 
-    public Dependency(Task source, Task destination,
-            DependencyType type, boolean visible) {
-        if (source == null) {
+    public Dependency(Task source, Task destination, DependencyType type, boolean visible) {
+        if ( source == null ) {
             throw new IllegalArgumentException("source cannot be null");
         }
-        if (destination == null) {
+
+        if ( destination == null ) {
             throw new IllegalArgumentException("destination cannot be null");
         }
-        if (type == null) {
+
+        if ( type == null ) {
             throw new IllegalArgumentException("type cannot be null");
         }
+
         this.source = source;
         this.destination = destination;
         this.type = type;
         this.visible = visible;
     }
 
-    public Dependency(Task source, Task destination,
-            DependencyType type) {
+    public Dependency(Task source, Task destination, DependencyType type) {
         this(source, destination, type, true);
     }
 
-    private List<Constraint<GanttDate>> withViolationNotification(
-            List<Constraint<GanttDate>> original) {
+    private List<Constraint<GanttDate>> withViolationNotification(List<Constraint<GanttDate>> original) {
         return violationsNotificator.withListener(original);
     }
 
-    public void addConstraintViolationListener(
-            IConstraintViolationListener<GanttDate> listener, Mode mode) {
+    public void addConstraintViolationListener(IConstraintViolationListener<GanttDate> listener, Mode mode) {
         violationsNotificator.addConstraintViolationListener(listener, mode);
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(source).append(destination).append(
-                type).toHashCode();
+        return new HashCodeBuilder().append(source).append(destination).append(type).toHashCode();
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
+        if ( this == obj ) {
             return true;
         }
-        if (obj == null) {
+
+        if ( obj == null ) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
+
+        if ( getClass() != obj.getClass() ) {
             return false;
         }
+
         Dependency other = (Dependency) obj;
-        return new EqualsBuilder().append(this.destination, other.destination)
+
+        return new EqualsBuilder()
+                .append(this.destination, other.destination)
                 .append(this.source, other.source)
                 .append(this.type, other.type).isEquals();
     }

@@ -23,22 +23,19 @@ package org.zkoss.ganttz.data.constraint;
 import java.util.Arrays;
 import java.util.Collections;
 
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 
 /**
  * @author Óscar González Fernández
  *
  */
-public class ConstraintOnComparableValues<T extends Comparable<T>> extends
-        Constraint<T> {
+public class ConstraintOnComparableValues<T extends Comparable<T>> extends Constraint<T> {
 
-    public static <T extends Comparable<T>> Constraint<T> biggerOrEqualThan(
-            T value) {
+    public static <T extends Comparable<T>> Constraint<T> biggerOrEqualThan(T value) {
         return instantiate(ComparisonType.BIGGER_OR_EQUAL_THAN, value);
     }
 
-    public static <T extends Comparable<T>> Constraint<T> lessOrEqualThan(
-            T value) {
+    public static <T extends Comparable<T>> Constraint<T> lessOrEqualThan(T value) {
         return instantiate(ComparisonType.LESS_OR_EQUAL_THAN, value);
     }
 
@@ -46,11 +43,11 @@ public class ConstraintOnComparableValues<T extends Comparable<T>> extends
         return instantiate(ComparisonType.EQUAL_TO, value);
     }
 
-    public static <T extends Comparable<T>> Constraint<T> instantiate(
-            ComparisonType type, T value) {
-        if (value == null) {
+    public static <T extends Comparable<T>> Constraint<T> instantiate(ComparisonType type, T value) {
+        if ( value == null ) {
             return Constraint.voidConstraint();
         }
+
         return new ConstraintOnComparableValues<T>(type, value);
     }
 
@@ -70,21 +67,28 @@ public class ConstraintOnComparableValues<T extends Comparable<T>> extends
     @Override
     @SuppressWarnings("unchecked")
     protected T applyConstraintTo(T value) {
-        if (value == null) {
+        if ( value == null ) {
             return comparisonValue;
         }
+
         switch (comparisonType) {
-        case LESS_OR_EQUAL_THAN:
-            return min(comparisonValue, value);
-        case LESS_OR_EQUAL_THAN_RIGHT_FLOATING:
-        case BIGGER_OR_EQUAL_THAN_LEFT_FLOATING:
-            return comparisonValue;
-        case BIGGER_OR_EQUAL_THAN:
-            return max(comparisonValue, value);
-        case EQUAL_TO:
-            return comparisonValue;
-        default:
-            throw new RuntimeException("can't handle "+comparisonType);
+
+            case LESS_OR_EQUAL_THAN:
+                return min(comparisonValue, value);
+
+            case LESS_OR_EQUAL_THAN_RIGHT_FLOATING:
+
+            case BIGGER_OR_EQUAL_THAN_LEFT_FLOATING:
+                return comparisonValue;
+
+            case BIGGER_OR_EQUAL_THAN:
+                return max(comparisonValue, value);
+
+            case EQUAL_TO:
+                return comparisonValue;
+
+            default:
+                throw new RuntimeException("can't handle "+comparisonType);
         }
     }
 
@@ -99,16 +103,22 @@ public class ConstraintOnComparableValues<T extends Comparable<T>> extends
     @Override
     public boolean isSatisfiedBy(T value) {
         switch (comparisonType) {
-        case LESS_OR_EQUAL_THAN:
-        case LESS_OR_EQUAL_THAN_RIGHT_FLOATING:
-            return value.compareTo(comparisonValue) <= 0;
-        case BIGGER_OR_EQUAL_THAN:
-        case BIGGER_OR_EQUAL_THAN_LEFT_FLOATING:
-            return value.compareTo(comparisonValue) >= 0;
-        case EQUAL_TO:
-            return value.compareTo(comparisonValue) == 0;
-        default:
-            throw new RuntimeException("can't handle " + comparisonType);
+
+            case LESS_OR_EQUAL_THAN:
+
+            case LESS_OR_EQUAL_THAN_RIGHT_FLOATING:
+                return value.compareTo(comparisonValue) <= 0;
+
+            case BIGGER_OR_EQUAL_THAN:
+
+            case BIGGER_OR_EQUAL_THAN_LEFT_FLOATING:
+                return value.compareTo(comparisonValue) >= 0;
+
+            case EQUAL_TO:
+                return value.compareTo(comparisonValue) == 0;
+
+            default:
+                throw new RuntimeException("can't handle " + comparisonType);
         }
     }
 

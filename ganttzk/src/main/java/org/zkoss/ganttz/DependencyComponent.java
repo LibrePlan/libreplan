@@ -26,7 +26,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
 
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.zkoss.ganttz.data.Dependency;
 import org.zkoss.ganttz.data.DependencyType;
 import org.zkoss.ganttz.data.GanttDate;
@@ -62,13 +62,13 @@ public class DependencyComponent extends XulElement implements AfterCompose {
 
     private boolean violated = false;
 
-    public DependencyComponent(TaskComponent source, TaskComponent destination,
-            Dependency dependency) {
+    public DependencyComponent(TaskComponent source, TaskComponent destination, Dependency dependency) {
         Validate.notNull(dependency);
         Validate.notNull(source);
         Validate.notNull(destination);
         Validate.isTrue(source.getTask() == dependency.getSource());
         Validate.isTrue(destination.getTask() == dependency.getDestination());
+
         this.type = dependency.getType();
         this.source = source;
         this.destination = destination;
@@ -76,8 +76,7 @@ public class DependencyComponent extends XulElement implements AfterCompose {
     }
 
     private void sendCSSUpdate() {
-        response("constraintViolated", new AuInvoke(DependencyComponent.this,
-                "setCSSClass", getCSSClass()));
+        response("constraintViolated", new AuInvoke(DependencyComponent.this, "setCSSClass", getCSSClass()));
     }
 
     public String getCSSClass() {
@@ -88,9 +87,10 @@ public class DependencyComponent extends XulElement implements AfterCompose {
 
     @Override
     public void afterCompose() {
-        if (listenerAdded) {
+        if ( listenerAdded ) {
             return;
         }
+
         listener = new PropertyChangeListener() {
 
             @Override
@@ -98,11 +98,11 @@ public class DependencyComponent extends XulElement implements AfterCompose {
                 redrawDependency();
             }
         };
+
         this.source.getTask().addFundamentalPropertiesChangeListener(listener);
         this.destination.getTask().addFundamentalPropertiesChangeListener(listener);
 
-        violationListener = Constraint
-                .onlyOnZKExecution(new IConstraintViolationListener<GanttDate>() {
+        violationListener = Constraint.onlyOnZKExecution(new IConstraintViolationListener<GanttDate>() {
 
             @Override
             public void constraintViolated(Constraint<GanttDate> constraint, GanttDate value) {
@@ -116,16 +116,17 @@ public class DependencyComponent extends XulElement implements AfterCompose {
                 sendCSSUpdate();
             }
         });
-        this.dependency.addConstraintViolationListener(violationListener,
-                Mode.RECEIVE_PENDING);
+
+        this.dependency.addConstraintViolationListener(violationListener, Mode.RECEIVE_PENDING);
 
         listenerAdded = true;
     }
 
     public void removeChangeListeners() {
-        if (!listenerAdded) {
+        if ( !listenerAdded ) {
             return;
         }
+
         this.source.getTask().removePropertyChangeListener(listener);
         this.destination.getTask().removePropertyChangeListener(listener);
         listenerAdded = false;
@@ -169,6 +170,7 @@ public class DependencyComponent extends XulElement implements AfterCompose {
     public boolean contains(Task task) {
         Task sourceTask = getSource().getTask();
         Task destinationTask = getDestination().getTask();
+
         return task.equals(sourceTask) || task.equals(destinationTask);
     }
 
@@ -191,8 +193,8 @@ public class DependencyComponent extends XulElement implements AfterCompose {
     public boolean hasSameSourceAndDestination(Dependency dependency) {
         Task sourceTask = source.getTask();
         Task destinationTask = destination.getTask();
-        return sourceTask.equals(dependency.getSource())
-                && destinationTask.equals(dependency.getDestination());
+
+        return sourceTask.equals(dependency.getSource()) && destinationTask.equals(dependency.getDestination());
     }
 
     protected void renderProperties(ContentRenderer renderer) throws IOException{

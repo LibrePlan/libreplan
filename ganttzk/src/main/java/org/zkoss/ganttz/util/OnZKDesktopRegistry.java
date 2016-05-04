@@ -21,7 +21,7 @@
 
 package org.zkoss.ganttz.util;
 
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
 
@@ -37,6 +37,7 @@ public class OnZKDesktopRegistry<T> {
 
     public OnZKDesktopRegistry(Class<T> klass) {
         Validate.notNull(klass);
+
         this.klass = klass;
         this.attributeName = klass.getName() + "_locator";
     }
@@ -51,6 +52,7 @@ public class OnZKDesktopRegistry<T> {
 
     public boolean isRegistered() {
         Object result = get();
+
         return result != null;
     }
 
@@ -59,10 +61,10 @@ public class OnZKDesktopRegistry<T> {
     }
 
     public T retrieve() throws IllegalStateException {
-        if (!isRegistered()) {
-            throw new IllegalStateException("no " + klass.getSimpleName()
-                    + " registered");
+        if ( !isRegistered() ) {
+            throw new IllegalStateException("no " + klass.getSimpleName() + " registered");
         }
+
         return klass.cast(get());
     }
 

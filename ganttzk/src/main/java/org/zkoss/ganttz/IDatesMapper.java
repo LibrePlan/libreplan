@@ -21,7 +21,7 @@
 
 package org.zkoss.ganttz;
 
-import org.apache.commons.lang.math.Fraction;
+import org.apache.commons.lang3.math.Fraction;
 import org.joda.time.LocalDate;
 import org.joda.time.ReadableDuration;
 import org.zkoss.ganttz.util.Interval;

@@ -27,7 +27,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 
 public class WeakReferencedListeners<T> {
 
@@ -38,10 +38,10 @@ public class WeakReferencedListeners<T> {
     }
 
     public static <T> WeakReferencedListeners<T> create() {
-        return new WeakReferencedListeners<T>();
+        return new WeakReferencedListeners<>();
     }
 
-    private LinkedList<WeakReference<T>> listeners = new LinkedList<WeakReference<T>>();
+    private LinkedList<WeakReference<T>> listeners = new LinkedList<>();
 
     private WeakReferencedListeners() {
 
@@ -58,13 +58,13 @@ public class WeakReferencedListeners<T> {
     public synchronized void addListener(T listener, Mode mode) {
         Validate.notNull(listener);
 
-        if (getActiveListeners().isEmpty() && mode == Mode.RECEIVE_PENDING) {
+        if ( getActiveListeners().isEmpty() && mode == Mode.RECEIVE_PENDING ) {
             notifyPendingOfNotificationTo(listener);
         }
         listeners.add(new WeakReference<T>(listener));
     }
 
-    private List<IListenerNotification<? super T>> pendingOfNotification = new ArrayList<WeakReferencedListeners.IListenerNotification<? super T>>();
+    private List<IListenerNotification<? super T>> pendingOfNotification = new ArrayList<>();
 
     private void notifyPendingOfNotificationTo(T listener) {
         for (IListenerNotification<? super T> each : pendingOfNotification) {
@@ -73,30 +73,31 @@ public class WeakReferencedListeners<T> {
         pendingOfNotification.clear();
     }
 
-    public synchronized void fireEvent(
-            IListenerNotification<? super T> notification) {
+    public synchronized void fireEvent(IListenerNotification<? super T> notification) {
         List<T> active = getActiveListeners();
 
         for (T listener : active) {
             notification.doNotify(listener);
         }
 
-        if (active.isEmpty()) {
+        if ( active.isEmpty() ) {
             pendingOfNotification.add(notification);
         }
     }
 
     private List<T> getActiveListeners() {
         ListIterator<WeakReference<T>> listIterator = listeners.listIterator();
-        List<T> result = new ArrayList<T>();
+        List<T> result = new ArrayList<>();
+
         while (listIterator.hasNext()) {
             T listener = listIterator.next().get();
-            if (listener == null) {
+            if ( listener == null ) {
                 listIterator.remove();
             } else {
                 result.add(listener);
             }
         }
+
         return result;
     }
 }
