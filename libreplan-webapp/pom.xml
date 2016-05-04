@@ -324,6 +324,7 @@
           <artifactId>customdetailrowcomponent</artifactId>
         </dependency>
 
+        <!-- Spring Framework -->
         <dependency>
           <groupId>org.springframework</groupId>
           <artifactId>spring-web</artifactId>
@@ -343,7 +344,7 @@
             <artifactId>spring-security-ldap</artifactId>
          </dependency>
 
-        <!--  Spring security -->
+        <!-- Spring security -->
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-web</artifactId>
@@ -359,14 +360,19 @@
             <artifactId>spring-security-ldap</artifactId>
         </dependency>
 
+        <!-- BSH -->
         <dependency>
             <groupId>org.beanshell</groupId>
             <artifactId>bsh</artifactId>
         </dependency>
+
+        <!-- JFreeChart -->
         <dependency>
             <groupId>org.jfree</groupId>
             <artifactId>jfreechart</artifactId>
         </dependency>
+
+        <!-- JCommon -->
         <dependency>
             <groupId>org.jfree</groupId>
             <artifactId>jcommon</artifactId>
@@ -404,6 +410,7 @@
             <artifactId>libreplan-business</artifactId>
         </dependency>
 
+        <!-- JUnit -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -428,6 +435,7 @@
             <artifactId>spring-test</artifactId>
         </dependency>
 
+        <!-- Easymock -->
         <dependency>
             <groupId>org.easymock</groupId>
             <artifactId>easymock</artifactId>
@@ -439,12 +447,12 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- Servlet -->
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
         </dependency>
 
-        <!-- TODO put it to main pom? -->
         <!-- Java mail -->
         <dependency>
             <groupId>javax.mail</groupId>
@@ -467,7 +475,7 @@
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-rt-frontend-jaxrs</artifactId>
         </dependency>
-         <dependency>
+        <dependency>
             <groupId>com.fasterxml.jackson.jaxrs</groupId>
             <artifactId>jackson-jaxrs-json-provider</artifactId>
         </dependency>
