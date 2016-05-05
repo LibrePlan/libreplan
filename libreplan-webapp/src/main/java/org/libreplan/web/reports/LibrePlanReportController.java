@@ -69,7 +69,7 @@ public abstract class LibrePlanReportController extends GenericForwardComposer {
         jasperreport.setParameters(getParameters());
         jasperreport.setType(type);
 
-        if (type.equals(HTML)) {
+        if ( type.equals(HTML) ) {
             URItext.setStyle("display: none");
             Executions.getCurrent().sendRedirect(jasperreport.getReportUrl(), "_blank");
         } else {
@@ -85,10 +85,12 @@ public abstract class LibrePlanReportController extends GenericForwardComposer {
     }
 
     protected Map<String, Object> getParameters() {
-        Map<String, Object> parameters = new HashMap<String, Object>();
+        Map<String, Object> parameters = new HashMap<>();
         String companyLogo = Registry.getConfigurationDAO()
-                .getConfigurationWithReadOnlyTransaction().getCompanyLogoURL();
-        if (StringUtils.isBlank(companyLogo)) {
+                .getConfigurationWithReadOnlyTransaction()
+                .getCompanyLogoURL();
+
+        if ( StringUtils.isBlank(companyLogo) ) {
             companyLogo = "/logos/logo.png";
         }
         parameters.put("logo", companyLogo);

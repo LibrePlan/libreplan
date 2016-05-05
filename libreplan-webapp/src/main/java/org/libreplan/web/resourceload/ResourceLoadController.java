@@ -507,11 +507,10 @@ public class ResourceLoadController implements Composer {
 
         private ByDatesFilter(Runnable onChange, PlanningState filterBy, LocalDate startDate, LocalDate endDate) {
             super(onChange, filterBy);
+            startDateValue = (isAppliedToOrder() || (startDate == null)) ? null
+                    : startDate.toDateTimeAtStartOfDay().toLocalDate();
 
-            startDateValue = (isAppliedToOrder() || (startDate == null)) ? null :
-                    startDate.toDateTimeAtStartOfDay().toLocalDate();
-
-            endDateValue = (endDate == null) ? null : endDate.toDateMidnight().toLocalDate();
+            endDateValue = (endDate == null) ? null : endDate.toDateTimeAtStartOfDay().toLocalDate();
         }
 
         @Override
@@ -924,7 +923,7 @@ public class ResourceLoadController implements Composer {
     }
 
     private static <T> List<T> as(Class<T> klass, Collection<?> entities) {
-        List<T> result = new ArrayList<T>(entities.size());
+        List<T> result = new ArrayList<>(entities.size());
         for (Object each : entities) {
             result.add(klass.cast(each));
         }

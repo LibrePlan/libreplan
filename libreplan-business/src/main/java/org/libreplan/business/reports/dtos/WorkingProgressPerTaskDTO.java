@@ -83,27 +83,28 @@ public class WorkingProgressPerTaskDTO {
         this.realHours = calculateRealHours(task, date);
         this.averageProgress = task.getOrderElement().getAdvancePercentage(date);
 
-        this.imputedProgress = (totalPlannedHours != 0) ? new Double(
-realHours
-                .toHoursAsDecimalWithScale(2).doubleValue()
-                / totalPlannedHours.doubleValue())
+        this.imputedProgress = (totalPlannedHours != 0) ?
+                new Double(realHours.toHoursAsDecimalWithScale(2).doubleValue() / totalPlannedHours.doubleValue())
                 : new Double(0);
-        this.plannedProgress = (totalPlannedHours != 0) ? new Double(partialPlannedHours / totalPlannedHours.doubleValue()) : new Double(0);
+        this.plannedProgress = (totalPlannedHours != 0) ?
+                new Double(partialPlannedHours / totalPlannedHours.doubleValue())
+                : new Double(0);
         this.costDifference = calculateCostDifference(averageProgress,
-                new BigDecimal(totalPlannedHours),
-                realHours.toHoursAsDecimalWithScale(2));
+                                                        new BigDecimal(totalPlannedHours),
+                                                                        realHours.toHoursAsDecimalWithScale(2));
         this.planningDifference = calculatePlanningDifference(averageProgress,
-                new BigDecimal(totalPlannedHours), new BigDecimal(
-                        partialPlannedHours));
+                                                            new BigDecimal(totalPlannedHours),
+                                                            new BigDecimal(partialPlannedHours));
         this.ratioCostDifference = calculateRatioCostDifference(averageProgress, imputedProgress);
         this.ratioPlanningDifference = calculateRatioPlanningDifference(averageProgress, plannedProgress);
     }
 
     public String getTaskName(Task task) {
         String result = task.getName();
-        if (result == null || result.isEmpty()) {
+        if ( result == null || result.isEmpty() ) {
             result = task.getOrderElement().getName();
         }
+
         return result;
     }
 
@@ -111,13 +112,13 @@ realHours
         Integer result = new Integer(0);
 
         final List<DayAssignment> dayAssignments = task.getDayAssignments(FilterType.WITHOUT_DERIVED);
-        if (dayAssignments.isEmpty()) {
+        if ( dayAssignments.isEmpty() ) {
             return result;
         }
 
         for (DayAssignment dayAssignment : dayAssignments) {
-            if (date == null || dayAssignment.getDay().compareTo(date) <= 0) {
-                result += dayAssignment.getHours();
+            if ( date == null || dayAssignment.getDay().compareTo(date) <= 0 ) {
+                result += dayAssignment.getDuration().getHours();
             }
         }
         return result;
@@ -128,13 +129,13 @@ realHours
 
         final List<WorkReportLine> workReportLines = workReportLineDAO
                 .findByOrderElementAndChildren(task.getOrderElement());
-        if (workReportLines.isEmpty()) {
+        if ( workReportLines.isEmpty() ) {
             return result;
         }
 
         for (WorkReportLine workReportLine : workReportLines) {
             final LocalDate workReportLineDate = new LocalDate(workReportLine.getDate());
-            if (date == null || workReportLineDate.compareTo(date) <= 0) {
+            if ( date == null || workReportLineDate.compareTo(date) <= 0 ) {
                 result = EffortDuration.sum(result, workReportLine.getEffort());
             }
         }
@@ -206,30 +207,36 @@ realHours
     }
 
     public BigDecimal calculateCostDifference(BigDecimal averageProgress,
-            BigDecimal totalPlannedHours, BigDecimal realHours) {
+                                              BigDecimal totalPlannedHours,
+                                              BigDecimal realHours) {
         BigDecimal result = averageProgress;
         result = result.multiply(totalPlannedHours);
+
         return result.subtract(realHours);
     }
 
     public BigDecimal calculatePlanningDifference(BigDecimal averageProgress,
-            BigDecimal totalPlannedHours, BigDecimal partialPlannedHours) {
+                                                  BigDecimal totalPlannedHours,
+                                                  BigDecimal partialPlannedHours) {
         BigDecimal result = averageProgress;
         result = result.multiply(totalPlannedHours);
+
         return result.subtract(partialPlannedHours);
     }
 
     public BigDecimal calculateRatioCostDifference(BigDecimal averageProgress, Double imputedProgress) {
-        if (imputedProgress.doubleValue() == 0) {
+        if ( imputedProgress.doubleValue() == 0 ) {
             return new BigDecimal(0);
         }
+
         return averageProgress.divide(new BigDecimal(imputedProgress), 2, RoundingMode.HALF_UP);
     }
 
     public BigDecimal calculateRatioPlanningDifference(BigDecimal averageProgress, Double plannedProgress) {
-        if (plannedProgress.doubleValue() == 0) {
+        if ( plannedProgress.doubleValue() == 0 ) {
             return new BigDecimal(0);
         }
+
         return averageProgress.divide(new BigDecimal(plannedProgress), 2, RoundingMode.HALF_UP);
     }
 

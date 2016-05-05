@@ -192,7 +192,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         }
 
         private static Date asDate(LocalDate start) {
-            return start.toDateMidnight().toDate();
+            return start.toDateTimeAtStartOfDay().toDate();
         }
 
     }

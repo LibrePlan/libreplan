@@ -496,7 +496,7 @@ public class GenericResourceAllocationTest {
         genericResourceAllocation.forResources(Arrays.asList(worker1)).allocate(ResourcesPerDay.amount(2));
 
         List<GenericDayAssignment> orderedAssignmentsFor = genericResourceAllocation.getOrderedAssignmentsFor(worker1);
-        assertThat(orderedAssignmentsFor.get(0).getHours(), equalTo(standardHoursPerDay * 2));
+        assertThat(orderedAssignmentsFor.get(0).getDuration().getHours(), equalTo(standardHoursPerDay * 2));
     }
 
     @Test
@@ -531,7 +531,7 @@ public class GenericResourceAllocationTest {
         genericResourceAllocation.forResources(Arrays.asList(worker1)).allocate(ResourcesPerDay.amount(1));
 
         List<GenericDayAssignment> assigmments = genericResourceAllocation.getOrderedAssignmentsFor(worker1);
-        assertThat(assigmments.get(0).getHours(), equalTo(defaultWorkableHours));
+        assertThat(assigmments.get(0).getDuration().getHours(), equalTo(defaultWorkableHours));
     }
 
     @Test

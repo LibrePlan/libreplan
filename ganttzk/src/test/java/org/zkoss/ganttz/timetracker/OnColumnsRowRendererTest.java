@@ -82,7 +82,7 @@ public class OnColumnsRowRendererTest {
 
     private void givenDetailItems() {
         detailItems = new ArrayList<>();
-        start = new LocalDate(2010, 1, 1).toDateMidnight().toDateTime();
+        start = new LocalDate(2010, 1, 1).toDateTimeAtStartOfDay().toDateTime();
         DateTime current = start;
         Period period = Period.months(2);
 
