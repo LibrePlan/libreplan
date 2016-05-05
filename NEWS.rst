@@ -40,6 +40,14 @@ Changes
 * Update LibrePlan version to 1.6.0
 * Update Javax Servlet
 * Update Jfree
+* Update Commons Lang
+* Update Commons Math
+* Update JGraphT
+* Update DBUnit
+* Update Log4j
+
+* Remove Ezmorph
+
 * Code refactoring
 
 
