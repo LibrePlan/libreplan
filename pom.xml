@@ -390,15 +390,14 @@
                 <classifier>jdk15</classifier>
             </dependency>
 
-            <!-- Commons collections -->
+            <!-- Commons Collections -->
             <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-collections4</artifactId>
+                <version>4.1</version>
+            </dependency>
 
-                  <groupId>commons-collections</groupId>
-                  <artifactId>commons-collections</artifactId>
-                  <version>3.2.2</version>
-             </dependency>
-
-            <!-- Commons lang -->
+            <!-- Commons Lang -->
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>

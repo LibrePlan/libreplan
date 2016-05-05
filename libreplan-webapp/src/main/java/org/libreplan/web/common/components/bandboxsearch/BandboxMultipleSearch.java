@@ -81,7 +81,7 @@ public class BandboxMultipleSearch extends HtmlMacroComponent {
 
     private List selectedFilters = new ArrayList();
 
-    private String selectedFiltersText = new String("");
+    private String selectedFiltersText = "";
 
     public void afterCompose() {
         super.afterCompose();
@@ -104,15 +104,17 @@ public class BandboxMultipleSearch extends HtmlMacroComponent {
             @Override
             public boolean service(AuRequest request, boolean everError) {
                 String command = request.getCommand();
-                if (command.equals("closeBandbox")) {
+                if ( command.equals("closeBandbox") ) {
                     pickElementFromListAndCloseBandbox();
+
                     return true;
                 }
+
                 return false;
             }
         });
-        listbox.addEventListener(Events.ON_OK, new EventListener() {
 
+        listbox.addEventListener(Events.ON_OK, new EventListener() {
             @Override
             public void onEvent(Event event) {
                 pickElementFromListAndCloseBandbox();
@@ -125,11 +127,10 @@ public class BandboxMultipleSearch extends HtmlMacroComponent {
          * Search for matching elements while typing on bandbox
          */
         bandbox.addEventListener("onChanging", new EventListener() {
-
             @Override
             public void onEvent(Event event) {
                 final String inputText = ((InputEvent) event).getValue();
-                if ((inputText == null) || (inputText.isEmpty())) {
+                if ( (inputText == null) || (inputText.isEmpty()) ) {
                     clear();
                     listbox.setSelectedIndex(0);
                     Events.postEvent(Events.ON_CHANGE, listbox, null);
@@ -145,7 +146,7 @@ public class BandboxMultipleSearch extends HtmlMacroComponent {
             @Override
             public void onEvent(Event event) {
                 List<Listitem> items = listbox.getItems();
-                if (!items.isEmpty()) {
+                if ( !items.isEmpty() ) {
                     listbox.setSelectedIndex(0);
                     items.get(0).setFocus(true);
                 }
@@ -154,20 +155,22 @@ public class BandboxMultipleSearch extends HtmlMacroComponent {
     }
 
     private void initFinder() {
-        if (multipleFiltersFinder != null) {
-            if (listbox != null) {
+        if ( multipleFiltersFinder != null ) {
+
+            if ( listbox != null ) {
                 initListbox();
             }
-            if (bandbox != null) {
+
+            if ( bandbox != null ) {
                 initBandbox();
             }
         }
     }
 
     private void pickElementFromListAndCloseBandbox() {
-        if(getSelectedItem() != null) {
+        if ( getSelectedItem() != null ) {
             final Object object = getSelectedItem().getValue();
-            if (multipleFiltersFinder.isValidNewFilter(selectedFilters, object)) {
+            if ( multipleFiltersFinder.isValidNewFilter(selectedFilters, object) ) {
                 addSelectedElement(object);
                 clearListbox();
                 listbox.setModel(getSubModel());
@@ -186,16 +189,16 @@ public class BandboxMultipleSearch extends HtmlMacroComponent {
 
     private void searchMultipleFilters(String inputText) {
         // update the filters list if some filter was deleted
-        boolean someRemoved = multipleFiltersFinder.updateDeletedFilters(
-                selectedFilters, inputText);
-        if (someRemoved) {
+        boolean someRemoved = multipleFiltersFinder.updateDeletedFilters(selectedFilters, inputText);
+
+        if ( someRemoved ) {
             updateselectedFiltersText();
             updateBandboxValue();
         } else {
             // find the filter set to show it in the listbox
-            String newFilterText = multipleFiltersFinder
-                .getNewFilterText(inputText);
-            if ((newFilterText != null) && (!newFilterText.isEmpty())) {
+            String newFilterText = multipleFiltersFinder.getNewFilterText(inputText);
+
+            if ( (newFilterText != null) && (!newFilterText.isEmpty()) ) {
                 listbox.setModel(getSubModel(newFilterText));
                 listbox.invalidate();
             } else {
@@ -213,7 +216,7 @@ public class BandboxMultipleSearch extends HtmlMacroComponent {
     }
 
     public void addSelectedElement(Object obj) {
-        if (obj != null) {
+        if ( obj != null ) {
             addFilter(obj);
             updateselectedFiltersText();
             updateBandboxValue();
@@ -223,10 +226,11 @@ public class BandboxMultipleSearch extends HtmlMacroComponent {
     private void addFilter(Object obj) {
         FilterPair newFilter = (FilterPair) obj;
         for (FilterPair filter : (List<FilterPair>) selectedFilters) {
-            if ((filter.getType().equals(newFilter.getType()))
-                    && (filter.getPattern().equals(newFilter.getPattern()))) {
-                throw new WrongValueException(bandbox,
-                        _("filter already exists"));
+
+            if ( (filter.getType().equals(newFilter.getType())) &&
+                    (filter.getPattern().equals(newFilter.getPattern())) ) {
+
+                throw new WrongValueException(bandbox, _("filter already exists"));
             }
         }
         selectedFilters.add(obj);
@@ -234,13 +238,12 @@ public class BandboxMultipleSearch extends HtmlMacroComponent {
 
     public List getSelectedElements() {
         updateBandboxValue();
-        if (this.multipleFiltersFinder != null) {
-            if (!multipleFiltersFinder.isValidFormatText(selectedFilters,
-                    bandbox.getValue())) {
-                throw new WrongValueException(bandbox,
-                        _("format filters are not valid"));
+        if ( this.multipleFiltersFinder != null ) {
+            if ( !multipleFiltersFinder.isValidFormatText(selectedFilters, bandbox.getValue()) ) {
+                throw new WrongValueException(bandbox, _("format filters are not valid"));
             }
         }
+
         return selectedFilters;
     }
 
@@ -250,6 +253,7 @@ public class BandboxMultipleSearch extends HtmlMacroComponent {
     @SuppressWarnings("unchecked")
     private ListModel getSubModel() {
         List result = multipleFiltersFinder.getFirstTenFilters();
+
         return new SimpleListModel(result);
     }
 
@@ -260,6 +264,7 @@ public class BandboxMultipleSearch extends HtmlMacroComponent {
     @SuppressWarnings("unchecked")
     private ListModel getSubModel(String inputText) {
         List result = multipleFiltersFinder.getMatching(inputText);
+
         return new SimpleListModel(result);
     }
 
@@ -270,13 +275,13 @@ public class BandboxMultipleSearch extends HtmlMacroComponent {
     public void addHeaders() {
         clearHeaderIfNecessary();
         final String[] headers = multipleFiltersFinder.getHeaders();
-        for (int i = 0; i < headers.length; i++) {
-            listhead.getChildren().add(new Listheader(_(headers[i])));
+        for (String header : headers) {
+            listhead.getChildren().add(new Listheader(_(header)));
         }
     }
 
     private void clearHeaderIfNecessary() {
-        if (listhead.getChildren() != null) {
+        if ( listhead.getChildren() != null ) {
             listhead.getChildren().clear();
         }
     }
@@ -295,12 +300,12 @@ public class BandboxMultipleSearch extends HtmlMacroComponent {
     }
 
     private Object getBean(String beanName) {
-        HttpServletRequest servletRequest = (HttpServletRequest) Executions
-                .getCurrent().getNativeRequest();
-        ServletContext servletContext = servletRequest.getSession()
-                .getServletContext();
-        WebApplicationContext webApplicationContext = WebApplicationContextUtils
-                .getWebApplicationContext(servletContext);
+        HttpServletRequest servletRequest = (HttpServletRequest) Executions.getCurrent().getNativeRequest();
+        ServletContext servletContext = servletRequest.getSession().getServletContext();
+
+        WebApplicationContext webApplicationContext =
+                WebApplicationContextUtils.getWebApplicationContext(servletContext);
+
         return webApplicationContext.getBean(beanName);
     }
 
@@ -309,8 +314,7 @@ public class BandboxMultipleSearch extends HtmlMacroComponent {
     }
 
     public void setFinder(String classname) {
-        multipleFiltersFinder = (IMultipleFiltersFinder) getBean(StringUtils
-                .uncapitalize(classname));
+        multipleFiltersFinder = (IMultipleFiltersFinder) getBean(StringUtils.uncapitalize(classname));
         initFinder();
     }
 
@@ -324,16 +328,17 @@ public class BandboxMultipleSearch extends HtmlMacroComponent {
     }
 
     private void clearListbox() {
-        List<Object> list = new ArrayList<Object>();
+        List<Object> list = new ArrayList<>();
         listbox.setModel(new SimpleListModel(list));
         listbox.invalidate();
     }
 
     public List<Object> asList(ListModel model) {
-        List<Object> result = new ArrayList<Object>();
+        List<Object> result = new ArrayList<>();
         for (int i = 0; i < model.getSize(); i++) {
             result.add(model.getElementAt(i));
         }
+
         return result;
     }
 
@@ -358,14 +363,14 @@ public class BandboxMultipleSearch extends HtmlMacroComponent {
     }
 
     private void updateWidth() {
-        if ((widthBandbox != null) && (!widthBandbox.isEmpty())) {
+        if ( (widthBandbox != null) && (!widthBandbox.isEmpty()) ) {
             this.bandbox.setWidth(widthBandbox);
             this.listbox.setWidth(widthListbox);
         }
     }
 
     private void updateHeight() {
-        if ((heightBbox != null) && (!heightBbox.isEmpty())) {
+        if ( (heightBbox != null) && (!heightBbox.isEmpty()) ) {
             this.bandbox.setHeight(heightBbox);
         }
     }
@@ -377,8 +382,7 @@ public class BandboxMultipleSearch extends HtmlMacroComponent {
     private void updateselectedFiltersText() {
         selectedFiltersText = "";
         for (Object obj : selectedFilters) {
-            selectedFiltersText = selectedFiltersText
-                    .concat(multipleFiltersFinder.objectToString(obj));
+            selectedFiltersText = selectedFiltersText.concat(multipleFiltersFinder.objectToString(obj));
         }
     }
 
@@ -392,9 +396,11 @@ public class BandboxMultipleSearch extends HtmlMacroComponent {
 
     public void addSelectedElements(List<FilterPair> sessionFilterPairs) {
         selectedFilters.clear();
+
         for (FilterPair filterPair : sessionFilterPairs) {
             addFilter(filterPair);
         }
+
         updateselectedFiltersText();
         updateBandboxValue();
     }
