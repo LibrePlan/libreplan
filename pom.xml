@@ -396,12 +396,6 @@
                   <version>3.2.2</version>
              </dependency>
 
-            <dependency>
-                <groupId>net.sf.ezmorph</groupId>
-                <artifactId>ezmorph</artifactId>
-                <version>1.0.6</version>
-            </dependency>
-
             <!-- Commons lang -->
             <dependency>
                 <groupId>org.apache.commons</groupId>
