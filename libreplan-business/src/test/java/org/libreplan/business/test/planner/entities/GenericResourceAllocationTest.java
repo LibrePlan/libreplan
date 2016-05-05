@@ -25,8 +25,8 @@ import static java.util.Arrays.asList;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.getCurrentArguments;
 import static org.easymock.EasyMock.isA;
-import static org.easymock.classextension.EasyMock.createNiceMock;
-import static org.easymock.classextension.EasyMock.replay;
+import static org.easymock.EasyMock.createNiceMock;
+import static org.easymock.EasyMock.replay;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
@@ -49,7 +49,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 import org.easymock.IAnswer;
-import org.easymock.classextension.EasyMock;
+import org.easymock.EasyMock;
 import org.joda.time.Interval;
 import org.joda.time.LocalDate;
 import org.joda.time.Period;
@@ -140,7 +140,7 @@ public class GenericResourceAllocationTest {
     }
 
     private Set<Criterion> givenPredefinedCriterions() {
-        Set<Criterion> result = new HashSet<Criterion>();
+        Set<Criterion> result = new HashSet<>();
         Criterion criterion1 = createNiceMock(Criterion.class);
         setupIsSatisfiedByAll(criterion1);
         Criterion criterion2 = createNiceMock(Criterion.class);
