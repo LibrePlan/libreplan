@@ -43,24 +43,20 @@ import org.apache.log4j.xml.DOMConfigurator;
  */
 public class LoggingConfiguration implements ServletContextListener {
 
-    private static final String lineSeparator = System
-            .getProperty("line.separator");
+    private static final String lineSeparator = System.getProperty("line.separator");
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        if (System.getProperty("libreplan-log-directory") != null) {
+        if ( System.getProperty("libreplan-log-directory") != null ) {
             // log4j will do the replacement automatically.
             return;
         }
 
-        Map<String, String> replacements = new HashMap<String, String>();
-        replacements.put("libreplan-log-directory",
-                findLogDirectory(sce.getServletContext()));
+        Map<String, String> replacements = new HashMap<>();
+        replacements.put("libreplan-log-directory", findLogDirectory(sce.getServletContext()));
         try {
-            StringReader newConfiguration = new StringReader(
-                    getContents(replacements));
-            new DOMConfigurator().doConfigure(newConfiguration,
-                    LogManager.getLoggerRepository());
+            StringReader newConfiguration = new StringReader(getContents(replacements));
+            new DOMConfigurator().doConfigure(newConfiguration, LogManager.getLoggerRepository());
         } catch (IOException e) {
             e.printStackTrace();
             // let log4j be loaded without replacements
@@ -69,25 +65,28 @@ public class LoggingConfiguration implements ServletContextListener {
 
     private String findLogDirectory(ServletContext servletContext) {
         File result = logDirectoryFile(servletContext);
-        if (result != null) {
+        if ( result != null ) {
             return result.getAbsolutePath() + "/";
         }
+
         return "";
     }
 
     private File logDirectoryFile(ServletContext servletContext) {
         String applicationName = firstNotEmptyOrNull(
                 servletContext.getContextPath(),
-                servletContext.getServletContextName(), "LibrePlan");
-        if (isTomcat(servletContext)) {
+                servletContext.getServletContextName(),
+                "LibrePlan");
+
+        if ( isTomcat(servletContext) ) {
             File logDirectory = findTomcatLogDirectory();
-            if (logDirectory != null) {
+            if ( logDirectory != null ) {
                 return tryToAppendApplicationName(logDirectory, applicationName);
             }
         }
 
         File home = new File(System.getProperty("user.home"));
-        if (home.canWrite()) {
+        if ( home.canWrite() ) {
             return tryToAppendApplicationName(home, applicationName);
         }
 
@@ -96,82 +95,84 @@ public class LoggingConfiguration implements ServletContextListener {
 
     private File findTomcatLogDirectory() {
         File file = new File("/var/log/");
-        if (!file.isDirectory()) {
+        if ( !file.isDirectory() ) {
             return null;
         }
-        File[] tomcatLogDirectories = file.listFiles(new FileFilter() {
 
+        File[] tomcatLogDirectories = file.listFiles(new FileFilter() {
             @Override
             public boolean accept(File pathname) {
                 return pathname.getName().contains("tomcat");
             }
         });
-        if (tomcatLogDirectories.length == 0) {
+
+        if ( tomcatLogDirectories.length == 0 ) {
             return null;
         }
+
         return tomcatLogDirectories[0];
     }
 
-    private File tryToAppendApplicationName(File logDirectory,
-            String applicationName) {
+    private File tryToAppendApplicationName(File logDirectory, String applicationName) {
         File forApplication = new File(logDirectory, applicationName);
-        if (forApplication.mkdir() || forApplication.canWrite()) {
+        if ( forApplication.mkdir() || forApplication.canWrite() ) {
             return forApplication;
         }
+
         return logDirectory;
     }
 
     private boolean isTomcat(ServletContext servletContext) {
         String serverInfo = servletContext.getServerInfo();
+
         return serverInfo != null && serverInfo.contains("Tomcat");
     }
 
     private static String firstNotEmptyOrNull(String... strings) {
         for (String each : strings) {
-            if (each != null && !each.isEmpty()) {
+            if ( each != null && !each.isEmpty() ) {
                 return each;
             }
         }
+
         return "";
     }
 
-    private String getContents(Map<String, String> replacements)
-            throws IOException {
+    private String getContents(Map<String, String> replacements) throws IOException {
         return withReplacements(replacements, getOriginalConfiguration());
     }
 
     private BufferedReader getOriginalConfiguration() {
-        return new BufferedReader(new InputStreamReader(
-                getClass().getClassLoader().getResourceAsStream("log4j.xml")));
+        return new BufferedReader(new InputStreamReader(getClass().getClassLoader().getResourceAsStream("log4j.xml")));
     }
 
-    private String withReplacements(Map<String, String> replacements,
-            BufferedReader originalConfiguration)
+    private String withReplacements(Map<String, String> replacements, BufferedReader originalConfiguration)
             throws IOException {
+
         StringBuilder result = new StringBuilder();
-        String line = null;
+        String line;
+
         while ((line = originalConfiguration.readLine()) != null) {
-            result.append(doReplacement(replacements, line)).append(
-                    lineSeparator);
+            result.append(doReplacement(replacements, line)).append(lineSeparator);
         }
+
         return result.toString();
     }
 
-    private static Pattern propertyPattern = Pattern
-            .compile("\\$\\{\\s*(.+?)\\s*\\}");
+    private static Pattern propertyPattern = Pattern.compile("\\$\\{\\s*(.+?)\\s*\\}");
 
-    private static String doReplacement(
-            Map<String, String> propertyReplacements, String line) {
+    private static String doReplacement(Map<String, String> propertyReplacements, String line) {
 
         String result = line;
         Matcher matcher = propertyPattern.matcher(line);
+
         while (matcher.find()) {
             String propertyName = matcher.group(1);
-            if (propertyReplacements.containsKey(propertyName)) {
-                result = line.replace(matcher.group(),
-                        propertyReplacements.get(propertyName));
+            if ( propertyReplacements.containsKey(propertyName) ) {
+                result = line.replace(matcher.group(), propertyReplacements.get(propertyName));
             }
         }
+
         return result;
     }
 
