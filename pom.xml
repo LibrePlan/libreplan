@@ -118,7 +118,7 @@
                 <!-- JDBC driver properties -->
                 <jdbcDriver.groupId>org.postgresql</jdbcDriver.groupId>
                 <jdbcDriver.artifactId>postgresql</jdbcDriver.artifactId>
-                <jdbcDriver.version>9.2-1003-jdbc4</jdbcDriver.version>
+                <jdbcDriver.version>9.4.1208.jre7</jdbcDriver.version>
                 <jdbcDriver.className>org.postgresql.Driver</jdbcDriver.className>
                 <!-- Data source properties -->
                 <dataSource.url>jdbc:postgresql://localhost/libreplan${libreplan.mode}</dataSource.url>
@@ -129,14 +129,16 @@
             </properties>
         </profile>
 
-        <!-- MySQL profile -->
+        <!-- MySQL profile
+            TODO chagne version mysql for JDK8
+        -->
         <profile>
             <id>mysql</id>
             <properties>
                 <!-- JDBC driver properties -->
                 <jdbcDriver.groupId>mysql</jdbcDriver.groupId>
                 <jdbcDriver.artifactId>mysql-connector-java</jdbcDriver.artifactId>
-                <jdbcDriver.version>5.0.5</jdbcDriver.version>
+                <jdbcDriver.version>6.0.2</jdbcDriver.version>
                 <jdbcDriver.className>com.mysql.jdbc.Driver</jdbcDriver.className>
                 <!-- Data source properties -->
                 <dataSource.url>jdbc:mysql://localhost/libreplan${libreplan.mode}</dataSource.url>
@@ -260,15 +262,15 @@
 
             <!-- Usertype.Core -->
             <dependency>
-	      <groupId>org.jadira.usertype</groupId>
-	      <artifactId>usertype.core</artifactId>
-	      <version>3.2.0.GA</version>
-              <exclusions>
-                <exclusion>
-                  <groupId>org.hibernate</groupId>
-                  <artifactId>hibernate-entitymanager</artifactId>
-                </exclusion>
-              </exclusions>
+              <groupId>org.jadira.usertype</groupId>
+              <artifactId>usertype.core</artifactId>
+              <version>3.2.0.GA</version>
+                  <exclusions>
+                    <exclusion>
+                      <groupId>org.hibernate</groupId>
+                      <artifactId>hibernate-entitymanager</artifactId>
+                    </exclusion>
+                  </exclusions>
             </dependency>
 
             <!-- JDBC driver -->
@@ -280,7 +282,7 @@
             </dependency>
             <dependency>
                 <groupId>org.jboss.spec.javax.transaction</groupId>
-                <artifactId>jboss-transaction-api_1.1_spec</artifactId>
+                <artifactId>jboss-transaction-api_1.2_spec</artifactId>
                 <version>1.0.1.Final</version>
                 <scope>compile</scope>
                 <exclusions>
@@ -820,7 +822,7 @@
             <!-- =========================================================== -->
             <!-- Jetty configuration -->
             <plugin>
-
+                <!-- TODO  Change version for JDK8 -->
                 <groupId>org.mortbay.jetty</groupId>
                 <artifactId>maven-jetty-plugin</artifactId>
                 <version>6.1.18</version>
