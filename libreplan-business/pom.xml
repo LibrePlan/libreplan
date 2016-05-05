@@ -110,7 +110,7 @@
             <artifactId>commons-math3</artifactId>
         </dependency>
 
-        <!-- Log4J -->
+        <!-- Log4j -->
         <dependency>
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-log4j12</artifactId>
