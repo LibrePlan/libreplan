@@ -31,6 +31,7 @@ public class TaskRow extends XulElement {
     public static <T extends TaskComponent> T wrapInRow(T taskComponent) {
         TaskRow parent = new TaskRow();
         parent.appendChild(taskComponent);
+
         return taskComponent;
     }
 
