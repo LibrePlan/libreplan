@@ -23,7 +23,7 @@ package org.libreplan.web.common.components;
 
 import java.util.Comparator;
 
-import org.apache.commons.collections.comparators.BooleanComparator;
+import org.apache.commons.collections4.comparators.BooleanComparator;
 import org.apache.commons.lang.Validate;
 import org.libreplan.business.INewObject;
 import org.zkoss.zk.ui.ext.AfterCompose;
@@ -45,13 +45,13 @@ import org.zkoss.zul.api.Grid;
  * in order to work properly. They notify the {@link NewDataSortableGrid} in which are
  * included when they are requested to be sorted.
  *<p>
+ *
  * @author Javier Moran Rua <jmoran@igalia.com>
  */
 
 public class NewDataSortableColumn extends Column implements AfterCompose {
 
-    private static class NewObjectDecoratorComparator implements
-            Comparator<Object> {
+    private static class NewObjectDecoratorComparator implements Comparator<Object> {
         private Comparator<Object> decoratedComparator;
 
         public NewObjectDecoratorComparator(Comparator<Object> c) {
@@ -61,7 +61,7 @@ public class NewDataSortableColumn extends Column implements AfterCompose {
 
         @Override
         public int compare(Object o1, Object o2) {
-            if (!doComparingObjectsSupportInterface(o1, o2)) {
+            if ( !doComparingObjectsSupportInterface(o1, o2) ) {
                 return decoratedComparator.compare(o1, o2);
             } else {
                 return decorateBehaviour((INewObject) o1, (INewObject) o2);
@@ -73,11 +73,11 @@ public class NewDataSortableColumn extends Column implements AfterCompose {
         }
 
         private int decorateBehaviour(INewObject o1, INewObject o2) {
-            if (o1.isNewObject() == o2.isNewObject()) {
+            if ( o1.isNewObject() == o2.isNewObject() ) {
                 return decoratedComparator.compare(o1, o2);
             }
-            return BooleanComparator.getTrueFirstComparator().compare(
-                    o1.isNewObject(), o2.isNewObject());
+
+            return BooleanComparator.getTrueFirstComparator().compare(o1.isNewObject(), o2.isNewObject());
         }
     }
 
@@ -94,10 +94,11 @@ public class NewDataSortableColumn extends Column implements AfterCompose {
     @Override
     public boolean sort(boolean ascending) {
         Grid grid = getGrid();
-        if (grid instanceof NewDataSortableGrid) {
+        if ( grid instanceof NewDataSortableGrid ) {
             ((NewDataSortableGrid) grid).setSortedColumn(this);
             ((NewDataSortableGrid) grid).setLastSortedColumnAscending(ascending);
         }
+
         return super.sort(ascending);
     }
 
@@ -105,11 +106,11 @@ public class NewDataSortableColumn extends Column implements AfterCompose {
     public void afterCompose() {
         Grid g = getGrid();
 
-        if (g instanceof NewDataSortableGrid) {
+        if ( g instanceof NewDataSortableGrid ) {
             NewDataSortableGrid castedGrid = (NewDataSortableGrid) g;
 
             // The first registered column is responsible for ordering
-            if (castedGrid.getSortedColumn() == null) {
+            if ( castedGrid.getSortedColumn() == null ) {
                 markInGridAsColumnToOrder(castedGrid);
             }
         }
@@ -118,12 +119,10 @@ public class NewDataSortableColumn extends Column implements AfterCompose {
     private void markInGridAsColumnToOrder(NewDataSortableGrid parentGrid) {
         parentGrid.setSortedColumn(this);
 
-        if ("ascending".equals(getSortDirection())) {
-            parentGrid.setLastSortedColumnAscending(
-                    Boolean.TRUE.booleanValue());
-        } else if ("descending".equals(getSortDirection())) {
-            parentGrid.setLastSortedColumnAscending(
-                    Boolean.FALSE.booleanValue());
+        if ( "ascending".equals(getSortDirection()) ) {
+            parentGrid.setLastSortedColumnAscending(true);
+        } else if ( "descending".equals(getSortDirection()) ) {
+            parentGrid.setLastSortedColumnAscending(false);
         }
     }
 

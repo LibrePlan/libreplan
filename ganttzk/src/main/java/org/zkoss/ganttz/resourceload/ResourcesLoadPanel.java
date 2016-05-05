@@ -285,9 +285,8 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
     @SuppressWarnings("unchecked")
     private Separator getSeparator() {
         List<Component> children = getToolbar().getChildren();
-        Separator separator = ComponentsFinder.findComponentsOfType(Separator.class, children).get(0);
 
-        return separator;
+        return ComponentsFinder.findComponentsOfType(Separator.class, children).get(0);
     }
 
     private Component getToolbar() {
@@ -364,12 +363,12 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
 
         // Insert additional filters if any
         Component additionalFilter = getFirstOptionalFilter();
-        if( additionalFilter != null ) {
+        if ( additionalFilter != null ) {
             getFellow("additionalFilterInsertionPoint1").appendChild(additionalFilter);
         }
 
         additionalFilter = getSecondOptionalFilter();
-        if( additionalFilter != null ) {
+        if ( additionalFilter != null ) {
             getFellow("additionalFilterInsertionPoint2").appendChild(additionalFilter);
         }
 
@@ -378,10 +377,10 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
         listZoomLevels = (Listbox) getFellow("listZoomLevels");
         listZoomLevels.setSelectedIndex(timeTracker.getDetailLevel().ordinal());
 
-        if( paginationType == PaginationType.INTERNAL_PAGINATION && refreshNameFilter ) {
+        if ( paginationType == PaginationType.INTERNAL_PAGINATION && refreshNameFilter ) {
             setupNameFilter();
         }
-        else if( paginationType == PaginationType.NONE ) {
+        else if ( paginationType == PaginationType.NONE ) {
             getFellow("filterByNameCombo").setVisible(false);
             getFellow("filterByNameLabel").setVisible(false);
         }
@@ -443,15 +442,15 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
         filterByNameCombo.getChildren().clear();
         int size = groups.size();
 
-        if( size > numberOfGroupsByName ) {
+        if ( size > numberOfGroupsByName ) {
             int position = 0;
 
-            while(position < size) {
+            while (position < size) {
                 String firstName = groups.get(position).getConceptName();
                 String lastName;
                 int newPosition = position + numberOfGroupsByName;
 
-                if( newPosition - 1 < size ) {
+                if ( newPosition - 1 < size ) {
                     lastName = groups.get(newPosition - 1).getConceptName();
                 }
                 else {
@@ -483,7 +482,7 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
      * @return
      */
     private List<LoadTimeLine> getGroupsToShow() {
-        if( paginationType != PaginationType.INTERNAL_PAGINATION || filterByNamePosition == -1 ) {
+        if ( paginationType != PaginationType.INTERNAL_PAGINATION || filterByNamePosition == -1 ) {
             return groups;
         }
 
@@ -522,7 +521,7 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
         LongOperationFeedback.execute(componentOnWhichGiveFeedback, new ILongOperation() {
             @Override
             public void doAction() {
-                if( paginationType == PaginationType.INTERNAL_PAGINATION ) {
+                if ( paginationType == PaginationType.INTERNAL_PAGINATION ) {
 
                     //if the pagination is internal, we are in charge of repainting the graph
                     treeModel = createModelForTree();
@@ -563,6 +562,7 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
 
     public void changeChartVisibility(boolean visible) {
         visibleChart = visible;
+
         chartVisibilityListeners.fireEvent(new IListenerNotification<IChartVisibilityChangedListener>() {
             @Override
             public void doNotify(IChartVisibilityChangedListener listener) {
@@ -588,7 +588,7 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
     }
 
     public Combobox getPaginationFilterCombobox() {
-        if( paginationType == PaginationType.EXTERNAL_PAGINATION ) {
+        if ( paginationType == PaginationType.EXTERNAL_PAGINATION ) {
             return (Combobox) getFellow("filterByNameCombo");
         }
 
