@@ -66,31 +66,28 @@ public abstract class DayAssignment extends BaseEntity {
         public abstract boolean accepts(DayAssignment each);
     }
 
-    public static List<DayAssignment> filter(
-            Collection<? extends DayAssignment> assignments,
-            FilterType filter) {
+    public static List<DayAssignment> filter(Collection<? extends DayAssignment> assignments,
+                                            FilterType filter) {
         if (filter == null || filter.equals(FilterType.KEEP_ALL)) {
-            return new ArrayList<DayAssignment>(assignments);
+            return new ArrayList<>(assignments);
         }
         List<DayAssignment> result = new ArrayList<DayAssignment>();
         for (DayAssignment each : assignments) {
-            if (filter.accepts(each)) {
+            if ( filter.accepts(each) ) {
                 result.add(each);
             }
         }
         return result;
     }
 
-    public static <T extends DayAssignment> List<T> getAtInterval(
-            List<T> orderedAssignments, LocalDate startInclusive,
-            LocalDate endExclusive) {
+    public static <T extends DayAssignment> List<T> getAtInterval(List<T> orderedAssignments, LocalDate startInclusive,
+                                                                    LocalDate endExclusive) {
         int position = findFirstAfterOrEqual(orderedAssignments, startInclusive);
-        List<T> couldBeIncluded = orderedAssignments.subList(position, Math
-                .max(
-                orderedAssignments.size(), position));
-        List<T> result = new ArrayList<T>();
+        List<T> couldBeIncluded = orderedAssignments.subList(position,
+                Math.max(orderedAssignments.size(), position));
+        List<T> result = new ArrayList<>();
         for (T each : couldBeIncluded) {
-            if (each.getDay().compareTo(endExclusive) >= 0) {
+            if ( each.getDay().compareTo(endExclusive) >= 0 ) {
                 break;
             }
             assert each.includedIn(startInclusive, endExclusive);
@@ -101,9 +98,9 @@ public abstract class DayAssignment extends BaseEntity {
 
     public static <T extends DayAssignment> List<T> withConsolidatedValue(
             Collection<? extends T> assignments, boolean consolidated) {
-        List<T> result = new ArrayList<T>();
+        List<T> result = new ArrayList<>();
         for (T each : assignments) {
-            if (each.isConsolidated() == consolidated) {
+            if ( each.isConsolidated() == consolidated ) {
                 result.add(each);
             }
         }
@@ -116,8 +113,7 @@ public abstract class DayAssignment extends BaseEntity {
         int end = orderedAssignments.size() - 1;
         while (start <= end) {
             int middle = start + (end - start) / 2;
-            if (orderedAssignments.get(middle).getDay().compareTo(
-                    startInclusive) < 0) {
+            if ( orderedAssignments.get(middle).getDay().compareTo(startInclusive) < 0 ) {
                 start = middle + 1;
             } else {
                 end = middle - 1;
@@ -126,8 +122,7 @@ public abstract class DayAssignment extends BaseEntity {
         return start;
     }
 
-    public static EffortDuration sum(
-            Collection<? extends DayAssignment> assignments) {
+    public static EffortDuration sum(Collection<? extends DayAssignment> assignments) {
         EffortDuration result = zero();
         for (DayAssignment each : assignments) {
             result = result.plus(each.getDuration());
@@ -144,8 +139,7 @@ public abstract class DayAssignment extends BaseEntity {
         return result;
     }
 
-    public static <T extends DayAssignment> Map<Resource, List<T>> byResource(
-            Collection<? extends T> assignments) {
+    public static <T extends DayAssignment> Map<Resource, List<T>> byResource(Collection<? extends T> assignments) {
         Map<Resource, List<T>> result = new HashMap<Resource, List<T>>();
         for (T assignment : assignments) {
             Resource resource = assignment.getResource();
@@ -157,12 +151,11 @@ public abstract class DayAssignment extends BaseEntity {
         return result;
     }
 
-    public static <T extends DayAssignment> Map<LocalDate, List<T>> byDay(
-            Collection<? extends T> assignments) {
+    public static <T extends DayAssignment> Map<LocalDate, List<T>> byDay(Collection<? extends T> assignments) {
         Map<LocalDate, List<T>> result = new HashMap<LocalDate, List<T>>();
         for (T t : assignments) {
             LocalDate day = t.getDay();
-            if (!result.containsKey(day)) {
+            if ( !result.containsKey(day) ) {
                 result.put(day, new ArrayList<T>());
             }
             result.get(day).add(t);
@@ -170,8 +163,7 @@ public abstract class DayAssignment extends BaseEntity {
         return result;
     }
 
-    public static Set<Resource> getAllResources(
-            Collection<? extends DayAssignment> assignments) {
+    public static Set<Resource> getAllResources(Collection<? extends DayAssignment> assignments) {
         Set<Resource> result = new HashSet<Resource>();
         for (DayAssignment dayAssignment : assignments) {
             result.add(dayAssignment.getResource());
@@ -181,7 +173,7 @@ public abstract class DayAssignment extends BaseEntity {
 
     public static <T extends DayAssignment> List<T> getOfType(Class<T> klass,
             Collection<? extends DayAssignment> dayAssignments) {
-        List<T> result = new ArrayList<T>();
+        List<T> result = new ArrayList<>();
         for (DayAssignment each : dayAssignments) {
             if (klass.isInstance(each)) {
                 result.add(klass.cast(each));
@@ -211,6 +203,7 @@ public abstract class DayAssignment extends BaseEntity {
         return result;
     }
 
+    @NotNull
     private EffortDuration duration;
 
     @NotNull
@@ -226,8 +219,7 @@ public abstract class DayAssignment extends BaseEntity {
 
     }
 
-    protected DayAssignment(LocalDate day, EffortDuration duration,
-            Resource resource) {
+    protected DayAssignment(LocalDate day, EffortDuration duration, Resource resource) {
         Validate.notNull(day);
         Validate.notNull(duration);
         Validate.notNull(resource);
@@ -236,15 +228,12 @@ public abstract class DayAssignment extends BaseEntity {
         this.resource = resource;
     }
 
-    /**
-     * @deprecated Use {@link #getDuration()}
-     */
-    @Deprecated
-    public int getHours() {
+
+   /* public int getHours() {
         return duration.getHours();
     }
+    */
 
-    @NotNull
     public EffortDuration getDuration() {
         return duration;
     }
@@ -290,7 +279,7 @@ public abstract class DayAssignment extends BaseEntity {
 
     public static <T extends DayAssignment> List<T> orderedByDay(
             Collection<T> dayAssignments) {
-        List<T> result = new ArrayList<T>(dayAssignments);
+        List<T> result = new ArrayList<>(dayAssignments);
         Collections.sort(result, byDayComparator());
         return result;
     }

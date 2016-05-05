@@ -45,6 +45,7 @@ Changes
 * Update JGraphT
 * Update DBUnit
 * Update Log4j
+* Update JodaTime
 
 * Remove Ezmorph
 

@@ -64,18 +64,15 @@ import org.zkoss.zul.impl.XulElement;
  * This class wraps ResourceLoad data inside an specific HTML Div component.
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
-public class QueueComponent extends XulElement implements
-        AfterCompose {
+public class QueueComponent extends XulElement implements AfterCompose {
 
     private static final int DEADLINE_MARK_HALF_WIDTH = 5;
 
-    public static QueueComponent create(
-            QueueListComponent queueListComponent,
-            TimeTracker timeTracker,
-            LimitingResourceQueue limitingResourceQueue) {
+    public static QueueComponent create(QueueListComponent queueListComponent,
+                                        TimeTracker timeTracker,
+                                        LimitingResourceQueue limitingResourceQueue) {
 
-        return new QueueComponent(queueListComponent, timeTracker,
-                limitingResourceQueue);
+        return new QueueComponent(queueListComponent, timeTracker, limitingResourceQueue);
     }
 
     private final QueueListComponent queueListComponent;
@@ -86,12 +83,11 @@ public class QueueComponent extends XulElement implements
 
     private LimitingResourceQueue limitingResourceQueue;
 
-    private List<QueueTask> queueTasks = new ArrayList<QueueTask>();
+    private List<QueueTask> queueTasks = new ArrayList<>();
 
-    private QueueComponent(
-            final QueueListComponent queueListComponent,
-            final TimeTracker timeTracker,
-            final LimitingResourceQueue limitingResourceQueue) {
+    private QueueComponent(final QueueListComponent queueListComponent,
+                           final TimeTracker timeTracker,
+                           final LimitingResourceQueue limitingResourceQueue) {
 
         this.queueListComponent = queueListComponent;
         this.limitingResourceQueue = limitingResourceQueue;
@@ -106,6 +102,7 @@ public class QueueComponent extends XulElement implements
                 createChildren(limitingResourceQueue, timeTracker.getMapper());
             }
         };
+
         this.timeTracker.addZoomListener(zoomChangedListener);
     }
 
@@ -122,10 +119,8 @@ public class QueueComponent extends XulElement implements
         this.limitingResourceQueue = limitingResourceQueue;
     }
 
-    private void createChildren(LimitingResourceQueue limitingResourceQueue,
-            IDatesMapper mapper) {
-        List<QueueTask> queueTasks = createQueueTasks(mapper,
-                limitingResourceQueue.getLimitingResourceQueueElements());
+    private void createChildren(LimitingResourceQueue limitingResourceQueue, IDatesMapper mapper) {
+        List<QueueTask> queueTasks = createQueueTasks(mapper, limitingResourceQueue.getLimitingResourceQueueElements());
         appendQueueTasks(queueTasks);
     }
 
@@ -165,41 +160,50 @@ public class QueueComponent extends XulElement implements
         removeChild(queueTask);
     }
 
-    private List<QueueTask> createQueueTasks(IDatesMapper datesMapper,
-            Set<LimitingResourceQueueElement> list) {
+    private List<QueueTask> createQueueTasks(IDatesMapper datesMapper, Set<LimitingResourceQueueElement> list) {
 
-        List<QueueTask> result = new ArrayList<QueueTask>();
+        List<QueueTask> result = new ArrayList<>();
 
         org.zkoss.ganttz.util.Interval interval = null;
-        if (timeTracker.getFilter() != null) {
+
+        if ( timeTracker.getFilter() != null ) {
             timeTracker.getFilter().resetInterval();
             interval = timeTracker.getFilter().getCurrentPaginationInterval();
         }
+
         for (LimitingResourceQueueElement each : list) {
-            if (interval != null) {
-                if (each.getEndDate().toDateMidnight()
-                        .isAfter(interval.getStart().toDateMidnight())
-                        && each.getStartDate().toDateMidnight()
-                                .isBefore(interval.getFinish().toDateMidnight())) {
+
+            if ( interval != null ) {
+
+                if ( each.getEndDate().toDateTimeAtStartOfDay().isAfter(interval.getStart().toDateTimeAtStartOfDay()) &&
+                        each.getStartDate().toDateTimeAtStartOfDay()
+                                .isBefore(interval.getFinish().toDateTimeAtStartOfDay()) ) {
                     result.add(createQueueTask(datesMapper, each));
                 }
+
             } else {
+
                 result.add(createQueueTask(datesMapper, each));
+
             }
         }
+
         return result;
     }
 
     private static QueueTask createQueueTask(IDatesMapper datesMapper, LimitingResourceQueueElement element) {
         validateQueueElement(element);
+
         return createDivForElement(datesMapper, element);
     }
 
     private static OrderElement getRootOrder(Task task) {
         OrderElement order = task.getOrderElement();
+
         while (order.getParent() != null) {
             order = order.getParent();
         }
+
         return order;
     }
 
@@ -213,15 +217,19 @@ public class QueueComponent extends XulElement implements
         result.append(_("Completed: {0}%", element.getAdvancePercentage().multiply(new BigDecimal(100))) + " ");
 
         final ResourceAllocation<?> resourceAllocation = element.getResourceAllocation();
-        if (resourceAllocation instanceof SpecificResourceAllocation) {
+
+        if ( resourceAllocation instanceof SpecificResourceAllocation ) {
+
             final SpecificResourceAllocation specific = (SpecificResourceAllocation) resourceAllocation;
             result.append(_("Resource: {0}", specific.getResource().getName()) + " ");
-        } else if (resourceAllocation instanceof GenericResourceAllocation) {
+
+        } else if ( resourceAllocation instanceof GenericResourceAllocation ) {
+
             final GenericResourceAllocation generic = (GenericResourceAllocation) resourceAllocation;
             result.append(_("Criteria: {0}", Criterion.getCaptionFor(generic.getCriterions())) + " ");
+
         }
-        result.append(_("Allocation: [{0},{1}]", element.getStartDate()
-                .toString(), element.getEndDate()));
+        result.append(_("Allocation: [{0},{1}]", element.getStartDate().toString(), element.getEndDate()));
 
         return result.toString();
     }
@@ -234,32 +242,39 @@ public class QueueComponent extends XulElement implements
      */
     private static DateAndHour getAdvanceEndDate(LimitingResourceQueueElement element) {
         int hoursWorked = 0;
+
         final List<? extends DayAssignment> dayAssignments = element.getDayAssignments();
-        if (element.hasDayAssignments()) {
+
+        if ( element.hasDayAssignments() ) {
+
             final int estimatedWorkedHours = estimatedWorkedHours(element.getIntentedTotalHours(), element.getAdvancePercentage());
 
             for (DayAssignment each: dayAssignments) {
-                hoursWorked += each.getHours();
-                if (hoursWorked >= estimatedWorkedHours) {
-                    int hourSlot = each.getHours() - (hoursWorked - estimatedWorkedHours);
+                hoursWorked += each.getDuration().getHours();
+
+                if ( hoursWorked >= estimatedWorkedHours ) {
+                    int hourSlot = each.getDuration().getHours() - (hoursWorked - estimatedWorkedHours);
                     return new DateAndHour(each.getDay(), hourSlot);
                 }
+
             }
         }
-        if (hoursWorked != 0) {
+
+        if ( hoursWorked != 0 ) {
             DayAssignment lastDayAssignment = dayAssignments.get(dayAssignments.size() - 1);
-            return new DateAndHour(lastDayAssignment.getDay(), lastDayAssignment.getHours());
+            return new DateAndHour(lastDayAssignment.getDay(), lastDayAssignment.getDuration().getHours());
         }
+
         return null;
     }
 
     private static int estimatedWorkedHours(Integer totalHours, BigDecimal percentageWorked) {
-        return (totalHours != null && percentageWorked != null) ? percentageWorked.multiply(
-                new BigDecimal(totalHours)).intValue() : 0;
+        boolean bool = totalHours != null && percentageWorked != null;
+
+        return bool ? percentageWorked.multiply(new BigDecimal(totalHours)).intValue() : 0;
     }
 
-    private static QueueTask createDivForElement(IDatesMapper datesMapper,
-            LimitingResourceQueueElement queueElement) {
+    private static QueueTask createDivForElement(IDatesMapper datesMapper, LimitingResourceQueueElement queueElement) {
 
         final Task task = queueElement.getResourceAllocation().getTask();
         final OrderElement order = getRootOrder(task);
@@ -270,12 +285,14 @@ public class QueueComponent extends XulElement implements
 
         int startPixels = getStartPixels(datesMapper, queueElement);
         result.setLeft(forCSS(startPixels));
-        if (startPixels < 0) {
+
+        if ( startPixels < 0 ) {
             cssClass += " truncated-start ";
         }
 
         int taskWidth = getWidthPixels(datesMapper, queueElement);
-        if ((startPixels + taskWidth) > datesMapper.getHorizontalSize()) {
+
+        if ( (startPixels + taskWidth) > datesMapper.getHorizontalSize() ) {
             taskWidth = datesMapper.getHorizontalSize() - startPixels;
             cssClass += " truncated-end ";
         } else {
@@ -286,138 +303,142 @@ public class QueueComponent extends XulElement implements
 
         LocalDate deadlineDate = task.getDeadline();
         boolean isOrderDeadline = false;
-        if (deadlineDate == null) {
+
+        if ( deadlineDate == null ) {
+
             Date orderDate = order.getDeadline();
-            if (orderDate != null) {
+
+            if ( orderDate != null ) {
+
                 deadlineDate = LocalDate.fromDateFields(orderDate);
                 isOrderDeadline = true;
+
             }
         }
-        if (deadlineDate != null) {
+
+        if ( deadlineDate != null ) {
+
             int deadlinePosition = getDeadlinePixels(datesMapper, deadlineDate);
-            if (deadlinePosition < datesMapper.getHorizontalSize()) {
+
+            if ( deadlinePosition < datesMapper.getHorizontalSize() ) {
                 Div deadline = new Div();
-                deadline.setSclass(isOrderDeadline ? "deadline order-deadline"
-                        : "deadline");
-                deadline
-                        .setLeft((deadlinePosition - startPixels - DEADLINE_MARK_HALF_WIDTH)
-                                + "px");
+                deadline.setSclass(isOrderDeadline ? "deadline order-deadline" : "deadline");
+                deadline.setLeft((deadlinePosition - startPixels - DEADLINE_MARK_HALF_WIDTH) + "px");
                 result.appendChild(deadline);
-                result.appendChild(generateNonWorkableShade(datesMapper,
-                        queueElement));
+                result.appendChild(generateNonWorkableShade(datesMapper, queueElement));
             }
-            if (deadlineDate.isBefore(queueElement.getEndDate())) {
+
+            if ( deadlineDate.isBefore(queueElement.getEndDate()) ) {
                 cssClass += " unmet-deadline ";
             }
         }
 
         result.setClass(cssClass);
         result.appendChild(generateCompletionShade(datesMapper, queueElement));
-        Component progressBar = generateProgressBar(datesMapper, queueElement,
-                task, startPixels);
-        if (progressBar != null) {
+        Component progressBar = generateProgressBar(datesMapper, queueElement, task, startPixels);
+
+        if ( progressBar != null ) {
             result.appendChild(progressBar);
         }
+
         return result;
     }
 
     private static Component generateProgressBar(IDatesMapper datesMapper,
-            LimitingResourceQueueElement queueElement, Task task,
-            int startPixels) {
+                                                 LimitingResourceQueueElement queueElement,
+                                                 Task task,
+                                                 int startPixels) {
+
         DateAndHour advancementEndDate = getAdvanceEndDate(queueElement);
-        if (advancementEndDate == null) {
+
+        if ( advancementEndDate == null ) {
             return null;
         }
-        Duration durationBetween = new Duration(queueElement.getStartTime()
-                .toDateTime().getMillis(), advancementEndDate.toDateTime().getMillis());
+
+        Duration durationBetween = new Duration(queueElement.getStartTime().toDateTime().getMillis(),
+                advancementEndDate.toDateTime().getMillis());
         Div progressBar = new Div();
-        if (!queueElement.getStartDate().isEqual(advancementEndDate.getDate())) {
+
+        if ( !queueElement.getStartDate().isEqual(advancementEndDate.getDate()) ) {
             progressBar.setWidth(datesMapper.toPixels(durationBetween) + "px");
             progressBar.setSclass("queue-progress-bar");
         }
+
         return progressBar;
     }
 
-    private static Div generateNonWorkableShade(IDatesMapper datesMapper,
-            LimitingResourceQueueElement queueElement) {
+    private static Div generateNonWorkableShade(IDatesMapper datesMapper, LimitingResourceQueueElement queueElement) {
 
-        int workableHours = queueElement.getLimitingResourceQueue()
-                .getResource().getCalendar()
+        int workableHours = queueElement
+                .getLimitingResourceQueue()
+                .getResource()
+                .getCalendar()
                 .getCapacityOn(PartialDay.wholeDay(queueElement.getEndDate()))
                 .roundToHours();
 
-        int shadeWidth = Long.valueOf(
-                (24 - workableHours)
-                        * DatesMapperOnInterval.MILISECONDS_PER_HOUR
-                        / datesMapper.getMilisecondsPerPixel()).intValue();
+        int shadeWidth = Long
+                .valueOf((24 - workableHours) * DatesMapperOnInterval.MILISECONDS_PER_HOUR
+                        / datesMapper.getMilisecondsPerPixel())
+                .intValue();
 
-        int shadeLeft = Long.valueOf(
-                (workableHours - queueElement.getEndHour())
-                        * DatesMapperOnInterval.MILISECONDS_PER_HOUR
-                        / datesMapper.getMilisecondsPerPixel()).intValue()
-                + shadeWidth;
-        ;
+        int shadeLeft = Long
+                .valueOf((workableHours - queueElement.getEndHour()) * DatesMapperOnInterval.MILISECONDS_PER_HOUR
+                        / datesMapper.getMilisecondsPerPixel()).intValue() + shadeWidth;
 
         Div notWorkableHoursShade = new Div();
-        notWorkableHoursShade
-                .setTooltiptext(_("Workable capacity for this period ")
-                        + workableHours + _(" hours"));
 
+        notWorkableHoursShade.setTooltiptext(_("Workable capacity for this period ") + workableHours + _(" hours"));
         notWorkableHoursShade.setContext("");
         notWorkableHoursShade.setSclass("not-workable-hours");
+        notWorkableHoursShade.setStyle("left: " + shadeLeft + "px; width: " + shadeWidth + "px;");
 
-        notWorkableHoursShade.setStyle("left: " + shadeLeft + "px; width: "
-                + shadeWidth + "px;");
         return notWorkableHoursShade;
     }
 
-    private static Div generateCompletionShade(IDatesMapper datesMapper,
-            LimitingResourceQueueElement queueElement) {
+    private static Div generateCompletionShade(IDatesMapper datesMapper, LimitingResourceQueueElement queueElement) {
 
-        int workableHours = queueElement.getLimitingResourceQueue()
-                .getResource().getCalendar()
+        int workableHours = queueElement
+                .getLimitingResourceQueue()
+                .getResource()
+                .getCalendar()
                 .getCapacityOn(PartialDay.wholeDay(queueElement.getEndDate()))
                 .roundToHours();
 
-        int shadeWidth = new Long((24 - workableHours)
-                * DatesMapperOnInterval.MILISECONDS_PER_HOUR
-                / datesMapper.getMilisecondsPerPixel()).intValue();
+        int shadeWidth = new Long((24 - workableHours) * DatesMapperOnInterval.MILISECONDS_PER_HOUR
+                / datesMapper.getMilisecondsPerPixel())
+                .intValue();
 
-        int shadeLeft = new Long((workableHours - queueElement.getEndHour())
-                * DatesMapperOnInterval.MILISECONDS_PER_HOUR
-                / datesMapper.getMilisecondsPerPixel()).intValue()
-                + shadeWidth;
+        int shadeLeft = new Long((workableHours - queueElement.getEndHour()) * DatesMapperOnInterval.MILISECONDS_PER_HOUR
+                / datesMapper.getMilisecondsPerPixel())
+                .intValue() + shadeWidth;
 
         Div notWorkableHoursShade = new Div();
+
         notWorkableHoursShade.setContext("");
         notWorkableHoursShade.setSclass("limiting-completion");
+        notWorkableHoursShade.setStyle("left: " + shadeLeft + "px; width: " + shadeWidth + "px;");
 
-        notWorkableHoursShade.setStyle("left: " + shadeLeft + "px; width: "
-                + shadeWidth + "px;");
         return notWorkableHoursShade;
     }
 
-    private static int getWidthPixels(IDatesMapper datesMapper,
-            LimitingResourceQueueElement queueElement) {
+    private static int getWidthPixels(IDatesMapper datesMapper, LimitingResourceQueueElement queueElement) {
         return datesMapper.toPixels(queueElement.getLengthBetween());
     }
 
-    private static int getDeadlinePixels(IDatesMapper datesMapper,
-            LocalDate deadlineDate) {
+    private static int getDeadlinePixels(IDatesMapper datesMapper, LocalDate deadlineDate) {
         // Deadline date is considered inclusively
-        return datesMapper.toPixelsAbsolute(deadlineDate.plusDays(1)
-                .toDateMidnight().getMillis());
+        return datesMapper.toPixelsAbsolute(deadlineDate.plusDays(1).toDateTimeAtStartOfDay().getMillis());
     }
 
     private static String forCSS(int pixels) {
         return String.format("%dpx", pixels);
     }
 
-    private static int getStartPixels(IDatesMapper datesMapper,
-            LimitingResourceQueueElement queueElement) {
-        return datesMapper.toPixelsAbsolute((queueElement.getStartDate()
-                .toDateMidnight().getMillis() + queueElement.getStartHour()
-                * DatesMapperOnInterval.MILISECONDS_PER_HOUR));
+    private static int getStartPixels(IDatesMapper datesMapper, LimitingResourceQueueElement queueElement) {
+        return datesMapper.toPixelsAbsolute(
+                        (queueElement.getStartDate().toDateTimeAtStartOfDay().getMillis()
+                        + queueElement.getStartHour() * DatesMapperOnInterval.MILISECONDS_PER_HOUR)
+                );
     }
 
     public void appendQueueElements(SortedSet<LimitingResourceQueueElement> elements) {
@@ -435,17 +456,18 @@ public class QueueComponent extends XulElement implements
 
     public void removeQueueElement(LimitingResourceQueueElement element) {
         QueueTask queueTask = findQueueTaskByElement(element);
-        if (queueTask != null) {
+        if ( queueTask != null ) {
             removeQueueTask(queueTask);
         }
     }
 
     private QueueTask findQueueTaskByElement(LimitingResourceQueueElement element) {
         for (QueueTask each: queueTasks) {
-            if (each.getLimitingResourceQueueElement().getId().equals(element.getId())) {
+            if ( each.getLimitingResourceQueueElement().getId().equals(element.getId()) ) {
                 return each;
             }
         }
+
         return null;
     }
 
@@ -462,40 +484,37 @@ public class QueueComponent extends XulElement implements
         return limitingResourceQueue.getResource().getName();
     }
 
-    private static void validateQueueElement(
-            LimitingResourceQueueElement queueElement) {
-        if ((queueElement.getStartDate() == null)
-                || (queueElement.getEndDate() == null)) {
+    private static void validateQueueElement(LimitingResourceQueueElement queueElement) {
+        if ( (queueElement.getStartDate() == null ) || ( queueElement.getEndDate() == null) ) {
             throw new ValidationException(_("Invalid queue element"));
         }
     }
 
     private void appendMenu(QueueTask divElement) {
-        if (divElement.getPage() != null) {
-            MenuBuilder<QueueTask> menuBuilder = MenuBuilder.on(divElement
-                    .getPage(), divElement);
+        if ( divElement.getPage() != null ) {
+            MenuBuilder<QueueTask> menuBuilder = MenuBuilder.on(divElement.getPage(), divElement);
 
-            menuBuilder.item(_("Edit"), "/common/img/ico_editar.png",
-                    new ItemAction<QueueTask>() {
+            menuBuilder.item(_("Edit"), "/common/img/ico_editar.png", new ItemAction<QueueTask>() {
                         @Override
                         public void onEvent(QueueTask choosen, Event event) {
                             editResourceAllocation(choosen);
                         }
                     });
-            menuBuilder.item(_("Unassign"), "/common/img/ico_borrar.png",
-                    new ItemAction<QueueTask>() {
+
+            menuBuilder.item(_("Unassign"), "/common/img/ico_borrar.png", new ItemAction<QueueTask>() {
                         @Override
                         public void onEvent(QueueTask choosen, Event event) {
                             unnasign(choosen);
                         }
                     });
-            menuBuilder.item(_("Move"), "",
-                    new ItemAction<QueueTask>() {
+
+            menuBuilder.item(_("Move"), "", new ItemAction<QueueTask>() {
                         @Override
                         public void onEvent(QueueTask choosen, Event event) {
                             moveQueueTask(choosen);
                         }
                     });
+
             divElement.setContext(menuBuilder.createWithoutSettingContext());
         }
     }

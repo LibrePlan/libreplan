@@ -66,9 +66,10 @@ public class CompletedEstimatedHoursPerTaskDTO {
 
     public String getTaskName(Task task) {
         String result = task.getName();
-        if (result == null || result.isEmpty()) {
+        if ( result == null || result.isEmpty() ) {
             result = task.getOrderElement().getName();
         }
+
         return result;
     }
 
@@ -76,15 +77,16 @@ public class CompletedEstimatedHoursPerTaskDTO {
         Integer result = new Integer(0);
 
         final List<DayAssignment> dayAssignments = task.getDayAssignments(FilterType.WITHOUT_DERIVED);
-        if (dayAssignments.isEmpty()) {
+        if ( dayAssignments.isEmpty() ) {
             return result;
         }
 
         for (DayAssignment dayAssignment : dayAssignments) {
-            if (date == null || dayAssignment.getDay().compareTo(date) <= 0) {
-                result += dayAssignment.getHours();
+            if ( date == null || dayAssignment.getDay().compareTo(date) <= 0 ) {
+                result += dayAssignment.getDuration().getHours();
             }
         }
+
         return result;
     }
 
@@ -93,16 +95,17 @@ public class CompletedEstimatedHoursPerTaskDTO {
 
         final List<WorkReportLine> workReportLines = workReportLineDAO
                 .findByOrderElementAndChildren(task.getOrderElement());
-        if (workReportLines.isEmpty()) {
+        if ( workReportLines.isEmpty() ) {
             return result;
         }
 
         for (WorkReportLine workReportLine : workReportLines) {
             final LocalDate workReportLineDate = new LocalDate(workReportLine.getDate());
-            if (date == null || workReportLineDate.compareTo(date) <= 0) {
+            if ( date == null || workReportLineDate.compareTo(date) <= 0 ) {
                 result = EffortDuration.sum(result, workReportLine.getEffort());
             }
         }
+
         return result;
     }
 

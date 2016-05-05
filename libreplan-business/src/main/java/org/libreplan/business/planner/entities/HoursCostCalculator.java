@@ -34,6 +34,7 @@ import java.util.TreeMap;
 import java.util.Date;
 
 import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
 import org.libreplan.business.advance.entities.AdvanceMeasurement;
 import org.libreplan.business.advance.entities.DirectAdvanceAssignment;
 import org.libreplan.business.planner.entities.DayAssignment.FilterType;
@@ -69,7 +70,7 @@ public class HoursCostCalculator implements ICostCalculator {
                 (task.getOrderElement() != null) ? task.getOrderElement().getReportGlobalAdvanceAssignment() : null;
 
         if ( advanceAssignment == null ) {
-            return new TreeMap<LocalDate, BigDecimal>();
+            return new TreeMap<>();
         }
 
         return calculateHoursPerDay(
@@ -110,10 +111,9 @@ public class HoursCostCalculator implements ICostCalculator {
      * MAX(BCWS) equals addition of all dayAssignments.
      */
     @Override
-    public SortedMap<LocalDate, BigDecimal> getEstimatedCost(
-            Task task,
-            LocalDate filterStartDate,
-            LocalDate filterEndDate) {
+    public SortedMap<LocalDate, BigDecimal> getEstimatedCost(Task task,
+                                                             LocalDate filterStartDate,
+                                                             LocalDate filterEndDate) {
 
         if ( task.isSubcontracted() ) {
             return getAdvanceCost(task);
@@ -130,11 +130,10 @@ public class HoursCostCalculator implements ICostCalculator {
 
         for (DayAssignment dayAssignment : dayAssignments) {
             LocalDate day = dayAssignment.getDay();
-            if( ( (filterStartDate == null) || day.compareTo(filterStartDate) >= 0) &&
-                    ( (filterEndDate == null) || day.compareTo(filterEndDate) <= 0) ) {
+            if( ((filterStartDate == null) || day.compareTo(filterStartDate) >= 0) &&
+                    ((filterEndDate == null) || day.compareTo(filterEndDate) <= 0) ) {
 
                 String currentTime = dayAssignment.getDuration().toFormattedString();
-
 
                 SimpleDateFormat format1 = new SimpleDateFormat("hh:mm");
                 SimpleDateFormat format2 = new SimpleDateFormat("hh");
@@ -142,18 +141,22 @@ public class HoursCostCalculator implements ICostCalculator {
                 Date date = null;
 
                 try {
-                    if ( isParsableWithFormat1(currentTime) )
+                    if ( isParsableWithFormat1(currentTime) ) {
                         date = format1.parse(currentTime);
-                    else if ( isParsableWithFormat2(currentTime) )
+                    } else if ( isParsableWithFormat2(currentTime) ) {
                         date = format2.parse(currentTime);
+                    }
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
 
-                Time time = new Time(date.getTime());
+                assert date != null;
 
-                BigDecimal hours = new BigDecimal(time.getHours());
-                additionOfAllAssignmentsMinutes += time.getMinutes();
+                LocalTime time = new LocalTime(date.getTime());
+               // Time time = new Time(date.getTime());
+
+                BigDecimal hours = new BigDecimal(time.getHourOfDay());
+                additionOfAllAssignmentsMinutes += time.getMinuteOfHour();
 
                 if ( !result.containsKey(day) ) {
                     result.put(day, BigDecimal.ZERO);

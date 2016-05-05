@@ -20,8 +20,6 @@
  */
 package org.libreplan.business.planner.entities;
 
-import static org.libreplan.business.workingday.EffortDuration.hours;
-
 import org.apache.commons.lang.Validate;
 import javax.validation.constraints.NotNull;
 import org.joda.time.LocalDate;
@@ -40,18 +38,21 @@ import org.libreplan.business.workingday.EffortDuration;
  */
 public class DerivedDayAssignment extends DayAssignment {
 
-    @Deprecated
+/*    @Deprecated
     public static DerivedDayAssignment create(LocalDate day, int hours,
             Resource resource, DerivedAllocation derivedAllocation) {
         return create(new DerivedDayAssignment(day, hours(hours), resource,
                 derivedAllocation));
+    }*/
+
+    private static DerivedDayAssignment create(LocalDate day,  EffortDuration hours, Resource resource,
+                                               DerivedDayAssignmentsContainer container) {
+        return create(new DerivedDayAssignment(day, hours, resource, container));
     }
 
-    public static DerivedDayAssignment create(LocalDate day,
-            EffortDuration duration, Resource resource,
-            DerivedAllocation derivedAllocation) {
-        return create(new DerivedDayAssignment(day, duration, resource,
-                derivedAllocation));
+    public static DerivedDayAssignment create(LocalDate day, EffortDuration duration, Resource resource,
+                                              DerivedAllocation derivedAllocation) {
+        return create(new DerivedDayAssignment(day, duration, resource, derivedAllocation));
     }
 
     /**
@@ -62,9 +63,10 @@ public class DerivedDayAssignment extends DayAssignment {
     }
 
     private abstract class ParentState {
-        protected abstract DerivedAllocation getAllocation();
 
+        protected abstract DerivedAllocation getAllocation();
         public abstract Scenario getScenario();
+
     }
 
     private class TransientParentState extends ParentState {
@@ -85,6 +87,7 @@ public class DerivedDayAssignment extends DayAssignment {
         public Scenario getScenario() {
             return null;
         }
+
     }
 
     private class ContainerParentState extends ParentState {
@@ -96,11 +99,11 @@ public class DerivedDayAssignment extends DayAssignment {
         protected DerivedAllocation getAllocation() {
             return container.getResourceAllocation();
         }
-
         @Override
         public Scenario getScenario() {
             return container.getScenario();
         }
+
     }
 
     private class DetachedState extends ParentState {
@@ -123,22 +126,19 @@ public class DerivedDayAssignment extends DayAssignment {
     @OnCopy(Strategy.IGNORE)
     private ParentState parentState;
 
-    private DerivedDayAssignment(LocalDate day, EffortDuration hours,
-            Resource resource) {
+    private DerivedDayAssignment(LocalDate day, EffortDuration hours, Resource resource) {
         super(day, hours, resource);
         Validate.isTrue(resource instanceof Worker);
     }
 
-    private DerivedDayAssignment(LocalDate day, EffortDuration hours,
-            Resource resource,
-            DerivedAllocation derivedAllocation) {
+    private DerivedDayAssignment(LocalDate day, EffortDuration hours, Resource resource,
+                                DerivedAllocation derivedAllocation) {
         this(day, hours, resource);
         this.parentState = new TransientParentState(derivedAllocation);
     }
 
-    private DerivedDayAssignment(LocalDate day, EffortDuration hours,
-            Resource resource,
-            DerivedDayAssignmentsContainer container) {
+    private DerivedDayAssignment(LocalDate day, EffortDuration hours, Resource resource,
+                                 DerivedDayAssignmentsContainer container) {
         this(day, hours, resource);
         Validate.notNull(container);
         this.container = container;
@@ -150,19 +150,11 @@ public class DerivedDayAssignment extends DayAssignment {
     }
 
     DerivedDayAssignment copyAsChildOf(DerivedDayAssignmentsContainer container) {
-        return create(this.getDay(), this.getHours(), this.getResource(),
-                container);
-    }
-
-    private static DerivedDayAssignment create(LocalDate day, int hours,
-            Resource resource, DerivedDayAssignmentsContainer container) {
-        return create(new DerivedDayAssignment(day,
-                EffortDuration.hours(hours), resource, container));
+        return create(this.getDay(), this.getDuration(), this.getResource(), container);
     }
 
     DerivedDayAssignment copyAsChildOf(DerivedAllocation derivedAllocation) {
-        return create(this.getDay(), this.getHours(), this.getResource(),
-                derivedAllocation);
+        return create(this.getDay(), this.getDuration(), this.getResource(), derivedAllocation);
     }
 
     @Override
