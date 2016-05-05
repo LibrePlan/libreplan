@@ -31,6 +31,7 @@ import org.joda.time.LocalDate;
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public abstract class Interval {
+
     protected final LocalDate start;
 
     protected final LocalDate end;
@@ -45,21 +46,24 @@ public abstract class Interval {
 
     public static Interval range(LocalDate start, LocalDate end) {
         Validate.notNull(start, "start date must be not null");
-        if (end == null) {
+        if ( end == null ) {
             return from(start);
         }
-        if (start.equals(end)) {
+
+        if ( start.equals(end) ) {
             return point(start);
         }
+
         return new Range(start, end);
     }
 
     protected Interval(LocalDate start, LocalDate end) {
         Validate.notNull(start, "start date must be not null");
-        if (end != null) {
-            Validate.isTrue(start.compareTo(end) <= 0,
-                    "start date must be equal or before than end date");
+
+        if ( end != null ) {
+            Validate.isTrue(start.compareTo(end) <= 0, "start date must be equal or before than end date");
         }
+
         this.start = start;
         this.end = end;
     }
@@ -68,11 +72,12 @@ public abstract class Interval {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof Interval) {
+        if ( obj instanceof Interval ) {
             Interval interval = (Interval) obj;
-            return dateEquals(start, interval.start)
-                    && dateEquals(end, interval.end);
+
+            return dateEquals(start, interval.start) && dateEquals(end, interval.end);
         }
+
         return false;
     }
 
@@ -82,8 +87,7 @@ public abstract class Interval {
     }
 
     private boolean dateEquals(LocalDate date1, LocalDate date2) {
-        return date1 == date2
-                || (date1 != null && date2 != null && date1.equals(date2));
+        return date1 == date2 || (date1 != null && date2 != null && date1.equals(date2));
     }
 
     public abstract boolean includes(Interval included);
@@ -108,6 +112,7 @@ class Range extends Interval {
 
     Range(LocalDate start, LocalDate end) {
         super(start, end);
+
         Validate.notNull(start);
         Validate.notNull(end);
     }
@@ -119,36 +124,39 @@ class Range extends Interval {
 
     @Override
     public boolean includes(Interval included) {
-        if (included instanceof Point) {
+        if ( included instanceof Point ) {
             Point point = (Point) included;
+
             return point.overlapsWith(this);
         }
-        return start.compareTo(included.start) <= 0 && included.end != null
-                && end.isAfter(included.end);
+
+        return start.compareTo(included.start) <= 0 && included.end != null && end.isAfter(included.end);
     }
 
     @Override
     public boolean overlapsWith(Interval interval) {
-        if (interval instanceof Point) {
+        if ( interval instanceof Point ) {
             Point point = (Point) interval;
+
             return point.overlapsWith(this);
         }
-        if (interval instanceof OpenEndedInterval) {
+
+        if ( interval instanceof OpenEndedInterval ) {
             return interval.overlapsWith(this);
         }
-        return interval.start.compareTo(this.end) < 0
-                && this.start.compareTo(interval.end) < 0;
+
+        return interval.start.compareTo(this.end) < 0 && this.start.compareTo(interval.end) < 0;
     }
 
     @Override
     public String toString() {
-        return new StringBuilder("[").append(start).append(", ").append(end)
-                .append(")").toString();
+        return new StringBuilder("[").append(start).append(", ").append(end).append(")").toString();
     }
 
 }
 
 class OpenEndedInterval extends Interval {
+
     OpenEndedInterval(LocalDate start) {
         super(start, null);
     }
@@ -165,8 +173,7 @@ class OpenEndedInterval extends Interval {
 
     @Override
     public boolean overlapsWith(Interval interval) {
-        return start.isBefore(interval.start) || interval.end == null
-                || start.isBefore(interval.end);
+        return start.isBefore(interval.start) || interval.end == null || start.isBefore(interval.end);
     }
 
     @Override
@@ -198,8 +205,7 @@ class Point extends Interval {
 
     @Override
     public String toString() {
-        return new StringBuilder().append("[").append(start).append(")")
-                .toString();
+        return new StringBuilder().append("[").append(start).append(")").toString();
     }
 
 }

@@ -21,7 +21,7 @@
 
 package org.zkoss.ganttz.data.resourceload;
 
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 
 public class LoadLevel {
 
@@ -33,18 +33,21 @@ public class LoadLevel {
                 return percentage == 0;
             }
         },
+
         SOME_LOAD {
             @Override
             public boolean contains(int percentage) {
                 return percentage > 0 && percentage < 100;
             }
         },
+
         FULL_LOAD {
             @Override
             public boolean contains(int percentage) {
                 return percentage == 100;
             }
         },
+
         OVERLOAD {
             @Override
             public boolean contains(int percentage) {
@@ -55,10 +58,11 @@ public class LoadLevel {
         protected abstract boolean contains(int percentage);
         public static Category categoryFor(int percentage) {
             for (Category category : values()) {
-                if (category.contains(percentage)) {
+                if ( category.contains(percentage) ) {
                     return category;
                 }
             }
+
             throw new IllegalArgumentException("couldn't handle " + percentage);
         }
     }

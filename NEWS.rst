@@ -1,6 +1,83 @@
 NEWS
 ====
 
+Version 1.6.0 (? 2016)
+---------------------------
+
+Summary
+~~~~~~~
+
+These are the most representative changes:
+
+* Update SDK to JDK8
+* Update all libraries
+
+Contributors
+~~~~~~~~~~~~
+
+Thanks to all the contributors to this new version:
+
+* Vova Perebykivskyi
+* Bodgan Bodnarjuk
+* Jeroen Baten
+
+Changes
+~~~~~~~
+
+* Update MPXJ
+* Update Maven Gettext Plugin
+* Update Maven Compiler Plugin
+* Update Maven War Plugin
+* Update Maven Surfire Plugin
+* Update Bonecp
+* Update Slf4j API
+* Update Slf4j Simple
+* Update Guava
+* Update Maven Cobertura Plugin
+* Update Maven Liquibase Plugin
+* Update Liquibase Core
+* Update Jackson
+* Update LibrePlan version to 1.6.0
+* Update Javax Servlet
+* Update Jfree
+* Update Commons Lang
+* Update Commons Math
+* Update JGraphT
+* Update DBUnit
+* Update Log4j
+* Update JodaTime
+
+* Remove Ezmorph
+
+* Code refactoring
+
+
+Version 1.4.2 (2015)
+---------------------------
+
+Summary
+~~~~~~~
+
+These are the most representative changes:
+
+* ?
+
+Contributors
+~~~~~~~~~~~~
+
+Thanks to all the contributors to this new version:
+
+* Misha Gozda
+* Vova Perebykivskyi
+* Bodgan Bodnarjuk
+* Jeroen Baten
+
+Changes
+~~~~~~~
+
+* ?
+
+
 Version 1.4.0 (29 Apr 2013)
 ---------------------------
 

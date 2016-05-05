@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 
 /**
  * Represents a position for a task <br />
@@ -40,13 +40,13 @@ public abstract class Position {
      * @param positionInParent
      * @return a {@link Position} specified by the params
      */
-    public static Position createPosition(
-            List<? extends TaskContainer> parents, int positionInParent) {
+    public static Position createPosition(List<? extends TaskContainer> parents, int positionInParent) {
         Validate.notEmpty(parents);
         Validate.noNullElements(parents);
         Validate.isTrue(positionInParent >= 0);
         Task firstParent = parents.get(0);
         Validate.isTrue(positionInParent < firstParent.getTasks().size());
+
         return new ChildPosition(parents, positionInParent);
     }
 
@@ -115,9 +115,10 @@ public abstract class Position {
      * @return
      */
     public Position down(TaskContainer current, int positionInParent) {
-        List<TaskContainer> ancestors = new ArrayList<TaskContainer>();
+        List<TaskContainer> ancestors = new ArrayList<>();
         ancestors.add(current);
         ancestors.addAll(getAncestors());
+
         return new ChildPosition(ancestors, positionInParent);
     }
 
@@ -127,11 +128,12 @@ public abstract class Position {
     private static class ChildPosition extends Position {
 
         private final List<? extends TaskContainer> parents;
+
         private TaskContainer parent;
 
-        ChildPosition(List<? extends TaskContainer> parents,
-                int positionInParent) {
+        ChildPosition(List<? extends TaskContainer> parents, int positionInParent) {
             super(positionInParent);
+
             this.parents = parents;
             this.parent = parents.get(0);
         }
@@ -153,8 +155,7 @@ public abstract class Position {
 
         @Override
         public Position pop() {
-            return new ChildPosition(parents.subList(0, parents.size() - 1),
-                    getInsertionPosition());
+            return new ChildPosition(parents.subList(0, parents.size() - 1), getInsertionPosition());
         }
 
         @Override

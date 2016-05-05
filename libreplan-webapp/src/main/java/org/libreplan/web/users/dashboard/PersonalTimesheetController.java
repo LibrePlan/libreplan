@@ -79,8 +79,7 @@ import org.zkoss.zul.api.Popup;
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 @SuppressWarnings("serial")
-public class PersonalTimesheetController extends GenericForwardComposer
-        implements IPersonalTimesheetController {
+public class PersonalTimesheetController extends GenericForwardComposer implements IPersonalTimesheetController {
 
     private final static String EFFORT_DURATION_TEXTBOX_WIDTH = "30px";
     private final static String TOTAL_DURATION_TEXTBOX_WIDTH = "50px";
@@ -142,29 +141,32 @@ public class PersonalTimesheetController extends GenericForwardComposer
             initPersonalTimesheetDates();
 
             switch (personalTimesheetRow.getType()) {
-            case ORDER_ELEMENT:
-                renderOrderElementRow(row,
-                        personalTimesheetRow.getOrderElemement());
-                break;
-            case OTHER:
-                renderOtherRow(row);
-                break;
-            case CAPACITY:
-                renderCapacityRow(row);
-                break;
-            case TOTAL:
-                renderTotalRow(row);
-                break;
-            case EXTRA:
-                renderExtraRow(row);
+                case ORDER_ELEMENT:
+                    renderOrderElementRow(row, personalTimesheetRow.getOrderElemement());
+                    break;
 
-                // This is the last row so we can load the info in the summary
-                updateSummary();
-                break;
-            default:
-                throw new IllegalStateException(
-                        "Unknown PersonalTimesheetRow type: "
-                                + personalTimesheetRow.getType());
+                case OTHER:
+                    renderOtherRow(row);
+                    break;
+
+                case CAPACITY:
+                    renderCapacityRow(row);
+                    break;
+
+                case TOTAL:
+                    renderTotalRow(row);
+                    break;
+
+                case EXTRA:
+                    renderExtraRow(row);
+
+                    // This is the last row so we can load the info in the summary
+                    updateSummary();
+                    break;
+
+                default:
+                    throw new IllegalStateException(
+                            "Unknown PersonalTimesheetRow type: " + personalTimesheetRow.getType());
             }
         }
 
@@ -174,81 +176,78 @@ public class PersonalTimesheetController extends GenericForwardComposer
         }
 
         private void renderOrderElementRow(Row row, OrderElement orderElement) {
-            Util.appendLabel(row, personalTimesheetModel.getOrder(orderElement)
-                    .getName());
+            Util.appendLabel(row, personalTimesheetModel.getOrder(orderElement).getName());
             Util.appendLabel(row, orderElement.getName());
 
             appendInputsForDays(row, orderElement);
 
-            if (personalTimesheetModel.hasOtherReports()) {
+            if ( personalTimesheetModel.hasOtherReports() ) {
                 appendOtherColumn(row, orderElement);
             }
 
             appendTotalColumn(row, orderElement);
         }
 
-        private void appendInputsForDays(Row row,
-                final OrderElement orderElement) {
-            for (LocalDate day = first; day.compareTo(last) <= 0; day = day
-                    .plusDays(1)) {
+        private void appendInputsForDays(Row row, final OrderElement orderElement) {
+            for (LocalDate day = first; day.compareTo(last) <= 0; day = day.plusDays(1)) {
                 final LocalDate textboxDate = day;
 
                 final Textbox textbox = new Textbox();
                 textbox.setHflex("true");
 
-                Util.bind(textbox, new Util.Getter<String>() {
-                    @Override
-                    public String get() {
-                        EffortDuration effortDuration = personalTimesheetModel
-                                .getEffortDuration(orderElement, textboxDate);
-                        return effortDurationToString(effortDuration);
-                    }
-                }, new Util.Setter<String>() {
-                    @Override
-                    public void set(String value) {
-                        EffortDuration effortDuration = effortDurationFromString(value);
-                        if (effortDuration == null) {
-                            throw new WrongValueException(textbox,
-                                    _("Invalid Effort Duration"));
-                        }
-                        personalTimesheetModel.setEffortDuration(orderElement,
-                                textboxDate, effortDuration);
-                        markAsModified(textbox);
-                        updateTotals(orderElement, textboxDate);
-                    }
+                Util.bind(
+                        textbox,
+                        new Util.Getter<String>() {
+                            @Override
+                            public String get() {
 
-                    private void updateTotals(OrderElement orderElement,
-                            LocalDate date) {
-                        updateTotalColumn(orderElement);
-                        updateTotalRow(date);
-                        updateExtraRow(date);
-                        updateTotalColumn();
-                        updateTotalExtraColumn();
-                        updateSummary();
-                    }
+                                EffortDuration effortDuration =
+                                        personalTimesheetModel.getEffortDuration(orderElement, textboxDate);
 
-                });
+                                return effortDurationToString(effortDuration);
+                            }
+                        },
+                        new Util.Setter<String>() {
+                            @Override
+                            public void set(String value) {
+                                EffortDuration effortDuration = effortDurationFromString(value);
+
+                                if ( effortDuration == null ) {
+                                    throw new WrongValueException(textbox, _("Invalid Effort Duration"));
+                                }
+
+                                personalTimesheetModel.setEffortDuration(orderElement, textboxDate, effortDuration);
+                                markAsModified(textbox);
+                                updateTotals(orderElement, textboxDate);
+                            }
+
+                            private void updateTotals(OrderElement orderElement, LocalDate date) {
+                                updateTotalColumn(orderElement);
+                                updateTotalRow(date);
+                                updateExtraRow(date);
+                                updateTotalColumn();
+                                updateTotalExtraColumn();
+                                updateSummary();
+                            }
+                        });
 
                 EventListener openPersonalTimesheetPopup = new EventListener() {
                     @Override
                     public void onEvent(Event event) throws Exception {
-                        openPersonalTimesheetPopup(textbox,
-                                orderElement, textboxDate);
+                        openPersonalTimesheetPopup(textbox, orderElement, textboxDate);
                     }
 
                 };
-                textbox.addEventListener(Events.ON_DOUBLE_CLICK,
-                        openPersonalTimesheetPopup);
-                textbox.addEventListener(Events.ON_OK,
-                        openPersonalTimesheetPopup);
 
-                if (personalTimesheetModel
-                        .wasModified(orderElement, textboxDate)) {
+                textbox.addEventListener(Events.ON_DOUBLE_CLICK, openPersonalTimesheetPopup);
+                textbox.addEventListener(Events.ON_OK, openPersonalTimesheetPopup);
+
+                if ( personalTimesheetModel.wasModified(orderElement, textboxDate) ) {
                     markAsModified(textbox);
                 }
 
                 Cell cell = getCenteredCell(textbox);
-                if (personalTimesheetModel.getResourceCapacity(day).isZero()) {
+                if ( personalTimesheetModel.getResourceCapacity(day).isZero() ) {
                     setBackgroundNonCapacityCell(cell);
                 }
                 row.appendChild(cell);
@@ -256,64 +255,71 @@ public class PersonalTimesheetController extends GenericForwardComposer
 
         }
 
-        private void openPersonalTimesheetPopup(Textbox textbox,
-                OrderElement orderElement, LocalDate textboxDate) {
-            Textbox toFocus = setupPersonalTimesheetPopup(textbox,
-                    orderElement, textboxDate);
+        private void openPersonalTimesheetPopup(Textbox textbox, OrderElement orderElement, LocalDate textboxDate) {
+            Textbox toFocus = setupPersonalTimesheetPopup(textbox, orderElement, textboxDate);
             personalTimesheetPopup.open(textbox, "after_start");
             toFocus.setFocus(true);
         }
 
-        private Textbox setupPersonalTimesheetPopup(final Textbox textbox,
-                final OrderElement orderElement, final LocalDate textboxDate) {
+        private Textbox setupPersonalTimesheetPopup(final Textbox textbox, final OrderElement orderElement,
+                                                    final LocalDate textboxDate) {
+
             personalTimesheetPopupTask.setValue(orderElement.getName());
             personalTimesheetPopupDate.setValue(textboxDate.toString());
 
             personalTimesheetPopupEffort.getChildren().clear();
-            Textbox effortTextbox = Util.bind(new Textbox(),
+
+            Textbox effortTextbox = Util.bind(
+                    new Textbox(),
                     new Util.Getter<String>() {
-                @Override
-                public String get() {
-                    EffortDuration effortDuration = personalTimesheetModel
-                            .getEffortDuration(orderElement, textboxDate);
-                    return effortDurationToString(effortDuration);
-                }
-            }, new Util.Setter<String>() {
-                @Override
-                public void set(String value) {
-                    EffortDuration effortDuration = effortDurationFromString(value);
-                    if (effortDuration == null) {
-                        throw new WrongValueException(
-                                personalTimesheetPopupEffort,
-                                _("Invalid Effort Duration"));
-                    }
-                    Events.sendEvent(new InputEvent(Events.ON_CHANGE, textbox,
-                            value));
-                }
-            });
+                        @Override
+                        public String get() {
+
+                            EffortDuration effortDuration =
+                                    personalTimesheetModel.getEffortDuration(orderElement, textboxDate);
+
+                            return effortDurationToString(effortDuration);
+                        }
+                    },
+                    new Util.Setter<String>() {
+                        @Override
+                        public void set(String value) {
+                            EffortDuration effortDuration = effortDurationFromString(value);
+
+                            if ( effortDuration == null ) {
+                                throw new WrongValueException(
+                                        personalTimesheetPopupEffort, _("Invalid Effort Duration"));
+                            }
+
+                            Events.sendEvent(new InputEvent(Events.ON_CHANGE, textbox, value));
+                        }
+                    });
+
             addOnOkEventToClosePopup(effortTextbox);
             personalTimesheetPopupEffort.appendChild(effortTextbox);
 
             personalTimesheetPopupFinished.getChildren().clear();
-            Checkbox finishedCheckbox = Util.bind(new Checkbox(),
+
+            Checkbox finishedCheckbox = Util.bind(
+                    new Checkbox(),
                     new Util.Getter<Boolean>() {
                         @Override
                         public Boolean get() {
-                            return personalTimesheetModel.isFinished(
-                                    orderElement, textboxDate);
+                            return personalTimesheetModel.isFinished(orderElement, textboxDate);
                         }
-                    }, new Util.Setter<Boolean>() {
+                    },
+                    new Util.Setter<Boolean>() {
                         @Override
                         public void set(Boolean value) {
-                            personalTimesheetModel.setFinished(orderElement,
-                                    textboxDate, value);
+                            personalTimesheetModel.setFinished(orderElement, textboxDate, value);
                             markAsModified(textbox);
                         }
                     });
-            if (!finishedCheckbox.isChecked()) {
-                finishedCheckbox.setDisabled(personalTimesheetModel
-                        .isFinished(orderElement));
+
+            if ( !finishedCheckbox.isChecked() ) {
+                finishedCheckbox.setDisabled(personalTimesheetModel.isFinished(orderElement));
             }
+
             addOnOkEventToClosePopup(finishedCheckbox);
             personalTimesheetPopupFinished.appendChild(finishedCheckbox);
 
@@ -321,8 +327,7 @@ public class PersonalTimesheetController extends GenericForwardComposer
         }
 
         private boolean addOnOkEventToClosePopup(Component component) {
-            return component.addEventListener(Events.ON_OK,
-                    new EventListener() {
+            return component.addEventListener(Events.ON_OK, new EventListener() {
                 @Override
                 public void onEvent(Event event) throws Exception {
                     closePersonalTimesheetPopup();
@@ -346,13 +351,10 @@ public class PersonalTimesheetController extends GenericForwardComposer
         }
 
         private void updateTotalColumn(OrderElement orderElement) {
-            EffortDuration effort = personalTimesheetModel
-                    .getEffortDuration(orderElement);
-            effort = effort.plus(personalTimesheetModel
-                    .getOtherEffortDuration(orderElement));
+            EffortDuration effort = personalTimesheetModel.getEffortDuration(orderElement);
+            effort = effort.plus(personalTimesheetModel.getOtherEffortDuration(orderElement));
 
-            Textbox textbox = (Textbox) timesheet
-                    .getFellow(getTotalRowTextboxId(orderElement));
+            Textbox textbox = (Textbox) timesheet.getFellow(getTotalRowTextboxId(orderElement));
             textbox.setValue(effortDurationToString(effort));
         }
 
@@ -373,12 +375,13 @@ public class PersonalTimesheetController extends GenericForwardComposer
         }
 
         private void appendTotalForDays(Row row) {
-            for (LocalDate day = first; day.compareTo(last) <= 0; day = day
-                    .plusDays(1)) {
+            for (LocalDate day = first; day.compareTo(last) <= 0; day = day.plusDays(1)) {
                 Cell cell = getCenteredCell(getDisabledTextbox(getTotalColumnTextboxId(day)));
-                if (personalTimesheetModel.getResourceCapacity(day).isZero()) {
+
+                if ( personalTimesheetModel.getResourceCapacity(day).isZero() ) {
                     setBackgroundNonCapacityCell(cell);
                 }
+
                 row.appendChild(cell);
 
                 updateTotalRow(day);
@@ -386,33 +389,29 @@ public class PersonalTimesheetController extends GenericForwardComposer
         }
 
         private void updateTotalRow(LocalDate date) {
-            EffortDuration effort = personalTimesheetModel
-                    .getEffortDuration(date);
-            effort = effort.plus(personalTimesheetModel
-                    .getOtherEffortDuration(date));
+            EffortDuration effort = personalTimesheetModel.getEffortDuration(date);
+            effort = effort.plus(personalTimesheetModel.getOtherEffortDuration(date));
 
-            Textbox textbox = (Textbox) timesheet
-                    .getFellow(getTotalColumnTextboxId(date));
+            Textbox textbox = (Textbox) timesheet.getFellow(getTotalColumnTextboxId(date));
             textbox.setValue(effortDurationToString(effort));
         }
 
         private void appendTotalColumn(Row row) {
             Cell totalCell = getCenteredCell(getDisabledTextbox(getTotalTextboxId()));
-            if (personalTimesheetModel.hasOtherReports()) {
+
+            if ( personalTimesheetModel.hasOtherReports() ) {
                 totalCell.setColspan(2);
             }
+
             row.appendChild(totalCell);
             updateTotalColumn();
         }
 
         private void updateTotalColumn() {
-            EffortDuration effort = personalTimesheetModel
-                    .getTotalEffortDuration();
-            effort = effort.plus(personalTimesheetModel
-                    .getTotalOtherEffortDuration());
+            EffortDuration effort = personalTimesheetModel.getTotalEffortDuration();
+            effort = effort.plus(personalTimesheetModel.getTotalOtherEffortDuration());
 
-            Textbox textbox = (Textbox) timesheet
-                    .getFellow(getTotalTextboxId());
+            Textbox textbox = (Textbox) timesheet.getFellow(getTotalTextboxId());
             textbox.setValue(effortDurationToString(effort));
         }
 
@@ -424,23 +423,21 @@ public class PersonalTimesheetController extends GenericForwardComposer
         private void appendOtherForDaysAndTotal(Row row) {
             EffortDuration totalOther = EffortDuration.zero();
 
-            for (LocalDate day = first; day.compareTo(last) <= 0; day = day
-                    .plusDays(1)) {
-                EffortDuration other = personalTimesheetModel
-                        .getOtherEffortDuration(day);
+            for (LocalDate day = first; day.compareTo(last) <= 0; day = day.plusDays(1)) {
+                EffortDuration other = personalTimesheetModel.getOtherEffortDuration(day);
 
-                Cell cell = getCenteredCell(getDisabledTextbox(
-                        getOtherColumnTextboxId(day), other));
-                if (personalTimesheetModel.getResourceCapacity(day).isZero()) {
+                Cell cell = getCenteredCell(getDisabledTextbox(getOtherColumnTextboxId(day), other));
+
+                if ( personalTimesheetModel.getResourceCapacity(day).isZero() ) {
                     setBackgroundNonCapacityCell(cell);
                 }
+
                 row.appendChild(cell);
 
                 totalOther = totalOther.plus(other);
             }
 
-            Cell totalOtherCell = getCenteredCell(getDisabledTextbox(
-                    getTotalOtherTextboxId(), totalOther));
+            Cell totalOtherCell = getCenteredCell(getDisabledTextbox(getTotalOtherTextboxId(), totalOther));
             totalOtherCell.setColspan(2);
             row.appendChild(totalOtherCell);
         }
@@ -453,26 +450,26 @@ public class PersonalTimesheetController extends GenericForwardComposer
         private void appendCapcityForDaysAndTotal(Row row) {
             EffortDuration totalCapacity = EffortDuration.zero();
 
-            for (LocalDate day = first; day.compareTo(last) <= 0; day = day
-                    .plusDays(1)) {
-                EffortDuration capacity = personalTimesheetModel
-                        .getResourceCapacity(day);
+            for (LocalDate day = first; day.compareTo(last) <= 0; day = day.plusDays(1)) {
+                EffortDuration capacity = personalTimesheetModel.getResourceCapacity(day);
 
-                Cell cell = getCenteredCell(getDisabledTextbox(
-                        getCapcityColumnTextboxId(day), capacity));
-                if (personalTimesheetModel.getResourceCapacity(day).isZero()) {
+                Cell cell = getCenteredCell(getDisabledTextbox(getCapcityColumnTextboxId(day), capacity));
+
+                if ( personalTimesheetModel.getResourceCapacity(day).isZero() ) {
                     setBackgroundNonCapacityCell(cell);
                 }
+
                 row.appendChild(cell);
 
                 totalCapacity = totalCapacity.plus(capacity);
             }
 
-            Cell totalCapacityCell = getCenteredCell(getDisabledTextbox(
-                    getTotalCapacityTextboxId(), totalCapacity));
-            if (personalTimesheetModel.hasOtherReports()) {
+            Cell totalCapacityCell = getCenteredCell(getDisabledTextbox(getTotalCapacityTextboxId(), totalCapacity));
+
+            if ( personalTimesheetModel.hasOtherReports() ) {
                 totalCapacityCell.setColspan(2);
             }
+
             row.appendChild(totalCapacityCell);
         }
 
@@ -483,12 +480,13 @@ public class PersonalTimesheetController extends GenericForwardComposer
         }
 
         private void appendExtraForDays(Row row) {
-            for (LocalDate day = first; day.compareTo(last) <= 0; day = day
-                    .plusDays(1)) {
+            for (LocalDate day = first; day.compareTo(last) <= 0; day = day.plusDays(1)) {
                 Cell cell = getCenteredCell(getDisabledTextbox(getExtraColumnTextboxId(day)));
-                if (personalTimesheetModel.getResourceCapacity(day).isZero()) {
+
+                if ( personalTimesheetModel.getResourceCapacity(day).isZero() ) {
                     setBackgroundNonCapacityCell(cell);
                 }
+
                 row.appendChild(cell);
 
                 updateExtraRow(day);
@@ -501,40 +499,39 @@ public class PersonalTimesheetController extends GenericForwardComposer
             EffortDuration capacity = getEffortDuration(getCapcityColumnTextboxId(date));
 
             EffortDuration extra = EffortDuration.zero();
-            if (total.compareTo(capacity) > 0) {
+            if ( total.compareTo(capacity) > 0 ) {
                 extra = total.minus(capacity);
             }
 
-            Textbox textbox = (Textbox) timesheet
-                    .getFellow(getExtraColumnTextboxId(date));
+            Textbox textbox = (Textbox) timesheet.getFellow(getExtraColumnTextboxId(date));
             textbox.setValue(effortDurationToString(extra));
         }
 
         private EffortDuration getEffortDuration(String textboxId) {
-            String value = ((Textbox) timesheet.getFellow(textboxId))
-                    .getValue();
+            String value = ((Textbox) timesheet.getFellow(textboxId)).getValue();
+
             return effortDurationFromString(value);
         }
 
         private void appendTotalExtra(Row row) {
             Cell totalExtraCell = getCenteredCell(getDisabledTextbox(getTotalExtraTextboxId()));
-            if (personalTimesheetModel.hasOtherReports()) {
+
+            if ( personalTimesheetModel.hasOtherReports() ) {
                 totalExtraCell.setColspan(2);
             }
+
             row.appendChild(totalExtraCell);
             updateTotalExtraColumn();
         }
 
         private void updateTotalExtraColumn() {
             EffortDuration totalExtra = EffortDuration.zero();
-            for (LocalDate day = first; day.compareTo(last) <= 0; day = day
-                    .plusDays(1)) {
+            for (LocalDate day = first; day.compareTo(last) <= 0; day = day.plusDays(1)) {
                 EffortDuration extra = getEffortDuration(getExtraColumnTextboxId(day));
                 totalExtra = totalExtra.plus(extra);
             }
 
-            Textbox textbox = (Textbox) timesheet
-                    .getFellow(getTotalExtraTextboxId());
+            Textbox textbox = (Textbox) timesheet.getFellow(getTotalExtraTextboxId());
             textbox.setValue(effortDurationToString(totalExtra));
         }
 
@@ -543,12 +540,14 @@ public class PersonalTimesheetController extends GenericForwardComposer
             textbox.setHflex("true");
             textbox.setId(id);
             textbox.setDisabled(true);
+
             return textbox;
         }
 
         private Textbox getDisabledTextbox(String id, EffortDuration effort) {
             Textbox textbox = getDisabledTextbox(id);
             textbox.setValue(effortDurationToString(effort));
+
             return textbox;
         }
 
@@ -556,6 +555,7 @@ public class PersonalTimesheetController extends GenericForwardComposer
             Cell cell = new Cell();
             cell.setAlign("center");
             cell.appendChild(component);
+
             return cell;
         }
 
@@ -563,6 +563,7 @@ public class PersonalTimesheetController extends GenericForwardComposer
             Cell cell = new Cell();
             cell.setAlign("left");
             cell.appendChild(component);
+
             return cell;
         }
 
@@ -582,31 +583,31 @@ public class PersonalTimesheetController extends GenericForwardComposer
 
         checkUserComesFromEntryPointsOrSendForbiddenCode();
 
-        URLHandlerRegistry.getRedirectorFor(IPersonalTimesheetController.class)
-                .register(this, page);
+        URLHandlerRegistry.getRedirectorFor(IPersonalTimesheetController.class).register(this, page);
     }
 
     private void adjustFrozenWidth() {
-        // Hack to reduce frozen scrollarea
+        // Hack to reduce frozen scroll area
         Clients.evalJavaScript("jq('.z-frozen-inner div').width(jq('.totals-column').offset().left);");
     }
 
     private void checkUserComesFromEntryPointsOrSendForbiddenCode() {
-        HttpServletRequest request = (HttpServletRequest) Executions
-                .getCurrent().getNativeRequest();
+        HttpServletRequest request = (HttpServletRequest) Executions.getCurrent().getNativeRequest();
         Map<String, String> matrixParams = MatrixParameters.extract(request);
 
         // If it doesn't come from a entry point
-        if (matrixParams.isEmpty()) {
+        if ( matrixParams.isEmpty() ) {
             Util.sendForbiddenStatusCodeInHttpServletResponse();
         }
     }
 
     private void setBreadcrumbs(Component comp) {
         Component breadcrumbs = comp.getPage().getFellow("breadcrumbs");
-        if (breadcrumbs.getChildren() != null) {
+
+        if ( breadcrumbs.getChildren() != null ) {
             breadcrumbs.getChildren().clear();
         }
+
         breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
         breadcrumbs.appendChild(new Label(_("My account")));
         breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
@@ -617,7 +618,7 @@ public class PersonalTimesheetController extends GenericForwardComposer
 
     @Override
     public void goToCreateOrEditForm(LocalDate date) {
-        if (!SecurityUtils.isUserInRole(UserRole.ROLE_BOUND_USER)) {
+        if ( !SecurityUtils.isUserInRole(UserRole.ROLE_BOUND_USER) ) {
             Util.sendForbiddenStatusCodeInHttpServletResponse();
         }
 
@@ -627,8 +628,9 @@ public class PersonalTimesheetController extends GenericForwardComposer
 
     @Override
     public void goToCreateOrEditFormForResource(LocalDate date,
-            org.libreplan.business.resources.entities.Resource resource) {
-        if (!SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_TIMESHEETS)) {
+                                                org.libreplan.business.resources.entities.Resource resource) {
+
+        if ( !SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_TIMESHEETS) ) {
             Util.sendForbiddenStatusCodeInHttpServletResponse();
         }
 
@@ -653,9 +655,11 @@ public class PersonalTimesheetController extends GenericForwardComposer
     private void createColumns(LocalDate date) {
         createProjectAndTaskColumns();
         createColumnsForDays(date);
-        if (personalTimesheetModel.hasOtherReports()) {
+
+        if ( personalTimesheetModel.hasOtherReports() ) {
             createOtherColumn();
         }
+
         createTotalColumn();
     }
 
@@ -672,13 +676,10 @@ public class PersonalTimesheetController extends GenericForwardComposer
     }
 
     private void createColumnsForDays(LocalDate date) {
-        LocalDate start = personalTimesheetModel
-                .getPersonalTimesheetsPeriodicity().getStart(date);
-        LocalDate end = personalTimesheetModel
-                .getPersonalTimesheetsPeriodicity().getEnd(date);
+        LocalDate start = personalTimesheetModel.getPersonalTimesheetsPeriodicity().getStart(date);
+        LocalDate end = personalTimesheetModel.getPersonalTimesheetsPeriodicity().getEnd(date);
 
-        for (LocalDate day = start; day.compareTo(end) <= 0; day = day
-                .plusDays(1)) {
+        for (LocalDate day = start; day.compareTo(end) <= 0; day = day.plusDays(1)) {
             Column column = new Column(day.getDayOfMonth() + "");
             column.setAlign("center");
             column.setWidth(EFFORT_DURATION_TEXTBOX_WIDTH);
@@ -711,15 +712,15 @@ public class PersonalTimesheetController extends GenericForwardComposer
     }
 
     public List<PersonalTimesheetRow> getRows() {
-        List<PersonalTimesheetRow> result = PersonalTimesheetRow
-                .wrap(personalTimesheetModel
-                .getOrderElements());
-        if (personalTimesheetModel.hasOtherReports()) {
+        List<PersonalTimesheetRow> result = PersonalTimesheetRow.wrap(personalTimesheetModel.getOrderElements());
+        if ( personalTimesheetModel.hasOtherReports() ) {
             result.add(PersonalTimesheetRow.createOtherRow());
         }
+
         result.add(PersonalTimesheetRow.createTotalRow());
         result.add(PersonalTimesheetRow.createCapacityRow());
         result.add(PersonalTimesheetRow.createExtraRow());
+
         return result;
     }
 
@@ -729,22 +730,24 @@ public class PersonalTimesheetController extends GenericForwardComposer
 
     public void save() {
         personalTimesheetModel.save();
-        String url = IndexController.USER_DASHBOARD_URL
-                + "?timesheet_saved=" + personalTimesheetModel.getDate();
-        if (!personalTimesheetModel.isCurrentUser()) {
+        String url = IndexController.USER_DASHBOARD_URL + "?timesheet_saved=" + personalTimesheetModel.getDate();
+
+        if ( !personalTimesheetModel.isCurrentUser() ) {
             url = WORK_REPORTS_URL + "?timesheet_saved=true";
         }
+
         Executions.getCurrent().sendRedirect(url);
     }
 
     public void saveAndContinue() {
         personalTimesheetModel.save();
-        if (personalTimesheetModel.isCurrentUser()) {
+
+        if ( personalTimesheetModel.isCurrentUser() ) {
             goToCreateOrEditForm(personalTimesheetModel.getDate());
         } else {
-            goToCreateOrEditFormForResource(personalTimesheetModel.getDate(),
-                    personalTimesheetModel.getWorker());
+            goToCreateOrEditFormForResource(personalTimesheetModel.getDate(), personalTimesheetModel.getWorker());
         }
+
         messagesForUser.showMessage(Level.INFO, _("Personal timesheet saved"));
         Util.reloadBindings(timesheet);
     }
@@ -752,16 +755,17 @@ public class PersonalTimesheetController extends GenericForwardComposer
     public void cancel() {
         personalTimesheetModel.cancel();
         String url = IndexController.USER_DASHBOARD_URL;
-        if (!personalTimesheetModel.isCurrentUser()) {
+
+        if ( !personalTimesheetModel.isCurrentUser() ) {
             url = WORK_REPORTS_URL;
         }
+
         Executions.getCurrent().sendRedirect(url);
     }
 
     public void addOrderElement() {
-        OrderElement orderElement = (OrderElement) orderElementBandboxSearch
-                .getSelectedElement();
-        if (orderElement != null) {
+        OrderElement orderElement = (OrderElement) orderElementBandboxSearch.getSelectedElement();
+        if ( orderElement != null ) {
             personalTimesheetModel.addOrderElement(orderElement);
             orderElementBandboxSearch.setSelectedElement(null);
             Util.reloadBindings(timesheet);
@@ -778,18 +782,17 @@ public class PersonalTimesheetController extends GenericForwardComposer
     }
 
     public void previousPeriod() {
-        if (personalTimesheetModel.isModified()) {
-            throw new WrongValueException(
-                    previousPeriod,
+        if ( personalTimesheetModel.isModified() ) {
+            throw new WrongValueException(previousPeriod,
                     _("There are unsaved changes in the current personal timesheet, please save before moving"));
         }
+
         sendToPersonalTimesheet(personalTimesheetModel.getPrevious());
     }
 
     public void nextPeriod() {
-        if (personalTimesheetModel.isModified()) {
-            throw new WrongValueException(
-                    nextPeriod,
+        if ( personalTimesheetModel.isModified() ) {
+            throw new WrongValueException(nextPeriod,
                     _("There are unsaved changes in the current personal timesheet, please save before moving"));
         }
 
@@ -803,6 +806,7 @@ public class PersonalTimesheetController extends GenericForwardComposer
                 personalTimesheetController.goToCreateOrEditForm(date);
             }
         });
+
         Executions.getCurrent().sendRedirect(capturePath);
     }
 
@@ -855,7 +859,7 @@ public class PersonalTimesheetController extends GenericForwardComposer
     }
 
     private static String effortDurationToString(EffortDuration effort) {
-        if (effort == null || effort.isZero()) {
+        if ( effort == null || effort.isZero() ) {
             return "";
         }
 
@@ -863,19 +867,19 @@ public class PersonalTimesheetController extends GenericForwardComposer
     }
 
     private static EffortDuration effortDurationFromString(String effort) {
-        if (StringUtils.isBlank(effort)) {
+        if ( StringUtils.isBlank(effort) ) {
             return EffortDuration.zero();
         }
 
         String decimalSeparator = ((DecimalFormat) DecimalFormat
                 .getInstance(Locales.getCurrent()))
                 .getDecimalFormatSymbols().getDecimalSeparator() + "";
-        if (effort.contains(decimalSeparator) || effort.contains(".")) {
+
+        if ( effort.contains(decimalSeparator) || effort.contains(".") ) {
             try {
                 effort = effort.replace(decimalSeparator, ".");
                 double hours = Double.parseDouble(effort);
-                return EffortDuration.fromHoursAsBigDecimal(new BigDecimal(
-                        hours));
+                return EffortDuration.fromHoursAsBigDecimal(new BigDecimal(hours));
             } catch (NumberFormatException e) {
                 return null;
             }
@@ -887,21 +891,23 @@ public class PersonalTimesheetController extends GenericForwardComposer
     public void updateSummary() {
         EffortDuration total = getEffortDurationFromTextbox(getTotalTextboxId());
         EffortDuration other = EffortDuration.zero();
-        if (personalTimesheetModel.hasOtherReports()) {
+
+        if ( personalTimesheetModel.hasOtherReports() ) {
             other = getEffortDurationFromTextbox(getTotalOtherTextboxId());
         }
+
         EffortDuration capacity = getEffortDurationFromTextbox(getTotalCapacityTextboxId());
         EffortDuration extraPerDay = getEffortDurationFromTextbox(getTotalExtraTextboxId());
 
         EffortDuration timesheet = total.minus(other);
         EffortDuration extra = EffortDuration.zero();
-        if (total.compareTo(capacity) > 0) {
+
+        if ( total.compareTo(capacity) > 0 ) {
             extra = total.minus(capacity);
         }
 
-        if (personalTimesheetModel.hasOtherReports()) {
-            summaryTotalPersonalTimesheet
-                    .setValue(timesheet.toFormattedString());
+        if ( personalTimesheetModel.hasOtherReports() ) {
+            summaryTotalPersonalTimesheet.setValue(timesheet.toFormattedString());
             summaryTotalOther.setValue(other.toFormattedString());
         }
 
@@ -912,8 +918,7 @@ public class PersonalTimesheetController extends GenericForwardComposer
     }
 
     private EffortDuration getEffortDurationFromTextbox(String id) {
-        return effortDurationFromString(((Textbox) timesheet.getFellow(id))
-                .getValue());
+        return effortDurationFromString(((Textbox) timesheet.getFellow(id)).getValue());
     }
 
     public boolean hasOtherReports() {
@@ -932,19 +937,19 @@ public class PersonalTimesheetController extends GenericForwardComposer
  * This is used to mark the special rows like capacity and total.
  */
 class PersonalTimesheetRow {
+
     enum PersonalTimesheetRowType {
         ORDER_ELEMENT, OTHER, CAPACITY, TOTAL, EXTRA
-    };
+    }
 
     private PersonalTimesheetRowType type;
     private OrderElement orderElemement;
 
-    public static PersonalTimesheetRow createOrderElementRow(
-            OrderElement orderElemement) {
-        PersonalTimesheetRow row = new PersonalTimesheetRow(
-                PersonalTimesheetRowType.ORDER_ELEMENT);
+    public static PersonalTimesheetRow createOrderElementRow(OrderElement orderElemement) {
+        PersonalTimesheetRow row = new PersonalTimesheetRow(PersonalTimesheetRowType.ORDER_ELEMENT);
         Assert.notNull(orderElemement);
         row.orderElemement = orderElemement;
+
         return row;
     }
 
@@ -964,12 +969,12 @@ class PersonalTimesheetRow {
         return new PersonalTimesheetRow(PersonalTimesheetRowType.EXTRA);
     }
 
-    public static List<PersonalTimesheetRow> wrap(
-            List<OrderElement> orderElements) {
-        List<PersonalTimesheetRow> result = new ArrayList<PersonalTimesheetRow>();
+    public static List<PersonalTimesheetRow> wrap(List<OrderElement> orderElements) {
+        List<PersonalTimesheetRow> result = new ArrayList<>();
         for (OrderElement each : orderElements) {
             result.add(createOrderElementRow(each));
         }
+
         return result;
     }
 

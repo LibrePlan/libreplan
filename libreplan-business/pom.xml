@@ -18,15 +18,18 @@
             <artifactId>gettext-commons</artifactId>
         </dependency>
 
+        <!-- Spring ORM -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-orm</artifactId>
         </dependency>
+
+        <!-- Hibernate -->
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
         </dependency>
-       <dependency>
+        <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-ehcache</artifactId>
         </dependency>
@@ -35,6 +38,7 @@
             <artifactId>hibernate-validator</artifactId>
         </dependency>
 
+        <!-- Usertype.Core -->
         <dependency>
 	      <groupId>org.jadira.usertype</groupId>
 	      <artifactId>usertype.core</artifactId>
@@ -57,6 +61,7 @@
             <artifactId>spring-context-support</artifactId>
         </dependency>
 
+        <!-- AspectJWeaver -->
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjweaver</artifactId>
@@ -74,11 +79,13 @@
            <artifactId>bonecp</artifactId>
         </dependency>
 
+        <!-- Spring Test -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
         </dependency>
 
+        <!-- Easymock -->
         <dependency>
             <groupId>org.easymock</groupId>
             <artifactId>easymock</artifactId>
@@ -90,18 +97,20 @@
             <scope>test</scope>
         </dependency>
 
-
-        <!--<dependency>
+        <!-- JSON lib -->
+        <dependency>
             <groupId>net.sf.json-lib</groupId>
             <artifactId>json-lib</artifactId>
             <classifier>jdk15</classifier>
-        </dependency>-->
+        </dependency>
 
         <!-- Commons Math-->
         <dependency>
-            <groupId>commons-math</groupId>
-            <artifactId>commons-math</artifactId>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-math3</artifactId>
         </dependency>
+
+        <!-- Log4j -->
         <dependency>
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-log4j12</artifactId>
@@ -113,10 +122,13 @@
             <artifactId>joda-time</artifactId>
         </dependency>
 
+        <!-- DBUnit -->
         <dependency>
             <groupId>org.dbunit</groupId>
             <artifactId>dbunit</artifactId>
         </dependency>
+
+        <!-- Liquibase -->
         <dependency>
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-core</artifactId>

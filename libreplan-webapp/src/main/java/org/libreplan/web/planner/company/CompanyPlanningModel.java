@@ -861,8 +861,7 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
     }
     @Override
     public Date getFilterFinishDate() {
-        return ((filterStartDate == null) ? null : filterFinishDate
-                .toDateMidnight().toDate());
+        return ((filterStartDate == null) ? null : filterFinishDate.toDateTimeAtStartOfDay().toDate());
     }
 
     private AvailabilityTimeLine.Interval getFilterInterval() {

@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.math.fraction.Fraction;
+import org.apache.commons.math3.fraction.Fraction;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -32,24 +32,26 @@ import org.apache.commons.math.fraction.Fraction;
 public class ProportionalDistributor {
 
     public static ProportionalDistributor create(int... initialShares) {
-        return new ProportionalDistributor(toFractions(
-                sumIntegerParts(initialShares), initialShares));
+        return new ProportionalDistributor(toFractions(sumIntegerParts(initialShares), initialShares));
     }
 
     private static int sumIntegerParts(int[] numbers) {
         int sum = 0;
+
         for (int each : numbers) {
             sum += each;
         }
+
         return sum;
     }
 
     private static Fraction[] toFractions(int initialTotal, int... shares) {
         Fraction[] result = new Fraction[shares.length];
+
         for (int i = 0; i < result.length; i++) {
-            result[i] = initialTotal == 0 ? Fraction.ZERO : new Fraction(
-                    shares[i], initialTotal);
+            result[i] = initialTotal == 0 ? Fraction.ZERO : new Fraction(shares[i], initialTotal);
         }
+
         return result;
     }
 
@@ -57,14 +59,15 @@ public class ProportionalDistributor {
      * Note: this class has a natural ordering that is inconsistent with equals.
      *
      */
-    private static class FractionWithPosition implements
-            Comparable<FractionWithPosition> {
+    private static class FractionWithPosition implements Comparable<FractionWithPosition> {
 
         public static List<FractionWithPosition> transform(Fraction[] fractions) {
-            List<FractionWithPosition> result = new ArrayList<FractionWithPosition>();
+            List<FractionWithPosition> result = new ArrayList<>();
+
             for (int i = 0; i < fractions.length; i++) {
                 result.add(new FractionWithPosition(i, fractions[i]));
             }
+
             return result;
         }
 
@@ -90,49 +93,56 @@ public class ProportionalDistributor {
     }
 
     public int[] distribute(final int total) {
-        if (fractions.length == 0) {
+        if ( fractions.length == 0 ) {
             return new int[0];
         }
+
         int[] result = new int[fractions.length];
         int remaining = total - assignIntegerParts(total, result);
-        if (remaining == 0) {
+
+        if ( remaining == 0 ) {
             return result;
         }
+
         Fraction[] currentFractions = toFractions(total, result);
         assignRemaining(result, currentFractions, remaining);
+
         return result;
     }
 
     private int assignIntegerParts(int current, int[] result) {
         Fraction currentAsFraction = new Fraction(current, 1);
         int substract = 0;
+
         for (int i = 0; i < fractions.length; i++) {
             int intValue = fractions[i].multiply(currentAsFraction).intValue();
-            if (intValue > 0) {
+
+            if ( intValue > 0 ) {
                 result[i] = result[i] + intValue;
                 substract += intValue;
             }
         }
+
         return substract;
     }
 
-    private void assignRemaining(int[] result, Fraction[] currentProportions,
-            int remaining) {
-        List<FractionWithPosition> transform = FractionWithPosition
-                .transform(difference(currentProportions));
+    private void assignRemaining(int[] result, Fraction[] currentProportions, int remaining) {
+        List<FractionWithPosition> transform = FractionWithPosition.transform(difference(currentProportions));
         Collections.sort(transform, Collections.reverseOrder());
+
         for (int i = 0; i < remaining; i++) {
-            FractionWithPosition proportionWithPosition = transform.get(i
-                    % currentProportions.length);
+            FractionWithPosition proportionWithPosition = transform.get(i % currentProportions.length);
             result[proportionWithPosition.position] = result[proportionWithPosition.position] + 1;
         }
     }
 
     private Fraction[] difference(Fraction[] pr) {
         Fraction[] result = new Fraction[fractions.length];
+
         for (int i = 0; i < result.length; i++) {
             result[i] = fractions[i].subtract(pr[i]);
         }
+
         return result;
     }
 

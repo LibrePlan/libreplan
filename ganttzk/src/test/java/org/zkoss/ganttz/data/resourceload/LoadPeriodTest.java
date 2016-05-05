@@ -50,8 +50,7 @@ public class LoadPeriodTest {
     }
 
     private void givenExampleLoadPeriod(LocalDate start, LocalDate end) {
-        givenExampleLoadPeriod(GanttDate.createFrom(start),
-                GanttDate.createFrom(end));
+        givenExampleLoadPeriod(GanttDate.createFrom(start), GanttDate.createFrom(end));
     }
 
     private void givenExampleLoadPeriod(GanttDate start, GanttDate end) {
@@ -59,16 +58,13 @@ public class LoadPeriodTest {
         givenExampleLoadPeriod(start, end, loadLevel);
     }
 
-    private void givenExampleLoadPeriod(GanttDate start, GanttDate end,
-            LoadLevel loadLevel) {
-        loadPeriod = new LoadPeriod(start, end, totalHours, assignedHours,
-                loadLevel);
+    private void givenExampleLoadPeriod(GanttDate start, GanttDate end, LoadLevel loadLevel) {
+        loadPeriod = new LoadPeriod(start, end, totalHours, assignedHours, loadLevel);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void aLoadPeriodMustHaveAStartDate() {
-        new LoadPeriod(null, GanttDate.createFrom(new LocalDate()), totalHours,
-                assignedHours, correctLoadLevel());
+        new LoadPeriod(null, GanttDate.createFrom(new LocalDate()), totalHours, assignedHours, correctLoadLevel());
     }
 
     private static final String totalHours = "100";
@@ -79,26 +75,33 @@ public class LoadPeriodTest {
         return new LoadLevel(40);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void aLoadPeriodMustHaveAnEndDate() {
-        new LoadPeriod(GanttDate.createFrom(new LocalDate()), null, totalHours,
-                assignedHours, correctLoadLevel());
+        new LoadPeriod(GanttDate.createFrom(new LocalDate()), null, totalHours, assignedHours, correctLoadLevel());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void theEndDateCantBeBeforeTheStartDate() {
         LocalDate start = new LocalDate(2009, 10, 4);
         LocalDate end = new LocalDate(2009, 10, 3);
-        new LoadPeriod(GanttDate.createFrom(start), GanttDate.createFrom(end),
-                totalHours, assignedHours, correctLoadLevel());
+
+        new LoadPeriod(
+                GanttDate.createFrom(start),
+                GanttDate.createFrom(end),
+                totalHours, assignedHours,
+                correctLoadLevel());
     }
 
     @Test
     public void theEndDateCanBeTheSameThanTheStartDate() {
         LocalDate start = new LocalDate(2009, 10, 4);
         LocalDate end = new LocalDate(2009, 10, 4);
-        new LoadPeriod(GanttDate.createFrom(start), GanttDate.createFrom(end),
-                totalHours, assignedHours, correctLoadLevel());
+
+        new LoadPeriod(
+                GanttDate.createFrom(start),
+                GanttDate.createFrom(end),
+                totalHours, assignedHours,
+                correctLoadLevel());
     }
 
     @Test
@@ -115,8 +118,8 @@ public class LoadPeriodTest {
 
     @Test
     public void twoLoadPeriodOverlapCanOverlap() {
-        givenExampleLoadPeriod(new LocalDate(2009, 11, 1), new LocalDate(2009,
-                12, 1));
+        givenExampleLoadPeriod(new LocalDate(2009, 11, 1), new LocalDate(2009, 12, 1));
+
         assertTrue(loadPeriod.overlaps(create(2009, 11, 2, 2009, 11, 3)));
         assertTrue(loadPeriod.overlaps(create(2009, 10, 30, 2009, 11, 2)));
         assertTrue(loadPeriod.overlaps(create(2009, 10, 20, 2009, 12, 2)));
@@ -128,31 +131,31 @@ public class LoadPeriodTest {
     @Test
     // [start, end)
     public void startInclusiveButEndExclusive() {
-        givenExampleLoadPeriod(new LocalDate(2009, 11, 1), new LocalDate(2009,
-                12, 1));
+        givenExampleLoadPeriod(new LocalDate(2009, 11, 1), new LocalDate(2009, 12, 1));
+
         assertFalse(loadPeriod.overlaps(create(2009, 12, 1, 2009, 12, 3)));
         assertFalse(loadPeriod.overlaps(create(2009, 10, 1, 2009, 11, 1)));
     }
 
     @Test
     public void pointDontOverlap() {
-        givenExampleLoadPeriod(new LocalDate(2009, 11, 1), new LocalDate(2009,
-                12, 1));
+        givenExampleLoadPeriod(new LocalDate(2009, 11, 1), new LocalDate(2009, 12, 1));
         assertFalse(loadPeriod.overlaps(create(2009, 11, 1, 2009, 11, 1)));
     }
 
-    private static LoadPeriod create(int startYear, int startMonth,
-            int startDay, int endYear, int endMonth, int endDay) {
-        return new LoadPeriod(GanttDate.createFrom(new LocalDate(startYear,
-                startMonth, startDay)), GanttDate.createFrom(new LocalDate(
-                endYear, endMonth, endDay)), totalHours,
-                assignedHours, correctLoadLevel());
+    private static LoadPeriod create(
+            int startYear, int startMonth, int startDay, int endYear, int endMonth, int endDay) {
+
+        return new LoadPeriod(
+                GanttDate.createFrom(new LocalDate(startYear, startMonth, startDay)),
+                GanttDate.createFrom(new LocalDate(endYear, endMonth, endDay)),
+                totalHours, assignedHours,
+                correctLoadLevel());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void loadPeriodsThatOverlapCannotBeSorted() {
-        LoadPeriod.sort(Arrays.asList(create(2009, 4, 10, 2010, 1, 12), create(
-                2009, 4, 11, 2011, 1, 20)));
+        LoadPeriod.sort(Arrays.asList(create(2009, 4, 10, 2010, 1, 12), create(2009, 4, 11, 2011, 1, 20)));
     }
 
     @Test
@@ -164,15 +167,16 @@ public class LoadPeriodTest {
 
     @Test
     public void aZeroDaysLoadPeriodStartingTheSameDateThanANoZeroDaysLoadPeriodGoesAfter() {
-        givenUnsortedListOfPeriods(create(2009, 4, 10, 2010, 1, 12), create(
-                2009, 4, 10, 2009, 4, 10));
+        givenUnsortedListOfPeriods(create(2009, 4, 10, 2010, 1, 12), create(2009, 4, 10, 2009, 4, 10));
         List<LoadPeriod> sorted = LoadPeriod.sort(unsortedList);
         thenIsSorted(sorted);
     }
 
     private void givenUnsortedListOfPeriods() {
-        givenUnsortedListOfPeriods(create(2009, 4, 10, 2010, 1, 12), create(
-                2010, 1, 12, 2010, 1, 12), create(2010, 2, 13, 2010, 5, 7),
+        givenUnsortedListOfPeriods(
+                create(2009, 4, 10, 2010, 1, 12),
+                create(2010, 1, 12, 2010, 1, 12),
+                create(2010, 2, 13, 2010, 5, 7),
                 create(2009, 3, 5, 2009, 3, 10));
     }
 
@@ -182,18 +186,19 @@ public class LoadPeriodTest {
 
     private void thenIsSorted(List<LoadPeriod> sorted) {
         ListIterator<LoadPeriod> listIterator = sorted.listIterator();
-        LoadPeriod previous = null;
+        LoadPeriod previous;
         LoadPeriod current = null;
+
         while (listIterator.hasNext()) {
             previous = current;
             current = listIterator.next();
-            if (previous != null) {
+            if ( previous != null ) {
                 assertFalse(current.getStart().compareTo(previous.getEnd()) < 0);
             }
         }
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void aLoadPeriodMustHaveANotNullLoadLevel() {
         givenExampleLoadPeriod();
         new LoadPeriod(start, end, totalHours, assignedHours, null);

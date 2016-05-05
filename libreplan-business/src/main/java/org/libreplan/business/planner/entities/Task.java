@@ -86,7 +86,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
      * Maximum number of days in order to looking for calendar capacity (defined
      * to 5 years)
      */
-    private static int MAX_DAYS_LOOKING_CAPACITY = 360 * 5;
+    private final static int MAX_DAYS_LOOKING_CAPACITY = 360 * 5;
 
     public static Task createTask(TaskSource taskSource) {
         Task task = new Task();
@@ -94,6 +94,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         orderElement.applyInitialPositionConstraintTo(task);
         Task result = create(task, taskSource);
         result.initializeDates();
+
         return result;
     }
 
@@ -112,6 +113,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         OrderElement orderElement = taskSource.getOrderElement();
         orderElement.applyInitialPositionConstraintTo(task);
         Task result = create(task, taskSource);
+
         return result;
     }
 
@@ -121,7 +123,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         DurationBetweenDates duration = fromFixedDuration(workHours);
 
         IntraDayDate start = getIntraDayStartDate();
-        if (start != null) {
+        if ( start != null ) {
             setIntraDayEndDate(duration.fromStartToEnd(start));
         } else {
             IntraDayDate end = getIntraDayEndDate();
@@ -152,17 +154,17 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
 
     private TaskStatusEnum currentStatus = null;
 
-    private Set<ResourceAllocation<?>> resourceAllocations = new HashSet<ResourceAllocation<?>>();
+    private Set<ResourceAllocation<?>> resourceAllocations = new HashSet<>();
 
     @Valid
     private Set<ResourceAllocation<?>> getResourceAllocations() {
-        return new HashSet<ResourceAllocation<?>>(resourceAllocations);
+        return new HashSet<>(resourceAllocations);
     }
 
     @SuppressWarnings("unused")
     @AfterCopy
     private void ifLimitingAllocationRemove() {
-        if (isLimiting()) {
+        if ( isLimiting() ) {
             resourceAllocations.clear();
         }
     }
@@ -198,8 +200,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
     }
 
     public Set<Criterion> getCriterions() {
-        return Collections
-                .unmodifiableSet(getHoursGroup().getValidCriterions());
+        return Collections.unmodifiableSet(getHoursGroup().getValidCriterions());
     }
 
     public Integer getHoursSpecifiedAtOrder() {
@@ -207,18 +208,15 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
     }
 
     public int getAssignedHours() {
-        return AggregateOfResourceAllocations.createFromSatisfied(resourceAllocations)
-                .getTotalHours();
+        return AggregateOfResourceAllocations.createFromSatisfied(resourceAllocations).getTotalHours();
     }
 
     public EffortDuration getAssignedEffort() {
-        return AggregateOfResourceAllocations.createFromSatisfied(
-                resourceAllocations).getTotalEffort();
+        return AggregateOfResourceAllocations.createFromSatisfied(resourceAllocations).getTotalEffort();
     }
 
     private EffortDuration getTotalNonConsolidatedEffort() {
-        return AggregateOfResourceAllocations
-                .createFromAll(resourceAllocations).getNonConsolidatedEffort();
+        return AggregateOfResourceAllocations.createFromAll(resourceAllocations).getNonConsolidatedEffort();
     }
 
     public int getTotalHours() {
@@ -236,13 +234,14 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
     }
 
     public Set<ResourceAllocation<?>> getSatisfiedResourceAllocations() {
-        Set<ResourceAllocation<?>> result = new HashSet<ResourceAllocation<?>>();
+        Set<ResourceAllocation<?>> result = new HashSet<>();
 
         if ( isLimiting() ) {
             result.addAll(getLimitingResourceAllocations());
         } else {
             result.addAll(ResourceAllocation.getSatisfied(resourceAllocations));
         }
+
         return Collections.unmodifiableSet(result);
     }
 
@@ -252,22 +251,24 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
     }
 
     public Set<ResourceAllocation<?>> getLimitingResourceAllocations() {
-        Set<ResourceAllocation<?>> result = new HashSet<ResourceAllocation<?>>();
+        Set<ResourceAllocation<?>> result = new HashSet<>();
         for (ResourceAllocation<?> each: resourceAllocations) {
-            if (each.isLimiting()) {
+            if ( each.isLimiting() ) {
                 result.add(each);
             }
         }
+
         return Collections.unmodifiableSet(result);
     }
 
     public Set<ResourceAllocation<?>> getNonLimitingResourceAllocations() {
-        Set<ResourceAllocation<?>> result = new HashSet<ResourceAllocation<?>>();
+        Set<ResourceAllocation<?>> result = new HashSet<>();
         for (ResourceAllocation<?> each: resourceAllocations) {
-            if (!each.isLimiting()) {
+            if ( !each.isLimiting() ) {
                 result.add(each);
             }
         }
+
         return Collections.unmodifiableSet(result);
     }
 
@@ -277,6 +278,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
 
     private ResourceAllocation<?> getAssociatedLimitingResourceAllocation() {
         Set<ResourceAllocation<?>> resourceAllocations = getLimitingResourceAllocations();
+
         return (resourceAllocations.size() > 0) ? resourceAllocations.iterator().next() : null;
     }
 
@@ -284,11 +286,13 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         if ( !isLimiting() ) {
             throw new IllegalStateException("this is not a limiting task");
         }
+
         return getAssociatedLimitingResourceAllocation().getLimitingResourceQueueElement();
     }
 
     public boolean isLimitingAndHasDayAssignments() {
         ResourceAllocation<?> resourceAllocation = getAssociatedLimitingResourceAllocation();
+
         return resourceAllocation != null && resourceAllocation.isLimitingAndHasDayAssignments();
     }
 
@@ -300,7 +304,9 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         if ( !resourceAllocation.getTask().equals(this) ) {
             throw new IllegalArgumentException("the resourceAllocation's task must be this task");
         }
+
         resourceAllocations.add(resourceAllocation);
+
         if ( generateDayAssignments ) {
             resourceAllocation.associateAssignmentsToResource();
         }
@@ -308,6 +314,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
 
     public ResourceAllocation<?> getResourceAllocation() {
         Validate.isTrue(isLimiting());
+
         return resourceAllocations.isEmpty() ? null : resourceAllocations.iterator().next();
     }
 
@@ -317,16 +324,16 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         resourceAllocations.add(resourceAllocation);
     }
 
-    public void removeResourceAllocation(
-            ResourceAllocation<?> resourceAllocation) {
+    public void removeResourceAllocation(ResourceAllocation<?> resourceAllocation) {
         resourceAllocation.detach();
         resourceAllocations.remove(resourceAllocation);
     }
 
     public CalculatedValue getCalculatedValue() {
-        if (calculatedValue == null) {
+        if ( calculatedValue == null ) {
             return CalculatedValue.END_DATE;
         }
+
         return calculatedValue;
     }
 
@@ -342,14 +349,13 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
      *         isn't any {@link Worker} repeated.
      */
     public boolean isValidResourceAllocationWorkers() {
-        Set<Long> workers = new HashSet<Long>();
+        Set<Long> workers = new HashSet<>();
 
         for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
-            if (resourceAllocation instanceof SpecificResourceAllocation) {
-                Resource resource = ((SpecificResourceAllocation) resourceAllocation)
-                        .getResource();
-                if (resource != null) {
-                    if (workers.contains(resource.getId())) {
+            if ( resourceAllocation instanceof SpecificResourceAllocation ) {
+                Resource resource = ((SpecificResourceAllocation) resourceAllocation).getResource();
+                if ( resource != null ) {
+                    if ( workers.contains(resource.getId()) ) {
                         return false;
                     } else {
                         workers.add(resource.getId());
@@ -362,44 +368,48 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
     }
 
     public Set<GenericResourceAllocation> getGenericResourceAllocations() {
-        return new HashSet<GenericResourceAllocation>(ResourceAllocation
-                .getOfType(GenericResourceAllocation.class,
-                        getSatisfiedResourceAllocations()));
+        return new HashSet<>(ResourceAllocation.getOfType(
+                GenericResourceAllocation.class,
+                getSatisfiedResourceAllocations()));
     }
 
     public Set<SpecificResourceAllocation> getSpecificResourceAllocations() {
-        return new HashSet<SpecificResourceAllocation>(ResourceAllocation
-                .getOfType(SpecificResourceAllocation.class,
-                        getSatisfiedResourceAllocations()));
+        return new HashSet<>(ResourceAllocation.getOfType(
+                SpecificResourceAllocation.class,
+                getSatisfiedResourceAllocations()));
     }
 
     public static class ModifiedAllocation {
 
-        public static List<ModifiedAllocation> copy(Scenario onScenario,
+        public static List<ModifiedAllocation> copy(
+                Scenario onScenario,
                 Collection<ResourceAllocation<?>> resourceAllocations) {
-            List<ModifiedAllocation> result = new ArrayList<ModifiedAllocation>();
+
+            List<ModifiedAllocation> result = new ArrayList<>();
             for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
-                result.add(new ModifiedAllocation(resourceAllocation,
-                        resourceAllocation.copy(onScenario)));
+                result.add(new ModifiedAllocation(resourceAllocation, resourceAllocation.copy(onScenario)));
             }
+
             return result;
         }
 
-        public static List<ResourceAllocation<?>> modified(
-                Collection<? extends ModifiedAllocation> collection) {
-            List<ResourceAllocation<?>> result = new ArrayList<ResourceAllocation<?>>();
+        public static List<ResourceAllocation<?>> modified(Collection<? extends ModifiedAllocation> collection) {
+            List<ResourceAllocation<?>> result = new ArrayList<>();
             for (ModifiedAllocation modifiedAllocation : collection) {
                 result.add(modifiedAllocation.getModification());
             }
+
             return result;
         }
 
-        public static List<ResourceAllocation<?>> originals(
-                Collection<? extends ModifiedAllocation> modifiedAllocations) {
-            List<ResourceAllocation<?>> result = new ArrayList<ResourceAllocation<?>>();
+        public static List<ResourceAllocation<?>> originals
+                (Collection<? extends ModifiedAllocation> modifiedAllocations) {
+
+            List<ResourceAllocation<?>> result = new ArrayList<>();
             for (ModifiedAllocation each : modifiedAllocations) {
                 result.add(each.getOriginal());
             }
+
             return result;
         }
 
@@ -407,10 +417,10 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
 
         private final ResourceAllocation<?> modification;
 
-        public ModifiedAllocation(ResourceAllocation<?> original,
-                ResourceAllocation<?> modification) {
+        public ModifiedAllocation(ResourceAllocation<?> original, ResourceAllocation<?> modification) {
             Validate.notNull(original);
             Validate.notNull(modification);
+
             this.original = original;
             this.modification = modification;
         }
@@ -425,22 +435,26 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
 
     }
 
-    public void mergeAllocation(Scenario scenario, final IntraDayDate start,
+    public void mergeAllocation(
+            Scenario scenario,
+            final IntraDayDate start,
             final IntraDayDate end, Integer newWorkableDays,
             CalculatedValue calculatedValue,
             List<ResourceAllocation<?>> newAllocations,
             List<ModifiedAllocation> modifications,
             Collection<? extends ResourceAllocation<?>> toRemove) {
+
         this.calculatedValue = calculatedValue;
-        this.workableDays = calculatedValue == CalculatedValue.END_DATE ? null
-                : newWorkableDays;
+        this.workableDays = calculatedValue == CalculatedValue.END_DATE ? null : newWorkableDays;
+
         setIntraDayStartDate(start);
         setIntraDayEndDate(end);
+
         for (ModifiedAllocation pair : modifications) {
             Validate.isTrue(resourceAllocations.contains(pair.getOriginal()));
-            pair.getOriginal().mergeAssignmentsAndResourcesPerDay(scenario,
-                    pair.getModification());
+            pair.getOriginal().mergeAssignmentsAndResourcesPerDay(scenario, pair.getModification());
         }
+
         remove(toRemove);
         addAllocations(scenario, newAllocations);
     }
@@ -451,8 +465,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         }
     }
 
-    private void addAllocations(Scenario scenario,
-            List<ResourceAllocation<?>> newAllocations) {
+    private void addAllocations(Scenario scenario, List<ResourceAllocation<?>> newAllocations) {
         for (ResourceAllocation<?> resourceAllocation : newAllocations) {
             resourceAllocation.switchToScenario(scenario);
             addResourceAllocation(resourceAllocation);
@@ -460,14 +473,14 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
     }
 
     public void explicityMoved(IntraDayDate startDate, IntraDayDate endDate) {
-        getPositionConstraint().explicityMovedTo(startDate, endDate,
-                getOrderElement().getOrder().getSchedulingMode());
+        getPositionConstraint().explicityMovedTo(startDate, endDate, getOrderElement().getOrder().getSchedulingMode());
     }
 
     public TaskPositionConstraint getPositionConstraint() {
-        if (positionConstraint == null) {
+        if ( positionConstraint == null ) {
             positionConstraint = new TaskPositionConstraint();
         }
+
         return positionConstraint;
     }
 
@@ -476,15 +489,16 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         static <T extends AllocationModification> ModificationsResult<T> create(
                 List<ResourceAllocation<?>> original, List<T> canBeModified) {
 
-            List<ResourceAllocation<?>> beingModified = AllocationModification
-                    .getBeingModified(canBeModified);
-            List<ResourceAllocation<?>> noLongerValid = new ArrayList<ResourceAllocation<?>>();
+            List<ResourceAllocation<?>> beingModified = AllocationModification.getBeingModified(canBeModified);
+            List<ResourceAllocation<?>> noLongerValid = new ArrayList<>();
+
             for (ResourceAllocation<?> each : original) {
-                if (!beingModified.contains(each)) {
+                if ( !beingModified.contains(each) ) {
                     noLongerValid.add(each);
                 }
             }
-            return new ModificationsResult<T>(canBeModified, noLongerValid);
+
+            return new ModificationsResult<>(canBeModified, noLongerValid);
         }
 
         private final List<T> valid;
@@ -515,17 +529,18 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
             this.searcher = searcher;
         }
 
-        public ModificationsResult<EffortModification> getHoursModified(
-                List<ResourceAllocation<?>> allocations) {
-            List<EffortModification> canBeModified = EffortModification
-                    .withNewResources(allocations, searcher);
+        public ModificationsResult<EffortModification> getHoursModified(List<ResourceAllocation<?>> allocations) {
+            List<EffortModification> canBeModified = EffortModification.withNewResources(allocations, searcher);
+
             return ModificationsResult.create(allocations, canBeModified);
         }
 
         public ModificationsResult<ResourcesPerDayModification> getResourcesPerDayModified(
                 List<ResourceAllocation<?>> allocations) {
-            List<ResourcesPerDayModification> canBeModified = ResourcesPerDayModification
-                    .withNewResources(allocations, searcher);
+
+            List<ResourcesPerDayModification> canBeModified =
+                    ResourcesPerDayModification.withNewResources(allocations, searcher);
+
             return ModificationsResult.create(allocations, canBeModified);
         }
 
@@ -538,31 +553,31 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
     }
 
     @Override
-    protected IDatesHandler createDatesHandler(final Scenario scenario,
-            final IResourcesSearcher searcher) {
+    protected IDatesHandler createDatesHandler(final Scenario scenario, final IResourcesSearcher searcher) {
         return new IDatesHandler() {
-
             @Override
             public void moveTo(IntraDayDate newStartDate) {
                 IntraDayDate previousStart = getIntraDayStartDate();
-                if (previousStart.equals(newStartDate)) {
+
+                if ( previousStart.equals(newStartDate) ) {
                     return;
                 }
+
                 setIntraDayEndDate(calculateEndKeepingLength(newStartDate));
                 setIntraDayStartDate(newStartDate);
                 doReassignment(Direction.FORWARD);
             }
 
             private void doReassignment(Direction direction) {
-                reassign(scenario, direction, new WithPotentiallyNewResources(
-                        searcher));
+                reassign(scenario, direction, new WithPotentiallyNewResources(searcher));
             }
 
             @Override
             public void moveEndTo(IntraDayDate newEnd) {
-                if (getIntraDayEndDate().equals(newEnd)) {
+                if ( getIntraDayEndDate().equals(newEnd) ) {
                     return;
                 }
+
                 setIntraDayStartDate(calculateNewStartGivenEnd(newEnd));
                 setIntraDayEndDate(newEnd);
                 doReassignment(Direction.BACKWARD);
@@ -574,9 +589,10 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
 
             @Override
             public void resizeTo(IntraDayDate endDate) {
-                if (!canBeResized() || getIntraDayEndDate().equals(endDate)) {
+                if ( !canBeResized() || getIntraDayEndDate().equals(endDate) ) {
                     return;
                 }
+
                 setIntraDayEndDate(endDate);
                 updateWorkableDays();
                 doReassignment(getAllocationDirection());
@@ -592,28 +608,32 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
 
     public IntraDayDate calculateEndKeepingLength(IntraDayDate newStartDate) {
         DurationBetweenDates durationBetweenDates = getDurationBetweenDates();
+
         return durationBetweenDates.fromStartToEnd(newStartDate);
     }
 
     public IntraDayDate calculateEndGivenWorkableDays(int days) {
         Validate.isTrue(days >= 0);
         DurationBetweenDates duration = fromFixedDuration(days);
+
         return duration.fromStartToEnd(getIntraDayStartDate());
     }
 
     public IntraDayDate calculateStartGivenWorkableDays(int days) {
         Validate.isTrue(days >= 0);
         DurationBetweenDates duration = fromFixedDuration(days);
+
         return duration.fromEndToStart(getIntraDayEndDate());
     }
 
     private IntraDayDate calculateStartKeepingLength(IntraDayDate newEnd) {
         DurationBetweenDates durationBetweenDates = getDurationBetweenDates();
+
         return durationBetweenDates.fromEndToStart(newEnd);
     }
 
     private DurationBetweenDates getDurationBetweenDates() {
-        if (workableDays != null) {
+        if ( workableDays != null ) {
             return fromFixedDuration(workableDays);
         } else {
             return fromCurrentDuration();
@@ -621,33 +641,31 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
     }
 
     private DurationBetweenDates fromFixedDuration(int fixedNumberOfWorkableDays) {
-        return new DurationBetweenDates(fixedNumberOfWorkableDays,
-                EffortDuration.zero());
+        return new DurationBetweenDates(fixedNumberOfWorkableDays, EffortDuration.zero());
     }
 
     private DurationBetweenDates fromCurrentDuration() {
         IntraDayDate start = getIntraDayStartDate();
         IntraDayDate end = getIntraDayEndDate();
-        int calculatedWorkableDays = getWorkableDaysFrom(start.roundUp(),
-                end.roundDown());
-        EffortDuration extraDuration = getExtraDurationAtStart(start).plus(
-                end.getEffortDuration());
+        int calculatedWorkableDays = getWorkableDaysFrom(start.roundUp(), end.roundDown());
+        EffortDuration extraDuration = getExtraDurationAtStart(start).plus(end.getEffortDuration());
+
         return new DurationBetweenDates(calculatedWorkableDays, extraDuration);
     }
 
     private EffortDuration getExtraDurationAtStart(IntraDayDate start) {
-        if (start.getEffortDuration().isZero()) {
+        if ( start.getEffortDuration().isZero() ) {
             return EffortDuration.zero();
         }
+
         ICalendar calendar = getNullSafeCalendar();
-        EffortDuration capacity = calendar.getCapacityOn(PartialDay
-                .wholeDay(start.getDate()));
+        EffortDuration capacity = calendar.getCapacityOn(PartialDay.wholeDay(start.getDate()));
+
         return capacity.minus(min(start.getEffortDuration(), capacity));
     }
 
     private ICalendar getNullSafeCalendar() {
-        return getCalendar() != null ? getCalendar() : SameWorkHoursEveryDay
-                .getDefaultWorkingDay();
+        return getCalendar() != null ? getCalendar() : SameWorkHoursEveryDay.getDefaultWorkingDay();
     }
 
     private DurationBetweenDates fromFixedDuration(EffortDuration duration) {
@@ -662,8 +680,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
 
         private final ICalendar calendar;
 
-        private DurationBetweenDates(int numberOfWorkableDays,
-                EffortDuration remainderDuration) {
+        private DurationBetweenDates(int numberOfWorkableDays, EffortDuration remainderDuration) {
             this.numberOfWorkableDays = numberOfWorkableDays;
             this.remainderDuration = remainderDuration;
             this.calendar = getNullSafeCalendar();
@@ -671,105 +688,107 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         }
 
         public IntraDayDate fromStartToEnd(IntraDayDate newStartDate) {
-            LocalDate resultDay = afterSomeWorkableDays(
-                    newStartDate.getDate(), numberOfWorkableDays);
-            return plusDuration(IntraDayDate.startOfDay(resultDay),
+            LocalDate resultDay = afterSomeWorkableDays(newStartDate.getDate(), numberOfWorkableDays);
+
+            return plusDuration(
+                    IntraDayDate.startOfDay(resultDay),
                     remainderDuration.plus(newStartDate.getEffortDuration()));
         }
 
-        private LocalDate afterSomeWorkableDays(LocalDate start,
-                int workableDays) {
+        private LocalDate afterSomeWorkableDays(LocalDate start, int workableDays) {
             LocalDate result = start;
             for (int i = 0; i < workableDays; result = result.plusDays(1)) {
-                if (isWorkable(result)) {
+                if ( isWorkable(result) ) {
                     i++;
                 }
             }
+
             return result;
         }
 
-        private IntraDayDate plusDuration(IntraDayDate start,
-                EffortDuration remaining) {
+        private IntraDayDate plusDuration(IntraDayDate start, EffortDuration remaining) {
             IntraDayDate result = IntraDayDate.startOfDay(start.getDate());
             remaining = remaining.plus(start.getEffortDuration());
             EffortDuration originalRemaining = remaining;
             LocalDate startDate = start.getDate();
             LocalDate current = startDate;
-            if (!canBeFulfilled(start, originalRemaining)) {
-                return roughApproximationDueToNotFullfilingCalendar(startDate,
-                        originalRemaining);
+
+            if ( !canBeFulfilled(start, originalRemaining) ) {
+                return roughApproximationDueToNotFullfilingCalendar(startDate, originalRemaining);
             }
+
             while (!remaining.isZero()) {
-                EffortDuration capacity = calendar.getCapacityOn(PartialDay
-                        .wholeDay(current));
+                EffortDuration capacity = calendar.getCapacityOn(PartialDay.wholeDay(current));
                 result = IntraDayDate.create(current, remaining);
                 remaining = remaining.minus(min(capacity, remaining));
                 current = current.plusDays(1);
-                if (Days.daysBetween(startDate, current).getDays() > MAX_DAYS_LOOKING_CAPACITY) {
-                    LOG.error("thereAreCapacityFor didn't detect that it didn't"
-                            + " really have enough capacity to fulfill the required hours"
-                            + " or this capacity is more than "
-                            + MAX_DAYS_LOOKING_CAPACITY + " in the future");
-                    return roughApproximationDueToNotFullfilingCalendar(
-                            startDate, originalRemaining);
+
+                if ( Days.daysBetween(startDate, current).getDays() > MAX_DAYS_LOOKING_CAPACITY ) {
+
+                    LOG.error("thereAreCapacityFor didn't detect that it didn't" +
+                            " really have enough capacity to fulfill the required hours" +
+                            " or this capacity is more than " +
+                            MAX_DAYS_LOOKING_CAPACITY + " in the future");
+
+                    return roughApproximationDueToNotFullfilingCalendar(startDate, originalRemaining);
                 }
             }
+
             return result;
         }
 
-        private boolean canBeFulfilled(IntraDayDate start,
-                EffortDuration originalRemaining) {
+        private boolean canBeFulfilled(IntraDayDate start, EffortDuration originalRemaining) {
             AvailabilityTimeLine availability = AvailabilityTimeLine.allValid();
             availability.invalidUntil(start.getDate());
-            return calendar.thereAreCapacityFor(availability,
-                    ResourcesPerDay.amount(1), originalRemaining);
+
+            return calendar.thereAreCapacityFor(availability, ResourcesPerDay.amount(1), originalRemaining);
         }
 
         private IntraDayDate roughApproximationDueToNotFullfilingCalendar(
-                LocalDate startDate,
-                EffortDuration originalRemaining) {
-            LOG.warn("Calendar " + calendar + " doesn't have enough capacity, "
-                    + "using 8h per day to calculate end date for the task");
+                LocalDate startDate, EffortDuration originalRemaining) {
+
+            LOG.warn("Calendar " + calendar + " doesn't have enough capacity, " +
+                    "using 8h per day to calculate end date for the task");
+
             return IntraDayDate.create(
                     startDate.plusDays(originalRemaining.getHours() / 8),
                     EffortDuration.zero());
         }
 
         public IntraDayDate fromEndToStart(IntraDayDate newEnd) {
-            LocalDate resultDay = someWorkableDaysBefore(
-                    newEnd.getDate(), numberOfWorkableDays);
-            return minusDuration(plusDuration(
-                    IntraDayDate.startOfDay(resultDay),
-                            newEnd.getEffortDuration()), remainderDuration);
+            LocalDate resultDay = someWorkableDaysBefore(newEnd.getDate(), numberOfWorkableDays);
+
+            return minusDuration(
+                    plusDuration(IntraDayDate.startOfDay(resultDay), newEnd.getEffortDuration()), remainderDuration);
         }
 
         private LocalDate someWorkableDaysBefore(LocalDate end, int workableDays) {
             LocalDate result = end;
             for (int i = 0; i < workableDays; result = result.minusDays(1)) {
-                if (isWorkable(result.minusDays(1))) {
+                if ( isWorkable(result.minusDays(1)) ) {
                     i++;
                 }
             }
+
             return result;
         }
 
-        private IntraDayDate minusDuration(IntraDayDate date,
-                EffortDuration decrement) {
+        private IntraDayDate minusDuration(IntraDayDate date, EffortDuration decrement) {
+
             IntraDayDate result = IntraDayDate.create(
                     date.getDate(),
-                    date.getEffortDuration().minus(
-                            min(decrement, date.getEffortDuration())));
-            decrement = decrement
-                    .minus(min(date.getEffortDuration(), decrement));
+                    date.getEffortDuration().minus(min(decrement, date.getEffortDuration())));
+
+            decrement = decrement.minus(min(date.getEffortDuration(), decrement));
             LocalDate resultDay = date.getDate();
+
             while (!decrement.isZero()) {
                 resultDay = resultDay.minusDays(1);
-                EffortDuration capacity = calendar.getCapacityOn(PartialDay
-                        .wholeDay(resultDay));
-                result = IntraDayDate.create(resultDay,
-                        capacity.minus(min(capacity, decrement)));
+                EffortDuration capacity = calendar.getCapacityOn(PartialDay.wholeDay(resultDay));
+                result = IntraDayDate.create(resultDay, capacity.minus(min(capacity, decrement)));
                 decrement = decrement.minus(min(capacity, decrement));
             }
+
             return result;
         }
     }
@@ -778,16 +797,15 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
      * The allocation direction in which the allocation must be done
      */
     public Direction getAllocationDirection() {
-        if (lastAllocationDirection == null || hasConsolidations()) {
+        if ( lastAllocationDirection == null || hasConsolidations() ) {
             return Direction.FORWARD;
         }
+
         return lastAllocationDirection;
     }
 
-    public void reassignAllocationsWithNewResources(Scenario scenario,
-            IResourcesSearcher searcher) {
-        reassign(scenario, getAllocationDirection(),
-                new WithPotentiallyNewResources(searcher));
+    public void reassignAllocationsWithNewResources(Scenario scenario, IResourcesSearcher searcher) {
+        reassign(scenario, getAllocationDirection(), new WithPotentiallyNewResources(searcher));
     }
 
     private void reassign(Scenario onScenario, Direction direction, WithPotentiallyNewResources strategy) {
@@ -796,90 +814,100 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
             if ( isLimiting() ) {
                 return;
             }
+
             List<ModifiedAllocation> copied = ModifiedAllocation.copy(onScenario, getResourceAllocations());
             List<ResourceAllocation<?>> toBeModified = ModifiedAllocation.modified(copied);
             if ( toBeModified.isEmpty() ) {
                 return;
             }
+
             setCustomAssignedEffortForResource(copied);
             doAllocation(strategy, direction, toBeModified);
             updateDerived(copied);
 
             List<ResourceAllocation<?>> newAllocations = emptyList(), removedAllocations = emptyList();
 
-            mergeAllocation(onScenario, getIntraDayStartDate(), getIntraDayEndDate(), workableDays, calculatedValue,
-                    newAllocations, copied, removedAllocations);
+            mergeAllocation(
+                    onScenario,
+                    getIntraDayStartDate(),
+                    getIntraDayEndDate(),
+                    workableDays,
+                    calculatedValue,
+                    newAllocations,
+                    copied,
+                    removedAllocations);
 
         } catch (Exception e) {
             LOG.error("reassignment for task: " + this + " couldn't be completed", e);
         }
     }
 
-    private void setCustomAssignedEffortForResource(
-            List<ModifiedAllocation> modifiedAllocations) {
-        List<ResourceAllocation<?>> originals = ModifiedAllocation
-                .originals(modifiedAllocations);
-        IAssignedEffortForResource discounting = AssignedEffortForResource
-                .effortDiscounting(originals);
-        List<ResourceAllocation<?>> beingModified = ModifiedAllocation
-                .modified(modifiedAllocations);
-        WithTheLoadOf allNewLoad = AssignedEffortForResource
-                .withTheLoadOf(beingModified);
-        List<GenericResourceAllocation> generic = ResourceAllocation.getOfType(
-                GenericResourceAllocation.class, beingModified);
+    private void setCustomAssignedEffortForResource(List<ModifiedAllocation> modifiedAllocations) {
+        List<ResourceAllocation<?>> originals = ModifiedAllocation.originals(modifiedAllocations);
+        IAssignedEffortForResource discounting = AssignedEffortForResource.effortDiscounting(originals);
+        List<ResourceAllocation<?>> beingModified = ModifiedAllocation.modified(modifiedAllocations);
+        WithTheLoadOf allNewLoad = AssignedEffortForResource.withTheLoadOf(beingModified);
+
+        List<GenericResourceAllocation> generic =
+                ResourceAllocation.getOfType(GenericResourceAllocation.class, beingModified);
+
         for (GenericResourceAllocation each : generic) {
-            each.setAssignedEffortForResource(AssignedEffortForResource.sum(
-                    allNewLoad.withoutConsidering(each), discounting));
+
+            each.setAssignedEffortForResource(
+                    AssignedEffortForResource.sum(allNewLoad.withoutConsidering(each), discounting));
         }
     }
 
-    private void doAllocation(WithPotentiallyNewResources strategy,
-            Direction direction, List<ResourceAllocation<?>> toBeModified) {
-        ModificationsResult<ResourcesPerDayModification> modificationsResult = strategy
-                .getResourcesPerDayModified(toBeModified);
+    private void doAllocation(WithPotentiallyNewResources strategy, Direction direction,
+                              List<ResourceAllocation<?>> toBeModified) {
+
+        ModificationsResult<ResourcesPerDayModification> modificationsResult =
+                strategy.getResourcesPerDayModified(toBeModified);
+
         markAsUnsatisfied(modificationsResult.getNoLongerValid());
-        List<ResourcesPerDayModification> allocations = modificationsResult
-                .getBeingModified();
-        if (allocations.isEmpty()) {
-            LOG.warn("all allocations for task " + this
-                    + " have no valid data that could be used");
+        List<ResourcesPerDayModification> allocations = modificationsResult.getBeingModified();
+
+        if ( allocations.isEmpty() ) {
+            LOG.warn("all allocations for task " + this + " have no valid data that could be used");
+
             return;
         }
+
         switch (calculatedValue) {
-        case NUMBER_OF_HOURS:
-            ResourceAllocation.allocating(allocations).allocateOnTaskLength();
-            break;
-        case END_DATE:
-            IntraDayDate date = ResourceAllocation.allocating(allocations)
-                    .untilAllocating(direction, getTotalNonConsolidatedEffort());
-            if (direction == Direction.FORWARD) {
-                setIntraDayEndDate(date);
-            } else {
-                setIntraDayStartDate(date);
-            }
-            break;
-        case RESOURCES_PER_DAY:
-            ModificationsResult<EffortModification> hoursModificationResult = strategy
-                    .getHoursModified(toBeModified);
-            markAsUnsatisfied(hoursModificationResult.getNoLongerValid());
-            List<EffortModification> hoursModified = hoursModificationResult
-                    .getBeingModified();
-            if (hoursModified.isEmpty()) {
-                LOG.warn("all allocations for task " + this + " can't be used");
-                return;
-            }
-            ResourceAllocation.allocatingHours(hoursModified).allocateUntil(
-                    getIntraDayEndDate());
-            break;
-        default:
-            throw new RuntimeException("cant handle: " + calculatedValue);
+            case NUMBER_OF_HOURS:
+                ResourceAllocation.allocating(allocations).allocateOnTaskLength();
+                break;
+
+            case END_DATE:
+                IntraDayDate date = ResourceAllocation.allocating(allocations)
+                        .untilAllocating(direction, getTotalNonConsolidatedEffort());
+
+                if ( direction == Direction.FORWARD ) {
+                    setIntraDayEndDate(date);
+                } else {
+                    setIntraDayStartDate(date);
+                }
+                break;
+
+            case RESOURCES_PER_DAY:
+                ModificationsResult<EffortModification> hoursModificationResult = strategy.getHoursModified(toBeModified);
+                markAsUnsatisfied(hoursModificationResult.getNoLongerValid());
+                List<EffortModification> hoursModified = hoursModificationResult.getBeingModified();
+                if ( hoursModified.isEmpty() ) {
+                    LOG.warn("all allocations for task " + this + " can't be used");
+                    return;
+                }
+                ResourceAllocation.allocatingHours(hoursModified).allocateUntil(getIntraDayEndDate());
+                break;
+
+            default:
+                throw new RuntimeException("cant handle: " + calculatedValue);
         }
 
         AssignmentFunction.applyAssignmentFunctionsIfAny(toBeModified);
     }
 
-    private void markAsUnsatisfied(
-            Collection<? extends ResourceAllocation<?>> noLongerValid) {
+    private void markAsUnsatisfied(Collection<? extends ResourceAllocation<?>> noLongerValid) {
         for (ResourceAllocation<?> each : noLongerValid) {
             each.markAsUnsatisfied();
         }
@@ -888,35 +916,37 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
     private void updateDerived(List<ModifiedAllocation> allocations) {
         for (ModifiedAllocation each : allocations) {
             ResourceAllocation<?> original = each.getOriginal();
-            if (!original.getDerivedAllocations().isEmpty()) {
+
+            if ( !original.getDerivedAllocations().isEmpty() ) {
                 IWorkerFinder workersFinder = createFromExistentDerivedAllocationsFinder(original);
                 each.getModification().createDerived(workersFinder);
             }
         }
     }
 
-    private IWorkerFinder createFromExistentDerivedAllocationsFinder(
-            ResourceAllocation<?> original) {
-        Set<DerivedAllocation> derivedAllocations = original
-                .getDerivedAllocations();
-        final Set<Worker> allWorkers = new HashSet<Worker>();
+    private IWorkerFinder createFromExistentDerivedAllocationsFinder(ResourceAllocation<?> original) {
+        Set<DerivedAllocation> derivedAllocations = original.getDerivedAllocations();
+        final Set<Worker> allWorkers = new HashSet<>();
+
         for (DerivedAllocation each : derivedAllocations) {
             allWorkers.addAll(Resource.workers(each.getResources()));
         }
+
         return new IWorkerFinder() {
 
             @Override
-            public Collection<Worker> findWorkersMatching(
-                    Collection<? extends Criterion> requiredCriterions) {
-                if (requiredCriterions.isEmpty()) {
-                    return new ArrayList<Worker>();
+            public Collection<Worker> findWorkersMatching(Collection<? extends Criterion> requiredCriterions) {
+                if ( requiredCriterions.isEmpty() ) {
+                    return new ArrayList<>();
                 }
-                Collection<Worker> result = new ArrayList<Worker>();
+
+                Collection<Worker> result = new ArrayList<>();
                 for (Worker each : allWorkers) {
-                    if (each.satisfiesCriterions(requiredCriterions)) {
+                    if ( each.satisfiesCriterions(requiredCriterions) ) {
                         result.add(each);
                     }
                 }
+
                 return result;
             }
         };
@@ -948,8 +978,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
     }
 
     public void removeAllResourceAllocations() {
-        for (Iterator<ResourceAllocation<?>> i = resourceAllocations.iterator(); i
-                .hasNext();) {
+        for (Iterator<ResourceAllocation<?>> i = resourceAllocations.iterator(); i.hasNext();) {
             ResourceAllocation<?> each = i.next();
             removeResourceAllocation(each);
         }
@@ -964,9 +993,8 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
     }
 
     public boolean isSubcontractedAndWasAlreadySent() {
-        return (subcontractedTaskData != null)
-                && (!subcontractedTaskData.getState()
-                        .equals(SubcontractState.PENDING_INITIAL_SEND));
+        return (subcontractedTaskData != null) &&
+                (!subcontractedTaskData.getState().equals(SubcontractState.PENDING_INITIAL_SEND));
     }
 
     public boolean hasSomeSatisfiedAllocation() {
@@ -975,8 +1003,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
 
     @Override
     protected boolean canBeResized() {
-        return calculatedValue != CalculatedValue.END_DATE
-                || resourceAllocations.isEmpty();
+        return calculatedValue != CalculatedValue.END_DATE || resourceAllocations.isEmpty();
     }
 
     @Override
@@ -990,7 +1017,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
     }
 
     public void removeSubcontractCommunicationDate() {
-        if (subcontractedTaskData != null) {
+        if ( subcontractedTaskData != null ) {
             subcontractedTaskData.setSubcontractCommunicationDate(null);
         }
     }
@@ -1027,12 +1054,14 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
     }
 
     public IntraDayDate getFirstDayNotConsolidated() {
-        if (consolidation != null) {
+        if ( consolidation != null ) {
+
             LocalDate until = consolidation.getConsolidatedUntil();
-            if (until != null) {
+            if ( until != null ) {
                 return IntraDayDate.startOfDay(until.plusDays(1));
             }
         }
+
         return getIntraDayStartDate();
     }
 
@@ -1043,15 +1072,12 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
     }
 
     public Integer getWorkableDays() {
-        if (workableDays == null) {
-            return getWorkableDaysBetweenDates();
-        }
-        return workableDays;
+        return (workableDays == null) ? getWorkableDaysBetweenDates() : workableDays;
     }
 
     public Integer getDaysBetweenDates() {
-        Days daysBetween = Days.daysBetween(getStartAsLocalDate(),
-                getIntraDayEndDate().asExclusiveEnd());
+        Days daysBetween = Days.daysBetween(getStartAsLocalDate(), getIntraDayEndDate().asExclusiveEnd());
+
         return daysBetween.getDays();
     }
 
@@ -1061,6 +1087,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
 
     private Integer getWorkableDaysBetweenDates() {
         LocalDate end = getIntraDayEndDate().asExclusiveEnd();
+
         return getWorkableDaysUntil(end);
     }
 
@@ -1068,16 +1095,14 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         return getWorkableDaysFrom(getStartAsLocalDate(), end);
     }
 
-    public Integer getWorkableDaysFrom(LocalDate startInclusive,
-            LocalDate endExclusive) {
+    public Integer getWorkableDaysFrom(LocalDate startInclusive, LocalDate endExclusive) {
         int result = 0;
-        for (LocalDate current = startInclusive; current
-                .compareTo(endExclusive) < 0; current = current
-                .plusDays(1)) {
-            if (isWorkable(current)) {
+        for (LocalDate current = startInclusive; current.compareTo(endExclusive) < 0; current = current.plusDays(1)) {
+            if ( isWorkable(current) ) {
                 result++;
             }
         }
+
         return result;
     }
 
@@ -1088,19 +1113,19 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         return getWorkableDaysFromLimitedByEndOfTheTask(getStartAsLocalDate(), end);
     }
 
-    public Integer getWorkableDaysFromLimitedByEndOfTheTask(LocalDate startInclusive,
-            LocalDate endExclusive) {
+    public Integer getWorkableDaysFromLimitedByEndOfTheTask(LocalDate startInclusive, LocalDate endExclusive) {
         int result = 0;
-        if(endExclusive.compareTo(this.getEndAsLocalDate()) > 0) {
+
+        if( endExclusive.compareTo(this.getEndAsLocalDate()) > 0 ) {
             endExclusive = getIntraDayEndDate().asExclusiveEnd();
         }
-        for (LocalDate current = startInclusive; current
-                .compareTo(endExclusive) < 0; current = current
-                .plusDays(1)) {
-            if (isWorkable(current)) {
+
+        for (LocalDate current = startInclusive; current.compareTo(endExclusive) < 0; current = current.plusDays(1)) {
+            if ( isWorkable(current) ) {
                 result++;
             }
         }
+
         return result;
     }
 
@@ -1112,19 +1137,19 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
 
     public static void convertOnStartInFixedDate(Task task) {
         TaskPositionConstraint taskConstraint = task.getPositionConstraint();
-        if (taskConstraint.isValid(PositionConstraintType.START_IN_FIXED_DATE,
-                task.getIntraDayStartDate())) {
-            taskConstraint.update(PositionConstraintType.START_IN_FIXED_DATE,
-                    task.getIntraDayStartDate());
+
+        if ( taskConstraint.isValid(PositionConstraintType.START_IN_FIXED_DATE, task.getIntraDayStartDate()) ) {
+            taskConstraint.update(PositionConstraintType.START_IN_FIXED_DATE, task.getIntraDayStartDate());
         }
     }
 
     public boolean isManualAnyAllocation() {
         for (ResourceAllocation<?> each : resourceAllocations) {
-            if (each.isManualAssignmentFunction()) {
+            if ( each.isManualAssignmentFunction() ) {
                 return true;
             }
         }
+
         return false;
     }
 
@@ -1138,52 +1163,61 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         return AggregateOfDayAssignments.createByDataRange(
                 this.getDayAssignments(FilterType.KEEP_ALL),
                 this.getStartDate(),
-                date).getTotalTime();
+                date)
+                .getTotalTime();
     }
 
     public TaskStatusEnum getTaskStatus() {
-        if (this.isFinished()) {
+        if ( this.isFinished() ) {
             return TaskStatusEnum.FINISHED;
-        } else if (this.isInProgress()) {
+
+        } else if ( this.isInProgress() ) {
             return TaskStatusEnum.IN_PROGRESS;
-        } else if (this.isReadyToStart()) {
+
+        } else if ( this.isReadyToStart() ) {
             return TaskStatusEnum.READY_TO_START;
-        } else if (this.isBlocked()){
+
+        } else if ( this.isBlocked() ){
             return TaskStatusEnum.BLOCKED;
+
         } else {
             throw new RuntimeException("Unknown task status. You've found a bug :)");
         }
     }
 
-    @Override
+
     /* If the status of the task was needed in the past was because
      * a TaskGroup needed to calculate children status, but only asked
      * if this task was FINISHED or IN_PROGRESS. Thus, there is no need
      * to cache other statutes because they only will be queried once.
      */
+    @Override
     public boolean isFinished() {
-        if (this.currentStatus != null) {
+        if ( this.currentStatus != null ) {
             return this.currentStatus == TaskStatusEnum.FINISHED;
+
         } else {
             boolean outcome = this.advancePercentageIsOne();
-            if (outcome == true) {
+            if ( outcome == true ) {
                 this.currentStatus = TaskStatusEnum.FINISHED;
             }
+
             return outcome;
         }
     }
 
     @Override
     public boolean isInProgress() {
-        if (this.currentStatus != null) {
+        if ( this.currentStatus != null ) {
             return this.currentStatus == TaskStatusEnum.IN_PROGRESS;
+
         } else {
-            boolean advanceBetweenZeroAndOne = this.advancePercentageIsGreaterThanZero() &&
-                    !advancePercentageIsOne();
+            boolean advanceBetweenZeroAndOne = this.advancePercentageIsGreaterThanZero() && !advancePercentageIsOne();
             boolean outcome = advanceBetweenZeroAndOne || this.hasAttachedWorkReports();
-            if (outcome == true) {
+            if ( outcome == true ) {
                 this.currentStatus = TaskStatusEnum.IN_PROGRESS;
             }
+
             return outcome;
         }
     }
@@ -1192,19 +1226,23 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         if ( !this.advancePercentageIsZero() || this.hasAttachedWorkReports() ) {
             return false;
         }
+
         Set<Dependency> dependencies = getDependenciesWithThisDestinationAndAllParents();
         for (Dependency dependency: dependencies) {
             Type dependencyType = dependency.getType();
+
             if ( dependencyType.equals(Type.END_START) ) {
                 if ( !dependency.getOrigin().isFinished() ) {
                     return false;
                 }
+
             } else if ( dependencyType.equals(Type.START_START) ) {
                 if ( !dependency.getOrigin().isFinished() && !dependency.getOrigin().isInProgress() ) {
                     return false;
                 }
             }
         }
+
         return true;
     }
 
@@ -1212,19 +1250,23 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         if ( !this.advancePercentageIsZero() || this.hasAttachedWorkReports() ) {
             return false;
         }
+
         Set<Dependency> dependencies = getDependenciesWithThisDestinationAndAllParents();
         for (Dependency dependency: dependencies) {
             Type dependencyType = dependency.getType();
+
             if ( dependencyType.equals(Type.END_START) ) {
                 if ( !dependency.getOrigin().isFinished() ) {
                     return true;
                 }
+
             } else if ( dependencyType.equals(Type.START_START) ) {
                 if ( !dependency.getOrigin().isFinished() && !dependency.getOrigin().isInProgress() ) {
                     return true;
                 }
             }
         }
+
         return false;
      }
 
@@ -1242,6 +1284,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
 
     private boolean hasAttachedWorkReports() {
         SumChargedEffort sumChargedEffort = this.getOrderElement().getSumChargedEffort();
+
         return sumChargedEffort != null && !sumChargedEffort.isZero();
     }
 
