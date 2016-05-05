@@ -20,7 +20,7 @@
  */
 package org.libreplan.business.test.orders.entities;
 
-import static org.easymock.classextension.EasyMock.createNiceMock;
+import static org.easymock.EasyMock.createNiceMock;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.core.AllOf.allOf;
 import static org.junit.Assert.assertThat;
