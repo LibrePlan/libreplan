@@ -26,7 +26,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.collections.comparators.BooleanComparator;
+import org.apache.commons.collections4.comparators.BooleanComparator;
 import org.libreplan.business.planner.limiting.entities.Gap.GapOnQueue;
 
 
@@ -45,12 +45,12 @@ public class GapsMergeSort {
      */
     private static class CurrentGap implements Comparable<CurrentGap> {
 
-        static List<CurrentGap> convert(
-                Collection<? extends Iterator<GapOnQueue>> iterators) {
-            List<CurrentGap> result = new ArrayList<CurrentGap>();
+        static List<CurrentGap> convert(Collection<? extends Iterator<GapOnQueue>> iterators) {
+            List<CurrentGap> result = new ArrayList<>();
             for (Iterator<GapOnQueue> iterator : iterators) {
                 result.add(new CurrentGap(iterator));
             }
+
             return result;
         }
 
@@ -65,6 +65,7 @@ public class GapsMergeSort {
         public GapOnQueue consume() {
             GapOnQueue result = getCurrent();
             current = null;
+
             return result;
         }
 
@@ -73,12 +74,14 @@ public class GapsMergeSort {
         }
 
         private GapOnQueue getCurrent() {
-            if (hasFinished()) {
+            if ( hasFinished() ) {
                 throw new IllegalStateException("already finished");
             }
-            if (current != null) {
+
+            if ( current != null ) {
                 return current;
             }
+
             return current = iterator.next();
         }
 
@@ -88,53 +91,61 @@ public class GapsMergeSort {
          */
         @Override
         public int compareTo(CurrentGap other) {
-            int finishComparison = BooleanComparator.getFalseFirstComparator()
-                    .compare(hasFinished(), other.hasFinished());
-            if (finishComparison != 0) {
+            int finishComparison =
+                    BooleanComparator.getFalseFirstComparator().compare(hasFinished(), other.hasFinished());
+
+            if ( finishComparison != 0 ) {
                 return finishComparison;
-            } else if (hasFinished()) {
+            } else if ( hasFinished() ) {
                 assert other.hasFinished();
+
                 return 0;
             } else {
                 assert !hasFinished() && !other.hasFinished();
-                return getCurrent().getGap().compareTo(
-                        other.getCurrent().getGap());
+
+                return getCurrent().getGap().compareTo(other.getCurrent().getGap());
             }
         }
     }
 
-    public static List<GapOnQueue> sort(
-            List<List<GapOnQueue>> orderedListsOfGaps) {
+    public static List<GapOnQueue> sort(List<List<GapOnQueue>> orderedListsOfGaps) {
 
-        List<GapOnQueue> result = new ArrayList<GapOnQueue>();
+        List<GapOnQueue> result = new ArrayList<>();
 
-        if (orderedListsOfGaps.isEmpty()) {
+        if ( orderedListsOfGaps.isEmpty() ) {
             return result;
         }
-        if (orderedListsOfGaps.size() == 1) {
+
+        if ( orderedListsOfGaps.size() == 1 ) {
             return orderedListsOfGaps.get(0);
         }
 
         List<CurrentGap> currentGaps = CurrentGap.convert(iteratorsFor(orderedListsOfGaps));
         CurrentGap min = Collections.min(currentGaps);
+
         while (!currentGaps.isEmpty() && !min.hasFinished()) {
+
             result.add(min.consume());
-            if (min.hasFinished()) {
+
+            if ( min.hasFinished() ) {
+
                 currentGaps.remove(min);
-                if (!currentGaps.isEmpty()) {
+
+                if ( !currentGaps.isEmpty() ) {
                     min = Collections.min(currentGaps);
                 }
             }
         }
+
         return result;
     }
 
-    private static List<Iterator<GapOnQueue>> iteratorsFor(
-            List<List<GapOnQueue>> orderedListsOfGaps) {
-        List<Iterator<GapOnQueue>> result = new ArrayList<Iterator<GapOnQueue>>();
+    private static List<Iterator<GapOnQueue>> iteratorsFor(List<List<GapOnQueue>> orderedListsOfGaps) {
+        List<Iterator<GapOnQueue>> result = new ArrayList<>();
         for (List<GapOnQueue> each : orderedListsOfGaps) {
             result.add(each.iterator());
         }
+
         return result;
     }
 

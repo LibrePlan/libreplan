@@ -24,28 +24,33 @@ Thanks to all the contributors to this new version:
 Changes
 ~~~~~~~
 
-* Update MPXJ
 * Update Maven Gettext Plugin
 * Update Maven Compiler Plugin
 * Update Maven War Plugin
 * Update Maven Surfire Plugin
-* Update Bonecp
-* Update Slf4j API
-* Update Slf4j Simple
-* Update Guava
 * Update Maven Cobertura Plugin
 * Update Maven Liquibase Plugin
-* Update Liquibase Core
-* Update Jackson
-* Update LibrePlan version to 1.6.0
-* Update Javax Servlet
-* Update Jfree
+
+* Update Slf4j API
+* Update Slf4j Simple
+* Update Log4j
+* Update Slf4j
+
 * Update Commons Lang
 * Update Commons Math
+* Update Commons Collections
+
+* Update MPXJ
+* Update Bonecp
+* Update Guava
+* Update Liquibase Core
+* Update Jackson
+* Update Javax Servlet
+* Update Jfree
 * Update JGraphT
 * Update DBUnit
-* Update Log4j
-* Update JodaTime
+
+* Update LibrePlan version to 1.6.0
 
 * Remove Ezmorph
 

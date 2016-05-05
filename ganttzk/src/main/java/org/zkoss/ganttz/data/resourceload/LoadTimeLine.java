@@ -26,7 +26,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.apache.commons.collections.ComparatorUtils;
+import org.apache.commons.collections4.comparators.NullComparator;
 import org.apache.commons.lang3.Validate;
 import org.joda.time.LocalDate;
 import org.zkoss.ganttz.data.GanttDate;
@@ -35,15 +35,14 @@ import org.zkoss.ganttz.util.Interval;
 public class LoadTimeLine {
 
     @SuppressWarnings("unchecked")
-    private static final Comparator<GanttDate> nullSafeComparator =
-            ComparatorUtils.nullLowComparator(ComparatorUtils.naturalComparator());
+    private static final Comparator<GanttDate> nullSafeComparator = new NullComparator<>(false);
 
     public static Comparator<LoadTimeLine> byStartAndEndDate() {
         return new Comparator<LoadTimeLine>() {
-
             @Override
             public int compare(LoadTimeLine o1, LoadTimeLine o2) {
                 int result = nullSafeComparator.compare(o1.getStartPeriod(), o2.getStartPeriod());
+
                 if ( result == 0 ) {
                     return nullSafeComparator.compare(o1.getEndPeriod(), o2.getEndPeriod());
                 }
@@ -151,7 +150,7 @@ public class LoadTimeLine {
         GanttDate end = null;
 
         for (LoadTimeLine loadTimeLine : timeLines) {
-            if( !loadTimeLine.isEmpty() ) {
+            if ( !loadTimeLine.isEmpty() ) {
                 Validate.notNull(loadTimeLine.getStart());
                 start = min(start, loadTimeLine.getStart());
                 Validate.notNull(loadTimeLine.getEnd());
