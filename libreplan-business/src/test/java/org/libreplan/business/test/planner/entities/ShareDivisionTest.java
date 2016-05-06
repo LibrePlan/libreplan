@@ -32,9 +32,10 @@ import java.util.List;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import org.hamcrest.CoreMatchers;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.matchers.JUnitMatchers;
+
 import org.libreplan.business.planner.entities.Share;
 import org.libreplan.business.planner.entities.ShareDivision;
 
@@ -52,7 +53,7 @@ public class ShareDivisionTest {
         Share share2 = createExampleShare();
         ShareDivision shareDivision = ShareDivision.create(Arrays.asList(
                 share1, share2));
-        assertThat(shareDivision.getShares(), JUnitMatchers.hasItems(share1,
+        assertThat(shareDivision.getShares(), CoreMatchers.hasItems(share1,
                 share2));
     }
 

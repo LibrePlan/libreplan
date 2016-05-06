@@ -49,10 +49,18 @@ Changes
 * Update Jfree
 * Update JGraphT
 * Update DBUnit
+* Update JodaTime
+* Update Gettext
+* Update Jasper Reports
+* Update EasyMock
+* Update JDBC driver
+* Update Сommons-IO
 
 * Update LibrePlan version to 1.6.0
 
+
 * Remove Ezmorph
+* Remove Json-lib
 
 * Code refactoring
 
