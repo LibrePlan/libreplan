@@ -27,6 +27,10 @@ Compilation requirements
 
   Database server
 
+* *MySQL* - Relational SQL database
+
+  Alternative database server
+
 * *Python Docutils* - Utilities for the documentation of Python modules
 
   Used to generate HTMLs help files from RST files (reStructuredText)
@@ -561,6 +565,7 @@ pushing a patch.
 
 MySQL
 -----
+Strongly preferred to use 5.6+ version
 
 For MySQL users here are specific instructions.
 
@@ -568,8 +573,9 @@ For MySQL users here are specific instructions.
 
     CREATE DATABASE libreplandev;
     CREATE DATABASE libreplandevtest;
-    GRANT ALL ON libreplandev.* to 'libreplan'@'localhost' identified by 'libreplan';
-    GRANT ALL ON libreplandevtest.* to 'libreplan'@'localhost' identified by 'libreplan';
+    CREATE USER 'libreplan'@'localhost' IDENTIFIED BY 'libreplan';
+    GRANT ALL PRIVILEGES ON libreplandev.* TO 'libreplan'@'localhost' WITH GRANT OPTION;
+    GRANT ALL PRIVILEGES ON libreplandevtest.* TO 'libreplan'@'localhost' WITH GRANT OPTION;
 
 * Compile project::
 
