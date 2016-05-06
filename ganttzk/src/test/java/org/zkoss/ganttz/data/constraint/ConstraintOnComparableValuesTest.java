@@ -34,41 +34,36 @@ public class ConstraintOnComparableValuesTest {
 
     private Constraint<Date> biggerOrEqualThanNow = biggerOrEqualThan(now);
 
-    private Constraint<Date> equalToNow = ConstraintOnComparableValues
-            .<Date> equalTo(now);
+    private Constraint<Date> equalToNow = ConstraintOnComparableValues.equalTo(now);
 
     @Test
     public void canCreateConstraintBiggerThan() {
-        assertThat(biggerOrEqualThanNow.applyTo(now), equalTo(new Date(now
-                .getTime())));
+        assertThat(biggerOrEqualThanNow.applyTo(now), equalTo(new Date(now.getTime())));
     }
 
     @Test
     public void biggerOrEqualThanNullLeaveValuesUnmodified() {
-        Constraint<Date> biggerThanNull = ConstraintOnComparableValues
-                .<Date> biggerOrEqualThan(null);
+        Constraint<Date> biggerThanNull = ConstraintOnComparableValues.biggerOrEqualThan(null);
         Date eraStart = new Date(0);
-        assertThat(biggerThanNull.applyConstraintTo(new Date(0)),
-                equalTo(eraStart));
+
+        assertThat(biggerThanNull.applyConstraintTo(new Date(0)), equalTo(eraStart));
     }
 
     @Test
     public void applyingBiggerOrEqualThanConstraintToNullNotFails() {
-        assertThat(biggerOrEqualThanNow.applyTo(null), equalTo(new Date(now
-                .getTime())));
+        assertThat(biggerOrEqualThanNow.applyTo(null), equalTo(new Date(now.getTime())));
     }
 
     @Test
     public void canCreateConstraintEqualTo(){
-        assertThat(equalToNow.applyTo(new Date(now.getTime() + 1000)),
-                equalTo(now));
+        assertThat(equalToNow.applyTo(new Date(now.getTime() + 1000)), equalTo(now));
     }
 
     @Test
     public void equalToNullLeaveValuesUnmodified() {
-        Constraint<Date> equalToNull = ConstraintOnComparableValues
-                .<Date> equalTo(null);
+        Constraint<Date> equalToNull = ConstraintOnComparableValues.equalTo(null);
         Date value = new Date(now.getTime() + 1000);
+
         assertThat(equalToNull.applyTo(value), equalTo(value));
     }
 

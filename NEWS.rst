@@ -30,6 +30,7 @@ Changes
 * Update Maven Surfire Plugin
 * Update Maven Cobertura Plugin
 * Update Maven Liquibase Plugin
+* Update Maven Tomcat Plugin
 
 * Update Slf4j API
 * Update Slf4j Simple
