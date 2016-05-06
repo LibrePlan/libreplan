@@ -36,8 +36,8 @@ import java.util.Map.Entry;
 import java.util.WeakHashMap;
 import java.util.concurrent.Callable;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.Period;

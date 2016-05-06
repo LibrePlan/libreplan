@@ -31,7 +31,7 @@ import java.util.Map;
 
 import net.sf.jasperreports.engine.JRDataSource;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.LocalDate;
 import org.libreplan.business.advance.entities.AdvanceType;
 import org.libreplan.business.orders.entities.Order;

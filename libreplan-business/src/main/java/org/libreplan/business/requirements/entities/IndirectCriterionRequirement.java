@@ -21,7 +21,7 @@
 
 package org.libreplan.business.requirements.entities;
 
-import org.apache.commons.lang.BooleanUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import javax.validation.constraints.NotNull;
 import org.libreplan.business.orders.entities.HoursGroup;
 import org.libreplan.business.orders.entities.OrderElement;

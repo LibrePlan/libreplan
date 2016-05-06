@@ -23,7 +23,7 @@ package org.libreplan.web.planner.tabs;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.libreplan.business.orders.entities.Order;
 import org.zkoss.ganttz.TabsRegistry;
 import org.zkoss.ganttz.TabsRegistry.IBeforeShowAction;

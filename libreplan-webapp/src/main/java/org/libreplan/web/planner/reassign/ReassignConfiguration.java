@@ -23,7 +23,7 @@ package org.libreplan.web.planner.reassign;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.joda.time.LocalDate;
 import org.libreplan.business.workingday.IntraDayDate;
 import org.libreplan.web.planner.TaskElementAdapter;

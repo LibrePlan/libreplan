@@ -44,7 +44,7 @@ public class AggregateOfResourceAllocationsTest {
 
     private AggregateOfResourceAllocations aggregate;
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void doesntAcceptNullResourceAllocations() {
         AggregateOfResourceAllocations.createFromSatisfied(null);
     }

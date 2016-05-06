@@ -20,7 +20,7 @@
 
 package org.libreplan.business.common;
 
-import org.apache.commons.lang.BooleanUtils;
+import org.apache.commons.lang3.BooleanUtils;
 
 
 /**

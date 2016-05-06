@@ -36,7 +36,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedSet;
 
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.hibernate.Hibernate;
 import org.hibernate.proxy.HibernateProxy;
 import org.jgrapht.DirectedGraph;

@@ -24,7 +24,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import javax.validation.constraints.NotNull;
 import javax.validation.Valid;
 import org.libreplan.business.common.BaseEntity;

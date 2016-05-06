@@ -29,7 +29,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.libreplan.business.calendars.entities.Capacity;
 import org.libreplan.business.planner.entities.Share;
 import org.libreplan.business.planner.entities.ShareDivision;

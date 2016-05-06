@@ -32,8 +32,8 @@ import javax.validation.Valid;
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.NotNull;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.libreplan.business.advance.entities.AdvanceAssignment;
 import org.libreplan.business.common.IHumanIdentifiable;

@@ -21,7 +21,7 @@
 
 package org.libreplan.business.resources.entities;
 
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 
 /**
  * Base implementation of {@link ICriterionType} <br />

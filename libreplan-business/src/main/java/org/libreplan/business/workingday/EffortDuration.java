@@ -31,8 +31,8 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.Validate;
-import org.apache.commons.lang.math.Fraction;
+import org.apache.commons.lang3.Validate;
+import org.apache.commons.lang3.math.Fraction;
 
 /**
  * <p>

@@ -22,7 +22,7 @@ package org.libreplan.business.templates.daos;
 
 import java.util.List;
 
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.hibernate.NonUniqueResultException;
 import org.hibernate.Query;
 import org.libreplan.business.common.daos.GenericDAOHibernate;

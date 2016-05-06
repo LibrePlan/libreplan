@@ -39,7 +39,7 @@ import org.libreplan.business.workingday.IntraDayDate.PartialDay;
 
 public class CombinedWorkHoursTest {
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void cannotAcceptOnlyNullElements() {
         ICalendar[] nullWorkHours = null;
         CombinedWorkHours.minOf(nullWorkHours);

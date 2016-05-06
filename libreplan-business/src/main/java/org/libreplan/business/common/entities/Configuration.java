@@ -21,7 +21,7 @@
 
 package org.libreplan.business.common.entities;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.Min;
 import org.hibernate.validator.constraints.NotEmpty;

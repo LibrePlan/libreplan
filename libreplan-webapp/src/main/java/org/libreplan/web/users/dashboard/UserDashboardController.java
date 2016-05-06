@@ -21,7 +21,7 @@ package org.libreplan.web.users.dashboard;
 
 import static org.libreplan.web.I18nHelper._;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.LocalDate;
 import org.libreplan.business.common.Registry;
 import org.libreplan.web.common.IMessagesForUser;

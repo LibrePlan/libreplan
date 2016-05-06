@@ -429,10 +429,8 @@ public class OrderElementDAOTest {
     @Test
     @Transactional
     public void testCheckUniqueQualityForm() {
-        OrderElement orderElement = OrderElementTest
-                .givenOrderLineGroupWithTwoOrderLines(2000, 3000);
-        QualityForm qualityForm = QualityForm.create(UUID.randomUUID()
-                .toString(), UUID.randomUUID().toString());
+        OrderElement orderElement = OrderElementTest.givenOrderLineGroupWithTwoOrderLines(2000, 3000);
+        QualityForm qualityForm = QualityForm.create(UUID.randomUUID().toString(), UUID.randomUUID().toString());
         orderElement.addTaskQualityForm(qualityForm);
 
         assertThat(orderElement.getTaskQualityForms().size(), equalTo(1));
@@ -440,7 +438,7 @@ public class OrderElementDAOTest {
         try {
             orderElement.addTaskQualityForm(null);
             fail("It should throw an exception");
-        } catch (IllegalArgumentException e) {
+        } catch (NullPointerException e) {
             // ok
         }
 

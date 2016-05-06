@@ -20,7 +20,7 @@
  */
 package org.libreplan.business.planner.entities;
 
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import javax.validation.constraints.NotNull;
 import org.joda.time.LocalDate;
 import org.libreplan.business.common.BaseEntity;

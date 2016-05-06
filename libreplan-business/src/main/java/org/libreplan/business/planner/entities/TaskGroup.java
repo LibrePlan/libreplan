@@ -33,7 +33,7 @@ import java.util.Set;
 import javax.validation.Valid;
 import javax.validation.constraints.AssertTrue;
 
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.libreplan.business.common.entities.ProgressType;
 import org.libreplan.business.orders.entities.TaskSource;
 import org.libreplan.business.resources.daos.IResourcesSearcher;

@@ -28,7 +28,7 @@ import java.lang.reflect.Proxy;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 
 public class ExceptionCatcherProxy<T> {
 

@@ -33,7 +33,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.NotNull;
 
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.joda.time.LocalDate;
 import org.libreplan.business.advance.entities.AdvanceAssignment;
 import org.libreplan.business.advance.entities.AdvanceType;

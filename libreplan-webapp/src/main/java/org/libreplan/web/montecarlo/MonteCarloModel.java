@@ -35,8 +35,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
 import org.hibernate.Hibernate;
 import org.joda.time.LocalDate;
 import org.libreplan.business.orders.entities.Order;

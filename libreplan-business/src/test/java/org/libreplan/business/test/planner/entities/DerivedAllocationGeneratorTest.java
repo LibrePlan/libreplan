@@ -179,7 +179,7 @@ public class DerivedAllocationGeneratorTest {
         return dayAssignment;
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void derivedFromMustBeNotNull() {
         givenFinder();
         givenConfigurationUnit();
@@ -187,7 +187,7 @@ public class DerivedAllocationGeneratorTest {
         DerivedAllocationGenerator.generate(derivedFrom, finder, configurationUnit, dayAssignments);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void finderMustBeNotNull() {
         givenDerivedFrom();
         givenConfigurationUnit();
@@ -195,7 +195,7 @@ public class DerivedAllocationGeneratorTest {
         DerivedAllocationGenerator.generate(derivedFrom, finder, configurationUnit, dayAssignments);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void configurationUnitMustBeNotNull() {
         givenDerivedFrom();
         givenFinder();
@@ -203,7 +203,7 @@ public class DerivedAllocationGeneratorTest {
         DerivedAllocationGenerator.generate(derivedFrom, finder, configurationUnit, dayAssignments);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void dayAssignmentsMustBeNotNull() {
         givenDerivedFrom();
         givenFinder();

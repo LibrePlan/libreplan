@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.libreplan.business.common.AdHocTransactionService;
 import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.hibernate.notification.ISnapshotRefresherService;

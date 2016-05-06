@@ -396,7 +396,7 @@ public class ResourceTest {
             try {
                 worker.addSatisfaction(criterionType, wrong);
                 fail("must send exception");
-            } catch (IllegalArgumentException e) {
+            } catch (NullPointerException | IllegalArgumentException e) {
                 // ok
             }
         }
@@ -514,7 +514,7 @@ public class ResourceTest {
     private Worker worker;
     private List<DayAssignment> assignments;
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     @Transactional
     public void addNewAssignmentsMustReceiveNotNullArgument() {
         givenWorker();
@@ -525,7 +525,7 @@ public class ResourceTest {
     @Transactional
     public void mustHaveNoNullElements() {
         givenWorker();
-        List<DayAssignment> list = new ArrayList<DayAssignment>();
+        List<DayAssignment> list = new ArrayList<>();
         list.add(null);
         worker.addNewAssignments(list);
     }

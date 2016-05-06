@@ -30,7 +30,7 @@ import java.util.Set;
 
 import javax.validation.ConstraintViolation;
 
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.libreplan.business.common.BaseEntity;
 
 /**

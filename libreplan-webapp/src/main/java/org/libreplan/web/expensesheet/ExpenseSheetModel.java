@@ -27,7 +27,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Hibernate;
 import org.joda.time.LocalDate;

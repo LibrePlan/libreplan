@@ -29,7 +29,7 @@ import java.util.Set;
 
 import javax.validation.constraints.AssertTrue;
 
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.libreplan.business.orders.entities.Order;

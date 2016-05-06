@@ -291,7 +291,7 @@ public class StretchesFunctionTest {
         assertThat(interval.getStartFor(now), equalTo(now));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void endDateCannotBeNull() {
         LocalDate start = new LocalDate().plusMonths(1);
         new Interval(new BigDecimal(0.3), start, null);

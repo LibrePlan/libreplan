@@ -22,7 +22,7 @@
 package org.libreplan.business.resources.entities;
 
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import javax.validation.constraints.AssertTrue;
 import org.hibernate.validator.constraints.NotEmpty;
 import javax.validation.Valid;

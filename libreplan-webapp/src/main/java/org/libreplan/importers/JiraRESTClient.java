@@ -27,7 +27,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.cxf.jaxrs.client.WebClient;
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 import org.libreplan.importers.jira.IssueDTO;

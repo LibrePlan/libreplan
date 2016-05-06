@@ -59,7 +59,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
-                        <version>2.1.2</version>
+                        <version>3.0.0</version>
                         <executions>
                             <execution>
                                 <id>default</id>
@@ -83,7 +83,7 @@
                 <plugins>
                     <plugin>
                         <artifactId>maven-antrun-plugin</artifactId>
-                        <version>1.1</version>
+                        <version>1.8</version>
                         <executions>
                           <execution>
                           <id>user-doc-generation</id>
@@ -251,7 +251,7 @@
                           <pluginExecutionFilter>
                             <groupId>org.apache.maven.plugins</groupId>
                             <artifactId>maven-antrun-plugin</artifactId>
-                            <versionRange>[1.1,)</versionRange>
+                            <versionRange>[1.8,)</versionRange>
                             <goals>
                               <goal>run</goal>
                             </goals>
@@ -275,9 +275,9 @@
                         </pluginExecution>
                         <pluginExecution>
                           <pluginExecutionFilter>
-                            <groupId>org.xnap.commons</groupId>
-                            <artifactId>maven-gettext-plugin</artifactId>
-                            <versionRange>[1.2.0,)</versionRange>
+                            <groupId>com.googlecode.gettext-commons</groupId>
+                            <artifactId>gettext-maven-plugin</artifactId>
+                            <versionRange>[1.2.4,)</versionRange>
                             <goals>
                               <goal>dist</goal>
                             </goals>

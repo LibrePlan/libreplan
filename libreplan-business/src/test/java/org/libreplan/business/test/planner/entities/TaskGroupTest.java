@@ -82,7 +82,7 @@ public class TaskGroupTest {
         assertThat(child.getParent(), equalTo(taskGroup));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void cantAddNullTaskElement() {
         taskGroup.addTaskElement(null);
     }

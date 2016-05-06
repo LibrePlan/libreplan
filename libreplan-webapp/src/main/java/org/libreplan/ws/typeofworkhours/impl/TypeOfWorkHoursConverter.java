@@ -21,7 +21,7 @@
 
 package org.libreplan.ws.typeofworkhours.impl;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
 import org.libreplan.ws.typeofworkhours.api.TypeOfWorkHoursDTO;

@@ -30,7 +30,7 @@ import java.util.ListIterator;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.libreplan.business.planner.chart.ContiguousDaysLine.OnDay;

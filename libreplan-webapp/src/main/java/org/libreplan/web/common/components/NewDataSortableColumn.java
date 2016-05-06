@@ -24,7 +24,7 @@ package org.libreplan.web.common.components;
 import java.util.Comparator;
 
 import org.apache.commons.collections4.comparators.BooleanComparator;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.libreplan.business.INewObject;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zul.Column;

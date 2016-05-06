@@ -777,7 +777,7 @@ public class BaseCalendarTest {
                 ResourcesPerDay.amount(2)), equalTo(hours(16)));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void getCapacityWithOvertimeMustNotBeCalledWithANullDate() {
         BaseCalendar calendar = createBasicCalendar();
         calendar.getCapacityWithOvertime(null);

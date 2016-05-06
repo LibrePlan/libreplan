@@ -43,7 +43,7 @@ import net.sf.mpxj.Task;
 import net.sf.mpxj.TimeUnit;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
 import org.libreplan.importers.CalendarDayHoursDTO.CalendarDayDTO;

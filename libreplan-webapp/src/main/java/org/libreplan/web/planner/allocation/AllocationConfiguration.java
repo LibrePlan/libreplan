@@ -21,7 +21,7 @@ package org.libreplan.web.planner.allocation;
 
 import java.util.Arrays;
 
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.libreplan.business.planner.entities.CalculatedValue;
 import org.libreplan.web.planner.allocation.ResourceAllocationController.CalculationTypeRadio;
 import org.zkoss.zk.ui.HtmlMacroComponent;

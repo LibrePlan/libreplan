@@ -56,6 +56,7 @@ Changes
 * Update EasyMock
 * Update JDBC driver
 * Update Сommons-IO
+* Update AspectJ Weaver
 
 * Update LibrePlan version to 1.6.0
 

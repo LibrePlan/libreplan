@@ -23,7 +23,7 @@ package org.libreplan.business.orders.entities;
 
 import java.util.Date;
 
-import org.apache.commons.lang.BooleanUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.libreplan.business.common.BaseEntity;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workreports.entities.WorkReportLine;
