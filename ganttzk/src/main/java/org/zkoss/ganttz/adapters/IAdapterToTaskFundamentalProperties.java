@@ -27,22 +27,23 @@ import org.zkoss.ganttz.data.ITaskFundamentalProperties;
 
 /**
  * Converts a domain object into a {@link ITaskFundamentalProperties}
+ *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public interface IAdapterToTaskFundamentalProperties<T> {
 
-    public ITaskFundamentalProperties adapt(T object);
+    ITaskFundamentalProperties adapt(T object);
 
-    public List<DomainDependency<T>> getOutcomingDependencies(T object);
+    List<DomainDependency<T>> getOutcomingDependencies(T object);
 
-    public List<DomainDependency<T>> getIncomingDependencies(T object);
+    List<DomainDependency<T>> getIncomingDependencies(T object);
 
-    public void doRemovalOf(T object);
+    void doRemovalOf(T object);
 
-    public boolean canAddDependency(DomainDependency<T> dependency);
+    boolean canAddDependency(DomainDependency<T> dependency);
 
-    public void addDependency(DomainDependency<T> dependency);
+    void addDependency(DomainDependency<T> dependency);
 
-    public void removeDependency(DomainDependency<T> dependency);
+    void removeDependency(DomainDependency<T> dependency);
 
 }
