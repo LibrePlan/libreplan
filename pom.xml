@@ -130,7 +130,7 @@
         </profile>
 
         <!-- MySQL profile
-            TODO chagne version mysql for JDK8
+            TODO change version mysql for JDK8
         -->
         <profile>
             <id>mysql</id>
@@ -138,7 +138,7 @@
                 <!-- JDBC driver properties -->
                 <jdbcDriver.groupId>mysql</jdbcDriver.groupId>
                 <jdbcDriver.artifactId>mysql-connector-java</jdbcDriver.artifactId>
-                <jdbcDriver.version>6.0.2</jdbcDriver.version>
+                <jdbcDriver.version>5.1.38</jdbcDriver.version>
                 <jdbcDriver.className>com.mysql.jdbc.Driver</jdbcDriver.className>
                 <!-- Data source properties -->
                 <dataSource.url>jdbc:mysql://localhost/libreplan${libreplan.mode}</dataSource.url>
@@ -912,9 +912,9 @@
 
             <!-- =========================================================== -->
             <!-- LiquiBase plugin -->
-        <plugin>
-            <groupId>org.liquibase</groupId>
-            <artifactId>liquibase-maven-plugin</artifactId>
+            <plugin>
+                <groupId>org.liquibase</groupId>
+                <artifactId>liquibase-maven-plugin</artifactId>
                 <version>3.5.0</version>
             </plugin>
 
