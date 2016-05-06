@@ -34,97 +34,98 @@ import org.zkoss.ganttz.data.constraint.Constraint;
  */
 public interface ITaskFundamentalProperties {
 
-    public interface IUpdatablePosition {
+    interface IUpdatablePosition {
 
-        public void setBeginDate(GanttDate beginDate);
+        void setBeginDate(GanttDate beginDate);
 
-        public void setEndDate(GanttDate endDate);
+        void setEndDate(GanttDate endDate);
 
-        public void resizeTo(GanttDate endDate);
+        void resizeTo(GanttDate endDate);
 
-        public void moveTo(GanttDate newStart);
+        void moveTo(GanttDate newStart);
     }
 
     /**
      * The position modifications must be wrapped inside this
      */
-    public interface IModifications {
-        public void doIt(IUpdatablePosition position);
+    interface IModifications {
+        void doIt(IUpdatablePosition position);
     }
 
-    public void doPositionModifications(IModifications modifications);
 
-    public String getName();
+    void doPositionModifications(IModifications modifications);
 
-    public void setName(String name);
+    String getName();
 
-    public GanttDate getBeginDate();
+    void setName(String name);
+
+    GanttDate getBeginDate();
 
     /**
      * The deadline associated to the task. It can return null if has no
      * deadline associated
      */
-    public Date getDeadline();
+    Date getDeadline();
 
-    public void setDeadline(Date date);
+    void setDeadline(Date date);
 
-    public GanttDate getConsolidatedline();
+    GanttDate getConsolidatedline();
 
-    public GanttDate getEndDate();
+    GanttDate getEndDate();
 
-    public String getNotes();
+    String getNotes();
 
-    public void setNotes(String notes);
+    void setNotes(String notes);
 
-    public GanttDate getHoursAdvanceBarEndDate();
+    GanttDate getHoursAdvanceBarEndDate();
 
-    public GanttDate getMoneyCostBarEndDate();
+    GanttDate getMoneyCostBarEndDate();
 
     BigDecimal getMoneyCostBarPercentage();
 
-    public GanttDate getAdvanceBarEndDate();
+    GanttDate getAdvanceBarEndDate();
 
-    public BigDecimal getHoursAdvanceBarPercentage();
+    BigDecimal getHoursAdvanceBarPercentage();
 
-    public BigDecimal getAdvancePercentage();
+    BigDecimal getAdvancePercentage();
 
-    public String getTooltipText();
+    String getTooltipText();
 
-    public String getLabelsText();
+    String getLabelsText();
 
-    public String getResourcesText();
+    String getResourcesText();
 
-    public List<Constraint<GanttDate>> getStartConstraints();
+    List<Constraint<GanttDate>> getStartConstraints();
 
-    public List<Constraint<GanttDate>> getEndConstraints();
+    List<Constraint<GanttDate>> getEndConstraints();
 
-    public boolean isSubcontracted();
+    boolean isSubcontracted();
 
-    public boolean isLimiting();
+    boolean isLimiting();
 
-    public boolean isLimitingAndHasDayAssignments();
+    boolean isLimitingAndHasDayAssignments();
 
-    public boolean hasConsolidations();
+    boolean hasConsolidations();
 
-    public boolean canBeExplicitlyResized();
+    boolean canBeExplicitlyResized();
 
-    public String getAssignedStatus();
+    String getAssignedStatus();
 
-    public boolean isFixed();
+    boolean isFixed();
 
-    public String updateTooltipText();
+    String updateTooltipText();
 
-    public List<Constraint<GanttDate>> getCurrentLengthConstraint();
+    List<Constraint<GanttDate>> getCurrentLengthConstraint();
 
-    public GanttDate getAdvanceBarEndDate(String progressType);
+    GanttDate getAdvanceBarEndDate(String progressType);
 
     String updateTooltipText(String progressType);
 
     boolean isManualAnyAllocation();
 
-    public boolean belongsClosedProject();
+    boolean belongsClosedProject();
 
-    public boolean isRoot();
+    boolean isRoot();
 
     boolean isUpdatedFromTimesheets();
 
@@ -132,9 +133,9 @@ public interface ITaskFundamentalProperties {
 
     Date getLastTimesheetDate();
 
-    public String getCode();
+    String getCode();
 
-    public String getProjectCode();
+    String getProjectCode();
 
     /**
      * Calculates whether the project is within the estimated hours or not and
