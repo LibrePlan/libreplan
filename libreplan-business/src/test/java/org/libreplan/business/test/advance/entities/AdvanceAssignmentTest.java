@@ -21,7 +21,7 @@
 
 package org.libreplan.business.test.advance.entities;
 
-import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 

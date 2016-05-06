@@ -24,7 +24,7 @@ import static org.easymock.EasyMock.createNiceMock;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.core.AllOf.allOf;
 import static org.junit.Assert.assertThat;
-import static org.junit.matchers.JUnitMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.hasItem;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -132,7 +132,7 @@ public class AggregatedHoursGroupTest {
 
     private Matcher<AggregatedHoursGroup> withCriterions(
             Criterion... criterions) {
-        final HashSet<Criterion> criterionsSet = new HashSet<Criterion>(Arrays
+        final HashSet<Criterion> criterionsSet = new HashSet<>(Arrays
                 .asList(criterions));
         return new AggregatedHoursGroupMatcher() {
 
@@ -150,7 +150,7 @@ public class AggregatedHoursGroupTest {
 
     private Matcher<AggregatedHoursGroup> withHours(
             HoursGroup... hours) {
-        final HashSet<HoursGroup> hoursSet = new HashSet<HoursGroup>(
+        final HashSet<HoursGroup> hoursSet = new HashSet<>(
                 Arrays.asList(hours));
         return new AggregatedHoursGroupMatcher() {
 
@@ -161,7 +161,7 @@ public class AggregatedHoursGroupTest {
 
             @Override
             public boolean matches(AggregatedHoursGroup aggregated) {
-                return new HashSet<HoursGroup>(aggregated.getHoursGroup())
+                return new HashSet<>(aggregated.getHoursGroup())
                         .equals(hoursSet);
             }
         };
@@ -181,7 +181,7 @@ public class AggregatedHoursGroupTest {
 
     private Set<CriterionRequirement> asCriterionRequirements(
             Criterion... criterions) {
-        Set<CriterionRequirement> result = new HashSet<CriterionRequirement>();
+        Set<CriterionRequirement> result = new HashSet<>();
         for (Criterion each : criterions) {
             result.add(new DirectCriterionRequirement(each));
         }
