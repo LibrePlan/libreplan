@@ -39,6 +39,7 @@ Changes
 * Update Commons Lang
 * Update Commons Math
 * Update Commons Collections
+* Update Commons Logging
 
 * Update MPXJ
 * Update Bonecp
