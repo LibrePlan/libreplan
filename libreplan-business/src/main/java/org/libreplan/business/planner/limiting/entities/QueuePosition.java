@@ -23,7 +23,7 @@ package org.libreplan.business.planner.limiting.entities;
 
 import static org.libreplan.business.i18n.I18nHelper._;
 
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.joda.time.LocalDate;
 
 /**

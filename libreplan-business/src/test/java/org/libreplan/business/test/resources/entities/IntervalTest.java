@@ -38,7 +38,7 @@ public class IntervalTest {
                 CriterionSatisfactionDAOTest.year(1999));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void testStartDateMustBeNotNull() {
         Interval.range(null, CriterionSatisfactionDAOTest.year(1999));
     }

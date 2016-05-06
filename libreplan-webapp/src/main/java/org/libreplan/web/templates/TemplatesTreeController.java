@@ -24,7 +24,7 @@ import static org.libreplan.web.I18nHelper._;
 
 import java.math.BigDecimal;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.libreplan.business.orders.entities.SchedulingState;
 import org.libreplan.business.templates.entities.OrderElementTemplate;
 import org.libreplan.business.templates.entities.OrderLineTemplate;

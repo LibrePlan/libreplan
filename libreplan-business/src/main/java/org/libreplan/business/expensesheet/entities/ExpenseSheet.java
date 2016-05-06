@@ -24,7 +24,7 @@ import java.util.Collections;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.Min;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -57,7 +57,7 @@ public class ExpenseSheet extends IntegrationEntity implements IHumanIdentifiabl
     private boolean personal = false;
 
     @Valid
-    private SortedSet<ExpenseSheetLine> expenseSheetLines = new TreeSet<ExpenseSheetLine>(
+    private SortedSet<ExpenseSheetLine> expenseSheetLines = new TreeSet<>(
             new ExpenseSheetLineComparator());
 
     private Integer lastExpenseSheetLineSequenceCode = 0;

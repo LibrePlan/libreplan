@@ -25,8 +25,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.Objects;
 
-import org.apache.commons.lang.ObjectUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.type.StandardBasicTypes;
@@ -50,7 +50,7 @@ public class EffortDurationType implements UserType {
 
     @Override
     public boolean equals(Object x, Object y) throws HibernateException {
-        return ObjectUtils.equals(x, y);
+        return Objects.equals(x, y);
     }
 
     @Override

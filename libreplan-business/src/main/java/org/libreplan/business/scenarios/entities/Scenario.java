@@ -29,10 +29,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.Objects;
 
-import org.apache.commons.lang.ObjectUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
 import javax.validation.constraints.AssertTrue;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.joda.time.DateTime;
@@ -90,7 +90,7 @@ public class Scenario extends BaseEntity implements IHumanIdentifiable {
         Iterator<OrderVersion> iterator = orders.values().iterator();
         while (iterator.hasNext()) {
             OrderVersion each = iterator.next();
-            if (ObjectUtils.equals(orderVersion, each)) {
+            if (Objects.equals(orderVersion, each)) {
                 iterator.remove();
             }
         }

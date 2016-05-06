@@ -34,9 +34,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.Objects;
 
-import org.apache.commons.lang.ObjectUtils;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import javax.validation.constraints.NotNull;
 import org.joda.time.LocalDate;
 import org.libreplan.business.common.BaseEntity;
@@ -196,7 +196,7 @@ public abstract class DayAssignment extends BaseEntity {
             Scenario scenario, Collection<T> dayAssignments) {
         List<T> result = new ArrayList<T>();
         for (T each : dayAssignments) {
-            if (ObjectUtils.equals(each.getScenario(), scenario)) {
+            if (Objects.equals(each.getScenario(), scenario)) {
                 result.add(each);
             }
         }

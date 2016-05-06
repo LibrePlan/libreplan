@@ -21,7 +21,7 @@
 
 package org.libreplan.business.calendars.entities;
 
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.joda.time.LocalDate;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workingday.IntraDayDate.PartialDay;

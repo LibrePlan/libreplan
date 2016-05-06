@@ -23,7 +23,7 @@ package org.libreplan.web.orders;
 
 import static org.libreplan.web.I18nHelper._;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderLine;

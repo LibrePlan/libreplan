@@ -33,8 +33,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import org.apache.commons.lang.Validate;
-import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang3.Validate;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import javax.validation.constraints.NotNull;
 import org.joda.time.DateTime;
 import org.joda.time.Days;

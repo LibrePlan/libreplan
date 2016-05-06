@@ -33,7 +33,7 @@ import java.util.UUID;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.joda.time.LocalDate;
 import org.libreplan.business.advance.entities.AdvanceMeasurement;
 import org.libreplan.business.advance.entities.DirectAdvanceAssignment;

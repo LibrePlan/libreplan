@@ -21,7 +21,7 @@ package org.libreplan.web.planner.taskedition;
 
 import static org.libreplan.web.I18nHelper._;
 
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.joda.time.LocalDate;
 import org.libreplan.business.planner.entities.AggregateOfResourceAllocations;
 import org.libreplan.business.planner.entities.CalculatedValue;

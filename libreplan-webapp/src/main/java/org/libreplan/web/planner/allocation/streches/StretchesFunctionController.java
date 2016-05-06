@@ -28,7 +28,7 @@ import java.math.RoundingMode;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.planner.entities.AssignmentFunction;
 import org.libreplan.business.planner.entities.ResourceAllocation;

@@ -24,7 +24,7 @@ import static org.libreplan.web.I18nHelper._;
 
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.libreplan.business.trees.ITreeNode;
 import org.libreplan.web.orders.OrderElementTreeController;
 import org.zkoss.zk.ui.HtmlMacroComponent;

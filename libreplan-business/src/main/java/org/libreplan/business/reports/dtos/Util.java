@@ -22,7 +22,7 @@ package org.libreplan.business.reports.dtos;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.libreplan.business.trees.ITreeNode;
 
 /**

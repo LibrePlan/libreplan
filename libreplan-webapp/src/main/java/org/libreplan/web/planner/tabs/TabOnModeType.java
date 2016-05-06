@@ -23,7 +23,7 @@ package org.libreplan.web.planner.tabs;
 import java.util.Collection;
 import java.util.EnumMap;
 
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.libreplan.web.planner.tabs.Mode.ModeTypeChangedListener;
 import org.zkoss.ganttz.extensions.ITab;
 import org.zkoss.zk.ui.Component;

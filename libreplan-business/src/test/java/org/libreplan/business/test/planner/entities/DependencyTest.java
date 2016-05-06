@@ -75,7 +75,7 @@ public class DependencyTest {
             try {
                 Dependency.create(origin, destination, type);
                 fail("must send IllegalArgumentException");
-            } catch (IllegalArgumentException e) {
+            } catch (NullPointerException e) {
                 // ok
             }
         }

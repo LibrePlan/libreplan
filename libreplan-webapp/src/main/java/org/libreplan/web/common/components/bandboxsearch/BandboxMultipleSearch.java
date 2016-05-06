@@ -30,7 +30,7 @@ import java.util.NoSuchElementException;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.libreplan.web.common.components.finders.FilterPair;
 import org.libreplan.web.common.components.finders.IMultipleFiltersFinder;
 import org.springframework.web.context.WebApplicationContext;

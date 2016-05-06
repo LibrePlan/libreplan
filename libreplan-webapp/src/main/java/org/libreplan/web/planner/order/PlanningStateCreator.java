@@ -28,8 +28,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang.ObjectUtils;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.Validate;
 import org.hibernate.Hibernate;
 import org.joda.time.LocalDate;
 import org.libreplan.business.advance.entities.DirectAdvanceAssignment;

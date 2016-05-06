@@ -33,7 +33,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.libreplan.business.common.IntegrationEntity;
 import org.libreplan.business.common.daos.IEntitySequenceDAO;
 import org.libreplan.business.common.daos.IIntegrationEntityDAO;

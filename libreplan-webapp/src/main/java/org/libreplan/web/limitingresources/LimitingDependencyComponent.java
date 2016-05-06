@@ -23,7 +23,7 @@ package org.libreplan.web.limitingresources;
 
 import java.io.IOException;
 
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.zkoss.ganttz.data.DependencyType;
 import org.zkoss.zk.au.out.AuInvoke;
 import org.zkoss.zk.ui.sys.ContentRenderer;

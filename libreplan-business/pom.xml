@@ -131,9 +131,8 @@
             <artifactId>liquibase-maven-plugin</artifactId>
         </dependency>
         <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
-            <version>2.5</version>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
         </dependency>
     </dependencies>
 
@@ -150,7 +149,7 @@
                 <plugin>
                     <groupId>org.liquibase</groupId>
                     <artifactId>liquibase-maven-plugin</artifactId>
-                        <version>2.0.5</version>
+                        <version>3.5.0</version>
                         <executions>
                             <execution>
                                 <phase>process-resources</phase>
@@ -179,7 +178,7 @@
                 <plugin>
                     <groupId>org.liquibase</groupId>
                     <artifactId>liquibase-maven-plugin</artifactId>
-                        <version>2.0.5</version>
+                        <version>3.5.0</version>
                         <executions>
                             <execution>
                                 <phase>process-resources</phase>
@@ -222,7 +221,7 @@
                         <pluginExecutionFilter>
                           <groupId>org.liquibase</groupId>
                           <artifactId>liquibase-maven-plugin</artifactId>
-                          <versionRange>[2.0.5,)</versionRange>
+                          <versionRange>[3.5.0,)</versionRange>
                           <goals>
                             <goal>update</goal>
                           </goals>

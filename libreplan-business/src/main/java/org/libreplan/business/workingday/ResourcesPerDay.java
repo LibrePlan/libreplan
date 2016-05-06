@@ -24,7 +24,7 @@ package org.libreplan.business.workingday;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.libreplan.business.common.ProportionalDistributor;
 import org.libreplan.business.workingday.EffortDuration.Granularity;
 

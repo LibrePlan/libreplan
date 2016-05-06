@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.libreplan.business.hibernate.notification.PredefinedDatabaseSnapshots;
 import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.resources.entities.CriterionType;

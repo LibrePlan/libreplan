@@ -42,7 +42,7 @@ public class ListSorterTest {
         listSorter = ListSorter.create(initialElements);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void theInitialElementsMustBeNotNull() {
         ListSorter.<String> create(null);
     }
@@ -52,7 +52,7 @@ public class ListSorterTest {
         ListSorter.create(asList("A", "C", null));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void theComparatorCannotBeNull() {
         ListSorter.create(Arrays.asList("A"), null);
     }
@@ -106,11 +106,12 @@ public class ListSorterTest {
         listSorter.add(initialElements.get(0));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void nullElementCannotBeAdded() {
         givenSortedList();
         listSorter.add(null);
     }
+
 
     @Test
     public void addInsertsAtRightPosition() {

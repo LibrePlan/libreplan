@@ -21,7 +21,7 @@ package org.libreplan.web.common.components.finders;
 
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.libreplan.business.resources.daos.IResourceDAO;
 import org.libreplan.business.resources.entities.Resource;
 import org.springframework.beans.factory.annotation.Autowired;

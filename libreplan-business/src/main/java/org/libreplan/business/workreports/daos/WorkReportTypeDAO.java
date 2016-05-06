@@ -23,7 +23,7 @@ package org.libreplan.business.workreports.daos;
 
 import java.util.List;
 
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.hibernate.Criteria;
 import org.hibernate.NonUniqueResultException;
 import org.hibernate.criterion.Restrictions;

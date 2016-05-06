@@ -7,8 +7,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-import org.apache.commons.lang.ObjectUtils;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -72,7 +72,7 @@ public class ContiguousDaysLineTest {
                 if (object instanceof ContiguousDaysLine) {
                     ContiguousDaysLine<?> line = (ContiguousDaysLine) object;
                     for (OnDay<?> each : line) {
-                        if(! ObjectUtils.equals(value, each.getValue())){
+                        if(! Objects.equals(value, each.getValue())){
                             return false;
                         }
                     }
@@ -179,7 +179,7 @@ public class ContiguousDaysLineTest {
                 if (object instanceof ContiguousDaysLine) {
                     ContiguousDaysLine<?> another = (ContiguousDaysLine<?>) object;
                     for (OnDay<?> each : line) {
-                        if (!ObjectUtils.equals(each.getValue(),
+                        if (!Objects.equals(each.getValue(),
                                 another.get(each.getDay()))) {
                             return false;
                         }
