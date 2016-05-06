@@ -15,8 +15,7 @@
         <timer-keep-alive>true</timer-keep-alive>
     </session-config>
     <error-page>
-        <exception-type>java.lang.Throwable
-        </exception-type>
+        <exception-type>java.lang.Throwable</exception-type>
         <location>/common/event_error.zul</location>
     </error-page>
 
