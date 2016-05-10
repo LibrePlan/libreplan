@@ -45,9 +45,7 @@
     <property name="deadline" access="field"/>
     <property name="communicationType" access="field" column="communication_type">
         <type name="org.hibernate.type.EnumType">
-            <param name="enumClass">
-                org.libreplan.business.externalcompanies.entities.CommunicationType
-            </param>
+            <param name="enumClass">org.libreplan.business.externalcompanies.entities.CommunicationType</param>
         </type>
     </property>
     <property name="communicationDate" access="field" column="communication_date" />

@@ -44,8 +44,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
-        BUSINESS_SPRING_CONFIG_TEST_FILE })
+@ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE, BUSINESS_SPRING_CONFIG_TEST_FILE })
 public class WorkReportTypeTest extends AbstractWorkReportTest {
 
     @Autowired

@@ -41,21 +41,18 @@ public interface IEntitySequenceDAO extends IGenericDAO<EntitySequence, Long> {
 
     List<EntitySequence> getAll();
 
-    List<EntitySequence> findEntitySquencesNotIn(
-            List<EntitySequence> entitySequences);
+    List<EntitySequence> findEntitySquencesNotIn(List<EntitySequence> entitySequences);
 
-    void remove(EntitySequence entitySequence)
-            throws InstanceNotFoundException, IllegalArgumentException;
+    void remove(EntitySequence entitySequence) throws InstanceNotFoundException, IllegalArgumentException;
 
-    EntitySequence getActiveEntitySequence(EntityNameEnum entityName)
-            throws InstanceNotFoundException, NonUniqueResultException;
+    EntitySequence getActiveEntitySequence(EntityNameEnum entityName) throws InstanceNotFoundException,
+                                                                            NonUniqueResultException;
 
     String getNextEntityCode(EntityNameEnum entityName);
 
     String getNextEntityCodeWithoutTransaction(EntityNameEnum entityName);
 
-    boolean existOtherActiveSequenceByEntityNameForNewObject(
-            EntitySequence entitySequence);
+    boolean existOtherActiveSequenceByEntityNameForNewObject(EntitySequence entitySequence);
 
     Integer getNumberOfDigitsCode(EntityNameEnum entityName);
 

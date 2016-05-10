@@ -49,22 +49,31 @@ import org.libreplan.business.workreports.entities.WorkReportType;
  */
 public enum EntityNameEnum {
 
-    ORDER("Project", false), CRITERION("Criterion", true), LABEL("Label", true), MACHINE(
-            "Machine", true), WORKER("Worker", true), UNIT_TYPE(
-            "Material unit",
-            true), CALENDAR("Calendar", true), WORK_HOURS_TYPE(
-            "Hours type", true), MATERIAL_CATEGORY("Material category", true), WORK_REPORT(
-            "Timesheet", true), WORKREPORTTYPE("Timesheet template", false), CALENDAR_EXCEPTION_TYPE(
-            "Calendar exception day", true), COST_CATEGORY("Cost category",
-            true), RESOURCE_CALENDAR("Resource calendar", true), CRITERION_SATISFACTION(
-            "Criterion satisfaction", true), RESOURCE_COST_CATEGORY_ASSIGNMENT(
-            "Resource cost category assignment", true), EXPENSE_SHEET("Expense sheet", true), ISSUE_LOG("Issue log", true), RISK_LOG("Risk log", true);
+    ORDER("Project", false),
+    CRITERION("Criterion", true),
+    LABEL("Label", true),
+    MACHINE("Machine", true),
+    WORKER("Worker", true),
+    UNIT_TYPE("Material unit", true),
+    CALENDAR("Calendar", true),
+    WORK_HOURS_TYPE("Hours type", true),
+    MATERIAL_CATEGORY("Material category", true),
+    WORK_REPORT("Timesheet", true),
+    WORKREPORTTYPE("Timesheet template", false),
+    CALENDAR_EXCEPTION_TYPE("Calendar exception day", true),
+    COST_CATEGORY("Cost category", true),
+    RESOURCE_CALENDAR("Resource calendar", true),
+    CRITERION_SATISFACTION("Criterion satisfaction", true),
+    RESOURCE_COST_CATEGORY_ASSIGNMENT("Resource cost category assignment", true),
+    EXPENSE_SHEET("Expense sheet", true),
+    ISSUE_LOG("Issue log", true),
+    RISK_LOG("Risk log", true);
 
     private String description;
 
     private boolean canContainLowBar;
 
-    private EntityNameEnum(String description, boolean canContainLowBar) {
+    EntityNameEnum(String description, boolean canContainLowBar) {
         this.description = description;
         this.canContainLowBar = canContainLowBar;
     }
@@ -80,59 +89,47 @@ public enum EntityNameEnum {
     public IIntegrationEntityDAO<? extends IntegrationEntity> getIntegrationEntityDAO() {
         switch (this) {
         case ORDER:
-            return (IIntegrationEntityDAO<Order>) Registry.getOrderDAO();
+            return Registry.getOrderDAO();
         case CRITERION:
-            return (IIntegrationEntityDAO<CriterionType>) Registry
-                    .getCriterionTypeDAO();
+            return Registry.getCriterionTypeDAO();
         case LABEL:
-            return (IIntegrationEntityDAO<LabelType>) Registry
-                    .getLabelTypeDAO();
+            return Registry.getLabelTypeDAO();
         case MACHINE:
-            return (IIntegrationEntityDAO<Machine>) Registry.getMachineDAO();
+            return Registry.getMachineDAO();
         case WORKER:
-            return (IIntegrationEntityDAO<Worker>) Registry.getWorkerDAO();
+            return Registry.getWorkerDAO();
         case UNIT_TYPE:
-            return (IIntegrationEntityDAO<UnitType>) Registry.getUnitTypeDAO();
+            return Registry.getUnitTypeDAO();
         case CALENDAR:
         case RESOURCE_CALENDAR:
-            return (IIntegrationEntityDAO<CalendarData>) Registry
-                    .getCalendarDataDAO();
+            return Registry.getCalendarDataDAO();
         case WORK_HOURS_TYPE:
-            return (IIntegrationEntityDAO<TypeOfWorkHours>) Registry
-                    .getTypeOfWorkHoursDAO();
+            return Registry.getTypeOfWorkHoursDAO();
         case MATERIAL_CATEGORY:
-            return (IIntegrationEntityDAO<MaterialCategory>) Registry
-                    .getMaterialCategoryDAO();
+            return Registry.getMaterialCategoryDAO();
         case WORK_REPORT:
-            return (IIntegrationEntityDAO<WorkReport>) Registry
-                    .getWorkReportDAO();
+            return Registry.getWorkReportDAO();
         case WORKREPORTTYPE:
-            return (IIntegrationEntityDAO<WorkReportType>) Registry
-                    .getWorkReportTypeDAO();
+            return Registry.getWorkReportTypeDAO();
         case CALENDAR_EXCEPTION_TYPE:
-            return (IIntegrationEntityDAO<CalendarExceptionType>) Registry
-                    .getCalendarExceptionTypeDAO();
+            return Registry.getCalendarExceptionTypeDAO();
         case COST_CATEGORY:
-            return (IIntegrationEntityDAO<CostCategory>) Registry
-                    .getCostCategoryDAO();
+            return Registry.getCostCategoryDAO();
         case CRITERION_SATISFACTION:
-            return (IIntegrationEntityDAO<CriterionSatisfaction>) Registry
-                    .getCriterionSatisfactionDAO();
+            return Registry.getCriterionSatisfactionDAO();
         case RESOURCE_COST_CATEGORY_ASSIGNMENT:
-            return (IIntegrationEntityDAO<ResourcesCostCategoryAssignment>) Registry
-                    .getResourcesCostCategoryAssignmentDAO();
+            return Registry.getResourcesCostCategoryAssignmentDAO();
         case EXPENSE_SHEET:
-            return (IIntegrationEntityDAO<ExpenseSheet>) Registry.getExpenseSheetDAO();
+            return Registry.getExpenseSheetDAO();
 
         case ISSUE_LOG:
-            return (IIntegrationEntityDAO<IssueLog>) Registry.getIssueLogDAO();
+            return Registry.getIssueLogDAO();
 
         case RISK_LOG:
-            return (IIntegrationEntityDAO<RiskLog>) Registry.getRiskLogDAO();
+            return Registry.getRiskLogDAO();
 
         default:
-            throw new RuntimeException("can't handle the code sequence of the "
-                    + description);
+            throw new RuntimeException("can't handle the code sequence of the " + description);
         }
     }
 
