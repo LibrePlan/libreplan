@@ -22,13 +22,12 @@ package org.libreplan.importers;
 import static org.junit.Assert.assertTrue;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
-import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.ProcessingException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
@@ -46,10 +45,9 @@ public class JiraRESTClientTest {
     private Properties properties = null;
 
     @Before
-    public void loadProperties() throws FileNotFoundException, IOException {
+    public void loadProperties() throws IOException {
 
-        String filename = System.getProperty("user.dir")
-                + "/../scripts/jira-connector/jira-conn.properties";
+        String filename = System.getProperty("user.dir") + "/../scripts/jira-connector/jira-conn.properties";
 
         properties = new Properties();
         properties.load(new FileInputStream(filename));
@@ -63,13 +61,13 @@ public class JiraRESTClientTest {
     @Test
     @Ignore("Only working if you have a JIRA server configured")
     public void testGetAllLablesFromValidLabelUrl() {
-        String labels = JiraRESTClient.getAllLables(properties
-                .getProperty("label_url"));
+        String labels = JiraRESTClient.getAllLables(properties.getProperty("label_url"));
         List<String> result = Arrays.asList(StringUtils.split(labels, ","));
+
         assertTrue(result.size() > 0);
     }
 
-    @Test(expected = WebApplicationException.class)
+    @Test(expected = ProcessingException.class)
     public void testGetAllLablesFromInValidLabelUrl() {
         JiraRESTClient.getAllLables("");
     }
@@ -82,12 +80,14 @@ public class JiraRESTClientTest {
                 properties.getProperty("username"),
                 properties.getProperty("password"), JiraRESTClient.PATH_SEARCH,
                 getJiraLabel(properties.getProperty("label")));
+
         assertTrue(issues.size() > 0);
     }
 
     @Test(expected = RuntimeException.class)
     public void testGetIssuesForValidLabelButUnAuthorizedUser() {
-        JiraRESTClient.getIssues(properties.getProperty("url"), "", "",
+        JiraRESTClient.getIssues(
+                properties.getProperty("url"), "", "",
                 JiraRESTClient.PATH_SEARCH,
                 getJiraLabel(properties.getProperty("label")));
     }
@@ -98,8 +98,8 @@ public class JiraRESTClientTest {
         List<IssueDTO> issues = JiraRESTClient.getIssues(
                 properties.getProperty("url"),
                 properties.getProperty("username"),
-                properties.getProperty("password"), JiraRESTClient.PATH_SEARCH,
-                "");
+                properties.getProperty("password"), JiraRESTClient.PATH_SEARCH, "");
+
         assertTrue(issues.size() > 0);
     }
 }
