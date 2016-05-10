@@ -8,9 +8,7 @@
     <version>1.6.0</version>
     <name>LibrePlan</name>
 
-    <!--
-        ===================================================================
-    -->
+
     <!-- Modules -->
     <modules>
         <module>libreplan-business</module>
@@ -18,9 +16,7 @@
         <module>libreplan-webapp</module>
     </modules>
 
-    <!--
-        ===================================================================
-    -->
+
     <!--
         Default values for properties. These default values are expected
         to be valid for most profiles. Specific profiles can overwrite
@@ -42,34 +38,37 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+
     <!--
-        ===================================================================
-    -->
-    <!--
-        Profiles. * The build is always executed by selecting at least
-        two non-exclusive profiles. By default, such profiles are "dev"
-        and "postgresql" (meaning "use PostgreSQL assuming a development
-        environment"). * General profiles. There are two general
-        (database-independent) profiles: "dev" and "prod". The former is
-        used for development (including testing) and the latter is used
-        for production (including testing). As shown below, two
-        dataSources (databases schemas) are used in both profiles: one
-        for running (dataSource) and another one for the Maven test fase
-        (testDataSource). Note the Maven test fase is executed both with
-        development and production profiles. * Database-specific
-        profiles. There is a profile for each supported database. *
-        Specific profiles can be defined to better adapt to a particular
-        environment by overwriting/adding properties and/or including
-        other chunks of valid XML. * Usage: + mvn <<goal>> => Execute
-        <<goal>> with default profiles. + mvn -Pdev,<<database>> <<goal>
-        => Execute <<goal>> with "dev" and <<database>> profiles. + mvn
-        -Pprod,<<database>> <<goal>> => Execute <<goal>> with "prod" and
-        <<database>> profiles. + Note that when using -P option all
-        desired profiles must be specified (e.g. "-Pprod" with the
-        intention to select "prod" and the default database profile is
-        not correct; "-Pprod,<<database>>" must be used instead). *
-        Examples: + mvn <<goal>> + mvn -Ppostgresql,prod <<goal>> + mvn
-        -Ppostgresql,dev <<goal>>
+        * Profiles.
+        The build is always executed by selecting at least two non-exclusive profiles.
+        By default, such profiles are "dev" and "postgresql"
+        (meaning "use PostgreSQL assuming a development environment").
+
+        * General profiles.
+        There are two general (database-independent) profiles: "dev" and "prod".
+        The former is used for development (including testing) and the latter is used for production
+        (including testing).
+        As shown below, two dataSources (databases schemas) are used in both profiles:
+        one for running (dataSource) and another one for the Maven test case (testDataSource).
+        Note the Maven test case is executed both with development and production profiles.
+
+        * Database-specific profiles.
+        There is a profile for each supported database.
+        Specific profiles can be defined to better adapt to a particular environment by
+        overwriting/adding properties and/or including other chunks of valid XML.
+
+        * Usage.
+        + mvn <<goal>> => Execute <<goal>> with default profiles.
+        + mvn -Pdev,<<database>> <<goal> => Execute <<goal>> with "dev" and <<database>> profiles.
+        + mvn -Pprod,<<database>> <<goal>> => Execute <<goal>> with "prod" and <<database>> profiles.
+        + Note that when using -P option all desired profiles must be specified
+        (e.g. "-Pprod" with the intention to select "prod" and the default database profile is not correct;
+        "-Pprod,<<database>>" must be used instead).
+
+        * Examples.
+        + mvn <<goal>> + mvn -Ppostgresql,prod <<goal>>
+        + mvn -Ppostgresql,dev <<goal>>
     -->
     <profiles>
 
@@ -88,8 +87,8 @@
                 <hibernate.use_sql_comments>false</hibernate.use_sql_comments>
                 <hibernate.hbm2ddl.auto>validate</hibernate.hbm2ddl.auto>
 
-                <!-- Enable example users (wsreader, wswriter, wssubcontracting,
-                manager, hresources, outsourcing and reports) -->
+                <!-- Enable example users
+                (wsreader, wswriter, wssubcontracting, manager, hresources, outsourcing and reports) -->
                 <default.exampleUsersDisabled>false</default.exampleUsersDisabled>
             </properties>
         </profile>
@@ -124,7 +123,7 @@
                 <dataSource.url>jdbc:postgresql://localhost/libreplan${libreplan.mode}</dataSource.url>
                 <testDataSource.url>${dataSource.url}test</testDataSource.url>
                 <!-- Hibernate properties -->
-                <hibernate.dialect>org.hibernate.dialect.PostgreSQLDialect</hibernate.dialect>
+                <hibernate.dialect>org.hibernate.dialect.PostgreSQL9Dialect</hibernate.dialect>
                 <databasetable.prefix>public.</databasetable.prefix>
             </properties>
         </profile>
@@ -145,15 +144,12 @@
                 <testDataSource.url>${dataSource.url}test</testDataSource.url>
                 <!-- Hibernate properties -->
                 <hibernate.dialect>org.hibernate.dialect.MySQL5InnoDBDialect</hibernate.dialect>
-                <databasetable.prefix></databasetable.prefix>
+                <databasetable.prefix/>
             </properties>
         </profile>
 
     </profiles>
 
-    <!--
-        ===================================================================
-    -->
 
     <repositories>
         <!-- Getttext commons -->
@@ -170,18 +166,11 @@
     </repositories>
 
     <pluginRepositories>
+        <!-- Gettext commons plugin -->
         <pluginRepository>
           <id>gettext-commons-site</id>
           <url>http://gettext-commons.googlecode.com/svn/maven-repository</url>
         </pluginRepository>
-        <!--
-        <pluginRepository>
-            <id>codehaus-plugin-repository</id>
-            <name>Codehaus Plugin Repository</name>
-            <url>http://repository.codehaus.org</url>
-        </pluginRepository>
-
-        -->
      </pluginRepositories>
 
     <!-- Dependency management -->
@@ -302,8 +291,7 @@
             </dependency>
 
             <!--
-             Various Application Context utilities, including EhCache, JavaMail, Quartz, and
-            Freemarker integration
+            Various Application Context utilities, including EhCache, JavaMail, Quartz, and Freemarker integration.
             We use QuartzJobBean.
             -->
 
@@ -523,8 +511,8 @@
             <!-- JAX-RS API -->
             <dependency>
                 <groupId>javax.ws.rs</groupId>
-                <artifactId>jsr311-api</artifactId>
-                <version>1.0</version>
+                <artifactId>javax.ws.rs-api</artifactId>
+                <version>2.0.1</version>
             </dependency>
 
             <!-- CXF -->
@@ -590,7 +578,7 @@
                 </exclusions>
             </dependency>
 
-            <!-- jackson provider -->
+            <!-- Jackson provider -->
             <dependency>
                 <groupId>com.fasterxml.jackson.jaxrs</groupId>
                 <artifactId>jackson-jaxrs-json-provider</artifactId>
@@ -669,19 +657,16 @@
                 </exclusion>
               </exclusions>
             </dependency>
+
         </dependencies>
     </dependencyManagement>
 
     <build>
 
-        <!-- =============================================================== -->
         <!-- Filtering -->
         <resources>
 
-            <!--
-                Apply filtering to files matching the following
-                expressions in src/main/resources.
-            -->
+            <!-- Apply filtering to files matching the following expressions in src/main/resources. -->
             <resource>
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
@@ -691,10 +676,7 @@
                 </includes>
             </resource>
 
-            <!--
-                Continue considering resources the files in
-                src/main/resources, but without applying filtering.
-            -->
+            <!-- Continue considering resources the files in src/main/resources, but without applying filtering. -->
             <resource>
                 <directory>src/main/resources</directory>
             </resource>
@@ -742,10 +724,7 @@
 
         <testResources>
 
-            <!--
-                Apply filtering to files matching the following
-                expressions in src/test/resources.
-            -->
+            <!-- Apply filtering to files matching the following expressions in src/test/resources. -->
             <testResource>
                 <directory>src/test/resources</directory>
                 <filtering>true</filtering>
@@ -756,10 +735,7 @@
                 </includes>
             </testResource>
 
-            <!--
-                Continue considering resources the files in
-                src/test/resources, but without applying filtering.
-            -->
+            <!-- Continue considering resources the files in src/test/resources, but without applying filtering. -->
             <testResource>
                 <directory>src/test/resources</directory>
             </testResource>
@@ -768,7 +744,6 @@
 
         <plugins>
 
-            <!-- =========================================================== -->
             <!-- Gettext configuration -->
             <plugin>
                 <groupId>com.googlecode.gettext-commons</groupId>
@@ -779,7 +754,6 @@
                 </configuration>
             </plugin>
 
-            <!-- =========================================================== -->
             <!-- Compiler configuration -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -793,7 +767,7 @@
                 </configuration>
             </plugin>
 
-            <!-- =========================================================== -->
+
             <!-- Assembly configuration -->
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
@@ -846,19 +820,12 @@
                     <!-- Log to the console. -->
                     <requestLog implementation="org.mortbay.jetty.NCSARequestLog">
                         <!--
-                            This do anything for Jetty, but is a
-                            workaround for a Maven bug that prevents the
-                            requestLog from being set.
+                            This do anything for Jetty,
+                            but is aworkaround for a Maven bug
+                            that prevents the requestLog from being set.
                         -->
                         <append>true</append>
                     </requestLog>
-                    <!--
-                    <connectors>
-                        <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
-                            <port>9090</port>
-                        </connector>
-                    </connectors>
-                    -->
                 </configuration>
 
                 <dependencies>
@@ -894,7 +861,6 @@
                 </dependencies>
             </plugin>
 
-            <!-- =========================================================== -->
             <!-- Tomcat configuration -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -906,7 +872,6 @@
                 </configuration>
             </plugin>
 
-            <!-- =========================================================== -->
             <!-- Cobertura configuration -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -922,7 +887,6 @@
                 </configuration>
             </plugin>
 
-            <!-- =========================================================== -->
             <!-- LiquiBase plugin -->
             <plugin>
                 <groupId>org.liquibase</groupId>
