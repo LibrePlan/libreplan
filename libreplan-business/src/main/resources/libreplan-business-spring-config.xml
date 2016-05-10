@@ -14,7 +14,7 @@
 
     <!--  Data source. -->
     <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean"
-        p:jndiName="${dataSource.jndiName}" p:resourceRef="true" />
+          p:jndiName="${dataSource.jndiName}" p:resourceRef="true" />
 
    <!-- Letting Spring do automatically exception translation -->
    <bean  class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>
@@ -125,9 +125,7 @@
 
     <context:component-scan base-package="org.libreplan.business" />
 
-    <bean id="registry"
-        class="org.libreplan.business.common.Registry"
-        factory-method="getInstance" />
+    <bean id="registry" class="org.libreplan.business.common.Registry" factory-method="getInstance" />
 
     <bean id="CriterionRequirementOrderElementHandler"
         class="org.libreplan.business.orders.entities.CriterionRequirementOrderElementHandler"
@@ -157,8 +155,6 @@
         </property>
     </bean>
 
-    <bean id="scenarioManager"
-        class="org.libreplan.business.scenarios.OnlyMainScenarioAwareManager"
-        scope="singleton"/>
+    <bean id="scenarioManager" class="org.libreplan.business.scenarios.OnlyMainScenarioAwareManager" scope="singleton"/>
 
 </beans>
