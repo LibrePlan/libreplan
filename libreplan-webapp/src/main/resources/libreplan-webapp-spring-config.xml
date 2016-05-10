@@ -63,7 +63,6 @@
 
     <!-- CXF -->
     <import resource="classpath:META-INF/cxf/cxf.xml" />
-    <import resource="classpath:META-INF/cxf/cxf-extension-jaxrs-binding.xml" />
     <import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
 
     <jaxrs:server id="rest" address="/">
