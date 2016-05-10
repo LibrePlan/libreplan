@@ -42,6 +42,10 @@ Changes
 * Update Commons Collections
 * Update Commons Logging
 
+* Update CXF-transports-http
+* Update CXF-frontend-jaxrs
+* Add CXF-rs-client
+
 * Update MPXJ
 * Update Bonecp
 * Update Guava

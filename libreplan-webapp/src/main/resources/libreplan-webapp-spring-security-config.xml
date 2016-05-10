@@ -193,14 +193,16 @@
         p:passwordEncoderService-ref="dbPasswordEncoderService">
     </beans:bean>
 
-    <beans:bean id="authenticationProvider" class="org.libreplan.web.users.services.AuthenticationProviderLoggingDecorator">
-        <beans:property name="decoratedProvider" ref="realAuthenticationProvider"></beans:property>
+    <beans:bean id="authenticationProvider"
+                class="org.libreplan.web.users.services.AuthenticationProviderLoggingDecorator">
+
+        <beans:property name="decoratedProvider" ref="realAuthenticationProvider"/>
+
     </beans:bean>
 
     <!-- This bean is used to implement UserDetailsService with LDAP authentication
         Provider. -->
-    <beans:bean id="ldapUserDetailsService"
-        class="org.libreplan.web.users.services.LDAPUserDetailsService" />
+    <beans:bean id="ldapUserDetailsService" class="org.libreplan.web.users.services.LDAPUserDetailsService" />
 
     <authentication-manager>
         <authentication-provider ref="authenticationProvider"/>

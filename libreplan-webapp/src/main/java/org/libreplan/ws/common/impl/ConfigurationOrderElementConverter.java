@@ -30,26 +30,25 @@ package org.libreplan.ws.common.impl;
 public class ConfigurationOrderElementConverter {
 
     public static ConfigurationOrderElementConverter create(boolean labels,
-            boolean materialAssignments, boolean advanceMeasurements,
-            boolean hoursGroups, boolean criterionRequirements) {
-        return new ConfigurationOrderElementConverter(labels,
-                materialAssignments, advanceMeasurements, hoursGroups,
-                criterionRequirements);
+                                                            boolean materialAssignments,
+                                                            boolean advanceMeasurements,
+                                                            boolean hoursGroups,
+                                                            boolean criterionRequirements) {
+
+        return new ConfigurationOrderElementConverter(
+                labels, materialAssignments, advanceMeasurements, hoursGroups, criterionRequirements);
     }
 
     public static ConfigurationOrderElementConverter all() {
-        return new ConfigurationOrderElementConverter(true, true, true, true,
-                true);
+        return new ConfigurationOrderElementConverter(true, true, true, true, true);
     }
 
     public static ConfigurationOrderElementConverter none() {
-        return new ConfigurationOrderElementConverter(false, false, false,
-                false, false);
+        return new ConfigurationOrderElementConverter(false, false, false, false, false);
     }
 
     public static ConfigurationOrderElementConverter noAdvanceMeasurements() {
-        return new ConfigurationOrderElementConverter(true, true, false, true,
-                true);
+        return new ConfigurationOrderElementConverter(true, true, false, true, true);
     }
 
     private boolean labels;
@@ -59,8 +58,10 @@ public class ConfigurationOrderElementConverter {
     private boolean criterionRequirements;
 
     private ConfigurationOrderElementConverter(boolean labels,
-            boolean materialAssignments, boolean advanceMeasurements,
-            boolean hoursGroups, boolean criterionRequirements) {
+                                               boolean materialAssignments,
+                                               boolean advanceMeasurements,
+                                               boolean hoursGroups,
+                                               boolean criterionRequirements) {
         this.labels = labels;
         this.materialAssignments = materialAssignments;
         this.advanceMeasurements = advanceMeasurements;
