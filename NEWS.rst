@@ -41,6 +41,9 @@ Changes
 * Update Commons Math
 * Update Commons Collections
 * Update Commons Logging
+* Update Commons Gettext
+* Update Сommons IO
+* Update Commons Fileupload
 
 * Update CXF-transports-http
 * Update CXF-frontend-jaxrs
@@ -56,12 +59,12 @@ Changes
 * Update JGraphT
 * Update DBUnit
 * Update JodaTime
-* Update Gettext
 * Update Jasper Reports
 * Update EasyMock
 * Update JDBC driver
-* Update Сommons-IO
 * Update AspectJ Weaver
+* Update JAX-RS API
+* Update BeanShell
 
 * Update LibrePlan version to 1.6.0
 

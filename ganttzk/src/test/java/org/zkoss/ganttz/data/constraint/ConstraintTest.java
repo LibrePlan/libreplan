@@ -91,22 +91,23 @@ public class ConstraintTest {
                 return value != null && value > 5;
             }
         };
+
         assertThat(biggerThanFive.applyTo(5), equalTo(6));
     }
 
     @SuppressWarnings("unchecked")
     @Test
     public void applyingSeveralConstraintsCallsApplyToOfEveryone() {
-        List<Constraint<Object>> constraints = new ArrayList<Constraint<Object>>();
+        List<Constraint<Object>> constraints = new ArrayList<>();
         final int numerOfConstraints = 5;
+
         for (int i = 0; i < numerOfConstraints; i++) {
             Constraint constraint = createNiceMock(Constraint.class);
-            expect(constraint.applyConstraintTo(isA(Object.class)))
-                    .andReturn(2).atLeastOnce();
-            expect(constraint.isSatisfiedBy(isA(Object.class))).andReturn(true)
-                    .atLeastOnce();
+            expect(constraint.applyConstraintTo(isA(Object.class))).andReturn(2).atLeastOnce();
+            expect(constraint.isSatisfiedBy(isA(Object.class))).andReturn(true).atLeastOnce();
             constraints.add(constraint);
         }
+
         replay(constraints.toArray());
         Constraint.apply(2, constraints);
         verify(constraints.toArray());
@@ -115,8 +116,8 @@ public class ConstraintTest {
     @SuppressWarnings("unchecked")
     @Test
     public void theLastConstraintHasPriority() {
-        Integer result = Constraint.apply(6, biggerThanFive,
-                lessThanFive);
+        Integer result = Constraint.apply(6, biggerThanFive, lessThanFive);
+
         assertThat(result, equalTo(4));
     }
 
@@ -124,21 +125,20 @@ public class ConstraintTest {
     @Test
     public void theViolatedConstraintsNotifiesItsListeners() {
         final Constraint<Integer>[] constraintViolated = new Constraint[1];
-        biggerThanFive
-                .addConstraintViolationListener(new IConstraintViolationListener<Integer>() {
 
-                    @Override
-                    public void constraintViolated(
-                            Constraint<Integer> constraint, Integer value) {
-                        constraintViolated[0] = constraint;
-                    }
+        biggerThanFive.addConstraintViolationListener(new IConstraintViolationListener<Integer>() {
+            @Override
+            public void constraintViolated(Constraint<Integer> constraint, Integer value) {
+                constraintViolated[0] = constraint;
+            }
 
-                    @Override
-                    public void constraintSatisfied(
-                            Constraint<Integer> constraint, Integer value) {
-                    }
-                });
+            @Override
+            public void constraintSatisfied(Constraint<Integer> constraint, Integer value) {
+            }
+        });
+
         Constraint.apply(6, biggerThanFive, lessThanFive);
+
         assertThat(constraintViolated[0], equalTo(biggerThanFive));
     }
 
@@ -146,31 +146,29 @@ public class ConstraintTest {
     @SuppressWarnings("unchecked")
     public void theSatisfiedConstraintsNotifiesItsListeners() {
         final Constraint<Integer>[] constraintSatisfied = new Constraint[1];
-        biggerThanFive
-                .addConstraintViolationListener(new IConstraintViolationListener<Integer>() {
 
-                    @Override
-                    public void constraintViolated(
-                            Constraint<Integer> constraint, Integer value) {
-                    }
+        biggerThanFive.addConstraintViolationListener(new IConstraintViolationListener<Integer>() {
+            @Override
+            public void constraintViolated(
+                    Constraint<Integer> constraint, Integer value) {
+            }
 
-                    @Override
-                    public void constraintSatisfied(
-                            Constraint<Integer> constraint, Integer value) {
-                        constraintSatisfied[0] = constraint;
-                    }
-                });
+            @Override
+            public void constraintSatisfied(
+                    Constraint<Integer> constraint, Integer value) {
+                constraintSatisfied[0] = constraint;
+            }
+        });
+
         Constraint.apply(6, biggerThanFive);
+
         assertThat(constraintSatisfied[0], equalTo(biggerThanFive));
     }
 
     @SuppressWarnings("unchecked")
     @Test
     public void theApplicationCanBeDoneUsingAFluentInterface() {
-        assertThat(Constraint.initialValue(3)
-                             .withConstraints(biggerThanFive)
-                             .apply(),
-                   equalTo(6));
+        assertThat(Constraint.initialValue(3).withConstraints(biggerThanFive).apply(), equalTo(6));
     }
 
     @SuppressWarnings("unchecked")

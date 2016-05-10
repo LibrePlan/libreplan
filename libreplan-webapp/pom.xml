@@ -464,7 +464,7 @@
         <!-- JAX-RS API -->
         <dependency>
             <groupId>javax.ws.rs</groupId>
-            <artifactId>jsr311-api</artifactId>
+            <artifactId>javax.ws.rs-api</artifactId>
         </dependency>
 
         <!-- CXF -->
