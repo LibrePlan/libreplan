@@ -12,17 +12,13 @@
     </id>
     <version name="version" access="property" type="long" />
 
-    <property name="unitName" access="field" unique="true"
-        column="unit_name" />
-    <property name="defaultMaxValue" access="field" scale="4"
-        column="default_max_value" />
+    <property name="unitName" access="field" unique="true" column="unit_name" />
+    <property name="defaultMaxValue" access="field" scale="4" column="default_max_value" />
     <property name="updatable" access="field"/>
-    <property name="unitPrecision" access="field" scale="4"
-        column="unit_precision" />
+    <property name="unitPrecision" access="field" scale="4" column="unit_precision" />
     <property name="active" access="field"/>
     <property name="percentage" access="field"/>
-    <property name="qualityForm" access="field"
-        column="quality_form" />
+    <property name="qualityForm" access="field" column="quality_form" />
     <property name="readOnly" column="read_only" />
 
 </class>
@@ -37,14 +33,13 @@
 
     <version name="version" access="property" type="long" />
 
-    <property name="reportGlobalAdvance" access="field"
-        column="report_global_advance" />
+    <property name="reportGlobalAdvance" access="field" column="report_global_advance" />
 
     <!-- Not indexed -->
     <many-to-one name="advanceType" class="AdvanceType" column="advance_type_id"/>
 
     <joined-subclass name="DirectAdvanceAssignment" table="direct_advance_assignment">
-        <key column="advance_assignment_id"></key>
+        <key column="advance_assignment_id"/>
 
         <!-- Indexed -->
         <many-to-one name="orderElement"
@@ -60,7 +55,7 @@
              access="field"
              sort="org.libreplan.business.advance.entities.AdvanceMeasurementComparator" >
                 <key column="advance_assignment_id" />
-                <one-to-many class="org.libreplan.business.advance.entities.AdvanceMeasurement"></one-to-many>
+            <one-to-many class="org.libreplan.business.advance.entities.AdvanceMeasurement"/>
         </set>
 
         <!-- Not indexed -->
@@ -75,7 +70,7 @@
     </joined-subclass>
 
     <joined-subclass name="IndirectAdvanceAssignment" table="indirect_advance_assignment">
-        <key column="advance_assignment_id"></key>
+        <key column="advance_assignment_id"/>
 
         <!-- Indexed -->
         <many-to-one name="orderElement"
@@ -107,10 +102,8 @@
 
     <property name="date" access="field"/>
     <property name="value" scale="2" access="field" />
-    <many-to-one name="advanceAssignment" class="AdvanceAssignment"
-        column="advance_assignment_id" access="field" />
-    <property name="communicationDate" access="field"
-        column="communication_date" />
+    <many-to-one name="advanceAssignment" class="AdvanceAssignment" column="advance_assignment_id" access="field" />
+    <property name="communicationDate" access="field" column="communication_date" />
 
     <!-- Not indexed -->
     <set name="nonCalculatedConsolidatedValues" access="field" cascade="none" inverse="true" batch-size="10">
@@ -138,8 +131,7 @@
         column="order_element_template_id"
         index="idx_advance_assigment_template_on_template"/>
 
-    <property name="reportGlobalAdvance" access="field"
-        column="report_global_advance" />
+    <property name="reportGlobalAdvance" access="field" column="report_global_advance" />
     <property name="maxValue" access="field" scale="2" column="max_value" />
 
 </class>

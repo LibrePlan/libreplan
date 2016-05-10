@@ -47,22 +47,30 @@ public class AdvanceType extends BaseEntity implements IHumanIdentifiable{
     public static AdvanceType create() {
         AdvanceType advanceType = new AdvanceType();
         advanceType.setNewObject(true);
+
         return advanceType;
     }
 
     public static AdvanceType create(String unitName,
-            BigDecimal defaultMaxValue, boolean updatable,
-            BigDecimal unitPrecision, boolean active, boolean percentage) {
-        return create(unitName, defaultMaxValue, updatable, unitPrecision,
-                active, percentage, false);
+                                     BigDecimal defaultMaxValue,
+                                     boolean updatable,
+                                     BigDecimal unitPrecision,
+                                     boolean active,
+                                     boolean percentage) {
+
+        return create(unitName, defaultMaxValue, updatable, unitPrecision, active, percentage, false);
     }
 
     public static AdvanceType create(String unitName,
-            BigDecimal defaultMaxValue, boolean updatable,
-            BigDecimal unitPrecision, boolean active, boolean percentage,
-            boolean qualityForm) {
-        return create(new AdvanceType(unitName, defaultMaxValue, updatable,
-                unitPrecision, active, percentage, qualityForm));
+                                     BigDecimal defaultMaxValue,
+                                     boolean updatable,
+                                     BigDecimal unitPrecision,
+                                     boolean active,
+                                     boolean percentage,
+                                     boolean qualityForm) {
+
+        return create(
+                new AdvanceType(unitName, defaultMaxValue, updatable, unitPrecision, active, percentage, qualityForm));
     }
 
     private String unitName;
