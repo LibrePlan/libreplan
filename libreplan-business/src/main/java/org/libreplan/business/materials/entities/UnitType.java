@@ -21,7 +21,7 @@
 
 package org.libreplan.business.materials.entities;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import javax.validation.constraints.AssertTrue;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.libreplan.business.common.IHumanIdentifiable;

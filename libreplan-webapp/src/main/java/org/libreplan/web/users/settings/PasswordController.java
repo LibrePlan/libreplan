@@ -21,7 +21,7 @@ package org.libreplan.web.users.settings;
 
 import static org.libreplan.web.I18nHelper._;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.web.UserUtil;
 import org.libreplan.web.common.ConstraintChecker;

@@ -28,7 +28,7 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.libreplan.web.common.Util;
 import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.util.Locales;

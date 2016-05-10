@@ -60,12 +60,12 @@ public class IntraDayDateTest {
     private EffortDuration oneHour = EffortDuration.hours(1);
     private EffortDuration halfHour = EffortDuration.minutes(30);
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void needsANotNullDuration() {
         IntraDayDate.create(new LocalDate(), null);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void needsANotNullDate() {
         IntraDayDate.create(null, EffortDuration.elapsing(1, Granularity.HOURS));
     }

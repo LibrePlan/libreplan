@@ -23,7 +23,7 @@ package org.libreplan.business.planner.entities;
 
 import java.util.Date;
 
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.libreplan.business.common.BaseEntity;
 import org.libreplan.business.planner.limiting.entities.LimitingResourceQueueDependency;
 import org.libreplan.business.util.deepcopy.Strategy;

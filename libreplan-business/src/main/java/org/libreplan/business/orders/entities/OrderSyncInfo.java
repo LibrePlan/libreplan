@@ -21,8 +21,8 @@ package org.libreplan.business.orders.entities;
 
 import java.util.Date;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.NotNull;
 import org.libreplan.business.common.BaseEntity;

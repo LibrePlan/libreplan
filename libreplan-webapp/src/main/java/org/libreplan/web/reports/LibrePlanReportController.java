@@ -27,7 +27,7 @@ import java.util.Map;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRParameter;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.libreplan.business.common.Registry;
 import org.zkoss.util.Locales;
 import org.zkoss.zk.au.out.AuDownload;

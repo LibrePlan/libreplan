@@ -22,7 +22,7 @@ package org.libreplan.business.planner.entities;
 
 import java.util.Date;
 
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.libreplan.business.orders.entities.Order.SchedulingMode;
 import org.libreplan.business.workingday.IntraDayDate;
 

@@ -24,7 +24,7 @@ import static org.libreplan.web.I18nHelper._;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.NonUniqueResultException;
 import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.daos.IConnectorDAO;

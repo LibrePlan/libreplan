@@ -24,7 +24,7 @@ import static org.libreplan.business.i18n.I18nHelper._;
 
 import java.util.EnumMap;
 
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.libreplan.business.common.BaseEntity;
 import org.libreplan.business.planner.entities.Dependency;
 import org.libreplan.business.planner.entities.Dependency.Type;

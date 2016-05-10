@@ -26,10 +26,10 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.Objects;
 
-import org.apache.commons.lang.ObjectUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
 import javax.validation.constraints.AssertTrue;
 import org.hibernate.validator.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -923,7 +923,7 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar, IHuman
                 && calendarAvailability.getId() == null) {
             return getLastCalendarAvailability() == calendarAvailability;
         }
-        return ObjectUtils.equals(getLastCalendarAvailability().getId(),
+        return Objects.equals(getLastCalendarAvailability().getId(),
                 calendarAvailability.getId());
     }
 

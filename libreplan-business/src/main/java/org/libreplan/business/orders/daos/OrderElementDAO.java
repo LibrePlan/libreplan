@@ -32,9 +32,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Objects;
 
-import org.apache.commons.lang.ObjectUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
@@ -591,7 +591,7 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
         if (order1 == null || order2 == null) {
             return false;
         }
-        return ObjectUtils.equals(order1.getId(), order2.getId());
+        return Objects.equals(order1.getId(), order2.getId());
     }
 
 }

@@ -81,9 +81,7 @@ public class QualityFormTest extends AbstractQualityFormTest {
             qualityForm.setQualityFormType(null);
             qualityFormDAO.save(qualityForm);
             fail("It should throw an exception");
-        } catch (ValidationException e) {
-            // It should throw an exception
-        } catch (IllegalArgumentException e) {
+        } catch (ValidationException | NullPointerException e) {
             // It should throw an exception
         }
     }

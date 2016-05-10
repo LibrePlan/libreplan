@@ -61,7 +61,7 @@ public class ShareDivisionTest {
         return new Share(10);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void sharesCannotBeNull() {
         ShareDivision.create(null);
     }

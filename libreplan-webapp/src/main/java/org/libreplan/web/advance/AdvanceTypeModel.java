@@ -26,7 +26,7 @@ import static org.libreplan.web.I18nHelper._;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.libreplan.business.advance.daos.IAdvanceTypeDAO;
 import org.libreplan.business.advance.entities.AdvanceType;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;

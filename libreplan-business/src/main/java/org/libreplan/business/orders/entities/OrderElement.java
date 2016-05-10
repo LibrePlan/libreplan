@@ -37,8 +37,8 @@ import java.util.Set;
 import javax.validation.Valid;
 import javax.validation.constraints.AssertTrue;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.joda.time.LocalDate;
 import org.libreplan.business.advance.bootstrap.PredefinedAdvancedTypes;
@@ -83,7 +83,8 @@ import org.libreplan.business.workingday.IntraDayDate;
 import org.libreplan.business.workreports.daos.IWorkReportLineDAO;
 import org.libreplan.business.workreports.entities.WorkReportLine;
 
-public abstract class OrderElement extends IntegrationEntity implements ICriterionRequirable, ITreeNode<OrderElement> {
+public abstract class
+OrderElement extends IntegrationEntity implements ICriterionRequirable, ITreeNode<OrderElement> {
 
     protected InfoComponentWithCode infoComponent = new InfoComponentWithCode();
 

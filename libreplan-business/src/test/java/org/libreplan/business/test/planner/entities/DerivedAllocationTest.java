@@ -148,13 +148,13 @@ public class DerivedAllocationTest {
         DerivedAllocation.create(derivedFrom, configurationUnit);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void theDerivedFromMustBeNotNull() {
         givenConfigurationUnit();
         DerivedAllocation.create(derivedFrom, configurationUnit);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void theConfigurationUnitMustBeNotNull() {
         givenDerivedFrom();
         DerivedAllocation.create(derivedFrom, configurationUnit);

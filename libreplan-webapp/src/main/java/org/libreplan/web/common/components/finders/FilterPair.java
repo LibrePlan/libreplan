@@ -21,7 +21,7 @@
 
 package org.libreplan.web.common.components.finders;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>

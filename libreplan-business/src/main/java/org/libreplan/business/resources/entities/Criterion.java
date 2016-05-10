@@ -32,9 +32,9 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.collections.ComparatorUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.Validate;
-import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
+import org.apache.commons.lang3.builder.EqualsBuilder;
 import javax.validation.constraints.AssertTrue;
 import org.hibernate.validator.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;

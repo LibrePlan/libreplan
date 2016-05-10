@@ -25,9 +25,9 @@ import static org.libreplan.business.i18n.I18nHelper._;
 
 import java.util.EnumMap;
 
-import org.apache.commons.lang.BooleanUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
 import org.hibernate.NonUniqueResultException;
 import javax.validation.constraints.AssertTrue;
 import org.hibernate.validator.constraints.NotEmpty;

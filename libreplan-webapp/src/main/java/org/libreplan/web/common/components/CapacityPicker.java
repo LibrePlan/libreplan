@@ -18,7 +18,7 @@
  */
 package org.libreplan.web.common.components;
 
-import org.apache.commons.lang.BooleanUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.libreplan.business.calendars.entities.Capacity;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.web.common.Util;
