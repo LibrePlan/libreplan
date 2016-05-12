@@ -27,8 +27,7 @@ import org.springframework.security.core.AuthenticationException;
 
 public class AuthenticationProviderLoggingDecorator implements AuthenticationProvider {
 
-    private static final Log LOG = LogFactory
-            .getLog(AuthenticationProviderLoggingDecorator.class);
+    private static final Log LOG = LogFactory.getLog(AuthenticationProviderLoggingDecorator.class);
 
     private AuthenticationProvider decoratedProvider;
 
@@ -41,22 +40,20 @@ public class AuthenticationProviderLoggingDecorator implements AuthenticationPro
     }
 
     @Override
-    public Authentication authenticate(Authentication authentication)
-            throws AuthenticationException {
-        Object principal = authentication != null ? authentication
-                .getPrincipal() : null;
+    public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+        Object principal = authentication != null ? authentication.getPrincipal() : null;
         LOG.info("trying to authenticate " + principal);
+
         try {
-            Authentication result = decoratedProvider
-                    .authenticate(authentication);
-            if (result != null) {
-                LOG.info("successful authentication for: " + principal
-                        + " with provider: " + decoratedProvider);
+            Authentication result = decoratedProvider.authenticate(authentication);
+            if ( result != null ) {
+                LOG.info("successful authentication for: " + principal + " with provider: " + decoratedProvider);
             }
+
             return result;
+
         } catch (AuthenticationException e) {
-            LOG.info("unsuccessful authentication of " + principal
-                    + " with provider: " + decoratedProvider);
+            LOG.info("unsuccessful authentication of " + principal + " with provider: " + decoratedProvider);
             throw e;
         }
     }

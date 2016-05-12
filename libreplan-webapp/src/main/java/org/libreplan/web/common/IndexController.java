@@ -48,15 +48,15 @@ public class IndexController extends GenericForwardComposer {
     }
 
     private String getInitialPageURL() {
-        if (SecurityUtils.isUserInRole(UserRole.ROLE_SUPERUSER)) {
+        if ( SecurityUtils.isUserInRole(UserRole.ROLE_SUPERUSER) ) {
             return PLANNING_URL;
         }
 
-        if (SecurityUtils.isUserInRole(UserRole.ROLE_BOUND_USER)) {
+        if ( SecurityUtils.isUserInRole(UserRole.ROLE_BOUND_USER) ) {
             return USER_DASHBOARD_URL;
         }
 
-        if (SecurityUtils.isSuperuserOrRolePlanningOrHasAnyAuthorization()) {
+        if ( SecurityUtils.isSuperuserOrRolePlanningOrHasAnyAuthorization() ) {
             return PLANNING_URL;
         }
 

@@ -49,6 +49,15 @@ Changes
 * Update CXF-frontend-jaxrs
 * Add CXF-rs-client
 
+* Update Spring ORM
+* Update Spring Context Support
+* Update Spring Test
+* Update Spring Web
+* Update Spring Security LDAP
+* Update Spring Security ACL
+* Update Spring Security Web
+* Update Spring Security Config
+
 * Update MPXJ
 * Update Bonecp
 * Update Guava
@@ -65,12 +74,14 @@ Changes
 * Update AspectJ Weaver
 * Update JAX-RS API
 * Update BeanShell
+* Update Quartz Framework
 
 * Update LibrePlan version to 1.6.0
 
 
 * Remove Ezmorph
 * Remove Json-lib
+* Remove M2E plugin
 
 * Code refactoring
 

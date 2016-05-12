@@ -4,150 +4,144 @@
     xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:p="http://www.springframework.org/schema/p"
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
-                        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.2.xsd">
+                        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-4.1.xsd">
 
-    <!-- NOTE: see http://static.springsource.org/spring-security/site/docs/2.0.x/apidocs/org/springframework/security/vote/AuthenticatedVoter.html
-        for an explanation of the meaning of IS_AUTHENTICATED_ANONYMOUSLY and IS_AUTHENTICATED_FULLY. -->
+    <!--
+    NOTE: see
 
-    <http auto-config="false" realm="LibrePlan Web Application">
+    http://static.springsource.org/spring-security/site/docs/2.0.x/apidocs/org/springframework/security/vote/AuthenticatedVoter.html
+
+    for an explanation of the meaning of IS_AUTHENTICATED_ANONYMOUSLY and IS_AUTHENTICATED_FULLY. -->
+
+    <http auto-config="false" realm="LibrePlan Web Application" >
 
         <!-- Web services -->
-        <intercept-url pattern="/ws/rest/bounduser/**"
-            access="ROLE_BOUND_USER"
-            method="GET" />
-        <intercept-url pattern="/ws/rest/bounduser/**"
-            access="ROLE_BOUND_USER"
-            method="POST" />
-        <intercept-url pattern="/ws/rest/subcontracting/**"
-            access="ROLE_WS_SUBCONTRACTING"
-            method="GET" />
-        <intercept-url pattern="/ws/rest/subcontracting/**"
-            access="ROLE_WS_SUBCONTRACTING"
-            method="POST" />
-        <intercept-url pattern="/ws/rest/**"
-            access="ROLE_WS_READER"
-            method="GET" />
-        <intercept-url pattern="/ws/rest/**"
-            access="ROLE_WS_WRITER"
-            method="POST" />
-        <intercept-url pattern="/ws/rest/**"
-            access="ROLE_WS_WRITER"
-            method="DELETE" />
+        <intercept-url pattern="/ws/rest/bounduser/**" access="ROLE_BOUND_USER" method="GET" />
+        <intercept-url pattern="/ws/rest/bounduser/**" access="ROLE_BOUND_USER" method="POST" />
+        <intercept-url pattern="/ws/rest/subcontracting/**" access="ROLE_WS_SUBCONTRACTING" method="GET" />
+        <intercept-url pattern="/ws/rest/subcontracting/**" access="ROLE_WS_SUBCONTRACTING" method="POST" />
+        <intercept-url pattern="/ws/rest/**" access="ROLE_WS_READER" method="GET" />
+        <intercept-url pattern="/ws/rest/**" access="ROLE_WS_WRITER" method="POST" />
+        <intercept-url pattern="/ws/rest/**" access="ROLE_WS_WRITER" method="DELETE" />
 
         <!-- Web application -->
-        <intercept-url pattern="/common/img/**"
-            access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <intercept-url pattern="/common/css/**"
-            access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <intercept-url pattern="/planner/css/**"
-            access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <intercept-url pattern="/callback/**"
-            access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <intercept-url pattern="/zkau/**"
-            access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <intercept-url pattern="/help/**"
-            access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <intercept-url pattern="/common/layout/login.zul"
-            access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <intercept-url pattern="/common/layout/timeout.zul"
-            access="IS_AUTHENTICATED_ANONYMOUSLY" />
+        <intercept-url pattern="/common/img/**" access="permitAll" />
+        <intercept-url pattern="/common/css/**" access="permitAll" />
+        <intercept-url pattern="/planner/css/**" access="permitAll" />
+        <intercept-url pattern="/callback/**" access="permitAll" />
+        <intercept-url pattern="/zkau/**" access="permitAll" />
+        <intercept-url pattern="/help/**" access="permitAll" />
+        <intercept-url pattern="/common/layout/login.zul" access="isAnonymous()" />
+        <intercept-url pattern="/common/layout/timeout.zul" access="permitAll" />
 
         <!-- Pages -->
-        <intercept-url pattern="/templates/*"
-            access="ROLE_SUPERUSER,ROLE_TEMPLATES" />
-        <intercept-url pattern="/email/*"
-            access="ROLE_SUPERUSER"/>
-        <intercept-url pattern="/resources/worker/worker.zul"
-            access="ROLE_SUPERUSER,ROLE_WORKERS" />
-        <intercept-url pattern="/resources/machine/*"
-            access="ROLE_SUPERUSER,ROLE_MACHINES" />
+        <intercept-url pattern="/templates/*" access="hasAnyRole('ROLE_SUPERUSER', 'ROLE_TEMPLATES')" />
+        <intercept-url pattern="/email/*" access="ROLE_SUPERUSER"/>
+        <intercept-url pattern="/resources/worker/worker.zul" access="hasAnyRole('ROLE_SUPERUSER', 'ROLE_WORKERS')" />
+        <intercept-url pattern="/resources/machine/*" access="hasAnyRole('ROLE_SUPERUSER', 'ROLE_MACHINES')" />
+
         <intercept-url pattern="/resources/worker/virtualWorkers.zul"
-            access="ROLE_SUPERUSER,ROLE_VIRTUAL_WORKERS" />
-        <intercept-url pattern="/calendars/*"
-            access="ROLE_SUPERUSER,ROLE_CALENDARS" />
+                       access="hasAnyRole('ROLE_SUPERUSER', 'ROLE_VIRTUAL_WORKERS')" />
+
+        <intercept-url pattern="/calendars/*" access="hasAnyRole('ROLE_SUPERUSER', 'ROLE_CALENDARS')" />
+
         <intercept-url pattern="/excetiondays/*"
-            access="ROLE_SUPERUSER,ROLE_CALENDAR_EXCEPTION_DAYS" />
-        <intercept-url pattern="/resources/criterions/*"
-            access="ROLE_SUPERUSER,ROLE_CRITERIA" />
-        <intercept-url pattern="/advance/*"
-            access="ROLE_SUPERUSER,ROLE_PROGRESS_TYPES" />
-        <intercept-url pattern="/labels/*"
-            access="ROLE_SUPERUSER,ROLE_LABELS" />
-        <intercept-url pattern="/materials/*"
-            access="ROLE_SUPERUSER,ROLE_MATERIALS" />
-        <intercept-url pattern="/unittypes/*"
-            access="ROLE_SUPERUSER,ROLE_MATERIAL_UNITS" />
-        <intercept-url pattern="/qualityforms/*"
-            access="ROLE_SUPERUSER,ROLE_QUALITY_FORMS" />
-        <intercept-url pattern="/workreports/workReport.zul"
-            access="ROLE_SUPERUSER,ROLE_TIMESHEETS" />
+                       access="hasAnyRole('ROLE_SUPERUSER', 'ROLE_CALENDAR_EXCEPTION_DAYS')" />
+
+        <intercept-url pattern="/resources/criterions/*" access="hasAnyRole('ROLE_SUPERUSER', 'ROLE_CRITERIA')" />
+        <intercept-url pattern="/advance/*" access="hasAnyRole('ROLE_SUPERUSER', 'ROLE_PROGRESS_TYPES')" />
+        <intercept-url pattern="/labels/*" access="hasAnyRole('ROLE_SUPERUSER', 'ROLE_LABELS')" />
+        <intercept-url pattern="/materials/*" access="hasAnyRole('ROLE_SUPERUSER', 'ROLE_MATERIALS')" />
+        <intercept-url pattern="/unittypes/*" access="hasAnyRole('ROLE_SUPERUSER', 'ROLE_MATERIAL_UNITS')" />
+        <intercept-url pattern="/qualityforms/*" access="hasAnyRole('ROLE_SUPERUSER', 'ROLE_QUALITY_FORMS')" />
+        <intercept-url pattern="/workreports/workReport.zul" access="hasAnyRole('ROLE_SUPERUSER', 'ROLE_TIMESHEETS')" />
+
         <intercept-url pattern="/workreports/workReportTypes.zul"
-            access="ROLE_SUPERUSER,ROLE_TIMESHEETS_TEMPLATES" />
+                       access="hasAnyRole('ROLE_SUPERUSER', 'ROLE_TIMESHEETS_TEMPLATES')" />
+
         <intercept-url pattern="/expensesheet/*"
-            access="ROLE_SUPERUSER,ROLE_EXPENSES,ROLE_BOUND_USER" />
-        <intercept-url pattern="/costcategories/*"
-            access="ROLE_SUPERUSER,ROLE_COST_CATEGORIES" />
-        <intercept-url pattern="/typeofworkhours/*"
-            access="ROLE_SUPERUSER,ROLE_HOURS_TYPES" />
+                       access="hasAnyRole('ROLE_SUPERUSER', 'ROLE_EXPENSES', 'ROLE_BOUND_USER')" />
+
+        <intercept-url pattern="/costcategories/*" access="hasAnyRole('ROLE_SUPERUSER', 'ROLE_COST_CATEGORIES')" />
+        <intercept-url pattern="/typeofworkhours/*" access="hasAnyRole('ROLE_SUPERUSER', 'ROLE_HOURS_TYPES')" />
+
         <intercept-url pattern="/common/configuration.zul"
-            access="ROLE_SUPERUSER,ROLE_MAIN_SETTINGS" />
-        <intercept-url pattern="/users/*"
-            access="ROLE_SUPERUSER,ROLE_USER_ACCOUNTS" />
-        <intercept-url pattern="/profiles/*"
-            access="ROLE_SUPERUSER,ROLE_PROFILES" />
-        <intercept-url pattern="/externalcompanies/*"
-            access="ROLE_SUPERUSER,ROLE_COMPANIES" />
+                       access="hasAnyRole('ROLE_SUPERUSER', 'ROLE_MAIN_SETTINGS')" />
+
+        <intercept-url pattern="/users/*" access="hasAnyRole('ROLE_SUPERUSER', 'ROLE_USER_ACCOUNTS')" />
+        <intercept-url pattern="/profiles/*" access="hasAnyRole('ROLE_SUPERUSER', 'ROLE_PROFILES')" />
+        <intercept-url pattern="/externalcompanies/*" access="hasAnyRole('ROLE_SUPERUSER', 'ROLE_COMPANIES')" />
+
         <intercept-url pattern="/subcontract/subcontractedTasks.zul"
-            access="ROLE_SUPERUSER,ROLE_SEND_TO_SUBCONTRACTORS" />
+                       access="hasAnyRole('ROLE_SUPERUSER', 'ROLE_SEND_TO_SUBCONTRACTORS')" />
+
         <intercept-url pattern="/subcontract/subcontractorCommunications.zul"
-            access="ROLE_SUPERUSER,ROLE_RECEIVED_FROM_SUBCONTRACTORS" />
+                       access="hasAnyRole('ROLE_SUPERUSER', 'ROLE_RECEIVED_FROM_SUBCONTRACTORS')" />
+
         <intercept-url pattern="/subcontract/reportAdvances.zul"
-            access="ROLE_SUPERUSER,ROLE_SEND_TO_CUSTOMERS" />
+                       access="hasAnyRole('ROLE_SUPERUSER', 'ROLE_SEND_TO_CUSTOMERS')" />
+
         <intercept-url pattern="/subcontract/customerCommunications.zul"
-            access="ROLE_SUPERUSER,ROLE_RECEIVED_FROM_CUSTOMERS" />
+                       access="hasAnyRole('ROLE_SUPERUSER', 'ROLE_RECEIVED_FROM_CUSTOMERS')" />
+
         <intercept-url pattern="/workreports/workReportQuery.zul"
-            access="ROLE_SUPERUSER,ROLE_TIMESHEET_LINES_LIST" />
+                       access="hasAnyRole('ROLE_SUPERUSER', 'ROLE_TIMESHEET_LINES_LIST')" />
+
         <intercept-url pattern="/reports/hoursWorkedPerWorkerReport.zul"
-            access="ROLE_SUPERUSER,ROLE_HOURS_WORKED_PER_RESOURCE_REPORT" />
+                       access="hasAnyRole('ROLE_SUPERUSER', 'ROLE_HOURS_WORKED_PER_RESOURCE_REPORT')" />
+
         <intercept-url pattern="/reports/hoursWorkedPerWorkerInAMonthReport.zul"
-            access="ROLE_SUPERUSER,ROLE_TOTAL_WORKED_HOURS_BY_RESOURCE_IN_A_MONTH_REPORT" />
+                       access="hasAnyRole('ROLE_SUPERUSER', 'ROLE_TOTAL_WORKED_HOURS_BY_RESOURCE_IN_A_MONTH_REPORT')" />
+
         <intercept-url pattern="/reports/schedulingProgressPerOrderReport.zul"
-            access="ROLE_SUPERUSER,ROLE_WORK_AND_PROGRESS_PER_PROJECT_REPORT" />
+                       access="hasAnyRole('ROLE_SUPERUSER', 'ROLE_WORK_AND_PROGRESS_PER_PROJECT_REPORT')" />
+
         <intercept-url pattern="/reports/workingProgressPerTaskReport.zul"
-            access="ROLE_SUPERUSER,ROLE_WORK_AND_PROGRESS_PER_TASK_REPORT" />
+                       access="hasAnyRole('ROLE_SUPERUSER', 'ROLE_WORK_AND_PROGRESS_PER_TASK_REPORT')" />
+
         <intercept-url pattern="/reports/completedEstimatedHoursPerTask.zul"
-            access="ROLE_SUPERUSER,ROLE_ESTIMATED_PLANNED_HOURS_PER_TASK_REPORT" />
+                       access="hasAnyRole('ROLE_SUPERUSER', 'ROLE_ESTIMATED_PLANNED_HOURS_PER_TASK_REPORT')" />
+
         <intercept-url pattern="/reportsorderCostsPerResource/.zul"
-            access="ROLE_SUPERUSER,ROLE_PROJECT_COSTS_REPORT" />
+                       access="hasAnyRole('ROLE_SUPERUSER', 'ROLE_PROJECT_COSTS_REPORT')" />
+
         <intercept-url pattern="/reports/workingArrangementsPerOrderReport.zul"
-            access="ROLE_SUPERUSER,ROLE_TASK_SCHEDULING_STATUS_IN_PROJECT_REPORT" />
+                       access="hasAnyRole('ROLE_SUPERUSER', 'ROLE_TASK_SCHEDULING_STATUS_IN_PROJECT_REPORT')" />
+
         <intercept-url pattern="/reports/timeLineMaterialReport.zul"
-            access="ROLE_SUPERUSER,ROLE_MATERIALS_NEED_AT_DATE_REPORT" />
-        <intercept-url pattern="/myaccount/userDashboard.zul"
-            access="ROLE_BOUND_USER" />
+                       access="hasAnyRole('ROLE_SUPERUSER', 'ROLE_MATERIALS_NEED_AT_DATE_REPORT')" />
+
+        <intercept-url pattern="/myaccount/userDashboard.zul" access="ROLE_BOUND_USER" />
+
         <intercept-url pattern="/myaccount/monthlyTimesheet.zul"
-            access="ROLE_SUPERUSER,ROLE_TIMESHEETS,ROLE_BOUND_USER" />
+                       access="hasAnyRole('ROLE_SUPERUSER', 'ROLE_TIMESHEETS', 'ROLE_BOUND_USER')" />
+
         <intercept-url pattern="/orders/imports/projectImport.zul"
-            access="ROLE_SUPERUSER,ROLE_IMPORT_PROJECTS" />
+                       access="hasAnyRole('ROLE_SUPERUSER', 'ROLE_IMPORT_PROJECTS')" />
 
 
-        <intercept-url pattern="/**" access="IS_AUTHENTICATED_FULLY" />
+        <intercept-url pattern="/**" access="isFullyAuthenticated()" />
 
-        <!-- These have been added because of auto-config is false now in order
-            to use a custom authentication filter.
-            See: http://static.springsource.org/spring-security/site/docs/2.0.x/reference/ns-config.html#ns-auto-config -->
+        <!--
+        These have been added because of auto-config is false now in order to use a custom authentication filter.
+        See: http://static.springsource.org/spring-security/site/docs/2.0.x/reference/ns-config.html#ns-auto-config
+        -->
         <anonymous />
-        <form-login login-page="/common/layout/login.zul"
-            default-target-url="/common/index.zul"
-            authentication-failure-url="/common/layout/login.zul?login_error=true" />
+        <form-login
+                login-page="/common/layout/login.zul"
+                default-target-url="/common/index.zul"
+                authentication-failure-url="/common/layout/login.zul?login_error=true"
+                login-processing-url="/j_spring_security_check"
+                username-parameter="j_username"
+                password-parameter="j_password"/>
         <http-basic />
         <logout />
         <remember-me />
+        <csrf disabled="true"/>
 
     </http>
 
-    <!-- Beans used by Spring Security (current configuration assumes users
-        are registered in the database). -->
+    <!-- Beans used by Spring Security (current configuration assumes users are registered in the database). -->
     <beans:bean id="passwordEncoder"
         class="org.springframework.security.authentication.encoding.ShaPasswordEncoder">
         <beans:constructor-arg value="512" />
@@ -156,12 +150,11 @@
     <beans:bean id="saltSource"
         class="org.springframework.security.authentication.dao.ReflectionSaltSource"
         p:userPropertyToUse="username" />
-    <!-- <beans:bean id="realAuthenticationProvider" class="org.springframework.security.providers.dao.DaoAuthenticationProvider"
-        p:passwordEncoder-ref="passwordEncoder" p:saltSource-ref="saltSource" p:userDetailsService-ref="dbUserDetailsService">
-        <custom-authentication-provider/> </beans:bean> -->
-    <!-- Beans used by the LibrePlan Web application when users are registered
-        in the database. When users are registered externally (e.g. in a LDAP server),
-        these lines may be commented. <beans:bean id="dbUserDetailsService" class="org.libreplan.web.users.services.DBUserDetailsService"/> -->
+
+    <!--
+    Beans used by the LibrePlan Web application when users are registered in the database.
+    When users are registered externally (e.g. in a LDAP server),these lines may be commented.
+    -->
     <beans:bean id="dbPasswordEncoderService"
         class="org.libreplan.web.users.services.DBPasswordEncoderService"
         p:passwordEncoder-ref="passwordEncoder" p:saltSource-ref="saltSource" />
@@ -169,10 +162,11 @@
     <beans:bean id="usersBootstrapInDB"
         class="org.libreplan.web.users.bootstrap.UsersBootstrapInDB"
         p:dbPasswordEncoderService-ref="dbPasswordEncoderService" />
-    <!-- Beans used by the LibrePlan Web Application when users are registerd
-        in LDAP. At this moment users MUST be also in database with same username.
-        This will be changed in the near future. the url, base, userDN and password
-        properties must be set with the proper values -->
+    <!--
+    Beans used by the LibrePlan Web Application when users are registerd in LDAP.
+    At this moment users MUST be also in database with same username.
+    This will be changed in the near future.
+    The url, base, userDN and password properties must be set with the proper values -->
     <beans:bean id="contextSource"
         class="org.libreplan.web.users.services.LDAPCustomContextSource">
     </beans:bean>
@@ -182,10 +176,10 @@
         p:contextSource-ref="contextSource">
     </beans:bean>
 
-    <!-- This authentication provider will make possible all the login process
-        when an LDAP is used. Also will allow authenticate users in database. The
-        property strUserId must be set with the proper value. It represents the property
-        of the user in LDAP which will be used to check the username. -->
+    <!-- This authentication provider will make possible all the login process when an LDAP is used.
+    Also will allow authenticate users in database.
+    The property strUserId must be set with the proper value.
+    It represents the property of the user in LDAP which will be used to check the username. -->
     <beans:bean id="realAuthenticationProvider"
         class="org.libreplan.web.users.services.LDAPCustomAuthenticationProvider"
         p:userDetailsService-ref="ldapUserDetailsService"
@@ -195,13 +189,10 @@
 
     <beans:bean id="authenticationProvider"
                 class="org.libreplan.web.users.services.AuthenticationProviderLoggingDecorator">
-
         <beans:property name="decoratedProvider" ref="realAuthenticationProvider"/>
-
     </beans:bean>
 
-    <!-- This bean is used to implement UserDetailsService with LDAP authentication
-        Provider. -->
+    <!-- This bean is used to implement UserDetailsService with LDAP authentication Provider -->
     <beans:bean id="ldapUserDetailsService" class="org.libreplan.web.users.services.LDAPUserDetailsService" />
 
     <authentication-manager>

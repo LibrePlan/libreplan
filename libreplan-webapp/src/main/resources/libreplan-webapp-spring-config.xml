@@ -1,61 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:p="http://www.springframework.org/schema/p"
-    xmlns:tx="http://www.springframework.org/schema/tx"
-    xmlns:context="http://www.springframework.org/schema/context"
-    xmlns:util="http://www.springframework.org/schema/util"
-    xmlns:jaxrs="http://cxf.apache.org/jaxrs"
-    xmlns:cxf="http://cxf.apache.org/core"
-    xsi:schemaLocation="
-    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
-    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
-    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
-    http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd
-    http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd
-    http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd">
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
 
-    <!--
-        For enabling annotation-based configuration (in particular,
-        required for "@Autowired")
-    -->
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+
+    http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd">
+
+    <!-- For enabling annotation-based configuration (in particular, required for "@Autowired") -->
     <context:annotation-config />
 
-    <bean id="aspect" class="org.libreplan.web.common.concurrentdetection.ConcurrentModificationHandling">
-    </bean>
+    <bean id="aspect" class="org.libreplan.web.common.concurrentdetection.ConcurrentModificationHandling" />
 
-    <bean class="org.libreplan.web.common.entrypoints.RedirectorSynthetiser"></bean>
+    <bean class="org.libreplan.web.common.entrypoints.RedirectorSynthetiser"/>
 
-    <bean id="ordersMultipleFiltersFinder" class="org.libreplan.web.common.components.finders.OrdersMultipleFiltersFinder" scope="singleton" />
+    <bean id="ordersMultipleFiltersFinder"
+          class="org.libreplan.web.common.components.finders.OrdersMultipleFiltersFinder"/>
 
-    <bean id="taskGroupsMultipleFiltersFinder" class="org.libreplan.web.common.components.finders.TaskGroupsMultipleFiltersFinder" scope="singleton" />
+    <bean id="taskGroupsMultipleFiltersFinder"
+          class="org.libreplan.web.common.components.finders.TaskGroupsMultipleFiltersFinder"/>
 
-    <bean id="orderElementsMultipleFiltersFinder" class="org.libreplan.web.common.components.finders.OrderElementsMultipleFiltersFinder" scope="singleton"/>
+    <bean id="orderElementsMultipleFiltersFinder"
+          class="org.libreplan.web.common.components.finders.OrderElementsMultipleFiltersFinder"/>
 
-    <bean id="taskElementsMultipleFiltersFinder" class="org.libreplan.web.common.components.finders.TaskElementsMultipleFiltersFinder" scope="singleton" />
+    <bean id="taskElementsMultipleFiltersFinder"
+          class="org.libreplan.web.common.components.finders.TaskElementsMultipleFiltersFinder"/>
 
-    <bean id="resourcesMultipleFiltersFinder" class="org.libreplan.web.common.components.finders.ResourcesMultipleFiltersFinder" scope="singleton" />
+    <bean id="resourcesMultipleFiltersFinder"
+          class="org.libreplan.web.common.components.finders.ResourcesMultipleFiltersFinder"/>
 
-    <bean id="limitingResourceAllocationMultipleFiltersFinder" class="org.libreplan.web.common.components.finders.LimitingResourceAllocationMultipleFiltersFinder" scope="singleton"/>
+    <bean id="limitingResourceAllocationMultipleFiltersFinder"
+          class="org.libreplan.web.common.components.finders.LimitingResourceAllocationMultipleFiltersFinder"/>
 
-    <bean id="nonLimitingResourceAllocationMultipleFiltersFinder" class="org.libreplan.web.common.components.finders.NonLimitingResourceAllocationMultipleFiltersFinder" scope="singleton" />
+    <bean id="nonLimitingResourceAllocationMultipleFiltersFinder"
+          class="org.libreplan.web.common.components.finders.NonLimitingResourceAllocationMultipleFiltersFinder"/>
 
-    <bean id="resourceMultipleFiltersFinderByResourceAndCriterion" class="org.libreplan.web.common.components.finders.ResourceMultipleFiltersFinderByResourceAndCriterion" scope="singleton"/>
+    <bean id="resourceMultipleFiltersFinderByResourceAndCriterion"
+          class="org.libreplan.web.common.components.finders.ResourceMultipleFiltersFinderByResourceAndCriterion"/>
 
-    <bean id="criterionMultipleFiltersFinder" class="org.libreplan.web.common.components.finders.CriterionMultipleFiltersFinder" scope="singleton"/>
+    <bean id="criterionMultipleFiltersFinder"
+          class="org.libreplan.web.common.components.finders.CriterionMultipleFiltersFinder"/>
 
-    <bean id="scenarioManager"
-        class="org.libreplan.web.scenarios.CurrentUserScenarioAwareManager"
-        scope="singleton"/>
+    <bean id="scenarioManager" class="org.libreplan.web.scenarios.CurrentUserScenarioAwareManager"/>
 
     <!-- Scheduler -->
-    <bean id="schedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean" lazy-init="false" />
+    <bean id="schedulerFactoryBean"
+          class="org.springframework.scheduling.quartz.SchedulerFactoryBean" lazy-init="false" />
 
-    <bean id="schedulerManager"
-        class="org.libreplan.importers.SchedulerManager"
-        scope="singleton"
-        init-method="scheduleJobs">
+    <bean id="schedulerManager" class="org.libreplan.importers.SchedulerManager" init-method="scheduleJobs">
         <property name="scheduler" ref="schedulerFactoryBean"/>
     </bean>
 

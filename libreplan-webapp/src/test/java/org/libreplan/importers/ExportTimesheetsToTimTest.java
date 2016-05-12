@@ -71,15 +71,13 @@ import org.springframework.transaction.annotation.Transactional;
         WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE })
 public class ExportTimesheetsToTimTest {
 
-    private Properties properties = null;
-
     @Autowired
     IExportTimesheetsToTim exportTimesheetsToTim;
 
     @Before
     public void loadProperties() throws IOException {
         String filename = System.getProperty("user.dir") + "/../scripts/tim-connector/tim-conn.properties";
-        properties = new Properties();
+        Properties properties = new Properties();
         properties.load(new FileInputStream(filename));
     }
 
@@ -114,6 +112,7 @@ public class ExportTimesheetsToTimTest {
                 defaultAdvanceTypesBootstrapListener.loadRequiredData();
                 configurationBootstrap.loadRequiredData();
                 scenariosBootstrap.loadRequiredData();
+
                 return null;
             }
         };
@@ -123,11 +122,11 @@ public class ExportTimesheetsToTimTest {
 
     private Order givenOrder() {
         return transactionService.runOnAnotherTransaction(new IOnTransaction<Order>() {
-                    @Override
-                    public Order execute() {
-                        return givenValidOrderAlreadyStored();
-                    }
-                });
+            @Override
+            public Order execute() {
+                return givenValidOrderAlreadyStored();
+            }
+        });
     }
 
     private Order givenValidOrderAlreadyStored() {
@@ -152,6 +151,7 @@ public class ExportTimesheetsToTimTest {
         Scenario current = scenarioManager.getCurrent();
         OrderVersion result = OrderVersion.createInitialVersion(current);
         order.setVersionForScenario(current, result);
+
         return result;
     }
 

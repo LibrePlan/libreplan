@@ -34,11 +34,10 @@ import org.zkoss.zk.ui.util.GenericForwardComposer;
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 
+// TODO resolve deprecated methods
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class LoginController extends GenericForwardComposer {
-
-    private final String autocompletLoginValue = "admin";
 
     @Autowired
     private IConfigurationDAO configurationDAO;
@@ -53,11 +52,13 @@ public class LoginController extends GenericForwardComposer {
      * It returns the login value in function of the property autocompleteLogin.
      */
     public String getLoginValue() {
-        Configuration configuration = configurationDAO
-                .getConfigurationWithReadOnlyTransaction();
-        return ((configuration.isAutocompleteLogin()) && (!configuration
-                .getChangedDefaultAdminPassword())) ? this.autocompletLoginValue
-                : null;
+        Configuration configuration = configurationDAO.getConfigurationWithReadOnlyTransaction();
+        String autocompleteLoginValue = "admin";
+
+        boolean condition =
+                ((configuration.isAutocompleteLogin()) && (!configuration.getChangedDefaultAdminPassword()));
+
+        return condition ? autocompleteLoginValue : null;
     }
 
 }

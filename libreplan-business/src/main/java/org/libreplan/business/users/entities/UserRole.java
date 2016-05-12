@@ -28,7 +28,7 @@ import static org.libreplan.business.i18n.I18nHelper._;
  *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  * @author Manuel Rego Casasnovas <rego@igalia.com>
- * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
 public enum UserRole {
 
@@ -100,7 +100,7 @@ public enum UserRole {
 
     private final String displayName;
 
-    private UserRole(String displayName) {
+    UserRole(String displayName) {
         this.displayName = displayName;
     }
 

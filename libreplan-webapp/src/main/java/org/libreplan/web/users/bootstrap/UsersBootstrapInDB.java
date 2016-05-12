@@ -36,7 +36,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Bootstrapt to create the default {@link User Users}.
+ * Bootstrap to create the default {@link User Users}.
  *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  * @author Manuel Rego Casasnovas <rego@igalia.com>
@@ -63,11 +63,15 @@ public class UsersBootstrapInDB implements IUsersBootstrapInDB {
     @Override
     public void loadRequiredData() {
 
-        if (userDAO.list(User.class).isEmpty()) {
+        if ( userDAO.list(User.class).isEmpty() ) {
             for (PredefinedUsers u : PredefinedUsers.values()) {
-                User user = User.create(u.getLoginName(),
-                        getEncodedPassword(u), u.getInitialRoles(),
+
+                User user = User.create(
+                        u.getLoginName(),
+                        getEncodedPassword(u),
+                        u.getInitialRoles(),
                         getProfiles(u.getInitialProfiles()));
+
                 user.setDisabled(u.isUserDisabled());
 
                 userDAO.save(user);
@@ -77,7 +81,7 @@ public class UsersBootstrapInDB implements IUsersBootstrapInDB {
     }
 
     private Set<Profile> getProfiles(Set<PredefinedProfiles> initialProfiles) {
-        Set<Profile> profiles = new HashSet<Profile>();
+        Set<Profile> profiles = new HashSet<>();
         for (PredefinedProfiles each : initialProfiles) {
             try {
                 profiles.add(profileDAO.findByProfileName(each.getName()));
@@ -85,13 +89,13 @@ public class UsersBootstrapInDB implements IUsersBootstrapInDB {
                 throw new RuntimeException(e);
             }
         }
+
         return profiles;
     }
 
     private String getEncodedPassword(PredefinedUsers u) {
 
-        return dbPasswordEncoderService.encodePassword(u.getClearPassword(),
-            u.getLoginName());
+        return dbPasswordEncoderService.encodePassword(u.getClearPassword(), u.getLoginName());
 
     }
 

@@ -112,22 +112,17 @@
         class="org.springframework.orm.hibernate4.HibernateTransactionManager"
         p:sessionFactory-ref="sessionFactory" />
 
-    <!--
-        Enable configuration of transactional behavior based on annotations
-    -->
+    <!-- Enable configuration of transactional behavior based on annotations -->
     <tx:annotation-driven transaction-manager="transactionManager" />
 
-    <!--
-        For enabling annotation-based configuration (in particular, required
-        for Autowired annotation)
-    -->
+    <!-- For enabling annotation-based configuration (in particular, required for Autowired annotation) -->
     <context:annotation-config />
 
     <context:component-scan base-package="org.libreplan.business" />
 
     <bean id="registry" class="org.libreplan.business.common.Registry" factory-method="getInstance" />
 
-    <bean id="CriterionRequirementOrderElementHandler"
+    <bean id="criterionRequirementOrderElementHandler"
         class="org.libreplan.business.orders.entities.CriterionRequirementOrderElementHandler"
         factory-method="getInstance" />
 
@@ -135,26 +130,18 @@
         class="org.libreplan.business.common.VersionInformation"
         factory-method="getInstance"
         lazy-init="false">
-        <property name="projectVersion">
-            <value>${project.version}</value>
-        </property>
+        <property name="projectVersion" value="${project.version}"/>
     </bean>
 
     <bean id="configuration"
         class="org.libreplan.business.common.Configuration"
         factory-method="getInstance"
         lazy-init="false">
-        <property name="defaultPasswordsControl">
-            <value>${default.passwordsControl}</value>
-        </property>
-        <property name="exampleUsersDisabled">
-            <value>${default.exampleUsersDisabled}</value>
-        </property>
-        <property name="emailSendingEnabled">
-            <value>${default.emailSendingEnabled}</value>
-        </property>
+        <property name="defaultPasswordsControl" value="${default.passwordsControl}"/>
+        <property name="exampleUsersDisabled" value="${default.exampleUsersDisabled}"/>
+        <property name="emailSendingEnabled" value="${default.emailSendingEnabled}"/>
     </bean>
 
-    <bean id="scenarioManager" class="org.libreplan.business.scenarios.OnlyMainScenarioAwareManager" scope="singleton"/>
+    <bean id="scenarioManager" class="org.libreplan.business.scenarios.OnlyMainScenarioAwareManager"/>
 
 </beans>
