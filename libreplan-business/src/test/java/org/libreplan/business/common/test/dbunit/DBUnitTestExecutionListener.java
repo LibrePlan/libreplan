@@ -50,7 +50,7 @@ import org.springframework.test.context.transaction.TransactionalTestExecutionLi
  * @author Bob McCune
  * @version 1.0
  */
-public class DBUnitTestExecutionListener extends TransactionalTestExecutionListener {
+class DBUnitTestExecutionListener extends TransactionalTestExecutionListener {
 
     private static final Log logger = LogFactory.getLog(DBUnitTestExecutionListener.class);
 
@@ -65,6 +65,7 @@ public class DBUnitTestExecutionListener extends TransactionalTestExecutionListe
         DataSource dataSource = getDataSource(testContext);
         Connection conn = DataSourceUtils.getConnection(dataSource);
         IDatabaseConnection dbUnitConn = getDBUnitConnection(conn);
+
         try {
             IDataSet dataSets[] = getDataSets(testContext);
             for (IDataSet dataSet : dataSets) {
@@ -78,63 +79,65 @@ public class DBUnitTestExecutionListener extends TransactionalTestExecutionListe
 
     private DataSource getDataSource(TestContext context) {
         DataSource dataSource;
-        Map beans = context.getApplicationContext().getBeansOfType(
-                DataSource.class);
-        if (beans.size() > 1) {
+        Map beans = context.getApplicationContext().getBeansOfType(DataSource.class);
+
+        if ( beans.size() > 1 ) {
             dataSource = (DataSource) beans.get(DEFAULT_DATASOURCE_NAME);
-            if (dataSource == null) {
-                throw new NoSuchBeanDefinitionException(
-                        "Unable to locate default data source.");
+
+            if ( dataSource == null ) {
+                throw new NoSuchBeanDefinitionException("Unable to locate default data source.");
             }
         } else {
             dataSource = (DataSource) beans.values().iterator().next();
         }
+
         return dataSource;
     }
 
-    private IDatabaseConnection getDBUnitConnection(Connection c)
-            throws DatabaseUnitException
-            {
+    private IDatabaseConnection getDBUnitConnection(Connection c) throws DatabaseUnitException {
         IDatabaseConnection conn = new DatabaseConnection(c);
         DatabaseConfig config = conn.getConfig();
-        config.setFeature("http://www.dbunit.org/features/qualifiedTableNames",
-                true);
-        config.setProperty("http://www.dbunit.org/properties/tableType",
-                TABLE_TYPES);
+        // TODO resolve depracated method
+        config.setFeature("http://www.dbunit.org/features/qualifiedTableNames", true);
+        config.setProperty("http://www.dbunit.org/properties/tableType", TABLE_TYPES);
+
         return conn;
     }
 
     private IDataSet[] getDataSets(TestContext context) throws Exception {
         String dataFiles[] = getDataLocations(context);
         IDataSet dataSets[] = new IDataSet[dataFiles.length];
+
         for (int i = 0; i < dataFiles.length; i++) {
             Resource resource = new ClassPathResource(dataFiles[i]);
             Class clazz = getDataSetType(context);
             Constructor con = clazz.getConstructor(InputStream.class);
             dataSets[i] = (IDataSet) con.newInstance(resource.getInputStream());
         }
+
         return dataSets;
     }
 
-    protected Class getDataSetType(TestContext context) {
+    private Class getDataSetType(TestContext context) {
         Class<?> testClass = context.getTestClass();
-        DBUnitConfiguration config = testClass
-                .getAnnotation(DBUnitConfiguration.class);
+        DBUnitConfiguration config = testClass.getAnnotation(DBUnitConfiguration.class);
+
         return config.type();
     }
 
     private String[] getDataLocations(TestContext context) {
         Class<?> testClass = context.getTestClass();
-        DBUnitConfiguration config = testClass
-                .getAnnotation(DBUnitConfiguration.class);
-        if (config == null) {
-            throw new IllegalStateException("Test class '" + testClass
-                    + " has is missing @DBUnitConfiguration annotation.");
+        DBUnitConfiguration config = testClass.getAnnotation(DBUnitConfiguration.class);
+
+        if ( config == null ) {
+            throw new IllegalStateException(
+                    "Test class '" + testClass + " has is missing @DBUnitConfiguration annotation.");
         }
-        if (config.locations().length == 0) {
+        if ( config.locations().length == 0 ) {
             throw new IllegalStateException(
                     "@DBUnitConfiguration annotation doesn't specify any DBUnit configuration locations.");
         }
+
         return config.locations();
     }
 }

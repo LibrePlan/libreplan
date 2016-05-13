@@ -55,7 +55,7 @@ public class Connector extends BaseEntity {
 
     private String name;
 
-    private List<ConnectorProperty> properties = new ArrayList<ConnectorProperty>();
+    private List<ConnectorProperty> properties = new ArrayList<>();
 
     /**
      * Constructor for Hibernate. Do not use!
@@ -90,34 +90,33 @@ public class Connector extends BaseEntity {
     }
 
     public Map<String, String> getPropertiesAsMap() {
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, String> map = new HashMap<>();
         for (ConnectorProperty property : properties) {
             map.put(property.getKey(), property.getValue());
         }
+
         return map;
     }
 
     @AssertTrue(message = "connector name is already being used")
     public boolean isUniqueConnectorNameConstraint() {
-        if (StringUtils.isBlank(name)) {
+        if ( StringUtils.isBlank(name) ) {
             return true;
         }
 
         IConnectorDAO connectorDAO = Registry.getConnectorDAO();
-        if (isNewObject()) {
+        if ( isNewObject() ) {
             return !connectorDAO.existsByNameAnotherTransaction(this);
         } else {
-            Connector found = connectorDAO
-                    .findUniqueByNameAnotherTransaction(name);
+            Connector found = connectorDAO.findUniqueByNameAnotherTransaction(name);
+
             return found == null || found.getId().equals(getId());
         }
 
     }
 
     public boolean isActivated() {
-        return getPropertiesAsMap()
-                .get(PredefinedConnectorProperties.ACTIVATED).equalsIgnoreCase(
-                        "Y");
+        return getPropertiesAsMap().get(PredefinedConnectorProperties.ACTIVATED).equalsIgnoreCase("Y");
     }
 
     /**
@@ -126,23 +125,15 @@ public class Connector extends BaseEntity {
      * @return true if connection values are valid
      */
     public boolean areConnectionValuesValid() {
-        String serverUrl = getPropertiesAsMap().get(
-                PredefinedConnectorProperties.SERVER_URL);
+        String serverUrl = getPropertiesAsMap().get(PredefinedConnectorProperties.SERVER_URL);
         try {
             new URL(serverUrl);
         } catch (MalformedURLException e) {
             return false;
         }
 
-        if (StringUtils.isBlank(getPropertiesAsMap().get(
-                PredefinedConnectorProperties.USERNAME))) {
-            return false;
-        }
+        return !StringUtils.isBlank(getPropertiesAsMap().get(PredefinedConnectorProperties.USERNAME)) &&
+                !StringUtils.isBlank(getPropertiesAsMap().get(PredefinedConnectorProperties.PASSWORD));
 
-        if (StringUtils.isBlank(getPropertiesAsMap().get(
-                PredefinedConnectorProperties.PASSWORD))) {
-            return false;
-        }
-        return true;
     }
 }

@@ -28,8 +28,7 @@ import org.libreplan.business.common.entities.JobSchedulerConfiguration;
  *
  * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
  */
-public interface IJobSchedulerConfigurationDAO extends
-        IGenericDAO<JobSchedulerConfiguration, Long> {
+public interface IJobSchedulerConfigurationDAO extends IGenericDAO<JobSchedulerConfiguration, Long> {
 
     /**
      * Returns all {@link JobSchedulerConfiguration}
@@ -52,8 +51,7 @@ public interface IJobSchedulerConfigurationDAO extends
      * @param jobGroup
      * @param jobName
      */
-    JobSchedulerConfiguration findByJobGroupAndJobName(String jobGroup,
-            String jobName);
+    JobSchedulerConfiguration findByJobGroupAndJobName(String jobGroup, String jobName);
 
     /**
      * Returns true if there exists other @{link JobSchedulerConfiguration} with
@@ -63,8 +61,7 @@ public interface IJobSchedulerConfigurationDAO extends
      * @param jobSchedulerConfiguration
      *            the <code>{@link JobSchedulerConfiguration}</code>
      */
-    boolean existsByJobGroupAndJobNameAnotherTransaction(
-            JobSchedulerConfiguration jobSchedulerConfiguration);
+    boolean existsByJobGroupAndJobNameAnotherTransaction(JobSchedulerConfiguration jobSchedulerConfiguration);
 
     /**
      * Returns unique {@link JobSchedulerConfiguration} for the specified
@@ -75,6 +72,5 @@ public interface IJobSchedulerConfigurationDAO extends
      * @param jobName
      *            the jobName
      */
-    JobSchedulerConfiguration findUniqueByJobGroupAndJobNameAnotherTransaction(
-            String jobGroup, String jobName);
+    JobSchedulerConfiguration findUniqueByJobGroupAndJobNameAnotherTransaction(String jobGroup, String jobName);
 }

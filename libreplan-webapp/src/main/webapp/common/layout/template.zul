@@ -104,7 +104,11 @@
                                 </div>
                             </n:td>
                             <n:td class="usuario">${i18n:_('user')}: ${templateCtrl.username}</n:td>
-                            <n:td><n:a href="${contextPath}/j_spring_security_logout" class="cerrar_sesion">[${i18n:_('Log out')}]</n:a></n:td>
+                            <n:td>
+                                <n:a href="${contextPath}/j_spring_security_logout" class="cerrar_sesion">
+                                    [${i18n:_('Log out')}]
+                                </n:a>
+                            </n:td>
                         </n:tr>
                     </n:table>
                 </n:div>
@@ -113,7 +117,6 @@
 
         <center border="none">
             <borderlayout width="auto" height="100%">
-                <!-- borderlayout class="main-layout" height="2000px" width="2000px"-->
                 <west class="perspectives-column" width="90px" >
                     <vbox vflex="1" height="100%">
                         <hbox id="perspectiveButtonsInsertionPoint" sclass="toolbar-box global-commands" height="30px" width="100%">

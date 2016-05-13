@@ -38,9 +38,8 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
-public class JobSchedulerConfigurationDAO extends
-        GenericDAOHibernate<JobSchedulerConfiguration, Long> implements
-        IJobSchedulerConfigurationDAO {
+public class JobSchedulerConfigurationDAO extends GenericDAOHibernate<JobSchedulerConfiguration, Long>
+        implements IJobSchedulerConfigurationDAO {
 
     @Override
     @Transactional(readOnly = true)
@@ -50,28 +49,24 @@ public class JobSchedulerConfigurationDAO extends
 
     @Override
     @Transactional(readOnly = true)
-    public JobSchedulerConfiguration findByJobGroupAndJobName(String jobGroup,
-            String jobName) {
-        return (JobSchedulerConfiguration) getSession()
-                .createCriteria(JobSchedulerConfiguration.class)
+    public JobSchedulerConfiguration findByJobGroupAndJobName(String jobGroup, String jobName) {
+        return (JobSchedulerConfiguration) getSession().createCriteria(JobSchedulerConfiguration.class)
                 .add(Restrictions.eq("jobGroup", jobGroup))
                 .add(Restrictions.eq("jobName", jobName)).uniqueResult();
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<JobSchedulerConfiguration> findByConnectorName(
-            String connectorName) {
-        Criteria c = getSession().createCriteria(
-                JobSchedulerConfiguration.class).add(
-                Restrictions.eq("connectorName", connectorName));
+    public List<JobSchedulerConfiguration> findByConnectorName(String connectorName) {
+        Criteria c = getSession().createCriteria(JobSchedulerConfiguration.class)
+                .add(Restrictions.eq("connectorName", connectorName));
+
         return ((List<JobSchedulerConfiguration>) c.list());
     }
 
     @Override
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
-    public boolean existsByJobGroupAndJobNameAnotherTransaction(
-            JobSchedulerConfiguration jobSchedulerConfiguration) {
+    public boolean existsByJobGroupAndJobNameAnotherTransaction(JobSchedulerConfiguration jobSchedulerConfiguration) {
         return existsOtherJobByGroupAndName(jobSchedulerConfiguration);
     }
 
@@ -82,18 +77,17 @@ public class JobSchedulerConfigurationDAO extends
      * @param jobSchedulerConfiguration
      *            the {@link JobSchedulerConfiguration}
      */
-    private boolean existsOtherJobByGroupAndName(
-            JobSchedulerConfiguration jobSchedulerConfiguration) {
+    private boolean existsOtherJobByGroupAndName(JobSchedulerConfiguration jobSchedulerConfiguration) {
         JobSchedulerConfiguration found = findByJobGroupAndJobName(
                 jobSchedulerConfiguration.getJobGroup(),
                 jobSchedulerConfiguration.getJobName());
+
         return found != null && found != jobSchedulerConfiguration;
     }
 
     @Override
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
-    public JobSchedulerConfiguration findUniqueByJobGroupAndJobNameAnotherTransaction(
-            String jobGroup, String jobName) {
+    public JobSchedulerConfiguration findUniqueByJobGroupAndJobNameAnotherTransaction(String jobGroup, String jobName) {
         return findByJobGroupAndJobName(jobGroup, jobName);
     }
 

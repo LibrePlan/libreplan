@@ -128,16 +128,22 @@
             </properties>
         </profile>
 
-        <!-- MySQL profile
-            TODO change version mysql for JDK8
-        -->
+        <!-- MySQL profile -->
         <profile>
             <id>mysql</id>
             <properties>
                 <!-- JDBC driver properties -->
+
+                <!--
+                If 6.X driver will not throw exceptions (with Timezone), use this configuration:
+
+                <jdbcDriver.className>com.mysql.cj.jdbc.Driver</jdbcDriver.className>
+                <dataSource.url>jdbc:mysql://localhost/libreplan${libreplan.mode}?useSSL=false</dataSource.url>
+                -->
+
                 <jdbcDriver.groupId>mysql</jdbcDriver.groupId>
                 <jdbcDriver.artifactId>mysql-connector-java</jdbcDriver.artifactId>
-                <jdbcDriver.version>5.1.38</jdbcDriver.version>
+                <jdbcDriver.version>5.1.39</jdbcDriver.version>
                 <jdbcDriver.className>com.mysql.jdbc.Driver</jdbcDriver.className>
                 <!-- Data source properties -->
                 <dataSource.url>jdbc:mysql://localhost/libreplan${libreplan.mode}</dataSource.url>
@@ -212,9 +218,9 @@
 
             <!-- Gettext commons -->
             <dependency>
-                <groupId>org.xnap.commons</groupId>
+                <groupId>com.googlecode.gettext-commons</groupId>
                 <artifactId>gettext-commons</artifactId>
-                <version>0.9.6</version>
+                <version>0.9.8</version>
             </dependency>
 
             <!--
@@ -612,12 +618,12 @@
             <dependency>
                 <groupId>org.liquibase</groupId>
                 <artifactId>liquibase-core</artifactId>
-                <version>3.5.0</version>
+                <version>3.5.1</version>
             </dependency>
             <dependency>
                 <groupId>org.liquibase</groupId>
                 <artifactId>liquibase-maven-plugin</artifactId>
-                <version>3.5.0</version>
+                <version>3.5.1</version>
             </dependency>
 
             <!-- jqPlot -->
@@ -761,8 +767,8 @@
                 <version>3.5.1</version>
                 <configuration>
                     <verbose>true</verbose>
-                    <source>1.7</source>
-                    <target>1.7</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
@@ -820,8 +826,7 @@
                     <!-- Log to the console. -->
                     <requestLog implementation="org.mortbay.jetty.NCSARequestLog">
                         <!--
-                            This do anything for Jetty,
-                            but is aworkaround for a Maven bug
+                            This do anything for Jetty, but is a workaround for a Maven bug
                             that prevents the requestLog from being set.
                         -->
                         <append>true</append>
@@ -891,7 +896,7 @@
             <plugin>
                 <groupId>org.liquibase</groupId>
                 <artifactId>liquibase-maven-plugin</artifactId>
-                <version>3.5.0</version>
+                <version>3.5.1</version>
             </plugin>
 
         </plugins>

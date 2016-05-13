@@ -70,11 +70,12 @@ Changes
 * Update JodaTime
 * Update Jasper Reports
 * Update EasyMock
-* Update JDBC driver
+* Update JDBC drivers (PostgreSQL + MySQL)
 * Update AspectJ Weaver
 * Update JAX-RS API
 * Update BeanShell
 * Update Quartz Framework
+* Update Hibernate
 
 * Update LibrePlan version to 1.6.0
 
