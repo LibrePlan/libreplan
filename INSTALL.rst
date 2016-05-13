@@ -84,7 +84,7 @@ Instructions depending on the distribution:
     # wget download.opensuse.org/repositories/home:/jsuarezr:/LibrePlan/Fedora_23/home:jsuarezr:LibrePlan.repo
     # yum install libreplan
 
-  Follow the instructions in /usr/share/doc/libreplan-1.4.0/README.Fedora afterwards.
+  Follow the instructions in /usr/share/doc/libreplan-1.4.1/README.Fedora afterwards.
 
 * Fedora 22::
 
@@ -92,7 +92,7 @@ Instructions depending on the distribution:
     # wget download.opensuse.org/repositories/home:/jsuarezr:/LibrePlan/Fedora_22/home:jsuarezr:LibrePlan.repo
     # yum install libreplan
 
-  Follow the instructions in /usr/share/doc/libreplan-1.4.0/README.Fedora afterwards.
+  Follow the instructions in /usr/share/doc/libreplan-1.4.1/README.Fedora afterwards.
 
 * CentOS 7::
 

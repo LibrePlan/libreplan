@@ -88,16 +88,16 @@ Features
 Requirements
 ------------
 
-* *JRE 6* - Java Runtime Environment
+* *JRE 7* or *JRE 6* - Java Runtime Environment
 
-  Project depends on Java 6 and JRE is needed in order to run it
+  Project depends on Java 6 or 7 and JRE is needed in order to run it
 
 * *PostgreSQL* - Object-relational SQL database
 
   A database server is needed. You could use *PostgreSQL* or *MySQL* as you
   prefer.
 
-* *Tomcat 6* - Servlet and JSP engine
+* *Tomcat 7* or Tomcat 6* - Servlet and JSP engine
 
   Server to deploy the application. You could use *Jetty* instead.
 
