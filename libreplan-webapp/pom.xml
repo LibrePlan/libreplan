@@ -236,62 +236,6 @@
 
     <build>
         <finalName>libreplan-webapp</finalName>
-
-        <pluginManagement>
-            <plugins>
-              <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
-              <plugin>
-                  <groupId>org.eclipse.m2e</groupId>
-                  <artifactId>lifecycle-mapping</artifactId>
-                  <version>1.0.0</version>
-                  <configuration>
-                  <lifecycleMappingMetadata>
-                      <pluginExecutions>
-                        <pluginExecution>
-                          <pluginExecutionFilter>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-antrun-plugin</artifactId>
-                            <versionRange>[1.8,)</versionRange>
-                            <goals>
-                              <goal>run</goal>
-                            </goals>
-                          </pluginExecutionFilter>
-                          <action>
-                            <ignore/>
-                          </action>
-                        </pluginExecution>
-                        <pluginExecution>
-                          <pluginExecutionFilter>
-                            <groupId>org.codehaus.mojo</groupId>
-                            <artifactId>jasperreports-maven-plugin</artifactId>
-                            <versionRange>[1.0-beta-2,)</versionRange>
-                            <goals>
-                              <goal>compile-reports</goal>
-                            </goals>
-                          </pluginExecutionFilter>
-                          <action>
-                            <ignore/>
-                          </action>
-                        </pluginExecution>
-                        <pluginExecution>
-                          <pluginExecutionFilter>
-                            <groupId>com.googlecode.gettext-commons</groupId>
-                            <artifactId>gettext-maven-plugin</artifactId>
-                            <versionRange>[1.2.4,)</versionRange>
-                            <goals>
-                              <goal>dist</goal>
-                            </goals>
-                          </pluginExecutionFilter>
-                          <action>
-                            <ignore></ignore>
-                          </action>
-                        </pluginExecution>
-                      </pluginExecutions>
-                    </lifecycleMappingMetadata>
-                </configuration>
-              </plugin>
-          </plugins>
-        </pluginManagement>
     </build>
 
     <dependencies>
@@ -334,8 +278,8 @@
           <artifactId>spring-security-config</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-acl</artifactId>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
         </dependency>
 
         <!-- Spring Dependency LDAP -->
@@ -352,12 +296,6 @@
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-acl</artifactId>
-        </dependency>
-
-        <!-- Spring Dependency LDAP -->
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-ldap</artifactId>
         </dependency>
 
         <!-- Spring Test -->

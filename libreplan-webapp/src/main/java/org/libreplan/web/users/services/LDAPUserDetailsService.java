@@ -32,7 +32,7 @@ import org.libreplan.business.users.entities.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.GrantedAuthorityImpl;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -55,38 +55,40 @@ public class LDAPUserDetailsService implements UserDetailsService {
 
     @Override
     @Transactional(readOnly = true)
-    public UserDetails loadUserByUsername(String loginName)
-            throws UsernameNotFoundException, DataAccessException {
+    public UserDetails loadUserByUsername(String loginName) throws UsernameNotFoundException, DataAccessException {
 
         User user;
 
         try {
             user = userDAO.findByLoginName(loginName);
         } catch (InstanceNotFoundException e) {
-            throw new UsernameNotFoundException(MessageFormat.format(
-                    "User with username {0}: not found", loginName));
+            throw new UsernameNotFoundException(MessageFormat.format("User with username {0}: not found", loginName));
         }
 
         Scenario scenario = user.getLastConnectedScenario();
-        if (scenario == null) {
+        if ( scenario == null ) {
             scenario = PredefinedScenarios.MASTER.getScenario();
         }
 
         String password = user.getPassword();
-        if (null == password)
+        if ( null == password )
             password = "foo";
-        return new CustomUser(user.getLoginName(), password,
-                !user.isDisabled(), true, // accountNonExpired
+
+        return new CustomUser(
+                user.getLoginName(), password,
+                !user.isDisabled(),
+                true, // accountNonExpired
                 true, // credentialsNonExpired
                 true, // accountNonLocked
                 getGrantedAuthorities(user.getAllRoles()), scenario);
     }
 
     private List<GrantedAuthority> getGrantedAuthorities(Set<UserRole> roles) {
-        List<GrantedAuthority> result = new ArrayList<GrantedAuthority>();
+        List<GrantedAuthority> result = new ArrayList<>();
         for (UserRole r : roles) {
-            result.add(new GrantedAuthorityImpl(r.name()));
+            result.add(new SimpleGrantedAuthority(r.name()));
         }
+
         return result;
     }
 }

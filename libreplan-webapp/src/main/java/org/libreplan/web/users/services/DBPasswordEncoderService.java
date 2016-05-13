@@ -30,15 +30,17 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
 /**
- * For maximum flexibility, the implementation uses the password encoder and
- * the salt source configured in the Spring Security configuration file (in
- * consequence, it is possible to change the configuration to use any password
- * encoder and/or salt source without modifying the implementation of this
- * service). The only restriction the implementation imposes is that when using
- * a reflection-based salt source, the "username" property must be specified.
+ * For maximum flexibility, the implementation uses the password encoder and the salt source
+ * configured in the Spring Security configuration file
+ * (in consequence, it is possible to change the configuration to use any password encoder and/or salt source
+ * without modifying the implementation of this service).
+ *
+ * The only restriction the implementation imposes is that
+ * when using a reflection-based salt source, the "username" property must be specified.
  *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
+// TODO resolve deprecated
 public class DBPasswordEncoderService implements IDBPasswordEncoderService {
 
     private SaltSource saltSource;
@@ -67,12 +69,12 @@ public class DBPasswordEncoderService implements IDBPasswordEncoderService {
          * "ReflectionSaltSource". Note that "SystemWideSaltSource" ignores
          * the "user" passed as a parameter to "saltSource.getSalt".
          */
-        UserDetails userDetails = new User(loginName, clearPassword, true,
-                true, true, true, Collections.<GrantedAuthority>emptyList());
+        UserDetails userDetails =
+                new User(loginName, clearPassword, true, true, true, true, Collections.<GrantedAuthority>emptyList());
 
         Object salt = null;
 
-        if (saltSource != null) {
+        if ( saltSource != null ) {
             salt = saltSource.getSalt(userDetails);
         }
 

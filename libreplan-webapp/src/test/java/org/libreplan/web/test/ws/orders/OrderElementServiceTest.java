@@ -70,7 +70,6 @@ import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderLine;
 import org.libreplan.business.requirements.entities.CriterionRequirement;
 import org.libreplan.business.requirements.entities.DirectCriterionRequirement;
-import org.libreplan.business.requirements.entities.IndirectCriterionRequirement;
 import org.libreplan.business.resources.daos.ICriterionTypeDAO;
 import org.libreplan.business.resources.daos.IResourceDAO;
 import org.libreplan.business.resources.entities.PredefinedCriterionTypes;
@@ -106,8 +105,12 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
-        WEBAPP_SPRING_CONFIG_FILE, WEBAPP_SPRING_CONFIG_TEST_FILE,
+@ContextConfiguration(locations = {
+        BUSINESS_SPRING_CONFIG_FILE,
+
+        WEBAPP_SPRING_CONFIG_FILE,
+        WEBAPP_SPRING_CONFIG_TEST_FILE,
+
         WEBAPP_SPRING_SECURITY_CONFIG_FILE,
         WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE })
 public class OrderElementServiceTest {
@@ -147,11 +150,12 @@ public class OrderElementServiceTest {
         transactionService.runOnTransaction(new IOnTransaction<Void>() {
             @Override
             public Void execute() {
-                OrderElementTreeModelTest.cleanCriteria(workReportDAO,
-                        resourceDAO, criterionTypeDAO);
+                OrderElementTreeModelTest.cleanCriteria(workReportDAO, resourceDAO, criterionTypeDAO);
+
                 return null;
             }
         });
+
         transactionService.runOnAnotherTransaction(new IOnTransaction<Void>() {
             @Override
             public Void execute() {
@@ -161,6 +165,7 @@ public class OrderElementServiceTest {
                 unitTypeBootstrap.loadRequiredData();
                 defaultAdvanceTypesBootstrapListener.loadRequiredData();
                 scenariosBootstrap.loadRequiredData();
+
                 return null;
             }
         });
@@ -182,11 +187,9 @@ public class OrderElementServiceTest {
     private SessionFactory sessionFactory;
 
     private Label givenLabelStored() {
-        Label label = Label.create("label-code-" + UUID.randomUUID(),
-                "labelName " + UUID.randomUUID().toString());
+        Label label = Label.create("label-code-" + UUID.randomUUID(), "labelName " + UUID.randomUUID().toString());
 
-        LabelType labelType = LabelType.create("label-type-"
-                + UUID.randomUUID());
+        LabelType labelType = LabelType.create("label-type-" + UUID.randomUUID());
         labelType.addLabel(label);
 
         labelTypeDAO.save(labelType);
@@ -196,6 +199,7 @@ public class OrderElementServiceTest {
 
         labelType.dontPoseAsTransientObjectAnymore();
         label.dontPoseAsTransientObjectAnymore();
+
         return label;
     }
 
@@ -207,15 +211,15 @@ public class OrderElementServiceTest {
         OrderDTO orderDTO = new OrderDTO();
 
         OrderListDTO orderListDTO = createOrderListDTO(orderDTO);
-        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
-                .addOrders(orderListDTO).instanceConstraintViolationsList;
 
-        assertTrue(instanceConstraintViolationsList.toString(),
-                instanceConstraintViolationsList.size() == 1);
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
+                orderElementService.addOrders(orderListDTO).instanceConstraintViolationsList;
+
+        assertTrue(instanceConstraintViolationsList.toString(), instanceConstraintViolationsList.size() == 1);
         assertThat(instanceConstraintViolationsList.size(), equalTo(1));
 
-        List<ConstraintViolationDTO> constraintViolations = instanceConstraintViolationsList
-                .get(0).constraintViolations;
+        List<ConstraintViolationDTO> constraintViolations =
+                instanceConstraintViolationsList.get(0).constraintViolations;
 
         assertThat(constraintViolations.size(), equalTo(1));
 
@@ -231,18 +235,18 @@ public class OrderElementServiceTest {
         orderDTO.code = "order-code " + UUID.randomUUID().toString();
 
         OrderListDTO orderListDTO = createOrderListDTO(orderDTO);
-        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
-                .addOrders(orderListDTO).instanceConstraintViolationsList;
 
-        assertTrue(instanceConstraintViolationsList.toString(),
-                instanceConstraintViolationsList.size() == 1);
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
+                orderElementService.addOrders(orderListDTO).instanceConstraintViolationsList;
+
+        assertTrue(instanceConstraintViolationsList.toString(), instanceConstraintViolationsList.size() == 1);
         assertThat(instanceConstraintViolationsList.size(), equalTo(1));
 
-        List<ConstraintViolationDTO> constraintViolations = instanceConstraintViolationsList
-                .get(0).constraintViolations;
-        // Mandatory fields: infoComponent.code, infoComponent.name. Check
-        // constraints:
-        // checkConstraintOrderMustHaveStartDate
+        List<ConstraintViolationDTO> constraintViolations =
+                instanceConstraintViolationsList.get(0).constraintViolations;
+
+        // Mandatory fields: infoComponent.code, infoComponent.name.
+        // Check constraints: checkConstraintOrderMustHaveStartDate
 
         assertThat(constraintViolations.size(), equalTo(2));
 
@@ -258,16 +262,17 @@ public class OrderElementServiceTest {
         orderDTO.code = "order-code " + UUID.randomUUID().toString();
 
         OrderListDTO orderListDTO = createOrderListDTO(orderDTO);
-        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
-                .addOrders(orderListDTO).instanceConstraintViolationsList;
 
-        assertTrue(instanceConstraintViolationsList.toString(),
-                instanceConstraintViolationsList.size() == 1);
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
+                orderElementService.addOrders(orderListDTO).instanceConstraintViolationsList;
 
-        List<ConstraintViolationDTO> constraintViolations = instanceConstraintViolationsList
-                .get(0).constraintViolations;
-        // Mandatory fields: name. Check constraints:
-        // checkConstraintOrderMustHaveStartDate
+        assertTrue(instanceConstraintViolationsList.toString(), instanceConstraintViolationsList.size() == 1);
+
+        List<ConstraintViolationDTO> constraintViolations =
+                instanceConstraintViolationsList.get(0).constraintViolations;
+
+        // Mandatory fields: name.
+        // Check constraints: checkConstraintOrderMustHaveStartDate
         assertThat(constraintViolations.size(), equalTo(2));
 
         assertThat(orderDAO.getOrders().size(), equalTo(previous));
@@ -283,14 +288,17 @@ public class OrderElementServiceTest {
         orderDTO.name = "Order name " + UUID.randomUUID().toString();
 
         OrderListDTO orderListDTO = createOrderListDTO(orderDTO);
-        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
-                .addOrders(orderListDTO).instanceConstraintViolationsList;
+
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
+                orderElementService.addOrders(orderListDTO).instanceConstraintViolationsList;
+
         assertThat(instanceConstraintViolationsList.size(), equalTo(1));
 
-        List<ConstraintViolationDTO> constraintViolations = instanceConstraintViolationsList
-                .get(0).constraintViolations;
-        // Mandatory fields: code, infoComponentCode. Check constraints:
-        // checkConstraintOrderMustHaveStartDate
+        List<ConstraintViolationDTO> constraintViolations =
+                instanceConstraintViolationsList.get(0).constraintViolations;
+
+        // Mandatory fields: code, infoComponentCode.
+        // Check constraints: checkConstraintOrderMustHaveStartDate
         assertThat(constraintViolations.size(), equalTo(1));
 
         assertThat(orderDAO.getOrders().size(), equalTo(previous));
@@ -306,17 +314,20 @@ public class OrderElementServiceTest {
         orderDTO.initDate = DateConverter.toXMLGregorianCalendar(new Date());
 
         OrderListDTO orderListDTO = createOrderListDTO(orderDTO);
-        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
-                .addOrders(orderListDTO).instanceConstraintViolationsList;
+
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
+                orderElementService.addOrders(orderListDTO).instanceConstraintViolationsList;
+
         assertThat(instanceConstraintViolationsList.size(), equalTo(1));
 
-        List<ConstraintViolationDTO> constraintViolations = instanceConstraintViolationsList
-                .get(0).constraintViolations;
+        List<ConstraintViolationDTO> constraintViolations =
+                instanceConstraintViolationsList.get(0).constraintViolations;
+
         // Mandatory fields: code,infoComponent.code, infoComponent.name
         assertThat(constraintViolations.size(), equalTo(1));
+
         for (ConstraintViolationDTO constraintViolationDTO : constraintViolations) {
-            assertThat(constraintViolationDTO.fieldName, anyOf(mustEnd("code"),
-                    mustEnd("name")));
+            assertThat(constraintViolationDTO.fieldName, anyOf(mustEnd("code"), mustEnd("name")));
         }
 
         assertThat(orderDAO.getOrders().size(), equalTo(previous));
@@ -333,11 +344,11 @@ public class OrderElementServiceTest {
         orderDTO.initDate = DateConverter.toXMLGregorianCalendar(new Date());
 
         OrderListDTO orderListDTO = createOrderListDTO(orderDTO);
-        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
-                .addOrders(orderListDTO).instanceConstraintViolationsList;
 
-        assertTrue(instanceConstraintViolationsList.toString(),
-                instanceConstraintViolationsList.size() == 0);
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
+                orderElementService.addOrders(orderListDTO).instanceConstraintViolationsList;
+
+        assertTrue(instanceConstraintViolationsList.toString(), instanceConstraintViolationsList.size() == 0);
 
     }
 
@@ -356,12 +367,15 @@ public class OrderElementServiceTest {
         orderDTO.children.add(orderLineDTO);
 
         OrderListDTO orderListDTO = createOrderListDTO(orderDTO);
-        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
-                .addOrders(orderListDTO).instanceConstraintViolationsList;
+
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
+                orderElementService.addOrders(orderListDTO).instanceConstraintViolationsList;
+
         assertThat(instanceConstraintViolationsList.size(), equalTo(1));
 
-        List<ConstraintViolationDTO> constraintViolations = instanceConstraintViolationsList
-                .get(0).constraintViolations;
+        List<ConstraintViolationDTO> constraintViolations =
+                instanceConstraintViolationsList.get(0).constraintViolations;
+
         // Mandatory fields: infoComponent.code, infoComponent.name.
         assertThat(constraintViolations.size(), equalTo(1));
 
@@ -382,12 +396,15 @@ public class OrderElementServiceTest {
         orderDTO.children.add(orderLineDTO);
 
         OrderListDTO orderListDTO = createOrderListDTO(orderDTO);
-        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
-                .addOrders(orderListDTO).instanceConstraintViolationsList;
+
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
+                orderElementService.addOrders(orderListDTO).instanceConstraintViolationsList;
+
         assertThat(instanceConstraintViolationsList.size(), equalTo(1));
 
-        List<ConstraintViolationDTO> constraintViolations = instanceConstraintViolationsList
-                .get(0).constraintViolations;
+        List<ConstraintViolationDTO> constraintViolations =
+                instanceConstraintViolationsList.get(0).constraintViolations;
+
         // Mandatory fields: code,infoComponent.code, infoComponent.name.
         assertThat(constraintViolations.size(), equalTo(1));
 
@@ -413,18 +430,20 @@ public class OrderElementServiceTest {
         orderDTO.children.add(orderLineDTO);
 
         OrderListDTO orderListDTO = createOrderListDTO(orderDTO);
-        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
-                .addOrders(orderListDTO).instanceConstraintViolationsList;
+
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
+                orderElementService.addOrders(orderListDTO).instanceConstraintViolationsList;
+
         assertThat(instanceConstraintViolationsList.size(), equalTo(1));
 
-        List<ConstraintViolationDTO> constraintViolations = instanceConstraintViolationsList
-                .get(0).constraintViolations;
+        List<ConstraintViolationDTO> constraintViolations =
+                instanceConstraintViolationsList.get(0).constraintViolations;
+
         // Mandatory fields: code
         assertThat(constraintViolations.size(), equalTo(1));
 
         for (ConstraintViolationDTO constraintViolationDTO : constraintViolations) {
-            assertThat(constraintViolationDTO.fieldName, anyOf(mustEnd("code"),
-                    mustEnd("workingHours")));
+            assertThat(constraintViolationDTO.fieldName, anyOf(mustEnd("code"), mustEnd("workingHours")));
         }
 
         assertThat(orderDAO.getOrders().size(), equalTo(previous));
@@ -443,15 +462,20 @@ public class OrderElementServiceTest {
         OrderLineDTO orderLineDTO = new OrderLineDTO();
         orderLineDTO.name = "Order line " + UUID.randomUUID().toString();
         orderLineDTO.code = "order-line-code " + UUID.randomUUID().toString();
-        HoursGroupDTO hoursGroupDTO = new HoursGroupDTO("hours-group",
+
+        HoursGroupDTO hoursGroupDTO = new HoursGroupDTO(
+                "hours-group",
                 ResourceEnumDTO.WORKER, 1000,
                 new HashSet<CriterionRequirementDTO>());
+
         orderLineDTO.hoursGroups.add(hoursGroupDTO);
         orderDTO.children.add(orderLineDTO);
 
         OrderListDTO orderListDTO = createOrderListDTO(orderDTO);
-        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
-                .addOrders(orderListDTO).instanceConstraintViolationsList;
+
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
+                orderElementService.addOrders(orderListDTO).instanceConstraintViolationsList;
+
         assertThat(instanceConstraintViolationsList.size(), equalTo(0));
 
         checkIfExistsByCodeInAnotherTransaction(code);
@@ -472,15 +496,17 @@ public class OrderElementServiceTest {
         orderDTO.children.add(orderLineGroupDTO);
 
         OrderListDTO orderListDTO = createOrderListDTO(orderDTO);
-        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
-                .addOrders(orderListDTO).instanceConstraintViolationsList;
+
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
+                orderElementService.addOrders(orderListDTO).instanceConstraintViolationsList;
+
         assertThat(instanceConstraintViolationsList.size(), equalTo(1));
 
-        List<ConstraintViolationDTO> constraintViolations = instanceConstraintViolationsList
-                .get(0).constraintViolations;
-        // Mandatory fields: infoComponent.code, infoComponenet.name. Check
-        // constraints:
-        // checkConstraintAtLeastOneHoursGroupForEachOrderElement
+        List<ConstraintViolationDTO> constraintViolations =
+                instanceConstraintViolationsList.get(0).constraintViolations;
+
+        // Mandatory fields: infoComponent.code, infoComponenet.name.
+        // Check constraints: checkConstraintAtLeastOneHoursGroupForEachOrderElement
         assertThat(constraintViolations.size(), equalTo(2));
 
         assertThat(orderDAO.getOrders().size(), equalTo(previous));
@@ -500,15 +526,17 @@ public class OrderElementServiceTest {
         orderDTO.children.add(orderLineGroupDTO);
 
         OrderListDTO orderListDTO = createOrderListDTO(orderDTO);
-        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
-                .addOrders(orderListDTO).instanceConstraintViolationsList;
+
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
+                orderElementService.addOrders(orderListDTO).instanceConstraintViolationsList;
+
         assertThat(instanceConstraintViolationsList.size(), equalTo(1));
 
-        List<ConstraintViolationDTO> constraintViolations = instanceConstraintViolationsList
-                .get(0).constraintViolations;
-        // Mandatory fields: code,infoComponent.code, infoComponenet.name. Check
-        // constraints:
-        // checkConstraintAtLeastOneHoursGroupForEachOrderElement
+        List<ConstraintViolationDTO> constraintViolations =
+                instanceConstraintViolationsList.get(0).constraintViolations;
+
+        // Mandatory fields: code,infoComponent.code, infoComponenet.name.
+        // Check constraints: checkConstraintAtLeastOneHoursGroupForEachOrderElement
         assertThat(constraintViolations.size(), equalTo(1));
 
         assertThat(orderDAO.getOrders().size(), equalTo(previous));
@@ -525,21 +553,21 @@ public class OrderElementServiceTest {
         orderDTO.initDate = DateConverter.toXMLGregorianCalendar(new Date());
 
         OrderLineGroupDTO orderLineGroupDTO = new OrderLineGroupDTO();
-        orderLineGroupDTO.name = "Order line group "
-                + UUID.randomUUID().toString();
-        orderLineGroupDTO.code = "order-line-group-code "
-                + UUID.randomUUID().toString();
+        orderLineGroupDTO.name = "Order line group " + UUID.randomUUID().toString();
+        orderLineGroupDTO.code = "order-line-group-code " + UUID.randomUUID().toString();
         orderDTO.children.add(orderLineGroupDTO);
 
         OrderListDTO orderListDTO = createOrderListDTO(orderDTO);
-        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
-                .addOrders(orderListDTO).instanceConstraintViolationsList;
+
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
+                orderElementService.addOrders(orderListDTO).instanceConstraintViolationsList;
+
         assertThat(instanceConstraintViolationsList.size(), equalTo(1));
 
-        List<ConstraintViolationDTO> constraintViolations = instanceConstraintViolationsList
-                .get(0).constraintViolations;
-        // Check constraints:
-        // checkConstraintAtLeastOneHoursGroupForEachOrderElement
+        List<ConstraintViolationDTO> constraintViolations =
+                instanceConstraintViolationsList.get(0).constraintViolations;
+
+        // Check constraints: checkConstraintAtLeastOneHoursGroupForEachOrderElement
         assertThat(constraintViolations.size(), equalTo(1));
 
         assertThat(orderDAO.getOrders().size(), equalTo(previous));
@@ -553,10 +581,11 @@ public class OrderElementServiceTest {
         OrderDTO orderDTO = createOrderDTOWithChildren(code);
 
         OrderListDTO orderListDTO = createOrderListDTO(orderDTO);
-        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
-                .addOrders(orderListDTO).instanceConstraintViolationsList;
-        assertTrue(instanceConstraintViolationsList.toString(),
-                instanceConstraintViolationsList.size() == 0);
+
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
+                orderElementService.addOrders(orderListDTO).instanceConstraintViolationsList;
+
+        assertTrue(instanceConstraintViolationsList.toString(), instanceConstraintViolationsList.size() == 0);
 
         checkIfExistsByCodeInAnotherTransaction(code);
     }
@@ -568,21 +597,24 @@ public class OrderElementServiceTest {
         orderDTO.initDate = DateConverter.toXMLGregorianCalendar(new Date());
 
         OrderLineGroupDTO orderLineGroupDTO = new OrderLineGroupDTO();
-        orderLineGroupDTO.name = "Order line group "
-                + UUID.randomUUID().toString();
-        orderLineGroupDTO.code = "order-line-group-code "
-                + UUID.randomUUID().toString();
+        orderLineGroupDTO.name = "Order line group " + UUID.randomUUID().toString();
+        orderLineGroupDTO.code = "order-line-group-code " + UUID.randomUUID().toString();
 
         OrderLineDTO orderLineDTO = new OrderLineDTO();
         orderLineDTO.name = "Order line " + UUID.randomUUID().toString();
         orderLineDTO.code = "order-line-code " + UUID.randomUUID().toString();
-        HoursGroupDTO hoursGroupDTO = new HoursGroupDTO("hours-group-"
-                + UUID.randomUUID().toString(), ResourceEnumDTO.WORKER, 1000,
+
+        HoursGroupDTO hoursGroupDTO = new HoursGroupDTO(
+                "hours-group-" + UUID.randomUUID().toString(),
+                ResourceEnumDTO.WORKER,
+                1000,
                 new HashSet<CriterionRequirementDTO>());
+
         orderLineDTO.hoursGroups.add(hoursGroupDTO);
         orderLineGroupDTO.children.add(orderLineDTO);
 
         orderDTO.children.add(orderLineGroupDTO);
+
         return orderDTO;
     }
 
@@ -594,10 +626,11 @@ public class OrderElementServiceTest {
         final OrderDTO orderDTO = createOrderDTOWithChildren(code);
 
         OrderListDTO orderListDTO = createOrderListDTO(orderDTO);
-        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
-                .addOrders(orderListDTO).instanceConstraintViolationsList;
-        assertTrue(instanceConstraintViolationsList.toString(),
-                instanceConstraintViolationsList.size() == 0);
+
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
+                orderElementService.addOrders(orderListDTO).instanceConstraintViolationsList;
+
+        assertTrue(instanceConstraintViolationsList.toString(), instanceConstraintViolationsList.size() == 0);
 
         checkIfExistsByCodeInAnotherTransaction(code);
 
@@ -606,10 +639,8 @@ public class OrderElementServiceTest {
             @Override
             public Void execute() {
                 String codeToRemove = orderDTO.children.get(0).code;
-                Response response = orderElementService
-                        .removeOrderElement(codeToRemove);
-                assertThat(response.getStatus(),
-                        equalTo(Status.OK.getStatusCode()));
+                Response response = orderElementService.removeOrderElement(codeToRemove);
+                assertThat(response.getStatus(), equalTo(Status.OK.getStatusCode()));
 
                 try {
                     orderElementDAO.findByCode(codeToRemove);
@@ -623,6 +654,7 @@ public class OrderElementServiceTest {
                 } catch (InstanceNotFoundException e) {
                     fail();
                 }
+
                 return null;
             }
         });
@@ -642,12 +674,15 @@ public class OrderElementServiceTest {
         orderDTO.materialAssignments.add(materialAssignmentDTO);
 
         OrderListDTO orderListDTO = createOrderListDTO(orderDTO);
-        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
-                .addOrders(orderListDTO).instanceConstraintViolationsList;
+
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
+                orderElementService.addOrders(orderListDTO).instanceConstraintViolationsList;
+
         assertThat(instanceConstraintViolationsList.size(), equalTo(1));
 
-        List<ConstraintViolationDTO> constraintViolations = instanceConstraintViolationsList
-                .get(0).constraintViolations;
+        List<ConstraintViolationDTO> constraintViolations =
+                instanceConstraintViolationsList.get(0).constraintViolations;
+
         // Mandatory fields: material code
         assertThat(constraintViolations.size(), equalTo(1));
         assertThat(constraintViolations.get(0).fieldName, mustEnd("code"));
@@ -666,23 +701,24 @@ public class OrderElementServiceTest {
         orderDTO.initDate = DateConverter.toXMLGregorianCalendar(new Date());
 
         MaterialAssignmentDTO materialAssignmentDTO = new MaterialAssignmentDTO();
-        materialAssignmentDTO.materialCode = "material-code "
-                + UUID.randomUUID().toString();
+        materialAssignmentDTO.materialCode = "material-code " + UUID.randomUUID().toString();
         orderDTO.materialAssignments.add(materialAssignmentDTO);
 
         OrderListDTO orderListDTO = createOrderListDTO(orderDTO);
-        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
-                .addOrders(orderListDTO).instanceConstraintViolationsList;
+
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
+                orderElementService.addOrders(orderListDTO).instanceConstraintViolationsList;
 
         assertThat(instanceConstraintViolationsList.size(), equalTo(1));
 
-        List<ConstraintViolationDTO> constraintViolations = instanceConstraintViolationsList
-                .get(0).constraintViolations;
+        List<ConstraintViolationDTO> constraintViolations =
+                instanceConstraintViolationsList.get(0).constraintViolations;
+
         // Mandatory fields: units, unitPrice
         assertThat(constraintViolations.size(), equalTo(2));
+
         for (ConstraintViolationDTO constraintViolationDTO : constraintViolations) {
-            assertThat(constraintViolationDTO.fieldName, anyOf(
-                    mustEnd("units"), mustEnd("unitPrice")));
+            assertThat(constraintViolationDTO.fieldName, anyOf(mustEnd("units"), mustEnd("unitPrice")));
         }
 
         assertThat(orderDAO.getOrders().size(), equalTo(previous));
@@ -699,17 +735,17 @@ public class OrderElementServiceTest {
         orderDTO.initDate = DateConverter.toXMLGregorianCalendar(new Date());
 
         MaterialAssignmentDTO materialAssignmentDTO = new MaterialAssignmentDTO();
-        materialAssignmentDTO.materialCode = "material-code "
-                + UUID.randomUUID().toString();
+        materialAssignmentDTO.materialCode = "material-code " + UUID.randomUUID().toString();
         materialAssignmentDTO.unitPrice = BigDecimal.TEN;
         materialAssignmentDTO.units = BigDecimal.valueOf(100.0);
         orderDTO.materialAssignments.add(materialAssignmentDTO);
 
         OrderListDTO orderListDTO = createOrderListDTO(orderDTO);
-        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
-                .addOrders(orderListDTO).instanceConstraintViolationsList;
-        assertTrue(instanceConstraintViolationsList.toString(),
-                instanceConstraintViolationsList.size() == 0);
+
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
+                orderElementService.addOrders(orderListDTO).instanceConstraintViolationsList;
+
+        assertTrue(instanceConstraintViolationsList.toString(), instanceConstraintViolationsList.size() == 0);
 
         checkIfExistsByCodeInAnotherTransaction(code);
     }
@@ -728,12 +764,15 @@ public class OrderElementServiceTest {
         orderDTO.labels.add(labelReferenceDTO);
 
         OrderListDTO orderListDTO = createOrderListDTO(orderDTO);
-        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
-                .addOrders(orderListDTO).instanceConstraintViolationsList;
+
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
+                orderElementService.addOrders(orderListDTO).instanceConstraintViolationsList;
+
         assertThat(instanceConstraintViolationsList.size(), equalTo(1));
 
-        List<ConstraintViolationDTO> constraintViolations = instanceConstraintViolationsList
-                .get(0).constraintViolations;
+        List<ConstraintViolationDTO> constraintViolations =
+                instanceConstraintViolationsList.get(0).constraintViolations;
+
         assertThat(constraintViolations.size(), equalTo(1));
 
         assertThat(orderDAO.getOrders().size(), equalTo(previous));
@@ -748,21 +787,22 @@ public class OrderElementServiceTest {
         orderDTO.code = code;
         orderDTO.initDate = DateConverter.toXMLGregorianCalendar(new Date());
 
-        String labelCode = transactionService
-                .runOnTransaction(new IOnTransaction<String>() {
-                    @Override
-                    public String execute() {
-                        return givenLabelStored().getCode();
-                    }
-                });
+        String labelCode = transactionService.runOnTransaction(new IOnTransaction<String>() {
+            @Override
+            public String execute() {
+                return givenLabelStored().getCode();
+            }
+        });
 
         LabelReferenceDTO labelReferenceDTO = new LabelReferenceDTO();
         labelReferenceDTO.code = labelCode;
         orderDTO.labels.add(labelReferenceDTO);
 
         OrderListDTO orderListDTO = createOrderListDTO(orderDTO);
-        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
-                .addOrders(orderListDTO).instanceConstraintViolationsList;
+
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
+                orderElementService.addOrders(orderListDTO).instanceConstraintViolationsList;
+
         assertThat(instanceConstraintViolationsList.size(), equalTo(0));
 
         checkIfExistsByCodeInAnotherTransaction(code);
@@ -778,14 +818,14 @@ public class OrderElementServiceTest {
                 } catch (InstanceNotFoundException e) {
                     fail();
                 }
+
                 return null;
             }
         });
     }
 
     @Test
-    public void updateLabels() throws InstanceNotFoundException,
-            IncompatibleTypeException {
+    public void updateLabels() throws InstanceNotFoundException, IncompatibleTypeException {
         final String code = "order-code-" + UUID.randomUUID().toString();
 
         transactionService.runOnTransaction(new IOnTransaction<Void>() {
@@ -797,6 +837,7 @@ public class OrderElementServiceTest {
                 } catch (InstanceNotFoundException e) {
                     // It should throw an exception
                 }
+
                 return null;
             }
         });
@@ -806,35 +847,36 @@ public class OrderElementServiceTest {
         orderDTO.code = code;
         orderDTO.initDate = DateConverter.toXMLGregorianCalendar(new Date());
 
-        String labelCode = transactionService
-                .runOnTransaction(new IOnTransaction<String>() {
-                    @Override
-                    public String execute() {
-                        return givenLabelStored().getCode();
-                    }
-                });
+        String labelCode = transactionService.runOnTransaction(new IOnTransaction<String>() {
+            @Override
+            public String execute() {
+                return givenLabelStored().getCode();
+            }
+        });
+
         LabelReferenceDTO labelReferenceDTO = new LabelReferenceDTO(labelCode);
         orderDTO.labels.add(labelReferenceDTO);
 
         OrderListDTO orderListDTO = createOrderListDTO(orderDTO);
-        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
-                .addOrders(orderListDTO).instanceConstraintViolationsList;
+
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
+                orderElementService.addOrders(orderListDTO).instanceConstraintViolationsList;
+
         assertThat(instanceConstraintViolationsList.size(), equalTo(0));
 
-        final OrderElement orderElement = transactionService
-                .runOnTransaction(new IOnTransaction<OrderElement>() {
-                    @Override
-                    public OrderElement execute() {
-                        try {
-                            OrderElement element = orderElementDAO
-                                    .findUniqueByCode(code);
-                            element.getLabels().size();
-                            return element;
-                        } catch (InstanceNotFoundException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                });
+        final OrderElement orderElement = transactionService.runOnTransaction(new IOnTransaction<OrderElement>() {
+            @Override
+            public OrderElement execute() {
+                try {
+                    OrderElement element = orderElementDAO.findUniqueByCode(code);
+                    element.getLabels().size();
+
+                    return element;
+                } catch (InstanceNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
 
         assertNotNull(orderElement);
         assertThat(orderElement.getLabels().size(), equalTo(1));
@@ -844,6 +886,7 @@ public class OrderElementServiceTest {
             public Void execute() {
                 orderElementDAO.flush();
                 sessionFactory.getCurrentSession().evict(orderElement);
+
                 return null;
             }
         });
@@ -852,37 +895,33 @@ public class OrderElementServiceTest {
         orderDTO.labels.add(labelReferenceDTO2);
 
         orderListDTO = createOrderListDTO(orderDTO);
-        instanceConstraintViolationsList = orderElementService
-                .addOrders(orderListDTO).instanceConstraintViolationsList;
+        instanceConstraintViolationsList = orderElementService.addOrders(orderListDTO).instanceConstraintViolationsList;
 
         assertThat(instanceConstraintViolationsList.size(), equalTo(0));
 
-        OrderElement orderElement2 = transactionService
-                .runOnTransaction(new IOnTransaction<OrderElement>() {
-                    @Override
-                    public OrderElement execute() {
-                        try {
-                            OrderElement element = orderElementDAO
-                                    .findUniqueByCode(code);
-                            element.getLabels().size();
-                            return element;
-                        } catch (InstanceNotFoundException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                });
+        OrderElement orderElement2 = transactionService.runOnTransaction(new IOnTransaction<OrderElement>() {
+            @Override
+            public OrderElement execute() {
+                try {
+                    OrderElement element = orderElementDAO.findUniqueByCode(code);
+                    element.getLabels().size();
+
+                    return element;
+                } catch (InstanceNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
         // update the same label
         assertThat(orderElement2.getLabels().size(), equalTo(1));
     }
 
     @Test
-    public void updateMaterialAssignment() throws InstanceNotFoundException,
-            IncompatibleTypeException {
+    public void updateMaterialAssignment() throws InstanceNotFoundException, IncompatibleTypeException {
         final String code = "order-code" + UUID.randomUUID().toString();
-        String materialcode1 = "material-code-1-"
-                + UUID.randomUUID().toString();
-        String materialcode2 = "material-code-2-"
-                + UUID.randomUUID().toString();
+        String materialcode1 = "material-code-1-" + UUID.randomUUID().toString();
+        String materialcode2 = "material-code-2-" + UUID.randomUUID().toString();
 
         transactionService.runOnTransaction(new IOnTransaction<Void>() {
             @Override
@@ -893,6 +932,7 @@ public class OrderElementServiceTest {
                 } catch (InstanceNotFoundException e) {
                     // It should throw an exception
                 }
+
                 return null;
             }
         });
@@ -902,29 +942,31 @@ public class OrderElementServiceTest {
         orderDTO.code = code;
         orderDTO.initDate = DateConverter.toXMLGregorianCalendar(new Date());
 
-        MaterialAssignmentDTO materialAssignmentDTO = new MaterialAssignmentDTO(
-                materialcode1, BigDecimal.valueOf(100.0), BigDecimal.TEN, null);
+        MaterialAssignmentDTO materialAssignmentDTO =
+                new MaterialAssignmentDTO(materialcode1, BigDecimal.valueOf(100.0), BigDecimal.TEN, null);
+
         orderDTO.materialAssignments.add(materialAssignmentDTO);
 
         OrderListDTO orderListDTO = createOrderListDTO(orderDTO);
-        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
-                .addOrders(orderListDTO).instanceConstraintViolationsList;
+
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
+                orderElementService.addOrders(orderListDTO).instanceConstraintViolationsList;
+
         assertThat(instanceConstraintViolationsList.size(), equalTo(0));
 
-        final OrderElement orderElement = transactionService
-                .runOnTransaction(new IOnTransaction<OrderElement>() {
-                    @Override
-                    public OrderElement execute() {
-                        try {
-                            OrderElement element = orderElementDAO
-                                    .findUniqueByCode(code);
-                            element.getMaterialAssignments().size();
-                            return element;
-                        } catch (InstanceNotFoundException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                });
+        final OrderElement orderElement = transactionService.runOnTransaction(new IOnTransaction<OrderElement>() {
+            @Override
+            public OrderElement execute() {
+                try {
+                    OrderElement element = orderElementDAO.findUniqueByCode(code);
+                    element.getMaterialAssignments().size();
+
+                    return element;
+                } catch (InstanceNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
 
         assertNotNull(orderElement);
         assertThat(orderElement.getMaterialAssignments().size(), equalTo(1));
@@ -934,58 +976,61 @@ public class OrderElementServiceTest {
             public Void execute() {
                 orderElementDAO.flush();
                 sessionFactory.getCurrentSession().evict(orderElement);
+
                 return null;
             }
         });
 
-        orderDTO.materialAssignments.iterator().next().units = BigDecimal
-                .valueOf(150.0);
+        orderDTO.materialAssignments.iterator().next().units = BigDecimal.valueOf(150.0);
 
-        MaterialAssignmentDTO materialAssignmentDTO2 = new MaterialAssignmentDTO(
-                materialcode2, BigDecimal.valueOf(200.0), BigDecimal.ONE, null);
+        MaterialAssignmentDTO materialAssignmentDTO2 =
+                new MaterialAssignmentDTO(materialcode2, BigDecimal.valueOf(200.0), BigDecimal.ONE, null);
+
         orderDTO.materialAssignments.add(materialAssignmentDTO);
         orderDTO.materialAssignments.add(materialAssignmentDTO2);
 
         orderListDTO = createOrderListDTO(orderDTO);
-        instanceConstraintViolationsList = orderElementService
-                .addOrders(orderListDTO).instanceConstraintViolationsList;
+        instanceConstraintViolationsList = orderElementService.addOrders(orderListDTO).instanceConstraintViolationsList;
         assertThat(instanceConstraintViolationsList.size(), equalTo(0));
 
-        OrderElement orderElement2 = transactionService
-                .runOnTransaction(new IOnTransaction<OrderElement>() {
-                    @Override
-                    public OrderElement execute() {
-                        try {
-                            OrderElement element = orderElementDAO
-                                    .findUniqueByCode(code);
-                            for (MaterialAssignment materialAssignment : element
-                                    .getMaterialAssignments()) {
-                                materialAssignment.getMaterial().getCode();
-                            }
-                            return element;
-                        } catch (InstanceNotFoundException e) {
-                            throw new RuntimeException(e);
-                        }
+        OrderElement orderElement2 = transactionService.runOnTransaction(new IOnTransaction<OrderElement>() {
+            @Override
+            public OrderElement execute() {
+                try {
+                    OrderElement element = orderElementDAO.findUniqueByCode(code);
+                    for (MaterialAssignment materialAssignment : element.getMaterialAssignments()) {
+                        materialAssignment.getMaterial().getCode();
                     }
-                });
+
+                    return element;
+                } catch (InstanceNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
 
         assertThat(orderElement2.getMaterialAssignments().size(), equalTo(2));
-        for (MaterialAssignment materialAssignment : orderElement2
-                .getMaterialAssignments()) {
-            assertThat(materialAssignment.getMaterial().getCode(), anyOf(
-                    equalTo(materialcode1), equalTo(materialcode2)));
-            assertThat(materialAssignment.getUnits(), anyOf(equalTo(BigDecimal
-                    .valueOf(150.0).setScale(2)), equalTo(BigDecimal.valueOf(
-                    200.0).setScale(2))));
-            assertThat(materialAssignment.getUnitPrice(), anyOf(
-                    equalTo(BigDecimal.TEN.setScale(2)), equalTo(BigDecimal.ONE
-                            .setScale(2))));
+
+        for (MaterialAssignment materialAssignment : orderElement2.getMaterialAssignments()) {
+
+            assertThat(
+                    materialAssignment.getMaterial().getCode(),
+                    anyOf(equalTo(materialcode1), equalTo(materialcode2)));
+
+            assertThat(
+                    materialAssignment.getUnits(),
+                    anyOf(
+                            equalTo(BigDecimal.valueOf(150.0).setScale(2)),
+                            equalTo(BigDecimal.valueOf(200.0).setScale(2))));
+
+            assertThat(
+                    materialAssignment.getUnitPrice(),
+                    anyOf(equalTo(BigDecimal.TEN.setScale(2)), equalTo(BigDecimal.ONE.setScale(2))));
         }
     }
 
     @Test
-    public void updateHoursGroup() throws InstanceNotFoundException,
-            IncompatibleTypeException {
+    public void updateHoursGroup() throws InstanceNotFoundException, IncompatibleTypeException {
         final String code = "order-code" + UUID.randomUUID().toString();
         transactionService.runOnTransaction(new IOnTransaction<Void>() {
             @Override
@@ -996,6 +1041,7 @@ public class OrderElementServiceTest {
                 } catch (InstanceNotFoundException e) {
                     // It should throw an exception
                 }
+
                 return null;
             }
         });
@@ -1005,50 +1051,53 @@ public class OrderElementServiceTest {
         orderDTO.code = code;
         orderDTO.initDate = DateConverter.toXMLGregorianCalendar(new Date());
 
-        final String orderLineCode = "order-line-code"
-                + UUID.randomUUID().toString();
+        final String orderLineCode = "order-line-code" + UUID.randomUUID().toString();
         OrderLineDTO orderLineDTO = new OrderLineDTO();
         orderLineDTO.name = "Order line " + UUID.randomUUID().toString();
         orderLineDTO.code = orderLineCode;
-        HoursGroupDTO hoursGroupDTO = new HoursGroupDTO("hours-groupYY",
+
+        HoursGroupDTO hoursGroupDTO = new HoursGroupDTO(
+                "hours-groupYY",
                 ResourceEnumDTO.WORKER, 1000,
                 new HashSet<CriterionRequirementDTO>());
+
         orderLineDTO.hoursGroups.add(hoursGroupDTO);
         orderDTO.children.add(orderLineDTO);
 
         OrderListDTO orderListDTO = createOrderListDTO(orderDTO);
-        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
-                .addOrders(orderListDTO).instanceConstraintViolationsList;
-        assertTrue(instanceConstraintViolationsList.toString(),
-                instanceConstraintViolationsList.size() == 0);
 
-        final OrderElement orderElement = transactionService
-                .runOnTransaction(new IOnTransaction<OrderElement>() {
-                    @Override
-                    public OrderElement execute() {
-                        try {
-                            return orderElementDAO.findUniqueByCode(code);
-                        } catch (InstanceNotFoundException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                });
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
+                orderElementService.addOrders(orderListDTO).instanceConstraintViolationsList;
+
+        assertTrue(instanceConstraintViolationsList.toString(), instanceConstraintViolationsList.size() == 0);
+
+        final OrderElement orderElement = transactionService.runOnTransaction(new IOnTransaction<OrderElement>() {
+            @Override
+            public OrderElement execute() {
+                try {
+                    return orderElementDAO.findUniqueByCode(code);
+                } catch (InstanceNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
         assertNotNull(orderElement);
 
-        final OrderLine orderLine = transactionService
-                .runOnTransaction(new IOnTransaction<OrderLine>() {
-                    @Override
-                    public OrderLine execute() {
-                        try {
-                            OrderLine line = (OrderLine) orderElementDAO
-                                    .findUniqueByCode(orderLineCode);
-                            line.getHoursGroups().size();
-                            return line;
-                        } catch (InstanceNotFoundException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                });
+        final OrderLine orderLine = transactionService.runOnTransaction(new IOnTransaction<OrderLine>() {
+            @Override
+            public OrderLine execute() {
+                try {
+                    OrderLine line = (OrderLine) orderElementDAO.findUniqueByCode(orderLineCode);
+                    line.getHoursGroups().size();
+
+                    return line;
+                } catch (InstanceNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
         assertNotNull(orderLine);
         assertThat(orderLine.getHoursGroups().size(), equalTo(1));
 
@@ -1058,68 +1107,67 @@ public class OrderElementServiceTest {
                 orderElementDAO.flush();
                 sessionFactory.getCurrentSession().evict(orderElement);
                 sessionFactory.getCurrentSession().evict(orderLine);
+
                 return null;
             }
         });
 
         orderLineDTO.hoursGroups.iterator().next().workingHours = 1500;
-        HoursGroupDTO hoursGroupDTO2 = new HoursGroupDTO("hours-groupXX",
+
+        HoursGroupDTO hoursGroupDTO2 = new HoursGroupDTO(
+                "hours-groupXX",
                 ResourceEnumDTO.WORKER, 2000,
                 new HashSet<CriterionRequirementDTO>());
+
         orderLineDTO.hoursGroups.add(hoursGroupDTO2);
 
         orderListDTO = createOrderListDTO(orderDTO);
-        instanceConstraintViolationsList = orderElementService
-                .addOrders(orderListDTO).instanceConstraintViolationsList;
+        instanceConstraintViolationsList = orderElementService.addOrders(orderListDTO).instanceConstraintViolationsList;
         assertThat(instanceConstraintViolationsList.size(), equalTo(0));
 
-        final OrderElement orderElement2 = transactionService
-                .runOnTransaction(new IOnTransaction<OrderElement>() {
-                    @Override
-                    public OrderElement execute() {
-                        try {
-                            return orderElementDAO.findUniqueByCode(code);
-                        } catch (InstanceNotFoundException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                });
+        final OrderElement orderElement2 = transactionService.runOnTransaction(new IOnTransaction<OrderElement>() {
+            @Override
+            public OrderElement execute() {
+                try {
+                    return orderElementDAO.findUniqueByCode(code);
+                } catch (InstanceNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
         assertNotNull(orderElement2);
 
-        final OrderLine orderLine2 = transactionService
-                .runOnTransaction(new IOnTransaction<OrderLine>() {
-                    @Override
-                    public OrderLine execute() {
-                        try {
-                            OrderLine line = (OrderLine) orderElementDAO
-                                    .findUniqueByCode(orderLineCode);
-                            for (HoursGroup hoursGroup : line.getHoursGroups()) {
-                                hoursGroup.getCode();
-                            }
-                            return line;
-                        } catch (InstanceNotFoundException e) {
-                            throw new RuntimeException(e);
-                        }
+        final OrderLine orderLine2 = transactionService.runOnTransaction(new IOnTransaction<OrderLine>() {
+            @Override
+            public OrderLine execute() {
+                try {
+                    OrderLine line = (OrderLine) orderElementDAO.findUniqueByCode(orderLineCode);
+                    for (HoursGroup hoursGroup : line.getHoursGroups()) {
+                        hoursGroup.getCode();
                     }
-                });
+
+                    return line;
+                } catch (InstanceNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
         assertNotNull(orderLine2);
         assertThat(orderLine2.getHoursGroups().size(), equalTo(2));
 
         for (HoursGroup hoursGroup : orderLine2.getHoursGroups()) {
-            assertThat(hoursGroup.getCode(), anyOf(equalTo("hours-groupYY"),
-                    equalTo("hours-groupXX")));
-            assertThat(hoursGroup.getWorkingHours(), anyOf(equalTo(1500),
-                    equalTo(2000)));
-            assertThat(hoursGroup.getResourceType(),
-                    equalTo(ResourceEnum.WORKER));
+            assertThat(hoursGroup.getCode(), anyOf(equalTo("hours-groupYY"), equalTo("hours-groupXX")));
+            assertThat(hoursGroup.getWorkingHours(), anyOf(equalTo(1500), equalTo(2000)));
+            assertThat(hoursGroup.getResourceType(), equalTo(ResourceEnum.WORKER));
         }
     }
 
     @Test
     @Transactional
     // FIXME move to subcontractors service when it exists
-    public void invalidOrderWithInvalidAdvanceMeasurements()
-            throws InstanceNotFoundException {
+    public void invalidOrderWithInvalidAdvanceMeasurements() throws InstanceNotFoundException {
         String code = "order-code" + UUID.randomUUID().toString();
         try {
             orderElementDAO.findUniqueByCode(code);
@@ -1137,17 +1185,20 @@ public class OrderElementServiceTest {
         orderDTO.advanceMeasurements.add(advanceMeasurementDTO);
 
         OrderListDTO orderListDTO = createOrderListDTO(orderDTO);
-        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
-                .addOrders(orderListDTO).instanceConstraintViolationsList;
+
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
+                orderElementService.addOrders(orderListDTO).instanceConstraintViolationsList;
+
         assertThat(instanceConstraintViolationsList.size(), equalTo(1));
 
-        List<ConstraintViolationDTO> constraintViolations = instanceConstraintViolationsList
-                .get(0).constraintViolations;
+        List<ConstraintViolationDTO> constraintViolations =
+                instanceConstraintViolationsList.get(0).constraintViolations;
+
         // Mandatory fields: date
         assertThat(constraintViolations.size(), equalTo(2));
+
         for (ConstraintViolationDTO constraintViolationDTO : constraintViolations) {
-            assertThat(constraintViolationDTO.fieldName,
-                    anyOf(mustEnd("value"), mustEnd("date")));
+            assertThat(constraintViolationDTO.fieldName, anyOf(mustEnd("value"), mustEnd("date")));
         }
 
         try {
@@ -1162,6 +1213,7 @@ public class OrderElementServiceTest {
     // FIXME move to subcontractors service when it exists
     public void validOrderWithAdvanceMeasurements() {
         final String code = "order-code" + UUID.randomUUID().toString();
+
         transactionService.runOnTransaction(new IOnTransaction<Void>() {
             @Override
             public Void execute() {
@@ -1171,6 +1223,7 @@ public class OrderElementServiceTest {
                 } catch (InstanceNotFoundException e) {
                     // It should throw an exception
                 }
+
                 return null;
             }
         });
@@ -1180,44 +1233,43 @@ public class OrderElementServiceTest {
         orderDTO.code = code;
         orderDTO.initDate = DateConverter.toXMLGregorianCalendar(new Date());
 
-        AdvanceMeasurementDTO advanceMeasurementDTO = new AdvanceMeasurementDTO(
-                DateConverter.toXMLGregorianCalendar(new Date()),
-                BigDecimal.TEN);
+        AdvanceMeasurementDTO advanceMeasurementDTO =
+                new AdvanceMeasurementDTO(DateConverter.toXMLGregorianCalendar(new Date()), BigDecimal.TEN);
+
         orderDTO.advanceMeasurements.add(advanceMeasurementDTO);
 
         OrderListDTO orderListDTO = createOrderListDTO(orderDTO);
-        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
-                .addOrders(orderListDTO).instanceConstraintViolationsList;
+
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
+                orderElementService.addOrders(orderListDTO).instanceConstraintViolationsList;
+
         assertThat(instanceConstraintViolationsList.size(), equalTo(0));
 
-        OrderElement orderElement = transactionService
-                .runOnTransaction(new IOnTransaction<OrderElement>() {
-                    @Override
-                    public OrderElement execute() {
-                        try {
-                            OrderElement element = orderElementDAO
-                                    .findUniqueByCode(code);
-                            element.getDirectAdvanceAssignmentSubcontractor()
-                                    .getAdvanceMeasurements().size();
-                            return element;
-                        } catch (InstanceNotFoundException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                });
+        OrderElement orderElement = transactionService.runOnTransaction(new IOnTransaction<OrderElement>() {
+            @Override
+            public OrderElement execute() {
+                try {
+                    OrderElement element = orderElementDAO.findUniqueByCode(code);
+                    element.getDirectAdvanceAssignmentSubcontractor().getAdvanceMeasurements().size();
+
+                    return element;
+                } catch (InstanceNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
         assertNotNull(orderElement);
-        DirectAdvanceAssignment advanceAssignment = orderElement
-                .getDirectAdvanceAssignmentSubcontractor();
+        DirectAdvanceAssignment advanceAssignment = orderElement.getDirectAdvanceAssignmentSubcontractor();
         assertNotNull(advanceAssignment);
-        assertThat(advanceAssignment.getAdvanceMeasurements().size(),
-                equalTo(1));
+        assertThat(advanceAssignment.getAdvanceMeasurements().size(), equalTo(1));
     }
 
     @Test
     // FIXME move to subcontractors service when it exists
-    public void updateAdvanceMeasurements() throws InstanceNotFoundException,
-            IncompatibleTypeException {
+    public void updateAdvanceMeasurements() throws InstanceNotFoundException, IncompatibleTypeException {
         final String code = "order-code" + UUID.randomUUID().toString();
+
         transactionService.runOnTransaction(new IOnTransaction<Void>() {
             @Override
             public Void execute() {
@@ -1227,6 +1279,7 @@ public class OrderElementServiceTest {
                 } catch (InstanceNotFoundException e) {
                     // It should throw an exception
                 }
+
                 return null;
             }
         });
@@ -1237,96 +1290,96 @@ public class OrderElementServiceTest {
         orderDTO.initDate = DateConverter.toXMLGregorianCalendar(new Date());
 
         LocalDate date = new LocalDate();
-        AdvanceMeasurementDTO advanceMeasurementDTO = new AdvanceMeasurementDTO(
-                DateConverter.toXMLGregorianCalendar(date), new BigDecimal(15));
+
+        AdvanceMeasurementDTO advanceMeasurementDTO =
+                new AdvanceMeasurementDTO(DateConverter.toXMLGregorianCalendar(date), new BigDecimal(15));
 
         orderDTO.advanceMeasurements.add(advanceMeasurementDTO);
 
         OrderListDTO orderListDTO = createOrderListDTO(orderDTO);
-        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
-                .addOrders(orderListDTO).instanceConstraintViolationsList;
+
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
+                orderElementService.addOrders(orderListDTO).instanceConstraintViolationsList;
+
         assertThat(instanceConstraintViolationsList.size(), equalTo(0));
 
-        final OrderElement orderElement = transactionService
-                .runOnTransaction(new IOnTransaction<OrderElement>() {
-                    @Override
-                    public OrderElement execute() {
-                        try {
-                            OrderElement element = orderElementDAO
-                                    .findUniqueByCode(code);
-                            element.getDirectAdvanceAssignmentSubcontractor()
-                                    .getAdvanceMeasurements().size();
-                            return element;
-                        } catch (InstanceNotFoundException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                });
+        final OrderElement orderElement = transactionService.runOnTransaction(new IOnTransaction<OrderElement>() {
+            @Override
+            public OrderElement execute() {
+                try {
+                    OrderElement element = orderElementDAO.findUniqueByCode(code);
+                    element.getDirectAdvanceAssignmentSubcontractor().getAdvanceMeasurements().size();
+
+                    return element;
+                } catch (InstanceNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
         assertNotNull(orderElement);
-        DirectAdvanceAssignment advanceAssignment = orderElement
-                .getDirectAdvanceAssignmentSubcontractor();
+        DirectAdvanceAssignment advanceAssignment = orderElement.getDirectAdvanceAssignmentSubcontractor();
         assertNotNull(advanceAssignment);
-        assertThat(advanceAssignment.getAdvanceMeasurements().size(),
-                equalTo(1));
+        assertThat(advanceAssignment.getAdvanceMeasurements().size(), equalTo(1));
 
         transactionService.runOnTransaction(new IOnTransaction<Void>() {
             @Override
             public Void execute() {
                 orderElementDAO.flush();
                 sessionFactory.getCurrentSession().evict(orderElement);
+
                 return null;
             }
         });
 
-        AdvanceMeasurementDTO advanceMeasurementDTO2 = new AdvanceMeasurementDTO(
-                DateConverter.toXMLGregorianCalendar(date.plusWeeks(1)),
-                new BigDecimal(20));
+        AdvanceMeasurementDTO advanceMeasurementDTO2 =
+                new AdvanceMeasurementDTO(DateConverter.toXMLGregorianCalendar(date.plusWeeks(1)), new BigDecimal(20));
+
         orderDTO.advanceMeasurements.add(advanceMeasurementDTO2);
 
         orderListDTO = createOrderListDTO(orderDTO);
-        instanceConstraintViolationsList = orderElementService
-                .addOrders(orderListDTO).instanceConstraintViolationsList;
+        instanceConstraintViolationsList = orderElementService.addOrders(orderListDTO).instanceConstraintViolationsList;
 
         assertThat(instanceConstraintViolationsList.size(), equalTo(0));
 
-        final OrderElement orderElement2 = transactionService
-                .runOnTransaction(new IOnTransaction<OrderElement>() {
-                    @Override
-                    public OrderElement execute() {
-                        try {
-                            OrderElement element = orderElementDAO
-                                    .findUniqueByCode(code);
-                            for (AdvanceMeasurement measurement : element
-                                    .getDirectAdvanceAssignmentSubcontractor()
-                                    .getAdvanceMeasurements()) {
-                                measurement.getDate();
-                            }
-                            return element;
-                        } catch (InstanceNotFoundException e) {
-                            throw new RuntimeException(e);
-                        }
+        final OrderElement orderElement2 = transactionService.runOnTransaction(new IOnTransaction<OrderElement>() {
+            @Override
+            public OrderElement execute() {
+                try {
+                    OrderElement element = orderElementDAO.findUniqueByCode(code);
+
+                    SortedSet<AdvanceMeasurement> items =
+                            element.getDirectAdvanceAssignmentSubcontractor().getAdvanceMeasurements();
+
+                    for (AdvanceMeasurement measurement : items) {
+                        measurement.getDate();
                     }
-                });
+
+                    return element;
+                } catch (InstanceNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
         assertNotNull(orderElement2);
-        advanceAssignment = orderElement2
-                .getDirectAdvanceAssignmentSubcontractor();
+        advanceAssignment = orderElement2.getDirectAdvanceAssignmentSubcontractor();
         assertNotNull(advanceAssignment);
-        SortedSet<AdvanceMeasurement> advanceMeasurements = advanceAssignment
-                .getAdvanceMeasurements();
+        SortedSet<AdvanceMeasurement> advanceMeasurements = advanceAssignment.getAdvanceMeasurements();
         assertThat(advanceMeasurements.size(), equalTo(2));
+
         for (AdvanceMeasurement advanceMeasurement : advanceMeasurements) {
-            assertThat(advanceMeasurement.getDate(), anyOf(equalTo(date),
-                    equalTo(date.plusWeeks(1))));
-            assertThat(advanceMeasurement.getValue(), anyOf(
-                    equalTo(new BigDecimal(15).setScale(2)),
-                    equalTo(new BigDecimal(20).setScale(2))));
+            assertThat(advanceMeasurement.getDate(), anyOf(equalTo(date), equalTo(date.plusWeeks(1))));
+
+            assertThat(
+                    advanceMeasurement.getValue(),
+                    anyOf(equalTo(new BigDecimal(15).setScale(2)), equalTo(new BigDecimal(20).setScale(2))));
         }
     }
 
     @Test
     @Transactional
-    public void invalidOrderWithCriterionRequirements()
-            throws InstanceNotFoundException {
+    public void invalidOrderWithCriterionRequirements() throws InstanceNotFoundException {
         String code = "order-code" + UUID.randomUUID().toString();
         try {
             orderElementDAO.findUniqueByCode(code);
@@ -1344,8 +1397,9 @@ public class OrderElementServiceTest {
         orderDTO.criterionRequirements.add(criterionRequirementDTO);
 
         OrderListDTO orderListDTO = createOrderListDTO(orderDTO);
-        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
-                .addOrders(orderListDTO).instanceConstraintViolationsList;
+
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
+                orderElementService.addOrders(orderListDTO).instanceConstraintViolationsList;
 
         // the criterion format is incorrect because its name and type is empty.
         assertThat(instanceConstraintViolationsList.size(), equalTo(1));
@@ -1359,8 +1413,7 @@ public class OrderElementServiceTest {
     }
 
     @Test
-    public void validOrderWithCriterionRequirements()
-            throws InstanceNotFoundException {
+    public void validOrderWithCriterionRequirements() throws InstanceNotFoundException {
         final String code = "order-code" + UUID.randomUUID().toString();
         transactionService.runOnTransaction(new IOnTransaction<Void>() {
             @Override
@@ -1371,6 +1424,7 @@ public class OrderElementServiceTest {
                 } catch (InstanceNotFoundException e) {
                     // It should throw an exception
                 }
+
                 return null;
             }
         });
@@ -1383,29 +1437,30 @@ public class OrderElementServiceTest {
         String name = PredefinedCriterionTypes.LOCATION.getPredefined().get(0);
         String type = PredefinedCriterionTypes.LOCATION.getName();
 
-        CriterionRequirementDTO criterionRequirementDTO = new DirectCriterionRequirementDTO(
-                name, type);
+        CriterionRequirementDTO criterionRequirementDTO = new DirectCriterionRequirementDTO(name, type);
         orderDTO.criterionRequirements.add(criterionRequirementDTO);
 
         OrderListDTO orderListDTO = createOrderListDTO(orderDTO);
-        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
-                .addOrders(orderListDTO).instanceConstraintViolationsList;
+
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
+                orderElementService.addOrders(orderListDTO).instanceConstraintViolationsList;
+
         assertThat(instanceConstraintViolationsList.size(), equalTo(0));
 
-        OrderElement orderElement = transactionService
-                .runOnTransaction(new IOnTransaction<OrderElement>() {
-                    @Override
-                    public OrderElement execute() {
-                        try {
-                            OrderElement element = orderElementDAO
-                                    .findUniqueByCode(code);
-                            element.getCriterionRequirements().size();
-                            return element;
-                        } catch (InstanceNotFoundException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                });
+        OrderElement orderElement = transactionService.runOnTransaction(new IOnTransaction<OrderElement>() {
+            @Override
+            public OrderElement execute() {
+                try {
+                    OrderElement element = orderElementDAO.findUniqueByCode(code);
+                    element.getCriterionRequirements().size();
+
+                    return element;
+                } catch (InstanceNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
         assertNotNull(orderElement);
         assertThat(orderElement.getCriterionRequirements().size(), equalTo(1));
     }
@@ -1413,7 +1468,9 @@ public class OrderElementServiceTest {
     @Test
     public void validOrderWithDirectCriterionRequirementsAndIndidirectCriterionRequirements()
             throws InstanceNotFoundException {
+
         final String code = "order-code" + UUID.randomUUID().toString();
+
         transactionService.runOnTransaction(new IOnTransaction<Void>() {
             @Override
             public Void execute() {
@@ -1423,6 +1480,7 @@ public class OrderElementServiceTest {
                 } catch (InstanceNotFoundException e) {
                     // It should throw an exception
                 }
+
                 return null;
             }
         });
@@ -1435,71 +1493,76 @@ public class OrderElementServiceTest {
         String name = PredefinedCriterionTypes.LOCATION.getPredefined().get(0);
         String type = PredefinedCriterionTypes.LOCATION.getName();
 
-        CriterionRequirementDTO criterionRequirementDTO = new DirectCriterionRequirementDTO(
-                name, type);
+        CriterionRequirementDTO criterionRequirementDTO = new DirectCriterionRequirementDTO(name, type);
         orderDTO.criterionRequirements.add(criterionRequirementDTO);
 
         OrderLineDTO orderLineDTO = new OrderLineDTO();
         orderLineDTO.name = "Order line " + UUID.randomUUID().toString();
         orderLineDTO.code = "order-line-code-AX";
-        HoursGroupDTO hoursGroupDTO = new HoursGroupDTO("hours-group"
-                + UUID.randomUUID().toString(), ResourceEnumDTO.WORKER, 1000,
+
+        HoursGroupDTO hoursGroupDTO = new HoursGroupDTO(
+                "hours-group" + UUID.randomUUID().toString(),
+                ResourceEnumDTO.WORKER,
+                1000,
                 new HashSet<CriterionRequirementDTO>());
+
         orderLineDTO.hoursGroups.add(hoursGroupDTO);
-        IndirectCriterionRequirementDTO indirectCriterionRequirementDTO = new IndirectCriterionRequirementDTO(
-                name, type, false);
+
+        IndirectCriterionRequirementDTO indirectCriterionRequirementDTO =
+                new IndirectCriterionRequirementDTO(name, type, false);
+
         orderLineDTO.criterionRequirements.add(indirectCriterionRequirementDTO);
         orderDTO.children.add(orderLineDTO);
 
         OrderListDTO orderListDTO = createOrderListDTO(orderDTO);
-        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
-                .addOrders(orderListDTO).instanceConstraintViolationsList;
+
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
+                orderElementService.addOrders(orderListDTO).instanceConstraintViolationsList;
+
         assertThat(instanceConstraintViolationsList.size(), equalTo(0));
 
-        OrderElement orderElement = transactionService
-                .runOnTransaction(new IOnTransaction<OrderElement>() {
-                    @Override
-                    public OrderElement execute() {
-                        try {
-                            OrderElement element = orderElementDAO
-                                    .findUniqueByCode(code);
-                            element.getCriterionRequirements().size();
-                            return element;
-                        } catch (InstanceNotFoundException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                });
+        OrderElement orderElement = transactionService.runOnTransaction(new IOnTransaction<OrderElement>() {
+            @Override
+            public OrderElement execute() {
+                try {
+                    OrderElement element = orderElementDAO.findUniqueByCode(code);
+                    element.getCriterionRequirements().size();
+
+                    return element;
+                } catch (InstanceNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
         assertNotNull(orderElement);
         assertThat(orderElement.getCriterionRequirements().size(), equalTo(1));
 
-        OrderElement orderElement2 = transactionService
-                .runOnTransaction(new IOnTransaction<OrderElement>() {
-                    @Override
-                    public OrderElement execute() {
-                        try {
-                            OrderElement element = orderElementDAO
-                                    .findUniqueByCode("order-line-code-AX");
-                            for (CriterionRequirement requirement : element
-                                    .getCriterionRequirements()) {
-                                requirement.isValid();
-                            }
-                            return element;
-                        } catch (InstanceNotFoundException e) {
-                            throw new RuntimeException(e);
-                        }
+        OrderElement orderElement2 = transactionService.runOnTransaction(new IOnTransaction<OrderElement>() {
+            @Override
+            public OrderElement execute() {
+                try {
+                    OrderElement element = orderElementDAO.findUniqueByCode("order-line-code-AX");
+                    for (CriterionRequirement requirement : element.getCriterionRequirements()) {
+                        requirement.isValid();
                     }
-                });
+
+                    return element;
+                } catch (InstanceNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
         assertNotNull(orderElement2);
         assertThat(orderElement2.getCriterionRequirements().size(), equalTo(1));
-        assertFalse(((IndirectCriterionRequirement) orderElement2
-                .getCriterionRequirements().iterator().next()).isValid());
+        assertFalse(orderElement2.getCriterionRequirements().iterator().next().isValid());
     }
 
     @Test
-    public void updateCriterionRequirements() throws InstanceNotFoundException,
-            IncompatibleTypeException {
+    public void updateCriterionRequirements() throws InstanceNotFoundException, IncompatibleTypeException {
         final String code = "order-code" + UUID.randomUUID().toString();
+
         transactionService.runOnTransaction(new IOnTransaction<Void>() {
             @Override
             public Void execute() {
@@ -1509,6 +1572,7 @@ public class OrderElementServiceTest {
                 } catch (InstanceNotFoundException e) {
                     // It should throw an exception
                 }
+
                 return null;
             }
         });
@@ -1521,29 +1585,30 @@ public class OrderElementServiceTest {
         String name = PredefinedCriterionTypes.LOCATION.getPredefined().get(0);
         String type = PredefinedCriterionTypes.LOCATION.getName();
 
-        CriterionRequirementDTO criterionRequirementDTO = new DirectCriterionRequirementDTO(
-                name, type);
+        CriterionRequirementDTO criterionRequirementDTO = new DirectCriterionRequirementDTO(name, type);
         orderDTO.criterionRequirements.add(criterionRequirementDTO);
 
         OrderListDTO orderListDTO = createOrderListDTO(orderDTO);
-        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
-                .addOrders(orderListDTO).instanceConstraintViolationsList;
+
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
+                orderElementService.addOrders(orderListDTO).instanceConstraintViolationsList;
+
         assertThat(instanceConstraintViolationsList.size(), equalTo(0));
 
-        final OrderElement orderElement = transactionService
-                .runOnTransaction(new IOnTransaction<OrderElement>() {
-                    @Override
-                    public OrderElement execute() {
-                        try {
-                            OrderElement element = orderElementDAO
-                                    .findUniqueByCode(code);
-                            element.getCriterionRequirements().size();
-                            return element;
-                        } catch (InstanceNotFoundException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                });
+        final OrderElement orderElement = transactionService.runOnTransaction(new IOnTransaction<OrderElement>() {
+            @Override
+            public OrderElement execute() {
+                try {
+                    OrderElement element = orderElementDAO.findUniqueByCode(code);
+                    element.getCriterionRequirements().size();
+
+                    return element;
+                } catch (InstanceNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
         assertNotNull(orderElement);
         assertThat(orderElement.getCriterionRequirements().size(), equalTo(1));
 
@@ -1554,46 +1619,42 @@ public class OrderElementServiceTest {
             public Void execute() {
                 orderElementDAO.flush();
                 sessionFactory.getCurrentSession().evict(orderElement);
+
                 return null;
             }
         });
 
-        CriterionRequirementDTO criterionRequirementDTO2 = new DirectCriterionRequirementDTO(
-                name2, type);
+        CriterionRequirementDTO criterionRequirementDTO2 = new DirectCriterionRequirementDTO(name2, type);
         orderDTO.criterionRequirements.add(criterionRequirementDTO2);
 
         orderListDTO = createOrderListDTO(orderDTO);
-        instanceConstraintViolationsList = orderElementService
-                .addOrders(orderListDTO).instanceConstraintViolationsList;
+        instanceConstraintViolationsList = orderElementService.addOrders(orderListDTO).instanceConstraintViolationsList;
 
         assertThat(instanceConstraintViolationsList.size(), equalTo(0));
 
-        OrderElement orderElement2 = transactionService
-                .runOnTransaction(new IOnTransaction<OrderElement>() {
-                    @Override
-                    public OrderElement execute() {
-                        try {
-                            OrderElement element = orderElementDAO
-                                    .findUniqueByCode(code);
-                            for (CriterionRequirement requirement : element
-                                    .getCriterionRequirements()) {
-                                requirement.getCriterion().getType().getName();
-                            }
-                            return element;
-                        } catch (InstanceNotFoundException e) {
-                            throw new RuntimeException(e);
-                        }
+        OrderElement orderElement2 = transactionService.runOnTransaction(new IOnTransaction<OrderElement>() {
+            @Override
+            public OrderElement execute() {
+                try {
+                    OrderElement element = orderElementDAO.findUniqueByCode(code);
+                    for (CriterionRequirement requirement : element.getCriterionRequirements()) {
+                        requirement.getCriterion().getType().getName();
                     }
-                });
+
+                    return element;
+                } catch (InstanceNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
         assertNotNull(orderElement2);
-        Set<CriterionRequirement> criterionRequirements = orderElement2
-                .getCriterionRequirements();
+        Set<CriterionRequirement> criterionRequirements = orderElement2.getCriterionRequirements();
         assertThat(criterionRequirements.size(), equalTo(2));
+
         for (CriterionRequirement criterionRequirement : criterionRequirements) {
-            assertThat(criterionRequirement.getCriterion().getName(), anyOf(
-                    equalTo(name), equalTo(name2)));
-            assertThat(criterionRequirement.getCriterion().getType().getName(),
-                    equalTo(type));
+            assertThat(criterionRequirement.getCriterion().getName(), anyOf(equalTo(name), equalTo(name2)));
+            assertThat(criterionRequirement.getCriterion().getType().getName(), equalTo(type));
             assertTrue(criterionRequirement instanceof DirectCriterionRequirement);
         }
     }
@@ -1601,7 +1662,9 @@ public class OrderElementServiceTest {
     @Test
     public void updateDirectCriterionRequirementsAndIndirectCriterionRequirements()
             throws InstanceNotFoundException, IncompatibleTypeException {
+
         final String code = "order-code" + UUID.randomUUID().toString();
+
         transactionService.runOnTransaction(new IOnTransaction<Void>() {
             @Override
             public Void execute() {
@@ -1611,6 +1674,7 @@ public class OrderElementServiceTest {
                 } catch (InstanceNotFoundException e) {
                     // It should throw an exception
                 }
+
                 return null;
             }
         });
@@ -1623,38 +1687,43 @@ public class OrderElementServiceTest {
         String name = PredefinedCriterionTypes.LOCATION.getPredefined().get(0);
         String type = PredefinedCriterionTypes.LOCATION.getName();
 
-        CriterionRequirementDTO criterionRequirementDTO = new DirectCriterionRequirementDTO(
-                name, type);
+        CriterionRequirementDTO criterionRequirementDTO = new DirectCriterionRequirementDTO(name, type);
         orderDTO.criterionRequirements.add(criterionRequirementDTO);
 
         OrderLineDTO orderLineDTO = new OrderLineDTO();
         orderLineDTO.name = "Order line";
         orderLineDTO.code = "order-line-code-RR";
-        HoursGroupDTO hoursGroupDTO = new HoursGroupDTO("hours-group-RR",
-                ResourceEnumDTO.WORKER, 1000,
+
+        HoursGroupDTO hoursGroupDTO = new HoursGroupDTO(
+                "hours-group-RR",
+                ResourceEnumDTO.WORKER,
+                1000,
                 new HashSet<CriterionRequirementDTO>());
+
         orderLineDTO.hoursGroups.add(hoursGroupDTO);
         orderDTO.children.add(orderLineDTO);
 
         OrderListDTO orderListDTO = createOrderListDTO(orderDTO);
-        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
-                .addOrders(orderListDTO).instanceConstraintViolationsList;
+
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
+                orderElementService.addOrders(orderListDTO).instanceConstraintViolationsList;
+
         assertThat(instanceConstraintViolationsList.size(), equalTo(0));
 
-        final OrderElement orderElement = transactionService
-                .runOnTransaction(new IOnTransaction<OrderElement>() {
-                    @Override
-                    public OrderElement execute() {
-                        try {
-                            OrderElement element = orderElementDAO
-                                    .findUniqueByCode(code);
-                            element.getCriterionRequirements().size();
-                            return element;
-                        } catch (InstanceNotFoundException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                });
+        final OrderElement orderElement = transactionService.runOnTransaction(new IOnTransaction<OrderElement>() {
+            @Override
+            public OrderElement execute() {
+                try {
+                    OrderElement element = orderElementDAO.findUniqueByCode(code);
+                    element.getCriterionRequirements().size();
+
+                    return element;
+                } catch (InstanceNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
         assertNotNull(orderElement);
         assertThat(orderElement.getCriterionRequirements().size(), equalTo(1));
 
@@ -1663,95 +1732,95 @@ public class OrderElementServiceTest {
             public Void execute() {
                 orderElementDAO.flush();
                 sessionFactory.getCurrentSession().evict(orderElement);
+
                 return null;
             }
         });
 
-        final OrderElement orderElement2 = transactionService
-                .runOnTransaction(new IOnTransaction<OrderElement>() {
-                    @Override
-                    public OrderElement execute() {
-                        try {
-                            OrderElement element = orderElementDAO
-                                    .findUniqueByCode("order-line-code-RR");
-                            for (CriterionRequirement requirement : element
-                                    .getCriterionRequirements()) {
-                                requirement.isValid();
-                            }
-                            return element;
-                        } catch (InstanceNotFoundException e) {
-                            throw new RuntimeException(e);
-                        }
+        final OrderElement orderElement2 = transactionService.runOnTransaction(new IOnTransaction<OrderElement>() {
+            @Override
+            public OrderElement execute() {
+                try {
+                    OrderElement element = orderElementDAO.findUniqueByCode("order-line-code-RR");
+                    for (CriterionRequirement requirement : element.getCriterionRequirements()) {
+                        requirement.isValid();
                     }
-                });
+
+                    return element;
+                } catch (InstanceNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
         assertNotNull(orderElement2);
         assertThat(orderElement2.getCriterionRequirements().size(), equalTo(1));
-        assertTrue(((IndirectCriterionRequirement) orderElement2
-                .getCriterionRequirements().iterator().next()).isValid());
+        assertTrue(orderElement2.getCriterionRequirements().iterator().next().isValid());
 
         transactionService.runOnTransaction(new IOnTransaction<Void>() {
             @Override
             public Void execute() {
                 orderElementDAO.flush();
                 sessionFactory.getCurrentSession().evict(orderElement2);
+
                 return null;
             }
         });
 
-        IndirectCriterionRequirementDTO indirectCriterionRequirementDTO = new IndirectCriterionRequirementDTO(
-                name, type, false);
+        IndirectCriterionRequirementDTO indirectCriterionRequirementDTO =
+                new IndirectCriterionRequirementDTO(name, type, false);
+
         orderLineDTO.criterionRequirements.add(indirectCriterionRequirementDTO);
 
         orderListDTO = createOrderListDTO(orderDTO);
-        instanceConstraintViolationsList = orderElementService
-                .addOrders(orderListDTO).instanceConstraintViolationsList;
+        instanceConstraintViolationsList = orderElementService.addOrders(orderListDTO).instanceConstraintViolationsList;
 
         assertThat(instanceConstraintViolationsList.size(), equalTo(0));
 
-        OrderElement orderElement3 = transactionService
-                .runOnTransaction(new IOnTransaction<OrderElement>() {
-                    @Override
-                    public OrderElement execute() {
-                        try {
-                            OrderElement element = orderElementDAO
-                                    .findUniqueByCode(code);
-                            element.getCriterionRequirements().size();
-                            return element;
-                        } catch (InstanceNotFoundException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                });
+        OrderElement orderElement3 = transactionService.runOnTransaction(new IOnTransaction<OrderElement>() {
+            @Override
+            public OrderElement execute() {
+                try {
+                    OrderElement element = orderElementDAO.findUniqueByCode(code);
+                    element.getCriterionRequirements().size();
+
+                    return element;
+                } catch (InstanceNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
         assertNotNull(orderElement3);
         assertThat(orderElement3.getCriterionRequirements().size(), equalTo(1));
 
-        orderElement3 = transactionService
-                .runOnTransaction(new IOnTransaction<OrderElement>() {
-                    @Override
-                    public OrderElement execute() {
-                        try {
-                            OrderElement element = orderElementDAO
-                                    .findUniqueByCode("order-line-code-RR");
-                            for (CriterionRequirement requirement : element
-                                    .getCriterionRequirements()) {
-                                requirement.isValid();
-                            }
-                            return element;
-                        } catch (InstanceNotFoundException e) {
-                            throw new RuntimeException(e);
-                        }
+        orderElement3 = transactionService.runOnTransaction(new IOnTransaction<OrderElement>() {
+            @Override
+            public OrderElement execute() {
+                try {
+                    OrderElement element = orderElementDAO.findUniqueByCode("order-line-code-RR");
+                    for (CriterionRequirement requirement : element.getCriterionRequirements()) {
+                        requirement.isValid();
                     }
-                });
+
+                    return element;
+                } catch (InstanceNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
         assertNotNull(orderElement3);
         assertThat(orderElement3.getCriterionRequirements().size(), equalTo(1));
-        assertFalse(((IndirectCriterionRequirement) orderElement3
-                .getCriterionRequirements().iterator().next()).isValid());
+        assertFalse(orderElement3.getCriterionRequirements().iterator().next().isValid());
     }
 
     @Test
     public void importDirectCriterionRequirementsAndIndirectCriterionRequirements()
             throws InstanceNotFoundException, IncompatibleTypeException {
+
         final String code = "order-code" + UUID.randomUUID().toString();
+
         transactionService.runOnTransaction(new IOnTransaction<Void>() {
             @Override
             public Void execute() {
@@ -1761,6 +1830,7 @@ public class OrderElementServiceTest {
                 } catch (InstanceNotFoundException e) {
                     // It should throw an exception
                 }
+
                 return null;
             }
         });
@@ -1773,72 +1843,76 @@ public class OrderElementServiceTest {
         String name = PredefinedCriterionTypes.LOCATION.getPredefined().get(0);
         String type = PredefinedCriterionTypes.LOCATION.getName();
 
-        CriterionRequirementDTO criterionRequirementDTO = new DirectCriterionRequirementDTO(
-                name, type);
+        CriterionRequirementDTO criterionRequirementDTO = new DirectCriterionRequirementDTO(name, type);
         orderDTO.criterionRequirements.add(criterionRequirementDTO);
 
         OrderLineDTO orderLineDTO = new OrderLineDTO();
         orderLineDTO.name = "Order line";
         orderLineDTO.code = "order-line-code-WW";
-        HoursGroupDTO hoursGroupDTO = new HoursGroupDTO("hours-group-WW",
-                ResourceEnumDTO.WORKER, 1000,
+
+        HoursGroupDTO hoursGroupDTO = new HoursGroupDTO(
+                "hours-group-WW",
+                ResourceEnumDTO.WORKER,
+                1000,
                 new HashSet<CriterionRequirementDTO>());
+
         orderLineDTO.hoursGroups.add(hoursGroupDTO);
 
-        IndirectCriterionRequirementDTO indirectCriterionRequirementDTO = new IndirectCriterionRequirementDTO(
-                name, type, false);
+        IndirectCriterionRequirementDTO indirectCriterionRequirementDTO =
+                new IndirectCriterionRequirementDTO(name, type, false);
+
         orderLineDTO.criterionRequirements.add(indirectCriterionRequirementDTO);
 
         orderDTO.children.add(orderLineDTO);
 
         OrderListDTO orderListDTO = createOrderListDTO(orderDTO);
-        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
-                .addOrders(orderListDTO).instanceConstraintViolationsList;
+
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
+                orderElementService.addOrders(orderListDTO).instanceConstraintViolationsList;
+
         assertThat(instanceConstraintViolationsList.size(), equalTo(0));
 
-        OrderElement orderElement = transactionService
-                .runOnTransaction(new IOnTransaction<OrderElement>() {
-                    @Override
-                    public OrderElement execute() {
-                        try {
-                            OrderElement element = orderElementDAO
-                                    .findUniqueByCode(code);
-                            element.getCriterionRequirements().size();
-                            return element;
-                        } catch (InstanceNotFoundException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                });
+        OrderElement orderElement = transactionService.runOnTransaction(new IOnTransaction<OrderElement>() {
+            @Override
+            public OrderElement execute() {
+                try {
+                    OrderElement element = orderElementDAO.findUniqueByCode(code);
+                    element.getCriterionRequirements().size();
+
+                    return element;
+                } catch (InstanceNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
         assertNotNull(orderElement);
         assertThat(orderElement.getCriterionRequirements().size(), equalTo(1));
 
-        orderElement = transactionService
-                .runOnTransaction(new IOnTransaction<OrderElement>() {
-                    @Override
-                    public OrderElement execute() {
-                        try {
-                            OrderElement element = orderElementDAO
-                                    .findUniqueByCode("order-line-code-WW");
-                            for (CriterionRequirement requirement : element
-                                    .getCriterionRequirements()) {
-                                requirement.isValid();
-                            }
-                            return element;
-                        } catch (InstanceNotFoundException e) {
-                            throw new RuntimeException(e);
-                        }
+        orderElement = transactionService.runOnTransaction(new IOnTransaction<OrderElement>() {
+            @Override
+            public OrderElement execute() {
+                try {
+                    OrderElement element = orderElementDAO.findUniqueByCode("order-line-code-WW");
+                    for (CriterionRequirement requirement : element.getCriterionRequirements()) {
+                        requirement.isValid();
                     }
-                });
+
+                    return element;
+                } catch (InstanceNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
         assertNotNull(orderElement);
         assertThat(orderElement.getCriterionRequirements().size(), equalTo(1));
-        assertFalse(((IndirectCriterionRequirement) orderElement
-                .getCriterionRequirements().iterator().next()).isValid());
+        assertFalse(orderElement.getCriterionRequirements().iterator().next().isValid());
     }
 
     private OrderListDTO createOrderListDTO(OrderDTO... orderDTOs) {
 
-        List<OrderDTO> orderList = new ArrayList<OrderDTO>();
+        List<OrderDTO> orderList = new ArrayList<>();
 
         for (OrderDTO c : orderDTOs) {
             orderList.add(c);
@@ -1859,11 +1933,11 @@ public class OrderElementServiceTest {
         orderDTO.children.add(orderLineDTO);
 
         OrderListDTO orderListDTO = createOrderListDTO(orderDTO);
-        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
-                .addOrders(orderListDTO).instanceConstraintViolationsList;
 
-        assertTrue(instanceConstraintViolationsList.toString(),
-                instanceConstraintViolationsList.size() == 1);
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
+                orderElementService.addOrders(orderListDTO).instanceConstraintViolationsList;
+
+        assertTrue(instanceConstraintViolationsList.toString(), instanceConstraintViolationsList.size() == 1);
     }
 
     @Test
@@ -1882,11 +1956,11 @@ public class OrderElementServiceTest {
         orderDTO.children.add(orderLineDTO2);
 
         OrderListDTO orderListDTO = createOrderListDTO(orderDTO);
-        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
-                .addOrders(orderListDTO).instanceConstraintViolationsList;
 
-        assertTrue(instanceConstraintViolationsList.toString(),
-                instanceConstraintViolationsList.size() == 1);
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
+                orderElementService.addOrders(orderListDTO).instanceConstraintViolationsList;
+
+        assertTrue(instanceConstraintViolationsList.toString(), instanceConstraintViolationsList.size() == 1);
     }
 
     private OrderDTO createOrderDTO(String code) {
@@ -1894,6 +1968,7 @@ public class OrderElementServiceTest {
         result.initDate = DateConverter.toXMLGregorianCalendar(new Date());
         result.code = code;
         result.name = UUID.randomUUID().toString();
+
         return result;
     }
 
@@ -1902,6 +1977,7 @@ public class OrderElementServiceTest {
         result.initDate = DateConverter.toXMLGregorianCalendar(new Date());
         result.code = code;
         result.name = UUID.randomUUID().toString();
+
         return result;
     }
 
@@ -1909,6 +1985,7 @@ public class OrderElementServiceTest {
         HoursGroupDTO result = new HoursGroupDTO();
         result.code = code;
         result.resourceType = ResourceEnumDTO.MACHINE;
+
         return result;
     }
 

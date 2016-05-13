@@ -1,7 +1,7 @@
 <ehcache>
-    <!-- Uncomment the next line if you want to enable
-      overflowToDisk (only recommended when the DB server
-      is in a different machine)
+    <!--
+    Uncomment the next line if you want to enable overflowToDisk
+    (only recommended when the DB server is in a different machine)
     <diskStore path="java.io.tmpdir"/>
     -->
 

@@ -11,8 +11,6 @@
 
         <property name="javax.persistence.validation.mode">none</property>
 
-        <property name="javax.persistence.validation.mode">none</property>
-
         <property name="jadira.usertype.autoRegisterUserTypes">true</property>
         <property name="jadira.usertype.databaseZone">jvm</property>
         <property name="jadira.usertype.javaZone">jvm</property>

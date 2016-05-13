@@ -11,7 +11,7 @@
 # Philippe Poumaroux <philippe.poumaroux@free.fr>, 2012-2013.
 msgid ""
 msgstr ""
-"Project-Id-Version: libreplan-1.4.0\n"
+"Project-Id-Version: libreplan-1.6.0\n"
 "Report-Msgid-Bugs-To: http://bugs.libreplan.org/\n"
 "POT-Creation-Date: 2013-04-22 12:09+0200\n"
 "PO-Revision-Date: 2013-04-28 16:59+0000\n"

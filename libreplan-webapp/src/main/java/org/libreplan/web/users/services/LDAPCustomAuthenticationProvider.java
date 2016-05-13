@@ -58,8 +58,8 @@ import org.springframework.transaction.annotation.Transactional;
  * An extending from AbstractUserDetailsAuthenticationProvider class which is
  * used to implement the authentication against LDAP.
  *
- * This provider implements the process explained in <https
- * ://wiki.libreplan.org/twiki/bin/view/LibrePlan/AnA04S06LdapAuthentication>
+ * This provider implements the process explained in
+ * <https://wiki.libreplan.org/twiki/bin/view/LibrePlan/AnA04S06LdapAuthentication>
  *
  * At this time it authenticates user against LDAP and then searches it in BD to
  * use the BD user in application.
@@ -68,9 +68,10 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Cristina Alvarino Perez <cristina.alvarino@comtecsf.es>
  *
  */
-public class LDAPCustomAuthenticationProvider extends
-        AbstractUserDetailsAuthenticationProvider implements
-        AuthenticationProvider {
+
+// TODO resolve deprecated methods
+public class LDAPCustomAuthenticationProvider extends AbstractUserDetailsAuthenticationProvider
+        implements AuthenticationProvider {
 
     @Autowired
     private IAdHocTransactionService transactionService;
@@ -94,41 +95,36 @@ public class LDAPCustomAuthenticationProvider extends
 
     private static final String USER_ID_SUBSTITUTION = "[USER_ID]";
 
-    private static final Log LOG = LogFactory
-            .getLog(LDAPCustomAuthenticationProvider.class);
+    private static final Log LOG = LogFactory.getLog(LDAPCustomAuthenticationProvider.class);
 
     /**
-     * LDAP role matching could be configured using an asterix (*) to specify
-     * all users or groups
+     * LDAP role matching could be configured using an asterix (*)
+     * to specify all users or groups
      */
     private static final String WILDCHAR_ALL = "*";
 
     @Override
-    protected void additionalAuthenticationChecks(UserDetails arg0,
-            UsernamePasswordAuthenticationToken arg1)
+    protected void additionalAuthenticationChecks(UserDetails arg0, UsernamePasswordAuthenticationToken arg1)
             throws AuthenticationException {
         // No needed at this time
     }
 
     @Transactional(readOnly = true)
     @Override
-    public UserDetails retrieveUser(String username,
-            UsernamePasswordAuthenticationToken authentication)
+    public UserDetails retrieveUser(String username, UsernamePasswordAuthenticationToken authentication)
             throws AuthenticationException {
 
         String clearPassword = authentication.getCredentials().toString();
 
-        if (StringUtils.isBlank(username) || StringUtils.isBlank(clearPassword)) {
-            throw new BadCredentialsException(
-                    "Username and password can not be empty");
+        if ( StringUtils.isBlank(username) || StringUtils.isBlank(clearPassword) ) {
+            throw new BadCredentialsException("Username and password can not be empty");
         }
 
-        String encodedPassword = passwordEncoderService.encodePassword(
-                clearPassword, username);
+        String encodedPassword = passwordEncoderService.encodePassword(clearPassword, username);
         User user = getUserFromDB(username);
 
         // If user != null then exists in LibrePlan
-        if (null != user && user.isLibrePlanUser()) {
+        if ( null != user && user.isLibrePlanUser() ) {
             // is a LibrePlan user, then we must authenticate against DB
             return authenticateInDatabase(username, user, encodedPassword);
         }
@@ -137,36 +133,39 @@ public class LDAPCustomAuthenticationProvider extends
         // Load LDAPConfiguration properties
         configuration = loadLDAPConfiguration();
 
-        if (configuration.getLdapAuthEnabled()) {
+        if ( configuration.getLdapAuthEnabled() ) {
             // Sets the new context to ldapTemplate
             ldapTemplate.setContextSource(loadLDAPContext());
 
             try {
+
                 // Test authentication for user against LDAP
-                if (authenticateAgainstLDAP(username, clearPassword)) {
+                if ( authenticateAgainstLDAP(username, clearPassword) ) {
+
                     // Authentication against LDAP was ok
-                    if (null == user) {
+                    if ( null == user ) {
+
                         // User does not exist in LibrePlan must be imported
                         user = createLDAPUserWithRoles(username, encodedPassword);
                     } else {
+
                         // Update password
-                        if (configuration.isLdapSavePasswordsDB()) {
+                        if ( configuration.isLdapSavePasswordsDB() ) {
                             user.setPassword(encodedPassword);
                         }
+
                         // Update roles from LDAP
                         setRoles(user);
                     }
                     saveUserOnTransaction(user);
+
                     return loadUserDetails(username);
                 } else {
                     throw new BadCredentialsException("User is not in LDAP.");
                 }
             } catch (Exception e) {
-                // This exception captures when LDAP authentication is not
-                // possible
-                LOG.info(
-                        "LDAP not reachable. Trying to authenticate against database.",
-                        e);
+                // This exception captures when LDAP authentication is not possible
+                LOG.info("LDAP not reachable. Trying to authenticate against database.", e);
             }
         }
 
@@ -179,10 +178,9 @@ public class LDAPCustomAuthenticationProvider extends
     }
 
     private void setRoles(User user) {
-        if (configuration.getLdapSaveRolesDB()) {
+        if ( configuration.getLdapSaveRolesDB() ) {
             user.clearRoles();
-            List<String> roles = getMatchedRoles(configuration, ldapTemplate,
-                    user.getLoginName());
+            List<String> roles = getMatchedRoles(configuration, user.getLoginName());
             for (String role : roles) {
                 user.addRole(UserRole.valueOf(UserRole.class, role));
             }
@@ -192,58 +190,56 @@ public class LDAPCustomAuthenticationProvider extends
     private User createLDAPUserWithRoles(String username, String encodedPassword) {
         User user = User.create();
         user.setLoginName(username);
-        // we must check if it is needed to save LDAP
-        // passwords in DB
-        if (!configuration.isLdapSavePasswordsDB()) {
+
+        // we must check if it is needed to save LDAP passwords in DB
+        if ( !configuration.isLdapSavePasswordsDB() ) {
             encodedPassword = null;
         }
+
         user.setPassword(encodedPassword);
         user.setLibrePlanUser(false);
         user.setDisabled(false);
         setRoles(user);
+
         return user;
     }
 
     private LDAPConfiguration loadLDAPConfiguration() {
-        return transactionService
-                .runOnReadOnlyTransaction(new IOnTransaction<LDAPConfiguration>() {
-
-                    @Override
-                    public LDAPConfiguration execute() {
-                        return configurationDAO.getConfiguration()
-                                .getLdapConfiguration();
-                    }
-                });
+        return transactionService.runOnReadOnlyTransaction(new IOnTransaction<LDAPConfiguration>() {
+            @Override
+            public LDAPConfiguration execute() {
+                return configurationDAO.getConfiguration().getLdapConfiguration();
+            }
+        });
     }
 
     private User getUserFromDB(String username) {
         final String usernameInserted = username;
-        return transactionService
-                .runOnReadOnlyTransaction(new IOnTransaction<User>() {
 
-                    @Override
-                    public User execute() {
-                        try {
-                            return userDAO.findByLoginName(usernameInserted);
-                        } catch (InstanceNotFoundException e) {
-                            LOG.info("User " + usernameInserted
-                                    + " not found in database.");
-                            return null;
-                        }
-                    }
-                });
+        return transactionService.runOnReadOnlyTransaction(new IOnTransaction<User>() {
+            @Override
+            public User execute() {
+                try {
+                    return userDAO.findByLoginName(usernameInserted);
+                } catch (InstanceNotFoundException e) {
+                    LOG.info("User " + usernameInserted + " not found in database.");
+                    return null;
+                }
+            }
+        });
 
     }
 
     private LDAPCustomContextSource loadLDAPContext() {
+
         // Establishes the context for LDAP connection.
-        LDAPCustomContextSource context = (LDAPCustomContextSource) ldapTemplate
-                .getContextSource();
-        context.setUrl(configuration.getLdapHost() + COLON
-                + configuration.getLdapPort());
+        LDAPCustomContextSource context = (LDAPCustomContextSource) ldapTemplate.getContextSource();
+
+        context.setUrl(configuration.getLdapHost() + COLON + configuration.getLdapPort());
         context.setBase(configuration.getLdapBase());
         context.setUserDn(configuration.getLdapUserDn());
         context.setPassword(configuration.getLdapPassword());
+
         try {
             context.afterPropertiesSet();
         } catch (Exception e) {
@@ -251,83 +247,83 @@ public class LDAPCustomAuthenticationProvider extends
             // properties are well-formed.
             LOG.error("There is a problem in LDAP connection: ", e);
         }
+
         return context;
     }
 
-    private boolean authenticateAgainstLDAP(String username,
-            String clearPassword) {
-        return ldapTemplate.authenticate(DistinguishedName.EMPTY_PATH,
-                new EqualsFilter(configuration.getLdapUserId(), username)
-                        .toString(), clearPassword);
+    private boolean authenticateAgainstLDAP(String username, String clearPassword) {
+        return ldapTemplate.authenticate(
+                DistinguishedName.EMPTY_PATH,
+                new EqualsFilter(configuration.getLdapUserId(), username).toString(),
+                clearPassword);
     }
 
     private void saveUserOnTransaction(User user) {
         final User userLibrePlan = user;
+
         transactionService.runOnTransaction(new IOnTransaction<Void>() {
             @Override
             public Void execute() {
                 userDAO.save(userLibrePlan);
+
                 return null;
             }
         });
     }
 
-    private UserDetails authenticateInDatabase(String username, User user,
-            String encodedPassword) {
-        if (null != user && null != user.getPassword()
-                && encodedPassword.equals(user.getPassword())) {
+    private UserDetails authenticateInDatabase(String username, User user, String encodedPassword) {
+        if ( null != user && null != user.getPassword() && encodedPassword.equals(user.getPassword()) ) {
             return loadUserDetails(username);
         } else {
-            throw new BadCredentialsException(
-                    "Credentials are not the same as in database.");
+            throw new BadCredentialsException("Credentials are not the same as in database.");
         }
     }
 
     @SuppressWarnings("unchecked")
     private List<String> getRolesUsingNodeStrategy(
-            Set<ConfigurationRolesLDAP> rolesLdap, String queryRoles,
-            final LDAPConfiguration configuration) {
+            Set<ConfigurationRolesLDAP> rolesLdap, String queryRoles, final LDAPConfiguration configuration) {
 
         String roleProperty = configuration.getLdapRoleProperty();
 
-        List<String> rolesReturn = new ArrayList<String>();
+        List<String> rolesReturn = new ArrayList<>();
         for (ConfigurationRolesLDAP roleLDAP : rolesLdap) {
-            if (roleLDAP.getRoleLdap().equals(WILDCHAR_ALL)) {
+            if ( roleLDAP.getRoleLdap().equals(WILDCHAR_ALL) ) {
                 rolesReturn.add(roleLDAP.getRoleLibreplan());
                 continue;
             }
 
             // We must make a search for each role-matching in nodes
-            List<Attribute> resultsSearch = new ArrayList<Attribute>();
+            List<Attribute> resultsSearch = new ArrayList<>();
             resultsSearch.addAll(ldapTemplate.search(
-                    DistinguishedName.EMPTY_PATH, new EqualsFilter(
-                            roleProperty, roleLDAP.getRoleLdap()).toString(),
+                    DistinguishedName.EMPTY_PATH,
+                    new EqualsFilter(roleProperty, roleLDAP.getRoleLdap()).toString(),
                     new AttributesMapper() {
                         @Override
-                        public Object mapFromAttributes(Attributes attributes)
-                                throws NamingException {
+                        public Object mapFromAttributes(Attributes attributes) throws NamingException {
                             return attributes.get(configuration.getLdapUserId());
                         }
                     }));
+
             for (Attribute atrib : resultsSearch) {
-                if (atrib.contains(queryRoles)) {
+                if ( atrib.contains(queryRoles) ) {
                     rolesReturn.add(roleLDAP.getRoleLibreplan());
                 }
             }
         }
+
         return rolesReturn;
     }
 
     private List<String> getRolesUsingBranchStrategy(
-            Set<ConfigurationRolesLDAP> rolesLdap, String queryRoles,
-            LDAPConfiguration configuration) {
+            Set<ConfigurationRolesLDAP> rolesLdap, String queryRoles, LDAPConfiguration configuration) {
 
         String roleProperty = configuration.getLdapRoleProperty();
         String groupsPath = configuration.getLdapGroupPath();
 
-        List<String> rolesReturn = new ArrayList<String>();
+        List<String> rolesReturn = new ArrayList<>();
+
         for (ConfigurationRolesLDAP roleLdap : rolesLdap) {
-            if (roleLdap.getRoleLdap().equals(WILDCHAR_ALL)) {
+            if ( roleLdap.getRoleLdap().equals(WILDCHAR_ALL) ) {
                 rolesReturn.add(roleLdap.getRoleLibreplan());
                 continue;
             }
@@ -335,48 +331,41 @@ public class LDAPCustomAuthenticationProvider extends
             // We must make a search for each role matching
             DirContextAdapter adapter = null;
             try {
-                adapter = (DirContextAdapter) ldapTemplate
-                        .lookup(roleLdap.getRoleLdap() + "," + groupsPath);
+                adapter = (DirContextAdapter) ldapTemplate.lookup(roleLdap.getRoleLdap() + "," + groupsPath);
             } catch (org.springframework.ldap.NamingException ne) {
                 LOG.error(ne.getMessage());
             }
-            if (adapter != null && adapter.attributeExists(roleProperty)) {
+            if ( adapter != null && adapter.attributeExists(roleProperty) ) {
                 Attributes atrs = adapter.getAttributes();
 
-                if (atrs.get(roleProperty).contains(queryRoles)) {
+                if ( atrs.get(roleProperty).contains(queryRoles) ) {
                     rolesReturn.add(roleLdap.getRoleLibreplan());
                 }
             }
         }
+
         return rolesReturn;
     }
 
-    private List<String> getMatchedRoles(LDAPConfiguration configuration,
-            LdapTemplate ldapTemplate, String username) {
+    private List<String> getMatchedRoles(LDAPConfiguration configuration, String username) {
 
-        String queryRoles = configuration.getLdapSearchQuery().replace(
-                USER_ID_SUBSTITUTION, username);
+        String queryRoles = configuration.getLdapSearchQuery().replace(USER_ID_SUBSTITUTION, username);
 
-        Set<ConfigurationRolesLDAP> rolesLdap = configuration
-                .getConfigurationRolesLdap();
+        Set<ConfigurationRolesLDAP> rolesLdap = configuration.getConfigurationRolesLdap();
 
         try {
-
-            if (!configuration.getLdapGroupStrategy()) {
+            if ( !configuration.getLdapGroupStrategy() ) {
                 // The LDAP has a node strategy for groups,
                 // we must check the roleProperty in user node.
-                return getRolesUsingNodeStrategy(rolesLdap, queryRoles,
-                        configuration);
+                return getRolesUsingNodeStrategy(rolesLdap, queryRoles, configuration);
             } else {
                 // The LDAP has a branch strategy for groups
                 // we must check if the user is in one of the groups.
-                return getRolesUsingBranchStrategy(rolesLdap, queryRoles,
-                        configuration);
+                return getRolesUsingBranchStrategy(rolesLdap, queryRoles, configuration);
             }
         } catch (Exception e) {
-            LOG.error(
-                    "Configuration of LDAP role-matching is wrong. Please check it.",
-                    e);
+            LOG.error("Configuration of LDAP role-matching is wrong. Please check it.", e);
+
             return Collections.emptyList();
         }
     }
@@ -385,8 +374,7 @@ public class LDAPCustomAuthenticationProvider extends
         return passwordEncoderService;
     }
 
-    public void setPasswordEncoderService(
-            DBPasswordEncoderService passwordEncoderService) {
+    public void setPasswordEncoderService(DBPasswordEncoderService passwordEncoderService) {
         this.passwordEncoderService = passwordEncoderService;
     }
 

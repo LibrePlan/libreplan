@@ -5,10 +5,9 @@
     <addon-name>libreplan-webapp</addon-name>
     <language-name>xul/html</language-name>
 
-    <!-- When the version is changed, the browser will reload the
-        JavaScript modules. -->
-    <javascript-module name="webcommon" version="1.4.0" />
-    <javascript-module name="limitingresources" version="1.4.0" />
+    <!-- When the version is changed, the browser will reload the JavaScript modules -->
+    <javascript-module name="webcommon" version="1.6.0" />
+    <javascript-module name="limitingresources" version="1.6.0" />
 
     <component>
         <component-name>twowayselector</component-name>
@@ -113,7 +112,6 @@
         <mold>
             <mold-name>default</mold-name>
             <mold-uri>mold/queue-list-component.js</mold-uri>
-            <!-- <mold-uri>/limitingresources/queuelistcomponent.dsp</mold-uri> -->
         </mold>
     </component>
 
@@ -123,14 +121,14 @@
         <macro-uri>/limitingresources/leftPane.zul</macro-uri>
     </component>
 
+    <!-- Limiting resources queue -->
     <component>
-        <component-name>queuecomponent</component-name><!-- Limiting resources queue -->
+        <component-name>queuecomponent</component-name>
         <component-class>org.libreplan.web.limitingresources.QueueComponent</component-class>
         <widget-class>limitingresources.QueueComponent</widget-class>
         <mold>
             <mold-name>default</mold-name>
             <mold-uri>mold/queue-component.js</mold-uri>
-            <!-- <mold-uri>/limitingresources/queuecomponent.dsp</mold-uri> -->
         </mold>
     </component>
 
@@ -148,7 +146,6 @@
         <mold>
             <mold-name>default</mold-name>
             <mold-uri>mold/limiting-dependency-list.js</mold-uri>
-            <!-- <mold-uri>/limitingresources/limitingdependencylist.dsp</mold-uri> -->
         </mold>
     </component>
 
@@ -159,7 +156,6 @@
         <mold>
             <mold-name>default</mold-name>
             <mold-uri>mold/limiting-dependency-component.js</mold-uri>
-            <!-- <mold-uri>/limitingresources/limitingdependency.dsp</mold-uri> -->
         </mold>
     </component>
 

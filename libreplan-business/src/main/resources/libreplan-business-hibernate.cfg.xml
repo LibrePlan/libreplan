@@ -10,10 +10,10 @@
         <property name="hibernate.use_sql_comments">${hibernate.use_sql_comments}</property>
         <property name="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</property>
 
-        <!-- We explicitly call validation, otherwise infinite loops can happen.
-            Sometimes DAOs are queried when validating some constraints.
-            When the DAO does a query, the pending changes are flushed, causing
-            the validations to be run again.
+        <!--
+        We explicitly call validation, otherwise infinite loops can happen.
+        Sometimes DAOs are queried when validating some constraints.
+        When the DAO does a query, the pending changes are flushed, causing the validations to be run again.
          -->
         <property name="javax.persistence.validation.mode">none</property>
 

@@ -58,9 +58,7 @@ public class EntitySequenceTest {
         for (EntitySequence sequence : entitySequenceDAO.getAll()) {
             try {
                 entitySequenceDAO.remove(sequence.getId());
-            } catch (InstanceNotFoundException e) {
-
-            }
+            } catch (InstanceNotFoundException ignored) {}
         }
     }
 
@@ -73,8 +71,8 @@ public class EntitySequenceTest {
         } catch (ValidationException e) {
             fail("It should not throw an exception");
         }
-        assertTrue(entitySequenceDAO.getAll().size() == 1);
 
+        assertTrue(entitySequenceDAO.getAll().size() == 1);
     }
 
     @Test
@@ -159,8 +157,7 @@ public class EntitySequenceTest {
 
             entitySequenceDAO.save(entitySequenceB);
             fail("Expected ValidationException");
-        } catch (ValidationException e) {
-        }
+        } catch (ValidationException ignored) {}
     }
 
     @Test

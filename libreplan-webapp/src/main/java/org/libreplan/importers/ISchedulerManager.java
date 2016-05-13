@@ -21,8 +21,6 @@ package org.libreplan.importers;
 
 import org.libreplan.business.common.entities.JobSchedulerConfiguration;
 import org.quartz.SchedulerException;
-import org.springframework.scheduling.quartz.CronTriggerBean;
-import org.springframework.scheduling.quartz.JobDetailBean;
 
 /**
  * A manager(client) that dynamically creates jobs and cron-triggers using
@@ -36,8 +34,8 @@ import org.springframework.scheduling.quartz.JobDetailBean;
  * {@link JobSchedulerConfiguration} entity once the scheduler starts.
  *
  * <ul>
- * <li>Schedule job:create job {@link JobDetailBean} and cron-trigger
- * {@link CronTriggerBean}, associated the trigger with the job and add it to
+ * <li>Schedule job:create job {@link JobDetailFactoryBean} and cron-trigger
+ * {@link CronTriggerFactoryBean}, associated the trigger with the job and add it to
  * the scheduler.
  * <li>
  * <li>Delete job: search the job in the scheduler and if found
