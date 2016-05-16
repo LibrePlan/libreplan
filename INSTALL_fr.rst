@@ -9,10 +9,18 @@ Ceci est un guide d'installation de *LibrePlan*. Si vous voulez mettre à jour v
 Installation automatisée de LibrePlan
 -------------------------------------
 
+Images Docker
+~~~~~~~~~~~~~
+
+La façon la plus facile d'obtenir rapidement une instance fonctionnelle de LibrePlan consiste à utiliser des images Docker de LibrePlan.
+Outre l'image classique LibrePlan/Postgresql, vous trouverez également une image utilisant MySQL ou MariaDB.
+
+Voir https://hub.docker.com/r/libreplan/libreplan/ pour obtenir davantage d'informations et les instructions nécessaires à leur utilisation.
+
 PPAs Ubuntu 
 ~~~~~~~~~~~
 
-Il existe des PPAs Ubuntu pour plusieurs versions (Lucid, Maverick et Natty); vous pourrez trouver davantage d'informations à l'URL suivante :
+Il existe des PPAs Ubuntu pour plusieurs versions (Precise, Trusty, Utopic et Vivid); vous pourrez trouver davantage d'informations à l'URL suivante :
 https://launchpad.net/~libreplan/+archive/ppa
 
 Instructions::
@@ -23,10 +31,10 @@ Instructions::
 
 .. TIP::
 
-  Si nous n'avez pas la commande ``add-apt-repository``, vous devrez installer le paquet ``python-software-properties`` avant de lancer les commandes précédentes.
+  Si nous n'avez pas la commande ``add-apt-repository``, vous devrez installer le paquet ``software-properties-common`` avant de lancer les commandes précédentes.
   Vous pouvez le faire avec la ligne suivante :
 
-    sudo apt-get install python-software-properties
+    sudo apt-get install software-properties-common
 
 .. WARNING::
 
@@ -35,17 +43,17 @@ Instructions::
 Paquets Debian
 ~~~~~~~~~~~~~~
 
-Il existe des paquets Debian pour Squeeze (i386 et amd64), vous pouvez les télécharger sur : http://sourceforge.net/projects/libreplan/files/LibrePlan/
+Il existe des paquets Debian pour Wheezy et Jessie (i386 et amd64), vous pouvez les télécharger sur : http://sourceforge.net/projects/libreplan/files/LibrePlan/
 
 Instructions:
 
 * Télécharger le paquet::
 
-    $ wget http://downloads.sourceforge.net/project/libreplan/LibrePlan/libreplan_1.3.0-1_amd64.deb
+    $ wget http://downloads.sourceforge.net/project/libreplan/LibrePlan/libreplan_1.4.1-1_amd64.deb
 
 * Installer le paquet::
 
-    # dpkg -i libreplan_1.3.0-1_amd64.deb
+    # dpkg -i libreplan_1.4.1-1_amd64.deb
 
 * Installer les dépendances::
 
@@ -64,27 +72,40 @@ Fedora, CentOS et openSUSE OBS (openSUSE Build Service)
 
 Instructions dépendants de la distribution :
 
-* Fedora 17::
+* Fedora 23::
 
     # cd /etc/yum.repos.d
-    # wget download.opensuse.org/repositories/home:/jsuarezr:/LibrePlan/Fedora_17/home:jsuarezr:LibrePlan.repo
+    # wget download.opensuse.org/repositories/home:/jsuarezr:/LibrePlan/Fedora_23/home:jsuarezr:LibrePlan.repo
     # yum install libreplan
 
-  Suivre ensuite les instructions présentes dans /usr/share/doc/libreplan-1.3.0/README.Fedora.
+  Suivre ensuite les instructions présentes dans /usr/share/doc/libreplan-1.4.1/README.Fedora.
 
-* Fedora 16::
+* Fedora 22::
 
     # cd /etc/yum.repos.d
-    # wget download.opensuse.org/repositories/home:/jsuarezr:/LibrePlan/Fedora_16/home:jsuarezr:LibrePlan.repo
+    # wget download.opensuse.org/repositories/home:/jsuarezr:/LibrePlan/Fedora_22/home:jsuarezr:LibrePlan.repo
     # yum install libreplan
 
-  Suivre ensuite les instructions présentes dans /usr/share/doc/libreplan-1.3.0/README.Fedora.
+  Suivre ensuite les instructions présentes dans /usr/share/doc/libreplan-1.4.1/README.Fedora.
+
+* CentOS 7::
+
+    # cd /etc/yum.repos.d
+    # wget download.opensuse.org/repositories/home:/jsuarezr:/LibrePlan/CentOS_7/home:jsuarezr:LibrePlan.repo
+    # yum install libreplan
 
 * CentOS 6::
 
     # cd /etc/yum.repos.d
     # wget download.opensuse.org/repositories/home:/jsuarezr:/LibrePlan/CentOS_CentOS-6/home:jsuarezr:LibrePlan.repo
     # yum install libreplan
+
+* openSUSE Leap_42.1::
+
+    # cd /etc/zypp/repos.d
+    # wget download.opensuse.org/repositories/home:/jsuarezr:/LibrePlan/openSUSE_Leap_42.1/home:jsuarezr:LibrePlan.repo
+    # zypper ref
+    # zypper install libreplan
 
 * openSUSE Factory::
 
@@ -93,17 +114,17 @@ Instructions dépendants de la distribution :
     # zypper ref
     # zypper install libreplan
 
-* openSUSE 12.1::
+* openSUSE 13.2::
 
     # cd /etc/zypp/repos.d
-    # wget download.opensuse.org/repositories/home:/jsuarezr:/LibrePlan/openSUSE_12.1/home:jsuarezr:LibrePlan.repo
+    # wget download.opensuse.org/repositories/home:/jsuarezr:/LibrePlan/openSUSE_13.2/home:jsuarezr:LibrePlan.repo
     # zypper ref
     # zypper install libreplan
 
-* openSUSE 11.4::
+* openSUSE 13.1::
 
     # cd /etc/zypp/repos.d
-    # wget download.opensuse.org/repositories/home:/jsuarezr:/LibrePlan/openSUSE_11.4/home:jsuarezr:LibrePlan.repo
+    # wget download.opensuse.org/repositories/home:/jsuarezr:/LibrePlan/openSUSE_13.1/home:jsuarezr:LibrePlan.repo
     # zypper ref
     # zypper install libreplan
 
@@ -132,7 +153,7 @@ Debian/Ubuntu
 
 * Installer les pré-requis::
 
-    # apt-get install openjdk-6-jre postgresql postgresql-client tomcat6 libpg-java cutycapt xvfb
+    # apt-get install openjdk-7-jre postgresql postgresql-client tomcat7 libpg-java cutycapt xvfb
 
 * se connecter à la base de données::
 
@@ -146,7 +167,11 @@ Debian/Ubuntu
 
 * Télécharger le script d'installation de la base de données::
 
-    $ wget -O install.sql http://downloads.sourceforge.net/project/libreplan/LibrePlan/install_1.x.y.sql
+    $ wget -O install.sql http://downloads.sourceforge.net/project/libreplan/LibrePlan/install_1.4.0.sql
+
+  .. WARNING::
+
+    Le fichier 1.4.1.sql est spécifique pour une installation avec MySQL.
 
 * Créer la structure de la base de données::
 
@@ -160,7 +185,7 @@ Debian/Ubuntu
 
 * Télécharger le fichier ``.war`` sur SourceForge.net::
 
-    $ wget -O libreplan.war http://downloads.sourceforge.net/project/libreplan/LibrePlan/libreplan_1.x.y.war
+    $ wget -O libreplan.war http://downloads.sourceforge.net/project/libreplan/LibrePlan/libreplan_1.4.1.war
 
 * Créer un nouveau fichier ``/etc/tomcat6/Catalina/localhost/libreplan.xml`` (le nom du fichier doit correspondre au nom avec ``.war``) avec la configuration de la base de données pour Tomcat 6 ou 7::
 
@@ -199,15 +224,15 @@ Debian/Ubuntu
 
 * Ajouter un lien vers le pilote Java JDBC pour PostgreSQL dans le répertoire des bibliothèques de Tomcat 6 ou 7::
 
-    # ln -s /usr/share/java/postgresql-jdbc3.jar /usr/share/tomcat6/lib/
+    # ln -s /usr/share/java/postgresql-jdbc4.jar /usr/share/tomcat7/lib/
 
 * Copier le war dans le répertoire des applications web de Tomcat 6 ou 7::
 
-    # cp libreplan.war /var/lib/tomcat6/webapps/
+    # cp libreplan.war /var/lib/tomcat7/webapps/
 
 * Relancer Tomcat::
 
-    # /etc/init.d/tomcat6 restart
+    # /etc/init.d/tomcat7 restart
 
 * Aller à l'adresse http://localhost:8080/libreplan/
 
@@ -221,13 +246,13 @@ openSUSE
 
 * Installer les pré-requis::
 
-    # zypper install java-1_6_0-openjdk postgresql-server postgresql tomcat6 xorg-x11-server
+    # zypper install java-1_7_0-openjdk postgresql-server postgresql tomcat7 xorg-x11-server
 
 * Installation manuelle du pilote JDBC::
 
     # cd /usr/share/java/
-    # wget http://jdbc.postgresql.org/download/postgresql-9.0-801.jdbc3.jar
-    # mv postgresql-9.0-801.jdbc3.jar postgresql-jdbc3.jar
+    # wget http://jdbc.postgresql.org/download/postgresql-9.2-1004.jdbc41.jar
+    # mv postgresql-9.2-1004.jdbc41.jar postgresql-jdbc4.jar
 
 * Suivre les instructions du fichier ``HACKING`` pour compiler et installer CutyCapt
 
@@ -257,7 +282,7 @@ openSUSE
 
 * Télécharger le script d'installation de la base de données::
 
-    $ wget -O install.sql http://downloads.sourceforge.net/project/libreplan/LibrePlan/install_1.x.y.sql
+    $ wget -O install.sql http://downloads.sourceforge.net/project/libreplan/LibrePlan/install_1.4.0.sql
 
 * Créer la structure de la base de données::
 
@@ -271,7 +296,7 @@ openSUSE
 
 * Télécharger le fichier ``.war`` sur SourceForge.net::
 
-    $ wget -O libreplan.war http://downloads.sourceforge.net/project/libreplan/LibrePlan/libreplan_1.x.y.war
+    $ wget -O libreplan.war http://downloads.sourceforge.net/project/libreplan/LibrePlan/libreplan_1.4.1.war
 
 * Créer un nouveau fichier ``/etc/tomcat6/Catalina/localhost/libreplan.xml`` (le nom du fichier doit correspondre avec le nom ``.war``) avec la configuration de la base de données pour Tomcat 6 ou 7::
 
@@ -288,15 +313,15 @@ openSUSE
 
 * Ajouter un lien vers le pilote Java JDBC pour PostgreSQL dans le répertoire des bibliothèques Tomcat 6 ou 7::
 
-    # ln -s /usr/share/java/postgresql-jdbc3.jar /usr/share/tomcat6/lib/
+    # ln -s /usr/share/java/postgresql-jdbc4.jar /usr/share/tomcat7/lib/
 
 * Copier le war dans le répertoire des applications web de Tomcat 6 ou 7::
 
-    # cp libreplan.war /srv/tomcat6/webapps/
+    # cp libreplan.war /srv/tomcat7/webapps/
 
 * Relancer Tomcat 6 ou 7::
 
-    # /etc/init.d/tomcat6 restart
+    # /etc/init.d/tomcat7 restart
 
 * Aller à l'adresse http://localhost:8080/libreplan/
 
