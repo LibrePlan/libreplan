@@ -297,7 +297,8 @@ public class SchedulerManager implements ISchedulerManager {
     @Override
     public String getNextFireTime(JobSchedulerConfiguration jobSchedulerConfiguration) {
         try {
-            CronTrigger trigger = (CronTrigger) this.scheduler.getTrigger(TriggerKey.triggerKey(
+            CronTrigger trigger = (CronTrigger)
+                    this.scheduler.getTrigger(TriggerKey.triggerKey(
                             jobSchedulerConfiguration.getJobName() + TRIGGER_SUFFIX,
                             jobSchedulerConfiguration.getJobGroup() + TRIGGER_SUFFIX));
 

@@ -61,7 +61,8 @@ import static org.libreplan.web.I18nHelper._;
 
 
 /**
- * Controller for managing Order files
+ * Controller for managing Order files.
+ *
  * Created by
  * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
  * on 12.24.2015.
@@ -69,6 +70,7 @@ import static org.libreplan.web.I18nHelper._;
 
 public class OrderFilesController extends GenericForwardComposer {
 
+    // TODO refactor Autowired?
     @Autowired
     IConfigurationModel configurationModel;
 
@@ -88,6 +90,7 @@ public class OrderFilesController extends GenericForwardComposer {
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
+        // TODO resolve deprecated
         comp.setVariable("orderFilesController", this, true);
         messages = new MessagesForUser(messagesContainer);
     }
@@ -99,15 +102,12 @@ public class OrderFilesController extends GenericForwardComposer {
         if ( !(configurationModel.getRepositoryLocation() == null) )
             repositoryDirectory = new File(configurationModel.getRepositoryLocation());
 
-        if ( repositoryDirectory != null && repositoryDirectory.exists() ) return true;
+        return repositoryDirectory != null && repositoryDirectory.exists();
 
-        return false;
     }
 
     public boolean isUploadButtonDisabled(){
-        if ( isRepositoryExists() ) return false;
-
-        return true;
+        return !isRepositoryExists();
     }
 
     public ListitemRenderer getFilesRenderer(){
@@ -119,6 +119,7 @@ public class OrderFilesController extends GenericForwardComposer {
                 Listcell nameCell = new Listcell();
                 listitem.appendChild(nameCell);
                 Label label = new Label(file.getName());
+
                 label.addEventListener("onClick", new EventListener() {
                     @Override
                     public void onEvent(Event event) throws Exception {
@@ -130,6 +131,7 @@ public class OrderFilesController extends GenericForwardComposer {
                         Filedownload.save(fileToDownload.getAbsoluteFile(), null);
                     }
                 });
+
                 label.setClass("label-highlight");
                 label.setTooltiptext("Download file");
                 nameCell.appendChild(label);
@@ -170,7 +172,7 @@ public class OrderFilesController extends GenericForwardComposer {
             if ( Messagebox.OK != status ) {
                 return;
             }
-        } catch (InterruptedException e) {}
+        } catch (InterruptedException ignored) {}
 
 
         if ( isRepositoryExists() ) {
@@ -206,20 +208,18 @@ public class OrderFilesController extends GenericForwardComposer {
     public void upload() {
         configurationModel.init();
 
-        String directory = "";
+        String directory;
         if ( isRepositoryExists() ){
 
             String projectCode = orderElementModel.getOrderElement().getCode();
             directory = configurationModel.getRepositoryLocation() + "orders" + "/" + projectCode;
 
             try {
-                Fileupload fileupload = new Fileupload();
-
                 // Location of file: libreplan-webapp/src/main/webapp/planner/fileupload.zul
-                fileupload.setTemplate("fileupload.zul");
+                Fileupload.setTemplate("fileupload.zul");
 
 
-                Media media = fileupload.get();
+                Media media = Fileupload.get();
 
                 File dir = new File(directory);
                 String filename = media.getName();
@@ -277,13 +277,14 @@ public class OrderFilesController extends GenericForwardComposer {
     public void openWindow(IOrderElementModel orderElementModel) {
         setOrderElementModel(orderElementModel);
 
-        if ( isRepositoryExists() ) updateListbox();
+        if ( isRepositoryExists() )
+            updateListbox();
     }
 
     /**
      * Listbox is updating after re set the model for it
      */
-    public void updateListbox(){
+    private void updateListbox(){
         OrderElement currentOrder = orderElementModel.getOrderElement();
         filesList.setModel(new ListModelList(orderFileModel.findByParent(currentOrder)));
     }

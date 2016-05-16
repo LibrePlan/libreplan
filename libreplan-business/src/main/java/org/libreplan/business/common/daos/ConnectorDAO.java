@@ -38,8 +38,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
-public class ConnectorDAO extends GenericDAOHibernate<Connector, Long>
-        implements IConnectorDAO {
+public class ConnectorDAO extends GenericDAOHibernate<Connector, Long> implements IConnectorDAO {
 
     @Override
     @Transactional(readOnly = true)
@@ -50,8 +49,8 @@ public class ConnectorDAO extends GenericDAOHibernate<Connector, Long>
     @Override
     @Transactional(readOnly = true)
     public Connector findUniqueByName(String name) {
-        Criteria c = getSession().createCriteria(Connector.class).add(
-                Restrictions.eq("name", name));
+        Criteria c = getSession().createCriteria(Connector.class).add(Restrictions.eq("name", name));
+
         return (Connector) c.uniqueResult();
     }
 
@@ -63,6 +62,7 @@ public class ConnectorDAO extends GenericDAOHibernate<Connector, Long>
 
     private boolean existsOtherConnectorByName(Connector connector) {
         Connector found = findUniqueByName(connector.getName());
+
         return found != null && found != connector;
     }
 

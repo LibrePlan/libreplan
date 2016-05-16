@@ -92,11 +92,11 @@ Develop LibrePlan in Intellij IDEA using MySQL
   LibrePlan using MySQL you have to do 2 small changes:
 
   * In section `Configure project to run`_ you have to set the *Profiles* to:
-    ``-dev -mysql -userguide -reports -i18n``
+    ``dev mysql -userguide -reports -i18n``
 
 * Remember that the three last profiles that are being disabled is just to save
   compilation time and not mandatory. However, to develop using MySQL you have
-  to set at least the first two: ``-dev`` and ``-mysql``.
+  to set at least the first two: ``dev`` and ``mysql``.
 
 
 .. _LibrePlan: http://www.libreplan.com/

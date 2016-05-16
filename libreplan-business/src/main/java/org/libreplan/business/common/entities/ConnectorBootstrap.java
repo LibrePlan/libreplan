@@ -41,12 +41,11 @@ public class ConnectorBootstrap implements IConnectorBootstrap {
     @Override
     @Transactional
     public void loadRequiredData() {
-        for (PredefinedConnectors predefinedConnector : PredefinedConnectors
-                .values()) {
+        for (PredefinedConnectors predefinedConnector : PredefinedConnectors.values()) {
             String name = predefinedConnector.getName();
 
             Connector connector = connectorDAO.findUniqueByName(name);
-            if (connector == null) {
+            if ( connector == null ) {
                 connector = Connector.create(name);
                 connector.setProperties(predefinedConnector.getProperties());
                 connectorDAO.save(connector);

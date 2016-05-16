@@ -213,8 +213,8 @@
                 -->
                 <plugins>
                     <plugin>
-                        <groupId>org.xnap.commons</groupId>
-                        <artifactId>maven-gettext-plugin</artifactId>
+                        <groupId>com.googlecode.gettext-commons</groupId>
+                        <artifactId>gettext-maven-plugin</artifactId>
                         <configuration>
                             <targetBundle>i18n.Messages</targetBundle>
                             <poDirectory>${project.build.sourceDirectory}/../resources/i18n</poDirectory>
@@ -274,10 +274,6 @@
           <artifactId>spring-web</artifactId>
         </dependency>
         <dependency>
-          <groupId>org.springframework.security</groupId>
-          <artifactId>spring-security-config</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context-support</artifactId>
         </dependency>
@@ -296,6 +292,10 @@
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-acl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-config</artifactId>
         </dependency>
 
         <!-- Spring Test -->
@@ -418,6 +418,8 @@
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-rt-rs-client</artifactId>
         </dependency>
+
+        <!-- Jackson -->
         <dependency>
             <groupId>com.fasterxml.jackson.jaxrs</groupId>
             <artifactId>jackson-jaxrs-json-provider</artifactId>

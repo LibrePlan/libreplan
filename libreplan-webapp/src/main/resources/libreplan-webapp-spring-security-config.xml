@@ -135,7 +135,7 @@
                 username-parameter="j_username"
                 password-parameter="j_password"/>
         <http-basic />
-        <logout />
+        <logout logout-url="/j_spring_security_logout" />
         <remember-me />
         <csrf disabled="true"/>
 

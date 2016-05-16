@@ -21,8 +21,8 @@
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>org.xnap.commons</groupId>
-                        <artifactId>maven-gettext-plugin</artifactId>
+                        <groupId>com.googlecode.gettext-commons</groupId>
+                        <artifactId>gettext-maven-plugin</artifactId>
                         <configuration>
                             <targetBundle>app.i18n.Messages</targetBundle>
                             <poDirectory>${project.build.sourceDirectory}/../resources/i18n</poDirectory>
@@ -40,16 +40,16 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
+                        <version>3.0.0</version>
                         <executions>
                             <execution>
                                 <id>default</id>
                                 <phase>package</phase>
-                            <goals>
-                                <goal>jar-no-fork</goal>
-                            </goals>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
                             </execution>
                         </executions>
-
                     </plugin>
                 </plugins>
             </build>
@@ -59,7 +59,7 @@
     <dependencies>
         <!-- Gettext commons -->
         <dependency>
-            <groupId>org.xnap.commons</groupId>
+            <groupId>com.googlecode.gettext-commons</groupId>
             <artifactId>gettext-commons</artifactId>
         </dependency>
 
