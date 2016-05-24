@@ -29,14 +29,16 @@ import org.apache.commons.lang3.BooleanUtils;
  * Currently we have three options:
  * <ul>
  * <li>Enable/Disable the warning changing default password</li>
- * <li>Enable/Disable default users (such as wsreader, wswriter,
- * wssubcontracting, manager, hresources, outsourcing and reports)</li>
+ *
+ * <li>Enable/Disable default users
+ * (such as wsreader, wswriter, wssubcontracting, manager, hresources, outsourcing and reports)</li>
+ *
  * <li>Enable/Disable E-mail sending functionality</li>
  * </ul>
  *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  * @author Manuel Rego Casasnovas <rego@igalia.com>
- * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
 
 public class Configuration {
@@ -57,12 +59,10 @@ public class Configuration {
     }
 
     /**
-     * It returns the current state of the default passwords control in order to
-     * show or not warnings.
+     * It returns the current state of the default passwords control in order to show or not warnings.
      */
     public static Boolean isDefaultPasswordsControl() {
-        return singleton.getDefaultPasswordsControl() != null ? singleton
-                .getDefaultPasswordsControl() : true;
+        return singleton.getDefaultPasswordsControl() != null ? singleton.getDefaultPasswordsControl() : true;
     }
     public Boolean getDefaultPasswordsControl() {
         return defaultPasswordsControl;

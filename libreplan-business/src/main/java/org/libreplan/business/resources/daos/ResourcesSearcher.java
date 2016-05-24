@@ -71,12 +71,12 @@ public class ResourcesSearcher implements IResourcesSearcher {
     private SessionFactory sessionFactory;
 
     public IResourcesQuery<Machine> searchMachines() {
-        return new Query<Machine>(Machine.class);
+        return new Query<>(Machine.class);
     }
 
     @Override
     public IResourcesQuery<Worker> searchWorkers() {
-        return new Query<Worker>(Worker.class);
+        return new Query<>(Worker.class);
     }
 
     class Query<T extends Resource> implements IResourcesQuery<T> {
@@ -96,14 +96,15 @@ public class ResourcesSearcher implements IResourcesSearcher {
         @Override
         public IResourcesQuery<T> byName(String name) {
             this.name = name;
+
             return this;
         }
 
         @Override
-        public IResourcesQuery<T> byCriteria(
-                Collection<? extends Criterion> criteria) {
+        public IResourcesQuery<T> byCriteria(Collection<? extends Criterion> criteria) {
             Validate.noNullElements(criteria);
-            this.criteria = new ArrayList<Criterion>(criteria);
+            this.criteria = new ArrayList<>(criteria);
+
             return this;
         }
 
@@ -115,18 +116,12 @@ public class ResourcesSearcher implements IResourcesSearcher {
 
         @Override
         public List<T> execute() {
-            return adHocTransactionService
-                    .runOnReadOnlyTransaction(new IOnTransaction<List<T>>() {
-                        @Override
-                        @SuppressWarnings("unchecked")
-                        public List<T> execute() {
-                            Session session = sessionFactory
-                                    .getCurrentSession();
-                            List<T> resources = buildCriteria(session).list();
-                            return restrictToSatisfyAllCriteria(resources);
-                        }
+            return adHocTransactionService.runOnReadOnlyTransaction(() -> {
+                Session session = sessionFactory.getCurrentSession();
+                List<T> resources = buildCriteria(session).list();
 
-                    });
+                return restrictToSatisfyAllCriteria(resources);
+            });
         }
 
         private Criteria buildCriteria(Session session) {
@@ -135,15 +130,16 @@ public class ResourcesSearcher implements IResourcesSearcher {
             addQueryByName(result);
             addFindRelatedWithSomeOfTheCriterions(result);
             result.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+
             return result;
         }
 
         private void addFindRelatedWithSomeOfTheCriterions(Criteria criteria) {
-            if (!criteriaSpecified()) {
+            if ( !criteriaSpecified() ) {
                 return;
             }
-            criteria.createCriteria("criterionSatisfactions").add(
-                    in("criterion", Criterion.withAllDescendants(this.criteria)));
+            criteria.createCriteria("criterionSatisfactions")
+                    .add(in("criterion", Criterion.withAllDescendants(this.criteria)));
         }
 
         private boolean criteriaSpecified() {
@@ -151,53 +147,57 @@ public class ResourcesSearcher implements IResourcesSearcher {
         }
 
         private void addQueryByName(Criteria criteria) {
-            if (name == null) {
+            if ( name == null ) {
                 return;
             }
+
             final String nameWithWildcards = "%" + name + "%";
-            if (klass.equals(Worker.class)) {
-                criteria.add(or(
-                        or(ilike("firstName", nameWithWildcards),
-                                ilike("surname", nameWithWildcards)),
+            if ( klass.equals(Worker.class) ) {
+
+                criteria.add(or(or(
+                        ilike("firstName", nameWithWildcards), ilike("surname", nameWithWildcards)),
                         like("nif", nameWithWildcards)));
-            } else if (klass.equals(Machine.class)) {
-                criteria.add(or(ilike("name", nameWithWildcards),
-                        ilike("code", nameWithWildcards)));
+
+            } else if ( klass.equals(Machine.class) ) {
+                criteria.add(or(ilike("name", nameWithWildcards), ilike("code", nameWithWildcards)));
             } else {
                 LOG.warn("can't handle " + klass);
             }
         }
 
         private List<T> restrictToSatisfyAllCriteria(List<T> resources) {
-            if (!criteriaSpecified()) {
+            if ( !criteriaSpecified() ) {
                 return resources;
             }
-            List<T> result = new ArrayList<T>();
+            List<T> result = new ArrayList<>();
             for (T each : resources) {
-                if (each.satisfiesCriterionsAtSomePoint(criteria)) {
+                if ( each.satisfiesCriterionsAtSomePoint(criteria) ) {
                     result.add(each);
                 }
             }
+
             return result;
         }
 
         @Override
         public Map<CriterionType, Set<Criterion>> getCriteria() {
-            return adHocTransactionService
-                    .runOnReadOnlyTransaction(getCriterionsTree(klass));
+            return adHocTransactionService.runOnReadOnlyTransaction(getCriterionsTree(klass));
         }
     }
 
     @Override
     public IResourcesQuery<?> searchBy(ResourceEnum resourceType) {
         Validate.notNull(resourceType);
+
         switch (resourceType) {
-        case MACHINE:
-            return searchMachines();
-        case WORKER:
-            return searchWorkers();
-        default:
-            throw new RuntimeException("can't handle " + resourceType);
+            case MACHINE:
+                return searchMachines();
+
+            case WORKER:
+                return searchWorkers();
+
+            default:
+                throw new RuntimeException("can't handle " + resourceType);
         }
     }
 
@@ -211,14 +211,15 @@ public class ResourcesSearcher implements IResourcesSearcher {
             public IResourcesQuery<Resource> byName(String name) {
                 searchWorkers.byName(name);
                 searchMachines.byName(name);
+
                 return this;
             }
 
             @Override
-            public IResourcesQuery<Resource> byCriteria(
-                    Collection<? extends Criterion> criteria) {
+            public IResourcesQuery<Resource> byCriteria(Collection<? extends Criterion> criteria) {
                 searchWorkers.byCriteria(criteria);
                 searchMachines.byCriteria(criteria);
+
                 return this;
             }
 
@@ -226,23 +227,24 @@ public class ResourcesSearcher implements IResourcesSearcher {
             public IResourcesQuery<Resource> byResourceType(ResourceType type) {
                 searchWorkers.byResourceType(type);
                 searchMachines.byResourceType(type);
+
                 return this;
             }
 
             @Override
             public List<Resource> execute() {
-                List<Resource> result = new ArrayList<Resource>();
+                List<Resource> result = new ArrayList<>();
                 List<Worker> workers = searchWorkers.execute();
                 result.addAll(workers);
                 List<Machine> machines = searchMachines.execute();
                 result.addAll(machines);
+
                 return result;
             }
 
             @Override
             public Map<CriterionType, Set<Criterion>> getCriteria() {
-                return adHocTransactionService
-                        .runOnReadOnlyTransaction(getCriterionsTree(Resource.class));
+                return adHocTransactionService.runOnReadOnlyTransaction(getCriterionsTree(Resource.class));
             }
         };
     }
@@ -252,23 +254,21 @@ public class ResourcesSearcher implements IResourcesSearcher {
 
     private IOnTransaction<Map<CriterionType, Set<Criterion>>> getCriterionsTree(
             final Class<? extends Resource> klassTheCriterionTypeMustBeRelatedWith) {
-        return new IOnTransaction<Map<CriterionType, Set<Criterion>>>() {
-            @Override
-            public Map<CriterionType, Set<Criterion>> execute() {
-                Map<CriterionType, Set<Criterion>> result = new LinkedHashMap<CriterionType, Set<Criterion>>();
-                for (Criterion criterion : criterionDAO
-                        .getAllSortedByTypeAndName()) {
-                    CriterionType key = criterion.getType();
-                    if (klassTheCriterionTypeMustBeRelatedWith
-                            .isAssignableFrom(key.getResource().asClass())) {
-                        if (!result.containsKey(key)) {
-                            result.put(key, new LinkedHashSet<Criterion>());
-                        }
-                        result.get(key).add(criterion);
+
+        return () -> {
+            Map<CriterionType, Set<Criterion>> result = new LinkedHashMap<>();
+            for (Criterion criterion : criterionDAO.getAllSortedByTypeAndName()) {
+                CriterionType key = criterion.getType();
+
+                if ( klassTheCriterionTypeMustBeRelatedWith.isAssignableFrom(key.getResource().asClass()) ) {
+                    if ( !result.containsKey(key) ) {
+                        result.put(key, new LinkedHashSet<>());
                     }
+                    result.get(key).add(criterion);
                 }
-                return result;
             }
+
+            return result;
         };
     }
 

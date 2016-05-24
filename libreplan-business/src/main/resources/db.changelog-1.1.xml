@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
     <changeSet id="add-new-column-ldap-host" author="calvarinop">
         <comment>Add new column to store ldap host</comment>
@@ -60,8 +61,7 @@
         </addColumn>
     </changeSet>
 
-    <changeSet id="add-new-column-navalplan-user"
-        author="idiazt">
+    <changeSet id="add-new-column-navalplan-user" author="idiazt">
         <comment>Add new column to store if it is a navalplan user</comment>
         <addColumn tableName="user_table">
             <column name="navalplan_user" type="BOOLEAN" />
@@ -319,8 +319,9 @@
 
     <changeSet id="change-navalplan_user-to-libreplan_user-in-user_table" author="mrego">
         <comment>Changing navalplan_user to libreplan_user in user_table</comment>
-        <renameColumn tableName="user_table" oldColumnName="navalplan_user"
-          newColumnName="libreplan_user" columnDataType="BOOLEAN" />
+        <renameColumn tableName="user_table"
+                      oldColumnName="navalplan_user"
+                      newColumnName="libreplan_user" columnDataType="BOOLEAN" />
     </changeSet>
 
     <changeSet id="add-new-column-ldap-role-strategy" author="idiazt">

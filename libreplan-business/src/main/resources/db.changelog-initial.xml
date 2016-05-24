@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
     <changeSet id="resize-precision-in-planning_data" author="dpino">
         <comment>Resize precision for 'progress_by_duration' and 'progress_by_num_hours' fields</comment>
@@ -32,7 +33,8 @@
     </changeSet>
 
     <changeSet id="rename start_constraint_type in task and task milestone" author="ogonzalez">
-        <comment>Caused by renaming org.libreplan.business.planner.entities.TaskPositionConstraint.startConstraintType</comment>
+        <comment>Caused by renaming
+            org.libreplan.business.planner.entities.TaskPositionConstraint.startConstraintType</comment>
         <renameColumn tableName="task" oldColumnName="start_constraint_type"
             newColumnName="constraint_type" columnDataType="INTEGER" />
         <renameColumn tableName="task_milestone"
@@ -57,7 +59,8 @@
     </changeSet>
 
     <changeSet id="remove-stretches-with-amountWorkPercentage-equal-100" author="dpino">
-        <comment>Removes all stretches which amountWorkPercentage value is 100 as now these stretches will be created automatically and never stored into DB</comment>
+        <comment>Removes all stretches which amountWorkPercentage value is 100 as now these stretches will be created
+            automatically and never stored into DB</comment>
         <sql>
             DELETE FROM stretches WHERE amount_work_percentage = 1.00;
         </sql>

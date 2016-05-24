@@ -1,21 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
 <hibernate-mapping package="org.libreplan.business.scenarios.entities"
     default-access="field">
 
     <!-- Scenario -->
     <class name="Scenario" table="scenario">
         <id name="id" access="property" type="long">
-            <generator class="hilo">
+            <generator class="increment">
                 <param name="max_lo">100</param>
             </generator>
         </id>
         <version name="version" access="property" type="long" />
 
         <property name="name" />
+
         <property name="description" />
-        <property name="lastNotOwnedReassignationsTimeStamp"
-            column="last_not_owned_reassignations_time_stamp" />
+
+        <property name="lastNotOwnedReassignationsTimeStamp" column="last_not_owned_reassignations_time_stamp" />
 
         <map name="orders" table="scenario_orders" lazy="false" cascade="save-update">
             <key column="scenario_id" />
@@ -31,13 +34,15 @@
     <!-- OrderVersion -->
     <class name="OrderVersion" table="order_version">
         <id name="id" access="property" type="long">
-            <generator class="hilo">
+            <generator class="increment">
                 <param name="max_lo">100</param>
             </generator>
         </id>
+
         <version name="version" access="property" type="long" />
-        <property name="modificationByOwnerTimestamp"
-            column="modification_by_owner_timestamp" />
+
+        <property name="modificationByOwnerTimestamp" column="modification_by_owner_timestamp" />
+
         <many-to-one name="ownerScenario" class="Scenario" />
     </class>
 

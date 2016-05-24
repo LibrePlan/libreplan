@@ -25,10 +25,10 @@ package org.libreplan.ws.subcontract.impl;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.Collections;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -104,9 +104,10 @@ public class ReportAdvancesServiceREST implements IReportAdvancesService {
 
     private InstanceConstraintViolationsListDTO getErrorMessage(String code, String message) {
         // FIXME review errors returned
+        // TODO resolve deprecated method
         return new InstanceConstraintViolationsListDTO(
-                Arrays.asList(InstanceConstraintViolationsDTO.create(
-                        Util.generateInstanceId(1, code), message)));
+                Collections.singletonList(
+                        InstanceConstraintViolationsDTO.create(Util.generateInstanceId(1, code), message)));
     }
 
     @Override
@@ -116,64 +117,63 @@ public class ReportAdvancesServiceREST implements IReportAdvancesService {
     public InstanceConstraintViolationsListDTO updateAdvancesOrEndDate(
             OrderElementWithAdvanceMeasurementsOrEndDateListDTO orderElementWithAdvanceMeasurementsListDTO) {
 
-        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = new ArrayList<InstanceConstraintViolationsDTO>();
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = new ArrayList<>();
 
         InstanceConstraintViolationsDTO instanceConstraintViolationsDTO = null;
 
-        if (StringUtils.isEmpty(orderElementWithAdvanceMeasurementsListDTO.externalCompanyNif)) {
+        if ( StringUtils.isEmpty(orderElementWithAdvanceMeasurementsListDTO.externalCompanyNif) ) {
             return getErrorMessage("", "external company ID not specified");
         }
 
         ExternalCompany externalCompany;
         try {
-            externalCompany = externalCompanyDAO
-                    .findUniqueByNif(orderElementWithAdvanceMeasurementsListDTO.externalCompanyNif);
+
+            externalCompany =
+                    externalCompanyDAO.findUniqueByNif(orderElementWithAdvanceMeasurementsListDTO.externalCompanyNif);
+
         } catch (InstanceNotFoundException e1) {
-            return getErrorMessage(orderElementWithAdvanceMeasurementsListDTO.externalCompanyNif,
-                    "external company not found");
+
+            return getErrorMessage(
+                    orderElementWithAdvanceMeasurementsListDTO.externalCompanyNif, "external company not found");
         }
 
-        if (!externalCompany.isSubcontractor()) {
-            return getErrorMessage(orderElementWithAdvanceMeasurementsListDTO.externalCompanyNif,
+        if ( !externalCompany.isSubcontractor() ) {
+
+            return getErrorMessage(
+                    orderElementWithAdvanceMeasurementsListDTO.externalCompanyNif,
                     "external company is not registered as subcontractor");
         }
 
-        List<OrderElementWithAdvanceMeasurementsOrEndDateDTO> orderElements = orderElementWithAdvanceMeasurementsListDTO.orderElements;
-        for (OrderElementWithAdvanceMeasurementsOrEndDateDTO orderElementWithAdvanceMeasurementsOrEndDateDTO : orderElements) {
+        List<OrderElementWithAdvanceMeasurementsOrEndDateDTO> orderElements =
+                orderElementWithAdvanceMeasurementsListDTO.orderElements;
+
+        for (OrderElementWithAdvanceMeasurementsOrEndDateDTO current : orderElements) {
             try {
-                OrderElement orderElement = orderElementDAO
-                        .findUniqueByCode(orderElementWithAdvanceMeasurementsOrEndDateDTO.code);
+                OrderElement orderElement = orderElementDAO.findUniqueByCode(current.code);
 
                 Scenario scenarioMaster = PredefinedScenarios.MASTER.getScenario();
                 Order order = orderDAO.loadOrderAvoidingProxyFor(orderElement);
                 OrderVersion orderVersion = order.getScenarios().get(scenarioMaster);
 
-                if (orderElementWithAdvanceMeasurementsOrEndDateDTO.advanceMeasurements != null
-                        && !orderElementWithAdvanceMeasurementsOrEndDateDTO.advanceMeasurements
-                                .isEmpty()) {
-                    updateAdvances(orderVersion, orderElement,
-                            orderElementWithAdvanceMeasurementsOrEndDateDTO);
+                if ( current.advanceMeasurements != null && !current.advanceMeasurements.isEmpty() ) {
+                    updateAdvances(orderVersion, orderElement, current);
                 }
 
-                if (orderElementWithAdvanceMeasurementsOrEndDateDTO.endDateCommunicationToCustomerDTO != null) {
-                    updateEndDate(orderVersion, orderElement,
-                            orderElementWithAdvanceMeasurementsOrEndDateDTO);
+                if ( current.endDateCommunicationToCustomerDTO != null ) {
+                    updateEndDate(orderVersion, orderElement, current);
                 }
 
             } catch (ValidationException e) {
-                instanceConstraintViolationsDTO = ConstraintViolationConverter
-                        .toDTO(Util
-                                .generateInstanceId(
-                                        1,
-                                        orderElementWithAdvanceMeasurementsOrEndDateDTO.code),
-                                e.getInvalidValues());
+
+                instanceConstraintViolationsDTO = ConstraintViolationConverter.toDTO(
+                        Util.generateInstanceId(1, current.code), e.getInvalidValues());
+
             } catch (InstanceNotFoundException e) {
-                return getErrorMessage(orderElementWithAdvanceMeasurementsOrEndDateDTO.code,
-                        "instance not found");
+                return getErrorMessage(current.code, "instance not found");
             }
         }
 
-        if (instanceConstraintViolationsDTO != null) {
+        if ( instanceConstraintViolationsDTO != null ) {
             instanceConstraintViolationsList.add(instanceConstraintViolationsDTO);
         }
 
@@ -185,87 +185,100 @@ public class ReportAdvancesServiceREST implements IReportAdvancesService {
             OrderVersion orderVersion,
             OrderElement orderElement,
             OrderElementWithAdvanceMeasurementsOrEndDateDTO orderElementWithAdvanceMeasurementsOrEndDateDTO) {
-        DirectAdvanceAssignment advanceAssignmentSubcontractor = orderElement
-                .getDirectAdvanceAssignmentSubcontractor();
 
-        if (advanceAssignmentSubcontractor == null) {
+        DirectAdvanceAssignment advanceAssignmentSubcontractor = orderElement.getDirectAdvanceAssignmentSubcontractor();
+
+        if ( advanceAssignmentSubcontractor == null ) {
             DirectAdvanceAssignment reportGlobal = orderElement.getReportGlobalAdvanceAssignment();
 
-            advanceAssignmentSubcontractor = DirectAdvanceAssignment.create((reportGlobal == null),
-                    new BigDecimal(100));
-            advanceAssignmentSubcontractor.setAdvanceType(PredefinedAdvancedTypes.SUBCONTRACTOR
-                    .getType());
+            advanceAssignmentSubcontractor =
+                    DirectAdvanceAssignment.create((reportGlobal == null), new BigDecimal(100));
+
+            advanceAssignmentSubcontractor.setAdvanceType(PredefinedAdvancedTypes.SUBCONTRACTOR.getType());
             advanceAssignmentSubcontractor.setOrderElement(orderElement);
 
             try {
                 orderElement.addAdvanceAssignment(advanceAssignmentSubcontractor);
             } catch (DuplicateValueTrueReportGlobalAdvanceException e) {
-                // This shouldn't happen, because new advance is only
-                // marked as report global if there is not other advance
-                // as report global
+
+                // This shouldn't happen, because new advance is only marked as report global
+                // if there is not other advance as report global
                 throw new RuntimeException(e);
+
             } catch (DuplicateAdvanceAssignmentForOrderElementException e) {
-                return getErrorMessage(orderElementWithAdvanceMeasurementsOrEndDateDTO.code,
+
+                return getErrorMessage(
+                        orderElementWithAdvanceMeasurementsOrEndDateDTO.code,
                         "someone in the same branch has the same advance type");
             }
         }
 
-        for (AdvanceMeasurementDTO advanceMeasurementDTO : orderElementWithAdvanceMeasurementsOrEndDateDTO.advanceMeasurements) {
+        for (AdvanceMeasurementDTO current : orderElementWithAdvanceMeasurementsOrEndDateDTO.advanceMeasurements) {
+
             AdvanceMeasurement advanceMeasurement = advanceAssignmentSubcontractor
-                    .getAdvanceMeasurementAtExactDate(DateConverter
-                            .toLocalDate(advanceMeasurementDTO.date));
-            if (advanceMeasurement == null) {
-                advanceAssignmentSubcontractor.addAdvanceMeasurements(OrderElementConverter
-                        .toEntity(advanceMeasurementDTO));
+                    .getAdvanceMeasurementAtExactDate(DateConverter.toLocalDate(current.date));
+
+            if ( advanceMeasurement == null ) {
+                advanceAssignmentSubcontractor.addAdvanceMeasurements(OrderElementConverter.toEntity(current));
             } else {
-                advanceMeasurement.setValue(advanceMeasurementDTO.value);
+                advanceMeasurement.setValue(current.value);
             }
         }
 
-        // set the advance assingment subcontractor like spread
+        // Set the advance assignment subcontractor like spread
         AdvanceAssignment spreadAdvance = orderElement.getReportGlobalAdvanceAssignment();
-        if (spreadAdvance != null && !spreadAdvance.equals(advanceAssignmentSubcontractor)) {
+        if ( spreadAdvance != null && !spreadAdvance.equals(advanceAssignmentSubcontractor) ) {
             spreadAdvance.setReportGlobalAdvance(false);
             advanceAssignmentSubcontractor.setReportGlobalAdvance(true);
         }
-        // update the advance percentage in its related task
+
+        // Update the advance percentage in its related task
         updateAdvancePercentage(orderVersion, orderElement);
 
         orderElement.validate();
         orderElementDAO.save(orderElement);
 
         /*
-         * If the order element is subcontrated then create the subcontrated
-         * communication for the subcontrated task data to which the order
-         * element belongs.
+         * If the order element is subcontracted
+         * then create the subcontracted communication for the subcontracted task data
+         * to which the order element belongs.
          */
         try {
-            createSubcontractorCommunicationWithNewProgress(orderElement,
-                    orderElementWithAdvanceMeasurementsOrEndDateDTO.advanceMeasurements);
+            createSubcontractorCommunicationWithNewProgress(
+                    orderElement, orderElementWithAdvanceMeasurementsOrEndDateDTO.advanceMeasurements);
+
         } catch (InstanceNotFoundException e) {
-            return getErrorMessage(orderElementWithAdvanceMeasurementsOrEndDateDTO.code,
-                    "instance not found");
+            return getErrorMessage(orderElementWithAdvanceMeasurementsOrEndDateDTO.code, "instance not found");
         }
 
         return null;
     }
 
-    public void createSubcontractorCommunicationWithNewProgress(OrderElement orderElement,
-            Set<AdvanceMeasurementDTO> advanceMeasurementDTOs) throws InstanceNotFoundException {
-        if (orderElement != null && orderElement.getTaskSource() != null
-                && orderElement.getTaskSource().getTask().isSubcontracted()) {
+    public void createSubcontractorCommunicationWithNewProgress(
+            OrderElement orderElement, Set<AdvanceMeasurementDTO> advanceMeasurementDTOs)
+            throws InstanceNotFoundException {
+
+        boolean condition = orderElement != null &&
+                orderElement.getTaskSource() != null &&
+                orderElement.getTaskSource().getTask().isSubcontracted();
+
+        if ( condition ) {
             Task task = (Task) orderElement.getTaskSource().getTask();
             SubcontractedTaskData subcontractedTaskData = task.getSubcontractedTaskData();
-            if (subcontractedTaskData != null) {
-                SubcontractorCommunication subcontractorCommunication = SubcontractorCommunication
-                        .create(subcontractedTaskData, CommunicationType.PROGRESS_UPDATE,
-                                new Date(), false);
+
+            if ( subcontractedTaskData != null ) {
+
+                SubcontractorCommunication subcontractorCommunication = SubcontractorCommunication.create(
+                        subcontractedTaskData,
+                        CommunicationType.PROGRESS_UPDATE,
+                        new Date(),
+                        false);
 
                 for (AdvanceMeasurementDTO advanceMeasurementDTO : advanceMeasurementDTOs) {
-                    // add subcontractorCommunicationValue
-                    addSubcontractorCommunicationValue(advanceMeasurementDTO,
-                            subcontractorCommunication);
+                    // Add subcontractorCommunicationValue
+                    addSubcontractorCommunicationValue(advanceMeasurementDTO, subcontractorCommunication);
                 }
+
                 subcontractorCommunicationDAO.save(subcontractorCommunication);
             }
         }
@@ -276,30 +289,35 @@ public class ReportAdvancesServiceREST implements IReportAdvancesService {
             OrderVersion orderVersion,
             OrderElement orderElement,
             OrderElementWithAdvanceMeasurementsOrEndDateDTO orderElementWithAdvanceMeasurementsOrEndDateDTO) {
+
         try {
             orderElement.useSchedulingDataFor(orderVersion);
 
-            if (orderElement != null && orderElement.getTaskSource() != null
-                    && orderElement.getTaskSource().getTask().isSubcontracted()) {
+            boolean contidion = orderElement != null &&
+                    orderElement.getTaskSource() != null &&
+                    orderElement.getTaskSource().getTask().isSubcontracted();
 
+            if ( contidion ) {
                 Task task = (Task) orderElement.getTaskSource().getTask();
                 SubcontractedTaskData subcontractedTaskData = task.getSubcontractedTaskData();
-                EndDateCommunicationToCustomerDTO endDateDTO = orderElementWithAdvanceMeasurementsOrEndDateDTO.endDateCommunicationToCustomerDTO;
+
+                EndDateCommunicationToCustomerDTO endDateDTO =
+                        orderElementWithAdvanceMeasurementsOrEndDateDTO.endDateCommunicationToCustomerDTO;
 
                 Date endDate = DateConverter.toDate(endDateDTO.endDate);
                 Date communicationDate = DateConverter.toDate(endDateDTO.communicationDate);
 
                 subcontractedTaskData.getEndDatesCommunicatedFromSubcontractor().add(
-                        EndDateCommunication.create(new Date(), endDate,
-                                communicationDate));
+                        EndDateCommunication.create(new Date(), endDate, communicationDate));
+
                 subcontractedTaskDataDAO.save(subcontractedTaskData);
 
                 createSubcontractorCommunicationWithNewEndDate(subcontractedTaskData, endDateDTO);
             }
         } catch (InstanceNotFoundException e) {
-            return getErrorMessage(orderElementWithAdvanceMeasurementsOrEndDateDTO.code,
-                    "instance not found");
+            return getErrorMessage(orderElementWithAdvanceMeasurementsOrEndDateDTO.code, "instance not found");
         }
+
         return null;
     }
 
@@ -307,33 +325,40 @@ public class ReportAdvancesServiceREST implements IReportAdvancesService {
             SubcontractedTaskData subcontractedTaskData,
             EndDateCommunicationToCustomerDTO endDateDTO) throws InstanceNotFoundException {
 
-            if (subcontractedTaskData != null) {
-                SubcontractorCommunication subcontractorCommunication = SubcontractorCommunication
-                        .create(subcontractedTaskData, CommunicationType.END_DATE_UPDATE,
-                                new Date(), false);
+            if ( subcontractedTaskData != null ) {
+                SubcontractorCommunication subcontractorCommunication = SubcontractorCommunication.create(
+                        subcontractedTaskData,
+                        CommunicationType.END_DATE_UPDATE,
+                        new Date(),
+                        false);
+
                 Date dateValue = DateConverter.toDate(endDateDTO.endDate);
-                SubcontractorCommunicationValue value = SubcontractorCommunicationValue.create(
-                        dateValue, null);
+                SubcontractorCommunicationValue value = SubcontractorCommunicationValue.create(dateValue, null);
                 subcontractorCommunication.getSubcontractorCommunicationValues().add(value);
                 subcontractorCommunicationDAO.save(subcontractorCommunication);
             }
     }
 
-    private void addSubcontractorCommunicationValue(AdvanceMeasurementDTO advanceMeasurementDTO,
-            SubcontractorCommunication subcontractorCommunication) {
+    private void addSubcontractorCommunicationValue(
+            AdvanceMeasurementDTO advanceMeasurementDTO, SubcontractorCommunication subcontractorCommunication) {
+
         Date dateValue = DateConverter.toDate(advanceMeasurementDTO.date);
-        SubcontractorCommunicationValue value = SubcontractorCommunicationValue.create(dateValue,
-                advanceMeasurementDTO.value);
+
+        SubcontractorCommunicationValue value =
+                SubcontractorCommunicationValue.create(dateValue, advanceMeasurementDTO.value);
+
         subcontractorCommunication.getSubcontractorCommunicationValues().add(value);
     }
 
     private void updateAdvancePercentage(OrderVersion orderVersion, OrderElement orderElement) {
         orderElement.useSchedulingDataFor(orderVersion);
         OrderElement parent = orderElement.getParent();
+
         while (parent != null) {
             parent.useSchedulingDataFor(orderVersion);
             parent = parent.getParent();
         }
+
         orderElement.updateAdvancePercentageTaskElement();
     }
 }

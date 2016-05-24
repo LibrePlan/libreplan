@@ -42,8 +42,7 @@ public enum CalendarExceptionTypeColor {
     private final String colorOwnException;
     private final String colorDerivedException;
 
-    private CalendarExceptionTypeColor(String name, String colorOwnException,
-            String colorDerivedException) {
+    CalendarExceptionTypeColor(String name, String colorOwnException, String colorDerivedException) {
         this.name = name;
         this.colorOwnException = colorOwnException;
         this.colorDerivedException = colorDerivedException;

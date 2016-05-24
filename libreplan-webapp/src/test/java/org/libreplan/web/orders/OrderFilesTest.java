@@ -19,11 +19,6 @@
 
 package org.libreplan.web.orders;
 
-
-import org.hibernate.PropertyValueException;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.libreplan.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
@@ -32,37 +27,44 @@ import static org.libreplan.web.WebappGlobalNames.WEBAPP_SPRING_SECURITY_CONFIG_
 import static org.libreplan.web.test.WebappGlobalNames.WEBAPP_SPRING_CONFIG_TEST_FILE;
 import static org.libreplan.web.test.WebappGlobalNames.WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE;
 
-import org.hibernate.Transaction;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-
+import org.libreplan.business.common.exceptions.InstanceNotFoundException;
+import org.libreplan.business.orders.daos.IHoursGroupDAO;
+import org.libreplan.business.orders.daos.IOrderElementDAO;
 import org.libreplan.business.orders.entities.HoursGroup;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderFile;
 import org.libreplan.business.orders.entities.OrderLine;
+import org.libreplan.business.users.daos.IUserDAO;
 import org.libreplan.business.users.entities.User;
 import org.libreplan.web.orders.files.IOrderFileModel;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
-import java.util.List;
 
 
 /**
  * Tests for {@link OrderFile}.
+ *
  * Created by
  * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
  * on 11.01.2016.
  */
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
-        WEBAPP_SPRING_CONFIG_FILE, WEBAPP_SPRING_CONFIG_TEST_FILE,
+@ContextConfiguration(locations = {
+        BUSINESS_SPRING_CONFIG_FILE,
+
+        WEBAPP_SPRING_CONFIG_FILE,
+        WEBAPP_SPRING_CONFIG_TEST_FILE,
+
         WEBAPP_SPRING_SECURITY_CONFIG_FILE,
         WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE })
 public class OrderFilesTest {
@@ -74,196 +76,164 @@ public class OrderFilesTest {
     private IOrderElementModel orderElementModel;
 
     @Autowired
-    private SessionFactory sessionFactory;
+    private IOrderElementDAO orderElementDAO;
 
-    private Session newSession;
+    @Autowired
+    private IUserDAO userDAO;
 
-    private Transaction transaction;
+    @Autowired
+    private IHoursGroupDAO hoursGroupDAO;
 
     /**
-     * A new session is opened because there was a lot of errors with {@link Transaction}, {@link Session}
-     *
      * CRUD test
      * 1. Add row to files table
-     * 2. Add row and read it
-     * 3. Add row and update added row
-     * 4. Add row and delete it
+     * 2. Read it
+     * 3. Update it
+     * 4. Delete it
      *
      * Negative test
      * 1. Create row with null field value and try to save it
      */
-    @Test
-    public void testRead() {
-        // This initialize method is for all test methods
-        initialize();
-
-        // Make OrderFile
-        orderFileModel.createNewFileObject();
-        orderFileModel.setFileName("noname");
-        orderFileModel.setFileType(".htaccess");
-        orderFileModel.setUploadDate(new Date());
-        orderFileModel.setUploader( (User) newSession.createCriteria(User.class).list().get(0) );
-        orderFileModel.setParent( (OrderElement) newSession.createCriteria(OrderElement.class).list().get(0) );
-
-        newSession.save(orderFileModel.getOrderFile());
-        transactionBeginCommit();
-
-        List<OrderFile> file = orderFileModel.getAll();
-        assertEquals(file.get(0).getName(), "noname");
-
-        // Clean data
-        OrderFile orderFile = (OrderFile) newSession.createCriteria(OrderFile.class).list().get(0);
-        newSession.delete(orderFile);
-        transactionBeginCommit();
-
-        newSession.close();
-    }
 
     @Test
-    public void testCreate(){
-        newSession = sessionFactory.openSession();
+    @Transactional
+    public void testCRUD() {
 
+        // Create
         int sizeBefore = orderFileModel.getAll().size();
-
-        // Make OrderFile
-        orderFileModel.createNewFileObject();
-        orderFileModel.setFileName("Index");
-        orderFileModel.setFileType("html");
-        orderFileModel.setUploadDate(new Date());
-        orderFileModel.setUploader( (User) newSession.createCriteria(User.class).list().get(0) );
-        orderFileModel.setParent( (OrderElement) newSession.createCriteria(OrderElement.class).list().get(0) );
-
-        newSession.save(orderFileModel.getOrderFile());
-        transactionBeginCommit();
-
+        createEntities();
         int sizeWithNewRow = orderFileModel.getAll().size();
-
         assertEquals(sizeBefore + 1, sizeWithNewRow);
 
-        // Clean data
-        OrderFile orderFile = (OrderFile) newSession.createCriteria(OrderFile.class).list().get(0);
-        newSession.delete(orderFile);
-        transactionBeginCommit();
+        OrderFile orderFile = null;
 
-        newSession.close();
-    }
+        // Read
+        try {
+            orderFile = orderFileModel.findByParent(orderElementDAO.findUniqueByCode("1a1k1k1k")).get(0);
+            assertEquals(orderFile.getName(), "Index");
+        } catch (InstanceNotFoundException e) {
+            e.printStackTrace();
+        }
 
-    @Test
-    public void testDelete(){
-        newSession = sessionFactory.openSession();
-
-        int sizeBefore = orderFileModel.getAll().size();
-
-        // Make OrderFile
-        orderFileModel.createNewFileObject();
-        orderFileModel.setFileName("Main");
-        orderFileModel.setFileType("java");
-        orderFileModel.setUploadDate(new Date());
-        orderFileModel.setUploader( (User) newSession.createCriteria(User.class).list().get(0) );
-        orderFileModel.setParent( (OrderElement) newSession.createCriteria(OrderElement.class).list().get(0) );
-
-        newSession.save(orderFileModel.getOrderFile());
-        transactionBeginCommit();
-
-        newSession.delete(orderFileModel.getOrderFile());
-        transactionBeginCommit();
-
-        int sizeAfter = orderFileModel.getAll().size();
-
-        assertEquals(sizeBefore, sizeAfter);
-
-        newSession.close();
-    }
-
-    @Test(expected = PropertyValueException.class)
-    public void testCreateNotValidRow(){
-        newSession = sessionFactory.openSession();
-
-        // Make OrderFile
-        orderFileModel.createNewFileObject();
-        orderFileModel.setFileName(null);
-        orderFileModel.setFileType("html");
-        orderFileModel.setUploadDate(new Date());
-        orderFileModel.setUploader( (User) newSession.createCriteria(User.class).list().get(0) );
-        orderFileModel.setParent( (OrderElement) newSession.createCriteria(OrderElement.class).list().get(0) );
-
-        newSession.save(orderFileModel.getOrderFile());
-        transactionBeginCommit();
-
-        newSession.close();
-    }
-
-    @Test
-    public void testUpdate(){
-        newSession = sessionFactory.openSession();
-
-        // Make OrderFile
-        orderFileModel.createNewFileObject();
-        orderFileModel.setFileName("yii");
-        orderFileModel.setFileType("bat");
-        orderFileModel.setUploadDate(new Date());
-        orderFileModel.setUploader( (User) newSession.createCriteria(User.class).list().get(0) );
-        orderFileModel.setParent( (OrderElement) newSession.createCriteria(OrderElement.class).list().get(0) );
-
-        newSession.save(orderFileModel.getOrderFile());
-        transactionBeginCommit();
-
-        // Get saved OrderFile and update it
-        OrderFile orderFile = (OrderFile) newSession.createCriteria(OrderFile.class).list().get(0);
+        // Update
         orderFile.setName("yii2");
+        orderFileModel.confirmSave();
 
-        newSession.save(orderFile);
-        transactionBeginCommit();
+        try {
+            orderFile = orderFileModel.findByParent(orderElementDAO.findUniqueByCode("1a1k1k1k")).get(0);
+            assertTrue(orderFile.getName().equals("yii2"));
+        } catch (InstanceNotFoundException e) {
+            e.printStackTrace();
+        }
 
-        // Get updated OrderFile and check for equality
-        OrderFile newOrderFile = (OrderFile) newSession.createCriteria(OrderFile.class).list().get(0);
-        assertTrue( newOrderFile.getName().equals("yii2") );
-
-        /**
-         * It is necessary to delete user and order element because it make influence on some other tests
-         */
-        OrderFile orderFileToDelete = (OrderFile) newSession.createCriteria(OrderFile.class).list().get(0);
-        User userToDelete = (User) newSession.createCriteria(User.class).list().get(0);
-        OrderElement orderElementToDelete = (OrderElement) newSession.createCriteria(OrderElement.class).list().get(0);
-
-        newSession.delete(orderFileToDelete);
-        newSession.delete(userToDelete);
-        newSession.delete(orderElementToDelete);
-        transactionBeginCommit();
-
-        newSession.close();
+        // Delete
+        removeEntities();
+        int sizeAfter = orderFileModel.getAll().size();
+        assertEquals(sizeBefore, sizeAfter);
     }
 
-
-    public void initialize(){
-        newSession = sessionFactory.openSession();
+    @Transactional
+    @Test(expected = DataIntegrityViolationException.class)
+    public void testCreateNotValidRow() {
         createUser();
         createOrderElement();
+
+        // Make OrderFile with null value
+        createOrderFile(true);
     }
 
-    private void createUser(){
+    private void createEntities() {
+        createUser();
+        createOrderElement();
+        createOrderFile(false);
+    }
+
+    private void removeEntities() {
+        removeOrderFile();
+        removeUser();
+        removeOrderElement();
+    }
+
+    private void createUser() {
         User user = User.create("harry-potter", "somePassword", "harry-potter@hogwarts.uk");
-        newSession.save(user);
-        transactionBeginCommit();
+        userDAO.save(user);
     }
 
-    private void createOrderElement(){
-        OrderLine result = OrderLine.create();
-        result.setName("OrderLineB");
-        result.setCode("1a1k1k1k");
-        HoursGroup hoursGroup = HoursGroup.create(result);
+    private void createOrderElement() {
+        OrderLine orderLine = OrderLine.create();
+        orderLine.setName("OrderLineB");
+        orderLine.setCode("1a1k1k1k");
+
+        HoursGroup hoursGroup = HoursGroup.create(orderLine);
         hoursGroup.setWorkingHours(0);
         hoursGroup.setCode("hoursGroupName1");
-        result.addHoursGroup(hoursGroup);
+        orderLine.addHoursGroup(hoursGroup);
 
-        OrderElement orderElement = result;
-        orderElementModel.setCurrent(orderElement, new OrderModel());
-        newSession.save(orderElement);
-        transactionBeginCommit();
+        // Save is inside method
+        orderElementModel.setCurrent(orderLine, new OrderModel());
     }
 
-    private void transactionBeginCommit(){
-        transaction = newSession.beginTransaction();
-        transaction.commit();
+
+    private void createOrderFile(boolean nameIsNull) {
+        orderFileModel.createNewFileObject();
+
+        if ( !nameIsNull )
+            orderFileModel.setFileName("Index");
+        else orderFileModel.setFileName(null);
+
+        orderFileModel.setFileType("html");
+        orderFileModel.setUploadDate(new Date());
+
+        User user = null;
+        OrderElement orderElement = null;
+        try {
+            user = userDAO.findByLoginName("harry-potter");
+            orderElement = orderElementDAO.findUniqueByCode("1a1k1k1k");
+        } catch (InstanceNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        orderFileModel.setUploader(user);
+        orderFileModel.setParent(orderElement);
+
+        orderFileModel.confirmSave();
+    }
+
+    private void removeOrderFile() {
+        OrderFile orderFileToDelete = orderFileModel.getAll().get(0);
+        orderFileModel.delete(orderFileToDelete);
+    }
+
+    private void removeUser() {
+        User user;
+        try {
+            user = userDAO.findByLoginName("harry-potter");
+            userDAO.remove(user);
+        } catch (InstanceNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void removeOrderElement() {
+        OrderElement orderElement = null;
+        HoursGroup hoursGroup = null;
+        try {
+            orderElement = orderElementDAO.findUniqueByCode("1a1k1k1k");
+            hoursGroup = hoursGroupDAO.findByCode("hoursGroupName1");
+        } catch (InstanceNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        OrderElement orderElementToDelete = orderElement;
+        HoursGroup hoursGroupToDelete = hoursGroup;
+
+        orderElementToDelete.getHoursGroups().remove(0);
+        hoursGroupToDelete.setParentOrderLine(null);
+
+        try {
+            orderElementDAO.remove(orderElement.getId());
+        } catch (InstanceNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }

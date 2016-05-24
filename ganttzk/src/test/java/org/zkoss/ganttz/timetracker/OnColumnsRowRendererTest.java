@@ -69,8 +69,6 @@ public class OnColumnsRowRendererTest {
 
     private OnColumnsRowRenderer<DetailItem, Data> rowRenderer;
 
-    private DateTime start;
-
     private List<Data> data;
 
     private void givenOnDetailItemsRowRenderer(ICellForDetailItemRenderer<DetailItem, Data> cellRenderer) {
@@ -82,7 +80,7 @@ public class OnColumnsRowRendererTest {
 
     private void givenDetailItems() {
         detailItems = new ArrayList<>();
-        start = new LocalDate(2010, 1, 1).toDateTimeAtStartOfDay().toDateTime();
+        DateTime start = new LocalDate(2010, 1, 1).toDateTimeAtStartOfDay().toDateTime();
         DateTime current = start;
         Period period = Period.months(2);
 
@@ -107,32 +105,32 @@ public class OnColumnsRowRendererTest {
 
     @Test(expected = NullPointerException.class)
     public void itNeedsNotNullCellRenderer() {
-        OnColumnsRowRenderer.create(Data.class, null, new ArrayList<DetailItem>());
+        OnColumnsRowRenderer.create(Data.class, null, new ArrayList<>());
     }
 
     @Test(expected = NullPointerException.class)
     public void itNeedsTheTypeAsClass() {
-        OnColumnsRowRenderer.create(null, createStub(), new ArrayList<DetailItem>());
+        OnColumnsRowRenderer.create(null, createStub(), new ArrayList<>());
     }
 
     @Test
     public void itCanHaveEmptyDetailItems() {
-        OnColumnsRowRenderer.create(Data.class, createStub(), new ArrayList<DetailItem>());
+        OnColumnsRowRenderer.create(Data.class, createStub(), new ArrayList<>());
     }
 
     @Test
     public void itCanInferTheGenericType() {
-        OnColumnsRowRenderer.create(new CellRenderer(), new ArrayList<DetailItem>());
+        OnColumnsRowRenderer.create(new CellRenderer(), new ArrayList<>());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void ifComesFromRawTypeIsNotInferrable() {
-        OnColumnsRowRenderer.create(createStub(), new ArrayList<DetailItem>());
+        OnColumnsRowRenderer.create(createStub(), new ArrayList<>());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void ifItNotShowsTheActualTypeIsNotInferrable() {
-        OnColumnsRowRenderer.create(new CellRendererNotInferable<Data>(), new ArrayList<DetailItem>());
+        OnColumnsRowRenderer.create(new CellRendererNotInferable<>(), new ArrayList<>());
     }
 
     @SuppressWarnings("serial")

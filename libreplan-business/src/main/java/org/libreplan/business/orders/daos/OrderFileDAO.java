@@ -30,7 +30,7 @@ import java.util.List;
 
 /**
  * Created by
- * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  * on 12.24.2015.
  */
 
@@ -46,12 +46,12 @@ public class OrderFileDAO extends GenericDAOHibernate<OrderFile, Long> implement
     public void delete(OrderFile file) {
         try {
             remove(file.getId());
-        } catch (InstanceNotFoundException e) {}
+        } catch (InstanceNotFoundException ignored) {
+        }
     }
 
     @Override
     public List<OrderFile> findByParent(OrderElement parent) {
-        return getSession().createCriteria(OrderFile.class)
-                .add(Restrictions.eq("parent", parent)).list();
+        return getSession().createCriteria(OrderFile.class).add(Restrictions.eq("parent", parent)).list();
     }
 }

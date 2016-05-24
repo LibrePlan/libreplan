@@ -25,8 +25,7 @@ import static org.libreplan.web.I18nHelper._;
 
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.web.common.Util;
 import org.libreplan.web.planner.order.PlanningStateCreator.PlanningState;
@@ -48,9 +47,6 @@ import org.zkoss.zul.Window;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class AdvanceConsolidationController extends GenericForwardComposer {
 
-    private static final Log LOG = LogFactory
-            .getLog(AdvanceConsolidationController.class);
-
     private IAdvanceConsolidationModel advanceConsolidationModel;
 
     private Grid advancesGrid;
@@ -65,9 +61,7 @@ public class AdvanceConsolidationController extends GenericForwardComposer {
         window = (Window) comp;
     }
 
-    public void showWindow(IContextWithPlannerTask<TaskElement> context,
-            org.libreplan.business.planner.entities.Task task,
-            PlanningState planningState) {
+    public void showWindow(IContextWithPlannerTask<TaskElement> context, Task task, PlanningState planningState) {
 
         this.context = context;
         advanceConsolidationModel.initAdvancesFor(task, context, planningState);
@@ -75,9 +69,7 @@ public class AdvanceConsolidationController extends GenericForwardComposer {
         try {
             Util.reloadBindings(window);
             window.doModal();
-        } catch (SuspendNotAllowedException e) {
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
+        } catch (SuspendNotAllowedException | InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
@@ -89,9 +81,9 @@ public class AdvanceConsolidationController extends GenericForwardComposer {
 
     public void accept() {
         advanceConsolidationModel.accept();
-        if (context.getRelativeTo() instanceof TaskComponent) {
+        if ( context.getRelativeTo() instanceof TaskComponent ) {
             ((TaskComponent) context.getRelativeTo()).updateProperties();
-            ((TaskComponent) context.getRelativeTo()).invalidate();
+            context.getRelativeTo().invalidate();
         }
         close();
     }
@@ -101,9 +93,8 @@ public class AdvanceConsolidationController extends GenericForwardComposer {
     }
 
     public String getInfoAdvance() {
-        String infoAdvanceAssignment = advanceConsolidationModel
-                .getInfoAdvanceAssignment();
-        if (infoAdvanceAssignment.isEmpty()) {
+        String infoAdvanceAssignment = advanceConsolidationModel.getInfoAdvanceAssignment();
+        if ( infoAdvanceAssignment.isEmpty() ) {
             return _("Progress measurements");
         }
 
@@ -133,9 +124,10 @@ public class AdvanceConsolidationController extends GenericForwardComposer {
     }
 
     public String getReadOnlySclass() {
-        if (advanceConsolidationModel.hasLimitingResourceAllocation()) {
+        if ( advanceConsolidationModel.hasLimitingResourceAllocation() ) {
             return "readonly";
         }
+
         return "";
     }
 

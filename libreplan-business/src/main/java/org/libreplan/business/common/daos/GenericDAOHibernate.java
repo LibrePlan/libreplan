@@ -41,17 +41,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * An implementation of <code>IGenericDao</code> based on Hibernate's native
- * API. Concrete DAOs must extend directly from this class. This constraint is
- * imposed by the constructor of this class that must infer the type of the
- * entity from the declaration of the concrete DAO.
+ * An implementation of <code>IGenericDao</code> based on Hibernate's native API.
+ * Concrete DAOs must extend directly from this class.
+ * This constraint is imposed by the constructor of this class that must infer the
+ * type of the entity from the declaration of the concrete DAO.
  * <p/>
- * This class autowires a <code>SessionFactory</code> bean and allows to
- * implement DAOs with Hibernate's native API. Subclasses access Hibernate's
- * <code>Session</code> by calling on <code>getSession()</code> method.
+ * This class autowires a <code>SessionFactory</code> bean and allows to implement DAOs with Hibernate's native API.
+ * Subclasses access Hibernate's <code>Session</code> by calling on <code>getSession()</code> method.
  * Operations must be implemented by catching <code>HibernateException</code>
- * and rethrowing it by using <code>convertHibernateAccessException()</code>
- * method. See source code of this class for an example.
+ * and rethrowing it by using <code>convertHibernateAccessException()</code> method.
+ * See source code of this class for an example.
+ *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  * @param <E>
  *            Entity class
@@ -87,8 +87,9 @@ public class GenericDAOHibernate<E extends BaseEntity, PK extends Serializable> 
     /**
      * It's necessary to save and validate later.
      *
-     * Validate may retrieve the entity from DB and put it into the Session, which can eventually lead to
-     * a NonUniqueObject exception. Save works here to reattach the object as well as saving.
+     * Validate may retrieve the entity from DB and put it into the Session,
+     * which can eventually lead to a NonUniqueObject exception.
+     * Save works here to reattach the object as well as saving.
      */
     public void save(E entity) throws ValidationException {
         getSession().saveOrUpdate(entity);
@@ -108,9 +109,7 @@ public class GenericDAOHibernate<E extends BaseEntity, PK extends Serializable> 
     }
 
     public E merge(E entity) {
-
         return entityClass.cast(getSession().merge(entity));
-
     }
 
     public void checkVersion(E entity) {
@@ -155,7 +154,7 @@ public class GenericDAOHibernate<E extends BaseEntity, PK extends Serializable> 
     }
 
     public void lock(E entity) {
-
+        // TODO resolve deprecated
         getSession().lock(entity, LockMode.UPGRADE);
 
     }
@@ -168,7 +167,7 @@ public class GenericDAOHibernate<E extends BaseEntity, PK extends Serializable> 
     @Transactional(readOnly = true)
     public E find(PK id) throws InstanceNotFoundException {
 
-        E entity = (E) getSession().get(entityClass, id);
+        E entity = getSession().get(entityClass, id);
 
         if ( entity == null ) {
             throw new InstanceNotFoundException(id, entityClass.getName());
@@ -189,8 +188,9 @@ public class GenericDAOHibernate<E extends BaseEntity, PK extends Serializable> 
 
     public boolean exists(final PK id) {
 
-        return getSession().createCriteria(entityClass).add(
-                Restrictions.idEq(id)).setProjection(Projections.id())
+        return getSession().createCriteria(entityClass)
+                .add(Restrictions.idEq(id))
+                .setProjection(Projections.id())
                 .uniqueResult() != null;
 
     }

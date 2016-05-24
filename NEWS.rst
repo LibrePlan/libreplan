@@ -58,6 +58,10 @@ Changes
 * Update Spring Security Web
 * Update Spring Security Config
 
+* Update Hibernate Core
+* Update Hibernate Ehcache
+* Update Hibernate Validator
+
 * Update MPXJ
 * Update Bonecp
 * Update Guava
@@ -75,7 +79,9 @@ Changes
 * Update JAX-RS API
 * Update BeanShell
 * Update Quartz Framework
-* Update Hibernate
+* Update Usertype.Core
+
+* Add Javax EL
 
 * Update LibrePlan version to 1.6.0
 

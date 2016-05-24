@@ -44,7 +44,8 @@ public abstract class AdvanceAssignment extends BaseEntity {
 
     public void setReportGlobalAdvance(boolean reportGlobalAdvance) {
         this.reportGlobalAdvance = reportGlobalAdvance;
-        if (this.orderElement != null) {
+
+        if ( this.orderElement != null ) {
             this.orderElement.markAsDirtyLastAdvanceMeasurementForSpreading();
         }
     }
@@ -63,12 +64,12 @@ public abstract class AdvanceAssignment extends BaseEntity {
 
     public void setAdvanceType(AdvanceType advanceType) {
         AdvanceType oldType = this.advanceType;
-        if (advanceType != null) {
+        if ( advanceType != null ) {
             this.advanceType = advanceType;
         }
 
-        if (oldType != null && advanceType != null) {
-            changeAdvanceTypeInParents(oldType, this.advanceType, this);
+        if ( oldType != null && advanceType != null ) {
+            changeAdvanceTypeInParents(oldType, this);
         }
     }
 
@@ -77,17 +78,16 @@ public abstract class AdvanceAssignment extends BaseEntity {
         return this.advanceType;
     }
 
-    public void changeAdvanceTypeInParents(final AdvanceType oldType,
-            AdvanceType newType, AdvanceAssignment advance) {
-        if (getOrderElement() != null) {
+    public void changeAdvanceTypeInParents(final AdvanceType oldType, AdvanceAssignment advance) {
+        if ( getOrderElement() != null ) {
             OrderLineGroup parent = getOrderElement().getParent();
-            if (parent != null) {
-                IndirectAdvanceAssignment oldIndirect = parent
-                        .getIndirectAdvanceAssignment(oldType);
-                if (oldIndirect != null) {
+
+            if ( parent != null ) {
+                IndirectAdvanceAssignment oldIndirect = parent.getIndirectAdvanceAssignment(oldType);
+
+                if ( oldIndirect != null ) {
                     parent.removeIndirectAdvanceAssignment(oldType);
-                    IndirectAdvanceAssignment newIndirect = advance
-                            .createIndirectAdvanceFor(parent);
+                    IndirectAdvanceAssignment newIndirect = advance.createIndirectAdvanceFor(parent);
                     parent.addIndirectAdvanceAssignment(newIndirect);
                 }
             }
@@ -99,6 +99,7 @@ public abstract class AdvanceAssignment extends BaseEntity {
         result.setAdvanceType(getAdvanceType());
         result.setOrderElement(parent);
         result.setReportGlobalAdvance(noOtherGlobalReportingAdvance(parent));
+
         return create(result);
     }
 

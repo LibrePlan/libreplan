@@ -33,7 +33,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.libreplan.business.common.IAdHocTransactionService;
-import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.entities.IConfigurationBootstrap;
 import org.libreplan.business.scenarios.bootstrap.IScenariosBootstrap;
 import org.libreplan.business.users.bootstrap.IProfileBootstrap;
@@ -59,8 +58,12 @@ import org.springframework.transaction.annotation.Transactional;
  */
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
-        WEBAPP_SPRING_CONFIG_FILE, WEBAPP_SPRING_CONFIG_TEST_FILE,
+@ContextConfiguration(locations = {
+        BUSINESS_SPRING_CONFIG_FILE,
+
+        WEBAPP_SPRING_CONFIG_FILE,
+        WEBAPP_SPRING_CONFIG_TEST_FILE,
+
         WEBAPP_SPRING_SECURITY_CONFIG_FILE,
         WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE })
 public class LDAPUserDetailsServiceTest {
@@ -85,21 +88,19 @@ public class LDAPUserDetailsServiceTest {
 
     @Before
     public void loadRequiredData() {
-        /*
-         * the required data is loaded in another transaction because if it's
-         * loaded on the same transaction the added scenario could not be
-         * retrieved from PredefinedScenario. This happened when executing all
-         * tests. If you execute this test in isolation this problem doesn't
-         * happen
+        /**
+         * The required data is loaded in another transaction because
+         * if it's loaded on the same transaction the added scenario could not be retrieved from PredefinedScenario.
+         *
+         * This happened when executing all tests.
+         * If you execute this test in isolation this problem doesn't happen.
          */
-        transactionService.runOnAnotherTransaction(new IOnTransaction<Void>() {
-            @Override
-            public Void execute() {
-                configurationBootstrap.loadRequiredData();
-                scenariosBootstrap.loadRequiredData();
-                profileBootstrap.loadRequiredData();
-                return null;
-            }
+        transactionService.runOnAnotherTransaction(() -> {
+            configurationBootstrap.loadRequiredData();
+            scenariosBootstrap.loadRequiredData();
+            profileBootstrap.loadRequiredData();
+
+            return null;
         });
     }
 
@@ -110,8 +111,7 @@ public class LDAPUserDetailsServiceTest {
 
         for (PredefinedUsers u : PredefinedUsers.values()) {
 
-            UserDetails userDetails = userDetailsService.loadUserByUsername(u
-                    .getLoginName());
+            UserDetails userDetails = userDetailsService.loadUserByUsername(u.getLoginName());
 
             assertEquals(u.getLoginName(), userDetails.getUsername());
 
@@ -122,7 +122,7 @@ public class LDAPUserDetailsServiceTest {
     }
 
     private Object getUserRoles(PredefinedUsers u) {
-        Set<UserRole> userRoles = new HashSet<UserRole>();
+        Set<UserRole> userRoles = new HashSet<>();
 
         userRoles.addAll(u.getInitialRoles());
 
@@ -135,7 +135,7 @@ public class LDAPUserDetailsServiceTest {
 
     private Set<UserRole> getUserRoles(UserDetails userDetails) {
 
-        Set<UserRole> userRoles = new HashSet<UserRole>();
+        Set<UserRole> userRoles = new HashSet<>();
 
         for (GrantedAuthority a : userDetails.getAuthorities()) {
             userRoles.add(UserRole.valueOf(a.getAuthority()));

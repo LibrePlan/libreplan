@@ -22,7 +22,10 @@
  *
  * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
-@javax.xml.bind.annotation.XmlSchema(elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED, namespace = WSCommonGlobalNames.REST_NAMESPACE)
+@javax.xml.bind.annotation.XmlSchema(
+        elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED,
+        namespace = WSCommonGlobalNames.REST_NAMESPACE)
+
 package org.libreplan.ws.boundusers.api;
 
 import org.libreplan.ws.common.api.WSCommonGlobalNames;

@@ -20,7 +20,6 @@ package org.libreplan.web;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
@@ -99,11 +98,8 @@ public class LoggingConfiguration implements ServletContextListener {
             return null;
         }
 
-        File[] tomcatLogDirectories = file.listFiles(new FileFilter() {
-            @Override
-            public boolean accept(File pathname) {
-                return pathname.getName().contains("tomcat");
-            }
+        File[] tomcatLogDirectories = file.listFiles(pathname -> {
+            return pathname.getName().contains("tomcat");
         });
 
         if ( tomcatLogDirectories.length == 0 ) {

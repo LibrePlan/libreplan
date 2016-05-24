@@ -33,9 +33,8 @@ import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 
 /**
  * Base class for all entities to be sent/received to/from other applications.
- * These entities have a "code" attribute, which unlike "id" is unique among
- * the applications to be integrated ("id" is only unique inside
- * "libreplan").
+ * These entities have a "code" attribute, which unlike "id" is unique among the applications to be integrated
+ * ("id" is only unique inside "libreplan").
  *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
@@ -63,9 +62,7 @@ public abstract class IntegrationEntity extends BaseEntity {
      * specifying a specific code (e.g. provided by the end-user or an external
      * application).
      */
-    protected static <T extends IntegrationEntity> T create(
-        T integrationEntity, String code) {
-
+    protected static <T extends IntegrationEntity> T create(T integrationEntity, String code) {
         BaseEntity.create(integrationEntity);
         integrationEntity.setCode(code);
 
@@ -78,8 +75,7 @@ public abstract class IntegrationEntity extends BaseEntity {
      * automatically generate a code. This is a Template method which delegates
      * code generation by calling on <code>generateCode()</code>.
      */
-    protected static <T extends IntegrationEntity> T create(
-        T integrationEntity) {
+    protected static <T extends IntegrationEntity> T create(T integrationEntity) {
 
         BaseEntity.create(integrationEntity);
         integrationEntity.setCode(generateCode());
@@ -110,21 +106,20 @@ public abstract class IntegrationEntity extends BaseEntity {
     @AssertTrue(message="code is already used")
     public boolean isUniqueCodeConstraint() {
 
-        /* Check if it makes sense to check the constraint .*/
-        if (!iCodeSpecified()) {
+        // Check if it makes sense to check the constraint
+        if ( !iCodeSpecified() ) {
             return true;
         }
 
         /* Check the constraint. */
-        IIntegrationEntityDAO<? extends IntegrationEntity>
-            integrationEntityDAO = findIntegrationEntityDAO();
+        IIntegrationEntityDAO<? extends IntegrationEntity> integrationEntityDAO = findIntegrationEntityDAO();
 
-        if (isNewObject()) {
+        if ( isNewObject() ) {
             return !integrationEntityDAO.existsByCodeAnotherTransaction(code);
         } else {
             try {
-                IntegrationEntity entity =
-                    integrationEntityDAO.findByCodeAnotherTransaction(code);
+                IntegrationEntity entity = integrationEntityDAO.findByCodeAnotherTransaction(code);
+
                 return entity.getId().equals(getId());
             } catch (InstanceNotFoundException e) {
                 return true;
@@ -142,14 +137,14 @@ public abstract class IntegrationEntity extends BaseEntity {
     protected String getFirstRepeatedCode(
         Set<? extends IntegrationEntity> entities) {
 
-        Set<String> codes = new HashSet<String>();
+        Set<String> codes = new HashSet<>();
 
         for (IntegrationEntity e : entities) {
 
             String code = e.getCode();
 
-            if (!StringUtils.isBlank(code)) {
-                if (codes.contains(code.toLowerCase())) {
+            if ( !StringUtils.isBlank(code) ) {
+                if ( codes.contains(code.toLowerCase()) ) {
                     return code;
                 } else {
                     codes.add(code.toLowerCase());
@@ -165,20 +160,17 @@ public abstract class IntegrationEntity extends BaseEntity {
     /**
      * It returns the DAO of this entity.
      */
-    protected abstract IIntegrationEntityDAO<? extends IntegrationEntity>
-        getIntegrationEntityDAO();
+    protected abstract IIntegrationEntityDAO<? extends IntegrationEntity> getIntegrationEntityDAO();
 
-    private IIntegrationEntityDAO<? extends IntegrationEntity>
-        findIntegrationEntityDAO() {
+    private IIntegrationEntityDAO<? extends IntegrationEntity> findIntegrationEntityDAO() {
 
-        IIntegrationEntityDAO<? extends IntegrationEntity>
-            integrationEntityDAO = getIntegrationEntityDAO();
+        IIntegrationEntityDAO<? extends IntegrationEntity> integrationEntityDAO = getIntegrationEntityDAO();
 
-        if (!integrationEntityDAO.getEntityClass().isAssignableFrom(
-            this.getClass())) {
-            throw new RuntimeException(this.getClass().getName() + "::" +
-                "getIntegrationEntityDAO returns an incompatible " +
-                "DAO: " + integrationEntityDAO.getClass().getName());
+        if ( !integrationEntityDAO.getEntityClass().isAssignableFrom(this.getClass())) {
+            throw new RuntimeException(
+                    this.getClass().getName() +
+                    ":: getIntegrationEntityDAO returns an incompatible DAO: " +
+                    integrationEntityDAO.getClass().getName());
         } else {
             return integrationEntityDAO;
         }

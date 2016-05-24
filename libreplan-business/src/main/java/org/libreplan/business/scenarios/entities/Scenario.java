@@ -59,7 +59,7 @@ public class Scenario extends BaseEntity implements IHumanIdentifiable {
      * For each order tracked by this Scenario exists an OrderVersion that will
      * have specific data for that order
      */
-    private Map<Order, OrderVersion> orders = new HashMap<Order, OrderVersion>();
+    private Map<Order, OrderVersion> orders = new HashMap<>();
 
     private Scenario predecessor = null;
 
@@ -90,7 +90,7 @@ public class Scenario extends BaseEntity implements IHumanIdentifiable {
         Iterator<OrderVersion> iterator = orders.values().iterator();
         while (iterator.hasNext()) {
             OrderVersion each = iterator.next();
-            if (Objects.equals(orderVersion, each)) {
+            if ( Objects.equals(orderVersion, each) ) {
                 iterator.remove();
             }
         }
@@ -98,11 +98,12 @@ public class Scenario extends BaseEntity implements IHumanIdentifiable {
 
     public OrderVersion addOrder(Order order) {
         addOrder(order, OrderVersion.createInitialVersion(this));
+
         return orders.get(order);
     }
 
     public void addOrder(Order order, OrderVersion orderVersion) {
-        if (!orders.keySet().contains(order)) {
+        if ( !orders.keySet().contains(order) ) {
             orders.put(order, orderVersion);
         }
     }
@@ -133,29 +134,31 @@ public class Scenario extends BaseEntity implements IHumanIdentifiable {
     }
 
     public List<Scenario> getPredecessors() {
-        List<Scenario> result = new ArrayList<Scenario>();
+        List<Scenario> result = new ArrayList<>();
         Scenario current = getPredecessor();
+
         while (current != null) {
             result.add(current);
             current = current.getPredecessor();
         }
+
         return result;
     }
 
     @AssertTrue(message = "name is already used")
     public boolean isUniqueNameConstraint() {
-        if (StringUtils.isBlank(name)) {
+        if ( StringUtils.isBlank(name) ) {
             return true;
         }
 
         IScenarioDAO scenarioDAO = Registry.getScenarioDAO();
 
-        if (isNewObject()) {
-            return !scenarioDAO.existsByNameAnotherTransaction(
-                    name);
+        if ( isNewObject() ) {
+            return !scenarioDAO.existsByNameAnotherTransaction(name);
         } else {
             try {
                 Scenario scenario = scenarioDAO.findByName(name);
+
                 return scenario.getId().equals(getId());
             } catch (InstanceNotFoundException e) {
                 return true;
@@ -176,20 +179,21 @@ public class Scenario extends BaseEntity implements IHumanIdentifiable {
         for (Order order : orders.keySet()) {
             result.addOrder(order, orders.get(order));
         }
+
         return result;
     }
 
     public boolean isPredefined() {
-        if (name == null) {
+        if ( name == null ) {
             return false;
         }
 
-        for (PredefinedScenarios predefinedScenario : PredefinedScenarios
-                .values()) {
-            if (predefinedScenario.getName().equals(name)) {
+        for (PredefinedScenarios predefinedScenario : PredefinedScenarios.values()) {
+            if ( predefinedScenario.getName().equals(name) ) {
                 return true;
             }
         }
+
         return false;
     }
 
@@ -212,12 +216,13 @@ public class Scenario extends BaseEntity implements IHumanIdentifiable {
     public boolean usesVersion(OrderVersion previousOrderVersion, Order order) {
         Validate.notNull(order);
         OrderVersion orderVersionForThisScenario = getOrderVersion(order);
-        if (previousOrderVersion == null) {
+
+        if ( previousOrderVersion == null ) {
             return (orderVersionForThisScenario == null);
         }
-        return orderVersionForThisScenario != null
-                && orderVersionForThisScenario.getId().equals(
-                        previousOrderVersion.getId());
+
+        return orderVersionForThisScenario != null &&
+                orderVersionForThisScenario.getId().equals(previousOrderVersion.getId());
     }
 
     public void removeOrderVersionForOrder(Order order) {
@@ -228,51 +233,56 @@ public class Scenario extends BaseEntity implements IHumanIdentifiable {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime
-                * result
-                + ((getId() == null || isNewObject()) ? super.hashCode()
-                        : getId().hashCode());
+        result = prime * result +
+                ((getId() == null || isNewObject()) ? super.hashCode() : getId().hashCode());
+
         return result;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
+        if ( this == obj ) {
             return true;
         }
-        if (obj == null || isNewObject()) {
+
+        if ( obj == null || isNewObject() ) {
             return false;
         }
-        if (!(obj instanceof Scenario)) {
+
+        if ( !(obj instanceof Scenario) ) {
             return false;
         }
+
         Scenario other = (Scenario) obj;
-        if (getId() == null) {
-            if (other.getId() != null) {
+        if ( getId() == null ) {
+
+            if ( other.getId() != null ) {
                 return false;
             }
-        } else if (!getId().equals(other.getId())) {
+
+        } else if ( !getId().equals(other.getId()) ) {
             return false;
         }
+
         return true;
     }
 
     public List<Entry<Order, OrderVersion>> getOrderVersionsNeedingReassignation() {
-        List<Entry<Order, OrderVersion>> result = new ArrayList<Entry<Order, OrderVersion>>();
+        List<Entry<Order, OrderVersion>> result = new ArrayList<>();
         for (Entry<Order, OrderVersion> each : orders.entrySet()) {
             OrderVersion orderVersion = each.getValue();
-            if (needsReassignation(orderVersion)) {
+            if ( needsReassignation(orderVersion) ) {
                 result.add(each);
             }
         }
+
         return result;
     }
 
     private boolean needsReassignation(OrderVersion orderVersion) {
         boolean isOwnerScenario = this.equals(orderVersion.getOwnerScenario());
-        return !isOwnerScenario
-                && orderVersion
-                        .hasBeenModifiedAfter(lastNotOwnedReassignationsTimeStamp);
+
+        return !isOwnerScenario && orderVersion.hasBeenModifiedAfter(lastNotOwnedReassignationsTimeStamp);
     }
 
     @Override

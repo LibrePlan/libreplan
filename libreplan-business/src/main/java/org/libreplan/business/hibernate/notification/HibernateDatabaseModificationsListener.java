@@ -58,45 +58,45 @@ import org.springframework.stereotype.Component;
 
 /**
  * @author Óscar González Fernández
- *
  */
 @Component
 public class HibernateDatabaseModificationsListener implements
-        PostInsertEventListener, PostUpdateEventListener,
-        PostDeleteEventListener, ISnapshotRefresherService {
+        PostInsertEventListener,
+        PostUpdateEventListener,
+        PostDeleteEventListener,
+        ISnapshotRefresherService {
 
-    private static final Log LOG = LogFactory
-            .getLog(HibernateDatabaseModificationsListener.class);
+    private static final Log LOG = LogFactory.getLog(HibernateDatabaseModificationsListener.class);
 
     private final ExecutorService executor = Executors.newFixedThreadPool(3);
 
     private final ConcurrentMap<Class<?>, BlockingQueue<NotBlockingAutoUpdatedSnapshot<?>>> interested;
 
-    private ConcurrentMap<Transaction, Dispatcher> pending = new ConcurrentHashMap<Transaction, Dispatcher>();
+    private ConcurrentMap<Transaction, Dispatcher> pending = new ConcurrentHashMap<>();
 
-    private Set<NotBlockingAutoUpdatedSnapshot<?>> snapshotsInterestedOn(
-            Class<?> entityClass) {
-        List<Class<?>> list = new ArrayList<Class<?>>(1);
+    private Set<NotBlockingAutoUpdatedSnapshot<?>> snapshotsInterestedOn(Class<?> entityClass) {
+        List<Class<?>> list = new ArrayList<>(1);
         list.add(entityClass);
+
         return snapshotsInterestedOn(list);
     }
 
-    private Set<NotBlockingAutoUpdatedSnapshot<?>> snapshotsInterestedOn(
-            Collection<? extends Class<?>> classesList) {
-        Set<NotBlockingAutoUpdatedSnapshot<?>> result = new HashSet<NotBlockingAutoUpdatedSnapshot<?>>();
-        for (Class<?> each : new HashSet<Class<?>>(classesList)) {
-            BlockingQueue<NotBlockingAutoUpdatedSnapshot<?>> queue = interested
-                    .get(each);
-            if (queue != null) {
+    private Set<NotBlockingAutoUpdatedSnapshot<?>> snapshotsInterestedOn(Collection<? extends Class<?>> classesList) {
+        Set<NotBlockingAutoUpdatedSnapshot<?>> result = new HashSet<>();
+
+        for (Class<?> each : new HashSet<>(classesList)) {
+            BlockingQueue<NotBlockingAutoUpdatedSnapshot<?>> queue = interested.get(each);
+            if ( queue != null ) {
                 result.addAll(queue);
             }
         }
+
         return result;
     }
 
     private final class Dispatcher implements Synchronization {
 
-        private BlockingQueue<Class<?>> classes = new LinkedBlockingQueue<Class<?>>();
+        private BlockingQueue<Class<?>> classes = new LinkedBlockingQueue<>();
         private final Transaction transaction;
 
         public Dispatcher(Transaction transaction, Class<?> entityClass) {
@@ -116,21 +116,22 @@ public class HibernateDatabaseModificationsListener implements
         public void afterCompletion(int status) {
             LOG.debug("transaction completed with status: " + status);
             pending.remove(transaction);
-            if (isProbablySucessful(status)) {
-                List<Class<?>> list = new ArrayList<Class<?>>();
+
+            if ( isProbablySucessful(status) ) {
+                List<Class<?>> list = new ArrayList<>();
                 classes.drainTo(list);
                 LOG.debug(list.size() + " modification events recorded");
                 Set<NotBlockingAutoUpdatedSnapshot<?>> toDispatch = snapshotsInterestedOn(list);
-                LOG.debug("dispatching "
-                        + toDispatch
-                        + " snapshots to reload due to transaction successful completion");
+
+                LOG.debug(
+                        "dispatching " + toDispatch + " snapshots to reload due to transaction successful completion");
+
                 dispatch(toDispatch);
             }
         }
 
         private boolean isProbablySucessful(int status) {
-            return status != Status.STATUS_ROLLEDBACK
-                    && status != Status.STATUS_ROLLING_BACK;
+            return status != Status.STATUS_ROLLEDBACK && status != Status.STATUS_ROLLING_BACK;
         }
 
     }
@@ -141,7 +142,7 @@ public class HibernateDatabaseModificationsListener implements
     private volatile boolean hibernateListenersRegistered = false;
 
     public HibernateDatabaseModificationsListener() {
-        interested = new ConcurrentHashMap<Class<?>, BlockingQueue<NotBlockingAutoUpdatedSnapshot<?>>>();
+        interested = new ConcurrentHashMap<>();
     }
 
     @PostConstruct
@@ -163,20 +164,17 @@ public class HibernateDatabaseModificationsListener implements
 
     @Override
     public void onPostDelete(PostDeleteEvent event) {
-        modificationOn(inferTransaction(event),
-                inferEntityClass(getEntityObject(event)));
+        modificationOn(inferTransaction(event), inferEntityClass(getEntityObject(event)));
     }
 
     @Override
     public void onPostUpdate(PostUpdateEvent event) {
-        modificationOn(inferTransaction(event),
-                inferEntityClass(getEntityObject(event)));
+        modificationOn(inferTransaction(event), inferEntityClass(getEntityObject(event)));
     }
 
     @Override
     public void onPostInsert(PostInsertEvent event) {
-        modificationOn(inferTransaction(event),
-                inferEntityClass(getEntityObject(event)));
+        modificationOn(inferTransaction(event), inferEntityClass(getEntityObject(event)));
     }
 
 
@@ -197,24 +195,27 @@ public class HibernateDatabaseModificationsListener implements
     }
 
     private static Class<?> inferEntityClass(Object entity) {
-        if (entity instanceof HibernateProxy) {
+        if ( entity instanceof HibernateProxy ) {
             HibernateProxy proxy = (HibernateProxy) entity;
+
             return proxy.getHibernateLazyInitializer().getPersistentClass();
         }
+
         return entity.getClass();
     }
 
     void modificationOn(Transaction transaction, Class<?> entityClass) {
-        if (transaction == null) {
+        if ( transaction == null ) {
             dispatch(snapshotsInterestedOn(entityClass));
+
             return;
         }
         Dispatcher newDispatcher = new Dispatcher(transaction, entityClass);
-        Dispatcher previous = null;
+        Dispatcher previous;
         previous = pending.putIfAbsent(transaction, newDispatcher);
 
         boolean dispatcherAlreadyExisted = previous != null;
-        if (dispatcherAlreadyExisted) {
+        if ( dispatcherAlreadyExisted ) {
             previous.add(entityClass);
         } else {
             transaction.registerSynchronization(newDispatcher);
@@ -222,9 +223,7 @@ public class HibernateDatabaseModificationsListener implements
     }
 
     private void dispatch(Set<NotBlockingAutoUpdatedSnapshot<?>> toBeDispatched) {
-        for (NotBlockingAutoUpdatedSnapshot<?> each : toBeDispatched) {
-            dispatch(each);
-        }
+        toBeDispatched.forEach(this::dispatch);
     }
 
     private void dispatch(NotBlockingAutoUpdatedSnapshot<?> each) {
@@ -232,28 +231,28 @@ public class HibernateDatabaseModificationsListener implements
     }
 
     @Override
-    public <T> IAutoUpdatedSnapshot<T> takeSnapshot(String name,
-            Callable<T> callable, ReloadOn reloadOn) {
-        if (!hibernateListenersRegistered) {
+    public <T> IAutoUpdatedSnapshot<T> takeSnapshot(String name, Callable<T> callable, ReloadOn reloadOn) {
+        if ( !hibernateListenersRegistered ) {
             throw new IllegalStateException(
                     "The hibernate listeners has not been registered. There is some configuration problem.");
         }
 
         final NotBlockingAutoUpdatedSnapshot<T> result;
-        result = new NotBlockingAutoUpdatedSnapshot<T>(name, callable);
+        result = new NotBlockingAutoUpdatedSnapshot<>(name, callable);
+
         for (Class<?> each : reloadOn.getClassesOnWhichToReload()) {
             interested.putIfAbsent(each, emptyQueue());
-            BlockingQueue<NotBlockingAutoUpdatedSnapshot<?>> queue = interested
-                    .get(each);
+            BlockingQueue<NotBlockingAutoUpdatedSnapshot<?>> queue = interested.get(each);
             boolean success = queue.add(result);
             assert success : "the type of queue used must not have restricted capacity";
         }
         result.ensureFirstLoad(executor);
+
         return result;
     }
 
     private BlockingQueue<NotBlockingAutoUpdatedSnapshot<?>> emptyQueue() {
-        return new LinkedBlockingQueue<NotBlockingAutoUpdatedSnapshot<?>>();
+        return new LinkedBlockingQueue<>();
     }
 
 }

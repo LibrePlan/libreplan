@@ -50,16 +50,17 @@ public class OrderLine extends OrderElement {
     public static OrderLine create() {
         OrderLine result = new OrderLine();
         result.setNewObject(true);
+
         return result;
     }
 
     public static OrderLine createUnvalidated(String code) {
-        OrderLine orderLine = create(new OrderLine(), code);
-        return orderLine;
+        return create(new OrderLine(), code);
     }
 
     public static OrderLine createUnvalidatedWithUnfixedPercentage(String code, int hours) {
         OrderLine orderLine = createOrderLineWithUnfixedPercentage(hours);
+
         return create(orderLine, code);
     }
 
@@ -70,6 +71,7 @@ public class OrderLine extends OrderElement {
         hoursGroup.setFixedPercentage(false);
         hoursGroup.setPercentage(new BigDecimal(1));
         hoursGroup.setWorkingHours(hours);
+
         return result;
     }
 
@@ -79,10 +81,9 @@ public class OrderLine extends OrderElement {
      * Constructor for hibernate. Do not use!
      */
     public OrderLine() {
-
     }
 
-    private Set<HoursGroup> hoursGroups = new HashSet<HoursGroup>();
+    private Set<HoursGroup> hoursGroups = new HashSet<>();
 
     private Integer lastHoursGroupSequenceCode = 0;
 
@@ -95,7 +96,7 @@ public class OrderLine extends OrderElement {
 
     @Override
     public List<OrderElement> getChildren() {
-        return new ArrayList<OrderElement>();
+        return new ArrayList<>();
     }
 
     @Override
@@ -105,38 +106,44 @@ public class OrderLine extends OrderElement {
 
     @Override
     public boolean isEmptyLeaf() {
-        if (getWorkHours() != 0) {
+        if ( getWorkHours() != 0 ) {
             return false;
         }
-        if (!getDirectCriterionRequirement().isEmpty()) {
+
+        if ( !getDirectCriterionRequirement().isEmpty() ) {
             return false;
         }
-        if (!getDirectAdvanceAssignments().isEmpty()) {
+
+        if ( !getDirectAdvanceAssignments().isEmpty() ) {
             for (DirectAdvanceAssignment each : getDirectAdvanceAssignments()) {
-                if (!each.getAdvanceMeasurements().isEmpty()) {
+                if ( !each.getAdvanceMeasurements().isEmpty() ) {
                     return false;
                 }
             }
         }
-        if (!getQualityForms().isEmpty()) {
+
+        if ( !getQualityForms().isEmpty() ) {
             return false;
         }
-        if (!getLabels().isEmpty()) {
+
+        if ( !getLabels().isEmpty() ) {
             return false;
         }
-        if (!getMaterialAssignments().isEmpty()) {
+
+        if ( !getMaterialAssignments().isEmpty() ) {
             return false;
         }
-        if (getSumChargedEffort() != null
-                && !getSumChargedEffort().getDirectChargedEffort().isZero()) {
+
+        if ( getSumChargedEffort() != null && !getSumChargedEffort().getDirectChargedEffort().isZero() ) {
             return false;
         }
-        if (getSumExpenses() != null && !getSumExpenses().isTotalDirectExpensesZero()) {
+
+        if ( getSumExpenses() != null && !getSumExpenses().isTotalDirectExpensesZero() ) {
             return false;
         }
-        if (!getTaskElements().isEmpty()) {
-            if (!getTaskElements().iterator().next()
-                    .getDayAssignments(FilterType.KEEP_ALL).isEmpty()) {
+
+        if ( !getTaskElements().isEmpty() ) {
+            if ( !getTaskElements().iterator().next().getDayAssignments(FilterType.KEEP_ALL).isEmpty() ) {
                 return false;
             }
         }
@@ -157,13 +164,14 @@ public class OrderLine extends OrderElement {
         setCode("");
         setName("");
         convertedToContainer = true;
+
         return result;
     }
 
     @Valid
     @Override
     public List<HoursGroup> getHoursGroups() {
-        return new ArrayList<HoursGroup>(hoursGroups);
+        return new ArrayList<>(hoursGroups);
     }
 
     public Set<HoursGroup> myHoursGroups() {
@@ -214,8 +222,8 @@ public class OrderLine extends OrderElement {
     @Override
     public BigDecimal getAdvancePercentage(LocalDate date) {
         for (DirectAdvanceAssignment directAdvanceAssignment : directAdvanceAssignments) {
-            if (directAdvanceAssignment.getReportGlobalAdvance()) {
-                if (date == null) {
+            if ( directAdvanceAssignment.getReportGlobalAdvance() ) {
+                if ( date == null ) {
                     return directAdvanceAssignment.getAdvancePercentage();
                 }
                 return directAdvanceAssignment.getAdvancePercentage(date);
@@ -225,13 +233,12 @@ public class OrderLine extends OrderElement {
         return BigDecimal.ZERO;
     }
 
-    public Set<DirectAdvanceAssignment> getAllDirectAdvanceAssignments(
-            AdvanceType advanceType) {
-        Set<DirectAdvanceAssignment> result = new HashSet<DirectAdvanceAssignment>();
+    public Set<DirectAdvanceAssignment> getAllDirectAdvanceAssignments(AdvanceType advanceType) {
+        Set<DirectAdvanceAssignment> result = new HashSet<>();
         for (DirectAdvanceAssignment directAdvanceAssignment : directAdvanceAssignments) {
-            if (directAdvanceAssignment.getAdvanceType().getUnitName().equals(
-                    advanceType.getUnitName())) {
+            if ( directAdvanceAssignment.getAdvanceType().getUnitName().equals(advanceType.getUnitName()) ) {
                 result.add(directAdvanceAssignment);
+
                 return result;
             }
         }
@@ -239,8 +246,7 @@ public class OrderLine extends OrderElement {
     }
 
     @Override
-    public Set<IndirectAdvanceAssignment> getAllIndirectAdvanceAssignments(
-            AdvanceType advanceType) {
+    public Set<IndirectAdvanceAssignment> getAllIndirectAdvanceAssignments(AdvanceType advanceType) {
         return Collections.emptySet();
     }
 
@@ -251,27 +257,25 @@ public class OrderLine extends OrderElement {
 
     @Override
     protected Set<DirectAdvanceAssignment> getAllDirectAdvanceAssignmentsReportGlobal() {
-        Set<DirectAdvanceAssignment> result = new HashSet<DirectAdvanceAssignment>();
+        Set<DirectAdvanceAssignment> result = new HashSet<>();
         for (DirectAdvanceAssignment directAdvanceAssignment : directAdvanceAssignments) {
-            if (directAdvanceAssignment.getReportGlobalAdvance()) {
+            if ( directAdvanceAssignment.getReportGlobalAdvance() ) {
                 result.add(directAdvanceAssignment);
+
                 return result;
             }
         }
         return result;
     }
 
-    public boolean existSameCriterionRequirement(
-            CriterionRequirement newRequirement) {
-        return criterionRequirementHandler
-                .existSameCriterionRequirementIntoOrderLine(this,
-                        newRequirement);
+    public boolean existSameCriterionRequirement(CriterionRequirement newRequirement) {
+        return criterionRequirementHandler.existSameCriterionRequirementIntoOrderLine(this, newRequirement);
     }
 
     @Override
     public DirectAdvanceAssignment getReportGlobalAdvanceAssignment() {
         for (DirectAdvanceAssignment directAdvanceAssignment : getDirectAdvanceAssignments()) {
-            if (directAdvanceAssignment.getReportGlobalAdvance()) {
+            if ( directAdvanceAssignment.getReportGlobalAdvance() ) {
                 return directAdvanceAssignment;
             }
         }
@@ -281,7 +285,7 @@ public class OrderLine extends OrderElement {
     @Override
     public void removeReportGlobalAdvanceAssignment() {
         AdvanceAssignment advanceAssignment = getReportGlobalAdvanceAssignment();
-        if (advanceAssignment != null) {
+        if ( advanceAssignment != null ) {
             advanceAssignment.setReportGlobalAdvance(false);
         }
         markAsDirtyLastAdvanceMeasurementForSpreading();
@@ -289,7 +293,7 @@ public class OrderLine extends OrderElement {
 
     public boolean containsHoursGroup(String code) {
         for (HoursGroup hoursGroup : getHoursGroups()) {
-            if (hoursGroup.getCode().equals(code)) {
+            if ( hoursGroup.getCode().equals(code) ) {
                 return true;
             }
         }
@@ -297,12 +301,12 @@ public class OrderLine extends OrderElement {
     }
 
     public HoursGroup getHoursGroup(String code) {
-        if (code == null) {
+        if ( code == null ) {
             return null;
         }
 
         for (HoursGroup hoursGroup : getHoursGroups()) {
-            if (hoursGroup.getCode().equals(code)) {
+            if ( hoursGroup.getCode().equals(code) ) {
                 return hoursGroup;
             }
         }
@@ -315,7 +319,7 @@ public class OrderLine extends OrderElement {
     }
 
     public void incrementLastHoursGroupSequenceCode() {
-        if (lastHoursGroupSequenceCode == null) {
+        if ( lastHoursGroupSequenceCode == null ) {
             lastHoursGroupSequenceCode = 0;
         }
         lastHoursGroupSequenceCode++;
@@ -328,11 +332,11 @@ public class OrderLine extends OrderElement {
 
     @AssertTrue(message = "Code already included in Hours Group codes")
     public boolean isHoursGroupsCodeNotRepeatedConstraint() {
-        Set<String> codes = new HashSet<String>();
+        Set<String> codes = new HashSet<>();
 
         for (HoursGroup hoursGroup : getHoursGroups()) {
             String code = hoursGroup.getCode();
-            if (codes.contains(code)) {
+            if ( codes.contains(code) ) {
                 return false;
             }
             codes.add(code);
@@ -348,6 +352,7 @@ public class OrderLine extends OrderElement {
     @Override
     public DirectAdvanceAssignment calculateFakeDirectAdvanceAssignment(
             IndirectAdvanceAssignment indirectAdvanceAssignment) {
+
         return null;
     }
 
@@ -371,10 +376,9 @@ public class OrderLine extends OrderElement {
         super.setCode(code);
 
         Order order = getOrder();
-        if ((order != null) && (!order.isCodeAutogenerated())) {
+        if ( (order != null) && (!order.isCodeAutogenerated()) ) {
             for (HoursGroup hoursGroup : getHoursGroups()) {
-                if ((hoursGroup.getCode() == null)
-                        || (hoursGroup.getCode().isEmpty())) {
+                if ( (hoursGroup.getCode() == null) || (hoursGroup.getCode().isEmpty()) ) {
                     hoursGroup.setCode(code);
                 }
             }
@@ -382,8 +386,7 @@ public class OrderLine extends OrderElement {
     }
 
     public void setBudget(BigDecimal budget) {
-        Validate.isTrue(budget.compareTo(BigDecimal.ZERO) >= 0,
-                "budget cannot be negative");
+        Validate.isTrue(budget.compareTo(BigDecimal.ZERO) >= 0, "budget cannot be negative");
         this.budget = budget.setScale(2, RoundingMode.HALF_UP);
     }
 

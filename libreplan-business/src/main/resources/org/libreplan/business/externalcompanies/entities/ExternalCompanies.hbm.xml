@@ -1,81 +1,94 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
 <hibernate-mapping package="org.libreplan.business.externalcompanies.entities" default-access="field">
 
-<!-- ExternalCompany -->
-<class name="ExternalCompany" table="external_company">
-    <id name="id" type="long" access="property">
-        <generator class="hilo">
-            <param name="max_lo">100</param>
-        </generator>
-    </id>
-    <version name="version" access="property" type="long" />
+    <!-- ExternalCompany -->
+    <class name="ExternalCompany" table="external_company">
+        <id name="id" type="long" access="property">
+            <generator class="increment">
+                <param name="max_lo">100</param>
+            </generator>
+        </id>
 
-    <property name="name" unique="true" />
+        <version name="version" access="property" type="long" />
 
-    <property name="nif" unique="true" />
+        <property name="name" unique="true" />
 
-    <property name="client" />
+        <property name="nif" unique="true" />
 
-    <property name="subcontractor" />
+        <property name="client" />
 
-    <property name="interactsWithApplications"
-        column="interacts_with_applications" />
+        <property name="subcontractor" />
 
-    <property name="appURI" column="app_uri" />
+        <property name="interactsWithApplications" column="interacts_with_applications" />
 
-    <property name="ourCompanyLogin" column="our_company_login" />
+        <property name="appURI" column="app_uri" />
 
-    <property name="ourCompanyPassword" column="our_company_password" />
+        <property name="ourCompanyLogin" column="our_company_login" />
 
-    <!-- Not indexed, navigation from User to this is not even implemented -->
-    <many-to-one name="companyUser" class="org.libreplan.business.users.entities.User"
-        column="company_user" />
-</class>
+        <property name="ourCompanyPassword" column="our_company_password" />
 
-<!-- CustomerCommunication -->
-<class name="CustomerCommunication" table="customer_communication">
-    <id name="id" type="long" access="property">
-        <generator class="hilo">
-            <param name="max_lo">100</param>
-        </generator>
-    </id>
-    <version name="version" access="property" type="long" />
+        <!-- Not indexed, navigation from User to this is not even implemented -->
+        <many-to-one name="companyUser" class="org.libreplan.business.users.entities.User" column="company_user" />
+    </class>
 
-    <property name="deadline" access="field"/>
-    <property name="communicationType" access="field" column="communication_type">
-        <type name="org.hibernate.type.EnumType">
-            <param name="enumClass">org.libreplan.business.externalcompanies.entities.CommunicationType</param>
-        </type>
-    </property>
-    <property name="communicationDate" access="field" column="communication_date" />
-    <property name="reviewed" access="field" column="reviewed" />
-    <many-to-one name="order" class="org.libreplan.business.orders.entities.Order" column="order_id" />
-</class>
+    <!-- CustomerCommunication -->
+    <class name="CustomerCommunication" table="customer_communication">
+        <id name="id" type="long" access="property">
+            <generator class="increment">
+                <param name="max_lo">100</param>
+            </generator>
+        </id>
 
-<!-- DeadlineCommunication -->
-<class name="DeadlineCommunication" table="deadline_communication">
-    <id name="id" type="long" access="property">
-        <generator class="hilo">
-            <param name="max_lo">100</param>
-        </generator>
-    </id>
-    <version name="version" access="property" type="long" />
+        <version name="version" access="property" type="long" />
 
-    <property name="saveDate" access="field" column="save_date"/>
-    <property name="deliverDate" access="field" column="deliver_date" />
-</class>
+        <property name="deadline" access="field"/>
 
-<!-- EndDateCommunication -->
-<class name="EndDateCommunication" table="end_date_communication">
-    <id name="id" type="long" access="property">
-        <generator class="hilo">
-            <param name="max_lo">100</param>
-        </generator>
-    </id>
-    <version name="version" access="property" type="long" />
-	<property name="endDate" access="field" column="end_date"/>
-    <property name="saveDate" access="field" column="save_date"/>
-    <property name="communicationDate" access="field" column="communication_date" />
-</class>
+        <property name="communicationType" access="field" column="communication_type">
+            <type name="org.hibernate.type.EnumType">
+                <param name="enumClass">org.libreplan.business.externalcompanies.entities.CommunicationType</param>
+            </type>
+        </property>
+
+        <property name="communicationDate" access="field" column="communication_date" />
+
+        <property name="reviewed" access="field" column="reviewed" />
+
+        <many-to-one name="order" class="org.libreplan.business.orders.entities.Order" column="order_id" />
+    </class>
+
+    <!-- DeadlineCommunication -->
+    <class name="DeadlineCommunication" table="deadline_communication">
+        <id name="id" type="long" access="property">
+            <generator class="increment">
+                <param name="max_lo">100</param>
+            </generator>
+        </id>
+
+        <version name="version" access="property" type="long" />
+
+        <property name="saveDate" access="field" column="save_date"/>
+
+        <property name="deliverDate" access="field" column="deliver_date" />
+    </class>
+
+    <!-- EndDateCommunication -->
+    <class name="EndDateCommunication" table="end_date_communication">
+        <id name="id" type="long" access="property">
+            <generator class="increment">
+                <param name="max_lo">100</param>
+            </generator>
+        </id>
+
+        <version name="version" access="property" type="long" />
+
+        <property name="endDate" access="field" column="end_date"/>
+
+        <property name="saveDate" access="field" column="save_date"/>
+
+        <property name="communicationDate" access="field" column="communication_date" />
+    </class>
+
 </hibernate-mapping>

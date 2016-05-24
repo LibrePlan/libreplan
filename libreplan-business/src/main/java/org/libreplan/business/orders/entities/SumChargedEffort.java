@@ -69,13 +69,11 @@ public class SumChargedEffort extends BaseEntity {
     }
 
     public void addDirectChargedEffort(EffortDuration directChargedEffort) {
-        this.directChargedEffort = this.directChargedEffort
-                .plus(directChargedEffort);
+        this.directChargedEffort = this.directChargedEffort.plus(directChargedEffort);
     }
 
     public void subtractDirectChargedEffort(EffortDuration directChargedEffort) {
-        this.directChargedEffort = this.directChargedEffort
-                .minus(directChargedEffort);
+        this.directChargedEffort = this.directChargedEffort.minus(directChargedEffort);
     }
 
     public EffortDuration getDirectChargedEffort() {
@@ -83,14 +81,11 @@ public class SumChargedEffort extends BaseEntity {
     }
 
     public void addIndirectChargedEffort(EffortDuration indirectChargedEffort) {
-        this.indirectChargedEffort = this.indirectChargedEffort
-                .plus(indirectChargedEffort);
+        this.indirectChargedEffort = this.indirectChargedEffort.plus(indirectChargedEffort);
     }
 
-    public void subtractIndirectChargedEffort(
-            EffortDuration indirectChargedEffort) {
-        this.indirectChargedEffort = this.indirectChargedEffort
-                .minus(indirectChargedEffort);
+    public void subtractIndirectChargedEffort(EffortDuration indirectChargedEffort) {
+        this.indirectChargedEffort = this.indirectChargedEffort.minus(indirectChargedEffort);
     }
 
     public EffortDuration getIndirectChargedEffort() {
@@ -128,8 +123,7 @@ public class SumChargedEffort extends BaseEntity {
         this.lastTimesheetDate = lastTimesheetDate;
     }
 
-    public void setTimesheetDates(Date firstTimesheetDate,
-            Date lastTimesheetDate) {
+    public void setTimesheetDates(Date firstTimesheetDate, Date lastTimesheetDate) {
         setFirstTimesheetDate(firstTimesheetDate);
         setLastTimesheetDate(lastTimesheetDate);
     }

@@ -1,27 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
 
     <bean id="dataSourceReal"
-        class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close"
-        p:driverClass="${jdbcDriver.className}"
-        p:jdbcUrl="${testDataSource.url}"
-        p:username="${testDataSource.user}"
-        p:password="${testDataSource.password}"
-        p:maxConnectionsPerPartition="10"
-        p:minConnectionsPerPartition="4"
-        p:partitionCount="3"/>
+          class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close"
+          p:driverClass="${jdbcDriver.className}"
+          p:jdbcUrl="${testDataSource.url}"
+          p:username="${testDataSource.user}"
+          p:password="${testDataSource.password}"
+          p:maxConnectionsPerPartition="10"
+          p:minConnectionsPerPartition="4"
+          p:partitionCount="3"/>
 
     <bean id="dataSource"
-            class="org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy"
-            p:targetDataSource-ref="dataSourceReal" />
+          class="org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy"
+          p:targetDataSource-ref="dataSourceReal" />
 
     <!-- Hibernate Session Factory. -->
     <bean id="sessionFactory"
-        class="org.springframework.orm.hibernate4.LocalSessionFactoryBean"
-        p:dataSource-ref="dataSource"
-        p:configLocation="classpath:/libreplan-business-hibernate-test.cfg.xml">
+          class="org.springframework.orm.hibernate5.LocalSessionFactoryBean"
+          p:dataSource-ref="dataSource"
+          p:configLocation="classpath:/libreplan-business-hibernate-test.cfg.xml">
 
         <!--
             FIXME: ideally this chunk of XML should be only in
@@ -72,9 +74,6 @@
                     org/libreplan/business/costcategories/entities/CostCategories.hbm.xml
                 </value>
                 <value>
-                    TestEntities.hbm.xml
-                </value>
-                <value>
                     org/libreplan/business/qualityforms/entities/QualityForms.hbm.xml
                 </value>
                 <value>
@@ -94,6 +93,9 @@
                 </value>
                 <value>
                     org/libreplan/business/expensesheets/entities/ExpenseSheets.hbm.xml
+                </value>
+                <value>
+                    TestEntities.hbm.xml
                 </value>
             </list>
         </property>
