@@ -33,7 +33,6 @@ import static org.libreplan.web.test.WebappGlobalNames.WEBAPP_SPRING_SECURITY_CO
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -44,7 +43,6 @@ import java.util.UUID;
 import javax.annotation.Resource;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-import org.hibernate.SessionFactory;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 import org.junit.Test;
@@ -95,8 +93,12 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
-        WEBAPP_SPRING_CONFIG_FILE, WEBAPP_SPRING_CONFIG_TEST_FILE,
+@ContextConfiguration(locations = {
+        BUSINESS_SPRING_CONFIG_FILE,
+
+        WEBAPP_SPRING_CONFIG_FILE,
+        WEBAPP_SPRING_CONFIG_TEST_FILE,
+
         WEBAPP_SPRING_SECURITY_CONFIG_FILE,
         WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE })
 @Transactional
@@ -107,9 +109,6 @@ public class WorkReportServiceTest {
 
     @Autowired
     private IWorkerDAO dao;
-
-    @Autowired
-    private SessionFactory sessionFactory;
 
     @Autowired
     private IOrderElementDAO orderElementDAO;
@@ -192,18 +191,17 @@ public class WorkReportServiceTest {
         configurationBootstrap.loadRequiredData();
     }
 
-    private static <T extends IntegrationEntity> T findOrCreate(
-            IIntegrationEntityDAO<? super T> dao, Class<T> klass,
-            String code, Object... constructorArguments) {
-        if (dao.existsByCode(code)) {
+    private static <T extends IntegrationEntity> T findOrCreate(IIntegrationEntityDAO<? super T> dao,
+                                                                Class<T> klass,
+                                                                String code, Object... constructorArguments) {
+        if ( dao.existsByCode(code) ) {
             return klass.cast(dao.findExistingEntityByCode(code));
         } else {
             try {
-                Method create = klass.getMethod("create",
-                        asClasses(constructorArguments));
-                T result = klass
-                        .cast(create.invoke(null, constructorArguments));
+                Method create = klass.getMethod("create", asClasses(constructorArguments));
+                T result = klass.cast(create.invoke(null, constructorArguments));
                 result.setCode(code);
+
                 return result;
             } catch (Exception e) {
                 throw new RuntimeException(e);
@@ -220,29 +218,25 @@ public class WorkReportServiceTest {
     }
 
     private void givenWorkerStored() {
-        Worker worker = findOrCreate(dao, Worker.class, resourceCode,
-                "Firstname", "Surname", resourceCode);
-        if (worker.isNewObject()) {
+        Worker worker = findOrCreate(dao, Worker.class, resourceCode, "Firstname", "Surname", resourceCode);
+        if ( worker.isNewObject() ) {
             dao.save(worker);
         }
     }
 
     private void givenOrderLineStored() {
-        OrderLine orderLine = findOrCreate(orderElementDAO, OrderLine.class,
-                orderElementCode);
-        if (orderLine.isNewObject()) {
+        OrderLine orderLine = findOrCreate(orderElementDAO, OrderLine.class, orderElementCode);
+        if ( orderLine.isNewObject() ) {
             orderLine.setName("order-line-name" + UUID.randomUUID());
             orderElementDAO.save(orderLine);
         }
     }
 
     private void createAPairOfLabelTypes() {
-        LabelType labelType_A = findOrCreate(labelTypeDAO, LabelType.class,
-                labelTypeA, labelTypeA, labelTypeA);
-        LabelType labelType_B = findOrCreate(labelTypeDAO, LabelType.class,
-                labelTypeB, labelTypeB, labelTypeB);
+        LabelType labelType_A = findOrCreate(labelTypeDAO, LabelType.class, labelTypeA, labelTypeA, labelTypeA);
+        LabelType labelType_B = findOrCreate(labelTypeDAO, LabelType.class, labelTypeB, labelTypeB, labelTypeB);
 
-        if (labelType_A.isNewObject()) {
+        if ( labelType_A.isNewObject() ) {
             Label label_A1 = Label.create(labelA1, labelA1);
             Label label_A2 = Label.create(labelA2, labelA2);
             Label label_B1 = Label.create(labelB1, labelB1);
@@ -257,13 +251,11 @@ public class WorkReportServiceTest {
     }
 
     private void givenTypeOfWorkHoursStored() {
-        TypeOfWorkHours typeOfWorkHours = findOrCreate(typeOfWorkHoursDAO,
-                TypeOfWorkHours.class, typeOfWorkHoursCode);
+        TypeOfWorkHours typeOfWorkHours = findOrCreate(typeOfWorkHoursDAO, TypeOfWorkHours.class, typeOfWorkHoursCode);
 
-        if (typeOfWorkHours.isNewObject()) {
+        if ( typeOfWorkHours.isNewObject() ) {
             typeOfWorkHours.setCode(typeOfWorkHoursCode);
-            typeOfWorkHours.setName("type-of-work-hours-name-"
-                    + UUID.randomUUID());
+            typeOfWorkHours.setName("type-of-work-hours-name-" + UUID.randomUUID());
             typeOfWorkHours.setDefaultPrice(BigDecimal.TEN);
 
             typeOfWorkHoursDAO.save(typeOfWorkHours);
@@ -271,60 +263,48 @@ public class WorkReportServiceTest {
     }
 
     private void givenWorkReportTypeStored() {
-        WorkReportType t = givenWorkReportTypeStored(false, false, false, null,
-                workReportTypeCode);
+        WorkReportType t = givenWorkReportTypeStored(false, false, false, null, workReportTypeCode);
         workReportTypeDAO.save(t);
     }
 
     private void givenWorkReportTypeStored2() {
-        WorkReportType t = givenWorkReportTypeStored(true, false, false, null,
-                workReportTypeCode2);
+        WorkReportType t = givenWorkReportTypeStored(true, false, false, null, workReportTypeCode2);
         workReportTypeDAO.save(t);
     }
 
     private void givenWorkReportTypeStored3() {
-        WorkReportType t = givenWorkReportTypeStored(false, false, false,
-                HoursManagementEnum.HOURS_CALCULATED_BY_CLOCK,
-                workReportTypeCode3);
+        WorkReportType t = givenWorkReportTypeStored(
+                false, false, false, HoursManagementEnum.HOURS_CALCULATED_BY_CLOCK, workReportTypeCode3);
+
         workReportTypeDAO.save(t);
     }
 
     private void givenWorkReportTypeStored4() {
-        WorkReportType type = givenWorkReportTypeStored(false, false, false,
-                null, workReportTypeCode4);
+        WorkReportType type = givenWorkReportTypeStored(false, false, false, null, workReportTypeCode4);
 
-        if (type.isNewObject()) {
-            type.addDescriptionFieldToEndHead(DescriptionField.create(field1,
-                    10));
-            type.addDescriptionFieldToEndLine(DescriptionField.create(field2,
-                    10));
+        if ( type.isNewObject() ) {
+            type.addDescriptionFieldToEndHead(DescriptionField.create(field1, 10));
+            type.addDescriptionFieldToEndLine(DescriptionField.create(field2, 10));
 
             workReportTypeDAO.save(type);
         }
     }
 
     private void givenWorkReportTypeStored5() {
-        WorkReportType type = givenWorkReportTypeStored(false, false, false,
-                null, workReportTypeCode5);
-        if (!type.isNewObject()) {
+        WorkReportType type = givenWorkReportTypeStored(false, false, false, null, workReportTypeCode5);
+        if ( !type.isNewObject() ) {
             return;
         }
 
-        WorkReportLabelTypeAssigment labelAssigment1 = WorkReportLabelTypeAssigment
-                .create(true);
-        WorkReportLabelTypeAssigment labelAssigment2 = WorkReportLabelTypeAssigment
-                .create(false);
+        WorkReportLabelTypeAssigment labelAssigment1 = WorkReportLabelTypeAssigment.create(true);
+        WorkReportLabelTypeAssigment labelAssigment2 = WorkReportLabelTypeAssigment.create(false);
 
-        labelAssigment1.setLabelType(labelTypeDAO
-                .findExistingEntityByCode(labelTypeA));
-        labelAssigment1.setDefaultLabel(labelDAO
-                .findExistingEntityByCode(labelA1));
+        labelAssigment1.setLabelType(labelTypeDAO.findExistingEntityByCode(labelTypeA));
+        labelAssigment1.setDefaultLabel(labelDAO.findExistingEntityByCode(labelA1));
         labelAssigment1.setPositionNumber(0);
 
-        labelAssigment2.setLabelType(labelTypeDAO
-                .findExistingEntityByCode(labelTypeB));
-        labelAssigment2.setDefaultLabel(labelDAO
-                .findExistingEntityByCode(labelB1));
+        labelAssigment2.setLabelType(labelTypeDAO.findExistingEntityByCode(labelTypeB));
+        labelAssigment2.setDefaultLabel(labelDAO.findExistingEntityByCode(labelB1));
         labelAssigment2.setPositionNumber(0);
 
         type.addLabelAssigmentToEndHead(labelAssigment1);
@@ -334,12 +314,13 @@ public class WorkReportServiceTest {
     }
 
     private WorkReportType givenWorkReportTypeStored(boolean dateShared,
-            boolean orderElementShared, boolean resourceShared,
-            HoursManagementEnum hoursManagement, String workReportTypeCode) {
+                                                     boolean orderElementShared,
+                                                     boolean resourceShared,
+                                                     HoursManagementEnum hoursManagement,
+                                                     String workReportTypeCode) {
 
-        WorkReportType workReportType = findOrCreate(workReportTypeDAO,
-                WorkReportType.class, workReportTypeCode);
-        if (!workReportType.isNewObject()) {
+        WorkReportType workReportType = findOrCreate(workReportTypeDAO, WorkReportType.class, workReportTypeCode);
+        if ( !workReportType.isNewObject() ) {
             return workReportType;
         }
 
@@ -350,7 +331,7 @@ public class WorkReportServiceTest {
         workReportType.setOrderElementIsSharedInLines(orderElementShared);
         workReportType.setResourceIsSharedInLines(resourceShared);
 
-        if (hoursManagement != null) {
+        if ( hoursManagement != null ) {
             workReportType.setHoursManagement(hoursManagement);
         }
 
@@ -363,8 +344,7 @@ public class WorkReportServiceTest {
         workReportLineDTO.code = "work-report-line-code-" + UUID.randomUUID();
         workReportLineDTO.resource = resourceCode;
         workReportLineDTO.orderElement = orderElementCode;
-        workReportLineDTO.date = DateConverter
-                .toXMLGregorianCalendar(new Date());
+        workReportLineDTO.date = DateConverter.toXMLGregorianCalendar(new Date());
         workReportLineDTO.typeOfWorkHours = typeOfWorkHoursCode;
         workReportLineDTO.numHours = "8:15";
 
@@ -376,171 +356,155 @@ public class WorkReportServiceTest {
         workReportDTO.code = "work-report-code-" + UUID.randomUUID();
         workReportDTO.workReportType = type;
         workReportDTO.workReportLines.add(createWorkReportLineDTO());
+
         return workReportDTO;
     }
 
     @Test
     @Transactional
     public void importInvalidLabelsToWorkReport() {
-        // create work report with a work report line
+        // Create work report with a work report line
         WorkReportDTO workReportDTO = createWorkReportDTO(workReportTypeCode5);
 
-        // create invalid description value to add into head and lines.
+        // Create invalid description value to add into head and lines
         LabelReferenceDTO labelDTO1 = new LabelReferenceDTO("codeLabelNoexiste");
         LabelReferenceDTO labelDTO2 = new LabelReferenceDTO(labelA1);
 
-        // it assigne a label type LabelTypeA, but it should be a label type
-        // LabelTypeB
+        // It assigns a label type LabelTypeA, but it should be a label type LabelTypeB
         workReportDTO.labels.add(labelDTO1);
         for (WorkReportLineDTO lineDTO : workReportDTO.workReportLines) {
             lineDTO.labels.add(labelDTO2);
         }
 
-        WorkReportListDTO workReportListDTO = new WorkReportListDTO(Arrays
-                .asList(workReportDTO));
-        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = workReportService
-                .addWorkReports(workReportListDTO).instanceConstraintViolationsList;
+        WorkReportListDTO workReportListDTO = new WorkReportListDTO(Collections.singletonList(workReportDTO));
 
-        // Test
-        assertTrue(instanceConstraintViolationsList.toString(),
-                instanceConstraintViolationsList.size() == 1);
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
+                workReportService.addWorkReports(workReportListDTO).instanceConstraintViolationsList;
+
+        assertTrue(instanceConstraintViolationsList.toString(), instanceConstraintViolationsList.size() == 1);
     }
 
     @Test
     @Transactional
     public void importValidLabelsToWorkReport() {
-        // create work report with a work report line
+        // Create work report with a work report line
         WorkReportDTO workReportDTO = createWorkReportDTO(workReportTypeCode5);
 
-        // create invalid description value to add into head and lines.
+        // Create invalid description value to add into head and lines
         LabelReferenceDTO labelDTO1 = new LabelReferenceDTO(labelA1);
         LabelReferenceDTO labelDTO2 = new LabelReferenceDTO(labelB1);
 
-        // it assigne a label type LabelTypeA, but it should be a label type
-        // LabelTypeB
+        // It assigns a label type LabelTypeA, but it should be a label type LabelTypeB
         workReportDTO.labels.add(labelDTO1);
         for (WorkReportLineDTO lineDTO : workReportDTO.workReportLines) {
             lineDTO.labels.add(labelDTO2);
         }
 
-        WorkReportListDTO workReportListDTO = new WorkReportListDTO(Arrays
-                .asList(workReportDTO));
-        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = workReportService
-                .addWorkReports(workReportListDTO).instanceConstraintViolationsList;
+        WorkReportListDTO workReportListDTO = new WorkReportListDTO(Collections.singletonList(workReportDTO));
 
-        // Test
-        assertTrue(instanceConstraintViolationsList.toString(),
-                instanceConstraintViolationsList.size() == 0);
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
+                workReportService.addWorkReports(workReportListDTO).instanceConstraintViolationsList;
+
+        assertTrue(instanceConstraintViolationsList.toString(), instanceConstraintViolationsList.size() == 0);
     }
 
     @Test
     @Transactional
     public void importInvalidDescriptionValuesToWorkReport() {
-        // create work report with a work report line
+        // Create work report with a work report line
         WorkReportDTO workReportDTO = createWorkReportDTO(workReportTypeCode4);
 
-        // create invalid description value to add into head and lines.
-        DescriptionValueDTO valueDTO1 = new DescriptionValueDTO(field1 + "X",
-                "incorrecto");
-        DescriptionValueDTO valueDTO2 = new DescriptionValueDTO(field2 + "X",
-                "incorrecto");
+        // Create invalid description value to add into head and lines
+        DescriptionValueDTO valueDTO1 = new DescriptionValueDTO(field1 + "X", "incorrecto");
+        DescriptionValueDTO valueDTO2 = new DescriptionValueDTO(field2 + "X", "incorrecto");
         workReportDTO.descriptionValues.add(valueDTO1);
+
         for (WorkReportLineDTO lineDTO : workReportDTO.workReportLines) {
             lineDTO.descriptionValues.add(valueDTO2);
         }
 
-        WorkReportListDTO workReportListDTO = new WorkReportListDTO(Arrays
-                .asList(workReportDTO));
-        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = workReportService
-                .addWorkReports(workReportListDTO).instanceConstraintViolationsList;
+        WorkReportListDTO workReportListDTO = new WorkReportListDTO(Collections.singletonList(workReportDTO));
 
-        // Test
-        assertTrue(instanceConstraintViolationsList.toString(),
-                instanceConstraintViolationsList.size() == 1);
-        assertTrue(instanceConstraintViolationsList.get(0).constraintViolations
-                .toString(),
-                instanceConstraintViolationsList.get(0).constraintViolations
-                        .size() == 2);
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
+                workReportService.addWorkReports(workReportListDTO).instanceConstraintViolationsList;
+
+        assertTrue(instanceConstraintViolationsList.toString(), instanceConstraintViolationsList.size() == 1);
+
+        assertTrue(
+                instanceConstraintViolationsList.get(0).constraintViolations.toString(),
+                instanceConstraintViolationsList.get(0).constraintViolations.size() == 2);
     }
 
     @Test
     @Transactional
     public void importValidDescriptionValuesToWorkReport() {
-        // create work report with a work report line
+        // Create work report with a work report line
         WorkReportDTO workReportDTO = createWorkReportDTO(workReportTypeCode4);
 
-        // create invalid description value to add into head and lines.
-        DescriptionValueDTO valueDTO1 = new DescriptionValueDTO(field1,
-                "correcto");
-        DescriptionValueDTO valueDTO2 = new DescriptionValueDTO(field2,
-                "correcto");
+        // Create invalid description value to add into head and lines
+        DescriptionValueDTO valueDTO1 = new DescriptionValueDTO(field1, "correcto");
+        DescriptionValueDTO valueDTO2 = new DescriptionValueDTO(field2, "correcto");
         workReportDTO.descriptionValues.add(valueDTO1);
+
         for (WorkReportLineDTO lineDTO : workReportDTO.workReportLines) {
             lineDTO.descriptionValues.add(valueDTO2);
         }
 
-        WorkReportListDTO workReportListDTO = new WorkReportListDTO(Arrays
-                .asList(workReportDTO));
-        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = workReportService
-                .addWorkReports(workReportListDTO).instanceConstraintViolationsList;
+        WorkReportListDTO workReportListDTO = new WorkReportListDTO(Collections.singletonList(workReportDTO));
 
-        // Test
-        assertTrue(instanceConstraintViolationsList.toString(),
-                instanceConstraintViolationsList.size() == 0);
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
+                workReportService.addWorkReports(workReportListDTO).instanceConstraintViolationsList;
+
+        assertTrue(instanceConstraintViolationsList.toString(), instanceConstraintViolationsList.size() == 0);
     }
 
     @Test
     @NotTransactional
     public void importValidWorkReport() {
-        int previous = transactionService
-                .runOnTransaction(new IOnTransaction<Integer>() {
-                    @Override
-                    public Integer execute() {
-                        return workReportDAO.getAll().size();
-                    }
-                });
+        int previous = transactionService.runOnTransaction(new IOnTransaction<Integer>() {
+            @Override
+            public Integer execute() {
+                return workReportDAO.getAll().size();
+            }
+        });
 
         transactionService.runOnTransaction(new IOnTransaction<Void>() {
             @Override
             public Void execute() {
+                WorkReportListDTO workReportListDTO =
+                        new WorkReportListDTO(Collections.singletonList(createWorkReportDTO(workReportTypeCode)));
 
-        WorkReportListDTO workReportListDTO = new WorkReportListDTO(Arrays
-                .asList(createWorkReportDTO(workReportTypeCode)));
+                InstanceConstraintViolationsListDTO instanceConstraintViolationsListDTO =
+                        workReportService.addWorkReports(workReportListDTO);
 
-        InstanceConstraintViolationsListDTO instanceConstraintViolationsListDTO = workReportService
-                .addWorkReports(workReportListDTO);
-        assertThat(
-                instanceConstraintViolationsListDTO.instanceConstraintViolationsList
-                        .size(), equalTo(0));
+                assertThat(instanceConstraintViolationsListDTO.instanceConstraintViolationsList.size(), equalTo(0));
+
                 return null;
             }
         });
 
-        List<WorkReport> workReports = transactionService
-                .runOnTransaction(new IOnTransaction<List<WorkReport>>() {
-                    @Override
-                    public List<WorkReport> execute() {
-                        List<WorkReport> list = workReportDAO.getAll();
-                        for (WorkReport workReport : list) {
-                            Set<WorkReportLine> workReportLines = workReport
-                                    .getWorkReportLines();
-                            for (WorkReportLine line : workReportLines) {
-                                line.getEffort().getHours();
-                            }
-                        }
-                        return list;
+        List<WorkReport> workReports = transactionService.runOnTransaction(new IOnTransaction<List<WorkReport>>() {
+            @Override
+            public List<WorkReport> execute() {
+                List<WorkReport> list = workReportDAO.getAll();
+                for (WorkReport workReport : list) {
+                    Set<WorkReportLine> workReportLines = workReport.getWorkReportLines();
+                    for (WorkReportLine line : workReportLines) {
+                        line.getEffort().getHours();
                     }
-                });
+                }
+                return list;
+            }
+        });
 
         assertThat(workReports.size(), equalTo(previous + 1));
 
-        Set<WorkReportLine> workReportLines = workReports.get(previous)
-                .getWorkReportLines();
+        Set<WorkReportLine> workReportLines = workReports.get(previous).getWorkReportLines();
         assertThat(workReportLines.size(), equalTo(1));
 
-        assertThat(workReportLines.iterator().next().getEffort(),
-                equalTo(EffortDuration.sum(EffortDuration.hours(8),
-                        EffortDuration.minutes(15))));
+        assertThat(
+                workReportLines.iterator().next().getEffort(),
+                equalTo(EffortDuration.sum(EffortDuration.hours(8), EffortDuration.minutes(15))));
 
     }
 
@@ -548,15 +512,15 @@ public class WorkReportServiceTest {
     public void importInvalidWorkReportWithoutDateAtWorkReportLevel() {
         int previous = workReportDAO.getAll().size();
 
-        WorkReportListDTO workReportListDTO = new WorkReportListDTO(Arrays
-                .asList(createWorkReportDTO(workReportTypeCode2)));
+        WorkReportListDTO workReportListDTO =
+                new WorkReportListDTO(Collections.singletonList(createWorkReportDTO(workReportTypeCode2)));
 
-        InstanceConstraintViolationsListDTO instanceConstraintViolationsListDTO = workReportService
-                .addWorkReports(workReportListDTO);
-        assertThat(
-                instanceConstraintViolationsListDTO.instanceConstraintViolationsList
-                        .size(), equalTo(1));
+        InstanceConstraintViolationsListDTO instanceConstraintViolationsListDTO =
+                workReportService.addWorkReports(workReportListDTO);
+
+        assertThat(instanceConstraintViolationsListDTO.instanceConstraintViolationsList.size(), equalTo(1));
         List<WorkReport> workReports = workReportDAO.getAll();
+
         assertThat(workReports.size(), equalTo(previous));
     }
 
@@ -568,28 +532,24 @@ public class WorkReportServiceTest {
         Date date = new LocalDate().toDateTimeAtStartOfDay().toDate();
         workReportDTO.date = DateConverter.toXMLGregorianCalendar(date);
 
-        WorkReportListDTO workReportListDTO = new WorkReportListDTO(Arrays
-                .asList(workReportDTO));
+        WorkReportListDTO workReportListDTO = new WorkReportListDTO(Collections.singletonList(workReportDTO));
 
-        InstanceConstraintViolationsListDTO instanceConstraintViolationsListDTO = workReportService
-                .addWorkReports(workReportListDTO);
-        assertThat(
-                instanceConstraintViolationsListDTO.instanceConstraintViolationsList
-                        .size(), equalTo(0));
+        InstanceConstraintViolationsListDTO instanceConstraintViolationsListDTO =
+                workReportService.addWorkReports(workReportListDTO);
+
+        assertThat(instanceConstraintViolationsListDTO.instanceConstraintViolationsList.size(), equalTo(0));
 
         List<WorkReport> workReports = workReportDAO.getAll();
         assertThat(workReports.size(), equalTo(previous + 1));
 
-        WorkReport imported = workReportDAO
-                .findExistingEntityByCode(workReportDTO.code);
+        WorkReport imported = workReportDAO.findExistingEntityByCode(workReportDTO.code);
         assertThat(imported.getDate(), equalTo(date));
 
-        List<WorkReportLine> importedLines = new ArrayList<WorkReportLine>(
-                imported.getWorkReportLines());
+        List<WorkReportLine> importedLines = new ArrayList<WorkReportLine>(imported.getWorkReportLines());
         Collections.sort(importedLines);
 
-        List<WorkReportLineDTO> exportedLines = new ArrayList<WorkReportLineDTO>(
-                workReportDTO.workReportLines);
+        List<WorkReportLineDTO> exportedLines = new ArrayList<WorkReportLineDTO>(workReportDTO.workReportLines);
+
         Collections.sort(exportedLines, new Comparator<WorkReportLineDTO>() {
             @Override
             public int compare(WorkReportLineDTO o1, WorkReportLineDTO o2) {
@@ -604,22 +564,20 @@ public class WorkReportServiceTest {
     }
 
     private long asTime(XMLGregorianCalendar date2) {
-        return date2
-                .toGregorianCalendar().getTime().getTime();
+        return date2.toGregorianCalendar().getTime().getTime();
     }
 
     @Test
     public void importInvalidWorkReportCalculatedHours() {
         int previous = workReportDAO.getAll().size();
 
-        WorkReportListDTO workReportListDTO = new WorkReportListDTO(Arrays
-                .asList(createWorkReportDTO(workReportTypeCode3)));
+        WorkReportListDTO workReportListDTO =
+                new WorkReportListDTO(Collections.singletonList(createWorkReportDTO(workReportTypeCode3)));
 
-        InstanceConstraintViolationsListDTO instanceConstraintViolationsListDTO = workReportService
-                .addWorkReports(workReportListDTO);
-        assertThat(
-                instanceConstraintViolationsListDTO.instanceConstraintViolationsList
-                        .size(), equalTo(1));
+        InstanceConstraintViolationsListDTO instanceConstraintViolationsListDTO =
+                workReportService.addWorkReports(workReportListDTO);
+
+        assertThat(instanceConstraintViolationsListDTO.instanceConstraintViolationsList.size(), equalTo(1));
         List<WorkReport> workReports = workReportDAO.getAll();
         assertThat(workReports.size(), equalTo(previous));
     }
@@ -627,113 +585,96 @@ public class WorkReportServiceTest {
     @Test
     @NotTransactional
     public void importValidWorkReportCalculatedHours() {
-        int previous = transactionService
-                .runOnTransaction(new IOnTransaction<Integer>() {
-                    @Override
-                    public Integer execute() {
-                        return workReportDAO.getAll().size();
-                    }
-                });
+        int previous = transactionService.runOnTransaction(new IOnTransaction<Integer>() {
+            @Override
+            public Integer execute() {
+                return workReportDAO.getAll().size();
+            }
+        });
 
         WorkReportDTO workReportDTO = createWorkReportDTO(workReportTypeCode3);
-        WorkReportLineDTO workReportLineDTO = workReportDTO.workReportLines
-                .iterator().next();
+        WorkReportLineDTO workReportLineDTO = workReportDTO.workReportLines.iterator().next();
 
         int hours = 12;
         LocalTime start = new LocalTime(8, 0);
         LocalTime end = start.plusHours(hours);
-        workReportLineDTO.clockStart = DateConverter
-                .toXMLGregorianCalendar(start);
-        workReportLineDTO.clockFinish = DateConverter
-                .toXMLGregorianCalendar(end);
+        workReportLineDTO.clockStart = DateConverter.toXMLGregorianCalendar(start);
+        workReportLineDTO.clockFinish = DateConverter.toXMLGregorianCalendar(end);
 
-        WorkReportListDTO workReportListDTO = new WorkReportListDTO(Arrays
-                .asList(workReportDTO));
+        WorkReportListDTO workReportListDTO = new WorkReportListDTO(Collections.singletonList(workReportDTO));
 
-        InstanceConstraintViolationsListDTO instanceConstraintViolationsListDTO = workReportService
-                .addWorkReports(workReportListDTO);
-        assertThat(
-                instanceConstraintViolationsListDTO.instanceConstraintViolationsList
-                        .size(), equalTo(0));
-        List<WorkReport> workReports = transactionService
-                .runOnTransaction(new IOnTransaction<List<WorkReport>>() {
-                    @Override
-                    public List<WorkReport> execute() {
-                        List<WorkReport> list = workReportDAO.getAll();
-                        for (WorkReport workReport : list) {
-                            Set<WorkReportLine> workReportLines = workReport
-                                    .getWorkReportLines();
-                            for (WorkReportLine line : workReportLines) {
-                                line.getEffort().getHours();
-                            }
-                        }
-                        return list;
+        InstanceConstraintViolationsListDTO instanceConstraintViolationsListDTO =
+                workReportService.addWorkReports(workReportListDTO);
+
+        assertThat(instanceConstraintViolationsListDTO.instanceConstraintViolationsList.size(), equalTo(0));
+
+        List<WorkReport> workReports = transactionService.runOnTransaction(new IOnTransaction<List<WorkReport>>() {
+            @Override
+            public List<WorkReport> execute() {
+                List<WorkReport> list = workReportDAO.getAll();
+                for (WorkReport workReport : list) {
+                    Set<WorkReportLine> workReportLines = workReport.getWorkReportLines();
+                    for (WorkReportLine line : workReportLines) {
+                        line.getEffort().getHours();
                     }
-                });
+                }
+                return list;
+            }
+        });
+
         assertThat(workReports.size(), equalTo(previous + 1));
 
-        Set<WorkReportLine> workReportLines = workReports.get(previous)
-                .getWorkReportLines();
+        Set<WorkReportLine> workReportLines = workReports.get(previous).getWorkReportLines();
         assertThat(workReportLines.size(), equalTo(1));
 
-        assertThat(workReportLines.iterator().next().getEffort().getHours(),
-                equalTo(hours));
+        assertThat(workReportLines.iterator().next().getEffort().getHours(), equalTo(hours));
     }
 
     @Test
     @NotTransactional
     public void importAndUpdateValidWorkReport() {
-        int previous = transactionService
-                .runOnTransaction(new IOnTransaction<Integer>() {
-                    @Override
-                    public Integer execute() {
-                        return workReportDAO.getAll().size();
-                    }
-                });
+        int previous = transactionService.runOnTransaction(new IOnTransaction<Integer>() {
+            @Override
+            public Integer execute() {
+                return workReportDAO.getAll().size();
+            }
+        });
 
         WorkReportDTO workReportDTO = createWorkReportDTO(workReportTypeCode);
-        WorkReportListDTO workReportListDTO = new WorkReportListDTO(Arrays
-                .asList(workReportDTO));
+        WorkReportListDTO workReportListDTO = new WorkReportListDTO(Collections.singletonList(workReportDTO));
 
-        InstanceConstraintViolationsListDTO instanceConstraintViolationsListDTO = workReportService
-                .addWorkReports(workReportListDTO);
-        assertThat(
-                instanceConstraintViolationsListDTO.instanceConstraintViolationsList
-                        .size(), equalTo(0));
-        List<WorkReport> workReports = transactionService
-                .runOnTransaction(new IOnTransaction<List<WorkReport>>() {
-                    @Override
-                    public List<WorkReport> execute() {
-                        List<WorkReport> list = workReportDAO.getAll();
-                        for (WorkReport workReport : list) {
-                            Set<WorkReportLine> workReportLines = workReport
-                                    .getWorkReportLines();
-                            for (WorkReportLine line : workReportLines) {
-                                line.getEffort().getHours();
-                            }
-                        }
-                        return list;
+        InstanceConstraintViolationsListDTO instanceConstraintViolationsListDTO =
+                workReportService.addWorkReports(workReportListDTO);
+
+        assertThat(instanceConstraintViolationsListDTO.instanceConstraintViolationsList.size(), equalTo(0));
+
+        List<WorkReport> workReports = transactionService.runOnTransaction(new IOnTransaction<List<WorkReport>>() {
+            @Override
+            public List<WorkReport> execute() {
+                List<WorkReport> list = workReportDAO.getAll();
+                for (WorkReport workReport : list) {
+                    Set<WorkReportLine> workReportLines = workReport.getWorkReportLines();
+                    for (WorkReportLine line : workReportLines) {
+                        line.getEffort().getHours();
                     }
-                });
+                }
+                return list;
+            }
+        });
         assertThat(workReports.size(), equalTo(previous + 1));
 
-        Set<WorkReportLine> workReportLines = workReports.get(previous)
-                .getWorkReportLines();
+        Set<WorkReportLine> workReportLines = workReports.get(previous).getWorkReportLines();
         assertThat(workReportLines.size(), equalTo(1));
 
-        assertThat(workReportLines.iterator().next().getEffort(),
-                equalTo(EffortDuration.sum(EffortDuration.hours(8),
-                        EffortDuration.minutes(15))));
+        assertThat(
+                workReportLines.iterator().next().getEffort(),
+                equalTo(EffortDuration.sum(EffortDuration.hours(8), EffortDuration.minutes(15))));
 
         workReportDTO.workReportLines.add(createWorkReportLineDTO());
-        WorkReportListDTO workReportListDTO2 = new WorkReportListDTO(Arrays
-                .asList(workReportDTO));
-        instanceConstraintViolationsListDTO = workReportService
-                .addWorkReports(workReportListDTO2);
+        WorkReportListDTO workReportListDTO2 = new WorkReportListDTO(Collections.singletonList(workReportDTO));
+        instanceConstraintViolationsListDTO = workReportService.addWorkReports(workReportListDTO2);
 
-        assertThat(
-                instanceConstraintViolationsListDTO.instanceConstraintViolationsList
-                        .size(), equalTo(0));
+        assertThat(instanceConstraintViolationsListDTO.instanceConstraintViolationsList.size(), equalTo(0));
 
     }
 }

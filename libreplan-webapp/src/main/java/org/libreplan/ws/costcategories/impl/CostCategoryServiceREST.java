@@ -44,15 +44,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * REST-based implementation of <code>ICostCategoryService</code>.
+ *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 
 @Path("/costcategories/")
 @Produces("application/xml")
 @Service("costCategoryServiceREST")
-public class CostCategoryServiceREST extends
-        GenericRESTService<CostCategory, CostCategoryDTO> implements
-        ICostCategoryService {
+public class CostCategoryServiceREST extends GenericRESTService<CostCategory, CostCategoryDTO>
+        implements ICostCategoryService {
 
     @Autowired
     private ICostCategoryDAO costCategoryDAO;
@@ -60,18 +60,15 @@ public class CostCategoryServiceREST extends
     @Override
     @GET
     @Transactional(readOnly = true)
-    public CostCategoryListDTO getCostCotegories() {
+    public CostCategoryListDTO getCostCategories() {
         return new CostCategoryListDTO(findAll());
     }
 
     @Override
     @POST
     @Consumes("application/xml")
-    public InstanceConstraintViolationsListDTO addCostCategories(
-            CostCategoryListDTO costCategoryListDTO) {
-
+    public InstanceConstraintViolationsListDTO addCostCategories(CostCategoryListDTO costCategoryListDTO) {
         return save(costCategoryListDTO.costCategories);
-
     }
 
     @Override
@@ -90,11 +87,8 @@ public class CostCategoryServiceREST extends
     }
 
     @Override
-    protected void updateEntity(CostCategory entity, CostCategoryDTO entityDTO)
-            throws ValidationException {
-
+    protected void updateEntity(CostCategory entity, CostCategoryDTO entityDTO) throws ValidationException {
         CostCategoryConverter.updateCostCategory(entity, entityDTO);
-
     }
 
     @Override

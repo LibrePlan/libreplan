@@ -1,5 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.libreplan</groupId>
@@ -153,13 +153,6 @@
     -->
 
     <repositories>
-
-        <!-- Getttext commons -->
-        <repository>
-            <id>gettext-commons-site</id>
-            <url>http://gettext-commons.googlecode.com/svn/maven-repository</url>
-        </repository>
-
         <!-- LibrePlan repository -->
         <repository>
             <id>thirdparty</id>
@@ -167,30 +160,15 @@
         </repository>
     </repositories>
 
-     <pluginRepositories>
-        <pluginRepository>
-          <id>gettext-commons-site</id>
-          <url>http://gettext-commons.googlecode.com/svn/maven-repository</url>
-        </pluginRepository>
-        <!--
-        <pluginRepository>
-            <id>codehaus-plugin-repository</id>
-            <name>Codehaus Plugin Repository</name>
-            <url>http://repository.codehaus.org</url>
-        </pluginRepository>
-
-        -->
-     </pluginRepositories>
-
     <!-- Dependency management -->
     <dependencyManagement>
         <dependencies>
 
             <!-- Jasper Reports -->
             <dependency>
-              <groupId>net.sf.jasperreports</groupId>
-              <artifactId>jasperreports</artifactId>
-              <version>4.7.0</version>
+                <groupId>net.sf.jasperreports</groupId>
+                <artifactId>jasperreports</artifactId>
+                <version>4.7.0</version>
             </dependency>
             <dependency>
                 <groupId>net.sf.jasperreports</groupId>
@@ -200,9 +178,9 @@
 
             <!-- GPL Jasperreport Component for ZK -->
             <dependency>
-              <groupId>com.igalia.java.zk.components</groupId>
-              <artifactId>jasperreportcomponent</artifactId>
-              <version>1.0</version>
+                <groupId>com.igalia.java.zk.components</groupId>
+                <artifactId>jasperreportcomponent</artifactId>
+                <version>1.0</version>
             </dependency>
 
             <!-- GPL JFreechartEngine for ZK -->
@@ -221,11 +199,10 @@
 
             <!-- Gettext commons -->
             <dependency>
-                <groupId>org.xnap.commons</groupId>
+                <groupId>com.googlecode.gettext-commons</groupId>
                 <artifactId>gettext-commons</artifactId>
-                <version>0.9.6</version>
+                <version>0.9.8</version>
             </dependency>
-
             <!-- JDBC driver -->
             <dependency>
                 <groupId>${jdbcDriver.groupId}</groupId>
@@ -240,14 +217,14 @@
                 <artifactId>hibernate</artifactId>
                 <version>3.2.7.ga</version>
                 <exclusions>
-                <exclusion>
-                    <groupId>javax.transaction</groupId>
-                    <artifactId>jta</artifactId>
-                </exclusion>
-            </exclusions>
+                    <exclusion>
+                        <groupId>javax.transaction</groupId>
+                        <artifactId>jta</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
-            <groupId>org.apache.geronimo.specs</groupId>
+                <groupId>org.apache.geronimo.specs</groupId>
                 <artifactId>geronimo-jta_1.0.1B_spec</artifactId>
                 <version>1.1.1</version>
             </dependency>
@@ -276,10 +253,10 @@
 
             <!-- Datasource for testing -->
             <dependency>
-              <groupId>com.jolbox</groupId>
-              <artifactId>bonecp</artifactId>
-              <version>0.7.1.RELEASE</version>
-              <scope>test</scope>
+                <groupId>com.jolbox</groupId>
+                <artifactId>bonecp</artifactId>
+                <version>0.7.1.RELEASE</version>
+                <scope>test</scope>
             </dependency>
 
             <!-- Easy mock -->
@@ -409,7 +386,7 @@
                         <artifactId>spring-tx</artifactId>
                     </exclusion>
                 </exclusions>
-             </dependency>
+            </dependency>
             <dependency>
                 <groupId>org.springframework.ldap</groupId>
                 <artifactId>spring-ldap-core-tiger</artifactId>
@@ -440,7 +417,7 @@
                         <artifactId>spring-tx</artifactId>
                     </exclusion>
                 </exclusions>
-             </dependency>
+            </dependency>
             <dependency>
                 <groupId>org.springframework.ldap</groupId>
                 <artifactId>spring-ldap-odm</artifactId>
@@ -471,7 +448,7 @@
                         <artifactId>spring-tx</artifactId>
                     </exclusion>
                 </exclusions>
-             </dependency>
+            </dependency>
             <dependency>
                 <groupId>org.springframework.ldap</groupId>
                 <artifactId>spring-ldap-ldif-core</artifactId>
@@ -502,7 +479,7 @@
                         <artifactId>spring-tx</artifactId>
                     </exclusion>
                 </exclusions>
-             </dependency>
+            </dependency>
             <dependency>
                 <groupId>org.springframework.ldap</groupId>
                 <artifactId>spring-ldap-ldif-batch</artifactId>
@@ -533,7 +510,7 @@
                         <artifactId>spring-tx</artifactId>
                     </exclusion>
                 </exclusions>
-             </dependency>
+            </dependency>
 
             <dependency>
                 <groupId>org.springframework</groupId>
@@ -566,7 +543,7 @@
                 <version>2.2.3</version>
                 <classifier>jdk15</classifier>
             </dependency>
-             <dependency>
+            <dependency>
                 <groupId>commons-collections</groupId>
                 <artifactId>commons-collections</artifactId>
                 <version>3.2</version>
@@ -788,11 +765,11 @@
                 <artifactId>timelinez</artifactId>
                 <version>2.3.1_50</version>
                 <exclusions>
-                <exclusion>
-                    <groupId>org.zkoss.common</groupId>
-                    <artifactId>zcommon</artifactId>
-                </exclusion>
-            </exclusions>
+                    <exclusion>
+                        <groupId>org.zkoss.common</groupId>
+                        <artifactId>zcommon</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>net.sf.ehcache</groupId>
@@ -800,7 +777,7 @@
                 <version>1.6.2</version>
             </dependency>
 
-        <!-- LiquiBase -->
+            <!-- LiquiBase -->
             <dependency>
                 <groupId>org.liquibase</groupId>
                 <artifactId>liquibase-core</artifactId>
@@ -828,17 +805,17 @@
 
             <!-- ZK fileupload -->
             <dependency>
-              <groupId>commons-io</groupId>
-              <artifactId>commons-io</artifactId>
-              <version>1.4</version>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>1.4</version>
             </dependency>
 
             <!-- Quartz framework -->
-           <dependency>
-              <groupId>org.quartz-scheduler</groupId>
-              <artifactId>quartz</artifactId>
-              <version>1.8.0</version>
-           </dependency>
+            <dependency>
+                <groupId>org.quartz-scheduler</groupId>
+                <artifactId>quartz</artifactId>
+                <version>1.8.0</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -941,9 +918,9 @@
             <!-- =========================================================== -->
             <!-- Gettext configuration -->
             <plugin>
-                <groupId>org.xnap.commons</groupId>
-                <artifactId>maven-gettext-plugin</artifactId>
-                <version>1.2.0</version>
+                <groupId>com.googlecode.gettext-commons</groupId>
+                <artifactId>gettext-maven-plugin</artifactId>
+                <version>1.2.4</version>
                 <configuration>
                     <targetBundle>i18n.Messages</targetBundle>
                 </configuration>
@@ -997,7 +974,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.10</version>
                 <configuration>
-                   <runOrder>alphabetical</runOrder>
+                    <runOrder>alphabetical</runOrder>
                 </configuration>
             </plugin>
 
@@ -1032,35 +1009,35 @@
                 </configuration>
 
                 <dependencies>
-                  <dependency>
-                    <groupId>${jdbcDriver.groupId}</groupId>
-                    <artifactId>${jdbcDriver.artifactId}</artifactId>
-                    <version>${jdbcDriver.version}</version>
-                  </dependency>
+                    <dependency>
+                        <groupId>${jdbcDriver.groupId}</groupId>
+                        <artifactId>${jdbcDriver.artifactId}</artifactId>
+                        <version>${jdbcDriver.version}</version>
+                    </dependency>
 
-                  <!-- Connection pooling -->
-                  <dependency>
-                    <groupId>com.jolbox</groupId>
-                    <artifactId>bonecp</artifactId>
-                    <version>0.7.1.RELEASE</version>
-                  </dependency>
+                    <!-- Connection pooling -->
+                    <dependency>
+                        <groupId>com.jolbox</groupId>
+                        <artifactId>bonecp</artifactId>
+                        <version>0.7.1.RELEASE</version>
+                    </dependency>
 
-                  <!-- Connection pooling dependencies -->
-                  <dependency>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                    <version>1.5.5</version>
-                  </dependency>
-                  <dependency>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-simple</artifactId>
-                    <version>1.5.5</version>
-                  </dependency>
-                  <dependency>
-                    <groupId>com.google.guava</groupId>
-                    <artifactId>guava</artifactId>
-                    <version>14.0.1</version>
-                  </dependency>
+                    <!-- Connection pooling dependencies -->
+                    <dependency>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-api</artifactId>
+                        <version>1.5.5</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-simple</artifactId>
+                        <version>1.5.5</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>com.google.guava</groupId>
+                        <artifactId>guava</artifactId>
+                        <version>14.0.1</version>
+                    </dependency>
                 </dependencies>
             </plugin>
 
@@ -1093,9 +1070,9 @@
 
             <!-- =========================================================== -->
             <!-- LiquiBase plugin -->
-        <plugin>
-            <groupId>org.liquibase</groupId>
-            <artifactId>liquibase-maven-plugin</artifactId>
+            <plugin>
+                <groupId>org.liquibase</groupId>
+                <artifactId>liquibase-maven-plugin</artifactId>
                 <version>2.0.5</version>
             </plugin>
 

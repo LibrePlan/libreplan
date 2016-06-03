@@ -55,10 +55,17 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * Test for {@link IOrderDAO}
  *
+ * Correct order of tests:
+ * 1. testInSpringContainer()
+ * 2. testSaveOrdersWithDeliveringDates()
+ * 3. testSaveTwoOrdersWithDifferentNames()
+ * 4. testSaveTwoOrdersWithSameNames()
+ *
  * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
+@ContextConfiguration(locations = {
+        BUSINESS_SPRING_CONFIG_FILE,
         BUSINESS_SPRING_CONFIG_TEST_FILE })
 @Transactional
 public class OrderDAOTest {
@@ -69,6 +76,7 @@ public class OrderDAOTest {
             @Override
             public Void execute() {
                 scenariosBootstrap.loadRequiredData();
+
                 return null;
             }
         });
@@ -90,42 +98,12 @@ public class OrderDAOTest {
     private IAdHocTransactionService transactionService;
 
     @Test
-    public void testInSpringContainer() {
+    public void testA_InSpringContainer() {
         assertNotNull(orderDAO);
     }
 
-    private Order createValidOrder(String name) {
-        Order order = Order.create();
-        order.setName(name);
-        order.setCode(UUID.randomUUID().toString());
-        order.setInitDate(new Date());
-        BaseCalendar basicCalendar = BaseCalendarTest.createBasicCalendar();
-        calendarDAO.save(basicCalendar);
-        order.setCalendar(basicCalendar);
-        OrderVersion orderVersion = ResourceAllocationDAOTest
-                .setupVersionUsing(scenarioManager, order);
-        order.useSchedulingDataFor(orderVersion);
-        return order;
-    }
-
-    private Order createValidOrderWithDeadlineCommunications(String name) {
-        Order order = createValidOrder(name);
-
-        //create two deadline communications
-        Date date1 = (new Date());
-        Date date2 = (new LocalDate(date1).plusDays(3)).toDateTimeAtStartOfDay().toDate();
-
-        DeadlineCommunication deadlineCommunication1 = DeadlineCommunication.create(date1, null);
-        DeadlineCommunication deadlineCommunication2 = DeadlineCommunication.create(date2, null);
-
-        order.getDeliveringDates().add(deadlineCommunication1);
-        order.getDeliveringDates().add(deadlineCommunication2);
-
-        return order;
-    }
-
     @Test
-    public void testSaveOrdersWithDeliveringDates() {
+    public void testB_SaveOrdersWithDeliveringDates() {
         Order order = createValidOrderWithDeadlineCommunications("new-test");
         orderDAO.save(order);
         orderDAO.flush();
@@ -138,7 +116,7 @@ public class OrderDAOTest {
         assertTrue(dcFirst.getSaveDate().after(dcLast.getSaveDate()));
 
 
-        //A new DeadlineCommunication is placed between the existing communications.
+        // A new DeadlineCommunication is placed between the existing communications.
         Date date = (new LocalDate(dcLast.getSaveDate()).plusDays(2)).toDateTimeAtStartOfDay().toDate();
         DeadlineCommunication deadlineCommunication = DeadlineCommunication.create(date, null);
         order.getDeliveringDates().add(deadlineCommunication);
@@ -159,13 +137,14 @@ public class OrderDAOTest {
     }
 
     @Test
-    public void testSaveTwoOrdersWithDifferentNames() {
+    public void testC_SaveTwoOrdersWithDifferentNames() {
         transactionService.runOnAnotherTransaction(new IOnTransaction<Void>() {
             @Override
             public Void execute() {
                 Order order = createValidOrder("test");
                 orderDAO.save(order);
                 orderDAO.flush();
+
                 return null;
             }
         });
@@ -176,19 +155,21 @@ public class OrderDAOTest {
                 Order order = createValidOrder("test2");
                 orderDAO.save(order);
                 orderDAO.flush();
+
                 return null;
             }
         });
     }
 
     @Test(expected = ValidationException.class)
-    public void testSaveTwoOrdersWithSameNames() {
+    public void testD_SaveTwoOrdersWithSameNames() {
         transactionService.runOnAnotherTransaction(new IOnTransaction<Void>() {
             @Override
             public Void execute() {
                 Order order = createValidOrder("test");
                 orderDAO.save(order);
                 orderDAO.flush();
+
                 return null;
             }
         });
@@ -199,9 +180,40 @@ public class OrderDAOTest {
                 Order order = createValidOrder("test");
                 orderDAO.save(order);
                 orderDAO.flush();
+
                 return null;
             }
         });
+    }
+
+    private Order createValidOrder(String name) {
+        Order order = Order.create();
+        order.setName(name);
+        order.setCode(UUID.randomUUID().toString());
+        order.setInitDate(new Date());
+        BaseCalendar basicCalendar = BaseCalendarTest.createBasicCalendar();
+        calendarDAO.save(basicCalendar);
+        order.setCalendar(basicCalendar);
+        OrderVersion orderVersion = ResourceAllocationDAOTest.setupVersionUsing(scenarioManager, order);
+        order.useSchedulingDataFor(orderVersion);
+
+        return order;
+    }
+
+    private Order createValidOrderWithDeadlineCommunications(String name) {
+        Order order = createValidOrder(name);
+
+        // Create two deadline communications
+        Date date1 = (new Date());
+        Date date2 = (new LocalDate(date1).plusDays(3)).toDateTimeAtStartOfDay().toDate();
+
+        DeadlineCommunication deadlineCommunication1 = DeadlineCommunication.create(date1, null);
+        DeadlineCommunication deadlineCommunication2 = DeadlineCommunication.create(date2, null);
+
+        order.getDeliveringDates().add(deadlineCommunication1);
+        order.getDeliveringDates().add(deadlineCommunication2);
+
+        return order;
     }
 
 }

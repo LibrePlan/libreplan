@@ -74,8 +74,7 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
         private List<Task> topLevel = new ArrayList<Task>();
 
         @Override
-        public Task findAssociatedBean(T domainObject)
-                throws IllegalArgumentException {
+        public Task findAssociatedBean(T domainObject) throws IllegalArgumentException {
             if (domainObject == null) {
                 throw new IllegalArgumentException("domainObject is null");
             }
@@ -110,16 +109,17 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
             fromDomainToTask.remove(domainObject);
             fromTaskToDomain.remove(toBeRemoved);
             TaskContainer parent = fromTaskToParent.get(toBeRemoved);
+
             if (parent != null) {
                 parent.remove(toBeRemoved);
             }
+
             fromTaskToParent.remove(toBeRemoved);
             topLevel.remove(toBeRemoved);
         }
 
         @Override
-        public T findAssociatedDomainObject(Task task)
-                throws IllegalArgumentException {
+        public T findAssociatedDomainObject(Task task) throws IllegalArgumentException {
             if (task == null) {
                 throw new IllegalArgumentException("taskBean is null");
             }
@@ -136,8 +136,8 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
                 return Position.createAtTopPosition(topLevel.indexOf(task));
             }
             TaskContainer parent = ancestors.get(0);
-            return Position.createPosition(ancestors, parent.getTasks()
-                    .indexOf(task));
+
+            return Position.createPosition(ancestors, parent.getTasks().indexOf(task));
         }
 
         @Override
@@ -148,6 +148,7 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
         private List<TaskContainer> ancestorsOf(Task task) {
             ArrayList<TaskContainer> result = new ArrayList<TaskContainer>();
             TaskContainer taskContainer = fromTaskToParent.get(task);
+
             while (taskContainer != null) {
                 result.add(taskContainer);
                 taskContainer = fromTaskToParent.get(taskContainer);
@@ -158,6 +159,7 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
         @Override
         public List<? extends TaskContainer> getParents(Task task) {
             Position position = findPositionFor(task);
+
             return position.getAncestors();
         }
 
@@ -171,43 +173,39 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
     private TimeTracker timeTracker;
     private final PlannerConfiguration<T> configuration;
 
-    public FunctionalityExposedForExtensions(Planner planner,
-            PlannerConfiguration<T> configuration,
-            GanttZKDiagramGraph diagramGraph) {
+    public FunctionalityExposedForExtensions(
+            Planner planner, PlannerConfiguration<T> configuration, GanttZKDiagramGraph diagramGraph) {
+
         this.planner = planner;
         this.configuration = configuration;
         this.adapter = configuration.getAdapter();
         this.navigator = configuration.getNavigator();
         this.diagramGraph = diagramGraph;
 
-        final IDetailItemModificator firstLevelModificators = configuration
-                .getFirstLevelModificators();
-        final IDetailItemModificator secondLevelModificators = configuration
-                .getSecondLevelModificators();
+        final IDetailItemModificator firstLevelModificators = configuration.getFirstLevelModificators();
+        final IDetailItemModificator secondLevelModificators = configuration.getSecondLevelModificators();
 
         Calendar calendarRightNow = Calendar.getInstance();
         LocalDate localDateRightNow = LocalDate.fromCalendarFields(calendarRightNow);
         LocalDate initDate = localDateRightNow.minusYears(1);
         LocalDate endDate = localDateRightNow.plusYears(5);
 
-        this.timeTracker = new TimeTracker(new Interval(
-                TimeTrackerState.year(initDate.getYear()),
-                TimeTrackerState.year(endDate.getYear())),
-                planner.getZoomLevel(), firstLevelModificators,
-                secondLevelModificators, planner);
+        this.timeTracker = new TimeTracker(
+                new Interval(TimeTrackerState.year(initDate.getYear()), TimeTrackerState.year(endDate.getYear())),
+                planner.getZoomLevel(),
+                firstLevelModificators,
+                secondLevelModificators,
+                planner);
     }
 
     /**
-     * @param insertionPosition
-     *            the position in which to register the task at top level. It
-     *            can be <code>null</code>
+     * @param insertionPosition       the position in which to register the task at top level. It can be <code>null</code>
      * @param accumulatedDependencies
      * @param data
      * @param parent
      * @return
      */
-    private Task buildAndRegister(Position position,
-            List<DomainDependency<T>> accumulatedDependencies, T data) {
+    private Task buildAndRegister(Position position, List<DomainDependency<T>> accumulatedDependencies, T data) {
         accumulatedDependencies.addAll(adapter.getOutcomingDependencies(data));
         accumulatedDependencies.addAll(adapter.getIncomingDependencies(data));
 
@@ -216,11 +214,12 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
         if (!navigator.isLeaf(data)) {
             TaskContainer container = (TaskContainer) result;
             int i = 0;
+
             for (T child : navigator.getChildren(data)) {
-                container.add(buildAndRegister(position.down(container, i),
-                        accumulatedDependencies, child));
+                container.add(buildAndRegister(position.down(container, i), accumulatedDependencies, child));
                 i++;
             }
+
         } else if (navigator.isMilestone(data)) {
             Milestone milestone = (Milestone) result;
             milestone.setOwner(position.getParent());
@@ -231,6 +230,7 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
         result.setShowingAdvances(planner.showAdvancesRightNow());
 
         mapper.register(position, result, data);
+
         return result;
     }
 
@@ -241,18 +241,19 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
         } else if (navigator.isLeaf(data)) {
             return new TaskLeaf(adapted);
         } else {
-            return new TaskContainer(adapted,
-                    planner.areContainersExpandedByDefault());
+            return new TaskContainer(adapted, planner.areContainersExpandedByDefault());
         }
     }
 
     public void add(Position position, Collection<? extends T> domainObjects) {
         List<DomainDependency<T>> totalDependencies = new ArrayList<DomainDependency<T>>();
         List<Task> tasksCreated = new ArrayList<Task>();
+
         for (T object : domainObjects) {
             Task task = buildAndRegister(position, totalDependencies, object);
             tasksCreated.add(task);
         }
+
         updateTimeTracker(tasksCreated);
         if (position.isAppendToTop() || position.isAtTop()) {
             this.diagramGraph.addTopLevel(tasksCreated);
@@ -262,8 +263,7 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
             parent.addAll(position.getInsertionPosition(), tasksCreated);
             this.diagramGraph.childrenAddedTo(parent);
         }
-        for (Dependency dependency : DomainDependency.toDependencies(mapper,
-                totalDependencies)) {
+        for (Dependency dependency : DomainDependency.toDependencies(mapper, totalDependencies)) {
             this.diagramGraph.addWithoutEnforcingConstraints(dependency);
         }
         this.diagramGraph.enforceAllRestrictions();
@@ -312,6 +312,7 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
         diagramGraph.remove(task);
         task.removed();
         planner.removeTask(task);
+
         return position;
     }
 
@@ -332,11 +333,9 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
 
     private DomainDependency<T> toDomainDependency(Dependency bean) {
         T source = mapper.findAssociatedDomainObject(bean.getSource());
-        T destination = mapper
-                .findAssociatedDomainObject(bean.getDestination());
-        DomainDependency<T> dep = DomainDependency.createDependency(source,
-                destination, bean.getType());
-        return dep;
+        T destination = mapper.findAssociatedDomainObject(bean.getDestination());
+
+        return DomainDependency.createDependency(source, destination, bean.getType());
     }
 
     public void addDependency(Dependency dependency) {
@@ -344,8 +343,7 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
             return;
         }
         diagramGraph.add(dependency);
-        getDependencyList().addDependencyComponent(
-                getTaskList().asDependencyComponent(dependency));
+        getDependencyList().addDependencyComponent(getTaskList().asDependencyComponent(dependency));
         adapter.addDependency(toDomainDependency(dependency));
     }
 
@@ -354,8 +352,7 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
     }
 
     private boolean canAddDependency(Dependency dependency) {
-        return diagramGraph.canAddDependency(dependency)
-                && adapter.canAddDependency(toDomainDependency(dependency));
+        return diagramGraph.canAddDependency(dependency) && adapter.canAddDependency(toDomainDependency(dependency));
     }
 
     private DependencyList getDependencyList() {
@@ -372,14 +369,15 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
      * Substitutes the dependency for a new one with the same source and
      * destination but with the specified type. If the new dependency cannot be
      * added, the old one remains.
+     *
      * @param dependency
-     * @param type
-     *            the new type
+     * @param type       the new type
      * @return true only if the new dependency can be added.
      */
     public boolean changeType(Dependency dependency, DependencyType type) {
         Dependency newDependency = dependency.createWithType(type);
         boolean canAddDependency = diagramGraph.canAddDependency(newDependency);
+
         if (canAddDependency) {
             removeDependency(dependency);
             addDependency(newDependency);
@@ -400,11 +398,10 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
 
     @Override
     public void showCriticalPath() {
-        CriticalPathCalculator<Task, Dependency> criticalPathCalculator = CriticalPathCalculator
-                .create(configuration.isDependenciesConstraintsHavePriority());
+        CriticalPathCalculator<Task, Dependency> criticalPathCalculator =
+                CriticalPathCalculator.create(configuration.isDependenciesConstraintsHavePriority());
 
-        List<Task> criticalPath = criticalPathCalculator
-                .calculateCriticalPath(diagramGraph);
+        List<Task> criticalPath = criticalPathCalculator.calculateCriticalPath(diagramGraph);
         for (Task task : diagramGraph.getTasks()) {
             task.setInCriticalPath(isInCriticalPath(criticalPath, task));
         }
@@ -412,7 +409,8 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
 
     private boolean isInCriticalPath(List<Task> criticalPath, Task task) {
         if (task.isContainer()) {
-            List<Task> allTaskLeafs = ((TaskContainer) task).getAllTaskLeafs();
+            List<Task> allTaskLeafs = task.getAllTaskLeafs();
+
             return CollectionUtils.containsAny(criticalPath, allTaskLeafs);
         } else {
             return criticalPath.contains(task);
@@ -422,10 +420,10 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
     @Override
     public List<T> getCriticalPath() {
         List<T> result = new ArrayList<T>();
-        CriticalPathCalculator<Task, Dependency> criticalPathCalculator = CriticalPathCalculator
-                .create(configuration.isDependenciesConstraintsHavePriority());
-        for (Task each : criticalPathCalculator
-                .calculateCriticalPath(diagramGraph)) {
+        CriticalPathCalculator<Task, Dependency> criticalPathCalculator =
+                CriticalPathCalculator.create(configuration.isDependenciesConstraintsHavePriority());
+
+        for (Task each : criticalPathCalculator.calculateCriticalPath(diagramGraph)) {
             result.add(mapper.findAssociatedDomainObject(each));
         }
         return result;
@@ -496,31 +494,30 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
         Checkbox resources = (Checkbox) parent.getFellow("print_resources");
         Checkbox labels = (Checkbox) parent.getFellow("print_labels");
         Checkbox advances = (Checkbox) parent.getFellow("print_advances");
-        Checkbox reportedHours = (Checkbox) parent
-                .getFellow("print_reported_hours");
-        Checkbox moneyCostBar = (Checkbox) parent
-                .getFellow("print_money_cost_bar");
+        Checkbox reportedHours = (Checkbox) parent.getFellow("print_reported_hours");
+        Checkbox moneyCostBar = (Checkbox) parent.getFellow("print_money_cost_bar");
 
         parameters.put("extension", ".png");
-        if (expanded.isChecked() == true) {
+        if ( expanded.isChecked() ) {
             parameters.put("expanded", "all");
         }
-        if (labels.isChecked() == true) {
+        if ( labels.isChecked() ) {
             parameters.put("labels", "all");
         }
-        if (advances.isChecked() == true) {
+        if ( advances.isChecked() ) {
             parameters.put("advances", "all");
         }
-        if (reportedHours.isChecked() == true) {
+        if ( reportedHours.isChecked() ) {
             parameters.put("reportedHours", "all");
         }
-        if (moneyCostBar.isChecked() == true) {
+        if ( moneyCostBar.isChecked() ) {
             parameters.put("moneyCostBar", "all");
         }
-        if (resources.isChecked() == true) {
+        if ( resources.isChecked() ) {
             parameters.put("resources", "all");
         }
         parameters.put("zoom", planner.getZoomLevel().getInternalName());
+
         return parameters;
     }
 
@@ -529,15 +526,15 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
             throw new UnsupportedOperationException("print is not supported");
         }
 
-        final Window printProperties = (Window) Executions.createComponents(
-                "/planner/print_configuration.zul", planner, null);
+        final Window printProperties =
+                (Window) Executions.createComponents("/planner/print_configuration.zul", planner, null);
 
         Button printButton = (Button) printProperties.getFellow("printButton");
         printButton.addEventListener(Events.ON_CLICK, new EventListener() {
             @Override
             public void onEvent(Event event) {
                 printProperties.detach();
-                configuration.print(buildParameters(printProperties),planner);
+                configuration.print(buildParameters(printProperties), planner);
             }
         });
         printButton.setParent(printProperties);
@@ -554,7 +551,6 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
     public List<Task> getTasksOrderedByStartDate() {
         List<Task> tasks = diagramGraph.getTasks();
         Collections.sort(tasks, new Comparator<Task>() {
-
             @Override
             public int compare(Task o1, Task o2) {
                 return o1.getBeginDate().compareTo(o2.getBeginDate());

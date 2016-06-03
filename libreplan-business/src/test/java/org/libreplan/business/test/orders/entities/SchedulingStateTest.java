@@ -31,6 +31,7 @@ import static org.junit.Assert.fail;
 import static org.junit.matchers.JUnitMatchers.each;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.hamcrest.BaseMatcher;
@@ -74,25 +75,22 @@ public class SchedulingStateTest {
     }
 
     private List<SchedulingState> all(){
-        return Arrays.asList(root,childA, childB, grandChildA1, grandChildA2,
-                grandChildB1, grandChildB2);
+        return Arrays.asList(root,childA, childB, grandChildA1, grandChildA2, grandChildB1, grandChildB2);
     }
 
     private List<SchedulingState> allRootDescendants() {
-        return Arrays.asList(childA, childB, grandChildA1, grandChildA2,
-                grandChildB1, grandChildB2);
+        return Arrays.asList(childA, childB, grandChildA1, grandChildA2, grandChildB1, grandChildB2);
     }
 
     @Test
     public void aNewlyCreatedSchedulingStateIsNoScheduled() {
         SchedulingState schedulingState = new SchedulingState();
-        assertThat(schedulingState.getType(),
-                equalTo(Type.NO_SCHEDULED));
+        assertThat(schedulingState.getType(), equalTo(Type.NO_SCHEDULED));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void cannotCreateASchedulingStateWithChildrenAlreadyAssigned() {
-        new SchedulingState(Type.NO_SCHEDULED, Arrays.asList(childA));
+        new SchedulingState(Type.NO_SCHEDULED, Collections.singletonList(childA));
     }
 
     @Test
@@ -119,13 +117,14 @@ public class SchedulingStateTest {
     @Test
     public void whenChangingTheTypeItsNotified() {
         final boolean typeChanged[] = { false };
-        childA.addTypeChangeListener(new ITypeChangedListener() {
 
+        childA.addTypeChangeListener(new ITypeChangedListener() {
             @Override
             public void typeChanged(Type newType) {
                 typeChanged[0] = true;
             }
         });
+
         childA.schedule();
         assertTrue(typeChanged[0]);
     }
@@ -133,12 +132,12 @@ public class SchedulingStateTest {
     @Test
     public void afterRemovingTheListenerItsNotNotified() {
         ITypeChangedListener listener = new ITypeChangedListener() {
-
             @Override
             public void typeChanged(Type newType) {
                 fail("the listener shouldn't be called since it's removed");
             }
         };
+
         childA.addTypeChangeListener(listener);
         childA.removeTypeChangeListener(listener);
         childA.schedule();
@@ -147,8 +146,7 @@ public class SchedulingStateTest {
     @Test
     public void whenSchedulingAElementItTurnsAllItsDescendantsIntoScheduledSubelements() {
         root.schedule();
-        assertThat(allRootDescendants(),
-                each(hasType(Type.SCHEDULED_SUBELEMENT)));
+        assertThat(allRootDescendants(), each(hasType(Type.SCHEDULED_SUBELEMENT)));
     }
 
     @Test
@@ -162,9 +160,8 @@ public class SchedulingStateTest {
         grandChildA1.schedule();
         grandChildB1.schedule();
         for (SchedulingState schedulingState : all()) {
-            if (schedulingState == grandChildA2
-                    || schedulingState == grandChildB2) {
-                // can be scheduled
+            if ( schedulingState == grandChildA2 || schedulingState == grandChildB2 ) {
+                // Can be scheduled
                 continue;
             }
             try {
@@ -290,12 +287,14 @@ public class SchedulingStateTest {
     public void theChangeOfTypeIsNotified() {
         root.schedule();
         final boolean[] typeChanged = { false };
+
         childA.addTypeChangeListener(new ITypeChangedListener() {
             @Override
             public void typeChanged(Type newType) {
                 typeChanged[0] = true;
             }
         });
+
         root.unschedule();
         assertTrue(typeChanged[0]);
     }
@@ -347,15 +346,10 @@ public class SchedulingStateTest {
         assertThat(grandChildB1, hasType(Type.NO_SCHEDULED));
     }
 
-    abstract static class SchedulingStateMatcher extends
-            BaseMatcher<SchedulingState> {
+    abstract static class SchedulingStateMatcher extends BaseMatcher<SchedulingState> {
         @Override
         public boolean matches(Object object) {
-            if (object instanceof SchedulingState) {
-                return matches((SchedulingState) object);
-            } else {
-                return false;
-            }
+            return object instanceof SchedulingState && matches((SchedulingState) object);
         }
 
         protected abstract boolean matches(SchedulingState schedulingState);
@@ -363,7 +357,6 @@ public class SchedulingStateTest {
 
     private Matcher<SchedulingState> hasType(final Type type) {
         return new SchedulingStateMatcher() {
-
             @Override
             public boolean matches(SchedulingState state) {
                 return state.getType() == type;
@@ -371,16 +364,13 @@ public class SchedulingStateTest {
 
             @Override
             public void describeTo(Description description) {
-                description
-                        .appendText("the type of the SchedulingState must be: "
-                                + type);
+                description.appendText("the type of the SchedulingState must be: " + type);
             }
         };
     }
 
     private Matcher<SchedulingState> completelyScheduled() {
         return new SchedulingStateMatcher() {
-
             @Override
             public void describeTo(Description description) {
                 description.appendText("completely scheduled");
@@ -395,7 +385,6 @@ public class SchedulingStateTest {
 
     private Matcher<SchedulingState> canBeScheduled() {
         return new SchedulingStateMatcher() {
-
             @Override
             public boolean matches(SchedulingState state) {
                 return state.canBeScheduled();
@@ -410,7 +399,6 @@ public class SchedulingStateTest {
 
     private Matcher<SchedulingState> canBeUnsheduled() {
         return new SchedulingStateMatcher() {
-
             @Override
             protected boolean matches(SchedulingState schedulingState) {
                 return schedulingState.canBeUnscheduled();

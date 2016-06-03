@@ -31,7 +31,6 @@ import static org.junit.Assert.fail;
 import static org.libreplan.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.libreplan.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -94,7 +93,8 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
+@ContextConfiguration(locations = {
+        BUSINESS_SPRING_CONFIG_FILE,
         BUSINESS_SPRING_CONFIG_TEST_FILE })
 @Transactional
 public class TaskElementDAOTest {
@@ -150,18 +150,17 @@ public class TaskElementDAOTest {
         associatedHoursGroup.setCode("hours-group-code-" + UUID.randomUUID());
         OrderLine orderLine = createOrderLine();
         orderLine.addHoursGroup(associatedHoursGroup);
-        OrderVersion orderVersion = ResourceAllocationDAOTest
-                .setupVersionUsing(scenarioManager,
-                orderLine.getOrder());
+        OrderVersion orderVersion = ResourceAllocationDAOTest.setupVersionUsing(scenarioManager, orderLine.getOrder());
         orderLine.useSchedulingDataFor(orderVersion);
-        SchedulingDataForVersion schedulingDataForVersion = orderLine
-                .getCurrentSchedulingDataForVersion();
-        TaskSource taskSource = TaskSource.create(schedulingDataForVersion,
-                Arrays.asList(associatedHoursGroup));
+        SchedulingDataForVersion schedulingDataForVersion = orderLine.getCurrentSchedulingDataForVersion();
+
+        TaskSource taskSource =
+                TaskSource.create(schedulingDataForVersion, Collections.singletonList(associatedHoursGroup));
+
         TaskSourceSynchronization mustAdd = TaskSource.mustAdd(taskSource);
         mustAdd.apply(TaskSource.persistTaskSources(taskSourceDAO));
-        Task task = (Task) taskSource.getTask();
-        return task;
+
+        return (Task) taskSource.getTask();
     }
 
     private OrderLine createOrderLine() {
@@ -172,15 +171,13 @@ public class TaskElementDAOTest {
         hoursGroup.setCode("hours-group-code-" + UUID.randomUUID());
         orderLine.addHoursGroup(hoursGroup);
         Order order = Order.create();
-        OrderVersion orderVersion = ResourceAllocationDAOTest
-                .setupVersionUsing(scenarioManager, order);
+        OrderVersion orderVersion = ResourceAllocationDAOTest.setupVersionUsing(scenarioManager, order);
         order.setName("bla-" + UUID.randomUUID());
         order.setInitDate(new Date());
         order.setCode("code-" + UUID.randomUUID());
         order.useSchedulingDataFor(orderVersion);
         order.add(orderLine);
-        order.setCalendar(configurationDAO.getConfiguration()
-                .getDefaultCalendar());
+        order.setCalendar(configurationDAO.getConfiguration().getDefaultCalendar());
         try {
             orderDAO.save(order);
             sessionFactory.getCurrentSession().flush();
@@ -192,43 +189,39 @@ public class TaskElementDAOTest {
 
     private TaskGroup createValidTaskGroup() {
         OrderLine orderLine = createOrderLine();
-        OrderVersion orderVersion = ResourceAllocationDAOTest
-                .setupVersionUsing(scenarioManager, orderLine
-                        .getOrder());
+        OrderVersion orderVersion = ResourceAllocationDAOTest.setupVersionUsing(scenarioManager, orderLine.getOrder());
         orderLine.useSchedulingDataFor(orderVersion);
-        SchedulingDataForVersion schedulingDataForVersion = orderLine
-                .getCurrentSchedulingDataForVersion();
-        TaskSource taskSource = TaskSource
-                .createForGroup(schedulingDataForVersion);
-        TaskGroupSynchronization synchronization = new TaskGroupSynchronization(
-                taskSource, Collections.<TaskSourceSynchronization> emptyList()) {
+        SchedulingDataForVersion schedulingDataForVersion = orderLine.getCurrentSchedulingDataForVersion();
+        TaskSource taskSource = TaskSource.createForGroup(schedulingDataForVersion);
 
-            @Override
-            protected TaskElement apply(List<TaskElement> children,
-                    IOptionalPersistence persistence) {
-                TaskGroup result = TaskGroup.create(taskSource);
-                Date today = new Date();
-                result.setStartDate(today);
-                result.setEndDate(plusDays(today, 3));
-                setTask(taskSource, result);
-                taskSourceDAO.save(taskSource);
-                return result;
-            }
+        TaskGroupSynchronization synchronization =
+                new TaskGroupSynchronization(taskSource, Collections.<TaskSourceSynchronization> emptyList()) {
+                    @Override
+                    protected TaskElement apply(List<TaskElement> children, IOptionalPersistence persistence) {
+                        TaskGroup result = TaskGroup.create(taskSource);
+                        Date today = new Date();
+                        result.setStartDate(today);
+                        result.setEndDate(plusDays(today, 3));
+                        setTask(taskSource, result);
+                        taskSourceDAO.save(taskSource);
 
-        };
+                        return result;
+                    }
+                };
+
         synchronization.apply(TaskSource.persistTaskSources(taskSourceDAO));
+
         return (TaskGroup) taskSource.getTask();
     }
 
     private Date plusDays(Date today, int days) {
-        LocalDate result = LocalDate.fromDateFields(today)
-                .plusDays(days);
+        LocalDate result = LocalDate.fromDateFields(today).plusDays(days);
+
         return result.toDateTimeAtStartOfDay().toDate();
     }
 
     private TaskMilestone createValidTaskMilestone() {
-        TaskMilestone result = TaskMilestone.create(new Date());
-        return result;
+        return TaskMilestone.create(new Date());
     }
 
     private void checkProperties(TaskElement inMemory, TaskElement fromDB) {
@@ -247,11 +240,13 @@ public class TaskElementDAOTest {
         taskElementDAO.save(task);
         flushAndEvict(task);
         TaskElement fromDB;
+
         try {
             fromDB = taskElementDAO.find(task.getId());
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }
+
         assertThat(fromDB.getId(), equalTo(task.getId()));
         assertThat(fromDB, is(Task.class));
         checkProperties(task, fromDB);
@@ -265,11 +260,13 @@ public class TaskElementDAOTest {
         taskElementDAO.save(milestone);
         flushAndEvict(milestone);
         TaskElement fromDB;
+
         try {
             fromDB = taskElementDAO.find(milestone.getId());
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }
+
         assertThat(fromDB.getId(), equalTo(milestone.getId()));
         assertThat(fromDB, is(TaskMilestone.class));
     }
@@ -289,11 +286,13 @@ public class TaskElementDAOTest {
         taskElementDAO.save(taskGroup);
         flushAndEvict(taskGroup);
         TaskElement reloaded;
+
         try {
             reloaded = taskElementDAO.find(taskGroup.getId());
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }
+
         assertThat(reloaded.getId(), equalTo(taskGroup.getId()));
         assertThat(reloaded, is(TaskGroup.class));
         checkProperties(taskGroup, reloaded);
@@ -306,11 +305,13 @@ public class TaskElementDAOTest {
         taskElementDAO.save(taskGroup);
         flushAndEvict(taskGroup);
         TaskElement reloaded;
+
         try {
             reloaded = taskElementDAO.find(taskGroup.getId());
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }
+
         TaskElement child = reloaded.getChildren().get(0);
         assertThat(child.getParent(), equalTo(reloaded));
     }
@@ -325,11 +326,13 @@ public class TaskElementDAOTest {
         taskElementDAO.save(taskGroup);
         flushAndEvict(taskGroup);
         TaskGroup reloaded;
+
         try {
             reloaded = (TaskGroup) taskElementDAO.find(taskGroup.getId());
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }
+
         List<TaskElement> taskElements = reloaded.getChildren();
         assertThat(taskElements.size(), equalTo(2));
         assertThat(taskElements.get(0).getId(), equalTo(child1.getId()));
@@ -339,44 +342,38 @@ public class TaskElementDAOTest {
 
     @Test
     @NotTransactional
-    public void savingTaskElementSavesAssociatedDependencies()
-            throws InstanceNotFoundException {
+    public void savingTaskElementSavesAssociatedDependencies() throws InstanceNotFoundException {
         IOnTransaction<Task> createValidTask = new IOnTransaction<Task>() {
+            @Override
+            public Task execute() {
+                return createValidTask();
+            }
+        };
 
-                    @Override
-                    public Task execute() {
-                        return createValidTask();
-                    }
-                };
-        final Task child1 = transactionService
-                .runOnTransaction(createValidTask);
-        final Task child2 = transactionService
-                .runOnTransaction(createValidTask);
+        final Task child1 = transactionService.runOnTransaction(createValidTask);
+        final Task child2 = transactionService.runOnTransaction(createValidTask);
         IOnTransaction<Void> createDependency = new IOnTransaction<Void>() {
-
             @Override
             public Void execute() {
                 child1.dontPoseAsTransientObjectAnymore();
                 child2.dontPoseAsTransientObjectAnymore();
                 Dependency.create(child1, child2, Type.START_END);
                 taskElementDAO.save(child1);
+
                 return null;
             }
         };
         transactionService.runOnTransaction(createDependency);
-        assertThat(child2.getDependenciesWithThisDestination().size(),
-                equalTo(1));
+        assertThat(child2.getDependenciesWithThisDestination().size(), equalTo(1));
         assertTrue(child2.getDependenciesWithThisOrigin().isEmpty());
         IOnTransaction<Void> checkDependencyWasSaved = new IOnTransaction<Void>() {
 
             @Override
             public Void execute() {
-                TaskElement fromDB = (TaskElement) taskElementDAO
-                        .findExistingEntity(child1.getId());
-                assertThat(fromDB.getDependenciesWithThisOrigin()
-                        .size(), equalTo(1));
-                assertTrue(fromDB.getDependenciesWithThisDestination()
-                        .isEmpty());
+                TaskElement fromDB = taskElementDAO.findExistingEntity(child1.getId());
+                assertThat(fromDB.getDependenciesWithThisOrigin().size(), equalTo(1));
+                assertTrue(fromDB.getDependenciesWithThisDestination().isEmpty());
+
                 return null;
             }
         };
@@ -387,36 +384,34 @@ public class TaskElementDAOTest {
         Task task = createValidTask();
         taskElementDAO.save(task);
         flushAndEvict(task);
+
         try {
             taskElementDAO.remove(task.getId());
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }
+
         sessionFactory.getCurrentSession().flush();
-        assertNull(sessionFactory.getCurrentSession().get(TaskElement.class,
-                task.getId()));
+        assertNull(sessionFactory.getCurrentSession().get(TaskElement.class, task.getId()));
     }
 
     @NotTransactional
     public void testInverseManyToOneRelationshipInOrderElementIsSavedCorrectly() {
-        final Task task = transactionService
-                .runOnTransaction(new IOnTransaction<Task>() {
-
+        final Task task = transactionService.runOnTransaction(new IOnTransaction<Task>() {
             @Override
             public Task execute() {
                 return createValidTask();
             }
         });
-        transactionService.runOnReadOnlyTransaction(new IOnTransaction<Void>() {
 
+        transactionService.runOnReadOnlyTransaction(new IOnTransaction<Void>() {
             @Override
             public Void execute() {
-                TaskElement fromDB = taskElementDAO.findExistingEntity(task
-                        .getId());
+                TaskElement fromDB = taskElementDAO.findExistingEntity(task.getId());
                 OrderElement orderElement = fromDB.getOrderElement();
                 assertThat(orderElement.getTaskElements().size(), equalTo(1));
-                assertThat(orderElement.getTaskElements().iterator().next(),
-                        equalTo(fromDB));
+                assertThat(orderElement.getTaskElements().iterator().next(), equalTo(fromDB));
+
                 return null;
             }
         });
@@ -426,11 +421,11 @@ public class TaskElementDAOTest {
     @NotTransactional
     public void aTaskCanBeRemovedFromItsTaskSource() {
         final Task task = transactionService.runOnTransaction(new IOnTransaction<Task>(){
-
             @Override
             public Task execute() {
                 Task task = createValidTask();
                 taskElementDAO.save(task);
+
                 return task;
             }});
         transactionService.runOnTransaction(new IOnTransaction<Void>() {
@@ -442,9 +437,10 @@ public class TaskElementDAOTest {
                 } catch (InstanceNotFoundException e) {
                     throw new RuntimeException(e);
                 }
+
                 sessionFactory.getCurrentSession().flush();
-                assertNull(sessionFactory.getCurrentSession().get(TaskElement.class,
-                        task.getId()));
+                assertNull(sessionFactory.getCurrentSession().get(TaskElement.class, task.getId()));
+
                 return null;
             }});
     }
@@ -452,36 +448,33 @@ public class TaskElementDAOTest {
     @Test
     @NotTransactional
     public void aTaskGroupCanBeRemovedFromItsTaskSourceIfBelowTasksSourcesAreRemovedFirst() {
-        final TaskGroup taskGroupWithOneChild = transactionService
-                .runOnTransaction(new IOnTransaction<TaskGroup>() {
+        final TaskGroup taskGroupWithOneChild = transactionService.runOnTransaction(new IOnTransaction<TaskGroup>() {
+            @Override
+            public TaskGroup execute() {
+                TaskGroup taskGroup = createValidTaskGroup();
+                Task task = createValidTask();
+                taskGroup.addTaskElement(task);
 
-                    @Override
-                    public TaskGroup execute() {
-                        TaskGroup taskGroup = createValidTaskGroup();
-                        Task task = createValidTask();
-                        taskGroup.addTaskElement(task);
-                        return taskGroup;
-                    }
-                });
+                return taskGroup;
+            }
+        });
+
         transactionService.runOnTransaction(new IOnTransaction<Void>() {
-
             @Override
             public Void execute() {
                 try {
-                    taskSourceDAO.remove(taskGroupWithOneChild.getChildren()
-                            .get(0).getTaskSource().getId());
+                    taskSourceDAO.remove(taskGroupWithOneChild.getChildren().get(0).getTaskSource().getId());
                 } catch (InstanceNotFoundException e) {
                     throw new RuntimeException(e);
                 }
                 try {
-                    taskSourceDAO.remove(taskGroupWithOneChild.getTaskSource()
-                            .getId());
+                    taskSourceDAO.remove(taskGroupWithOneChild.getTaskSource().getId());
                 } catch (InstanceNotFoundException e) {
                     throw new RuntimeException(e);
                 }
                 sessionFactory.getCurrentSession().flush();
-                assertNull(sessionFactory.getCurrentSession().get(
-                        TaskElement.class, taskGroupWithOneChild.getId()));
+                assertNull(sessionFactory.getCurrentSession().get(TaskElement.class, taskGroupWithOneChild.getId()));
+
                 return null;
             }
         });
@@ -491,8 +484,7 @@ public class TaskElementDAOTest {
     private IExternalCompanyDAO externalCompanyDAO;
 
     private ExternalCompany getSubcontractorExternalCompanySaved() {
-        ExternalCompany externalCompany = ExternalCompanyDAOTest
-                .createValidExternalCompany();
+        ExternalCompany externalCompany = ExternalCompanyDAOTest.createValidExternalCompany();
         externalCompany.setSubcontractor(true);
 
         externalCompanyDAO.save(externalCompany);
@@ -505,14 +497,11 @@ public class TaskElementDAOTest {
     }
 
     @Test
-    public void testStoreSubcontractedTaskData()
-            throws InstanceNotFoundException {
+    public void testStoreSubcontractedTaskData() throws InstanceNotFoundException {
         Task task = createValidTask();
 
-        SubcontractedTaskData subcontractedTaskData = SubcontractedTaskData
-                .create(task);
-        subcontractedTaskData.addRequiredDeliveringDates(SubcontractorDeliverDate
-                .create(new Date(),new Date(), null));
+        SubcontractedTaskData subcontractedTaskData = SubcontractedTaskData.create(task);
+        subcontractedTaskData.addRequiredDeliveringDates(SubcontractorDeliverDate.create(new Date(), new Date(), null));
         subcontractedTaskData.setExternalCompany(getSubcontractorExternalCompanySaved());
 
         task.setSubcontractedTaskData(subcontractedTaskData);
@@ -524,8 +513,7 @@ public class TaskElementDAOTest {
         Task taskFound = (Task) taskElementDAO.find(task.getId());
         assertNotNull(taskFound.getSubcontractedTaskData());
 
-        SubcontractedTaskData subcontractedTaskDataFound = subcontractedTaskDataDAO
-                .find(subcontractedTaskData.getId());
+        SubcontractedTaskData subcontractedTaskDataFound = subcontractedTaskDataDAO.find(subcontractedTaskData.getId());
         assertNotNull(subcontractedTaskDataFound.getTask());
     }
 
@@ -538,15 +526,13 @@ public class TaskElementDAOTest {
         worker.setSurname(UUID.randomUUID().toString());
         worker.setNif(UUID.randomUUID().toString());
         resourceDAO.save(worker);
+
         return worker;
     }
 
     @Test
-    public void testSaveTaskElementUpdatesSumOfHoursAllocatedAttribute()
-            throws InstanceNotFoundException {
-        IOnTransaction<Long> createTaskElement =
-            new IOnTransaction<Long>() {
-
+    public void testSaveTaskElementUpdatesSumOfHoursAllocatedAttribute() throws InstanceNotFoundException {
+        IOnTransaction<Long> createTaskElement = new IOnTransaction<Long>() {
             @Override
             public Long execute() {
                 Task task = createValidTask();
@@ -554,7 +540,7 @@ public class TaskElementDAOTest {
                 taskGroup.addTaskElement(task);
 
                 SpecificResourceAllocation allocation =
-                    SpecificResourceAllocation.create(task);
+                        SpecificResourceAllocation.create(task);
                 allocation.setResource(createValidWorker());
                 LocalDate start = task.getStartAsLocalDate();
                 task.setIntraDayEndDate(IntraDayDate.startOfDay(start
@@ -572,9 +558,7 @@ public class TaskElementDAOTest {
 
         final Long id = transactionService.runOnTransaction(createTaskElement);
 
-        IOnTransaction<Void> checkAllocatedHoursWereUpdated =
-            new IOnTransaction<Void>() {
-
+        IOnTransaction<Void> checkAllocatedHoursWereUpdated = new IOnTransaction<Void>() {
             @Override
             public Void execute() {
                 TaskElement task1;

@@ -53,8 +53,7 @@ public abstract class BaseEntity implements INewObject {
      * @param entities
      * @return entities grouped by id
      */
-    public static <T extends BaseEntity> Map<Long, Set<T>> byId(
-            Collection<? extends T> entities) {
+    public static <T extends BaseEntity> Map<Long, Set<T>> byId(Collection<? extends T> entities) {
         Map<Long, Set<T>> result = new HashMap<Long, Set<T>>();
         for (T each : entities) {
             if ( !result.containsKey(each.getId()) ) {
@@ -81,7 +80,7 @@ public abstract class BaseEntity implements INewObject {
     }
 
     public Long getVersion() {
-        if (isNewObject()) {
+        if ( isNewObject() ) {
             return null;
         }
 
@@ -111,6 +110,7 @@ public abstract class BaseEntity implements INewObject {
 
     protected static <T extends BaseEntity> T create(T baseEntity) {
         baseEntity.setNewObject(true);
+
         return baseEntity;
     }
 
@@ -127,6 +127,7 @@ public abstract class BaseEntity implements INewObject {
     public void validate() throws ValidationException {
         LibrePlanClassValidator classValidator = new LibrePlanClassValidator(this.getClass());
         InvalidValue[] invalidValues = classValidator.getInvalidValues(this);
+
         if ( invalidValues.length > 0 ) {
             throw new ValidationException(invalidValues);
         }

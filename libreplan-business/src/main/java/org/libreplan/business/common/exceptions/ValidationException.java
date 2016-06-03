@@ -27,46 +27,46 @@ import org.libreplan.business.common.BaseEntity;
 
 /**
  * Encapsulates some validation failure <br />
+ *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Diego Pino García <dpino@igalia.com>
  */
 public class ValidationException extends RuntimeException {
 
-    private static String getValidationErrorSummary(
-            InvalidValue... invalidValues) {
+    private static String getValidationErrorSummary(InvalidValue... invalidValues) {
         StringBuilder builder = new StringBuilder();
+
         for (InvalidValue each : invalidValues) {
             builder.append(summaryFor(each));
             builder.append("; ");
         }
-        if (invalidValues.length > 0) {
+
+        if ( invalidValues.length > 0 ) {
             builder.delete(builder.length() - 2, builder.length());
         }
         return builder.toString();
     }
 
     private static String summaryFor(InvalidValue invalidValue) {
-        return "at " + asString(invalidValue.getBean()) + " "
-                + invalidValue.getPropertyPath() + ": "
-                + invalidValue.getMessage();
+        return "at " + asString(invalidValue.getBean()) + " " +
+               invalidValue.getPropertyPath() + ": " + invalidValue.getMessage();
     }
 
     private static String asString(Object bean) {
-        if (bean == null) {
-            // this shouldn't happen, just in case
+        if ( bean == null ) {
+            // This should not happen, just in case
             return "null";
         }
-        if (bean instanceof BaseEntity) {
+        if ( bean instanceof BaseEntity ) {
             BaseEntity entity = (BaseEntity) bean;
-            return bean.getClass().getSimpleName() + " "
-                    + entity.getExtraInformation();
+            return bean.getClass().getSimpleName() + " " + entity.getExtraInformation();
         }
         return bean.toString();
     }
 
     public static ValidationException invalidValue(String message, Object value) {
-        InvalidValue invalidValue = new InvalidValue(message, null, "", value,
-                null);
+        InvalidValue invalidValue = new InvalidValue(message, null, "", value, null);
+
         return new ValidationException(invalidValue);
     }
 
@@ -88,6 +88,7 @@ public class ValidationException extends RuntimeException {
     private InvalidValue[] toArray(InvalidValue invalidValue) {
         InvalidValue[] result = new InvalidValue[1];
         result[0] = invalidValue;
+
         return result;
     }
 
@@ -101,8 +102,7 @@ public class ValidationException extends RuntimeException {
         this.invalidValues = invalidValues.clone();
     }
 
-    public ValidationException(InvalidValue[] invalidValues, String message,
-            Throwable cause) {
+    public ValidationException(InvalidValue[] invalidValues, String message, Throwable cause) {
         super(message, cause);
         storeInvalidValues(invalidValues);
     }
