@@ -63,11 +63,9 @@ import org.zkoss.lang.Strings;
  */
 public final class WorkReportConverter {
 
-    private static IBindingOrderElementStrategy bindingStrategy = OneOrderElementPerWorkReportLine
-            .getInstance();
+    private static IBindingOrderElementStrategy bindingStrategy = OneOrderElementPerWorkReportLine.getInstance();
 
-    public static WorkReport toEntity(WorkReportDTO workReportDTO)
-            throws InstanceNotFoundException {
+    public static WorkReport toEntity(WorkReportDTO workReportDTO) throws InstanceNotFoundException {
 
         WorkReport workReport = WorkReport.create();
 
@@ -75,21 +73,20 @@ public final class WorkReportConverter {
         workReport.setCode(workReportDTO.code);
 
         try {
-            WorkReportType workReportType = Registry.getWorkReportTypeDAO()
-                    .findUniqueByCode(workReportDTO.workReportType);
+            WorkReportType workReportType =
+                    Registry.getWorkReportTypeDAO().findUniqueByCode(workReportDTO.workReportType);
+
             workReport.setWorkReportType(workReportType);
         } catch (InstanceNotFoundException e) {
-            throw new ValidationException(
-                    "There is no type of work report with this code");
+            throw new ValidationException("There is no type of work report with this code");
         }
 
         for (WorkReportLineDTO workReportLineDTO : workReportDTO.workReportLines) {
-            workReport
-                    .addWorkReportLine(toEntity(workReportLineDTO, workReport));
+            workReport.addWorkReportLine(toEntity(workReportLineDTO, workReport));
         }
 
         // Optional fields
-        if (workReportDTO.date != null) {
+        if ( workReportDTO.date != null ) {
             workReport.setDate(DateConverter.toDate(workReportDTO.date));
         }
 
@@ -146,8 +143,7 @@ public final class WorkReportConverter {
                                 workReportLineDTO.typeOfWorkHours);
                 workReportLine.setTypeOfWorkHours(typeOfWorkHours);
             } catch (InstanceNotFoundException e) {
-                throw new ValidationException(
-                        "There is no type of work hours with this code");
+                throw new ValidationException("There is no type of work hours with this code");
             }
         }
 
@@ -511,8 +507,7 @@ public final class WorkReportConverter {
                 TypeOfWorkHours typeOfWorkHours = Registry.getTypeOfWorkHoursDAO().findUniqueByCode(workReportLineDTO.typeOfWorkHours);
                 workReportLine.setTypeOfWorkHours(typeOfWorkHours);
             } catch (InstanceNotFoundException e) {
-                throw new ValidationException(
-                        "There is no type of work hours with this code");
+                throw new ValidationException("There is no type of work hours with this code");
             }
         }
 

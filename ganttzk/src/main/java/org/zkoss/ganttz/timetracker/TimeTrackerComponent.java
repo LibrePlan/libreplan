@@ -25,7 +25,6 @@ import java.util.Collection;
 
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
-import org.zkoss.ganttz.IDatesMapper;
 import org.zkoss.ganttz.timetracker.zoom.DetailItem;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.TimeTrackerState;
@@ -40,26 +39,21 @@ import org.zkoss.zk.ui.HtmlMacroComponent;
 public abstract class TimeTrackerComponent extends HtmlMacroComponent {
 
     private final TimeTracker timeTracker;
-    private IZoomLevelChangedListener zoomListener;
     private final String secondLevelZul;
     private String timeTrackerElementId;
     private int scrollLeft;
 
     public TimeTrackerComponent(TimeTracker timeTracker) {
-        this(timeTracker,
-                "~./ganttz/zul/timetracker/timetrackersecondlevel.zul",
-                "timetracker");
+        this(timeTracker, "~./ganttz/zul/timetracker/timetrackersecondlevel.zul", "timetracker");
     }
 
-    protected TimeTrackerComponent(TimeTracker timeTracker,
-            String secondLevelZul, String timetrackerId) {
+    protected TimeTrackerComponent(TimeTracker timeTracker, String secondLevelZul, String timetrackerId) {
         this.secondLevelZul = secondLevelZul;
         this.timeTracker = timeTracker;
-        zoomListener = new IZoomLevelChangedListener() {
-
+        IZoomLevelChangedListener zoomListener = new IZoomLevelChangedListener() {
             @Override
             public void zoomLevelChanged(ZoomLevel detailLevel) {
-                if (isInPage()) {
+                if ( isInPage() ) {
                     recreate();
                     changeDetailLevel(getDaysFor(scrollLeft));
                 }
@@ -95,8 +89,7 @@ public abstract class TimeTrackerComponent extends HtmlMacroComponent {
     }
 
     private void addSecondLevels(Component parent) {
-        Executions.getCurrent().createComponents(secondLevelZul, parent,
-                getAttributes());
+        Executions.getCurrent().createComponents(secondLevelZul, parent, getAttributes());
     }
 
     public ZoomLevel getZoomLevel() {
@@ -146,9 +139,9 @@ public abstract class TimeTrackerComponent extends HtmlMacroComponent {
     }
 
     public int getDiffDays(LocalDate previousStart) {
-        // get the current data
-        IDatesMapper mapper = getTimeTracker().getMapper();
+        // Get the current data
         LocalDate start = getTimeTracker().getRealInterval().getStart();
+
         return Days.daysBetween(start, previousStart).getDays();
     }
 

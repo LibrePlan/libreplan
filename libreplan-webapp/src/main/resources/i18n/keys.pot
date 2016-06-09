@@ -9307,3 +9307,8 @@ msgstr ""
 #: libreplan-webapp/src/main/java/org/libreplan/web/resources/machine/MachineCRUDController.java:631
 msgid "Machines limit reached"
 msgstr ""
+
+#: libreplan-webapp/src/main/java/org/libreplan/web/orders/ProjectDetailsController.java:266
+#: libreplan-webapp/src/main/java/org/libreplan/web/orders/DetailsOrderElement.java:110
+msgid "Must be after 2010!"
+msgstr ""

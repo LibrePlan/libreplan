@@ -77,19 +77,18 @@ public class Order extends OrderLineGroup implements Comparable {
     public static Order create() {
         Order order = new Order();
         order.setNewObject(true);
+
         return order;
     }
 
     public static Order createUnvalidated(String code) {
-        Order order = create(new Order(), code);
-        return order;
+        return create(new Order(), code);
     }
 
     /**
      * Constructor for hibernate. Do not use!
      */
     public Order() {
-
     }
 
     private String responsible;
@@ -121,15 +120,16 @@ public class Order extends OrderLineGroup implements Comparable {
     private Set<CustomerCommunication> customerCommunications = new HashSet<CustomerCommunication>();
 
     @Valid
-    private SortedSet<DeadlineCommunication> deliveringDates = new TreeSet<DeadlineCommunication>(
-            new DeliverDateComparator());
+    private SortedSet<DeadlineCommunication> deliveringDates =
+            new TreeSet<DeadlineCommunication>(new DeliverDateComparator());
 
     @Valid
-    private SortedSet<EndDateCommunication> endDateCommunicationToCustomer = new TreeSet<EndDateCommunication>(
-            new EndDateCommunicationComparator());
+    private SortedSet<EndDateCommunication> endDateCommunicationToCustomer =
+            new TreeSet<EndDateCommunication>(new EndDateCommunicationComparator());
 
     public enum SchedulingMode {
-        FORWARD, BACKWARDS;
+        FORWARD,
+        BACKWARDS
     }
 
     private SchedulingMode schedulingMode = SchedulingMode.FORWARD;
@@ -144,14 +144,14 @@ public class Order extends OrderLineGroup implements Comparable {
 
         private final boolean modifyingTheOwnerScenario;
 
-        static CurrentVersionInfo create(Scenario scenario,
-                OrderVersion orderVersion) {
+        static CurrentVersionInfo create(Scenario scenario, OrderVersion orderVersion) {
             return new CurrentVersionInfo(scenario, orderVersion);
         }
 
         private CurrentVersionInfo(Scenario scenario, OrderVersion orderVersion) {
             Validate.notNull(scenario);
             Validate.notNull(orderVersion);
+
             this.orderVersion = orderVersion;
             this.modifyingTheOwnerScenario = orderVersion.isOwnedBy(scenario);
         }
@@ -166,11 +166,10 @@ public class Order extends OrderLineGroup implements Comparable {
     }
 
     public CurrentVersionInfo getCurrentVersionInfo() {
-        if (currentVersionInfo == null) {
+        if ( currentVersionInfo == null ) {
             throw new IllegalStateException(
-                    "Order#useSchedulingDataFor(Scenario scenario)"
-                            + " must have been called first in order to use"
-                            + " this method");
+                    "Order#useSchedulingDataFor(Scenario scenario)" +
+                            " must have been called first in order to use this method");
         }
         return currentVersionInfo;
     }
@@ -199,20 +198,21 @@ public class Order extends OrderLineGroup implements Comparable {
         super.writeSchedulingDataChanges();
     }
 
-    public void writeSchedulingDataChangesTo(Scenario currentScenario,
-            OrderVersion newOrderVersion) {
+    public void writeSchedulingDataChangesTo(Scenario currentScenario, OrderVersion newOrderVersion) {
         setVersionForScenario(currentScenario, newOrderVersion);
+
         writeSchedulingDataChangesTo(
                 deepCopyWithNeededReplaces(newOrderVersion),
                 newOrderVersion);
+
         useSchedulingDataFor(currentScenario);
         removeSpuriousDayAssignments(currentScenario);
     }
 
-    private DeepCopy deepCopyWithNeededReplaces(
-            OrderVersion newOrderVersion) {
+    private DeepCopy deepCopyWithNeededReplaces(OrderVersion newOrderVersion) {
         DeepCopy result = new DeepCopy();
         addNeededReplaces(result, newOrderVersion);
+
         return result;
     }
 
@@ -221,28 +221,28 @@ public class Order extends OrderLineGroup implements Comparable {
     }
 
     public BigDecimal getWorkBudget() {
-        if (workBudget == null) {
+        if ( workBudget == null ) {
             return BigDecimal.ZERO;
         }
         return workBudget;
     }
 
     public void setWorkBudget(BigDecimal workBudget) {
-        if (workBudget == null) {
+        if ( workBudget == null ) {
             workBudget = BigDecimal.ZERO.setScale(2);
         }
         this.workBudget = workBudget;
     }
 
     public BigDecimal getMaterialsBudget() {
-        if (materialsBudget == null) {
+        if ( materialsBudget == null ) {
             return BigDecimal.ZERO;
         }
         return materialsBudget;
     }
 
     public void setMaterialsBudget(BigDecimal materialsBudget) {
-        if (materialsBudget == null) {
+        if ( materialsBudget == null ) {
             materialsBudget = BigDecimal.ZERO.setScale(2);
         }
         this.materialsBudget = materialsBudget;
@@ -367,7 +367,7 @@ public class Order extends OrderLineGroup implements Comparable {
     @AssertTrue(message = "At least one hours group is needed for each task")
     private boolean checkConstraintAtLeastOneHoursGroupForEachOrderElement() {
         for (OrderElement orderElement : this.getOrderElements()) {
-            if (!orderElement.checkAtLeastOneHoursGroup()) {
+            if ( !orderElement.checkAtLeastOneHoursGroup() ) {
                 return false;
             }
         }
@@ -376,12 +376,15 @@ public class Order extends OrderLineGroup implements Comparable {
 
     public List<DayAssignment> getDayAssignments(FilterType filter) {
         List<DayAssignment> dayAssignments = new ArrayList<DayAssignment>();
+
         for (OrderElement orderElement : getAllOrderElements()) {
+
             Set<TaskElement> taskElements = orderElement.getTaskElements();
+
             for (TaskElement taskElement : taskElements) {
-                if (taskElement instanceof Task) {
-                    dayAssignments
-                            .addAll(taskElement.getDayAssignments(filter));
+
+                if ( taskElement instanceof Task ) {
+                    dayAssignments.addAll(taskElement.getDayAssignments(filter));
                 }
             }
         }
@@ -397,20 +400,16 @@ public class Order extends OrderLineGroup implements Comparable {
     }
 
     @Override
-    protected boolean applyConstraintBasedOnInitOrEndDate(Task task,
-            boolean scheduleBackwards) {
-        // the initDate or the deadline of a order doesn't imply a start
-        // constraint at a task
+    protected boolean applyConstraintBasedOnInitOrEndDate(Task task, boolean scheduleBackwards) {
+        // The initDate or the deadline of a order does not imply a start constraint at a task
         return false;
     }
 
     public boolean getDependenciesConstraintsHavePriority() {
-        return dependenciesConstraintsHavePriority != null
-                && dependenciesConstraintsHavePriority;
+        return dependenciesConstraintsHavePriority != null && dependenciesConstraintsHavePriority;
     }
 
-    public void setDependenciesConstraintsHavePriority(
-            Boolean dependenciesConstraintsHavePriority) {
+    public void setDependenciesConstraintsHavePriority(Boolean dependenciesConstraintsHavePriority) {
         this.dependenciesConstraintsHavePriority = dependenciesConstraintsHavePriority;
     }
 
@@ -424,7 +423,7 @@ public class Order extends OrderLineGroup implements Comparable {
     }
 
     public void incrementLastOrderElementSequenceCode() {
-        if (this.lastOrderElementSequenceCode == null) {
+        if ( this.lastOrderElementSequenceCode == null ) {
             this.lastOrderElementSequenceCode = 0;
         }
         this.lastOrderElementSequenceCode++;
@@ -446,34 +445,46 @@ public class Order extends OrderLineGroup implements Comparable {
     }
 
     public void generateOrderElementCodes(int numberOfDigits) {
-        if (isCodeAutogenerated()) {
+        boolean condition;
+
+        if ( isCodeAutogenerated() ) {
             for (OrderElement orderElement : this.getAllOrderElements()) {
-                if ((orderElement.getCode() == null)
-                        || (orderElement.getCode().isEmpty())
-                        || (!orderElement.getCode().startsWith(this.getCode()))) {
+
+                condition = (orderElement.getCode() == null) ||
+                        (orderElement.getCode().isEmpty()) ||
+                        (!orderElement.getCode().startsWith(this.getCode()));
+
+                if ( condition ) {
                     this.incrementLastOrderElementSequenceCode();
+
                     String orderElementCode = EntitySequence.formatValue(
                             numberOfDigits,
                             this.getLastOrderElementSequenceCode());
-                    orderElement.setCode(this.getCode()
-                            + EntitySequence.CODE_SEPARATOR_CHILDREN
-                            + orderElementCode);
+
+                    orderElement.setCode(
+                            this.getCode()
+                                    + EntitySequence.CODE_SEPARATOR_CHILDREN
+                                    + orderElementCode);
                 }
 
-                if (orderElement instanceof OrderLine) {
+                if ( orderElement instanceof OrderLine ) {
                     for (HoursGroup hoursGroup : orderElement.getHoursGroups()) {
-                        if ((hoursGroup.getCode() == null)
-                                || (hoursGroup.getCode().isEmpty())
-                                || (!hoursGroup.getCode().startsWith(
-                                        orderElement.getCode()))) {
-                            ((OrderLine) orderElement)
-                                    .incrementLastHoursGroupSequenceCode();
+
+                        condition = (hoursGroup.getCode() == null) ||
+                                (hoursGroup.getCode().isEmpty()) ||
+                                (!hoursGroup.getCode().startsWith(orderElement.getCode()));
+
+                        if ( condition ) {
+                            ((OrderLine) orderElement).incrementLastHoursGroupSequenceCode();
+
                             String hoursGroupCode = EntitySequence.formatValue(
-                                    numberOfDigits, ((OrderLine) orderElement)
-                                            .getLastHoursGroupSequenceCode());
-                            hoursGroup.setCode(orderElement.getCode()
-                                    + EntitySequence.CODE_SEPARATOR_CHILDREN
-                                    + hoursGroupCode);
+                                    numberOfDigits,
+                                    ((OrderLine) orderElement).getLastHoursGroupSequenceCode());
+
+                            hoursGroup.setCode(
+                                    orderElement.getCode()
+                                            + EntitySequence.CODE_SEPARATOR_CHILDREN
+                                            + hoursGroupCode);
                         }
                     }
                 }
@@ -485,37 +496,34 @@ public class Order extends OrderLineGroup implements Comparable {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime
-                * result
-                + ((getId() == null || isNewObject()) ? super.hashCode()
-                        : getId().hashCode());
+        result = prime * result + ( (getId() == null || isNewObject()) ? super.hashCode() : getId().hashCode() );
+
         return result;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
+        if ( this == obj ) {
             return true;
         }
-        if (obj == null || isNewObject()) {
+        if ( obj == null || isNewObject() ) {
             return false;
         }
-        if (!(obj instanceof Order)) {
+        if ( !(obj instanceof Order) ) {
             return false;
         }
         Order other = (Order) obj;
-        if (getId() == null) {
+        if ( getId() == null ) {
             if (other.getId() != null) {
                 return false;
             }
-        } else if (!getId().equals(other.getId())) {
+        } else if ( !getId().equals(other.getId()) ) {
             return false;
         }
         return true;
     }
 
-    public void setVersionForScenario(Scenario currentScenario,
-            OrderVersion orderVersion) {
+    public void setVersionForScenario(Scenario currentScenario, OrderVersion orderVersion) {
         scenarios.put(currentScenario, orderVersion);
     }
 
@@ -527,7 +535,7 @@ public class Order extends OrderLineGroup implements Comparable {
      */
     public OrderVersion disassociateFrom(Scenario scenario) {
         OrderVersion existentVersion = scenarios.remove(scenario);
-        if (existentVersion != null && !isVersionUsed(existentVersion)) {
+        if ( existentVersion != null && !isVersionUsed(existentVersion) ) {
             removeVersion(existentVersion);
         }
         return existentVersion;
@@ -547,7 +555,7 @@ public class Order extends OrderLineGroup implements Comparable {
 
     public boolean isVersionUsed(OrderVersion orderVersion) {
         for (OrderVersion each : getScenarios().values()) {
-            if (each.getId().equals(orderVersion.getId())) {
+            if ( each.getId().equals(orderVersion.getId()) ) {
                 return true;
             }
         }
@@ -556,17 +564,15 @@ public class Order extends OrderLineGroup implements Comparable {
 
     @Override
     public OrderLine toLeaf() {
-        throw new UnsupportedOperationException(
-                "Order can not be converted to leaf");
+        throw new UnsupportedOperationException("Order can not be converted to leaf");
     }
 
     public DirectAdvanceAssignment getDirectAdvanceAssignmentOfTypeSubcontractor() {
-        if (StringUtils.isBlank(getExternalCode())) {
+        if ( StringUtils.isBlank(getExternalCode()) ) {
             return null;
         }
 
-        AdvanceType advanceType = PredefinedAdvancedTypes.SUBCONTRACTOR
-                .getType();
+        AdvanceType advanceType = PredefinedAdvancedTypes.SUBCONTRACTOR.getType();
 
         return getAdvanceAssignmentByType(advanceType);
     }
@@ -576,11 +582,12 @@ public class Order extends OrderLineGroup implements Comparable {
 
         IOrderDAO orderDAO = Registry.getOrderDAO();
 
-        if (isNewObject()) {
+        if ( isNewObject() ) {
             return !orderDAO.existsByNameAnotherTransaction(getName());
         } else {
             try {
                 Order o = orderDAO.findByNameAnotherTransaction(getName());
+
                 return o.getId().equals(getId());
             } catch (InstanceNotFoundException e) {
                 return true;
@@ -611,8 +618,7 @@ public class Order extends OrderLineGroup implements Comparable {
         return deliveringDates;
     }
 
-    public void setEndDateCommunicationToCustomer(
-            SortedSet<EndDateCommunication> endDateCommunicationToCustomer) {
+    public void setEndDateCommunicationToCustomer(SortedSet<EndDateCommunication> endDateCommunicationToCustomer) {
         this.endDateCommunicationToCustomer.clear();
         this.endDateCommunicationToCustomer.addAll(endDateCommunicationToCustomer);
     }
@@ -623,22 +629,20 @@ public class Order extends OrderLineGroup implements Comparable {
 
 
     public void updateFirstAskedEndDate(Date communicationDate) {
-        if (this.endDateCommunicationToCustomer != null && !this.endDateCommunicationToCustomer.isEmpty()) {
+        if ( this.endDateCommunicationToCustomer != null && !this.endDateCommunicationToCustomer.isEmpty() ) {
             this.endDateCommunicationToCustomer.first().setCommunicationDate(communicationDate);
         }
     }
 
     public Date getLastAskedEndDate() {
-        if (this.endDateCommunicationToCustomer != null
-                && !this.endDateCommunicationToCustomer.isEmpty()) {
+        if ( this.endDateCommunicationToCustomer != null && !this.endDateCommunicationToCustomer.isEmpty() ) {
             return this.endDateCommunicationToCustomer.first().getEndDate();
         }
         return null;
     }
 
     public EndDateCommunication getLastEndDateCommunicationToCustomer() {
-        if (this.endDateCommunicationToCustomer != null
-                && !this.endDateCommunicationToCustomer.isEmpty()) {
+        if ( this.endDateCommunicationToCustomer != null && !this.endDateCommunicationToCustomer.isEmpty() ) {
             return this.endDateCommunicationToCustomer.first();
         }
         return null;
@@ -680,7 +684,7 @@ public class Order extends OrderLineGroup implements Comparable {
 
         for (OrderElement child : getAllChildren()) {
             String childCode = child.getCode();
-            if (codes.contains(childCode)) {
+            if ( codes.contains(childCode) ) {
                 return false;
             }
             codes.add(childCode);

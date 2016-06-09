@@ -71,11 +71,12 @@ import org.hibernate.validator.interpolator.DefaultMessageInterpolatorAggerator;
 /**
  * This class is copy-cat of HibernateValidator.ClassValidator
  *
- * Adds extra functionality to cache extra ClassValidators created for validating children elements (see getClassValidator)
+ * Adds extra functionality to cache extra ClassValidators created for validating children elements
+ * (see getClassValidator)
  *
- * The function createChildValidator creates ClassValidators for getters and members marked for Validation, but it doesn't create
- * ClassValidators for members that return Collections or ArrayList of entities. These ClassValidators are created later in getClasValidator
- * but are not cached.
+ * The function createChildValidator creates ClassValidators for getters and members marked for Validation,
+ * but it doesn't create ClassValidators for members that return Collections or ArrayList of entities.
+ * These ClassValidators are created later in getClassValidator but are not cached.
  *
  * Original code: http://anonsvn.jboss.org/repos/hibernate/validator/trunk/hibernate-validator-legacy/src/main/java/org/hibernate/validator/ClassValidator.java
  *
@@ -87,7 +88,10 @@ public class LibrePlanClassValidator<T> implements Serializable {
 
     private static Log log = LogFactory.getLog( LibrePlanClassValidator.class );
     private static final InvalidValue[] EMPTY_INVALID_VALUE_ARRAY = new InvalidValue[]{};
-    private static final String DEFAULT_VALIDATOR_MESSAGE = "org.hibernate.validator.resources.DefaultValidatorMessages";
+
+    private static final String DEFAULT_VALIDATOR_MESSAGE =
+            "org.hibernate.validator.resources.DefaultValidatorMessages";
+
     private static final String VALIDATOR_MESSAGE = "ValidatorMessages";
     private static final Set<Class> INDEXABLE_CLASS = new HashSet<Class>();
 
@@ -115,6 +119,7 @@ public class LibrePlanClassValidator<T> implements Serializable {
     private transient List<XMember> childGetters;
     private transient DefaultMessageInterpolatorAggerator defaultInterpolator;
     private transient MessageInterpolator userInterpolator;
+
     private static final Filter GET_ALL_FILTER = new Filter() {
         public boolean returnStatic() {
         return true;
@@ -151,35 +156,38 @@ public class LibrePlanClassValidator<T> implements Serializable {
     /**
      * Not a public API
      */
-    public LibrePlanClassValidator(
-            Class<T> beanClass, ResourceBundle resourceBundle, MessageInterpolator interpolator,
-            Map<XClass, LibrePlanClassValidator> childClassValidators, ReflectionManager reflectionManager
-    ) {
+    public LibrePlanClassValidator(Class<T> beanClass,
+                                   ResourceBundle resourceBundle,
+                                   MessageInterpolator interpolator,
+                                   Map<XClass, LibrePlanClassValidator> childClassValidators,
+                                   ReflectionManager reflectionManager) {
+
         this.reflectionManager = reflectionManager != null ? reflectionManager : new JavaReflectionManager();
         XClass beanXClass = this.reflectionManager.toXClass( beanClass );
         this.beanClass = beanClass;
-        this.messageBundle = resourceBundle == null ?
-                getDefaultResourceBundle() :
-                resourceBundle;
+
+        this.messageBundle = resourceBundle == null ? getDefaultResourceBundle() : resourceBundle;
+
         this.defaultMessageBundle = ResourceBundle.getBundle( DEFAULT_VALIDATOR_MESSAGE );
         this.userInterpolator = interpolator;
-        this.childClassValidators = childClassValidators != null ?
-                childClassValidators :
-                new HashMap<XClass, LibrePlanClassValidator>();
+
+        this.childClassValidators =
+                childClassValidators != null ? childClassValidators : new HashMap<XClass, LibrePlanClassValidator>();
+
         this.extraClassValidators = new HashMap<XClass, LibrePlanClassValidator>();
         initValidator( beanXClass, this.childClassValidators );
     }
 
     @SuppressWarnings("unchecked")
-    protected LibrePlanClassValidator(
-            XClass beanXClass, ResourceBundle resourceBundle, MessageInterpolator userInterpolator,
-            Map<XClass, LibrePlanClassValidator> childClassValidators, ReflectionManager reflectionManager
-    ) {
+    protected LibrePlanClassValidator(XClass beanXClass,
+                                      ResourceBundle resourceBundle,
+                                      MessageInterpolator userInterpolator,
+                                      Map<XClass, LibrePlanClassValidator> childClassValidators,
+                                      ReflectionManager reflectionManager) {
+
         this.reflectionManager = reflectionManager;
         this.beanClass = reflectionManager.toClass( beanXClass );
-        this.messageBundle = resourceBundle == null ?
-                getDefaultResourceBundle() :
-                resourceBundle;
+        this.messageBundle = resourceBundle == null ? getDefaultResourceBundle() : resourceBundle;
         this.defaultMessageBundle = ResourceBundle.getBundle( DEFAULT_VALIDATOR_MESSAGE );
         this.userInterpolator = userInterpolator;
         this.childClassValidators = childClassValidators;
@@ -190,11 +198,12 @@ public class LibrePlanClassValidator<T> implements Serializable {
     private ResourceBundle getDefaultResourceBundle() {
         ResourceBundle rb;
         try {
-            //use context class loader as a first citizen
+            // Use context class loader as a first citizen
             ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
             if ( contextClassLoader == null ) {
                 throw new MissingResourceException( "No context classloader", null, VALIDATOR_MESSAGE );
             }
+
             rb = ResourceBundle.getBundle(
                     VALIDATOR_MESSAGE,
                     Locale.getDefault(),
@@ -203,7 +212,7 @@ public class LibrePlanClassValidator<T> implements Serializable {
         }
         catch (MissingResourceException e) {
             log.trace( "ResourceBundle " + VALIDATOR_MESSAGE + " not found in thread context classloader" );
-            //then use the Validator Framework classloader
+            // Then use the Validator Framework classloader
             try {
                 rb = ResourceBundle.getBundle(
                         VALIDATOR_MESSAGE,
@@ -213,19 +222,19 @@ public class LibrePlanClassValidator<T> implements Serializable {
             }
             catch (MissingResourceException ee) {
                 log.debug(
-                        "ResourceBundle ValidatorMessages not found in Validator classloader. Delegate to " + DEFAULT_VALIDATOR_MESSAGE
-                );
-                //the user did not override the default ValidatorMessages
+                        "ResourceBundle ValidatorMessages not found in Validator classloader. Delegate to " +
+                        DEFAULT_VALIDATOR_MESSAGE);
+
+                // The user did not override the default ValidatorMessages
                 rb = null;
             }
         }
         isUserProvidedResourceBundle = true;
+
         return rb;
     }
 
-    private void initValidator(
-            XClass xClass, Map<XClass, LibrePlanClassValidator> childClassValidators
-    ) {
+    private void initValidator(XClass xClass, Map<XClass, LibrePlanClassValidator> childClassValidators) {
         beanValidators = new ArrayList<Validator>();
         memberValidators = new ArrayList<Validator>();
         memberGetters = new ArrayList<XMember>();
@@ -233,21 +242,25 @@ public class LibrePlanClassValidator<T> implements Serializable {
         defaultInterpolator = new DefaultMessageInterpolatorAggerator();
         defaultInterpolator.initialize( messageBundle, defaultMessageBundle );
 
-        //build the class hierarchy to look for members in
+        // Build the class hierarchy to look for members in
         childClassValidators.put( xClass, this );
         Collection<XClass> classes = new HashSet<XClass>();
         addSuperClassesAndInterfaces( xClass, classes );
+
         for ( XClass currentClass : classes ) {
             Annotation[] classAnnotations = currentClass.getAnnotations();
-            for ( int i = 0; i < classAnnotations.length ; i++ ) {
-                Annotation classAnnotation = classAnnotations[i];
-                Validator beanValidator = createValidator( classAnnotation );
-                if ( beanValidator != null ) beanValidators.add( beanValidator );
+
+            for (Annotation classAnnotation : classAnnotations) {
+                Validator beanValidator = createValidator(classAnnotation);
+
+                if ( beanValidator != null )
+                    beanValidators.add(beanValidator);
+
                 handleAggregateAnnotations(classAnnotation, null);
             }
         }
 
-        //Check on all selected classes
+        // Check on all selected classes
         for ( XClass currClass : classes ) {
             List<XMethod> methods = currClass.getDeclaredMethods();
             for ( XMethod method : methods ) {
@@ -255,8 +268,7 @@ public class LibrePlanClassValidator<T> implements Serializable {
                 createChildValidator( method );
             }
 
-            List<XProperty> fields = currClass.getDeclaredProperties(
-                    "field", GET_ALL_FILTER
+            List<XProperty> fields = currClass.getDeclaredProperties("field", GET_ALL_FILTER
             );
             for ( XProperty field : fields ) {
                 createMemberValidator( field );
@@ -267,7 +279,10 @@ public class LibrePlanClassValidator<T> implements Serializable {
 
     private void addSuperClassesAndInterfaces(XClass clazz, Collection<XClass> classes) {
         for ( XClass currClass = clazz; currClass != null ; currClass = currClass.getSuperclass() ) {
-            if ( ! classes.add( currClass ) ) return;
+
+            if ( ! classes.add( currClass ) )
+                return;
+
             XClass[] interfaces = currClass.getInterfaces();
             for ( XClass interf : interfaces ) {
                 addSuperClassesAndInterfaces( interf, classes );
@@ -300,13 +315,13 @@ public class LibrePlanClassValidator<T> implements Serializable {
                 Validator validator = createValidator( annotation );
                 if ( validator != null ) {
                     if ( member != null ) {
-                        //member
+                        // Member
                         memberValidators.add( validator );
                         setAccessible( member );
                         memberGetters.add( member );
                     }
                     else {
-                        //bean
+                        // Bean
                         beanValidators.add( validator );
                     }
                     validatorPresent = true;
@@ -322,6 +337,7 @@ public class LibrePlanClassValidator<T> implements Serializable {
             setAccessible( member );
             childGetters.add( member );
             XClass clazz;
+
             if ( member.isCollection() || member.isArray() ) {
                 clazz = member.getElementClass();
             }
@@ -329,8 +345,9 @@ public class LibrePlanClassValidator<T> implements Serializable {
                 clazz = member.getType();
             }
             if ( !childClassValidators.containsKey( clazz ) ) {
-                //ClassValidator added by side effect (added to childClassValidators during CV construction)
-                new LibrePlanClassValidator( clazz, messageBundle, userInterpolator, childClassValidators, reflectionManager );
+                // ClassValidator added by side effect (added to childClassValidators during CV construction)
+                new LibrePlanClassValidator(
+                        clazz, messageBundle, userInterpolator, childClassValidators, reflectionManager);
             }
         }
     }
@@ -338,8 +355,10 @@ public class LibrePlanClassValidator<T> implements Serializable {
     private void createMemberValidator(XMember member) {
         boolean validatorPresent = false;
         Annotation[] memberAnnotations = member.getAnnotations();
+
         for ( Annotation methodAnnotation : memberAnnotations ) {
             Validator propertyValidator = createValidator( methodAnnotation );
+
             if ( propertyValidator != null ) {
                 memberValidators.add( propertyValidator );
                 setAccessible( member );
@@ -370,6 +389,7 @@ public class LibrePlanClassValidator<T> implements Serializable {
             Validator beanValidator = validatorClass.value().newInstance();
             beanValidator.initialize( annotation );
             defaultInterpolator.addInterpolator( annotation, beanValidator );
+
             return beanValidator;
         }
         catch (Exception e) {
@@ -382,21 +402,22 @@ public class LibrePlanClassValidator<T> implements Serializable {
     }
 
     /**
-     * apply constraints on a bean instance and return all the failures.
-     * if <code>bean</code> is null, an empty array is returned
+     * Apply constraints on a bean instance and return all the failures.
+     * If <code>bean</code> is null, an empty array is returned
      */
     public InvalidValue[] getInvalidValues(T bean) {
         return this.getInvalidValues( bean, new IdentitySet() );
     }
 
     /**
-     * apply constraints on a bean instance and return all the failures.
-     * if <code>bean</code> is null, an empty array is returned
+     * Apply constraints on a bean instance and return all the failures.
+     * If <code>bean</code> is null, an empty array is returned
      */
     @SuppressWarnings("unchecked")
     protected InvalidValue[] getInvalidValues(T bean, Set<Object> circularityState) {
         if ( bean == null || circularityState.contains( bean ) ) {
-            return EMPTY_INVALID_VALUE_ARRAY; //Avoid circularity
+            // Avoid circularity
+            return EMPTY_INVALID_VALUE_ARRAY;
         }
         else {
             circularityState.add( bean );
@@ -408,18 +429,19 @@ public class LibrePlanClassValidator<T> implements Serializable {
 
         List<InvalidValue> results = new ArrayList<InvalidValue>();
 
-        for ( int i = 0; i < beanValidators.size() ; i++ ) {
-            Validator validator = beanValidators.get( i );
-            if ( !validator.isValid( bean ) ) {
-                results.add( new InvalidValue( interpolate(validator), beanClass, null, bean, bean ) );
+        for (Validator validator : beanValidators) {
+            if ( !validator.isValid(bean) ) {
+                results.add(new InvalidValue(interpolate(validator), beanClass, null, bean, bean));
             }
         }
 
         for ( int i = 0; i < memberValidators.size() ; i++ ) {
             XMember getter = memberGetters.get( i );
+
             if ( Hibernate.isPropertyInitialized( bean, getPropertyName( getter ) ) ) {
                 Object value = getMemberValue( bean, getter );
                 Validator validator = memberValidators.get( i );
+
                 if ( !validator.isValid( value ) ) {
                     String propertyName = getPropertyName( getter );
                     results.add( new InvalidValue( interpolate(validator), beanClass, propertyName, value, bean ) );
@@ -427,72 +449,70 @@ public class LibrePlanClassValidator<T> implements Serializable {
             }
         }
 
-        for ( int i = 0; i < childGetters.size() ; i++ ) {
-            XMember getter = childGetters.get( i );
-            if ( Hibernate.isPropertyInitialized( bean, getPropertyName( getter ) ) ) {
-                Object value = getMemberValue( bean, getter );
-                if ( value != null && Hibernate.isInitialized( value ) ) {
-                    String propertyName = getPropertyName( getter );
+        for (XMember getter : childGetters) {
+
+            if ( Hibernate.isPropertyInitialized(bean, getPropertyName(getter)) ) {
+
+                Object value = getMemberValue(bean, getter);
+                if ( value != null && Hibernate.isInitialized(value) ) {
+
+                    String propertyName = getPropertyName(getter);
                     if ( getter.isCollection() ) {
+
                         int index = 0;
                         boolean isIterable = value instanceof Iterable;
-                        Map map = ! isIterable ? (Map) value : null;
-                        Iterable elements = isIterable ?
-                                (Iterable) value :
-                                map.keySet();
-                        for ( Object element : elements ) {
-                            Object actualElement = isIterable ? element : map.get( element );
+                        Map map = !isIterable ? (Map) value : null;
+                        Iterable elements = isIterable ? (Iterable) value : map.keySet();
+
+                        for (Object element : elements) {
+                            Object actualElement = isIterable ? element : map.get(element);
+
                             if ( actualElement == null ) {
                                 index++;
                                 continue;
                             }
-                            InvalidValue[] invalidValues = getClassValidator( actualElement )
-                                    .getInvalidValues( actualElement, circularityState );
+                            InvalidValue[] invalidValues =
+                                    getClassValidator(actualElement).getInvalidValues(actualElement, circularityState);
 
                             String indexedPropName = MessageFormat.format(
                                     "{0}[{1}]",
                                     propertyName,
-                                    INDEXABLE_CLASS.contains( element.getClass() ) ?
-                                            ( "'" + element + "'" ) :
-                                            index
-                            );
+                                    INDEXABLE_CLASS.contains(element.getClass()) ? ("'" + element + "'") : index);
+
                             index++;
 
-                            for ( InvalidValue invalidValue : invalidValues ) {
-                                invalidValue.addParentBean( bean, indexedPropName );
-                                results.add( invalidValue );
+                            for (InvalidValue invalidValue : invalidValues) {
+                                invalidValue.addParentBean(bean, indexedPropName);
+                                results.add(invalidValue);
                             }
                         }
                     }
                     if ( getter.isArray() ) {
                         int index = 0;
-                        for ( Object element : (Object[]) value ) {
+                        for (Object element : (Object[]) value) {
                             if ( element == null ) {
                                 index++;
                                 continue;
                             }
-                            InvalidValue[] invalidValues = getClassValidator( element )
-                                    .getInvalidValues( element, circularityState );
+                            InvalidValue[] invalidValues =
+                                    getClassValidator(element).getInvalidValues(element, circularityState);
 
-                            String indexedPropName = MessageFormat.format(
-                                    "{0}[{1}]",
-                                    propertyName,
-                                    index
-                            );
+                            String indexedPropName = MessageFormat.format("{0}[{1}]", propertyName, index);
                             index++;
 
-                            for ( InvalidValue invalidValue : invalidValues ) {
-                                invalidValue.addParentBean( bean, indexedPropName );
-                                results.add( invalidValue );
+                            for (InvalidValue invalidValue : invalidValues) {
+                                invalidValue.addParentBean(bean, indexedPropName);
+                                results.add(invalidValue);
                             }
                         }
-                    }
-                    else {
-                        InvalidValue[] invalidValues = getClassValidator( value )
-                                .getInvalidValues( value, circularityState );
-                        for ( InvalidValue invalidValue : invalidValues ) {
-                            invalidValue.addParentBean( bean, propertyName );
-                            results.add( invalidValue );
+                    } else {
+
+                        InvalidValue[] invalidValues =
+                                getClassValidator(value).getInvalidValues(value, circularityState);
+
+                        for (InvalidValue invalidValue : invalidValues) {
+                            invalidValue.addParentBean(bean, propertyName);
+                            results.add(invalidValue);
                         }
                     }
                 }
@@ -504,7 +524,7 @@ public class LibrePlanClassValidator<T> implements Serializable {
 
     private String interpolate(Validator validator) {
         String message = defaultInterpolator.getAnnotationMessage( validator );
-        if (userInterpolator != null) {
+        if ( userInterpolator != null ) {
             return userInterpolator.interpolate( message, validator, defaultInterpolator );
         }
         else {
@@ -516,10 +536,12 @@ public class LibrePlanClassValidator<T> implements Serializable {
     private LibrePlanClassValidator getClassValidator(Object value) {
         Class clazz = value.getClass();
         XClass xclass = reflectionManager.toXClass( clazz );
-        LibrePlanClassValidator validator = (LibrePlanClassValidator) childClassValidators.get( xclass );
-        if ( validator == null ) { //handles polymorphism
+        LibrePlanClassValidator validator = childClassValidators.get( xclass );
+
+        // Handles polymorphism
+        if ( validator == null ) {
             validator = extraClassValidators.get( xclass );
-            if (validator == null) {
+            if ( validator == null ) {
                 validator = new LibrePlanClassValidator( clazz );
                 extraClassValidators.put( xclass, validator );
             }
@@ -583,7 +605,7 @@ public class LibrePlanClassValidator<T> implements Serializable {
     }
 
     public String getPropertyName(XMember member) {
-        //Do no try to cache the result in a map, it's actually much slower (2.x time)
+        // Do no try to cache the result in a map, it is actually much slower (2.x time)
         String propertyName;
         if ( XProperty.class.isAssignableFrom( member.getClass() ) ) {
             propertyName = member.getName();
@@ -596,7 +618,7 @@ public class LibrePlanClassValidator<T> implements Serializable {
             else if ( propertyName.startsWith( "get" ) ) {
                 propertyName = Introspector.decapitalize( propertyName.substring( 3 ) );
             }
-            //do nothing for non getter method, in case someone want to validate a PO Method
+            // Do nothing for non getter method, in case someone want to validate a PO Method
         }
         else {
             throw new AssertionFailure( "Unexpected member: " + member.getClass().getName() );
@@ -604,72 +626,8 @@ public class LibrePlanClassValidator<T> implements Serializable {
         return propertyName;
     }
 
-    /** @deprecated */
-    private String replace(String message, Annotation parameters) {
-        StringTokenizer tokens = new StringTokenizer( message, "#{}", true );
-        StringBuilder buf = new StringBuilder( 30 );
-        boolean escaped = false;
-        boolean el = false;
-        while ( tokens.hasMoreTokens() ) {
-            String token = tokens.nextToken();
-            if ( !escaped && "#".equals( token ) ) {
-                el = true;
-            }
-            if ( !el && "{".equals( token ) ) {
-                escaped = true;
-            }
-            else if ( escaped && "}".equals( token ) ) {
-                escaped = false;
-            }
-            else if ( !escaped ) {
-                if ( "{".equals( token ) ) el = false;
-                buf.append( token );
-            }
-            else {
-                Method member;
-                try {
-                    member = parameters.getClass().getMethod( token, (Class[]) null );
-                }
-                catch (NoSuchMethodException nsfme) {
-                    member = null;
-                }
-                if ( member != null ) {
-                    try {
-                        buf.append( member.invoke( parameters ) );
-                    }
-                    catch (Exception e) {
-                        throw new IllegalArgumentException( "could not render message", e );
-                    }
-                }
-                else {
-                    String string = null;
-                    try {
-                        string = messageBundle != null ? messageBundle.getString( token ) : null;
-                    }
-                    catch( MissingResourceException e ) {
-                        //give a second chance with the default resource bundle
-                    }
-                    if (string == null) {
-                        try {
-                            string = defaultMessageBundle.getString( token );
-                        }
-                        catch( MissingResourceException e) {
-                            throw new MissingResourceException(
-                                    "Can't find resource in validator bundles, key " + token,
-                                    defaultMessageBundle.getClass().getName(),
-                                    token
-                            );
-                        }
-                    }
-                    if ( string != null ) buf.append( replace( string, parameters ) );
-                }
-            }
-        }
-        return buf.toString();
-    }
-
     /**
-     * apply the registred constraints rules on the hibernate metadata (to be applied on DB schema...)
+     * Apply the registered constraints rules on the hibernate metadata (to be applied on DB schema...)
      *
      * @param persistentClass hibernate metadata
      */
@@ -689,12 +647,12 @@ public class LibrePlanClassValidator<T> implements Serializable {
             if ( validator instanceof PropertyConstraint ) {
                 try {
                     Property property = findPropertyByName(persistentClass, propertyName);
-                    if (property != null) {
+                    if ( property != null ) {
                         ( (PropertyConstraint) validator ).apply( property );
                     }
                 }
                 catch (MappingException pnfe) {
-                    //do nothing
+                    // Do nothing
                 }
             }
         }
@@ -715,11 +673,11 @@ public class LibrePlanClassValidator<T> implements Serializable {
             messageBundle = null;
             if ( ! isUserProvidedResourceBundle ) {
                 log.warn(
-                        "Serializing a LibrePlanClassValidator with a non serializable ResourceBundle: ResourceBundle ignored"
-                );
+                        "Serializing a LibrePlanClassValidator with a non serializable ResourceBundle:" +
+                                " ResourceBundle ignored");
             }
         }
-        if (interpolator != null && ! (interpolator instanceof Serializable) ) {
+        if ( interpolator != null && ! (interpolator instanceof Serializable) ) {
             userInterpolator = null;
             log.warn( "Serializing a non serializable MessageInterpolator" );
         }
@@ -733,7 +691,10 @@ public class LibrePlanClassValidator<T> implements Serializable {
     private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {
         ois.defaultReadObject();
         ResourceBundle rb = (ResourceBundle) ois.readObject();
-        if ( rb == null ) rb = getDefaultResourceBundle();
+
+        if ( rb == null )
+            rb = getDefaultResourceBundle();
+
         this.messageBundle = rb;
         this.userInterpolator = (MessageInterpolator) ois.readObject();
         this.defaultMessageBundle = ResourceBundle.getBundle( DEFAULT_VALIDATOR_MESSAGE );
@@ -742,18 +703,17 @@ public class LibrePlanClassValidator<T> implements Serializable {
     }
 
     /**
-     * Retrieve the property by path in a recursive way, including IndetifierProperty in the loop
-     * If propertyName is null or empty, the IdentifierProperty is returned
+     * Retrieve the property by path in a recursive way, including IndetifierProperty in the loop.
+     * If propertyName is null or empty, the IdentifierProperty is returned.
      */
     public static Property findPropertyByName(PersistentClass associatedClass, String propertyName) {
         Property property = null;
         Property idProperty = associatedClass.getIdentifierProperty();
         String idName = idProperty != null ? idProperty.getName() : null;
         try {
-            if ( propertyName == null
-                    || propertyName.length() == 0
-                    || propertyName.equals( idName ) ) {
-                //default to id
+            if ( propertyName == null || propertyName.length() == 0 || propertyName.equals( idName ) ) {
+
+                // Default to id
                 property = idProperty;
             }
             else {
@@ -768,7 +728,9 @@ public class LibrePlanClassValidator<T> implements Serializable {
                         property = associatedClass.getProperty( element );
                     }
                     else {
-                        if ( ! property.isComposite() ) return null;
+                        if ( ! property.isComposite() )
+                            return null;
+
                         property = ( (Component) property.getValue() ).getProperty( element );
                     }
                 }
@@ -776,8 +738,10 @@ public class LibrePlanClassValidator<T> implements Serializable {
         }
         catch (MappingException e) {
             try {
-                //if we do not find it try to check the identifier mapper
-                if ( associatedClass.getIdentifierMapper() == null ) return null;
+                // If we do not find it try to check the identifier mapper
+                if ( associatedClass.getIdentifierMapper() == null )
+                    return null;
+
                 StringTokenizer st = new StringTokenizer( propertyName, ".", false );
                 while ( st.hasMoreElements() ) {
                     String element = (String) st.nextElement();
@@ -785,7 +749,8 @@ public class LibrePlanClassValidator<T> implements Serializable {
                         property = associatedClass.getIdentifierMapper().getProperty( element );
                     }
                     else {
-                        if ( ! property.isComposite() ) return null;
+                        if ( ! property.isComposite() )
+                            return null;
                         property = ( (Component) property.getValue() ).getProperty( element );
                     }
                 }

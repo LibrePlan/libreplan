@@ -49,7 +49,6 @@ import org.libreplan.web.costcategories.ResourcesCostCategoryAssignmentControlle
 import org.libreplan.web.resources.search.ResourcePredicate;
 import org.libreplan.web.resources.worker.CriterionsController;
 import org.libreplan.web.resources.worker.CriterionsMachineController;
-import org.libreplan.web.resources.worker.IWorkerModel;
 import org.libreplan.web.resources.worker.WorkerCRUDController.LimitingResourceEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.Component;
@@ -78,6 +77,7 @@ import org.zkoss.zul.api.Window;
 
 /**
  * Controller for {@link Machine} resource <br />
+ *
  * @author Diego Pino Garcia <dpino@igalia.com>
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
@@ -92,8 +92,6 @@ public class MachineCRUDController extends BaseCRUDController<Machine> {
 
     @Autowired
     private IResourceDAO resourceDAO;
-
-    private Component configurationUnits;
 
     private CriterionsMachineController criterionsController;
 
@@ -128,21 +126,17 @@ public class MachineCRUDController extends BaseCRUDController<Machine> {
         super.doAfterCompose(comp);
         setupCriterionsController();
         setupConfigurationController();
-        setupResourcesCostCategoryAssignmentController(comp);
+        setupResourcesCostCategoryAssignmentController();
         showListWindow();
         initFilterComponent();
         setupFilterLimitingResourceListbox();
     }
 
     private void initFilterComponent() {
-        this.filterFinishDate = (Datebox) listWindow
-                .getFellowIfAny("filterFinishDate");
-        this.filterStartDate = (Datebox) listWindow
-                .getFellowIfAny("filterStartDate");
-        this.filterLimitingResource = (Listbox) listWindow
-                .getFellowIfAny("filterLimitingResource");
-        this.bdFilters = (BandboxMultipleSearch) listWindow
-                .getFellowIfAny("bdFilters");
+        this.filterFinishDate = (Datebox) listWindow.getFellowIfAny("filterFinishDate");
+        this.filterStartDate = (Datebox) listWindow.getFellowIfAny("filterStartDate");
+        this.filterLimitingResource = (Listbox) listWindow.getFellowIfAny("filterLimitingResource");
+        this.bdFilters = (BandboxMultipleSearch) listWindow.getFellowIfAny("bdFilters");
         this.txtfilter = (Textbox) listWindow.getFellowIfAny("txtfilter");
         this.listing = (Grid) listWindow.getFellowIfAny("listing");
         clearFilterDates();
@@ -155,14 +149,15 @@ public class MachineCRUDController extends BaseCRUDController<Machine> {
     }
 
     private void setupConfigurationController() {
-        configurationUnits = editWindow.getFellow("configurationUnits");
-        configurationController = (MachineConfigurationController) configurationUnits
-                .getVariable("configurationController", true);
+        Component configurationUnits = editWindow.getFellow("configurationUnits");
+
+        configurationController = (MachineConfigurationController)
+                configurationUnits.getVariable("configurationController", true);
     }
 
-    private void setupResourcesCostCategoryAssignmentController(Component comp) {
-        Component costCategoryAssignmentContainer =
-                editWindow.getFellowIfAny("costCategoryAssignmentContainer");
+    private void setupResourcesCostCategoryAssignmentController() {
+        Component costCategoryAssignmentContainer = editWindow.getFellowIfAny("costCategoryAssignmentContainer");
+
         resourcesCostCategoryAssignmentController = (ResourcesCostCategoryAssignmentController)
                 costCategoryAssignmentContainer.getVariable("assignmentController", true);
     }
@@ -197,7 +192,7 @@ public class MachineCRUDController extends BaseCRUDController<Machine> {
     }
 
     private void prepareCalendarForEdit() {
-        if (isCalendarNull()) {
+        if ( isCalendarNull() ) {
             return;
         }
 
@@ -222,7 +217,7 @@ public class MachineCRUDController extends BaseCRUDController<Machine> {
     @Override
     protected void save() throws ValidationException {
         saveCalendar();
-        if (!confirmCriterions()) {
+        if ( !confirmCriterions() ) {
             return;
         }
         machineModel.confirmSave();
@@ -244,22 +239,21 @@ public class MachineCRUDController extends BaseCRUDController<Machine> {
     }
 
     private void validateMachineDataTab() {
-        ConstraintChecker.isValid(editWindow
-                .getFellowIfAny("machineDataTabpanel"));
+        ConstraintChecker.isValid(editWindow.getFellowIfAny("machineDataTabpanel"));
     }
 
     private void saveCalendar() throws ValidationException {
-        if (baseCalendarEditionController != null) {
+        if ( baseCalendarEditionController != null ) {
             baseCalendarEditionController.save();
         }
-        if (machineModel.getCalendar() == null) {
+        if ( machineModel.getCalendar() == null ) {
             createCalendar();
         }
     }
 
     private boolean confirmCriterions() throws ValidationException {
-        if (criterionsController != null) {
-            if (!criterionsController.validate()) {
+        if ( criterionsController != null ) {
+            if ( !criterionsController.validate() ) {
                 return false;
             }
             criterionsController.save();
@@ -274,24 +268,21 @@ public class MachineCRUDController extends BaseCRUDController<Machine> {
     private IBaseCalendarModel resourceCalendarModel;
 
     private void createCalendar() {
-        Combobox combobox = (Combobox) editWindow
-                .getFellow("createDerivedCalendar");
+        Combobox combobox = (Combobox) editWindow.getFellow("createDerivedCalendar");
         Comboitem selectedItem = combobox.getSelectedItem();
-        if (selectedItem == null) {
-            throw new WrongValueException(combobox,
-                    _("Please, select a calendar"));
+
+        if ( selectedItem == null ) {
+            throw new WrongValueException(combobox, _("Please, select a calendar"));
         }
 
-        BaseCalendar parentCalendar = (BaseCalendar) combobox.getSelectedItem()
-                .getValue();
-        if (parentCalendar == null) {
+        BaseCalendar parentCalendar = (BaseCalendar) combobox.getSelectedItem().getValue();
+        if ( parentCalendar == null ) {
             parentCalendar = machineModel.getDefaultCalendar();
         }
 
         resourceCalendarModel.initCreateDerived(parentCalendar);
         resourceCalendarModel.generateCalendarCodes();
-        machineModel.setCalendar((ResourceCalendar) resourceCalendarModel
-                .getBaseCalendar());
+        machineModel.setCalendar((ResourceCalendar) resourceCalendarModel.getBaseCalendar());
     }
 
     private Window editCalendarWindow;
@@ -301,23 +292,17 @@ public class MachineCRUDController extends BaseCRUDController<Machine> {
     private BaseCalendarEditionController baseCalendarEditionController;
 
     private void updateCalendarController() {
-        editCalendarWindow = (Window) editWindow
-                .getFellowIfAny("editCalendarWindow");
-        createNewVersionWindow = (Window) editWindow
-                .getFellowIfAny("createNewVersion");
+        editCalendarWindow = (Window) editWindow.getFellowIfAny("editCalendarWindow");
+        createNewVersionWindow = (Window) editWindow.getFellowIfAny("createNewVersion");
 
         createNewVersionWindow.setVisible(true);
         createNewVersionWindow.setVisible(false);
 
         baseCalendarEditionController = new BaseCalendarEditionController(
-                resourceCalendarModel, editCalendarWindow,
-                createNewVersionWindow, messagesForUser) {
-
+                resourceCalendarModel, editCalendarWindow, createNewVersionWindow, messagesForUser) {
             @Override
             public void goToList() {
-                machineModel
-                        .setCalendarOfMachine((ResourceCalendar) resourceCalendarModel
-                                .getBaseCalendar());
+                machineModel.setCalendarOfMachine((ResourceCalendar) resourceCalendarModel.getBaseCalendar());
                 reloadWindow();
             }
 
@@ -331,9 +316,8 @@ public class MachineCRUDController extends BaseCRUDController<Machine> {
             @Override
             public void save() {
                 validateCalendarExceptionCodes();
-                ResourceCalendar calendar = (ResourceCalendar) resourceCalendarModel
-                        .getBaseCalendar();
-                if (calendar != null) {
+                ResourceCalendar calendar = (ResourceCalendar) resourceCalendarModel.getBaseCalendar();
+                if ( calendar != null ) {
                     resourceCalendarModel.generateCalendarCodes();
                     machineModel.setCalendarOfMachine(calendar);
                 }
@@ -369,9 +353,9 @@ public class MachineCRUDController extends BaseCRUDController<Machine> {
 
     @SuppressWarnings("unused")
     private CriterionsController getCriterionsController() {
-        return (CriterionsController) editWindow.getFellow(
-                "criterionsContainer").getAttribute(
-                "assignedCriterionsController");
+        return (CriterionsController) editWindow
+                .getFellow("criterionsContainer")
+                .getAttribute("assignedCriterionsController");
     }
 
     public MachineConfigurationController getConfigurationController() {
@@ -390,7 +374,7 @@ public class MachineCRUDController extends BaseCRUDController<Machine> {
             item.setLabel(calendar.getName());
             item.setValue(calendar);
 
-            if (isDefaultCalendar(calendar)) {
+            if ( isDefaultCalendar(calendar) ) {
                 Combobox combobox = (Combobox) item.getParent();
                 combobox.setSelectedItem(item);
             }
@@ -398,6 +382,7 @@ public class MachineCRUDController extends BaseCRUDController<Machine> {
 
         private boolean isDefaultCalendar(BaseCalendar calendar) {
             BaseCalendar defaultCalendar = machineModel.getDefaultCalendar();
+
             return defaultCalendar.getId().equals(calendar.getId());
         }
 
@@ -410,15 +395,16 @@ public class MachineCRUDController extends BaseCRUDController<Machine> {
     public Constraint checkConstraintFinishDate() {
         return new Constraint() {
             @Override
-            public void validate(Component comp, Object value)
-                    throws WrongValueException {
+            public void validate(Component comp, Object value) throws WrongValueException {
                 Date finishDate = (Date) value;
-                if ((finishDate != null)
-                        && (filterStartDate.getValue() != null)
-                        && (finishDate.compareTo(filterStartDate.getValue()) < 0)) {
+
+                boolean condition = (finishDate != null) &&
+                        (filterStartDate.getValue() != null) &&
+                        (finishDate.compareTo(filterStartDate.getValue()) < 0);
+
+                if ( condition ) {
                     filterFinishDate.setValue(null);
-                    throw new WrongValueException(comp,
-                            _("must be after start date"));
+                    throw new WrongValueException(comp, _("must be after start date"));
                 }
             }
         };
@@ -427,15 +413,16 @@ public class MachineCRUDController extends BaseCRUDController<Machine> {
     public Constraint checkConstraintStartDate() {
         return new Constraint() {
             @Override
-            public void validate(Component comp, Object value)
-                    throws WrongValueException {
+            public void validate(Component comp, Object value) throws WrongValueException {
                 Date startDate = (Date) value;
-                if ((startDate != null)
-                        && (filterFinishDate.getValue() != null)
-                        && (startDate.compareTo(filterFinishDate.getValue()) > 0)) {
+
+                boolean condition = (startDate != null) &&
+                        (filterFinishDate.getValue() != null) &&
+                        (startDate.compareTo(filterFinishDate.getValue()) > 0);
+
+                if ( condition ) {
                     filterStartDate.setValue(null);
-                    throw new WrongValueException(comp,
-                            _("must be lower than end date"));
+                    throw new WrongValueException(comp, _("must be lower than end date"));
                 }
             }
         };
@@ -443,7 +430,7 @@ public class MachineCRUDController extends BaseCRUDController<Machine> {
 
     public void onApplyFilter() {
         ResourcePredicate predicate = createPredicate();
-        if (predicate != null) {
+        if ( predicate != null ) {
             filterByPredicate(predicate);
         } else {
             showAllMachines();
@@ -451,39 +438,40 @@ public class MachineCRUDController extends BaseCRUDController<Machine> {
     }
 
     private ResourcePredicate createPredicate() {
-        List<FilterPair> listFilters = (List<FilterPair>) bdFilters
-                .getSelectedElements();
+        List<FilterPair> listFilters = (List<FilterPair>) bdFilters.getSelectedElements();
 
         String personalFilter = txtfilter.getValue();
+
         // Get the dates filter
         LocalDate startDate = null;
         LocalDate finishDate = null;
-        if (filterStartDate.getValue() != null) {
-            startDate = LocalDate.fromDateFields(filterStartDate
-                    .getValue());
+        if ( filterStartDate.getValue() != null ) {
+            startDate = LocalDate.fromDateFields(filterStartDate.getValue());
         }
-        if (filterFinishDate.getValue() != null) {
-            finishDate = LocalDate.fromDateFields(filterFinishDate
-                    .getValue());
+        if ( filterFinishDate.getValue() != null ) {
+            finishDate = LocalDate.fromDateFields(filterFinishDate.getValue());
         }
 
         final Listitem item = filterLimitingResource.getSelectedItem();
-        Boolean isLimitingResource = (item != null) ? LimitingResourceEnum
-                .valueOf((LimitingResourceEnum) item.getValue()) : null;
 
-        if (listFilters.isEmpty()
-                && (personalFilter == null || personalFilter.isEmpty())
-                && startDate == null && finishDate == null
-                && isLimitingResource == null) {
+        Boolean isLimitingResource =
+                (item != null) ? LimitingResourceEnum.valueOf((LimitingResourceEnum) item.getValue()) : null;
+
+        boolean condition = listFilters.isEmpty() &&
+                (personalFilter == null || personalFilter.isEmpty()) &&
+                startDate == null &&
+                finishDate == null &&
+                isLimitingResource == null;
+
+        if ( condition ) {
             return null;
         }
-        return new ResourcePredicate(listFilters, personalFilter, startDate,
-                finishDate, isLimitingResource);
+
+        return new ResourcePredicate(listFilters, personalFilter, startDate, finishDate, isLimitingResource);
     }
 
     private void filterByPredicate(ResourcePredicate predicate) {
-        List<Machine> filteredResources = machineModel
-                .getFilteredMachines(predicate);
+        List<Machine> filteredResources = machineModel.getFilteredMachines(predicate);
         listing.setModel(new SimpleListModel(filteredResources.toArray()));
         listing.invalidate();
     }
@@ -494,14 +482,12 @@ public class MachineCRUDController extends BaseCRUDController<Machine> {
     }
 
     public void showAllMachines() {
-        listing.setModel(new SimpleListModel(machineModel.getAllMachines()
-                .toArray()));
+        listing.setModel(new SimpleListModel(machineModel.getAllMachines().toArray()));
         listing.invalidate();
     }
 
     private void setupFilterLimitingResourceListbox() {
-        for(LimitingResourceEnum resourceEnum :
-                LimitingResourceEnum.getLimitingResourceFilterOptionList()) {
+        for(LimitingResourceEnum resourceEnum : LimitingResourceEnum.getLimitingResourceFilterOptionList()) {
             Listitem item = new Listitem();
             item.setParent(filterLimitingResource);
             item.setValue(resourceEnum);
@@ -517,14 +503,14 @@ public class MachineCRUDController extends BaseCRUDController<Machine> {
 
     public Object getLimitingResource() {
         final Machine machine = getMachine();
-        return (machine != null) ? LimitingResourceEnum.valueOf(machine
-                .isLimitingResource())
-                : LimitingResourceEnum.NON_LIMITING_RESOURCE;         // Default option
+
+        return (machine != null) ? LimitingResourceEnum.valueOf(machine.isLimitingResource()) :
+                LimitingResourceEnum.NON_LIMITING_RESOURCE;         // Default option
     }
 
     public void setLimitingResource(LimitingResourceEnum option) {
         Machine machine = getMachine();
-        if (machine != null) {
+        if ( machine != null ) {
             machine.setResourceType(LimitingResourceEnum.toResourceType(option));
         }
     }
@@ -535,8 +521,8 @@ public class MachineCRUDController extends BaseCRUDController<Machine> {
 
     public void onCheckGenerateCode(Event e) {
         CheckEvent ce = (CheckEvent) e;
-        if (ce.isChecked()) {
-            // we have to auto-generate the code if it's unsaved
+        if ( ce.isChecked() ) {
+            // We have to auto-generate the code if it's unsaved
             try {
                 machineModel.setCodeAutogenerated(ce.isChecked());
             } catch (ConcurrentModificationException err) {
@@ -548,11 +534,11 @@ public class MachineCRUDController extends BaseCRUDController<Machine> {
 
     @Override
     protected boolean beforeDeleting(Machine machine) {
-        if (!machineModel.canRemove(machine)) {
-            messagesForUser
-                    .showMessage(
-                            Level.WARNING,
-                            _("Machine cannot be deleted. Machine is allocated to a project or contains imputed hours"));
+        if ( !machineModel.canRemove(machine) ) {
+            messagesForUser.showMessage(
+                    Level.WARNING,
+                    _("Machine cannot be deleted. Machine is allocated to a project or contains imputed hours"));
+
             return false;
         }
         return true;
@@ -563,46 +549,45 @@ public class MachineCRUDController extends BaseCRUDController<Machine> {
         try {
             machineModel.confirmRemove(machine);
         } catch (InstanceNotFoundException e) {
-            messagesForUser.showMessage(Level.INFO,
-                    _("Machine was already removed"));
+            messagesForUser.showMessage(Level.INFO, _("Machine was already removed"));
         }
     }
 
     public RowRenderer getMachinesRenderer() {
         return new RowRenderer() {
-
             @Override
             public void render(Row row, Object data) {
                 final Machine machine = (Machine) data;
                 row.setValue(machine);
 
-                row.addEventListener(Events.ON_CLICK,
-                        new EventListener() {
-                            @Override
-                            public void onEvent(Event event) {
-                                goToEditForm(machine);
-                            }
-                        });
+                row.addEventListener(Events.ON_CLICK, new EventListener() {
+                    @Override
+                    public void onEvent(Event event) {
+                        goToEditForm(machine);
+                    }
+                });
 
                 row.appendChild(new Label(machine.getName()));
                 row.appendChild(new Label(machine.getDescription()));
                 row.appendChild(new Label(machine.getCode()));
-                row.appendChild(new Label((Boolean.TRUE.equals(machine
-                        .isLimitingResource())) ? _("yes") : _("no")));
+                row.appendChild(new Label((Boolean.TRUE.equals(machine.isLimitingResource())) ? _("yes") : _("no")));
 
                 Hbox hbox = new Hbox();
+
                 hbox.appendChild(Util.createEditButton(new EventListener() {
                     @Override
                     public void onEvent(Event event) {
                         goToEditForm(machine);
                     }
                 }));
+
                 hbox.appendChild(Util.createRemoveButton(new EventListener() {
                     @Override
                     public void onEvent(Event event) {
                         confirmDelete(machine);
                     }
                 }));
+
                 row.appendChild(hbox);
             }
 

@@ -1,6 +1,47 @@
 NEWS
 ====
 
+Version 1.4.2 (? 2016)
+---------------------------
+
+Summary
+~~~~~~~
+
+* Bug fixing
+* Limits feature
+* Anonymous statistics
+
+Contributors
+~~~~~~~~~~~~
+
+Thanks to all the contributors to this new version:
+
+* Jeroen Baten
+* Vova Perebykivkyi
+* Bodgan Bodnarjuk
+
+Changes
+~~~~~~~
+
+* Add limits feature
+* Add new strings to i18n
+* Add data sending to server feature
+* Add test for BAC value
+* Add validation for init/deadline dates of order
+
+* Update gitignore file
+* Update OrderStatusEnum.STORED to ARCHIVED
+* Update Gettext Plugin / Commons in pom file
+* Update CostCategoryServiceTest
+* Update OrderDAOTest
+
+* Remove Eclipse config from pom file
+
+* Fix bug 1633
+* Fix bug 1681
+
+* Code refactoring
+
 Version 1.4.1 (14 apr 2015)
 ---------------------------
 

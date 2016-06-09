@@ -21,21 +21,21 @@
 
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 <zk xmlns:n="http://www.zkoss.org/2005/zk/native">
-<zscript><![CDATA[
-top = self;
-]]>
-</zscript>
+    <zscript>
+        <![CDATA[
+        top = self;
+    ]]>
+    </zscript>
 
-<div>
-<n:div id="${top.timeTrackerId}">
-    <vbox>
-        <grid id="firstleveldetails" width="${top.horizontalSizePixels}px;">
-            <columns>
-                <column label="${each.name}" width="${each.size}px"
-                    forEach="${top.detailsFirstLevel}"></column>
-            </columns>
-        </grid>
-    </vbox>
-</n:div>
-</div>
+    <div>
+        <n:div id="${top.timeTrackerId}">
+            <vbox>
+                <grid id="firstleveldetails" width="${top.horizontalSizePixels}px;">
+                    <columns>
+                        <column label="${each.name}" width="${each.size}px" forEach="${top.detailsFirstLevel}"/>
+                    </columns>
+                </grid>
+            </vbox>
+        </n:div>
+    </div>
 </zk>
