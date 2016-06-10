@@ -22,5 +22,5 @@
 package org.libreplan.business;
 
 public interface INewObject {
-    public boolean isNewObject();
+    boolean isNewObject();
 }

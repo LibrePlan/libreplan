@@ -1,11 +1,12 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.libreplan</groupId>
         <artifactId>libreplan</artifactId>
-        <version>1.4.1</version>
+        <version>1.5.0</version>
     </parent>
     <artifactId>libreplan-business</artifactId>
     <packaging>jar</packaging>
@@ -14,19 +15,16 @@
     <dependencies>
         <!-- Gettext commons -->
         <dependency>
-            <groupId>org.xnap.commons</groupId>
+            <groupId>com.googlecode.gettext-commons</groupId>
             <artifactId>gettext-commons</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-orm</artifactId>
-        </dependency>
+        <!-- Hibernate -->
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
         </dependency>
-       <dependency>
+        <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-ehcache</artifactId>
         </dependency>
@@ -35,6 +33,7 @@
             <artifactId>hibernate-validator</artifactId>
         </dependency>
 
+        <!-- Usertype Core -->
         <dependency>
 	      <groupId>org.jadira.usertype</groupId>
 	      <artifactId>usertype.core</artifactId>
@@ -46,6 +45,8 @@
             <artifactId>${jdbcDriver.artifactId}</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <!-- Jboss Transaction -->
         <dependency>
             <groupId>org.jboss.spec.javax.transaction</groupId>
             <artifactId>jboss-transaction-api_1.1_spec</artifactId>
@@ -56,7 +57,16 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-context-support</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-orm</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+        </dependency>
 
+        <!-- Aspect J -->
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjweaver</artifactId>
@@ -68,17 +78,13 @@
             <artifactId>junit</artifactId>
         </dependency>
 
-        <!-- datasource for testing -->
+        <!-- Datasource for testing -->
         <dependency>
            <groupId>com.jolbox</groupId>
            <artifactId>bonecp</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-test</artifactId>
-        </dependency>
-
+        <!-- Easymock -->
         <dependency>
             <groupId>org.easymock</groupId>
             <artifactId>easymock</artifactId>
@@ -90,18 +96,19 @@
             <scope>test</scope>
         </dependency>
 
-
-        <dependency>
-            <groupId>net.sf.json-lib</groupId>
-            <artifactId>json-lib</artifactId>
-            <classifier>jdk15</classifier>
-        </dependency>
-
         <!-- Commons Math-->
         <dependency>
             <groupId>commons-math</groupId>
             <artifactId>commons-math</artifactId>
         </dependency>
+
+        <!-- Commons Lang -->
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+        </dependency>
+
+        <!-- Log4j -->
         <dependency>
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-log4j12</artifactId>
@@ -113,10 +120,13 @@
             <artifactId>joda-time</artifactId>
         </dependency>
 
+        <!-- DBUnit -->
         <dependency>
             <groupId>org.dbunit</groupId>
             <artifactId>dbunit</artifactId>
         </dependency>
+
+        <!-- Liquibase -->
         <dependency>
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-core</artifactId>
@@ -197,35 +207,5 @@
                 <filtering>true</filtering>
             </resource>
         </resources>
-
-        <pluginManagement>
-            <plugins>
-            <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
-              <plugin>
-                <groupId>org.eclipse.m2e</groupId>
-                <artifactId>lifecycle-mapping</artifactId>
-                <version>1.0.0</version>
-                <configuration>
-                  <lifecycleMappingMetadata>
-                    <pluginExecutions>
-                      <pluginExecution>
-                        <pluginExecutionFilter>
-                          <groupId>org.liquibase</groupId>
-                          <artifactId>liquibase-maven-plugin</artifactId>
-                          <versionRange>[2.0.5,)</versionRange>
-                          <goals>
-                            <goal>update</goal>
-                          </goals>
-                        </pluginExecutionFilter>
-                        <action>
-                          <ignore></ignore>
-                        </action>
-                      </pluginExecution>
-                    </pluginExecutions>
-                  </lifecycleMappingMetadata>
-                </configuration>
-              </plugin>
-            </plugins>
-        </pluginManagement>
     </build>
 </project>

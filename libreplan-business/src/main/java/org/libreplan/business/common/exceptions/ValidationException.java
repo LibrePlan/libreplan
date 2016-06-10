@@ -35,6 +35,7 @@ import org.libreplan.business.common.BaseEntity;
 
 /**
  * Encapsulates some validation failure <br />
+ *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Diego Pino García <dpino@igalia.com>
  */
@@ -56,7 +57,7 @@ public class ValidationException extends RuntimeException {
 
         private ConstraintViolation<?> violation;
 
-        public BasedOnConstraintViolation(ConstraintViolation<?> violation) {
+        BasedOnConstraintViolation(ConstraintViolation<?> violation) {
             Validate.notNull(violation);
             this.violation = violation;
         }
@@ -68,7 +69,7 @@ public class ValidationException extends RuntimeException {
 
         @Override
         public String getPropertyPath() {
-            if (violation.getPropertyPath() == null) {
+            if ( violation.getPropertyPath() == null ) {
                 return null;
             }
             return violation.getPropertyPath().toString();
@@ -93,8 +94,7 @@ public class ValidationException extends RuntimeException {
         private final Object invalidValue;
         private final Object rootBean;
 
-        private InstantiatedInvalidValue(String message, String propertyPath,
-                Object invalidValue, Object rootBean) {
+        private InstantiatedInvalidValue(String message, String propertyPath, Object invalidValue, Object rootBean) {
             super();
             this.message = message;
             this.propertyPath = propertyPath;
@@ -123,14 +123,13 @@ public class ValidationException extends RuntimeException {
         }
     }
 
-    private static String getValidationErrorSummary(
-            Collection<? extends InvalidValue> violations) {
+    private static String getValidationErrorSummary(Collection<? extends InvalidValue> violations) {
         StringBuilder builder = new StringBuilder();
         for (InvalidValue each : violations) {
             builder.append(summaryFor(each));
             builder.append("; ");
         }
-        if (builder.length() > 0) {
+        if ( builder.length() > 0 ) {
             builder.delete(builder.length() - 2, builder.length());
         }
         return builder.toString();
@@ -141,9 +140,9 @@ public class ValidationException extends RuntimeException {
         Object propertyPath = invalid.getPropertyPath();
 
         StringBuilder builder = new StringBuilder();
-        if (bean != null) {
+        if ( bean != null ) {
             builder = builder.append("at ").append(asString(bean));
-            if (propertyPath != null) {
+            if ( propertyPath != null ) {
                 builder = builder.append(" ").append(propertyPath).append(": ");
             }
         }
@@ -151,20 +150,18 @@ public class ValidationException extends RuntimeException {
     }
 
     private static String asString(Object bean) {
-        if (bean == null) {
-            // this shouldn't happen, just in case
+        if ( bean == null ) {
+            // This shouldn ot happen, just in case
             return "null";
         }
-        if (bean instanceof BaseEntity) {
+        if ( bean instanceof BaseEntity ) {
             BaseEntity entity = (BaseEntity) bean;
-            return bean.getClass().getSimpleName() + " "
-                    + entity.getExtraInformation();
+            return bean.getClass().getSimpleName() + " " + entity.getExtraInformation();
         }
         return bean.toString();
     }
 
-    public static ValidationException invalidValueException(String message,
-            Object bean) {
+    public static ValidationException invalidValueException(String message, Object bean) {
         return new ValidationException(invalidValue(message, bean));
     }
 
@@ -172,10 +169,8 @@ public class ValidationException extends RuntimeException {
         return invalidValue(message, null, null, bean);
     }
 
-    public static InvalidValue invalidValue(String message,
-            String propertyPath, Object invalidValue, Object rootBean) {
-        return new InstantiatedInvalidValue(message, propertyPath,
-                invalidValue, rootBean);
+    public static InvalidValue invalidValue(String message, String propertyPath, Object invalidValue, Object rootBean) {
+        return new InstantiatedInvalidValue(message, propertyPath, invalidValue, rootBean);
     }
 
     private final Set<? extends InvalidValue> invalidValues;
@@ -208,13 +203,11 @@ public class ValidationException extends RuntimeException {
         this.invalidValues = singleton(invalidValue);
     }
 
-    private static Set<? extends InvalidValue> convert(
-            ConstraintViolation<?> violation) {
+    private static Set<? extends InvalidValue> convert(ConstraintViolation<?> violation) {
         return Collections.singleton(new BasedOnConstraintViolation(violation));
     }
 
-    private static Set<? extends InvalidValue> convert(
-            Collection<? extends ConstraintViolation<?>> violations) {
+    private static Set<? extends InvalidValue> convert(Collection<? extends ConstraintViolation<?>> violations) {
         Set<InvalidValue> result = new HashSet<InvalidValue>();
         for (ConstraintViolation<?> each : violations) {
             result.add(new BasedOnConstraintViolation(each));
@@ -228,9 +221,7 @@ public class ValidationException extends RuntimeException {
     }
 
 
-    public ValidationException(
-            Set<? extends ConstraintViolation<?>> violations, String message,
-            Throwable cause) {
+    public ValidationException(Set<? extends ConstraintViolation<?>> violations, String message, Throwable cause) {
         super(message, cause);
         this.invalidValues = convert(violations);
     }
@@ -240,8 +231,7 @@ public class ValidationException extends RuntimeException {
         this.invalidValues = convert(violations);
     }
 
-    public ValidationException(
-            Set<? extends ConstraintViolation<?>> violations, Throwable cause) {
+    public ValidationException(Set<? extends ConstraintViolation<?>> violations, Throwable cause) {
         this(violations, getValidationErrorSummary(convert(violations)), cause);
     }
 

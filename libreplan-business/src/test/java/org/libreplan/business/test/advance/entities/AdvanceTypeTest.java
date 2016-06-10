@@ -37,7 +37,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
+@ContextConfiguration(locations = {
+        BUSINESS_SPRING_CONFIG_FILE,
         BUSINESS_SPRING_CONFIG_TEST_FILE })
 public class AdvanceTypeTest {
 
@@ -48,10 +49,12 @@ public class AdvanceTypeTest {
     @Transactional
     public void typeNameMustBeUniqueInDB() {
         String repeatedName = "bla";
-        AdvanceType advanceType = AdvanceType.create(repeatedName, new BigDecimal(
-                5), false, new BigDecimal(1), true, false);
-        AdvanceType other = AdvanceType.create(repeatedName, new BigDecimal(4),
-                false, new BigDecimal(2), true, false);
+
+        AdvanceType advanceType =
+                AdvanceType.create(repeatedName, new BigDecimal(5), false, new BigDecimal(1), true, false);
+
+        AdvanceType other = AdvanceType.create(repeatedName, new BigDecimal(4), false, new BigDecimal(2), true, false);
+
         dao.save(advanceType);
         dao.save(other);
         dao.flush();

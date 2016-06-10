@@ -5,7 +5,7 @@
     <groupId>org.libreplan</groupId>
     <artifactId>libreplan</artifactId>
     <packaging>pom</packaging>
-    <version>1.4.1</version>
+    <version>1.5.0</version>
     <name>LibrePlan</name>
 
     <!--
@@ -154,12 +154,6 @@
     -->
 
     <repositories>
-        <!-- Getttext commons -->
-        <repository>
-            <id>gettext-commons-site</id>
-            <url>http://gettext-commons.googlecode.com/svn/maven-repository</url>
-        </repository>
-
         <!-- LibrePlan repository -->
         <repository>
             <id>thirdparty</id>
@@ -172,14 +166,6 @@
           <id>gettext-commons-site</id>
           <url>http://gettext-commons.googlecode.com/svn/maven-repository</url>
         </pluginRepository>
-        <!--
-        <pluginRepository>
-            <id>codehaus-plugin-repository</id>
-            <name>Codehaus Plugin Repository</name>
-            <url>http://repository.codehaus.org</url>
-        </pluginRepository>
-
-        -->
      </pluginRepositories>
 
     <!-- Dependency management -->
@@ -221,9 +207,9 @@
 
             <!-- Gettext commons -->
             <dependency>
-                <groupId>org.xnap.commons</groupId>
+                <groupId>com.googlecode.gettext-commons</groupId>
                 <artifactId>gettext-commons</artifactId>
-                <version>0.9.6</version>
+                <version>0.9.8</version>
             </dependency>
 
             <!--
@@ -231,12 +217,19 @@
             (depends on spring-core, spring-beans, spring-context, spring-tx)
             Define this if you need ORM (org.springframework.orm.*)
             -->
+            <!-- Spring -->
             <dependency>
               <groupId>org.springframework</groupId>
               <artifactId>spring-orm</artifactId>
               <version>4.0.3.RELEASE</version>
             </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-web</artifactId>
+                <version>4.0.3.RELEASE</version>
+            </dependency>
 
+            <!-- Hibernate -->
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-core</artifactId>
@@ -247,13 +240,13 @@
                 <artifactId>hibernate-ehcache</artifactId>
                 <version>4.3.11.Final</version>
             </dependency>
-
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-validator</artifactId>
                 <version>4.3.2.Final</version>
             </dependency>
 
+            <!-- Usertype Core -->
             <dependency>
 	      <groupId>org.jadira.usertype</groupId>
 	      <artifactId>usertype.core</artifactId>
@@ -273,6 +266,8 @@
                 <version>${jdbcDriver.version}</version>
                 <scope>test</scope>
             </dependency>
+
+            <!-- JBoss Transaction -->
             <dependency>
                 <groupId>org.jboss.spec.javax.transaction</groupId>
                 <artifactId>jboss-transaction-api_1.1_spec</artifactId>
@@ -286,22 +281,26 @@
                 </exclusions>
             </dependency>
 
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-web</artifactId>
-                <version>4.0.3.RELEASE</version>
-            </dependency>
             <!--
              Various Application Context utilities, including EhCache, JavaMail, Quartz, and
             Freemarker integration
             We use QuartzJobBean.
             -->
+
+            <!-- Spring -->
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-context-support</artifactId>
                 <version>4.0.3.RELEASE</version>
             </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-test</artifactId>
+                <version>4.0.3.RELEASE</version>
+                <scope>test</scope>
+            </dependency>
 
+            <!-- AspectJ -->
             <dependency>
                 <groupId>org.aspectj</groupId>
                 <artifactId>aspectjweaver</artifactId>
@@ -340,19 +339,12 @@
                 <scope>test</scope>
             </dependency>
 
-            <!-- datasource for testing -->
+            <!-- Datasource for testing -->
             <dependency>
               <groupId>com.jolbox</groupId>
               <artifactId>bonecp</artifactId>
               <version>0.8.0.RELEASE</version>
               <scope>test</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-test</artifactId>
-                <version>4.0.3.RELEASE</version>
-                <scope>test</scope>
             </dependency>
 
             <!-- Easy mock -->
@@ -362,7 +354,6 @@
                 <version>2.4</version>
                 <scope>test</scope>
             </dependency>
-
             <dependency>
                 <groupId>org.easymock</groupId>
                 <artifactId>easymockclassextension</artifactId>
@@ -370,23 +361,12 @@
                 <scope>test</scope>
             </dependency>
 
+            <!-- Commons Collections -->
             <dependency>
-                <groupId>net.sf.json-lib</groupId>
-                <artifactId>json-lib</artifactId>
-                <version>2.2.3</version>
-                <classifier>jdk15</classifier>
-            </dependency>
-             <dependency>
                   <groupId>commons-collections</groupId>
                   <artifactId>commons-collections</artifactId>
                   <version>3.2</version>
              </dependency>
-
-            <dependency>
-                <groupId>net.sf.ezmorph</groupId>
-                <artifactId>ezmorph</artifactId>
-                <version>1.0.6</version>
-            </dependency>
 
             <!-- Commons lang -->
             <dependency>
@@ -497,11 +477,15 @@
                 <artifactId>libreplan-business</artifactId>
                 <version>${project.version}</version>
             </dependency>
+
+            <!-- DBUnit -->
             <dependency>
                 <groupId>org.dbunit</groupId>
                 <artifactId>dbunit</artifactId>
                 <version>2.4.6</version>
             </dependency>
+
+            <!-- Javax Servlet -->
             <dependency>
                 <groupId>javax.servlet</groupId>
                 <artifactId>servlet-api</artifactId>
@@ -561,7 +545,7 @@
                 </exclusions>
             </dependency>
 
-            <!-- jackson provider -->
+            <!-- Jackson provider -->
             <dependency>
                 <groupId>org.codehaus.jackson</groupId>
                 <artifactId>jackson-jaxrs</artifactId>
@@ -591,7 +575,7 @@
             </exclusions>
             </dependency>
 
-        <!-- LiquiBase -->
+            <!-- LiquiBase -->
             <dependency>
                 <groupId>org.liquibase</groupId>
                 <artifactId>liquibase-core</artifactId>
@@ -742,9 +726,9 @@
             <!-- =========================================================== -->
             <!-- Gettext configuration -->
             <plugin>
-                <groupId>org.xnap.commons</groupId>
-                <artifactId>maven-gettext-plugin</artifactId>
-                <version>1.2.0</version>
+                <groupId>com.googlecode.gettext-commons</groupId>
+                <artifactId>gettext-maven-plugin</artifactId>
+                <version>1.2.4</version>
                 <configuration>
                     <targetBundle>i18n.Messages</targetBundle>
                 </configuration>
@@ -839,14 +823,14 @@
                     <version>${jdbcDriver.version}</version>
                   </dependency>
 
-                  <!-- connection pooling -->
+                  <!-- Connection pooling -->
                   <dependency>
                     <groupId>com.jolbox</groupId>
                     <artifactId>bonecp</artifactId>
                     <version>0.7.1.RELEASE</version>
                   </dependency>
 
-                  <!-- connection pooling dependencies -->
+                  <!-- Connection pooling dependencies -->
                   <dependency>
                     <groupId>org.slf4j</groupId>
                     <artifactId>slf4j-api</artifactId>

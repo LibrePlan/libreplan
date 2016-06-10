@@ -115,7 +115,7 @@ public class GenericDAOHibernate<E extends BaseEntity, PK extends Serializable> 
 
     public void checkVersion(E entity) {
 
-        /* Get id and version from entity. */
+        /* Get id and version from entity */
         Serializable id;
         Long versionValueInMemory;
 
@@ -139,10 +139,12 @@ public class GenericDAOHibernate<E extends BaseEntity, PK extends Serializable> 
             throw new RuntimeException(e);
         }
 
-        /* Check version. */
-        Long versionValueInDB = (Long) getSession().createCriteria(entityClass)
+        /* Check version */
+        Long versionValueInDB = (Long) getSession()
+                .createCriteria(entityClass)
                 .add(Restrictions.idEq(id))
-                .setProjection(Projections.property("version")).uniqueResult();
+                .setProjection(Projections.property("version"))
+                .uniqueResult();
 
         if ( versionValueInDB == null ) {
             return;
@@ -189,8 +191,9 @@ public class GenericDAOHibernate<E extends BaseEntity, PK extends Serializable> 
 
     public boolean exists(final PK id) {
 
-        return getSession().createCriteria(entityClass).add(
-                Restrictions.idEq(id)).setProjection(Projections.id())
+        return getSession()
+                .createCriteria(entityClass)
+                .add(Restrictions.idEq(id)).setProjection(Projections.id())
                 .uniqueResult() != null;
 
     }

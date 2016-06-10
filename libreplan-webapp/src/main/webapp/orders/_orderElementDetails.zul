@@ -20,7 +20,7 @@
 -->
 
 <vbox id="${arg.id}"
-    apply="org.libreplan.web.orders.DetailsOrderElementController" width="100%">
+      apply="org.libreplan.web.orders.DetailsOrderElementController" width="100%">
     <!-- Details data -->
     <grid id="details" sizedByContent="false">
         <columns >
@@ -31,43 +31,43 @@
             <row>
                 <label value="${i18n:_('Task name')}" />
                 <textbox id="name"
-                    value="@{detailsController.orderElement.name}"
-                    constraint="no empty:${i18n:_('cannot be empty')}" width="500px" />
+                         value="@{detailsController.orderElement.name}"
+                         constraint="no empty:${i18n:_('cannot be empty')}" width="500px" />
             </row>
             <row>
                 <label value="${i18n:_('Code ')}" />
                 <textbox id="code"
-                    value="@{detailsController.orderElement.code}"
-                    constraint="no empty:${i18n:_('cannot be empty')}" width="150px"
-                    disabled="@{detailsController.codeDisabled}" />
+                         value="@{detailsController.orderElement.code}"
+                         constraint="no empty:${i18n:_('cannot be empty')}" width="150px"
+                         disabled="@{detailsController.codeDisabled}" />
             </row>
             <row>
                 <label value="${i18n:_('Starting date')}" />
                 <hbox>
-                    <datebox id="initDate"
-                        value="@{detailsController.orderElement.initDate}" />
+                    <datebox id="initDate" value="@{detailsController.orderElement.initDate}"
+                             constraint="@{detailsController.checkConstraintStartDate}"/>
                 </hbox>
             </row>
             <row>
                 <label value="${i18n:_('Deadline')}" />
                 <hbox>
-                    <datebox id="deadline"
-                        value="@{detailsController.orderElement.deadline}" />
+                    <datebox id="deadline" value="@{detailsController.orderElement.deadline}"
+                             constraint="@{detailsController.checkConstraintFinishDate}"/>
                 </hbox>
             </row>
             <row>
                 <label value="${i18n:_('Description')}" />
                 <textbox id="description" rows="3"
-                    value="@{detailsController.orderElement.description}"
-                    width="600px" />
+                         value="@{detailsController.orderElement.description}"
+                         width="600px" />
             </row>
             <row>
                 <label value="${i18n:_('Budget')}" />
                 <decimalbox id="budget"
-                    value="@{detailsController.orderElement.budget}"
-                    disabled="@{detailsController.container}"
-                    constraint="no empty,no negative:${i18n:_('cannot be negative or empty')}"
-                    format="@{detailsController.moneyFormat}" />
+                            value="@{detailsController.orderElement.budget}"
+                            disabled="@{detailsController.container}"
+                            constraint="no empty,no negative:${i18n:_('cannot be negative or empty')}"
+                            format="@{detailsController.moneyFormat}" />
             </row>
         </rows>
     </grid>

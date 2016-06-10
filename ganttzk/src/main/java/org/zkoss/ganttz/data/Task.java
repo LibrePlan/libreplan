@@ -27,7 +27,6 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -56,28 +55,23 @@ import org.zkoss.ganttz.util.WeakReferencedListeners.Mode;
 public abstract class Task implements ITaskFundamentalProperties {
 
     public interface IReloadResourcesTextRequested {
-        public void reloadResourcesTextRequested();
+        void reloadResourcesTextRequested();
     }
 
-    private List<IReloadResourcesTextRequested> reloadRequestedListeners = new ArrayList<IReloadResourcesTextRequested>();
+    private List<IReloadResourcesTextRequested> reloadRequestedListeners =
+                new ArrayList<IReloadResourcesTextRequested>();
 
-    private PropertyChangeSupport fundamentalPropertiesListeners = new PropertyChangeSupport(
-            this);
+    private PropertyChangeSupport fundamentalPropertiesListeners = new PropertyChangeSupport(this);
 
-    private PropertyChangeSupport visibilityProperties = new PropertyChangeSupport(
-            this);
+    private PropertyChangeSupport visibilityProperties = new PropertyChangeSupport(this);
 
-    private PropertyChangeSupport criticalPathProperty = new PropertyChangeSupport(
-            this);
+    private PropertyChangeSupport criticalPathProperty = new PropertyChangeSupport(this);
 
-    private PropertyChangeSupport advancesProperty = new PropertyChangeSupport(
-            this);
+    private PropertyChangeSupport advancesProperty = new PropertyChangeSupport(this);
 
-    private PropertyChangeSupport reportedHoursProperty = new PropertyChangeSupport(
-            this);
+    private PropertyChangeSupport reportedHoursProperty = new PropertyChangeSupport(this);
 
-    private PropertyChangeSupport moneyCostBarProperty = new PropertyChangeSupport(
-            this);
+    private PropertyChangeSupport moneyCostBarProperty = new PropertyChangeSupport(this);
 
     private final ITaskFundamentalProperties fundamentalProperties;
 
@@ -91,32 +85,31 @@ public abstract class Task implements ITaskFundamentalProperties {
 
     private boolean showingMoneyCostBar = false;
 
-    private ConstraintViolationNotificator<GanttDate> violationNotificator = ConstraintViolationNotificator
-            .create();
+    private ConstraintViolationNotificator<GanttDate> violationNotificator = ConstraintViolationNotificator.create();
 
-    private IDependenciesEnforcerHook dependenciesEnforcerHook = GanttDiagramGraph
-            .doNothingHook();
+    private IDependenciesEnforcerHook dependenciesEnforcerHook = GanttDiagramGraph.doNothingHook();
 
-    private final INotificationAfterDependenciesEnforcement notifyDates = new INotificationAfterDependenciesEnforcement() {
+    private final INotificationAfterDependenciesEnforcement notifyDates =
+                new INotificationAfterDependenciesEnforcement() {
+                    @Override
+                    public void onStartDateChange(GanttDate previousStart, GanttDate previousEnd, GanttDate newStart) {
 
-        @Override
-        public void onStartDateChange(GanttDate previousStart,
-                GanttDate previousEnd, GanttDate newStart) {
-            fundamentalPropertiesListeners.firePropertyChange("beginDate",
-                    previousStart, fundamentalProperties.getBeginDate());
-            fireEndDate(previousEnd);
-        }
+                        fundamentalPropertiesListeners.firePropertyChange(
+                                "beginDate", previousStart, fundamentalProperties.getBeginDate());
 
-        @Override
-        public void onEndDateChange(GanttDate previousEnd, GanttDate newEnd) {
-            fireEndDate(previousEnd);
-        }
+                        fireEndDate(previousEnd);
+                    }
 
-        private void fireEndDate(GanttDate previousEnd) {
-            fundamentalPropertiesListeners.firePropertyChange("endDate",
-                    previousEnd, fundamentalProperties.getEndDate());
-        }
-    };
+                    @Override
+                    public void onEndDateChange(GanttDate previousEnd, GanttDate newEnd) {
+                        fireEndDate(previousEnd);
+                    }
+
+                    private void fireEndDate(GanttDate previousEnd) {
+                        fundamentalPropertiesListeners.firePropertyChange(
+                                "endDate", previousEnd, fundamentalProperties.getEndDate());
+                    }
+                };
 
     public Task(ITaskFundamentalProperties fundamentalProperties) {
         this.fundamentalProperties = fundamentalProperties;
@@ -124,19 +117,16 @@ public abstract class Task implements ITaskFundamentalProperties {
 
     @Override
     public List<Constraint<GanttDate>> getStartConstraints() {
-        return violationNotificator.withListener(fundamentalProperties
-                .getStartConstraints());
+        return violationNotificator.withListener(fundamentalProperties.getStartConstraints());
     }
 
     public List<Constraint<GanttDate>> getEndConstraints() {
-        return violationNotificator.withListener(fundamentalProperties
-                .getEndConstraints());
+        return violationNotificator.withListener(fundamentalProperties.getEndConstraints());
     }
 
     @Override
     public void doPositionModifications(final IModifications modifications) {
         fundamentalProperties.doPositionModifications(new IModifications() {
-
             @Override
             public void doIt(IUpdatablePosition p) {
                 modifications.doIt(position);
@@ -146,16 +136,15 @@ public abstract class Task implements ITaskFundamentalProperties {
     }
 
     private final IUpdatablePosition position = new IUpdatablePosition() {
-
         @Override
         public void setEndDate(GanttDate value) {
-            if (value == null) {
+            if ( value == null ) {
                 return;
             }
+
             GanttDate previousEnd = fundamentalProperties.getEndDate();
             getFundamentalPropertiesPosition().setEndDate(value);
-            dependenciesEnforcerHook.setNewEnd(previousEnd,
-                    fundamentalProperties.getEndDate());
+            dependenciesEnforcerHook.setNewEnd(previousEnd, fundamentalProperties.getEndDate());
         }
 
         @Override
@@ -163,8 +152,7 @@ public abstract class Task implements ITaskFundamentalProperties {
             GanttDate previousValue = fundamentalProperties.getBeginDate();
             GanttDate previousEnd = fundamentalProperties.getEndDate();
             getFundamentalPropertiesPosition().setBeginDate(newStart);
-            dependenciesEnforcerHook.setStartDate(previousValue, previousEnd,
-                    newStart);
+            dependenciesEnforcerHook.setStartDate(previousValue, previousEnd, newStart);
         }
 
         @Override
@@ -179,19 +167,19 @@ public abstract class Task implements ITaskFundamentalProperties {
             GanttDate previousStart = getBeginDate();
             GanttDate previousEnd = getEndDate();
             getFundamentalPropertiesPosition().moveTo(date);
-            dependenciesEnforcerHook.setStartDate(previousStart, previousEnd,
-                    date);
+            dependenciesEnforcerHook.setStartDate(previousStart, previousEnd, date);
         }
 
         private IUpdatablePosition getFundamentalPropertiesPosition() {
             final IUpdatablePosition[] result = new IUpdatablePosition[1];
-            fundamentalProperties.doPositionModifications(new IModifications() {
 
+            fundamentalProperties.doPositionModifications(new IModifications() {
                 @Override
                 public void doIt(IUpdatablePosition position) {
                     result[0] = position;
                 }
             });
+
             assert result[0] != null;
             return result[0];
         }
@@ -203,8 +191,7 @@ public abstract class Task implements ITaskFundamentalProperties {
 
     public abstract boolean isExpanded() throws UnsupportedOperationException;
 
-    public abstract List<Task> getTasks()
-            throws UnsupportedOperationException;
+    public abstract List<Task> getTasks() throws UnsupportedOperationException;
 
     public boolean isVisible() {
         return visible;
@@ -213,8 +200,7 @@ public abstract class Task implements ITaskFundamentalProperties {
     public void setVisible(boolean visible) {
         boolean previousValue = this.visible;
         this.visible = visible;
-        visibilityProperties.firePropertyChange("visible", previousValue,
-                this.visible);
+        visibilityProperties.firePropertyChange("visible", previousValue, this.visible);
     }
 
     public boolean isInCriticalPath() {
@@ -224,15 +210,13 @@ public abstract class Task implements ITaskFundamentalProperties {
     public void setInCriticalPath(boolean inCriticalPath) {
         boolean previousValue = this.inCriticalPath;
         this.inCriticalPath = inCriticalPath;
-        criticalPathProperty.firePropertyChange("inCriticalPath",
-                previousValue, this.inCriticalPath);
+        criticalPathProperty.firePropertyChange("inCriticalPath", previousValue, this.inCriticalPath);
     }
 
     public void setShowingAdvances(boolean showingAdvances) {
         boolean previousValue = this.showingAdvances;
         this.showingAdvances = showingAdvances;
-        advancesProperty.firePropertyChange("showingAdvances", previousValue,
-                this.showingAdvances);
+        advancesProperty.firePropertyChange("showingAdvances", previousValue, this.showingAdvances);
     }
 
     public boolean isShowingAdvances() {
@@ -242,8 +226,7 @@ public abstract class Task implements ITaskFundamentalProperties {
     public void setShowingReportedHours(boolean showingReportedHours) {
         boolean previousValue = this.showingReportedHours;
         this.showingReportedHours = showingReportedHours;
-        reportedHoursProperty.firePropertyChange("showingReportedHours",
-                previousValue, this.showingReportedHours);
+        reportedHoursProperty.firePropertyChange("showingReportedHours", previousValue, this.showingReportedHours);
     }
 
     public boolean isShowingReportedHours() {
@@ -253,8 +236,7 @@ public abstract class Task implements ITaskFundamentalProperties {
     public void setShowingMoneyCostBar(boolean showingMoneyCostBar) {
         boolean previousValue = this.showingMoneyCostBar;
         this.showingMoneyCostBar = showingMoneyCostBar;
-        moneyCostBarProperty.firePropertyChange("showingMoneyCostBar",
-                previousValue, this.showingMoneyCostBar);
+        moneyCostBarProperty.firePropertyChange("showingMoneyCostBar", previousValue, this.showingMoneyCostBar);
     }
 
     public boolean isShowingMoneyCostBar() {
@@ -268,12 +250,10 @@ public abstract class Task implements ITaskFundamentalProperties {
     public void setName(String name) {
         String previousValue = fundamentalProperties.getName();
         fundamentalProperties.setName(name);
-        fundamentalPropertiesListeners.firePropertyChange("name",
-                previousValue, name);
+        fundamentalPropertiesListeners.firePropertyChange("name", previousValue, name);
     }
 
-    public void registerDependenciesEnforcerHook(
-            IDependenciesEnforcerHookFactory<Task> factory) {
+    void registerDependenciesEnforcerHook(IDependenciesEnforcerHookFactory<Task> factory) {
         Validate.notNull(factory);
         dependenciesEnforcerHook = factory.create(this, notifyDates);
         Validate.notNull(dependenciesEnforcerHook);
@@ -288,52 +268,42 @@ public abstract class Task implements ITaskFundamentalProperties {
     }
 
     public long getLengthMilliseconds() {
-        return getEndDate().toDayRoundedDate().getTime()
-                - getBeginDate().toDayRoundedDate().getTime();
+        return getEndDate().toDayRoundedDate().getTime() - getBeginDate().toDayRoundedDate().getTime();
     }
 
     public ReadableDuration getLength() {
-        return new Duration(getBeginDate().toDayRoundedDate().getTime(),
-                getEndDate().toDayRoundedDate().getTime());
+        return new Duration(getBeginDate().toDayRoundedDate().getTime(), getEndDate().toDayRoundedDate().getTime());
     }
 
-    public void addVisibilityPropertiesChangeListener(
-            PropertyChangeListener listener) {
+    public void addVisibilityPropertiesChangeListener(PropertyChangeListener listener) {
         this.visibilityProperties.addPropertyChangeListener(listener);
     }
 
-    public void addCriticalPathPropertyChangeListener(
-            PropertyChangeListener listener) {
+    public void addCriticalPathPropertyChangeListener(PropertyChangeListener listener) {
         this.criticalPathProperty.addPropertyChangeListener(listener);
     }
 
-    public void addAdvancesPropertyChangeListener(
-            PropertyChangeListener listener) {
+    public void addAdvancesPropertyChangeListener(PropertyChangeListener listener) {
         this.advancesProperty.addPropertyChangeListener(listener);
     }
 
-    public void addReportedHoursPropertyChangeListener(
-            PropertyChangeListener listener) {
+    public void addReportedHoursPropertyChangeListener(PropertyChangeListener listener) {
         this.reportedHoursProperty.addPropertyChangeListener(listener);
     }
 
-    public void addMoneyCostBarPropertyChangeListener(
-            PropertyChangeListener listener) {
+    public void addMoneyCostBarPropertyChangeListener(PropertyChangeListener listener) {
         this.moneyCostBarProperty.addPropertyChangeListener(listener);
     }
 
-    public void addFundamentalPropertiesChangeListener(
-            PropertyChangeListener listener) {
+    public void addFundamentalPropertiesChangeListener(PropertyChangeListener listener) {
         this.fundamentalPropertiesListeners.addPropertyChangeListener(listener);
     }
 
     public void removePropertyChangeListener(PropertyChangeListener listener) {
-        this.fundamentalPropertiesListeners
-                .removePropertyChangeListener(listener);
+        this.fundamentalPropertiesListeners.removePropertyChangeListener(listener);
     }
 
-    public void removeVisibilityPropertiesChangeListener(
-            PropertyChangeListener listener) {
+    public void removeVisibilityPropertiesChangeListener(PropertyChangeListener listener) {
         this.visibilityProperties.removePropertyChangeListener(listener);
     }
 
@@ -344,16 +314,14 @@ public abstract class Task implements ITaskFundamentalProperties {
 
     @Override
     public List<Constraint<GanttDate>> getCurrentLengthConstraint() {
-        if (isContainer()) {
+        if ( isContainer() ) {
             return Collections.emptyList();
         }
-        return violationNotificator.withListener(fundamentalProperties
-                .getCurrentLengthConstraint());
+        return violationNotificator.withListener(fundamentalProperties.getCurrentLengthConstraint());
     }
 
     public Constraint<GanttDate> getEndDateBiggerThanStartDate() {
-        return violationNotificator
-                .withListener(biggerOrEqualThan(getBeginDate()));
+        return violationNotificator.withListener(biggerOrEqualThan(getBeginDate()));
     }
 
     public String getNotes() {
@@ -363,16 +331,17 @@ public abstract class Task implements ITaskFundamentalProperties {
     public void setNotes(String notes) {
         String previousValue = fundamentalProperties.getNotes();
         this.fundamentalProperties.setNotes(notes);
-        fundamentalPropertiesListeners.firePropertyChange("notes",
-                previousValue, this.fundamentalProperties.getNotes());
+
+        fundamentalPropertiesListeners.firePropertyChange(
+                "notes", previousValue, this.fundamentalProperties.getNotes());
     }
 
     public void resizeTo(final LocalDate date) {
-        if (date.compareTo(getBeginDateAsLocalDate()) < 0) {
+        if ( date.compareTo(getBeginDateAsLocalDate()) < 0 ) {
             return;
         }
-        doPositionModifications(new IModifications() {
 
+        doPositionModifications(new IModifications() {
             @Override
             public void doIt(IUpdatablePosition position) {
                 position.resizeTo(GanttDate.createFrom(date));
@@ -447,8 +416,7 @@ public abstract class Task implements ITaskFundamentalProperties {
     public void setDeadline(Date date) {
         Date previousValue = fundamentalProperties.getDeadline();
         fundamentalProperties.setDeadline(date);
-        fundamentalPropertiesListeners.firePropertyChange("deadline",
-                previousValue, date);
+        fundamentalPropertiesListeners.firePropertyChange("deadline", previousValue, date);
     }
 
     @Override
@@ -456,23 +424,20 @@ public abstract class Task implements ITaskFundamentalProperties {
         return fundamentalProperties.getConsolidatedline();
     }
 
-    public void addConstraintViolationListener(
-            IConstraintViolationListener<GanttDate> listener, Mode mode) {
+    public void addConstraintViolationListener(IConstraintViolationListener<GanttDate> listener, Mode mode) {
         violationNotificator.addConstraintViolationListener(listener, mode);
     }
 
-    public void addReloadListener(
-            IReloadResourcesTextRequested reloadResourcesTextRequested) {
+    public void addReloadListener(IReloadResourcesTextRequested reloadResourcesTextRequested) {
         Validate.notNull(reloadResourcesTextRequested);
         this.reloadRequestedListeners.add(reloadResourcesTextRequested);
     }
 
-    public void removeReloadListener(
-            IReloadResourcesTextRequested reloadResourcesTextRequested) {
+    public void removeReloadListener(IReloadResourcesTextRequested reloadResourcesTextRequested) {
         this.reloadRequestedListeners.remove(reloadResourcesTextRequested);
     }
 
-    public void reloadResourcesText() {
+    void reloadResourcesText() {
         for (IReloadResourcesTextRequested each : reloadRequestedListeners) {
             each.reloadResourcesTextRequested();
         }
@@ -481,8 +446,8 @@ public abstract class Task implements ITaskFundamentalProperties {
     public static void reloadResourcesText(IContextWithPlannerTask<?> context) {
         Task task = context.getTask();
         task.reloadResourcesText();
-        List<? extends TaskContainer> parents = context.getMapper().getParents(
-                task);
+        List<? extends TaskContainer> parents = context.getMapper().getParents(task);
+
         for (TaskContainer each : parents) {
             each.reloadResourcesText();
         }
@@ -516,7 +481,7 @@ public abstract class Task implements ITaskFundamentalProperties {
     }
 
     public List<Task> getAllTaskLeafs() {
-        return Arrays.asList(this);
+        return Collections.singletonList(this);
     }
 
     public String getAssignedStatus() {
@@ -545,8 +510,7 @@ public abstract class Task implements ITaskFundamentalProperties {
     }
 
     public void updateSizeDueToDateChanges(GanttDate previousStart, GanttDate previousEnd) {
-        dependenciesEnforcerHook.setStartDate(previousStart, previousEnd,
-                getBeginDate());
+        dependenciesEnforcerHook.setStartDate(previousStart, previousEnd, getBeginDate());
     }
 
     @Override
@@ -565,10 +529,8 @@ public abstract class Task implements ITaskFundamentalProperties {
     }
 
     public void firePropertyChangeForTaskDates() {
-        fundamentalPropertiesListeners.firePropertyChange("beginDate", null,
-                getBeginDate());
-        fundamentalPropertiesListeners.firePropertyChange("endDate", null,
-                getEndDate());
+        fundamentalPropertiesListeners.firePropertyChange("beginDate", null, getBeginDate());
+        fundamentalPropertiesListeners.firePropertyChange("endDate", null, getEndDate());
     }
 
     public String getCode() {

@@ -53,9 +53,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
-public class TypeOfWorkHoursDAO extends IntegrationEntityDAO<TypeOfWorkHours>
-        implements
-        ITypeOfWorkHoursDAO {
+public class TypeOfWorkHoursDAO extends IntegrationEntityDAO<TypeOfWorkHours> implements ITypeOfWorkHoursDAO {
 
     @Autowired
     private IConfigurationDAO configurationDAO;
@@ -64,22 +62,21 @@ public class TypeOfWorkHoursDAO extends IntegrationEntityDAO<TypeOfWorkHours>
     private IConnectorDAO connectorDAO;
 
     @Override
-    public TypeOfWorkHours findUniqueByCode(TypeOfWorkHours typeOfWorkHours)
-            throws InstanceNotFoundException {
+    public TypeOfWorkHours findUniqueByCode(TypeOfWorkHours typeOfWorkHours) throws InstanceNotFoundException {
 
         Validate.notNull(typeOfWorkHours);
+
         return findUniqueByCode(typeOfWorkHours.getCode());
     }
 
     @Override
-    public TypeOfWorkHours findUniqueByCode(String code)
-            throws InstanceNotFoundException {
+    public TypeOfWorkHours findUniqueByCode(String code) throws InstanceNotFoundException {
 
         Criteria c = getSession().createCriteria(TypeOfWorkHours.class);
         c.add(Restrictions.eq("code", code));
 
         TypeOfWorkHours found = (TypeOfWorkHours) c.uniqueResult();
-        if (found == null) {
+        if ( found == null ) {
             throw new InstanceNotFoundException(code, TypeOfWorkHours.class.getName());
         }
         return found;
@@ -93,6 +90,7 @@ public class TypeOfWorkHoursDAO extends IntegrationEntityDAO<TypeOfWorkHours>
 
         List<TypeOfWorkHours> list = new ArrayList<TypeOfWorkHours>();
         list.addAll(c.list());
+
         return list;
     }
 
@@ -110,6 +108,7 @@ public class TypeOfWorkHoursDAO extends IntegrationEntityDAO<TypeOfWorkHours>
     public boolean existsTypeWithCodeInAnotherTransaction(String code) {
         try {
             findUniqueByCode(code);
+
             return true;
         } catch (InstanceNotFoundException e) {
             return false;
@@ -118,37 +117,32 @@ public class TypeOfWorkHoursDAO extends IntegrationEntityDAO<TypeOfWorkHours>
 
     @Override
     @Transactional(readOnly= true, propagation = Propagation.REQUIRES_NEW)
-    public TypeOfWorkHours findUniqueByCodeInAnotherTransaction(String code)
-            throws InstanceNotFoundException {
+    public TypeOfWorkHours findUniqueByCodeInAnotherTransaction(String code) throws InstanceNotFoundException {
         return findUniqueByCode(code);
     }
 
     @Override
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
-    public TypeOfWorkHours findUniqueByNameInAnotherTransaction(String name)
-            throws InstanceNotFoundException {
+    public TypeOfWorkHours findUniqueByNameInAnotherTransaction(String name) throws InstanceNotFoundException {
         return findUniqueByName(name);
     }
 
     @Override
-    public TypeOfWorkHours findUniqueByName(String name)
-            throws InstanceNotFoundException {
+    public TypeOfWorkHours findUniqueByName(String name) throws InstanceNotFoundException {
 
         Criteria c = getSession().createCriteria(TypeOfWorkHours.class);
         c.add(Restrictions.eq("name", name.trim()).ignoreCase());
 
         TypeOfWorkHours found = (TypeOfWorkHours) c.uniqueResult();
-        if (found == null) {
-            throw new InstanceNotFoundException(name, TypeOfWorkHours.class
-                    .getName());
+        if ( found == null ) {
+            throw new InstanceNotFoundException(name, TypeOfWorkHours.class.getName());
         }
         return found;
     }
 
     @Override
     public List<TypeOfWorkHours> hoursTypeByNameAsc() {
-        return getSession().createCriteria(TypeOfWorkHours.class)
-                .addOrder(Order.asc("name")).list();
+        return getSession().createCriteria(TypeOfWorkHours.class).addOrder(Order.asc("name")).list();
     }
 
     @Override
@@ -162,55 +156,58 @@ public class TypeOfWorkHoursDAO extends IntegrationEntityDAO<TypeOfWorkHours>
     private void checkHasWorkReportLine(TypeOfWorkHours type) {
         List workReportLines = getSession()
                 .createCriteria(WorkReportLine.class)
-                .add(Restrictions.eq("typeOfWorkHours", type)).list();
-        if (!workReportLines.isEmpty()) {
-            throw ValidationException
-                    .invalidValueException(
-                            "Cannot delete type of work hours. It is being used at this moment in some timesheet line.",
-                            type);
+                .add(Restrictions.eq("typeOfWorkHours", type))
+                .list();
+
+        if ( !workReportLines.isEmpty() ) {
+            throw ValidationException.invalidValueException(
+                    "Cannot delete type of work hours. It is being used at this moment in some timesheet line.",
+                    type);
         }
     }
 
     private void checkHasHourCost(TypeOfWorkHours type) {
-        List hoursCost = getSession().createCriteria(HourCost.class)
-                .add(Restrictions.eq("type", type)).list();
-        if (!hoursCost.isEmpty()) {
-            throw ValidationException
-                    .invalidValueException(
-                            "Cannot delete type of work hours. It is being used at this moment in some cost category.",
-                            type);
+        List hoursCost = getSession()
+                .createCriteria(HourCost.class)
+                .add(Restrictions.eq("type", type))
+                .list();
+
+        if ( !hoursCost.isEmpty() ) {
+            throw ValidationException.invalidValueException(
+                    "Cannot delete type of work hours. It is being used at this moment in some cost category.",
+                    type);
         }
     }
 
     private void checkIsPersonalTimesheetsTypeOfWorkHours(TypeOfWorkHours type) {
         Configuration configuration = configurationDAO.getConfiguration();
-        if (configuration.getPersonalTimesheetsTypeOfWorkHours().getId()
-                .equals(type.getId())) {
-            throw ValidationException
-                    .invalidValueException(
-                            "Cannot delete the type of work hours. It is configured as type of work hours for personal timesheets.",
-                            type);
+
+        if ( configuration.getPersonalTimesheetsTypeOfWorkHours().getId().equals(type.getId()) ) {
+            throw ValidationException.invalidValueException(
+                    "Cannot delete the type of work hours. It is configured as type of work hours for personal timesheets.",
+                    type);
         }
     }
 
     @Override
     public boolean existsByName(TypeOfWorkHours typeOfWorkHours) {
-        Criteria c = getSession().createCriteria(TypeOfWorkHours.class).add(
-                Restrictions.eq("name", typeOfWorkHours.getName()));
+        Criteria c = getSession()
+                .createCriteria(TypeOfWorkHours.class)
+                .add(Restrictions.eq("name", typeOfWorkHours.getName()));
+
         return c.uniqueResult() != null;
     }
 
     private void checkIsJiraConnectorTypeOfWorkHours(TypeOfWorkHours type) {
-        Connector connector = connectorDAO
-                .findUniqueByName(PredefinedConnectors.JIRA.getName());
-        if (connector != null) {
-            String name = connector.getPropertiesAsMap().get(
-                    PredefinedConnectorProperties.JIRA_HOURS_TYPE);
-            if (name.equals(type.getName())) {
-                throw ValidationException
-                        .invalidValueException(
-                                "Cannot delete the type of work hours. It is configured as type of work hours for JIRA connector.",
-                                type);
+        Connector connector = connectorDAO.findUniqueByName(PredefinedConnectors.JIRA.getName());
+
+        if ( connector != null ) {
+            String name = connector.getPropertiesAsMap().get(PredefinedConnectorProperties.JIRA_HOURS_TYPE);
+            if ( name.equals(type.getName()) ) {
+                throw ValidationException.invalidValueException(
+                        "Cannot delete the type of work hours. " +
+                        "It is configured as type of work hours for JIRA connector.",
+                        type);
             }
         }
     }

@@ -27,14 +27,14 @@ import org.libreplan.ws.common.api.InstanceConstraintViolationsListDTO;
 
 /**
  * Service for managing cost categories.
+ *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 public interface ICostCategoryService {
 
-    InstanceConstraintViolationsListDTO addCostCategories(
-            CostCategoryListDTO costCategoryListDTO);
+    InstanceConstraintViolationsListDTO addCostCategories(CostCategoryListDTO costCategoryListDTO);
 
-    public CostCategoryListDTO getCostCotegories();
+    CostCategoryListDTO getCostCotegories();
 
     Response getCostCategory(String code);
 }
