@@ -57,8 +57,7 @@ public abstract class BaseEntity implements INewObject {
      * @param entities
      * @return entities grouped by id
      */
-    public static <T extends BaseEntity> Map<Long, Set<T>> byId(
-            Collection<? extends T> entities) {
+    public static <T extends BaseEntity> Map<Long, Set<T>> byId(Collection<? extends T> entities) {
         Map<Long, Set<T>> result = new HashMap<Long, Set<T>>();
         for (T each : entities) {
             if ( !result.containsKey(each.getId()) ) {
@@ -123,9 +122,9 @@ public abstract class BaseEntity implements INewObject {
     }
 
     /**
-     * Once the has been really saved in DB (not a readonly transaction), it
-     * could be necessary to unmark the object as newObject. This is the case if
-     * you must use the same instance after the transaction. <br />
+     * Once the has been really saved in DB (not a readonly transaction),
+     * it could be necessary to unmark the object as newObject.
+     * This is the case if you must use the same instance after the transaction. <br />
      */
     public void dontPoseAsTransientObjectAnymore() {
         setNewObject(false);

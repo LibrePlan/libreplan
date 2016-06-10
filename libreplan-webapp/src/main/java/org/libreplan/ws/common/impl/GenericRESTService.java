@@ -44,8 +44,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
-public abstract class GenericRESTService<E extends IntegrationEntity,
-    DTO extends IntegrationEntityDTO> {
+public abstract class GenericRESTService<E extends IntegrationEntity, DTO extends IntegrationEntityDTO> {
 
     @Autowired
     protected IAdHocTransactionService transactionService;
@@ -58,51 +57,47 @@ public abstract class GenericRESTService<E extends IntegrationEntity,
     }
 
     /**
-     * It saves (inserts or updates) a list of entities. Each entity is
-     * saved in a separate transaction.
+     * It saves (inserts or updates) a list of entities.
+     * Each entity is saved in a separate transaction.
      */
-    protected InstanceConstraintViolationsListDTO save(
-        List<? extends DTO> entityDTOs) {
+    protected InstanceConstraintViolationsListDTO save(List<? extends DTO> entityDTOs) {
 
         List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
-            new ArrayList<InstanceConstraintViolationsDTO>();
+                new ArrayList<InstanceConstraintViolationsDTO>();
+
         long numItem = 1;
 
         for (DTO entityDTO : entityDTOs) {
 
-            InstanceConstraintViolationsDTO instanceConstraintViolationsDTO =
-                null;
+            InstanceConstraintViolationsDTO instanceConstraintViolationsDTO = null;
 
             try {
                 insertOrUpdate(entityDTO);
             } catch (ValidationException e) {
-                instanceConstraintViolationsDTO =
-                    ConstraintViolationConverter.toDTO(
-                        Util.generateInstanceConstraintViolationsDTOId(
-                            numItem, entityDTO), e);
+
+                instanceConstraintViolationsDTO = ConstraintViolationConverter.toDTO(
+                        Util.generateInstanceConstraintViolationsDTOId(numItem, entityDTO), e);
+
             } catch (RecoverableErrorException e) {
-                instanceConstraintViolationsDTO =
-                    ConstraintViolationConverter.toDTO(
-                        Util.generateInstanceConstraintViolationsDTOId(
-                            numItem, entityDTO), e);
+
+                instanceConstraintViolationsDTO = ConstraintViolationConverter.toDTO(
+                        Util.generateInstanceConstraintViolationsDTOId(numItem, entityDTO), e);
+
             } catch (RuntimeException e) {
-                instanceConstraintViolationsDTO =
-                    ConstraintViolationConverter.toDTO(
-                        Util.generateInstanceConstraintViolationsDTOId(
-                            numItem, entityDTO), e);
+
+                instanceConstraintViolationsDTO = ConstraintViolationConverter.toDTO(
+                        Util.generateInstanceConstraintViolationsDTOId(numItem, entityDTO), e);
             }
 
-            if (instanceConstraintViolationsDTO != null) {
-                instanceConstraintViolationsList.add(
-                    instanceConstraintViolationsDTO);
+            if ( instanceConstraintViolationsDTO != null ) {
+                instanceConstraintViolationsList.add(instanceConstraintViolationsDTO);
             }
 
             numItem++;
 
         }
 
-        return new InstanceConstraintViolationsListDTO(
-            instanceConstraintViolationsList);
+        return new InstanceConstraintViolationsListDTO(instanceConstraintViolationsList);
 
     }
 
@@ -112,22 +107,17 @@ public abstract class GenericRESTService<E extends IntegrationEntity,
      * @throws ValidationException if validations are not passed
      * @throws RecoverableErrorException if a recoverable error occurs
      */
-    protected void insertOrUpdate(final DTO entityDTO)
-        throws ValidationException, RecoverableErrorException {
+    protected void insertOrUpdate(final DTO entityDTO) throws ValidationException, RecoverableErrorException {
         /*
-         * NOTE: ValidationException and RecoverableErrorException are runtime
-         * exceptions. In consequence, if any of them occurs, transaction is
-         * automatically rolled back.
+         * NOTE: ValidationException and RecoverableErrorException are runtime exceptions.
+         * In consequence, if any of them occurs, transaction is automatically rolled back.
          */
 
         IOnTransaction<Void> save = new IOnTransaction<Void>() {
-
             @Override
             public Void execute() {
-
-                E entity = null;
-                IIntegrationEntityDAO<E> entityDAO =
-                    getIntegrationEntityDAO();
+                E entity;
+                IIntegrationEntityDAO<E> entityDAO = getIntegrationEntityDAO();
 
                 /* Insert or update? */
                 try {
@@ -137,9 +127,7 @@ public abstract class GenericRESTService<E extends IntegrationEntity,
                     entity = toEntity(entityDTO);
                 }
 
-                /*
-                 * Validate and save (insert or update) the entity.
-                 */
+                /* Validate and save (insert or update) the entity. */
                 entity.validate();
                 beforeSaving(entity);
                 entityDAO.saveWithoutValidating(entity);
@@ -181,8 +169,7 @@ public abstract class GenericRESTService<E extends IntegrationEntity,
      * @throws RecoverableErrorException if a recoverable
      *            error occurs
      */
-    protected abstract E toEntity(DTO entityDTO)
-        throws ValidationException, RecoverableErrorException;
+    protected abstract E toEntity(DTO entityDTO) throws ValidationException, RecoverableErrorException;
 
     /**
      * It creates a DTO from an entity.
@@ -192,8 +179,7 @@ public abstract class GenericRESTService<E extends IntegrationEntity,
     /**
      * It must return the DAO for the entity "E".
      */
-    protected abstract IIntegrationEntityDAO<E>
-        getIntegrationEntityDAO();
+    protected abstract IIntegrationEntityDAO<E> getIntegrationEntityDAO();
 
     /**
      * It must update the entity from the DTO.
@@ -202,8 +188,7 @@ public abstract class GenericRESTService<E extends IntegrationEntity,
      *         very important constraint is violated
      * @throws RecoverableErrorException if a recoverable error occurs
      */
-    protected abstract void updateEntity(E entity, DTO entityDTO)
-        throws ValidationException, RecoverableErrorException;
+    protected abstract void updateEntity(E entity, DTO entityDTO) throws ValidationException, RecoverableErrorException;
 
     /**
      * It returns a list of DTOs from a list of entities.
@@ -221,8 +206,8 @@ public abstract class GenericRESTService<E extends IntegrationEntity,
     }
 
     /**
-     * Returns a DTO searching by code. This will be useful for all REST
-     * services of IntegrationEntities
+     * Returns a DTO searching by code.
+     * This will be useful for all REST services of IntegrationEntities.
      *
      * @param code
      *            this is the code for the element which will be searched
@@ -235,8 +220,7 @@ public abstract class GenericRESTService<E extends IntegrationEntity,
     }
 
     /**
-     * Wraps within a {@link Response} object the DTO searching the entity by
-     * code.
+     * Wraps within a {@link Response} object the DTO searching the entity by code.
      *
      * If entity is not found returns 404 HTTP status code (NOT_FOUND).
      *

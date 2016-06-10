@@ -21,7 +21,7 @@ package org.libreplan.web.planner.order;
 import static org.libreplan.business.planner.entities.TaskElement.justTasks;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.SortedSet;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -97,12 +97,12 @@ import org.zkoss.ganttz.adapters.PlannerConfiguration;
 import org.zkoss.zk.ui.Desktop;
 
 /**
- * It retrieves the PlaningState from a ZK {@link Desktop}. If it doesn't exist
- * yet, it creates and initializes a new PlanningState.
+ * It retrieves the PlaningState from a ZK {@link Desktop}.
+ * If it doesn't exist yet, it creates and initializes a new PlanningState.
  *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
- * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
 @Component
 @Scope(BeanDefinition.SCOPE_SINGLETON)
@@ -111,25 +111,22 @@ public class PlanningStateCreator {
     private static final String ATTRIBUTE_NAME = PlanningState.class.getName();
 
     /**
-     * When the scenario is not the owner, all the tasks are copied, creating
-     * new assignments. But the previous assignments keep on being referenced by
-     * the resource and must be discarded.
+     * When the scenario is not the owner, all the tasks are copied, creating new assignments.
+     * But the previous assignments keep on being referenced by the resource and must be discarded.
      */
-    private static final class AvoidStaleAssignments implements
-            IAssignmentsOnResourceCalculator {
+    private static final class AvoidStaleAssignments implements IAssignmentsOnResourceCalculator {
 
         private Set<DayAssignment> previousAssignmentsSet;
 
         public AvoidStaleAssignments(List<DayAssignment> previousAssignments) {
-            this.previousAssignmentsSet = new HashSet<DayAssignment>(
-                    previousAssignments);
+            this.previousAssignmentsSet = new HashSet<DayAssignment>(previousAssignments);
         }
 
         @Override
         public List<DayAssignment> getAssignments(Resource resource) {
             List<DayAssignment> result = new ArrayList<DayAssignment>();
             for (DayAssignment each : resource.getAssignments()) {
-                if (!previousAssignmentsSet.contains(each)) {
+                if ( !previousAssignmentsSet.contains(each) ) {
                     result.add(each);
                 }
             }
@@ -181,8 +178,7 @@ public class PlanningStateCreator {
     private IMoneyCostCalculator moneyCostCalculator;
 
     void synchronizeWithSchedule(Order order, IOptionalPersistence persistence) {
-        List<TaskSourceSynchronization> synchronizationsNeeded = order
-                .calculateSynchronizationsNeeded();
+        List<TaskSourceSynchronization> synchronizationsNeeded = order.calculateSynchronizationsNeeded();
         for (TaskSourceSynchronization each : synchronizationsNeeded) {
             each.apply(persistence);
         }
@@ -190,7 +186,7 @@ public class PlanningStateCreator {
 
     public interface IActionsOnRetrieval {
 
-        public void onRetrieval(PlanningState planningState);
+        void onRetrieval(PlanningState planningState);
     }
 
     public PlanningState createOn(Desktop desktop, Order order) {
@@ -199,11 +195,12 @@ public class PlanningStateCreator {
         setupScenario(order);
         PlanningState result = createPlanning(order);
         desktop.setAttribute(ATTRIBUTE_NAME, result);
+
         return result;
     }
 
     void setupScenario(Order order) {
-        if (!order.hasNoVersions()) {
+        if ( !order.hasNoVersions() ) {
             return;
         }
         Scenario currentScenario = scenarioManager.getCurrent();
@@ -216,26 +213,24 @@ public class PlanningStateCreator {
         return retrieveOrCreate(desktop, order, null);
     }
 
-    public PlanningState retrieveOrCreate(Desktop desktop, Order order,
-            IActionsOnRetrieval onRetrieval) {
+    public PlanningState retrieveOrCreate(Desktop desktop, Order order, IActionsOnRetrieval onRetrieval) {
         Object existent = null;
-        if (desktop != null) {
+        if ( desktop != null ) {
             existent = desktop.getAttribute(ATTRIBUTE_NAME);
         }
-        if (existent instanceof PlanningState) {
+        if ( existent instanceof PlanningState ) {
             PlanningState result = (PlanningState) existent;
-            if (ObjectUtils.equals(order.getId(), result.getOrder().getId())) {
+            if ( ObjectUtils.equals(order.getId(), result.getOrder().getId()) ) {
                 result.onRetrieval();
-                if (onRetrieval != null) {
+                if ( onRetrieval != null ) {
                     onRetrieval.onRetrieval(result);
                 }
                 return result;
             }
         }
         PlanningState result = createPlanning(reload(order));
-        // It was called before, no need to do it one more
-        //result.onRetrieval();
-        if (desktop != null) {
+       /* It was called before, no need to do it one more result.onRetrieval() */
+        if ( desktop != null ) {
             desktop.setAttribute(ATTRIBUTE_NAME, result);
         }
         return result;
@@ -246,13 +241,13 @@ public class PlanningStateCreator {
         Order result = orderDAO.findExistingEntity(order.getId());
         Scenario current = scenarioManager.getCurrent();
         result.useSchedulingDataFor(current);
+
         return result;
     }
 
     private void ensureOrderVersionsAreNotProxies() {
-        List<Long> orderVersionIds = transactionService
-                .runOnAnotherReadOnlyTransaction(new IOnTransaction<List<Long>>() {
-
+        List<Long> orderVersionIds =
+                transactionService.runOnAnotherReadOnlyTransaction(new IOnTransaction<List<Long>>() {
                     @Override
                     public List<Long> execute() {
                         List<Long> result = new ArrayList<Long>();
@@ -275,21 +270,18 @@ public class PlanningStateCreator {
 
         forceLoadOfOrderAssociatedData(orderReloaded);
         TaskGroup rootTask = orderReloaded.getAssociatedTaskElement();
-        if (rootTask != null) {
+        if ( rootTask != null ) {
             forceLoadOf(rootTask);
-            forceLoadDayAssignments(orderReloaded
-                    .getResources(FilterType.KEEP_ALL));
+            forceLoadDayAssignments(orderReloaded.getResources(FilterType.KEEP_ALL));
             forceLoadOfDepedenciesCollections(rootTask);
-            forceLoadOfLabels(Arrays.asList((TaskElement) rootTask));
+            forceLoadOfLabels(Collections.singletonList((TaskElement) rootTask));
         }
 
-        if (orderReloaded.getCalendar() != null) {
-            BaseCalendarModel
-                    .forceLoadBaseCalendar(orderReloaded.getCalendar());
+        if ( orderReloaded.getCalendar() != null ) {
+            BaseCalendarModel.forceLoadBaseCalendar(orderReloaded.getCalendar());
         }
 
-        PlanningState result = new PlanningState(orderReloaded, allResources,
-                currentScenario);
+        PlanningState result = new PlanningState(orderReloaded, allResources);
 
         forceLoadOfWorkingHours(result.getInitial());
 
@@ -302,25 +294,24 @@ public class PlanningStateCreator {
         List<OrderElement> all = new ArrayList<OrderElement>();
         all.add(order);
         all.addAll(order.getAllChildren());
+
         for (OrderElement each : all) {
             for (DirectAdvanceAssignment direct : each.getDirectAdvanceAssignments()) {
                 direct.getAdvanceMeasurements().size();
                 direct.getAdvanceType().getHumanId();
                 direct.getAdvanceType().getUnitName();
             }
-            for (IndirectAdvanceAssignment indirect : each
-                    .getIndirectAdvanceAssignments()) {
+
+            for (IndirectAdvanceAssignment indirect : each.getIndirectAdvanceAssignments()) {
                 indirect.getAdvanceType().getUnitName();
-                Set<CalculatedConsolidation> consolidation = indirect
-                        .getCalculatedConsolidation();
+                Set<CalculatedConsolidation> consolidation = indirect.getCalculatedConsolidation();
                 for (CalculatedConsolidation c : consolidation) {
                     c.getCalculatedConsolidatedValues().size();
                 }
             }
 
             for (HoursGroup hours : each.getHoursGroups()) {
-                for (CriterionRequirement requirement : hours
-                        .getCriterionRequirements()) {
+                for (CriterionRequirement requirement : hours.getCriterionRequirements()) {
 
                     requirement.ensureDataLoaded();
                 }
@@ -337,7 +328,7 @@ public class PlanningStateCreator {
 
     private void forceLoadOf(TaskElement taskElement) {
         forceLoadOfDataAssociatedTo(taskElement);
-        if (taskElement instanceof TaskGroup) {
+        if ( taskElement instanceof TaskGroup ) {
             findChildrenWithQueryToAvoidProxies((TaskGroup) taskElement);
             for (TaskElement each : taskElement.getChildren()) {
                 forceLoadOf(each);
@@ -351,26 +342,23 @@ public class PlanningStateCreator {
         forceLoadOfSubcontractedTaskData(each);
 
         BaseCalendar calendar = each.getOwnCalendar();
-        if (calendar == null) {
-            if (each.getOrderElement() != null) {
-                calendar = orderDAO.loadOrderAvoidingProxyFor(
-                        each.getOrderElement()).getCalendar();
+        if ( calendar == null ) {
+            if ( each.getOrderElement() != null ) {
+                calendar = orderDAO.loadOrderAvoidingProxyFor(each.getOrderElement()).getCalendar();
             }
         }
-        if (calendar != null) {
+        if ( calendar != null ) {
             BaseCalendarModel.forceLoadBaseCalendar(calendar);
         }
         each.hasConsolidations();
     }
 
     /**
-     * Forcing the load of all resources so the resources at planning state and
-     * at allocations are the same. It loads the assignment function too
+     * Forcing the load of all resources so the resources at planning state and at allocations are the same.
+     * It loads the assignment function too.
      */
-    private static void forceLoadOfResourceAllocationsResourcesAndAssignmentFunction(
-            TaskElement taskElement) {
-        Set<ResourceAllocation<?>> resourceAllocations = taskElement
-                .getAllResourceAllocations();
+    private static void forceLoadOfResourceAllocationsResourcesAndAssignmentFunction(TaskElement taskElement) {
+        Set<ResourceAllocation<?>> resourceAllocations = taskElement.getAllResourceAllocations();
         for (ResourceAllocation<?> each : resourceAllocations) {
             each.getAssociatedResources();
             for (DerivedAllocation eachDerived : each.getDerivedAllocations()) {
@@ -380,27 +368,28 @@ public class PlanningStateCreator {
         }
     }
 
-    private static void forceLoadOfDerivedAllocation(
-            DerivedAllocation derivedAllocation) {
+    private static void forceLoadOfDerivedAllocation(DerivedAllocation derivedAllocation) {
         derivedAllocation.getResources();
         derivedAllocation.getConfigurationUnit().getWorkerAssignments().size();
     }
 
     private static void forceLoadOfAssignmentFunction(ResourceAllocation<?> each) {
         AssignmentFunction function = each.getAssignmentFunction();
-        if ((function != null) && (function instanceof StretchesFunction)) {
+        if ( (function != null) && (function instanceof StretchesFunction) ) {
             ((StretchesFunction) function).getStretches().size();
         }
     }
 
     /**
-     * Forcing the load of all criterions so there are no different criterion
-     * instances for the same criteiron at database
+     * Forcing the load of all criterions so,
+     * there are no different criterion instances for the same criterion at database
      */
     private static void forceLoadOfCriterions(TaskElement taskElement) {
+
         List<GenericResourceAllocation> generic = ResourceAllocation.getOfType(
                 GenericResourceAllocation.class,
                 taskElement.getSatisfiedResourceAllocations());
+
         for (GenericResourceAllocation each : generic) {
             for (Criterion eachCriterion : each.getCriterions()) {
                 eachCriterion.getName();
@@ -409,11 +398,13 @@ public class PlanningStateCreator {
     }
 
     private static void forceLoadOfSubcontractedTaskData(TaskElement taskElement){
-        if(taskElement.isTask()){
-            if(((Task)taskElement).getSubcontractedTaskData() != null){
-                for (SubcontractorDeliverDate subDeliverDate : ((Task) taskElement)
-                        .getSubcontractedTaskData()
-                        .getRequiredDeliveringDates()) {
+        if ( taskElement.isTask() ){
+            if ( ((Task)taskElement).getSubcontractedTaskData() != null ){
+
+                SortedSet<SubcontractorDeliverDate> dates =
+                        ((Task) taskElement).getSubcontractedTaskData().getRequiredDeliveringDates();
+
+                for (SubcontractorDeliverDate subDeliverDate : dates) {
                     subDeliverDate.getSaveDate();
                 }
             }
@@ -429,29 +420,25 @@ public class PlanningStateCreator {
 
     private IScenarioInfo buildScenarioInfo(Order orderReloaded) {
         Scenario currentScenario = scenarioManager.getCurrent();
-        if (orderReloaded.isUsingTheOwnerScenario()) {
-            switchAllocationsToScenario(currentScenario,
-                    orderReloaded.getAssociatedTaskElement());
+        if ( orderReloaded.isUsingTheOwnerScenario() ) {
+            switchAllocationsToScenario(currentScenario, orderReloaded.getAssociatedTaskElement());
+
             return new UsingOwnerScenario(currentScenario, orderReloaded);
         }
-        final List<DayAssignment> previousAssignments = orderReloaded
-                .getDayAssignments(DayAssignment.FilterType.KEEP_ALL);
+        final List<DayAssignment> previousAssignments =
+                orderReloaded.getDayAssignments(DayAssignment.FilterType.KEEP_ALL);
 
-        OrderVersion newVersion = OrderVersion
-                .createInitialVersion(currentScenario);
+        OrderVersion newVersion = OrderVersion.createInitialVersion(currentScenario);
 
         orderReloaded.writeSchedulingDataChangesTo(currentScenario, newVersion);
-        switchAllocationsToScenario(currentScenario,
-                orderReloaded.getAssociatedTaskElement());
+        switchAllocationsToScenario(currentScenario, orderReloaded.getAssociatedTaskElement());
 
-        return new UsingNotOwnerScenario(new AvoidStaleAssignments(
-                previousAssignments), orderReloaded, currentScenario,
-                newVersion);
+        return new UsingNotOwnerScenario(
+                new AvoidStaleAssignments(previousAssignments), orderReloaded, currentScenario, newVersion);
     }
 
-    private static void switchAllocationsToScenario(Scenario scenario,
-            TaskElement task) {
-        if (task == null) {
+    private static void switchAllocationsToScenario(Scenario scenario, TaskElement task) {
+        if ( task == null ) {
             return;
         }
         for (ResourceAllocation<?> each : task.getAllResourceAllocations()) {
@@ -476,13 +463,13 @@ public class PlanningStateCreator {
 
     private void forceLoadOfWorkingHours(List<TaskElement> initial) {
         for (TaskElement taskElement : initial) {
-            if (taskElement.getTaskSource() != null) {
+            if ( taskElement.getTaskSource() != null ) {
                 taskElement.getTaskSource().getTotalHours();
                 OrderElement orderElement = taskElement.getOrderElement();
-                if (orderElement != null) {
+                if ( orderElement != null ) {
                     orderElement.getWorkHours();
                 }
-                if (!taskElement.isLeaf()) {
+                if ( !taskElement.isLeaf() ) {
                     forceLoadOfWorkingHours(taskElement.getChildren());
                 }
             }
@@ -492,7 +479,7 @@ public class PlanningStateCreator {
     private void forceLoadOfLabels(List<TaskElement> initial) {
         for (TaskElement taskElement : initial) {
             OrderElement orderElement = taskElement.getOrderElement();
-            if (orderElement != null) {
+            if ( orderElement != null ) {
                 Set<Label> labels = orderElement.getLabels();
                 for (Label each : labels) {
                     each.getType().getName();
@@ -502,8 +489,7 @@ public class PlanningStateCreator {
         }
     }
 
-    private static final class TaskElementNavigator implements
-            IStructureNavigator<TaskElement> {
+    private static final class TaskElementNavigator implements IStructureNavigator<TaskElement> {
 
         @Override
         public List<TaskElement> getChildren(TaskElement object) {
@@ -517,28 +503,25 @@ public class PlanningStateCreator {
 
         @Override
         public boolean isMilestone(TaskElement object) {
-            if (object != null) {
-                return object instanceof TaskMilestone;
-            }
-            return false;
+            return object != null && object instanceof TaskMilestone;
         }
     }
 
     public interface IScenarioInfo {
 
-        public IAssignmentsOnResourceCalculator getAssignmentsCalculator();
+        IAssignmentsOnResourceCalculator getAssignmentsCalculator();
 
-        public Scenario getCurrentScenario();
+        Scenario getCurrentScenario();
 
-        public boolean isUsingTheOwnerScenario();
+        boolean isUsingTheOwnerScenario();
 
         /**
          * @throws IllegalStateException
          *             if it's using the owner scenario
          */
-        public void saveVersioningInfo() throws IllegalStateException;
+        void saveVersioningInfo() throws IllegalStateException;
 
-        public void afterCommit();
+        void afterCommit();
     }
 
     private class ChangeScenarioInfoOnSave implements IScenarioInfo {
@@ -570,9 +553,10 @@ public class PlanningStateCreator {
 
         }
         public void afterCommit() {
-            if (current instanceof ChangeScenarioInfoOnSave) {
-                current = new UsingOwnerScenario(current.getCurrentScenario(),
-                        order, current.getAssignmentsCalculator());
+            if ( current instanceof ChangeScenarioInfoOnSave ) {
+
+                current = new UsingOwnerScenario(
+                        current.getCurrentScenario(), order, current.getAssignmentsCalculator());
             }
         }
 
@@ -591,6 +575,7 @@ public class PlanningStateCreator {
         public UsingOwnerScenario(Scenario currentScenario, Order order, IAssignmentsOnResourceCalculator calculator) {
             Validate.notNull(currentScenario);
             Validate.notNull(order);
+
             this.currentScenario = currentScenario;
             this.order = order;
             this.calculator = calculator;
@@ -603,11 +588,9 @@ public class PlanningStateCreator {
 
         @Override
         public void saveVersioningInfo() {
-            OrderVersion orderVersion = order.getCurrentVersionInfo()
-                    .getOrderVersion();
-            if (order.isNewObject()) {
-                scenarioDAO.updateDerivedScenariosWithNewVersion(null, order,
-                        currentScenario, orderVersion);
+            OrderVersion orderVersion = order.getCurrentVersionInfo().getOrderVersion();
+            if ( order.isNewObject() ) {
+                scenarioDAO.updateDerivedScenariosWithNewVersion(null, order, currentScenario, orderVersion);
             }
             orderVersion.savingThroughOwner();
             synchronizeWithSchedule(order, getPersistence());
@@ -615,9 +598,8 @@ public class PlanningStateCreator {
         }
 
         IOptionalPersistence getPersistence() {
-            if (order.isNewObject()) {
-                return TaskSource
-                        .persistButDontRemoveTaskSources(taskSourceDAO);
+            if ( order.isNewObject() ) {
+                return TaskSource.persistButDontRemoveTaskSources(taskSourceDAO);
             } else {
                 return TaskSource.persistTaskSources(taskSourceDAO);
             }
@@ -651,10 +633,12 @@ public class PlanningStateCreator {
                 IAssignmentsOnResourceCalculator assigmentsOnResourceCalculator,
                 Order order, Scenario currentScenario,
                 OrderVersion newVersion) {
+
             Validate.notNull(assigmentsOnResourceCalculator);
             Validate.notNull(order);
             Validate.notNull(currentScenario);
             Validate.notNull(newVersion);
+
             this.assigmentsOnResourceCalculator = assigmentsOnResourceCalculator;
             this.currentScenario = currentScenario;
             this.newVersion = newVersion;
@@ -669,28 +653,22 @@ public class PlanningStateCreator {
         @Override
         public void saveVersioningInfo() throws IllegalStateException {
             reattachAllTaskSources();
-            createAndSaveNewOrderVersion(scenarioManager.getCurrent(),
-                    newVersion);
-            synchronizeWithSchedule(order,
-                    TaskSource.persistButDontRemoveTaskSources(taskSourceDAO));
+            createAndSaveNewOrderVersion(scenarioManager.getCurrent(), newVersion);
+            synchronizeWithSchedule(order, TaskSource.persistButDontRemoveTaskSources(taskSourceDAO));
             order.writeSchedulingDataChanges();
         }
 
-        private void createAndSaveNewOrderVersion(Scenario currentScenario,
-                OrderVersion newOrderVersion) {
-            OrderVersion previousOrderVersion = currentScenario
-                    .getOrderVersion(order);
+        private void createAndSaveNewOrderVersion(Scenario currentScenario, OrderVersion newOrderVersion) {
+            OrderVersion previousOrderVersion = currentScenario.getOrderVersion(order);
             currentScenario.setOrderVersion(order, newOrderVersion);
+
             scenarioDAO.updateDerivedScenariosWithNewVersion(
-                    previousOrderVersion, order, currentScenario,
-                    newOrderVersion);
+                    previousOrderVersion, order, currentScenario, newOrderVersion);
         }
 
         private void reattachAllTaskSources() {
-            // avoid LazyInitializationException for when doing
-            // removePredecessorsDayAssignmentsFor
-            for (TaskSource each : order
-                    .getAllScenariosTaskSourcesFromBottomToTop()) {
+            /* Avoid LazyInitializationException for when doing removePredecessorsDayAssignmentsFor */
+            for (TaskSource each : order.getAllScenariosTaskSourcesFromBottomToTop()) {
                 taskSourceDAO.reattach(each);
             }
         }
@@ -729,33 +707,29 @@ public class PlanningStateCreator {
         private OrderStatusEnum savedOrderState;
 
         public PlanningState(Order order,
-                Collection<? extends Resource> initialResources,
-                Scenario currentScenario) {
+                             Collection<? extends Resource> initialResources) {
+
             Validate.notNull(order);
             this.order = order;
             rebuildTasksState();
-            this.scenarioInfo = new ChangeScenarioInfoOnSave(
-                    buildScenarioInfo(order), order);
-            this.resources = OrderPlanningModel
-                    .loadRequiredDataFor(new HashSet<Resource>(initialResources));
+            this.scenarioInfo = new ChangeScenarioInfoOnSave(buildScenarioInfo(order), order);
+            this.resources = OrderPlanningModel.loadRequiredDataFor(new HashSet<Resource>(initialResources));
             associateWithScenario(this.resources);
             this.orderAuthorizations = loadOrderAuthorizations();
             this.savedOrderState = order.getState();
         }
 
         private List<OrderAuthorization> loadOrderAuthorizations() {
-            if (order.isNewObject()) {
+            if ( order.isNewObject() ) {
                 return new ArrayList<OrderAuthorization>();
             }
-            List<OrderAuthorization> orderAuthorizations = orderAuthorizationDAO
-                    .listByOrder(order);
+            List<OrderAuthorization> orderAuthorizations = orderAuthorizationDAO.listByOrder(order);
             for (OrderAuthorization each : orderAuthorizations) {
-                if (each instanceof UserOrderAuthorization) {
+                if ( each instanceof UserOrderAuthorization ) {
                     ((UserOrderAuthorization) each).getUser().getLoginName();
                 }
-                if (each instanceof ProfileOrderAuthorization) {
-                    ((ProfileOrderAuthorization) each).getProfile()
-                            .getProfileName();
+                if ( each instanceof ProfileOrderAuthorization ) {
+                    ((ProfileOrderAuthorization) each).getProfile().getProfileName();
                 }
 
             }
@@ -775,22 +749,19 @@ public class PlanningStateCreator {
         }
 
         private void generateOrderElementCodes() {
-            order.generateOrderElementCodes(entitySequenceDAO
-                    .getNumberOfDigitsCode(EntityNameEnum.ORDER));
+            order.generateOrderElementCodes(entitySequenceDAO.getNumberOfDigitsCode(EntityNameEnum.ORDER));
         }
 
         private void rebuildTasksState() {
             TaskGroup rootTask = getRootTask();
-            if (rootTask == null) {
+            if ( rootTask == null ) {
                 this.initial = new ArrayList<TaskElement>();
             } else {
-                this.initial = new ArrayList<TaskElement>(
-                        rootTask.getChildren());
+                this.initial = new ArrayList<TaskElement>(rootTask.getChildren());
             }
         }
 
-        private void associateWithScenario(
-                Collection<? extends Resource> resources) {
+        private void associateWithScenario(Collection<? extends Resource> resources) {
             Scenario currentScenario = getCurrentScenario();
             for (Resource each : resources) {
                 each.useScenario(currentScenario);
@@ -828,32 +799,30 @@ public class PlanningStateCreator {
         private PlannerConfiguration<TaskElement> cachedConfiguration;
 
         public PlannerConfiguration<TaskElement> getConfiguration() {
-            if (cachedConfiguration != null) {
+            if ( cachedConfiguration != null ) {
                 return cachedConfiguration;
             }
             IAdapterToTaskFundamentalProperties<TaskElement> adapter;
-            adapter = taskElementAdapterCreator.createForOrder(
-                    getScenarioInfo().getCurrentScenario(), order, this);
+            adapter = taskElementAdapterCreator.createForOrder(getScenarioInfo().getCurrentScenario(), order, this);
 
-            PlannerConfiguration<TaskElement> result = new PlannerConfiguration<TaskElement>(
-                    adapter, new TaskElementNavigator(), getInitial());
+            PlannerConfiguration<TaskElement> result =
+                    new PlannerConfiguration<TaskElement>(adapter, new TaskElementNavigator(), getInitial());
 
             result.setNotBeforeThan(order.getInitDate());
             result.setNotAfterThan(order.getDeadline());
-            result.setDependenciesConstraintsHavePriority(order
-                    .getDependenciesConstraintsHavePriority());
+            result.setDependenciesConstraintsHavePriority(order.getDependenciesConstraintsHavePriority());
             result.setScheduleBackwards(order.isScheduleBackwards());
+
             return cachedConfiguration = result;
         }
 
         private ISaveCommand cachedCommand;
 
         public ISaveCommand getSaveCommand() {
-            if (cachedCommand != null) {
+            if ( cachedCommand != null ) {
                 return cachedCommand;
             }
-            return cachedCommand = saveCommandBuilder.build(this,
-                    getConfiguration());
+            return cachedCommand = saveCommandBuilder.build(this, getConfiguration());
         }
 
         public List<TaskElement> getInitial() {
@@ -862,14 +831,14 @@ public class PlanningStateCreator {
 
         public List<Task> getAllTasks() {
             List<Task> result = new ArrayList<Task>();
-            if (getRootTask() != null) {
+            if ( getRootTask() != null ) {
                 findTasks(getRootTask(), result);
             }
             return result;
         }
 
         private void findTasks(TaskElement taskElement, List<Task> result) {
-            if (taskElement instanceof Task) {
+            if ( taskElement instanceof Task ) {
                 Task t = (Task) taskElement;
                 result.add(t);
             }
@@ -883,10 +852,8 @@ public class PlanningStateCreator {
             boolean isBoundUser = (user != null) && user.isBound();
 
             for (Resource resource : resources) {
-                if (isBoundUser
-                        && user.getWorker().getId().equals(resource.getId())) {
-                    // Resource bound to current user is already associated with
-                    // session
+                if ( isBoundUser && user.getWorker().getId().equals(resource.getId()) ) {
+                    /* Resource bound to current user is already associated with session */
                     continue;
                 }
                 resourceDAO.reattach(resource);
@@ -899,8 +866,7 @@ public class PlanningStateCreator {
         private Set<Criterion> getExistentCriterions(Set<Resource> resources) {
             Set<Criterion> result = new HashSet<Criterion>();
             for (Resource resource : resources) {
-                for (CriterionSatisfaction each : resource
-                        .getCriterionSatisfactions()) {
+                for (CriterionSatisfaction each : resource.getCriterionSatisfactions()) {
                     result.add(each.getCriterion());
                 }
             }
@@ -909,7 +875,7 @@ public class PlanningStateCreator {
 
         private void reattachCriterions(Set<Criterion> criterions) {
             for (Criterion each : criterions) {
-                if (!Hibernate.isInitialized(each)) {
+                if ( !Hibernate.isInitialized(each) ) {
                     criterionDAO.reattachUnmodifiedEntity(each);
                 }
             }
@@ -923,22 +889,20 @@ public class PlanningStateCreator {
         }
 
         private Set<Resource> getNewResources(IResourceDAO resourceDAO) {
-            Set<Resource> result = new HashSet<Resource>(
-                    resourceDAO.list(Resource.class));
+            Set<Resource> result = new HashSet<Resource>(resourceDAO.list(Resource.class));
             result.removeAll(resources);
+
             return result;
         }
 
         public Collection<? extends TaskElement> getToRemove() {
-            return Collections
-                    .unmodifiableCollection(onlyNotTransient(toRemove));
+            return Collections.unmodifiableCollection(onlyNotTransient(toRemove));
         }
 
-        private List<TaskElement> onlyNotTransient(
-                Collection<? extends TaskElement> toRemove) {
+        private List<TaskElement> onlyNotTransient(Collection<? extends TaskElement> toRemove) {
             ArrayList<TaskElement> result = new ArrayList<TaskElement>();
             for (TaskElement taskElement : toRemove) {
-                if (taskElement.getId() != null) {
+                if ( taskElement.getId() != null ) {
                     result.add(taskElement);
                 }
             }
@@ -947,17 +911,14 @@ public class PlanningStateCreator {
 
         public void removed(TaskElement taskElement) {
             taskElement.detach();
-            if (!isTopLevel(taskElement)) {
+            if ( !isTopLevel(taskElement) ) {
                 return;
             }
             toRemove.add(taskElement);
         }
 
         private boolean isTopLevel(TaskElement taskElement) {
-            if (taskElement instanceof TaskMilestone) {
-                return true;
-            }
-            return taskElement.getParent() == getRootTask();
+            return taskElement instanceof TaskMilestone || taskElement.getParent() == getRootTask();
         }
 
         public TaskGroup getRootTask() {
@@ -974,7 +935,7 @@ public class PlanningStateCreator {
 
         public void reattach() {
             orderDAO.reattach(order);
-            if (getRootTask() != null) {
+            if ( getRootTask() != null ) {
                 taskDAO.reattach(getRootTask());
             }
         }
@@ -985,8 +946,7 @@ public class PlanningStateCreator {
 
         public List<Resource> getResourcesRelatedWithAllocations() {
             Set<Resource> result = new HashSet<Resource>();
-            for (Task each : justTasks(order
-                    .getAllChildrenAssociatedTaskElements())) {
+            for (Task each : justTasks(order.getAllChildrenAssociatedTaskElements())) {
                 result.addAll(resourcesRelatedWith(each));
             }
             return new ArrayList<Resource>(result);
@@ -994,44 +954,36 @@ public class PlanningStateCreator {
 
         private Set<Resource> resourcesRelatedWith(Task task) {
             Set<Resource> result = new HashSet<Resource>();
-            for (ResourceAllocation<?> each : task
-                    .getSatisfiedResourceAllocations()) {
+            for (ResourceAllocation<?> each : task.getSatisfiedResourceAllocations()) {
                 result.addAll(resourcesRelatedWith(each));
             }
             return result;
         }
 
-        private <T> Collection<Resource> resourcesRelatedWith(
-                ResourceAllocation<?> allocation) {
-            return ResourceAllocation.visit(allocation,
-                    new IVisitor<Collection<Resource>>() {
+        private Collection<Resource> resourcesRelatedWith(ResourceAllocation<?> allocation) {
+            return ResourceAllocation.visit(allocation, new IVisitor<Collection<Resource>>() {
+                @Override
+                public Collection<Resource> on(SpecificResourceAllocation specificAllocation) {
+                    return Collections.singletonList(specificAllocation.getResource());
+                }
 
-                        @Override
-                        public Collection<Resource> on(
-                                SpecificResourceAllocation specificAllocation) {
-                            return Collections.singletonList(specificAllocation
-                                    .getResource());
-                        }
-
-                        @Override
-                        public Collection<Resource> on(
-                                GenericResourceAllocation genericAllocation) {
-                            return DayAssignment.byResource(
-                                    genericAllocation.getAssignments())
-                                    .keySet();
-                        }
-                    });
+                @Override
+                public Collection<Resource> on(GenericResourceAllocation genericAllocation) {
+                    return DayAssignment.byResource(genericAllocation.getAssignments()).keySet();
+                }
+            });
         }
 
         public List<ResourceAllocation<?>> replaceByCurrentOnes(
                 Collection<? extends ResourceAllocation<?>> allocationsReturnedByQuery,
                 IAllocationCriteria allocationCriteria) {
+
             Set<Long> orderElements = getIds(order.getAllChildren());
-            List<ResourceAllocation<?>> result = allocationsNotInOrder(
-                    allocationsReturnedByQuery, orderElements);
+            List<ResourceAllocation<?>> result = allocationsNotInOrder(allocationsReturnedByQuery, orderElements);
+
             result.addAll(allocationsInOrderSatisfyingCriteria(
-                    order.getAllChildrenAssociatedTaskElements(),
-                    allocationCriteria));
+                    order.getAllChildrenAssociatedTaskElements(), allocationCriteria));
+
             return result;
         }
 
@@ -1046,10 +998,11 @@ public class PlanningStateCreator {
         private List<ResourceAllocation<?>> allocationsNotInOrder(
                 Collection<? extends ResourceAllocation<?>> allocationsReturnedByQuery,
                 Set<Long> orderElementsIds) {
+
             List<ResourceAllocation<?>> result = new ArrayList<ResourceAllocation<?>>();
             for (ResourceAllocation<?> each : allocationsReturnedByQuery) {
                 Task task = each.getTask();
-                if (!isIncluded(orderElementsIds, task)) {
+                if ( !isIncluded(orderElementsIds, task) ) {
                     result.add(each);
                 }
             }
@@ -1063,20 +1016,20 @@ public class PlanningStateCreator {
         private List<ResourceAllocation<?>> allocationsInOrderSatisfyingCriteria(
                 Collection<? extends TaskElement> tasks,
                 IAllocationCriteria allocationCriteria) {
+
             List<ResourceAllocation<?>> result = new ArrayList<ResourceAllocation<?>>();
             for (Task each : justTasks(tasks)) {
-                result.addAll(satisfying(allocationCriteria,
-                        each.getSatisfiedResourceAllocations()));
+                result.addAll(satisfying(allocationCriteria, each.getSatisfiedResourceAllocations()));
             }
             return result;
         }
 
         private List<ResourceAllocation<?>> satisfying(
-                IAllocationCriteria criteria,
-                Collection<ResourceAllocation<?>> allocations) {
+                IAllocationCriteria criteria, Collection<ResourceAllocation<?>> allocations) {
+
             List<ResourceAllocation<?>> result = new ArrayList<ResourceAllocation<?>>();
             for (ResourceAllocation<?> each : allocations) {
-                if (criteria.isSatisfiedBy(each)) {
+                if ( criteria.isSatisfiedBy(each) ) {
                     result.add(each);
                 }
             }
@@ -1100,11 +1053,10 @@ public class PlanningStateCreator {
             orderAuthorizationsAddition.add(orderAuthorization);
         }
 
-        public void removeOrderAuthorization(
-                OrderAuthorization orderAuthorization) {
+        public void removeOrderAuthorization(OrderAuthorization orderAuthorization) {
             orderAuthorizations.remove(orderAuthorization);
             orderAuthorizationsAddition.remove(orderAuthorization);
-            if (!orderAuthorization.isNewObject()) {
+            if ( !orderAuthorization.isNewObject() ) {
                 orderAuthorizationsRemoval.add(orderAuthorization);
             }
         }
@@ -1132,12 +1084,10 @@ public class PlanningStateCreator {
 
     public static IAllocationCriteria and(final IAllocationCriteria... criteria) {
         return new IAllocationCriteria() {
-
             @Override
-            public boolean isSatisfiedBy(
-                    ResourceAllocation<?> resourceAllocation) {
+            public boolean isSatisfiedBy(ResourceAllocation<?> resourceAllocation) {
                 for (IAllocationCriteria each : criteria) {
-                    if (!each.isSatisfiedBy(resourceAllocation)) {
+                    if ( !each.isSatisfiedBy(resourceAllocation) ) {
                         return false;
                     }
                 }
@@ -1159,22 +1109,12 @@ public class PlanningStateCreator {
 
         @Override
         public boolean isSatisfiedBy(ResourceAllocation<?> resourceAllocation) {
-            if (startInclusive != null
-                    && resourceAllocation.getEndDate()
-                            .compareTo(startInclusive) < 0) {
-                return false;
-            }
-            if (endInclusive != null
-                    && resourceAllocation.getStartDate()
-                            .compareTo(endInclusive) > 0) {
-                return false;
-            }
-            return true;
+            return !(startInclusive != null && resourceAllocation.getEndDate().compareTo(startInclusive) < 0) &&
+                    !(endInclusive != null && resourceAllocation.getStartDate().compareTo(endInclusive) > 0);
         }
     }
 
-    public static class RelatedWith implements
-            IAllocationCriteria {
+    public static class RelatedWith implements IAllocationCriteria {
 
         private final Criterion criterion;
 
@@ -1184,18 +1124,18 @@ public class PlanningStateCreator {
 
         @Override
         public boolean isSatisfiedBy(ResourceAllocation<?> resourceAllocation) {
-            if (resourceAllocation instanceof GenericResourceAllocation) {
+            if ( resourceAllocation instanceof GenericResourceAllocation ) {
                 GenericResourceAllocation g = (GenericResourceAllocation) resourceAllocation;
                 Set<Criterion> allocationCriterions = g.getCriterions();
+
                 return someCriterionIn(allocationCriterions);
             }
             return false;
         }
 
-        private boolean someCriterionIn(
-                Collection<? extends Criterion> allocationCriterions) {
+        private boolean someCriterionIn(Collection<? extends Criterion> allocationCriterions) {
             for (Criterion each : allocationCriterions) {
-                if (criterion.equals(each)) {
+                if ( criterion.equals(each) ) {
                     return true;
                 }
             }
@@ -1204,8 +1144,7 @@ public class PlanningStateCreator {
 
     }
 
-    public static class SpecificRelatedWithCriterionOnInterval implements
-            IAllocationCriteria {
+    public static class SpecificRelatedWithCriterionOnInterval implements IAllocationCriteria {
 
         private final LocalDate startInclusive;
 
@@ -1214,19 +1153,19 @@ public class PlanningStateCreator {
         private final Criterion criterion;
 
         public SpecificRelatedWithCriterionOnInterval(
-                Criterion criterion, LocalDate startInclusive,
-                LocalDate endInclusive) {
+                Criterion criterion, LocalDate startInclusive, LocalDate endInclusive) {
+
             Validate.notNull(criterion);
             this.startInclusive = startInclusive;
-            this.endExclusive = endInclusive != null ? endInclusive.plusDays(1)
-                    : null;
+            this.endExclusive = endInclusive != null ? endInclusive.plusDays(1) : null;
             this.criterion = criterion;
         }
 
         @Override
         public boolean isSatisfiedBy(ResourceAllocation<?> resourceAllocation) {
-            if (resourceAllocation instanceof SpecificResourceAllocation) {
+            if ( resourceAllocation instanceof SpecificResourceAllocation ) {
                 SpecificResourceAllocation s = (SpecificResourceAllocation) resourceAllocation;
+
                 return s.interferesWith(criterion, startInclusive, endExclusive);
             }
             return false;
@@ -1244,24 +1183,17 @@ public class PlanningStateCreator {
 
         @Override
         public boolean isSatisfiedBy(ResourceAllocation<?> resourceAllocation) {
-            return ResourceAllocation.visit(resourceAllocation,
-                    new IVisitor<Boolean>() {
+            return ResourceAllocation.visit(resourceAllocation, new IVisitor<Boolean>() {
+                @Override
+                public Boolean on(SpecificResourceAllocation specificAllocation) {
+                    return specificAllocation.getResource().equals(resource);
+                }
 
-                        @Override
-                        public Boolean on(
-                                SpecificResourceAllocation specificAllocation) {
-                            return specificAllocation.getResource().equals(
-                                    resource);
-                        }
-
-                        @Override
-                        public Boolean on(
-                                GenericResourceAllocation genericAllocation) {
-                            return DayAssignment.byResource(
-                                    genericAllocation.getAssignments())
-                                    .containsKey(resource);
-                        }
-                    });
+                @Override
+                public Boolean on(GenericResourceAllocation genericAllocation) {
+                    return DayAssignment.byResource(genericAllocation.getAssignments()).containsKey(resource);
+                }
+            });
         }
 
     }

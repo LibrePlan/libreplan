@@ -21,9 +21,10 @@
 
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 <zk xmlns:n="http://www.zkoss.org/2005/zk/native">
-<zscript><![CDATA[
-top = self;
-]]>
+<zscript>
+    <![CDATA[
+        top = self;
+    ]]>
 </zscript>
 
 <div>
@@ -31,8 +32,7 @@ top = self;
     <vbox>
         <grid id="firstleveldetails" width="${top.horizontalSizePixels}px;">
             <columns>
-                <column label="${each.name}" width="${each.size}px"
-                    forEach="${top.detailsFirstLevel}"></column>
+                <column label="${each.name}" width="${each.size}px" forEach="${top.detailsFirstLevel}"></column>
             </columns>
         </grid>
     </vbox>
