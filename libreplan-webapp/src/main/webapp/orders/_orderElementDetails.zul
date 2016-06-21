@@ -45,14 +45,16 @@
                 <label value="${i18n:_('Starting date')}" />
                 <hbox>
                     <datebox id="initDate"
-                        value="@{detailsController.orderElement.initDate}" />
+                             value="@{detailsController.orderElement.initDate}"
+                             constraint="@{detailsController.checkConstraintStartDate}"/>
                 </hbox>
             </row>
             <row>
                 <label value="${i18n:_('Deadline')}" />
                 <hbox>
                     <datebox id="deadline"
-                        value="@{detailsController.orderElement.deadline}" />
+                             value="@{detailsController.orderElement.deadline}"
+                             constraint="@{detailsController.checkConstraintFinishDate}"/>
                 </hbox>
             </row>
             <row>

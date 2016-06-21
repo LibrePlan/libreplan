@@ -24,25 +24,33 @@ package org.libreplan.web.orders;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.web.common.Util;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Constraint;
 import org.zkoss.zul.api.Datebox;
 
+import java.util.Date;
+
+import static org.libreplan.web.I18nHelper._;
+
 /**
- * Controller for {@link OrderElement} details
+ * Controller for {@link OrderElement} details.
  *
  * @author Diego Pino García <dpino@igalia.com>
- *
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
-public class DetailsOrderElementController extends
-        GenericForwardComposer {
+public class DetailsOrderElementController extends GenericForwardComposer {
 
     private IOrderElementModel orderElementModel;
+
+    private Datebox initDate;
 
     private Datebox deadline;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
+        // TODO resolve deprecated
         comp.setVariable("detailsController", this, true);
     }
 
@@ -89,10 +97,45 @@ public class DetailsOrderElementController extends
             return true;
         }
         OrderElement orderElement = orderElementModel.getOrderElement();
-        if (orderElement == null) {
-            return false;
-        }
-        return orderElement.isJiraIssue();
+
+        return orderElement != null && orderElement.isJiraIssue();
+    }
+
+    public Constraint checkConstraintStartDate() {
+        return new Constraint() {
+            @Override
+            public void validate(Component comp, Object value) throws WrongValueException {
+                Date startDate = (Date) value;
+                Date year2010 = new Date(1262296800000L);
+
+                boolean startBefore2010 = (startDate != null) && startDate.before(year2010);
+
+                if ( startBefore2010 ) {
+                    initDate.setValue(null);
+                    getOrderElement().setInitDate(null);
+                    throw new WrongValueException(comp, _("Must be after 2010!"));
+                }
+            }
+        };
+    }
+
+    public Constraint checkConstraintFinishDate() {
+        return new Constraint() {
+            @Override
+            public void validate(Component comp, Object value) throws WrongValueException {
+                Date finishDate = (Date) value;
+
+                boolean deadlineBeforeStart = (finishDate != null) &&
+                        (initDate.getValue() != null) &&
+                        (finishDate.compareTo(initDate.getValue()) < 0);
+
+                if ( deadlineBeforeStart ) {
+                    deadline.setValue(null);
+                    getOrderElement().setDeadline(null);
+                    throw new WrongValueException(comp, _("must be after starting date"));
+                }
+            }
+        };
     }
 
 }

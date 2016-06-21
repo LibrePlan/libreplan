@@ -93,6 +93,44 @@ Changes
 * Code refactoring
 
 
+Version 1.5.0 (? 2016)
+---------------------------
+
+Summary
+~~~~~~~
+
+* Bug fixing
+* Email notification feature
+* Risk and Issue Log feature
+* Documents feature
+* Global Dashboard feature
+
+Contributors
+~~~~~~~~~~~~
+
+Thanks to all the contributors to this new version:
+
+* Jeroen Baten
+* Vova Perebykivkyi
+* Bodgan Bodnarjuk
+* Misha Gozda
+
+Changes
+~~~~~~~
+
+* Add Email notification feature (notification + template)
+* Add new strings to i18n
+* Add Risk&Issue Log feature
+* Add Documents uploading/downloading feature
+* Add test for documents feature
+* Changes to LibrePlan version check
+* Add Global Dashboard page
+
+* Update MPXJ library
+
+* Code refactoring
+
+
 Version 1.4.2 (2015)
 ---------------------------
 
