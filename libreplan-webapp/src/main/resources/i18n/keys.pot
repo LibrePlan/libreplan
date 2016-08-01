@@ -9419,3 +9419,7 @@ msgstr ""
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/DetailsOrderElement.java:110
 msgid "Must be after 2010!"
 msgstr ""
+
+#: libreplan-webapp/src/main/java/org/libreplan/web/dashboard/DashboardControllerGlobal.java:284
+msgid "Undefined"
+msgstr ""
