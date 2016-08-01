@@ -24,7 +24,7 @@ import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
 import org.libreplan.ws.common.api.ConcurrentModificationErrorDTO;
-import org.springframework.orm.hibernate4.HibernateOptimisticLockingFailureException;
+import org.springframework.orm.hibernate5.HibernateOptimisticLockingFailureException;
 import org.springframework.stereotype.Component;
 
 /**
@@ -34,14 +34,13 @@ import org.springframework.stereotype.Component;
  */
 @Provider
 @Component("hibernateOptimisticLockingFailureException")
-public class HibernateOptimisticLockingFailureExceptionMapper implements
-        ExceptionMapper<HibernateOptimisticLockingFailureException> {
+public class HibernateOptimisticLockingFailureExceptionMapper
+        implements ExceptionMapper<HibernateOptimisticLockingFailureException> {
 
     public Response toResponse(HibernateOptimisticLockingFailureException e) {
         return Response
                 .status(Response.Status.INTERNAL_SERVER_ERROR)
-                .entity(new ConcurrentModificationErrorDTO(
-                        e.getMessage(), Util.getStackTrace(e)))
+                .entity(new ConcurrentModificationErrorDTO(e.getMessage(), Util.getStackTrace(e)))
                 .type("application/xml").build();
     }
 

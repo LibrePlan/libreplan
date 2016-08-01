@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<hibernate-mapping default-access="field"
-    package="org.libreplan.business.common.entities">
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-access="field" package="org.libreplan.business.common.entities">
 
     <class name="Connector" table="connector">
         <id name="id" column="id" type="long" access="property">
-            <generator class="hilo">
+            <generator class="increment">
                 <param name="max_lo">100</param>
             </generator>
         </id>
@@ -19,8 +20,7 @@
             <list-index column="connector_property_position" />
 
             <composite-element class="ConnectorProperty">
-                <property name="key" column="property_key"
-                    not-null="true" />
+                <property name="key" column="property_key" not-null="true" />
                 <property name="value" column="property_value" />
             </composite-element>
         </list>

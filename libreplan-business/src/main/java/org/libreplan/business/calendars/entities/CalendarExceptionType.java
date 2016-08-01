@@ -39,15 +39,14 @@ import org.libreplan.business.common.Registry;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workingday.EffortDuration.Granularity;
-import org.springframework.orm.hibernate4.HibernateOptimisticLockingFailureException;
+import org.springframework.orm.hibernate5.HibernateOptimisticLockingFailureException;
 
 /**
  * Type of an exception day.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public class CalendarExceptionType extends IntegrationEntity implements
-        IHumanIdentifiable {
+public class CalendarExceptionType extends IntegrationEntity implements IHumanIdentifiable {
 
     private String name;
 
@@ -62,34 +61,34 @@ public class CalendarExceptionType extends IntegrationEntity implements
         return create(new CalendarExceptionType());
     }
 
-    public static CalendarExceptionType create(String name,
-            CalendarExceptionTypeColor color,
-            Boolean notAssignable) {
+    public static CalendarExceptionType create(String name, CalendarExceptionTypeColor color, Boolean notAssignable) {
         return create(new CalendarExceptionType(name, color, notAssignable));
     }
 
-    public static CalendarExceptionType create(String code, String name,
-            CalendarExceptionTypeColor color, Boolean notAssignable) {
-        return create(new CalendarExceptionType(name, color, notAssignable),
-                code);
+    public static CalendarExceptionType create(
+            String code, String name, CalendarExceptionTypeColor color, Boolean notAssignable) {
+
+        return create(new CalendarExceptionType(name, color, notAssignable), code);
     }
 
-    public static CalendarExceptionType create(String code, String name,
-            CalendarExceptionTypeColor color, Boolean notAssignable,
-            Boolean updatable) {
-        CalendarExceptionType calendarExceptionType = new CalendarExceptionType(
-                name, color, notAssignable);
+    public static CalendarExceptionType create(
+            String code, String name, CalendarExceptionTypeColor color, Boolean notAssignable, Boolean updatable) {
+
+        CalendarExceptionType calendarExceptionType = new CalendarExceptionType(name, color, notAssignable);
         calendarExceptionType.updatable = updatable;
-        return create(calendarExceptionType,
-                code);
+
+        return create(calendarExceptionType, code);
     }
 
-    public static CalendarExceptionType create(String code, String name,
-            CalendarExceptionTypeColor color, Boolean notAssignable,
-            EffortDuration duration) {
-        CalendarExceptionType calendarExceptionType = new CalendarExceptionType(
-                name, color, notAssignable);
+    public static CalendarExceptionType create(String code,
+                                               String name,
+                                               CalendarExceptionTypeColor color,
+                                               Boolean notAssignable,
+                                               EffortDuration duration) {
+
+        CalendarExceptionType calendarExceptionType = new CalendarExceptionType(name, color, notAssignable);
         calendarExceptionType.setDuration(duration);
+
         return create(calendarExceptionType, code);
     }
 
@@ -97,16 +96,13 @@ public class CalendarExceptionType extends IntegrationEntity implements
      * Constructor for hibernate. Do not use!
      */
     protected CalendarExceptionType() {
-
     }
 
-    public CalendarExceptionType(String name, CalendarExceptionTypeColor color,
-            Boolean notOverAssignable) {
+    public CalendarExceptionType(String name, CalendarExceptionTypeColor color, Boolean notOverAssignable) {
         this.name = name;
         this.color = color;
         this.capacity = Capacity.zero();
-        this.capacity = this.capacity.overAssignableWithoutLimit(!BooleanUtils
-                .isTrue(notOverAssignable));
+        this.capacity = this.capacity.overAssignableWithoutLimit(!BooleanUtils.isTrue(notOverAssignable));
     }
 
     public boolean isUpdatable() {
@@ -148,8 +144,7 @@ public class CalendarExceptionType extends IntegrationEntity implements
     }
 
     public void setOverAssignable(Boolean overAssignable) {
-        this.capacity = capacity.overAssignableWithoutLimit(BooleanUtils
-                .isTrue(overAssignable));
+        this.capacity = capacity.overAssignableWithoutLimit(BooleanUtils.isTrue(overAssignable));
     }
 
     public String getOverAssignableStr() {
@@ -161,12 +156,14 @@ public class CalendarExceptionType extends IntegrationEntity implements
     }
 
     private String asString(EffortDuration duration) {
-        if (duration == null) {
+        if ( duration == null ) {
             return "";
         }
+
         EnumMap<Granularity, Integer> values = duration.decompose();
         Integer hours = values.get(Granularity.HOURS);
         Integer minutes = values.get(Granularity.MINUTES);
+
         return hours + ":" + minutes;
     }
 
@@ -181,18 +178,18 @@ public class CalendarExceptionType extends IntegrationEntity implements
 
     @AssertTrue(message = "name is already used")
     public boolean isUniqueNameConstraint() {
-        if (StringUtils.isBlank(name)) {
+        if ( StringUtils.isBlank(name) ) {
             return true;
         }
 
         ICalendarExceptionTypeDAO calendarExceptionTypeDAO = getIntegrationEntityDAO();
-        if (isNewObject()) {
-            return !calendarExceptionTypeDAO.existsByNameAnotherTransaction(
-                    name);
+        if ( isNewObject() ) {
+            return !calendarExceptionTypeDAO.existsByNameAnotherTransaction(name);
         } else {
             try {
-                CalendarExceptionType calendarExceptionType = calendarExceptionTypeDAO
-                        .findUniqueByNameAnotherTransaction(name);
+                CalendarExceptionType calendarExceptionType =
+                        calendarExceptionTypeDAO.findUniqueByNameAnotherTransaction(name);
+
                 return calendarExceptionType.getId().equals(getId());
             } catch (InstanceNotFoundException e) {
                 return true;

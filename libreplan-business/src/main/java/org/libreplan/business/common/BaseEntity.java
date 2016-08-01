@@ -57,15 +57,16 @@ public abstract class BaseEntity implements INewObject {
      * @param entities
      * @return entities grouped by id
      */
-    public static <T extends BaseEntity> Map<Long, Set<T>> byId(
-            Collection<? extends T> entities) {
-        Map<Long, Set<T>> result = new HashMap<Long, Set<T>>();
+    public static <T extends BaseEntity> Map<Long, Set<T>> byId(Collection<? extends T> entities) {
+        Map<Long, Set<T>> result = new HashMap<>();
+
         for (T each : entities) {
             if ( !result.containsKey(each.getId()) ) {
-                result.put(each.getId(), new HashSet<T>());
+                result.put(each.getId(), new HashSet<>());
             }
             result.get(each.getId()).add(each);
         }
+
         return result;
     }
 
@@ -89,7 +90,7 @@ public abstract class BaseEntity implements INewObject {
     }
 
     public Long getVersion() {
-        if (isNewObject()) {
+        if ( isNewObject() ) {
             return null;
         }
 
@@ -119,6 +120,7 @@ public abstract class BaseEntity implements INewObject {
 
     protected static <T extends BaseEntity> T create(T baseEntity) {
         baseEntity.setNewObject(true);
+
         return baseEntity;
     }
 
@@ -146,6 +148,7 @@ public abstract class BaseEntity implements INewObject {
         } catch (Exception e) {
             final String message = "error doing toString";
             LOG.error(message, e);
+
             return message;
         }
     }

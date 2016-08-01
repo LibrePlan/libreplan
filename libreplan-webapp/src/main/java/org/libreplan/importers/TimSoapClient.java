@@ -43,9 +43,8 @@ import org.libreplan.importers.tim.RosterResponseDTO;
 /**
  * Client to interact with Tim SOAP server.
  *
- * This client creates SOAP message, makes connection to the SOAP server and
- * sends the request. It is also the task of this client to convert the
- * response(xml document) to java objects
+ * This client creates SOAP message, makes connection to the SOAP server and sends the request.
+ * It is also the task of this client to convert the response(xml document) to java objects.
  *
  * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
  */
@@ -68,8 +67,8 @@ public class TimSoapClient {
      * @throws JAXBException
      *             if unable to marshal the clazz
      */
-    private static <T> SOAPMessage createRequest(T clazz, String userName,
-            String password) throws SOAPException, JAXBException {
+    private static <T> SOAPMessage createRequest(
+            T clazz, String userName, String password) throws SOAPException, JAXBException {
 
         SOAPMessage message = createMessage();
 
@@ -81,6 +80,7 @@ public class TimSoapClient {
         marshal(clazz, soapBody);
 
         message.saveChanges();
+
         return message;
     }
 
@@ -93,8 +93,8 @@ public class TimSoapClient {
      */
     private static SOAPMessage createMessage() throws SOAPException {
         MessageFactory messageFactory = MessageFactory.newInstance();
-        SOAPMessage message = messageFactory.createMessage();
-        return message;
+
+        return messageFactory.createMessage();
     }
 
     /**
@@ -107,12 +107,10 @@ public class TimSoapClient {
      * @param password
      *            the password
      */
-    private static void addAuthorization(SOAPMessage message, String username,
-            String password) {
+    private static void addAuthorization(SOAPMessage message, String username, String password) {
         String encodeUserInfo = username + ":" + password;
         encodeUserInfo = Base64Utility.encode(encodeUserInfo.getBytes());
-        message.getMimeHeaders().setHeader("Authorization",
-                "Basic " + encodeUserInfo);
+        message.getMimeHeaders().setHeader("Authorization", "Basic " + encodeUserInfo);
     }
 
     /**
@@ -124,11 +122,11 @@ public class TimSoapClient {
      * @return the SOAP envelope
      * @throws SOAPException
      */
-    private static SOAPEnvelope createEnvelope(SOAPPart soapPart)
-            throws SOAPException {
+    private static SOAPEnvelope createEnvelope(SOAPPart soapPart) throws SOAPException {
         SOAPEnvelope soapEnvelope = soapPart.getEnvelope();
         addNamespaceDeclaration(soapEnvelope);
         setEncodingStyle(soapEnvelope);
+
         return soapEnvelope;
     }
 
@@ -140,16 +138,11 @@ public class TimSoapClient {
      *            the SOAP envelope
      * @throws SOAPException
      */
-    private static void addNamespaceDeclaration(SOAPEnvelope soapEnvelope)
-            throws SOAPException {
-        soapEnvelope.addNamespaceDeclaration("xsd",
-                "http://www.w3.org/2001/XMLSchema");
-        soapEnvelope.addNamespaceDeclaration("xsi",
-                "http://www.w3.org/2001/XMLSchema-instance");
-        soapEnvelope.addNamespaceDeclaration("enc",
-                "http://schemas.xmlsoap.org/soap/encoding/");
-        soapEnvelope.addNamespaceDeclaration("env",
-                "http://schemas.xmlsoap.org/soap/envelop/");
+    private static void addNamespaceDeclaration(SOAPEnvelope soapEnvelope) throws SOAPException {
+        soapEnvelope.addNamespaceDeclaration("xsd", "http://www.w3.org/2001/XMLSchema");
+        soapEnvelope.addNamespaceDeclaration("xsi", "http://www.w3.org/2001/XMLSchema-instance");
+        soapEnvelope.addNamespaceDeclaration("enc", "http://schemas.xmlsoap.org/soap/encoding/");
+        soapEnvelope.addNamespaceDeclaration("env", "http://schemas.xmlsoap.org/soap/envelop/");
 
     }
 
@@ -161,10 +154,8 @@ public class TimSoapClient {
      *            the SOAP envelope
      * @throws SOAPException
      */
-    private static void setEncodingStyle(SOAPEnvelope soapEnvelope)
-            throws SOAPException {
-        soapEnvelope
-                .setEncodingStyle("http://schemas.xmlsoap.org/soap/encoding/");
+    private static void setEncodingStyle(SOAPEnvelope soapEnvelope) throws SOAPException {
+        soapEnvelope.setEncodingStyle("http://schemas.xmlsoap.org/soap/encoding/");
     }
 
     /**
@@ -178,8 +169,7 @@ public class TimSoapClient {
      * @throws JAXBException
      *             if marshaling failed
      */
-    private static <T> void marshal(T clazz, SOAPBody soapBody)
-            throws JAXBException {
+    private static <T> void marshal(T clazz, SOAPBody soapBody) throws JAXBException {
         JAXBContext jaxbContext = JAXBContext.newInstance(clazz.getClass());
         Marshaller marshaller = jaxbContext.createMarshaller();
         marshaller.marshal(clazz, soapBody);
@@ -198,15 +188,16 @@ public class TimSoapClient {
      *             if unmarshal failed
      */
     @SuppressWarnings("unchecked")
-    private static <T> T unmarshal(Class<T> clazz, SOAPBody soapBody)
-            throws JAXBException {
+    private static <T> T unmarshal(Class<T> clazz, SOAPBody soapBody) throws JAXBException {
         JAXBContext jaxbContext = JAXBContext.newInstance(clazz);
 
         Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
         Node bindElement = (Node) soapBody.getFirstChild();
+
         while (bindElement.getNodeType() != Node.ELEMENT_NODE) {
             bindElement = (Node) bindElement.getNextSibling();
         }
+
         return unmarshaller.unmarshal(bindElement, clazz).getValue();
     }
 
@@ -221,15 +212,14 @@ public class TimSoapClient {
      * @throws SOAPException
      *             if unable to send request
      */
-    private static SOAPMessage sendRequest(String url, SOAPMessage message)
-            throws SOAPException {
+    private static SOAPMessage sendRequest(String url, SOAPMessage message) throws SOAPException {
         SOAPConnection connection = null;
         SOAPMessage response = null;
         try {
             connection = createConnection();
             response = connection.call(message, url);
         } finally {
-            if (connection != null) {
+            if ( connection != null ) {
                 closeConnection(connection);
             }
         }
@@ -245,10 +235,9 @@ public class TimSoapClient {
      *             if unable to create connection
      */
     private static SOAPConnection createConnection() throws SOAPException {
-        SOAPConnectionFactory soapConnectionFactory = SOAPConnectionFactory
-                .newInstance();
-        SOAPConnection connection = soapConnectionFactory.createConnection();
-        return connection;
+        SOAPConnectionFactory soapConnectionFactory = SOAPConnectionFactory.newInstance();
+
+        return soapConnectionFactory.createConnection();
     }
 
     /**
@@ -259,8 +248,7 @@ public class TimSoapClient {
      * @throws SOAPException
      *             if unable to close connection
      */
-    private static void closeConnection(SOAPConnection connection)
-            throws SOAPException {
+    private static void closeConnection(SOAPConnection connection) throws SOAPException {
         connection.close();
     }
 
@@ -280,11 +268,13 @@ public class TimSoapClient {
      *            the response class
      * @return the expected object or null
      */
-    public static <T, U> T sendRequestReceiveResponse(String url,
-            String userName, String password, U request, Class<T> response) {
+    public static <T, U> T sendRequestReceiveResponse(
+            String url, String userName, String password, U request, Class<T> response) {
+
         try {
             SOAPMessage requestMsg = createRequest(request, userName, password);
             SOAPMessage responseMsg = sendRequest(url, requestMsg);
+
             return unmarshal(response, responseMsg.getSOAPBody());
         } catch (SOAPException soapExp) {
             LOG.error("SOAPException: ", soapExp);
@@ -307,12 +297,12 @@ public class TimSoapClient {
      *            the password
      * @return true if user is authorized otherwise false
      */
-    public static boolean checkAuthorization(String url, String username,
-            String password) {
+    public static boolean checkAuthorization(String url, String username, String password) {
         try {
             SOAPMessage message = createMessage();
             addAuthorization(message, username, password);
             sendRequest(url, message);
+
             return true;
         } catch (SOAPException e) {
             LOG.error("SOAP Exception: ", e);
@@ -332,13 +322,11 @@ public class TimSoapClient {
      */
     public static RosterResponseDTO unmarshalRosterFromFile(File file) {
         try {
-            JAXBContext jaxbContext = JAXBContext
-                    .newInstance(RosterResponseDTO.class);
+            JAXBContext jaxbContext = JAXBContext.newInstance(RosterResponseDTO.class);
 
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-            RosterResponseDTO exportResponseDTO = (RosterResponseDTO) unmarshaller
-                    .unmarshal(file);
-            return exportResponseDTO;
+
+            return (RosterResponseDTO) unmarshaller.unmarshal(file);
         } catch (JAXBException e) {
             LOG.error("Error processing response: ", e);
         }

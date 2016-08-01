@@ -46,7 +46,6 @@ import org.junit.runner.RunWith;
 import org.libreplan.business.IDataBootstrap;
 import org.libreplan.business.calendars.entities.ResourceCalendar;
 import org.libreplan.business.common.IAdHocTransactionService;
-import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.resources.daos.ICriterionDAO;
@@ -72,7 +71,8 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
+@ContextConfiguration(locations = {
+        BUSINESS_SPRING_CONFIG_FILE,
         BUSINESS_SPRING_CONFIG_TEST_FILE })
 public class ResourceDAOTest {
 
@@ -118,15 +118,16 @@ public class ResourceDAOTest {
         sessionFactory.getCurrentSession().evict(resource);
 
         Resource foundResource = resourceDAO.find(resource.getId());
+
         assertNotSame(resource, foundResource);
         assertNotNull(foundResource.getCalendar());
-        assertThat(foundResource.getCalendar().getId(),
-                equalTo(resourceCalendar.getId()));
+        assertThat(foundResource.getCalendar().getId(), equalTo(resourceCalendar.getId()));
     }
 
     private ResourceCalendar givenValidResourceCalendar() {
         ResourceCalendar resourceCalendar = ResourceCalendar.create();
         resourceCalendar.setName("Calendar");
+
         return resourceCalendar;
     }
 
@@ -135,6 +136,7 @@ public class ResourceDAOTest {
         worker.setFirstName("First name");
         worker.setSurname("Surname");
         worker.setNif("NIF" + UUID.randomUUID().toString());
+
         return worker;
     }
 
@@ -143,8 +145,8 @@ public class ResourceDAOTest {
     public void testResourceIsRelatedWithAllCriterions() {
         Collection<Criterion> criterions = createCriterions();
         createAndSaveResourceSatisfyingAllCriterions(criterions);
-        List<Resource> result = resourcesSearcher.searchBoth()
-                .byCriteria(criterions).execute();
+        List<Resource> result = resourcesSearcher.searchBoth().byCriteria(criterions).execute();
+
         assertNotNull(result);
         assertEquals(1, result.size());
     }
@@ -152,56 +154,43 @@ public class ResourceDAOTest {
     @Test
     public void theHierarchyOfCriterionsIsConsidered() {
         final Criterion[] parentCriteron = { null };
-        Resource worker = transactionService
-                .runOnTransaction(new IOnTransaction<Resource>() {
-                    @Override
-                    public Resource execute() {
-                        Worker result = givenValidWorker();
-                        CriterionType type = createCriterionType("testType");
-                        Criterion parent = createCriterion("parent", type);
-                        parentCriteron[0] = parent;
-                        Criterion child = createCriterion("child", type);
-                        child.setParent(parent);
-                        addSatisfactionsOn(result,
-                                Interval.from(new LocalDate(1970, 1, 1)), child);
-                        return result;
-                    }
+
+        Resource worker = transactionService.runOnTransaction(() -> {
+            Worker result = givenValidWorker();
+            CriterionType type = createCriterionType("testType");
+            Criterion parent = createCriterion("parent", type);
+            parentCriteron[0] = parent;
+            Criterion child = createCriterion("child", type);
+            child.setParent(parent);
+            addSatisfactionsOn(result, Interval.from(new LocalDate(1970, 1, 1)), child);
+
+            return result;
         });
-        final Criterion parent = transactionService
-                .runOnReadOnlyTransaction(new IOnTransaction<Criterion>() {
 
-                    @Override
-                    public Criterion execute() {
-                        return criterionDAO
-                                .findExistingEntity(parentCriteron[0].getId());
-                    }
-                });
-        List<Resource> resources = transactionService
-                .runOnReadOnlyTransaction(new IOnTransaction<List<Resource>>() {
+        final Criterion parent = transactionService.runOnReadOnlyTransaction(() ->
+                criterionDAO.findExistingEntity(parentCriteron[0].getId()));
 
-                    @Override
-                    public List<Resource> execute() {
-                        return resourcesSearcher.searchBoth()
-                                .byCriteria(Collections.singleton(parent))
-                                .execute();
-                    }
-                });
+        List<Resource> resources = transactionService.runOnReadOnlyTransaction(() ->
+                resourcesSearcher.searchBoth().byCriteria(Collections.singleton(parent)).execute());
+
         assertThat(resources.size(), equalTo(1));
         Resource resource = resources.get(0);
         assertThat(resource.getId(), equalTo(worker.getId()));
     }
 
     private Collection<Criterion> createCriterions() {
-        List<Criterion> result = new ArrayList<Criterion>();
+        List<Criterion> result = new ArrayList<>();
         CriterionType type = createCriterionType("criterionTypeTest");
         result.add(createCriterion("criterion1", type));
         result.add(createCriterion("criterion2", type));
+
         return result;
     }
 
     private CriterionType createCriterionType(String name) {
         CriterionType result = CriterionType.create(name, "");
         criterionTypeDAO.save(result);
+
         return result;
     }
 
@@ -212,23 +201,22 @@ public class ResourceDAOTest {
     private Criterion createCriterion(String name, CriterionType type) {
         Criterion result = Criterion.create(name, type);
         criterionDAO.save(result);
+
         return result;
     }
 
     private Worker createAndSaveResourceSatisfyingAllCriterions(final Collection<Criterion> criterions) {
         Worker result = givenValidWorker();
         Interval interval = Interval.range(new LocalDate(1970, 1, 1), null);
-        addSatisfactionsOn(result, interval,
-                criterions.toArray(new Criterion[] {}));
+        addSatisfactionsOn(result, interval, criterions.toArray(new Criterion[criterions.size()]));
+
         return result;
     }
 
-    private void addSatisfactionsOn(Worker worker, Interval interval,
-            final Criterion... criterions) {
-        Set<CriterionSatisfaction> satisfactions = new HashSet<CriterionSatisfaction>();
+    private void addSatisfactionsOn(Worker worker, Interval interval, final Criterion... criterions) {
+        Set<CriterionSatisfaction> satisfactions = new HashSet<>();
         for (Criterion each : criterions) {
-            satisfactions.add(CriterionSatisfaction.create(each, worker,
-                    interval));
+            satisfactions.add(CriterionSatisfaction.create(each, worker, interval));
         }
         worker.addSatisfactions(satisfactions);
         resourceDAO.save(worker);
@@ -243,25 +231,20 @@ public class ResourceDAOTest {
         // Modify criterions collection
         criterions.add(createCriterion("criterion3"));
 
-        List<Resource> result = resourcesSearcher.searchBoth()
-                .byCriteria(criterions).execute();
+        List<Resource> result = resourcesSearcher.searchBoth().byCriteria(criterions).execute();
+
         assertNotNull(result);
         assertThat(result.size(), not(equalTo(1)));
     }
 
     private User givenStoredUser() {
-        return transactionService
-                .runOnAnotherTransaction(new IOnTransaction<User>() {
+        return transactionService.runOnAnotherTransaction(() -> {
+            User user = User.create("login" + UUID.randomUUID(), "password", "");
+            userDAO.save(user);
+            user.dontPoseAsTransientObjectAnymore();
 
-                    @Override
-                    public User execute() {
-                        User user = User.create("login" + UUID.randomUUID(),
-                                "password", "");
-                        userDAO.save(user);
-                        user.dontPoseAsTransientObjectAnymore();
-                        return user;
-                    }
-                });
+            return user;
+        });
     }
 
     @Test(expected = ValidationException.class)
@@ -269,24 +252,20 @@ public class ResourceDAOTest {
     public void testWorkerBoundToUserAlreadyBound() {
         final User user = givenStoredUser();
 
-        transactionService.runOnAnotherTransaction(new IOnTransaction<Void>() {
-            @Override
-            public Void execute() {
-                Worker worker1 = givenValidWorker();
-                worker1.setUser(user);
-                resourceDAO.save(worker1);
-                return null;
-            }
+        transactionService.runOnAnotherTransaction(() -> {
+            Worker worker1 = givenValidWorker();
+            worker1.setUser(user);
+            resourceDAO.save(worker1);
+
+            return null;
         });
 
-        transactionService.runOnAnotherTransaction(new IOnTransaction<Void>() {
-            @Override
-            public Void execute() {
-                Worker worker2 = givenValidWorker();
-                worker2.setUser(user);
-                resourceDAO.save(worker2);
-                return null;
-            }
+        transactionService.runOnAnotherTransaction(() -> {
+            Worker worker2 = givenValidWorker();
+            worker2.setUser(user);
+            resourceDAO.save(worker2);
+
+            return null;
         });
     }
 

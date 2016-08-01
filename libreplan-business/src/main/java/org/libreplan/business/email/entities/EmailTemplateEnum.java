@@ -25,7 +25,7 @@ import static org.libreplan.business.i18n.I18nHelper._;
  * Available E-mail templates.
  *
  * Created by
- * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  * on 28.09.2015.
  *
  * TEMPLATE_N(_("Template N")) - for i18n

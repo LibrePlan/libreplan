@@ -45,46 +45,41 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  * @author Manuel Rego Casasnovas <rego@igalia.com>
- * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
 @Repository
-public class UserDAO extends GenericDAOHibernate<User, Long>
-    implements IUserDAO {
+public class UserDAO extends GenericDAOHibernate<User, Long> implements IUserDAO {
 
     @Autowired
     private IOrderAuthorizationDAO orderAuthorizationDAO;
 
     @Override
     @Transactional(readOnly = true)
-    public User findByLoginName(String loginName)
-        throws InstanceNotFoundException {
+    public User findByLoginName(String loginName) throws InstanceNotFoundException {
 
-        Criteria c = getSession().createCriteria(User.class);
-        c.add(Restrictions.eq("loginName", loginName).ignoreCase());
-        User user = (User) c.uniqueResult();
+        User user = (User) getSession()
+                .createCriteria(User.class)
+                .add(Restrictions.eq("loginName", loginName).ignoreCase())
+                .uniqueResult();
 
-        if (user == null) {
-            throw new InstanceNotFoundException(loginName,
-                User.class.getName());
+        if ( user == null ) {
+            throw new InstanceNotFoundException(loginName, User.class.getName());
         } else {
-            user.getProfiles().size();
             return user;
         }
 
     }
 
     @Override
-    public User findByLoginNameNotDisabled(String loginName)
-        throws InstanceNotFoundException {
+    public User findByLoginNameNotDisabled(String loginName) throws InstanceNotFoundException {
 
         Criteria c = getSession().createCriteria(User.class);
         c.add(Restrictions.eq("loginName", loginName).ignoreCase());
         c.add(Restrictions.eq("disabled", false));
         User user = (User) c.uniqueResult();
 
-        if (user == null) {
-            throw new InstanceNotFoundException(loginName,
-                User.class.getName());
+        if ( user == null ) {
+            throw new InstanceNotFoundException(loginName, User.class.getName());
         } else {
             return user;
         }
@@ -104,6 +99,7 @@ public class UserDAO extends GenericDAOHibernate<User, Long>
     public boolean existsByLoginName(String loginName) {
         try {
             findByLoginName(loginName);
+
             return true;
         } catch (InstanceNotFoundException e) {
             return false;
@@ -120,6 +116,7 @@ public class UserDAO extends GenericDAOHibernate<User, Long>
     public List<User> listNotDisabled() {
         Criteria c = getSession().createCriteria(User.class);
         c.add(Restrictions.eq("disabled", false));
+
         return c.list();
     }
 
@@ -127,6 +124,7 @@ public class UserDAO extends GenericDAOHibernate<User, Long>
     public List<User> findByLastConnectedScenario(Scenario scenario) {
         Criteria c = getSession().createCriteria(User.class);
         c.add(Restrictions.eq("lastConnectedScenario", scenario));
+
         return c.list();
     }
 
@@ -134,16 +132,20 @@ public class UserDAO extends GenericDAOHibernate<User, Long>
         List orderAuthorizations = getSession()
                 .createCriteria(UserOrderAuthorization.class)
                 .add(Restrictions.eq("user", user)).list();
+
         return orderAuthorizations;
     }
 
     @Override
     public List<User> getUnboundUsers(Worker worker) {
-        List<User> result = new ArrayList<User>();
+        List<User> result = new ArrayList<>();
+        boolean condition;
         for (User user : getUsersOrderByLoginame()) {
-            if ((user.getWorker() == null)
-                    || (worker != null && !worker.isNewObject() && worker
-                            .getId().equals(user.getWorker().getId()))) {
+
+            condition = (user.getWorker() == null) ||
+                    (worker != null && !worker.isNewObject() && worker.getId().equals(user.getWorker().getId()));
+
+            if ( condition ) {
                 result.add(user);
             }
         }
@@ -151,8 +153,7 @@ public class UserDAO extends GenericDAOHibernate<User, Long>
     }
 
     private List<User> getUsersOrderByLoginame() {
-        return getSession().createCriteria(User.class).addOrder(
-                org.hibernate.criterion.Order.asc("loginName")).list();
+        return getSession().createCriteria(User.class).addOrder(org.hibernate.criterion.Order.asc("loginName")).list();
     }
 
     @Override
@@ -168,7 +169,7 @@ public class UserDAO extends GenericDAOHibernate<User, Long>
     @Override
     public void remove(User user) throws InstanceNotFoundException {
         List<OrderAuthorization> orderAuthorizations = getOrderAuthorizationsByUser(user);
-        if (!orderAuthorizations.isEmpty()) {
+        if ( !orderAuthorizations.isEmpty() ) {
             for (OrderAuthorization orderAuthorization : orderAuthorizations) {
                 orderAuthorizationDAO.remove(orderAuthorization.getId());
             }

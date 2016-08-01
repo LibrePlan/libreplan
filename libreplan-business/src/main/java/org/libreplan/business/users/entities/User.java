@@ -31,7 +31,6 @@ import javax.validation.constraints.AssertTrue;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.libreplan.business.common.BaseEntity;
 import org.libreplan.business.common.IHumanIdentifiable;
-import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.Registry;
 import org.libreplan.business.common.entities.Configuration;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
@@ -61,9 +60,9 @@ public class User extends BaseEntity implements IHumanIdentifiable{
 
     private Language applicationLanguage = Language.BROWSER_LANGUAGE;
 
-    private Set<UserRole> roles = new HashSet<UserRole>();
+    private Set<UserRole> roles = new HashSet<>();
 
-    private Set<Profile> profiles = new HashSet<Profile>();
+    private Set<Profile> profiles = new HashSet<>();
 
     private String email;
 
@@ -104,8 +103,7 @@ public class User extends BaseEntity implements IHumanIdentifiable{
     public User() {
     }
 
-    private User(String loginName, String password, Set<UserRole> roles,
-            Set<Profile> profiles) {
+    private User(String loginName, String password, Set<UserRole> roles, Set<Profile> profiles) {
         this.loginName = loginName;
         this.password = password;
         this.roles = roles;
@@ -118,13 +116,11 @@ public class User extends BaseEntity implements IHumanIdentifiable{
         this.email = email;
     }
 
-    public static User create(String loginName, String password,
-            Set<UserRole> roles) {
-        return create(loginName, password, roles, new HashSet<Profile>());
+    public static User create(String loginName, String password, Set<UserRole> roles) {
+        return create(loginName, password, roles, new HashSet<>());
     }
 
-    public static User create(String loginName, String password,
-            Set<UserRole> roles, Set<Profile> profiles) {
+    public static User create(String loginName, String password, Set<UserRole> roles, Set<Profile> profiles) {
         return create(new User(loginName, password, roles, profiles));
     }
 
@@ -180,10 +176,11 @@ public class User extends BaseEntity implements IHumanIdentifiable{
      * @return A list of UserRole objects
      */
     public Set<UserRole> getAllRoles() {
-        Set<UserRole> allRoles = new HashSet<UserRole>(roles);
+        Set<UserRole> allRoles = new HashSet<>(roles);
         for (Profile profile : getProfiles()) {
             allRoles.addAll(profile.getRoles());
         }
+
         return allRoles;
     }
 
@@ -191,14 +188,16 @@ public class User extends BaseEntity implements IHumanIdentifiable{
      * Checks if current user is in the requested role
      */
     public boolean isInRole(UserRole role) {
-        if (roles.contains(role)) {
+        if ( roles.contains(role) ) {
             return true;
         }
+
         for (Profile profile : profiles) {
-            if (profile.getRoles().contains(role)) {
+            if ( profile.getRoles().contains(role) ) {
                 return true;
             }
         }
+
         return false;
     }
 
@@ -215,17 +214,18 @@ public class User extends BaseEntity implements IHumanIdentifiable{
     }
 
     public void addProfile(Profile profile) {
-        if (!containsProfile(profile)) {
+        if ( !containsProfile(profile) ) {
             profiles.add(profile);
         }
     }
 
     private boolean containsProfile(Profile profile) {
         for (Profile assignedProfile : profiles) {
-            if (assignedProfile.getId().equals(profile.getId())) {
+            if ( assignedProfile.getId().equals(profile.getId()) ) {
                 return true;
             }
         }
+
         return false;
     }
 
@@ -250,11 +250,12 @@ public class User extends BaseEntity implements IHumanIdentifiable{
 
         IUserDAO userDAO = Registry.getUserDAO();
 
-        if (isNewObject()) {
+        if ( isNewObject() ) {
             return !userDAO.existsByLoginNameAnotherTransaction(loginName);
         } else {
             try {
                 User u = userDAO.findByLoginNameAnotherTransaction(loginName);
+
                 return u.getId().equals(getId());
             } catch (InstanceNotFoundException e) {
                 return true;
@@ -292,8 +293,7 @@ public class User extends BaseEntity implements IHumanIdentifiable{
         return expandCompanyPlanningViewCharts;
     }
 
-    public void setExpandOrderPlanningViewCharts(
-            boolean expandOrderPlanningViewCharts) {
+    public void setExpandOrderPlanningViewCharts(boolean expandOrderPlanningViewCharts) {
         this.expandOrderPlanningViewCharts = expandOrderPlanningViewCharts;
     }
 
@@ -301,8 +301,7 @@ public class User extends BaseEntity implements IHumanIdentifiable{
         return expandOrderPlanningViewCharts;
     }
 
-    public void setExpandResourceLoadViewCharts(
-            boolean expandResourceLoadViewCharts) {
+    public void setExpandResourceLoadViewCharts(boolean expandResourceLoadViewCharts) {
         this.expandResourceLoadViewCharts = expandResourceLoadViewCharts;
     }
 
@@ -310,8 +309,7 @@ public class User extends BaseEntity implements IHumanIdentifiable{
         return expandResourceLoadViewCharts;
     }
 
-    public void setExpandCompanyPlanningViewCharts(
-            boolean expandCompanyPlanningViewCharts) {
+    public void setExpandCompanyPlanningViewCharts(boolean expandCompanyPlanningViewCharts) {
         this.expandCompanyPlanningViewCharts = expandCompanyPlanningViewCharts;
     }
 
@@ -342,7 +340,7 @@ public class User extends BaseEntity implements IHumanIdentifiable{
 
     public void setWorker(Worker worker) {
         this.worker = worker;
-        if (worker == null) {
+        if ( worker == null ) {
             roles.remove(UserRole.ROLE_BOUND_USER);
         } else {
             roles.add(UserRole.ROLE_BOUND_USER);
@@ -359,11 +357,12 @@ public class User extends BaseEntity implements IHumanIdentifiable{
 
     public enum UserAuthenticationType {
 
-        DATABASE(_("Database")), LDAP(_("LDAP"));
+        DATABASE(_("Database")),
+        LDAP(_("LDAP"));
 
         private String name;
 
-        private UserAuthenticationType(String name) {
+        UserAuthenticationType(String name) {
             this.name = name;
         }
 
@@ -373,36 +372,32 @@ public class User extends BaseEntity implements IHumanIdentifiable{
     }
 
     public UserAuthenticationType getUserType() {
-        return isLibrePlanUser() ? UserAuthenticationType.DATABASE
-                : UserAuthenticationType.LDAP;
+        return isLibrePlanUser() ? UserAuthenticationType.DATABASE : UserAuthenticationType.LDAP;
     }
 
     @AssertTrue(message = "You have exceeded the maximum limit of users")
     public boolean isMaxUsersConstraint() {
-        return Registry.getTransactionService()
-                .runOnAnotherReadOnlyTransaction(new IOnTransaction<Boolean>() {
-                    @Override
-                    public Boolean execute() {
-                        Configuration configuration = Registry
-                                .getConfigurationDAO().getConfiguration();
-                        if (configuration == null) {
-                            return true;
-                        }
+        return Registry.getTransactionService().runOnAnotherReadOnlyTransaction(() -> {
+            Configuration configuration = Registry.getConfigurationDAO().getConfiguration();
+            if ( configuration == null ) {
+                return true;
+            }
 
-                        Integer maxUsers = configuration.getMaxUsers();
-                        if (maxUsers != null && maxUsers > 0) {
-                            List<User> users = Registry.getUserDAO().findAll();
-                            int usersNumber = users.size();
-                            if (isNewObject()) {
-                                usersNumber++;
-                            }
-                            if (usersNumber > maxUsers) {
-                                return false;
-                            }
-                        }
-                        return true;
-                    }
-                });
+            Integer maxUsers = configuration.getMaxUsers();
+            if ( maxUsers != null && maxUsers > 0 ) {
+                List<User> users = Registry.getUserDAO().findAll();
+                int usersNumber = users.size();
+
+                if ( isNewObject() ) {
+                    usersNumber++;
+                }
+
+                if ( usersNumber > maxUsers ) {
+                    return false;
+                }
+            }
+            return true;
+        });
     }
 
     public Label getProjectsFilterLabel() {

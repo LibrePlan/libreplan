@@ -24,8 +24,6 @@ package org.libreplan.business.planner.entities;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -50,12 +48,12 @@ public class SubcontractedTaskData extends BaseEntity {
     public static SubcontractedTaskData create(Task task) {
         SubcontractedTaskData subcontractedTaskData = new SubcontractedTaskData(task);
         subcontractedTaskData.subcontratationDate = new Date();
+
         return create(subcontractedTaskData);
     }
 
-    public static SubcontractedTaskData createFrom(
-            SubcontractedTaskData subcontractedTaskData) {
-        if (subcontractedTaskData == null) {
+    public static SubcontractedTaskData createFrom(SubcontractedTaskData subcontractedTaskData) {
+        if ( subcontractedTaskData == null ) {
             return null;
         }
 
@@ -73,8 +71,10 @@ public class SubcontractedTaskData extends BaseEntity {
         result.hoursGroupsExported = subcontractedTaskData.hoursGroupsExported;
         result.setState(subcontractedTaskData.getState());
         result.setRequiredDeliveringDates(subcontractedTaskData.getRequiredDeliveringDates());
-        result.setEndDatesCommunicatedFromSubcontractor(subcontractedTaskData
-                .getEndDatesCommunicatedFromSubcontractor());
+
+        result.setEndDatesCommunicatedFromSubcontractor(
+                subcontractedTaskData.getEndDatesCommunicatedFromSubcontractor());
+
         return create(result);
     }
 
@@ -100,13 +100,11 @@ public class SubcontractedTaskData extends BaseEntity {
 
     private SubcontractState state = SubcontractState.PENDING_INITIAL_SEND;
 
-    private final SortedSet<SubcontractorDeliverDate> requiredDeliveringDates = new TreeSet<SubcontractorDeliverDate>(
-            new DeliverDateComparator());
+    private final SortedSet<SubcontractorDeliverDate> requiredDeliveringDates =
+            new TreeSet<>(new DeliverDateComparator());
 
-    private Set<SubcontractorCommunication> subcontractorCommunications = new HashSet<SubcontractorCommunication>();
-
-    private SortedSet<EndDateCommunication> endDatesCommunicatedFromSubcontractor = new TreeSet<EndDateCommunication>(
-            new EndDateCommunicationComparator());
+    private SortedSet<EndDateCommunication> endDatesCommunicatedFromSubcontractor =
+            new TreeSet<>(new EndDateCommunicationComparator());
 
     /**
      * Constructor for hibernate. Do not use!
@@ -136,8 +134,7 @@ public class SubcontractedTaskData extends BaseEntity {
         return subcontractCommunicationDate;
     }
 
-    public void setSubcontractCommunicationDate(
-            Date subcontractCommunicationDate) {
+    public void setSubcontractCommunicationDate(Date subcontractCommunicationDate) {
         this.subcontractCommunicationDate = subcontractCommunicationDate;
     }
 
@@ -166,58 +163,60 @@ public class SubcontractedTaskData extends BaseEntity {
     }
 
     public boolean isNodeWithoutChildrenExported() {
-        if (nodeWithoutChildrenExported == null) {
+        if ( nodeWithoutChildrenExported == null ) {
             return false;
         }
+
         return nodeWithoutChildrenExported;
     }
 
-    public void setNodeWithoutChildrenExported(
-            Boolean nodeWithoutChildrenExported) {
-        if (nodeWithoutChildrenExported == null) {
+    public void setNodeWithoutChildrenExported(Boolean nodeWithoutChildrenExported) {
+        if ( nodeWithoutChildrenExported == null ) {
             nodeWithoutChildrenExported = false;
         }
         this.nodeWithoutChildrenExported = nodeWithoutChildrenExported;
     }
 
     public boolean isLabelsExported() {
-        if (labelsExported == null) {
+        if ( labelsExported == null ) {
             return false;
         }
+
         return labelsExported;
     }
 
     public void setLabelsExported(Boolean labelsExported) {
-        if (labelsExported == null) {
+        if ( labelsExported == null ) {
             labelsExported = false;
         }
         this.labelsExported = labelsExported;
     }
 
     public Boolean isMaterialAssignmentsExported() {
-        if (materialAssignmentsExported == null) {
+        if ( materialAssignmentsExported == null ) {
             return false;
         }
+
         return materialAssignmentsExported;
     }
 
-    public void setMaterialAssignmentsExported(
-            Boolean materialAssignmentsExported) {
-        if (materialAssignmentsExported == null) {
+    public void setMaterialAssignmentsExported(Boolean materialAssignmentsExported) {
+        if ( materialAssignmentsExported == null ) {
             materialAssignmentsExported = false;
         }
         this.materialAssignmentsExported = materialAssignmentsExported;
     }
 
     public Boolean isHoursGroupsExported() {
-        if (hoursGroupsExported == null) {
+        if ( hoursGroupsExported == null ) {
             return false;
         }
+
         return hoursGroupsExported;
     }
 
     public void setHoursGroupsExported(Boolean hoursGroupsExported) {
-        if (hoursGroupsExported == null) {
+        if ( hoursGroupsExported == null ) {
             hoursGroupsExported = false;
         }
         this.hoursGroupsExported = hoursGroupsExported;
@@ -241,17 +240,13 @@ public class SubcontractedTaskData extends BaseEntity {
         this.hoursGroupsExported = subcontratedTask.hoursGroupsExported;
         this.state = subcontratedTask.getState();
         this.setRequiredDeliveringDates(subcontratedTask.getRequiredDeliveringDates());
-        this.setEndDatesCommunicatedFromSubcontractor(subcontratedTask
-                .getEndDatesCommunicatedFromSubcontractor());
+        this.setEndDatesCommunicatedFromSubcontractor(subcontratedTask.getEndDatesCommunicatedFromSubcontractor());
     }
 
     @AssertTrue(message = "external company should be subcontractor")
     public boolean isExternalCompanyIsSubcontractorConstraint() {
-        if (!firstLevelValidationsPassed()) {
-            return true;
-        }
+        return !firstLevelValidationsPassed() || externalCompany.isSubcontractor();
 
-        return externalCompany.isSubcontractor();
     }
 
     private boolean firstLevelValidationsPassed() {
@@ -268,12 +263,10 @@ public class SubcontractedTaskData extends BaseEntity {
     }
 
     public boolean isSendable() {
-        return state.isSendable()
-                && externalCompany.getInteractsWithApplications();
+        return state.isSendable() && externalCompany.getInteractsWithApplications();
     }
 
-    public void setRequiredDeliveringDates(
-            SortedSet<SubcontractorDeliverDate> requiredDeliveringDates) {
+    public void setRequiredDeliveringDates(SortedSet<SubcontractorDeliverDate> requiredDeliveringDates) {
         this.requiredDeliveringDates.clear();
         this.requiredDeliveringDates.addAll(requiredDeliveringDates);
     }
@@ -283,33 +276,31 @@ public class SubcontractedTaskData extends BaseEntity {
         return Collections.unmodifiableSortedSet(this.requiredDeliveringDates);
     }
 
-    public void addRequiredDeliveringDates(
-            SubcontractorDeliverDate subDeliverDate) {
+    public void addRequiredDeliveringDates(SubcontractorDeliverDate subDeliverDate) {
         this.requiredDeliveringDates.add(subDeliverDate);
     }
 
-    public void removeRequiredDeliveringDates(
-            SubcontractorDeliverDate subcontractorDeliverDate) {
+    public void removeRequiredDeliveringDates(SubcontractorDeliverDate subcontractorDeliverDate) {
         this.requiredDeliveringDates.remove(subcontractorDeliverDate);
     }
 
     public void updateFirstRequiredDeliverDate(Date subcontractCommunicationDate){
-        if(this.requiredDeliveringDates != null && !this.requiredDeliveringDates.isEmpty()){
+        if ( this.requiredDeliveringDates != null && !this.requiredDeliveringDates.isEmpty() ) {
             this.requiredDeliveringDates.first().setCommunicationDate(subcontractCommunicationDate);
         }
     }
 
     public Date getLastRequiredDeliverDate() {
-        if (this.requiredDeliveringDates != null
-                && !this.requiredDeliveringDates.isEmpty()) {
-            return this.requiredDeliveringDates.first()
-                    .getSubcontractorDeliverDate();
+        if ( this.requiredDeliveringDates != null && !this.requiredDeliveringDates.isEmpty() ) {
+            return this.requiredDeliveringDates.first().getSubcontractorDeliverDate();
         }
+
         return null;
     }
 
     public void setEndDatesCommunicatedFromSubcontractor(
             SortedSet<EndDateCommunication> endDatesCommunicatedFromSubcontractor) {
+
         this.endDatesCommunicatedFromSubcontractor = endDatesCommunicatedFromSubcontractor;
     }
 
@@ -318,9 +309,10 @@ public class SubcontractedTaskData extends BaseEntity {
     }
 
     public EndDateCommunication getLastEndDatesCommunicatedFromSubcontractor() {
-        if (getEndDatesCommunicatedFromSubcontractor() != null) {
+        if ( getEndDatesCommunicatedFromSubcontractor() != null ) {
             return getEndDatesCommunicatedFromSubcontractor().first();
         }
+
         return null;
     }
 }

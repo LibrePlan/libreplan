@@ -1,5 +1,7 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.libreplan</groupId>
@@ -158,26 +160,12 @@
 
 
     <repositories>
-        <!-- Getttext commons -->
-        <repository>
-            <id>gettext-commons-site</id>
-            <url>http://gettext-commons.googlecode.com/svn/maven-repository</url>
-        </repository>
-
         <!-- LibrePlan repository -->
         <repository>
             <id>thirdparty</id>
             <url>http://nexus.libreplan.org/content/repositories/thirdparty</url>
         </repository>
     </repositories>
-
-    <pluginRepositories>
-        <!-- Gettext commons plugin -->
-        <pluginRepository>
-          <id>gettext-commons-site</id>
-          <url>http://gettext-commons.googlecode.com/svn/maven-repository</url>
-        </pluginRepository>
-     </pluginRepositories>
 
     <!-- Dependency management -->
     <dependencyManagement>
@@ -230,30 +218,36 @@
             -->
 
             <!-- Hibernate -->
-            <!-- TODO Hibernate 5.1.0.FINAL for Spring 4.2+ -->
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-core</artifactId>
-                <version>4.3.11.Final</version>
+                <version>5.1.0.Final</version>
             </dependency>
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-ehcache</artifactId>
-                <version>4.3.11.Final</version>
+                <version>5.1.0.Final</version>
             </dependency>
 
             <!-- Hibernate Validator -->
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-validator</artifactId>
-                <version>4.3.2.Final</version>
+                <version>5.2.4.Final</version>
+            </dependency>
+
+            <!-- Javax EL (needed for javax validation) -->
+            <dependency>
+                <groupId>javax.el</groupId>
+                <artifactId>javax.el-api</artifactId>
+                <version>3.0.0</version>
             </dependency>
 
             <!-- Usertype.Core -->
             <dependency>
               <groupId>org.jadira.usertype</groupId>
               <artifactId>usertype.core</artifactId>
-              <version>3.2.0.GA</version>
+              <version>5.0.0.GA</version>
                   <exclusions>
                     <exclusion>
                       <groupId>org.hibernate</groupId>
@@ -269,6 +263,8 @@
                 <version>${jdbcDriver.version}</version>
                 <scope>test</scope>
             </dependency>
+
+            <!-- Jboss Transaction -->
             <dependency>
                 <groupId>org.jboss.spec.javax.transaction</groupId>
                 <artifactId>jboss-transaction-api_1.2_spec</artifactId>

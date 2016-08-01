@@ -44,9 +44,8 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
-public class CalendarExceptionTypeDAO extends
-        IntegrationEntityDAO<CalendarExceptionType> implements
-        ICalendarExceptionTypeDAO {
+public class CalendarExceptionTypeDAO extends IntegrationEntityDAO<CalendarExceptionType>
+        implements ICalendarExceptionTypeDAO {
 
     @Override
     public boolean existsByName(CalendarExceptionType type) {
@@ -54,6 +53,7 @@ public class CalendarExceptionTypeDAO extends
         c.add(Restrictions.eq("name", type.getName()));
 
         List list = c.list();
+
         return (list.size() == 1);
     }
 
@@ -70,6 +70,7 @@ public class CalendarExceptionTypeDAO extends
     private List<CalendarException> getCalendarExceptions(CalendarExceptionType type) {
         Criteria c = getSession().createCriteria(CalendarException.class);
         c.add(Restrictions.eq("type.id", type.getId()));
+
         return c.list();
     }
 
@@ -92,16 +93,15 @@ public class CalendarExceptionTypeDAO extends
     @Override
     @Transactional(readOnly = true)
     public CalendarExceptionType findUniqueByName(String name) throws InstanceNotFoundException {
-        if (StringUtils.isBlank(name)) {
+        if ( StringUtils.isBlank(name) ) {
             throw new InstanceNotFoundException(null, CalendarExceptionType.class.getName());
         }
 
-        CalendarExceptionType calendarExceptionType = (CalendarExceptionType) getSession().createCriteria(
-                CalendarExceptionType.class).add(
-                Restrictions.eq("name", name.trim()).ignoreCase())
-                .uniqueResult();
+        CalendarExceptionType calendarExceptionType = (CalendarExceptionType) getSession()
+                .createCriteria(CalendarExceptionType.class)
+                .add(Restrictions.eq("name", name.trim()).ignoreCase()).uniqueResult();
 
-        if (calendarExceptionType == null) {
+        if ( calendarExceptionType == null ) {
             throw new InstanceNotFoundException(name, CalendarExceptionType.class.getName());
         } else {
             return calendarExceptionType;
@@ -111,8 +111,7 @@ public class CalendarExceptionTypeDAO extends
 
     @Override
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
-    public CalendarExceptionType findUniqueByNameAnotherTransaction(String name)
-            throws InstanceNotFoundException {
+    public CalendarExceptionType findUniqueByNameAnotherTransaction(String name) throws InstanceNotFoundException {
         return findUniqueByName(name);
     }
 

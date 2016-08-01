@@ -35,9 +35,8 @@ import org.libreplan.business.resources.entities.CriterionType;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * Implements all the methods needed to search the criterion to filter the
- * orders. Provides multiples criterions to filter like {@link Criterion} and
- * {@link Label}.
+ * Implements all the methods needed to search the criterion to filter the orders.
+ * Provides multiples criterions to filter like {@link Criterion} and {@link Label}.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
@@ -55,20 +54,22 @@ public class OrderElementsMultipleFiltersFinder extends MultipleFiltersFinder {
         fillWithFirstTenFiltersLabels();
         fillWithFirstTenFiltersCriterions();
         addNoneFilter();
+
         return getListMatching();
     }
 
     private List<FilterPair> fillWithFirstTenFiltersLabels() {
         Map<LabelType, List<Label>> mapLabels = getLabelsMap();
         Iterator<LabelType> iteratorLabelType = mapLabels.keySet().iterator();
+
         while (iteratorLabelType.hasNext() && getListMatching().size() < 10) {
             LabelType type = iteratorLabelType.next();
-            for (int i = 0; getListMatching().size() < 10
-                    && i < mapLabels.get(type).size(); i++) {
+            for (int i = 0; getListMatching().size() < 10 && i < mapLabels.get(type).size(); i++) {
                 Label label = mapLabels.get(type).get(i);
-                addLabel(type, label);
+                addLabel(label);
             }
         }
+
         return getListMatching();
     }
 
@@ -78,16 +79,16 @@ public class OrderElementsMultipleFiltersFinder extends MultipleFiltersFinder {
 
     private List<FilterPair> fillWithFirstTenFiltersCriterions() {
         SortedMap<CriterionType, List<Criterion>> mapCriterions = getMapCriterions();
-        Iterator<CriterionType> iteratorCriterionType = mapCriterions.keySet()
-                .iterator();
+        Iterator<CriterionType> iteratorCriterionType = mapCriterions.keySet().iterator();
+
         while (iteratorCriterionType.hasNext() && getListMatching().size() < 10) {
             CriterionType type = iteratorCriterionType.next();
-            for (int i = 0; getListMatching().size() < 10
-                    && i < mapCriterions.get(type).size(); i++) {
+            for (int i = 0; getListMatching().size() < 10 && i < mapCriterions.get(type).size(); i++) {
                 Criterion criterion = mapCriterions.get(type).get(i);
                 addCriterion(type, criterion);
             }
         }
+
         return getListMatching();
     }
 
@@ -97,22 +98,22 @@ public class OrderElementsMultipleFiltersFinder extends MultipleFiltersFinder {
 
     public List<FilterPair> getMatching(String filter) {
         getListMatching().clear();
-        if ((filter != null) && (!filter.isEmpty())) {
+        if ( (filter != null) && (!filter.isEmpty()) ) {
             filter = StringUtils.deleteWhitespace(filter.toLowerCase());
             searchInCriterionTypes(filter);
             searchInLabelTypes(filter);
         }
 
         addNoneFilter();
+
         return getListMatching();
     }
 
     private void searchInCriterionTypes(String filter) {
         boolean limited = (filter.length() < 3);
         for (CriterionType type : getMapCriterions().keySet()) {
-            String name = StringUtils.deleteWhitespace(type.getName()
-                    .toLowerCase());
-            if (name.contains(filter)) {
+            String name = StringUtils.deleteWhitespace(type.getName().toLowerCase());
+            if ( name.contains(filter) ) {
                 setFilterPairCriterionType(type, limited);
             } else {
                 searchInCriterions(type, filter);
@@ -122,15 +123,15 @@ public class OrderElementsMultipleFiltersFinder extends MultipleFiltersFinder {
 
     private void searchInCriterions(CriterionType type, String filter) {
         List<Criterion> list = getMapCriterions().get(type);
-        if (list == null) {
+        if ( list == null ) {
             return;
         }
+
         for (Criterion criterion : list) {
-            String name = StringUtils.deleteWhitespace(criterion.getName()
-                    .toLowerCase());
-            if (name.contains(filter)) {
+            String name = StringUtils.deleteWhitespace(criterion.getName().toLowerCase());
+            if ( name.contains(filter) ) {
                 addCriterion(type, criterion);
-                if ((filter.length() < 3) && (getListMatching().size() > 9)) {
+                if ( (filter.length() < 3) && (getListMatching().size() > 9) ) {
                     return;
                 }
             }
@@ -139,12 +140,13 @@ public class OrderElementsMultipleFiltersFinder extends MultipleFiltersFinder {
 
     private void setFilterPairCriterionType(CriterionType type, boolean limited) {
         List<Criterion> list = getMapCriterions().get(type);
-        if (list == null) {
+        if ( list == null ) {
             return;
         }
+
         for (Criterion criterion : list) {
             addCriterion(type, criterion);
-            if ((limited) && (getListMatching().size() > 9)) {
+            if ( (limited) && (getListMatching().size() > 9) ) {
                 return;
             }
         }
@@ -153,9 +155,8 @@ public class OrderElementsMultipleFiltersFinder extends MultipleFiltersFinder {
     private void searchInLabelTypes(String filter) {
         boolean limited = (filter.length() < 3);
         for (LabelType type : getLabelsMap().keySet()) {
-            String name = StringUtils.deleteWhitespace(type.getName()
-                    .toLowerCase());
-            if (name.contains(filter)) {
+            String name = StringUtils.deleteWhitespace(type.getName().toLowerCase());
+            if ( name.contains(filter) ) {
                 setFilterPairLabelType(type, limited);
             } else {
                 searchInLabels(type, filter);
@@ -165,11 +166,10 @@ public class OrderElementsMultipleFiltersFinder extends MultipleFiltersFinder {
 
     private void searchInLabels(LabelType type, String filter) {
         for (Label label : getLabelsMap().get(type)) {
-            String name = StringUtils.deleteWhitespace(label.getName()
-                    .toLowerCase());
-            if (name.contains(filter)) {
-                addLabel(type, label);
-                if ((filter.length() < 3) && (getListMatching().size() > 9)) {
+            String name = StringUtils.deleteWhitespace(label.getName().toLowerCase());
+            if ( name.contains(filter) ) {
+                addLabel(label);
+                if ( (filter.length() < 3) && (getListMatching().size() > 9) ) {
                     return;
                 }
             }
@@ -178,8 +178,8 @@ public class OrderElementsMultipleFiltersFinder extends MultipleFiltersFinder {
 
     private void setFilterPairLabelType(LabelType type, boolean limited) {
         for (Label label : getLabelsMap().get(type)) {
-            addLabel(type, label);
-            if ((limited) && (getListMatching().size() > 9)) {
+            addLabel(label);
+            if ( (limited) && (getListMatching().size() > 9) ) {
                 return;
             }
         }
@@ -188,14 +188,11 @@ public class OrderElementsMultipleFiltersFinder extends MultipleFiltersFinder {
     private void addCriterion(CriterionType type, Criterion criterion) {
         String pattern = criterion.getName() + " ( " + type.getName() + " )";
         getListMatching().add(
-                new FilterPair(OrderElementFilterEnum.Criterion, type
-                        .getResource().toLowerCase(), pattern, criterion));
+                new FilterPair(OrderElementFilterEnum.Criterion, type.getResource().toLowerCase(), pattern, criterion));
     }
 
-    private void addLabel(LabelType type, Label label) {
-        getListMatching().add(
-                new FilterPair(OrderElementFilterEnum.Label, label
-                        .getFinderPattern(), label));
+    private void addLabel(Label label) {
+        getListMatching().add(new FilterPair(OrderElementFilterEnum.Label, label.getFinderPattern(), label));
     }
 
 }

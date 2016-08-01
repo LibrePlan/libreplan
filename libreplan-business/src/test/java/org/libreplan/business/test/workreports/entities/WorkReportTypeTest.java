@@ -52,8 +52,7 @@ public class WorkReportTypeTest extends AbstractWorkReportTest {
 
     @Test
     @Transactional
-    public void checkInvalidNameWorkReportType()
-            throws ValidationException {
+    public void checkInvalidNameWorkReportType() throws ValidationException {
         WorkReportType workReportType = createValidWorkReportType();
         workReportType.setName("");
         try {
@@ -107,7 +106,7 @@ public class WorkReportTypeTest extends AbstractWorkReportTest {
     @Test
     @Transactional
     public void checkIfCodeWorkReportTypeIsUnique() throws ValidationException {
-        String code = new String("A");
+        String code = "A";
         WorkReportType workReportTypeA = createValidWorkReportType();
         workReportTypeA.setCode(code);
         workReportTypeDAO.save(workReportTypeA);
@@ -179,7 +178,7 @@ public class WorkReportTypeTest extends AbstractWorkReportTest {
         try {
             workReportTypeDAO.save(workReportType);
             fail("It should throw an exception");
-        } catch (ValidationException e) {
+        } catch (ValidationException ignored) {
         }
     }
 
@@ -195,14 +194,14 @@ public class WorkReportTypeTest extends AbstractWorkReportTest {
         try {
             workReportTypeDAO.save(workReportType);
             fail("It should throw an exception");
-        } catch (ValidationException e) {
+        } catch (ValidationException ignored) {
         }
 
         descriptionFieldHead.setFieldName(null);
         try {
             workReportTypeDAO.save(workReportType);
             fail("It should throw an exception");
-        } catch (ValidationException e) {
+        } catch (ValidationException ignored) {
         }
 
         descriptionFieldHead.setFieldName("XXX");
@@ -225,14 +224,14 @@ public class WorkReportTypeTest extends AbstractWorkReportTest {
         try {
             workReportTypeDAO.save(workReportType);
             fail("It should throw an exception");
-        } catch (ValidationException e) {
+        } catch (ValidationException ignored) {
         }
 
         descriptionFieldHead.setLength(0);
         try {
             workReportTypeDAO.save(workReportType);
             fail("It should throw an exception");
-        } catch (ValidationException e) {
+        } catch (ValidationException ignored) {
         }
 
         descriptionFieldHead.setLength(1);
@@ -272,7 +271,7 @@ public class WorkReportTypeTest extends AbstractWorkReportTest {
         try {
             workReportTypeDAO.save(workReportType);
             fail("It should throw an exception");
-        } catch (ValidationException e) {
+        } catch (ValidationException ignored) {
         }
     }
 
@@ -287,7 +286,7 @@ public class WorkReportTypeTest extends AbstractWorkReportTest {
         try {
             workReportTypeDAO.save(workReportType);
             fail("It should throw an exception");
-        } catch (ValidationException e) {
+        } catch (ValidationException ignored) {
         }
     }
 
@@ -313,7 +312,7 @@ public class WorkReportTypeTest extends AbstractWorkReportTest {
         try {
             workReportTypeDAO.save(workReportType);
             fail("It should throw an exception");
-        } catch (ValidationException e) {
+        } catch (ValidationException ignored) {
         }
     }
 
@@ -339,7 +338,7 @@ public class WorkReportTypeTest extends AbstractWorkReportTest {
         try {
             workReportTypeDAO.save(workReportType);
             fail("It should throw an exception");
-        } catch (ValidationException e) {
+        } catch (ValidationException ignored) {
         }
     }
 
@@ -365,7 +364,7 @@ public class WorkReportTypeTest extends AbstractWorkReportTest {
         try {
             workReportTypeDAO.save(workReportType);
             fail("It should throw an exception");
-        } catch (ValidationException e) {
+        } catch (ValidationException ignored) {
         }
     }
 }

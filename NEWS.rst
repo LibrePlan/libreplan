@@ -58,6 +58,10 @@ Changes
 * Update Spring Security Web
 * Update Spring Security Config
 
+* Update Hibernate Core
+* Update Hibernate Ehcache
+* Update Hibernate Validator
+
 * Update MPXJ
 * Update Bonecp
 * Update Guava
@@ -75,7 +79,9 @@ Changes
 * Update JAX-RS API
 * Update BeanShell
 * Update Quartz Framework
-* Update Hibernate
+* Update Usertype.Core
+
+* Add Javax EL
 
 * Update LibrePlan version to 1.6.0
 
@@ -83,6 +89,44 @@ Changes
 * Remove Ezmorph
 * Remove Json-lib
 * Remove M2E plugin
+
+* Code refactoring
+
+
+Version 1.5.0 (? 2016)
+---------------------------
+
+Summary
+~~~~~~~
+
+* Bug fixing
+* Email notification feature
+* Risk and Issue Log feature
+* Documents feature
+* Global Dashboard feature
+
+Contributors
+~~~~~~~~~~~~
+
+Thanks to all the contributors to this new version:
+
+* Jeroen Baten
+* Vova Perebykivkyi
+* Bodgan Bodnarjuk
+* Misha Gozda
+
+Changes
+~~~~~~~
+
+* Add Email notification feature (notification + template)
+* Add new strings to i18n
+* Add Risk&Issue Log feature
+* Add Documents uploading/downloading feature
+* Add test for documents feature
+* Changes to LibrePlan version check
+* Add Global Dashboard page
+
+* Update MPXJ library
 
 * Code refactoring
 

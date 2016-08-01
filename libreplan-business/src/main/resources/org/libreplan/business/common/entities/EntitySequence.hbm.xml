@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<hibernate-mapping default-access="field"
-    package="org.libreplan.business.common.entities">
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-access="field" package="org.libreplan.business.common.entities">
 
     <!-- EntitySequence -->
     <class name="EntitySequence" table="entity_sequence">
-        <id name="id" column="id" type="long" access="property">
-            <generator class="hilo">
+        <id name="id" column="id" type="java.lang.Long" access="property">
+            <generator class="increment">
                 <param name="max_lo">100</param>
             </generator>
         </id>
+
         <version name="version" access="property" type="long" />
 
         <property name="entityName" column="entity_name">
@@ -17,9 +19,13 @@
                 <param name="enumClass">org.libreplan.business.common.entities.EntityNameEnum</param>
             </type>
         </property>
+
         <property name="prefix" />
+
         <property name="lastValue" column="last_value" />
+
         <property name="numberOfDigits" column="number_of_digits" />
+
         <property name="active" />
 
         </class>

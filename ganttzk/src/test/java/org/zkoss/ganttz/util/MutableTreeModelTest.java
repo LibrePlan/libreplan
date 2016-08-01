@@ -38,7 +38,6 @@ import org.junit.Test;
 import org.zkoss.ganttz.util.MutableTreeModel.IChildrenExtractor;
 import org.zkoss.zul.TreeModel;
 import org.zkoss.zul.event.TreeDataEvent;
-import org.zkoss.zul.event.TreeDataListener;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -215,12 +214,7 @@ public class MutableTreeModelTest {
         MutableTreeModel<Prueba> model = MutableTreeModel.create(Prueba.class);
         final ArrayList<TreeDataEvent> eventsFired = new ArrayList<>();
 
-        model.addTreeDataListener(new TreeDataListener() {
-            @Override
-            public void onChange(TreeDataEvent event) {
-                eventsFired.add(event);
-            }
-        });
+        model.addTreeDataListener(event -> eventsFired.add(event));
 
         Prueba child1 = new Prueba();
         Prueba child2 = new Prueba();
@@ -240,12 +234,7 @@ public class MutableTreeModelTest {
         MutableTreeModel<Prueba> model = MutableTreeModel.create(Prueba.class);
         final ArrayList<TreeDataEvent> eventsFired = new ArrayList<>();
 
-        model.addTreeDataListener(new TreeDataListener() {
-            @Override
-            public void onChange(TreeDataEvent event) {
-                eventsFired.add(event);
-            }
-        });
+        model.addTreeDataListener(event -> eventsFired.add(event));
 
         Prueba child1 = new Prueba();
         Prueba child2 = new Prueba();
@@ -278,12 +267,7 @@ public class MutableTreeModelTest {
         model.add(model.getRoot(), p1);
         final ArrayList<TreeDataEvent> eventsFired = new ArrayList<>();
 
-        model.addTreeDataListener(new TreeDataListener() {
-            @Override
-            public void onChange(TreeDataEvent event) {
-                eventsFired.add(event);
-            }
-        });
+        model.addTreeDataListener(event -> eventsFired.add(event));
 
         model.add(model.getRoot(), 0, Arrays.asList(new Prueba(), new Prueba()));
         TreeDataEvent event = getLast(eventsFired);
@@ -305,14 +289,9 @@ public class MutableTreeModelTest {
         MutableTreeModel<Prueba> model = MutableTreeModel.create(Prueba.class);
         final List<TreeDataEvent> events = new ArrayList<>();
 
-        model.addTreeDataListener(new TreeDataListener() {
-            @Override
-            public void onChange(TreeDataEvent event) {
-                events.add(event);
-            }
-        });
+        model.addTreeDataListener(event -> events.add(event));
 
-        model.add(model.getRoot(), new ArrayList<Prueba>());
+        model.add(model.getRoot(), new ArrayList<>());
 
         assertThat(events.size(), equalTo(0));
     }
@@ -330,14 +309,11 @@ public class MutableTreeModelTest {
     }
 
     private IChildrenExtractor<Prueba> childrenFor(final Prueba parent, final Prueba... children) {
-        return new IChildrenExtractor<Prueba>() {
-            @Override
-            public List<Prueba> getChildren(Prueba p) {
-                if ( parent == p ) {
-                    return Arrays.asList(children);
-                } else {
-                    return Collections.emptyList();
-                }
+        return p -> {
+            if ( parent == p ) {
+                return Arrays.asList(children);
+            } else {
+                return Collections.emptyList();
             }
         };
     }
@@ -350,12 +326,7 @@ public class MutableTreeModelTest {
         final Prueba child2 = new Prueba();
         final List<TreeDataEvent> eventsFired = new ArrayList<>();
 
-        model.addTreeDataListener(new TreeDataListener() {
-            @Override
-            public void onChange(TreeDataEvent event) {
-                eventsFired.add(event);
-            }
-        });
+        model.addTreeDataListener(event -> eventsFired.add(event));
 
         model.add(model.getRoot(), Collections.singletonList(newlyAdded), childrenFor(newlyAdded, child1, child2));
 
@@ -396,12 +367,9 @@ public class MutableTreeModelTest {
         final MutableTreeModel<Prueba> model = MutableTreeModel.create(Prueba.class);
         final List<TreeDataEvent> removeEventsFired = new ArrayList<>();
 
-        model.addTreeDataListener(new TreeDataListener() {
-            @Override
-            public void onChange(TreeDataEvent event) {
-                if ( event.getType() == TreeDataEvent.INTERVAL_REMOVED ) {
-                    removeEventsFired.add(event);
-                }
+        model.addTreeDataListener(event -> {
+            if ( event.getType() == TreeDataEvent.INTERVAL_REMOVED ) {
+                removeEventsFired.add(event);
             }
         });
 
@@ -506,12 +474,7 @@ public class MutableTreeModelTest {
         model.addToRoot(prueba3);
         final ArrayList<TreeDataEvent> eventsFired = new ArrayList<>();
 
-        model.addTreeDataListener(new TreeDataListener() {
-            @Override
-            public void onChange(TreeDataEvent event) {
-                eventsFired.add(event);
-            }
-        });
+        model.addTreeDataListener(event -> eventsFired.add(event));
 
         model.up(prueba2);
         checkIsValid(getPreviousToLast(eventsFired), TreeDataEvent.INTERVAL_REMOVED, model.getRoot(), 0, 1);

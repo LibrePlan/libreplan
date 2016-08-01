@@ -69,11 +69,10 @@ import org.libreplan.business.workreports.daos.IWorkReportTypeDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * A registry, AKA service locator, for objects in which dependency injection
- * (DI) is not directly supported by Spring (e.g. entities) must use this class
- * to access DAOs. For the rest of classes (e.g. services, tests, etc.), Spring
- * DI is a more convenient option. The DAOs or services are added to the
- * registry as needed.
+ * A registry, AKA service locator, for objects in which dependency injection (DI) is not directly supported by Spring
+ * (e.g. entities) must use this class to access DAOs.
+ * For the rest of classes (e.g. services, tests, etc.), Spring DI is a more convenient option.
+ * The DAOs or services are added to the registry as needed.
  *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Fernando Bellas Permuy <fbellas@udc.es>
@@ -93,7 +92,6 @@ public class Registry {
     private ICriterionTypeDAO criterionTypeDAO;
 
     @Autowired
-
     private IUserDAO userDAO;
 
     @Autowired
@@ -163,8 +161,7 @@ public class Registry {
     private ICriterionSatisfactionDAO criterionSatisfactionDAO;
 
     @Autowired
-    private IResourcesCostCategoryAssignmentDAO
-        resourcesCostCategoryAssignmentDAO;
+    private IResourcesCostCategoryAssignmentDAO resourcesCostCategoryAssignmentDAO;
 
     @Autowired
     private IOrderElementTemplateDAO orderElementTemplateDAO;
@@ -336,11 +333,8 @@ public class Registry {
         return getInstance().criterionSatisfactionDAO;
     }
 
-    public static IResourcesCostCategoryAssignmentDAO
-        getResourcesCostCategoryAssignmentDAO() {
-
+    public static IResourcesCostCategoryAssignmentDAO getResourcesCostCategoryAssignmentDAO() {
         return getInstance().resourcesCostCategoryAssignmentDAO;
-
     }
 
     public static IOrderElementTemplateDAO getOrderElementTemplateDAO() {
@@ -395,7 +389,9 @@ public class Registry {
         return getInstance().issueLogDAO;
     }
 
-    public static IRiskLogDAO getRiskLogDAO() {return getInstance().riskLogDAO;}
+    public static IRiskLogDAO getRiskLogDAO() {
+        return getInstance().riskLogDAO;
+    }
 
     public static IExpenseSheetLineDAO getExpenseSheetLineDAO() {
         return getInstance().expenseSheetLineDAO;

@@ -4,8 +4,8 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
     xmlns:aop="http://www.springframework.org/schema/aop"
     xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
-    xsi:schemaLocation="
-    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
@@ -21,8 +21,9 @@
 
     <!-- Hibernate Session Factory. -->
     <bean id="sessionFactory"
-    class="org.springframework.orm.hibernate4.LocalSessionFactoryBean"
-        p:dataSource-ref="dataSource" p:configLocation="classpath:/libreplan-business-hibernate.cfg.xml">
+          class="org.springframework.orm.hibernate5.LocalSessionFactoryBean"
+          p:dataSource-ref="dataSource"
+          p:configLocation="classpath:/libreplan-business-hibernate.cfg.xml">
         <property name="mappingResources">
             <list>
                 <value>
@@ -109,7 +110,7 @@
 
     <!-- Spring Transaction manager  -->
     <bean id="transactionManager"
-        class="org.springframework.orm.hibernate4.HibernateTransactionManager"
+        class="org.springframework.orm.hibernate5.HibernateTransactionManager"
         p:sessionFactory-ref="sessionFactory" />
 
     <!-- Enable configuration of transactional behavior based on annotations -->
@@ -123,20 +124,20 @@
     <bean id="registry" class="org.libreplan.business.common.Registry" factory-method="getInstance" />
 
     <bean id="criterionRequirementOrderElementHandler"
-        class="org.libreplan.business.orders.entities.CriterionRequirementOrderElementHandler"
-        factory-method="getInstance" />
+          class="org.libreplan.business.orders.entities.CriterionRequirementOrderElementHandler"
+          factory-method="getInstance" />
 
     <bean id="versionInformation"
-        class="org.libreplan.business.common.VersionInformation"
-        factory-method="getInstance"
-        lazy-init="false">
+          class="org.libreplan.business.common.VersionInformation"
+          factory-method="getInstance"
+          lazy-init="false">
         <property name="projectVersion" value="${project.version}"/>
     </bean>
 
     <bean id="configuration"
-        class="org.libreplan.business.common.Configuration"
-        factory-method="getInstance"
-        lazy-init="false">
+          class="org.libreplan.business.common.Configuration"
+          factory-method="getInstance"
+          lazy-init="false">
         <property name="defaultPasswordsControl" value="${default.passwordsControl}"/>
         <property name="exampleUsersDisabled" value="${default.exampleUsersDisabled}"/>
         <property name="emailSendingEnabled" value="${default.emailSendingEnabled}"/>

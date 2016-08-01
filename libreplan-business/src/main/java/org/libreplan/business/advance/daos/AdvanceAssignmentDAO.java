@@ -29,11 +29,11 @@ import org.springframework.stereotype.Repository;
 
 /**
  * Dao for {@link AdvanceAssignment}
+ *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
-public class AdvanceAssignmentDAO extends
-        GenericDAOHibernate<AdvanceAssignment, Long> implements
-        IAdvanceAssignmentDAO {
+public class AdvanceAssignmentDAO extends GenericDAOHibernate<AdvanceAssignment, Long>
+        implements IAdvanceAssignmentDAO {
 }

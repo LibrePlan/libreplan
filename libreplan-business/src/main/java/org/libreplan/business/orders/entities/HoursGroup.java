@@ -35,8 +35,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.Validate;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.libreplan.business.common.IntegrationEntity;
 import org.libreplan.business.common.Registry;
 import org.libreplan.business.common.daos.IIntegrationEntityDAO;
@@ -49,8 +47,6 @@ import org.libreplan.business.templates.entities.OrderLineTemplate;
 
 public class HoursGroup extends IntegrationEntity implements Cloneable, ICriterionRequirable {
 
-    private static final Log LOG = LogFactory.getLog(HoursGroup.class);
-
     private ResourceEnum resourceType = ResourceEnum.WORKER;
 
     private Integer workingHours = 0;
@@ -59,7 +55,7 @@ public class HoursGroup extends IntegrationEntity implements Cloneable, ICriteri
 
     private Boolean fixedPercentage = false;
 
-    private Set<CriterionRequirement> criterionRequirements = new HashSet<CriterionRequirement>();
+    private Set<CriterionRequirement> criterionRequirements = new HashSet<>();
 
     private OrderLine parentOrderLine;
 
@@ -74,21 +70,23 @@ public class HoursGroup extends IntegrationEntity implements Cloneable, ICriteri
     public static HoursGroup create(OrderLine parentOrderLine) {
         HoursGroup result = new HoursGroup(parentOrderLine);
         result.setNewObject(true);
+
         return result;
     }
 
     public static HoursGroup create(OrderLineTemplate orderLineTemplate) {
         HoursGroup result = new HoursGroup(orderLineTemplate);
         result.setNewObject(true);
+
         return result;
     }
 
-    public static HoursGroup createUnvalidated(String code,
-            ResourceEnum resourceType, Integer workingHours) {
+    public static HoursGroup createUnvalidated(String code, ResourceEnum resourceType, Integer workingHours) {
         HoursGroup result = create(new HoursGroup());
         result.setCode(code);
         result.setResourceType(resourceType);
         result.setWorkingHours(workingHours);
+
         return result;
     }
 
@@ -101,23 +99,26 @@ public class HoursGroup extends IntegrationEntity implements Cloneable, ICriteri
      */
     public static HoursGroup copyFrom(HoursGroup hoursGroup, OrderLineTemplate parent) {
         HoursGroup result = copyFrom(hoursGroup);
+
         result.setCriterionRequirements(copyDirectCriterionRequirements(
-                result, parent, hoursGroup.getDirectCriterionRequirement()));
+                result, hoursGroup.getDirectCriterionRequirement()));
+
         result.setOrderLineTemplate(parent);
         result.setParentOrderLine(null);
+
         return result;
     }
 
     private static Set<CriterionRequirement> copyDirectCriterionRequirements(
-            HoursGroup hoursGroup,
-            Object orderLine,
-            Collection<DirectCriterionRequirement> criterionRequirements) {
-        Set<CriterionRequirement> result = new HashSet<CriterionRequirement>();
+            HoursGroup hoursGroup, Collection<DirectCriterionRequirement> criterionRequirements) {
+
+        Set<CriterionRequirement> result = new HashSet<>();
 
         for (DirectCriterionRequirement each: criterionRequirements) {
-            final DirectCriterionRequirement directCriterionRequirement = (DirectCriterionRequirement) each;
-            DirectCriterionRequirement newDirectCriterionRequirement = DirectCriterionRequirement
-                    .copyFrom(directCriterionRequirement, hoursGroup);
+
+            DirectCriterionRequirement newDirectCriterionRequirement =
+                    DirectCriterionRequirement.copyFrom(each, hoursGroup);
+
             newDirectCriterionRequirement.setHoursGroup(hoursGroup);
             result.add(newDirectCriterionRequirement);
         }
@@ -126,10 +127,13 @@ public class HoursGroup extends IntegrationEntity implements Cloneable, ICriteri
 
     public static HoursGroup copyFrom(HoursGroup hoursGroup, OrderLine parent) {
         HoursGroup result = copyFrom(hoursGroup);
+
         result.setCriterionRequirements(copyDirectCriterionRequirements(
-                result, parent, hoursGroup.getDirectCriterionRequirement()));
+                result, hoursGroup.getDirectCriterionRequirement()));
+
         result.setOrderLineTemplate(null);
         result.setParentOrderLine(parent);
+
         return result;
     }
 
@@ -138,10 +142,12 @@ public class HoursGroup extends IntegrationEntity implements Cloneable, ICriteri
                 hoursGroup.getCode(),
                 hoursGroup.getResourceType(),
                 hoursGroup.getWorkingHours());
+
         result.setCode(UUID.randomUUID().toString());
         result.percentage = hoursGroup.getPercentage();
         result.fixedPercentage = hoursGroup.isFixedPercentage();
         result.origin = hoursGroup;
+
         return result;
     }
 
@@ -173,12 +179,12 @@ public class HoursGroup extends IntegrationEntity implements Cloneable, ICriteri
         this.resourceType = resource;
     }
 
-    public void setWorkingHours(Integer workingHours)
-            throws IllegalArgumentException {
-        if ((workingHours != null) && (workingHours < 0)) {
+    public void setWorkingHours(Integer workingHours) throws IllegalArgumentException {
+        if ( (workingHours != null) && (workingHours < 0) ) {
             throw new IllegalArgumentException("Working hours should not be negative");
         }
-        if (workingHours == null) {
+
+        if ( workingHours == null ) {
             workingHours = 0;
         }
         this.workingHours = workingHours;
@@ -234,10 +240,11 @@ public class HoursGroup extends IntegrationEntity implements Cloneable, ICriteri
     }
 
     public Set<Criterion> getValidCriterions() {
-        Set<Criterion> criterions = new HashSet<Criterion>();
+        Set<Criterion> criterions = new HashSet<>();
         for (CriterionRequirement criterionRequirement : getDirectCriterionRequirement()) {
             criterions.add(criterionRequirement.getCriterion());
         }
+
         for (IndirectCriterionRequirement requirement : getIndirectCriterionRequirement()) {
             if ( requirement.isValid() ) {
                 criterions.add(requirement.getCriterion());
@@ -262,10 +269,7 @@ public class HoursGroup extends IntegrationEntity implements Cloneable, ICriteri
     }
 
     public boolean canAddCriterionRequirement(CriterionRequirement newRequirement) {
-        if ( (isValidResourceType(newRequirement)) && (!existSameCriterionRequirement(newRequirement)) ) {
-            return false;
-        }
-        return true;
+        return !((isValidResourceType(newRequirement)) && (!existSameCriterionRequirement(newRequirement)));
     }
 
     @Override
@@ -289,11 +293,11 @@ public class HoursGroup extends IntegrationEntity implements Cloneable, ICriteri
 
     public void updateMyCriterionRequirements() {
         Set<CriterionRequirement> requirementsParent = criterionRequirementHandler
-                .getRequirementWithSameResourType(
-                        getCriterionRequirementsFromParent(), resourceType);
+                .getRequirementWithSameResourType(getCriterionRequirementsFromParent(), resourceType);
+
         Set<IndirectCriterionRequirement> currentIndirects = criterionRequirementHandler
-                .getCurrentIndirectRequirements(
-                        getIndirectCriterionRequirement(), requirementsParent);
+                .getCurrentIndirectRequirements(getIndirectCriterionRequirement(), requirementsParent);
+
         criterionRequirementHandler.removeOldIndirects(this, currentIndirects);
         criterionRequirementHandler.addNewsIndirects(this, currentIndirects);
     }
@@ -302,20 +306,19 @@ public class HoursGroup extends IntegrationEntity implements Cloneable, ICriteri
         updateMyCriterionRequirements();
 
         // Set valid value as original value for every indirect
-        Map<Criterion, Boolean> mapCriterionToValid = createCriterionToValidMap(origin
-                .getIndirectCriterionRequirement());
+        Map<Criterion, Boolean> mapCriterionToValid =
+                createCriterionToValidMap(origin.getIndirectCriterionRequirement());
 
         for (CriterionRequirement each : criterionRequirements) {
-            if (each instanceof IndirectCriterionRequirement) {
+            if ( each instanceof IndirectCriterionRequirement ) {
                 IndirectCriterionRequirement indirect = (IndirectCriterionRequirement) each;
                 indirect.setValid(mapCriterionToValid.get(each.getCriterion()));
             }
         }
     }
 
-    private Map<Criterion, Boolean> createCriterionToValidMap(
-            Set<IndirectCriterionRequirement> indirects) {
-        Map<Criterion, Boolean> result = new HashMap<Criterion, Boolean>();
+    private Map<Criterion, Boolean> createCriterionToValidMap(Set<IndirectCriterionRequirement> indirects) {
+        Map<Criterion, Boolean> result = new HashMap<>();
 
         for (IndirectCriterionRequirement each : indirects) {
             result.put(each.getCriterion(), each.isValid());
@@ -324,15 +327,14 @@ public class HoursGroup extends IntegrationEntity implements Cloneable, ICriteri
     }
 
     private Set<CriterionRequirement> getCriterionRequirementsFromParent() {
-        return (parentOrderLine != null) ? parentOrderLine
-                .getCriterionRequirements() : orderLineTemplate
-                .getCriterionRequirements();
+        return (parentOrderLine != null) ? parentOrderLine.getCriterionRequirements() :
+                orderLineTemplate.getCriterionRequirements();
     }
 
     public Set<IndirectCriterionRequirement> getIndirectCriterionRequirement() {
-        Set<IndirectCriterionRequirement> list = new HashSet<IndirectCriterionRequirement>();
+        Set<IndirectCriterionRequirement> list = new HashSet<>();
         for(CriterionRequirement criterionRequirement : criterionRequirements ){
-            if(criterionRequirement instanceof IndirectCriterionRequirement){
+            if ( criterionRequirement instanceof IndirectCriterionRequirement ){
                 list.add((IndirectCriterionRequirement) criterionRequirement);
             }
         }
@@ -340,9 +342,9 @@ public class HoursGroup extends IntegrationEntity implements Cloneable, ICriteri
     }
 
     public Set<DirectCriterionRequirement> getDirectCriterionRequirement() {
-        Set<DirectCriterionRequirement> list = new HashSet<DirectCriterionRequirement>();
+        Set<DirectCriterionRequirement> list = new HashSet<>();
         for(CriterionRequirement criterionRequirement : criterionRequirements ){
-            if(criterionRequirement instanceof DirectCriterionRequirement){
+            if ( criterionRequirement instanceof DirectCriterionRequirement ){
                 list.add((DirectCriterionRequirement) criterionRequirement);
             }
         }
@@ -350,20 +352,17 @@ public class HoursGroup extends IntegrationEntity implements Cloneable, ICriteri
     }
 
     public boolean isValidResourceType(CriterionRequirement newRequirement) {
-        ResourceEnum resourceTypeRequirement = newRequirement.getCriterion()
-                .getType().getResource();
-        if (resourceType != null) {
-            return (resourceType.equals(resourceTypeRequirement) || (resourceTypeRequirement
-                    .equals(ResourceEnum.getDefault())));
-        }
-        return true;
+        ResourceEnum resourceTypeRequirement = newRequirement.getCriterion().getType().getResource();
+
+        return resourceType == null ||
+                (resourceType.equals(resourceTypeRequirement) ||
+                        (resourceTypeRequirement.equals(ResourceEnum.getDefault())));
     }
 
-    boolean existSameCriterionRequirement(
-            CriterionRequirement newRequirement) {
+    boolean existSameCriterionRequirement(CriterionRequirement newRequirement) {
         Criterion criterion = newRequirement.getCriterion();
-        for(CriterionRequirement requirement : getCriterionRequirements()){
-            if (requirement.getCriterion().equals(criterion)) {
+        for (CriterionRequirement requirement : getCriterionRequirements()){
+            if ( requirement.getCriterion().equals(criterion) ) {
                 return true;
             }
         }
@@ -393,8 +392,7 @@ public class HoursGroup extends IntegrationEntity implements Cloneable, ICriteri
 
     @Override
     public boolean isUniqueCodeConstraint() {
-        // the automatic checking of this constraint is avoided because it uses
-        // the wrong code property
+        // The automatic checking of this constraint is avoided because it uses the wrong code property
         return true;
     }
 

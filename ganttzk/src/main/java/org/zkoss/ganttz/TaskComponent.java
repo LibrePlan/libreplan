@@ -21,7 +21,6 @@
 
 package org.zkoss.ganttz;
 
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.util.Date;
@@ -35,8 +34,6 @@ import org.joda.time.Duration;
 import org.joda.time.LocalDate;
 import org.zkoss.ganttz.adapters.IDisabilityConfiguration;
 import org.zkoss.ganttz.data.GanttDate;
-import org.zkoss.ganttz.data.ITaskFundamentalProperties.IModifications;
-import org.zkoss.ganttz.data.ITaskFundamentalProperties.IUpdatablePosition;
 import org.zkoss.ganttz.data.Milestone;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.data.Task.IReloadResourcesTextRequested;
@@ -111,7 +108,9 @@ public class TaskComponent extends Div implements AfterCompose {
         setClass(calculateCSSClass());
         setId(UUID.randomUUID().toString());
         this.disabilityConfiguration = disabilityConfiguration;
-        taskViolationListener = Constraint.onlyOnZKExecution(new IConstraintViolationListener<GanttDate>() {
+
+        IConstraintViolationListener<GanttDate> taskViolationListener =
+                Constraint.onlyOnZKExecution(new IConstraintViolationListener<GanttDate>() {
 
             @Override
             public void constraintViolated(Constraint<GanttDate> constraint, GanttDate value) {
@@ -125,23 +124,18 @@ public class TaskComponent extends Div implements AfterCompose {
         });
 
         this.task.addConstraintViolationListener(taskViolationListener, Mode.RECEIVE_PENDING);
-        reloadResourcesTextRequested = new IReloadResourcesTextRequested() {
-
-            @Override
-            public void reloadResourcesTextRequested() {
-                if ( canShowResourcesText() ) {
-                    smartUpdate("resourcesText", getResourcesText());
-                }
-
-                String cssClass = calculateCSSClass();
-
-                response("setClass", new AuInvoke(TaskComponent.this, "setClass", cssClass));
-
-                // FIXME: Refactor to another listener
-                updateDeadline();
-                invalidate();
+        reloadResourcesTextRequested = () -> {
+            if ( canShowResourcesText() ) {
+                smartUpdate("resourcesText", getResourcesText());
             }
 
+            String cssClass = calculateCSSClass();
+
+            response("setClass", new AuInvoke(TaskComponent.this, "setClass", cssClass));
+
+            // FIXME: Refactor to another listener
+            updateDeadline();
+            invalidate();
         };
 
         this.task.addReloadListener(reloadResourcesTextRequested);
@@ -155,9 +149,7 @@ public class TaskComponent extends Div implements AfterCompose {
                 if ( command.equals("onUpdatePosition") ){
                     ta = retrieveTaskComponent(request);
 
-                    ta.doUpdatePosition(
-                            toInteger(retrieveData(request, "left"))
-                    );
+                    ta.doUpdatePosition(toInteger(retrieveData(request, "left")));
 
                     Events.postEvent(new Event(getId(), ta, request.getData()));
 
@@ -248,25 +240,15 @@ public class TaskComponent extends Div implements AfterCompose {
     public final void afterCompose() {
         updateProperties();
         if ( propertiesListener == null ) {
-            propertiesListener = new PropertyChangeListener() {
-
-                @Override
-                public void propertyChange(PropertyChangeEvent evt) {
-                    updateProperties();
-                }
-            };
+            propertiesListener = evt -> updateProperties();
         }
 
         this.task.addFundamentalPropertiesChangeListener(propertiesListener);
 
         if ( showingAdvancePropertyListener == null ) {
-            showingAdvancePropertyListener = new PropertyChangeListener() {
-
-                @Override
-                public void propertyChange(PropertyChangeEvent evt) {
-                    if ( isInPage() && !(task instanceof Milestone) ) {
-                        updateCompletionAdvance();
-                    }
+            showingAdvancePropertyListener = evt -> {
+                if ( isInPage() && !(task instanceof Milestone) ) {
+                    updateCompletionAdvance();
                 }
             };
         }
@@ -274,13 +256,9 @@ public class TaskComponent extends Div implements AfterCompose {
         this.task.addAdvancesPropertyChangeListener(showingAdvancePropertyListener);
 
         if ( showingReportedHoursPropertyListener == null ) {
-            showingReportedHoursPropertyListener = new PropertyChangeListener() {
-
-                @Override
-                public void propertyChange(PropertyChangeEvent evt) {
-                    if ( isInPage() && !(task instanceof Milestone) ) {
-                        updateCompletionReportedHours();
-                    }
+            showingReportedHoursPropertyListener = evt -> {
+                if ( isInPage() && !(task instanceof Milestone) ) {
+                    updateCompletionReportedHours();
                 }
             };
         }
@@ -288,13 +266,9 @@ public class TaskComponent extends Div implements AfterCompose {
         this.task.addReportedHoursPropertyChangeListener(showingReportedHoursPropertyListener);
 
         if ( showingMoneyCostBarPropertyListener == null ) {
-            showingMoneyCostBarPropertyListener = new PropertyChangeListener() {
-
-                @Override
-                public void propertyChange(PropertyChangeEvent evt) {
-                    if ( isInPage() && !(task instanceof Milestone) ) {
-                        updateCompletionMoneyCostBar();
-                    }
+            showingMoneyCostBarPropertyListener = evt -> {
+                if ( isInPage() && !(task instanceof Milestone) ) {
+                    updateCompletionMoneyCostBar();
                 }
             };
         }
@@ -302,14 +276,7 @@ public class TaskComponent extends Div implements AfterCompose {
         this.task.addMoneyCostBarPropertyChangeListener(showingMoneyCostBarPropertyListener);
 
         if ( criticalPathPropertyListener == null ) {
-            criticalPathPropertyListener = new PropertyChangeListener() {
-
-                @Override
-                public void propertyChange(PropertyChangeEvent evt) {
-                    updateClass();
-                }
-
-            };
+            criticalPathPropertyListener = evt -> updateClass();
         }
 
         this.task.addCriticalPathPropertyChangeListener(criticalPathPropertyListener);
@@ -330,7 +297,6 @@ public class TaskComponent extends Div implements AfterCompose {
 
     private final Task task;
     private transient PropertyChangeListener propertiesListener;
-    private IConstraintViolationListener<GanttDate> taskViolationListener;
 
     private String progressType;
 
@@ -371,13 +337,7 @@ public class TaskComponent extends Div implements AfterCompose {
     void doUpdatePosition(int leftX) {
         GanttDate startBeforeMoving = this.task.getBeginDate();
         final LocalDate newPosition = getMapper().toDate(leftX);
-        this.task.doPositionModifications(new IModifications() {
-
-            @Override
-            public void doIt(IUpdatablePosition position) {
-                position.moveTo(GanttDate.createFrom(newPosition));
-            }
-        });
+        this.task.doPositionModifications(position -> position.moveTo(GanttDate.createFrom(newPosition)));
 
         boolean remainsInOriginalPosition = this.task.getBeginDate().equals(startBeforeMoving);
         if ( remainsInOriginalPosition ) {
@@ -417,7 +377,8 @@ public class TaskComponent extends Div implements AfterCompose {
      * of the style
      */
     protected void renderProperties(ContentRenderer renderer) throws IOException{
-        if( getColor() != null ) setStyle("background-color : " +  getColor());
+        if ( getColor() != null )
+            setStyle("background-color : " +  getColor());
 
         setWidgetAttribute("movingTasksEnabled", ((Boolean)isMovingTasksEnabled()).toString());
         setWidgetAttribute("resizingTasksEnabled", ((Boolean)isResizingTasksEnabled()).toString());
