@@ -44,12 +44,10 @@ import java.util.List;
 
 /**
  * Sends E-mail users with data that storing in notification_queue table
- * and that are treat to {@link EmailTemplateEnum.TEMPLATE_TODAY_TASK_SHOULD_START}
+ * and that are treat to {@link EmailTemplateEnum#TEMPLATE_TODAY_TASK_SHOULD_START}
  * Data will be send if current data equals to start date.
  *
- * Created by
- * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
- * on 20.01.2016.
+ * @author Created by Vova Perebykivskyi <vova@libreplan-enterprise.com> on 20.01.2016.
  */
 
 @Component
@@ -73,18 +71,16 @@ public class SendEmailOnTaskShouldStart implements IEmailNotificationJob {
         // Gather data
         taskShouldStart();
 
-        if ( Configuration.isEmailSendingEnabled() ){
+        if ( Configuration.isEmailSendingEnabled() ) {
 
-            if ( emailConnectionValidator.isConnectionActivated() )
+            if ( emailConnectionValidator.isConnectionActivated() && emailConnectionValidator.validConnection() ) {
 
-                if ( emailConnectionValidator.validConnection() ){
+                List<EmailNotification> notifications =
+                        emailNotificationModel.getAllByType(EmailTemplateEnum.TEMPLATE_TODAY_TASK_SHOULD_START);
 
-                List<EmailNotification> notifications = emailNotificationModel
-                        .getAllByType(EmailTemplateEnum.TEMPLATE_TODAY_TASK_SHOULD_START);
-
-                for (int i = 0; i < notifications.size(); i++)
-                    if ( composeMessageForUser(notifications.get(i)) )
-                        deleteSingleNotification(notifications.get(i));
+                for (EmailNotification notification : notifications)
+                    if ( composeMessageForUser(notification) )
+                        deleteSingleNotification(notification);
             }
         }
     }
@@ -102,35 +98,34 @@ public class SendEmailOnTaskShouldStart implements IEmailNotificationJob {
     public void taskShouldStart() {
         // Check if current date equals with item date
         Date date = new Date();
+        // TODO resolve deprecated
         int currentYear = date.getYear();
         int currentMonth = date.getMonth();
         int currentDay = date.getDay();
 
         List<TaskElement> tasks = taskElementDAO.getTaskElementsWithParentsWithoutMilestones();
-        for (TaskElement item : tasks){
+        for (TaskElement item : tasks) {
             Date startDate = item.getStartDate();
             int startYear = startDate.getYear();
             int startMonth = startDate.getMonth();
             int startDay = startDate.getDay();
 
-            if ( currentYear == startYear &&
-                    currentMonth == startMonth &&
-                    currentDay == startDay){
+            if ( currentYear == startYear && currentMonth == startMonth && currentDay == startDay ) {
                 // Get all resources for current task and send them email notification
                 sendEmailNotificationAboutTaskShouldStart(item);
             }
         }
     }
 
-    private void sendEmailNotificationAboutTaskShouldStart(TaskElement item){
-        List<ResourceAllocation<?>> list = new ArrayList<ResourceAllocation<?>>();
+    private void sendEmailNotificationAboutTaskShouldStart(TaskElement item) {
+        List<ResourceAllocation<?>> list = new ArrayList<>();
         list.addAll(item.getAllResourceAllocations());
 
-        List<Resource> resources = new ArrayList<Resource>();
+        List<Resource> resources = new ArrayList<>();
         for (ResourceAllocation<?> allocation : list)
             resources.add(allocation.getAssociatedResources().get(0));
 
-        for (Resource resourceItem : resources){
+        for (Resource resourceItem : resources) {
             emailNotificationModel.setNewObject();
             emailNotificationModel.setType(EmailTemplateEnum.TEMPLATE_TODAY_TASK_SHOULD_START);
             emailNotificationModel.setUpdated(new Date());

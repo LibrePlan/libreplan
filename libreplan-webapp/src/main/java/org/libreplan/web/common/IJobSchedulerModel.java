@@ -37,15 +37,14 @@ import org.libreplan.importers.SynchronizationInfo;
 public interface IJobSchedulerModel {
 
     /**
-     * returns all job scheduler configurations
+     * Returns all job scheduler configurations.
      *
      * @return list of <code>JobSchedulerConfiguration</code>
      */
     List<JobSchedulerConfiguration> getJobSchedulerConfigurations();
 
     /**
-     * returns next fire time for the specified job from
-     * <code>{@link JobSchedulerConfiguration}</code>
+     * Returns next fire time for the specified job from <code>{@link JobSchedulerConfiguration}</code>.
      *
      * @param jobSchedulerConfiguration
      *            the job scheduler configuration
@@ -53,18 +52,17 @@ public interface IJobSchedulerModel {
     String getNextFireTime(JobSchedulerConfiguration jobSchedulerConfiguration);
 
     /**
-     * Do manual action(replacement of scheduling)
+     * Do manual action(replacement of scheduling).
      *
      * @param jobSchedulerConfiguration
      *            the job configuration
      * @throws ConnectorException
      *             if connector is not valid
      */
-    void doManual(JobSchedulerConfiguration jobSchedulerConfiguration)
-            throws ConnectorException;
+    void doManual(JobSchedulerConfiguration jobSchedulerConfiguration) throws ConnectorException;
 
     /**
-     * Returns synchronization infos. Failures or successes info
+     * Returns synchronization infos. Failures or successes info.
      */
     List<SynchronizationInfo> getSynchronizationInfos();
 
@@ -74,7 +72,7 @@ public interface IJobSchedulerModel {
     void initCreate();
 
     /**
-     * Prepares for edit {@link JobSchedulerConfiguration}
+     * Prepares for edit {@link JobSchedulerConfiguration}.
      *
      * @param jobSchedulerConfiguration
      *            object to be edited
@@ -89,7 +87,7 @@ public interface IJobSchedulerModel {
     JobSchedulerConfiguration getJobSchedulerConfiguration();
 
     /**
-     * Saves the current {@link JobSchedulerConfiguration}
+     * Saves the current {@link JobSchedulerConfiguration}.
      *
      * @throws ValidationException
      *             if validation fails
@@ -97,12 +95,12 @@ public interface IJobSchedulerModel {
     void confirmSave() throws ValidationException;
 
     /**
-     * Cancels the current {@link JobSchedulerConfiguration}
+     * Cancels the current {@link JobSchedulerConfiguration}.
      */
     void cancel();
 
     /**
-     * Removes the current {@link JobSchedulerConfiguration}
+     * Removes the current {@link JobSchedulerConfiguration}.
      *
      * @param jobSchedulerConfiguration
      *            object to be removed
@@ -110,16 +108,15 @@ public interface IJobSchedulerModel {
     void remove(JobSchedulerConfiguration jobSchedulerConfiguration);
 
     /**
-     * returns list of connectors
+     * Returns list of connectors
      */
     List<Connector> getConnectors();
 
     /**
-     * Schedule or unschedule jobs for the specified <code>connector</code>
+     * Schedule or unschedule jobs for the specified <code>connector</code>.
      *
-     * schedule all jobs of the specified <code>connector</code>'s property
-     * {@link PredefinedConnectorProperties#ACTIVATED} is 'Y', otherwise
-     * unschedule the jobs
+     * Schedule all jobs of the specified <code>connector</code>'s property
+     * {@link PredefinedConnectorProperties#ACTIVATED} is 'Y', otherwise unschedule the jobs.
      *
      * @param connector
      *            where to check if property is changed
@@ -128,22 +125,20 @@ public interface IJobSchedulerModel {
     boolean scheduleOrUnscheduleJobs(Connector connector);
 
     /**
-     * schedule or unschedule job for the specified job in
-     * <code>{@link JobSchedulerConfiguration}</code>
+     * Schedule or unschedule job for the specified job in <code>{@link JobSchedulerConfiguration}</code>.
      *
      * @return true if scheduling is succeeded, false otherwise
      */
     boolean scheduleOrUnscheduleJob();
 
     /**
-     * Delete job specified in <code>{@link JobSchedulerConfiguration}</code>
+     * Delete job specified in <code>{@link JobSchedulerConfiguration}</code>.
      *
      * @param jobSchedulerConfiguration
      *            configuration for the job to be deleted
      * @return true if job is successfully deleted from the scheduler, false
      *         otherwise
      */
-    boolean deleteScheduledJob(
-            JobSchedulerConfiguration jobSchedulerConfiguration);
+    boolean deleteScheduledJob(JobSchedulerConfiguration jobSchedulerConfiguration);
 
 }

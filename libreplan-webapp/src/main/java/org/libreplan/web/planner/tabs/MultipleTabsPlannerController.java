@@ -157,8 +157,6 @@ public class MultipleTabsPlannerController implements Composer, IGlobalViewEntry
     @Autowired
     private OrderCRUDController orderCRUDController;
 
-
-
     @Autowired
     private PlanningStateCreator planningStateCreator;
 

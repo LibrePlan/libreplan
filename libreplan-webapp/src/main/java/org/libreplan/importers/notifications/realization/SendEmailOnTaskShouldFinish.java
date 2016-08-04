@@ -44,12 +44,10 @@ import java.util.List;
 
 /**
  * Sends E-mail to users with data that storing in notification_queue table
- * and that are treat to {@link EmailTemplateEnum.TEMPLATE_TODAY_TASK_SHOULD_FINISH}
+ * and that are treat to {@link EmailTemplateEnum#TEMPLATE_TODAY_TASK_SHOULD_FINISH}
  * Data will be send when current day equals to finish date.
  *
- * Created by
- * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
- * on 21.01.2016.
+ * @author Created by Vova Perebykivskiy <vova@libreplan-enterprise.com> on 21.01.2016.
  */
 
 @Component
@@ -73,14 +71,11 @@ public class SendEmailOnTaskShouldFinish implements IEmailNotificationJob {
         // Gather data for email sending
         taskShouldFinish();
 
-        if ( Configuration.isEmailSendingEnabled() ){
+        if ( Configuration.isEmailSendingEnabled() ) {
+            if ( emailConnectionValidator.isConnectionActivated() && emailConnectionValidator.validConnection() ) {
 
-            if ( emailConnectionValidator.isConnectionActivated() )
-
-                if ( emailConnectionValidator.validConnection() ){
-
-                List<EmailNotification> notifications = emailNotificationModel
-                        .getAllByType(EmailTemplateEnum.TEMPLATE_TODAY_TASK_SHOULD_FINISH);
+                List<EmailNotification> notifications =
+                        emailNotificationModel.getAllByType(EmailTemplateEnum.TEMPLATE_TODAY_TASK_SHOULD_FINISH);
 
                 for (int i = 0; i < notifications.size(); i++)
                     if ( composeMessageForUser(notifications.get(i)) )
@@ -100,6 +95,7 @@ public class SendEmailOnTaskShouldFinish implements IEmailNotificationJob {
 
     @Transactional
     public void taskShouldFinish() {
+        // TODO resolve deprecated
         // Check if current date equals with item date
         Date date = new Date();
         int currentYear = date.getYear();
@@ -115,7 +111,7 @@ public class SendEmailOnTaskShouldFinish implements IEmailNotificationJob {
 
             if ( currentYear == endYear &&
                     currentMonth == endMonth &&
-                    currentDay == endDay ){
+                    currentDay == endDay ) {
                 // Get all resources for current task and send them email notification
                 sendEmailNotificationAboutTaskShouldFinish(item);
             }
@@ -124,10 +120,10 @@ public class SendEmailOnTaskShouldFinish implements IEmailNotificationJob {
 
 
     private void sendEmailNotificationAboutTaskShouldFinish(TaskElement item){
-        List<ResourceAllocation<?>> list = new ArrayList<ResourceAllocation<?>>();
+        List<ResourceAllocation<?>> list = new ArrayList<>();
         list.addAll(item.getAllResourceAllocations());
 
-        List<Resource> resources = new ArrayList<Resource>();
+        List<Resource> resources = new ArrayList<>();
         for (ResourceAllocation<?> allocation : list)
             resources.add(allocation.getAssociatedResources().get(0));
 

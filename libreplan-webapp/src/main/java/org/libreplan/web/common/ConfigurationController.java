@@ -89,7 +89,6 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 
-
 import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Grid;
@@ -119,7 +118,7 @@ import org.zkoss.zul.impl.InputElement;
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  * @author Cristina Alavarino Perez <cristina.alvarino@comtecsf.es>
  * @author Ignacio Diaz Teijido <ignacio.diaz@comtecsf.es>
- * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
 public class ConfigurationController extends GenericForwardComposer {
 
@@ -157,7 +156,7 @@ public class ConfigurationController extends GenericForwardComposer {
     private IMaterialsModel materialsModel;
 
     @Autowired
-    private IAssignedTaskQualityFormsToOrderElementModel assignedQualityFormsModel;
+    private IAssignedTaskQualityFormsToOrderElementModel assignedTaskQualityFormsToOrderElementModel;
 
     private IMessagesForUser messages;
 
@@ -194,19 +193,17 @@ public class ConfigurationController extends GenericForwardComposer {
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
+
+        // TODO resolve deprecated
         comp.setVariable("configurationController", this, true);
+
         configurationModel.init();
 
-        defaultCalendarBandboxSearch.setListboxEventListener(Events.ON_SELECT,
-                new EventListener() {
-                    @Override
-                    public void onEvent(Event event) {
-                        Listitem selectedItem = (Listitem) ((SelectEvent) event)
-                                .getSelectedItems().iterator().next();
-                        setDefaultCalendar((BaseCalendar) selectedItem
-                                .getValue());
-                    }
-                });
+        defaultCalendarBandboxSearch.setListboxEventListener(Events.ON_SELECT, event -> {
+            Listitem selectedItem = (Listitem) ((SelectEvent) event).getSelectedItems().iterator().next();
+            setDefaultCalendar((BaseCalendar) selectedItem.getValue());
+        });
+
         initializeProgressTypeList();
         messages = new MessagesForUser(messagesContainer);
         reloadEntitySequences();
@@ -214,13 +211,12 @@ public class ConfigurationController extends GenericForwardComposer {
     }
 
     public void changeRoleStrategy() {
-        this.getLdapConfiguration().setLdapGroupStrategy(
-                strategy.getSelectedItem().getValue().equals("group"));
+        this.getLdapConfiguration().setLdapGroupStrategy(strategy.getSelectedItem().getValue().equals("group"));
         loadRoleStrategyRows();
     }
 
     private void loadRoleStrategyRows() {
-        if (getLdapConfiguration().getLdapGroupStrategy()) {
+        if ( getLdapConfiguration().getLdapGroupStrategy() ) {
             strategy.setSelectedIndex(0);
             ldapGroupPath.setDisabled(false);
         } else {
@@ -235,15 +231,15 @@ public class ConfigurationController extends GenericForwardComposer {
             @Override
             public void onEvent(Event event) {
                 Listitem selectedItem = getSelectedItem((SelectEvent) event);
-                if (selectedItem != null) {
-                    ProgressType progressType = (ProgressType) selectedItem
-                            .getValue();
+                if ( selectedItem != null ) {
+                    ProgressType progressType = (ProgressType) selectedItem.getValue();
                     configurationModel.setProgressType(progressType);
                 }
             }
 
             private Listitem getSelectedItem(SelectEvent event) {
                 final Set<Listitem> selectedItems = event.getSelectedItems();
+
                 return selectedItems.iterator().next();
             }
 
@@ -276,26 +272,34 @@ public class ConfigurationController extends GenericForwardComposer {
 
     public void save() throws InterruptedException {
 
-        if (getSelectedConnector() != null && getSelectedConnector().getName().equals("E-mail") &&
-                isEmailFieldsValid() == false) {
+        boolean connectorIsEmailAndFieldsAreInvalid = getSelectedConnector() != null &&
+                getSelectedConnector().getName().equals("E-mail") &&
+                !areEmailFieldsValid();
+
+        if ( connectorIsEmailAndFieldsAreInvalid ) {
+            messages.clearMessages();
             messages.showMessage(Level.ERROR, _("Check all fields"));
 
         } else {
             ConstraintChecker.isValid(configurationWindow);
-            if (checkValidEntitySequenceRows()) {
+            if ( checkValidEntitySequenceRows() ) {
                 try {
                     configurationModel.confirm();
                     configurationModel.init();
                     messages.showMessage(Level.INFO, _("Changes saved"));
 
+                    boolean gatheredDataNotSentAndItIsNotRestricted = !SecurityUtils.isGatheredStatsAlreadySent &&
+                            configurationDAO
+                                    .getConfigurationWithReadOnlyTransaction()
+                                    .isAllowToGatherUsageStatsEnabled();
+
                     // Send data to server
-                    if ( !SecurityUtils.isGatheredStatsAlreadySent &&
-                            configurationDAO.getConfigurationWithReadOnlyTransaction().isAllowToGatherUsageStatsEnabled() )
+                    if ( gatheredDataNotSentAndItIsNotRestricted )
                         sendDataToServer();
 
-                    if (getSelectedConnector() != null
-                            && !configurationModel
-                            .scheduleOrUnscheduleJobs(getSelectedConnector())) {
+                    if ( getSelectedConnector() != null &&
+                            !configurationModel.scheduleOrUnscheduleJobs(getSelectedConnector()) ) {
+
                         messages.showMessage(
                                 Level.ERROR,
                                 _("Scheduling or unscheduling of jobs for this connector is not completed"));
@@ -316,11 +320,18 @@ public class ConfigurationController extends GenericForwardComposer {
         }
     }
 
-    private void sendDataToServer(){
+    private void sendDataToServer() {
         GatheredUsageStats gatheredUsageStats = new GatheredUsageStats();
 
-        gatheredUsageStats.setupNotAutowiredClasses(userDAO, orderModel, workReportModel, workerModel, machineModel,
-                expenseSheetModel, materialsModel, assignedQualityFormsModel);
+        gatheredUsageStats.setupNotAutowiredClasses(
+                userDAO,
+                orderModel,
+                workReportModel,
+                workerModel,
+                machineModel,
+                expenseSheetModel,
+                materialsModel,
+                assignedTaskQualityFormsToOrderElementModel);
 
         gatheredUsageStats.sendGatheredUsageStatsToServer();
         SecurityUtils.isGatheredStatsAlreadySent = true;
@@ -337,13 +348,13 @@ public class ConfigurationController extends GenericForwardComposer {
 
     public void testLDAPConnection() {
         LdapContextSource source = new LdapContextSource();
+
         source.setUrl(configurationModel.getLdapConfiguration().getLdapHost()
                 + ":" + configurationModel.getLdapConfiguration().getLdapPort());
+
         source.setBase(configurationModel.getLdapConfiguration().getLdapBase());
-        source.setUserDn(configurationModel.getLdapConfiguration()
-                .getLdapUserDn());
-        source.setPassword(configurationModel.getLdapConfiguration()
-                .getLdapPassword());
+        source.setUserDn(configurationModel.getLdapConfiguration().getLdapUserDn());
+        source.setPassword(configurationModel.getLdapConfiguration().getLdapPassword());
         source.setDirObjectFactory(DefaultDirObjectFactory.class);
         source.setPooled(false);
         try {
@@ -354,15 +365,16 @@ public class ConfigurationController extends GenericForwardComposer {
 
         LdapTemplate template = new LdapTemplate(source);
         try {
-            template.authenticate(DistinguishedName.EMPTY_PATH,
-                    new EqualsFilter(configurationModel.getLdapConfiguration()
-                            .getLdapUserId(), "test").toString(), "test");
-            messages.showMessage(Level.INFO,
-                    _("LDAP connection was successful"));
+            // TODO resolve deprecated
+            template.authenticate(
+                    DistinguishedName.EMPTY_PATH,
+                    new EqualsFilter(configurationModel.getLdapConfiguration().getLdapUserId(), "test").toString(),
+                    "test");
+
+            messages.showMessage(Level.INFO, _("LDAP connection was successful"));
         } catch (Exception e) {
             LOG.info(e);
-            messages.showMessage(Level.ERROR,
-                    _("Cannot connect to LDAP server"));
+            messages.showMessage(Level.ERROR, _("Cannot connect to LDAP server"));
         }
     }
 
@@ -370,27 +382,21 @@ public class ConfigurationController extends GenericForwardComposer {
      * Tests connection
      */
     public void testConnection() {
-        if (selectedConnector == null) {
-            messages.showMessage(Level.ERROR,
-                    _("Please select a connector to test it"));
+        if ( selectedConnector == null ) {
+            messages.showMessage(Level.ERROR, _("Please select a connector to test it"));
             return;
         }
 
         Map<String, String> properties = selectedConnector.getPropertiesAsMap();
         String url = properties.get(PredefinedConnectorProperties.SERVER_URL);
-        String username = properties
-                .get(PredefinedConnectorProperties.USERNAME);
-        String password = properties
-                .get(PredefinedConnectorProperties.PASSWORD);
+        String username = properties.get(PredefinedConnectorProperties.USERNAME);
+        String password = properties.get(PredefinedConnectorProperties.PASSWORD);
 
-        if ( selectedConnector.getName().equals(
-                PredefinedConnectors.TIM.getName()) ) {
+        if ( selectedConnector.getName().equals(PredefinedConnectors.TIM.getName()) ) {
             testTimConnection(url, username, password);
-        } else if ( selectedConnector.getName().equals(
-                PredefinedConnectors.JIRA.getName()) ) {
+        } else if ( selectedConnector.getName().equals(PredefinedConnectors.JIRA.getName()) ) {
             testJiraConnection(url, username, password);
-        } else if( selectedConnector.getName().equals(
-                PredefinedConnectors.EMAIL.getName()) ){
+        } else if( selectedConnector.getName().equals(PredefinedConnectors.EMAIL.getName()) ) {
             String host = properties.get(PredefinedConnectorProperties.HOST);
             username = properties.get(PredefinedConnectorProperties.EMAIL_USERNAME);
             password = properties.get(PredefinedConnectorProperties.EMAIL_PASSWORD);
@@ -412,7 +418,7 @@ public class ConfigurationController extends GenericForwardComposer {
      *            the password
      */
     private void testTimConnection(String url, String username, String password) {
-        if (TimSoapClient.checkAuthorization(url, username, password)) {
+        if ( TimSoapClient.checkAuthorization(url, username, password) ) {
             messages.showMessage(Level.INFO, _("Tim connection was successful"));
         } else {
             messages.showMessage(Level.ERROR, _("Cannot connet to Tim server"));
@@ -434,27 +440,22 @@ public class ConfigurationController extends GenericForwardComposer {
         try {
 
             WebClient client = WebClient.create(url);
-            client.path(JiraRESTClient.PATH_AUTH_SESSION).accept(
-                    MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML);
+            client.path(JiraRESTClient.PATH_AUTH_SESSION).accept(MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML);
 
-            org.libreplan.ws.common.impl.Util.addAuthorizationHeader(client,
-                    username, password);
+            org.libreplan.ws.common.impl.Util.addAuthorizationHeader(client, username, password);
 
             Response response = client.get();
 
-            if (response.getStatus() == Status.OK.getStatusCode()) {
-                messages.showMessage(Level.INFO,
-                        _("JIRA connection was successful"));
+            if ( response.getStatus() == Status.OK.getStatusCode() ) {
+                messages.showMessage(Level.INFO, _("JIRA connection was successful"));
             } else {
                 LOG.error("Status code: " + response.getStatus());
-                messages.showMessage(Level.ERROR,
-                        _("Cannot connect to JIRA server"));
+                messages.showMessage(Level.ERROR, _("Cannot connect to JIRA server"));
             }
 
         } catch (Exception e) {
             LOG.error(e);
-            messages.showMessage(Level.ERROR,
-                    _("Cannot connect to JIRA server"));
+            messages.showMessage(Level.ERROR, _("Cannot connect to JIRA server"));
         }
     }
 
@@ -470,18 +471,19 @@ public class ConfigurationController extends GenericForwardComposer {
      * @param password
      *            the password
      */
-    private void testEmailConnection(String host, String port, String username, String password){
-        Properties props = System.getProperties();
+    private void testEmailConnection(String host, String port, String username, String password) {
+        Properties props = new Properties();
         Transport transport = null;
 
         try {
-            if ( protocolsCombobox.getSelectedItem().getLabel().equals("SMTP") ){
+            if ( protocolsCombobox.getSelectedItem().getLabel().equals("SMTP") ) {
                 props.setProperty("mail.smtp.port", port);
                 props.setProperty("mail.smtp.host", host);
                 Session session = Session.getInstance(props, null);
 
                 transport = session.getTransport("smtp");
-                if ( username.equals("") && password.equals("")) transport.connect();
+                if ( username.equals("") && password.equals(""))
+                    transport.connect();
             }
             else if ( protocolsCombobox.getSelectedItem().getLabel().equals("STARTTLS") ) {
                 props.setProperty("mail.smtps.port", port);
@@ -489,23 +491,29 @@ public class ConfigurationController extends GenericForwardComposer {
                 Session session = Session.getInstance(props, null);
 
                 transport = session.getTransport("smtps");
-                if ( !username.equals("") && password != null ) transport.connect(host, username, password);
+                if ( !username.equals("") && password != null )
+                    transport.connect(host, username, password);
             }
 
             messages.clearMessages();
-            if ( transport.isConnected() ) messages.showMessage(Level.INFO, _("Connection successful!"));
-            else if ( transport.isConnected() == false ) messages.showMessage(Level.WARNING, _("Connection unsuccessful"));
+            if ( transport.isConnected() )
+                messages.showMessage(Level.INFO, _("Connection successful!"));
+            else if ( !transport.isConnected() )
+                messages.showMessage(Level.WARNING, _("Connection unsuccessful"));
         }
         catch (AuthenticationFailedException e){
             LOG.error(e);
+            messages.clearMessages();
             messages.showMessage(Level.ERROR, _("Invalid credentials"));
         }
         catch (MessagingException e){
             LOG.error(e);
+            messages.clearMessages();
             messages.showMessage(Level.ERROR, _("Cannot connect"));
         }
         catch (Exception e){
             LOG.error(e);
+            messages.clearMessages();
             messages.showMessage(Level.ERROR, _("Failed to connect"));
         }
     }
@@ -514,30 +522,29 @@ public class ConfigurationController extends GenericForwardComposer {
         Rows rows = entitySequencesGrid.getRows();
         for (Row row : (List<Row>) rows.getChildren()) {
 
-                EntitySequence seq = (EntitySequence) row.getValue();
-                if (seq != null) {
+            EntitySequence seq = (EntitySequence) row.getValue();
+            if ( seq != null ) {
                 Textbox prefixBox = (Textbox) row.getChildren().get(2);
-                    if (!seq.isAlreadyInUse()) {
-                        String errorMessage = this.validPrefix(seq,
-                                prefixBox.getValue());
-                        if (errorMessage != null) {
-                            throw new WrongValueException(prefixBox,
-                                    errorMessage);
-                        }
-                    }
-
-                Intbox digitsBox = (Intbox) row.getChildren().get(3);
-                    try {
-                        if (!seq.isAlreadyInUse()) {
-                            seq.setNumberOfDigits(digitsBox.getValue());
-                        }
-                    } catch (IllegalArgumentException e) {
-                        throw new WrongValueException(digitsBox, _(
-                                "number of digits must be between {0} and {1}",
-                                EntitySequence.MIN_NUMBER_OF_DIGITS,
-                                EntitySequence.MAX_NUMBER_OF_DIGITS));
+                if ( !seq.isAlreadyInUse() ) {
+                    String errorMessage = this.validPrefix(seq, prefixBox.getValue());
+                    if ( errorMessage != null ) {
+                        throw new WrongValueException(prefixBox, errorMessage);
                     }
                 }
+
+                Intbox digitsBox = (Intbox) row.getChildren().get(3);
+                try {
+                    if ( !seq.isAlreadyInUse() ) {
+                        seq.setNumberOfDigits(digitsBox.getValue());
+                    }
+                } catch (IllegalArgumentException e) {
+                    throw new WrongValueException(
+                            digitsBox,
+                            _("number of digits must be between {0} and {1}",
+                                    EntitySequence.MIN_NUMBER_OF_DIGITS,
+                                    EntitySequence.MAX_NUMBER_OF_DIGITS));
+                }
+            }
 
         }
         return true;
@@ -548,15 +555,14 @@ public class ConfigurationController extends GenericForwardComposer {
     }
 
     private void reloadEntitySequences() {
-        entitySequencesGrid.setModel(new SimpleListModel(
-                getAllEntitySequences().toArray()));
+        entitySequencesGrid.setModel(new SimpleListModel(getAllEntitySequences().toArray()));
         entitySequencesGrid.invalidate();
     }
 
     private void reloadConnectors() {
-        selectedConnector = configurationModel
-                .getConnectorByName(selectedConnector != null ? selectedConnector
-                        .getName() : null);
+        selectedConnector =
+                configurationModel.getConnectorByName(selectedConnector != null ? selectedConnector.getName() : null);
+
         Util.reloadBindings(connectorCombo);
         Util.reloadBindings(connectorPropertriesGrid);
     }
@@ -582,38 +588,31 @@ public class ConfigurationController extends GenericForwardComposer {
     }
 
     public void setGenerateCodeForCriterion(Boolean generateCodeForCriterion) {
-        configurationModel
-                .setGenerateCodeForCriterion(generateCodeForCriterion);
+        configurationModel.setGenerateCodeForCriterion(generateCodeForCriterion);
     }
 
     public Boolean getGenerateCodeForWorkReportType() {
         return configurationModel.getGenerateCodeForWorkReportType();
     }
 
-    public void setGenerateCodeForWorkReportType(
-            Boolean generateCodeForWorkReportType) {
-        configurationModel
-                .setGenerateCodeForWorkReportType(generateCodeForWorkReportType);
+    public void setGenerateCodeForWorkReportType(Boolean generateCodeForWorkReportType) {
+        configurationModel.setGenerateCodeForWorkReportType(generateCodeForWorkReportType);
     }
 
     public Boolean getGenerateCodeForCalendarExceptionType() {
         return configurationModel.getGenerateCodeForCalendarExceptionType();
     }
 
-    public void setGenerateCodeForCalendarExceptionType(
-            Boolean generateCodeForCalendarExceptionType) {
-        configurationModel
-                .setGenerateCodeForCalendarExceptionType(generateCodeForCalendarExceptionType);
+    public void setGenerateCodeForCalendarExceptionType(Boolean generateCodeForCalendarExceptionType) {
+        configurationModel.setGenerateCodeForCalendarExceptionType(generateCodeForCalendarExceptionType);
     }
 
     public Boolean getGenerateCodeForCostCategory() {
         return configurationModel.getGenerateCodeForCostCategory();
     }
 
-    public void setGenerateCodeForCostCategory(
-            Boolean generateCodeForCostCategory) {
-        configurationModel
-                .setGenerateCodeForCostCategory(generateCodeForCostCategory);
+    public void setGenerateCodeForCostCategory(Boolean generateCodeForCostCategory) {
+        configurationModel.setGenerateCodeForCostCategory(generateCodeForCostCategory);
     }
 
     public Boolean getGenerateCodeForLabel() {
@@ -629,8 +628,7 @@ public class ConfigurationController extends GenericForwardComposer {
     }
 
     public void setGenerateCodeForWorkReport(Boolean generateCodeForWorkReport) {
-        configurationModel
-                .setGenerateCodeForWorkReport(generateCodeForWorkReport);
+        configurationModel.setGenerateCodeForWorkReport(generateCodeForWorkReport);
     }
 
     public Boolean getGenerateCodeForResources() {
@@ -638,28 +636,23 @@ public class ConfigurationController extends GenericForwardComposer {
     }
 
     public void setGenerateCodeForResources(Boolean generateCodeForResources) {
-        configurationModel
-                .setGenerateCodeForResources(generateCodeForResources);
+        configurationModel.setGenerateCodeForResources(generateCodeForResources);
     }
 
     public Boolean getGenerateCodeForTypesOfWorkHours() {
         return configurationModel.getGenerateCodeForTypesOfWorkHours();
     }
 
-    public void setGenerateCodeForTypesOfWorkHours(
-            Boolean generateCodeForTypesOfWorkHours) {
-        configurationModel
-                .setGenerateCodeForTypesOfWorkHours(generateCodeForTypesOfWorkHours);
+    public void setGenerateCodeForTypesOfWorkHours(Boolean generateCodeForTypesOfWorkHours) {
+        configurationModel.setGenerateCodeForTypesOfWorkHours(generateCodeForTypesOfWorkHours);
     }
 
     public Boolean getGenerateCodeForMaterialCategories() {
         return configurationModel.getGenerateCodeForMaterialCategories();
     }
 
-    public void setGenerateCodeForMaterialCategories(
-            Boolean generateCodeForMaterialCategories) {
-        configurationModel
-                .setGenerateCodeForMaterialCategories(generateCodeForMaterialCategories);
+    public void setGenerateCodeForMaterialCategories(Boolean generateCodeForMaterialCategories) {
+        configurationModel.setGenerateCodeForMaterialCategories(generateCodeForMaterialCategories);
     }
 
     public Boolean getGenerateCodeForExpenseSheets() {
@@ -679,18 +672,15 @@ public class ConfigurationController extends GenericForwardComposer {
     }
 
     public void setGenerateCodeForUnitTypes(Boolean generateCodeForUnitTypes) {
-        configurationModel
-                .setGenerateCodeForUnitTypes(generateCodeForUnitTypes);
+        configurationModel.setGenerateCodeForUnitTypes(generateCodeForUnitTypes);
     }
 
     public Boolean getGenerateCodeForBaseCalendars() {
         return configurationModel.getGenerateCodeForBaseCalendars();
     }
 
-    public void setGenerateCodeForBaseCalendars(
-            Boolean generateCodeForBaseCalendars) {
-        configurationModel
-                .setGenerateCodeForBaseCalendars(generateCodeForBaseCalendars);
+    public void setGenerateCodeForBaseCalendars(Boolean generateCodeForBaseCalendars) {
+        configurationModel.setGenerateCodeForBaseCalendars(generateCodeForBaseCalendars);
     }
 
     public Boolean isAutocompleteLogin() {
@@ -711,10 +701,8 @@ public class ConfigurationController extends GenericForwardComposer {
     }
 
 
-    public void setMonteCarloMethodTabVisible(
-            Boolean expandResourceLoadViewCharts) {
-        configurationModel
-                .setMonteCarloMethodTabVisible(expandResourceLoadViewCharts);
+    public void setMonteCarloMethodTabVisible(Boolean expandResourceLoadViewCharts) {
+        configurationModel.setMonteCarloMethodTabVisible(expandResourceLoadViewCharts);
     }
 
     public Boolean isMonteCarloMethodTabVisible() {
@@ -726,7 +714,6 @@ public class ConfigurationController extends GenericForwardComposer {
     }
 
     private static class ProgressTypeRenderer implements ListitemRenderer {
-
         @Override
         public void render(Listitem item, Object data) {
             ProgressType progressType = (ProgressType) data;
@@ -744,8 +731,7 @@ public class ConfigurationController extends GenericForwardComposer {
             final EntityNameEnum entityName = entitySequence.getEntityName();
 
             row.setValue(entityName);
-            row.appendChild(new Label(_("{0} sequences",
-                    entityName.getDescription())));
+            row.appendChild(new Label(_("{0} sequences", entityName.getDescription())));
 
             row.setValue(entitySequence);
             appendActiveRadiobox(row, entitySequence);
@@ -754,164 +740,124 @@ public class ConfigurationController extends GenericForwardComposer {
             appendLastValueInbox(row, entitySequence);
             appendOperations(row, entitySequence);
 
-            if (entitySequence.isAlreadyInUse()) {
+            if ( entitySequence.isAlreadyInUse() ) {
                 row.setTooltiptext(_("Code sequence is already in use and cannot be updated"));
             }
 
-            if ((row.getPreviousSibling() != null)
-                    && !((EntitySequence) ((Row) row.getPreviousSibling())
-                            .getValue()).getEntityName().equals(entityName)) {
+            if ( (row.getPreviousSibling() != null) &&
+                    !((EntitySequence) ((Row)
+                            row.getPreviousSibling()).getValue()).getEntityName().equals(entityName) ) {
+
                 row.setClass("separator");
             }
         }
     }
 
-        private void appendActiveRadiobox(final Row row,
-                final EntitySequence entitySequence) {
+    private void appendActiveRadiobox(final Row row, final EntitySequence entitySequence) {
 
-            final Radio radiobox = Util.bind(new Radio(),
-                    new Util.Getter<Boolean>() {
+        final Radio radiobox = Util.bind(
+                new Radio(),
+                () -> entitySequence.isActive(),
+                value -> {
+                    updateOtherSequences(entitySequence);
+                    entitySequence.setActive(value);
+                    Util.reloadBindings(entitySequencesGrid);
+                    reloadEntitySequences();
+                });
 
-                        @Override
-                        public Boolean get() {
-                            return entitySequence.isActive();
-                        }
-                    }, new Util.Setter<Boolean>() {
+        row.appendChild(radiobox);
+    }
 
-                        @Override
-                        public void set(Boolean value) {
-                            updateOtherSequences(entitySequence);
-                            entitySequence.setActive(value);
-                            Util.reloadBindings(entitySequencesGrid);
-                            reloadEntitySequences();
-                        }
-                    });
-
-            row.appendChild(radiobox);
+    private void updateOtherSequences(final EntitySequence activeSequence) {
+        for (EntitySequence sequence : getEntitySequences(activeSequence.getEntityName())) {
+            sequence.setActive(false);
         }
+    }
 
-        private void updateOtherSequences(final EntitySequence activeSequence) {
-            for (EntitySequence sequence : getEntitySequences(activeSequence
-                    .getEntityName())) {
-                sequence.setActive(false);
-            }
-        }
+    private void appendPrefixTextbox(Row row, final EntitySequence entitySequence) {
+        final Textbox tempTextbox = new Textbox();
+        tempTextbox.setWidth("200px");
 
-        private void appendPrefixTextbox(Row row,
-                final EntitySequence entitySequence) {
-            final Textbox tempTextbox = new Textbox();
-            tempTextbox.setWidth("200px");
-            Textbox textbox = Util.bind(tempTextbox, new Util.Getter<String>() {
-
-                @Override
-                public String get() {
-                    return entitySequence.getPrefix();
-                }
-            }, new Util.Setter<String>() {
-
-                @Override
-                public void set(String value) {
+        Textbox textbox = Util.bind(
+                tempTextbox,
+                () -> entitySequence.getPrefix(),
+                value -> {
                     try {
                         entitySequence.setPrefix(value);
                     } catch (IllegalArgumentException e) {
-                        throw new WrongValueException(tempTextbox, e
-                                .getMessage());
+                        throw new WrongValueException(tempTextbox, e.getMessage());
                     }
-                }
-            });
-            textbox.setConstraint(checkConstraintFormatPrefix());
+                });
 
-            if (entitySequence.isAlreadyInUse()) {
-                textbox.setDisabled(true);
-            }
+        textbox.setConstraint(checkConstraintFormatPrefix());
 
-            row.appendChild(textbox);
+        if ( entitySequence.isAlreadyInUse() ) {
+            textbox.setDisabled(true);
         }
 
-        private void appendNumberOfDigitsInbox(Row row,
-                final EntitySequence entitySequence) {
-            final Intbox tempIntbox = new Intbox();
-            Intbox intbox = Util.bind(tempIntbox, new Util.Getter<Integer>() {
+        row.appendChild(textbox);
+    }
 
-                @Override
-                public Integer get() {
-                    return entitySequence.getNumberOfDigits();
-                }
-            }, new Util.Setter<Integer>() {
+    private void appendNumberOfDigitsInbox(Row row, final EntitySequence entitySequence) {
+        final Intbox tempIntbox = new Intbox();
 
-                @Override
-                public void set(Integer value) {
+        Intbox intbox = Util.bind(
+                tempIntbox,
+                () -> entitySequence.getNumberOfDigits(),
+                value -> {
                     try {
                         entitySequence.setNumberOfDigits(value);
                     } catch (IllegalArgumentException e) {
-                        throw new WrongValueException(tempIntbox, _(
-                                "number of digits must be between {0} and {1}",
-                                EntitySequence.MIN_NUMBER_OF_DIGITS,
-                                EntitySequence.MAX_NUMBER_OF_DIGITS));
+                        throw new WrongValueException(
+                                tempIntbox,
+                                _("number of digits must be between {0} and {1}",
+                                        EntitySequence.MIN_NUMBER_OF_DIGITS,
+                                        EntitySequence.MAX_NUMBER_OF_DIGITS));
                     }
-                }
-            });
-            intbox.setConstraint(checkConstraintNumberOfDigits());
+                });
 
-            if (entitySequence.isAlreadyInUse()) {
-                intbox.setDisabled(true);
+        intbox.setConstraint(checkConstraintNumberOfDigits());
+
+        if ( entitySequence.isAlreadyInUse() ) {
+            intbox.setDisabled(true);
+        }
+
+        row.appendChild(intbox);
+    }
+
+    private void appendLastValueInbox(Row row, final EntitySequence entitySequence) {
+        Textbox textbox = Util.bind(
+                new Textbox(),
+                () -> EntitySequence.formatValue(entitySequence.getNumberOfDigits(), entitySequence.getLastValue()));
+
+        row.appendChild(textbox);
+    }
+
+    private void appendOperations(final Row row, final EntitySequence entitySequence) {
+        final Button removeButton = Util.createRemoveButton(event -> {
+            if ( isLastOne(entitySequence) ) {
+                showMessageNotDelete();
+            } else {
+                removeEntitySequence(entitySequence);
             }
+        });
 
-            row.appendChild(intbox);
+        if ( entitySequence.isAlreadyInUse() ) {
+            removeButton.setDisabled(true);
         }
 
-        private void appendLastValueInbox(Row row,
-                final EntitySequence entitySequence) {
-            Textbox textbox = Util.bind(new Textbox(),
-                    new Util.Getter<String>() {
-
-                        @Override
-                        public String get() {
-                            return EntitySequence.formatValue(
-                                    entitySequence.getNumberOfDigits(),
-                                    entitySequence.getLastValue());
-                        }
-                    });
-
-            row.appendChild(textbox);
-        }
-
-        private void appendOperations(final Row row,
-                final EntitySequence entitySequence) {
-            final Button removeButton = Util
-                    .createRemoveButton(new EventListener() {
-
-                        @Override
-                        public void onEvent(Event event) {
-                            if (isLastOne(entitySequence)) {
-                                showMessageNotDelete();
-                            } else {
-                                removeEntitySequence(entitySequence);
-                            }
-                        }
-                    });
-
-            if (entitySequence.isAlreadyInUse()) {
-                removeButton.setDisabled(true);
-            }
-
-            row.appendChild(removeButton);
-        }
+        row.appendChild(removeButton);
+    }
 
 
     public Constraint checkConstraintFormatPrefix() {
-        return new Constraint() {
-            @Override
-            public void validate(Component comp, Object value)
-                    throws WrongValueException {
-
-                Row row = (Row) comp.getParent();
-                EntitySequence sequence = (EntitySequence) row.getValue();
-                if (!sequence.isAlreadyInUse()) {
-                    String errorMessage = validPrefix(sequence, (String) value);
-                    if (errorMessage != null) {
-                        throw new WrongValueException(comp, errorMessage);
-                    }
+        return (comp, value) -> {
+            Row row = (Row) comp.getParent();
+            EntitySequence sequence = (EntitySequence) row.getValue();
+            if ( !sequence.isAlreadyInUse() ) {
+                String errorMessage = validPrefix(sequence, (String) value);
+                if ( errorMessage != null ) {
+                    throw new WrongValueException(comp, errorMessage);
                 }
             }
         };
@@ -919,9 +865,9 @@ public class ConfigurationController extends GenericForwardComposer {
 
     private String validPrefix(EntitySequence sequence, String prefixValue) {
         sequence.setPrefix(prefixValue);
-        if (!configurationModel.checkFrefixFormat(sequence)) {
+        if ( !configurationModel.checkFrefixFormat(sequence) ) {
             String message = _("Invalid format prefix. Format prefix cannot be empty, contain '_' or contain whitespaces.");
-            if (sequence.getEntityName().canContainLowBar()) {
+            if ( sequence.getEntityName().canContainLowBar() ) {
                 message = _("format prefix invalid. It cannot be empty or contain whitespaces.");
             }
             return message;
@@ -930,30 +876,27 @@ public class ConfigurationController extends GenericForwardComposer {
     }
 
     public Constraint checkConstraintNumberOfDigits() {
-        return new Constraint() {
+        return (comp, value) -> {
+            Row row = (Row) comp.getParent();
+            EntitySequence sequence = (EntitySequence) row.getValue();
 
-            @Override
-            public void validate(Component comp, Object value)
-                    throws WrongValueException {
-                Row row = (Row) comp.getParent();
-                EntitySequence sequence = (EntitySequence) row.getValue();
-                if (!sequence.isAlreadyInUse()) {
-                    Integer numberOfDigits = (Integer) value;
-                    try {
-                        sequence.setNumberOfDigits(numberOfDigits);
-                    } catch (IllegalArgumentException e) {
-                        throw new WrongValueException(comp, _(
-                                "number of digits must be between {0} and {1}",
-                                EntitySequence.MIN_NUMBER_OF_DIGITS,
-                                EntitySequence.MAX_NUMBER_OF_DIGITS));
-                    }
+            if ( !sequence.isAlreadyInUse() ) {
+                Integer numberOfDigits = (Integer) value;
+                try {
+                    sequence.setNumberOfDigits(numberOfDigits);
+                } catch (IllegalArgumentException e) {
+
+                    throw new WrongValueException(
+                            comp,
+                            _("number of digits must be between {0} and {1}",
+                                    EntitySequence.MIN_NUMBER_OF_DIGITS,
+                                    EntitySequence.MAX_NUMBER_OF_DIGITS));
                 }
             }
         };
     }
 
-    public void addEntitySequence(EntityNameEnum entityName, String prefix,
-            Integer digits) {
+    public void addEntitySequence(EntityNameEnum entityName, String prefix, Integer digits) {
         configurationModel.addEntitySequence(entityName, prefix, digits);
         reloadEntitySequences();
     }
@@ -963,22 +906,21 @@ public class ConfigurationController extends GenericForwardComposer {
     }
 
     private boolean isLastOne(EntitySequence sequence) {
-        return (getEntitySequences(sequence.getEntityName()).size() == 1);
+        return getEntitySequences(sequence.getEntityName()).size() == 1;
     }
 
     private void showMessageNotDelete() {
         try {
-            Messagebox
-                    .show(_("It can not be deleted. At least one sequence is necessary."),
-                            _("Deleting sequence"), Messagebox.OK,
-                            Messagebox.INFORMATION);
+            Messagebox.show(
+                    _("It can not be deleted. At least one sequence is necessary."),
+                    _("Deleting sequence"), Messagebox.OK, Messagebox.INFORMATION);
+
         } catch (InterruptedException e) {
             messages.showMessage(Level.ERROR, e.getMessage());
         }
     }
 
-    public static class EntitySequenceComparator implements
-            Comparator<EntitySequence> {
+    public static class EntitySequenceComparator implements Comparator<EntitySequence> {
 
         @Override
         public int compare(EntitySequence seq1, EntitySequence seq2) {
@@ -991,7 +933,7 @@ public class ConfigurationController extends GenericForwardComposer {
     }
 
     private List<EntitySequence> getAllEntitySequences() {
-        List<EntitySequence> allSequences = new ArrayList<EntitySequence>();
+        List<EntitySequence> allSequences = new ArrayList<>();
         for (final EntityNameEnum entityName : EntityNameEnum.values()) {
             allSequences.addAll(this.getEntitySequences(entityName));
         }
@@ -999,21 +941,20 @@ public class ConfigurationController extends GenericForwardComposer {
     }
 
     public void addNewEntitySequence() {
-        if (entityCombo != null && numDigitBox != null) {
-            if (entityCombo.getSelectedItem() == null) {
-                throw new WrongValueException(entityCombo,
-                        _("Select entity, please"));
+        if ( entityCombo != null && numDigitBox != null ) {
+            if ( entityCombo.getSelectedItem() == null ) {
+                throw new WrongValueException(entityCombo, _("Select entity, please"));
             }
 
-            if (prefixBox.getValue() == null || prefixBox.getValue().isEmpty()) {
-                throw new WrongValueException(prefixBox,
-                        _("cannot be empty"));
+            if ( prefixBox.getValue() == null || prefixBox.getValue().isEmpty() ) {
+                throw new WrongValueException(prefixBox, _("cannot be empty"));
             }
 
             try {
-                addEntitySequence((EntityNameEnum) entityCombo
-                        .getSelectedItem().getValue(), prefixBox.getValue(),
-                        numDigitBox.getValue());
+                addEntitySequence(
+                        (EntityNameEnum) entityCombo.getSelectedItem().getValue(),
+                        prefixBox.getValue(), numDigitBox.getValue());
+
             } catch (IllegalArgumentException e) {
                 throw new WrongValueException(numDigitBox, e.getMessage());
             }
@@ -1024,7 +965,7 @@ public class ConfigurationController extends GenericForwardComposer {
         return EntityNameEnum.values();
     }
 
-    // Tab ldap properties
+    // Tab LDAP properties
     public LDAPConfiguration getLdapConfiguration() {
         return configurationModel.getLdapConfiguration();
     }
@@ -1034,42 +975,36 @@ public class ConfigurationController extends GenericForwardComposer {
     }
 
     public RowRenderer getAllUserRolesRenderer() {
-        return new RowRenderer() {
-            @Override
-            public void render(Row row, Object data) throws Exception {
+        return (row, data) -> {
 
-                final UserRole role = (UserRole) data;
-                row.appendChild(new Label(role.getDisplayName()));
+            final UserRole role = (UserRole) data;
+            row.appendChild(new Label(role.getDisplayName()));
 
-                final Textbox tempTextbox = new Textbox();
-                Textbox textbox = Util.bind(tempTextbox, new Util.Getter<String>() {
-                    @Override
-                    public String get() {
-                        List<String> listRoles = configurationModel.
-                            getLdapConfiguration().getMapMatchingRoles().get(role.name());
+            final Textbox tempTextbox = new Textbox();
+
+            Textbox textbox = Util.bind(
+                    tempTextbox,
+                    () -> {
+                        List<String> listRoles =
+                                configurationModel.getLdapConfiguration().getMapMatchingRoles().get(role.name());
+
                         Collections.sort(listRoles);
+
                         return StringUtils.join(listRoles, ";");
-                    }
-                }, new Util.Setter<String>() {
-                    @Override
-                    public void set(String value) {
-                                // Created a set in order to avoid duplicates
-                                Set<String> rolesLdap = new HashSet<String>(
-                                        Arrays.asList(StringUtils.split(value,
-                                                ";")));
-                                configurationModel.getLdapConfiguration()
-                                        .setConfigurationRolesLdap(role.name(),
-                                                rolesLdap);
-                    }
-                });
-                textbox.setWidth("300px");
-                row.appendChild(textbox);
-            }
+                    },
+                    value -> {
+                        // Created a set in order to avoid duplicates
+                        Set<String> rolesLdap = new HashSet<>(Arrays.asList(StringUtils.split(value, ";")));
+                        configurationModel.getLdapConfiguration().setConfigurationRolesLdap(role.name(), rolesLdap);
+                    });
+
+            textbox.setWidth("300px");
+            row.appendChild(textbox);
         };
     }
 
     public UserRole[] getRoles() {
-        return roles.values();
+        return UserRole.values();
     }
 
     public void setRoles(UserRole roles) {
@@ -1100,10 +1035,8 @@ public class ConfigurationController extends GenericForwardComposer {
         return configurationModel.isAllowToGatherUsageStatsEnabled();
     }
 
-    public void setAllowToGatherUsageStatsEnabled(
-            boolean allowToGatherUsageStatsEnabled) {
-        configurationModel
-                .setAllowToGatherUsageStatsEnabled(allowToGatherUsageStatsEnabled);
+    public void setAllowToGatherUsageStatsEnabled(boolean allowToGatherUsageStatsEnabled) {
+        configurationModel.setAllowToGatherUsageStatsEnabled(allowToGatherUsageStatsEnabled);
     }
 
     public Set<String> getCurrencies() {
@@ -1111,14 +1044,10 @@ public class ConfigurationController extends GenericForwardComposer {
     }
 
     public ListitemRenderer getCurrencyRenderer() {
-        return new ListitemRenderer() {
-            @Override
-            public void render(Listitem item, Object data) throws Exception {
-                String currencyCode = (String) data;
-                item.setLabel(currencyCode + " - "
-                        + configurationModel.getCurrencySymbol(currencyCode));
-                item.setValue(currencyCode);
-            }
+        return (item, data) -> {
+            String currencyCode = (String) data;
+            item.setLabel(currencyCode + " - " + configurationModel.getCurrencySymbol(currencyCode));
+            item.setValue(currencyCode);
         };
     }
 
@@ -1134,8 +1063,7 @@ public class ConfigurationController extends GenericForwardComposer {
         return configurationModel.getPersonalTimesheetsTypeOfWorkHours();
     }
 
-    public void setPersonalTimesheetsTypeOfWorkHours(
-            TypeOfWorkHours typeOfWorkHours) {
+    public void setPersonalTimesheetsTypeOfWorkHours(TypeOfWorkHours typeOfWorkHours) {
         configurationModel.setPersonalTimesheetsTypeOfWorkHours(typeOfWorkHours);
     }
 
@@ -1160,13 +1088,10 @@ public class ConfigurationController extends GenericForwardComposer {
     }
 
     public ListitemRenderer getPersonalTimesheetsPeriodicityRenderer() {
-        return new ListitemRenderer() {
-            @Override
-            public void render(Listitem item, Object data) throws Exception {
-                PersonalTimesheetsPeriodicityEnum periodicity = (PersonalTimesheetsPeriodicityEnum) data;
-                item.setLabel(_(periodicity.getName()));
-                item.setValue(periodicity);
-            }
+        return (item, data) -> {
+            PersonalTimesheetsPeriodicityEnum periodicity = (PersonalTimesheetsPeriodicityEnum) data;
+            item.setLabel(_(periodicity.getName()));
+            item.setValue(periodicity);
         };
     }
 
@@ -1176,8 +1101,8 @@ public class ConfigurationController extends GenericForwardComposer {
 
     public void setSelectedPersonalTimesheetsPeriodicity(
             PersonalTimesheetsPeriodicityEnum personalTimesheetsPeriodicity) {
-        configurationModel
-                .setPersonalTimesheetsPeriodicity(personalTimesheetsPeriodicity);
+
+        configurationModel.setPersonalTimesheetsPeriodicity(personalTimesheetsPeriodicity);
     }
 
     public boolean isPersonalTimesheetsPeriodicityDisabled() {
@@ -1185,7 +1110,7 @@ public class ConfigurationController extends GenericForwardComposer {
     }
 
     public String getPersonalTimesheetsPeriodicityTooltip() {
-        if (isPersonalTimesheetsPeriodicityDisabled()) {
+        if ( isPersonalTimesheetsPeriodicityDisabled() ) {
             return _("Periocity cannot be changed because there is already any personal timesheet stored");
         }
         return "";
@@ -1221,12 +1146,10 @@ public class ConfigurationController extends GenericForwardComposer {
     }
 
     public List<ConnectorProperty> getConnectorPropertries() {
-        if (selectedConnector == null) {
-            return Collections.emptyList();
-        }
-        return selectedConnector.getProperties();
+        return selectedConnector == null ? Collections.emptyList() : selectedConnector.getProperties();
     }
 
+    /* Should be public! */
     public RowRenderer getConnectorPropertriesRenderer() {
         return new RowRenderer() {
             @Override
@@ -1237,135 +1160,108 @@ public class ConfigurationController extends GenericForwardComposer {
                 Util.appendLabel(row, _(property.getKey()));
 
                 // FIXME this is not perfect solution
-                if ( property.getKey().equals("Protocol") ) appendValueCombobox(row, property);
+                if ( property.getKey().equals("Protocol") )
+                    appendValueCombobox(row, property);
+
                 else appendValueTextbox(row, property);
             }
 
-            private void appendValueTextbox(Row row,
-                    final ConnectorProperty property) {
+            private void appendValueTextbox(Row row, final ConnectorProperty property) {
                 final Textbox textbox = new Textbox();
                 textbox.setWidth("400px");
                 textbox.setConstraint(checkPropertyValue(property));
 
-                Util.bind(textbox, new Util.Getter<String>() {
+                Util.bind(
+                        textbox,
+                        () -> property.getValue(),
+                        value -> property.setValue(value));
 
-                    @Override
-                    public String get() {
-                        return property.getValue();
-                    }
-                }, new Util.Setter<String>() {
+                boolean propertyEqualsPasswordOrEmailPassword =
+                        property.getKey().equals(PredefinedConnectorProperties.PASSWORD) ||
+                                property.getKey().equals(PredefinedConnectorProperties.EMAIL_PASSWORD);
 
-                    @Override
-                    public void set(String value) {
-                        property.setValue(value);
-                    }
-                });
-
-                if ( property.getKey().equals(
-                        PredefinedConnectorProperties.PASSWORD) ||
-                    property.getKey().equals(
-                        PredefinedConnectorProperties.EMAIL_PASSWORD) ) {
+                if ( propertyEqualsPasswordOrEmailPassword ) {
                     textbox.setType("password");
                 }
 
-                // Need for method validateEmailFields()
-                if ( property.getKey().equals(
-                        PredefinedConnectorProperties.EMAIL_USERNAME) ) emailUsernameTextbox = textbox;
+                // Needed for method validateEmailFields()
+                if ( property.getKey().equals(PredefinedConnectorProperties.EMAIL_USERNAME) )
+                    emailUsernameTextbox = textbox;
 
-                if ( property.getKey().equals(
-                        PredefinedConnectorProperties.EMAIL_PASSWORD) ) emailPasswordTextbox = textbox;
+                if ( property.getKey().equals(PredefinedConnectorProperties.EMAIL_PASSWORD) )
+                    emailPasswordTextbox = textbox;
 
-                if ( property.getKey().equals(
-                        PredefinedConnectorProperties.EMAIL_SENDER) ) emailSenderTextbox = textbox;
+                if ( property.getKey().equals(PredefinedConnectorProperties.EMAIL_SENDER) )
+                    emailSenderTextbox = textbox;
 
                 row.appendChild(textbox);
             }
 
-            private void appendValueCombobox(Row row,
-                    final ConnectorProperty property){
+            private void appendValueCombobox(Row row, final ConnectorProperty property) {
 
                 final Combobox combobox = new Combobox();
                 combobox.setWidth("400px");
-                final List<String> protocols = new ArrayList<String>();
+                final List<String> protocols = new ArrayList<>();
                 protocols.add("SMTP");
                 protocols.add("STARTTLS");
 
-                for (String item : protocols){
+                for (String item : protocols) {
                     Comboitem comboitem = new Comboitem();
                     comboitem.setValue(item);
                     comboitem.setLabel(item);
                     comboitem.setParent(combobox);
 
-                    if ( (!property.getValue().equals("")) &&
-                            (item.equals(property.getValue())) ){
+                    if ( (!"".equals(property.getValue())) && (item.equals(property.getValue())) ){
                         combobox.setSelectedItem(comboitem);
                     }
                 }
 
-                combobox.addEventListener(Events.ON_SELECT,
-                        new EventListener() {
-                            @Override
-                            public void onEvent(Event event) throws Exception {
-                                if (combobox.getSelectedItem() != null){
-                                    property.setValue(combobox.getSelectedItem().getValue().toString());
-                                }
-                            }
-                        });
-
-                Util.bind(combobox, new Util.Getter<Comboitem>() {
-                    @Override
-                    public Comboitem get() {
-                        return combobox.getSelectedItem();
-                    }
-                }, new Util.Setter<Comboitem>(){
-
-                    @Override
-                    public void set(Comboitem item) {
-                        if ( (item != null) && (item.getValue() != null) &&
-                                (item.getValue() instanceof String) ){
-                            property.setValue(combobox.getSelectedItem().getValue().toString());
-                        }
+                combobox.addEventListener(Events.ON_SELECT, event -> {
+                    if ( combobox.getSelectedItem() != null ) {
+                        property.setValue(combobox.getSelectedItem().getValue().toString());
                     }
                 });
+
+                Util.bind(
+                        combobox,
+                        () -> combobox.getSelectedItem(),
+                        item -> {
+                            if ( (item != null) && (item.getValue() != null) && (item.getValue() instanceof String) ) {
+                                property.setValue(combobox.getSelectedItem().getValue().toString());
+                            }
+                        });
 
 
                 row.appendChild(combobox);
 
-                // Need for testing E-mail connection
+                // Needed for testing E-mail connection
                 protocolsCombobox = combobox;
             }
 
-            public Constraint checkPropertyValue(
-                    final ConnectorProperty property) {
+            public Constraint checkPropertyValue(final ConnectorProperty property) {
                 final String key = property.getKey();
-                return new Constraint() {
-                    @Override
-                    public void validate(Component comp, Object value) {
-                        if ( key.equals(PredefinedConnectorProperties.ACTIVATED) ) {
-                            if ( !((String) value).equalsIgnoreCase("Y")
-                                    && !((String) value).equalsIgnoreCase("N") ) {
-                                throw new WrongValueException(comp, _(
-                                        "Only {0} allowed", "Y/N"));
-                            }
-                        } else if ( key
-                                .equals(PredefinedConnectorProperties.SERVER_URL) ||
-                                key.equals(PredefinedConnectorProperties.USERNAME) ||
-                                key.equals(PredefinedConnectorProperties.PASSWORD) ||
-                                key.equals(PredefinedConnectorProperties.JIRA_HOURS_TYPE) ||
-                                key.equals(PredefinedConnectorProperties.HOST) ||
-                                key.equals(PredefinedConnectorProperties.PORT) ||
-                                key.equals(PredefinedConnectorProperties.EMAIL_SENDER) ||
-                                key.equals(PredefinedConnectorProperties.PROTOCOL) ) {
-                            ((InputElement) comp).setConstraint("no empty:"
-                                    + _("cannot be empty"));
-                        } else if ( key
-                                .equals(PredefinedConnectorProperties.TIM_NR_DAYS_TIMESHEET) ||
-                                key.equals(PredefinedConnectorProperties.TIM_NR_DAYS_ROSTER) ||
-                                key.equals(PredefinedConnectorProperties.PORT) ) {
-                            if ( !isNumeric((String) value) ) {
-                                throw new WrongValueException(comp,
-                                        _("Only digits allowed"));
-                            }
+                return (comp, value) -> {
+                    if ( key.equals(PredefinedConnectorProperties.ACTIVATED) ) {
+                        if ( !((String) value).equalsIgnoreCase("Y") && !((String) value).equalsIgnoreCase("N") ) {
+                            throw new WrongValueException(comp, _("Only {0} allowed", "Y/N"));
+                        }
+                    } else if ( key.equals(PredefinedConnectorProperties.SERVER_URL) ||
+                            key.equals(PredefinedConnectorProperties.USERNAME) ||
+                            key.equals(PredefinedConnectorProperties.PASSWORD) ||
+                            key.equals(PredefinedConnectorProperties.JIRA_HOURS_TYPE) ||
+                            key.equals(PredefinedConnectorProperties.HOST) ||
+                            key.equals(PredefinedConnectorProperties.PORT) ||
+                            key.equals(PredefinedConnectorProperties.EMAIL_SENDER) ||
+                            key.equals(PredefinedConnectorProperties.PROTOCOL) ) {
+
+                        ((InputElement) comp).setConstraint("no empty:" + _("cannot be empty"));
+
+                    } else if ( key.equals(PredefinedConnectorProperties.TIM_NR_DAYS_TIMESHEET) ||
+                            key.equals(PredefinedConnectorProperties.TIM_NR_DAYS_ROSTER) ||
+                            key.equals(PredefinedConnectorProperties.PORT) ) {
+
+                        if ( !isNumeric((String) value) ) {
+                            throw new WrongValueException(comp, _("Only digits allowed"));
                         }
                     }
                 };
@@ -1383,8 +1279,8 @@ public class ConfigurationController extends GenericForwardComposer {
         };
     }
 
-    private boolean isEmailFieldsValid(){
-        if ( protocolsCombobox != null && protocolsCombobox.getSelectedItem() != null ){
+    private boolean areEmailFieldsValid() {
+        if ( protocolsCombobox != null && protocolsCombobox.getSelectedItem() != null ) {
             if ( protocolsCombobox.getSelectedItem().getLabel().equals("STARTTLS") &&
                     emailUsernameTextbox.getValue() != null &&
                     emailPasswordTextbox.getValue() != null &&
@@ -1393,7 +1289,7 @@ public class ConfigurationController extends GenericForwardComposer {
                     emailSenderTextbox.getValue().matches("^\\S+@\\S+\\.\\S+$") )
                 return true;
 
-            if ( protocolsCombobox != null && protocolsCombobox.getSelectedItem() != null ){
+            if ( protocolsCombobox != null && protocolsCombobox.getSelectedItem() != null ) {
                 if ( protocolsCombobox.getSelectedItem().getLabel().equals("SMTP") )
                     return true;
             }

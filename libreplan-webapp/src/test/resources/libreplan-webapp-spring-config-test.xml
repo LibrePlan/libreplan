@@ -91,6 +91,12 @@
                 <value>
                     org/libreplan/business/scenarios/entities/Scenarios.hbm.xml
                 </value>
+                <value>
+                    org/libreplan/business/email/entities/Email.hbm.xml
+                </value>
+                <value>
+                    org/libreplan/business/common/entities/Connector.hbm.xml
+                </value>
             </list>
         </property>
 

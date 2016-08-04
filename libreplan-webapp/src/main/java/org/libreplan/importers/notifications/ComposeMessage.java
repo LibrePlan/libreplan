@@ -34,9 +34,7 @@ import static org.libreplan.web.I18nHelper._;
  * Sends E-mail to users with data that storing in notification_queue table
  * and that are treat to incoming EmailNotification
  *
- * Created by
- * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
- * on 20.01.2016.
+ * @author Created by Vova Perebykivskiy <vova@libreplan-enterprise.com> on 20.01.2016.
  */
 
 @Component
@@ -76,7 +74,8 @@ public class ComposeMessage {
 
         UserRole currentUserRole = getCurrentUserRole(notification.getType());
 
-        if ( currentWorker.getUser().isInRole(currentUserRole) ){
+        if ( currentWorker.getUser().isInRole(currentUserRole) ) {
+
             if ( currentWorker.getUser().getApplicationLanguage().equals(Language.BROWSER_LANGUAGE) ) {
                 locale = new Locale(System.getProperty("user.language"));
             } else {
@@ -96,16 +95,15 @@ public class ComposeMessage {
             final String username = usrnme;
             final String password = psswrd;
 
-            // It is very important to use Session.getInstance instead of Session.getDefaultInstance
-            Session mailSession = Session.getInstance(properties,
-                    new javax.mail.Authenticator() {
-                        protected PasswordAuthentication getPasswordAuthentication() {
-                            return new PasswordAuthentication(username, password);
-                        }
-                    });
+            // It is very important to use Session.getInstance() instead of Session.getDefaultInstance()
+            Session mailSession = Session.getInstance(properties, new javax.mail.Authenticator() {
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication(username, password);
+                }
+            });
 
             // Send message
-            try{
+            try {
                 MimeMessage message = new MimeMessage(mailSession);
 
                 message.setFrom(new InternetAddress(sender));
@@ -122,37 +120,42 @@ public class ComposeMessage {
 
             } catch (MessagingException e) {
                 throw new RuntimeException(e);
-            } catch (NullPointerException e){
-                if (receiver == null) try {
-                    Messagebox.show(_(currentWorker.getUser().getLoginName() + " - this user have not filled E-mail"), _("Error"),
-                            Messagebox.OK, Messagebox.ERROR);
-                } catch (InterruptedException e1) {
-                    e1.printStackTrace();
-                }
+            } catch (NullPointerException e) {
+                if (receiver == null)
+                    try {
+                        Messagebox.show(
+                                _(currentWorker.getUser().getLoginName() + " - this user have not filled E-mail"),
+                                _("Error"), Messagebox.OK, Messagebox.ERROR);
+                    } catch (InterruptedException e1) {
+                        e1.printStackTrace();
+                    }
             }
         }
         return false;
     }
 
-    private Worker getCurrentWorker(Long resourceID){
+    private Worker getCurrentWorker(Long resourceID) {
         List<Worker> workerList = workerModel.getWorkers();
-        for(int i = 0; i < workerList.size(); i++)
-            if ( workerList.get(i).getId().equals(resourceID) )
-                return workerList.get(i);
+        for (Worker current : workerList)
+            if ( current.getId().equals(resourceID) )
+                return current;
+
         return null;
     }
 
-    private EmailTemplate findCurrentEmailTemplate(EmailTemplateEnum templateEnum, Locale locale){
+    private EmailTemplate findCurrentEmailTemplate(EmailTemplateEnum templateEnum, Locale locale) {
         List<EmailTemplate> emailTemplates;
         emailTemplates = emailTemplateModel.getAll();
+
         for (EmailTemplate item : emailTemplates)
             if ( item.getType().equals(templateEnum) && item.getLanguage().getLocale().equals(locale) )
                 return item;
+
         return null;
     }
 
-    private String replaceKeywords(String text, Worker currentWorker, EmailNotification notification){
-        if ( notification.getType().equals(EmailTemplateEnum.TEMPLATE_ENTER_DATA_IN_TIMESHEET) ){
+    private String replaceKeywords(String text, Worker currentWorker, EmailNotification notification) {
+        if ( notification.getType().equals(EmailTemplateEnum.TEMPLATE_ENTER_DATA_IN_TIMESHEET) ) {
             // It is because there is no other data for
             // EmailNotification of TEMPLATE_ENTER_DATA_IN_TIMESHEET notification type
             text = text.replaceAll("\\{resource\\}", notification.getResource().getName());
@@ -172,38 +175,41 @@ public class ComposeMessage {
     private void setupConnectionProperties(){
         List<ConnectorProperty> emailConnectorProperties = emailConnectionValidator.getEmailConnectorProperties();
 
-        for (int i = 0; i < emailConnectorProperties.size(); i++){
-            switch (i){
-                case 1: {
+        for (int i = 0; i < emailConnectorProperties.size(); i++) {
+            switch (i) {
+                case 1:
                     protocol = emailConnectorProperties.get(1).getValue();
                     break;
-                }
-                case 2: {
+
+                case 2:
                     host = emailConnectorProperties.get(2).getValue();
                     break;
-                }
-                case 3: {
+
+                case 3:
                     port = emailConnectorProperties.get(3).getValue();
                     break;
-                }
-                case 4: {
+
+                case 4:
                     sender = emailConnectorProperties.get(4).getValue();
                     break;
-                }
-                case 5: {
+
+                case 5:
                     usrnme = emailConnectorProperties.get(5).getValue();
                     break;
-                }
-                case 6: {
+
+                case 6:
                     psswrd = emailConnectorProperties.get(6).getValue();
                     break;
-                }
+
+                default:
+                    /* Nothing */
+                    break;
             }
         }
 
         properties = new Properties();
 
-        if ( protocol.equals("STARTTLS") ) {
+        if ( "STARTTLS".equals(protocol) ) {
             properties.put("mail.smtp.starttls.enable", "true");
             properties.put("mail.smtp.host", host);
             properties.put("mail.smtp.socketFactory.port", port);
@@ -211,27 +217,36 @@ public class ComposeMessage {
             properties.put("mail.smtp.auth", "true");
             properties.put("mail.smtp.port", port);
         }
-        else if ( protocol.equals("SMTP") ) {
+        else if ( "SMTP".equals(protocol) ) {
             properties.put("mail.smtp.host", host);
             properties.put("mail.smtp.port", port);
         }
     }
 
-    private UserRole getCurrentUserRole(EmailTemplateEnum type){
-        switch (type){
-            case TEMPLATE_TASK_ASSIGNED_TO_RESOURCE: return UserRole.ROLE_EMAIL_TASK_ASSIGNED_TO_RESOURCE;
+    private UserRole getCurrentUserRole(EmailTemplateEnum type) {
+        switch (type) {
+            case TEMPLATE_TASK_ASSIGNED_TO_RESOURCE:
+                return UserRole.ROLE_EMAIL_TASK_ASSIGNED_TO_RESOURCE;
 
-            case TEMPLATE_RESOURCE_REMOVED_FROM_TASK: return UserRole.ROLE_EMAIL_RESOURCE_REMOVED_FROM_TASK;
+            case TEMPLATE_RESOURCE_REMOVED_FROM_TASK:
+                return UserRole.ROLE_EMAIL_RESOURCE_REMOVED_FROM_TASK;
 
-            case TEMPLATE_MILESTONE_REACHED: return UserRole.ROLE_EMAIL_MILESTONE_REACHED;
+            case TEMPLATE_MILESTONE_REACHED:
+                return UserRole.ROLE_EMAIL_MILESTONE_REACHED;
 
-            case TEMPLATE_TODAY_TASK_SHOULD_START: return UserRole.ROLE_EMAIL_TASK_SHOULD_START;
+            case TEMPLATE_TODAY_TASK_SHOULD_START:
+                return UserRole.ROLE_EMAIL_TASK_SHOULD_START;
 
-            case TEMPLATE_TODAY_TASK_SHOULD_FINISH: return UserRole.ROLE_EMAIL_TASK_SHOULD_FINISH;
+            case TEMPLATE_TODAY_TASK_SHOULD_FINISH:
+                return UserRole.ROLE_EMAIL_TASK_SHOULD_FINISH;
 
-            case TEMPLATE_ENTER_DATA_IN_TIMESHEET: return UserRole.ROLE_EMAIL_TIMESHEET_DATA_MISSING;
+            case TEMPLATE_ENTER_DATA_IN_TIMESHEET:
+                return UserRole.ROLE_EMAIL_TIMESHEET_DATA_MISSING;
+
+            default:
+                /* There is no other template */
+                return null;
         }
-        return null;
     }
 
 }

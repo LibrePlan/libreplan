@@ -39,7 +39,6 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-
 import java.util.Date;
 import java.util.List;
 
@@ -51,9 +50,7 @@ import java.util.List;
  * Date will be send on current date equals to deadline date of {@link Milestone}
  * But it will be only send to Manager (you can assign him in project properties)
  *
- * Created by
- * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
- * on 20.01.2016.
+ * @author Created by Vova Perebykivskyi <vova@libreplan-enterprise.com> on 20.01.2016
  */
 
 @Component
@@ -80,18 +77,16 @@ public class SendEmailOnMilestoneReached implements IEmailNotificationJob {
         // Gathering data
         checkMilestoneDate();
 
-        if ( Configuration.isEmailSendingEnabled() ){
+        if ( Configuration.isEmailSendingEnabled() ) {
 
-            if ( emailConnectionValidator.isConnectionActivated() )
+            if ( emailConnectionValidator.isConnectionActivated() && emailConnectionValidator.validConnection() ) {
 
-                if ( emailConnectionValidator.validConnection() ){
+                List<EmailNotification> notifications =
+                        emailNotificationModel.getAllByType(EmailTemplateEnum.TEMPLATE_MILESTONE_REACHED);
 
-                List<EmailNotification> notifications = emailNotificationModel
-                        .getAllByType(EmailTemplateEnum.TEMPLATE_MILESTONE_REACHED);
-
-                for (int i = 0; i < notifications.size(); i++)
-                    if ( composeMessageForUser(notifications.get(i)) )
-                        deleteSingleNotification(notifications.get(i));
+                for (EmailNotification notification : notifications)
+                    if ( composeMessageForUser(notification) )
+                        deleteSingleNotification(notification);
             }
         }
     }
@@ -144,9 +139,7 @@ public class SendEmailOnMilestoneReached implements IEmailNotificationJob {
                 int deadlineMonth = deadline.getMonthOfYear();
                 int deadlineDay = deadline.getDayOfMonth();
 
-                if (currentYear == deadlineYear &&
-                        currentMonth == deadlineMonth &&
-                        currentDay == deadlineDay)
+                if ( currentYear == deadlineYear && currentMonth == deadlineMonth && currentDay == deadlineDay )
                     sendEmailNotificationToManager(item);
             }
         }

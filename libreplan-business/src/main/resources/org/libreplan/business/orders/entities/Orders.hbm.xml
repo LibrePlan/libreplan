@@ -79,9 +79,9 @@
             <many-to-many class="SchedulingDataForVersion" column="scheduling_state_for_version_id" />
         </map>
 
-        <one-to-one name="sumChargedEffort" class="SumChargedEffort" cascade="delete" property-ref="orderElement" />
+        <one-to-one name="sumChargedEffort" class="SumChargedEffort" cascade="delete-orphan" property-ref="orderElement" />
 
-        <one-to-one name="sumExpenses" class="SumExpenses" cascade="delete" property-ref="orderElement" />
+        <one-to-one name="sumExpenses" class="SumExpenses" cascade="delete-orphan" property-ref="orderElement" />
 
         <joined-subclass name="OrderLineGroup" table="order_line_group">
             <key column="order_element_id"/>

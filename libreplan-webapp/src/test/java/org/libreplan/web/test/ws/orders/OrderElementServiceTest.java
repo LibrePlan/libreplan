@@ -643,6 +643,12 @@ public class OrderElementServiceTest {
                 assertThat(response.getStatus(), equalTo(Status.OK.getStatusCode()));
 
                 try {
+                    /*
+                     * Flush is needed because
+                     * before there were errors that after removing object some references were still present.
+                     */
+                    sessionFactory.getCurrentSession().flush();
+
                     orderElementDAO.findByCode(codeToRemove);
                 } catch (InstanceNotFoundException e) {
                     assertTrue(true);

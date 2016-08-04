@@ -40,9 +40,7 @@ import java.util.List;
 /**
  * Model for operations related to {@link EmailNotification}.
  *
- * Created by
- * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
- * on 21.10.15.
+ * @author Created by Vova Perebykivskiy <vova@libreplan-enterprise.com> on 21.10.2015.
  */
 
 @Service

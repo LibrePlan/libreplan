@@ -31,9 +31,7 @@ import java.util.Date;
  * This class is intended to work as a Hibernate component.
  * It represents the Email notification to be send to user.
  *
- * Created by
- * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
- * on 19.10.2015.
+ * @author Created by Vova Perebykivskyi <vova@libreplan-enterprise.com> on 19.10.2015.
  */
 public class EmailNotification extends BaseEntity {
 

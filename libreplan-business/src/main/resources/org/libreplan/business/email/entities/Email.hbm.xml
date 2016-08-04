@@ -4,7 +4,7 @@
 
 <hibernate-mapping package="org.libreplan.business.email.entities" default-access="field">
 
-    <class name="org.libreplan.business.email.entities.EmailTemplate" table="email_template">
+    <class name="EmailTemplate" table="email_template">
 
         <id name="id" access="property" type="long">
             <generator class="increment" >

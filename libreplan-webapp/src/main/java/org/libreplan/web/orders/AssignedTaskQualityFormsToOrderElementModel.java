@@ -52,7 +52,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
- * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -116,15 +116,11 @@ public class AssignedTaskQualityFormsToOrderElementModel implements IAssignedTas
 
     @Override
     public List<QualityForm> getNotAssignedQualityForms() {
-        List<QualityForm> result = new ArrayList<QualityForm>();
-        if ( orderElement != null ) {
-            return getListNotAssignedQualityForms();
-        }
-        return result;
+        return orderElement != null ? getListNotAssignedQualityForms() : new ArrayList<>();
     }
 
     private List<QualityForm> getListNotAssignedQualityForms() {
-        List<QualityForm> result = new ArrayList<QualityForm>();
+        List<QualityForm> result = new ArrayList<>();
         for (QualityForm qualityForm : orderModel.getQualityForms()) {
             if ( !isAssigned(qualityForm) ) {
                 result.add(qualityForm);
@@ -135,7 +131,7 @@ public class AssignedTaskQualityFormsToOrderElementModel implements IAssignedTas
 
     @Override
     public List<QualityForm> getAssignedQualityForms() {
-        List<QualityForm> result = new ArrayList<QualityForm>();
+        List<QualityForm> result = new ArrayList<>();
         for (QualityForm qualityForm : qualityFormDAO.getAll()) {
             if ( isAssigned(qualityForm) ) {
                 result.add(qualityForm);
@@ -146,7 +142,7 @@ public class AssignedTaskQualityFormsToOrderElementModel implements IAssignedTas
 
     @Override
     public List<TaskQualityForm> getTaskQualityForms() {
-        List<TaskQualityForm> result = new ArrayList<TaskQualityForm>();
+        List<TaskQualityForm> result = new ArrayList<>();
         if ( orderElement != null ) {
             result.addAll(orderElement.getTaskQualityForms());
         }
@@ -176,10 +172,10 @@ public class AssignedTaskQualityFormsToOrderElementModel implements IAssignedTas
 
     @Override
     public boolean isAssigned(QualityForm qualityForm) {
-        // orderDAO used for gathered data to be sent to LibrePlan server
-        // In general case orderElement will be not null and only that part of code will be triggered
+        // orderDAO used for gathered data to be sent to LibrePlan server.
+        // In general case orderElement will be not null and only that part of code will be triggered.
 
-        if ( orderElement != null ){
+        if ( orderElement != null ) {
             for (TaskQualityForm taskQualityForm : orderElement.getTaskQualityForms()) {
                 if ( qualityForm.equals(taskQualityForm.getQualityForm()) ) {
                     return true;
@@ -203,37 +199,27 @@ public class AssignedTaskQualityFormsToOrderElementModel implements IAssignedTas
     }
 
     public boolean isDisabledPassedItem(TaskQualityForm taskQualityForm, TaskQualityFormItem item) {
-        if ( (taskQualityForm == null) || ((item == null)) ) {
-            return true;
-        }
-        if ( !taskQualityForm.isByItems() ) {
-            return (!(item.getPassed() || taskQualityForm.isPassedPreviousItem(item)));
-        }
-        return false;
+        return (taskQualityForm == null) ||
+                (item == null) ||
+                !taskQualityForm.isByItems() && !(item.getPassed() ||
+                taskQualityForm.isPassedPreviousItem(item));
     }
 
     public boolean isDisabledDateItem(TaskQualityForm taskQualityForm, TaskQualityFormItem item) {
-        if ( (taskQualityForm == null) || ((item == null)) ) {
-            return true;
-        }
-        return (!taskQualityForm.isByItems() && (!item.getPassed()));
+        return (taskQualityForm == null) || (item == null) || !taskQualityForm.isByItems() && !item.getPassed();
     }
 
     public boolean isCorrectConsecutiveDate(TaskQualityForm taskQualityForm, TaskQualityFormItem item) {
-        if ( (taskQualityForm == null) || ((item == null)) ) {
-            return true;
-        }
-        if ( taskQualityForm.isByItems() ) {
-            return true;
-        }
-        return (taskQualityForm.isCorrectConsecutiveDate(item));
+        return (taskQualityForm == null) ||
+                (item == null) ||
+                taskQualityForm.isByItems() ||
+                taskQualityForm.isCorrectConsecutiveDate(item);
     }
 
     public void updatePassedTaskQualityFormItems(TaskQualityForm taskQualityForm) {
         if (taskQualityForm != null) {
             Integer position = getFirstNotPassedPosition(taskQualityForm);
-            List<TaskQualityFormItem> items = taskQualityForm
-                .getTaskQualityFormItems();
+            List<TaskQualityFormItem> items = taskQualityForm.getTaskQualityFormItems();
             for (int i = position; i < items.size(); i++) {
                 items.get(i).setPassed(false);
                 items.get(i).setDate(null);
@@ -243,8 +229,7 @@ public class AssignedTaskQualityFormsToOrderElementModel implements IAssignedTas
 
     private Integer getFirstNotPassedPosition(TaskQualityForm taskQualityForm) {
         Integer position = 0;
-        for (TaskQualityFormItem item : taskQualityForm
-                .getTaskQualityFormItems()) {
+        for (TaskQualityFormItem item : taskQualityForm.getTaskQualityFormItems()) {
             if (!item.getPassed()) {
                 return position;
             }
@@ -254,12 +239,10 @@ public class AssignedTaskQualityFormsToOrderElementModel implements IAssignedTas
     }
 
     // Operation to confirm and validate
-
     @Override
     public void validate() {
         if (getOrderElement() != null) {
-            for (TaskQualityForm taskQualityForm : orderElement
-                    .getTaskQualityForms()) {
+            for (TaskQualityForm taskQualityForm : orderElement.getTaskQualityForms()) {
                 validateTaskQualityForm(taskQualityForm);
             }
         }
@@ -270,19 +253,15 @@ public class AssignedTaskQualityFormsToOrderElementModel implements IAssignedTas
     }
 
     private void validateTaskQualityFormItems(TaskQualityForm taskQualityForm) {
-        for (TaskQualityFormItem item : taskQualityForm
-                .getTaskQualityFormItems()) {
+        for (TaskQualityFormItem item : taskQualityForm.getTaskQualityFormItems()) {
 
-            if ((!taskQualityForm.isByItems())
-                    && (!taskQualityForm.isCorrectConsecutivePassed(item))) {
-                throw new ValidationException(
-                        invalidValue(
+            if ( (!taskQualityForm.isByItems()) && (!taskQualityForm.isCorrectConsecutivePassed(item)) ) {
+                throw new ValidationException(invalidValue(
                         _("cannot be checked until the previous item is checked before"),
                         "passed", item.getName(), taskQualityForm));
 
             }
-            if ((!taskQualityForm.isByItems())
-                    && (!taskQualityForm.isCorrectConsecutiveDate(item))) {
+            if ( (!taskQualityForm.isByItems()) && (!taskQualityForm.isCorrectConsecutiveDate(item)) ) {
                 throw new ValidationException(invalidValue(
                         _("must be after the previous date"),
                         "date", item.getName(), taskQualityForm));
@@ -299,8 +278,7 @@ public class AssignedTaskQualityFormsToOrderElementModel implements IAssignedTas
     @Override
     @Transactional(readOnly = true)
     public void addAdvanceAssignmentIfNeeded(TaskQualityForm taskQualityForm)
-            throws DuplicateValueTrueReportGlobalAdvanceException,
-            DuplicateAdvanceAssignmentForOrderElementException {
+            throws DuplicateValueTrueReportGlobalAdvanceException, DuplicateAdvanceAssignmentForOrderElementException {
 
         AdvanceType advanceType = taskQualityForm.getQualityForm().getAdvanceType();
         advanceTypeDAO.reattach(advanceType);
@@ -340,8 +318,7 @@ public class AssignedTaskQualityFormsToOrderElementModel implements IAssignedTas
     }
 
     private void showMessageDeleteSpread() throws ValidationException {
-        throw new ValidationException(
-                _("Quality form cannot be removed as it is spreading progress"));
+        throw new ValidationException(_("Quality form cannot be removed as it is spreading progress"));
     }
 
     @Override

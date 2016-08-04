@@ -33,33 +33,31 @@ import org.libreplan.business.qualityforms.entities.TaskQualityFormItem;
 
 /**
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
- * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
 public interface IAssignedTaskQualityFormsToOrderElementModel {
 
     /**
-     * Assigns {@link TaskQualityForm} to {@link OrderElement}
+     * Assigns {@link TaskQualityForm} to {@link OrderElement}.
      * @param @ QualityForm}
      */
     void assignTaskQualityForm(QualityForm qualityForm);
 
     /**
-     * Delete {@link TaskQualityForm}
+     * Delete {@link TaskQualityForm}.
      * @param taskQualityForm
      */
     void deleteTaskQualityForm(TaskQualityForm taskQualityForm);
 
     /**
-     * Gets all {@link TaskQualityForm} assigned to the current
-     * {@link OrderElement}
-     * @return
+     * Gets all {@link TaskQualityForm} assigned to the current {@link OrderElement}.
+     * @return {@link List<TaskQualityForm>}
      */
     List<TaskQualityForm> getTaskQualityForms();
 
     /**
-     * Returns all the unallocated {@link QualityForm} to the current
-     * {@link OrderElement}
-     * @return
+     * Returns all the unallocated {@link QualityForm} to the current {@link OrderElement}.
+     * @return {@link List<QualityForm>}
      */
     List<QualityForm> getNotAssignedQualityForms();
 
@@ -69,22 +67,20 @@ public interface IAssignedTaskQualityFormsToOrderElementModel {
     List<QualityForm> getAssignedQualityForms();
 
     /**
-     * Returns {@link OrderElement}
-     * @return
+     * @return {@link OrderElement}
      */
     OrderElement getOrderElement();
 
     void init(OrderElement orderElement);
 
     /**
-     * Check whether {@link QualityForm} has been already assigned to
-     * {@link OrderElement} or not
+     * Check whether {@link QualityForm} has been already assigned to {@link OrderElement} or not.
      * @param qualityForm
      */
     boolean isAssigned(QualityForm qualityForm);
 
     /**
-     * Set {@link OrderElement}
+     * Set {@link OrderElement}.
      * @param orderElement
      */
     void setOrderElement(OrderElement orderElement);
@@ -95,47 +91,36 @@ public interface IAssignedTaskQualityFormsToOrderElementModel {
     void setOrderModel(IOrderModel orderModel);
 
     /**
-     * Update the date and the property passed of all the
-     * {@link TaskQualityFormItem} of the {@ TaskQualityForm}
+     * Update the date and the property passed of all the {@link TaskQualityFormItem} of the {@link TaskQualityForm}.
      * @param taskQualityForm
      */
     void updatePassedTaskQualityFormItems(TaskQualityForm taskQualityForm);
 
     /**
-     * Check whether {@link QualityFormItem} the property passed must be
-     * disabled
-     * @param taskQualityForm
-     *            ,item
+     * Check whether {@link QualityFormItem} the property passed must be disabled.
+     * @param taskQualityForm, item
      */
-    boolean isDisabledPassedItem(TaskQualityForm taskQualityForm,
-            TaskQualityFormItem item);
+    boolean isDisabledPassedItem(TaskQualityForm taskQualityForm, TaskQualityFormItem item);
 
     /**
-     * Check whether {@link QualityFormItem} date must be disabled
-     * @param taskQualityForm
-     *            ,item
+     * Check whether {@link QualityFormItem} date must be disabled.
+     * @param taskQualityForm, item
      */
-    boolean isDisabledDateItem(TaskQualityForm taskQualityForm,
-            TaskQualityFormItem item);
+    boolean isDisabledDateItem(TaskQualityForm taskQualityForm, TaskQualityFormItem item);
 
     /**
-     * Check whether {@link QualityFormItem} date is consecutive
-     * @param taskQualityForm
-     *            ,item
+     * Check whether {@link QualityFormItem} date is consecutive.
+     * @param taskQualityForm, item
      */
-    boolean isCorrectConsecutiveDate(TaskQualityForm taskQualityForm,
-            TaskQualityFormItem item);
+    boolean isCorrectConsecutiveDate(TaskQualityForm taskQualityForm, TaskQualityFormItem item);
 
     /**
-     * Check whether all {@link QualityForm} and its {@link QualityFormItem} are
-     * valid.
-     * @param
+     * Check whether all {@link QualityForm} and its {@link QualityFormItem} are valid.
      */
     void validate();
 
     void addAdvanceAssignmentIfNeeded(TaskQualityForm taskQualityForm)
-            throws DuplicateValueTrueReportGlobalAdvanceException,
-            DuplicateAdvanceAssignmentForOrderElementException;
+            throws DuplicateValueTrueReportGlobalAdvanceException, DuplicateAdvanceAssignmentForOrderElementException;
 
     void removeAdvanceAssignmentIfNeeded(TaskQualityForm taskQualityForm);
 
