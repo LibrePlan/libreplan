@@ -89,7 +89,6 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 
-
 import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Grid;
@@ -157,7 +156,7 @@ public class ConfigurationController extends GenericForwardComposer {
     private IMaterialsModel materialsModel;
 
     @Autowired
-    private IAssignedTaskQualityFormsToOrderElementModel assignedQualityFormsModel;
+    private IAssignedTaskQualityFormsToOrderElementModel assignedTaskQualityFormsToOrderElementModel;
 
     private IMessagesForUser messages;
 
@@ -276,8 +275,12 @@ public class ConfigurationController extends GenericForwardComposer {
 
     public void save() throws InterruptedException {
 
-        if (getSelectedConnector() != null && getSelectedConnector().getName().equals("E-mail") &&
-                isEmailFieldsValid() == false) {
+        boolean connectorIsEmailAndFieldsAreInvalid = getSelectedConnector() != null &&
+                getSelectedConnector().getName().equals("E-mail") &&
+                !areEmailFieldsValid();
+
+        if ( connectorIsEmailAndFieldsAreInvalid ) {
+            messages.clearMessages();
             messages.showMessage(Level.ERROR, _("Check all fields"));
 
         } else {
@@ -316,11 +319,18 @@ public class ConfigurationController extends GenericForwardComposer {
         }
     }
 
-    private void sendDataToServer(){
+    private void sendDataToServer() {
         GatheredUsageStats gatheredUsageStats = new GatheredUsageStats();
 
-        gatheredUsageStats.setupNotAutowiredClasses(userDAO, orderModel, workReportModel, workerModel, machineModel,
-                expenseSheetModel, materialsModel, assignedQualityFormsModel);
+        gatheredUsageStats.setupNotAutowiredClasses(
+                userDAO,
+                orderModel,
+                workReportModel,
+                workerModel,
+                machineModel,
+                expenseSheetModel,
+                materialsModel,
+                assignedTaskQualityFormsToOrderElementModel);
 
         gatheredUsageStats.sendGatheredUsageStatsToServer();
         SecurityUtils.isGatheredStatsAlreadySent = true;
@@ -1383,8 +1393,8 @@ public class ConfigurationController extends GenericForwardComposer {
         };
     }
 
-    private boolean isEmailFieldsValid(){
-        if ( protocolsCombobox != null && protocolsCombobox.getSelectedItem() != null ){
+    private boolean areEmailFieldsValid() {
+        if ( protocolsCombobox != null && protocolsCombobox.getSelectedItem() != null ) {
             if ( protocolsCombobox.getSelectedItem().getLabel().equals("STARTTLS") &&
                     emailUsernameTextbox.getValue() != null &&
                     emailPasswordTextbox.getValue() != null &&
@@ -1393,7 +1403,7 @@ public class ConfigurationController extends GenericForwardComposer {
                     emailSenderTextbox.getValue().matches("^\\S+@\\S+\\.\\S+$") )
                 return true;
 
-            if ( protocolsCombobox != null && protocolsCombobox.getSelectedItem() != null ){
+            if ( protocolsCombobox != null && protocolsCombobox.getSelectedItem() != null ) {
                 if ( protocolsCombobox.getSelectedItem().getLabel().equals("SMTP") )
                     return true;
             }

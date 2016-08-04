@@ -40,9 +40,7 @@ import java.util.List;
 /**
  * Model for operations related to {@link EmailNotification}.
  *
- * Created by
- * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
- * on 21.10.15.
+ * @author Created by Vova Perebykivskiy <vova@libreplan-enterprise.com> on 21.10.2015.
  */
 
 @Service
@@ -119,7 +117,7 @@ public class EmailNotificationModel implements IEmailNotificationModel {
         return emailNotification;
     }
 
-    public void setNewObject(){
+    public void setNewObject() {
         this.emailNotification = new EmailNotification();
     }
 

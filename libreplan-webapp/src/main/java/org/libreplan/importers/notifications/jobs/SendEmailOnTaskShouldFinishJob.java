@@ -27,22 +27,21 @@ import org.springframework.scheduling.quartz.QuartzJobBean;
 
 /**
  * Sends E-mail to users with data that storing in notification_queue table
- * and that are treat to {@link EmailTemplateEnum.TEMPLATE_TODAY_TASK_SHOULD_FINISH}
+ * and that are treat to
+ * {@link org.libreplan.business.email.entities.EmailTemplateEnum#TEMPLATE_TODAY_TASK_SHOULD_FINISH}
  *
- * Created by
- * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
- * on 20.01.2016.
- *
+ * @author Created by Vova Perebykivskiy <vova@libreplan-enterprise.com> on 20.01.2016.
  */
 public class SendEmailOnTaskShouldFinishJob extends QuartzJobBean {
 
     @Override
     protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
-        ApplicationContext applicationContext = (ApplicationContext) context.getJobDetail().
-                getJobDataMap().get("applicationContext");
 
-        IEmailNotificationJob taskShouldFinish = (IEmailNotificationJob) applicationContext
-                .getBean("SendEmailOnTaskShouldFinish");
+        ApplicationContext applicationContext =
+                (ApplicationContext) context.getJobDetail().getJobDataMap().get("applicationContext");
+
+        IEmailNotificationJob taskShouldFinish =
+                (IEmailNotificationJob) applicationContext.getBean("SendEmailOnTaskShouldFinish");
 
         taskShouldFinish.sendEmail();
     }

@@ -31,25 +31,30 @@ import java.util.List;
 /**
  * Contract for {@link EmailNotification}
  *
- * Created by
- * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
- * on 21.10.15.
+ * @author Created by Vova Perebykivskiy <vova@libreplan-enterprise.com> on 21.10.2015.
  */
 public interface IEmailNotificationModel {
 
     void confirmSave() throws ValidationException;
 
     List<EmailNotification> getAll();
+
     List<EmailNotification> getAllByType(EmailTemplateEnum enumeration);
 
     boolean deleteAll();
+
     boolean deleteAllByType(EmailTemplateEnum enumeration);
+
     boolean deleteById(EmailNotification notification);
 
     void setType(EmailTemplateEnum type);
+
     void setUpdated(Date date);
+
     void setResource(Resource resource);
+
     void setTask(TaskElement task);
+
     void setProject(TaskElement project);
 
     EmailNotification getEmailNotification();

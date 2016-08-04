@@ -21,6 +21,8 @@ package org.libreplan.business.email.daos;
 
 import org.libreplan.business.common.daos.IGenericDAO;
 import org.libreplan.business.email.entities.EmailTemplate;
+import org.libreplan.business.email.entities.EmailTemplateEnum;
+import org.libreplan.business.settings.entities.Language;
 
 import java.util.List;
 
@@ -28,17 +30,15 @@ import java.util.List;
  * DAO interface for the <code>EmailTemplate</code> entity.
  * Contract for {@link EmailTemplateDAO}
  *
- * Created by
- * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
- * on 29.09.2015.
+ * @author Created by Vova Perebykivskiy <vova@libreplan-enterprise.com> on 29.09.2015.
  */
 public interface IEmailTemplateDAO extends IGenericDAO<EmailTemplate, Long>{
 
     List<EmailTemplate> getAll();
 
-    String getContentBySelectedLanguage(int languageOrdinal, int emailTemplateTypeOrdinal);
-    String getContentBySelectedTemplate(int emailTemplateTypeOrdinal, int languageOrdinal);
+    List<EmailTemplate> findByType(EmailTemplateEnum emailTemplateEnum);
 
-    String getSubjectBySelectedLanguage(int languageOrdinal, int emailTemplateTypeOrdinal);
-    String getSubjectBySelectedTemplate(int emailTemplateTypeOrdinal, int languageOrdinal);
+    EmailTemplate findByTypeAndLanguage(EmailTemplateEnum emailTemplateEnum, Language language);
+
+    void delete(EmailTemplate entity);
 }

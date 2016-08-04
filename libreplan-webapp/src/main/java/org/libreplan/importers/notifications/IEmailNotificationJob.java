@@ -22,15 +22,15 @@ package org.libreplan.importers.notifications;
 import org.libreplan.business.email.entities.EmailNotification;
 
 /**
- * Sends E-mail to users with data that storing in notification_queue table
+ * Sends E-mail to users with data that storing in notification_queue table.
  *
- * Created by
- * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
- * on 13.10.2015.
+ * @author Created by Vova Perebykivskyi <vova@libreplan-enterprise.com> on 13.10.2015.
  */
 
 public interface IEmailNotificationJob {
+
     void sendEmail();
+
     boolean composeMessageForUser(EmailNotification notification);
 
 }
