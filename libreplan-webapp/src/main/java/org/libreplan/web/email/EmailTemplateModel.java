@@ -36,9 +36,7 @@ import java.util.List;
 /**
  * Model for operations related to {@link EmailTemplate}.
  *
- * Created by
- * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
- * on 25.09.15.
+ * @author Created by Vova Perebykivskiy <vova@libreplan-enterprise.com> on 25.09.2015.
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -52,22 +50,31 @@ public class EmailTemplateModel implements IEmailTemplateModel {
 
     @Override
     @Transactional
-    public void confirmSave() throws InstanceNotFoundException {
+    public void confirmSave() {
 
-        /* If current EmailTemplate entity (id) is existing in DB than it needs to be updated.
-        *  Else current EmailTemplate entity (id) is creating and getting new values from form.
-        */
+        /*
+         * If current EmailTemplate entity (id) is existing in DB than it needs to be updated.
+         * Else current EmailTemplate entity (id) is creating and getting new values from form.
+         */
         List<EmailTemplate> emailTemplates = emailTemplateDAO.getAll();
         EmailTemplate emailTemplateFromDatabase = null;
+        boolean condition;
 
-        for (int i = 0; i < emailTemplates.size(); i++) {
-            if ( emailTemplate.getLanguage() == emailTemplates.get(i).getLanguage() &&
-                    emailTemplate.getType() == emailTemplates.get(i).getType() ) {
-                emailTemplateFromDatabase = emailTemplateDAO.find(emailTemplates.get(i).getId());
+        for (EmailTemplate emailTemplate1 : emailTemplates) {
+
+            condition = emailTemplate.getLanguage() == emailTemplate1.getLanguage() &&
+                    emailTemplate.getType() == emailTemplate1.getType();
+
+            if ( condition ) {
+                try {
+                    emailTemplateFromDatabase = emailTemplateDAO.find(emailTemplate1.getId());
+                } catch (InstanceNotFoundException e) {
+                    e.printStackTrace();
+                }
             }
         }
 
-        if ( emailTemplateFromDatabase != null ){
+        if ( emailTemplateFromDatabase != null ) {
             EmailTemplate temporaryEntity = emailTemplate;
             emailTemplate = emailTemplateFromDatabase;
 
@@ -89,13 +96,11 @@ public class EmailTemplateModel implements IEmailTemplateModel {
     }
 
     @Override
-    @Transactional
     public List<EmailTemplate> getAll() {
         return emailTemplateDAO.getAll();
     }
 
     @Override
-    @Transactional
     public Language getLanguage() {
         return this.emailTemplate.getLanguage();
     }
@@ -114,45 +119,36 @@ public class EmailTemplateModel implements IEmailTemplateModel {
     }
 
     @Override
-    public String getContent() {
-        return this.emailTemplate.getContent();
-    }
-    @Override
     public void setContent(String content) {
         this.emailTemplate.setContent(content);
     }
 
-    @Override
-    public String getSubject() {
-        return this.emailTemplate.getSubject();
-    }
     @Override
     public void setSubject(String subject) {
         this.emailTemplate.setSubject(subject);
     }
 
     @Override
-    @Transactional
-    public String getContentBySelectedLanguage(int languageOrdinal, int emailTemplateTypeOrdinal) {
-        return emailTemplateDAO.getContentBySelectedLanguage(languageOrdinal, emailTemplateTypeOrdinal);
+    public String getContent(Language language, EmailTemplateEnum type) {
+        EmailTemplate template = getEmailTemplateByTypeAndLanguage(type, language);
+
+        return template != null ? template.getContent() : "";
     }
 
     @Override
-    @Transactional
-    public String getContentBySelectedTemplate(int emailTemplateTypeOrdinal, int languageOrdinal) {
-        return emailTemplateDAO.getContentBySelectedTemplate(emailTemplateTypeOrdinal, languageOrdinal);
+    public String getSubject(Language language, EmailTemplateEnum type) {
+        EmailTemplate template = getEmailTemplateByTypeAndLanguage(type, language);
+
+        return template != null ? template.getSubject() : "";
+    }
+
+    public EmailTemplate getEmailTemplateByTypeAndLanguage(EmailTemplateEnum type, Language language) {
+        return emailTemplateDAO.findByTypeAndLanguage(type, language);
     }
 
     @Override
-    @Transactional
-    public String getSubjectBySelectedLanguage(int languageOrdinal, int emailTemplateTypeOrdinal) {
-        return emailTemplateDAO.getSubjectBySelectedLanguage(languageOrdinal, emailTemplateTypeOrdinal);
-    }
-
-    @Override
-    @Transactional
-    public String getSubjectBySelectedTemplate(int emailTemplateTypeOrdinal, int languageOrdinal) {
-        return emailTemplateDAO.getSubjectBySelectedTemplate(emailTemplateTypeOrdinal, languageOrdinal);
+    public void delete() {
+        emailTemplateDAO.delete(this.emailTemplate);
     }
 }
 

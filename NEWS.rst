@@ -31,6 +31,7 @@ Changes
 * Add Risk&Issue Log feature
 * Add Documents uploading/downloading feature
 * Add test for documents feature
+* Add tests for email feature
 * Changes to LibrePlan version check
 * Add Global Dashboard page
 

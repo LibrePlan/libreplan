@@ -27,22 +27,22 @@ import org.springframework.scheduling.quartz.QuartzJobBean;
 
 /**
  * Sends E-mail to users with data that storing in notification_queue table
- * and that are treat to {@link EmailTemplateEnum.TEMPLATE_TODAY_TASK_SHOULD_START}
+ * and that are treat to
+ * {@link org.libreplan.business.email.entities.EmailTemplateEnum#TEMPLATE_TODAY_TASK_SHOULD_START}.
  *
- * Created by
- * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
- * on 20.01.2016.
  *
+ * @author Created by Vova Perebykivskyi <vova@libreplan-enterprise.com> on 20.01.2016
  */
 public class SendEmailOnTaskShouldStartJob extends QuartzJobBean {
 
     @Override
     protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
-        ApplicationContext applicationContext = (ApplicationContext) context.getJobDetail().
-                getJobDataMap().get("applicationContext");
 
-        IEmailNotificationJob taskShouldStart = (IEmailNotificationJob) applicationContext
-                .getBean("SendEmailOnTaskShouldStart");
+        ApplicationContext applicationContext = (ApplicationContext)
+                context.getJobDetail().getJobDataMap().get("applicationContext");
+
+        IEmailNotificationJob taskShouldStart =
+                (IEmailNotificationJob) applicationContext.getBean("SendEmailOnTaskShouldStart");
 
         taskShouldStart.sendEmail();
     }

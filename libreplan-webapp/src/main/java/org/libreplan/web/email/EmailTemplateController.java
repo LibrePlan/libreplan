@@ -45,15 +45,15 @@ import org.zkoss.zul.Textbox;
 import java.util.List;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.LinkedList;
+import java.util.Comparator;
 
 import static org.libreplan.web.I18nHelper._;
 
 /**
- * Created by
- * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
- * on 25.09.15.
+ * Controller for page Edit email templates.
+ *
+ * @author Created by Vova Perebykivskiy <vova@libreplan-enterprise.com> on 25.09.2015.
  */
 public class EmailTemplateController extends GenericForwardComposer{
 
@@ -85,30 +85,32 @@ public class EmailTemplateController extends GenericForwardComposer{
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
+
+        // TODO resolve deprecated
         comp.setVariable("emailTemplateController", this, true);
+
         messages = new MessagesForUser(messagesContainer);
 
-        // Set default template and language for user
-        // And content and subject for that language & template
+        // Set default template and language for user.
+        // And content and subject for that language & template.
         setUser();
-        setSelectedLanguage(user.getApplicationLanguage());
+        setSelectedLanguage(Language.ENGLISH_LANGUAGE);
 
         getContentDataBySelectedLanguage();
         getSubjectDataBySelectedLanguage();
     }
 
-    public boolean save(){
+    public boolean save() {
         try {
             setSelectedContent();
             setSelectedSubject();
             emailTemplateModel.confirmSave();
             messages.clearMessages();
             messages.showMessage(Level.INFO, _("E-mail template saved"));
+
             return true;
         } catch (ValidationException e) {
             messages.showInvalidValues(e);
-        } catch (InstanceNotFoundException e) {
-            e.printStackTrace();
         }
         return false;
     }
@@ -121,7 +123,7 @@ public class EmailTemplateController extends GenericForwardComposer{
         return emailTemplateModel.getLanguage();
     }
 
-    public void setSelectedLanguage(Language language){
+    public void setSelectedLanguage(Language language) {
         emailTemplateModel.setLanguage(language);
 
         getSubjectDataBySelectedLanguage();
@@ -153,7 +155,7 @@ public class EmailTemplateController extends GenericForwardComposer{
     public EmailTemplateEnum getSelectedEmailTemplateEnum() {
         return emailTemplateModel.getEmailTemplateEnum();
     }
-    public void setSelectedEmailTemplateEnum(EmailTemplateEnum emailTemplateEnum){
+    public void setSelectedEmailTemplateEnum(EmailTemplateEnum emailTemplateEnum) {
         emailTemplateModel.setEmailTemplateEnum(emailTemplateEnum);
 
         getSubjectDataBySelectedTemplate();
@@ -175,30 +177,30 @@ public class EmailTemplateController extends GenericForwardComposer{
     }
 
 
-    public void setSelectedContent(){
+    public void setSelectedContent() {
         emailTemplateModel.setContent(contentsTextbox.getValue());
     }
 
-    public void setSelectedSubject(){
+    public void setSelectedSubject() {
         emailTemplateModel.setSubject(subjectTextbox.getValue());
     }
 
-    private void getContentDataBySelectedLanguage(){
-        contentsTextbox.setValue(emailTemplateModel.getContentBySelectedLanguage(getSelectedLanguage().ordinal(), getSelectedEmailTemplateEnum().ordinal()));
+    private void getContentDataBySelectedLanguage() {
+        contentsTextbox.setValue(emailTemplateModel.getContent(getSelectedLanguage(), getSelectedEmailTemplateEnum()));
     }
-    private void getContentDataBySelectedTemplate(){
-        contentsTextbox.setValue( emailTemplateModel.getContentBySelectedTemplate(getSelectedEmailTemplateEnum().ordinal(), getSelectedLanguage().ordinal()) );
+    private void getContentDataBySelectedTemplate() {
+        contentsTextbox.setValue(emailTemplateModel.getContent(getSelectedLanguage(), getSelectedEmailTemplateEnum()));
     }
 
-    private void getSubjectDataBySelectedLanguage(){
-        subjectTextbox.setValue(emailTemplateModel.getSubjectBySelectedLanguage(getSelectedLanguage().ordinal(), getSelectedEmailTemplateEnum().ordinal()));
+    private void getSubjectDataBySelectedLanguage() {
+        subjectTextbox.setValue(emailTemplateModel.getSubject(getSelectedLanguage(), getSelectedEmailTemplateEnum()));
     }
-    private void getSubjectDataBySelectedTemplate(){
-        subjectTextbox.setValue( emailTemplateModel.getSubjectBySelectedTemplate(getSelectedEmailTemplateEnum().ordinal(), getSelectedLanguage().ordinal()) );
+    private void getSubjectDataBySelectedTemplate() {
+        subjectTextbox.setValue(emailTemplateModel.getSubject(getSelectedLanguage(), getSelectedEmailTemplateEnum()));
     }
 
     @Transactional
-    private void setUser(){
+    private void setUser() {
         try {
             user = userDAO.findByLoginName(SecurityUtils.getSessionUserLoginName());
         } catch (InstanceNotFoundException e) {

@@ -45,19 +45,21 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * DAO for {@link QualityForm}
+ * DAO for {@link QualityForm}.
+ *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
 
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
-public class QualityFormDAO extends GenericDAOHibernate<QualityForm, Long>
-        implements IQualityFormDAO {
+public class QualityFormDAO extends GenericDAOHibernate<QualityForm, Long> implements IQualityFormDAO {
 
     @Autowired
     private IAdvanceTypeDAO advanceTypeDAO;
 
     @Override
+    @Transactional(readOnly = true)
     public List<QualityForm> getAll() {
         return list(QualityForm.class);
     }

@@ -28,7 +28,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import javax.mail.MessagingException;
-import javax.mail.NoSuchProviderException;
 import javax.mail.Session;
 import javax.mail.Transport;
 import java.util.List;
@@ -37,9 +36,7 @@ import java.util.Properties;
 /**
  * Validate Email Connection properties
  *
- * Created by
- * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
- * on 20.01.2016.
+ * @author Created by Vova Perebykivskyi <vova@libreplan-enterprise.com> on 20.01.2016.
  */
 
 @Component
@@ -49,7 +46,10 @@ public class EmailConnectionValidator {
     @Autowired
     private IConnectorDAO connectorDAO;
 
-    public boolean validConnection(){
+    /* Needed for EmailTest */
+    public static Exception exceptionType;
+
+    public boolean validConnection() {
         List<ConnectorProperty> emailConnectorProperties = getEmailConnectorProperties();
 
         String protocol = null;
@@ -58,28 +58,31 @@ public class EmailConnectionValidator {
         String usrnme = null;
         String psswrd = null;
 
-        for (int i = 0; i < emailConnectorProperties.size(); i++){
-            switch (i){
-                case 1: {
+        for (int i = 0; i < emailConnectorProperties.size(); i++) {
+            switch ( i ) {
+                case 1:
                     protocol = emailConnectorProperties.get(1).getValue();
                     break;
-                }
-                case 2: {
+
+                case 2:
                     host = emailConnectorProperties.get(2).getValue();
                     break;
-                }
-                case 3: {
+
+                case 3:
                     port = emailConnectorProperties.get(3).getValue();
                     break;
-                }
-                case 5: {
+
+                case 5:
                     usrnme = emailConnectorProperties.get(5).getValue();
                     break;
-                }
-                case 6: {
+
+                case 6:
                     psswrd = emailConnectorProperties.get(6).getValue();
                     break;
-                }
+
+                default:
+                    /* Nothing */
+                    break;
             }
         }
 
@@ -89,48 +92,53 @@ public class EmailConnectionValidator {
         Transport transport = null;
 
         try {
-            if (protocol.equals("SMTP")) {
+            if ( protocol.equals("SMTP") ) {
                 properties.setProperty("mail.smtp.port", port);
                 properties.setProperty("mail.smtp.host", host);
+                properties.setProperty("mail.smtp.connectiontimeout", Integer.toString(3000));
                 Session session = Session.getInstance(properties, null);
 
                 transport = session.getTransport("smtp");
-                if (usrnme.equals("") && psswrd.equals("")) transport.connect();
-            } else if (protocol.equals("STARTTLS")) {
+                if ( "".equals(usrnme) && "".equals(psswrd) )
+                    transport.connect();
+
+            } else if ( protocol.equals("STARTTLS") ) {
                 properties.setProperty("mail.smtps.port", port);
                 properties.setProperty("mail.smtps.host", host);
+                properties.setProperty("mail.smtp.connectiontimeout", Integer.toString(3000));
                 Session session = Session.getInstance(properties, null);
 
                 transport = session.getTransport("smtps");
-                if (!usrnme.equals("") && psswrd != null) transport.connect(host, usrnme, psswrd);
-            }
-            if (transport != null && transport.isConnected()) return true;
 
-        } catch (NoSuchProviderException e) {
+                if ( !"".equals(usrnme) && psswrd != null )
+                    transport.connect(host, usrnme, psswrd);
+            }
+            if ( transport != null && transport.isConnected() )
+                return true;
+
+        } catch (MessagingException e) {
             e.printStackTrace();
-        }
-        catch (MessagingException e) {
-            e.printStackTrace();
+            // FIXME must be a better way to send exception type to test class
+            exceptionType = e;
         }
 
         return false;
     }
 
     public List<ConnectorProperty> getEmailConnectorProperties() {
-
         Connector connector = connectorDAO.findUniqueByName("E-mail");
 
         return connector.getProperties();
     }
 
-    public boolean isConnectionActivated(){
+    public boolean isConnectionActivated() {
         List<ConnectorProperty> emailConnectorProperties = getEmailConnectorProperties();
 
-        for (ConnectorProperty item : emailConnectorProperties){
+        for (ConnectorProperty item : emailConnectorProperties) {
             if ( item.getKey().equals("Activated") )
                 if ( item.getValue().equals("Y") )
                     return true;
-            else break;
+                else break;
         }
         return false;
     }

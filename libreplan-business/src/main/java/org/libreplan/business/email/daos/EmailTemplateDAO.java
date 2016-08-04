@@ -19,60 +19,56 @@
 
 package org.libreplan.business.email.daos;
 
+import org.hibernate.criterion.Restrictions;
 import org.libreplan.business.common.daos.GenericDAOHibernate;
+import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.email.entities.EmailTemplate;
+import org.libreplan.business.email.entities.EmailTemplateEnum;
+import org.libreplan.business.settings.entities.Language;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 /**
  * DAO for {@link EmailTemplate}
  *
- * Created by
- * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
- * on 24.09.2015.
+ * @author Created by Vova Perebykivskiy <vova@libreplan-enterprise.com> on 24.09.2015.
  */
 @Repository
 public class EmailTemplateDAO extends GenericDAOHibernate<EmailTemplate, Long> implements IEmailTemplateDAO{
 
     @Override
+    @Transactional(readOnly = true)
     public List<EmailTemplate> getAll() {
         return list(EmailTemplate.class);
     }
 
     @Override
-    public String getContentBySelectedLanguage(int languageOrdinal, int emailTemplateTypeOrdinal) {
-        for (int i = 0; i < list(EmailTemplate.class).size(); i++)
-            if ( list(EmailTemplate.class).get(i).getLanguage().ordinal() == languageOrdinal &&
-                    list(EmailTemplate.class).get(i).getType().ordinal() == emailTemplateTypeOrdinal )
-                return list(EmailTemplate.class).get(i).getContent();
-        return "";
+    @Transactional(readOnly = true)
+    public List<EmailTemplate> findByType(EmailTemplateEnum type) {
+        return getSession()
+                .createCriteria(EmailTemplate.class)
+                .add(Restrictions.eq("type", type))
+                .list();
     }
 
     @Override
-    public String getContentBySelectedTemplate(int emailTemplateTypeOrdinal, int languageOrdinal) {
-        for (int i = 0; i < list(EmailTemplate.class).size(); i++)
-            if ( list(EmailTemplate.class).get(i).getType().ordinal() == emailTemplateTypeOrdinal &&
-                    list(EmailTemplate.class).get(i).getLanguage().ordinal() == languageOrdinal )
-                return list(EmailTemplate.class).get(i).getContent();
-        return "";
+    @Transactional(readOnly = true)
+    public EmailTemplate findByTypeAndLanguage(EmailTemplateEnum type, Language language) {
+        return (EmailTemplate) getSession()
+                .createCriteria(EmailTemplate.class)
+                .add(Restrictions.eq("type", type))
+                .add(Restrictions.eq("language", language))
+                .uniqueResult();
     }
 
     @Override
-    public String getSubjectBySelectedLanguage(int languageOrdinal, int emailTemplateTypeOrdinal) {
-        for (int i = 0; i < list(EmailTemplate.class).size(); i++)
-            if ( list(EmailTemplate.class).get(i).getLanguage().ordinal() == languageOrdinal &&
-                    list(EmailTemplate.class).get(i).getType().ordinal() == emailTemplateTypeOrdinal )
-                return list(EmailTemplate.class).get(i).getSubject();
-        return "";
-    }
-
-    @Override
-    public String getSubjectBySelectedTemplate(int emailTemplateTypeOrdinal, int languageOrdinal) {
-        for (int i = 0; i < list(EmailTemplate.class).size(); i++)
-            if ( list(EmailTemplate.class).get(i).getType().ordinal() == emailTemplateTypeOrdinal &&
-                    list(EmailTemplate.class).get(i).getLanguage().ordinal() == languageOrdinal )
-                return list(EmailTemplate.class).get(i).getSubject();
-        return "";
+    @Transactional
+    public void delete(EmailTemplate entity) {
+        try {
+            remove(entity.getId());
+        } catch (InstanceNotFoundException ignored) {
+        }
     }
 }
