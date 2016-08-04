@@ -38,7 +38,7 @@
 
         <!-- Pages -->
         <intercept-url pattern="/templates/*" access="hasAnyRole('ROLE_SUPERUSER', 'ROLE_TEMPLATES')" />
-        <intercept-url pattern="/email/*" access="ROLE_SUPERUSER"/>
+        <intercept-url pattern="/email/*" access="hasAnyRole('ROLE_SUPERUSER', 'ROLE_EDIT_EMAIL_TEMPLATES')"/>
         <intercept-url pattern="/resources/worker/worker.zul" access="hasAnyRole('ROLE_SUPERUSER', 'ROLE_WORKERS')" />
         <intercept-url pattern="/resources/machine/*" access="hasAnyRole('ROLE_SUPERUSER', 'ROLE_MACHINES')" />
 

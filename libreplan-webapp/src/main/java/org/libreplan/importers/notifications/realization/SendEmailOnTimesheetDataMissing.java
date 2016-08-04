@@ -60,12 +60,10 @@ import java.util.List;
 
 /**
  * Sends E-mail to users with data that storing in notification_queue table
- * and that are treat to {@link EmailTemplateEnum.TEMPLATE_ENTER_DATA_IN_TIMESHEET}
+ * and that are treat to {@link EmailTemplateEnum#TEMPLATE_ENTER_DATA_IN_TIMESHEET}
  * Data will be send for bound users with empty timesheet lines.
  *
- * Created by
- * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
- * on 20.01.2016.
+ * @author Created by Vova Perebykivskiy <vova@libreplan-enterprise.com> on 20.01.2016.
  */
 
 @Component
@@ -95,14 +93,11 @@ public class SendEmailOnTimesheetDataMissing implements IEmailNotificationJob {
     public void sendEmail() {
         checkTimesheet();
 
-        if ( Configuration.isEmailSendingEnabled() ){
+        if ( Configuration.isEmailSendingEnabled() ) {
+            if ( emailConnectionValidator.isConnectionActivated() && emailConnectionValidator.validConnection() ) {
 
-            if ( emailConnectionValidator.isConnectionActivated() )
-
-                if ( emailConnectionValidator.validConnection() ){
-
-                List<EmailNotification> notifications = emailNotificationModel
-                        .getAllByType(EmailTemplateEnum.TEMPLATE_ENTER_DATA_IN_TIMESHEET);
+                List<EmailNotification> notifications =
+                        emailNotificationModel.getAllByType(EmailTemplateEnum.TEMPLATE_ENTER_DATA_IN_TIMESHEET);
 
                 for (int i = 0; i < notifications.size(); i++)
                     if ( composeMessageForUser(notifications.get(i)) )
@@ -128,8 +123,8 @@ public class SendEmailOnTimesheetDataMissing implements IEmailNotificationJob {
 
     @Transactional
     private List<User> getPersonalTimesheets() {
-        List<PersonalTimesheetDTO> personalTimesheetDTO = new ArrayList<PersonalTimesheetDTO>();
-        List<User> usersWithoutTimesheets = new ArrayList<User>();
+        List<PersonalTimesheetDTO> personalTimesheetDTO = new ArrayList<>();
+        List<User> usersWithoutTimesheets = new ArrayList<>();
         List<User> users = userModel.getUsers();
 
         for (User user : users)
@@ -139,11 +134,15 @@ public class SendEmailOnTimesheetDataMissing implements IEmailNotificationJob {
 
                 LocalDate activationDate = getActivationDate(user.getWorker());
                 LocalDate currentDate = new LocalDate();
-                personalTimesheetDTO.addAll(getPersonalTimesheets(user.getWorker(), activationDate,
-                        currentDate.plusMonths(1), getPersonalTimesheetsPeriodicity()));
+                personalTimesheetDTO.addAll(getPersonalTimesheets(
+                        user.getWorker(),
+                        activationDate,
+                        currentDate.plusMonths(1),
+                        getPersonalTimesheetsPeriodicity()));
 
-                for(PersonalTimesheetDTO item : personalTimesheetDTO){
+                for(PersonalTimesheetDTO item : personalTimesheetDTO) {
                     WorkReport workReport = item.getWorkReport();
+
                     if ( item.getTasksNumber() == 0 && workReport == null )
                         if ( !usersWithoutTimesheets.contains(user) )
                             usersWithoutTimesheets.add(user);
@@ -173,10 +172,9 @@ public class SendEmailOnTimesheetDataMissing implements IEmailNotificationJob {
         end = periodicity.getEnd(end);
         int items = periodicity.getItemsBetween(start, end);
 
-        List<PersonalTimesheetDTO> result = new ArrayList<PersonalTimesheetDTO>();
+        List<PersonalTimesheetDTO> result = new ArrayList<>();
 
-        // In decreasing order to provide a list sorted with the more recent
-        // personal timesheets at the beginning
+        // In decreasing order to provide a list sorted with the more recent personal timesheets at the beginning
         for (int i = items; i >= 0; i--) {
             LocalDate date = periodicity.getDateForItemFromDate(i, start);
 
@@ -189,28 +187,31 @@ public class SendEmailOnTimesheetDataMissing implements IEmailNotificationJob {
                 tasksNumber = getNumberOfOrderElementsWithTrackedTime(workReport);
             }
 
-            result.add(new PersonalTimesheetDTO(date, workReport,
-                    getResourceCapcity(resource, date, periodicity), hours,
+            result.add(new PersonalTimesheetDTO(
+                    date,
+                    workReport,
+                    getResourceCapcity(resource, date, periodicity),
+                    hours,
                     tasksNumber));
         }
 
         return result;
     }
     private LocalDate getActivationDate(Worker worker) {
-        return worker.getCalendar().getFistCalendarAvailability()
-                .getStartDate();
+        return worker.getCalendar().getFistCalendarAvailability().getStartDate();
     }
 
 
     private PersonalTimesheetsPeriodicityEnum getPersonalTimesheetsPeriodicity() {
-        return configurationDAO.getConfiguration()
-                .getPersonalTimesheetsPeriodicity();
+        return configurationDAO.getConfiguration().getPersonalTimesheetsPeriodicity();
     }
     private WorkReport getWorkReport(Resource resource, LocalDate date,
                                      PersonalTimesheetsPeriodicityEnum periodicity) {
+
         WorkReport workReport = workReportDAO.getPersonalTimesheetWorkReport(
                 resource, date, periodicity);
         forceLoad(workReport);
+
         return workReport;
     }
     private void forceLoad(WorkReport workReport) {
@@ -226,7 +227,7 @@ public class SendEmailOnTimesheetDataMissing implements IEmailNotificationJob {
             return 0;
         }
 
-        List<OrderElement> orderElements = new ArrayList<OrderElement>();
+        List<OrderElement> orderElements = new ArrayList<>();
         for (WorkReportLine line : workReport.getWorkReportLines()) {
             if (!line.getEffort().isZero()) {
                 OrderElement orderElement = line.getOrderElement();
@@ -239,14 +240,13 @@ public class SendEmailOnTimesheetDataMissing implements IEmailNotificationJob {
     }
     private EffortDuration getResourceCapcity(Resource resource, LocalDate date,
                                               PersonalTimesheetsPeriodicityEnum periodicity) {
+
         LocalDate start = periodicity.getStart(date);
         LocalDate end = periodicity.getEnd(date);
 
         EffortDuration capacity = EffortDuration.zero();
-        for (LocalDate day = start; day.compareTo(end) <= 0; day = day
-                .plusDays(1)) {
-            capacity = capacity.plus(resource.getCalendar().getCapacityOn(
-                    IntraDayDate.PartialDay.wholeDay(day)));
+        for (LocalDate day = start; day.compareTo(end) <= 0; day = day.plusDays(1)) {
+            capacity = capacity.plus(resource.getCalendar().getCapacityOn(IntraDayDate.PartialDay.wholeDay(day)));
         }
         return capacity;
     }

@@ -28,15 +28,17 @@ import java.util.List;
 /**
  * Contract for {@link EmailNotificationDAO}
  *
- * Created by
- * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
- * on 19.10.15.
+ * @author Created by Vova Perebykivskiy <vova@libreplan-enterprise.com> on 19.10.2015.
  */
 public interface IEmailNotificationDAO extends IGenericDAO<EmailNotification, Long> {
+
     List<EmailNotification> getAll();
+
     List<EmailNotification> getAllByType(EmailTemplateEnum enumeration);
 
     boolean deleteAll();
+
     boolean deleteAllByType(EmailTemplateEnum enumeration);
+
     boolean deleteById(EmailNotification notification);
 }

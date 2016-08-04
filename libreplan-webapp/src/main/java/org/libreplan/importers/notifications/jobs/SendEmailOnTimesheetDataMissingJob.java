@@ -27,22 +27,20 @@ import org.springframework.scheduling.quartz.QuartzJobBean;
 
 /**
  * Sends E-mail to users with data that storing in notification_queue table
- * and that are treat to {@link EmailTemplateEnum.TEMPLATE_ENTER_DATA_IN_TIMESHEET}
+ * and that are treat to
+ * {@link org.libreplan.business.email.entities.EmailTemplateEnum#TEMPLATE_ENTER_DATA_IN_TIMESHEET}
  *
- * Created by
- * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
- * on 20.01.2016.
- *
+ * @author Created by Vova Perebykivskiy <vova@libreplan-enterprise.com> on 20.01.2016.
  */
 public class SendEmailOnTimesheetDataMissingJob extends QuartzJobBean {
 
     @Override
     protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
-        ApplicationContext applicationContext = (ApplicationContext) context.getJobDetail().
-                getJobDataMap().get("applicationContext");
+        ApplicationContext applicationContext =
+                (ApplicationContext) context.getJobDetail().getJobDataMap().get("applicationContext");
 
-        IEmailNotificationJob timesheetMissing = (IEmailNotificationJob) applicationContext
-                .getBean("SendEmailOnTimesheetDataMissing");
+        IEmailNotificationJob timesheetMissing =
+                (IEmailNotificationJob) applicationContext.getBean("SendEmailOnTimesheetDataMissing");
 
         timesheetMissing.sendEmail();
     }

@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
-    xmlns:aop="http://www.springframework.org/schema/aop"
-    xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
-    xsi:schemaLocation="http://www.springframework.org/schema/beans
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
     http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
@@ -16,8 +18,8 @@
     <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean"
           p:jndiName="${dataSource.jndiName}" p:resourceRef="true" />
 
-   <!-- Letting Spring do automatically exception translation -->
-   <bean  class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>
+    <!-- Letting Spring do automatically exception translation -->
+    <bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>
 
     <!-- Hibernate Session Factory. -->
     <bean id="sessionFactory"
@@ -110,8 +112,8 @@
 
     <!-- Spring Transaction manager  -->
     <bean id="transactionManager"
-        class="org.springframework.orm.hibernate5.HibernateTransactionManager"
-        p:sessionFactory-ref="sessionFactory" />
+          class="org.springframework.orm.hibernate5.HibernateTransactionManager"
+          p:sessionFactory-ref="sessionFactory" />
 
     <!-- Enable configuration of transactional behavior based on annotations -->
     <tx:annotation-driven transaction-manager="transactionManager" />

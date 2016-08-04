@@ -30,12 +30,11 @@ import java.util.List;
 /**
  * Dao for {@link EmailNotification}
  *
- * Created by
- * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
- * on 19.10.2015.
+ * @author Created by Vova Perebykivskiy <vova@libreplan-enterprise.com> on 19.10.2015.
  */
 @Repository
-public class EmailNotificationDAO extends GenericDAOHibernate<EmailNotification, Long>
+public class EmailNotificationDAO
+        extends GenericDAOHibernate<EmailNotification, Long>
         implements IEmailNotificationDAO {
 
     @Override
@@ -45,13 +44,16 @@ public class EmailNotificationDAO extends GenericDAOHibernate<EmailNotification,
 
     @Override
     public List<EmailNotification> getAllByType(EmailTemplateEnum enumeration) {
-        return getSession().createCriteria(EmailNotification.class)
-                .add(Restrictions.eq("type", enumeration)).list();
+        return getSession()
+                .createCriteria(EmailNotification.class)
+                .add(Restrictions.eq("type", enumeration))
+                .list();
     }
 
     @Override
     public boolean deleteAll() {
         List<EmailNotification> notifications = list(EmailNotification.class);
+
         for (Object item : notifications){
             getSession().delete(item);
         }
@@ -61,23 +63,30 @@ public class EmailNotificationDAO extends GenericDAOHibernate<EmailNotification,
 
     @Override
     public boolean deleteAllByType(EmailTemplateEnum enumeration) {
-        List<EmailNotification> notifications = getSession().createCriteria(EmailNotification.class)
-                .add(Restrictions.eq("type", enumeration)).list();
+        List<EmailNotification> notifications = getSession()
+                .createCriteria(EmailNotification.class)
+                .add(Restrictions.eq("type", enumeration))
+                .list();
+
         for (Object item : notifications){
             getSession().delete(item);
         }
 
-        if ( getSession().createCriteria(EmailNotification.class)
-                .add(Restrictions.eq("type", enumeration.ordinal())).list().size() == 0 ) return true;
-        return false;
+        return getSession()
+                .createCriteria(EmailNotification.class)
+                .add(Restrictions.eq("type", enumeration.ordinal()))
+                .list()
+                .size() == 0;
     }
 
     @Override
     public boolean deleteById(EmailNotification notification) {
         getSession().delete(notification);
-        if ( getSession().createCriteria(EmailNotification.class).add(Restrictions.eq("id", notification.getId()))
-                .uniqueResult() != null ) return false;
-        return true;
+
+        return getSession()
+                .createCriteria(EmailNotification.class)
+                .add(Restrictions.eq("id", notification.getId()))
+                .uniqueResult() == null;
     }
 
 }

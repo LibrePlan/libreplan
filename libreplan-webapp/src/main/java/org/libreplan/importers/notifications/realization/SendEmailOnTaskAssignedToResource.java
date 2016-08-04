@@ -38,12 +38,10 @@ import java.util.List;
 
 /**
  * Sends E-mail to users with data that storing in notification_queue table
- * and that are treat to {@link EmailTemplateEnum.TEMPLATE_ENTER_DATA_IN_TIMESHEET}
+ * and that are treat to {@link EmailTemplateEnum#TEMPLATE_ENTER_DATA_IN_TIMESHEET}
  * Data will be send after user will be assigned to some task.
  *
- * Created by
- * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
- * on 13.10.2015.
+ * @author Created by Vova Perebykivskyi <vova@libreplan-enterprise.com> on 13.10.2015.
  */
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -61,18 +59,16 @@ public class SendEmailOnTaskAssignedToResource implements IEmailNotificationJob 
     @Override
     @Transactional
     public void sendEmail() {
-        if ( Configuration.isEmailSendingEnabled() ){
+        if ( Configuration.isEmailSendingEnabled() ) {
 
-            if ( emailConnectionValidator.isConnectionActivated() )
+            if ( emailConnectionValidator.isConnectionActivated() && emailConnectionValidator.validConnection() ) {
 
-                if ( emailConnectionValidator.validConnection() ){
+                List<EmailNotification> notifications =
+                        emailNotificationModel.getAllByType(EmailTemplateEnum.TEMPLATE_TASK_ASSIGNED_TO_RESOURCE);
 
-                List<EmailNotification> notifications = emailNotificationModel
-                        .getAllByType(EmailTemplateEnum.TEMPLATE_TASK_ASSIGNED_TO_RESOURCE);
-
-                for (int i = 0; i < notifications.size(); i++)
-                    if ( composeMessageForUser(notifications.get(i)) )
-                        deleteSingleNotification(notifications.get(i));
+                for (EmailNotification notification : notifications)
+                    if ( composeMessageForUser(notification) )
+                        deleteSingleNotification(notification);
             }
         }
     }

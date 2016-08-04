@@ -19,8 +19,6 @@
 
 package org.libreplan.web.email;
 
-import org.libreplan.business.common.exceptions.InstanceNotFoundException;
-import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.email.entities.EmailTemplate;
 import org.libreplan.business.settings.entities.Language;
 import org.libreplan.business.email.entities.EmailTemplateEnum;
@@ -30,31 +28,31 @@ import java.util.List;
 /**
  * Contract for {@link EmailTemplate}
  *
- * Created by
- * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
- * on 28.09.2015.
+ * @author Created by Vova Perebykivskyi <vova@libreplan-enterprise.com> on 28.09.2015.
  */
 public interface IEmailTemplateModel {
 
-    void confirmSave() throws ValidationException, InstanceNotFoundException;
+    void confirmSave();
 
     List<EmailTemplate> getAll();
 
-    String getContentBySelectedLanguage(int languageOrdinal, int emailTemplateTypeOrdinal);
-    String getContentBySelectedTemplate(int emailTemplateTypeOrdinal, int languageOrdinal);
+    String getContent(Language language, EmailTemplateEnum emailTemplateEnum);
 
-    String getSubjectBySelectedLanguage(int languageOrdinal, int emailTemplateTypeOrdinal);
-    String getSubjectBySelectedTemplate(int emailTemplateTypeOrdinal, int languageOrdinal);
-
-    String getContent();
+    String getSubject(Language language, EmailTemplateEnum emailTemplateEnum);
+    
     void setContent(String content);
 
     Language getLanguage();
+
     void setLanguage(Language language);
 
     EmailTemplateEnum getEmailTemplateEnum();
+
     void setEmailTemplateEnum(EmailTemplateEnum emailTemplateEnum);
 
-    String getSubject();
     void setSubject(String subject);
+
+    EmailTemplate getEmailTemplateByTypeAndLanguage(EmailTemplateEnum emailTemplateEnum, Language language);
+
+    void delete();
 }

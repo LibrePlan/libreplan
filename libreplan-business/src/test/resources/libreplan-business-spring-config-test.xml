@@ -97,6 +97,9 @@
                 <value>
                     TestEntities.hbm.xml
                 </value>
+                <value>
+                    org/libreplan/business/common/entities/Limits.hbm.xml
+                </value>
             </list>
         </property>
 

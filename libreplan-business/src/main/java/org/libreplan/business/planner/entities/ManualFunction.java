@@ -20,8 +20,7 @@ package org.libreplan.business.planner.entities;
 
 
 /**
- * Manual allocation function, it used to represent when user has done a manual
- * allocation.
+ * Manual allocation function, it used to represent when user has done a manual allocation.
  *
  * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
