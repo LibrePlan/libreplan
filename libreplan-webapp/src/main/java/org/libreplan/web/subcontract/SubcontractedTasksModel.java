@@ -212,7 +212,7 @@ public class SubcontractedTasksModel implements ISubcontractedTasksModel {
     private void makeSubcontractRequestRequest_UpdateDeliverDate(SubcontractedTaskData subcontractedTaskData)
     throws ConnectionProblemsException, UnrecoverableErrorServiceException {
         UpdateDeliveringDateDTO updateDeliveringDateDTO = SubcontractedTaskDataConverter
-                .toUpdateDeliveringDateDTO(getCompanyCode(), subcontractedTaskData);
+                .toUpdateDeliveringDateDTO(subcontractedTaskData.getExternalCompany().getNif(), subcontractedTaskData);
         ExternalCompany externalCompany = subcontractedTaskData
                 .getExternalCompany();
 
@@ -302,12 +302,8 @@ public class SubcontractedTasksModel implements ISubcontractedTasksModel {
 
     private SubcontractedTaskDataDTO getSubcontractedTaskData(
             SubcontractedTaskData subcontractedTaskData) {
-        return SubcontractedTaskDataConverter.toDTO(getCompanyCode(),
+        return SubcontractedTaskDataConverter.toDTO(subcontractedTaskData.getExternalCompany().getNif(),
                 subcontractedTaskData, getOrderElement(subcontractedTaskData));
-    }
-
-    private String getCompanyCode() {
-        return configurationDAO.getConfiguration().getCompanyCode();
     }
 
     private OrderElementDTO getOrderElement(
@@ -384,7 +380,7 @@ public class SubcontractedTasksModel implements ISubcontractedTasksModel {
     public String exportXML_UpdateSubcontractor(SubcontractedTaskData subcontractedTaskData){
         subcontractedTaskDataDAO.reattachUnmodifiedEntity(subcontractedTaskData);
         UpdateDeliveringDateDTO updateDeliveringDateDTO = SubcontractedTaskDataConverter
-                .toUpdateDeliveringDateDTO(getCompanyCode(), subcontractedTaskData);
+                .toUpdateDeliveringDateDTO(subcontractedTaskData.getExternalCompany().getNif(), subcontractedTaskData);
 
         StringWriter xml = new StringWriter();
         try {

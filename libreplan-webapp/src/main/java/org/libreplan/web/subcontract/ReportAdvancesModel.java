@@ -268,12 +268,8 @@ public class ReportAdvancesModel implements IReportAdvancesModel {
                     .add(orderElementWithAdvanceMeasurementsOrEndDateDTO);
         }
 
-        return new OrderElementWithAdvanceMeasurementsOrEndDateListDTO(getCompanyCode(),
+        return new OrderElementWithAdvanceMeasurementsOrEndDateListDTO(order.getCustomer().getNif(),
                 orderElementWithAdvanceMeasurementsDTOs);
-    }
-
-    private String getCompanyCode() {
-        return configurationDAO.getConfiguration().getCompanyCode();
     }
 
     @Override
