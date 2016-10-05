@@ -69,8 +69,11 @@ public class LeftTasksTree extends HtmlMacroComponent {
         public void render(final Treeitem item, Object data) throws Exception {
             Task task = (Task) data;
             item.setOpen(isOpened(task));
+
             if (task instanceof TaskContainer) {
+
                 final TaskContainer container = (TaskContainer) task;
+
                 IExpandListener expandListener = new IExpandListener() {
 
                     @Override
@@ -78,6 +81,7 @@ public class LeftTasksTree extends HtmlMacroComponent {
                         item.setOpen(isNowExpanded);
                     }
                 };
+
                 expandListeners.put(container, expandListener);
                 container.addExpandListener(expandListener);
 
@@ -85,6 +89,7 @@ public class LeftTasksTree extends HtmlMacroComponent {
             LeftTasksTreeRow leftTasksTreeRow = LeftTasksTreeRow.create(
                     disabilityConfiguration, task, new TreeNavigator(
                             tasksTreeModel, task), planner);
+
             if (task.isContainer()) {
                 expandWhenOpened((TaskContainer) task, item);
             }
