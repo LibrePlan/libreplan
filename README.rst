@@ -88,16 +88,16 @@ Features
 Requirements
 ------------
 
-* *JRE 7* or *JRE 6* - Java Runtime Environment
+* *JRE 8* - Java Runtime Environment
 
-  Project depends on Java 6 or 7 and JRE is needed in order to run it
+  Project depends on Java 8 JRE is needed in order to run it
 
 * *PostgreSQL* - Object-relational SQL database
 
   A database server is needed. You could use *PostgreSQL* or *MySQL* as you
   prefer.
 
-* *Tomcat 7* or Tomcat 6* - Servlet and JSP engine
+* *Tomcat 8* - Servlet and JSP engine
 
   Server to deploy the application. You could use *Jetty* instead.
 
@@ -122,26 +122,26 @@ Availability
 ------------
 
 The cutting-edge version of this project is always available from the Git
-repository at https://github.com/Igalia/libreplan.
+repository at https://github.com/LibrePlan/libreplan
 
 Released versions are available at
-http://sourceforge.net/projects/libreplan/files/.
+http://sourceforge.net/projects/libreplan/files/
 
 
 Webpage
 -------
 
 You can find more information about *LibrePlan* at
-http://www.libreplan.com/.
+http://www.libreplan.org/home/
 
 For information related with *LibrePlan* development you can visit the wiki at
-http://wiki.libreplan.org/.
+http://wiki.libreplan.org/twiki/bin/view/LibrePlan
 
 
 Reporting bugs
 --------------
 
-Please use the bug tracker to report bugs at http://bugs.libreplan.org/.
+Please use the bug tracker to report bugs at http://bugs.libreplan.org/
 
 
 License
@@ -165,5 +165,5 @@ Please see ``AUTHORS`` file for more information about the authors.
 
 .. [1] http://en.wikipedia.org/wiki/Work_Breakdown_Structure
 .. [2] http://en.wikipedia.org/wiki/Earned_Value_Management
-.. [3] http://www.fsf.org/licensing/licenses/agpl.html
-.. [4] http://www.fundacioncalidade.org/
+.. [3] http://www.gnu.org/licenses/agpl.html
+.. [4] http://gain.xunta.gal/

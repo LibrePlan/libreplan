@@ -20,6 +20,7 @@ Thanks to all the contributors to this new version:
 * Vova Perebykivskyi
 * Bodgan Bodnarjuk
 * Jeroen Baten
+* Paul Luchyn
 
 Changes
 ~~~~~~~

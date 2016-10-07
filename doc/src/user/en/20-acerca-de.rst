@@ -43,6 +43,21 @@ Written by
 LibrePlan Team
 --------------
 
+* Jeroen Baten <jeroen@libreplan-enterprise.com>
+* Edwin Zuijdendorp <edwin@zuydendorp.nl>
+* Bjørn Vos <bjorn@libreplan-enterprise.com>
+* Philippe Poumaroux <philippe.poumaroux@free.fr>
+* Vova Perebykivskyi <vova@libreplan-enterprise.com>
+* Paul Luchyn <ddiamondbbackk@gmail.com>
+
+Previous Team Members
+---------------------
+
+* Fernando Bellas Permuy <fbellas@udc.es>
+* José María Casanova Crespo <jmcasanova@igalia.com>
+* Óscar González Fernández <ogonzalez@igalia.com>
+* Pablo Fernández de la Cigoña Nóvoa <pcigonha@igalia.com>
+* Farruco Sanjurjo Arcay <fsanjurjo@igalia.com>
 * Cristina Alvariño Pérez <cristina.alvarino@cafedered.es>
 * Jacobo Aragunde Pérez <jaragunde@igalia.com>
 * Nacho Barrientos Arias <nacho@igalia.com>
@@ -53,15 +68,8 @@ LibrePlan Team
 * Diego Pino García <dpino@igalia.com>
 * Manuel Rego Casasnovas <rego@igalia.com>
 * Lorenzo Tilve Álvaro <ltilve@igalia.com>
-
-Previous Team Members
----------------------
-
-* Fernando Bellas Permuy <fbellas@udc.es>
-* José María Casanova Crespo <jmcasanova@igalia.com>
-* Óscar González Fernández <ogonzalez@igalia.com>
-* Pablo Fernández de la Cigoña Nóvoa <pcigonha@igalia.com>
-* Farruco Sanjurjo Arcay <fsanjurjo@igalia.com>
+* Misha Gozda <misha@libreplan-enterprise.com>
+* Bogdan Bodnarjuk <b.bodnarjuk@libreplan-enterprise.com>
 
 Translators
 -----------
@@ -106,10 +114,10 @@ Public funding
 Inside the global scope that LibrePlan is designed for regarding planning management, a project was developed to solve some common polanning problems. This project is partially financed by Xunta de Galicia, Ministerio de Industria, Turismo e Comercio, and by the European Union, Fondo Europeo de Desenvolvemento Rexional.
 
 .. figure:: images/logos.png
-   :scale: 100
+:scale: 100
 
 This project was part of Plan Avanza:
 
 .. figure:: images/avanza.png
-   :scale: 100
+:scale: 100
 

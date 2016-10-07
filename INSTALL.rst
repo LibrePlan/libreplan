@@ -427,6 +427,9 @@ Instructions:
 
     # Example location: C:/Program Files/Apache Software Foundation/Tomcat 6.0/bin/Tomcat6.exe
 
+If you will face SKIP_IDENTIFIER_CHECK error, refer to:
+  http://stackoverflow.com/questions/24546304/how-to-skip-java-reserve-keyword-identifier-check-in-tomcat
+
 * Go to http://localhost:8080/libreplan
 
 Logs
@@ -528,3 +531,4 @@ Where the different parameters have the following meaning:
 .. NOTE::
 
    Take into account that size of PermGen is additional to heap size.
+   Since JDK8(b75) you will not see java.lang.OutOfMemoryError: PermGen space.

@@ -67,7 +67,7 @@ function criteriaCreateWithHierarchy($type, $name, $name2){
     _setValue(_textbox(0, _near(_span("Name"))), $type);
     _setValue(_textbox(0, _near(_span("New criterion"))), $name);
     _click(_cell("Add"));
-    _click(_div(0, _near(_div("z-treecell-cnt z-overflow-hidden"))));
+    _click(_div(0, _near(_div("z-treecell-content z-overflow-hidden"))));
     _setValue(_textbox(0, _near(_span("New criterion"))), $name2);
     _click(_cell("Add"));
     _assertExists(_span("z-tree-line z-tree-spacer"));
@@ -83,7 +83,7 @@ function criteriaCreateWithoutHierarchy($type, $name, $name2){
     _click(_cell("OK"));
     _setValue(_textbox(0, _near(_span("New criterion"))), $name);
     _click(_cell("Add"));
-    _click(_div(0, _near(_div("z-treecell-cnt z-overflow-hidden"))));
+    _click(_div(0, _near(_div("z-treecell-content z-overflow-hidden"))));
     _setValue(_textbox(0, _near(_span("New criterion"))), $name2);
     _click(_cell("Add"));
     _assertExists(_span("z-tree-ico z-tree-firstspacer[1]"));

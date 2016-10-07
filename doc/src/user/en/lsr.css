@@ -10,7 +10,6 @@ body {
   background: #ffffff;
   color: black;
   margin: 2em;
-/*  padding: 0em 2em; */
 }
 
 p.topic-title {
@@ -19,7 +18,7 @@ p.topic-title {
 
 table.docinfo {
   text-align: left;
-  margin: 2em 0em;
+  margin: 2em 0;
 }
 
 a[href] {
@@ -78,18 +77,18 @@ p.rubric {
 h1.title {
   color: #003a6b;
   font-size: 250%;
-  margin-bottom: 0em;
+  margin-bottom: 0;
 }
 
 h2.subtitle {
   color: #003a6b;
-  border-bottom: 0px;
+  border-bottom: 0;
 }
 
 h1, h2, h3, h4, h5, h6 {
   color: #555;
   background-color: transparent;
-  margin: 0em;
+  margin: 0;
   padding-top: 0.5em;
 }
 
@@ -138,7 +137,7 @@ dd {
 
 div.admonition, div.note, div.tip, div.caution, div.important, div.warning {
   margin: 2em 2em;
-  padding: 0em 1em;
+  padding: 0 1em;
   border-top: 1px solid #aaa;
   border-left: 1px solid #aaa;
   border-bottom: 2px solid #555;
@@ -180,7 +179,7 @@ table.docutils {
   border: 1px solid gray;
   border-collapse: collapse;
   width: 100%;
-  margin: 1.5em 0em;
+  margin: 1.5em 0;
 }
 
 table.docutils caption {
@@ -198,8 +197,8 @@ table.docutils th {
 div.sidebar {
   width: 33%;
   float: right;
-  margin: 0em 2em;
-  padding: 0em 1em;
+  margin: 0 2em;
+  padding: 0 1em;
   border-top: 1px solid #aaa;
   border-left: 1px solid #aaa;
   border-bottom: 2px solid #555;
@@ -207,45 +206,45 @@ div.sidebar {
 }
 
 p.sidebar-title {
-  margin-bottom: 0em;
+  margin-bottom: 0;
   color: #003a6b;
   border-bottom: 1px solid #aaa;
   font-weight: bold;
 }
 
 p.sidebar-subtitle {
-  margin-top: 0em;
+  margin-top: 0;
   font-style: italic;
   color: #003a6b;
 }
 
 div.figure {
-    text-align: center;
+  text-align: center;
 }
 
 div.figure img {
-    background: #f8f8f8;
-    padding: 0.25em;
-    border: 1px solid #888;
-    border-radius: 5px;
-    -moz-border-radius: 5px;
-    -webkit-border-radius: 5px;
+  background: #f8f8f8;
+  padding: 0.25em;
+  border: 1px solid #888;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
 }
 
 div.figure img:hover {
-    background: #e0e0e0;
+  background: #e0e0e0;
 }
 
 div.figure p.caption {
-    text-align: center;
-    margin-top: 0.1em;
-    font-style: italic;
-    color: #444;
+  text-align: center;
+  margin-top: 0.1em;
+  font-style: italic;
+  color: #444;
 }
 
 pre.literal-block {
-    padding: 0.15em;
-    background: #f8f8f8;
-    border: 1px solid #dfdfdf;
-    border-left: 0.25em solid #dfdfdf
+  padding: 0.15em;
+  background: #f8f8f8;
+  border: 1px solid #dfdfdf;
+  border-left: 0.25em solid #dfdfdf
 }
