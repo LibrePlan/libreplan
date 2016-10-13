@@ -23,8 +23,6 @@ package org.zkoss.ganttz.timetracker;
 
 import static org.zkoss.ganttz.i18n.I18nHelper._;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.Collection;
 import java.util.Date;
 
@@ -43,7 +41,6 @@ import org.zkoss.ganttz.util.Interval;
 import org.zkoss.ganttz.util.LongOperationFeedback;
 import org.zkoss.ganttz.util.WeakReferencedListeners;
 import org.zkoss.ganttz.util.LongOperationFeedback.ILongOperation;
-import org.zkoss.ganttz.util.WeakReferencedListeners.IListenerNotification;
 import org.zkoss.zk.ui.Component;
 
 public class TimeTracker {
@@ -82,9 +79,7 @@ public class TimeTracker {
 
     private IDetailItemFilter filter = null;
 
-    public IDetailItemFilter getFilter() {
-        return filter;
-    }
+    private Interval realIntervalCached;
 
     public TimeTracker(Interval interval, ZoomLevel zoomLevel, Component parent) {
         this(interval, zoomLevel, SeveralModificators.empty(), SeveralModificators.empty(), parent);
@@ -122,6 +117,10 @@ public class TimeTracker {
         detailLevel = zoomLevel;
     }
 
+    public IDetailItemFilter getFilter() {
+        return filter;
+    }
+
     public void setFilter(IDetailItemFilter filter) {
         this.filter = filter;
         datesMapper = null;
@@ -144,11 +143,7 @@ public class TimeTracker {
     }
 
     private Collection<DetailItem> filterFirstLevel(Collection<DetailItem> firstLevelDetails) {
-        if ( filter == null ) {
-            return firstLevelDetails;
-        }
-
-        return filter.selectsFirstLevel(firstLevelDetails);
+        return filter == null ? firstLevelDetails : filter.selectsFirstLevel(firstLevelDetails);
     }
 
     public Collection<DetailItem> getDetailsSecondLevel() {
@@ -160,14 +155,8 @@ public class TimeTracker {
     }
 
     private Collection<DetailItem> filterSecondLevel(Collection<DetailItem> secondLevelDetails) {
-        if ( filter == null ) {
-            return secondLevelDetails;
-        }
-
-        return filter.selectsSecondLevel(secondLevelDetails);
+        return filter == null ? secondLevelDetails : filter.selectsSecondLevel(secondLevelDetails);
     }
-
-    private Interval realIntervalCached;
 
     public Interval getRealInterval() {
         if ( realIntervalCached == null ) {
@@ -182,7 +171,8 @@ public class TimeTracker {
     }
 
     private void fireZoomChanged() {
-        zoomListeners.fireEvent(new IListenerNotification<IZoomLevelChangedListener>() {
+        /* Do not replace it with lambda */
+        zoomListeners.fireEvent(new WeakReferencedListeners.IListenerNotification<IZoomLevelChangedListener>() {
             @Override
             public void doNotify(IZoomLevelChangedListener listener) {
                 listener.zoomLevelChanged(detailLevel);
@@ -257,13 +247,7 @@ public class TimeTracker {
     }
 
     public void trackPosition(final Task task) {
-        task.addFundamentalPropertiesChangeListener(new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                updateIntervalIfNeeded(task);
-            }
-        });
-
+        task.addFundamentalPropertiesChangeListener(evt -> updateIntervalIfNeeded(task));
         updateIntervalIfNeeded(task);
     }
 
@@ -319,16 +303,14 @@ public class TimeTracker {
     }
 
     private LocalDate endPlusOneMonth(Task task) {
-        Date taskEnd = max(task.getEndDate().toDayRoundedDate(), task.getDeadline());
-
-        return new LocalDate(taskEnd).plusMonths(1);
+        return new LocalDate(max(task.getEndDate().toDayRoundedDate(), task.getDeadline())).plusMonths(1);
     }
 
     private LocalDate startMinusTwoWeeks(Task task) {
-        // the deadline could be before the start
+        // The deadline could be before the start
         Date start = min(task.getBeginDate().toDayRoundedDate(), task.getDeadline());
 
-        // the last consolidated value could be before the start
+        // The last consolidated value could be before the start
         if ( task.getConsolidatedline() != null ) {
             start = min(start, task.getConsolidatedline().toDayRoundedDate());
         }

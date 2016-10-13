@@ -24,65 +24,106 @@ package org.zkoss.ganttz.resourceload;
 import static org.zkoss.ganttz.i18n.I18nHelper._;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+import java.util.HashSet;
 
 import org.zkoss.ganttz.data.resourceload.LoadTimeLine;
 import org.zkoss.ganttz.util.MutableTreeModel;
 import org.zkoss.ganttz.util.WeakReferencedListeners;
-import org.zkoss.ganttz.util.WeakReferencedListeners.IListenerNotification;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlMacroComponent;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.OpenEvent;
-import org.zkoss.zul.Button;
-import org.zkoss.zul.Div;
-import org.zkoss.zul.Label;
-import org.zkoss.zul.Popup;
 import org.zkoss.zul.Treecell;
-import org.zkoss.zul.Treechildren;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.TreeitemRenderer;
 import org.zkoss.zul.Treerow;
-import org.zkoss.zul.api.Tree;
+import org.zkoss.zul.Button;
+import org.zkoss.zul.Div;
+import org.zkoss.zul.Label;
+import org.zkoss.zul.Tree;
+import org.zkoss.zul.Treechildren;
 
+/**
+ * Works with left pane of Resource Load page. Also works with right pane ( a little bit ).
+ *
+ * @author Óscar González Fernández
+ * @author Manuel Rego Casasnovas
+ * @author Susana Montes Pedreira
+ * @author Lorenzo Tilve
+ * @author Jacobo Aragunde Pérez
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
+ */
 public class ResourceLoadLeftPane extends HtmlMacroComponent {
 
     private MutableTreeModel<LoadTimeLine> modelForTree;
+
     private final ResourceLoadList resourceLoadList;
 
-    private WeakReferencedListeners<ISeeScheduledOfListener> scheduleListeners = WeakReferencedListeners
-            .create();
+    private WeakReferencedListeners<ISeeScheduledOfListener> scheduleListeners = WeakReferencedListeners.create();
 
-    public ResourceLoadLeftPane(
-MutableTreeModel<LoadTimeLine> modelForTree,
-            ResourceLoadList resourceLoadList) {
+    /**
+     * {@link ResourceLoadLeftPane#onOpenEventQueue}, {@link OnOpenEvent} and proceedOnOpenEventQueue()
+     * were created because of problem:
+     * after migration from ZK5 to ZK8 onOpen event had been calling before render().
+     * It produced a problem.
+     * On onOpen event we are calculating closest items to treeItem.
+     * render() was not called so, treeItem row had no value.
+     * It made calculatedClosedItems(treeItem).isEmpty() to return true, even if it is not!
+     *
+     * http://forum.zkoss.org/question/101294/event-before-render-treeitem/
+     */
+    private OnOpenEvent onOpenEventQueue = null;
+
+    /**
+     * Made to know if {@link LoadTimeLine} was rendered.
+     */
+    private HashSet<LoadTimeLine> renderedLines;
+
+
+    public ResourceLoadLeftPane(MutableTreeModel<LoadTimeLine> modelForTree, ResourceLoadList resourceLoadList) {
         this.resourceLoadList = resourceLoadList;
         this.modelForTree = modelForTree;
+        this.renderedLines = new HashSet<>();
     }
-
 
     @Override
     public void afterCompose() {
         super.afterCompose();
+
         getContainerTree().setModel(modelForTree);
-        getContainerTree().setTreeitemRenderer(getRendererForTree());
+        getContainerTree().setItemRenderer(getRendererForTree());
+
+        /* Force call overridden render() */
+        try {
+            if ( !this.resourceLoadList.getChildren().isEmpty() ) {
+                getRendererForTree().render(
+                        new Treeitem(""),
+                        ((ResourceLoadComponent) this.resourceLoadList.getFirstChild()).getLoadLine(),
+                        0);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private TreeitemRenderer getRendererForTree() {
         return new TreeitemRenderer() {
             @Override
-            public void render(Treeitem item, Object data)
-                    {
-                LoadTimeLine line = (LoadTimeLine) data;
-                item.setOpen(false);
-                item.setValue(line);
+            public void render(Treeitem treeitem, Object o, int index) throws Exception {
+                LoadTimeLine line = (LoadTimeLine) o;
+                treeitem.setOpen(false);
+                treeitem.setValue(line);
 
                 Treerow row = new Treerow();
                 Treecell cell = new Treecell();
                 Component component = createComponent(line);
-                item.appendChild(row);
+
+                /* Clear existing Treerows */
+                if ( !treeitem.getChildren().isEmpty() ) {
+                    treeitem.getChildren().clear();
+                }
+
+                treeitem.appendChild(row);
                 row.appendChild(cell);
 
                 appendOperations(cell, line);
@@ -90,70 +131,86 @@ MutableTreeModel<LoadTimeLine> modelForTree,
                 cell.appendChild(component);
 
                 collapse(line);
-                addExpandedListener(item, line);
+                addExpandedListener(treeitem, line);
 
                 row.setSclass("resourceload-leftpanel-row");
+
+                if ( onOpenEventQueue != null ) {
+                    processOnOpenEventQueue();
+                }
+
+                renderedLines.add(line);
             }
 
-            private void appendOperations(final Treecell cell,
-                    final LoadTimeLine line) {
-                if (line.getRole().isVisibleScheduled()) {
+            private void processOnOpenEventQueue() {
+                if ( onOpenEventQueue.event.isOpen() ) {
+                    List<LoadTimeLine> closed = calculatedClosedItems(onOpenEventQueue.treeitem);
+                    expand(onOpenEventQueue.line, closed);
+                } else {
+                    collapse(onOpenEventQueue.line);
+                }
+
+                /*
+                 * When queue processed, clean object, to make it kind of "unique" or "one time only".
+                 */
+                onOpenEventQueue = null;
+            }
+
+            private void appendOperations(final Treecell cell, final LoadTimeLine line) {
+                if ( line.getRole().isVisibleScheduled() ) {
                     appendButtonPlan(cell, line);
                 }
             }
 
-            private void appendButtonPlan(final Treecell cell,
-                    final LoadTimeLine taskLine) {
+            private void appendButtonPlan(final Treecell cell, final LoadTimeLine taskLine) {
                 Button buttonPlan = new Button();
                 buttonPlan.setSclass("icono");
                 buttonPlan.setImage("/common/img/ico_planificador1.png");
                 buttonPlan.setHoverImage("/common/img/ico_planificador.png");
                 buttonPlan.setTooltiptext(_("See scheduling"));
-                buttonPlan.addEventListener("onClick", new EventListener() {
-                    @Override
-                    public void onEvent(Event event) {
-                        schedule(taskLine);
-                    }
-                });
+                buttonPlan.addEventListener("onClick", event -> schedule(taskLine));
+
                 cell.appendChild(buttonPlan);
             }
 
+            /**
+             * Do not replace it with lambda.
+             */
             public void schedule(final LoadTimeLine taskLine) {
-
-                scheduleListeners
-                        .fireEvent(new IListenerNotification<ISeeScheduledOfListener>() {
+                scheduleListeners.fireEvent(
+                        new WeakReferencedListeners.IListenerNotification<ISeeScheduledOfListener>() {
                             @Override
-                            public void doNotify(
-                                    ISeeScheduledOfListener listener) {
+                            public void doNotify(ISeeScheduledOfListener listener) {
                                 listener.seeScheduleOf(taskLine);
                             }
                         });
             }
 
-            private void addExpandedListener(final Treeitem item,
-                    final LoadTimeLine line) {
-                item.addEventListener("onOpen", new EventListener() {
-                    @Override
-                    public void onEvent(Event event) {
-                        OpenEvent openEvent = (OpenEvent) event;
-                        if (openEvent.isOpen()) {
-                            List<LoadTimeLine> closed = calculatedClosedItems(item);
-                            expand(line, closed);
-                        } else {
-                            collapse(line);
+            private void addExpandedListener(final Treeitem item, final LoadTimeLine line) {
+                item.addEventListener("onOpen", event ->  {
+                    OpenEvent openEvent = (OpenEvent) event;
+
+                    if ( openEvent.isOpen() ) {
+
+                        onOpenEventQueue = new OnOpenEvent(item, line, openEvent);
+
+                        /* If line was rendered than we need to call expand manually */
+                        if ( renderedLines.contains(line) ) {
+                            processOnOpenEventQueue();
                         }
+
+                    } else {
+                        collapse(line);
                     }
                 });
             }
 
             private Component createComponent(LoadTimeLine line) {
-                return isTopLevel(line) ? createFirstLevel(line)
-                        : createSecondLevel(line);
+                return isTopLevel(line) ? createFirstLevel(line) : createSecondLevel(line);
             }
 
             private boolean isTopLevel(LoadTimeLine line) {
-                int[] path = modelForTree.getPath(modelForTree.getRoot(), line);
-                return path.length == 0;
+                return modelForTree.getPath(modelForTree.getRoot(), line).length == 0;
             }
         };
     }
@@ -167,40 +224,45 @@ MutableTreeModel<LoadTimeLine> modelForTree,
     }
 
     private List<LoadTimeLine> calculatedClosedItems(Treeitem item) {
-        List<LoadTimeLine> result = new ArrayList<LoadTimeLine>();
+        List<LoadTimeLine> result = new ArrayList<>();
         Treechildren treeChildren = item.getTreechildren();
-        if (treeChildren != null) {
-            List<Treeitem> myTreeItems = (List<Treeitem>) treeChildren
-                    .getChildren();
-            Iterator<Treeitem> iterator = myTreeItems.iterator();
-            while (iterator.hasNext()) {
-                Treeitem child = (Treeitem) iterator.next();
-                if (!child.isOpen()) {
+
+        if ( treeChildren != null ) {
+
+            List<Treeitem> myTreeItems = treeChildren.getChildren();
+            for (Treeitem child : myTreeItems) {
+
+                if ( !child.isOpen() ) {
                     result.addAll(getLineChildrenBy(child));
                 } else {
                     result.addAll(calculatedClosedItems(child));
                 }
             }
         }
+
         return result;
     }
 
     private List<LoadTimeLine> getLineChildrenBy(Treeitem item) {
-        List<LoadTimeLine> result = new ArrayList<LoadTimeLine>();
+        List<LoadTimeLine> result = new ArrayList<>();
         LoadTimeLine line = getLineByTreeitem(item);
-        if (line != null) {
+
+        if ( line != null ) {
             result.addAll(line.getAllChildren());
         }
+
         return result;
     }
 
     private LoadTimeLine getLineByTreeitem(Treeitem child) {
-        LoadTimeLine line = null;
+        LoadTimeLine line;
+
         try {
-            line = (LoadTimeLine) child.getValue();
+            line = child.getValue();
         } catch (Exception e) {
             return null;
         }
+
         return line;
     }
 
@@ -211,12 +273,14 @@ MutableTreeModel<LoadTimeLine> modelForTree,
     private Component createFirstLevel(LoadTimeLine main) {
         Div result = createLabelWithName(main);
         result.setSclass("firstlevel");
+
         return result;
     }
 
     private Component createSecondLevel(LoadTimeLine loadTimeLine) {
         Div result = createLabelWithName(loadTimeLine);
         result.setSclass("secondlevel");
+
         return result;
     }
 
@@ -224,20 +288,32 @@ MutableTreeModel<LoadTimeLine> modelForTree,
         Div result = new Div();
         Label label = new Label();
         final String conceptName = main.getConceptName();
+
         label.setValue(conceptName);
         result.appendChild(label);
+
         return result;
     }
 
-    private static Popup createPopup(Div parent, String originalValue) {
-        Popup result = new Popup();
-        result.appendChild(new Label(originalValue));
-        parent.appendChild(result);
-        return result;
-    }
-
-    public void addSeeScheduledOfListener(
-            ISeeScheduledOfListener seeScheduledOfListener) {
+    public void addSeeScheduledOfListener(ISeeScheduledOfListener seeScheduledOfListener) {
         scheduleListeners.addListener(seeScheduledOfListener);
+    }
+
+    /**
+     * Info about onOpenEvent.
+     */
+    private class OnOpenEvent {
+
+        private LoadTimeLine line;
+
+        private Treeitem treeitem;
+
+        private OpenEvent event;
+
+        OnOpenEvent(Treeitem treeitem, LoadTimeLine line, OpenEvent event) {
+            this.line = line;
+            this.treeitem = treeitem;
+            this.event = event;
+        }
     }
 }

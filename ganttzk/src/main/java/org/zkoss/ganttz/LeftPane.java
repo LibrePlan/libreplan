@@ -31,13 +31,12 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 
 /**
- * LeftPane of the planner. Responsible of showing global commands and the
- * leftTasksTree <br />
+ * LeftPane of the planner. Responsible of showing global commands and the leftTasksTree
+ * <br />
+ *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public class LeftPane extends HtmlMacroComponent {
-
-    private final List<Task> topLevelTasks;
 
     private LeftTasksTree leftTasksTree;
 
@@ -47,16 +46,14 @@ public class LeftPane extends HtmlMacroComponent {
 
     private Planner planner;
 
-    public void setGoingDownInLastArrowCommand(
-            CommandContextualized<?> goingDownInLastArrowCommand) {
-        this.leftTasksTree
-                .setGoingDownInLastArrowCommand(goingDownInLastArrowCommand);
+    public void setGoingDownInLastArrowCommand(CommandContextualized<?> goingDownInLastArrowCommand) {
+        this.leftTasksTree.setGoingDownInLastArrowCommand(goingDownInLastArrowCommand);
     }
 
     public LeftPane(IDisabilityConfiguration disabilityConfiguration,
-            Planner planner,
-            FilterAndParentExpandedPredicates predicate) {
-        this.topLevelTasks = planner.getDiagramGraph().getTopLevelTasks();
+                    Planner planner,
+                    FilterAndParentExpandedPredicates predicate) {
+
         this.disabilityConfiguration = disabilityConfiguration;
         this.predicate = predicate;
         this.planner = planner;
@@ -65,15 +62,14 @@ public class LeftPane extends HtmlMacroComponent {
     @Override
     public void afterCompose() {
         super.afterCompose();
-        leftTasksTree = new LeftTasksTree(disabilityConfiguration, planner,
-                predicate);
+
+        leftTasksTree = new LeftTasksTree(disabilityConfiguration, planner, predicate);
         getContainer().appendChild(leftTasksTree);
         leftTasksTree.afterCompose();
     }
 
     private Component getContainer() {
-        Component container = getFellow("listdetails_container");
-        return container;
+        return getFellow("listdetails_container");
     }
 
     public void taskRemoved(Task task) {

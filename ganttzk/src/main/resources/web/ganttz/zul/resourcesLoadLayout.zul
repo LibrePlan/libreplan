@@ -20,76 +20,90 @@
 -->
 
 <?xel-method prefix="ganttzk_i18n" name="_" class="org.zkoss.ganttz.i18n.I18nHelper"
-    signature="java.lang.String _(java.lang.String name)" ?>
+        signature="java.lang.String _(java.lang.String name)" ?>
 
-<zk xmlns:n="http://www.zkoss.org/2005/zk/native" height="100%">
-<zscript><![CDATA[
-resourcesLoadPanel = self;
-]]>
-</zscript>
+<zk>
+    <zscript>
+        <![CDATA[
+            resourcesLoadPanel = self;
+        ]]>
+    </zscript>
 
-    <borderlayout sclass="resourcesloadlayout" width="auto" height="100%">
-       <north height="30px" border="0" sclass="toolbar-box">
-       <hbox align="center" id="toolbar" >
-        <separator height="30px"/>
-        <label>${ganttzk_i18n:_('Zoom')}:</label>
-        <listbox id="listZoomLevels" mold="select" rows="1"
-            model="${resourcesLoadPanel.zoomLevels}"
-            onSelect="resourcesLoadPanel.setZoomLevel(self.selectedItem.value);" >
-        </listbox>
-        <separator/>
-        <hbox id="additionalFilterInsertionPoint1" />
-        <separator/>
-        <label id="filterByNameLabel">${ganttzk_i18n:_('Page')}:</label>
-        <combobox id="filterByNameCombo" width="50px"
-            onChange="resourcesLoadPanel.onSelectFilterByName(self)" />
-        <separator/>
-        ${ganttzk_i18n:_('Group by')}:
-        <listbox id="listFilters" mold="select" rows="1" width="150px"
-            model="${resourcesLoadPanel.filters}"
-            selectedIndex="0"
-            onSelect="resourcesLoadPanel.setFilter(self.selectedItem.value);">
-        </listbox>
-        <separator/>
-        <hbox id="additionalFilterInsertionPoint2" />
-       </hbox>
-       </north>
+    <borderlayout id="resourcesloadlayout" sclass="resourcesloadlayout" width="auto" height="100%">
+        <north height="30px" border="0" sclass="toolbar-box">
+            <hbox align="center" id="toolbar" >
+
+                <separator height="30px"/>
+
+                <label>${ganttzk_i18n:_('Zoom')}:</label>
+
+                <listbox id="listZoomLevels" mold="select" rows="1"
+                         model="${resourcesLoadPanel.zoomLevels}"
+                         onSelect="resourcesLoadPanel.setZoomLevel(self.selectedItem.value);" />
+
+                <separator/>
+
+                <hbox id="additionalFilterInsertionPoint1" />
+
+                <separator/>
+
+                <label id="filterByNameLabel">${ganttzk_i18n:_('Page')}:</label>
+
+                <combobox id="filterByNameCombo" width="62px" onChange="resourcesLoadPanel.onSelectFilterByName(self)" />
+
+                <separator/>
+
+                ${ganttzk_i18n:_('Group by')}:
+
+                <listbox id="listFilters" mold="select" rows="1" width="150px"
+                         model="${resourcesLoadPanel.filters}"
+                         selectedIndex="0"
+                         onSelect="resourcesLoadPanel.setFilter(self.selectedItem.value);">
+                </listbox>
+                <separator/>
+                <hbox id="additionalFilterInsertionPoint2" />
+            </hbox>
+        </north>
 
         <center border="0">
-            <borderlayout sclass="resourcesload">
-                <west size="250px" flex="true" collapsible="true"
-                    splittable="true" autoscroll="false" border="0">
+            <borderlayout sclass="resources-load">
+                <west size="250px" vflex="1" hflex="min" collapsible="true"
+                      splittable="true" autoscroll="false" border="0">
                     <borderlayout>
-                        <north border="0" height="35px" flex="true" collapsible="true">
+                        <north border="0" height="35px" hflex="true" collapsible="true">
                             <vbox pack="top" align="center">
-                            <tree fixedLayout="true" hflex="true" sclass="resourceloaddetailsContainer">
-                                <treecols>
-                                    <treecol label="${ganttzk_i18n:_('Name')}" height="29px"/>
-                                </treecols>
-                            </tree>
-
+                                <tree fixedLayout="true" hflex="true" sclass="resourceload-details-container">
+                                    <treecols>
+                                        <treecol label="${ganttzk_i18n:_('Name')}" height="29px"/>
+                                    </treecols>
+                                </tree>
                             </vbox>
                         </north>
                         <center border="0" style="overflow-x:scroll">
-                            <div sclass="leftpanelgap" id="insertionPointLeftPanel"></div>
+                            <div sclass="leftpanelgap" id="insertionPointLeftPanel"/>
                         </center>
                     </borderlayout>
                 </west>
 
                 <center sclass="taskspanel">
                     <borderlayout>
-                        <north border="0"><div sclass="timetrackergap" height="30px" id="insertionPointTimetracker"></div></north>
-                        <center autoscroll="true" border="0" sclass="rightpanellayout">
-                            <div id="insertionPointRightPanel" sclass="taskspanelgap"></div>
+                        <north border="0">
+                            <div sclass="timetrackergap" height="30px" id="insertionPointTimetracker"/>
+                        </north>
+
+                        <center autoscroll="true" border="0" sclass="rightpanel-layout">
+                            <div id="insertionPointRightPanel" sclass="taskspanel-gap"/>
                         </center>
                     </borderlayout>
 
                 </center>
             </borderlayout>
         </center>
+
         <south height="200px" collapsible="true" title="${ganttzk_i18n:_('Graphics')}"
-            sclass="scheduling-graphics" id="graphics"
-            onOpen="resourcesLoadPanel.changeChartVisibility(event.open);">
+               sclass="scheduling-graphics" id="graphics"
+               onOpen="resourcesLoadPanel.changeChartVisibility(event.open);">
+
             <div id="insertionPointChart" />
         </south>
     </borderlayout>

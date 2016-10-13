@@ -23,15 +23,7 @@ package org.zkoss.ganttz;
 
 import static org.zkoss.ganttz.i18n.I18nHelper._;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.WeakHashMap;
+import java.util.*;
 
 import org.apache.commons.lang3.math.Fraction;
 import org.joda.time.LocalDate;
@@ -48,15 +40,13 @@ import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.Interval;
 import org.zkoss.ganttz.util.MenuBuilder;
-import org.zkoss.ganttz.util.MenuBuilder.ItemAction;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zul.Menupopup;
 import org.zkoss.zul.impl.XulElement;
 
 /**
- * Component to show the list of task in the planner
+ * Component to show the list of task in the planner.
+ *
  * @author Javier Moran Rua <jmoran@igalia.com>
  */
 public class TaskList extends XulElement implements AfterCompose {
@@ -78,6 +68,10 @@ public class TaskList extends XulElement implements AfterCompose {
     private Set<Task> visibleTasks = new HashSet<>();
 
     private Map<Task, TaskComponent> taskComponentByTask;
+
+    private Map<TaskContainer, IExpandListener> autoRemovedListers = new WeakHashMap<>();
+
+    private Map<TaskComponent, Menupopup> contextMenus = new HashMap<>();
 
     public TaskList(
             FunctionalityExposedForExtensions<?> context,
@@ -114,15 +108,13 @@ public class TaskList extends XulElement implements AfterCompose {
             IDisabilityConfiguration disabilityConfiguration,
             FilterAndParentExpandedPredicates predicate) {
 
-        TaskList result = new TaskList(
+        return new TaskList(
                 context,
                 doubleClickCommand,
                 context.getDiagramGraph().getTopLevelTasks(),
                 commandsOnTasksContextualized,
                 disabilityConfiguration,
                 predicate);
-
-        return result;
     }
 
     public List<DependencyComponent> asDependencyComponents(Collection<? extends Dependency> dependencies) {
@@ -137,11 +129,11 @@ public class TaskList extends XulElement implements AfterCompose {
     }
 
     public DependencyComponent asDependencyComponent(Dependency dependency) {
-        return asDependencyComponents(Arrays.asList(dependency)).get(0);
+        return asDependencyComponents(Collections.singletonList(dependency)).get(0);
     }
 
-    private synchronized void addTaskComponent(TaskRow beforeThis, final TaskComponent taskComponent,
-                                               boolean relocate) {
+    private synchronized void addTaskComponent(
+            TaskRow beforeThis, final TaskComponent taskComponent, boolean relocate) {
 
         insertBefore(taskComponent.getRow(), beforeThis);
         addContextMenu(taskComponent);
@@ -163,7 +155,7 @@ public class TaskList extends XulElement implements AfterCompose {
             currentTotalTasks.addAll(insertionPosition, newTasks);
         }
 
-        // if the position is children of some already existent task when
+        // If the position is children of some already existent task when
         // reloading it will be added if the predicate tells so
         reload(true);
     }
@@ -182,13 +174,7 @@ public class TaskList extends XulElement implements AfterCompose {
         if ( doubleClickCommand == null ) {
             return;
         }
-        taskComponent.addEventListener("onDoubleClick", new EventListener() {
-
-            @Override
-            public void onEvent(Event event) {
-                doubleClickCommand.doAction(taskComponent);
-            }
-        });
+        taskComponent.addEventListener("onDoubleClick", event -> doubleClickCommand.doAction(taskComponent));
     }
 
     private void addContextMenu(final TaskComponent taskComponent) {
@@ -262,20 +248,12 @@ public class TaskList extends XulElement implements AfterCompose {
         return result;
     }
 
-    private Map<TaskContainer, IExpandListener> autoRemovedListers = new WeakHashMap<>();
-
     private void addExpandListenerTo(TaskContainer container) {
         if ( autoRemovedListers.containsKey(container) ) {
             return;
         }
 
-        IExpandListener expandListener = new IExpandListener() {
-
-            @Override
-            public void expandStateChanged(boolean isNowExpanded) {
-                reload(true);
-            }
-        };
+        IExpandListener expandListener = (isNowExpanded -> reload(true));
 
         container.addExpandListener(expandListener);
         autoRemovedListers.put(container, expandListener);
@@ -283,6 +261,7 @@ public class TaskList extends XulElement implements AfterCompose {
 
     private void registerZoomLevelChangedListener() {
         if ( zoomLevelChangedListener == null ) {
+            /* Do not replace it with lambda */
             zoomLevelChangedListener = new IZoomLevelChangedListener() {
                 @Override
                 public void zoomLevelChanged(ZoomLevel detailLevel) {
@@ -301,25 +280,20 @@ public class TaskList extends XulElement implements AfterCompose {
         return interval.getStart().plusDays(daysInto);
     }
 
-    private Map<TaskComponent, Menupopup> contextMenus = new HashMap<>();
-
     private Menupopup getContextMenuFor(TaskComponent taskComponent) {
         if ( contextMenus.get(taskComponent) == null ) {
             MenuBuilder<TaskComponent> menuBuilder = MenuBuilder.on(getPage(), getTaskComponents());
 
             if ( disabilityConfiguration.isAddingDependenciesEnabled() ) {
-                menuBuilder.item(_("Add Dependency"), "/common/img/ico_dependency.png",
-                        new ItemAction<TaskComponent>() {
-                            @Override
-                            public void onEvent(TaskComponent choosen, Event event) {
-                                choosen.addDependency();
-                            }
-                        });
+
+                menuBuilder.item(
+                        _("Add Dependency"), "/common/img/ico_dependency.png",
+                        (chosen, event) -> chosen.addDependency());
             }
 
             for (CommandOnTaskContextualized<?> command : commandsOnTasksContextualized) {
                 if ( command.accepts(taskComponent) ) {
-                        menuBuilder.item(command.getName(), command.getIcon(), command.toItemAction());
+                    menuBuilder.item(command.getName(), command.getIcon(), command.toItemAction());
                 }
             }
 

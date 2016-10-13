@@ -25,7 +25,6 @@ import java.util.Collection;
 
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
-import org.zkoss.ganttz.IDatesMapper;
 import org.zkoss.ganttz.timetracker.zoom.DetailItem;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.TimeTrackerState;
@@ -35,36 +34,35 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 
 /**
+ * Works with time header of some pages.
+ *
  * @author Javier Moran Rua <jmoran@igalia.com>
  */
 public abstract class TimeTrackerComponent extends HtmlMacroComponent {
 
     private final TimeTracker timeTracker;
-    private IZoomLevelChangedListener zoomListener;
+
     private final String secondLevelZul;
+
     private String timeTrackerElementId;
+
     private int scrollLeft;
 
     public TimeTrackerComponent(TimeTracker timeTracker) {
-        this(timeTracker,
-                "~./ganttz/zul/timetracker/timetrackersecondlevel.zul",
-                "timetracker");
+        this(timeTracker, "~./ganttz/zul/timetracker/timetrackersecondlevel.zul", "timetracker");
     }
 
-    protected TimeTrackerComponent(TimeTracker timeTracker,
-            String secondLevelZul, String timetrackerId) {
+    TimeTrackerComponent(TimeTracker timeTracker, String secondLevelZul, String timetrackerId) {
         this.secondLevelZul = secondLevelZul;
         this.timeTracker = timeTracker;
-        zoomListener = new IZoomLevelChangedListener() {
 
-            @Override
-            public void zoomLevelChanged(ZoomLevel detailLevel) {
-                if (isInPage()) {
-                    recreate();
-                    changeDetailLevel(getDaysFor(scrollLeft));
-                }
+        IZoomLevelChangedListener zoomListener = detailLevel ->  {
+            if ( isInPage() ) {
+                recreate();
+                changeDetailLevel(getDaysFor(scrollLeft));
             }
         };
+
         this.timeTracker.addZoomListener(zoomListener);
         timeTrackerElementId = timetrackerId;
     }
@@ -81,22 +79,24 @@ public abstract class TimeTrackerComponent extends HtmlMacroComponent {
         return timeTrackerElementId;
     }
 
-    /*
-     *  fsanjurjo: I'm temporary changing the name of this method
-     *  (from afterCompose to compose) to get it called after calling recreate().
-     *  To understand why, please read this: http://www.zkoss.org/forum/listComment/14905
-     *  Also renamed the call to its parent.
-     * */
+    /**
+     * fsanjurjo:
+     * I'm temporary changing the name of this method (from afterCompose to compose)
+     * to get it called after calling recreate().
+     *
+     * To understand why, please read this: http://www.zkoss.org/forum/listComment/14905
+     * Also renamed the call to its parent.
+     */
     @Override
     public void compose() {
         super.compose();
+
         Component fellow = getFellow("firstleveldetails");
         addSecondLevels(fellow.getParent());
     }
 
     private void addSecondLevels(Component parent) {
-        Executions.getCurrent().createComponents(secondLevelZul, parent,
-                getAttributes());
+        Executions.getCurrent().createComponents(secondLevelZul, parent, getAttributes());
     }
 
     public ZoomLevel getZoomLevel() {
@@ -146,9 +146,9 @@ public abstract class TimeTrackerComponent extends HtmlMacroComponent {
     }
 
     public int getDiffDays(LocalDate previousStart) {
-        // get the current data
-        IDatesMapper mapper = getTimeTracker().getMapper();
+        // Get the current data
         LocalDate start = getTimeTracker().getRealInterval().getStart();
+
         return Days.daysBetween(start, previousStart).getDays();
     }
 
@@ -166,7 +166,7 @@ public abstract class TimeTrackerComponent extends HtmlMacroComponent {
     }
 
     public String getWidgetClass(){
-        return getDefinition().getDefaultWidgetClass();
+        return getDefinition().getDefaultWidgetClass(this);
     }
 
 }

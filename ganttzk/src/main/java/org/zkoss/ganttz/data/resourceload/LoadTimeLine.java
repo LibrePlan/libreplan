@@ -37,29 +37,16 @@ public class LoadTimeLine {
     @SuppressWarnings("unchecked")
     private static final Comparator<GanttDate> nullSafeComparator = new NullComparator<>(false);
 
-    public static Comparator<LoadTimeLine> byStartAndEndDate() {
-        return new Comparator<LoadTimeLine>() {
-            @Override
-            public int compare(LoadTimeLine o1, LoadTimeLine o2) {
-                int result = nullSafeComparator.compare(o1.getStartPeriod(), o2.getStartPeriod());
-
-                if ( result == 0 ) {
-                    return nullSafeComparator.compare(o1.getEndPeriod(), o2.getEndPeriod());
-                }
-
-                return result;
-
-            }
-        };
-    }
-
     private final String conceptName;
+
     private final List<LoadPeriod> loadPeriods;
 
     private final TimeLineRole<?> timeLineRole;
+
     private final String type;
 
     private final List<LoadTimeLine> children;
+
 
     public LoadTimeLine(String conceptName,
                         List<LoadPeriod> loadPeriods,
@@ -101,6 +88,22 @@ public class LoadTimeLine {
 
     }
 
+    public static Comparator<LoadTimeLine> byStartAndEndDate() {
+        return new Comparator<LoadTimeLine>() {
+            @Override
+            public int compare(LoadTimeLine o1, LoadTimeLine o2) {
+                int result = nullSafeComparator.compare(o1.getStartPeriod(), o2.getStartPeriod());
+
+                if ( result == 0 ) {
+                    return nullSafeComparator.compare(o1.getEndPeriod(), o2.getEndPeriod());
+                }
+
+                return result;
+
+            }
+        };
+    }
+
     public List<LoadPeriod> getLoadPeriods() {
         return loadPeriods;
     }
@@ -122,11 +125,7 @@ public class LoadTimeLine {
     }
 
     public GanttDate getStartPeriod() {
-        if ( isEmpty() ) {
-            return null;
-        }
-
-        return getFirst().getStart();
+        return isEmpty() ? null : getFirst().getStart();
     }
 
     public boolean isEmpty() {
@@ -134,11 +133,7 @@ public class LoadTimeLine {
     }
 
     public GanttDate getEndPeriod() {
-        if ( isEmpty() ) {
-            return null;
-        }
-
-        return getLast().getEnd();
+        return isEmpty() ? null : getLast().getEnd();
     }
 
     public String getType() {
@@ -192,7 +187,7 @@ public class LoadTimeLine {
     }
 
     public boolean hasChildren() {
-        return (!children.isEmpty());
+        return !children.isEmpty();
     }
 
     public List<LoadTimeLine> getChildren() {

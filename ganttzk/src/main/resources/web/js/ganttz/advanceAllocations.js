@@ -25,14 +25,15 @@ ADVANCE_ALLOCATIONS = {};
 ADVANCE_ALLOCATIONS.listenToScroll = function() {
     var scrollableArea = jq('.advanced-assignment-area');
     var innerScrollableArea = jq('.z-center-body', scrollableArea);
-    var taskDetails = jq('.advancedassignmentdetails .z-grid-body');
+    var taskDetails = jq('.advanced-assignment-details .z-grid-body');
     var timeTracker = ganttz.TimeTracker.getInstance();
 
     scrollableArea.bind('scroll', function() {
-      timeTracker.scrollLeft(scrollableArea.scrollLeft());
-      taskDetails.css({top : -scrollableArea.scrollTop()});
+        timeTracker.scrollLeft(scrollableArea.scrollLeft());
+        taskDetails.css({top : -scrollableArea.scrollTop()});
     });
 
-    if (timeTracker != undefined ) innerScrollableArea.width(timeTracker.realWidth());
+    if (timeTracker != undefined )
+        innerScrollableArea.width(timeTracker.realWidth());
 
 };

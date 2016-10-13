@@ -29,16 +29,14 @@ import java.util.Map;
 import org.zkoss.ganttz.extensions.ITab;
 import org.zkoss.ganttz.util.IMenuItemsRegister;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
 
 public class TabsRegistry {
 
-    private List<ITab> tabs = new ArrayList<ITab>();
+    private List<ITab> tabs = new ArrayList<>();
 
     private final Component parent;
 
-    private Map<ITab, Object> fromTabToMenuKey = new HashMap<ITab, Object>();
+    private Map<ITab, Object> fromTabToMenuKey = new HashMap<>();
 
     private IMenuItemsRegister menu;
 
@@ -52,14 +50,10 @@ public class TabsRegistry {
     }
 
     public interface IBeforeShowAction {
-        public void doAction();
+        void doAction();
     }
 
-    private static final IBeforeShowAction DO_NOTHING = new IBeforeShowAction() {
-        @Override
-        public void doAction() {
-        }
-    };
+    private static final IBeforeShowAction DO_NOTHING = () -> {};
 
     public void show(ITab tab) {
         show(tab, DO_NOTHING);
@@ -101,23 +95,10 @@ public class TabsRegistry {
         }
     }
 
-    public void showFirst() {
-        if (!tabs.isEmpty()) {
-            show(tabs.get(0));
-        }
-    }
-
     public void registerAtMenu(IMenuItemsRegister menu) {
         this.menu = menu;
         for (final ITab t : tabs) {
-            Object key = menu.addMenuItem(t.getName(), t.getCssClass(),
-                    new EventListener() {
-
-                @Override
-                public void onEvent(Event event) {
-                    show(t);
-                }
-            });
+            Object key = menu.addMenuItem(t.getName(), t.getCssClass(), event -> show(t));
             fromTabToMenuKey.put(t, key);
         }
 

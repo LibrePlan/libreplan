@@ -30,12 +30,13 @@ import org.apache.commons.lang3.Validate;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
- *
  */
 public class SeveralModificators implements IDetailItemModificator {
 
+    private final List<IDetailItemModificator> modificators;
+
     public static IDetailItemModificator empty() {
-        return new SeveralModificators(Collections.<IDetailItemModificator> emptyList());
+        return new SeveralModificators(Collections.emptyList());
     }
 
     public static IDetailItemModificator create(IDetailItemModificator... modificators) {
@@ -45,8 +46,6 @@ public class SeveralModificators implements IDetailItemModificator {
     public static IDetailItemModificator create(Collection<? extends IDetailItemModificator> modificators) {
         return new SeveralModificators(modificators);
     }
-
-    private final List<IDetailItemModificator> modificators;
 
     private SeveralModificators(Collection<? extends IDetailItemModificator> modificators) {
         Validate.noNullElements(modificators);

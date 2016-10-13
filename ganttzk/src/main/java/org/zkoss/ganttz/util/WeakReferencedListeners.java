@@ -37,18 +37,19 @@ public class WeakReferencedListeners<T> {
 
     }
 
+    private LinkedList<WeakReference<T>> listeners = new LinkedList<>();
+
+    private List<IListenerNotification<? super T>> pendingOfNotification = new ArrayList<>();
+
+    private WeakReferencedListeners() {}
+
     public static <T> WeakReferencedListeners<T> create() {
         return new WeakReferencedListeners<>();
     }
 
-    private LinkedList<WeakReference<T>> listeners = new LinkedList<>();
-
-    private WeakReferencedListeners() {
-
-    }
-
     public enum Mode {
-        RECEIVE_PENDING, FROM_NOW_ON;
+        RECEIVE_PENDING,
+        FROM_NOW_ON
     }
 
     public void addListener(T listener) {
@@ -61,10 +62,8 @@ public class WeakReferencedListeners<T> {
         if ( getActiveListeners().isEmpty() && mode == Mode.RECEIVE_PENDING ) {
             notifyPendingOfNotificationTo(listener);
         }
-        listeners.add(new WeakReference<T>(listener));
+        listeners.add(new WeakReference<>(listener));
     }
-
-    private List<IListenerNotification<? super T>> pendingOfNotification = new ArrayList<>();
 
     private void notifyPendingOfNotificationTo(T listener) {
         for (IListenerNotification<? super T> each : pendingOfNotification) {

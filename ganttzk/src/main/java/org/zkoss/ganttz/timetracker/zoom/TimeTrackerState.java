@@ -47,6 +47,24 @@ import org.zkoss.ganttz.util.Interval;
  */
 public abstract class TimeTrackerState {
 
+    protected static final long MILLSECONDS_IN_DAY = 1000 * 60 * 60 * 24L;
+
+    /**
+     * Pending to calculate interval dinamically
+     */
+    protected static final int NUMBER_OF_ITEMS_MINIMUM = 4;
+
+    private final IDetailItemModificator firstLevelModificator;
+
+    private final IDetailItemModificator secondLevelModificator;
+
+    protected TimeTrackerState(IDetailItemModificator firstLevelModificator,
+                               IDetailItemModificator secondLevelModificator) {
+
+        this.firstLevelModificator = firstLevelModificator;
+        this.secondLevelModificator = secondLevelModificator;
+    }
+
     public static Date year(int year) {
         Calendar calendar = Calendar.getInstance();
         calendar.clear();
@@ -54,7 +72,7 @@ public abstract class TimeTrackerState {
         return calendar.getTime();
     }
 
-    public static abstract class LazyGenerator<T> implements Iterator<T> {
+    public abstract static class LazyGenerator<T> implements Iterator<T> {
 
         private T current;
 
@@ -69,7 +87,9 @@ public abstract class TimeTrackerState {
 
         @Override
         public T next() {
-            return this.current = next(this.current);
+            this.current = next(this.current);
+
+            return this.current;
         }
 
         protected abstract T next(T last);
@@ -80,27 +100,15 @@ public abstract class TimeTrackerState {
         }
     }
 
-    protected static final long MILLSECONDS_IN_DAY = 1000 * 60 * 60 * 24;
-
-    // Pending to calculate interval dinamically
-    protected static final int NUMBER_OF_ITEMS_MINIMUM = 4;
-
-    private final IDetailItemModificator firstLevelModificator;
-
-    private final IDetailItemModificator secondLevelModificator;
-
-    protected TimeTrackerState(IDetailItemModificator firstLevelModificator,
-            IDetailItemModificator secondLevelModificator) {
-        this.firstLevelModificator = firstLevelModificator;
-        this.secondLevelModificator = secondLevelModificator;
-    }
-
-    // When applied after setting current day, removes extra data as current day
-    // or bank holidays, and must proccess the array twice. May be refactorized
-    private static List<DetailItem> markEvens(
-            Collection<? extends DetailItem> items) {
+    /**
+     * When applied after setting current day, removes extra data as current day or bank holidays,
+     * and must process the array twice.
+     *
+     * May be refactorized.
+     */
+    private static List<DetailItem> markEvens(Collection<? extends DetailItem> items) {
         boolean even = false;
-        ArrayList<DetailItem> result = new ArrayList<DetailItem>();
+        ArrayList<DetailItem> result = new ArrayList<>();
 
         for (DetailItem detailItem : items) {
             detailItem.setEven(even);
@@ -120,26 +128,29 @@ public abstract class TimeTrackerState {
 
     public Collection<DetailItem> getSecondLevelDetails(Interval interval) {
         if (getZoomLevel() == ZoomLevel.DETAIL_FIVE) {
-            // Evens are not highlighted in day view
+            // Events are not highlighted in day view
             return applyConfiguredModifications(
                     secondLevelModificator,
-                    createDetailsForSecondLevel(interval), getZoomLevel());
+                    createDetailsForSecondLevel(interval),
+                    getZoomLevel());
         } else {
             return markEvens(applyConfiguredModifications(
                     secondLevelModificator,
-                    createDetailsForSecondLevel(interval), getZoomLevel()));
+                    createDetailsForSecondLevel(interval),
+                    getZoomLevel()));
         }
     }
 
     public Collection<DetailItem> getFirstLevelDetails(Interval interval) {
-        return applyConfiguredModifications(firstLevelModificator,
-                createDetailsForFirstLevel(interval), getZoomLevel());
+        return applyConfiguredModifications(
+                firstLevelModificator, createDetailsForFirstLevel(interval), getZoomLevel());
     }
 
-    private static List<DetailItem> applyConfiguredModifications(
-            IDetailItemModificator modificator,
-            Collection<? extends DetailItem> detailsItems, ZoomLevel zoomlevel) {
-        List<DetailItem> result = new ArrayList<DetailItem>(detailsItems.size());
+    private static List<DetailItem> applyConfiguredModifications(IDetailItemModificator modificator,
+                                                                 Collection<? extends DetailItem> detailsItems,
+                                                                 ZoomLevel zoomlevel) {
+
+        List<DetailItem> result = new ArrayList<>(detailsItems.size());
         for (DetailItem each : detailsItems) {
             result.add(modificator.applyModificationsTo(each, zoomlevel));
         }
@@ -147,41 +158,43 @@ public abstract class TimeTrackerState {
     }
 
     private Collection<DetailItem> createDetails(Interval interval,
-            Iterator<LocalDate> datesGenerator,
-            IDetailItemCreator detailItemCreator) {
+                                                 Iterator<LocalDate> datesGenerator,
+                                                 IDetailItemCreator detailItemCreator) {
+
+        List<DetailItem> result = new ArrayList<>();
         LocalDate current = interval.getStart();
         LocalDate end = interval.getFinish();
-        List<DetailItem> result = new ArrayList<DetailItem>();
+
         while (current.isBefore(end)) {
-            result.add(detailItemCreator.create(current
-                    .toDateTimeAtStartOfDay()));
+            result.add(detailItemCreator.create(current.toDateTimeAtStartOfDay()));
             assert datesGenerator.hasNext();
             current = datesGenerator.next();
         }
+
         return result;
     }
 
-    private final Collection<DetailItem> createDetailsForFirstLevel(
-            Interval interval) {
+    private final Collection<DetailItem> createDetailsForFirstLevel(Interval interval) {
         Interval realInterval = getRealIntervalFor(interval);
-        return createDetails(realInterval,
+
+        return createDetails(
+                realInterval,
                 getPeriodsFirstLevelGenerator(realInterval.getStart()),
                 getDetailItemCreatorFirstLevel());
     }
 
-    protected abstract Iterator<LocalDate> getPeriodsFirstLevelGenerator(
-            LocalDate start);
+    protected abstract Iterator<LocalDate> getPeriodsFirstLevelGenerator(LocalDate start);
 
-    private final Collection<DetailItem> createDetailsForSecondLevel(
-            Interval interval) {
+    private final Collection<DetailItem> createDetailsForSecondLevel(Interval interval) {
         Interval realInterval = getRealIntervalFor(interval);
-        return createDetails(realInterval,
+
+        return createDetails(
+                realInterval,
                 getPeriodsSecondLevelGenerator(realInterval.getStart()),
                 getDetailItemCreatorSecondLevel());
     }
 
-    protected abstract Iterator<LocalDate> getPeriodsSecondLevelGenerator(
-            LocalDate start);
+    protected abstract Iterator<LocalDate> getPeriodsSecondLevelGenerator(LocalDate start);
 
     protected abstract IDetailItemCreator getDetailItemCreatorFirstLevel();
 
@@ -201,6 +214,7 @@ public abstract class TimeTrackerState {
                 return Years.yearsBetween(start, end);
             }
         },
+
         MONTHS {
             @Override
             public ReadablePeriod toPeriod(int amount) {
@@ -212,6 +226,7 @@ public abstract class TimeTrackerState {
                 return Months.monthsBetween(start, end);
             }
         },
+
         WEEKS {
             @Override
             public ReadablePeriod toPeriod(int amount) {
@@ -223,6 +238,7 @@ public abstract class TimeTrackerState {
                 return Weeks.weeksBetween(start, end);
             }
         },
+
         DAYS {
             @Override
             public ReadablePeriod toPeriod(int amount) {
@@ -237,8 +253,7 @@ public abstract class TimeTrackerState {
 
         public abstract ReadablePeriod toPeriod(int amount);
 
-        public abstract BaseSingleFieldPeriod differenceBetween(
-                LocalDate start, LocalDate end);
+        public abstract BaseSingleFieldPeriod differenceBetween(LocalDate start, LocalDate end);
 
         public Period amount(int amount) {
             return new Period(this, amount);
@@ -262,18 +277,16 @@ public abstract class TimeTrackerState {
         }
 
         BaseSingleFieldPeriod asPeriod(Interval interval) {
-            return type.differenceBetween(interval.getStart(),
-                    interval.getFinish());
+            return type.differenceBetween(interval.getStart(), interval.getFinish());
         }
     }
 
     protected abstract Period getMinimumPeriod();
 
     private Interval ensureMinimumInterval(Interval interval) {
-        LocalDate newEnd = interval.getStart().plus(
-                getMinimumPeriod().toPeriod());
-        return new Interval(interval.getStart(), Collections.max(asList(newEnd,
-                interval.getFinish())));
+        LocalDate newEnd = interval.getStart().plus(getMinimumPeriod().toPeriod());
+
+        return new Interval(interval.getStart(), Collections.max(asList(newEnd, interval.getFinish())));
     }
 
     public Interval getRealIntervalFor(Interval testInterval) {
@@ -283,9 +296,8 @@ public abstract class TimeTrackerState {
     private Interval calculateForAtLeastMinimum(Interval atLeastMinimum) {
         LocalDate start = round(atLeastMinimum.getStart(), true);
         LocalDate finish = round(atLeastMinimum.getFinish(), false);
-        Interval result = new Interval(start.toDateTimeAtStartOfDay().toDate(),
-                finish.toDateTimeAtStartOfDay().toDate());
-        return result;
+
+        return new Interval(start.toDateTimeAtStartOfDay().toDate(), finish.toDateTimeAtStartOfDay().toDate());
     }
 
     public abstract double daysPerPixel();

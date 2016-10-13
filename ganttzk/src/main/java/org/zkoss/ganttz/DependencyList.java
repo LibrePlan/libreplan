@@ -27,8 +27,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.zkoss.ganttz.data.Dependency;
 import org.zkoss.ganttz.data.DependencyType;
 import org.zkoss.ganttz.data.Task;
@@ -39,6 +37,7 @@ import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.ganttz.util.MenuBuilder;
 import org.zkoss.ganttz.util.MenuBuilder.ItemAction;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zul.Menupopup;
@@ -51,8 +50,8 @@ import org.zkoss.zul.impl.XulElement;
  */
 public class DependencyList extends XulElement implements AfterCompose {
 
-    private final class ChangeTypeAction implements
-            ItemAction<DependencyComponent> {
+    private final class ChangeTypeAction implements ItemAction<DependencyComponent> {
+
         private final DependencyType type;
 
         private ChangeTypeAction(DependencyType type) {
@@ -60,32 +59,28 @@ public class DependencyList extends XulElement implements AfterCompose {
         }
 
         @Override
-        public void onEvent(final DependencyComponent choosen, Event event) {
-            boolean canBeAdded = context.changeType(choosen.getDependency(),
-                    type);
-            if (!canBeAdded) {
+        public void onEvent(final DependencyComponent chosen, Event event) {
+            boolean canBeAdded = context.changeType(chosen.getDependency(), type);
+
+            if ( !canBeAdded ) {
                 warnUser(_("The specified dependency is not allowed"));
             }
         }
 
         private void warnUser(String message) {
-            try {
-                Messagebox.show(message, null, Messagebox.OK,
-                        Messagebox.EXCLAMATION, 0, null);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+            Messagebox.show(message, null, Messagebox.OK, Messagebox.EXCLAMATION, 0, null);
         }
     }
 
-    private final class DependencyVisibilityToggler implements
-            PropertyChangeListener {
+    private final class DependencyVisibilityToggler implements PropertyChangeListener {
+
         private final Task source;
+
         private final Task destination;
+
         private final DependencyComponent dependencyComponent;
 
-        private DependencyVisibilityToggler(Task source, Task destination,
-                DependencyComponent dependencyComponent) {
+        private DependencyVisibilityToggler(Task source, Task destination, DependencyComponent dependencyComponent) {
             this.source = source;
             this.destination = destination;
             this.dependencyComponent = dependencyComponent;
@@ -93,16 +88,17 @@ public class DependencyList extends XulElement implements AfterCompose {
 
         @Override
         public void propertyChange(PropertyChangeEvent evt) {
-            if (!evt.getPropertyName().equals("visible")) {
+            if ( !"visible".equals(evt.getPropertyName()) ) {
                 return;
             }
-            if (dependencyMustBeVisible() != isDependencyNowVisible()) {
+
+            if ( dependencyMustBeVisible() != isDependencyNowVisible() ) {
                 toggleDependencyExistence(dependencyMustBeVisible());
             }
         }
 
         void toggleDependencyExistence(boolean visible) {
-            if (visible) {
+            if ( visible ) {
                 appendChild(dependencyComponent);
                 dependencyComponent.afterCompose();
                 addContextMenu(dependencyComponent);
@@ -120,8 +116,6 @@ public class DependencyList extends XulElement implements AfterCompose {
         }
     }
 
-    private static final Log LOG = LogFactory.getLog(DependencyList.class);
-
     private transient IZoomLevelChangedListener listener;
 
     private final FunctionalityExposedForExtensions<?> context;
@@ -135,33 +129,32 @@ public class DependencyList extends XulElement implements AfterCompose {
     }
 
     private List<DependencyComponent> getDependencyComponents() {
-        List<Object> children = getChildren();
-        return ComponentsFinder
-                .findComponentsOfType(DependencyComponent.class, children);
+        List<Component> children = getChildren();
+        return ComponentsFinder.findComponentsOfType(DependencyComponent.class, children);
     }
 
     void addDependencyComponent(final DependencyComponent dependencyComponent) {
         TaskComponent source = dependencyComponent.getSource();
         TaskComponent destination = dependencyComponent.getDestination();
-        DependencyVisibilityToggler visibilityToggler = new DependencyVisibilityToggler(
-                source.getTask(), destination.getTask(), dependencyComponent);
-        source.getTask().addVisibilityPropertiesChangeListener(
-                visibilityToggler);
-        destination.getTask().addVisibilityPropertiesChangeListener(
-                visibilityToggler);
+
+        DependencyVisibilityToggler visibilityToggler =
+                new DependencyVisibilityToggler(source.getTask(), destination.getTask(), dependencyComponent);
+
+        source.getTask().addVisibilityPropertiesChangeListener(visibilityToggler);
+        destination.getTask().addVisibilityPropertiesChangeListener(visibilityToggler);
         dependencyComponent.setVisibilityChangeListener(visibilityToggler);
-        boolean dependencyMustBeVisible = visibilityToggler
-                .dependencyMustBeVisible();
+
+        boolean dependencyMustBeVisible = visibilityToggler.dependencyMustBeVisible();
         visibilityToggler.toggleDependencyExistence(dependencyMustBeVisible);
-        if (dependencyMustBeVisible) {
+
+        if ( dependencyMustBeVisible ) {
             dependencyComponent.redrawDependency();
         }
     }
 
     private void addContextMenu(DependencyComponent dependencyComponent) {
-        Menupopup contextMenu = dependencyComponent.hasLimitingTasks() ?
-                getLimitingContextMenu()
-                : getContextMenu();
+        Menupopup contextMenu = dependencyComponent.hasLimitingTasks() ? getLimitingContextMenu() : getContextMenu();
+
         dependencyComponent.setContext(contextMenu);
     }
 
@@ -169,8 +162,7 @@ public class DependencyList extends XulElement implements AfterCompose {
         return (GanttPanel) getParent();
     }
 
-    public void setDependencyComponents(
-            List<DependencyComponent> dependencyComponents) {
+    void setDependencyComponents(List<DependencyComponent> dependencyComponents) {
         for (DependencyComponent dependencyComponent : dependencyComponents) {
             addDependencyComponent(dependencyComponent);
         }
@@ -178,11 +170,13 @@ public class DependencyList extends XulElement implements AfterCompose {
 
     @Override
     public void afterCompose() {
-        if (listener == null) {
+        if ( listener == null ) {
+
+            /* Do not replace it with lambda */
             listener = new IZoomLevelChangedListener() {
                 @Override
                 public void zoomLevelChanged(ZoomLevel detailLevel) {
-                    if (!isInPage()) {
+                    if ( !isInPage() ) {
                         return;
                     }
                     for (DependencyComponent dependencyComponent : getDependencyComponents()) {
@@ -190,14 +184,15 @@ public class DependencyList extends XulElement implements AfterCompose {
                     }
                 }
             };
+
             getTimeTracker().addZoomListener(listener);
         }
+
         addContextMenu();
     }
 
     private boolean isInPage() {
-        return getParent() != null && getGanttPanel() != null
-                && getGanttPanel().getParent() != null;
+        return getParent() != null && getGanttPanel() != null && getGanttPanel().getParent() != null;
     }
 
     private TimeTracker getTimeTracker() {
@@ -211,54 +206,39 @@ public class DependencyList extends XulElement implements AfterCompose {
     }
 
     private Menupopup getLimitingContextMenu() {
-        if (limitingContextMenu == null) {
-            MenuBuilder<DependencyComponent> contextMenuBuilder = MenuBuilder
-                    .on(getPage(), getDependencyComponents()).item(_("Erase"),
+        if ( limitingContextMenu == null ) {
+
+            MenuBuilder<DependencyComponent> contextMenuBuilder =
+                    MenuBuilder.on(getPage(), getDependencyComponents()).item(
+                            _("Erase"),
                             "/common/img/ico_borrar.png",
-                            new ItemAction<DependencyComponent>() {
-                                @Override
-                                public void onEvent(
-                                        final DependencyComponent choosen,
-                                        Event event) {
-                                    context
-                                            .removeDependency(choosen.getDependency());
-                                }
-                            });
+                            (chosen, event) -> context.removeDependency(chosen.getDependency()));
+
             limitingContextMenu = contextMenuBuilder.create();
         }
+
         return limitingContextMenu;
     }
 
     private Menupopup getContextMenu() {
-        if (contextMenu == null) {
-            MenuBuilder<DependencyComponent> contextMenuBuilder = MenuBuilder
-                    .on(getPage(), getDependencyComponents()).item(_("Erase"),
+        if ( contextMenu == null ) {
+
+            MenuBuilder<DependencyComponent> contextMenuBuilder =
+                    MenuBuilder.on(getPage(), getDependencyComponents()).item(
+                            _("Erase"),
                             "/common/img/ico_borrar.png",
-                            new ItemAction<DependencyComponent>() {
-                                @Override
-                                public void onEvent(
-                                        final DependencyComponent choosen,
-                                        Event event) {
-                                    context
-                                            .removeDependency(choosen.getDependency());
-                                }
-                            });
+                            ((chosen, event) -> context.removeDependency(chosen.getDependency())));
 
-            contextMenuBuilder.item(_("Set End-Start"), null,
-                    new ChangeTypeAction(
-                    DependencyType.END_START));
+            contextMenuBuilder.item(_("Set End-Start"), null, new ChangeTypeAction(DependencyType.END_START));
 
-            contextMenuBuilder.item(_("Set Start-Start"), null,
-                    new ChangeTypeAction(
-                    DependencyType.START_START));
+            contextMenuBuilder.item(_("Set Start-Start"), null, new ChangeTypeAction(DependencyType.START_START));
 
-            contextMenuBuilder.item(_("Set End-End"), null,
-                    new ChangeTypeAction(
-                    DependencyType.END_END));
+            contextMenuBuilder.item(_("Set End-End"), null, new ChangeTypeAction(DependencyType.END_END));
 
             contextMenu = contextMenuBuilder.create();
 
         }
+
         return contextMenu;
     }
 
@@ -266,48 +246,45 @@ public class DependencyList extends XulElement implements AfterCompose {
         return getGanttPanel().getTimeTrackerComponent();
     }
 
-    public void redrawDependencies() {
+    void redrawDependencies() {
         redrawDependencyComponents(getDependencyComponents());
     }
 
-    public void redrawDependencyComponents(
-            List<DependencyComponent> dependencyComponents) {
+    private void redrawDependencyComponents(List<DependencyComponent> dependencyComponents) {
         for (DependencyComponent dependencyComponent : dependencyComponents) {
             dependencyComponent.redrawDependency();
         }
     }
 
-    public void taskRemoved(Task task) {
-        for (DependencyComponent dependencyComponent : DependencyList.this
-                .getDependencyComponents()) {
-            if (dependencyComponent.contains(task)) {
+    void taskRemoved(Task task) {
+        for (DependencyComponent dependencyComponent : DependencyList.this.getDependencyComponents()) {
+            if ( dependencyComponent.contains(task) ) {
                 removeDependencyComponent(dependencyComponent);
             }
         }
     }
 
     public void remove(Dependency dependency) {
-        for (DependencyComponent dependencyComponent : DependencyList.this
-                .getDependencyComponents()) {
-            if (dependencyComponent.hasSameSourceAndDestination(dependency)) {
+        for (DependencyComponent dependencyComponent : DependencyList.this.getDependencyComponents()) {
+            if ( dependencyComponent.hasSameSourceAndDestination(dependency) ) {
                 removeDependencyComponent(dependencyComponent);
             }
         }
     }
 
     private void removeDependencyComponent(DependencyComponent dependencyComponent) {
-        //remove the visibility listener attached to the tasks
+        // Remove the visibility listener attached to the tasks
         TaskComponent source = dependencyComponent.getSource();
         TaskComponent destination = dependencyComponent.getDestination();
-        PropertyChangeListener listener =
-                dependencyComponent.getVisibilityChangeListener();
+        PropertyChangeListener listener = dependencyComponent.getVisibilityChangeListener();
+
         source.getTask().removeVisibilityPropertiesChangeListener(listener);
         destination.getTask().removeVisibilityPropertiesChangeListener(listener);
 
-        //remove other change listeners
+        // Remove other change listeners
         dependencyComponent.removeChangeListeners();
 
-        //remove the dependency itself
+        // Remove the dependency itself
         this.removeChild(dependencyComponent);
     }
 }

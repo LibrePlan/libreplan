@@ -24,16 +24,10 @@ package org.zkoss.ganttz;
 import org.apache.commons.lang3.StringUtils;
 import org.zkoss.ganttz.extensions.ICommand;
 import org.zkoss.ganttz.extensions.IContext;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Button;
 
 class CommandContextualized<T> {
-
-    public static <T> CommandContextualized<T> create(ICommand<T> command, IContext<T> context) {
-        return new CommandContextualized<T>(command, context);
-    }
 
     private final ICommand<T> command;
 
@@ -44,6 +38,10 @@ class CommandContextualized<T> {
     private CommandContextualized(ICommand<T> command, IContext<T> context) {
         this.command = command;
         this.context = context;
+    }
+
+    public static <T> CommandContextualized<T> create(ICommand<T> command, IContext<T> context) {
+        return new CommandContextualized<>(command, context);
     }
 
     public void doAction() {
@@ -66,12 +64,7 @@ class CommandContextualized<T> {
         if ( command.isDisabled() ) {
             result.setDisabled(true);
         } else {
-            result.addEventListener(Events.ON_CLICK, new EventListener() {
-                @Override
-                public void onEvent(Event event) {
-                    doAction();
-                }
-            });
+            result.addEventListener(Events.ON_CLICK, event -> doAction());
         }
 
         button = result;

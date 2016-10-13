@@ -39,30 +39,24 @@ import org.junit.Test;
 import org.zkoss.ganttz.timetracker.zoom.DetailItem;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zul.Row;
-import org.zkoss.zul.api.Label;
+import org.zkoss.zul.Label;
 
 public class OnColumnsRowRendererTest {
 
-    private static class Data {
-
-    }
+    private static class Data {}
 
     private static class CellRenderer implements ICellForDetailItemRenderer<DetailItem, Data> {
-
         @Override
         public Component cellFor(DetailItem item, Data data) {
             return null;
         }
-
     }
 
     private static class CellRendererNotInferable<T> implements ICellForDetailItemRenderer<DetailItem, T> {
-
         @Override
         public Component cellFor(DetailItem item, T data) {
             return null;
         }
-
     }
 
     private List<DetailItem> detailItems;
@@ -80,8 +74,7 @@ public class OnColumnsRowRendererTest {
 
     private void givenDetailItems() {
         detailItems = new ArrayList<>();
-        DateTime start = new LocalDate(2010, 1, 1).toDateTimeAtStartOfDay().toDateTime();
-        DateTime current = start;
+        DateTime current = new LocalDate(2010, 1, 1).toDateTimeAtStartOfDay().toDateTime();
         Period period = Period.months(2);
 
         for (int i = 1; i <= 10; i++) {
@@ -105,32 +98,32 @@ public class OnColumnsRowRendererTest {
 
     @Test(expected = NullPointerException.class)
     public void itNeedsNotNullCellRenderer() {
-        OnColumnsRowRenderer.create(Data.class, null, new ArrayList<>());
+        OnColumnsRowRenderer.create(Data.class, null, new ArrayList<DetailItem>());
     }
 
     @Test(expected = NullPointerException.class)
     public void itNeedsTheTypeAsClass() {
-        OnColumnsRowRenderer.create(null, createStub(), new ArrayList<>());
+        OnColumnsRowRenderer.create(null, createStub(), new ArrayList<DetailItem>());
     }
 
     @Test
     public void itCanHaveEmptyDetailItems() {
-        OnColumnsRowRenderer.create(Data.class, createStub(), new ArrayList<>());
+        OnColumnsRowRenderer.create(Data.class, createStub(), new ArrayList<DetailItem>());
     }
 
     @Test
     public void itCanInferTheGenericType() {
-        OnColumnsRowRenderer.create(new CellRenderer(), new ArrayList<>());
+        OnColumnsRowRenderer.create(new CellRenderer(), new ArrayList<DetailItem>());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void ifComesFromRawTypeIsNotInferrable() {
-        OnColumnsRowRenderer.create(createStub(), new ArrayList<>());
+        OnColumnsRowRenderer.create(createStub(), new ArrayList<DetailItem>());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void ifItNotShowsTheActualTypeIsNotInferrable() {
-        OnColumnsRowRenderer.create(new CellRendererNotInferable<>(), new ArrayList<>());
+        OnColumnsRowRenderer.create(new CellRendererNotInferable<Data>(), new ArrayList<DetailItem>());
     }
 
     @SuppressWarnings("serial")
@@ -145,9 +138,9 @@ public class OnColumnsRowRendererTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void cantRenderObjectsOfOtherType() {
+    public void cantRenderObjectsOfOtherType() throws Exception {
         givenOnDetailItemsRowRenderer(createStub());
-        rowRenderer.render(new Row(), "");
+        rowRenderer.render(new Row(), "", 0);
     }
 
     private ICellForDetailItemRenderer<DetailItem, Data> createStub() {
@@ -168,7 +161,11 @@ public class OnColumnsRowRendererTest {
 
     private void renderingTheData() {
         for (Data d : data) {
-            rowRenderer.render(new Row(), d);
+            try {
+                rowRenderer.render(new Row(), d, 0);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -200,8 +197,8 @@ public class OnColumnsRowRendererTest {
 
     private Label expectTheCreatedLabelIsAddedToTheRow(ICellForDetailItemRenderer<DetailItem, Data> mock) {
         Label labelMock = createStrictMock(Label.class);
-        for (Data ignored1 : data) {
-            for (DetailItem ignored2 : detailItems) {
+        for (Data ignored : data) {
+            for (DetailItem ignored1 : detailItems) {
                 expect(mock.cellFor(isA(DetailItem.class), isA(Data.class))).andReturn(labelMock);
                 labelMock.setParent(isA(Row.class));
             }

@@ -23,6 +23,6 @@ package org.zkoss.ganttz.resourceload;
 
 public interface IFilterChangedListener {
 
-    public void filterChanged(boolean filter);
+    void filterChanged(boolean filter);
 
 }

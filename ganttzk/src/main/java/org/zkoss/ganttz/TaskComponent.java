@@ -21,6 +21,7 @@
 
 package org.zkoss.ganttz;
 
+import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.util.Date;
@@ -34,6 +35,8 @@ import org.joda.time.Duration;
 import org.joda.time.LocalDate;
 import org.zkoss.ganttz.adapters.IDisabilityConfiguration;
 import org.zkoss.ganttz.data.GanttDate;
+import org.zkoss.ganttz.data.ITaskFundamentalProperties.IModifications;
+import org.zkoss.ganttz.data.ITaskFundamentalProperties.IUpdatablePosition;
 import org.zkoss.ganttz.data.Milestone;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.data.Task.IReloadResourcesTextRequested;
@@ -62,9 +65,12 @@ import org.zkoss.zul.Div;
 public class TaskComponent extends Div implements AfterCompose {
 
     private static final int HEIGHT_PER_TASK = 10;
+
     private static final int CONSOLIDATED_MARK_HALF_WIDTH = 3;
+
     private static final int HALF_DEADLINE_MARK = 3;
 
+    private String FUNCTION_RESIZE = "resizeCompletion2Advance";
 
     protected final IDisabilityConfiguration disabilityConfiguration;
 
@@ -75,6 +81,18 @@ public class TaskComponent extends Div implements AfterCompose {
     private PropertyChangeListener showingReportedHoursPropertyListener;
 
     private PropertyChangeListener showingMoneyCostBarPropertyListener;
+
+    private IReloadResourcesTextRequested reloadResourcesTextRequested;
+
+    private String _color;
+
+    private boolean isTopLevel;
+
+    private final Task task;
+
+    private transient PropertyChangeListener propertiesListener;
+
+    private String progressType;
 
     public static TaskComponent asTaskComponent(Task task,
                                                 IDisabilityConfiguration disabilityConfiguration,
@@ -99,8 +117,6 @@ public class TaskComponent extends Div implements AfterCompose {
         return asTaskComponent(task, disabilityConfiguration, true);
     }
 
-    private IReloadResourcesTextRequested reloadResourcesTextRequested;
-
     public TaskComponent(Task task, IDisabilityConfiguration disabilityConfiguration) {
         setHeight(HEIGHT_PER_TASK + "px");
         setContext("idContextMenuTaskAssignment");
@@ -108,9 +124,7 @@ public class TaskComponent extends Div implements AfterCompose {
         setClass(calculateCSSClass());
         setId(UUID.randomUUID().toString());
         this.disabilityConfiguration = disabilityConfiguration;
-
-        IConstraintViolationListener<GanttDate> taskViolationListener =
-                Constraint.onlyOnZKExecution(new IConstraintViolationListener<GanttDate>() {
+        IConstraintViolationListener<GanttDate> taskViolationListener = Constraint.onlyOnZKExecution(new IConstraintViolationListener<GanttDate>() {
 
             @Override
             public void constraintViolated(Constraint<GanttDate> constraint, GanttDate value) {
@@ -124,32 +138,38 @@ public class TaskComponent extends Div implements AfterCompose {
         });
 
         this.task.addConstraintViolationListener(taskViolationListener, Mode.RECEIVE_PENDING);
-        reloadResourcesTextRequested = () -> {
-            if ( canShowResourcesText() ) {
-                smartUpdate("resourcesText", getResourcesText());
+
+        reloadResourcesTextRequested = new IReloadResourcesTextRequested() {
+            @Override
+            public void reloadResourcesTextRequested() {
+                if ( canShowResourcesText() ) {
+                    smartUpdate("resourcesText", getResourcesText());
+                }
+
+                String cssClass = calculateCSSClass();
+
+                response("setClass", new AuInvoke(TaskComponent.this, "setClass", cssClass));
+
+                // FIXME: Refactor to another listener
+                updateDeadline();
+                invalidate();
             }
 
-            String cssClass = calculateCSSClass();
-
-            response("setClass", new AuInvoke(TaskComponent.this, "setClass", cssClass));
-
-            // FIXME: Refactor to another listener
-            updateDeadline();
-            invalidate();
         };
 
         this.task.addReloadListener(reloadResourcesTextRequested);
 
-        setAuService(new AuService(){
+        setAuService(new AuService() {
 
-            public boolean service(AuRequest request, boolean everError){
+            public boolean service(AuRequest request, boolean everError) {
                 String command = request.getCommand();
                 final TaskComponent ta;
 
                 if ( command.equals("onUpdatePosition") ){
                     ta = retrieveTaskComponent(request);
 
-                    ta.doUpdatePosition(toInteger(retrieveData(request, "left")));
+                    ta.doUpdatePosition(toInteger(retrieveData(request, "left"))
+                    );
 
                     Events.postEvent(new Event(getId(), ta, request.getData()));
 
@@ -181,7 +201,7 @@ public class TaskComponent extends Div implements AfterCompose {
                 return ((Number) valueFromRequestData).intValue();
             }
 
-            private TaskComponent retrieveTaskComponent(AuRequest request){
+            private TaskComponent retrieveTaskComponent(AuRequest request) {
                 final TaskComponent ta = (TaskComponent) request.getComponent();
 
                 if ( ta == null ) {
@@ -191,7 +211,7 @@ public class TaskComponent extends Div implements AfterCompose {
                 return ta;
             }
 
-            private Object retrieveData(AuRequest request, String key){
+            private Object retrieveData(AuRequest request, String key) {
                 Object value = request.getData().get(key);
                 if ( value == null )
                     throw new UiException(MZk.ILLEGAL_REQUEST_WRONG_DATA, new Object[] { key, this });
@@ -240,15 +260,25 @@ public class TaskComponent extends Div implements AfterCompose {
     public final void afterCompose() {
         updateProperties();
         if ( propertiesListener == null ) {
-            propertiesListener = evt -> updateProperties();
+
+            propertiesListener = new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent evt) {
+                    updateProperties();
+                }
+            };
         }
 
         this.task.addFundamentalPropertiesChangeListener(propertiesListener);
 
         if ( showingAdvancePropertyListener == null ) {
-            showingAdvancePropertyListener = evt -> {
-                if ( isInPage() && !(task instanceof Milestone) ) {
-                    updateCompletionAdvance();
+
+            showingAdvancePropertyListener = new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent evt) {
+                    if ( isInPage() && !(task instanceof Milestone) ) {
+                        updateCompletionAdvance();
+                    }
                 }
             };
         }
@@ -256,9 +286,13 @@ public class TaskComponent extends Div implements AfterCompose {
         this.task.addAdvancesPropertyChangeListener(showingAdvancePropertyListener);
 
         if ( showingReportedHoursPropertyListener == null ) {
-            showingReportedHoursPropertyListener = evt -> {
-                if ( isInPage() && !(task instanceof Milestone) ) {
-                    updateCompletionReportedHours();
+
+            showingReportedHoursPropertyListener = new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent evt) {
+                    if ( isInPage() && !(task instanceof Milestone) ) {
+                        updateCompletionReportedHours();
+                    }
                 }
             };
         }
@@ -266,9 +300,13 @@ public class TaskComponent extends Div implements AfterCompose {
         this.task.addReportedHoursPropertyChangeListener(showingReportedHoursPropertyListener);
 
         if ( showingMoneyCostBarPropertyListener == null ) {
-            showingMoneyCostBarPropertyListener = evt -> {
-                if ( isInPage() && !(task instanceof Milestone) ) {
-                    updateCompletionMoneyCostBar();
+
+            showingMoneyCostBarPropertyListener = new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent evt) {
+                    if ( isInPage() && !(task instanceof Milestone) ) {
+                        updateCompletionMoneyCostBar();
+                    }
                 }
             };
         }
@@ -276,7 +314,14 @@ public class TaskComponent extends Div implements AfterCompose {
         this.task.addMoneyCostBarPropertyChangeListener(showingMoneyCostBarPropertyListener);
 
         if ( criticalPathPropertyListener == null ) {
-            criticalPathPropertyListener = evt -> updateClass();
+
+            criticalPathPropertyListener = new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent evt) {
+                    updateClass();
+                }
+
+            };
         }
 
         this.task.addCriticalPathPropertyChangeListener(criticalPathPropertyListener);
@@ -290,15 +335,6 @@ public class TaskComponent extends Div implements AfterCompose {
     protected boolean canShowResourcesText() {
         return true;
     }
-
-    private String _color;
-
-    private boolean isTopLevel;
-
-    private final Task task;
-    private transient PropertyChangeListener propertiesListener;
-
-    private String progressType;
 
     public TaskRow getRow() {
         if ( getParent() == null ) {
@@ -337,9 +373,16 @@ public class TaskComponent extends Div implements AfterCompose {
     void doUpdatePosition(int leftX) {
         GanttDate startBeforeMoving = this.task.getBeginDate();
         final LocalDate newPosition = getMapper().toDate(leftX);
-        this.task.doPositionModifications(position -> position.moveTo(GanttDate.createFrom(newPosition)));
+
+        this.task.doPositionModifications(new IModifications() {
+            @Override
+            public void doIt(IUpdatablePosition position) {
+                position.moveTo(GanttDate.createFrom(newPosition));
+            }
+        });
 
         boolean remainsInOriginalPosition = this.task.getBeginDate().equals(startBeforeMoving);
+
         if ( remainsInOriginalPosition ) {
             updateProperties();
         }
@@ -372,20 +415,18 @@ public class TaskComponent extends Div implements AfterCompose {
         }
     }
 
-    /*
-     * We override the method of renderProperties to put the color property as part
-     * of the style
-     */
+    /* We override the method of renderProperties to put the color property as part of the style */
     protected void renderProperties(ContentRenderer renderer) throws IOException{
+
         if ( getColor() != null )
             setStyle("background-color : " +  getColor());
 
         setWidgetAttribute("movingTasksEnabled", ((Boolean)isMovingTasksEnabled()).toString());
         setWidgetAttribute("resizingTasksEnabled", ((Boolean)isResizingTasksEnabled()).toString());
 
-        /* We can't use setStyle because of restrictions
-         * involved with UiVisualizer#getResponses and the
-         * smartUpdate method (when the request is asynchronous) */
+        /* We can't use setStyle because of restrictions involved with UiVisualizer#getResponses and the
+         * smartUpdate method (when the request is asynchronous)
+         */
         render(renderer, "style", "position : absolute");
 
         render(renderer, "_labelsText", getLabelsText());
@@ -395,10 +436,7 @@ public class TaskComponent extends Div implements AfterCompose {
         super.renderProperties(renderer);
     }
 
-    /*
-     * We send a response to the client to create the arrow we are going to use
-     * to create the dependency
-     */
+    /* We send a response to the client to create the arrow we are going to use to create the dependency */
 
     public void addDependency() {
         response("depkey", new AuInvoke(this, "addDependency"));
@@ -540,9 +578,9 @@ public class TaskComponent extends Div implements AfterCompose {
         if ( task.isShowingAdvances() ) {
             int startPixels = this.task.getBeginDate().toPixels(getMapper());
             String widthAdvancePercentage = pixelsFromStartUntil(startPixels, this.task.getAdvanceBarEndDate()) + "px";
-            response(null, new AuInvoke(this, "resizeCompletion2Advance", widthAdvancePercentage));
+            response(null, new AuInvoke(this, FUNCTION_RESIZE, widthAdvancePercentage));
         } else {
-            response(null, new AuInvoke(this, "resizeCompletion2Advance", "0px"));
+            response(null, new AuInvoke(this, FUNCTION_RESIZE, "0px"));
         }
     }
 
@@ -553,9 +591,9 @@ public class TaskComponent extends Div implements AfterCompose {
             String widthAdvancePercentage =
                     pixelsFromStartUntil(startPixels, this.task.getAdvanceBarEndDate(progressType)) + "px";
 
-            response(null, new AuInvoke(this, "resizeCompletion2Advance", widthAdvancePercentage));
+            response(null, new AuInvoke(this, FUNCTION_RESIZE, widthAdvancePercentage));
         } else {
-            response(null, new AuInvoke(this, "resizeCompletion2Advance", "0px"));
+            response(null, new AuInvoke(this, FUNCTION_RESIZE, "0px"));
         }
     }
 

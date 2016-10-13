@@ -39,16 +39,12 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.zkoss.ganttz.adapters.IDisabilityConfiguration;
 import org.zkoss.ganttz.data.GanttDate;
-import org.zkoss.ganttz.data.ITaskFundamentalProperties.IModifications;
-import org.zkoss.ganttz.data.ITaskFundamentalProperties.IUpdatablePosition;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.util.Locales;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
@@ -56,10 +52,10 @@ import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Treecell;
-import org.zkoss.zul.api.Div;
-import org.zkoss.zul.api.Hlayout;
-import org.zkoss.zul.api.Label;
-import org.zkoss.zul.api.Treerow;
+import org.zkoss.zul.Div;
+import org.zkoss.zul.Hlayout;
+import org.zkoss.zul.Label;
+import org.zkoss.zul.Treerow;
 
 import static org.zkoss.ganttz.i18n.I18nHelper._;
 
@@ -74,6 +70,7 @@ import static org.zkoss.ganttz.i18n.I18nHelper._;
 public class LeftTasksTreeRow extends GenericForwardComposer {
 
     public interface ILeftTasksTreeNavigator {
+
         LeftTasksTreeRow getBelowRow();
 
         LeftTasksTreeRow getAboveRow();
@@ -287,7 +284,11 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
     }
 
     private enum Navigation {
-        LEFT, UP, RIGHT, DOWN;
+        LEFT,
+        UP,
+        RIGHT,
+        DOWN;
+
         public static Navigation getIntentFrom(KeyEvent keyEvent) {
             return values()[keyEvent.getKeyCode() - 37];
         }
@@ -332,15 +333,15 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
         int position = textBoxes.indexOf(textbox);
         switch (navigation) {
             case UP:
-            focusGoUp(position);
-            break;
+                focusGoUp(position);
+                break;
 
             case DOWN:
-            focusGoDown(position);
-            break;
+                focusGoDown(position);
+                break;
 
             default:
-            throw new RuntimeException("case not covered: " + navigation);
+                throw new RuntimeException("case not covered: " + navigation);
         }
     }
 
@@ -394,7 +395,7 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
     }
 
     private void findComponents(Treerow row) {
-        List<Object> rowChildren = row.getChildren();
+        List<Component> rowChildren = row.getChildren();
         List<Treecell> treeCells = ComponentsFinder.findComponentsOfType(Treecell.class, rowChildren);
         assert treeCells.size() == 4;
 
@@ -405,7 +406,7 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
     }
 
     private static Textbox findTextBoxOfCell(Treecell treecell) {
-        List<Object> children = treecell.getChildren();
+        List<Component> children = treecell.getChildren();
         return ComponentsFinder.findComponentsOfType(Textbox.class, children).get(0);
     }
 
@@ -418,54 +419,26 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
     }
 
     private void registerKeyboardListener(final Textbox textBox) {
-        textBox.addEventListener("onCtrlKey", new EventListener() {
-
-            @Override
-            public void onEvent(Event event) {
-                userWantsToMove(textBox, (KeyEvent) event);
-            }
-        });
+        textBox.addEventListener("onCtrlKey", event -> userWantsToMove(textBox, (KeyEvent) event));
     }
 
     private void registerOnChange(final Component component) {
-        component.addEventListener("onChange", new EventListener() {
-
-            @Override
-            public void onEvent(Event event) {
-                updateBean(component);
-            }
-        });
+        component.addEventListener("onChange", event -> updateBean(component));
     }
 
     private void registerOnChangeDatebox(final Datebox datebox, final Textbox textbox) {
-        datebox.addEventListener("onChange", new EventListener() {
-
-            @Override
-            public void onEvent(Event event) {
-                textbox.setValue(dateFormat.format(datebox.getValue()));
-                updateBean(textbox);
-            }
+        datebox.addEventListener("onChange", event -> {
+            textbox.setValue(dateFormat.format(datebox.getValue()));
+            updateBean(textbox);
         });
     }
 
     private void registerOnEnterListener(final Textbox textBox) {
-        textBox.addEventListener("onOK", new EventListener() {
-
-            @Override
-            public void onEvent(Event event) {
-                userWantsDateBox(textBox);
-            }
-        });
+        textBox.addEventListener("onOK", event -> userWantsDateBox(textBox));
     }
 
     private void registerOnEnterOpenDateBox(final Datebox datebox) {
-        datebox.addEventListener("onOK", new EventListener() {
-
-            @Override
-            public void onEvent(Event event) {
-                datebox.setOpen(true);
-            }
-        });
+        datebox.addEventListener("onOK", event -> datebox.setOpen(true));
     }
 
     private void findComponentsForStartDateCell(Treecell treecell) {
@@ -485,7 +458,7 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
     }
 
     private void findComponentsForStatusCell(Treecell treecell) {
-        List<Object> children = treecell.getChildren();
+        List<Component> children = treecell.getChildren();
 
         Hlayout hlayout = ComponentsFinder.findComponentsOfType(Hlayout.class, children).get(0);
 
@@ -496,13 +469,7 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
     }
 
     private void registerBlurListener(final Datebox datebox) {
-        datebox.addEventListener("onBlur", new EventListener() {
-
-            @Override
-            public void onEvent(Event event) {
-                dateBoxHasLostFocus(datebox);
-            }
-        });
+        datebox.addEventListener("onBlur", event -> dateBoxHasLostFocus(datebox));
     }
 
     public void updateBean(Component updatedComponent) {
@@ -518,13 +485,7 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
 
             try {
                 final Date begin = dateFormat.parse(getStartDateTextBox().getValue());
-                task.doPositionModifications(new IModifications() {
-
-                    @Override
-                    public void doIt(IUpdatablePosition position) {
-                        position.moveTo(GanttDate.createFrom(begin));
-                    }
-                });
+                task.doPositionModifications(position -> position.moveTo(GanttDate.createFrom(begin)));
             } catch (ParseException e) {
                 // Do nothing as textbox is rested in the next sentence
             }
@@ -562,12 +523,8 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
             nameLabel.setTooltiptext(task.getName());
             nameLabel.setSclass("clickable-rows");
 
-            nameLabel.addEventListener(Events.ON_CLICK, new EventListener() {
-                @Override
-                public void onEvent(Event arg0) throws Exception {
-                    Executions.getCurrent().sendRedirect("/planner/index.zul;order=" + task.getProjectCode());
-                }
-            });
+            nameLabel.addEventListener(Events.ON_CLICK,
+                    arg0 -> Executions.getCurrent().sendRedirect("/planner/index.zul;order=" + task.getProjectCode()));
 
             startDateLabel.setValue(asString(task.getBeginDate().toDayRoundedDate()));
             endDateLabel.setValue(asString(task.getEndDate().toDayRoundedDate()));
@@ -627,17 +584,17 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
 
         switch (status) {
             case MARGIN_EXCEEDED:
-            cssClass = "status-red";
-            break;
+                cssClass = "status-red";
+                break;
 
             case WITHIN_MARGIN:
-            cssClass = "status-orange";
-            break;
+                cssClass = "status-orange";
+                break;
 
             case AS_PLANNED:
 
             default:
-            cssClass = "status-green";
+                cssClass = "status-green";
         }
 
         return cssClass;
@@ -645,12 +602,9 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
 
     private void onProjectStatusClick(Component statucComp) {
         if ( !disabilityConfiguration.isTreeEditable() ) {
-            statucComp.addEventListener(Events.ON_CLICK, new EventListener() {
-                @Override
-                public void onEvent(Event arg0) throws Exception {
-                    Executions.getCurrent().sendRedirect("/planner/index.zul;order=" + task.getProjectCode());
-                }
-            });
+            statucComp.addEventListener(
+                    Events.ON_CLICK,
+                    arg0 -> Executions.getCurrent().sendRedirect("/planner/index.zul;order=" + task.getProjectCode()));
         }
     }
 }

@@ -20,13 +20,11 @@
 -->
 <zk xmlns:n="http://www.zkoss.org/2005/zk/native">
 
-  <n:div class="z-grid-header">
+    <n:div class="z-grid-header">
         <n:table style="width: ${top.horizontalSize+2}px;" class="second_level_">
-
             <n:tr class="z-columns">
-                <n:td class="z-column" forEach="${top.detailsSecondLevel}"
-                style="width: ${each.size}px">
-                ${each.name}
+                <n:td class="z-column" forEach="${top.detailsSecondLevel}" style="width: ${each.size}px">
+                    ${each.name}
                 </n:td>
             </n:tr>
         </n:table>

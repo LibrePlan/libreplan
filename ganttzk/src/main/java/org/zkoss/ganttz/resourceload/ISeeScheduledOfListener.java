@@ -25,6 +25,6 @@ import org.zkoss.ganttz.data.resourceload.LoadTimeLine;
 
 public interface ISeeScheduledOfListener {
 
-    public void seeScheduleOf(LoadTimeLine taskLine);
+    void seeScheduleOf(LoadTimeLine taskLine);
 
 }

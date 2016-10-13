@@ -73,6 +73,7 @@ import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workingday.IntraDayDate;
 import org.libreplan.business.workingday.IntraDayDate.PartialDay;
 import org.libreplan.business.workingday.ResourcesPerDay;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -246,6 +247,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Set<ResourceAllocation<?>> getAllResourceAllocations() {
         return Collections.unmodifiableSet(resourceAllocations);
     }

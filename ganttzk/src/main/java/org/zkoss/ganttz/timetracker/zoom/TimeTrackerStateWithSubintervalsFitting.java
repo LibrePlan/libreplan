@@ -32,9 +32,8 @@ import org.joda.time.ReadablePeriod;
  */
 public abstract class TimeTrackerStateWithSubintervalsFitting extends TimeTrackerState {
 
-    protected TimeTrackerStateWithSubintervalsFitting(
-            IDetailItemModificator firstLevelModificator,
-            IDetailItemModificator secondLevelModificator) {
+    protected TimeTrackerStateWithSubintervalsFitting(IDetailItemModificator firstLevelModificator,
+                                                      IDetailItemModificator secondLevelModificator) {
 
         super(firstLevelModificator, secondLevelModificator);
     }

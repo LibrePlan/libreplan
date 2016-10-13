@@ -23,6 +23,9 @@ package org.zkoss.ganttz.data.resourceload;
 
 import org.apache.commons.lang3.Validate;
 
+/**
+ * Represents level of load of some {@link Resource}.
+ */
 public class LoadLevel {
 
     public enum Category {
@@ -56,6 +59,7 @@ public class LoadLevel {
         };
 
         protected abstract boolean contains(int percentage);
+
         public static Category categoryFor(int percentage) {
             for (Category category : values()) {
                 if ( category.contains(percentage) ) {

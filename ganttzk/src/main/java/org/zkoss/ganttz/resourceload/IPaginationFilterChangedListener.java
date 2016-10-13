@@ -23,6 +23,6 @@ package org.zkoss.ganttz.resourceload;
 
 public interface IPaginationFilterChangedListener {
 
-    public void filterChanged(int initialPosition);
+    void filterChanged(int initialPosition);
 
 }

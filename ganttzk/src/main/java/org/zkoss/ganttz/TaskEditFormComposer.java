@@ -33,11 +33,7 @@ import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Textbox;
 
-public class TaskEditFormComposer extends GenericForwardComposer {
-
-    public TaskEditFormComposer() {
-
-    }
+public class TaskEditFormComposer extends GenericForwardComposer<Component> {
 
     private Task currentTask;
 
@@ -53,19 +49,22 @@ public class TaskEditFormComposer extends GenericForwardComposer {
 
     private Textbox notes;
 
+    public TaskEditFormComposer() {
+
+    }
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
     }
 
-    public void init(Component openRelativeTo, Task task) {
+    public void init(Task task) {
         this.currentTask = task;
         this.taskDTO = toDTO(task);
         updateComponentValuesForTask(taskDTO);
     }
 
-    private void updateComponentValuesForTask(
-            TaskDTO taskDTO) {
+    private void updateComponentValuesForTask(TaskDTO taskDTO) {
         name.setValue(taskDTO.name);
         startDateBox.setValue(taskDTO.beginDate);
         endDateBox.setValue(taskDTO.endDate);
@@ -96,10 +95,15 @@ public class TaskEditFormComposer extends GenericForwardComposer {
      * @author Manuel Rego Casasnovas <mrego@igalia.com>
      */
     public static class TaskDTO {
+
         public String name;
+
         public Date beginDate;
+
         public Date endDate;
+
         public Date deadlineDate;
+
         public String notes;
     }
 
@@ -122,18 +126,12 @@ public class TaskEditFormComposer extends GenericForwardComposer {
         return localDate.toDateTimeAtStartOfDay().toDate();
     }
 
-    private void copyFromDTO(final TaskDTO taskDTO, Task currentTask,
-            boolean copyDates) {
+    private void copyFromDTO(final TaskDTO taskDTO, Task currentTask, boolean copyDates) {
         currentTask.setName(taskDTO.name);
         if (copyDates) {
-            currentTask.doPositionModifications(new IModifications() {
-
-                @Override
-                public void doIt(IUpdatablePosition position) {
-                    position.setBeginDate(GanttDate
-                            .createFrom(taskDTO.beginDate));
-                    position.resizeTo(GanttDate.createFrom(taskDTO.endDate));
-                }
+            currentTask.doPositionModifications(position -> {
+                position.setBeginDate(GanttDate.createFrom(taskDTO.beginDate));
+                position.resizeTo(GanttDate.createFrom(taskDTO.endDate));
             });
         }
         currentTask.setNotes(taskDTO.notes);

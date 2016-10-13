@@ -20,6 +20,5 @@
 -->
 
 <zk>
-    <div id="container">
-    </div>
+    <div id="container" sclass="tabSwitcher" self="@{insert(content_tabSwitcher)}" height="100%"/>
 </zk>

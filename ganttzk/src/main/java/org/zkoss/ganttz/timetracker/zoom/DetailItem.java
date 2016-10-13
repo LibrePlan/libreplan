@@ -25,42 +25,40 @@ import org.joda.time.DateTime;
 import org.joda.time.Days;
 
 /**
- * One of each of the subintervals a time line is divided into
+ * One of each of the subintervals a time line is divided into.
+ *
  * @author Francisco Javier Moran Rúa <jmoran@igalia.com>
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
 public final class DetailItem {
 
     private int size;
+
     private String name;
 
     private boolean even;
+
     private boolean bankHoliday;
 
     private String bankHolidayWeek;
 
-    public String getBankHolidayWeek() {
-        return bankHolidayWeek;
-    }
-
-    public void setBankHolidayWeek(String bankHolidayWeek) {
-        this.bankHolidayWeek = bankHolidayWeek;
-    }
-
     private boolean currentPeriod;
+
     private int currentDayOffset;
 
     private boolean projectStart = false;
+
     private int projectStartOffset = 0;
 
     private boolean deadlinePeriod;
+
     private int deadlineOffset;
 
     private DateTime startDate;
+
     private DateTime endDate;
 
-    public DetailItem(int size, String name, DateTime startDate,
-            DateTime endDate) {
+    public DetailItem(int size, String name, DateTime startDate, DateTime endDate) {
         this(size, name, false);
         this.startDate = startDate;
         this.endDate = endDate;
@@ -88,32 +86,41 @@ public final class DetailItem {
         this.currentDayOffset = currentdayoffset;
     }
 
-    public DetailItem(int size, String name, int currentdayoffset,
-            int deadlineoffset) {
+    public DetailItem(int size, String name, int currentdayoffset, int deadlineoffset) {
         this(size, name, currentdayoffset);
         this.deadlinePeriod = true;
         this.deadlineOffset = deadlineoffset;
     }
 
+    public String getBankHolidayWeek() {
+        return bankHolidayWeek;
+    }
+
+    public void setBankHolidayWeek(String bankHolidayWeek) {
+        this.bankHolidayWeek = bankHolidayWeek;
+    }
+
     public void markCurrentDay() {
         if (this.startDate.isBeforeNow() && this.endDate.isAfterNow()) {
-            int offsetInPx = Math
-                    .round(((((float) Days.daysBetween(this.startDate,
-                            new DateTime()).getDays()) + (float) 0.5) / ((float) Days
-                    .daysBetween(this.startDate, this.endDate).getDays()))
-                    * this.size);
+
+            int offsetInPx = Math.round(
+                    ( (((float) Days.daysBetween(this.startDate, new DateTime()).getDays()) + (float) 0.5) /
+                            ((float) Days.daysBetween(this.startDate, this.endDate).getDays()) )
+                            * this.size );
+
             // 1px per column side, 1px for right border and 1px own bg-width
             this.markCurrentDay(Math.min(this.size - 4, offsetInPx));
         }
     }
 
     public void markProjectStart(DateTime projectStart) {
-        if (!this.startDate.isAfter(projectStart)
-                && projectStart.isBefore(endDate)) {
-            int offsetInPx = Math.round((((float) Days.daysBetween(
-                    this.startDate, projectStart).getDays()) / ((float) Days
-                    .daysBetween(this.startDate, this.endDate).getDays()))
-                    * this.size);
+        if (!this.startDate.isAfter(projectStart) && projectStart.isBefore(endDate)) {
+
+            int offsetInPx = Math.round(
+                    ( ((float) Days.daysBetween(this.startDate, projectStart).getDays()) /
+                            ((float) Days.daysBetween(this.startDate, this.endDate).getDays()) )
+                            * this.size);
+
             this.markprojectStart(offsetInPx);
         }
     }
@@ -121,10 +128,12 @@ public final class DetailItem {
     public void markDeadlineDay(DateTime maxdeadline) {
         DateTime deadline = maxdeadline.plusDays(1);
         if (!this.startDate.isAfter(deadline) && deadline.isBefore(endDate)) {
-            int offsetInPx = Math.round((((float) Days.daysBetween(
-                    this.startDate, deadline).getDays()) / ((float) Days
-                    .daysBetween(this.startDate, this.endDate).getDays()))
-                    * this.size);
+
+            int offsetInPx = Math.round(
+                    ( ((float) Days.daysBetween(this.startDate, deadline).getDays()) /
+                            ((float) Days.daysBetween(this.startDate, this.endDate).getDays()) )
+                            * this.size);
+
             // 1px per column side, 1px for right border and 1px own bg-width
             this.markDeadlineDay(Math.min(this.size - 4, offsetInPx));
         }

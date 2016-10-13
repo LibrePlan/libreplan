@@ -21,16 +21,14 @@
 package org.zkoss.ganttz.timetracker;
 
 /**
- * A {@link TimeTrackerComponent} that doesn't show columns as watermark
+ * A {@link TimeTrackerComponent} that doesn't show columns as watermark.
+ *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public class TimeTrackerComponentWithoutColumns extends TimeTrackerComponent {
 
-    public TimeTrackerComponentWithoutColumns(TimeTracker timeTracker,
-            String timeTrackerId) {
-        super(timeTracker,
-                "~./ganttz/zul/timetracker/secondlevelwithoutwatermark.zul",
-                timeTrackerId);
+    public TimeTrackerComponentWithoutColumns(TimeTracker timeTracker, String timeTrackerId) {
+        super(timeTracker, "~./ganttz/zul/timetracker/secondlevelwithoutwatermark.zul", timeTrackerId);
     }
 
     @Override
@@ -38,14 +36,8 @@ public class TimeTrackerComponentWithoutColumns extends TimeTrackerComponent {
     }
 
     @Override
-    protected void moveCurrentPositionScroll() {
-        // TODO Auto-generated method stub
-
-    }
+    protected void moveCurrentPositionScroll() {}
 
     @Override
-    protected void updateCurrentDayScroll() {
-        // TODO Auto-generated method stub
-
-    }
+    protected void updateCurrentDayScroll() {}
 }

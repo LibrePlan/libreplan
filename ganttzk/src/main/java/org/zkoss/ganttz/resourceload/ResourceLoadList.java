@@ -40,27 +40,26 @@ import org.zkoss.zul.impl.XulElement;
 
 /**
  * Component to include a list of ResourceLoads inside the ResourcesLoadPanel.
+ *
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
 public class ResourceLoadList extends XulElement {
 
-    private final IZoomLevelChangedListener zoomListener;
+    private Map<LoadTimeLine, ResourceLoadComponent> fromTimeLineToComponent = new HashMap<>();
 
-    private Map<LoadTimeLine, ResourceLoadComponent> fromTimeLineToComponent = new HashMap<LoadTimeLine, ResourceLoadComponent>();
-
-    public ResourceLoadList(TimeTracker timeTracker,
-            MutableTreeModel<LoadTimeLine> timelinesTree) {
-        zoomListener = adjustTimeTrackerSizeListener();
+    public ResourceLoadList(TimeTracker timeTracker, MutableTreeModel<LoadTimeLine> timelinesTree) {
+        IZoomLevelChangedListener zoomListener = adjustTimeTrackerSizeListener();
         timeTracker.addZoomListener(zoomListener);
         LoadTimeLine current = timelinesTree.getRoot();
-        List<LoadTimeLine> toInsert = new ArrayList<LoadTimeLine>();
+        List<LoadTimeLine> toInsert = new ArrayList<>();
         fill(timelinesTree, current, toInsert);
         insertAsComponents(timeTracker, toInsert);
     }
 
-    private void fill(MutableTreeModel<LoadTimeLine> timelinesTree,
-            LoadTimeLine current, List<LoadTimeLine> result) {
+    private void fill(MutableTreeModel<LoadTimeLine> timelinesTree, LoadTimeLine current, List<LoadTimeLine> result) {
         final int length = timelinesTree.getChildCount(current);
+
         for (int i = 0; i < length; i++) {
             LoadTimeLine child = timelinesTree.getChild(current, i);
             result.add(child);
@@ -70,41 +69,48 @@ public class ResourceLoadList extends XulElement {
 
     private IZoomLevelChangedListener adjustTimeTrackerSizeListener() {
         return new IZoomLevelChangedListener() {
-
             @Override
             public void zoomLevelChanged(ZoomLevel detailLevel) {
-                response(null, new AuInvoke(ResourceLoadList.this,
-                        "adjustTimeTrackerSize"));
-                response(null, new AuInvoke(ResourceLoadList.this,
-                        "adjustResourceLoadRows"));
+                response(null, new AuInvoke(ResourceLoadList.this, "adjustTimeTrackerSize"));
+                response(null, new AuInvoke(ResourceLoadList.this, "adjustResourceLoadRows"));
             }
         };
     }
 
-    private void insertAsComponents(TimeTracker timetracker,
-            List<LoadTimeLine> children) {
+    private void insertAsComponents(TimeTracker timetracker, List<LoadTimeLine> children) {
         for (LoadTimeLine loadTimeLine : children) {
-            ResourceLoadComponent component = ResourceLoadComponent.create(
-                    timetracker, loadTimeLine);
+            ResourceLoadComponent component = ResourceLoadComponent.create(timetracker, loadTimeLine);
             appendChild(component);
             fromTimeLineToComponent.put(loadTimeLine, component);
         }
     }
 
+    /**
+     * On Resources Load page it will collapse inherited resources.
+     *
+     * @param line
+     */
     public void collapse(LoadTimeLine line) {
         for (LoadTimeLine l : line.getAllChildren()) {
             getComponentFor(l).detach();
         }
 
+        /* In ZK8, after detaching component, component will be still visible, so we need to redraw it */
+        this.invalidate();
+
         Clients.evalJavaScript(getWidgetClass() + ".getInstance().recalculateTimeTrackerHeight();");
     }
 
     private ResourceLoadComponent getComponentFor(LoadTimeLine l) {
-        ResourceLoadComponent resourceLoadComponent = fromTimeLineToComponent
-                .get(l);
-        return resourceLoadComponent;
+        return fromTimeLineToComponent.get(l);
     }
 
+    /**
+     * On Resources Load page it will expand inherited resources.
+     *
+     * @param line
+     * @param closed
+     */
     public void expand(LoadTimeLine line, List<LoadTimeLine> closed) {
         ResourceLoadComponent parentComponent = getComponentFor(line);
         Component nextSibling = parentComponent.getNextSibling();
@@ -118,19 +124,21 @@ public class ResourceLoadList extends XulElement {
             nextSibling = child;
         }
 
+        /* In ZK8, after detaching component, component will be still visible, so we need to redraw it */
+        this.invalidate();
+
         Clients.evalJavaScript(getWidgetClass() + ".getInstance().recalculateTimeTrackerHeight();");
     }
 
     private List<LoadTimeLine> getChildrenReverseOrderFor(LoadTimeLine line) {
         List<LoadTimeLine> childrenOf = line.getAllChildren();
         Collections.reverse(childrenOf);
+
         return childrenOf;
     }
 
-    public void addSeeScheduledOfListener(
-            ISeeScheduledOfListener seeScheduledOfListener) {
-        for (Entry<LoadTimeLine, ResourceLoadComponent> entry : fromTimeLineToComponent
-                .entrySet()) {
+    public void addSeeScheduledOfListener(ISeeScheduledOfListener seeScheduledOfListener) {
+        for (Entry<LoadTimeLine, ResourceLoadComponent> entry : fromTimeLineToComponent.entrySet()) {
             entry.getValue().addSeeScheduledOfListener(seeScheduledOfListener);
         }
     }
