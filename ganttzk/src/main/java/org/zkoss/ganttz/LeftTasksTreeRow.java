@@ -116,11 +116,11 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
 
     private static final String PROPERTIES_FILENAME = "libreplan.properties";
 
-    public static final int CALENDAR_START_YEAR = 2001;
+    private static final int CALENDAR_START_YEAR = 2001;
 
-    public static final int MINIMUM_MONTH = 1;
+    private static final int MINIMUM_MONTH = 1;
 
-    public static final int MINIMUM_DAY = 1;
+    private static final int MINIMUM_DAY = 1;
 
     public static LeftTasksTreeRow create(
             IDisabilityConfiguration disabilityConfiguration, Task bean,
@@ -138,17 +138,24 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
                 .getCurrent());
         this.leftTasksTreeNavigator = leftTasksTreeNavigator;
         this.planner = planner;
+        setUpProperties();
+    }
 
+    private void setUpProperties () {
         // Getting properties from file (libreplan-business/src/main/resources/libreplan.properties)
         properties = new Properties();
         InputStream inputStream = LeftTasksTreeRow.class.getClassLoader().getResourceAsStream(PROPERTIES_FILENAME);
         try {
             properties.load(inputStream);
-            inputStream.close();
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                inputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-
     }
 
     public Task getTask() {
@@ -207,7 +214,12 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
         openedDateBox.setFocus(true);
         openedDateBox.setOpen(true);
 
-        textbox.setConstraint(new Constraint() {
+        openedDateBox.setConstraint(generateConstraintForDates());
+    }
+
+    private Constraint generateConstraintForDates()
+    {
+        return  new Constraint() {
             @Override
             public void validate(Component comp, Object value) throws WrongValueException {
 
@@ -221,17 +233,40 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
                 DateTime minimum =
                         new DateTime(new GregorianCalendar(minimumYear, MINIMUM_MONTH, MINIMUM_DAY).getTime());
 
-                SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/YY");
-
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yy");
                 // Need to call dateFormat.set2DigitYearStart to force parser not to parse date to previous century
-                dateFormat.set2DigitYearStart(
+                simpleDateFormat.set2DigitYearStart(
                         new GregorianCalendar(CALENDAR_START_YEAR, MINIMUM_MONTH, MINIMUM_DAY).getTime());
 
                 Date date = null;
-                try {
-                    date = dateFormat.parse((String) value);
-                } catch (ParseException e) {
-                    e.printStackTrace();
+
+                /*
+                 * Need to check value type because constraint is created for textbox and datebox.
+                 * Textbox returns value in String. Datebox returns value in java.util.Date.
+                 * Also need to take last two year digits because Datebox component formats it's value.
+                 */
+
+                if (value instanceof Date) {
+                    try {
+
+                        /*
+                         * Using DateTime (Joda Time class) because java.util.Date.getYear() returns invalid value.
+                         * Also java.util.Date methods are deprecated.
+                         */
+
+                        DateTime correct = new DateTime(value);
+                        String year = Integer.valueOf(correct.getYear()).toString().substring(2);
+                        date = simpleDateFormat.parse(((Date) value).getMonth()+"/"+((Date) value).getDate()+"/"+year);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+                else {
+                    try {
+                        date = simpleDateFormat.parse((String) value);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
                 }
 
                 DateTime dateTimeInTextbox = new DateTime(date);
@@ -240,19 +275,18 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
                     throw new WrongValueException(
                             comp,
                             _("The date you entered is invalid") + ". " +
-                                    _("Please enter date not before") + " " + minimumYear
-                                    + " " + _("and no later than") + " " + maximum.getYear());
+                                    _("Please enter date not before") + " " + minimumYear +
+                                    " " + _("and no later than") + " " + maximum.getYear());
                 }
                 if (dateTimeInTextbox.isBefore(minimum)) {
                     throw new WrongValueException(
                             comp,
                             _("The date you entered is invalid") + ". " +
-                                    _("Please enter date not before") + " " + minimumYear
-                                    + " " + _("and no later than") + " " + maximum.getYear());
+                                    _("Please enter date not before") + " " + minimumYear +
+                                    " " + _("and no later than") + " " + maximum.getYear());
                 }
             }
-        });
-
+        };
     }
 
     private enum Navigation {
@@ -349,6 +383,13 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
             registerOnEnterListener(endDateTextBox);
             registerOnChange(startDateTextBox);
             registerOnChange(endDateTextBox);
+
+            /*
+             * Setting constraints right after creating texboxes.
+             * This need to be done because constraints must work at first change of textbox.
+             */
+            startDateTextBox.setConstraint(generateConstraintForDates());
+            endDateTextBox.setConstraint(generateConstraintForDates());
         }
     }
 
