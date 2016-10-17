@@ -21,6 +21,7 @@ package org.libreplan.business.users.bootstrap;
 import org.libreplan.business.users.daos.IProfileDAO;
 import org.libreplan.business.users.entities.Profile;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,7 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 @Component
-@Scope("singleton")
+@Scope(BeanDefinition.SCOPE_SINGLETON)
 public class ProfilesBootstrap implements IProfileBootstrap {
 
     @Autowired

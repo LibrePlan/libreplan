@@ -61,7 +61,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Dao for {@link OrderElement}
+ * Dao for {@link OrderElement}.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  * @author Diego Pino García <dpino@igalia.com>
@@ -86,10 +86,10 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement> implemen
 
     @Override
     public List<OrderElement> findWithoutParent() {
-        Criteria c = getSession().createCriteria(OrderElement.class);
-        c.add(Restrictions.isNull("parent"));
-
-        return (List<OrderElement>) c.list();
+        return getSession()
+                .createCriteria(OrderElement.class)
+                .add(Restrictions.isNull("parent"))
+                .list();
     }
 
     public List<OrderElement> findByCodeAndParent(OrderElement parent, String code) {
@@ -116,11 +116,11 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement> implemen
     @Transactional(readOnly = true)
     public EffortDuration getAssignedDirectEffort(OrderElement orderElement) {
         List<WorkReportLine> listWRL = this.workReportLineDAO.findByOrderElement(orderElement);
-        EffortDuration asignedDirectHours = EffortDuration.zero();
+        EffortDuration assignedDirectHours = EffortDuration.zero();
         for (WorkReportLine aListWRL : listWRL) {
-            asignedDirectHours = asignedDirectHours.plus(aListWRL.getEffort());
+            assignedDirectHours = assignedDirectHours.plus(aListWRL.getEffort());
         }
-        return asignedDirectHours;
+        return assignedDirectHours;
     }
 
     @Override
@@ -134,11 +134,9 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement> implemen
         BigDecimal assignedHours = totalChargedEffort.toHoursAsDecimalWithScale(2);
         BigDecimal estimatedHours = new BigDecimal(orderElement.getWorkHours()).setScale(2);
 
-        if ( estimatedHours.compareTo(BigDecimal.ZERO) <= 0 ) {
-            return BigDecimal.ZERO;
-        }
-
-        return assignedHours.divide(estimatedHours, RoundingMode.DOWN);
+        return estimatedHours.compareTo(BigDecimal.ZERO) <= 0
+                ? BigDecimal.ZERO
+                : assignedHours.divide(estimatedHours, RoundingMode.DOWN);
     }
 
     @Override
@@ -185,7 +183,8 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement> implemen
     public List<OrderElement> findAll() {
         return getSession()
                 .createCriteria(getEntityClass())
-                .addOrder(org.hibernate.criterion.Order.asc("infoComponent.code")).list();
+                .addOrder(org.hibernate.criterion.Order.asc("infoComponent.code"))
+                .list();
     }
 
     @SuppressWarnings("unchecked")
@@ -211,10 +210,10 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement> implemen
     }
 
     public List<OrderElement> findByTemplate(OrderElementTemplate template) {
-        Criteria c = getSession().createCriteria(OrderElement.class);
-        c.add(Restrictions.eq("template", template));
-
-        return (List<OrderElement>) c.list();
+        return getSession()
+                .createCriteria(OrderElement.class)
+                .add(Restrictions.eq("template", template))
+                .list();
     }
 
     @Override
@@ -244,10 +243,10 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement> implemen
 
     @Override
     public List<OrderElement> findOrderElementsWithExternalCode() {
-        Criteria c = getSession().createCriteria(OrderElement.class);
-        c.add(Restrictions.isNotNull("externalCode"));
-
-        return c.list();
+        return getSession()
+                .createCriteria(OrderElement.class)
+                .add(Restrictions.isNotNull("externalCode"))
+                .list();
     }
 
 
@@ -259,9 +258,10 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement> implemen
             throw new InstanceNotFoundException(null, getEntityClass().getName());
         }
 
-        Criteria c = getSession().createCriteria(OrderElement.class);
-        c.add(Restrictions.eq("externalCode", code.trim()).ignoreCase());
-        OrderElement entity = (OrderElement) c.uniqueResult();
+        OrderElement entity = (OrderElement) getSession()
+                .createCriteria(OrderElement.class)
+                .add(Restrictions.eq("externalCode", code.trim()).ignoreCase())
+                .uniqueResult();
 
         if ( entity == null ) {
             throw new InstanceNotFoundException(code, getEntityClass().getName());
@@ -273,20 +273,17 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement> implemen
 
     /**
      * Methods to calculate statistics with the estimated hours and worked hours of a set of order elements.
-     * @param List
+     *
+     * @param list
      *            <{@link OrderElement}>
      */
 
     public BigDecimal calculateAverageEstimatedHours(final List<OrderElement> list) {
-        BigDecimal sum = sumEstimatedHours(list);
-
-        return average(new BigDecimal(list.size()), sum);
+        return average(new BigDecimal(list.size()), sumEstimatedHours(list));
     }
 
     public EffortDuration calculateAverageWorkedHours(final List<OrderElement> list) {
-        EffortDuration sum = sumWorkedHours(list);
-
-        return (list.size() == 0) ? EffortDuration.zero() : EffortDuration.average(sum, list.size());
+        return list.isEmpty() ? EffortDuration.zero() : EffortDuration.average(sumWorkedHours(list), list.size());
     }
 
     private BigDecimal average(BigDecimal divisor, BigDecimal sum) {
@@ -484,16 +481,12 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement> implemen
 
     @Override
     public boolean hasImputedExpenseSheet(Long id) throws InstanceNotFoundException {
-        OrderElement orderElement = find(id);
-
-        return (!expenseSheetLineDAO.findByOrderElement(orderElement).isEmpty());
+        return !expenseSheetLineDAO.findByOrderElement(find(id)).isEmpty();
     }
 
     @Override
     public boolean hasImputedExpenseSheetThisOrAnyOfItsChildren(Long id) throws InstanceNotFoundException {
-        OrderElement orderElement = find(id);
-
-        return (!expenseSheetLineDAO.findByOrderElementAndChildren(orderElement).isEmpty());
+        return !expenseSheetLineDAO.findByOrderElementAndChildren(find(id)).isEmpty();
     }
 
     @SuppressWarnings("unchecked")
@@ -517,11 +510,13 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement> implemen
 
         if ( criteria != null && !criteria.isEmpty() ) {
             strQuery += "JOIN oe.criterionRequirements cr ";
+
             if ( where.isEmpty() ) {
                 where += "WHERE ";
             } else {
                 where += "AND ";
             }
+
             where += "cr.criterion IN (:criteria) ";
             where += "AND cr.class = DirectCriterionRequirement ";
             where += "GROUP BY oe.id ";
@@ -562,9 +557,7 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement> implemen
 
     private boolean existsByCodeInAnotherOrder(OrderElement orderElement) {
         try {
-            OrderElement found = findUniqueByCode(orderElement.getCode());
-
-            return !areInTheSameOrder(orderElement, found);
+            return !areInTheSameOrder(orderElement, findUniqueByCode(orderElement.getCode()));
         } catch (InstanceNotFoundException e) {
             return false;
         }

@@ -397,11 +397,9 @@ public class StretchesFunction extends AssignmentFunction {
 
     @Override
     public String getName() {
-        if ( StretchesFunctionTypeEnum.INTERPOLATED.equals(type) ) {
-            return AssignmentFunctionName.INTERPOLATION.toString();
-        } else {
-            return AssignmentFunctionName.STRETCHES.toString();
-        }
+        return StretchesFunctionTypeEnum.INTERPOLATED.equals(type)
+                ? AssignmentFunctionName.INTERPOLATION.toString()
+                : AssignmentFunctionName.STRETCHES.toString();
     }
 
     public List<Interval> getIntervalsDefinedByStreches() {
@@ -415,9 +413,9 @@ public class StretchesFunction extends AssignmentFunction {
     }
 
     private List<Stretch> stretchesFor() {
-        boolean condition = (getDesiredType().equals(StretchesFunctionTypeEnum.INTERPOLATED));
-
-        return  condition ? getStretchesPlusConsolidated() : getStretches();
+        return  getDesiredType().equals(StretchesFunctionTypeEnum.INTERPOLATED)
+                ? getStretchesPlusConsolidated()
+                : getStretches();
     }
 
     private void checkStretchesSumOneHundredPercent() {

@@ -29,9 +29,8 @@ import java.util.Date;
  * This class is intended to work as a Hibernate component.
  * It represents the LibrePlan File to be stored in customer`s HDD.
  *
- * Created by
- * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
- * on 25.12.2015.
+ *
+ * @author Created by Vova Perebykivskyi <vova@libreplan-enterprise.com> on 25.12.2015.
  */
 
 public class OrderFile extends BaseEntity {

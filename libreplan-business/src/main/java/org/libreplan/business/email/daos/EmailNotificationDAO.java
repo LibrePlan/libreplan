@@ -30,7 +30,7 @@ import java.util.List;
 /**
  * Dao for {@link EmailNotification}
  *
- * @author Created by Vova Perebykivskiy <vova@libreplan-enterprise.com> on 19.10.2015.
+ * @author Created by Vova Perebykivskyi <vova@libreplan-enterprise.com> on 19.10.2015.
  */
 @Repository
 public class EmailNotificationDAO

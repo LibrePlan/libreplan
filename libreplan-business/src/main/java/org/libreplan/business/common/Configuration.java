@@ -28,12 +28,12 @@ import org.apache.commons.lang3.BooleanUtils;
  *
  * Currently we have three options:
  * <ul>
- * <li>Enable/Disable the warning changing default password</li>
- *
- * <li>Enable/Disable default users
- * (such as wsreader, wswriter, wssubcontracting, manager, hresources, outsourcing and reports)</li>
- *
- * <li>Enable/Disable E-mail sending functionality</li>
+ *     <li>Enable/Disable the warning changing default password</li>
+ *     <li>
+ *         Enable/Disable default users
+ *         (such as wsreader, wswriter, wssubcontracting, manager, hresources, outsourcing and reports)
+ *     </li>
+ *     <li>Enable/Disable E-mail sending functionality</li>
  * </ul>
  *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>

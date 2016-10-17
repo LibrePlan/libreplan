@@ -98,16 +98,16 @@ public class QualityFormDAO extends GenericDAOHibernate<QualityForm, Long> imple
     @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
     public QualityForm findUniqueByName(QualityForm qualityForm) throws InstanceNotFoundException {
         Validate.notNull(qualityForm);
-
         return findUniqueByName(qualityForm.getName());
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
     public QualityForm findUniqueByName(String name) throws InstanceNotFoundException, NonUniqueResultException {
-        Criteria c = getSession().createCriteria(QualityForm.class);
-        c.add(Restrictions.eq("name", name));
-        QualityForm qualityForm = (QualityForm) c.uniqueResult();
+        QualityForm qualityForm = (QualityForm) getSession()
+                .createCriteria(QualityForm.class)
+                .add(Restrictions.eq("name", name))
+                .uniqueResult();
 
         if (qualityForm == null) {
             throw new InstanceNotFoundException(null, "QualityForm");
@@ -120,7 +120,6 @@ public class QualityFormDAO extends GenericDAOHibernate<QualityForm, Long> imple
     public boolean existsOtherWorkReportTypeByName(QualityForm qualityForm) {
         try {
             QualityForm t = findUniqueByName(qualityForm);
-
             return t != null && t != qualityForm;
         } catch (InstanceNotFoundException e) {
             return false;

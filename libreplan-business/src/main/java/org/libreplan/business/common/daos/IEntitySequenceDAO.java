@@ -33,6 +33,7 @@ import org.springframework.stereotype.Repository;
 
 /**
  * DAO interface for {@link EntitySequenceDAO}.
+ *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 @Repository
@@ -41,12 +42,12 @@ public interface IEntitySequenceDAO extends IGenericDAO<EntitySequence, Long> {
 
     List<EntitySequence> getAll();
 
-    List<EntitySequence> findEntitySquencesNotIn(List<EntitySequence> entitySequences);
+    List<EntitySequence> findEntitySequencesNotIn(List<EntitySequence> entitySequences);
 
     void remove(EntitySequence entitySequence) throws InstanceNotFoundException, IllegalArgumentException;
 
-    EntitySequence getActiveEntitySequence(EntityNameEnum entityName) throws InstanceNotFoundException,
-                                                                            NonUniqueResultException;
+    EntitySequence getActiveEntitySequence(EntityNameEnum entityName)
+            throws InstanceNotFoundException, NonUniqueResultException;
 
     String getNextEntityCode(EntityNameEnum entityName);
 

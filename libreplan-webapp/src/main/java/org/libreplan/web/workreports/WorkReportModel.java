@@ -269,7 +269,7 @@ public class WorkReportModel extends IntegrationEntityModel implements
         }
 
         for (WorkReportLabelTypeAssigment assignedLabel : workReportType
-                .getWorkReportLabelTypeAssigments()) {
+                .getWorkReportLabelTypeAssignments()) {
             assignedLabel.getDefaultLabel().getName();
             assignedLabel.getLabelType().getName();
         }
@@ -530,7 +530,7 @@ public class WorkReportModel extends IntegrationEntityModel implements
 
     private Integer getAssignedLabelIndex(Label label){
         for (WorkReportLabelTypeAssigment labelTypeAssigment : getWorkReportType()
-                .getWorkReportLabelTypeAssigments()) {
+                .getWorkReportLabelTypeAssignments()) {
             if(labelTypeAssigment.getLabelType().equals(label.getType())){
                 return labelTypeAssigment.getPositionNumber();
             }
@@ -554,7 +554,7 @@ public class WorkReportModel extends IntegrationEntityModel implements
     private List<LabelType> getAssignedLabelTypes() {
         List<LabelType> result = new ArrayList<LabelType>();
         for (WorkReportLabelTypeAssigment labelTypeAssigment : getWorkReportType()
-                .getWorkReportLabelTypeAssigments()) {
+                .getWorkReportLabelTypeAssignments()) {
             result.add(labelTypeAssigment.getLabelType());
         }
         return result;

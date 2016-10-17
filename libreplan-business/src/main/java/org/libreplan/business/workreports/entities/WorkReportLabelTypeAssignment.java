@@ -31,30 +31,7 @@ import org.libreplan.business.labels.entities.LabelType;
  *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
-public class WorkReportLabelTypeAssigment extends BaseEntity implements
-        Comparable {
-
-    public static WorkReportLabelTypeAssigment create() {
-        WorkReportLabelTypeAssigment workReportLabelTypeAssigment = new WorkReportLabelTypeAssigment();
-        workReportLabelTypeAssigment.setNewObject(true);
-        return workReportLabelTypeAssigment;
-    }
-
-    public static WorkReportLabelTypeAssigment create(
-            boolean labelsSharedByLines) {
-        WorkReportLabelTypeAssigment workReportLabelTypeAssigment = new WorkReportLabelTypeAssigment(
-                labelsSharedByLines);
-        workReportLabelTypeAssigment.setNewObject(true);
-        return workReportLabelTypeAssigment;
-    }
-
-    public WorkReportLabelTypeAssigment() {
-
-    }
-
-    public WorkReportLabelTypeAssigment(boolean labelsSharedByLines) {
-        this.labelsSharedByLines = labelsSharedByLines;
-    }
+public class WorkReportLabelTypeAssignment extends BaseEntity implements Comparable {
 
     private Boolean labelsSharedByLines = false;
 
@@ -63,6 +40,34 @@ public class WorkReportLabelTypeAssigment extends BaseEntity implements
 
     @NotNull(message = "default label not specified")
     private Label defaultLabel;
+
+    /* Methos for the index */
+
+    private Integer positionNumber;
+
+    public WorkReportLabelTypeAssignment() {
+
+    }
+
+    public WorkReportLabelTypeAssignment(boolean labelsSharedByLines) {
+        this.labelsSharedByLines = labelsSharedByLines;
+    }
+
+    public static WorkReportLabelTypeAssignment create() {
+        WorkReportLabelTypeAssignment workReportLabelTypeAssigment = new WorkReportLabelTypeAssignment();
+        workReportLabelTypeAssigment.setNewObject(true);
+
+        return workReportLabelTypeAssigment;
+    }
+
+    public static WorkReportLabelTypeAssignment create(boolean labelsSharedByLines) {
+        WorkReportLabelTypeAssignment workReportLabelTypeAssigment =
+                new WorkReportLabelTypeAssignment(labelsSharedByLines);
+
+        workReportLabelTypeAssigment.setNewObject(true);
+
+        return workReportLabelTypeAssigment;
+    }
 
     public LabelType getLabelType() {
         return labelType;
@@ -88,10 +93,6 @@ public class WorkReportLabelTypeAssigment extends BaseEntity implements
         this.labelsSharedByLines = labelsSharedByLines;
     }
 
-    /* Methos for the index */
-
-    private Integer positionNumber;
-
     public Integer getPositionNumber() {
         return positionNumber;
     }
@@ -103,8 +104,7 @@ public class WorkReportLabelTypeAssigment extends BaseEntity implements
     @Override
     public int compareTo(Object arg0) {
         if (labelType != null) {
-            return labelType.compareTo(
-                    ((WorkReportLabelTypeAssigment) arg0).getLabelType());
+            return labelType.compareTo(((WorkReportLabelTypeAssignment) arg0).getLabelType());
         }
         return -1;
     }

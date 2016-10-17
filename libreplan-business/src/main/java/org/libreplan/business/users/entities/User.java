@@ -70,7 +70,9 @@ public class User extends BaseEntity implements IHumanIdentifiable{
 
     private Scenario lastConnectedScenario;
 
-    // if a user is a LibrePlan user or not (ldap)
+    /**
+     * If a user is a LibrePlan user or not (ldap).
+     */
     private Boolean librePlanUser = true;
 
     private boolean expandCompanyPlanningViewCharts = false;
@@ -100,8 +102,7 @@ public class User extends BaseEntity implements IHumanIdentifiable{
     /**
      * Necessary for Hibernate. Please, do not call it.
      */
-    public User() {
-    }
+    public User() {}
 
     private User(String loginName, String password, Set<UserRole> roles, Set<Profile> profiles) {
         this.loginName = loginName;
@@ -171,7 +172,7 @@ public class User extends BaseEntity implements IHumanIdentifiable{
 
     /**
      * Retrieves UserRoles from related Profiles and returns them together with
-     * the UserRoles related directly to the User entity
+     * the UserRoles related directly to the User entity.
      *
      * @return A list of UserRole objects
      */
@@ -185,7 +186,7 @@ public class User extends BaseEntity implements IHumanIdentifiable{
     }
 
     /**
-     * Checks if current user is in the requested role
+     * Checks if current user is in the requested role.
      */
     public boolean isInRole(UserRole role) {
         if ( roles.contains(role) ) {
@@ -254,9 +255,7 @@ public class User extends BaseEntity implements IHumanIdentifiable{
             return !userDAO.existsByLoginNameAnotherTransaction(loginName);
         } else {
             try {
-                User u = userDAO.findByLoginNameAnotherTransaction(loginName);
-
-                return u.getId().equals(getId());
+                return userDAO.findByLoginNameAnotherTransaction(loginName).getId().equals(getId());
             } catch (InstanceNotFoundException e) {
                 return true;
             }
@@ -366,6 +365,7 @@ public class User extends BaseEntity implements IHumanIdentifiable{
             this.name = name;
         }
 
+        @Override
         public String toString() {
             return name;
         }
@@ -419,6 +419,7 @@ public class User extends BaseEntity implements IHumanIdentifiable{
     public Integer getProjectsFilterPeriodSince() {
         return projectsFilterPeriodSince;
     }
+
     public void setProjectsFilterPeriodSince(Integer period) {
         projectsFilterPeriodSince = period;
     }

@@ -104,7 +104,7 @@
         <intercept-url pattern="/reports/completedEstimatedHoursPerTask.zul"
                        access="hasAnyRole('ROLE_SUPERUSER', 'ROLE_ESTIMATED_PLANNED_HOURS_PER_TASK_REPORT')" />
 
-        <intercept-url pattern="/reportsorderCostsPerResource/.zul"
+        <intercept-url pattern="/reports/orderCostsPerResource.zul"
                        access="hasAnyRole('ROLE_SUPERUSER', 'ROLE_PROJECT_COSTS_REPORT')" />
 
         <intercept-url pattern="/reports/workingArrangementsPerOrderReport.zul"
@@ -112,6 +112,9 @@
 
         <intercept-url pattern="/reports/timeLineMaterialReport.zul"
                        access="hasAnyRole('ROLE_SUPERUSER', 'ROLE_MATERIALS_NEED_AT_DATE_REPORT')" />
+
+        <intercept-url pattern="/reports/projectStatusReport.zul"
+                       access="hasAnyRole('ROLE_SUPERUSER', 'ROLE_PROJECT_STATUS_REPORT')" />
 
         <intercept-url pattern="/myaccount/userDashboard.zul" access="ROLE_BOUND_USER" />
 
@@ -129,13 +132,12 @@
         See: http://static.springsource.org/spring-security/site/docs/2.0.x/reference/ns-config.html#ns-auto-config
         -->
         <anonymous />
-        <form-login
-                login-page="/common/layout/login.zul"
-                default-target-url="/common/index.zul"
-                authentication-failure-url="/common/layout/login.zul?login_error=true"
-                login-processing-url="/j_spring_security_check"
-                username-parameter="j_username"
-                password-parameter="j_password"/>
+        <form-login login-page="/common/layout/login.zul"
+                    default-target-url="/common/index.zul"
+                    authentication-failure-url="/common/layout/login.zul?login_error=true"
+                    login-processing-url="/j_spring_security_check"
+                    username-parameter="j_username"
+                    password-parameter="j_password"/>
         <http-basic />
         <logout logout-url="/j_spring_security_logout" />
         <remember-me />

@@ -197,7 +197,7 @@ public class WorkReportTypeModel extends IntegrationEntityModel implements
         }
 
         for (WorkReportLabelTypeAssigment assignedLabel : workReportType
-                .getWorkReportLabelTypeAssigments()) {
+                .getWorkReportLabelTypeAssignments()) {
             assignedLabel.getDefaultLabel().getName();
             assignedLabel.getLabelType().getName();
         }
@@ -301,7 +301,7 @@ public class WorkReportTypeModel extends IntegrationEntityModel implements
 
     public Set<WorkReportLabelTypeAssigment> getWorkReportLabelTypeAssigments() {
         if (getWorkReportType() != null) {
-            return getWorkReportType().getWorkReportLabelTypeAssigments();
+            return getWorkReportType().getWorkReportLabelTypeAssignments();
         }
         return new HashSet<WorkReportLabelTypeAssigment>();
     }

@@ -22,12 +22,11 @@ package org.libreplan.business.common.entities;
 import static org.libreplan.business.i18n.I18nHelper._;
 
 /**
- * Simply class to keep constants of {@link ConnectorProperty properties} for
- * LibrePlan {@link Connector connectors}.
+ * Simply class to keep constants of {@link ConnectorProperty properties} for LibrePlan {@link Connector connectors}.
  *
  * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
  * @author Manuel Rego Casasnovas <rego@igalia.com>
- * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
 public class PredefinedConnectorProperties {
 

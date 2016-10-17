@@ -33,13 +33,13 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Default implementation of <code>IIntegrationEntityDAO</code>. DAOs of
- * entities used in application integration may extend from this interface.
+ * Default implementation of <code>IIntegrationEntityDAO</code>.
+ * DAOs of entities used in application integration may extend from this interface.
  *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
 public class IntegrationEntityDAO<E extends IntegrationEntity>
-    extends GenericDAOHibernate<E, Long> implements IIntegrationEntityDAO<E> {
+        extends GenericDAOHibernate<E, Long> implements IIntegrationEntityDAO<E> {
 
     @Override
     public boolean existsByCode(String code) {
@@ -66,15 +66,15 @@ public class IntegrationEntityDAO<E extends IntegrationEntity>
 
         if (StringUtils.isBlank(code)) {
             throw new InstanceNotFoundException(null,
-                getEntityClass().getName());
+                    getEntityClass().getName());
         }
 
         E entity = (E) getSession().createCriteria(getEntityClass()).add(
-            Restrictions.eq("code", code.trim()).ignoreCase()).uniqueResult();
+                Restrictions.eq("code", code.trim()).ignoreCase()).uniqueResult();
 
         if (entity == null) {
             throw new InstanceNotFoundException(
-                code, getEntityClass().getName());
+                    code, getEntityClass().getName());
         } else {
             return entity;
         }
@@ -84,7 +84,7 @@ public class IntegrationEntityDAO<E extends IntegrationEntity>
     @Override
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
     public E findByCodeAnotherTransaction(String code)
-        throws InstanceNotFoundException {
+            throws InstanceNotFoundException {
 
         return findByCode(code);
 
@@ -104,8 +104,7 @@ public class IntegrationEntityDAO<E extends IntegrationEntity>
     @SuppressWarnings("unchecked")
     @Override
     public List<E> findAll() {
-        return getSession().createCriteria(getEntityClass()).
-            addOrder(Order.asc("code")).list();
+        return getSession().createCriteria(getEntityClass()).addOrder(Order.asc("code")).list();
     }
 
 }

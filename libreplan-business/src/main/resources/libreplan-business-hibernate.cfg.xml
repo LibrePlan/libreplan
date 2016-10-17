@@ -10,6 +10,9 @@
         <property name="hibernate.use_sql_comments">${hibernate.use_sql_comments}</property>
         <property name="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</property>
 
+        <!-- If you want to measure/tune Hibernate performance, use this flag -->
+        <!-- <property name="hibernate.generate_statistics">true</property> -->
+
         <!--
         We explicitly call validation, otherwise infinite loops can happen.
         Sometimes DAOs are queried when validating some constraints.

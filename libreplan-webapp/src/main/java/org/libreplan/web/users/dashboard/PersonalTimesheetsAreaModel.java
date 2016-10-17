@@ -133,7 +133,7 @@ public class PersonalTimesheetsAreaModel implements IPersonalTimesheetsAreaModel
         if (workReport != null) {
             WorkReportType workReportType = workReport.getWorkReportType();
             workReportType.getLineFields().size();
-            workReportType.getWorkReportLabelTypeAssigments().size();
+            workReportType.getWorkReportLabelTypeAssignments().size();
             workReportType.getHeadingFields().size();
         }
     }

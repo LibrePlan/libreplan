@@ -75,24 +75,6 @@ import org.libreplan.business.util.deepcopy.DeepCopy;
  */
 public class Order extends OrderLineGroup implements Comparable {
 
-    public static Order create() {
-        Order order = new Order();
-        order.setNewObject(true);
-        return order;
-    }
-
-    public static Order createUnvalidated(String code) {
-        Order order = create(new Order(), code);
-        return order;
-    }
-
-    /**
-     * Constructor for hibernate. Do not use!
-     */
-    public Order() {
-
-    }
-
     private String responsible;
 
     private Boolean dependenciesConstraintsHavePriority;
@@ -113,24 +95,24 @@ public class Order extends OrderLineGroup implements Comparable {
 
     private String customerReference;
 
-    private Map<Scenario, OrderVersion> scenarios = new HashMap<Scenario, OrderVersion>();
+    private Map<Scenario, OrderVersion> scenarios = new HashMap<>();
 
-    private Set<OrderAuthorization> orderAuthorizations = new HashSet<OrderAuthorization>();
+    private Set<OrderAuthorization> orderAuthorizations = new HashSet<>();
 
     private CurrentVersionInfo currentVersionInfo;
 
-    private Set<CustomerCommunication> customerCommunications = new HashSet<CustomerCommunication>();
+    private Set<CustomerCommunication> customerCommunications = new HashSet<>();
 
     @Valid
-    private SortedSet<DeadlineCommunication> deliveringDates = new TreeSet<DeadlineCommunication>(
-            new DeliverDateComparator());
+    private SortedSet<DeadlineCommunication> deliveringDates = new TreeSet<>(new DeliverDateComparator());
 
     @Valid
-    private SortedSet<EndDateCommunication> endDateCommunicationToCustomer = new TreeSet<EndDateCommunication>(
+    private SortedSet<EndDateCommunication> endDateCommunicationToCustomer = new TreeSet<>(
             new EndDateCommunicationComparator());
 
     public enum SchedulingMode {
-        FORWARD, BACKWARDS;
+        FORWARD,
+        BACKWARDS
     }
 
     private SchedulingMode schedulingMode = SchedulingMode.FORWARD;
@@ -143,14 +125,31 @@ public class Order extends OrderLineGroup implements Comparable {
 
     private Integer budgetMargin;
 
+
+    public Order() {
+        /**
+         * Constructor for hibernate. Do not use!
+         */
+    }
+
+    public static Order create() {
+        Order order = new Order();
+        order.setNewObject(true);
+        return order;
+    }
+
+    public static Order createUnvalidated(String code) {
+        Order order = create(new Order(), code);
+        return order;
+    }
+
     public static class CurrentVersionInfo {
 
         private final OrderVersion orderVersion;
 
         private final boolean modifyingTheOwnerScenario;
 
-        static CurrentVersionInfo create(Scenario scenario,
-                OrderVersion orderVersion) {
+        static CurrentVersionInfo create(Scenario scenario, OrderVersion orderVersion) {
             return new CurrentVersionInfo(scenario, orderVersion);
         }
 
@@ -205,7 +204,7 @@ public class Order extends OrderLineGroup implements Comparable {
     }
 
     public void writeSchedulingDataChangesTo(Scenario currentScenario,
-            OrderVersion newOrderVersion) {
+                                             OrderVersion newOrderVersion) {
         setVersionForScenario(currentScenario, newOrderVersion);
         writeSchedulingDataChangesTo(
                 deepCopyWithNeededReplaces(newOrderVersion),
@@ -403,7 +402,7 @@ public class Order extends OrderLineGroup implements Comparable {
 
     @Override
     protected boolean applyConstraintBasedOnInitOrEndDate(Task task,
-            boolean scheduleBackwards) {
+                                                          boolean scheduleBackwards) {
         // the initDate or the deadline of a order doesn't imply a start
         // constraint at a task
         return false;
@@ -470,7 +469,7 @@ public class Order extends OrderLineGroup implements Comparable {
                         if ((hoursGroup.getCode() == null)
                                 || (hoursGroup.getCode().isEmpty())
                                 || (!hoursGroup.getCode().startsWith(
-                                        orderElement.getCode()))) {
+                                orderElement.getCode()))) {
                             ((OrderLine) orderElement)
                                     .incrementLastHoursGroupSequenceCode();
                             String hoursGroupCode = EntitySequence.formatValue(
@@ -493,7 +492,7 @@ public class Order extends OrderLineGroup implements Comparable {
         result = prime
                 * result
                 + ((getId() == null || isNewObject()) ? super.hashCode()
-                        : getId().hashCode());
+                : getId().hashCode());
         return result;
     }
 
@@ -520,7 +519,7 @@ public class Order extends OrderLineGroup implements Comparable {
     }
 
     public void setVersionForScenario(Scenario currentScenario,
-            OrderVersion orderVersion) {
+                                      OrderVersion orderVersion) {
         scenarios.put(currentScenario, orderVersion);
     }
 
@@ -570,8 +569,7 @@ public class Order extends OrderLineGroup implements Comparable {
             return null;
         }
 
-        AdvanceType advanceType = PredefinedAdvancedTypes.SUBCONTRACTOR
-                .getType();
+        AdvanceType advanceType = PredefinedAdvancedTypes.SUBCONTRACTOR.getType();
 
         return getAdvanceAssignmentByType(advanceType);
     }
@@ -696,7 +694,7 @@ public class Order extends OrderLineGroup implements Comparable {
 
     @AssertTrue(message = "task code is repeated inside the project")
     public boolean isUniqueCodeInsideOrderConstraint() {
-        List<String> codes = new ArrayList<String>();
+        List<String> codes = new ArrayList<>();
         codes.add(getCode());
 
         for (OrderElement child : getAllChildren()) {

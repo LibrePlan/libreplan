@@ -41,12 +41,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class ConfigurationDAO extends GenericDAOHibernate<Configuration, Long> implements IConfigurationDAO {
 
     @Override
+    @Transactional(readOnly = true)
     public Configuration getConfiguration() {
         List<Configuration> list = list(Configuration.class);
-        if ( list.isEmpty() ) {
-            return null;
-        }
-        return list.get(0);
+
+        return list.isEmpty() ? null : list.get(0);
     }
 
     @Override
@@ -60,6 +59,7 @@ public class ConfigurationDAO extends GenericDAOHibernate<Configuration, Long> i
     public void saveChangedDefaultPassword(String user, boolean change) {
         user = user.substring(0, 1).toUpperCase() + user.substring(1).toLowerCase();
         String sql = "UPDATE Configuration e SET e.changedDefault" + user + "Password = :change";
+
         Query query = getSession().createQuery(sql);
         query.setParameter("change", change);
         query.executeUpdate();

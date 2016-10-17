@@ -30,7 +30,6 @@ import static org.libreplan.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_
 import static org.libreplan.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 
 import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 
 import javax.annotation.Resource;
@@ -53,15 +52,14 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
-        BUSINESS_SPRING_CONFIG_TEST_FILE })
 /**
  * Test for {@link ExternalCompanyDAO}
  *
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  *
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE, BUSINESS_SPRING_CONFIG_TEST_FILE })
 public class ExternalCompanyDAOTest {
 
     @Autowired
@@ -178,7 +176,7 @@ public class ExternalCompanyDAOTest {
             }
         };
         transactionService.runOnTransaction(createCompanyWithRepeatedName);
-        //the second time we save the same object, a exception is thrown
+        // The second time we save the same object, a exception is thrown
         transactionService.runOnTransaction(createCompanyWithRepeatedName);
     }
 
@@ -203,18 +201,15 @@ public class ExternalCompanyDAOTest {
             }
         };
         transactionService.runOnTransaction(createCompany);
-        //the second object has the same cif, a exception is thrown when saving it
+        // The second object has the same cif, a exception is thrown when saving it
         transactionService.runOnTransaction(createCompanyWithRepeatedNif);
     }
 
     public static ExternalCompany createValidExternalCompany() {
-        return ExternalCompany.create(UUID.randomUUID().toString(),
-                UUID.randomUUID().toString());
+        return ExternalCompany.create(UUID.randomUUID().toString(), UUID.randomUUID().toString());
     }
 
     private User createValidUser() {
-        Set<UserRole> roles = new HashSet<UserRole>();
-        return User.create(UUID.randomUUID().toString(),
-        UUID.randomUUID().toString(), roles);
+        return User.create(UUID.randomUUID().toString(), UUID.randomUUID().toString(), new HashSet<UserRole>());
     }
 }

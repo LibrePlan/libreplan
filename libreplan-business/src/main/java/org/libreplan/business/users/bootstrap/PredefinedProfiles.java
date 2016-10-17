@@ -31,7 +31,7 @@ import static org.libreplan.business.users.entities.UserRole.*;
  * Profiles}
  *
  * @author Manuel Rego Casasnovas <rego@igalia.com>
- * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
 public enum PredefinedProfiles {
 

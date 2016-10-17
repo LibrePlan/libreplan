@@ -44,8 +44,8 @@ import org.libreplan.business.trees.ITreeParentNode;
 public class OrderLineGroupTemplate extends OrderElementTemplate implements
         ITreeParentNode<OrderElementTemplate> {
 
-    private final CriterionRequirementTemplateHandler criterionRequirementTemplateHandler = CriterionRequirementTemplateHandler
-            .getInstance();
+    private final CriterionRequirementTemplateHandler criterionRequirementTemplateHandler =
+            CriterionRequirementTemplateHandler.getInstance();
 
     private final class ChildrenManipulator extends
             TreeNodeOnListWithSchedulingState<OrderElementTemplate> {
@@ -121,7 +121,7 @@ public class OrderLineGroupTemplate extends OrderElementTemplate implements
     }
 
     protected static <T extends OrderLineGroupTemplate> T create(T beingBuilt,
-            OrderLineGroup group) {
+                                                                 OrderLineGroup group) {
         OrderElementTemplate.create(beingBuilt, group);
         List<OrderElementTemplate> result = buildChildrenTemplates(beingBuilt,
                 group.getChildren());
@@ -165,7 +165,7 @@ public class OrderLineGroupTemplate extends OrderElementTemplate implements
 
     private static List<OrderElementTemplate> buildChildrenTemplates(
             OrderLineGroupTemplate parent, List<OrderElement> children) {
-        List<OrderElementTemplate> result = new ArrayList<OrderElementTemplate>();
+        List<OrderElementTemplate> result = new ArrayList<>();
         for (OrderElement each : children) {
             OrderElementTemplate template = each.createTemplate();
             template.setParent(parent);
@@ -174,7 +174,7 @@ public class OrderLineGroupTemplate extends OrderElementTemplate implements
         return result;
     }
 
-    private List<OrderElementTemplate> children = new ArrayList<OrderElementTemplate>();
+    private List<OrderElementTemplate> children = new ArrayList<>();
 
     @Override
     public List<OrderElementTemplate> getChildrenTemplates() {
@@ -207,7 +207,7 @@ public class OrderLineGroupTemplate extends OrderElementTemplate implements
 
     @Override
     public void replace(OrderElementTemplate previousChild,
-            OrderElementTemplate newChild) {
+                        OrderElementTemplate newChild) {
         getManipulator().replace(previousChild, newChild);
     }
 

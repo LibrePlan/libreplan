@@ -70,6 +70,46 @@ public abstract class TaskElement extends BaseEntity {
 
     private static final Log LOG = LogFactory.getLog(TaskElement.class);
 
+    private static final IDatesInterceptor EMPTY_INTERCEPTOR = new IDatesInterceptor() {
+        @Override
+        public void setStartDate(IntraDayDate previousStart, IntraDayDate previousEnd, IntraDayDate newStart) {}
+
+        @Override
+        public void setNewEnd(IntraDayDate previousEnd, IntraDayDate newEnd) {}
+    };
+
+    @OnCopy(Strategy.SHARE)
+    private IDatesInterceptor datesInterceptor = EMPTY_INTERCEPTOR;
+
+    @OnCopy(Strategy.SHARE)
+    private BaseCalendar calendar;
+
+    private IntraDayDate startDate;
+
+    private IntraDayDate endDate;
+
+    private LocalDate deadline;
+
+    private String name;
+
+    private String notes;
+
+    private BigDecimal advancePercentage = BigDecimal.ZERO;
+
+    private Boolean simplifiedAssignedStatusCalculationEnabled = false;
+
+    private Boolean updatedFromTimesheets = false;
+
+    private EffortDuration sumOfAssignedEffort = EffortDuration.zero();
+
+    private TaskGroup parent;
+
+    private Set<Dependency> dependenciesWithThisOrigin = new HashSet<>();
+
+    private Set<Dependency> dependenciesWithThisDestination = new HashSet<>();
+
+    private TaskSource taskSource;
+
     public static List<Task> justTasks(Collection<? extends TaskElement> tasks) {
         List<Task> result = new ArrayList<>();
         for (TaskElement taskElement : tasks) {
@@ -82,27 +122,14 @@ public abstract class TaskElement extends BaseEntity {
     }
 
     public interface IDatesInterceptor {
-        void setStartDate(IntraDayDate previousStart,
-                IntraDayDate previousEnd, IntraDayDate newStart);
+
+        void setStartDate(IntraDayDate previousStart, IntraDayDate previousEnd, IntraDayDate newStart);
 
         void setNewEnd(IntraDayDate previousEnd, IntraDayDate newEnd);
     }
 
-    private static final IDatesInterceptor EMPTY_INTERCEPTOR = new IDatesInterceptor() {
-
-        @Override
-        public void setStartDate(IntraDayDate previousStart, IntraDayDate previousEnd, IntraDayDate newStart) {
-        }
-
-        @Override
-        public void setNewEnd(IntraDayDate previousEnd, IntraDayDate newEnd) {
-        }
-
-    };
-
     public static Comparator<TaskElement> getByStartDateComparator() {
         Comparator<TaskElement> result = new Comparator<TaskElement>() {
-
             @Override
             public int compare(TaskElement o1, TaskElement o2) {
                 return o1.getStartDate().compareTo(o2.getStartDate());
@@ -114,13 +141,10 @@ public abstract class TaskElement extends BaseEntity {
 
     public static Comparator<? super TaskElement> getByEndAndDeadlineDateComparator() {
         return new Comparator<TaskElement>() {
-
             @Override
             public int compare(TaskElement o1, TaskElement o2) {
-                return o1.getBiggestAmongEndOrDeadline().compareTo(
-                        o2.getBiggestAmongEndOrDeadline());
+                return o1.getBiggestAmongEndOrDeadline().compareTo(o2.getBiggestAmongEndOrDeadline());
             }
-
         };
     }
 
@@ -129,11 +153,9 @@ public abstract class TaskElement extends BaseEntity {
      */
     @SuppressWarnings("unchecked")
     public LocalDate getBiggestAmongEndOrDeadline() {
-        if ( this.getDeadline() != null ) {
-            return Collections.max(asList(this.getDeadline(), this.getEndAsLocalDate()));
-        }
-
-        return this.getEndAsLocalDate();
+        return this.getDeadline() != null
+                ? Collections.max(asList(this.getDeadline(), this.getEndAsLocalDate()))
+                : this.getEndAsLocalDate();
     }
 
     protected static <T extends TaskElement> T create(T taskElement, TaskSource taskSource) {
@@ -142,6 +164,7 @@ public abstract class TaskElement extends BaseEntity {
         taskElement.setName(taskElement.getOrderElement().getName());
         taskElement.updateAdvancePercentageFromOrderElement();
         Order order = taskElement.getOrderElement().getOrder();
+
         if ( order.isScheduleBackwards() ) {
             taskElement.setEndDate(order.getDeadline());
         } else {
@@ -153,36 +176,6 @@ public abstract class TaskElement extends BaseEntity {
     protected static <T extends TaskElement> T createWithoutTaskSource(T taskElement) {
         return create(taskElement);
     }
-
-    @OnCopy(Strategy.SHARE)
-    private IDatesInterceptor datesInterceptor = EMPTY_INTERCEPTOR;
-
-    private IntraDayDate startDate;
-
-    private IntraDayDate endDate;
-
-    private LocalDate deadline;
-
-    private String name;
-
-    private String notes;
-
-    private TaskGroup parent;
-
-    private Set<Dependency> dependenciesWithThisOrigin = new HashSet<Dependency>();
-
-    private Set<Dependency> dependenciesWithThisDestination = new HashSet<Dependency>();
-
-    @OnCopy(Strategy.SHARE)
-    private BaseCalendar calendar;
-
-    private TaskSource taskSource;
-
-    private BigDecimal advancePercentage = BigDecimal.ZERO;
-
-    private Boolean simplifiedAssignedStatusCalculationEnabled = false;
-
-    private Boolean updatedFromTimesheets = false;
 
     public void initializeDatesIfNeeded() {
         if ( getIntraDayEndDate() == null || getIntraDayStartDate() == null ) {
@@ -203,11 +196,7 @@ public abstract class TaskElement extends BaseEntity {
     }
 
     public Integer getWorkHours() {
-        if ( taskSource == null ) {
-            return 0;
-        }
-
-        return taskSource.getTotalHours();
+        return taskSource == null ? 0 : taskSource.getTotalHours();
     }
 
     protected void copyPropertiesFrom(TaskElement task) {
@@ -227,12 +216,11 @@ public abstract class TaskElement extends BaseEntity {
 
     protected void copyDependenciesTo(TaskElement result) {
         for (Dependency dependency : getDependenciesWithThisOrigin()) {
-            Dependency.create(result, dependency.getDestination(),
-                    dependency.getType());
+            Dependency.create(result, dependency.getDestination(), dependency.getType());
         }
+
         for (Dependency dependency : getDependenciesWithThisDestination()) {
-            Dependency.create(dependency.getOrigin(), result,
-                    dependency.getType());
+            Dependency.create(dependency.getOrigin(), result, dependency.getType());
         }
     }
 
@@ -274,11 +262,7 @@ public abstract class TaskElement extends BaseEntity {
     }
 
     public OrderElement getOrderElement() {
-        if ( getTaskSource() == null ) {
-            return null;
-        }
-
-        return getTaskSource().getOrderElement();
+        return getTaskSource() == null ? null : getTaskSource().getOrderElement();
     }
 
     public Set<Dependency> getDependenciesWithThisOrigin() {
@@ -290,7 +274,7 @@ public abstract class TaskElement extends BaseEntity {
     }
 
     public Set<Dependency> getDependenciesWithThisDestinationAndAllParents() {
-        Set<Dependency> result = new HashSet<Dependency>(getDependenciesWithThisDestination());
+        Set<Dependency> result = new HashSet<>(getDependenciesWithThisDestination());
         if ( parent != null ) {
             result.addAll(parent.getDependenciesWithThisDestinationAndAllParents());
         }
@@ -323,6 +307,7 @@ public abstract class TaskElement extends BaseEntity {
         if ( startDate == null ) {
             LOG.error(doNotProvideNullsDiscouragingMessage());
         }
+
         IntraDayDate previousStart = getIntraDayStartDate();
         IntraDayDate previousEnd = getIntraDayEndDate();
         this.startDate = startDate;
@@ -335,24 +320,26 @@ public abstract class TaskElement extends BaseEntity {
     }
 
     public void setEndDate(Date endDate) {
-        setIntraDayEndDate( (endDate != null) ?
-                IntraDayDate.create(LocalDate.fromDateFields(endDate), EffortDuration.zero()) : null);
+        setIntraDayEndDate( (endDate != null)
+                ? IntraDayDate.create(LocalDate.fromDateFields(endDate), EffortDuration.zero())
+                : null);
     }
 
     public void setIntraDayEndDate(IntraDayDate endDate) {
         if ( endDate == null ) {
             LOG.error(doNotProvideNullsDiscouragingMessage());
         }
+
         IntraDayDate previousEnd = getIntraDayEndDate();
         this.endDate = endDate;
         datesInterceptor.setNewEnd(previousEnd, this.endDate);
     }
 
     private String doNotProvideNullsDiscouragingMessage() {
-        return "The provided date shouldn't be null.\n"
-                + "Providing null values to start or end dates is not safe.\n"
-                + "In a near future an exception will be thrown if you provide a null value to a start or end date.\n"
-                + "Please detect the caller and fix it";
+        return "The provided date shouldn't be null.\n" +
+                "Providing null values to start or end dates is not safe.\n" +
+                "In a near future an exception will be thrown if you provide a null value to a start or end date.\n" +
+                "Please detect the caller and fix it";
     }
 
     @NotNull
@@ -360,8 +347,7 @@ public abstract class TaskElement extends BaseEntity {
         return endDate;
     }
 
-    public IDatesHandler getDatesHandler(Scenario scenario,
-            IResourcesSearcher resourcesSearcher) {
+    public IDatesHandler getDatesHandler(Scenario scenario, IResourcesSearcher resourcesSearcher) {
         return noNullDates(createDatesHandler(scenario, resourcesSearcher));
     }
 
@@ -388,15 +374,13 @@ public abstract class TaskElement extends BaseEntity {
         };
     }
 
-    protected abstract IDatesHandler createDatesHandler(Scenario scenario,
-            IResourcesSearcher resourcesSearcher);
+    protected abstract IDatesHandler createDatesHandler(Scenario scenario, IResourcesSearcher resourcesSearcher);
 
     public interface IDatesHandler {
 
         /**
-         * Sets the startDate to newStartDate. It can update the endDate
+         * Sets the startDate to newStartDate. It can update the endDate.
          *
-         * @param scenario
          * @param newStartDate
          */
         void moveTo(IntraDayDate newStartDate);
@@ -420,8 +404,10 @@ public abstract class TaskElement extends BaseEntity {
     public void setDeadline(LocalDate deadline) {
         this.deadline = deadline;
         if ( taskSource != null && taskSource.getOrderElement() != null ) {
-            taskSource.getOrderElement().setDeadline(
-                    (deadline == null)? null : deadline.toDateTimeAtStartOfDay().toDate());
+
+            taskSource.getOrderElement().setDeadline((deadline == null)
+                    ? null
+                    : deadline.toDateTimeAtStartOfDay().toDate());
         }
     }
 
@@ -429,6 +415,7 @@ public abstract class TaskElement extends BaseEntity {
         if ( this.equals(dependency.getOrigin()) ) {
             dependenciesWithThisOrigin.add(dependency);
         }
+
         if ( this.equals(dependency.getDestination()) ) {
             dependenciesWithThisDestination.add(dependency);
         }
@@ -445,7 +432,7 @@ public abstract class TaskElement extends BaseEntity {
     }
 
     public void removeDependencyWithDestination(TaskElement destination, Type type) {
-        ArrayList<Dependency> toBeRemoved = new ArrayList<Dependency>();
+        ArrayList<Dependency> toBeRemoved = new ArrayList<>();
         for (Dependency dependency : dependenciesWithThisOrigin) {
             if ( dependency.getDestination().equals(destination) && dependency.getType().equals(type) ) {
                 toBeRemoved.add(dependency);
@@ -498,7 +485,8 @@ public abstract class TaskElement extends BaseEntity {
     private List<Dependency> getDependenciesWithOrigin(TaskElement t) {
         ArrayList<Dependency> result = new ArrayList<>();
         for (Dependency dependency : dependenciesWithThisDestination) {
-            if ( dependency.getOrigin().equals(t) ) {result.add(dependency);
+            if ( dependency.getOrigin().equals(t) ) {
+                result.add(dependency);
             }
         }
 
@@ -511,7 +499,7 @@ public abstract class TaskElement extends BaseEntity {
     }
 
     private void detachIncomingDependencies() {
-        Set<TaskElement> tasksToNotify = new HashSet<TaskElement>();
+        Set<TaskElement> tasksToNotify = new HashSet<>();
         for (Dependency dependency : dependenciesWithThisDestination) {
             TaskElement origin = dependency.getOrigin();
             if ( origin != null ) {
@@ -525,7 +513,7 @@ public abstract class TaskElement extends BaseEntity {
     }
 
     private void detachOutcomingDependencies() {
-        Set<TaskElement> tasksToNotify = new HashSet<TaskElement>();
+        Set<TaskElement> tasksToNotify = new HashSet<>();
         for (Dependency dependency : dependenciesWithThisOrigin) {
             TaskElement destination = dependency.getDestination();
             if ( destination != null ) {
@@ -549,6 +537,7 @@ public abstract class TaskElement extends BaseEntity {
     public BaseCalendar getCalendar() {
         if ( calendar == null ) {
             OrderElement orderElement = getOrderElement();
+
             return orderElement != null ? orderElement.getOrder().getCalendar() : null;
         }
 
@@ -590,8 +579,10 @@ public abstract class TaskElement extends BaseEntity {
         return DayAssignment.filter(dayAssignments, filter);
     }
 
+    /**
+     * Just Task could be subcontracted.
+     */
     public boolean isSubcontracted() {
-        // Just Task could be subcontracted
         return false;
     }
 
@@ -599,8 +590,10 @@ public abstract class TaskElement extends BaseEntity {
         return "";
     }
 
+    /**
+     * Just Task could be subcontracted.
+     */
     public boolean isSubcontractedAndWasAlreadySent() {
-        // Just Task could be subcontracted
         return false;
     }
 
@@ -612,8 +605,10 @@ public abstract class TaskElement extends BaseEntity {
         return false;
     }
 
+    /**
+     * Just Task could be consolidated.
+     */
     public boolean hasConsolidations() {
-        // Just Task could be consolidated
         return false;
     }
 
@@ -637,20 +632,19 @@ public abstract class TaskElement extends BaseEntity {
     }
 
     public String getAssignedStatus() {
-        if(isSimplifiedAssignedStatusCalculationEnabled()) {
-            //simplified calculation has only two states:
-            //unassigned, when hours allocated is zero, and
-            //assigned otherwise
-            if ( getSumOfAssignedEffort().isZero() ) {
-                return "unassigned";
-            }
+        if (isSimplifiedAssignedStatusCalculationEnabled()) {
+            // Simplified calculation has only two states:
+            // 1. Unassigned, when hours allocated is zero.
+            // 2. Assigned otherwise.
 
-            return "assigned";
+            return getSumOfAssignedEffort().isZero() ? "unassigned" : "assigned";
         }
+
         Set<ResourceAllocation<?>> resourceAllocations = getSatisfiedResourceAllocations();
         if ( resourceAllocations.isEmpty() ) {
             return "unassigned";
         }
+
         for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
             final ResourcesPerDay resourcesPerDay = resourceAllocation.getResourcesPerDay();
             if ( resourcesPerDay != null && resourcesPerDay.isZero() ) {
@@ -662,16 +656,11 @@ public abstract class TaskElement extends BaseEntity {
     }
 
     public Boolean belongsClosedProject() {
-        EnumSet<OrderStatusEnum> CLOSED = EnumSet.of(OrderStatusEnum.CANCELLED,
-                                                    OrderStatusEnum.FINISHED,
-                                                    OrderStatusEnum.STORED);
 
-        Order order = getOrderElement().getOrder();
-        if( CLOSED.contains(order.getState()) ) {
-            return true;
-        }
+        EnumSet<OrderStatusEnum> CLOSED =
+                EnumSet.of(OrderStatusEnum.CANCELLED, OrderStatusEnum.FINISHED, OrderStatusEnum.STORED);
 
-        return false;
+        return CLOSED.contains(getOrderElement().getOrder().getState());
     }
 
     public abstract boolean hasLimitedResourceAllocation();
@@ -695,15 +684,12 @@ public abstract class TaskElement extends BaseEntity {
     /**
      * For common tasks it just return the spread progress.
      *
-     * It's overridden in {@link TaskGroup} to return different progresses
-     * depending on parameter
+     * It's overridden in {@link TaskGroup} to return different progresses depending on parameter.
      */
     public BigDecimal getAdvancePercentage(ProgressType progressType) {
-        if ( progressType != null && progressType.equals(ProgressType.SPREAD_PROGRESS) ) {
-            return advancePercentage;
-        }
-
-        return BigDecimal.ZERO;
+        return progressType != null && progressType.equals(ProgressType.SPREAD_PROGRESS)
+                ? advancePercentage
+                : BigDecimal.ZERO;
     }
 
     public void setAdvancePercentage(BigDecimal advancePercentage) {
@@ -711,15 +697,13 @@ public abstract class TaskElement extends BaseEntity {
         this.resetStatus();
     }
 
-    private EffortDuration sumOfAssignedEffort = EffortDuration.zero();
-
     public void setSumOfAssignedEffort(EffortDuration sumOfAssignedEffort) {
         this.sumOfAssignedEffort = sumOfAssignedEffort;
     }
 
     public EffortDuration getSumOfAssignedEffort() {
         if ( this.getParent() == null ) {
-            //it's an order, we use the cached value
+            // It's an order, we use the cached value
             return sumOfAssignedEffort;
         }
         else {
@@ -729,7 +713,7 @@ public abstract class TaskElement extends BaseEntity {
 
     private EffortDuration getSumOfAssignedEffortCalculated() {
         EffortDuration result = EffortDuration.zero();
-        for(ResourceAllocation<?> allocation : getAllResourceAllocations()) {
+        for (ResourceAllocation<?> allocation : getAllResourceAllocations()) {
             result = result.plus(allocation.getAssignedEffort());
         }
         return result;
@@ -743,7 +727,7 @@ public abstract class TaskElement extends BaseEntity {
 
     public List<TaskElement> getAllChildren() {
         List<TaskElement> children = getChildren();
-        List<TaskElement> result = new ArrayList<TaskElement>();
+        List<TaskElement> result = new ArrayList<>();
         for (TaskElement child : children) {
             result.add(child);
             result.addAll(child.getAllChildren());
@@ -755,12 +739,15 @@ public abstract class TaskElement extends BaseEntity {
     public abstract EffortDuration getTheoreticalCompletedTimeUntilDate(Date date);
 
     public BigDecimal getTheoreticalAdvancePercentageUntilDate(Date date) {
-        EffortDuration totalAllocatedTime = AggregateOfDayAssignments.create(
-                                            this.getDayAssignments(FilterType.KEEP_ALL)).getTotalTime();
+        EffortDuration totalAllocatedTime =
+                AggregateOfDayAssignments.create(this.getDayAssignments(FilterType.KEEP_ALL)).getTotalTime();
+
         EffortDuration totalTheoreticalCompletedTime = this.getTheoreticalCompletedTimeUntilDate(date);
+
         if ( totalAllocatedTime.isZero() || totalTheoreticalCompletedTime.isZero() ) {
             return BigDecimal.ZERO;
         }
+
         Validate.isTrue(totalTheoreticalCompletedTime.getSeconds() <= totalAllocatedTime.getSeconds());
 
         return totalTheoreticalCompletedTime.dividedByAndResultAsBigDecimal(totalAllocatedTime);
@@ -779,23 +766,19 @@ public abstract class TaskElement extends BaseEntity {
     }
 
     public Boolean isRoot() {
-        return (this.getParent() == null);
+        return this.getParent() == null;
     }
 
     public BigDecimal getBudget() {
-        if ( (taskSource != null) && (taskSource.getOrderElement() != null) ) {
-            return taskSource.getOrderElement().getBudget();
-        }
-
-        return null;
+        return (taskSource != null) && (taskSource.getOrderElement() != null)
+                ? taskSource.getOrderElement().getBudget()
+                : null;
     }
 
     public BigDecimal getResourcesBudget() {
-        if ( (taskSource != null) && (taskSource.getOrderElement() != null) ) {
-            return taskSource.getOrderElement().getResourcesBudget();
-        }
-
-        return null;
+        return (taskSource != null) && (taskSource.getOrderElement() != null)
+                ? taskSource.getOrderElement().getResourcesBudget()
+                : null;
     }
 
     public ExternalCompany getSubcontractedCompany() {
@@ -806,10 +789,13 @@ public abstract class TaskElement extends BaseEntity {
 
     public TaskDeadlineViolationStatusEnum getDeadlineViolationStatus() {
         LocalDate deadline = this.getDeadline();
+
         if ( deadline == null ) {
             return TaskDeadlineViolationStatusEnum.NO_DEADLINE;
+
         } else if ( this.getEndAsLocalDate().isAfter(deadline) ) {
             return TaskDeadlineViolationStatusEnum.DEADLINE_VIOLATED;
+
         } else {
             return TaskDeadlineViolationStatusEnum.ON_SCHEDULE;
         }

@@ -21,10 +21,7 @@
 
 package org.libreplan.business.resources.entities;
 
-
-
 /**
- *
  * @author Diego Pino Garcia<dpino@igalia.com>
  */
 public enum ResourceEnum {
@@ -32,19 +29,20 @@ public enum ResourceEnum {
     WORKER(Worker.class, _("WORKER")),
     MACHINE(Machine.class, _("MACHINE"));
 
+    private Class<? extends Resource> klass;
+
+    private final String displayName;
+
+    ResourceEnum(Class<? extends Resource> klass, String displayName) {
+        this.klass = klass;
+        this.displayName = displayName;
+    }
+
     /**
-     * Forces to mark the string as needing translation
+     * Forces to mark the string as needing translation.
      */
     private static String _(String string) {
         return string;
-    }
-
-    private Class<? extends Resource> klass;
-    private final String displayName;
-
-    private ResourceEnum(Class<? extends Resource> klass, String displayName) {
-        this.klass = klass;
-        this.displayName = displayName;
     }
 
     public Class<? extends Resource> asClass() {

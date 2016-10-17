@@ -52,13 +52,7 @@ import org.libreplan.business.workreports.valueobjects.DescriptionValue;
  * @author Diego Pino García <dpino@igalia.com>
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
-public class WorkReportLine extends IntegrationEntity implements
-        Comparable<WorkReportLine>,
-        IWorkReportsElements {
-
-    public static WorkReportLine create(WorkReport workReport) {
-        return create(new WorkReportLine(workReport));
-    }
+public class WorkReportLine extends IntegrationEntity implements Comparable<WorkReportLine>, IWorkReportsElements {
 
     private EffortDuration effort;
 
@@ -72,9 +66,9 @@ public class WorkReportLine extends IntegrationEntity implements
 
     private OrderElement orderElement;
 
-    private Set<Label> labels = new HashSet<Label>();
+    private Set<Label> labels = new HashSet<>();
 
-    private Set<DescriptionValue> descriptionValues = new HashSet<DescriptionValue>();
+    private Set<DescriptionValue> descriptionValues = new HashSet<>();
 
     private WorkReport workReport;
 
@@ -92,6 +86,10 @@ public class WorkReportLine extends IntegrationEntity implements
         this.setWorkReport(workReport);
     }
 
+    public static WorkReportLine create(WorkReport workReport) {
+        return create(new WorkReportLine(workReport));
+    }
+
     @NotNull(message = "effort not specified")
     public EffortDuration getEffort() {
         return effort;
@@ -99,10 +97,12 @@ public class WorkReportLine extends IntegrationEntity implements
 
     public void setEffort(EffortDuration effort) {
         this.effort = effort;
-        if ((workReport != null)
-                && (workReport.getWorkReportType() != null)
-                && (workReport.getWorkReportType().getHoursManagement()
-                        .equals(HoursManagementEnum.HOURS_CALCULATED_BY_CLOCK))) {
+
+        if ( (workReport != null) &&
+                (workReport.getWorkReportType() != null) &&
+                (workReport.getWorkReportType().getHoursManagement()
+                        .equals(HoursManagementEnum.HOURS_CALCULATED_BY_CLOCK)) ) {
+
             this.effort = getDiferenceBetweenTimeStartAndFinish();
         }
     }
@@ -153,10 +153,12 @@ public class WorkReportLine extends IntegrationEntity implements
     @Override
     public void setDate(Date date) {
         this.date = date;
-        if ((workReport != null) && (workReport.getWorkReportType() != null)) {
-            if (workReport.getWorkReportType().getDateIsSharedByLines()) {
-                this.date = workReport.getDate();
-            }
+
+        if ( (workReport != null) &&
+                (workReport.getWorkReportType() != null) &&
+                workReport.getWorkReportType().getDateIsSharedByLines() ) {
+
+            this.date = workReport.getDate();
         }
     }
 
@@ -169,10 +171,12 @@ public class WorkReportLine extends IntegrationEntity implements
     @Override
     public void setResource(Resource resource) {
         this.resource = resource;
-        if ((workReport != null) && (workReport.getWorkReportType() != null)) {
-            if (workReport.getWorkReportType().getResourceIsSharedInLines()) {
-                this.resource = workReport.getResource();
-            }
+
+        if ( (workReport != null) &&
+                (workReport.getWorkReportType() != null) &&
+                workReport.getWorkReportType().getResourceIsSharedInLines() ) {
+
+            this.resource = workReport.getResource();
         }
     }
 
@@ -185,11 +189,14 @@ public class WorkReportLine extends IntegrationEntity implements
     @Override
     public void setOrderElement(OrderElement orderElement) {
         this.orderElement = orderElement;
-        if ((workReport != null) && (workReport.getWorkReportType() != null)) {
-            if (workReport.getWorkReportType().getOrderElementIsSharedInLines()) {
-                this.orderElement = workReport.getOrderElement();
-            }
+
+        if ( (workReport != null) &&
+                (workReport.getWorkReportType() != null) &&
+                workReport.getWorkReportType().getOrderElementIsSharedInLines() ) {
+
+            this.orderElement = workReport.getOrderElement();
         }
+
     }
 
     @Override
@@ -210,13 +217,13 @@ public class WorkReportLine extends IntegrationEntity implements
     private void setWorkReport(WorkReport workReport) {
         this.workReport = workReport;
 
-        // update and copy the fields and label for each line
+        // Update and copy the fields and label for each line
         updateItsFieldsAndLabels();
 
-        // copy the required fields if these are shared by lines
+        // Copy the required fields if these are shared by lines
         updatesAllSharedDataByLines();
 
-        // update calculated effort
+        // Update calculated effort
         updateEffort();
     }
 
@@ -250,46 +257,33 @@ public class WorkReportLine extends IntegrationEntity implements
 
     @AssertTrue(message = "closckStart:the clockStart must be not null if number of hours is calcultate by clock")
     public boolean isClockStartMustBeNotNullIfIsCalculatedByClockConstraint() {
-        if (!firstLevelValidationsPassed()) {
-            return true;
-        }
+        return !firstLevelValidationsPassed() ||
+                !workReport.getWorkReportType().getHoursManagement()
+                        .equals(HoursManagementEnum.HOURS_CALCULATED_BY_CLOCK) ||
+                (getClockStart() != null);
 
-        if (workReport.getWorkReportType().getHoursManagement().equals(
-                HoursManagementEnum.HOURS_CALCULATED_BY_CLOCK)) {
-            return (getClockStart() != null);
-        }
-        return true;
     }
 
     @AssertTrue(message = "clock finish cannot be empty if number of hours is calcultate by clock")
     public boolean isClockFinishMustBeNotNullIfIsCalculatedByClockConstraint() {
-        if (!firstLevelValidationsPassed()) {
-            return true;
-        }
+        return !firstLevelValidationsPassed() ||
+                !workReport.getWorkReportType().getHoursManagement()
+                        .equals(HoursManagementEnum.HOURS_CALCULATED_BY_CLOCK) ||
+                (getClockFinish() != null);
 
-        if (workReport.getWorkReportType().getHoursManagement().equals(
-                HoursManagementEnum.HOURS_CALCULATED_BY_CLOCK)) {
-            return (getClockFinish() != null);
-        }
-        return true;
     }
 
     @AssertTrue(message = "Start hour cannot be greater than finish hour")
     public boolean isCannotBeHigherConstraint() {
-        if (!firstLevelValidationsPassed()) {
-            return true;
-        }
+        return !firstLevelValidationsPassed() ||
+                !workReport.getWorkReportType().getHoursManagement()
+                        .equals(HoursManagementEnum.HOURS_CALCULATED_BY_CLOCK) ||
+                checkCannotBeHigher(this.clockStart, this.clockFinish);
 
-        if (workReport.getWorkReportType().getHoursManagement().equals(
-                HoursManagementEnum.HOURS_CALCULATED_BY_CLOCK)) {
-            return checkCannotBeHigher(this.clockStart, this.clockFinish);
-        }
-        return true;
     }
 
     public boolean checkCannotBeHigher(LocalTime starting, LocalTime ending) {
-        return !((ending != null) && (starting != null) && (starting
-                .compareTo(ending) > 0));
+        return !((ending != null) && (starting != null) && (starting.compareTo(ending) > 0));
     }
 
     void updateItsFieldsAndLabels() {
@@ -300,10 +294,9 @@ public class WorkReportLine extends IntegrationEntity implements
     }
 
     private void assignItsLabels(WorkReportType workReportType) {
-        Set<Label> updatedLabels = new HashSet<Label>();
+        Set<Label> updatedLabels = new HashSet<>();
         if (workReportType != null) {
-            for (WorkReportLabelTypeAssigment labelTypeAssigment : workReportType
-                    .getLineLabels()) {
+            for (WorkReportLabelTypeAssignment labelTypeAssigment : workReportType.getLineLabels()) {
                 Label label = getLabelBy(labelTypeAssigment);
                 if (label != null) {
                     updatedLabels.add(label);
@@ -315,7 +308,7 @@ public class WorkReportLine extends IntegrationEntity implements
         }
     }
 
-    private Label getLabelBy(WorkReportLabelTypeAssigment labelTypeAssigment) {
+    private Label getLabelBy(WorkReportLabelTypeAssignment labelTypeAssigment) {
         LabelType type = labelTypeAssigment.getLabelType();
         for (Label label : labels) {
             if (label.getType().getId().equals(type.getId())) {
@@ -326,18 +319,14 @@ public class WorkReportLine extends IntegrationEntity implements
     }
 
     private void assignItsDescriptionValues(WorkReportType workReportType) {
-        Set<DescriptionValue> updatedDescriptionValues = new HashSet<DescriptionValue>();
+        Set<DescriptionValue> updatedDescriptionValues = new HashSet<>();
         if (workReportType != null) {
-            for (DescriptionField descriptionField : workReportType
-                    .getLineFields()) {
+            for (DescriptionField descriptionField : workReportType.getLineFields()) {
                 DescriptionValue descriptionValue;
                 try {
-                    descriptionValue = this
-                            .getDescriptionValueByFieldName(descriptionField
-                                    .getFieldName());
+                    descriptionValue = this.getDescriptionValueByFieldName(descriptionField.getFieldName());
                 } catch (InstanceNotFoundException e) {
-                    descriptionValue = DescriptionValue.create(
-                        descriptionField.getFieldName(), null);
+                    descriptionValue = DescriptionValue.create(descriptionField.getFieldName(), null);
                 }
                 updatedDescriptionValues.add(descriptionValue);
             }
@@ -346,51 +335,51 @@ public class WorkReportLine extends IntegrationEntity implements
     }
 
     void updatesAllSharedDataByLines() {
-        // copy the required fields if these are shared by lines
+        // Copy the required fields if these are shared by lines
         updateSharedDateByLines();
         updateSharedResourceByLines();
         updateSharedOrderElementByLines();
     }
 
     void updateSharedDateByLines() {
-        if ((workReport != null) && (workReport.getWorkReportType() != null)
-                && (workReport.getWorkReportType().getDateIsSharedByLines())) {
+        if ( (workReport != null) && (workReport.getWorkReportType() != null) &&
+                (workReport.getWorkReportType().getDateIsSharedByLines()) ) {
+
             setDate(workReport.getDate());
         }
     }
 
     void updateSharedResourceByLines() {
-        if ((workReport != null)
-                && (workReport.getWorkReportType() != null)
-                && (workReport.getWorkReportType().getResourceIsSharedInLines())) {
+        if ( (workReport != null) &&
+                (workReport.getWorkReportType() != null) &&
+                (workReport.getWorkReportType().getResourceIsSharedInLines()) ) {
+
             setResource(workReport.getResource());
         }
     }
 
     void updateSharedOrderElementByLines() {
-        if ((workReport != null)
-                && (workReport.getWorkReportType() != null)
-                && (workReport.getWorkReportType()
-                        .getOrderElementIsSharedInLines())) {
+        if ( (workReport != null) &&
+                (workReport.getWorkReportType() != null) &&
+                (workReport.getWorkReportType().getOrderElementIsSharedInLines()) ) {
+
             setOrderElement(workReport.getOrderElement());
         }
     }
 
     private void updateEffort() {
-        if ((workReport != null)
-                && (workReport.getWorkReportType() != null)
-                && workReport.getWorkReportType().getHoursManagement().equals(
-                        HoursManagementEnum.HOURS_CALCULATED_BY_CLOCK)) {
+        if ( (workReport != null) &&
+                (workReport.getWorkReportType() != null) &&
+                workReport.getWorkReportType().getHoursManagement()
+                        .equals(HoursManagementEnum.HOURS_CALCULATED_BY_CLOCK) ) {
+
             setEffort(getDiferenceBetweenTimeStartAndFinish());
         }
     }
 
     private EffortDuration getDiferenceBetweenTimeStartAndFinish() {
-        if ((clockStart != null) && (clockFinish != null)) {
-            return EffortDuration.seconds(Seconds.secondsBetween(clockStart,
-                    clockFinish).getSeconds());
-        }
-        return null;
+        return (clockStart != null) && (clockFinish != null) ?
+                EffortDuration.seconds(Seconds.secondsBetween(clockStart, clockFinish).getSeconds()) : null;
     }
 
     @Override
@@ -429,8 +418,7 @@ public class WorkReportLine extends IntegrationEntity implements
             return true;
         }
 
-        if (workReport.getWorkReportType().getHoursManagement().equals(
-                HoursManagementEnum.HOURS_CALCULATED_BY_CLOCK)) {
+        if (workReport.getWorkReportType().getHoursManagement().equals(HoursManagementEnum.HOURS_CALCULATED_BY_CLOCK)) {
             if (getDiferenceBetweenTimeStartAndFinish().compareTo(effort) != 0) {
                 return false;
             }
@@ -439,25 +427,25 @@ public class WorkReportLine extends IntegrationEntity implements
     }
 
     private boolean firstLevelValidationsPassed() {
-        return (workReport != null) && (typeOfWorkHours != null)
-                && (effort != null) && (date != null) && (resource != null)
-                && (orderElement != null);
+        return (workReport != null) &&
+                (typeOfWorkHours != null) &&
+                (effort != null) &&
+                (date != null) &&
+                (resource != null) &&
+                (orderElement != null);
     }
 
     @AssertTrue(message = "label type: the timesheet has not assigned this label type")
     public boolean isAssignedLabelTypesConstraint() {
-        if (this.workReport == null
-                || this.workReport.getWorkReportType() == null) {
+        if (this.workReport == null || this.workReport.getWorkReportType() == null) {
             return true;
         }
 
-        if (this.workReport.getWorkReportType().getLineLabels().size() != this.labels
-                .size()) {
+        if (this.workReport.getWorkReportType().getLineLabels().size() != this.labels.size()) {
             return false;
         }
 
-        for (WorkReportLabelTypeAssigment typeAssigment : this.workReport
-                .getWorkReportType().getLineLabels()) {
+        for (WorkReportLabelTypeAssignment typeAssigment : this.workReport.getWorkReportType().getLineLabels()) {
             try {
                 getLabelByType(typeAssigment.getLabelType());
             } catch (InstanceNotFoundException e) {
@@ -469,18 +457,15 @@ public class WorkReportLine extends IntegrationEntity implements
 
     @AssertTrue(message = "description value: the timesheet has not assigned the description field")
     public boolean isAssignedDescriptionValuesConstraint() {
-        if (this.workReport == null
-                || this.workReport.getWorkReportType() == null) {
+        if (this.workReport == null || this.workReport.getWorkReportType() == null) {
             return true;
         }
 
-        if (this.workReport.getWorkReportType().getLineFields().size() > this.descriptionValues
-                .size()) {
+        if (this.workReport.getWorkReportType().getLineFields().size() > this.descriptionValues.size()) {
             return false;
         }
 
-        for (DescriptionField field : this.workReport.getWorkReportType()
-                .getLineFields()) {
+        for (DescriptionField field : this.workReport.getWorkReportType().getLineFields()) {
             try {
                 getDescriptionValueByFieldName(field.getFieldName());
             } catch (InstanceNotFoundException e) {
@@ -493,7 +478,7 @@ public class WorkReportLine extends IntegrationEntity implements
     @AssertTrue(message = "there are repeated description values in the timesheet lines")
     public boolean isAssignedRepeatedDescriptionValuesConstraint() {
 
-        Set<String> textFields = new HashSet<String>();
+        Set<String> textFields = new HashSet<>();
 
         for (DescriptionValue v : this.descriptionValues) {
 
@@ -510,12 +495,10 @@ public class WorkReportLine extends IntegrationEntity implements
         return true;
     }
 
-    public DescriptionValue getDescriptionValueByFieldName(String fieldName)
-            throws InstanceNotFoundException {
+    public DescriptionValue getDescriptionValueByFieldName(String fieldName) throws InstanceNotFoundException {
 
         if (StringUtils.isBlank(fieldName)) {
-            throw new InstanceNotFoundException(fieldName,
-                    DescriptionValue.class.getName());
+            throw new InstanceNotFoundException(fieldName, DescriptionValue.class.getName());
         }
 
         for (DescriptionValue v : this.descriptionValues) {
@@ -524,12 +507,10 @@ public class WorkReportLine extends IntegrationEntity implements
             }
         }
 
-        throw new InstanceNotFoundException(fieldName, DescriptionValue.class
-                .getName());
+        throw new InstanceNotFoundException(fieldName, DescriptionValue.class.getName());
     }
 
-    public Label getLabelByType(LabelType type)
-            throws InstanceNotFoundException {
+    public Label getLabelByType(LabelType type) throws InstanceNotFoundException {
 
         if (type == null) {
             throw new InstanceNotFoundException(type, LabelType.class.getName());
@@ -546,13 +527,12 @@ public class WorkReportLine extends IntegrationEntity implements
 
     @Override
     public void setCodeAutogenerated(Boolean codeAutogenerated) {
-        // do nothing
+        // Do nothing
     }
 
     @Override
     public Boolean isCodeAutogenerated() {
-        return getWorkReport() != null ? getWorkReport().isCodeAutogenerated()
-                : false;
+        return getWorkReport() != null ? getWorkReport().isCodeAutogenerated() : false;
     }
 
     @NotNull(message = "finished not specified")
@@ -570,9 +550,10 @@ public class WorkReportLine extends IntegrationEntity implements
             return true;
         }
 
-        List<WorkReportLine> lines = Registry.getWorkReportLineDAO()
-                .findFinishedByOrderElementNotInWorkReportAnotherTransaction(
-                        orderElement, workReport);
+        List<WorkReportLine> lines = Registry
+                .getWorkReportLineDAO()
+                .findFinishedByOrderElementNotInWorkReportAnotherTransaction(orderElement, workReport);
+
         return lines.isEmpty();
     }
 

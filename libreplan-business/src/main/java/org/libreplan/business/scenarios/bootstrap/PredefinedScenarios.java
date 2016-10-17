@@ -36,7 +36,7 @@ public enum PredefinedScenarios {
 
     private final String name;
 
-    private PredefinedScenarios(String name) {
+    PredefinedScenarios(String name) {
         this.name = name;
     }
 

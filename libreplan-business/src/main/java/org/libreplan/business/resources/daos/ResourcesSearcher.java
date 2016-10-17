@@ -70,6 +70,7 @@ public class ResourcesSearcher implements IResourcesSearcher {
     @Autowired
     private SessionFactory sessionFactory;
 
+    @Override
     public IResourcesQuery<Machine> searchMachines() {
         return new Query<>(Machine.class);
     }
@@ -104,7 +105,6 @@ public class ResourcesSearcher implements IResourcesSearcher {
         public IResourcesQuery<T> byCriteria(Collection<? extends Criterion> criteria) {
             Validate.noNullElements(criteria);
             this.criteria = new ArrayList<>(criteria);
-
             return this;
         }
 
@@ -205,13 +205,13 @@ public class ResourcesSearcher implements IResourcesSearcher {
     public IResourcesQuery<Resource> searchBoth() {
         final IResourcesQuery<Worker> searchWorkers = searchWorkers();
         final IResourcesQuery<Machine> searchMachines = searchMachines();
+
         return new IResourcesQuery<Resource>() {
 
             @Override
             public IResourcesQuery<Resource> byName(String name) {
                 searchWorkers.byName(name);
                 searchMachines.byName(name);
-
                 return this;
             }
 
@@ -219,7 +219,6 @@ public class ResourcesSearcher implements IResourcesSearcher {
             public IResourcesQuery<Resource> byCriteria(Collection<? extends Criterion> criteria) {
                 searchWorkers.byCriteria(criteria);
                 searchMachines.byCriteria(criteria);
-
                 return this;
             }
 
@@ -227,7 +226,6 @@ public class ResourcesSearcher implements IResourcesSearcher {
             public IResourcesQuery<Resource> byResourceType(ResourceType type) {
                 searchWorkers.byResourceType(type);
                 searchMachines.byResourceType(type);
-
                 return this;
             }
 

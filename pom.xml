@@ -246,7 +246,7 @@
                 <version>3.0.0</version>
             </dependency>
 
-            <!-- Usertype.Core -->
+            <!-- Usertype.Core ( Significant for Hibernate ) -->
             <dependency>
               <groupId>org.jadira.usertype</groupId>
               <artifactId>usertype.core</artifactId>
@@ -504,13 +504,6 @@
                 <groupId>org.libreplan</groupId>
                 <artifactId>libreplan-business</artifactId>
                 <version>${project.version}</version>
-            </dependency>
-
-            <!-- DBUnit -->
-            <dependency>
-                <groupId>org.dbunit</groupId>
-                <artifactId>dbunit</artifactId>
-                <version>2.5.2</version>
             </dependency>
 
             <!-- Servlet -->
@@ -836,7 +829,7 @@
 
                     <stopPort>${jetty-stop-port}</stopPort>
                     <stopKey>stop</stopKey>
-                    <!-- Log to the console. -->
+                    <!-- Log to the console -->
                     <requestLog implementation="org.mortbay.jetty.NCSARequestLog">
                         <!--
                             This do anything for Jetty, but is a workaround for a Maven bug

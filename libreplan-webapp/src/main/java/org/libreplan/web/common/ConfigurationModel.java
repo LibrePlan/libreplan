@@ -255,7 +255,7 @@ public class ConfigurationModel implements IConfigurationModel {
 
     public void removeEntitySequences(final List<EntitySequence> sequences) {
         // first one is necessary to remove the deleted sequences.
-        List<EntitySequence> toRemove = entitySequenceDAO.findEntitySquencesNotIn(sequences);
+        List<EntitySequence> toRemove = entitySequenceDAO.findEntitySequencesNotIn(sequences);
         for (final EntitySequence entitySequence : toRemove) {
             try {
                 entitySequenceDAO.remove(entitySequence);

@@ -28,9 +28,9 @@ import java.util.List;
 
 /**
  * DAO interface for the <code>EmailTemplate</code> entity.
- * Contract for {@link EmailTemplateDAO}
+ * Contract for {@link EmailTemplateDAO}.
  *
- * @author Created by Vova Perebykivskiy <vova@libreplan-enterprise.com> on 29.09.2015.
+ * @author Created by Vova Perebykivskyi <vova@libreplan-enterprise.com> on 29.09.2015.
  */
 public interface IEmailTemplateDAO extends IGenericDAO<EmailTemplate, Long>{
 

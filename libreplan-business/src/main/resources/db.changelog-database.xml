@@ -1506,10 +1506,11 @@
             <column name="order_element_id" type="BIGINT"/>
         </createTable>
     </changeSet>
+
     <changeSet author="mrego" id="initial-database-creation-98">
-        <createTable tableName="work_report_label_type_assigment">
+        <createTable tableName="work_report_label_type_assignment">
             <column name="id" type="BIGINT">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="work_report_label_type_assigment_pkey"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="work_report_label_type_assignment_pkey"/>
             </column>
             <column name="version" type="BIGINT">
                 <constraints nullable="false"/>
@@ -1521,6 +1522,7 @@
             <column name="work_report_type_id" type="BIGINT"/>
         </createTable>
     </changeSet>
+
     <changeSet author="mrego" id="initial-database-creation-99">
         <createTable tableName="work_report_line">
             <column name="id" type="BIGINT">
@@ -2207,13 +2209,13 @@
         <addForeignKeyConstraint baseColumnNames="resource_id" baseTableName="work_report" constraintName="fkfd7aa62248d21790" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="resource" referencesUniqueColumn="false"/>
     </changeSet>
     <changeSet author="mrego" id="initial-database-creation-307">
-        <addForeignKeyConstraint baseColumnNames="label_id" baseTableName="work_report_label_type_assigment" constraintName="fkbb262920c1c2746e" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="label" referencesUniqueColumn="false"/>
+        <addForeignKeyConstraint baseColumnNames="label_id" baseTableName="work_report_label_type_assignment" constraintName="fkbb262920c1c2746e" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="label" referencesUniqueColumn="false"/>
     </changeSet>
     <changeSet author="mrego" id="initial-database-creation-308">
-        <addForeignKeyConstraint baseColumnNames="label_type_id" baseTableName="work_report_label_type_assigment" constraintName="fkbb262920707cd777" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="label_type" referencesUniqueColumn="false"/>
+        <addForeignKeyConstraint baseColumnNames="label_type_id" baseTableName="work_report_label_type_assignment" constraintName="fkbb262920707cd777" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="label_type" referencesUniqueColumn="false"/>
     </changeSet>
     <changeSet author="mrego" id="initial-database-creation-309">
-        <addForeignKeyConstraint baseColumnNames="work_report_type_id" baseTableName="work_report_label_type_assigment" constraintName="fkbb262920131853a1" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="work_report_type" referencesUniqueColumn="false"/>
+        <addForeignKeyConstraint baseColumnNames="work_report_type_id" baseTableName="work_report_label_type_assignment" constraintName="fkbb262920131853a1" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="work_report_type" referencesUniqueColumn="false"/>
     </changeSet>
     <changeSet author="mrego" id="initial-database-creation-310">
         <addForeignKeyConstraint baseColumnNames="order_element_id" baseTableName="work_report_line" constraintName="fke2af47f1efda874f" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="order_element" referencesUniqueColumn="false"/>

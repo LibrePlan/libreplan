@@ -31,18 +31,18 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
-import org.junit.Before;
-import org.junit.Ignore;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.libreplan.business.IDataBootstrap;
-import org.libreplan.business.common.IAdHocTransactionService;
-import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.daos.IConfigurationDAO;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.entities.Order;
-import org.libreplan.business.scenarios.bootstrap.IScenariosBootstrap;
+import org.libreplan.business.orders.entities.TaskSource;
+import org.libreplan.business.planner.daos.ITaskSourceDAO;
 import org.libreplan.business.scenarios.bootstrap.PredefinedScenarios;
 import org.libreplan.business.scenarios.daos.IOrderVersionDAO;
 import org.libreplan.business.scenarios.daos.IScenarioDAO;
@@ -50,17 +50,18 @@ import org.libreplan.business.scenarios.entities.OrderVersion;
 import org.libreplan.business.scenarios.entities.Scenario;
 import org.libreplan.business.test.scenarios.daos.ScenarioDAOTest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
-        BUSINESS_SPRING_CONFIG_TEST_FILE })
-public class ScenariosBootstrapTest {
+@ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE, BUSINESS_SPRING_CONFIG_TEST_FILE })
 
-    @Autowired
-    private IScenariosBootstrap scenariosBootstrap;
+// Needed to clear context after testClass
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
+
+public class ScenariosBootstrapTest {
 
     @Autowired
     private IScenarioDAO scenarioDAO;
@@ -69,13 +70,13 @@ public class ScenariosBootstrapTest {
     private IOrderDAO orderDAO;
 
     @Autowired
-    private IAdHocTransactionService transactionService;
-
-    @Autowired
     private IConfigurationDAO configurationDAO;
 
     @Autowired
     private IOrderVersionDAO orderVersionDAO;
+
+    @Autowired
+    private ITaskSourceDAO taskSourceDAO;
 
     @Resource
     private IDataBootstrap defaultAdvanceTypesBootstrapListener;
@@ -83,60 +84,77 @@ public class ScenariosBootstrapTest {
     @Resource
     private IDataBootstrap configurationBootstrap;
 
-    @Before
-    public void loadRequiredaData() {
+    @Autowired
+    SessionFactory sessionFactory;
+
+    public void loadRequiredData() {
+
         defaultAdvanceTypesBootstrapListener.loadRequiredData();
         configurationBootstrap.loadRequiredData();
-    }
 
-    private void removeCurrentScenarios() {
-        transactionService.runOnAnotherTransaction(new IOnTransaction<Void>() {
+        try {
 
-            @Override
-            public Void execute() {
-                try {
-                    for (Order order : orderDAO.findAll()) {
-                        orderDAO.remove(order.getId());
-                    }
-                    for (OrderVersion orderVersion : orderVersionDAO
-                            .list(OrderVersion.class)) {
-                        orderVersionDAO.remove(orderVersion.getId());
-                    }
-                    for (Scenario scenario : scenarioDAO.getAll()) {
-                        scenarioDAO.remove(scenario.getId());
-                    }
-                } catch (InstanceNotFoundException e) {
-                    throw new RuntimeException(e);
-                }
-                return null;
+            for (TaskSource source: taskSourceDAO.list(TaskSource.class)) {
+                taskSourceDAO.remove(source.getId());
             }
-        });
+
+            Session session = sessionFactory.getCurrentSession();
+
+            Query deleteSchedulingStatesByOrderVersion =
+                    session.createSQLQuery("DELETE FROM scheduling_states_by_order_version");
+
+            deleteSchedulingStatesByOrderVersion.executeUpdate();
+            session.flush();
+
+            Query deleteSchedulingDataForVersion =
+                    session.createSQLQuery("DELETE FROM scheduling_data_for_version");
+
+            deleteSchedulingDataForVersion.executeUpdate();
+            session.flush();
+
+            for (Order order : orderDAO.findAll()) {
+                orderDAO.remove(order.getId());
+            }
+            // TODO: replace with Hibernate Criteria
+            for (Scenario scenario : scenarioDAO.getAll()) {
+                if (!"master".equals(scenario.getName())) {
+                    scenarioDAO.remove(scenario.getId());
+                }
+                else {
+                    for (OrderVersion orderVersion : orderVersionDAO.list(OrderVersion.class)) {
+                        scenario.removeVersion(orderVersion);
+                    }
+                    session.flush();
+                }
+            }
+
+            for (OrderVersion orderVersion : orderVersionDAO.list(OrderVersion.class)) {
+                orderVersionDAO.remove(orderVersion.getId());
+            }
+            session.flush();
+
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
+
 
     private Order givenOrderStored() {
+        // TODO : refactor this ( do not use method from other testClass )
         return ScenarioDAOTest.createOrderStored(orderDAO, configurationDAO);
     }
 
     @Test
     @Transactional
-    @Ignore("FIXME failing in MySQL")
     public void loadBasicData() throws InstanceNotFoundException {
-        removeCurrentScenarios();
-        scenariosBootstrap.loadRequiredData();
-
         assertFalse(scenarioDAO.getAll().isEmpty());
-        assertNotNull(scenarioDAO.findByName(PredefinedScenarios.MASTER
-                .getName()));
+        assertNotNull(scenarioDAO.findByName(PredefinedScenarios.MASTER.getName()));
     }
 
     @Test
     @Transactional
-    @Ignore("FIXME failing in MySQL")
-    public void loadBasicDataAssociatedWithCurrentOrders()
-            throws InstanceNotFoundException {
-        removeCurrentScenarios();
-        scenariosBootstrap.loadRequiredData();
-
+    public void loadBasicDataAssociatedWithCurrentOrders() throws InstanceNotFoundException {
+        loadRequiredData();
         assertFalse(scenarioDAO.getAll().isEmpty());
         Scenario scenario = PredefinedScenarios.MASTER.getScenario();
         assertNotNull(scenario);

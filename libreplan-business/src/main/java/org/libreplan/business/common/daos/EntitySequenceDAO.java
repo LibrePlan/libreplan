@@ -40,6 +40,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * DAO for {@link EntitySequence}.
+ *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 @Repository
@@ -53,7 +54,7 @@ public class EntitySequenceDAO extends GenericDAOHibernate<EntitySequence, Long>
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<EntitySequence> findEntitySquencesNotIn(List<EntitySequence> entitySequences) {
+    public List<EntitySequence> findEntitySequencesNotIn(List<EntitySequence> entitySequences) {
         List<Long> entitySequenceIds = new ArrayList<>();
         for (EntitySequence entitySequence : entitySequences) {
             if ( !entitySequence.isNewObject() ) {
@@ -61,8 +62,10 @@ public class EntitySequenceDAO extends GenericDAOHibernate<EntitySequence, Long>
             }
         }
 
-        return getSession().createCriteria(EntitySequence.class)
-                .add(Restrictions.not(Restrictions.in("id", entitySequenceIds))).list();
+        return getSession()
+                .createCriteria(EntitySequence.class)
+                .add(Restrictions.not(Restrictions.in("id", entitySequenceIds)))
+                .list();
     }
 
     @Override

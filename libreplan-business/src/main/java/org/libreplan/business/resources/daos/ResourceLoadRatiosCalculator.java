@@ -23,9 +23,9 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.joda.time.LocalDate;
-import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.planner.daos.IDayAssignmentDAO;
 import org.libreplan.business.planner.entities.DayAssignment;
 import org.libreplan.business.resources.entities.Resource;
@@ -43,13 +43,11 @@ import org.springframework.transaction.annotation.Transactional;
  * {@link IResourceLoadRatiosCalculator} interface.
  *
  * @author Javier Moran Rua <jmoran@igalia.com>
- *
  */
 
 @Service
 @Scope(BeanDefinition.SCOPE_SINGLETON)
-public class ResourceLoadRatiosCalculator implements
-        IResourceLoadRatiosCalculator {
+public class ResourceLoadRatiosCalculator implements IResourceLoadRatiosCalculator {
 
     @Autowired
     private IDayAssignmentDAO dayAssigmentDAO;
@@ -57,17 +55,14 @@ public class ResourceLoadRatiosCalculator implements
     @Autowired
     private IResourceDAO resourceDAO;
 
-    @Autowired
-    private IAdHocTransactionService adHocTransactionService;
-
-    private static class LoadRatiosDataType implements
-            IResourceLoadRatiosCalculator.ILoadRatiosDataType {
+    private static class LoadRatiosDataType implements IResourceLoadRatiosCalculator.ILoadRatiosDataType {
         private EffortDuration load;
+
         private EffortDuration overload;
+
         private EffortDuration capacity;
 
-        public LoadRatiosDataType(EffortDuration load, EffortDuration overload,
-                EffortDuration capacity) {
+        public LoadRatiosDataType(EffortDuration load, EffortDuration overload, EffortDuration capacity) {
             this.load = load;
             this.overload = overload;
             this.capacity = capacity;
@@ -94,8 +89,7 @@ public class ResourceLoadRatiosCalculator implements
             if (this.load.isZero() && this.overload.isZero()) {
                 result = BigDecimal.ZERO;
             } else {
-                result = this.overload.dividedByAndResultAsBigDecimal(this.load
-                        .plus(this.capacity));
+                result = this.overload.dividedByAndResultAsBigDecimal(this.load.plus(this.capacity));
             }
 
             return result.setScale(2, BigDecimal.ROUND_HALF_UP);
@@ -104,12 +98,13 @@ public class ResourceLoadRatiosCalculator implements
         @Override
         public BigDecimal getAvailiabilityRatio() {
             BigDecimal result;
+
             if (this.capacity.isZero()) {
                 result = BigDecimal.ZERO;
             } else {
 
-                result = BigDecimal.ONE.subtract(this.load
-                        .dividedByAndResultAsBigDecimal(this.capacity));
+                result = BigDecimal.ONE.subtract(this.load.dividedByAndResultAsBigDecimal(this.capacity));
+
                 if (result.compareTo(BigDecimal.ZERO) < 0) {
                     result = BigDecimal.ZERO;
                 }
@@ -121,35 +116,39 @@ public class ResourceLoadRatiosCalculator implements
     @Override
     @Transactional(readOnly = true)
     public ILoadRatiosDataType calculateLoadRatios(final Resource resource,
-            final LocalDate startDate, final LocalDate endDate,
-            final Scenario scenario) {
-
+                                                   final LocalDate startDate,
+                                                   final LocalDate endDate,
+                                                   final Scenario scenario) {
         resourceDAO.reattach(resource);
 
-        EffortDuration totalLoad = EffortDuration.zero(), totalOverload = EffortDuration
-                .zero(), totalCapacity = EffortDuration.zero();
+        EffortDuration
+                totalLoad = EffortDuration.zero(),
+                totalOverload = EffortDuration.zero(),
+                totalCapacity;
 
-        for (Map.Entry<LocalDate, EffortDuration> each : getAllEffortPerDateFor(
-                scenario, startDate, endDate, resource).entrySet()) {
+        Set<Map.Entry<LocalDate, EffortDuration>> efforts =
+                getAllEffortPerDateFor(scenario, startDate, endDate, resource).entrySet();
+
+        for (Map.Entry<LocalDate, EffortDuration> each : efforts) {
             totalLoad = totalLoad.plus(each.getValue());
-            totalOverload = addOverload(totalOverload, resource,
-                    each.getValue(), each.getKey());
+            totalOverload = addOverload(totalOverload, resource, each.getValue(), each.getKey());
         }
 
         totalCapacity = calculateTotalCapacity(resource, startDate, endDate);
+
         return new LoadRatiosDataType(totalLoad, totalOverload, totalCapacity);
     }
 
     private Map<LocalDate, EffortDuration> getAllEffortPerDateFor(
-            Scenario scenario, LocalDate startDate, LocalDate endDate,
-            Resource resource) {
+            Scenario scenario, LocalDate startDate, LocalDate endDate, Resource resource) {
 
-        HashMap<LocalDate, EffortDuration> result = new HashMap<LocalDate, EffortDuration>();
+        HashMap<LocalDate, EffortDuration> result;
+        result = new HashMap<>();
 
-        List<DayAssignment> l = dayAssigmentDAO.getAllFor(scenario, startDate,
-                endDate, resource);
+        List<DayAssignment> l = dayAssigmentDAO.getAllFor(scenario, startDate, endDate, resource);
 
-        EffortDuration newValue = EffortDuration.zero();
+        EffortDuration newValue;
+
         for (DayAssignment each : l) {
             if (result.containsKey(each.getDay())) {
                 newValue = result.get(each.getDay()).plus(each.getDuration());
@@ -161,15 +160,16 @@ public class ResourceLoadRatiosCalculator implements
         return result;
     }
 
-    private EffortDuration calculateTotalCapacity(Resource resource,
-            LocalDate startDate, LocalDate endDate) {
+    private EffortDuration calculateTotalCapacity(Resource resource, LocalDate startDate, LocalDate endDate) {
         return resource.getCalendar().getWorkableDuration(startDate, endDate);
     }
 
-    private EffortDuration addOverload(EffortDuration currentOverload,
-            Resource resource, EffortDuration loadAtDate, LocalDate date) {
+    private EffortDuration addOverload(
+            EffortDuration currentOverload, Resource resource, EffortDuration loadAtDate, LocalDate date) {
+
         EffortDuration result;
         EffortDuration capacityAtDay = getCapacityAtDate(resource, date);
+
         if (capacityAtDay.compareTo(loadAtDate) < 0) {
             result = currentOverload.plus(loadAtDate.minus(capacityAtDay));
         } else {

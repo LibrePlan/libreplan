@@ -69,7 +69,7 @@ import org.libreplan.business.workreports.daos.IWorkReportDAO;
 import org.libreplan.business.workreports.daos.IWorkReportTypeDAO;
 import org.libreplan.business.workreports.entities.HoursManagementEnum;
 import org.libreplan.business.workreports.entities.WorkReport;
-import org.libreplan.business.workreports.entities.WorkReportLabelTypeAssigment;
+import org.libreplan.business.workreports.entities.WorkReportLabelTypeAssignment;
 import org.libreplan.business.workreports.entities.WorkReportLine;
 import org.libreplan.business.workreports.entities.WorkReportType;
 import org.libreplan.business.workreports.valueobjects.DescriptionField;
@@ -92,7 +92,7 @@ import org.springframework.transaction.annotation.Transactional;
  * Tests for {@link IWorkReportService}.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
- * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
@@ -297,19 +297,19 @@ public class WorkReportServiceTest {
             return;
         }
 
-        WorkReportLabelTypeAssigment labelAssigment1 = WorkReportLabelTypeAssigment.create(true);
-        WorkReportLabelTypeAssigment labelAssigment2 = WorkReportLabelTypeAssigment.create(false);
+        WorkReportLabelTypeAssignment labelAssignment1 = WorkReportLabelTypeAssignment.create(true); 
+        WorkReportLabelTypeAssignment labelAssignment2 = WorkReportLabelTypeAssignment.create(false);
 
-        labelAssigment1.setLabelType(labelTypeDAO.findExistingEntityByCode(labelTypeA));
-        labelAssigment1.setDefaultLabel(labelDAO.findExistingEntityByCode(labelA1));
-        labelAssigment1.setPositionNumber(0);
+        labelAssignment1.setLabelType(labelTypeDAO.findExistingEntityByCode(labelTypeA));
+        labelAssignment1.setDefaultLabel(labelDAO.findExistingEntityByCode(labelA1));
+        labelAssignment1.setPositionNumber(0);
 
-        labelAssigment2.setLabelType(labelTypeDAO.findExistingEntityByCode(labelTypeB));
-        labelAssigment2.setDefaultLabel(labelDAO.findExistingEntityByCode(labelB1));
-        labelAssigment2.setPositionNumber(0);
+        labelAssignment2.setLabelType(labelTypeDAO.findExistingEntityByCode(labelTypeB));
+        labelAssignment2.setDefaultLabel(labelDAO.findExistingEntityByCode(labelB1));
+        labelAssignment2.setPositionNumber(0);
 
-        type.addLabelAssigmentToEndHead(labelAssigment1);
-        type.addLabelAssigmentToEndLine(labelAssigment2);
+        type.addLabelAssigmentToEndHead(labelAssignment1);
+        type.addLabelAssigmentToEndLine(labelAssignment2);
 
         workReportTypeDAO.save(type);
     }
@@ -364,14 +364,14 @@ public class WorkReportServiceTest {
     @Test
     @Transactional
     public void importInvalidLabelsToWorkReport() {
-        // create work report with a work report line
+        // Create work report with a work report line
         WorkReportDTO workReportDTO = createWorkReportDTO(workReportTypeCode5);
 
-        // create invalid description value to add into head and lines
-        LabelReferenceDTO labelDTO1 = new LabelReferenceDTO("codeLabelNoexiste");
+        // Create invalid description value to add into head and lines
+        LabelReferenceDTO labelDTO1 = new LabelReferenceDTO("codeLabelNotExists");
         LabelReferenceDTO labelDTO2 = new LabelReferenceDTO(labelA1);
 
-        // it assigns a label type LabelTypeA, but it should be a label type LabelTypeB
+        // It assigns a label type LabelTypeA, but it should be a label type LabelTypeB
         workReportDTO.labels.add(labelDTO1);
         for (WorkReportLineDTO lineDTO : workReportDTO.workReportLines) {
             lineDTO.labels.add(labelDTO2);
@@ -382,21 +382,20 @@ public class WorkReportServiceTest {
         List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
                 workReportService.addWorkReports(workReportListDTO).instanceConstraintViolationsList;
 
-        // Test
         assertTrue(instanceConstraintViolationsList.toString(), instanceConstraintViolationsList.size() == 1);
     }
 
     @Test
     @Transactional
     public void importValidLabelsToWorkReport() {
-        // create work report with a work report line
+        // Create work report with a work report line
         WorkReportDTO workReportDTO = createWorkReportDTO(workReportTypeCode5);
 
-        // create invalid description value to add into head and lines.
+        // Create invalid description value to add into head and lines
         LabelReferenceDTO labelDTO1 = new LabelReferenceDTO(labelA1);
         LabelReferenceDTO labelDTO2 = new LabelReferenceDTO(labelB1);
 
-        // it assigns a label type LabelTypeA, but it should be a label type LabelTypeB
+        // It assigns a label type LabelTypeA, but it should be a label type LabelTypeB
         workReportDTO.labels.add(labelDTO1);
         for (WorkReportLineDTO lineDTO : workReportDTO.workReportLines) {
             lineDTO.labels.add(labelDTO2);
@@ -407,17 +406,16 @@ public class WorkReportServiceTest {
         List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
                 workReportService.addWorkReports(workReportListDTO).instanceConstraintViolationsList;
 
-        // Test
         assertTrue(instanceConstraintViolationsList.toString(), instanceConstraintViolationsList.size() == 0);
     }
 
     @Test
     @Transactional
     public void importInvalidDescriptionValuesToWorkReport() {
-        // create work report with a work report line
+        // Create work report with a work report line
         WorkReportDTO workReportDTO = createWorkReportDTO(workReportTypeCode4);
 
-        // create invalid description value to add into head and lines.
+        // Create invalid description value to add into head and lines
         DescriptionValueDTO valueDTO1 = new DescriptionValueDTO(field1 + "X", "incorrecto");
         DescriptionValueDTO valueDTO2 = new DescriptionValueDTO(field2 + "X", "incorrecto");
 
@@ -431,7 +429,6 @@ public class WorkReportServiceTest {
         List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
                 workReportService.addWorkReports(workReportListDTO).instanceConstraintViolationsList;
 
-        // Test
         assertTrue(instanceConstraintViolationsList.toString(), instanceConstraintViolationsList.size() == 1);
 
         assertTrue(
@@ -442,10 +439,10 @@ public class WorkReportServiceTest {
     @Test
     @Transactional
     public void importValidDescriptionValuesToWorkReport() {
-        // create work report with a work report line
+        // Create work report with a work report line
         WorkReportDTO workReportDTO = createWorkReportDTO(workReportTypeCode4);
 
-        // create invalid description value to add into head and lines.
+        // Create invalid description value to add into head and lines
         DescriptionValueDTO valueDTO1 = new DescriptionValueDTO(field1, "correcto");
         DescriptionValueDTO valueDTO2 = new DescriptionValueDTO(field2, "correcto");
         workReportDTO.descriptionValues.add(valueDTO1);
@@ -459,7 +456,6 @@ public class WorkReportServiceTest {
         List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
                 workReportService.addWorkReports(workReportListDTO).instanceConstraintViolationsList;
 
-        // Test
         assertTrue(instanceConstraintViolationsList.toString(), instanceConstraintViolationsList.size() == 0);
     }
 

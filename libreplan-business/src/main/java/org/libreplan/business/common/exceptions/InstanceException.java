@@ -26,19 +26,17 @@ package org.libreplan.business.common.exceptions;
  * It contains a message, the key of the instance, and its class name.
  *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
- *
  */
 @SuppressWarnings("serial")
 public abstract class InstanceException extends Exception {
 
-    private Object key;
-    private String className;
+    private final Object key;
 
-    protected InstanceException(String specificMessage, Object key,
-        String className) {
+    private final String className;
 
-        super(specificMessage + " (key = '" + key + "' - className = '" +
-            className + "')");
+    protected InstanceException(String specificMessage, Object key, String className) {
+
+        super(specificMessage + " (key = '" + key + "' - className = '" + className + "')");
         this.key = key;
         this.className = className;
 

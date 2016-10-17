@@ -26,6 +26,7 @@ import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.scenarios.daos.IScenarioDAO;
 import org.libreplan.business.scenarios.entities.Scenario;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,7 +37,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 @Component
-@Scope("singleton")
+@Scope(BeanDefinition.SCOPE_SINGLETON)
 public class ScenariosBootstrap implements IScenariosBootstrap {
 
     @Autowired
@@ -50,16 +51,16 @@ public class ScenariosBootstrap implements IScenariosBootstrap {
     @Override
     @Transactional
     public void loadRequiredData() {
-        for (PredefinedScenarios predefinedScenario : PredefinedScenarios
-                .values()) {
-            if (!scenarioDAO.existsByNameAnotherTransaction(predefinedScenario
-                    .getName())) {
+        for (PredefinedScenarios predefinedScenario : PredefinedScenarios.values()) {
+            if (!scenarioDAO.existsByNameAnotherTransaction(predefinedScenario.getName())) {
                 Scenario scenario = createAtDB(predefinedScenario);
+
                 if (predefinedScenario == PredefinedScenarios.MASTER) {
                     mainScenario = scenario;
                 }
             }
         }
+
         if (mainScenario == null) {
             mainScenario = PredefinedScenarios.MASTER.getScenario();
         }
@@ -67,11 +68,14 @@ public class ScenariosBootstrap implements IScenariosBootstrap {
 
     private Scenario createAtDB(PredefinedScenarios predefinedScenario) {
         Scenario scenario = predefinedScenario.createScenario();
+
         for (Order each : orderDAO.getOrders()) {
             scenario.addOrder(each);
         }
+
         scenarioDAO.save(scenario);
         scenario.dontPoseAsTransientObjectAnymore();
+
         return scenario;
     }
 

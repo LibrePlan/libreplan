@@ -35,7 +35,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
- *
  */
 public class CurrentUserScenarioAwareManager implements IScenarioManager {
 

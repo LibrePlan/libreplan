@@ -28,31 +28,27 @@ import java.util.List;
 import org.libreplan.business.common.BaseEntity;
 
 /**
+ * Represents entity AssignmentFunction.
  *
  * @author Diego Pino García <dpino@igalia.com>
- *
  */
 public abstract class AssignmentFunction extends BaseEntity {
 
     /**
-     * This method goes over the {@link ResourceAllocation} list and apply the
-     * assignment function if it is defined.
+     * This method goes over the {@link ResourceAllocation} list and apply the assignment function if it is defined.
      *
-     * As this is called at the end of {@link Task#doAllocation} and a flat
-     * allocation was already applied before. If assignment function was set to
-     * manual it is reseted to flat again.
+     * As this is called at the end of {@link Task#doAllocation} and a flat allocation was already applied before.
+     * If assignment function was set to manual it is reseted to flat again.
      *
      * @param resourceAllocations
      *            List of {@link ResourceAllocation}
      */
-    public static void applyAssignmentFunctionsIfAny(
-            List<ResourceAllocation<?>> resourceAllocations) {
+    public static void applyAssignmentFunctionsIfAny(List<ResourceAllocation<?>> resourceAllocations) {
         for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
-            AssignmentFunction assignmentFunction = resourceAllocation
-                    .getAssignmentFunction();
+            AssignmentFunction assignmentFunction = resourceAllocation.getAssignmentFunction();
             if (assignmentFunction != null) {
                 if (assignmentFunction.isManual()) {
-                    // reset to flat
+                    // Reset to flat
                     resourceAllocation.setAssignmentFunctionWithoutApply(null);
                 } else {
                     assignmentFunction.applyTo(resourceAllocation);
@@ -64,6 +60,7 @@ public abstract class AssignmentFunction extends BaseEntity {
     /**
      * This method applies the function to the received resourceAllocation
      * <i>This method is intended to be overridden by subclasses</i>
+     *
      * @param resourceAllocation
      */
     public abstract void applyTo(ResourceAllocation<?> resourceAllocation);
@@ -81,10 +78,11 @@ public abstract class AssignmentFunction extends BaseEntity {
 
         private String name;
 
-        private AssignmentFunctionName(String name) {
+        AssignmentFunctionName(String name) {
             this.name = name;
         }
 
+        @Override
         public String toString() {
             return name;
         }

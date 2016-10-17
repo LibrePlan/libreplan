@@ -218,7 +218,7 @@ public class SendEmailOnTimesheetDataMissing implements IEmailNotificationJob {
         if (workReport != null) {
             WorkReportType workReportType = workReport.getWorkReportType();
             workReportType.getLineFields().size();
-            workReportType.getWorkReportLabelTypeAssigments().size();
+            workReportType.getWorkReportLabelTypeAssignments().size();
             workReportType.getHeadingFields().size();
         }
     }

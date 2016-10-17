@@ -27,24 +27,34 @@ import org.libreplan.business.users.entities.User;
 import java.util.Date;
 
 /**
- * RiskLog entity, represents parameters to be able to administrate risks that
- * come up in the project
- * 
+ * RiskLog entity, represents parameters to be able to administrate risks that come up in the project.
+ *
  * @author Misha Gozhda <misha@libreplan-enterprise.com>
  */
 public class RiskLog extends ProjectLog {
 
     private String projectName;
+
     private String status;
+
     private LowMediumHighEnum probability = LowMediumHighEnum.getDefault();
+
     private LowMediumHighEnum impact = LowMediumHighEnum.getDefault();
+
     private Date dateCreated;
+
     private User createdBy;
+
     private String counterMeasures;
+
     private String contingency;
+
     private String responsible;
+
     private Date actionWhen;
+
     private String notes;
+
     private RiskScoreStatesEnum score = RiskScoreStatesEnum.getDefault();
 
     public static RiskLog create() {
@@ -169,8 +179,7 @@ public class RiskLog extends ProjectLog {
 
     @Override
     protected IIntegrationEntityDAO<? extends IntegrationEntity> getIntegrationEntityDAO() {
-        return (IIntegrationEntityDAO<? extends IntegrationEntity>) Registry
-                .getRiskLogDAO();
+        return Registry.getRiskLogDAO();
     }
 
 }

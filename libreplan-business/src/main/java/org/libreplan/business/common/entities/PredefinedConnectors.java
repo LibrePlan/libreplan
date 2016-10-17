@@ -23,35 +23,32 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Defines the LibrePlan {@link Connector Connectors} together with its
- * configuration properties.
+ * Defines the LibrePlan {@link Connector Connectors} together with its configuration properties.
  *
  * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
  * @author Manuel Rego Casasnovas <rego@igalia.com>
- * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
 public enum PredefinedConnectors {
 
     TIM("Tim",
-        ConnectorProperty.create(PredefinedConnectorProperties.ACTIVATED, "N"),
-        ConnectorProperty.create(PredefinedConnectorProperties.SERVER_URL, ""),
-        ConnectorProperty.create(PredefinedConnectorProperties.USERNAME, ""),
-        ConnectorProperty.create(PredefinedConnectorProperties.PASSWORD, ""),
-        ConnectorProperty.create(PredefinedConnectorProperties.TIM_NR_DAYS_TIMESHEET, "7"),
-        ConnectorProperty.create(PredefinedConnectorProperties.TIM_NR_DAYS_ROSTER, "90"),
-        ConnectorProperty.create(PredefinedConnectorProperties.TIM_PRODUCTIVITY_FACTOR, "100"),
-        ConnectorProperty.create(
-                PredefinedConnectorProperties.TIM_DEPARTAMENTS_IMPORT_ROSTER,
-                "0")),
+            ConnectorProperty.create(PredefinedConnectorProperties.ACTIVATED, "N"),
+            ConnectorProperty.create(PredefinedConnectorProperties.SERVER_URL, ""),
+            ConnectorProperty.create(PredefinedConnectorProperties.USERNAME, ""),
+            ConnectorProperty.create(PredefinedConnectorProperties.PASSWORD, ""),
+            ConnectorProperty.create(PredefinedConnectorProperties.TIM_NR_DAYS_TIMESHEET, "7"),
+            ConnectorProperty.create(PredefinedConnectorProperties.TIM_NR_DAYS_ROSTER, "90"),
+            ConnectorProperty.create(PredefinedConnectorProperties.TIM_PRODUCTIVITY_FACTOR, "100"),
+            ConnectorProperty.create(PredefinedConnectorProperties.TIM_DEPARTAMENTS_IMPORT_ROSTER, "0")),
+
     JIRA("Jira",
-         ConnectorProperty.create(PredefinedConnectorProperties.ACTIVATED, "N"),
-         ConnectorProperty.create(PredefinedConnectorProperties.SERVER_URL, ""),
-         ConnectorProperty.create(PredefinedConnectorProperties.USERNAME, ""),
-         ConnectorProperty.create(PredefinedConnectorProperties.PASSWORD, ""),
-         ConnectorProperty
-                 .create(PredefinedConnectorProperties.JIRA_LABELS, ""),
-         ConnectorProperty.create(
-                 PredefinedConnectorProperties.JIRA_HOURS_TYPE, "Default")),
+            ConnectorProperty.create(PredefinedConnectorProperties.ACTIVATED, "N"),
+            ConnectorProperty.create(PredefinedConnectorProperties.SERVER_URL, ""),
+            ConnectorProperty.create(PredefinedConnectorProperties.USERNAME, ""),
+            ConnectorProperty.create(PredefinedConnectorProperties.PASSWORD, ""),
+            ConnectorProperty.create(PredefinedConnectorProperties.JIRA_LABELS, ""),
+            ConnectorProperty.create(PredefinedConnectorProperties.JIRA_HOURS_TYPE, "Default")),
+
     EMAIL("E-mail",
             ConnectorProperty.create(PredefinedConnectorProperties.ACTIVATED, "N"),
             ConnectorProperty.create(PredefinedConnectorProperties.PROTOCOL, ""),
@@ -64,10 +61,10 @@ public enum PredefinedConnectors {
     );
 
     private String name;
+    
     private List<ConnectorProperty> properties;
 
-    private PredefinedConnectors(String name,
-            ConnectorProperty... properties) {
+    PredefinedConnectors(String name, ConnectorProperty... properties) {
         this.name = name;
         this.properties = Arrays.asList(properties);
     }

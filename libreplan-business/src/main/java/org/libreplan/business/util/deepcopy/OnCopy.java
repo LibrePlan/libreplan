@@ -28,11 +28,10 @@ import java.lang.annotation.Target;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
- *
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface OnCopy {
-    public Strategy value();
+    Strategy value();
 }

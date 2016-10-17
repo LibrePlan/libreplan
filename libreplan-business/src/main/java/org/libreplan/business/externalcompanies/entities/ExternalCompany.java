@@ -32,12 +32,11 @@ import org.libreplan.business.externalcompanies.daos.IExternalCompanyDAO;
 import org.libreplan.business.users.entities.User;
 
 /**
- * Entity ExternalCompany
+ * Entity ExternalCompany.
  *
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  */
-public class ExternalCompany extends BaseEntity implements IHumanIdentifiable,
-        Comparable<ExternalCompany> {
+public class ExternalCompany extends BaseEntity implements IHumanIdentifiable, Comparable<ExternalCompany> {
 
     private String name;
 
@@ -60,7 +59,7 @@ public class ExternalCompany extends BaseEntity implements IHumanIdentifiable,
     protected ExternalCompany() {}
 
     public static ExternalCompany create() {
-        return (ExternalCompany) create(new ExternalCompany());
+        return create(new ExternalCompany());
     }
 
     protected ExternalCompany(String name, String nif) {
@@ -69,7 +68,7 @@ public class ExternalCompany extends BaseEntity implements IHumanIdentifiable,
     }
 
     public static ExternalCompany create(String name, String nif) {
-        return (ExternalCompany) create(new ExternalCompany(name,nif));
+        return create(new ExternalCompany(name,nif));
     }
 
     public void setName(String name) {
@@ -154,8 +153,8 @@ public class ExternalCompany extends BaseEntity implements IHumanIdentifiable,
             return !dao.existsByNameInAnotherTransaction(name);
         } else {
             try {
-                ExternalCompany company =
-                    dao.findUniqueByNameInAnotherTransaction(name);
+                ExternalCompany company = dao.findUniqueByNameInAnotherTransaction(name);
+
                 return company.getId().equals(getId());
             } catch (InstanceNotFoundException e) {
                 return true;
@@ -171,8 +170,8 @@ public class ExternalCompany extends BaseEntity implements IHumanIdentifiable,
             return !dao.existsByNifInAnotherTransaction(nif);
         } else {
             try {
-                ExternalCompany company =
-                    dao.findUniqueByNifInAnotherTransaction(nif);
+                ExternalCompany company = dao.findUniqueByNifInAnotherTransaction(nif);
+
                 return company.getId().equals(getId());
             } catch (InstanceNotFoundException e) {
                 return true;
@@ -182,13 +181,9 @@ public class ExternalCompany extends BaseEntity implements IHumanIdentifiable,
 
     @AssertTrue(message = "interaction fields are empty and company is marked as interact with applications")
     public boolean isInteractionFieldsNotEmptyIfNeededConstraint() {
-        if (!interactsWithApplications) {
-            return true;
-        }
+        return !interactsWithApplications || !StringUtils.isEmpty(appURI) && !StringUtils.isEmpty(ourCompanyLogin) &&
+                !StringUtils.isEmpty(ourCompanyPassword);
 
-        return !StringUtils.isEmpty(appURI)
-                && !StringUtils.isEmpty(ourCompanyLogin)
-                && !StringUtils.isEmpty(ourCompanyPassword);
     }
 
     @Override

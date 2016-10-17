@@ -84,8 +84,7 @@
             <ref bean="incompatibleTypeExceptionMapper" />
             <ref bean="hibernateOptimisticLockingFailureException" />
         </jaxrs:providers>
-        <!-- FIXME: in root pom.xml, enable CXF logging on development and
-             disable it in production.
+        <!-- FIXME: in root pom.xml, enable CXF logging on development and disable it in production.
         <jaxrs:features>
             <cxf:logging/>
         </jaxrs:features>

@@ -25,7 +25,7 @@ import static org.junit.Assert.fail;
 import static org.libreplan.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.libreplan.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.UUID;
 
@@ -35,7 +35,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.libreplan.business.calendars.daos.IBaseCalendarDAO;
 import org.libreplan.business.calendars.entities.BaseCalendar;
-import org.libreplan.business.common.daos.IConfigurationDAO;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.externalcompanies.daos.IExternalCompanyDAO;
@@ -72,8 +71,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
-        BUSINESS_SPRING_CONFIG_TEST_FILE })
+@ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE, BUSINESS_SPRING_CONFIG_TEST_FILE })
 public class SubcontractorCommunicationDAOTest {
 
     @Autowired
@@ -98,9 +96,6 @@ public class SubcontractorCommunicationDAOTest {
     private SessionFactory sessionFactory;
 
     @Autowired
-    private IConfigurationDAO configurationDAO;
-
-    @Autowired
     private IScenarioManager scenarioManager;
 
     @Autowired
@@ -114,11 +109,8 @@ public class SubcontractorCommunicationDAOTest {
         scenariosBootstrap.loadRequiredData();
     }
 
-    private HoursGroup associatedHoursGroup;
-
     private ExternalCompany getSubcontractorExternalCompanySaved() {
-        ExternalCompany externalCompany = ExternalCompanyDAOTest
-                .createValidExternalCompany();
+        ExternalCompany externalCompany = ExternalCompanyDAOTest.createValidExternalCompany();
         externalCompany.setSubcontractor(true);
 
         externalCompanyDAO.save(externalCompany);
@@ -138,15 +130,14 @@ public class SubcontractorCommunicationDAOTest {
         hoursGroup.setCode("hours-group-code-" + UUID.randomUUID());
         orderLine.addHoursGroup(hoursGroup);
         Order order = Order.create();
-        OrderVersion orderVersion = ResourceAllocationDAOTest
-                .setupVersionUsing(scenarioManager, order);
+        OrderVersion orderVersion = ResourceAllocationDAOTest.setupVersionUsing(scenarioManager, order);
         order.setName("bla-" + UUID.randomUUID());
         order.setInitDate(new Date());
         order.setCode("code-" + UUID.randomUUID());
         order.useSchedulingDataFor(orderVersion);
         order.add(orderLine);
 
-        //add a basic calendar
+        // Add a basic calendar
         BaseCalendar basicCalendar = BaseCalendarTest.createBasicCalendar();
         calendarDAO.save(basicCalendar);
         order.setCalendar(basicCalendar);
@@ -161,30 +152,27 @@ public class SubcontractorCommunicationDAOTest {
     }
 
     private Task createValidTask() {
-        associatedHoursGroup = new HoursGroup();
+        HoursGroup associatedHoursGroup = new HoursGroup();
         associatedHoursGroup.setCode("hours-group-code-" + UUID.randomUUID());
         OrderLine orderLine = createOrderLine();
         orderLine.addHoursGroup(associatedHoursGroup);
-        OrderVersion orderVersion = ResourceAllocationDAOTest
-                .setupVersionUsing(scenarioManager,
-                orderLine.getOrder());
+        OrderVersion orderVersion = ResourceAllocationDAOTest.setupVersionUsing(scenarioManager, orderLine.getOrder());
         orderLine.useSchedulingDataFor(orderVersion);
-        SchedulingDataForVersion schedulingDataForVersion = orderLine
-                .getCurrentSchedulingDataForVersion();
-        TaskSource taskSource = TaskSource.create(schedulingDataForVersion,
-                Arrays.asList(associatedHoursGroup));
+        SchedulingDataForVersion schedulingDataForVersion = orderLine.getCurrentSchedulingDataForVersion();
+
+        TaskSource taskSource =
+                TaskSource.create(schedulingDataForVersion, Collections.singletonList(associatedHoursGroup));
+
         TaskSourceSynchronization mustAdd = TaskSource.mustAdd(taskSource);
         mustAdd.apply(TaskSource.persistTaskSources(taskSourceDAO));
-        Task task = (Task) taskSource.getTask();
-        return task;
+
+        return (Task) taskSource.getTask();
     }
 
-    public SubcontractedTaskData createValidSubcontractedTaskData(String name) {
+    public SubcontractedTaskData createValidSubcontractedTaskData() {
         Task task = createValidTask();
-        SubcontractedTaskData subcontractedTaskData = SubcontractedTaskData
-                .create(task);
-        subcontractedTaskData.addRequiredDeliveringDates(SubcontractorDeliverDate
-                .create(new Date(),new Date(), null));
+        SubcontractedTaskData subcontractedTaskData = SubcontractedTaskData.create(task);
+        subcontractedTaskData.addRequiredDeliveringDates(SubcontractorDeliverDate.create(new Date(),new Date(), null));
         subcontractedTaskData.setExternalCompany(getSubcontractorExternalCompanySaved());
 
         task.setSubcontractedTaskData(subcontractedTaskData);
@@ -194,16 +182,16 @@ public class SubcontractorCommunicationDAOTest {
         sessionFactory.getCurrentSession().evict(subcontractedTaskData);
 
         subcontractedTaskDataDAO.save(subcontractedTaskData);
+
         return subcontractedTaskData;
     }
 
     public SubcontractorCommunication createValidSubcontractorCommunication(){
-        SubcontractedTaskData subcontractedTaskData = createValidSubcontractedTaskData("Task A");
+        SubcontractedTaskData subcontractedTaskData = createValidSubcontractedTaskData();
         Date communicationDate = new Date();
-        SubcontractorCommunication subcontractorCommunication = SubcontractorCommunication
-                .create(subcontractedTaskData, CommunicationType.NEW_PROJECT,
-                        communicationDate, false);
-        return subcontractorCommunication;
+
+        return SubcontractorCommunication.create(
+                subcontractedTaskData, CommunicationType.NEW_PROJECT, communicationDate, false);
     }
 
     @Test
@@ -222,23 +210,20 @@ public class SubcontractorCommunicationDAOTest {
 
     @Test
     @Transactional
-    public void testRemoveSubcontractorCommunication()
-            throws InstanceNotFoundException {
+    public void testRemoveSubcontractorCommunication() throws InstanceNotFoundException {
         SubcontractorCommunication subcontractorCommunication = createValidSubcontractorCommunication();
         subcontractorCommunicationDAO.save(subcontractorCommunication);
 
         assertTrue(subcontractorCommunication.getId() != null);
-        Long idSubcontratecTaskData = subcontractorCommunication
-                .getSubcontractedTaskData().getId();
+        Long idSubcontratecTaskData = subcontractorCommunication.getSubcontractedTaskData().getId();
         Long idCommunication = subcontractorCommunication.getId();
 
-        subcontractorCommunicationDAO
-                .remove(subcontractorCommunication.getId());
+        subcontractorCommunicationDAO.remove(subcontractorCommunication.getId());
         try{
             subcontractorCommunicationDAO.findExistingEntity(idCommunication);
             fail("error");
         }catch(RuntimeException e){
-            //ok
+            // Ok
         }
         try{
             subcontractedTaskDataDAO.findExistingEntity(idSubcontratecTaskData);
@@ -249,8 +234,7 @@ public class SubcontractorCommunicationDAOTest {
 
     @Test
     @Transactional
-    public void testSaveSubcontractorCommunicationWithoutSubcontratedTaskData()
-            throws InstanceNotFoundException {
+    public void testSaveSubcontractorCommunicationWithoutSubcontratedTaskData() throws InstanceNotFoundException {
         SubcontractorCommunication subcontractorCommunication = createValidSubcontractorCommunication();
         subcontractorCommunication.setSubcontractedTaskData(null);
         try {

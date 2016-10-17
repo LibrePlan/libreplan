@@ -26,7 +26,7 @@ import org.libreplan.business.email.entities.EmailTemplateEnum;
 import java.util.List;
 
 /**
- * Contract for {@link EmailTemplate}
+ * Contract for {@link EmailTemplate}.
  *
  * @author Created by Vova Perebykivskyi <vova@libreplan-enterprise.com> on 28.09.2015.
  */

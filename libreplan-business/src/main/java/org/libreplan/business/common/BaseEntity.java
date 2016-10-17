@@ -43,7 +43,6 @@ import org.libreplan.business.util.deepcopy.Strategy;
 
 /**
  * Base class for all the application entities.
- *
  * It provides the basic behavior for id and version fields.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
@@ -126,8 +125,9 @@ public abstract class BaseEntity implements INewObject {
 
     /**
      * Once the has been really saved in DB (not a readonly transaction), it
-     * could be necessary to unmark the object as newObject. This is the case if
-     * you must use the same instance after the transaction. <br />
+     * could be necessary to unmark the object as newObject.
+     * This is the case if you must use the same instance after the transaction.
+     * <br />
      */
     public void dontPoseAsTransientObjectAnymore() {
         setNewObject(false);

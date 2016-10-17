@@ -25,11 +25,9 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 /**
- * DAO for {@link Limits}
+ * DAO for {@link Limits}.
  *
- * Created by
- * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
- * on 24.09.15.
+ * @author Created by Vova Perebykivskyi <vova@libreplan-enterprise.com> on 24.09.2015.
  */
 
 @Repository

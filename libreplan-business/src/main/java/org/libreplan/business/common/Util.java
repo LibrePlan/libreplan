@@ -22,7 +22,8 @@ package org.libreplan.business.common;
 import java.util.Collection;
 
 /**
- * Utilities class. <br />
+ * Utilities class.
+ * <br />
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 public class Util {
@@ -34,16 +35,17 @@ public class Util {
         if (entity1.getId() == null || entity2.getId() == null) {
             return false;
         }
+
         return entity1.getId().equals(entity2.getId());
     }
 
-    public static boolean contains(Collection<? extends BaseEntity> collection,
-            BaseEntity entity) {
+    public static boolean contains(Collection<? extends BaseEntity> collection, BaseEntity entity) {
         for (BaseEntity each : collection) {
-            if (each.getId().equals(entity.getId())) {
+            if ( each.getId().equals(entity.getId()) ) {
                 return true;
             }
         }
+
         return false;
     }
 

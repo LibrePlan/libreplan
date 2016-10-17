@@ -31,7 +31,5 @@ public class BusinessGlobalNames {
 
     public final static String BUSINESS_SPRING_CONFIG_TEST_FILE = "classpath:/libreplan-business-spring-config-test.xml";
 
-    public final static String DBUNIT_CONFIG_TEST_FILE = "/dbunit-data.xml";
-
     private BusinessGlobalNames () {}
 }

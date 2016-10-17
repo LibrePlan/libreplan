@@ -25,7 +25,5 @@ import org.libreplan.business.orders.entities.TaskSource;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
- *
  */
-public interface ITaskSourceDAO extends IGenericDAO<TaskSource, Long> {
-}
+public interface ITaskSourceDAO extends IGenericDAO<TaskSource, Long> {}

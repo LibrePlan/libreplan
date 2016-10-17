@@ -51,8 +51,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
-public class SumExpensesDAO extends GenericDAOHibernate<SumExpenses, Long> implements
-        ISumExpensesDAO {
+public class SumExpensesDAO extends GenericDAOHibernate<SumExpenses, Long> implements ISumExpensesDAO {
 
     @Autowired
     private SessionFactory sessionFactory;
@@ -69,8 +68,7 @@ public class SumExpensesDAO extends GenericDAOHibernate<SumExpenses, Long> imple
     private Map<OrderElement, SumExpenses> mapSumExpenses;
 
     @Override
-    public void updateRelatedSumExpensesWithExpenseSheetLineSet(
-            Set<ExpenseSheetLine> expenseSheetLineSet) {
+    public void updateRelatedSumExpensesWithExpenseSheetLineSet(Set<ExpenseSheetLine> expenseSheetLineSet) {
         resetMapSumExpenses();
 
         for (ExpenseSheetLine expenseSheetLine : expenseSheetLineSet) {
