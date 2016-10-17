@@ -41,7 +41,7 @@
                 <constraints primaryKey="true" nullable="false" primaryKeyName="notification_queue_pkey"/>
             </column>
             <column name="type" type="int"/>
-            <column name="updated" type="timestamp with time zone"/>
+            <column name="updated" type="timestamp"/>
             <column name="resource" type="BIGINT"/>
             <column name="task" type="BIGINT"/>
             <column name="project" type="BIGINT"/>
@@ -68,9 +68,9 @@
             <column name="created_by" type="BIGINT"/>
             <column name="assigned_to" type="varchar(50)"/>
             <column name="status" type="varchar(50)"/>
-            <column name="date_raised" type="timestamp with time zone"/>
-            <column name="deadline" type="timestamp with time zone"/>
-            <column name="date_resolved" type="timestamp with time zone"/>
+            <column name="date_raised" type="timestamp"/>
+            <column name="deadline" type="timestamp"/>
+            <column name="date_resolved" type="timestamp"/>
             <column name="notes" type="varchar(256)"/>
         </createTable>
 
@@ -108,8 +108,8 @@
             <column name="status" type="varchar(25)"/>
             <column name="contingency" type="varchar(50)"/>
             <column name="counter_measures" type="varchar(50)"/>
-            <column name="action_when" type="timestamp with time zone"/>
-            <column name="date_created" type="timestamp with time zone"/>
+            <column name="action_when" type="timestamp"/>
+            <column name="date_created" type="timestamp"/>
             <column name="notes" type="varchar(256)"/>
         </createTable>
         <addForeignKeyConstraint baseTableName="risk_log" baseColumnNames="project"
@@ -143,7 +143,7 @@
             </column>
             <column name="name" type="varchar(1024)"/>
             <column name="type" type="varchar(22)"/>
-            <column name="date" type="timestamp with time zone"/>
+            <column name="date" type="timestamp"/>
             <column name="uploader" type="BIGINT"/>
             <column name="parent" type="BIGINT"/>
         </createTable>
