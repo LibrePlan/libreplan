@@ -29,11 +29,11 @@ import org.libreplan.web.common.entrypoints.EntryPoints;
 public interface IUserCRUDController {
 
     @EntryPoint("edit")
-    public abstract void goToEditForm(User user);
+    void goToEditForm(User user);
 
     @EntryPoint("create")
-    public abstract void goToCreateForm();
+    void goToCreateForm();
 
     @EntryPoint("list")
-    public abstract void goToList();
+    void goToList();
 }

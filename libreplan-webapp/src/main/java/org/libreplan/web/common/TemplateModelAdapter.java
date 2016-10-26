@@ -45,12 +45,9 @@ import org.zkoss.ganttz.data.GanttDiagramGraph.IDependenciesEnforcerHookFactory;
 import org.zkoss.ganttz.data.constraint.Constraint;
 
 /**
- *
  * @author Manuel Rego Casasnovas<mrego@igalia.com>
- *
  */
-public class TemplateModelAdapter implements
-        IAdapter<TaskElement, DependencyWithVisibility> {
+public class TemplateModelAdapter implements IAdapter<TaskElement, DependencyWithVisibility> {
 
     private final Scenario scenario;
 
@@ -60,28 +57,28 @@ public class TemplateModelAdapter implements
 
     private final IResourcesSearcher resourcesSearcher;
 
-    public static TemplateModelAdapter create(Scenario scenario,
-            LocalDate initDate, LocalDate deadline,
-            IResourcesSearcher resourcesSearcher) {
-        return new TemplateModelAdapter(scenario, initDate, deadline,
-                resourcesSearcher);
+    public static TemplateModelAdapter create(Scenario scenario, LocalDate initDate, LocalDate deadline,
+                                              IResourcesSearcher resourcesSearcher) {
+
+        return new TemplateModelAdapter(scenario, initDate, deadline, resourcesSearcher);
     }
 
-    private TemplateModelAdapter(Scenario scenario, LocalDate orderInitDate,
-            LocalDate deadline, IResourcesSearcher resoucesSearcher) {
+    private TemplateModelAdapter(Scenario scenario, LocalDate orderInitDate, LocalDate deadline,
+                                 IResourcesSearcher resourcesSearcher) {
+
         Validate.notNull(scenario);
-        Validate.notNull(resoucesSearcher);
+        Validate.notNull(resourcesSearcher);
         this.scenario = scenario;
         this.orderInitDate = orderInitDate;
         this.deadline = deadline;
-        this.resourcesSearcher = resoucesSearcher;
+        this.resourcesSearcher = resourcesSearcher;
     }
 
     @Override
-    public DependencyWithVisibility createInvisibleDependency(
-            TaskElement origin, TaskElement destination, DependencyType type) {
-        return DependencyWithVisibility.createInvisible(origin, destination,
-                type);
+    public DependencyWithVisibility createInvisibleDependency(TaskElement origin, TaskElement destination,
+                                                              DependencyType type) {
+
+        return DependencyWithVisibility.createInvisible(origin, destination, type);
     }
 
     @Override
@@ -89,7 +86,7 @@ public class TemplateModelAdapter implements
         if (!task.isLeaf()) {
             return task.getChildren();
         } else {
-            return new ArrayList<TaskElement>();
+            return new ArrayList<>();
         }
     }
 
@@ -130,10 +127,9 @@ public class TemplateModelAdapter implements
 
     @Override
     public List<Constraint<GanttDate>> getConstraints(
-            ConstraintCalculator<TaskElement> calculator,
-            Set<DependencyWithVisibility> withDependencies, Point point) {
-        return DependencyWithVisibility.getConstraints(calculator,
-                withDependencies, point);
+            ConstraintCalculator<TaskElement> calculator, Set<DependencyWithVisibility> withDependencies, Point point) {
+
+        return DependencyWithVisibility.getConstraints(calculator, withDependencies, point);
     }
 
     @Override
@@ -158,9 +154,10 @@ public class TemplateModelAdapter implements
 
     @Override
     public void registerDependenciesEnforcerHookOn(TaskElement task,
-            IDependenciesEnforcerHookFactory<TaskElement> hookFactory) {
+                                                   IDependenciesEnforcerHookFactory<TaskElement> hookFactory) {
+
         IDependenciesEnforcerHook enforcer = hookFactory.create(task);
-        task.setDatesInterceptor(asIntercerptor(enforcer));
+        task.setDatesInterceptor(asInterceptor(enforcer));
     }
 
     @Override
@@ -182,22 +179,20 @@ public class TemplateModelAdapter implements
         return task.isLimitingAndHasDayAssignments();
     }
 
-    private static IDatesInterceptor asIntercerptor(
-            final IDependenciesEnforcerHook hook) {
+    private static IDatesInterceptor asInterceptor(final IDependenciesEnforcerHook hook) {
         return new IDatesInterceptor() {
 
             @Override
-            public void setStartDate(IntraDayDate previousStart,
-                    IntraDayDate previousEnd, IntraDayDate newStart) {
-                hook.setStartDate(convert(previousStart.getDate()),
+            public void setStartDate(IntraDayDate previousStart, IntraDayDate previousEnd, IntraDayDate newStart) {
+                hook.setStartDate(
+                        convert(previousStart.getDate()),
                         convert(previousEnd.asExclusiveEnd()),
                         convert(newStart.getDate()));
             }
 
             @Override
             public void setNewEnd(IntraDayDate previousEnd, IntraDayDate newEnd) {
-                hook.setNewEnd(convert(previousEnd.getDate()),
-                        convert(newEnd.asExclusiveEnd()));
+                hook.setNewEnd(convert(previousEnd.getDate()), convert(newEnd.asExclusiveEnd()));
             }
         };
     }

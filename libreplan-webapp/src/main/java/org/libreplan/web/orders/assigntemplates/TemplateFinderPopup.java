@@ -27,8 +27,6 @@ import org.libreplan.business.templates.entities.OrderTemplate;
 import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlMacroComponent;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Caption;
@@ -40,19 +38,24 @@ import org.zkoss.zul.Popup;
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
-public class TemplateFinderPopup extends
-        HtmlMacroComponent {
+public class TemplateFinderPopup extends HtmlMacroComponent {
 
     private Component finderPlaceholder;
+
     private Popup popup;
+
     private IOnResult onResult;
+
     private BandboxSearch bandboxSearch;
+
     private Button acceptButton;
+
     private Button cancelButton;
+
     private Caption caption;
 
     public interface IOnResult<T extends OrderElementTemplate> {
-        public void found(T template);
+        void found(T template);
     }
 
     /**
@@ -63,8 +66,7 @@ public class TemplateFinderPopup extends
      * @param onResult
      * @see Popup#open(Component, String)
      */
-    public void openForSubElemenetCreation(Component ref, String position,
-            IOnResult<OrderElementTemplate> onResult) {
+    public void openForSubElemenetCreation(Component ref, String position, IOnResult<OrderElementTemplate> onResult) {
         this.onResult = onResult;
         setupPopUp(ref, position, "templatesEligibleForSubElement");
     }
@@ -77,17 +79,16 @@ public class TemplateFinderPopup extends
      * @param onResult
      * @see Popup#open(Component, String)
      */
-    public void openForOrderCreation(Component ref, String position,
-            IOnResult<OrderTemplate> onResult) {
+    public void openForOrderCreation(Component ref, String position, IOnResult<OrderTemplate> onResult) {
         this.onResult = onResult;
         setupPopUp(ref, position, "templatesEligibleForOrder");
     }
 
-    private void setupPopUp(Component ref, String position,
-            String finderName) {
+    private void setupPopUp(Component ref, String position, String finderName) {
         if (bandboxSearch != null) {
             finderPlaceholder.removeChild(bandboxSearch);
         }
+
         bandboxSearch = new BandboxSearch();
         bandboxSearch.setFinder(finderName);
         bandboxSearch.setWidthBandbox("300px");
@@ -100,9 +101,11 @@ public class TemplateFinderPopup extends
 
     private void onAccept() {
         Object selectedElement = bandboxSearch.getSelectedElement();
+
         if (selectedElement != null) {
             onResult.found((OrderElementTemplate) selectedElement);
         }
+
         popup.close();
     }
 
@@ -113,26 +116,20 @@ public class TemplateFinderPopup extends
     @Override
     public void afterCompose() {
         super.afterCompose();
+
         acceptButton = (Button) getFellow("acceptButton");
         acceptButton.setLabel(_("Create task"));
-        acceptButton.addEventListener(Events.ON_CLICK, new EventListener() {
+        acceptButton.setClass("add-button");
+        acceptButton.addEventListener(Events.ON_CLICK, event -> onAccept());
 
-            @Override
-            public void onEvent(Event event) {
-                onAccept();
-            }
-        });
         cancelButton = (Button) getFellow("cancelButton");
         cancelButton.setLabel(_("Cancel"));
-        cancelButton.addEventListener(Events.ON_CLICK, new EventListener() {
+        cancelButton.setClass("add-button");
+        cancelButton.addEventListener(Events.ON_CLICK, event -> onCancel());
 
-            @Override
-            public void onEvent(Event event) {
-                onCancel();
-            }
-        });
         finderPlaceholder = getFellow("finderPlaceholder");
         popup = (Popup) getFellow("finderPopup");
+
         caption = (Caption) getFellow("finderCaption");
         caption.setLabel(_("Choosing Template"));
     }

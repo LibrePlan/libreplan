@@ -19,8 +19,6 @@
 
 package org.libreplan.web.common.components.finders;
 
-import java.util.List;
-
 import org.apache.commons.lang3.StringUtils;
 import org.libreplan.business.resources.daos.IResourceDAO;
 import org.libreplan.business.resources.entities.Resource;
@@ -31,6 +29,8 @@ import org.zkoss.zul.Bandbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
+
+import java.util.List;
 
 /**
  * This is a finder for {@link Resource Resources} in a {@link Bandbox}
@@ -62,6 +62,7 @@ public class ResourceBandboxFinder extends BandboxFinder implements IBandboxFind
     public boolean entryMatchesText(Object obj, String text) {
         Resource resource = (Resource) obj;
         text = StringUtils.trim(text.toLowerCase());
+
         return checkContainsText(resource.getShortDescription(), text);
     }
 
@@ -72,6 +73,7 @@ public class ResourceBandboxFinder extends BandboxFinder implements IBandboxFind
     @Override
     public String objectToString(Object obj) {
         Resource resource = (Resource) obj;
+
         return resource.getShortDescription();
     }
 
@@ -87,7 +89,7 @@ public class ResourceBandboxFinder extends BandboxFinder implements IBandboxFind
 
     private final ListitemRenderer resourcesRenderer = new ListitemRenderer() {
         @Override
-        public void render(Listitem item, Object data) {
+        public void render(Listitem item, Object data, int i) {
             Resource resource = (Resource) data;
             item.setValue(data);
 

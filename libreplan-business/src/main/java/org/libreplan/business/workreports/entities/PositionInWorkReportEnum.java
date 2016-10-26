@@ -35,7 +35,7 @@ public enum PositionInWorkReportEnum {
 
     private String displayName;
 
-    private PositionInWorkReportEnum(String displayName) {
+    PositionInWorkReportEnum(String displayName) {
         this.displayName = displayName;
     }
 

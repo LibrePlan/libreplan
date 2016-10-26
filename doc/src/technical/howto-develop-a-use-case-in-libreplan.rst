@@ -602,7 +602,7 @@ content:
 
  <zk>
      <window self="@{define(content)}"
-         apply="org.libreplan.web.planner.allocation.streches.StretchesFunctionTemplateCRUDController">
+         apply="org.libreplan.web.planner.allocation.stretches.StretchesFunctionTemplateCRUDController">
          <vbox id="messagesContainer"/>
          <list id="listWindow"/>
          <edit id="editWindow"/>
@@ -680,7 +680,7 @@ The basis for implementing MVC pattern in ZK is ``apply`` attribute.
 Your page defines a component ``Window`` with an ``apply`` attribute assigned::
 
     <window self="@{define(content)}"
-            apply="org.libreplan.web.planner.allocation.streches.StretchesFunctionTemplateCRUDController">
+            apply="org.libreplan.web.planner.allocation.stretches.StretchesFunctionTemplateCRUDController">
 
 It links this ``Window`` component with a ``.java`` file, thereby the Java class
 will be able to access and manipulate components defined inside ``window`` tag.
@@ -766,7 +766,7 @@ For this example you will create a new controller
 
 ::
 
- package org.libreplan.web.planner.allocation.streches;
+ package org.libreplan.web.planner.allocation.stretches;
 
  ...
 
@@ -1253,7 +1253,7 @@ folder:
 
 * ``IStretchesFunctionTemplateModel.java``::
 
-    package org.libreplan.web.planner.allocation.streches;
+    package org.libreplan.web.planner.allocation.stretches;
 
     ...
 
@@ -1263,7 +1263,7 @@ folder:
 
 * ``StretchesFunctionTemplateModel.java``::
 
-    package org.libreplan.web.planner.allocation.streches;
+    package org.libreplan.web.planner.allocation.stretches;
 
     ...
 

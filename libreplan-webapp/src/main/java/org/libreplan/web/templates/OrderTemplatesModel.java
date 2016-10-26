@@ -71,7 +71,7 @@ import org.springframework.transaction.annotation.Transactional;
 @OnConcurrentModification(goToPage = "/templates/templates.zul")
 public class OrderTemplatesModel implements IOrderTemplatesModel {
 
-    private static final Map<CriterionType, List<Criterion>> mapCriterions = new HashMap<CriterionType, List<Criterion>>();
+    private static final Map<CriterionType, List<Criterion>> mapCriterions = new HashMap<>();
 
     @Autowired
     private IOrderElementDAO orderElementDAO;
@@ -106,30 +106,31 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
 
     private LabelsOnConversation labelsOnConversation;
 
+    private QualityFormsOnConversation qualityFormsOnConversation;
+
+    private OrderElementsOnConversation orderElementsOnConversation;
+
     private LabelsOnConversation getLabelsOnConversation() {
         if (labelsOnConversation == null) {
             labelsOnConversation = new LabelsOnConversation(labelDAO);
         }
+
         return labelsOnConversation;
     }
 
-    private QualityFormsOnConversation qualityFormsOnConversation;
-
     private QualityFormsOnConversation getQualityFormsOnConversation() {
         if (qualityFormsOnConversation == null) {
-            qualityFormsOnConversation = new QualityFormsOnConversation(
-                    qualityFormDAO);
+            qualityFormsOnConversation = new QualityFormsOnConversation(qualityFormDAO);
         }
+
         return qualityFormsOnConversation;
     }
 
-    private OrderElementsOnConversation orderElementsOnConversation;
-
     public OrderElementsOnConversation getOrderElementsOnConversation() {
         if (orderElementsOnConversation == null) {
-            orderElementsOnConversation = new OrderElementsOnConversation(
-                    orderElementDAO, orderDAO);
+            orderElementsOnConversation = new OrderElementsOnConversation(orderElementDAO, orderDAO);
         }
+
         return orderElementsOnConversation;
     }
 
@@ -145,20 +146,16 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
 
     @Override
     public void confirmSave() {
-        transaction.runOnTransaction(new IOnTransaction<Void>() {
-            @Override
-            public Void execute() {
-                dao.save(template);
-                return null;
-            }
+        transaction.runOnTransaction((IOnTransaction<Void>) () -> {
+            dao.save(template);
+            return null;
         });
         dontPoseAsTransient(template);
     }
 
     private void dontPoseAsTransient(OrderElementTemplate template) {
         template.dontPoseAsTransientObjectAnymore();
-        List<OrderElementTemplate> childrenTemplates = template
-                .getChildrenTemplates();
+        List<OrderElementTemplate> childrenTemplates = template.getChildrenTemplates();
         for (OrderElementTemplate each : childrenTemplates) {
             dontPoseAsTransient(each);
         }
@@ -170,9 +167,7 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
         initializeAcompanyingObjectsOnConversation();
         Order order = orderDAO.loadOrderAvoidingProxyFor(orderElement);
         order.useSchedulingDataFor(getCurrentScenario());
-        OrderElement orderElementOrigin = orderElementDAO
-                .findExistingEntity(orderElement
-                .getId());
+        OrderElement orderElementOrigin = orderElementDAO.findExistingEntity(orderElement.getId());
         template = orderElementOrigin.createTemplate();
         loadAssociatedData(template);
         treeModel = new TemplatesTree(template);
@@ -210,19 +205,16 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
     private static void loadCriterionRequirements(OrderElementTemplate orderElement) {
         orderElement.getHoursGroups().size();
         for (HoursGroup hoursGroup : orderElement.getHoursGroups()) {
-            attachDirectCriterionRequirement(hoursGroup
-                    .getDirectCriterionRequirement());
+            attachDirectCriterionRequirement(hoursGroup.getDirectCriterionRequirement());
         }
-        attachDirectCriterionRequirement(orderElement
-                .getDirectCriterionRequirements());
+        attachDirectCriterionRequirement(orderElement.getDirectCriterionRequirements());
 
         for (OrderElementTemplate child : orderElement.getChildren()) {
             loadCriterionRequirements(child);
         }
     }
 
-    private static void attachDirectCriterionRequirement(
-            Set<DirectCriterionRequirement> requirements) {
+    private static void attachDirectCriterionRequirement(Set<DirectCriterionRequirement> requirements) {
         for (DirectCriterionRequirement requirement : requirements) {
             requirement.getChildren().size();
             requirement.getCriterion().getName();
@@ -250,8 +242,7 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
     }
 
     private void loadAdvanceAssignments(OrderElementTemplate template) {
-        for (AdvanceAssignmentTemplate each : template
-                .getAdvanceAssignmentTemplates()) {
+        for (AdvanceAssignmentTemplate each : template.getAdvanceAssignmentTemplates()) {
             each.getMaxValue();
             each.getAdvanceType().getUnitName();
         }
@@ -268,11 +259,9 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
 
     private void loadCriterions() {
         mapCriterions.clear();
-        List<CriterionType> criterionTypes = criterionTypeDAO
-                .getCriterionTypes();
+        List<CriterionType> criterionTypes = criterionTypeDAO.getCriterionTypes();
         for (CriterionType criterionType : criterionTypes) {
-            List<Criterion> criterions = new ArrayList<Criterion>(criterionDAO
-                    .findByType(criterionType));
+            List<Criterion> criterions = new ArrayList<>(criterionDAO.findByType(criterionType));
 
             mapCriterions.put(criterionType, criterions);
         }
@@ -300,21 +289,19 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
 
     @Override
     public Set<QualityForm> getAllQualityForms() {
-        return new HashSet<QualityForm>(getQualityFormsOnConversation()
-                .getQualityForms());
+        return new HashSet<>(getQualityFormsOnConversation().getQualityForms());
     }
 
     @Transactional(readOnly = true)
-    public void validateTemplateName(String name)
-            throws IllegalArgumentException {
+    public void validateTemplateName(String name) throws IllegalArgumentException {
         if ((name == null) || (name.isEmpty())) {
             throw new IllegalArgumentException(_("name cannot be empty"));
         }
 
         getTemplate().setName(name);
+
         if (!getTemplate().isUniqueRootTemplateNameConstraint()) {
-            throw new IllegalArgumentException(
-                    _("Already exists another template with the same name"));
+            throw new IllegalArgumentException(_("Already exists another template with the same name"));
         }
     }
 
@@ -325,9 +312,9 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
 
     @Override
     public Map<CriterionType, List<Criterion>> getMapCriterions() {
-        final Map<CriterionType, List<Criterion>> result =
-            new HashMap<CriterionType, List<Criterion>>();
+        final Map<CriterionType, List<Criterion>> result = new HashMap<>();
         result.putAll(mapCriterions);
+
         return result;
     }
 

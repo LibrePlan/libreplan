@@ -53,12 +53,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Test cases for CriterionDAO <br />
+ * Test cases for CriterionDAO.
+ * <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
-        BUSINESS_SPRING_CONFIG_TEST_FILE })
+@ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE, BUSINESS_SPRING_CONFIG_TEST_FILE })
 public class CriterionDAOTest {
 
     @Autowired
@@ -79,20 +79,19 @@ public class CriterionDAOTest {
     }
 
     public static Criterion createValidCriterion() {
-        return createValidCriterion(UUID.randomUUID().toString(),"");
+        return createValidCriterion(UUID.randomUUID().toString());
     }
 
-    public static Criterion createValidCriterion(String name,String description) {
-        CriterionType criterionType = CriterionTypeDAOTest
-                .createValidCriterionType();
+    public static Criterion createValidCriterion(String name) {
+        CriterionType criterionType = CriterionTypeDAOTest.createValidCriterionType();
         return Criterion.withNameAndType(name, criterionType);
     }
 
     private CriterionType ensureTypeExists(CriterionType criterionType) {
         if (criterionTypeDAO.existsOtherCriterionTypeByName(criterionType)) {
             try {
-                return criterionType = criterionTypeDAO
-                        .findUniqueByName(criterionType);
+                /* Do not remove it */
+                return criterionType = criterionTypeDAO.findUniqueByName(criterionType);
             } catch (InstanceNotFoundException e) {
                 throw new RuntimeException(e);
             }
@@ -124,8 +123,7 @@ public class CriterionDAOTest {
 
     @Test
     @Transactional
-    public void afterRemovingTheCriterionNoLongerExists()
-            throws InstanceNotFoundException {
+    public void afterRemovingTheCriterionNoLongerExists() throws InstanceNotFoundException {
         givenACriterionWithAnExistentType();
         criterionDAO.save(criterion);
         criterionDAO.remove(criterion.getId());
@@ -134,8 +132,7 @@ public class CriterionDAOTest {
 
     private Criterion givenACriterionWithAnExistentType() {
         this.criterion = createValidCriterion();
-        CriterionType type = ensureTypeExists(CriterionTypeDAOTest
-                .createValidCriterionType());
+        CriterionType type = ensureTypeExists(CriterionTypeDAOTest.createValidCriterionType());
         this.criterion.setType(type);
         return this.criterion;
     }
@@ -162,8 +159,7 @@ public class CriterionDAOTest {
 
     @Test(expected = DataIntegrityViolationException.class)
     @Transactional
-    public void schemaEnsuresCannotExistTwoDifferentCriterionsWithSameNameAndType()
-            throws ValidationException {
+    public void schemaEnsuresCannotExistTwoDifferentCriterionsWithSameNameAndType() throws ValidationException {
         Criterion c = givenASavedCriterionWithAnExistentType();
         Criterion repeated = anotherCriterionWithSameNameAndType(c);
         criterionDAO.save(repeated);
@@ -178,6 +174,7 @@ public class CriterionDAOTest {
     @Transactional
     public void findByTypeOnlyReturnsTheCriterionsMatchedByType() {
         givenASavedCriterionWithAnExistentType();
+
         // saving another
         givenASavedCriterionWithAnExistentType();
         ICriterionType<Criterion> type = createTypeThatMatches(criterion);
@@ -189,7 +186,6 @@ public class CriterionDAOTest {
     @Test
     public void thereIsOtherWithSameNameAndTypeWorksIsolatedFromCurrentTransaction() {
         transactionService.runOnTransaction(new IOnTransaction<Void>() {
-
             @Override
             public Void execute() {
                 Criterion saved = givenASavedCriterionWithAnExistentType();
@@ -201,46 +197,43 @@ public class CriterionDAOTest {
 
     @Test
     public void thereIsNoOtherIfItsTheSame() {
-        Criterion c = transactionService
-                .runOnTransaction(new IOnTransaction<Criterion>() {
-
+        Criterion c = transactionService.runOnTransaction(new IOnTransaction<Criterion>() {
             @Override
             public Criterion execute() {
                 return givenASavedCriterionWithAnExistentType();
             }
         });
+
         assertFalse(criterionDAO.thereIsOtherWithSameNameAndType(c));
     }
 
     @Test
     public void ifItsDifferentThereIsOther() {
-        Criterion c = transactionService
-                .runOnTransaction(new IOnTransaction<Criterion>() {
+        Criterion c = transactionService.runOnTransaction(new IOnTransaction<Criterion>() {
+            @Override
+            public Criterion execute() {
+                return givenASavedCriterionWithAnExistentType();
+            }
+        });
 
-                    @Override
-                    public Criterion execute() {
-                        return givenASavedCriterionWithAnExistentType();
-                    }
-                });
         Criterion copy = Criterion.create(c.getName(), c.getType());
         assertTrue(criterionDAO.thereIsOtherWithSameNameAndType(copy));
     }
 
     @Test
     @Transactional
-    public void noOtherIfTheCriterionDoesntExist() {
+    public void noOtherIfTheCriterionDoesNotExist() {
         Criterion criterion = givenUniquelyNamedCriterion();
         assertFalse(criterionDAO.thereIsOtherWithSameNameAndType(criterion));
     }
 
-    private static ICriterionType<Criterion> createTypeThatMatches(
-            final Criterion criterion) {
+    private static ICriterionType<Criterion> createTypeThatMatches(final Criterion criterion) {
         return createTypeThatMatches(false, criterion);
     }
 
     private static ICriterionType<Criterion> createTypeThatMatches(
-            final boolean allowSimultaneousCriterionsPerResource,
-            final Criterion criterion) {
+            final boolean allowSimultaneousCriterionsPerResource, final Criterion criterion) {
+
         return new ICriterionType<Criterion>() {
 
             @Override
@@ -255,8 +248,7 @@ public class CriterionDAOTest {
 
             @Override
             public boolean contains(ICriterion c) {
-                return c instanceof Criterion
-                        && criterion.isEquivalent((Criterion) c);
+                return c instanceof Criterion && criterion.isEquivalent((Criterion) c);
             }
 
             @Override

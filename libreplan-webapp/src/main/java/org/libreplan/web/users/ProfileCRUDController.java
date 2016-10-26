@@ -21,13 +21,6 @@
 
 package org.libreplan.web.users;
 
-import static org.libreplan.web.I18nHelper._;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import org.apache.commons.logging.LogFactory;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.users.entities.Profile;
@@ -43,6 +36,13 @@ import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
+import org.zkoss.zkplus.spring.SpringUtil;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.libreplan.web.I18nHelper._;
 
 /**
  * Controller for CRUD actions over a {@link Profile}
@@ -53,11 +53,13 @@ import org.zkoss.zul.RowRenderer;
 @SuppressWarnings("serial")
 public class ProfileCRUDController extends BaseCRUDController<Profile> {
 
-    private static final org.apache.commons.logging.Log LOG = LogFactory.getLog(ProfileCRUDController.class);
-
     private IProfileModel profileModel;
 
     private Combobox userRolesCombo;
+
+    public ProfileCRUDController(){
+        profileModel = (IProfileModel) SpringUtil.getBean("profileModel");
+    }
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -71,8 +73,7 @@ public class ProfileCRUDController extends BaseCRUDController<Profile> {
      * @param combo
      */
     private void appendAllUserRolesExceptRoleBoundUser(Combobox combo) {
-        List<UserRole> roles = new ArrayList<UserRole>(Arrays.asList(UserRole
-                .values()));
+        List<UserRole> roles = new ArrayList<>(Arrays.asList(UserRole.values()));
         roles.remove(UserRole.ROLE_BOUND_USER);
 
         for (UserRole role : roles) {
@@ -104,12 +105,12 @@ public class ProfileCRUDController extends BaseCRUDController<Profile> {
         return profileModel.getRoles();
     }
 
-    public void addRole(UserRole role) {
+    private void addRole(UserRole role) {
         profileModel.addRole(role);
         Util.reloadBindings(editWindow);
     }
 
-    public void removeRole(UserRole role) {
+    private void removeRole(UserRole role) {
         profileModel.removeRole(role);
         Util.reloadBindings(editWindow);
     }
@@ -144,19 +145,15 @@ public class ProfileCRUDController extends BaseCRUDController<Profile> {
             profileModel.checkHasUsers(profile);
             return false;
         } catch (ValidationException e) {
-            showCannotDeleteProfileDialog(e.getInvalidValue().getMessage(),
-                    profile);
+            showCannotDeleteProfileDialog(e.getInvalidValue().getMessage()
+            );
         }
+
         return true;
     }
 
-    private void showCannotDeleteProfileDialog(String message, Profile profile) {
-        try {
-            Messagebox.show(_(message), _("Warning"), Messagebox.OK,
-                    Messagebox.EXCLAMATION);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+    private void showCannotDeleteProfileDialog(String message) {
+        Messagebox.show(_(message), _("Warning"), Messagebox.OK, Messagebox.EXCLAMATION);
     }
     @Override
     protected boolean beforeDeleting(Profile profile){
@@ -171,7 +168,7 @@ public class ProfileCRUDController extends BaseCRUDController<Profile> {
     public RowRenderer getRolesRenderer() {
         return new RowRenderer() {
             @Override
-            public void render(Row row, Object data) throws Exception {
+            public void render(Row row, Object data, int i) throws Exception {
                 final UserRole role = (UserRole) data;
 
                 row.appendChild(new Label(_(role.getDisplayName())));

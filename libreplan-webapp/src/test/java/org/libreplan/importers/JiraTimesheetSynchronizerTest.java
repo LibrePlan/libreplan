@@ -27,9 +27,7 @@ import static org.libreplan.web.test.WebappGlobalNames.WEBAPP_SPRING_CONFIG_TEST
 import static org.libreplan.web.test.WebappGlobalNames.WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
@@ -60,15 +58,15 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Test for {@link JiraTimesheetSynchronizer}
+ * Test for {@link JiraTimesheetSynchronizer}.
  *
  * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
+@ContextConfiguration(locations = {
+        BUSINESS_SPRING_CONFIG_FILE,
         WEBAPP_SPRING_CONFIG_FILE, WEBAPP_SPRING_CONFIG_TEST_FILE,
-        WEBAPP_SPRING_SECURITY_CONFIG_FILE,
-        WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE })
+        WEBAPP_SPRING_SECURITY_CONFIG_FILE, WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE })
 public class JiraTimesheetSynchronizerTest {
 
     @Resource
@@ -104,10 +102,9 @@ public class JiraTimesheetSynchronizerTest {
     private IJiraTimesheetSynchronizer jiraTimesheetSynchronizer;
 
     @Before
-    public void loadRequiredaData() {
+    public void loadRequiredData() {
 
         IOnTransaction<Void> load = new IOnTransaction<Void>() {
-
             @Override
             public Void execute() {
                 defaultAdvanceTypesBootstrapListener.loadRequiredData();
@@ -123,32 +120,30 @@ public class JiraTimesheetSynchronizerTest {
     }
 
     private List<IssueDTO> getJiraIssues() {
-        List<IssueDTO> issues = new ArrayList<IssueDTO>();
+        List<IssueDTO> issues;
         try {
             Properties properties = loadProperties();
-            issues = JiraRESTClient.getIssues(properties.getProperty("url"),
+
+            issues = JiraRESTClient.getIssues(
+                    properties.getProperty("url"),
                     properties.getProperty("username"),
                     properties.getProperty("password"),
                     JiraRESTClient.PATH_SEARCH,
                     getJiraLabel(properties.getProperty("label")));
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         return issues;
     }
 
-    private Properties loadProperties() throws FileNotFoundException,
-            IOException {
+    private Properties loadProperties() throws IOException {
 
-        String filename = System.getProperty("user.dir")
-                + "/../scripts/jira-connector/jira-conn.properties";
+        String filename = System.getProperty("user.dir") + "/../scripts/jira-connector/jira-conn.properties";
 
         Properties properties = new Properties();
         properties.load(new FileInputStream(filename));
         return properties;
-
     }
 
     private String getJiraLabel(String label) {
@@ -156,13 +151,12 @@ public class JiraTimesheetSynchronizerTest {
     }
 
     private Order givenOrder() {
-        return transactionService
-                .runOnAnotherTransaction(new IOnTransaction<Order>() {
-                    @Override
-                    public Order execute() {
-                        return givenValidOrderAlreadyStored();
-                    }
-                });
+        return transactionService.runOnAnotherTransaction(new IOnTransaction<Order>() {
+            @Override
+            public Order execute() {
+                return givenValidOrderAlreadyStored();
+            }
+        });
     }
 
     private Order givenValidOrderAlreadyStored() {
@@ -170,8 +164,7 @@ public class JiraTimesheetSynchronizerTest {
         order.setCode(UUID.randomUUID().toString());
         order.setName("Order name " + UUID.randomUUID());
         order.setInitDate(new Date());
-        order.setCalendar(configurationDAO.getConfiguration()
-                .getDefaultCalendar());
+        order.setCalendar(configurationDAO.getConfiguration().getDefaultCalendar());
         OrderVersion version = setupVersionUsing(scenarioManager, order);
         order.useSchedulingDataFor(version);
 
@@ -185,20 +178,18 @@ public class JiraTimesheetSynchronizerTest {
     }
 
     private Order givenOrderWithValidOrderLines() {
-        return transactionService
-                .runOnAnotherTransaction(new IOnTransaction<Order>() {
-                    @Override
-                    public Order execute() {
-                        return givenValidOrderWithValidOrderLinesAlreadyStored();
-                    }
-                });
+        return transactionService.runOnAnotherTransaction(new IOnTransaction<Order>() {
+            @Override
+            public Order execute() {
+                return givenValidOrderWithValidOrderLinesAlreadyStored();
+            }
+        });
     }
 
 
     private Order givenValidOrderWithValidOrderLinesAlreadyStored() {
         Order order = givenOrder();
-        jiraOrderElementSynchronizer.syncOrderElementsWithJiraIssues(issues,
-                order);
+        jiraOrderElementSynchronizer.syncOrderElementsWithJiraIssues(issues, order);
         order.dontPoseAsTransientObjectAnymore();
         orderDAO.saveWithoutValidating(order);
         orderDAO.flush();
@@ -209,8 +200,7 @@ public class JiraTimesheetSynchronizerTest {
         }
     }
 
-    private OrderVersion setupVersionUsing(IScenarioManager scenarioManager,
-            Order order) {
+    private OrderVersion setupVersionUsing(IScenarioManager scenarioManager, Order order) {
         Scenario current = scenarioManager.getCurrent();
         OrderVersion result = OrderVersion.createInitialVersion(current);
         order.setVersionForScenario(current, result);
@@ -224,8 +214,7 @@ public class JiraTimesheetSynchronizerTest {
     public void testSyncJiraTimesheet() throws ConnectorException {
 
         Order order = givenOrderWithValidOrderLines();
-        jiraTimesheetSynchronizer
-                .syncJiraTimesheetWithJiraIssues(issues, order);
+        jiraTimesheetSynchronizer.syncJiraTimesheetWithJiraIssues(issues, order);
         assertTrue(order.getWorkReportLines(false).size() > 0);
     }
 

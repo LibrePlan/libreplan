@@ -31,44 +31,11 @@ import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workingday.IntraDayDate.PartialDay;
 
 /**
- *
  * @author Diego Pino Garcia<dpino@igalia.com>
- *
  */
 public class MonteCarloTask {
 
-    public static MonteCarloTask create(Task task) {
-        return new MonteCarloTask(task);
-    }
-
-    public static MonteCarloTask copy(MonteCarloTask task) {
-        return new MonteCarloTask(task);
-    }
-
-    public static BigDecimal calculateRealDurationFor(MonteCarloTask task, BigDecimal daysDuration) {
-        LocalDate start = task.getStartDate();
-        Validate.notNull(start);
-        LocalDate end = calculateEndDateFor(task, daysDuration);
-        Days daysBetween = Days.daysBetween(start, end);
-        return BigDecimal.valueOf(daysBetween.getDays());
-    }
-
-    private static LocalDate calculateEndDateFor(MonteCarloTask task, BigDecimal daysDuration) {
-        BaseCalendar calendar = task.getCalendar();
-        LocalDate start = new LocalDate(task.getStartDate());
-        LocalDate day = start;
-
-        double duration = daysDuration.doubleValue();
-        for (int i = 0; i < duration;) {
-            EffortDuration workableTime = calendar.getCapacityOn(PartialDay
-                    .wholeDay(day));
-            if (!EffortDuration.zero().equals(workableTime)) {
-                i++;
-            }
-            day = day.plusDays(1);
-        }
-        return day;
-    }
+    private static final MathContext mathContext = new MathContext(2, RoundingMode.HALF_UP);
 
     private Task task;
 
@@ -106,6 +73,40 @@ public class MonteCarloTask {
         this.normalDurationPercentage = task.getNormalDurationPercentage();
         this.optimisticDuration = task.getOptimisticDuration();
         this.optimisticDurationPercentage = task.getOptimisticDurationPercentage();
+    }
+
+    public static MonteCarloTask create(Task task) {
+        return new MonteCarloTask(task);
+    }
+
+    public static MonteCarloTask copy(MonteCarloTask task) {
+        return new MonteCarloTask(task);
+    }
+
+    public static BigDecimal calculateRealDurationFor(MonteCarloTask task, BigDecimal daysDuration) {
+        LocalDate start = task.getStartDate();
+        Validate.notNull(start);
+        LocalDate end = calculateEndDateFor(task, daysDuration);
+        Days daysBetween = Days.daysBetween(start, end);
+
+        return BigDecimal.valueOf(daysBetween.getDays());
+    }
+
+    private static LocalDate calculateEndDateFor(MonteCarloTask task, BigDecimal daysDuration) {
+        BaseCalendar calendar = task.getCalendar();
+        LocalDate day = new LocalDate(task.getStartDate());
+
+        double duration = daysDuration.doubleValue();
+        for (int i = 0; i < duration;) {
+            EffortDuration workableTime = calendar.getCapacityOn(PartialDay.wholeDay(day));
+
+            if (!EffortDuration.zero().equals(workableTime)) {
+                i++;
+            }
+
+            day = day.plusDays(1);
+        }
+        return day;
     }
 
     public Task getTask() {
@@ -160,8 +161,7 @@ public class MonteCarloTask {
         this.pessimisticDuration = pessimisticDuration;
     }
 
-    public void setPessimisticDurationPercentage(
-            Integer pessimisticDurationPercentage) {
+    public void setPessimisticDurationPercentage(Integer pessimisticDurationPercentage) {
         this.pessimisticDurationPercentage = pessimisticDurationPercentage;
     }
 
@@ -177,15 +177,17 @@ public class MonteCarloTask {
         this.optimisticDuration = optimisticDuration;
     }
 
-    public void setOptimisticDurationPercentage(
-            Integer optimisticDurationPercentage) {
+    public void setOptimisticDurationPercentage(Integer optimisticDurationPercentage) {
         this.optimisticDurationPercentage = optimisticDurationPercentage;
     }
 
+    @Override
     public String toString() {
-        return String.format("%s:%f:(%f,%d):(%f,%d):(%f,%d)", task.getName(),
-                duration, pessimisticDuration, pessimisticDurationPercentage,
-                normalDuration, normalDurationPercentage, optimisticDuration,
+        return String.format(
+                "%s:%f:(%f,%d):(%f,%d):(%f,%d)", task.getName(),
+                duration, pessimisticDuration,
+                pessimisticDurationPercentage, normalDuration,
+                normalDurationPercentage, optimisticDuration,
                 optimisticDurationPercentage);
     }
 
@@ -197,12 +199,8 @@ public class MonteCarloTask {
         return BigDecimal.ZERO;
     }
 
-    private static final MathContext mathContext = new MathContext(2,
-            RoundingMode.HALF_UP);
-
     public BigDecimal getPessimisticDurationPercentageUpperLimit() {
-        return BigDecimal.valueOf(pessimisticDurationPercentage).divide(
-                BigDecimal.valueOf(100), mathContext);
+        return BigDecimal.valueOf(pessimisticDurationPercentage).divide(BigDecimal.valueOf(100), mathContext);
     }
 
     public BigDecimal getNormalDurationPercentageLowerLimit() {
@@ -210,9 +208,8 @@ public class MonteCarloTask {
     }
 
     public BigDecimal getNormalDurationPercentageUpperLimit() {
-        BigDecimal result = BigDecimal.valueOf(pessimisticDurationPercentage
-                + normalDurationPercentage);
-        return result.divide(BigDecimal.valueOf(100), mathContext);
+        return BigDecimal.valueOf(pessimisticDurationPercentage.longValue() + normalDurationPercentage)
+                .divide(BigDecimal.valueOf(100), mathContext);
     }
 
     public BigDecimal getOptimisticDurationPercentageLowerLimit() {

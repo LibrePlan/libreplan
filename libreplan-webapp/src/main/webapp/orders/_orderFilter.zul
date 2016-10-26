@@ -21,22 +21,32 @@
 
 <hbox align="center" sclass="filtering-area">
     <label value="${i18n:_('Project')}"
-        tooltiptext="${i18n:_('Select required criteria set and press filter button')}"/>
+           tooltiptext="${i18n:_('Select required criteria set and press filter button')}"/>
+
     <textbox id="filterProjectName" width="100px"
-        onChange="orderFilterController.onApplyFilter()" />
+             onChange="orderFilterController.onApplyFilter()" />
+
     <label value=" ${i18n:_('with')}" />
+
     <bandboxMultipleSearch id="bdFilters" widthBandbox="260px" widthListbox="550px"
-        finder="ordersMultipleFiltersFinder" onChange="orderFilterController.onApplyFilter()" />
+                           finder="ordersMultipleFiltersFinder" onChange="orderFilterController.onApplyFilter()" />
+
     <label value="${i18n:_('from')}"/>
+
     <datebox id="filterStartDate" constraint = "@{orderFilterController.checkConstraintStartDate}"
-        onChange="orderFilterController.onApplyFilter()"/>
+             onChange="orderFilterController.onApplyFilter()"/>
+
     <label value="${i18n:_('to')}"/>
+
     <datebox id="filterFinishDate" constraint = "@{orderFilterController.checkConstraintFinishDate}"
-        onChange="orderFilterController.onApplyFilter()"/>
+             onChange="orderFilterController.onApplyFilter()"/>
+
     <label value="${i18n:_('subelements')}"/>
-    <checkbox id="checkIncludeOrderElements"
-        tooltiptext="${i18n:_('Apply filtering to tasks satisfying required criteria')}" />
+
+    <!-- TODO Jeroen is thinking about tooltip for this checkbox -->
+    <checkbox id="checkIncludeOrderElements"/>
+
     <button mold="trendy" image="/common/img/ico_filter.png" style="margin-top: -4px"
-        tooltiptext="${i18n:_('Apply filtering to tasks satisfying required criteria')}"
-        onClick="orderFilterController.onApplyFilter()"/>
+            tooltiptext="${i18n:_('Apply filtering to tasks satisfying required criteria')}"
+            onClick="orderFilterController.onApplyFilter()"/>
 </hbox>

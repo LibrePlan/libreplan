@@ -19,8 +19,6 @@
 
 package org.libreplan.web.common.components.finders;
 
-import java.util.List;
-
 import org.apache.commons.lang3.StringUtils;
 import org.libreplan.business.users.daos.IUserDAO;
 import org.libreplan.business.users.entities.User;
@@ -30,8 +28,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.lang.Strings;
 import org.zkoss.zul.Bandbox;
 import org.zkoss.zul.Listcell;
-import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
+
+import java.util.List;
 
 /**
  * This is a finder for {@link User}s in a {@link Bandbox}
@@ -46,8 +45,17 @@ public class UserBandboxFinder extends BandboxFinder implements IBandboxFinder {
 
     private final String headers[] = { _("Username"), _("Full name") };
 
+    private final ListitemRenderer usersRenderer = (item, data, i) -> {
+        User user = (User) data;
+
+        item.setValue(data);
+
+        item.appendChild(new Listcell(user.getLoginName()));
+        item.appendChild(new Listcell(user.getFullName()));
+    };
+
     /**
-     * Forces to mark the string as needing translation
+     * Forces to mark the string as needing translation.
      */
     private static String _(String string) {
         return string;
@@ -63,9 +71,10 @@ public class UserBandboxFinder extends BandboxFinder implements IBandboxFinder {
     public boolean entryMatchesText(Object obj, String text) {
         final User user = (User) obj;
         text = StringUtils.trim(text.toLowerCase());
-        return checkContainsText(user.getLoginName(), text)
-                || checkContainsText(user.getFirstName(), text)
-                || checkContainsText(user.getLastName(), text);
+
+        return checkContainsText(user.getLoginName(), text) ||
+                checkContainsText(user.getFirstName(), text) ||
+                checkContainsText(user.getLastName(), text);
     }
 
     private boolean checkContainsText(String original, String text) {
@@ -93,16 +102,4 @@ public class UserBandboxFinder extends BandboxFinder implements IBandboxFinder {
     public ListitemRenderer getItemRenderer() {
         return usersRenderer;
     }
-
-    private final ListitemRenderer usersRenderer = new ListitemRenderer() {
-        @Override
-        public void render(Listitem item, Object data) {
-            User user = (User) data;
-
-            item.setValue(data);
-
-            item.appendChild(new Listcell(user.getLoginName()));
-            item.appendChild(new Listcell(user.getFullName()));
-        }
-    };
 }

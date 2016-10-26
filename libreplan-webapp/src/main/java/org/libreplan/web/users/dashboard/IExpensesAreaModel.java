@@ -24,7 +24,7 @@ import java.util.List;
 import org.libreplan.business.expensesheet.entities.ExpenseSheet;
 
 /**
- * Interface for "Expenses" area model
+ * Interface for "Expenses" area model.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */

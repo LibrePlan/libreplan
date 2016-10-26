@@ -66,9 +66,9 @@ import org.springframework.orm.hibernate5.HibernateOptimisticLockingFailureExcep
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
- *
  */
-public abstract class OrderElementTemplate extends BaseEntity
+public abstract class OrderElementTemplate
+        extends BaseEntity
         implements ICriterionRequirable, ITreeNode<OrderElementTemplate> {
 
     private static final Log LOG = LogFactory.getLog(OrderElementTemplate.class);
@@ -122,12 +122,11 @@ public abstract class OrderElementTemplate extends BaseEntity
     }
 
     /**
-     *
-     * Copy only {@link DirectCriterionRequirement}
+     * Copy only {@link DirectCriterionRequirement}.
      *
      * @param beingBuilt
      * @param criterionRequirements
-     * @return
+     * @return {@link Set<CriterionRequirement>}
      */
     private static Set<CriterionRequirement> copyDirectCriterionRequirements(
             OrderElementTemplate beingBuilt, Collection<DirectCriterionRequirement> criterionRequirements) {
@@ -345,7 +344,7 @@ public abstract class OrderElementTemplate extends BaseEntity
     }
 
     /**
-     * @return a description of the type or template this object is
+     * @return a description of the type or template this object is.
      */
     public abstract String getType();
 
@@ -403,8 +402,8 @@ public abstract class OrderElementTemplate extends BaseEntity
         return Collections.unmodifiableSet(materialAssignments);
     }
 
-    protected void setMaterialAssignments(Set<MaterialAssignmentTemplate> newMaterialAssigments) {
-        this.materialAssignments = newMaterialAssigments;
+    protected void setMaterialAssignments(Set<MaterialAssignmentTemplate> newMaterialAssignments) {
+        this.materialAssignments = newMaterialAssignments;
     }
 
     public void addMaterialAssignment(MaterialAssignmentTemplate materialAssignment) {
@@ -416,7 +415,7 @@ public abstract class OrderElementTemplate extends BaseEntity
         materialAssignments.remove(materialAssignment);
     }
 
-    public BigDecimal getTotalMaterialAssigmentPrice() {
+    public BigDecimal getTotalMaterialAssignmentPrice() {
         BigDecimal result = BigDecimal.ZERO;
         for (MaterialAssignmentTemplate each : materialAssignments) {
             result = result.add(each.getTotalPrice());
@@ -425,7 +424,7 @@ public abstract class OrderElementTemplate extends BaseEntity
         return result;
     }
 
-    public BigDecimal getTotalMaterialAssigmentUnits() {
+    public BigDecimal getTotalMaterialAssignmentUnits() {
         BigDecimal result = BigDecimal.ZERO;
         for (MaterialAssignmentTemplate each : materialAssignments) {
             if ( each.getUnits() != null ) {
@@ -538,7 +537,7 @@ public abstract class OrderElementTemplate extends BaseEntity
     public abstract Integer getWorkHours();
 
     /**
-     * Operations for manipulating CriterionRequirement
+     * Operations for manipulating CriterionRequirement.
      */
 
     protected CriterionRequirementTemplateHandler criterionRequirementHandler =

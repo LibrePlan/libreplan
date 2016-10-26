@@ -64,12 +64,13 @@ public class AssignedTaskQualityFormsToOrderElementModel implements IAssignedTas
     @Autowired
     private IQualityFormDAO qualityFormDAO;
 
+    @Autowired
+    private IAdvanceTypeDAO advanceTypeDAO;
+
     private OrderElement orderElement;
 
     private IOrderModel orderModel;
 
-    @Autowired
-    private IAdvanceTypeDAO advanceTypeDAO;
 
     @Override
     public OrderElement getOrderElement() {
@@ -126,6 +127,7 @@ public class AssignedTaskQualityFormsToOrderElementModel implements IAssignedTas
                 result.add(qualityForm);
             }
         }
+
         return result;
     }
 
@@ -137,6 +139,7 @@ public class AssignedTaskQualityFormsToOrderElementModel implements IAssignedTas
                 result.add(qualityForm);
             }
         }
+
         return result;
     }
 
@@ -146,6 +149,7 @@ public class AssignedTaskQualityFormsToOrderElementModel implements IAssignedTas
         if ( orderElement != null ) {
             result.addAll(orderElement.getTaskQualityForms());
         }
+
         return result;
     }
 
@@ -156,7 +160,7 @@ public class AssignedTaskQualityFormsToOrderElementModel implements IAssignedTas
 
     @Override
     public void deleteTaskQualityForm(TaskQualityForm taskQualityForm) {
-            orderElement.removeTaskQualityForm(taskQualityForm);
+        orderElement.removeTaskQualityForm(taskQualityForm);
     }
 
     private AdvanceAssignment getAdvanceAssignment(TaskQualityForm taskQualityForm) {
@@ -199,10 +203,14 @@ public class AssignedTaskQualityFormsToOrderElementModel implements IAssignedTas
     }
 
     public boolean isDisabledPassedItem(TaskQualityForm taskQualityForm, TaskQualityFormItem item) {
-        return (taskQualityForm == null) ||
-                (item == null) ||
-                !taskQualityForm.isByItems() && !(item.getPassed() ||
-                taskQualityForm.isPassedPreviousItem(item));
+        if ( (taskQualityForm == null) || (item == null) ) {
+            return true;
+        }
+
+        if ( !taskQualityForm.isByItems() ) {
+            return !(item.getPassed() || taskQualityForm.isPassedPreviousItem(item));
+        }
+        return false;
     }
 
     public boolean isDisabledDateItem(TaskQualityForm taskQualityForm, TaskQualityFormItem item) {
@@ -210,16 +218,21 @@ public class AssignedTaskQualityFormsToOrderElementModel implements IAssignedTas
     }
 
     public boolean isCorrectConsecutiveDate(TaskQualityForm taskQualityForm, TaskQualityFormItem item) {
-        return (taskQualityForm == null) ||
-                (item == null) ||
-                taskQualityForm.isByItems() ||
-                taskQualityForm.isCorrectConsecutiveDate(item);
+        if ( (taskQualityForm == null) || (item == null) ) {
+            return true;
+        }
+
+        if ( taskQualityForm.isByItems() ) {
+            return true;
+        }
+        return taskQualityForm.isCorrectConsecutiveDate(item);
     }
 
     public void updatePassedTaskQualityFormItems(TaskQualityForm taskQualityForm) {
         if (taskQualityForm != null) {
             Integer position = getFirstNotPassedPosition(taskQualityForm);
             List<TaskQualityFormItem> items = taskQualityForm.getTaskQualityFormItems();
+
             for (int i = position; i < items.size(); i++) {
                 items.get(i).setPassed(false);
                 items.get(i).setDate(null);
@@ -238,7 +251,9 @@ public class AssignedTaskQualityFormsToOrderElementModel implements IAssignedTas
         return position;
     }
 
-    // Operation to confirm and validate
+    /**
+     * Operation to confirm and validate.
+     */
     @Override
     public void validate() {
         if (getOrderElement() != null) {
@@ -255,22 +270,30 @@ public class AssignedTaskQualityFormsToOrderElementModel implements IAssignedTas
     private void validateTaskQualityFormItems(TaskQualityForm taskQualityForm) {
         for (TaskQualityFormItem item : taskQualityForm.getTaskQualityFormItems()) {
 
-            if ( (!taskQualityForm.isByItems()) && (!taskQualityForm.isCorrectConsecutivePassed(item)) ) {
+            if ((!taskQualityForm.isByItems()) && (!taskQualityForm.isCorrectConsecutivePassed(item))) {
+
                 throw new ValidationException(invalidValue(
                         _("cannot be checked until the previous item is checked before"),
-                        "passed", item.getName(), taskQualityForm));
+                        "passed",
+                        item.getName(),
+                        taskQualityForm));
 
             }
-            if ( (!taskQualityForm.isByItems()) && (!taskQualityForm.isCorrectConsecutiveDate(item)) ) {
+
+            if ((!taskQualityForm.isByItems()) && (!taskQualityForm.isCorrectConsecutiveDate(item))) {
                 throw new ValidationException(invalidValue(
                         _("must be after the previous date"),
-                        "date", item.getName(), taskQualityForm));
+                        "date",
+                        item.getName(),
+                        taskQualityForm));
             }
 
             if (!item.isIfDateCanBeNullConstraint()) {
                 throw new ValidationException(invalidValue(
-                        _("date not specified"), "date",
-                        item.getName(), taskQualityForm));
+                        _("date not specified"),
+                        "date",
+                        item.getName(),
+                        taskQualityForm));
             }
         }
     }

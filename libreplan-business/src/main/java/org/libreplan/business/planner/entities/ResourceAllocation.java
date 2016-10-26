@@ -613,7 +613,7 @@ public abstract class ResourceAllocation<T extends DayAssignment>
         return task;
     }
 
-    private void updateOriginalTotalAssigment() {
+    private void updateOriginalTotalAssignment() {
         if ( !isSatisfied() ) {
             return;
         }
@@ -629,7 +629,7 @@ public abstract class ResourceAllocation<T extends DayAssignment>
     }
 
     @NotNull
-    public EffortDuration getIntendedTotalAssigment() {
+    public EffortDuration getIntendedTotalAssignment() {
         return intendedTotalAssignment;
     }
 
@@ -1015,7 +1015,7 @@ public abstract class ResourceAllocation<T extends DayAssignment>
 
         removingAssignments(withoutConsolidated(getAssignments()));
         addingAssignments(assignments);
-        updateOriginalTotalAssigment();
+        updateOriginalTotalAssignment();
         getDayAssignmentsState().setIntraDayStart(intraDayStart);
         getDayAssignmentsState().setIntraDayEnd(intraDayEnd);
     }
@@ -1062,7 +1062,7 @@ public abstract class ResourceAllocation<T extends DayAssignment>
 
 
         public void resetAssignments(List<T> assignmentsCreated) {
-            resetAssigmentsFittingAllocationDatesToResultingAssignments(this, assignmentsCreated);
+            resetAssignmentsFittingAllocationDatesToResultingAssignments(this, assignmentsCreated);
         }
 
         public IntraDayDate getStartInclusive() {
@@ -1102,11 +1102,11 @@ public abstract class ResourceAllocation<T extends DayAssignment>
 
         @Override
         public void resetAssignments(List<T> assignmentsCreated) {
-            resetAssigmentsForInterval(this, assignmentsCreated);
+            resetAssignmentsForInterval(this, assignmentsCreated);
         }
     }
 
-    protected void resetAssigmentsForInterval(AllocationIntervalInsideTask interval, List<T> assignmentsCreated) {
+    protected void resetAssignmentsForInterval(AllocationIntervalInsideTask interval, List<T> assignmentsCreated) {
         IntraDayDate originalStart = getIntraDayStartDate();
         IntraDayDate originalEnd = getIntraDayEndDate();
 
@@ -1127,7 +1127,7 @@ public abstract class ResourceAllocation<T extends DayAssignment>
         removingAssignments(withoutConsolidated(interval.getAssignmentsOnInterval()));
         addingAssignments(assignmentsCreated);
 
-        updateOriginalTotalAssigment();
+        updateOriginalTotalAssignment();
         updateResourcesPerDay();
     }
 
@@ -1138,7 +1138,7 @@ public abstract class ResourceAllocation<T extends DayAssignment>
         }
     }
 
-    private void resetAssigmentsFittingAllocationDatesToResultingAssignments(
+    private void resetAssignmentsFittingAllocationDatesToResultingAssignments(
             AllocationInterval interval, List<T> assignmentsCreated) {
 
         updateAssignments(interval, assignmentsCreated);
@@ -1921,7 +1921,7 @@ public abstract class ResourceAllocation<T extends DayAssignment>
         this.intendedResourcesPerDay = modifications.intendedResourcesPerDay;
 
         if (modifications.isSatisfied()) {
-            updateOriginalTotalAssigment();
+            updateOriginalTotalAssignment();
             updateResourcesPerDay();
         }
 
@@ -2013,7 +2013,7 @@ public abstract class ResourceAllocation<T extends DayAssignment>
 
     protected abstract void removePredecessorContainersFor(Scenario scenario);
 
-    public void removeDayAssigmentsFor(Scenario scenario) {
+    public void removeDayAssignmentsFor(Scenario scenario) {
         for (DerivedAllocation each : getDerivedAllocations()) {
             each.removeContainersFor(scenario);
         }

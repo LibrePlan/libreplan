@@ -25,7 +25,7 @@
     <caption id="caption" sclass="caption-title" />
     <tabbox>
         <tabs>
-            <tab label="${i18n:_('User data')}"></tab>
+            <tab label="${i18n:_('User data')}"/>
         </tabs>
         <tabpanels>
             <tabpanel>
@@ -33,147 +33,163 @@
 
                     <!-- User details  -->
                     <groupbox closable="false">
-                    <caption label="${i18n:_('General user data')}" />
-                    <vbox>
-                        <label value="${i18n:_('Password cannot be managed for LDAP users because LDAP authentication is enabled.')}" visible="@{controller.ldapUserLdapConfiguration}" />
-                    </vbox>
-                    <grid fixedLayout="false" span="true">
-                        <columns>
-                            <column width="200px" />
-                            <column />
-                        </columns>
-                        <rows>
-                            <row>
-                                <label value="${i18n:_('Username')}" />
-                                <textbox id="loginName"
-                                    value="@{controller.user.loginName}" width="300px"
-                                    constraint="no empty:${i18n:_('cannot be empty')}"
-                                    onBlur="controller.updateWindowTitle()"
-                                    disabled="@{controller.ldapUserOrDefaultAdmin}" />
-                            </row>
-                            <row>
-                                <label value="${i18n:_('First name')}" />
-                                <textbox id="firstName"
-                                    value="@{controller.user.firstName}" width="300px"
-                                    disabled="@{controller.user.bound}" />
-                            </row>
-                            <row>
-                                <label value="${i18n:_('Last name')}" />
-                                <textbox id="lastName"
-                                    value="@{controller.user.lastName}" width="300px"
-                                    disabled="@{controller.user.bound}" />
-                            </row>
-                            <row>
-                                <label value="${i18n:_('Password')}" />
-                                <textbox id="password" type="password"
-                                    onChange="controller.setPassword(self.value);" width="300px" disabled="@{controller.ldapUserLdapConfiguration}"/>
-                            </row>
-                            <row>
-                                <label value="${i18n:_('Password confirmation')}" />
-                                <textbox id="passwordConfirmation" type="password"
-                                    constraint="@{controller.validatePasswordConfirmation}"
-                                    width="300px" disabled="@{controller.ldapUserLdapConfiguration}"/>
-                            </row>
-                            <row>
-                                <label value="${i18n:_('Disabled')}" />
-                                <checkbox id="disabled"
-                                    checked="@{controller.user.disabled}" width="300px"
-                                    disabled="@{controller.ldapUserOrDefaultAdmin}" />
-                            </row>
-                            <row>
-                                <label value="${i18n:_('E-mail')}" />
-                                <textbox id="email"
-                                    value="@{controller.user.email}" width="300px"/>
-                            </row>
-                            <row id="authenticationTypeComboRow">
-                                <label value="${i18n:_('Authentication type')}" />
-                                <combobox id="authenticationTypeCombo" autodrop="true"
-                                onChange="controller.setAuthenticationType(self.selectedItem)" />
-                            </row>
-                        </rows>
-                    </grid>
+                        <caption label="${i18n:_('General user data')}" />
+                        <vbox>
+                            <label value="${i18n:_('Password cannot be managed for LDAP users because LDAP authentication is enabled.')}"
+                                   visible="@{controller.ldapUserLdapConfiguration}" />
+                        </vbox>
+                        <grid fixedLayout="true" span="true">
+                            <columns>
+                                <column width="200px" />
+                                <column />
+                            </columns>
+                            <rows>
+                                <row>
+                                    <label value="${i18n:_('Username')}" />
+                                    <textbox id="loginName"
+                                             value="@{controller.user.loginName}" width="300px"
+                                             constraint="no empty:${i18n:_('cannot be empty')}"
+                                             onBlur="controller.updateWindowTitle()"
+                                             disabled="@{controller.ldapUserOrDefaultAdmin}" />
+                                </row>
+                                <row>
+                                    <label value="${i18n:_('First name')}" />
+                                    <textbox id="firstName"
+                                             value="@{controller.user.firstName}" width="300px"
+                                             disabled="@{controller.user.bound}" />
+                                </row>
+                                <row>
+                                    <label value="${i18n:_('Last name')}" />
+                                    <textbox id="lastName"
+                                             value="@{controller.user.lastName}" width="300px"
+                                             disabled="@{controller.user.bound}" />
+                                </row>
+                                <row>
+                                    <label value="${i18n:_('Password')}" />
+                                    <textbox id="password" type="password"
+                                             onChange="controller.setPassword(self.value);"
+                                             width="300px"
+                                             disabled="@{controller.ldapUserLdapConfiguration}"/>
+                                </row>
+                                <row>
+                                    <label value="${i18n:_('Password confirmation')}" />
+                                    <textbox id="passwordConfirmation" type="password"
+                                             constraint="@{controller.validatePasswordConfirmation}"
+                                             width="300px"
+                                             disabled="@{controller.ldapUserLdapConfiguration}"/>
+                                </row>
+                                <row>
+                                    <label value="${i18n:_('Disabled')}" />
+                                    <checkbox id="disabled"
+                                              checked="@{controller.user.disabled}"
+                                              width="300px"
+                                              disabled="@{controller.ldapUserOrDefaultAdmin}" />
+                                </row>
+                                <row>
+                                    <label value="${i18n:_('E-mail')}" />
+                                    <textbox id="email" value="@{controller.user.email}" width="300px"/>
+                                </row>
+                                <row id="authenticationTypeComboRow">
+                                    <label value="${i18n:_('Authentication type')}" />
+                                    <combobox id="authenticationTypeCombo" autodrop="true"
+                                              onChange="controller.setAuthenticationType(self.selectedItem)" />
+                                </row>
+                            </rows>
+                        </grid>
                     </groupbox>
 
                     <groupbox closable="false" id="boundResourceGroupbox">
-                    <caption label="${i18n:_('Bound resource')}" />
-                    <grid fixedLayout="false" span="true">
-                        <columns>
-                            <column width="200px" />
-                            <column />
-                        </columns>
-                        <rows>
-                            <row>
-                                <label value="${i18n:_('Has bound resource')}" />
-                                <label value="@{controller.hasBoundResource}" />
-                            </row>
-                            <row visible="@{controller.bound}">
-                                <label value="${i18n:_('Bound resource')}" />
-                                <label value="@{controller.boundResource}" />
-                            </row>
-                        </rows>
-                    </grid>
-                    <button label="${i18n:_('Go to edit worker window')}"
-                        onClick="controller.goToWorkerEdition();"
-                        visible="@{controller.bound}"
-                        disabled="@{controller.noRoleWorkers}"
-                        tooltiptext="@{controller.workerEditionButtonTooltip}" />
-                    <button label="${i18n:_('Unbound resource')}"
-                        onClick="controller.unboundResource();"
-                        visible="@{controller.bound}" />
+                        <caption label="${i18n:_('Bound resource')}" />
+                        <grid fixedLayout="true" span="true">
+                            <columns>
+                                <column width="200px" />
+                                <column />
+                            </columns>
+                            <rows>
+                                <row>
+                                    <label value="${i18n:_('Has bound resource')}" />
+                                    <label value="@{controller.hasBoundResource}" />
+                                </row>
+                                <row visible="@{controller.bound}">
+                                    <label value="${i18n:_('Bound resource')}" />
+                                    <label value="@{controller.boundResource}" />
+                                </row>
+                            </rows>
+                        </grid>
+
+                        <hbox style="margin-top: 2px">
+                            <button label="${i18n:_('Go to edit worker window')}"
+                                    sclass="add-button"
+                                    onClick="controller.goToWorkerEdition();"
+                                    visible="@{controller.bound}"
+                                    disabled="@{controller.noRoleWorkers}"
+                                    tooltiptext="@{controller.workerEditionButtonTooltip}" />
+                            <button label="${i18n:_('Unbound resource')}"
+                                    sclass="add-button"
+                                    onClick="controller.unboundResource();"
+                                    visible="@{controller.bound}" />
+                        </hbox>
                     </groupbox>
 
                     <!-- Associated UserRoles -->
                     <groupbox closable="false">
-                    <caption label="${i18n:_('Association with roles')}" />
-                    <vbox>
-                        <label value="${i18n:_('Roles of LDAP users cannot be managed because LDAP is enabled and LDAP roles are being used.')}" visible="@{controller.areRolesAndProfilesDisabled}" />
-                    </vbox>
-                    <hbox align="center">
-                        <combobox id="userRolesCombo" autodrop="true" />
-                        <button label="${i18n:_('Add role')}"
-                            onClick="controller.addSelectedRole()"
-                            disabled="@{controller.areRolesAndProfilesDisabled}" />
-                    </hbox>
-                    <grid id="listing" model="@{controller.roles}"
-                        rowRenderer="@{controller.rolesRenderer}">
-                        <columns sizable="true">
-                            <column label="${i18n:_('Role name')}" />
-                            <column label="${i18n:_('Actions')}" />
-                        </columns>
-                    </grid>
+
+                        <caption label="${i18n:_('Association with roles')}" />
+
+                        <vbox>
+                            <label value="${i18n:_('Roles of LDAP users cannot be managed because LDAP is enabled and LDAP roles are being used.')}"
+                                   visible="@{controller.areRolesAndProfilesDisabled}" />
+                        </vbox>
+
+                        <hbox align="center" style="margin: 2px 0 2px 0">
+                            <combobox id="userRolesCombo" autodrop="true" />
+                            <button label="${i18n:_('Add role')}"
+                                    sclass="add-button"
+                                    onClick="controller.addSelectedRole()"
+                                    disabled="@{controller.areRolesAndProfilesDisabled}" />
+                        </hbox>
+
+                        <grid id="listing" model="@{controller.roles}"
+                              rowRenderer="@{controller.rolesRenderer}">
+                            <columns sizable="true">
+                                <column label="${i18n:_('Role name')}" />
+                                <column label="${i18n:_('Actions')}" />
+                            </columns>
+                        </grid>
                     </groupbox>
 
                     <!-- Associated Profiles -->
                     <groupbox closable="false">
-                    <caption label="${i18n:_('Association with profiles')}" />
-                    <vbox>
-                        <label value="${i18n:_('Profiles of LDAP users cannot be managed because LDAP is enabled and LDAP roles are being used.')}" visible="@{controller.areRolesAndProfilesDisabled}" />
-                    </vbox>
-                    <hbox align="center">
-                        <combobox id="profilesCombo" autodrop="true" />
-                        <button label="${i18n:_('Add profile')}"
-                            onClick="controller.addSelectedProfile()"
-                            disabled="@{controller.areRolesAndProfilesDisabled}" />
-                    </hbox>
-                    <grid id="profilesListing" model="@{controller.profiles}">
-                        <columns sizable="true">
-                            <column label="${i18n:_('Profile name')}" />
-                            <column label="${i18n:_('Actions')}" />
-                        </columns>
-                        <rows>
-                            <row self="@{each='profile'}" value="@{profile}">
-                                <label value="@{profile.profileName}" />
-                                <hbox>
-                                    <button sclass="icono" image="/common/img/ico_borrar1.png"
-                                        hoverImage="/common/img/ico_borrar.png"
-                                        tooltiptext="${i18n:_('Delete')}"
-                                        onClick="controller.removeProfile(self.parent.parent.value);"
-                                        disabled="@{controller.areRolesAndProfilesDisabled}" >
-                                    </button>
-                                </hbox>
-                            </row>
-                        </rows>
-                    </grid>
+                        <caption label="${i18n:_('Association with profiles')}" />
+                        <vbox>
+                            <label value="${i18n:_('Profiles of LDAP users cannot be managed because LDAP is enabled and LDAP roles are being used.')}"
+                                   visible="@{controller.areRolesAndProfilesDisabled}" />
+                        </vbox>
+                        <hbox align="center" style="margin: 2px 0 2px 0">
+                            <combobox id="profilesCombo" autodrop="true" />
+                            <button label="${i18n:_('Add profile')}" sclass="add-button"
+                                    onClick="controller.addSelectedProfile()"
+                                    disabled="@{controller.areRolesAndProfilesDisabled}" />
+                        </hbox>
+                        <grid id="profilesListing" model="@{controller.profiles}">
+                            <columns sizable="true">
+                                <column label="${i18n:_('Profile name')}" />
+                                <column label="${i18n:_('Actions')}" />
+                            </columns>
+                            <rows>
+                                <row self="@{each='profile'}" value="@{profile}">
+                                    <label value="@{profile.profileName}" />
+                                    <hbox>
+                                        <button sclass="icono" image="/common/img/ico_borrar1.png"
+                                                hoverImage="/common/img/ico_borrar.png"
+                                                tooltiptext="${i18n:_('Delete')}"
+                                                onClick="controller.removeProfile(self.parent.parent.value);"
+                                                disabled="@{controller.areRolesAndProfilesDisabled}" >
+                                        </button>
+                                    </hbox>
+                                </row>
+                            </rows>
+                        </grid>
                     </groupbox>
                 </vbox>
             </tabpanel>
@@ -181,10 +197,10 @@
     </tabbox>
 
     <button onClick="controller.saveAndExit();" autodisable="self"
-        label="${i18n:_('Save')}" sclass="save-button global-action" />
+            label="${i18n:_('Save')}" sclass="save-button global-action" />
     <button onClick="controller.saveAndContinue();"
-        label="${i18n:_('Save &amp; Continue')}" sclass="saveandcontinue-button global-action" />
+            label="${i18n:_('Save &amp; Continue')}" sclass="saveandcontinue-button global-action" />
     <button onClick="controller.cancelForm();"
-        label="${i18n:_('Cancel')}" sclass="cancel-button global-action" />
+            label="${i18n:_('Cancel')}" sclass="cancel-button global-action" />
 
 </window>

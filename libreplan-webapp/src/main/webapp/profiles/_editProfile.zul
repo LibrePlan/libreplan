@@ -22,9 +22,10 @@
 
 <window id="${arg.top_id}">
     <caption id="caption" sclass="caption-title" />
+
     <tabbox>
         <tabs>
-            <tab label="${i18n:_('Profile data')}"></tab>
+            <tab label="${i18n:_('Profile data')}"/>
         </tabs>
         <tabpanels>
             <tabpanel>
@@ -39,9 +40,9 @@
                             <row>
                                 <label value="${i18n:_('Name')}" />
                                 <textbox id="name"
-                                    value="@{controller.profile.profileName}" width="300px"
-                                    constraint="no empty:${i18n:_('cannot be empty')}"
-                                    onBlur="controller.updateWindowTitle()"  sclass="focus-element" />
+                                         value="@{controller.profile.profileName}" width="300px"
+                                         constraint="no empty:${i18n:_('cannot be empty')}"
+                                         onBlur="controller.updateWindowTitle()"  sclass="focus-element" />
                             </row>
                         </rows>
                     </grid>
@@ -49,13 +50,13 @@
                 <!-- Associated UserRoles -->
                 <groupbox closable="false">
                     <caption label="${i18n:_('Association with roles')}" />
-                    <hbox align="center">
+                    <hbox align="center" sclass="report-margin">
                         <combobox id="userRolesCombo" autodrop="true" />
-                        <button label="${i18n:_('Add role')}"
-                            onClick="controller.addSelectedRole()"/>
+                        <button label="${i18n:_('Add role')}" sclass="add-button"
+                                onClick="controller.addSelectedRole()"/>
                     </hbox>
                     <grid id="listing" model="@{controller.roles}"
-                        rowRenderer="@{controller.rolesRenderer}">
+                          rowRenderer="@{controller.rolesRenderer}">
                         <columns sizable="true">
                             <column label="${i18n:_('Role name')}" />
                             <column label="${i18n:_('Actions')}" />
@@ -67,10 +68,13 @@
     </tabbox>
 
     <button onClick="controller.saveAndExit();" autodisable="self"
-        label="${i18n:_('Save')}" sclass="save-button global-action" />
+            label="${i18n:_('Save')}"
+            sclass="save-button global-action" />
     <button onClick="controller.saveAndContinue();"
-        label="${i18n:_('Save &amp; Continue')}" sclass="saveandcontinue-button global-action" />
+            label="${i18n:_('Save &amp; Continue')}"
+            sclass="saveandcontinue-button global-action" />
     <button onClick="controller.cancelForm();"
-        label="${i18n:_('Cancel')}" sclass="cancel-button global-action" />
+            label="${i18n:_('Cancel')}"
+            sclass="cancel-button global-action" />
 
 </window>

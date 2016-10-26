@@ -29,29 +29,28 @@
 
 <?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
 
-<?component name="combobox_output_format" macroURI="combobox_output_format.zul"
-    class="org.libreplan.web.reports.ComboboxOutputFormat" ?>
+<?component name="comboboxOutputFormat" macroURI="comboboxOutputFormat.zul"
+        class="org.libreplan.web.reports.ComboboxOutputFormat" ?>
 
-<zk id="hoursWorkedPerWorker" xmlns:n="http://www.zkoss.org/2005/zk/native">
+<zk>
 
     <window self="@{define(content)}"
-        apply="org.libreplan.web.reports.HoursWorkedPerWorkerInAMonthController"
-        title="${i18n:_('Total Worked Hours By Resource In A Month')}"
-        border="normal" >
+            apply="org.libreplan.web.reports.HoursWorkedPerWorkerInAMonthController"
+            title="${i18n:_('Total Worked Hours By Resource In A Month')}"
+            border="normal" >
 
         <!-- Select workers -->
-        <panel title="${i18n:_('Filter by month')}"
-                border="normal"
-                style="overflow:auto">
+        <panel title="${i18n:_('Filter by month')}" border="normal" style="overflow:auto" sclass="report-margin">
 
             <panelchildren>
                 <hbox>
-                    <vbox>
+                    <vbox sclass="margin-border">
                         <label value="${i18n:_('Year')}" />
                         <listbox id="lbYears" rows="1" mold="select">
                         </listbox>
                     </vbox>
-                    <vbox>
+
+                    <vbox sclass="margin-border">
                         <label value="${i18n:_('Month')}" />
                         <listbox id="lbMonths" rows="1" mold="select">
                         </listbox>
@@ -63,18 +62,18 @@
         <separator spacing="10px" orient="horizontal" />
 
         <!-- Select output format -->
-        <panel title="${i18n:_('Format')}" border="normal"
-            style="overflow:auto">
+        <panel title="${i18n:_('Format')}" border="normal" style="overflow:auto" sclass="report-margin">
             <panelchildren>
-                <grid width="700px">
+                <grid width="700px" sclass="margin-border">
                     <columns>
                         <column width="200px" />
                         <column />
                     </columns>
+
                     <rows>
                         <row>
                             <label value="${i18n:_('Output format')}" />
-                            <combobox_output_format id="outputFormat" />
+                            <comboboxOutputFormat id="outputFormat" />
                         </row>
                     </rows>
                 </grid>
@@ -86,14 +85,13 @@
 
         <hbox style="display: none" id="URItext">
             <label value="${i18n:_('Click on this')}" />
-            <a id="URIlink" class="z-label" zclass="z-label"
-                    label="${i18n:_('direct link')}" />
-            <label value="${i18n:_('if the report is not opened automatically')}" />
+            <a id="URIlink" sclass="z-label" zclass="z-label" label="${i18n:_('direct link')}" />
+            <label value="${i18n:_('if the report is not opened automatically or use save as...')}" />
         </hbox>
 
         <separator spacing="10px" orient="horizontal" />
 
-        <button label="${i18n:_('Show')}" onClick="controller.showReport(report)" />
+        <button label="${i18n:_('Show')}" sclass="add-button" onClick="controller.showReport(report)" />
 
         <jasperreportcomponent id="report" />
 

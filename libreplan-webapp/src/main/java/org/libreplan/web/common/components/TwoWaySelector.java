@@ -21,19 +21,6 @@
 
 package org.libreplan.web.common.components;
 
-import static org.libreplan.web.I18nHelper._;
-
-import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.libreplan.web.common.Util;
 import org.zkoss.lang.Objects;
 import org.zkoss.zk.ui.HtmlMacroComponent;
@@ -41,6 +28,19 @@ import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
+
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Set;
+import java.util.Arrays;
+
+import static org.libreplan.web.I18nHelper._;
 
 /**
  * ZK macro component that shows two {@link Listbox} allowing to move objects
@@ -60,7 +60,7 @@ public class TwoWaySelector extends HtmlMacroComponent {
      * A {@link Set} of objects that are assigned (so they're shown on the left
      * {@link Listbox})
      */
-    private Set assignedObjects = new HashSet();
+    private Set<Object> assignedObjects = new HashSet<Object>();
 
     /**
      * Title for the left {@link Listbox} (where assigned objects are shown)
@@ -93,9 +93,9 @@ public class TwoWaySelector extends HtmlMacroComponent {
      */
     private transient ListitemRenderer renderer = new ListitemRenderer() {
         @Override
-        public void render(Listitem item, Object data) throws Exception {
+        public void render(Listitem item, Object data, int i) throws Exception {
 
-            Class<? extends Object> klass = data.getClass();
+            Class<?> klass = data.getClass();
             Map<String, PropertyDescriptor> propertiesByName = getProperties(klass);
 
             // If a list of attributes is defined
@@ -103,15 +103,12 @@ public class TwoWaySelector extends HtmlMacroComponent {
                 // For each attribute
                 for (String column : columns) {
                     // Call the method to get the information
-                    PropertyDescriptor propertyDescriptor = propertiesByName
-                            .get(column);
+                    PropertyDescriptor propertyDescriptor = propertiesByName.get(column);
                     if (propertyDescriptor == null) {
-                        throw new RuntimeException(
-                            _("Unknown attribute '{0}' in class {1}", column, klass.getName()));
+                        throw new RuntimeException(_("Unknown attribute '{0}' in class {1}", column, klass.getName()));
                     }
 
-                    String label = Objects.toString(propertyDescriptor
-                            .getReadMethod().invoke(data));
+                    String label = Objects.toString(propertyDescriptor.getReadMethod().invoke(data));
 
                     // Add a new Listcell
                     item.appendChild(new Listcell(label));
@@ -143,15 +140,13 @@ public class TwoWaySelector extends HtmlMacroComponent {
          * @return A {@link Map} that relates properties name and
          *         {@link PropertyDescriptor}
          */
-        private Map<String, PropertyDescriptor> buildPropertyDescriptorsMap(
-                BeanInfo info) {
-            PropertyDescriptor[] propertyDescriptors = info
-                    .getPropertyDescriptors();
-            Map<String, PropertyDescriptor> propertiesByName = new HashMap<String, PropertyDescriptor>();
+        private Map<String, PropertyDescriptor> buildPropertyDescriptorsMap(BeanInfo info) {
+            PropertyDescriptor[] propertyDescriptors = info.getPropertyDescriptors();
+            Map<String, PropertyDescriptor> propertiesByName = new HashMap<>();
             for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
-                propertiesByName.put(propertyDescriptor.getName(),
-                        propertyDescriptor);
+                propertiesByName.put(propertyDescriptor.getName(), propertyDescriptor);
             }
+
             return propertiesByName;
         }
 
@@ -165,8 +160,7 @@ public class TwoWaySelector extends HtmlMacroComponent {
          *         {@link PropertyDescriptor}
          * @throws IntrospectionException
          */
-        private Map<String, PropertyDescriptor> getProperties(
-                Class<? extends Object> klass) throws IntrospectionException {
+        private Map<String, PropertyDescriptor> getProperties(Class<?> klass) throws IntrospectionException {
             // If it's already cached
             if (propertiesMapsCached.containsKey(klass)) {
                 return propertiesMapsCached.get(klass);
@@ -202,13 +196,13 @@ public class TwoWaySelector extends HtmlMacroComponent {
         return unassignedTitle;
     }
 
-    public void setAssignedObjects(Set assignedObjects) {
+    public void setAssignedObjects(Set<Object> assignedObjects) {
         if (assignedObjects != null) {
             this.assignedObjects = assignedObjects;
         }
     }
 
-    public Set getAssignedObjects() {
+    public Set<Object> getAssignedObjects() {
         return assignedObjects;
     }
 

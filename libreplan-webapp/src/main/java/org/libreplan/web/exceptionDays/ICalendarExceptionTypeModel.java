@@ -23,14 +23,12 @@ import java.util.List;
 import org.libreplan.business.calendars.entities.CalendarExceptionType;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.web.common.IIntegrationEntityModel;
-import org.zkoss.util.InvalidValueException;
+import org.zkoss.util.IllegalSyntaxException;
 
 /**
- *
  * @author Diego Pino <dpino@igalia.com>
- *
  */
-public interface ICalendarExceptionTypeModel extends IIntegrationEntityModel {
+interface ICalendarExceptionTypeModel extends IIntegrationEntityModel {
 
     void initCreate();
 
@@ -42,7 +40,6 @@ public interface ICalendarExceptionTypeModel extends IIntegrationEntityModel {
 
     void confirmSave();
 
-    void confirmDelete(CalendarExceptionType exceptionType)
-            throws InstanceNotFoundException, InvalidValueException;
+    void confirmDelete(CalendarExceptionType exceptionType) throws InstanceNotFoundException, IllegalSyntaxException;
 
 }

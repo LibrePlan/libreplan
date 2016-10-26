@@ -21,27 +21,26 @@
 
 package org.libreplan.web.common;
 
-import static org.libreplan.web.I18nHelper._;
-
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
+
+import static org.libreplan.web.I18nHelper._;
 
 /**
  * {@link Enum} types needs to be translated in the webapp module, because of it
  * is not possible to known the user language in the business layer.
  *
  * This class provides a basic renderer that just call to the translation method
- * and could be useful to translate {@link Enum} that are showed into
- * {@link Listbox}.
+ * and could be useful to translate {@link Enum} that are showed into {@link Listbox}.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 public class EnumsListitemRenderer implements ListitemRenderer {
 
     @Override
-    public void render(Listitem item, Object data) {
+    public void render(Listitem item, Object data, int i) {
         item.setValue(data);
         item.appendChild(new Listcell(_(data.toString())));
     }

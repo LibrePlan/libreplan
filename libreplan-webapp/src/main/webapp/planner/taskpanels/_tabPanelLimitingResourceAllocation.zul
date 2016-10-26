@@ -23,24 +23,24 @@
 <?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n" ?>
 
 <?component name="newAllocationSelectorCombo"
-    class="org.libreplan.web.common.components.NewAllocationSelectorCombo"
-    macroURI="/resources/search/allocation_selector_combo.zul" ?>
+        class="org.libreplan.web.common.components.NewAllocationSelectorCombo"
+        macroURI="/resources/search/allocation_selector_combo.zul" ?>
 
 <?component name="newAllocationSelector"
-    class="org.libreplan.web.common.components.NewAllocationSelector"
-    macroURI="/resources/search/allocation_selector.zul" ?>
+        class="org.libreplan.web.common.components.NewAllocationSelector"
+        macroURI="/resources/search/allocation_selector.zul" ?>
 
 <?component name="taskInformation"
-    class="org.libreplan.web.planner.allocation.TaskInformation"
-    macroURI="_taskInformation.zul" ?>
+        class="org.libreplan.web.planner.allocation.TaskInformation"
+        macroURI="_taskInformation.zul" ?>
 
 <tabpanel id="${arg.id}">
- <tabbox mold="accordion">
+    <tabbox mold="accordion">
         <tabs>
             <tab id="tabLimitingResourceAllocation" />
             <tab id="tabLimitingWorkerSearch" />
         </tabs>
-        <tabpanels>
+        <tabpanels sclass="tabNormalAllocation">
             <tabpanel>
 
                 <!-- Order element information -->
@@ -56,16 +56,21 @@
 
                     <hbox>
                         <newAllocationSelectorCombo id="limitingNewAllocationSelectorCombo" behaviour="LIMITING" />
-                        <button label="${i18n:_('Add')}" onClick="limitingAllocationController.selectWorkers(limitingNewAllocationSelectorCombo)" />
-                        <button label="${i18n:_('Advanced search')}" onClick="tabLimitingWorkerSearch.setSelected(true); " />
+
+                        <button label="${i18n:_('Add')}" sclass="add-button"
+                                onClick="limitingAllocationController.selectWorkers(limitingNewAllocationSelectorCombo)" />
+
+                        <button label="${i18n:_('Advanced search')}"
+                                onClick="tabLimitingWorkerSearch.setSelected(true);"
+                                sclass="add-button"/>
                     </hbox>
 
                     <separator spacing="10px"/>
 
                     <grid id="gridLimitingAllocations"
-                            model="@{limitingAllocationController.resourceAllocationRows}"
-                            rowRenderer="@{limitingAllocationController.gridLimitingAllocationRenderer}"
-                            style="margin-bottom: 5px">
+                          model="@{limitingAllocationController.resourceAllocationRows}"
+                          rowRenderer="@{limitingAllocationController.gridLimitingAllocationRenderer}"
+                          style="margin-bottom: 5px">
                         <columns>
                             <column label="${i18n:_('Assignation type')}" align="center"/>
                             <column label="${i18n:_('Assignation')}" align="center"/>
@@ -81,9 +86,11 @@
             <tabpanel >
                 <newAllocationSelector id="limitingNewAllocationSelector"  behaviour="LIMITING" />
                 <hbox>
-                    <button label="${i18n:_('Select')}" onClick="limitingAllocationController.selectWorkers(limitingNewAllocationSelector)" />
-                    <button label="${i18n:_('Close')}" onClick="limitingAllocationController.closeSelectWorkers()" />
-               </hbox>
+                    <button label="${i18n:_('Select')}" sclass="add-button"
+                            onClick="limitingAllocationController.selectWorkers(limitingNewAllocationSelector)" />
+                    <button label="${i18n:_('Close')}"  sclass="add-button"
+                            onClick="limitingAllocationController.closeSelectWorkers()" />
+                </hbox>
             </tabpanel>
         </tabpanels>
     </tabbox>

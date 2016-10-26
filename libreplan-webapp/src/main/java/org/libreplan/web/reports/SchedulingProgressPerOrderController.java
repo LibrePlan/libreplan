@@ -21,16 +21,8 @@
 
 package org.libreplan.web.reports;
 
-import static org.libreplan.web.I18nHelper._;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
+import com.libreplan.java.zk.components.JasperreportComponent;
 import net.sf.jasperreports.engine.JRDataSource;
-
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.LocalDate;
 import org.libreplan.business.advance.entities.AdvanceType;
@@ -39,11 +31,18 @@ import org.libreplan.web.common.Util;
 import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
+import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
 
-import com.igalia.java.zk.components.JasperreportComponent;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import static org.libreplan.web.I18nHelper._;
 
 /**
  * @author Diego Pino Garcia <dpino@igalia.com>
@@ -70,7 +69,11 @@ public class SchedulingProgressPerOrderController extends LibrePlanReportControl
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        comp.setVariable("controller", this, true);
+
+        schedulingProgressPerOrderModel =
+                (ISchedulingProgressPerOrderModel) SpringUtil.getBean("schedulingProgressPerOrderModel");
+
+        comp.setAttribute("controller", this, true);
         lbAdvanceType.setSelectedIndex(0);
         schedulingProgressPerOrderModel.init();
     }
@@ -80,8 +83,8 @@ public class SchedulingProgressPerOrderController extends LibrePlanReportControl
     }
 
     public List<Order> getSelectedOrdersToFilter() {
-        return (getSelectedOrders().isEmpty()) ? Collections
-                .unmodifiableList(getAllOrders())
+        return getSelectedOrders().isEmpty()
+                ? Collections.unmodifiableList(getAllOrders())
                 : getSelectedOrders();
     }
 
@@ -90,8 +93,7 @@ public class SchedulingProgressPerOrderController extends LibrePlanReportControl
      * @return
      */
     public List<Order> getSelectedOrders() {
-        return Collections.unmodifiableList(schedulingProgressPerOrderModel
-                .getSelectedOrders());
+        return Collections.unmodifiableList(schedulingProgressPerOrderModel.getSelectedOrders());
     }
 
     public void onSelectOrder() {
@@ -99,11 +101,10 @@ public class SchedulingProgressPerOrderController extends LibrePlanReportControl
         if (order == null) {
             throw new WrongValueException(bdOrders, _("please, select a project"));
         }
-        boolean result = schedulingProgressPerOrderModel
-                .addSelectedOrder(order);
+
+        boolean result = schedulingProgressPerOrderModel.addSelectedOrder(order);
         if (!result) {
-            throw new WrongValueException(bdOrders,
-                    _("This project has already been added."));
+            throw new WrongValueException(bdOrders, _("This project has already been added."));
         } else {
             Util.reloadBindings(lbOrders);
         }
@@ -122,25 +123,29 @@ public class SchedulingProgressPerOrderController extends LibrePlanReportControl
     protected JRDataSource getDataSource() {
         List<Order> orders = getSelectedOrdersToFilter();
 
-        return schedulingProgressPerOrderModel
-                .getSchedulingProgressPerOrderReport(orders, getAdvanceType(),
-                        startingDate.getValue(), endingDate.getValue(),
-                        new LocalDate(getReferenceDate()));
-   }
+        return schedulingProgressPerOrderModel.getSchedulingProgressPerOrderReport(
+                orders,
+                getAdvanceType(),
+                startingDate.getValue(),
+                endingDate.getValue(),
+                new LocalDate(getReferenceDate()));
+    }
 
-    private Date getReferenceDate() {
+    public Date getReferenceDate() {
         Date result = referenceDate.getValue();
+
         if (result == null) {
             referenceDate.setValue(new Date());
         }
+
         return referenceDate.getValue();
     }
 
-    private Date getStartingDate() {
+    public Date getStartingDate() {
         return startingDate.getValue();
     }
 
-    private Date getEndingDate() {
+    public Date getEndingDate() {
         return endingDate.getValue();
     }
 
@@ -156,9 +161,8 @@ public class SchedulingProgressPerOrderController extends LibrePlanReportControl
         return result;
     }
 
-    private AdvanceTypeDTO getSelectedAdvanceType() {
-        final Listitem item = lbAdvanceType.getSelectedItem();
-        return (AdvanceTypeDTO) item.getValue();
+    public AdvanceTypeDTO getSelectedAdvanceType() {
+        return (AdvanceTypeDTO) lbAdvanceType.getSelectedItem().getValue();
     }
 
     private String asString(AdvanceTypeDTO advanceTypeDTO) {
@@ -171,18 +175,19 @@ public class SchedulingProgressPerOrderController extends LibrePlanReportControl
     }
 
     public String getSelectedOrderNames() {
-        List<String> orderNames = new ArrayList<String>();
+        List<String> orderNames = new ArrayList<>();
 
         final List<Listitem> listItems = lbOrders.getItems();
         for (Listitem each : listItems) {
-            final Order order = (Order) each.getValue();
+            final Order order = each.getValue();
             orderNames.add(order.getName());
         }
+
         return (!orderNames.isEmpty()) ? StringUtils.join(orderNames, ",") : _("All");
     }
 
     public List<AdvanceTypeDTO> getAdvanceTypeDTOs() {
-        List<AdvanceTypeDTO> result = new ArrayList<AdvanceTypeDTO>();
+        List<AdvanceTypeDTO> result = new ArrayList<>();
 
         // Add value Spread
         AdvanceTypeDTO advanceTypeDTO = new AdvanceTypeDTO();
@@ -202,8 +207,8 @@ public class SchedulingProgressPerOrderController extends LibrePlanReportControl
         dbStarting.clearErrorMessage(true);
         dbEnding.clearErrorMessage(true);
 
-        final Date startingDate = (Date) dbStarting.getValue();
-        final Date endingDate = (Date) dbEnding.getValue();
+        final Date startingDate = dbStarting.getValue();
+        final Date endingDate = dbEnding.getValue();
 
         if (endingDate != null && startingDate != null && startingDate.compareTo(endingDate) > 0) {
             throw new WrongValueException(dbStarting, _("Cannot be higher than Ending Date"));
@@ -221,9 +226,7 @@ public class SchedulingProgressPerOrderController extends LibrePlanReportControl
 
         private AdvanceType advanceType;
 
-        public AdvanceTypeDTO() {
-
-        }
+        public AdvanceTypeDTO() {}
 
         public AdvanceTypeDTO(AdvanceType advanceType) {
             this.name = advanceType.getUnitName().toUpperCase();

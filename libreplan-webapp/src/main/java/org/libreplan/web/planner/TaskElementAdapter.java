@@ -514,17 +514,13 @@ public class TaskElementAdapter {
                     }
 
                     IOnTransaction<Void> asTransaction(final IModifications modifications) {
-                        return new IOnTransaction<Void>() {
-
-                            @Override
-                            public Void execute() {
-                                if ( planningState != null ) {
-                                    planningState.reassociateResourcesWithSession();
-                                }
-                                modifications.doIt(position);
-
-                                return null;
+                        return () -> {
+                            if ( planningState != null ) {
+                                planningState.reassociateResourcesWithSession();
                             }
+                            modifications.doIt(position);
+
+                            return null;
                         };
                     }
 
@@ -627,13 +623,7 @@ public class TaskElementAdapter {
                     return BigDecimal.ZERO;
                 }
 
-                return transactionService.runOnReadOnlyTransaction(new IOnTransaction<BigDecimal>() {
-
-                            @Override
-                            public BigDecimal execute() {
-                                return taskElement.getOrderElement().getTotalBudget();
-                            }
-                        });
+                return transactionService.runOnReadOnlyTransaction(() -> taskElement.getOrderElement().getTotalBudget());
             }
 
             private BigDecimal getMoneyCost() {
@@ -641,13 +631,8 @@ public class TaskElementAdapter {
                     return BigDecimal.ZERO;
                 }
 
-                return transactionService.runOnReadOnlyTransaction(new IOnTransaction<BigDecimal>() {
-
-                            @Override
-                            public BigDecimal execute() {
-                                return moneyCostCalculator.getTotalMoneyCost(taskElement.getOrderElement());
-                            }
-                        });
+                return transactionService.runOnReadOnlyTransaction(() ->
+                        moneyCostCalculator.getTotalMoneyCost(taskElement.getOrderElement()));
             }
 
             private BigDecimal getHoursMoneyCost() {
@@ -655,12 +640,8 @@ public class TaskElementAdapter {
                     return BigDecimal.ZERO;
                 }
 
-                return transactionService.runOnReadOnlyTransaction(new IOnTransaction<BigDecimal>() {
-                            @Override
-                            public BigDecimal execute() {
-                                return moneyCostCalculator.getHoursMoneyCost(taskElement.getOrderElement());
-                            }
-                        });
+                return transactionService.runOnReadOnlyTransaction(() ->
+                        moneyCostCalculator.getHoursMoneyCost(taskElement.getOrderElement()));
             }
 
             private BigDecimal getExpensesMoneyCost() {
@@ -668,12 +649,8 @@ public class TaskElementAdapter {
                     return BigDecimal.ZERO;
                 }
 
-                return transactionService.runOnReadOnlyTransaction(new IOnTransaction<BigDecimal>() {
-                            @Override
-                            public BigDecimal execute() {
-                                return moneyCostCalculator.getExpensesMoneyCost(taskElement.getOrderElement());
-                            }
-                        });
+                return transactionService.runOnReadOnlyTransaction(() ->
+                        moneyCostCalculator.getExpensesMoneyCost(taskElement.getOrderElement()));
             }
 
             @Override
@@ -700,12 +677,8 @@ public class TaskElementAdapter {
             }
 
             private ProgressType getProgressTypeFromConfiguration() {
-                return transactionService.runOnReadOnlyTransaction(new IOnTransaction<ProgressType>() {
-                            @Override
-                            public ProgressType execute() {
-                                return configurationDAO.getConfiguration().getProgressType();
-                            }
-                        });
+                return transactionService.runOnReadOnlyTransaction(() ->
+                        configurationDAO.getConfiguration().getProgressType());
             }
 
             private GanttDate getAdvanceBarEndDate(BigDecimal advancePercentage) {
@@ -718,15 +691,11 @@ public class TaskElementAdapter {
                     return "";
                 }
 
-                return transactionService.runOnReadOnlyTransaction(new IOnTransaction<String>() {
+                return transactionService.runOnReadOnlyTransaction(() -> {
+                    orderElementDAO.reattach(taskElement.getOrderElement());
 
-                            @Override
-                            public String execute() {
-                                orderElementDAO.reattach(taskElement.getOrderElement());
-
-                                return buildTooltipText();
-                            }
-                        });
+                    return buildTooltipText();
+                });
             }
 
             @Override
@@ -735,15 +704,11 @@ public class TaskElementAdapter {
                     return "";
                 }
 
-                return transactionService.runOnReadOnlyTransaction(new IOnTransaction<String>() {
+                return transactionService.runOnReadOnlyTransaction(() -> {
+                    orderElementDAO.reattach(taskElement.getOrderElement());
 
-                            @Override
-                            public String execute() {
-                                orderElementDAO.reattach(taskElement.getOrderElement());
-
-                                return buildLabelsText();
-                            }
-                        });
+                    return buildLabelsText();
+                });
             }
 
             @Override
@@ -752,17 +717,14 @@ public class TaskElementAdapter {
                     return "";
                 }
                 try {
-                    return transactionService.runOnAnotherReadOnlyTransaction(new IOnTransaction<String>() {
-                        @Override
-                        public String execute() {
-                            orderElementDAO.reattach(taskElement.getOrderElement());
+                    return transactionService.runOnAnotherReadOnlyTransaction(() -> {
+                        orderElementDAO.reattach(taskElement.getOrderElement());
 
-                            if ( taskElement.isSubcontracted() ) {
-                                externalCompanyDAO.reattach(taskElement.getSubcontractedCompany());
-                            }
-
-                            return buildResourcesText();
+                        if ( taskElement.isSubcontracted() ) {
+                            externalCompanyDAO.reattach(taskElement.getSubcontractedCompany());
                         }
+
+                        return buildResourcesText();
                     });
 
                 } catch (Exception e) {

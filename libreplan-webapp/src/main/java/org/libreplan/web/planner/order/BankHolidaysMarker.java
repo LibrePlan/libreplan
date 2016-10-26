@@ -27,27 +27,21 @@ import org.libreplan.business.calendars.entities.ICalendar;
 import org.libreplan.business.workingday.IntraDayDate.PartialDay;
 import org.libreplan.web.calendars.BaseCalendarModel;
 import org.zkoss.ganttz.timetracker.zoom.DetailItem;
-import org.zkoss.ganttz.timetracker.zoom.IDetailItemModificator;
+import org.zkoss.ganttz.timetracker.zoom.IDetailItemModifier;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public final class BankHolidaysMarker implements
-        IDetailItemModificator {
-
-    public static BankHolidaysMarker create(BaseCalendar calendar) {
-        BaseCalendarModel.forceLoadBaseCalendar(calendar);
-        return new BankHolidaysMarker(calendar);
-    }
+public final class BankHolidaysMarker implements IDetailItemModifier {
 
     private final ICalendar calendar;
 
     private static final int WEEK_LEVEL_SHADE_WIDTH = 8;
 
     /**
-     * <strong>Important: </strong>Make sure that the provided calendar has all
-     * its associated data loaded.
+     * <strong>Important:</strong>
+     * Make sure that the provided calendar has all its associated data loaded.
      *
      * @param calendar
      */
@@ -56,27 +50,31 @@ public final class BankHolidaysMarker implements
         this.calendar = calendar;
     }
 
+    public static BankHolidaysMarker create(BaseCalendar calendar) {
+        BaseCalendarModel.forceLoadBaseCalendar(calendar);
+        return new BankHolidaysMarker(calendar);
+    }
+
     @Override
     public DetailItem applyModificationsTo(DetailItem item, ZoomLevel z) {
         if (z == ZoomLevel.DETAIL_FIVE && calendar != null) {
-            PartialDay day = PartialDay.wholeDay(item.getStartDate()
-                    .toLocalDate());
+            PartialDay day = PartialDay.wholeDay(item.getStartDate().toLocalDate());
             if (calendar.getCapacityOn(day).isZero()) {
                 item.markBankHoliday();
             }
         }
-        if ((calendar != null)
-                && (z == ZoomLevel.DETAIL_THREE || z == ZoomLevel.DETAIL_FOUR)) {
+
+        if ((calendar != null) && (z == ZoomLevel.DETAIL_THREE || z == ZoomLevel.DETAIL_FOUR)) {
             LocalDate day = item.getStartDate().toLocalDate();
             boolean notWorkable;
             StringBuilder result = new StringBuilder();
+
             for (int i = 0; i < 7; i++) {
-                notWorkable = calendar.getCapacityOn(PartialDay.wholeDay(day))
-                        .isZero();
+                notWorkable = calendar.getCapacityOn(PartialDay.wholeDay(day)).isZero();
                 day = day.plusDays(1);
-                result.append(notWorkable ? i * WEEK_LEVEL_SHADE_WIDTH
-                        : -WEEK_LEVEL_SHADE_WIDTH);
+                result.append(notWorkable ? i * WEEK_LEVEL_SHADE_WIDTH : -WEEK_LEVEL_SHADE_WIDTH);
                 result.append("px 0");
+
                 if (i != 6) {
                     result.append(",");
                 }

@@ -27,36 +27,35 @@ import java.util.List;
 import java.util.Map;
 
 import org.libreplan.business.scenarios.entities.Scenario;
-import org.zkoss.zul.SimpleTreeModel;
-import org.zkoss.zul.SimpleTreeNode;
+import org.zkoss.zul.DefaultTreeModel;
+import org.zkoss.zul.DefaultTreeNode;
 
 /**
  * Model for the {@link Scenario} tree.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public class ScenariosTreeModel extends SimpleTreeModel {
+public class ScenariosTreeModel extends DefaultTreeModel {
 
     public ScenariosTreeModel(ScenarioTreeRoot root) {
-        super(createRootNodeAndDescendants(root, root.getRootScenarios(), root
-                .getDerivedScenarios()));
+        super(createRootNodeAndDescendants(root, root.getRootScenarios(), root.getDerivedScenarios()));
     }
 
-    private static SimpleTreeNode createRootNodeAndDescendants(
-            ScenarioTreeRoot root, List<Scenario> rootScenarios,
-            List<Scenario> derivedScenarios) {
-        return new SimpleTreeNode(root, asNodes(fillHashParentChildren(
-                rootScenarios, derivedScenarios), rootScenarios));
+    private static DefaultTreeNode<Object> createRootNodeAndDescendants(ScenarioTreeRoot root,
+                                                                        List<Scenario> rootScenarios,
+                                                                        List<Scenario> derivedScenarios) {
+
+        return new DefaultTreeNode<>(root,
+                asNodes(fillHashParentChildren(rootScenarios, derivedScenarios), rootScenarios));
     }
 
-    private static List<SimpleTreeNode> asNodes(
-            Map<Scenario, List<Scenario>> childrenMap,
-            List<Scenario> scenarios) {
-        if (scenarios == null) {
-            return new ArrayList<SimpleTreeNode>();
+    private static ArrayList<DefaultTreeNode<Object>> asNodes(Map<Scenario, List<Scenario>> childrenMap,
+                                                              List<Scenario> scenarios) {
+        if ( scenarios == null ) {
+            return new ArrayList<>();
         }
 
-        ArrayList<SimpleTreeNode> result = new ArrayList<SimpleTreeNode>();
+        ArrayList<DefaultTreeNode<Object>> result = new ArrayList<>();
         for (Scenario scenario : scenarios) {
             result.add(asNode(childrenMap, scenario));
         }
@@ -64,32 +63,33 @@ public class ScenariosTreeModel extends SimpleTreeModel {
         return result;
     }
 
-    private static SimpleTreeNode asNode(
-            Map<Scenario, List<Scenario>> childrenMap, Scenario scenario) {
+    private static DefaultTreeNode<Object> asNode(Map<Scenario, List<Scenario>> childrenMap, Scenario scenario) {
         List<Scenario> children = childrenMap.get(scenario);
-        return new SimpleTreeNode(scenario, asNodes(childrenMap, children));
+
+        return new DefaultTreeNode<>(scenario, asNodes(childrenMap, children));
     }
 
-    private static Map<Scenario, List<Scenario>> fillHashParentChildren(
-            List<Scenario> rootScenarios,
-            List<Scenario> derivedScenarios) {
-        Map<Scenario, List<Scenario>> result = new HashMap<Scenario, List<Scenario>>();
+    private static Map<Scenario, List<Scenario>> fillHashParentChildren(List<Scenario> rootScenarios,
+                                                                        List<Scenario> derivedScenarios) {
+
+        Map<Scenario, List<Scenario>> result = new HashMap<>();
         for (Scenario root : rootScenarios) {
-            result.put(root, new ArrayList<Scenario>());
+            result.put(root, new ArrayList<>());
         }
 
         for (Scenario derived : derivedScenarios) {
             Scenario parent = derived.getPredecessor();
             List<Scenario> siblings = result.get(parent);
 
-            if (siblings == null) {
-                siblings = new ArrayList<Scenario>();
+            if ( siblings == null ) {
+                siblings = new ArrayList<>();
                 siblings.add(derived);
                 result.put(parent, siblings);
             } else {
                 siblings.add(derived);
             }
         }
+
         return result;
     }
 

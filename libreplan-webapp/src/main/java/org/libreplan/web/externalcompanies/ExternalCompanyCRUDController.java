@@ -26,7 +26,6 @@ import static org.libreplan.web.I18nHelper._;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.LogFactory;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.users.entities.User;
@@ -34,22 +33,19 @@ import org.libreplan.web.common.BaseCRUDController;
 import org.libreplan.web.common.Level;
 import org.libreplan.web.common.components.Autocomplete;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Textbox;
 
 /**
- * Controller for CRUD actions over a {@link User}
+ * Controller for CRUD actions over a {@link User}.
  *
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  * @author Javier Moran Rua <jmoran@igalia.com>
  */
 @SuppressWarnings("serial")
-public class ExternalCompanyCRUDController extends
-        BaseCRUDController<ExternalCompany> {
-
-    private static final org.apache.commons.logging.Log LOG = LogFactory
-            .getLog(ExternalCompanyCRUDController.class);
+public class ExternalCompanyCRUDController extends BaseCRUDController<ExternalCompany> {
 
     private IExternalCompanyModel externalCompanyModel;
 
@@ -59,13 +55,16 @@ public class ExternalCompanyCRUDController extends
 
     private Textbox ourCompanyPassword;
 
+    public ExternalCompanyCRUDController() {
+        externalCompanyModel = (IExternalCompanyModel) SpringUtil.getBean("externalCompanyModel");
+    }
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         appURI = (Textbox) editWindow.getFellow("appURI");
         ourCompanyLogin = (Textbox) editWindow.getFellow("ourCompanyLogin");
-        ourCompanyPassword = (Textbox) editWindow
-                .getFellow("ourCompanyPassword");
+        ourCompanyPassword = (Textbox) editWindow.getFellow("ourCompanyPassword");
     }
 
     private void clearAutocompleteUser() {
@@ -89,7 +88,7 @@ public class ExternalCompanyCRUDController extends
     }
 
     public List<ExternalCompanyDTO> getCompaniesDTO() {
-        List<ExternalCompanyDTO> result = new ArrayList<ExternalCompanyDTO>();
+        List<ExternalCompanyDTO> result = new ArrayList<>();
         for (ExternalCompany company : getCompanies()) {
             result.add(new ExternalCompanyDTO(company));
         }
@@ -102,7 +101,7 @@ public class ExternalCompanyCRUDController extends
 
     public void setCompanyUser(Comboitem selectedItem) {
         if (selectedItem != null) {
-            externalCompanyModel.setCompanyUser((User) selectedItem.getValue());
+            externalCompanyModel.setCompanyUser(selectedItem.getValue());
         } else {
             externalCompanyModel.setCompanyUser(null);
         }
@@ -121,10 +120,8 @@ public class ExternalCompanyCRUDController extends
         ourCompanyLogin.setDisabled(false);
         ourCompanyPassword.setDisabled(false);
         appURI.setConstraint("no empty:" + _("cannot be empty"));
-        ourCompanyLogin.setConstraint("no empty:"
-                + _("cannot be empty"));
-        ourCompanyPassword.setConstraint("no empty:"
-                + _("cannot be empty"));
+        ourCompanyLogin.setConstraint("no empty:" + _("cannot be empty"));
+        ourCompanyPassword.setConstraint("no empty:" + _("cannot be empty"));
     }
 
     private void disableInteractionFields() {
@@ -149,8 +146,7 @@ public class ExternalCompanyCRUDController extends
     @Override
     protected void initCreate() {
         externalCompanyModel.initCreate();
-        setInteractionFieldsActivation(getCompany()
-                .getInteractsWithApplications());
+        setInteractionFieldsActivation(getCompany().getInteractsWithApplications());
         clearAutocompleteUser();
     }
 
@@ -176,9 +172,7 @@ public class ExternalCompanyCRUDController extends
         if (externalCompanyModel.isAlreadyInUse(company)) {
             messagesForUser.showMessage(
                     Level.WARNING,
-                            _("{0} \"{1}\" can not be deleted because of it is being used",
-                                    getEntityType(),
-                            company.getHumanId()));
+                    _("{0} \"{1}\" can not be deleted because of it is being used", getEntityType(), company.getHumanId()));
             return false;
         }
         return true;

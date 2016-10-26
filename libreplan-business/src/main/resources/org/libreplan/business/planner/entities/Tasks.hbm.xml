@@ -106,7 +106,7 @@
             </set>
 
             <!-- Already indexed because it's unique -->
-            <many-to-one name="subcontractedTaskData" column="subcontrated_task_data_id" unique="true" cascade="all"
+            <many-to-one name="subcontractedTaskData" column="subcontracted_task_data_id" unique="true" cascade="all"
                          lazy="false" />
 
             <property name="priority" />

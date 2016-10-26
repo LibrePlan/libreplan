@@ -77,7 +77,7 @@ public class SubcontractorCommunication extends BaseEntity {
         this.subcontractedTaskData = subcontractedTaskData;
     }
 
-    @NotNull(message="subcontrated task data not specified")
+    @NotNull(message="subcontracted task data not specified")
     public SubcontractedTaskData getSubcontractedTaskData() {
         return subcontractedTaskData;
     }

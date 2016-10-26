@@ -29,25 +29,24 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Messagebox;
-import org.zkoss.zul.api.Caption;
-import org.zkoss.zul.api.Window;
+import org.zkoss.zul.Caption;
+import org.zkoss.zul.Window;
 
 /**
- * Abstract class defining common behavior for controllers of CRUD screens. <br />
+ * Abstract class defining common behavior for controllers of CRUD screens.
+ * <br />
  *
  * Those screens must define the following components:
  * <ul>
- * <li>{@link #messagesContainer}: A {@link Component} to show the different
- * messages to users.</li>
- * <li>{@link #listWindow}: A {@link Window} where the list of elements is
- * shown.</li>
- * <li>{@link #editWindow}: A {@link Window} with creation/edition form.</li>
+ *     <li>{@link #messagesContainer}: A {@link Component} to show the different messages to users.</li>
+ *     <li>{@link #listWindow}: A {@link Window} where the list of elements is shown.</li>
+ *     <li>{@link #editWindow}: A {@link Window} with creation/edition form.</li>
+ * </ul>
  *
  * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
-@SuppressWarnings("serial")
-public abstract class BaseCRUDController<T extends IHumanIdentifiable> extends
-        GenericForwardComposer {
+
+public abstract class BaseCRUDController<T extends IHumanIdentifiable> extends GenericForwardComposer<Component> {
 
     private OnlyOneVisible visibility;
 
@@ -66,14 +65,15 @@ public abstract class BaseCRUDController<T extends IHumanIdentifiable> extends
     protected CRUDControllerState state = CRUDControllerState.LIST;
 
     /**
-     * Call to super and do some extra stuff: <br />
+     * Call to super and do some extra stuff:
+     * <br />
      * <ul>
-     * <li>Set "controller" variable to be used in .zul files.</li>
-     * <li>Initialize {@link #messagesForUser}.</li>
-     * <li>Show list view.</li>
+     *     <li>Set "controller" variable to be used in .zul files.</li>
+     *     <li>Initialize {@link #messagesForUser}.</li>
+     *     <li>Show list view.</li>
      * </ul>
      *
-     * @see org.zkoss.zk.ui.util.GenericForwardComposer#doAfterCompose(org.zkoss.zk.ui.Component)
+     * @see GenericForwardComposer#doAfterCompose(org.zkoss.zk.ui.Component)
      */
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -87,14 +87,14 @@ public abstract class BaseCRUDController<T extends IHumanIdentifiable> extends
     }
 
     private OnlyOneVisible getVisibility() {
-        if (visibility == null) {
+        if (visibility == null)
             visibility = new OnlyOneVisible(listWindow, editWindow);
-        }
+
         return visibility;
     }
 
     /**
-     * Show list window and reload bindings
+     * Show list window and reload bindings.
      */
     protected void showListWindow() {
         getVisibility().showOnly(listWindow);
@@ -102,8 +102,7 @@ public abstract class BaseCRUDController<T extends IHumanIdentifiable> extends
     }
 
     /**
-     * Show edit form with different title depending on controller state and
-     * reload bindings
+     * Show edit form with different title depending on controller state and reload bindings.
      */
     protected void showEditWindow() {
         getVisibility().showOnly(editWindow);
@@ -114,48 +113,51 @@ public abstract class BaseCRUDController<T extends IHumanIdentifiable> extends
 
     public final void updateWindowTitle() {
         T entityBeingEdited = getEntityBeingEdited();
+
         if (entityBeingEdited == null) {
-            throw new IllegalStateException(
-                    "You should be editing one entity in order to use this method");
+            throw new IllegalStateException("You should be editing one entity in order to use this method");
         }
 
         String title;
 
         String humanId = entityBeingEdited.getHumanId();
+
         switch (state) {
-        case CREATE:
-            if (StringUtils.isEmpty(humanId)) {
-                title = _("Create {0}", getEntityType());
-            } else {
-                title = _("Create {0}: {1}", getEntityType(), humanId);
-            }
-            break;
-        case EDIT:
-            title = _("Edit {0}: {1}", getEntityType(), humanId);
-            break;
-        default:
-            throw new IllegalStateException(
-                    "You should be in creation or edition mode to use this method");
+
+            case CREATE:
+                if (StringUtils.isEmpty(humanId))
+                    title = _("Create {0}", getEntityType());
+                else
+                    title = _("Create {0}: {1}", getEntityType(), humanId);
+                break;
+
+            case EDIT:
+                title = _("Edit {0}: {1}", getEntityType(), humanId);
+                break;
+
+            default:
+                throw new IllegalStateException("You should be in creation or edition mode to use this method");
         }
+
         ((Caption) editWindow.getFellow("caption")).setLabel(title);
     }
 
     /**
-     * Returns the translated text to represent one entity type
+     * Returns the translated text to represent one entity type.
      *
      * @return Text representing one entity
      */
     protected abstract String getEntityType();
 
     /**
-     * Returns the translated text to represent multiple entity types
+     * Returns the translated text to represent multiple entity types.
      *
      * @return Text representing several entities
      */
     protected abstract String getPluralEntityType();
 
     /**
-     * Show list window and reload bindings there
+     * Show list window and reload bindings there.
      */
     public final void goToList() {
         state = CRUDControllerState.LIST;
@@ -163,8 +165,8 @@ public abstract class BaseCRUDController<T extends IHumanIdentifiable> extends
     }
 
     /**
-     * Show create form. Delegate in {@link #initCreate()} that should be
-     * implemented in subclasses.
+     * Show create form.
+     * Delegate in {@link #initCreate()} that should be implemented in subclasses.
      */
     public final void goToCreateForm() {
         state = CRUDControllerState.CREATE;
@@ -178,8 +180,8 @@ public abstract class BaseCRUDController<T extends IHumanIdentifiable> extends
     protected abstract void initCreate();
 
     /**
-     * Show edit form for entity passed as parameter. Delegate in
-     * {@link #initEdit(entity)} that should be implemented in subclasses.
+     * Show edit form for entity passed as parameter.
+     * Delegate in initEdit(entity) that should be implemented in subclasses.
      *
      * @param entity
      *            Entity to be edited
@@ -199,8 +201,8 @@ public abstract class BaseCRUDController<T extends IHumanIdentifiable> extends
     protected abstract void initEdit(T entity);
 
     /**
-     * Save current form and go to list view. Delegate in {@link #save()} that
-     * should be implemented in subclasses.
+     * Save current form and go to list view.
+     * Delegate in {@link #save()} that should be implemented in subclasses.
      */
     public final void saveAndExit() {
         try {
@@ -212,14 +214,13 @@ public abstract class BaseCRUDController<T extends IHumanIdentifiable> extends
     }
 
     /**
-     * Common save actions:<br />
+     * Common save actions:
+     * <br />
      * <ul>
-     * <li>Delegate in {@link #beforeSaving()} that could be implemented if
-     * needed in subclasses.</li>
-     * <li>Use {@link ConstraintChecker} to validate form.</li>
-     * <li>Delegate in {@link #save()} that should be implemented in subclasses.
-     * </li>
-     * <li>Show message to user.</li>
+     *     <li>Delegate in {@link #beforeSaving()} that could be implemented if needed in subclasses.</li>
+     *     <li>Use {@link ConstraintChecker} to validate form.</li>
+     *     <li>Delegate in {@link #save()} that should be implemented in subclasses.</li>
+     *     <li>Show message to user.</li>
      * </ul>
      *
      * @throws ValidationException
@@ -229,15 +230,12 @@ public abstract class BaseCRUDController<T extends IHumanIdentifiable> extends
         beforeSaving();
         messagesForUser.clearMessages();
         save();
-        messagesForUser.showMessage(
-                Level.INFO,
-                _("{0} \"{1}\" saved", getEntityType(), getEntityBeingEdited()
-                        .getHumanId()));
+        messagesForUser.showMessage(Level.INFO, _("{0} \"{1}\" saved", getEntityType(), getEntityBeingEdited().getHumanId()));
     }
 
     /**
-     * Save current form and continue in edition view. Delegate in
-     * {@link #save()} that should be implemented in subclasses.
+     * Save current form and continue in edition view.
+     * Delegate in {@link #save()} that should be implemented in subclasses.
      */
     public final void saveAndContinue() {
         try {
@@ -249,8 +247,7 @@ public abstract class BaseCRUDController<T extends IHumanIdentifiable> extends
     }
 
     /**
-     * Performs additional operations before saving (usually do some checks or
-     * generate codes of related entities).
+     * Performs additional operations before saving (usually do some checks or generate codes of related entities).
      *
      * Default behavior use {@link ConstraintChecker} to see if
      * {@link #editWindow} is valid, however it could be overridden if needed.
@@ -260,7 +257,7 @@ public abstract class BaseCRUDController<T extends IHumanIdentifiable> extends
     }
 
     /**
-     * Performs actions to save current form
+     * Performs actions to save current form.
      *
      * @throws ValidationException
      *             If entity is not valid
@@ -268,15 +265,15 @@ public abstract class BaseCRUDController<T extends IHumanIdentifiable> extends
     protected abstract void save() throws ValidationException;
 
     /**
-     * Returns entity being edited in the form
+     * Returns entity being edited in the form.
      *
      * @return Current entity being edited
      */
     protected abstract T getEntityBeingEdited();
 
     /**
-     * Close form and go to list view. Delegate in {@link #cancel()} that could
-     * be implemented in subclasses if needed.
+     * Close form and go to list view.
+     * Delegate in {@link #cancel()} that could be implemented in subclasses if needed.
      */
     public final void cancelForm() {
         cancel();
@@ -284,7 +281,7 @@ public abstract class BaseCRUDController<T extends IHumanIdentifiable> extends
     }
 
     /**
-     * Performs needed actions to cancel edition
+     * Performs needed actions to cancel edition.
      *
      * Default behavior do nothing, however it could be overridden if needed.
      */
@@ -293,46 +290,39 @@ public abstract class BaseCRUDController<T extends IHumanIdentifiable> extends
     }
 
     /**
-     * First call {@link #beforeDeleting(entity)} in order to perform some
-     * checkings before trying to delete if needed. Then show a dialog asking
-     * for confirmation to user and if ok remove entity passed as parameter.
-     * Delegate in {@link #delete(entity)} that should be implemented in
-     * subclasses.
+     * First call beforeDeleting(entity) in order to perform some checks before trying to delete if needed.
+     * Then show a dialog asking for confirmation to user and if ok remove entity passed as parameter.
+     * Delegate in delete(entity) that should be implemented in subclasses.
      *
      * @param entity
      *            Entity to be removed
      */
     public final void confirmDelete(T entity) {
-        if (!beforeDeleting(entity)) {
+        if (!beforeDeleting(entity))
             return;
-        }
 
         try {
             if (Messagebox.show(
-                    _("Delete {0} \"{1}\". Are you sure?", getEntityType(),
-                            entity.getHumanId()),
-                    _("Confirm"), Messagebox.OK | Messagebox.CANCEL,
-                    Messagebox.QUESTION) == Messagebox.OK) {
+                    _("Delete {0} \"{1}\". Are you sure?", getEntityType(), entity.getHumanId()),
+                    _("Confirm"), Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION) == Messagebox.OK) {
+
                 delete(entity);
+
                 messagesForUser.showMessage(
                         Level.INFO,
-                        _("{0} \"{1}\" deleted", getEntityType(),
-                                entity.getHumanId()));
+                        _("{0} \"{1}\" deleted", getEntityType(), entity.getHumanId()));
+
                 Util.reloadBindings(listWindow);
             }
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
         } catch (InstanceNotFoundException ie) {
             messagesForUser.showMessage(
                     Level.ERROR,
-                    _("{0} \"{1}\" could not be deleted, it was already removed", getEntityType(),
-                            entity.getHumanId()));
+                    _("{0} \"{1}\" could not be deleted, it was already removed", getEntityType(), entity.getHumanId()));
         }
     }
 
     /**
-     * Performs additional operations before deleting (usually check some wrong
-     * conditions before deleting).
+     * Performs additional operations before deleting (usually check some wrong conditions before deleting).
      *
      * Default behavior do nothing, however it could be overridden if needed.
      *
@@ -341,12 +331,11 @@ public abstract class BaseCRUDController<T extends IHumanIdentifiable> extends
      * @return Return true if deletion can carry on
      */
     protected boolean beforeDeleting(T entity) {
-        // Do nothing
         return true;
     }
 
     /**
-     * Performs actions needed to remove entity passed as parameter
+     * Performs actions needed to remove entity passed as parameter.
      *
      * @param entity
      *            Entity to be removed

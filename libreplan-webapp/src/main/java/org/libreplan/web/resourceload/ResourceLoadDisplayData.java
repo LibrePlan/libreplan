@@ -16,7 +16,7 @@ import org.zkoss.ganttz.util.Interval;
 public class ResourceLoadDisplayData {
 
     private static <T> Callable<T> cached(Callable<T> callable) {
-        return new CachedCallable<T>(callable);
+        return new CachedCallable<>(callable);
     }
 
     private static <T> T resolve(Callable<T> callable) {
@@ -61,15 +61,19 @@ public class ResourceLoadDisplayData {
 
     private final LocalDate filterEnd;
 
-    public ResourceLoadDisplayData(List<LoadTimeLine> timeLines,
-            LocalDate filterStart, LocalDate filterEnd,
+    public ResourceLoadDisplayData(
+            List<LoadTimeLine> timeLines,
+            LocalDate filterStart,
+            LocalDate filterEnd,
             Paginator<? extends BaseEntity> paginator,
             Callable<List<Resource>> resourcesConsidered,
             Callable<List<DayAssignment>> assignmentsConsidered) {
+
         Validate.notNull(timeLines);
         Validate.notNull(paginator);
         Validate.notNull(resourcesConsidered);
         Validate.notNull(assignmentsConsidered);
+
         this.timeLines = timeLines;
         this.filterStart = filterStart;
         this.filterEnd = filterEnd;
@@ -93,6 +97,7 @@ public class ResourceLoadDisplayData {
 
     public ZoomLevel getInitialZoomLevel() {
         Interval interval = getViewInterval();
+
         return ZoomLevel.getDefaultZoomByDates(
                 new LocalDate(interval.getStart()),
                 new LocalDate(interval.getFinish()));

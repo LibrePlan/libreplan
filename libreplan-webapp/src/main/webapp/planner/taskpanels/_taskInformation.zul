@@ -20,16 +20,16 @@
 <?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n" ?>
 
 <!-- Task Information -->
-<zk id="${arg.id}" >
+<zk>
 
-    <groupbox height="170px" closable="false" >
+    <groupbox height="230px" closable="false" >
 
         <caption label="${i18n:_('Task Information')}" />
 
         <!-- Task rows  -->
-        <grid id="gridTaskRows">
+        <grid id="gridTaskRows" sclass="normalResourceAllocation">
             <columns>
-                <column label="${i18n:_('Criteria')}" width="290px" hflex="1" align="center"/>
+                <column label="${i18n:_('Criteria')}" width="290px" align="center"/>
                 <column label="${i18n:_('Type')}" width="140px" align="center"/>
                 <column label="${i18n:_('Hours')}" width="80px" align="center"/>
             </columns>
@@ -44,7 +44,7 @@
 
         <!-- Recommended Allocation -->
         <vbox align="bottom">
-            <button id="btnRecommendedAllocation" label="${i18n:_('Recommended allocation')}" />
+            <button id="btnRecommendedAllocation" label="${i18n:_('Recommended allocation')}" sclass="add-button" />
         </vbox>
 
     </groupbox>

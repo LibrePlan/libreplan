@@ -292,7 +292,7 @@ public class BaseCalendarModel extends IntegrationEntityModel implements IBaseCa
         if (getBaseCalendar() == null) {
             return Capacity.zero();
         }
-        return getBaseCalendar().getCapacityConsideringCalendarDatasOn(
+        return getBaseCalendar().getCapacityConsideringCalendarDataOn(
                 selectedDate, day);
     }
 
@@ -309,7 +309,7 @@ public class BaseCalendarModel extends IntegrationEntityModel implements IBaseCa
     public void unsetDefault(Days day) {
         if (getBaseCalendar() != null) {
             Capacity previousCapacity = getBaseCalendar()
-                    .getCapacityConsideringCalendarDatasOn(selectedDate, day);
+                    .getCapacityConsideringCalendarDataOn(selectedDate, day);
             getBaseCalendar()
                     .setCapacityAt(day, previousCapacity, selectedDate);
         }

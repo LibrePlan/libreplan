@@ -131,7 +131,7 @@ public class TaskElementDAOTest {
     private IResourceDAO resourceDAO;
 
     @Before
-    public void loadRequiredaData() {
+    public void loadRequiredData() {
         scenariosBootstrap.loadRequiredData();
         defaultAdvanceTypesBootstrapListener.loadRequiredData();
         configurationBootstrap.loadRequiredData();
@@ -146,8 +146,7 @@ public class TaskElementDAOTest {
         orderLine.useSchedulingDataFor(orderVersion);
         SchedulingDataForVersion schedulingDataForVersion = orderLine.getCurrentSchedulingDataForVersion();
 
-        TaskSource taskSource =
-                TaskSource.create(schedulingDataForVersion, Collections.singletonList(associatedHoursGroup));
+        TaskSource taskSource = TaskSource.create(schedulingDataForVersion, Collections.singletonList(associatedHoursGroup));
 
         TaskSourceSynchronization mustAdd = TaskSource.mustAdd(taskSource);
         mustAdd.apply(TaskSource.persistTaskSources(taskSourceDAO));
@@ -354,6 +353,7 @@ public class TaskElementDAOTest {
         transactionService.runOnTransaction(createDependency);
         assertThat(child2.getDependenciesWithThisDestination().size(), equalTo(1));
         assertTrue(child2.getDependenciesWithThisOrigin().isEmpty());
+
         IOnTransaction<Void> checkDependencyWasSaved = new IOnTransaction<Void>() {
             @Override
             public Void execute() {

@@ -788,9 +788,9 @@
     </changeSet>
 
     <changeSet author="mrego" id="initial-database-creation-47">
-        <createTable tableName="material_assigment">
+        <createTable tableName="material_assignment">
             <column name="id" type="BIGINT">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="material_assigment_pkey"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="material_assignment_pkey"/>
             </column>
             <column name="version" type="BIGINT">
                 <constraints nullable="false"/>
@@ -805,9 +805,9 @@
     </changeSet>
 
     <changeSet author="mrego" id="initial-database-creation-48">
-        <createTable tableName="material_assigment_template">
+        <createTable tableName="material_assignment_template">
             <column name="id" type="BIGINT">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="material_assigment_template_pkey"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="material_assignment_template_pkey"/>
             </column>
             <column name="version" type="BIGINT">
                 <constraints nullable="false"/>
@@ -874,7 +874,7 @@
             <column name="code" type="VARCHAR(255)"/>
             <column name="init_date" type="DATETIME"/>
             <column name="deadline" type="DATETIME"/>
-            <column name="last_advance_meausurement_for_spreading" type="DECIMAL(19,2)"/>
+            <column name="last_advance_measurement_for_spreading" type="DECIMAL(19,2)"/>
             <column name="dirty_last_advance_measurement_for_spreading" type="BOOLEAN"/>
             <column name="parent" type="BIGINT"/>
             <column name="template" type="BIGINT"/>
@@ -1314,7 +1314,7 @@
             <column name="constraint_date" type="DATE"/>
             <column name="workable_days" type="INTEGER"/>
             <column name="allocation_direction" type="INTEGER"/>
-            <column name="subcontrated_task_data_id" type="BIGINT"/>
+            <column name="subcontracted_task_data_id" type="BIGINT"/>
             <column name="priority" type="INTEGER"/>
         </createTable>
     </changeSet>
@@ -1744,7 +1744,7 @@
         <addUniqueConstraint columnNames="code" constraintName="resources_cost_category_assignment_code_key" deferrable="false" disabled="false" initiallyDeferred="false" tableName="resources_cost_category_assignment"/>
     </changeSet>
     <changeSet author="mrego" id="initial-database-creation-152">
-        <addUniqueConstraint columnNames="subcontrated_task_data_id" constraintName="task_subcontrated_task_data_id_key" deferrable="false" disabled="false" initiallyDeferred="false" tableName="task"/>
+        <addUniqueConstraint columnNames="subcontracted_task_data_id" constraintName="task_subcontracted_task_data_id_key" deferrable="false" disabled="false" initiallyDeferred="false" tableName="task"/>
     </changeSet>
     <changeSet author="mrego" id="initial-database-creation-153">
         <addUniqueConstraint columnNames="schedulingdata" constraintName="task_source_schedulingdata_key" deferrable="false" disabled="false" initiallyDeferred="false" tableName="task_source"/>
@@ -1984,16 +1984,16 @@
         <addForeignKeyConstraint baseColumnNames="unit_type" baseTableName="material" constraintName="fk11d36527f11b2d0" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="unit_type" referencesUniqueColumn="false"/>
     </changeSet>
     <changeSet author="mrego" id="initial-database-creation-232">
-        <addForeignKeyConstraint baseColumnNames="material_id" baseTableName="material_assigment" constraintName="fkb3e9425b5c68337" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="material" referencesUniqueColumn="false"/>
+        <addForeignKeyConstraint baseColumnNames="material_id" baseTableName="material_assignment" constraintName="fkb3e9425b5c68337" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="material" referencesUniqueColumn="false"/>
     </changeSet>
     <changeSet author="mrego" id="initial-database-creation-233">
-        <addForeignKeyConstraint baseColumnNames="order_element_id" baseTableName="material_assigment" constraintName="fkb3e9425efda874f" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="order_element" referencesUniqueColumn="false"/>
+        <addForeignKeyConstraint baseColumnNames="order_element_id" baseTableName="material_assignment" constraintName="fkb3e9425efda874f" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="order_element" referencesUniqueColumn="false"/>
     </changeSet>
     <changeSet author="mrego" id="initial-database-creation-234">
-        <addForeignKeyConstraint baseColumnNames="material_id" baseTableName="material_assigment_template" constraintName="fk35254354b5c68337" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="material" referencesUniqueColumn="false"/>
+        <addForeignKeyConstraint baseColumnNames="material_id" baseTableName="material_assignment_template" constraintName="fk35254354b5c68337" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="material" referencesUniqueColumn="false"/>
     </changeSet>
     <changeSet author="mrego" id="initial-database-creation-235">
-        <addForeignKeyConstraint baseColumnNames="order_element_template_id" baseTableName="material_assigment_template" constraintName="fk3525435419b9dfde" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="order_element_template" referencesUniqueColumn="false"/>
+        <addForeignKeyConstraint baseColumnNames="order_element_template_id" baseTableName="material_assignment_template" constraintName="fk3525435419b9dfde" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="order_element_template" referencesUniqueColumn="false"/>
     </changeSet>
     <changeSet author="mrego" id="initial-database-creation-236">
         <addForeignKeyConstraint baseColumnNames="parent_id" baseTableName="material_category" constraintName="fk84c66516b53669f2" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="material_category" referencesUniqueColumn="false"/>
@@ -2149,7 +2149,7 @@
         <addForeignKeyConstraint baseColumnNames="external_company" baseTableName="subcontracted_task_data" constraintName="fk35bc4ed63804cfa" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="external_company" referencesUniqueColumn="false"/>
     </changeSet>
     <changeSet author="mrego" id="initial-database-creation-287">
-        <addForeignKeyConstraint baseColumnNames="subcontrated_task_data_id" baseTableName="task" constraintName="fk3635855b595a0" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="subcontracted_task_data" referencesUniqueColumn="false"/>
+        <addForeignKeyConstraint baseColumnNames="subcontracted_task_data_id" baseTableName="task" constraintName="fk3635855b595a0" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="subcontracted_task_data" referencesUniqueColumn="false"/>
     </changeSet>
     <changeSet author="mrego" id="initial-database-creation-288">
         <addForeignKeyConstraint baseColumnNames="task_element_id" baseTableName="task" constraintName="fk3635854936bb8c" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="task_element" referencesUniqueColumn="false"/>

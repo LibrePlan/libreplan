@@ -25,7 +25,6 @@ import java.util.Collections;
 
 import org.springframework.security.authentication.dao.SaltSource;
 import org.springframework.security.authentication.encoding.PasswordEncoder;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -40,17 +39,17 @@ import org.springframework.security.core.userdetails.UserDetails;
  *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
-// TODO resolve deprecated
 public class DBPasswordEncoderService implements IDBPasswordEncoderService {
 
     private SaltSource saltSource;
-
+    // TODO resolve deprecated
     private PasswordEncoder passwordEncoder;
 
     public void setSaltSource(SaltSource saltSource) {
         this.saltSource = saltSource;
     }
 
+    // TODO resolve deprecated
     public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder;
     }
@@ -58,8 +57,8 @@ public class DBPasswordEncoderService implements IDBPasswordEncoderService {
     @Override
     /**
      * The second parameter, <code>loginName</code>, is used as a salt if the
-     * configured salt source is <code>ReflectionSaltSource</code> (which must
-     * be configured to use "username" property as a salt).
+     * configured salt source is <code>ReflectionSaltSource</code>
+     * (which must be configured to use "username" property as a salt).
      */
     public String encodePassword(String clearPassword, String loginName) {
 
@@ -67,10 +66,9 @@ public class DBPasswordEncoderService implements IDBPasswordEncoderService {
          * The only important parameter in User's constructor is "loginName",
          * which corresponds to the "username" property if the "saltSource" is
          * "ReflectionSaltSource". Note that "SystemWideSaltSource" ignores
-         * the "user" passed as a parameter to "saltSource.getSalt".
+         * the "user" passed as a parameter to "saltSource.getSalt"
          */
-        UserDetails userDetails =
-                new User(loginName, clearPassword, true, true, true, true, Collections.<GrantedAuthority>emptyList());
+        UserDetails userDetails = new User(loginName, clearPassword, true, true, true, true, Collections.emptyList());
 
         Object salt = null;
 

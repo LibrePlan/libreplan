@@ -29,7 +29,7 @@
 
 <zk>
     <window apply="org.libreplan.web.users.dashboard.PersonalTimesheetController"
-        self="@{define(content)}" title="${i18n:_('Personal timesheet')}">
+            self="@{define(content)}" title="${i18n:_('Personal timesheet')}">
 
         <div id="messagesContainer" />
 
@@ -45,26 +45,30 @@
                         <column width="200px" />
                         <column />
                     </columns>
+
                     <rows>
                         <row>
                             <label value="${i18n:_('Date')}" />
                             <hbox align="pack">
                                 <div visible="@{controller.currentUser}">
                                     <button id="previousPeriod"
-                                        image="/common/img/ico_step_left.png" sclass="icono"
-                                        onClick="controller.previousPeriod();"
-                                        tooltiptext="${i18n:_('Previous')}"
-                                        disabled="@{controller.firstPeriod}" />
+                                            image="/common/img/ico_step_left.png" sclass="icono"
+                                            onClick="controller.previousPeriod();"
+                                            tooltiptext="${i18n:_('Previous')}"
+                                            disabled="@{controller.firstPeriod}" />
                                 </div>
+
                                 <label value="@{controller.timesheetString}" />
+
                                 <div visible="@{controller.currentUser}">
                                     <button id="nextPeriod"
-                                        onClick="controller.nextPeriod();" image="/common/img/ico_step_right.png"
-                                        tooltiptext="${i18n:_('Next')}" sclass="icono"
-                                        disabled="@{controller.lastPeriod}" />
+                                            onClick="controller.nextPeriod();" image="/common/img/ico_step_right.png"
+                                            tooltiptext="${i18n:_('Next')}" sclass="icono"
+                                            disabled="@{controller.lastPeriod}" />
                                 </div>
                             </hbox>
                         </row>
+
                         <row>
                             <label value="${i18n:_('Resource')}" />
                             <label value="@{controller.resource}" />
@@ -72,34 +76,41 @@
                     </rows>
                 </grid>
             </groupbox>
-            <groupbox style="margin-top: 5px" closable="false" hflex="1">
+
+            <groupbox style="margin-top: 5px; margin-left: 10px;" closable="false" hflex="1">
                 <caption label="${i18n:_('Timesheet summary')}" />
                 <grid fixedLayout="true">
                     <columns>
                         <column width="200px" />
                         <column />
                     </columns>
+
                     <rows>
                         <row visible="@{controller.hasOtherReports}">
                             <label value="${i18n:_('Total personal timesheet')}" />
                             <label id="summaryTotalPersonalTimesheet" />
                         </row>
+
                         <row visible="@{controller.hasOtherReports}">
                             <label value="${i18n:_('Total other')}" />
                             <label id="summaryTotalOther" />
                         </row>
+
                         <row>
                             <label value="${i18n:_('Total')}" />
                             <label id="summaryTotal" />
                         </row>
+
                         <row>
                             <label value="${i18n:_('Total capacity')}" />
                             <label id="summaryTotalCapacity" />
                         </row>
+
                         <row>
                             <label value="${i18n:_('Total extra per day')}" />
                             <label id="summaryTotalExtraPerDay" />
                         </row>
+
                         <row>
                             <label value="${i18n:_('Total extra')}" />
                             <label id="summaryTotalExtra" />
@@ -109,35 +120,33 @@
             </groupbox>
         </hbox>
 
-        <hbox  width="100%">
-            <groupbox width="100%" closable="false" hflex="1" style="margin-top:5px">
+        <hbox width="100%">
+            <groupbox width="100%" closable="false" hflex="min" style="margin-top:5px">
                 <caption label="${i18n:_('Time tracking')}" />
-                <hbox align="center" hflex="1" width="100%" style="padding-bottom:5px">
-                    <bandboxSearch
-                        id="orderElementBandboxSearch"
-                        finder="OrderElementBandboxFinder"
-                        widthBandbox="400px"
-                        widthListbox="700px" />
-                    <button onClick="controller.addOrderElement();"
-                        label="${i18n:_('Add task')}" />
+
+                <hbox align="center" width="100%" style="padding-bottom:5px">
+                    <bandboxSearch id="orderElementBandboxSearch"
+                                   finder="OrderElementBandboxFinder"
+                                   widthBandbox="400px"
+                                   widthListbox="700px" />
+                    <button onClick="controller.addOrderElement();" label="${i18n:_('Add task')}" sclass="add-button"/>
                 </hbox>
+
                 <hbox width="100%">
                     <grid id="timesheet" sizedByContent="true" hflex="1" sclass="timesheet"
-                        model="@{controller.rows}"
-                        rowRenderer="@{controller.rowRenderer}"/>
+                          model="@{controller.rows}"
+                          rowRenderer="@{controller.rowRenderer}"/>
                 </hbox>
             </groupbox>
         </hbox>
 
-        <button onClick="controller.save();"
-            label="${i18n:_('Save')}"
-            sclass="save-button global-action" />
+        <button onClick="controller.save();" label="${i18n:_('Save')}" sclass="save-button global-action" />
+
         <button onClick="controller.saveAndContinue();"
-            label="${i18n:_('Save &amp; Continue')}"
-            sclass="saveandcontinue-button global-action" />
-        <button onClick="controller.cancel();"
-            label="${i18n:_('Cancel')}"
-            sclass="cancel-button global-action" />
+                label="${i18n:_('Save &amp; Continue')}"
+                sclass="saveandcontinue-button global-action" />
+
+        <button onClick="controller.cancel();" label="${i18n:_('Cancel')}" sclass="cancel-button global-action" />
 
         <popup id="personalTimesheetPopup" width="300px">
             <grid>
@@ -164,8 +173,8 @@
                     </row>
                 </rows>
             </grid>
-            <button onClick="controller.closePersonalTimesheetPopup();"
-                label="${i18n:_('Ok')}" />
+            <button onClick="controller.closePersonalTimesheetPopup();" label="${i18n:_('Ok')}"
+                    style="margin-top: 5px" sclass="add-button" />
         </popup>
 
     </window>

@@ -21,30 +21,31 @@
 
 package org.libreplan.web.orders;
 
-import java.math.BigDecimal;
-import java.util.List;
-
-import org.libreplan.business.common.Registry;
-import org.libreplan.business.common.daos.ConfigurationDAO;
 import org.libreplan.business.expensesheet.entities.ExpenseSheetLine;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.reports.dtos.WorkReportLineDTO;
 import org.libreplan.web.common.Util;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.Progressmeter;
 import org.zkoss.zul.Vbox;
 
+import java.math.BigDecimal;
+import java.util.List;
+
 /**
- * Controller for show the asigned hours of the selected order element<br />
+ * Controller for show the assigned hours of the selected order element.
+ * <br />
  *
  * @author Susana Montes Pedreria <smontes@wirelessgalicia.com>
  * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
-public class AssignedHoursToOrderElementController extends
-        GenericForwardComposer {
+public class AssignedHoursToOrderElementController extends GenericForwardComposer {
 
     private IAssignedHoursToOrderElementModel assignedHoursToOrderElementModel;
+
+    private IOrderElementModel orderElementModel;
 
     private Vbox orderElementHours;
 
@@ -56,10 +57,21 @@ public class AssignedHoursToOrderElementController extends
 
     private Progressmeter exceedMoneyCostProgressBar;
 
+    public AssignedHoursToOrderElementController() {
+        if ( assignedHoursToOrderElementModel == null ) {
+            assignedHoursToOrderElementModel =
+                    (IAssignedHoursToOrderElementModel) SpringUtil.getBean("assignedHoursToOrderElementModel");
+        }
+
+        if ( orderElementModel == null ) {
+            orderElementModel = (IOrderElementModel) SpringUtil.getBean("orderElementModel");
+        }
+    }
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        comp.setVariable("assignedHoursToOrderElementController", this, true);
+        comp.setAttribute("assignedHoursToOrderElementController", this, true);
     }
 
     public List<WorkReportLineDTO> getWorkReportLines() {
@@ -67,13 +79,11 @@ public class AssignedHoursToOrderElementController extends
     }
 
     public String getTotalAssignedDirectEffort() {
-        return assignedHoursToOrderElementModel.getAssignedDirectEffort()
-                .toFormattedString();
+        return assignedHoursToOrderElementModel.getAssignedDirectEffort().toFormattedString();
     }
 
     public String getTotalAssignedEffort() {
-        return assignedHoursToOrderElementModel.getTotalAssignedEffort()
-                .toFormattedString();
+        return assignedHoursToOrderElementModel.getTotalAssignedEffort().toFormattedString();
     }
 
     public String getTotalDirectExpenses() {
@@ -89,13 +99,11 @@ public class AssignedHoursToOrderElementController extends
     }
 
     public String getEffortChildren() {
-        return assignedHoursToOrderElementModel
-                .getAssignedDirectEffortChildren().toFormattedString();
+        return assignedHoursToOrderElementModel.getAssignedDirectEffortChildren().toFormattedString();
     }
 
     public String getEstimatedEffort() {
-        return assignedHoursToOrderElementModel.getEstimatedEffort()
-                .toFormattedString();
+        return assignedHoursToOrderElementModel.getEstimatedEffort().toFormattedString();
     }
 
     public int getProgressWork() {
@@ -130,8 +138,6 @@ public class AssignedHoursToOrderElementController extends
         return assignedHoursToOrderElementModel.getMoneyCostPercentage();
     }
 
-    private IOrderElementModel orderElementModel;
-
     public void openWindow(IOrderElementModel orderElementModel) {
         setOrderElementModel(orderElementModel);
         assignedHoursToOrderElementModel.initOrderElement(getOrderElement());
@@ -144,7 +150,7 @@ public class AssignedHoursToOrderElementController extends
         paintProgressBars();
     }
 
-    public void paintProgressBars() {
+    void paintProgressBars() {
         viewPercentage();
         showMoneyCostPercentageBars();
     }
@@ -158,9 +164,8 @@ public class AssignedHoursToOrderElementController extends
     }
 
     /**
-     * This method shows the percentage of the imputed hours with respect to the
-     * estimated hours.If the hours imputed is greater that the hours estimated
-     * then show the exceed percentage of hours.
+     * This method shows the percentage of the imputed hours with respect to the estimated hours.
+     * If the hours imputed is greater that the hours estimated then show the exceed percentage of hours.
      */
     private void viewPercentage() {
         if (this.getProgressWork() > 100) {
@@ -181,9 +186,7 @@ public class AssignedHoursToOrderElementController extends
             moneyCostProgressBar.setValue(100);
 
             exceedMoneyCostProgressBar.setVisible(true);
-            exceedMoneyCostProgressBar.setWidth(moneyCostPercentage.subtract(
-                    new BigDecimal(100)).intValue()
-                    + "px");
+            exceedMoneyCostProgressBar.setWidth(moneyCostPercentage.subtract(new BigDecimal(100)).intValue() + "px");
         } else {
             moneyCostProgressBar.setValue(moneyCostPercentage.intValue());
             exceedMoneyCostProgressBar.setVisible(false);

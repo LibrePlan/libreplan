@@ -20,17 +20,6 @@
  */
 package org.libreplan.web.orders.materials;
 
-import static org.libreplan.web.I18nHelper._;
-
-import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.apache.commons.logging.LogFactory;
 import org.libreplan.business.materials.entities.Material;
 import org.libreplan.business.materials.entities.MaterialAssignment;
 import org.libreplan.business.materials.entities.MaterialCategory;
@@ -40,8 +29,6 @@ import org.libreplan.web.common.Util;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Label;
@@ -60,18 +47,23 @@ import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.TreeitemRenderer;
 import org.zkoss.zul.Treerow;
 import org.zkoss.zul.Vbox;
-import org.zkoss.zul.api.Decimalbox;
-import org.zkoss.zul.api.Textbox;
+import org.zkoss.zul.Textbox;
+import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.impl.MessageboxDlg;
+
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import static org.libreplan.web.I18nHelper._;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
- *
  */
-public abstract class AssignedMaterialsController<T, A> extends GenericForwardComposer {
-
-    private static final org.apache.commons.logging.Log LOG = LogFactory
-            .getLog(AssignedMaterialsController.class);
+public abstract class AssignedMaterialsController<T, A> extends GenericForwardComposer<Component> {
 
     private Tree categoriesTree;
 
@@ -86,6 +78,8 @@ public abstract class AssignedMaterialsController<T, A> extends GenericForwardCo
     private Tab tbAssignedMaterials;
 
     private Vbox assignmentsBox;
+
+    private UnitTypeListRenderer unitTypeListRenderer = new UnitTypeListRenderer();
 
     protected abstract IAssignedMaterialsModel<T, A> getModel();
 
@@ -110,14 +104,14 @@ public abstract class AssignedMaterialsController<T, A> extends GenericForwardCo
     protected abstract void initializeEdition(T orderElement);
 
     /**
-     * Delay initialization of categories tree till user clicks on Materials tab
+     * Delay initialization of categories tree till user clicks on Materials tab.
      *
      * Initializing model and renderer properties directly in ZUL resulted in calling the renderer
-     * more times than actually needed, resulting in noticeable lack of performance
+     * more times than actually needed, resulting in noticeable lack of performance.
      */
     private void prepareCategoriesTree() {
-        if (categoriesTree.getTreeitemRenderer() == null) {
-            categoriesTree.setTreeitemRenderer(getMaterialCategoryWithUnitsAndPriceRenderer());
+        if ( categoriesTree.getItemRenderer() == null ) {
+            categoriesTree.setItemRenderer(getMaterialCategoryWithUnitsAndPriceRenderer());
         }
         categoriesTree.setModel(getMaterialCategories());
     }
@@ -125,8 +119,8 @@ public abstract class AssignedMaterialsController<T, A> extends GenericForwardCo
     public abstract TreeModel getMaterialCategories();
 
     private void prepareAllCategoriesTree() {
-        if (allCategoriesTree.getTreeitemRenderer() == null) {
-            allCategoriesTree.setTreeitemRenderer(getMaterialCategoryRenderer());
+        if ( allCategoriesTree.getItemRenderer() == null ) {
+            allCategoriesTree.setItemRenderer(getMaterialCategoryRenderer());
         }
         allCategoriesTree.setModel(getAllMaterialCategories());
     }
@@ -138,12 +132,11 @@ public abstract class AssignedMaterialsController<T, A> extends GenericForwardCo
     public abstract BigDecimal getTotalPrice();
 
     /**
-     * On selecting category, refresh {@link MaterialAssignment} associated with
-     * selected {@link MaterialCategory}
+     * On selecting category, refresh {@link MaterialAssignment} associated with selected {@link MaterialCategory}.
      */
-    public void refreshMaterialAssigments() {
+    public void refreshMaterialAssignments() {
         final List<A> materials = getAssignedMaterials();
-        gridMaterials.setModel(new SimpleListModel(materials));
+        gridMaterials.setModel(new SimpleListModel<>(materials));
         reloadGridMaterials();
     }
 
@@ -154,20 +147,21 @@ public abstract class AssignedMaterialsController<T, A> extends GenericForwardCo
 
     private List<A> getAssignedMaterials(Treeitem treeitem) {
         final MaterialCategory materialCategory = (treeitem != null) ? (MaterialCategory) treeitem.getValue() : null;
+
         return getAssignedMaterials(materialCategory);
     }
 
-    public List<A> getAssignedMaterials(MaterialCategory materialCategory) {
+    private List<A> getAssignedMaterials(MaterialCategory materialCategory) {
         return getModel().getAssignedMaterials(materialCategory);
     }
 
     /**
-     * On changing total price, recalculate unit price and refresh categories tree
+     * On changing total price, recalculate unit price and refresh categories tree.
      *
      * @param row
      */
     public void updateTotalPrice(Row row) {
-        final A materialAssignment = (A) row.getValue();
+        final A materialAssignment =  row.getValue();
         reloadGridMaterials();
         refreshTotalPriceAndTotalUnits(materialAssignment);
     }
@@ -175,25 +169,25 @@ public abstract class AssignedMaterialsController<T, A> extends GenericForwardCo
     protected abstract Double getTotalPrice(A materialAssignment);
 
     /**
-     * Refresh categoriesTree since it shows totalUnits and totalPrice as well
+     * Refresh categoriesTree since it shows totalUnits and totalPrice as well.
      */
     private void refreshTotalPriceAndTotalUnits(A materialAssignment) {
         final Treeitem item = findMaterialCategoryInTree(getCategory(materialAssignment), categoriesTree);
-        if (item != null) {
+        if ( item != null ) {
             // Reload categoriesTree
             categoriesTree.setModel(getMaterialCategories());
         }
     }
 
     private Treeitem findMaterialCategoryInTree(MaterialCategory category, Tree tree) {
-        for (Iterator i = tree.getItems().iterator(); i.hasNext();) {
-            Treeitem treeitem = (Treeitem) i.next();
-            final MaterialCategory materialCategory = (MaterialCategory) treeitem
-                    .getValue();
-            if (category.equals(materialCategory)) {
+        for (Treeitem treeitem : tree.getItems()) {
+            final MaterialCategory materialCategory = treeitem.getValue();
+
+            if ( category.equals(materialCategory) ) {
                 return treeitem;
             }
         }
+
         return null;
     }
 
@@ -202,7 +196,7 @@ public abstract class AssignedMaterialsController<T, A> extends GenericForwardCo
     }
 
     /**
-     * Search materials on pressing search button
+     * Search materials on pressing search button.
      */
     public void searchMaterials() {
         final String text = txtSearchMaterial.getValue();
@@ -212,10 +206,10 @@ public abstract class AssignedMaterialsController<T, A> extends GenericForwardCo
     }
 
     /**
-     * Returns {@link MaterialCategory} associated with selected {@link Treeitem} in {@link Tree}
+     * Returns {@link MaterialCategory} associated with selected {@link Treeitem} in {@link Tree}.
      *
      * @param tree
-     * @return
+     * @return {@link MaterialCategory}
      */
     private MaterialCategory getSelectedCategory(Tree tree) {
         final Treeitem treeitem = tree.getSelectedItem();
@@ -223,20 +217,20 @@ public abstract class AssignedMaterialsController<T, A> extends GenericForwardCo
     }
 
     /**
-     * Get materials found on latest search
+     * Get materials found on latest search.
      *
-     * @return
+     * @return {@link List<Material>}
      */
     public List<Material> getMatchingMaterials() {
         return getModel().getMatchingMaterials();
     }
 
     /**
-     * Assigns a list of selected {@link Material} to current {@link OrderElement}
+     * Assigns a list of selected {@link Material} to current {@link OrderElement}.
      */
     public void assignSelectedMaterials() {
         Set<Material> materials = getSelectedMaterials();
-        if (materials.isEmpty()) {
+        if ( materials.isEmpty() ) {
             return;
         }
 
@@ -252,13 +246,15 @@ public abstract class AssignedMaterialsController<T, A> extends GenericForwardCo
     }
 
     private Set<Material> getSelectedMaterials() {
-        Set<Material> result = new HashSet<Material>();
+        Set<Material> result = new HashSet<>();
 
         final Set<Listitem> listitems = lbFoundMaterials.getSelectedItems();
+
         for (Listitem each: listitems) {
-            final Material material = (Material) each.getValue();
+            final Material material = each.getValue();
             result.add(material);
         }
+
         return result;
     }
 
@@ -268,7 +264,7 @@ public abstract class AssignedMaterialsController<T, A> extends GenericForwardCo
     }
 
     private void reloadGridMaterials() {
-        if (gridMaterials != null) {
+        if ( gridMaterials != null ) {
             Util.reloadBindings(gridMaterials);
         }
     }
@@ -283,6 +279,7 @@ public abstract class AssignedMaterialsController<T, A> extends GenericForwardCo
         getModel().searchMaterials("", null);
     }
 
+    /** Should be public! */
     public MaterialCategoryRenderer getMaterialCategoryRenderer() {
         return new MaterialCategoryRenderer();
     }
@@ -293,31 +290,29 @@ public abstract class AssignedMaterialsController<T, A> extends GenericForwardCo
          * Copied verbatim from org.zkoss.zul.Tree;
          */
         @Override
-        public void render(Treeitem ti, Object node) {
-            final MaterialCategory materialCategory = (MaterialCategory) node;
+        public void render(Treeitem treeitem, Object o, int i) throws Exception {
+            final MaterialCategory materialCategory = (MaterialCategory) o;
 
             Label lblName = new Label(materialCategory.getName());
 
-            Treerow tr = null;
-            ti.setValue(node);
-            if (ti.getTreerow() == null) {
+            Treerow tr;
+            treeitem.setValue(o);
+            if ( treeitem.getTreerow() == null ) {
                 tr = new Treerow();
-                tr.setParent(ti);
-                ti.setOpen(true); // Expand node
+                tr.setParent(treeitem);
+                treeitem.setOpen(true); // Expand node
             } else {
-                tr = ti.getTreerow();
+                tr = treeitem.getTreerow();
                 tr.getChildren().clear();
             }
+
             // Add category name
             Treecell cellName = new Treecell();
-            cellName.addEventListener("onClick", new EventListener() {
-
-                @Override
-                public void onEvent(Event event) {
-                    getModel().searchMaterials("", materialCategory);
-                    Util.reloadBindings(lbFoundMaterials);
-                }
+            cellName.addEventListener("onClick", event ->  {
+                getModel().searchMaterials("", materialCategory);
+                Util.reloadBindings(lbFoundMaterials);
             });
+
             lblName.setParent(cellName);
             cellName.setParent(tr);
         }
@@ -333,22 +328,21 @@ public abstract class AssignedMaterialsController<T, A> extends GenericForwardCo
          * Copied verbatim from org.zkoss.zul.Tree;
          */
         @Override
-        public void render(Treeitem ti, Object node) {
-            final MaterialCategory materialCategory = (MaterialCategory) node;
+        public void render(Treeitem treeitem, Object o, int i) throws Exception {
+            final MaterialCategory materialCategory = (MaterialCategory) o;
 
             Label lblName = new Label(materialCategory.getName());
             Label lblUnits = new Label(getUnits(materialCategory).toString());
-            Label lblPrice = new Label(getPrice(materialCategory).toString()
-                    + getCurrencySymbol());
+            Label lblPrice = new Label(getPrice(materialCategory).toString() + getCurrencySymbol());
 
-            Treerow tr = null;
-            ti.setValue(node);
-            if (ti.getTreerow() == null) {
+            Treerow tr;
+            treeitem.setValue(o);
+            if ( treeitem.getTreerow() == null ) {
                 tr = new Treerow();
-                tr.setParent(ti);
-                ti.setOpen(true); // Expand node
+                tr.setParent(treeitem);
+                treeitem.setOpen(true); // Expand node
             } else {
-                tr = ti.getTreerow();
+                tr = treeitem.getTreerow();
                 tr.getChildren().clear();
             }
             // Add category name
@@ -374,24 +368,20 @@ public abstract class AssignedMaterialsController<T, A> extends GenericForwardCo
         private BigDecimal getPrice(MaterialCategory materialCategory) {
             return getModel().getPrice(materialCategory);
         }
-
     }
 
     /**
-     * On clicking remove {@link MaterialAssignment}, shows dialog for
-     * confirming removing selected element
+     * On clicking remove {@link MaterialAssignment}, shows dialog for confirming removing selected element.
      *
      * @param materialAssignment
      */
     public void showRemoveMaterialAssignmentDlg(A materialAssignment) {
-        try {
-            int status = Messagebox.show(_("Delete item {0}. Are you sure?", getMaterial(materialAssignment).getCode()),
-                    _("Delete"), Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION);
-            if (Messagebox.OK == status) {
-                removeMaterialAssignment(materialAssignment);
-            }
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+        int status = Messagebox.show(
+                _("Delete item {0}. Are you sure?", getMaterial(materialAssignment).getCode()),
+                _("Delete"), Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION);
+
+        if ( Messagebox.OK == status ) {
+            removeMaterialAssignment(materialAssignment);
         }
     }
 
@@ -406,8 +396,8 @@ public abstract class AssignedMaterialsController<T, A> extends GenericForwardCo
     private void reloadTree(Tree tree) {
         final Treeitem treeitem = tree.getSelectedItem();
 
-        if (treeitem != null) {
-            final MaterialCategory materialCategory = (MaterialCategory) treeitem.getValue();
+        if ( treeitem != null ) {
+            final MaterialCategory materialCategory = treeitem.getValue();
             tree.setModel(getMaterialCategories());
             locateAndSelectMaterialCategory(tree, materialCategory);
         } else {
@@ -418,37 +408,37 @@ public abstract class AssignedMaterialsController<T, A> extends GenericForwardCo
 
     private boolean locateAndSelectMaterialCategory(Tree tree, MaterialCategory materialCategory) {
         Treeitem treeitem = findTreeItemByMaterialCategory(tree.getRoot(), materialCategory);
-        if (treeitem != null) {
+        if ( treeitem != null ) {
             treeitem.setSelected(true);
             return true;
         }
+
         return false;
     }
 
     @SuppressWarnings("unchecked")
     private Treeitem findTreeItemByMaterialCategory(Component node, MaterialCategory materialCategory) {
-        if (node instanceof Treeitem) {
+        if ( node instanceof Treeitem ) {
             final Treeitem treeitem = (Treeitem) node;
-            final MaterialCategory _materialCategory = (MaterialCategory) treeitem.getValue();
-            if (_materialCategory.getId().equals(materialCategory.getId())) {
+            final MaterialCategory _materialCategory =  treeitem.getValue();
+            if ( _materialCategory.getId().equals(materialCategory.getId()) ) {
                 return treeitem;
             }
         }
-        for (Iterator i = node.getChildren().iterator(); i.hasNext(); ) {
-            Object obj = i.next();
-            if (obj instanceof Component) {
-                Treeitem treeitem =  findTreeItemByMaterialCategory((Component) obj, materialCategory);
-                if (treeitem != null) {
+        for (Component obj : node.getChildren()) {
+            if (obj != null) {
+                Treeitem treeitem = findTreeItemByMaterialCategory(obj, materialCategory);
+                if ( treeitem != null ) {
                     return treeitem;
                 }
             }
         }
+
         return null;
     }
 
     /**
-     * On clicking Split button, shows dialog for splitting selected
-     * {@link MaterialAssignment} into two
+     * On clicking Split button, shows dialog for splitting selected {@link MaterialAssignment} into two.
      *
      * @param materialAssignment
      */
@@ -456,40 +446,35 @@ public abstract class AssignedMaterialsController<T, A> extends GenericForwardCo
     public void showSplitMaterialAssignmentDlg(A materialAssignment) {
         MessageboxDlg dialogSplitAssignment;
 
-        final String message = _("Do you want to split the material assignment {0}?",
-                getMaterial(materialAssignment).getCode());
+        final String message =
+                _("Do you want to split the material assignment {0}?", getMaterial(materialAssignment).getCode());
 
-        Map args = new HashMap();
+        Map<String, java.io.Serializable> args = new HashMap<>();
         args.put("message", message);
         args.put("title", _("Split new assignment"));
         args.put("OK", Messagebox.OK);
         args.put("CANCEL", Messagebox.CANCEL);
         args.put("icon", Messagebox.QUESTION);
 
-        dialogSplitAssignment = (MessageboxDlg) Executions
-                .createComponents("/orders/_splitMaterialAssignmentDlg.zul",
-                        self, args);
-        Decimalbox dbUnits = (Decimalbox) dialogSplitAssignment
-                .getFellowIfAny("dbUnits");
+        dialogSplitAssignment = (MessageboxDlg) Executions.createComponents("/orders/_splitMaterialAssignmentDlg.zul",
+                self, args);
+        Decimalbox dbUnits = (Decimalbox) dialogSplitAssignment.getFellowIfAny("dbUnits");
         dbUnits.setValue(getUnits(materialAssignment));
         try {
             dialogSplitAssignment.doModal();
-            int status = dialogSplitAssignment.getResult();
-            if (Messagebox.OK == status) {
+
+            Messagebox.Button status = dialogSplitAssignment.getResult();
+
+            if ( Messagebox.Button.OK == status ) {
                 splitMaterialAssignment(materialAssignment, dbUnits.getValue());
             }
         } catch (SuspendNotAllowedException e) {
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
 
     /**
-     * Creates a new {@link MaterialAssignment} out of materialAssignment, but
-     * setting its units attribute to units.
-     *
-     * materialAssignment passed as parameter decreases its units attribute in units
+     * Creates a new {@link MaterialAssignment} out of materialAssignment, but setting its units attribute to units.
      *
      * @param materialAssignment
      * @param units
@@ -497,13 +482,15 @@ public abstract class AssignedMaterialsController<T, A> extends GenericForwardCo
     private void splitMaterialAssignment(A materialAssignment, BigDecimal units) {
         A newAssignment = copyFrom(materialAssignment);
         BigDecimal currentUnits = getUnits(materialAssignment);
-        if (units.compareTo(currentUnits) > 0) {
-            units = currentUnits;
+        BigDecimal newUnits = units;
+
+        if ( units.compareTo(currentUnits) > 0 ) {
+            newUnits = currentUnits;
             currentUnits = BigDecimal.ZERO;
         } else {
-            currentUnits = currentUnits.subtract(units);
+            currentUnits = currentUnits.subtract(newUnits);
         }
-        setUnits(newAssignment, units);
+        setUnits(newAssignment, newUnits);
         setUnits(materialAssignment, currentUnits);
         getModel().addMaterialAssignment(newAssignment);
         reloadGridMaterials();
@@ -515,16 +502,14 @@ public abstract class AssignedMaterialsController<T, A> extends GenericForwardCo
 
     protected abstract BigDecimal getUnits(A assignment);
 
-    private UnitTypeListRenderer unitTypeListRenderer = new UnitTypeListRenderer();
-
     public List<UnitType> getUnitTypes() {
         return getModel().getUnitTypes();
     }
 
     public void selectUnitType(Component self) {
         Listitem selectedItem = ((Listbox) self).getSelectedItem();
-        UnitType unitType = (UnitType) selectedItem.getValue();
-        Material material = (Material) ((Row) self.getParent()).getValue();
+        UnitType unitType = selectedItem.getValue();
+        Material material = ((Row) self.getParent()).getValue();
         material.setUnitType(unitType);
     }
 
@@ -532,46 +517,45 @@ public abstract class AssignedMaterialsController<T, A> extends GenericForwardCo
         return unitTypeListRenderer;
     }
 
-    /**
-     * RowRenderer for a @{UnitType} element
-     * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
-     */
     public class UnitTypeListRenderer implements ListitemRenderer {
+        /**
+         * RowRenderer for a @{UnitType} element.
+         *
+         * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
+         */
         @Override
-        public void render(Listitem listItem, Object data) {
-            final UnitType unitType = (UnitType) data;
-            listItem.setValue(unitType);
+        public void render(Listitem listitem, Object o, int i) throws Exception {
+            final UnitType unitType = (UnitType) o;
+            listitem.setValue(unitType);
 
             Listcell listCell = new Listcell(unitType.getMeasure());
-            listItem.appendChild(listCell);
+            listitem.appendChild(listCell);
 
-            Listbox listbox = listItem.getListbox();
+            Listbox listbox = listitem.getListbox();
             Component parent = listbox.getParent();
 
-            if (parent instanceof Row) {
-                Object assigment = (Object) ((Row) parent).getValue();
-                if (getModel().isCurrentUnitType(assigment, unitType)) {
-                    listItem.getListbox().setSelectedItem(listItem);
+            if ( parent instanceof Row ) {
+                Object assignment = ((Row) parent).getValue();
+                if ( getModel().isCurrentUnitType(assignment, unitType) ) {
+                    listitem.getListbox().setSelectedItem(listitem);
                 }
+
                 return;
             }
 
-            if (parent instanceof Listcell) {
-                Material material = (Material) ((Listitem) (parent.getParent()))
-                        .getValue();
-                if (isCurrentUnitType(material, unitType)) {
-                    listItem.getListbox().setSelectedItem(listItem);
+            if ( parent instanceof Listcell ) {
+                Material material = ((Listitem) (parent.getParent())).getValue();
+                if ( isCurrentUnitType(material, unitType) ) {
+                    listitem.getListbox().setSelectedItem(listitem);
                 }
             }
-
         }
-    }
 
-    private boolean isCurrentUnitType(Material material, UnitType unitType) {
-        return ((material != null)
-                && (material.getUnitType() != null)
- && (unitType
-                .getId().equals(material.getUnitType().getId())));
+        private boolean isCurrentUnitType(Material material, UnitType unitType) {
+            return material != null &&
+                    material.getUnitType() != null &&
+                    unitType.getId().equals(material.getUnitType().getId());
+        }
     }
 
     public String getCurrencySymbol() {

@@ -19,8 +19,6 @@
 
 package org.libreplan.web.planner.taskedition;
 
-import static org.libreplan.web.I18nHelper._;
-
 import org.apache.commons.lang3.Validate;
 import org.joda.time.LocalDate;
 import org.libreplan.business.planner.entities.AggregateOfResourceAllocations;
@@ -41,6 +39,8 @@ import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Messagebox;
 
+import static org.libreplan.web.I18nHelper._;
+
 /**
  * Controller for advanced allocation of a {@link Task}.
  *
@@ -59,8 +59,8 @@ public class AdvancedAllocationTaskController extends GenericForwardComposer {
     private ViewSwitcher switcher;
 
     public void showAdvancedAllocation(Task task,
-            IContextWithPlannerTask<TaskElement> context,
-            PlanningState planningState) {
+                                       IContextWithPlannerTask<TaskElement> context,
+                                       PlanningState planningState) {
         this.task = task;
         this.context = context;
         this.planningState = planningState;
@@ -69,12 +69,8 @@ public class AdvancedAllocationTaskController extends GenericForwardComposer {
                 planningState.getCurrentScenario(), task);
 
         if (allocationResult.getAggregate().isEmpty()) {
-            try {
-                Messagebox.show(_("Some allocations needed"), _("Warning"),
-                        Messagebox.OK, Messagebox.EXCLAMATION);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+            Messagebox.show(_("Some allocations needed"), _("Warning"),
+                    Messagebox.OK, Messagebox.EXCLAMATION);
             return;
         }
 
@@ -105,12 +101,11 @@ public class AdvancedAllocationTaskController extends GenericForwardComposer {
         private AdvanceAllocationResultReceiver(AllocationResult allocation) {
             Validate.isTrue(!allocation.getAggregate().isEmpty());
             this.allocation = allocation;
-            final EffortDuration totalEffort = allocation.getAggregate()
-                    .getTotalEffort();
+            final EffortDuration totalEffort = allocation.getAggregate().getTotalEffort();
             final IntraDayDate start = allocation.getIntraDayStart();
             final IntraDayDate end = allocation.getIntraDayEnd();
-            final CalculatedValue calculatedValue = allocation
-                    .getCalculatedValue();
+            final CalculatedValue calculatedValue = allocation.getCalculatedValue();
+
             restrictionSource = new IRestrictionSource() {
 
                 @Override
@@ -137,7 +132,7 @@ public class AdvancedAllocationTaskController extends GenericForwardComposer {
 
         @Override
         public void cancel() {
-            // Do nothing
+            /* Do nothing */
         }
 
         @Override

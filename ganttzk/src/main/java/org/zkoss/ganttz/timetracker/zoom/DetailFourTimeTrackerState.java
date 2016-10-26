@@ -43,9 +43,9 @@ public class DetailFourTimeTrackerState extends TimeTrackerState {
     private static final int SECOND_LEVEL_SIZE = 56;
 
     DetailFourTimeTrackerState(
-            IDetailItemModificator firstLevelModificator, IDetailItemModificator secondLevelModificator) {
+            IDetailItemModifier firstLevelModifier, IDetailItemModifier secondLevelModifier) {
 
-        super(firstLevelModificator, secondLevelModificator);
+        super(firstLevelModifier, secondLevelModifier);
     }
 
     public final double pixelPerDay() {

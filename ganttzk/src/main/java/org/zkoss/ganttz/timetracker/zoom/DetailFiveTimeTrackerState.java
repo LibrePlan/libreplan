@@ -40,9 +40,9 @@ public class DetailFiveTimeTrackerState extends TimeTrackerStateWithSubintervals
     private static final int SECOND_LEVEL_SIZE = 30;
 
     DetailFiveTimeTrackerState(
-            IDetailItemModificator firstLevelModificator, IDetailItemModificator secondLevelModificator) {
+            IDetailItemModifier firstLevelModifier, IDetailItemModifier secondLevelModifier) {
 
-        super(firstLevelModificator, secondLevelModificator);
+        super(firstLevelModifier, secondLevelModifier);
     }
 
     @Override

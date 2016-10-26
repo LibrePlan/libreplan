@@ -21,13 +21,13 @@
 
 package org.libreplan.web.common.components;
 
-import org.libreplan.web.I18nHelper;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 import org.zkoss.zul.Label;
 
+import static org.libreplan.web.I18nHelper._;
+
 /**
- * ZK macro component for translating texts created dinamically, that means,
- * those which need one or more parameters
+ * ZK macro component for translating texts created dynamically, that means, those which need one or more parameters.
  *
  * @author Diego Pino García <dpino@igalia.com>
  */
@@ -45,7 +45,6 @@ public class I18n extends HtmlMacroComponent {
     private String arg3;
 
     public I18n() {
-
     }
 
     public String getValue() {
@@ -90,19 +89,22 @@ public class I18n extends HtmlMacroComponent {
 
     public String getI18n() {
         if (arg0 != null && arg1 != null && arg2 != null && arg3 != null) {
-            return I18nHelper._(value, arg0, arg1, arg2, arg3);
-        }
-        if (arg0 != null && arg1 != null && arg2 != null) {
-            return I18nHelper._(value, arg0, arg1, arg2);
-        }
-        if (arg0 != null && arg1 != null) {
-            return I18nHelper._(value, arg0, arg1);
-        }
-        if (arg0 != null) {
-            return I18nHelper._(value, arg0);
+            return _(value, arg0, arg1, arg2, arg3);
         }
 
-        return I18nHelper._(value);
+        if (arg0 != null && arg1 != null && arg2 != null) {
+            return _(value, arg0, arg1, arg2);
+        }
+
+        if (arg0 != null && arg1 != null) {
+            return _(value, arg0, arg1);
+        }
+
+        if (arg0 != null) {
+            return _(value, arg0);
+        }
+
+        return _(value);
     }
 
     public void forceLoad() {

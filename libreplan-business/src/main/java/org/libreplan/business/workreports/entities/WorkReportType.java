@@ -66,7 +66,9 @@ public class WorkReportType extends IntegrationEntity implements IHumanIdentifia
     /**
      * Constructor for hibernate. Do not use!
      */
-    public WorkReportType() {}
+    public WorkReportType() {
+
+    }
 
     private WorkReportType(String name) {
         this.name = name;
@@ -253,11 +255,11 @@ public class WorkReportType extends IntegrationEntity implements IHumanIdentifia
         addDescriptionFieldToHead(descriptionField, getHeadingFieldsAndLabels().size());
     }
 
-    public void addLabelAssigmentToEndHead(WorkReportLabelTypeAssignment workReportLabelTypeAssignment) {
+    public void addLabelAssignmentToEndHead(WorkReportLabelTypeAssignment workReportLabelTypeAssignment) {
         addLabelAssignmentToHead(workReportLabelTypeAssignment, getHeadingFieldsAndLabels().size());
     }
 
-    public void addLabelAssigmentToEndLine(WorkReportLabelTypeAssignment workReportLabelTypeAssignment) {
+    public void addLabelAssignmentToEndLine(WorkReportLabelTypeAssignment workReportLabelTypeAssignment) {
         addLabelAssignmentToLine(workReportLabelTypeAssignment, getLineFieldsAndLabels().size());
     }
 

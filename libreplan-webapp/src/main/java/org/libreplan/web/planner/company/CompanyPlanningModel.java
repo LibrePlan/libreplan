@@ -30,7 +30,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -95,7 +94,6 @@ import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.Emitter;
-import org.zkoss.ganttz.util.Emitter.IEmissionListener;
 import org.zkoss.ganttz.util.Interval;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
@@ -107,7 +105,6 @@ import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Label;
-import org.zkoss.zul.South;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Tabbox;
 import org.zkoss.zul.Tabpanel;
@@ -137,13 +134,11 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
     @Autowired
     private ICompanyEarnedValueCalculator earnedValueCalculator;
 
-    private List<IZoomLevelChangedListener> keepAliveZoomListeners = new ArrayList<IZoomLevelChangedListener>();
+    private List<IZoomLevelChangedListener> keepAliveZoomListeners = new ArrayList<>();
 
-    private List<Checkbox> earnedValueChartConfigurationCheckboxes = new ArrayList<Checkbox>();
+    private List<Checkbox> earnedValueChartConfigurationCheckboxes = new ArrayList<>();
 
-    private MultipleTabsPlannerController tabs;
-
-    private List<IChartVisibilityChangedListener> keepAliveChartVisibilityListeners = new ArrayList<IChartVisibilityChangedListener>();
+    private List<IChartVisibilityChangedListener> keepAliveChartVisibilityListeners = new ArrayList<>();
 
     @Autowired
     private IConfigurationDAO configurationDAO;
@@ -160,19 +155,13 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
     private PredefinedDatabaseSnapshots databaseSnapshots;
 
     private LocalDate filterStartDate;
+
     private LocalDate filterFinishDate;
 
-    // All the status but CANCELLED and STORED
-    private static final EnumSet<OrderStatusEnum> STATUS_VISUALIZED = OrderStatusEnum
-            .getVisibleStatus();
+    /** All the status but CANCELLED and STORED */
+    private static final EnumSet<OrderStatusEnum> STATUS_VISUALIZED = OrderStatusEnum.getVisibleStatus();
 
-    public void setPlanningControllerEntryPoints(
-            MultipleTabsPlannerController entryPoints) {
-        this.tabs = entryPoints;
-    }
-
-    private static final class TaskElementNavigator implements
-            IStructureNavigator<TaskElement> {
+    private static final class TaskElementNavigator implements IStructureNavigator<TaskElement> {
 
         @Override
         public List<TaskElement> getChildren(TaskElement object) {
@@ -186,35 +175,30 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
 
         @Override
         public boolean isMilestone(TaskElement object) {
-            if (object != null) {
-                return object instanceof TaskMilestone;
-            }
-            return false;
+            return object != null && object instanceof TaskMilestone;
         }
     }
 
     @Override
     public void setTabsController(MultipleTabsPlannerController tabsController) {
-        this.tabs = tabsController;
     }
 
     @Override
     @Transactional(readOnly = true)
     public void setConfigurationToPlanner(final Planner planner, Collection<ICommandOnTask<TaskElement>> additional,
-                                            ICommandOnTask<TaskElement> doubleClickCommand,
-                                            TaskGroupPredicate predicate) {
+                                          ICommandOnTask<TaskElement> doubleClickCommand,
+                                          TaskGroupPredicate predicate) {
+
         currentScenario = scenarioManager.getCurrent();
         final PlannerConfiguration<TaskElement> configuration = createConfiguration(predicate);
 
         User user;
         try {
-            user = this.userDAO.findByLoginName(SecurityUtils
-                    .getSessionUserLoginName());
+            user = this.userDAO.findByLoginName(SecurityUtils.getSessionUserLoginName());
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }
-        boolean expandPlanningViewChart = user
-                .isExpandCompanyPlanningViewCharts();
+        boolean expandPlanningViewChart = user.isExpandCompanyPlanningViewCharts();
         configuration.setExpandPlanningViewCharts(expandPlanningViewChart);
 
         final Tabbox chartComponent = new Tabbox();
@@ -224,7 +208,7 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
         appendTabpanels(chartComponent);
 
         configuration.setChartComponent(chartComponent);
-        if (doubleClickCommand != null) {
+        if ( doubleClickCommand != null ) {
             configuration.setDoubleClickCommand(doubleClickCommand);
         }
 
@@ -234,43 +218,39 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
 
         planner.setInitialZoomLevel(getZoomLevel(configuration));
 
-        configuration.setSecondLevelModificators(BankHolidaysMarker.create(getDefaultCalendar()));
+        configuration.setSecondLevelModifiers(BankHolidaysMarker.create(getDefaultCalendar()));
         planner.setConfiguration(configuration);
 
         setupZoomLevelListener(planner);
 
-        if(expandPlanningViewChart) {
-            //if the chart is expanded, we load the data now
+        if (expandPlanningViewChart) {
+            // If the chart is expanded, we load the data now
             setupChartAndItsContent(planner, chartComponent);
         }
         else {
-            //if the chart is not expanded, we load the data later with a listener
-            ((South) planner.getFellow("graphics"))
-                    .addEventListener("onOpen",
-                new EventListener() {
-                    @Override
-                    public void onEvent(Event event) {
-                        transactionService
-                        .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
-                            @Override
-                            public Void execute() {
+            // If the chart is not expanded, we load the data later with a listener
+            (planner.getFellow("graphics")).addEventListener("onOpen",
+                    new EventListener() {
+                        @Override
+                        public void onEvent(Event event) {
+                            transactionService.runOnReadOnlyTransaction((IOnTransaction<Void>) () -> {
                                 setupChartAndItsContent(planner, chartComponent);
                                 return null;
-                            }
-                        });
-                        //data is loaded only once, then we remove the listener
-                        event.getTarget().removeEventListener("onOpen", this);
-                    }
-                });
+                            });
+                            // Data is loaded only once, then we remove the listener
+                            event.getTarget().removeEventListener("onOpen", this);
+                        }
+                    });
         }
     }
 
-    private ZoomLevel getZoomLevel(
-            PlannerConfiguration<TaskElement> configuration) {
+    private ZoomLevel getZoomLevel(PlannerConfiguration<TaskElement> configuration) {
         ZoomLevel sessionZoom = FilterUtils.readZoomLevelCompanyView();
-        if (sessionZoom != null) {
+
+        if ( sessionZoom != null ) {
             return sessionZoom;
         }
+
         return OrderPlanningModel.calculateDefaultLevel(configuration);
     }
 
@@ -279,15 +259,10 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
     }
 
     private IZoomLevelChangedListener getSessionZoomLevelListener() {
-        IZoomLevelChangedListener zoomListener = new IZoomLevelChangedListener() {
-
-            @Override
-            public void zoomLevelChanged(ZoomLevel detailLevel) {
-                FilterUtils.writeZoomLevelCompanyView(detailLevel);
-            }
-        };
+        IZoomLevelChangedListener zoomListener = detailLevel -> FilterUtils.writeZoomLevelCompanyView(detailLevel);
 
         keepAliveZoomListeners.add(zoomListener);
+
         return zoomListener;
     }
 
@@ -295,8 +270,7 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
         return configurationDAO.getConfiguration().getDefaultCalendar();
     }
 
-    private void setupChartAndItsContent(final Planner planner,
-           final Tabbox chartComponent) {
+    private void setupChartAndItsContent(final Planner planner, final Tabbox chartComponent) {
         Timeplot chartLoadTimeplot = createEmptyTimeplot();
 
         appendTab(chartComponent, appendLoadChartAndLegend(new Tabpanel(), chartLoadTimeplot));
@@ -313,29 +287,25 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
     }
 
     private void createOnDemandEarnedValueTimePlot(final Tabbox chartComponent, final Planner planner){
-        transactionService.runOnReadOnlyTransaction(new IOnTransaction<Void>() {
-            @Override
-            public Void execute() {
-                Timeplot chartEarnedValueTimeplot = createEmptyTimeplot();
-                CompanyEarnedValueChartFiller earnedValueChartFiller = new CompanyEarnedValueChartFiller();
-                earnedValueChartFiller.calculateValues(planner.getTimeTracker().getRealInterval());
-                Tabpanel earnedValueTabpanel = new Tabpanel();
+        transactionService.runOnReadOnlyTransaction((IOnTransaction<Void>) () -> {
+            Timeplot chartEarnedValueTimeplot = createEmptyTimeplot();
+            CompanyEarnedValueChartFiller earnedValueChartFiller = new CompanyEarnedValueChartFiller();
+            earnedValueChartFiller.calculateValues(planner.getTimeTracker().getRealInterval());
+            Tabpanel earnedValueTabpanel = new Tabpanel();
 
-                appendEarnedValueChartAndLegend(earnedValueTabpanel, chartEarnedValueTimeplot, earnedValueChartFiller);
-                appendTab(chartComponent, earnedValueTabpanel);
-                Chart chart = setupChart(chartEarnedValueTimeplot, earnedValueChartFiller, planner);
-                setEventListenerConfigurationCheckboxes(chart);
+            appendEarnedValueChartAndLegend(earnedValueTabpanel, chartEarnedValueTimeplot, earnedValueChartFiller);
+            appendTab(chartComponent, earnedValueTabpanel);
+            Chart chart = setupChart(chartEarnedValueTimeplot, earnedValueChartFiller, planner);
+            setEventListenerConfigurationCheckboxes(chart);
 
-                Writer out = new StringWriter();
-                try {
-                    earnedValueTabpanel.redraw(out);
-                } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-
-                return null;
+            Writer out = new StringWriter();
+            try {
+                earnedValueTabpanel.redraw(out);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
+
+            return null;
         });
     }
 
@@ -343,6 +313,7 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
     private Timeplot createEmptyTimeplot() {
         Timeplot timeplot = new Timeplot();
         timeplot.appendChild(new Plotinfo());
+
         return timeplot;
     }
 
@@ -363,25 +334,21 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
         chartComponent.getTabpanels().appendChild(panel);
     }
 
-    private void appendEventListenerToDateboxIndicators(
-            final CompanyEarnedValueChartFiller earnedValueChartFiller,
-            final Vbox vbox, final Datebox datebox) {
-        datebox.addEventListener(Events.ON_CHANGE, new EventListener() {
+    private void appendEventListenerToDateboxIndicators(final CompanyEarnedValueChartFiller earnedValueChartFiller,
+                                                        final Vbox vbox,
+                                                        final Datebox datebox) {
 
-            @Override
-            public void onEvent(Event event) {
-                LocalDate date = new LocalDate(datebox.getValue());
-                org.zkoss.zk.ui.Component child = vbox
-                        .getFellow("indicatorsTable");
-                updateEarnedValueChartLegend(vbox, earnedValueChartFiller, date);
-                dateInfutureMessage(datebox);
-            }
-
+        datebox.addEventListener(Events.ON_CHANGE,  event -> {
+            LocalDate date = new LocalDate(datebox.getValue());
+            updateEarnedValueChartLegend(vbox, earnedValueChartFiller, date);
+            dateInfutureMessage(datebox);
         });
     }
 
     private void updateEarnedValueChartLegend(Vbox vbox,
-            CompanyEarnedValueChartFiller earnedValueChartFiller, LocalDate date) {
+                                              CompanyEarnedValueChartFiller earnedValueChartFiller,
+                                              LocalDate date) {
+
         for (EarnedValueType type : EarnedValueType.values()) {
             Label valueLabel = (Label) vbox.getFellow(type.toString());
             valueLabel.setValue(getLabelTextEarnedValueType(earnedValueChartFiller, type, date));
@@ -390,21 +357,18 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
 
     private void dateInfutureMessage(Datebox datebox) {
         Date value = datebox.getValue();
-        Date today = LocalDate.fromDateFields(new Date())
-                .toDateTimeAtStartOfDay().toDate();
-        if (value != null && (value.compareTo(today) > 0)) {
+        Date today = LocalDate.fromDateFields(new Date()).toDateTimeAtStartOfDay().toDate();
+
+        if ( value != null && (value.compareTo(today) > 0) ) {
             throw new WrongValueException(datebox, _("date in the future"));
         }
     }
 
-    public static Tabpanel appendLoadChartAndLegend(Tabpanel loadChartPannel,
-            Timeplot loadChart) {
-        return appendLoadChartAndLegend(loadChartPannel,
-                Emitter.withInitial(loadChart));
+    public static Tabpanel appendLoadChartAndLegend(Tabpanel loadChartPanel, Timeplot loadChart) {
+        return appendLoadChartAndLegend(loadChartPanel, Emitter.withInitial(loadChart));
     }
 
-    public static Tabpanel appendLoadChartAndLegend(Tabpanel loadChartPannel,
-            Emitter<Timeplot> loadChartEmitter) {
+    public static Tabpanel appendLoadChartAndLegend(Tabpanel loadChartPanel, Emitter<Timeplot> loadChartEmitter) {
         Hbox hbox = new Hbox();
         hbox.appendChild(getLoadChartLegend());
 
@@ -413,21 +377,18 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
         if (timePlot != null) {
             div.appendChild(timePlot);
         }
-        loadChartEmitter.addListener(new IEmissionListener<Timeplot>() {
-
-            @Override
-            public void newEmission(Timeplot timePlot) {
-                div.getChildren().clear();
-                if (timePlot != null) {
-                    div.appendChild(timePlot);
-                }
+        loadChartEmitter.addListener(timePlot1 -> {
+            div.getChildren().clear();
+            if (timePlot1 != null) {
+                div.appendChild(timePlot1);
             }
         });
         div.setSclass("plannergraph");
         hbox.appendChild(div);
 
-        loadChartPannel.appendChild(hbox);
-        return loadChartPannel;
+        loadChartPanel.appendChild(hbox);
+
+        return loadChartPanel;
     }
 
     public static org.zkoss.zk.ui.Component getLoadChartLegend() {
@@ -435,14 +396,15 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
         hbox.setClass("legend-container");
         hbox.setAlign("center");
         hbox.setPack("center");
-        Executions.createComponents("/planner/_legendLoadChartCompany.zul",
-                hbox, null);
+        Executions.createComponents("/planner/_legendLoadChartCompany.zul", hbox, null);
+
         return hbox;
     }
 
-    private void appendEarnedValueChartAndLegend(
-            Tabpanel earnedValueChartPannel, Timeplot chartEarnedValueTimeplot,
-            CompanyEarnedValueChartFiller earnedValueChartFiller) {
+    private void appendEarnedValueChartAndLegend(Tabpanel earnedValueChartPanel,
+                                                 Timeplot chartEarnedValueTimeplot,
+                                                 CompanyEarnedValueChartFiller earnedValueChartFiller) {
+
         Vbox vbox = new Vbox();
         vbox.setClass("legend-container");
         vbox.setAlign("center");
@@ -451,18 +413,14 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
         Hbox dateHbox = new Hbox();
         dateHbox.appendChild(new Label(_("Select date")));
 
-        LocalDate initialDate = earnedValueChartFiller
-                .initialDateForIndicatorValues();
-        Datebox datebox = new Datebox(initialDate.toDateTimeAtStartOfDay()
-                .toDate());
+        LocalDate initialDate = earnedValueChartFiller.initialDateForIndicatorValues();
+        Datebox datebox = new Datebox(initialDate.toDateTimeAtStartOfDay().toDate());
         dateHbox.appendChild(datebox);
 
-        appendEventListenerToDateboxIndicators(earnedValueChartFiller, vbox,
-                datebox);
+        appendEventListenerToDateboxIndicators(earnedValueChartFiller, vbox, datebox);
         vbox.appendChild(dateHbox);
 
-        vbox.appendChild(getEarnedValueChartConfigurableLegend(
-                earnedValueChartFiller, initialDate));
+        vbox.appendChild(getEarnedValueChartConfigurableLegend(earnedValueChartFiller, initialDate));
 
         Hbox hbox = new Hbox();
         hbox.setSclass("earned-value-chart");
@@ -475,7 +433,7 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
 
         hbox.appendChild(div);
 
-        earnedValueChartPannel.appendChild(hbox);
+        earnedValueChartPanel.appendChild(hbox);
     }
 
     private org.zkoss.zk.ui.Component getEarnedValueChartConfigurableLegend(
@@ -511,12 +469,18 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
 
             columnNumber = columnNumber + 1;
             switch (columnNumber) {
-            case 1:
-                column1.appendChild(hbox);
-                break;
-            case 2:
-                column2.appendChild(hbox);
-                columnNumber = 0;
+
+                case 1:
+                    column1.appendChild(hbox);
+                    break;
+
+                case 2:
+                    column2.appendChild(hbox);
+                    columnNumber = 0;
+                    break;
+
+                default:
+                    break;
             }
             earnedValueChartConfigurationCheckboxes.add(checkbox);
 
@@ -534,73 +498,68 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
         return mainhbox;
     }
 
-    private String getLabelTextEarnedValueType(
-            CompanyEarnedValueChartFiller earnedValueChartFiller,
-            EarnedValueType type, LocalDate date) {
-        BigDecimal value = earnedValueChartFiller.getIndicator(type, date) != null ? earnedValueChartFiller
-                .getIndicator(type, date) : BigDecimal.ZERO;
+    private String getLabelTextEarnedValueType(CompanyEarnedValueChartFiller earnedValueChartFiller,
+                                               EarnedValueType type, LocalDate date) {
+
+        BigDecimal value = earnedValueChartFiller.getIndicator(type, date) != null
+                ? earnedValueChartFiller.getIndicator(type, date)
+                : BigDecimal.ZERO;
+
         String units = _("h");
-        if (type.equals(EarnedValueType.CPI)
-                || type.equals(EarnedValueType.SPI)) {
+
+        if (type.equals(EarnedValueType.CPI) || type.equals(EarnedValueType.SPI)) {
             value = value.multiply(new BigDecimal(100));
             units = "%";
         }
+
         return value.intValue() + " " + units;
     }
 
     private void markAsSelectedDefaultIndicators() {
         for (Checkbox checkbox : earnedValueChartConfigurationCheckboxes) {
-            EarnedValueType type = (EarnedValueType) checkbox
-                    .getAttribute("indicator");
-            switch (type) {
-            case BCWS:
-            case ACWP:
-            case BCWP:
-                checkbox.setChecked(true);
-                break;
 
-            default:
-                checkbox.setChecked(false);
-                break;
+            EarnedValueType type = (EarnedValueType) checkbox.getAttribute("indicator");
+
+            switch (type) {
+
+                case BCWS:
+                case ACWP:
+                case BCWP:
+                    checkbox.setChecked(true);
+                    break;
+
+                default:
+                    checkbox.setChecked(false);
+                    break;
             }
         }
     }
 
     private Set<EarnedValueType> getEarnedValueSelectedIndicators() {
-        Set<EarnedValueType> result = new HashSet<EarnedValueType>();
+        Set<EarnedValueType> result = new HashSet<>();
+
         for (Checkbox checkbox : earnedValueChartConfigurationCheckboxes) {
             if (checkbox.isChecked()) {
-                EarnedValueType type = (EarnedValueType) checkbox
-                        .getAttribute("indicator");
+
+                EarnedValueType type = (EarnedValueType) checkbox.getAttribute("indicator");
                 result.add(type);
             }
         }
+
         return result;
     }
 
-    private void setEventListenerConfigurationCheckboxes(
-            final Chart earnedValueChart) {
+    private void setEventListenerConfigurationCheckboxes(final Chart earnedValueChart) {
         for (Checkbox checkbox : earnedValueChartConfigurationCheckboxes) {
-            checkbox.addEventListener(Events.ON_CHECK, new EventListener() {
-
-                @Override
-                public void onEvent(Event event) {
-                    transactionService
-                            .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
-                                @Override
-                                public Void execute() {
-                                    earnedValueChart.fillChart();
-                                    return null;
-                                }
-                            });
-                }
-
-            });
+            checkbox.addEventListener(Events.ON_CHECK, event ->
+                    transactionService.runOnReadOnlyTransaction((IOnTransaction<Void>) () -> {
+                        earnedValueChart.fillChart();
+                        return null;
+                    }));
         }
     }
 
-    private void disableSomeFeatures(
-            PlannerConfiguration<TaskElement> configuration) {
+    private void disableSomeFeatures(PlannerConfiguration<TaskElement> configuration) {
         configuration.setAddingDependenciesEnabled(false);
         configuration.setMovingTasksEnabled(false);
         configuration.setResizingTasksEnabled(false);
@@ -613,9 +572,9 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
         configuration.setMoneyCostBarEnabled(false);
     }
 
-    private void addAdditionalCommands(
-            Collection<ICommandOnTask<TaskElement>> additional,
-            PlannerConfiguration<TaskElement> configuration) {
+    private void addAdditionalCommands(Collection<ICommandOnTask<TaskElement>> additional,
+                                       PlannerConfiguration<TaskElement> configuration) {
+
         for (ICommandOnTask<TaskElement> t : additional) {
             configuration.addCommandOnTask(t);
         }
@@ -634,71 +593,54 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
             }
 
             @Override
-            public void doPrint(HashMap<String, String> parameters,
-                    Planner planner) {
+            public void doPrint(HashMap<String, String> parameters, Planner planner) {
                 CutyPrint.print(parameters, planner);
             }
 
         });
     }
 
-    private Chart setupChart(Timeplot chartComponent,
-            IChartFiller loadChartFiller, Planner planner) {
+    private Chart setupChart(Timeplot chartComponent, IChartFiller loadChartFiller, Planner planner) {
         TimeTracker timeTracker = planner.getTimeTracker();
-        Chart loadChart = new Chart(chartComponent, loadChartFiller,
-                timeTracker);
+        Chart loadChart = new Chart(chartComponent, loadChartFiller, timeTracker);
         loadChart.setZoomLevel(planner.getZoomLevel());
+
         if (planner.isVisibleChart()) {
             loadChart.fillChart();
         }
+
         timeTracker.addZoomListener(fillOnZoomChange(planner, loadChart));
-        planner
-                .addChartVisibilityListener(fillOnChartVisibilityChange(loadChart));
+        planner.addChartVisibilityListener(fillOnChartVisibilityChange(loadChart));
+
         return loadChart;
     }
 
-    private IChartVisibilityChangedListener fillOnChartVisibilityChange(
-            final Chart loadChart) {
-        IChartVisibilityChangedListener chartVisibilityChangedListener = new IChartVisibilityChangedListener() {
-
-            @Override
-            public void chartVisibilityChanged(final boolean visible) {
-                transactionService
-                        .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
-                    @Override
-                    public Void execute() {
-                        if (visible) {
-                            loadChart.fillChart();
-                        }
-                        return null;
+    private IChartVisibilityChangedListener fillOnChartVisibilityChange(final Chart loadChart) {
+        IChartVisibilityChangedListener chartVisibilityChangedListener =
+                visible -> transactionService.runOnReadOnlyTransaction((IOnTransaction<Void>) () -> {
+                    if (visible) {
+                        loadChart.fillChart();
                     }
+
+                    return null;
                 });
-            }
-        };
+
         keepAliveChartVisibilityListeners.add(chartVisibilityChangedListener);
         return chartVisibilityChangedListener;
     }
 
-    private IZoomLevelChangedListener fillOnZoomChange(final Planner planner,
-            final Chart loadChart) {
+    private IZoomLevelChangedListener fillOnZoomChange(final Planner planner, final Chart loadChart) {
 
-        IZoomLevelChangedListener zoomListener = new IZoomLevelChangedListener() {
+        IZoomLevelChangedListener zoomListener = detailLevel -> {
+            loadChart.setZoomLevel(detailLevel);
 
-            @Override
-            public void zoomLevelChanged(ZoomLevel detailLevel) {
-                loadChart.setZoomLevel(detailLevel);
+            transactionService.runOnReadOnlyTransaction((IOnTransaction<Void>) () -> {
+                if (planner.isVisibleChart()) {
+                    loadChart.fillChart();
+                }
 
-                transactionService
-                        .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
-                    @Override
-                    public Void execute() {
-                        if (planner.isVisibleChart()) {
-                            loadChart.fillChart();
-                        }
-                        return null;
-                    }
-                });
-            }
+                return null;
+            });
         };
 
         keepAliveZoomListeners.add(zoomListener);
@@ -706,15 +648,15 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
         return zoomListener;
     }
 
-    private PlannerConfiguration<TaskElement> createConfiguration(
-            TaskGroupPredicate predicate) {
-        return new PlannerConfiguration<TaskElement>(
+    private PlannerConfiguration<TaskElement> createConfiguration(TaskGroupPredicate predicate) {
+        return new PlannerConfiguration<>(
                 taskElementAdapterCreator.createForCompany(currentScenario),
-                new TaskElementNavigator(), retainOnlyTopLevel(predicate));
+                new TaskElementNavigator(),
+                retainOnlyTopLevel(predicate));
     }
 
     private List<TaskElement> retainOnlyTopLevel(TaskGroupPredicate predicate) {
-        List<TaskElement> result = new ArrayList<TaskElement>();
+        List<TaskElement> result = new ArrayList<>();
 
         List<Order> list = getOrders(predicate);
         for (Order order : list) {
@@ -723,80 +665,70 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
 
             if (associatedTaskElement != null) {
                 if (predicate != null) {
-                    // If predicate includeChildren then we check if it accepts
-                    // the element
+                    // If predicate includeChildren then we check if it accepts the element
                     if (!predicate.accepts(associatedTaskElement)) {
-                        // If it doesn't accept the element we move on to the
-                        // next order
+                        // If it doesn't accept the element we move on to the next order
                         continue;
                     }
                 }
-                // If predicate doesn't includeChildren then the orders where
-                // already filtered in the DB query.
+                // If predicate doesn't includeChildren then the orders where already filtered in the DB query.
                 // Otherwise they've been filtered with the predicate above, and
-                // if they didn't pass the filter the execution doesn't reach
-                // this point.
+                // if they didn't pass the filter the execution doesn't reach this point.
                 associatedTaskElement.setSimplifiedAssignedStatusCalculationEnabled(true);
                 result.add(associatedTaskElement);
             }
         }
-        Collections.sort(result,new Comparator<TaskElement>(){
-            @Override
-            public int compare(TaskElement arg0, TaskElement arg1) {
-                return arg0.getStartDate().compareTo(arg1.getStartDate());
-            }
-        });
+        Collections.sort(result, (arg0, arg1) -> arg0.getStartDate().compareTo(arg1.getStartDate()));
         return result;
     }
 
     private List<Order> getOrders(TaskGroupPredicate predicate) {
         String username = SecurityUtils.getSessionUserLoginName();
+
         if (predicate.isIncludeChildren()) {
-            return orderDAO.getOrdersByReadAuthorizationByScenario(username,
-                    currentScenario);
+            return orderDAO.getOrdersByReadAuthorizationByScenario(username, currentScenario);
         }
 
         Date startDate = predicate.getStartDate();
         Date endDate = predicate.getFinishDate();
-        List<org.libreplan.business.labels.entities.Label> labels = new ArrayList<org.libreplan.business.labels.entities.Label>();
-        List<Criterion> criteria = new ArrayList<Criterion>();
+        List<org.libreplan.business.labels.entities.Label> labels = new ArrayList<>();
+        List<Criterion> criteria = new ArrayList<>();
         ExternalCompany customer = null;
         OrderStatusEnum state = null;
 
-        for (FilterPair filterPair : (List<FilterPair>) predicate.getFilters()) {
-            TaskGroupFilterEnum type = (TaskGroupFilterEnum) filterPair
-                    .getType();
+        for (FilterPair filterPair : predicate.getFilters()) {
+            TaskGroupFilterEnum type = (TaskGroupFilterEnum) filterPair.getType();
+
             switch (type) {
-            case Label:
-                labels.add((org.libreplan.business.labels.entities.Label) filterPair
-                        .getValue());
-                break;
-            case Criterion:
-                criteria.add((Criterion) filterPair.getValue());
-                break;
-            case ExternalCompany:
-                if (customer != null) {
-                    // It's impossible to have an Order associated to more than
-                    // 1 customer
-                    return Collections.emptyList();
-                }
-                customer = (ExternalCompany) filterPair.getValue();
-                break;
-            case State:
-                if (state != null) {
-                    // It's impossible to have an Order associated with more
-                    // than 1 state
-                    return Collections.emptyList();
-                }
-                state = (OrderStatusEnum) filterPair.getValue();
-                break;
+
+                case Label:
+                    labels.add((org.libreplan.business.labels.entities.Label) filterPair.getValue());
+                    break;
+
+                case Criterion:
+                    criteria.add((Criterion) filterPair.getValue());
+                    break;
+
+                case ExternalCompany:
+                    if (customer != null) {
+                        // It's impossible to have an Order associated to more than 1 customer
+                        return Collections.emptyList();
+                    }
+                    customer = (ExternalCompany) filterPair.getValue();
+                    break;
+
+                case State:
+                    if (state != null) {
+                        // It's impossible to have an Order associated with more than 1 state
+                        return Collections.emptyList();
+                    }
+                    state = (OrderStatusEnum) filterPair.getValue();
+                    break;
             }
         }
 
-        return orderDAO
-                .getOrdersByReadAuthorizationBetweenDatesByLabelsCriteriaCustomerAndState(
-                        username, currentScenario, startDate, endDate, labels,
-                        criteria, customer, state);
+        return orderDAO.getOrdersByReadAuthorizationBetweenDatesByLabelsCriteriaCustomerAndState(
+                username, currentScenario, startDate, endDate, labels, criteria, customer, state);
     }
 
     @Override
@@ -811,53 +743,53 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
         boolean calculateEndDate = (endDate == null);
 
         // Filter predicate needs to be calculated based on the projects dates
-        if ((calculateStartDate) || (calculateEndDate)) {
-            if (currentScenario == null) {
+        if ( (calculateStartDate) || (calculateEndDate) ) {
+
+            if ( currentScenario == null ) {
                 currentScenario = scenarioManager.getCurrent();
             }
+
             List<Order> list = orderDAO.getOrdersByReadAuthorizationByScenario(
                     SecurityUtils.getSessionUserLoginName(), currentScenario);
+
             for (Order each : list) {
                 each.useSchedulingDataFor(currentScenario, false);
-                TaskGroup associatedTaskElement = each
-                        .getAssociatedTaskElement();
-                if (associatedTaskElement != null
-                        && STATUS_VISUALIZED.contains(each.getState())) {
-                    if (calculateStartDate) {
-                        startDate = Collections.min(notNull(startDate,
-                                each.getInitDate(),
-                                associatedTaskElement.getStartDate()));
+                TaskGroup associatedTaskElement = each.getAssociatedTaskElement();
+
+                if ( associatedTaskElement != null && STATUS_VISUALIZED.contains(each.getState()) ) {
+
+                    if ( calculateStartDate ) {
+                        startDate = Collections.min(
+                                notNull(startDate, each.getInitDate(), associatedTaskElement.getStartDate()));
                     }
-                    if (calculateEndDate) {
-                        endDate = Collections.max(notNull(endDate,
-                                each.getDeadline(),
-                                associatedTaskElement.getEndDate()));
+                    if ( calculateEndDate ) {
+                        endDate = Collections.max(
+                                notNull(endDate, each.getDeadline(), associatedTaskElement.getEndDate()));
                     }
                 }
             }
         }
-        filterStartDate = startDate != null ? LocalDate
-                .fromDateFields(startDate) : null;
-        filterFinishDate = endDate != null ? LocalDate.fromDateFields(endDate)
-                : null;
-        return new TaskGroupPredicate(null, startDate, endDate,
-                includeOrderElements, name);
+        filterStartDate = startDate != null ? LocalDate.fromDateFields(startDate) : null;
+        filterFinishDate = endDate != null ? LocalDate.fromDateFields(endDate) : null;
+
+        return new TaskGroupPredicate(null, startDate, endDate, includeOrderElements, name);
     }
 
     private static <T> List<T> notNull(T... values) {
-        List<T> result = new ArrayList<T>();
+        List<T> result = new ArrayList<>();
+
         for (T each : values) {
             if (each != null) {
                 result.add(each);
             }
         }
+
         return result;
     }
 
     @Override
     public Date getFilterStartDate() {
-        return ((filterStartDate == null) ? null : filterStartDate
-                .toDateTimeAtStartOfDay().toDate());
+        return ((filterStartDate == null) ? null : filterStartDate.toDateTimeAtStartOfDay().toDate());
     }
     @Override
     public Date getFilterFinishDate() {
@@ -865,8 +797,7 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
     }
 
     private AvailabilityTimeLine.Interval getFilterInterval() {
-        return AvailabilityTimeLine.Interval.create(filterStartDate,
-                filterFinishDate);
+        return AvailabilityTimeLine.Interval.create(filterStartDate, filterFinishDate);
     }
 
     private class CompanyLoadChartFiller extends StandardLoadChartFiller {
@@ -878,22 +809,17 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
 
         @Override
         protected ILoadChartData getDataOn(Interval interval) {
-            ResourceLoadChartData data = databaseSnapshots
-                    .snapshotResourceLoadChartData();
-            return data.on(getStart(filterStartDate, interval),
-                    getEnd(filterFinishDate, interval));
+            ResourceLoadChartData data = databaseSnapshots.snapshotResourceLoadChartData();
+            return data.on(getStart(filterStartDate, interval), getEnd(filterFinishDate, interval));
         }
 
     }
 
     /**
+     * Calculates 'Earned Value' indicators and set them in the Company 'Earned Valued' chart.
      *
      * @author Manuel Rego Casasnovas <mrego@igalia.com>
      * @author Diego Pino García <dpino@igalia.com>
-     *
-     *         Calculates 'Earned Value' indicators and set them in the Company
-     *         'Earned Valued' chart
-     *
      */
     private class CompanyEarnedValueChartFiller extends EarnedValueChartFiller {
 
@@ -904,22 +830,19 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
         @Override
         protected void calculateBudgetedCostWorkScheduled(Interval interval) {
             setIndicatorInInterval(EarnedValueType.BCWS, interval,
-                    earnedValueCalculator
-                            .calculateBudgetedCostWorkScheduled(getFilterInterval()));
+                    earnedValueCalculator.calculateBudgetedCostWorkScheduled(getFilterInterval()));
         }
 
         @Override
         protected void calculateActualCostWorkPerformed(Interval interval) {
             setIndicatorInInterval(EarnedValueType.ACWP, interval,
-                    earnedValueCalculator
-                            .calculateActualCostWorkPerformed(getFilterInterval()));
+                    earnedValueCalculator.calculateActualCostWorkPerformed(getFilterInterval()));
         }
 
         @Override
         protected void calculateBudgetedCostWorkPerformed(Interval interval) {
             setIndicatorInInterval(EarnedValueType.BCWP, interval,
-                    earnedValueCalculator
-                            .calculateBudgetedCostWorkPerformed(getFilterInterval()));
+                    earnedValueCalculator.calculateBudgetedCostWorkPerformed(getFilterInterval()));
         }
 
         @Override
@@ -940,8 +863,7 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
     public User getUser() {
         User user;
         try {
-            user = this.userDAO.findByLoginName(SecurityUtils
-                    .getSessionUserLoginName());
+            user = this.userDAO.findByLoginName(SecurityUtils.getSessionUserLoginName());
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -949,6 +871,7 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
         if (user.getProjectsFilterLabel() != null) {
             user.getProjectsFilterLabel().getFinderPattern();
         }
+
         return user;
     }
 

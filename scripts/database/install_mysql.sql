@@ -247,12 +247,12 @@ CREATE TABLE `material` (`id` BIGINT NOT NULL, `version` BIGINT NOT NULL, `code`
 INSERT INTO `DATABASECHANGELOG` (`AUTHOR`, `COMMENTS`, `DATEEXECUTED`, `DESCRIPTION`, `EXECTYPE`, `FILENAME`, `ID`, `LIQUIBASE`, `MD5SUM`, `ORDEREXECUTED`) VALUES ('mrego', '', NOW(), 'Create Table', 'EXECUTED', 'src/main/resources/db.changelog-database.xml', 'initial-database-creation-46', '2.0.5', '3:20a4b538a58ecad5fefff00c68060415', 46);
 
 --  Changeset src/main/resources/db.changelog-database.xml::initial-database-creation-47::mrego::(Checksum: 3:20d9ca0a2dac404d34031a303d36332f)
-CREATE TABLE `material_assigment` (`id` BIGINT NOT NULL, `version` BIGINT NOT NULL, `units` DECIMAL(19,2) NULL, `unit_price` DECIMAL(19,2) NULL, `material_id` BIGINT NULL, `estimated_availability` DATETIME NULL, `status` INT NULL, `order_element_id` BIGINT NULL, CONSTRAINT `material_assigment_pkey` PRIMARY KEY (`id`));
+CREATE TABLE `material_assignment` (`id` BIGINT NOT NULL, `version` BIGINT NOT NULL, `units` DECIMAL(19,2) NULL, `unit_price` DECIMAL(19,2) NULL, `material_id` BIGINT NULL, `estimated_availability` DATETIME NULL, `status` INT NULL, `order_element_id` BIGINT NULL, CONSTRAINT `material_assignment_pkey` PRIMARY KEY (`id`));
 
 INSERT INTO `DATABASECHANGELOG` (`AUTHOR`, `COMMENTS`, `DATEEXECUTED`, `DESCRIPTION`, `EXECTYPE`, `FILENAME`, `ID`, `LIQUIBASE`, `MD5SUM`, `ORDEREXECUTED`) VALUES ('mrego', '', NOW(), 'Create Table', 'EXECUTED', 'src/main/resources/db.changelog-database.xml', 'initial-database-creation-47', '2.0.5', '3:20d9ca0a2dac404d34031a303d36332f', 47);
 
 --  Changeset src/main/resources/db.changelog-database.xml::initial-database-creation-48::mrego::(Checksum: 3:9422bfd2634488255bcbb32d73d4d9a6)
-CREATE TABLE `material_assigment_template` (`id` BIGINT NOT NULL, `version` BIGINT NOT NULL, `units` DECIMAL(19,2) NULL, `unit_price` DECIMAL(19,2) NULL, `material_id` BIGINT NULL, `order_element_template_id` BIGINT NULL, CONSTRAINT `material_assigment_template_pkey` PRIMARY KEY (`id`));
+CREATE TABLE `material_assignment_template` (`id` BIGINT NOT NULL, `version` BIGINT NOT NULL, `units` DECIMAL(19,2) NULL, `unit_price` DECIMAL(19,2) NULL, `material_id` BIGINT NULL, `order_element_template_id` BIGINT NULL, CONSTRAINT `material_assignment_template_pkey` PRIMARY KEY (`id`));
 
 INSERT INTO `DATABASECHANGELOG` (`AUTHOR`, `COMMENTS`, `DATEEXECUTED`, `DESCRIPTION`, `EXECTYPE`, `FILENAME`, `ID`, `LIQUIBASE`, `MD5SUM`, `ORDEREXECUTED`) VALUES ('mrego', '', NOW(), 'Create Table', 'EXECUTED', 'src/main/resources/db.changelog-database.xml', 'initial-database-creation-48', '2.0.5', '3:9422bfd2634488255bcbb32d73d4d9a6', 48);
 
@@ -267,7 +267,7 @@ CREATE TABLE `order_authorization` (`id` BIGINT NOT NULL, `order_authorization_s
 INSERT INTO `DATABASECHANGELOG` (`AUTHOR`, `COMMENTS`, `DATEEXECUTED`, `DESCRIPTION`, `EXECTYPE`, `FILENAME`, `ID`, `LIQUIBASE`, `MD5SUM`, `ORDEREXECUTED`) VALUES ('mrego', '', NOW(), 'Create Table', 'EXECUTED', 'src/main/resources/db.changelog-database.xml', 'initial-database-creation-50', '2.0.5', '3:86be514721a43f3a69e0fc5575f68bcf', 50);
 
 --  Changeset src/main/resources/db.changelog-database.xml::initial-database-creation-51::mrego::(Checksum: 3:6a7ac8677daeb7b232876fef8bc2eb13)
-CREATE TABLE `order_element` (`id` BIGINT NOT NULL, `version` BIGINT NOT NULL, `name` VARCHAR(255) NULL, `description` VARCHAR(255) NULL, `code` VARCHAR(255) NULL, `init_date` DATETIME NULL, `deadline` DATETIME NULL, `last_advance_meausurement_for_spreading` DECIMAL(19,2) NULL, `dirty_last_advance_measurement_for_spreading` TINYINT(1) NULL, `parent` BIGINT NULL, `template` BIGINT NULL, `external_code` VARCHAR(255) NULL, `sum_charged_hours_id` BIGINT NULL, `position_in_container` INT NULL, CONSTRAINT `order_element_pkey` PRIMARY KEY (`id`));
+CREATE TABLE `order_element` (`id` BIGINT NOT NULL, `version` BIGINT NOT NULL, `name` VARCHAR(255) NULL, `description` VARCHAR(255) NULL, `code` VARCHAR(255) NULL, `init_date` DATETIME NULL, `deadline` DATETIME NULL, `last_advance_measurement_for_spreading` DECIMAL(19,2) NULL, `dirty_last_advance_measurement_for_spreading` TINYINT(1) NULL, `parent` BIGINT NULL, `template` BIGINT NULL, `external_code` VARCHAR(255) NULL, `sum_charged_hours_id` BIGINT NULL, `position_in_container` INT NULL, CONSTRAINT `order_element_pkey` PRIMARY KEY (`id`));
 
 INSERT INTO `DATABASECHANGELOG` (`AUTHOR`, `COMMENTS`, `DATEEXECUTED`, `DESCRIPTION`, `EXECTYPE`, `FILENAME`, `ID`, `LIQUIBASE`, `MD5SUM`, `ORDEREXECUTED`) VALUES ('mrego', '', NOW(), 'Create Table', 'EXECUTED', 'src/main/resources/db.changelog-database.xml', 'initial-database-creation-51', '2.0.5', '3:6a7ac8677daeb7b232876fef8bc2eb13', 51);
 
@@ -432,7 +432,7 @@ CREATE TABLE `sum_charged_hours` (`id` BIGINT NOT NULL, `version` BIGINT NOT NUL
 INSERT INTO `DATABASECHANGELOG` (`AUTHOR`, `COMMENTS`, `DATEEXECUTED`, `DESCRIPTION`, `EXECTYPE`, `FILENAME`, `ID`, `LIQUIBASE`, `MD5SUM`, `ORDEREXECUTED`) VALUES ('mrego', '', NOW(), 'Create Table', 'EXECUTED', 'src/main/resources/db.changelog-database.xml', 'initial-database-creation-83', '2.0.5', '3:43f98ac2e8ef569c2ace92091588dfc5', 83);
 
 --  Changeset src/main/resources/db.changelog-database.xml::initial-database-creation-84::mrego::(Checksum: 3:72aa9950802d4e8da713013ae72ea212)
-CREATE TABLE `task` (`task_element_id` BIGINT NOT NULL, `calculated_value` INT NULL, `start_constraint_type` INT NULL, `constraint_date` DATE NULL, `workable_days` INT NULL, `allocation_direction` INT NULL, `subcontrated_task_data_id` BIGINT NULL, `priority` INT NULL, CONSTRAINT `task_pkey` PRIMARY KEY (`task_element_id`));
+CREATE TABLE `task` (`task_element_id` BIGINT NOT NULL, `calculated_value` INT NULL, `start_constraint_type` INT NULL, `constraint_date` DATE NULL, `workable_days` INT NULL, `allocation_direction` INT NULL, `subcontracted_task_data_id` BIGINT NULL, `priority` INT NULL, CONSTRAINT `task_pkey` PRIMARY KEY (`task_element_id`));
 
 INSERT INTO `DATABASECHANGELOG` (`AUTHOR`, `COMMENTS`, `DATEEXECUTED`, `DESCRIPTION`, `EXECTYPE`, `FILENAME`, `ID`, `LIQUIBASE`, `MD5SUM`, `ORDEREXECUTED`) VALUES ('mrego', '', NOW(), 'Create Table', 'EXECUTED', 'src/main/resources/db.changelog-database.xml', 'initial-database-creation-84', '2.0.5', '3:72aa9950802d4e8da713013ae72ea212', 84);
 
@@ -502,7 +502,7 @@ CREATE TABLE `work_report` (`id` BIGINT NOT NULL, `version` BIGINT NOT NULL, `co
 INSERT INTO `DATABASECHANGELOG` (`AUTHOR`, `COMMENTS`, `DATEEXECUTED`, `DESCRIPTION`, `EXECTYPE`, `FILENAME`, `ID`, `LIQUIBASE`, `MD5SUM`, `ORDEREXECUTED`) VALUES ('mrego', '', NOW(), 'Create Table', 'EXECUTED', 'src/main/resources/db.changelog-database.xml', 'initial-database-creation-97', '2.0.5', '3:72db70644086a38aa90367c038a89350', 97);
 
 --  Changeset src/main/resources/db.changelog-database.xml::initial-database-creation-98::mrego::(Checksum: 3:1d6bac1b7849a0442a162078696893e3)
-CREATE TABLE `work_report_label_type_assigment` (`id` BIGINT NOT NULL, `version` BIGINT NOT NULL, `labels_shared_by_lines` TINYINT(1) NULL, `position_number` INT NULL, `label_type_id` BIGINT NULL, `label_id` BIGINT NULL, `work_report_type_id` BIGINT NULL, CONSTRAINT `work_report_label_type_assigment_pkey` PRIMARY KEY (`id`));
+CREATE TABLE `work_report_label_type_assignment` (`id` BIGINT NOT NULL, `version` BIGINT NOT NULL, `labels_shared_by_lines` TINYINT(1) NULL, `position_number` INT NULL, `label_type_id` BIGINT NULL, `label_id` BIGINT NULL, `work_report_type_id` BIGINT NULL, CONSTRAINT `work_report_label_type_assignment_pkey` PRIMARY KEY (`id`));
 
 INSERT INTO `DATABASECHANGELOG` (`AUTHOR`, `COMMENTS`, `DATEEXECUTED`, `DESCRIPTION`, `EXECTYPE`, `FILENAME`, `ID`, `LIQUIBASE`, `MD5SUM`, `ORDEREXECUTED`) VALUES ('mrego', '', NOW(), 'Create Table', 'EXECUTED', 'src/main/resources/db.changelog-database.xml', 'initial-database-creation-98', '2.0.5', '3:1d6bac1b7849a0442a162078696893e3', 98);
 
@@ -772,7 +772,7 @@ ALTER TABLE `resources_cost_category_assignment` ADD CONSTRAINT `resources_cost_
 INSERT INTO `DATABASECHANGELOG` (`AUTHOR`, `COMMENTS`, `DATEEXECUTED`, `DESCRIPTION`, `EXECTYPE`, `FILENAME`, `ID`, `LIQUIBASE`, `MD5SUM`, `ORDEREXECUTED`) VALUES ('mrego', '', NOW(), 'Add Unique Constraint', 'EXECUTED', 'src/main/resources/db.changelog-database.xml', 'initial-database-creation-151', '2.0.5', '3:003b820bd40132476357aae25ba7d50b', 151);
 
 --  Changeset src/main/resources/db.changelog-database.xml::initial-database-creation-152::mrego::(Checksum: 3:cbe9e0b14bac88a7b895d8bc4c4777d7)
-ALTER TABLE `task` ADD CONSTRAINT `task_subcontrated_task_data_id_key` UNIQUE (`subcontrated_task_data_id`);
+ALTER TABLE `task` ADD CONSTRAINT `task_subcontracted_task_data_id_key` UNIQUE (`subcontracted_task_data_id`);
 
 INSERT INTO `DATABASECHANGELOG` (`AUTHOR`, `COMMENTS`, `DATEEXECUTED`, `DESCRIPTION`, `EXECTYPE`, `FILENAME`, `ID`, `LIQUIBASE`, `MD5SUM`, `ORDEREXECUTED`) VALUES ('mrego', '', NOW(), 'Add Unique Constraint', 'EXECUTED', 'src/main/resources/db.changelog-database.xml', 'initial-database-creation-152', '2.0.5', '3:cbe9e0b14bac88a7b895d8bc4c4777d7', 152);
 
@@ -1172,22 +1172,22 @@ ALTER TABLE `material` ADD CONSTRAINT `fk11d36527f11b2d0` FOREIGN KEY (`unit_typ
 INSERT INTO `DATABASECHANGELOG` (`AUTHOR`, `COMMENTS`, `DATEEXECUTED`, `DESCRIPTION`, `EXECTYPE`, `FILENAME`, `ID`, `LIQUIBASE`, `MD5SUM`, `ORDEREXECUTED`) VALUES ('mrego', '', NOW(), 'Add Foreign Key Constraint', 'EXECUTED', 'src/main/resources/db.changelog-database.xml', 'initial-database-creation-231', '2.0.5', '3:d493ad51ca6712c994efb741c1cd5cee', 231);
 
 --  Changeset src/main/resources/db.changelog-database.xml::initial-database-creation-232::mrego::(Checksum: 3:611e912194a15238fe4fd70e46ecd271)
-ALTER TABLE `material_assigment` ADD CONSTRAINT `fkb3e9425b5c68337` FOREIGN KEY (`material_id`) REFERENCES `material` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `material_assignment` ADD CONSTRAINT `fkb3e9425b5c68337` FOREIGN KEY (`material_id`) REFERENCES `material` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION;
 
 INSERT INTO `DATABASECHANGELOG` (`AUTHOR`, `COMMENTS`, `DATEEXECUTED`, `DESCRIPTION`, `EXECTYPE`, `FILENAME`, `ID`, `LIQUIBASE`, `MD5SUM`, `ORDEREXECUTED`) VALUES ('mrego', '', NOW(), 'Add Foreign Key Constraint', 'EXECUTED', 'src/main/resources/db.changelog-database.xml', 'initial-database-creation-232', '2.0.5', '3:611e912194a15238fe4fd70e46ecd271', 232);
 
 --  Changeset src/main/resources/db.changelog-database.xml::initial-database-creation-233::mrego::(Checksum: 3:4823fd19347ba5a9c14b862fac025901)
-ALTER TABLE `material_assigment` ADD CONSTRAINT `fkb3e9425efda874f` FOREIGN KEY (`order_element_id`) REFERENCES `order_element` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `material_assignment` ADD CONSTRAINT `fkb3e9425efda874f` FOREIGN KEY (`order_element_id`) REFERENCES `order_element` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION;
 
 INSERT INTO `DATABASECHANGELOG` (`AUTHOR`, `COMMENTS`, `DATEEXECUTED`, `DESCRIPTION`, `EXECTYPE`, `FILENAME`, `ID`, `LIQUIBASE`, `MD5SUM`, `ORDEREXECUTED`) VALUES ('mrego', '', NOW(), 'Add Foreign Key Constraint', 'EXECUTED', 'src/main/resources/db.changelog-database.xml', 'initial-database-creation-233', '2.0.5', '3:4823fd19347ba5a9c14b862fac025901', 233);
 
 --  Changeset src/main/resources/db.changelog-database.xml::initial-database-creation-234::mrego::(Checksum: 3:7aa2f827cf3710d979cd5c62770417bb)
-ALTER TABLE `material_assigment_template` ADD CONSTRAINT `fk35254354b5c68337` FOREIGN KEY (`material_id`) REFERENCES `material` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `material_assignment_template` ADD CONSTRAINT `fk35254354b5c68337` FOREIGN KEY (`material_id`) REFERENCES `material` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION;
 
 INSERT INTO `DATABASECHANGELOG` (`AUTHOR`, `COMMENTS`, `DATEEXECUTED`, `DESCRIPTION`, `EXECTYPE`, `FILENAME`, `ID`, `LIQUIBASE`, `MD5SUM`, `ORDEREXECUTED`) VALUES ('mrego', '', NOW(), 'Add Foreign Key Constraint', 'EXECUTED', 'src/main/resources/db.changelog-database.xml', 'initial-database-creation-234', '2.0.5', '3:7aa2f827cf3710d979cd5c62770417bb', 234);
 
 --  Changeset src/main/resources/db.changelog-database.xml::initial-database-creation-235::mrego::(Checksum: 3:1d77a4d184e0f24891d62762883540af)
-ALTER TABLE `material_assigment_template` ADD CONSTRAINT `fk3525435419b9dfde` FOREIGN KEY (`order_element_template_id`) REFERENCES `order_element_template` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `material_assignment_template` ADD CONSTRAINT `fk3525435419b9dfde` FOREIGN KEY (`order_element_template_id`) REFERENCES `order_element_template` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION;
 
 INSERT INTO `DATABASECHANGELOG` (`AUTHOR`, `COMMENTS`, `DATEEXECUTED`, `DESCRIPTION`, `EXECTYPE`, `FILENAME`, `ID`, `LIQUIBASE`, `MD5SUM`, `ORDEREXECUTED`) VALUES ('mrego', '', NOW(), 'Add Foreign Key Constraint', 'EXECUTED', 'src/main/resources/db.changelog-database.xml', 'initial-database-creation-235', '2.0.5', '3:1d77a4d184e0f24891d62762883540af', 235);
 
@@ -1447,7 +1447,7 @@ ALTER TABLE `subcontracted_task_data` ADD CONSTRAINT `fk35bc4ed63804cfa` FOREIGN
 INSERT INTO `DATABASECHANGELOG` (`AUTHOR`, `COMMENTS`, `DATEEXECUTED`, `DESCRIPTION`, `EXECTYPE`, `FILENAME`, `ID`, `LIQUIBASE`, `MD5SUM`, `ORDEREXECUTED`) VALUES ('mrego', '', NOW(), 'Add Foreign Key Constraint', 'EXECUTED', 'src/main/resources/db.changelog-database.xml', 'initial-database-creation-286', '2.0.5', '3:3663d9ecd66964bffcc07bcfce7bdcdc', 286);
 
 --  Changeset src/main/resources/db.changelog-database.xml::initial-database-creation-287::mrego::(Checksum: 3:35e0a6356d11ed9dfe53c300b9e2ffee)
-ALTER TABLE `task` ADD CONSTRAINT `fk3635855b595a0` FOREIGN KEY (`subcontrated_task_data_id`) REFERENCES `subcontracted_task_data` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `task` ADD CONSTRAINT `fk3635855b595a0` FOREIGN KEY (`subcontracted_task_data_id`) REFERENCES `subcontracted_task_data` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION;
 
 INSERT INTO `DATABASECHANGELOG` (`AUTHOR`, `COMMENTS`, `DATEEXECUTED`, `DESCRIPTION`, `EXECTYPE`, `FILENAME`, `ID`, `LIQUIBASE`, `MD5SUM`, `ORDEREXECUTED`) VALUES ('mrego', '', NOW(), 'Add Foreign Key Constraint', 'EXECUTED', 'src/main/resources/db.changelog-database.xml', 'initial-database-creation-287', '2.0.5', '3:35e0a6356d11ed9dfe53c300b9e2ffee', 287);
 
@@ -1547,17 +1547,17 @@ ALTER TABLE `work_report` ADD CONSTRAINT `fkfd7aa62248d21790` FOREIGN KEY (`reso
 INSERT INTO `DATABASECHANGELOG` (`AUTHOR`, `COMMENTS`, `DATEEXECUTED`, `DESCRIPTION`, `EXECTYPE`, `FILENAME`, `ID`, `LIQUIBASE`, `MD5SUM`, `ORDEREXECUTED`) VALUES ('mrego', '', NOW(), 'Add Foreign Key Constraint', 'EXECUTED', 'src/main/resources/db.changelog-database.xml', 'initial-database-creation-306', '2.0.5', '3:fc14a87fde20c7151888cea5c48c6f39', 306);
 
 --  Changeset src/main/resources/db.changelog-database.xml::initial-database-creation-307::mrego::(Checksum: 3:23a513bb939d6d2751a1550188c32222)
-ALTER TABLE `work_report_label_type_assigment` ADD CONSTRAINT `fkbb262920c1c2746e` FOREIGN KEY (`label_id`) REFERENCES `label` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `work_report_label_type_assignment` ADD CONSTRAINT `fkbb262920c1c2746e` FOREIGN KEY (`label_id`) REFERENCES `label` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION;
 
 INSERT INTO `DATABASECHANGELOG` (`AUTHOR`, `COMMENTS`, `DATEEXECUTED`, `DESCRIPTION`, `EXECTYPE`, `FILENAME`, `ID`, `LIQUIBASE`, `MD5SUM`, `ORDEREXECUTED`) VALUES ('mrego', '', NOW(), 'Add Foreign Key Constraint', 'EXECUTED', 'src/main/resources/db.changelog-database.xml', 'initial-database-creation-307', '2.0.5', '3:23a513bb939d6d2751a1550188c32222', 307);
 
 --  Changeset src/main/resources/db.changelog-database.xml::initial-database-creation-308::mrego::(Checksum: 3:4144c0d934e5fd823f19ef91da210ffa)
-ALTER TABLE `work_report_label_type_assigment` ADD CONSTRAINT `fkbb262920707cd777` FOREIGN KEY (`label_type_id`) REFERENCES `label_type` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `work_report_label_type_assignment` ADD CONSTRAINT `fkbb262920707cd777` FOREIGN KEY (`label_type_id`) REFERENCES `label_type` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION;
 
 INSERT INTO `DATABASECHANGELOG` (`AUTHOR`, `COMMENTS`, `DATEEXECUTED`, `DESCRIPTION`, `EXECTYPE`, `FILENAME`, `ID`, `LIQUIBASE`, `MD5SUM`, `ORDEREXECUTED`) VALUES ('mrego', '', NOW(), 'Add Foreign Key Constraint', 'EXECUTED', 'src/main/resources/db.changelog-database.xml', 'initial-database-creation-308', '2.0.5', '3:4144c0d934e5fd823f19ef91da210ffa', 308);
 
 --  Changeset src/main/resources/db.changelog-database.xml::initial-database-creation-309::mrego::(Checksum: 3:c0d764328d333e644989448a4cd480bb)
-ALTER TABLE `work_report_label_type_assigment` ADD CONSTRAINT `fkbb262920131853a1` FOREIGN KEY (`work_report_type_id`) REFERENCES `work_report_type` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `work_report_label_type_assignment` ADD CONSTRAINT `fkbb262920131853a1` FOREIGN KEY (`work_report_type_id`) REFERENCES `work_report_type` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION;
 
 INSERT INTO `DATABASECHANGELOG` (`AUTHOR`, `COMMENTS`, `DATEEXECUTED`, `DESCRIPTION`, `EXECTYPE`, `FILENAME`, `ID`, `LIQUIBASE`, `MD5SUM`, `ORDEREXECUTED`) VALUES ('mrego', '', NOW(), 'Add Foreign Key Constraint', 'EXECUTED', 'src/main/resources/db.changelog-database.xml', 'initial-database-creation-309', '2.0.5', '3:c0d764328d333e644989448a4cd480bb', 309);
 

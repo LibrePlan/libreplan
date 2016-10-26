@@ -31,8 +31,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * @author Susana Montes Pedreira <smontes@wirelessgalicia.com> Implements a
- *         {@link IFinder} class for providing {@link Resource} elements
+ * Implements a {@link IFinder} class for providing {@link Resource} elements.
+ *
+ * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 @Repository
 public class ResourceFinder extends Finder implements IFinder {
@@ -44,12 +45,14 @@ public class ResourceFinder extends Finder implements IFinder {
     public List<Resource> getAll() {
         List<Resource> resources = resourceDAO.getResources();
         Collections.sort(resources);
+
         return resources;
     }
 
     @Override
     public String _toString(Object value) {
         final Resource resource = (Resource) value;
+
         return (resource != null) ? resource.getShortDescription() : "";
     }
 }

@@ -31,13 +31,13 @@ import org.libreplan.business.labels.entities.LabelType;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.workreports.entities.PositionInWorkReportEnum;
 import org.libreplan.business.workreports.entities.WorkReport;
-import org.libreplan.business.workreports.entities.WorkReportLabelTypeAssigment;
+import org.libreplan.business.workreports.entities.WorkReportLabelTypeAssignment;
 import org.libreplan.business.workreports.entities.WorkReportType;
 import org.libreplan.business.workreports.valueobjects.DescriptionField;
 import org.libreplan.web.common.IIntegrationEntityModel;
 
 /**
- * Contract for {@link WorkRerportType}
+ * Contract for {@link WorkReportType}.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
@@ -96,212 +96,187 @@ public interface IWorkReportTypeModel extends IIntegrationEntityModel {
     void prepareForRemove(WorkReportType workReportType);
 
     /**
-     * Check if it's or not editing a {@link WorkReportType}
+     * Check if it's or not editing a {@link WorkReportType}.
+     *
      * @return true if it's editing a {@link WorkReportType}
      */
     boolean isEditing();
 
     /**
-     * Set if it's or not shows {@link WorkReportType} list
-     * @return true if it's shows the list.
+     * Set if it's or not shows {@link WorkReportType} list.
      */
     void setListing(boolean listing);
 
     /**
-     * Check if there is any {@link WorkReport} bound to {@link WorkReportType}
+     * Check if there is any {@link WorkReport} bound to {@link WorkReportType}.
      * @param workReportType
-     * @return
+     * @return boolean
      */
     boolean thereAreWorkReportsFor(WorkReportType workReportType);
 
     /**
-     * Check if there is any {@link WorkReport} bound to {@link WorkReportType}
-     * which have been edited.
-     * @param workReportType
-     * @return
+     * Check if there is any {@link WorkReport} bound to {@link WorkReportType} which have been edited.
+     *
+     * @return boolean
      */
     boolean thereAreWorkReportsFor();
 
     /**
-     * Gets the current list of assigned {@link DescripitonField} to the edited
-     * {@link WorkReportType}.
-     * @return A List {@link DescripitonField}
+     * Gets the current list of assigned {@link DescripitonField} to the edited {@link WorkReportType}.
+     *
+     * @return A List {@link DescriptionField}
      */
-    public List<DescriptionField> getDescriptionFields();
+    List<DescriptionField> getDescriptionFields();
 
     /**
-     * Gets the current list of {@link LabelType}
+     * Gets the current list of {@link LabelType}.
+     *
      * @return A List {@link LabelType}
      */
     Map<LabelType, List<Label>> getMapLabelTypes();
 
     /**
-     * Add a new {@link DescriptionField} to {@link WorkReportType} For default
-     * to the LineFields collection.
-     * @param
-     * @return
+     * Add a new {@link DescriptionField} to {@link WorkReportType} For default to the LineFields collection.
      */
-    public void addNewDescriptionField();
+    void addNewDescriptionField();
 
     /**
      * Delete a {@link DescriptionField} from {@link WorkReportType}
-     * @param DescriptionField
-     * @return
+     * @param descriptionField
      */
-    public void removeDescriptionField(DescriptionField descriptionField);
+    void removeDescriptionField(DescriptionField descriptionField);
 
     /**
-     * Change the @{PositionInWorkReportEnum} of a {@link DescriptionField} to
-     * other collection of {@link WorkReportType}
-     * @param @{PositionInWorkReportEnum} ,@{DescriptionField}
-     * @return
+     * Change the @{PositionInWorkReportEnum} of a {@link DescriptionField} to other collection of {@link WorkReportType}.
+     * @param newPosition
+     * @param descriptionField
      */
-    void changePositionDescriptionField(
-            PositionInWorkReportEnum newPosition,
-            DescriptionField descriptionField);
+    void changePositionDescriptionField(PositionInWorkReportEnum newPosition, DescriptionField descriptionField);
 
     /**
-     * return the @{PositionInWorkReportEnum} of a {@link DescriptionField}.
-     * @param @{DescriptionField}
-     * @return @{PositionInWorkReportEnum}
+     * @param descriptionField
+     * @return {@link PositionInWorkReportEnum}
      */
-    PositionInWorkReportEnum getPosition(
-            DescriptionField descriptionField);
+    PositionInWorkReportEnum getPosition(DescriptionField descriptionField);
 
     /**
-     * Check if a @{DescriptionField} is into the
-     * @{PositionInWorkReportEnum.HEADING}
+     * Check if a @{DescriptionField} is into the {@link PositionInWorkReportEnum#HEADING}.
+     *
      * @return true if it's is into the @{PositionInWorkReportEnum.HEADING}
      */
     boolean isHeadingDescriptionField(DescriptionField descriptionField);
 
     /**
-     * Gets the {@link List} of {@link WorkReportLabelTypeAssigment}.
-     * @return A {@link List} of {@link WorkReportLabelTypeAssigment}
+     * Gets the {@link List} of {@link WorkReportLabelTypeAssignment}.
+     *
+     * @return A {@link List} of {@link WorkReportLabelTypeAssignment}
      */
-    Set<WorkReportLabelTypeAssigment> getWorkReportLabelTypeAssigments();
+    Set<WorkReportLabelTypeAssignment> getWorkReportLabelTypeAssignments();
 
     /**
-     * Add a new {@link WorkReportLabelTypeAssigment} to {@link WorkReportType}.
-     * @param
-     * @return
+     * Add a new {@link WorkReportLabelTypeAssignment} to {@link WorkReportType}.
      */
-    void addNewWorkReportLabelTypeAssigment();
+    void addNewWorkReportLabelTypeAssignment();
 
     /**
-     * Delete a {@link WorkReportLabelTypeAssigment} from {@link WorkReportType}
-     * @param {@link WorkReportLabelTypeAssigment}
-     * @return
+     * Delete a {@link WorkReportLabelTypeAssignment} from {@link WorkReportType}.
+     *
+     * @param workReportLabelTypeAssignment
      */
-    void removeWorkReportLabelTypeAssigment(
-            WorkReportLabelTypeAssigment workReportLabelTypeAssigment);
+    void removeWorkReportLabelTypeAssignment(WorkReportLabelTypeAssignment workReportLabelTypeAssignment);
 
     /**
-     * Check if a {@link WorkReportLabelTypeAssigment} is shared by lines
+     * Check if a {@link WorkReportLabelTypeAssignment} is shared by lines.
+     *
      * @return a @{PositionInWorkReportEnum.HEADING} if it's is shared by lines.
      */
-    PositionInWorkReportEnum getLabelAssigmentPosition(
-            WorkReportLabelTypeAssigment workReportLabelTypeAssigment);
+    PositionInWorkReportEnum getLabelAssignmentPosition(WorkReportLabelTypeAssignment workReportLabelTypeAssignment);
 
     /**
-     * Set weather the {@link WorkReportLabelTypeAssigment} is shared by lines
-     * @return
+     * Set weather the {@link WorkReportLabelTypeAssignment} is shared by lines.
      */
-    void setLabelAssigmentPosition(
-            WorkReportLabelTypeAssigment workReportLabelTypeAssigment,
-            PositionInWorkReportEnum position);
-
-    /* Operation to assign the requirements fields */
+    void setLabelAssignmentPosition(
+            WorkReportLabelTypeAssignment workReportLabelTypeAssignment, PositionInWorkReportEnum position);
 
     /**
-     * Check if a {@link Date} is shared by lines
-     * @return a @{PositionInWorkReportEnum.HEADING} if it's is shared by lines.
+     * Check if a {@link java.util.Date} is shared by lines.
+     *
+     * @return a {@link PositionInWorkReportEnum#HEADING} if it's is shared by lines.
      */
     PositionInWorkReportEnum getDatePosition();
 
     /**
-     * Check if a {@link Resource} is shared by lines
-     * @return a @{PositionInWorkReportEnum.HEADING} if it's is shared by lines.
+     * Check if a {@link org.libreplan.business.resources.entities.Resource} is shared by lines.
+     *
+     * @return a {@link PositionInWorkReportEnum#HEADING} if it's is shared by lines.
      */
     PositionInWorkReportEnum getResourcePosition();
 
     /**
-     * Check if a {@link OrderElement} is shared by lines
-     * @return a @{PositionInWorkReportEnum.HEADING} if it's is shared by lines.
+     * Check if a {@link OrderElement} is shared by lines.
+     *
+     * @return a {@link PositionInWorkReportEnum#HEADING} if it's is shared by lines.
      */
     PositionInWorkReportEnum getOrderElementPosition();
 
     /**
-     * Set weather the {@link Date} is shared by lines
-     * @return
+     * Set weather the {@link java.util.Date} is shared by lines.
      */
     void setDatePosition(PositionInWorkReportEnum position);
 
     /**
-     * Set weather the {@link Resource} is shared by lines
-     * @return
+     * Set weather the {@link org.libreplan.business.resources.entities.Resource} is shared by lines.
      */
     void setResourcePosition(PositionInWorkReportEnum position);
 
     /**
-     * Set weather the {@link OrderElement} is shared by lines
-     * @return
+     * Set weather the {@link OrderElement} is shared by lines.
      */
     void setOrderElementPosition(PositionInWorkReportEnum position);
 
-    /* Operations to validate the data workReportType */
-
     /**
      * Check if the name of a {@link WorkReportType} is valid.
-     * @throw @{IllegalArgumentException} if it's is null, empty or not unique.
+     *
+     * @throw {@link IllegalArgumentException} if it's is null, empty or not unique.
      */
-    public void validateWorkReportTypeName(String name)
-            throws IllegalArgumentException;
+    void validateWorkReportTypeName(String name) throws IllegalArgumentException;
 
     /**
      * Check if the code of a {@link WorkReportType} is valid.
-     * @throw @{IllegalArgumentException} if it's is null, empty or not unique.
+     *
+     * @throw {@link IllegalArgumentException} if it's is null, empty or not unique.
      */
-    void validateWorkReportTypeCode(String code)
-            throws IllegalArgumentException;
+    void validateWorkReportTypeCode(String code) throws IllegalArgumentException;
 
     /**
-     * Check if the leghts of the collection of {@link DescriptionField} are
-     * valids.
-     * @return the @{DescriptionField} with the length negative or zero.
+     * Check if the lengths of the collection of {@link DescriptionField} are valid.
+     *
+     * @return the {@link DescriptionField} with the length negative or zero.
      */
     DescriptionField validateLengthLineFields() throws IllegalArgumentException;
 
     /**
-     * Check if the fieldNames of the collection of {@link DescriptionField} are
-     * valids.
-     * @return the @{DescriptionField} with the fieldName null, empty or not
+     * Check if the fieldNames of the collection of {@link DescriptionField} are valid.
+     *
+     * @return the {@link DescriptionField} with the fieldName null, empty or not
      *         unique.
      */
-    DescriptionField validateFieldNameLineFields()
-            throws IllegalArgumentException;
-
-    // /**
-    // * Check if the fieldName of a {@link DescriptionField} is equal to the
-    // * fieldName of another {@link DescriptionField}.
-    // * @return true if exist other {@link DescriptionField} with the same
-    // * fieldName.
-    // */
-    // boolean existSameFieldName(DescriptionField descriptionField);
+    DescriptionField validateFieldNameLineFields() throws IllegalArgumentException;
 
     /**
-     * Check if the collection of @{LabelType} are valids.
-     * @return the @{WorkReportLabelTypeAssigment} with the LabelType null.
+     * Check if the collection of @{LabelType} are valid.
+     *
+     * @return the {@link WorkReportLabelTypeAssignment} with the LabelType null.
      */
-    WorkReportLabelTypeAssigment validateLabelTypes();
+    WorkReportLabelTypeAssignment validateLabelTypes();
 
     /**
-     * Check if the collection of @{Label} are valids.
-     * @return the @{WorkReportLabelTypeAssigment} with the Label null.
+     * Check if the collection of @{Label} are valid.
+     *
+     * @return the {@link WorkReportLabelTypeAssignment} with the Label null.
      */
-    WorkReportLabelTypeAssigment validateLabels();
+    WorkReportLabelTypeAssignment validateLabels();
 
-    /* Operation to manage the ordered list of fields and labels */
     boolean validateTheIndexFieldsAndLabels();
 
     List<Object> getOrderedListHeading();

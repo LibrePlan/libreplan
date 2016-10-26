@@ -25,8 +25,8 @@ package org.zkoss.ganttz.timetracker.zoom;
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  *
  */
-public interface IDetailItemModificator {
+public interface IDetailItemModifier {
 
-    public DetailItem applyModificationsTo(DetailItem item, ZoomLevel z);
+    DetailItem applyModificationsTo(DetailItem item, ZoomLevel z);
 
 }

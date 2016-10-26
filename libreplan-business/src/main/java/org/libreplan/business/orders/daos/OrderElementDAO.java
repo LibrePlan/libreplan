@@ -61,7 +61,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Dao for {@link OrderElement}.
+ * DAO for {@link OrderElement}.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  * @author Diego Pino García <dpino@igalia.com>
@@ -154,7 +154,7 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement> implemen
     public static void removeTaskSourcesFor(ITaskSourceDAO taskSourceDAO, OrderElement orderElement)
             throws InstanceNotFoundException {
 
-        List<SchedulingDataForVersion> allVersions = orderElement.getSchedulingDatasForVersionFromBottomToTop();
+        List<SchedulingDataForVersion> allVersions = orderElement.getSchedulingDataForVersionFromBottomToTop();
         for (TaskSource each : taskSourcesFrom(allVersions)) {
             each.detachAssociatedTaskFromParent();
             taskSourceDAO.remove(each.getId());

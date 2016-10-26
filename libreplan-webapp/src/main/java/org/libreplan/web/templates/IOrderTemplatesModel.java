@@ -35,7 +35,6 @@ import org.libreplan.web.tree.EntitiesTree;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
- *
  */
 public interface IOrderTemplatesModel {
 

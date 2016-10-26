@@ -44,14 +44,14 @@ import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.resources.daos.ICriterionTypeDAO;
 import org.springframework.stereotype.Component;
 /**
- * Base implementation of {@link ICriterionType} <br />
+ * Base implementation of {@link ICriterionType}.
+ * <br />
 
  * @author Diego Pino García <dpino@igalia.com>
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
 @Component
-public class CriterionType extends IntegrationEntity implements
-        ICriterionType<Criterion>, IHumanIdentifiable {
+public class CriterionType extends IntegrationEntity implements ICriterionType<Criterion>, IHumanIdentifiable {
 
     public static CriterionType create() {
         return create(new CriterionType());
@@ -92,9 +92,8 @@ public class CriterionType extends IntegrationEntity implements
 
     }
 
-    public void updateUnvalidated(String name, String description,
-        Boolean allowHierarchy, Boolean allowSimultaneousCriterionsPerResource,
-        Boolean enabled, ResourceEnum resource) {
+    public void updateUnvalidated(String name, String description, Boolean allowHierarchy,
+                                  Boolean allowSimultaneousCriterionsPerResource, Boolean enabled, ResourceEnum resource) {
 
         if (!StringUtils.isBlank(name)) {
             this.name = name;
@@ -127,22 +126,21 @@ public class CriterionType extends IntegrationEntity implements
         return create(new CriterionType(name,description));
     }
 
-    public static CriterionType create(String name,String description,
-            boolean allowHierarchy,boolean allowSimultaneousCriterionsPerResource,
-            boolean enabled,ResourceEnum resource) {
+    public static CriterionType create(String name, String description, boolean allowHierarchy,
+                                       boolean allowSimultaneousCriterionsPerResource, boolean enabled,
+                                       ResourceEnum resource) {
 
-        return create(new CriterionType(name,description, allowHierarchy,
-            allowSimultaneousCriterionsPerResource,enabled,resource));
+        return create(new CriterionType(
+                name, description, allowHierarchy, allowSimultaneousCriterionsPerResource, enabled, resource));
 
     }
 
     private String name;
 
     /**
-     * The original name of the criterion type. It only exists for
-     * CriterionTypes created from {@link PredefinedCriterionTypes}. Important:
-     * This value must <strong>not</strong> be editable and should only be set
-     * at creation time
+     * The original name of the criterion type.
+     * It only exists for CriterionTypes created from {@link PredefinedCriterionTypes}.
+     * Important: This value must <strong>not</strong> be editable and should only be set at creation time.
      */
     private String predefinedTypeInternalName;
 
@@ -156,14 +154,14 @@ public class CriterionType extends IntegrationEntity implements
 
     private ResourceEnum resource = ResourceEnum.getDefault();
 
-    private Set<Criterion> criterions = new HashSet<Criterion>();
+    private Set<Criterion> criterions = new HashSet<>();
 
     private Integer lastCriterionSequenceCode = 0;
+
     /**
      * Constructor for hibernate. Do not use!
      */
     public CriterionType() {
-
     }
 
     private CriterionType(String name,String description) {
@@ -171,9 +169,8 @@ public class CriterionType extends IntegrationEntity implements
         this.description = description;
     }
 
-    private CriterionType(String name,String description, boolean allowHierarchy,
-            boolean allowSimultaneousCriterionsPerResource, boolean enabled,
-            ResourceEnum resource) {
+    private CriterionType(String name, String description, boolean allowHierarchy,
+                          boolean allowSimultaneousCriterionsPerResource, boolean enabled, ResourceEnum resource) {
 
         this.allowHierarchy = allowHierarchy;
         this.allowSimultaneousCriterionsPerResource = allowSimultaneousCriterionsPerResource;
@@ -183,17 +180,18 @@ public class CriterionType extends IntegrationEntity implements
         this.resource = resource;
     }
 
-    public static CriterionType fromPredefined(
-            PredefinedCriterionTypes predefinedType) {
+    public static CriterionType fromPredefined(PredefinedCriterionTypes predefinedType) {
         CriterionType result = asCriterionType(predefinedType);
         result.predefinedTypeInternalName = predefinedType.getName();
         return result;
     }
 
     public static CriterionType asCriterionType(ICriterionType<?> criterionType) {
-        return create(criterionType.getName(),criterionType.getDescription(),
-                criterionType.allowHierarchy(), criterionType
-        .isAllowSimultaneousCriterionsPerResource(),
+        return create(
+                criterionType.getName(),
+                criterionType.getDescription(),
+                criterionType.allowHierarchy(),
+                criterionType.isAllowSimultaneousCriterionsPerResource(),
                 criterionType.isEnabled(),
                 CriterionType.getResource(criterionType));
     }
@@ -228,13 +226,15 @@ public class CriterionType extends IntegrationEntity implements
     }
 
     public List<Criterion> getSortCriterions() {
-        List<Criterion> criterions = new ArrayList<Criterion>(getCriterions());
+        List<Criterion> criterions = new ArrayList<>(getCriterions());
+
         Collections.sort(criterions, new Comparator<Criterion>() {
             @Override
             public int compare(Criterion o1, Criterion o2) {
                 return o1.getName().compareTo(o2.getName());
             }
         });
+
         return criterions;
     }
 
@@ -273,13 +273,8 @@ public class CriterionType extends IntegrationEntity implements
         return Criterion.withNameAndType(name, this);
     }
 
-    public static Criterion createCriterion(
-            PredefinedCriterionTypes predefinedCriterionType, String name) {
-
-        CriterionType criterionType = CriterionType
-                .fromPredefined(predefinedCriterionType);
-
-        return Criterion.withNameAndType(name, criterionType);
+    public static Criterion createCriterion(PredefinedCriterionTypes predefinedCriterionType, String name) {
+        return Criterion.withNameAndType(name, CriterionType.fromPredefined(predefinedCriterionType));
     }
 
     @Override
@@ -299,7 +294,7 @@ public class CriterionType extends IntegrationEntity implements
 
     /**
      * A {@link CriterionType} can be related with {@link Resource} matching
-     * attribute resource and it's always related with resource of type RESOURCE
+     * attribute resource and it's always related with resource of type RESOURCE.
      */
     @Override
     public boolean criterionCanBeRelatedTo(Class<? extends Resource> klass) {
@@ -308,10 +303,10 @@ public class CriterionType extends IntegrationEntity implements
 
 
     /**
-     * Two criterion types are equals if they both got the same name
+     * Two criterion types are equals if they both got the same name.
      *
      * @param o
-     * @return
+     * @return boolean
      */
     @Override
     public boolean equals(Object o) {
@@ -324,8 +319,7 @@ public class CriterionType extends IntegrationEntity implements
 
         CriterionType criterionType = (CriterionType) o;
 
-        return new EqualsBuilder().append(criterionType.getName(),
-                this.getName()).isEquals();
+        return new EqualsBuilder().append(criterionType.getName(), this.getName()).isEquals();
     }
 
     @Override
@@ -354,17 +348,16 @@ public class CriterionType extends IntegrationEntity implements
     }
 
     @Override
-    public boolean isImmutable(){
+    public boolean isImmutable() {
         return !isEnabled();
     }
 
 
-    public int getNumCriterions(){
+    public int getNumCriterions() {
         return criterions.size();
     }
 
-    public Criterion getCriterion(String criterionName)
-        throws InstanceNotFoundException {
+    public Criterion getCriterion(String criterionName) throws InstanceNotFoundException {
 
         for (Criterion c : criterions) {
             if (c.getName().equalsIgnoreCase(criterionName)) {
@@ -372,17 +365,14 @@ public class CriterionType extends IntegrationEntity implements
             }
         }
 
-        throw new InstanceNotFoundException(criterionName,
-            Criterion.class.getName());
+        throw new InstanceNotFoundException(criterionName, Criterion.class.getName());
 
     }
 
-    public Criterion getCriterionByCode(String code)
-        throws InstanceNotFoundException {
+    public Criterion getCriterionByCode(String code) throws InstanceNotFoundException {
 
         if (StringUtils.isBlank(code)) {
-            throw new InstanceNotFoundException(code,
-                 Criterion.class.getName());
+            throw new InstanceNotFoundException(code, Criterion.class.getName());
         }
 
         for (Criterion c : criterions) {
@@ -391,9 +381,7 @@ public class CriterionType extends IntegrationEntity implements
             }
         }
 
-        throw new InstanceNotFoundException(code,
-            Criterion.class.getName());
-
+        throw new InstanceNotFoundException(code, Criterion.class.getName());
     }
 
     public Criterion getExistingCriterionByCode(String code) {
@@ -417,17 +405,15 @@ public class CriterionType extends IntegrationEntity implements
 
     }
 
-    @AssertTrue(message="criterion codes must be unique inside a criterion " +
-        " type")
+    @AssertTrue(message="criterion codes must be unique inside a criterion type")
     public boolean isConstraintNonRepeatedCriterionCodesConstraint() {
         return getFirstRepeatedCode(criterions) == null;
     }
 
-    @AssertTrue(message="criterion names must be unique inside a criterion " +
-        " type")
+    @AssertTrue(message="criterion names must be unique inside a criterion type")
     public boolean isNonRepeatedCriterionNamesConstraint() {
 
-        Set<String> criterionNames = new HashSet<String>();
+        Set<String> criterionNames = new HashSet<>();
 
         for (Criterion c : criterions) {
             if (!StringUtils.isBlank(c.getName())) {
@@ -446,20 +432,19 @@ public class CriterionType extends IntegrationEntity implements
     @AssertTrue(message="Criterion Type name is already being used")
     public boolean isUniqueCriterionTypeNameConstraint() {
 
-        /* Check if it makes sense to check the constraint .*/
+        /* Check if it makes sense to check the constraint */
         if (!isNameSpecified()) {
             return true;
         }
 
-        /* Check the constraint. */
+        /* Check the constraint */
         ICriterionTypeDAO criterionTypeDAO = Registry.getCriterionTypeDAO();
 
         if (isNewObject()) {
             return !criterionTypeDAO.existsByNameAnotherTransaction(this);
         } else {
             try {
-                CriterionType c =
-                    criterionTypeDAO.findUniqueByNameAnotherTransaction(name);
+                CriterionType c = criterionTypeDAO.findUniqueByNameAnotherTransaction(name);
                 return c.getId().equals(getId());
             } catch (InstanceNotFoundException e) {
                 return true;
@@ -511,24 +496,22 @@ public class CriterionType extends IntegrationEntity implements
 
     /**
      * It checks there are no {@link AdvanceAssignment} any criteria of this
-     * {@link CriterionType} has been assigned to any {@link Resource}
-     * @throws ChangeTypeCriterionTypeException
+     * {@link CriterionType} has been assigned to any {@link Resource}.
      */
     @AssertTrue(message = "Criteria of this criterion type have been assigned to some resource.")
     protected boolean isChangeTypeConstraint() {
-        /* Check the constraint. */
+        /* Check the constraint */
         ICriterionTypeDAO criterionTypeDAO = Registry.getCriterionTypeDAO();
 
         if (isNewObject()) {
             return true;
         }
 
-        if (!criterionTypeDAO.hasDiferentTypeSaved(getId(), getResource())) {
+        if (!criterionTypeDAO.hasDifferentTypeSaved(getId(), getResource())) {
             return true;
         }
 
-        return (!(criterionTypeDAO
-                .checkChildrenAssignedToAnyResource(this)));
+        return (!(criterionTypeDAO.checkChildrenAssignedToAnyResource(this)));
     }
 
     @NotNull(message = "last criterion sequence code not specified")
@@ -544,13 +527,13 @@ public class CriterionType extends IntegrationEntity implements
     }
 
     public void setGenerateCode(Criterion criterion, int numberOfDigits) {
-        if ((criterion.getCode() == null) || (criterion.getCode().isEmpty())
-                || (!criterion.getCode().startsWith(getCode()))) {
+        if ( (criterion.getCode() == null) ||
+                (criterion.getCode().isEmpty()) ||
+                (!criterion.getCode().startsWith(getCode())) ) {
+
             incrementLastCriterionSequenceCode();
-            String criterionCode = EntitySequence.formatValue(numberOfDigits,
-                    getLastCriterionSequenceCode());
-            criterion.setCode(getCode()
-                    + EntitySequence.CODE_SEPARATOR_CHILDREN + criterionCode);
+            String criterionCode = EntitySequence.formatValue(numberOfDigits, getLastCriterionSequenceCode());
+            criterion.setCode(getCode() + EntitySequence.CODE_SEPARATOR_CHILDREN + criterionCode);
         }
     }
 

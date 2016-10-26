@@ -28,12 +28,11 @@ import org.libreplan.business.planner.entities.ValleyFiller;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
- *
  */
 public class ValleyFillerTest {
 
     @Test
-    public void ifIsMonotonicIncreasingDoesntDoAnything() {
+    public void ifIsMonotonicIncreasingDoesNotDoAnything() {
         int[] param = { 2, 4, 8 };
         int[] result = ValleyFiller.fillValley(param);
         assertThat(result, equalTo(param));

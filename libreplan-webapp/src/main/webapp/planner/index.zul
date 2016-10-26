@@ -31,14 +31,15 @@
 
 <?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
 <zk>
-
-<zscript><![CDATA[
-    multipleTabsPlanner = multipleTabsPlannerController;
-]]>
-</zscript>
+    <zscript>
+        <![CDATA[
+            multipleTabsPlanner = multipleTabsPlannerController;
+        ]]>
+    </zscript>
     <div id="idContextMenuTaskAssignment">
         <div/>
     </div>
-    <tabSwitcher self="@{define(content)}" apply="${multipleTabsPlanner}">
+    <tabSwitcher self="@{define(content)}" sclass="contentTabSwitcher" style="display: block; height: 100%; width: 100%;"
+                 apply="${multipleTabsPlanner}">
     </tabSwitcher>
 </zk>

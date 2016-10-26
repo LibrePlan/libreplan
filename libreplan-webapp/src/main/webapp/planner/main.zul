@@ -31,17 +31,17 @@
 <?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
 <zk>
 
-<zscript><![CDATA[
+    <zscript><![CDATA[
     plannerData = new org.libreplan.web.planner.DataForPlanner();
     allocationController = resourceAllocationController;
 ]]>
-</zscript>
+    </zscript>
     <!-- choose lightLoad, mediumLoad or highLoad.
      -->
     <tabSwitcher self="@{define(content)}" configuration="@{plannerData.lightLoad}">
     </tabSwitcher>
 
-    <div id="idContextMenuTaskAssignment"></div>
+    <div id="idContextMenuTaskAssignment" sclass="mainTest"/>
     <popup width="300px" apply="${plannerData.taskEditForm}">
         <grid>
             <rows>
@@ -51,11 +51,11 @@
                 </row>
                 <row>
                     ${i18n:_('Start')}
-                    <datebox id="startDateBox" compact="true" />
+                    <datebox id="startDateBox"/>
                 </row>
                 <row>
                     ${i18n:_('End')}
-                    <datebox id="endDateBox" compact="true" />
+                    <datebox id="endDateBox"/>
                 </row>
                 <row>
                     ${i18n:_('Notes')}

@@ -54,7 +54,9 @@ public class OrdersMultipleFiltersFinder extends MultipleFiltersFinder {
     @Autowired
     private PredefinedDatabaseSnapshots databaseSnapshots;
 
-    protected OrdersMultipleFiltersFinder() {}
+    protected OrdersMultipleFiltersFinder() {
+
+    }
 
     public List<FilterPair> getFirstTenFilters() {
         getListMatching().clear();
@@ -62,8 +64,8 @@ public class OrdersMultipleFiltersFinder extends MultipleFiltersFinder {
         fillWithFirstTenFiltersCriterions();
         fillWithFirstTenFiltersCustomer();
         fillWithFirstTenFiltersState();
-        fillWihtFirstTenFiltersCodes();
-        fillWihtFirstTenFiltersCustomerReferences();
+        fillWithFirstTenFiltersCodes();
+        fillWithFirstTenFiltersCustomerReferences();
         addNoneFilter();
 
         return getListMatching();
@@ -121,7 +123,7 @@ public class OrdersMultipleFiltersFinder extends MultipleFiltersFinder {
         return getListMatching();
     }
 
-    private List<FilterPair> fillWihtFirstTenFiltersCodes() {
+    private List<FilterPair> fillWithFirstTenFiltersCodes() {
         List<String> ordersCodes = databaseSnapshots.snapshotOrdersCodes();
         for (int i = 0; getListMatching().size() < 10 && i < ordersCodes.size(); i++) {
             String code = ordersCodes.get(i);
@@ -130,7 +132,7 @@ public class OrdersMultipleFiltersFinder extends MultipleFiltersFinder {
         return getListMatching();
     }
 
-    private List<FilterPair> fillWihtFirstTenFiltersCustomerReferences() {
+    private List<FilterPair> fillWithFirstTenFiltersCustomerReferences() {
         List<String> customerReferences = databaseSnapshots.snapshotCustomerReferences();
         for (int i = 0; getListMatching().size() < 10 && i < customerReferences.size(); i++) {
             String reference = customerReferences.get(i);
@@ -178,6 +180,7 @@ public class OrdersMultipleFiltersFinder extends MultipleFiltersFinder {
     private void searchInCriterions(CriterionType type, String filter) {
         for (Criterion criterion : getMapCriterions().get(type)) {
             String name = StringUtils.deleteWhitespace(criterion.getName().toLowerCase());
+
             if (name.contains(filter)) {
                 addCriterion(type, criterion);
                 if ((filter.length() < 3) && (getListMatching().size() > 9)) {
@@ -217,6 +220,7 @@ public class OrdersMultipleFiltersFinder extends MultipleFiltersFinder {
     private void searchInLabels(LabelType type, String filter) {
         for (Label label : getLabelsMap().get(type)) {
             String name = StringUtils.deleteWhitespace(label.getName().toLowerCase());
+
             if (name.contains(filter)) {
                 addLabel(label);
                 if ((filter.length() < 3) && (getListMatching().size() > 9)) {
@@ -252,6 +256,7 @@ public class OrdersMultipleFiltersFinder extends MultipleFiltersFinder {
     private void searchInOrderStatus(String filter) {
         for (OrderStatusEnum state : OrderStatusEnum.values()) {
             String name = StringUtils.deleteWhitespace(_(state.name()).toLowerCase());
+
             if (name.contains(filter)) {
                 addState(state);
                 if ((filter.length() < 3) && (getListMatching().size() > 9)) {

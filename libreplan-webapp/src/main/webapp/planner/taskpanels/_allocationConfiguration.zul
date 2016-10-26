@@ -20,9 +20,9 @@
 <?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n" ?>
 
 <!-- Task Information -->
-<zk id="${arg.id}" >
+<zk>
 
-    <groupbox sclass="assignedresources" closable="false" width="340px" height="170px" >
+    <groupbox sclass="assignedresources" closable="false" hflex="1" height="230px" >
 
         <caption label="${i18n:_('Allocation configuration')}" />
 

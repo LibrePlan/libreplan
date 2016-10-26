@@ -30,18 +30,18 @@ import org.libreplan.business.users.entities.User;
 import org.libreplan.business.users.entities.UserRole;
 
 /**
- * Model for UI operations related to {@link User}
+ * Model for UI operations related to {@link User}.
  *
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  * @author Manuel Rego Casasnovas <rego@igalia.com>
- * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
 public interface IUserModel {
 
     /**
-     * Get all {@link User} elements
+     * Get all {@link User} elements.
      *
-     * @return
+     * @return {@link List<User>}
      */
     List<User> getUsers();
 
@@ -96,28 +96,27 @@ public interface IUserModel {
 
     /**
      * Retrieves the list of Profiles associated with the current user.
+     *
      * @return List of {@link Profile} objects.
      */
     List<Profile> getProfiles();
 
     /**
-     * Removes a profile from the list of {@link Profile} objects associated
-     * with the current User.
+     * Removes a profile from the list of {@link Profile} objects associated with the current User.
      *
-     * @param role The {@link Profile} object to be removed.
+     * @param profile The {@link Profile} object to be removed.
      */
     void removeProfile(Profile profile);
 
     /**
-     * Adds a profile to the list of {@link Profile} objects associated
-     * with the current User.
+     * Adds a profile to the list of {@link Profile} objects associated with the current User.
      *
-     * @param role The {@link Profile} object to be added.
+     * @param profile The {@link Profile} object to be added.
      */
     void addProfile(Profile profile);
 
     /**
-     * Sets the password attribute to the inner {@ link User} object.
+     * Sets the password attribute to the inner {@link User} object.
      *
      * @param password String with the <b>unencrypted</b> password.
      */

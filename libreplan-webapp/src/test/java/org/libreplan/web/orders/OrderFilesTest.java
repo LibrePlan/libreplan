@@ -53,9 +53,7 @@ import java.util.Date;
 /**
  * Tests for {@link OrderFile}.
  *
- * Created by
- * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
- * on 11.01.2016.
+ * @author Created by Vova Perebykivskyi <vova@libreplan-enterprise.com> on 11.01.2016.
  */
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -179,7 +177,8 @@ public class OrderFilesTest {
 
         if ( !nameIsNull )
             orderFileModel.setFileName("Index");
-        else orderFileModel.setFileName(null);
+        else
+            orderFileModel.setFileName(null);
 
         orderFileModel.setFileType("html");
         orderFileModel.setUploadDate(new Date());

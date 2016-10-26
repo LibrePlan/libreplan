@@ -31,28 +31,25 @@ import org.libreplan.web.logs.LogsController;
 import org.libreplan.web.planner.order.IOrderPlanningGate;
 import org.libreplan.web.planner.tabs.CreatedOnDemandTab.IComponentCreator;
 import org.libreplan.web.security.SecurityUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.ganttz.extensions.ITab;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Label;
 
-import javax.swing.*;
-
 /**
- * Creates global Tab for Logs(issue and risk logs)
- * 
+ * Creates global Tab for Logs(issue and risk logs).
+ *
  * @author Misha Gozhda <misha@libreplan-enterprise.com>
  */
 public class LogsTabCreator {
 
     public static ITab create(Mode mode, LogsController logsController, LogsController logsControllerGlobal,
-            Component breadcrumbs, IOrderPlanningGate orderPlanningGate,
-            Map<String, String[]> parameters) {
-        return new LogsTabCreator(mode, logsController, logsControllerGlobal, breadcrumbs,
-                orderPlanningGate, parameters)
-                .build();
+                              Component breadcrumbs, IOrderPlanningGate orderPlanningGate,
+                              Map<String, String[]> parameters) {
+
+        return new LogsTabCreator(
+                mode, logsController, logsControllerGlobal, breadcrumbs, orderPlanningGate).build();
     }
 
     private final Mode mode;
@@ -63,16 +60,12 @@ public class LogsTabCreator {
 
     private final Component breadcrumbs;
 
-    private final IOrderPlanningGate orderPlanningGate;
-
     private LogsTabCreator(Mode mode, LogsController logsController, LogsController logsControllerGlobal,
-            Component breadcrumbs, IOrderPlanningGate orderPlanningGate,
-            Map<String, String[]> parameters) {
+                           Component breadcrumbs, IOrderPlanningGate orderPlanningGate) {
         this.mode = mode;
         this.logsController = logsController;
         this.logsControllerGlobal = logsControllerGlobal;
         this.breadcrumbs = breadcrumbs;
-        this.orderPlanningGate = orderPlanningGate;
     }
 
     private ITab build() {
@@ -85,23 +78,18 @@ public class LogsTabCreator {
 
     private ITab createGlobalLogsTab() {
         IComponentCreator componentCreator = new IComponentCreator() {
-
             @Override
-            public org.zkoss.zk.ui.Component create(
-                    org.zkoss.zk.ui.Component parent) {
-                Map<String, Object> arguments = new HashMap<String, Object>();
+            public Component create(Component parent) {
+                Map<String, Object> arguments = new HashMap<>();
                 arguments.put("logsController", logsControllerGlobal);
-                return Executions.createComponents("/logs/_logs.zul",
-                        parent, arguments);
+                return Executions.createComponents("/logs/_logs.zul", parent, arguments);
             }
 
         };
-        return new CreatedOnDemandTab(_("Logs"), "logs-global",
-                componentCreator) {
+        return new CreatedOnDemandTab(_("Logs"), "logs-global", componentCreator) {
             @Override
             protected void beforeShowAction() {
-                if (!SecurityUtils
-                        .isSuperuserOrUserInRoles(UserRole.ROLE_PLANNING)) {
+                if (!SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_PLANNING)) {
                     Util.sendForbiddenStatusCodeInHttpServletResponse();
                 }
             }
@@ -111,6 +99,7 @@ public class LogsTabCreator {
                 if (breadcrumbs.getChildren() != null) {
                     breadcrumbs.getChildren().clear();
                 }
+
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(getSchedulingLabel()));
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
@@ -121,23 +110,18 @@ public class LogsTabCreator {
 
     private ITab createOrderLogsTab() {
         IComponentCreator componentCreator = new IComponentCreator() {
-
             @Override
-            public org.zkoss.zk.ui.Component create(
-                    org.zkoss.zk.ui.Component parent) {
-                Map<String, Object> arguments = new HashMap<String, Object>();
+            public Component create(Component parent) {
+                Map<String, Object> arguments = new HashMap<>();
                 arguments.put("logsController", logsController);
-                return Executions.createComponents("/logs/_logs.zul",
-                        parent, arguments);
+                return Executions.createComponents("/logs/_logs.zul", parent, arguments);
             }
 
         };
-        return new CreatedOnDemandTab(_("Logs"), "logs-order",
-                componentCreator) {
+        return new CreatedOnDemandTab(_("Logs"), "logs-order", componentCreator) {
             @Override
             protected void beforeShowAction() {
-                if (!SecurityUtils
-                        .isSuperuserOrUserInRoles(UserRole.ROLE_PLANNING)) {
+                if (!SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_PLANNING)) {
                     Util.sendForbiddenStatusCodeInHttpServletResponse();
                 }
             }
@@ -147,6 +131,7 @@ public class LogsTabCreator {
                 if (breadcrumbs.getChildren() != null) {
                     breadcrumbs.getChildren().clear();
                 }
+
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(getSchedulingLabel()));
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));

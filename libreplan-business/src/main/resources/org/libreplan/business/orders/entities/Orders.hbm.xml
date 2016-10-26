@@ -23,8 +23,8 @@
 
         <property name="deadline" access="field" />
 
-        <property name="lastAdvanceMeausurementForSpreading" access="field"
-                  column="last_advance_meausurement_for_spreading" />
+        <property name="lastAdvanceMeasurementForSpreading" access="field"
+                  column="last_advance_measurement_for_spreading" />
 
         <property name="dirtyLastAdvanceMeasurementForSpreading" access="field"
                   column="dirty_last_advance_measurement_for_spreading" />
@@ -70,7 +70,7 @@
 
         <property name="externalCode" access="field" column="external_code" />
 
-        <map name="schedulingDatasForVersion" table="scheduling_states_by_order_version" cascade="all-delete-orphan">
+        <map name="schedulingDataForVersion" table="scheduling_states_by_order_version" cascade="all-delete-orphan">
             <key column="order_element_id"/>
 
             <map-key-many-to-many column="order_version_id"

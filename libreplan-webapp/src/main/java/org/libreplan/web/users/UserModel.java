@@ -50,7 +50,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  * @author Manuel Rego Casasnovas <rego@igalia.com>
- * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -182,7 +182,7 @@ public class UserModel implements IUserModel {
 
     @Override
     public List<UserRole> getRoles() {
-        List<UserRole> list = new ArrayList<UserRole>();
+        List<UserRole> list = new ArrayList<>();
         if (user != null) {
             list.addAll(user.getRoles());
         }
@@ -201,7 +201,7 @@ public class UserModel implements IUserModel {
 
     @Override
     public List<Profile> getProfiles() {
-        List<Profile> list = new ArrayList<Profile>();
+        List<Profile> list = new ArrayList<>();
         if (user != null) {
             list.addAll(user.getProfiles());
         }

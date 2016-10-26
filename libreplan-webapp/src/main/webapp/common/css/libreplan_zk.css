@@ -7,6 +7,7 @@
  */
 
 /* ----- Predefined Height dependent styles ----- */
+
 .scheduling-graphics {
     height:200px;
 }
@@ -23,7 +24,7 @@
     height: 99999px !important;
 }
 
-.plannerlayout .taskspanelgap #timetracker {
+.plannerlayout .taskspanel-gap #timetracker {
     overflow-y: hidden;
 }
 
@@ -33,16 +34,6 @@
 
 body {
     font-family: Verdana, Tahoma, Arial, Helvetica, sans-serif;
-}
-
-.logo {
-    background-image: url("../img/v3/blue_ga.jpg");
-    width: 300px;
-    height: 100px;
-    float: left;
-    clear: both;
-    position: absolute;
-    border: 0;
 }
 
 .headings {
@@ -72,9 +63,8 @@ table {
 .icono .z-button-cm,
 body .z-window-embedded .icono .z-button-cm,
 body .z-window-modal .icono .z-button-cm,
-body .advancedallocationlayout .icono .z-button-cm {
+body .advanced-allocation-layout .icono .z-button-cm {
     color: #007bbe;
-    background: transparent none;
     border: 0 solid #007bbe;
     padding: 0;
 }
@@ -82,20 +72,19 @@ body .advancedallocationlayout .icono .z-button-cm {
 
 .z-button {
     font-family: Tahoma, Arial, Helvetica, sans-serif;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: normal;
+    min-height: 16px;
 }
 
 
 
-/* Perspective and planner buttons
---------------------------------------------------- */
+/* Perspective and planner buttons */
 .perspectives-column {
     padding-top:0;
     overflow-y: auto;
     border-right:0;
 }
-
 
 .perspectives-column .global-commands {
     margin-bottom: 0;
@@ -115,16 +104,8 @@ body .advancedallocationlayout .icono .z-button-cm {
 }
 
 .toolbar-box .z-button .z-button-cm,
-.advancedallocationlayout .z-north-body .z-button-cm {
+.advanced-allocation-layout .z-north-body .z-button-cm {
     height: 24px;
-    padding: 2px;
-}
-
-.toolbar-box .clicked .z-button-cm,
-.toolbar-box .z-button-cm:active {
-    background-color: #E6F2F9; /* blue (active background)*/
-    border-top: 1px solid #006699;
-    border-left: 1px solid #006699;
     padding: 2px;
 }
 
@@ -151,40 +132,46 @@ body .advancedallocationlayout .icono .z-button-cm {
 
 /* Global action button styles
 --------------------------------------------------- */
-.global-action.z-button {
+.global-action.z-button,
+.save-button.z-button[disabled],
+.create-button.z-button[disabled] {
     margin-top: 10px;
     font-weight: bold;
-}
-
-.global-action.z-button .z-button-cm {
+    background-repeat: no-repeat;
+    background-position: 5%;
     padding: 4px 25px !important;
-    background: no-repeat 5px;
-    margin-right: 1px;
+    font-size: 12px;
+    background-color: #E4F3D9;
+    margin-right: 10px;
 }
 
-.global-action.z-button .z-button-cm:active {
-    margin-right: 0;
+.global-action.z-button:active,
+.global-action.z-button:hover,
+.global-action.z-button:focus {
+    margin-right: 10px;
     border-bottom: 0;
-    border-right: 0;
+    /* Do not optimize it */
+    background-color: #C3EAAF;
+    background-repeat: no-repeat;
 }
 
-.save-button.z-button .z-button-cm {
+.save-button.z-button {
     background-image: url(../img/bt_ok.png) !important;
 }
 
-.create-button.z-button .z-button-cm {
+.create-button.z-button {
     background-image: url(../img/bt_create.png) !important;
 }
 
-.saveandcontinue-button.z-button .z-button-cm {
+.saveandcontinue-button.z-button {
     background-image: url(../img/bt_ok_continue.png);
 }
 
-.cancel-button.z-button .z-button-cm {
+.cancel-button.z-button {
     background-image: url(../img/bt_cancel.png) !important;
 }
 
-.back-button.z-button .z-button-cm {
+.back-button.z-button  {
     background-image: url(../img/bt_back.png);
 }
 
@@ -211,7 +198,7 @@ body .advancedallocationlayout .icono .z-button-cm {
     font-size: 12px;
 }
 
-/* ------------- order element tree  -------------  */
+/* ------------- OrderElement tree  -------------  */
 .orderTree input {
     height: 18px;
     border-bottom: 0;
@@ -221,7 +208,7 @@ body .advancedallocationlayout .icono .z-button-cm {
     border-right: 0;
 }
 
-.orderTree .z-datebox-inp {
+.orderTree .z-datebox-input {
     height: 20px;
 }
 
@@ -240,8 +227,7 @@ body .advancedallocationlayout .icono .z-button-cm {
 .orderTree .depth_3 input,
 .orderTree .depth_4 input,
 .orderTree .depth_5 input,
-.orderTree .depth_6 input
-{
+.orderTree .depth_6 input {
     border-right: 0;
 }
 
@@ -258,17 +244,17 @@ body .advancedallocationlayout .icono .z-button-cm {
     background: none;
 }
 
-.z-window-embedded-header {
-    color: #009900;
-    font-weight: bold;
-    font-size: 1.2em;
+.z-window.z-window-noborder.z-window-embedded {
+    background: none;
+    padding-left: 6px;
+    border-radius: 5px 5px 0 0;
 }
 
 .message_ERROR, .message_INFO {
     border-radius: 10px;
     padding: 15px;
     margin: 10px;
-    width: 300px;
+    width: 367px; /* Special for Bogdan */
 }
 
 .message_WARNING {
@@ -301,7 +287,6 @@ body .advancedallocationlayout .icono .z-button-cm {
 
 .message_INFO span {
     position: relative;
-    top: -10px;
     left: 10px;
 }
 
@@ -317,12 +302,6 @@ div.z-errbox {
     border-radius: 10px;
 }
 
-.advancedallocationlayout .message_WARNING {
-    padding: 3px 20px 3px 20px;
-    margin: 0;
-    width: auto;
-}
-
 h4.message_WARNING {
     border-radius: 10px;
     padding: 10px 5px;
@@ -332,15 +311,10 @@ h4.message_WARNING {
     width: 400px;
 }
 
-
-.z-window-embedded {
-    margin: 5px 10px 10px;
-}
-
-.main-area .z-center-body > .z-window-embedded {
+.main-area .z-center-body > .z-div > .z-window-embedded {
     margin-top: 0;
     margin-bottom: 0;
-    padding-top: 10px;
+    background: none;
 }
 
 /* Hide inner second level embed window titles */
@@ -354,21 +328,21 @@ h4.message_WARNING {
 }
 
 /* ------ Overridden norrmoz.css.dsp styles ------ */
-.z-label,.z-radio-cnt,.z-checkbox-cnt,.z-slider-pp,input.button,input.file,.z-loading,.z-errbox,
-div.z-tree-footer-cnt, div.z-tree-cell-cnt, div.z-tree-col-cnt, .z-listbox,
-div.z-footer-cnt, div.z-row-cnt, div.z-group-cnt, div.z-group-foot-cnt,
-div.z-column-cnt, div.z-list-footer-cnt, div.z-list-cell-cnt, .z-bandbox, .z-bandbox-inp {
+.z-label,.z-radio-content,.z-checkbox-content,.z-slider-pp,input.button,input.file,.z-loading,.z-errbox,
+div.z-tree-footer-content, div.z-tree-cell-content, div.z-tree-col-content, .z-listbox,
+div.z-footer-content, div.z-row-content, div.z-group-content, div.z-group-foot-content,
+div.z-column-content, div.z-listfooter-content, div.z-listcell-content, .z-bandbox, .z-bandbox-input {
     font-family: Tahoma, Arial, Helvetica, sans-serif;
     font-size: 11px;
     font-weight: normal;
 }
 
-.z-textbox-disd, .z-decimalbox-disd, .z-intbox-disd, .z-longbox-disd, .z-doublebox-disd,
-.z-textbox-disd *, .z-decimalbox-disd *, .z-intbox-disd *, .z-longbox-disd *, .z-doublebox-disd * {
+.z-textbox-disabled, .z-decimalbox-disabled, .z-intbox-disabled, .z-longbox-disabled, .z-doublebox-disabled,
+.z-textbox-disabled *, .z-decimalbox-disabled *, .z-intbox-disabled *, .z-longbox-disabled *, .z-doublebox-disabled * {
     color:#333333 !important;
 }
 
-div.z-row-cnt {
+div.z-row-content {
     padding:0;
 }
 
@@ -376,7 +350,7 @@ div.z-row-cnt {
     word-wrap: normal;
 }
 
-.z-word-wrap .z-auxheader-cnt {
+.z-word-wrap .z-auxheader-content {
     word-wrap: normal;
 }
 
@@ -427,29 +401,35 @@ div.z-row-cnt {
     background-image: none;
 }
 
-.z-window-popup-header,.z-window-highlighted-header,
-.z-window-overlapped-header,.z-window-embedded-header {
+/*
+Only if header is embedded than we should use header with bullet ico.
+Else we will use header with blue image. (.z-window-header)
+*/
+.z-window-embedded .z-window-popup-header,
+.z-window-embedded .z-window-highlighted-header,
+.z-window-embedded .z-window-overlapped-header,
+.z-window-embedded .z-window-header {
     color: #0081C3;
     font-family: Georgia, Tahoma, Arial, Helvetica, sans-serif;
     font-size: 18px;
     padding-bottom: 10px;
     font-weight: normal;
     padding-left: 22px;
-    background: #FFFFFF url(../img/header_bullet.gif) no-repeat 0 3px;
+    background: #FFFFFF url(../img/header_bullet.gif) no-repeat 0 8px;
 }
 
-.caption-title .z-caption-l {
+.caption-title .z-caption-content {
     font-size: 18px;
 }
 
-.z-tabs-scroll .z-tabs-cnt {
+.z-tabs-scroll .z-tabs-content {
     background: #FAFDFE none repeat scroll 0 0;
     border-bottom: 1px solid #7EAAC6;
     padding-bottom: 0;
 }
 
 .z-textbox,.z-decimalbox,.z-intbox,.z-longbox, .z-combobox-inp,
-.z-doublebox, .z-datebox,  .z-datebox-inp, .z-datebox-focus .z-datebox-inp {
+.z-doublebox, .z-datebox,  .z-datebox-input, .z-datebox-focus .z-datebox-input {
     font-family: Tahoma, Arial, Helvetica, sans-serif;
     font-size: 11px;
     padding-left: 2px;
@@ -457,8 +437,8 @@ div.z-row-cnt {
 
 .leftpanelgap .z-textbox, .leftpanelgap .z-decimalbox, .leftpanelgap .z-intbox,
 .leftpanelgap .z-longbox, .leftpanelgap .z-doublebox, .leftpanelgap .z-datebox,
-.leftpanelgap .z-datebox-inp, .leftpanelgap .z-datebox-focus .z-datebox-inp,
-.leftpanelgap .z-datebox-inp {
+.leftpanelgap .z-datebox-input, .leftpanelgap .z-datebox-focus .z-datebox-input,
+.leftpanelgap .z-datebox-input {
     font-size: 11px;
 }
 
@@ -467,18 +447,18 @@ tr.z-treerow td.z-treerow-focus {
     background-image: none;
 }
 
-div.z-footer-cnt,div.z-row-cnt,div.z-group-cnt,div.z-group-foot-cnt,div.z-column-cnt,div.z-tree-col-cnt {
+div.z-footer-content,div.z-row-content,div.z-group-content,div.z-group-foot-content,div.z-column-content,div.z-tree-col-content {
     font-family: Tahoma, Arial, Helvetica, sans-serif;
     font-size: 11px;
     font-weight: bold;
 }
 
-.z-word-wrap div.z-tree-cell-cnt,.z-word-wrap div.z-tree-footer-cnt,
-.z-word-wrap div.z-tree-col-cnt {
+.z-word-wrap div.z-tree-cell-content,.z-word-wrap div.z-tree-footer-content,
+.z-word-wrap div.z-tree-col-content {
     word-wrap: normal;
 }
 
-.z-tabs .z-tabs-cnt {
+.z-tabs .z-tabs-content {
     background: none;
     border-bottom: 0;
     border-bottom: 1px solid #7EAAC6;
@@ -498,7 +478,7 @@ div.z-footer-cnt,div.z-row-cnt,div.z-group-cnt,div.z-group-foot-cnt,div.z-column
     font-family: Tahoma, Arial, Helvetica, sans-serif;
 }
 
-.z-tabpanel,.z-tabbox-ver .z-tabpanels-ver {
+.z-tabpanel,.z-tabbox-ver .z-tabpanels {
     padding: 5px;
     border-bottom: 1px solid #7EAAC6;
 }
@@ -509,11 +489,10 @@ div.z-footer-cnt,div.z-row-cnt,div.z-group-cnt,div.z-group-foot-cnt,div.z-column
     color: #006600;
     margin: 10px;
     padding: 15px 15px 15px 50px;
-    width: 300px;
+    width: 367px; /* Special for Bogdan */
 }
 
 div.z-grid {
-    background: #DAE7F6 none repeat scroll 0 0;
     border: 1px solid #ABC6DE;
     overflow: hidden;
 }
@@ -566,11 +545,11 @@ div.z-grid {
 
 .listdetails .z-textbox, .listdetails .z-decimalbox,
 .listdetails .z-intbox, .listdetails .z-longbox,
-.listdetails .z-doublebox, .listdetails .z-tree .z-datebox-inp {
+.listdetails .z-doublebox, .listdetails .z-tree .z-datebox-input {
     height: 15px;
 }
 
-.listdetails .z-tree .z-datebox-inp {
+.listdetails .z-tree .z-datebox-input {
     padding-top: 3px;
 }
 
@@ -578,8 +557,8 @@ div.z-grid {
     padding-top: 5px;
 }
 
-.z-tree .z-datebox-inp {
-    height:25px;
+.z-tree .z-datebox-input {
+    height: 25px;
 }
 .orderTree .operations {
     width: 50px;
@@ -590,12 +569,13 @@ div.z-grid {
 .orderTree .hours {
     width: 50px;
 }
+/* After ZK8, this code is not working */
 .orderTree .code {
-    min-width: 100px;
+    min-width: 110px;
 }
 
 .orderTree .scheduling_state {
-    min-width:140px;
+    min-width: 140px;
 }
 .orderTree .estimated_init,
 .orderTree .estimated_end {
@@ -606,8 +586,8 @@ div.z-grid {
     display:none;
 }
 
-.orderTree div.z-tree-cell-cnt {
-    padding:0;
+.orderTree div.z-tree-cell-content {
+    padding: 0;
 }
 
 .orderTree td {
@@ -622,13 +602,13 @@ div.z-grid {
     border:none;
 }
 
-.orderelements-tab .z-datebox-focus .z-datebox-inp  {
+.orderelements-tab .z-datebox-focus .z-datebox-input  {
     border-top: 0;
     border-bottom: 0;
 }
 
-.orderelements-tab .z-datebox-focus .z-datebox-inp,
-.orderelements-tab .z-datebox-inp {
+.orderelements-tab .z-datebox-focus .z-datebox-input,
+.orderelements-tab .z-datebox-input {
     width: auto;
 }
 
@@ -636,7 +616,7 @@ div.z-grid {
     background-color: #DAE7F6;
 }
 
-.listdetails .z-datebox-focus .z-datebox-inp  {
+.listdetails .z-datebox-focus .z-datebox-input {
     border-top: 0;
     border-bottom: 0;
     height: 17px;
@@ -645,6 +625,7 @@ div.z-grid {
 }
 
 .taskTreeCols div.z-tree-header, .taskTreeCols div.z-tree-header tr {
+    width: 100% !important;
     overflow: visible;
 }
 
@@ -661,11 +642,11 @@ div.z-grid {
     height: 17px !important;
 }
 
-/* Highlight advancedallocation grouping row */
-.resourcesload .taskspanelgap .z-grid-body tr:first-child {
+/* Highlight advanced allocation grouping row */
+.resources-load .taskspanel-gap .z-grid-body tr:first-child {
     background-color: #E8E8E8;
 }
-.resourcesload .taskspanelgap .z-grid-body tr.z-row td {
+.resources-load .taskspanel-gap .z-grid-body tr.z-row td {
     background-color:transparent;
 }
 
@@ -708,7 +689,7 @@ div.z-grid {
 }
 
 .scheduling-graphics,
-.scheduling-graphics .z-tabs-ver-scroll {
+.scheduling-graphics .z-tabs-scroll {
     border: 0;
 }
 
@@ -780,10 +761,9 @@ div.z-grid {
 
 /* Graphical improvements */
 
-.z-panel-header {
-    background:none;
-    border: 0;
-    margin:0 0 0 10px
+.z-panel-header, .z-panel-head {
+    font-weight: bold;
+    margin: 0 10px;
 }
 
 .z-panel-body {
@@ -812,10 +792,10 @@ div.z-listbox-pgi-b {
     float:left;
 }
 
-.orderTree .not-scheduled span.z-button,
-.orderTree .partially-scheduled span.z-button,
-.orderTree .completely-scheduled span.z-button {
-    margin: 4px 1px 0 0;
+.orderTree .not-scheduled button.z-button,
+.orderTree .partially-scheduled button.z-button,
+.orderTree .completely-scheduled button.z-button {
+    margin: -12px -6px -20px 0;
 }
 
 .orderTree .not-scheduled span.scheduling-state,
@@ -829,9 +809,7 @@ div.z-listbox-pgi-b {
     padding: 1px 5px;
     height: 14px;
     font-size: 9px;
-    width: 5px;
 }
-
 
 .scheduling-state {
     cursor: move;
@@ -863,27 +841,82 @@ span.z-dottree-line {
 /* --- START -- menus and toolbar --
 =================================================== */
 
-.z-menubar-hor, .z-menubar-ver {
+.z-menubar-horizontal, .z-menubar-ver {
     background: none;
 }
 
-.z-menu-body {
-    background-color: #d4e1ef;
-    border-radius: 10px 10px 0 0;
-}
-
-.z-menu-inner-m .z-menu-btn {
+.z-menu-text {
     font-weight: normal;
+    text-shadow: none;
     color: #005782;
+    font-size: 11px;
+    line-height: 8px;
 }
 
-.z-menu-body-over .z-menu-inner-m .z-menu-btn,
-.z-menu-body-seld .z-menu-inner-m .z-menu-btn,
-.current-section .z-menu-body .z-menu-inner-m .z-menu-btn {
+.z-menu-icon {
+    display: none !important;
+}
+
+.z-menu-selected > .z-menu-content > .z-menu-text,
+.current-section  > .z-menu-content > .z-menu-text,
+.z-menu-content:hover > .z-menu-text {
     color: #FFFFFF;
 }
 
-.z-menu-body-over, .z-menu-body-seld, .current-section .z-menu-body {
+.z-menubar-horizontal {
+    border-top: none;
+    border-bottom: 3px solid #2a83b4;
+    padding: 0;
+}
+
+.z-menubar-horizontal li {
+    background-color: #d4e1ef;
+    border-radius: 10px 10px 0 0;
+    margin: 0 4px 0 4px;
+}
+
+.current-section {
+    background-image: none;
+    background-color: #2a83b4 !important;
+}
+
+.current-section .z-menu-content:focus,
+.current-section .z-menu-content:active {
+    background-color: #2a83b4 !important;
+}
+
+.z-menu-content {
+    padding-right: 10px;
+}
+
+.z-menu-content:focus ,
+.z-menu-content:active {
+    box-shadow: none;
+    border-color: transparent;
+    background-image: none;
+    background-color: #d4e1ef !important;
+    border-radius: 10px 10px 0 0;
+}
+
+.z-menu-content:focus > .z-menu-text,
+.z-menu-content:active > .z-menu-text {
+    color: #fff;
+    text-decoration: underline;
+}
+
+.z-menu-selected > .z-menu-content,
+.z-menu-content:hover {
+    box-shadow: none;
+    border-color: transparent;
+    background-image: none;
+    background-color: #2a83b4;
+    border-radius: 10px 10px 0 0;
+}
+.submenu {
+    display: block;
+}
+
+.current-section .z-menu {
     background-color: #2a83b4;
     font-weight: normal;
 }
@@ -904,11 +937,6 @@ span.z-dottree-line {
     background-image:none;
 }
 
-.z-menubar-hor {
-    border-bottom: 3px solid #2a83b4;
-    padding: 0;
-}
-
 .user_row .cerrar_sesion {
     display:inline;
 }
@@ -921,8 +949,8 @@ span.z-dottree-line {
 /* ---- Perspectives ------ */
 .perspective, .perspective-active {
     width: 84px;
-    height: 94px;
-    margin: 0 0 4px 4px;
+    /* height: 94px;*/
+    margin: 0 2px;
 }
 
 .perspective tr td, .perspective-active  tr td {
@@ -930,117 +958,140 @@ span.z-dottree-line {
     font-size: 10px;
 }
 
-.perspective .z-button-cm,
-.perspective-active .z-button-cm {
+
+.perspective ,
+.perspective-active {
     padding-top: 60px;
     background: no-repeat 18px 10px;
-    border-radius: 2px;
+    /* border-radius: 2px;*/
 }
 
-.perspective .z-button-cm {
+.perspective {
     border: 1px solid #FFFFFF;
     background-color: #FFFFFF;
-}
-
-.perspective-active .z-button-cm,
-.perspective-active .z-button-cm:hover,
-.perspective-active .z-button-cm:active,
-.perspective .z-button-cm:hover,
-.perspective .z-button-cm:active {
-    border: 1px solid #CCCCCC;
-}
-
-.perspective-active .z-button-cm,
-.perspective-active .z-button-cm:hover,
-.perspective-active .z-button-cm:active,
-.perspective .z-button-cm:active {
-    background-color: #71B0D4;
-}
-
-.perspective .z-button-cm {
     color: #005782;
     background-repeat: no-repeat;
 }
 
-.perspective-active .z-button-cm {
-    border-radius: 2px;
+.perspective-active,
+.perspective-active:hover,
+.perspective-active:active,
+.perspective:hover,
+.perspective:active {
+    border: 1px solid #CCCCCC;
+}
+
+.perspective-active,
+.perspective-active:focus,
+.perspective-active:hover,
+.perspective-active:active {
     color: #FFFFFF;
+    background-color: #71B0D4;
+}
+
+.perspective-active {
+    /*border-radius: 2px;*/
+    color: #FFFFFF;
+    text-shadow: none;
     border-color:#006699 #DFF5FE #DFF5FE #006699;
 }
 
-.perspective .z-button-cm:hover {
+.perspective:hover {
     background-color: #E6F2F9;
-}
-
-span.perspective, span.perspective-active {
-    margin: 4px 2px;
+    text-shadow: none;
 }
 
 .perspectives-label {
     display: none;
 }
 
-.taskdetailsContainer,
-.resourceloaddetailsContainer {
+.taskdetailsContainer, .resourceload-details-container {
     border-left:0;
     border-top:0;
+}
+
+.resourceload-details-container table {
+    height: 35px;
 }
 
 .taskdetail-company-view .clickable-rows {
     margin-left: 5px;
 }
 
-.z-button.perspective .z-button-cm,
-.z-button.perspective-active .z-button-cm {
+.z-button.perspective,
+.z-button.perspective-active {
+    padding-top: 60px;
     white-space:normal;
 }
 
-.perspective.company-scheduling .z-button-cm,
-.perspective-active.company-scheduling  .z-button-cm {
+.perspective.company-scheduling ,
+.perspective-active.company-scheduling {
     background-image: url(../img/ico_company-scheduling.png);
+    background-repeat: no-repeat;
+    background-position: 18px 10px;
 }
-.perspective.company-load .z-button-cm,
-.perspective-active.company-load .z-button-cm {
+.perspective.company-load ,
+.perspective-active.company-load  {
     background-image: url(../img/ico_company-load.png);
+    background-repeat: no-repeat;
+    background-position: 18px 10px;
 }
-.perspective.orders .z-button-cm,
-.perspective-active.orders .z-button-cm {
+.perspective.orders ,
+.perspective-active.orders {
     background-image: url(../img/ico_orders.png);
+    background-repeat: no-repeat;
+    background-position: 18px 10px;
 }
-.perspective.order-scheduling .z-button-cm,
-.perspective-active.order-scheduling .z-button-cm {
+.perspective.order-scheduling ,
+.perspective-active.order-scheduling  {
     background-image: url(../img/ico_order-scheduling.png);
+    background-repeat: no-repeat;
+    background-position: 18px 10px;
 }
-.perspective.order-load .z-button-cm,
-.perspective-active.order-load .z-button-cm {
+.perspective.order-load ,
+.perspective-active.order-load {
     background-image: url(../img/ico_order-load.png);
+    background-repeat: no-repeat;
+    background-position: 18px 10px;
 }
-.perspective.limiting-resources .z-button-cm,
-.perspective-active.limiting-resources .z-button-cm {
+.perspective.limiting-resources,
+.perspective-active.limiting-resources {
     background-image: url(../img/ico_limiting-resources.png);
+    background-repeat: no-repeat;
+    background-position: 18px 10px;
 }
 .perspective.hidden {
     display: none;
 }
-.perspective.order-data .z-button-cm,
-.perspective-active.order-data .z-button-cm {
+.perspective.order-data,
+.perspective-active.order-data {
     background-image: url(../img/ico_order-data.png);
+    background-repeat: no-repeat;
+    background-position: 18px 10px;
 }
-.perspective.advanced-allocation .z-button-cm,
-.perspective-active.advanced-allocation .z-button-cm {
+.perspective.advanced-allocation,
+.perspective-active.advanced-allocation  {
     background-image: url(../img/ico_advanced-allocation.png);
+    background-repeat: no-repeat;
+    background-position: 18px 10px;
 }
-.perspective.montecarlo-simulation .z-button-cm,
-.perspective-active.montecarlo-simulation .z-button-cm {
+.perspective.montecarlo-simulation,
+.perspective-active.montecarlo-simulation {
     background-image: url(../img/ico_montecarlo-simulation.png);
+    background-repeat: no-repeat;
+    background-position: 18px 10px;
 }
-.perspective.global-dashboard .z-button-cm,
-.perspective-active.global-dashboard .z-button-cm {
+.perspective.global-dashboard,
+.perspective-active.global-dashboard{
     background-image: url(../img/ico_global-dashboard.png);
+    background-repeat: no-repeat;
+    background-position: 18px 10px;
 }
-.perspective.order-dashboard .z-button-cm,
-.perspective-active.order-dashboard .z-button-cm{
+.perspective.order-dashboard ,
+.perspective-active.order-dashboard {
     background-image: url(../img/ico_order-dashboard.png);
+    background-repeat: no-repeat;
+    background-position: 18px 10px;
 }
 
 .label-highlight:hover{
@@ -1051,18 +1102,18 @@ span.perspective, span.perspective-active {
     margin-top: 5px;
 }
 
-.perspective.logs-global .z-button-cm {
+.perspective.logs-global ,
+.perspective-active.logs-global {
     background-image: url(../img/ico_logs-global.png);
-}
-.perspective-active.logs-global .z-button-cm {
-    background-image: url(../img/ico_logs-global.png);
+    background-repeat: no-repeat;
+    background-position: 18px 10px;
 }
 
-.perspective.logs-order .z-button-cm {
+.perspective.logs-order ,
+.perspective-active.logs-order {
     background-image: url(../img/ico_logs-order.png);
-}
-.perspective-active.logs-order .z-button-cm {
-    background-image: url(../img/ico_logs-order.png);
+    background-repeat: no-repeat;
+    background-position: 18px 10px;
 }
 
 .perspectives-column {
@@ -1080,21 +1131,20 @@ span.perspective, span.perspective-active {
     padding-left:4px;
 }
 
-.toolbar-box span.z-button {
-    margin: 0 0 0 0;
+.toolbar-box button.z-button {
+    margin: 2px 3px 0 0;
 }
 
-.toolbar-box .z-button-cm  {
+.z-button {
+    background-image: none;
+}
+
+.toolbar-box .z-button  {
     background-color: transparent;
     border-color:transparent;
 }
 
-.toolbar-box .z-button-cm:hover  {
-    background-color: #E6F2F9;
-    border-color:#006699 #DFF5FE #DFF5FE #006699;
-}
-
-.toolbar-box .z-button.z-button-disd .z-button-cm {
+.toolbar-box .z-button.z-button-disd .z-button {
     background-color: transparent;
     border-color: transparent;
 }
@@ -1112,7 +1162,7 @@ span.perspective, span.perspective-active {
 }
 
 
-.toolbar-box .z-button-cm {
+.toolbar-box .z-button {
     font-size:11px;
     color: #0068B1;
 }
@@ -1124,7 +1174,6 @@ span.perspective, span.perspective-active {
 }
 
 .main-area > .z-center-body:first-child {
-    /*    height: auto !important; */
     width: auto !important;
 }
 
@@ -1148,14 +1197,21 @@ span.perspective, span.perspective-active {
     overflow-x: auto;
 }
 
-tr.z-tree-row-seld, tr.z-listitem-seld,
-.z-combobox-pp .z-comboitem-seld,
-tr.z-treerow-seld {
-    background-color: #fdd772; /* Dark orange */
-    color: #000000;
+.z-treerow.z-treerow-selected > .z-treecell,
+.z-treerow-focus > .z-treecell,
+.z-treerow.z-treerow-selected.z-treerow-focus:hover > .z-treecell,
+.z-treerow.z-treerow-selected.z-treerow-focus > .z-treecell,
+.z-treerow.z-treerow-selected:hover > .z-treecell,
+.z-listitem.z-listitem-selected > .z-listcell,
+.z-listitem.z-listitem-selected:hover > .z-listcell,
+.z-listitem.z-listitem-selected.z-listitem-focus > .z-listcell,
+.z-listitem.z-listitem-selected.z-listitem-focus:hover > .z-listcell {
+    /*background: #fdd772; !* Dark orange *!*/
+    background: linear-gradient(to bottom, #fdd772 0, #fdd772 100%);
+    border-left: none;
 }
 
-tr.z-treerow-seld input {
+tr.z-treerow-selected input {
     /* Soft orange */
     background: #fdf3da none;
 }
@@ -1175,15 +1231,21 @@ tr.z-treerow-over input {
     overflow:hidden;
 }
 
-.resourcesload .timetracker-secondlevel {
+.resources-load .timetracker-secondlevel {
     height: 2000px;
 }
 
-.scheduling-graphics .z-tabs-ver {
+.scheduling-graphics .z-tabs {
     width: 60px !important;
 }
 
-.scheduling-graphics .z-tab-ver .z-tab-ver-text {
+.scheduling-graphics .z-tab .z-tab-text {
+    white-space: normal;
+    text-overflow: clip;
+}
+
+/* Display value tab in normal white space */
+.scheduling-graphics  .z-tabbox-left>.z-tabs .z-tab-selected .z-tab-text {
     white-space: normal;
 }
 
@@ -1195,15 +1257,15 @@ tr.z-treerow-over input {
     padding: 10px;
 }
 
-.resourcesload .z-west-body .z-tree-header ,
-.limitingresources .z-west-body .z-tree-header {
+.resources-load .z-west-body .z-tree-header ,
+.limiting-resources .z-west-body .z-tree-header {
     width: 100% !important;
 }
 
 .z-tab-accordion-hm, .z-tab-accordion-hr, .z-tab-accordion-hl {
-    -moz-background-clip:border;
-    -moz-background-inline-policy:continuous;
-    -moz-background-origin:padding;
+    -moz-background-clip: border;
+    -moz-background-inline-policy: continuous;
+    -moz-background-origin: padding;
     background: transparent url(../img/borderlayout-hm.png) repeat-x scroll 0 0;
 }
 
@@ -1212,7 +1274,7 @@ tr.z-treerow-over input {
     min-height:14px;
 }
 
-.allocation-criterion-selector .z-treecell-cnt {
+.allocation-criterion-selector .z-treecell-content {
     line-height: inherit;
 }
 
@@ -1241,11 +1303,19 @@ tr.z-treerow-over input {
     background-color: transparent;
 }
 
-.submenu .z-menu-popup-cnt .z-menu-item-over .z-menu-item-img {
+.submenu .z-menupopup-content .z-menuitem-content:hover .z-menuitem-image {
     background-image: url(../img/ico_submenu.png);
 }
 
-.advancedallocationlayout .global-action.z-button {
+.z-menupopup .z-menu-image, .z-menupopup .z-menuitem-image {
+    min-width: 14px;
+    max-width: 14px;
+    min-height: 16px;
+    margin-right: 11px;
+    margin-left: 3px;
+}
+
+.advanced-allocation-layout .global-action.z-button {
     margin-top: 1px;
 }
 
@@ -1257,7 +1327,7 @@ tr.z-treerow-over input {
     color: #DDDDDD;
 }
 
-/* for horizontal scrolling */
+/* For horizontal scrolling */
 .timeTrackedTableWithLeftPane .z-grid-body table {
     position:relative;
 }
@@ -1265,25 +1335,26 @@ tr.z-treerow-over input {
     overflow: visible;
 }
 
-.advancedallocationlayout #timeTracker .z-vbox {
+.advanced-allocation-layout #timeTracker .z-vbox {
     position:relative;
 }
 
-.z-button-disd {
-    opacity:0.3;
-}
-
-.advancedallocationlayout #timeTracker {
+.advanced-allocation-layout #timeTracker {
     background-color: #CDE6F5;
 }
 
-/* Resource allocation*/
+/* Resource allocation */
 .allocation-not-satisfied .resource-allocation tr.z-grid-odd td.z-row-inner, .allocation-not-satisfied tr.z-grid-odd {
     background-color: #EECCCC;
 }
 
+.resource-allocation-checkbox input {
+    margin-bottom: -1px;
+}
+
 .allocation-not-satisfied td.z-row-inner {
-    background-color: #EECCCC;
+    /* Important rule will overlap rule for z-row:hover */
+    background-color: #EECCCC !important;
 }
 
 .assignedresources .allocation-not-satisfied td.z-row-inner {
@@ -1304,11 +1375,11 @@ tr.z-treerow-over input {
 
 /* Advanced allocation */
 
-.advancedallocationlayout #timeTrackedTableWithLeftPane div.z-grid {
+.advanced-allocation-layout #timeTrackedTableWithLeftPane div.z-grid {
     overflow:auto;
 }
 
-.advancedallocationlayout .timetrackergap {
+.advanced-allocation-layout .timetrackergap {
     overflow: visible;
 }
 
@@ -1327,7 +1398,7 @@ tr.z-treerow-over input {
     text-decoration: underline;
 }
 
-.clickable-rows tr.z-row:hover .z-row-cnt {
+.clickable-rows tr.z-row:hover .z-row-content {
     color: #000000;
 }
 
@@ -1335,7 +1406,7 @@ tr.z-tree-row-seld td.z-row-inner {
     background-color: #2A83B4
 }
 
-tr.z-tree-row-seld .z-row-cnt {
+tr.z-tree-row-seld .z-row-content {
     color: #FFFFFF;
 }
 
@@ -1366,6 +1437,10 @@ tr.z-tree-row-seld .z-row-cnt {
 
 .current-queue-information .z-grid-body {
     overflow: hidden;
+}
+
+.current-queue-information {
+    margin: 5px;
 }
 
 .z-fieldset legend {
@@ -1412,6 +1487,7 @@ tr.z-tree-row-seld .z-row-cnt {
 
 
 .filtering-area {
+    height: 30px;
     white-space: nowrap;
 }
 
@@ -1419,18 +1495,21 @@ tr.z-tree-row-seld .z-row-cnt {
     overflow: visible;
 }
 
-.filter-more-options .z-groupbox-cnt {
-    width: 600px;
+.filter-more-options .z-groupbox-content {
+    width: 612px;
     left: -492px;
     position: relative;
     background-color: #F0FAFF;
 }
-.filter-more-options .z-groupbox-body .z-groupbox-cnt {
+.filter-more-options .z-groupbox-body .z-groupbox-content {
     border-top: solid 1px #B2CCD9 !important;
 }
 
 .filter-more-options .z-groupbox-header {
     margin-top: 0;
+    min-height: 24px;
+    height: 24px;
+    border-radius: 4px;
 }
 .filter-more-options .z-groupbox-bl {
     display: none;
@@ -1444,7 +1523,7 @@ tr.z-tree-row-seld .z-row-cnt {
     padding-bottom: 1px;
 }
 
-.filter-more-options .z-caption .z-caption-l,
+.filter-more-options .z-caption .z-caption-content,
 .filter-more-options .z-caption .z-caption-r {
     font-size:11px;
     padding-top: 2px;
@@ -1485,13 +1564,13 @@ tr.z-tree-row-seld .z-row-cnt {
     border: solid 1px black;
 }
 
-/* Expand vertical boxes for non-ffox browsers */
+/* Expand vertical boxes for non-FireFox browsers */
 .z-vbox {
     width:100%;
 }
 
 .earned-parameter-column .z-label,
-.earned-parameter-column .z-checkbox-cnt {
+.earned-parameter-column .z-checkbox-content {
     font-size: 10px;
 }
 .earned-parameter-column {
@@ -1518,6 +1597,7 @@ tr.z-tree-row-seld .z-row-cnt {
 }
 
 .progress-types.z-combobox input {
+    display: none;
     font-size: 0;
 }
 
@@ -1526,26 +1606,27 @@ tr.z-tree-row-seld .z-row-cnt {
     left: -6px;
 }
 
-.progress-types.z-combobox .z-combobox-btn {
-    background-image: url(../img/small-combo-arrow.png);
+.progress-types.z-combobox .z-combobox-button {
+    background: transparent;
     border: 0;
+    box-shadow: none;
 }
 
-.advancedallocationlayout .second_level_ td {
+.advanced-allocation-layout .second_level_ td {
     border-right: solid 1px #ABC6DE;
     border-bottom: solid 1px #ABC6DE;
 }
 
-.advancedallocationlayout .second_level_ th {
+.advanced-allocation-layout .second_level_ th {
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
 }
 
-.advancedallocationlayout div.z-grid {
+.advanced-allocation-layout div.z-grid {
     border-top: 0;
 }
 
-.advancedallocationlayout .timeTrackedTableWithLeftPane .z-grid-body .z-row-inner {
+.advanced-allocation-layout .timeTrackedTableWithLeftPane .z-grid-body .z-row-inner {
     background-color: #F2F2F2;
     cursor: default;
 }
@@ -1585,24 +1666,24 @@ tr.z-tree-row-seld .z-row-cnt {
     overflow: visible !important;
 }
 
-input.z-spinner-text-disd,
-input.z-datebox-text-disd {
+input.z-spinner-text-disd {
     color: #000000 !important;
 }
-.z-calendar .z-calendar-calmon td.z-calendar-seld,
-.z-calendar .z-calendar-calday td.z-calendar-seld {
+.z-calendar td.z-calendar-selected,
+.z-calendar .z-calendar-body td.z-calendar-selected {
     padding: 0;
 }
 
-.z-calendar .z-outside {
+.z-calendar .z-calendar-outside {
     color: #CCC;
 }
 
-.z-calendar-calday td.z-calendar-seld {
+
+td.z-calendar-selected {
     font-weight: bold;
 }
 
-.add-resources-or-criteria span {
+.add-resources-or-criteria div {
     white-space: nowrap;
 }
 
@@ -1756,11 +1837,11 @@ input.z-datebox-text-disd {
     cursor: default;
 }
 
-.assignedresources .details div.z-column-cnt {
+.assignedresources .details div.z-column-content {
     font-weight: normal;
 }
 
-.assignedresources .z-auxheader-cnt  {
+.assignedresources .z-auxheader-content  {
     font-weight: bold;
 }
 
@@ -1770,6 +1851,7 @@ input.z-datebox-text-disd {
 }
 
 .timeplot-container {
+    height: 170px !important;
     margin-left: 8px;
 }
 
@@ -1803,7 +1885,6 @@ input.z-datebox-text-disd {
 }
 
 .day-details {
-    width: 165px;
     margin: 5px;
 }
 
@@ -1841,7 +1922,7 @@ select {
     font-size:12px;
 }
 
-.z-separator-ver-bar {
+.z-separator-vertical-bar {
     height: 22px;
     width: 0;
     border-right: 1px solid #9ECAD8;
@@ -1870,11 +1951,9 @@ select {
     font-size:11px;
 }
 
-.scheduling-graphics {
-    width: auto !important;
-}
 
-.scheduling-graphics .z-tabs-ver-space {
+
+.scheduling-graphics .z-tabs-space {
     width: 0;
     border: 0;
 }
@@ -1894,11 +1973,11 @@ select {
     width: 250px;
 }
 
-.communication-not-reviewed div.z-row-cnt .z-label {
+.communication-not-reviewed div.z-row-content .z-label {
     font-weight: bold;
 }
 
-.current-delivery-date div.z-row-cnt .z-label {
+.current-delivery-date div.z-row-content .z-label {
     font-weight: bold;
 }
 
@@ -1907,7 +1986,7 @@ select {
     color: #0F3B82;
 }
 
-.z-menu-popup a:focus {
+.z-menupopup a:focus {
     text-decoration: none !important;
 }
 
@@ -1947,4 +2026,328 @@ select {
     background: #EA0024 !important;
 }
 
+.icono {
+    margin: -8px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border: 1px solid transparent !important;
+}
 
+.icono:hover {
+    background-image: none !important;
+}
+
+.icono:focus {
+    -webkit-box-shadow: none !important;
+    box-shadow: none !important;
+    background: none;
+}
+
+/* Made for create buttons, because default ZK css is not work correctly for create button */
+.add-button {
+    background-color: #E4F3D9;
+    background-image: none !important;
+}
+
+.add-button:hover {
+    background: none;
+    background-color: #C3EAAF;
+}
+
+.add-button:focus {
+    background: none;
+    background-color: #C3EAAF;
+}
+
+.add-button:disabled {
+    background: none;
+    background-color: #C3EAAF !important;
+}
+
+.z-center {
+    border: 1px solid #9ECAD8;
+}
+
+.z-radio{
+    padding: 3px;
+}
+
+.z-label {
+    padding-left: 4px;
+}
+
+/*
+ Made for grid rows.
+ It makes possible to define on hover background of rows.
+ If row is pair then background equals grey.
+ Else if row is odd then background equals white.
+ So, it removes default ZK hover effect for grid.
+*/
+.z-row:hover:nth-child(odd)>.z-row-inner, .z-row:hover>.z-cell {
+    background: none;
+}
+
+.z-row:hover:nth-child(even)>.z-row-inner, .z-row:hover>.z-cell {
+    background:#F0FBFF;
+}
+
+.z-row:hover:nth-child(odd)>.z-row-inner .z-row-content,
+.z-row:hover:nth-child(even)>.z-row-inner .z-row-content {
+    color: #00547a;
+}
+
+.z-row .z-row-inner, .z-row .z-cell {
+    border: none;
+    border-right: 1px solid rgb(204, 204, 204);
+    border-bottom: 1px solid rgb(207, 207, 207);
+}
+
+.z-row-content {
+    margin: 5px;
+}
+
+/*
+  Made for edit email template page text area.
+  If it will break something, add class for text area and remove this restriction.
+*/
+textarea {
+    resize: none;
+}
+
+.z-column {
+    border: none;
+    border-right: 1px solid rgb(207, 207, 207);
+}
+
+/* Synchronization window ( Job Scheduling ) */
+.job-scheduling-manual-header .z-window-header {
+    padding-left: 6px;
+    color: white;
+    border-radius: 5px 5px 0 0;
+}
+
+.z-window-header-move {
+    padding-left: 6px;
+}
+
+.hour-cost-button {
+    padding-left: 10px;
+    padding-top: 10px;
+}
+
+.hour-cost-grid {
+    margin: 0 10px 10px 10px;
+}
+
+.more-options-label {
+    top: -4px !important;
+    padding-left: 6px !important;
+}
+
+.z-treerow.z-treerow-selected.z-treerow-focus:hover > .z-treecell > .z-treecell-content,
+.z-treerow.z-treerow-selected:hover > .z-treecell > .z-treecell-content,
+.z-treerow.z-treerow-selected.z-treerow-focus > .z-treecell > .z-treecell-content {
+    color: black;
+}
+
+.completely-scheduled.z-treecell {
+    min-width: 140px;
+}
+
+.depth_1.z-treecell {
+    min-width: 1152px;
+}
+
+.orderTree.z-dottree > .z-dottree-body > table > .z-treechildren > .z-treerow > td:nth-child(4) {
+    min-width: 50px;
+}
+
+/* Correct border line for auxheader(grid) in edit task */
+.z-auxhead .z-auxheader {
+    border-right: 1px solid rgb(204, 204, 204);
+    border-left: none;
+}
+
+/* Rewrite width for auto generate table */
+.normalResourceAllocation > div > table {
+    width: 100% !important;
+}
+
+/* Doesn't show tabpanel, because it isn't necessary */
+.tabNormalAllocation > .z-tabpanel > .z-tab {
+    display: none;
+}
+
+.z-datebox-input {
+    color: #000000 !important;
+}
+
+.scheduling-graphics .z-tabpanels .z-tabpanel {
+    padding: 0 !important;
+}
+
+.scheduling-graphics .z-south-header {
+    height: 23px;
+    padding-top: 0;
+}
+
+/* It needs for correctly show tree item in project planning */
+.allocationTreeCol > div > table > tbody > tr > td > .z-treecell-content > span.z-dottree-line {
+    display: inline-block;
+}
+
+.z-button[disabled] {
+    background: none;
+    opacity: 0.3;
+}
+
+.queue-element-information {
+    margin: 5px;
+}
+
+.z-textbox:focus, .z-decimalbox:focus, .z-intbox:focus, .z-longbox:focus, .z-doublebox:focus {
+    border: 1px solid #90BCE6 !important;
+}
+
+.margin-border {
+    margin: 5px;
+}
+
+.orderTree button.icono {
+    padding-right: 0;
+    padding-left: 0;
+    margin-left: 2px;
+}
+
+.timetrackergap .z-column-content {
+    top: -7px;
+}
+
+.timetrackergap .z-grid {
+    height: 16px;
+}
+
+/* For correct display button icon when it clicked and unclicked */
+.planner-command:focus {
+    background-image: none;
+    box-shadow: none;
+}
+
+.planner-command.clicked.z-button,
+.planner-command.clicked.z-button:focus {
+    background-color: #E6F2F9; /* blue (active background)*/
+    border-top: 1px solid #006699;
+    border-left: 1px solid #006699;
+    padding: 2px;
+}
+
+/* It needs for correct work (correct width) collapse component in Project Planning and Project Scheduling */
+.scroll-collapse {
+    width: 99%;
+}
+
+.report-margin {
+    margin: 10px 0 10px 0;
+}
+
+.bandbox-margin {
+    margin-left: 5px;
+}
+
+.grid-margin {
+    margin: 0 0 5px 5px;
+}
+
+.hbox-margin {
+    margin: 5px 0 0 5px;
+}
+
+/* This style for buttons when you want to delete something */
+.z-messagebox-button,
+.z-messagebox-btn {
+    background-color: #E4F3D9;
+    background-image: none !important;
+}
+
+.z-messagebox-button:hover,
+.z-messagebox-btn:hover {
+    background: #C3EAAF none;
+}
+
+.z-messagebox-button:focus,
+.z-messagebox-btn:focus {
+    background: #C3EAAF none;
+}
+
+.z-messagebox-button:disabled,
+.z-messagebox-btn:disabled {
+    background: none;
+    background-color: #C3EAAF !important;
+}
+
+.label-middle td tr td {
+    vertical-align: middle;
+}
+
+.label-middle td tr td > span {
+    font-size: 12px;
+}
+
+.z-tree-line + button {
+    height: 16px;
+}
+
+.decimal-max-value {
+    width: 85px;
+}
+
+.checkbox-margin > input {
+    margin-bottom: -2px;
+}
+
+/* It needs for nice view timetracker in sapphire theme, because native background is looked very awful */
+.z-grid-header.timetracker-secondlevel {
+    background: #ffffff !important;
+}
+
+.z-treerow:hover > .z-treecell,
+.z-listitem:hover > .z-listcell {
+    background: #Dae7f6;
+}
+
+.z-treerow:hover > .z-treecell > .z-treecell-content,
+.z-listitem:hover > .z-listcell > .z-listcell-content,
+.z-treerow.z-treerow-selected > .z-treecell > .z-treecell-content,
+.z-treerow.z-treerow-selected.z-treerow-focus > .z-treecell > .z-treecell-content,
+.z-listitem.z-listitem-selected > .z-listcell > .z-listcell-content,
+.z-listitem.z-listitem-selected.z-listitem-focus > .z-listcell > .z-listcell-content {
+    color: #00547a;
+}
+
+.z-comboitem-selected,
+.z-comboitem-selected:hover {
+    background: #97BAC9;
+}
+
+.z-comboitem-selected .z-comboitem-text {
+    text-shadow: none;
+}
+
+.padding-bottom-queue {
+    padding-bottom: 6px;
+}
+
+.more-options-caption div{
+    position: absolute;
+    top: 28%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.remove-detailrow-background td,tr{
+    background: none !important;
+}
+
+.expenses-sheet-code-wide-table table{
+    width: 60%;
+}

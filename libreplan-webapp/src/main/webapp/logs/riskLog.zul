@@ -24,7 +24,7 @@
 <?component name="edit" inline="true" macroURI="_editRiskLog.zul"?>
 
 <zk>
-    <window self="@{define(content)}" id="riskLogWindow" apply="${org.libreplan.web.logs.riskLogCRUDController}" >
+    <window self="@{define(content)}" id="riskLogWindow" apply="org.libreplan.web.logs.RiskLogCRUDController" >
         <vbox id="messagesContainer" />
         <list id="listWindow" />
         <edit id="editWindow" />

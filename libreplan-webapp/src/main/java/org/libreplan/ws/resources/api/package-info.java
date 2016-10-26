@@ -26,7 +26,8 @@
  */
 @javax.xml.bind.annotation.XmlSchema(
     elementFormDefault=javax.xml.bind.annotation.XmlNsForm.QUALIFIED,
-    namespace=WSCommonGlobalNames.REST_NAMESPACE
-)
+    namespace=WSCommonGlobalNames.REST_NAMESPACE)
+
 package org.libreplan.ws.resources.api;
+
 import org.libreplan.ws.common.api.WSCommonGlobalNames;

@@ -20,6 +20,7 @@
 -->
 
 <?page title="${i18n:_('LibrePlan: Page not found')}" ?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/libreplan.css"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/libreplan_zk.css"?>
@@ -27,15 +28,14 @@
 <zk xmlns:n="http://www.zkoss.org/2005/zk/native">
 
     <zscript>
-    <![CDATA[
-        contextPath = Executions.getCurrent().getContextPath();
-    ]]>
+        <![CDATA[
+            contextPath = Executions.getCurrent().getContextPath();
+        ]]>
     </zscript>
 
     <window self="@{define(content)}" >
 
-        <vbox apply="org.libreplan.web.error.PageForErrorOnEvent"
-            sclass="errorbox">
+        <vbox apply="org.libreplan.web.error.PageForErrorOnEvent" sclass="errorbox" width="96%">
 
             <label value="${i18n:_('The page that you are requesting does not exist.')}" />
 
@@ -50,6 +50,16 @@
 
             <label value="${i18n:_('Sorry for the inconvenience.')}" />
 
+            <vbox visible="@{pageErrorController.VisibleOnHelpPage}">
+
+                <separator height="5px"/>
+
+                <label value="Help/Info pages are not generated!"/>
+
+                <label value="If you want to see help/info page then:"/>
+
+                <label value="Open file HACKING.rst in project directory and read Part 'LibrePlan documentation generation', how to generate help/info pages."/>
+            </vbox>
         </vbox>
     </window>
 </zk>

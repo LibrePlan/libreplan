@@ -39,7 +39,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 @OnConcurrentModification(goToPage = "/subcontract/subcontractorCommunication.zul")
-public class SubcontractorCommunicationModel implements ISubcontractorCommunicationModel{
+public class SubcontractorCommunicationModel implements ISubcontractorCommunicationModel {
 
     @Autowired
     private ISubcontractorCommunicationDAO subcontractorCommunicationDAO;
@@ -51,13 +51,13 @@ public class SubcontractorCommunicationModel implements ISubcontractorCommunicat
 
     @Override
     @Transactional
-    public void confirmSave(SubcontractorCommunication subcontractorCommunication){
+    public void confirmSave(SubcontractorCommunication subcontractorCommunication) {
         subcontractorCommunicationDAO.save(subcontractorCommunication);
     }
 
     @Override
     @Transactional
-    public List<SubcontractorCommunication> getSubcontractorAllCommunications(){
+    public List<SubcontractorCommunication> getSubcontractorAllCommunications() {
         List<SubcontractorCommunication> list = subcontractorCommunicationDAO.getAll();
         forceLoadAssociatedData(list);
         return list;
@@ -65,13 +65,13 @@ public class SubcontractorCommunicationModel implements ISubcontractorCommunicat
 
     @Override
     @Transactional
-    public List<SubcontractorCommunication> getSubcontractorCommunicationWithoutReviewed(){
+    public List<SubcontractorCommunication> getSubcontractorCommunicationWithoutReviewed() {
         List<SubcontractorCommunication> list = subcontractorCommunicationDAO.getAllNotReviewed();
         forceLoadAssociatedData(list);
         return list;
     }
 
-    private void forceLoadAssociatedData(List<SubcontractorCommunication> subcontractorCommunicationList){
+    private void forceLoadAssociatedData(List<SubcontractorCommunication> subcontractorCommunicationList) {
         if (subcontractorCommunicationList != null) {
             for (SubcontractorCommunication subcontractorCommunication : subcontractorCommunicationList) {
                 subcontractorCommunication.getSubcontractedTaskData().getExternalCompany().getName();
@@ -82,7 +82,9 @@ public class SubcontractorCommunicationModel implements ISubcontractorCommunicat
         }
     }
 
-    private void forceLoadAssociatedDataValue(List<SubcontractorCommunicationValue> subcontractorCommunicationValueList){
+    private void forceLoadAssociatedDataValue(
+            List<SubcontractorCommunicationValue> subcontractorCommunicationValueList) {
+
         if (subcontractorCommunicationValueList != null) {
             for (SubcontractorCommunicationValue value : subcontractorCommunicationValueList) {
                 value.getDate();
@@ -94,8 +96,8 @@ public class SubcontractorCommunicationModel implements ISubcontractorCommunicat
     @Transactional(readOnly = true)
     public String getOrderCode(SubcontractedTaskData subcontractedTaskData) {
         Task task = subcontractedTaskData.getTask();
-        OrderElement orderElement = orderDAO.loadOrderAvoidingProxyFor(task
-                .getOrderElement());
+        OrderElement orderElement = orderDAO.loadOrderAvoidingProxyFor(task.getOrderElement());
+
         return orderElement.getOrder().getCode();
     }
 
@@ -103,8 +105,8 @@ public class SubcontractorCommunicationModel implements ISubcontractorCommunicat
     @Transactional(readOnly = true)
     public String getOrderName(SubcontractedTaskData subcontractedTaskData) {
         Task task = subcontractedTaskData.getTask();
-        OrderElement orderElement = orderDAO.loadOrderAvoidingProxyFor(task
-                .getOrderElement());
+        OrderElement orderElement = orderDAO.loadOrderAvoidingProxyFor(task.getOrderElement());
+
         return orderElement.getOrder().getName();
     }
 

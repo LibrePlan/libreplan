@@ -50,11 +50,11 @@ public class OrdersTabCreator {
     private final String PROJECT_DETAILS = _("Project Details");
 
     public static ITab create(Mode mode,
-            OrderCRUDController orderCRUDController, Component breadcrumbs,
-            IOrderPlanningGate orderPlanningGate,
-            Map<String, String[]> parameters) {
+                              OrderCRUDController orderCRUDController, Component breadcrumbs,
+                              IOrderPlanningGate orderPlanningGate,
+                              Map<String, String[]> parameters) {
         return new OrdersTabCreator(mode, orderCRUDController, breadcrumbs,
-                orderPlanningGate, parameters)
+                orderPlanningGate)
                 .build();
     }
 
@@ -67,12 +67,12 @@ public class OrdersTabCreator {
             if (result != null) {
                 return result;
             }
-            Map<String, Object> args = new HashMap<String, Object>();
+            Map<String, Object> args = new HashMap<>();
             args.put("orderController", setupOrderCrudController());
-            result = Executions.createComponents("/orders/_ordersTab.zul",
-                    parent, args);
+            result = Executions.createComponents("/orders/_ordersTab.zul", parent, args);
             Util.createBindingsFor(result);
             Util.reloadBindings(ReloadStrategy.ONE_PER_REQUEST, result);
+
             return result;
         }
 
@@ -87,9 +87,8 @@ public class OrdersTabCreator {
     private final IOrderPlanningGate orderPlanningGate;
 
     private OrdersTabCreator(Mode mode,
-            OrderCRUDController orderCRUDController, Component breadcrumbs,
-            IOrderPlanningGate orderPlanningGate,
-            Map<String, String[]> parameters) {
+                             OrderCRUDController orderCRUDController, Component breadcrumbs,
+                             IOrderPlanningGate orderPlanningGate) {
         this.mode = mode;
         this.orderCRUDController = orderCRUDController;
         this.breadcrumbs = breadcrumbs;
@@ -107,8 +106,7 @@ public class OrdersTabCreator {
                 ordersTabCreator) {
             @Override
             protected void beforeShowAction() {
-                if (!SecurityUtils
-                        .isSuperuserOrRolePlanningOrHasAnyAuthorization()) {
+                if (!SecurityUtils.isSuperuserOrRolePlanningOrHasAnyAuthorization()) {
                     Util.sendForbiddenStatusCodeInHttpServletResponse();
                 }
             }
@@ -163,12 +161,12 @@ public class OrdersTabCreator {
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(PROJECT_DETAILS));
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
+
                 if (mode.isOf(ModeType.ORDER)) {
                     orderCRUDController.showOrderElementFilter();
                     orderCRUDController.showCreateButtons(false);
                     orderCRUDController.initEdit(mode.getOrder());
-                    breadcrumbs
-                            .appendChild(new Label(mode.getOrder().getName()));
+                    breadcrumbs.appendChild(new Label(mode.getOrder().getName()));
                 }
 
             }

@@ -76,7 +76,9 @@ public class WorkReport extends IntegrationEntity implements IWorkReportsElement
     /**
      * Constructor for hibernate. Do not use!
      */
-    public WorkReport() {}
+    public WorkReport() {
+
+    }
 
     private WorkReport(WorkReportType workReportType) {
         this.setWorkReportType(workReportType);
@@ -257,9 +259,9 @@ public class WorkReport extends IntegrationEntity implements IWorkReportsElement
             return false;
         }
 
-        for (WorkReportLabelTypeAssignment typeAssigment : this.workReportType.getHeadingLabels()) {
+        for (WorkReportLabelTypeAssignment typeAssignment : this.workReportType.getHeadingLabels()) {
             try {
-                getLabelByType(typeAssigment.getLabelType());
+                getLabelByType(typeAssignment.getLabelType());
             } catch (InstanceNotFoundException e) {
                 return false;
             }
@@ -350,8 +352,8 @@ public class WorkReport extends IntegrationEntity implements IWorkReportsElement
     private void assignItsLabels(WorkReportType workReportType){
         if (workReportType != null) {
             labels.clear();
-            for (WorkReportLabelTypeAssignment labelTypeAssigment : workReportType.getHeadingLabels()) {
-                labels.add(labelTypeAssigment.getDefaultLabel());
+            for (WorkReportLabelTypeAssignment labelTypeAssignment : workReportType.getHeadingLabels()) {
+                labels.add(labelTypeAssignment.getDefaultLabel());
             }
         }
     }

@@ -20,10 +20,6 @@
  */
 package org.libreplan.web.templates.advances;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import org.libreplan.business.advance.entities.AdvanceAssignmentTemplate;
 import org.libreplan.business.templates.entities.OrderElementTemplate;
 import org.libreplan.web.templates.IOrderTemplatesModel;
@@ -36,9 +32,12 @@ import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
- *
  */
 public class AdvancesAssignmentComponent extends HtmlMacroComponent {
 
@@ -47,15 +46,15 @@ public class AdvancesAssignmentComponent extends HtmlMacroComponent {
     private ListitemRenderer advancesRenderer = new ListitemRenderer() {
 
         @Override
-        public void render(Listitem item, Object data) {
+        public void render(Listitem item, Object data, int i) {
             AdvanceAssignmentTemplate assignment = (AdvanceAssignmentTemplate) data;
             append(item, createTypeLabel(assignment));
             append(item, createMaxValueLabel(assignment));
             append(item, createReportGlobalCheckbox(assignment));
-            append(item, createOperations(assignment));
+            append(item, createOperations());
         }
 
-        private Hbox createOperations(AdvanceAssignmentTemplate assignment) {
+        private Hbox createOperations() {
             return new Hbox();
         }
 
@@ -63,12 +62,14 @@ public class AdvancesAssignmentComponent extends HtmlMacroComponent {
             Listcell cell = new Listcell();
             cell.appendChild(component);
             item.appendChild(cell);
+
             return component;
         }
 
         private Label createTypeLabel(AdvanceAssignmentTemplate assignment) {
             Label result = new Label();
             result.setValue(assignment.getAdvanceType().getUnitName());
+
             return result;
         }
 
@@ -76,22 +77,21 @@ public class AdvancesAssignmentComponent extends HtmlMacroComponent {
             return new Label(assignment.getMaxValue().toPlainString());
         }
 
-        private Checkbox createReportGlobalCheckbox(
-                AdvanceAssignmentTemplate assignment) {
+        private Checkbox createReportGlobalCheckbox(AdvanceAssignmentTemplate assignment) {
             Checkbox result = new Checkbox();
             result.setChecked(assignment.isReportGlobalAdvance());
             result.setDisabled(true);
+
             return result;
         }
 
     };
 
     public void useModel(IOrderTemplatesModel model) {
-        useModel(model, model.getTemplate());
+        useModel(model.getTemplate());
     }
 
-    public void useModel(IOrderTemplatesModel model,
-            OrderElementTemplate template) {
+    public void useModel(OrderElementTemplate template) {
         this.template = template;
     }
 
@@ -99,8 +99,7 @@ public class AdvancesAssignmentComponent extends HtmlMacroComponent {
         if (template == null) {
             return Collections.emptyList();
         }
-        return new ArrayList<AdvanceAssignmentTemplate>(template
-                .getAdvanceAssignmentTemplates());
+        return new ArrayList<>(template.getAdvanceAssignmentTemplates());
     }
 
     public ListitemRenderer getAdvancesRenderer() {

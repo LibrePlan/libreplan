@@ -19,7 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.libreplan.web.planner.allocation.streches;
+package org.libreplan.web.planner.allocation.stretches;
 
 import static org.libreplan.web.I18nHelper._;
 
@@ -50,12 +50,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.util.Locales;
 
 /**
+ * Model for UI operations related to {@link StretchesFunction} configuration.
+ *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  * @author Diego Pino García <dpino@igalia.com>
- *
- *         Model for UI operations related to {@link StretchesFunction}
- *         configuration.
- *
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -142,10 +140,9 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
     }
 
     /**
-     * Returns an empty stretch plus the stretches from stretchesFunction and
-     * the consolidated stretch if any
+     * Returns an empty stretch plus the stretches from stretchesFunction and the consolidated stretch if any.
      *
-     * @return
+     * @return {@link List<Stretch>}
      */
     private List<Stretch> allStretches() {
         return stretchesFunction.getStretchesPlusConsolidated();
@@ -183,21 +180,18 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
                 }
             }
             if (originalStretchesFunction != null) {
-                originalStretchesFunction
-                        .resetToStrechesFrom(stretchesFunction);
-                originalStretchesFunction.changeTypeTo(stretchesFunction
-                                .getDesiredType());
+                originalStretchesFunction.resetToStretchesFrom(stretchesFunction);
+                originalStretchesFunction.changeTypeTo(stretchesFunction.getDesiredType());
                 stretchesFunction = originalStretchesFunction;
             }
         }
     }
 
     public static boolean areValidForInterpolation(List<Stretch> stretches) {
-        return atLeastThreeStreches(stretches)
-                && areStretchesSortedAndWithIncrements(stretches);
+        return atLeastThreeStretches(stretches) && areStretchesSortedAndWithIncrements(stretches);
     }
 
-    private static boolean atLeastThreeStreches(List<Stretch> stretches) {
+    private static boolean atLeastThreeStretches(List<Stretch> stretches) {
         return stretches.size() >= 3;
     }
 

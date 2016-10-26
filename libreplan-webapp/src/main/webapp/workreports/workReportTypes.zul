@@ -29,13 +29,12 @@
 <?component name="list" inline="true" macroURI="_listWorkReportTypes.zul"?>
 <?component name="edition" inline="true" macroURI="_editWorkReportType.zul"?>
 <zk>
-    <window self="@{define(content)}"
-        apply="org.libreplan.web.workreports.WorkReportTypeCRUDController">
-        <vbox id="messagesContainer"></vbox>
+    <window self="@{define(content)}" apply="org.libreplan.web.workreports.WorkReportTypeCRUDController">
+        <vbox id="messagesContainer"/>
         <list top_id="listWindow" />
         <edition top_id="editWindow"
-            save_button_label="${i18n:_('Save')}"
-            saveAndContinue_button_label="${i18n:_('Save &amp; Continue')}"
-            cancel_button_label="${i18n:_('Cancel')}" />
+                 save_button_label="${i18n:_('Save')}"
+                 saveAndContinue_button_label="${i18n:_('Save &amp; Continue')}"
+                 cancel_button_label="${i18n:_('Cancel')}" />
     </window>
 </zk>

@@ -66,7 +66,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Tests for {@link SubcontractorCommunication}
+ * Tests for {@link SubcontractorCommunication}.
  *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
@@ -215,32 +215,32 @@ public class SubcontractorCommunicationDAOTest {
         subcontractorCommunicationDAO.save(subcontractorCommunication);
 
         assertTrue(subcontractorCommunication.getId() != null);
-        Long idSubcontratecTaskData = subcontractorCommunication.getSubcontractedTaskData().getId();
+        Long idSubcontractedTaskData = subcontractorCommunication.getSubcontractedTaskData().getId();
         Long idCommunication = subcontractorCommunication.getId();
 
         subcontractorCommunicationDAO.remove(subcontractorCommunication.getId());
-        try{
+        try {
             subcontractorCommunicationDAO.findExistingEntity(idCommunication);
             fail("error");
-        }catch(RuntimeException e){
+        } catch(RuntimeException ignored) {
             // Ok
         }
-        try{
-            subcontractedTaskDataDAO.findExistingEntity(idSubcontratecTaskData);
-        }catch(RuntimeException e){
+        try {
+            subcontractedTaskDataDAO.findExistingEntity(idSubcontractedTaskData);
+        } catch(RuntimeException e) {
             fail("error");
         }
     }
 
     @Test
     @Transactional
-    public void testSaveSubcontractorCommunicationWithoutSubcontratedTaskData() throws InstanceNotFoundException {
+    public void testSaveSubcontractorCommunicationWithoutSubcontractedTaskData() throws InstanceNotFoundException {
         SubcontractorCommunication subcontractorCommunication = createValidSubcontractorCommunication();
         subcontractorCommunication.setSubcontractedTaskData(null);
         try {
             subcontractorCommunicationDAO.save(subcontractorCommunication);
             fail("It should throw an exception");
-        } catch (ValidationException e) {
+        } catch (ValidationException ignored) {
             // Ok
         }
     }

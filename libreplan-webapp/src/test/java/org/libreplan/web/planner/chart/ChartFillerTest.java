@@ -77,20 +77,16 @@ import org.zkoss.zk.ui.Desktop;
 import javax.annotation.Resource;
 
 /**
- * Tests for {@link ChartFiller}
+ * Tests for {@link ChartFiller}.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
- * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
         BUSINESS_SPRING_CONFIG_FILE,
-
-        WEBAPP_SPRING_CONFIG_FILE,
-        WEBAPP_SPRING_CONFIG_TEST_FILE,
-
-        WEBAPP_SPRING_SECURITY_CONFIG_FILE,
-        WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE
+        WEBAPP_SPRING_CONFIG_FILE, WEBAPP_SPRING_CONFIG_TEST_FILE,
+        WEBAPP_SPRING_SECURITY_CONFIG_FILE, WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE
 })
 @Transactional
 public class ChartFillerTest {
@@ -104,12 +100,15 @@ public class ChartFillerTest {
     };
 
     private static final LocalDate START_DAY = new LocalDate(2009, 12, 1);
+
     private static final LocalDate FIRST_DAY = new LocalDate(2009, 12, 5);
+
     private static final LocalDate LAST_DAY = new LocalDate(2009, 12, 15);
+
     private static final LocalDate FINISH_DAY = new LocalDate(2009, 12, 30);
 
     private SortedMap<LocalDate, BigDecimal> givenExampleMap() {
-        SortedMap<LocalDate, BigDecimal> result = new TreeMap<LocalDate, BigDecimal>();
+        SortedMap<LocalDate, BigDecimal> result = new TreeMap<>();
 
         result.put(FIRST_DAY, new BigDecimal(100));
         result.put(LAST_DAY, new BigDecimal(150));
@@ -147,7 +146,7 @@ public class ChartFillerTest {
     private IAdHocTransactionService transactionService;
 
     @Before
-    public void loadRequiredaData() {
+    public void loadRequiredData() {
 
         IOnTransaction<Void> load = new IOnTransaction<Void>() {
 
@@ -180,7 +179,7 @@ public class ChartFillerTest {
     IConfigurationModel configurationModel;
 
     @Test
-    public void testBAC(){
+    public void testBAC() {
         createAndSaveWorker();
         createAndSaveProject();
         createAndSaveTwoTasksForProject();
@@ -190,7 +189,8 @@ public class ChartFillerTest {
         assertEquals(BAC, new BigDecimal(50));
     }
 
-    // For creating worker
+    /**  For creation of worker */
+
     @Autowired
     IWorkerModel workerModel;
 
@@ -206,7 +206,8 @@ public class ChartFillerTest {
         workerModel.save();
     }
 
-    // For creating project
+    /** For project creation */
+
     @Autowired
     IOrderModel orderModel;
 
@@ -219,7 +220,7 @@ public class ChartFillerTest {
     @Autowired
     private IConfigurationDAO configurationDAO;
 
-    private void createAndSaveProject(){
+    private void createAndSaveProject() {
         final Order project = Order.create();
         project.setDescription("Goal of project: do not be thirsty");
 
@@ -233,28 +234,19 @@ public class ChartFillerTest {
         project.setResponsible("human");
         project.setCode("code-" + UUID.randomUUID());
 
-        BaseCalendar baseCalendar = adHocTransaction.runOnReadOnlyTransaction(new IOnTransaction<BaseCalendar>() {
-            @Override
-            public BaseCalendar execute() {
-                BaseCalendar result =
-                        configurationDAO.getConfigurationWithReadOnlyTransaction().getDefaultCalendar();
+        BaseCalendar baseCalendar = adHocTransaction.runOnReadOnlyTransaction(() -> {
+            BaseCalendar result =
+                    configurationDAO.getConfigurationWithReadOnlyTransaction().getDefaultCalendar();
 
-                BaseCalendarModel.forceLoadBaseCalendar(result);
-                return result;
-            }
+            BaseCalendarModel.forceLoadBaseCalendar(result);
+            return result;
         });
 
         project.setCalendar(baseCalendar);
 
         // Create planningState
-        PlanningState planningState =
-                adHocTransaction.runOnAnotherReadOnlyTransaction(new IOnTransaction<PlanningState>() {
-
-            @Override
-            public PlanningStateCreator.PlanningState execute() {
-                return planningStateCreator.createOn(EasyMock.createNiceMock(Desktop.class), project);
-            }
-        });
+        PlanningState planningState = adHocTransaction.runOnAnotherReadOnlyTransaction(
+                () -> planningStateCreator.createOn(EasyMock.createNiceMock(Desktop.class), project));
 
         orderModel.setPlanningState(planningState);
         orderModel.save();
@@ -277,7 +269,7 @@ public class ChartFillerTest {
         orderModel.save();
     }
 
-    // For assigning resources to tasks
+    /** For assigning resources to tasks */
     @Autowired
     private IOrderEarnedValueCalculator earnedValueCalculator;
 

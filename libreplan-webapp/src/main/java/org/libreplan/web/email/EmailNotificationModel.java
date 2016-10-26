@@ -20,9 +20,7 @@
 package org.libreplan.web.email;
 
 import org.libreplan.business.common.exceptions.ValidationException;
-
 import org.libreplan.business.email.daos.IEmailNotificationDAO;
-
 import org.libreplan.business.email.entities.EmailTemplateEnum;
 import org.libreplan.business.email.entities.EmailNotification;
 
@@ -40,7 +38,7 @@ import java.util.List;
 /**
  * Model for operations related to {@link EmailNotification}.
  *
- * @author Created by Vova Perebykivskiy <vova@libreplan-enterprise.com> on 21.10.2015.
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
 
 @Service

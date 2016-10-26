@@ -27,7 +27,8 @@ import org.libreplan.web.resources.search.AllocationSelectorController;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 
 /**
- * ZK macro component for searching {@link Worker} entities
+ * ZK macro component for searching {@link Worker} entities.
+ *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 @SuppressWarnings("serial")
@@ -46,7 +47,7 @@ public abstract class AllocationSelector extends HtmlMacroComponent {
         getController().clearAll();
     }
 
-    public void addChoosen() {
+    public void addChosen() {
         getController().addTo(allocationsAdder);
     }
 

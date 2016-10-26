@@ -27,8 +27,7 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zul.impl.InputElement;
 
 /**
- * Class for checking if a component is completely valid (checks all constraints
- * within a component)
+ * Class for checking if a component is completely valid (checks all constraints within a component).
  *
  * @author Diego Pino García <dpino@igalia.com>
  * @author Manuel Rego Casasnovas <rego@igalia.com>

@@ -62,6 +62,7 @@ import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Column;
@@ -140,8 +141,8 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
     private EditTaskController editTaskController;
 
-    public void setEditTaskController(EditTaskController editTaskController) {
-        this.editTaskController = editTaskController;
+    public ResourceAllocationController(){
+        resourceAllocationModel = (IResourceAllocationModel) SpringUtil.getBean("resourceAllocationModel");
     }
 
     @Override
@@ -151,6 +152,10 @@ public class ResourceAllocationController extends GenericForwardComposer {
         allResourcesPerDay.setWidth("80px");
         initAllocationLabels();
         makeReadyInputsForCalculationTypes();
+    }
+
+    public void setEditTaskController(EditTaskController editTaskController) {
+        this.editTaskController = editTaskController;
     }
 
     private void initAllocationLabels() {
@@ -174,6 +179,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
     /**
      * Shows Resource Allocation window.
+     *
      * @param context
      * @param task
      * @param planningState
@@ -277,15 +283,13 @@ public class ResourceAllocationController extends GenericForwardComposer {
         private static String asString(ResourceEnum resourceType) {
             switch (resourceType) {
 
-            case MACHINE:
+                case MACHINE:
+                case WORKER:
+                    return _(resourceType.getDisplayName());
 
-            case WORKER:
-                return _(resourceType.getDisplayName());
-
-            default:
-                LOG.warn("no i18n for " + resourceType.name());
-
-                return resourceType.name();
+                default:
+                    LOG.warn("no i18n for " + resourceType.name());
+                    return resourceType.name();
             }
         }
 
@@ -295,20 +299,22 @@ public class ResourceAllocationController extends GenericForwardComposer {
     /**
      * Pick resources selected from {@link NewAllocationSelector} and add them to resource allocation list.
      *
-     * @param e
+     * Should be public!
+     *
+     * @param allocationSelector
      */
     public void onSelectWorkers( AllocationSelector allocationSelector) {
         try {
-            allocationSelector.addChoosen();
+            allocationSelector.addChosen();
         } finally {
             // For email notification feature
             int rowsSize = allocationRows.getCurrentRows().size();
-
-            editTaskController
-                    .getTaskPropertiesController()
-                    .getListToAdd()
-                    .add(allocationRows.getCurrentRows().get(rowsSize - 1).getAssociatedResources().get(0));
-
+            if ( rowsSize >= 1 ) {
+                editTaskController
+                        .getTaskPropertiesController()
+                        .getListToAdd()
+                        .add(allocationRows.getCurrentRows().get(rowsSize - 1).getAssociatedResources().get(0));
+            }
             editTaskController.getTaskPropertiesController().setResourcesAdded(true);
 
             tbResourceAllocation.setSelected(true);
@@ -331,7 +337,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
      * Shows the extended view of the resources allocations.
      */
     public void onCheckExtendedView() {
-        if (isExtendedView()) {
+        if ( isExtendedView() ) {
             editTaskWindow.setWidth("970px");
         } else {
             editTaskWindow.setWidth("870px");
@@ -344,13 +350,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
         return extendedViewCheckbox.isChecked();
     }
 
-    public int getColspanHours() {
-        return isExtendedView() ? 4 : 1;
-    }
-
-    public int getColspanResources() {
-        return isExtendedView() ? 3 : 1;
-    }
     /**
      * Close search worker in worker search tab.
      */
@@ -368,8 +367,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
             }
 
             @Override
-            public Component input(
-                    ResourceAllocationController resourceAllocationController) {
+            public Component input(ResourceAllocationController resourceAllocationController) {
                 return resourceAllocationController.getTaskWorkableDays();
             }
         },
@@ -381,8 +379,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
             }
 
             @Override
-            public Component input(
-                    ResourceAllocationController resourceAllocationController) {
+            public Component input(ResourceAllocationController resourceAllocationController) {
                 return resourceAllocationController.assignedEffortComponent;
             }
         },
@@ -394,8 +391,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
             }
 
             @Override
-            public Component input(
-                    ResourceAllocationController resourceAllocationController) {
+            public Component input(ResourceAllocationController resourceAllocationController) {
                 return resourceAllocationController.allResourcesPerDay;
             }
         };
@@ -410,7 +406,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
         public static CalculationTypeRadio from(CalculatedValue calculatedValue) {
             Validate.notNull(calculatedValue);
             for (CalculationTypeRadio calculationTypeRadio : CalculationTypeRadio.values()) {
-                if (calculationTypeRadio.getCalculatedValue() == calculatedValue) {
+                if ( calculationTypeRadio.getCalculatedValue() == calculatedValue) {
                     return calculationTypeRadio;
                 }
             }
@@ -479,7 +475,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
         }
 
         @Override
-        public org.zkoss.zul.api.Column toColumn() {
+        public Column toColumn() {
             return new Column(getName());
         }
 
@@ -520,7 +516,9 @@ public class ResourceAllocationController extends GenericForwardComposer {
         return resourceAllocationRenderer;
     }
 
-    // Triggered when closable button is clicked
+    /**
+     * Triggered when closable button is clicked.
+     */
     public void onClose(Event event) {
         cancel();
         event.stopPropagation();
@@ -532,7 +530,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
     }
 
     public void clear() {
-        allocationsGrid.setModel(new SimpleListModel(Collections.emptyList()));
+        allocationsGrid.setModel(new SimpleListModel<>(Collections.emptyList()));
     }
 
     /**
@@ -541,23 +539,25 @@ public class ResourceAllocationController extends GenericForwardComposer {
      */
     public boolean accept() {
         boolean mustExit = formBinder.accept();
-        if (mustExit) {
+        if ( mustExit ) {
             clear();
         }
+
         return mustExit;
     }
 
     private class ResourceAllocationRenderer implements RowRenderer {
 
         @Override
-        public void render(Row item, Object data) {
-            if (data instanceof AllocationRow) {
-                AllocationRow row = (AllocationRow) data;
+        public void render(Row item, Object o, int i) throws Exception {
+            if ( o instanceof AllocationRow ) {
+                AllocationRow row = (AllocationRow) o;
                 renderResourceAllocation(item, row);
             } else {
                 renderAggregatingRow(item);
             }
         }
+
 
         private void renderResourceAllocation(Row row, final AllocationRow data) {
             row.setValue(data);
@@ -577,12 +577,12 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
             Listbox assignmentFunctionListbox = data.getAssignmentFunctionListbox();
             append(row, assignmentFunctionListbox);
-            assignmentFunctionListbox.addEventListener(Events.ON_SELECT, event -> data.resetAssignmentFunction());
+            assignmentFunctionListbox.addEventListener(Events.ON_SELECT, arg0 -> data.resetAssignmentFunction());
 
             // On click delete button
             Button deleteButton = appendDeleteButton(row);
             deleteButton.setDisabled(isAnyManualOrTaskUpdatedFromTimesheets());
-            formBinder.setDeleteButtonFor(data, deleteButton);
+            formBinder.setDeleteButtonFor(deleteButton);
 
             deleteButton.addEventListener("onClick", event -> {
 
@@ -632,6 +632,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
         private <T extends Component> T append(Component parent, T component) {
             parent.appendChild(component);
+
             return component;
         }
     }

@@ -23,8 +23,6 @@ package org.zkoss.ganttz;
 
 import static org.zkoss.ganttz.i18n.I18nHelper._;
 
-import java.util.*;
-
 import org.apache.commons.lang3.math.Fraction;
 import org.joda.time.LocalDate;
 import org.zkoss.ganttz.adapters.IDisabilityConfiguration;
@@ -43,6 +41,16 @@ import org.zkoss.ganttz.util.MenuBuilder;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zul.Menupopup;
 import org.zkoss.zul.impl.XulElement;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.WeakHashMap;
+import java.util.HashMap;
+import java.util.Set;
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  * Component to show the list of task in the planner.

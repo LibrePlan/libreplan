@@ -23,7 +23,7 @@
     <caption id="caption" sclass="caption-title" />
     <tabbox>
         <tabs>
-            <tab label="${i18n:_('Edit')}"></tab>
+            <tab label="${i18n:_('Edit')}"/>
         </tabs>
         <tabpanels>
             <tabpanel>
@@ -36,27 +36,35 @@
                     <rows>
                         <row>
                             <label value="${i18n:_('Unit name')}" />
-                            <textbox id="unitName" value="@{controller.advanceType.unitName}" constraint="@{controller.distinctNames}" width="300px"
-                                disabled="@{controller.immutable}"
-                                onBlur="controller.updateWindowTitle()"
-                                sclass="focus-element" />
+                            <textbox id="unitName" value="@{controller.advanceType.unitName}"
+                                     constraint="@{controller.distinctNames}"
+                                     width="300px"
+                                     disabled="@{controller.immutable}"
+                                     onBlur="controller.updateWindowTitle()"
+                                     sclass="focus-element" />
                         </row>
                         <row>
                             <label value="${i18n:_('Active')}" />
                             <checkbox checked="@{controller.advanceType.active}"
-                                disabled="@{controller.immutable}" />
+                                      disabled="@{controller.immutable}" />
                         </row>
                         <row>
                             <label value="${i18n:_('Default max value')}" />
-                            <decimalbox id="defaultMaxValue" scale="2"
-                                value="@{controller.defaultMaxValue}" constraint="@{controller.greaterThanPrecision}"
-                                disabled="@{controller.percentage}" />
+                            <decimalbox id="defaultMaxValue"
+                                        scale="2"
+                                        width="300px"
+                                        value="@{controller.defaultMaxValue}"
+                                        constraint="@{controller.greaterThanPrecision}"
+                                        disabled="@{controller.percentage}" />
                         </row>
                         <row>
                             <label value="${i18n:_('Precision')}" />
-                            <decimalbox id="precision" scale="4"
-                                value = "@{controller.advanceType.unitPrecision}" constraint = "@{controller.lessThanDefaultMaxValue}"
-                                disabled="@{controller.immutable}" />
+                            <decimalbox id="precision"
+                                        scale="4"
+                                        width="300px"
+                                        value = "@{controller.advanceType.unitPrecision}"
+                                        constraint = "@{controller.lessThanDefaultMaxValue}"
+                                        disabled="@{controller.immutable}" />
                         </row>
                         <row>
                             <label value="${i18n:_('Type')}" />
@@ -64,8 +72,9 @@
                         </row>
                         <row>
                             <label value="${i18n:_('Percentage')}" />
-                            <checkbox id="percentage" checked="@{controller.percentage}"
-                                disabled="@{controller.immutable}" />
+                            <checkbox id="percentage"
+                                      checked="@{controller.percentage}"
+                                      disabled="@{controller.immutable}" />
                         </row>
                     </rows>
                 </grid>
@@ -73,15 +82,16 @@
         </tabpanels>
     </tabbox>
 
-    <button onClick="controller.saveAndExit();" autodisable="self"
-        label="${arg.save_button_label}"
-        sclass="save-button global-action"
-        disabled="@{controller.immutable}" />
+    <button onClick="controller.saveAndExit();"
+            autodisable="self"
+            label="${arg.save_button_label}"
+            sclass="save-button global-action"
+            disabled="@{controller.immutable}" />
     <button onClick="controller.saveAndContinue();"
-        label="${arg.save_and_continue_button_label}"
-        sclass="save-button global-action"
-        disabled="@{controller.immutable}" />
+            label="${arg.save_and_continue_button_label}"
+            sclass="save-button global-action"
+            disabled="@{controller.immutable}" />
     <button onClick="controller.cancelForm();"
-        label="${arg.cancel_button_label}"
-        sclass="cancel-button global-action" />
+            label="${arg.cancel_button_label}"
+            sclass="cancel-button global-action" />
 </window>

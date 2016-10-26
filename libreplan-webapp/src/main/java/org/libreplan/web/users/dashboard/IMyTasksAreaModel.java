@@ -29,7 +29,7 @@ import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.users.entities.User;
 
 /**
- * Interface for "My tasks" area model
+ * Interface for "My tasks" area model.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
@@ -37,14 +37,12 @@ public interface IMyTasksAreaModel {
 
     /**
      * Returns the list of {@link TaskElement TaskElements} assigned to the
-     * resource bound to current {@link User} through a
-     * {@link SpecificResourceAllocation}.
+     * resource bound to current {@link User} through a {@link SpecificResourceAllocation}.
      */
     List<Task> getTasks();
 
     /**
-     * Returns the {@link PersonalTimesheetsPeriodicityEnum} from
-     * {@link Configuration}.
+     * Returns the {@link PersonalTimesheetsPeriodicityEnum} from {@link Configuration}.
      */
     PersonalTimesheetsPeriodicityEnum getPersonalTimesheetsPeriodicity();
 

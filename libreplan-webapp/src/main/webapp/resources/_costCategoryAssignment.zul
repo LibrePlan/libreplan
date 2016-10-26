@@ -20,18 +20,21 @@
 -->
 
 <vbox id="${arg.id}"
-        apply="org.libreplan.web.costcategories.ResourcesCostCategoryAssignmentController"
-        width="100%">
+      apply="org.libreplan.web.costcategories.ResourcesCostCategoryAssignmentController"
+      width="100%">
+
     <panel title="${i18n:_('Cost category assignment')}" border="normal">
         <panelchildren>
+
             <hbox>
                 <button label="${i18n:_('Add new row')}"
-                    onClick="assignmentController.addCostCategory()" />
+                        sclass="add-button margin-border"
+                        onClick="assignmentController.addCostCategory()" />
             </hbox>
 
             <grid id="listResourcesCostCategoryAssignments"
-                    model="@{assignmentController.costCategoryAssignments}"
-                    rowRenderer="@{assignmentController.costCategoryAssignmentsRenderer}">
+                  model="@{assignmentController.costCategoryAssignments}"
+                  rowRenderer="@{assignmentController.costCategoryAssignmentsRenderer}">
                 <columns>
                     <column label="${i18n:_('Category name')}" align="center"/>
                     <column label="${i18n:_('Start date')}" align="center"/>
@@ -39,6 +42,7 @@
                     <column label="${i18n:_('Operations')}" width="150px" align="center"/>
                 </columns>
             </grid>
+
         </panelchildren>
     </panel>
 </vbox>

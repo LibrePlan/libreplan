@@ -24,13 +24,11 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
-import org.zkoss.zul.api.Window;
-
-import javax.swing.*;
+import org.zkoss.zul.Window;
 
 
 /**
- * Controller for Logs(issue and risk logs)
+ * Controller for Logs(issue and risk logs).
  *
  * @author Misha Gozhda <misha@libreplan-enterprise.com>
  */
@@ -38,29 +36,34 @@ import javax.swing.*;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class LogsController extends GenericForwardComposer {
 
-
     private Window issueLogWindow;
+
     private Window riskLogWindow;
+
     private Window logWindow;
 
     private IssueLogCRUDController issueLogController;
+
     private RiskLogCRUDController riskLogController;
+
     private static boolean projectNameVisibility = true;
+
     private static Order order = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        comp.setVariable("logsController", this, true);
+        comp.setAttribute("logsController", this, true);
         logWindow = (Window) comp.getFellowIfAny("logWindow");
         Util.createBindingsFor(logWindow);
         setupIssueLogController();
+        setupRiskLogController();
     }
 
     public void setupIssueLogController() {
         issueLogWindow = (Window) self.getFellowIfAny("issueLogWindow");
 
-        if (issueLogController == null) {
+        if ( issueLogController == null ) {
             issueLogController = new IssueLogCRUDController();
         }
         try {
@@ -74,7 +77,7 @@ public class LogsController extends GenericForwardComposer {
     public void setupRiskLogController() {
         riskLogWindow = (Window) self.getFellowIfAny("riskLogWindow");
 
-        if (riskLogController == null) {
+        if ( riskLogController == null ) {
             riskLogController = new RiskLogCRUDController();
         }
         try {
@@ -85,7 +88,7 @@ public class LogsController extends GenericForwardComposer {
     }
 
     public static void goToOrderMode(Order order) {
-        LogsController.projectNameVisibility =false;
+        LogsController.projectNameVisibility = false;
         LogsController.order = order;
     }
 

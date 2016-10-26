@@ -22,9 +22,12 @@
 <zk>
     <vbox>
         <hbox>
-            <label value="${i18n:_('Select criteria or resources')}" tooltiptext="${i18n:_('Select criteria set or a resource to add')}"/>
-            <bandboxMultipleSearch id="bbMultipleSearch"
-                    widthBandbox="385px" widthListbox="600px" heightBbox="15px" />
+            <label value="${i18n:_('Select criteria or resources')}"
+                   tooltiptext="${i18n:_('Select criteria set or a resource to add')}"/>
+
+            <bandboxMultipleSearch id="bbMultipleSearch" widthBandbox="385px" widthListbox="600px"
+                                   style="margin-bottom: -4px;"
+                                   heightBbox="15px"/>
         </hbox>
     </vbox>
 </zk>

@@ -24,10 +24,11 @@ package org.libreplan.web.common;
 import java.util.List;
 
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zul.impl.api.InputElement;
+import org.zkoss.zul.impl.InputElement;
 
 /**
- * Class for checking the inexistence of invalid values
+ * Class for checking the inexistence of invalid values.
+ *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public class InvalidInputsChecker {
@@ -36,25 +37,28 @@ public class InvalidInputsChecker {
     }
 
     public static boolean thereAreInvalidInputsOn(Component component) {
-        if (isInvalid(component)) {
+        if ( isInvalid(component) ) {
             return true;
         }
+
         List<Component> children = component.getChildren();
         for (Component child : children) {
-            if (thereAreInvalidInputsOn(child)) {
+            if ( thereAreInvalidInputsOn(child) ) {
                 return true;
             }
         }
+
         return false;
     }
 
     public static boolean isInvalid(Component child) {
-        if (child instanceof InputElement) {
+        if ( child instanceof InputElement ) {
             InputElement input = (InputElement) child;
-            if (!input.isValid()) {
+            if ( !input.isValid() ) {
                 return true;
             }
         }
+
         return false;
     }
 

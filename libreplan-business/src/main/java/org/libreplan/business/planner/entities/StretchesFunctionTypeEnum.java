@@ -43,31 +43,30 @@ import org.libreplan.business.workingday.EffortDuration;
 public enum StretchesFunctionTypeEnum {
 
     STRETCHES {
-
         @Override
         public void apply(ResourceAllocation<?> allocation,
-                          List<Interval> intervalsDefinedByStreches,
+                          List<Interval> intervalsDefinedByStretches,
                           LocalDate startInclusive, LocalDate endExclusive,
                           int totalHours) {
 
-            Interval.apply(allocation, intervalsDefinedByStreches, startInclusive, totalHours);
+            Interval.apply(allocation, intervalsDefinedByStretches, startInclusive, totalHours);
         }
     },
-    INTERPOLATED {
 
+    INTERPOLATED {
         @Override
         public void apply(ResourceAllocation<?> allocation,
-                          List<Interval> intervalsDefinedByStreches,
+                          List<Interval> intervalsDefinedByStretches,
                           LocalDate startInclusive, LocalDate endExclusive,
                           int totalHours) {
 
             final Task task = allocation.getTask();
 
-            double[] x = Interval.getDayPointsFor(task.getStartAsLocalDate(), intervalsDefinedByStreches);
-            assert x.length == 1 + intervalsDefinedByStreches.size();
+            double[] x = Interval.getDayPointsFor(task.getStartAsLocalDate(), intervalsDefinedByStretches);
+            assert x.length == 1 + intervalsDefinedByStretches.size();
 
-            double[] y = Interval.getHoursPointsFor(totalHours, intervalsDefinedByStreches);
-            assert y.length == 1 + intervalsDefinedByStreches.size();
+            double[] y = Interval.getHoursPointsFor(totalHours, intervalsDefinedByStretches);
+            assert y.length == 1 + intervalsDefinedByStretches.size();
 
             int[] hoursForEachDay = hoursForEachDayUsingSplines(x, y, startInclusive, endExclusive);
 
@@ -219,7 +218,7 @@ public enum StretchesFunctionTypeEnum {
     public void applyTo(ResourceAllocation<?> resourceAllocation, StretchesFunction stretchesFunction) {
 
         List<Interval> intervals = new ArrayList<>();
-        intervals.addAll(stretchesFunction.getIntervalsDefinedByStreches());
+        intervals.addAll(stretchesFunction.getIntervalsDefinedByStretches());
 
         LocalDate startInclusive = resourceAllocation.getFirstNonConsolidatedDate();
         LocalDate endExclusive = resourceAllocation.getIntraDayEndDate().asExclusiveEnd();
@@ -228,7 +227,7 @@ public enum StretchesFunctionTypeEnum {
     }
 
     protected abstract void apply(ResourceAllocation<?> allocation,
-                                  List<Interval> intervalsDefinedByStreches,
+                                  List<Interval> intervalsDefinedByStretches,
                                   LocalDate startInclusive,
                                   LocalDate endExclusive,
                                   int totalHours);

@@ -24,7 +24,7 @@
  * 3 - Create a Work Report Model with empty type (it should be a failure)
  * 4 - Create a Work Report Model with duplicate name (it should be a failure)
  * 5 - Edit a Work Report Model
- * 6 - Check Diferent Fields
+ * 6 - Check Different Fields
  *   6.1 - Check code
  *     6.1.1 - Change configuration
  *     6.1.2 - Try to create a new Work Report Model without Code (it should be a failure)
@@ -101,7 +101,7 @@ function workReportModelCheckValues($name, $name2){
     workReportModelCheckCode($name);
     workReportModelCheckComplementaryTextFields($name);
     workReportModelCheckLabelTypeFields($name2);
-    _log("Check diferent labels", "custom1");
+    _log("Check different labels", "custom1");
 }
 
 function workReportModelCreateWithoutCode($type){

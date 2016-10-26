@@ -125,6 +125,9 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     @Autowired
     private ILimitingResourceQueueDependencyDAO limitingResourceQueueDependencyDAO;
 
+    @Autowired
+    private IDependencyDAO dependencyDAO;
+
     private QueuesState queuesState;
 
     private Interval viewInterval;
@@ -141,6 +144,8 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
 
     private Map<LimitingResourceQueueElement, HashSet<LimitingResourceQueueDependency>> toBeSavedDependencies =
             new HashMap<>();
+
+    private boolean checkAllocationIsAppropriative = true;
 
     @Override
     @Transactional(readOnly = true)
@@ -165,7 +170,6 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
 
     private Date getEarliestDate() {
         final LimitingResourceQueueElement element = getEarliestQueueElement();
-
         return (element != null) ? element.getStartDate().toDateTimeAtCurrentTime().toDate() : new Date();
     }
 
@@ -199,9 +203,9 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     }
 
     /**
-     * Loads unassigned {@link LimitingResourceQueueElement} from DB
+     * Loads unassigned {@link LimitingResourceQueueElement} from DB.
      *
-     * @return
+     * @return {@link List<LimitingResourceQueueElement>}
      */
     private List<LimitingResourceQueueElement> findUnassignedLimitingResourceQueueElements() {
         return initializeLimitingResourceQueueElements(limitingResourceQueueElementDAO.getUnassigned());
@@ -405,9 +409,8 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
                 }
             }
         } catch (InstanceNotFoundException e) {
-            // this case shouldn't happen, because it would mean that there
-            // isn't a logged user
-            // anyway, if it happened we don't allow the user to pass
+            // This case shouldn't happen, because it would mean that there isn't a logged user
+            // anyway, if it happened we don't allow the user to pass.
         }
 
         return false;
@@ -459,10 +462,10 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     /**
      * After an allocation dependencies might be broken, this method unschedules
      * elements affected by an allocation and reschedule them again in
-     * topological order, so dependencies are satisfied
+     * topological order, so dependencies are satisfied.
      *
      * If the allocation was appropriative it also allocates those elements that
-     * might be unscheduled before due to the appropriative allocation
+     * might be unscheduled before due to the appropriative allocation.
      *
      * @param allocation
      * @param moved
@@ -492,7 +495,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     }
 
     /**
-     * Moves elements in order to satisfy dependencies
+     * Moves elements in order to satisfy dependencies.
      *
      * @param potentiallyAffectedByInsertion
      * @param elementInserted
@@ -600,11 +603,9 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
 
 
     private DateAndHour calculateStart(AllocationSpec previous, QueueDependencyType type) {
-        if ( !type.modifiesDestinationStart() ) {
-            return null;
-        }
-
-        return type.calculateDateTargetFrom(previous.getStartInclusive(), previous.getEndExclusive());
+        return !type.modifiesDestinationStart()
+                ? null
+                : type.calculateDateTargetFrom(previous.getStartInclusive(), previous.getEndExclusive());
     }
 
     private DateAndHour getEndFrom(AllocationSpec previous, List<Edge> edges) {
@@ -617,21 +618,15 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     }
 
     private DateAndHour calculateEnd(AllocationSpec previous, QueueDependencyType type) {
-        if ( !type.modifiesDestinationEnd() ) {
-            return null;
-        }
-
-        return type.calculateDateTargetFrom(previous.getStartInclusive(), previous.getEndExclusive());
+        return !type.modifiesDestinationEnd()
+                ? null
+                : type.calculateDateTargetFrom(previous.getStartInclusive(), previous.getEndExclusive());
     }
 
     private Map<LimitingResourceQueueElement, List<Edge>> bySource(Collection<? extends Edge> incomingEdgesOf) {
         Map<LimitingResourceQueueElement, List<Edge>> result = new HashMap<>();
         for (Edge each : incomingEdgesOf) {
-
-            if ( result.get(each.source) == null ) {
-                result.put(each.source, new ArrayList<Edge>());
-            }
-
+            result.putIfAbsent(each.source, new ArrayList<>());
             result.get(each.source).add(each);
         }
 
@@ -643,21 +638,17 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
      *         otherwise
      */
     private AllocationSpec insertAtGap(InsertionRequirements requirements) {
-        AllocationSpec allocationStillNotDone = findAllocationSpecFor(requirements);
-
-        return doAppropriativeIfNecessary(allocationStillNotDone, requirements);
+        return doAppropriativeIfNecessary(findAllocationSpecFor(requirements), requirements);
     }
 
     /**
-     * Find valid {@link AllocationSpec} taking into account requirements
+     * Find valid {@link AllocationSpec} taking into account requirements.
      *
      * @param requirements
-     * @return
+     * @return {@link AllocationSpec}
      */
     private AllocationSpec findAllocationSpecFor(InsertionRequirements requirements) {
-        List<GapOnQueue> potentiallyValidGapsFor = queuesState.getPotentiallyValidGapsFor(requirements);
-
-        return findAllocationSpecFor(potentiallyValidGapsFor, requirements);
+        return findAllocationSpecFor(queuesState.getPotentiallyValidGapsFor(requirements), requirements);
     }
 
     private AllocationSpec findAllocationSpecFor(List<GapOnQueue> gapsOnQueue, InsertionRequirements requirements) {
@@ -680,7 +671,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     private AllocationSpec doAppropriativeIfNecessary(AllocationSpec allocation, InsertionRequirements requirements) {
         if ( allocation != null ) {
             if ( checkAllocationIsAppropriative() && requirements.isAppropiativeAllocation(allocation) ) {
-                return doAppropriativeAllocation(requirements, allocation);
+                return doAppropriativeAllocation(requirements);
             }
 
             return allocation;
@@ -709,26 +700,24 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         return findAllocationSpecFor(potentiallyValidGapsFor, requirements);
     }
 
-    private boolean checkAllocationIsAppropriative = true;
-
-    private AllocationSpec doAppropriativeAllocation(InsertionRequirements requirements, AllocationSpec allocation) {
+    private AllocationSpec doAppropriativeAllocation(InsertionRequirements requirements) {
 
         LimitingResourceQueueElement element = requirements.getElement();
         List<LimitingResourceQueue> potentiallyValidQueues = getAssignableQueues(element);
         LimitingResourceQueue queue = earliestQueue(potentiallyValidQueues);
 
         List<LimitingResourceQueueElement> unscheduled = new ArrayList<>();
-        allocation = unscheduleElementsFor(queue, requirements, unscheduled);
+        AllocationSpec allocation = unscheduleElementsFor(queue, requirements, unscheduled);
         allocation.setUnscheduledElements(queuesState.inTopologicalOrder(unscheduled));
 
         return allocation;
     }
 
     /**
-     * Returns queue which last element is at a earliest date
+     * Returns queue which last element is at a earliest date.
      *
      * @param potentiallyValidQueues
-     * @return
+     * @return {@link LimitingResourceQueue}
      */
     private LimitingResourceQueue earliestQueue(List<LimitingResourceQueue> potentiallyValidQueues) {
 
@@ -748,7 +737,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
             }
         }
 
-        if( result == null && !potentiallyValidQueues.isEmpty() ) {
+        if ( result == null && !potentiallyValidQueues.isEmpty() ) {
             result = potentiallyValidQueues.get(0);
         }
 
@@ -764,18 +753,16 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     }
 
     private List<GapOnQueue> getSubGaps(GapOnQueue each, LimitingResourceQueueElement element, boolean generic) {
-        if ( generic ) {
-            return each.splitIntoGapsSatisfyingCriteria(element.getCriteria());
-        }
-
-        return Collections.singletonList(each);
+        return generic
+                ? each.splitIntoGapsSatisfyingCriteria(element.getCriteria())
+                : Collections.singletonList(each);
     }
 
     private AllocationSpec applyAllocation(final AllocationSpec allocationStillNotDone) {
         applyAllocation(allocationStillNotDone, new IDayAssignmentBehaviour() {
 
             @Override
-            public void allocateDayAssigments(IntraDayDate start, IntraDayDate end) {
+            public void allocateDayAssignments(IntraDayDate start, IntraDayDate end) {
                 ResourceAllocation<?> resourceAllocation = getResourceAllocation(allocationStillNotDone);
                 Resource resource = getResource(allocationStillNotDone);
 
@@ -801,7 +788,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     private void applyAllocation(AllocationSpec allocationStillNotDone, IDayAssignmentBehaviour allocationBehaviour) {
 
         // Do day allocation
-        allocationBehaviour.allocateDayAssigments(
+        allocationBehaviour.allocateDayAssignments(
                 convert(allocationStillNotDone.getStartInclusive()),
                 convert(allocationStillNotDone.getEndExclusive()));
 
@@ -838,18 +825,12 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         }
 
         // Do allocation
-        applyAllocation(allocation, new IDayAssignmentBehaviour() {
+        applyAllocation(allocation, (start, end) -> {
+            List<DayAssignment> assignments = LimitingResourceAllocator.generateDayAssignments(
+                    element.getResourceAllocation(),
+                    queue.getResource(), startAt, endsAfter);
 
-            @Override
-            public void allocateDayAssigments(IntraDayDate start, IntraDayDate end) {
-
-                List<DayAssignment> assignments = LimitingResourceAllocator.generateDayAssignments(
-                        element.getResourceAllocation(),
-                        queue.getResource(), startAt, endsAfter);
-
-                element.getResourceAllocation().allocateLimitingDayAssignments(assignments, start, end);
-            }
-
+            element.getResourceAllocation().allocateLimitingDayAssignments(assignments, start, end);
         });
 
         assert allocation.isValid();
@@ -868,15 +849,13 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     }
 
     /**
-     *
-     * Describes how day assignments are going to be generated for an allocation
+     * Describes how day assignments are going to be generated for an allocation.
      *
      * @author Diego Pino García<dpino@igalia.com>
-     *
      */
     private interface IDayAssignmentBehaviour {
 
-        void allocateDayAssigments(IntraDayDate start, IntraDayDate end);
+        void allocateDayAssignments(IntraDayDate start, IntraDayDate end);
 
     }
 
@@ -914,8 +893,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         task.explicityMoved(startDate, endDate);
     }
 
-    private void addLimitingResourceQueueElementIfNeeded(LimitingResourceQueue queue,
-                                                         LimitingResourceQueueElement element) {
+    private void addLimitingResourceQueueElementIfNeeded(LimitingResourceQueue queue, LimitingResourceQueueElement element) {
 
         if ( element.getLimitingResourceQueue() == null ) {
             queuesState.assignedToQueue(element, queue);
@@ -1050,9 +1028,6 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         }
     }
 
-    @Autowired
-    private IDependencyDAO dependencyDAO;
-
     private void removeQueueDependencyById(Long id) {
         try {
             limitingResourceQueueDependencyDAO.remove(id);
@@ -1063,20 +1038,19 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     }
 
     /**
-     * Unschedules an element from the list of queue elements. The element is
-     * later added to the list of unassigned elements
+     * Unschedules an element from the list of queue elements.
+     * The element is later added to the list of unassigned elements.
      */
     @Override
     public LimitingResourceQueueElement unschedule(LimitingResourceQueueElement queueElement) {
         queuesState.unassingFromQueue(queueElement);
         markAsModified(queueElement);
+
         return queueElement;
     }
 
     /**
-     * Removes an {@link LimitingResourceQueueElement} from the list of
-     * unassigned elements
-     *
+     * Removes an {@link LimitingResourceQueueElement} from the list of unassigned elements.
      */
     @Override
     public void removeUnassignedLimitingResourceQueueElement(LimitingResourceQueueElement element) {
@@ -1137,7 +1111,8 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     @Override
     public Set<LimitingResourceQueueElement> appropriativeAllocation(
             LimitingResourceQueueElement _element,
-            LimitingResourceQueue _queue, DateAndHour allocationTime) {
+            LimitingResourceQueue _queue,
+            DateAndHour allocationTime) {
 
         Set<LimitingResourceQueueElement> result = new HashSet<>();
 
@@ -1168,17 +1143,16 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     }
 
     /**
-     * Creates room enough in a queue for fitting requirements
+     * Creates room enough in a queue for fitting requirements.
      *
-     * Starts unscheduling elements in queue since
-     * requirements.earliestPossibleStart() When there's room enough for
-     * allocating requirements, the method stops unscheduling more elements
+     * Starts unscheduling elements in queue since requirements.earliestPossibleStart()
+     * When there's room enough for allocating requirements, the method stops unscheduling more elements.
      *
-     * Returns the list of elements that were unscheduled in the process
+     * Returns the list of elements that were unscheduled in the process.
      *
      * @param queue
      * @param requirements
-     * @return
+     * @return {@link AllocationSpec}
      */
     private AllocationSpec unscheduleElementsFor(
             LimitingResourceQueue queue, InsertionRequirements requirements,
@@ -1231,9 +1205,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         }
 
         // Rest of elements
-        for (int i = 0; i < elements.size(); i++) {
-            final LimitingResourceQueueElement each = elements.get(i);
-
+        for (final LimitingResourceQueueElement each : elements) {
             if ( isInTheMiddle(each, allocationTime) || isAfter(each, allocationTime) ) {
                 return each;
             }

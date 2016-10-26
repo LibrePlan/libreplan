@@ -22,16 +22,17 @@
 <?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
 <?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n"?>
 <zk>
-    <zscript><![CDATA[
-        controllerForReassigning = reassignController;
-    ]]>
+    <zscript>
+        <![CDATA[
+            controllerForReassigning = reassignController;
+        ]]>
     </zscript>
 
-    <window border="none" title="${i18n:_('Reassigning')}"
-        apply="${controllerForReassigning}" width="300px">
+    <window border="none" title="${i18n:_('Reassigning')}" apply="${controllerForReassigning}" width="300px">
 
         <groupbox closable="false">
             <caption label="${i18n:_('Reassigning type')}" />
+
             <vbox width="100%">
                 <radiogroup id="reassigningTypeSelector" width="100%">
                     <grid id="reassigningTypesGrid" fixedLayout="true" width="100%">
@@ -45,10 +46,8 @@
         </groupbox>
 
         <hbox>
-            <button label="${i18n:_('Accept')}"
-                onClick="controllerForReassigning.confirm()" />
-            <button label="${i18n:_('Cancel')}"
-                onClick="controllerForReassigning.cancel()" />
+            <button label="${i18n:_('Accept')}" onClick="controllerForReassigning.confirm()" sclass="add-button" />
+            <button label="${i18n:_('Cancel')}" onClick="controllerForReassigning.cancel()" sclass="add-button" />
         </hbox>
 
     </window>

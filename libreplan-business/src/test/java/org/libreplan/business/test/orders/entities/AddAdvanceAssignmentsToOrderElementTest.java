@@ -66,12 +66,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Tests for {@link AdvanceAssignment of OrderElement}. <br />
+ * Tests for {@link AdvanceAssignment of OrderElement}.
+ * <br />
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
-        BUSINESS_SPRING_CONFIG_TEST_FILE })
+@ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE, BUSINESS_SPRING_CONFIG_TEST_FILE })
 public class AddAdvanceAssignmentsToOrderElementTest {
 
     @Resource
@@ -81,7 +81,7 @@ public class AddAdvanceAssignmentsToOrderElementTest {
     private IDataBootstrap configurationBootstrap;
 
     @Before
-    public void loadRequiredaData() {
+    public void loadRequiredData() {
         defaultAdvanceTypesBootstrapListener.loadRequiredData();
         configurationBootstrap.loadRequiredData();
     }
@@ -110,17 +110,15 @@ public class AddAdvanceAssignmentsToOrderElementTest {
 
     private Order createValidOrder() {
         Order order = Order.create();
-        OrderVersion orderVersion = ResourceAllocationDAOTest
-                .setupVersionUsing(scenarioManager, order);
+        OrderVersion orderVersion = ResourceAllocationDAOTest.setupVersionUsing(scenarioManager, order);
         order.useSchedulingDataFor(orderVersion);
         order.setDescription("description");
-        order.setInitDate(CriterionSatisfactionDAOTest.year(2000)
-                .toDateTimeAtStartOfDay().toDate());
+        order.setInitDate(CriterionSatisfactionDAOTest.year(2000).toDateTimeAtStartOfDay().toDate());
         order.setName("name");
         order.setResponsible("responsible");
         order.setCode("code");
-        order.setCalendar(configurationDAO.getConfiguration()
-                .getDefaultCalendar());
+        order.setCalendar(configurationDAO.getConfiguration().getDefaultCalendar());
+
         return order;
     }
 
@@ -132,28 +130,24 @@ public class AddAdvanceAssignmentsToOrderElementTest {
         hoursGroup.setWorkingHours(0);
         hoursGroup.setCode("hoursGroupName");
         result.addHoursGroup(hoursGroup);
+
         return result;
     }
 
     private AdvanceType createValidAdvanceType(String name) {
         BigDecimal value = new BigDecimal(120).setScale(2);
         BigDecimal precision = new BigDecimal(10).setScale(4);
-        AdvanceType advanceType = AdvanceType.create(name, value, true,
-                precision, true, false);
+        AdvanceType advanceType = AdvanceType.create(name, value, true, precision, true, false);
         return advanceType;
     }
 
     private AdvanceMeasurement createValidAdvanceMeasurement() {
-        AdvanceMeasurement advanceMeasurement = AdvanceMeasurement.create(
-                new LocalDate(), new BigDecimal(0));
+        AdvanceMeasurement advanceMeasurement = AdvanceMeasurement.create(new LocalDate(), new BigDecimal(0));
         return advanceMeasurement;
     }
 
-    private DirectAdvanceAssignment createValidAdvanceAssignment(
-            boolean reportGlobalAdvance) {
-    DirectAdvanceAssignment advanceAssignment = DirectAdvanceAssignment
-                .create(reportGlobalAdvance, BigDecimal.TEN);
-        return advanceAssignment;
+    private DirectAdvanceAssignment createValidAdvanceAssignment(boolean reportGlobalAdvance) {
+        return DirectAdvanceAssignment.create(reportGlobalAdvance, BigDecimal.TEN);
     }
 
     @Test
@@ -161,6 +155,7 @@ public class AddAdvanceAssignmentsToOrderElementTest {
     public void savingTheOrderSavesAlsoTheAddedAssignments()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
+
         Order order = createValidOrder();
         OrderElement orderLine = createValidLeaf("OrderLineA", "1k1k1k1k");
 
@@ -194,6 +189,7 @@ public class AddAdvanceAssignmentsToOrderElementTest {
     public void addingSeveralAssignmentsOfDifferentTypes()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
+
         Order order = createValidOrder();
         OrderLine orderLine = createValidLeaf("OrderLineA", "1111111");
 
@@ -218,6 +214,7 @@ public class AddAdvanceAssignmentsToOrderElementTest {
     public void cannotAddDuplicatedAssignment()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
+
         OrderLine orderLine = createValidLeaf("OrderLineA", "22222222");
 
         AdvanceType advanceTypeA = createAndSaveType("tipoA");
@@ -233,16 +230,17 @@ public class AddAdvanceAssignmentsToOrderElementTest {
         try {
             orderLine.addAdvanceAssignment(advanceAssignmentB);
             fail("It should throw an exception");
-        } catch (DuplicateAdvanceAssignmentForOrderElementException e) {
+        } catch (DuplicateAdvanceAssignmentForOrderElementException ignored) {
             // Ok
         }
     }
 
     @Test
     @Transactional
-    public void cannotAddTwoAssignmetsWithGlobalReportValue()
+    public void cannotAddTwoAssignmentsWithGlobalReportValue()
             throws DuplicateAdvanceAssignmentForOrderElementException,
             DuplicateValueTrueReportGlobalAdvanceException {
+
         OrderLine orderLine = createValidLeaf("OrderLineA", "101010101");
 
         AdvanceType advanceTypeA = createAndSaveType("tipoA");
@@ -259,7 +257,7 @@ public class AddAdvanceAssignmentsToOrderElementTest {
         try {
             orderLine.addAdvanceAssignment(advanceAssignmentB);
             fail("It should throw an exception  ");
-        } catch (DuplicateValueTrueReportGlobalAdvanceException e) {
+        } catch (DuplicateValueTrueReportGlobalAdvanceException ignored) {
             // Ok
         }
     }
@@ -269,6 +267,7 @@ public class AddAdvanceAssignmentsToOrderElementTest {
     public void addingAssignmentsOfAnotherTypeToSon()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
+
         Order validOrder = createValidOrder();
         OrderLineGroup container = OrderLineGroup.create();
         validOrder.add(container);
@@ -302,6 +301,7 @@ public class AddAdvanceAssignmentsToOrderElementTest {
     public void addingAnAdvanceAssignmentIncreasesTheNumberOfAdvanceAssignments()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
+
         Order validOrder = createValidOrder();
         final OrderLineGroup container = OrderLineGroup.create();
         validOrder.add(container);
@@ -313,8 +313,7 @@ public class AddAdvanceAssignmentsToOrderElementTest {
         DirectAdvanceAssignment advanceAssignmentA = createValidAdvanceAssignment(true);
         advanceAssignmentA.setAdvanceType(advanceTypeA);
 
-        OrderElementTest
-                .removeReportGlobalAdvanceFromChildrenAdvance(container);
+        OrderElementTest.removeReportGlobalAdvanceFromChildrenAdvance(container);
         container.addAdvanceAssignment(advanceAssignmentA);
 
         assertThat(container.getDirectAdvanceAssignments().size(), equalTo(1));
@@ -325,6 +324,7 @@ public class AddAdvanceAssignmentsToOrderElementTest {
     public void cannotAddDuplicatedAssignmentToSon()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
+
         Order validOrder = createValidOrder();
         final OrderLineGroup father = OrderLineGroup.create();
         validOrder.add(father);
@@ -343,10 +343,10 @@ public class AddAdvanceAssignmentsToOrderElementTest {
         father.addAdvanceAssignment(advanceAssignmentA);
 
         try {
-            OrderElement child = (OrderElement) father.getChildren().get(0);
+            OrderElement child = father.getChildren().get(0);
             child.addAdvanceAssignment(anotherAssignmentWithSameType);
             fail("It should throw an exception  ");
-        } catch (DuplicateAdvanceAssignmentForOrderElementException e) {
+        } catch (DuplicateAdvanceAssignmentForOrderElementException ignored) {
             // Ok
         }
     }
@@ -356,12 +356,13 @@ public class AddAdvanceAssignmentsToOrderElementTest {
     public void cannotAddDuplicateAssignmentToGrandParent()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
+
         Order validOrder = createValidOrder();
         OrderLineGroup parent = OrderLineGroup.create();
         validOrder.add(parent);
         parent.setName("bla_");
         parent.setCode("000000000");
-        OrderLineGroup son = (OrderLineGroup) OrderLineGroup.create();
+        OrderLineGroup son = OrderLineGroup.create();
         son.setName("Son");
         son.setCode("11111111");
         parent.add(son);
@@ -383,7 +384,7 @@ public class AddAdvanceAssignmentsToOrderElementTest {
             parent.addAdvanceAssignment(advanceAssignmentB);
             advanceAssignmentB.addAdvanceMeasurements(advanceMeasurement);
             fail("It should throw an exception  ");
-        } catch (DuplicateAdvanceAssignmentForOrderElementException e) {
+        } catch (DuplicateAdvanceAssignmentForOrderElementException ignored) {
             // Ok
         }
     }
@@ -418,8 +419,7 @@ public class AddAdvanceAssignmentsToOrderElementTest {
 
     private AdvanceType reloadType(AdvanceType type) {
         try {
-            // new instance of id is created to avoid both types have the same
-            // id object
+            // New instance of id is created to avoid both types have the same id object
             Long newLong = new Long(type.getId());
             return advanceTypeDao.find(newLong);
         } catch (InstanceNotFoundException e) {
@@ -429,9 +429,10 @@ public class AddAdvanceAssignmentsToOrderElementTest {
 
     @Test(expected = DuplicateValueTrueReportGlobalAdvanceException.class)
     @Transactional
-    public void cannotAddTwoAssignmetsDirectAndIndirectWithGlobalReportValue()
+    public void cannotAddTwoAssignmentsDirectAndIndirectWithGlobalReportValue()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
+
         OrderLineGroup orderLineGroup = OrderLineGroup.create();
         orderLineGroup.setName("test");
         orderLineGroup.setCode("1");

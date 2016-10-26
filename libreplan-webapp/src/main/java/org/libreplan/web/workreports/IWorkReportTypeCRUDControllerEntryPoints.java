@@ -28,6 +28,6 @@ import org.libreplan.web.common.entrypoints.EntryPoints;
 public interface IWorkReportTypeCRUDControllerEntryPoints {
 
     @EntryPoint("list")
-    public abstract void goToList();
+    void goToList();
 
 }

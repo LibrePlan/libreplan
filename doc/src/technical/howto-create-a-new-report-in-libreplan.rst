@@ -104,7 +104,7 @@ Steps:
 
  <?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
 
- <?component name="combobox_output_format" macroURI="combobox_output_format.zul"
+ <?component name="comboboxOutputFormat" macroURI="comboboxOutputFormat.zul"
      class="org.libreplan.web.reports.ComboboxOutputFormat" ?>
 
  <zk>
@@ -126,7 +126,7 @@ Steps:
                      <rows>
                          <row>
                              <label value="${i18n:_('Output format:')}" />
-                             <combobox_output_format id="outputFormat" />
+                             <comboboxOutputFormat id="outputFormat" />
                          </row>
                      </rows>
                  </grid>

@@ -43,9 +43,9 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
-public class AssignedMaterialsToOrderElementModel extends
-        AssignedMaterialsModel<OrderElement, MaterialAssignment> implements
-        IAssignedMaterialsToOrderElementModel {
+public class AssignedMaterialsToOrderElementModel
+        extends AssignedMaterialsModel<OrderElement, MaterialAssignment>
+        implements IAssignedMaterialsToOrderElementModel {
 
     @Autowired
     private IOrderElementDAO orderElementDAO;
@@ -59,12 +59,11 @@ public class AssignedMaterialsToOrderElementModel extends
     }
 
     @Override
-    protected void initializeMaterialAssigments() {
-        initializeMaterialAssigments(this.orderElement.getMaterialAssignments());
+    protected void initializeMaterialAssignments() {
+        initializeMaterialAssignments(this.orderElement.getMaterialAssignments());
     }
 
-    private void initializeMaterialAssigments(
-            Set<MaterialAssignment> materialAssignments) {
+    private void initializeMaterialAssignments(Set<MaterialAssignment> materialAssignments) {
         for (MaterialAssignment each : materialAssignments) {
             each.getStatus();
             reattachMaterial(each.getMaterial());
@@ -79,8 +78,7 @@ public class AssignedMaterialsToOrderElementModel extends
 
     @Override
     protected List<MaterialAssignment> getAssignments() {
-        return new ArrayList<MaterialAssignment>(orderElement
-                .getMaterialAssignments());
+        return new ArrayList<>(orderElement.getMaterialAssignments());
     }
 
     @Override
@@ -89,8 +87,7 @@ public class AssignedMaterialsToOrderElementModel extends
     }
 
     @Override
-    protected MaterialCategory removeAssignment(
-            MaterialAssignment materialAssignment) {
+    protected MaterialCategory removeAssignment(MaterialAssignment materialAssignment) {
         orderElement.removeMaterialAssignment(materialAssignment);
         return materialAssignment.getMaterial().getCategory();
     }
@@ -98,36 +95,37 @@ public class AssignedMaterialsToOrderElementModel extends
     @Override
     @Transactional(readOnly = true)
     public void addMaterialAssignment(Material material) {
-        MaterialAssignment materialAssigment = MaterialAssignment
-                .create(material);
-        materialAssigment.setEstimatedAvailability(orderElement.getInitDate());
-        addMaterialAssignment(materialAssigment);
+        MaterialAssignment materialAssignment = MaterialAssignment.create(material);
+        materialAssignment.setEstimatedAvailability(orderElement.getInitDate());
+        addMaterialAssignment(materialAssignment);
     }
 
     @Override
-    protected MaterialCategory addAssignment(
-            MaterialAssignment materialAssignment) {
+    protected MaterialCategory addAssignment(MaterialAssignment materialAssignment) {
         orderElement.addMaterialAssignment(materialAssignment);
         return materialAssignment.getMaterial().getCategory();
     }
 
     @Override
-    protected BigDecimal getUnits(MaterialAssignment assigment) {
-        return assigment.getUnits();
+    protected BigDecimal getUnits(MaterialAssignment assignment) {
+        return assignment.getUnits();
     }
 
     @Override
     public BigDecimal getPrice(MaterialCategory materialCategory) {
         BigDecimal result = new BigDecimal(0);
+
         if (orderElement != null) {
-            for (MaterialAssignment materialAssignment : orderElement
-                    .getMaterialAssignments()) {
+
+            for (MaterialAssignment materialAssignment : orderElement.getMaterialAssignments()) {
                 final Material material = materialAssignment.getMaterial();
+
                 if (materialCategory.equals(material.getCategory())) {
                     result = result.add(materialAssignment.getTotalPrice());
                 }
             }
         }
+
         return result;
     }
 
@@ -142,11 +140,12 @@ public class AssignedMaterialsToOrderElementModel extends
     }
 
     @Override
-    public boolean isCurrentUnitType(Object assigment, UnitType unitType) {
-        MaterialAssignment material = (MaterialAssignment) assigment;
-        return ((material != null)
-                && (material.getMaterial().getUnitType() != null) && (unitType
-                .getId().equals(material.getMaterial().getUnitType().getId())));
+    public boolean isCurrentUnitType(Object assignment, UnitType unitType) {
+        MaterialAssignment material = (MaterialAssignment) assignment;
+
+        return (material != null) &&
+                (material.getMaterial().getUnitType() != null) &&
+                (unitType.getId().equals(material.getMaterial().getUnitType().getId()));
     }
 
 }

@@ -21,30 +21,13 @@
 
 package org.libreplan.business.common.entities;
 
-import org.libreplan.business.calendars.entities.CalendarData;
-import org.libreplan.business.calendars.entities.CalendarExceptionType;
 import org.libreplan.business.common.IntegrationEntity;
 import org.libreplan.business.common.Registry;
 import org.libreplan.business.common.daos.IIntegrationEntityDAO;
-import org.libreplan.business.costcategories.entities.CostCategory;
-import org.libreplan.business.costcategories.entities.ResourcesCostCategoryAssignment;
-import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
-import org.libreplan.business.expensesheet.entities.ExpenseSheet;
-import org.libreplan.business.labels.entities.LabelType;
-import org.libreplan.business.logs.entities.IssueLog;
-import org.libreplan.business.logs.entities.RiskLog;
-import org.libreplan.business.materials.entities.MaterialCategory;
-import org.libreplan.business.materials.entities.UnitType;
-import org.libreplan.business.orders.entities.Order;
-import org.libreplan.business.resources.entities.CriterionSatisfaction;
-import org.libreplan.business.resources.entities.CriterionType;
-import org.libreplan.business.resources.entities.Machine;
-import org.libreplan.business.resources.entities.Worker;
-import org.libreplan.business.workreports.entities.WorkReport;
-import org.libreplan.business.workreports.entities.WorkReportType;
 
 /**
- * It represents the entities which use code generation
+ * It represents the entities which use code generation.
+ *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 public enum EntityNameEnum {
@@ -88,48 +71,64 @@ public enum EntityNameEnum {
 
     public IIntegrationEntityDAO<? extends IntegrationEntity> getIntegrationEntityDAO() {
         switch (this) {
-        case ORDER:
-            return Registry.getOrderDAO();
-        case CRITERION:
-            return Registry.getCriterionTypeDAO();
-        case LABEL:
-            return Registry.getLabelTypeDAO();
-        case MACHINE:
-            return Registry.getMachineDAO();
-        case WORKER:
-            return Registry.getWorkerDAO();
-        case UNIT_TYPE:
-            return Registry.getUnitTypeDAO();
-        case CALENDAR:
-        case RESOURCE_CALENDAR:
-            return Registry.getCalendarDataDAO();
-        case WORK_HOURS_TYPE:
-            return Registry.getTypeOfWorkHoursDAO();
-        case MATERIAL_CATEGORY:
-            return Registry.getMaterialCategoryDAO();
-        case WORK_REPORT:
-            return Registry.getWorkReportDAO();
-        case WORKREPORTTYPE:
-            return Registry.getWorkReportTypeDAO();
-        case CALENDAR_EXCEPTION_TYPE:
-            return Registry.getCalendarExceptionTypeDAO();
-        case COST_CATEGORY:
-            return Registry.getCostCategoryDAO();
-        case CRITERION_SATISFACTION:
-            return Registry.getCriterionSatisfactionDAO();
-        case RESOURCE_COST_CATEGORY_ASSIGNMENT:
-            return Registry.getResourcesCostCategoryAssignmentDAO();
-        case EXPENSE_SHEET:
-            return Registry.getExpenseSheetDAO();
 
-        case ISSUE_LOG:
-            return Registry.getIssueLogDAO();
+            case ORDER:
+                return Registry.getOrderDAO();
 
-        case RISK_LOG:
-            return Registry.getRiskLogDAO();
+            case CRITERION:
+                return Registry.getCriterionTypeDAO();
 
-        default:
-            throw new RuntimeException("can't handle the code sequence of the " + description);
+            case LABEL:
+                return Registry.getLabelTypeDAO();
+
+            case MACHINE:
+                return Registry.getMachineDAO();
+
+            case WORKER:
+                return Registry.getWorkerDAO();
+
+            case UNIT_TYPE:
+                return Registry.getUnitTypeDAO();
+
+            case CALENDAR:
+            case RESOURCE_CALENDAR:
+                return Registry.getCalendarDataDAO();
+
+            case WORK_HOURS_TYPE:
+                return Registry.getTypeOfWorkHoursDAO();
+
+            case MATERIAL_CATEGORY:
+                return Registry.getMaterialCategoryDAO();
+
+            case WORK_REPORT:
+                return Registry.getWorkReportDAO();
+
+            case WORKREPORTTYPE:
+                return Registry.getWorkReportTypeDAO();
+
+            case CALENDAR_EXCEPTION_TYPE:
+                return Registry.getCalendarExceptionTypeDAO();
+
+            case COST_CATEGORY:
+                return Registry.getCostCategoryDAO();
+
+            case CRITERION_SATISFACTION:
+                return Registry.getCriterionSatisfactionDAO();
+
+            case RESOURCE_COST_CATEGORY_ASSIGNMENT:
+                return Registry.getResourcesCostCategoryAssignmentDAO();
+
+            case EXPENSE_SHEET:
+                return Registry.getExpenseSheetDAO();
+
+            case ISSUE_LOG:
+                return Registry.getIssueLogDAO();
+
+            case RISK_LOG:
+                return Registry.getRiskLogDAO();
+
+            default:
+                throw new RuntimeException("can't handle the code sequence of the " + description);
         }
     }
 

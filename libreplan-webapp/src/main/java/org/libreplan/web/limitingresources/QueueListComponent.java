@@ -30,39 +30,35 @@ import org.libreplan.business.planner.limiting.entities.LimitingResourceQueueEle
 import org.libreplan.business.resources.entities.LimitingResourceQueue;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
-import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.MutableTreeModel;
 import org.zkoss.zk.au.out.AuInvoke;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zul.impl.XulElement;
 
 /**
- * Component to include a list of {@link LimitingResourceQueue} inside the {@link LimitingResourcesPanel}
+ * Component to include a list of {@link LimitingResourceQueue} inside the {@link LimitingResourcesPanel}.
  *
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  * @author Diego Pino Garcia <dpino@igalia.com>
  */
-public class QueueListComponent extends XulElement implements
-        AfterCompose {
+public class QueueListComponent extends XulElement implements AfterCompose {
 
     private final LimitingResourcesPanel limitingResourcesPanel;
-
-    private final IZoomLevelChangedListener zoomListener;
 
     private MutableTreeModel<LimitingResourceQueue> model;
 
     private TimeTracker timeTracker;
 
-    private Map<LimitingResourceQueue, QueueComponent> fromQueueToComponent = new HashMap<LimitingResourceQueue, QueueComponent>();
+    private Map<LimitingResourceQueue, QueueComponent> fromQueueToComponent = new HashMap<>();
 
     public QueueListComponent(LimitingResourcesPanel limitingResourcesPanel,
-            TimeTracker timeTracker,
-            MutableTreeModel<LimitingResourceQueue> timelinesTree) {
+                              TimeTracker timeTracker,
+                              MutableTreeModel<LimitingResourceQueue> timelinesTree) {
 
         this.limitingResourcesPanel = limitingResourcesPanel;
         this.model = timelinesTree;
 
-        zoomListener = adjustTimeTrackerSizeListener();
+        IZoomLevelChangedListener zoomListener = adjustTimeTrackerSizeListener();
         timeTracker.addZoomListener(zoomListener);
         this.timeTracker = timeTracker;
 
@@ -93,8 +89,7 @@ public class QueueListComponent extends XulElement implements
     }
 
     public void appendQueueElement(LimitingResourceQueueElement element) {
-        QueueComponent queueComponent = fromQueueToComponent.get(element
-                .getLimitingResourceQueue());
+        QueueComponent queueComponent = fromQueueToComponent.get(element.getLimitingResourceQueue());
         queueComponent.appendQueueElement(element);
     }
 
@@ -120,15 +115,9 @@ public class QueueListComponent extends XulElement implements
     }
 
     private IZoomLevelChangedListener adjustTimeTrackerSizeListener() {
-        return new IZoomLevelChangedListener() {
-
-            @Override
-            public void zoomLevelChanged(ZoomLevel detailLevel) {
-                response(null, new AuInvoke(QueueListComponent.this,
-                        "adjustTimeTrackerSize"));
-                response(null, new AuInvoke(QueueListComponent.this,
-                        "adjustResourceLoadRows"));
-            }
+        return detailLevel -> {
+            response(null, new AuInvoke(QueueListComponent.this, "adjustTimeTrackerSize"));
+            response(null, new AuInvoke(QueueListComponent.this, "adjustResourceLoadRows"));
         };
     }
 
@@ -140,7 +129,7 @@ public class QueueListComponent extends XulElement implements
     }
 
     public List<QueueTask> getQueueTasks() {
-        List<QueueTask> result = new ArrayList<QueueTask>();
+        List<QueueTask> result = new ArrayList<>();
         for (QueueComponent each : fromQueueToComponent.values()) {
             result.addAll(each.getQueueTasks());
         }
@@ -155,8 +144,10 @@ public class QueueListComponent extends XulElement implements
      */
     public QueueTask getQueueTask(LimitingResourceQueueElement element) {
         QueueComponent queue = fromQueueToComponent.get(element.getLimitingResourceQueue());
+
         for (QueueTask each: queue.getQueueTasks()) {
             LimitingResourceQueueElement target = each.getLimitingResourceQueueElement();
+
             if (element.getId().equals(target.getId())) {
                 return each;
             }
@@ -165,7 +156,7 @@ public class QueueListComponent extends XulElement implements
     }
 
     public Map<LimitingResourceQueueElement, QueueTask> getLimitingResourceElementToQueueTaskMap() {
-        Map<LimitingResourceQueueElement, QueueTask> result = new HashMap<LimitingResourceQueueElement, QueueTask>();
+        Map<LimitingResourceQueueElement, QueueTask> result = new HashMap<>();
         for (QueueTask each : getQueueTasks()) {
             result.put(each.getLimitingResourceQueueElement(), each);
         }

@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -48,7 +49,6 @@ import org.zkoss.ganttz.util.OnZKDesktopRegistry;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Button;
@@ -56,21 +56,45 @@ import org.zkoss.zul.Div;
 import org.zkoss.zul.Vbox;
 
 /**
- * Controller for customMenu <br />
+ * Controller for customMenu.
+ * <br />
+ *
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  * @author Fernando Bellas Permuy <fbellas@udc.es>
- * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
 public class CustomMenuController extends Div implements IMenuItemsRegister {
+
+    private static final Pattern perspectiveCssClass = Pattern.compile("\\bperspective(-\\w+)?\\b");
+
+    private List<CustomMenuItem> firstLevel;
+
+    private IGlobalViewEntryPoints globalView;
+
+    private Button currentOne = null;
+
+    public CustomMenuController() {
+        this.firstLevel = new ArrayList<>();
+        this.globalView = findGlobalViewEntryPoints();
+        initializeMenu();
+        activateCurrentOne();
+        getLocator().store(this);
+    }
 
     public static class CustomMenuItem {
 
         private final String name;
+
         private final String unencodedURL;
+
         private final String encodedURL;
+
         private final List<CustomMenuItem> children;
+
         private boolean activeParent;
+
         private String helpLink;
+
         private boolean disabled;
 
         public String getName() {
@@ -98,16 +122,16 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
         }
 
         public CustomMenuItem(String name, String url) {
-            this(name, url, new ArrayList<CustomMenuItem>());
+            this(name, url, new ArrayList<>());
         }
 
         public CustomMenuItem(String name, String url, String helpLink) {
-            this(name, url, new ArrayList<CustomMenuItem>());
+            this(name, url, new ArrayList<>());
             this.helpLink = helpLink;
         }
 
         public CustomMenuItem(String name, String url, boolean disabled) {
-            this(name, url, new ArrayList<CustomMenuItem>());
+            this(name, url, new ArrayList<>());
             this.disabled = disabled;
         }
 
@@ -179,18 +203,6 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
         return WebApplicationContextUtils.getWebApplicationContext(context);
     }
 
-    private List<CustomMenuItem> firstLevel;
-
-    private IGlobalViewEntryPoints globalView;
-
-    public CustomMenuController() {
-        this.firstLevel = new ArrayList<>();
-        this.globalView = findGlobalViewEntryPoints();
-        initializeMenu();
-        activateCurrentOne();
-        getLocator().store(this);
-    }
-
     private void activateCurrentOne() {
         String requestPath = Executions.getCurrent().getDesktop().getRequestPath();
 
@@ -234,7 +246,9 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
         return OnZKDesktopRegistry.getLocatorFor(IMenuItemsRegister.class);
     }
 
-    private CustomMenuController topItem(String name, String url, String helpUri,
+    private CustomMenuController topItem(String name,
+                                         String url,
+                                         String helpUri,
                                          Collection<? extends CustomMenuItem> items) {
 
         return topItem(name, url, helpUri, items.toArray(new CustomMenuItem[items.size()]));
@@ -244,7 +258,10 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
         return topItem(name, url, helpUri, false, items);
     }
 
-    private CustomMenuController topItem(String name, String url, String helpLink, boolean disabled,
+    private CustomMenuController topItem(String name,
+                                         String url,
+                                         String helpLink,
+                                         boolean disabled,
                                          CustomMenuItem... items) {
 
         CustomMenuItem parent = new CustomMenuItem(name, url, disabled);
@@ -269,47 +286,26 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
         List<CustomMenuItem> planningItems = new ArrayList<>();
         if ( SecurityUtils.isSuperuserOrRolePlanningOrHasAnyAuthorization() ) {
 
-            planningItems.add(
-                    subItem(
-                            _("Company view"),
-                            new ICapture() {
-                                @Override
-                                public void capture() {
-                                    globalView.goToCompanyScheduling();
-                                }
-                            },
-                            "01-introducion.html"));
+            planningItems.add(subItem(
+                    _("Company view"),
+                    () -> globalView.goToCompanyScheduling(),
+                    "01-introducion.html"));
 
             planningItems.add(subItem(
                     _("Projects"),
-                    new ICapture() {
-                        @Override
-                        public void capture() {
-                            globalView.goToOrdersList();
-                        }
-                    },
+                    () -> globalView.goToOrdersList(),
                     "01-introducion.html#id2"));
         }
 
         if ( SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_PLANNING) ) {
             planningItems.add(subItem(
                     _("Resources Load"),
-                    new ICapture() {
-                        @Override
-                        public void capture() {
-                            globalView.goToCompanyLoad();
-                        }
-                    },
+                    () -> globalView.goToCompanyLoad(),
                     "01-introducion.html#id1"));
 
             planningItems.add(subItem(
                     _("Queue-based Resources"),
-                    new ICapture() {
-                        @Override
-                        public void capture() {
-                            globalView.goToLimitingResources();
-                        }
-                    },
+                    () -> globalView.goToLimitingResources(),
                     "01-introducion.html"));
         }
 
@@ -318,8 +314,8 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
         }
 
         if ( SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_IMPORT_PROJECTS) ) {
-        // In order of see the Import project option in the menu
-        planningItems.add(subItem(_("Import project"), "/orders/imports/projectImport.zul", ""));
+            // In order of see the Import project option in the menu
+            planningItems.add(subItem(_("Import project"), "/orders/imports/projectImport.zul", ""));
         }
 
 
@@ -458,7 +454,7 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
         }
 
         if ( SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_JOB_SCHEDULING) ) {
-            configurationItems.add(subItem(_("Job Scheduling"), "/common/job_scheduling.zul", "19-scheduler.html"));
+            configurationItems.add(subItem(_("Job Scheduling"), "/common/jobScheduling.zul", "19-scheduler.html"));
         }
 
         if ( SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_EDIT_EMAIL_TEMPLATES) ) {
@@ -484,7 +480,8 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
         if ( SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_RECEIVED_FROM_SUBCONTRACTORS) ) {
             communicationsItems.add(subItem(
                     _("Received From Subcontractors"),
-                    "/subcontract/subcontractorCommunications.zul", ""));
+                    "/subcontract/subcontractorCommunications.zul",
+                    ""));
         }
 
         if ( SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_SEND_TO_CUSTOMERS) ) {
@@ -588,7 +585,7 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
 
             if ( ci.isActiveParent() ) {
 
-                if ( (ci.name != null) && (ci.name != _("Planning")) ) {
+                if ( (ci.name != null) && (!Objects.equals(ci.name, _("Planning"))) ) {
 
                     breadcrumbsPath.add(ci);
 
@@ -619,7 +616,7 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
 
             if ( ci.isActiveParent() ) {
 
-                if ( (ci.name != null) ) {
+                if ( ci.name != null ) {
 
                     for (CustomMenuItem child : ci.children) {
 
@@ -645,10 +642,8 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
 
     }
 
-    private Button currentOne = null;
-
     @Override
-    public Object addMenuItem(String name, String cssClass, org.zkoss.zk.ui.event.EventListener eventListener) {
+    public Object addMenuItem(String name, String cssClass, EventListener eventListener) {
         Vbox insertionPoint = getRegisteredItemsInsertionPoint();
         Button button = new Button();
         button.setLabel(_(name));
@@ -709,8 +704,6 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
         togglePerspectiveClassTo(button, "perspective");
     }
 
-    private static final Pattern perspectiveCssClass = Pattern.compile("\\bperspective(-\\w+)?\\b");
-
     private void togglePerspectiveClassTo(final Button button, String newPerspectiveClass) {
         button.setSclass(togglePerspectiveCssClass(newPerspectiveClass, button));
     }
@@ -727,24 +720,21 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
     }
 
     private EventListener doNotCallTwice(final Button button,
-                                         final org.zkoss.zk.ui.event.EventListener originalListener) {
-        return new EventListener() {
-
-            @Override
-            public void onEvent(Event event) throws Exception {
-                if ( currentOne == button ) {
-                    return;
-                }
-
-                switchCurrentButtonTo(button);
-                originalListener.onEvent(event);
+                                         final EventListener originalListener) {
+        return event -> {
+            if ( currentOne == button ) {
+                return;
             }
+
+            switchCurrentButtonTo(button);
+            originalListener.onEvent(event);
         };
     }
 
     private Component separator() {
         Div div = new Div();
         div.setSclass("vertical-separator");
+
         return div;
     }
 
@@ -764,9 +754,7 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
     }
 
     public boolean isScenariosVisible() {
-        return Registry.getConfigurationDAO()
-                .getConfigurationWithReadOnlyTransaction()
-                .isScenariosVisible();
+        return Registry.getConfigurationDAO().getConfigurationWithReadOnlyTransaction().isScenariosVisible();
     }
 
 }

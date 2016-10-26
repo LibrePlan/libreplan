@@ -97,12 +97,8 @@ import org.springframework.transaction.annotation.Transactional;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
         BUSINESS_SPRING_CONFIG_FILE,
-
-        WEBAPP_SPRING_CONFIG_FILE,
-        WEBAPP_SPRING_CONFIG_TEST_FILE,
-
-        WEBAPP_SPRING_SECURITY_CONFIG_FILE,
-        WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE })
+        WEBAPP_SPRING_CONFIG_FILE, WEBAPP_SPRING_CONFIG_TEST_FILE,
+        WEBAPP_SPRING_SECURITY_CONFIG_FILE, WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE })
 public class WorkReportServiceTest {
 
     @Autowired
@@ -171,7 +167,7 @@ public class WorkReportServiceTest {
     @BeforeTransaction
     public void setup() {
         transactionService.runOnTransaction(() -> {
-            loadRequiredaData();
+            loadRequiredData();
             givenWorkerStored();
             givenOrderLineStored();
             createAPairOfLabelTypes();
@@ -187,7 +183,7 @@ public class WorkReportServiceTest {
         });
     }
 
-    private void loadRequiredaData() {
+    private void loadRequiredData() {
         configurationBootstrap.loadRequiredData();
     }
 
@@ -308,8 +304,8 @@ public class WorkReportServiceTest {
         labelAssignment2.setDefaultLabel(labelDAO.findExistingEntityByCode(labelB1));
         labelAssignment2.setPositionNumber(0);
 
-        type.addLabelAssigmentToEndHead(labelAssignment1);
-        type.addLabelAssigmentToEndLine(labelAssignment2);
+        type.addLabelAssignmentToEndHead(labelAssignment1);
+        type.addLabelAssignmentToEndLine(labelAssignment2);
 
         workReportTypeDAO.save(type);
     }
@@ -535,12 +531,17 @@ public class WorkReportServiceTest {
 
         Session session = sessionFactory.openSession();
 
-        List workReports = session.createCriteria(WorkReport.class).addOrder(Order.asc("code")).list();
+        List workReports = session
+                .createCriteria(WorkReport.class)
+                .addOrder(Order.asc("code"))
+                .list();
 
         assertThat(workReports.size(), equalTo(previous + 1));
 
-        WorkReport imported = (WorkReport) session.createCriteria(WorkReport.class)
-                .add(Restrictions.eq("code", workReportDTO.code.trim()).ignoreCase()).uniqueResult();
+        WorkReport imported = (WorkReport) session
+                .createCriteria(WorkReport.class)
+                .add(Restrictions.eq("code", workReportDTO.code.trim()).ignoreCase())
+                .uniqueResult();
 
         assertThat(imported.getDate(), equalTo(date));
 

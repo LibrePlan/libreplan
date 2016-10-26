@@ -50,7 +50,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ResourceLoadRatiosCalculator implements IResourceLoadRatiosCalculator {
 
     @Autowired
-    private IDayAssignmentDAO dayAssigmentDAO;
+    private IDayAssignmentDAO dayAssignmentDAO;
 
     @Autowired
     private IResourceDAO resourceDAO;
@@ -145,7 +145,7 @@ public class ResourceLoadRatiosCalculator implements IResourceLoadRatiosCalculat
         HashMap<LocalDate, EffortDuration> result;
         result = new HashMap<>();
 
-        List<DayAssignment> l = dayAssigmentDAO.getAllFor(scenario, startDate, endDate, resource);
+        List<DayAssignment> l = dayAssignmentDAO.getAllFor(scenario, startDate, endDate, resource);
 
         EffortDuration newValue;
 

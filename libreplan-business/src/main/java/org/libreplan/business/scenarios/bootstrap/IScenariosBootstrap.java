@@ -25,7 +25,7 @@ import org.libreplan.business.IDataBootstrap;
 import org.libreplan.business.scenarios.entities.Scenario;
 
 /**
- * Contratct for {@link ScenariosBootstrap}.
+ * Contract for {@link ScenariosBootstrap}.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
@@ -36,9 +36,9 @@ public interface IScenariosBootstrap extends IDataBootstrap {
     /**
      * The main scenario.
      *
-     * @return
+     * @return {@link Scenario}
      * @throws IllegalStateException
-     *             if loadRequiredaData has not been called
+     *             if loadRequiredData has not been called
      */
     Scenario getMain() throws IllegalStateException;
 

@@ -34,9 +34,9 @@ import java.util.List;
 import java.util.Properties;
 
 /**
- * Validate Email Connection properties
+ * Validate Email Connection properties.
  *
- * @author Created by Vova Perebykivskyi <vova@libreplan-enterprise.com> on 20.01.2016.
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
 
 @Component
@@ -46,7 +46,9 @@ public class EmailConnectionValidator {
     @Autowired
     private IConnectorDAO connectorDAO;
 
-    /* Needed for EmailTest */
+    /**
+     * Needed for EmailTest.
+     */
     public static Exception exceptionType;
 
     public boolean validConnection() {

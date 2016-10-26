@@ -26,6 +26,7 @@
     ]]>
     </zscript>
 
-    <planner id="planner" apply="${planningController}">
+    <planner id="planner" sclass="parentPlanner scroll-collapse"
+             style="display: block; height: 100%;" apply="${planningController}">
     </planner>
 </zk>

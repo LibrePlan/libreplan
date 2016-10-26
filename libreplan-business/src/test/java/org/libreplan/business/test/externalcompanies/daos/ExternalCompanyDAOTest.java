@@ -46,17 +46,15 @@ import org.libreplan.business.externalcompanies.daos.IExternalCompanyDAO;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.users.daos.IUserDAO;
 import org.libreplan.business.users.entities.User;
-import org.libreplan.business.users.entities.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Test for {@link ExternalCompanyDAO}
+ * Test for {@link org.libreplan.business.externalcompanies.daos.ExternalCompanyDAO}.
  *
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
- *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE, BUSINESS_SPRING_CONFIG_TEST_FILE })
@@ -75,7 +73,7 @@ public class ExternalCompanyDAOTest {
     private IDataBootstrap configurationBootstrap;
 
     @Before
-    public void loadRequiredaData() {
+    public void loadRequiredData() {
         configurationBootstrap.loadRequiredData();
     }
 
@@ -118,7 +116,6 @@ public class ExternalCompanyDAOTest {
         externalCompany.setCompanyUser(user);
 
         IOnTransaction<Void> saveEntities = new IOnTransaction<Void>() {
-
             @Override
             public Void execute() {
                 userDAO.save(user);
@@ -126,10 +123,10 @@ public class ExternalCompanyDAOTest {
                 return null;
             }
         };
+
         transactionService.runOnTransaction(saveEntities);
 
         IOnTransaction<Void> retrieveEntitiesInOtherTransaction = new IOnTransaction<Void>() {
-
             @Override
             public Void execute() {
                 try{
@@ -142,6 +139,7 @@ public class ExternalCompanyDAOTest {
                 return null;
             }
         };
+
         transactionService.runOnTransaction(retrieveEntitiesInOtherTransaction);
     }
 
@@ -150,8 +148,7 @@ public class ExternalCompanyDAOTest {
     public void testFindUniqueByName() throws InstanceNotFoundException {
         ExternalCompany externalCompany = createValidExternalCompany();
         externalCompanyDAO.save(externalCompany);
-        assertEquals(externalCompany.getId(),
-                externalCompanyDAO.findUniqueByName(externalCompany.getName()).getId());
+        assertEquals(externalCompany.getId(), externalCompanyDAO.findUniqueByName(externalCompany.getName()).getId());
     }
 
     @Test
@@ -168,14 +165,15 @@ public class ExternalCompanyDAOTest {
         final ExternalCompany externalCompany1 = createValidExternalCompany();
 
         IOnTransaction<Void> createCompanyWithRepeatedName = new IOnTransaction<Void>() {
-
             @Override
             public Void execute() {
                 externalCompanyDAO.save(externalCompany1);
                 return null;
             }
         };
+
         transactionService.runOnTransaction(createCompanyWithRepeatedName);
+
         // The second time we save the same object, a exception is thrown
         transactionService.runOnTransaction(createCompanyWithRepeatedName);
     }
@@ -191,6 +189,7 @@ public class ExternalCompanyDAOTest {
                 return null;
             }
         };
+
         IOnTransaction<Void> createCompanyWithRepeatedNif = new IOnTransaction<Void>() {
             @Override
             public Void execute() {
@@ -200,7 +199,9 @@ public class ExternalCompanyDAOTest {
                 return null;
             }
         };
+
         transactionService.runOnTransaction(createCompany);
+
         // The second object has the same cif, a exception is thrown when saving it
         transactionService.runOnTransaction(createCompanyWithRepeatedNif);
     }
@@ -210,6 +211,6 @@ public class ExternalCompanyDAOTest {
     }
 
     private User createValidUser() {
-        return User.create(UUID.randomUUID().toString(), UUID.randomUUID().toString(), new HashSet<UserRole>());
+        return User.create(UUID.randomUUID().toString(), UUID.randomUUID().toString(), new HashSet<>());
     }
 }

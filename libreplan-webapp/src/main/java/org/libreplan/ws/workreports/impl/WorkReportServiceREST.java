@@ -21,7 +21,6 @@
 
 package org.libreplan.ws.workreports.impl;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -62,9 +61,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Path("/workreports/")
 @Produces("application/xml")
 @Service("workReportServiceREST")
-public class WorkReportServiceREST extends
-        GenericRESTService<WorkReport, WorkReportDTO> implements
-        IWorkReportService {
+public class WorkReportServiceREST extends GenericRESTService<WorkReport, WorkReportDTO> implements IWorkReportService {
 
     private Set<OrderElement> orderElements;
 
@@ -87,8 +84,7 @@ public class WorkReportServiceREST extends
     @Override
     @POST
     @Consumes("application/xml")
-    public InstanceConstraintViolationsListDTO addWorkReports(
-            WorkReportListDTO workReportListDTO) {
+    public InstanceConstraintViolationsListDTO addWorkReports(WorkReportListDTO workReportListDTO) {
         return save(workReportListDTO.workReports);
     }
 
@@ -174,8 +170,8 @@ public class WorkReportServiceREST extends
                     .getOrderElementsToRecalculateTimsheetDates(null,
                             Collections.singleton(workReportLine));
             sumChargedEffortDAO
-                    .updateRelatedSumChargedEffortWithDeletedWorkReportLineSet(new HashSet<WorkReportLine>(
-                            Arrays.asList(workReportLine)));
+                    .updateRelatedSumChargedEffortWithDeletedWorkReportLineSet(new HashSet<>(
+                            Collections.singletonList(workReportLine)));
             workReportLineDAO.remove(workReportLine.getId());
             sumChargedEffortDAO.recalculateTimesheetData(orderElements);
             return Response.ok().build();

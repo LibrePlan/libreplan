@@ -26,12 +26,8 @@ import static org.libreplan.web.I18nHelper._;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
-import javax.annotation.Resource;
-
-import org.apache.commons.logging.LogFactory;
 import org.libreplan.business.common.entities.Limits;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
@@ -48,11 +44,9 @@ import org.libreplan.web.common.entrypoints.IURLHandlerRegistry;
 import org.libreplan.web.resources.worker.IWorkerCRUDControllerEntryPoints;
 import org.libreplan.web.security.SecurityUtils;
 import org.libreplan.web.users.bootstrap.PredefinedUsers;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
@@ -62,9 +56,7 @@ import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.Textbox;
-import org.zkoss.zul.api.Groupbox;
-
-import static org.libreplan.web.I18nHelper._;
+import org.zkoss.zul.Groupbox;
 
 /**
  * Controller for CRUD actions over a {@link User}
@@ -72,21 +64,15 @@ import static org.libreplan.web.I18nHelper._;
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  * @author Manuel Rego Casasnovas <rego@igalia.com>
  * @author Javier Moran Rua <jmoran@igalia.com>
- * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
 @SuppressWarnings("serial")
-public class UserCRUDController extends BaseCRUDController<User> implements
-        IUserCRUDController {
+public class UserCRUDController extends BaseCRUDController<User> implements IUserCRUDController {
 
-    private static final org.apache.commons.logging.Log LOG = LogFactory.getLog(UserCRUDController.class);
-
-    @Resource
     private IWorkerCRUDControllerEntryPoints workerCRUD;
 
-    @Autowired
     private ILimitsModel limitsModel;
 
-    @Autowired
     private IUserModel userModel;
 
     private Textbox passwordBox;
@@ -103,46 +89,35 @@ public class UserCRUDController extends BaseCRUDController<User> implements
 
     private IURLHandlerRegistry URLHandlerRegistry;
 
-    private RowRenderer usersRenderer = new RowRenderer() {
+    public UserCRUDController() {
 
-        @Override
-        public void render(Row row, Object data) throws Exception {
-            final User user = (User) data;
-            row.setValue(user);
+    }
 
-            Util.appendLabel(row, user.getLoginName());
-            Util.appendLabel(row, user.isDisabled() ? _("Yes") : _("No"));
-            Util.appendLabel(row, user.isSuperuser() ? _("Yes") : _("No"));
-            Util.appendLabel(row, _(user.getUserType().toString()));
-            Util.appendLabel(row, user.isBound() ? user.getWorker()
-                    .getShortDescription() : "");
+    private RowRenderer usersRenderer = (row, data, i) -> {
+        final User user = (User) data;
+        row.setValue(user);
 
-            Button[] buttons = Util.appendOperationsAndOnClickEvent(row,
-                    new EventListener() {
-                        @Override
-                        public void onEvent(Event event) throws Exception {
-                            goToEditForm(user);
-                        }
-                    }, new EventListener() {
-                        @Override
-                        public void onEvent(Event event) throws Exception {
-                            confirmDelete(user);
-                        }
-                    });
+        Util.appendLabel(row, user.getLoginName());
+        Util.appendLabel(row, user.isDisabled() ? _("Yes") : _("No"));
+        Util.appendLabel(row, user.isSuperuser() ? _("Yes") : _("No"));
+        Util.appendLabel(row, _(user.getUserType().toString()));
+        Util.appendLabel(row, user.isBound() ? user.getWorker().getShortDescription() : "");
 
-            // Disable remove button for default admin as it's mandatory
-            if (isDefaultAdmin(user)) {
-                buttons[1].setDisabled(true);
-                buttons[1]
-                        .setTooltiptext(_("Default user \"admin\" cannot be removed as it is mandatory"));
-            }
+        Button[] buttons = Util.appendOperationsAndOnClickEvent(row,
+                event -> goToEditForm(user), event -> confirmDelete(user));
+
+        // Disable remove button for default admin as it's mandatory
+        if ( isDefaultAdmin(user) ) {
+            buttons[1].setDisabled(true);
+            buttons[1].setTooltiptext(_("Default user \"admin\" cannot be removed as it is mandatory"));
         }
-
     };
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
+
+        injectsObjects();
 
         passwordBox = (Textbox) editWindow.getFellowIfAny("password");
         passwordConfirmationBox = (Textbox) editWindow.getFellowIfAny("passwordConfirmation");
@@ -150,12 +125,17 @@ public class UserCRUDController extends BaseCRUDController<User> implements
         userRolesCombo = (Combobox) editWindow.getFellowIfAny("userRolesCombo");
         appendAllUserRolesExceptRoleBoundUser(userRolesCombo);
         appendAllProfiles(profilesCombo);
-        boundResourceGroupbox = (Groupbox) editWindow
-                .getFellowIfAny("boundResourceGroupbox");
+        boundResourceGroupbox = (Groupbox) editWindow.getFellowIfAny("boundResourceGroupbox");
 
-        final EntryPointsHandler<IUserCRUDController> handler = URLHandlerRegistry
-                .getRedirectorFor(IUserCRUDController.class);
+        final EntryPointsHandler<IUserCRUDController> handler = URLHandlerRegistry.getRedirectorFor(IUserCRUDController.class);
         handler.register(this, page);
+    }
+
+    private void injectsObjects() {
+        userModel = (IUserModel) SpringUtil.getBean("userModel");
+        limitsModel = (ILimitsModel) SpringUtil.getBean("limitsModel");
+        workerCRUD = (IWorkerCRUDControllerEntryPoints) SpringUtil.getBean("workerCRUD");
+        URLHandlerRegistry = (IURLHandlerRegistry) SpringUtil.getBean("URLHandlerRegistry");
     }
 
     /**
@@ -163,17 +143,10 @@ public class UserCRUDController extends BaseCRUDController<User> implements
      * @param combo
      */
     private void appendAllUserRolesExceptRoleBoundUser(Combobox combo) {
-        List<UserRole> roles = new ArrayList<UserRole>(Arrays.asList(UserRole
-                .values()));
+        List<UserRole> roles = new ArrayList<>(Arrays.asList(UserRole.values()));
         roles.remove(UserRole.ROLE_BOUND_USER);
 
-        Collections.sort(roles, new Comparator<UserRole> () {
-            @Override
-            public int compare(UserRole arg0, UserRole arg1) {
-                return _(arg0.getDisplayName()).compareTo(
-                        _(arg1.getDisplayName()));
-            }
-        });
+        Collections.sort(roles, (arg0, arg1) -> _(arg0.getDisplayName()).compareTo(_(arg1.getDisplayName())));
 
         for (UserRole role : roles) {
             Comboitem item = combo.appendItem(_(role.getDisplayName()));
@@ -214,8 +187,9 @@ public class UserCRUDController extends BaseCRUDController<User> implements
 
     public void addSelectedRole() {
         Comboitem comboItem = userRolesCombo.getSelectedItem();
+
         if(comboItem != null) {
-            addRole((UserRole)comboItem.getValue());
+            addRole(comboItem.getValue());
         }
     }
 
@@ -235,8 +209,9 @@ public class UserCRUDController extends BaseCRUDController<User> implements
 
     public void addSelectedProfile() {
         Comboitem comboItem = profilesCombo.getSelectedItem();
+
         if(comboItem != null) {
-            addProfile((Profile)comboItem.getValue());
+            addProfile(comboItem.getValue());
         }
     }
 
@@ -259,19 +234,15 @@ public class UserCRUDController extends BaseCRUDController<User> implements
     public void setPassword(String password) {
         userModel.setPassword(password);
         //update the constraint on the confirmation password box
-        ((Textbox)editWindow.getFellowIfAny("passwordConfirmation")).
-                clearErrorMessage(true);
+        ((Textbox)editWindow.getFellowIfAny("passwordConfirmation")).clearErrorMessage(true);
     }
 
     public Constraint validatePasswordConfirmation() {
-        return new Constraint() {
-            @Override
-            public void validate(Component comp, Object value)
-                    throws WrongValueException {
-                ((Textbox)comp).setRawValue(value);
-                if(!((String)value).equals(passwordBox.getValue())) {
-                    throw new WrongValueException(comp, _("passwords don't match"));
-                }
+        return (comp, value) -> {
+            ((Textbox)comp).setRawValue(value);
+
+            if(!value.equals(passwordBox.getValue())) {
+                throw new WrongValueException(comp, _("passwords don't match"));
             }
         };
     }
@@ -290,8 +261,7 @@ public class UserCRUDController extends BaseCRUDController<User> implements
     protected void initCreate() {
         userModel.initCreate();
         //password is compulsory when creating
-        passwordBox.setConstraint("no empty:" +
-                _("Password cannot be empty"));
+        passwordBox.setConstraint("no empty:" + _("Password cannot be empty"));
         //clean the password boxes, they are not cleared automatically
         //because they are not directly associated to an attribute
         passwordBox.setRawValue("");
@@ -313,8 +283,7 @@ public class UserCRUDController extends BaseCRUDController<User> implements
     }
 
     private void prepareAuthenticationTypesCombo() {
-        Combobox combo = (Combobox) editWindow
-                .getFellowIfAny("authenticationTypeCombo");
+        Combobox combo = (Combobox) editWindow.getFellowIfAny("authenticationTypeCombo");
         combo.getChildren().clear();
         for (UserAuthenticationType type : UserAuthenticationType.values()) {
             Comboitem item = combo.appendItem(_(type.toString()));
@@ -324,8 +293,7 @@ public class UserCRUDController extends BaseCRUDController<User> implements
             }
         }
 
-        Row comboRow = (Row) editWindow
-                .getFellowIfAny("authenticationTypeComboRow");
+        Row comboRow = (Row) editWindow.getFellowIfAny("authenticationTypeComboRow");
         comboRow.setVisible(true);
     }
 
@@ -337,18 +305,12 @@ public class UserCRUDController extends BaseCRUDController<User> implements
     @Override
     protected boolean beforeDeleting(User user) {
         Worker worker = user.getWorker();
-        if (worker != null) {
-            try {
-                return Messagebox
-                        .show(_("User is bound to resource \"{0}\" and it will be unbound. Do you want to continue with user removal?",
-                                worker.getShortDescription()),
-                                _("Confirm remove user"), Messagebox.YES
-                                        | Messagebox.NO, Messagebox.QUESTION) == Messagebox.YES;
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        return true;
+        return worker == null ||
+                Messagebox.show(_("User is bound to resource \"{0}\" and it will be unbound. " +
+                                "Do you want to continue with user removal?",
+                        worker.getShortDescription()),
+                        _("Confirm remove user"),
+                        Messagebox.YES | Messagebox.NO, Messagebox.QUESTION) == Messagebox.YES;
     }
 
     @Override
@@ -358,10 +320,8 @@ public class UserCRUDController extends BaseCRUDController<User> implements
 
     public boolean isLdapUser() {
         User user = userModel.getUser();
-        if (user == null) {
-            return false;
-        }
-        return !user.isLibrePlanUser();
+
+        return user != null && !user.isLibrePlanUser();
     }
 
     public boolean isLdapUserLdapConfiguration() {
@@ -373,25 +333,16 @@ public class UserCRUDController extends BaseCRUDController<User> implements
     }
 
     public RowRenderer getRolesRenderer() {
-        return new RowRenderer() {
-            @Override
-            public void render(Row row, Object data) throws Exception {
-                final UserRole role = (UserRole) data;
+        return (row, data, i) -> {
+            final UserRole role = (UserRole) data;
 
-                row.appendChild(new Label(_(role.getDisplayName())));
+            row.appendChild(new Label(_(role.getDisplayName())));
 
-                Button removeButton = Util
-                        .createRemoveButton(new EventListener() {
-                            @Override
-                            public void onEvent(Event event) throws Exception {
-                                removeRole(role);
-                            }
-                        });
-                removeButton.setDisabled(areRolesAndProfilesDisabled()
-                        || role.equals(UserRole.ROLE_BOUND_USER)
-                        || isUserDefaultAdmin());
-                row.appendChild(removeButton);
-            }
+            Button removeButton = Util.createRemoveButton(event -> removeRole(role));
+            removeButton.setDisabled(areRolesAndProfilesDisabled() ||
+                    role.equals(UserRole.ROLE_BOUND_USER) || isUserDefaultAdmin());
+
+            row.appendChild(removeButton);
         };
     }
 
@@ -404,6 +355,7 @@ public class UserCRUDController extends BaseCRUDController<User> implements
         if (user != null && user.isBound()) {
             return _("Yes");
         }
+
         return _("No");
     }
 
@@ -412,35 +364,29 @@ public class UserCRUDController extends BaseCRUDController<User> implements
         if (user != null && user.isBound()) {
             return user.getWorker().getShortDescription();
         }
+
         return "";
     }
 
     public boolean isBound() {
         User user = getUser();
-        if (user != null) {
-            return user.isBound();
-        }
-        return false;
+
+        return user != null && user.isBound();
     }
 
     public void goToWorkerEdition() {
         Worker worker = getUser().getWorker();
-        if (worker != null) {
-            if (showConfirmWorkerEditionDialog() == Messagebox.OK) {
-                workerCRUD.goToEditForm(worker);
-            }
+
+        if (worker != null && showConfirmWorkerEditionDialog() == Messagebox.OK) {
+            workerCRUD.goToEditForm(worker);
         }
     }
 
     private int showConfirmWorkerEditionDialog() {
-        try {
-            return Messagebox
-                    .show(_("Unsaved changes will be lost. Would you like to continue?"),
-                            _("Confirm edit worker"), Messagebox.OK
-                                    | Messagebox.CANCEL, Messagebox.QUESTION);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        return Messagebox
+                .show(_("Unsaved changes will be lost. Would you like to continue?"),
+                        _("Confirm edit worker"), Messagebox.OK
+                                | Messagebox.CANCEL, Messagebox.QUESTION);
     }
 
     public void unboundResource() {
@@ -456,6 +402,7 @@ public class UserCRUDController extends BaseCRUDController<User> implements
         if (isNoRoleWorkers()) {
             return _("You do not have permissions to go to edit worker window");
         }
+
         return "";
     }
 
@@ -465,15 +412,12 @@ public class UserCRUDController extends BaseCRUDController<User> implements
 
     private boolean isUserDefaultAdmin() {
         User user = userModel.getUser();
-        if (user != null) {
-            return isDefaultAdmin(user);
-        }
-        return false;
+
+        return user != null && isDefaultAdmin(user);
     }
 
     public boolean areRolesAndProfilesDisabled() {
-        return (isLdapUser() && userModel.isLDAPBeingUsed() && userModel
-                .isLDAPRolesBeingUsed()) || isUserDefaultAdmin();
+        return (isLdapUser() && userModel.isLDAPBeingUsed() && userModel.isLDAPRolesBeingUsed()) || isUserDefaultAdmin();
     }
 
     public boolean isLdapUserOrDefaultAdmin() {
@@ -485,6 +429,7 @@ public class UserCRUDController extends BaseCRUDController<User> implements
         if (user != null) {
             return user.getUserType();
         }
+
         return null;
     }
 
@@ -494,31 +439,33 @@ public class UserCRUDController extends BaseCRUDController<User> implements
                     editWindow.getFellowIfAny("authenticationTypeCombo"),
                     _("cannot be empty"));
         }
-        UserAuthenticationType authenticationType = (UserAuthenticationType) item
-                .getValue();
+
+        UserAuthenticationType authenticationType = item.getValue();
         User user = getUser();
+
         if (user != null) {
-            user.setLibrePlanUser(authenticationType
-                    .equals(UserAuthenticationType.DATABASE));
+            user.setLibrePlanUser(authenticationType.equals(UserAuthenticationType.DATABASE));
         }
     }
 
-    public boolean isCreateButtonDisabled(){
+    public boolean isCreateButtonDisabled() {
         Limits usersTypeLimit = limitsModel.getUsersType();
         Integer usersCount = userModel.getRowCount().intValue();
-        if (usersTypeLimit != null)
-            if ( usersCount >= usersTypeLimit.getValue() )
-                return true;
-        return false;
+
+        return usersTypeLimit != null && usersCount >= usersTypeLimit.getValue();
     }
 
-    public String getShowCreateFormLabel(){
+    /**
+     * Should be public!
+     * Used in _listUsers.zul
+     */
+    public String getShowCreateFormLabel() {
         Limits usersTypeLimit = limitsModel.getUsersType();
         Integer usersCount = userModel.getRowCount().intValue();
         int usersLeft = usersTypeLimit.getValue() - usersCount;
-        if (usersTypeLimit != null)
-            if ( usersCount >= usersTypeLimit.getValue() )
-                return _("User limit reached");
+
+        if ( usersCount >= usersTypeLimit.getValue() )
+            return _("User limit reached");
 
         return _("Create") + " ( " + usersLeft  + " " + _("left") + " )";
     }

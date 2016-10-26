@@ -37,16 +37,14 @@ public interface ITemplateModel {
 
     String getCompanyLogoURL();
 
-    Scenario getScenarioByName(String name);
+    interface IOnFinished {
 
-    public interface IOnFinished {
-        public void onWithoutErrorFinish();
+        void onWithoutErrorFinish();
 
-        public void errorHappened(Exception exceptionHappened);
+        void errorHappened(Exception exceptionHappened);
     }
 
-    void setScenario(String loginName, Scenario scenario,
-            IOnFinished onFinish);
+    void setScenario(String loginName, Scenario scenario, IOnFinished onFinish);
 
     boolean isScenariosVisible();
 
@@ -59,7 +57,5 @@ public interface ITemplateModel {
     boolean isUserAdmin();
 
     boolean isCheckNewVersionEnabled();
-
-    boolean isAllowToGatherUsageStatsEnabled();
 
 }

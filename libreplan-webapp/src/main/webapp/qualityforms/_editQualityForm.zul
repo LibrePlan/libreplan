@@ -26,7 +26,7 @@
 
     <tabbox>
         <tabs>
-           <tab label="${i18n:_('Quality form')}"></tab>
+            <tab label="${i18n:_('Quality form')}"/>
         </tabs>
         <tabpanels>
             <tabpanel>
@@ -41,15 +41,15 @@
                             <row>
                                 <label value="${i18n:_('Name')}" />
                                 <textbox id="qualityFormName"
-                                    width="500px" value="@{controller.qualityForm.name}"
-                                    constraint="@{controller.checkConstraintUniqueQualityFormName}"
-                                    onBlur="controller.updateWindowTitle()" sclass="focus-element" />
+                                         width="500px" value="@{controller.qualityForm.name}"
+                                         constraint="@{controller.checkConstraintUniqueQualityFormName}"
+                                         onBlur="controller.updateWindowTitle()" sclass="focus-element" />
                             </row>
                             <row>
                                 <label value="${i18n:_('Description')}" />
                                 <textbox id="qualityFormDescription"
-                                    rows="3" width="500px"
-                                    value="@{controller.qualityForm.description}"/>
+                                         rows="3" width="500px"
+                                         value="@{controller.qualityForm.description}"/>
                             </row>
                             <row>
                                 <hbox>
@@ -57,10 +57,10 @@
                                     <image height="15px" src="/common/img/axuda.gif" tooltip="quality-forms-popup" />
                                 </hbox>
                                 <listbox id="listQualityFormTypes" mold="select" rows="1"
-                                    model="@{controller.qualityFormTypes}"
-                                    onSelect="controller.changeQualityFormType();"
-                                    selectedItem="@{controller.qualityForm.qualityFormType}"
-                                    itemRenderer="org.libreplan.web.common.EnumsListitemRenderer"/>
+                                         model="@{controller.qualityFormTypes}"
+                                         onSelect="controller.changeQualityFormType();"
+                                         selectedItem="@{controller.qualityForm.qualityFormType}"
+                                         itemRenderer="org.libreplan.web.common.EnumsListitemRenderer"/>
                             </row>
                             <row>
                                 <label value="${i18n:_('Report progress')}" />
@@ -74,47 +74,47 @@
                 <panel title="${i18n:_('Quality form items list')}" border="normal">
                     <panelchildren>
                         <hbox pack="center">
-                            <button label="${i18n:_('New quality form item')}"
-                            onClick="controller.createQualityFormItem()" />
+                            <button label="${i18n:_('New quality form item')}" sclass="add-button"
+                                    onClick="controller.createQualityFormItem()" />
                         </hbox>
                         <grid id="gridQualityFormItems"
-                            model="@{controller.qualityFormItems}" fixedLayout="true">
+                              model="@{controller.qualityFormItems}" fixedLayout="true">
                             <columns sizable="true">
                                 <column label="${i18n:_('Name')}"/>
                                 <column label="${i18n:_('Position')}" align="center" width="120px"
-                                    sort="auto(position)" sortDirection="ascending"/>
+                                        sort="auto(position)" sortDirection="ascending"/>
                                 <column visible="@{controller.byPercentage}" label="${i18n:_('Percentage')}" align="center" width="180px"/>
                                 <column label="${i18n:_('Operations')}" align="center" width="120px"/>
                             </columns>
                             <rows>
                                 <row self="@{each='qualityFormItem'}" value="@{qualityFormItem}">
                                     <textbox value="@{qualityFormItem.name}" width="95%"
-                                        constraint="@{controller.checkConstraintQualityFormItemName}"/>
+                                             constraint="@{controller.checkConstraintQualityFormItemName}"/>
                                     <label value="@{qualityFormItem.stringPosition}" width="50px"/>
 
                                     <decimalbox scale = "2" width="100px"
-                                        visible="@{controller.byPercentage}"
-                                        value="@{qualityFormItem.percentage}"
-                                        constraint = "@{controller.checkConstraintQualityFormItemPercentage}"
-                                        onChange = "controller.onChangeQualityFormItemPercentage()"/>
+                                                visible="@{controller.byPercentage}"
+                                                value="@{qualityFormItem.percentage}"
+                                                constraint = "@{controller.checkConstraintQualityFormItemPercentage}"
+                                                onChange = "controller.onChangeQualityFormItemPercentage()"/>
 
                                     <hbox>
                                         <button visible="@{controller.byItems}"
-                                            sclass="icono" image="/common/img/ico_subir1.png"
-                                            hoverImage="/common/img/ico_subir.png"
-                                            tooltiptext="${i18n:_('Up')}"
-                                            onClick="controller.upQualityFormItem(self.parent.parent.value);">
+                                                sclass="icono" image="/common/img/ico_subir1.png"
+                                                hoverImage="/common/img/ico_subir.png"
+                                                tooltiptext="${i18n:_('Up')}"
+                                                onClick="controller.upQualityFormItem(self.parent.parent.value);">
                                         </button>
                                         <button visible="@{controller.byItems}"
-                                            sclass="icono" image="/common/img/ico_bajar1.png"
-                                            hoverImage="/common/img/ico_bajar.png"
-                                            tooltiptext="${i18n:_('Down')}"
-                                            onClick="controller.downQualityFormItem(self.parent.parent.value);">
+                                                sclass="icono" image="/common/img/ico_bajar1.png"
+                                                hoverImage="/common/img/ico_bajar.png"
+                                                tooltiptext="${i18n:_('Down')}"
+                                                onClick="controller.downQualityFormItem(self.parent.parent.value);">
                                         </button>
                                         <button sclass="icono" image="/common/img/ico_borrar1.png"
-                                            hoverImage="/common/img/ico_borrar.png"
-                                            tooltiptext="${i18n:_('Delete')}"
-                                            onClick="controller.confirmDeleteQualityFormItem(self.parent.parent.value);">
+                                                hoverImage="/common/img/ico_borrar.png"
+                                                tooltiptext="${i18n:_('Delete')}"
+                                                onClick="controller.confirmDeleteQualityFormItem(self.parent.parent.value);">
                                         </button>
                                     </hbox>
                                 </row>
@@ -129,19 +129,22 @@
     <!-- Control buttons -->
     <hbox>
         <button label="${i18n:_('Save')}"
-            onClick="controller.saveAndExit()" autodisable="self"
-            sclass="save-button global-action"/>
+                onClick="controller.saveAndExit()" autodisable="self"
+                sclass="save-button global-action"/>
         <button label="${i18n:_('Save &amp; Continue')}"
-            onClick="controller.saveAndContinue()"
-            sclass="saveandcontinue-button global-action"/>
+                onClick="controller.saveAndContinue()"
+                sclass="saveandcontinue-button global-action"/>
         <button label="${i18n:_('Cancel')}"
-            onClick="controller.cancelForm()"
-            sclass="cancel-button global-action"/>
+                onClick="controller.cancelForm()"
+                sclass="cancel-button global-action"/>
     </hbox>
 
     <zscript><![CDATA[
-        i18iframe = "/help/" + org.libreplan.web.I18nHelper._("en") + "/12-formularios-calidad.html#administracion-de-formularios-de-calidade";
-    ]]></zscript>
+        i18iframe = org.libreplan.web.HelpLinkUtil.checkUrlPath(
+            "/help/" + org.libreplan.web.I18nHelper._("en") +
+            "/12-formularios-calidad.html#administracion-de-formularios-de-calidade");
+        ]]>
+    </zscript>
     <popup id="quality-forms-popup" width="700px" onOpen='iframe.setSrc(i18iframe)'>
         <iframe id="iframe" width="100%" />
     </popup>

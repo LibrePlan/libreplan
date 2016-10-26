@@ -26,8 +26,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
 /**
- * Sends E-mail to users with data that storing in notification_queue table
- * and that are treat to
+ * Sends E-mail to users with data that storing in notification_queue table and that are treat to
  * {@link org.libreplan.business.email.entities.EmailTemplateEnum#TEMPLATE_TODAY_TASK_SHOULD_START}.
  *
  *
@@ -46,5 +45,4 @@ public class SendEmailOnTaskShouldStartJob extends QuartzJobBean {
 
         taskShouldStart.sendEmail();
     }
-
 }

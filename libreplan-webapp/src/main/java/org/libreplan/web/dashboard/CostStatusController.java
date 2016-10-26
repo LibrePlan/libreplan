@@ -33,13 +33,13 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.Label;
 
 /**
- * @author Diego Pino García <dpino@igalia.com>
+ * Contains operations for calculations in the CostStatus table in the Dashboard view.
  *
- *         Contains operations for calculations in the CostStatus table in the
- *         Dashboard view
+ * @author Diego Pino García <dpino@igalia.com>
  */
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -47,26 +47,32 @@ public class CostStatusController extends GenericForwardComposer {
 
     private ICostStatusModel costStatusModel;
 
-    // Cost Variance
+    /** Cost Variance */
     public Label lblCV;
 
-    // Cost Performance Index
+    /** Cost Performance Index */
     public Label lblCPI;
 
-    // Budget at Completion
+    /** Budget at Completion */
     public Label lblBAC;
 
-    // Estimate at Completion
+    /** Estimate at Completion */
     public Label lblEAC;
 
-    // Variance at Completion
+    /** Variance at Completion */
     public Label lblVAC;
 
-    // Cost Variance
+    /** Cost Variance */
     public Label lblACWP;
 
-    // Estimate To Complete
+    /** Estimate To Complete */
     public Label lblETC;
+
+    public CostStatusController() {
+        if ( costStatusModel == null ) {
+            costStatusModel = (ICostStatusModel) SpringUtil.getBean("costStatusModel");
+        }
+    }
 
     @Override
     public void doAfterCompose(org.zkoss.zk.ui.Component comp) throws Exception {
@@ -82,35 +88,26 @@ public class CostStatusController extends GenericForwardComposer {
 
     public void render() {
         LocalDate today = LocalDate.fromDateFields(new Date());
-        BigDecimal actualCost = costStatusModel
-                .getActualCostWorkPerformedAt(today);
+        BigDecimal actualCost = costStatusModel.getActualCostWorkPerformedAt(today);
         setHoursLabel(lblACWP, actualCost);
 
-        BigDecimal budgetedCost = costStatusModel
-                .getBudgetedCostWorkPerformedAt(today);
-        BigDecimal costVariance = costStatusModel.getCostVariance(budgetedCost,
-                actualCost);
+        BigDecimal budgetedCost = costStatusModel.getBudgetedCostWorkPerformedAt(today);
+        BigDecimal costVariance = costStatusModel.getCostVariance(budgetedCost, actualCost);
         setHoursLabel(lblCV, costVariance);
 
-        BigDecimal costPerformanceIndex = costStatusModel
-                .getCostPerformanceIndex(budgetedCost, actualCost);
+        BigDecimal costPerformanceIndex = costStatusModel.getCostPerformanceIndex(budgetedCost, actualCost);
         setPercentageLabel(lblCPI, costPerformanceIndex);
 
         BigDecimal budgetAtCompletion = costStatusModel.getBudgetAtCompletion();
         setHoursLabel(lblBAC, budgetAtCompletion);
 
-        BigDecimal estimateAtCompletion = costStatusModel
-                .getEstimateAtCompletion(budgetAtCompletion,
-                        costPerformanceIndex);
+        BigDecimal estimateAtCompletion = costStatusModel.getEstimateAtCompletion(budgetAtCompletion, costPerformanceIndex);
         setHoursLabel(lblEAC, estimateAtCompletion);
 
-        BigDecimal varianceAtCompletion = costStatusModel
-                .getVarianceAtCompletion(budgetAtCompletion,
-                        estimateAtCompletion);
+        BigDecimal varianceAtCompletion = costStatusModel.getVarianceAtCompletion(budgetAtCompletion, estimateAtCompletion);
         setHoursLabel(lblVAC, varianceAtCompletion);
 
-        BigDecimal estimateToComplete = costStatusModel.getEstimateToComplete(
-                estimateAtCompletion, actualCost);
+        BigDecimal estimateToComplete = costStatusModel.getEstimateToComplete(estimateAtCompletion, actualCost);
         setHoursLabel(lblETC, estimateToComplete);
     }
 

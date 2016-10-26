@@ -35,7 +35,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
- *
  */
 public abstract class AssignedLabelsModel<T> implements IAssignedLabelsModel<T> {
 
@@ -105,17 +104,19 @@ public abstract class AssignedLabelsModel<T> implements IAssignedLabelsModel<T> 
 
     @Transactional(readOnly = true)
     public List<Label> getLabels() {
-        List<Label> result = new ArrayList<Label>();
+        List<Label> result = new ArrayList<>();
+
         if (element != null && getLabels(element) != null) {
             reattachLabels();
             result.addAll(getLabels(element));
         }
+
         return result;
     }
 
     @Transactional(readOnly = true)
     public List<Label> getInheritedLabels() {
-        List<Label> result = new ArrayList<Label>();
+        List<Label> result = new ArrayList<>();
         if (element != null) {
             reattachLabels();
             T parent = getParent(element);
@@ -128,15 +129,13 @@ public abstract class AssignedLabelsModel<T> implements IAssignedLabelsModel<T> 
     }
 
     @Transactional(readOnly = true)
-    public Label createLabel(final String labelName,
-            final LabelType labelType) {
+    public Label createLabel(final String labelName, final LabelType labelType) {
         Label label = createAndSaveLabelOrGetFromDatabase(labelName, labelType);
         addLabelToConversation(label);
         return label;
     }
 
-    private Label createAndSaveLabelOrGetFromDatabase(final String labelName,
-            final LabelType labelType) {
+    private Label createAndSaveLabelOrGetFromDatabase(final String labelName, final LabelType labelType) {
         Label label;
         try {
             label = saveLabelOnAnotherTransaction(labelName, labelType);
@@ -149,18 +148,16 @@ public abstract class AssignedLabelsModel<T> implements IAssignedLabelsModel<T> 
         return label;
     }
 
-    private Label saveLabelOnAnotherTransaction(final String labelName,
-            final LabelType labelType) {
-        return adHocTransactionService
-                .runOnAnotherTransaction(new IOnTransaction<Label>() {
-                    @Override
-                    public Label execute() {
-                        Label label = Label.create(labelName);
-                        label.setType(labelType);
-                        labelDAO.save(label);
-                        return label;
-                    }
-                });
+    private Label saveLabelOnAnotherTransaction(final String labelName, final LabelType labelType) {
+        return adHocTransactionService.runOnAnotherTransaction(new IOnTransaction<Label>() {
+            @Override
+            public Label execute() {
+                Label label = Label.create(labelName);
+                label.setType(labelType);
+                labelDAO.save(label);
+                return label;
+            }
+        });
     }
 
     private void forceLoad(Label label) {
@@ -195,16 +192,15 @@ public abstract class AssignedLabelsModel<T> implements IAssignedLabelsModel<T> 
     }
 
     /**
-     * Search {@link Label} by name and type in cache of labels
+     * Search {@link Label} by name and type in cache of labels.
+     *
      * @param labelName
      * @param labelTypeName
-     * @return
+     * @return {@link Label}
      */
-    private Label findLabelByNameAndTypeName(String labelName,
-            String labelTypeName) {
+    private Label findLabelByNameAndTypeName(String labelName, String labelTypeName) {
         for (Label label : getLabelsOnConversation()) {
-            if (label.getName().equals(labelName)
-                    && label.getType().getName().equals(labelTypeName)) {
+            if (label.getName().equals(labelName) && label.getType().getName().equals(labelTypeName)) {
                 return label;
             }
         }

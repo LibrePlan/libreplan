@@ -26,12 +26,16 @@ import org.libreplan.business.common.exceptions.ValidationException.InvalidValue
 import org.zkoss.zk.ui.Component;
 
 /**
- * Defines the ways in which information messages can be shown to the user <br />
+ * Defines the ways in which information messages can be shown to the user.
+ * <br />
+ *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public interface IMessagesForUser {
-    public interface ICustomLabelCreator{
-        public Component createLabelFor(InvalidValue invalidValue);
+
+    interface ICustomLabelCreator {
+
+        Component createLabelFor(InvalidValue invalidValue);
     }
 
     void invalidValue(InvalidValue invalidValue, ICustomLabelCreator customLabelCreator);

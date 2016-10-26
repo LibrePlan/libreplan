@@ -77,7 +77,8 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar, IHuman
     /**
      * Constructor for hibernate. Do not use!
      */
-    public BaseCalendar() {}
+    public BaseCalendar() {
+    }
 
     protected BaseCalendar(CalendarData calendarData) {
         calendarDataVersions.add(calendarData);
@@ -95,14 +96,12 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar, IHuman
     public static BaseCalendar createBasicCalendar() {
         BaseCalendar calendar = create();
         resetDefaultCapacities(calendar);
-
         return calendar;
     }
 
     public static BaseCalendar createBasicCalendar(String code) {
         BaseCalendar calendar = create(code);
         resetDefaultCapacities(calendar);
-
         return calendar;
     }
 
@@ -209,8 +208,7 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar, IHuman
         exceptionDays.addAll(exceptions);
 
         if (getParent(date) != null) {
-            for (CalendarException exceptionDay : getParent(date)
-                    .getExceptions()) {
+            for (CalendarException exceptionDay : getParent(date).getExceptions()) {
                 if (!isExceptionDayAlreadyInExceptions(exceptionDay)) {
                     exceptionDays.add(exceptionDay);
                 }
@@ -233,13 +231,11 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar, IHuman
     public void addExceptionDay(CalendarException day) {
 
         if (day.getDate() == null) {
-            throw new IllegalArgumentException(
-                    "This exception day has a incorrect date");
+            throw new IllegalArgumentException("This exception day has a incorrect date");
         }
 
         if (isExceptionDayAlreadyInExceptions(day)) {
-            throw new IllegalArgumentException(
-                    "This day is already in the exception days");
+            throw new IllegalArgumentException("This day is already in the exception days");
         }
 
         exceptions.add(day);
@@ -249,8 +245,7 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar, IHuman
         CalendarException day = getOwnExceptionDay(date);
 
         if (day == null) {
-            throw new IllegalArgumentException(
-                    "There is not an exception day on that date");
+            throw new IllegalArgumentException("There is not an exception day on that date");
         }
 
         exceptions.remove(day);
@@ -304,21 +299,21 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar, IHuman
             return exceptionDay.getCapacity();
         }
 
-        return getCapacityConsideringCalendarDatasOn(date, getDayFrom(date));
+        return getCapacityConsideringCalendarDataOn(date, getDayFrom(date));
     }
 
     private Days getDayFrom(LocalDate date) {
         return Days.values()[date.getDayOfWeek() - 1];
     }
 
-    public Capacity getCapacityConsideringCalendarDatasOn(LocalDate date, Days day) {
+    public Capacity getCapacityConsideringCalendarDataOn(LocalDate date, Days day) {
         CalendarData calendarData = getCalendarData(date);
 
         Capacity capacity = calendarData.getCapacityOn(day);
         BaseCalendar parent = getParent(date);
 
         if (capacity == null && parent != null) {
-            return parent.getCapacityConsideringCalendarDatasOn(date, day);
+            return parent.getCapacityConsideringCalendarDataOn(date, day);
         }
 
         return valueIfNotNullElseDefaultValue(capacity);
@@ -333,8 +328,7 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar, IHuman
     }
 
     /**
-     * Returns the number of workable hours for a specific period depending on
-     * the calendar restrictions.
+     * Returns the number of workable hours for a specific period depending on the calendar restrictions.
      *
      * @param init
      * @param end
@@ -345,19 +339,18 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar, IHuman
     }
 
     /**
-     * Returns the workable duration for a specific period depending on the
-     * calendar restrictions.
+     * Returns the workable duration for a specific period depending on the calendar restrictions.
      *
      * @param init
      * @param endInclusive
      * @return Duration of work
      */
     public EffortDuration getWorkableDuration(LocalDate init, LocalDate endInclusive) {
-        Iterable<PartialDay> daysBetween = IntraDayDate.startOfDay(init)
-                .daysUntil(IntraDayDate.startOfDay(endInclusive).nextDayAtStart());
+
+        Iterable<PartialDay> daysBetween =
+                IntraDayDate.startOfDay(init).daysUntil(IntraDayDate.startOfDay(endInclusive).nextDayAtStart());
 
         return EffortDuration.sum(daysBetween, new IEffortFrom<PartialDay>() {
-
             @Override
             public EffortDuration from(PartialDay each) {
                 return getCapacityOn(each);
@@ -367,8 +360,7 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar, IHuman
     }
 
     /**
-     * Returns the number of workable hours for a specific week depending on the
-     * calendar restrictions.
+     * Returns the number of workable hours for a specific week depending on the calendar restrictions.
      *
      * @param date
      * @return Workable hours per week
@@ -376,33 +368,31 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar, IHuman
     public Integer getWorkableHoursPerWeek(LocalDate date) {
         LocalDate init = date.dayOfWeek().withMinimumValue();
         LocalDate end = date.dayOfWeek().withMaximumValue();
-
         return getWorkableHours(init, end);
     }
 
     /**
-     * Creates a new {@link BaseCalendar} derived from the current calendar. The
-     * new calendar will be the child of the current calendar.
+     * Creates a new {@link BaseCalendar} derived from the current calendar.
+     * The new calendar will be the child of the current calendar.
+     *
      * @return The derived calendar
      */
     public BaseCalendar newDerivedCalendar() {
         BaseCalendar derivedCalendar = create();
         derivedCalendar.setParent(this);
-
         return derivedCalendar;
     }
 
     public ResourceCalendar newDerivedResourceCalendar() {
         ResourceCalendar derivedCalendar = ResourceCalendar.create();
         derivedCalendar.setParent(this);
-
         return derivedCalendar;
     }
 
     /**
      * Creates a new version this {@link BaseCalendar} from the specific date.
-     * It makes that the current calendar expires in the specific date. And the
-     * new calendar will be used from that date onwards.
+     * It makes that the current calendar expires in the specific date.
+     * And the new calendar will be used from that date onwards.
      *
      * @param date
      */
@@ -419,14 +409,17 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar, IHuman
 
     public CalendarData createNewVersionInsideIntersection(LocalDate startDate, LocalDate expiringDate) {
         for (CalendarData nextVersion : calendarDataVersions) {
-            if ((nextVersion.getExpiringDate() == null) ||
-                    (expiringDate.compareTo(nextVersion.getExpiringDate()) <= 0)) {
+
+            if ((nextVersion.getExpiringDate() == null) || (expiringDate.compareTo(nextVersion.getExpiringDate()) <= 0)) {
+
                 int index = calendarDataVersions.indexOf(nextVersion);
+
                 if (index > 0) {
                     CalendarData prevVersion = calendarDataVersions.get(index - 1);
+
                     if (newIntervalIncludeAnotherWorkWeek(startDate, expiringDate, prevVersion, nextVersion)) {
-                        throw new IllegalArgumentException(
-                                "the new work week includes a whole work week already exists");
+                        throw new IllegalArgumentException("the new work week includes a whole work week already exists");
+
                     } else {
                         LocalDate prevExpiringDate = prevVersion.getExpiringDate();
                         LocalDate nextExpiringDate = nextVersion.getExpiringDate();
@@ -524,8 +517,7 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar, IHuman
         CalendarData newCalendarData;
         if (startDate != null && expiringDate != null) {
             if (startDate.compareTo(expiringDate) > 0) {
-                throw new IllegalArgumentException(
-                        "the start date must be lower than expiring date");
+                throw new IllegalArgumentException("the start date must be lower than expiring date");
             }
 
             if (calendarDataVersions.size() == 1) {
@@ -569,7 +561,6 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar, IHuman
             else{
                 calendarDataVersions.add(version);
                 Collections.sort(calendarDataVersions, CalendarData.BY_EXPIRING_DATE_COMPARATOR);
-
                 return;
             }
         }
@@ -580,13 +571,17 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar, IHuman
                     "You can not add a work week with previous date than current date");
         }
         for (int i = 0; i < calendarDataVersions.size(); i++) {
-            if ((calendarDataVersions.get(i).getExpiringDate() == null) ||
-                    (calendarDataVersions.get(i).getExpiringDate().compareTo(version.getExpiringDate()) > 0)) {
-                if ((i - 1 >= 0) &&
+
+            if ( (calendarDataVersions.get(i).getExpiringDate() == null) ||
+                    (calendarDataVersions.get(i).getExpiringDate().compareTo(version.getExpiringDate()) > 0) ) {
+
+                if ( (i - 1 >= 0) &&
                         (calendarDataVersions.get(i - 1).getExpiringDate() != null) &&
-                        (calendarDataVersions.get(i - 1).getExpiringDate().compareTo(version.getExpiringDate()) >= 0)) {
+                        (calendarDataVersions.get(i - 1).getExpiringDate().compareTo(version.getExpiringDate()) >= 0) ) {
+
                     throw new IllegalArgumentException("the date is null and overlap with the other work week.");
                 }
+
                 calendarDataVersions.add(i, version);
 
                 return;
@@ -714,16 +709,14 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar, IHuman
 
     private void setExpiringDate(CalendarData calendarData, LocalDate expiringDate) {
         if (calendarData.getExpiringDate() == null) {
-            throw new IllegalArgumentException("Can not set the expiring date "
-                    + "because of this is the last work week");
+            throw new IllegalArgumentException("Can not set the expiring date because of this is the last work week");
         }
 
         Integer index = calendarDataVersions.indexOf(calendarData);
         if (index > 0) {
-            CalendarData preivousCalendarData = calendarDataVersions.get(index - 1);
-            if (expiringDate.compareTo(preivousCalendarData.getExpiringDate()) <= 0) {
-                throw new IllegalArgumentException(
-                        "This date must be greater than expiring date of previous calendars");
+            CalendarData previousCalendarData = calendarDataVersions.get(index - 1);
+            if (expiringDate.compareTo(previousCalendarData.getExpiringDate()) <= 0) {
+                throw new IllegalArgumentException("This date must be greater than expiring date of previous calendars");
             }
         }
 
@@ -760,8 +753,7 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar, IHuman
         CalendarData calendarData = getPreviousCalendarData(date);
 
         if (calendarData == null) {
-            throw new IllegalArgumentException(
-                    "You can not set this date for the first work week");
+            throw new IllegalArgumentException("You can not set this date for the first work week");
         }
 
         setExpiringDate(calendarData, validFromDate);
@@ -770,20 +762,17 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar, IHuman
     public boolean isLastVersion(LocalDate date) {
         CalendarData calendarData = getCalendarData(date);
         Integer index = calendarDataVersions.indexOf(calendarData);
-
         return index == (calendarDataVersions.size() - 1);
     }
 
     public boolean isFirstVersion(LocalDate date) {
         CalendarData calendarData = getCalendarData(date);
         Integer index = calendarDataVersions.indexOf(calendarData);
-
         return index == 0;
     }
 
     /**
-     * Returns a set of non workable days (0 hours) for a specific period
-     * depending on the calendar restrictions.
+     * Returns a set of non workable days (0 hours) for a specific period depending on the calendar restrictions.
      *
      * @param init
      * @param end
@@ -814,8 +803,7 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar, IHuman
 
     public void removeCalendarData(CalendarData calendarData) {
         if (this.getCalendarDataVersions().size() <= 1) {
-            throw new IllegalArgumentException(
-                    "You can not remove the last calendar data");
+            throw new IllegalArgumentException("You can not remove the last calendar data");
         }
 
         CalendarData lastCalendarData = getLastCalendarData();
@@ -842,8 +830,7 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar, IHuman
 
     /**
      * Returns a a copy of calendar availabilities sorted by start date.
-     * calendarAvailabilities should already be sorted by start date, this
-     * method is just for extra safety
+     * calendarAvailabilities should already be sorted by start date, this method is just for extra safety.
      *
      * @return List of calendar availability
      */
@@ -856,15 +843,20 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar, IHuman
 
     public void addNewCalendarAvailability(CalendarAvailability calendarAvailability) {
         if (this instanceof ResourceCalendar) {
+
             if (!calendarAvailabilities.isEmpty()) {
+
                 CalendarAvailability lastCalendarAvailability = getLastCalendarAvailability();
+
                 if (lastCalendarAvailability != null) {
+
                     if (lastCalendarAvailability.getEndDate() == null) {
-                        if (lastCalendarAvailability.getStartDate()
-                                .compareTo(calendarAvailability.getStartDate()) >= 0) {
+
+                        if (lastCalendarAvailability.getStartDate().compareTo(calendarAvailability.getStartDate()) >= 0) {
                             throw new IllegalArgumentException(
                                     "New calendar availability should start after the last calendar availability");
                         }
+
                     } else {
                         if (lastCalendarAvailability.getEndDate().compareTo(calendarAvailability.getStartDate()) >= 0) {
                             throw new IllegalArgumentException(
@@ -920,8 +912,8 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar, IHuman
         if (calendarAvailabilities.isEmpty()) {
             return null;
         }
-        // Sorting for ensuring the last one is picked. In theory sorting would
-        // not be necessary, doing it for safety
+        // Sorting for ensuring the last one is picked.
+        // In theory sorting would not be necessary, doing it for safety.
         List<CalendarAvailability> sorted = getCalendarAvailabilitiesSortedByStartDate();
 
         return sorted.get(sorted.size() - 1);
@@ -931,8 +923,8 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar, IHuman
         if (calendarAvailabilities.isEmpty()) {
             return null;
         }
-        // Sorting for ensuring the first one is picked. In theory sorting would
-        // not be necessary, doing it for safety
+        // Sorting for ensuring the first one is picked.
+        // In theory sorting would not be necessary, doing it for safety.
         List<CalendarAvailability> sorted = getCalendarAvailabilitiesSortedByStartDate();
 
         return sorted.get(0);
@@ -942,6 +934,7 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar, IHuman
         if (getLastCalendarAvailability() == null || calendarAvailability == null) {
             return false;
         }
+
         if (getLastCalendarAvailability().getId() == null && calendarAvailability.getId() == null) {
             return getLastCalendarAvailability() == calendarAvailability;
         }
@@ -979,12 +972,11 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar, IHuman
 
     /**
      * <p>
-     * Calendar units are the number of units this calendar is applied to. For
-     * example a {@link VirtualWorker} composed of ten workers would multiply
-     * the capacity by ten.
+     *     Calendar units are the number of units this calendar is applied to.
+     *     For example a {@link VirtualWorker} composed of ten workers would multiply the capacity by ten.
      * </p>
      * <p>
-     * This method is intended to be overridden
+     *     This method is intended to be overridden.
      * </p>
      *
      */
@@ -1003,10 +995,10 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar, IHuman
     }
 
     public boolean onlyGivesZeroHours() {
-        return lastDataDoesntGiveOnlyZeros();
+        return lastDataDoesNotGiveOnlyZeros();
     }
 
-    public boolean lastDataDoesntGiveOnlyZeros() {
+    public boolean lastDataDoesNotGiveOnlyZeros() {
         CalendarData last = lastCalendarData();
 
         return last.isEmpty();
@@ -1022,7 +1014,6 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar, IHuman
                 return false;
             }
         }
-
         return true;
     }
 
@@ -1036,13 +1027,12 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar, IHuman
     private void addInvaliditiesDerivedFromCalendar(AvailabilityTimeLine result) {
         addInvaliditiesFromAvailabilities(result);
         addInvaliditiesFromExceptions(result);
-        addInvaliditiesFromEmptyCalendarDatas(result);
-        addInvaliditiesFromEmptyDaysInCalendarDatas(result);
+        addInvaliditiesFromEmptyCalendarData(result);
+        addInvaliditiesFromEmptyDaysInCalendarData(result);
     }
 
-    private void addInvaliditiesFromEmptyDaysInCalendarDatas(AvailabilityTimeLine result) {
+    private void addInvaliditiesFromEmptyDaysInCalendarData(AvailabilityTimeLine result) {
         result.setVetoer(new IVetoer() {
-
             @Override
             public boolean isValid(LocalDate date) {
                 return canWorkOn(date);
@@ -1050,7 +1040,7 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar, IHuman
         });
     }
 
-    private void addInvaliditiesFromEmptyCalendarDatas(AvailabilityTimeLine result) {
+    private void addInvaliditiesFromEmptyCalendarData(AvailabilityTimeLine result) {
         LocalDate previous = null;
         for (CalendarData each : calendarDataVersions) {
             addInvalidityIfDataEmpty(result, previous, each);
@@ -1132,8 +1122,7 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar, IHuman
         for (int i = 0; i < calendarDataVersions.size() - 2; i++) {
             LocalDate date1 = calendarDataVersions.get(i).getExpiringDate();
             LocalDate date2 = calendarDataVersions.get(i + 1).getExpiringDate();
-            if ((date1 == null) || (date2 == null)
-                    || (date1.compareTo(date2) >= 0)) {
+            if ((date1 == null) || (date2 == null) || (date1.compareTo(date2) >= 0)) {
                 return false;
             }
         }
@@ -1175,6 +1164,7 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar, IHuman
 
     public void generateCalendarExceptionCodes(int numberOfDigits) {
         for (CalendarException exception : this.getExceptions()) {
+
             if ((exception.getCode() == null) || (exception.getCode().isEmpty()) ||
                     (!exception.getCode().startsWith(this.getCode()))) {
 
@@ -1193,6 +1183,7 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar, IHuman
         }
 
         for (CalendarAvailability availability : this.getCalendarAvailabilities()) {
+
             if ((availability.getCode() == null) || (availability.getCode().isEmpty()) ||
                     (!availability.getCode().startsWith(this.getCode()))) {
 

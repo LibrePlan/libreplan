@@ -30,7 +30,6 @@ import org.zkoss.zul.TreeModel;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
- *
  */
 public interface IAssignedMaterialsModel<T, A> {
 
@@ -44,7 +43,7 @@ public interface IAssignedMaterialsModel<T, A> {
 
     List<A> getAssignedMaterials(MaterialCategory materialCategory);
 
-    abstract boolean isCurrentUnitType(Object assigment, UnitType unitType);
+    boolean isCurrentUnitType(Object assignment, UnitType unitType);
 
     List<Material> getMatchingMaterials();
 

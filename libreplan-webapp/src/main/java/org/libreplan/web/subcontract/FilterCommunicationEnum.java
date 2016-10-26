@@ -25,19 +25,20 @@ package org.libreplan.web.subcontract;
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 public enum FilterCommunicationEnum {
-    ALL(_("All")), NOT_REVIEWED(_("Not Reviewed"));
-
-    /**
-     * Forces to mark the string as needing translation
-     */
-    private static String _(String string) {
-        return string;
-    }
+    ALL(_("All")),
+    NOT_REVIEWED(_("Not Reviewed"));
 
     private String displayName;
 
-    private FilterCommunicationEnum(String displayName) {
+    FilterCommunicationEnum(String displayName) {
         this.displayName = displayName;
+    }
+
+    /**
+     * Forces to mark the string as needing translation.
+     */
+    private static String _(String string) {
+        return string;
     }
 
     public static FilterCommunicationEnum getDefault() {

@@ -32,9 +32,9 @@ import org.zkoss.ganttz.DatesMapperOnInterval;
 import org.zkoss.ganttz.IDatesMapper;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.timetracker.zoom.DetailItem;
-import org.zkoss.ganttz.timetracker.zoom.IDetailItemModificator;
+import org.zkoss.ganttz.timetracker.zoom.IDetailItemModifier;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
-import org.zkoss.ganttz.timetracker.zoom.SeveralModificators;
+import org.zkoss.ganttz.timetracker.zoom.SeveralModifiers;
 import org.zkoss.ganttz.timetracker.zoom.TimeTrackerState;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.Interval;
@@ -69,9 +69,9 @@ public class TimeTracker {
 
     private Interval interval;
 
-    private final IDetailItemModificator firstLevelModificator;
+    private final IDetailItemModifier firstLevelModifier;
 
-    private final IDetailItemModificator secondLevelModificator;
+    private final IDetailItemModifier secondLevelModifier;
 
     private final Component componentOnWhichGiveFeedback;
 
@@ -82,38 +82,38 @@ public class TimeTracker {
     private Interval realIntervalCached;
 
     public TimeTracker(Interval interval, ZoomLevel zoomLevel, Component parent) {
-        this(interval, zoomLevel, SeveralModificators.empty(), SeveralModificators.empty(), parent);
+        this(interval, zoomLevel, SeveralModifiers.empty(), SeveralModifiers.empty(), parent);
     }
 
     public TimeTracker(Interval interval, Component componentOnWhichGiveFeedback) {
-        this(interval, SeveralModificators.empty(), SeveralModificators.empty(), componentOnWhichGiveFeedback);
+        this(interval, SeveralModifiers.empty(), SeveralModifiers.empty(), componentOnWhichGiveFeedback);
     }
 
     public TimeTracker(
             Interval interval,
-            IDetailItemModificator firstLevelModificator,
-            IDetailItemModificator secondLevelModificator,
+            IDetailItemModifier firstLevelModifier,
+            IDetailItemModifier secondLevelModifier,
             Component componentOnWhichGiveFeedback) {
 
         Validate.notNull(interval);
-        Validate.notNull(firstLevelModificator);
-        Validate.notNull(secondLevelModificator);
+        Validate.notNull(firstLevelModifier);
+        Validate.notNull(secondLevelModifier);
         Validate.notNull(componentOnWhichGiveFeedback);
 
         this.interval = interval;
-        this.firstLevelModificator = firstLevelModificator;
-        this.secondLevelModificator = secondLevelModificator;
+        this.firstLevelModifier = firstLevelModifier;
+        this.secondLevelModifier = secondLevelModifier;
         this.componentOnWhichGiveFeedback = componentOnWhichGiveFeedback;
     }
 
     public TimeTracker(
             Interval interval,
             ZoomLevel zoomLevel,
-            IDetailItemModificator firstLevelModificator,
-            IDetailItemModificator secondLevelModificator,
+            IDetailItemModifier firstLevelModifier,
+            IDetailItemModifier secondLevelModifier,
             Component componentOnWhichGiveFeedback) {
 
-        this(interval, firstLevelModificator, secondLevelModificator, componentOnWhichGiveFeedback);
+        this(interval, firstLevelModifier, secondLevelModifier, componentOnWhichGiveFeedback);
         detailLevel = zoomLevel;
     }
 
@@ -167,7 +167,7 @@ public class TimeTracker {
     }
 
     public TimeTrackerState getTimeTrackerState() {
-        return detailLevel.getTimeTrackerState(firstLevelModificator, secondLevelModificator);
+        return detailLevel.getTimeTrackerState(firstLevelModifier, secondLevelModifier);
     }
 
     private void fireZoomChanged() {

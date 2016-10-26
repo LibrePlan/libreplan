@@ -47,7 +47,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Label;
-import org.zkoss.zul.SimpleTreeNode;
+import org.zkoss.zul.DefaultTreeNode;
 import org.zkoss.zul.Treecell;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.TreeitemRenderer;
@@ -60,8 +60,7 @@ import org.zkoss.zul.Treerow;
  */
 public class ScenarioCRUDController extends BaseCRUDController<Scenario> {
 
-    private static final Log LOG = LogFactory
-            .getLog(ScenarioCRUDController.class);
+    private static final Log LOG = LogFactory.getLog(ScenarioCRUDController.class);
 
     @Autowired
     private IScenarioModel scenarioModel;
@@ -89,19 +88,17 @@ public class ScenarioCRUDController extends BaseCRUDController<Scenario> {
 
     @Override
     protected void initCreate() {
-        // Do nothing, direct scenario creation is not allowed it should be
-        // derived
+        // Do nothing, direct scenario creation is not allowed it should be derived
     }
 
-    public void goToCreateDerivedForm(Scenario scenario) {
+    private void goToCreateDerivedForm(Scenario scenario) {
         state = CRUDControllerState.CREATE;
         scenarioModel.initCreateDerived(scenario);
         showEditWindow();
     }
 
     public ScenariosTreeModel getScenariosTreeModel() {
-        return new ScenariosTreeModel(new ScenarioTreeRoot(
-                scenarioModel.getScenarios()));
+        return new ScenariosTreeModel(new ScenarioTreeRoot(scenarioModel.getScenarios()));
     }
 
     public ScenariosTreeitemRenderer getScenariosTreeitemRenderer() {
@@ -111,14 +108,13 @@ public class ScenarioCRUDController extends BaseCRUDController<Scenario> {
     public class ScenariosTreeitemRenderer implements TreeitemRenderer {
 
         @Override
-        public void render(final Treeitem item, Object data) {
-            SimpleTreeNode simpleTreeNode = (SimpleTreeNode) data;
+        public void render(Treeitem treeitem, Object o, int i) throws Exception {
+            DefaultTreeNode simpleTreeNode = (DefaultTreeNode) o;
             final Scenario scenario = (Scenario) simpleTreeNode.getData();
-            item.setValue(data);
+            treeitem.setValue(o);
 
             Scenario currentScenario = scenarioManager.getCurrent();
-            boolean isCurrentScenario = currentScenario.getId().equals(
-                    scenario.getId());
+            boolean isCurrentScenario = currentScenario.getId().equals(scenario.getId());
 
             Treerow treerow = new Treerow();
 
@@ -138,12 +134,12 @@ public class ScenarioCRUDController extends BaseCRUDController<Scenario> {
             createDerivedButton.addEventListener(Events.ON_CLICK,
                     new EventListener() {
 
-                @Override
-                public void onEvent(Event event) {
-                    goToCreateDerivedForm(scenario);
-                }
+                        @Override
+                        public void onEvent(Event event) {
+                            goToCreateDerivedForm(scenario);
+                        }
 
-            });
+                    });
             operationsTreecell.appendChild(createDerivedButton);
 
             Button editButton = Util.createEditButton(new EventListener() {
@@ -165,12 +161,9 @@ public class ScenarioCRUDController extends BaseCRUDController<Scenario> {
 
             });
 
-            boolean isMainScenario = PredefinedScenarios.MASTER.getScenario()
-                    .getId().equals(scenario.getId());
-            List<Scenario> derivedScenarios = scenarioModel
-                    .getDerivedScenarios(scenario);
-            if (isCurrentScenario || isMainScenario
-                    || !derivedScenarios.isEmpty()) {
+            boolean isMainScenario = PredefinedScenarios.MASTER.getScenario().getId().equals(scenario.getId());
+            List<Scenario> derivedScenarios = scenarioModel.getDerivedScenarios(scenario);
+            if ( isCurrentScenario || isMainScenario || !derivedScenarios.isEmpty() ) {
                 removeButton.setDisabled(true);
             }
             operationsTreecell.appendChild(removeButton);
@@ -185,14 +178,11 @@ public class ScenarioCRUDController extends BaseCRUDController<Scenario> {
                         }
 
                         private void connectTo(Scenario scenario) {
-                            templateModel.setScenario(SecurityUtils
-                                    .getSessionUserLoginName(),
-                                    scenario,
+                            templateModel.setScenario(SecurityUtils.getSessionUserLoginName(), scenario,
                                     new IOnFinished() {
                                         @Override
                                         public void onWithoutErrorFinish() {
-                                            Executions
-                                                    .sendRedirect("/scenarios/scenarios.zul");
+                                            Executions.sendRedirect("/scenarios/scenarios.zul");
                                         }
 
                                         @Override
@@ -204,32 +194,31 @@ public class ScenarioCRUDController extends BaseCRUDController<Scenario> {
                         }
 
                     });
-            if (isCurrentScenario) {
+            if ( isCurrentScenario ) {
                 connectButton.setDisabled(true);
             }
             operationsTreecell.appendChild(connectButton);
 
             treerow.appendChild(operationsTreecell);
 
-            item.appendChild(treerow);
+            treeitem.appendChild(treerow);
 
             // Show the tree expanded at start
-            item.setOpen(true);
+            treeitem.setOpen(true);
         }
-
     }
 
     private void errorHappenedDoingReassignation(Exception exceptionHappened) {
         LOG.error("error happened doing reassignation", exceptionHappened);
-        messagesForUser.showMessage(Level.ERROR, _(
-                "error doing reassignment: {0}", exceptionHappened));
+        messagesForUser.showMessage(Level.ERROR, _("error doing reassignment: {0}", exceptionHappened));
     }
 
     public Set<Order> getOrders() {
         Scenario scenario = scenarioModel.getScenario();
-        if (scenario == null) {
+        if ( scenario == null ) {
             return Collections.emptySet();
         }
+
         return scenario.getOrders().keySet();
     }
 

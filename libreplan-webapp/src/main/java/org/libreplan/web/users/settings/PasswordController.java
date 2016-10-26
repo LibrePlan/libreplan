@@ -32,12 +32,13 @@ import org.libreplan.web.users.PasswordUtil;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Textbox;
-import org.zkoss.zul.api.Window;
+import org.zkoss.zul.Window;
 
 /**
- * Controller for password changes
+ * Controller for password changes.
  *
  * @author Cristina Alvarino Perez <cristina.alvarino@comtecsf.es>
  * @author Ignacio Diaz Teijido <ignacio.diaz@comtecsf.es>
@@ -54,9 +55,13 @@ public class PasswordController extends GenericForwardComposer {
 
     private Textbox password;
 
+    public PasswordController() {
+        passwordModel = (IPasswordModel) SpringUtil.getBean("passwordModel");
+    }
+
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        comp.setVariable("passwordController", this, true);
+        comp.setAttribute("passwordController", this, true);
         messages = new MessagesForUser(messagesContainer);
         passwordModel.initEditLoggedUser();
     }
@@ -73,8 +78,7 @@ public class PasswordController extends GenericForwardComposer {
     }
 
     /**
-     * Tells the SettingsModel to set the password attribute of the inner
-     * {@ link User} object.
+     * Tells the SettingsModel to set the password attribute of the inner {@link org.libreplan.business.users.entities.User} object.
      *
      * @param password String with the <b>unencrypted</b> password.
      */
@@ -83,19 +87,17 @@ public class PasswordController extends GenericForwardComposer {
     }
 
     public boolean isLdapUser() {
-        return (!UserUtil.getUserFromSession().isLibrePlanUser() && passwordModel
-                .isLdapAuthEnabled());
+        return !UserUtil.getUserFromSession().isLibrePlanUser() && passwordModel.isLdapAuthEnabled();
     }
 
     public Constraint validatePasswordConfirmation() {
         return new Constraint() {
             @Override
-            public void validate(Component comp, Object value)
-                    throws WrongValueException {
-                if(StringUtils.isEmpty((String)value) || StringUtils.isEmpty(password.getValue())) {
+            public void validate(Component comp, Object value) throws WrongValueException {
+                if (StringUtils.isEmpty((String)value) || StringUtils.isEmpty(password.getValue())) {
                     throw new WrongValueException(comp, _("passwords can not be empty"));
                 }
-                if(!((String)value).equals(password.getValue())) {
+                if (!value.equals(password.getValue())) {
                     throw new WrongValueException(comp, _("passwords don't match"));
                 }
             }
@@ -105,9 +107,8 @@ public class PasswordController extends GenericForwardComposer {
     public Constraint validateCurrentPassword() {
         return new Constraint() {
             @Override
-            public void validate(Component comp, Object value)
-                    throws WrongValueException {
-                if(!passwordModel.validateCurrentPassword((String)value)) {
+            public void validate(Component comp, Object value) throws WrongValueException {
+                if (!passwordModel.validateCurrentPassword((String)value)) {
                     throw new WrongValueException(comp, _("Current password is incorrect"));
                 }
             }

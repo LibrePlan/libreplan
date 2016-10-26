@@ -50,29 +50,28 @@ public class BaseCalendarDTO extends IntegrationEntityDTO {
 
     @XmlElementWrapper(name = "calendar-exception-list")
     @XmlElement(name = "calendar-exception")
-    public List<CalendarExceptionDTO> calendarExceptions = new ArrayList<CalendarExceptionDTO>();
+    public List<CalendarExceptionDTO> calendarExceptions = new ArrayList<>();
 
     @XmlElementWrapper(name = "calendar-data-list")
     @XmlElement(name = "calendar-data")
-    public List<CalendarDataDTO> calendarDatas = new ArrayList<CalendarDataDTO>();
+    public List<CalendarDataDTO> calendarData = new ArrayList<>();
 
     public BaseCalendarDTO() {
     }
 
-    public BaseCalendarDTO(String code, String name, String parent,
-            List<CalendarExceptionDTO> calendarExceptions,
-            List<CalendarDataDTO> calendarDatas) {
+    public BaseCalendarDTO(String code, String name, String parent, List<CalendarExceptionDTO> calendarExceptions,
+                           List<CalendarDataDTO> calendarData) {
         super(code);
         this.name = name;
         this.parent = parent;
         this.calendarExceptions = calendarExceptions;
-        this.calendarDatas = calendarDatas;
+        this.calendarData = calendarData;
     }
 
-    public BaseCalendarDTO(String name, String parent,
-            List<CalendarExceptionDTO> calendarExceptions,
-            List<CalendarDataDTO> calendarDatas) {
-        this(generateCode(), name, parent, calendarExceptions, calendarDatas);
+    public BaseCalendarDTO(String name, String parent, List<CalendarExceptionDTO> calendarExceptions,
+                           List<CalendarDataDTO> calendarData) {
+
+        this(generateCode(), name, parent, calendarExceptions, calendarData);
     }
 
     @Override

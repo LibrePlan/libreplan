@@ -41,32 +41,28 @@ public class WorkReportLabelTypeAssignment extends BaseEntity implements Compara
     @NotNull(message = "default label not specified")
     private Label defaultLabel;
 
-    /* Methos for the index */
-
     private Integer positionNumber;
 
-    public WorkReportLabelTypeAssignment() {
-
-    }
+    public WorkReportLabelTypeAssignment() {}
 
     public WorkReportLabelTypeAssignment(boolean labelsSharedByLines) {
         this.labelsSharedByLines = labelsSharedByLines;
     }
 
     public static WorkReportLabelTypeAssignment create() {
-        WorkReportLabelTypeAssignment workReportLabelTypeAssigment = new WorkReportLabelTypeAssignment();
-        workReportLabelTypeAssigment.setNewObject(true);
+        WorkReportLabelTypeAssignment workReportLabelTypeAssignment = new WorkReportLabelTypeAssignment();
+        workReportLabelTypeAssignment.setNewObject(true);
 
-        return workReportLabelTypeAssigment;
+        return workReportLabelTypeAssignment;
     }
 
     public static WorkReportLabelTypeAssignment create(boolean labelsSharedByLines) {
-        WorkReportLabelTypeAssignment workReportLabelTypeAssigment =
+        WorkReportLabelTypeAssignment workReportLabelTypeAssignment =
                 new WorkReportLabelTypeAssignment(labelsSharedByLines);
 
-        workReportLabelTypeAssigment.setNewObject(true);
+        workReportLabelTypeAssignment.setNewObject(true);
 
-        return workReportLabelTypeAssigment;
+        return workReportLabelTypeAssignment;
     }
 
     public LabelType getLabelType() {
@@ -103,10 +99,9 @@ public class WorkReportLabelTypeAssignment extends BaseEntity implements Compara
 
     @Override
     public int compareTo(Object arg0) {
-        if (labelType != null) {
-            return labelType.compareTo(((WorkReportLabelTypeAssignment) arg0).getLabelType());
-        }
-        return -1;
+        return labelType != null
+                ? labelType.compareTo(((WorkReportLabelTypeAssignment) arg0).getLabelType())
+                : -1;
     }
 
 }

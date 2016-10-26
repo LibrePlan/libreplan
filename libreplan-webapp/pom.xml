@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
@@ -85,115 +86,116 @@
                         <artifactId>maven-antrun-plugin</artifactId>
                         <version>1.8</version>
                         <executions>
-                          <execution>
-                          <id>user-doc-generation</id>
-                          <goals>
-                           <goal>run</goal>
-                          </goals>
-                         <phase>process-resources</phase>
-                         <inherited>false</inherited>
-                         <configuration>
-                          <tasks>
-                            <echo>Executing make html</echo>
-                            <exec executable="make" failifexecutionfails="false">
-                                <arg value="-C"/>
-                                <arg value="../doc/src/user/gl/"/>
-                                <arg value="html"/>
-                            </exec>
-                            <copy todir="src/main/webapp/help/gl" failonerror="false">
-                                <fileset dir="../doc/src/user/gl/html"/>
-                            </copy>
-                            <exec executable="make" failifexecutionfails="false">
-                                <arg value="-C"/>
-                                <arg value="../doc/src/user/es/"/>
-                                <arg value="html"/>
-                            </exec>
-                            <copy todir="src/main/webapp/help/es" failonerror="false">
-                                <fileset dir="../doc/src/user/es/html"/>
-                            </copy>
-                            <exec executable="make" failifexecutionfails="false">
-                                <arg value="-C"/>
-                                <arg value="../doc/src/user/en/"/>
-                                <arg value="html"/>
-                            </exec>
-                            <copy todir="src/main/webapp/help/en" failonerror="false">
-                                <fileset dir="../doc/src/user/en/html"/>
-                            </copy>
-                            <copy todir="src/main/webapp/help/ru" failonerror="false">
-                                <fileset dir="../doc/src/user/en/html"/>
-                            </copy>
-                            <copy todir="src/main/webapp/help/pt" failonerror="false">
-                                <fileset dir="../doc/src/user/en/html"/>
-                            </copy>
-                            <copy todir="src/main/webapp/help/it" failonerror="false">
-                                <fileset dir="../doc/src/user/en/html"/>
-                            </copy>
-                             <exec executable="make" failifexecutionfails="false">
-                                <arg value="-C"/>
-                                <arg value="../doc/src/user/fr/"/>
-                                <arg value="html"/>
-                            </exec>
-                            <copy todir="src/main/webapp/help/fr" failonerror="false">
-                                <fileset dir="../doc/src/user/fr/html"/>
-                            </copy>
-                            <copy todir="src/main/webapp/help/nl" failonerror="false">
-                                <fileset dir="../doc/src/user/en/html"/>
-                            </copy>
-                            <copy todir="src/main/webapp/help/pl" failonerror="false">
-                                <fileset dir="../doc/src/user/en/html"/>
-                            </copy>
-                            <copy todir="src/main/webapp/help/cs" failonerror="false">
-                                <fileset dir="../doc/src/user/en/html"/>
-                            </copy>
-                            <copy todir="src/main/webapp/help/de" failonerror="false">
-                                <fileset dir="../doc/src/user/en/html"/>
-                            </copy>
-                            <copy todir="src/main/webapp/help/ca" failonerror="false">
-                                <fileset dir="../doc/src/user/es/html"/>
-                            </copy>
-                            <copy todir="src/main/webapp/help/zh" failonerror="false">
-                                <fileset dir="../doc/src/user/en/html"/>
-                            </copy>
-                            <copy todir="src/main/webapp/help/nb" failonerror="false">
-                                <fileset dir="../doc/src/user/en/html"/>
-                            </copy>
-                          </tasks>
-                         </configuration>
-                        </execution>
-                          <execution>
-                          <id>user-doc-clean</id>
-                          <goals>
-                           <goal>run</goal>
-                          </goals>
-                         <phase>clean</phase>
-                         <inherited>false</inherited>
-                         <configuration>
-                          <tasks>
-                            <exec executable="make" failifexecutionfails="false">
-                                <arg value="-C"/>
-                                <arg value="../doc/src/user/gl/"/>
-                                <arg value="clean"/>
-                            </exec>
-                            <exec executable="make" failifexecutionfails="false">
-                                <arg value="-C"/>
-                                <arg value="../doc/src/user/es/"/>
-                                <arg value="clean"/>
-                            </exec>
-                            <exec executable="make" failifexecutionfails="false">
-                                <arg value="-C"/>
-                                <arg value="../doc/src/user/en/"/>
-                                <arg value="clean"/>
-                            </exec>
-                             <exec executable="make" failifexecutionfails="false">
-                                <arg value="-C"/>
-                                <arg value="../doc/src/user/fr/"/>
-                                <arg value="clean"/>
-                            </exec>
-                            <delete dir="src/main/webapp/help" failonerror="false" />
-                          </tasks>
-                         </configuration>
-                        </execution>
-                       </executions>
+                            <execution>
+                                <id>user-doc-generation</id>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <phase>process-resources</phase>
+                                <inherited>false</inherited>
+                                <configuration>
+                                    <tasks>
+                                        <echo>Executing make html</echo>
+                                        <exec executable="make" failifexecutionfails="false">
+                                            <arg value="-C"/>
+                                            <arg value="../doc/src/user/gl/"/>
+                                            <arg value="html"/>
+                                        </exec>
+                                        <copy todir="src/main/webapp/help/gl" failonerror="false">
+                                            <fileset dir="../doc/src/user/gl/html"/>
+                                        </copy>
+                                        <exec executable="make" failifexecutionfails="false">
+                                            <arg value="-C"/>
+                                            <arg value="../doc/src/user/es/"/>
+                                            <arg value="html"/>
+                                        </exec>
+                                        <copy todir="src/main/webapp/help/es" failonerror="false">
+                                            <fileset dir="../doc/src/user/es/html"/>
+                                        </copy>
+                                        <exec executable="make" failifexecutionfails="false">
+                                            <arg value="-C"/>
+                                            <arg value="../doc/src/user/en/"/>
+                                            <arg value="html"/>
+                                        </exec>
+                                        <copy todir="src/main/webapp/help/en" failonerror="false">
+                                            <fileset dir="../doc/src/user/en/html"/>
+                                        </copy>
+                                        <copy todir="src/main/webapp/help/ru" failonerror="false">
+                                            <fileset dir="../doc/src/user/en/html"/>
+                                        </copy>
+                                        <copy todir="src/main/webapp/help/pt" failonerror="false">
+                                            <fileset dir="../doc/src/user/en/html"/>
+                                        </copy>
+                                        <copy todir="src/main/webapp/help/it" failonerror="false">
+                                            <fileset dir="../doc/src/user/en/html"/>
+                                        </copy>
+                                        <exec executable="make" failifexecutionfails="false">
+                                            <arg value="-C"/>
+                                            <arg value="../doc/src/user/fr/"/>
+                                            <arg value="html"/>
+                                        </exec>
+                                        <copy todir="src/main/webapp/help/fr" failonerror="false">
+                                            <fileset dir="../doc/src/user/fr/html"/>
+                                        </copy>
+                                        <copy todir="src/main/webapp/help/nl" failonerror="false">
+                                            <fileset dir="../doc/src/user/en/html"/>
+                                        </copy>
+                                        <copy todir="src/main/webapp/help/pl" failonerror="false">
+                                            <fileset dir="../doc/src/user/en/html"/>
+                                        </copy>
+                                        <copy todir="src/main/webapp/help/cs" failonerror="false">
+                                            <fileset dir="../doc/src/user/en/html"/>
+                                        </copy>
+                                        <copy todir="src/main/webapp/help/de" failonerror="false">
+                                            <fileset dir="../doc/src/user/en/html"/>
+                                        </copy>
+                                        <copy todir="src/main/webapp/help/ca" failonerror="false">
+                                            <fileset dir="../doc/src/user/es/html"/>
+                                        </copy>
+                                        <copy todir="src/main/webapp/help/zh" failonerror="false">
+                                            <fileset dir="../doc/src/user/en/html"/>
+                                        </copy>
+                                        <copy todir="src/main/webapp/help/nb" failonerror="false">
+                                            <fileset dir="../doc/src/user/en/html"/>
+                                        </copy>
+                                    </tasks>
+                                </configuration>
+                            </execution>
+
+                            <execution>
+                                <id>user-doc-clean</id>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <phase>clean</phase>
+                                <inherited>false</inherited>
+                                <configuration>
+                                    <tasks>
+                                        <exec executable="make" failifexecutionfails="false">
+                                            <arg value="-C"/>
+                                            <arg value="../doc/src/user/gl/"/>
+                                            <arg value="clean"/>
+                                        </exec>
+                                        <exec executable="make" failifexecutionfails="false">
+                                            <arg value="-C"/>
+                                            <arg value="../doc/src/user/es/"/>
+                                            <arg value="clean"/>
+                                        </exec>
+                                        <exec executable="make" failifexecutionfails="false">
+                                            <arg value="-C"/>
+                                            <arg value="../doc/src/user/en/"/>
+                                            <arg value="clean"/>
+                                        </exec>
+                                        <exec executable="make" failifexecutionfails="false">
+                                            <arg value="-C"/>
+                                            <arg value="../doc/src/user/fr/"/>
+                                            <arg value="clean"/>
+                                        </exec>
+                                        <delete dir="src/main/webapp/help" failonerror="false" />
+                                    </tasks>
+                                </configuration>
+                            </execution>
+                        </executions>
                     </plugin>
                 </plugins>
             </build>
@@ -239,12 +241,12 @@
     </build>
 
     <dependencies>
-
         <!-- Jasper Reports -->
         <dependency>
-          <groupId>net.sf.jasperreports</groupId>
-          <artifactId>jasperreports</artifactId>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports</artifactId>
         </dependency>
+
         <dependency>
             <groupId>net.sf.jasperreports</groupId>
             <artifactId>jasperreports-fonts</artifactId>
@@ -252,27 +254,28 @@
 
         <!-- GPL Jasperreport Component for ZK -->
         <dependency>
-          <groupId>com.igalia.java.zk.components</groupId>
-          <artifactId>jasperreportcomponent</artifactId>
+            <groupId>com.libreplan.java.zk.components</groupId>
+            <artifactId>jasperreportcomponent</artifactId>
         </dependency>
 
         <!-- GPL Jasperreport Component for ZK -->
         <dependency>
-          <groupId>com.igalia.java.zk.components</groupId>
-          <artifactId>jfreechartengine</artifactId>
+            <groupId>com.libreplan.java.zk.components</groupId>
+            <artifactId>jfreechartengine</artifactId>
         </dependency>
 
         <!-- GPL detailrow Component for ZK -->
         <dependency>
-          <groupId>com.igalia.java.zk.components</groupId>
-          <artifactId>customdetailrowcomponent</artifactId>
+            <groupId>com.libreplan.java.zk.components</groupId>
+            <artifactId>customdetailrowcomponent</artifactId>
         </dependency>
 
         <!-- Spring Framework -->
         <dependency>
-          <groupId>org.springframework</groupId>
-          <artifactId>spring-web</artifactId>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context-support</artifactId>
@@ -282,17 +285,19 @@
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-ldap</artifactId>
-         </dependency>
+        </dependency>
 
         <!-- Spring security -->
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-web</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-acl</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-config</artifactId>
@@ -333,10 +338,17 @@
             <groupId>org.zkoss.zk</groupId>
             <artifactId>zul</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.zkoss.zk</groupId>
             <artifactId>zkplus</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>org.zkoss.zk</groupId>
+            <artifactId>zkbind</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.zkoss.zk</groupId>
             <artifactId>zk</artifactId>
@@ -360,11 +372,11 @@
             <artifactId>junit</artifactId>
         </dependency>
 
-        <!-- datasource for testing -->
+        <!-- Datasource for testing -->
         <dependency>
-           <groupId>com.jolbox</groupId>
-           <artifactId>bonecp</artifactId>
-           <scope>test</scope>
+            <groupId>com.jolbox</groupId>
+            <artifactId>bonecp</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <!-- JDBC driver -->
@@ -380,6 +392,7 @@
             <artifactId>easymock</artifactId>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.easymock</groupId>
             <artifactId>easymockclassextension</artifactId>
@@ -409,10 +422,12 @@
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-rt-transports-http</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-rt-frontend-jaxrs</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-rt-rs-client</artifactId>
@@ -423,6 +438,7 @@
             <groupId>com.fasterxml.jackson.jaxrs</groupId>
             <artifactId>jackson-jaxrs-json-provider</artifactId>
         </dependency>
+
         <dependency>
             <groupId>com.fasterxml.jackson.module</groupId>
             <artifactId>jackson-module-jaxb-annotations</artifactId>
@@ -433,6 +449,7 @@
             <groupId>org.zkoss.zkforge</groupId>
             <artifactId>timelinez</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.zkoss.zkforge</groupId>
             <artifactId>timeplotz</artifactId>
@@ -458,14 +475,14 @@
 
         <!-- ZK fileupload -->
         <dependency>
-          <groupId>commons-io</groupId>
-          <artifactId>commons-io</artifactId>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
         </dependency>
 
         <!-- Quartz framework -->
         <dependency>
-           <groupId>org.quartz-scheduler</groupId>
-           <artifactId>quartz</artifactId>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz</artifactId>
         </dependency>
-   </dependencies>
+    </dependencies>
 </project>

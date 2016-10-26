@@ -19,8 +19,6 @@
 
 package org.libreplan.web.common.components.finders;
 
-import java.util.List;
-
 import org.libreplan.business.resources.daos.IResourceDAO;
 import org.libreplan.business.resources.entities.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +27,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
+
+import java.util.List;
 
 /**
  * Bandbox finder for {@link Resource} in ExpenseSheet.
@@ -44,8 +44,8 @@ public class ResourceInExpenseSheetBandboxFinder extends BandboxFinder implement
     private final String headers[] = { _("Resource name (Resource code)"), _("Type") };
 
     /**
-    * Forces to mark the string as needing translation
-    */
+     * Forces to mark the string as needing translation
+     */
     private static String _(String string) {
         return string;
     }
@@ -53,22 +53,22 @@ public class ResourceInExpenseSheetBandboxFinder extends BandboxFinder implement
     @Override
     @Transactional(readOnly = true)
     public List<Resource> getAll() {
-        List<Resource> resources = resourceDAO.getResources();
-        return resources;
+        return resourceDAO.getResources();
     }
 
     @Override
     public boolean entryMatchesText(Object obj, String text) {
         Resource resource = (Resource) obj;
         text = text.trim().toLowerCase();
-        return (resource.getCode().toLowerCase().contains(text) || resource.getName().toLowerCase()
-                .contains(text));
+
+        return (resource.getCode().toLowerCase().contains(text) || resource.getName().toLowerCase().contains(text));
     }
 
     @Override
     @Transactional(readOnly = true)
     public String objectToString(Object obj) {
         Resource resource = (Resource) obj;
+
         return resource.getName() + " :: " + resource.getCode();
     }
 
@@ -85,7 +85,7 @@ public class ResourceInExpenseSheetBandboxFinder extends BandboxFinder implement
     private final ListitemRenderer resourceRenderer = new ListitemRenderer() {
 
         @Override
-        public void render(Listitem item, Object data) {
+        public void render(Listitem item, Object data, int i) {
             Resource resource = (Resource) data;
             item.setValue(resource);
 

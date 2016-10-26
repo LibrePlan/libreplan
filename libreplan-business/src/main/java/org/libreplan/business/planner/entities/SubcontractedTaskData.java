@@ -70,16 +70,16 @@ public class SubcontractedTaskData extends BaseEntity {
 
     private SubcontractState state = SubcontractState.PENDING_INITIAL_SEND;
 
-    private final SortedSet<SubcontractorDeliverDate> requiredDeliveringDates =
-            new TreeSet<>(new DeliverDateComparator());
+    private final SortedSet<SubcontractorDeliverDate> requiredDeliveringDates = new TreeSet<>(new DeliverDateComparator());
 
     private SortedSet<EndDateCommunication> endDatesCommunicatedFromSubcontractor =
-            new TreeSet<>(new EndDateCommunicationComparator());
+                new TreeSet<>(new EndDateCommunicationComparator());
 
     /**
      * Constructor for hibernate. Do not use!
      */
-    public SubcontractedTaskData() {}
+    public SubcontractedTaskData() {
+    }
 
     private SubcontractedTaskData(Task task) {
         this.task = task;
@@ -88,7 +88,6 @@ public class SubcontractedTaskData extends BaseEntity {
     public static SubcontractedTaskData create(Task task) {
         SubcontractedTaskData subcontractedTaskData = new SubcontractedTaskData(task);
         subcontractedTaskData.subcontratationDate = new Date();
-
         return create(subcontractedTaskData);
     }
 
@@ -112,8 +111,7 @@ public class SubcontractedTaskData extends BaseEntity {
         result.setState(subcontractedTaskData.getState());
         result.setRequiredDeliveringDates(subcontractedTaskData.getRequiredDeliveringDates());
 
-        result.setEndDatesCommunicatedFromSubcontractor(
-                subcontractedTaskData.getEndDatesCommunicatedFromSubcontractor());
+        result.setEndDatesCommunicatedFromSubcontractor(subcontractedTaskData.getEndDatesCommunicatedFromSubcontractor());
 
         return create(result);
     }
@@ -213,20 +211,20 @@ public class SubcontractedTaskData extends BaseEntity {
         return subcontratationDate;
     }
 
-    public void applyChanges(SubcontractedTaskData subcontratedTask) {
-        this.externalCompany = subcontratedTask.externalCompany;
-        this.subcontratationDate = subcontratedTask.subcontratationDate;
-        this.subcontractCommunicationDate = subcontratedTask.subcontractCommunicationDate;
-        this.workDescription = subcontratedTask.workDescription;
-        this.subcontractPrice = subcontratedTask.subcontractPrice;
-        this.subcontractedCode = subcontratedTask.subcontractedCode;
-        this.nodeWithoutChildrenExported = subcontratedTask.nodeWithoutChildrenExported;
-        this.labelsExported = subcontratedTask.labelsExported;
-        this.materialAssignmentsExported = subcontratedTask.materialAssignmentsExported;
-        this.hoursGroupsExported = subcontratedTask.hoursGroupsExported;
-        this.state = subcontratedTask.getState();
-        this.setRequiredDeliveringDates(subcontratedTask.getRequiredDeliveringDates());
-        this.setEndDatesCommunicatedFromSubcontractor(subcontratedTask.getEndDatesCommunicatedFromSubcontractor());
+    public void applyChanges(SubcontractedTaskData subcontractedTask) {
+        this.externalCompany = subcontractedTask.externalCompany;
+        this.subcontratationDate = subcontractedTask.subcontratationDate;
+        this.subcontractCommunicationDate = subcontractedTask.subcontractCommunicationDate;
+        this.workDescription = subcontractedTask.workDescription;
+        this.subcontractPrice = subcontractedTask.subcontractPrice;
+        this.subcontractedCode = subcontractedTask.subcontractedCode;
+        this.nodeWithoutChildrenExported = subcontractedTask.nodeWithoutChildrenExported;
+        this.labelsExported = subcontractedTask.labelsExported;
+        this.materialAssignmentsExported = subcontractedTask.materialAssignmentsExported;
+        this.hoursGroupsExported = subcontractedTask.hoursGroupsExported;
+        this.state = subcontractedTask.getState();
+        this.setRequiredDeliveringDates(subcontractedTask.getRequiredDeliveringDates());
+        this.setEndDatesCommunicatedFromSubcontractor(subcontractedTask.getEndDatesCommunicatedFromSubcontractor());
     }
 
     @AssertTrue(message = "external company should be subcontractor")

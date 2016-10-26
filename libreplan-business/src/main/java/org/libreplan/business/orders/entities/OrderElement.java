@@ -123,7 +123,7 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
 
     private String externalCode;
 
-    private Map<OrderVersion, SchedulingDataForVersion> schedulingDatasForVersion = new HashMap<>();
+    private Map<OrderVersion, SchedulingDataForVersion> schedulingDataForVersion = new HashMap<>();
 
     private SchedulingDataForVersion.Data current = null;
 
@@ -132,7 +132,7 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
     }
 
     protected void removeVersion(OrderVersion orderVersion) {
-        schedulingDatasForVersion.remove(orderVersion);
+        schedulingDataForVersion.remove(orderVersion);
         for (OrderElement each : getChildren()) {
             each.removeVersion(orderVersion);
         }
@@ -234,10 +234,10 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
     }
 
     private SchedulingDataForVersion schedulingVersionFor(OrderVersion orderVersion) {
-        SchedulingDataForVersion currentSchedulingData = schedulingDatasForVersion.get(orderVersion);
+        SchedulingDataForVersion currentSchedulingData = schedulingDataForVersion.get(orderVersion);
         if (currentSchedulingData == null) {
             currentSchedulingData = SchedulingDataForVersion.createInitialFor(this);
-            schedulingDatasForVersion.put(orderVersion, currentSchedulingData);
+            schedulingDataForVersion.put(orderVersion, currentSchedulingData);
         }
 
         return currentSchedulingData;
@@ -270,7 +270,7 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
 
     private void removeAtNotCurrent(Scenario scenario) {
         SchedulingDataForVersion currentDataForVersion = getCurrentSchedulingDataForVersion();
-        for (Entry<OrderVersion, SchedulingDataForVersion> each : schedulingDatasForVersion.entrySet()) {
+        for (Entry<OrderVersion, SchedulingDataForVersion> each : schedulingDataForVersion.entrySet()) {
             SchedulingDataForVersion dataForVersion = each.getValue();
 
             if (!currentDataForVersion.equals(dataForVersion)) {
@@ -460,7 +460,7 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
     }
 
     SchedulingDataForVersion getCurrentVersionOnDB() {
-        return schedulingDatasForVersion.get(getCurrentSchedulingData().getOriginOrderVersion());
+        return schedulingDataForVersion.get(getCurrentSchedulingData().getOriginOrderVersion());
     }
 
     private TaskSourceSynchronization taskSourceRemoval() {
@@ -995,7 +995,7 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
         return result;
     }
 
-    public List<SchedulingDataForVersion> getSchedulingDatasForVersionFromBottomToTop() {
+    public List<SchedulingDataForVersion> getSchedulingDataForVersionFromBottomToTop() {
         List<SchedulingDataForVersion> result = new ArrayList<>();
         schedulingDataForVersionFromBottomToTop(result);
         return result;
@@ -1005,7 +1005,7 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
         for (OrderElement each : getChildren()) {
             each.schedulingDataForVersionFromBottomToTop(result);
         }
-        result.addAll(schedulingDatasForVersion.values());
+        result.addAll(schedulingDataForVersion.values());
     }
 
     private void taskSourcesFromBottomToTop(List<TaskSource> result) {
@@ -1023,7 +1023,7 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
             each.allScenariosTaskSourcesFromBottomToTop(result);
         }
 
-        for (Entry<OrderVersion, SchedulingDataForVersion> each : schedulingDatasForVersion.entrySet()) {
+        for (Entry<OrderVersion, SchedulingDataForVersion> each : schedulingDataForVersion.entrySet()) {
             TaskSource taskSource = each.getValue().getTaskSource();
             if (taskSource != null) {
                 result.add(taskSource);
@@ -1503,7 +1503,7 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
     }
 
     public List<OrderVersion> getOrderVersions() {
-        return new ArrayList<>(schedulingDatasForVersion.keySet());
+        return new ArrayList<>(schedulingDataForVersion.keySet());
     }
 
     @Override

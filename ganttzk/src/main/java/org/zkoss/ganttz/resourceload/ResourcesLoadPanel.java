@@ -153,8 +153,8 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
         return new SimpleListModel<>(new String[] { FILTER_RESOURCES, FILTER_CRITERIA });
     }
 
-    public void setFilter(String filterby) {
-        if ( filterby.equals(FILTER_RESOURCES) ) {
+    public void setFilter(String filterBy) {
+        if ( filterBy.equals(FILTER_RESOURCES) ) {
             this.filterbyResources = true;
             this.feedBackMessage = _("showing resources");
         } else {
@@ -203,7 +203,8 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
                 ZoomLevel.DETAIL_TWO,
                 ZoomLevel.DETAIL_THREE,
                 ZoomLevel.DETAIL_FOUR,
-                ZoomLevel.DETAIL_FIVE };
+                ZoomLevel.DETAIL_FIVE
+        };
 
         return new SimpleListModel<>(selectableZoomlevels);
     }

@@ -32,5 +32,5 @@ import org.libreplan.web.common.entrypoints.EntryPoints;
 public interface IOrderTemplatesControllerEntryPoints {
 
     @EntryPoint("orderElement")
-    public void goToCreateTemplateFrom(OrderElement orderElement);
+    void goToCreateTemplateFrom(OrderElement orderElement);
 }

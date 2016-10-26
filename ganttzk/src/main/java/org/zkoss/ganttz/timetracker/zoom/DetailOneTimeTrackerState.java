@@ -27,7 +27,6 @@ import org.joda.time.Months;
 import org.joda.time.ReadablePeriod;
 import org.joda.time.Years;
 
-
 /**
  * Zoom level with years in the first level and semesters in the second level.
  *
@@ -46,10 +45,8 @@ public class DetailOneTimeTrackerState extends TimeTrackerStateWithSubintervalsF
         return (double) 365 / FIRST_LEVEL_ITEM_SIZE;
     }
 
-    DetailOneTimeTrackerState(
-            IDetailItemModificator firstLevelModificator, IDetailItemModificator secondLevelModificator) {
-
-        super(firstLevelModificator, secondLevelModificator);
+    DetailOneTimeTrackerState(IDetailItemModifier firstLevelModifier, IDetailItemModifier secondLevelModifier) {
+        super(firstLevelModifier, secondLevelModifier);
     }
 
     @Override

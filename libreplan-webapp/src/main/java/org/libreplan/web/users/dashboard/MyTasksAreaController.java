@@ -19,13 +19,6 @@
 
 package org.libreplan.web.users.dashboard;
 
-import static org.libreplan.web.I18nHelper._;
-
-import java.text.MessageFormat;
-import java.util.List;
-
-import javax.annotation.Resource;
-
 import org.joda.time.LocalDate;
 import org.libreplan.business.advance.entities.AdvanceMeasurement;
 import org.libreplan.business.common.entities.PersonalTimesheetsPeriodicityEnum;
@@ -37,30 +30,33 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 
+import java.text.MessageFormat;
+import java.util.List;
+
+import static org.libreplan.web.I18nHelper._;
+
 /**
- * Controller for "My tasks" area in the user dashboard window
+ * Controller for "My tasks" area in the user dashboard window.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
 @SuppressWarnings("serial")
 public class MyTasksAreaController extends GenericForwardComposer {
 
     private IMyTasksAreaModel myTasksAreaModel;
 
-    @Resource
     private IPersonalTimesheetController personalTimesheetController;
 
     private RowRenderer tasksRenderer = new RowRenderer() {
 
         @Override
-        public void render(Row row, Object data) throws Exception {
-            // MvanMiddelkoop feb 2015 - changed columns: added total budgeted
-            // hours for resource, added Notes, removed Code (not of any use,
-            // technical code)
+        public void render(Row row, Object data, int i) throws Exception {
 
             Task task = (Task) data;
             row.setValue(task);
@@ -74,10 +70,7 @@ public class MyTasksAreaController extends GenericForwardComposer {
             Util.appendLabel(row, task.getStartAsLocalDate().toString());
             Util.appendLabel(row, task.getEndAsLocalDate().toString());
 
-            Util.appendLabel(
-                    row,
-                    _("{0} h", task.getSumOfAssignedEffort()
-                    .toHoursAsDecimalWithScale(0).toString()));
+            Util.appendLabel(row, _("{0} h", task.getSumOfAssignedEffort().toHoursAsDecimalWithScale(0).toString()));
             Util.appendLabel(row, _("{0} h", orderElement.getEffortAsString()));
             Util.appendLabel(row, getProgress(orderElement));
             appendTimeTrackingButton(row, task);
@@ -85,22 +78,20 @@ public class MyTasksAreaController extends GenericForwardComposer {
 
         private String getProgress(OrderElement orderElement) {
 
-            AdvanceMeasurement lastAdvanceMeasurement = orderElement
-                    .getLastAdvanceMeasurement();
-            if (lastAdvanceMeasurement != null) {
-                return MessageFormat.format("[{0} %] ({1})",
-                        lastAdvanceMeasurement.getValue(),
-                        lastAdvanceMeasurement.getDate());
-            }
-            return "";
+            AdvanceMeasurement lastAdvanceMeasurement = orderElement.getLastAdvanceMeasurement();
+
+            return lastAdvanceMeasurement != null
+                    ? MessageFormat.format(
+                    "[{0} %] ({1})", lastAdvanceMeasurement.getValue(), lastAdvanceMeasurement.getDate())
+                    : "";
         }
 
         private void appendTimeTrackingButton(Row row, final Task task) {
+
             EventListener trackTimeButtonListener = new EventListener() {
                 @Override
                 public void onEvent(Event event) throws Exception {
-                    personalTimesheetController
-                            .goToCreateOrEditForm(getPersonalTimesheetDateForTask(task));
+                    personalTimesheetController.goToCreateOrEditForm(getPersonalTimesheetDateForTask(task));
                 }
 
                 private LocalDate getPersonalTimesheetDateForTask(Task task) {
@@ -108,8 +99,7 @@ public class MyTasksAreaController extends GenericForwardComposer {
                     LocalDate end = task.getEndAsLocalDate();
 
                     LocalDate currentDate = new LocalDate();
-                    PersonalTimesheetsPeriodicityEnum periodicity = myTasksAreaModel
-                            .getPersonalTimesheetsPeriodicity();
+                    PersonalTimesheetsPeriodicityEnum periodicity = myTasksAreaModel.getPersonalTimesheetsPeriodicity();
                     LocalDate min = periodicity.getStart(currentDate);
                     LocalDate max = periodicity.getEnd(currentDate);
 
@@ -136,13 +126,8 @@ public class MyTasksAreaController extends GenericForwardComposer {
                     return currentDate;
                 }
 
-                private boolean dateBetween(LocalDate date, LocalDate start,
-                        LocalDate end) {
-                    if ((date.compareTo(start) >= 0)
-                            && (date.compareTo(end) <= 0)) {
-                        return true;
-                    }
-                    return false;
+                private boolean dateBetween(LocalDate date, LocalDate start, LocalDate end) {
+                    return (date.compareTo(start) >= 0) && (date.compareTo(end) <= 0);
                 }
             };
 
@@ -160,6 +145,19 @@ public class MyTasksAreaController extends GenericForwardComposer {
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         comp.setAttribute("controller", this);
+        injectObjects();
+    }
+
+    private void injectObjects() {
+        if ( personalTimesheetController == null ) {
+
+            personalTimesheetController =
+                    (IPersonalTimesheetController) SpringUtil.getBean("personalTimesheetController");
+        }
+
+        if ( myTasksAreaModel == null ) {
+            myTasksAreaModel = (IMyTasksAreaModel) SpringUtil.getBean("myTasksAreaModel");
+        }
     }
 
     public List<Task> getTasks() {

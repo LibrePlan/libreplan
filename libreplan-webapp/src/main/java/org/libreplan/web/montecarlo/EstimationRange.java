@@ -21,15 +21,21 @@ package org.libreplan.web.montecarlo;
 import java.math.BigDecimal;
 
 /**
- *
  * @author Diego Pino Garcia<dpino@igalia.com>
- *
  */
 public class EstimationRange {
 
     BigDecimal min;
+
     BigDecimal max;
+
     ESTIMATION_TYPE estimationType;
+
+    public EstimationRange(BigDecimal min, BigDecimal max, ESTIMATION_TYPE estimationType) {
+        this.min = min;
+        this.max = max;
+        this.estimationType = estimationType;
+    }
 
     public static EstimationRange optimisticRangeFor(MonteCarloTask task) {
         return new EstimationRange(
@@ -52,15 +58,8 @@ public class EstimationRange {
                 ESTIMATION_TYPE.PESSIMISTIC);
     }
 
-    public EstimationRange(BigDecimal min, BigDecimal max,
-            ESTIMATION_TYPE estimationType) {
-        this.min = min;
-        this.max = max;
-        this.estimationType = estimationType;
-    }
-
     public boolean contains(BigDecimal value) {
-        return (value.compareTo(min) >= 0 && value.compareTo(max) <= 0);
+        return value.compareTo(min) >= 0 && value.compareTo(max) <= 0;
     }
 
     public ESTIMATION_TYPE getEstimationType() {
@@ -70,5 +69,5 @@ public class EstimationRange {
 }
 
 enum ESTIMATION_TYPE {
-    PESSIMISTIC, NORMAL, OPTIMISTIC;
+    PESSIMISTIC, NORMAL, OPTIMISTIC
 }

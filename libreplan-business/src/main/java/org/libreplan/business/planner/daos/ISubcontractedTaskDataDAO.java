@@ -35,8 +35,7 @@ import org.libreplan.business.planner.entities.SubcontractedTaskData;
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public interface ISubcontractedTaskDataDAO extends
-        IGenericDAO<SubcontractedTaskData, Long> {
+public interface ISubcontractedTaskDataDAO extends IGenericDAO<SubcontractedTaskData, Long> {
 
     boolean existsInAnohterTransaction(Long id);
 
@@ -46,6 +45,5 @@ public interface ISubcontractedTaskDataDAO extends
 
     List<SubcontractedTaskData> getAllForMasterScenario();
 
-    SubcontractedTaskData getSubcontratedTaskDataByOrderElement(
-            OrderElement orderElement) throws InstanceNotFoundException;
+    SubcontractedTaskData getSubcontractedTaskDataByOrderElement(OrderElement orderElement) throws InstanceNotFoundException;
 }

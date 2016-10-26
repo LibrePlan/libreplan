@@ -27,7 +27,6 @@
 <?link rel="stylesheet" type="text/css" href="/common/css/libreplan_zk.css"?>
 
 
-
 <zk>
     <window id="importProject" self="@{define(content)}"
             apply="org.libreplan.web.importers.ProjectImportController"
@@ -59,7 +58,7 @@
 
         <hbox>
             <button id="btnImportProject" label="${i18n:_('Upload Project')}" upload="true,maxsize=9000"
-                    onUpload="projectImportController.importProject(event.getMedia())" class="create-button global-action"/>
+                    onUpload="projectImportController.importProject(event.getMedia())" sclass="create-button global-action"/>
         </hbox>
     </window>
 </zk>

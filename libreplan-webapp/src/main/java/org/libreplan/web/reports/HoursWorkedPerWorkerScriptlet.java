@@ -29,19 +29,16 @@ import org.libreplan.business.workingday.EffortDuration;
 
 /**
  * This class will be used to implement methods that could be called from
- * hoursWoerkedPerWorkerReport.jrxml to make calculations over
- * {@link EffortDuration} elements.
+ * hoursWorkedPerWorkerReport.jrxml to make calculations over {@link EffortDuration} elements.
  *
  * @author Ignacio Diaz Teijido <ignacio.diaz@comtecsf.es>
- *
  */
 public class HoursWorkedPerWorkerScriptlet extends JRAbstractScriptlet {
 
-    private Set<HoursWorkedPerResourceDTO> dtos = new HashSet<HoursWorkedPerResourceDTO>();
+    private Set<HoursWorkedPerResourceDTO> dtos = new HashSet<>();
 
     public String getEffort() throws JRScriptletException {
-        EffortDuration effort = (EffortDuration) this.getFieldValue("effort");
-        return effort.toFormattedString();
+        return ((EffortDuration) this.getFieldValue("effort")).toFormattedString();
     }
 
     public String getSumEffort() throws JRScriptletException {
@@ -54,25 +51,28 @@ public class HoursWorkedPerWorkerScriptlet extends JRAbstractScriptlet {
 
     @Override
     public void afterDetailEval() throws JRScriptletException {
-        // We use the set because elements could be processed twice depending on
-        // the report
+        // We use the set because elements could be processed twice depending on the report
         EffortDuration current = (EffortDuration) this.getFieldValue("effort");
+
         if (current == null) {
             current = EffortDuration.zero();
         }
-        HoursWorkedPerResourceDTO dto = (HoursWorkedPerResourceDTO) this
-                .getFieldValue("self");
+
+        HoursWorkedPerResourceDTO dto = (HoursWorkedPerResourceDTO) this.getFieldValue("self");
         if (!dtos.contains(dto)) {
-            // The effort of the worker is the sum of all efforts.
-            EffortDuration effortWorker = EffortDuration.sum(current,
-                    EffortDuration.parseFromFormattedString((String) this
-                            .getVariableValue("sumHoursPerWorker")));
-            this.setVariableValue("sumHoursPerWorker",
-                    effortWorker.toFormattedString());
+
+            // The effort of the worker is the sum of all efforts
+            EffortDuration effortWorker = EffortDuration.sum(
+                    current,
+                    EffortDuration.parseFromFormattedString((String) this.getVariableValue("sumHoursPerWorker")));
+
+            this.setVariableValue("sumHoursPerWorker", effortWorker.toFormattedString());
+
             // We calculate here the effort for a particular day
-            EffortDuration effort = EffortDuration.sum(current, EffortDuration
-                    .parseFromFormattedString((String) this
-                            .getVariableValue("sumHoursPerDay")));
+            EffortDuration effort = EffortDuration.sum(
+                    current,
+                    EffortDuration.parseFromFormattedString((String) this.getVariableValue("sumHoursPerDay")));
+
             this.setVariableValue("sumHoursPerDay", effort.toFormattedString());
             dtos.add(dto);
         }
@@ -80,46 +80,37 @@ public class HoursWorkedPerWorkerScriptlet extends JRAbstractScriptlet {
 
     @Override
     public void afterColumnInit() throws JRScriptletException {
-
     }
 
     @Override
     public void afterGroupInit(String arg0) throws JRScriptletException {
-
     }
 
     @Override
     public void afterPageInit() throws JRScriptletException {
-
     }
 
     @Override
     public void afterReportInit() throws JRScriptletException {
-
     }
 
     @Override
     public void beforeColumnInit() throws JRScriptletException {
-
     }
 
     @Override
     public void beforeDetailEval() throws JRScriptletException {
-
     }
 
     @Override
     public void beforeGroupInit(String arg0) throws JRScriptletException {
-
     }
 
     @Override
     public void beforePageInit() throws JRScriptletException {
-
     }
 
     @Override
     public void beforeReportInit() throws JRScriptletException {
-
     }
 }

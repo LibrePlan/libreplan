@@ -33,16 +33,17 @@ import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.resources.entities.Resource;
 
 /**
+ * Model for Hours Worked Per Resource page.
  *
  * @author Diego Pino Garcia <dpino@igalia.com>
- *
  */
 public interface IHoursWorkedPerWorkerModel {
 
     JRDataSource getHoursWorkedPerWorkerReport(List<Resource> resources,
-            List<Label> labels, LabelFilterType labelFilterType,
-            List<Criterion> criterions,
-            Date startingDate, Date endingDate);
+                                               List<Label> labels,
+                                               LabelFilterType labelFilterType,
+                                               List<Criterion> criterions,
+                                               Date startingDate, Date endingDate);
 
     void init();
 

@@ -39,7 +39,6 @@ import javax.annotation.Resource;
 
 import org.hibernate.SessionFactory;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.libreplan.business.IDataBootstrap;
@@ -83,7 +82,7 @@ public class ScenarioModelTest {
     private IDataBootstrap scenariosBootstrap;
 
     @Before
-    public void loadRequiredaData() {
+    public void loadRequiredData() {
         defaultAdvanceTypesBootstrapListener.loadRequiredData();
         configurationBootstrap.loadRequiredData();
         scenariosBootstrap.loadRequiredData();
@@ -123,8 +122,8 @@ public class ScenarioModelTest {
     }
 
     public static Order givenStoredOrderInScenario(Scenario scenario,
-            IConfigurationDAO configurationDAO, IOrderDAO orderDAO,
-            SessionFactory sessionFactory) {
+                                                   IConfigurationDAO configurationDAO, IOrderDAO orderDAO,
+                                                   SessionFactory sessionFactory) {
         Order order = Order.create();
         order.setCode(UUID.randomUUID().toString());
         order.setName(randomize("order-name"));
@@ -163,7 +162,7 @@ public class ScenarioModelTest {
     }
 
     public static Scenario givenStoredScenario(Scenario predecessor,
-            IScenarioDAO scenarioDAO, SessionFactory sessionFactory) {
+                                               IScenarioDAO scenarioDAO, SessionFactory sessionFactory) {
         Scenario scenario = predecessor.newDerivedScenario();
         scenario.setName("scenario-name-" + UUID.randomUUID());
 
@@ -188,7 +187,6 @@ public class ScenarioModelTest {
 
     @Test
     @Transactional
-    @Ignore("FIXME: test was causing problems in Debian Wheezy")
     public void testCreateAndSaveScenarioWithoutOrders() {
         int previous = scenarioModel.getScenarios().size();
 
@@ -206,7 +204,6 @@ public class ScenarioModelTest {
 
     @Test
     @Transactional
-    @Ignore("FIXME: test was causing problems in Debian Wheezy")
     public void testCreateAndSaveScenarioWithOrders() {
         Order order = givenStoredOrderInDefaultScenario();
 
@@ -257,7 +254,6 @@ public class ScenarioModelTest {
 
     @Test
     @Transactional
-    @Ignore("FIXME: test was causing problems in Debian Wheezy")
     public void testRemoveScenarioWithOrders() throws InstanceNotFoundException {
         Order order = givenStoredOrderInDefaultScenario();
         Scenario scenario = givenStoredScenario();
@@ -294,14 +290,14 @@ public class ScenarioModelTest {
         try {
             orderDAO.find(order.getId());
             fail("Order should be removed");
-        } catch (InstanceNotFoundException e) {
+        } catch (InstanceNotFoundException ignored) {
             // Ok
         }
 
         try {
             orderVersionDAO.find(orderVersion.getId());
             fail("Order version should be removed");
-        } catch (InstanceNotFoundException e) {
+        } catch (InstanceNotFoundException ignored) {
             // Ok
         }
     }

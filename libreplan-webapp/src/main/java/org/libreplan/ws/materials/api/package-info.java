@@ -21,11 +21,13 @@
 
 /**
  * Specification of namespace for REST-based services.
+ *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 @javax.xml.bind.annotation.XmlSchema(
     elementFormDefault=javax.xml.bind.annotation.XmlNsForm.QUALIFIED,
-    namespace=WSCommonGlobalNames.REST_NAMESPACE
-)
+    namespace=WSCommonGlobalNames.REST_NAMESPACE)
+
 package org.libreplan.ws.materials.api;
+
 import org.libreplan.ws.common.api.WSCommonGlobalNames;

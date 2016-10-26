@@ -32,13 +32,15 @@
                 <vbox sclass="allocation-criterion-selector">
 
                     <tree id="criterionsTree" width="420px"
-                            height="412px" vflex="true" multiple="true"
-                            model="@{selectorController.criterions}"
-                            zclass="z-dottree" style="margin-top:5px;margin-bottom:5px;">
+                          height="459px" multiple="true"
+                          model="@{selectorController.criterions}"
+                          sclass="allocationTreeCol"
+                          zclass="z-dottree" style="margin-top:5px;margin-bottom:5px;">
                         <treecols>
-                            <treecol label="${i18n:_('Criteria')}" tooltiptext="${i18n:_('Criteria (Hold CTRL for multiple selection)')}" />
+                            <treecol label="${i18n:_('Criteria')}"
+                                     tooltiptext="${i18n:_('Criteria (Hold CTRL for multiple selection)')}" />
                         </treecols>
-                   </tree>
+                    </tree>
 
                 </vbox>
 
@@ -47,41 +49,67 @@
                     <label value="${i18n:_('Load ratios calculated between')}:"/>
                     <separator/>
                     <grid fixedLayout="true">
-                       <columns>
-                          <column/>
-                          <column/>
-                       </columns>
-                       <rows>
-                         <row>
-                           <label value="${i18n:_('Start date')}:"/>
-                           <datebox id="startDateLoadRatiosDatebox"
-                                    onChange="selectorController.updateLoadRatios()"/>
-                         </row>
-                         <row>
-                           <label value="${i18n:_('End date')}:"/>
-                           <datebox id="endDateLoadRatiosDatebox"
-                                    onChange="selectorController.updateLoadRatios()"/>
-                         </row>
-                       </rows>
-                     </grid>
-                     <style>
-                        .z-listcell-cnt {
-                            height: 20px;
+                        <columns>
+                            <column/>
+                            <column/>
+                        </columns>
+                        <rows>
+                            <row>
+                                <label value="${i18n:_('Start date')}:"/>
+                                <datebox id="startDateLoadRatiosDatebox"
+                                         onChange="selectorController.updateLoadRatios()"/>
+                            </row>
+                            <row>
+                                <label value="${i18n:_('End date')}:"/>
+                                <datebox id="endDateLoadRatiosDatebox"
+                                         onChange="selectorController.updateLoadRatios()"/>
+                            </row>
+                        </rows>
+                    </grid>
+                    <style>
+                        .z-listcell-content > div {
+                        width: 58px !important;
+                        height: 13px !important;
+                        margin-left: 7px;
                         }
-                        div.z-listcell-cnt {
-                            padding: 5px 0 1px 0;
+
+                        div.z-listcell-content > div > div {
+                        line-height: 12px;
                         }
-                     </style>
-                     <listbox id="listBoxResources" width="420px" height="340px"
-                            vflex="true" multiple="@{selectorController.allowSelectMultipleResources}" style="margin:5px;"
-                            itemRenderer="@{selectorController.listitemRenderer}" >
+
+                        div.z-listcell-content > div > div > span {
+                        color: black;
+                        }
+
+                        div.z-listcell-content {
+                        padding: 5px 0 1px 0;
+                        }
+
+                        tr.z-listitem-selected > .z-listcell,
+                        tr.z-listitem-selected:hover > .z-listcell,
+                        tr.z-listitem-selected.z-listitem-focus:hover > .z-listcell,
+                        tr.z-listitem-selected.z-listitem-focus > .z-listcell {
+                        background: linear-gradient(to bottom, #fdd772 0, #fdd772 100%) !important;
+                        }
+
+                        .z-listcell > div > span {
+                        color: black;
+                        }
+
+                        .z-listitem .z-listcell {
+                        border-left: none !important;
+                        }
+                    </style>
+                    <listbox id="listBoxResources" hflex="1" height="340px"
+                             multiple="@{selectorController.allowSelectMultipleResources}" style="margin:5px;"
+                             itemRenderer="@{selectorController.listitemRenderer}" >
                         <listhead>
                             <listheader label="${i18n:_('Found resources')}"
-                                    tooltiptext="${i18n:_('Resources matching selected criteria')}"
-                                    sort="auto" sortDirection="ascending"/>
+                                        tooltiptext="${i18n:_('Resources matching selected criteria')}"
+                                        sort="auto" sortDirection="ascending"/>
                             <listheader label="${i18n:_('Availability')}" hflex="min"/>
                             <listheader label="${i18n:_('Overtime')}" hflex="min"/>
-                       </listhead>
+                        </listhead>
                     </listbox>
 
                 </vbox>
@@ -100,7 +128,7 @@
                             <hbox width="100%">
                                 <label value="${i18n:_('Assignment Type')}" />
                                 <image src="/common/img/axuda.gif" tooltip="allocation-type-popup"
-                                        sclass="context-help-popup" height="15px" />
+                                       sclass="context-help-popup" height="15px" />
                             </hbox>
                             <radiogroup id="allocationTypeSelector" orient="vertical" />
                         </row>
@@ -114,8 +142,14 @@
 
         </groupbox>
 
-        <popup id="allocation-type-popup" width="700px" >
-            <iframe id="iframe" src="/help/${i18n:_('en')}/08-asignacion.html" width="100%" />
+        <zscript><![CDATA[
+                i18iframe = org.libreplan.web.HelpLinkUtil.checkUrlPath(
+                    "/help/" + org.libreplan.web.I18nHelper._("en") + "/08-asignacion.html");
+            ]]>
+        </zscript>
+
+        <popup id="allocation-type-popup" width="700px" onOpen="iframe.setSrc(i18iframe)">
+            <iframe id="iframe" width="100%" />
         </popup>
 
     </vbox>

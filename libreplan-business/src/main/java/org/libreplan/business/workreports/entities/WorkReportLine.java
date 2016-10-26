@@ -80,6 +80,7 @@ public class WorkReportLine extends IntegrationEntity implements Comparable<Work
      * Constructor for hibernate. Do not use!
      */
     public WorkReportLine() {
+
     }
 
     public WorkReportLine(WorkReport workReport) {
@@ -296,20 +297,20 @@ public class WorkReportLine extends IntegrationEntity implements Comparable<Work
     private void assignItsLabels(WorkReportType workReportType) {
         Set<Label> updatedLabels = new HashSet<>();
         if (workReportType != null) {
-            for (WorkReportLabelTypeAssignment labelTypeAssigment : workReportType.getLineLabels()) {
-                Label label = getLabelBy(labelTypeAssigment);
+            for (WorkReportLabelTypeAssignment labelTypeAssignment : workReportType.getLineLabels()) {
+                Label label = getLabelBy(labelTypeAssignment);
                 if (label != null) {
                     updatedLabels.add(label);
                 } else {
-                    updatedLabels.add(labelTypeAssigment.getDefaultLabel());
+                    updatedLabels.add(labelTypeAssignment.getDefaultLabel());
                 }
             }
             this.labels = updatedLabels;
         }
     }
 
-    private Label getLabelBy(WorkReportLabelTypeAssignment labelTypeAssigment) {
-        LabelType type = labelTypeAssigment.getLabelType();
+    private Label getLabelBy(WorkReportLabelTypeAssignment labelTypeAssignment) {
+        LabelType type = labelTypeAssignment.getLabelType();
         for (Label label : labels) {
             if (label.getType().getId().equals(type.getId())) {
                 return label;
@@ -445,9 +446,9 @@ public class WorkReportLine extends IntegrationEntity implements Comparable<Work
             return false;
         }
 
-        for (WorkReportLabelTypeAssignment typeAssigment : this.workReport.getWorkReportType().getLineLabels()) {
+        for (WorkReportLabelTypeAssignment typeAssignment : this.workReport.getWorkReportType().getLineLabels()) {
             try {
-                getLabelByType(typeAssigment.getLabelType());
+                getLabelByType(typeAssignment.getLabelType());
             } catch (InstanceNotFoundException e) {
                 return false;
             }

@@ -63,7 +63,7 @@ import java.util.List;
  * and that are treat to {@link EmailTemplateEnum#TEMPLATE_ENTER_DATA_IN_TIMESHEET}
  * Data will be send for bound users with empty timesheet lines.
  *
- * @author Created by Vova Perebykivskiy <vova@libreplan-enterprise.com> on 20.01.2016.
+ * @author Created by Vova Perebykivskyi <vova@libreplan-enterprise.com> on 20.01.2016.
  */
 
 @Component
@@ -190,7 +190,7 @@ public class SendEmailOnTimesheetDataMissing implements IEmailNotificationJob {
             result.add(new PersonalTimesheetDTO(
                     date,
                     workReport,
-                    getResourceCapcity(resource, date, periodicity),
+                    getResourceCapacity(resource, date, periodicity),
                     hours,
                     tasksNumber));
         }
@@ -208,8 +208,7 @@ public class SendEmailOnTimesheetDataMissing implements IEmailNotificationJob {
     private WorkReport getWorkReport(Resource resource, LocalDate date,
                                      PersonalTimesheetsPeriodicityEnum periodicity) {
 
-        WorkReport workReport = workReportDAO.getPersonalTimesheetWorkReport(
-                resource, date, periodicity);
+        WorkReport workReport = workReportDAO.getPersonalTimesheetWorkReport(resource, date, periodicity);
         forceLoad(workReport);
 
         return workReport;
@@ -238,7 +237,7 @@ public class SendEmailOnTimesheetDataMissing implements IEmailNotificationJob {
         }
         return orderElements.size();
     }
-    private EffortDuration getResourceCapcity(Resource resource, LocalDate date,
+    private EffortDuration getResourceCapacity(Resource resource, LocalDate date,
                                               PersonalTimesheetsPeriodicityEnum periodicity) {
 
         LocalDate start = periodicity.getStart(date);

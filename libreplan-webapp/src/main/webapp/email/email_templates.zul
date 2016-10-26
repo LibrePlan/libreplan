@@ -31,7 +31,9 @@
 <zk>
     <window self="@{define(content)}" apply="org.libreplan.web.email.EmailTemplateController"
             title="${i18n:_('Edit E-mail template')}">
+
         <vbox id="messagesContainer" />
+
         <tabbox>
             <tabs>
                 <tab label="${i18n:_('Template data')}"/>
@@ -40,10 +42,12 @@
                 <tabpanel>
                     <groupbox>
                         <caption label="${i18n:_('General user data')}" />
+
                         <grid>
                             <columns>
-                                <column width="220px"/>
-                                <column width="420px"/>
+                                <column width="6%"/>
+                                <column width="20%"/>
+                                <column width="54%"/>
                             </columns>
                             <rows>
                                 <row>
@@ -65,17 +69,14 @@
                                 </row>
                                 <row>
                                     <label value="${i18n:_('E-mail subject')}"/>
-                                    <textbox id="subjectTextbox"
-                                             width="400px;" />
+                                    <textbox id="subjectTextbox" width="400px;" />
                                 </row>
-                                <row>
+                                <row style="height: 270px;">
                                     <label value="${i18n:_('Template contents')}"/>
-
-                                    <textbox id="contentsTextbox"
-                                             rows="15" width="400px;"
-                                             tabindex="11"/>
-                                    <groupbox closable="false" width="270px">
-                                        <caption label="${i18n:_('Possible content keywords')}"/>
+                                    <textbox id="contentsTextbox" rows="20" width="400px;"/>
+                                    <groupbox closable="false" width="270px" sclass="email-content-keywords">
+                                        <caption label="${i18n:_('Possible content keywords')}"
+                                                 style="background: #F7F7F7;"/>
                                         <grid width="250px">
                                             <columns>
                                                 <column label="${i18n:_('Keyword')}"/>
@@ -124,15 +125,32 @@
                                 </row>
                             </rows>
                         </grid>
+
                     </groupbox>
                 </tabpanel>
             </tabpanels>
         </tabbox>
-        <button onClick="emailTemplateController.save()" autodisable="self" label="${i18n:_('Save')}"
-                sclass="save-button global-action"/>
 
-        <button onClick="emailTemplateController.cancel()" label="${i18n:_('Cancel')}"
-                sclass="cancel-button global-action"/>
+        <button onClick="emailTemplateController.save()"
+                autodisable="self" label="${i18n:_('Save')}" sclass="save-button global-action"/>
 
+        <button onClick="emailTemplateController.cancel()"
+                label="${i18n:_('Cancel')}" sclass="cancel-button global-action"/>
+
+        <button upload="true, maxsize=999">
+            <attribute name="onUpload">
+                <![CDATA[
+                    System.out.println(event.getMedia());
+                ]]>
+            </attribute>
+        </button>
+
+        <script>
+            <!-- Hack for removing unnecessary border of grid column -->
+            zk.afterMount(function() {
+                var div = $( "div.email-content-keywords" );
+                div.parents('td.z-row-inner').css('border-right', 'none');
+            });
+        </script>
     </window>
 </zk>

@@ -34,11 +34,11 @@ import org.libreplan.business.util.deepcopy.OnCopy;
 import org.libreplan.business.util.deepcopy.Strategy;
 
 /**
- * Machine Workers Configuration Unit<br />
+ * Machine Workers Configuration Unit.
+ * <br />
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
-public class MachineWorkersConfigurationUnit extends BaseEntity implements
-        Comparable {
+public class MachineWorkersConfigurationUnit extends BaseEntity implements Comparable {
 
     @OnCopy(Strategy.SHARE)
     private Machine machine;
@@ -47,27 +47,22 @@ public class MachineWorkersConfigurationUnit extends BaseEntity implements
 
     private String name;
 
-    private Set<MachineWorkerAssignment> workerAssignments = new HashSet<MachineWorkerAssignment>();
+    private Set<MachineWorkerAssignment> workerAssignments = new HashSet<>();
 
     @OnCopy(Strategy.SHARE_COLLECTION_ELEMENTS)
-    private Set<Criterion> requiredCriterions = new HashSet<Criterion>();
+    private Set<Criterion> requiredCriterions = new HashSet<>();
 
-    public static MachineWorkersConfigurationUnit create(Machine machine,
-            String name,
-            BigDecimal alpha) {
-        return create(new MachineWorkersConfigurationUnit(
-                machine,
-                name, alpha));
+    public MachineWorkersConfigurationUnit() {
     }
 
-    protected MachineWorkersConfigurationUnit(Machine machine, String name,
-            BigDecimal alpha) {
+    protected MachineWorkersConfigurationUnit(Machine machine, String name, BigDecimal alpha) {
         this.machine = machine;
         this.name = name;
         this.alpha = alpha;
     }
 
-    public MachineWorkersConfigurationUnit() {
+    public static MachineWorkersConfigurationUnit create(Machine machine, String name, BigDecimal alpha) {
+        return create(new MachineWorkersConfigurationUnit(machine, name, alpha));
     }
 
     public void setMachine(Machine machine) {
@@ -104,10 +99,9 @@ public class MachineWorkersConfigurationUnit extends BaseEntity implements
     }
 
     public void addNewWorkerAssignment(Worker worker) {
-        MachineWorkerAssignment assigment = MachineWorkerAssignment.create(
-                this, worker);
-        assigment.setStartDate(new Date());
-        workerAssignments.add(assigment);
+        MachineWorkerAssignment assignment = MachineWorkerAssignment.create(this, worker);
+        assignment.setStartDate(new Date());
+        workerAssignments.add(assignment);
     }
 
     public void removeMachineWorkersConfigurationUnit(
@@ -131,28 +125,26 @@ public class MachineWorkersConfigurationUnit extends BaseEntity implements
         requiredCriterions.remove(criterion);
     }
 
-    public boolean existsWorkerAssignmentWithSameWorker(
-            MachineWorkerAssignment assignment) {
+    public boolean existsWorkerAssignmentWithSameWorker(MachineWorkerAssignment assignment) {
         boolean assigned = false;
         for (MachineWorkerAssignment each : workerAssignments) {
-            if (!(each.getId().equals(assignment.getId()))
-                    && ((each.getWorker().getId().equals(assignment.getWorker()
-                            .getId())))) {
+
+            if (!(each.getId().equals(assignment.getId())) &&
+                    ((each.getWorker().getId().equals(assignment.getWorker().getId())))) {
+
                 assigned = true;
             }
         }
         return assigned;
     }
 
-    public boolean existsWorkerAssignmentWithSameWorker(
-            MachineWorkerAssignment assignment,
-            Interval interval) {
+    public boolean existsWorkerAssignmentWithSameWorker(MachineWorkerAssignment assignment, Interval interval) {
         boolean assigned = false;
         Worker worker = assignment.getWorker();
-        Interval range = null;
+        Interval range;
+
         for (MachineWorkerAssignment each : workerAssignments) {
-            if ((each.getWorker().getId().equals(worker.getId()))
-                    && (each.getId() != assignment.getId())) {
+            if ((each.getWorker().getId().equals(worker.getId())) && (each.getId() != assignment.getId())) {
                 if (each.getFinishDate() != null) {
                     range = Interval.range(each.getStart(), each.getFinish());
                 } else {
@@ -177,8 +169,7 @@ public class MachineWorkersConfigurationUnit extends BaseEntity implements
         for (MachineWorkerAssignment each : workerAssignments) {
             if (each.getStartDate() == null) {
                 correctIntervals = false;
-            } else if ((each.getFinishDate() != null)
-                    && (each.getStartDate().compareTo(each.getFinishDate()) > 0)) {
+            } else if ((each.getFinishDate() != null) && (each.getStartDate().compareTo(each.getFinishDate()) > 0)) {
                 correctIntervals = false;
             }
         }
@@ -188,7 +179,7 @@ public class MachineWorkersConfigurationUnit extends BaseEntity implements
     @AssertTrue(message = "The same resource is assigned twice inside an interval")
     public boolean isUniqueWorkerAssignmentInIntervalConstraint() {
         boolean unique = true;
-        Interval range = null;
+        Interval range;
         for (MachineWorkerAssignment each : workerAssignments) {
             if (each.getStartDate() != null) {
                 if (each.getFinishDate() != null) {
@@ -206,9 +197,7 @@ public class MachineWorkersConfigurationUnit extends BaseEntity implements
 
     @Override
     public int compareTo(Object configurationUnit) {
-        return this.name
-                .compareToIgnoreCase(((MachineWorkersConfigurationUnit) configurationUnit)
-                        .getName());
+        return this.name.compareToIgnoreCase(((MachineWorkersConfigurationUnit) configurationUnit).getName());
     }
 
 }

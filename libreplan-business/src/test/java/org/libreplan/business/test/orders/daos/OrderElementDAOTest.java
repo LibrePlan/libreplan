@@ -88,9 +88,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {
-        BUSINESS_SPRING_CONFIG_FILE,
-        BUSINESS_SPRING_CONFIG_TEST_FILE })
+@ContextConfiguration(locations = {BUSINESS_SPRING_CONFIG_FILE, BUSINESS_SPRING_CONFIG_TEST_FILE })
 /**
  * @author Diego Pino García <dpino@igalia.com>
  */
@@ -98,11 +96,6 @@ public class OrderElementDAOTest {
 
     @Resource
     private IDataBootstrap defaultAdvanceTypesBootstrapListener;
-
-    @Before
-    public void loadRequiredaData() {
-        defaultAdvanceTypesBootstrapListener.loadRequiredData();
-    }
 
     @Autowired
     IQualityFormDAO qualityFormDAO;
@@ -134,6 +127,7 @@ public class OrderElementDAOTest {
     @Before
     public void loadRequiredData() {
         scenariosBootstrap.loadRequiredData();
+        defaultAdvanceTypesBootstrapListener.loadRequiredData();
     }
 
     @Test
@@ -144,7 +138,6 @@ public class OrderElementDAOTest {
 
     private OrderLine createValidOrderLine() {
         String unique = UUID.randomUUID().toString();
-
         return createValidOrderLine(unique, unique);
     }
 
@@ -152,13 +145,11 @@ public class OrderElementDAOTest {
         Order order = createValidOrder();
         OrderLine orderLine = createStandAloneLine(name, code);
         order.add(orderLine);
-
         return orderLine;
     }
 
     private OrderLine createStandAloneLine() {
         String uniqueCode = UUID.randomUUID().toString();
-
         return createStandAloneLine(uniqueCode, uniqueCode);
     }
 
@@ -166,13 +157,11 @@ public class OrderElementDAOTest {
         OrderLine orderLine = OrderLine.create();
         orderLine.setName(name);
         orderLine.setCode(code);
-
         return orderLine;
     }
 
     private OrderLineGroup createValidOrderLineGroup() {
         String unique = UUID.randomUUID().toString();
-
         return createValidOrderLineGroup(unique, unique);
     }
 
@@ -266,7 +255,7 @@ public class OrderElementDAOTest {
 
         OrderLine orderLine = createValidOrderLine();
 
-        OrderElementTest.addAvanceAssignmentWithMeasurement(
+        OrderElementTest.addAdvanceAssignmentWithMeasurement(
                 orderLine, PredefinedAdvancedTypes.UNITS.getType(), new BigDecimal(1000), new BigDecimal(400), true);
 
         orderElementDAO.save(orderLine);
@@ -302,10 +291,10 @@ public class OrderElementDAOTest {
 
         AdvanceType advanceType = PredefinedAdvancedTypes.UNITS.getType();
 
-        OrderElementTest.addAvanceAssignmentWithMeasurement(
+        OrderElementTest.addAdvanceAssignmentWithMeasurement(
                 children.get(0), advanceType, new BigDecimal(1000), new BigDecimal(100), true);
 
-        OrderElementTest.addAvanceAssignmentWithMeasurement(
+        OrderElementTest.addAdvanceAssignmentWithMeasurement(
                 children.get(1), advanceType, new BigDecimal(1000), new BigDecimal(300), true);
 
         orderElementDAO.save(orderElement);
@@ -338,7 +327,7 @@ public class OrderElementDAOTest {
 
         OrderLine orderLine = createValidOrderLine();
 
-        OrderElementTest.addAvanceAssignmentWithMeasurement(
+        OrderElementTest.addAdvanceAssignmentWithMeasurement(
                 orderLine, PredefinedAdvancedTypes.UNITS.getType(), new BigDecimal(1000), new BigDecimal(400), true);
 
         orderElementDAO.save(orderLine);
@@ -354,7 +343,7 @@ public class OrderElementDAOTest {
         try {
             orderElementDAO.find(id);
             fail("It should throw an exception");
-        } catch (InstanceNotFoundException e) {
+        } catch (InstanceNotFoundException ignored) {
             // ok
         }
     }
@@ -376,10 +365,10 @@ public class OrderElementDAOTest {
 
         AdvanceType advanceType = PredefinedAdvancedTypes.UNITS.getType();
 
-        OrderElementTest.addAvanceAssignmentWithMeasurement(
+        OrderElementTest.addAdvanceAssignmentWithMeasurement(
                 children.get(0), advanceType, new BigDecimal(1000), new BigDecimal(100), true);
 
-        OrderElementTest.addAvanceAssignmentWithMeasurement(
+        OrderElementTest.addAdvanceAssignmentWithMeasurement(
                 children.get(1), advanceType, new BigDecimal(1000), new BigDecimal(300), true);
 
         orderElementDAO.save(orderElement);
@@ -395,7 +384,7 @@ public class OrderElementDAOTest {
         try {
             orderElementDAO.find(id);
             fail("It should throw an exception");
-        } catch (InstanceNotFoundException e) {
+        } catch (InstanceNotFoundException ignored) {
             // OK
         }
     }
@@ -425,14 +414,14 @@ public class OrderElementDAOTest {
         try {
             orderElement.addTaskQualityForm(null);
             fail("It should throw an exception");
-        } catch (NullPointerException e) {
+        } catch (NullPointerException ignored) {
             // OK
         }
 
         try {
             orderElement.addTaskQualityForm(qualityForm);
             fail("It should throw an exception");
-        } catch (ValidationException e) {
+        } catch (ValidationException ignored) {
             // OK
         }
     }
@@ -479,10 +468,10 @@ public class OrderElementDAOTest {
         OrderLine orderLine3 = createValidOrderLine();
         orderElementDAO.save(orderLine3);
 
-        List<OrderElement> orderELements = orderElementDAO.findByLabelsAndCriteria(Collections.singleton(label), null);
+        List<OrderElement> orderElements = orderElementDAO.findByLabelsAndCriteria(Collections.singleton(label), null);
 
-        assertEquals(1, orderELements.size());
-        assertEquals(orderLine1.getId(), orderELements.get(0).getId());
+        assertEquals(1, orderElements.size());
+        assertEquals(orderLine1.getId(), orderElements.get(0).getId());
     }
 
     @Test
@@ -503,20 +492,20 @@ public class OrderElementDAOTest {
         orderLine3.addLabel(label2);
         orderElementDAO.save(orderLine3);
 
-        List<OrderElement> orderELements = orderElementDAO.findByLabelsAndCriteria(Collections.singleton(label1), null);
-        assertEquals(1, orderELements.size());
-        assertEquals(orderLine1.getId(), orderELements.get(0).getId());
+        List<OrderElement> orderElements = orderElementDAO.findByLabelsAndCriteria(Collections.singleton(label1), null);
+        assertEquals(1, orderElements.size());
+        assertEquals(orderLine1.getId(), orderElements.get(0).getId());
 
-        orderELements = orderElementDAO.findByLabelsAndCriteria(Collections.singleton(label2), null);
-        assertEquals(2, orderELements.size());
+        orderElements = orderElementDAO.findByLabelsAndCriteria(Collections.singleton(label2), null);
+        assertEquals(2, orderElements.size());
 
-        for (OrderElement each : orderELements) {
+        for (OrderElement each : orderElements) {
             assertTrue(each.getId().equals(orderLine1.getId()) || each.getId().equals(orderLine3.getId()));
         }
 
-        orderELements = orderElementDAO.findByLabelsAndCriteria(new HashSet<>(Arrays.asList(label1, label2)), null);
-        assertEquals(1, orderELements.size());
-        assertEquals(orderLine1.getId(), orderELements.get(0).getId());
+        orderElements = orderElementDAO.findByLabelsAndCriteria(new HashSet<>(Arrays.asList(label1, label2)), null);
+        assertEquals(1, orderElements.size());
+        assertEquals(orderLine1.getId(), orderElements.get(0).getId());
     }
 
     @Test
@@ -531,16 +520,16 @@ public class OrderElementDAOTest {
         child.addLabel(label2);
         orderElementDAO.save(orderLineGroup);
 
-        List<OrderElement> orderELements = orderElementDAO.findByLabelsAndCriteria(Collections.singleton(label1), null);
-        assertEquals(1, orderELements.size());
-        assertEquals(orderLineGroup.getId(), orderELements.get(0).getId());
+        List<OrderElement> orderElements = orderElementDAO.findByLabelsAndCriteria(Collections.singleton(label1), null);
+        assertEquals(1, orderElements.size());
+        assertEquals(orderLineGroup.getId(), orderElements.get(0).getId());
 
-        orderELements = orderElementDAO.findByLabelsAndCriteria(Collections.singleton(label2), null);
-        assertEquals(1, orderELements.size());
-        assertEquals(child.getId(), orderELements.get(0).getId());
+        orderElements = orderElementDAO.findByLabelsAndCriteria(Collections.singleton(label2), null);
+        assertEquals(1, orderElements.size());
+        assertEquals(child.getId(), orderElements.get(0).getId());
 
-        orderELements = orderElementDAO.findByLabelsAndCriteria(new HashSet<>(Arrays.asList(label1, label2)), null);
-        assertEquals(0, orderELements.size());
+        orderElements = orderElementDAO.findByLabelsAndCriteria(new HashSet<>(Arrays.asList(label1, label2)), null);
+        assertEquals(0, orderElements.size());
     }
 
     private Criterion givenStoredCriterion() {
@@ -570,11 +559,10 @@ public class OrderElementDAOTest {
         OrderLine orderLine3 = createValidOrderLine();
         orderElementDAO.save(orderLine3);
 
-        List<OrderElement> orderELements =
-                orderElementDAO.findByLabelsAndCriteria(null, Collections.singleton(criterion));
+        List<OrderElement> orderElements = orderElementDAO.findByLabelsAndCriteria(null, Collections.singleton(criterion));
 
-        assertEquals(1, orderELements.size());
-        assertEquals(orderLine1.getId(), orderELements.get(0).getId());
+        assertEquals(1, orderElements.size());
+        assertEquals(orderLine1.getId(), orderElements.get(0).getId());
     }
 
     @Test
@@ -595,24 +583,24 @@ public class OrderElementDAOTest {
         orderLine3.addCriterionRequirement(new DirectCriterionRequirement(criterion2));
         orderElementDAO.save(orderLine3);
 
-        List<OrderElement> orderELements =
+        List<OrderElement> orderElements =
                 orderElementDAO.findByLabelsAndCriteria(null, Collections.singleton(criterion1));
 
-        assertEquals(1, orderELements.size());
-        assertEquals(orderLine1.getId(), orderELements.get(0).getId());
+        assertEquals(1, orderElements.size());
+        assertEquals(orderLine1.getId(), orderElements.get(0).getId());
 
-        orderELements = orderElementDAO.findByLabelsAndCriteria(null, Collections.singleton(criterion2));
-        assertEquals(2, orderELements.size());
+        orderElements = orderElementDAO.findByLabelsAndCriteria(null, Collections.singleton(criterion2));
+        assertEquals(2, orderElements.size());
 
-        for (OrderElement each : orderELements) {
+        for (OrderElement each : orderElements) {
             assertTrue(each.getId().equals(orderLine1.getId()) || each.getId().equals(orderLine3.getId()));
         }
 
-        orderELements =
+        orderElements =
                 orderElementDAO.findByLabelsAndCriteria(null, new HashSet<>(Arrays.asList(criterion1, criterion2)));
 
-        assertEquals(1, orderELements.size());
-        assertEquals(orderLine1.getId(), orderELements.get(0).getId());
+        assertEquals(1, orderElements.size());
+        assertEquals(orderLine1.getId(), orderElements.get(0).getId());
 
     }
 
@@ -628,20 +616,20 @@ public class OrderElementDAOTest {
         child.addCriterionRequirement(new DirectCriterionRequirement(criterion2));
         orderElementDAO.save(orderLineGroup);
 
-        List<OrderElement> orderELements =
+        List<OrderElement> orderElements =
                 orderElementDAO.findByLabelsAndCriteria(null, Collections.singleton(criterion1));
 
-        assertEquals(1, orderELements.size());
-        assertEquals(orderLineGroup.getId(), orderELements.get(0).getId());
+        assertEquals(1, orderElements.size());
+        assertEquals(orderLineGroup.getId(), orderElements.get(0).getId());
 
-        orderELements = orderElementDAO.findByLabelsAndCriteria(null, Collections.singleton(criterion2));
-        assertEquals(1, orderELements.size());
-        assertEquals(child.getId(), orderELements.get(0).getId());
+        orderElements = orderElementDAO.findByLabelsAndCriteria(null, Collections.singleton(criterion2));
+        assertEquals(1, orderElements.size());
+        assertEquals(child.getId(), orderElements.get(0).getId());
 
-        orderELements =
+        orderElements =
                 orderElementDAO.findByLabelsAndCriteria(null, new HashSet<>(Arrays.asList(criterion1, criterion2)));
 
-        assertEquals(0, orderELements.size());
+        assertEquals(0, orderElements.size());
     }
 
     @Test
@@ -662,11 +650,11 @@ public class OrderElementDAOTest {
 
         orderElementDAO.save(orderLine3);
 
-        List<OrderElement> orderELements =
+        List<OrderElement> orderElements =
                 orderElementDAO.findByLabelsAndCriteria(Collections.singleton(label), Collections.singleton(criterion));
 
-        assertEquals(1, orderELements.size());
-        assertEquals(orderLine3.getId(), orderELements.get(0).getId());
+        assertEquals(1, orderElements.size());
+        assertEquals(orderLine3.getId(), orderElements.get(0).getId());
     }
 
     @Test
@@ -693,27 +681,27 @@ public class OrderElementDAOTest {
 
         orderElementDAO.save(orderLine3);
 
-        List<OrderElement> orderELements = orderElementDAO
+        List<OrderElement> orderElements = orderElementDAO
                 .findByLabelsAndCriteria(Collections.singleton(label2), Collections.singleton(criterion1));
 
-        assertEquals(2, orderELements.size());
-        for (OrderElement each : orderELements) {
+        assertEquals(2, orderElements.size());
+        for (OrderElement each : orderElements) {
             assertTrue(each.getId().equals(orderLine2.getId()) || each.getId().equals(orderLine3.getId()));
         }
 
-        orderELements = orderElementDAO
+        orderElements = orderElementDAO
                 .findByLabelsAndCriteria(Collections.singleton(label1), Collections.singleton(criterion2));
 
-        assertEquals(2, orderELements.size());
-        for (OrderElement each : orderELements) {
+        assertEquals(2, orderElements.size());
+        for (OrderElement each : orderElements) {
             assertTrue(each.getId().equals(orderLine1.getId()) || each.getId().equals(orderLine3.getId()));
         }
 
-        orderELements = orderElementDAO.findByLabelsAndCriteria(
+        orderElements = orderElementDAO.findByLabelsAndCriteria(
                 new HashSet<>(Arrays.asList(label1, label2)), new HashSet<>(Arrays.asList(criterion1, criterion2)));
 
-        assertEquals(1, orderELements.size());
-        assertEquals(orderLine3.getId(), orderELements.get(0).getId());
+        assertEquals(1, orderElements.size());
+        assertEquals(orderLine3.getId(), orderElements.get(0).getId());
     }
 
 }

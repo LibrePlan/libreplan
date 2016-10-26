@@ -38,7 +38,8 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * DAO implementation for Criterion. <br />
+ * DAO implementation for Criterion.
+ * <br />
  * @author Diego Pino Garcia <dpino@igalia.com>
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
@@ -49,35 +50,31 @@ public class CriterionTypeDAO extends IntegrationEntityDAO<CriterionType>
 
     @Override
     public CriterionType findByName(String name) {
-        return (CriterionType) getSession().createCriteria(CriterionType.class)
-                .add(Restrictions.eq("name", name).ignoreCase()).uniqueResult();
+        return (CriterionType) getSession()
+                .createCriteria(CriterionType.class)
+                .add(Restrictions.eq("name", name).ignoreCase())
+                .uniqueResult();
     }
 
     @Override
-    public CriterionType findUniqueByName(CriterionType criterionType)
-                throws InstanceNotFoundException {
+    public CriterionType findUniqueByName(CriterionType criterionType) throws InstanceNotFoundException {
         Validate.notNull(criterionType);
         return findUniqueByName(criterionType.getName());
     }
 
     @Override
-    public CriterionType findUniqueByName(String name)
-            throws InstanceNotFoundException {
+    public CriterionType findUniqueByName(String name) throws InstanceNotFoundException {
         CriterionType result = findByName(name);
         if (result == null) {
-              throw new InstanceNotFoundException(name,
-                  CriterionType.class.getName());
+              throw new InstanceNotFoundException(name, CriterionType.class.getName());
           }
         return result;
     }
 
     @Override
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
-    public CriterionType findUniqueByNameAnotherTransaction(String name)
-        throws InstanceNotFoundException {
-
+    public CriterionType findUniqueByNameAnotherTransaction(String name) throws InstanceNotFoundException {
         return findUniqueByName(name);
-
     }
 
     @Override
@@ -91,14 +88,12 @@ public class CriterionTypeDAO extends IntegrationEntityDAO<CriterionType>
     public boolean existsPredefinedType(CriterionType criterionType) {
         Validate.notNull(criterionType);
         Validate.notNull(criterionType.getPredefinedTypeInternalName());
-        if (existsOtherCriterionTypeByName(criterionType)) {
-            return true;
-        }
-        return uniqueByInternalName(criterionType) != null;
+
+        return existsOtherCriterionTypeByName(criterionType) || uniqueByInternalName(criterionType) != null;
     }
 
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
-    public boolean hasDiferentTypeSaved(Long id, ResourceEnum resource) {
+    public boolean hasDifferentTypeSaved(Long id, ResourceEnum resource) {
         try {
             CriterionType type = find(id);
             return (!(type.getResource().equals(resource)));
@@ -109,15 +104,14 @@ public class CriterionTypeDAO extends IntegrationEntityDAO<CriterionType>
 
     @Override
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
-    public boolean checkChildrenAssignedToAnyResource(
-            CriterionType criterionType) {
+    public boolean checkChildrenAssignedToAnyResource(CriterionType criterionType) {
         Validate.notNull(criterionType);
 
-        String strQuery = "SELECT COUNT(*) "
-                + "FROM Criterion criterion, CriterionSatisfaction satisfaction "
-                + "LEFT OUTER JOIN satisfaction.criterion sat_crit "
-                + "WHERE sat_crit.id = criterion.id "
-                + "AND criterion.type = :criterionType ";
+        String strQuery = "SELECT COUNT(*) " +
+                "FROM Criterion criterion, CriterionSatisfaction satisfaction " +
+                "LEFT OUTER JOIN satisfaction.criterion sat_crit " +
+                "WHERE sat_crit.id = criterion.id " +
+                "AND criterion.type = :criterionType ";
 
         Query query = getSession().createQuery(strQuery);
 
@@ -125,10 +119,7 @@ public class CriterionTypeDAO extends IntegrationEntityDAO<CriterionType>
             query.setParameter("criterionType", criterionType);
         }
 
-        if ((Long) query.uniqueResult() == 0) {
-            return false;
-        }
-        return true;
+        return (Long) query.uniqueResult() != 0;
     }
 
     @Override
@@ -144,15 +135,12 @@ public class CriterionTypeDAO extends IntegrationEntityDAO<CriterionType>
 
     private Criteria byInternalName(String predefinedTypeInternalName) {
         Criteria result = getSession().createCriteria(CriterionType.class);
-        result.add(Restrictions.eq("predefinedTypeInternalName",
-                predefinedTypeInternalName).ignoreCase());
+        result.add(Restrictions.eq("predefinedTypeInternalName", predefinedTypeInternalName).ignoreCase());
         return result;
     }
 
     private CriterionType uniqueByInternalName(CriterionType criterionType) {
-        Criteria c = byInternalName(criterionType
-                .getPredefinedTypeInternalName());
-        return (CriterionType) c.uniqueResult();
+        return (CriterionType) byInternalName(criterionType.getPredefinedTypeInternalName()).uniqueResult();
     }
 
     @Override
@@ -178,17 +166,19 @@ public class CriterionTypeDAO extends IntegrationEntityDAO<CriterionType>
 
     @Override
     public List<CriterionType> getSortedCriterionTypes() {
-        return getSession().createCriteria(CriterionType.class).addOrder(
-                Order.asc("name")).list();
+        return getSession()
+                .createCriteria(CriterionType.class)
+                .addOrder(Order.asc("name"))
+                .list();
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<CriterionType> getCriterionTypesByResources(
-            Collection<ResourceEnum> resources) {
-        return getSession().createCriteria(CriterionType.class).add(
-                Restrictions.in("resource", resources)).addOrder(
-                Order.asc("name")).list();
+    public List<CriterionType> getCriterionTypesByResources(Collection<ResourceEnum> resources) {
+        return getSession()
+                .createCriteria(CriterionType.class)
+                .add(Restrictions.in("resource", resources))
+                .addOrder(Order.asc("name")).list();
     }
 
 }

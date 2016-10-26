@@ -61,8 +61,7 @@ public class CalendarData extends IntegrationEntity {
         }
     };
 
-    public static CalendarData createUnvalidated(String code,
-            LocalDate expiringDate, BaseCalendar parent) {
+    public static CalendarData createUnvalidated(String code, LocalDate expiringDate, BaseCalendar parent) {
         CalendarData calendarData = create(new CalendarData(), code);
         calendarData.expiringDate = expiringDate;
         calendarData.parent = parent;
@@ -73,13 +72,13 @@ public class CalendarData extends IntegrationEntity {
         if (expiringDate != null) {
             this.expiringDate = expiringDate;
         }
+
         if (parent != null) {
             this.parent = parent;
         }
     }
 
-    public void updateCapacitiesPerDay(Map<Integer, Capacity> capacityPerDay)
-            throws IllegalArgumentException {
+    public void updateCapacitiesPerDay(Map<Integer, Capacity> capacityPerDay) throws IllegalArgumentException {
         if (capacityPerDay == null) {
             return;
         }
@@ -108,13 +107,12 @@ public class CalendarData extends IntegrationEntity {
 
         private int index;
 
-        private Days(int index) {
+        Days(int index) {
             this.index = index;
         }
 
         /**
-         * This is used to get the week day translated via
-         * {@link DateFormatSymbols#getWeekdays()}
+         * This is used to get the week day translated via {@link DateFormatSymbols#getWeekdays()}.
          */
         public int getIndex() {
             return index;
@@ -126,7 +124,7 @@ public class CalendarData extends IntegrationEntity {
      * Constructor for hibernate. Do not use!
      */
     public CalendarData() {
-        capacityPerDay = new HashMap<Integer, Capacity>();
+        capacityPerDay = new HashMap<>();
         for (Days each : Days.values()) {
             setCapacityAt(each, null);
         }
@@ -137,7 +135,7 @@ public class CalendarData extends IntegrationEntity {
     }
 
     private Map<Integer, Integer> asHours(Map<Integer, Capacity> capacities) {
-        Map<Integer, Integer> result = new HashMap<Integer, Integer>();
+        Map<Integer, Integer> result = new HashMap<>();
         for (Entry<Integer, Capacity> each : capacities.entrySet()) {
             EffortDuration value = toDuration(each.getValue());
             result.put(each.getKey(), value == null ? null : value.getHours());
@@ -174,7 +172,8 @@ public class CalendarData extends IntegrationEntity {
     }
 
     /**
-     * The expiringDate. It is exclusive.
+     * The expiringDate.
+     * It is exclusive.
      */
     public LocalDate getExpiringDate() {
         return expiringDate;
@@ -186,8 +185,7 @@ public class CalendarData extends IntegrationEntity {
 
     public CalendarData copy() {
         CalendarData copy = create();
-        copy.capacityPerDay = new HashMap<Integer, Capacity>(
-                this.capacityPerDay);
+        copy.capacityPerDay = new HashMap<>(this.capacityPerDay);
         copy.expiringDate = this.expiringDate;
         copy.parent = this.parent;
 
@@ -241,8 +239,7 @@ public class CalendarData extends IntegrationEntity {
     }
 
     public static void resetDefaultCapacities(CalendarData calendar) {
-        Capacity eightHours = Capacity.create(hours(8))
-                .overAssignableWithoutLimit();
+        Capacity eightHours = Capacity.create(hours(8)).overAssignableWithoutLimit();
         calendar.setCapacityAt(Days.MONDAY, eightHours);
         calendar.setCapacityAt(Days.TUESDAY, eightHours);
         calendar.setCapacityAt(Days.WEDNESDAY, eightHours);

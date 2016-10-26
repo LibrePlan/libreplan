@@ -47,22 +47,14 @@ import org.zkoss.ganttz.util.Interval;
  */
 public abstract class TimeTrackerState {
 
-    protected static final long MILLSECONDS_IN_DAY = 1000 * 60 * 60 * 24L;
+    private final IDetailItemModifier firstLevelModifier;
 
-    /**
-     * Pending to calculate interval dinamically
-     */
-    protected static final int NUMBER_OF_ITEMS_MINIMUM = 4;
+    private final IDetailItemModifier secondLevelModifier;
 
-    private final IDetailItemModificator firstLevelModificator;
+    protected TimeTrackerState(IDetailItemModifier firstLevelModifier, IDetailItemModifier secondLevelModifier) {
 
-    private final IDetailItemModificator secondLevelModificator;
-
-    protected TimeTrackerState(IDetailItemModificator firstLevelModificator,
-                               IDetailItemModificator secondLevelModificator) {
-
-        this.firstLevelModificator = firstLevelModificator;
-        this.secondLevelModificator = secondLevelModificator;
+        this.firstLevelModifier = firstLevelModifier;
+        this.secondLevelModifier = secondLevelModifier;
     }
 
     public static Date year(int year) {
@@ -130,12 +122,12 @@ public abstract class TimeTrackerState {
         if (getZoomLevel() == ZoomLevel.DETAIL_FIVE) {
             // Events are not highlighted in day view
             return applyConfiguredModifications(
-                    secondLevelModificator,
+                    secondLevelModifier,
                     createDetailsForSecondLevel(interval),
                     getZoomLevel());
         } else {
             return markEvens(applyConfiguredModifications(
-                    secondLevelModificator,
+                    secondLevelModifier,
                     createDetailsForSecondLevel(interval),
                     getZoomLevel()));
         }
@@ -143,16 +135,16 @@ public abstract class TimeTrackerState {
 
     public Collection<DetailItem> getFirstLevelDetails(Interval interval) {
         return applyConfiguredModifications(
-                firstLevelModificator, createDetailsForFirstLevel(interval), getZoomLevel());
+                firstLevelModifier, createDetailsForFirstLevel(interval), getZoomLevel());
     }
 
-    private static List<DetailItem> applyConfiguredModifications(IDetailItemModificator modificator,
+    private static List<DetailItem> applyConfiguredModifications(IDetailItemModifier modifier,
                                                                  Collection<? extends DetailItem> detailsItems,
                                                                  ZoomLevel zoomlevel) {
 
         List<DetailItem> result = new ArrayList<>(detailsItems.size());
         for (DetailItem each : detailsItems) {
-            result.add(modificator.applyModificationsTo(each, zoomlevel));
+            result.add(modifier.applyModificationsTo(each, zoomlevel));
         }
         return result;
     }

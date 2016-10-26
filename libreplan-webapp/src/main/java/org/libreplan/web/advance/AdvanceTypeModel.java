@@ -30,7 +30,6 @@ import org.apache.commons.lang3.Validate;
 import org.libreplan.business.advance.daos.IAdvanceTypeDAO;
 import org.libreplan.business.advance.entities.AdvanceType;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
-import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.web.common.concurrentdetection.OnConcurrentModification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -40,6 +39,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Model for UI operations related to {@link AdvanceType}.
+ *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 
@@ -81,14 +81,12 @@ public class AdvanceTypeModel implements IAdvanceTypeModel {
     @Transactional(readOnly = true)
     public void prepareForEdit(AdvanceType advanceType) {
         Validate.notNull(advanceType);
-        // checkCanBeModified(advanceType);
         this.advanceType = getFromDB(advanceType);
     }
 
     private void checkCanBeModified(AdvanceType advanceType) {
         if (!canBeModified(advanceType)) {
-            throw new IllegalArgumentException(
-                    _("Progress type cannot be modified"));
+            throw new IllegalArgumentException(_("Progress type cannot be modified"));
         }
     }
 
@@ -101,7 +99,7 @@ public class AdvanceTypeModel implements IAdvanceTypeModel {
 
     @Override
     @Transactional
-    public void save() throws ValidationException {
+    public void save() {
         advanceTypeDAO.save(advanceType);
         checkCanBeModified(advanceType);
     }
@@ -127,6 +125,7 @@ public class AdvanceTypeModel implements IAdvanceTypeModel {
         return this.advanceType.isPrecisionValid(precision);
     }
 
+    @Override
     public boolean isDefaultMaxValueValid(BigDecimal defaultMaxValue) {
         return this.advanceType.isDefaultMaxValueValid(defaultMaxValue);
     }
@@ -137,13 +136,14 @@ public class AdvanceTypeModel implements IAdvanceTypeModel {
         if (name.isEmpty()) {
             return true;
         }
-        for (AdvanceType advanceType : advanceTypeDAO
-                .list(AdvanceType.class)) {
-            if (!advanceType.getId().equals(this.advanceType.getId())
-                    && advanceType.getUnitName().equalsIgnoreCase(name)) {
+
+        for (AdvanceType itemAdvanceType : advanceTypeDAO.list(AdvanceType.class)) {
+            if (!itemAdvanceType.getId().equals(this.advanceType.getId()) &&
+                    itemAdvanceType.getUnitName().equalsIgnoreCase(name)) {
                 return false;
             }
         }
+
         return true;
     }
 
@@ -165,11 +165,8 @@ public class AdvanceTypeModel implements IAdvanceTypeModel {
 
     @Override
     public Boolean getPercentage() {
-        if (advanceType == null) {
-            return null;
-        }
+        return advanceType != null && advanceType.getPercentage();
 
-        return advanceType.getPercentage();
     }
 
     @Override
@@ -181,23 +178,13 @@ public class AdvanceTypeModel implements IAdvanceTypeModel {
 
     @Override
     public boolean isImmutable() {
-        if (advanceType == null) {
-            return false;
-        }
-        return advanceType.isImmutable();
+        return advanceType != null && advanceType.isImmutable();
     }
 
     @Override
     @Transactional(readOnly = true)
     public boolean isImmutableOrAlreadyInUse(AdvanceType advanceType) {
-        if (advanceType == null) {
-            return false;
-        }
-        if (advanceType.isImmutable()) {
-            return true;
-        }
-
-        return advanceTypeDAO.isAlreadyInUse(advanceType);
+        return advanceType != null && (advanceType.isImmutable() || advanceTypeDAO.isAlreadyInUse(advanceType));
     }
 
 }

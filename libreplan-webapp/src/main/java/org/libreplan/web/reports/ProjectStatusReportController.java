@@ -33,7 +33,6 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.codehaus.plexus.util.StringUtils;
 import org.libreplan.business.common.entities.Configuration;
 import org.libreplan.business.common.Registry;
-import org.libreplan.business.common.daos.ConfigurationDAO;
 import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.reports.dtos.ProjectStatusReportDTO;
@@ -43,12 +42,12 @@ import org.libreplan.web.common.Level;
 import org.libreplan.web.common.MessagesForUser;
 import org.libreplan.web.common.Util;
 import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
-import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
+import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.Listbox;
 
-import com.igalia.java.zk.components.JasperreportComponent;
+import com.libreplan.java.zk.components.JasperreportComponent;
 
 /**
  * Controller for UI operations of Project Satus report.
@@ -78,6 +77,10 @@ public class ProjectStatusReportController extends LibrePlanReportController {
 
     private Component messagesContainer;
 
+    public ProjectStatusReportController() {
+        projectStatusReportModel = (IProjectStatusReportModel) SpringUtil.getBean("projectStatusReportModel");
+    }
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
@@ -88,35 +91,27 @@ public class ProjectStatusReportController extends LibrePlanReportController {
 
     @Override
     protected String getReportName() {
-        Configuration configuration = Registry.getConfigurationDAO()
-                .getConfigurationWithReadOnlyTransaction();
-        if (configuration != null && configuration.isEnabledAutomaticBudget()) {
-            return REPORT_WITH_HOURS_BUDGET_NAME;
-        } else {
-            return REPORT_NAME;
-        }
+        Configuration configuration = Registry.getConfigurationDAO().getConfigurationWithReadOnlyTransaction();
+
+        return configuration != null && configuration.isEnabledAutomaticBudget()
+                ? REPORT_WITH_HOURS_BUDGET_NAME
+                : REPORT_NAME;
     }
 
     @Override
     protected JRDataSource getDataSource() {
-        List<ProjectStatusReportDTO> dtos = projectStatusReportModel
-                .getProjectStatusReportDTOs(getSelectedOrder());
+        List<ProjectStatusReportDTO> dtos = projectStatusReportModel.getProjectStatusReportDTOs(getSelectedOrder());
 
-        if (dtos.isEmpty()) {
-            return new JREmptyDataSource();
-        }
-
-        return new JRBeanCollectionDataSource(dtos);
+        return dtos.isEmpty()
+                ? new JREmptyDataSource()
+                : new JRBeanCollectionDataSource(dtos);
     }
 
     @Override
     public void showReport(JasperreportComponent jasperreport) {
         final Order order = getSelectedOrder();
         if (order == null && projectStatusReportModel.isNotFiltering()) {
-            messagesForUser
-                    .showMessage(
-                            Level.ERROR,
-                            _("You should filter the report by project, labels or criteria"));
+            messagesForUser.showMessage(Level.ERROR, _("You should filter the report by project, labels or criteria"));
         } else {
             super.showReport(jasperreport);
         }
@@ -136,14 +131,12 @@ public class ProjectStatusReportController extends LibrePlanReportController {
 
         Order order = getSelectedOrder();
         if (order != null) {
-            result.put("project", order.getName() + " (" + order.getCode()
-                    + ")");
+            result.put("project", order.getName() + " (" + order.getCode() + ")");
         } else {
             result.put("filter", getFilterSummary());
         }
 
-        ProjectStatusReportDTO totalDTO = projectStatusReportModel
-                .getTotalDTO();
+        ProjectStatusReportDTO totalDTO = projectStatusReportModel.getTotalDTO();
 
         result.put("estimatedHours", totalDTO.getEstimatedHours());
         result.put("plannedHours", totalDTO.getPlannedHours());
@@ -151,14 +144,11 @@ public class ProjectStatusReportController extends LibrePlanReportController {
         result.put("hoursMark", totalDTO.getHoursMark());
 
         result.put("budget", Util.addCurrencySymbol(totalDTO.getBudget()));
-        result.put("resourcesBudget",
-                Util.addCurrencySymbol(totalDTO.getResourcesBudget()));
-        result.put("expensesBudget",
-                Util.addCurrencySymbol(totalDTO.getExpensesBudget()));
+        result.put("resourcesBudget", Util.addCurrencySymbol(totalDTO.getResourcesBudget()));
+        result.put("expensesBudget", Util.addCurrencySymbol(totalDTO.getExpensesBudget()));
 
         result.put("hoursCost", Util.addCurrencySymbol(totalDTO.getHoursCost()));
-        result.put("expensesCost",
-                Util.addCurrencySymbol(totalDTO.getExpensesCost()));
+        result.put("expensesCost", Util.addCurrencySymbol(totalDTO.getExpensesCost()));
         result.put("totalCost", Util.addCurrencySymbol(totalDTO.getTotalCost()));
         result.put("costMark", totalDTO.getCostMark());
 
@@ -170,25 +160,23 @@ public class ProjectStatusReportController extends LibrePlanReportController {
 
         Set<Label> labels = projectStatusReportModel.getSelectedLabels();
         if (!labels.isEmpty()) {
-            List<String> labelNames = new ArrayList<String>();
+            List<String> labelNames = new ArrayList<>();
             for (Label label : labels) {
                 labelNames.add(label.getName());
             }
-            filter += _("Labels") + ": "
-                    + StringUtils.join(labelNames.toArray(), ", ");
+            filter += _("Labels") + ": " + StringUtils.join(labelNames.toArray(), ", ");
         }
 
         Set<Criterion> criteria = projectStatusReportModel.getSelectedCriteria();
         if (!criteria.isEmpty()){
-            List<String> criterionNames = new ArrayList<String>();
+            List<String> criterionNames = new ArrayList<>();
             for (Criterion criterion : criteria) {
                 criterionNames.add(criterion.getName());
             }
             if (!filter.isEmpty()) {
                 filter += ". ";
             }
-            filter += _("Criteria") + ": "
-                    + StringUtils.join(criterionNames.toArray(), ", ");
+            filter += _("Criteria") + ": " + StringUtils.join(criterionNames.toArray(), ", ");
         }
 
         return filter;
@@ -201,8 +189,7 @@ public class ProjectStatusReportController extends LibrePlanReportController {
     public void addLabel() {
         Label label = (Label) bandboxLabels.getSelectedElement();
         if (label == null) {
-            throw new WrongValueException(bandboxLabels,
-                    _("please, select a label"));
+            throw new WrongValueException(bandboxLabels, _("please, select a label"));
         }
         projectStatusReportModel.addSelectedLabel(label);
         Util.reloadBindings(listboxLabels);
@@ -225,8 +212,7 @@ public class ProjectStatusReportController extends LibrePlanReportController {
     public void addCriterion() {
         Criterion criterion = (Criterion) bandboxCriteria.getSelectedElement();
         if (criterion == null) {
-            throw new WrongValueException(bandboxCriteria,
-                    _("please, select a criterion"));
+            throw new WrongValueException(bandboxCriteria, _("please, select a criterion"));
         }
         projectStatusReportModel.addSelectedCriterion(criterion);
         Util.reloadBindings(listboxCriteria);

@@ -20,9 +20,10 @@
 <window id="${arg.id}" title="${i18n:_('Job Scheduling List')}">
 
     <grid id="listJobSchedulings"
-        rowRenderer="@{controller.jobSchedulingRenderer}"
-        model="@{controller.jobSchedulerConfigurations}"
-        mold="paging" pageSize="10" fixedLayout="true">
+          rowRenderer="@{controller.jobSchedulingRenderer}"
+          model="@{controller.jobSchedulerConfigurations}"
+          mold="paging" pageSize="10" fixedLayout="true">
+
         <columns>
             <column label="${i18n:_('Job group')}" />
             <column label="${i18n:_('Job name')}" />
@@ -30,7 +31,7 @@
             <column label="${i18n:_('Next fire time')}" />
             <column label="${i18n:_('Operations')}" />
         </columns>
+
     </grid>
-    <button label="${i18n:_('Create')}" onClick="controller.goToCreateForm()"
-        sclass="create-button-global-action"/>
+    <button label="${i18n:_('Create')}" onClick="controller.goToCreateForm()" sclass="add-button global-action"/>
 </window>

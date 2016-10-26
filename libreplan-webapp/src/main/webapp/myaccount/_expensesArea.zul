@@ -19,29 +19,26 @@
  -->
 
 <groupbox apply="org.libreplan.web.users.dashboard.ExpensesAreaController">
+
     <caption label="${i18n:_('Expenses')}" />
 
     <grid id="expenseSheetsList"
-        mold="paging" pageSize="10" sclass="clickable-rows"
-        model="@{controller.personalExpenseSheets}"
-        rowRenderer="@{controller.expenseSheetsRenderer}">
+          mold="paging" pageSize="10"
+          model="@{controller.personalExpenseSheets}"
+          rowRenderer="@{controller.expenseSheetsRenderer}"
+          sclass="clickable-rows" >
+
         <columns sizable="true">
-            <column label="${i18n:_('Description')}"
-                sort="auto(description)" />
-            <column label="${i18n:_('Code')}"
-                sort="auto(code)" />
-            <column label="${i18n:_('Total')}"
-                sort="auto(total)" />
-            <column label="${i18n:_('First expense')}"
-                sort="auto(firstExpense)"
-                sortDirection="descending" />
-            <column label="${i18n:_('Last expense')}"
-                sort="auto(lastExpense)" />
+            <column label="${i18n:_('Description')}" sort="auto(description)" />
+            <column label="${i18n:_('Code')}" sort="auto(code)" />
+            <column label="${i18n:_('Total')}" sort="auto(total)" />
+            <column label="${i18n:_('First expense')}" sort="auto(firstExpense)" sortDirection="descending" />
+            <column label="${i18n:_('Last expense')}" sort="auto(lastExpense)" />
             <column label="${i18n:_('Operations')}" />
         </columns>
     </grid>
 
-    <button label="${i18n:_('New expense sheet')}"
-        onClick="controller.newExpenseSheet();" />
+    <button label="${i18n:_('New expense sheet')}" onClick="controller.newExpenseSheet();" sclass="add-button"
+            style="margin-top: 2px;"/>
 
 </groupbox>

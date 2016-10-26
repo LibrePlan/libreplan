@@ -31,14 +31,13 @@ import org.zkoss.zul.Treecell;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.TreeitemRenderer;
 import org.zkoss.zul.Treerow;
-import org.zkoss.zul.api.Tree;
+import org.zkoss.zul.Tree;
 
 public class LimitingResourcesLeftPane extends HtmlMacroComponent {
 
     private MutableTreeModel<LimitingResourceQueue> modelForTree;
 
-    public LimitingResourcesLeftPane(
-            MutableTreeModel<LimitingResourceQueue> treeModel) {
+    LimitingResourcesLeftPane(MutableTreeModel<LimitingResourceQueue> treeModel) {
         this.modelForTree = treeModel;
     }
 
@@ -46,33 +45,33 @@ public class LimitingResourcesLeftPane extends HtmlMacroComponent {
     public void afterCompose() {
         super.afterCompose();
         getContainerTree().setModel(modelForTree);
-        getContainerTree().setTreeitemRenderer(getRendererForTree());
+        getContainerTree().setItemRenderer(getRendererForTree());
     }
 
     private TreeitemRenderer getRendererForTree() {
         return new TreeitemRenderer() {
             @Override
-            public void render(Treeitem item, Object data)
-                    {
-                LimitingResourceQueue line = (LimitingResourceQueue) data;
-                item.setOpen(false);
-                item.setValue(line);
+            public void render(Treeitem treeitem, Object o, int i) throws Exception {
+                LimitingResourceQueue line = (LimitingResourceQueue) o;
+                treeitem.setOpen(false);
+                treeitem.setValue(line);
 
                 Treerow row = new Treerow();
                 Treecell cell = new Treecell();
                 Component component = createComponent(line);
-                item.appendChild(row);
+                treeitem.appendChild(row);
                 row.appendChild(cell);
                 cell.appendChild(component);
             }
 
+
             private Component createComponent(LimitingResourceQueue line) {
-                return isTopLevel(line) ? createFirstLevel(line)
-                        : createSecondLevel(line);
+                return isTopLevel(line) ? createFirstLevel(line) : createSecondLevel(line);
             }
 
             private boolean isTopLevel(LimitingResourceQueue line) {
                 int[] path = modelForTree.getPath(modelForTree.getRoot(), line);
+
                 return path.length == 0;
             }
         };
@@ -85,12 +84,14 @@ public class LimitingResourcesLeftPane extends HtmlMacroComponent {
     private Component createFirstLevel(LimitingResourceQueue main) {
         Div result = createLabelWithName(main);
         result.setSclass("firstlevel");
+
         return result;
     }
 
     private Component createSecondLevel(LimitingResourceQueue loadTimeLine) {
         Div result = createLabelWithName(loadTimeLine);
         result.setSclass("secondlevel");
+
         return result;
     }
 
@@ -100,6 +101,7 @@ public class LimitingResourcesLeftPane extends HtmlMacroComponent {
         final String conceptName = main.getResource().getName();
         label.setValue(conceptName);
         result.appendChild(label);
+
         return result;
     }
 }

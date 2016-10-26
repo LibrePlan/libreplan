@@ -66,14 +66,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Test cases for {@link ResourceDAOTest}
+ * Test cases for {@link ResourceDAOTest}.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {
-        BUSINESS_SPRING_CONFIG_FILE,
-        BUSINESS_SPRING_CONFIG_TEST_FILE })
+@ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE, BUSINESS_SPRING_CONFIG_TEST_FILE })
 public class ResourceDAOTest {
 
     @Autowired
@@ -101,7 +99,7 @@ public class ResourceDAOTest {
     private IDataBootstrap configurationBootstrap;
 
     @Before
-    public void loadRequiredaData() {
+    public void loadRequiredData() {
         configurationBootstrap.loadRequiredData();
     }
 
@@ -127,7 +125,6 @@ public class ResourceDAOTest {
     private ResourceCalendar givenValidResourceCalendar() {
         ResourceCalendar resourceCalendar = ResourceCalendar.create();
         resourceCalendar.setName("Calendar");
-
         return resourceCalendar;
     }
 

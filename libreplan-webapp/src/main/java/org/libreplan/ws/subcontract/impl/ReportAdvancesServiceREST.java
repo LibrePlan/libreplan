@@ -105,9 +105,8 @@ public class ReportAdvancesServiceREST implements IReportAdvancesService {
     private InstanceConstraintViolationsListDTO getErrorMessage(String code, String message) {
         // FIXME review errors returned
         // TODO resolve deprecated method
-        return new InstanceConstraintViolationsListDTO(
-                Collections.singletonList(
-                        InstanceConstraintViolationsDTO.create(Util.generateInstanceId(1, code), message)));
+        return new InstanceConstraintViolationsListDTO(Collections.singletonList(
+                InstanceConstraintViolationsDTO.create(Util.generateInstanceId(1, code), message)));
     }
 
     @Override
@@ -165,8 +164,9 @@ public class ReportAdvancesServiceREST implements IReportAdvancesService {
 
             } catch (ValidationException e) {
 
-                instanceConstraintViolationsDTO = ConstraintViolationConverter.toDTO(
-                        Util.generateInstanceId(1, current.code), e.getInvalidValues());
+                /* TODO resolve deprecated */
+                instanceConstraintViolationsDTO = ConstraintViolationConverter
+                        .toDTO(Util.generateInstanceId(1, current.code), e.getInvalidValues());
 
             } catch (InstanceNotFoundException e) {
                 return getErrorMessage(current.code, "instance not found");
@@ -192,7 +192,7 @@ public class ReportAdvancesServiceREST implements IReportAdvancesService {
             DirectAdvanceAssignment reportGlobal = orderElement.getReportGlobalAdvanceAssignment();
 
             advanceAssignmentSubcontractor =
-                    DirectAdvanceAssignment.create((reportGlobal == null), new BigDecimal(100));
+                    DirectAdvanceAssignment.create(reportGlobal == null, new BigDecimal(100));
 
             advanceAssignmentSubcontractor.setAdvanceType(PredefinedAdvancedTypes.SUBCONTRACTOR.getType());
             advanceAssignmentSubcontractor.setOrderElement(orderElement);
@@ -293,11 +293,11 @@ public class ReportAdvancesServiceREST implements IReportAdvancesService {
         try {
             orderElement.useSchedulingDataFor(orderVersion);
 
-            boolean contidion = orderElement != null &&
+            boolean condition = orderElement != null &&
                     orderElement.getTaskSource() != null &&
                     orderElement.getTaskSource().getTask().isSubcontracted();
 
-            if ( contidion ) {
+            if ( condition ) {
                 Task task = (Task) orderElement.getTaskSource().getTask();
                 SubcontractedTaskData subcontractedTaskData = task.getSubcontractedTaskData();
 

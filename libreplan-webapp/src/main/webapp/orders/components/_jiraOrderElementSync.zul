@@ -18,27 +18,27 @@
  -->
 
 <groupbox id="jiraGroupBox"
-    style="margin-top: 5px" closable="false">
+          style="margin-top: 5px" closable="false">
     <caption label="${i18n:_('Jira sync information')}" />
     <separator spacing="10px"/>
     <hbox width="100%">
         <separator spacing="10px" width="100%"/>
 
-        <grid fixedLayout="true" hflex="1">
+        <grid sizedByContent="true" hflex="1">
             <columns>
                 <column width="200px" />
                 <column  />
             </columns>
             <rows>
-                  <row>
-                     <label value="${i18n:_('JIRA label')}" width="50px"/>
-                     <hbox>
+                <row>
+                    <label value="${i18n:_('JIRA label')}" width="50px"/>
+                    <hbox>
                         <textbox id="txtLastSyncDate" value="" width="130px" disabled="true"/>
                         <textbox id="txtImportedLabel" value=""
-                            width="220px" disabled="true"/>
-                         <button label="${i18n:_('Sync with JIRA')}" id="syncWithJiraButton"
-                             onClick="jiraSynchroniaztionController.syncWithJira()" />
-                     </hbox>
+                                 width="220px" disabled="true"/>
+                        <button label="${i18n:_('Sync with JIRA')}" id="syncWithJiraButton"
+                                onClick="jiraSynchroniaztionController.syncWithJira()" />
+                    </hbox>
                 </row>
             </rows>
         </grid>
@@ -52,6 +52,6 @@
                 <button id="startJiraSyncButton" />
                 <button id="cancelJiraSyncButton" />
             </hbox>
-       </groupbox>
-   </popup>
+        </groupbox>
+    </popup>
 </groupbox>

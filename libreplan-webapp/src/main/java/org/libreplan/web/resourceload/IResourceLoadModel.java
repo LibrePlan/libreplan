@@ -27,8 +27,7 @@ import org.libreplan.business.users.entities.User;
 
 public interface IResourceLoadModel {
 
-    ResourceLoadDisplayData calculateDataToDisplay(
-            ResourceLoadParameters parameters);
+    ResourceLoadDisplayData calculateDataToDisplay(ResourceLoadParameters parameters);
 
     Order getOrderByTask(TaskElement task);
 

@@ -29,9 +29,9 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Contract for {@link EmailNotification}
+ * Contract for {@link EmailNotification}.
  *
- * @author Created by Vova Perebykivskiy <vova@libreplan-enterprise.com> on 21.10.2015.
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
 public interface IEmailNotificationModel {
 

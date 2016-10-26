@@ -54,7 +54,8 @@ import org.libreplan.importers.DependencyDTO.TypeOfDependencyDTO;
  * Class that is a converter from the MPXJ format File to {@link OrderDTO}.
  *
  * @author Alba Carro Pérez <alba.carro@gmail.com>
- * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
+ *
  * @todo It last relationships. resources, calendars, hours, etc.
  */
 public class MPXJProjectFileConverter {
@@ -69,9 +70,8 @@ public class MPXJProjectFileConverter {
     /**
      * Converts a ProjectFile into a {@link OrderDTO}.
      *
-     * This method contains a switch that is going to select the method to call
-     * for each format. At this time it only differences between planner and
-     * project.
+     * This method contains a switch that is going to select the method to call for each format.
+     * At this time it only differences between planner and project.
      *
      * @param file
      *            ProjectFile to extract data from.
@@ -89,7 +89,7 @@ public class MPXJProjectFileConverter {
     }
 
     /**
-     * Get a list of {@link CalendarDTO} from a ProjectFile
+     * Get a list of {@link CalendarDTO} from a ProjectFile.
      *
      * @param file
      *            ProjectFile to extract data from.
@@ -97,7 +97,7 @@ public class MPXJProjectFileConverter {
      */
     public static List<CalendarDTO> convertCalendars(ProjectFile file) {
 
-        List<CalendarDTO> calendarDTOs = new ArrayList<CalendarDTO>();
+        List<CalendarDTO> calendarDTOs = new ArrayList<>();
 
         for (ProjectCalendar projectCalendar : file.getCalendars()) {
             if ( StringUtils.isBlank(projectCalendar.getName()) ) {
@@ -105,47 +105,42 @@ public class MPXJProjectFileConverter {
                 projectCalendar.setName(name);
             }
             calendarDTOs.add(toCalendarDTO(projectCalendar));
-            calendarDTOs.addAll(getDerivedCalendars(projectCalendar
-                    .getDerivedCalendars()));
+            calendarDTOs.addAll(getDerivedCalendars(projectCalendar.getDerivedCalendars()));
         }
 
         return calendarDTOs;
     }
 
     /**
-     * Get a list of {@link CalendarDTO} from a ProjectFile
+     * Get a list of {@link CalendarDTO} from a ProjectFile.
      *
-     * @param file
-     *            ProjectFile to extract data from.
+     * @param derivedProjectCalendars
+     *            ProjectCalendar to extract data from.
      * @return List<CalendarDTO> List with the calendars that we want to import.
      */
-    public static List<CalendarDTO> getDerivedCalendars(
-            List<ProjectCalendar> derivedProjectCalendars) {
+    public static List<CalendarDTO> getDerivedCalendars(List<ProjectCalendar> derivedProjectCalendars) {
 
-        List<CalendarDTO> calendarDTOs = new ArrayList<CalendarDTO>();
+        List<CalendarDTO> calendarDTOs = new ArrayList<>();
 
         for (ProjectCalendar projectCalendar : derivedProjectCalendars) {
 
-            if (projectCalendar.getResource() == null) {
+            if (projectCalendar.getResource() == null &&
+                    projectCalendar.getName() != null && projectCalendar.getName().length() != 0) {
 
-                if (projectCalendar.getName() != null
-                        && projectCalendar.getName().length() != 0) {
-                    calendarDTOs.add(toCalendarDTO(projectCalendar));
-                    calendarDTOs.addAll(getDerivedCalendars(projectCalendar.getDerivedCalendars()));
-                }
+                calendarDTOs.add(toCalendarDTO(projectCalendar));
+                calendarDTOs.addAll(getDerivedCalendars(projectCalendar.getDerivedCalendars()));
             }
         }
+
 
         return calendarDTOs;
     }
 
     /**
-     * Private Method
-     *
-     * Get {@link CalendarDTO} from a ProjectCalendar
+     * Get {@link CalendarDTO} from a ProjectCalendar.
      *
      * @param projectCalendar
-     *            ProjectCalendat to extract data from.
+     *            ProjectCalendar to extract data from.
      * @return List<CalendarDTO> List with the calendars that we want to import.
      */
     private static CalendarDTO toCalendarDTO(ProjectCalendar projectCalendar) {
@@ -158,23 +153,19 @@ public class MPXJProjectFileConverter {
             calendarDTO.parent = projectCalendar.getParent().getName();
         }
 
-        calendarDTO.calendarExceptions = getCalendarExceptionDTOs(projectCalendar
-                .getCalendarExceptions());
+        calendarDTO.calendarExceptions = getCalendarExceptionDTOs(projectCalendar.getCalendarExceptions());
 
         List<ProjectCalendarWeek> workWeeks = projectCalendar.getWorkWeeks();
 
         Collections.sort(workWeeks, new CompareMPXJProjectCalendarWeeks());
 
-        calendarDTO.calendarWeeks = getCalendarWeekDTOs(projectCalendar,
-                workWeeks);
+        calendarDTO.calendarWeeks = getCalendarWeekDTOs(projectCalendar, workWeeks);
 
         return calendarDTO;
     }
 
     /**
-     * Private Method
-     *
-     * Get a list of {@link CalendarExceptionDTO} from a list of CalendarExceptions
+     * Get a list of {@link CalendarExceptionDTO} from a list of CalendarExceptions.
      *
      * @param calendarExceptions
      *            List of CalendarException to extract data from.
@@ -183,30 +174,26 @@ public class MPXJProjectFileConverter {
     private static List<CalendarExceptionDTO> getCalendarExceptionDTOs(
             List<ProjectCalendarException> calendarExceptions) {
 
-        List<CalendarExceptionDTO> calendarExceptionDTOs = new ArrayList<CalendarExceptionDTO>();
+        List<CalendarExceptionDTO> calendarExceptionDTOs = new ArrayList<>();
 
         for (ProjectCalendarException projectCalendarException : calendarExceptions) {
 
-            calendarExceptionDTOs
-                    .addAll(toCalendarExceptionDTOs(projectCalendarException));
+            calendarExceptionDTOs.addAll(toCalendarExceptionDTOs(projectCalendarException));
         }
 
         return calendarExceptionDTOs;
     }
 
     /**
-     * Private Method
+     * Get {@link CalendarExceptionDTO} from a ProjectCalendarException.
      *
-     * Get {@link CalendarExceptionDTO} from a ProjectCalendarException
-     *
-     * @param projectCalendar
+     * @param projectCalendarException
      *            ProjectCalendarException to extract data from.
      * @return List<CalendarExceptionDTO>  with the calendar exceptions that we want to import.
      */
-    private static List<CalendarExceptionDTO> toCalendarExceptionDTOs(
-            ProjectCalendarException projectCalendarException) {
+    private static List<CalendarExceptionDTO> toCalendarExceptionDTOs(ProjectCalendarException projectCalendarException) {
 
-        List<CalendarExceptionDTO> calendarExceptionDTOs = new ArrayList<CalendarExceptionDTO>();
+        List<CalendarExceptionDTO> calendarExceptionDTOs = new ArrayList<>();
 
         Date fromDate = projectCalendarException.getFromDate();
 
@@ -246,8 +233,8 @@ public class MPXJProjectFileConverter {
             minutes = 0;
         }
 
-        while (day > -1){
-            if (day==0){
+        while (day > -1) {
+            if (day==0) {
 
                 calendarExceptionDTOs.add(toCalendarExceptionDTO(cal.getTime(),
                         hours, minutes, working));
@@ -269,9 +256,7 @@ public class MPXJProjectFileConverter {
     }
 
     /**
-     * Private Method
-     *
-     * Get {@link CalendarExceptionDTO} from a ProjectCalendarException
+     * Get {@link CalendarExceptionDTO} from a ProjectCalendarException.
      *
      * @param fromDate
      *            Date with the day of the exception.
@@ -300,8 +285,6 @@ public class MPXJProjectFileConverter {
     }
 
     /**
-     * Private Method
-     *
      * Get a list of {@link CalendarWeekDTO} from a list of ProjectCalendarWeek.
      *
      * @param projectCalendar
@@ -309,12 +292,12 @@ public class MPXJProjectFileConverter {
      * @param workWeeks
      *            List of ProjectCalendarWeek to extract data from.Assume that is ordered
      *            for its DataRange start date.
-     * @return List<CalendarDataDTO> List with the CalendarDatas that we want to import.
+     * @return List<CalendarDataDTO> List with the CalendarData that we want to import.
      */
     private static List<CalendarWeekDTO> getCalendarWeekDTOs(
             ProjectCalendar projectCalendar, List<ProjectCalendarWeek> workWeeks) {
 
-        List<CalendarWeekDTO> calendarDataDTOs = new ArrayList<CalendarWeekDTO>();
+        List<CalendarWeekDTO> calendarDataDTOs = new ArrayList<>();
 
         Date startCalendarDate;
         Date endCalendarDate;
@@ -329,73 +312,62 @@ public class MPXJProjectFileConverter {
 
         }
 
-        if (workWeeks.size() == 0) {
-            calendarDataDTOs.add(toCalendarWeekDTO(startCalendarDate,
-                    endCalendarDate, projectCalendar));
+        if (workWeeks.isEmpty()) {
+            calendarDataDTOs.add(toCalendarWeekDTO(projectCalendar));
         } else {
 
-            // TODO This utility is not currently implemented in MPXJ
-            // This one is going to represent all the work weeks. Including the
-            // ones
-            // with the default value that are in the middle of two.
+            /*
+             * TODO
+             *  This utility is not currently implemented in MPXJ.
+             *  This one is going to represent all the work weeks.
+             *  Including the ones with the default value that are in the middle of two.
+             */
 
-            Date firsWorkWeekCalendarDate = workWeeks.get(0).getDateRange()
-                    .getStart();
+            Date firsWorkWeekCalendarDate = workWeeks.get(0).getDateRange().getStart();
             Calendar calendar1 = Calendar.getInstance();
             Calendar calendar2 = Calendar.getInstance();
 
-            // If the star of the first work week is after the start of the
-            // default
-            // we have to fill the hole
+            // If the star of the first work week is after the start of the default we have to fill the hole
             if (startCalendarDate.compareTo(firsWorkWeekCalendarDate) < 0) {
                 calendar1.setTime(firsWorkWeekCalendarDate);
                 calendar1.set(Calendar.DAY_OF_MONTH, -1);
-                calendarDataDTOs.add(toCalendarWeekDTO(startCalendarDate,
-                        calendar1.getTime(), projectCalendar));
+                calendarDataDTOs.add(toCalendarWeekDTO(projectCalendar));
             }
 
-            Date startDate;
             Date endDate;
             Date nextStartDate;
 
             int j;
             for (int i = 0; i < workWeeks.size(); i++) {
-                startDate = workWeeks.get(i).getDateRange().getStart();
                 endDate = workWeeks.get(i).getDateRange().getEnd();
-                calendarDataDTOs.add(toCalendarWeekDTO(startDate, endDate,
-                        workWeeks.get(i)));
+                calendarDataDTOs.add(toCalendarWeekDTO(workWeeks.get(i)));
 
                 j = i + 1;
+
                 // If is not the last one
                 if (j < workWeeks.size()) {
-                    nextStartDate = workWeeks.get(i + 1).getDateRange()
-                            .getStart();
+                    nextStartDate = workWeeks.get(i + 1).getDateRange().getStart();
                     calendar1.setTime(endDate);
                     calendar1.set(Calendar.DAY_OF_MONTH, +1);
-                    // If the end of the current work week is more than one day
-                    // before
-                    // the beginning of the next
+
+                    // If the end of the current work week is more than one day before the beginning of the next
                     if (calendar1.getTime().compareTo(nextStartDate) < 0) {
                         calendar2.setTime(nextStartDate);
                         calendar1.set(Calendar.DAY_OF_MONTH, -1);
+
                         // Adds a new default calendar week in the hole
-                        calendarDataDTOs.add(toCalendarWeekDTO(
-                                calendar1.getTime(), calendar2.getTime(),
-                                projectCalendar));
+                        calendarDataDTOs.add(toCalendarWeekDTO(projectCalendar));
                     }
                 }
             }
 
-            Date endWorkWeekCalendarDate = workWeeks.get(workWeeks.size())
-                    .getDateRange().getEnd();
+            Date endWorkWeekCalendarDate = workWeeks.get(workWeeks.size()).getDateRange().getEnd();
 
-            // If the end of the last work week is earlier than the end of the
-            // default we have to fill the hole
+            // If the end of the last work week is earlier than the end of the default we have to fill the hole
             if (endCalendarDate.compareTo(endWorkWeekCalendarDate) > 0) {
                 calendar1.setTime(endWorkWeekCalendarDate);
                 calendar1.set(Calendar.DAY_OF_MONTH, +1);
-                calendarDataDTOs.add(toCalendarWeekDTO(calendar1.getTime(),
-                        endCalendarDate, projectCalendar));
+                calendarDataDTOs.add(toCalendarWeekDTO(projectCalendar));
             }
 
         }
@@ -404,29 +376,21 @@ public class MPXJProjectFileConverter {
     }
 
     /**
-     * Private Method
+     * Get {@link CalendarWeekDTO} from a ProjectCalendarWeek.
      *
-     * Get {@link CalendarWeekDTO} from a ProjectCalendarWeek
-     * @param parentEndDate
-     *            End date.
-     * @param parentStartDate
-     *            Start date.
      * @param projectCalendarWeek
      *            ProjectCalendarWeek to extract data from.
      * @return CalendarDataDTO  with the calendar data that we want to import.
      */
-    private static CalendarWeekDTO toCalendarWeekDTO(Date parentStartDate, Date parentEndDate,
-                                                     ProjectCalendarWeek projectCalendarWeek) {
+    private static CalendarWeekDTO toCalendarWeekDTO(ProjectCalendarWeek projectCalendarWeek) {
 
         CalendarWeekDTO calendarDataDTO = new CalendarWeekDTO();
 
         if (projectCalendarWeek.getDateRange() != null) {
 
-            calendarDataDTO.startDate = projectCalendarWeek.getDateRange()
-                    .getStart();
+            calendarDataDTO.startDate = projectCalendarWeek.getDateRange().getStart();
 
-            calendarDataDTO.endDate = projectCalendarWeek.getDateRange()
-                    .getEnd();
+            calendarDataDTO.endDate = projectCalendarWeek.getDateRange().getEnd();
 
         } else {
 
@@ -435,7 +399,7 @@ public class MPXJProjectFileConverter {
             calendarDataDTO.endDate = null;
 
         }
-        List<CalendarDayHoursDTO> calendarDaysHourDTOs = new ArrayList<CalendarDayHoursDTO>();
+        List<CalendarDayHoursDTO> calendarDaysHourDTOs = new ArrayList<>();
 
         CalendarDayHoursDTO calendarDayHoursDTO;
 
@@ -443,8 +407,7 @@ public class MPXJProjectFileConverter {
 
             calendarDayHoursDTO = new CalendarDayHoursDTO();
 
-            calendarDayHoursDTO.type = toCalendarTypeDayDTO(projectCalendarWeek
-                    .getDays()[i]);
+            calendarDayHoursDTO.type = toCalendarTypeDayDTO(projectCalendarWeek.getDays()[i]);
             calendarDayHoursDTO.day = CalendarDayDTO.values()[i];
 
             List<Integer> duration = toHours(projectCalendarWeek.getHours()[i]);
@@ -459,6 +422,7 @@ public class MPXJProjectFileConverter {
                 } else if (calendarDayHoursDTO.type == CalendarTypeDayDTO.NOT_WORKING) {
                     calendarDayHoursDTO.hours = 0;
                 } else if (calendarDayHoursDTO.type == CalendarTypeDayDTO.DEFAULT) {
+
                     // TODO Grab the ones form default
                     calendarDayHoursDTO.hours = 0;
                 }
@@ -476,20 +440,17 @@ public class MPXJProjectFileConverter {
     private static CalendarTypeDayDTO toCalendarTypeDayDTO(DayType dayType) {
 
         switch (dayType) {
-            case DEFAULT:
 
+            case DEFAULT:
                 return CalendarTypeDayDTO.DEFAULT;
 
             case NON_WORKING:
-
                 return CalendarTypeDayDTO.NOT_WORKING;
 
             case WORKING:
-
                 return CalendarTypeDayDTO.WORKING;
 
             default:
-
                 return null;
 
         }
@@ -497,20 +458,17 @@ public class MPXJProjectFileConverter {
     }
 
     /**
-     * Private Method
-     *
-     * Get the number of hours of a ProjectCalendarHours
+     * Get the number of hours of a ProjectCalendarHours.
      *
      * @param projectCalendarDateRanges
      *            ProjectCalendarDateRanges to extract data from.
      * @return Integer  with the total number of hours or null if the projectCalendarHours is null.
      */
-    private static List<Integer> toHours(
-            ProjectCalendarDateRanges projectCalendarDateRanges) {
+    private static List<Integer> toHours(ProjectCalendarDateRanges projectCalendarDateRanges) {
 
         if (projectCalendarDateRanges != null) {
 
-            List<Integer> duration = new ArrayList<Integer>();
+            List<Integer> duration = new ArrayList<>();
 
             int hours = 0;
 
@@ -525,11 +483,11 @@ public class MPXJProjectFileConverter {
                 Period period = new Period(start, end);
 
                 int days = period.getDays();
+
                 if (period.getDays() != 0) {
-
                     hours += 24 * days;
-
                 }
+
                 hours += period.getHours();
 
                 minutes += period.getMinutes();
@@ -548,7 +506,6 @@ public class MPXJProjectFileConverter {
 
     /**
      * Converts a ProjectFile into a {@link OrderDTO}.
-     *
      * Assumes that the ProjectFile comes for a .planner file.
      *
      * @param file
@@ -559,10 +516,9 @@ public class MPXJProjectFileConverter {
 
         OrderDTO importData = new OrderDTO();
 
-        mapTask = new HashMap<Task, IHasTaskAssociated>();
+        mapTask = new HashMap<>();
 
-        importData.name = filename
-                .substring(0, filename.length() - 8/* ".planner" */);
+        importData.name = filename.substring(0, filename.length() - 8/* ".planner" */);
 
         properties = file.getProjectProperties();
 
@@ -572,8 +528,7 @@ public class MPXJProjectFileConverter {
 
         importData.milestones = getImportMilestones(file.getChildTasks());
 
-        // MPXJ don't provide a deadline for the project so we take the finish
-        // date
+        // MPXJ don't provide a deadline for the project so we take the finish date
         importData.deadline = properties.getFinishDate();
 
         importData.dependencies = createDependencies();
@@ -585,16 +540,14 @@ public class MPXJProjectFileConverter {
     }
 
     /**
-     * Private Method
-     *
-     * Uses the map mapTask to create the list of {@link DependencyDTO}
+     * Uses the map mapTask to create the list of {@link DependencyDTO}.
      *
      * @return List<DependencyDTO>
      *            List with all the dependencies
      */
     private static List<DependencyDTO> createDependencies() {
 
-        List<DependencyDTO> dependencies = new ArrayList<DependencyDTO>();
+        List<DependencyDTO> dependencies = new ArrayList<>();
 
         List<Relation> successors;
 
@@ -635,9 +588,7 @@ public class MPXJProjectFileConverter {
 
 
     /**
-     * Private Method
-     *
-     * Mapping between LP and MPXJ relationships
+     * Mapping between LP and MPXJ relationships.
      *
      * @param type
      *            MPXJ RelationType to map.
@@ -649,23 +600,18 @@ public class MPXJProjectFileConverter {
         switch (type) {
 
             case FINISH_FINISH:
-
                 return TypeOfDependencyDTO.END_END;
 
             case FINISH_START:
-
                 return TypeOfDependencyDTO.END_START;
 
             case START_FINISH:
-
                 return TypeOfDependencyDTO.START_END;
 
             case START_START:
-
                 return TypeOfDependencyDTO.START_START;
 
             default:
-
                 return null;
 
         }
@@ -673,8 +619,7 @@ public class MPXJProjectFileConverter {
 
 
     /**
-     * Converts a ProjectFile into a {@link OrderDTO}
-     *
+     * Converts a ProjectFile into a {@link OrderDTO}.
      * Assumes that the ProjectFile comes for a .mpp file.
      *
      * @param file
@@ -685,22 +630,20 @@ public class MPXJProjectFileConverter {
 
         OrderDTO importData = new OrderDTO();
 
-        mapTask = new HashMap<Task, IHasTaskAssociated>();
+        mapTask = new HashMap<>();
 
         properties = file.getProjectProperties();
 
         importData.startDate = properties.getStartDate();
 
-        // MPXJ don't provide a deadline for the project so we take the finish
-        // date
+        // MPXJ doesn't provide a deadline for the project so we take the finish date
         importData.deadline = properties.getFinishDate();
 
         for (Task task : file.getChildTasks()) {
-            // Projects are represented as a level 0 task with all
-            // real task as its children. Ignore all other top level tasks.
-            // See
-            // http://mpxj.sourceforge.net/faq.html#extra-tasks-and-resources
-            if ( task.getChildTasks().size() != 0 ) {
+            // Projects are represented as a level 0 task with all real task as its children.
+            // Ignore all other top level tasks.
+            // See http://mpxj.sourceforge.net/faq.html#extra-tasks-and-resources
+            if ( !task.getChildTasks().isEmpty() ) {
 
                 String name = task.getName();
 
@@ -709,9 +652,8 @@ public class MPXJProjectFileConverter {
                     importData.name = name;
 
                 } else {
-                    // Take the filename if the project name is not set.
-                    importData.name = filename.substring(0,
-                            filename.length() - 4/* ".mpp" */);
+                    // Take the filename if the project name is not set
+                    importData.name = filename.substring(0, filename.length() - 4 /* ".mpp" */ );
 
                 }
 
@@ -741,7 +683,7 @@ public class MPXJProjectFileConverter {
      */
     private static List<MilestoneDTO> getImportMilestones(List<Task> childTasks) {
 
-        List<MilestoneDTO> milestones = new ArrayList<MilestoneDTO>();
+        List<MilestoneDTO> milestones = new ArrayList<>();
 
         for (Task task : childTasks) {
 
@@ -786,9 +728,7 @@ public class MPXJProjectFileConverter {
 
 
     /**
-     * Private method
-     *
-     * Converts the Duration into an integer that represent hours
+     * Converts the Duration into an integer that represent hours.
      *
      * @param duration
      *            Duration to convert.
@@ -796,12 +736,8 @@ public class MPXJProjectFileConverter {
      *            ProjectProperties needed to convert
      * @return int Integer with the rounded duration in hours
      */
-    private static int durationToIntHours(Duration duration,
-                                          ProjectProperties properties) {
-
-        Duration durationInHours = duration
-                .convertUnits(TimeUnit.HOURS, properties);
-
+    private static int durationToIntHours(Duration duration, ProjectProperties properties) {
+        Duration durationInHours = duration.convertUnits(TimeUnit.HOURS, properties);
         return (int) Math.floor(durationInHours.getDuration());
     }
 
@@ -810,12 +746,11 @@ public class MPXJProjectFileConverter {
      *
      * @param tasks
      *            List of MPXJ Tasks to extract data from.
-     * @return List<OrderElementDTO> List of ImportTask with the data that we want to
-     *         import.
+     * @return List<OrderElementDTO> List of ImportTask with the data that we want to import.
      */
     private static List<OrderElementDTO> getImportTasks(List<Task> tasks) {
 
-        List<OrderElementDTO> importTasks = new ArrayList<OrderElementDTO>();
+        List<OrderElementDTO> importTasks = new ArrayList<>();
 
         for (Task task : tasks) {
 
@@ -827,7 +762,8 @@ public class MPXJProjectFileConverter {
                 importTask.children = getImportTasks(task.getChildTasks());
 
                 importTask.milestones = getImportMilestones(task.getChildTasks());
-                // This is because in MPXJ only MPP9 files have this atribute.
+
+                // This is because in MPXJ only MPP9 files have this attribute
                 if ( task.getCalendar() != null ) {
 
                     importTask.calendarName = task.getCalendar().getName();
@@ -885,13 +821,10 @@ public class MPXJProjectFileConverter {
     private static Date constraintDate;
 
     /**
-     * Private Method
-     *
      * Set the attributes constraint y constraintDate with the correct value.
      *
      * Because MPXJ has more types of constraints than Libreplan we had
      * choose to convert some of them.
-     *
      *
      * @param task
      *            MPXJ Task to extract data from.
@@ -901,79 +834,53 @@ public class MPXJProjectFileConverter {
         switch (task.getConstraintType()) {
 
             case AS_SOON_AS_POSSIBLE:
-
                 constraint = ConstraintDTO.AS_SOON_AS_POSSIBLE;
-
                 constraintDate = task.getConstraintDate();
-
                 return;
 
             case AS_LATE_AS_POSSIBLE:
-
                 constraint = ConstraintDTO.AS_LATE_AS_POSSIBLE;
-
                 constraintDate = task.getConstraintDate();
-
                 return;
 
             case MUST_START_ON:
-
                 constraint = ConstraintDTO.START_IN_FIXED_DATE;
-
                 constraintDate = task.getConstraintDate();
-
                 return;
 
             case MUST_FINISH_ON:
-
                 constraint = ConstraintDTO.START_IN_FIXED_DATE;
-
                 constraintDate = recalculateConstraintDateMin(task);
-
                 return;
 
             case START_NO_EARLIER_THAN:
-
                 constraint = ConstraintDTO.START_NOT_EARLIER_THAN;
-
                 constraintDate = task.getConstraintDate();
-
                 return;
 
             case START_NO_LATER_THAN:
-
                 constraint = ConstraintDTO.FINISH_NOT_LATER_THAN;
-
                 constraintDate = recalculateConstraintDateSum(task);
-
                 return;
 
             case FINISH_NO_EARLIER_THAN:
-
                 constraint = ConstraintDTO.START_NOT_EARLIER_THAN;
-
                 constraintDate = recalculateConstraintDateMin(task);
-
-
                 return;
 
             case FINISH_NO_LATER_THAN:
-
                 constraint = ConstraintDTO.FINISH_NOT_LATER_THAN;
-
                 constraintDate = task.getConstraintDate();
-
                 return;
 
+            default:
+                break;
         }
 
     }
 
     /**
-     * Private Method
-     *
      * Get the new date based on the task date adding duration.
-     *
      *
      * @param task
      *            MPXJ Task to extract data from.
@@ -981,15 +888,12 @@ public class MPXJProjectFileConverter {
      */
     private static Date recalculateConstraintDateSum(Task task) {
 
-        return new Date(task.getConstraintDate().getTime()
-                + (durationToIntHours(task.getDuration(), properties) * 60 * 60 * 1000));
+        return new Date(task.getConstraintDate().getTime() +
+                (durationToIntHours(task.getDuration(), properties) * 60 * 60 * 1000));
     }
 
     /**
-     * Private Method
-     *
      * Get the new date based on the task date and substracting duration.
-     *
      *
      * @param task
      *            MPXJ Task to extract data from.

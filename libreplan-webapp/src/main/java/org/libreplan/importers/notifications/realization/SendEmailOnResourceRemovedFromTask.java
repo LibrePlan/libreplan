@@ -36,10 +36,10 @@ import java.util.List;
 
 /**
  * Sends E-mail to users with data that storing in notification_queue table
- * and that are treat to {@link EmailTemplateEnum#TEMPLATE_RESOURCE_REMOVED_FROM_TASK}
+ * and that are treat to {@link EmailTemplateEnum#TEMPLATE_RESOURCE_REMOVED_FROM_TASK}.
  * Data will be send if resource has been removed from task (in resource allocation)
  *
- * @author Created by Vova Perebykivskiy <vova@libreplan-enterprise.com> on 20.01.2016.
+ * @author Created by Vova Perebykivskyi <vova@libreplan-enterprise.com> on 20.01.2016.
  */
 
 @Component

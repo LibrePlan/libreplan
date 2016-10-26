@@ -44,7 +44,7 @@ import java.util.List;
 
 /**
  * Sends E-mail users with data that storing in notification_queue table
- * and that are treat to {@link EmailTemplateEnum#TEMPLATE_TODAY_TASK_SHOULD_START}
+ * and that are treat to {@link EmailTemplateEnum#TEMPLATE_TODAY_TASK_SHOULD_START}.
  * Data will be send if current data equals to start date.
  *
  * @author Created by Vova Perebykivskyi <vova@libreplan-enterprise.com> on 20.01.2016.

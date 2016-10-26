@@ -918,11 +918,11 @@ public class OrderLineGroup extends OrderElement implements ITreeParentNode<Orde
     }
 
     public void removeIndirectAdvanceAssignment(AdvanceType advanceType) {
-        DirectAdvanceAssignment tempAdavanceAssignmet = DirectAdvanceAssignment.create();
-        tempAdavanceAssignmet.setAdvanceType(advanceType);
+        DirectAdvanceAssignment tempAdvanceAssignment = DirectAdvanceAssignment.create();
+        tempAdvanceAssignment.setAdvanceType(advanceType);
 
         try {
-            checkChildrenNoOtherAssignmentWithSameAdvanceType(this, tempAdavanceAssignmet);
+            checkChildrenNoOtherAssignmentWithSameAdvanceType(this, tempAdvanceAssignment);
 
             String unitName = advanceType.getUnitName();
             IndirectAdvanceAssignment toRemove = null;

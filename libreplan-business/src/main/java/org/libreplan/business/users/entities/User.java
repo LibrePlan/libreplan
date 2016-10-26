@@ -71,7 +71,7 @@ public class User extends BaseEntity implements IHumanIdentifiable{
     private Scenario lastConnectedScenario;
 
     /**
-     * If a user is a LibrePlan user or not (ldap).
+     * If a user is a LibrePlan user or not (LDAP).
      */
     private Boolean librePlanUser = true;
 
@@ -102,7 +102,9 @@ public class User extends BaseEntity implements IHumanIdentifiable{
     /**
      * Necessary for Hibernate. Please, do not call it.
      */
-    public User() {}
+    public User() {
+
+    }
 
     private User(String loginName, String password, Set<UserRole> roles, Set<Profile> profiles) {
         this.loginName = loginName;

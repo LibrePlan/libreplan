@@ -21,11 +21,6 @@
 
 package org.libreplan.web.resources.criterion;
 
-import static org.libreplan.web.I18nHelper._;
-
-import java.util.ConcurrentModificationException;
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
@@ -37,7 +32,6 @@ import org.libreplan.business.resources.entities.ResourceEnum;
 import org.libreplan.web.common.BaseCRUDController;
 import org.libreplan.web.common.Level;
 import org.libreplan.web.common.Util;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.CheckEvent;
 import org.zkoss.zk.ui.event.Event;
@@ -46,16 +40,21 @@ import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Tree;
+import org.zkoss.zkplus.spring.SpringUtil;
+
+import java.util.ConcurrentModificationException;
+import java.util.List;
+
+import static org.libreplan.web.I18nHelper._;
 
 /**
- * Controller for Criterions <br />
+ * Controller for Criterions.
+ * <br />
  */
 public class CriterionAdminController extends BaseCRUDController<CriterionType> {
 
-    private static final Log LOG = LogFactory
-            .getLog(CriterionAdminController.class);
+    private static final Log LOG = LogFactory.getLog(CriterionAdminController.class);
 
-    @Autowired
     private ICriterionsModel criterionsModel;
 
     private Checkbox cbHierarchy;
@@ -65,6 +64,11 @@ public class CriterionAdminController extends BaseCRUDController<CriterionType> 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
+
+        if ( criterionsModel == null ) {
+            criterionsModel = (ICriterionsModel) SpringUtil.getBean("criterionsModel");
+        }
+
         cbHierarchy = (Checkbox) editWindow.getFellow("cbHierarchy");
         setupResourceCombobox((Combobox) editWindow.getFellowIfAny("resourceCombobox"));
     }
@@ -76,10 +80,7 @@ public class CriterionAdminController extends BaseCRUDController<CriterionType> 
     }
 
     public boolean allowRemove(CriterionType criterionType){
-        if(criterionType.getCriterions().size() > 0) {
-            return false;
-        }
-        return true;
+        return criterionType.getCriterions().size() <= 0;
     }
 
     public boolean notAllowRemove(CriterionType criterionType){
@@ -91,28 +92,25 @@ public class CriterionAdminController extends BaseCRUDController<CriterionType> 
     }
 
     private void showConfirmingHierarchyWindow() {
-        try {
-            int status = Messagebox
-                    .show(_("Disable hierarchy will cause criteria tree to be flattened. Are you sure?"),
-                            _("Question"), Messagebox.OK | Messagebox.CANCEL,
-                            Messagebox.QUESTION);
-            if (Messagebox.OK == status) {
-                disableHierarchy();
-                editionTree.reloadTree();
-            } else {
-                cbHierarchy.setChecked(true);
-            }
-        } catch (InterruptedException e) {
-            messagesForUser.showMessage(Level.ERROR, e.getMessage());
+        int status = Messagebox.show(
+                _("Disable hierarchy will cause criteria tree to be flattened. Are you sure?"),
+                _("Question"), Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION);
+
+        if (Messagebox.OK == status) {
+            disableHierarchy();
+            editionTree.reloadTree();
+        } else {
+            cbHierarchy.setChecked(true);
         }
     }
 
     public void disableHierarchy() {
         editionTree.disabledHierarchy();
+
         messagesForUser.showMessage(
                 Level.INFO,
-                _("Tree {0} sucessfully flattened", criterionsModel
-                        .getCriterionType().getName()));
+                _("Tree {0} sucessfully flattened", criterionsModel.getCriterionType().getName()));
+
         Util.reloadBindings(listWindow);
     }
 
@@ -131,8 +129,7 @@ public class CriterionAdminController extends BaseCRUDController<CriterionType> 
     }
 
     public List<CriterionType> getCriterionTypes() {
-        List<CriterionType> types = criterionsModel.getTypes();
-        return types;
+        return criterionsModel.getTypes();
     }
 
     public ICriterionType<?> getCriterionType() {
@@ -156,10 +153,12 @@ public class CriterionAdminController extends BaseCRUDController<CriterionType> 
 
     private void setResourceComboboxValue(Combobox combo) {
         CriterionType criterionType = (CriterionType) getCriterionType();
+
         for (Object object : combo.getItems()) {
+
             Comboitem item = (Comboitem) object;
-            if (criterionType != null
-                    && item.getValue().equals(criterionType.getResource())) {
+
+            if (criterionType != null && item.getValue().equals(criterionType.getResource())) {
                 combo.setSelectedItem(item);
             }
         }
@@ -167,15 +166,16 @@ public class CriterionAdminController extends BaseCRUDController<CriterionType> 
 
     public void setResource(Comboitem item) {
         if (item != null) {
-            ((CriterionType)getCriterionType()).setResource((ResourceEnum) item.getValue());
+            ((CriterionType)getCriterionType()).setResource(item.getValue());
         }
     }
 
     private void setupCriterionTreeController(Component comp) throws Exception {
         editionTree = new CriterionTreeController(criterionsModel);
-        editionTree
-                .setCriterionCodeEditionDisabled(((CriterionType) criterionsModel
-                        .getCriterionType()).isCodeAutogenerated());
+
+        editionTree.setCriterionCodeEditionDisabled(
+                ((CriterionType) criterionsModel.getCriterionType()).isCodeAutogenerated());
+
         editionTree.doAfterCompose(comp.getFellow("criterionsTree"));
     }
 
@@ -183,14 +183,14 @@ public class CriterionAdminController extends BaseCRUDController<CriterionType> 
         CheckEvent ce = (CheckEvent) e;
         if (ce.isChecked()) {
             try {
-                // we have to auto-generate the code for new objects
+                // We have to auto-generate the code for new objects
                 criterionsModel.setCodeAutogenerated(ce.isChecked());
             } catch (ConcurrentModificationException err) {
                 messagesForUser.showMessage(Level.ERROR, err.getMessage());
             }
             Util.reloadBindings(editWindow);
         }
-        //disable code field in criterion tree controller
+        // Disable code field in criterion tree controller
         editionTree.setCriterionCodeEditionDisabled(ce.isChecked());
         editionTree.reloadTree();
     }
@@ -213,8 +213,7 @@ public class CriterionAdminController extends BaseCRUDController<CriterionType> 
         } catch (Exception e) {
             LOG.error("Error setting up creating form for Criterion Type", e);
         }
-        setResourceComboboxValue((Combobox) editWindow
-                .getFellowIfAny("resourceCombobox"));
+        setResourceComboboxValue((Combobox) editWindow.getFellowIfAny("resourceCombobox"));
     }
 
     @Override
@@ -223,12 +222,9 @@ public class CriterionAdminController extends BaseCRUDController<CriterionType> 
         try {
             setupCriterionTreeController(editWindow);
         } catch (Exception e) {
-            LOG.error(
-                    "Error setting up edition form for Criterion Type with id: "
-                            + criterionType.getId(), e);
+            LOG.error("Error setting up edition form for Criterion Type with id: " + criterionType.getId(), e);
         }
-        setResourceComboboxValue((Combobox) editWindow
-                .getFellowIfAny("resourceCombobox"));
+        setResourceComboboxValue((Combobox) editWindow.getFellowIfAny("resourceCombobox"));
     }
 
     @Override
@@ -243,20 +239,20 @@ public class CriterionAdminController extends BaseCRUDController<CriterionType> 
     }
 
     @Override
-    protected void delete(CriterionType criterionType)
-            throws InstanceNotFoundException {
+    protected void delete(CriterionType criterionType) throws InstanceNotFoundException {
         criterionsModel.confirmRemove(criterionType);
     }
 
     @Override
     protected boolean beforeDeleting(CriterionType criterionType) {
         if (!criterionsModel.canRemove(criterionType)) {
-            messagesForUser
-                    .showMessage(
-                            Level.WARNING,
-                            _("This criterion type cannot be deleted because it is assigned to projects or resources"));
+            messagesForUser.showMessage(
+                    Level.WARNING,
+                    _("This criterion type cannot be deleted because it is assigned to projects or resources"));
+
             return false;
         }
+
         return true;
     }
 

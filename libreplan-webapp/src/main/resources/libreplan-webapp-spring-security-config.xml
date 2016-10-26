@@ -140,6 +140,15 @@
                     password-parameter="j_password"/>
         <http-basic />
         <logout logout-url="/j_spring_security_logout" />
+
+        <!--
+        In Spring Security 4 by default frame option policy became DENY.
+        See: http://forum.zkoss.org/question/99483/fileupload-not-worked/
+        -->
+        <headers>
+            <frame-options policy="SAMEORIGIN"/>
+        </headers>
+
         <remember-me />
         <csrf disabled="true"/>
 

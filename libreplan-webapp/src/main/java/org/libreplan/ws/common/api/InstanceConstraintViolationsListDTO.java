@@ -41,13 +41,11 @@ public class InstanceConstraintViolationsListDTO {
     public List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList;
 
     public InstanceConstraintViolationsListDTO() {
-        instanceConstraintViolationsList = new ArrayList<InstanceConstraintViolationsDTO>();
+        instanceConstraintViolationsList = new ArrayList<>();
     }
 
-    public InstanceConstraintViolationsListDTO(
-            List<InstanceConstraintViolationsDTO> violations) {
-        this.instanceConstraintViolationsList = new ArrayList<InstanceConstraintViolationsDTO>(
-                violations);
+    public InstanceConstraintViolationsListDTO(List<InstanceConstraintViolationsDTO> violations) {
+        this.instanceConstraintViolationsList = new ArrayList<>(violations);
     }
 
     @Override
@@ -55,10 +53,13 @@ public class InstanceConstraintViolationsListDTO {
         StringWriter stringWriter = new StringWriter();
         PrintWriter printWriter = new PrintWriter(stringWriter);
         printWriter.println("*** " + this.getClass().getName() + " ***");
+
         for (InstanceConstraintViolationsDTO i : instanceConstraintViolationsList) {
             printWriter.println(i);
         }
+
         printWriter.close();
+
         return stringWriter.toString();
     }
 

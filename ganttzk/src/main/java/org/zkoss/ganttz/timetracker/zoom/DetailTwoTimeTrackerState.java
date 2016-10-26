@@ -38,10 +38,8 @@ public class DetailTwoTimeTrackerState extends TimeTrackerStateWithSubintervalsF
 
     private static final int SECOND_LEVEL_ITEM_SIZE = 100;
 
-    protected DetailTwoTimeTrackerState(IDetailItemModificator firstLevelModificator,
-                                        IDetailItemModificator secondLevelModificator) {
-
-        super(firstLevelModificator, secondLevelModificator);
+    protected DetailTwoTimeTrackerState(IDetailItemModifier firstLevelModifier, IDetailItemModifier secondLevelModifier) {
+        super(firstLevelModifier, secondLevelModifier);
     }
 
     @Override

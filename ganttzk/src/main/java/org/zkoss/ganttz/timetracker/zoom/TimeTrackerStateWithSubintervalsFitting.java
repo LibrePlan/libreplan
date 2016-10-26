@@ -32,10 +32,10 @@ import org.joda.time.ReadablePeriod;
  */
 public abstract class TimeTrackerStateWithSubintervalsFitting extends TimeTrackerState {
 
-    protected TimeTrackerStateWithSubintervalsFitting(IDetailItemModificator firstLevelModificator,
-                                                      IDetailItemModificator secondLevelModificator) {
+    protected TimeTrackerStateWithSubintervalsFitting(IDetailItemModifier firstLevelModifier,
+                                                      IDetailItemModifier secondLevelModifier) {
 
-        super(firstLevelModificator, secondLevelModificator);
+        super(firstLevelModifier, secondLevelModifier);
     }
 
     private final class PeriodicalGenerator extends LazyGenerator<LocalDate> {

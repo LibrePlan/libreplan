@@ -19,55 +19,44 @@
 
 package org.libreplan.web.users.dashboard;
 
-import java.util.List;
-
-import javax.annotation.Resource;
-
 import org.libreplan.web.common.Util;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 
+import java.util.List;
+
 /**
- * Controller for "Personal timesheets" area in the user dashboard window
+ * Controller for "Personal timesheets" area in the user dashboard window.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Vova Perebykivskyi <vova@libreplan-enteprise.com>
  */
 @SuppressWarnings("serial")
 public class PersonalTimesheetsAreaController extends GenericForwardComposer {
 
     private IPersonalTimesheetsAreaModel personalTimesheetsAreaModel;
 
-    @Resource
     private IPersonalTimesheetController personalTimesheetController;
 
     private RowRenderer personalTimesheetsRenderer = new RowRenderer() {
 
         @Override
-        public void render(Row row, Object data) throws Exception {
+        public void render(Row row, Object data, int i) throws Exception {
             final PersonalTimesheetDTO personalTimesheet = (PersonalTimesheetDTO) data;
             row.setValue(personalTimesheet);
 
-            Util.appendLabel(row, personalTimesheet
-                    .toString(personalTimesheetsAreaModel
-                            .getPersonalTimesheetsPeriodicity()));
-            Util.appendLabel(row, personalTimesheet.getResourceCapacity()
-                    .toFormattedString());
-            Util.appendLabel(row, personalTimesheet.getTotalHours()
-                    .toFormattedString());
-            Util.appendLabel(row, personalTimesheet.getTasksNumber() + "");
+            Util.appendLabel(
+                    row, personalTimesheet.toString(personalTimesheetsAreaModel.getPersonalTimesheetsPeriodicity()));
 
-            Util.appendOperationsAndOnClickEvent(row, new EventListener() {
+            Util.appendLabel(row, personalTimesheet.getResourceCapacity().toFormattedString());
+            Util.appendLabel(row, personalTimesheet.getTotalHours().toFormattedString());
+            Util.appendLabel(row, Integer.toString(personalTimesheet.getTasksNumber()));
 
-                @Override
-                public void onEvent(Event event) throws Exception {
-                    personalTimesheetController.goToCreateOrEditForm(personalTimesheet
-                            .getDate());
-                }
-            }, null);
+            Util.appendOperationsAndOnClickEvent(
+                    row, event -> personalTimesheetController.goToCreateOrEditForm(personalTimesheet.getDate()), null);
         }
 
     };
@@ -76,6 +65,22 @@ public class PersonalTimesheetsAreaController extends GenericForwardComposer {
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         comp.setAttribute("controller", this);
+
+        injectObjects();
+    }
+
+    private void injectObjects() {
+        if ( personalTimesheetsAreaModel == null ) {
+
+            personalTimesheetsAreaModel =
+                    (IPersonalTimesheetsAreaModel) SpringUtil.getBean("personalTimesheetsAreaModel");
+        }
+
+        if ( personalTimesheetController == null ) {
+
+            personalTimesheetController =
+                    (IPersonalTimesheetController) SpringUtil.getBean("personalTimesheetController");
+        }
     }
 
     public List<PersonalTimesheetDTO> getPersonalTimesheets() {

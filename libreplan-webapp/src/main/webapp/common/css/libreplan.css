@@ -1,14 +1,10 @@
 body {
-    margin-top: 0px;
-    margin-bottom: 0px;
-    margin-right: 0px;
-    margin-left: 0px;
+    margin: 0;
 }
 
 .menuup {
     font-family: Tahoma, Arial, Helvetica, sans-serif;
     text-decoration: none;
-    background-image: url(../img/pestana1.gif);
     font-size: 11px;
     color: #0081C2;
     display: block;
@@ -16,8 +12,7 @@ body {
     padding-left: 6px;
     width: 125px;
     font-weight: bold;
-    background-repeat: no-repeat;
-    background-position: -4px 0px;
+    background: url(../img/pestana1.gif) no-repeat -4px 0;
     padding-bottom: 5px;
 }
 
@@ -26,18 +21,16 @@ a.menuup:hover {
 }
 
 .menuup_desactivado {
-        font-family: Tahoma, Arial, Helvetica, sans-serif;
-        text-decoration: none;
-        font-size: 11px;
-        color: #77B6D0;
-        display: block;
-        padding-top: 10px;
-        padding-left: 6px;
-        width: 125px;
-        background-repeat: no-repeat;
-        background-position: -4px 4px;
-        padding-bottom: 5px;
-        background-image: url(../img/pestana_desactivada.gif);
+    font-family: Tahoma, Arial, Helvetica, sans-serif;
+    text-decoration: none;
+    font-size: 11px;
+    color: #77B6D0;
+    display: block;
+    padding-top: 10px;
+    padding-left: 6px;
+    width: 125px;
+    padding-bottom: 5px;
+    background: url(../img/pestana_desactivada.gif) no-repeat -4px 4px;
 }
 
 .sub_menu {
@@ -57,31 +50,31 @@ a.sub_menu:hover {
 }
 
 .sub_menu_activo {
-        font-family: Tahoma, Arial, Helvetica, sans-serif, Tahoma;
-        font-size: 11px;
-        color: #2A83B4;
-        background-color: #CBDBEB;
-        text-decoration: none;
-        display: block;
-        line-height: 16px;
-        padding-right: 3px;
-        padding-left: 3px;
-        text-decoration: none;
-        background-image: url(../img/pest_sub1.gif);
-        background-repeat:  no-repeat;
-        background-position: right top;
+    font-family: Tahoma, Arial, Helvetica, sans-serif, Tahoma;
+    font-size: 11px;
+    color: #2A83B4;
+    background-color: #CBDBEB;
+    text-decoration: none;
+    display: block;
+    line-height: 16px;
+    padding-right: 3px;
+    padding-left: 3px;
+    text-decoration: none;
+    background-image: url(../img/pest_sub1.gif);
+    background-repeat:  no-repeat;
+    background-position: right top;
 }
 
 .sub_menu_desactivado {
-        font-family: Tahoma, Arial, Helvetica, sans-serif, Tahoma;
-        font-size: 11px;
-        color: #ABB8CD;
-        text-decoration: none;
-        display: block;
-        line-height: 22px;
-        padding-right: 3px;
-        padding-left: 3px;
-        font-style: italic;
+    font-family: Tahoma, Arial, Helvetica, sans-serif, Tahoma;
+    font-size: 11px;
+    color: #ABB8CD;
+    text-decoration: none;
+    display: block;
+    line-height: 22px;
+    padding-right: 3px;
+    padding-left: 3px;
+    font-style: italic;
 }
 
 .menuup_activa {
@@ -97,7 +90,7 @@ a.sub_menu:hover {
     padding-left: 6px;
     font-weight: bold;
     background-repeat: no-repeat;
-    background-position: -4px 0px;
+    background-position: -4px 0;
 }
 
 .usuario {
@@ -142,12 +135,6 @@ a.sub_menu:hover {
     vertical-align: middle;
 }
 
-.fondo_cabecera {
-    background-image: url(../img/cabecera.jpg);
-    background-position: right top;
-    background-repeat: no-repeat;
-}
-
 .migas_linea {
     border-top-width: 1px;
     border-bottom-width: 1px;
@@ -183,7 +170,6 @@ a.sub_menu:hover {
 
 .help-link a span {
     position: relative;
-    top:-6px;
 }
 
 .user-area {
@@ -194,25 +180,25 @@ a.sub_menu:hover {
 }
 
 .footer-messages-area * {
-  color: #CC5013;
-  font-size: 11px;
+    color: #CC5013;
+    font-size: 11px;
 }
 
 .footer-messages-area a {
-  text-decoration: none;
+    text-decoration: none;
 }
 
 .footer-messages-area .command {
-  font-weight: bold;
+    font-weight: bold;
 }
 
 .footer-messages-area a:hover {
-  text-decoration: underline;
+    text-decoration: underline;
 }
 
 .logo-area img {
-	max-width: 300px;
-	max-height: 65px;
+    max-width: 300px;
+    max-height: 65px;
 }
 
 .mainmenu :focus {

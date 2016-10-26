@@ -44,7 +44,7 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
-import org.zkoss.zul.api.Listbox;
+import org.zkoss.zul.Listbox;
 
 /**
  * Controller for UI operations to transfer orders between scenarios.
@@ -72,7 +72,7 @@ public class TransferOrdersController extends GenericForwardComposer {
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         messagesForUser = new MessagesForUser(messagesContainer);
-        comp.setVariable("transferOrdersController", this, true);
+        comp.setAttribute("transferOrdersController", this, true);
 
         sourceScenarioBandboxSearch.setListboxEventListener(Events.ON_CLICK,
                 new EventListener() {
@@ -108,16 +108,14 @@ public class TransferOrdersController extends GenericForwardComposer {
     }
 
     private void setSourceScenario() {
-        Scenario sourceScenario = (Scenario) sourceScenarioBandboxSearch
-                .getSelectedElement();
+        Scenario sourceScenario = (Scenario) sourceScenarioBandboxSearch.getSelectedElement();
         transferOrdersModel.setSourceScenario(sourceScenario);
         Util.reloadBindings(sourceScenarioOrders);
         sourceScenarioBandboxSearch.close();
     }
 
     private void setDestinationScenario() {
-        Scenario destinationScenario = (Scenario) destinationScenarioBandboxSearch
-                .getSelectedElement();
+        Scenario destinationScenario = (Scenario) destinationScenarioBandboxSearch.getSelectedElement();
         transferOrdersModel.setDestinationScenario(destinationScenario);
         Util.reloadBindings(destinationScenarioOrders);
         destinationScenarioBandboxSearch.close();
@@ -155,27 +153,27 @@ public class TransferOrdersController extends GenericForwardComposer {
 
         private final boolean source;
 
-        public OrderRenderer(boolean source) {
+        OrderRenderer(boolean source) {
             this.source = source;
         }
 
         @Override
-        public void render(Listitem item, Object data) {
-            Order order = (Order) data;
-            item.setValue(data);
+        public void render(Listitem listitem, Object o, int i) throws Exception {
+            Order order = (Order) o;
+            listitem.setValue(o);
 
-            item.appendChild(new Listcell(order.getCode()));
-            item.appendChild(new Listcell(order.getName()));
-            Scenario scenario = source ? transferOrdersModel
-                    .getSourceScenario() : transferOrdersModel
-                    .getDestinationScenario();
-            item.appendChild(new Listcell(transferOrdersModel.getVersion(order,
+            listitem.appendChild(new Listcell(order.getCode()));
+            listitem.appendChild(new Listcell(order.getName()));
+            Scenario scenario = source
+                    ? transferOrdersModel.getSourceScenario()
+                    : transferOrdersModel.getDestinationScenario();
+            listitem.appendChild(new Listcell(transferOrdersModel.getVersion(order,
                     scenario)));
 
             if (source) {
                 Listcell cell = new Listcell();
                 cell.appendChild(getTransferButton(order));
-                item.appendChild(cell);
+                listitem.appendChild(cell);
             }
         }
 
@@ -196,9 +194,9 @@ public class TransferOrdersController extends GenericForwardComposer {
                             }
                         }
                     });
+
             return transferButton;
         }
-
     }
 
 }

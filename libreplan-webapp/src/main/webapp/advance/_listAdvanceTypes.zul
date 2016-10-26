@@ -21,8 +21,8 @@
 
 <window id="${arg.top_id}" title="${i18n:_('Progress Types List')}">
     <newdatasortablegrid id="listing" model="@{controller.advanceTypes}" mold="paging"
-        pageSize="10" fixedLayout="true" sclass="clickable-rows"
-        rowRenderer="@{controller.advanceTypeRenderer}" >
+                         pageSize="10" fixedLayout="true" sclass="clickable-rows"
+                         rowRenderer="@{controller.advanceTypeRenderer}" >
         <columns>
             <newdatasortablecolumn label="${i18n:_('Name')}" sort="auto(unitName)"/>
             <newdatasortablecolumn label="${i18n:_('Enabled')}"/>
@@ -31,6 +31,6 @@
         </columns>
     </newdatasortablegrid>
     <button id="show_create_form" onClick="controller.goToCreateForm();" label="${i18n:_('Create')}"
-        sclass="create-button global-action">
+            sclass="create-button global-action">
     </button>
 </window>

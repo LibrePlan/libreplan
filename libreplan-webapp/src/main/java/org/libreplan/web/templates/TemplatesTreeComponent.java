@@ -33,31 +33,27 @@ import org.libreplan.web.tree.TreeController;
 import org.zkoss.zul.Treeitem;
 
 /**
- * Tree component for templates <br />
+ * Tree component for templates.
+ * <br />
+ *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public class TemplatesTreeComponent extends TreeComponent {
 
     private abstract class TemplatesTreeColumn extends Column {
 
-        TemplatesTreeColumn(String label, String cssClass, String tooltip) {
-            super(label, cssClass, tooltip);
-        }
-
         TemplatesTreeColumn(String label, String cssClass) {
             super(label, cssClass);
         }
 
         public final <T extends ITreeNode<T>> void doCell(
-                TreeController<T>.Renderer renderer,
-                Treeitem item, T currentElement) {
-            doCell(TemplatesTreeRenderer.class.cast(renderer), item,
-                    OrderElementTemplate.class.cast(currentElement));
+                TreeController<T>.Renderer renderer, Treeitem item, T currentElement) {
+
+            doCell(TemplatesTreeRenderer.class.cast(renderer), item, OrderElementTemplate.class.cast(currentElement));
         }
 
-        protected abstract void doCell(TemplatesTreeRenderer renderer,
-                Treeitem item, OrderElementTemplate currentElement);
-
+        protected abstract void doCell(
+                TemplatesTreeRenderer renderer, Treeitem item, OrderElementTemplate currentElement);
     }
 
     public String getAddElementLabel() {
@@ -74,51 +70,41 @@ public class TemplatesTreeComponent extends TreeComponent {
 
     @Override
     public List<Column> getColumns() {
-        List<Column> result = new ArrayList<Column>();
+        List<Column> result = new ArrayList<>();
 
         result.add(schedulingStateColumn);
         result.add(nameAndDescriptionColumn);
-        result.add(new TemplatesTreeColumn(_("Hours"), "hours") {
 
+        result.add(new TemplatesTreeColumn(_("Hours"), "hours") {
             @Override
-            protected void doCell(TemplatesTreeRenderer renderer,
-                    Treeitem item, OrderElementTemplate currentElement) {
+            protected void doCell(TemplatesTreeRenderer renderer, Treeitem item, OrderElementTemplate currentElement) {
                 renderer.addHoursCell(currentElement);
             }
-
         });
-        result.add(new TemplatesTreeColumn(_("Budget"), "budget") {
 
+        result.add(new TemplatesTreeColumn(_("Budget"), "budget") {
             @Override
-            protected void doCell(TemplatesTreeRenderer renderer,
-                    Treeitem item, OrderElementTemplate currentElement) {
+            protected void doCell(TemplatesTreeRenderer renderer, Treeitem item, OrderElementTemplate currentElement) {
                 renderer.addBudgetCell(currentElement);
             }
-
         });
-        result.add(new TemplatesTreeColumn(
-                _("Must start after (days since project start)"),
-                "estimated_init") {
 
+        result.add(new TemplatesTreeColumn(_("Must start after (days since project start)"), "estimated_init") {
             @Override
-            protected void doCell(TemplatesTreeRenderer renderer,
-                    Treeitem item, OrderElementTemplate currentElement) {
+            protected void doCell(TemplatesTreeRenderer renderer, Treeitem item, OrderElementTemplate currentElement) {
                 renderer.addInitCell(currentElement);
             }
-
         });
-        result.add(new TemplatesTreeColumn(
-                _("Deadline (days since project start)"),
-                "estimated_end") {
 
+        result.add(new TemplatesTreeColumn(_("Deadline (days since project start)"), "estimated_end") {
             @Override
-            protected void doCell(TemplatesTreeRenderer renderer,
-                    Treeitem item, OrderElementTemplate currentElement) {
+            protected void doCell(TemplatesTreeRenderer renderer, Treeitem item, OrderElementTemplate currentElement) {
                 renderer.addEndCell(currentElement);
             }
-
         });
+
         result.add(operationsColumn);
+
         return result;
     }
 

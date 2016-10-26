@@ -57,7 +57,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 
 /**
- * Model for UI operations related to {@link Task}
+ * Model for UI operations related to {@link Task}.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  * @author Diego Pino García <dpino@igalia.com>
@@ -90,19 +90,18 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     @Transactional(readOnly = true)
     public void addSpecific(Collection<? extends Resource> resources) {
         reassociateResourcesWithSession();
-        allocationRowsHandler
-                .addSpecificResourceAllocationFor(reloadResources(resources));
+        allocationRowsHandler.addSpecificResourceAllocationFor(reloadResources(resources));
     }
 
     @SuppressWarnings("unchecked")
-    private <T extends Resource> List<T> reloadResources(
-            Collection<? extends T> resources) {
-        List<T> result = new ArrayList<T>();
+    private <T extends Resource> List<T> reloadResources(Collection<? extends T> resources) {
+        List<T> result = new ArrayList<>();
         for (T each : resources) {
             Resource reloaded = resourceDAO.findExistingEntity(each.getId());
             reattachResource(reloaded);
             result.add((T) reloaded);
         }
+
         return result;
     }
 
@@ -110,35 +109,36 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     @Transactional(readOnly = true)
     public ProportionalDistributor addDefaultAllocations() {
         reassociateResourcesWithSession();
-        List<AggregatedHoursGroup> hoursGroups = task
-                .getAggregatedByCriterions();
+        List<AggregatedHoursGroup> hoursGroups = task.getAggregatedByCriterions();
+
         int hours[] = new int[hoursGroups.size()];
         int i = 0;
         for (AggregatedHoursGroup each : hoursGroups) {
             hours[i++] = each.getHours();
-            List<? extends Resource> resourcesFound = searchModel
-                    .searchBy(each.getResourceType())
+            List<? extends Resource> resourcesFound = searchModel.searchBy(each.getResourceType())
                     .byCriteria(each.getCriterions()).execute();
-            boolean added = allocationRowsHandler.addGeneric(each
-                    .getResourceType(),
+
+            boolean added = allocationRowsHandler.addGeneric(each.getResourceType(),
                     each.getCriterions(), reloadResources(resourcesFound),
                     each.getHours());
+
             if (!added) {
                 return null;
             }
         }
+
         return ProportionalDistributor.create(hours);
     }
 
     @Override
     @Transactional(readOnly = true)
     public void addGeneric(ResourceEnum resourceType,
-            Collection<? extends Criterion> criteria,
-            Collection<? extends Resource> resourcesMatched) {
+                           Collection<? extends Criterion> criteria,
+                           Collection<? extends Resource> resourcesMatched) {
+
         reassociateResourcesWithSession();
         List<Resource> reloadResources = reloadResources(resourcesMatched);
-        allocationRowsHandler.addGeneric(resourceType, criteria,
-                reloadResources);
+        allocationRowsHandler.addGeneric(resourceType, criteria, reloadResources);
     }
 
     @Override
@@ -153,46 +153,41 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     @Override
     public Flagged<AllocationResult, Warnings> accept() {
         if (context != null) {
-            return applyDateChangesNotificationIfNoFlags(new IOnTransaction<Flagged<AllocationResult, Warnings>>() {
-                @Override
-                public Flagged<AllocationResult, Warnings> execute() {
-                    stepsBeforeDoingAllocation();
-                    Flagged<AllocationResult, Warnings> allocationResult = allocationRowsHandler
-                            .doAllocation();
-                    if (!allocationResult.isFlagged()) {
-                        allocationResult.getValue().applyTo(
-                                planningState.getCurrentScenario(), task);
-                    }
-                    return allocationResult;
+            return applyDateChangesNotificationIfNoFlags(() -> {
+                stepsBeforeDoingAllocation();
+                Flagged<AllocationResult, Warnings> allocationResult = allocationRowsHandler.doAllocation();
+
+                if (!allocationResult.isFlagged()) {
+                    allocationResult.getValue().applyTo(
+                            planningState.getCurrentScenario(), task);
                 }
+
+                return allocationResult;
             });
         }
+
         return null;
     }
 
     @Override
     public void accept(final AllocationResult modifiedAllocationResult) {
         if (context != null) {
-            applyDateChangesNotificationIfNoFlags(new IOnTransaction<Flagged<Void, Void>>() {
-                @Override
-                public Flagged<Void, Void> execute() {
-                    stepsBeforeDoingAllocation();
-                    modifiedAllocationResult.applyTo(planningState
-                            .getCurrentScenario(), task);
+            applyDateChangesNotificationIfNoFlags((IOnTransaction<Flagged<Void, Void>>) () -> {
+                stepsBeforeDoingAllocation();
+                modifiedAllocationResult.applyTo(planningState.getCurrentScenario(), task);
 
-                    return Flagged.justValue(null);
-                }
+                return Flagged.justValue(null);
             });
         }
     }
 
-    private <V, T extends Flagged<V, ?>> T applyDateChangesNotificationIfNoFlags(
-            IOnTransaction<T> allocationDoer) {
+    private <V, T extends Flagged<V, ?>> T applyDateChangesNotificationIfNoFlags(IOnTransaction<T> allocationDoer) {
         org.zkoss.ganttz.data.Task ganttTask = context.getTask();
         T result = transactionService.runOnReadOnlyTransaction(allocationDoer);
         if (!result.isFlagged()) {
             ganttTask.enforceDependenciesDueToPositionPotentiallyModified();
         }
+
         return result;
     }
 
@@ -210,8 +205,8 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     }
 
     private void ensureResourcesAreReadyForDoingAllocation() {
-        Set<Resource> resources = allocationRowsHandler
-                .getAllocationResources();
+        Set<Resource> resources = allocationRowsHandler.getAllocationResources();
+
         for (Resource each : resources) {
             reattachResource(each);
         }
@@ -232,47 +227,40 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     @Override
     @Transactional(readOnly = true)
     public AllocationRowsHandler initAllocationsFor(Task task,
-            IContextWithPlannerTask<TaskElement> context,
-            PlanningState planningState) {
+                                                    IContextWithPlannerTask<TaskElement> context,
+                                                    PlanningState planningState) {
         this.context = context;
         this.task = task;
         this.currentStartDate = task.getStartDate();
         this.planningState = planningState;
         planningState.reassociateResourcesWithSession();
         loadDerivedAllocations(this.task.getSatisfiedResourceAllocations());
-        List<AllocationRow> initialRows = AllocationRow.toRows(
-                task.getNonLimitingResourceAllocations(), searchModel);
-        allocationRowsHandler = AllocationRowsHandler.create(task, initialRows,
-                createWorkerFinder());
+        List<AllocationRow> initialRows = AllocationRow.toRows(task.getNonLimitingResourceAllocations(), searchModel);
+        allocationRowsHandler = AllocationRowsHandler.create(task, initialRows, createWorkerFinder());
+
         return allocationRowsHandler;
     }
 
     private IWorkerFinder createWorkerFinder() {
-        return new IWorkerFinder() {
+        return requiredCriteria -> {
+            reassociateResourcesWithSession();
+            List<Worker> workers = new ArrayList<>();
 
-            @Override
-            public Collection<Worker> findWorkersMatching(
-                    Collection<? extends Criterion> requiredCriteria) {
-                reassociateResourcesWithSession();
-                List<Worker> workers = new ArrayList<Worker>();
-                if (!requiredCriteria.isEmpty()) {
-                    workers = searchModel.searchWorkers()
-                            .byCriteria(requiredCriteria).execute();
-                }
-                return reloadResources(workers);
+            if (!requiredCriteria.isEmpty()) {
+                workers = searchModel.searchWorkers().byCriteria(requiredCriteria).execute();
             }
+
+            return reloadResources(workers);
         };
     }
 
     private void loadMachine(Machine eachMachine) {
-        for (MachineWorkersConfigurationUnit eachUnit : eachMachine
-                .getConfigurationUnits()) {
+        for (MachineWorkersConfigurationUnit eachUnit : eachMachine.getConfigurationUnits()) {
             Hibernate.initialize(eachUnit);
         }
     }
 
-    private void loadDerivedAllocations(
-            Set<ResourceAllocation<?>> resourceAllocations) {
+    private void loadDerivedAllocations(Set<ResourceAllocation<?>> resourceAllocations) {
         for (ResourceAllocation<?> each : resourceAllocations) {
             for (DerivedAllocation eachDerived : each.getDerivedAllocations()) {
                 Hibernate.initialize(eachDerived);
@@ -285,9 +273,11 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
 
     private void reattachResource(Resource resource) {
         resourceDAO.reattach(resource);
+
         for (DayAssignment dayAssignment : resource.getAssignments()) {
             Hibernate.initialize(dayAssignment);
         }
+
         if (resource instanceof Machine) {
             loadMachine((Machine) resource);
         }
@@ -296,14 +286,13 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     @Override
     @Transactional(readOnly = true)
     public List<AggregatedHoursGroup> getHoursAggregatedByCriterions() {
-        List<AggregatedHoursGroup> result = task.getTaskSource()
-                .getAggregatedByCriterions();
+        List<AggregatedHoursGroup> result = task.getTaskSource().getAggregatedByCriterions();
         ensuringAccesedPropertiesAreLoaded(result);
+
         return result;
     }
 
-    private void ensuringAccesedPropertiesAreLoaded(
-            List<AggregatedHoursGroup> result) {
+    private void ensuringAccesedPropertiesAreLoaded(List<AggregatedHoursGroup> result) {
         for (AggregatedHoursGroup each : result) {
             each.getCriterionsJoinedByComma();
             each.getHours();
@@ -315,6 +304,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         if (task == null) {
             return 0;
         }
+
         return AggregatedHoursGroup.sum(task.getAggregatedByCriterions());
     }
 
@@ -323,6 +313,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         if (task == null) {
             return null;
         }
+
         return task.getEndDate();
     }
 

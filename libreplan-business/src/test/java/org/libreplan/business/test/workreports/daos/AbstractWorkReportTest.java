@@ -150,11 +150,11 @@ public abstract class AbstractWorkReportTest {
         label.setType(labelType);
         labelDAO.save(label);
 
-        WorkReportLabelTypeAssignment labelAssigment = WorkReportLabelTypeAssignment.create();
-        labelAssigment.setDefaultLabel(label);
-        labelAssigment.setLabelType(labelType);
+        WorkReportLabelTypeAssignment labelAssignment = WorkReportLabelTypeAssignment.create();
+        labelAssignment.setDefaultLabel(label);
+        labelAssignment.setLabelType(labelType);
 
-        return labelAssigment;
+        return labelAssignment;
     }
 
 }

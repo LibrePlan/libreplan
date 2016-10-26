@@ -30,12 +30,12 @@ import org.libreplan.web.common.entrypoints.EntryPoints;
 public interface IWorkReportCRUDControllerEntryPoints {
 
     @EntryPoint("edit")
-    public abstract void goToEditForm(WorkReport workReport);
+    void goToEditForm(WorkReport workReport);
 
     @EntryPoint("create")
-    public abstract void goToCreateForm(WorkReportType workReportType);
+    void goToCreateForm(WorkReportType workReportType);
 
     @EntryPoint("list")
-    public abstract void goToList();
+    void goToList();
 
 }

@@ -22,10 +22,10 @@
 <window id="${arg.id}">
 
     <newdatasortablegrid id="listExceptionDayTypes"
-        model="@{controller.exceptionDayTypes}"
-        rowRenderer="@{controller.exceptionDayTypeRenderer}"
-        mold="paging" pageSize="10" class="clickable-rows"
-        fixedLayout="true">
+                         model="@{controller.exceptionDayTypes}"
+                         rowRenderer="@{controller.exceptionDayTypeRenderer}"
+                         mold="paging" pageSize="10" class="clickable-rows"
+                         fixedLayout="true">
 
         <columns>
             <newdatasortablecolumn label="${i18n:_('Name')}" sort="auto(lower(name))" sortDirection="ascending" />
@@ -37,7 +37,6 @@
         </columns>
     </newdatasortablegrid>
 
-    <button label="${i18n:_('Create')}" onClick="controller.goToCreateForm()"
-        sclass="create-button global-action"/>
+    <button label="${i18n:_('Create')}" onClick="controller.goToCreateForm()" sclass="create-button global-action"/>
 
- </window>
+</window>

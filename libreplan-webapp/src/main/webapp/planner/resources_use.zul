@@ -28,8 +28,8 @@
 <?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
 <zk>
 
-    <resourcesLoadPanel id="planner" self="@{define(content)}">
-        <div id="idContextMenuTaskAssignment"></div>
+    <resourcesLoadPanel id="planner" sclass="resourceTestLoadPanel" self="@{define(content)}">
+        <div id="idContextMenuTaskAssignment" sclass="resourceTestLoadPanel100500"/>
     </resourcesLoadPanel>
 
 </zk>

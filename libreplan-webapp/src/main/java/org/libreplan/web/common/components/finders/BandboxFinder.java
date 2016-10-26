@@ -30,7 +30,7 @@ import org.zkoss.zul.SimpleListModel;
 /**
  * BandboxFinder implements basic methods for {@link IBandboxFinder} and
  * provides a default renderer, the rest of methods for {@link IBandboxFinder}
- * should be implement by a concrete class
+ * should be implement by a concrete class.
  *
  * @author Diego Pino Garcia<dpino@igalia.com>
  *
@@ -43,8 +43,9 @@ public abstract class BandboxFinder implements IBandboxFinder {
     @Transactional(readOnly = true)
     public ListModel getModel() {
         if (model == null) {
-            model = new SimpleListModel(getAll());
+            model = new SimpleListModel<>(getAll());
         }
+
         return model;
     }
 
@@ -59,26 +60,18 @@ public abstract class BandboxFinder implements IBandboxFinder {
     }
 
     /**
-     * Class for rendering combo items
+     * Class for rendering combo items.
      *
      * It's necessary to provide this renderer since by default a combobox sets
-     * label as Objects.toString(data) which relies on the actual implementation
-     * of Object.toString. By doing this, it's possible to decouple how an
-     * object is shown from its Object.toString method.
+     * label as Objects.toString(data) which relies on the actual implementation of Object.toString.
+     * By doing this, it's possible to decouple how an object is shown from its Object.toString method.
      *
-     * See Combobox.getDefaultItemRenderer()
-     *
-     * In general it won't be necessary to overwrite this Renderer. Use
-     * _toString() to indicate how an object is shown in the list of matching
-     * elements
-     *
-     * @author Diego Pino Garcia<dpino@igalia.com>
-     *
+     * In general it won't be necessary to overwrite this Renderer.
+     * Use _toString() to indicate how an object is shown in the list of matching elements.
      */
     private final ListitemRenderer _defRend = new ListitemRenderer() {
-
         @Override
-        public void render(Listitem item, Object data) {
+        public void render(Listitem item, Object data, int i) {
             item.setLabel(objectToString(data));
             item.setValue(data);
         }

@@ -26,11 +26,10 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
 /**
- * Sends E-mail to users with data that storing in notification_queue table
- * and that are treat to
- * {@link org.libreplan.business.email.entities.EmailTemplateEnum#TEMPLATE_TODAY_TASK_SHOULD_FINISH}
+ * Sends E-mail to users with data that storing in notification_queue table and that are treat to
+ * {@link org.libreplan.business.email.entities.EmailTemplateEnum#TEMPLATE_TODAY_TASK_SHOULD_FINISH}.
  *
- * @author Created by Vova Perebykivskiy <vova@libreplan-enterprise.com> on 20.01.2016.
+ * @author Created by Vova Perebykivskyi <vova@libreplan-enterprise.com> on 20.01.2016.
  */
 public class SendEmailOnTaskShouldFinishJob extends QuartzJobBean {
 
@@ -45,5 +44,4 @@ public class SendEmailOnTaskShouldFinishJob extends QuartzJobBean {
 
         taskShouldFinish.sendEmail();
     }
-
 }

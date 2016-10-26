@@ -26,13 +26,11 @@ package org.libreplan.business.planner.daos;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.libreplan.business.common.daos.GenericDAOHibernate;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
-import org.libreplan.business.orders.entities.TaskSource;
 import org.libreplan.business.planner.entities.SubcontractedTaskData;
 import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.planner.entities.TaskElement;
@@ -51,9 +49,9 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
-public class SubcontractedTaskDataDAO extends
-        GenericDAOHibernate<SubcontractedTaskData, Long> implements
-        ISubcontractedTaskDataDAO {
+public class SubcontractedTaskDataDAO
+        extends GenericDAOHibernate<SubcontractedTaskData, Long>
+        implements ISubcontractedTaskDataDAO {
 
     @Override
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
@@ -88,14 +86,13 @@ public class SubcontractedTaskDataDAO extends
     public List<SubcontractedTaskData> getAllForMasterScenario() {
         Scenario masterScenario = PredefinedScenarios.MASTER.getScenario();
 
-        List<SubcontractedTaskData> result = new ArrayList<SubcontractedTaskData>();
+        List<SubcontractedTaskData> result = new ArrayList<>();
         for (Order order : masterScenario.getOrders().keySet()) {
             order.useSchedulingDataFor(masterScenario);
             for (OrderElement orderElement : order.getAllOrderElements()) {
                 for (TaskElement taskElement : orderElement.getTaskElements()) {
                     if (taskElement.isSubcontracted()) {
-                        result.add(((Task) taskElement)
-                                .getSubcontractedTaskData());
+                        result.add(((Task) taskElement).getSubcontractedTaskData());
                     }
                 }
             }
@@ -106,16 +103,19 @@ public class SubcontractedTaskDataDAO extends
 
     @Override
     @Transactional(readOnly = true)
-    public SubcontractedTaskData getSubcontratedTaskDataByOrderElement(
-            OrderElement orderElement) throws InstanceNotFoundException {
-        Criteria c = getSession().createCriteria(TaskElement.class)
-         .createCriteria("taskSource","ts")
-         .createCriteria("schedulingData","data")
-         .add(Restrictions.eq("data.orderElement",orderElement));
+    public SubcontractedTaskData getSubcontractedTaskDataByOrderElement(OrderElement orderElement)
+            throws InstanceNotFoundException {
 
-        TaskElement taskElement = (TaskElement) c.uniqueResult();
-        return (taskElement != null && taskElement.isSubcontracted()) ? ((Task) taskElement)
-                .getSubcontractedTaskData() : null;
+        TaskElement taskElement = (TaskElement) getSession()
+                .createCriteria(TaskElement.class)
+                .createCriteria("taskSource", "ts")
+                .createCriteria("schedulingData", "data")
+                .add(Restrictions.eq("data.orderElement", orderElement))
+                .uniqueResult();
+
+        return (taskElement != null && taskElement.isSubcontracted())
+                ? ((Task) taskElement).getSubcontractedTaskData()
+                : null;
     }
 
 }

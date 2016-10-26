@@ -36,19 +36,14 @@ import org.zkoss.zul.Window;
  */
 public class EditTemplateWindowController extends GenericForwardComposer {
 
-    private static final String ATTRIBUTE_NAME = EditTemplateWindowController.class
-            .getSimpleName();
+    private static final String ATTRIBUTE_NAME = EditTemplateWindowController.class.getSimpleName();
 
-    public static EditTemplateWindowController bindTo(
-            IOrderTemplatesModel model, Window editTemplateWindow) {
+    public static EditTemplateWindowController bindTo(IOrderTemplatesModel model, Window editTemplateWindow) {
         ensureWindowIsClosed(editTemplateWindow);
         if (editTemplateWindow.getAttribute(ATTRIBUTE_NAME) != null) {
-            return (EditTemplateWindowController) editTemplateWindow
-                    .getAttribute(ATTRIBUTE_NAME);
+            return (EditTemplateWindowController) editTemplateWindow.getAttribute(ATTRIBUTE_NAME);
         }
-        EditTemplateWindowController controller = new EditTemplateWindowController(
-                editTemplateWindow,
-                model);
+        EditTemplateWindowController controller = new EditTemplateWindowController(editTemplateWindow, model);
         editTemplateWindow.setAttribute(ATTRIBUTE_NAME, controller);
         doAfterCompose(editTemplateWindow, controller);
         return controller;
@@ -59,8 +54,7 @@ public class EditTemplateWindowController extends GenericForwardComposer {
         editTemplateWindow.setVisible(false);
     }
 
-    private static void doAfterCompose(Window editTemplateWindow,
-            EditTemplateWindowController controller) {
+    private static void doAfterCompose(Window editTemplateWindow, EditTemplateWindowController controller) {
         try {
             controller.doAfterCompose(editTemplateWindow);
         } catch (Exception e) {
@@ -69,20 +63,16 @@ public class EditTemplateWindowController extends GenericForwardComposer {
     }
 
     private final IOrderTemplatesModel model;
+
     private final Window editTemplateWindow;
 
-    public EditTemplateWindowController(Window editTemplateWindow,
-            IOrderTemplatesModel model) {
+    public EditTemplateWindowController(Window editTemplateWindow, IOrderTemplatesModel model) {
         this.editTemplateWindow = editTemplateWindow;
         this.model = model;
     }
 
     public void open(OrderElementTemplate template) {
-        try {
-            editTemplateWindow.setMode("modal");
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        editTemplateWindow.setMode("modal");
         bindAdvancesAssignment(template);
         bindOrderElementLabels(template);
         bindCriterionRequirements(template);
@@ -96,36 +86,34 @@ public class EditTemplateWindowController extends GenericForwardComposer {
     }
 
     private void bindAdvancesAssignment(OrderElementTemplate template) {
-        AdvancesAssignmentComponent component = find(
-                "advancesAssignment", AdvancesAssignmentComponent.class);
-        component.useModel(model, template);
+        AdvancesAssignmentComponent component = find("advancesAssignment", AdvancesAssignmentComponent.class);
+        component.useModel(template);
     }
 
     private void bindOrderElementLabels(OrderElementTemplate template) {
-        LabelsAssignmentToTemplateComponent component = find(
-                "listOrderElementLabels",
-                LabelsAssignmentToTemplateComponent.class);
+        LabelsAssignmentToTemplateComponent component =
+                find("listOrderElementLabels", LabelsAssignmentToTemplateComponent.class);
+
         component.getController().setTemplate(template);
         component.getController().openWindow(model);
     }
 
     private void bindCriterionRequirements(OrderElementTemplate template) {
-        CriterionRequirementTemplateComponent component = find(
-                "listOrderElementCriterionRequirements",
-                CriterionRequirementTemplateComponent.class);
+        CriterionRequirementTemplateComponent component =
+                find("listOrderElementCriterionRequirements", CriterionRequirementTemplateComponent.class);
+
         component.getController().openWindow(model, template);
     }
 
     private void bindOrderElementMaterials(OrderElementTemplate template) {
-        MaterialAssignmentTemplateComponent component = find(
-                "listOrderElementMaterials",
-                MaterialAssignmentTemplateComponent.class);
+        MaterialAssignmentTemplateComponent component =
+                find("listOrderElementMaterials", MaterialAssignmentTemplateComponent.class);
+
         component.getController().openWindow(template);
     }
 
     private void bindAssignedQualityForms(OrderElementTemplate template) {
-        QualityFormAssignerComponent c = find("assignedQualityForms",
-                QualityFormAssignerComponent.class);
+        QualityFormAssignerComponent c = find("assignedQualityForms", QualityFormAssignerComponent.class);
         c.useModel(model, template);
     }
 

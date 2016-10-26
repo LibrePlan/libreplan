@@ -36,11 +36,13 @@ import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Window;
 
 /**
  * Controller for {@link Advance} consolidation view.
+ *
  * @author Susana Montes Pedreira <smontes@wirelessgailicia.com>
  */
 @org.springframework.stereotype.Component("advanceConsolidationController")
@@ -54,6 +56,12 @@ public class AdvanceConsolidationController extends GenericForwardComposer {
     private Window window;
 
     private IContextWithPlannerTask<TaskElement> context;
+
+    public AdvanceConsolidationController() {
+        if ( advanceConsolidationModel == null ) {
+            advanceConsolidationModel = (IAdvanceConsolidationModel) SpringUtil.getBean("advanceConsolidationModel");
+        }
+    }
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -69,7 +77,7 @@ public class AdvanceConsolidationController extends GenericForwardComposer {
         try {
             Util.reloadBindings(window);
             window.doModal();
-        } catch (SuspendNotAllowedException | InterruptedException e) {
+        } catch (SuspendNotAllowedException e) {
             throw new RuntimeException(e);
         }
     }
@@ -81,10 +89,12 @@ public class AdvanceConsolidationController extends GenericForwardComposer {
 
     public void accept() {
         advanceConsolidationModel.accept();
-        if ( context.getRelativeTo() instanceof TaskComponent ) {
+
+        if (context.getRelativeTo() instanceof TaskComponent) {
             ((TaskComponent) context.getRelativeTo()).updateProperties();
             context.getRelativeTo().invalidate();
         }
+
         close();
     }
 
@@ -94,11 +104,10 @@ public class AdvanceConsolidationController extends GenericForwardComposer {
 
     public String getInfoAdvance() {
         String infoAdvanceAssignment = advanceConsolidationModel.getInfoAdvanceAssignment();
-        if ( infoAdvanceAssignment.isEmpty() ) {
-            return _("Progress measurements");
-        }
 
-        return _("Progress measurements") + ": " + infoAdvanceAssignment;
+        return infoAdvanceAssignment.isEmpty()
+                ? _("Progress measurements")
+                : _("Progress measurements") + ": " + infoAdvanceAssignment;
     }
 
     public List<AdvanceConsolidationDTO> getAdvances() {
@@ -124,11 +133,7 @@ public class AdvanceConsolidationController extends GenericForwardComposer {
     }
 
     public String getReadOnlySclass() {
-        if ( advanceConsolidationModel.hasLimitingResourceAllocation() ) {
-            return "readonly";
-        }
-
-        return "";
+        return advanceConsolidationModel.hasLimitingResourceAllocation() ? "readonly" : "";
     }
 
     public boolean isUnitType() {

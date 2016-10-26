@@ -29,25 +29,29 @@ import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.workreports.entities.WorkReportType;
 
 /**
- * Contract for {@link WorkRerportType}
+ * Contract for {@link WorkRerportType}.
+ *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 public interface IAdvanceTypeModel {
 
     /**
      * Gets the current {@link WorkReportType}.
+     *
      * @return A {@link AdvanceType}
      */
     AdvanceType getAdvanceType();
 
     /**
      * Gets the {@link List} of {@link AdvanceType}.
+     *
      * @return A {@link List} of {@link AdvanceType}
      */
     List<AdvanceType> getAdvanceTypes();
 
     /**
      * Stores the current {@link AdvanceType}.
+     *
      * @throws ValidationException
      *             If validation fails
      */
@@ -55,7 +59,8 @@ public interface IAdvanceTypeModel {
 
     /**
      * Deletes the {@link AdvanceType} passed as parameter.
-     * @param AdvanceType
+     *
+     * @param advanceType
      *            The object to be removed
      */
     void remove(AdvanceType advanceType);
@@ -67,6 +72,7 @@ public interface IAdvanceTypeModel {
 
     /**
      * Makes some operations needed before edit a {@link AdvanceType}.
+     *
      * @param AdvanceType
      *            The object to be edited
      * @throws IllegalArgumentException
@@ -77,45 +83,49 @@ public interface IAdvanceTypeModel {
 
     /**
      * Makes some operations needed before remove a {@link AdvanceType}.
-     * @param AdvanceType
+     *
+     * @param advanceType
      *            The object to be removed
      * @throws IllegalArgumentException
      *             if {@link IAdvanceTypeModel#canBeModified(AdvanceType)} is
      *             false
      */
-    void prepareForRemove(AdvanceType advanceType)
-            throws IllegalArgumentException;
+    void prepareForRemove(AdvanceType advanceType) throws IllegalArgumentException;
 
     /**
-     * Check if it's or not updatable a {@link AdvanceType}
+     * Check if it's or not updatable a {@link AdvanceType}.
+     *
      * @return the type according to the updatable value of the
      *         {@link AdvanceType}
      */
 
     /**
      * Check if the advance type names are distinct.
+     *
      * @return true if the names is not similar
      */
-    public boolean distinctNames(String name);
+    boolean distinctNames(String name);
 
     /**
-     * Check if the advance type is updatable and the it can be removed or
-     * modified.
+     * Check if the advance type is updatable and the it can be removed or modified.
+     *
      * @return false if the attribute updatable is false.
      */
-    public boolean canBeModified(AdvanceType advanceType);
+    boolean canBeModified(AdvanceType advanceType);
 
     /**
      * Check if the precision value is less than default max value.
+     *
      * @return true if precision is less than default max value.
      */
-    public boolean isPrecisionValid(BigDecimal precision);
+    boolean isPrecisionValid(BigDecimal precision);
 
     /**
      * Check if the default max value is greater than precision value.
+     *
      * @return true if default max value is greater than precision value
      */
-    public boolean isDefaultMaxValueValid(BigDecimal defaultMaxValue);
+    boolean isDefaultMaxValueValid(BigDecimal defaultMaxValue);
 
     void setDefaultMaxValue(BigDecimal defaultMaxValue);
 

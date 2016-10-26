@@ -56,7 +56,7 @@ import static org.libreplan.web.I18nHelper._;
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
-@OnConcurrentModification(goToPage = "/common/job_scheduling.zul")
+@OnConcurrentModification(goToPage = "/common/jobScheduling.zul")
 public class JobSchedulerModel implements IJobSchedulerModel {
 
     private JobSchedulerConfiguration jobSchedulerConfiguration;
@@ -123,25 +123,22 @@ public class JobSchedulerModel implements IJobSchedulerModel {
 
         if ( name.equals(JobClassNameEnum.IMPORT_ROSTER_FROM_TIM_JOB.getName()) ) {
             synchronizationInfos = importRosterFromTim.importRosters();
-
             return;
         }
 
         if ( name.equals(JobClassNameEnum.EXPORT_TIMESHEET_TO_TIM_JOB.getName()) ) {
             synchronizationInfos = exportTimesheetsToTim.exportTimesheets();
-
             return;
         }
 
         if ( name.equals(JobClassNameEnum.SYNC_ORDERELEMENTS_WITH_JIRA_ISSUES_JOB.getName()) ) {
             synchronizationInfos = jiraOrderElementSynchronizer.syncOrderElementsWithJiraIssues();
-
             return;
         }
 
         if ( name.equals(JobClassNameEnum.SEND_EMAIL_TASK_ASSIGNED_TO_RESOURCE.getName()) ) {
             synchronizationInfos = new ArrayList<>();
-            synchronizationInfos.add(new SynchronizationInfo(_("Task assigned to resource emails")));
+            synchronizationInfos.add(new SynchronizationInfo(_("Task assigned to resource emails job")));
             taskAssignedToResource.sendEmail();
 
             return;
@@ -149,7 +146,7 @@ public class JobSchedulerModel implements IJobSchedulerModel {
 
         if ( name.equals(JobClassNameEnum.SEND_EMAIL_RESOURCE_REMOVED_FROM_TASK.getName()) ) {
             synchronizationInfos = new ArrayList<>();
-            synchronizationInfos.add(new SynchronizationInfo(_("Resource removed from task")));
+            synchronizationInfos.add(new SynchronizationInfo(_("Resource removed from task job")));
             resourceRemovedFromTask.sendEmail();
 
             return;
@@ -157,7 +154,7 @@ public class JobSchedulerModel implements IJobSchedulerModel {
 
         if ( name.equals(JobClassNameEnum.SEND_EMAIL_MILESTONE_REACHED.getName()) ) {
             synchronizationInfos = new ArrayList<>();
-            synchronizationInfos.add(new SynchronizationInfo(_("Milestone reached")));
+            synchronizationInfos.add(new SynchronizationInfo(_("Milestone reached job")));
             milestoneReached.sendEmail();
 
             return;
@@ -165,7 +162,7 @@ public class JobSchedulerModel implements IJobSchedulerModel {
 
         if ( name.equals(JobClassNameEnum.SEND_EMAIL_TASK_SHOULD_START.getName()) ) {
             synchronizationInfos = new ArrayList<>();
-            synchronizationInfos.add(new SynchronizationInfo(_("Task should start")));
+            synchronizationInfos.add(new SynchronizationInfo(_("Task should start job")));
             taskShouldStart.sendEmail();
 
             return;
@@ -173,7 +170,7 @@ public class JobSchedulerModel implements IJobSchedulerModel {
 
         if ( name.equals(JobClassNameEnum.SEND_EMAIL_TASK_SHOULD_FINISH.getName()) ) {
             synchronizationInfos = new ArrayList<>();
-            synchronizationInfos.add(new SynchronizationInfo(_("Task should finish")));
+            synchronizationInfos.add(new SynchronizationInfo(_("Task should finish job")));
             taskShouldFinish.sendEmail();
 
             return;
@@ -181,7 +178,7 @@ public class JobSchedulerModel implements IJobSchedulerModel {
 
         if ( name.equals(JobClassNameEnum.SEND_EMAIL_TIMESHEET_DATA_MISSING.getName()) ) {
             synchronizationInfos = new ArrayList<>();
-            synchronizationInfos.add(new SynchronizationInfo(_("Timesheet data missing")));
+            synchronizationInfos.add(new SynchronizationInfo(_("Timesheet data missing job")));
             timesheetDataMissing.sendEmail();
 
             return;

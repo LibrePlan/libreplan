@@ -35,49 +35,6 @@ import org.zkoss.zul.TreeModel;
  */
 public abstract class EntitiesTree<T extends ITreeNode<T>> {
 
-    protected static <T extends ITreeNode<T>> MutableTreeModel<T> createTreeFrom(
-            Class<T> type, T tree) {
-        List<T> children = tree.getChildren();
-        return createTreeFrom(type, tree, children);
-    }
-
-    protected static <T extends ITreeNode<T>> MutableTreeModel<T> createTreeFrom(
-            Class<T> type, T tree, List<T> children) {
-        MutableTreeModel<T> treeModel = MutableTreeModel.create(type, tree);
-        T parent = treeModel.getRoot();
-        treeModel.add(parent, children, EntitiesTree
-                .<T> createChildrenExtractor());
-        return treeModel;
-    }
-
-    private static <T extends ITreeNode<T>> IChildrenExtractor<T> createChildrenExtractor() {
-        return new IChildrenExtractor<T>() {
-
-            @Override
-            public List<? extends T> getChildren(T parent) {
-                return parent.getChildren();
-            }
-        };
-    }
-
-    private static <T extends ITreeNode<T>> MutableTreeModel<T> createFilteredTreeFrom(
-            Class<T> type, T tree, List<T> elements) {
-        MutableTreeModel<T> treeModel = MutableTreeModel.create(type, tree);
-        T parent = treeModel.getRoot();
-        addFilteredChildren(treeModel, parent, elements);
-        return treeModel;
-    }
-
-    private static <T extends ITreeNode<T>> void addFilteredChildren(
-            MutableTreeModel<T> treeModel, T parent, List<T> children) {
-        for (T each : children) {
-            if ((each.getParent() != null) && (each.getParent().equals(parent))) {
-                treeModel.add(parent, each);
-                addFilteredChildren(treeModel, each, children);
-            }
-        }
-    }
-
     private MutableTreeModel<T> tree;
 
     protected EntitiesTree(Class<T> type, T root) {
@@ -86,6 +43,47 @@ public abstract class EntitiesTree<T extends ITreeNode<T>> {
 
     protected EntitiesTree(Class<T> type, T root, List<T> elements) {
         tree = createFilteredTreeFrom(type, root, elements);
+    }
+
+    protected static <T extends ITreeNode<T>> MutableTreeModel<T> createTreeFrom(Class<T> type, T tree) {
+        List<T> children = tree.getChildren();
+
+        return createTreeFrom(type, tree, children);
+    }
+
+    protected static <T extends ITreeNode<T>> MutableTreeModel<T> createTreeFrom(Class<T> type,
+                                                                                 T tree,
+                                                                                 List<T> children) {
+        MutableTreeModel<T> treeModel = MutableTreeModel.create(type, tree);
+        T parent = treeModel.getRoot();
+        treeModel.add(parent, children, EntitiesTree.createChildrenExtractor());
+
+        return treeModel;
+    }
+
+    private static <T extends ITreeNode<T>> IChildrenExtractor<T> createChildrenExtractor() {
+        return parent -> parent.getChildren();
+    }
+
+    private static <T extends ITreeNode<T>> MutableTreeModel<T> createFilteredTreeFrom(
+            Class<T> type, T tree, List<T> elements) {
+
+        MutableTreeModel<T> treeModel = MutableTreeModel.create(type, tree);
+        T parent = treeModel.getRoot();
+        addFilteredChildren(treeModel, parent, elements);
+
+        return treeModel;
+    }
+
+    private static <T extends ITreeNode<T>> void addFilteredChildren(
+            MutableTreeModel<T> treeModel, T parent, List<T> children) {
+
+        for (T each : children) {
+            if ((each.getParent() != null) && (each.getParent().equals(parent))) {
+                treeModel.add(parent, each);
+                addFilteredChildren(treeModel, each, children);
+            }
+        }
     }
 
     public TreeModel asTree() {
@@ -123,17 +121,18 @@ public abstract class EntitiesTree<T extends ITreeNode<T>> {
     private T addElementAtImpl(T parent, String name, int hours) {
         T newElement = createNewElement(name, hours);
         addOrderElementAt(parent, newElement);
+
         return newElement;
     }
 
     private void addToTree(ITreeNode<T> parentNode, ITreeNode<T> elementToAdd) {
-        tree.add(parentNode.getThis(), Collections.singletonList(elementToAdd
-                .getThis()),
-                childrenExtractor());
+        tree.add(parentNode.getThis(), Collections.singletonList(elementToAdd.getThis()), childrenExtractor());
     }
 
-    private void addToTree(ITreeNode<T> parentNode, int position,
-            ITreeNode<T> elementToAdd) {
+    private void addToTree(ITreeNode<T> parentNode,
+                           int position,
+                           ITreeNode<T> elementToAdd) {
+
         List<T> children = Collections.singletonList(elementToAdd.getThis());
         tree.add(parentNode.getThis(), position, children, childrenExtractor());
     }
@@ -145,32 +144,34 @@ public abstract class EntitiesTree<T extends ITreeNode<T>> {
     }
 
     private void addOrderElementAt(ITreeNode<T> destinationNode,
-            ITreeNode<T> elementToAdd, int position) {
+                                   ITreeNode<T> elementToAdd,
+                                   int position) {
+
         ITreeParentNode<T> container = turnIntoContainerIfNeeded(destinationNode);
         container.add(position, elementToAdd.getThis());
         addToTree(container, position, elementToAdd);
+
         if (!tree.isRoot(container.getThis())) {
-            // the destination node might have data that depends on its
-            // children, so it should be redrawn
+            // The destination node might have data that depends on its children, so it should be redrawn
             tree.sendContentsChangedEventFor(container.getThis());
         }
     }
 
-    private ITreeParentNode<T> turnIntoContainerIfNeeded(
-            ITreeNode<T> selectedForTurningIntoContainer) {
+    private ITreeParentNode<T> turnIntoContainerIfNeeded(ITreeNode<T> selectedForTurningIntoContainer) {
         if (selectedForTurningIntoContainer instanceof ITreeParentNode) {
             return (ITreeParentNode<T>) selectedForTurningIntoContainer;
         }
+
         ITreeParentNode<T> parentContainer = getParent(selectedForTurningIntoContainer);
-        ITreeParentNode<T> asContainer = selectedForTurningIntoContainer
-                .toContainer();
-        parentContainer.replace(selectedForTurningIntoContainer.getThis(),
-                asContainer.getThis());
+        ITreeParentNode<T> asContainer = selectedForTurningIntoContainer.toContainer();
+        parentContainer.replace(selectedForTurningIntoContainer.getThis(), asContainer.getThis());
+
         if (!selectedForTurningIntoContainer.isEmptyLeaf()) {
             asContainer.add(selectedForTurningIntoContainer.getThis());
         }
-        tree.replace(selectedForTurningIntoContainer.getThis(),
-                asContainer.getThis(), childrenExtractor());
+
+        tree.replace(selectedForTurningIntoContainer.getThis(), asContainer.getThis(), childrenExtractor());
+
         return asContainer;
     }
 
@@ -185,15 +186,17 @@ public abstract class EntitiesTree<T extends ITreeNode<T>> {
     public void indent(T nodeToIndent) {
         T parentOfSelected = tree.getParent(nodeToIndent);
         int position = getChildren(parentOfSelected).indexOf(nodeToIndent);
+
         if (position == 0) {
             return;
         }
+
         T destination = getChildren(parentOfSelected).get(position - 1);
         move(nodeToIndent, destination, getChildren(destination).size());
     }
 
     private List<T> getChildren(T node) {
-        List<T> result = new ArrayList<T>();
+        List<T> result = new ArrayList<>();
         final int childCount = tree.getChildCount(node);
         for (int i = 0; i < childCount; i++) {
             result.add(tree.getChild(node, i));
@@ -206,24 +209,26 @@ public abstract class EntitiesTree<T extends ITreeNode<T>> {
         if (tree.isRoot(parent)) {
             return;
         }
-        // if the last child of parent in unindented parent is replaced by its
-        // representation as leaf so no longer would be found. Keeping track of
-        // the position
+        // If the last child of parent in unindented parent is replaced by
+        // its representation as leaf so no longer would be found.
+        // Keeping track of the position
         int[] parentNodePath = tree.getPath(getRoot(), parent);
         T destination = tree.getParent(parent);
-        move(nodeToUnindent, destination, getChildren(destination).indexOf(
-                parent) + 1);
+        move(nodeToUnindent, destination, getChildren(destination).indexOf(parent) + 1);
 
         if (!tree.contains(parent)) {
             parent = tree.findObjectAt(parentNodePath);
         }
+
         if (!tree.isRoot(parent)) {
             tree.sendContentsChangedEventFor(parent);
         }
     }
 
     private class WithPosition {
+
         int position;
+
         T element;
 
         private WithPosition(int position, T element) {
@@ -235,12 +240,14 @@ public abstract class EntitiesTree<T extends ITreeNode<T>> {
     public void addNewlyAddedChildrenOf(ITreeParentNode<T> parent) {
         List<T> treeChildren = getTreeChildren(parent);
         List<T> currentChildren = parent.getChildren();
+
         if (!currentChildren.containsAll(treeChildren)) {
-            throw new IllegalStateException(
-                    "some children were removed. Can't add new tree children");
+            throw new IllegalStateException("some children were removed. Can't add new tree children");
         }
+
         int i = 0;
-        List<WithPosition> addings = new ArrayList<WithPosition>();
+        List<WithPosition> addings = new ArrayList<>();
+
         for (T each : currentChildren) {
             if (!treeChildren.contains(each)) {
                 addings.add(new WithPosition(i, each));
@@ -248,18 +255,18 @@ public abstract class EntitiesTree<T extends ITreeNode<T>> {
             i++;
         }
         for (WithPosition each : addings) {
-            tree.add(parent.getThis(), each.position, Collections
-                    .singletonList(each.element), childrenExtractor());
+            tree.add(parent.getThis(), each.position, Collections.singletonList(each.element), childrenExtractor());
         }
     }
 
     private IChildrenExtractor<T> childrenExtractor() {
-        return EntitiesTree.<T> createChildrenExtractor();
+        return EntitiesTree.createChildrenExtractor();
     }
 
     private List<T> getTreeChildren(ITreeParentNode<T> parent) {
-        List<T> result = new ArrayList<T>();
+        List<T> result = new ArrayList<>();
         int childCount = tree.getChildCount(parent);
+
         for (int i = 0; i < childCount; i++) {
             result.add(tree.getChild(parent, i));
         }
@@ -276,11 +283,13 @@ public abstract class EntitiesTree<T extends ITreeNode<T>> {
 
     private void move(T toBeMoved, T destination, int position) {
         if (getChildren(destination).contains(toBeMoved)) {
-            return;// it's already moved
+            return; // It's already moved
         }
+
         if (isGreatInHierarchy(toBeMoved, destination)) {
             return;
         }
+
         removeNode(toBeMoved);
         addOrderElementAt(destination, toBeMoved, position);
     }
@@ -293,6 +302,7 @@ public abstract class EntitiesTree<T extends ITreeNode<T>> {
         if (children.indexOf(child) >= 0) {
             return true;
         }
+
         for (T each : children) {
             if (find(child, getChildren(each))) {
                 return true;
@@ -317,9 +327,11 @@ public abstract class EntitiesTree<T extends ITreeNode<T>> {
         if (element == tree.getRoot()) {
             return;
         }
+
         ITreeParentNode<T> parent = getParent(element);
         parent.remove(element);
         tree.remove(element);
+
         // If removed node was the last one and its parent is not the root node
         if (!tree.isRoot(parent.getThis()) && tree.getChildCount(parent) == 0) {
             T asLeaf = parent.toLeaf();

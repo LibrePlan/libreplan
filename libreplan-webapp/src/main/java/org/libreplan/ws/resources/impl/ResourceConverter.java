@@ -491,7 +491,7 @@ public class ResourceConverter {
         return new ResourceCalendarDTO(baseCalendarDTO.code,
                 baseCalendarDTO.name, baseCalendarDTO.parent, calendar
                         .getCapacity(), baseCalendarDTO.calendarExceptions,
-                baseCalendarDTO.calendarDatas, calendarAvailabilityDTOs);
+                baseCalendarDTO.calendarData, calendarAvailabilityDTOs);
 
     }
 

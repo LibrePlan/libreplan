@@ -24,20 +24,27 @@ package org.libreplan.web.orders.labels;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.web.orders.IOrderElementModel;
 import org.libreplan.web.orders.IOrderModel;
+import org.zkoss.zkplus.spring.SpringUtil;
 
 /**
- * Controller for showing OrderElement assigned labels
+ * Controller for showing OrderElement assigned labels.
  *
  * @author Diego Pino García <dpino@igalia.com>
  *
  */
-public class AssignedLabelsToOrderElementController extends
-        AssignedLabelsController<OrderElement, IOrderElementModel> {
+public class AssignedLabelsToOrderElementController extends AssignedLabelsController<OrderElement, IOrderElementModel> {
 
     private IAssignedLabelsToOrderElementModel assignedLabelsToOrderElementModel;
 
 
     IOrderElementModel orderElementModel;
+
+    public AssignedLabelsToOrderElementController() {
+        if ( assignedLabelsToOrderElementModel == null ) {
+            assignedLabelsToOrderElementModel =
+                    (IAssignedLabelsToOrderElementModel) SpringUtil.getBean("assignedLabelsToOrderElementModel");
+        }
+    }
 
     @Override
     protected IAssignedLabelsToOrderElementModel getModel() {

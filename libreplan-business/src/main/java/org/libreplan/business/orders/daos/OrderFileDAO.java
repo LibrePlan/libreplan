@@ -29,7 +29,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 /**
- *
  * @author Created by Vova Perebykivskyi <vova@libreplan-enterprise.com> on 12.24.2015.
  */
 

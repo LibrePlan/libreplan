@@ -26,17 +26,18 @@
             <row>
                 <label value="${i18n:_('External company')}" />
                 <hbox>
-                     <combobox model="@{subController.subcontractorExternalCompanies}"
-                            value="@{subController.subcontractedTaskData.externalCompany.name}"
-                            onSelect="subController.setExternalCompany(self.selectedItem);"
-                            visible="@{subController.notSent}" >
+                    <combobox model="@{subController.subcontractorExternalCompanies}"
+                              value="@{subController.subcontractedTaskData.externalCompany.name}"
+                              onSelect="subController.setExternalCompany(self.selectedItem);"
+                              visible="@{subController.notSent}" >
+
                         <comboitem self="@{each='externalCompany'}"
-                            value="@{externalCompany}"
-                            label="@{externalCompany.name}"
-                            readonly="@{subController.sent}" />
+                                   value="@{externalCompany}"
+                                   label="@{externalCompany.name}"
+                                   readonly="@{subController.sent}" />
                     </combobox>
                     <label value="@{subController.subcontractedTaskData.externalCompany.name}"
-                        visible="@{subController.sent}"/>
+                           visible="@{subController.sent}"/>
                 </hbox>
             </row>
 
@@ -44,44 +45,49 @@
                 <label value="${i18n:_('Subcontracting date')}" />
                 <label value="@{subController.subcontractedTaskData.subcontratationDate,
                    converter='org.libreplan.web.common.typeconverters.DateConverter'}"
-                   visible="@{subController.sent}"/>
+                       visible="@{subController.sent}"/>
             </row>
             <row>
                 <label value="${i18n:_('Subcontracting communication date')}" />
-                <label value="@{subController.subcontractedTaskData.subcontractCommunicationDate,
-                   converter='org.libreplan.web.common.typeconverters.DateConverter'}"
-                   visible="@{subController.sent}"/>
+                <label value="@{
+                subController.subcontractedTaskData.subcontractCommunicationDate,
+                converter='org.libreplan.web.common.typeconverters.DateConverter'}"
+                       visible="@{subController.sent}"/>
             </row>
             <row>
-                <label value="${i18n:_('Work description')}" />
+                <!--TODO Create tooltips like help link, from Bogdan)-->
+                <hbox>
+                    <label value="${i18n:_('Work description')}" />
+                    <image height="15px" src="/common/img/axuda.gif" tooltip="subcontractor-description-popup" />
+                </hbox>
                 <textbox value="@{subController.subcontractedTaskData.workDescription}"
-                    readonly="@{subController.sent}" hflex="1"/>
+                         readonly="@{subController.sent}" hflex="1"/>
             </row>
             <row>
                 <label value="${i18n:_('Subcontract price')}" />
                 <decimalbox value="@{subController.subcontractedTaskData.subcontractPrice}"
-                    readonly="@{subController.sent}" format="@{subController.moneyFormat}"/>
+                            readonly="@{subController.sent}" format="@{subController.moneyFormat}"/>
             </row>
             <row>
                 <label value="${i18n:_('Subcontracting code')}" />
                 <textbox value="@{subController.subcontractedTaskData.subcontractedCode}"
-                    readonly="@{subController.sent}"/>
+                         readonly="@{subController.sent}"/>
             </row>
             <row>
                 <label value="${i18n:_('Exportation options')}" />
                 <vbox>
                     <checkbox label="${i18n:_('Node without children')}"
-                            checked="@{subController.subcontractedTaskData.nodeWithoutChildrenExported}"
-                            disabled="@{subController.sent}" />
+                              checked="@{subController.subcontractedTaskData.nodeWithoutChildrenExported}"
+                              disabled="@{subController.sent}" />
                     <checkbox label="${i18n:_('Labels')}"
-                            checked="@{subController.subcontractedTaskData.labelsExported}"
-                            disabled="@{subController.sent}" />
+                              checked="@{subController.subcontractedTaskData.labelsExported}"
+                              disabled="@{subController.sent}" />
                     <checkbox label="${i18n:_('Material assignments')}"
-                            checked="@{subController.subcontractedTaskData.materialAssignmentsExported}"
-                            disabled="@{subController.sent}" />
+                              checked="@{subController.subcontractedTaskData.materialAssignmentsExported}"
+                              disabled="@{subController.sent}" />
                     <checkbox label="${i18n:_('Hours groups')}"
-                            checked="@{subController.subcontractedTaskData.hoursGroupsExported}"
-                            disabled="@{subController.sent}" />
+                              checked="@{subController.subcontractedTaskData.hoursGroupsExported}"
+                              disabled="@{subController.sent}" />
                 </vbox>
             </row>
         </rows>
@@ -94,15 +100,15 @@
         <hbox align="bottom" sclass="add-resources-or-criteria">
             <label value="${i18n:_('New delivery date')}" />
             <datebox id="newDeliverDate" />
-            <button label="${i18n:_('Add')}" onClick="subController.addDeliverDate(newDeliverDate)"/>
+            <button label="${i18n:_('Add')}" onClick="subController.addDeliverDate(newDeliverDate)" sclass="add-button"/>
         </hbox>
 
         <separator spacing="20px"/>
 
         <grid id="gridDeliverDate"
-            model="@{subController.deliverDates}"
-            rowRenderer="@{subController.deliverDatesRenderer}"
-	        mold="paging" pageSize="10" fixedLayout="true" width="880px">
+              model="@{subController.deliverDates}"
+              rowRenderer="@{subController.deliverDatesRenderer}"
+              mold="paging" pageSize="10" fixedLayout="true" width="880px">
             <columns>
                 <column label="${i18n:_('Save date')}" sort="auto(saveDate)" align="center" width="220px"/>
                 <column label="${i18n:_('Deliver date')}" align="center" width="220px"/>
@@ -118,9 +124,9 @@
         <separator spacing="10px"/>
 
         <grid id="gridEndDates"
-            model="@{subController.askedEndDates}"
-            rowRenderer="@{subController.endDatesRenderer}"
-	        mold="paging" pageSize="10" fixedLayout="true" width="880px">
+              model="@{subController.askedEndDates}"
+              rowRenderer="@{subController.endDatesRenderer}"
+              mold="paging" pageSize="10" fixedLayout="true" width="880px">
             <columns>
                 <column label="${i18n:_('End date')}" sort="auto(saveDate)" align="center" width="320px"/>
                 <column label="${i18n:_('Communication date')}" align="center" width="320px"/>
@@ -128,5 +134,16 @@
             </columns>
         </grid>
     </groupbox>
+
+    <zscript>
+        <![CDATA[
+            i18iframe = org.libreplan.web.HelpLinkUtil.checkUrlPath(
+                "/help/" + org.libreplan.web.I18nHelper._("en") + "/21-communications.html#subcontractor-work-description");
+        ]]>
+    </zscript>
+
+    <popup id="subcontractor-description-popup" width="375px" onOpen='iframe.setSrc(i18iframe)'>
+        <iframe id="iframe" width="100%" />
+    </popup>
 
 </tabpanel>

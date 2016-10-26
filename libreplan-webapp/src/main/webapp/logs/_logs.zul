@@ -18,45 +18,45 @@
  -->
 
 <?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n"?>
-<?component name="listIssueLogs" inline="true" macroURI="issue_log.zul"?>
-<?component name="listRiskLogs" inline="true" macroURI="risk_log.zul"?>
+<?component name="listIssueLogs" inline="true" macroURI="issueLog.zul"?>
+<?component name="listRiskLogs" inline="true" macroURI="riskLog.zul"?>
 
 <zk>
-<zscript><![CDATA[
-    logsController = arg.get("logsController");
-]]>
-</zscript>
+    <zscript><![CDATA[
+        logsController = arg.get("logsController");
+    ]]>
+    </zscript>
 
-<div self="@{define(content)}" height="100%" style="overflow:visible">
-    <style src="/dashboard/css/dashboard.css" dynamic="true" />
+    <div self="@{define(content)}" height="100%" style="overflow:visible">
+        <style src="/dashboard/css/dashboard.css" dynamic="true" />
 
-    <div height="30px" sclass="toolbar-box">
-        <hbox id="logsFilter" visible="false" />
+        <div height="30px" sclass="toolbar-box">
+            <hbox id="logsFilter" visible="false" />
+        </div>
+
+        <window self="@{define(content)}" id="logWindow" apply="${logsController}" vflex="1">
+            <borderlayout sclass="orderslayout" height="100%">
+                <center border="0" sclass="orderslayout-area">
+                    <tabbox id="tabboxLog">
+                        <tabs>
+                            <tab id="tabIssueLogs" label="${i18n:_('Issue logs')}" selected="true"
+                                 onClick = "logsController.setupIssueLogController();"/>
+                            <tab id="tabRiskLogs" label="${i18n:_('Risk logs')}"
+                                 onClick = "logsController.setupRiskLogController();"/>
+                        </tabs>
+                        <tabpanels>
+                            <tabpanel sclass="orderelements-tab">
+                                <listIssueLogs id="issueLogs" fulfill="tabIssueLogs.onSelect"/>
+                            </tabpanel>
+                            <tabpanel sclass="orderelements-tab">
+                                <listRiskLogs id="riskLogs" fulfill="tabRiskLogs.onSelect"/>
+                            </tabpanel>
+                        </tabpanels>
+                    </tabbox>
+                </center>
+            </borderlayout>
+        </window>
+
     </div>
-
-    <window self="@{define(content)}" id="logWindow" apply="${logsController}" vflex="1">
-        <borderlayout sclass="orderslayout" height="100%">
-            <center border="0" sclass="orderslayout-area">
-                <tabbox id="tabboxLog">
-                    <tabs>
-                        <tab id="tabIssueLogs" label="${i18n:_('Issue logs')}" selected="true"
-                             onClick = "logsController.setupIssueLogController();"/>
-                        <tab id="tabRiskLogs" label="${i18n:_('Risk logs')}"
-                             onClick = "logsController.setupRiskLogController();"/>
-                    </tabs>
-                    <tabpanels>
-                        <tabpanel sclass="orderelements-tab" id="tabpanelLog">
-                            <listIssueLogs id="issueLogs" fulfill="tabIssueLogs.onSelect"/>
-                        </tabpanel>
-                        <tabpanel sclass="orderelements-tab" id="tabpanelLog2">
-                            <listRiskLogs id="riskLogs" fulfill="tabRiskLogs.onSelect"/>
-                        </tabpanel>
-                    </tabpanels>
-                </tabbox>
-            </center>
-        </borderlayout>
-    </window>
-
-</div>
 
 </zk>

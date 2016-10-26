@@ -4,8 +4,10 @@
     </log>
 
     <desktop-config>
-        <!-- Seconds it takes between requests for a desktop to be invalidated -->
-        <!-- A timer is introduced to avoid invalidation of pages still open -->
+        <!--
+        Seconds it takes between requests for a desktop to be invalidated.
+        A timer is introduced to avoid invalidation of pages still open.
+        -->
         <desktop-timeout>30</desktop-timeout>
     </desktop-config>
 
@@ -16,13 +18,13 @@
     </session-config>
     <error-page>
         <exception-type>java.lang.Throwable</exception-type>
-        <location>/common/event_error.zul</location>
+        <location>/common/eventError.zul</location>
     </error-page>
 
     <!--  Spring Security -->
     <listener>
-       <description>ThreadLocal Synchronization Listener</description>
-       <listener-class>org.zkoss.zkplus.util.ThreadLocalListener</listener-class>
+        <description>ThreadLocal Synchronization Listener</description>
+        <listener-class>org.zkoss.zkplus.util.ThreadLocalListener</listener-class>
     </listener>
 
     <preference>
@@ -45,7 +47,12 @@
 
     <library-property>
         <name>org.zkoss.zul.chart.engine.class</name>
-        <value>com.igalia.java.zk.components.JFreeChartEngine</value>
+        <value>com.libreplan.java.zk.components.JFreeChartEngine</value>
+    </library-property>
+
+    <library-property>
+        <name>org.zkoss.theme.preferred</name>
+        <value>sapphire</value>
     </library-property>
 
 </zk>

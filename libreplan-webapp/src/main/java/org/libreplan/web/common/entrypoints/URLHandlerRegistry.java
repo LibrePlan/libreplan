@@ -31,7 +31,9 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 /**
- * Registry of {@link EntryPointsHandler} <br />
+ * Registry of {@link EntryPointsHandler}.
+ * <br />
+ *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 @Component
@@ -44,16 +46,19 @@ public class URLHandlerRegistry implements IURLHandlerRegistry {
     @Autowired
     private IConverterFactory converterFactory;
 
-    private Map<Class<?>, EntryPointsHandler<?>> cached = new HashMap<Class<?>, EntryPointsHandler<?>>();;
+    private Map<Class<?>, EntryPointsHandler<?>> cached = new HashMap<>();
 
     @SuppressWarnings("unchecked")
     public <T> EntryPointsHandler<T> getRedirectorFor(Class<T> klassWithLinkableMetadata) {
         if (cached.containsKey(klassWithLinkableMetadata)) {
             return (EntryPointsHandler<T>) cached.get(klassWithLinkableMetadata);
         }
-        EntryPointsHandler<T> result = new EntryPointsHandler<T>(converterFactory,
-                executorRetriever, klassWithLinkableMetadata);
+
+        EntryPointsHandler<T> result =
+                new EntryPointsHandler<>(converterFactory, executorRetriever, klassWithLinkableMetadata);
+
         cached.put(klassWithLinkableMetadata, result);
+
         return result;
     }
 }

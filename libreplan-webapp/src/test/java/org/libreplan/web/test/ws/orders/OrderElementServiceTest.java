@@ -107,12 +107,8 @@ import org.springframework.transaction.annotation.Transactional;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
         BUSINESS_SPRING_CONFIG_FILE,
-
-        WEBAPP_SPRING_CONFIG_FILE,
-        WEBAPP_SPRING_CONFIG_TEST_FILE,
-
-        WEBAPP_SPRING_SECURITY_CONFIG_FILE,
-        WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE })
+        WEBAPP_SPRING_CONFIG_FILE, WEBAPP_SPRING_CONFIG_TEST_FILE,
+        WEBAPP_SPRING_SECURITY_CONFIG_FILE, WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE })
 public class OrderElementServiceTest {
 
     @Resource
@@ -146,12 +142,11 @@ public class OrderElementServiceTest {
     private ICriterionTypeDAO criterionTypeDAO;
 
     @Before
-    public void loadRequiredaData() {
+    public void loadRequiredData() {
         transactionService.runOnTransaction(new IOnTransaction<Void>() {
             @Override
             public Void execute() {
                 OrderElementTreeModelTest.cleanCriteria(workReportDAO, resourceDAO, criterionTypeDAO);
-
                 return null;
             }
         });
@@ -245,7 +240,7 @@ public class OrderElementServiceTest {
         List<ConstraintViolationDTO> constraintViolations =
                 instanceConstraintViolationsList.get(0).constraintViolations;
 
-        // Mandatory fields: infoComponent.code, infoComponent.name.
+        // Mandatory fields: infoComponent.code, infoComponent.name
         // Check constraints: checkConstraintOrderMustHaveStartDate
 
         assertThat(constraintViolations.size(), equalTo(2));
@@ -271,7 +266,7 @@ public class OrderElementServiceTest {
         List<ConstraintViolationDTO> constraintViolations =
                 instanceConstraintViolationsList.get(0).constraintViolations;
 
-        // Mandatory fields: name.
+        // Mandatory fields: name
         // Check constraints: checkConstraintOrderMustHaveStartDate
         assertThat(constraintViolations.size(), equalTo(2));
 
@@ -297,7 +292,7 @@ public class OrderElementServiceTest {
         List<ConstraintViolationDTO> constraintViolations =
                 instanceConstraintViolationsList.get(0).constraintViolations;
 
-        // Mandatory fields: code, infoComponentCode.
+        // Mandatory fields: code, infoComponentCode
         // Check constraints: checkConstraintOrderMustHaveStartDate
         assertThat(constraintViolations.size(), equalTo(1));
 
@@ -376,7 +371,7 @@ public class OrderElementServiceTest {
         List<ConstraintViolationDTO> constraintViolations =
                 instanceConstraintViolationsList.get(0).constraintViolations;
 
-        // Mandatory fields: infoComponent.code, infoComponent.name.
+        // Mandatory fields: infoComponent.code, infoComponent.name
         assertThat(constraintViolations.size(), equalTo(1));
 
         assertThat(orderDAO.getOrders().size(), equalTo(previous));
@@ -405,7 +400,7 @@ public class OrderElementServiceTest {
         List<ConstraintViolationDTO> constraintViolations =
                 instanceConstraintViolationsList.get(0).constraintViolations;
 
-        // Mandatory fields: code,infoComponent.code, infoComponent.name.
+        // Mandatory fields: code,infoComponent.code, infoComponent.name
         assertThat(constraintViolations.size(), equalTo(1));
 
         assertThat(orderDAO.getOrders().size(), equalTo(previous));
@@ -466,7 +461,7 @@ public class OrderElementServiceTest {
         HoursGroupDTO hoursGroupDTO = new HoursGroupDTO(
                 "hours-group",
                 ResourceEnumDTO.WORKER, 1000,
-                new HashSet<CriterionRequirementDTO>());
+                new HashSet<>());
 
         orderLineDTO.hoursGroups.add(hoursGroupDTO);
         orderDTO.children.add(orderLineDTO);
@@ -505,7 +500,7 @@ public class OrderElementServiceTest {
         List<ConstraintViolationDTO> constraintViolations =
                 instanceConstraintViolationsList.get(0).constraintViolations;
 
-        // Mandatory fields: infoComponent.code, infoComponenet.name.
+        // Mandatory fields: infoComponent.code, infoComponenet.name
         // Check constraints: checkConstraintAtLeastOneHoursGroupForEachOrderElement
         assertThat(constraintViolations.size(), equalTo(2));
 
@@ -535,7 +530,7 @@ public class OrderElementServiceTest {
         List<ConstraintViolationDTO> constraintViolations =
                 instanceConstraintViolationsList.get(0).constraintViolations;
 
-        // Mandatory fields: code,infoComponent.code, infoComponenet.name.
+        // Mandatory fields: code,infoComponent.code, infoComponent.name
         // Check constraints: checkConstraintAtLeastOneHoursGroupForEachOrderElement
         assertThat(constraintViolations.size(), equalTo(1));
 
@@ -608,7 +603,7 @@ public class OrderElementServiceTest {
                 "hours-group-" + UUID.randomUUID().toString(),
                 ResourceEnumDTO.WORKER,
                 1000,
-                new HashSet<CriterionRequirementDTO>());
+                new HashSet<>());
 
         orderLineDTO.hoursGroups.add(hoursGroupDTO);
         orderLineGroupDTO.children.add(orderLineDTO);
@@ -644,10 +639,10 @@ public class OrderElementServiceTest {
 
                 try {
                     /*
-                     * Flush is needed because
+                     * Session.clear() is needed because,
                      * before there were errors that after removing object some references were still present.
                      */
-                    sessionFactory.getCurrentSession().flush();
+                    sessionFactory.getCurrentSession().clear();
 
                     orderElementDAO.findByCode(codeToRemove);
                 } catch (InstanceNotFoundException e) {
@@ -919,7 +914,7 @@ public class OrderElementServiceTest {
             }
         });
 
-        // update the same label
+        // Update the same label
         assertThat(orderElement2.getLabels().size(), equalTo(1));
     }
 
@@ -1038,16 +1033,16 @@ public class OrderElementServiceTest {
     @Test
     public void updateHoursGroup() throws InstanceNotFoundException, IncompatibleTypeException {
         final String code = "order-code" + UUID.randomUUID().toString();
+
         transactionService.runOnTransaction(new IOnTransaction<Void>() {
             @Override
             public Void execute() {
                 try {
                     orderElementDAO.findUniqueByCode(code);
                     fail("Order with code " + code + " already exists");
-                } catch (InstanceNotFoundException e) {
+                } catch (InstanceNotFoundException ignored) {
                     // It should throw an exception
                 }
-
                 return null;
             }
         });
@@ -1065,7 +1060,7 @@ public class OrderElementServiceTest {
         HoursGroupDTO hoursGroupDTO = new HoursGroupDTO(
                 "hours-groupYY",
                 ResourceEnumDTO.WORKER, 1000,
-                new HashSet<CriterionRequirementDTO>());
+                new HashSet<>());
 
         orderLineDTO.hoursGroups.add(hoursGroupDTO);
         orderDTO.children.add(orderLineDTO);
@@ -1123,7 +1118,7 @@ public class OrderElementServiceTest {
         HoursGroupDTO hoursGroupDTO2 = new HoursGroupDTO(
                 "hours-groupXX",
                 ResourceEnumDTO.WORKER, 2000,
-                new HashSet<CriterionRequirementDTO>());
+                new HashSet<>());
 
         orderLineDTO.hoursGroups.add(hoursGroupDTO2);
 
@@ -1178,7 +1173,7 @@ public class OrderElementServiceTest {
         try {
             orderElementDAO.findUniqueByCode(code);
             fail("Order with code " + code + " already exists");
-        } catch (InstanceNotFoundException e) {
+        } catch (InstanceNotFoundException ignored) {
             // It should throw an exception
         }
 
@@ -1210,7 +1205,7 @@ public class OrderElementServiceTest {
         try {
             orderElementDAO.findUniqueByCode(code);
             fail("Order shouldn't be stored");
-        } catch (InstanceNotFoundException e) {
+        } catch (InstanceNotFoundException ignored) {
             // It should throw an exception
         }
     }
@@ -1226,7 +1221,7 @@ public class OrderElementServiceTest {
                 try {
                     orderElementDAO.findUniqueByCode(code);
                     fail("Order with code " + code + " already exists");
-                } catch (InstanceNotFoundException e) {
+                } catch (InstanceNotFoundException ignored) {
                     // It should throw an exception
                 }
 
@@ -1390,7 +1385,7 @@ public class OrderElementServiceTest {
         try {
             orderElementDAO.findUniqueByCode(code);
             fail("Order with code " + code + " already exists");
-        } catch (InstanceNotFoundException e) {
+        } catch (InstanceNotFoundException ignored) {
             // It should throw an exception
         }
 
@@ -1407,13 +1402,13 @@ public class OrderElementServiceTest {
         List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
                 orderElementService.addOrders(orderListDTO).instanceConstraintViolationsList;
 
-        // the criterion format is incorrect because its name and type is empty.
+        // The criterion format is incorrect because its name and type is empty
         assertThat(instanceConstraintViolationsList.size(), equalTo(1));
 
         try {
             orderElementDAO.findUniqueByCode(code);
             fail("Order shouldn't be stored");
-        } catch (InstanceNotFoundException e) {
+        } catch (InstanceNotFoundException ignored) {
             // It should throw an exception
         }
     }
@@ -1483,7 +1478,7 @@ public class OrderElementServiceTest {
                 try {
                     orderElementDAO.findUniqueByCode(code);
                     fail("Order with code " + code + " already exists");
-                } catch (InstanceNotFoundException e) {
+                } catch (InstanceNotFoundException ignored) {
                     // It should throw an exception
                 }
 
@@ -1510,7 +1505,7 @@ public class OrderElementServiceTest {
                 "hours-group" + UUID.randomUUID().toString(),
                 ResourceEnumDTO.WORKER,
                 1000,
-                new HashSet<CriterionRequirementDTO>());
+                new HashSet<>());
 
         orderLineDTO.hoursGroups.add(hoursGroupDTO);
 
@@ -1575,7 +1570,7 @@ public class OrderElementServiceTest {
                 try {
                     orderElementDAO.findUniqueByCode(code);
                     fail("Order with code " + code + " already exists");
-                } catch (InstanceNotFoundException e) {
+                } catch (InstanceNotFoundException ignored) {
                     // It should throw an exception
                 }
 
@@ -1677,10 +1672,9 @@ public class OrderElementServiceTest {
                 try {
                     orderElementDAO.findUniqueByCode(code);
                     fail("Order with code " + code + " already exists");
-                } catch (InstanceNotFoundException e) {
+                } catch (InstanceNotFoundException ignored) {
                     // It should throw an exception
                 }
-
                 return null;
             }
         });
@@ -1704,7 +1698,7 @@ public class OrderElementServiceTest {
                 "hours-group-RR",
                 ResourceEnumDTO.WORKER,
                 1000,
-                new HashSet<CriterionRequirementDTO>());
+                new HashSet<>());
 
         orderLineDTO.hoursGroups.add(hoursGroupDTO);
         orderDTO.children.add(orderLineDTO);
@@ -1833,10 +1827,9 @@ public class OrderElementServiceTest {
                 try {
                     orderElementDAO.findUniqueByCode(code);
                     fail("Order with code " + code + " already exists");
-                } catch (InstanceNotFoundException e) {
+                } catch (InstanceNotFoundException ignored) {
                     // It should throw an exception
                 }
-
                 return null;
             }
         });
@@ -1860,7 +1853,7 @@ public class OrderElementServiceTest {
                 "hours-group-WW",
                 ResourceEnumDTO.WORKER,
                 1000,
-                new HashSet<CriterionRequirementDTO>());
+                new HashSet<>());
 
         orderLineDTO.hoursGroups.add(hoursGroupDTO);
 

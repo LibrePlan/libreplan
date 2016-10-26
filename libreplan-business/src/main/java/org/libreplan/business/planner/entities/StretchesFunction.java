@@ -40,11 +40,10 @@ import org.joda.time.Days;
 import org.joda.time.LocalDate;
 
 /**
- * @author Diego Pino García <dpino@igalia.com>
- * @author Manuel Rego Casasnovas <mrego@igalia.com>
- *
  * Assignment function by stretches.
  *
+ * @author Diego Pino García <dpino@igalia.com>
+ * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 public class StretchesFunction extends AssignmentFunction {
 
@@ -79,12 +78,12 @@ public class StretchesFunction extends AssignmentFunction {
             this.end = end;
         }
 
-        public static double[] getHoursPointsFor(int totalHours, List<Interval> intervalsDefinedByStreches) {
-            double[] result = new double[intervalsDefinedByStreches.size()];
+        public static double[] getHoursPointsFor(int totalHours, List<Interval> intervalsDefinedByStretches) {
+            double[] result = new double[intervalsDefinedByStretches.size()];
             int i = 0;
             int accumulated = 0;
 
-            for (Interval each : intervalsDefinedByStreches) {
+            for (Interval each : intervalsDefinedByStretches) {
                 accumulated += each.getHoursFor(totalHours);
                 result[i++] = accumulated;
             }
@@ -92,11 +91,11 @@ public class StretchesFunction extends AssignmentFunction {
             return result;
         }
 
-        public static double[] getDayPointsFor(LocalDate start, List<Interval> intervalsDefinedByStreches) {
-            double[] result = new double[intervalsDefinedByStreches.size()];
+        public static double[] getDayPointsFor(LocalDate start, List<Interval> intervalsDefinedByStretches) {
+            double[] result = new double[intervalsDefinedByStretches.size()];
             int i = 0;
 
-            for (Interval each : intervalsDefinedByStreches) {
+            for (Interval each : intervalsDefinedByStretches) {
                 result[i++] = Days.daysBetween(start, each.getEnd()).getDays();
             }
 
@@ -137,31 +136,31 @@ public class StretchesFunction extends AssignmentFunction {
         }
 
         public static void apply(ResourceAllocation<?> allocation,
-                                 List<Interval> intervalsDefinedByStreches,
+                                 List<Interval> intervalsDefinedByStretches,
                                  LocalDate allocationStart,
                                  int totalHours) {
 
-            if ( intervalsDefinedByStreches.isEmpty() ) {
+            if ( intervalsDefinedByStretches.isEmpty() ) {
                 return;
             }
 
             Validate.isTrue(totalHours == allocation.getNonConsolidatedHours());
 
-            int[] hoursPerInterval = getHoursPerInterval(intervalsDefinedByStreches, totalHours);
+            int[] hoursPerInterval = getHoursPerInterval(intervalsDefinedByStretches, totalHours);
             int remainder = totalHours - sum(hoursPerInterval);
             hoursPerInterval[0] += remainder;
             int i = 0;
 
-            for (Interval interval : intervalsDefinedByStreches) {
+            for (Interval interval : intervalsDefinedByStretches) {
                 interval.apply(allocation, allocationStart, hoursPerInterval[i++]);
             }
         }
 
-        private static int[] getHoursPerInterval(List<Interval> intervalsDefinedByStreches, int totalHours) {
-            int[] hoursPerInterval = new int[intervalsDefinedByStreches.size()];
+        private static int[] getHoursPerInterval(List<Interval> intervalsDefinedByStretches, int totalHours) {
+            int[] hoursPerInterval = new int[intervalsDefinedByStretches.size()];
             int i = 0;
 
-            for (Interval each : intervalsDefinedByStreches) {
+            for (Interval each : intervalsDefinedByStretches) {
                 hoursPerInterval[i++] = each.getHoursFor(totalHours);
             }
 
@@ -216,7 +215,7 @@ public class StretchesFunction extends AssignmentFunction {
     }
 
     public static List<Interval> intervalsFor(ResourceAllocation<?> allocation,
-                                              Collection<? extends Stretch> streches) {
+                                              Collection<? extends Stretch> stretches) {
 
         ArrayList<Interval> result = new ArrayList<>();
         LocalDate previous = null;
@@ -225,7 +224,7 @@ public class StretchesFunction extends AssignmentFunction {
         BigDecimal sumOfProportions = BigDecimal.ZERO;
         BigDecimal loadedProportion;
 
-        for (Stretch each : streches) {
+        for (Stretch each : stretches) {
             stretchDate = each.getDateIn(allocation);
             loadedProportion = each.getAmountWorkPercentage().subtract(sumOfProportions);
 
@@ -247,7 +246,7 @@ public class StretchesFunction extends AssignmentFunction {
 
     public StretchesFunction copy() {
         StretchesFunction result = StretchesFunction.create();
-        result.resetToStrechesFrom(this);
+        result.resetToStretchesFrom(this);
         result.type = type;
         result.desiredType = desiredType;
         result.consolidatedStretch = consolidatedStretch;
@@ -256,7 +255,7 @@ public class StretchesFunction extends AssignmentFunction {
         return result;
     }
 
-    public void resetToStrechesFrom(StretchesFunction from) {
+    public void resetToStretchesFrom(StretchesFunction from) {
         this.removeAllStretches();
         for (Stretch each : from.getStretchesDefinedByUser()) {
             this.addStretch(Stretch.copy(each));
@@ -402,7 +401,7 @@ public class StretchesFunction extends AssignmentFunction {
                 : AssignmentFunctionName.STRETCHES.toString();
     }
 
-    public List<Interval> getIntervalsDefinedByStreches() {
+    public List<Interval> getIntervalsDefinedByStretches() {
         List<Stretch> stretches = stretchesFor();
         if ( stretches.isEmpty() ) {
             return Collections.emptyList();

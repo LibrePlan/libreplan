@@ -25,14 +25,11 @@ import static org.libreplan.web.I18nHelper._;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.libreplan.business.orders.entities.HoursGroup;
 import org.libreplan.business.orders.entities.OrderLine;
-import org.libreplan.business.requirements.entities.CriterionRequirement;
 import org.libreplan.business.requirements.entities.DirectCriterionRequirement;
 import org.libreplan.business.requirements.entities.IndirectCriterionRequirement;
-import org.libreplan.business.resources.entities.CriterionType;
 import org.libreplan.business.resources.entities.CriterionWithItsType;
 import org.libreplan.web.orders.CriterionRequirementWrapper;
 import org.libreplan.web.orders.HoursGroupWrapper;
@@ -47,20 +44,14 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
-public abstract class AssignedCriterionRequirementModel<T, M> implements
-        IAssignedCriterionRequirementModel<T, M> {
+public abstract class AssignedCriterionRequirementModel<T, M> implements IAssignedCriterionRequirementModel<T, M> {
 
-    protected List<CriterionWithItsType> criterionWithItsTypes =
-            new ArrayList<CriterionWithItsType>();
+    protected List<CriterionWithItsType> criterionWithItsTypes = new ArrayList<>();
 
-    protected List<CriterionRequirementWrapper> criterionRequirementWrappers =
-            new ArrayList<CriterionRequirementWrapper>();
+    protected List<CriterionRequirementWrapper> criterionRequirementWrappers = new ArrayList<>();
 
-    protected List<HoursGroupWrapper> hoursGroupsWrappers = new ArrayList<HoursGroupWrapper>();
+    protected List<HoursGroupWrapper> hoursGroupsWrappers = new ArrayList<>();
 
-
-    @Override
-    public abstract Set<CriterionType> getTypes();
 
     @Override
     public List<CriterionWithItsType> getCriterionWithItsTypes(){
@@ -72,28 +63,21 @@ public abstract class AssignedCriterionRequirementModel<T, M> implements
     @Override
     @Transactional(readOnly = true)
     public void assignCriterionRequirementWrapper() {
-        if((getModel() != null) && (getElement() != null)){
+        if ((getModel() != null) && (getElement() != null)) {
             CriterionRequirementWrapper newRequirementWrapper = createCriterionRequirementWreapper(null);
             criterionRequirementWrappers.add(newRequirementWrapper);
         }
     }
 
-    private CriterionRequirementWrapper createCriterionRequirementWreapper(
-            HoursGroupWrapper hoursGroupWrapper) {
-        CriterionRequirement newRequirement = DirectCriterionRequirement
-                .create();
-        CriterionRequirementWrapper newRequirementWrapper = new CriterionRequirementWrapper(
-                newRequirement, hoursGroupWrapper, true);
-        return newRequirementWrapper;
+    private CriterionRequirementWrapper createCriterionRequirementWreapper(HoursGroupWrapper hoursGroupWrapper) {
+        return new CriterionRequirementWrapper(DirectCriterionRequirement.create(), hoursGroupWrapper, true);
     }
 
     public void changeCriterionAndType(
-            CriterionRequirementWrapper requirementWrapper,
-            CriterionWithItsType newCriterionAndType) {
-        CriterionWithItsType oldCriterionAndType = requirementWrapper
-                .getCriterionWithItsType();
-        if ((oldCriterionAndType == null)
-                || (!oldCriterionAndType.equals(newCriterionAndType))) {
+            CriterionRequirementWrapper requirementWrapper, CriterionWithItsType newCriterionAndType) {
+
+        CriterionWithItsType oldCriterionAndType = requirementWrapper.getCriterionWithItsType();
+        if ((oldCriterionAndType == null) || (!oldCriterionAndType.equals(newCriterionAndType))) {
             removeOldCriterionAndType(requirementWrapper);
             requirementWrapper.setCriterionWithItsType(newCriterionAndType);
             addNewCriterionAndType(requirementWrapper);
@@ -101,34 +85,32 @@ public abstract class AssignedCriterionRequirementModel<T, M> implements
         }
     }
 
-    private void removeOldCriterionAndType(
-            CriterionRequirementWrapper requirementWrapper) {
+    private void removeOldCriterionAndType(CriterionRequirementWrapper requirementWrapper) {
         if (requirementWrapper.getCriterionWithItsType() != null) {
             removeCriterionRequirement(requirementWrapper);
         }
     }
 
-    private void addNewCriterionAndType(
-            CriterionRequirementWrapper requirementWrapper) {
-        DirectCriterionRequirement requirement = (DirectCriterionRequirement) requirementWrapper
-                .getCriterionRequirement();
+    private void addNewCriterionAndType(CriterionRequirementWrapper requirementWrapper) {
+        DirectCriterionRequirement requirement =
+                (DirectCriterionRequirement) requirementWrapper.getCriterionRequirement();
+
         addDirectCriterionRequirement(requirement);
     }
 
     protected abstract void addDirectCriterionRequirement(DirectCriterionRequirement requirement);
 
     @Override
-    public void deleteCriterionRequirementWrapper(
-            CriterionRequirementWrapper requirementWrapper) {
+    public void deleteCriterionRequirementWrapper(CriterionRequirementWrapper requirementWrapper) {
         removeCriterionRequirement(requirementWrapper);
         criterionRequirementWrappers.remove(requirementWrapper);
         updateExceptionInHoursGroups();
     }
 
-    private void removeCriterionRequirement(
-            CriterionRequirementWrapper requirementWrapper) {
-        DirectCriterionRequirement requirement = (DirectCriterionRequirement) requirementWrapper
-                .getCriterionRequirement();
+    private void removeCriterionRequirement(CriterionRequirementWrapper requirementWrapper) {
+        DirectCriterionRequirement requirement =
+                (DirectCriterionRequirement) requirementWrapper.getCriterionRequirement();
+
         removeDirectCriterionRequirement(requirement);
     }
 
@@ -136,18 +118,16 @@ public abstract class AssignedCriterionRequirementModel<T, M> implements
 
     @Override
     public List<CriterionRequirementWrapper> getCriterionRequirementWrappers() {
-        if ((getModel() != null) && (getElement() != null)) {
-            return criterionRequirementWrappers;
-        }
-        return new ArrayList<CriterionRequirementWrapper>();
+        return (getModel() != null) && (getElement() != null) ? criterionRequirementWrappers : new ArrayList<>();
     }
 
     @Override
-    public void setValidCriterionRequirementWrapper(
-            CriterionRequirementWrapper requirementWrapper, boolean valid) {
+    public void setValidCriterionRequirementWrapper(CriterionRequirementWrapper requirementWrapper, boolean valid) {
         requirementWrapper.setValid(valid);
-        IndirectCriterionRequirement requirement = (IndirectCriterionRequirement) requirementWrapper
-                .getCriterionRequirement();
+
+        IndirectCriterionRequirement requirement =
+                (IndirectCriterionRequirement) requirementWrapper.getCriterionRequirement();
+
         setValidCriterionRequirement(requirement, valid);
         if (requirementWrapper.getCriterionWithItsType() != null) {
             updateExceptionInHoursGroups();
@@ -156,8 +136,7 @@ public abstract class AssignedCriterionRequirementModel<T, M> implements
 
     protected abstract void setValidCriterionRequirement(IndirectCriterionRequirement requirement, boolean valid);
 
-    public CriterionRequirementWrapper validateWrappers(
-            List<CriterionRequirementWrapper> list) {
+    public CriterionRequirementWrapper validateWrappers(List<CriterionRequirementWrapper> list) {
         for (CriterionRequirementWrapper requirementWrapper : list) {
             if (requirementWrapper.getCriterionWithItsType() == null) {
                 return requirementWrapper;
@@ -168,8 +147,10 @@ public abstract class AssignedCriterionRequirementModel<T, M> implements
 
     public CriterionRequirementWrapper validateHoursGroupWrappers() {
         for (HoursGroupWrapper hoursGroupWrapper : hoursGroupsWrappers) {
-            CriterionRequirementWrapper requirementWrapper = validateWrappers(hoursGroupWrapper
-                    .getCriterionRequirementWrappersView());
+
+            CriterionRequirementWrapper requirementWrapper =
+                    validateWrappers(hoursGroupWrapper.getCriterionRequirementWrappersView());
+
             if (requirementWrapper != null) {
                 return requirementWrapper;
             }
@@ -177,10 +158,10 @@ public abstract class AssignedCriterionRequirementModel<T, M> implements
         return null;
     }
 
-    /*
-     * Operations to manage the hours groups (add new hours group, delete a
-     * hours group , edit a hours group ), and assign criterions requirements to
-     * the hoursGroup
+    /**
+     * Operations to manage the hours groups
+     * (add new hours group, delete a hours group , edit a hours group ),
+     * and assign criterions requirements to the hoursGroup.
      */
 
     private OrderLine asOrderLine() {
@@ -211,10 +192,7 @@ public abstract class AssignedCriterionRequirementModel<T, M> implements
     }
 
     public List<HoursGroupWrapper> getHoursGroupsWrappers() {
-        if ((getModel() != null) && (getElement() != null)) {
-            return hoursGroupsWrappers;
-        }
-        return new ArrayList<HoursGroupWrapper>();
+        return (getModel() != null) && (getElement() != null) ? hoursGroupsWrappers : new ArrayList<>();
     }
 
     public void deleteHoursGroupWrapper(HoursGroupWrapper hoursGroupWrapper) {
@@ -225,13 +203,12 @@ public abstract class AssignedCriterionRequirementModel<T, M> implements
         }
     }
 
-    /*
-     * Operation to manage the criterion Requirements for the hoursGroups. The
-     * operations is add new direct criterion requirement, delete criterion
-     * requirement, add new Exception and delete Exception
+    /**
+     * Operation to manage the criterion Requirements for the hoursGroups.
+     * The operations is add new direct criterion requirement, delete criterion
+     * requirement, add new Exception and delete Exception.
      */
-    public void addCriterionToHoursGroupWrapper(
-            HoursGroupWrapper hoursGroupWrapper) {
+    public void addCriterionToHoursGroupWrapper(HoursGroupWrapper hoursGroupWrapper) {
         if ((getModel() != null) && (getElement() != null)) {
             CriterionRequirementWrapper requirement = createCriterionRequirementWreapper(hoursGroupWrapper);
             hoursGroupWrapper.assignCriterionRequirementWrapper(requirement);
@@ -241,13 +218,12 @@ public abstract class AssignedCriterionRequirementModel<T, M> implements
     public void selectCriterionToHoursGroup(
             HoursGroupWrapper hoursGroupWrapper,
             CriterionRequirementWrapper requirementWrapper,
-            CriterionWithItsType criterionAndType){
+            CriterionWithItsType criterionAndType) {
+
         if (requirementWrapper.isDirect()) {
-            selectCriterionToDirectRequirementWrapper(hoursGroupWrapper,
-                    requirementWrapper, criterionAndType);
+            selectCriterionToDirectRequirementWrapper(hoursGroupWrapper, requirementWrapper, criterionAndType);
         } else {
-            selectCriterionToExceptionRequirementWrapper(
-                    hoursGroupWrapper, requirementWrapper, criterionAndType);
+            selectCriterionToExceptionRequirementWrapper(hoursGroupWrapper, requirementWrapper, criterionAndType);
         }
     }
 
@@ -256,25 +232,26 @@ public abstract class AssignedCriterionRequirementModel<T, M> implements
             CriterionRequirementWrapper direct,
             CriterionWithItsType newCriterionAndType) {
 
-        CriterionWithItsType oldCriterionAndType = direct
-                .getCriterionWithItsType();
-        if ((oldCriterionAndType == null)
-                || (!oldCriterionAndType.equals(newCriterionAndType))) {
+        CriterionWithItsType oldCriterionAndType = direct.getCriterionWithItsType();
+        if ( (oldCriterionAndType == null) || (!oldCriterionAndType.equals(newCriterionAndType)) ) {
             hoursGroupWrapper.removeDirectCriterionRequirement(direct);
             direct.setCriterionWithItsType(newCriterionAndType);
             hoursGroupWrapper.addDirectCriterionToHoursGroup(direct);
         }
     }
 
-    public CriterionRequirementWrapper addExceptionToHoursGroupWrapper(
-            HoursGroupWrapper hoursGroupWrapper) {
+    public CriterionRequirementWrapper addExceptionToHoursGroupWrapper(HoursGroupWrapper hoursGroupWrapper) {
         if ((getModel() != null) && (getElement() != null)) {
-            CriterionRequirementWrapper exceptionWrapper = new CriterionRequirementWrapper(
-                    CriterionRequirementWrapper.getIndirectTypeLabel());
+
+            CriterionRequirementWrapper exceptionWrapper =
+                    new CriterionRequirementWrapper(CriterionRequirementWrapper.getIndirectTypeLabel());
+
             exceptionWrapper.setNewException(true);
             hoursGroupWrapper.addExceptionRequirementWrappers(exceptionWrapper);
+
             return exceptionWrapper;
         }
+
         return null;
     }
 
@@ -282,13 +259,13 @@ public abstract class AssignedCriterionRequirementModel<T, M> implements
             HoursGroupWrapper hoursGroupWrapper,
             CriterionRequirementWrapper exception,
             CriterionWithItsType criterionAndType) {
-        hoursGroupWrapper.selectCriterionToExceptionRequirementWrapper(
-                exception, criterionAndType);
+
+        hoursGroupWrapper.selectCriterionToExceptionRequirementWrapper(exception, criterionAndType);
     }
 
     public void deleteCriterionToHoursGroup(
-            HoursGroupWrapper hoursGroupWrapper,
-            CriterionRequirementWrapper requirementWrapper) {
+            HoursGroupWrapper hoursGroupWrapper, CriterionRequirementWrapper requirementWrapper) {
+
         if (requirementWrapper.isDirect()) {
             deleteDirectToHoursGroup(hoursGroupWrapper, requirementWrapper);
         } else {
@@ -296,14 +273,13 @@ public abstract class AssignedCriterionRequirementModel<T, M> implements
         }
     }
 
-    private void deleteDirectToHoursGroup(HoursGroupWrapper hoursGroupWrapper,
-            CriterionRequirementWrapper direct) {
+    private void deleteDirectToHoursGroup(HoursGroupWrapper hoursGroupWrapper, CriterionRequirementWrapper direct) {
         hoursGroupWrapper.removeDirectCriterionRequirementWrapper(direct);
     }
 
     private void deleteExceptionToHoursGroup(
-            HoursGroupWrapper hoursGroupWrapper,
-            CriterionRequirementWrapper exception) {
+            HoursGroupWrapper hoursGroupWrapper, CriterionRequirementWrapper exception) {
+
         hoursGroupWrapper.removeExceptionCriterionRequirementWrapper(exception);
     }
 
@@ -313,15 +289,13 @@ public abstract class AssignedCriterionRequirementModel<T, M> implements
         }
     }
 
-    /* Operations to control and validate the data hoursGroup */
-
-    public void updateCriterionsWithDiferentResourceType(
-            HoursGroupWrapper hoursGroupWrapper) {
-        hoursGroupWrapper.removeDirectCriterionsWithDiferentResourceType();
+    /**
+     * Operation to control and validate the data hoursGroup.
+     */
+    public void updateCriterionsWithDifferentResourceType(HoursGroupWrapper hoursGroupWrapper) {
+        hoursGroupWrapper.removeDirectCriterionsWithDifferentResourceType();
         hoursGroupWrapper.getHoursGroup().updateMyCriterionRequirements();
         hoursGroupWrapper.updateListExceptionCriterionRequirementWrapper();
     }
-
-    public abstract boolean isCodeAutogenerated();
 
 }

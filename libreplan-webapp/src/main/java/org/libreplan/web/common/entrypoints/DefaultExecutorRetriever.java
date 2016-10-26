@@ -28,7 +28,9 @@ import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
 
 /**
- * Uses {@link Executions#getCurrent()} <br />
+ * Uses {@link Executions#getCurrent()}.
+ * <br />
+ *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 @Component

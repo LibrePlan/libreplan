@@ -42,7 +42,8 @@ import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Textbox;
 
 /**
- * Textbox component which is transformed into a Datebox picker on demand <br />
+ * Textbox component which is transformed into a Datebox picker on demand.
+ * <br />
  *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
@@ -63,15 +64,13 @@ public class DynamicDatebox extends GenericForwardComposer {
 
     private boolean disabled = false;
 
-    public DynamicDatebox(Getter<Date> getter,
-            Setter<Date> setter) {
+    public DynamicDatebox(Getter<Date> getter, Setter<Date> setter) {
         this.setter = setter;
         this.getter = getter;
-        this.dateFormat = DateFormat.getDateInstance(DateFormat.SHORT, Locales
-                .getCurrent());
+        this.dateFormat = DateFormat.getDateInstance(DateFormat.SHORT, Locales.getCurrent());
     }
 
-    public Datebox createDateBox() {
+    private Datebox createDateBox() {
         dateBox = new Datebox();
         dateBox.setFormat("short");
         dateBox.setValue(getter.get());
@@ -82,17 +81,17 @@ public class DynamicDatebox extends GenericForwardComposer {
         return dateBox;
     }
 
-    public Datebox getDateBox() {
+    private Datebox getDateBox() {
         return dateBox;
     }
 
     /**
-     * When a text box associated to a datebox is requested to show the datebox,
-     * the corresponding datebox is shown
+     * When a text box associated to a datebox is requested to show the datebox, the corresponding datebox is shown.
+     *
      * @param component
      *            the component that has received focus
      */
-    public void userWantsDateBox(Component component) {
+    private void userWantsDateBox(Component component) {
         if (component == dateTextBox) {
             showDateBox(dateTextBox);
         }
@@ -108,10 +107,11 @@ public class DynamicDatebox extends GenericForwardComposer {
 
     /**
      * When the dateBox loses focus the corresponding textbox is shown instead.
-     * @param dateBox
+     *
+     * @param currentDateBox
      *            the component that has lost focus
      */
-    public void dateBoxHasLostFocus(Datebox currentDateBox) {
+    private void dateBoxHasLostFocus(Datebox currentDateBox) {
         if (currentDateBox == dateBox) {
             hideDateBox(dateTextBox);
         }
@@ -133,43 +133,41 @@ public class DynamicDatebox extends GenericForwardComposer {
     private void registerListeners() {
         registerOnEnterListener(dateTextBox);
 
-        Util.bind(dateTextBox, new Util.Getter<String>() {
-            @Override
-            public String get() {
-                return asString(getter.get());
-            }
-        }, new Util.Setter<String>() {
-            @Override
-            public void set(String string) {
-                try {
-                    setter.set(fromString(string));
-                } catch (ParseException e) {
-                    throw new WrongValueException(
-                            dateTextBox,
-                            _("Date format is wrong. Please, use the following format: {0}",
-                                    asString(new Date())));
-                }
-            }
-        });
+        Util.bind(
+                dateTextBox,
+                new Util.Getter<String>() {
+                    @Override
+                    public String get() {
+                        return asString(getter.get());
+                    }
+                },
+                new Util.Setter<String>() {
+                    @Override
+                    public void set(String string) {
+                        try {
+                            setter.set(fromString(string));
+                        } catch (ParseException e) {
+                            throw new WrongValueException(
+                                    dateTextBox,
+                                    _("Date format is wrong. Please, use the following format: {0}", asString(new Date())));
+                        }
+                    }
+                });
 
     }
 
     private void findComponents(Hbox hbox) {
-        List<Object> children = hbox.getChildren();
+        List<Component> children = hbox.getChildren();
         assert children.size() == 1;
-
         dateTextBox = findTextBoxOfCell(children);
-        // dateBox = findDateBoxOfCell(children);
     }
 
-    private static Textbox findTextBoxOfCell(List<Object> children) {
-        return ComponentsFinder.findComponentsOfType(Textbox.class, children)
-                .get(0);
+    private static Textbox findTextBoxOfCell(List<Component> children) {
+        return ComponentsFinder.findComponentsOfType(Textbox.class, children).get(0);
     }
 
     private void registerOnChange(Component component) {
         component.addEventListener("onChange", new EventListener() {
-
             @Override
             public void onEvent(Event event) {
                 updateBean();
@@ -180,7 +178,6 @@ public class DynamicDatebox extends GenericForwardComposer {
 
     private void registerOnEnterListener(final Textbox textBox) {
         textBox.addEventListener("onOK", new EventListener() {
-
             @Override
             public void onEvent(Event event) {
                 userWantsDateBox(textBox);
@@ -190,7 +187,6 @@ public class DynamicDatebox extends GenericForwardComposer {
 
     private void registerOnEnterOpenDateBox(final Datebox currentDatebox) {
         currentDatebox.addEventListener("onOK", new EventListener() {
-
             @Override
             public void onEvent(Event event) {
                 currentDatebox.setOpen(true);
@@ -200,7 +196,6 @@ public class DynamicDatebox extends GenericForwardComposer {
 
     private void registerBlurListener(final Datebox currentDatebox) {
         currentDatebox.addEventListener("onBlur", new EventListener() {
-
             @Override
             public void onEvent(Event event) {
                 dateBoxHasLostFocus(currentDatebox);
@@ -208,24 +203,26 @@ public class DynamicDatebox extends GenericForwardComposer {
         });
     }
 
-    public static interface Getter<Date> {
+    public interface Getter<Date> {
         /**
          * Typical get method that returns a variable.
+         *
          * @return A variable of type Date.
          */
-        public Date get();
+        Date get();
     }
 
-    public static interface Setter<Date> {
+    public interface Setter<Date> {
         /**
          * Typical set method to store a variable.
+         *
          * @param value
          *            A variable of type Date to be set.
          */
-        public void set(Date value);
+        void set(Date value);
     }
 
-    public void updateBean() {
+    private void updateBean() {
         Date date = getDateBox().getValue();
         setter.set(date);
     }

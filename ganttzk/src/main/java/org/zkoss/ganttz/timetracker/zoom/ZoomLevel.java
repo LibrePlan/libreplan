@@ -33,9 +33,7 @@ public enum ZoomLevel {
 
     DETAIL_ONE(_("Year")) {
         @Override
-        public TimeTrackerState getTimeTrackerState(
-                IDetailItemModificator firstLevel, IDetailItemModificator secondLevel) {
-
+        public TimeTrackerState getTimeTrackerState(IDetailItemModifier firstLevel, IDetailItemModifier secondLevel) {
             return new DetailOneTimeTrackerState(firstLevel, secondLevel);
         }
 
@@ -47,9 +45,7 @@ public enum ZoomLevel {
 
     DETAIL_TWO(_("Quarter")) {
         @Override
-        public TimeTrackerState getTimeTrackerState(
-                IDetailItemModificator firstLevel, IDetailItemModificator secondLevel) {
-
+        public TimeTrackerState getTimeTrackerState(IDetailItemModifier firstLevel, IDetailItemModifier secondLevel) {
             return new DetailTwoTimeTrackerState(firstLevel, secondLevel);
         }
 
@@ -61,9 +57,7 @@ public enum ZoomLevel {
 
     DETAIL_THREE(_("Month")) {
         @Override
-        public TimeTrackerState getTimeTrackerState(
-                IDetailItemModificator firstLevel, IDetailItemModificator secondLevel) {
-
+        public TimeTrackerState getTimeTrackerState(IDetailItemModifier firstLevel, IDetailItemModifier secondLevel) {
             return new DetailThreeTimeTrackerState(firstLevel, secondLevel);
         }
 
@@ -75,9 +69,7 @@ public enum ZoomLevel {
 
     DETAIL_FOUR(_("Week")) {
         @Override
-        public TimeTrackerState getTimeTrackerState(
-                IDetailItemModificator firstLevel, IDetailItemModificator secondLevel) {
-
+        public TimeTrackerState getTimeTrackerState(IDetailItemModifier firstLevel, IDetailItemModifier secondLevel) {
             return new DetailFourTimeTrackerState(firstLevel, secondLevel);
         }
 
@@ -89,9 +81,7 @@ public enum ZoomLevel {
 
     DETAIL_FIVE(_("Day")) {
         @Override
-        public TimeTrackerState getTimeTrackerState(
-                IDetailItemModificator firstLevel, IDetailItemModificator secondLevel) {
-
+        public TimeTrackerState getTimeTrackerState(IDetailItemModifier firstLevel, IDetailItemModifier secondLevel) {
             return new DetailFiveTimeTrackerState(firstLevel, secondLevel);
         }
 
@@ -135,7 +125,7 @@ public enum ZoomLevel {
     }
 
     public abstract TimeTrackerState getTimeTrackerState(
-            IDetailItemModificator firstLevel, IDetailItemModificator secondLevel);
+            IDetailItemModifier firstLevel, IDetailItemModifier secondLevel);
 
     @Override
     public String toString() {

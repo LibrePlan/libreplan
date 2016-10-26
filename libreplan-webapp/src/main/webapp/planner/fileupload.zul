@@ -37,22 +37,28 @@ Copyright (C) 2005 Potix Corporation. All Rights Reserved.
 -->
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c" ?>
 <?page language="xul/html"?>
+
 <?component name="uploaddlg" extends="window"
         class="org.zkoss.zul.impl.FileuploadDlg" widgetClass="zul.fud.FileuploadDlg"?>
+
 <?component name="submit" extends="button" widgetClass="zul.fud.Submit"?>
 <?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n"?>
 
 <uploaddlg title="${arg.title}" shadow="false" border="normal" width="360px" closable="true"
            xmlns:w="http://www.zkoss.org/2005/zk/client"
            w:onClose="this.cancel()" w:max="${arg.max}">
+
     <label value="${i18n:_('Please select a file on your system')}"/>
+
     <fileupload id="fileupload" forward="onUpload=" label="${c:l('mesg:org.zkoss.zul.mesg.MZul:UPLOAD_BROWSE')}"
                 upload="zul.fud.ModalFileViewer,maxsize=${arg.maxsize}${arg.native ? ',native':''}"/>
+
     <separator bar="true"/>
-    <div id="uploaded" visible="false"></div>
+    <div id="uploaded" visible="false"/>
     <div id="btns">
-        <submit id="submit" label="${c:l('mesg:org.zkoss.zul.mesg.MZul:UPLOAD_SUBMIT')}"
-                w:onClick="this.submit()"/>
+
+        <submit id="submit" label="${c:l('mesg:org.zkoss.zul.mesg.MZul:UPLOAD_SUBMIT')}" w:onClick="this.submit()"/>
+
         <button label="${c:l('mesg:org.zkoss.zul.mesg.MZul:UPLOAD_CANCEL')}" w:onClick="this.$o().cancel(true)"/>
     </div>
 </uploaddlg>

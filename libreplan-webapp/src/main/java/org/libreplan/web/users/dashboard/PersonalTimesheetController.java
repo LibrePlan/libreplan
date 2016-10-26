@@ -28,12 +28,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.LocalDate;
 import org.libreplan.business.orders.entities.OrderElement;
+import org.libreplan.business.resources.entities.Resource;
 import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.web.common.IMessagesForUser;
@@ -43,7 +43,6 @@ import org.libreplan.web.common.MessagesForUser;
 import org.libreplan.web.common.Util;
 import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
 import org.libreplan.web.common.entrypoints.EntryPointsHandler;
-import org.libreplan.web.common.entrypoints.EntryPointsHandler.ICapture;
 import org.libreplan.web.common.entrypoints.IURLHandlerRegistry;
 import org.libreplan.web.common.entrypoints.MatrixParameters;
 import org.libreplan.web.security.SecurityUtils;
@@ -52,12 +51,12 @@ import org.zkoss.util.Locales;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
-import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Cell;
 import org.zkoss.zul.Checkbox;
@@ -69,26 +68,32 @@ import org.zkoss.zul.Label;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.Textbox;
-import org.zkoss.zul.api.Div;
-import org.zkoss.zul.api.Grid;
-import org.zkoss.zul.api.Popup;
+import org.zkoss.zul.Div;
+import org.zkoss.zul.Grid;
+import org.zkoss.zul.Popup;
 
 /**
- * Controller for creation/edition of a personal timesheet
+ * Controller for creation/edition of a personal timesheet.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
 @SuppressWarnings("serial")
 public class PersonalTimesheetController extends GenericForwardComposer implements IPersonalTimesheetController {
 
-    private final static String EFFORT_DURATION_TEXTBOX_WIDTH = "30px";
-    private final static String TOTAL_DURATION_TEXTBOX_WIDTH = "50px";
+    private static final String EFFORT_DURATION_TEXTBOX_WIDTH = "30px";
 
-    private final static String WORK_REPORTS_URL = "/workreports/workReport.zul";
+    private static final String TOTAL_DURATION_TEXTBOX_WIDTH = "50px";
+
+    private static final String WORK_REPORTS_URL = "/workreports/workReport.zul";
+
+    private static final String ALIGN_CENTER = "center";
 
     private IPersonalTimesheetModel personalTimesheetModel;
 
     private IURLHandlerRegistry URLHandlerRegistry;
+
+    private IPersonalTimesheetController personalTimesheetController;
 
     private Grid timesheet;
 
@@ -126,16 +131,14 @@ public class PersonalTimesheetController extends GenericForwardComposer implemen
 
     private Div personalTimesheetPopupFinished;
 
-    @Resource
-    private IPersonalTimesheetController personalTimesheetController;
-
     private RowRenderer rowRenderer = new RowRenderer() {
 
         private LocalDate first;
+
         private LocalDate last;
 
         @Override
-        public void render(Row row, Object data) throws Exception {
+        public void render(Row row, Object data, int i) throws Exception {
             PersonalTimesheetRow personalTimesheetRow = (PersonalTimesheetRow) data;
 
             initPersonalTimesheetDates();
@@ -159,7 +162,6 @@ public class PersonalTimesheetController extends GenericForwardComposer implemen
 
                 case EXTRA:
                     renderExtraRow(row);
-
                     // This is the last row so we can load the info in the summary
                     updateSummary();
                     break;
@@ -176,6 +178,11 @@ public class PersonalTimesheetController extends GenericForwardComposer implemen
         }
 
         private void renderOrderElementRow(Row row, OrderElement orderElement) {
+            /* Flattening of orderElement row by height */
+            row.setHeight("27px");
+
+            row.setClass("row-timetracking");
+
             Util.appendLabel(row, personalTimesheetModel.getOrder(orderElement).getName());
             Util.appendLabel(row, orderElement.getName());
 
@@ -197,16 +204,8 @@ public class PersonalTimesheetController extends GenericForwardComposer implemen
 
                 Util.bind(
                         textbox,
-                        new Util.Getter<String>() {
-                            @Override
-                            public String get() {
-
-                                EffortDuration effortDuration =
-                                        personalTimesheetModel.getEffortDuration(orderElement, textboxDate);
-
-                                return effortDurationToString(effortDuration);
-                            }
-                        },
+                        () -> effortDurationToString(
+                                personalTimesheetModel.getEffortDuration(orderElement, textboxDate)),
                         new Util.Setter<String>() {
                             @Override
                             public void set(String value) {
@@ -231,13 +230,8 @@ public class PersonalTimesheetController extends GenericForwardComposer implemen
                             }
                         });
 
-                EventListener openPersonalTimesheetPopup = new EventListener() {
-                    @Override
-                    public void onEvent(Event event) throws Exception {
-                        openPersonalTimesheetPopup(textbox, orderElement, textboxDate);
-                    }
-
-                };
+                EventListener openPersonalTimesheetPopup =
+                        event -> openPersonalTimesheetPopup(textbox, orderElement, textboxDate);
 
                 textbox.addEventListener(Events.ON_DOUBLE_CLICK, openPersonalTimesheetPopup);
                 textbox.addEventListener(Events.ON_OK, openPersonalTimesheetPopup);
@@ -261,7 +255,8 @@ public class PersonalTimesheetController extends GenericForwardComposer implemen
             toFocus.setFocus(true);
         }
 
-        private Textbox setupPersonalTimesheetPopup(final Textbox textbox, final OrderElement orderElement,
+        private Textbox setupPersonalTimesheetPopup(final Textbox textbox,
+                                                    final OrderElement orderElement,
                                                     final LocalDate textboxDate) {
 
             personalTimesheetPopupTask.setValue(orderElement.getName());
@@ -271,28 +266,21 @@ public class PersonalTimesheetController extends GenericForwardComposer implemen
 
             Textbox effortTextbox = Util.bind(
                     new Textbox(),
-                    new Util.Getter<String>() {
-                        @Override
-                        public String get() {
+                    () -> {
+                        EffortDuration effortDuration =
+                                personalTimesheetModel.getEffortDuration(orderElement, textboxDate);
 
-                            EffortDuration effortDuration =
-                                    personalTimesheetModel.getEffortDuration(orderElement, textboxDate);
-
-                            return effortDurationToString(effortDuration);
-                        }
+                        return effortDurationToString(effortDuration);
                     },
-                    new Util.Setter<String>() {
-                        @Override
-                        public void set(String value) {
-                            EffortDuration effortDuration = effortDurationFromString(value);
+                    value -> {
+                        EffortDuration effortDuration = effortDurationFromString(value);
 
-                            if ( effortDuration == null ) {
-                                throw new WrongValueException(
-                                        personalTimesheetPopupEffort, _("Invalid Effort Duration"));
-                            }
-
-                            Events.sendEvent(new InputEvent(Events.ON_CHANGE, textbox, value));
+                        if ( effortDuration == null ) {
+                            throw new WrongValueException(
+                                    personalTimesheetPopupEffort, _("Invalid Effort Duration"));
                         }
+
+                        Events.sendEvent(new InputEvent(Events.ON_CHANGE, textbox, value, textbox.getValue()));
                     });
 
             addOnOkEventToClosePopup(effortTextbox);
@@ -302,18 +290,10 @@ public class PersonalTimesheetController extends GenericForwardComposer implemen
 
             Checkbox finishedCheckbox = Util.bind(
                     new Checkbox(),
-                    new Util.Getter<Boolean>() {
-                        @Override
-                        public Boolean get() {
-                            return personalTimesheetModel.isFinished(orderElement, textboxDate);
-                        }
-                    },
-                    new Util.Setter<Boolean>() {
-                        @Override
-                        public void set(Boolean value) {
-                            personalTimesheetModel.setFinished(orderElement, textboxDate, value);
-                            markAsModified(textbox);
-                        }
+                    () -> personalTimesheetModel.isFinished(orderElement, textboxDate),
+                    value -> {
+                        personalTimesheetModel.setFinished(orderElement, textboxDate, value);
+                        markAsModified(textbox);
                     });
 
             if ( !finishedCheckbox.isChecked() ) {
@@ -327,12 +307,7 @@ public class PersonalTimesheetController extends GenericForwardComposer implemen
         }
 
         private boolean addOnOkEventToClosePopup(Component component) {
-            return component.addEventListener(Events.ON_OK, new EventListener() {
-                @Override
-                public void onEvent(Event event) throws Exception {
-                    closePersonalTimesheetPopup();
-                }
-            });
+            return component.addEventListener(Events.ON_OK, event -> closePersonalTimesheetPopup());
         }
 
         private void markAsModified(final Textbox textbox) {
@@ -553,15 +528,7 @@ public class PersonalTimesheetController extends GenericForwardComposer implemen
 
         private Cell getCenteredCell(Component component) {
             Cell cell = new Cell();
-            cell.setAlign("center");
-            cell.appendChild(component);
-
-            return cell;
-        }
-
-        private Cell getAlignLeftCell(Component component) {
-            Cell cell = new Cell();
-            cell.setAlign("left");
+            cell.setAlign(ALIGN_CENTER);
             cell.appendChild(component);
 
             return cell;
@@ -583,19 +550,42 @@ public class PersonalTimesheetController extends GenericForwardComposer implemen
 
         checkUserComesFromEntryPointsOrSendForbiddenCode();
 
+        injectObjects();
+
         URLHandlerRegistry.getRedirectorFor(IPersonalTimesheetController.class).register(this, page);
     }
 
+    /**
+     * After migration from ZK 5 to ZK 8 ZK Spring works not as before.
+     * Now you should manually inject objects.
+     */
+    private void injectObjects() {
+        if ( personalTimesheetModel == null )
+            personalTimesheetModel = (IPersonalTimesheetModel) SpringUtil.getBean("personalTimesheetModel");
+
+        if ( URLHandlerRegistry == null )
+            URLHandlerRegistry = (IURLHandlerRegistry) SpringUtil.getBean("URLHandlerRegistry");
+
+        if ( personalTimesheetController == null ) {
+
+            personalTimesheetController =
+                    (IPersonalTimesheetController) SpringUtil.getBean("personalTimesheetController");
+        }
+    }
+    /**
+     * Hack to reduce frozen scroll area.
+     * Timeout needed because of ZK 8 timings.
+     */
     private void adjustFrozenWidth() {
-        // Hack to reduce frozen scroll area
-        Clients.evalJavaScript("jq('.z-frozen-inner div').width(jq('.totals-column').offset().left);");
+        Clients.evalJavaScript(
+                "setTimeout(function(){jq('.z-frozen-inner div').width(jq('.totals-column').offset().left);}, 1);");
     }
 
     private void checkUserComesFromEntryPointsOrSendForbiddenCode() {
         HttpServletRequest request = (HttpServletRequest) Executions.getCurrent().getNativeRequest();
         Map<String, String> matrixParams = MatrixParameters.extract(request);
 
-        // If it doesn't come from a entry point
+        // If it does not come from a entry point
         if ( matrixParams.isEmpty() ) {
             Util.sendForbiddenStatusCodeInHttpServletResponse();
         }
@@ -610,8 +600,10 @@ public class PersonalTimesheetController extends GenericForwardComposer implemen
 
         breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
         breadcrumbs.appendChild(new Label(_("My account")));
+
         breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
         breadcrumbs.appendChild(new Label(_("My dashboard")));
+
         breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
         breadcrumbs.appendChild(new Label(_("Personal timesheet")));
     }
@@ -627,8 +619,7 @@ public class PersonalTimesheetController extends GenericForwardComposer implemen
     }
 
     @Override
-    public void goToCreateOrEditFormForResource(LocalDate date,
-                                                org.libreplan.business.resources.entities.Resource resource) {
+    public void goToCreateOrEditFormForResource(LocalDate date, Resource resource) {
 
         if ( !SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_TIMESHEETS) ) {
             Util.sendForbiddenStatusCodeInHttpServletResponse();
@@ -648,6 +639,7 @@ public class PersonalTimesheetController extends GenericForwardComposer implemen
         Frozen frozen = new Frozen();
         frozen.setColumns(2);
         timesheet.appendChild(frozen);
+        timesheet.invalidate();
 
         adjustFrozenWidth();
     }
@@ -664,12 +656,15 @@ public class PersonalTimesheetController extends GenericForwardComposer implemen
     }
 
     private void createProjectAndTaskColumns() {
+        /* setWidth() was used because setStyle(min-width) was not working */
+
         Column project = new Column(_("Project"));
-        project.setStyle("min-width:100px");
+        project.setWidth("150px");
+
         columns.appendChild(project);
 
         Column task = new Column(_("Task"));
-        task.setStyle("min-width:100px");
+        task.setWidth("150px");
 
         columns.appendChild(project);
         columns.appendChild(task);
@@ -680,8 +675,8 @@ public class PersonalTimesheetController extends GenericForwardComposer implemen
         LocalDate end = personalTimesheetModel.getPersonalTimesheetsPeriodicity().getEnd(date);
 
         for (LocalDate day = start; day.compareTo(end) <= 0; day = day.plusDays(1)) {
-            Column column = new Column(day.getDayOfMonth() + "");
-            column.setAlign("center");
+            Column column = new Column(Integer.toString(day.getDayOfMonth()));
+            column.setAlign(ALIGN_CENTER);
             column.setWidth(EFFORT_DURATION_TEXTBOX_WIDTH);
             columns.appendChild(column);
         }
@@ -691,7 +686,7 @@ public class PersonalTimesheetController extends GenericForwardComposer implemen
         Column other = new Column(_("Other"));
         other.setWidth(TOTAL_DURATION_TEXTBOX_WIDTH);
         other.setSclass("totals-column");
-        other.setAlign("center");
+        other.setAlign(ALIGN_CENTER);
         columns.appendChild(other);
     }
 
@@ -699,7 +694,7 @@ public class PersonalTimesheetController extends GenericForwardComposer implemen
         Column total = new Column(_("Total"));
         total.setWidth(TOTAL_DURATION_TEXTBOX_WIDTH);
         total.setSclass("totals-column");
-        total.setAlign("center");
+        total.setAlign(ALIGN_CENTER);
         columns.appendChild(total);
     }
 
@@ -763,6 +758,10 @@ public class PersonalTimesheetController extends GenericForwardComposer implemen
         Executions.getCurrent().sendRedirect(url);
     }
 
+    /**
+     * Should be public!
+     * Used in personalTimesheet.zul
+     */
     public void addOrderElement() {
         OrderElement orderElement = (OrderElement) orderElementBandboxSearch.getSelectedElement();
         if ( orderElement != null ) {
@@ -800,12 +799,8 @@ public class PersonalTimesheetController extends GenericForwardComposer implemen
     }
 
     private void sendToPersonalTimesheet(final LocalDate date) {
-        String capturePath = EntryPointsHandler.capturePath(new ICapture() {
-            @Override
-            public void capture() {
-                personalTimesheetController.goToCreateOrEditForm(date);
-            }
-        });
+        String capturePath =
+                EntryPointsHandler.capturePath(() -> personalTimesheetController.goToCreateOrEditForm(date));
 
         Executions.getCurrent().sendRedirect(capturePath);
     }
@@ -859,11 +854,7 @@ public class PersonalTimesheetController extends GenericForwardComposer implemen
     }
 
     private static String effortDurationToString(EffortDuration effort) {
-        if ( effort == null || effort.isZero() ) {
-            return "";
-        }
-
-        return effort.toFormattedString();
+        return effort == null || effort.isZero() ? "" : effort.toFormattedString();
     }
 
     private static EffortDuration effortDurationFromString(String effort) {
@@ -871,15 +862,16 @@ public class PersonalTimesheetController extends GenericForwardComposer implemen
             return EffortDuration.zero();
         }
 
-        String decimalSeparator = ((DecimalFormat) DecimalFormat
-                .getInstance(Locales.getCurrent()))
-                .getDecimalFormatSymbols().getDecimalSeparator() + "";
+        String decimalSeparator = Character.toString(
+                ((DecimalFormat) DecimalFormat.getInstance(Locales.getCurrent()))
+                        .getDecimalFormatSymbols().getDecimalSeparator());
 
         if ( effort.contains(decimalSeparator) || effort.contains(".") ) {
             try {
                 effort = effort.replace(decimalSeparator, ".");
                 double hours = Double.parseDouble(effort);
-                return EffortDuration.fromHoursAsBigDecimal(new BigDecimal(hours));
+
+                return EffortDuration.fromHoursAsBigDecimal(BigDecimal.valueOf(hours));
             } catch (NumberFormatException e) {
                 return null;
             }
@@ -932,18 +924,27 @@ public class PersonalTimesheetController extends GenericForwardComposer implemen
 }
 
 /**
- * Simple class to represent the the rows in the personal timesheet grid.<br />
- *
+ * Simple class to represent the the rows in the personal timesheet grid.
+ * <br />
  * This is used to mark the special rows like capacity and total.
  */
 class PersonalTimesheetRow {
 
     enum PersonalTimesheetRowType {
-        ORDER_ELEMENT, OTHER, CAPACITY, TOTAL, EXTRA
+        ORDER_ELEMENT,
+        OTHER,
+        CAPACITY,
+        TOTAL,
+        EXTRA
     }
 
     private PersonalTimesheetRowType type;
+
     private OrderElement orderElemement;
+
+    private PersonalTimesheetRow(PersonalTimesheetRowType type) {
+        this.type = type;
+    }
 
     public static PersonalTimesheetRow createOrderElementRow(OrderElement orderElemement) {
         PersonalTimesheetRow row = new PersonalTimesheetRow(PersonalTimesheetRowType.ORDER_ELEMENT);
@@ -976,10 +977,6 @@ class PersonalTimesheetRow {
         }
 
         return result;
-    }
-
-    private PersonalTimesheetRow(PersonalTimesheetRowType type) {
-        this.type = type;
     }
 
     public PersonalTimesheetRowType getType() {

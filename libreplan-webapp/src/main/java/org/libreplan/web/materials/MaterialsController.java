@@ -21,16 +21,6 @@
 
 package org.libreplan.web.materials;
 
-import static org.libreplan.web.I18nHelper._;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.ConcurrentModificationException;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
-import org.apache.commons.logging.LogFactory;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.common.exceptions.ValidationException.InvalidValue;
 import org.libreplan.business.materials.entities.Material;
@@ -41,12 +31,9 @@ import org.libreplan.web.common.IMessagesForUser;
 import org.libreplan.web.common.Level;
 import org.libreplan.web.common.MessagesForUser;
 import org.libreplan.web.common.Util;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.CheckEvent;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
@@ -70,6 +57,15 @@ import org.zkoss.zul.Treechildren;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.TreeitemRenderer;
 import org.zkoss.zul.Treerow;
+import org.zkoss.zkplus.spring.SpringUtil;
+
+import java.util.ConcurrentModificationException;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.ArrayList;
+
+import static org.libreplan.web.I18nHelper._;
 
 /**
  * Controller for {@link Material} materials
@@ -77,12 +73,8 @@ import org.zkoss.zul.Treerow;
  * @author Diego Pino García <dpino@igalia.com>
  *
  */
-public class MaterialsController extends
-        GenericForwardComposer {
+public class MaterialsController extends GenericForwardComposer {
 
-    private static final org.apache.commons.logging.Log LOG = LogFactory.getLog(MaterialsController.class);
-
-    @Autowired
     private IMaterialsModel materialsModel;
 
     private Tree categoriesTree;
@@ -101,32 +93,35 @@ public class MaterialsController extends
 
     private UnitTypeListRenderer unitTypeListRenderer = new UnitTypeListRenderer();
 
+    public MaterialsController(){
+        materialsModel = (IMaterialsModel) SpringUtil.getBean("materialsModel");
+    }
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        comp.setVariable("materialsController", this, true);
+
+
+        comp.setAttribute("materialsController", this, true);
         messagesForUser = new MessagesForUser(messagesContainer);
 
         // load the unit types
         loadUnitTypes();
 
         // Renders grid and enables delete button is material is new
-        gridMaterials.addEventListener("onInitRender", new EventListener() {
+        gridMaterials.addEventListener("onInitRender", event -> {
+            gridMaterials.renderAll();
 
-            @Override
-            public void onEvent(Event event) {
-                gridMaterials.renderAll();
+            final Rows rows = gridMaterials.getRows();
+            for (Iterator i = rows.getChildren().iterator(); i.hasNext(); ) {
+                final Row row = (Row) i.next();
+                final Material material = row.getValue();
+                Button btnDelete = (Button) row.getChildren().get(6);
 
-                final Rows rows = gridMaterials.getRows();
-                for (Iterator i = rows.getChildren().iterator(); i.hasNext(); ) {
-                    final Row row = (Row) i.next();
-                    final Material material = (Material) row.getValue();
-                    Button btnDelete = (Button) row.getChildren().get(6);
-                    if (!materialsModel.canRemoveMaterial(material)) {
-                        btnDelete.setDisabled(true);
-                        btnDelete.setImage("/common/img/ico_borrar_out.png");
-                        btnDelete.setHoverImage("/common/img/ico_borrar_out.png");
-                    }
+                if (!materialsModel.canRemoveMaterial(material)) {
+                    btnDelete.setDisabled(true);
+                    btnDelete.setImage("/common/img/ico_borrar_out.png");
+                    btnDelete.setHoverImage("/common/img/ico_borrar_out.png");
                 }
             }
         });
@@ -142,9 +137,9 @@ public class MaterialsController extends
 
     public void selectUnitType(Component self) {
         Listitem selectedItem = ((Listbox) self).getSelectedItem();
-            UnitType unitType = (UnitType) selectedItem.getValue();
-            Material material = (Material) ((Row) self.getParent()).getValue();
-            material.setUnitType(unitType);
+        UnitType unitType = selectedItem.getValue();
+        Material material = ((Row) self.getParent()).getValue();
+        material.setUnitType(unitType);
     }
 
     public TreeModel getMaterialCategories() {
@@ -156,57 +151,48 @@ public class MaterialsController extends
     }
 
     /**
-     * Render for criterionsTree
+     * Render for criterionsTree.
      *
-     * I had to implement a renderer for the Tree, for setting open to tree for
-     * each treeitem while being rendered.
+     * I had to implement a renderer for the Tree, for setting open to tree for each treeitem while being rendered.
      *
      * I tried to do this by iterating through the list of items after setting
-     * model in doAfterCompose, but I got a ConcurrentModificationException. It
-     * seems that at that point some other component was using the list of item,
-     * so it was not possible to modify it. There's not other point where to
-     * initialize components but doAfterCompose.
-     *
-     * Finally, I tried this solution and it works.
+     * model in doAfterCompose, but I got a ConcurrentModificationException.
+     * It seems that at that point some other component was using the list of item, so it was not possible to modify it.
+     * There's not other point where to initialize components but doAfterCompose.
      *
      * @author Diego Pino Garcia <dpino@igalia.com>
      *
      */
-    private class MaterialCategoryRenderer implements TreeitemRenderer {
+    private class MaterialCategoryRenderer implements TreeitemRenderer<MaterialCategory> {
 
         /**
-         * Copied verbatim from org.zkoss.zul.Tree;
+         * Copied verbatim from org.zkoss.zul.Tree
          */
+
         @Override
-        public void render(Treeitem ti, Object node) {
-            final MaterialCategory materialCategory = (MaterialCategory) node;
+        public void render(Treeitem treeitem, MaterialCategory node, int i) throws Exception {
+            final MaterialCategory materialCategory = node;
 
             final Textbox tb = new Textbox(materialCategory.getName());
             tb.setWidth("90%");
-            tb.addEventListener("onChange", new EventListener() {
-                @Override
-                public void onEvent(Event event) {
-                    final InputEvent ie = (InputEvent) event;
-                    materialCategory.setName(ie.getValue());
-                }
+            tb.addEventListener("onChange", event -> {
+                final InputEvent ie = (InputEvent) event;
+                materialCategory.setName(ie.getValue());
             });
-            tb.addEventListener("onFocus", new EventListener() {
-                @Override
-                public void onEvent(Event event) {
-                    ((Treeitem)tb.getParent().getParent().getParent()).setSelected(true);
-                    refreshMaterials();
-                }
+            tb.addEventListener("onFocus",  event -> {
+                ((Treeitem)tb.getParent().getParent().getParent()).setSelected(true);
+                refreshMaterials();
             });
             Treecell tc = new Treecell();
 
-            Treerow tr = null;
-            ti.setValue(node);
-            if (ti.getTreerow() == null) {
+            Treerow tr;
+            treeitem.setValue(node);
+            if (treeitem.getTreerow() == null) {
                 tr = new Treerow();
-                tr.setParent(ti);
-                ti.setOpen(true); // Expand node
+                tr.setParent(treeitem);
+                treeitem.setOpen(true); // Expand node
             } else {
-                tr = ti.getTreerow();
+                tr = treeitem.getTreerow();
                 tr.getChildren().clear();
             }
             tb.setParent(tc);
@@ -215,19 +201,13 @@ public class MaterialsController extends
             final Textbox codeTb = new Textbox(materialCategory.getCode());
             codeTb.setWidth("95%");
             codeTb.setDisabled(materialCategory.isCodeAutogenerated());
-            codeTb.addEventListener("onChange", new EventListener() {
-                @Override
-                public void onEvent(Event event) {
-                    final InputEvent ie = (InputEvent) event;
-                    materialCategory.setCode(ie.getValue());
-                }
+            codeTb.addEventListener("onChange", event -> {
+                final InputEvent ie = (InputEvent) event;
+                materialCategory.setCode(ie.getValue());
             });
-            codeTb.addEventListener("onFocus", new EventListener() {
-                @Override
-                public void onEvent(Event event) {
-                    ((Treeitem)codeTb.getParent().getParent().getParent()).setSelected(true);
-                    refreshMaterials();
-                }
+            codeTb.addEventListener("onFocus",  event -> {
+                ((Treeitem)codeTb.getParent().getParent().getParent()).setSelected(true);
+                refreshMaterials();
             });
             Treecell codeTc = new Treecell();
             codeTb.setParent(codeTc);
@@ -235,47 +215,37 @@ public class MaterialsController extends
 
             final Checkbox cb = new Checkbox();
             cb.setChecked(materialCategory.isCodeAutogenerated());
-            cb.addEventListener("onCheck", new EventListener() {
-                @Override
-                public void onEvent(Event event) {
-                    final CheckEvent ce = (CheckEvent) event;
-                    materialCategory.setCodeAutogenerated(ce.isChecked());
-                    if (ce.isChecked()) {
-                        try {
-                            materialsModel.setCodeAutogenerated(ce.isChecked(),
-                                    materialCategory);
-                        } catch (ConcurrentModificationException err) {
-                            messagesForUser.showMessage(Level.ERROR, err
-                                    .getMessage());
-                        }
+            cb.addEventListener("onCheck",  event -> {
+                final CheckEvent ce = (CheckEvent) event;
+                materialCategory.setCodeAutogenerated(ce.isChecked());
+                if (ce.isChecked()) {
+                    try {
+                        materialsModel.setCodeAutogenerated(ce.isChecked(), materialCategory);
+                    } catch (ConcurrentModificationException err) {
+                        messagesForUser.showMessage(Level.ERROR, err.getMessage());
                     }
-                    codeTb.setValue(materialCategory.getCode());
-                    codeTb.setDisabled(ce.isChecked());
-                    Util.reloadBindings(codeTb);
-                    Util.reloadBindings(gridMaterials);
                 }
+                codeTb.setValue(materialCategory.getCode());
+                codeTb.setDisabled(ce.isChecked());
+                Util.reloadBindings(codeTb);
+                Util.reloadBindings(gridMaterials);
             });
             Treecell generateCodeTc = new Treecell();
             cb.setParent(generateCodeTc);
             generateCodeTc.setParent(tr);
 
-            appendDeleteButton(ti);
+            appendDeleteButton(treeitem);
         }
     }
 
     private void appendDeleteButton(final Treeitem ti) {
-        final MaterialCategory materialCategory = (MaterialCategory) ti.getValue();
+        final MaterialCategory materialCategory = ti.getValue();
 
         Button btnDelete = new Button("", "/common/img/ico_borrar1.png");
         btnDelete.setHoverImage("/common/img/ico_borrar.png");
         btnDelete.setSclass("icono");
         btnDelete.setTooltiptext(_("Delete"));
-        btnDelete.addEventListener(Events.ON_CLICK, new EventListener() {
-            @Override
-            public void onEvent(Event event) {
-                confirmRemove(materialCategory);
-            }
-        });
+        btnDelete.addEventListener(Events.ON_CLICK, event -> confirmRemove(materialCategory));
         btnDelete.setDisabled(hasSubcategoriesOrMaterials(materialCategory));
         Treecell tc = new Treecell();
         tc.setParent(ti.getTreerow());
@@ -288,15 +258,12 @@ public class MaterialsController extends
 
     public void confirmRemove(MaterialCategory materialCategory) {
 
-        try {
-            int status = Messagebox.show(_("Confirm deleting {0}. Are you sure?",
-                    materialCategory.getName()), _("Delete"),
-                    Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION);
-            if (Messagebox.OK == status) {
-                removeMaterialCategory(materialCategory);
-            }
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+        int status = Messagebox.show(_("Confirm deleting {0}. Are you sure?",
+                materialCategory.getName()), _("Delete"),
+                Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION);
+
+        if (Messagebox.OK == status) {
+            removeMaterialCategory(materialCategory);
         }
     }
 
@@ -314,7 +281,7 @@ public class MaterialsController extends
         MaterialCategory parent = null;
         final Treeitem treeitem = categoriesTree.getSelectedItem();
         if (treeitem != null) {
-            parent = (MaterialCategory) treeitem.getValue();
+            parent = treeitem.getValue();
         }
         try {
             materialsModel.addMaterialCategory(parent, categoryName);
@@ -323,36 +290,37 @@ public class MaterialsController extends
         } catch (ValidationException e) {
             for (InvalidValue invalidValue : e.getInvalidValues()) {
                 Object value = invalidValue.getRootBean();
-                 if (value instanceof MaterialCategory) {
-                     MaterialCategory materialCategory = (MaterialCategory) value;
-                     Component comp = findInMaterialCategoryTree(materialCategory);
-                     if (comp != null) {
-                        throw new WrongValueException(comp,
-                                _(invalidValue.getMessage()));
-                     }
-                 }
+                if (value instanceof MaterialCategory) {
+                    MaterialCategory materialCategory = (MaterialCategory) value;
+                    Component comp = findInMaterialCategoryTree(materialCategory);
+                    if (comp != null) {
+                        throw new WrongValueException(comp, _(invalidValue.getMessage()));
+                    }
+                }
             }
         }
     }
 
     /**
      * Finds which element in categoryTree has the same name as {@link MaterialCategory},
-     * and returns name {@link Textbox} component
+     * and returns name {@link Textbox} component.
      *
      * @param materialCategory
-     * @return
+     * @return {@link Component}
      */
     private Component findInMaterialCategoryTree(MaterialCategory materialCategory) {
         final Treechildren children = categoriesTree.getTreechildren();
-        for(Treeitem each: (Collection<Treeitem>) children.getItems()) {
-            final MaterialCategory _materialCategory = (MaterialCategory) each.getValue();
+        for(Treeitem each: children.getItems()) {
+            final MaterialCategory _materialCategory = each.getValue();
             final Textbox textbox = getMaterialCategoryTextbox(each);
+
             // Clear previous errors
             textbox.clearErrorMessage();
             if (_materialCategory.equals(materialCategory)) {
                 return textbox;
             }
         }
+
         return null;
     }
 
@@ -366,7 +334,7 @@ public class MaterialsController extends
         if (treeitem == null) {
             throw new WrongValueException(btnAddMaterial, _("Cannot insert material in general view. Please, select a category"));
         }
-        final MaterialCategory materialCategory = (MaterialCategory) treeitem.getValue();
+        final MaterialCategory materialCategory = treeitem.getValue();
         materialsModel.addMaterialToMaterialCategory(materialCategory);
         Util.reloadBindings(gridMaterials);
     }
@@ -386,7 +354,7 @@ public class MaterialsController extends
     private void reloadCategoriesTree(Treeitem treeitem) {
         Util.reloadBindings(categoriesTree);
         if (treeitem != null) {
-            final MaterialCategory materialCategory = (MaterialCategory) treeitem.getValue();
+            final MaterialCategory materialCategory = treeitem.getValue();
             categoriesTree.invalidate();
             locateAndSelectMaterialCategory(materialCategory);
         } else {
@@ -401,33 +369,31 @@ public class MaterialsController extends
         } catch (ValidationException e) {
             showInvalidValues(e);
         }
+
         return false;
     }
 
     private void showInvalidValues(ValidationException validationException) {
-        final Set<? extends InvalidValue> invalidValues = validationException
-                .getInvalidValues();
+        final Set<? extends InvalidValue> invalidValues = validationException.getInvalidValues();
         for (InvalidValue each: invalidValues) {
             final Object bean = each.getRootBean();
-            // Errors related with contraints in Material (not null, etc)
+
+            // Errors related with constraints in Material (not null, etc)
             if (bean instanceof Material) {
                 final Material material = (Material) bean;
                 showConstraintErrorsFor(material.getCategory());
             }
+
             // Unique material in materialCategory
             if (bean instanceof MaterialCategory) {
                 final MaterialCategory materialCategory = (MaterialCategory) bean;
                 final Treeitem treeitem = findTreeItemByMaterialCategory(categoriesTree, materialCategory);
                 if (treeitem != null) {
-                    if(each.getPropertyPath().equals("name")) {
-                        throw new WrongValueException(
-                                getCategoryTextbox(treeitem),
-                                _(each.getMessage()));
+                    if (each.getPropertyPath().equals("name")) {
+                        throw new WrongValueException(getCategoryTextbox(treeitem), _(each.getMessage()));
                     }
-                    if(each.getPropertyPath().equals("code")) {
-                        throw new WrongValueException(
-                                getCategoryCodeTextbox(treeitem),
-                                _(each.getMessage()));
+                    if (each.getPropertyPath().equals("code")) {
+                        throw new WrongValueException(getCategoryCodeTextbox(treeitem), _(each.getMessage()));
                     }
                 }
             }
@@ -453,17 +419,18 @@ public class MaterialsController extends
             treeitem.setSelected(true);
             return true;
         }
+
         return false;
     }
 
     private Treeitem findTreeItemByMaterialCategory(Tree tree, MaterialCategory materialCategory) {
-        for (Iterator i = tree.getItems().iterator(); i.hasNext();)  {
-            final Treeitem treeitem = (Treeitem) i.next();
-            final MaterialCategory _materialCategory = (MaterialCategory) treeitem.getValue();
+        for (final Treeitem treeitem : tree.getItems()) {
+            final MaterialCategory _materialCategory = treeitem.getValue();
             if (_materialCategory.getId() != null && _materialCategory.getId().equals(materialCategory.getId())) {
                 return treeitem;
             }
         }
+
         return null;
     }
 
@@ -472,7 +439,7 @@ public class MaterialsController extends
 
             // Load materials for category
             final List<Material> materials = getMaterials(materialCategory);
-            gridMaterials.setModel(new SimpleListModel(materials));
+            gridMaterials.setModel(new SimpleListModel<>(materials));
             gridMaterials.renderAll();
 
             // Show errors
@@ -482,7 +449,7 @@ public class MaterialsController extends
 
     public void refreshMaterials() {
         final List<Material> materials = getMaterials();
-        gridMaterials.setModel(new SimpleListModel(materials));
+        gridMaterials.setModel(new SimpleListModel<>(materials));
         refreshMaterialsListTitle();
         Util.reloadBindings(gridMaterials);
     }
@@ -490,13 +457,11 @@ public class MaterialsController extends
     private void refreshMaterialsListTitle() {
         Treeitem treeitem = categoriesTree.getSelectedItem();
         if (treeitem != null) {
-            materialsCaption.setLabel(_("List of materials for category: {0}",
-                    ((MaterialCategory) treeitem.getValue()).getName()));
+            materialsCaption.setLabel(
+                    _("List of materials for category: {0}", ((MaterialCategory) treeitem.getValue()).getName()));
         }
         else {
-            materialsCaption
-                    .setLabel
-                (_("List of materials for all categories (select one to filter)"));
+            materialsCaption.setLabel(_("List of materials for all categories (select one to filter)"));
         }
     }
 
@@ -505,12 +470,13 @@ public class MaterialsController extends
     }
 
     private List<Material> getMaterials(Treeitem treeitem) {
-        final List<Material> result = new ArrayList<Material>();
+        final List<Material> result = new ArrayList<>();
         if (treeitem != null) {
             result.addAll(getMaterials((MaterialCategory) treeitem.getValue()));
         } else {
             result.addAll(materialsModel.getMaterials());
         }
+
         return result;
     }
 
@@ -524,8 +490,7 @@ public class MaterialsController extends
             Util.reloadBindings(gridMaterials);
         }
         else {
-            messagesForUser.showMessage(Level.ERROR,
-                    _("Cannot delete that material because it is assigned to a project."));
+            messagesForUser.showMessage(Level.ERROR, _("Cannot delete that material because it is assigned to a project."));
         }
     }
 
@@ -540,22 +505,21 @@ public class MaterialsController extends
     }
 
     /**
-     * RowRenderer for a @{UnitType} element
+     * RowRenderer for a @{UnitType} element.
+     *
      * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
      */
     public static class UnitTypeListRenderer implements ListitemRenderer {
         @Override
-        public void render(Listitem listItem, Object data) {
+        public void render(Listitem listItem, Object data, int i) {
             final UnitType unitType = (UnitType) data;
             listItem.setValue(unitType);
 
             Listcell listCell = new Listcell(unitType.getMeasure());
             listItem.appendChild(listCell);
 
-            Material material = (Material) ((Row) listItem.getListbox()
-                    .getParent()).getValue();
-            if ((material.getUnitType() != null)
-                    && (unitType.getId().equals(material.getUnitType().getId()))) {
+            Material material = ((Row) listItem.getListbox().getParent()).getValue();
+            if ((material.getUnitType() != null) && (unitType.getId().equals(material.getUnitType().getId()))) {
                 listItem.getListbox().setSelectedItem(listItem);
             }
         }

@@ -41,10 +41,8 @@ public class DetailThreeTimeTrackerState extends TimeTrackerStateWithSubinterval
 
     protected static final int SECOND_LEVEL_SIZE = 50;
 
-    DetailThreeTimeTrackerState(
-            IDetailItemModificator firstLevelModificator, IDetailItemModificator secondLevelModificator) {
-
-        super(firstLevelModificator, secondLevelModificator);
+    DetailThreeTimeTrackerState(IDetailItemModifier firstLevelModifier, IDetailItemModifier secondLevelModifier) {
+        super(firstLevelModifier, secondLevelModifier);
     }
 
     public final double daysPerPixel() {

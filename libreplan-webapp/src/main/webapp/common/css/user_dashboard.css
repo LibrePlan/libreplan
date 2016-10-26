@@ -1,6 +1,5 @@
 .timesheet .z-textbox {
-    background-image: none;
-    background-color: transparent;
+    background: transparent none;
     border: 0;
     margin: 0;
     text-align: center;
@@ -15,25 +14,33 @@
     border-left: 0;
 }
 
-.timesheet .z-textbox.z-textbox-disd {
-    background-color: #EEE;
-}
-
-.timesheet .z-textbox-disd  {
+.timesheet .z-textbox-disabled  {
     color: #000 !important;
 }
 
 .timesheet {
-    margin-top:5px;
     margin: 0;
     padding: 0;
 }
 
 .timesheet .totals-column,
-.timesheet .totals-column .z-column-cnt {
+.timesheet .totals-column .z-column-content {
     text-align: center;
 }
 
 .timesheet .total-row td {
     border-top: solid 1px #B1CBD5;
+}
+
+/* Correct display added orderElementRows in personal timesheet grid. Special for Vova!;) */
+.row-timetracking > td > div.z-row-content {
+    line-height: 14px;
+}
+
+.timesheet .z-row:hover > .z-row-inner, .z-row:hover > .z-cell {
+    background: none;
+}
+
+.timesheet .z-grid-odd td {
+    background: none;
 }

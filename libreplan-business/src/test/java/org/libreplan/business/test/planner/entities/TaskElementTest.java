@@ -69,15 +69,14 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
-        BUSINESS_SPRING_CONFIG_TEST_FILE })
+@ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE, BUSINESS_SPRING_CONFIG_TEST_FILE })
 public class TaskElementTest {
 
     @Resource
     private IDataBootstrap defaultAdvanceTypesBootstrapListener;
 
     @Before
-    public void loadRequiredaData() {
+    public void loadRequiredData() {
         defaultAdvanceTypesBootstrapListener.loadRequiredData();
     }
 
@@ -244,9 +243,8 @@ public class TaskElementTest {
         group.add(orderLine);
         TaskSource taskSource = asTaskSource(orderLine);
         Task task = Task.createTask(taskSource);
-        assertThat(task.getPositionConstraint(), allOf(
-                isOfType(PositionConstraintType.START_NOT_EARLIER_THAN),
-                hasValue(initDate)));
+        assertThat(task.getPositionConstraint(),
+                allOf(isOfType(PositionConstraintType.START_NOT_EARLIER_THAN), hasValue(initDate)));
     }
 
     @Test
@@ -264,7 +262,6 @@ public class TaskElementTest {
 
     private static Matcher<TaskPositionConstraint> isOfType(final PositionConstraintType type) {
         return new BaseMatcher<TaskPositionConstraint>() {
-
             @Override
             public boolean matches(Object object) {
                 if ( object instanceof TaskPositionConstraint ) {
@@ -288,10 +285,9 @@ public class TaskElementTest {
             public boolean matches(Object object) {
                 if ( object instanceof TaskPositionConstraint ) {
                     TaskPositionConstraint startConstraint = (TaskPositionConstraint) object;
-                    LocalDate constraintDate = startConstraint
-                            .getConstraintDate().toDateTimeAtStartOfDay()
-                            .toLocalDate();
+                    LocalDate constraintDate = startConstraint.getConstraintDate().toDateTimeAtStartOfDay().toLocalDate();
                     boolean bothNotNull = value != null && constraintDate != null;
+
                     return value == constraintDate || bothNotNull && constraintDate.equals(value);
                 }
                 return false;

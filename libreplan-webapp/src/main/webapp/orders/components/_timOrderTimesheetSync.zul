@@ -18,35 +18,35 @@
  -->
 
 <groupbox id="timGroupBox"
-    style="margin-top: 5px" closable="false">
+          style="margin-top: 5px" closable="false">
     <caption label="${i18n:_('Tim sync information')}" />
     <separator spacing="10px"/>
     <hbox width="100%">
         <separator spacing="10px" width="100%"/>
-        <grid fixedLayout="true" hflex="1">
+        <grid hflex="min">
             <columns>
                 <column width="200px" />
                 <column  />
             </columns>
             <rows>
-               <row>
-                   <label value="${i18n:_('Tim last sync')}"/>
-                   <hbox>
-                       <label id="labelLastSyncDate" value=""/>
-                       <separator bar="false" spacing="15px" orient="vertical"/>
-                       <label id="labelProductCode" value=""/>
-                   </hbox>
-               </row>
-               <row>
-                   <label value="${i18n:_('Tim product code')}"/>
-                   <hbox>
-                       <textbox id="txtProductCode" value=""
-                           width="350px"/>
-                       <button label="${i18n:_('Export to Tim')}" id="exportToTimButton"
-                           onClick="timSynchronizationController.startExportToTim()" />
-                   </hbox>
-               </row>
-           </rows>
-       </grid>
-   </hbox>
+                <row>
+                    <label value="${i18n:_('Tim last sync')}"/>
+                    <hbox>
+                        <label id="labelLastSyncDate" value=""/>
+                        <separator bar="false" spacing="15px" orient="vertical"/>
+                        <label id="labelProductCode" value=""/>
+                    </hbox>
+                </row>
+                <row>
+                    <label value="${i18n:_('Tim product code')}"/>
+                    <hbox>
+                        <textbox id="txtProductCode" value=""
+                                 width="350px"/>
+                        <button label="${i18n:_('Export to Tim')}" id="exportToTimButton"
+                                onClick="timSynchronizationController.startExportToTim()" />
+                    </hbox>
+                </row>
+            </rows>
+        </grid>
+    </hbox>
 </groupbox>

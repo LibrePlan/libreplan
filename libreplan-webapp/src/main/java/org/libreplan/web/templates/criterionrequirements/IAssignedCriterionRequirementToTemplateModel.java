@@ -26,11 +26,8 @@ import org.libreplan.web.orders.criterionrequirements.IAssignedCriterionRequirem
 import org.libreplan.web.templates.IOrderTemplatesModel;
 
 /**
- *
  * @author Diego Pino Garcia <dpino@igalia.com>
- *
  */
-public interface IAssignedCriterionRequirementToTemplateModel extends
-    IAssignedCriterionRequirementModel<OrderElementTemplate, IOrderTemplatesModel> {
-
+public interface IAssignedCriterionRequirementToTemplateModel
+        extends IAssignedCriterionRequirementModel<OrderElementTemplate, IOrderTemplatesModel> {
 }

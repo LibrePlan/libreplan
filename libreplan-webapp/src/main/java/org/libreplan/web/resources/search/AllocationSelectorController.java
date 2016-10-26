@@ -32,37 +32,51 @@ import org.libreplan.business.scenarios.IScenarioManager;
 import org.libreplan.web.common.components.ResourceAllocationBehaviour;
 import org.libreplan.web.planner.allocation.INewAllocationsAdder;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zkplus.spring.SpringUtil;
 
 /**
- * Controller for searching for {@link Resource}
+ * Controller for searching for {@link Resource}.
+ *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
-public abstract class AllocationSelectorController extends
-        GenericForwardComposer {
+public abstract class AllocationSelectorController extends GenericForwardComposer {
 
-    // injected by name
     protected IResourcesSearcher resourcesSearcher;
 
-    // injected by name
     protected IAdHocTransactionService adHocTransactionService;
 
-    // injected by name
     protected IResourceLoadRatiosCalculator resourceLoadRatiosCalculator;
 
-    // injected by name
     protected ResourceAllocationBehaviour behaviour;
 
-    // injected by name
     protected IScenarioManager scenarioManager;
 
     public AllocationSelectorController() {
+        if ( resourcesSearcher == null ) {
+            resourcesSearcher = (IResourcesSearcher) SpringUtil.getBean("resourcesSearcher");
+        }
 
+        if ( adHocTransactionService == null ) {
+            adHocTransactionService = (IAdHocTransactionService) SpringUtil.getBean("adHocTransactionService");
+        }
+
+        if ( resourceLoadRatiosCalculator == null ) {
+            resourceLoadRatiosCalculator =
+                    (IResourceLoadRatiosCalculator) SpringUtil.getBean("resourceLoadRatiosCalculator");
+        }
+
+        if ( behaviour == null ) {
+            behaviour = (ResourceAllocationBehaviour) SpringUtil.getBean("resourceAllocationBehaviour");
+        }
+
+        if ( scenarioManager == null ) {
+            scenarioManager = (IScenarioManager) SpringUtil.getBean("scenarioManager");
+        }
     }
 
     /**
-     * Returns list of selected {@link Criterion}, selects only those which are
-     * leaf nodes
-     * @return
+     * Returns list of selected {@link Criterion}, selects only those which are leaf nodes.
+     * @return {@link List<Criterion>}
      */
     public abstract List<Criterion> getSelectedCriterions();
 

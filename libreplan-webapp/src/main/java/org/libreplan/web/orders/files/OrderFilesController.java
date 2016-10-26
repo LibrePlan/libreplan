@@ -33,12 +33,12 @@ import org.libreplan.web.common.Util;
 import org.libreplan.web.common.MessagesForUser;
 import org.libreplan.web.orders.IOrderElementModel;
 import org.libreplan.web.security.SecurityUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.Fileupload;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
@@ -59,23 +59,17 @@ import java.util.Date;
 
 import static org.libreplan.web.I18nHelper._;
 
-
 /**
  * Controller for managing Order files.
  *
- * Created by
- * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
- * on 12.24.2015.
+ * @author Created by Vova Perebykivskyi <vova@libreplan-enterprise.com> on 12.24.2015.
  */
 
 public class OrderFilesController extends GenericForwardComposer {
 
-    // TODO refactor Autowired?
-    @Autowired
-    IConfigurationModel configurationModel;
+    private IConfigurationModel configurationModel;
 
-    @Autowired
-    IUserDAO userDAO;
+    private IUserDAO userDAO;
 
     private Component messagesContainer;
 
@@ -87,33 +81,38 @@ public class OrderFilesController extends GenericForwardComposer {
 
     private Listbox filesList;
 
+    public OrderFilesController() {
+        configurationModel = (IConfigurationModel) SpringUtil.getBean("configurationModel");
+        userDAO = (IUserDAO) SpringUtil.getBean("userDAO");
+        orderElementModel = (IOrderElementModel) SpringUtil.getBean("orderElementModel");
+        orderFileModel = (IOrderFileModel) SpringUtil.getBean("orderFileModel");
+    }
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        // TODO resolve deprecated
-        comp.setVariable("orderFilesController", this, true);
+        comp.setAttribute("orderFilesController", this, true);
         messages = new MessagesForUser(messagesContainer);
     }
 
-    public boolean isRepositoryExists() {
+    private boolean isRepositoryExists() {
         configurationModel.init();
 
         File repositoryDirectory = null;
-        if ( !(configurationModel.getRepositoryLocation() == null) )
+        if ( configurationModel.getRepositoryLocation() != null )
             repositoryDirectory = new File(configurationModel.getRepositoryLocation());
 
         return repositoryDirectory != null && repositoryDirectory.exists();
-
     }
 
-    public boolean isUploadButtonDisabled(){
+    public boolean isUploadButtonDisabled() {
         return !isRepositoryExists();
     }
 
-    public ListitemRenderer getFilesRenderer(){
+    public ListitemRenderer getFilesRenderer() {
         return new ListitemRenderer() {
             @Override
-            public void render(Listitem listitem, Object data) throws Exception {
+            public void render(Listitem listitem, Object data, int i) throws Exception {
                 final OrderFile file = (OrderFile) data;
 
                 Listcell nameCell = new Listcell();
@@ -152,6 +151,7 @@ public class OrderFilesController extends GenericForwardComposer {
 
                 Listcell operationsCell = new Listcell();
                 listitem.appendChild(operationsCell);
+
                 operationsCell.appendChild(Util.createRemoveButton(new EventListener() {
                     @Override
                     public void onEvent(Event event) throws Exception {
@@ -166,13 +166,13 @@ public class OrderFilesController extends GenericForwardComposer {
 
     public void confirmRemove(OrderFile file){
 
-        try {
-            int status = Messagebox.show(_("Confirm deleting this file. Are you sure?"), _("Delete"),
-                    Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION);
-            if ( Messagebox.OK != status ) {
-                return;
-            }
-        } catch (InterruptedException ignored) {}
+        int status = Messagebox.show(
+                _("Confirm deleting this file. Are you sure?"), _("Delete"),
+                Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION);
+
+        if ( Messagebox.OK != status ) {
+            return;
+        }
 
 
         if ( isRepositoryExists() ) {
@@ -205,11 +205,15 @@ public class OrderFilesController extends GenericForwardComposer {
 
     }
 
+    /**
+     * Should be public!
+     * Used in _listOrderElementFiles.zul
+     */
     public void upload() {
         configurationModel.init();
 
         String directory;
-        if ( isRepositoryExists() ){
+        if ( isRepositoryExists() ) {
 
             String projectCode = orderElementModel.getOrderElement().getCode();
             directory = configurationModel.getRepositoryLocation() + "orders" + "/" + projectCode;
@@ -217,7 +221,6 @@ public class OrderFilesController extends GenericForwardComposer {
             try {
                 // Location of file: libreplan-webapp/src/main/webapp/planner/fileupload.zul
                 Fileupload.setTemplate("fileupload.zul");
-
 
                 Media media = Fileupload.get();
 
@@ -230,10 +233,11 @@ public class OrderFilesController extends GenericForwardComposer {
 
                 OutputStream outputStream = new FileOutputStream(file);
 
-                InputStream inputStream = media.isBinary() ? (media.getStreamData()) :
-                        (new ReaderInputStream(media.getReaderData()));
+                InputStream inputStream = media.isBinary()
+                        ? media.getStreamData()
+                        : new ReaderInputStream(media.getReaderData());
 
-                if ( inputStream != null ){
+                if ( inputStream != null ) {
                     byte[] buffer = new byte[1024];
                     for ( int count; (count = inputStream.read(buffer)) != -1; )
                         outputStream.write(buffer, 0, count);
@@ -241,8 +245,10 @@ public class OrderFilesController extends GenericForwardComposer {
 
                 outputStream.flush();
                 outputStream.close();
-                inputStream.close();
 
+                if (inputStream != null) {
+                    inputStream.close();
+                }
 
                 orderFileModel.createNewFileObject();
                 orderFileModel.setFileName(FilenameUtils.getBaseName(media.getName()));
@@ -268,11 +274,11 @@ public class OrderFilesController extends GenericForwardComposer {
 
     /**
      * This method is a:
-     * 1. setter for current opened {@link org.libreplan.business.orders.entities.Order}
-     * 2. setter for model of ListBox of files
+     * 1. Setter for current opened {@link org.libreplan.business.orders.entities.Order}.
+     * 2. Setter for model of ListBox of files.
      *
      * The easiest way is to set a model in zul file, but its setter was invoking before
-     * setter of current {@link org.libreplan.business.orders.entities.Order}
+     * setter of current {@link org.libreplan.business.orders.entities.Order}.
      */
     public void openWindow(IOrderElementModel orderElementModel) {
         setOrderElementModel(orderElementModel);
@@ -282,16 +288,17 @@ public class OrderFilesController extends GenericForwardComposer {
     }
 
     /**
-     * Listbox is updating after re set the model for it
+     * Listbox is updating after re set the model for it.
      */
     private void updateListbox(){
         OrderElement currentOrder = orderElementModel.getOrderElement();
-        filesList.setModel(new ListModelList(orderFileModel.findByParent(currentOrder)));
+        filesList.setModel(new ListModelList<>(orderFileModel.findByParent(currentOrder)));
     }
 
     public IOrderElementModel getOrderElementModel() {
         return orderElementModel;
     }
+
     public void setOrderElementModel(IOrderElementModel orderElementModel) {
         this.orderElementModel = orderElementModel;
     }

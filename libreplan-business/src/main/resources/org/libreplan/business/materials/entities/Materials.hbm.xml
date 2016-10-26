@@ -83,7 +83,7 @@
     </class>
 
     <!-- MaterialAssignment -->
-    <class name="MaterialAssignment" table="material_assigment">
+    <class name="MaterialAssignment" table="material_assignment">
         <id name="id" type="long" access="property">
             <generator class="increment">
                 <param name="max_lo">100</param>
@@ -108,11 +108,11 @@
 
         <!-- Indexed. -->
         <many-to-one name="orderElement" class="org.libreplan.business.orders.entities.OrderElement"
-                     column="order_element_id" index="idx_material_assigment_on_order_element"/>
+                     column="order_element_id" index="idx_material_assignment_on_order_element"/>
 
     </class>
 
-    <class name="MaterialAssignmentTemplate" table="material_assigment_template">
+    <class name="MaterialAssignmentTemplate" table="material_assignment_template">
         <id name="id" type="long" access="property">
             <generator class="increment">
                 <param name="max_lo">100</param>
@@ -129,7 +129,7 @@
 
         <!-- Indexed -->
         <many-to-one name="orderElementTemplate" class="org.libreplan.business.templates.entities.OrderElementTemplate"
-                     column="order_element_template_id" index="idx_material_assigment_template_on_order_element"/>
+                     column="order_element_template_id" index="idx_material_assignment_template_on_order_element"/>
 
     </class>
 

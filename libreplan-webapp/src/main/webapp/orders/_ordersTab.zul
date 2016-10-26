@@ -21,30 +21,31 @@
 <?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n"?>
 <?component name="list" inline="true" macroURI="_list.zul"?>
 <zk>
-<zscript><![CDATA[
-    orderController = arg.get("orderController");
-]]>
-</zscript>
+    <zscript>
+        <![CDATA[
+            orderController = arg.get("orderController");
+        ]]>
+    </zscript>
     <borderlayout sclass="orderslayout" width="auto" apply="${orderController}">
-       <north height="30px" border="0" sclass="toolbar-box">
-       <hbox align="center" id="toolbar">
+        <north height="30px" border="0" sclass="toolbar-box">
+            <hbox align="center" id="toolbar">
 
-            <button id="saveOrderAndContinueButton"  image="/common/img/ico_save.png" sclass="planner-icon"
-                tooltiptext="${i18n:_('Save Project')}" />
+                <button id="saveOrderAndContinueButton"  image="/common/img/ico_save.png" sclass="planner-icon"
+                        tooltiptext="${i18n:_('Save Project')}" />
 
-            <button id="cancelEditionButton"  image="/common/img/ico_back.png" sclass="planner-icon"
-                tooltiptext="${i18n:_('Cancel editing')}" />
+                <button id="cancelEditionButton"  image="/common/img/ico_back.png" sclass="planner-icon"
+                        tooltiptext="${i18n:_('Cancel editing')}" />
 
-            <hbox id="orderFilter" visible="false"/>
-            <vbox id="orderElementFilter" />
-       </hbox>
-       </north>
+                <hbox id="orderFilter" visible="false"/>
+                <vbox id="orderElementFilter" />
+            </hbox>
+        </north>
 
-        <center border="0" class="orderslayout-area">
+        <center border="0" sclass="orderslayout-area">
             <div>
                 <vbox id="messagesContainer" />
                 <list top_id="listWindow" />
             </div>
         </center>
-</borderlayout>
+    </borderlayout>
 </zk>

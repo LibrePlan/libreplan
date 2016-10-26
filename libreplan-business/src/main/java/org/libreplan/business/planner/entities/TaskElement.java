@@ -673,7 +673,7 @@ public abstract class TaskElement extends BaseEntity {
 
     public void removeDayAssignmentsFor(Scenario scenario) {
         for (ResourceAllocation<?> each : getAllResourceAllocations()) {
-            each.removeDayAssigmentsFor(scenario);
+            each.removeDayAssignmentsFor(scenario);
         }
     }
 

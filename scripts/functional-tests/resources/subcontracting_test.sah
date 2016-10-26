@@ -113,7 +113,7 @@ function subcontractingDeleteValidation(){
 /* test values */
 var $companyName = "subcompany";
 var $companyId = "COMPANY_CODE";
-var $projectName = "projectToBeSubcontrated";
+var $projectName = "projectToBeSubcontracted";
 var $subProjectName = "SomeDescription";
 var $taskName = "taskforsubcontract";
 var $taskHour =  "100";

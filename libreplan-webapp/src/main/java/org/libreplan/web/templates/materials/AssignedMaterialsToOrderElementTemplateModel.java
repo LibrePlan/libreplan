@@ -40,12 +40,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
- *
  */
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
-public class AssignedMaterialsToOrderElementTemplateModel extends
-        AssignedMaterialsModel<OrderElementTemplate, MaterialAssignmentTemplate>
+public class AssignedMaterialsToOrderElementTemplateModel
+        extends AssignedMaterialsModel<OrderElementTemplate, MaterialAssignmentTemplate>
         implements IAssignedMaterialsToOrderElementTemplateModel {
 
     @Autowired
@@ -54,8 +53,7 @@ public class AssignedMaterialsToOrderElementTemplateModel extends
     private OrderElementTemplate template;
 
     @Override
-    protected MaterialCategory addAssignment(
-            MaterialAssignmentTemplate materialAssignment) {
+    protected MaterialCategory addAssignment(MaterialAssignmentTemplate materialAssignment) {
         template.addMaterialAssignment(materialAssignment);
         return materialAssignment.getMaterial().getCategory();
     }
@@ -63,8 +61,7 @@ public class AssignedMaterialsToOrderElementTemplateModel extends
     @Override
     @Transactional(readOnly = true)
     public void addMaterialAssignment(Material material) {
-        MaterialAssignmentTemplate materialAssignmentTemplate = MaterialAssignmentTemplate
-                .create(template, material);
+        MaterialAssignmentTemplate materialAssignmentTemplate = MaterialAssignmentTemplate.create(template, material);
         addMaterialAssignment(materialAssignmentTemplate);
     }
 
@@ -76,8 +73,7 @@ public class AssignedMaterialsToOrderElementTemplateModel extends
 
     @Override
     protected List<MaterialAssignmentTemplate> getAssignments() {
-        return new ArrayList<MaterialAssignmentTemplate>(template
-                .getMaterialAssignments());
+        return new ArrayList<>(template.getMaterialAssignments());
     }
 
     @Override
@@ -91,17 +87,16 @@ public class AssignedMaterialsToOrderElementTemplateModel extends
     }
 
     @Override
-    protected BigDecimal getUnits(MaterialAssignmentTemplate assigment) {
-        return assigment.getUnits();
+    protected BigDecimal getUnits(MaterialAssignmentTemplate assignment) {
+        return assignment.getUnits();
     }
 
     @Override
-    protected void initializeMaterialAssigments() {
-        initializeMaterialAssigments(getAssignments());
+    protected void initializeMaterialAssignments() {
+        initializeMaterialAssignments(getAssignments());
     }
 
-    private void initializeMaterialAssigments(
-            Collection<MaterialAssignmentTemplate> materialAssignments) {
+    private void initializeMaterialAssignments(Collection<MaterialAssignmentTemplate> materialAssignments) {
         for (MaterialAssignmentTemplate each : materialAssignments) {
             each.getUnits();
             reattachMaterial(each.getMaterial());
@@ -115,8 +110,7 @@ public class AssignedMaterialsToOrderElementTemplateModel extends
     }
 
     @Override
-    protected MaterialCategory removeAssignment(
-            MaterialAssignmentTemplate materialAssignment) {
+    protected MaterialCategory removeAssignment(MaterialAssignmentTemplate materialAssignment) {
         template.removeMaterialAssignment(materialAssignment);
         return materialAssignment.getMaterial().getCategory();
     }
@@ -127,17 +121,17 @@ public class AssignedMaterialsToOrderElementTemplateModel extends
     }
 
     @Override
-    public void removeMaterialAssignment(
-            MaterialAssignmentTemplate materialAssignment) {
+    public void removeMaterialAssignment(MaterialAssignmentTemplate materialAssignment) {
         template.removeMaterialAssignment(materialAssignment);
     }
 
     @Override
-    public boolean isCurrentUnitType(Object assigment, UnitType unitType) {
-        MaterialAssignmentTemplate material = (MaterialAssignmentTemplate) assigment;
-        return ((material != null)
-                && (material.getMaterial().getUnitType() != null) && (unitType
-                .getId().equals(material.getMaterial().getUnitType().getId())));
+    public boolean isCurrentUnitType(Object assignment, UnitType unitType) {
+        MaterialAssignmentTemplate material = (MaterialAssignmentTemplate) assignment;
+
+        return ((material != null) &&
+                (material.getMaterial().getUnitType() != null) &&
+                (unitType.getId().equals(material.getMaterial().getUnitType().getId())));
     }
 
 }

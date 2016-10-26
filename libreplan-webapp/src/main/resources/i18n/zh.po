@@ -210,7 +210,7 @@ msgstr "无截止日期"
 msgid "Project Scheduling"
 msgstr "项目计划"
 
-#: libreplan-business/src/main/java/org/libreplan/business/workreports/entities/WorkReportLabelTypeAssigment.java:61
+#: libreplan-business/src/main/java/org/libreplan/business/workreports/entities/WorkReportLabelTypeAssignment.java:61
 msgid "label type not specified"
 msgstr "不指定标签类型"
 
@@ -512,7 +512,7 @@ msgid "Total estimated hours"
 msgstr "估计总额小时"
 
 #: libreplan-webapp/src/main/webapp/common/error.zul:21
-#: libreplan-webapp/src/main/webapp/common/event_error.zul:22
+#: libreplan-webapp/src/main/webapp/common/eventError.zul:22
 msgid "LibrePlan: Runtime Error"
 msgstr "LibrePlan：运行时错误"
 
@@ -806,7 +806,7 @@ msgstr "前任"
 msgid "Not workable day"
 msgstr "没有可行的一天"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/streches/StretchesFunctionModel.java:172
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/stretches/StretchesFunctionModel.java:172
 msgid "Some stretch has higher or equal values than the previous stretch"
 msgstr "有一些拉伸值高于或等于比以前的拉伸"
 
@@ -1007,7 +1007,7 @@ msgstr "结束日期"
 msgid "There is not any assigned progress to current task"
 msgstr "没有任何分配到当前的任务方面取得的进展"
 
-#: libreplan-webapp/src/main/webapp/common/page_not_found.zul:22
+#: libreplan-webapp/src/main/webapp/common/pageNotFound.zul:22
 msgid "LibrePlan: Page not found"
 msgstr "LibrePlan：找不到网页"
 
@@ -1252,7 +1252,7 @@ msgstr "重复的项目代码{0}项目{1}"
 msgid "End date is not valid, the new end date must be after start date"
 msgstr "结束日期是无效的，新的结束日期必须在开始日期"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/streches/StretchesFunctionModel.java:284
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/stretches/StretchesFunctionModel.java:284
 msgid "Stretch date must not be before task start date: "
 msgstr "伸展日期不得早于任务开始日期："
 
@@ -1507,7 +1507,7 @@ msgid ""
 "Spread progress cannot be removed. Please select another progress as spread."
 msgstr "传播进步不能被删除。请选择另一个进步为传播。"
 
-#: libreplan-webapp/src/main/webapp/common/concurrent_modification.zul:34
+#: libreplan-webapp/src/main/webapp/common/concurrentModification.zul:34
 msgid "Please try it again."
 msgstr "请再试一次。"
 
@@ -1535,7 +1535,7 @@ msgstr "密码不能为空"
 msgid "Task {0}"
 msgstr "任务{0}"
 
-#: libreplan-webapp/src/main/webapp/common/access_forbidden.zul:40
+#: libreplan-webapp/src/main/webapp/common/accessForbidden.zul:40
 msgid ""
 "Please try to contact with any administrator in order to review your "
 "permissions in LibrePlan."
@@ -2045,7 +2045,7 @@ msgid "criterion names must be unique inside a criterion  type"
 msgstr "标准名称必须是唯一的标准型内"
 
 #: libreplan-webapp/src/main/webapp/common/error.zul:44
-#: libreplan-webapp/src/main/webapp/common/event_error.zul:39
+#: libreplan-webapp/src/main/webapp/common/eventError.zul:39
 msgid "Status code"
 msgstr "状态代码"
 
@@ -2483,7 +2483,7 @@ msgstr "任务完成"
 msgid "Must start after (days since project start)"
 msgstr "必须从（日以来，项目启动后）"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/streches/StretchesFunctionController.java:129
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/stretches/StretchesFunctionController.java:129
 msgid "Confirm cancel"
 msgstr "确认取消"
 
@@ -2588,7 +2588,7 @@ msgid "Overload"
 msgstr "超载"
 
 #: libreplan-business/src/main/java/org/libreplan/business/planner/entities/SubcontractorCommunication.java:76
-msgid "subcontrated task data not specified"
+msgid "subcontracted task data not specified"
 msgstr "未指定的subcontrated任务数据"
 
 #: libreplan-webapp/src/main/webapp/templates/_editTemplate.zul:50
@@ -2637,11 +2637,11 @@ msgid ""
 "items."
 msgstr "每一个日期必须大于以前的工作质量的表单项目的日期。"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/streches/StretchesFunctionModel.java:290
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/stretches/StretchesFunctionModel.java:290
 msgid "Stretch date must be earlier than End date: "
 msgstr "拉伸日期必须早于结束日期："
 
-#: libreplan-webapp/src/main/webapp/common/access_forbidden.zul:38
+#: libreplan-webapp/src/main/webapp/common/accessForbidden.zul:38
 msgid "You do not have permissions to access to this page."
 msgstr "您没有权限访问此页。"
 
@@ -2996,7 +2996,7 @@ msgstr "材料保存"
 msgid "Total Worked Hours By Resource In A Month"
 msgstr "在一个月内通过资源的总工作小时"
 
-#: libreplan-webapp/src/main/webapp/common/access_forbidden.zul:20
+#: libreplan-webapp/src/main/webapp/common/accessForbidden.zul:20
 msgid "LibrePlan: Access Forbidden"
 msgstr "LibrePlan：拒绝访问"
 
@@ -3315,7 +3315,7 @@ msgstr "日期"
 msgid "Units"
 msgstr "单位"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/streches/StretchesFunctionModel.java:168
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/stretches/StretchesFunctionModel.java:168
 #: libreplan-business/src/main/java/org/libreplan/business/planner/entities/StretchesFunction.java:309
 msgid "At least one stretch is needed"
 msgstr "中的至少一个需要拉伸"
@@ -3393,8 +3393,8 @@ msgstr "继承的例外"
 msgid "Authorizations"
 msgstr "授权"
 
-#: libreplan-webapp/src/main/webapp/common/concurrent_modification.zul:36
-#: libreplan-webapp/src/main/webapp/common/event_error.zul:49
+#: libreplan-webapp/src/main/webapp/common/concurrentModification.zul:36
+#: libreplan-webapp/src/main/webapp/common/eventError.zul:49
 msgid "Continue"
 msgstr "继续"
 
@@ -3669,7 +3669,7 @@ msgstr "日历例外日"
 msgid "Time tracking"
 msgstr "实时跟踪"
 
-#: libreplan-webapp/src/main/webapp/common/page_not_found.zul:43
+#: libreplan-webapp/src/main/webapp/common/pageNotFound.zul:43
 msgid ""
 "If you entered the URL directly in the navigation bar of the browser, please"
 " review it or click in the following link in order to go to initial page: "
@@ -4781,7 +4781,7 @@ msgstr "{0} H"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/order/SaveCommandBuilder.java:343
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/taskedition/TaskPropertiesController.java:351
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/streches/StretchesFunctionController.java:121
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/stretches/StretchesFunctionController.java:121
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/AdvancedAllocationController.java:1312
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/criterionrequirements/AssignedCriterionRequirementController.java:403
 #: libreplan-webapp/src/main/java/org/libreplan/web/limitingresources/LimitingResourcesController.java:628
@@ -5211,7 +5211,7 @@ msgid "User disabled"
 msgstr "用户已禁用"
 
 #: libreplan-webapp/src/main/webapp/common/error.zul:40
-#: libreplan-webapp/src/main/webapp/common/event_error.zul:35
+#: libreplan-webapp/src/main/webapp/common/eventError.zul:35
 msgid "Exception type"
 msgstr "异常类型"
 
@@ -5224,7 +5224,7 @@ msgid "Association with profiles"
 msgstr "协会与配置文件"
 
 #: libreplan-webapp/src/main/webapp/common/error.zul:30
-#: libreplan-webapp/src/main/webapp/common/event_error.zul:25
+#: libreplan-webapp/src/main/webapp/common/eventError.zul:25
 msgid "Message - {0}"
 msgstr "留言 - {0}"
 
@@ -5555,11 +5555,11 @@ msgstr "名称是无效的，还有另一种具有相同名称的类型进展。
 msgid "task"
 msgstr "任务"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/streches/StretchesFunctionController.java:128
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/stretches/StretchesFunctionController.java:128
 msgid "All changes will be lost. Are you sure?"
 msgstr "所有更改都将丢失。你确定吗？"
 
-#: libreplan-webapp/src/main/webapp/common/page_not_found.zul:51
+#: libreplan-webapp/src/main/webapp/common/pageNotFound.zul:51
 msgid "Sorry for the inconvenience."
 msgstr "很抱歉给您带来不便。"
 
@@ -5838,7 +5838,7 @@ msgid ""
 "Epiphany."
 msgstr "请使用兼容的浏览器：Chrome，火狐，Safari或顿悟。"
 
-#: libreplan-webapp/src/main/webapp/common/concurrent_modification.zul:33
+#: libreplan-webapp/src/main/webapp/common/concurrentModification.zul:33
 msgid ""
 "Another user has modified the same data, so the operation cannot be safely "
 "completed."
@@ -5884,7 +5884,7 @@ msgid "Group"
 msgstr "组"
 
 #: libreplan-webapp/src/main/webapp/common/error.zul:55
-#: libreplan-webapp/src/main/webapp/common/event_error.zul:51
+#: libreplan-webapp/src/main/webapp/common/eventError.zul:51
 msgid "Exit session"
 msgstr "退出会话"
 
@@ -5950,7 +5950,7 @@ msgstr "未指定的长度"
 msgid "Track time"
 msgstr "跟踪时间"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/streches/StretchesFunctionModel.java:182
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/stretches/StretchesFunctionModel.java:182
 msgid "There must be at least 2 stretches for doing interpolation"
 msgstr "必须有至少2伸展做插值"
 
@@ -6078,7 +6078,7 @@ msgid "generic machines allocation"
 msgstr "通用机分配"
 
 #: libreplan-webapp/src/main/webapp/subcontract/subcontractorCommunications.zul:53
-msgid "Subcontrated task"
+msgid "Subcontracted task"
 msgstr "Subcontrated任务"
 
 #: libreplan-webapp/src/main/webapp/planner/montecarlo_function.zul:68
@@ -6189,7 +6189,7 @@ msgstr "未分配已经完成"
 msgid "Total hours task"
 msgstr "任务的总时数"
 
-#: libreplan-webapp/src/main/webapp/common/page_not_found.zul:49
+#: libreplan-webapp/src/main/webapp/common/pageNotFound.zul:49
 msgid ""
 "If you reached this page from another page of LibrePlan please notify us in "
 "order to fix it as soon as possible."
@@ -6487,7 +6487,7 @@ msgstr "一切进步的类型已经被分配。"
 msgid "Price per hour"
 msgstr "价格每小时"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/streches/StretchesFunctionModel.java:177
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/stretches/StretchesFunctionModel.java:177
 msgid "Last stretch should have 100% for length and amount of work"
 msgstr "最后一段应该有100% 的长度和工作"
 
@@ -6692,13 +6692,13 @@ msgstr "LibrePlan：用户帐号"
 msgid "Budget in money"
 msgstr "财政预算案中钱"
 
-#: libreplan-webapp/src/main/webapp/common/access_forbidden.zul:45
-#: libreplan-webapp/src/main/webapp/common/page_not_found.zul:45
+#: libreplan-webapp/src/main/webapp/common/accessForbidden.zul:45
+#: libreplan-webapp/src/main/webapp/common/pageNotFound.zul:45
 msgid "Go to init"
 msgstr "进入到init"
 
 #: libreplan-webapp/src/main/webapp/common/error.zul:54
-#: libreplan-webapp/src/main/webapp/common/event_error.zul:50
+#: libreplan-webapp/src/main/webapp/common/eventError.zul:50
 msgid "Reload"
 msgstr "刷新"
 
@@ -7082,7 +7082,7 @@ msgstr "所报告的质量形式的进展，不能修改"
 msgid "LibrePlan: Main Settings"
 msgstr "LibrePlan：主要设置"
 
-#: libreplan-business/src/main/java/org/libreplan/business/workreports/entities/WorkReportLabelTypeAssigment.java:64
+#: libreplan-business/src/main/java/org/libreplan/business/workreports/entities/WorkReportLabelTypeAssignment.java:64
 msgid "default label not specified"
 msgstr "未指定默认标签"
 
@@ -7224,8 +7224,8 @@ msgstr "无效的队列元素"
 #: libreplan-webapp/src/main/java/org/libreplan/web/limitingresources/ManualAllocationController.java:576
 #: libreplan-webapp/src/main/java/org/libreplan/web/limitingresources/ManualAllocationController.java:585
 #: libreplan-webapp/src/main/java/org/libreplan/web/limitingresources/ManualAllocationController.java:593
-msgid "Unnasigned"
-msgstr "Unnasigned"
+msgid "Unassigned"
+msgstr "Unassigned"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/dashboard/DashboardController.java:236
 #: libreplan-webapp/src/main/java/org/libreplan/web/dashboard/DashboardController.java:263
@@ -7257,7 +7257,7 @@ msgstr "资源名称（资源代码）"
 msgid "Virtual worker"
 msgstr "虚拟工作者"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/streches/StretchesFunctionController.java:343
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/stretches/StretchesFunctionController.java:343
 msgid "Length percentage should be between 0 and 100"
 msgstr "长度比例应为0和100之间"
 
@@ -7377,7 +7377,7 @@ msgstr "编辑"
 msgid "Responsible"
 msgstr "负责"
 
-#: libreplan-webapp/src/main/webapp/common/access_forbidden.zul:43
+#: libreplan-webapp/src/main/webapp/common/accessForbidden.zul:43
 msgid "Click the following link to return to home page: "
 msgstr "点击以下链接返回首页："
 
@@ -7710,7 +7710,7 @@ msgid "Add"
 msgstr "加"
 
 #: libreplan-webapp/src/main/webapp/common/error.zul:48
-#: libreplan-webapp/src/main/webapp/common/event_error.zul:43
+#: libreplan-webapp/src/main/webapp/common/eventError.zul:43
 msgid "Stacktrace"
 msgstr "堆栈跟踪"
 
@@ -7757,7 +7757,7 @@ msgstr "任务"
 msgid "Filter by categories or materials"
 msgstr "按类别或材料筛选"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/streches/StretchesFunctionController.java:389
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/stretches/StretchesFunctionController.java:389
 msgid "Amount work percentage should be between 0 and 100"
 msgstr "金额的比例应是介于0和100之间"
 
@@ -7899,7 +7899,7 @@ msgstr "分包合同价格"
 msgid "Send To Customers"
 msgstr "发送给客户"
 
-#: libreplan-webapp/src/main/webapp/common/page_not_found.zul:40
+#: libreplan-webapp/src/main/webapp/common/pageNotFound.zul:40
 msgid "The page that you are requesting does not exist."
 msgstr "您所请求的页面不存在。"
 
@@ -8064,7 +8064,7 @@ msgstr "未指定开始日期"
 #: libreplan-webapp/src/main/java/org/libreplan/web/costcategories/ResourcesCostCategoryAssignmentController.java:143
 #: libreplan-webapp/src/main/java/org/libreplan/web/costcategories/ResourcesCostCategoryAssignmentController.java:162
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/order/SubcontractController.java:210
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/streches/StretchesFunctionController.java:408
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/stretches/StretchesFunctionController.java:408
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/ResourceAllocationController.java:648
 #: libreplan-webapp/src/main/java/org/libreplan/web/reports/HoursWorkedPerWorkerController.java:270
 #: libreplan-webapp/src/main/java/org/libreplan/web/calendars/BaseCalendarEditionController.java:894

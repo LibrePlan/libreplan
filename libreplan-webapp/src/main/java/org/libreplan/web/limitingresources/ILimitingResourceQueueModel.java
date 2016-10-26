@@ -21,7 +21,6 @@
 
 package org.libreplan.web.limitingresources;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -37,21 +36,20 @@ import org.zkoss.ganttz.util.Interval;
 /**
  * Contains operations for showing {@link LimitingResourceQueue} and its
  * elements ({@link LimitingResourceQueueElement}), plus showing all
- * {@link LimitingResourceQueueElement} which are not assigned to any
- * {@link LimitingResourceQueue}
+ * {@link LimitingResourceQueueElement} which are not assigned to any {@link LimitingResourceQueue}.
  *
  * <strong>Conversational protocol:</strong>
- * <ul>
- * <li>
- * Initial conversation step: <code>initGlobalView</code></li>
- * <li>
- * Intermediate conversation steps:
- * <code>assignLimitingResourceQueueElement</code>,
- * <code>getLimitingResourceQueues</code>,
- * <code>getUnassignedLimitingResourceQueueElements</code></li>
- * <li>
- * Final conversation step: <code>confirm</code></li>
  *
+ * <ul>
+ *     <li>Initial conversation step: <code>initGlobalView</code></li>
+ *     <li>
+ *         Intermediate conversation steps:
+ *         <code>assignLimitingResourceQueueElement</code>,
+ *         <code>getLimitingResourceQueues</code>,
+ *         <code>getUnassignedLimitingResourceQueueElements</code>
+ *     </li>
+ *     <li>Final conversation step: <code>confirm</code></li>
+ * </ul>
  *
  * @author Diego Pino Garcia <dpino@igalia.com>
  *
@@ -62,23 +60,23 @@ public interface ILimitingResourceQueueModel {
             LimitingResourceQueueElement element, LimitingResourceQueue queue, DateAndHour time);
 
     /**
-     * Assigns a {@link LimitingResourceQueueElement} to its corresponding
-     * {@link LimitingResourceQueue} There is one and only one queue for every
-     * limiting resource. An element is assigned to its queue searching by
-     * element.resource. Allocation within the queue is done by finding the
-     * first gap in the queue that fits the initial intented hours assigned to
-     * element.resourceallocation. The method also generates
-     * {@link DayAssignment} once the allocation is done Returns the inserted
-     * queue elements. More than one can be inserted because inserting
-     * <code>element</code> can imply to move its sucessors.<br />
-     * The only case were an allocation cannot be done is if there's not any
-     * queue that can hold the element (only for a generic allocation, there's
-     * not any queue that matches the criteria of the element). In this case an
-     * empty list is returned
+     * Assigns a {@link LimitingResourceQueueElement} to its corresponding {@link LimitingResourceQueue}.
+     * There is one and only one queue for every limiting resource.
+     * An element is assigned to its queue searching by element.resource.
+     * Allocation within the queue is done by finding the
+     * first gap in the queue that fits the initial intented hours assigned to element.resourceallocation.
+     *
+     * The method also generates
+     * {@link DayAssignment} once the allocation is done Returns the inserted queue elements.
+     * More than one can be inserted because inserting <code>element</code> can imply to move its successors.
+     * <br />
+     * The only case were an allocation cannot be done is if there's not any queue that can hold the element
+     * (only for a generic allocation, there's not any queue that matches the criteria of the element).
+     * In this case an empty list is returned.
+     *
      * @param element
      */
-    List<LimitingResourceQueueElement> assignLimitingResourceQueueElement(
-            LimitingResourceQueueElement element);
+    List<LimitingResourceQueueElement> assignLimitingResourceQueueElement(LimitingResourceQueueElement element);
 
     ZoomLevel calculateInitialZoomLevel();
 
@@ -87,8 +85,7 @@ public interface ILimitingResourceQueueModel {
      */
     void confirm();
 
-    List<LimitingResourceQueue> getAssignableQueues(
-            LimitingResourceQueueElement element);
+    List<LimitingResourceQueue> getAssignableQueues(LimitingResourceQueueElement element);
 
     LimitingResourceQueueElement getLimitingResourceQueueElement();
 
@@ -114,30 +111,30 @@ public interface ILimitingResourceQueueModel {
     void init(LimitingResourceQueueElement element);
 
     /**
-     * Loads {@link LimitingResourceQueue} and unassigned {@link LimitingResourceQueueElement} from DB
+     * Loads {@link LimitingResourceQueue} and unassigned {@link LimitingResourceQueueElement} from DB.
      */
     void initGlobalView();
 
     /**
-     * Inserts element into queue at a specific time
+     * Inserts element into queue at a specific time.
      *
      * If it's not possible to insert element at that time because there's no
      * room, for instance, then the task that is at that moment occupying that
-     * space is moved it to the end of the queue. This process is done
-     * recursively until there's room enough for holding the element to insert
+     * space is moved it to the end of the queue.
+     * This process is done recursively until there's room enough for holding the element to insert.
      *
      * @param element
      * @param queue
      * @param allocationTime
      */
     Set<LimitingResourceQueueElement> appropriativeAllocation(
-            LimitingResourceQueueElement element, LimitingResourceQueue queue,
+            LimitingResourceQueueElement element,
+            LimitingResourceQueue queue,
             DateAndHour allocationTime);
 
     LimitingResourceQueueElement unschedule(LimitingResourceQueueElement element);
 
-    void removeUnassignedLimitingResourceQueueElement(
-            LimitingResourceQueueElement element);
+    void removeUnassignedLimitingResourceQueueElement(LimitingResourceQueueElement element);
 
     boolean userCanRead(Order order, String loginName);
 
@@ -145,7 +142,6 @@ public interface ILimitingResourceQueueModel {
             LimitingResourceQueueElement oldElement,
             LimitingResourceQueueElement newElement);
 
-    Set<LimitingResourceQueueElement> assignLimitingResourceQueueElements(
-            List<LimitingResourceQueueElement> elements);
+    Set<LimitingResourceQueueElement> assignLimitingResourceQueueElements(List<LimitingResourceQueueElement> elements);
 
 }

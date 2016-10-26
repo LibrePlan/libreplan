@@ -49,21 +49,25 @@ import org.libreplan.business.workingday.ResourcesPerDay;
 
 /**
  * Handles all the logic related to allocation of
- * {@link LimitingResourceQueueElement} into {@link LimitingResourceQueue}
+ * {@link LimitingResourceQueueElement} into {@link LimitingResourceQueue}.
  *
- * The class does not do the allocation itself but provides methods:
- * <em>getFirstValidGap</em>, <em>calculateStartAndEndTime</em> or
- * <em>generateDayAssignments</em>, needed to do the allocation of
- * {@link LimitingResourceQueueElement}
+ * The class does not do the allocation itself but provides methods
+ * needed to do the allocation of {@link LimitingResourceQueueElement}:
+ * <ul>
+ *     <li><em>getFirstValidGap</em></li>
+ *     <li><em>calculateStartAndEndTime</em></li>
+ *     <li><em>generateDayAssignments</em></li>
+ * </ul>
+ *
  *
  * @author Diego Pino Garcia <dpino@igalia.com>
- *
  */
 public class LimitingResourceAllocator {
 
     private static final class UntilEndAndEffort extends UntilEnd {
 
         private final EffortDuration goal;
+
         private EffortDuration currentDuration = zero();
 
         private UntilEndAndEffort(IntraDayDate endExclusive, EffortDuration goal) {
@@ -90,16 +94,15 @@ public class LimitingResourceAllocator {
     private final static ResourcesPerDay ONE_RESOURCE_PER_DAY = ResourcesPerDay.amount(new BigDecimal(1));
 
     /**
-     * Returns first valid gap in queue for element
+     * Returns first valid gap in queue for element.
      *
-     * Returns null if there is not a valid gap. This case can only happen on
-     * trying to allocate an element related to a generic resource allocation.
-     * It is possible that queue.resource does not hold element.criteria at any
-     * interval of time
+     * Returns null if there is not a valid gap.
+     * This case can only happen on trying to allocate an element related to a generic resource allocation.
+     * It is possible that queue.resource does not hold element.criteria at any interval of time.
      *
      * @param queue search gap inside queue
      * @param element element to fit into queue
-     * @return
+     * @return {@link Gap}
      */
     public static Gap getFirstValidGap(LimitingResourceQueue queue, LimitingResourceQueueElement element) {
 
@@ -112,8 +115,7 @@ public class LimitingResourceAllocator {
 
         // Iterate through queue elements
         while (pos <= size) {
-            Gap gap = getGapInQueueAtPosition(
-                    resource, elements, startTime, pos++);
+            Gap gap = getGapInQueueAtPosition(resource, elements, startTime, pos++);
 
             if ( gap != null ) {
 
@@ -125,8 +127,7 @@ public class LimitingResourceAllocator {
             }
         }
 
-        // The queue cannot hold this element (queue.resource
-        // doesn't meet element.criteria)
+        // The queue cannot hold this element (queue.resource doesn't meet element.criteria)
         return null;
     }
 
@@ -154,6 +155,7 @@ public class LimitingResourceAllocator {
     public static Gap getFirstValidGapSince(LimitingResourceQueueElement element,
                                             LimitingResourceQueue queue,
                                             DateAndHour since) {
+
         List<Gap> gaps = getValidGapsForElementSince(element, queue, since);
         return (!gaps.isEmpty()) ? gaps.get(0) : null;
     }
@@ -175,8 +177,7 @@ public class LimitingResourceAllocator {
             Gap gap = getGapInQueueAtPosition(
                     resource, elements, since, pos++);
 
-            // The queue cannot hold this element (queue.resource
-            // doesn't meet element.criteria)
+            // The queue cannot hold this element (queue.resource doesn't meet element.criteria)
             if ( gap != null ) {
                 List<Gap> subgaps = getFittingSubgaps(element, gap, resource);
                 result.addAll(subgaps);
@@ -277,18 +278,17 @@ public class LimitingResourceAllocator {
     }
 
     /**
-     * Generates a list of {@link DayAssignment} for {@link Resource} starting
-     * from startTime
+     * Generates a list of {@link DayAssignment} for {@link Resource} starting from startTime.
      *
-     * The returned list is not associated to resouceAllocation.
+     * The returned list is not associated to resourceAllocation.
      *
      * resourceAllocation is passed to know if the list of day assignments
-     * should be {@link GenericDayAssignment} or {@link SpecificDayAssignment}
+     * should be {@link GenericDayAssignment} or {@link SpecificDayAssignment}.
      *
      * @param resourceAllocation
      * @param resource
      * @param startTime
-     * @return
+     * @return {@link List<DayAssignment>}
      */
     public static List<DayAssignment> generateDayAssignments(ResourceAllocation<?> resourceAllocation,
                                                              Resource resource,
@@ -300,11 +300,10 @@ public class LimitingResourceAllocator {
         final EffortDuration totalEffort = hours(resourceAllocation.getIntendedTotalHours());
         EffortDuration effortAssigned = zero();
         UntilEndAndEffort condition = new UntilEndAndEffort(endsAfter.toIntraDayDate(), totalEffort);
+
         for (PartialDay each : startTime.toIntraDayDate().daysUntil(condition)) {
-            EffortDuration effortForDay = EffortDuration.min(calendar.asDurationOn(each, ONE_RESOURCE_PER_DAY),
-                                                            totalEffort);
-            DayAssignment dayAssignment = createDayAssignment(resourceAllocation, resource, each.getDate(),
-                                                            effortForDay);
+            EffortDuration effortForDay = EffortDuration.min(calendar.asDurationOn(each, ONE_RESOURCE_PER_DAY), totalEffort);
+            DayAssignment dayAssignment = createDayAssignment(resourceAllocation, resource, each.getDate(), effortForDay);
             effortAssigned = effortAssigned.plus(addDayAssignment(assignments, dayAssignment));
             condition.setCurrent(effortAssigned);
         }
@@ -339,8 +338,8 @@ public class LimitingResourceAllocator {
         EffortDuration totalIntended = hours(resourceAllocation.getIntendedTotalHours());
 
         // Generate last day assignment
-        PartialDay firstDay = new PartialDay(IntraDayDate.startOfDay(date),
-                                            IntraDayDate.create(date, hours(endTime.getHour())));
+        PartialDay firstDay =
+                new PartialDay(IntraDayDate.startOfDay(date), IntraDayDate.create(date, hours(endTime.getHour())));
 
         EffortDuration effortCanAllocate = min(totalIntended, calendar.asDurationOn(firstDay, ONE_RESOURCE_PER_DAY));
 
@@ -351,12 +350,12 @@ public class LimitingResourceAllocator {
 
         // Generate rest of day assignments
         for (date = date.minusDays(1); totalIntended.compareTo(zero()) > 0; date = date.minusDays(1)) {
-            EffortDuration duration = min(totalIntended,
-                                        calendar.asDurationOn(PartialDay.wholeDay(date),
-                                        ONE_RESOURCE_PER_DAY));
 
-            DayAssignment dayAssigment = createDayAssignment(resourceAllocation, resource, date, duration);
-            totalIntended = totalIntended.minus(addDayAssignment(result, dayAssigment));
+            EffortDuration duration =
+                    min(totalIntended, calendar.asDurationOn(PartialDay.wholeDay(date), ONE_RESOURCE_PER_DAY));
+
+            DayAssignment dayAssignment = createDayAssignment(resourceAllocation, resource, date, duration);
+            totalIntended = totalIntended.minus(addDayAssignment(result, dayAssignment));
         }
 
         return result;
@@ -366,6 +365,7 @@ public class LimitingResourceAllocator {
                                                      Resource resource,
                                                      LocalDate date,
                                                      EffortDuration toAllocate) {
+
         if ( resourceAllocation instanceof SpecificResourceAllocation ) {
             return SpecificDayAssignment.create(date, toAllocate, resource);
         } else if ( resourceAllocation instanceof GenericResourceAllocation ) {

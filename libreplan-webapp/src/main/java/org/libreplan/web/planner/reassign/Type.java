@@ -20,12 +20,12 @@
  */
 package org.libreplan.web.planner.reassign;
 
-import static org.libreplan.web.I18nHelper._;
-
 import org.zkoss.zul.Radio;
-public enum Type {
-    ALL {
 
+import static org.libreplan.web.I18nHelper._;
+public enum Type {
+
+    ALL {
         @Override
         public String getName() {
             return _("All project tasks");
@@ -36,8 +36,8 @@ public enum Type {
             return false;
         }
     },
-    FROM_TODAY {
 
+    FROM_TODAY {
         @Override
         public String getName() {
             return _("From today");
@@ -48,8 +48,8 @@ public enum Type {
             return false;
         }
     },
-    FROM_CHOSEN {
 
+    FROM_CHOSEN {
         @Override
         public String getName() {
             return _("From chosen date");
@@ -69,6 +69,7 @@ public enum Type {
         Radio result = new Radio();
         result.setLabel(getName());
         result.setValue(this.toString());
+
         return result;
     }
 

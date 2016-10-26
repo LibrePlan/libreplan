@@ -19,28 +19,28 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <zk>
-<zscript><![CDATA[
+    <zscript><![CDATA[
     advancesAssignmentComponent = self;
 ]]>
-</zscript>
-<vbox>
-    <panel title="${i18n:_('Progress assignments')}" border="normal">
-        <panelchildren>
-            <vbox id="messagesContainerAdvances" />
-            <vbox>
-            <listbox id="editAdvances" height="200px"
-                     model="@{advancesAssignmentComponent.advanceAssignments}"
-                     itemRenderer="@{advancesAssignmentComponent.advancesRenderer}" mold="paging"
-                     pageSize="10">
-                    <listhead sizable="true">
-                         <listheader label="${i18n:_('Type')}" tooltiptext="Progress unit type" />
-                         <listheader label="${i18n:_('Max value')}" tooltiptext="Maximum allowed value"/>
-                         <listheader label="${i18n:_('Spread')}"/>
-                         <listheader label="${i18n:_('Operations')}"/>
-                     </listhead>
-            </listbox>
-            </vbox>
-        </panelchildren>
-    </panel>
-</vbox>
+    </zscript>
+    <vbox>
+        <panel title="${i18n:_('Progress assignments')}" border="normal">
+            <panelchildren>
+                <vbox id="messagesContainerAdvances" />
+                <vbox>
+                    <listbox id="editAdvances" height="200px" sclass="margin-border"
+                             model="@{advancesAssignmentComponent.advanceAssignments}"
+                             itemRenderer="@{advancesAssignmentComponent.advancesRenderer}" mold="paging"
+                             pageSize="10">
+                        <listhead sizable="true">
+                            <listheader label="${i18n:_('Type')}" tooltiptext="Progress unit type" />
+                            <listheader label="${i18n:_('Max value')}" tooltiptext="Maximum allowed value"/>
+                            <listheader label="${i18n:_('Spread')}"/>
+                            <listheader label="${i18n:_('Operations')}"/>
+                        </listhead>
+                    </listbox>
+                </vbox>
+            </panelchildren>
+        </panel>
+    </vbox>
 </zk>

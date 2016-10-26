@@ -53,13 +53,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Tests for <code>IUnitTypeService</code>.
+ *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
+@ContextConfiguration(locations = {
+        BUSINESS_SPRING_CONFIG_FILE,
         WEBAPP_SPRING_CONFIG_FILE, WEBAPP_SPRING_CONFIG_TEST_FILE,
-        WEBAPP_SPRING_SECURITY_CONFIG_FILE,
-        WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE })
+        WEBAPP_SPRING_SECURITY_CONFIG_FILE, WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE })
 public class UnitTypeServiceTest {
 
     @Autowired
@@ -80,7 +81,7 @@ public class UnitTypeServiceTest {
     @Autowired
     private IAdHocTransactionService transactionService;
 
-    private void loadRequiredaData() {
+    private void loadRequiredData() {
         configurationBootstrap.loadRequiredData();
         unitTypeBootstrap.loadRequiredData();
     }
@@ -88,25 +89,24 @@ public class UnitTypeServiceTest {
     @Test
     @Transactional
     public void testAddUnitTypeRepeatedMeasure() {
-        loadRequiredaData();
+        loadRequiredData();
 
-        /* Build material with same code (1 constraint violations). */
+        /* Build material with same code (1 constraint violations) */
         UnitTypeDTO m1 = new UnitTypeDTO("CodeA", "measure1");
         UnitTypeDTO m2 = new UnitTypeDTO("CodeB", "measure1");
         UnitTypeDTO m3 = new UnitTypeDTO("measure1");
 
-        List<UnitTypeDTO> unitTypeDTOs = new ArrayList<UnitTypeDTO>();
+        List<UnitTypeDTO> unitTypeDTOs = new ArrayList<>();
         unitTypeDTOs.add(m1);
         unitTypeDTOs.add(m2);
         unitTypeDTOs.add(m3);
 
         UnitTypeListDTO unitTypeListDTO = createUnitTypeListDTO(m1, m2);
 
-        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = unitTypeService
-                .addUnitTypes(unitTypeListDTO).instanceConstraintViolationsList;
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
+                unitTypeService.addUnitTypes(unitTypeListDTO).instanceConstraintViolationsList;
 
-        assertTrue(instanceConstraintViolationsList.toString(),
-                instanceConstraintViolationsList.size() == 1);
+        assertTrue(instanceConstraintViolationsList.toString(), instanceConstraintViolationsList.size() == 1);
     }
 
     @Test
@@ -114,26 +114,25 @@ public class UnitTypeServiceTest {
         transactionService.runOnTransaction(new IOnTransaction<Void>() {
             @Override
             public Void execute() {
-                loadRequiredaData();
+                loadRequiredData();
                 return null;
             }
         });
 
-        /* Build unittype (0 constraint violations). */
+        /* Build unittype (0 constraint violations) */
         UnitTypeDTO m1 = new UnitTypeDTO("XXX", "measureX");
         UnitTypeDTO m2 = new UnitTypeDTO("YYY", "measureY");
 
-        List<UnitTypeDTO> unitTypeDTOs = new ArrayList<UnitTypeDTO>();
+        List<UnitTypeDTO> unitTypeDTOs = new ArrayList<>();
         unitTypeDTOs.add(m1);
         unitTypeDTOs.add(m2);
 
         UnitTypeListDTO unitTypeListDTO = createUnitTypeListDTO(m1, m2);
 
-        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = unitTypeService
-                .addUnitTypes(unitTypeListDTO).instanceConstraintViolationsList;
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
+                unitTypeService.addUnitTypes(unitTypeListDTO).instanceConstraintViolationsList;
 
-        assertTrue(instanceConstraintViolationsList.toString(),
-                instanceConstraintViolationsList.size() == 0);
+        assertTrue(instanceConstraintViolationsList.toString(), instanceConstraintViolationsList.size() == 0);
 
         transactionService.runOnTransaction(new IOnTransaction<Void>() {
             @Override
@@ -157,28 +156,24 @@ public class UnitTypeServiceTest {
         m1 = new UnitTypeDTO("XXX", "update-measureX");
         m2 = new UnitTypeDTO("YYY", "update-measureY");
 
-        unitTypeDTOs = new ArrayList<UnitTypeDTO>();
+        unitTypeDTOs = new ArrayList<>();
         unitTypeDTOs.add(m1);
         unitTypeDTOs.add(m2);
 
         unitTypeListDTO = createUnitTypeListDTO(m1, m2);
 
-        instanceConstraintViolationsList = unitTypeService
-                .addUnitTypes(unitTypeListDTO).instanceConstraintViolationsList;
+        instanceConstraintViolationsList = unitTypeService.addUnitTypes(unitTypeListDTO).instanceConstraintViolationsList;
 
-        assertTrue(instanceConstraintViolationsList.toString(),
-                instanceConstraintViolationsList.size() == 0);
+        assertTrue(instanceConstraintViolationsList.toString(), instanceConstraintViolationsList.size() == 0);
 
         transactionService.runOnTransaction(new IOnTransaction<Void>() {
             @Override
             public Void execute() {
                 try {
                     UnitType typeX = unitTypeDAO.findByCode("XXX");
-                    assertTrue(typeX.getMeasure().equalsIgnoreCase(
-                            "update-measureX"));
+                    assertTrue(typeX.getMeasure().equalsIgnoreCase("update-measureX"));
                     UnitType typeY = unitTypeDAO.findByCode("YYY");
-                    assertTrue(typeY.getMeasure().equalsIgnoreCase(
-                            "update-measureY"));
+                    assertTrue(typeY.getMeasure().equalsIgnoreCase("update-measureY"));
                 } catch (InstanceNotFoundException e) {
                     throw new RuntimeException(e);
                 }
@@ -189,7 +184,7 @@ public class UnitTypeServiceTest {
 
     private UnitTypeListDTO createUnitTypeListDTO(UnitTypeDTO... unitTypeDTOs) {
 
-        List<UnitTypeDTO> unitTypeList = new ArrayList<UnitTypeDTO>();
+        List<UnitTypeDTO> unitTypeList = new ArrayList<>();
 
         for (UnitTypeDTO c : unitTypeDTOs) {
             unitTypeList.add(c);

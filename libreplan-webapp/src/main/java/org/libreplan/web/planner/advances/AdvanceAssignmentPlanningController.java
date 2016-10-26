@@ -26,8 +26,6 @@ package org.libreplan.web.planner.advances;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.web.common.Util;
@@ -44,18 +42,17 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.Window;
 
 /**
- * Controller for {@link Advance} assignment in the order planning view.
+ * Controller for AdvanceAssignment in the order planning view.
+ *
  * @author Susana Montes Pedreira <smontes@wirelessgailicia.com>
  */
 @org.springframework.stereotype.Component("advanceAssignmentPlanningController")
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class AdvanceAssignmentPlanningController extends GenericForwardComposer {
-
-    private static final Log LOG = LogFactory
-            .getLog(AdvanceAssignmentPlanningController.class);
 
     private ManageOrderElementAdvancesController manageOrderElementAdvancesController;
 
@@ -73,15 +70,21 @@ public class AdvanceAssignmentPlanningController extends GenericForwardComposer 
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         this.window = (Window) comp;
+
+        if ( advanceAssignmentPlanningModel == null ) {
+            advanceAssignmentPlanningModel =
+                    (IAdvanceAssignmentPlanningModel) SpringUtil.getBean("advanceAssignmentPlanningModel");
+        }
+
         setupAdvanceController();
     }
 
     public void showWindow(IContextWithPlannerTask<TaskElement> context,
-            TaskElement task,
-            PlanningState planningState) {
+                           TaskElement task,
+                           PlanningState planningState) {
+
         this.context = context;
-        advanceAssignmentPlanningModel.initAdvancesFor(task, context,
-                planningState);
+        advanceAssignmentPlanningModel.initAdvancesFor(task, context, planningState);
         showAdvanceWindow(advanceAssignmentPlanningModel.getOrderElement());
 
         try {
@@ -90,16 +93,14 @@ public class AdvanceAssignmentPlanningController extends GenericForwardComposer 
             this.window.setMode("modal");
         } catch (SuspendNotAllowedException e) {
             throw new RuntimeException(e);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
         }
     }
 
     private void setupAdvanceController() {
-        Component orderElementAdvances = window
-                .getFellowIfAny("orderElementAdvances");
-        manageOrderElementAdvancesController = (ManageOrderElementAdvancesController) orderElementAdvances
-                .getVariable("manageOrderElementAdvancesController", true);
+        Component orderElementAdvances = window.getFellowIfAny("orderElementAdvances");
+
+        manageOrderElementAdvancesController = (ManageOrderElementAdvancesController)
+                orderElementAdvances.getAttribute("manageOrderElementAdvancesController", true);
     }
 
     private void showAdvanceWindow(OrderElement orderElement) {
@@ -136,14 +137,12 @@ public class AdvanceAssignmentPlanningController extends GenericForwardComposer 
 
     private void updateTaskComponents() {
         if (context.getRelativeTo() instanceof TaskComponent) {
-            // update the current taskComponent
-            TaskComponent taskComponent = (TaskComponent) context
-                    .getRelativeTo();
+            // Update the current taskComponent
+            TaskComponent taskComponent = (TaskComponent) context.getRelativeTo();
             updateTaskComponent(taskComponent);
 
-            // update the current taskComponent's parents
-            List<Task> parents = new ArrayList<Task>(context.getMapper()
-                    .getParents(taskComponent.getTask()));
+            // Update the current taskComponent's parents
+            List<Task> parents = new ArrayList<>(context.getMapper().getParents(taskComponent.getTask()));
             TaskList taskList = taskComponent.getTaskList();
             for (Task task : parents) {
                 TaskComponent parentComponent = taskList.find(task);
@@ -166,10 +165,10 @@ public class AdvanceAssignmentPlanningController extends GenericForwardComposer 
 
     public String getTitle(){
         String title = "Advance Assignments";
-        if ((advanceAssignmentPlanningModel != null)
-                && (advanceAssignmentPlanningModel.getOrderElement() != null)) {
+        if ((advanceAssignmentPlanningModel != null) && (advanceAssignmentPlanningModel.getOrderElement() != null)) {
             title = advanceAssignmentPlanningModel.getOrderElement().getName();
         }
+
         return title;
     }
 

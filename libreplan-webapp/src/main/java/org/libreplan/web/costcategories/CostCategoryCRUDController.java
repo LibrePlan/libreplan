@@ -30,7 +30,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.logging.LogFactory;
 import org.joda.time.LocalDate;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
@@ -40,7 +39,6 @@ import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
 import org.libreplan.web.common.BaseCRUDController;
 import org.libreplan.web.common.Level;
 import org.libreplan.web.common.Util;
-import org.libreplan.web.workreports.WorkReportCRUDController;
 import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
@@ -48,6 +46,7 @@ import org.zkoss.zk.ui.event.CheckEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Decimalbox;
@@ -61,18 +60,15 @@ import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.Rows;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Textbox;
-import org.zkoss.zul.api.Hbox;
 
 /**
- * Controller for CRUD actions over a {@link CostCategory}
+ * Controller for CRUD actions over a {@link CostCategory}.
  *
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  * @author Diego Pino García <dpino@igalia.com>
  */
 @SuppressWarnings("serial")
 public class CostCategoryCRUDController extends BaseCRUDController<CostCategory> {
-
-    private static final org.apache.commons.logging.Log LOG = LogFactory.getLog(WorkReportCRUDController.class);
 
     private ICostCategoryModel costCategoryModel;
 
@@ -84,6 +80,12 @@ public class CostCategoryCRUDController extends BaseCRUDController<CostCategory>
 
     private HourCostListRenderer hourCostListRenderer = new HourCostListRenderer();
 
+    public CostCategoryCRUDController() {
+        if ( costCategoryModel == null ) {
+            costCategoryModel = (ICostCategoryModel) SpringUtil.getBean("costCategoryModel");
+        }
+    }
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
@@ -94,14 +96,14 @@ public class CostCategoryCRUDController extends BaseCRUDController<CostCategory>
         listCostCategories.addEventListener("onInitRender", new EventListener() {
 
             @Override
-                    public void onEvent(Event event) {
+            public void onEvent(Event event) {
                 listCostCategories.renderAll();
 
                 final Rows rows = listCostCategories.getRows();
                 for (Iterator i = rows.getChildren().iterator(); i.hasNext(); ) {
                     final Row row = (Row) i.next();
-                    final CostCategory category = (CostCategory) row.getValue();
-                    Button btnDelete = (Button) ((Hbox)row.getChildren().get(2)).getChildren().get(1);
+                    final CostCategory category = row.getValue();
+                    Button btnDelete = (Button) row.getChildren().get(2).getChildren().get(1);
                     if (!canRemoveCostCategory(category)) {
                         btnDelete.setDisabled(true);
                         btnDelete.setImage("/common/img/ico_borrar_out.png");
@@ -114,7 +116,7 @@ public class CostCategoryCRUDController extends BaseCRUDController<CostCategory>
     }
 
     private void initializeHoursType() {
-        allHoursType = new SimpleListModel(costCategoryModel.getAllHoursType());
+        allHoursType = new SimpleListModel<>(costCategoryModel.getAllHoursType());
     }
 
     @Override
@@ -140,8 +142,11 @@ public class CostCategoryCRUDController extends BaseCRUDController<CostCategory>
         if (row != null) {
             if (hourCost.getType() == null) {
                 Listbox workHoursType = getWorkHoursType(row);
-                String message = workHoursType.getItems().isEmpty() ? _("Hours types are empty. Please, create some hours types before proceeding")
+
+                String message = workHoursType.getItems().isEmpty()
+                        ? _("Hours types are empty. Please, create some hours types before proceeding")
                         : _("cannot be empty");
+
                 throw new WrongValueException(getWorkHoursType(row), message);
             }
             if (hourCost.getPriceCost() == null) {
@@ -155,7 +160,7 @@ public class CostCategoryCRUDController extends BaseCRUDController<CostCategory>
     }
 
     private Component getPricePerHour(Row row) {
-        return (Component) row.getChildren().get(2);
+        return row.getChildren().get(2);
     }
 
     public CostCategory getCostCategory() {
@@ -172,33 +177,37 @@ public class CostCategoryCRUDController extends BaseCRUDController<CostCategory>
 
 
     private TypeOfWorkHours getTypeOfWorkHours(Row listitem) {
-        HourCost hourCost = (HourCost) listitem.getValue();
+        HourCost hourCost = listitem.getValue();
         return hourCost.getType();
     }
 
     /**
-     * Append a textbox @{link code} to row
+     * Append a textbox code to row.
+     *
      * @param row
      */
     private void appendTextboxCode(final Row row) {
-        final HourCost hourCost = ((HourCost) row.getValue());
+        final HourCost hourCost = row.getValue();
         final Textbox txtCode = new Textbox();
         txtCode.setWidth("200px");
         if (hourCost != null) {
             CostCategory costCategory = hourCost.getCategory();
             txtCode.setDisabled(costCategory.isCodeAutogenerated());
-            Util.bind(txtCode, new Util.Getter<String>() {
-                @Override
-                public String get() {
-                    return hourCost.getCode();
-                }
-            }, new Util.Setter<String>() {
 
-                @Override
-                public void set(String value) {
-                    hourCost.setCode(value);
-                }
-            });
+            Util.bind(
+                    txtCode,
+                    new Util.Getter<String>() {
+                        @Override
+                        public String get() {
+                            return hourCost.getCode();
+                        }
+                    },
+                    new Util.Setter<String>() {
+                        @Override
+                        public void set(String value) {
+                            hourCost.setCode(value);
+                        }
+                    });
 
             if (!hourCost.getCategory().isCodeAutogenerated()) {
                 txtCode.setConstraint("no empty:"
@@ -211,12 +220,12 @@ public class CostCategoryCRUDController extends BaseCRUDController<CostCategory>
     }
 
     /**
-     * Append Selectbox of @{link TypeOfWorkHours} to row
+     * Append Selectbox of {@link TypeOfWorkHours} to row.
      *
      * @param row
      */
     private void appendHoursType(final Row row) {
-        final HourCost hourCost = (HourCost) row.getValue();
+        final HourCost hourCost = row.getValue();
         final Listbox lbHoursType = new Listbox();
         lbHoursType.setMold("select");
         lbHoursType.setModel(allHoursType);
@@ -230,7 +239,7 @@ public class CostCategoryCRUDController extends BaseCRUDController<CostCategory>
 
         // First time is rendered, select first item
         TypeOfWorkHours type = hourCost.getType();
-        if (hourCost.isNewObject() && type == null) {
+        if ( hourCost.isNewObject() && type == null ) {
             Listitem item = lbHoursType.getItemAtIndex(0);
             item.setSelected(true);
             setHoursType(hourCost, item);
@@ -243,12 +252,11 @@ public class CostCategoryCRUDController extends BaseCRUDController<CostCategory>
         }
 
         lbHoursType.addEventListener(Events.ON_SELECT, new EventListener() {
-
             @Override
             public void onEvent(Event event) {
                 Listitem item = lbHoursType.getSelectedItem();
                 if (item != null) {
-                    setHoursType((HourCost) row.getValue(), item);
+                    setHoursType(row.getValue(), item);
                 }
             }
 
@@ -258,8 +266,7 @@ public class CostCategoryCRUDController extends BaseCRUDController<CostCategory>
     }
 
     private void setHoursType(HourCost hourCost, Listitem item) {
-        TypeOfWorkHours value = item != null ? (TypeOfWorkHours) item
-                .getValue() : null;
+        TypeOfWorkHours value = item != null ? (TypeOfWorkHours) item.getValue() : null;
         hourCost.setType(value);
         if (value != null) {
             final BigDecimal defaultPrice = value.getDefaultPrice();
@@ -270,13 +277,12 @@ public class CostCategoryCRUDController extends BaseCRUDController<CostCategory>
             }
         } else if (item != null) {
             hourCost.setPriceCost(BigDecimal.ZERO);
-            throw new WrongValueException(item.getParent(),
-                    _("Please, select an item"));
+            throw new WrongValueException(item.getParent(), _("Please, select an item"));
         }
     }
 
     /**
-     * Append a delete {@link Button} to {@link Row}
+     * Append a delete {@link Button} to {@link Row}.
      *
      * @param row
      */
@@ -285,68 +291,68 @@ public class CostCategoryCRUDController extends BaseCRUDController<CostCategory>
         delete.setHoverImage("/common/img/ico_borrar.png");
         delete.setSclass("icono");
         delete.setTooltiptext(_("Delete"));
+
         delete.addEventListener(Events.ON_CLICK, new EventListener() {
             @Override
             public void onEvent(Event event) {
                 confirmRemove((HourCost) row.getValue());
             }
         });
+
         row.appendChild(delete);
     }
 
     /**
-     * Append a Textbox "hour cost" to row
+     * Append a Textbox "hour cost" to row.
      *
      * @param row
      */
     private void appendDecimalboxCost(Row row) {
         Decimalbox boxCost = new Decimalbox();
-        bindDecimalboxCost(boxCost, (HourCost) row.getValue());
+        bindDecimalboxCost(boxCost, row.getValue());
         boxCost.setConstraint("no empty:" + _("cannot be empty"));
         boxCost.setFormat(Util.getMoneyFormat());
         row.appendChild(boxCost);
     }
 
     /**
-     * Binds Decimalbox "hour cost" to the corresponding attribute of a {@link HourCost}
+     * Binds Decimalbox "hour cost" to the corresponding attribute of a {@link HourCost}.
      *
      * @param boxCost
      * @param hourCost
      */
-    private void bindDecimalboxCost(final Decimalbox boxCost,
-            final HourCost hourCost) {
-        Util.bind(boxCost, new Util.Getter<BigDecimal>() {
-
-            @Override
-            public BigDecimal get() {
-                if (hourCost.getPriceCost() != null) {
-                    return hourCost.getPriceCost();
-                }
-                return new BigDecimal(0);
-            }
-
-        }, new Util.Setter<BigDecimal>() {
-
-            @Override
-            public void set(BigDecimal value) {
-                hourCost.setPriceCost(value);
-            }
-        });
+    private void bindDecimalboxCost(final Decimalbox boxCost, final HourCost hourCost) {
+        Util.bind(
+                boxCost,
+                new Util.Getter<BigDecimal>() {
+                    @Override
+                    public BigDecimal get() {
+                        if (hourCost.getPriceCost() != null) {
+                            return hourCost.getPriceCost();
+                        }
+                        return new BigDecimal(0);
+                    }
+                },
+                new Util.Setter<BigDecimal>() {
+                    @Override
+                    public void set(BigDecimal value) {
+                        hourCost.setPriceCost(value);
+                    }
+                });
     }
 
     /**
-     * Append a Datebox "init date" to row
+     * Append a Datebox "init date" to row.
      *
      * @param row
      */
     private void appendDateboxInitDate(final Row row) {
         Datebox initDateBox = new Datebox();
-        bindDateboxInitDate(initDateBox, (HourCost) row.getValue());
+        bindDateboxInitDate(initDateBox, row.getValue());
         initDateBox.setConstraint("no empty:" + _("Start date cannot be empty"));
         row.appendChild(initDateBox);
 
         initDateBox.addEventListener("onChange", new EventListener() {
-
             @Override
             public void onEvent(Event event) {
                 // Updates the constraint of the endDate box with the new date
@@ -361,51 +367,50 @@ public class CostCategoryCRUDController extends BaseCRUDController<CostCategory>
     }
 
     /**
-     * Binds Datebox "init date" to the corresponding attribute of a {@link HourCost}
+     * Binds Datebox "init date" to the corresponding attribute of a {@link HourCost}.
      *
      * @param dateBoxInitDate
      * @param hourCost
      */
-    private void bindDateboxInitDate(final Datebox dateBoxInitDate,
-            final HourCost hourCost) {
-        Util.bind(dateBoxInitDate, new Util.Getter<Date>() {
-
-            @Override
-            public Date get() {
-                LocalDate dateTime = hourCost.getInitDate();
-                if (dateTime != null) {
-                    return new Date(dateTime.getYear()-1900,
-                            dateTime.getMonthOfYear()-1,dateTime.getDayOfMonth());
-                } else {
-                    Date now = new Date();
-                    hourCost.setInitDate(new LocalDate(now));
-                    return now;
-                }
-            }
-
-        }, new Util.Setter<Date>() {
-
-            @Override
-            public void set(Date value) {
-                if (value != null) {
-                    hourCost.setInitDate(new LocalDate(value.getYear()+1900,
-                            value.getMonth()+1,value.getDate()));
-                }
-                else {
-                    hourCost.setInitDate(null);
-                }
-            }
-        });
+    private void bindDateboxInitDate(final Datebox dateBoxInitDate, final HourCost hourCost) {
+        Util.bind(
+                dateBoxInitDate,
+                new Util.Getter<Date>() {
+                    @Override
+                    public Date get() {
+                        LocalDate dateTime = hourCost.getInitDate();
+                        if (dateTime != null) {
+                            /* TODO resolve deprecated */
+                            return new Date(dateTime.getYear() - 1900, dateTime.getMonthOfYear() - 1, dateTime.getDayOfMonth());
+                        } else {
+                            Date now = new Date();
+                            hourCost.setInitDate(new LocalDate(now));
+                            return now;
+                        }
+                    }
+                },
+                new Util.Setter<Date>() {
+                    @Override
+                    public void set(Date value) {
+                        if (value != null) {
+                            /* TODO resolve deprecated */
+                            hourCost.setInitDate(new LocalDate(value.getYear() + 1900, value.getMonth() + 1, value.getDate()));
+                        }
+                        else {
+                            hourCost.setInitDate(null);
+                        }
+                    }
+                });
     }
 
     /**
-     * Append a Datebox "end date" to row
+     * Append a Datebox "end date" to row.
      *
      * @param row
      */
     private void appendDateboxEndDate(Row row) {
         Datebox endDateBox = new Datebox();
-        bindDateboxEndDate(endDateBox, (HourCost) row.getValue());
+        bindDateboxEndDate(endDateBox, row.getValue());
         LocalDate initDate = ((HourCost)row.getValue()).getInitDate();
         if (initDate != null) {
             endDateBox.setConstraint("after " +
@@ -417,49 +422,48 @@ public class CostCategoryCRUDController extends BaseCRUDController<CostCategory>
     }
 
     /**
-     * Binds Datebox "init date" to the corresponding attribute of a {@link HourCost}
+     * Binds Datebox "init date" to the corresponding attribute of a {@link HourCost}.
      *
-     * @param dateBoxInitDate
+     * @param dateBoxEndDate
      * @param hourCost
      */
-    private void bindDateboxEndDate(final Datebox dateBoxEndDate,
-            final HourCost hourCost) {
-        Util.bind(dateBoxEndDate, new Util.Getter<Date>() {
-
-            @Override
-            public Date get() {
-                LocalDate dateTime = hourCost.getEndDate();
-                if (dateTime != null) {
-                    return new Date(dateTime.getYear()-1900,
-                            dateTime.getMonthOfYear()-1,dateTime.getDayOfMonth());
-                }
-                return null;
-            }
-
-        }, new Util.Setter<Date>() {
-
-            @Override
-            public void set(Date value) {
-                if (value != null) {
-                    hourCost.setEndDate(new LocalDate(value.getYear()+1900,
-                            value.getMonth()+1,value.getDate()));
-                }
-                else {
-                    hourCost.setEndDate(null);
-                }
-            }
-        });
+    private void bindDateboxEndDate(final Datebox dateBoxEndDate, final HourCost hourCost) {
+        Util.bind(
+                dateBoxEndDate,
+                new Util.Getter<Date>() {
+                    @Override
+                    public Date get() {
+                        LocalDate dateTime = hourCost.getEndDate();
+                        if (dateTime != null) {
+                            /* TODO resolve deprecated */
+                            return new Date(
+                                    dateTime.getYear() - 1900, dateTime.getMonthOfYear() - 1, dateTime.getDayOfMonth());
+                        }
+                        return null;
+                    }
+                },
+                new Util.Setter<Date>() {
+                    @Override
+                    public void set(Date value) {
+                        if (value != null) {
+                            /* TODO resolve deprecated */
+                            hourCost.setEndDate(
+                                    new LocalDate(value.getYear() + 1900, value.getMonth() + 1, value.getDate()));
+                        }
+                        else {
+                            hourCost.setEndDate(null);
+                        }
+                    }
+                });
     }
 
     public void confirmRemove(HourCost hourCost) {
-        try {
-            int status = Messagebox.show(_("Confirm deleting this hour cost. Are you sure?"), _("Delete"),
-                    Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION);
-            if (Messagebox.OK == status) {
-                removeHourCost(hourCost);
-            }
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+        int status = Messagebox.show(
+                _("Confirm deleting this hour cost. Are you sure?"), _("Delete"),
+                Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION);
+
+        if (Messagebox.OK == status) {
+            removeHourCost(hourCost);
         }
     }
 
@@ -468,31 +472,26 @@ public class CostCategoryCRUDController extends BaseCRUDController<CostCategory>
     }
 
     /**
-     * Adds a new {@link HourCost} to the list of rows
-     *
-     * @param rows
+     * Adds a new {@link HourCost} to the list of rows.
      */
     public void addHourCost() {
         costCategoryModel.addHourCost();
         Util.reloadBindings(listHourCosts);
     }
 
-    public void removeHourCost(HourCost hourCost) {
+    private void removeHourCost(HourCost hourCost) {
         costCategoryModel.removeHourCost(hourCost);
         Util.reloadBindings(listHourCosts);
     }
 
     /**
-     * RowRenderer for a @{HourCost} element
-     *
-     * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
-     *
+     * RowRenderer for a @{HourCost} element.
      */
-    public class HourCostListRenderer implements RowRenderer {
+    private class HourCostListRenderer implements RowRenderer {
 
         @Override
-        public void render(Row row, Object data) {
-            HourCost hourCost = (HourCost) data;
+        public void render(Row row, Object o, int i) throws Exception {
+            HourCost hourCost = (HourCost) o;
 
             row.setValue(hourCost);
 
@@ -510,7 +509,7 @@ public class CostCategoryCRUDController extends BaseCRUDController<CostCategory>
     public void onCheckGenerateCode(Event e) {
         CheckEvent ce = (CheckEvent) e;
         if (ce.isChecked()) {
-            // we have to auto-generate the code for new objects
+            // We have to auto-generate the code for new objects
             try {
                 costCategoryModel.setCodeAutogenerated(ce.isChecked());
             } catch (ConcurrentModificationException err) {
@@ -556,7 +555,7 @@ public class CostCategoryCRUDController extends BaseCRUDController<CostCategory>
         return costCategoryModel.canRemoveCostCategory(category);
     }
 
-    public boolean canRemoveCostCategory(CostCategory category) {
+    private boolean canRemoveCostCategory(CostCategory category) {
         return costCategoryModel.canRemoveCostCategory(category);
     }
 

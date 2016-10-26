@@ -39,32 +39,27 @@ import org.libreplan.business.util.deepcopy.Strategy;
 
 public class NonCalculatedConsolidation extends Consolidation {
 
-    private SortedSet<NonCalculatedConsolidatedValue> consolidatedValues = new TreeSet<NonCalculatedConsolidatedValue>(
-            new ConsolidatedValueComparator());
+    private SortedSet<NonCalculatedConsolidatedValue> consolidatedValues = new TreeSet<>(new ConsolidatedValueComparator());
 
     @AfterCopy
     private void instantiateConsolidatedValuesWithComparator() {
         SortedSet<NonCalculatedConsolidatedValue> previous = consolidatedValues;
-        consolidatedValues = new TreeSet<NonCalculatedConsolidatedValue>(
-                new ConsolidatedValueComparator());
+        consolidatedValues = new TreeSet<>(new ConsolidatedValueComparator());
         consolidatedValues.addAll(previous);
     }
 
     @OnCopy(Strategy.SHARE)
     private DirectAdvanceAssignment directAdvanceAssignment;
 
-    public static NonCalculatedConsolidation create(Task task,
-            DirectAdvanceAssignment directAdvanceAssignment) {
-        return create(new NonCalculatedConsolidation(task,
-                directAdvanceAssignment));
+    public static NonCalculatedConsolidation create(Task task, DirectAdvanceAssignment directAdvanceAssignment) {
+        return create(new NonCalculatedConsolidation(task, directAdvanceAssignment));
     }
 
     public static NonCalculatedConsolidation create(Task task,
             DirectAdvanceAssignment directAdvanceAssignment,
             SortedSet<NonCalculatedConsolidatedValue> consolidatedValues) {
-        return create(new NonCalculatedConsolidation(task,
-                directAdvanceAssignment,
-                consolidatedValues));
+
+        return create(new NonCalculatedConsolidation(task, directAdvanceAssignment, consolidatedValues));
     }
 
     /**
@@ -77,26 +72,25 @@ public class NonCalculatedConsolidation extends Consolidation {
     protected NonCalculatedConsolidation(Task task,
             DirectAdvanceAssignment directAdvanceAssignment,
             SortedSet<NonCalculatedConsolidatedValue> consolidatedValues) {
+
         this(task, directAdvanceAssignment);
         this.setConsolidatedValues(consolidatedValues);
     }
 
-    public NonCalculatedConsolidation(Task task,
-            DirectAdvanceAssignment directAdvanceAssignment) {
+    public NonCalculatedConsolidation(Task task, DirectAdvanceAssignment directAdvanceAssignment) {
         super(task);
         this.directAdvanceAssignment = directAdvanceAssignment;
     }
 
     @Override
     public SortedSet<ConsolidatedValue> getConsolidatedValues() {
-        TreeSet<ConsolidatedValue> result = new TreeSet<ConsolidatedValue>(
-                new Comparator<ConsolidatedValue>() {
-                    @Override
-                    public int compare(ConsolidatedValue arg0,
-                            ConsolidatedValue arg1) {
-                        return arg0.getDate().compareTo(arg1.getDate());
-                    }
-                });
+        TreeSet<ConsolidatedValue> result = new TreeSet<>(new Comparator<ConsolidatedValue>() {
+            @Override
+            public int compare(ConsolidatedValue arg0, ConsolidatedValue arg1) {
+                return arg0.getDate().compareTo(arg1.getDate());
+            }
+        });
+
         result.addAll(consolidatedValues);
         return result;
     }
@@ -105,13 +99,11 @@ public class NonCalculatedConsolidation extends Consolidation {
         return consolidatedValues;
     }
 
-    public void setConsolidatedValues(
-            SortedSet<NonCalculatedConsolidatedValue> consolidatedValues) {
+    public void setConsolidatedValues(SortedSet<NonCalculatedConsolidatedValue> consolidatedValues) {
         this.consolidatedValues = consolidatedValues;
     }
 
-    public void setDirectAdvanceAssignment(
-            DirectAdvanceAssignment directAdvanceAssignment) {
+    public void setDirectAdvanceAssignment(DirectAdvanceAssignment directAdvanceAssignment) {
         this.directAdvanceAssignment = directAdvanceAssignment;
     }
 
