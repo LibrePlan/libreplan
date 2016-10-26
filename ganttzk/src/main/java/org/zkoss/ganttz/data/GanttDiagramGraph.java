@@ -423,11 +423,22 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements ICritical
             addTask(t);
         }
     }
-
+    /**
+     * This class is designed for performing topological sorting of nodes.
+     * Topological sorting is used to make graph nodes not to be mixed, because
+     * parent and child nodes ({@link TaskPoint}) must be placed in the correct order.
+     * Also during topological sorting nodes are placed on appropriate levels.
+     * Topological sorting can be done using different algorithms, but here is used Khan's algorithm.
+     */
     class TopologicalSorter {
 
         private Map<TaskPoint, Integer> taskPointsByDepthCached = null;
 
+        /**
+         * This method is used to place each node on appropriate level.
+         *
+         * @return map of TaskPoints with appropriate levels
+         */
         private Map<TaskPoint, Integer> taskPointsByDepth() {
             if (taskPointsByDepthCached != null) {
                 return taskPointsByDepthCached;
@@ -436,29 +447,48 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements ICritical
             Map<TaskPoint, Integer> result = new HashMap<TaskPoint, Integer>();
             Map<TaskPoint, Set<TaskPoint>> visitedBy = new HashMap<TaskPoint, Set<TaskPoint>>();
 
+            /*
+             * Here are stored taskpoints that we have visited.
+             * This need to be done because we need to check have we visited this taskpoint, or not.
+             * Described above need to be done to avoid loop between taskpoints.
+             */
+            Set<TaskPoint> visitedTaskPoints = new HashSet ();
+
             Queue<TaskPoint> withoutIncoming = getInitial(withoutVisibleIncomingDependencies(getTopLevelTasks()));
             for (TaskPoint each : withoutIncoming) {
                 initializeIfNeededForKey(result, each, 0);
             }
 
             while (!withoutIncoming.isEmpty()) {
+
                 TaskPoint current = withoutIncoming.poll();
+
+                visitedTaskPoints.add(current); // Marking taskpoint as visited
+
+                // Taking all child elements
                 for (TaskPoint each : current.getImmediateSuccessors()) {
-                    initializeIfNeededForKey(visitedBy, each,
-                            new HashSet<TaskPoint>());
-                    Set<TaskPoint> visitors = visitedBy.get(each);
-                    visitors.add(current);
-                    Set<TaskPoint> predecessorsRequired = each
-                            .getImmediatePredecessors();
-                    if (visitors.containsAll(predecessorsRequired)) {
-                        initializeIfNeededForKey(result, each,
-                                result.get(current) + 1);
-                        withoutIncoming.offer(each);
+
+                    if (!visitedTaskPoints.contains(each)) {
+
+                        initializeIfNeededForKey(visitedBy, each, new HashSet<TaskPoint>());
+
+                        Set<TaskPoint> visitors = visitedBy.get(each);
+                        visitors.add(current);
+
+                        // Taking parent elements
+                        Set<TaskPoint> predecessorsRequired = each.getImmediatePredecessors();
+
+                        if (visitors.containsAll(predecessorsRequired)) {
+
+                            initializeIfNeededForKey(result, each, result.get(current) + 1);
+
+                            withoutIncoming.offer(each);
+                        }
                     }
                 }
             }
-            return taskPointsByDepthCached = Collections
-                    .unmodifiableMap(result);
+
+            return taskPointsByDepthCached = Collections.unmodifiableMap(result);
         }
 
         private <K, T> void initializeIfNeededForKey(Map<K, T> map, K key,
