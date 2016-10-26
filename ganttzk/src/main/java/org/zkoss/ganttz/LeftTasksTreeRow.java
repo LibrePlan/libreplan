@@ -227,6 +227,7 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
                         new DateTime(new GregorianCalendar(minimumYear, MINIMUM_MONTH, MINIMUM_DAY).getTime());
 
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yy");
+
                 // Need to call dateFormat.set2DigitYearStart to force parser not to parse date to previous century
                 simpleDateFormat.set2DigitYearStart(
                         new GregorianCalendar(CALENDAR_START_YEAR, MINIMUM_MONTH, MINIMUM_DAY).getTime());
@@ -245,6 +246,7 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
                         DateTime correct = new DateTime(value);
                         String year = Integer.valueOf(correct.getYear()).toString().substring(2);
 
+                        // TODO Resolve deprecated methods
                         date = simpleDateFormat
                                 .parse(((Date) value).getMonth() + "/" + ((Date) value).getDate() + "/" + year);
 
@@ -255,7 +257,8 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
                 else {
                     try {
                         date = simpleDateFormat.parse((String) value);
-                    } catch (ParseException ignored) {}
+                    } catch (ParseException ignored) {
+                    }
                 }
 
                 DateTime dateTimeInTextbox = new DateTime(date);

@@ -245,17 +245,17 @@ msgstr ""
 msgid "Show/Hide money cost bar"
 msgstr ""
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/LeftTasksTreeRow.java:229
-#: ganttzk/src/main/java/org/zkoss/ganttz/LeftTasksTreeRow.java:234
+#: ganttzk/src/main/java/org/zkoss/ganttz/LeftTasksTreeRow.java:266
+#: ganttzk/src/main/java/org/zkoss/ganttz/LeftTasksTreeRow.java:273
 msgid "The date you entered is invalid"
 msgstr ""
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/LeftTasksTreeRow.java:230
-#: ganttzk/src/main/java/org/zkoss/ganttz/LeftTasksTreeRow.java:235
+#: ganttzk/src/main/java/org/zkoss/ganttz/LeftTasksTreeRow.java:267
+#: ganttzk/src/main/java/org/zkoss/ganttz/LeftTasksTreeRow.java:274
 msgid "Please enter date not before"
 msgstr ""
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/LeftTasksTreeRow.java:231
-#: ganttzk/src/main/java/org/zkoss/ganttz/LeftTasksTreeRow.java:236
+#: ganttzk/src/main/java/org/zkoss/ganttz/LeftTasksTreeRow.java:268
+#: ganttzk/src/main/java/org/zkoss/ganttz/LeftTasksTreeRow.java:275
 msgid "and no later than"
 msgstr ""
