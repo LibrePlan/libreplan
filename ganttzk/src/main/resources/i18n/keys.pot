@@ -246,17 +246,17 @@ msgstr ""
 msgid "Show critical path"
 msgstr ""
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/LeftTasksTreeRow.java:240
-#: ganttzk/src/main/java/org/zkoss/ganttz/LeftTasksTreeRow.java:247
+#: ganttzk/src/main/java/org/zkoss/ganttz/LeftTasksTreeRow.java:271
+#: ganttzk/src/main/java/org/zkoss/ganttz/LeftTasksTreeRow.java:278
 msgid "The date you entered is invalid"
 msgstr ""
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/LeftTasksTreeRow.java:241
-#: ganttzk/src/main/java/org/zkoss/ganttz/LeftTasksTreeRow.java:248
+#: ganttzk/src/main/java/org/zkoss/ganttz/LeftTasksTreeRow.java:272
+#: ganttzk/src/main/java/org/zkoss/ganttz/LeftTasksTreeRow.java:279
 msgid "Please enter date not before"
 msgstr ""
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/LeftTasksTreeRow.java:242
-#: ganttzk/src/main/java/org/zkoss/ganttz/LeftTasksTreeRow.java:249
+#: ganttzk/src/main/java/org/zkoss/ganttz/LeftTasksTreeRow.java:273
+#: ganttzk/src/main/java/org/zkoss/ganttz/LeftTasksTreeRow.java:280
 msgid "and no later than"
 msgstr ""
