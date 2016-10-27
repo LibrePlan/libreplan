@@ -167,7 +167,7 @@
         <n:tr>
             <n:td height="100">
                 <div align="right">
-                    <n:a href="http://www.libreplan-enterprise.com">
+                    <n:a href="http://www.libreplan-enterprise.com" target="_blank">
                         <n:img src="${contextPath}/common/img/login-banner.png" width="750" height="40" />
                     </n:a>
                 </div>

@@ -60,7 +60,8 @@ public class VersionInformation {
 
     private Date lastVersionCachedDate = new Date();
 
-    private VersionInformation() {}
+    private VersionInformation() {
+    }
 
     private void loadNewVersionFromURL() {
         lastVersionCachedDate = new Date();
