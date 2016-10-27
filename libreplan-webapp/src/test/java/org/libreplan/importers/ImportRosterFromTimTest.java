@@ -43,15 +43,15 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
- * Test for {@link ImportRosterFromTim}
+ * Test for {@link ImportRosterFromTim}.
  *
  * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
+@ContextConfiguration(locations = {
+        BUSINESS_SPRING_CONFIG_FILE,
         WEBAPP_SPRING_CONFIG_FILE, WEBAPP_SPRING_CONFIG_TEST_FILE,
-        WEBAPP_SPRING_SECURITY_CONFIG_FILE,
-        WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE })
+        WEBAPP_SPRING_SECURITY_CONFIG_FILE, WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE })
 public class ImportRosterFromTimTest {
 
     @Resource
@@ -74,10 +74,9 @@ public class ImportRosterFromTimTest {
     private IBaseCalendarModel baseCalendarModel;
 
     @Before
-    public void loadRequiredaData() {
+    public void loadRequiredData() {
 
         IOnTransaction<Void> load = new IOnTransaction<Void>() {
-
             @Override
             public Void execute() {
                 defaultAdvanceTypesBootstrapListener.loadRequiredData();

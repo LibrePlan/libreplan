@@ -28,10 +28,11 @@
 <?link rel="stylesheet" type="text/css" href="/common/css/libreplan.css"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/libreplan_zk.css"?>
 <?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+
 <zk>
     <window id="settingsWindow" self="@{define(content)}"
-        apply="org.libreplan.web.users.settings.SettingsController"
-        title="${i18n:_('User settings')}">
+            apply="org.libreplan.web.users.settings.SettingsController"
+            title="${i18n:_('User settings')}">
 
         <vbox id="messagesContainer" />
 
@@ -42,7 +43,9 @@
             <tabpanels>
                 <tabpanel>
                     <groupbox style="margin-top: 5px" closable="false">
+
                         <caption label="${i18n:_('Personal Data')}" />
+
                         <grid fixedLayout="true" id="personalData">
                             <columns>
                                 <column width="200px" />
@@ -52,33 +55,34 @@
                                 <row>
                                     <label value="${i18n:_('Username')}" />
                                     <textbox id="loginName"
-                                        value="@{settingsController.loginName}"
-                                        disabled="true"
-                                        width="300px" />
+                                             value="@{settingsController.loginName}"
+                                             disabled="true"
+                                             width="300px" />
                                 </row>
                                 <row>
                                     <label value="${i18n:_('First name')}" />
                                     <textbox id="firstName"
-                                        value="@{settingsController.firstName}" width="300px"
-                                        disabled="@{settingsController.bound}" />
+                                             value="@{settingsController.firstName}" width="300px"
+                                             disabled="@{settingsController.bound}" />
                                 </row>
                                 <row>
                                     <label value="${i18n:_('Last name')}" />
                                     <textbox id="lastName"
-                                        value="@{settingsController.lastName}" width="300px"
-                                        disabled="@{settingsController.bound}" />
+                                             value="@{settingsController.lastName}" width="300px"
+                                             disabled="@{settingsController.bound}" />
                                 </row>
                                 <row>
                                     <label value="${i18n:_('E-mail')}" />
-                                    <textbox id="email"
-                                        value="@{settingsController.email}" width="300px"/>
+                                    <textbox id="email" value="@{settingsController.email}" width="300px"/>
                                 </row>
                             </rows>
                         </grid>
                     </groupbox>
 
                     <groupbox style="margin-top: 5px" closable="false">
+
                         <caption label="${i18n:_('Application settings')}" />
+
                         <grid fixedLayout="true" id="configurationVariables">
                             <columns>
                                 <column width="200px" />
@@ -89,14 +93,13 @@
                                     <label value="${i18n:_('Select language')}" />
 
                                     <listbox id="applicationLanguage"
-                                            model="@{settingsController.languages}"
-                                            itemRenderer="@{settingsController.languagesRenderer}"
-                                            selectedItem="@{settingsController.selectedLanguage}"
-                                            mold="select" />
+                                             model="@{settingsController.languages}"
+                                             itemRenderer="@{settingsController.languagesRenderer}"
+                                             selectedItem="@{settingsController.selectedLanguage}"
+                                             mold="select" />
                                 </row>
                                 <row>
-                                    <label
-                                        value="${i18n:_('Planning charts expanded')}" />
+                                    <label value="${i18n:_('Planning charts expanded')}" />
                                     <grid>
                                         <columns>
                                             <column />
@@ -106,50 +109,66 @@
                                         <rows>
                                             <row>
                                                 <checkbox id="expandCompanyPlanningViewCharts"
-                                                    label="${i18n:_('Company view')}"
-                                                    checked="@{settingsController.expandCompanyPlanningViewCharts}"/>
+                                                          label="${i18n:_('Company view')}"
+                                                          checked="@{settingsController.expandCompanyPlanningViewCharts}"/>
                                                 <checkbox id="expandOrderPlanningViewCharts"
-                                                    label="${i18n:_('Project view')}"
-                                                    checked="@{settingsController.expandOrderPlanningViewCharts}"/>
+                                                          label="${i18n:_('Project view')}"
+                                                          checked="@{settingsController.expandOrderPlanningViewCharts}"/>
                                                 <checkbox id="expandResourceLoadViewCharts"
-                                                    label="${i18n:_('Resource load view')}"
-                                                    checked="@{settingsController.expandResourceLoadViewCharts}"/>
+                                                          label="${i18n:_('Resource load view')}"
+                                                          checked="@{settingsController.expandResourceLoadViewCharts}"/>
                                             </row>
                                         </rows>
                                     </grid>
                                 </row>
                                 <row>
-                                    <label
-                                        value="${i18n:_('Projects view filtering')}" />
+                                    <label value="${i18n:_('Projects view filtering')}" />
                                     <hbox>
                                         <label value="${i18n:_('Label filter')}" />
-                                        <bandboxSearch
-                                            id="projectsFilterLabelBandboxSearch"
-                                            finder="LabelBandboxFinder"
-                                            model="@{settingsController.allLabels}"
-                                            selectedElement="@{settingsController.projectsFilterLabel}"
-                                            widthListbox="450px" widthBandbox="200px"/>
+                                        <bandboxSearch id="projectsFilterLabelBandboxSearch"
+                                                       finder="LabelBandboxFinder"
+                                                       model="@{settingsController.allLabels}"
+                                                       selectedElement="@{settingsController.projectsFilterLabel}"
+                                                       widthListbox="450px"
+                                                       widthBandbox="200px"/>
+
                                         <label value="${i18n:_('Projects since')}" />
-                                        <intbox id="projectsFilterPeriodSince" value="@{settingsController.projectsFilterPeriodSince}" width="50px"/>
+                                        <intbox id="projectsFilterPeriodSince"
+                                                value="@{settingsController.projectsFilterPeriodSince}"
+                                                width="50px"
+                                                constraint="@{settingsController.checkMonthsMaxValue}"/>
+
                                         <label value="${i18n:_('months to')}" />
-                                        <intbox id="projectsFilterPeriodTo" value="@{settingsController.projectsFilterPeriodTo}" width="50px"/>
+                                        <intbox id="projectsFilterPeriodTo"
+                                                value="@{settingsController.projectsFilterPeriodTo}"
+                                                width="50px"
+                                                constraint="@{settingsController.checkMonthsMaxValue}"/>
                                     </hbox>
                                 </row>
+
                                 <row>
-                                    <label
-                                        value="${i18n:_('Resources load filtering')}" />
+                                    <label value="${i18n:_('Resources load filtering')}" />
                                     <hbox>
                                         <label value="${i18n:_('Criterion filter')}" />
                                         <bandboxSearch
-                                            id="resourcesLoadFilterCriterionBandboxSearch"
-                                            finder="CriterionBandboxFinder"
-                                            model="@{settingsController.allCriteria}"
-                                            selectedElement="@{settingsController.resourcesLoadFilterCriterion}"
-                                            widthListbox="450px" widthBandbox="200px"/>
+                                                id="resourcesLoadFilterCriterionBandboxSearch"
+                                                finder="CriterionBandboxFinder"
+                                                model="@{settingsController.allCriteria}"
+                                                selectedElement="@{settingsController.resourcesLoadFilterCriterion}"
+                                                widthListbox="450px"
+                                                widthBandbox="200px"/>
+
                                         <label value="${i18n:_('Resources load since')}" />
-                                        <intbox id="resourcesLoadFilterPeriodSince" value="@{settingsController.resourcesLoadFilterPeriodSince}" width="50px"/>
+                                        <intbox id="resourcesLoadFilterPeriodSince"
+                                                value="@{settingsController.resourcesLoadFilterPeriodSince}"
+                                                width="50px"
+                                                constraint="@{settingsController.checkMonthsMaxValue}"/>
+
                                         <label value="${i18n:_('months to')}" />
-                                        <intbox id="resourcesLoadFilterPeriodTo" value="@{settingsController.resourcesLoadFilterPeriodTo}" width="50px"/>
+                                        <intbox id="resourcesLoadFilterPeriodTo"
+                                                value="@{settingsController.resourcesLoadFilterPeriodTo}"
+                                                width="50px"
+                                                constraint="@{settingsController.checkMonthsMaxValue}"/>
                                     </hbox>
                                 </row>
                             </rows>
@@ -158,10 +177,11 @@
                 </tabpanel>
             </tabpanels>
         </tabbox>
+
         <hbox>
             <button label="${i18n:_('Save')}"
-                sclass="save-button global-action"
-                onClick="settingsController.save()" />
+                    sclass="save-button global-action"
+                    onClick="settingsController.save()" />
         </hbox>
     </window>
 </zk>

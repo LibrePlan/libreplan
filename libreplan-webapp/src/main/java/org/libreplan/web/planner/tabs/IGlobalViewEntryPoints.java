@@ -29,7 +29,8 @@ import org.libreplan.web.common.entrypoints.EntryPoint;
 import org.libreplan.web.common.entrypoints.EntryPoints;
 
 /**
- * Entry points for {@link MultipleTabsPlannerController} <br />
+ * Entry points for {@link MultipleTabsPlannerController}.
+ * <br />
  *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
@@ -39,25 +40,22 @@ import org.libreplan.web.common.entrypoints.EntryPoints;
 public interface IGlobalViewEntryPoints {
 
     @EntryPoint("company_scheduling")
-    public void goToCompanyScheduling();
+    void goToCompanyScheduling();
 
     @EntryPoint("company_load")
-    public void goToCompanyLoad();
+    void goToCompanyLoad();
 
     @EntryPoint("limiting_resources")
-    public void goToLimitingResources();
-
-/*    @EntryPoint("logs")
-    public void goToLogs();*/
+    void goToLimitingResources();
 
     @EntryPoint("orders_list")
-    public void goToOrdersList();
+    void goToOrdersList();
 
     @EntryPoint("order")
-    public void goToOrder(Order order);
+    void goToOrder(Order order);
 
     @EntryPoint({ "order", "orderElement" })
-    public void goToOrderElementDetails(Order order, OrderElement orderElement);
+    void goToOrderElementDetails(Order order, OrderElement orderElement);
 
     @EntryPoint("limiting_resources")
     void goToCompanyLimitingResources();
@@ -68,11 +66,11 @@ public interface IGlobalViewEntryPoints {
     @EntryPoint("order_load")
     void goToResourcesLoad(Order order);
 
-    @EntryPoint("order_advanced_allocation")
+    @EntryPoint("order_advanced_allocation") 
     void goToAdvancedAllocation(Order order);
 
     @EntryPoint("create_order_from_template")
-    void goToCreateotherOrderFromTemplate(OrderTemplate template);
+    void goToCreateOtherOrderFromTemplate(OrderTemplate template);
 
     @EntryPoint({"order","task"})
     void goToAdvanceTask(Order order,TaskElement task);

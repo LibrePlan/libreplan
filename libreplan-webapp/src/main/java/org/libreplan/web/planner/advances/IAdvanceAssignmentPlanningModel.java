@@ -29,28 +29,27 @@ import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 
 /**
  * Contract for {@link Task}.
+ *
  * @author Susana Montes Pedreira<smontes@wirelessgalicia.com>
  */
 public interface IAdvanceAssignmentPlanningModel {
 
-    public interface IAdvanceAssignmentPlanningContext<T> {
-        public T doInsideTransaction();
-    }
-
     /**
-     * Save task
+     * Save task.
      */
     void accept();
 
     /**
-     * Starts the use case
+     * Starts the use case.
+     *
      * @param task
-     * @param ganttTask
+     * @param context
      * @param planningState
      */
-    void initAdvancesFor(TaskElement task,
+    void initAdvancesFor(
+            TaskElement task,
             IContextWithPlannerTask<TaskElement> context,
             PlanningState planningState);
 
-    public OrderElement getOrderElement();
+    OrderElement getOrderElement();
 }

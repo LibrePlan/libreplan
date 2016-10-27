@@ -23,75 +23,96 @@
 <?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n"?>
 <zk xmlns:n="http://www.zkoss.org/2005/zk/native">
 
-<zscript><![CDATA[
-    advancedAllocationController = arg.get("advancedAllocationController");
-]]>
-</zscript>
+    <zscript>
+        <![CDATA[
+        advancedAllocationController = arg.get("advancedAllocationController");
+    ]]>
+    </zscript>
 
-<n:div class="advanced-allocation-layout">
-<div id="noDataLayout">
-    <n:h4 class="message_WARNING">${i18n:_('No Allocations have been done')}</n:h4>
-</div>
+    <n:div class="advanced-allocation-layout">
 
-<borderlayout id="normalLayout" width="auto" apply="${advancedAllocationController}" class="advancedallocationlayout">
-    <north height="30px" border="0" sclass="toolbar-box">
-        <hbox align="center">
-            <button label="${i18n:_('Apply')}" id="acceptButton" image="/common/img/bt_ok.png"
-                if="${advancedAllocationController.advancedAllocationOfSingleTask}"
-                tooltiptext="${i18n:_('Apply changes and go back to scheduling')}" />
-            <button label="${i18n:_('Cancel')}" id="cancelButton" image="/common/img/bt_cancel.png"
-                if="${advancedAllocationController.advancedAllocationOfSingleTask}"
-                tooltiptext="${i18n:_('Cancel changes and back to scheduling')}" />
-            <button label="${i18n:_('Apply')}" id="saveButton" image="/common/img/bt_ok.png"
-                if="${!(advancedAllocationController.advancedAllocationOfSingleTask)}"
-                tooltiptext="${i18n:_('Apply changes and continue editing')}" />
-            <separator/>
-            <space bar="true" />
-            <label>${i18n:_('Zoom level')}:</label>
-            <listbox mold="select" rows="1" id="advancedAllocationZoomLevel"
-                model="${advancedAllocationController.zoomLevels}"
-                onSelect="advancedAllocationController.setZoomLevel(self.selectedItem.value);" >
-            </listbox>
+        <div id="noDataLayout">
+            <n:h4 class="message_WARNING">${i18n:_('No Allocations have been done')}</n:h4>
+        </div>
 
-            <separator/>
-            <label>${i18n:_('Pagination')}:</label>
-            <button tooltiptext="Page down" image="/common/img/ico_left.png" id="paginationDownButton"
-            onClick="advancedAllocationController.paginationDown();" disabled="true" />
-            <listbox mold="select" rows="1" visible="false" id="advancedAllocationHorizontalPagination"
-            onSelect="advancedAllocationController.goToSelectedHorizontalPage();" />
-            <button tooltiptext="Page up" image="/common/img/ico_right.png" id="paginationUpButton"
-            onClick="advancedAllocationController.paginationUp();" />
+        <borderlayout id="normalLayout" width="auto" apply="${advancedAllocationController}"
+                      sclass="advanced-allocation-layout">
 
-            <separator/>
+            <north height="30px" border="0" sclass="toolbar-box">
 
-            <button tooltiptext="Vertical Page up" image="/common/img/ico_up.png" id="verticalPaginationUpButton"
-            onClick="advancedAllocationController.verticalPageup();" disabled="true" />
-            <listbox mold="select" rows="1" visible="true" id="advancedAllocationVerticalPagination"
-            onSelect="advancedAllocationController.goToSelectedVerticalPage();" />
-            <button tooltiptext="Vertical Page down" image="/common/img/ico_down.png" id="verticalPaginationDownButton"
-            onClick="advancedAllocationController.verticalPagedown();" disabled="true" />
-            <n:div id="messages-div">
-                <div id="messages" />
-            </n:div>
-        </hbox>
-   </north>
+                <hbox align="center">
+                    <button label="${i18n:_('Apply')}" id="acceptButton" image="/common/img/bt_ok.png"
+                            if="${advancedAllocationController.advancedAllocationOfSingleTask}"
+                            tooltiptext="${i18n:_('Apply changes and go back to scheduling')}" />
 
-    <center border="0">
-        <borderlayout>
-            <west size="400px" flex="true" collapsible="true"
-                splittable="true" sclass="advancedassignmentdetails">
-                        <div sclass="leftpanelgap" id="insertionPointLeftPanel"></div>
-            </west>
+                    <button label="${i18n:_('Cancel')}" id="cancelButton" image="/common/img/bt_cancel.png"
+                            if="${advancedAllocationController.advancedAllocationOfSingleTask}"
+                            tooltiptext="${i18n:_('Cancel changes and back to scheduling')}" />
 
-            <center sclass="taskspanel">
+                    <button label="${i18n:_('Apply')}" id="saveButton" image="/common/img/bt_ok.png"
+                            if="${!(advancedAllocationController.advancedAllocationOfSingleTask)}"
+                            tooltiptext="${i18n:_('Apply changes and continue editing')}" />
+
+                    <separator/>
+
+                    <space bar="true" />
+                    <label>${i18n:_('Zoom level')}:</label>
+
+                    <listbox mold="select" rows="1" id="advancedAllocationZoomLevel"
+                             model="${advancedAllocationController.zoomLevels}"
+                             onSelect="advancedAllocationController.setZoomLevel(self.selectedItem.value);" >
+                    </listbox>
+
+                    <separator/>
+
+                    <label>${i18n:_('Pagination')}:</label>
+
+                    <button tooltiptext="Page down" image="/common/img/ico_left.png" id="paginationDownButton"
+                            onClick="advancedAllocationController.paginationDown();" disabled="true" />
+
+                    <listbox mold="select" rows="1" visible="false" id="advancedAllocationHorizontalPagination"
+                             onSelect="advancedAllocationController.goToSelectedHorizontalPage();" />
+
+                    <button tooltiptext="Page up" image="/common/img/ico_right.png" id="paginationUpButton"
+                            onClick="advancedAllocationController.paginationUp();" />
+
+                    <separator/>
+
+                    <button tooltiptext="Vertical Page up" image="/common/img/ico_up.png" id="verticalPaginationUpButton"
+                            onClick="advancedAllocationController.verticalPageup();" disabled="true" />
+
+                    <listbox mold="select" rows="1" visible="true" id="advancedAllocationVerticalPagination"
+                             onSelect="advancedAllocationController.goToSelectedVerticalPage();" />
+
+                    <button tooltiptext="Vertical Page down" image="/common/img/ico_down.png" id="verticalPaginationDownButton"
+                            onClick="advancedAllocationController.verticalPagedown();" disabled="true" />
+
+                    <n:div id="messages-div">
+                        <div id="messages" />
+                    </n:div>
+                </hbox>
+            </north>
+
+            <center border="0">
                 <borderlayout>
-                    <north border="0"><div sclass="timetrackergap" id="insertionPointTimetracker"></div></north>
-                    <!-- <north border="0" sclass="timetrackergap" height="31px" id="insertionPointTimetracker" /> -->
-                    <center style="overflow-y:auto;overflow-x:auto;" border="0" sclass="advanced-assignment-area rightpanellayout taskspanelgap" id="insertionPointRightPanel" />
+                    <west size="400px"  collapsible="true"
+                          splittable="true" sclass="advanced-assignment-details">
+                        <div sclass="leftpanelgap" id="insertionPointLeftPanel"/>
+                    </west>
+
+                    <center sclass="taskspanel">
+                        <borderlayout>
+                            <north border="0">
+                                <div sclass="timetrackergap" id="insertionPointTimetracker"/>
+                            </north>
+
+                            <center id="insertionPointRightPanel"
+                                    style="overflow-y:auto; overflow-x:auto;" border="0"
+                                    sclass="advanced-assignment-area rightpanel-layout taskspanel-gap" />
+                        </borderlayout>
+                    </center>
                 </borderlayout>
             </center>
         </borderlayout>
-    </center>
-</borderlayout>
-</n:div>
+    </n:div>
 </zk>

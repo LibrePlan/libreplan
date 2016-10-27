@@ -53,7 +53,7 @@
 
             <!-- Indexed -->
             <many-to-one name="orderElement" class="org.libreplan.business.orders.entities.OrderElement"
-                         column="direct_order_element_id" index="idx_direct_advance_assigment_on_order_element"/>
+                         column="direct_order_element_id" index="idx_direct_advance_assignment_on_order_element"/>
 
             <property name="maxValue" access="field" scale="2" column="max_value" />
 
@@ -76,7 +76,7 @@
 
             <!-- Indexed -->
             <many-to-one name="orderElement" class="org.libreplan.business.orders.entities.OrderElement"
-                         column="indirect_order_element_id" index="idx_indirect_advance_assigment_on_order_element"/>
+                         column="indirect_order_element_id" index="idx_indirect_advance_assignment_on_order_element"/>
 
             <!-- Not indexed -->
             <set name="calculatedConsolidations" cascade="none" inverse="true" access="field">
@@ -129,7 +129,7 @@
 
         <!-- Indexed -->
         <many-to-one name="template" class="org.libreplan.business.templates.entities.OrderElementTemplate"
-                     column="order_element_template_id" index="idx_advance_assigment_template_on_template"/>
+                     column="order_element_template_id" index="idx_advance_assignment_template_on_template"/>
 
         <property name="reportGlobalAdvance" access="field" column="report_global_advance" />
 

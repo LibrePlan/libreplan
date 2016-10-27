@@ -27,6 +27,7 @@ import org.libreplan.business.common.entities.EntityNameEnum;
 import org.libreplan.business.materials.daos.IMaterialCategoryDAO;
 import org.libreplan.business.materials.entities.MaterialCategory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,7 +38,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 @Component
-@Scope("singleton")
+@Scope(BeanDefinition.SCOPE_SINGLETON)
 public class MaterialCategoryBootstrap implements IMaterialCategoryBootstrap {
 
     @Autowired
@@ -49,13 +50,10 @@ public class MaterialCategoryBootstrap implements IMaterialCategoryBootstrap {
     @Override
     @Transactional
     public void loadRequiredData() {
-        for (PredefinedMaterialCategories predefinedMaterialCategory : PredefinedMaterialCategories
-                .values()) {
+        for (PredefinedMaterialCategories predefinedMaterialCategory : PredefinedMaterialCategories.values()) {
             if (!materialCategoryDAO
-                    .existsMaterialCategoryWithNameInAnotherTransaction(predefinedMaterialCategory
-                            .getName())) {
-                MaterialCategory materialCategory = predefinedMaterialCategory
-                        .createMaterialCategory();
+                    .existsMaterialCategoryWithNameInAnotherTransaction(predefinedMaterialCategory.getName())) {
+                MaterialCategory materialCategory = predefinedMaterialCategory.createMaterialCategory();
                 materialCategory
                         .setCode(entitySequenceDAO
                                 .getNextEntityCodeWithoutTransaction(EntityNameEnum.MATERIAL_CATEGORY));

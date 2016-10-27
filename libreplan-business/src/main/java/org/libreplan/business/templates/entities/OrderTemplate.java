@@ -36,13 +36,14 @@ import org.libreplan.business.scenarios.entities.Scenario;
  */
 public class OrderTemplate extends OrderLineGroupTemplate {
 
+    private BaseCalendar calendar;
+
     public static OrderTemplate create(Order order) {
         OrderTemplate beingBuilt = new OrderTemplate();
         beingBuilt.calendar = order.getCalendar();
+
         return create(beingBuilt, order);
     }
-
-    private BaseCalendar calendar;
 
     @Override
     public OrderElement createElement(OrderLineGroup parent) {
@@ -51,11 +52,11 @@ public class OrderTemplate extends OrderLineGroupTemplate {
 
     public Order createOrder(Scenario currentScenario) {
         Order order = Order.create();
-        order.setVersionForScenario(currentScenario, OrderVersion
-                .createInitialVersion(currentScenario));
+        order.setVersionForScenario(currentScenario, OrderVersion.createInitialVersion(currentScenario));
         order.useSchedulingDataFor(currentScenario);
         order.setCalendar(calendar);
         order.initializeTemplate(this);
+
         return setupGroupParts(setupSchedulingStateType(order));
     }
 

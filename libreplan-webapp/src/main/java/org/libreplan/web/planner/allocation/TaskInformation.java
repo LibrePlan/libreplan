@@ -36,9 +36,7 @@ import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.SimpleListModel;
 
 /**
- *
  * @author Diego Pino Garcia<dpino@igalia.com>
- *
  */
 public class TaskInformation extends HtmlMacroComponent {
 
@@ -54,7 +52,7 @@ public class TaskInformation extends HtmlMacroComponent {
     @Override
     public void afterCompose() {
         super.afterCompose();
-        this.setVariable("taskInformationController", this, true);
+        this.setAttribute("taskInformationController", this, true);
 
         btnRecommendedAllocation = (Button) getFellowIfAny("btnRecommendedAllocation");
         gridTaskRows = (Grid) getFellowIfAny("gridTaskRows");
@@ -65,15 +63,15 @@ public class TaskInformation extends HtmlMacroComponent {
         if (totalHoursCalculation != null) {
             return totalHoursCalculation.getTotalHours();
         }
-        return Integer.valueOf(0);
+        return 0;
     }
 
     public void initializeGridTaskRows(List<AggregatedHoursGroup> rows) {
-        gridTaskRows.setModel(new SimpleListModel(rows));
+        gridTaskRows.setModel(new SimpleListModel<>(rows));
         gridTaskRows.setRowRenderer(newTaskRowsRenderer());
     }
 
-    public Button getBtnRecommendedAllocation() {
+    Button getBtnRecommendedAllocation() {
         return btnRecommendedAllocation;
     }
 
@@ -86,29 +84,26 @@ public class TaskInformation extends HtmlMacroComponent {
     }
 
     private RowRenderer newTaskRowsRenderer() {
-        return OnColumnsRowRenderer.create(hoursCellRenderer,
-                Arrays.asList(HoursRendererColumn.values()));
+        return OnColumnsRowRenderer.create(hoursCellRenderer, Arrays.asList(HoursRendererColumn.values()));
     }
 
-    private static final ICellForDetailItemRenderer<HoursRendererColumn, AggregatedHoursGroup> hoursCellRenderer = new ICellForDetailItemRenderer<HoursRendererColumn, AggregatedHoursGroup>() {
-
-        @Override
-        public Component cellFor(HoursRendererColumn column,
-                AggregatedHoursGroup data) {
-            return column.cell(column, data);
-        }
-    };
+    private static final ICellForDetailItemRenderer<HoursRendererColumn, AggregatedHoursGroup> hoursCellRenderer =
+            new ICellForDetailItemRenderer<HoursRendererColumn, AggregatedHoursGroup>() {
+                @Override
+                public Component cellFor(HoursRendererColumn column, AggregatedHoursGroup data) {
+                    return column.cell(column, data);
+                }
+            };
 
     /**
      *
-     * Listener for calculating total number of hours
+     * Listener for calculating total number of hours.
      *
      * @author Diego Pino Garcia <dpino@igalia.com>
-     *
      */
     public interface ITotalHoursCalculationListener {
 
-        public Integer getTotalHours();
+        Integer getTotalHours();
 
     }
 

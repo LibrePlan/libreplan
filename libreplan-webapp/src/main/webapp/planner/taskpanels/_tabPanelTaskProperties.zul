@@ -22,11 +22,12 @@
 <?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n" ?>
 
 <tabpanel id="${arg.id}">
+
     <grid>
-    <columns>
-        <column width="300px"/>
-        <column />
-    </columns>
+        <columns>
+            <column width="300px"/>
+            <column />
+        </columns>
         <rows>
             <row>
                 <label value="${i18n:_('Name')}" />
@@ -35,16 +36,16 @@
             <row>
                 <label value="${i18n:_('Start')}" />
                 <datebox id="startDateBox" disabled="true"
-                value="@{propertiesController.ganttTaskDTO.beginDate}" />
+                         value = "@{propertiesController.ganttTaskDTO.beginDate}" />
             </row>
             <row>
                 <label value="${i18n:_('End')}" />
                 <datebox id="endDateBox" disabled="true"
-                value="@{propertiesController.ganttTaskDTO.endDate}" />
+                         value = "@{propertiesController.ganttTaskDTO.endDate}" />
             </row>
             <row>
                 <label value="${i18n:_('Deadline')}"/>
-                <datebox id="deadLineDateBox" value="@{propertiesController.ganttTaskDTO.deadlineDate}"/>
+                <datebox id="deadLineDateBox" value = "@{propertiesController.ganttTaskDTO.deadlineDate}"/>
             </row>
             <row>
                 <label value="${i18n:_('Notes')}" />
@@ -61,7 +62,7 @@
             <row>
                 <label value="${i18n:_('Budget')}" />
                 <decimalbox id="budget" disabled="true"
-                    format="@{propertiesController.moneyFormat}" />
+                            format="@{propertiesController.moneyFormat}" />
             </row>
             <row id="startConstraint">
                 <label value="${i18n:_('Constraint')}" />
@@ -73,10 +74,12 @@
             <row id="resourceAllocationType" visible="@{editController.isTask}">
                 <label value="${i18n:_('Resource allocation type')}" />
                 <listbox id="lbResourceAllocationType"
-                    mold="select"
-                    model="@{propertiesController.resourceAllocationTypeOptionList}"
-                    selectedItem="@{propertiesController.resourceAllocationType}"/>
+                         mold="select"
+                         model="@{propertiesController.resourceAllocationTypeOptionList}"
+                         selectedItem="@{propertiesController.resourceAllocationType}"/>
             </row>
         </rows>
     </grid>
+
 </tabpanel>
+

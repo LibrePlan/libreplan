@@ -82,8 +82,7 @@ import org.zkoss.zul.Vbox;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class OrderPlanningController implements Composer {
 
-    private static final Log PROFILING_LOG = ProfilingLogFactory
-            .getLog(OrderPlanningController.class);
+    private static final Log PROFILING_LOG = ProfilingLogFactory.getLog(OrderPlanningController.class);
 
     @Autowired
     private ViewSwitcher viewSwitcher;
@@ -119,26 +118,32 @@ public class OrderPlanningController implements Composer {
 
     private TaskElement task;
 
-    private List<ICommand<TaskElement>> additional = new ArrayList<ICommand<TaskElement>>();
+    private List<ICommand<TaskElement>> additional = new ArrayList<>();
 
     private Vbox orderElementFilter;
+
     private Datebox filterStartDateOrderElement;
+
     private Datebox filterFinishDateOrderElement;
+
     private Checkbox labelsWithoutInheritance;
+
     private BandboxMultipleSearch bdFiltersOrderElement;
+
     private Textbox filterNameOrderElement;
 
     private Popup filterOptionsPopup;
 
     public OrderPlanningController() {
+
     }
 
-    public List<org.libreplan.business.planner.entities.TaskElement> getCriticalPath() {
+    public List getCriticalPath() {
         return planner != null ? planner.getCriticalPath() : null;
     }
 
-    public void setOrder(Order order,
-            ICommand<TaskElement>... additionalCommands) {
+    @SafeVarargs
+    public final void setOrder(Order order, ICommand<TaskElement>... additionalCommands) {
         Validate.notNull(additionalCommands);
         Validate.noNullElements(additionalCommands);
         this.order = order;
@@ -170,44 +175,32 @@ public class OrderPlanningController implements Composer {
     public void doAfterCompose(org.zkoss.zk.ui.Component comp) {
         this.planner = (Planner) comp;
         String zoomLevelParameter = null;
-        if ((parameters != null) && (parameters.get("zoom") != null)
-                && !(parameters.isEmpty())) {
+        if ((parameters != null) && (parameters.get("zoom") != null) && !(parameters.isEmpty())) {
             zoomLevelParameter = parameters.get("zoom")[0];
         }
         if (zoomLevelParameter != null) {
-            planner.setInitialZoomLevel(ZoomLevel
-                    .getFromString(zoomLevelParameter));
+            planner.setInitialZoomLevel(ZoomLevel.getFromString(zoomLevelParameter));
         }
-        planner.setAreContainersExpandedByDefault(Planner
-                .guessContainersExpandedByDefault(parameters));
+        planner.setAreContainersExpandedByDefault(Planner.guessContainersExpandedByDefault(parameters));
 
-        planner.setAreShownAdvancesByDefault(Planner
-                .guessShowAdvancesByDefault(parameters));
+        planner.setAreShownAdvancesByDefault(Planner.guessShowAdvancesByDefault(parameters));
 
-        planner.setAreShownReportedHoursByDefault(Planner
-                .guessShowReportedHoursByDefault(parameters));
-        planner.setAreShownMoneyCostBarByDefault(Planner
-                .guessShowMoneyCostBarByDefault(parameters));
+        planner.setAreShownReportedHoursByDefault(Planner.guessShowReportedHoursByDefault(parameters));
+        planner.setAreShownMoneyCostBarByDefault(Planner.guessShowMoneyCostBarByDefault(parameters));
 
         orderElementFilter = (Vbox) planner.getFellow("orderElementFilter");
         // Configuration of the order filter
         org.zkoss.zk.ui.Component filterComponent = Executions
                 .createComponents("/orders/_orderElementTreeFilter.zul",
                         orderElementFilter, new HashMap<String, String>());
-        filterComponent.setVariable("treeController", this, true);
-        filterOptionsPopup = (Popup) filterComponent
-                .getFellow("filterOptionsPopup");
-        filterStartDateOrderElement = (Datebox) filterOptionsPopup
-                .getFellow("filterStartDateOrderElement");
-        filterFinishDateOrderElement = (Datebox) filterOptionsPopup
-                .getFellow("filterFinishDateOrderElement");
-        labelsWithoutInheritance = (Checkbox) filterOptionsPopup
-                .getFellow("labelsWithoutInheritance");
-        bdFiltersOrderElement = (BandboxMultipleSearch) filterComponent
-                .getFellow("bdFiltersOrderElement");
+        filterComponent.setAttribute("treeController", this, true);
+        filterOptionsPopup = (Popup) filterComponent.getFellow("filterOptionsPopup");
+        filterStartDateOrderElement = (Datebox) filterOptionsPopup.getFellow("filterStartDateOrderElement");
+        filterFinishDateOrderElement = (Datebox) filterOptionsPopup.getFellow("filterFinishDateOrderElement");
+        labelsWithoutInheritance = (Checkbox) filterOptionsPopup.getFellow("labelsWithoutInheritance");
+        bdFiltersOrderElement = (BandboxMultipleSearch) filterComponent.getFellow("bdFiltersOrderElement");
         bdFiltersOrderElement.setFinder("taskElementsMultipleFiltersFinder");
-        filterNameOrderElement = (Textbox) filterComponent
-                .getFellow("filterNameOrderElement");
+        filterNameOrderElement = (Textbox) filterComponent.getFellow("filterNameOrderElement");
         filterComponent.setVisible(true);
         updateConfiguration();
     }
@@ -222,33 +215,27 @@ public class OrderPlanningController implements Composer {
                     advanceAssignmentPlanningController,
                     advanceConsolidationController,
                     calendarAllocationController, additional);
-            PROFILING_LOG.debug("setConfigurationToPlanner took: "
-                    + (System.currentTimeMillis() - time) + " ms");
+            PROFILING_LOG.debug("setConfigurationToPlanner took: " + (System.currentTimeMillis() - time) + " ms");
             planner.updateSelectedZoomLevel();
             showResorceAllocationIfIsNeeded();
 
         }
     }
 
-    public void importOrderFiltersFromSession() {
+    private void importOrderFiltersFromSession() {
         importOrderFiltersFromSession(false);
     }
 
-    public void importOrderFiltersFromSession(boolean forceReload) {
+    private void importOrderFiltersFromSession(boolean forceReload) {
         filterNameOrderElement.setValue(FilterUtils.readOrderTaskName(order));
-        filterStartDateOrderElement.setValue(FilterUtils
-                .readOrderStartDate(order));
-        filterFinishDateOrderElement.setValue(FilterUtils
-                .readOrderEndDate(order));
-        List<FilterPair> sessionFilterPairs = FilterUtils
-                .readOrderParameters(order);
-        if ((sessionFilterPairs != null)
-                && (bdFiltersOrderElement.getSelectedElements().isEmpty() || forceReload)) {
+        filterStartDateOrderElement.setValue(FilterUtils.readOrderStartDate(order));
+        filterFinishDateOrderElement.setValue(FilterUtils.readOrderEndDate(order));
+        List<FilterPair> sessionFilterPairs = FilterUtils.readOrderParameters(order);
+        if ((sessionFilterPairs != null) && (bdFiltersOrderElement.getSelectedElements().isEmpty() || forceReload)) {
             bdFiltersOrderElement.addSelectedElements(sessionFilterPairs);
         }
         if (FilterUtils.readOrderInheritance(order) != null) {
-            labelsWithoutInheritance.setChecked(FilterUtils
-                    .readOrderInheritance(order));
+            labelsWithoutInheritance.setChecked(FilterUtils.readOrderInheritance(order));
         }
     }
 
@@ -274,8 +261,7 @@ public class OrderPlanningController implements Composer {
 
     public void onApplyFilter() {
         filterByPredicate(createPredicate());
-        List<FilterPair> listFilters = (List<FilterPair>) bdFiltersOrderElement
-                .getSelectedElements();
+        List<FilterPair> listFilters = (List<FilterPair>) bdFiltersOrderElement.getSelectedElements();
         FilterUtils.writeOrderParameters(order, listFilters);
     }
 
@@ -286,23 +272,20 @@ public class OrderPlanningController implements Composer {
             FilterUtils.writeOrderWBSFiltersChanged(order, false);
         }
 
-        List<FilterPair> listFilters = (List<FilterPair>) bdFiltersOrderElement
-                .getSelectedElements();
+        List<FilterPair> listFilters = (List<FilterPair>) bdFiltersOrderElement.getSelectedElements();
         Date startDate = filterStartDateOrderElement.getValue();
         Date finishDate = filterFinishDateOrderElement.getValue();
         boolean ignoreLabelsInheritance = labelsWithoutInheritance.isChecked();
         String name = filterNameOrderElement.getValue();
 
-        if (listFilters.isEmpty() && startDate == null && finishDate == null
-                && name == null) {
+        if (listFilters.isEmpty() && startDate == null && finishDate == null && name == null) {
             return null;
         }
         FilterUtils.writeOrderTaskName(order, name);
         FilterUtils.writeOrderStartDate(order, startDate);
         FilterUtils.writeOrderEndDate(order, finishDate);
         FilterUtils.writeOrderInheritance(order, ignoreLabelsInheritance);
-        return new TaskElementPredicate(listFilters, startDate, finishDate,
-                name, ignoreLabelsInheritance);
+        return new TaskElementPredicate(listFilters, startDate, finishDate, name, ignoreLabelsInheritance);
     }
 
     public Checkbox getLabelsWithoutInheritance() {
@@ -334,37 +317,32 @@ public class OrderPlanningController implements Composer {
     private FilterAndParentExpandedPredicates getFilterAndParentExpanedPredicates(
             final TaskElementPredicate predicate) {
         final IContext<?> context = planner.getContext();
-        FilterAndParentExpandedPredicates newPredicate = new FilterAndParentExpandedPredicates(
-                context) {
+        FilterAndParentExpandedPredicates newPredicate = new FilterAndParentExpandedPredicates(context) {
             @Override
             public boolean accpetsFilterPredicate(Task task) {
                 if (predicate == null) {
                     return true;
                 }
-                TaskElement taskElement = (TaskElement) context.getMapper()
-                        .findAssociatedDomainObject(task);
+                TaskElement taskElement = (TaskElement) context.getMapper().findAssociatedDomainObject(task);
                 return predicate.accepts(taskElement);
             }
 
         };
-        newPredicate.setFilterContainers(planner.getPredicate()
-                .isFilterContainers());
+        newPredicate.setFilterContainers(planner.getPredicate().isFilterContainers());
+
         return newPredicate;
     }
 
     public Constraint checkConstraintFinishDate() {
         return new Constraint() {
             @Override
-            public void validate(org.zkoss.zk.ui.Component comp, Object value)
-                    throws WrongValueException {
+            public void validate(org.zkoss.zk.ui.Component comp, Object value) throws WrongValueException {
                 Date finishDate = (Date) value;
-                if ((finishDate != null)
-                        && (filterStartDateOrderElement.getValue() != null)
-                        && (finishDate.compareTo(filterStartDateOrderElement
-                                .getValue()) < 0)) {
+                if ((finishDate != null) && (filterStartDateOrderElement.getValue() != null) &&
+                        (finishDate.compareTo(filterStartDateOrderElement.getValue()) < 0)) {
+
                     filterFinishDateOrderElement.setRawValue(null);
-                    throw new WrongValueException(comp,
-                            _("must be after start date"));
+                    throw new WrongValueException(comp, _("must be after start date"));
                 }
             }
 
@@ -374,32 +352,27 @@ public class OrderPlanningController implements Composer {
     public Constraint checkConstraintStartDate() {
         return new Constraint() {
             @Override
-            public void validate(org.zkoss.zk.ui.Component comp, Object value)
-                    throws WrongValueException {
+            public void validate(org.zkoss.zk.ui.Component comp, Object value) throws WrongValueException {
                 Date startDate = (Date) value;
-                if ((startDate != null)
-                        && (filterFinishDateOrderElement.getValue() != null)
-                        && (startDate.compareTo(filterFinishDateOrderElement
-                                .getValue()) > 0)) {
+                if ((startDate != null) && (filterFinishDateOrderElement.getValue() != null) &&
+                        (startDate.compareTo(filterFinishDateOrderElement.getValue()) > 0)) {
+
                     filterStartDateOrderElement.setRawValue(null);
-                    throw new WrongValueException(comp,
-                            _("must be lower than end date"));
+                    throw new WrongValueException(comp, _("must be lower than end date"));
                 }
             }
         };
     }
 
-    public void showResorceAllocationIfIsNeeded() {
+    private void showResorceAllocationIfIsNeeded() {
         if ((task != null) && (planner != null)) {
 
             planner.expandAllAlways();
 
             Task foundTask = null;
             TaskElement foundTaskElement = null;
-            IContext<TaskElement> context = (IContext<TaskElement>) planner
-                    .getContext();
-            Map<TaskElement, Task> map = context.getMapper()
-                    .getMapDomainToTask();
+            IContext<TaskElement> context = (IContext<TaskElement>) planner.getContext();
+            Map<TaskElement, Task> map = context.getMapper().getMapDomainToTask();
 
             for (Entry<TaskElement, Task> entry : map.entrySet()) {
                 if (task.getId().equals(entry.getKey().getId())) {
@@ -409,17 +382,16 @@ public class OrderPlanningController implements Composer {
             }
 
             if ((foundTask != null) && (foundTaskElement != null)) {
-                IContextWithPlannerTask<TaskElement> contextTask = ContextWithPlannerTask
-                        .create(context, foundTask);
-                if (this.getCurrentControllerToShow().equals(
-                        getEditTaskController())) {
-                    this.editTaskController.showEditFormResourceAllocation(
-                            contextTask, foundTaskElement,
+                IContextWithPlannerTask<TaskElement> contextTask = ContextWithPlannerTask.create(context, foundTask);
+
+                if (this.getCurrentControllerToShow().equals(getEditTaskController())) {
+
+                    this.editTaskController.showEditFormResourceAllocation(contextTask, foundTaskElement,
                             model.getPlanningState());
-                } else if (this.getCurrentControllerToShow().equals(
-                        this.getAdvanceAssignmentPlanningController())) {
-                    getAdvanceAssignmentPlanningController().showWindow(
-                            contextTask, foundTaskElement,
+
+                } else if (this.getCurrentControllerToShow().equals(this.getAdvanceAssignmentPlanningController())) {
+
+                    getAdvanceAssignmentPlanningController().showWindow(contextTask, foundTaskElement,
                             model.getPlanningState());
                 }
             }
@@ -438,7 +410,7 @@ public class OrderPlanningController implements Composer {
         this.currentControllerToShow = currentControllerToShow;
     }
 
-    public GenericForwardComposer getCurrentControllerToShow() {
+    private GenericForwardComposer getCurrentControllerToShow() {
         return currentControllerToShow;
     }
 

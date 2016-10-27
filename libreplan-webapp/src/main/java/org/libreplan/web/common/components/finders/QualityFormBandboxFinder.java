@@ -21,8 +21,6 @@
 
 package org.libreplan.web.common.components.finders;
 
-import java.util.List;
-
 import org.libreplan.business.qualityforms.daos.IQualityFormDAO;
 import org.libreplan.business.qualityforms.entities.QualityForm;
 import org.libreplan.business.qualityforms.entities.QualityFormItem;
@@ -34,6 +32,8 @@ import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
 
+import java.util.List;
+
 /**
  * Implements all the methods needed to comply IBandboxFinder This is a finder
  * for {@link QualityForm}l in a {@link Bandbox}. Provides how many columns for
@@ -42,8 +42,7 @@ import org.zkoss.zul.ListitemRenderer;
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 @Repository
-public class QualityFormBandboxFinder extends BandboxFinder implements
-        IBandboxFinder {
+public class QualityFormBandboxFinder extends BandboxFinder implements IBandboxFinder {
 
     @Autowired
     private IQualityFormDAO qualityFormDAO;
@@ -62,6 +61,7 @@ public class QualityFormBandboxFinder extends BandboxFinder implements
     public List<QualityForm> getAll() {
         List<QualityForm> qualityForms = qualityFormDAO.getAll();
         initializeQualityForms(qualityForms);
+
         return qualityForms;
     }
 
@@ -74,8 +74,7 @@ public class QualityFormBandboxFinder extends BandboxFinder implements
     private void initializeQualityForm(QualityForm qualityForm) {
         qualityForm.getName();
         qualityForm.getQualityFormType();
-        for (QualityFormItem qualityFormItem : qualityForm
-                .getQualityFormItems()) {
+        for (QualityFormItem qualityFormItem : qualityForm.getQualityFormItems()) {
             qualityFormItem.getName();
         }
     }
@@ -84,10 +83,9 @@ public class QualityFormBandboxFinder extends BandboxFinder implements
     public boolean entryMatchesText(Object obj, String text) {
         final QualityForm qualityForm = (QualityForm) obj;
         text = text.toLowerCase();
-        return (qualityForm.getQualityFormType().name().toLowerCase()
-                .contains(text.toLowerCase()) || qualityForm.getName()
-                .toLowerCase().contains(
-                text));
+
+        return (qualityForm.getQualityFormType().name().toLowerCase().contains(text.toLowerCase()) ||
+                qualityForm.getName().toLowerCase().contains(text));
     }
 
     @Override
@@ -112,7 +110,7 @@ public class QualityFormBandboxFinder extends BandboxFinder implements
     private final ListitemRenderer qualityFormRenderer = new ListitemRenderer() {
 
         @Override
-        public void render(Listitem item, Object data) {
+        public void render(Listitem item, Object data, int i) {
             QualityForm qualityForm = (QualityForm) data;
             item.setValue(data);
 

@@ -36,11 +36,7 @@ import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.MenuBuilder;
-import org.zkoss.ganttz.util.MenuBuilder.ItemAction;
 import org.zkoss.ganttz.util.WeakReferencedListeners;
-import org.zkoss.ganttz.util.WeakReferencedListeners.IListenerNotification;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.sys.ContentRenderer;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Menupopup;
@@ -48,36 +44,52 @@ import org.zkoss.zul.impl.XulElement;
 
 /**
  * This class wraps ResourceLoad data inside an specific HTML Div component.
+ *
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
 public class ResourceLoadComponent extends XulElement {
 
-    public static ResourceLoadComponent create(TimeTracker timeTracker,
-            LoadTimeLine loadLine) {
-        return new ResourceLoadComponent(timeTracker, loadLine);
-    }
-
     private final LoadTimeLine loadLine;
-    private final TimeTracker timeTracker;
-    private transient IZoomLevelChangedListener zoomChangedListener;
-    private WeakReferencedListeners<ISeeScheduledOfListener> scheduleListeners = WeakReferencedListeners
-            .create();
 
-    private ResourceLoadComponent(final TimeTracker timeTracker,
-            final LoadTimeLine loadLine) {
+    private final TimeTracker timeTracker;
+
+    private transient IZoomLevelChangedListener zoomChangedListener;
+
+    private WeakReferencedListeners<ISeeScheduledOfListener> scheduleListeners = WeakReferencedListeners.create();
+
+    private Map<Div, Menupopup> contextMenus = new HashMap<>();
+
+    private ResourceLoadComponent(final TimeTracker timeTracker, final LoadTimeLine loadLine) {
         this.loadLine = loadLine;
         this.timeTracker = timeTracker;
         createChildren(loadLine, timeTracker.getMapper());
+
+        /* Do not replace it with lambda */
         zoomChangedListener = new IZoomLevelChangedListener() {
 
+            /**
+             * In general it is working like, on every zoomChanged :
+             * 1. Remove all LoadLines ( divs ).
+             * 2. Create new ones ( for selected zoom mode ).
+             * 3. Redraw insertionPointRightPanel component ( Div ).
+             */
             @Override
             public void zoomLevelChanged(ZoomLevel detailLevel) {
                 getChildren().clear();
                 createChildren(loadLine, timeTracker.getMapper());
+                if ( !getFellows().isEmpty() ) {
+                    getFellow("insertionPointRightPanel").invalidate();
+                }
                 invalidate();
             }
         };
+
         this.timeTracker.addZoomListener(zoomChangedListener);
+    }
+
+    public static ResourceLoadComponent create(TimeTracker timeTracker, LoadTimeLine loadLine) {
+        return new ResourceLoadComponent(timeTracker, loadLine);
     }
 
     private void createChildren(final LoadTimeLine loadLine, IDatesMapper mapper) {
@@ -95,71 +107,50 @@ public class ResourceLoadComponent extends XulElement {
     }
 
     private void addDoubleClickAction(final Div div, final LoadTimeLine loadLine) {
-        div.addEventListener("onDoubleClick", new EventListener() {
-            @Override
-            public void onEvent(Event event) {
-                schedule(loadLine);
-            }
-        });
+        div.addEventListener("onDoubleClick", event -> schedule(loadLine));
     }
 
-    private void addContextMenu(final List<Div> divs, final Div div,
-            final LoadTimeLine loadLine) {
+    private void addContextMenu(final List<Div> divs, final Div div, final LoadTimeLine loadLine) {
         /*
          * This EventListener could be replaced with
          * div.setContext(getContextMenuFor(divs, div, loadLine)) but
-         * on this case this is not valid as we'll got an exception.
+         * in this case this is not valid as we'll got an exception.
+         *
          * As this component (ResourceLoadComponent) hasn't be added to
          * a page yet, its getPage() method will return null and a
-         * non-null page is required by MenuBuilder or a NullPointerException
-         * will be raised.
-         * */
-        div.addEventListener("onRightClick", new EventListener() {
-            @Override
-            public void onEvent(Event event) {
-                try {
-                    getContextMenuFor(divs, div, loadLine).open(div);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+         * non-null page is required by MenuBuilder or a NullPointerException will be raised.
+         */
+
+        div.addEventListener("onRightClick", event ->  {
+            try {
+                getContextMenuFor(divs, div, loadLine).open(div);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         });
     }
 
     public void schedule(final LoadTimeLine taskLine) {
-
-        scheduleListeners
-                .fireEvent(new IListenerNotification<ISeeScheduledOfListener>() {
-                    @Override
-                    public void doNotify(ISeeScheduledOfListener listener) {
-                        listener.seeScheduleOf(taskLine);
-                    }
-                });
+        scheduleListeners.fireEvent(listener -> listener.seeScheduleOf(taskLine));
     }
 
-    public void addSeeScheduledOfListener(
-            ISeeScheduledOfListener seeScheduledOfListener) {
+    public void addSeeScheduledOfListener(ISeeScheduledOfListener seeScheduledOfListener) {
         scheduleListeners.addListener(seeScheduledOfListener);
     }
 
-    private Map<Div, Menupopup> contextMenus = new HashMap<Div, Menupopup>();
-
-    private Menupopup getContextMenuFor(final List<Div> divs, final Div div,
-            final LoadTimeLine loadLine) {
+    private Menupopup getContextMenuFor(final List<Div> divs, final Div div, final LoadTimeLine loadLine) {
         if (contextMenus.get(div) == null) {
 
             MenuBuilder<Div> menuBuilder = MenuBuilder.on(getPage(), divs);
-            menuBuilder.item(_("See resource allocation"),
-                    "/common/img/ico_allocation.png", new ItemAction<Div>() {
 
-                        @Override
-                        public void onEvent(Div choosen, Event event) {
-                            schedule(loadLine);
-                        }
-                    });
+            menuBuilder.item(
+                    _("See resource allocation"),
+                    "/common/img/ico_allocation.png",
+                    (chosen, event) -> schedule(loadLine));
 
             Menupopup result = menuBuilder.createWithoutSettingContext();
             contextMenus.put(div, result);
+
             return result;
 
         }
@@ -174,52 +165,56 @@ public class ResourceLoadComponent extends XulElement {
         return loadLine.getType();
     }
 
+    LoadTimeLine getLoadLine() {
+        return loadLine;
+    }
 
-    private static List<Div> createDivsForPeriods(IDatesMapper datesMapper,
-            List<LoadPeriod> loadPeriods) {
-        List<Div> result = new ArrayList<Div>();
+    private static List<Div> createDivsForPeriods(IDatesMapper datesMapper, List<LoadPeriod> loadPeriods) {
+        List<Div> result = new ArrayList<>();
         for (LoadPeriod loadPeriod : loadPeriods) {
             result.add(createDivForPeriod(datesMapper, loadPeriod));
         }
         return result;
     }
 
-    private static Div createDivForPeriod(IDatesMapper datesMapper,
-            LoadPeriod loadPeriod) {
+    private static Div createDivForPeriod(IDatesMapper datesMapper, LoadPeriod loadPeriod) {
         Div result = new Div();
-        result.setClass(String.format("taskassignmentinterval %s", loadPeriod
-                .getLoadLevel().getCategory()));
+        result.setClass(String.format("taskassignmentinterval %s", loadPeriod.getLoadLevel().getCategory()));
 
-        String load = _("Load: {0}%", loadPeriod.getLoadLevel().getPercentage())
-                + ", ";
+        String load = _("Load: {0}%", loadPeriod.getLoadLevel().getPercentage()) + ", ";
+
         if (loadPeriod.getLoadLevel().getPercentage() == Integer.MAX_VALUE) {
             load = "";
         }
-        result.setTooltiptext(load
-                + _("available effort: {0}, assigned effort: {1}",
-                        loadPeriod.getAvailableEffort(),
-                        loadPeriod.getAssignedEffort()));
+
+        result.setTooltiptext(
+                load +
+                        _("available effort: {0}, assigned effort: {1}",
+                                loadPeriod.getAvailableEffort(),
+                                loadPeriod.getAssignedEffort()));
 
         result.setLeft(forCSS(getStartPixels(datesMapper, loadPeriod)));
         result.setWidth(forCSS(getWidthPixels(datesMapper, loadPeriod)));
+
         return result;
     }
 
-    private static int getWidthPixels(IDatesMapper datesMapper,
-            LoadPeriod loadPeriod) {
-        return Math.max(loadPeriod.getEnd().toPixels(datesMapper)
-                - getStartPixels(datesMapper, loadPeriod), 0);
+    private static int getWidthPixels(IDatesMapper datesMapper, LoadPeriod loadPeriod) {
+        return Math.max(loadPeriod.getEnd().toPixels(datesMapper) - getStartPixels(datesMapper, loadPeriod), 0);
     }
 
     private static String forCSS(int pixels) {
         return String.format("%dpx", pixels);
     }
 
-    private static int getStartPixels(IDatesMapper datesMapper,
-            LoadPeriod loadPeriod) {
+    private static int getStartPixels(IDatesMapper datesMapper, LoadPeriod loadPeriod) {
         return loadPeriod.getStart().toPixels(datesMapper);
     }
 
+    /**
+     * It is drawing chart on right pane for each ResourceLoad row.
+     */
+    @Override
     protected void renderProperties(ContentRenderer renderer) throws IOException{
         render(renderer, "_resourceLoadName", getResourceLoadName());
         render(renderer, "_resourceLoadType", getResourceLoadType());

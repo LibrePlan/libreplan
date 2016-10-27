@@ -20,6 +20,5 @@
 -->
 
 <zk>
-    <div id="listdetails_container">
-    </div>
+    <div id="listdetails_container"/>
 </zk>

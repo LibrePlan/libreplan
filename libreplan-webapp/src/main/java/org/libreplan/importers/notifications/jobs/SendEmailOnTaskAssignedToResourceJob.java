@@ -27,11 +27,10 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
 /**
- * Sends E-mail to users with data that storing in notification_queue table
- * and that are treat to
- * {@link org.libreplan.business.email.entities.EmailTemplateEnum#TEMPLATE_TASK_ASSIGNED_TO_RESOURCE}
+ * Sends E-mail to users with data that storing in notification_queue table and that are treat to
+ * {@link org.libreplan.business.email.entities.EmailTemplateEnum#TEMPLATE_TASK_ASSIGNED_TO_RESOURCE}.
  *
- * @author Created by Vova Perebykivskiy <vova@libreplan-enterprise.com> on 13.10.2015.
+ * @author Created by Vova Perebykivskyi <vova@libreplan-enterprise.com> on 13.10.2015.
  */
 
 public class SendEmailOnTaskAssignedToResourceJob extends QuartzJobBean {

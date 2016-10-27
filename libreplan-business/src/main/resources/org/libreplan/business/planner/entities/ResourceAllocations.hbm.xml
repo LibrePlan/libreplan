@@ -282,7 +282,7 @@
 
         <!--
         Not indexed.
-        It is not indexed because it is regarded that to navigate from a resource to all his DayAssigments is not useful
+        It is not indexed because it is regarded that to navigate from a resource to all his DayAssignments is not useful.
         -->
         <many-to-one name="resource" class="org.libreplan.business.resources.entities.Resource" column="resource_id"
                      not-null="true">

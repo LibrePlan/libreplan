@@ -27,7 +27,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.jfree.util.Log;
-import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.Registry;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.orders.entities.Order;
@@ -46,16 +45,20 @@ import org.zkoss.zk.ui.Executions;
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  * @author Cristina Alvarino Perez <cristina.alvarino@comtecsf.es>
- * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
 public final class SecurityUtils {
 
-    // Related to the data that is sending to LibrePlan server
+    /**
+     * Related to the data that is sending to LibrePlan server.
+     */
     public static boolean isGatheredStatsAlreadySent = false;
 
-    private SecurityUtils() {}
+    private SecurityUtils() {
 
-    public final static boolean isUserInRole(UserRole role) {
+    }
+
+    public static boolean isUserInRole(UserRole role) {
         return Executions.getCurrent().isUserInRole(role.name());
     }
 
@@ -63,14 +66,15 @@ public final class SecurityUtils {
      * Returns <code>true</code> if current user:
      *
      * <ul>
-     * <li>Has role {@link UserRole#ROLE_SUPERUSER}</li>
-     * <li>Or has at least one of the <code>roles</code> provided as parameters.
+     *     <li>Has role {@link UserRole#ROLE_SUPERUSER}</li>
+     *     <li>Or has at least one of the <code>roles</code> provided as parameters.</li>
      * </ul>
      */
-    public final static boolean isSuperuserOrUserInRoles(UserRole... roles) {
+    public static boolean isSuperuserOrUserInRoles(UserRole... roles) {
         if (isUserInRole(UserRole.ROLE_SUPERUSER)) {
             return true;
         }
+
         for (UserRole role : roles) {
             if (isUserInRole(role)) {
                 return true;
@@ -79,10 +83,10 @@ public final class SecurityUtils {
         return false;
     }
 
-    public final static String getSessionUserLoginName() {
-        HttpServletRequest request = (HttpServletRequest)Executions
-            .getCurrent().getNativeRequest();
+    public static String getSessionUserLoginName() {
+        HttpServletRequest request = (HttpServletRequest)Executions.getCurrent().getNativeRequest();
         Principal principal = request.getUserPrincipal();
+
         if (principal == null) {
             return null;
         }
@@ -92,12 +96,13 @@ public final class SecurityUtils {
     /**
      * @return <code>null</code> if not user is logged
      */
-    public final static CustomUser getLoggedUser() {
+    public static CustomUser getLoggedUser() {
         Authentication authentication = getAuthentication();
         if (authentication == null) {
             // This happens before processing first element of login page
             return null;
         }
+
         if (authentication.getPrincipal() instanceof CustomUser) {
             return (CustomUser) authentication.getPrincipal();
         }
@@ -110,53 +115,51 @@ public final class SecurityUtils {
 
     /**
      * Returns <code>true</code> if current user:
-     *
+     *+
      * <ul>
-     * <li>Has role {@link UserRole#ROLE_SUPERUSER}</li>
-     * <li>Or has role {@link UserRole#ROLE_PLANNING}</li>
-     * <li>Or has role {@link UserRole#ROLE_READ_ALL_PROJECTS}</li>
-     * <li>Or has role {@link UserRole#ROLE_READ_EDIT_PROJECTS}</li>
-     * <li>Or has role {@link UserRole#ROLE_CREATE_PROJECTS}</li>
-     * <li>Or has any {@link OrderAuthorization} over any project</li>
+     *     <li>Has role {@link UserRole#ROLE_SUPERUSER}</li>
+     *     <li>Or has role {@link UserRole#ROLE_PLANNING}</li>
+     *     <li>Or has role {@link UserRole#ROLE_READ_ALL_PROJECTS}</li>
+     *     <li>Or has role {@link UserRole#ROLE_EDIT_ALL_PROJECTS}</li>
+     *     <li>Or has role {@link UserRole#ROLE_CREATE_PROJECTS}</li>
+     *     <li>Or has any {@link OrderAuthorization} over any project</li>
      * </ul>
      */
-    public final static boolean isSuperuserOrRolePlanningOrHasAnyAuthorization() {
-        if (isSuperuserOrUserInRoles(UserRole.ROLE_PLANNING,
+    public static boolean isSuperuserOrRolePlanningOrHasAnyAuthorization() {
+        if (isSuperuserOrUserInRoles(
+                UserRole.ROLE_PLANNING,
                 UserRole.ROLE_READ_ALL_PROJECTS,
                 UserRole.ROLE_EDIT_ALL_PROJECTS,
                 UserRole.ROLE_CREATE_PROJECTS)) {
+
             return true;
         }
 
         return Registry.getTransactionService().runOnReadOnlyTransaction(
-                new IOnTransaction<Boolean>() {
-                    @Override
-                    public Boolean execute() {
-                        try {
-                            CustomUser customUser = getLoggedUser();
-                            if (customUser == null) {
-                                return false;
-                            }
-                            String username = customUser.getUsername();
-                            return Registry
-                                    .getOrderAuthorizationDAO()
-                                    .userOrItsProfilesHaveAnyAuthorization(
-                                            Registry.getUserDAO()
-                                                    .findByLoginName(
-                                                            username));
-                        } catch (InstanceNotFoundException e) {
-                            throw new RuntimeException(e);
+                () -> {
+                    try {
+                        CustomUser customUser = getLoggedUser();
+                        if (customUser == null) {
+                            return false;
                         }
+                        String username = customUser.getUsername();
+
+                        return Registry
+                                .getOrderAuthorizationDAO()
+                                .userOrItsProfilesHaveAnyAuthorization(Registry.getUserDAO().findByLoginName(username));
+
+                    } catch (InstanceNotFoundException e) {
+                        throw new RuntimeException(e);
                     }
                 });
     }
 
-    public final static boolean loggedUserCanWrite(Order order) {
+    public static boolean loggedUserCanWrite(Order order) {
         if (isSuperuserOrUserInRoles(UserRole.ROLE_EDIT_ALL_PROJECTS)) {
             return true;
         }
-        if (order.isNewObject()
-                && isSuperuserOrUserInRoles(UserRole.ROLE_CREATE_PROJECTS)) {
+
+        if (order.isNewObject() && isSuperuserOrUserInRoles(UserRole.ROLE_CREATE_PROJECTS)) {
             return true;
         }
 
@@ -166,19 +169,17 @@ public final class SecurityUtils {
             if (loggedUser == null) {
                 return false;
             }
-            user = Registry.getUserDAO().findByLoginName(
-                    loggedUser.getUsername());
+            user = Registry.getUserDAO().findByLoginName(loggedUser.getUsername());
         } catch (InstanceNotFoundException e) {
             Log.warn("Logged user not found in database", e);
             return false;
         }
 
-        List<OrderAuthorization> orderAuthorizations = Registry
-                .getOrderAuthorizationDAO().listByOrderUserAndItsProfiles(
-                        order, user);
+        List<OrderAuthorization> orderAuthorizations =
+                Registry.getOrderAuthorizationDAO().listByOrderUserAndItsProfiles(order, user);
+
         for (OrderAuthorization authorization : orderAuthorizations) {
-            if (authorization.getAuthorizationType().equals(
-                    OrderAuthorizationType.WRITE_AUTHORIZATION)) {
+            if (authorization.getAuthorizationType().equals(OrderAuthorizationType.WRITE_AUTHORIZATION)) {
                 return true;
             }
         }

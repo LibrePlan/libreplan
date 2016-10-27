@@ -23,34 +23,34 @@
 
     <!-- Multiple filter -->
     <label value="${i18n:_('Filter by')}"
-        tooltiptext="${i18n:_('Select required criteria set and press filter button')}"/>
+           tooltiptext="${i18n:_('Select required criteria set and press filter button')}"/>
     <bandboxMultipleSearch id="bdFilters" widthBandbox="285px" widthListbox="550px"
-        finder="resourcesMultipleFiltersFinder"/>
+                           finder="resourcesMultipleFiltersFinder"/>
 
     <!-- Personal details -->
     <label value="${i18n:_('Personal details')}"/>
     <textbox id="txtfilter" width="200px" onOK="controller.onApplyFilter()"/>
 
-<groupbox sclass="filter-more-options" mold="3d"  width="120px" open="false"
-    contentStyle="border: 1px solid #B2CCD9;">
-        <caption label="${i18n:_('More options')}" />
+    <groupbox sclass="filter-more-options" mold="3d"  width="120px" open="false"
+              contentStyle="border: 1px solid #B2CCD9;">
+        <caption sclass="more-options-caption" label="${i18n:_('More options')}" />
 
-<hbox>
-    <!-- Filter by date -->
-    <label value="${i18n:_('Active period from')}"/>
-    <datebox id="filterStartDate" constraint = "@{controller.checkConstraintStartDate}"/>
-    <label value="${i18n:_('to')}"/>
-    <datebox id="filterFinishDate" constraint = "@{controller.checkConstraintFinishDate}"/>
+        <hbox>
+            <!-- Filter by date -->
+            <label value="${i18n:_('Active period from')}"/>
+            <datebox id="filterStartDate" constraint = "@{controller.checkConstraintStartDate}"/>
+            <label value="${i18n:_('to')}"/>
+            <datebox id="filterFinishDate" constraint = "@{controller.checkConstraintFinishDate}"/>
 
-    <!-- Limiting resource -->
-    <label value="${i18n:_('Type')}"/>
-    <listbox id="filterLimitingResource" mold="select" />
-    </hbox>
-      </groupbox>
+            <!-- Limiting resource -->
+            <label value="${i18n:_('Type')}"/>
+            <listbox id="filterLimitingResource" mold="select" />
+        </hbox>
+    </groupbox>
 
-    <button label="${i18n:_('Filter')}"
-        tooltiptext="${i18n:_('Apply filtering to resources satisfying required criteria')}"
-        onClick="controller.onApplyFilter()"/>
+    <button label="${i18n:_('Filter')}" sclass="add-button"
+            tooltiptext="${i18n:_('Apply filtering to resources satisfying required criteria')}"
+            onClick="controller.onApplyFilter()"/>
 
 
 </hbox>

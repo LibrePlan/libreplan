@@ -220,7 +220,7 @@ msgstr "Критерий требований"
 msgid "START_NOT_EARLIER_THAN"
 msgstr "Начать не позже чем"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/streches/StretchesFunctionModel.java:287
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/stretches/StretchesFunctionModel.java:287
 msgid "Stretch date must not be less than task start date: "
 msgstr "Растягиваемая дата не должна быть меньше чем дата начала задачи:"
 
@@ -237,7 +237,7 @@ msgstr "Шкала, информирующая формой качества, н
 msgid "Not the same hours group, impossible to update"
 msgstr "Нет такой часовой группы, невозможно обновить"
 
-#: libreplan-webapp/src/main/webapp/common/event_error.zul:43
+#: libreplan-webapp/src/main/webapp/common/eventError.zul:43
 #: libreplan-webapp/src/main/webapp/common/error.zul:48
 msgid "Stacktracke:"
 msgstr "Трассировка стека:"
@@ -332,7 +332,7 @@ msgstr "Пользователь ''{0}'': не найден"
 msgid "Resources capability"
 msgstr "Ресурсы возможностей"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/streches/StretchesFunctionModel.java:204
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/stretches/StretchesFunctionModel.java:204
 msgid "The first stretch must be after the first day for doing interpolation"
 msgstr ""
 "Для произведения интерполяции начало нитки должно быть после первого дня"
@@ -672,7 +672,7 @@ msgstr "Предшественник"
 msgid "Please select a task"
 msgstr "Пожалуйста, выберите задачу"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/streches/StretchesFunctionModel.java:189
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/stretches/StretchesFunctionModel.java:189
 msgid "Some stretch has higher or equal values than the previous stretch"
 msgstr ""
 "Некоторые протяжения имеют более высокие или эквивалентные значения, чем "
@@ -707,7 +707,7 @@ msgstr ""
 #: libreplan-webapp/src/main/java/org/libreplan/web/externalcompanies/ExternalCompanyCRUDController.java:146
 msgid ""
 "You can not remove the company \"{0}\" because is already in use in some "
-"project or in some subcontrated task."
+"project or in some subcontracted task."
 msgstr "Вы не можете удалить компанию \"{0}\" "
 
 #: libreplan-business/src/main/java/org/libreplan/business/users/entities/Profile.java:88
@@ -1135,7 +1135,7 @@ msgstr "Критическая часть"
 msgid "Categories"
 msgstr "Категории"
 
-#: libreplan-webapp/src/main/webapp/common/event_error.zul:39
+#: libreplan-webapp/src/main/webapp/common/eventError.zul:39
 #: libreplan-webapp/src/main/webapp/common/error.zul:44
 msgid "Status code:"
 msgstr "Код статуса:"
@@ -1278,7 +1278,7 @@ msgstr "Выбрать дату:"
 msgid "You should select a end date for the exception"
 msgstr "Вы должны выбрать дату окончания для исключения"
 
-#: libreplan-webapp/src/main/webapp/common/concurrent_modification.zul:34
+#: libreplan-webapp/src/main/webapp/common/concurrentModification.zul:34
 msgid "Please try it again."
 msgstr "Пожалуйста повторите попытку"
 
@@ -1992,7 +1992,7 @@ msgstr ""
 msgid "Work week"
 msgstr "Рабочая неделя"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/streches/StretchesFunctionController.java:128
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/stretches/StretchesFunctionController.java:128
 msgid "You will lose the changes. Are you sure?"
 msgstr "Вы потеряете все изменения. Вы уверены?"
 
@@ -2026,7 +2026,7 @@ msgstr "Всего часов"
 msgid "Create Progress Type"
 msgstr "Создать тип хода работ"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/streches/StretchesFunctionController.java:129
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/stretches/StretchesFunctionController.java:129
 msgid "Confirm cancel"
 msgstr "Подтвердить отмену"
 
@@ -2704,7 +2704,7 @@ msgstr "Страницу вниз"
 msgid "resource type does not allow enabled criteria"
 msgstr "Тип ресурса не позволяет включить критерии"
 
-#: libreplan-webapp/src/main/webapp/common/event_error.zul:22
+#: libreplan-webapp/src/main/webapp/common/eventError.zul:22
 #: libreplan-webapp/src/main/webapp/common/error.zul:21
 msgid "LibrePlan: Runtime Error"
 msgstr "LibrePlan: Runtime Error"
@@ -2801,7 +2801,7 @@ msgstr "Единицы"
 msgid "Create Calendar"
 msgstr "Создать Календарь"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/streches/StretchesFunctionModel.java:185
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/stretches/StretchesFunctionModel.java:185
 msgid "At least one stretch is needed"
 msgstr "По крайней мере одно растяжение необходимо"
 
@@ -2855,8 +2855,8 @@ msgstr "Журнал действий"
 msgid "Authorizations"
 msgstr "Разрешения"
 
-#: libreplan-webapp/src/main/webapp/common/event_error.zul:49
-#: libreplan-webapp/src/main/webapp/common/concurrent_modification.zul:36
+#: libreplan-webapp/src/main/webapp/common/eventError.zul:49
+#: libreplan-webapp/src/main/webapp/common/concurrentModification.zul:36
 msgid "Continue"
 msgstr "Продолжить"
 
@@ -3526,7 +3526,7 @@ msgstr "Присутствует другой workReportType с тем же на
 msgid "Schedule"
 msgstr "Расписание"
 
-#: libreplan-webapp/src/main/webapp/common/event_error.zul:35
+#: libreplan-webapp/src/main/webapp/common/eventError.zul:35
 #: libreplan-webapp/src/main/webapp/common/error.zul:40
 msgid "Exception type:"
 msgstr "Тип исключения:"
@@ -3870,7 +3870,7 @@ msgstr ""
 "Задача имеет консолидированный ход работ. Необходимо удалить все "
 "консолидации чтобы изменить тип распределения ресурсов"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/streches/StretchesFunctionController.java:121
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/stretches/StretchesFunctionController.java:121
 #: libreplan-webapp/src/main/java/org/libreplan/web/limitingresources/LimitingResourcesController.java:626
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/criterionrequirements/AssignedCriterionRequirementController.java:403
 msgid "Error"
@@ -4174,7 +4174,7 @@ msgstr "Ассоциации с профилями"
 msgid "Task {0} : Duplicate code in DB"
 msgstr "Задача {0} : Дублируется код в базе данных"
 
-#: libreplan-webapp/src/main/webapp/common/event_error.zul:25
+#: libreplan-webapp/src/main/webapp/common/eventError.zul:25
 #: libreplan-webapp/src/main/webapp/common/error.zul:30
 msgid "Message - {0}"
 msgstr "Сообщение - {0}"
@@ -4216,7 +4216,7 @@ msgstr "Работник удален"
 msgid "Select entity, please"
 msgstr "Пожалуйста, выберите сущность"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/streches/StretchesFunctionModel.java:293
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/stretches/StretchesFunctionModel.java:293
 msgid "Stretch date must not be greater than the task's end date: "
 msgstr "Растягиваемая дата должна быть больше, чем дата окончания задачи:"
 
@@ -4678,7 +4678,7 @@ msgid "company name has to be unique. It is already used"
 msgstr ""
 "Наименование компании должно быть уникальным. Это название уже используется"
 
-#: libreplan-webapp/src/main/webapp/common/concurrent_modification.zul:33
+#: libreplan-webapp/src/main/webapp/common/concurrentModification.zul:33
 msgid ""
 "Another user has modified the same data, so the operation cannot be safely "
 "completed."
@@ -4719,7 +4719,7 @@ msgstr "Окончить не позднее чем"
 msgid ": code not found"
 msgstr ": код не найден"
 
-#: libreplan-webapp/src/main/webapp/common/event_error.zul:51
+#: libreplan-webapp/src/main/webapp/common/eventError.zul:51
 #: libreplan-webapp/src/main/webapp/common/error.zul:55
 msgid "Exit session"
 msgstr "Окончить сессию"
@@ -4768,7 +4768,7 @@ msgstr "Нагрузки в связи с текущим проектом"
 msgid "You are going to change the assignment function. Are you sure?"
 msgstr "Вы собираетесь изменить назначенную функцию. Вы уверены?"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/streches/StretchesFunctionModel.java:200
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/stretches/StretchesFunctionModel.java:200
 msgid "There must be at least 2 stretches for doing interpolation"
 msgstr "Должно быть не менее 2 участков для производства интерполяции"
 
@@ -5303,7 +5303,7 @@ msgstr "Календари"
 msgid "Project: {0} "
 msgstr "Проект: {0} "
 
-#: libreplan-webapp/src/main/webapp/common/page_not_found.zul:21
+#: libreplan-webapp/src/main/webapp/common/pageNotFound.zul:21
 msgid "LibrePlan: Page not found"
 msgstr "LibrePlan: Страница не найдена"
 
@@ -5357,7 +5357,7 @@ msgstr "LibrePlan: Счета"
 msgid "LibrePlan: Scenarios Management"
 msgstr "LibrePlan: Сценарии управления"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/streches/StretchesFunctionModel.java:194
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/stretches/StretchesFunctionModel.java:194
 msgid ""
 "Last stretch should have one hundred percent for length and amount of work "
 "percentage"
@@ -5495,7 +5495,7 @@ msgstr "Число итераций должно быть между 1 и "
 msgid "Scenarios must be enabled as more elements than master exist"
 msgstr "Сценарии должны включать больше элементов чем существующий мастер"
 
-#: libreplan-webapp/src/main/webapp/common/event_error.zul:50
+#: libreplan-webapp/src/main/webapp/common/eventError.zul:50
 #: libreplan-webapp/src/main/webapp/common/error.zul:54
 msgid "Reload"
 msgstr "Перезагрузить"
@@ -5965,7 +5965,7 @@ msgstr "Неверный элемент очереди"
 #: libreplan-webapp/src/main/java/org/libreplan/web/limitingresources/ManualAllocationController.java:575
 #: libreplan-webapp/src/main/java/org/libreplan/web/limitingresources/ManualAllocationController.java:584
 #: libreplan-webapp/src/main/java/org/libreplan/web/limitingresources/ManualAllocationController.java:592
-msgid "Unnasigned"
+msgid "Unassigned"
 msgstr "Нераспределенный"
 
 #: libreplan-webapp/src/main/webapp/externalcompanies/_editExternalCompany.zul:61
@@ -5985,7 +5985,7 @@ msgstr "Взаимодействие с приложениями"
 msgid "Virtual worker"
 msgstr "Виртуальный работник"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/streches/StretchesFunctionController.java:343
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/stretches/StretchesFunctionController.java:343
 msgid "Length percentage should be between 0 and 100"
 msgstr "Длина процентажа должна быть между 0 и 100"
 
@@ -6375,7 +6375,7 @@ msgstr "Фильтр по категориям или материалам"
 msgid "Subcontracted Tasks"
 msgstr "Задачи субподряда"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/streches/StretchesFunctionController.java:389
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/stretches/StretchesFunctionController.java:389
 msgid "Amount work percentage should be between 0 and 100"
 msgstr "Процентное количество работы должно быть между 0 и 100"
 
@@ -6654,7 +6654,7 @@ msgstr "Итоговая стоимость"
 #: libreplan-webapp/src/main/java/org/libreplan/web/calendars/BaseCalendarEditionController.java:1045
 #: libreplan-webapp/src/main/java/org/libreplan/web/calendars/BaseCalendarEditionController.java:1296
 #: libreplan-webapp/src/main/java/org/libreplan/web/calendars/BaseCalendarCRUDController.java:419
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/streches/StretchesFunctionController.java:408
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/stretches/StretchesFunctionController.java:408
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/ResourceAllocationController.java:694
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/OrderCRUDController.java:1266
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/materials/AssignedMaterialsController.java:388

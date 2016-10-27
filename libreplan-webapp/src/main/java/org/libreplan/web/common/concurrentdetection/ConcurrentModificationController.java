@@ -33,8 +33,8 @@ import org.zkoss.zk.ui.util.GenericForwardComposer;
 
 public class ConcurrentModificationController extends GenericForwardComposer {
 
-    private static final Log LOG = LogFactory
-            .getLog(ConcurrentModificationController.class);
+    private static final Log LOG = LogFactory.getLog(ConcurrentModificationController.class);
+
     private String backURL;
 
     @Override
@@ -43,18 +43,15 @@ public class ConcurrentModificationController extends GenericForwardComposer {
         backURL = getBackURL();
     }
 
-    public static void showException(
-            OptimisticLockingFailureException exception, String backURL) {
-        LOG
-                .info(
-                        "an OptimistLockingFailureException caused a disruption to an user",
-                        exception);
+    public static void showException(OptimisticLockingFailureException exception, String backURL) {
+        LOG.info("an OptimistLockingFailureException caused a disruption to an user", exception);
+
         if (Executions.getCurrent() != null) {
             ConfirmCloseUtil.resetConfirmClose();
-            Executions.sendRedirect("/common/concurrent_modification.zul?back="
-                    + backURL);
+            Executions.sendRedirect("/common/concurrentModification.zul?back=" + backURL);
         } else {
-            LOG.warn("Impossible to do redirect due to OptimisticLockingFailureException because of Executions.getCurrent() is null");
+            LOG.warn("Impossible to do redirect due to OptimisticLockingFailureException " +
+                    "because of Executions.getCurrent() is null");
         }
     }
 

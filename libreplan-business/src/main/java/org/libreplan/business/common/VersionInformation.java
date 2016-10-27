@@ -30,13 +30,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * It contains the current version of project and implements of singleton
- * pattern. <br />
- * It also has a cached value with information about last project version
- * published. It checks the last version against a URL.
+ * It contains the current version of project and implements of singleton pattern. <br />
+ * It also has a cached value with information about last project version published.
+ * It checks the last version against a URL.
  *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
- * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
 public class VersionInformation {
 
@@ -47,14 +46,11 @@ public class VersionInformation {
      */
     private static final String LIBREPLAN_VERSION_URL = "http://libreplan.org/VERSION";
 
-    private static final String LIBREPLAN_USAGE_STATS_PARAM = "stats";
-    private static final String LIBREPLAN_VERSION_PARAM = "version";
-
 
     /**
      * Delay to wait till we check the URL again
      */
-    private static final long DELAY_TO_CHECK_URL = 24 * 60 * 60 * 1000; // 1 day
+    private static final long DELAY_TO_CHECK_URL = 24 * 60 * 60 * 1000L; // 1 day
 
     private static final VersionInformation singleton = new VersionInformation();
 
@@ -71,24 +67,21 @@ public class VersionInformation {
         lastVersionCachedDate = new Date();
         try {
             URL url = getURL();
-            String lastVersion = (new BufferedReader(new InputStreamReader(
-                    url.openStream()))).readLine();
+            String lastVersion = (new BufferedReader(new InputStreamReader(url.openStream()))).readLine();
             if (projectVersion != null && lastVersion != null) {
                 newVersionCached = !projectVersion.equals(lastVersion);
             }
         } catch (MalformedURLException e) {
-            LOG.warn("Problems generating URL to check LibrePlan version. MalformedURLException: "
-                    + e.getMessage());
+            LOG.warn("Problems generating URL to check LibrePlan version. MalformedURLException: " + e.getMessage());
         } catch (IOException e) {
-            LOG.info("Could not check LibrePlan version information from "
-                    + LIBREPLAN_VERSION_URL + ". IOException: "
-                    + e.getMessage());
+            LOG.info(
+                    "Could not check LibrePlan version information from " +
+                            LIBREPLAN_VERSION_URL + ". IOException: " + e.getMessage());
         }
     }
 
     private URL getURL() throws MalformedURLException {
-        String url = LIBREPLAN_VERSION_URL;
-        return new URL(url);
+        return new URL(LIBREPLAN_VERSION_URL);
     }
 
     public static VersionInformation getInstance() {
@@ -120,13 +113,11 @@ public class VersionInformation {
 
     /**
      * If there is a new version already detected, it doesn't check it again.
-     * Otherwise, during one day it returns the cached value. And it checks it
-     * again after that time.
+     * Otherwise, during one day it returns the cached value. And it checks it again after that time.
      */
     private boolean checkIsNewVersionAvailable() {
         if ( !newVersionCached ) {
-            long oneDayLater = lastVersionCachedDate.getTime()
-                    + DELAY_TO_CHECK_URL;
+            long oneDayLater = lastVersionCachedDate.getTime() + DELAY_TO_CHECK_URL;
             if ( oneDayLater < new Date().getTime() ) {
                 loadNewVersionFromURL();
             }
@@ -138,10 +129,7 @@ public class VersionInformation {
         String lastVersion = "";
         try {
             URL url = new URL(LIBREPLAN_VERSION_URL);
-            lastVersion = (new BufferedReader(new InputStreamReader(
-                    url.openStream()))).readLine();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
+            lastVersion = (new BufferedReader(new InputStreamReader(url.openStream()))).readLine();
         } catch (IOException e) {
             e.printStackTrace();
         }

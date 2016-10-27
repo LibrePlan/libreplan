@@ -24,7 +24,7 @@ import org.libreplan.web.common.entrypoints.EntryPoint;
 import org.libreplan.web.common.entrypoints.EntryPoints;
 
 /**
- * Entry points for CRUD actions over a {@link ExpenseSheet}
+ * Entry points for CRUD actions over a {@link ExpenseSheet}.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */

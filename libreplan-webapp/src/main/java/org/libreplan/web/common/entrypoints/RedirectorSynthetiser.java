@@ -45,16 +45,15 @@ import org.springframework.core.type.classreading.MetadataReader;
 import org.springframework.util.ClassUtils;
 
 /**
- * Creates implemnetations of controllers that sends http redirects to the
- * proper page <br />
+ * Creates implementations of controllers that sends http redirects to the proper page <br />
+ *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public class RedirectorSynthetiser implements BeanFactoryPostProcessor {
-    private static final Log LOG = LogFactory
-            .getLog(RedirectorSynthetiser.class);
 
-    private static final class SynthetizedImplementation implements
-            InvocationHandler {
+    private static final Log LOG = LogFactory.getLog(RedirectorSynthetiser.class);
+
+    private static final class SynthetizedImplementation implements InvocationHandler {
 
         private final ConfigurableListableBeanFactory beanFactory;
 
@@ -65,15 +64,16 @@ public class RedirectorSynthetiser implements BeanFactoryPostProcessor {
         private SynthetizedImplementation(
                 ConfigurableListableBeanFactory beanFactory,
                 Class<?> pageInterface) {
+
             this.beanFactory = beanFactory;
             this.pageInterface = pageInterface;
         }
 
         @Override
-        public Object invoke(Object proxy, Method method, Object[] args)
-                throws Throwable {
+        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
             EntryPointsHandler<?> redirector = getHandler();
             redirector.doTransition(method.getName(), args);
+
             return null;
         }
 
@@ -81,66 +81,65 @@ public class RedirectorSynthetiser implements BeanFactoryPostProcessor {
             if (urlHandler != null) {
                 return urlHandler;
             }
-            URLHandlerRegistry registry = (URLHandlerRegistry) BeanFactoryUtils
-                    .beanOfType(beanFactory, URLHandlerRegistry.class);
+
+            URLHandlerRegistry registry = BeanFactoryUtils.beanOfType(beanFactory, URLHandlerRegistry.class);
             urlHandler = registry.getRedirectorFor(pageInterface);
+
             return urlHandler;
         }
     }
 
-    public void postProcessBeanFactory(
-            ConfigurableListableBeanFactory beanFactory) throws BeansException {
+    public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
         long elapsedTime = System.currentTimeMillis();
+
         for (Class<?> pageInterface : findInterfacesMarkedEntryPoints()) {
-            beanFactory.registerSingleton(getBeanName(pageInterface),
-                    createRedirectorImplementationFor(beanFactory,
-                            pageInterface));
+
+            beanFactory.registerSingleton(
+                    getBeanName(pageInterface),
+                    createRedirectorImplementationFor(beanFactory, pageInterface));
         }
         elapsedTime = System.currentTimeMillis() - elapsedTime;
-        LOG.debug("Took " + elapsedTime
-                + " ms to search for interfaces annotated with "
-                + EntryPoints.class.getSimpleName());
+
+        LOG.debug(
+                "Took " + elapsedTime + " ms to search for interfaces annotated with " +
+                        EntryPoints.class.getSimpleName());
     }
 
     private List<Class<?>> findInterfacesMarkedEntryPoints() {
-        List<Class<?>> result = new ArrayList<Class<?>>();
+        List<Class<?>> result = new ArrayList<>();
         PathMatchingResourcePatternResolver resourceResolver = new PathMatchingResourcePatternResolver();
-        CachingMetadataReaderFactory metadataReaderFactory = new CachingMetadataReaderFactory(
-                resourceResolver);
+        CachingMetadataReaderFactory metadataReaderFactory = new CachingMetadataReaderFactory(resourceResolver);
+
         for (Resource resource : findResourcesCouldMatch(resourceResolver)) {
             addIfSuitable(result, metadataReaderFactory, resource);
         }
         return result;
     }
 
-    private Resource[] findResourcesCouldMatch(
-            PathMatchingResourcePatternResolver resourceResolver) {
+    private Resource[] findResourcesCouldMatch(PathMatchingResourcePatternResolver resourceResolver) {
         try {
-            return resourceResolver
-                    .getResources("classpath*:"
-                            + ClassUtils
-                                    .convertClassNameToResourcePath("org.libreplan.web")
-                            + "/" + "**/*.class");
+            return resourceResolver.getResources(
+                    "classpath*:" +
+                            ClassUtils.convertClassNameToResourcePath("org.libreplan.web") + "/" + "**/*.class");
+
         } catch (IOException e) {
             throw new RuntimeException(_("Could not load any resource"), e);
         }
     }
 
     private void addIfSuitable(List<Class<?>> accumulatedResult,
-            CachingMetadataReaderFactory metadataReaderFactory,
-            Resource resource) {
+                               CachingMetadataReaderFactory metadataReaderFactory,
+                               Resource resource) {
         try {
             if (resource.isReadable()) {
-                MetadataReader metadataReader = metadataReaderFactory
-                        .getMetadataReader(resource);
-                AnnotationMetadata annotationMetadata = metadataReader
-                        .getAnnotationMetadata();
+                MetadataReader metadataReader = metadataReaderFactory.getMetadataReader(resource);
+                AnnotationMetadata annotationMetadata = metadataReader.getAnnotationMetadata();
                 ClassMetadata classMetadata = metadataReader.getClassMetadata();
-                if (classMetadata.isInterface()
-                        && annotationMetadata.getAnnotationTypes().contains(
-                                EntryPoints.class.getName())) {
-                    Class<?> klass = Class
-                            .forName(classMetadata.getClassName());
+
+                if ( classMetadata.isInterface() &&
+                        annotationMetadata.getAnnotationTypes().contains(EntryPoints.class.getName()) ) {
+
+                    Class<?> klass = Class.forName(classMetadata.getClassName());
                     if (klass.isInterface()) {
                         accumulatedResult.add(klass);
                     }
@@ -155,13 +154,15 @@ public class RedirectorSynthetiser implements BeanFactoryPostProcessor {
             final ConfigurableListableBeanFactory beanFactory,
             final Class<?> pageInterface) {
 
-        return Proxy.newProxyInstance(getClass().getClassLoader(),
-                new Class[] { pageInterface }, new SynthetizedImplementation(
-                        beanFactory, pageInterface));
+        return Proxy.newProxyInstance(
+                getClass().getClassLoader(),
+                new Class[] { pageInterface },
+                new SynthetizedImplementation(beanFactory, pageInterface));
     }
 
     private static String getBeanName(Class<?> pageInterface) {
         EntryPoints annotation = pageInterface.getAnnotation(EntryPoints.class);
+
         return annotation.registerAs();
     }
 }

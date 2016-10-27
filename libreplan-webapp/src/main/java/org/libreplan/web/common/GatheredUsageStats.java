@@ -15,13 +15,13 @@ import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.zkoss.json.JSONObject;
 import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zkplus.spring.SpringUtil;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -36,10 +36,8 @@ import java.util.Properties;
  * If you want to use it, just create a new object and set 2 private variables.
  * All needed data will be already in object.
  *
- * Created by
- * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  * @author Bogdan Bodnarjuk <bogdan@libreplan-enterprise.com>
- * on 02.08.2016.
  */
 
 public class GatheredUsageStats {
@@ -58,58 +56,98 @@ public class GatheredUsageStats {
 
     private IMaterialsModel materialsModel;
 
-    private IAssignedTaskQualityFormsToOrderElementModel assignedQualityFormModel;
+    private IAssignedTaskQualityFormsToOrderElementModel assignedTaskQualityFormsToOrderElementModel;
 
 
-    // Version of this statistics implementation.
-    // Just increment it, if you will change something related to JSON object.
+    /**
+     * Version of this statistics implementation.
+     * Just increment it, if you will change something related to JSON object.
+     */
     private int jsonObjectVersion = 3;
 
-    // Unique system identifier (MD5 - ip + hostname)
+    /**
+     * Unique system identifier (MD5 - ip + hostname).
+     */
     private String id;
 
-    // Version of LibrePlan
+    /**
+     * Version of LibrePlan.
+     */
     private String version = VersionInformation.getVersion();
 
-    // Number of users in application
+    /**
+     * Number of users in application.
+     */
     private Number users;
 
-    // Number of projects in application
+    /**
+     * Number of projects in application.
+     */
     private int projects;
 
-    // Number of timesheets in application
+    /**
+     * Number of timesheets in application.
+     */
     private int timesheets;
 
-    // Number of workers in application
+    /**
+     * Number of workers in application.
+     */
     private int workers;
 
-    // Number of machines in application
+    /**
+     * Number of machines in application.
+     */
     private int machines;
 
-    // Number of expense sheets in application
+    /**
+     * Number of expense sheets in application.
+     */
     private int expensesheets;
 
-    // Number of materials in application
+    /**
+     * Number of materials in application.
+     */
     private int materials;
 
-    // Number of assigned quality forms in application
+    /**
+     * Number of assigned quality forms in application.
+     */
     private int assignedQualityForms;
 
-    // The oldestDate in the projects
+    /**
+     * The oldest date of project.
+     */
     private String oldestDate;
 
-    private String generateID(){
+    public GatheredUsageStats() {
+        this.userDAO = (IUserDAO) SpringUtil.getBean("userDAO");
+        this.orderModel = (IOrderModel) SpringUtil.getBean("orderModel");
+        this.workReportModel = (IWorkReportModel) SpringUtil.getBean("workReportModel");
+        this.workerModel = (IWorkerModel) SpringUtil.getBean("workerModel");
+        this.machineModel = (IMachineModel) SpringUtil.getBean("machineModel");
+        this.expenseSheetModel = (IExpenseSheetModel) SpringUtil.getBean("expenseSheetModel");
+        this.materialsModel = (IMaterialsModel) SpringUtil.getBean("materialsModel");
+
+        this.assignedTaskQualityFormsToOrderElementModel = (IAssignedTaskQualityFormsToOrderElementModel)
+                SpringUtil.getBean("assignedTaskQualityFormsToOrderElementModel");
+
+        initialize();
+    }
+
+    private String generateID() {
         // Make hash of ip + hostname
-        WebAuthenticationDetails details = (WebAuthenticationDetails) SecurityContextHolder.getContext()
-                .getAuthentication().getDetails();
+        WebAuthenticationDetails details =
+                (WebAuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails();
+
         String ip = details.getRemoteAddress();
 
         Execution execution = Executions.getCurrent();
         String hostname = execution.getServerName();
 
         String message = ip + hostname;
-        byte[] encoded = null;
-        StringBuffer sb = null;
+        byte[] encoded;
+        StringBuilder sb = null;
 
         try {
             byte[] bytesOfMessage = message.getBytes("UTF-8");
@@ -117,20 +155,17 @@ public class GatheredUsageStats {
             encoded = md5.digest(bytesOfMessage);
 
             // Convert bytes to hex format
-            sb = new StringBuffer();
-            for (int i = 0; i < encoded.length; i++) sb.append(Integer.toString((encoded[i] & 0xff) + 0x100, 16)
-                    .substring(1));
+            sb = new StringBuilder();
+            for (byte anEncoded : encoded) {
+                sb.append(Integer.toString((anEncoded & 0xff) + 0x100, 16).substring(1));
+            }
 
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
+        } catch (NoSuchAlgorithmException | UnsupportedEncodingException ignored) {}
+
         return sb.toString();
     }
 
-    // It needed because i do not need to call default constructor on Autowiring
-    private void myConstructor(){
+    private void initialize() {
         setId(generateID());
         setUsers(getUserRows());
         setProjects(orderModel.getOrders().size());
@@ -139,7 +174,7 @@ public class GatheredUsageStats {
         setMachines(machineModel.getMachines().size());
         setExpensesheets(expenseSheetModel.getExpenseSheets().size());
         setMaterials(materialsModel.getMaterials().size());
-        setQualityForms(assignedQualityFormModel.getAssignedQualityForms().size());
+        setQualityForms(assignedTaskQualityFormsToOrderElementModel.getAssignedQualityForms().size());
         setOldestDate(orderModel.getOrders());
     }
 
@@ -163,10 +198,10 @@ public class GatheredUsageStats {
         HttpURLConnection connection = null;
 
         Properties properties = new Properties();
-        InputStream inputStream = null;
+        InputStream inputStream;
 
         try {
-            // You can find it in libreplan-business/src/main/resouces
+            // You can find it in libreplan-business/src/main/resources
             String filename = "libreplan.properties";
             inputStream = GatheredUsageStats.class.getClassLoader().getResourceAsStream(filename);
             properties.load(inputStream);
@@ -180,6 +215,7 @@ public class GatheredUsageStats {
             connection.setUseCaches(false);
             connection.setDoInput(true);
             connection.setDoOutput(true);
+
             // If the connection lasts > 2 sec throw Exception
             connection.setConnectTimeout(2000);
 
@@ -192,42 +228,16 @@ public class GatheredUsageStats {
             // No needed code, but it is not working without it
             connection.getInputStream();
 
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        finally {
+        } catch (IOException ignored) {
+
+        } finally {
             if ( connection != null ) {
                 connection.disconnect();
             }
         }
     }
 
-    public void setupNotAutowiredClasses(
-            IUserDAO userDAO,
-            IOrderModel orderModel,
-            IWorkReportModel workReportModel,
-            IWorkerModel workerModel,
-            IMachineModel machineModel,
-            IExpenseSheetModel expenseSheetModel,
-            IMaterialsModel materialsModel,
-            IAssignedTaskQualityFormsToOrderElementModel assignedQualityFormModel){
-
-        this.userDAO = userDAO;
-        this.orderModel = orderModel;
-        this.workReportModel = workReportModel;
-        this.workerModel = workerModel;
-        this.machineModel = machineModel;
-        this.expenseSheetModel = expenseSheetModel;
-        this.materialsModel = materialsModel;
-        this.assignedQualityFormModel = assignedQualityFormModel;
-
-        myConstructor();
-    }
-
-
-    private Number getUserRows(){
+    private Number getUserRows() {
         return userDAO.getRowCount();
     }
 
@@ -267,14 +277,16 @@ public class GatheredUsageStats {
         this.assignedQualityForms = qualityForms;
     }
 
-    private void setOldestDate(List<Order> list){
-        if(!list.isEmpty()) {
+    private void setOldestDate(List<Order> list) {
+        if ( !list.isEmpty() ) {
             Date date = list.get(0).getInitDate();
-            for (int i = 1; i < list.size(); i++) {
-                if (list.get(i).getInitDate().compareTo(date) < 0) {
-                    date = list.get(i).getInitDate();
+
+            for ( Order item : list ) {
+                if (item.getInitDate().compareTo(date) < 0) {
+                    date = item.getInitDate();
                 }
             }
+
             this.oldestDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.S'Z'").format(date);
         } else {
             this.oldestDate = "0";

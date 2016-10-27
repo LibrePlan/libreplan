@@ -34,7 +34,6 @@ import org.libreplan.business.users.entities.UserRole;
 
 /**
  * This class models a worker.
- *
  * Note: this class has a natural ordering that is inconsistent with equals.
  *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
@@ -51,15 +50,13 @@ public class Worker extends Resource {
         return create(new Worker(), code);
     }
 
-    public static Worker create(String firstName, String surname,
-        String nif) {
+    public static Worker create(String firstName, String surname, String nif) {
 
         return create(new Worker(firstName, surname, nif));
 
     }
 
-    public static Worker createUnvalidated(String code, String firstName,
-        String surname, String nif) {
+    public static Worker createUnvalidated(String code, String firstName, String surname, String nif) {
 
         Worker worker = create(new Worker(), code);
 
@@ -108,6 +105,14 @@ public class Worker extends Resource {
         this.firstName = firstName;
         this.surname = surname;
         this.nif = nif;
+    }
+
+    /**
+     * This method is needed by autocomplete component on _machineConfigurationUnits.zul
+     */
+    @Override
+    public String toString () {
+        return this.getName() + " - " + this.getNif();
     }
 
     public String getDescription() {
@@ -165,9 +170,8 @@ public class Worker extends Resource {
         }
 
         try {
-        /* Check the constraint. */
-            Worker worker = Registry.getWorkerDAO()
-                    .findByNifAnotherTransaction(nif);
+        /* Check the constraint */
+            Worker worker = Registry.getWorkerDAO().findByNifAnotherTransaction(nif);
             if (isNewObject()) {
                 return false;
             } else {
@@ -180,18 +184,18 @@ public class Worker extends Resource {
 
     protected boolean areFirstNameSurnameNifSpecified() {
 
-       return !StringUtils.isBlank(firstName) &&
-           !StringUtils.isBlank(surname) &&
-           !StringUtils.isBlank(nif);
+        return !StringUtils.isBlank(firstName) &&
+                !StringUtils.isBlank(surname) &&
+                !StringUtils.isBlank(nif);
 
-   }
+    }
 
-   @Override
-   protected boolean isCriterionSatisfactionOfCorrectType(
-      CriterionSatisfaction c) {
+    @Override
+    protected boolean isCriterionSatisfactionOfCorrectType(
+            CriterionSatisfaction c) {
         return c.getResourceType().equals(ResourceEnum.WORKER);
 
-   }
+    }
 
     @Override
     public ResourceEnum getType() {

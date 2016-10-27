@@ -19,7 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.libreplan.web.planner.allocation.streches;
+package org.libreplan.web.planner.allocation.stretches;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -35,7 +35,6 @@ import org.libreplan.business.planner.entities.StretchesFunction;
 import org.libreplan.business.planner.entities.StretchesFunctionTypeEnum;
 
 
-
 /**
  * Contract for {@link StretchesFunctionModel}.
  *
@@ -43,16 +42,14 @@ import org.libreplan.business.planner.entities.StretchesFunctionTypeEnum;
  */
 public interface IStretchesFunctionModel {
 
-    /*
-     * Initial conversation steps
+    /**
+     * Initial conversation steps.
      */
 
-    void init(StretchesFunction stretchesFunction,
-            ResourceAllocation<?> resourceAllocation,
-            StretchesFunctionTypeEnum type);
+    void init(StretchesFunction stretchesFunction, ResourceAllocation<?> resourceAllocation, StretchesFunctionTypeEnum type);
 
-    /*
-     * Intermediate conversation steps
+    /**
+     * Intermediate conversation steps.
      */
 
     List<Stretch> getAllStretches();
@@ -71,8 +68,7 @@ public interface IStretchesFunctionModel {
 
     void setStretchDate(Stretch stretch, Date date) throws IllegalArgumentException;
 
-    void setStretchLengthPercentage(Stretch stretch, BigDecimal lengthPercentage)
-            throws IllegalArgumentException;
+    void setStretchLengthPercentage(Stretch stretch, BigDecimal lengthPercentage) throws IllegalArgumentException;
 
     LocalDate getTaskStartDate();
 
@@ -82,7 +78,7 @@ public interface IStretchesFunctionModel {
 
     ResourceAllocation<?> getResourceAllocation();
 
-    /*
+    /**
      * Final conversation steps
      */
 

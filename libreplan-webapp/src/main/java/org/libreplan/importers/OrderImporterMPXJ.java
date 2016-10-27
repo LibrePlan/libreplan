@@ -40,7 +40,6 @@ import org.libreplan.business.common.daos.IEntitySequenceDAO;
 import org.libreplan.business.common.entities.EntityNameEnum;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.orders.daos.IOrderDAO;
-import org.libreplan.business.orders.daos.IOrderElementDAO;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderLine;
@@ -68,11 +67,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
- * Has all the methods needed to successfully import some external project files
- * into Libreplan using MPXJ.
+ * Has all the methods needed to successfully import some external project files into Libreplan using MPXJ.
  *
  * @author Alba Carro Pérez <alba.carro@gmail.com>
- * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>>
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>>
  */
 @Component
 @Scope(BeanDefinition.SCOPE_SINGLETON)
@@ -109,8 +107,7 @@ public class OrderImporterMPXJ implements IOrderImporter {
     /**
      * Makes a {@link OrderDTO} from a InputStream.
      *
-     * Uses the filename in order to get the specific ProjectReader for each
-     * kind of file (.mpp, .planner, etc).
+     * Uses the filename in order to get the specific ProjectReader for each kind of file (.mpp, .planner, etc).
      *
      * @param file
      *            InputStream to extract data from.
@@ -187,7 +184,7 @@ public class OrderImporterMPXJ implements IOrderImporter {
 
         orderElement.useSchedulingDataFor(orderVersion);
 
-        List<OrderElement> children = new ArrayList<OrderElement>();
+        List<OrderElement> children = new ArrayList<>();
 
         for (OrderElementDTO task : project.tasks) {
             children.add(convertImportTaskToOrderElement(orderVersion, task));
@@ -246,7 +243,7 @@ public class OrderImporterMPXJ implements IOrderImporter {
             orderElement.useSchedulingDataFor(orderVersion);
         }
 
-        List<OrderElement> children = new ArrayList<OrderElement>();
+        List<OrderElement> children = new ArrayList<>();
 
         for (OrderElementDTO childrenTask : task.children) {
             children.add(convertImportTaskToOrderElement(orderVersion, childrenTask));
@@ -267,7 +264,7 @@ public class OrderImporterMPXJ implements IOrderImporter {
     }
 
     /**
-     * Creates a {@link TaskGroup} from a {@link ImportData}
+     * Creates a {@link TaskGroup} from a {@link OrderDTO}.
      *
      * @param project
      *            ImportData to extract data from
@@ -288,7 +285,7 @@ public class OrderImporterMPXJ implements IOrderImporter {
 
         taskGroup.setCalendar(calendar);
 
-        List<TaskElement> taskElements = new ArrayList<TaskElement>();
+        List<TaskElement> taskElements = new ArrayList<>();
 
         for (OrderElementDTO importTask : project.tasks) {
 
@@ -313,7 +310,7 @@ public class OrderImporterMPXJ implements IOrderImporter {
     /**
      * Private method.
      *
-     * It makes a {@link TaskMilestone} from a {@link MilsetoneDTO}
+     * It makes a {@link TaskMilestone} from a {@link MilestoneDTO}
      *
      * @param milestone
      *            MilestoneDTO to extract data from.
@@ -335,9 +332,7 @@ public class OrderImporterMPXJ implements IOrderImporter {
     }
 
     /**
-     * Private method.
-     *
-     * It makes a {@link TaskElement} from a {@link ImportTask}
+     * It makes a {@link TaskElement} from a {@link OrderElementDTO}.
      *
      * @param task
      *            ImportTask to extract data from.
@@ -367,13 +362,11 @@ public class OrderImporterMPXJ implements IOrderImporter {
 
         } else {
 
-            taskSource = TaskSource.createForGroup(orderElement
-                    .getCurrentSchedulingDataForVersion());
+            taskSource = TaskSource.createForGroup(orderElement.getCurrentSchedulingDataForVersion());
 
-            taskElement = taskSource
-                    .createTaskGroupWithoutDatesInitializedAndLinkItToTaskSource();
+            taskElement = taskSource.createTaskGroupWithoutDatesInitializedAndLinkItToTaskSource();
 
-            List<TaskElement> taskElements = new ArrayList<TaskElement>();
+            List<TaskElement> taskElements = new ArrayList<>();
 
             for (OrderElementDTO importTask : task.children) {
 
@@ -403,9 +396,7 @@ public class OrderImporterMPXJ implements IOrderImporter {
     }
 
     /**
-     * Private method.
-     *
-     * Sets the proper constraint to and a {@link Task}
+     * Sets the proper constraint to and a {@link Task}.
      *
      * @param importTask
      *            OrderElementDTO to extract data from.
@@ -417,47 +408,34 @@ public class OrderImporterMPXJ implements IOrderImporter {
         switch (importTask.constraint) {
 
             case AS_SOON_AS_POSSIBLE:
-
                 task.getPositionConstraint().asSoonAsPossible();
-
                 return;
 
             case AS_LATE_AS_POSSIBLE:
-
                 task.getPositionConstraint().asLateAsPossible();
-
                 return;
 
             case START_IN_FIXED_DATE:
-
-                task.setIntraDayStartDate(IntraDayDate.startOfDay(LocalDate
-                        .fromDateFields(importTask.constraintDate)));
-
+                task.setIntraDayStartDate(IntraDayDate.startOfDay(LocalDate.fromDateFields(importTask.constraintDate)));
                 Task.convertOnStartInFixedDate(task);
-
                 return;
 
             case START_NOT_EARLIER_THAN:
-
                 task.getPositionConstraint().notEarlierThan(
-                        IntraDayDate.startOfDay(LocalDate
-                                .fromDateFields(importTask.constraintDate)));
-
+                        IntraDayDate.startOfDay(LocalDate.fromDateFields(importTask.constraintDate)));
                 return;
 
             case FINISH_NOT_LATER_THAN:
-
                 task.getPositionConstraint().finishNotLaterThan(
-                        IntraDayDate.startOfDay(LocalDate
-                                .fromDateFields(importTask.constraintDate)));
+                        IntraDayDate.startOfDay(LocalDate.fromDateFields(importTask.constraintDate)));
                 return;
+
+            default: return;
         }
 
     }
 
     /**
-     * Private method.
-     *
      * Sets the proper constraint to and a {@link TaskMiletone}
      *
      * @param milestone
@@ -470,59 +448,48 @@ public class OrderImporterMPXJ implements IOrderImporter {
         switch (milestone.constraint) {
 
             case AS_SOON_AS_POSSIBLE:
-
                 taskMilestone.getPositionConstraint().asSoonAsPossible();
-
                 return;
 
             case AS_LATE_AS_POSSIBLE:
-
                 taskMilestone.getPositionConstraint().asLateAsPossible();
-
                 return;
 
             case START_IN_FIXED_DATE:
-
                 taskMilestone.getPositionConstraint().notEarlierThan(
-                        IntraDayDate.startOfDay(LocalDate
-                                .fromDateFields(milestone.constraintDate)));
-
+                        IntraDayDate.startOfDay(LocalDate.fromDateFields(milestone.constraintDate)));
                 return;
 
             case START_NOT_EARLIER_THAN:
-
                 taskMilestone.getPositionConstraint().notEarlierThan(
-                        IntraDayDate.startOfDay(LocalDate
-                                .fromDateFields(milestone.constraintDate)));
-
+                        IntraDayDate.startOfDay(LocalDate.fromDateFields(milestone.constraintDate)));
                 return;
 
             case FINISH_NOT_LATER_THAN:
-
                 taskMilestone.getPositionConstraint().finishNotLaterThan(
-                        IntraDayDate.startOfDay(LocalDate
-                                .fromDateFields(milestone.constraintDate)));
+                        IntraDayDate.startOfDay(LocalDate.fromDateFields(milestone.constraintDate)));
                 return;
+
+            default: return;
         }
 
     }
 
     /**
-     * Saves an {@link Order} which has all the data that we want to store in
-     * the database. Also save all the related {@link TaskElement} and its
-     * {@link TaskSource}
+     * Saves an {@link Order} which has all the data that we want to store in the database.
+     * Also save all the related {@link TaskElement} and its {@link TaskSource}.
      *
-     * @param Order
+     * @param order
      *            Order with the data.
-     * @param TaskGroup
-     *            TaskGroup with the data. It also contains the link to the
-     *            TaskSources.
+     * @param taskGroup
+     *            TaskGroup with the data. It also contains the link to the TaskSources.
+     * @param dependencies
      */
     @Override
     @Transactional
     public void storeOrder(final Order order, final TaskGroup taskGroup, final List<Dependency> dependencies) {
 
-        final List<TaskSource> taskSources = new ArrayList<TaskSource>();
+        final List<TaskSource> taskSources = new ArrayList<>();
 
         taskSources.add(taskGroup.getTaskSource());
 
@@ -556,17 +523,17 @@ public class OrderImporterMPXJ implements IOrderImporter {
     }
 
     /**
-     * Creates a list of {@link Dependency} from a {@link ImportData}
+     * Creates a list of {@link Dependency} from a {@link OrderDTO}.
      *
      * @param importData
      *            ImportData to extract data from
      *
-     * @return List<Dependency> with the data extracted.
+     * @return {@link List<Dependency>} with the data extracted.
      */
     @Override
     public List<Dependency> createDependencies(OrderDTO importData) {
 
-        List<Dependency> dependencies =  new ArrayList<Dependency>();
+        List<Dependency> dependencies = new ArrayList<>();
 
         for(DependencyDTO dependencyDTO: importData.dependencies){
 
@@ -588,9 +555,7 @@ public class OrderImporterMPXJ implements IOrderImporter {
     }
 
     /**
-     * Private method.
-     *
-     * Return the equivalent {@link Type} of a {@link TypeOfDependencyDTO}
+     * Return the equivalent {@link Type} of a {@link TypeOfDependencyDTO}.
      *
      * @param type
      *            TypeOfDependencyDTO to extract data from.
@@ -601,15 +566,12 @@ public class OrderImporterMPXJ implements IOrderImporter {
         switch (type) {
 
             case END_START:
-
                 return Type.END_START;
 
             case START_START:
-
                 return Type.START_START;
 
             case END_END:
-
                 return Type.END_END;
 
             case START_END:
@@ -622,8 +584,6 @@ public class OrderImporterMPXJ implements IOrderImporter {
     }
 
     /**
-     * Private method.
-     *
      * Return the {@link BaseCalendar} with the same name as the string given.
      *
      * @param name
@@ -634,7 +594,7 @@ public class OrderImporterMPXJ implements IOrderImporter {
 
         List<BaseCalendar> baseCalendars = baseCalendarDAO.findByName(name);
 
-        BaseCalendar calendar = null;
+        BaseCalendar calendar;
 
         for (BaseCalendar baseCalendar : baseCalendars) {
             if ( baseCalendar.getName().equals(name) ) {

@@ -27,18 +27,18 @@ import org.libreplan.web.security.SecurityUtils;
 import org.libreplan.web.users.services.CustomUser;
 
 /**
- * Class used to implement some utilities about users which could be useful in
- * different web layer classes
+ * Class used to implement some utilities about users which could be useful in different web layer classes.
  *
  * @author Cristina Alavarino Perez <cristina.alvarino@comtecsf.es>
  * @author Ignacio Diaz Teijido <ignacio.diaz@comtecsf.es>
  */
 public class UserUtil {
 
-    private UserUtil() {
-    }
-
     private static final Log LOG = LogFactory.getLog(UserUtil.class);
+
+    private UserUtil() {
+
+    }
 
     public static User getUserFromSession() {
         CustomUser loggedUser = SecurityUtils.getLoggedUser();

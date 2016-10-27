@@ -20,20 +20,21 @@
 -->
 
 <treerow sclass="taskdetail_grid taskdetail-company-view">
-    <zscript><![CDATA[
-    ]]>
-</zscript>
+
     <treecell>
-        <label class="task_title"/>
+        <label sclass="task_title"/>
     </treecell>
+
     <treecell>
-        <label class="order-startdate" />
+        <label sclass="order-startdate" />
     </treecell>
+
     <treecell>
-        <label class="order-enddate" />
+        <label sclass="order-enddate" />
     </treecell>
+
     <treecell>
-        <hlayout class="projectstatus-layout">
+        <hlayout sclass="projectstatus-layout">
             <div />
             <label>/</label>
             <div />

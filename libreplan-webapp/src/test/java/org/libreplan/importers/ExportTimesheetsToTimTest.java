@@ -56,7 +56,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Test for {@link ExportTimesheetsToTim}
+ * Test for {@link ExportTimesheetsToTim}.
  *
  * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
  */
@@ -64,11 +64,9 @@ import org.springframework.transaction.annotation.Transactional;
 @ContextConfiguration(locations = {
         BUSINESS_SPRING_CONFIG_FILE,
 
-        WEBAPP_SPRING_CONFIG_FILE,
-        WEBAPP_SPRING_CONFIG_TEST_FILE,
+        WEBAPP_SPRING_CONFIG_FILE, WEBAPP_SPRING_CONFIG_TEST_FILE,
 
-        WEBAPP_SPRING_SECURITY_CONFIG_FILE,
-        WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE })
+        WEBAPP_SPRING_SECURITY_CONFIG_FILE, WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE })
 public class ExportTimesheetsToTimTest {
 
     @Autowired
@@ -103,16 +101,13 @@ public class ExportTimesheetsToTimTest {
     private IScenarioManager scenarioManager;
 
     @Before
-    public void loadRequiredaData() {
-
+    public void loadRequiredData() {
         IOnTransaction<Void> load = new IOnTransaction<Void>() {
-
             @Override
             public Void execute() {
                 defaultAdvanceTypesBootstrapListener.loadRequiredData();
                 configurationBootstrap.loadRequiredData();
                 scenariosBootstrap.loadRequiredData();
-
                 return null;
             }
         };

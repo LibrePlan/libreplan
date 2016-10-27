@@ -20,10 +20,7 @@
 
 <vbox>
 
-    <combobox id="combobox"
-            value="HTML"
-            autocomplete="true"
-            autodrop="true" >
+    <combobox id="combobox" value="HTML" autocomplete="true" autodrop="true" >
         <comboitem label="HTML"/>
         <comboitem label="ODT"/>
         <comboitem label="PDF"/>

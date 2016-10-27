@@ -46,11 +46,11 @@ import java.util.List;
 /**
  * Sends E-mail to manager user (it writes in responsible field in project properties)
  * with data that storing in notification_queue table
- * and that are treat to {@link EmailTemplateEnum.TEMPLATE_MILESTONE_REACHED}
- * Date will be send on current date equals to deadline date of {@link Milestone}
- * But it will be only send to Manager (you can assign him in project properties)
+ * and that are treat to {@link EmailTemplateEnum#TEMPLATE_MILESTONE_REACHED}
+ * Date will be send on current date equals to deadline date of {@link org.zkoss.ganttz.data.Milestone}.
+ * But it will be only send to Manager (you can assign him in project properties).
  *
- * @author Created by Vova Perebykivskyi <vova@libreplan-enterprise.com> on 20.01.2016
+ * @author Created by Vova Perebykivskyi <vova@libreplan-enterprise.com> on 20.01.2016.
  */
 
 @Component
@@ -84,9 +84,11 @@ public class SendEmailOnMilestoneReached implements IEmailNotificationJob {
                 List<EmailNotification> notifications =
                         emailNotificationModel.getAllByType(EmailTemplateEnum.TEMPLATE_MILESTONE_REACHED);
 
-                for (EmailNotification notification : notifications)
-                    if ( composeMessageForUser(notification) )
+                for (EmailNotification notification : notifications) {
+                    if ( composeMessageForUser(notification) ) {
                         deleteSingleNotification(notification);
+                    }
+                }
             }
         }
     }
@@ -100,7 +102,7 @@ public class SendEmailOnMilestoneReached implements IEmailNotificationJob {
         emailNotificationModel.deleteById(notification);
     }
 
-    private void sendEmailNotificationToManager(TaskElement item){
+    private void sendEmailNotificationToManager(TaskElement item) {
         emailNotificationModel.setNewObject();
         emailNotificationModel.setType(EmailTemplateEnum.TEMPLATE_MILESTONE_REACHED);
         emailNotificationModel.setUpdated(new Date());
@@ -132,15 +134,18 @@ public class SendEmailOnMilestoneReached implements IEmailNotificationJob {
         int currentMonth = date.getMonthOfYear();
         int currentDay = date.getDayOfMonth();
 
-        for (TaskElement item : list){
-            if ( item.getDeadline() != null ){
+        for (TaskElement item : list) {
+            if ( item.getDeadline() != null ) {
+
                 LocalDate deadline = item.getDeadline();
                 int deadlineYear = deadline.getYear();
                 int deadlineMonth = deadline.getMonthOfYear();
                 int deadlineDay = deadline.getDayOfMonth();
 
-                if ( currentYear == deadlineYear && currentMonth == deadlineMonth && currentDay == deadlineDay )
+                if (currentYear == deadlineYear && currentMonth == deadlineMonth && currentDay == deadlineDay) {
                     sendEmailNotificationToManager(item);
+                }
+
             }
         }
     }

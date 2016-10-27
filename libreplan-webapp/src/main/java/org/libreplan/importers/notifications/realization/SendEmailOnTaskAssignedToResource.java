@@ -38,7 +38,7 @@ import java.util.List;
 
 /**
  * Sends E-mail to users with data that storing in notification_queue table
- * and that are treat to {@link EmailTemplateEnum#TEMPLATE_ENTER_DATA_IN_TIMESHEET}
+ * and that are treat to {@link EmailTemplateEnum#TEMPLATE_ENTER_DATA_IN_TIMESHEET}.
  * Data will be send after user will be assigned to some task.
  *
  * @author Created by Vova Perebykivskyi <vova@libreplan-enterprise.com> on 13.10.2015.
@@ -66,9 +66,11 @@ public class SendEmailOnTaskAssignedToResource implements IEmailNotificationJob 
                 List<EmailNotification> notifications =
                         emailNotificationModel.getAllByType(EmailTemplateEnum.TEMPLATE_TASK_ASSIGNED_TO_RESOURCE);
 
-                for (EmailNotification notification : notifications)
-                    if ( composeMessageForUser(notification) )
+                for (EmailNotification notification : notifications) {
+                    if (composeMessageForUser(notification)) {
                         deleteSingleNotification(notification);
+                    }
+                }
             }
         }
     }

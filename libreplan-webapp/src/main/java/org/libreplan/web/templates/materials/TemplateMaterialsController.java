@@ -22,7 +22,7 @@ package org.libreplan.web.templates.materials;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Collections;
+import java.util.HashMap;
 
 import org.libreplan.business.materials.entities.Material;
 import org.libreplan.business.materials.entities.MaterialAssignmentTemplate;
@@ -30,6 +30,7 @@ import org.libreplan.business.templates.entities.OrderElementTemplate;
 import org.libreplan.web.orders.materials.AssignedMaterialsController;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.TreeModel;
 
 /**
@@ -41,22 +42,25 @@ public class TemplateMaterialsController extends
 
     private IAssignedMaterialsToOrderElementTemplateModel assignedMaterialsToOrderElementTemplateModel;
 
+    public TemplateMaterialsController(){
+        assignedMaterialsToOrderElementTemplateModel =
+                (IAssignedMaterialsToOrderElementTemplateModel) SpringUtil
+                        .getBean("assignedMaterialsToOrderElementTemplateModel");
+    }
+
     @Override
-    protected MaterialAssignmentTemplate copyFrom(
-            MaterialAssignmentTemplate assignment) {
+    protected MaterialAssignmentTemplate copyFrom(MaterialAssignmentTemplate assignment) {
         return MaterialAssignmentTemplate.copyFrom(assignment);
     }
 
     @Override
     protected void createAssignmentsBoxComponent(Component parent) {
-        Executions.createComponents("/templates/_materialAssignmentsBox.zul",
-                parent, Collections.emptyMap());
+        Executions.createComponents("/templates/_materialAssignmentsBox.zul", parent, new HashMap<String, String>());
     }
 
     @Override
     public TreeModel getAllMaterialCategories() {
-        return assignedMaterialsToOrderElementTemplateModel
-                .getAllMaterialCategories();
+        return assignedMaterialsToOrderElementTemplateModel.getAllMaterialCategories();
     }
 
     @Override
@@ -66,8 +70,7 @@ public class TemplateMaterialsController extends
 
     @Override
     public TreeModel getMaterialCategories() {
-        return assignedMaterialsToOrderElementTemplateModel
-                .getMaterialCategories();
+        return assignedMaterialsToOrderElementTemplateModel.getMaterialCategories();
     }
 
     @Override
@@ -77,13 +80,11 @@ public class TemplateMaterialsController extends
 
     @Override
     public BigDecimal getTotalPrice() {
-        OrderElementTemplate template = assignedMaterialsToOrderElementTemplateModel
-                .getTemplate();
-        if (template == null) {
-            return BigDecimal.ZERO;
-        }
-        return template.getTotalMaterialAssigmentPrice().setScale(2,
-                RoundingMode.HALF_UP);
+        OrderElementTemplate template = assignedMaterialsToOrderElementTemplateModel.getTemplate();
+
+        return template == null
+                ? BigDecimal.ZERO
+                : template.getTotalMaterialAssignmentPrice().setScale(2, RoundingMode.HALF_UP);
     }
 
     @Override
@@ -93,20 +94,13 @@ public class TemplateMaterialsController extends
 
     @Override
     public BigDecimal getTotalUnits() {
-        OrderElementTemplate template = assignedMaterialsToOrderElementTemplateModel
-                .getTemplate();
-        if (template == null) {
-            return BigDecimal.ZERO;
-        }
-        return template.getTotalMaterialAssigmentUnits();
+        OrderElementTemplate template = assignedMaterialsToOrderElementTemplateModel.getTemplate();
+        return template == null ? BigDecimal.ZERO : template.getTotalMaterialAssignmentUnits();
     }
 
     @Override
     protected BigDecimal getUnits(MaterialAssignmentTemplate assignment) {
-        if (assignment.getUnits() == null) {
-            return BigDecimal.ZERO;
-        }
-        return assignment.getUnits();
+        return assignment.getUnits() == null ? BigDecimal.ZERO : assignment.getUnits();
     }
 
     @Override
@@ -115,8 +109,7 @@ public class TemplateMaterialsController extends
     }
 
     @Override
-    protected void setUnits(MaterialAssignmentTemplate assignment,
-            BigDecimal units) {
+    protected void setUnits(MaterialAssignmentTemplate assignment, BigDecimal units) {
         assignment.setUnits(units);
     }
 

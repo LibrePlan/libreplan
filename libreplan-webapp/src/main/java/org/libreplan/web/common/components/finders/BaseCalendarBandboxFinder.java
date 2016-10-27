@@ -21,8 +21,6 @@
 
 package org.libreplan.web.common.components.finders;
 
-import java.util.List;
-
 import org.libreplan.business.calendars.daos.IBaseCalendarDAO;
 import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +29,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
+
+import java.util.List;
 
 /**
  * Bandbox finder for {@link BaseCalendar}.
@@ -46,7 +46,7 @@ public class BaseCalendarBandboxFinder extends BandboxFinder implements IBandbox
     private final String headers[] = { _("Name") };
 
     /**
-     * Forces to mark the string as needing translation
+     * Forces to mark the string as needing translation.
      */
     private static String _(String string) {
         return string;
@@ -57,6 +57,7 @@ public class BaseCalendarBandboxFinder extends BandboxFinder implements IBandbox
     public List<BaseCalendar> getAll() {
         List<BaseCalendar> baseCalendars = baseCalendarDAO.getBaseCalendars();
         forLoadCalendars(baseCalendars);
+
         return baseCalendars;
     }
 
@@ -91,7 +92,7 @@ public class BaseCalendarBandboxFinder extends BandboxFinder implements IBandbox
     private final ListitemRenderer baseCalendarRenderer = new ListitemRenderer() {
 
         @Override
-        public void render(Listitem item, Object data) {
+        public void render(Listitem item, Object data, int i) {
             BaseCalendar baseCalendar = (BaseCalendar) data;
             item.setValue(baseCalendar);
 

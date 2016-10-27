@@ -60,8 +60,8 @@ import org.libreplan.business.trees.ITreeParentNode;
 
 
 /**
- * Represents every container in the WBS view. A task of the WBS that has some children.<br />
- *
+ * Represents every container in the WBS view. A task of the WBS that has some children.
+ * <br />
  * The project itself is also an {@link OrderLineGroup}.
  *
  * @author Manuel Rego Casasnovas <rego@igalia.com>
@@ -918,11 +918,11 @@ public class OrderLineGroup extends OrderElement implements ITreeParentNode<Orde
     }
 
     public void removeIndirectAdvanceAssignment(AdvanceType advanceType) {
-        DirectAdvanceAssignment tempAdavanceAssignmet = DirectAdvanceAssignment.create();
-        tempAdavanceAssignmet.setAdvanceType(advanceType);
+        DirectAdvanceAssignment tempAdvanceAssignment = DirectAdvanceAssignment.create();
+        tempAdvanceAssignment.setAdvanceType(advanceType);
 
         try {
-            checkChildrenNoOtherAssignmentWithSameAdvanceType(this, tempAdavanceAssignmet);
+            checkChildrenNoOtherAssignmentWithSameAdvanceType(this, tempAdvanceAssignment);
 
             String unitName = advanceType.getUnitName();
             IndirectAdvanceAssignment toRemove = null;

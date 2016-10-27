@@ -59,10 +59,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
-        BUSINESS_SPRING_CONFIG_TEST_FILE })
+@ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE, BUSINESS_SPRING_CONFIG_TEST_FILE })
 /**
- * Test for {@link OrderAuthorizationDAO}
+ * Test for {@link org.libreplan.business.users.daos.OrderAuthorizationDAO}.
  *
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  *
@@ -97,11 +96,11 @@ public class OrderAuthorizationDAOTest {
 
     private User createValidUser() {
         String loginName = UUID.randomUUID().toString();
-        return User.create(loginName, loginName, new HashSet<UserRole>());
+        return User.create(loginName, loginName, new HashSet<>());
     }
 
     private Profile createValidProfile() {
-        Set<UserRole> roles = new HashSet<UserRole>();
+        Set<UserRole> roles = new HashSet<>();
         return Profile.create(UUID.randomUUID().toString(), roles);
     }
 
@@ -114,11 +113,12 @@ public class OrderAuthorizationDAOTest {
         order.setInitDate(new Date());
         order.setName(UUID.randomUUID().toString());
         order.setCode(UUID.randomUUID().toString());
+
         return order;
     }
 
     @Before
-    public void loadRequiredaData() {
+    public void loadRequiredData() {
         defaultAdvanceTypesBootstrapListener.loadRequiredData();
     }
 

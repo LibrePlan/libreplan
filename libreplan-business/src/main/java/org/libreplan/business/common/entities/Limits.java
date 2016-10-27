@@ -26,11 +26,9 @@ import org.libreplan.business.common.BaseEntity;
  * This class is intended to work as a Hibernate component.
  * It represents the limit that can be modified only in database.
  *
- * Created by
- * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
- * on 17.12.2015.
+ * @author Created by Vova Perebykivskyi <vova@libreplan-enterprise.com> on 17.12.2015.
  */
-public class Limits extends BaseEntity{
+public class Limits extends BaseEntity {
 
     private String type;
 

@@ -49,7 +49,7 @@ import org.springframework.stereotype.Component;
  * Cost calulator in terms of hours.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
- * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
 @Component
 @Scope(BeanDefinition.SCOPE_SINGLETON)
@@ -64,7 +64,7 @@ public class HoursCostCalculator implements ICostCalculator {
     }
 
     @Override
-    public SortedMap<LocalDate, BigDecimal> getAdvanceCost(Task task, LocalDate filterStartDate, 
+    public SortedMap<LocalDate, BigDecimal> getAdvanceCost(Task task, LocalDate filterStartDate,
                                                            LocalDate filterEndDate) {
         DirectAdvanceAssignment advanceAssignment =
                 (task.getOrderElement() != null) ? task.getOrderElement().getReportGlobalAdvanceAssignment() : null;
@@ -153,7 +153,7 @@ public class HoursCostCalculator implements ICostCalculator {
                 assert date != null;
 
                 LocalTime time = new LocalTime(date.getTime());
-               // Time time = new Time(date.getTime());
+                // Time time = new Time(date.getTime());
 
                 BigDecimal hours = new BigDecimal(time.getHourOfDay());
                 additionOfAllAssignmentsMinutes += time.getMinuteOfHour();

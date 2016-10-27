@@ -21,8 +21,6 @@
 
 package org.libreplan.web.common.components.finders;
 
-import java.util.List;
-
 import org.libreplan.business.labels.daos.ILabelDAO;
 import org.libreplan.business.labels.entities.Label;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,15 +31,16 @@ import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
 
+import java.util.List;
+
 /**
- * Implements all the methods needed to comply IBandboxFinder
+ * Implements all the methods needed to comply IBandboxFinder.
  *
- * This is a finder for {@link Label}l in a {@link Bandbox}. Provides how many
- * columns for {@link Label} will be shown, how to render {@link Label} object ,
- * how to do the matching, what text to show when an element is selected, etc
+ * This is a finder for {@link Label}l in a {@link Bandbox}.
+ * Provides how many columns for {@link Label} will be shown, how to render {@link Label} object,
+ * how to do the matching, what text to show when an element is selected, etc.
  *
  * @author Diego Pino Garcia <dpino@igalia.com>
- *
  */
 @Repository
 public class LabelBandboxFinder extends BandboxFinder implements IBandboxFinder {
@@ -52,7 +51,7 @@ public class LabelBandboxFinder extends BandboxFinder implements IBandboxFinder 
     private final String headers[] = { _("Type"), _("Name") };
 
     /**
-     * Forces to mark the string as needing translation
+     * Forces to mark the string as needing translation.
      */
     private static String _(String string) {
         return string;
@@ -63,6 +62,7 @@ public class LabelBandboxFinder extends BandboxFinder implements IBandboxFinder 
     public List<Label> getAll() {
         List<Label> labels = labelDAO.getAll();
         initializeLabels(labels);
+
         return labels;
     }
 
@@ -81,8 +81,9 @@ public class LabelBandboxFinder extends BandboxFinder implements IBandboxFinder 
     public boolean entryMatchesText(Object obj, String text) {
         final Label label = (Label) obj;
         text = text.toLowerCase();
-        return (label.getType().getName().toLowerCase().contains(text.toLowerCase()) || label
-                .getName().toLowerCase().contains(text));
+
+        return (label.getType().getName().toLowerCase().contains(text.toLowerCase()) ||
+                label.getName().toLowerCase().contains(text));
     }
 
     @Override
@@ -101,14 +102,14 @@ public class LabelBandboxFinder extends BandboxFinder implements IBandboxFinder 
     }
 
     /**
-     * Render for {@link Label}
+     * Render for {@link Label}.
      *
      * @author Diego Pino Garcia <dpino@igalia.com>
      */
     private final ListitemRenderer labelRenderer = new ListitemRenderer() {
 
         @Override
-        public void render(Listitem item, Object data) {
+        public void render(Listitem item, Object data, int i) {
             Label label = (Label) data;
 
             item.setValue(data);

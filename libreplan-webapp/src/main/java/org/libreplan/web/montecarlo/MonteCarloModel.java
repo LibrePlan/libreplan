@@ -35,7 +35,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.hibernate.Hibernate;
 import org.joda.time.LocalDate;
@@ -53,12 +52,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.ganttz.util.LongOperationFeedback.IDesktopUpdatesEmitter;
 
 /**
+ * Calculates the MonteCarlo function for a list of tasks.
+ * Usually this list of tasks represents a critical path.
+ * There could be many critical paths in scheduling.
+ *
  * @author Diego Pino Garcia <dpino@igalia.com>
- *
- *         Calculates the MonteCarlo function for a list of tasks. Usually this
- *         list of tasks represents a critical path. There could be many
- *         critical paths in scheduling.
- *
  */
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -67,11 +65,11 @@ public class MonteCarloModel implements IMonteCarloModel {
     @Autowired
     private ITaskElementDAO taskDAO;
 
-    private String CRITICAL_PATH = _("Critical path");
+    private static String criticalPath = _("Critical path");
 
-    private String DEFAULT_CRITICAL_PATH = CRITICAL_PATH + " 1";
+    private static String defaultCriticalPath = criticalPath + " 1";
 
-    private Map<String, List<MonteCarloTask>> criticalPaths = new HashMap<String, List<MonteCarloTask>>();
+    private Map<String, List<MonteCarloTask>> criticalPaths = new HashMap<>();
 
     private String orderName = "";
 
@@ -83,10 +81,13 @@ public class MonteCarloModel implements IMonteCarloModel {
         if (tasksInCriticalPath.isEmpty()) {
             return;
         }
+
         this.tasksInCriticalPath = onlyTasks(tasksInCriticalPath);
+
         if (this.tasksInCriticalPath.isEmpty()) {
             return;
         }
+
         Collections.sort(this.tasksInCriticalPath, Task.getByStartDateComparator());
         initializeTasksInOrder(getOrderFor(this.tasksInCriticalPath));
         initializeOrderNameFor(this.tasksInCriticalPath);
@@ -95,7 +96,7 @@ public class MonteCarloModel implements IMonteCarloModel {
 
     /**
      * @param tasksInCriticalPath Cannot be null or empty
-     * @return
+     * @return {@link Order}
      */
     private Order getOrderFor(List<Task> tasksInCriticalPath) {
         return tasksInCriticalPath.get(0).getOrderElement().getOrder();
@@ -107,23 +108,20 @@ public class MonteCarloModel implements IMonteCarloModel {
 
         criticalPaths.clear();
         for (List<Task> path : allCriticalPaths) {
-            criticalPaths.put(CRITICAL_PATH + " " + i++,
-                    toMonteCarloTaskList(path));
+            criticalPaths.put(criticalPath + " " + i++, toMonteCarloTaskList(path));
         }
     }
 
-    private List<List<Task>> buildAllPossibleCriticalPaths(
-            List<Task> tasksInCriticalPath) {
-        MonteCarloCriticalPathBuilder criticalPathBuilder = MonteCarloCriticalPathBuilder
-                .create(tasksInCriticalPath);
+    private List<List<Task>> buildAllPossibleCriticalPaths(List<Task> tasksInCriticalPath) {
+        MonteCarloCriticalPathBuilder criticalPathBuilder = MonteCarloCriticalPathBuilder.create(tasksInCriticalPath);
+
         return criticalPathBuilder.buildAllPossibleCriticalPaths();
     }
 
     /**
      * Calculating all the critical paths, may need to explore other tasks that
-     * are not part of the tasks that are on the critical path. So it's
-     * necessary to initialize all the tasks in the order, otherwise a lazy
-     * initialization may happen
+     * are not part of the tasks that are on the critical path.
+     * So it's necessary to initialize all the tasks in the order, otherwise a lazy initialization may happen.
      *
      * @param root
      */
@@ -137,6 +135,7 @@ public class MonteCarloModel implements IMonteCarloModel {
 
     private void initializeTask(OrderElement orderElement) {
         TaskElement task = orderElement.getAssociatedTaskElement();
+
         if (task != null) {
             taskDAO.reattach(task);
             task.getCalendar();
@@ -145,9 +144,9 @@ public class MonteCarloModel implements IMonteCarloModel {
     }
 
     private void initializeDependenciesFor(TaskElement task) {
-        Set<Dependency> dependencies = task
-                .getDependenciesWithThisDestination();
+        Set<Dependency> dependencies = task.getDependenciesWithThisDestination();
         Hibernate.initialize(dependencies);
+
         for (Dependency each : dependencies) {
             Hibernate.initialize(each.getOrigin());
             Hibernate.initialize(each.getDestination());
@@ -155,13 +154,12 @@ public class MonteCarloModel implements IMonteCarloModel {
     }
 
     private void initializeOrderNameFor(List<Task> tasksInCriticalPath) {
-        orderName = tasksInCriticalPath.isEmpty() ? "" : getOrderFor(
-                tasksInCriticalPath).getName();
+        orderName = tasksInCriticalPath.isEmpty() ? "" : getOrderFor(tasksInCriticalPath).getName();
     }
 
     @Override
     public List<String> getCriticalPathNames() {
-        List<String> result = new ArrayList(criticalPaths.keySet());
+        ArrayList result = new ArrayList(criticalPaths.keySet());
         Collections.sort(result);
         return result;
     }
@@ -169,53 +167,59 @@ public class MonteCarloModel implements IMonteCarloModel {
     @Override
     public List<MonteCarloTask> getCriticalPath(String name) {
         if (name == null || name.isEmpty()) {
-            return criticalPaths.get(DEFAULT_CRITICAL_PATH);
+            return criticalPaths.get(defaultCriticalPath);
         }
         return criticalPaths.get(name);
     }
 
     private List<Task> onlyTasks(List<TaskElement> tasks) {
-        List<Task> result = new ArrayList<Task>();
+        List<Task> result = new ArrayList<>();
+
         for (TaskElement each : tasks) {
             if (each instanceof Task) {
                 result.add((Task) each);
             }
         }
+
         return result;
     }
 
     private List<MonteCarloTask> toMonteCarloTaskList(List<Task> path) {
-        List<MonteCarloTask> result = new ArrayList<MonteCarloTask>();
+        List<MonteCarloTask> result = new ArrayList<>();
+
         for (Task each : path) {
             result.add(MonteCarloTask.create(each));
         }
+
         return result;
     }
 
     @Override
-    public Map<LocalDate, BigDecimal> calculateMonteCarlo(
-            List<MonteCarloTask> _tasks, int iterations,
-            IDesktopUpdatesEmitter<Integer> iterationProgress) {
+    public Map<LocalDate, BigDecimal> calculateMonteCarlo(List<MonteCarloTask> tasks,
+                                                          int iterations,
+                                                          IDesktopUpdatesEmitter<Integer> iterationProgress) {
 
         MonteCarloCalculation monteCarloCalculation = new MonteCarloCalculation(
-                copyOf(_tasks), iterations, iterationProgress);
+                copyOf(tasks), iterations, iterationProgress);
         Map<LocalDate, BigDecimal> monteCarloValues = monteCarloCalculation.doCalculation();
 
         // Convert number of times to probability
         for (LocalDate key : monteCarloValues.keySet()) {
             BigDecimal times = monteCarloValues.get(key);
-            BigDecimal probability = times.divide(
-                    BigDecimal.valueOf(iterations), 8, RoundingMode.HALF_UP);
+            BigDecimal probability = times.divide(BigDecimal.valueOf(iterations), 8, RoundingMode.HALF_UP);
             monteCarloValues.put(key, probability);
         }
+
         return monteCarloValues;
     }
 
-    private List<MonteCarloTask> copyOf(List<MonteCarloTask> _tasks) {
-        List<MonteCarloTask> result = new ArrayList<MonteCarloTask>();
-        for (MonteCarloTask each: _tasks) {
+    private List<MonteCarloTask> copyOf(List<MonteCarloTask> tasks) {
+        List<MonteCarloTask> result = new ArrayList<>();
+
+        for (MonteCarloTask each: tasks) {
             result.add(MonteCarloTask.copy(each));
         }
+
         return result;
     }
 
@@ -224,17 +228,9 @@ public class MonteCarloModel implements IMonteCarloModel {
         return orderName;
     }
 
-    private String toString(List<? extends TaskElement> tasks) {
-        List<String> result = new ArrayList<String>();
-        for (TaskElement each : tasks) {
-            result.add(each.getName());
-        }
-        return StringUtils.join(result, ",");
-    }
-
     private static class MonteCarloCalculation {
 
-        private Map<MonteCarloTask, Set<EstimationRange>> estimationRangesForTasks = new HashMap<MonteCarloTask, Set<EstimationRange>>();
+        private Map<MonteCarloTask, Set<EstimationRange>> estimationRangesForTasks = new HashMap<>();
 
         private List<MonteCarloTask> tasks;
 
@@ -243,8 +239,9 @@ public class MonteCarloModel implements IMonteCarloModel {
         private IDesktopUpdatesEmitter<Integer> iterationProgress;
 
         public MonteCarloCalculation(List<MonteCarloTask> tasks,
-                int iterations,
-                IDesktopUpdatesEmitter<Integer> iterationProgress) {
+                                     int iterations,
+                                     IDesktopUpdatesEmitter<Integer> iterationProgress) {
+
             adjustDurationDays(tasks);
             initializeEstimationRanges(tasks);
             this.tasks = tasks;
@@ -253,17 +250,21 @@ public class MonteCarloModel implements IMonteCarloModel {
         }
 
         public Map<LocalDate, BigDecimal> doCalculation() {
-            Map<LocalDate, BigDecimal> result = new HashMap<LocalDate, BigDecimal>();
+            Map<LocalDate, BigDecimal> result = new HashMap<>();
 
-            final int ONE_PERCENT = iterations / 100;
+            final int onePercent = iterations / 100;
             Random randomGenerator = new Random((new Date()).getTime());
+
             // Calculate number of times a date is repeated
             for (int i = 0; i < iterations; i++) {
                 LocalDate endDate = calculateEndDateFor(tasks, randomGenerator);
                 BigDecimal times = result.get(endDate);
+
                 times = times != null ? times.add(BigDecimal.ONE) : BigDecimal.ONE;
+
                 result.put(endDate, times);
-                if (i % ONE_PERCENT == 0) {
+
+                if (i % onePercent == 0) {
                     increaseProgressMeter((i * 100) / iterations);
                 }
             }
@@ -275,8 +276,7 @@ public class MonteCarloModel implements IMonteCarloModel {
             iterationProgress.doUpdate(completedPercent);
         }
 
-        private LocalDate calculateEndDateFor(List<MonteCarloTask> tasks,
-                Random randomGenerator) {
+        private LocalDate calculateEndDateFor(List<MonteCarloTask> tasks, Random randomGenerator) {
             Validate.notEmpty(tasks);
             BigDecimal durationDays = BigDecimal.ZERO;
             MonteCarloTask first = tasks.get(0);
@@ -285,6 +285,7 @@ public class MonteCarloModel implements IMonteCarloModel {
                 BigDecimal randomNumber = generate(randomGenerator);
                 durationDays = durationDays.add(getDuration(each, randomNumber));
             }
+
             return first.getStartDate().plusDays(durationDays.intValue());
         }
 
@@ -296,53 +297,56 @@ public class MonteCarloModel implements IMonteCarloModel {
             ESTIMATION_TYPE type = getEstimationType(each, random);
             Validate.notNull(type);
             switch (type) {
-            case PESSIMISTIC:
-                BigDecimal duration = each.getPessimisticDuration();
-                return duration;
-            case NORMAL:
-                return each.getNormalDuration();
-            case OPTIMISTIC:
-                return each.getOptimisticDuration();
+
+                case PESSIMISTIC:
+                    return each.getPessimisticDuration();
+
+                case NORMAL:
+                    return each.getNormalDuration();
+
+                case OPTIMISTIC:
+                    return each.getOptimisticDuration();
+
+                default:
+                    break;
             }
+
             return BigDecimal.ZERO;
         }
 
         private void adjustDurationDays(List<MonteCarloTask> tasks) {
             for (MonteCarloTask each : tasks) {
-                each.setPessimisticDuration(MonteCarloTask
-                        .calculateRealDurationFor(each,
-                                each.getPessimisticDuration()));
-                each.setNormalDuration(MonteCarloTask.calculateRealDurationFor(
-                        each, each.getNormalDuration()));
-                each.setOptimisticDuration(MonteCarloTask.calculateRealDurationFor(
-                        each, each.getOptimisticDuration()));
+                each.setPessimisticDuration(MonteCarloTask.calculateRealDurationFor(each, each.getPessimisticDuration()));
+                each.setNormalDuration(MonteCarloTask.calculateRealDurationFor(each, each.getNormalDuration()));
+                each.setOptimisticDuration(MonteCarloTask.calculateRealDurationFor(each, each.getOptimisticDuration()));
             }
         }
 
         private void initializeEstimationRanges(List<MonteCarloTask> tasks) {
             estimationRangesForTasks.clear();
+
             for (MonteCarloTask each : tasks) {
                 createEstimationRangesFor(each);
             }
         }
 
         private void createEstimationRangesFor(MonteCarloTask task) {
-            Set<EstimationRange> estimationRanges = new HashSet<EstimationRange>();
+            Set<EstimationRange> estimationRanges = new HashSet<>();
             estimationRanges.add(EstimationRange.pessimisticRangeFor(task));
             estimationRanges.add(EstimationRange.normalRangeFor(task));
             estimationRanges.add(EstimationRange.optimisticRangeFor(task));
             estimationRangesForTasks.put(task, estimationRanges);
         }
 
-        public ESTIMATION_TYPE getEstimationType(MonteCarloTask task,
-                BigDecimal random) {
-            Set<EstimationRange> estimationRanges = estimationRangesForTasks
-                    .get(task);
+        public ESTIMATION_TYPE getEstimationType(MonteCarloTask task, BigDecimal random) {
+            Set<EstimationRange> estimationRanges = estimationRangesForTasks.get(task);
+
             for (EstimationRange each : estimationRanges) {
                 if (each.contains(random)) {
                     return each.getEstimationType();
                 }
             }
+
             return null;
         }
 

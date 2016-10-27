@@ -1,4 +1,3 @@
-
 /* Work reports */
 .listWorkReportLines  td.z-row-inner,
 .listWorkReportLines td.z-group-foot-inner {
@@ -46,11 +45,16 @@
     width:90% !important;
 }
 
-.listWorkReportLines .z-combobox-inp,
+.listWorkReportLines .z-combobox-input,
 .listWorkReportLines .z-datebox,
-.listWorkReportLines .z-datebox-inp,
-.listWorkReportLines .z-datebox-focus .z-datebox-inp {
+.listWorkReportLines .z-datebox-input,
+.listWorkReportLines .z-datebox-focus .z-datebox-input {
     width:80% !important;
+}
+
+.listWorkReportLines .z-grid-header > table,
+.listWorkReportLines .z-grid-body > table {
+    width: 100% !important;
 }
 
 .z-tabpanel {

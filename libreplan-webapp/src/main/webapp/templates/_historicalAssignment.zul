@@ -19,42 +19,42 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <zk>
-<zscript><![CDATA[
+    <zscript><![CDATA[
     historicalAssignment = self;
 ]]>
-</zscript>
-<vbox>
-    <!-- Order element historic assignment to templates-->
+    </zscript>
     <vbox>
-        <vbox id="messagesContainerHistoricAssignment" />
-        <panel title="${i18n:_('Assignment log')}" border="normal">
-            <panelchildren>
-                <grid height="200px" fixedLayout="true"
-                    model="@{historicalAssignment.orderElementsWithThisAssignedTemplate}">
-                    <columns>
-                        <column label="${i18n:_('Project code')}" sort="orderCode" sortDirection="descending"/>
-                        <column label="${i18n:_('Project Name')}" width="250px" sort="auto(name)" sortDirection="descending"/>
-                        <column label="${i18n:_('Task code')}" sort="auto(orderElementCode)" />
-                        <column label="${i18n:_('Task name')}" sort="auto(orderElementName)" />
-                        <column label="${i18n:_('Estimated hours')}" />
-                        <column label="${i18n:_('Worked hours')}" />
-                        <column label="${i18n:_('Operations')}" align="center" width="100px" />
-                    </columns>
-                    <rows>
-                         <row self="@{each='orderElementDTO'}" value="@{orderElementDTO}">
-                            <label value="@{orderElementDTO.orderCode}"/>
-                            <label value="@{orderElementDTO.name}"/>
-                            <label value="@{orderElementDTO.orderElementCode}"/>
-                            <label value="@{orderElementDTO.orderElementName}"/>
-                            <label value="@{orderElementDTO.estimatedHours}"/>
-                            <label value="@{orderElementDTO.workedHours}"/>
-                            <button label="${i18n:_('View')}"
-                                onClick="historicalAssignment.view(self.parent.value);"/>
-                         </row>
-                    </rows>
-                </grid>
-            </panelchildren>
-        </panel>
+        <!-- Order element historic assignment to templates-->
+        <vbox>
+            <vbox id="messagesContainerHistoricAssignment" />
+            <panel title="${i18n:_('Assignment log')}" border="normal">
+                <panelchildren>
+                    <grid height="200px" fixedLayout="true" sclass="margin-border"
+                          model="@{historicalAssignment.orderElementsWithThisAssignedTemplate}">
+                        <columns>
+                            <column label="${i18n:_('Project code')}" sort="orderCode" sortDirection="descending"/>
+                            <column label="${i18n:_('Project Name')}" width="250px" sort="auto(name)" sortDirection="descending"/>
+                            <column label="${i18n:_('Task code')}" sort="auto(orderElementCode)" />
+                            <column label="${i18n:_('Task name')}" sort="auto(orderElementName)" />
+                            <column label="${i18n:_('Estimated hours')}" />
+                            <column label="${i18n:_('Worked hours')}" />
+                            <column label="${i18n:_('Operations')}" align="center" width="100px" />
+                        </columns>
+                        <rows>
+                            <row self="@{each='orderElementDTO'}" value="@{orderElementDTO}">
+                                <label value="@{orderElementDTO.orderCode}"/>
+                                <label value="@{orderElementDTO.name}"/>
+                                <label value="@{orderElementDTO.orderElementCode}"/>
+                                <label value="@{orderElementDTO.orderElementName}"/>
+                                <label value="@{orderElementDTO.estimatedHours}"/>
+                                <label value="@{orderElementDTO.workedHours}"/>
+                                <button label="${i18n:_('View')}"
+                                        onClick="historicalAssignment.view(self.parent.value);"/>
+                            </row>
+                        </rows>
+                    </grid>
+                </panelchildren>
+            </panel>
+        </vbox>
     </vbox>
-</vbox>
 </zk>

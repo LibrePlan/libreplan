@@ -37,13 +37,9 @@ import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
  * @author Cristina Alvarino Perez <cristina.alvarino@comtecsf.es>
  * @author Ignacio Diaz Teijido <ignacio.diaz@comtecsf.es>
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
- * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
 public class Configuration extends BaseEntity {
-
-    public static Configuration create() {
-        return create(new Configuration());
-    }
 
     private BaseCalendar defaultCalendar;
 
@@ -111,6 +107,7 @@ public class Configuration extends BaseEntity {
      * Currency code according to ISO-4217 (3 letters)
      */
     private String currencyCode = "EUR";
+
     private String currencySymbol = "€";
 
     private TypeOfWorkHours personalTimesheetsTypeOfWorkHours;
@@ -137,6 +134,10 @@ public class Configuration extends BaseEntity {
 
     private String repositoryLocation;
 
+    public static Configuration create() {
+        return create(new Configuration());
+    }
+
 
     public void setDefaultCalendar(BaseCalendar defaultCalendar) {
         this.defaultCalendar = defaultCalendar;
@@ -151,6 +152,7 @@ public class Configuration extends BaseEntity {
         if (companyCode != null) {
             companyCode = companyCode.trim();
         }
+
         this.companyCode = companyCode;
     }
 
@@ -161,53 +163,30 @@ public class Configuration extends BaseEntity {
 
     @AssertTrue(message = "company code cannot contain whitespaces")
     public boolean isCompanyCodeWithoutWhiteSpacesConstraint() {
-        if ((companyCode == null) || (companyCode.isEmpty())) {
-            return false;
-        }
-        return !companyCode.contains(" ");
+        return !((companyCode == null) || (companyCode.isEmpty())) && !companyCode.contains(" ");
     }
 
     @AssertTrue(message = "host not specified")
     public boolean isLdapHostWithoutWhiteSpacesConstraint() {
-        if (getLdapConfiguration().getLdapAuthEnabled()) {
-            if (StringUtils.isBlank(getLdapConfiguration().getLdapHost())) {
-                return false;
-            }
-        }
-        return true;
+        return !getLdapConfiguration().getLdapAuthEnabled() || !StringUtils.isBlank(getLdapConfiguration().getLdapHost());
+
     }
 
     @AssertTrue(message = "port not specified")
     public boolean isLdapPortWithoutWhiteSpacesConstraint() {
-        if (getLdapConfiguration().getLdapAuthEnabled()) {
-            if (StringUtils.isBlank(getLdapConfiguration().getLdapPort())) {
-                return false;
-            }
-        }
-        return true;
+        return !getLdapConfiguration().getLdapAuthEnabled() || !StringUtils.isBlank(getLdapConfiguration().getLdapPort());
     }
 
     @AssertTrue(message = "base not specified")
     public boolean isLdapBaseWithoutWhiteSpacesConstraint() {
-        if (getLdapConfiguration().getLdapAuthEnabled()) {
-            if (StringUtils.isBlank(getLdapConfiguration().getLdapBase())) {
-                return false;
-            }
-        }
-        return true;
+        return !getLdapConfiguration().getLdapAuthEnabled() || !StringUtils.isBlank(getLdapConfiguration().getLdapBase());
     }
 
     @AssertTrue(message = "userId not specified")
     public boolean isLdapUserIdWithoutWhiteSpacesConstraint() {
-        if (getLdapConfiguration().getLdapAuthEnabled()) {
-            if (StringUtils.isBlank(getLdapConfiguration().getLdapUserId())) {
-                return false;
-            }
-        }
-        return true;
+        return !getLdapConfiguration().getLdapAuthEnabled() || !StringUtils.isBlank(getLdapConfiguration().getLdapUserId());
     }
 
-    //TODO 2 added methods follow below
     public void setGeneratedCodeForProjectLog(Boolean generateCodeForProjectLog) {
         this.generateCodeForProjectLog = generateCodeForProjectLog;
     }
@@ -245,8 +224,7 @@ public class Configuration extends BaseEntity {
         return generateCodeForResources;
     }
 
-    public void setGenerateCodeForTypesOfWorkHours(
-            Boolean generateCodeForTypesOfWorkHours) {
+    public void setGenerateCodeForTypesOfWorkHours(Boolean generateCodeForTypesOfWorkHours) {
         this.generateCodeForTypesOfWorkHours = generateCodeForTypesOfWorkHours;
     }
 
@@ -254,8 +232,7 @@ public class Configuration extends BaseEntity {
         return generateCodeForTypesOfWorkHours;
     }
 
-    public void setGenerateCodeForMaterialCategories(
-            Boolean generateCodeForMaterialCategories) {
+    public void setGenerateCodeForMaterialCategories(Boolean generateCodeForMaterialCategories) {
         this.generateCodeForMaterialCategories = generateCodeForMaterialCategories;
     }
 
@@ -287,8 +264,7 @@ public class Configuration extends BaseEntity {
         this.scenariosVisible = scenariosVisible;
     }
 
-    public void setGenerateCodeForBaseCalendars(
-            Boolean generateCodeForBaseCalendars) {
+    public void setGenerateCodeForBaseCalendars(Boolean generateCodeForBaseCalendars) {
         this.generateCodeForBaseCalendars = generateCodeForBaseCalendars;
     }
 
@@ -296,8 +272,7 @@ public class Configuration extends BaseEntity {
         return generateCodeForBaseCalendars;
     }
 
-    public void setGenerateCodeForWorkReportType(
-            Boolean generateCodeForWorkReportType) {
+    public void setGenerateCodeForWorkReportType(Boolean generateCodeForWorkReportType) {
         this.generateCodeForWorkReportType = generateCodeForWorkReportType;
     }
 
@@ -305,8 +280,7 @@ public class Configuration extends BaseEntity {
         return generateCodeForWorkReportType;
     }
 
-    public void setGenerateCodeForCalendarExceptionType(
-            Boolean generateCodeForCalendarExceptionType) {
+    public void setGenerateCodeForCalendarExceptionType(Boolean generateCodeForCalendarExceptionType) {
         this.generateCodeForCalendarExceptionType = generateCodeForCalendarExceptionType;
     }
 
@@ -314,8 +288,7 @@ public class Configuration extends BaseEntity {
         return this.generateCodeForCalendarExceptionType;
     }
 
-    public void setGenerateCodeForCostCategory(
-            Boolean generateCodeForCostCategory) {
+    public void setGenerateCodeForCostCategory(Boolean generateCodeForCostCategory) {
         this.generateCodeForCostCategory = generateCodeForCostCategory;
     }
 
@@ -336,14 +309,14 @@ public class Configuration extends BaseEntity {
     }
 
     public ProgressType getProgressType() {
-        return (progressType == null) ? ProgressType.SPREAD_PROGRESS
-                : progressType;
+        return (progressType == null) ? ProgressType.SPREAD_PROGRESS : progressType;
     }
 
     public void setCompanyLogoURL(String companyLogoURL) {
         if (companyLogoURL != null) {
             companyLogoURL = companyLogoURL.trim();
         }
+
         this.companyLogoURL = companyLogoURL;
     }
 
@@ -351,84 +324,68 @@ public class Configuration extends BaseEntity {
         return companyLogoURL;
     }
 
-    public void setChangedDefaultAdminPassword(
-            Boolean changedDefaultAdminPassword) {
+    public void setChangedDefaultAdminPassword(Boolean changedDefaultAdminPassword) {
         this.changedDefaultAdminPassword = changedDefaultAdminPassword;
     }
 
     public Boolean getChangedDefaultAdminPassword() {
-        return changedDefaultAdminPassword == null ? false
-                : changedDefaultAdminPassword;
+        return changedDefaultAdminPassword == null ? false : changedDefaultAdminPassword;
     }
 
-    public void setChangedDefaultWsreaderPassword(
-            Boolean changedDefaultWsreaderPassword) {
+    public void setChangedDefaultWsreaderPassword(Boolean changedDefaultWsreaderPassword) {
         this.changedDefaultWsreaderPassword = changedDefaultWsreaderPassword;
     }
 
     public Boolean getChangedDefaultWsreaderPassword() {
-        return changedDefaultWsreaderPassword != null ? changedDefaultWsreaderPassword
-                : false;
+        return changedDefaultWsreaderPassword != null ? changedDefaultWsreaderPassword : false;
     }
 
-    public void setChangedDefaultWswriterPassword(
-            Boolean changedDefaultWswriterPassword) {
+    public void setChangedDefaultWswriterPassword(Boolean changedDefaultWswriterPassword) {
         this.changedDefaultWswriterPassword = changedDefaultWswriterPassword;
     }
 
     public Boolean getChangedDefaultWswriterPassword() {
-        return changedDefaultWswriterPassword != null ? changedDefaultWswriterPassword
-                : false;
+        return changedDefaultWswriterPassword != null ? changedDefaultWswriterPassword : false;
     }
 
-    public void setChangedDefaultWssubcontractingPassword(
-            Boolean changedDefaultWssubcontractingPassword) {
+    public void setChangedDefaultWssubcontractingPassword(Boolean changedDefaultWssubcontractingPassword) {
         this.changedDefaultWssubcontractingPassword = changedDefaultWssubcontractingPassword;
     }
 
     public Boolean getChangedDefaultWssubcontractingPassword() {
-        return changedDefaultWssubcontractingPassword != null ? changedDefaultWssubcontractingPassword
-                : false;
+        return changedDefaultWssubcontractingPassword != null ? changedDefaultWssubcontractingPassword : false;
     }
 
-    public void setChangedDefaultManagerPassword(
-            Boolean changedDefaultManagerPassword) {
+    public void setChangedDefaultManagerPassword(Boolean changedDefaultManagerPassword) {
         this.changedDefaultManagerPassword = changedDefaultManagerPassword;
     }
 
     public Boolean getChangedDefaultManagerPassword() {
-        return changedDefaultManagerPassword != null ? changedDefaultManagerPassword
-                : false;
+        return changedDefaultManagerPassword != null ? changedDefaultManagerPassword : false;
     }
 
-    public void setChangedDefaultHresourcesPassword(
-            Boolean changedDefaultHresourcesPassword) {
+    public void setChangedDefaultHresourcesPassword(Boolean changedDefaultHresourcesPassword) {
         this.changedDefaultHresourcesPassword = changedDefaultHresourcesPassword;
     }
 
     public Boolean getChangedDefaultHresourcesPassword() {
-        return changedDefaultHresourcesPassword != null ? changedDefaultHresourcesPassword
-                : false;
+        return changedDefaultHresourcesPassword != null ? changedDefaultHresourcesPassword : false;
     }
 
-    public void setChangedDefaultOutsourcingPassword(
-            Boolean changedDefaultOutsourcingPassword) {
+    public void setChangedDefaultOutsourcingPassword(Boolean changedDefaultOutsourcingPassword) {
         this.changedDefaultOutsourcingPassword = changedDefaultOutsourcingPassword;
     }
 
     public Boolean getChangedDefaultOutsourcingPassword() {
-        return changedDefaultOutsourcingPassword != null ? changedDefaultOutsourcingPassword
-                : false;
+        return changedDefaultOutsourcingPassword != null ? changedDefaultOutsourcingPassword : false;
     }
 
-    public void setChangedDefaultReportsPassword(
-            Boolean changedDefaultReportsPassword) {
+    public void setChangedDefaultReportsPassword(Boolean changedDefaultReportsPassword) {
         this.changedDefaultReportsPassword = changedDefaultReportsPassword;
     }
 
     public Boolean getChangedDefaultReportsPassword() {
-        return changedDefaultReportsPassword != null ? changedDefaultReportsPassword
-                : false;
+        return changedDefaultReportsPassword != null ? changedDefaultReportsPassword : false;
     }
 
     public LDAPConfiguration getLdapConfiguration() {
@@ -455,13 +412,11 @@ public class Configuration extends BaseEntity {
         this.checkNewVersionEnabled = checkNewVersionEnabled;
     }
 
-    public boolean isAllowToGatherUsageStatsEnabled() {
-        return allowToGatherUsageStatsEnabled != null ? allowToGatherUsageStatsEnabled
-                : false;
+    public boolean isAllowedToGatherUsageStatsEnabled() {
+        return allowToGatherUsageStatsEnabled != null ? allowToGatherUsageStatsEnabled : false;
     }
 
-    public void setAllowToGatherUsageStatsEnabled(
-            boolean allowToGatherUsageStatsEnabled) {
+    public void setAllowToGatherUsageStatsEnabled(boolean allowToGatherUsageStatsEnabled) {
         this.allowToGatherUsageStatsEnabled = allowToGatherUsageStatsEnabled;
     }
 
@@ -487,8 +442,7 @@ public class Configuration extends BaseEntity {
         return personalTimesheetsTypeOfWorkHours;
     }
 
-    public void setPersonalTimesheetsTypeOfWorkHours(
-            TypeOfWorkHours typeOfWorkHours) {
+    public void setPersonalTimesheetsTypeOfWorkHours(TypeOfWorkHours typeOfWorkHours) {
         personalTimesheetsTypeOfWorkHours = typeOfWorkHours;
     }
 
@@ -504,8 +458,7 @@ public class Configuration extends BaseEntity {
         return personalTimesheetsPeriodicity;
     }
 
-    public void setPersonalTimesheetsPeriodicity(
-            PersonalTimesheetsPeriodicityEnum personalTimesheetsPeriodicity) {
+    public void setPersonalTimesheetsPeriodicity(PersonalTimesheetsPeriodicityEnum personalTimesheetsPeriodicity) {
         this.personalTimesheetsPeriodicity = personalTimesheetsPeriodicity;
     }
 
@@ -538,6 +491,7 @@ public class Configuration extends BaseEntity {
     public String getRepositoryLocation() {
         return repositoryLocation;
     }
+
     public void setRepositoryLocation(String repositoryLocation) {
         this.repositoryLocation = repositoryLocation;
     }

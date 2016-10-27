@@ -17,6 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.libreplan.web.resourceload;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -36,22 +37,21 @@ public class ResourceLoadParameters {
     private boolean filterByResources = true;
 
     /**
-     * Contains the resources to be shown when specified manually using the
-     * Bandbox
+     * Contains the resources to be shown when specified manually using the BandBox.
      */
-    private List<Resource> resourcesToShowList = new ArrayList<Resource>();
+    private List<Resource> resourcesToShowList = new ArrayList<>();
 
     /**
-     * Contains the criteria to be shown when specified manually using the
-     * Bandbox
+     * Contains the criteria to be shown when specified manually using the BandBox
      */
-    private List<Criterion> criteriaToShowList = new ArrayList<Criterion>();
+    private List<Criterion> criteriaToShowList = new ArrayList<>();
 
     private LocalDate initDateFilter;
 
     private LocalDate endDateFilter;
 
     private int pageFilterPosition = 0;
+
     private int pageSize = 10;
 
     public ResourceLoadParameters(PlanningState planningState) {
@@ -105,47 +105,45 @@ public class ResourceLoadParameters {
         criteriaToShowList.addAll(criteriaList);
     }
 
-    public <T> Paginator<T> getEntities(Class<T> type,
-            Callable<List<T>> allEntities, IReattacher<T> reattacher) {
+    public <T> Paginator<T> getEntities(Class<T> type, Callable<List<T>> allEntities, IReattacher<T> reattacher) {
+
         Validate.isTrue(
                 type.equals(Resource.class) || type.equals(Criterion.class),
-                "only " + Resource.class.getSimpleName() + " and "
-                        + Criterion.class.getSimpleName() + " supported");
+                "only " + Resource.class.getSimpleName() + " and " + Criterion.class.getSimpleName() + " supported");
+
         if (type.equals(Resource.class)) {
-            return buildPaginator(listOfType(type, resourcesToShowList),
-                    allEntities, reattacher);
+            return buildPaginator(listOfType(type, resourcesToShowList), allEntities, reattacher);
         } else {
-            return buildPaginator(listOfType(type, criteriaToShowList),
-                    allEntities, reattacher);
+            return buildPaginator(listOfType(type, criteriaToShowList), allEntities, reattacher);
         }
     }
 
     private <T> List<T> listOfType(Class<T> klass, Collection<?> objects) {
-        List<T> result = new ArrayList<T>();
+        List<T> result = new ArrayList<>();
         for (Object each : objects) {
             result.add(klass.cast(each));
         }
         return result;
     }
 
-    private <T> Paginator<T> buildPaginator(List<T> selected,
-            Callable<List<T>> all,
-            IReattacher<T> reattacher) {
-        if (selected == null || selected.isEmpty()) {
-            return paginateAll(all);
-        }
+    private <T> Paginator<T> buildPaginator(List<T> selected, Callable<List<T>> all, IReattacher<T> reattacher) {
         List<T> reattached = reattach(selected, reattacher);
-        return new Paginator<T>(reattached, pageSize, reattached);
+
+        return selected == null || selected.isEmpty()
+                ? paginateAll(all)
+                : new Paginator<>(reattached, pageSize, reattached);
     }
 
     private <T> Paginator<T> paginateAll(Callable<List<T>> allCallable) {
         List<T> allEntities = call(allCallable);
-        if (pageFilterPosition == -1) {
-            return new Paginator<T>(allEntities, pageSize, allEntities);
-        }
-        List<T> page = allEntities.subList(pageFilterPosition,
-                Math.min(pageFilterPosition + pageSize, allEntities.size()));
-        return new Paginator<T>(page, pageSize, allEntities);
+
+        return pageFilterPosition == -1
+                ? new Paginator<>(allEntities, pageSize, allEntities)
+                : new Paginator<>(
+                allEntities.subList(
+                        pageFilterPosition, Math.min(pageFilterPosition + pageSize, allEntities.size())),
+                pageSize,
+                allEntities);
     }
 
     private static <T> T call(Callable<T> all) {
@@ -157,7 +155,7 @@ public class ResourceLoadParameters {
     }
 
     private <T> List<T> reattach(List<T> list, IReattacher<T> reattacher) {
-        List<T> result = new ArrayList<T>();
+        List<T> result = new ArrayList<>();
         for (T each : list) {
             result.add(reattacher.reattach(each));
         }
@@ -176,8 +174,7 @@ public class ResourceLoadParameters {
 
         private final List<T> allEntities;
 
-        private Paginator(List<T> forCurrentPage, int pageSize,
-                List<T> allEntities) {
+        private Paginator(List<T> forCurrentPage, int pageSize, List<T> allEntities) {
             this.forCurrentPage = forCurrentPage;
             this.pageSize = pageSize;
             this.allEntities = allEntities;

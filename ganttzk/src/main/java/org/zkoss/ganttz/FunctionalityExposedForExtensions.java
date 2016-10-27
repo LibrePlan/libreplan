@@ -50,7 +50,7 @@ import org.zkoss.ganttz.data.TaskLeaf;
 import org.zkoss.ganttz.data.criticalpath.CriticalPathCalculator;
 import org.zkoss.ganttz.extensions.IContext;
 import org.zkoss.ganttz.timetracker.TimeTracker;
-import org.zkoss.ganttz.timetracker.zoom.IDetailItemModificator;
+import org.zkoss.ganttz.timetracker.zoom.IDetailItemModifier;
 import org.zkoss.ganttz.timetracker.zoom.TimeTrackerState;
 import org.zkoss.ganttz.util.Interval;
 import org.zkoss.zk.ui.Component;
@@ -174,11 +174,17 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
     }
 
     private final Planner planner;
+
     private final IAdapterToTaskFundamentalProperties<T> adapter;
+
     private final IStructureNavigator<T> navigator;
-    private final OneToOneMapper<T> mapper = new OneToOneMapper<T>();
+
+    private final OneToOneMapper<T> mapper = new OneToOneMapper<>();
+
     private final GanttZKDiagramGraph diagramGraph;
+
     private TimeTracker timeTracker;
+
     private final PlannerConfiguration<T> configuration;
 
     public FunctionalityExposedForExtensions(
@@ -190,8 +196,8 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
         this.navigator = configuration.getNavigator();
         this.diagramGraph = diagramGraph;
 
-        final IDetailItemModificator firstLevelModificators = configuration.getFirstLevelModificators();
-        final IDetailItemModificator secondLevelModificators = configuration.getSecondLevelModificators();
+        final IDetailItemModifier firstLevelModifiers = configuration.getFirstLevelModifiers();
+        final IDetailItemModifier secondLevelModifiers = configuration.getSecondLevelModifiers();
 
         Calendar calendarRightNow = Calendar.getInstance();
         LocalDate localDateRightNow = LocalDate.fromCalendarFields(calendarRightNow);
@@ -201,19 +207,18 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
         this.timeTracker = new TimeTracker(
                 new Interval(TimeTrackerState.year(initDate.getYear()), TimeTrackerState.year(endDate.getYear())),
                 planner.getZoomLevel(),
-                firstLevelModificators,
-                secondLevelModificators,
+                firstLevelModifiers,
+                secondLevelModifiers,
                 planner);
     }
 
     /**
-     * @param insertionPosition the position in which to register the task at top level.
+     * @param position the position in which to register the task at top level.
      *                          It can be <code>null</code>
      * @param accumulatedDependencies
      * @param data
-     * @param parent
      *
-     * @return
+     * @return {@link Task}
      */
     private Task buildAndRegister(Position position, List<DomainDependency<T>> accumulatedDependencies, T data) {
         accumulatedDependencies.addAll(adapter.getOutcomingDependencies(data));
@@ -226,8 +231,7 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
             int i = 0;
 
             for (T child : navigator.getChildren(data)) {
-                container.add(buildAndRegister(position.down(container, i),
-                        accumulatedDependencies, child));
+                container.add(buildAndRegister(position.down(container, i), accumulatedDependencies, child));
                 i++;
             }
 
@@ -349,9 +353,8 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
     private DomainDependency<T> toDomainDependency(Dependency bean) {
         T source = mapper.findAssociatedDomainObject(bean.getSource());
         T destination = mapper.findAssociatedDomainObject(bean.getDestination());
-        DomainDependency<T> dep = DomainDependency.createDependency(source, destination, bean.getType());
 
-        return dep;
+        return DomainDependency.createDependency(source, destination, bean.getType());
     }
 
     public void addDependency(Dependency dependency) {
@@ -383,9 +386,8 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
     }
 
     /**
-     * Substitutes the dependency for a new one with the same source and
-     * destination but with the specified type. If the new dependency cannot be
-     * added, the old one remains.
+     * Substitutes the dependency for a new one with the same source and destination but with the specified type.
+     * If the new dependency cannot be added, the old one remains.
      *
      * @param dependency
      * @param type

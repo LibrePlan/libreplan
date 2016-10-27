@@ -66,13 +66,13 @@ public class HoursWorkedPerWorkerModel implements IHoursWorkedPerWorkerModel {
     @Autowired
     private ICriterionTypeDAO criterionTypeDAO;
 
-    private Set<Resource> selectedResources = new HashSet<Resource>();
+    private Set<Resource> selectedResources = new HashSet<>();
 
-    private List<Label> selectedLabels = new ArrayList<Label>();
+    private List<Label> selectedLabels = new ArrayList<>();
 
-    private List<Criterion> selectedCriterions = new ArrayList<Criterion>();
+    private List<Criterion> selectedCriterions = new ArrayList<>();
 
-    private List<Criterion> allCriterions = new ArrayList<Criterion>();
+    private List<Criterion> allCriterions = new ArrayList<>();
 
     private String selectedCriteria;
 
@@ -82,7 +82,7 @@ public class HoursWorkedPerWorkerModel implements IHoursWorkedPerWorkerModel {
 
     private boolean hasChangeLabels = false;
 
-    private static List<ResourceEnum> applicableResources = new ArrayList<ResourceEnum>();
+    private static List<ResourceEnum> applicableResources = new ArrayList<>();
 
     static {
         applicableResources.add(ResourceEnum.WORKER);
@@ -92,20 +92,23 @@ public class HoursWorkedPerWorkerModel implements IHoursWorkedPerWorkerModel {
 
     @Transactional(readOnly = true)
     public JRDataSource getHoursWorkedPerWorkerReport(List<Resource> resources,
-            List<Label> labels, LabelFilterType labelFilterType,
-            List<Criterion> criterions, Date startingDate,
-            Date endingDate) {
+                                                      List<Label> labels,
+                                                      LabelFilterType labelFilterType,
+                                                      List<Criterion> criterions,
+                                                      Date startingDate,
+                                                      Date endingDate) {
 
-        final List<HoursWorkedPerResourceDTO> workingHoursPerWorkerList = resourceDAO
-                .getWorkingHoursPerWorker(resources, labels, labelFilterType,
-                        criterions, startingDate, endingDate);
+        final List<HoursWorkedPerResourceDTO> workingHoursPerWorkerList = resourceDAO.getWorkingHoursPerWorker(
+                resources, labels, labelFilterType, criterions, startingDate, endingDate);
 
-        if (workingHoursPerWorkerList != null && !workingHoursPerWorkerList.isEmpty()) {
+        if ( workingHoursPerWorkerList != null && !workingHoursPerWorkerList.isEmpty() ) {
             Collections.sort(workingHoursPerWorkerList);
             setShowReportMessage(false);
+
             return new JRBeanCollectionDataSource(workingHoursPerWorkerList);
         } else {
             setShowReportMessage(true);
+
             return new JREmptyDataSource();
         }
     }
@@ -133,14 +136,14 @@ public class HoursWorkedPerWorkerModel implements IHoursWorkedPerWorkerModel {
 
     @Override
     public boolean addSelectedResource(Resource resource) {
-        if (this.selectedResources.contains(resource)) {
+        if ( this.selectedResources.contains(resource) )
             return false;
-        }
+
         this.selectedResources.add(resource);
         return true;
     }
 
-    public void setShowReportMessage(boolean showReportMessage) {
+    void setShowReportMessage(boolean showReportMessage) {
         this.showReportMessage = showReportMessage;
     }
 
@@ -153,11 +156,13 @@ public class HoursWorkedPerWorkerModel implements IHoursWorkedPerWorkerModel {
     @Transactional(readOnly = true)
     public List<Label> getAllLabels(){
         List<Label> allLabels = labelDAO.getAll();
-        // initialize the labels
+
+        /* Initialize the labels */
         for (Label label : allLabels) {
             label.getType().getName();
         }
         Collections.sort(allLabels);
+
         return allLabels;
     }
 
@@ -169,11 +174,12 @@ public class HoursWorkedPerWorkerModel implements IHoursWorkedPerWorkerModel {
 
     @Override
     public boolean addSelectedLabel(Label label) {
-        if (this.selectedLabels.contains(label)) {
+        if ( this.selectedLabels.contains(label) ) {
             return false;
         }
         this.selectedLabels.add(label);
         hasChangeLabels = true;
+
         return true;
     }
 
@@ -185,24 +191,24 @@ public class HoursWorkedPerWorkerModel implements IHoursWorkedPerWorkerModel {
     @Override
     public List<Criterion> getCriterions() {
         Collections.sort(allCriterions);
+
         return this.allCriterions;
     }
 
     private void loadAllCriterions() {
         List<CriterionType> listTypes = getCriterionTypes();
         for (CriterionType criterionType : listTypes) {
-            if (criterionType.isEnabled()) {
+            if ( criterionType.isEnabled() ) {
                 Set<Criterion> listCriterion = getDirectCriterions(criterionType);
                 addCriterionWithItsType(listCriterion);
             }
         }
     }
 
-    private static Set<Criterion> getDirectCriterions(
-            CriterionType criterionType) {
-        Set<Criterion> criterions = new HashSet<Criterion>();
+    private static Set<Criterion> getDirectCriterions(CriterionType criterionType) {
+        Set<Criterion> criterions = new HashSet<>();
         for (Criterion criterion : criterionType.getCriterions()) {
-            if (criterion.getParent() == null) {
+            if ( criterion.getParent() == null ) {
                 criterions.add(criterion);
             }
         }
@@ -211,8 +217,7 @@ public class HoursWorkedPerWorkerModel implements IHoursWorkedPerWorkerModel {
 
     private void addCriterionWithItsType(Set<Criterion> children) {
         for (Criterion criterion : children) {
-            if (criterion.isActive()) {
-                // Add to the list
+            if ( criterion.isActive() ) {
                 allCriterions.add(criterion);
                 addCriterionWithItsType(criterion.getChildren());
             }
@@ -220,8 +225,7 @@ public class HoursWorkedPerWorkerModel implements IHoursWorkedPerWorkerModel {
     }
 
     private List<CriterionType> getCriterionTypes() {
-        return criterionTypeDAO
-                .getCriterionTypesByResources(applicableResources);
+        return criterionTypeDAO.getCriterionTypesByResources(applicableResources);
     }
 
     @Override
@@ -232,11 +236,12 @@ public class HoursWorkedPerWorkerModel implements IHoursWorkedPerWorkerModel {
 
     @Override
     public boolean addSelectedCriterion(Criterion criterion) {
-        if (this.selectedCriterions.contains(criterion)) {
+        if ( this.selectedCriterions.contains(criterion) ) {
             return false;
         }
         this.selectedCriterions.add(criterion);
         hasChangeCriteria = true;
+
         return true;
     }
 
@@ -250,17 +255,15 @@ public class HoursWorkedPerWorkerModel implements IHoursWorkedPerWorkerModel {
     }
 
     public String getSelectedLabel() {
-        if (hasChangeLabels) {
+        if ( hasChangeLabels ) {
             this.selectedLabel = null;
             Iterator<Label> iterator = this.selectedLabels.iterator();
-            if (iterator.hasNext()) {
-                this.selectedLabel = new String();
-                this.selectedLabel = this.selectedLabel.concat(iterator.next()
-                        .getName());
+            if ( iterator.hasNext() ) {
+                this.selectedLabel = "";
+                this.selectedLabel = this.selectedLabel.concat(iterator.next().getName());
             }
-            while (iterator.hasNext()) {
-                this.selectedLabel = this.selectedLabel.concat(", "
-                        + iterator.next().getName());
+            while ( iterator.hasNext() ) {
+                this.selectedLabel = this.selectedLabel.concat(", " + iterator.next().getName());
             }
             hasChangeLabels = false;
         }
@@ -272,20 +275,22 @@ public class HoursWorkedPerWorkerModel implements IHoursWorkedPerWorkerModel {
     }
 
     public String getSelectedCriteria() {
-        if (hasChangeCriteria) {
+        if ( hasChangeCriteria ) {
             this.selectedCriteria = null;
             Iterator<Criterion> iterator = this.selectedCriterions.iterator();
-            if (iterator.hasNext()) {
-                this.selectedCriteria = new String();
-                this.selectedCriteria = this.selectedCriteria.concat(iterator
-                        .next().getName());
+
+            if ( iterator.hasNext() ) {
+                this.selectedCriteria = "";
+                this.selectedCriteria = this.selectedCriteria.concat(iterator.next().getName());
             }
-            while (iterator.hasNext()) {
-                this.selectedCriteria = this.selectedCriteria.concat(", "
-                        + iterator.next().getName());
+
+            while ( iterator.hasNext() ) {
+                this.selectedCriteria = this.selectedCriteria.concat(", " + iterator.next().getName());
             }
+
             hasChangeCriteria = false;
         }
+
         return selectedCriteria;
     }
 

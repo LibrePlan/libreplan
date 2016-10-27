@@ -27,29 +27,28 @@ import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
 import org.libreplan.business.costcategories.entities.TypeOfWorkHoursBootstrap;
 import org.libreplan.business.workreports.entities.PredefinedWorkReportTypes;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Fills the attributes {@link Configuration#personalTimesheetsTypeOfWorkHours}
- * and {@link JiraConfiguration#jiraConnectorTypeOfWorkHours} with a default
- * values.<br />
+ * Fills the attributes {@link Configuration#personalTimesheetsTypeOfWorkHours} with a default values.
+ * <br />
  *
  * If possible it uses the "Default" {@link TypeOfWorkHours}, but if it doesn't
- * exist, it uses the first {@link TypeOfWorkHours} found.<br />
+ * exist, it uses the first {@link TypeOfWorkHours} found.
+ * <br />
  *
  * This bootstrap have to be executed after {@link ConfigurationBootstrap} and
- * {@link TypeOfWorkHoursBootstrap}, this is why it's marked with
- * {@link BootstrapOrder BootstrapOrder(1)}.
+ * {@link TypeOfWorkHoursBootstrap}, this is why it's marked with {@link BootstrapOrder BootstrapOrder(1)}.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 @Component
-@Scope("singleton")
+@Scope(BeanDefinition.SCOPE_SINGLETON)
 @BootstrapOrder(1)
-public class ConfigurationTypeOfWorkHoursBootstrap implements
-        IConfigurationTypeOfWorkHoursBootstrap {
+public class ConfigurationTypeOfWorkHoursBootstrap implements IConfigurationTypeOfWorkHoursBootstrap {
 
     @Autowired
     private IConfigurationDAO configurationDAO;
@@ -63,13 +62,10 @@ public class ConfigurationTypeOfWorkHoursBootstrap implements
         Configuration configuration = configurationDAO.getConfiguration();
 
         // TypeOfWorkHoursBootstrap creates the TypeOfWorkHours objects
-        // specified by PredefinedWorkReportTypes if there isn't any
-        // TypeOfWorkHours in the database
+        // specified by PredefinedWorkReportTypes if there isn't any TypeOfWorkHours in the database
         TypeOfWorkHours typeOfWorkHours;
         try {
-            typeOfWorkHours = typeOfWorkHoursDAO
-                    .findUniqueByName(PredefinedWorkReportTypes.DEFAULT
-                            .getName());
+            typeOfWorkHours = typeOfWorkHoursDAO.findUniqueByName(PredefinedWorkReportTypes.DEFAULT.getName());
         } catch (InstanceNotFoundException e) {
             typeOfWorkHours = typeOfWorkHoursDAO.findActive().get(0);
         }

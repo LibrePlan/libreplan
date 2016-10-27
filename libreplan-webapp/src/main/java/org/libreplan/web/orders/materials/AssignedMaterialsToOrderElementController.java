@@ -30,18 +30,23 @@ import org.libreplan.business.materials.entities.MaterialAssignment;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.TreeModel;
 
 /**
- * Controller for showing {@link OrderElement} assigned {@link Material}
+ * Controller for showing {@link OrderElement} assigned {@link Material}.
  *
  * @author Diego Pino García <dpino@igalia.com>
- *
  */
-public class AssignedMaterialsToOrderElementController extends
-        AssignedMaterialsController<OrderElement, MaterialAssignment> {
+public class AssignedMaterialsToOrderElementController
+        extends AssignedMaterialsController<OrderElement, MaterialAssignment> {
 
     private IAssignedMaterialsToOrderElementModel assignedMaterialsToOrderElementModel;
+
+    public AssignedMaterialsToOrderElementController() {
+        assignedMaterialsToOrderElementModel =
+                (IAssignedMaterialsToOrderElementModel) SpringUtil.getBean("assignedMaterialsToOrderElementModel");
+    }
 
     @Override
     protected IAssignedMaterialsModel<OrderElement, MaterialAssignment> getModel() {
@@ -50,8 +55,7 @@ public class AssignedMaterialsToOrderElementController extends
 
     @Override
     protected void createAssignmentsBoxComponent(Component parent) {
-        Executions.createComponents("/orders/_assignmentsBox.zul", parent,
-                new HashMap<String, String>());
+        Executions.createComponents("/orders/_assignmentsBox.zul", parent, new HashMap<String, String>());
     }
 
     @Override
@@ -59,10 +63,12 @@ public class AssignedMaterialsToOrderElementController extends
         assignedMaterialsToOrderElementModel.initEdit(orderElement);
     }
 
+    @Override
     public TreeModel getMaterialCategories() {
         return assignedMaterialsToOrderElementModel.getMaterialCategories();
     }
 
+    @Override
     public TreeModel getAllMaterialCategories() {
         return assignedMaterialsToOrderElementModel.getAllMaterialCategories();
     }
@@ -73,7 +79,7 @@ public class AssignedMaterialsToOrderElementController extends
 
         final OrderElement orderElement = getOrderElement();
         if (orderElement != null) {
-            result = result.add(orderElement.getTotalMaterialAssigmentUnits());
+            result = result.add(orderElement.getTotalMaterialAssignmentUnits());
         }
         return result;
     }
@@ -83,7 +89,7 @@ public class AssignedMaterialsToOrderElementController extends
 
         final OrderElement orderElement = getOrderElement();
         if (orderElement != null) {
-            result = orderElement.getTotalMaterialAssigmentPrice();
+            result = orderElement.getTotalMaterialAssignmentPrice();
         }
         return result.setScale(2, RoundingMode.HALF_UP);
     }

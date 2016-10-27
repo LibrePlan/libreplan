@@ -19,7 +19,7 @@ There are several mandatory parameters. They are:
 
    * **Reference date**. It is the date which is wanted to have as reference to make the comparison with the planned foreseen status of the project at that date with the real performance of the project at that date according. *The default value for this field is the current date*.
 
-   * **Progres type**. It is the progress type it is wanted to be used to measure the projects progress. In the application a project can be measured simultaneously with different progress types, and the one selected with the pulldown component by the user is the one used for calculating the report data. The default value for the *progress type* is *spread*, which is a special progress type consisting of using the preferred way of measuring the progress configured in each WBS element.
+   * **Progress type**. It is the progress type it is wanted to be used to measure the projects progress. In the application a project can be measured simultaneously with different progress types, and the one selected with the pulldown component by the user is the one used for calculating the report data. The default value for the *progress type* is *spread*, which is a special progress type consisting of using the preferred way of measuring the progress configured in each WBS element.
 
 With regard to the optional fields, they are the following:
 

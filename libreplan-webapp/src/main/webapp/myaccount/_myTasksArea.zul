@@ -17,33 +17,29 @@
   License along with this program.  If not, see
   <http://www.gnu.org/licenses/>.
  -->
+<!-- MvanMiddelkoop feb 2015 - changed columns, added description and budgeted hours -->
+<!-- MvanMiddelkoop feb 2015 - changed sorting to ascending sortDirection="descending" /-->
 
 <groupbox apply="org.libreplan.web.users.dashboard.MyTasksAreaController">
+
     <caption label="${i18n:_('My tasks')}" />
 
-    <grid model="@{controller.tasks}" mold="paging" sclass="clickable-rows"
-        pageSize="10" rowRenderer="@{controller.tasksRenderer}">
+    <grid model="@{controller.tasks}"
+          mold="paging" pageSize="10"
+          rowRenderer="@{controller.tasksRenderer}"
+          sclass="clickable-rows">
+
         <columns sizable="true">
-<!-- MvanMiddelkoop feb 2015 - changed columns, added description and budgeted hours -->
-            <column label="${i18n:_('Project')}"
-                sort="auto(orderElement.order.name)" />
-            <column width="200px" label="${i18n:_('Task')}"
-                sort="auto(task.name)" />
-            <column width="300px" label="${i18n:_('Description')}"
-                sort="auto(orderElement.description)" />
-            <column label="${i18n:_('Start date')}"
-                sort="auto(startDate)"/>
-<!-- MvanMiddelkoop feb 2015 - changed sorting to ascending                
-                sortDirection="descending" /-->
-            <column label="${i18n:_('End date')}"
-                sort="auto(endDate)" />
-            <column label="${i18n:_('Work budgeted')}"
-                sort="auto(task.sumOfAssignedEffort)" />
-            <column label="${i18n:_('Work done')}"
-                sort="auto(orderElement.sumChargedEffort.totalChargedEffort)" />
-            <column label="${i18n:_('Progress')}"
-                sort="auto(orderElement.advancePercentage)" />
+            <column label="${i18n:_('Project')}" sort="auto(orderElement.order.name)" />
+            <column width="200px" label="${i18n:_('Task')}" sort="auto(task.name)" />
+            <column width="300px" label="${i18n:_('Description')}" sort="auto(orderElement.description)" />
+            <column label="${i18n:_('Start date')}" sort="auto(startDate)"/>
+            <column label="${i18n:_('End date')}" sort="auto(endDate)" />
+            <column label="${i18n:_('Work budgeted')}" sort="auto(task.sumOfAssignedEffort)" />
+            <column label="${i18n:_('Work done')}" sort="auto(orderElement.sumChargedEffort.totalChargedEffort)" />
+            <column label="${i18n:_('Progress')}" sort="auto(orderElement.advancePercentage)" />
             <column label="${i18n:_('Operations')}" />
         </columns>
+
     </grid>
 </groupbox>

@@ -20,12 +20,6 @@
  */
 package org.libreplan.web.planner.reassign;
 
-import static org.libreplan.web.I18nHelper._;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-
 import org.joda.time.LocalDate;
 import org.libreplan.web.planner.reassign.ReassignCommand.IConfigurationResult;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -35,8 +29,6 @@ import org.zkoss.ganttz.timetracker.ICellForDetailItemRenderer;
 import org.zkoss.ganttz.timetracker.OnColumnsRowRenderer;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Datebox;
@@ -45,22 +37,20 @@ import org.zkoss.zul.Radio;
 import org.zkoss.zul.Radiogroup;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Window;
+
+import java.util.Collections;
+import java.util.Date;
+
+import static org.libreplan.web.I18nHelper._;
 /**
- * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * When you are pushing reassign button ( green button on Project Scheduling page ), it will open Reassign window.
+ * This controller handles that window.
  *
+ * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class ReassignController extends GenericForwardComposer {
-
-    public static void openOn(org.zkoss.zk.ui.Component component,
-            IConfigurationResult configurationResult) {
-        Window result = (Window) Executions.createComponents(
-                "/planner/reassign.zul", component, Collections.emptyMap());
-        ReassignController controller = (ReassignController) result
-                .getAttribute("controller");
-        controller.showWindow(configurationResult);
-    }
 
     private Window window;
 
@@ -74,15 +64,6 @@ public class ReassignController extends GenericForwardComposer {
 
     private IConfigurationResult configurationResult;
 
-    private void showWindow(IConfigurationResult configurationResult) {
-        this.configurationResult = configurationResult;
-        try {
-            window.setMode("modal");
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     @Override
     public void doAfterCompose(org.zkoss.zk.ui.Component comp) throws Exception {
         super.doAfterCompose(comp);
@@ -94,12 +75,24 @@ public class ReassignController extends GenericForwardComposer {
         reassigningTypesGrid.invalidate();
     }
 
+    public static void openOn(org.zkoss.zk.ui.Component component, IConfigurationResult configurationResult) {
+        Window result =
+                (Window) Executions.createComponents("/planner/reassign.zul", component, Collections.emptyMap());
+
+        ReassignController controller = (ReassignController) result.getAttribute("controller");
+        controller.showWindow(configurationResult);
+    }
+
+    private void showWindow(IConfigurationResult configurationResult) {
+        this.configurationResult = configurationResult;
+        window.setMode("modal");
+    }
 
     private void fillGridWithRadios() {
-        reassigningTypesGrid.setModel(new SimpleListModel(Type
-                .values()));
-        reassigningTypesGrid.setRowRenderer(OnColumnsRowRenderer.create(
-                reassigningTypesRenderer(), Arrays.asList(0)));
+        reassigningTypesGrid.setModel(new SimpleListModel(Type.values()));
+
+        reassigningTypesGrid.setRowRenderer(
+                OnColumnsRowRenderer.create(reassigningTypesRenderer(), Collections.singletonList(0)));
     }
 
     private ICellForDetailItemRenderer<Integer, Type> reassigningTypesRenderer() {
@@ -114,22 +107,15 @@ public class ReassignController extends GenericForwardComposer {
     }
 
     private void listenForTypeChange() {
-        reassigningTypeSelector.addEventListener(Events.ON_CHECK,
-                new EventListener() {
-
-                    @Override
-                    public void onEvent(Event event) {
-                        Radio selectedItem = reassigningTypeSelector
-                                .getSelectedItem();
-                        newTypeChoosen(Type.fromRadio(selectedItem));
-                        associatedDate.setVisible(currentType
-                                .needsAssociatedDate());
-                    }
-                });
+        reassigningTypeSelector.addEventListener(Events.ON_CHECK, (event) -> {
+            Radio selectedItem = reassigningTypeSelector.getSelectedItem();
+            newTypeChosen(Type.fromRadio(selectedItem));
+            associatedDate.setVisible(currentType.needsAssociatedDate());
+        });
     }
 
 
-    private void newTypeChoosen(Type fromRadio) {
+    private void newTypeChosen(Type fromRadio) {
         this.currentType = fromRadio;
         associatedDate.setVisible(false);
     }
@@ -139,16 +125,17 @@ public class ReassignController extends GenericForwardComposer {
         if (currentType.needsAssociatedDate()) {
             Date value = associatedDate.getValue();
             if (value == null) {
-                throw new WrongValueException(associatedDate,
-                        _("cannot be empty"));
+                throw new WrongValueException(associatedDate, _("cannot be empty"));
             }
         }
         window.setVisible(false);
-        final LocalDate associatedDate = this.associatedDate.getValue() != null ? LocalDate
-                .fromDateFields(this.associatedDate.getValue())
-                : null;
-        configurationResult.result(ReassignConfiguration.create(currentType,
-                associatedDate));
+
+        final LocalDate associatedDate =
+                this.associatedDate.getValue() != null
+                        ? LocalDate.fromDateFields(this.associatedDate.getValue())
+                        : null;
+
+        configurationResult.result(ReassignConfiguration.create(currentType, associatedDate));
     }
 
     public void cancel() {

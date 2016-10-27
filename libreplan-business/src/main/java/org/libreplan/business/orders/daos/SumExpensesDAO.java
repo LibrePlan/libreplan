@@ -44,15 +44,13 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Contract for {@link SumExpensesDAO}
+ * Contract for {@link SumExpensesDAO}.
  *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
-
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
-public class SumExpensesDAO extends GenericDAOHibernate<SumExpenses, Long> implements
-        ISumExpensesDAO {
+public class SumExpensesDAO extends GenericDAOHibernate<SumExpenses, Long> implements ISumExpensesDAO {
 
     @Autowired
     private SessionFactory sessionFactory;
@@ -69,8 +67,7 @@ public class SumExpensesDAO extends GenericDAOHibernate<SumExpenses, Long> imple
     private Map<OrderElement, SumExpenses> mapSumExpenses;
 
     @Override
-    public void updateRelatedSumExpensesWithExpenseSheetLineSet(
-            Set<ExpenseSheetLine> expenseSheetLineSet) {
+    public void updateRelatedSumExpensesWithExpenseSheetLineSet(Set<ExpenseSheetLine> expenseSheetLineSet) {
         resetMapSumExpenses();
 
         for (ExpenseSheetLine expenseSheetLine : expenseSheetLineSet) {
@@ -78,26 +75,25 @@ public class SumExpensesDAO extends GenericDAOHibernate<SumExpenses, Long> imple
         }
     }
 
-    private void updateRelatedSumExpensesWithAddedOrModifiedExpenseSheetLine(
-            final ExpenseSheetLine expenseSheetLine) {
+    private void updateRelatedSumExpensesWithAddedOrModifiedExpenseSheetLine(final ExpenseSheetLine expenseSheetLine) {
         boolean increase = true;
         BigDecimal value = expenseSheetLine.getValue();
-        if (!expenseSheetLine.isNewObject()) {
-            BigDecimal previousValue = transactionService
-                    .runOnAnotherTransaction(new IOnTransaction<BigDecimal>() {
-                        @Override
-                        public BigDecimal execute() {
-                            try {
-                                return expenseSheetLineDAO.find(expenseSheetLine.getId())
-                                        .getValue();
-                            } catch (InstanceNotFoundException e) {
-                                throw new RuntimeException(e);
-                            }
-                        }
-                    });
 
-            boolean isTaskDifferent = updateRelatedSumExpensesIfTheAssociatedTaskIsDifferent(
-                    previousValue, expenseSheetLine);
+        if (!expenseSheetLine.isNewObject()) {
+            BigDecimal previousValue = transactionService.runOnAnotherTransaction(new IOnTransaction<BigDecimal>() {
+                @Override
+                public BigDecimal execute() {
+                    try {
+                        return expenseSheetLineDAO.find(expenseSheetLine.getId())
+                                .getValue();
+                    } catch (InstanceNotFoundException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            });
+
+            boolean isTaskDifferent =
+                    updateRelatedSumExpensesIfTheAssociatedTaskIsDifferent(previousValue, expenseSheetLine);
 
             if (!isTaskDifferent) {
                 if (value.compareTo(previousValue) >= 0) {
@@ -118,27 +114,29 @@ public class SumExpensesDAO extends GenericDAOHibernate<SumExpenses, Long> imple
         }
     }
 
-    private boolean updateRelatedSumExpensesIfTheAssociatedTaskIsDifferent(
-            BigDecimal previousValue, final ExpenseSheetLine expenseSheetLine) {
+    private boolean updateRelatedSumExpensesIfTheAssociatedTaskIsDifferent(BigDecimal previousValue,
+                                                                           final ExpenseSheetLine expenseSheetLine) {
         final OrderElement task = expenseSheetLine.getOrderElement();
 
-        OrderElement previousTask = transactionService
-                .runOnAnotherTransaction(new IOnTransaction<OrderElement>() {
-                    @Override
-                    public OrderElement execute() {
-                        try {
-                            OrderElement previousTask = expenseSheetLineDAO
-                                    .find(expenseSheetLine.getId())
-                                    .getOrderElement();
-                            if (task.getId().compareTo(previousTask.getId()) != 0) {
-                                initalizeOrderElement(previousTask);
-                            }
-                            return previousTask;
-                        } catch (InstanceNotFoundException e) {
-                            throw new RuntimeException(e);
-                        }
+        OrderElement previousTask = transactionService.runOnAnotherTransaction(new IOnTransaction<OrderElement>() {
+            @Override
+            public OrderElement execute() {
+                try {
+
+                    OrderElement previousTask = expenseSheetLineDAO
+                            .find(expenseSheetLine.getId())
+                            .getOrderElement();
+
+                    if (task.getId().compareTo(previousTask.getId()) != 0) {
+                        initializeOrderElement(previousTask);
                     }
-                });
+                    return previousTask;
+                } catch (InstanceNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
         if (task.getId().compareTo(previousTask.getId()) != 0) {
             substractDirectExpenses(previousTask, previousValue);
             return true;
@@ -146,12 +144,12 @@ public class SumExpensesDAO extends GenericDAOHibernate<SumExpenses, Long> imple
         return false;
     }
 
-    private void initalizeOrderElement(OrderElement orderElement) {
+    private void initializeOrderElement(OrderElement orderElement) {
         Hibernate.initialize(orderElement);
-        initalizeOrder(orderElement);
+        initializeOrder(orderElement);
     }
 
-    private void initalizeOrder(OrderElement orderElement) {
+    private void initializeOrder(OrderElement orderElement) {
         OrderLineGroup parent = orderElement.getParent();
         while (parent != null) {
             Hibernate.initialize(parent);
@@ -186,8 +184,7 @@ public class SumExpensesDAO extends GenericDAOHibernate<SumExpenses, Long> imple
     }
 
     @Override
-    public void updateRelatedSumExpensesWithDeletedExpenseSheetLineSet(
-            Set<ExpenseSheetLine> expenseSheetLineSet) {
+    public void updateRelatedSumExpensesWithDeletedExpenseSheetLineSet(Set<ExpenseSheetLine> expenseSheetLineSet) {
         resetMapSumExpenses();
 
         for (ExpenseSheetLine expenseSheetLine : expenseSheetLineSet) {
@@ -196,18 +193,16 @@ public class SumExpensesDAO extends GenericDAOHibernate<SumExpenses, Long> imple
     }
 
     private void resetMapSumExpenses() {
-        mapSumExpenses = new HashMap<OrderElement, SumExpenses>();
+        mapSumExpenses = new HashMap<>();
     }
 
-    private void updateRelatedSumExpensesWithDeletedExpenseSheetLine(
-            ExpenseSheetLine expenseSheetLine) {
+    private void updateRelatedSumExpensesWithDeletedExpenseSheetLine(ExpenseSheetLine expenseSheetLine) {
         if (expenseSheetLine.isNewObject()) {
             // If the line hasn't been saved, we have nothing to update
             return;
         }
 
-        // Refresh data from database, because of changes not saved are not
-        // useful for the following operations
+        // Refresh data from database, because of changes not saved are not useful for the following operations
         sessionFactory.getCurrentSession().refresh(expenseSheetLine);
 
         substractDirectExpenses(expenseSheetLine.getOrderElement(), expenseSheetLine.getValue());
@@ -244,8 +239,10 @@ public class SumExpensesDAO extends GenericDAOHibernate<SumExpenses, Long> imple
 
     @Override
     public SumExpenses findByOrderElement(OrderElement orderElement) {
-        return (SumExpenses) getSession().createCriteria(getEntityClass())
-                .add(Restrictions.eq("orderElement", orderElement)).uniqueResult();
+        return (SumExpenses) getSession()
+                .createCriteria(getEntityClass())
+                .add(Restrictions.eq("orderElement", orderElement))
+                .uniqueResult();
     }
 
     @Override

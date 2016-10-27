@@ -28,8 +28,9 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import org.libreplan.business.planner.entities.SubcontractedTaskData;
 import org.libreplan.web.subcontract.UpdateDeliveringDateDTO;
 import org.libreplan.ws.common.api.OrderElementDTO;
-import org.libreplan.ws.common.impl.DateConverter;
 import org.libreplan.ws.subcontract.api.SubcontractedTaskDataDTO;
+
+import static org.libreplan.ws.common.impl.DateConverter.toXMLGregorianCalendar;
 
 /**
  * Converter from/to {@link SubcontractedTaskData} entities to/from DTOs.
@@ -38,12 +39,12 @@ import org.libreplan.ws.subcontract.api.SubcontractedTaskDataDTO;
  */
 public final class SubcontractedTaskDataConverter {
 
-    private SubcontractedTaskDataConverter() {
-    }
+    private SubcontractedTaskDataConverter() {}
 
-    public final static SubcontractedTaskDataDTO toDTO(String companyCode,
-            SubcontractedTaskData subcontractedTaskData,
-            OrderElementDTO orderElementDTO) {
+    public static final SubcontractedTaskDataDTO toDTO(String companyCode,
+                                                       SubcontractedTaskData subcontractedTaskData,
+                                                       OrderElementDTO orderElementDTO) {
+
         return new SubcontractedTaskDataDTO(companyCode,
                 subcontractedTaskData.getWorkDescription(),
                 subcontractedTaskData.getSubcontractPrice(),
@@ -51,28 +52,31 @@ public final class SubcontractedTaskDataConverter {
                 toXmlDate(getDeliverDate(subcontractedTaskData)));
     }
 
-    public final static UpdateDeliveringDateDTO toUpdateDeliveringDateDTO(
-            String companyCode, SubcontractedTaskData subTaskData) {
+    public static final UpdateDeliveringDateDTO toUpdateDeliveringDateDTO(String companyCode,
+                                                                          SubcontractedTaskData subTaskData) {
         String customerReference = subTaskData.getSubcontractedCode();
         XMLGregorianCalendar deliverDate = toXmlDate(getDeliverDate(subTaskData));
-        if(!subTaskData.getRequiredDeliveringDates().isEmpty()){
-             deliverDate = toXmlDate(subTaskData.getRequiredDeliveringDates().first().getSubcontractorDeliverDate());
+
+        if (!subTaskData.getRequiredDeliveringDates().isEmpty()){
+            deliverDate = toXmlDate(subTaskData.getRequiredDeliveringDates().first().getSubcontractorDeliverDate());
         }
+
         String externalCode = subTaskData.getTask().getOrderElement().getCode();
+
         return new UpdateDeliveringDateDTO(companyCode, customerReference, externalCode, deliverDate);
     }
 
-    private final static XMLGregorianCalendar toXmlDate(Date date) {
-        XMLGregorianCalendar xmlDate = (date != null) ? DateConverter
-                .toXMLGregorianCalendar(date) : null;
-        return xmlDate;
+    private static XMLGregorianCalendar toXmlDate(Date date) {
+        return (date != null) ? toXMLGregorianCalendar(date) : null;
     }
 
-    private final static Date getDeliverDate(SubcontractedTaskData subcontractedTaskData){
+    private static Date getDeliverDate(SubcontractedTaskData subcontractedTaskData){
         Date deliverDate = null;
-        if((subcontractedTaskData != null) && (!subcontractedTaskData.getRequiredDeliveringDates().isEmpty())){
-             deliverDate = subcontractedTaskData.getRequiredDeliveringDates().first().getSubcontractorDeliverDate();
+
+        if (subcontractedTaskData != null && !subcontractedTaskData.getRequiredDeliveringDates().isEmpty()) {
+            deliverDate = subcontractedTaskData.getRequiredDeliveringDates().first().getSubcontractorDeliverDate();
         }
+
         return deliverDate;
     }
 }

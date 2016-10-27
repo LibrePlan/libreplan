@@ -35,7 +35,6 @@ import org.libreplan.business.common.entities.ConnectorException;
 import org.libreplan.business.common.entities.JobClassNameEnum;
 import org.libreplan.business.common.entities.JobSchedulerConfiguration;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
-import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.importers.SynchronizationInfo;
 import org.quartz.CronExpression;
 import org.zkoss.zk.ui.Component;
@@ -44,6 +43,7 @@ import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Groupbox;
@@ -53,12 +53,12 @@ import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Popup;
 import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.SimpleListModel;
-import org.zkoss.zul.api.Caption;
-import org.zkoss.zul.api.Textbox;
-import org.zkoss.zul.api.Window;
+import org.zkoss.zul.Caption;
+import org.zkoss.zul.Textbox;
+import org.zkoss.zul.Window;
 
 /**
- * Controller for job scheduler manager
+ * Controller for job scheduler manager.
  *
  * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
  */
@@ -90,6 +90,10 @@ public class JobSchedulerController extends BaseCRUDController<JobSchedulerConfi
 
     private IJobSchedulerModel jobSchedulerModel;
 
+    public JobSchedulerController() {
+        jobSchedulerModel = (IJobSchedulerModel) SpringUtil.getBean("jobSchedulerModel");
+    }
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
@@ -99,7 +103,7 @@ public class JobSchedulerController extends BaseCRUDController<JobSchedulerConfi
     }
 
     /**
-     * Initializes cron expressions for popup
+     * Initializes cron expressions for popup.
      */
     private void initCronExpressionPopup() {
         cronExpressionTextBox = (Textbox) editWindow.getFellow("cronExpressionTextBox");
@@ -128,45 +132,47 @@ public class JobSchedulerController extends BaseCRUDController<JobSchedulerConfi
     }
 
     /**
-     * Returns a list of {@link JobSchedulerConfiguration}
+     * Returns a list of {@link JobSchedulerConfiguration}.
      */
     public List<JobSchedulerConfiguration> getJobSchedulerConfigurations() {
         return jobSchedulerModel.getJobSchedulerConfigurations();
     }
 
     /**
-     * Returns {@link JobSchedulerConfiguration}
+     * Returns {@link JobSchedulerConfiguration}.
      */
     public JobSchedulerConfiguration getJobSchedulerConfiguration() {
         return jobSchedulerModel.getJobSchedulerConfiguration();
     }
 
     /**
-     * Returns all predefined jobs
+     * Returns all predefined jobs.
      */
     public JobClassNameEnum[] getJobNames() {
         return JobClassNameEnum.values();
     }
 
     /**
-     * Return list of connectorNames
+     * Returns list of connectorNames.
      */
     public List<String> getConnectorNames() {
         List<Connector> connectors = jobSchedulerModel.getConnectors();
         List<String> connectorNames = new ArrayList<>();
+
         for (Connector connector : connectors) {
             connectorNames.add(connector.getName());
         }
+
         return connectorNames;
     }
 
     /**
-     * Renders job scheduling and returns {@link RowRenderer}
+     * Renders job scheduling and returns {@link RowRenderer}.
      */
     public RowRenderer getJobSchedulingRenderer() {
-        return (row, data) ->  {
-            final JobSchedulerConfiguration jobSchedulerConfiguration = (JobSchedulerConfiguration) data;
-            row.setValue(data);
+        return (row, o, i) -> {
+            final JobSchedulerConfiguration jobSchedulerConfiguration = (JobSchedulerConfiguration) o;
+            row.setValue(o);
 
             Util.appendLabel(row, jobSchedulerConfiguration.getJobGroup());
             Util.appendLabel(row, jobSchedulerConfiguration.getJobName());
@@ -186,36 +192,37 @@ public class JobSchedulerController extends BaseCRUDController<JobSchedulerConfi
             hbox.appendChild(Util.createEditButton(event -> goToEditForm(jobSchedulerConfiguration)));
 
             hbox.appendChild(Util.createRemoveButton(event -> confirmDelete(jobSchedulerConfiguration)));
+
             row.appendChild(hbox);
         };
     }
 
-    public RowRenderer getSynchronizationInfoRenderer() {
-        return (row, data) -> {
-            final SynchronizationInfo synchronizationInfo = (SynchronizationInfo) data;
-            row.setValue(data);
+    private RowRenderer getSynchronizationInfoRenderer() {
+        return (row, o, i) -> {
+            final SynchronizationInfo synchronizationInfo = (SynchronizationInfo) o;
+            row.setValue(o);
 
             Groupbox groupbox = new Groupbox();
             groupbox.setClosable(true);
-            Caption caption = new org.zkoss.zul.Caption();
+            Caption caption = new Caption();
             caption.setLabel(synchronizationInfo.getAction());
             groupbox.appendChild(caption);
             row.appendChild(groupbox);
 
-            if (synchronizationInfo.isSuccessful()) {
+            if ( synchronizationInfo.isSuccessful() ) {
                 groupbox.appendChild(new Label(_("Completed")));
             } else {
 
                 Listbox listbox = new Listbox();
 
-                listbox.setModel(new SimpleListModel(synchronizationInfo.getFailedReasons()));
+                listbox.setModel(new SimpleListModel<>(synchronizationInfo.getFailedReasons()));
                 groupbox.appendChild(listbox);
             }
         };
     }
 
 
-    public List<SynchronizationInfo> getSynchronizationInfos() {
+    private List<SynchronizationInfo> getSynchronizationInfos() {
         return jobSchedulerModel.getSynchronizationInfos();
     }
 
@@ -229,19 +236,19 @@ public class JobSchedulerController extends BaseCRUDController<JobSchedulerConfi
 
         Grid syncInfoGrid = (Grid) syncInfoWin.getFellowIfAny("syncInfoGrid");
 
-        syncInfoGrid.setModel(new SimpleListModel(getSynchronizationInfos()));
+        syncInfoGrid.setModel(new SimpleListModel<>(getSynchronizationInfos()));
 
         syncInfoGrid.setRowRenderer(getSynchronizationInfoRenderer());
 
         try {
             win.doModal();
-        } catch (SuspendNotAllowedException | InterruptedException e) {
+        } catch (SuspendNotAllowedException e) {
             throw new RuntimeException(e);
         }
     }
 
     /**
-     * Returns the next fire time for the specified job in {@link JobSchedulerConfiguration}
+     * Returns the next fire time for the specified job in {@link JobSchedulerConfiguration}.
      *
      * @param jobSchedulerConfiguration
      *            the job scheduler configuration
@@ -251,7 +258,7 @@ public class JobSchedulerController extends BaseCRUDController<JobSchedulerConfi
     }
 
     /**
-     * Creates and returns a button
+     * Creates and returns a button.
      *
      * @param eventListener
      *            Event listener for this button
@@ -259,13 +266,14 @@ public class JobSchedulerController extends BaseCRUDController<JobSchedulerConfi
     private static Button createManualButton(EventListener eventListener) {
         Button button = new Button(_("Manual"));
         button.setTooltiptext(_("Manual"));
+        button.setSclass("add-button");
         button.addEventListener(Events.ON_CLICK, eventListener);
 
         return button;
     }
 
     /**
-     * Opens the <code>cronExpressionInputPopup</code>
+     * Opens the <code>cronExpressionInputPopup</code>.
      */
     public void openPopup() {
         setupCronExpressionPopup(getJobSchedulerConfiguration());
@@ -273,19 +281,19 @@ public class JobSchedulerController extends BaseCRUDController<JobSchedulerConfi
     }
 
     /**
-     * Sets the cronExpression values for <code>cronExpressionInputPopup</code>
+     * Sets the cronExpression values for <code>cronExpressionInputPopup</code>.
      *
      * @param jobSchedulerConfiguration
      *            where to read the values
      */
     private void setupCronExpressionPopup(final JobSchedulerConfiguration jobSchedulerConfiguration) {
-        if (jobSchedulerConfiguration != null) {
+        if ( jobSchedulerConfiguration != null ) {
             jobGroup.setValue(jobSchedulerConfiguration.getJobGroup());
             jobName.setValue(jobSchedulerConfiguration.getJobName());
 
             String cronExpression = jobSchedulerConfiguration.getCronExpression();
 
-            if (cronExpression == null || cronExpression.isEmpty()) {
+            if ( cronExpression == null || cronExpression.isEmpty() ) {
                 return;
             }
 
@@ -298,14 +306,14 @@ public class JobSchedulerController extends BaseCRUDController<JobSchedulerConfi
             cronExpressionMonth.setValue(cronExpressionArray[4]);
             cronExpressionDayOfWeek.setValue(cronExpressionArray[5]);
 
-            if (cronExpressionArray.length == 7) {
+            if ( cronExpressionArray.length == 7 ) {
                 cronExpressionYear.setValue(cronExpressionArray[6]);
             }
         }
     }
 
     /**
-     * Sets the <code>cronExpressionTextBox</code> value from the <code>cronExpressionInputPopup</code>
+     * Sets the <code>cronExpressionTextBox</code> value from the <code>cronExpressionInputPopup</code>.
      */
     public void updateCronExpression() {
         String cronExpression = getCronExpressionString();
@@ -316,7 +324,8 @@ public class JobSchedulerController extends BaseCRUDController<JobSchedulerConfi
             LOG.info("Unable to parse cron expression", e);
 
             throw new WrongValueException(
-                    cronExpressionInputPopup, _("Unable to parse cron expression") + ":\n" + e.getMessage());
+                    cronExpressionInputPopup,
+                    _("Unable to parse cron expression") + ":\n" + e.getMessage());
         }
         cronExpressionTextBox.setValue(cronExpression);
         cronExpressionInputPopup.close();
@@ -324,7 +333,7 @@ public class JobSchedulerController extends BaseCRUDController<JobSchedulerConfi
     }
 
     /**
-     * Concatenating the cronExpression values
+     * Concatenating the cronExpression values.
      *
      * @return cronExpression string
      */
@@ -343,7 +352,7 @@ public class JobSchedulerController extends BaseCRUDController<JobSchedulerConfi
     }
 
     /**
-     * Closes the popup
+     * Closes the popup.
      */
     public void cancelPopup() {
         cronExpressionInputPopup.close();
@@ -362,7 +371,6 @@ public class JobSchedulerController extends BaseCRUDController<JobSchedulerConfi
     @Override
     protected void initCreate() {
         jobSchedulerModel.initCreate();
-
     }
 
     @Override
@@ -371,9 +379,9 @@ public class JobSchedulerController extends BaseCRUDController<JobSchedulerConfi
     }
 
     @Override
-    protected void save() throws ValidationException {
+    protected void save() {
         jobSchedulerModel.confirmSave();
-        if (jobSchedulerModel.scheduleOrUnscheduleJob()) {
+        if ( jobSchedulerModel.scheduleOrUnscheduleJob() ) {
             messagesForUser.showMessage(Level.INFO, _("Job is scheduled/unscheduled"));
         }
     }
@@ -391,7 +399,7 @@ public class JobSchedulerController extends BaseCRUDController<JobSchedulerConfi
     @Override
     protected void delete(JobSchedulerConfiguration entity) throws InstanceNotFoundException {
         jobSchedulerModel.remove(entity);
-        if (jobSchedulerModel.deleteScheduledJob(entity)) {
+        if ( jobSchedulerModel.deleteScheduledJob(entity) ) {
             messagesForUser.showMessage(Level.INFO, _("Job is deleted from scheduler"));
         }
     }

@@ -32,7 +32,9 @@ import org.zkoss.zkplus.databind.TypeConverter;
  *
  * @author Diego Pino Garcia <dpino@igalia.com>
  *
+ * TODO resolve deprecated
  */
+
 public class DateConverter implements TypeConverter {
 
     @Override

@@ -48,9 +48,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {
-        BUSINESS_SPRING_CONFIG_FILE,
-        BUSINESS_SPRING_CONFIG_TEST_FILE })
+@ContextConfiguration(locations = {BUSINESS_SPRING_CONFIG_FILE, BUSINESS_SPRING_CONFIG_TEST_FILE })
 public class CriterionsBootstrapTest {
 
     @Resource
@@ -71,7 +69,7 @@ public class CriterionsBootstrapTest {
     private List<Criterion> somePredefinedCriterions;
 
     @Before
-    public void loadRequiredaData() {
+    public void loadRequiredData() {
         // Load data
         configurationBootstrap.loadRequiredData();
         cleanCriteria();

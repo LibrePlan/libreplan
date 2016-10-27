@@ -29,22 +29,22 @@
 
     <n:script language="javascript">
 
-    function closeBandbox(bandbox) {
-        zAu.send(new zk.Event(bandbox, "closeBandbox"));
-    }
+        function closeBandbox(bandbox) {
+            zAu.send(new zk.Event(bandbox, "closeBandbox"));
+        }
 
     </n:script>
 
     <bandbox id="bandbox" autodrop="true">
         <bandpopup>
             <vbox height="50px">
-               <listbox id="listbox" width="200px" sclass="bandbox-search" height="150px"
-                      vflex="true" model="${arg.model}"
-                      c:onClick="closeBandbox(this.$f().bandbox.parent);">
-               <listhead id="listhead" />
-               </listbox>
+                <listbox id="listbox" width="200px" sclass="bandbox-search" height="150px"
+                         model="${arg.model}"
+                         c:onClick="closeBandbox(this.$f().bandbox.parent);">
+                    <listhead id="listhead" />
+                </listbox>
             </vbox>
-            </bandpopup>
+        </bandpopup>
     </bandbox>
 
 </zk>

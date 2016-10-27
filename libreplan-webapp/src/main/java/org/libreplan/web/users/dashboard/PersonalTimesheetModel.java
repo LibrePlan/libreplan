@@ -239,7 +239,7 @@ public class PersonalTimesheetModel implements IPersonalTimesheetModel {
 
     private void forceLoad(WorkReportType workReportType) {
         workReportType.getLineFields().size();
-        workReportType.getWorkReportLabelTypeAssigments().size();
+        workReportType.getWorkReportLabelTypeAssignments().size();
         workReportType.getHeadingFields().size();
     }
 

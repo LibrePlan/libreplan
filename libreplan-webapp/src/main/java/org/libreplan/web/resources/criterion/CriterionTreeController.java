@@ -20,10 +20,10 @@
  */
 
 package org.libreplan.web.resources.criterion;
+
 import static org.libreplan.web.I18nHelper._;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import org.apache.commons.lang3.Validate;
@@ -37,8 +37,6 @@ import org.libreplan.web.common.Util;
 import org.libreplan.web.common.components.Autocomplete;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.DropEvent;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
@@ -50,8 +48,7 @@ import org.zkoss.zul.Treecell;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.TreeitemRenderer;
 import org.zkoss.zul.Treerow;
-import org.zkoss.zul.Vbox;
-import org.zkoss.zul.api.Tree;
+import org.zkoss.zul.Tree;
 
 public class CriterionTreeController extends GenericForwardComposer {
 
@@ -84,8 +81,8 @@ public class CriterionTreeController extends GenericForwardComposer {
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         messagesForUser = new MessagesForUser(messagesContainer);
-        comp.setVariable("criterionTreeController", this, true);
-        criterionName = (Textbox) ((Vbox) self).getFellowIfAny("criterionName");
+        comp.setAttribute("criterionTreeController", this, true);
+        criterionName = (Textbox) self.getFellowIfAny("criterionName");
         clearCriterionName();
     }
 
@@ -97,6 +94,7 @@ public class CriterionTreeController extends GenericForwardComposer {
         if (getModel() == null) {
             return null;
         }
+
         return getModel().asTree();
     }
 
@@ -110,7 +108,7 @@ public class CriterionTreeController extends GenericForwardComposer {
         }
 
         @Override
-        public void render(Treeitem item, Object data) {
+        public void render(Treeitem item, Object data, int i) {
             final CriterionDTO criterionForThisRow = (CriterionDTO) data;
             item.setValue(data);
 
@@ -121,55 +119,39 @@ public class CriterionTreeController extends GenericForwardComposer {
             Treecell cellForName = new Treecell();
             Textbox textboxName= new Textbox();
             textboxName.setWidth("400px");
-            cellForName.appendChild(Util.bind(textboxName,
-                    new Util.Getter<String>() {
 
-                        @Override
-                        public String get() {
-                            return criterionForThisRow.getName();
-                        }
-                    }, new Util.Setter<String>() {
-
-                        @Override
-                        public void set(String value) {
-                            criterionForThisRow.setName(value);
-                        }
+            cellForName.appendChild(Util.bind(
+                    textboxName,
+                    () -> {
+                        return criterionForThisRow.getName();
+                    }, value -> {
+                        criterionForThisRow.setName(value);
                     }));
+
             String message = _("cannot be empty");
-            textboxName
-                    .setConstraint("no empty:"+message);
+            textboxName.setConstraint("no empty:"+message);
 
             Treecell cellForActive = new Treecell();
             cellForActive.setStyle("center");
             Checkbox checkboxActive = new Checkbox();
-            cellForActive.appendChild(Util.bind(checkboxActive,
-                    new Util.Getter<Boolean>() {
 
-                        @Override
-                        public Boolean get() {
-                            return criterionForThisRow.isActive();
-                        }
-                    }, new Util.Setter<Boolean>() {
-
-                        @Override
-                        public void set(Boolean value) {
-                            criterionForThisRow.setActive(value);
-                        }
+            cellForActive.appendChild(Util.bind(
+                    checkboxActive,
+                    () -> {
+                        return criterionForThisRow.isActive();
+                    }, value -> {
+                        criterionForThisRow.setActive(value);
                     }));
 
-            checkboxActive.addEventListener(Events.ON_CHECK,new EventListener() {
-                @Override
-                        public void onEvent(Event event) {
-                    getModel().updateEnabledCriterions(criterionForThisRow.isActive(),criterionForThisRow);
-                    reloadTree();
-                }
+            checkboxActive.addEventListener(Events.ON_CHECK, event -> {
+                getModel().updateEnabledCriterions(criterionForThisRow.isActive(),criterionForThisRow);
+                reloadTree();
             });
 
-            Treerow tr = null;
+            Treerow tr;
             /*
-             * Since only one treerow is allowed, if treerow is not null, append
-             * treecells to it. If treerow is null, contruct a new treerow and
-             * attach it to item.
+             * Since only one treerow is allowed, if treerow is not null, append treecells to it.
+             * If treerow is null, contruct a new treerow and attach it to item.
              */
             if (item.getTreerow() == null) {
                 tr = new Treerow();
@@ -192,20 +174,14 @@ public class CriterionTreeController extends GenericForwardComposer {
             cellForCode.setStyle("center");
             Textbox codeLabel = new Textbox();
             codeLabel.setDisabled(codeEditionDisabled);
-            cellForCode.appendChild(Util.bind(codeLabel,
-                    new Util.Getter<String>() {
 
-                @Override
-                public String get() {
-                    return criterionForThisRow.getCriterion().getCode();
-                }
-            }, new Util.Setter<String>() {
-
-                @Override
-                public void set(String value) {
-                    criterionForThisRow.getCriterion().setCode(value);
-                }
-            }));
+            cellForCode.appendChild(Util.bind(
+                    codeLabel,
+                    () -> {
+                        return criterionForThisRow.getCriterion().getCode();
+                    }, value -> {
+                        criterionForThisRow.getCriterion().setCode(value);
+                    }));
 
             cellForName.setParent(tr);
             cellForCostCategory.setParent(tr);
@@ -213,90 +189,69 @@ public class CriterionTreeController extends GenericForwardComposer {
             cellForActive.setParent(tr);
 
             Treecell tcOperations = new Treecell();
-            Button upbutton = new Button("", "/common/img/ico_bajar1.png");
-            upbutton.setHoverImage("/common/img/ico_bajar.png");
-            upbutton.setParent(tcOperations);
-            upbutton.setSclass("icono");
-            upbutton.addEventListener(Events.ON_CLICK, new EventListener() {
-                @Override
-                public void onEvent(Event event) {
-                    getModel().down(criterionForThisRow);
-                    reloadTree();
-                }
+            Button upButton = new Button("", "/common/img/ico_bajar1.png");
+            upButton.setHoverImage("/common/img/ico_bajar.png");
+            upButton.setParent(tcOperations);
+            upButton.setSclass("icono");
+
+            upButton.addEventListener(Events.ON_CLICK, event -> {
+                getModel().down(criterionForThisRow);
+                reloadTree();
             });
 
-            Button downbutton = new Button("", "/common/img/ico_subir1.png");
-            downbutton.setHoverImage("/common/img/ico_subir.png");
-            downbutton.setParent(tcOperations);
-            downbutton.setSclass("icono");
-            downbutton.addEventListener(Events.ON_CLICK, new EventListener() {
-                @Override
-                public void onEvent(Event event) {
-                    getModel().up(criterionForThisRow);
-                    reloadTree();
-                }
+            Button downButton = new Button("", "/common/img/ico_subir1.png");
+            downButton.setHoverImage("/common/img/ico_subir.png");
+            downButton.setParent(tcOperations);
+            downButton.setSclass("icono");
+
+            downButton.addEventListener(Events.ON_CLICK, event -> {
+                getModel().up(criterionForThisRow);
+                reloadTree();
             });
 
-            Button indentbutton = createButtonIndent();
-            indentbutton.setParent(tcOperations);
-            if(getModel().getCriterionType().allowHierarchy()){
-                    indentbutton.addEventListener(Events.ON_CLICK, new EventListener() {
-                @Override
-                            public void onEvent(Event event) {
+            Button indentButton = createButtonIndent();
+            indentButton.setParent(tcOperations);
+
+            if (getModel().getCriterionType().allowHierarchy()) {
+                indentButton.addEventListener(Events.ON_CLICK, event -> {
                     getModel().indent(criterionForThisRow);
                     reloadTree();
-                }
                 });
             }
 
-            Button unindentbutton = createButtonUnindent();
-            unindentbutton.setParent(tcOperations);
-            if(getModel().getCriterionType().allowHierarchy()){
-                unindentbutton.addEventListener(Events.ON_CLICK,
-                    new EventListener() {
-                        @Override
-                            public void onEvent(Event event) {
-                            getModel().unindent(criterionForThisRow);
-                            reloadTree();
-                        }
-                    });
+            Button unindentButton = createButtonUnindent();
+            unindentButton.setParent(tcOperations);
+
+            if (getModel().getCriterionType().allowHierarchy()) {
+                unindentButton.addEventListener(Events.ON_CLICK, event -> {
+                    getModel().unindent(criterionForThisRow);
+                    reloadTree();
+                });
             }
 
-            Button removebutton = createButtonRemove(criterionForThisRow);
-            removebutton.setParent(tcOperations);
+            Button removeButton = createButtonRemove(criterionForThisRow);
+            removeButton.setParent(tcOperations);
             if (criterionsModel.isDeletable(criterionForThisRow.getCriterion())) {
-            removebutton.addEventListener(Events.ON_CLICK, new EventListener() {
-            @Override
-                            public void onEvent(Event event) {
-                getModel().removeNode(criterionForThisRow);
-                                if (!criterionForThisRow.isNewObject()) {
-                                    criterionsModel
-                                            .addForRemoval(criterionForThisRow
-                                                    .getCriterion());
-                                }
-                reloadTree();
-                }
-            });
-        }
+
+                removeButton.addEventListener(Events.ON_CLICK,  event -> {
+                    getModel().removeNode(criterionForThisRow);
+                    if (!criterionForThisRow.isNewObject()) {
+                        criterionsModel.addForRemoval(criterionForThisRow.getCriterion());
+                    }
+                    reloadTree();
+                });
+            }
 
             tcOperations.setParent(tr);
-            tr.addEventListener("onDrop", new EventListener() {
-
-                @Override
-                public void onEvent(org.zkoss.zk.ui.event.Event arg0)
- {
-                    DropEvent dropEvent = (DropEvent) arg0;
-                    move((Component) dropEvent.getTarget(),
-                            (Component) dropEvent.getDragged());
-                }
+            tr.addEventListener("onDrop", arg0 -> {
+                DropEvent dropEvent = (DropEvent) arg0;
+                move(dropEvent.getTarget(), dropEvent.getDragged());
             });
         }
     }
 
     private CostCategory getCostCategory(Treeitem listitem) {
-
-        return ((CriterionDTO) listitem.getValue()).getCriterion()
-                .getCostCategory();
+        return ((CriterionDTO) listitem.getValue()).getCriterion().getCostCategory();
     }
 
     private Autocomplete appendAutocompleteType(final Treeitem row) {
@@ -311,86 +266,78 @@ public class CriterionTreeController extends GenericForwardComposer {
         }
 
         // Setter, set type selected to HourCost.type
-        autocomplete.addEventListener("onSelect", new EventListener() {
+        autocomplete.addEventListener("onSelect", event -> {
+            final Comboitem comboitem = autocomplete.getSelectedItem();
 
-            @Override
-            public void onEvent(Event event) {
-                final Comboitem comboitem = autocomplete.getSelectedItem();
-
-                if (comboitem != null) {
-                    // Update resourcesCostCategoryAssignment
-                    CriterionDTO assignment = (CriterionDTO) row
-                            .getValue();
-                    assignment.getCriterion().setCostCategory(
-                            (CostCategory) comboitem
-                            .getValue());
-                    row.setValue(assignment);
-                }
+            if (comboitem != null) {
+                // Update resourcesCostCategoryAssignment
+                CriterionDTO assignment = row.getValue();
+                assignment.getCriterion().setCostCategory(comboitem.getValue());
+                row.setValue(assignment);
             }
         });
 
-        autocomplete.addEventListener("onBlur", new EventListener() {
-
-            @Override
-            public void onEvent(Event event) {
-                if (autocomplete.getText().isEmpty()) {
-                    autocomplete.clear();
-                    CriterionDTO assignment = (CriterionDTO) row.getValue();
-                    assignment.getCriterion().setCostCategory(null);
-                }
+        autocomplete.addEventListener("onBlur", event -> {
+            if (autocomplete.getText().isEmpty()) {
+                autocomplete.clear();
+                CriterionDTO assignment = row.getValue();
+                assignment.getCriterion().setCostCategory(null);
             }
         });
 
         return autocomplete;
     }
 
-    private Button createButtonUnindent(){
-        Button unindentbutton;
-        if( this.criterionsModel.getCriterionType().allowHierarchy()){
-            unindentbutton = new Button("", "/common/img/ico_izq1.png");
-            unindentbutton.setHoverImage("/common/img/ico_izq.png");
-            unindentbutton.setTooltiptext(_("Unindent"));
-        }else{
-            unindentbutton = new Button("", "/common/img/ico_izq_out.png");
-            unindentbutton.setTooltiptext(_("Not indentable"));
+    private Button createButtonUnindent() {
+        Button unindentButton;
+        if ( this.criterionsModel.getCriterionType().allowHierarchy()) {
+            unindentButton = new Button("", "/common/img/ico_izq1.png");
+            unindentButton.setHoverImage("/common/img/ico_izq.png");
+            unindentButton.setTooltiptext(_("Unindent"));
+        } else {
+            unindentButton = new Button("", "/common/img/ico_izq_out.png");
+            unindentButton.setTooltiptext(_("Not indentable"));
         }
-        unindentbutton.setSclass("icono");
-        return unindentbutton;
+        unindentButton.setSclass("icono");
+
+        return unindentButton;
     }
 
-    private Button createButtonIndent(){
-        Button indentbutton;
-        if( this.criterionsModel.getCriterionType().allowHierarchy()){
-            indentbutton = new Button("", "/common/img/ico_derecha1.png");
-            indentbutton.setHoverImage("/common/img/ico_derecha.png");
-            indentbutton.setTooltiptext(_("Indent"));
-        }else{
-            indentbutton = new Button("", "/common/img/ico_derecha_out.png");
-            indentbutton.setTooltiptext(_("Not indentable"));
+    private Button createButtonIndent() {
+        Button indentButton;
+        if ( this.criterionsModel.getCriterionType().allowHierarchy()) {
+            indentButton = new Button("", "/common/img/ico_derecha1.png");
+            indentButton.setHoverImage("/common/img/ico_derecha.png");
+            indentButton.setTooltiptext(_("Indent"));
+        } else {
+            indentButton = new Button("", "/common/img/ico_derecha_out.png");
+            indentButton.setTooltiptext(_("Not indentable"));
         }
-        indentbutton.setSclass("icono");
-        return indentbutton;
+        indentButton.setSclass("icono");
+
+        return indentButton;
     }
 
-    private Button createButtonRemove(CriterionDTO criterion){
-        Button removebutton;
+    private Button createButtonRemove(CriterionDTO criterion) {
+        Button removeButton;
 
-        int num = criterionsModel.numberOfRelatedEntities(criterion
-                .getCriterion());
+        int num = criterionsModel.numberOfRelatedEntities(criterion.getCriterion());
 
         if (criterionsModel.isDeletable(criterion.getCriterion())) {
-            removebutton = new Button("", "/common/img/ico_borrar1.png");
-            removebutton.setHoverImage("/common/img/ico_borrar.png");
-            removebutton.setTooltiptext(_("Delete"));
+            removeButton = new Button("", "/common/img/ico_borrar1.png");
+            removeButton.setHoverImage("/common/img/ico_borrar.png");
+            removeButton.setTooltiptext(_("Delete"));
         } else {
-            removebutton = new Button("", "/common/img/ico_borrar_out.png");
-            removebutton.setTooltiptext(criterion.getCriterion().getChildren()
-                    .isEmpty() ? (num + " " + _("references"))
+            removeButton = new Button("", "/common/img/ico_borrar_out.png");
+
+            removeButton.setTooltiptext(criterion.getCriterion().getChildren().isEmpty()
+                    ? (num + " " + _("references"))
                     : _("Criterion has subelements"));
         }
 
-        removebutton.setSclass("icono");
-        return removebutton;
+        removeButton.setSclass("icono");
+
+        return removeButton;
     }
 
     public void up() {
@@ -407,28 +354,26 @@ public class CriterionTreeController extends GenericForwardComposer {
         }
     }
 
-    public void move(Component dropedIn, Component dragged) {
+    public void move(Component droppedIn, Component dragged) {
         snapshotOfOpenedNodes = TreeViewStateSnapshot.snapshotOpened(tree);
         Treerow from = (Treerow) dragged;
-        CriterionDTO fromNode = (CriterionDTO) ((Treeitem) from.getParent())
-                .getValue();
-        if (dropedIn instanceof Tree) {
+        CriterionDTO fromNode = ((Treeitem) from.getParent()).getValue();
+        if ( droppedIn instanceof Tree) {
             getModel().moveToRoot(fromNode,0);
         }
-        if (dropedIn instanceof Treerow) {
-            Treerow to = (Treerow) dropedIn;
-            CriterionDTO toNode = (CriterionDTO) ((Treeitem) to.getParent())
-                    .getValue();
+        if ( droppedIn instanceof Treerow) {
+            Treerow to = (Treerow) droppedIn;
+            CriterionDTO toNode = ((Treeitem) to.getParent()).getValue();
             getModel().move(fromNode, toNode,0);
         }
+
         reloadTree();
     }
 
     public void addCriterion() {
         snapshotOfOpenedNodes = TreeViewStateSnapshot.snapshotOpened(tree);
         try {
-            if((tree.getSelectedCount() == 1)
-                && (this.criterionsModel.getAllowHierarchy())){
+            if ((tree.getSelectedCount() == 1) && (this.criterionsModel.getAllowHierarchy())) {
                 getModel().addCriterionAt(getSelectedNode(),getName());
             } else {
                 getModel().addCriterion(getName());
@@ -437,8 +382,7 @@ public class CriterionTreeController extends GenericForwardComposer {
             reloadTree();
         } catch (ValidationException e) {
             for (InvalidValue invalidValue : e.getInvalidValues()) {
-                messagesForUser.showMessage(Level.ERROR, invalidValue
-                        .getMessage());
+                messagesForUser.showMessage(Level.ERROR, invalidValue.getMessage());
             }
         }
     }
@@ -449,7 +393,7 @@ public class CriterionTreeController extends GenericForwardComposer {
         reloadTree();
     }
 
-    public void updateEnabledCriterions(boolean isChecked){
+    public void updateEnabledCriterions(boolean isChecked) {
         snapshotOfOpenedNodes = TreeViewStateSnapshot.snapshotOpened(tree);
         getModel().updateEnabledCriterions(isChecked);
         reloadTree();
@@ -475,11 +419,13 @@ public class CriterionTreeController extends GenericForwardComposer {
     }
 
     private CriterionDTO getSelectedNode() {
-        return (CriterionDTO) tree.getSelectedItemApi().getValue();
+        return (CriterionDTO) tree.getSelectedItem().getValue();
     }
 
     private static class TreeViewStateSnapshot {
+
         private final Set<Object> all;
+
         private final Set<Object> dataOpen;
 
         private TreeViewStateSnapshot(Set<Object> dataOpen, Set<Object> all) {
@@ -488,20 +434,21 @@ public class CriterionTreeController extends GenericForwardComposer {
         }
 
         public static TreeViewStateSnapshot snapshotOpened(Tree tree) {
-            Set<Object> dataOpen = new HashSet<Object>();
-            Set<Object> all = new HashSet<Object>();
-            if (tree != null && tree.getTreechildrenApi() != null) {
-                Iterator<Treeitem> itemsIterator = tree.getTreechildrenApi()
-                        .getItems().iterator();
-                while (itemsIterator.hasNext()) {
-                    Treeitem treeitem = (Treeitem) itemsIterator.next();
+            Set<Object> dataOpen = new HashSet<>();
+            Set<Object> all = new HashSet<>();
+            if (tree != null && tree.getTreechildren() != null) {
+
+                for (Treeitem treeitem : tree.getTreechildren().getItems()) {
                     Object value = getAssociatedValue(treeitem);
+
                     if (treeitem.isOpen()) {
                         dataOpen.add(value);
                     }
+
                     all.add(value);
                 }
             }
+
             return new TreeViewStateSnapshot(dataOpen, all);
         }
 

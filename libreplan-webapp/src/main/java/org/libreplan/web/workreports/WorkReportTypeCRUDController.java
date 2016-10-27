@@ -28,14 +28,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.logging.LogFactory;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.labels.entities.LabelType;
 import org.libreplan.business.workreports.entities.HoursManagementEnum;
 import org.libreplan.business.workreports.entities.PositionInWorkReportEnum;
-import org.libreplan.business.workreports.entities.WorkReportLabelTypeAssigment;
+import org.libreplan.business.workreports.entities.WorkReportLabelTypeAssignment;
 import org.libreplan.business.workreports.entities.WorkReportType;
 import org.libreplan.business.workreports.valueobjects.DescriptionField;
 import org.libreplan.web.common.BaseCRUDController;
@@ -54,6 +53,7 @@ import org.zkoss.zk.ui.event.CheckEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Column;
 import org.zkoss.zul.Combobox;
@@ -72,22 +72,21 @@ import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Vbox;
-import org.zkoss.zul.api.Window;
+import org.zkoss.zul.Window;
+
 
 /**
- * Controller for CRUD actions over a {@link WorkReportType}
+ * Controller for CRUD actions over a {@link WorkReportType}.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public class WorkReportTypeCRUDController extends BaseCRUDController<WorkReportType>
+public class WorkReportTypeCRUDController
+        extends BaseCRUDController<WorkReportType>
         implements IWorkReportTypeCRUDControllerEntryPoints {
-
-     private static final org.apache.commons.logging.Log LOG = LogFactory
-     .getLog(WorkReportTypeCRUDController.class);
 
     private NewDataSortableGrid listDescriptionFields;
 
-    private NewDataSortableGrid listWorkReportLabelTypeAssigments;
+    private NewDataSortableGrid listWorkReportLabelTypeAssignments;
 
     private Textbox name;
 
@@ -99,8 +98,6 @@ public class WorkReportTypeCRUDController extends BaseCRUDController<WorkReportT
 
     private Tab tabReportStructure;
 
-    private Component containerMessageSortedLabelsAndFields;
-
     private IMessagesForUser messagesForUserSortedLabelsAndFields;
 
     private IWorkReportTypeModel workReportTypeModel;
@@ -111,9 +108,18 @@ public class WorkReportTypeCRUDController extends BaseCRUDController<WorkReportT
 
     private DescriptionFieldRowRenderer descriptionFieldRowRenderer = new DescriptionFieldRowRenderer();
 
-    private WorkReportLabelTypeAssigmentRowRenderer workReportLabelTypeAssigmentRowRenderer = new WorkReportLabelTypeAssigmentRowRenderer();
+    private WorkReportLabelTypeAssignmentRowRenderer workReportLabelTypeAssignmentRowRenderer =
+            new WorkReportLabelTypeAssignmentRowRenderer();
 
-    private OrderedFieldsAndLabelsRowRenderer orderedFieldsAndLabesRowRenderer = new OrderedFieldsAndLabelsRowRenderer();
+    private OrderedFieldsAndLabelsRowRenderer orderedFieldsAndLabelsRowRenderer = new OrderedFieldsAndLabelsRowRenderer();
+
+    public WorkReportTypeCRUDController(){
+        workReportTypeModel = (IWorkReportTypeModel) SpringUtil.getBean("workReportTypeModel");
+
+        workReportCRUD = (IWorkReportCRUDControllerEntryPoints) SpringUtil.getBean("workReportCRUD");
+
+        URLHandlerRegistry = (IURLHandlerRegistry) SpringUtil.getBean("URLHandlerRegistry");
+    }
 
     public List<WorkReportType> getWorkReportTypes() {
         return workReportTypeModel.getWorkReportTypesExceptPersonalAndJiraTimesheets();
@@ -126,8 +132,10 @@ public class WorkReportTypeCRUDController extends BaseCRUDController<WorkReportT
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        final EntryPointsHandler<IWorkReportTypeCRUDControllerEntryPoints> handler = URLHandlerRegistry
-                .getRedirectorFor(IWorkReportTypeCRUDControllerEntryPoints.class);
+
+        final EntryPointsHandler<IWorkReportTypeCRUDControllerEntryPoints> handler =
+                URLHandlerRegistry.getRedirectorFor(IWorkReportTypeCRUDControllerEntryPoints.class);
+
         handler.register(this, page);
     }
 
@@ -157,18 +165,15 @@ public class WorkReportTypeCRUDController extends BaseCRUDController<WorkReportT
         if (!window.equals(listWindow)) {
             name = (Textbox) window.getFellow("name");
             code = (Textbox) window.getFellow("code");
-            listDescriptionFields = (NewDataSortableGrid) window
-                    .getFellow("listDescriptionFields");
-            listWorkReportLabelTypeAssigments = (NewDataSortableGrid) window
-                    .getFellow("listWorkReportLabelTypeAssigments");
-            orderedListFieldsAndLabels = (Vbox) window
-                    .getFellow("orderedListFieldsAndLabels");
-            containerMessageSortedLabelsAndFields = (Vbox) window
-                    .getFellow("containerMessageSortedLabelsAndFields");
-            messagesForUserSortedLabelsAndFields = new MessagesForUser(
-                    containerMessageSortedLabelsAndFields);
-            tabSortedLabelsAndFields = (Tab) window
-                    .getFellow("tabSortedLabelsAndFields");
+            listDescriptionFields = (NewDataSortableGrid) window.getFellow("listDescriptionFields");
+
+            listWorkReportLabelTypeAssignments =
+                    (NewDataSortableGrid) window.getFellow("listWorkReportLabelTypeAssignments");
+
+            orderedListFieldsAndLabels = (Vbox) window.getFellow("orderedListFieldsAndLabels");
+            Component containerMessageSortedLabelsAndFields = window.getFellow("containerMessageSortedLabelsAndFields");
+            messagesForUserSortedLabelsAndFields = new MessagesForUser(containerMessageSortedLabelsAndFields);
+            tabSortedLabelsAndFields = (Tab) window.getFellow("tabSortedLabelsAndFields");
             tabReportStructure = (Tab) window.getFellow("tabReportStructure");
         }
     }
@@ -177,7 +182,9 @@ public class WorkReportTypeCRUDController extends BaseCRUDController<WorkReportT
         workReportCRUD.goToCreateForm(workReportType);
     }
 
-    /* Operations to manage the description fiels of the edited workReportType */
+    /**
+     * Operations to manage the description fiels of the edited workReportType.
+     */
 
     public List<DescriptionField> getDescriptionFields() {
         return workReportTypeModel.getDescriptionFields();
@@ -200,7 +207,7 @@ public class WorkReportTypeCRUDController extends BaseCRUDController<WorkReportT
     public class DescriptionFieldRowRenderer implements RowRenderer {
 
         @Override
-        public void render(Row row, Object data) {
+        public void render(Row row, Object data, int i) {
 
             final DescriptionField descriptionField = (DescriptionField) data;
             row.setValue(descriptionField);
@@ -226,8 +233,7 @@ public class WorkReportTypeCRUDController extends BaseCRUDController<WorkReportT
 
     private void appendLabelLengthDescriptionField(Row row) {
         org.zkoss.zul.Label labelLength = new org.zkoss.zul.Label();
-        labelLength.setValue(((DescriptionField) row.getValue()).getLength()
-                .toString());
+        labelLength.setValue(((DescriptionField) row.getValue()).getLength().toString());
         labelLength.setParent(row);
     }
 
@@ -235,10 +241,8 @@ public class WorkReportTypeCRUDController extends BaseCRUDController<WorkReportT
         org.zkoss.zul.Label labelPosition = new org.zkoss.zul.Label();
         labelPosition.setParent(row);
 
-        if (workReportTypeModel
-                .isHeadingDescriptionField((DescriptionField) row.getValue())) {
-            labelPosition.setValue(_(PositionInWorkReportEnum.HEADING
-                    .toString()));
+        if (workReportTypeModel.isHeadingDescriptionField(row.getValue())) {
+            labelPosition.setValue(_(PositionInWorkReportEnum.HEADING.toString()));
         } else {
             labelPosition.setValue(_(PositionInWorkReportEnum.LINE.toString()));
         }
@@ -248,22 +252,16 @@ public class WorkReportTypeCRUDController extends BaseCRUDController<WorkReportT
         Textbox boxName = new Textbox();
         boxName.setHflex("1");
         boxName.setParent(row);
-        boxName
-                .setConstraint(validateIfExistTheSameFieldName((DescriptionField) row
-                        .getValue()));
+        boxName.setConstraint(validateIfExistTheSameFieldName(row.getValue()));
 
-        Util.bind(boxName, new Util.Getter<String>() {
-            @Override
-            public String get() {
-                return ((DescriptionField) row.getValue()).getFieldName();
-            }
-        }, new Util.Setter<String>() {
-
-            @Override
-            public void set(String value) {
-                ((DescriptionField) row.getValue()).setFieldName(value);
-            }
-        });
+        Util.bind(
+                boxName,
+                () -> {
+                    return ((DescriptionField) row.getValue()).getFieldName();
+                },
+                value -> {
+                    ((DescriptionField) row.getValue()).setFieldName(value);
+                });
     }
 
     private void appendIntBoxLengthDescriptionField(final Row row) {
@@ -273,23 +271,18 @@ public class WorkReportTypeCRUDController extends BaseCRUDController<WorkReportT
         boxLength.setParent(row);
         boxLength.setConstraint("no negative, no zero");
 
-        Util.bind(boxLength, new Util.Getter<Integer>() {
-            @Override
-            public Integer get() {
-                return ((DescriptionField) row.getValue()).getLength();
-            }
-        }, new Util.Setter<Integer>() {
-
-            @Override
-            public void set(Integer value) {
-                ((DescriptionField) row.getValue()).setLength(value);
-            }
-        });
+        Util.bind(
+                boxLength,
+                () -> {
+                    return ((DescriptionField) row.getValue()).getLength();
+                },
+                value -> {
+                    ((DescriptionField) row.getValue()).setLength(value);
+                });
     }
 
     private void appendListboxPositionDescriptionField(final Row row) {
-        final DescriptionField descriptionField = (DescriptionField) row
-                .getValue();
+        final DescriptionField descriptionField = row.getValue();
         final Listbox listPosition = createListPosition();
         listPosition.setParent(row);
 
@@ -299,36 +292,26 @@ public class WorkReportTypeCRUDController extends BaseCRUDController<WorkReportT
             listPosition.setSelectedItem(listPosition.getItemAtIndex(1));
         }
 
-        listPosition.addEventListener(Events.ON_SELECT, new EventListener() {
-            @Override
-            public void onEvent(Event event) {
-                changePositionDescriptionField(listPosition
-                            .getSelectedItem(), descriptionField);
-                Util.reloadBindings(listDescriptionFields);
-            }
+        listPosition.addEventListener(Events.ON_SELECT, (EventListener) event -> {
+            changePositionDescriptionField(listPosition.getSelectedItem(), descriptionField);
+            Util.reloadBindings(listDescriptionFields);
         });
     }
 
     private void appendRemoveButtonDescriptionField(final Row row) {
-        final DescriptionField descriptionField = (DescriptionField) row
-                .getValue();
+        final DescriptionField descriptionField = row.getValue();
         final Button removeButton = createRemoveButton();
         removeButton.setParent(row);
 
-        removeButton.addEventListener(Events.ON_CLICK, new EventListener() {
-            @Override
-            public void onEvent(Event event) {
-                removeDescriptionField(descriptionField);
-            }
-        });
+        removeButton.addEventListener(
+                Events.ON_CLICK, (EventListener) event -> removeDescriptionField(descriptionField));
     }
 
     private Listbox createListPosition() {
         final Listbox listPosition = new Listbox();
         listPosition.setMold("select");
 
-        listPosition.setModel(new SimpleListModel(
-                getPositionInWorkReportEnums()));
+        listPosition.setModel(new SimpleListModel<>(getPositionInWorkReportEnums()));
         listPosition.setItemRenderer(new EnumsListitemRenderer());
         return listPosition;
     }
@@ -339,15 +322,13 @@ public class WorkReportTypeCRUDController extends BaseCRUDController<WorkReportT
         removeButton.setImage("/common/img/ico_borrar1.png");
         removeButton.setHoverImage("/common/img/ico_borrar.png");
         removeButton.setTooltiptext(_("Delete"));
+
         return removeButton;
     }
 
-    private void changePositionDescriptionField(Listitem selectedItem,
-            DescriptionField descriptionField) {
-        PositionInWorkReportEnum newPosition = (PositionInWorkReportEnum) selectedItem
-                .getValue();
-        workReportTypeModel.changePositionDescriptionField(newPosition,
-                descriptionField);
+    private void changePositionDescriptionField(Listitem selectedItem, DescriptionField descriptionField) {
+        PositionInWorkReportEnum newPosition = selectedItem.getValue();
+        workReportTypeModel.changePositionDescriptionField(newPosition, descriptionField);
     }
 
     /* Operations to manage the label of the edited workReportType */
@@ -356,33 +337,31 @@ public class WorkReportTypeCRUDController extends BaseCRUDController<WorkReportT
         return workReportTypeModel.getMapLabelTypes();
     }
 
-    public Set<WorkReportLabelTypeAssigment> getWorkReportLabelTypeAssigments() {
-        return workReportTypeModel.getWorkReportLabelTypeAssigments();
+    public Set<WorkReportLabelTypeAssignment> getWorkReportLabelTypeAssignments() {
+        return workReportTypeModel.getWorkReportLabelTypeAssignments();
     }
 
-    public void addNewWorkReportLabelTypeAssigment() {
-        workReportTypeModel.addNewWorkReportLabelTypeAssigment();
-        Util.reloadBindings(listWorkReportLabelTypeAssigments);
+    public void addNewWorkReportLabelTypeAssignment() {
+        workReportTypeModel.addNewWorkReportLabelTypeAssignment();
+        Util.reloadBindings(listWorkReportLabelTypeAssignments);
     }
 
-    private void removeWorkReportLabelTypeAssigment(
-            WorkReportLabelTypeAssigment workReportLabelTypeAssigment) {
-        workReportTypeModel
-                .removeWorkReportLabelTypeAssigment(workReportLabelTypeAssigment);
-        Util.reloadBindings(listWorkReportLabelTypeAssigments);
+    private void removeWorkReportLabelTypeAssignment(WorkReportLabelTypeAssignment workReportLabelTypeAssignment) {
+        workReportTypeModel.removeWorkReportLabelTypeAssignment(workReportLabelTypeAssignment);
+        Util.reloadBindings(listWorkReportLabelTypeAssignments);
     }
 
-    public WorkReportLabelTypeAssigmentRowRenderer getWorkReportLabelTypeAssigmentRowRender() {
-        return workReportLabelTypeAssigmentRowRenderer;
+    public WorkReportLabelTypeAssignmentRowRenderer getWorkReportLabelTypeAssignmentRowRender() {
+        return workReportLabelTypeAssignmentRowRenderer;
     }
 
-    public class WorkReportLabelTypeAssigmentRowRenderer implements RowRenderer {
+    public class WorkReportLabelTypeAssignmentRowRenderer implements RowRenderer {
 
         @Override
-        public void render(Row row, Object data) {
+        public void render(Row row, Object data, int i) {
 
-            final WorkReportLabelTypeAssigment workReportLabelTypeAssigment = (WorkReportLabelTypeAssigment) data;
-            row.setValue(workReportLabelTypeAssigment);
+            final WorkReportLabelTypeAssignment workReportLabelTypeAssignment = (WorkReportLabelTypeAssignment) data;
+            row.setValue(workReportLabelTypeAssignment);
 
             if (isReadOnly()) {
                 appendLabelType(row);
@@ -392,7 +371,7 @@ public class WorkReportTypeCRUDController extends BaseCRUDController<WorkReportT
                 appendComboboxLabelTypes(row);
                 appendComboboxPositionLabel(row);
                 appendComboboxLabels(row);
-                appendRemoveButtonWorkReportLabelTypeAssigment(row);
+                appendRemoveButtonWorkReportLabelTypeAssignment(row);
             }
         }
     }
@@ -400,109 +379,83 @@ public class WorkReportTypeCRUDController extends BaseCRUDController<WorkReportT
     private void appendLabelType(Row row) {
         org.zkoss.zul.Label labelType = new org.zkoss.zul.Label();
         labelType.setParent(row);
-        labelType.setValue(((WorkReportLabelTypeAssigment) row.getValue())
-                .getLabelType().getName());
+        labelType.setValue(((WorkReportLabelTypeAssignment) row.getValue()).getLabelType().getName());
     }
 
     private void appendLabelPosition(Row row) {
         org.zkoss.zul.Label labelPosition = new org.zkoss.zul.Label();
         labelPosition.setParent(row);
-        labelPosition.setValue(_(workReportTypeModel.getLabelAssigmentPosition(
-                (WorkReportLabelTypeAssigment) row.getValue()).toString()));
+        labelPosition.setValue(_(workReportTypeModel.getLabelAssignmentPosition(row.getValue()).toString()));
     }
 
     private void appendLabel(Row row) {
         org.zkoss.zul.Label label = new org.zkoss.zul.Label();
         label.setParent(row);
-        label.setValue(((WorkReportLabelTypeAssigment) row.getValue())
-                .getDefaultLabel().getName());
+        label.setValue(((WorkReportLabelTypeAssignment) row.getValue()).getDefaultLabel().getName());
     }
 
     private void appendComboboxLabelTypes(final Row row) {
-        final WorkReportLabelTypeAssigment workReportLabelTypeAssigment = (WorkReportLabelTypeAssigment) row
-                .getValue();
+        final WorkReportLabelTypeAssignment workReportLabelTypeAssignment = row.getValue();
 
-        final Combobox comboLabelTypes = createComboboxLabelTypes(workReportLabelTypeAssigment);
+        final Combobox comboLabelTypes = createComboboxLabelTypes(workReportLabelTypeAssignment);
         comboLabelTypes.setParent(row);
 
-        comboLabelTypes.addEventListener(Events.ON_CHANGE, new EventListener() {
-            @Override
-            public void onEvent(Event event) {
-                changeLabelType(comboLabelTypes.getSelectedItem(),
-                        workReportLabelTypeAssigment);
-                validateIfExistTheSameLabelType(comboLabelTypes,
-                        workReportLabelTypeAssigment);
-                Util.reloadBindings(listWorkReportLabelTypeAssigments);
-            }
+        comboLabelTypes.addEventListener(Events.ON_CHANGE, (EventListener) event -> {
+            changeLabelType(comboLabelTypes.getSelectedItem(), workReportLabelTypeAssignment);
+            validateIfExistTheSameLabelType(comboLabelTypes, workReportLabelTypeAssignment);
+            Util.reloadBindings(listWorkReportLabelTypeAssignments);
         });
 
     }
 
     private void appendComboboxLabels(final Row row) {
-        final WorkReportLabelTypeAssigment workReportLabelTypeAssigment = (WorkReportLabelTypeAssigment) row
-                .getValue();
-        Comboitem selectedItemType = ((Autocomplete) row.getFirstChild())
-                .getSelectedItem();
+        final WorkReportLabelTypeAssignment workReportLabelTypeAssignment = row.getValue();
+        Comboitem selectedItemType = ((Autocomplete) row.getFirstChild()).getSelectedItem();
 
         LabelType selectedLabelType = null;
         if (selectedItemType != null) {
-            selectedLabelType = (LabelType) selectedItemType.getValue();
+            selectedLabelType = selectedItemType.getValue();
         }
 
-        final Combobox comboLabels = createComboboxLabels(selectedLabelType,
-                workReportLabelTypeAssigment);
+        final Combobox comboLabels = createComboboxLabels(selectedLabelType, workReportLabelTypeAssignment);
         comboLabels.setParent(row);
 
-        comboLabels.addEventListener(Events.ON_CHANGE, new EventListener() {
-            @Override
-            public void onEvent(Event event) {
-                changeLabel(comboLabels.getSelectedItem(),
-                        workReportLabelTypeAssigment);
-                Util.reloadBindings(listWorkReportLabelTypeAssigments);
-            }
+        comboLabels.addEventListener(Events.ON_CHANGE, (EventListener) event -> {
+            changeLabel(comboLabels.getSelectedItem(), workReportLabelTypeAssignment);
+            Util.reloadBindings(listWorkReportLabelTypeAssignments);
         });
     }
 
     private void appendComboboxPositionLabel(final Row row) {
-        final WorkReportLabelTypeAssigment workReportLabelTypeAssigment = (WorkReportLabelTypeAssigment) row
-                .getValue();
+        final WorkReportLabelTypeAssignment workReportLabelTypeAssignment = row.getValue();
 
         final Listbox listPosition = this.createListPosition();
         listPosition.setParent(row);
 
-        if (workReportLabelTypeAssigment.getLabelsSharedByLines()) {
+        if (workReportLabelTypeAssignment.getLabelsSharedByLines()) {
             listPosition.setSelectedItem(listPosition.getItemAtIndex(0));
         } else {
             listPosition.setSelectedItem(listPosition.getItemAtIndex(1));
         }
 
-        listPosition.addEventListener(Events.ON_SELECT, new EventListener() {
-            @Override
-            public void onEvent(Event event) {
-                changePositionLabel(listPosition.getSelectedItem(),
-                            workReportLabelTypeAssigment);
-                Util.reloadBindings(listWorkReportLabelTypeAssigments);
-            }
+        listPosition.addEventListener(Events.ON_SELECT, (EventListener) event -> {
+            changePositionLabel(listPosition.getSelectedItem(), workReportLabelTypeAssignment);
+            Util.reloadBindings(listWorkReportLabelTypeAssignments);
         });
 
     }
 
-    private void appendRemoveButtonWorkReportLabelTypeAssigment(final Row row) {
-        final WorkReportLabelTypeAssigment workReportLabelTypeAssigment = (WorkReportLabelTypeAssigment) row
-                .getValue();
+    private void appendRemoveButtonWorkReportLabelTypeAssignment(final Row row) {
+        final WorkReportLabelTypeAssignment workReportLabelTypeAssignment = row.getValue();
         final Button removeButton = createRemoveButton();
         removeButton.setParent(row);
 
-        removeButton.addEventListener(Events.ON_CLICK, new EventListener() {
-            @Override
-            public void onEvent(Event event) {
-                removeWorkReportLabelTypeAssigment(workReportLabelTypeAssigment);
-            }
-        });
+        removeButton.addEventListener(
+                Events.ON_CLICK,
+                (EventListener) event -> removeWorkReportLabelTypeAssignment(workReportLabelTypeAssignment));
     }
 
-    private Autocomplete createComboboxLabelTypes(
-            WorkReportLabelTypeAssigment workReportLabelTypeAssigment) {
+    private Autocomplete createComboboxLabelTypes(WorkReportLabelTypeAssignment workReportLabelTypeAssignment) {
         Autocomplete comboLabelTypes = new Autocomplete();
         comboLabelTypes.setButtonVisible(true);
 
@@ -513,67 +466,65 @@ public class WorkReportTypeCRUDController extends BaseCRUDController<WorkReportT
             comboItem.setLabel(labelType.getName());
             comboItem.setParent(comboLabelTypes);
 
-            if ((workReportLabelTypeAssigment.getLabelType() != null)
-                    && (workReportLabelTypeAssigment.getLabelType()
-                            .equals(labelType))) {
+            if ( (workReportLabelTypeAssignment.getLabelType() != null) &&
+                    (workReportLabelTypeAssignment.getLabelType().equals(labelType)) ) {
+
                 comboLabelTypes.setSelectedItem(comboItem);
             }
         }
+
         return comboLabelTypes;
     }
 
     private Autocomplete createComboboxLabels(LabelType labelType,
-            WorkReportLabelTypeAssigment workReportLabelTypeAssigment) {
+                                              WorkReportLabelTypeAssignment workReportLabelTypeAssignment) {
+
         Autocomplete comboLabels = new Autocomplete();
         comboLabels.setButtonVisible(true);
 
         if (labelType != null) {
-            final List<Label> listLabel = this.getMapLabelTypes()
-                    .get(labelType);
+            final List<Label> listLabel = this.getMapLabelTypes().get(labelType);
             for (Label label : listLabel) {
                 Comboitem comboItem = new Comboitem();
                 comboItem.setValue(label);
                 comboItem.setLabel(label.getName());
                 comboItem.setParent(comboLabels);
 
-                if ((workReportLabelTypeAssigment.getDefaultLabel() != null)
-                        && (workReportLabelTypeAssigment.getDefaultLabel()
-                                .equals(label))) {
+                if ( (workReportLabelTypeAssignment.getDefaultLabel() != null) &&
+                        (workReportLabelTypeAssignment.getDefaultLabel().equals(label)) ) {
                     comboLabels.setSelectedItem(comboItem);
                 }
             }
         }
+
         return comboLabels;
     }
 
-    private void changePositionLabel(Listitem selectedItem,
-            WorkReportLabelTypeAssigment workReportLabelTypeAssigment) {
-        PositionInWorkReportEnum newPosition = (PositionInWorkReportEnum) selectedItem
-                .getValue();
-        workReportTypeModel.setLabelAssigmentPosition(
-                workReportLabelTypeAssigment, newPosition);
+    private void changePositionLabel(Listitem selectedItem, WorkReportLabelTypeAssignment workReportLabelTypeAssignment) {
+        PositionInWorkReportEnum newPosition = selectedItem.getValue();
+        workReportTypeModel.setLabelAssignmentPosition(workReportLabelTypeAssignment, newPosition);
     }
 
-    private void changeLabelType(Comboitem selectedItem,
-            WorkReportLabelTypeAssigment workReportLabelTypeAssigment) {
+    private void changeLabelType(Comboitem selectedItem, WorkReportLabelTypeAssignment workReportLabelTypeAssignment) {
         LabelType labelType = null;
         if (selectedItem != null) {
-            labelType = (LabelType) selectedItem.getValue();
+            labelType = selectedItem.getValue();
         }
-        workReportLabelTypeAssigment.setLabelType(labelType);
-        workReportLabelTypeAssigment.setDefaultLabel(null);
+        workReportLabelTypeAssignment.setLabelType(labelType);
+        workReportLabelTypeAssignment.setDefaultLabel(null);
     }
 
-    private void changeLabel(Comboitem selectedItem,
-            WorkReportLabelTypeAssigment workReportLabelTypeAssigment) {
+    private void changeLabel(Comboitem selectedItem, WorkReportLabelTypeAssignment workReportLabelTypeAssignment) {
         Label defaultLabel = null;
         if (selectedItem != null) {
-            defaultLabel = (Label) selectedItem.getValue();
+            defaultLabel = selectedItem.getValue();
         }
-        workReportLabelTypeAssigment.setDefaultLabel(defaultLabel);
+        workReportLabelTypeAssignment.setDefaultLabel(defaultLabel);
     }
 
-    /* Operations to manage the requiremts fields */
+    /**
+     * Operations to manage the requirements fields
+     */
 
     public HoursManagementEnum[] getHoursManagementEnums() {
         return HoursManagementEnum.values();
@@ -601,103 +552,85 @@ public class WorkReportTypeCRUDController extends BaseCRUDController<WorkReportT
 
     public PositionInWorkReportEnum getOrderElementPosition() {
         return workReportTypeModel.getOrderElementPosition();
-     }
+    }
 
     public void setOrderElementPosition(PositionInWorkReportEnum position) {
         workReportTypeModel.setOrderElementPosition(position);
     }
 
-    /* Operations to the data validations */
+    /**
+     * Operations to the data validations.
+     */
 
     public Constraint validateWorkReportTypeName() {
-        return new Constraint() {
-            @Override
-            public void validate(Component comp, Object value)
-                    throws WrongValueException {
-                try {
-                    workReportTypeModel
-                            .validateWorkReportTypeName((String) value);
-                } catch (IllegalArgumentException e) {
-                    throw new WrongValueException(comp, _(e.getMessage()));
-                }
+        return (comp, value) -> {
+            try {
+                workReportTypeModel.validateWorkReportTypeName((String) value);
+            } catch (IllegalArgumentException e) {
+                throw new WrongValueException(comp, _(e.getMessage()));
             }
         };
     }
 
     public Constraint validateWorkReportTypeCode() {
-        return new Constraint() {
-            @Override
-            public void validate(Component comp, Object value)
-                    throws WrongValueException {
-                try {
-                    workReportTypeModel
-                            .validateWorkReportTypeCode((String) value);
-                } catch (IllegalArgumentException e) {
-                    throw new WrongValueException(comp, _(e.getMessage()));
-                }
+        return (comp, value) -> {
+            try {
+                workReportTypeModel.validateWorkReportTypeCode((String) value);
+            } catch (IllegalArgumentException e) {
+                throw new WrongValueException(comp, _(e.getMessage()));
             }
         };
     }
 
-    public void validateIfExistTheSameLabelType(final Combobox comboLabelTypes,
-            final WorkReportLabelTypeAssigment workReportLabelTypeAssigment)
+    public void validateIfExistTheSameLabelType(
+            final Combobox comboLabelTypes, final WorkReportLabelTypeAssignment workReportLabelTypeAssignment)
             throws WrongValueException {
-        if ((getWorkReportType() != null)
-                && (getWorkReportType()
-                        .existRepeatedLabelType(workReportLabelTypeAssigment))) {
-            workReportLabelTypeAssigment.setLabelType(null);
-            throw new WrongValueException(
-                    comboLabelTypes,
-                    _("Label type already assigned"));
+
+        if ( (getWorkReportType() != null) &&
+                (getWorkReportType().existRepeatedLabelType(workReportLabelTypeAssignment)) ) {
+
+            workReportLabelTypeAssignment.setLabelType(null);
+            throw new WrongValueException(comboLabelTypes, _("Label type already assigned"));
         }
     }
 
-    public Constraint validateIfExistTheSameFieldName(
-            final DescriptionField descriptionField) {
-        return new Constraint() {
-            @Override
-            public void validate(Component comp, Object value)
-                    throws WrongValueException {
-                descriptionField.setFieldName((String) value);
-                if ((getWorkReportType() != null)
-                        && (getWorkReportType()
-                                .existSameFieldName(descriptionField))) {
-                    descriptionField.setFieldName(null);
-                    throw new WrongValueException(
-                            comp,
-                            _("A description field with the same name already exists."));
-                }
+    public Constraint validateIfExistTheSameFieldName(final DescriptionField descriptionField) {
+        return (comp, value) -> {
+            descriptionField.setFieldName((String) value);
+            if ((getWorkReportType() != null) && (getWorkReportType().existSameFieldName(descriptionField))) {
+                descriptionField.setFieldName(null);
+                throw new WrongValueException(comp, _("A description field with the same name already exists."));
             }
         };
     }
 
     private boolean isAllValid() {
-        // validate workReportType name
+        // Validate workReportType name
         if (!name.isValid()) {
             selectTab(tabReportStructure);
             showInvalidWorkReportTypeName();
+
             return false;
         }
 
         if (!code.isValid()) {
             selectTab(tabReportStructure);
             showInvalidWorkReportTypeCode();
+
             return false;
         }
 
-        // validate the descriptionFields and the WorkReportLabelTypeAssigments
-        if (!((validateDescriptionFields()) && (validateWorkReportLabelTypeAssigments()))) {
-            return false;
-        }
-        return validateIndexLabelsAndFields();
+        // Validate the descriptionFields and the WorkReportLabelTypeAssignments
+        return ((validateDescriptionFields()) && (validateWorkReportLabelTypeAssignments())) &&
+                validateIndexLabelsAndFields();
     }
 
     private boolean validateDescriptionFields() {
-        DescriptionField descriptionField = workReportTypeModel
-                .validateFieldNameLineFields();
+        DescriptionField descriptionField = workReportTypeModel.validateFieldNameLineFields();
         if (descriptionField != null) {
             selectTab(tabReportStructure);
             showInvalidDescriptionFieldName(descriptionField);
+
             return false;
         }
 
@@ -705,31 +638,32 @@ public class WorkReportTypeCRUDController extends BaseCRUDController<WorkReportT
         if (descriptionField != null) {
             selectTab(tabReportStructure);
             showInvalidDescriptionFieldLength(descriptionField);
+
             return false;
         }
+
         return true;
     }
 
-    private boolean validateWorkReportLabelTypeAssigments() {
-        WorkReportLabelTypeAssigment labelTypeAssigment = workReportTypeModel
-                .validateLabelTypes();
-        if (labelTypeAssigment != null) {
+    private boolean validateWorkReportLabelTypeAssignments() {
+        WorkReportLabelTypeAssignment labelTypeAssignment = workReportTypeModel.validateLabelTypes();
+        if (labelTypeAssignment != null) {
             selectTab(tabReportStructure);
             String errorMessage = "The label type must unique and not null.";
-            showInvalidWorkReportLabelTypeAssigment(0, errorMessage,
-                    labelTypeAssigment);
+            showInvalidWorkReportLabelTypeAssignment(0, errorMessage, labelTypeAssignment);
+
             return false;
         }
 
-        WorkReportLabelTypeAssigment labelAssigment = workReportTypeModel
-                .validateLabels();
-        if (labelAssigment != null) {
+        WorkReportLabelTypeAssignment labelAssignment = workReportTypeModel.validateLabels();
+        if (labelAssignment != null) {
             selectTab(tabReportStructure);
             String errorMessage = "The label must not null.";
-            showInvalidWorkReportLabelTypeAssigment(2, errorMessage,
-                    labelAssigment);
+            showInvalidWorkReportLabelTypeAssignment(2, errorMessage, labelAssignment);
+
             return false;
         }
+
         return true;
     }
 
@@ -737,8 +671,10 @@ public class WorkReportTypeCRUDController extends BaseCRUDController<WorkReportT
         if (!workReportTypeModel.validateTheIndexFieldsAndLabels()) {
             selectTab(tabSortedLabelsAndFields);
             showMessageSortedLabelsAndFields();
+
             return false;
         }
+
         return true;
     }
 
@@ -761,34 +697,45 @@ public class WorkReportTypeCRUDController extends BaseCRUDController<WorkReportT
     private void showInvalidDescriptionFieldName(DescriptionField field) {
         // Find which row contains the description field inside grid
         Row row = findRowByValue(listDescriptionFields.getRows(), field);
-            Textbox fieldName = (Textbox) row.getFirstChild();
-        throw new WrongValueException(fieldName,
-                _("The field name must be unique and not empty"));
+        Textbox fieldName = null;
+        if (row != null) {
+            fieldName = (Textbox) row.getFirstChild();
+        }
+        throw new WrongValueException(fieldName, _("The field name must be unique and not empty"));
     }
 
     private void showInvalidDescriptionFieldLength(DescriptionField field) {
         // Find which row contains the description field inside grid
         Row row = findRowByValue(listDescriptionFields.getRows(), field);
-        Intbox fieldName = (Intbox) row.getChildren().get(1);
-        throw new WrongValueException(fieldName,
-                _("The length must be greater than 0 and not empty"));
+        Intbox fieldName = null;
+        if (row != null) {
+            fieldName = (Intbox) row.getChildren().get(1);
+        }
+        throw new WrongValueException(fieldName, _("The length must be greater than 0 and not empty"));
     }
 
-    private void showInvalidWorkReportLabelTypeAssigment(int combo,
-            String message, WorkReportLabelTypeAssigment labelType) {
-        Row row = findRowByValue(listWorkReportLabelTypeAssigments.getRows(),
-                labelType);
-        Combobox comboLabelType = (Combobox) row.getChildren().get(combo);
+    private void showInvalidWorkReportLabelTypeAssignment(int combo,
+                                                          String message,
+                                                          WorkReportLabelTypeAssignment labelType) {
+
+        Row row = findRowByValue(listWorkReportLabelTypeAssignments.getRows(), labelType);
+        Combobox comboLabelType = null;
+        if (row != null) {
+            comboLabelType = (Combobox) row.getChildren().get(combo);
+        }
+
         throw new WrongValueException(comboLabelType, _(message));
     }
 
     private Row findRowByValue(Rows rows, Object value) {
-        List<Row> listRows = (List<Row>) rows.getChildren();
+        List<Row> listRows = rows.getChildren();
+
         for (Row row : listRows) {
             if (value.equals(row.getValue())) {
                 return row;
             }
         }
+
         return null;
     }
 
@@ -807,32 +754,32 @@ public class WorkReportTypeCRUDController extends BaseCRUDController<WorkReportT
     }
 
     public OrderedFieldsAndLabelsRowRenderer getOrderedFieldsAndLabelsRowRenderer() {
-        return orderedFieldsAndLabesRowRenderer;
+        return orderedFieldsAndLabelsRowRenderer;
     }
 
     public class OrderedFieldsAndLabelsRowRenderer implements RowRenderer {
 
         @Override
-        public void render(Row row, Object data) {
+        public void render(Row row, Object data, int i) {
             row.setValue(data);
 
             String name = _("Unallocated name");
             String type;
             if (data instanceof DescriptionField) {
-                if ((((DescriptionField) data).getFieldName() != null)
-                        || (!((DescriptionField) data).getFieldName().isEmpty())) {
+
+                if ( (((DescriptionField) data).getFieldName() != null) ||
+                        (!((DescriptionField) data).getFieldName().isEmpty()) ) {
+
                     name = ((DescriptionField) data).getFieldName();
                 }
                 type = _("Text field");
             } else {
-                if((((WorkReportLabelTypeAssigment) data)
-                        .getLabelType() != null)
-                        && (((WorkReportLabelTypeAssigment) data)
-                                .getDefaultLabel() != null)) {
-                    String labelType = ((WorkReportLabelTypeAssigment) data)
-                        .getLabelType().getName();
-                    String label = ((WorkReportLabelTypeAssigment) data)
-                        .getDefaultLabel().getName();
+
+                if ( (((WorkReportLabelTypeAssignment) data).getLabelType() != null) &&
+                        (((WorkReportLabelTypeAssignment) data).getDefaultLabel() != null) ) {
+
+                    String labelType = ((WorkReportLabelTypeAssignment) data).getLabelType().getName();
+                    String label = ((WorkReportLabelTypeAssignment) data).getDefaultLabel().getName();
                     name = labelType + " :: " + label;
                 }
                 type = _("Label");
@@ -858,46 +805,34 @@ public class WorkReportTypeCRUDController extends BaseCRUDController<WorkReportT
         downbutton.setHoverImage("/common/img/ico_subir.png");
         downbutton.setParent(hbox);
         downbutton.setSclass("icono");
-        downbutton.addEventListener(Events.ON_CLICK, new EventListener() {
-            @Override
-            public void onEvent(Event event) {
-                boolean intoHeading = intoHeading(row.getGrid());
-                workReportTypeModel.upFieldOrLabel(row.getValue(), intoHeading);
-                Util.reloadBindings(row.getGrid());
-            }
+        downbutton.addEventListener(Events.ON_CLICK, (EventListener) event -> {
+            boolean intoHeading = intoHeading(row.getGrid());
+            workReportTypeModel.upFieldOrLabel(row.getValue(), intoHeading);
+            Util.reloadBindings(row.getGrid());
         });
 
         Button upbutton = new Button("", "/common/img/ico_bajar1.png");
         upbutton.setHoverImage("/common/img/ico_bajar.png");
         upbutton.setParent(hbox);
         upbutton.setSclass("icono");
-        upbutton.addEventListener(Events.ON_CLICK, new EventListener() {
-            @Override
-            public void onEvent(Event event) {
-                boolean intoHeading = intoHeading(row.getGrid());
-                workReportTypeModel.downFieldOrLabel(row.getValue(),
-                        intoHeading);
-                Util.reloadBindings(row.getGrid());
-            }
+        upbutton.addEventListener(Events.ON_CLICK, (EventListener) event -> {
+            boolean intoHeading = intoHeading(row.getGrid());
+            workReportTypeModel.downFieldOrLabel(row.getValue(), intoHeading);
+            Util.reloadBindings(row.getGrid());
         });
 
     }
 
     private boolean intoHeading(Grid grid) {
-        if (grid.getId().equals("linesFieldsAndLabels")) {
-            return false;
-        } else {
-            return true;
-        }
+        return !grid.getId().equals("linesFieldsAndLabels");
     }
 
     private void showMessageSortedLabelsAndFields() {
         reloadOrderedListFieldsAndLabels();
         if (messagesForUserSortedLabelsAndFields != null) {
-            messagesForUserSortedLabelsAndFields
-                    .showMessage(
-                            Level.ERROR,
-                            _("Index fields and labels must be unique and consecutive"));
+            messagesForUserSortedLabelsAndFields.showMessage(
+                    Level.ERROR,
+                    _("Index fields and labels must be unique and consecutive"));
         }
     }
 
@@ -908,8 +843,7 @@ public class WorkReportTypeCRUDController extends BaseCRUDController<WorkReportT
     }
 
     public void sortWorkReportTypes() {
-        Column columnName = (Column) listWindow
-                .getFellow("workReportTypeName");
+        Column columnName = (Column) listWindow.getFellow("workReportTypeName");
         if (columnName != null) {
             if (columnName.getSortDirection().equals("ascending")) {
                 columnName.sort(false, false);
@@ -924,7 +858,7 @@ public class WorkReportTypeCRUDController extends BaseCRUDController<WorkReportT
     public void onCheckGenerateCode(Event e) {
         CheckEvent ce = (CheckEvent) e;
         if (ce.isChecked()) {
-            // we have to auto-generate the code for new objects
+            // We have to auto-generate the code for new objects
             try {
                 workReportTypeModel.setCodeAutogenerated(ce.isChecked());
             } catch (ConcurrentModificationException err) {
@@ -964,22 +898,19 @@ public class WorkReportTypeCRUDController extends BaseCRUDController<WorkReportT
     @Override
     protected boolean beforeDeleting(WorkReportType workReportType) {
         if (thereAreWorkReportsFor(workReportType)) {
-            try {
-                Messagebox
-                        .show(_("Cannot delete timesheet template. There are some timesheets bound to it."),
-                                _("Warning"), Messagebox.OK, Messagebox.EXCLAMATION);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+            Messagebox.show(
+                    _("Cannot delete timesheet template. There are some timesheets bound to it."),
+                    _("Warning"), Messagebox.OK, Messagebox.EXCLAMATION);
             return false;
         }
+
         return true;
     }
 
     @Override
-    protected void delete(WorkReportType workReportType)
-            throws InstanceNotFoundException {
+    protected void delete(WorkReportType workReportType) throws InstanceNotFoundException {
         workReportTypeModel.confirmRemove(workReportType);
+
         final Grid workReportTypes = (Grid) listWindow.getFellowIfAny("listing");
         if (workReportTypes != null) {
             Util.reloadBindings(workReportTypes);

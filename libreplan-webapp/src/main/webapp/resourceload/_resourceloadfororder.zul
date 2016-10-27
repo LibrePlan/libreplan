@@ -21,10 +21,11 @@
 
 <zk>
 
-    <zscript><![CDATA[
-        resourceLoad = arg.get("resourceLoadController");
-    ]]>
+    <zscript>
+        <![CDATA[
+            resourceLoad = arg.get("resourceLoadController");
+        ]]>
     </zscript>
-    <div apply="${resourceLoad}" self="@{define(content)}">
-    </div>
+
+    <div apply="${resourceLoad}" sclass="resourceLoadForOrder" style="height: 100%" self="@{define(content)}"/>
 </zk>

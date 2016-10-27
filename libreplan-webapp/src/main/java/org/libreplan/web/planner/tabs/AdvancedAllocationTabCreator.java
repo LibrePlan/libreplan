@@ -62,24 +62,24 @@ import org.zkoss.zul.Label;
  */
 public class AdvancedAllocationTabCreator {
 
-    private static final org.apache.commons.logging.Log LOG = LogFactory
-            .getLog(AdvancedAllocationTabCreator.class);
+    private static final org.apache.commons.logging.Log LOG = LogFactory.getLog(AdvancedAllocationTabCreator.class);
 
-    private final class ResultReceiver implements
-            IAdvanceAllocationResultReceiver {
+    private final class ResultReceiver implements IAdvanceAllocationResultReceiver {
 
         private final CalculatedValue calculatedValue;
+
         private final AggregateOfResourceAllocations aggregate;
+
         private AllocationResult allocationResult;
+
         private final Task task;
+
         private final PlanningState planningState;
 
-        public ResultReceiver(PlanningState planningState,
-                Task task) {
+        public ResultReceiver(PlanningState planningState, Task task) {
             this.planningState = planningState;
             this.calculatedValue = task.getCalculatedValue();
-            this.allocationResult = AllocationResult.createCurrent(
-                    planningState.getCurrentScenario(), task);
+            this.allocationResult = AllocationResult.createCurrent(planningState.getCurrentScenario(), task);
             this.aggregate = this.allocationResult.getAggregate();
             this.task = task;
         }
@@ -100,8 +100,7 @@ public class AdvancedAllocationTabCreator {
                 @Override
                 public LocalDate getStart() {
                     if (aggregate.isEmpty()) {
-                        LOG.info("the aggregate for task " + task.getName()
-                                + " is empty");
+                        LOG.info("the aggregate for task " + task.getName() + " is empty");
                         return task.getStartAsLocalDate();
                     }
                     return aggregate.getStart().getDate();
@@ -110,8 +109,7 @@ public class AdvancedAllocationTabCreator {
                 @Override
                 public LocalDate getEnd() {
                     if (aggregate.isEmpty()) {
-                        LOG.info("the aggregate for task " + task.getName()
-                                + " is empty");
+                        LOG.info("the aggregate for task " + task.getName() + " is empty");
                         return task.getEndAsLocalDate();
                     }
                     return aggregate.getEnd().asExclusiveEnd();
@@ -126,13 +124,12 @@ public class AdvancedAllocationTabCreator {
 
         @Override
         public void cancel() {
-            // do nothing
+            // Do nothing
         }
 
         @Override
         public void accepted(AggregateOfResourceAllocations modifiedAllocations) {
-            Validate
-                    .isTrue(allocationResult.getAggregate() == modifiedAllocations);
+            Validate.isTrue(allocationResult.getAggregate() == modifiedAllocations);
             allocationResult.applyTo(planningState.getCurrentScenario(), task);
             if (task.isManualAnyAllocation()) {
                 Task.convertOnStartInFixedDate(task);
@@ -154,25 +151,33 @@ public class AdvancedAllocationTabCreator {
     }
 
     private final String ADVANCED_ALLOCATION_VIEW = _("Advanced Allocation");
+
     private final Mode mode;
+
     private final IAdHocTransactionService adHocTransactionService;
+
     private AdvancedAllocationController advancedAllocationController;
+
     private final IBack onBack;
+
     private final PlanningStateCreator planningStateCreator;
+
     private final Component breadcrumbs;
 
     public static ITab create(final Mode mode,
-            IAdHocTransactionService adHocTransactionService,
-            PlanningStateCreator planningStateCreator, IBack onBack,
-            Component breadcrumbs) {
-        return new AdvancedAllocationTabCreator(mode, adHocTransactionService,
-                planningStateCreator, onBack, breadcrumbs).build();
+                              IAdHocTransactionService adHocTransactionService,
+                              PlanningStateCreator planningStateCreator,
+                              IBack onBack,
+                              Component breadcrumbs) {
+
+        return new AdvancedAllocationTabCreator(
+                mode, adHocTransactionService, planningStateCreator, onBack, breadcrumbs).build();
     }
 
     private AdvancedAllocationTabCreator(Mode mode,
-            IAdHocTransactionService adHocTransactionService,
-            PlanningStateCreator planningStateCreator, IBack onBack,
-            Component breadcrumbs) {
+                                         IAdHocTransactionService adHocTransactionService,
+                                         PlanningStateCreator planningStateCreator, IBack onBack,
+                                         Component breadcrumbs) {
         Validate.notNull(mode);
         Validate.notNull(adHocTransactionService);
         Validate.notNull(onBack);
@@ -191,28 +196,23 @@ public class AdvancedAllocationTabCreator {
 
         @Override
         public Component create(final Component parent) {
-            return adHocTransactionService
-                    .runOnReadOnlyTransaction(new IOnTransaction<Component>() {
-                        @Override
-                        public Component execute() {
-                            planningState = createPlanningState(parent,
-                                    mode.getOrder());
-                            return createComponent(parent, planningState);
-                        }
+            return adHocTransactionService.runOnReadOnlyTransaction(new IOnTransaction<Component>() {
+                @Override
+                public Component execute() {
+                    planningState = createPlanningState(parent, mode.getOrder());
 
-                        private PlanningState createPlanningState(
-                                final Component parent, Order order) {
-                            return planningStateCreator.retrieveOrCreate(
-                                    parent.getDesktop(), order);
-                        }
+                    return createComponent(parent, planningState);
+                }
 
-                    });
+                private PlanningState createPlanningState(final Component parent, Order order) {
+                    return planningStateCreator.retrieveOrCreate(parent.getDesktop(), order);
+                }
+            });
         }
 
         public PlanningState getState() {
             if (planningState == null) {
-                throw new IllegalStateException(
-                        "the planningState has not been created yet");
+                throw new IllegalStateException("the planningState has not been created yet");
             }
             return planningState;
         }
@@ -222,9 +222,11 @@ public class AdvancedAllocationTabCreator {
     private ITab build() {
         final AdvanceAssignmentCreator advanceAllocationComponentCreator = new AdvanceAssignmentCreator();
 
-        return new CreatedOnDemandTab(ADVANCED_ALLOCATION_VIEW,
+        return new CreatedOnDemandTab(
+                ADVANCED_ALLOCATION_VIEW,
                 "advanced-allocation",
                 advanceAllocationComponentCreator) {
+
             private boolean firstTime = true;
 
             @Override
@@ -241,47 +243,44 @@ public class AdvancedAllocationTabCreator {
                     firstTime = false;
                     return;
                 }
-                adHocTransactionService
-                        .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
-
-                            @Override
-                            public Void execute() {
-                                resetController(advanceAllocationComponentCreator
-                                        .getState());
-                                return null;
-                            }
-                        });
+                adHocTransactionService.runOnReadOnlyTransaction(new IOnTransaction<Void>() {
+                    @Override
+                    public Void execute() {
+                        resetController(advanceAllocationComponentCreator.getState());
+                        return null;
+                    }
+                });
             }
         };
     }
 
-    private Component createComponent(final Component parent,
-            PlanningState planningState) {
-        return Executions.createComponents("advance_allocation.zul", parent,
-                argsWithController(planningState));
+    private Component createComponent(final Component parent, PlanningState planningState) {
+        return Executions.createComponents("advance_allocation.zul", parent, argsWithController(planningState));
     }
 
 
     private Map<String, Object> argsWithController(PlanningState planningState) {
-        Map<String, Object> result = new HashMap<String, Object>();
+        Map<String, Object> result = new HashMap<>();
+
         advancedAllocationController = new AdvancedAllocationController(
-                planningState.getOrder(), onBack,
+                planningState.getOrder(),
+                onBack,
                 createAllocationInputsFor(planningState));
+
         result.put("advancedAllocationController", advancedAllocationController);
+
         return result;
     }
 
-    private List<AllocationInput> createAllocationInputsFor(
-            PlanningState planningState) {
+    private List<AllocationInput> createAllocationInputsFor(PlanningState planningState) {
         planningState.reattach();
         planningState.reassociateResourcesWithSession();
         return createAllocationsWithOrderReloaded(planningState);
     }
 
-    private List<AllocationInput> createAllocationsWithOrderReloaded(
-            PlanningState planningState) {
+    private List<AllocationInput> createAllocationsWithOrderReloaded(PlanningState planningState) {
         List<Task> allTasks = planningState.getAllTasks();
-        List<AllocationInput> result = new ArrayList<AllocationInput>();
+        List<AllocationInput> result = new ArrayList<>();
         for (Task each : allTasks) {
             if (each.hasSomeSatisfiedAllocation()) {
                 result.add(createAllocationInputFor(planningState, each));
@@ -290,16 +289,13 @@ public class AdvancedAllocationTabCreator {
         return result;
     }
 
-    private AllocationInput createAllocationInputFor(
-            PlanningState planningState, Task task) {
+    private AllocationInput createAllocationInputFor(PlanningState planningState, Task task) {
         ResultReceiver resultReceiver = new ResultReceiver(planningState, task);
-        return new AllocationInput(resultReceiver.getAggregate(), task,
-                resultReceiver);
+        return new AllocationInput(resultReceiver.getAggregate(), task, resultReceiver);
     }
 
     private void resetController(PlanningState planningState) {
-        advancedAllocationController.reset(planningState.getOrder(), onBack,
-                createAllocationInputsFor(planningState));
+        advancedAllocationController.reset(planningState.getOrder(), onBack, createAllocationInputsFor(planningState));
     }
 
 }

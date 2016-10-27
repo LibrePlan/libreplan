@@ -69,6 +69,7 @@ import org.springframework.transaction.annotation.Transactional;
  * Model for operations related with report advances.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Bogdan Bodnarjuk <b.bodnarjuk@libreplan-enterprise.com>
  */
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -88,10 +89,10 @@ public class ReportAdvancesModel implements IReportAdvancesModel {
     @Override
     @Transactional(readOnly = true)
     public List<Order> getOrdersWithExternalCodeInAnyOrderElement() {
-        List<OrderElement> orderElements = orderElementDAO
-                .findOrderElementsWithExternalCode();
+        List<OrderElement> orderElements = orderElementDAO.findOrderElementsWithExternalCode();
 
-        Map<Long, Order> ordersMap = new HashMap<Long, Order>();
+        Map<Long, Order> ordersMap = new HashMap<>();
+
         for (OrderElement orderElement : orderElements) {
             Order order = orderDAO.loadOrderAvoidingProxyFor(orderElement);
             if (ordersMap.get(order.getId()) == null) {
@@ -102,7 +103,7 @@ public class ReportAdvancesModel implements IReportAdvancesModel {
             }
         }
 
-        return new ArrayList<Order>(ordersMap.values());
+        return new ArrayList<>(ordersMap.values());
     }
 
     private void forceLoadAskedEndDate(Order order) {
@@ -111,6 +112,7 @@ public class ReportAdvancesModel implements IReportAdvancesModel {
 
     private void forceLoadHoursGroups(OrderElement orderElement) {
         orderElement.getHoursGroups().size();
+
         for (OrderElement child : orderElement.getChildren()) {
             forceLoadHoursGroups(child);
         }
@@ -119,15 +121,13 @@ public class ReportAdvancesModel implements IReportAdvancesModel {
     private void forceLoadAdvanceAssignments(Order order) {
         order.getDirectAdvanceAssignmentOfTypeSubcontractor();
         if (order.getDirectAdvanceAssignmentOfTypeSubcontractor() != null) {
-            order.getDirectAdvanceAssignmentOfTypeSubcontractor()
-                .getAdvanceMeasurements().size();
+            order.getDirectAdvanceAssignmentOfTypeSubcontractor().getAdvanceMeasurements().size();
         }
     }
 
     @Override
     @Transactional(readOnly = true)
-    public AdvanceMeasurement getLastAdvanceMeasurement(
-            DirectAdvanceAssignment directAdvanceAssignment) {
+    public AdvanceMeasurement getLastAdvanceMeasurement(DirectAdvanceAssignment directAdvanceAssignment) {
         if (directAdvanceAssignment == null) {
             return null;
         }
@@ -137,58 +137,55 @@ public class ReportAdvancesModel implements IReportAdvancesModel {
 
     @Override
     @Transactional(readOnly = true)
-    public AdvanceMeasurement getLastAdvanceMeasurementReported(
-            DirectAdvanceAssignment directAdvanceAssignment) {
+    public AdvanceMeasurement getLastAdvanceMeasurementReported(DirectAdvanceAssignment directAdvanceAssignment) {
         if (directAdvanceAssignment == null) {
             return null;
         }
 
         AdvanceMeasurement lastAdvanceMeasurementReported = null;
-        for (AdvanceMeasurement advanceMeasurement : directAdvanceAssignment
-                .getAdvanceMeasurements()) {
-                if (advanceMeasurement.getCommunicationDate() != null) {
-                    if (lastAdvanceMeasurementReported == null) {
+        for (AdvanceMeasurement advanceMeasurement : directAdvanceAssignment.getAdvanceMeasurements()) {
+            if (advanceMeasurement.getCommunicationDate() != null) {
+                if (lastAdvanceMeasurementReported == null) {
+                    lastAdvanceMeasurementReported = advanceMeasurement;
+                } else {
+                    if (advanceMeasurement.getCommunicationDate()
+                            .compareTo(
+                                    lastAdvanceMeasurementReported
+                                            .getCommunicationDate()) > 0) {
                         lastAdvanceMeasurementReported = advanceMeasurement;
-                    } else {
-                        if (advanceMeasurement.getCommunicationDate()
-                                .compareTo(
-                                        lastAdvanceMeasurementReported
-                                                .getCommunicationDate()) > 0) {
-                            lastAdvanceMeasurementReported = advanceMeasurement;
-                        }
                     }
                 }
             }
+        }
 
         return lastAdvanceMeasurementReported;
     }
 
     @Override
     @Transactional(readOnly = true)
-    public boolean isAnyAdvanceMeasurementNotReported(
-            DirectAdvanceAssignment directAdvanceAssignment) {
+    public boolean isAnyAdvanceMeasurementNotReported(DirectAdvanceAssignment directAdvanceAssignment) {
         if (directAdvanceAssignment == null) {
             return false;
         }
 
-        for (AdvanceMeasurement advanceMeasurement : directAdvanceAssignment
-                .getAdvanceMeasurements()) {
+        for (AdvanceMeasurement advanceMeasurement : directAdvanceAssignment.getAdvanceMeasurements()) {
             if (advanceMeasurement.getCommunicationDate() == null) {
                 return true;
             }
         }
+
         return false;
     }
 
     @Override
-    @Transactional(rollbackFor = { ConnectionProblemsException.class,
-            UnrecoverableErrorServiceException.class })
+    @Transactional(rollbackFor = { ConnectionProblemsException.class, UnrecoverableErrorServiceException.class })
     public void sendAdvanceMeasurements(Order order)
-            throws UnrecoverableErrorServiceException,
-            ConnectionProblemsException {
+            throws UnrecoverableErrorServiceException, ConnectionProblemsException {
         orderDAO.save(order);
 
-        OrderElementWithAdvanceMeasurementsOrEndDateListDTO orderElementWithAdvanceMeasurementsListDTO = getOrderElementWithAdvanceMeasurementsListDTO(order);
+        OrderElementWithAdvanceMeasurementsOrEndDateListDTO orderElementWithAdvanceMeasurementsListDTO =
+                getOrderElementWithAdvanceMeasurementsListDTO(order);
+
         ExternalCompany externalCompany = order.getCustomer();
 
         NaiveTrustProvider.setAlwaysTrust(true);
@@ -197,21 +194,23 @@ public class ReportAdvancesModel implements IReportAdvancesModel {
 
         client.path("ws/rest/subcontracting/reportadvances");
 
-        Util.addAuthorizationHeader(client, externalCompany
-                .getOurCompanyLogin(), externalCompany.getOurCompanyPassword());
+        Util.addAuthorizationHeader(client,
+                externalCompany.getOurCompanyLogin(), externalCompany.getOurCompanyPassword());
 
         try {
             InstanceConstraintViolationsListDTO instanceConstraintViolationsListDTO = client
                     .post(orderElementWithAdvanceMeasurementsListDTO,
                             InstanceConstraintViolationsListDTO.class);
 
-            List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = instanceConstraintViolationsListDTO.instanceConstraintViolationsList;
-            if ((instanceConstraintViolationsList != null)
-                    && (!instanceConstraintViolationsList.isEmpty())) {
+            List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
+                    instanceConstraintViolationsListDTO.instanceConstraintViolationsList;
+
+            if (instanceConstraintViolationsList != null && !instanceConstraintViolationsList.isEmpty()) {
                 String message = "";
 
-                for (ConstraintViolationDTO constraintViolationDTO : instanceConstraintViolationsList
-                        .get(0).constraintViolations) {
+                for (ConstraintViolationDTO constraintViolationDTO :
+                        instanceConstraintViolationsList.get(0).constraintViolations) {
+
                     message += constraintViolationDTO.toString() + "\n";
                 }
 
@@ -232,27 +231,26 @@ public class ReportAdvancesModel implements IReportAdvancesModel {
 
     private OrderElementWithAdvanceMeasurementsOrEndDateListDTO getOrderElementWithAdvanceMeasurementsListDTO(
             Order order) {
-        List<OrderElementWithAdvanceMeasurementsOrEndDateDTO> orderElementWithAdvanceMeasurementsDTOs = new ArrayList<OrderElementWithAdvanceMeasurementsOrEndDateDTO>();
+        List<OrderElementWithAdvanceMeasurementsOrEndDateDTO> orderElementWithAdvanceMeasurementsDTOs = new ArrayList<>();
         // create the asked end dates
         EndDateCommunicationToCustomerDTO endDateCommunicationToCustomerDTO = null;
+
         if (isAnyEndDateNotReported(order)) {
-            EndDateCommunication lastEndDateCommunicationToCustomerReported = order
-                    .getLastEndDateCommunicationToCustomer();
+            EndDateCommunication lastEndDateCommunicationToCustomerReported =
+                    order.getLastEndDateCommunicationToCustomer();
+
             lastEndDateCommunicationToCustomerReported.setCommunicationDate(new Date());
             endDateCommunicationToCustomerDTO = OrderElementConverter.toDTO(lastEndDateCommunicationToCustomerReported);
         }
 
         // create the progress
-        DirectAdvanceAssignment directAdvanceAssignment = order
-                .getDirectAdvanceAssignmentOfTypeSubcontractor();
-        Set<AdvanceMeasurementDTO> advanceMeasurementDTOs = new HashSet<AdvanceMeasurementDTO>();
+        DirectAdvanceAssignment directAdvanceAssignment = order.getDirectAdvanceAssignmentOfTypeSubcontractor();
+        Set<AdvanceMeasurementDTO> advanceMeasurementDTOs = new HashSet<>();
 
         if (directAdvanceAssignment != null) {
-            for (AdvanceMeasurement advanceMeasurement : directAdvanceAssignment
-                    .getAdvanceMeasurements()) {
+            for (AdvanceMeasurement advanceMeasurement : directAdvanceAssignment.getAdvanceMeasurements()) {
                 if (advanceMeasurement.getCommunicationDate() == null) {
-                    AdvanceMeasurementDTO advanceMeasurementDTO = OrderElementConverter
-                            .toDTO(advanceMeasurement);
+                    AdvanceMeasurementDTO advanceMeasurementDTO = OrderElementConverter.toDTO(advanceMeasurement);
                     advanceMeasurement.updateCommunicationDate(new Date());
                     advanceMeasurementDTOs.add(advanceMeasurementDTO);
                 }
@@ -261,30 +259,27 @@ public class ReportAdvancesModel implements IReportAdvancesModel {
 
         // add the updates
         if (endDateCommunicationToCustomerDTO != null || !advanceMeasurementDTOs.isEmpty()) {
-            OrderElementWithAdvanceMeasurementsOrEndDateDTO orderElementWithAdvanceMeasurementsOrEndDateDTO = new OrderElementWithAdvanceMeasurementsOrEndDateDTO(
-                    order.getExternalCode(),
-                    advanceMeasurementDTOs, endDateCommunicationToCustomerDTO);
-            orderElementWithAdvanceMeasurementsDTOs
-                    .add(orderElementWithAdvanceMeasurementsOrEndDateDTO);
+            OrderElementWithAdvanceMeasurementsOrEndDateDTO orderElementWithAdvanceMeasurementsOrEndDateDTO =
+                    new OrderElementWithAdvanceMeasurementsOrEndDateDTO(
+                            order.getExternalCode(),
+                            advanceMeasurementDTOs,
+                            endDateCommunicationToCustomerDTO);
+            orderElementWithAdvanceMeasurementsDTOs.add(orderElementWithAdvanceMeasurementsOrEndDateDTO);
         }
 
-        return new OrderElementWithAdvanceMeasurementsOrEndDateListDTO(getCompanyCode(),
-                orderElementWithAdvanceMeasurementsDTOs);
-    }
-
-    private String getCompanyCode() {
-        return configurationDAO.getConfiguration().getCompanyCode();
+        return new OrderElementWithAdvanceMeasurementsOrEndDateListDTO(
+                order.getCustomer().getNif(), orderElementWithAdvanceMeasurementsDTOs);
     }
 
     @Override
     @Transactional(readOnly = true)
     public String exportXML(Order order) {
-        OrderElementWithAdvanceMeasurementsOrEndDateListDTO orderElementWithAdvanceMeasurementsListDTO = getOrderElementWithAdvanceMeasurementsListDTO(order);
+        OrderElementWithAdvanceMeasurementsOrEndDateListDTO orderElementWithAdvanceMeasurementsListDTO =
+                getOrderElementWithAdvanceMeasurementsListDTO(order);
 
         StringWriter xml = new StringWriter();
         try {
-            JAXBContext jaxbContext = JAXBContext
-                    .newInstance(OrderElementWithAdvanceMeasurementsOrEndDateListDTO.class);
+            JAXBContext jaxbContext = JAXBContext.newInstance(OrderElementWithAdvanceMeasurementsOrEndDateListDTO.class);
             Marshaller marshaller = jaxbContext.createMarshaller();
             marshaller.marshal(orderElementWithAdvanceMeasurementsListDTO, xml);
         } catch (Exception e) {
@@ -296,11 +291,11 @@ public class ReportAdvancesModel implements IReportAdvancesModel {
 
     @Override
     public String getStatus(Order order) {
-        DirectAdvanceAssignment directAdvanceAssignment = order
-                .getDirectAdvanceAssignmentOfTypeSubcontractor();
+        DirectAdvanceAssignment directAdvanceAssignment = order.getDirectAdvanceAssignmentOfTypeSubcontractor();
 
         boolean advancesNotReported = isAnyAdvanceMeasurementNotReported(directAdvanceAssignment);
         boolean endDateNotReported = isAnyEndDateNotReported(order);
+
         if (advancesNotReported && endDateNotReported) {
             return "Pending update of progress and communication date";
         } else if (endDateNotReported) {
@@ -308,16 +303,17 @@ public class ReportAdvancesModel implements IReportAdvancesModel {
         } else if (advancesNotReported) {
             return "Pending update of progress";
         }
+
         return "Updated";
     }
 
     private boolean isAnyEndDateNotReported(Order order) {
         if (order != null && order.getEndDateCommunicationToCustomer() != null) {
-            EndDateCommunication lastAskedEndDate = order
-                    .getLastEndDateCommunicationToCustomer();
-            return lastAskedEndDate != null ? (lastAskedEndDate.getCommunicationDate() == null)
-                    : false;
+            EndDateCommunication lastAskedEndDate = order.getLastEndDateCommunicationToCustomer();
+
+            return lastAskedEndDate != null && (lastAskedEndDate.getCommunicationDate() == null);
         }
+
         return false;
     }
 

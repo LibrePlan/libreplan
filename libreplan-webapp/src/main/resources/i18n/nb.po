@@ -122,8 +122,8 @@ msgstr "Progress kan ikke bli konsolidert."
 msgid "Schedule from start to deadline"
 msgstr "Tidsplan fra start til deadline"
 
-#: libreplan-webapp/src/main/webapp/common/concurrent_modification.zul:36
-#: libreplan-webapp/src/main/webapp/common/event_error.zul:49
+#: libreplan-webapp/src/main/webapp/common/concurrentModification.zul:36
+#: libreplan-webapp/src/main/webapp/common/eventError.zul:49
 msgid "Continue"
 msgstr "Fortsett"
 
@@ -226,7 +226,7 @@ msgstr "Personlig timeliste lagret"
 msgid "Project version is the same in source and destination scenarios"
 msgstr "Prosjekt versjon er identisk i kilde og destinasjons scenario"
 
-#: libreplan-webapp/src/main/webapp/common/access_forbidden.zul:40
+#: libreplan-webapp/src/main/webapp/common/accessForbidden.zul:40
 msgid ""
 "Please try to contact with any administrator in order to review your "
 "permissions in LibrePlan."
@@ -551,7 +551,7 @@ msgid ""
 "In the heading part, index labels and fields must be unique and consecutive"
 msgstr "I overskriften del, må indeks etiketter og felt være unikt og rad"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/streches/StretchesFunctionModel.java:290
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/stretches/StretchesFunctionModel.java:290
 msgid "Stretch date must be earlier than End date: "
 msgstr "Stretch Datoen må være tidligere enn Sluttdato: "
 
@@ -649,7 +649,7 @@ msgid "{0} already assigned to resource allocation list"
 msgstr "{0} allerede tildelt ressursliste tildeling"
 
 #: libreplan-webapp/src/main/webapp/common/error.zul:40
-#: libreplan-webapp/src/main/webapp/common/event_error.zul:35
+#: libreplan-webapp/src/main/webapp/common/eventError.zul:35
 msgid "Exception type"
 msgstr "Unntak typen"
 
@@ -771,7 +771,7 @@ msgstr "innrykk"
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/OrderCRUDController.java:1801
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/materials/AssignedMaterialsController.java:389
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/ResourceAllocationController.java:658
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/streches/StretchesFunctionController.java:408
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/stretches/StretchesFunctionController.java:408
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/order/SubcontractController.java:210
 #: libreplan-webapp/src/main/java/org/libreplan/web/reports/HoursWorkedPerWorkerController.java:270
 #: libreplan-webapp/src/main/java/org/libreplan/web/resources/criterion/CriterionTreeController.java:384
@@ -1558,7 +1558,7 @@ msgstr "% Avvik intervallet (forskjellen% mellom forbrukes og estimerte timer)"
 msgid "Hours type for personal timesheets"
 msgstr "Timer type for personlige timelister"
 
-#: libreplan-webapp/src/main/webapp/common/concurrent_modification.zul:33
+#: libreplan-webapp/src/main/webapp/common/concurrentModification.zul:33
 msgid ""
 "Another user has modified the same data, so the operation cannot be safely "
 "completed."
@@ -2165,14 +2165,14 @@ msgstr "beskrivelse verdi: time har ikke tildelt beskrivelsesfeltet"
 msgid "Save & Continue"
 msgstr "Lagre og Fortsett"
 
-#: libreplan-webapp/src/main/webapp/common/page_not_found.zul:43
+#: libreplan-webapp/src/main/webapp/common/pageNotFound.zul:43
 msgid ""
 "If you entered the URL directly in the navigation bar of the browser, please"
 " review it or click in the following link in order to go to initial page: "
 msgstr "Hvis du skrev inn nettadressen direkte til navigasjonslinjen i nettleseren, kan du lese den, eller klikk på følgende link for å gå til første side: "
 
 #: libreplan-webapp/src/main/webapp/common/error.zul:30
-#: libreplan-webapp/src/main/webapp/common/event_error.zul:25
+#: libreplan-webapp/src/main/webapp/common/eventError.zul:25
 msgid "Message - {0}"
 msgstr "Melding - {0}"
 
@@ -2224,7 +2224,7 @@ msgstr "Rediger oppgave {0}"
 msgid "Current password"
 msgstr "Nåværende passord"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/streches/StretchesFunctionController.java:128
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/stretches/StretchesFunctionController.java:128
 msgid "All changes will be lost. Are you sure?"
 msgstr "Alle endringer vil gå tapt. Er du sikker?"
 
@@ -2349,7 +2349,7 @@ msgid ""
 msgstr "{0} kan ikke tildeles denne ressursen. det er intern overlapping med andre kriteria "
 
 #: libreplan-webapp/src/main/webapp/subcontract/subcontractorCommunications.zul:53
-msgid "Subcontrated task"
+msgid "Subcontracted task"
 msgstr "Subcontrated oppgave"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/CustomMenuController.java:351
@@ -2495,7 +2495,7 @@ msgid "Calendar name already in use"
 msgstr "Kalendernavnet er allerede i bruk"
 
 #: libreplan-webapp/src/main/webapp/common/error.zul:48
-#: libreplan-webapp/src/main/webapp/common/event_error.zul:43
+#: libreplan-webapp/src/main/webapp/common/eventError.zul:43
 msgid "Stacktrace"
 msgstr "Stacktrace"
 
@@ -2508,7 +2508,7 @@ msgstr "Repetert prosjektkode {0} i Prosject {1}"
 msgid "Users authorization"
 msgstr "brukere autorisasjon"
 
-#: libreplan-webapp/src/main/webapp/common/job_scheduling.zul:20
+#: libreplan-webapp/src/main/webapp/common/jobScheduling.zul:20
 msgid "LibrePlan: Job Scheduling"
 msgstr "LibrePlan: Job Planlegging"
 
@@ -2631,7 +2631,7 @@ msgstr "timer gruppe"
 #: libreplan-webapp/src/main/java/org/libreplan/web/limitingresources/LimitingResourcesController.java:628
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/criterionrequirements/AssignedCriterionRequirementController.java:403
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/AdvancedAllocationController.java:1320
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/streches/StretchesFunctionController.java:121
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/stretches/StretchesFunctionController.java:121
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/order/SaveCommandBuilder.java:343
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/taskedition/TaskPropertiesController.java:351
 msgid "Error"
@@ -2713,7 +2713,7 @@ msgstr "Kan ikke slette timeliste mal. Det er noen timelister bundet til det."
 msgid "There are repeated description values in the timesheet "
 msgstr "Det er gjentatt beskrivelse verdier i timeliste "
 
-#: libreplan-business/src/main/java/org/libreplan/business/workreports/entities/WorkReportLabelTypeAssigment.java:61
+#: libreplan-business/src/main/java/org/libreplan/business/workreports/entities/WorkReportLabelTypeAssignment.java:61
 msgid "label type not specified"
 msgstr "etikett type ikke spesifisert"
 
@@ -2975,7 +2975,7 @@ msgid "cannot be empty"
 msgstr "kan ikke være tomt"
 
 #: libreplan-webapp/src/main/webapp/common/error.zul:21
-#: libreplan-webapp/src/main/webapp/common/event_error.zul:22
+#: libreplan-webapp/src/main/webapp/common/eventError.zul:22
 msgid "LibrePlan: Runtime Error"
 msgstr "Libreplan: Driftsfeil"
 
@@ -3423,7 +3423,7 @@ msgstr "Samhandler med applikasjoner"
 msgid "Key for Order \"{0}\" is empty"
 msgstr "Nøkkel for Bestill \"{0}\" er tom"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/streches/StretchesFunctionModel.java:168
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/stretches/StretchesFunctionModel.java:168
 #: libreplan-business/src/main/java/org/libreplan/business/planner/entities/StretchesFunction.java:310
 msgid "At least one stretch is needed"
 msgstr "Minst en strekning som er nødvendig"
@@ -3491,7 +3491,7 @@ msgstr "Progress konsolidering"
 msgid "Tree {0} sucessfully flattened"
 msgstr "Treet {0} sucessfully flatet"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/streches/StretchesFunctionController.java:343
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/stretches/StretchesFunctionController.java:343
 msgid "Length percentage should be between 0 and 100"
 msgstr "Lengde andelen bør være mellom 0 og 100"
 
@@ -3613,7 +3613,7 @@ msgstr "Etikett type allerede tilordnet"
 msgid "End date can only be deleted in the the last activation"
 msgstr "Sluttdato kan bare bli slettet i det siste aktivering"
 
-#: libreplan-webapp/src/main/webapp/common/access_forbidden.zul:20
+#: libreplan-webapp/src/main/webapp/common/accessForbidden.zul:20
 msgid "LibrePlan: Access Forbidden"
 msgstr "LibrePlan: Tilgang Forbidden"
 
@@ -3687,7 +3687,7 @@ msgstr "maksimale verdien ikke spesifisert"
 msgid "The field name must be unique and not empty"
 msgstr "Feltet Navnet må være unikt og ikke tom"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/streches/StretchesFunctionModel.java:182
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/stretches/StretchesFunctionModel.java:182
 msgid "There must be at least 2 stretches for doing interpolation"
 msgstr "Det må være minst to strekninger for å gjøre interpole"
 
@@ -4389,7 +4389,7 @@ msgstr "etikett Type: time har ikke fått tildelt denne type etikett"
 msgid "description is not specified"
 msgstr "Beskrivelsen er ikke spesifisert"
 
-#: libreplan-webapp/src/main/webapp/common/page_not_found.zul:49
+#: libreplan-webapp/src/main/webapp/common/pageNotFound.zul:49
 msgid ""
 "If you reached this page from another page of LibrePlan please notify us in "
 "order to fix it as soon as possible."
@@ -5025,7 +5025,7 @@ msgstr "total kapasitet"
 msgid "LibrePlan: Personal timesheet"
 msgstr "LibrePlan: Personlig timeliste"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/streches/StretchesFunctionModel.java:177
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/stretches/StretchesFunctionModel.java:177
 msgid "Last stretch should have 100% for length and amount of work"
 msgstr "Siste strekningen skal ha 100% for lengde og mengde arbeid"
 
@@ -5287,7 +5287,7 @@ msgstr "cron uttrykk ikke spesifisert"
 msgid "Permissions"
 msgstr "Tillatelser"
 
-#: libreplan-business/src/main/java/org/libreplan/business/workreports/entities/WorkReportLabelTypeAssigment.java:64
+#: libreplan-business/src/main/java/org/libreplan/business/workreports/entities/WorkReportLabelTypeAssignment.java:64
 msgid "default label not specified"
 msgstr "Standard etikett ikke spesifisert"
 
@@ -5367,7 +5367,7 @@ msgstr "Velg kø"
 msgid "Quality form items list"
 msgstr "Kvalitet fra elementer liste"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/streches/StretchesFunctionController.java:129
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/stretches/StretchesFunctionController.java:129
 msgid "Confirm cancel"
 msgstr "bekreft avbryte"
 
@@ -5430,7 +5430,7 @@ msgstr "den samme oppgaven er markert som avsluttet med mer enn én timelinje"
 msgid "Select gap"
 msgstr "Velg gap"
 
-#: libreplan-webapp/src/main/webapp/common/page_not_found.zul:22
+#: libreplan-webapp/src/main/webapp/common/pageNotFound.zul:22
 msgid "LibrePlan: Page not found"
 msgstr "LibrePlan: Side ikke funnet"
 
@@ -5772,8 +5772,8 @@ msgstr "Bundet ressurs"
 msgid "Load ratios calculated between"
 msgstr "Belastningsgrad beregnes mellom"
 
-#: libreplan-webapp/src/main/webapp/common/access_forbidden.zul:45
-#: libreplan-webapp/src/main/webapp/common/page_not_found.zul:45
+#: libreplan-webapp/src/main/webapp/common/accessForbidden.zul:45
+#: libreplan-webapp/src/main/webapp/common/pageNotFound.zul:45
 msgid "Go to init"
 msgstr "Gå til init"
 
@@ -6008,7 +6008,7 @@ msgstr "Bruker deaktivert"
 msgid "Cost"
 msgstr "Kost"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/streches/StretchesFunctionController.java:389
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/stretches/StretchesFunctionController.java:389
 msgid "Amount work percentage should be between 0 and 100"
 msgstr "Mengden arbeid andelen bør være mellom 0 og 100"
 
@@ -6046,7 +6046,7 @@ msgstr "Vis alle"
 msgid "Connection values of Tim connector are invalid"
 msgstr "Tilkoblingsverdiene av Tim kontakten er ugyldig"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/streches/StretchesFunctionModel.java:284
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/stretches/StretchesFunctionModel.java:284
 msgid "Stretch date must not be before task start date: "
 msgstr "Sprint dato må ikke være før oppgave start dato"
 
@@ -6337,7 +6337,7 @@ msgid ""
 msgstr "Dette prosjektet er en underleverandør prosjekt. Hvis du sletter den, vil du ikke være i stand til å rapportere fremgang lenger. Er du sikker?"
 
 #: libreplan-webapp/src/main/webapp/common/error.zul:44
-#: libreplan-webapp/src/main/webapp/common/event_error.zul:39
+#: libreplan-webapp/src/main/webapp/common/eventError.zul:39
 msgid "Status code"
 msgstr "Status kode"
 
@@ -6730,12 +6730,12 @@ msgid "The code must be unique."
 msgstr "Koden må være unik"
 
 #: libreplan-webapp/src/main/webapp/common/error.zul:55
-#: libreplan-webapp/src/main/webapp/common/event_error.zul:51
+#: libreplan-webapp/src/main/webapp/common/eventError.zul:51
 msgid "Exit session"
 msgstr "Avslutt økten"
 
 #: libreplan-business/src/main/java/org/libreplan/business/planner/entities/SubcontractorCommunication.java:76
-msgid "subcontrated task data not specified"
+msgid "subcontracted task data not specified"
 msgstr "subcontrated oppgavedata ikke spesifisert"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/OrderModel.java:719
@@ -7104,7 +7104,7 @@ msgstr "kalendere med null timer er ikke tillatt"
 msgid "start date not specified"
 msgstr "startdato ikke spesifisert"
 
-#: libreplan-webapp/src/main/webapp/common/page_not_found.zul:51
+#: libreplan-webapp/src/main/webapp/common/pageNotFound.zul:51
 msgid "Sorry for the inconvenience."
 msgstr "Beklager det inntrufne."
 
@@ -7483,7 +7483,7 @@ msgid "LibrePlan: Main Settings"
 msgstr "LibrePlan: Hovedinnstillinger"
 
 #: libreplan-webapp/src/main/webapp/common/error.zul:54
-#: libreplan-webapp/src/main/webapp/common/event_error.zul:50
+#: libreplan-webapp/src/main/webapp/common/eventError.zul:50
 msgid "Reload"
 msgstr "Last på nytt"
 
@@ -7676,7 +7676,7 @@ msgstr "Filtrer timeliste linjer etter"
 msgid "Delete Milestone"
 msgstr "Slett milepel"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/streches/StretchesFunctionModel.java:172
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/stretches/StretchesFunctionModel.java:172
 msgid "Some stretch has higher or equal values than the previous stretch"
 msgstr "En sprint har høyere eller lik verdi med en tidligere sprint"
 
@@ -7711,7 +7711,7 @@ msgstr "Kategori data"
 msgid "Projects since"
 msgstr "Prosjekter siden"
 
-#: libreplan-webapp/src/main/webapp/common/access_forbidden.zul:43
+#: libreplan-webapp/src/main/webapp/common/accessForbidden.zul:43
 msgid "Click the following link to return to home page: "
 msgstr "Klikk på følgende link for å gå tilbake til hjemmesiden: "
 
@@ -8023,7 +8023,7 @@ msgstr "Ingen frist prosjekt definert"
 msgid "quality form item name not specified or empty"
 msgstr "kvalitet skjema element navn ikke er spesifisert eller tom"
 
-#: libreplan-webapp/src/main/webapp/common/access_forbidden.zul:38
+#: libreplan-webapp/src/main/webapp/common/accessForbidden.zul:38
 msgid "You do not have permissions to access to this page."
 msgstr "Du har ikke tillatelse til å få tilgang til denne siden."
 
@@ -8099,7 +8099,7 @@ msgstr "EAC"
 msgid "Task contains consolidated progress. Cannot apply sigmoid function."
 msgstr "Oppgaven inneholder konsolidert fremgang. Kan ikke søke sigmoid funksjon."
 
-#: libreplan-webapp/src/main/webapp/common/page_not_found.zul:40
+#: libreplan-webapp/src/main/webapp/common/pageNotFound.zul:40
 msgid "The page that you are requesting does not exist."
 msgstr "Siden du ber om finnes ikke."
 
@@ -8650,7 +8650,7 @@ msgstr "Progressjon"
 msgid "passwords can not be empty"
 msgstr "passord kan ikke være tomt"
 
-#: libreplan-webapp/src/main/webapp/common/concurrent_modification.zul:34
+#: libreplan-webapp/src/main/webapp/common/concurrentModification.zul:34
 msgid "Please try it again."
 msgstr "Vennligst prøv igjen."
 

@@ -23,46 +23,47 @@
     <hbox>
 
         <vbox>
-            <label class="subtitulo" value="${i18n:_('Assigned locations')}" />
+            <label sclass="subtitulo" value="${i18n:_('Assigned locations')}" />
             <listbox id="activeSatisfactions" mold="paging"
-                model="@{controller.localizations.activeSatisfactions}"
-                height="200px" multiple="true" checkmark="true">
+                     model="@{controller.localizations.activeSatisfactions}"
+                     height="200px" multiple="true" checkmark="true">
                 <listhead>
                     <listheader label="${i18n:_('Group')}"
-                        sort="auto(criterion.name)"></listheader>
+                                sort="auto(criterion.name)"/>
                     <listheader label="${i18n:_('Starting date')}"
-                        sort="auto(startDate)" />
+                                sort="auto(startDate)" />
                 </listhead>
                 <listitem self="@{each='satisfaction'}" value="@{satisfaction}">
-                    <listcell label="@{satisfaction.criterion.name}"></listcell>
-                    <listcell label="@{satisfaction.startDate}"></listcell>
+                    <listcell label="@{satisfaction.criterion.name}"/>
+                    <listcell label="@{satisfaction.startDate}"/>
                 </listitem>
             </listbox>
         </vbox>
         <vbox style="margin-top:80px">
-            <button id="unassignButton" label="&gt;&gt;"></button>
-            <button id="assignButton" label="&lt;&lt;"></button>
+            <button id="unassignButton" label="&gt;&gt;"/>
+            <button id="assignButton" label="&lt;&lt;"/>
         </vbox>
 
         <vbox>
-            <label class="subtitulo" value="${i18n:_('Non-assigned locations')}" />
+            <label sclass="subtitulo" value="${i18n:_('Non-assigned locations')}" />
             <listbox id="criterionsNotAssigned" mold="paging"
-                model="@{controller.localizations.criterionsNotAssigned}"
-                height="200px" multiple="true" checkmark="true">
+                     model="@{controller.localizations.criterionsNotAssigned}"
+                     height="200px" multiple="true" checkmark="true">
                 <listhead>
                     <listheader label="${i18n:_('Group')}"
-                        sort="auto(name)"></listheader>
+                                sort="auto(name)"/>
                 </listhead>
                 <listitem self="@{each='criterion'}" value="@{criterion}">
-                    <listcell label="@{criterion.name}"></listcell>
+                    <listcell label="@{criterion.name}"/>
                 </listitem>
             </listbox>
         </vbox>
     </hbox>
 
-    <label class="subtitulo" value="${i18n:_('Log')}" />
+
+    <label sclass="subtitulo" value="${i18n:_('Log')}" />
     <grid id="listing" model="@{controller.localizations.localizationsHistory}"
-        mold="paging" pageSize="10">
+          mold="paging" pageSize="10">
         <columns>
             <column label="${i18n:_('Group')}" sort="auto(criterion.name)" />
             <column label="${i18n:_('Starting date')}" sort="auto(startDate)" />

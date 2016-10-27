@@ -42,7 +42,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Tests for {@link EntitySequence}. <br />
+ * Tests for {@link EntitySequence}.
+ * <br />
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 
@@ -54,7 +55,7 @@ public class EntitySequenceTest {
     IEntitySequenceDAO entitySequenceDAO;
 
     @Before
-    public void loadRequiredaData() {
+    public void loadRequiredData() {
         for (EntitySequence sequence : entitySequenceDAO.getAll()) {
             try {
                 entitySequenceDAO.remove(sequence.getId());

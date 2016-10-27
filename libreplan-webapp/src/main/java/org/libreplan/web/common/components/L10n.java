@@ -25,7 +25,9 @@ import org.libreplan.web.I18nHelper;
 import org.zkoss.zul.Label;
 
 /**
- * This component is aimed to localize strings that come from business objects. For instance:
+ * This component is aimed to localize strings that come from business objects.
+ *
+ * For instance:
  *
  * <rows>
  *    <row self="@{each='criterionType'}" value="@{criterionType}">

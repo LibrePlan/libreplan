@@ -75,9 +75,9 @@ public class SchedulingProgressPerOrderModel implements ISchedulingProgressPerOr
     @Autowired
     private IScenarioManager scenarioManager;
 
-    private List<Order> selectedOrders = new ArrayList<Order>();
+    private List<Order> selectedOrders = new ArrayList<>();
 
-    private List<Order> allOrders = new ArrayList<Order>();
+    private List<Order> allOrders = new ArrayList<>();
 
     @Override
     @Transactional(readOnly = true)
@@ -183,16 +183,15 @@ public class SchedulingProgressPerOrderModel implements ISchedulingProgressPerOr
     @Override
     @Transactional(readOnly = true)
     public JRDataSource getSchedulingProgressPerOrderReport(List<Order> orders,
-            AdvanceType advanceType, Date startingDate, Date endingDate,
-            LocalDate referenceDate) {
+                                                            AdvanceType advanceType, Date startingDate, Date endingDate,
+                                                            LocalDate referenceDate) {
 
         if (orders == null || orders.isEmpty()) {
             return new JREmptyDataSource();
         }
 
         // Create DTOs for orders
-        final List<SchedulingProgressPerOrderDTO> schedulingProgressPerOrderList =
-            new ArrayList<SchedulingProgressPerOrderDTO>();
+        final List<SchedulingProgressPerOrderDTO> schedulingProgressPerOrderList = new ArrayList<>();
         for (Order each: orders) {
             // Filter by date
             if ((startingDate != null) && (each.getInitDate() != null)
@@ -219,13 +218,14 @@ public class SchedulingProgressPerOrderModel implements ISchedulingProgressPerOr
     @Override
     @Transactional(readOnly = true)
     public List<AdvanceType> getAdvanceTypes() {
-        List<AdvanceType> result = new ArrayList<AdvanceType>();
+        List<AdvanceType> result = new ArrayList<>();
         result.addAll(advanceTypeDAO.getAll());
+
         return result;
     }
 
     private List<Task> getTasks(Order order) {
-        List<Task> result = new ArrayList<Task>();
+        List<Task> result = new ArrayList<>();
         final List<TaskElement> taskElements = order
                 .getAllChildrenAssociatedTaskElements();
         for (TaskElement each : taskElements) {

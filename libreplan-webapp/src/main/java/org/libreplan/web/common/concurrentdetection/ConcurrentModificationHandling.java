@@ -23,7 +23,6 @@ package org.libreplan.web.common.concurrentdetection;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -34,65 +33,62 @@ import org.springframework.core.annotation.Order;
 import org.springframework.dao.OptimisticLockingFailureException;
 
 /**
- * Responsible of handling {@link OptimisticLockingFailureException} on Spring
- * beans marked with {@link OnConcurrentModification}
+ * Responsible of handling {@link OptimisticLockingFailureException} on Spring beans
+ * marked with {@link OnConcurrentModification}.
+ *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 @Aspect
 @Order(0)
 public class ConcurrentModificationHandling {
 
-    public static <T> T addHandling(final String goToPage, Class<T> interfaceKlass, T toBeWraped) {
+    public ConcurrentModificationHandling() {
+    }
+
+    public static <T> T addHandling(final String goToPage, Class<T> interfaceKlass, T toBeWrapped) {
         Class<?>[] classesToProxy = { interfaceKlass };
 
         Object result =
-                Proxy.newProxyInstance(interfaceKlass.getClassLoader(), classesToProxy, handler(toBeWraped, goToPage));
+                Proxy.newProxyInstance(interfaceKlass.getClassLoader(), classesToProxy, handler(toBeWrapped, goToPage));
 
         return interfaceKlass.cast(result);
     }
 
     private static InvocationHandler handler(final Object toBeWraped, final String goToPage) {
-        return new InvocationHandler() {
+        return (proxy, method, args) -> {
+            try {
+                return method.invoke(toBeWraped, args);
+            } catch (InvocationTargetException e) {
+                Throwable cause = e.getCause();
+                if ( cause instanceof OptimisticLockingFailureException ) {
 
-            @Override
-            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-                try {
-                    return method.invoke(toBeWraped, args);
-                } catch (InvocationTargetException e) {
-                    Throwable cause = e.getCause();
-                    if ( cause instanceof OptimisticLockingFailureException ) {
+                    OptimisticLockingFailureException optimisticLockingFailureException =
+                            (OptimisticLockingFailureException) cause;
 
-                        OptimisticLockingFailureException optimisticLockingFailureException =
-                                (OptimisticLockingFailureException) cause;
-
-                        ConcurrentModificationController.showException(optimisticLockingFailureException, goToPage);
-                    }
-                    throw cause;
+                    ConcurrentModificationController.showException(optimisticLockingFailureException, goToPage);
                 }
+                throw cause;
             }
         };
     }
 
-    public ConcurrentModificationHandling() {
-    }
-
     @SuppressWarnings("unused")
-    @Pointcut("@within(onConcurrentModification))")
+    @Pointcut(value = "@within(onConcurrentModification))")
     private void methodWithinConcurrentModificationMarkedType(OnConcurrentModification onConcurrentModification) {
     }
 
     /**
-     * It intercepts the calls to public methods of Spring beans marked with
-     * {@link OnConcurrentModification}. When an
-     * {@link OptimisticLockingFailureException} happens the page for concurrent
-     * modification is shown and the user is returned to the page specified by
-     * {@link OnConcurrentModification}
+     * It intercepts the calls to public methods of Spring beans marked with {@link OnConcurrentModification}.
+     *
+     * When an {@link OptimisticLockingFailureException} happens the page for concurrent
+     * modification is shown and the user is returned to the page specified by {@link OnConcurrentModification}.
+     *
      * @param jointPoint
      * @param onConcurrentModification
      *            the annotation applied to object's type
      * @return the object that would be originally returned
      */
-    @Around("methodWithinConcurrentModificationMarkedType(onConcurrentModification)" + " && execution(public * * (..))")
+    @Around("methodWithinConcurrentModificationMarkedType(onConcurrentModification) && execution(public * * (..))")
     public Object whenConcurrentModification(ProceedingJoinPoint jointPoint,
                                              OnConcurrentModification onConcurrentModification) throws Throwable {
 

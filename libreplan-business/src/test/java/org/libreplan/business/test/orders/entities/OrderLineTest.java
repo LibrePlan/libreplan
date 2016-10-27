@@ -45,19 +45,19 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Tests for {@link OrderLine}. <br />
+ * Tests for {@link OrderLine}.
+ * <br />
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
-        BUSINESS_SPRING_CONFIG_TEST_FILE })
+@ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE, BUSINESS_SPRING_CONFIG_TEST_FILE })
 public class OrderLineTest {
 
     @Resource
     private IDataBootstrap defaultAdvanceTypesBootstrapListener;
 
     @Before
-    public void loadRequiredaData() {
+    public void loadRequiredData() {
         defaultAdvanceTypesBootstrapListener.loadRequiredData();
     }
 
@@ -72,9 +72,9 @@ public class OrderLineTest {
     }
 
     /**
-     * An empty {@link OrderLine} without any {@link HoursGroup}. Trying to set
-     * work hours of {@link OrderLine} to 100h. Expected: {@link OrderLine} with
-     * 100h, with one {@link HoursGroup} with 100h NO_FIXED.
+     * An empty {@link OrderLine} without any {@link HoursGroup}.
+     * Trying to set work hours of {@link OrderLine} to 100h.
+     * Expected: {@link OrderLine} with 100h, with one {@link HoursGroup} with 100h NO_FIXED.
      */
     @Test
     @Transactional
@@ -94,14 +94,14 @@ public class OrderLineTest {
         assertThat(orderLine.getHoursGroups().size(), equalTo(1));
         HoursGroup hoursGroup = orderLine.getHoursGroups().get(0);
         assertThat(hoursGroup.getWorkingHours(), equalTo(100));
-        assertThat(hoursGroup.getPercentage(), equalTo(new BigDecimal(1)
-                .setScale(2)));
+        assertThat(hoursGroup.getPercentage(), equalTo(new BigDecimal(1).setScale(2)));
         assertFalse(hoursGroup.isFixedPercentage());
     }
 
     /**
-     * An empty {@link OrderLine} without any {@link HoursGroup}. Trying to set
-     * work hours of {@link OrderLine} to -100h. Expected: Exception.
+     * An empty {@link OrderLine} without any {@link HoursGroup}.
+     * Trying to set work hours of {@link OrderLine} to -100h.
+     * Expected: Exception.
      */
     @Test
     @Transactional
@@ -114,7 +114,7 @@ public class OrderLineTest {
         try {
             orderLine.setWorkHours(-100);
             fail("It should throw an exception");
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException ignored) {
             // Ok
         }
 
@@ -125,8 +125,8 @@ public class OrderLineTest {
 
     /**
      * An {@link OrderLine} with just one {@link HoursGroup} of 100h NO_FIXED.
-     * Trying to set work hours of {@link OrderLine} to 120h. Expected:
-     * {@link OrderLine} with 120h. {@link HoursGroup} with 120h.
+     * Trying to set work hours of {@link OrderLine} to 120h.
+     * Expected: {@link OrderLine} with 120h, {@link HoursGroup} with 120h.
      */
     @Test
     @Transactional
@@ -152,8 +152,8 @@ public class OrderLineTest {
 
     /**
      * An {@link OrderLine} with just one {@link HoursGroup} of 100h NO_FIXED.
-     * Trying to set work hours of {@link OrderLine} to 75h. Expected:
-     * {@link OrderLine} with 75h. {@link HoursGroup} with 75h.
+     * Trying to set work hours of {@link OrderLine} to 75h.
+     * Expected: {@link OrderLine} with 75h, {@link HoursGroup} with 75h.
      */
     @Test
     @Transactional
@@ -179,9 +179,9 @@ public class OrderLineTest {
     }
 
     /**
-     * An {@link OrderLine} with just one {@link HoursGroup} of 100h 100%
-     * FIXED_PERCENTAGE. Trying to set work hours of {@link OrderLine} to 120h.
-     * Expected: {@link OrderLine} with 120h. {@link HoursGroup} with 120h 100%.
+     * An {@link OrderLine} with just one {@link HoursGroup} of 100h 100% FIXED_PERCENTAGE.
+     * Trying to set work hours of {@link OrderLine} to 120h.
+     * Expected: {@link OrderLine} with 120h, {@link HoursGroup} with 120h 100%.
      */
     @Test
     @Transactional
@@ -206,15 +206,14 @@ public class OrderLineTest {
         assertThat(orderLine.getWorkHours(), equalTo(120));
         assertThat(orderLine.getHoursGroups().size(), equalTo(1));
         assertThat(hoursGroup.getWorkingHours(), equalTo(120));
-        assertThat(hoursGroup.getPercentage(), equalTo(new BigDecimal(1)
-                .setScale(2)));
+        assertThat(hoursGroup.getPercentage(), equalTo(new BigDecimal(1).setScale(2)));
 
     }
 
     /**
-     * An {@link OrderLine} with just one {@link HoursGroup} of 100h 100%
-     * FIXED_PERCENTAGE. Trying to set work hours of {@link OrderLine} to 75h.
-     * Expected: {@link OrderLine} with 100h. {@link HoursGroup} with 75h 100%.
+     * An {@link OrderLine} with just one {@link HoursGroup} of 100h 100% FIXED_PERCENTAGE.
+     * Trying to set work hours of {@link OrderLine} to 75h.
+     * Expected: {@link OrderLine} with 100h, {@link HoursGroup} with 75h 100%.
      */
     @Test
     @Transactional
@@ -239,16 +238,14 @@ public class OrderLineTest {
         assertThat(orderLine.getWorkHours(), equalTo(75));
         assertThat(orderLine.getHoursGroups().size(), equalTo(1));
         assertThat(hoursGroup.getWorkingHours(), equalTo(75));
-        assertThat(hoursGroup.getPercentage(), equalTo(new BigDecimal(1)
-                .setScale(2)));
+        assertThat(hoursGroup.getPercentage(), equalTo(new BigDecimal(1).setScale(2)));
 
     }
 
     /**
-     * An {@link OrderLine} with two {@link HoursGroup} of 100h and 50h
-     * NO_FIXED. Trying to set work hours of {@link OrderLine} to 200h.
-     * Expected: {@link OrderLine} with 200h. {@link HoursGroup} with 133h and
-     * HoursGroup with 66h.
+     * An {@link OrderLine} with two {@link HoursGroup} of 100h and 50h NO_FIXED.
+     * Trying to set work hours of {@link OrderLine} to 200h.
+     * Expected: {@link OrderLine} with 200h, {@link HoursGroup} with 133h and HoursGroup with 66h.
      */
     @Test
     @Transactional
@@ -278,10 +275,9 @@ public class OrderLineTest {
     }
 
     /**
-     * An {@link OrderLine} with two {@link HoursGroup} of 100h and 50h
-     * NO_FIXED. Trying to set work hours of {@link OrderLine} to 50h. Expected:
-     * {@link OrderLine} with 50h. {@link HoursGroup} with 33h and
-     * {@link HoursGroup} with 16h.
+     * An {@link OrderLine} with two {@link HoursGroup} of 100h and 50h NO_FIXED.
+     * Trying to set work hours of {@link OrderLine} to 50h.
+     * Expected: {@link OrderLine} with 50h, {@link HoursGroup} with 33h and {@link HoursGroup} with 16h.
      */
     @Test
     @Transactional
@@ -311,10 +307,9 @@ public class OrderLineTest {
     }
 
     /**
-     * An {@link OrderLine} with two {@link HoursGroup} of 75h 75%
-     * FIXED_PERCENTAGE and 25h NO_FIXED. Trying to set work hours of
-     * {@link OrderLine} to 200h. Expected: {@link OrderLine} with 200h.
-     * {@link HoursGroup} with 150h 75% and {@link HoursGroup} with 50h.
+     * An {@link OrderLine} with two {@link HoursGroup} of 75h 75% FIXED_PERCENTAGE and 25h NO_FIXED.
+     * Trying to set work hours of {@link OrderLine} to 200h.
+     * Expected: {@link OrderLine} with 200h, {@link HoursGroup} with 150h 75% and {@link HoursGroup} with 50h.
      */
     @Test
     @Transactional
@@ -342,17 +337,15 @@ public class OrderLineTest {
         assertThat(orderLine.getWorkHours(), equalTo(200));
         assertThat(orderLine.getHoursGroups().size(), equalTo(2));
         assertThat(hoursGroup.getWorkingHours(), equalTo(150));
-        assertThat(hoursGroup.getPercentage(), equalTo(new BigDecimal(0.75)
-                .setScale(2)));
+        assertThat(hoursGroup.getPercentage(), equalTo(new BigDecimal(0.75).setScale(2)));
         assertThat(hoursGroup2.getWorkingHours(), equalTo(50));
 
     }
 
     /**
-     * An {@link OrderLine} with two {@link HoursGroup} of 75h 75%
-     * FIXED_PERCENTAGE and 25h NO_FIXED. Trying to set work hours of
-     * {@link OrderLine} to 50h. Expected: {@link OrderLine} with 50h.
-     * {@link HoursGroup} with 37h 75% and HoursGroup with 13h.
+     * An {@link OrderLine} with two {@link HoursGroup} of 75h 75% FIXED_PERCENTAGE and 25h NO_FIXED.
+     * Trying to set work hours of {@link OrderLine} to 50h.
+     * Expected: {@link OrderLine} with 50h, {@link HoursGroup} with 37h 75% and HoursGroup with 13h.
      */
     @Test
     @Transactional
@@ -380,17 +373,15 @@ public class OrderLineTest {
         assertThat(orderLine.getWorkHours(), equalTo(50));
         assertThat(orderLine.getHoursGroups().size(), equalTo(2));
         assertThat(hoursGroup.getWorkingHours(), equalTo(37));
-        assertThat(hoursGroup.getPercentage(), equalTo(new BigDecimal(0.75)
-                .setScale(2)));
+        assertThat(hoursGroup.getPercentage(), equalTo(new BigDecimal(0.75).setScale(2)));
         assertThat(hoursGroup2.getWorkingHours(), equalTo(13));
 
     }
 
     /**
-     * An {@link OrderLine} with two {@link HoursGroup} of 75h 75% and 25h 25%
-     * FIXED_PERCENTAGE. Trying to set work hours of {@link OrderLine} to 200h.
-     * Expected: {@link OrderLine} with 200h. {@link HoursGroup} with 150h 75%
-     * and {@link HoursGroup} with 50h 25%.
+     * An {@link OrderLine} with two {@link HoursGroup} of 75h 75% and 25h 25% FIXED_PERCENTAGE.
+     * Trying to set work hours of {@link OrderLine} to 200h.
+     * Expected: {@link OrderLine} with 200h, {@link HoursGroup} with 150h 75% and {@link HoursGroup} with 50h 25%.
      */
     @Test
     @Transactional
@@ -420,19 +411,16 @@ public class OrderLineTest {
         assertThat(orderLine.getWorkHours(), equalTo(200));
         assertThat(orderLine.getHoursGroups().size(), equalTo(2));
         assertThat(hoursGroup.getWorkingHours(), equalTo(150));
-        assertThat(hoursGroup.getPercentage(), equalTo(new BigDecimal(0.75)
-                .setScale(2)));
+        assertThat(hoursGroup.getPercentage(), equalTo(new BigDecimal(0.75).setScale(2)));
         assertThat(hoursGroup2.getWorkingHours(), equalTo(50));
-        assertThat(hoursGroup2.getPercentage(), equalTo(new BigDecimal(0.25)
-                .setScale(2)));
+        assertThat(hoursGroup2.getPercentage(), equalTo(new BigDecimal(0.25).setScale(2)));
 
     }
 
     /**
-     * An {@link OrderLine} with two {@link HoursGroup} of 75h 75% and 25h 25%
-     * FIXED_PERCENTAGE. Trying to set work hours of {@link OrderLine} to 80h.
-     * Expected: {@link OrderLine} with 80h. {@link HoursGroup} with 60h 75% and
-     * {@link HoursGroup} with 20h 25%.
+     * An {@link OrderLine} with two {@link HoursGroup} of 75h 75% and 25h 25% FIXED_PERCENTAGE.
+     * Trying to set work hours of {@link OrderLine} to 80h.
+     * Expected: {@link OrderLine} with 80h, {@link HoursGroup} with 60h 75% and {@link HoursGroup} with 20h 25%.
      */
     @Test
     @Transactional
@@ -462,20 +450,16 @@ public class OrderLineTest {
         assertThat(orderLine.getWorkHours(), equalTo(80));
         assertThat(orderLine.getHoursGroups().size(), equalTo(2));
         assertThat(hoursGroup.getWorkingHours(), equalTo(60));
-        assertThat(hoursGroup.getPercentage(), equalTo(new BigDecimal(0.75)
-                .setScale(2)));
+        assertThat(hoursGroup.getPercentage(), equalTo(new BigDecimal(0.75).setScale(2)));
         assertThat(hoursGroup2.getWorkingHours(), equalTo(20));
-        assertThat(hoursGroup2.getPercentage(), equalTo(new BigDecimal(0.25)
-                .setScale(2)));
+        assertThat(hoursGroup2.getPercentage(), equalTo(new BigDecimal(0.25).setScale(2)));
 
     }
 
     /**
-     * An {@link OrderLine} with three {@link HoursGroup} of 50h, 50h NO_FIXED
-     * and 100h 50% FIXED_PERCENTAGE. Trying to set work hours of
-     * {@link OrderLine} to 300h. Expected: {@link OrderLine} with 300h.
-     * {@link HoursGroup} with 75h, {@link HoursGroup} with 75h and
-     * {@link HoursGroup} with 150h 50%.
+     * An {@link OrderLine} with three {@link HoursGroup} of 50h, 50h NO_FIXED and 100h 50% FIXED_PERCENTAGE.
+     * Trying to set work hours of {@link OrderLine} to 300h.
+     * Expected: {@link OrderLine} with 300h, {@link HoursGroup} with 75h, {@link HoursGroup} with 75h and {@link HoursGroup} with 150h 50%.
      */
     @Test
     @Transactional
@@ -508,17 +492,14 @@ public class OrderLineTest {
         assertThat(hoursGroup.getWorkingHours(), equalTo(75));
         assertThat(hoursGroup2.getWorkingHours(), equalTo(75));
         assertThat(hoursGroup3.getWorkingHours(), equalTo(150));
-        assertThat(hoursGroup3.getPercentage(), equalTo(new BigDecimal(0.50)
-                .setScale(2)));
+        assertThat(hoursGroup3.getPercentage(), equalTo(new BigDecimal(0.50).setScale(2)));
 
     }
 
     /**
-     * An {@link OrderLine} with three {@link HoursGroup} of 40h, 60h NO_FIXED
-     * and 100h 50% FIXED_PERCENTAGE. Trying to set work hours of
-     * {@link OrderLine} to 100h. Expected: {@link OrderLine} with 100h.
-     * {@link HoursGroup} with 20h, {@link HoursGroup} with 30h and
-     * {@link HoursGroup} with 50h 50%.
+     * An {@link OrderLine} with three {@link HoursGroup} of 40h, 60h NO_FIXED and 100h 50% FIXED_PERCENTAGE.
+     * Trying to set work hours of {@link OrderLine} to 100h.
+     * Expected: {@link OrderLine} with 100h. {@link HoursGroup} with 20h, {@link HoursGroup} with 30h and {@link HoursGroup} with 50h 50%.
      */
     @Test
     @Transactional
@@ -551,17 +532,15 @@ public class OrderLineTest {
         assertThat(hoursGroup.getWorkingHours(), equalTo(20));
         assertThat(hoursGroup2.getWorkingHours(), equalTo(30));
         assertThat(hoursGroup3.getWorkingHours(), equalTo(50));
-        assertThat(hoursGroup3.getPercentage(), equalTo(new BigDecimal(0.50)
-                .setScale(2)));
+        assertThat(hoursGroup3.getPercentage(), equalTo(new BigDecimal(0.50).setScale(2)));
 
     }
 
     /**
-     * An {@link OrderLine} with three {@link HoursGroup} of 50h NO_FIXED, 50h
-     * 25% and 100h 50% FIXED_PERCENTAGE. Trying to set work hours of
-     * {@link OrderLine} to 400h. Expected: {@link OrderLine} with 400h.
-     * {@link HoursGroup} with 100h, {@link HoursGroup} with 100h 25% and
-     * {@link HoursGroup} with 200h 50%.
+     * An {@link OrderLine} with three {@link HoursGroup} of 50h NO_FIXED, 50h 25% and 100h 50% FIXED_PERCENTAGE.
+     * Trying to set work hours of {@link OrderLine} to 400h.
+     * Expected: {@link OrderLine} with 400h,
+     * {@link HoursGroup} with 100h, {@link HoursGroup} with 100h 25% and {@link HoursGroup} with 200h 50%.
      */
     @Test
     @Transactional
@@ -595,20 +574,17 @@ public class OrderLineTest {
         assertThat(orderLine.getHoursGroups().size(), equalTo(3));
         assertThat(hoursGroup.getWorkingHours(), equalTo(100));
         assertThat(hoursGroup2.getWorkingHours(), equalTo(100));
-        assertThat(hoursGroup2.getPercentage(), equalTo(new BigDecimal(0.25)
-                .setScale(2)));
+        assertThat(hoursGroup2.getPercentage(), equalTo(new BigDecimal(0.25).setScale(2)));
         assertThat(hoursGroup3.getWorkingHours(), equalTo(200));
-        assertThat(hoursGroup3.getPercentage(), equalTo(new BigDecimal(0.50)
-                .setScale(2)));
+        assertThat(hoursGroup3.getPercentage(), equalTo(new BigDecimal(0.50).setScale(2)));
 
     }
 
     /**
-     * An {@link OrderLine} with three {@link HoursGroup} of 50h NO_FIXED, 50h
-     * 25% and 100h 50% FIXED_PERCENTAGE. Trying to set work hours of
-     * {@link OrderLine} to 100h. Expected: {@link OrderLine} with 400h.
-     * {@link HoursGroup} with 25h, {@link HoursGroup} with 25h 25% and
-     * {@link HoursGroup} with 50h 50%.
+     * An {@link OrderLine} with three {@link HoursGroup} of 50h NO_FIXED, 50h 25% and 100h 50% FIXED_PERCENTAGE.
+     * Trying to set work hours of {@link OrderLine} to 100h.
+     * Expected: {@link OrderLine} with 400h,
+     * {@link HoursGroup} with 25h, {@link HoursGroup} with 25h 25% and {@link HoursGroup} with 50h 50%.
      */
     @Test
     @Transactional
@@ -642,19 +618,16 @@ public class OrderLineTest {
         assertThat(orderLine.getHoursGroups().size(), equalTo(3));
         assertThat(hoursGroup.getWorkingHours(), equalTo(25));
         assertThat(hoursGroup2.getWorkingHours(), equalTo(25));
-        assertThat(hoursGroup2.getPercentage(), equalTo(new BigDecimal(0.25)
-                .setScale(2)));
+        assertThat(hoursGroup2.getPercentage(), equalTo(new BigDecimal(0.25).setScale(2)));
         assertThat(hoursGroup3.getWorkingHours(), equalTo(50));
-        assertThat(hoursGroup3.getPercentage(), equalTo(new BigDecimal(0.50)
-                .setScale(2)));
+        assertThat(hoursGroup3.getPercentage(), equalTo(new BigDecimal(0.50).setScale(2)));
 
     }
 
     /**
-     * An {@link OrderLine} with two {@link HoursGroup} of 0h NO_FIXED. Trying
-     * to set work hours of {@link OrderLine} to 200h. Expected:
-     * {@link OrderLine} with 200h. {@link HoursGroup} with 100h and
-     * {@link HoursGroup} with 100h.
+     * An {@link OrderLine} with two {@link HoursGroup} of 0h NO_FIXED.
+     * Trying to set work hours of {@link OrderLine} to 200h.
+     * Expected: {@link OrderLine} with 200h, {@link HoursGroup} with 100h and {@link HoursGroup} with 100h.
      */
     @Test
     @Transactional
@@ -704,7 +677,7 @@ public class OrderLineTest {
         try {
             hoursGroup.setWorkingHours(-50);
             fail("It should throw an exception");
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException ignored) {
             // Ok
         }
 
@@ -733,7 +706,7 @@ public class OrderLineTest {
         try {
             hoursGroup2.setPercentage(new BigDecimal(0.75).setScale(2));
             fail("It should throw an exception");
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException ignored) {
             // Ok
         }
 
@@ -823,8 +796,7 @@ public class OrderLineTest {
     public void createOrderLineWithAnHoursGroupTakingAll() {
         int[] hoursValues = { 0, 100, 10, 30 };
         for (int hours : hoursValues) {
-            OrderLine orderLine = OrderLine
-                    .createOrderLineWithUnfixedPercentage(hours);
+            OrderLine orderLine = OrderLine.createOrderLineWithUnfixedPercentage(hours);
             assertThat(orderLine.getWorkHours(), equalTo(hours));
             assertThat(orderLine.getHoursGroups().size(), equalTo(1));
             orderLine.setWorkHours(20);

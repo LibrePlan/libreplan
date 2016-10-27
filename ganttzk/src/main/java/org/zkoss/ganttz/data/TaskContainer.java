@@ -37,18 +37,18 @@ import org.zkoss.zk.ui.util.Clients;
  */
 public class TaskContainer extends Task {
 
-    public TaskContainer(ITaskFundamentalProperties fundamentalProperties,
-            boolean expanded) {
+    public TaskContainer(ITaskFundamentalProperties fundamentalProperties, boolean expanded) {
         super(fundamentalProperties);
         this.expanded = expanded;
     }
 
     public interface IExpandListener {
-        public void expandStateChanged(boolean isNowExpanded);
+        void expandStateChanged(boolean isNowExpanded);
     }
 
     private static <T> List<T> removeNulls(Collection<T> elements) {
-        ArrayList<T> result = new ArrayList<T>();
+        ArrayList<T> result = new ArrayList<>();
+
         for (T e : elements) {
             if (e != null) {
                 result.add(e);
@@ -57,22 +57,19 @@ public class TaskContainer extends Task {
         return result;
     }
 
-    private static <T extends Comparable<? super T>> T getSmallest(
-            Collection<T> elements) {
+    private static <T extends Comparable<? super T>> T getSmallest(Collection<T> elements) {
         return Collections.min(removeNulls(elements));
     }
 
-    private static <T extends Comparable<? super T>> T getBiggest(
-            Collection<T> elements) {
+    private static <T extends Comparable<? super T>> T getBiggest(Collection<T> elements) {
         return Collections.max(removeNulls(elements));
     }
 
-    private List<Task> tasks = new ArrayList<Task>();
+    private List<Task> tasks = new ArrayList<>();
 
     private boolean expanded = false;
 
-    private WeakReferencedListeners<IExpandListener> expandListeners = WeakReferencedListeners
-            .create();
+    private WeakReferencedListeners<IExpandListener> expandListeners = WeakReferencedListeners.create();
 
     public void addExpandListener(IExpandListener expandListener) {
         expandListeners.addListener(expandListener);
@@ -89,17 +86,20 @@ public class TaskContainer extends Task {
     }
 
     private List<GanttDate> getEndDates() {
-        ArrayList<GanttDate> result = new ArrayList<GanttDate>();
+        ArrayList<GanttDate> result = new ArrayList<>();
+
         for (Task task : tasks) {
             result.add(task.getEndDate());
         }
+
         return result;
     }
 
     public GanttDate getBiggestDateFromChildren() {
-        if (tasks.isEmpty()) {
+        if ( tasks.isEmpty() ) {
             return getEndDate();
         }
+
         return getBiggest(getEndDates());
     }
 
@@ -111,9 +111,11 @@ public class TaskContainer extends Task {
     @Override
     public void setVisible(boolean visible) {
         super.setVisible(visible);
-        if (!this.expanded) {
+
+        if ( !this.expanded ) {
             return;
         }
+
         for (Task task : tasks) {
             task.setVisible(true);
         }
@@ -133,6 +135,7 @@ public class TaskContainer extends Task {
                         }
                     });
         }
+
         refreshTooltips();
     }
 
@@ -171,10 +174,12 @@ public class TaskContainer extends Task {
 
     @Override
     public List<Task> getAllTaskLeafs() {
-        List<Task> result = new ArrayList<Task>();
+        List<Task> result = new ArrayList<>();
+
         for (Task task : tasks) {
             result.addAll(task.getAllTaskLeafs());
         }
+
         return result;
     }
 

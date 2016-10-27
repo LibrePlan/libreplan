@@ -22,12 +22,13 @@
 package org.libreplan.web.common.entrypoints;
 
 /**
- * Contract for {@link URLHandlerRegistry} <br />
+ * Contract for {@link URLHandlerRegistry}.
+ * <br />
+ *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public interface IURLHandlerRegistry {
 
-    public abstract <T> EntryPointsHandler<T> getRedirectorFor(
-            Class<T> klassWithLinkableMetadata);
+    <T> EntryPointsHandler<T> getRedirectorFor(Class<T> klassWithLinkableMetadata);
 
 }

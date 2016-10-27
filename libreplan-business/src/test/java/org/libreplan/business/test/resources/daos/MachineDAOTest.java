@@ -55,10 +55,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
-        BUSINESS_SPRING_CONFIG_TEST_FILE })
+@ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE, BUSINESS_SPRING_CONFIG_TEST_FILE })
 /**
- * Test for {@MachineDAO}
+ * Test for {@link org.libreplan.business.resources.daos.MachineDAO}.
  *
  * @author Diego Pino Garcia <dpino@igalia.com>
  * @author Javier Moran Rua <jmoran@igalia.com>
@@ -84,7 +83,7 @@ public class MachineDAOTest {
     private IDataBootstrap configurationBootstrap;
 
     @Before
-    public void loadRequiredaData() {
+    public void loadRequiredData() {
         configurationBootstrap.loadRequiredData();
     }
 
@@ -137,11 +136,14 @@ public class MachineDAOTest {
     @Test
     public void testSaveConfigurationUnits() throws InstanceNotFoundException {
         final Machine machine = createValidMachine();
-        MachineWorkersConfigurationUnit configurationUnit = MachineWorkersConfigurationUnit
-                .create(machine, "Operation", new BigDecimal(1));
+
+        MachineWorkersConfigurationUnit configurationUnit =
+                MachineWorkersConfigurationUnit.create(machine, "Operation", new BigDecimal(1));
+
         final Criterion criterion = CriterionDAOTest.createValidCriterion();
         configurationUnit.addRequiredCriterion(criterion);
         machine.addMachineWorkersConfigurationUnit(configurationUnit);
+
         transactionService.runOnTransaction(new IOnTransaction<Void>() {
             @Override
             public Void execute() {
@@ -151,15 +153,16 @@ public class MachineDAOTest {
                 return null;
             }
         });
+
         assertTrue(machine.getId() != null);
         assertTrue(machine.getConfigurationUnits().size() != 0);
-        assertTrue(machine.getConfigurationUnits().iterator().next()
-                .getRequiredCriterions().size() != 0);
+        assertTrue(machine.getConfigurationUnits().iterator().next().getRequiredCriterions().size() != 0);
     }
 
     @Test(expected = ValidationException.class)
     public void testSaveTwoMachinesWithSameCodeForbidden() {
         final String sameCode = UUID.randomUUID().toString();
+
         transactionService.runOnTransaction(new IOnTransaction<Void>() {
             @Override
             public Void execute() {

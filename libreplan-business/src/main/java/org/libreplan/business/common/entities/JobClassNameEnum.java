@@ -21,11 +21,10 @@ package org.libreplan.business.common.entities;
 
 
 /**
- * Defines the job class package and name to be used as data type in
- * {@link JobSchedulerConfiguration}
+ * Defines the job class package and name to be used as data type in {@link JobSchedulerConfiguration}.
  *
  * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
- * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
 public enum JobClassNameEnum {
 
@@ -43,7 +42,7 @@ public enum JobClassNameEnum {
     private String packageName;
     private String name;
 
-    private JobClassNameEnum(String packageName, String name) {
+    JobClassNameEnum(String packageName, String name) {
         this.packageName = packageName;
         this.name = name;
     }

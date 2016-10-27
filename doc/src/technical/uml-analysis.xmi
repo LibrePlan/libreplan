@@ -196,7 +196,7 @@
         <UML:Attribute visibility="private" isSpecification="false" xmi.id="vbfrWGfCLBGl" type="hAf0l1kIOBtM" name="cantidad_que_hacer" />
        </UML:Classifier.feature>
       </UML:Class>
-      <UML:Class visibility="public" isSpecification="false" namespace="Logical View" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="UwUp5iYgVB85" name="AdvanceAssigment" >
+      <UML:Class visibility="public" isSpecification="false" namespace="Logical View" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="UwUp5iYgVB85" name="AdvanceAssignment" >
        <UML:Classifier.feature>
         <UML:Attribute visibility="private" isSpecification="false" xmi.id="T39teAln6AUS" type="qdTUeCLBaJts" name="reportGlobalAdvance" />
         <UML:Attribute visibility="private" isSpecification="false" xmi.id="oAXoyRcNetbF" type="2zQEOGZFsPzF" name="maxValue" />
@@ -245,8 +245,8 @@
         <UML:Attribute visibility="private" isSpecification="false" xmi.id="Db7E4ky5iW8v" type="dCHs9h07Z9Vb" name="duration" />
        </UML:Classifier.feature>
       </UML:Class>
-      <UML:Class visibility="public" isSpecification="false" namespace="Logical View" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="o5mCGv6T0zJ1" name="AssigmentFunction" />
-      <UML:Class visibility="public" isSpecification="false" namespace="Logical View" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="YpNtsZci2NR9" name="DayAssigment" >
+      <UML:Class visibility="public" isSpecification="false" namespace="Logical View" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="o5mCGv6T0zJ1" name="AssignmentFunction" />
+      <UML:Class visibility="public" isSpecification="false" namespace="Logical View" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="YpNtsZci2NR9" name="DayAssignment" >
        <UML:Classifier.feature>
         <UML:Attribute visibility="private" isSpecification="false" xmi.id="SEQVgSVQf1jQ" type="dCHs9h07Z9Vb" name="hours" />
         <UML:Attribute visibility="private" isSpecification="false" xmi.id="NyFsBrpPm7dW" type="ECeqpWy8psFU" initialValue="{criterion,especifica}" name="tipo" />
@@ -257,13 +257,13 @@
         <UML:Generalization xmi.idref="GvUkFUrye1Yl" />
        </UML:GeneralizableElement.generalization>
       </UML:Class>
-      <UML:Class visibility="public" isSpecification="false" namespace="Logical View" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="0WUme5I6QUAL" name="GenericDayAssigment" >
+      <UML:Class visibility="public" isSpecification="false" namespace="Logical View" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="0WUme5I6QUAL" name="GenericDayAssignment" >
        <UML:GeneralizableElement.generalization>
         <UML:Generalization xmi.idref="G2AvGRcerKjs" />
         <UML:Generalization xmi.idref="c5awcauVaslZ" />
        </UML:GeneralizableElement.generalization>
       </UML:Class>
-      <UML:Class visibility="public" isSpecification="false" namespace="Logical View" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="GpZEcpFG3HuR" name="SpecificDayAssigment" >
+      <UML:Class visibility="public" isSpecification="false" namespace="Logical View" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="GpZEcpFG3HuR" name="SpecificDayAssignment" >
        <UML:GeneralizableElement.generalization>
         <UML:Generalization xmi.idref="7deCbLvUjYef" />
        </UML:GeneralizableElement.generalization>
@@ -278,12 +278,12 @@
         <UML:Attribute visibility="private" isSpecification="false" xmi.id="O6eT5AUWOLWC" type="q0K4uDt3Em1T" name="name" />
        </UML:Classifier.feature>
       </UML:Class>
-      <UML:Class visibility="public" isSpecification="false" namespace="Logical View" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="o5RjRxAkOrU1" name="DirectAdvanceAssigment" >
+      <UML:Class visibility="public" isSpecification="false" namespace="Logical View" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="o5RjRxAkOrU1" name="DirectAdvanceAssignment" >
        <UML:GeneralizableElement.generalization>
         <UML:Generalization xmi.idref="t9QzWAWJNjCI" />
        </UML:GeneralizableElement.generalization>
       </UML:Class>
-      <UML:Class visibility="public" isSpecification="false" namespace="Logical View" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="KgJE71ZrTa4N" name="IndirectAdvanceAssigment" >
+      <UML:Class visibility="public" isSpecification="false" namespace="Logical View" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="KgJE71ZrTa4N" name="IndirectAdvanceAssignment" >
        <UML:GeneralizableElement.generalization>
         <UML:Generalization xmi.idref="u0gIjsab6Z3N" />
        </UML:GeneralizableElement.generalization>
@@ -454,7 +454,7 @@
         <UML:Attribute visibility="private" isSpecification="false" xmi.id="GeLKfWmQuIBU" type="Cq6BA0nXsCXx" name="machineHumanHourRate" />
        </UML:Classifier.feature>
       </UML:Class>
-      <UML:Class visibility="public" isSpecification="false" namespace="Logical View" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="Kw2aCKPV84kE" name="MachineWorkerAssigment" >
+      <UML:Class visibility="public" isSpecification="false" namespace="Logical View" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="Kw2aCKPV84kE" name="MachineWorkerAssignment" >
        <UML:Classifier.feature>
         <UML:Attribute visibility="private" isSpecification="false" xmi.id="OfmZd8GsCYKE" type="DtuyEvXi0kBC" name="start_date" />
         <UML:Attribute visibility="private" isSpecification="false" xmi.id="SkF33CAV0aTV" type="f7oGUkbSGEeR" name="end_date" />
@@ -1251,7 +1251,7 @@
       <UML:Class stereotype="ValueObject" visibility="public" isSpecification="false" namespace="Logical View" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="DvJMqK9uqyoj" name="DescriptionField" >
        <UML:Classifier.feature>
         <UML:Attribute visibility="private" isSpecification="false" xmi.id="EktSfldrewDU" type="6zMANtkSKpsl" name="fieldName" />
-        <UML:Attribute visibility="private" isSpecification="false" xmi.id="YA0kxe2sGVdU" type="dCHs9h07Z9Vb" name="lenght" />
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="YA0kxe2sGVdU" type="dCHs9h07Z9Vb" name="length" />
        </UML:Classifier.feature>
       </UML:Class>
       <UML:Association visibility="public" isSpecification="false" namespace="Logical View" xmi.id="NabCwmZxpxX4" name="lineFields" >
@@ -1291,7 +1291,7 @@
        </UML:Association.connection>
       </UML:Association>
       <UML:Class visibility="public" isSpecification="false" namespace="Logical View" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="jxLogAx66lof" name="DerivedAllocation" />
-      <UML:Class visibility="public" isSpecification="false" namespace="Logical View" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="ZcejaipLWSlT" name="DerivedDayAssigment" >
+      <UML:Class visibility="public" isSpecification="false" namespace="Logical View" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="ZcejaipLWSlT" name="DerivedDayAssignment" >
        <UML:GeneralizableElement.generalization>
         <UML:Generalization xmi.idref="OHtc23XcYxcn" />
        </UML:GeneralizableElement.generalization>
@@ -1574,7 +1574,7 @@
         <UML:AssociationEnd changeability="changeable" visibility="public" isNavigable="true" isSpecification="false" xmi.id="MYzp4P0l7Sfh" type="93SIJpAVZgSA" name="" aggregation="none" />
        </UML:Association.connection>
       </UML:Association>
-      <UML:Class visibility="public" isSpecification="false" namespace="Logical View" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="UUktVVzv8eYw" name="AdvanceAssigmentTemplate" >
+      <UML:Class visibility="public" isSpecification="false" namespace="Logical View" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="UUktVVzv8eYw" name="AdvanceAssignmentTemplate" >
        <UML:Classifier.feature>
         <UML:Attribute visibility="private" isSpecification="false" xmi.id="ZpKZ9EpZ43xr" type="qdTUeCLBaJts" name="reportGlobalAdvance" />
         <UML:Attribute visibility="private" isSpecification="false" xmi.id="7BAGgpu8Ke1n" type="2zQEOGZFsPzF" name="maxValue" />
@@ -1586,7 +1586,7 @@
         <UML:AssociationEnd changeability="changeable" visibility="public" isNavigable="true" isSpecification="false" xmi.id="RqC7SswCmRjc" type="UUktVVzv8eYw" name="" aggregation="none" />
        </UML:Association.connection>
       </UML:Association>
-      <UML:Class visibility="public" isSpecification="false" namespace="Logical View" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="BLUiq39f9WT0" name="AdvanceAssigment_1" >
+      <UML:Class visibility="public" isSpecification="false" namespace="Logical View" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="BLUiq39f9WT0" name="AdvanceAssignment_1" >
        <UML:Classifier.feature>
         <UML:Attribute visibility="private" isSpecification="false" xmi.id="OVE8Cs0Kfgrz" type="qdTUeCLBaJts" name="reportGlobalAdvance" />
         <UML:Attribute visibility="private" isSpecification="false" xmi.id="0GkbGqWR908z" type="2zQEOGZFsPzF" name="maxValue" />
@@ -1802,10 +1802,10 @@
          <classwidget linecolor="#ff0000" usesdiagramfillcolor="0" linewidth="none" showoperations="1" usesdiagramusefillcolor="0" showpubliconly="0" showpackage="0" x="201" showattsigs="601" y="181" showattributes="1" font="Sans Serif,10,-1,5,50,0,0,0,0,0" width="134" isinstance="0" usefillcolor="1" fillcolor="#ffffc0" xmi.id="oRwdH97rBGn9" showscope="1" height="88" showopsigs="601" />
          <classwidget linecolor="#ff0000" usesdiagramfillcolor="0" linewidth="none" showoperations="1" usesdiagramusefillcolor="0" showpubliconly="0" showpackage="0" x="634" showattsigs="601" y="183" showattributes="1" font="Sans Serif,10,-1,5,50,0,0,0,0,0" width="200" isinstance="0" usefillcolor="1" fillcolor="#ffffc0" xmi.id="xC9oqvTbtqno" showscope="1" height="56" showopsigs="601" />
          <classwidget linecolor="#ff0000" usesdiagramfillcolor="0" linewidth="none" showoperations="1" usesdiagramusefillcolor="0" showpubliconly="0" showpackage="0" x="891" showattsigs="601" y="362" showattributes="1" font="Sans Serif,10,-1,5,50,0,0,0,0,0" width="207" isinstance="0" usefillcolor="1" fillcolor="#ffffc0" xmi.id="zOVY0BwVHuvE" showscope="1" height="32" showopsigs="601" />
-         <notewidget width="137" x="471" noteType="0" y="20" usesdiagramusefillcolor="1" usesdiagramfillcolor="1" isinstance="0" fillcolor="none" height="137" linecolor="none" xmi.id="PFaYRnK1tp0B" usefillcolor="1" linewidth="none" font="Sans Serif,10,-1,5,50,0,0,0,0,0" text="The assigment is going to be from the startDate to the endDate of the task" />
+         <notewidget width="137" x="471" noteType="0" y="20" usesdiagramusefillcolor="1" usesdiagramfillcolor="1" isinstance="0" fillcolor="none" height="137" linecolor="none" xmi.id="PFaYRnK1tp0B" usefillcolor="1" linewidth="none" font="Sans Serif,10,-1,5,50,0,0,0,0,0" text="The assignment is going to be from the startDate to the endDate of the task" />
          <classwidget linecolor="none" usesdiagramfillcolor="1" linewidth="none" showoperations="1" usesdiagramusefillcolor="1" showpubliconly="0" showpackage="0" x="682" showattsigs="601" y="31" showattributes="1" font="Sans Serif,10,-1,5,50,0,0,0,0,0" width="152" isinstance="0" usefillcolor="1" fillcolor="none" xmi.id="o5mCGv6T0zJ1" showscope="1" height="36" showopsigs="601" />
          <classwidget linecolor="#ff0000" usesdiagramfillcolor="0" linewidth="none" showoperations="1" usesdiagramusefillcolor="0" showpubliconly="0" showpackage="0" x="397" showattsigs="601" y="743" showattributes="1" font="Sans Serif,10,-1,5,50,0,0,0,0,0" width="215" isinstance="0" usefillcolor="1" fillcolor="#ffffc0" xmi.id="YpNtsZci2NR9" showscope="1" height="56" showopsigs="601" />
-         <notewidget width="190" x="207" noteType="0" y="31" usesdiagramusefillcolor="1" usesdiagramfillcolor="1" isinstance="0" fillcolor="none" height="127" linecolor="none" xmi.id="q8fcVDfvP5R3" usefillcolor="1" linewidth="none" font="Sans Serif,10,-1,5,50,0,0,0,0,0" text="The percentage indicates in the case of an AssigmentFunction the maximum value to calculate the days assigments&#xa;" />
+         <notewidget width="190" x="207" noteType="0" y="31" usesdiagramusefillcolor="1" usesdiagramfillcolor="1" isinstance="0" fillcolor="none" height="127" linecolor="none" xmi.id="q8fcVDfvP5R3" usefillcolor="1" linewidth="none" font="Sans Serif,10,-1,5,50,0,0,0,0,0" text="The percentage indicates in the case of an AssignmentFunction the maximum value to calculate the days assignments&#xa;" />
          <classwidget linecolor="#ff0000" usesdiagramfillcolor="0" linewidth="none" showoperations="1" usesdiagramusefillcolor="0" showpubliconly="0" showpackage="0" x="57" showattsigs="601" y="368" showattributes="1" font="Sans Serif,10,-1,5,50,0,0,0,0,0" width="206" isinstance="0" usefillcolor="1" fillcolor="#ffffc0" xmi.id="ip8LnfNpfMJo" showscope="1" height="32" showopsigs="601" />
          <classwidget linecolor="none" usesdiagramfillcolor="1" linewidth="none" showoperations="1" usesdiagramusefillcolor="1" showpubliconly="0" showpackage="0" x="449" showattsigs="601" y="445" showattributes="1" font="Sans Serif,10,-1,5,75,0,0,0,0,0" width="123" isinstance="0" usefillcolor="1" fillcolor="none" xmi.id="pXwBgpXvFPTv" showscope="1" height="56" showopsigs="601" />
          <classwidget linecolor="none" usesdiagramfillcolor="1" linewidth="none" showoperations="1" usesdiagramusefillcolor="1" showpubliconly="0" showpackage="0" x="169" showattsigs="601" y="532" showattributes="1" font="Sans Serif,10,-1,5,50,0,0,0,0,0" width="171" isinstance="0" usefillcolor="1" fillcolor="none" xmi.id="0WUme5I6QUAL" showscope="1" height="32" showopsigs="601" />
@@ -1954,10 +1954,10 @@
          <classwidget linecolor="#ff0000" usesdiagramfillcolor="0" linewidth="none" showoperations="1" usesdiagramusefillcolor="0" showpubliconly="0" showpackage="0" x="297" showattsigs="601" y="245" showattributes="1" font="Sans Serif,10,-1,5,75,0,0,0,0,0" width="220" isinstance="0" usefillcolor="1" fillcolor="#71ff4a" xmi.id="UwUp5iYgVB85" showscope="1" height="56" showopsigs="601" />
          <classwidget linecolor="#ff0000" usesdiagramfillcolor="0" linewidth="none" showoperations="1" usesdiagramusefillcolor="0" showpubliconly="0" showpackage="0" x="655" showattsigs="601" y="223" showattributes="1" font="Sans Serif,10,-1,5,75,0,0,0,0,0" width="364" isinstance="0" usefillcolor="1" fillcolor="#ffffc0" xmi.id="bmRPNtkrYrn4" showscope="1" height="128" showopsigs="601" />
          <classwidget linecolor="#ff0000" usesdiagramfillcolor="0" linewidth="none" showoperations="1" usesdiagramusefillcolor="0" showpubliconly="0" showpackage="0" x="156" showattsigs="601" y="441" showattributes="1" font="Sans Serif,10,-1,5,50,0,0,0,0,0" width="173" isinstance="0" usefillcolor="1" fillcolor="#ffffc0" xmi.id="QX7KUtq8V8Jy" showscope="1" height="56" showopsigs="601" />
-         <notewidget width="461" x="173" noteType="0" y="19" usesdiagramusefillcolor="1" usesdiagramfillcolor="0" isinstance="0" fillcolor="#b9fff7" height="184" linecolor="none" xmi.id="BRWpZJn9t6Gg" usefillcolor="1" linewidth="none" font="Sans Serif,10,-1,0,50,0,0,0,0,0" text="Hai que introducir a regra de negocio de que non pode haber dous obxectos AdvanceAssigment do mesmo AdvanceType sobre o OrderElement&#xa;&#xa;Tamen hai que introducir a restriccion de que non se pode definir un obxecto AdvanceAssigment sobre un OrderElement se existe algun pai deste OrderElement que ten un obxecto AdvanceAssigment do mesmo AdvanceType" />
+         <notewidget width="461" x="173" noteType="0" y="19" usesdiagramusefillcolor="1" usesdiagramfillcolor="0" isinstance="0" fillcolor="#b9fff7" height="184" linecolor="none" xmi.id="BRWpZJn9t6Gg" usefillcolor="1" linewidth="none" font="Sans Serif,10,-1,0,50,0,0,0,0,0" text="Hai que introducir a regra de negocio de que non pode haber dous obxectos AdvanceAssignment do mesmo AdvanceType sobre o OrderElement&#xa;&#xa;Tamen hai que introducir a restriccion de que non se pode definir un obxecto AdvanceAssignment sobre un OrderElement se existe algun pai deste OrderElement que ten un obxecto AdvanceAssignment do mesmo AdvanceType" />
          <classwidget linecolor="#ff0000" usesdiagramfillcolor="0" linewidth="none" showoperations="1" usesdiagramusefillcolor="0" showpubliconly="0" showpackage="0" x="146" showattsigs="601" y="367" showattributes="1" font="Sans Serif,10,-1,5,50,0,0,0,0,0" width="193" isinstance="0" usefillcolor="1" fillcolor="#ffffc0" xmi.id="o5RjRxAkOrU1" showscope="1" height="32" showopsigs="601" />
          <classwidget linecolor="none" usesdiagramfillcolor="1" linewidth="none" showoperations="1" usesdiagramusefillcolor="1" showpubliconly="0" showpackage="0" x="387" showattsigs="601" y="367" showattributes="1" font="Sans Serif,10,-1,0,50,0,0,0,0,0" width="205" isinstance="0" usefillcolor="1" fillcolor="none" xmi.id="KgJE71ZrTa4N" showscope="1" height="32" showopsigs="601" />
-         <notewidget width="292" x="611" noteType="0" y="472" usesdiagramusefillcolor="1" usesdiagramfillcolor="1" isinstance="0" fillcolor="none" height="189" linecolor="none" xmi.id="zSuD3L47lpuA" usefillcolor="1" linewidth="none" font="Sans Serif,10,-1,0,50,0,0,0,0,0" text="Hai que crear un novo tipo de avance predefinido: ChildrenAdvanceType. Este tipo de avance se cargara se non existe na base de datos.  Ademais cando se cree un OrderElement de tipo OrderLineGroup haberá sempre que crearlle un IndirectAdvanceAssigment de tipo ChildrenAdvanceType" />
+         <notewidget width="292" x="611" noteType="0" y="472" usesdiagramusefillcolor="1" usesdiagramfillcolor="1" isinstance="0" fillcolor="none" height="189" linecolor="none" xmi.id="zSuD3L47lpuA" usefillcolor="1" linewidth="none" font="Sans Serif,10,-1,0,50,0,0,0,0,0" text="Hai que crear un novo tipo de avance predefinido: ChildrenAdvanceType. Este tipo de avance se cargara se non existe na base de datos.  Ademais cando se cree un OrderElement de tipo OrderLineGroup haberá sempre que crearlle un IndirectAdvanceAssignment de tipo ChildrenAdvanceType" />
         </widgets>
         <messages/>
         <associations>
@@ -2692,7 +2692,7 @@
          <classwidget linecolor="none" usesdiagramfillcolor="1" linewidth="none" showoperations="1" usesdiagramusefillcolor="1" showpubliconly="1" showpackage="1" x="94" showattsigs="601" showstereotype="1" y="206" showattributes="1" font="DejaVu Sans,8,-1,5,50,0,0,0,0,0" width="43" isinstance="0" usefillcolor="1" fillcolor="none" xmi.id="J8SsPhfYKZmW" showscope="1" height="28" showopsigs="601" />
          <classwidget linecolor="none" usesdiagramfillcolor="1" linewidth="none" showoperations="1" usesdiagramusefillcolor="1" showpubliconly="1" showpackage="1" x="266" showattsigs="601" showstereotype="1" y="77" showattributes="1" font="DejaVu Sans,8,-1,5,50,0,0,0,0,0" width="86" isinstance="0" usefillcolor="1" fillcolor="none" xmi.id="MMYIYbrnQlAN" showscope="1" height="28" showopsigs="601" />
          <notewidget width="151" showstereotype="1" x="55" noteType="0" y="13" usesdiagramusefillcolor="1" usesdiagramfillcolor="1" isinstance="0" fillcolor="none" height="157" linecolor="none" xmi.id="Px9F2MBrplzS" usefillcolor="1" linewidth="none" font="DejaVu Sans,8,-1,5,50,0,0,0,0,0" text="QualityFormTask has a relation with OrderElement but is QualityForm the one that has a direct relation in the case of template. So aplying the template will generate a QualityFormTask" />
-         <notewidget width="205" showstereotype="1" x="745" noteType="0" y="24" usesdiagramusefillcolor="1" usesdiagramfillcolor="1" isinstance="0" fillcolor="none" height="111" linecolor="none" xmi.id="lJ17VZ75s1O3" usefillcolor="1" linewidth="none" font="DejaVu Sans,8,-1,5,50,0,0,0,0,0" text="the value unitPrice, and totalPrice and stimatedAvaliability doesn't have sense, and will be get by Material information at the time of application of the template.&#xa;The status will be pending in the moment of creation." />
+         <notewidget width="205" showstereotype="1" x="745" noteType="0" y="24" usesdiagramusefillcolor="1" usesdiagramfillcolor="1" isinstance="0" fillcolor="none" height="111" linecolor="none" xmi.id="lJ17VZ75s1O3" usefillcolor="1" linewidth="none" font="DejaVu Sans,8,-1,5,50,0,0,0,0,0" text="the value unitPrice, and totalPrice and estimatedAvailability doesn't have sense, and will be get by Material information at the time of application of the template.&#xa;The status will be pending in the moment of creation." />
          <notewidget width="182" showstereotype="1" x="34" noteType="0" y="261" usesdiagramusefillcolor="1" usesdiagramfillcolor="1" isinstance="0" fillcolor="none" height="136" linecolor="none" xmi.id="bLm48FbWtpXE" usefillcolor="1" linewidth="none" font="DejaVu Sans,8,-1,5,50,0,0,0,0,0" text="Codes will be regenerated at the moment of application of the template acording to the Order that receives the template. Init and End date will be relative to the init of the template." />
          <classwidget linecolor="none" usesdiagramfillcolor="1" linewidth="none" showoperations="1" usesdiagramusefillcolor="1" showpubliconly="0" showpackage="1" x="577" showattsigs="601" showstereotype="1" y="175" showattributes="1" font="DejaVu Sans,8,-1,5,50,0,0,0,0,0" width="195" isinstance="0" usefillcolor="1" fillcolor="none" xmi.id="UUktVVzv8eYw" showscope="1" height="49" showopsigs="601" />
          <classwidget linecolor="#ff0000" usesdiagramfillcolor="0" linewidth="none" showoperations="0" usesdiagramusefillcolor="0" showpubliconly="1" showpackage="0" x="829" showattsigs="601" y="183" showattributes="1" font="Sans Serif,10,-1,5,50,0,0,0,0,0" width="105" isinstance="0" usefillcolor="1" fillcolor="#ffffc0" xmi.id="bmRPNtkrYrn4" showscope="1" height="32" showopsigs="601" />

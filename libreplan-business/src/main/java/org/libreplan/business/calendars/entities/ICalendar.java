@@ -29,39 +29,39 @@ import org.libreplan.business.workingday.ResourcesPerDay;
 public interface ICalendar {
 
     /**
-     * Translates the received amount into the corresponding duration at the
-     * given date. It takes into account the partial capacity of the day.
+     * Translates the received amount into the corresponding duration at the given date.
+     * It takes into account the partial capacity of the day.
      *
      * @param day
      * @param amount
      * @return
      */
-    public EffortDuration asDurationOn(PartialDay day, ResourcesPerDay amount);
+    EffortDuration asDurationOn(PartialDay day, ResourcesPerDay amount);
 
     /**
-     * Calculates the capacity duration at a given day. It means all the time
-     * that could be worked without having overtime. It considers the
-     * {@link PartialDay} so if the day it's not complete the capacity is
-     * reduced
+     * Calculates the capacity duration at a given day.
+     * It means all the time that could be worked without having overtime.
+     * It considers the {@link PartialDay} so if the day it's not complete the capacity is reduced.
+     *
      * @param date
      *            the date at which the capacity is calculated
      * @return the capacity at which the resource can work at the day specified
      */
-    public EffortDuration getCapacityOn(PartialDay partialDay);
+    EffortDuration getCapacityOn(PartialDay partialDay);
 
     /**
-     * Calculates the capacity information for a given date. It contains
-     * information about the normal effort and the extra effort, i.e., the
-     * overtime effort.
+     * Calculates the capacity information for a given date.
+     * It contains information about the normal effort and the extra effort, i.e., the overtime effort.
      *
      * @param date
      *            a not null date
      * @return the capacity for the date provided
      */
-    public Capacity getCapacityWithOvertime(LocalDate date);
+    Capacity getCapacityWithOvertime(LocalDate date);
 
-    public AvailabilityTimeLine getAvailability();
+    AvailabilityTimeLine getAvailability();
 
-    public boolean thereAreCapacityFor(AvailabilityTimeLine availability,
-            ResourcesPerDay resourcesPerDay, EffortDuration durationToAllocate);
+    boolean thereAreCapacityFor(AvailabilityTimeLine availability,
+                                ResourcesPerDay resourcesPerDay,
+                                EffortDuration durationToAllocate);
 }

@@ -29,15 +29,8 @@ import org.zkoss.ganttz.extensions.ICommandOnTask;
 import org.zkoss.ganttz.extensions.IContext;
 import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 import org.zkoss.ganttz.util.MenuBuilder.ItemAction;
-import org.zkoss.zk.ui.event.Event;
 
 public class CommandOnTaskContextualized<T> {
-
-    public static <T> CommandOnTaskContextualized<T> create(ICommandOnTask<T> commandOnTask,
-                                                            IDomainAndBeansMapper<T> mapper, IContext<T> context) {
-
-        return new CommandOnTaskContextualized<T>(commandOnTask, mapper, context);
-    }
 
     private final ICommandOnTask<T> commandOnTask;
 
@@ -45,12 +38,23 @@ public class CommandOnTaskContextualized<T> {
 
     private final IDomainAndBeansMapper<T> mapper;
 
-    private CommandOnTaskContextualized(ICommandOnTask<T> commandOnTask, IDomainAndBeansMapper<T> mapper,
+    private CommandOnTaskContextualized(ICommandOnTask<T> commandOnTask,
+                                        IDomainAndBeansMapper<T> mapper,
                                         IContext<T> context) {
+
         this.commandOnTask = commandOnTask;
         this.mapper = mapper;
         this.context = context;
     }
+
+    public static <T> CommandOnTaskContextualized<T> create(ICommandOnTask<T> commandOnTask,
+                                                            IDomainAndBeansMapper<T> mapper,
+                                                            IContext<T> context) {
+
+        return new CommandOnTaskContextualized<>(commandOnTask, mapper, context);
+    }
+
+
 
     public void doAction(TaskComponent taskComponent) {
         doAction(
@@ -82,12 +86,7 @@ public class CommandOnTaskContextualized<T> {
     }
 
     ItemAction<TaskComponent> toItemAction() {
-        return new ItemAction<TaskComponent>() {
-            @Override
-            public void onEvent(TaskComponent choosen, Event event) {
-                doAction(choosen);
-            }
-        };
+        return (chosen, event) -> doAction(chosen);
     }
 
     public String getIcon() {
@@ -95,8 +94,7 @@ public class CommandOnTaskContextualized<T> {
     }
 
     public boolean accepts(TaskComponent taskComponent) {
-        T domainObject = domainObjectFor(taskComponent.getTask());
-        return commandOnTask.isApplicableTo(domainObject);
+        return commandOnTask.isApplicableTo(domainObjectFor(taskComponent.getTask()));
     }
 
     public IDomainAndBeansMapper<T> getMapper() {

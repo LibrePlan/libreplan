@@ -20,24 +20,24 @@
 -->
 
 <vbox id="${arg.id}"
-    apply="org.libreplan.web.users.OrderAuthorizationController" width="100%">
+      apply="org.libreplan.web.users.OrderAuthorizationController" width="100%">
 
     <!-- Profiles -->
-    <panel title="${i18n:_('Profiles authorization')}" border="normal">
+    <panel title="${i18n:_('Profiles authorization')}" border="normal" sclass="report-margin">
         <panelchildren>
-            <hbox align="center">
+            <hbox align="center" sclass="margin-border">
                 <autocomplete id="profileAutocomplete" constraint=""
-                    autodrop="true" finder="ProfileFinder" />
+                              autodrop="true" finder="ProfileFinder" />
                 <checkbox id="profileReadAuthCheckbox" label="${i18n:_('Read')}" />
                 <checkbox id="profileWriteAuthCheckbox" label="${i18n:_('Write')}" />
-                <button label="${i18n:_('Authorize')}"
-                    onClick="orderAuthorizationController.addOrderAuthorization(
+                <button label="${i18n:_('Authorize')}" sclass="add-button"
+                        onClick="orderAuthorizationController.addOrderAuthorization(
                         profileAutocomplete.selectedItem, profileReadAuthCheckbox.checked,
                         profileWriteAuthCheckbox.checked);"/>
             </hbox>
             <grid id="profilesAuthListing"
-                model="@{orderAuthorizationController.profileOrderAuthorizations}"
-                rowRenderer="@{orderAuthorizationController.orderAuthorizationRenderer}" >
+                  model="@{orderAuthorizationController.profileOrderAuthorizations}"
+                  rowRenderer="@{orderAuthorizationController.orderAuthorizationRenderer}" >
                 <columns sizable="true">
                     <column label="${i18n:_('Profile name')}" />
                     <column label="${i18n:_('Permissions')}" />
@@ -48,20 +48,20 @@
     </panel>
 
     <!-- Users -->
-    <panel title="${i18n:_('Users authorization')}" border="normal">
+    <panel title="${i18n:_('Users authorization')}" border="normal" sclass="report-margin">
         <panelchildren>
-            <hbox align="center">
+            <hbox align="center" sclass="margin-border">
                 <autocomplete id="usersAutocomplete" constraint=""
-                    autodrop="true" finder="UserFinder" />
+                              autodrop="true" finder="UserFinder" />
                 <checkbox id="userReadAuthCheckbox" label="${i18n:_('Read')}" />
                 <checkbox id="userWriteAuthCheckbox" label="${i18n:_('Write')}" />
-                <button label="${i18n:_('Authorize')}"
-                    onClick="orderAuthorizationController.addOrderAuthorization(
+                <button label="${i18n:_('Authorize')}" sclass="add-button"
+                        onClick="orderAuthorizationController.addOrderAuthorization(
                         usersAutocomplete.selectedItem, userReadAuthCheckbox.checked,
                         userWriteAuthCheckbox.checked);"/>
             </hbox>
             <grid id="usersAuthListing"
-                model="@{orderAuthorizationController.userOrderAuthorizations}">
+                  model="@{orderAuthorizationController.userOrderAuthorizations}">
                 <columns sizable="true">
                     <column label="${i18n:_('Profile name')}" />
                     <column label="${i18n:_('Permissions')}" />
@@ -73,10 +73,10 @@
                         <label value="@{authorization.authorizationType.displayName}" />
                         <hbox>
                             <button sclass="icono" image="/common/img/ico_borrar1.png"
-                                onClick="orderAuthorizationController.
+                                    onClick="orderAuthorizationController.
                                     removeOrderAuthorization(self.parent.parent.value);"
-                                hoverImage="/common/img/ico_borrar.png"
-                                tooltiptext="${i18n:_('Delete')}" />
+                                    hoverImage="/common/img/ico_borrar.png"
+                                    tooltiptext="${i18n:_('Delete')}" />
                         </hbox>
                     </row>
                 </rows>

@@ -20,20 +20,20 @@
 -->
 
 <treerow sclass="taskdetail_grid">
-    <zscript><![CDATA[
-    ]]>
-</zscript>
-    <treecell>
+    <treecell hflex="min">
         <textbox ctrlKeys="#down#up" hflex="1" sclass="task-name" />
     </treecell>
+
     <treecell>
         <textbox value="" ctrlKeys="#down#up"  />
     </treecell>
+
     <treecell>
         <textbox value="" ctrlKeys="#down#up"  />
     </treecell>
+
     <treecell>
-        <hlayout class="projectstatus-layout">
+        <hlayout sclass="projectstatus-layout">
             <div />
             <label>/</label>
             <div />

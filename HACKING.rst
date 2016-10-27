@@ -332,6 +332,12 @@ Ubuntu/Debian
 
   In Ubuntu Lucid 10.04 remove ``libqtwebkit-dev`` package.
 
+  * Install::
+
+    # apt-get install cutycapt
+
+If it doesn't work. Try to do it:
+
 * Download source code::
 
     $ svn co https://cutycapt.svn.sourceforge.net/svnroot/cutycapt cutycapt
@@ -409,9 +415,8 @@ Debian/Ubuntu
 
     # apt-get install make python-docutils texlive-latex-base texlive-latex-recommended texlive-latex-extra textlive-fonts-recommended
 
-* Go to the directory where the documentation you want to generate
-  is. For example, if you want to generate the user manual in
-  English::
+* Go to the directory where the documentation you want to generate is.
+  For example, if you want to generate the user manual in English::
 
    # cd doc/src/user/en
 

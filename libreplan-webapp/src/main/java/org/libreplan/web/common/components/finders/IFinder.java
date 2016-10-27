@@ -28,56 +28,54 @@ import org.libreplan.web.common.components.Autocomplete;
 import org.libreplan.web.common.components.finders.Finder.SimpleListModelExt;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.ComboitemRenderer;
+import org.zkoss.zul.SimpleListModel;
 
 /**
- * Interface for providing, displaying and matching elements for an
- * {@link Autocomplete} combobox
+ * Interface for providing, displaying and matching elements for an {@link Autocomplete} combobox.
  *
  * @author Diego Pino Garcia <dpino@igalia.com>
  */
 public interface IFinder {
 
     /**
-     * Text displayed for each {@link Comboitem}
+     * Text displayed for each {@link Comboitem}.
      *
      * @param value
-     * @return
+     * @return {@link String}
      */
     String _toString(Object value);
 
     /**
-     * Get list of {@link BaseEntity} to fill {@link Autocomplete}
+     * Get list of {@link BaseEntity} to fill {@link Autocomplete}.
      *
-     * Executed once only when {@link Autocomplete} is rendered for the first
-     * time
+     * Executed once only when {@link Autocomplete} is rendered for the first time.
      *
-     * @return
+     * @return {@link List<? extends BaseEntity>}
      */
     List<? extends BaseEntity> getAll();
 
     /**
-     * Returns customize {@link ComboitemRenderer}
+     * Returns customize {@link ComboitemRenderer}.
      *
-     * When creating your own Renderer, labels should always use
-     * _toString(Object value)
+     * When creating your own Renderer, labels should always use _toString(Object value).
      *
-     * @return
+     * @return {@link ComboitemRenderer}
      */
     ComboitemRenderer getItemRenderer();
 
     /**
-     * Returns a {@link SimpleListModelExt}
+     * Returns a {@link SimpleListModelExt}.
      *
-     * @return
+     * @return {@link SimpleListModel}
      */
-    SimpleListModelExt getModel();
+    SimpleListModel getModel();
 
     /**
-     * Boolean function to evaluate whether an entry matches with input text
+     * Boolean function to evaluate whether an entry matches with input text.
      *
      * @param entry
      * @param text
-     * @return
+     * @return boolean
      */
     boolean entryMatchesText(String entry, String text);
 

@@ -51,23 +51,22 @@ import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zk.ui.event.MouseEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.Bandbox;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Column;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Grid;
-import org.zkoss.zul.Hbox;
 import org.zkoss.zul.ListModel;
-import org.zkoss.zul.ListModelExt;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Rows;
 import org.zkoss.zul.SimpleListModel;
+import org.zkoss.zul.ext.Sortable;
 
 /**
- *
  * @author Diego Pino García <dpino@igalia.com>
  */
 public class CriterionsMachineController extends GenericForwardComposer {
@@ -83,13 +82,18 @@ public class CriterionsMachineController extends GenericForwardComposer {
     private Checkbox criterionFilterCheckbox;
 
     public CriterionsMachineController() {
-
     }
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        comp.setVariable("assignedCriterionsController", this, true);
+
+        if ( assignedMachineCriterionsModel == null ) {
+            assignedMachineCriterionsModel =
+                    (IAssignedMachineCriterionsModel) SpringUtil.getBean("assignedMachineCriterionsModel");
+        }
+
+        comp.setAttribute("assignedCriterionsController", this, true);
         messages = new MessagesForUser(messagesContainer);
     }
 
@@ -104,14 +108,13 @@ public class CriterionsMachineController extends GenericForwardComposer {
     }
 
     public List<CriterionSatisfactionDTO> getCriterionSatisfactionDTOs() {
-        List<CriterionSatisfactionDTO> list = new ArrayList<CriterionSatisfactionDTO>();
+        List<CriterionSatisfactionDTO> list = new ArrayList<>();
         if (criterionFilterCheckbox.isChecked()) {
-            list.addAll(assignedMachineCriterionsModel
-                    .getFilterCriterionSatisfactions());
+            list.addAll(assignedMachineCriterionsModel.getFilterCriterionSatisfactions());
         } else {
-            list.addAll(assignedMachineCriterionsModel
-                    .getAllCriterionSatisfactions());
+            list.addAll(assignedMachineCriterionsModel.getAllCriterionSatisfactions());
         }
+
         return list;
     }
 
@@ -125,7 +128,6 @@ public class CriterionsMachineController extends GenericForwardComposer {
     }
 
     public List<CriterionWithItsType> getCriterionWorkersWithItsTypes() {
-        // othermodel
         return assignedMachineCriterionsModel.getCriterionWorkersWithItsType();
     }
 
@@ -136,7 +138,7 @@ public class CriterionsMachineController extends GenericForwardComposer {
 
     public void forceSortGridSatisfaction() {
         Column column = (Column) listingCriterions.getColumns().getFirstChild();
-        ListModelExt model = (ListModelExt) listingCriterions.getModel();
+        Sortable model = (Sortable) listingCriterions.getModel();
         if ("ascending".equals(column.getSortDirection())) {
             model.sort(column.getSortAscending(), true);
         }
@@ -150,10 +152,9 @@ public class CriterionsMachineController extends GenericForwardComposer {
         reload();
     }
 
-    public void selectCriterionAndType(Listitem item, Bandbox bandbox,
-        CriterionSatisfactionDTO criterionSatisfactionDTO){
-        if(item != null){
-            CriterionWithItsType criterionAndType = (CriterionWithItsType)item.getValue();
+    public void selectCriterionAndType(Listitem item, Bandbox bandbox, CriterionSatisfactionDTO criterionSatisfactionDTO) {
+        if (item != null) {
+            CriterionWithItsType criterionAndType = item.getValue();
             bandbox.setValue(criterionAndType.getNameAndType());
             setCriterionWithItsType(criterionAndType,criterionSatisfactionDTO,bandbox);
         } else {
@@ -161,88 +162,80 @@ public class CriterionsMachineController extends GenericForwardComposer {
         }
     }
 
-    public void setCriterionWithItsType(CriterionWithItsType criterionAndType,
-            CriterionSatisfactionDTO satisfaction,Bandbox bandbox)  throws WrongValueException{
-        this.assignedMachineCriterionsModel.setCriterionWithItsType(
-                satisfaction, criterionAndType);
-            validateCriterionWithItsType(satisfaction,bandbox);
+    public void setCriterionWithItsType(
+            CriterionWithItsType criterionAndType, CriterionSatisfactionDTO satisfaction, Bandbox bandbox)
+            throws WrongValueException{
+
+        this.assignedMachineCriterionsModel.setCriterionWithItsType(satisfaction, criterionAndType);
+        validateCriterionWithItsType(satisfaction,bandbox);
     }
 
-    private void validateCriterionWithItsType(CriterionSatisfactionDTO satisfaction,
-            Component comp) throws WrongValueException{
-            if(satisfaction.getCriterionWithItsType() == null) {
-                return;
-            }
-            if(satisfaction.getStartDate() == null) {
-                return;
-            }
-        if (assignedMachineCriterionsModel
-                .checkSameCriterionAndSameInterval(satisfaction)) {
-                throw new WrongValueException(comp,
-                                        _("Criterion already assigned"));
-            }
-        if (assignedMachineCriterionsModel
-                .checkNotAllowSimultaneousCriterionsPerResource(satisfaction)) {
-                throw new WrongValueException(comp,
-                                        _("This criterion type cannot have multiple values in the same period"));
-            }
+    private void validateCriterionWithItsType(CriterionSatisfactionDTO satisfaction, Component comp) throws WrongValueException {
+
+        if (satisfaction.getCriterionWithItsType() == null) {
+            return;
+        }
+
+        if (satisfaction.getStartDate() == null) {
+            return;
+        }
+
+        if (assignedMachineCriterionsModel.checkSameCriterionAndSameInterval(satisfaction)) {
+            throw new WrongValueException(comp, _("Criterion already assigned"));
+        }
+
+        if (assignedMachineCriterionsModel.checkNotAllowSimultaneousCriterionsPerResource(satisfaction)) {
+            throw new WrongValueException(comp,
+                    _("This criterion type cannot have multiple values in the same period"));
+        }
     }
 
     public void changeDate(Component comp) {
-        CriterionSatisfactionDTO criterionSatisfactionDTO =
-            (CriterionSatisfactionDTO)((Row) comp.getParent()).getValue();
+        CriterionSatisfactionDTO criterionSatisfactionDTO = ((Row) comp.getParent()).getValue();
         validateCriterionWithItsType(criterionSatisfactionDTO,comp);
         reload();
     }
 
     public Constraint validateEndDate(){
         return new Constraint() {
-                        @Override
-                        public void validate(Component comp, Object value)
-                                throws WrongValueException {
+            @Override
+            public void validate(Component comp, Object value) throws WrongValueException {
                 validateEndDate(comp, value);
-                        }
-                    };
+            }
+        };
     }
 
     private void validateEndDate(Component comp, Object value) {
-        CriterionSatisfactionDTO criterionSatisfactionDTO = (CriterionSatisfactionDTO) ((Row) comp
-                .getParent()).getValue();
+        CriterionSatisfactionDTO criterionSatisfactionDTO = ((Row) comp.getParent()).getValue();
         if (!criterionSatisfactionDTO.isGreaterStartDate((Date) value)) {
-            throw new WrongValueException(
-                    comp,
-                    _("End date is not valid, the new end date must be after the start date"));
+            throw new WrongValueException(comp, _("End date is not valid, the new end date must be after the start date"));
         } else if (!criterionSatisfactionDTO.isPostEndDate((Date) value)) {
-            throw new WrongValueException(
-                    comp,
-                    _("Invaldid End Date. New End Date must be after current End Date "));
+            throw new WrongValueException(comp, _("Invaldid End Date. New End Date must be after current End Date "));
         }
     }
 
     public Constraint validateStartDate() {
         return new Constraint() {
             @Override
-            public void validate(Component comp, Object value)
-                    throws WrongValueException {
+            public void validate(Component comp, Object value) throws WrongValueException {
                 validateStartDate(comp, value);
             }
         };
     }
 
     private void validateStartDate(Component comp, Object value) {
-        CriterionSatisfactionDTO criterionSatisfactionDTO = (CriterionSatisfactionDTO) ((Row) comp
-                .getParent()).getValue();
+        CriterionSatisfactionDTO criterionSatisfactionDTO = ((Row) comp.getParent()).getValue();
         if (value == null) {
             throw new WrongValueException(comp, _("cannot be empty"));
         }
+
         if (!criterionSatisfactionDTO.isLessToEndDate((Date) value)) {
-            throw new WrongValueException(
-                    comp,
-                    _("Invalid Start Date. New Start Date must be earlier than End Date"));
+            throw new WrongValueException(comp, _("Invalid Start Date. New Start Date must be earlier than End Date"));
+
         } else if (!criterionSatisfactionDTO.isPreviousStartDate((Date) value)) {
+
             throw new WrongValueException(
-                    comp,
-                    _("Start date is not valid, the new start date must be previous the current start date"));
+                    comp, _("Start date is not valid, the new start date must be previous the current start date"));
         }
     }
 
@@ -251,9 +244,7 @@ public class CriterionsMachineController extends GenericForwardComposer {
     }
 
     /**
-     * Shows invalid values for {@link CriterionSatisfaction} entities
-     *
-     * @param e
+     * Shows invalid values for {@link CriterionSatisfaction} entities.
      */
     public boolean validate() throws ValidationException {
         try {
@@ -263,45 +254,49 @@ public class CriterionsMachineController extends GenericForwardComposer {
             }
             assignedMachineCriterionsModel.validate();
             reload();
+
         } catch (ValidationException e) {
             showInvalidValues(e);
             messages.showInvalidValues(e);
             return false;
+
         } catch (IllegalStateException e) {
             messages.showMessage(Level.ERROR, e.getMessage());
             return false;
+
         } catch (IllegalArgumentException e) {
             messages.showMessage(Level.ERROR, e.getMessage());
             return false;
         }
+
         return true;
     }
 
     /**
-     * Shows invalid inputs for {@link CriterionSatisfactionDTO} entities
-     *
-     * @param
+     * Shows invalid inputs for {@link CriterionSatisfactionDTO} entities.
      */
     private void showInvalidInputs() {
         if (listingCriterions != null) {
             Rows rows = listingCriterions.getRows();
             List<Row> listRows = rows.getChildren();
             for (Row row : listRows) {
+
                 // Validate endDate Domain Restricctions.
                 Datebox endDate = getEndDatebox(row);
                 if (isInvalid(endDate)) {
                     validateEndDate(endDate, endDate.getValue());
                 }
+
                 // Validate startDate Domain Restricctions.
                 Datebox startDate = getStartDatebox(row);
                 if (isInvalid(startDate)) {
                     validateStartDate(startDate, startDate.getValue());
                 }
+
                 // Validate endDate Domain Restricctions.
                 Bandbox bandCriterion = getBandType(row);
                 if (isInvalid(bandCriterion)) {
-                    CriterionSatisfactionDTO satisfactionDTO = (CriterionSatisfactionDTO) row
-                            .getValue();
+                    CriterionSatisfactionDTO satisfactionDTO = row.getValue();
                     validateCriterionWithItsType(satisfactionDTO, bandCriterion);
                 }
             }
@@ -309,7 +304,7 @@ public class CriterionsMachineController extends GenericForwardComposer {
     }
 
     /**
-     * Shows invalid values for {@link CriterionSatisfactionDTO} entities
+     * Shows invalid values for {@link CriterionSatisfactionDTO} entities.
      *
      * @param e
      */
@@ -317,95 +312,94 @@ public class CriterionsMachineController extends GenericForwardComposer {
         for (InvalidValue invalidValue : e.getInvalidValues()) {
             Object value = invalidValue.getRootBean();
             if (value instanceof CriterionSatisfactionDTO) {
-                validateCriterionSatisfactionDTO(invalidValue,
-                        (CriterionSatisfactionDTO) value);
+                validateCriterionSatisfactionDTO(invalidValue, (CriterionSatisfactionDTO) value);
             }
         }
     }
 
     /**
-     * Validates {@link CriterionSatisfactionDTO} data constraints
+     * Validates {@link CriterionSatisfactionDTO} data constraints.
      *
      * @param invalidValue
+     * @param satisfactionDTO
      */
-    private void validateCriterionSatisfactionDTO(InvalidValue invalidValue,
-            CriterionSatisfactionDTO satisfactionDTO) {
+    private void validateCriterionSatisfactionDTO(InvalidValue invalidValue, CriterionSatisfactionDTO satisfactionDTO) {
         if (listingCriterions != null) {
 
             // Find which listItem contains CriterionSatisfaction inside listBox
-            Row row = findRowOfCriterionSatisfactionDTO(listingCriterions
-                    .getRows(), satisfactionDTO);
+            Row row = findRowOfCriterionSatisfactionDTO(listingCriterions.getRows(), satisfactionDTO);
 
             if (row != null) {
                 String propertyName = invalidValue.getPropertyPath();
 
                 if (CriterionSatisfactionDTO.START_DATE.equals(propertyName)) {
+
                     // Locate TextboxResource
                     Datebox startDate = getStartDatebox(row);
+
                     // Value is incorrect, clear
                     startDate.setValue(null);
-                    throw new WrongValueException(startDate,
-                            _("cannot be empty"));
+                    throw new WrongValueException(startDate, _("cannot be empty"));
                 }
-                if (CriterionSatisfactionDTO.CRITERION_WITH_ITS_TYPE
-                        .equals(propertyName)) {
+                if (CriterionSatisfactionDTO.CRITERION_WITH_ITS_TYPE.equals(propertyName)) {
+
                     // Locate TextboxResource
                     Bandbox bandType = getBandType(row);
+
                     // Value is incorrect, clear
                     bandType.setValue(null);
-                    throw new WrongValueException(bandType,
-                            _("cannot be empty"));
+                    throw new WrongValueException(bandType, _("cannot be empty"));
                 }
             }
         }
     }
 
     /**
-     * Locates which {@link row} is bound to {@link WorkReportLine} in rows
+     * Locates which {@link Row} is bound to {@link WorkReportLine} in rows.
      *
-     * @param Rows
-     * @param CriterionSatisfactionDTO
-     * @return
+     * @param rows
+     * @param criterionSatisfactionDTO
+     * @return {@link Row}
      */
-    private Row findRowOfCriterionSatisfactionDTO(Rows rows,
-            CriterionSatisfactionDTO satisfactionDTO) {
-        List<Row> listRows = (List<Row>) rows.getChildren();
+    private Row findRowOfCriterionSatisfactionDTO(Rows rows, CriterionSatisfactionDTO satisfactionDTO) {
+        List<Row> listRows = rows.getChildren();
         for (Row row : listRows) {
             if (satisfactionDTO.equals(row.getValue())) {
                 return row;
             }
         }
+
         return null;
     }
 
     /**
-     * Locates {@link Datebox} criterion satisfaction in {@link row}
+     * Locates {@link Datebox} criterion satisfaction in {@link Row}.
      *
      * @param row
-     * @return
+     * @return {@link Datebox}
      */
     private Datebox getStartDatebox(Row row) {
         return (Datebox) (row.getChildren().get(1));
     }
 
     /**
-     * Locates {@link Datebox} criterion satisfaction in {@link row}
+     * Locates {@link Datebox} criterion satisfaction in {@link Row}.
      *
      * @param row
-     * @return
+     * @return {@link Datebox}
      */
     private Datebox getEndDatebox(Row row) {
         return (Datebox) (row.getChildren().get(2));
     }
 
     /**
-     * Locates {@link Bandbox} criterion satisfaction in {@link row}
+     * Locates {@link Bandbox} criterion satisfaction in {@link Row}.
      *
      * @param row
-     * @return
+     * @return {@link Bandbox}
      */
     private Bandbox getBandType(Row row) {
-        return (Bandbox) ((Hbox) row.getChildren().get(0)).getChildren().get(0);
+        return (Bandbox) row.getChildren().get(0).getChildren().get(0);
     }
 
     public void validateConstraints() {
@@ -425,6 +419,7 @@ public class CriterionsMachineController extends GenericForwardComposer {
         Bandbox bd = (Bandbox) event.getTarget();
         Listbox listbox = (Listbox) bd.getFirstChild().getFirstChild();
         List<Listitem> items = listbox.getItems();
+
         if (!items.isEmpty()) {
             listbox.setSelectedIndex(0);
             items.get(0).setFocus(true);
@@ -432,28 +427,29 @@ public class CriterionsMachineController extends GenericForwardComposer {
     }
 
     private ListModel getSubModel(String text) {
-        List<CriterionWithItsType> list = new ArrayList<CriterionWithItsType>();
+        List<CriterionWithItsType> list = new ArrayList<>();
         text = text.trim().toLowerCase();
+
         for (CriterionWithItsType criterion : this.getCriterionWithItsTypes()) {
-            if ((criterion.getNameHierarchy().toLowerCase()
-                    .contains(text) || criterion.getType().getName()
-                    .toLowerCase().contains(text))) {
+
+            if ((criterion.getNameHierarchy().toLowerCase().contains(text) ||
+                    criterion.getType().getName().toLowerCase().contains(text))) {
+
                 list.add(criterion);
             }
         }
-        return new SimpleListModel(list);
+
+        return new SimpleListModel<>(list);
     }
 
     public void onOK(KeyEvent event) {
         Component listitem = event.getReference();
         if (listitem instanceof Listitem) {
-            Bandbox bandbox = (Bandbox) listitem.getParent().getParent()
-                    .getParent();
-            CriterionSatisfactionDTO criterionSatisfactionDTO = (CriterionSatisfactionDTO) ((Row) bandbox
-                    .getParent().getParent()).getValue();
 
-            selectCriterionAndType((Listitem) listitem, bandbox,
-                    criterionSatisfactionDTO);
+            Bandbox bandbox = (Bandbox) listitem.getParent().getParent().getParent();
+            CriterionSatisfactionDTO criterionSatisfactionDTO = ((Row) bandbox.getParent().getParent()).getValue();
+
+            selectCriterionAndType((Listitem) listitem, bandbox, criterionSatisfactionDTO);
 
             bandbox.close();
         }
@@ -462,8 +458,7 @@ public class CriterionsMachineController extends GenericForwardComposer {
     public void onClick(MouseEvent event) {
         Component listitem = event.getTarget();
         if (listitem instanceof Listitem) {
-            Bandbox bandbox = (Bandbox) listitem.getParent().getParent()
-                    .getParent();
+            Bandbox bandbox = (Bandbox) listitem.getParent().getParent().getParent();
             bandbox.close();
         }
     }

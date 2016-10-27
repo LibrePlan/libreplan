@@ -44,9 +44,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
-        BUSINESS_SPRING_CONFIG_TEST_FILE })
-/*
+@ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE, BUSINESS_SPRING_CONFIG_TEST_FILE })
+/**
  * @author Diego Pino García <dpino@igalia.com>
  */
 public class WorkReportLineDAOTest extends AbstractWorkReportTest {
@@ -58,7 +57,7 @@ public class WorkReportLineDAOTest extends AbstractWorkReportTest {
     private IDataBootstrap configurationBootstrap;
 
     @Before
-    public void loadRequiredaData() {
+    public void loadRequiredData() {
         configurationBootstrap.loadRequiredData();
     }
 
@@ -91,8 +90,7 @@ public class WorkReportLineDAOTest extends AbstractWorkReportTest {
         workReportLineDAO.save(workReportType1);
         workReportLineDAO.save(workReportType2);
 
-        List<WorkReportLine> list = workReportLineDAO
-                .list(WorkReportLine.class);
+        List<WorkReportLine> list = workReportLineDAO.list(WorkReportLine.class);
         assertEquals(previous + 2, list.size());
     }
 }

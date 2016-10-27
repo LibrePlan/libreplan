@@ -30,7 +30,8 @@ import org.hibernate.validator.constraints.NotEmpty;
 import javax.validation.Valid;
 
 /**
- * Entity
+ * Represents entity. It is another type of work resource.
+ *
  * @author Javier Moran Rua <jmoran@igalia.com>
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
@@ -42,25 +43,22 @@ public class Machine extends Resource {
 
     private String description;
 
-    private Set<MachineWorkersConfigurationUnit> configurationUnits = new HashSet<MachineWorkersConfigurationUnit>();
+    private Set<MachineWorkersConfigurationUnit> configurationUnits = new HashSet<>();
 
     @Valid
     public Set<MachineWorkersConfigurationUnit> getConfigurationUnits() {
         return Collections.unmodifiableSet(configurationUnits);
     }
 
-    public void addMachineWorkersConfigurationUnit(
-            MachineWorkersConfigurationUnit unit) {
+    public void addMachineWorkersConfigurationUnit(MachineWorkersConfigurationUnit unit) {
         configurationUnits.add(unit);
     }
 
-    public void removeMachineWorkersConfigurationUnit(
-            MachineWorkersConfigurationUnit unit) {
+    public void removeMachineWorkersConfigurationUnit(MachineWorkersConfigurationUnit unit) {
         configurationUnits.remove(unit);
     }
 
-    public static Machine createUnvalidated(String code, String name,
-        String description) {
+    public static Machine createUnvalidated(String code, String name, String description) {
 
         Machine machine = create(new Machine(), code);
 
@@ -86,9 +84,7 @@ public class Machine extends Resource {
     /**
      * Used by Hibernate. Do not use!
      */
-    protected Machine() {
-
-    }
+    protected Machine() {}
 
     public static Machine create() {
         return create(new Machine());
@@ -120,8 +116,7 @@ public class Machine extends Resource {
     }
 
     @Override
-    protected boolean isCriterionSatisfactionOfCorrectType(
-       CriterionSatisfaction c) {
+    protected boolean isCriterionSatisfactionOfCorrectType(CriterionSatisfaction c) {
         return c.getResourceType().equals(ResourceEnum.MACHINE);
     }
 
@@ -139,5 +134,4 @@ public class Machine extends Resource {
     public String getHumanId() {
         return name;
     }
-
 }

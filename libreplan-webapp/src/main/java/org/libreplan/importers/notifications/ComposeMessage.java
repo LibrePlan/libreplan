@@ -1,3 +1,22 @@
+/*
+ * This file is part of LibrePlan
+ *
+ * Copyright (C) 2016 LibrePlan
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package org.libreplan.importers.notifications;
 
 import org.libreplan.business.common.entities.ConnectorProperty;
@@ -32,9 +51,9 @@ import static org.libreplan.web.I18nHelper._;
 
 /**
  * Sends E-mail to users with data that storing in notification_queue table
- * and that are treat to incoming EmailNotification
+ * and that are treat to incoming {@link EmailNotification}.
  *
- * @author Created by Vova Perebykivskiy <vova@libreplan-enterprise.com> on 20.01.2016.
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
 
 @Component
@@ -74,9 +93,8 @@ public class ComposeMessage {
 
         UserRole currentUserRole = getCurrentUserRole(notification.getType());
 
-        if ( currentWorker.getUser().isInRole(currentUserRole) ) {
-
-            if ( currentWorker.getUser().getApplicationLanguage().equals(Language.BROWSER_LANGUAGE) ) {
+        if (currentWorker != null && currentWorker.getUser().isInRole(currentUserRole)) {
+            if (currentWorker.getUser().getApplicationLanguage().equals(Language.BROWSER_LANGUAGE)) {
                 locale = new Locale(System.getProperty("user.language"));
             } else {
                 locale = new Locale(currentWorker.getUser().getApplicationLanguage().getLocale().getLanguage());
@@ -97,6 +115,7 @@ public class ComposeMessage {
 
             // It is very important to use Session.getInstance() instead of Session.getDefaultInstance()
             Session mailSession = Session.getInstance(properties, new javax.mail.Authenticator() {
+                @Override
                 protected PasswordAuthentication getPasswordAuthentication() {
                     return new PasswordAuthentication(username, password);
                 }
@@ -121,24 +140,24 @@ public class ComposeMessage {
             } catch (MessagingException e) {
                 throw new RuntimeException(e);
             } catch (NullPointerException e) {
-                if (receiver == null)
-                    try {
-                        Messagebox.show(
-                                _(currentWorker.getUser().getLoginName() + " - this user have not filled E-mail"),
-                                _("Error"), Messagebox.OK, Messagebox.ERROR);
-                    } catch (InterruptedException e1) {
-                        e1.printStackTrace();
-                    }
+                if (receiver == null) {
+                    Messagebox.show(
+                            _(currentWorker.getUser().getLoginName() + " - this user have not filled E-mail"),
+                            _("Error"), Messagebox.OK, Messagebox.ERROR);
+                }
             }
         }
         return false;
     }
 
-    private Worker getCurrentWorker(Long resourceID) {
+    private Worker getCurrentWorker(Long resourceID){
         List<Worker> workerList = workerModel.getWorkers();
-        for (Worker current : workerList)
-            if ( current.getId().equals(resourceID) )
-                return current;
+
+        for (Worker aWorkerList : workerList) {
+            if (aWorkerList.getId().equals(resourceID)) {
+                return aWorkerList;
+            }
+        }
 
         return null;
     }
@@ -147,36 +166,42 @@ public class ComposeMessage {
         List<EmailTemplate> emailTemplates;
         emailTemplates = emailTemplateModel.getAll();
 
-        for (EmailTemplate item : emailTemplates)
-            if ( item.getType().equals(templateEnum) && item.getLanguage().getLocale().equals(locale) )
+        for (EmailTemplate item : emailTemplates) {
+            if ( item.getType().equals(templateEnum) && item.getLanguage().getLocale().equals(locale) ) {
                 return item;
+            }
+
+        }
 
         return null;
     }
 
     private String replaceKeywords(String text, Worker currentWorker, EmailNotification notification) {
+        String newText = text;
+
         if ( notification.getType().equals(EmailTemplateEnum.TEMPLATE_ENTER_DATA_IN_TIMESHEET) ) {
             // It is because there is no other data for
             // EmailNotification of TEMPLATE_ENTER_DATA_IN_TIMESHEET notification type
-            text = text.replaceAll("\\{resource\\}", notification.getResource().getName());
+            newText = newText.replaceAll("\\{resource\\}", notification.getResource().getName());
         }
         else {
-            text = text.replaceAll("\\{username\\}", currentWorker.getUser().getLoginName());
-            text = text.replaceAll("\\{firstname\\}", currentWorker.getUser().getFirstName());
-            text = text.replaceAll("\\{lastname\\}", currentWorker.getUser().getLastName());
-            text = text.replaceAll("\\{project\\}", notification.getProject().getName());
-            text = text.replaceAll("\\{resource\\}", notification.getResource().getName());
-            text = text.replaceAll("\\{task\\}", notification.getTask().getName());
-            text = text.replaceAll("\\{url\\}", MultipleTabsPlannerController.WELCOME_URL);
+            newText = newText.replaceAll("\\{username\\}", currentWorker.getUser().getLoginName());
+            newText = newText.replaceAll("\\{firstname\\}", currentWorker.getUser().getFirstName());
+            newText = newText.replaceAll("\\{lastname\\}", currentWorker.getUser().getLastName());
+            newText = newText.replaceAll("\\{project\\}", notification.getProject().getName());
+            newText = newText.replaceAll("\\{resource\\}", notification.getResource().getName());
+            newText = newText.replaceAll("\\{task\\}", notification.getTask().getName());
+            newText = newText.replaceAll("\\{url\\}", MultipleTabsPlannerController.WELCOME_URL);
         }
-        return text;
+        return newText;
     }
 
-    private void setupConnectionProperties(){
+    private void setupConnectionProperties() {
         List<ConnectorProperty> emailConnectorProperties = emailConnectionValidator.getEmailConnectorProperties();
 
         for (int i = 0; i < emailConnectorProperties.size(); i++) {
             switch (i) {
+
                 case 1:
                     protocol = emailConnectorProperties.get(1).getValue();
                     break;
@@ -202,8 +227,8 @@ public class ComposeMessage {
                     break;
 
                 default:
-                    /* Nothing */
                     break;
+
             }
         }
 
@@ -225,6 +250,7 @@ public class ComposeMessage {
 
     private UserRole getCurrentUserRole(EmailTemplateEnum type) {
         switch (type) {
+
             case TEMPLATE_TASK_ASSIGNED_TO_RESOURCE:
                 return UserRole.ROLE_EMAIL_TASK_ASSIGNED_TO_RESOURCE;
 

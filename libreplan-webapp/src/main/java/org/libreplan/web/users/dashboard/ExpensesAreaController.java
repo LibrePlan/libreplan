@@ -19,12 +19,6 @@
 
 package org.libreplan.web.users.dashboard;
 
-import static org.libreplan.web.I18nHelper._;
-
-import java.util.List;
-
-import javax.annotation.Resource;
-
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.expensesheet.entities.ExpenseSheet;
 import org.libreplan.web.common.IMessagesForUser;
@@ -34,23 +28,26 @@ import org.libreplan.web.common.Util;
 import org.libreplan.web.expensesheet.IExpenseSheetCRUDController;
 import org.libreplan.web.expensesheet.IExpenseSheetModel;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 
+import java.util.List;
+
+import static org.libreplan.web.I18nHelper._;
+
 /**
- * Controller for "Expenses" area in the user dashboard window
+ * Controller for "Expenses" area in the user dashboard window.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
 @SuppressWarnings("serial")
 public class ExpensesAreaController extends GenericForwardComposer {
 
-    @Resource
     private IExpenseSheetCRUDController expenseSheetCRUDController;
 
     private IExpensesAreaModel expensesAreaModel;
@@ -64,52 +61,40 @@ public class ExpensesAreaController extends GenericForwardComposer {
     private RowRenderer expenseSheetsRenderer = new RowRenderer() {
 
         @Override
-        public void render(Row row, Object data) throws Exception {
+        public void render(Row row, Object data, int i) throws Exception {
             final ExpenseSheet expenseSheet = (ExpenseSheet) data;
             row.setValue(expenseSheet);
 
             Util.appendLabel(row, expenseSheet.getDescription());
             Util.appendLabel(row, expenseSheet.getCode());
-            Util.appendLabel(row,
-                    Util.addCurrencySymbol(expenseSheet.getTotal()));
+            Util.appendLabel(row, Util.addCurrencySymbol(expenseSheet.getTotal()));
             Util.appendLabel(row, expenseSheet.getFirstExpense().toString());
             Util.appendLabel(row, expenseSheet.getLastExpense().toString());
 
-            Util.appendOperationsAndOnClickEvent(row, new EventListener() {
-                @Override
-                public void onEvent(Event event) throws Exception {
-                    expenseSheetCRUDController
-                            .goToEditPersonalExpenseSheet(expenseSheet);
-                }
-            }, new EventListener() {
+            Util.appendOperationsAndOnClickEvent(
+                    row,
+                    event -> expenseSheetCRUDController.goToEditPersonalExpenseSheet(expenseSheet),
+                    event ->  {
+                        try {
+                            if (Messagebox.show(
+                                    _("Delete expense sheet \"{0}\". Are you sure?", expenseSheet.getHumanId()),
+                                    _("Confirm"),
+                                    Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION) == Messagebox.OK) {
 
-                @Override
-                public void onEvent(Event event) throws Exception {
-                    try {
-                        if (Messagebox
-                                .show(_("Delete expense sheet \"{0}\". Are you sure?",
-                                        expenseSheet.getHumanId()),
-                                        _("Confirm"), Messagebox.OK
-                                                | Messagebox.CANCEL,
-                                        Messagebox.QUESTION) == Messagebox.OK) {
-                            expenseSheetModel.removeExpenseSheet(expenseSheet);
+                                expenseSheetModel.removeExpenseSheet(expenseSheet);
+
+                                messagesForUser.showMessage(
+                                        Level.INFO, _("Expense sheet \"{0}\" deleted", expenseSheet.getHumanId()));
+
+                                Util.reloadBindings(expenseSheetsList);
+                            }
+                        } catch (InstanceNotFoundException e) {
                             messagesForUser.showMessage(
-                                    Level.INFO,
-                                    _("Expense sheet \"{0}\" deleted",
+                                    Level.ERROR,
+                                    _("Expense sheet \"{1}\" could not be deleted, it was already removed",
                                             expenseSheet.getHumanId()));
-                            Util.reloadBindings(expenseSheetsList);
                         }
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    } catch (InstanceNotFoundException ie) {
-                        messagesForUser
-                                .showMessage(
-                                        Level.ERROR,
-                                        _("Expense sheet \"{1}\" could not be deleted, it was already removed",
-                                                expenseSheet.getHumanId()));
-                    }
-                }
-            });
+                    });
         }
     };
 
@@ -118,8 +103,23 @@ public class ExpensesAreaController extends GenericForwardComposer {
         super.doAfterCompose(comp);
         comp.setAttribute("controller", this);
 
-        messagesForUser = new MessagesForUser(
-                comp.getFellow("messagesContainer"));
+        messagesForUser = new MessagesForUser(comp.getFellow("messagesContainer"));
+
+        injectObjects();
+    }
+
+    private void injectObjects() {
+        if ( expenseSheetCRUDController == null ) {
+            expenseSheetCRUDController = (IExpenseSheetCRUDController) SpringUtil.getBean("expenseSheetCRUDController");
+        }
+
+        if ( expensesAreaModel == null ) {
+            expensesAreaModel = (IExpensesAreaModel) SpringUtil.getBean("expensesAreaModel");
+        }
+
+        if ( expenseSheetModel == null ) {
+            expenseSheetModel = (IExpenseSheetModel) SpringUtil.getBean("expenseSheetModel");
+        }
     }
 
     public void newExpenseSheet() {

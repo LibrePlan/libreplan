@@ -214,7 +214,7 @@ msgstr "Sin fecha límite"
 msgid "Project Scheduling"
 msgstr "Planificación de proyectos"
 
-#: libreplan-business/src/main/java/org/libreplan/business/workreports/entities/WorkReportLabelTypeAssigment.java:61
+#: libreplan-business/src/main/java/org/libreplan/business/workreports/entities/WorkReportLabelTypeAssignment.java:61
 msgid "label type not specified"
 msgstr "tipo de etiqueta no especificada"
 
@@ -534,7 +534,7 @@ msgid "For more details on cron expression click"
 msgstr "Para más detalles en la expresión cron pulsar"
 
 #: libreplan-webapp/src/main/webapp/common/error.zul:21
-#: libreplan-webapp/src/main/webapp/common/event_error.zul:22
+#: libreplan-webapp/src/main/webapp/common/eventError.zul:22
 msgid "LibrePlan: Runtime Error"
 msgstr "LibrePlan: Error de ejecución"
 
@@ -838,7 +838,7 @@ msgstr "Día no laborable"
 msgid "Predecessor"
 msgstr "Predecesor"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/streches/StretchesFunctionModel.java:172
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/stretches/StretchesFunctionModel.java:172
 msgid "Some stretch has higher or equal values than the previous stretch"
 msgstr "Algún tramo tiene valores mayores o iguales que el tramo anterior"
 
@@ -1048,7 +1048,7 @@ msgstr "Fecha de fin"
 msgid "There is not any assigned progress to current task"
 msgstr "No hay ningún progreso asignado a la tarea actual"
 
-#: libreplan-webapp/src/main/webapp/common/page_not_found.zul:22
+#: libreplan-webapp/src/main/webapp/common/pageNotFound.zul:22
 msgid "LibrePlan: Page not found"
 msgstr "LibrePlan: Página no encontrada"
 
@@ -1325,7 +1325,7 @@ msgstr "Código {0} de proyecto repetdio en proyecto {1}"
 msgid "End date is not valid, the new end date must be after start date"
 msgstr "Fecha de fin inválida, la nueva fecha de fin debe ser posterior a la fecha de inicio"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/streches/StretchesFunctionModel.java:284
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/stretches/StretchesFunctionModel.java:284
 msgid "Stretch date must not be before task start date: "
 msgstr "La fecha del tramo no debe ser anterior a la fecha de inicio de la tarea: "
 
@@ -1617,7 +1617,7 @@ msgid ""
 "Spread progress cannot be removed. Please select another progress as spread."
 msgstr "El progreso que propaga no se puede eliminar. Por favor seleccione otro progreso como propagado."
 
-#: libreplan-webapp/src/main/webapp/common/concurrent_modification.zul:34
+#: libreplan-webapp/src/main/webapp/common/concurrentModification.zul:34
 msgid "Please try it again."
 msgstr "Por favor, inténtelo de nuevo."
 
@@ -1649,7 +1649,7 @@ msgstr "las conraseñas no pueden estar vacías"
 msgid "Task {0}"
 msgstr "Tarea: {0}"
 
-#: libreplan-webapp/src/main/webapp/common/access_forbidden.zul:40
+#: libreplan-webapp/src/main/webapp/common/accessForbidden.zul:40
 msgid ""
 "Please try to contact with any administrator in order to review your "
 "permissions in LibrePlan."
@@ -2173,7 +2173,7 @@ msgid "criterion names must be unique inside a criterion  type"
 msgstr "los nombres de criterio deben ser únicos dentro de un tipo de criterio"
 
 #: libreplan-webapp/src/main/webapp/common/error.zul:44
-#: libreplan-webapp/src/main/webapp/common/event_error.zul:39
+#: libreplan-webapp/src/main/webapp/common/eventError.zul:39
 msgid "Status code"
 msgstr "Código de estado"
 
@@ -2677,7 +2677,7 @@ msgstr "Lista de planificación de trabajo"
 msgid "Must start after (days since project start)"
 msgstr "Debe empezar después de (días desde el inicio del proyecto)"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/streches/StretchesFunctionController.java:129
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/stretches/StretchesFunctionController.java:129
 msgid "Confirm cancel"
 msgstr "Confirmar cancelación"
 
@@ -2782,7 +2782,7 @@ msgid "Overload"
 msgstr "Sobrecarga"
 
 #: libreplan-business/src/main/java/org/libreplan/business/planner/entities/SubcontractorCommunication.java:76
-msgid "subcontrated task data not specified"
+msgid "subcontracted task data not specified"
 msgstr "datos de la tarea subcontratada no especificados"
 
 #: libreplan-webapp/src/main/webapp/templates/_editTemplate.zul:50
@@ -2841,11 +2841,11 @@ msgid ""
 "items."
 msgstr "Cada fecha debe ser posterior a las fechas de los ítems anteriores del formulario de calidad."
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/streches/StretchesFunctionModel.java:290
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/stretches/StretchesFunctionModel.java:290
 msgid "Stretch date must be earlier than End date: "
 msgstr "La fecha del tramo debe ser anterior a la fecha de fin: "
 
-#: libreplan-webapp/src/main/webapp/common/access_forbidden.zul:38
+#: libreplan-webapp/src/main/webapp/common/accessForbidden.zul:38
 msgid "You do not have permissions to access to this page."
 msgstr "No tiene permisos para acceder a esta página."
 
@@ -3252,7 +3252,7 @@ msgstr "El progreso calculado no se puede borrar"
 msgid "Total Worked Hours By Resource In A Month"
 msgstr "Total horas trabajadas por recurso en un mes"
 
-#: libreplan-webapp/src/main/webapp/common/access_forbidden.zul:20
+#: libreplan-webapp/src/main/webapp/common/accessForbidden.zul:20
 msgid "LibrePlan: Access Forbidden"
 msgstr "LibrePlan: Acceso prohibido"
 
@@ -3604,7 +3604,7 @@ msgstr "Unidades"
 msgid "Start filtering date cannot be empty"
 msgstr "La fecha de inicio no puede estar vacía"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/streches/StretchesFunctionModel.java:168
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/stretches/StretchesFunctionModel.java:168
 #: libreplan-business/src/main/java/org/libreplan/business/planner/entities/StretchesFunction.java:309
 msgid "At least one stretch is needed"
 msgstr "Se necesita al menos un tramo"
@@ -3690,8 +3690,8 @@ msgstr "Excepción heredada"
 msgid "Authorizations"
 msgstr "Autorizaciones"
 
-#: libreplan-webapp/src/main/webapp/common/concurrent_modification.zul:36
-#: libreplan-webapp/src/main/webapp/common/event_error.zul:49
+#: libreplan-webapp/src/main/webapp/common/concurrentModification.zul:36
+#: libreplan-webapp/src/main/webapp/common/eventError.zul:49
 msgid "Continue"
 msgstr "Continuar"
 
@@ -3981,7 +3981,7 @@ msgstr "Días excepcionales del calendario"
 msgid "Time tracking"
 msgstr "Partes de trabajo"
 
-#: libreplan-webapp/src/main/webapp/common/page_not_found.zul:43
+#: libreplan-webapp/src/main/webapp/common/pageNotFound.zul:43
 msgid ""
 "If you entered the URL directly in the navigation bar of the browser, please"
 " review it or click in the following link in order to go to initial page: "
@@ -5189,7 +5189,7 @@ msgstr "{0} h"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/taskedition/TaskPropertiesController.java:351
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/AdvancedAllocationController.java:1320
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/streches/StretchesFunctionController.java:121
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/stretches/StretchesFunctionController.java:121
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/order/SaveCommandBuilder.java:343
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/criterionrequirements/AssignedCriterionRequirementController.java:403
 #: libreplan-webapp/src/main/java/org/libreplan/web/limitingresources/LimitingResourcesController.java:628
@@ -5208,7 +5208,7 @@ msgstr "ETC"
 msgid "Log out"
 msgstr "Salir"
 
-#: libreplan-webapp/src/main/webapp/common/job_scheduling.zul:20
+#: libreplan-webapp/src/main/webapp/common/jobScheduling.zul:20
 msgid "LibrePlan: Job Scheduling"
 msgstr "Libreplan: Planificación de trabajo"
 
@@ -5638,7 +5638,7 @@ msgid "User disabled"
 msgstr "Usuario deshabilitado"
 
 #: libreplan-webapp/src/main/webapp/common/error.zul:40
-#: libreplan-webapp/src/main/webapp/common/event_error.zul:35
+#: libreplan-webapp/src/main/webapp/common/eventError.zul:35
 msgid "Exception type"
 msgstr "Tipo de excepción"
 
@@ -5655,7 +5655,7 @@ msgid "Association with profiles"
 msgstr "Asociación con perfiles"
 
 #: libreplan-webapp/src/main/webapp/common/error.zul:30
-#: libreplan-webapp/src/main/webapp/common/event_error.zul:25
+#: libreplan-webapp/src/main/webapp/common/eventError.zul:25
 msgid "Message - {0}"
 msgstr "Mensaje - {0}"
 
@@ -6010,11 +6010,11 @@ msgstr "Proyecto guardado"
 msgid "task"
 msgstr "tarea"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/streches/StretchesFunctionController.java:128
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/stretches/StretchesFunctionController.java:128
 msgid "All changes will be lost. Are you sure?"
 msgstr "Se perderán todos los cambios. ¿Está seguro?"
 
-#: libreplan-webapp/src/main/webapp/common/page_not_found.zul:51
+#: libreplan-webapp/src/main/webapp/common/pageNotFound.zul:51
 msgid "Sorry for the inconvenience."
 msgstr "Perdón por las molestias."
 
@@ -6313,7 +6313,7 @@ msgid ""
 "Epiphany."
 msgstr "Por favor usa uno de los navegadores compatibles: Chrome, Firefox, Safari o Epiphany."
 
-#: libreplan-webapp/src/main/webapp/common/concurrent_modification.zul:33
+#: libreplan-webapp/src/main/webapp/common/concurrentModification.zul:33
 msgid ""
 "Another user has modified the same data, so the operation cannot be safely "
 "completed."
@@ -6367,7 +6367,7 @@ msgid "Group"
 msgstr "Grupo"
 
 #: libreplan-webapp/src/main/webapp/common/error.zul:55
-#: libreplan-webapp/src/main/webapp/common/event_error.zul:51
+#: libreplan-webapp/src/main/webapp/common/eventError.zul:51
 msgid "Exit session"
 msgstr "Salir de la sesión"
 
@@ -6433,7 +6433,7 @@ msgstr "longitud no especificada"
 msgid "Track time"
 msgstr "Controlar el tiempo"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/streches/StretchesFunctionModel.java:182
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/stretches/StretchesFunctionModel.java:182
 msgid "There must be at least 2 stretches for doing interpolation"
 msgstr "Debe haber al menos dos tramos para hacer interpolación"
 
@@ -6569,7 +6569,7 @@ msgid "generic machines allocation"
 msgstr "asignación genérica de máquinas"
 
 #: libreplan-webapp/src/main/webapp/subcontract/subcontractorCommunications.zul:53
-msgid "Subcontrated task"
+msgid "Subcontracted task"
 msgstr "Tarea subcontratada"
 
 #: libreplan-webapp/src/main/webapp/planner/order.zul:70
@@ -6679,7 +6679,7 @@ msgstr "debe ser un número real positivo"
 msgid "No Allocations have been done"
 msgstr "No se han hecho asignaciones"
 
-#: libreplan-webapp/src/main/webapp/common/page_not_found.zul:49
+#: libreplan-webapp/src/main/webapp/common/pageNotFound.zul:49
 msgid ""
 "If you reached this page from another page of LibrePlan please notify us in "
 "order to fix it as soon as possible."
@@ -7008,7 +7008,7 @@ msgstr "Progreso"
 msgid "All progress types have already been assigned."
 msgstr "Todos los tipos de progreso ya han sido asignados."
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/streches/StretchesFunctionModel.java:177
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/stretches/StretchesFunctionModel.java:177
 msgid "Last stretch should have 100% for length and amount of work"
 msgstr "El último tramo debe tener 100% de longitud y cantidad de trabajo"
 
@@ -7240,8 +7240,8 @@ msgstr "LibrePlan: Horas Trabajadas Por Recurso"
 msgid "Machine"
 msgstr "Máquina"
 
-#: libreplan-webapp/src/main/webapp/common/access_forbidden.zul:45
-#: libreplan-webapp/src/main/webapp/common/page_not_found.zul:45
+#: libreplan-webapp/src/main/webapp/common/accessForbidden.zul:45
+#: libreplan-webapp/src/main/webapp/common/pageNotFound.zul:45
 msgid "Go to init"
 msgstr "Ir al inicio"
 
@@ -7258,7 +7258,7 @@ msgid "Criterion Type"
 msgstr "Tipo de criterio"
 
 #: libreplan-webapp/src/main/webapp/common/error.zul:54
-#: libreplan-webapp/src/main/webapp/common/event_error.zul:50
+#: libreplan-webapp/src/main/webapp/common/eventError.zul:50
 msgid "Reload"
 msgstr "Recargar"
 
@@ -7666,7 +7666,7 @@ msgstr "LibrePlan: Ajustes principales"
 msgid "Unit name"
 msgstr "Nombre de la unidad"
 
-#: libreplan-business/src/main/java/org/libreplan/business/workreports/entities/WorkReportLabelTypeAssigment.java:64
+#: libreplan-business/src/main/java/org/libreplan/business/workreports/entities/WorkReportLabelTypeAssignment.java:64
 msgid "default label not specified"
 msgstr "etiqueta por defecto no especificada"
 
@@ -7850,7 +7850,7 @@ msgstr "Nombre del recurso (Código del recurso)"
 msgid "Virtual worker"
 msgstr "Trabajador virtual"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/streches/StretchesFunctionController.java:343
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/stretches/StretchesFunctionController.java:343
 msgid "Length percentage should be between 0 and 100"
 msgstr "El porcentaje de duración debería estar entre 0 y 100"
 
@@ -7979,7 +7979,7 @@ msgstr "los nombres de las etiquetas deben ser únicos dentro de un tipo de etiq
 msgid "Edit"
 msgstr "Editar"
 
-#: libreplan-webapp/src/main/webapp/common/access_forbidden.zul:43
+#: libreplan-webapp/src/main/webapp/common/accessForbidden.zul:43
 msgid "Click the following link to return to home page: "
 msgstr "Haga click en el siguiente enlace para volver a la página de inicio:"
 
@@ -8334,7 +8334,7 @@ msgid ""
 msgstr "La sincronización de las tareas con incidencias de JIRA no ha podido completarse por los siguientes motivos:"
 
 #: libreplan-webapp/src/main/webapp/common/error.zul:48
-#: libreplan-webapp/src/main/webapp/common/event_error.zul:43
+#: libreplan-webapp/src/main/webapp/common/eventError.zul:43
 msgid "Stacktrace"
 msgstr "Stacktrace"
 
@@ -8381,7 +8381,7 @@ msgstr "Tareas"
 msgid "Filter by categories or materials"
 msgstr "Filtrar por categorías o materiales"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/streches/StretchesFunctionController.java:389
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/stretches/StretchesFunctionController.java:389
 msgid "Amount work percentage should be between 0 and 100"
 msgstr "El porcentaje de cantidad de trabajo debe estar entre 0 y 100"
 
@@ -8534,7 +8534,7 @@ msgstr "Precio de subcontratación"
 msgid "Send To Customers"
 msgstr "Enviar a clientes"
 
-#: libreplan-webapp/src/main/webapp/common/page_not_found.zul:40
+#: libreplan-webapp/src/main/webapp/common/pageNotFound.zul:40
 msgid "The page that you are requesting does not exist."
 msgstr "La página que está solicitando no existe."
 
@@ -8691,7 +8691,7 @@ msgstr "fecha de inicio no especificada"
 #: libreplan-webapp/src/main/java/org/libreplan/web/resources/worker/WorkerCRUDController.java:973
 #: libreplan-webapp/src/main/java/org/libreplan/web/resources/criterion/CriterionTreeController.java:324
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/ResourceAllocationController.java:669
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/streches/StretchesFunctionController.java:408
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/stretches/StretchesFunctionController.java:408
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/order/SubcontractController.java:210
 #: libreplan-webapp/src/main/java/org/libreplan/web/expensesheet/ExpenseSheetCRUDController.java:212
 #: libreplan-webapp/src/main/java/org/libreplan/web/expensesheet/ExpenseSheetCRUDController.java:412

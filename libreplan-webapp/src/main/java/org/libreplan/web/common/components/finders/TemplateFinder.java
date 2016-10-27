@@ -31,12 +31,11 @@ import org.zkoss.zul.ListitemRenderer;
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public abstract class TemplateFinder<T extends OrderElementTemplate> extends
-        BandboxFinder {
+abstract class TemplateFinder<T extends OrderElementTemplate> extends BandboxFinder {
 
     private final Class<T> type;
 
-    protected TemplateFinder(Class<T> type) {
+    TemplateFinder(Class<T> type) {
         this.type = type;
     }
 
@@ -55,7 +54,7 @@ public abstract class TemplateFinder<T extends OrderElementTemplate> extends
         return new ListitemRenderer() {
 
             @Override
-            public void render(Listitem item, Object data) {
+            public void render(Listitem item, Object data, int i) {
                 T template = type.cast(data);
                 item.setValue(data);
 
@@ -67,8 +66,9 @@ public abstract class TemplateFinder<T extends OrderElementTemplate> extends
         };
     }
 
-    protected boolean templateMatchesText(T template, String text) {
+    private boolean templateMatchesText(T template, String text) {
         String objectString = normalize(objectToString(template));
+
         return objectString.contains(normalize(text));
     }
 
@@ -79,10 +79,11 @@ public abstract class TemplateFinder<T extends OrderElementTemplate> extends
     @Override
     public String objectToString(Object obj) {
         T template = type.cast(obj);
+
         return extractStringFor(template);
     }
 
-    protected String extractStringFor(T template) {
+    private String extractStringFor(T template) {
         return template.getName();
     }
 

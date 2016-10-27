@@ -21,14 +21,12 @@
 
 package org.libreplan.web.common.components;
 
-import org.libreplan.business.resources.entities.Worker;
 import org.libreplan.web.resources.search.NewAllocationSelectorComboController;
 
 /**
+ * ZK macro component for searching {@link org.libreplan.business.resources.entities.Worker} entities
+ *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
- *
- *         ZK macro component for searching {@link Worker} entities
- *
  */
 @SuppressWarnings("serial")
 public class NewAllocationSelectorCombo extends AllocationSelector {
@@ -56,8 +54,7 @@ public class NewAllocationSelectorCombo extends AllocationSelector {
     }
 
     public void setDisabled(boolean disabled) {
-        ((NewAllocationSelectorComboController) getController())
-                .setDisabled(disabled);
+        getController().setDisabled(disabled);
     }
 
     public void setBehaviour(String behaviour) {

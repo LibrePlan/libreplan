@@ -36,32 +36,43 @@ import org.apache.commons.lang3.math.Fraction;
 
 /**
  * <p>
- * It represents some amount of effort. It's composed by some hours, minutes and
- * seconds. Less granularity than a second can't be specified.
+ *     It represents some amount of effort.
+ *     It's composed by some hours, minutes and seconds.
+ *     Less granularity than a second can't be specified.
  * </p>
  * <p>
- * This object can represent the predicted amount of work that a task takes, the
- * scheduled amount of work for a working day, the amount of effort that a
- * worker can work in a given day, etc.
+ *     This object can represent the predicted amount of work that a task takes,
+ *     the scheduled amount of work for a working day, the amount of effort that a worker can work in a given day, etc.
  * </p>
  *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
- *
  */
 public class EffortDuration implements Comparable<EffortDuration> {
 
+    private static final Pattern lenientEffortDurationSpecification = Pattern.compile("(\\d+)(\\s*:\\s*\\d+\\s*)*");
+
+    private static final Pattern contiguousDigitsPattern = Pattern.compile("\\d+");
+
+    private final int seconds;
+
+    private EffortDuration(int seconds) {
+        Validate.isTrue(seconds >= 0, "seconds cannot be negative");
+        this.seconds = seconds;
+    }
 
     public enum Granularity {
-        HOURS(3600), MINUTES(60), SECONDS(1);
-
-        static Granularity[] fromMoreCoarseToLessCoarse() {
-            return Granularity.values();
-        }
+        HOURS(3600),
+        MINUTES(60),
+        SECONDS(1);
 
         private final int secondsPerUnit;
 
-        private Granularity(int secondsPerUnit) {
+        Granularity(int secondsPerUnit) {
             this.secondsPerUnit = secondsPerUnit;
+        }
+
+        static Granularity[] fromMoreCoarseToLessCoarse() {
+            return Granularity.values();
         }
 
         public int toSeconds(int amount) {
@@ -73,24 +84,20 @@ public class EffortDuration implements Comparable<EffortDuration> {
         }
     }
 
-    private static final Pattern lenientEffortDurationSpecification = Pattern.compile("(\\d+)(\\s*:\\s*\\d+\\s*)*");
-
-    private static final Pattern contiguousDigitsPattern = Pattern.compile("\\d+");
-
     /**
-     * If an {@link EffortDuration} can't be parsed <code>null</code> is
-     * returned. The hours field at least is required, the next fields are the
-     * minutes and seconds. If there is more than one field, they are separated
-     * by colons.
+     * If an {@link EffortDuration} can't be parsed <code>null</code> is returned.
+     * The hours field at least is required, the next fields are the minutes and seconds.
+     * If there is more than one field, they are separated by colons.
      *
      * @param string
-     * @return
+     * @return {@link EffortDuration}
      */
     public static EffortDuration parseFromFormattedString(String string) {
         Matcher matcher = lenientEffortDurationSpecification.matcher(string);
         if (matcher.find()) {
             List<String> parts = scan(contiguousDigitsPattern, string);
             assert parts.size() >= 1;
+
             return EffortDuration.hours(retrieveNumber(0, parts))
                     .and(retrieveNumber(1, parts), Granularity.MINUTES)
                     .and(retrieveNumber(2, parts), Granularity.SECONDS);
@@ -99,7 +106,7 @@ public class EffortDuration implements Comparable<EffortDuration> {
     }
 
     private static List<String> scan(Pattern pattern, String text) {
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
         Matcher matcher = pattern.matcher(text);
         while (matcher.find()) {
             result.add(matcher.group());
@@ -108,19 +115,15 @@ public class EffortDuration implements Comparable<EffortDuration> {
     }
 
     private static int retrieveNumber(int i, List<String> parts) {
-        if (i >= parts.size()) {
-            return 0;
-        }
-        return Integer.parseInt(parts.get(i));
+        return i >= parts.size() ? 0 : Integer.parseInt(parts.get(i));
     }
 
     public interface IEffortFrom<T> {
 
-        public EffortDuration from(T each);
+        EffortDuration from(T each);
     }
 
-    public static <T> EffortDuration sum(Iterable<? extends T> collection,
-            IEffortFrom<T> effortFrom) {
+    public static <T> EffortDuration sum(Iterable<? extends T> collection, IEffortFrom<T> effortFrom) {
         EffortDuration result = zero();
         for (T each : collection) {
             result = result.plus(effortFrom.from(each));
@@ -130,7 +133,6 @@ public class EffortDuration implements Comparable<EffortDuration> {
 
     public static EffortDuration sum(EffortDuration... summands) {
         return sum(Arrays.asList(summands), new IEffortFrom<EffortDuration>() {
-
             @Override
             public EffortDuration from(EffortDuration each) {
                 return each;
@@ -160,15 +162,8 @@ public class EffortDuration implements Comparable<EffortDuration> {
 
     public static EffortDuration fromHoursAsBigDecimal(BigDecimal hours) {
         BigDecimal secondsPerHour = new BigDecimal(3600);
-        return elapsing(hours.multiply(secondsPerHour).intValue(),
-                Granularity.SECONDS);
-    }
 
-    private final int seconds;
-
-    private EffortDuration(int seconds) {
-        Validate.isTrue(seconds >= 0, "seconds cannot be negative");
-        this.seconds = seconds;
+        return elapsing(hours.multiply(secondsPerHour).intValue(), Granularity.SECONDS);
     }
 
     public int getHours() {
@@ -195,6 +190,7 @@ public class EffortDuration implements Comparable<EffortDuration> {
     public boolean equals(Object obj) {
         if (obj instanceof EffortDuration) {
             EffortDuration other = (EffortDuration) obj;
+
             return getSeconds() == other.getSeconds();
         }
         return false;
@@ -206,8 +202,7 @@ public class EffortDuration implements Comparable<EffortDuration> {
     }
 
     public EnumMap<Granularity, Integer> decompose() {
-        EnumMap<Granularity, Integer> result = new EnumMap<EffortDuration.Granularity, Integer>(
-                Granularity.class);
+        EnumMap<Granularity, Integer> result = new EnumMap<>(Granularity.class);
         int remainder = seconds;
         for (Granularity each : Granularity.fromMoreCoarseToLessCoarse()) {
             int value = each.convertFromSeconds(remainder);
@@ -215,19 +210,22 @@ public class EffortDuration implements Comparable<EffortDuration> {
             result.put(each, value);
         }
         assert remainder == 0;
+
         return result;
     }
 
     @Override
     public int compareTo(EffortDuration other) {
         Validate.notNull(other);
+
         return seconds - other.seconds;
     }
 
     /**
-     * Multiplies this duration by a scalar <br />
-     * <b>Warning:<b /> This method can cause an integer overflow and the result
-     * would be incorrect.
+     * Multiplies this duration by a scalar.
+     *
+     * <br />
+     * <b>Warning:<b /> This method can cause an integer overflow and the result would be incorrect.
      * @param n
      * @return a duration that is the multiply of n and <code>this</code>
      */
@@ -236,7 +234,8 @@ public class EffortDuration implements Comparable<EffortDuration> {
     }
 
     /**
-     * Divides this duration by a scalar
+     * Divides this duration by a scalar.
+     *
      * @param n
      *            a number greater than zero
      * @return a new duration that is the result of dividing <code>this</code>
@@ -249,9 +248,11 @@ public class EffortDuration implements Comparable<EffortDuration> {
 
     /**
      * <p>
-     * Divides this duration by other returning the quotient.
+     *     Divides this duration by other returning the quotient.
      * </p>
+     *
      * There can be a remainder left.
+     *
      * @see #remainderFor(EffortDuration)
      * @param other
      * @return
@@ -266,25 +267,21 @@ public class EffortDuration implements Comparable<EffortDuration> {
 
     /**
      * <p>
-     * Divides this duration by other (using total seconds) returning the
-     * quotient as BigDecimal.
+     *     Divides this duration by other (using total seconds) returning the quotient as BigDecimal.
      * </p>
+     *
      * @param other
      * @return
      */
     public BigDecimal dividedByAndResultAsBigDecimal(EffortDuration other) {
-        if (other.isZero()) {
-            return BigDecimal.ZERO;
-        }
-        else {
-            return new BigDecimal(this.getSeconds()).divide(
-                    new BigDecimal(other.getSeconds()), 8, BigDecimal.ROUND_HALF_EVEN);
-        }
+        return other.isZero()
+                ? BigDecimal.ZERO
+                : new BigDecimal(this.getSeconds())
+                .divide(new BigDecimal(other.getSeconds()), 8, BigDecimal.ROUND_HALF_EVEN);
     }
 
     /**
-     * Calculates the remainder resulting of doing the integer division of both
-     * durations
+     * Calculates the remainder resulting of doing the integer division of both durations.
      *
      * @see #divideBy(EffortDuration)
      * @param other
@@ -292,13 +289,15 @@ public class EffortDuration implements Comparable<EffortDuration> {
      */
     public EffortDuration remainderFor(EffortDuration other) {
         int dividend = divideBy(other);
+
         return this.minus(other.multiplyBy(dividend));
     }
 
     /**
-     * Pluses two {@link EffortDuration}. <br />
-     * <b>Warning:<b /> This method can cause an integer overflow and the result
-     * would be incorrect.
+     * Pluses two {@link EffortDuration}.
+     * <br />
+     * <b>Warning:<b /> This method can cause an integer overflow and the result would be incorrect.
+     *
      * @param other
      * @return a duration that is the sum of <code>this</code>
      *         {@link EffortDuration} and the other duration
@@ -312,9 +311,9 @@ public class EffortDuration implements Comparable<EffortDuration> {
     }
 
     /**
-     * Substracts two {@link EffortDuration}. Because {@link EffortDuration
-     * durations} cannot be negative <code>this</code> must be bigger than the
-     * parameter or the same
+     * Substracts two {@link EffortDuration}.
+     * Because {@link EffortDuration durations} cannot be negative <code>this</code> must be bigger than the
+     * parameter or the same.
      *
      * @param duration
      * @return the result of substracting the two durations
@@ -322,47 +321,43 @@ public class EffortDuration implements Comparable<EffortDuration> {
      *             if the parameter is bigger than <code>this</code>
      */
     public EffortDuration minus(EffortDuration duration) {
-        Validate.isTrue(this.compareTo(duration) >= 0,
-                "minued must not be smaller than subtrahend");
+        Validate.isTrue(this.compareTo(duration) >= 0, "minued must not be smaller than subtrahend");
+
         return new EffortDuration(seconds - duration.seconds);
     }
 
     public BigDecimal toHoursAsDecimalWithScale(int scale) {
         BigDecimal result = BigDecimal.ZERO;
         final BigDecimal secondsPerHour = new BigDecimal(3600);
+
         for (Entry<Granularity, Integer> each : decompose().entrySet()) {
-            BigDecimal seconds = new BigDecimal(each.getKey().toSeconds(
-                    each.getValue()));
-            result = result.add(seconds.divide(secondsPerHour, scale,
-                    BigDecimal.ROUND_HALF_UP));
+            BigDecimal seconds = new BigDecimal(each.getKey().toSeconds(each.getValue()));
+            result = result.add(seconds.divide(secondsPerHour, scale, BigDecimal.ROUND_HALF_UP));
         }
         return result;
     }
 
     /**
      * <p>
-     * Converts this duration in a number of hours. Uses a typical half up
-     * round, so for example one hour and half is converted to two hours. There
-     * is an exception though, when the duration is less than one hour and is
-     * not zero it's returned one. This is handy for avoiding infinite loops in
-     * some algorithms; when all code is converted to use {@link EffortDuration
-     * Effort Durations} this will no longer be necessary.
+     *     Converts this duration in a number of hours.
+     *     Uses a typical half up round, so for example one hour and half is converted to two hours.
+     *     There is an exception though, when the duration is less than one hour and is not zero it's returned one.
+     *     This is handy for avoiding infinite loops in some algorithms;
+     *     when all code is converted to use {@link EffortDuration Effort Durations} this will no longer be necessary.
      * </p>
+     *
      * So there are three cases:
      * <ul>
-     * <li>the duration is zero, 0 is returned</li>
-     * <li>if duration > 0 and duration < 1, 1 is returned</li>
-     * <li>if duration >= 1, typical half up round is done. For example 1 hour
-     * and 20 minutes returns 1 hour, 1 hour and 30 minutes 2 hours</li>
+     *     <li>the duration is zero, 0 is returned</li>
+     *     <li>if duration > 0 and duration < 1, 1 is returned</li>
+     *     <li>if duration >= 1, typical half up round is done.</li>
      * </ul>
+     * For example 1 hour and 20 minutes returns 1 hour, 1 hour and 30 minutes 2 hours.
      *
      * @return an integer number of hours
      */
     public int roundToHours() {
-        if (this.isZero()) {
-            return 0;
-        }
-        return Math.max(1, roundHalfUpToHours(this.decompose()));
+        return this.isZero() ? 0 : Math.max(1, roundHalfUpToHours(this.decompose()));
     }
 
     public static EffortDuration min(EffortDuration... durations) {
@@ -381,6 +376,7 @@ public class EffortDuration implements Comparable<EffortDuration> {
         int seconds = components.get(Granularity.SECONDS);
         int minutes = components.get(Granularity.MINUTES) + (seconds < 30 ? 0 : 1);
         int hours = components.get(Granularity.HOURS) + (minutes < 30 ? 0 : 1);
+
         return hours;
     }
 
@@ -389,29 +385,25 @@ public class EffortDuration implements Comparable<EffortDuration> {
         Integer hours = valuesForEachUnit.get(Granularity.HOURS);
         Integer minutes = valuesForEachUnit.get(Granularity.MINUTES);
         Integer seconds = valuesForEachUnit.get(Granularity.SECONDS);
+
         return String.format("%d:%02d:%02d", hours, minutes, seconds);
     }
 
     public String toFormattedString() {
-        EnumMap<Granularity, Integer> byGranularity = this.atNearestMinute()
-                .decompose();
+        EnumMap<Granularity, Integer> byGranularity = this.atNearestMinute().decompose();
         int hours = byGranularity.get(Granularity.HOURS);
         int minutes = byGranularity.get(Granularity.MINUTES);
-        if (minutes == 0) {
-            return String.format("%d", hours);
-        } else {
-            return String.format("%d:%02d", hours, minutes);
-        }
+
+        return minutes == 0 ? String.format("%d", hours) : String.format("%d:%02d", hours, minutes);
     }
 
     public EffortDuration atNearestMinute() {
         EnumMap<Granularity, Integer> decompose = this.decompose();
         int seconds = decompose.get(Granularity.SECONDS);
-        if (seconds >= 30) {
-            return this.plus(EffortDuration.seconds(60 - seconds));
-        } else {
-            return this.minus(EffortDuration.seconds(seconds));
-        }
+
+        return seconds >= 30
+                ? this.plus(EffortDuration.seconds(60 - seconds))
+                : this.minus(EffortDuration.seconds(seconds));
     }
 
 }

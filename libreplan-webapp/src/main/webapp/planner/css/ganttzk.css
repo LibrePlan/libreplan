@@ -27,7 +27,7 @@
 
 /* -------------- Listdetails -------------- */
 .listdetails {
-    margin-top: 0px;
+    margin-top: 0;
     font-size: 10px !important;
 }
 
@@ -43,7 +43,7 @@
 .listdetails div.z-tree {
     background: #FFFFFF;
 }
- .listdetails img {
+.listdetails img {
     display: none;
 }
 
@@ -53,10 +53,10 @@
 }
 
 #listdetails_container td {
-    padding: 0px;
+    padding: 0;
 }
 
-.listdetails th.z-tree-col .z-tree-col-cnt {
+.listdetails th.z-tree-col .z-tree-col-content {
     font-size:11px;
     font-weight:bold;
 }
@@ -64,36 +64,27 @@
 .listdetails input {
     width: 100%;
     font-size: 10px !important;
-    border-bottom: 0px;
-    border-right: 0px;
-    border-top: 0;
-    border-left: 0;
+    border-width: 0;
     height: 16px;
-    padding-left:2px;
+    padding-left: 2px;
 }
 
 .listdetails input.task-name {
     border-left: dotted 1px #CCC;
 }
 
-.listdetails div.z-tree-cell-cnt {
+.listdetails div.z-tree-cell-content {
     width: 500px; !important;
 }
 
-/*.listdetails input {
-    width: 80%; !important;
-} */
-
-
-#listdetails_container .z-datebox-inp,
-#listdetails_container div.z-tree-col-cnt {
+#listdetails_container .z-datebox-input,
+#listdetails_container div.z-tree-col-content {
     font-size: 9px !important;
-    border-bottom: 0px;
-    border-right: 0px;
+    border-bottom: 0;
+    border-right: 0;
 }
 
 .listdetails input {
-    /* min-width: 90px; */
     height: 19px;
 }
 
@@ -143,7 +134,7 @@
 #listtasks {
     position: relative;
     width: 100%;
-    top: 0px;
+    top: 0;
 }
 
 /* Task box properties */
@@ -203,7 +194,7 @@
     position: relative;
     width: 400px;
     float: left;
-    top: 0px;
+    top: 0;
 }
 
 .dependence {
@@ -212,7 +203,6 @@
 
 .end,.start,.mid,.arrow {
     position: absolute;
-    /* padding: 4px; */
     cursor: crosshair;
     z-index:0;
 }
@@ -220,10 +210,10 @@
 #ganttpanel .end,
 #ganttpanel .start,
 #listlimitingdependencies .mid {
-     height: 1px;
-     padding: 4px 0 2px 1px;
-     margin-left: 4px;
-     background-position: 0px 2px;
+    height: 1px;
+    padding: 4px 0 2px 1px;
+    margin-left: 4px;
+    background-position: 0 2px;
 }
 
 #ganttpanel .mid,
@@ -233,7 +223,7 @@
     margin-top: 3px;
     margin-bottom: 2px;
     padding-right: 4px;
-    padding-left: 0px;
+    padding-left: 0;
     background-position: 4px 0;
 }
 
@@ -264,18 +254,18 @@ div.box.limiting-unassigned {
 }
 
 .completionMoneyCostBar {
-    width: 0%;
+    width: 0;
     height: 3px; /* zkTasklist.HEIGHT_PER_TASK / 2 */
     background-color: #009900;
-    border: 0px;
+    border: 0;
     margin-top: -9px;
 }
 
 .completion {
-    width: 0%;
+    width: 0;
     height: 3px; /* zkTasklist.HEIGHT_PER_TASK / 2 */
     background-color: #F21CFF;
-    border: 0px;
+    border: 0;
     margin-top: 1px;
 }
 
@@ -305,10 +295,10 @@ div.box.limiting-unassigned {
 }
 
 .completion2 {
-    width: 0%;
+    width: 0;
     height: 6px;
     background-color: #004469;
-    border: 0px;
+    border: 0;
     margin-top: 4px;
 }
 
@@ -333,8 +323,7 @@ div.box.limiting-unassigned {
 }
 
 .taskgroup_end {
-    background-image:
-        url("../../zkau/web/ganttz/img/group_right.png");
+    background-image: url("../../zkau/web/ganttz/img/group_right.png");
     height: 10px;
     width: 10px;
     position:absolute;
@@ -344,9 +333,9 @@ div.box.limiting-unassigned {
 
 .taskgroup,.row .expanded {
     border-top: solid black 2px;
-    border-bottom: 0px;
-    border-left: 0px;
-    border-right: 0px;
+    border-bottom: 0;
+    border-left: 0;
+    border-right: 0;
     background-color: transparent !important;
 }
 
@@ -355,7 +344,6 @@ div.box.limiting-unassigned {
     padding-right:2px;
     heigth: 12px !important;
     position: relative;
-    left:10;
     display: block;
     clear: both;
 }
@@ -369,8 +357,7 @@ div.box.limiting-unassigned {
 }
 
 .milestone_end {
-    background-image:
-        url("../../zkau/web/ganttz/img/milestone.png");
+    background-image: url("../../zkau/web/ganttz/img/milestone.png");
     height: 15px;
     width: 15px;
     float: right;
@@ -384,7 +371,7 @@ div.box.limiting-unassigned {
 }
 
 .zk #ganttpanel .z-button-cm {
-    border: 0px;
+    border: 0;
 }
 
 #ganttpanel {
@@ -396,10 +383,6 @@ div.box.limiting-unassigned {
     float: left;
     padding: 0;
     margin: 0;
-}
-
-#ganttpanel table td {
-    /* padding: 0; */
 }
 
 /* -------------- Timetracker -------------- */
@@ -447,7 +430,7 @@ div.box.limiting-unassigned {
     background-position: -8px 0, -8px 0, -8px 0, -8px 0, -8px 0, -8px 0, -8px 0;
 }
 
-.limitingresources #watermark .bankHoliday {
+.limiting-resources #watermark .bankHoliday {
     height: 650px;
 }
 
@@ -458,13 +441,11 @@ div.box.limiting-unassigned {
 
 /* Background image for current day vertical line */
 #watermark .timetracker_column_today {
-    background-image: url("../img/watermark_today.png");
-    background-repeat: repeat-y;
+    background: url("../img/watermark_today.png") repeat-y;
 }
 
 #watermark .timetracker_column_start {
-    background-image: url("../img/watermark_start.png");
-    background-repeat: repeat-y;
+    background: url("../img/watermark_start.png") repeat-y;
     width: 100%;
     height: 100%;
     float: left;
@@ -472,15 +453,11 @@ div.box.limiting-unassigned {
 
 
 #watermark .timetracker_column_deadline {
-    background-image:
-        url("../../zkau/web/ganttz/img/pixel.gif");
-    background-repeat: repeat-y;
+    background: url("../../zkau/web/ganttz/img/pixel.gif") repeat-y;
 }
 
 #watermark .timetracker_column_today_deadline {
-    background-image:
-        url("../img/watermark_today.png"), url("../../zkau/web/ganttz/img/pixel.gif");
-    background-repeat: repeat-y, repeat-y;
+    background: url("../img/watermark_today.png"), url("../../zkau/web/ganttz/img/pixel.gif") repeat-y, repeat-y;
 }
 
 
@@ -494,42 +471,42 @@ div.box.limiting-unassigned {
 
 /* Reduce spacing and font-size for watermark legend */
 .z-columns,.z-column {
-    font-size: 8px !important;
-    text-align: center;
+    font-size: 9px !important;
+    text-align: center !important;
     padding: 0 0 0 0 !important;
 }
 
 table {
-    margin: 0px;
-    padding: 0px;
-    border: 0px;
+    margin: 0;
+    padding: 0;
+    border: 0;
 }
 
 #scroll_container {
-    margin-top: 0px;
+    margin-top: 0;
     float: left;
     position: absolute;
 }
 
-#timetracker { /* border: solid 1px red; */
+#timetracker {
     position: absolute;
     float: left;
     z-index: -20;
 }
 
-.resourcesload #timetracker {
+.resources-load #timetracker {
     position: absolute;
-    left: 0px;
-    top: 0px;
-    height: auto; width : 600px;
-    overflow-x: visible;
+    left: 0;
+    top: 0;
+    height: auto;
     width: 600px;
+    overflow-x: visible;
 }
 
-tr.z-vbox-sep {
-    height: 0px;
-    padding: 0px;
-    margin: 0px;
+tr.z-vbox-separator {
+    padding: 0;
+    margin: 0;
+    height: 0;
 }
 
 #ganttpanel_scroller_x,#ganttpanel_scroller_y {
@@ -573,9 +550,9 @@ tr.z-vbox-sep {
     display: none;
 }
 
-.scheduling-graphics .z-tabpanels-ver, .scheduling-graphics .z-tabpanel-ver,
-.scheduling-graphics .z-tabpanel, .scheduling-graphics .z-tabbox-ver .z-tabpanels-ver {
-    padding:0px;
+.scheduling-graphics .z-tabpanels, .scheduling-graphics .z-tabpanel-ver,
+.scheduling-graphics .z-tabpanel, .scheduling-graphics .z-tabbox-ver .z-tabpanels {
+    padding:0;
 }
 
 /*  ----------- Advanced resources assignment ------------ */
@@ -595,7 +572,7 @@ tr.z-vbox-sep {
     /* overflow: auto; */
 }
 
-.advancedallocationlayout #timetrackedtable {
+.advanced-allocation-layout #timetrackedtable {
     float: none;
     width: auto;
     overflow: visible;
@@ -623,13 +600,36 @@ tr.z-vbox-sep {
 }
 
 .NO_LOAD {
-   border-left: 0;
+    border-left: 0;
 }
 
 .row_resourceload {
     height: 10px;
     border: 1px;
-    margin-bottom: 10px;
+    width: 100%;
+    margin-bottom: 12px;
+    margin-top: 10px;
+    border-bottom: 1px dotted #CCCCCC;
+}
+
+.z-resourceloadlist {
+    margin-top: -10px;
+}
+
+.z-resourceloadcomponent {
+    height: 7px;
+    border: 1px;
+    margin-bottom: 16px;
+    margin-top: 6px;
+    padding-bottom: 2px;
+    width: 100%;
+    border-bottom: 1px dotted #CCCCCC;
+}
+
+.z-queuecomponent {
+    height: 14px;
+    border: 1px;
+    margin-bottom: 22px;
     margin-top: 8px;
     width: 100%;
     border-bottom: 1px dotted #CCCCCC;
@@ -647,7 +647,7 @@ tr.z-vbox-sep {
 
 .resourceloadleftpane {
     border: 1px;
-    margin-top: 0px;
+    margin-top: 0;
     min-width: 125px;
 }
 
@@ -661,30 +661,30 @@ tr.z-vbox-sep {
 }
 
 .resourceloadleftpane .icono {
-    margin-top: 0px;
-    margin-bottom: 0px;
-    border: 0px;
+    margin-top: 0;
+    margin-bottom: 0;
+    border: 0;
 }
 
 .resourceloadleftpane .icono img {
-    height: 17px;
+    height: 16px;
 }
 
-/* -- Upper taskpannel is hidden --*/
-.taskspanelgap #timetracker {
-    border-top: 0px;
-    margin: 0px;
+/* -- Upper task panel is hidden --*/
+.taskspanel-gap #timetracker {
+    border-top: 0;
+    margin: 0;
 }
 
-.resourcesload .taskspanelgap #timetracker table {
+.resources-load .taskspanel-gap #timetracker table {
     margin-top: -10px;
 }
 
-.resourcesload .taskspanelgap #timetracker th {
+.resources-load .taskspanel-gap #timetracker th {
     display: none;
-    border: 0px;
-    margin: 0px;
-    padding: 0px;
+    border: 0;
+    margin: 0;
+    padding: 0;
 }
 
 #ganttpanel #timetracker th {
@@ -698,13 +698,13 @@ tr.z-vbox-sep {
     border-collapse: collapse;
 }
 
-.resourceloadleftpane div.z-treecell-cnt {
-    paddding-top: 2px;
+.resourceloadleftpane div.z-treecell-content {
+    padding-top: 2px;
     border-bottom: 1px dotted #CCCCCC;
 }
 
 .resourceloadleftpane div.z-tree-body td.z-tree-cell {
-    padding: 0px;
+    padding: 0;
 }
 
 .resourceloadleftpanetitle {
@@ -725,11 +725,7 @@ tr.z-vbox-sep {
 
 .leftpanelgap .resourceloadleftpane {
     background: none;
-    border: 0px;
-}
-
-.resourceloadlist {
-    margin-top: 13px;
+    border: 0;
 }
 
 .resourceload-resource div {
@@ -744,12 +740,18 @@ tr.z-vbox-sep {
 
 .row_resourceload.resourceload-global-generic,
 .row_resourceload.resourceload-resource {
+    margin-bottom: 12px;
+    margin-top: 12px;
+}
+
+.z-queuecomponent.resourceload-global-generic,
+.z-queuecomponent.resourceload-resource {
     margin-bottom: 8px;
     margin-top: 6px;
     padding-bottom: 2px;
 }
 
-.resourceloadleftpane .z-tree-ico + .secondlevel span {
+.resourceloadleftpane .z-tree-line + .secondlevel span {
     font-weight: bold;
 }
 
@@ -761,7 +763,7 @@ tr.z-vbox-sep {
     overflow: visible;
 }
 .resourceloadleftpane div.z-tree-body table {
-    table-layout:auto !important;
+    table-layout:auto;
 }
 
 .resourceloadleftpane .icono .z-button-cm:active,
@@ -771,41 +773,45 @@ tr.z-vbox-sep {
 }
 
 /* ---------- Start Limiting resources --------------- */
-.limitingresourceslist .row_resourceload {
-    height: 25px;
+.limitingresources-list {
+    margin-top: -13px;
 }
 
-.limitingresources .z-tree-ico {
+.limitingresources-list .row_resourceload {
+    height: 24px;
+}
+
+.limiting-resources .z-tree-line {
     display: none;
 }
 
-.limitingresources .z-treerow {
+.limiting-resources .z-treerow {
     height: 35px;
 }
 
-.limitingresources td.z-treecell {
-    paddding-top: 2px;
+.limiting-resources td.z-treecell {
+    padding-top: 2px;
     border-bottom: 1px dotted #CCCCCC;
 }
 
-.limitingresourcesleftpane .secondlevel {
+.limitingresources-left-pane .secondlevel {
     display: inline;
 }
 
-.limitingresourcesleftpane .secondlevel .z-label,
-.limitingresourcesleftpane .z-tree-body {
+.limitingresources-left-pane .secondlevel .z-label,
+.limitingresources-left-pane .z-tree-body {
     white-space: nowrap;
 }
 
-.limitingresourcesleftpane div.z-tree-body {
+.limitingresources-left-pane div.z-tree-body {
     overflow: visible;
 }
 
-.limitingresourcesleftpane div.z-tree-body table {
+.limitingresources-left-pane div.z-tree-body table {
     table-layout:auto !important;
 }
 
-div.limitingresourcesleftpane  {
+div.limitingresources-left-pane  {
     background-color: white;
 }
 
@@ -831,10 +837,7 @@ div.limitingresourcesleftpane  {
 
 .timetrackergap {
     position: relative;
-    left : 0px;
-}
-
-.timetrackergap {
+    left : 0;
     height: 32px;
 }
 
@@ -846,8 +849,8 @@ div.limitingresourcesleftpane  {
     width: 100%;
 }
 
-.listdetails div.z-treecell-cnt {
-    padding: 0px;
+.listdetails div.z-treecell-content {
+    padding: 0;
 }
 
 div.z-tree {
@@ -859,16 +862,12 @@ div.z-tree {
     border-right: 1px dotted #CCC;
 }
 
-.plannerlayout, .resourcesloadlayout, .advancedallocationlayout {
-/*    height: 100%; */
-}
-
 .temp-class {
-height: 100%
+    height: 100%
 }
 
 .orderslayout {
-    height:550px;
+    height:100%;
 }
 
 .task_tooltip {
@@ -886,10 +885,10 @@ height: 100%
 }
 
 /* Avoid current box tooltip being overlapped */
+
 .box:hover {
     z-index:100 !important;
 }
-
 .task-labels {
     display: none;
     float: left;
@@ -924,7 +923,7 @@ height: 100%
 
 .task-resources-inner {
     position: absolute;
-    left: 0px;
+    left: 0;
     font-size: 9px;
     white-space: nowrap;
     color: #000000;
@@ -935,131 +934,129 @@ height: 100%
     padding: 1px 4px;
 }
 
-.advancedallocationlayout .name {
+.advanced-allocation-layout .name {
     min-width:200px;
 }
 
-.advancedallocationlayout .second_level_ {
+.advanced-allocation-layout .second_level_ {
     border-collapse: collapse;
 }
 
-.advancedallocationlayout .second_level_ th {
+.advanced-allocation-layout .second_level_ th {
     width:150px;
 }
-.advancedallocationlayout .taskspanelgap td.z-row-inner {
+
+.advanced-allocation-layout .taskspanel-gap td.z-row-inner {
     padding:0 !important;
 }
-.advancedallocationlayout .taskspanelgap td.z-row-inner input {
+.advanced-allocation-layout .taskspanel-gap td.z-row-inner input {
     padding-top: 1px;
     padding-bottom:1px;
 }
-
-.advancedallocationlayout .taskspanelgap .z-label {
-  margin-left:3px;
+.advanced-allocation-layout .taskspanel-gap .z-label {
+    margin-left:3px;
 }
 
-.advancedallocationlayout .taskspanelgap .level1 {
-  margin-left:8px;
+.advanced-allocation-layout .taskspanel-gap .level1 {
+    margin-left:8px;
 }
 
-
-.taskspanelgap table {
+.taskspanel-gap table {
     border-collapse: collapse;
 }
 
-.advancedallocationlayout .taskspanelgap input {
+
+.advanced-allocation-layout .taskspanel-gap input {
     width: 100%;
     heigth: 21px;
 }
 
-.advancedallocationlayout .taskspanelgap tr.z-grid-odd td.z-row-inner, tr.z-grid-odd,
-.advancedallocationlayout .taskspanelgap tr.z-row {
+.advanced-allocation-layout .taskspanel-gap tr.z-grid-odd td.z-row-inner, tr.z-grid-odd,
+.advanced-allocation-layout .taskspanel-gap tr.z-row {
     background: #f2f2f2;
 }
 
-.advancedallocationlayout .calculated-hours.z-label {
+.advanced-allocation-layout .calculated-hours.z-label {
     font-weight: bold;
     color: #555555;
     cursor: default;
 }
-.advancedallocationlayout .unmodifiable-hours.z-label {
+
+.advanced-allocation-layout .unmodifiable-hours.z-label {
     color: #555555;
 }
-.advancedallocationlayout .consolidated-hours.z-label {
+
+.advanced-allocation-layout .consolidated-hours.z-label {
     color: #75d9b0;
 }
-.advancedallocationlayout .z-row .z-intbox-disd {
-    color: 0 !important;
+
+.advanced-allocation-layout .taskspanel-gap input {
+    width: 100%;
 }
 
 
-.advancedallocationlayout .taskspanelgap input {
-    widht: 100%;
-}
-
-.taskspanelgap input {
+.taskspanel-gap input {
     border: 0;
     height: 19px;
 }
 
-.advancedassignmentdetails tr.z-row,
-.taskspanelgap tr.z-row {
+.advanced-assignment-details tr.z-row,
+.taskspanel-gap tr.z-row {
     height: 23px;
 }
 
-.advancedassignmentdetails td {
+.advanced-assignment-details td {
     overflow:hidden;
     white-space: nowrap;
 }
 
-.advancedassignmentdetails .level1 {
-  margin-left:12px;
+.advanced-assignment-details .level1 {
+    margin-left:12px;
 }
 
-.advancedassignmentdetails .level0 {
-  font-weight:bold;
+.advanced-assignment-details .level0 {
+    font-weight:bold;
 }
 
-.advancedallocationlayout .leftpanelgap .z-grid-header {
-    /* padding-bottom: 3px; */
+.advanced-allocation-layout .leftpanelgap .z-grid-header {
     border-bottom: solid 1px #DDDDDD;
     background: #FFFFFF;
 }
 
-.advancedallocationlayout div.z-row-cnt {
+.advanced-allocation-layout div.z-row-content {
     padding: 0;
 }
 
-.advancedallocationlayout .leftpanelgap td.z-row-inner {
+.advanced-allocation-layout .leftpanelgap td.z-row-inner {
     padding-top:0;
     padding-bottom:0;
 }
 
-.advancedassignmentdetails .z-intbox {
+.advanced-assignment-details .z-intbox {
     width: 50px;
 }
-.advancedassignmentdetails .z-combobox-inp {
+
+.advanced-assignment-details .z-combobox-inp {
+    width: 60px;
+}
+.advanced-allocation-layout .leftpanelgap .name {
+}
+
+.advanced-assignment-details .hours {
     width: 60px;
 }
 
-.advancedallocationlayout .leftpanelgap .name {
-}
-
-.advancedassignmentdetails .hours {
-    width: 60px;
-}
-
-.advancedassignmentdetails .function {
+.advanced-assignment-details .function {
     width: 110px;
 }
 
-.advancedassignmentdetails .z-combobox {
+.advanced-assignment-details .z-combobox {
     margin-top: 2px;
 }
-.advancedassignmentdetails .z-intbox {
-    padding-left: 0px;
-}
 
+.advanced-assignment-details .z-intbox {
+    padding-left: 0;
+}
 #tasksTree div.z-tree-header, #tasksTree div.z-tree-header tr, #tasksTree div.z-tree-footer {
     overflow:visible;
 }
@@ -1071,7 +1068,6 @@ height: 100%
 }
 
 .listdetails th {
-    display:visible;
     margin-top:10px;
 }
 
@@ -1087,12 +1083,8 @@ height: 100%
     margin-bottom:17px;
 }
 
-.listdetails .z-tree-header table {
-    /* display:none; */
-}
-
 .plannerlayout div.z-tree, .plannerlayout div.z-grid,
-.resourcesload div.z-tree, .resourcesload div.z-grid {
+.resources-load div.z-tree, .resources-load div.z-grid {
     border: 0;
 }
 
@@ -1108,42 +1100,36 @@ height: 100%
     position:relative;
 }
 
-.advancedassignmentdetails .z-grid-header table {
-    height:30px;
+.advanced-assignment-details .z-grid-header table {
+    height: 30px;
 }
 
 /* Advanced assignment */
-.advancedallocationlayout #timeTracker .z-vbox table {
-    height:15px;
+.advanced-allocation-layout #timeTracker .z-vbox table {
+    height: 15px;
+}
+.advanced-allocation-layout #timeTracker .z-vbox .z-grid-body {
+    display: none;
 }
 
-.advancedallocationlayout #timeTracker .z-vbox .z-grid-body {
-    display:none;
-}
-
-.advancedassignmentdetails .z-grid-body {
-    position:relative;
+.advanced-assignment-details .z-grid-body {
+    position: relative;
     margin-top: 31px;
-    overflow:hidden;
+    overflow: hidden;
 }
 
-.advancedassignmentdetails .z-grid-header {
-    z-index:2;
-    position:absolute;
-    overflow:hidden;
+.advanced-assignment-details .z-grid-header {
+    z-index: 2;
+    position: absolute;
+    overflow: hidden;
 }
 
 /* Workaround for extra column when configuring functions */
-.advancedassignmentdetails td + td + td + td {
-    display:none;
+.advanced-assignment-details td + td + td + td {
+    display: none;
 }
 
-/*
-.advancedassignmentdetails .z-row, .advancedallocationlayout .taskspanelgap .z-row {
-    height: 20px;
-} */
-
-.advancedallocationlayout .taskspanelgap td.z-row-inner {
+.advanced-allocation-layout .taskspanel-gap td.z-row-inner {
     padding:1px;
     padding-left: 3px;
     padding-right: 3px;
@@ -1151,7 +1137,6 @@ height: 100%
 
 .deadline {
     position:absolute;
-    /* border-right: solid 2px red; */
     margin-top: -5px;
     float:left;
     left:-100px; /* Hide when it has't been set */
@@ -1162,7 +1147,6 @@ height: 100%
 
 .consolidatedline {
     position:absolute;
-    /* border-right: solid 2px red; */
     margin-top: -5px;
     float:left;
     left:-100px; /* Hide when it has't been set */
@@ -1170,8 +1154,6 @@ height: 100%
     height:22px;
     background-image: url("../../zkau/web/ganttz/img/deadline_green.png");
 }
-
-
 
 .queue-element .deadline {
     position: relative;
@@ -1208,10 +1190,9 @@ body .perspectives-column {
     width: 100%;
 }
 
-.orderslayout .z-window-embedded-header {
+.orderslayout .z-window-header {
     display:none;
 }
-
 
 .timeTrackedTableWithLeftPane .z-grid-body table {
     width: 1px !important;
@@ -1247,10 +1228,10 @@ body .perspectives-column {
 }
 
 /* ------------ Limiting resources  ------------ */
+
 .limiting-resources-buffer .z-south-body {
     overflow-y:scroll;
 }
-
 .queue-progress-bar {
     background-color: #407865;
     height: 6px;
@@ -1276,23 +1257,43 @@ body .perspectives-column {
 }
 
 /* Workaround for zk 100% height just root components */
-.main-area {height: 100%;}
-.main-area .z-center-body > span {height: 100%; display: block;}
-.main-area .z-center-body > span > div > span { height: 100%; display: block;}
-.main-area .z-center-body > span > div { height: 100%;}
-.main-area .z-center-body > span > div > div  { height: 100%;}
-.main-area .z-center-body > span > div > div > span { height: 100%; display: block;}
-.main-area .z-center-body > span > div > div > div { height: 100%;}
-.main-area .z-center-body > span > div > div > div > span { height: 100%; display: block;}
 
-.main-area > span {height: 100%; display: block;}
-.main-area > span > div { height: 100%;}
-.main-area > span > div > span { height: 100%; display: block;}
-.main-area > span > div > div { height: 100%;}
-.main-area > span > div > div > span { height: 100%; display: block;}
+.toolbar-box > div {
+    overflow: hidden;
+}
 
-.main-area .advanced-assignment-area .z-center-body > span,
-.main-area .advanced-assignment-area .z-center-body > span > div > div {
+.z-west-splitter::after {
+    display: none !important;
+}
+
+.taskdetailsContainer .z-west {
+    width: 300px !important;
+    left: 0 !important;
+    top: 0 !important;
+    height: 345px !important;
+}
+
+.z-west-body {
+    width: 100% !important;
+    left: 0 !important;
+    top: 0 !important;
+    overflow: hidden;
+}
+
+.z-tree-header > table {
+    table-layout: inherit;
+}
+
+.taskTreeCols .z-tree {
+    width: 100% !important;
+}
+
+.z-treecols-bar {
+    display: none;
+}
+
+.main-area .advanced-assignment-area .z-center-body > div,
+.main-area .advanced-assignment-area .z-center-body > div > div > div {
     height: auto;
 }
 
@@ -1304,26 +1305,21 @@ div.z-grid-header .second_level_ tr {
     overflow: visible;
 }
 
-
 #ganttpanel .start, #ganttpanel .end,
 #listlimitingdependencies .mid {
-    background-image:
-        url("../../zkau/web/ganttz/img/solid-black-hor.png");
-        background-repeat:repeat-x;
+    background: url("../../zkau/web/ganttz/img/solid-black-hor.png") repeat-x;
 }
 
 #ganttpanel .mid,
 #listlimitingdependencies .start, #listlimitingdependencies .end {
-    background-image:
-        url("../../zkau/web/ganttz/img/solid-black-ver.png");
-        background-repeat:repeat-y;
+    background-image: url("../../zkau/web/ganttz/img/solid-black-ver.png");
+    background-repeat: repeat-y;
 }
 
 .arrow {
     height: 10px;
     width: 10px;
-    background-image:
-        url("../../zkau/web/ganttz/img/solid-black-arrows.png");
+    background-image: url("../../zkau/web/ganttz/img/solid-black-arrows.png");
     background-repeat: no-repeat;
     padding: 3px 4px 4px 4px;
 }
@@ -1368,9 +1364,11 @@ div.z-grid-header .second_level_ tr {
 #ganttpanel .violated-dependency .start, #ganttpanel .violated-dependency .end {
     background-image: url("../../zkau/web/ganttz/img/solid-red-hor.png");
 }
+
 #ganttpanel .violated-dependency .mid {
     background-image: url("../../zkau/web/ganttz/img/solid-red-ver.png");
 }
+
 #ganttpanel .violated-dependency .arrow {
     background-image: url("../../zkau/web/ganttz/img/solid-red-arrows.png");
 }
@@ -1379,17 +1377,16 @@ div.z-grid-header .second_level_ tr {
     background-position: 0 2px;
     margin-left: -10px;
 }
-
 #ganttpanel .resources-dependency .start, #ganttpanel .resources-dependency .end {
     background-image: url("../../zkau/web/ganttz/img/dashed-black-hor.png");
 }
 #ganttpanel .resources-dependency .mid {
     background-image: url("../../zkau/web/ganttz/img/dashed-black-ver.png");
 }
+
 #ganttpanel .resources-dependency .arrow {
     background-image: url("../../zkau/web/ganttz/img/dashed-black-arrows.png");
 }
-
 
 .point-east {
     background-position: 0 2px;
@@ -1400,20 +1397,18 @@ div.z-grid-header .second_level_ tr {
 .point-west {
     background-position: -35px 2px;
 }
+
 .point-north {
     background-position: -48px 0;
 }
-
 #listlimitingdependencies .point-north {
     background-position: -53px 0;
 }
-
 #listlimitingdependencies .point-south {
     background-position: -17px 0;
     margin-top: 2px;
 }
-
-.taskspanelgap #listlimitingdependencies {
+.taskspanel-gap #listlimitingdependencies {
     top: -2px;
 }
 
@@ -1435,4 +1430,83 @@ div.z-grid-header .second_level_ tr {
 .plannergraph .timeplot-timeflag {
     opacity: 1 !important;
     font-size: 12px;
+}
+
+.z-treerow.z-treerow-selected > .z-treecell > .z-treecell-content,
+.z-treerow.z-treerow > .z-treecell > .z-treecell-content {
+    color: black;
+}
+
+.taskdetail_grid .z-treecell .z-treecell-content {
+    display: inline-flex;
+    width: 100%;
+}
+
+.taskdetail_grid.taskdetail-company-view .z-treecell .z-treecell-content {
+    display: inline-table;
+    width: 100%;
+}
+
+span.z-dottree-icon {
+    width: 18px;
+    min-height: 18px;
+    height: 100%;
+    background-repeat: no-repeat;
+    display: -moz-inline-box;
+    vertical-align: top;
+    display: inline-block;
+}
+
+div.z-dottree {
+    border: 1px solid #cfcfcf;
+    overflow: hidden;
+    zoom: 1;
+}
+
+.z-dottree-line.z-dottree-spacer {
+    width: 18px;
+}
+
+.parentResourceLoad > div {
+    height: 100%;
+    display: block !important;
+}
+
+.contentTabSwitcher .main-content:nth-child(1) {
+    display: none !important;
+}
+
+.parentResourceLoad > div {
+    height: 100%;
+    display: block !important;
+}
+
+.resourcesloadlayout + div {
+    display: none;
+}
+
+.main-content:nth-child(2) .contentTabSwitcher {
+    display: none !important;
+}
+
+.main-area > div {height: 100%; display: block;}
+
+div ~ .resourcesloadlayout {
+    height: 100%;
+    display: block !important;
+}
+
+.parentLimitingResource > div,
+.resourceLoadForOrder > div {
+    height: 100%;
+    display: block !important;
+}
+
+.leftpanelgap > div {
+    display: block !important;
+}
+
+.z-ganttpanel > div > div {
+    height: 0;
+    display: block !important;
 }

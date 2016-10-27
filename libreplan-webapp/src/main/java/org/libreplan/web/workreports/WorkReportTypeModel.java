@@ -45,7 +45,7 @@ import org.libreplan.business.workreports.daos.IWorkReportTypeDAO;
 import org.libreplan.business.workreports.entities.PositionInWorkReportEnum;
 import org.libreplan.business.workreports.entities.PredefinedWorkReportTypes;
 import org.libreplan.business.workreports.entities.WorkReport;
-import org.libreplan.business.workreports.entities.WorkReportLabelTypeAssigment;
+import org.libreplan.business.workreports.entities.WorkReportLabelTypeAssignment;
 import org.libreplan.business.workreports.entities.WorkReportType;
 import org.libreplan.business.workreports.valueobjects.DescriptionField;
 import org.libreplan.web.common.IntegrationEntityModel;
@@ -65,8 +65,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 @OnConcurrentModification(goToPage = "/workreports/workReportTypes.zul")
-public class WorkReportTypeModel extends IntegrationEntityModel implements
-        IWorkReportTypeModel {
+public class WorkReportTypeModel extends IntegrationEntityModel implements IWorkReportTypeModel {
 
     @Autowired
     private IWorkReportTypeDAO workReportTypeDAO;
@@ -196,8 +195,7 @@ public class WorkReportTypeModel extends IntegrationEntityModel implements
             head.getFieldName();
         }
 
-        for (WorkReportLabelTypeAssigment assignedLabel : workReportType
-                .getWorkReportLabelTypeAssigments()) {
+        for (WorkReportLabelTypeAssignment assignedLabel : workReportType.getWorkReportLabelTypeAssignments()) {
             assignedLabel.getDefaultLabel().getName();
             assignedLabel.getLabelType().getName();
         }
@@ -207,7 +205,7 @@ public class WorkReportTypeModel extends IntegrationEntityModel implements
         mapLabels.clear();
         List<LabelType> labelTypes = labelTypeDAO.getAll();
         for (LabelType labelType : labelTypes) {
-            List<Label> labels = new ArrayList<Label>(labelType.getLabels());
+            List<Label> labels = new ArrayList<>(labelType.getLabels());
 
             mapLabels.put(labelType, labels);
         }
@@ -256,7 +254,7 @@ public class WorkReportTypeModel extends IntegrationEntityModel implements
     /* Operations to manage the Description field */
 
     public List<DescriptionField> getDescriptionFields() {
-        List<DescriptionField> descriptionFields = new ArrayList<DescriptionField>();
+        List<DescriptionField> descriptionFields = new ArrayList<>();
         if (getWorkReportType() != null) {
             descriptionFields.addAll(workReportType.getLineFields());
             descriptionFields.addAll(workReportType.getHeadingFields());
@@ -297,53 +295,53 @@ public class WorkReportTypeModel extends IntegrationEntityModel implements
         return workReportType.getHeadingFields().contains(descriptionField);
     }
 
-    /* Operations to manage the WorkReportLabelTypesAssigment */
+    /**
+     * Operations to manage the WorkReportLabelTypesAssignment.
+     */
 
-    public Set<WorkReportLabelTypeAssigment> getWorkReportLabelTypeAssigments() {
+    public Set<WorkReportLabelTypeAssignment> getWorkReportLabelTypeAssignments() {
         if (getWorkReportType() != null) {
-            return getWorkReportType().getWorkReportLabelTypeAssigments();
+            return getWorkReportType().getWorkReportLabelTypeAssignments();
         }
-        return new HashSet<WorkReportLabelTypeAssigment>();
+        return new HashSet<>();
     }
 
-    public void addNewWorkReportLabelTypeAssigment() {
+    public void addNewWorkReportLabelTypeAssignment() {
         if (getWorkReportType() != null) {
-            WorkReportLabelTypeAssigment newWorkReportLabelTypeAssigment = WorkReportLabelTypeAssigment
+            WorkReportLabelTypeAssignment newWorkReportLabelTypeAssignment = WorkReportLabelTypeAssignment
                     .create();
-            getWorkReportType().addLabelAssigmentToEndLine(
-                    newWorkReportLabelTypeAssigment);
+            getWorkReportType().addLabelAssignmentToEndLine(
+                    newWorkReportLabelTypeAssignment);
         }
     }
 
-    public void removeWorkReportLabelTypeAssigment(
-            WorkReportLabelTypeAssigment workReportLabelTypeAssigment) {
-        getWorkReportType().removeLabel(workReportLabelTypeAssigment);
+    public void removeWorkReportLabelTypeAssignment(
+            WorkReportLabelTypeAssignment workReportLabelTypeAssignment) {
+        getWorkReportType().removeLabel(workReportLabelTypeAssignment);
     }
 
-    public PositionInWorkReportEnum getLabelAssigmentPosition(
-            WorkReportLabelTypeAssigment workReportLabelTypeAssigment) {
-        if (getWorkReportType() != null) {
-            return getPosition(workReportLabelTypeAssigment
-                    .getLabelsSharedByLines());
-        }
-        return null;
+    public PositionInWorkReportEnum getLabelAssignmentPosition(WorkReportLabelTypeAssignment workReportLabelTypeAssignment) {
+        return getWorkReportType() != null
+                ? getPosition(workReportLabelTypeAssignment.getLabelsSharedByLines())
+                : null;
     }
 
-    public void setLabelAssigmentPosition(
-            WorkReportLabelTypeAssigment workReportLabelTypeAssigment,
-            PositionInWorkReportEnum position) {
-        getWorkReportType().removeLabel(workReportLabelTypeAssigment);
+    public void setLabelAssignmentPosition(
+            WorkReportLabelTypeAssignment workReportLabelTypeAssignment, PositionInWorkReportEnum position) {
+
+        getWorkReportType().removeLabel(workReportLabelTypeAssignment);
+
         if (isSharedByLines(position)) {
-            getWorkReportType().addLabelAssigmentToEndHead(
-                    workReportLabelTypeAssigment);
+            getWorkReportType().addLabelAssignmentToEndHead(workReportLabelTypeAssignment);
 
         } else {
-            getWorkReportType().addLabelAssigmentToEndLine(
-                    workReportLabelTypeAssigment);
+            getWorkReportType().addLabelAssignmentToEndLine(workReportLabelTypeAssignment);
         }
     }
 
-    /* Operation to manage the requirements fields */
+    /**
+     * Operation to manage the requirements fields.
+     */
     @Override
     public PositionInWorkReportEnum getDatePosition() {
         if (getWorkReportType() != null) {
@@ -398,7 +396,9 @@ public class WorkReportTypeModel extends IntegrationEntityModel implements
         return PositionInWorkReportEnum.HEADING.equals(position);
     }
 
-    /* Operations that realize the data validations */
+    /**
+     * Operations that realize the data validations.
+     */
 
     @Transactional(readOnly = true)
     public void validateWorkReportTypeName(String name)
@@ -454,21 +454,21 @@ public class WorkReportTypeModel extends IntegrationEntityModel implements
         return null;
     }
 
-    public WorkReportLabelTypeAssigment validateLabelTypes() {
-        for (WorkReportLabelTypeAssigment labelTypeAssigment : getWorkReportLabelTypeAssigments()) {
-            if ((labelTypeAssigment.getLabelType() == null)
+    public WorkReportLabelTypeAssignment validateLabelTypes() {
+        for (WorkReportLabelTypeAssignment labelTypeAssignment : getWorkReportLabelTypeAssignments()) {
+            if ((labelTypeAssignment.getLabelType() == null)
                     || (getWorkReportType()
-                            .existRepeatedLabelType(labelTypeAssigment))) {
-                return labelTypeAssigment;
+                            .existRepeatedLabelType(labelTypeAssignment))) {
+                return labelTypeAssignment;
             }
         }
         return null;
     }
 
-    public WorkReportLabelTypeAssigment validateLabels() {
-        for (WorkReportLabelTypeAssigment labelTypeAssigment : getWorkReportLabelTypeAssigments()) {
-            if (labelTypeAssigment.getDefaultLabel() == null) {
-                return labelTypeAssigment;
+    public WorkReportLabelTypeAssignment validateLabels() {
+        for (WorkReportLabelTypeAssignment labelTypeAssignment : getWorkReportLabelTypeAssignments()) {
+            if (labelTypeAssignment.getDefaultLabel() == null) {
+                return labelTypeAssignment;
             }
         }
         return null;
@@ -477,27 +477,27 @@ public class WorkReportTypeModel extends IntegrationEntityModel implements
     /* Operations to calculated the index position of the fields into workReport */
 
     public boolean validateTheIndexFieldsAndLabels() {
-        return ((getWorkReportType()
-                .isTheIndexHeadingFieldsAndLabelMustBeUniqueAndConsecutiveConstraint()) && (getWorkReportType()
-                .isTheIndexLineFieldsAndLabelMustBeUniqueAndConsecutiveConstraint()));
+        return getWorkReportType()
+                .isTheIndexHeadingFieldsAndLabelMustBeUniqueAndConsecutiveConstraint() && getWorkReportType()
+                .isTheIndexLineFieldsAndLabelMustBeUniqueAndConsecutiveConstraint();
     }
 
     public List<Object> getOrderedListHeading() {
         if (getWorkReportType() != null) {
             return sort(getWorkReportType().getHeadingFieldsAndLabels());
         }
-        return new ArrayList<Object>();
+        return new ArrayList<>();
     }
 
     public List<Object> getOrderedListLines() {
         if (getWorkReportType() != null) {
             return sort(getWorkReportType().getLineFieldsAndLabels());
         }
-        return new ArrayList<Object>();
+        return new ArrayList<>();
     }
 
     private List<Object> sort(List<Object> list) {
-        List<Object> result = new ArrayList<Object>(list);
+        List<Object> result = new ArrayList<>(list);
         for (Object object : list) {
             if ((getIndex(object) >= 0) && (getIndex(object) < list.size())) {
                 result.set(getIndex(object), object);
@@ -510,7 +510,7 @@ public class WorkReportTypeModel extends IntegrationEntityModel implements
         if (object instanceof DescriptionField) {
             return ((DescriptionField) object).getPositionNumber();
         } else {
-            return ((WorkReportLabelTypeAssigment) object).getPositionNumber();
+            return ((WorkReportLabelTypeAssignment) object).getPositionNumber();
         }
     }
 
@@ -520,10 +520,10 @@ public class WorkReportTypeModel extends IntegrationEntityModel implements
                     .getPositionNumber() - 1;
             moveDescriptionField((DescriptionField) objectToUp, intoHeading, newPosition);
         } else {
-            int newPosition = ((WorkReportLabelTypeAssigment) objectToUp)
+            int newPosition = ((WorkReportLabelTypeAssignment) objectToUp)
                     .getPositionNumber() - 1;
-            moveWorkReportLabelTypeAssigment(
-                    (WorkReportLabelTypeAssigment) objectToUp, intoHeading,
+            moveWorkReportLabelTypeAssignment(
+                    (WorkReportLabelTypeAssignment) objectToUp, intoHeading,
                     newPosition);
         }
     }
@@ -535,10 +535,10 @@ public class WorkReportTypeModel extends IntegrationEntityModel implements
             moveDescriptionField((DescriptionField) objectToDown, intoHeading,
                     newPosition);
         } else {
-            int newPosition = ((WorkReportLabelTypeAssigment) objectToDown)
+            int newPosition = ((WorkReportLabelTypeAssignment) objectToDown)
                     .getPositionNumber() + 1;
-            moveWorkReportLabelTypeAssigment(
-                    (WorkReportLabelTypeAssigment) objectToDown, intoHeading,
+            moveWorkReportLabelTypeAssignment(
+                    (WorkReportLabelTypeAssignment) objectToDown, intoHeading,
                     newPosition);
         }
     }
@@ -554,14 +554,14 @@ public class WorkReportTypeModel extends IntegrationEntityModel implements
         }
     }
 
-    private void moveWorkReportLabelTypeAssigment(
-            WorkReportLabelTypeAssigment workReportLabelTypeAssigment,
+    private void moveWorkReportLabelTypeAssignment(
+            WorkReportLabelTypeAssignment workReportLabelTypeAssignment,
             boolean intoHeading, int newPosition) {
         if (intoHeading) {
-            getWorkReportType().moveLabelToHead(workReportLabelTypeAssigment,
+            getWorkReportType().moveLabelToHead(workReportLabelTypeAssignment,
                     newPosition);
         } else {
-            getWorkReportType().moveLabelToLine(workReportLabelTypeAssigment,
+            getWorkReportType().moveLabelToLine(workReportLabelTypeAssignment,
                     newPosition);
         }
     }
@@ -571,7 +571,7 @@ public class WorkReportTypeModel extends IntegrationEntityModel implements
     }
 
     public Set<IntegrationEntity> getChildren() {
-        return new HashSet<IntegrationEntity>();
+        return new HashSet<>();
     }
 
     public IntegrationEntity getCurrentEntity() {

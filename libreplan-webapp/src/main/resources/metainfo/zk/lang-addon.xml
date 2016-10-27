@@ -42,13 +42,13 @@
     <component>
         <component-name>bandboxSearch</component-name>
         <component-class>org.libreplan.web.common.components.bandboxsearch.BandboxSearch</component-class>
-        <macro-uri>/common/components/bandbox_search.zul</macro-uri>
+        <macro-uri>/common/components/bandboxSearch.zul</macro-uri>
     </component>
 
     <component>
         <component-name>bandboxMultipleSearch</component-name>
         <component-class>org.libreplan.web.common.components.bandboxsearch.BandboxMultipleSearch</component-class>
-        <macro-uri>/common/components/bandbox_search.zul</macro-uri>
+        <macro-uri>/common/components/bandboxSearch.zul</macro-uri>
     </component>
 
     <component>
@@ -72,6 +72,7 @@
             <property-name>model</property-name>
             <attribute>
                 <attribute-name>converter</attribute-name>
+                <!-- TODO resolve deprecated -->
                 <attribute-value>org.zkoss.zkplus.databind.ListModelConverter</attribute-value>
             </attribute>
         </annotation>
@@ -79,11 +80,11 @@
 
     <component>
         <component-name>doublebox</component-name>
-            <extends>doublebox</extends>
-            <property>
-                <property-name>format</property-name>
-                <property-value>###,##0.00####</property-value>
-            </property>
+        <extends>doublebox</extends>
+        <property>
+            <property-name>format</property-name>
+            <property-value>###,##0.00####</property-value>
+        </property>
     </component>
 
     <component>
@@ -101,7 +102,7 @@
     <component>
         <component-name>LimitingResourcesPanel</component-name>
         <component-class>org.libreplan.web.limitingresources.LimitingResourcesPanel</component-class>
-            <macro-uri>/limitingresources/limitingResourcesLayout.zul</macro-uri>
+        <macro-uri>/limitingresources/limitingResourcesLayout.zul</macro-uri>
         <widget-class>limitingresources.LimitingResourcesPanel</widget-class>
     </component>
 

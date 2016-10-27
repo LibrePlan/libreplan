@@ -43,9 +43,9 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * An implementation of <code>IGenericDao</code> based on Hibernate's native API.
  * Concrete DAOs must extend directly from this class.
- * This constraint is imposed by the constructor of this class that must infer the
- * type of the entity from the declaration of the concrete DAO.
- * <p/>
+ * This constraint is imposed by the constructor of this class that must infer the type of the
+ * entity from the declaration of the concrete DAO.
+ *
  * This class autowires a <code>SessionFactory</code> bean and allows to implement DAOs with Hibernate's native API.
  * Subclasses access Hibernate's <code>Session</code> by calling on <code>getSession()</code> method.
  * Operations must be implemented by catching <code>HibernateException</code>
@@ -87,8 +87,8 @@ public class GenericDAOHibernate<E extends BaseEntity, PK extends Serializable> 
     /**
      * It's necessary to save and validate later.
      *
-     * Validate may retrieve the entity from DB and put it into the Session,
-     * which can eventually lead to a NonUniqueObject exception.
+     * Validate may retrieve the entity from DB and put it into the Session, which can eventually lead to
+     * a NonUniqueObject exception.
      * Save works here to reattach the object as well as saving.
      */
     public void save(E entity) throws ValidationException {
@@ -96,16 +96,16 @@ public class GenericDAOHibernate<E extends BaseEntity, PK extends Serializable> 
         entity.validate();
     }
 
-   public void saveWithoutValidating(E entity) {
-       getSession().saveOrUpdate(entity);
-   }
+    public void saveWithoutValidating(E entity) {
+        getSession().saveOrUpdate(entity);
+    }
 
     public void reattachUnmodifiedEntity(E entity) {
         if ( Hibernate.isInitialized(entity) && entity.isNewObject() ) {
             return;
         }
+        // TODO resolve deprecated
         getSession().lock(entity, LockMode.NONE);
-
     }
 
     public E merge(E entity) {
@@ -114,7 +114,7 @@ public class GenericDAOHibernate<E extends BaseEntity, PK extends Serializable> 
 
     public void checkVersion(E entity) {
 
-        /* Get id and version from entity. */
+        /* Get id and version from entity */
         Serializable id;
         Long versionValueInMemory;
 
@@ -138,10 +138,12 @@ public class GenericDAOHibernate<E extends BaseEntity, PK extends Serializable> 
             throw new RuntimeException(e);
         }
 
-        /* Check version. */
-        Long versionValueInDB = (Long) getSession().createCriteria(entityClass)
+        /* Check version */
+        Long versionValueInDB = (Long) getSession()
+                .createCriteria(entityClass)
                 .add(Restrictions.idEq(id))
-                .setProjection(Projections.property("version")).uniqueResult();
+                .setProjection(Projections.property("version"))
+                .uniqueResult();
 
         if ( versionValueInDB == null ) {
             return;
@@ -159,15 +161,11 @@ public class GenericDAOHibernate<E extends BaseEntity, PK extends Serializable> 
 
     }
 
-    public void associateToSession(E entity) {
-        getSession().lock(entity, LockMode.NONE);
-    }
-
     @SuppressWarnings("unchecked")
     @Transactional(readOnly = true)
     public E find(PK id) throws InstanceNotFoundException {
 
-        E entity = getSession().get(entityClass, id);
+        E entity = (E) getSession().get(entityClass, id);
 
         if ( entity == null ) {
             throw new InstanceNotFoundException(id, entityClass.getName());
@@ -188,7 +186,8 @@ public class GenericDAOHibernate<E extends BaseEntity, PK extends Serializable> 
 
     public boolean exists(final PK id) {
 
-        return getSession().createCriteria(entityClass)
+        return getSession()
+                .createCriteria(entityClass)
                 .add(Restrictions.idEq(id))
                 .setProjection(Projections.id())
                 .uniqueResult() != null;
@@ -212,6 +211,7 @@ public class GenericDAOHibernate<E extends BaseEntity, PK extends Serializable> 
     }
 
     @Override
+    @Transactional
     public void reattach(E entity) {
         getSession().saveOrUpdate(entity);
     }

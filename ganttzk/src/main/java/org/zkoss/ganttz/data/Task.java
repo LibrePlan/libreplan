@@ -126,14 +126,7 @@ public abstract class Task implements ITaskFundamentalProperties {
 
     @Override
     public void doPositionModifications(final IModifications modifications) {
-        fundamentalProperties.doPositionModifications(new IModifications() {
-
-            @Override
-            public void doIt(IUpdatablePosition p) {
-                modifications.doIt(position);
-
-            }
-        });
+        fundamentalProperties.doPositionModifications(p -> modifications.doIt(position));
     }
 
     private final IUpdatablePosition position = new IUpdatablePosition() {
@@ -174,12 +167,7 @@ public abstract class Task implements ITaskFundamentalProperties {
 
         private IUpdatablePosition getFundamentalPropertiesPosition() {
             final IUpdatablePosition[] result = new IUpdatablePosition[1];
-            fundamentalProperties.doPositionModifications(new IModifications() {
-                @Override
-                public void doIt(IUpdatablePosition position) {
-                    result[0] = position;
-                }
-            });
+            fundamentalProperties.doPositionModifications(position1 -> result[0] = position1);
 
             return result[0];
         }
@@ -342,12 +330,7 @@ public abstract class Task implements ITaskFundamentalProperties {
             return;
         }
 
-        doPositionModifications(new IModifications() {
-            @Override
-            public void doIt(IUpdatablePosition position) {
-                position.resizeTo(GanttDate.createFrom(date));
-            }
-        });
+        doPositionModifications(position1 -> position1.resizeTo(GanttDate.createFrom(date)));
     }
 
     public void removed() {

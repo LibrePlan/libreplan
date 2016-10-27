@@ -24,7 +24,7 @@ package org.libreplan.business.users.daos;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.libreplan.business.common.daos.GenericDAOHibernate;
@@ -73,12 +73,13 @@ public class UserDAO extends GenericDAOHibernate<User, Long> implements IUserDAO
     @Override
     public User findByLoginNameNotDisabled(String loginName) throws InstanceNotFoundException {
 
-        Criteria c = getSession().createCriteria(User.class);
-        c.add(Restrictions.eq("loginName", loginName).ignoreCase());
-        c.add(Restrictions.eq("disabled", false));
-        User user = (User) c.uniqueResult();
+        User user = (User) getSession()
+                .createCriteria(User.class)
+                .add(Restrictions.eq("loginName", loginName).ignoreCase())
+                .add(Restrictions.eq("disabled", false))
+                .uniqueResult();
 
-        if ( user == null ) {
+        if (user == null) {
             throw new InstanceNotFoundException(loginName, User.class.getName());
         } else {
             return user;
@@ -88,11 +89,8 @@ public class UserDAO extends GenericDAOHibernate<User, Long> implements IUserDAO
 
     @Override
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
-    public User findByLoginNameAnotherTransaction(String loginName)
-        throws InstanceNotFoundException {
-
+    public User findByLoginNameAnotherTransaction(String loginName) throws InstanceNotFoundException {
         return findByLoginName(loginName);
-
     }
 
     @Override
@@ -114,33 +112,32 @@ public class UserDAO extends GenericDAOHibernate<User, Long> implements IUserDAO
 
     @Override
     public List<User> listNotDisabled() {
-        Criteria c = getSession().createCriteria(User.class);
-        c.add(Restrictions.eq("disabled", false));
-
-        return c.list();
+        return getSession()
+                .createCriteria(User.class)
+                .add(Restrictions.eq("disabled", false))
+                .list();
     }
 
     @Override
     public List<User> findByLastConnectedScenario(Scenario scenario) {
-        Criteria c = getSession().createCriteria(User.class);
-        c.add(Restrictions.eq("lastConnectedScenario", scenario));
-
-        return c.list();
+        return getSession()
+                .createCriteria(User.class)
+                .add(Restrictions.eq("lastConnectedScenario", scenario))
+                .list();
     }
 
     private List<OrderAuthorization> getOrderAuthorizationsByUser(User user) {
-        List orderAuthorizations = getSession()
+        return getSession()
                 .createCriteria(UserOrderAuthorization.class)
-                .add(Restrictions.eq("user", user)).list();
-
-        return orderAuthorizations;
+                .add(Restrictions.eq("user", user))
+                .list();
     }
 
     @Override
     public List<User> getUnboundUsers(Worker worker) {
         List<User> result = new ArrayList<>();
         boolean condition;
-        for (User user : getUsersOrderByLoginame()) {
+        for (User user : getUsersOrderByLoginName()) {
 
             condition = (user.getWorker() == null) ||
                     (worker != null && !worker.isNewObject() && worker.getId().equals(user.getWorker().getId()));
@@ -152,8 +149,11 @@ public class UserDAO extends GenericDAOHibernate<User, Long> implements IUserDAO
         return result;
     }
 
-    private List<User> getUsersOrderByLoginame() {
-        return getSession().createCriteria(User.class).addOrder(org.hibernate.criterion.Order.asc("loginName")).list();
+    private List<User> getUsersOrderByLoginName() {
+        return getSession()
+                .createCriteria(User.class)
+                .addOrder(Order.asc("loginName"))
+                .list();
     }
 
     @Override

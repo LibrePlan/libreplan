@@ -25,12 +25,10 @@ import java.io.IOException;
 
 import org.apache.commons.lang3.Validate;
 import org.zkoss.ganttz.data.DependencyType;
-import org.zkoss.zk.au.out.AuInvoke;
 import org.zkoss.zk.ui.sys.ContentRenderer;
 import org.zkoss.zul.impl.XulElement;
 
 /**
- *
  * @author Francisco Javier Moran Rúa <jmoran@igalia.com>
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
@@ -42,8 +40,7 @@ public class LimitingDependencyComponent extends XulElement {
 
     private DependencyType type;
 
-    public LimitingDependencyComponent(QueueTask source, QueueTask destination,
-            DependencyType type) {
+    public LimitingDependencyComponent(QueueTask source, QueueTask destination, DependencyType type) {
         this(source, destination);
         this.type = type;
     }
@@ -51,6 +48,7 @@ public class LimitingDependencyComponent extends XulElement {
     public LimitingDependencyComponent(QueueTask source, QueueTask destination) {
         Validate.notNull(source);
         Validate.notNull(destination);
+
         this.source = source;
         this.destination = destination;
     }
@@ -64,7 +62,6 @@ public class LimitingDependencyComponent extends XulElement {
 
     public void setIdTaskOrig(String idTaskOrig) {
         this.source = findTaskComponent(idTaskOrig);
-
     }
 
     private QueueTask findTaskComponent(String idTaskOrig) {

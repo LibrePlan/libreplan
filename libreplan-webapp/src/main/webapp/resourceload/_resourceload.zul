@@ -27,6 +27,6 @@
         rsController = arg.get("resourceLoadController");;
     ]]>
     </zscript>
-    <div apply="${rsController}" self="@{define(content)}">
+    <div apply="${rsController}" sclass="parentResourceLoad" self="@{define(content_tabSwitcher)}" height="100%">
     </div>
 </zk>

@@ -28,7 +28,7 @@ import org.zkoss.ganttz.util.Interval;
 
 public interface IDatesMapper {
 
-    final long MILISECONDS_PER_HOUR = 3600000;
+    long MILISECONDS_PER_HOUR = 3600000;
 
     int toPixels(LocalDate date);
 

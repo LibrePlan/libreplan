@@ -35,9 +35,8 @@ import org.libreplan.business.resources.entities.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * Implements all the methods needed to search the criteria to filter the
- * {@link TaskElement}. Provides multiples criteria to filter like
- * {@link Criterion} and {@link Label}.
+ * Implements all the methods needed to search the criteria to filter the {@link TaskElement}.
+ * Provides multiples criteria to filter like {@link Criterion} and {@link Label}.
  *
  * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
@@ -46,9 +45,7 @@ public class TaskElementsMultipleFiltersFinder extends MultipleFiltersFinder {
     @Autowired
     private PredefinedDatabaseSnapshots databaseSnapshots;
 
-    protected TaskElementsMultipleFiltersFinder() {
-
-    }
+    protected TaskElementsMultipleFiltersFinder() {}
 
     @Override
     public List<FilterPair> getFirstTenFilters() {
@@ -68,7 +65,7 @@ public class TaskElementsMultipleFiltersFinder extends MultipleFiltersFinder {
             for (int i = 0; getListMatching().size() < 10
                     && i < mapLabels.get(type).size(); i++) {
                 Label label = mapLabels.get(type).get(i);
-                addLabel(type, label);
+                addLabel(label);
             }
         }
         return getListMatching();
@@ -171,7 +168,7 @@ public class TaskElementsMultipleFiltersFinder extends MultipleFiltersFinder {
             String name = StringUtils.deleteWhitespace(label.getName()
                     .toLowerCase());
             if (name.contains(filter)) {
-                addLabel(type, label);
+                addLabel(label);
                 if ((filter.length() < 3) && (getListMatching().size() > 9)) {
                     return;
                 }
@@ -181,7 +178,7 @@ public class TaskElementsMultipleFiltersFinder extends MultipleFiltersFinder {
 
     private void setFilterPairLabelType(LabelType type, boolean limited) {
         for (Label label : getLabelsMap().get(type)) {
-            addLabel(type, label);
+            addLabel(label);
             if ((limited) && (getListMatching().size() > 9)) {
                 return;
             }
@@ -195,10 +192,8 @@ public class TaskElementsMultipleFiltersFinder extends MultipleFiltersFinder {
                         .getResource().toLowerCase(), pattern, criterion));
     }
 
-    private void addLabel(LabelType type, Label label) {
-        getListMatching().add(
-                new FilterPair(TaskElementFilterEnum.Label, label
-                        .getFinderPattern(), label));
+    private void addLabel(Label label) {
+        getListMatching().add(new FilterPair(TaskElementFilterEnum.Label, label.getFinderPattern(), label));
     }
 
     private List<FilterPair> fillWithFirstTenFiltersResources() {

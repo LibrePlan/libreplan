@@ -21,8 +21,6 @@
 
 package org.libreplan.web.common.components.finders;
 
-import java.util.List;
-
 import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.daos.IOrderElementDAO;
 import org.libreplan.business.orders.entities.Order;
@@ -33,6 +31,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
+
+import java.util.List;
 
 /**
  * Bandbox finder for {@link OrderElement}.
@@ -48,8 +48,7 @@ public class OrderElementBandboxFinder extends BandboxFinder implements IBandbox
     @Autowired
     private IOrderDAO orderDAO;
 
-    private final String headers[] = { _("Project"), _("Project code"),
-            _("Task"), _("Task code") };
+    private final String headers[] = { _("Project"), _("Project code"), _("Task"), _("Task code") };
 
     /**
      * Forces to mark the string as needing translation
@@ -77,11 +76,11 @@ public class OrderElementBandboxFinder extends BandboxFinder implements IBandbox
     public boolean entryMatchesText(Object obj, String text) {
         OrderElement orderElement = (OrderElement) obj;
         text = text.trim().toLowerCase();
-        return (orderElement.getCode().toLowerCase().contains(text)
-                || orderElement.getName().toLowerCase().contains(text)
-                || orderElement.getOrder().getCode().toLowerCase().contains(
-                        text) || orderElement.getOrder().getName()
-                .toLowerCase().contains(text));
+
+        return (orderElement.getCode().toLowerCase().contains(text) ||
+                orderElement.getName().toLowerCase().contains(text) ||
+                orderElement.getOrder().getCode().toLowerCase().contains(text) ||
+                orderElement.getOrder().getName().toLowerCase().contains(text));
     }
 
     @Override
@@ -105,7 +104,7 @@ public class OrderElementBandboxFinder extends BandboxFinder implements IBandbox
     private final ListitemRenderer orderElementRenderer = new ListitemRenderer() {
 
         @Override
-        public void render(Listitem item, Object data) {
+        public void render(Listitem item, Object data, int i) {
             OrderElement orderElement = (OrderElement) data;
             item.setValue(orderElement);
 

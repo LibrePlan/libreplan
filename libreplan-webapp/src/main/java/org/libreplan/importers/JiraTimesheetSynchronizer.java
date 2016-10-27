@@ -26,7 +26,6 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.NonUniqueResultException;
-import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.daos.IConnectorDAO;
 import org.libreplan.business.common.entities.Connector;
 import org.libreplan.business.common.entities.ConnectorException;
@@ -62,7 +61,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Implementation of Synchronize timesheets with jira issues
+ * Implementation of Synchronize timesheets with jira issues.
  *
  * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
  */
@@ -99,9 +98,6 @@ public class JiraTimesheetSynchronizer implements IJiraTimesheetSynchronizer {
     @Autowired
     private IOrderSyncInfoDAO orderSyncInfoDAO;
 
-    @Autowired
-    private IAdHocTransactionService adHocTransactionService;
-
     @Override
     @Transactional
     public void syncJiraTimesheetWithJiraIssues(List<IssueDTO> issues, Order order) throws ConnectorException {
@@ -117,18 +113,15 @@ public class JiraTimesheetSynchronizer implements IJiraTimesheetSynchronizer {
         }
 
         OrderSyncInfo orderSyncInfo = orderSyncInfoDAO
-                .findLastSynchronizedInfoByOrderAndConnectorName(order,
-                        PredefinedConnectors.JIRA.getName());
+                .findLastSynchronizedInfoByOrderAndConnectorName(order, PredefinedConnectors.JIRA.getName());
+
         if (orderSyncInfo == null) {
-            synchronizationInfo.addFailedReason(_(
-                            "Order \"{0}\" not found. Order probalbly not synchronized",
-                    order.getName()));
+            synchronizationInfo.addFailedReason(
+                    _("Order \"{0}\" not found. Order probalbly not synchronized", order.getName()));
             return;
         }
         if (StringUtils.isBlank(orderSyncInfo.getKey())) {
-            synchronizationInfo.addFailedReason(_(
-                    "Key for Order \"{0}\" is empty",
-                    order.getName()));
+            synchronizationInfo.addFailedReason(_("Key for Order \"{0}\" is empty", order.getName()));
             return;
         }
 
@@ -137,29 +130,24 @@ public class JiraTimesheetSynchronizer implements IJiraTimesheetSynchronizer {
         WorkReport workReport = updateOrCreateWorkReport(code);
 
         for (IssueDTO issue : issues) {
-            WorkLogDTO worklog = issue.getFields().getWorklog();
-            if (worklog == null) {
-                synchronizationInfo.addFailedReason(_(
-                        "No worklogs found for \"{0}\" key", issue.getKey()));
+            WorkLogDTO workLog = issue.getFields().getWorklog();
+            if (workLog == null) {
+                synchronizationInfo.addFailedReason(_("No worklogs found for \"{0}\" key", issue.getKey()));
             } else {
-                List<WorkLogItemDTO> workLogItems = worklog.getWorklogs();
+                List<WorkLogItemDTO> workLogItems = workLog.getWorklogs();
                 if (workLogItems == null || workLogItems.isEmpty()) {
-                    synchronizationInfo.addFailedReason(_(
-                            "No worklog items found for \"{0}\" issue",
-                            issue.getKey()));
+                    synchronizationInfo.addFailedReason(_("No worklog items found for \"{0}\" issue", issue.getKey()));
                 } else {
 
-                    String codeOrderElement = PredefinedConnectorProperties.JIRA_CODE_PREFIX
-                            + order.getCode() + "-" + issue.getKey();
+                    String codeOrderElement =
+                            PredefinedConnectorProperties.JIRA_CODE_PREFIX + order.getCode() + "-" + issue.getKey();
 
                     OrderElement orderElement = order.getOrderElement(codeOrderElement);
 
                     if (orderElement == null) {
-                        synchronizationInfo.addFailedReason(_(
-                                "Order element \"{0}\" not found", code));
+                        synchronizationInfo.addFailedReason(_("Order element \"{0}\" not found", code));
                     } else {
-                        updateOrCreateWorkReportLineAndAddToWorkReport(workReport, orderElement,
-                                workLogItems);
+                        updateOrCreateWorkReportLineAndAddToWorkReport(workReport, orderElement, workLogItems);
                     }
                 }
             }
@@ -175,7 +163,7 @@ public class JiraTimesheetSynchronizer implements IJiraTimesheetSynchronizer {
     }
 
     /**
-     * Updates {@link WorkReport} if exist, if not creates new one
+     * Updates {@link WorkReport} if exist, if not creates new one.
      *
      * @param code
      *            search criteria for workReport
@@ -196,8 +184,7 @@ public class JiraTimesheetSynchronizer implements IJiraTimesheetSynchronizer {
     }
 
     /**
-     * Updates {@link WorkReportLine} if exist. If not creates new one and adds
-     * to <code>workReport</code>
+     * Updates {@link WorkReportLine} if exist. If not creates new one and adds to <code>workReport</code>.
      *
      * @param workReport
      *            an existing or new created workReport
@@ -207,8 +194,8 @@ public class JiraTimesheetSynchronizer implements IJiraTimesheetSynchronizer {
      *            jira's workLog items to be added to workReportLine
      */
     private void updateOrCreateWorkReportLineAndAddToWorkReport(WorkReport workReport,
-            OrderElement orderElement,
-            List<WorkLogItemDTO> workLogItems) {
+                                                                OrderElement orderElement,
+                                                                List<WorkLogItemDTO> workLogItems) {
 
         for (WorkLogItemDTO workLogItem : workLogItems) {
             Resource resource = getWorker(workLogItem.getAuthor().getName());
@@ -227,14 +214,13 @@ public class JiraTimesheetSynchronizer implements IJiraTimesheetSynchronizer {
                 workReportLine.setCode(code);
             }
 
-            updateWorkReportLine(workReportLine, orderElement, workLogItem,
-                    resource);
+            updateWorkReportLine(workReportLine, orderElement, workLogItem, resource);
         }
 
     }
 
     /**
-     * Updates {@link WorkReportLine} with <code>workLogItem</code>
+     * Updates {@link WorkReportLine} with <code>workLogItem</code>.
      *
      * @param workReportLine
      *            workReportLine to be updated
@@ -246,10 +232,11 @@ public class JiraTimesheetSynchronizer implements IJiraTimesheetSynchronizer {
      *            the resource
      */
     private void updateWorkReportLine(WorkReportLine workReportLine,
-            OrderElement orderElement, WorkLogItemDTO workLogItem,
-            Resource resource) {
+                                      OrderElement orderElement,
+                                      WorkLogItemDTO workLogItem,
+                                      Resource resource) {
 
-        int timeSpent = workLogItem.getTimeSpentSeconds().intValue();
+        int timeSpent = workLogItem.getTimeSpentSeconds();
 
         workReportLine.setDate(workLogItem.getStarted());
         workReportLine.setResource(resource);
@@ -257,33 +244,28 @@ public class JiraTimesheetSynchronizer implements IJiraTimesheetSynchronizer {
         workReportLine.setEffort(EffortDuration.seconds(timeSpent));
         workReportLine.setTypeOfWorkHours(typeOfWorkHours);
 
-        updateOrCreateDescriptionValuesAndAddToWorkReportLine(workReportLine,
-                        workLogItem.getComment());
+        updateOrCreateDescriptionValuesAndAddToWorkReportLine(workReportLine, workLogItem.getComment());
     }
 
     /**
-     * Updates {@link DescriptionValue} if exist. if not creates new one and
-     * adds to <code>workReportLine</code>
+     * Updates {@link DescriptionValue} if exist. if not creates new one and adds to <code>workReportLine</code>.
      *
      * @param workReportLine
      *            workReprtLinew where descriptionvalues to be added to
      * @param comment
      *            the description value
      */
-    private void updateOrCreateDescriptionValuesAndAddToWorkReportLine(WorkReportLine workReportLine,
-            String comment) {
+    private void updateOrCreateDescriptionValuesAndAddToWorkReportLine(WorkReportLine workReportLine, String comment) {
         DescriptionField descriptionField = workReportType.getLineFields().iterator().next();
 
-        Integer maxLenght = descriptionField.getLength();
-        if (comment.length() > maxLenght) {
-            comment = comment.substring(0, maxLenght - 1);
+        Integer maxLength = descriptionField.getLength();
+        if (comment.length() > maxLength) {
+            comment = comment.substring(0, maxLength - 1);
         }
 
-        Set<DescriptionValue> descriptionValues = workReportLine
-                .getDescriptionValues();
+        Set<DescriptionValue> descriptionValues = workReportLine.getDescriptionValues();
         if (descriptionValues.isEmpty()) {
-            descriptionValues.add(DescriptionValue.create(
-                    descriptionField.getFieldName(), comment));
+            descriptionValues.add(DescriptionValue.create(descriptionField.getFieldName(), comment));
         } else {
             descriptionValues.iterator().next().setValue(comment);
         }
@@ -292,44 +274,37 @@ public class JiraTimesheetSynchronizer implements IJiraTimesheetSynchronizer {
     }
 
     /**
-     * Returns {@link WorkReportType} for JIRA connector
+     * Returns {@link WorkReportType} for JIRA connector.
      *
      * @return WorkReportType for JIRA connector
      */
     private WorkReportType getJiraTimesheetsWorkReportType() {
         WorkReportType workReportType;
         try {
-            workReportType = workReportTypeDAO
-                    .findUniqueByName(PredefinedWorkReportTypes.JIRA_TIMESHEETS
-                            .getName());
-        } catch (NonUniqueResultException e) {
-            throw new RuntimeException(e);
-        } catch (InstanceNotFoundException e) {
+            workReportType = workReportTypeDAO.findUniqueByName(PredefinedWorkReportTypes.JIRA_TIMESHEETS.getName());
+        } catch (NonUniqueResultException | InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }
         return workReportType;
     }
 
     /**
-     * Returns {@link TypeOfWorkHours} configured for JIRA connector
+     * Returns {@link TypeOfWorkHours} configured for JIRA connector.
      *
      * @return TypeOfWorkHours for JIRA connector
      * @throws ConnectorException
      */
     private TypeOfWorkHours getTypeOfWorkHours() throws ConnectorException {
-        Connector connector = connectorDAO
-                .findUniqueByName(PredefinedConnectors.JIRA.getName());
+        Connector connector = connectorDAO.findUniqueByName(PredefinedConnectors.JIRA.getName());
         if (connector == null) {
             throw new ConnectorException(_("JIRA connector not found"));
         }
 
         TypeOfWorkHours typeOfWorkHours;
-        String name = connector.getPropertiesAsMap().get(
-                PredefinedConnectorProperties.JIRA_HOURS_TYPE);
+        String name = connector.getPropertiesAsMap().get(PredefinedConnectorProperties.JIRA_HOURS_TYPE);
 
         if (StringUtils.isBlank(name)) {
-            throw new ConnectorException(
-                    _("Hours type should not be empty to synchronine timesheets"));
+            throw new ConnectorException(_("Hours type should not be empty to synchronine timesheets"));
         }
 
         try {
@@ -342,8 +317,7 @@ public class JiraTimesheetSynchronizer implements IJiraTimesheetSynchronizer {
     }
 
     /**
-     * Searches for {@link WorkReport} for the specified parameter
-     * <code>code</code>
+     * Searches for {@link WorkReport} for the specified parameter <code>code</code>.
      *
      * @param code
      *            unique code
@@ -359,7 +333,7 @@ public class JiraTimesheetSynchronizer implements IJiraTimesheetSynchronizer {
 
 
     /**
-     * Gets all libreplan workers
+     * Gets all LibrePlan workers.
      *
      * @return list of workers
      */
@@ -368,7 +342,7 @@ public class JiraTimesheetSynchronizer implements IJiraTimesheetSynchronizer {
     }
 
     /**
-     * Searches for {@link Worker} for the specified parameter <code>nif</code>
+     * Searches for {@link Worker} for the specified parameter <code>nif</code>.
      *
      * @param nif
      *            unique id

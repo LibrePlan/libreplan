@@ -20,19 +20,19 @@
 
 package org.libreplan.web.common.components.finders;
 
-import java.util.List;
-
 import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.entities.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.zul.Listcell;
-import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
+
+import java.util.List;
 
 /**
  * Bandbox finder for {@link Order}.
+ *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 @Repository
@@ -44,7 +44,7 @@ public class OrderBandboxFinder extends BandboxFinder implements IBandboxFinder 
     private final String headers[] = { _("Project code"), _("Project name") };
 
     /**
-     * Forces to mark the string as needing translation
+     * Forces to mark the string as needing translation.
      */
     private static String _(String string) {
         return string;
@@ -53,16 +53,14 @@ public class OrderBandboxFinder extends BandboxFinder implements IBandboxFinder 
     @Override
     @Transactional(readOnly = true)
     public List<Order> getAll() {
-        List<Order> orders = orderDAO.findAll();
-        return orders;
+        return orderDAO.findAll();
     }
 
     @Override
     public boolean entryMatchesText(Object obj, String text) {
         Order order = (Order) obj;
         text = text.trim().toLowerCase();
-        return (order.getCode().toLowerCase().contains(text) || order.getName()
-                .toLowerCase().contains(text));
+        return (order.getCode().toLowerCase().contains(text) || order.getName().toLowerCase().contains(text));
     }
 
     @Override
@@ -82,22 +80,17 @@ public class OrderBandboxFinder extends BandboxFinder implements IBandboxFinder 
         return orderRenderer;
     }
 
-    private final ListitemRenderer orderRenderer = new ListitemRenderer() {
+    private final ListitemRenderer orderRenderer = (item, data, i) -> {
+        Order order = (Order) data;
+        item.setValue(order);
 
-        @Override
-        public void render(Listitem item, Object data) {
-            Order order = (Order) data;
-            item.setValue(order);
+        Listcell orderCode = new Listcell();
+        orderCode.setLabel(order.getCode());
+        orderCode.setParent(item);
 
-            Listcell orderCode = new Listcell();
-            orderCode.setLabel(order.getCode());
-            orderCode.setParent(item);
-
-            Listcell orderName = new Listcell();
-            orderName.setLabel(order.getName());
-            orderName.setParent(item);
-        }
-
+        Listcell orderName = new Listcell();
+        orderName.setLabel(order.getName());
+        orderName.setParent(item);
     };
 
 }

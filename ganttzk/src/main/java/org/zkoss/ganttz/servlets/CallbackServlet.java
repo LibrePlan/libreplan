@@ -34,11 +34,12 @@ import java.util.concurrent.TimeUnit;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.Validate;
-import org.zkoss.web.servlet.http.HttpServlet;
+
 
 /**
  * Servlet that allows to register custom responses. It must be declared at

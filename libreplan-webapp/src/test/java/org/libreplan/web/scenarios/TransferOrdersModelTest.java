@@ -50,7 +50,6 @@ import org.libreplan.business.scenarios.entities.Scenario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Tests for {@link TransferOrdersModel}.
@@ -58,10 +57,10 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
+@ContextConfiguration(locations = {
+        BUSINESS_SPRING_CONFIG_FILE,
         WEBAPP_SPRING_CONFIG_FILE, WEBAPP_SPRING_CONFIG_TEST_FILE,
-        WEBAPP_SPRING_SECURITY_CONFIG_FILE,
-        WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE })
+        WEBAPP_SPRING_SECURITY_CONFIG_FILE, WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE })
 public class TransferOrdersModelTest {
 
     @Resource
@@ -74,7 +73,7 @@ public class TransferOrdersModelTest {
     private IDataBootstrap scenariosBootstrap;
 
     @Before
-    public void loadRequiredaData() {
+    public void loadRequiredData() {
         defaultAdvanceTypesBootstrapListener.loadRequiredData();
         configurationBootstrap.loadRequiredData();
         scenariosBootstrap.loadRequiredData();
@@ -99,20 +98,17 @@ public class TransferOrdersModelTest {
     private IAdHocTransactionService transactionService;
 
     private Order givenStoredOrderInScenario() {
-        Scenario defaultScenario = transactionService
-                .runOnAnotherReadOnlyTransaction(new IOnTransaction<Scenario>() {
-
-                    @Override
-                    public Scenario execute() {
-                        return PredefinedScenarios.MASTER.getScenario();
-                    }
-                });
+        Scenario defaultScenario = transactionService.runOnAnotherReadOnlyTransaction(new IOnTransaction<Scenario>() {
+            @Override
+            public Scenario execute() {
+                return PredefinedScenarios.MASTER.getScenario();
+            }
+        });
         return givenStoredOrderInScenario(defaultScenario);
     }
 
     private Order givenStoredOrderInScenario(Scenario scenario) {
-        return ScenarioModelTest.givenStoredOrderInScenario(scenario,
-                configurationDAO, orderDAO, sessionFactory);
+        return ScenarioModelTest.givenStoredOrderInScenario(scenario, configurationDAO, orderDAO, sessionFactory);
     }
 
     private Scenario givenStoredScenario() {
@@ -121,46 +117,40 @@ public class TransferOrdersModelTest {
     }
 
     private Scenario givenStoredScenario(Scenario predecessor) {
-        return ScenarioModelTest.givenStoredScenario(predecessor, scenarioDAO,
-                sessionFactory);
+        return ScenarioModelTest.givenStoredScenario(predecessor, scenarioDAO, sessionFactory);
     }
 
     @Test
     public void testBasicTransferOrder() {
-        final int numOrders = transactionService
-                .runOnReadOnlyTransaction(new IOnTransaction<Integer>() {
-                    @Override
-                    public Integer execute() {
-                        return orderDAO.getOrders().size();
-                    }
-                });
+        final int numOrders = transactionService.runOnReadOnlyTransaction(new IOnTransaction<Integer>() {
+            @Override
+            public Integer execute() {
+                return orderDAO.getOrders().size();
+            }
+        });
 
-        final Object[] objects = transactionService
-                .runOnTransaction(new IOnTransaction<Object[]>() {
-                    @Override
-                    public Object[] execute() {
-                        Scenario source = givenStoredScenario();
-                        Scenario destination = givenStoredScenario();
+        final Object[] objects = transactionService.runOnTransaction(new IOnTransaction<Object[]>() {
+            @Override
+            public Object[] execute() {
+                Scenario source = givenStoredScenario();
+                Scenario destination = givenStoredScenario();
 
-                        Order order = givenStoredOrderInScenario(source);
-                        return new Object[] { source.getId(),
-                                destination.getId(), order };
-                    }
-                });
+                Order order = givenStoredOrderInScenario(source);
+                return new Object[] { source.getId(), destination.getId(), order };
+            }
+        });
+
         final Order orderAtSource = (Order) objects[2];
         transactionService.runOnTransaction(new IOnTransaction<Void>() {
             @Override
             public Void execute() {
                 try {
-                    Order order = orderDAO.findExistingEntity(orderAtSource
-                            .getId());
+                    Order order = orderDAO.findExistingEntity(orderAtSource.getId());
                     Scenario source = scenarioDAO.find((Long) objects[0]);
                     Scenario destination = scenarioDAO.find((Long) objects[1]);
 
-                    assertThat(source.getOrders().size(),
-                            equalTo(numOrders + 1));
-                    assertThat(destination.getOrders().size(),
-                            equalTo(numOrders));
+                    assertThat(source.getOrders().size(), equalTo(numOrders + 1));
+                    assertThat(destination.getOrders().size(), equalTo(numOrders));
 
                     transferOrdersModel.getScenarios();
 
@@ -183,12 +173,9 @@ public class TransferOrdersModelTest {
                     Scenario source = scenarioDAO.find((Long) objects[0]);
                     Scenario destination = scenarioDAO.find((Long) objects[1]);
 
-                    assertThat(source.getOrders().size(),
-                            equalTo(numOrders + 1));
-                    assertThat(destination.getOrders().size(),
-                            equalTo(numOrders + 1));
-                    assertNotNull(destination
-                            .getOrderVersion((Order) objects[2]));
+                    assertThat(source.getOrders().size(), equalTo(numOrders + 1));
+                    assertThat(destination.getOrders().size(), equalTo(numOrders + 1));
+                    assertNotNull(destination.getOrderVersion((Order) objects[2]));
 
                     return null;
                 } catch (InstanceNotFoundException e) {
@@ -200,34 +187,31 @@ public class TransferOrdersModelTest {
 
     @Test(expected = ValidationException.class)
     public void testTransferOrderWithTheSameVersion() {
-        final Order order = transactionService
-                .runOnTransaction(new IOnTransaction<Order>() {
-                    @Override
-                    public Order execute() {
-                        return givenStoredOrderInScenario();
-                    }
-                });
+        final Order order = transactionService.runOnTransaction(new IOnTransaction<Order>() {
+            @Override
+            public Order execute() {
+                return givenStoredOrderInScenario();
+            }
+        });
 
-        final Scenario source = transactionService
-                .runOnReadOnlyTransaction(new IOnTransaction<Scenario>() {
-                    @Override
-                    public Scenario execute() {
-                        return PredefinedScenarios.MASTER.getScenario();
-                    }
-                });
+        final Scenario source = transactionService.runOnReadOnlyTransaction(new IOnTransaction<Scenario>() {
+            @Override
+            public Scenario execute() {
+                return PredefinedScenarios.MASTER.getScenario();
+            }
+        });
 
-        final Scenario destination = transactionService
-                .runOnTransaction(new IOnTransaction<Scenario>() {
-                    @Override
-                    public Scenario execute() {
-                        return givenStoredScenario();
-                    }
-                });
+        final Scenario destination = transactionService.runOnTransaction(new IOnTransaction<Scenario>() {
+            @Override
+            public Scenario execute() {
+                return givenStoredScenario();
+            }
+        });
 
         transactionService.runOnTransaction(new IOnTransaction<Void>() {
             @Override
             public Void execute() {
-                // reload order so it has the relationship with destination
+                // Reload order so it has the relationship with destination
                 Order orderReloaded = orderDAO.findExistingEntity(order.getId());
                 transferOrdersModel.setSourceScenario(source);
                 transferOrdersModel.setDestinationScenario(destination);

@@ -44,15 +44,14 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
-        BUSINESS_SPRING_CONFIG_TEST_FILE })
+@ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE, BUSINESS_SPRING_CONFIG_TEST_FILE })
 public class ScenarioTest {
 
     @Resource
     private IDataBootstrap defaultAdvanceTypesBootstrapListener;
 
     @Before
-    public void loadRequiredaData() {
+    public void loadRequiredData() {
         defaultAdvanceTypesBootstrapListener.loadRequiredData();
     }
 
@@ -68,12 +67,10 @@ public class ScenarioTest {
         predecessor.addOrder(order);
 
         Scenario child = predecessor.newDerivedScenario();
-        assertThat(child.getPredecessor().getName(), equalTo(predecessor
-                .getName()));
+        assertThat(child.getPredecessor().getName(), equalTo(predecessor.getName()));
 
         assertThat(child.getOrders().size(), equalTo(1));
-        assertThat(child.getOrders().keySet().iterator().next().getName(),
-                equalTo(orderName));
+        assertThat(child.getOrders().keySet().iterator().next().getName(), equalTo(orderName));
     }
 
 }

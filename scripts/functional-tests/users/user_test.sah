@@ -82,7 +82,7 @@ function accountsCreateTwoPass($name, $password, $newPassword){
     _click(_cell("Save"));
     _assertExists(_div("passwords don't match"));
     _assert(_isVisible(_div("passwords don't match")));
-    _log("Create a new Account with two diferent passwords", "custom1");
+    _log("Create a new Account with two different passwords", "custom1");
 }
 
 function accountsForm($name, $password) {

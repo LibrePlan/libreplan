@@ -33,9 +33,9 @@
         </property>
 
         <!-- Not indexed -->
-        <set name="workReportLabelTypeAssigments" cascade="all-delete-orphan" batch-size="10">
+        <set name="workReportLabelTypeAssignments" cascade="all-delete-orphan" batch-size="10">
             <key column="work_report_type_id"/>
-            <one-to-many class="WorkReportLabelTypeAssigment"/>
+            <one-to-many class="WorkReportLabelTypeAssignment"/>
         </set>
 
         <!-- Not indexed -->
@@ -170,7 +170,7 @@
 
     </class>
 
-    <class name="WorkReportLabelTypeAssigment" table="work_report_label_type_assigment">
+    <class name="WorkReportLabelTypeAssignment" table="work_report_label_type_assignment">
         <id name="id" type="long" access="property">
             <generator class="increment">
                 <param name="max_lo">100</param>

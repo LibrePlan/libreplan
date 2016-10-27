@@ -30,7 +30,7 @@ import org.libreplan.business.planner.entities.TaskGroup;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
- * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
 public interface ITaskElementDAO extends IGenericDAO<TaskElement, Long> {
 

@@ -46,15 +46,12 @@ import org.libreplan.business.scenarios.entities.Scenario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
- *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
-        BUSINESS_SPRING_CONFIG_TEST_FILE })
+@ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE, BUSINESS_SPRING_CONFIG_TEST_FILE })
 public class ScenarioDAOTest {
 
     @Autowired
@@ -75,15 +72,14 @@ public class ScenarioDAOTest {
     @Resource
     private IDataBootstrap configurationBootstrap;
 
-    public static Order createOrderStored(IOrderDAO orderDAO,
-            IConfigurationDAO configurationDAO) {
+    public static Order createOrderStored(IOrderDAO orderDAO, IConfigurationDAO configurationDAO) {
         Order order = Order.create();
         order.setInitDate(new Date());
         order.setName("name-" + UUID.randomUUID().toString());
         order.setCode("code-" + UUID.randomUUID().toString());
-        order.setCalendar(configurationDAO.getConfiguration()
-                .getDefaultCalendar());
+        order.setCalendar(configurationDAO.getConfiguration().getDefaultCalendar());
         orderDAO.save(order);
+
         return order;
     }
 
@@ -96,7 +92,7 @@ public class ScenarioDAOTest {
     }
 
     @Before
-    public void loadRequiredaData() {
+    public void loadRequiredData() {
         configurationBootstrap.loadRequiredData();
         defaultAdvanceTypesBootstrapListener.loadRequiredData();
     }
@@ -104,9 +100,8 @@ public class ScenarioDAOTest {
     @Test
     public void afterSavingScenarioWithOrderNewlyRetrievedOrderHasScenariosInfo() {
         final Scenario scenario = createNewScenario();
-        final Long orderId = transactionService
-                .runOnTransaction(new IOnTransaction<Long>() {
 
+        final Long orderId = transactionService.runOnTransaction(new IOnTransaction<Long>() {
             @Override
             public Long execute() {
                 Order order = givenOrderStored();
@@ -117,7 +112,6 @@ public class ScenarioDAOTest {
         });
 
         transactionService.runOnTransaction(new IOnTransaction<Void>() {
-
             @Override
             public Void execute() {
                 Order order = orderDAO.findExistingEntity(orderId);

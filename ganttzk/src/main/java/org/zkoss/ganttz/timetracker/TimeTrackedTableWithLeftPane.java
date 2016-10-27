@@ -33,7 +33,7 @@ import org.zkoss.zul.Columns;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.ListModelList;
-import org.zkoss.zul.api.Column;
+import org.zkoss.zul.Column;
 
 public class TimeTrackedTableWithLeftPane<A, B> {
 
@@ -48,10 +48,13 @@ public class TimeTrackedTableWithLeftPane<A, B> {
             ICellForDetailItemRenderer<C, A> leftPaneCellRenderer,
             ICellForDetailItemRenderer<DetailItem, B> cellRendererForTimeTracker,
             TimeTracker timeTracker) {
+
         this.dataSource = dataSource;
-        timeTrackedTable = new TimeTrackedTable<B>(
+
+        timeTrackedTable = new TimeTrackedTable<>(
                 dataForTimeTracker(dataSource), cellRendererForTimeTracker,
                 timeTracker);
+
         timeTrackedTable.setSclass("inner-timetracked-table");
         leftPane = new Grid();
         zoomLevelListener = new IZoomLevelChangedListener() {
@@ -60,28 +63,32 @@ public class TimeTrackedTableWithLeftPane<A, B> {
                 loadModelForLeftPane();
             }
         };
+
         timeTracker.addZoomListener(zoomLevelListener);
+
         leftPane.appendChild(createColumns(leftPaneColumns));
-        leftPane.setRowRenderer(OnColumnsRowRenderer.create(
-                leftPaneCellRenderer, leftPaneColumns));
+        leftPane.setRowRenderer(OnColumnsRowRenderer.create(leftPaneCellRenderer, leftPaneColumns));
+
         loadModelForLeftPane();
     }
 
-    private static Columns createColumns(
-            Collection<? extends IConvertibleToColumn> convertibleToColumns) {
+    private static Columns createColumns(Collection<? extends IConvertibleToColumn> convertibleToColumns) {
         Columns result = new Columns();
+
         for (Column column : toColumns(convertibleToColumns)) {
             result.appendChild(column);
         }
+
         return result;
     }
 
-    private static List<Column> toColumns(
-            Collection<? extends IConvertibleToColumn> convertibleToColumns) {
-        List<Column> columns = new ArrayList<Column>();
+    private static List<Column> toColumns(Collection<? extends IConvertibleToColumn> convertibleToColumns) {
+        List<Column> columns = new ArrayList<>();
+
         for (IConvertibleToColumn c : convertibleToColumns) {
             columns.add(c.toColumn());
         }
+
         return columns;
     }
 
@@ -89,12 +96,13 @@ public class TimeTrackedTableWithLeftPane<A, B> {
         leftPane.setModel(createModelForLeftPane());
     }
 
-    private ListModel createModelForLeftPane() {
-        return new ListModelList(retrieveLeftPaneList());
+    private ListModel<A> createModelForLeftPane() {
+        return new ListModelList<>(retrieveLeftPaneList());
     }
 
     private List<A> retrieveLeftPaneList() {
         PairOfLists<A, B> pair = loadPairOfListsFromCallable();
+
         return pair.getFirst();
     }
 
@@ -106,8 +114,7 @@ public class TimeTrackedTableWithLeftPane<A, B> {
         }
     }
 
-    private Callable<List<B>> dataForTimeTracker(
-            final Callable<PairOfLists<A, B>> dataSource) {
+    private Callable<List<B>> dataForTimeTracker(final Callable<PairOfLists<A, B>> dataSource) {
         return new Callable<List<B>>() {
 
             @Override
@@ -120,10 +127,11 @@ public class TimeTrackedTableWithLeftPane<A, B> {
     private boolean afterComposeCalled = false;
 
     public TimeTrackedTable<B> getTimeTrackedTable() {
-        if (!afterComposeCalled) {
+        if ( !afterComposeCalled ) {
             timeTrackedTable.afterCompose();
             afterComposeCalled = true;
         }
+
         return timeTrackedTable;
     }
 

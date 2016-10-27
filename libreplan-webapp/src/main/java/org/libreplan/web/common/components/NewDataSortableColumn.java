@@ -28,23 +28,22 @@ import org.apache.commons.lang3.Validate;
 import org.libreplan.business.INewObject;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zul.Column;
-import org.zkoss.zul.api.Grid;
+import org.zkoss.zul.Grid;
 
 /**
- * {@link NewDataSortableColumn} is a macrocomponent which extends {@link Column}
- *<p>
- * NewDataSortableColumn extends the {@link Column} component and adds the
- * following behaviour: It creates a {@link Comparator} which is a
- * decorator of the comparator the component has configured. This comparator
- * delegates in the encapsulated comparator configured by the user, except
- * when the objects implement the interface {@link INewObject}. In that case,
- * the new objects are considered always that are placed before than the
- * object which are not new.
+ * This is a macrocomponent.
  * <p>
- * The {@link NewDataSortableColumn} must be included inside {@link NewDataSortableGrid}
- * in order to work properly. They notify the {@link NewDataSortableGrid} in which are
- * included when they are requested to be sorted.
- *<p>
+ *     NewDataSortableColumn extends the {@link Column} component and adds the following behaviour:
+ *     It creates a {@link Comparator} which is a decorator of the comparator the component has configured.
+ *     This comparator delegates in the encapsulated comparator configured by the user,
+ *     except when the objects implement the interface {@link INewObject}.
+ *     In that case, the new objects are considered always that are placed before than the object which are not new.
+ * </p>
+ *
+ * <p>
+ *     The {@link NewDataSortableColumn} must be included inside {@link NewDataSortableGrid} in order to work properly.
+ *     They notify the {@link NewDataSortableGrid} in which are included when they are requested to be sorted.
+ * </p>
  *
  * @author Javier Moran Rua <jmoran@igalia.com>
  */
@@ -52,6 +51,7 @@ import org.zkoss.zul.api.Grid;
 public class NewDataSortableColumn extends Column implements AfterCompose {
 
     private static class NewObjectDecoratorComparator implements Comparator<Object> {
+
         private Comparator<Object> decoratedComparator;
 
         public NewObjectDecoratorComparator(Comparator<Object> c) {
@@ -61,11 +61,9 @@ public class NewDataSortableColumn extends Column implements AfterCompose {
 
         @Override
         public int compare(Object o1, Object o2) {
-            if ( !doComparingObjectsSupportInterface(o1, o2) ) {
-                return decoratedComparator.compare(o1, o2);
-            } else {
-                return decorateBehaviour((INewObject) o1, (INewObject) o2);
-            }
+            return !doComparingObjectsSupportInterface(o1, o2)
+                    ? decoratedComparator.compare(o1, o2)
+                    : decorateBehaviour((INewObject) o1, (INewObject) o2);
         }
 
         private boolean doComparingObjectsSupportInterface(Object o1, Object o2) {
@@ -73,11 +71,9 @@ public class NewDataSortableColumn extends Column implements AfterCompose {
         }
 
         private int decorateBehaviour(INewObject o1, INewObject o2) {
-            if ( o1.isNewObject() == o2.isNewObject() ) {
-                return decoratedComparator.compare(o1, o2);
-            }
-
-            return BooleanComparator.getTrueFirstComparator().compare(o1.isNewObject(), o2.isNewObject());
+            return o1.isNewObject() == o2.isNewObject()
+                    ? decoratedComparator.compare(o1, o2)
+                    : BooleanComparator.getTrueFirstComparator().compare(o1.isNewObject(), o2.isNewObject());
         }
     }
 

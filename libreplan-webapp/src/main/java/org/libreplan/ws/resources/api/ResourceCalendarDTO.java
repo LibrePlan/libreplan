@@ -35,6 +35,7 @@ import org.libreplan.ws.calendars.api.CalendarExceptionDTO;
 
 /**
  * DTO for {@link ResourceCalendar} entity.
+ *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 public class ResourceCalendarDTO extends BaseCalendarDTO {
@@ -46,28 +47,25 @@ public class ResourceCalendarDTO extends BaseCalendarDTO {
 
     @XmlElementWrapper(name = "calendar-availability-list")
     @XmlElement(name = "calendar-availability")
-    public List<CalendarAvailabilityDTO> calendarAvailabilityDTOs = new ArrayList<CalendarAvailabilityDTO>();
+    public List<CalendarAvailabilityDTO> calendarAvailabilityDTOs = new ArrayList<>();
 
     public ResourceCalendarDTO() {
     }
 
-    public ResourceCalendarDTO(String code, String name, String parent,
-            Integer capacity,
-            List<CalendarExceptionDTO> calendarExceptions,
-            List<CalendarDataDTO> calendarDatas,
-            List<CalendarAvailabilityDTO> calendarAvailabilityDTOs) {
-        super(code, name, parent, calendarExceptions, calendarDatas);
+    public ResourceCalendarDTO(String code, String name, String parent, Integer capacity,
+                               List<CalendarExceptionDTO> calendarExceptions, List<CalendarDataDTO> calendarData,
+                               List<CalendarAvailabilityDTO> calendarAvailabilityDTOs) {
+
+        super(code, name, parent, calendarExceptions, calendarData);
         this.capacity = capacity;
         this.calendarAvailabilityDTOs = calendarAvailabilityDTOs;
     }
 
     public ResourceCalendarDTO(String name, String parent, Integer capacity,
-            List<CalendarExceptionDTO> calendarExceptions,
-            List<CalendarDataDTO> calendarDatas,
-            List<CalendarAvailabilityDTO> calendarAvailabilityDTOs) {
-        this(generateCode(), name, parent, capacity, calendarExceptions,
-                calendarDatas,
-                calendarAvailabilityDTOs);
+                               List<CalendarExceptionDTO> calendarExceptions, List<CalendarDataDTO> calendarData,
+                               List<CalendarAvailabilityDTO> calendarAvailabilityDTOs) {
+
+        this(generateCode(), name, parent, capacity, calendarExceptions, calendarData, calendarAvailabilityDTOs);
     }
 
     @Override

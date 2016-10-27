@@ -59,8 +59,8 @@ public class TaskGroupsMultipleFiltersFinder extends MultipleFiltersFinder {
         fillWithFirstTenFiltersCriterions();
         fillWithFirstTenFiltersCustomer();
         fillWithFirstTenFiltersState();
-        fillWihtFirstTenFiltersCodes();
-        fillWihtFirstTenFiltersCustomerReferences();
+        fillWithFirstTenFiltersCodes();
+        fillWithFirstTenFiltersCustomerReferences();
         fillWithFirstTenFiltersResources();
         addNoneFilter();
 
@@ -118,7 +118,7 @@ public class TaskGroupsMultipleFiltersFinder extends MultipleFiltersFinder {
         return getListMatching();
     }
 
-    private List<FilterPair> fillWihtFirstTenFiltersCodes() {
+    private List<FilterPair> fillWithFirstTenFiltersCodes() {
         List<String> ordersCodes = databaseSnapshots.snapshotOrdersCodes();
         for (int i = 0; getListMatching().size() < 10 && i < ordersCodes.size(); i++) {
             String code = ordersCodes.get(i);
@@ -127,7 +127,7 @@ public class TaskGroupsMultipleFiltersFinder extends MultipleFiltersFinder {
         return getListMatching();
     }
 
-    private List<FilterPair> fillWihtFirstTenFiltersCustomerReferences() {
+    private List<FilterPair> fillWithFirstTenFiltersCustomerReferences() {
         List<String> customerReferences = databaseSnapshots.snapshotCustomerReferences();
         for (int i = 0; getListMatching().size() < 10 && i < customerReferences.size(); i++) {
             String reference = customerReferences.get(i);
@@ -154,8 +154,8 @@ public class TaskGroupsMultipleFiltersFinder extends MultipleFiltersFinder {
                 searchInResources(filter);
             }
         }
-
         addNoneFilter();
+
         return getListMatching();
     }
 
@@ -179,6 +179,7 @@ public class TaskGroupsMultipleFiltersFinder extends MultipleFiltersFinder {
 
         for (Criterion criterion : list) {
             String name = StringUtils.deleteWhitespace(criterion.getName().toLowerCase());
+
             if (name.contains(filter)) {
                 addCriterion(type, criterion);
                 if ((filter.length() < 3) && (getListMatching().size() > 9)) {
@@ -200,8 +201,10 @@ public class TaskGroupsMultipleFiltersFinder extends MultipleFiltersFinder {
     private void searchInLabelTypes(String filter) {
         Map<LabelType, List<Label>> mapLabels = getLabelsMap();
         boolean limited = filter.length() < 3;
+
         for (LabelType type : mapLabels.keySet()) {
             String name = StringUtils.deleteWhitespace(type.getName().toLowerCase());
+
             if (name.contains(filter)) {
                 setFilterPairLabelType(type, limited);
             } else {
@@ -217,6 +220,7 @@ public class TaskGroupsMultipleFiltersFinder extends MultipleFiltersFinder {
     private void searchInLabels(LabelType type, String filter) {
         for (Label label : getLabelsMap().get(type)) {
             String name = StringUtils.deleteWhitespace(label.getName().toLowerCase());
+
             if (name.contains(filter)) {
                 addLabel(label);
                 if ((filter.length() < 3) && (getListMatching().size() > 9)) {
@@ -236,12 +240,13 @@ public class TaskGroupsMultipleFiltersFinder extends MultipleFiltersFinder {
     }
 
     private void searchInExternalCompanies(String filter){
-        for(ExternalCompany externalCompany : databaseSnapshots.snapshotExternalCompanies()){
+        for (ExternalCompany externalCompany : databaseSnapshots.snapshotExternalCompanies()) {
             String name = StringUtils.deleteWhitespace(externalCompany.getName().toLowerCase());
             String nif = StringUtils.deleteWhitespace(externalCompany.getNif().toLowerCase());
 
             if ((name.contains(filter)) || (nif.contains(filter))) {
                 addExternalCompany(externalCompany);
+
                 if ((filter.length() < 3) && (getListMatching().size() > 9)) {
                     return;
                 }
@@ -252,8 +257,10 @@ public class TaskGroupsMultipleFiltersFinder extends MultipleFiltersFinder {
     private void searchInOrderStatus(String filter) {
         for (OrderStatusEnum state : OrderStatusEnum.values()) {
             String name = StringUtils.deleteWhitespace(_(state.name()).toLowerCase());
+
             if (name.contains(filter)) {
                 addState(state);
+
                 if ((filter.length() < 3) && (getListMatching().size() > 9)) {
                     return;
                 }

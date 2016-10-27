@@ -21,17 +21,8 @@
 
 package org.libreplan.web.reports;
 
-import static org.libreplan.web.I18nHelper._;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-
+import com.libreplan.java.zk.components.JasperreportComponent;
 import net.sf.jasperreports.engine.JRDataSource;
-
 import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.planner.entities.TaskStatusEnum;
@@ -40,12 +31,20 @@ import org.libreplan.web.common.Util;
 import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
+import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 
-import com.igalia.java.zk.components.JasperreportComponent;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+
+import static org.libreplan.web.I18nHelper._;
 
 /**
  * @author Diego Pino Garcia <dpino@igalia.com>
@@ -71,22 +70,28 @@ public class WorkingArrangementsPerOrderController extends LibrePlanReportContro
 
     private Listbox lbCriterions;
 
+    public WorkingArrangementsPerOrderController(){
+        workingArrangementsPerOrderModel =
+                (IWorkingArrangementsPerOrderModel) SpringUtil.getBean("workingArrangementsPerOrderModel");
+    }
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        comp.setVariable("controller", this, true);
+        comp.setAttribute("controller", this, true);
         setupTaskStatusListbox();
         workingArrangementsPerOrderModel.init();
     }
 
     private void setupTaskStatusListbox() {
-        for(TaskStatusEnum status : getTasksStatus()) {
+        for (TaskStatusEnum status : getTasksStatus()) {
             Listitem item = new Listitem();
             item.setParent(lbTaskStatus);
             item.setValue(status);
             item.appendChild(new Listcell(_(status.toString())));
             lbTaskStatus.appendChild(item);
-            if(status.equals(TaskStatusEnum.ALL)) {
+
+            if (status.equals(TaskStatusEnum.ALL)) {
                 item.setSelected(true);
             }
         }
@@ -101,10 +106,12 @@ public class WorkingArrangementsPerOrderController extends LibrePlanReportContro
     }
 
     protected JRDataSource getDataSource() {
-        return workingArrangementsPerOrderModel
-                .getWorkingArrangementsPerOrderReportReport(getSelectedOrder(),
-                        getSelectedTaskStatus(), showDependencies(),
-                        getSelectedLabels(), getSelectedCriterions());
+        return workingArrangementsPerOrderModel.getWorkingArrangementsPerOrderReportReport(
+                getSelectedOrder(),
+                getSelectedTaskStatus(),
+                showDependencies(),
+                getSelectedLabels(),
+                getSelectedCriterions());
     }
 
     private boolean showDependencies() {
@@ -113,6 +120,7 @@ public class WorkingArrangementsPerOrderController extends LibrePlanReportContro
 
     private TaskStatusEnum getSelectedTaskStatus() {
         final Listitem item = lbTaskStatus.getSelectedItem();
+
         return (item != null) ? (TaskStatusEnum) item.getValue() : TaskStatusEnum.ALL;
     }
 
@@ -141,21 +149,19 @@ public class WorkingArrangementsPerOrderController extends LibrePlanReportContro
         super.showReport(jasperreport);
     }
 
-    public List<TaskStatusEnum> getTasksStatus() {
-        List<TaskStatusEnum> result = new ArrayList<TaskStatusEnum>();
+    private List<TaskStatusEnum> getTasksStatus() {
+        List<TaskStatusEnum> result = new ArrayList<>();
         result.addAll(Arrays.asList(TaskStatusEnum.values()));
         Collections.sort(result, new TaskStatusEnumComparator());
+
         return result;
     }
 
-    private static class TaskStatusEnumComparator implements
-            Comparator<TaskStatusEnum> {
-
+    private static class TaskStatusEnumComparator implements Comparator<TaskStatusEnum> {
         @Override
         public int compare(TaskStatusEnum arg0, TaskStatusEnum arg1) {
             return arg0.toString().compareTo(arg1.toString());
         }
-
     }
 
     public List<Label> getAllLabels() {
@@ -167,11 +173,10 @@ public class WorkingArrangementsPerOrderController extends LibrePlanReportContro
         if (label == null) {
             throw new WrongValueException(bdLabels, _("please, select a label"));
         }
-        boolean result = workingArrangementsPerOrderModel
-                .addSelectedLabel(label);
+
+        boolean result = workingArrangementsPerOrderModel.addSelectedLabel(label);
         if (!result) {
-            throw new WrongValueException(bdLabels,
-                    _("Label has already been added."));
+            throw new WrongValueException(bdLabels, _("Label has already been added."));
         } else {
             Util.reloadBindings(lbLabels);
         }
@@ -198,14 +203,12 @@ public class WorkingArrangementsPerOrderController extends LibrePlanReportContro
     public void onSelectCriterion() {
         Criterion criterion = (Criterion) bdCriterions.getSelectedElement();
         if (criterion == null) {
-            throw new WrongValueException(bdCriterions,
-                    _("please, select a Criterion"));
+            throw new WrongValueException(bdCriterions, _("please, select a Criterion"));
         }
-        boolean result = workingArrangementsPerOrderModel
-                .addSelectedCriterion(criterion);
+
+        boolean result = workingArrangementsPerOrderModel.addSelectedCriterion(criterion);
         if (!result) {
-            throw new WrongValueException(bdCriterions,
-                    _("This Criterion has already been added."));
+            throw new WrongValueException(bdCriterions, _("This Criterion has already been added."));
         } else {
             Util.reloadBindings(lbCriterions);
         }

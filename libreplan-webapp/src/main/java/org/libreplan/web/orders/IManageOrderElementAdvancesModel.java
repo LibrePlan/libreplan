@@ -42,93 +42,87 @@ import org.zkoss.zul.XYModel;
  */
 public interface IManageOrderElementAdvancesModel {
 
-    public void prepareEditAdvanceMeasurements(AdvanceAssignment advanceAssignment);
+    void prepareEditAdvanceMeasurements(AdvanceAssignment advanceAssignment);
 
-    public List<AdvanceMeasurement> getAdvanceMeasurements();
+    List<AdvanceMeasurement> getAdvanceMeasurements();
 
-    public List<AdvanceAssignment> getAdvanceAssignments();
+    List<AdvanceAssignment> getAdvanceAssignments();
 
-    public void initEdit(OrderElement orderElement);
+    void initEdit(OrderElement orderElement);
 
-    public boolean addNewLineAdvanceAssignment();
+    boolean addNewLineAdvanceAssignment();
 
-    public AdvanceMeasurement addNewLineAdvaceMeasurement();
+    AdvanceMeasurement addNewLineAdvanceMeasurement();
 
-    public void removeLineAdvanceAssignment(AdvanceAssignment advance);
+    void removeLineAdvanceAssignment(AdvanceAssignment advance);
 
-    public void removeLineAdvanceMeasurement(AdvanceMeasurement advance);
+    void removeLineAdvanceMeasurement(AdvanceMeasurement advance);
 
-    public List<AdvanceType> getPossibleAdvanceTypes(
-            DirectAdvanceAssignment directAdvanceAssignment);
+    List<AdvanceType> getPossibleAdvanceTypes(DirectAdvanceAssignment directAdvanceAssignment);
 
-    public boolean isReadOnlyAdvanceMeasurements();
+    boolean isReadOnlyAdvanceMeasurements();
 
-    public void cleanAdvance(DirectAdvanceAssignment advance);
+    void cleanAdvance(DirectAdvanceAssignment advance);
 
-    public boolean isPrecisionValid(AdvanceMeasurement advanceMeasurement);
+    boolean isPrecisionValid(AdvanceMeasurement advanceMeasurement);
 
-    public boolean greatThanMaxValue(AdvanceMeasurement advanceMeasurement);
+    boolean greatThanMaxValue(AdvanceMeasurement advanceMeasurement);
 
-    public boolean isDistinctValidDate(LocalDate value,
-            AdvanceMeasurement newAdvanceMeasurement);
+    boolean isDistinctValidDate(LocalDate value, AdvanceMeasurement newAdvanceMeasurement);
 
-    public BigDecimal getUnitPrecision();
+    BigDecimal getUnitPrecision();
 
-    public AdvanceMeasurement getLastAdvanceMeasurement(
-            DirectAdvanceAssignment advanceAssignment);
+    AdvanceMeasurement getLastAdvanceMeasurement(DirectAdvanceAssignment advanceAssignment);
 
-    public void sortListAdvanceMeasurement();
+    void sortListAdvanceMeasurement();
 
-    public String getInfoAdvanceAssignment();
+    String getInfoAdvanceAssignment();
 
-    public void confirmSave()throws InstanceNotFoundException,
+    void confirmSave()
+            throws InstanceNotFoundException,
             DuplicateAdvanceAssignmentForOrderElementException,
             DuplicateValueTrueReportGlobalAdvanceException;
 
-    public BigDecimal getPercentageAdvanceMeasurement(
-            AdvanceMeasurement advanceMeasurement);
+    BigDecimal getPercentageAdvanceMeasurement(AdvanceMeasurement advanceMeasurement);
 
-    public DirectAdvanceAssignment calculateFakeDirectAdvanceAssignment(
+    DirectAdvanceAssignment calculateFakeDirectAdvanceAssignment(
             IndirectAdvanceAssignment indirectAdvanceAssignment);
 
-    public BigDecimal getAdvancePercentageChildren();
+    BigDecimal getAdvancePercentageChildren();
 
-    public XYModel getChartData(Set<AdvanceAssignment> selectedAdvances);
+    XYModel getChartData(Set<AdvanceAssignment> selectedAdvances);
 
-    public void refreshChangesFromOrderElement();
+    void refreshChangesFromOrderElement();
 
-    public boolean isQualityForm(AdvanceAssignment advance);
+    boolean isQualityForm(AdvanceAssignment advance);
 
-    public boolean isReadOnly(AdvanceAssignment advance);
+    boolean isReadOnly(AdvanceAssignment advance);
 
-    public boolean lessThanPreviousMeasurements();
+    boolean lessThanPreviousMeasurements();
 
-    public boolean hasConsolidatedAdvances(AdvanceAssignment advance);
+    boolean hasConsolidatedAdvances(AdvanceAssignment advance);
 
-    public boolean hasConsolidatedAdvances(AdvanceMeasurement advanceMeasurement);
+    boolean hasConsolidatedAdvances(AdvanceMeasurement advanceMeasurement);
 
-    public boolean canRemoveOrChange(AdvanceMeasurement advanceMeasurement);
+    boolean canRemoveOrChange(AdvanceMeasurement advanceMeasurement);
 
-    public boolean findIndirectConsolidation(
-            AdvanceMeasurement advanceMeasurement);
+    boolean findIndirectConsolidation(AdvanceMeasurement advanceMeasurement);
 
-    public void resetAdvanceAssignment();
+    void resetAdvanceAssignment();
 
     BigDecimal getMaxValue(AdvanceType advanceType);
 
     AdvanceAssignment getSpreadAdvance();
 
-    LocalDate getLastConsolidatedMeasurementDate(
-            AdvanceAssignment advanceAssignment);
+    LocalDate getLastConsolidatedMeasurementDate(AdvanceAssignment advanceAssignment);
 
     boolean hasAnyConsolidatedAdvanceCurrentOrderElement();
 
-    boolean hasAnySubcontratedTaskOnChildren();
+    boolean hasAnySubcontractedTaskOnChildren();
 
-    boolean isSubcontratedAdvanceType(AdvanceAssignment advance);
+    boolean isSubcontractedAdvanceType(AdvanceAssignment advance);
 
-    boolean isSubcontratedAdvanceTypeAndSubcontratedTask(
-            AdvanceAssignment advance);
+    boolean isSubcontractedAdvanceTypeAndSubcontractedTask(AdvanceAssignment advance);
 
     Boolean isAlreadyReportedProgress(AdvanceMeasurement measure);
 

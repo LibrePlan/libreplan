@@ -47,8 +47,7 @@ import org.libreplan.business.workingday.ResourcesPerDay;
  */
 public class ResourceCalendarTest {
 
-    private static final Capacity capacityForEveryDay = Capacity.create(
-            EffortDuration.hours(8)).overAssignableWithoutLimit();
+    private static final Capacity capacityForEveryDay = Capacity.create(EffortDuration.hours(8)).overAssignableWithoutLimit();
 
     public static ResourceCalendar createBasicResourceCalendar(int capacity) {
         ResourceCalendar calendar = ResourceCalendar.create();
@@ -65,6 +64,7 @@ public class ResourceCalendarTest {
     }
 
     private static final LocalDate PAST = (new LocalDate()).minusMonths(1);
+
     private static final LocalDate FUTURE = (new LocalDate()).plusMonths(1);
 
     @Test
@@ -79,10 +79,8 @@ public class ResourceCalendarTest {
     public void testGetWorkableHours() {
         ResourceCalendar calendar = createBasicResourceCalendar();
 
-        assertThat(calendar.getCapacityOn(wholeDay(PAST)),
-                equalTo(EffortDuration.zero()));
-        assertThat(calendar.getCapacityOn(wholeDay(FUTURE)),
-                equalTo(EffortDuration.hours(8)));
+        assertThat(calendar.getCapacityOn(wholeDay(PAST)), equalTo(EffortDuration.zero()));
+        assertThat(calendar.getCapacityOn(wholeDay(FUTURE)), equalTo(EffortDuration.hours(8)));
     }
 
     @Test
@@ -95,22 +93,18 @@ public class ResourceCalendarTest {
     @Test
     public void theCapacityEffortIsMultipliedByTheCapacityOfTheResourceCalendar() {
         ResourceCalendar calendar = createBasicResourceCalendar(2);
-        EffortDuration duration = calendar.getCapacityOn(PartialDay
-                .wholeDay(FUTURE));
-        assertThat(duration, equalTo(capacityForEveryDay.getStandardEffort()
-                .multiplyBy(2)));
+        EffortDuration duration = calendar.getCapacityOn(PartialDay.wholeDay(FUTURE));
+        assertThat(duration, equalTo(capacityForEveryDay.getStandardEffort().multiplyBy(2)));
     }
 
     @Test
-    public void asDurationOnDoesntChangeWithTheCapacityOfTheResourceCalendar() {
-        ResourceCalendar[] calendars = { createBasicResourceCalendar(),
-                createBasicResourceCalendar(2), createBasicResourceCalendar(3) };
+    public void asDurationOnDoesNotChangeWithTheCapacityOfTheResourceCalendar() {
+        ResourceCalendar[] calendars =
+                { createBasicResourceCalendar(), createBasicResourceCalendar(2), createBasicResourceCalendar(3) };
+
         for (ResourceCalendar each : calendars) {
-            EffortDuration duration = each.asDurationOn(
-                    PartialDay.wholeDay(FUTURE),
-                    ResourcesPerDay.amount(1));
-            assertThat(duration,
-                    equalTo(capacityForEveryDay.getStandardEffort()));
+            EffortDuration duration = each.asDurationOn(PartialDay.wholeDay(FUTURE), ResourcesPerDay.amount(1));
+            assertThat(duration, equalTo(capacityForEveryDay.getStandardEffort()));
         }
     }
 
@@ -118,8 +112,7 @@ public class ResourceCalendarTest {
     public void notAllowCreateCalendarAvailabilityInThePast() {
         ResourceCalendar calendar = createBasicResourceCalendar();
 
-        CalendarAvailability calendarAvailability = CalendarAvailability
-                .create(PAST, null);
+        CalendarAvailability calendarAvailability = CalendarAvailability.create(PAST, null);
         calendar.addNewCalendarAvailability(calendarAvailability);
     }
 
@@ -127,16 +120,13 @@ public class ResourceCalendarTest {
     public void allowCreateCalendarAvailabilityInTheFuture() {
         ResourceCalendar calendar = createBasicResourceCalendar();
 
-        CalendarAvailability calendarAvailability = CalendarAvailability
-                .create(FUTURE, null);
+        CalendarAvailability calendarAvailability = CalendarAvailability.create(FUTURE, null);
         calendar.addNewCalendarAvailability(calendarAvailability);
 
         List<CalendarAvailability> calendarAvailabilities = calendar.getCalendarAvailabilities();
         assertThat(calendarAvailabilities.size(), equalTo(2));
-        assertThat(calendarAvailabilities.get(0).getEndDate(), equalTo(FUTURE
-                .minusDays(1)));
-        assertThat(calendarAvailabilities.get(1).getStartDate(),
-                equalTo(FUTURE));
+        assertThat(calendarAvailabilities.get(0).getEndDate(), equalTo(FUTURE.minusDays(1)));
+        assertThat(calendarAvailabilities.get(1).getStartDate(), equalTo(FUTURE));
         assertNull(calendarAvailabilities.get(1).getEndDate());
     }
 

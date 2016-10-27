@@ -55,28 +55,7 @@ import org.libreplan.business.workreports.valueobjects.DescriptionValue;
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public class WorkReport extends IntegrationEntity implements
-        IWorkReportsElements {
-
-    public static final String DATE = "date";
-    public static final String RESOURCE = "resource";
-    public static final String ORDERELEMENT = "orderElement";
-
-    public static WorkReport create() {
-        return create(new WorkReport());
-    }
-
-    public static WorkReport create(WorkReportType workReportType) {
-        return create(new WorkReport(workReportType));
-    }
-
-    public static WorkReport create(Date date,
-            WorkReportType workReportType, Set<WorkReportLine> workReportLines,
-            Resource resource, OrderElement orderElement) {
-        WorkReport workReport = new WorkReport(date, workReportType,
-                workReportLines, resource, orderElement);
-        return create(workReport);
-    }
+public class WorkReport extends IntegrationEntity implements IWorkReportsElements {
 
     private Date date;
 
@@ -86,13 +65,14 @@ public class WorkReport extends IntegrationEntity implements
 
     private OrderElement orderElement;
 
-    private Set<Label> labels = new HashSet<Label>();
+    private Set<Label> labels = new HashSet<>();
 
-    private Set<WorkReportLine> workReportLines = new HashSet<WorkReportLine>();
+    private Set<WorkReportLine> workReportLines = new HashSet<>();
 
-    private Set<DescriptionValue> descriptionValues = new HashSet<DescriptionValue>();
+    private Set<DescriptionValue> descriptionValues = new HashSet<>();
 
     private Integer lastWorkReportLineSequenceCode = 0;
+
     /**
      * Constructor for hibernate. Do not use!
      */
@@ -104,14 +84,37 @@ public class WorkReport extends IntegrationEntity implements
         this.setWorkReportType(workReportType);
     }
 
-    private WorkReport(Date date, WorkReportType workReportType,
-            Set<WorkReportLine> workReportLines, Resource resource,
+    private WorkReport(
+            Date date,
+            WorkReportType workReportType,
+            Set<WorkReportLine> workReportLines,
+            Resource resource,
             OrderElement orderElement) {
+
         this.date = date;
         this.setWorkReportType(workReportType);
         this.workReportLines = workReportLines;
         this.resource = resource;
         this.orderElement = orderElement;
+    }
+
+    public static WorkReport create() {
+        return create(new WorkReport());
+    }
+
+    public static WorkReport create(WorkReportType workReportType) {
+        return create(new WorkReport(workReportType));
+    }
+
+    public static WorkReport create(Date date,
+                                    WorkReportType workReportType,
+                                    Set<WorkReportLine> workReportLines,
+                                    Resource resource,
+                                    OrderElement orderElement) {
+
+        WorkReport workReport = new WorkReport(date, workReportType, workReportLines, resource, orderElement);
+
+        return create(workReport);
     }
 
     @Override
@@ -124,7 +127,7 @@ public class WorkReport extends IntegrationEntity implements
         this.date = date != null ? new Date(date.getTime()) : null;
         if (workReportType != null) {
             if (workReportType.getDateIsSharedByLines()) {
-                updateSharedDateByLines(date);
+                updateSharedDateByLines();
             } else {
                 this.date = null;
             }
@@ -146,9 +149,9 @@ public class WorkReport extends IntegrationEntity implements
     public void setWorkReportType(WorkReportType workReportType) {
         this.workReportType = workReportType;
 
-        updateSharedDateByLines(date);
-        updateSharedResourceByLines(resource);
-        updateSharedOrderElementByLines(orderElement);
+        updateSharedDateByLines();
+        updateSharedResourceByLines();
+        updateSharedOrderElementByLines();
         updateItsFieldsAndLabels(workReportType);
     }
 
@@ -196,7 +199,7 @@ public class WorkReport extends IntegrationEntity implements
         this.resource = resource;
         if (workReportType != null) {
             if (workReportType.getResourceIsSharedInLines()) {
-                updateSharedResourceByLines(resource);
+                updateSharedResourceByLines();
             } else {
                 this.resource = null;
             }
@@ -213,7 +216,7 @@ public class WorkReport extends IntegrationEntity implements
         this.orderElement = orderElement;
         if (workReportType != null) {
             if (workReportType.getOrderElementIsSharedInLines()) {
-                this.updateSharedOrderElementByLines(orderElement);
+                this.updateSharedOrderElementByLines();
             } else {
                 this.orderElement = null;
             }
@@ -223,40 +226,26 @@ public class WorkReport extends IntegrationEntity implements
     @SuppressWarnings("unused")
     @AssertTrue(message = "date cannot be empty if it is shared by lines")
     public boolean isDateMustBeNotNullIfIsSharedByLinesConstraint() {
-        if (!firstLevelValidationsPassed()) {
-            return true;
-        }
+        return !firstLevelValidationsPassed() || !workReportType.getDateIsSharedByLines() || (getDate() != null);
 
-        if (workReportType.getDateIsSharedByLines()) {
-            return (getDate() != null);
-        }
-        return true;
     }
 
     @SuppressWarnings("unused")
     @AssertTrue(message = "resource cannot be empty if it is shared by lines")
     public boolean isResourceMustBeNotNullIfIsSharedByLinesConstraint() {
-        if (!firstLevelValidationsPassed()) {
-            return true;
-        }
+        return !firstLevelValidationsPassed() ||
+                !workReportType.getResourceIsSharedInLines() ||
+                (getResource() != null);
 
-        if (workReportType.getResourceIsSharedInLines()) {
-            return (getResource() != null);
-        }
-        return true;
     }
 
     @SuppressWarnings("unused")
     @AssertTrue(message = "task cannot be empty if it is shared by lines")
     public boolean isOrderElementMustBeNotNullIfIsSharedByLinesConstraint() {
-        if (!firstLevelValidationsPassed()) {
-            return true;
-        }
+        return !firstLevelValidationsPassed() ||
+                !workReportType.getOrderElementIsSharedInLines() ||
+                (getOrderElement() != null);
 
-        if (workReportType.getOrderElementIsSharedInLines()) {
-            return (getOrderElement() != null);
-        }
-        return true;
     }
 
     @SuppressWarnings("unused")
@@ -270,10 +259,9 @@ public class WorkReport extends IntegrationEntity implements
             return false;
         }
 
-        for (WorkReportLabelTypeAssigment typeAssigment : this.workReportType
-                .getHeadingLabels()) {
+        for (WorkReportLabelTypeAssignment typeAssignment : this.workReportType.getHeadingLabels()) {
             try {
-                getLabelByType(typeAssigment.getLabelType());
+                getLabelByType(typeAssignment.getLabelType());
             } catch (InstanceNotFoundException e) {
                 return false;
             }
@@ -288,8 +276,7 @@ public class WorkReport extends IntegrationEntity implements
             return true;
         }
 
-        if (this.workReportType.getHeadingFields().size() > this.descriptionValues
-                .size()) {
+        if (this.workReportType.getHeadingFields().size() > this.descriptionValues.size()) {
             return false;
         }
 
@@ -308,7 +295,7 @@ public class WorkReport extends IntegrationEntity implements
     @AssertTrue(message = "There are repeated description values in the timesheet ")
     public boolean isAssignedRepeatedDescriptionValuesConstraint() {
 
-        Set<String> textFields = new HashSet<String>();
+        Set<String> textFields = new HashSet<>();
 
         for (DescriptionValue v : this.descriptionValues) {
 
@@ -325,12 +312,10 @@ public class WorkReport extends IntegrationEntity implements
         return true;
     }
 
-    public DescriptionValue getDescriptionValueByFieldName(String fieldName)
-            throws InstanceNotFoundException {
+    public DescriptionValue getDescriptionValueByFieldName(String fieldName) throws InstanceNotFoundException {
 
         if (StringUtils.isBlank(fieldName)) {
-            throw new InstanceNotFoundException(fieldName,
-                    DescriptionValue.class.getName());
+            throw new InstanceNotFoundException(fieldName, DescriptionValue.class.getName());
         }
 
         for (DescriptionValue v : this.descriptionValues) {
@@ -339,12 +324,10 @@ public class WorkReport extends IntegrationEntity implements
             }
         }
 
-        throw new InstanceNotFoundException(fieldName, DescriptionValue.class
-                .getName());
+        throw new InstanceNotFoundException(fieldName, DescriptionValue.class.getName());
     }
 
-    public Label getLabelByType(LabelType type)
-            throws InstanceNotFoundException {
+    public Label getLabelByType(LabelType type) throws InstanceNotFoundException {
         Validate.notNull(type);
 
         for (Label l : this.labels) {
@@ -369,8 +352,8 @@ public class WorkReport extends IntegrationEntity implements
     private void assignItsLabels(WorkReportType workReportType){
         if (workReportType != null) {
             labels.clear();
-            for (WorkReportLabelTypeAssigment labelTypeAssigment : workReportType.getHeadingLabels()) {
-                labels.add(labelTypeAssigment.getDefaultLabel());
+            for (WorkReportLabelTypeAssignment labelTypeAssignment : workReportType.getHeadingLabels()) {
+                labels.add(labelTypeAssignment.getDefaultLabel());
             }
         }
     }
@@ -378,28 +361,26 @@ public class WorkReport extends IntegrationEntity implements
     private void assignItsDescriptionValues(WorkReportType workReportType) {
         if (workReportType != null) {
             descriptionValues.clear();
-            for (DescriptionField descriptionField : workReportType
-                    .getHeadingFields()) {
-                DescriptionValue descriptionValue = DescriptionValue.create(
-                        descriptionField.getFieldName(), null);
+            for (DescriptionField descriptionField : workReportType.getHeadingFields()) {
+                DescriptionValue descriptionValue = DescriptionValue.create(descriptionField.getFieldName(), null);
                 descriptionValues.add(descriptionValue);
             }
         }
     }
 
-    private void updateSharedDateByLines(Date date) {
+    private void updateSharedDateByLines() {
         for (WorkReportLine line : getWorkReportLines()) {
             line.updateSharedDateByLines();
         }
     }
 
-    private void updateSharedResourceByLines(Resource resource) {
+    private void updateSharedResourceByLines() {
         for (WorkReportLine line : getWorkReportLines()) {
             line.updateSharedResourceByLines();
         }
     }
 
-    private void updateSharedOrderElementByLines(OrderElement orderElement) {
+    private void updateSharedOrderElementByLines() {
         for (WorkReportLine line : getWorkReportLines()) {
             line.updateSharedOrderElementByLines();
         }
@@ -414,12 +395,10 @@ public class WorkReport extends IntegrationEntity implements
         return (workReportType != null);
     }
 
-    public WorkReportLine getWorkReportLineByCode(String code)
-            throws InstanceNotFoundException {
+    public WorkReportLine getWorkReportLineByCode(String code) throws InstanceNotFoundException {
 
         if (StringUtils.isBlank(code)) {
-            throw new InstanceNotFoundException(code, WorkReportLine.class
-                    .getName());
+            throw new InstanceNotFoundException(code, WorkReportLine.class.getName());
         }
 
         for (WorkReportLine l : this.workReportLines) {
@@ -428,8 +407,7 @@ public class WorkReport extends IntegrationEntity implements
             }
         }
 
-        throw new InstanceNotFoundException(code, WorkReportLine.class
-                .getName());
+        throw new InstanceNotFoundException(code, WorkReportLine.class.getName());
 
     }
 
@@ -441,22 +419,21 @@ public class WorkReport extends IntegrationEntity implements
     public void generateWorkReportLineCodes(int numberOfDigits) {
         for (WorkReportLine line : this.getWorkReportLines()) {
 
-            if ((line.getCode() == null) || (line.getCode().isEmpty()) ||
-                    (!line.getCode().startsWith(this.getCode()))) {
+            if ( (line.getCode() == null) ||
+                    (line.getCode().isEmpty()) ||
+                    (!line.getCode().startsWith(this.getCode())) ) {
 
                 this.incrementLastWorkReportLineSequenceCode();
 
-                String lineCode = EntitySequence.formatValue(
-                        numberOfDigits, this.getLastWorkReportLineSequenceCode());
+                String lineCode = EntitySequence.formatValue(numberOfDigits, this.getLastWorkReportLineSequenceCode());
 
-                line.setCode(this.getCode() +
-                        EntitySequence.CODE_SEPARATOR_CHILDREN + lineCode);
+                line.setCode(this.getCode() + EntitySequence.CODE_SEPARATOR_CHILDREN + lineCode);
             }
         }
     }
 
     public void incrementLastWorkReportLineSequenceCode() {
-        if(lastWorkReportLineSequenceCode == null){
+        if (lastWorkReportLineSequenceCode == null) {
             lastWorkReportLineSequenceCode = 0;
         }
         lastWorkReportLineSequenceCode++;
@@ -481,7 +458,7 @@ public class WorkReport extends IntegrationEntity implements
             return true;
         }
 
-        Map<OrderElement, Set<LocalDate>> map = new HashMap<OrderElement, Set<LocalDate>>();
+        Map<OrderElement, Set<LocalDate>> map = new HashMap<>();
         for (WorkReportLine line : workReportLines) {
             OrderElement orderElement = line.getOrderElement();
             if (map.get(orderElement) == null) {
@@ -507,12 +484,13 @@ public class WorkReport extends IntegrationEntity implements
             return true;
         }
 
-        LocalDate workReportDate = LocalDate.fromDateFields(workReportLines
-                .iterator().next().getDate());
+        LocalDate workReportDate = LocalDate.fromDateFields(workReportLines.iterator().next().getDate());
+
         PersonalTimesheetsPeriodicityEnum periodicity = Registry
                 .getConfigurationDAO()
                 .getConfigurationWithReadOnlyTransaction()
                 .getPersonalTimesheetsPeriodicity();
+
         LocalDate min = periodicity.getStart(workReportDate);
         LocalDate max = periodicity.getEnd(workReportDate);
 
@@ -545,7 +523,7 @@ public class WorkReport extends IntegrationEntity implements
 
     @AssertTrue(message = "the same task is marked as finished by more than one timesheet line")
     public boolean isSameOrderElementFinishedBySeveralWorkReportLinesConstraint() {
-        Set<OrderElement> finishedOrderElements = new HashSet<OrderElement>();
+        Set<OrderElement> finishedOrderElements = new HashSet<>();
 
         for (WorkReportLine line : workReportLines) {
             if (line.isFinished()) {
@@ -561,8 +539,7 @@ public class WorkReport extends IntegrationEntity implements
 
     public boolean isFinished(OrderElement orderElement) {
         for (WorkReportLine line : workReportLines) {
-            if (line.isFinished()
-                    && Util.equals(line.getOrderElement(), orderElement)) {
+            if (line.isFinished() && Util.equals(line.getOrderElement(), orderElement)) {
                 return true;
             }
         }

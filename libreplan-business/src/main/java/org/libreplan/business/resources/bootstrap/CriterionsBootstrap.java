@@ -27,8 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.libreplan.business.common.daos.IEntitySequenceDAO;
 import org.libreplan.business.common.entities.EntityNameEnum;
 import org.libreplan.business.resources.daos.ICriterionDAO;
@@ -36,6 +34,7 @@ import org.libreplan.business.resources.daos.ICriterionTypeDAO;
 import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.resources.entities.CriterionType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,10 +46,8 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Diego Pino García <dpino@igalia.com>
  */
 @Component
-@Scope("singleton")
+@Scope(BeanDefinition.SCOPE_SINGLETON)
 public class CriterionsBootstrap implements ICriterionsBootstrap {
-
-    private static final Log LOG = LogFactory.getLog(CriterionsBootstrap.class);
 
     @Autowired
     private ICriterionDAO criterionDAO;
@@ -73,8 +70,7 @@ public class CriterionsBootstrap implements ICriterionsBootstrap {
         if (criterionTypeDAO.findAll().isEmpty()) {
             Map<CriterionType, List<String>> typesWithCriterions = getTypesWithCriterions();
             // Insert predefined criterions
-            for (Entry<CriterionType, List<String>> entry : typesWithCriterions
-                    .entrySet()) {
+            for (Entry<CriterionType, List<String>> entry : typesWithCriterions.entrySet()) {
                 CriterionType criterionType = retrieveOrCreate(entry.getKey());
                 // Create predefined criterions for criterionType
                 for (String criterionName : entry.getValue()) {
@@ -84,10 +80,9 @@ public class CriterionsBootstrap implements ICriterionsBootstrap {
         }
     }
 
-    private void ensureCriterionExists(String criterionName,
-            CriterionType criterionType) {
-        Criterion criterion = Criterion.createPredefined(criterionName,
-                criterionType);
+    private void ensureCriterionExists(String criterionName, CriterionType criterionType) {
+        Criterion criterion = Criterion.createPredefined(criterionName, criterionType);
+
         if (!criterionDAO.existsPredefinedCriterion(criterion)) {
             int numberOfDigits = getNumberOfDigitsCode();
             criterionType.setGenerateCode(criterion, numberOfDigits);
@@ -104,26 +99,26 @@ public class CriterionsBootstrap implements ICriterionsBootstrap {
             criterionTypeDAO.save(criterionType);
             return criterionType;
         }
+
         return criterionTypeDAO.findPredefined(criterionType);
     }
 
     private Map<CriterionType, List<String>> getTypesWithCriterions() {
-        HashMap<CriterionType, List<String>> result = new HashMap<CriterionType, List<String>>();
+        HashMap<CriterionType, List<String>> result = new HashMap<>();
         for (ICriterionTypeProvider provider : providers) {
-            for (Entry<CriterionType, List<String>> entry : provider
-                    .getRequiredCriterions().entrySet()) {
+            for (Entry<CriterionType, List<String>> entry : provider.getRequiredCriterions().entrySet()) {
                 if (!result.containsKey(entry.getKey())) {
                     result.put(entry.getKey(), new ArrayList<String>());
                 }
                 result.get(entry.getKey()).addAll(entry.getValue());
             }
         }
+
         return result;
     }
 
     protected Integer getNumberOfDigitsCode() {
-        return entitySequenceDAO
-                .getNumberOfDigitsCode(EntityNameEnum.CRITERION);
+        return entitySequenceDAO.getNumberOfDigitsCode(EntityNameEnum.CRITERION);
     }
 
 }

@@ -42,18 +42,17 @@ import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 public class TaskPropertiesCommand implements ITaskPropertiesCommand {
 
     private EditTaskController editTaskController;
+
     private PlanningState planningState;
 
     @Autowired
     private IEditTaskUtilities editTaskUtilities;
 
     @Override
-    public void doAction(IContextWithPlannerTask<TaskElement> context,
-            TaskElement taskElement) {
-        editTaskUtilities.reattach(taskElement);
+    public void doAction(IContextWithPlannerTask<TaskElement> context, TaskElement taskElement) {
 
-        editTaskController.showEditFormTaskProperties(context, taskElement,
-                planningState);
+        editTaskUtilities.reattach(taskElement);
+        editTaskController.showEditFormTaskProperties(context, taskElement, planningState);
     }
 
     @Override
@@ -63,7 +62,7 @@ public class TaskPropertiesCommand implements ITaskPropertiesCommand {
 
     @Override
     public void initialize(EditTaskController editTaskController,
-            PlanningState planningState) {
+                           PlanningState planningState) {
         this.editTaskController = editTaskController;
         this.planningState = planningState;
     }

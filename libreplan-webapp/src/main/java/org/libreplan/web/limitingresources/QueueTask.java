@@ -23,19 +23,11 @@ package org.libreplan.web.limitingresources;
 
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.joda.time.LocalDate;
 import org.libreplan.business.planner.limiting.entities.LimitingResourceQueueElement;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Div;
 
 public class QueueTask extends Div {
-
-    private static final Log LOG = LogFactory.getLog(QueueTask.class);
 
     private final LocalDate start;
 
@@ -46,8 +38,8 @@ public class QueueTask extends Div {
     public QueueTask(LimitingResourceQueueElement element) {
         Validate.notNull(element.getStartDate());
         Validate.notNull(element.getEndDate());
-        Validate
-                .isTrue(!(element.getStartDate()).isAfter(element.getEndDate()));
+        Validate.isTrue(!(element.getStartDate()).isAfter(element.getEndDate()));
+
         this.start = element.getStartDate();
         this.end = element.getEndDate();
         this.element = element;

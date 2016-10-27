@@ -91,7 +91,7 @@ public class AdvanceType extends BaseEntity implements IHumanIdentifiable{
 
     private Boolean qualityForm = false;
 
-    private IAdvanceTypeDAO avancedTypeDAO = Registry.getAdvanceTypeDao();
+    private IAdvanceTypeDAO advanceTypeDAO = Registry.getAdvanceTypeDao();
 
     private boolean readOnly = false;
 
@@ -255,7 +255,7 @@ public class AdvanceType extends BaseEntity implements IHumanIdentifiable{
         }
 
         if ( isNewObject() ) {
-            return !avancedTypeDAO.existsByNameInAnotherTransaction(unitName);
+            return !advanceTypeDAO.existsByNameInAnotherTransaction(unitName);
         } else {
             return checkNotExistsOrIsTheSame();
         }
@@ -263,7 +263,7 @@ public class AdvanceType extends BaseEntity implements IHumanIdentifiable{
 
     private boolean checkNotExistsOrIsTheSame() {
         try {
-            AdvanceType advanceType = avancedTypeDAO.findUniqueByNameInAnotherTransaction(unitName);
+            AdvanceType advanceType = advanceTypeDAO.findUniqueByNameInAnotherTransaction(unitName);
 
             return advanceType.getId().equals(getId());
         } catch (InstanceNotFoundException e) {

@@ -17,10 +17,12 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<window id="syncInfoWin" title="${i18n:_('LibrePlan: Synchronization info')}"
-    width="500px">
-    <grid id="syncInfoGrid" mold="paging" pageSize="10" fixedLayout="true">
-    </grid>
+<window id="syncInfoWin" title="${i18n:_('LibrePlan: Synchronization info')}" width="500px"
+        sclass="job-scheduling-manual-header">
+
+    <grid id="syncInfoGrid" mold="paging" pageSize="10" fixedLayout="true"/>
+
+
     <button id="closeBtn" label="${i18n:_('Close')}" onClick="syncInfoWin.detach()"
-        sclass="cancel-button global-action"/>
+            sclass="cancel-button global-action"/>
 </window>

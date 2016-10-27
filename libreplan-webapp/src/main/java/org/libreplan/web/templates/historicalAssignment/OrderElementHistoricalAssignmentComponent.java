@@ -21,16 +21,6 @@
 
 package org.libreplan.web.templates.historicalAssignment;
 
-import static org.libreplan.web.I18nHelper._;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-
 import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.Registry;
@@ -54,9 +44,17 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 import org.zkoss.zul.Messagebox;
 
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+
+import static org.libreplan.web.I18nHelper._;
+
 /**
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
- *
  */
 @SuppressWarnings("serial")
 public class OrderElementHistoricalAssignmentComponent extends HtmlMacroComponent {
@@ -83,8 +81,7 @@ public class OrderElementHistoricalAssignmentComponent extends HtmlMacroComponen
         this.orderDAO = (IOrderDAO) getBean("orderDAO");
     }
 
-    public void useModel(IOrderTemplatesModel model,
-            IGlobalViewEntryPoints globalView) {
+    public void useModel(IOrderTemplatesModel model, IGlobalViewEntryPoints globalView) {
         template = model.getTemplate();
         this.model = model;
         this.orderElements = model.getOrderElementsOnConversation()
@@ -99,16 +96,17 @@ public class OrderElementHistoricalAssignmentComponent extends HtmlMacroComponen
             return this.adHocTransactionService.runOnReadOnlyTransaction(new IOnTransaction<List<OrderElementHistoricAssignmentDTO>>() {
                 @Override
                 public List<OrderElementHistoricAssignmentDTO> execute() {
-                            model.getOrderElementsOnConversation().reattach();
-                            return createOrderElementHistoricAssignmentDTOs(orderElements);
-                        }
-                    });
-       }
+                    model.getOrderElementsOnConversation().reattach();
+                    return createOrderElementHistoricAssignmentDTOs(orderElements);
+                }
+            });
+        }
     }
 
     private List<OrderElementHistoricAssignmentDTO> createOrderElementHistoricAssignmentDTOs(
             List<OrderElement> orderElements) {
-        List<OrderElementHistoricAssignmentDTO> dtos = new ArrayList<OrderElementHistoricAssignmentDTO>();
+
+        List<OrderElementHistoricAssignmentDTO> dtos = new ArrayList<>();
         for (OrderElement orderElement : orderElements) {
             dtos.add(new OrderElementHistoricAssignmentDTO(orderElement,
                     getOrder(orderElement),
@@ -119,8 +117,7 @@ public class OrderElementHistoricalAssignmentComponent extends HtmlMacroComponen
     }
 
     private Order getOrder(OrderElement orderElement) {
-        Order order = orderDAO.loadOrderAvoidingProxyFor(orderElement);
-        return order;
+        return orderDAO.loadOrderAvoidingProxyFor(orderElement);
     }
 
     public String getEstimatedHours(OrderElement orderElement) {
@@ -128,40 +125,34 @@ public class OrderElementHistoricalAssignmentComponent extends HtmlMacroComponen
     }
 
     private String getWorkedHours(OrderElement orderElement){
-        EffortDuration asignedDirectHours = orderElementDAO
-                .getAssignedDirectEffort(orderElement);
-        return asignedDirectHours.toFormattedString();
+        EffortDuration assignedDirectHours = orderElementDAO.getAssignedDirectEffort(orderElement);
+        return assignedDirectHours.toFormattedString();
     }
 
     public void view(final OrderElementHistoricAssignmentDTO dto) {
         OrderElement orderElement = dto.getOrderElement();
         Order order = dto.getOrder();
-        try {
-            if (model.getCurrentScenario().contains(order)) {
-                if (SecurityUtils.isSuperuserOrUserInRoles(
-                        UserRole.ROLE_PLANNING,
-                        UserRole.ROLE_READ_ALL_PROJECTS,
-                        UserRole.ROLE_EDIT_ALL_PROJECTS)
-                        || curerntUserHasAnyPermissionOverOrder(order)) {
-                    globalView.goToOrderElementDetails(order, orderElement);
-                } else {
-                    Messagebox
-                            .show(_("Not enough permissions to edit this project"),
-                                    _("Warning"), Messagebox.OK,
-                                    Messagebox.EXCLAMATION);
-                }
+        if (model.getCurrentScenario().contains(order)) {
+            if (SecurityUtils.isSuperuserOrUserInRoles(
+                    UserRole.ROLE_PLANNING,
+                    UserRole.ROLE_READ_ALL_PROJECTS,
+                    UserRole.ROLE_EDIT_ALL_PROJECTS)
+                    || curerntUserHasAnyPermissionOverOrder(order)) {
+                globalView.goToOrderElementDetails(order, orderElement);
             } else {
-                String scenarios = "";
-                for (Scenario scene : getScenarios(order)) {
-                    scenarios = scenarios.concat(scene.getName() + "\n");
-                }
                 Messagebox
-                        .show(_("The planning of this task is not in the current scenenario.\nYou should change to any of the following scenarios: {0}",
-                                scenarios), _("Information"), Messagebox.OK,
-                                Messagebox.INFORMATION);
+                        .show(_("Not enough permissions to edit this project"),
+                                _("Warning"), Messagebox.OK,
+                                Messagebox.EXCLAMATION);
             }
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+        } else {
+            String scenarios = "";
+            for (Scenario scene : getScenarios(order)) {
+                scenarios = scenarios.concat(scene.getName() + "\n");
+            }
+            Messagebox.show(_("The planning of this task is not in the current scenenario.\n" +
+                    "You should change to any of the following scenarios: {0}", scenarios),
+                    _("Information"), Messagebox.OK, Messagebox.INFORMATION);
         }
     }
 
@@ -171,13 +162,8 @@ public class OrderElementHistoricalAssignmentComponent extends HtmlMacroComponen
                     @Override
                     public Boolean execute() {
                         try {
-                            User user = Registry.getUserDAO()
-                                    .findByLoginName(
-                                            SecurityUtils.getLoggedUser()
-                                                    .getUsername());
-                            return !Registry.getOrderAuthorizationDAO()
-                                    .listByOrderUserAndItsProfiles(order, user)
-                                    .isEmpty();
+                            User user = Registry.getUserDAO().findByLoginName(SecurityUtils.getLoggedUser().getUsername());
+                            return !Registry.getOrderAuthorizationDAO().listByOrderUserAndItsProfiles(order, user).isEmpty();
                         } catch (InstanceNotFoundException e) {
                             throw new RuntimeException(e);
                         }
@@ -186,24 +172,21 @@ public class OrderElementHistoricalAssignmentComponent extends HtmlMacroComponen
     }
 
     private Set<Scenario> getScenarios(final Order order) {
-        return this.adHocTransactionService
-                .runOnReadOnlyTransaction(new IOnTransaction<Set<Scenario>>() {
+        return this.adHocTransactionService.runOnReadOnlyTransaction(new IOnTransaction<Set<Scenario>>() {
             @Override
             public Set<Scenario> execute() {
-                        orderDAO.reattachUnmodifiedEntity(order);
-                        order.getScenarios().keySet().size();
-                        return order.getScenarios().keySet();
-                    }
-                });
+                orderDAO.reattachUnmodifiedEntity(order);
+                order.getScenarios().keySet().size();
+                return order.getScenarios().keySet();
+            }
+        });
     }
 
     private Object getBean(String classname) {
-        HttpServletRequest servletRequest = (HttpServletRequest) Executions
-                .getCurrent().getNativeRequest();
-        ServletContext servletContext = servletRequest.getSession()
-                .getServletContext();
-        WebApplicationContext webApplicationContext = WebApplicationContextUtils
-                .getWebApplicationContext(servletContext);
+        HttpServletRequest servletRequest = (HttpServletRequest) Executions.getCurrent().getNativeRequest();
+        ServletContext servletContext = servletRequest.getSession().getServletContext();
+        WebApplicationContext webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(servletContext);
+
         return webApplicationContext.getBean(classname);
     }
 

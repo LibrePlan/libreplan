@@ -23,8 +23,8 @@
 
         <property name="deadline" access="field" />
 
-        <property name="lastAdvanceMeausurementForSpreading" access="field"
-                  column="last_advance_meausurement_for_spreading" />
+        <property name="lastAdvanceMeasurementForSpreading" access="field"
+                  column="last_advance_measurement_for_spreading" />
 
         <property name="dirtyLastAdvanceMeasurementForSpreading" access="field"
                   column="dirty_last_advance_measurement_for_spreading" />
@@ -53,7 +53,7 @@
         </set>
 
         <!--  Indexed the other side -->
-        <set name="taskQualityForms" cascade="all-delete-orphan" inverse="true" batch-size="10">
+        <set name="taskQualityForms" cascade="all-delete-orphan" inverse="true" batch-size="10" lazy="false">
             <key column="order_element_id" not-null="true" />
             <one-to-many class="org.libreplan.business.qualityforms.entities.TaskQualityForm" />
         </set>
@@ -70,7 +70,7 @@
 
         <property name="externalCode" access="field" column="external_code" />
 
-        <map name="schedulingDatasForVersion" table="scheduling_states_by_order_version" cascade="all-delete-orphan">
+        <map name="schedulingDataForVersion" table="scheduling_states_by_order_version" cascade="all-delete-orphan">
             <key column="order_element_id"/>
 
             <map-key-many-to-many column="order_version_id"
@@ -131,14 +131,14 @@
                     </type>
                 </property>
 
-                <!-- extra column to hold projects hours- and budget- margin -->
+                <!-- Extra column to hold projects hours- and budget- margin -->
                 <property name="hoursMargin" column="hours_margin" access="field" />
 
                 <property name="budgetMargin" column="budget_margin" access="field" />
 
                 <!-- Not indexed -->
                 <many-to-one name="customer" access="field"
-                             class="org.libreplan.business.externalcompanies.entities.ExternalCompany"/>
+                             class="org.libreplan.business.externalcompanies.entities.ExternalCompany" lazy="false"/>
 
                 <!-- Not indexed -->
                 <many-to-one name="calendar" column="base_calendar_id" cascade="none"
@@ -182,7 +182,8 @@
             <key column="order_element_id"/>
 
             <!-- Indexed the other side -->
-            <set name="hoursGroups" access="field" cascade="all,delete-orphan" inverse="true" batch-size="10">
+            <set name="hoursGroups" access="field" cascade="all,delete-orphan" inverse="true" batch-size="10"
+                 lazy="false">
                 <key column="parent_order_line" not-null="false"/>
                 <one-to-many class="HoursGroup" />
             </set>

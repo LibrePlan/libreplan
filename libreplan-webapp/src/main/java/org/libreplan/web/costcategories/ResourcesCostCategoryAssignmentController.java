@@ -26,25 +26,21 @@ import static org.libreplan.web.I18nHelper._;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.logging.LogFactory;
 import org.joda.time.LocalDate;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.costcategories.entities.CostCategory;
 import org.libreplan.business.costcategories.entities.ResourcesCostCategoryAssignment;
 import org.libreplan.business.resources.entities.Resource;
 import org.libreplan.web.common.ConstraintChecker;
-import org.libreplan.web.common.IMessagesForUser;
-import org.libreplan.web.common.Level;
-import org.libreplan.web.common.MessagesForUser;
 import org.libreplan.web.common.Util;
 import org.libreplan.web.common.components.Autocomplete;
 import org.libreplan.web.util.ValidationExceptionPrinter;
-import org.libreplan.web.workreports.WorkReportCRUDController;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Datebox;
@@ -67,19 +63,15 @@ public class ResourcesCostCategoryAssignmentController extends GenericForwardCom
 
     private Grid listResourcesCostCategoryAssignments;
 
-    private static final org.apache.commons.logging.Log LOG = LogFactory.getLog(WorkReportCRUDController.class);
-
-    private IMessagesForUser messagesForUser;
-
-    private Component messagesContainer;
-
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        comp.setVariable("assignmentController", this, true);
-        this.listResourcesCostCategoryAssignments =
-            (Grid) comp.getFellowIfAny("listResourcesCostCategoryAssignments");
-        messagesForUser = new MessagesForUser(messagesContainer);
+
+        resourcesCostCategoryAssignmentModel =
+                (IResourcesCostCategoryAssignmentModel) SpringUtil.getBean("resourcesCostCategoryAssignmentModel");
+
+        comp.setAttribute("assignmentController", this, true);
+        this.listResourcesCostCategoryAssignments = (Grid) comp.getFellowIfAny("listResourcesCostCategoryAssignments");
     }
 
     public void addCostCategory() {
@@ -91,14 +83,14 @@ public class ResourcesCostCategoryAssignmentController extends GenericForwardCom
         return resourcesCostCategoryAssignmentModel.getCostCategoryAssignments();
     }
 
-    public void removeCostCategoryAssignment(ResourcesCostCategoryAssignment assignment) {
+    private void removeCostCategoryAssignment(ResourcesCostCategoryAssignment assignment) {
         resourcesCostCategoryAssignmentModel.removeCostCategoryAssignment(assignment);
         Util.reloadBindings(listResourcesCostCategoryAssignments);
     }
 
     private CostCategory getCostCategory(Row listitem) {
-        ResourcesCostCategoryAssignment assignment =
-            (ResourcesCostCategoryAssignment) listitem.getValue();
+        ResourcesCostCategoryAssignment assignment = listitem.getValue();
+
         return assignment.getCostCategory();
     }
 
@@ -128,9 +120,8 @@ public class ResourcesCostCategoryAssignmentController extends GenericForwardCom
 
                 if(comboitem != null) {
                     // Update resourcesCostCategoryAssignment
-                    ResourcesCostCategoryAssignment assignment =
-                        (ResourcesCostCategoryAssignment) row.getValue();
-                    assignment.setCostCategory((CostCategory) comboitem.getValue());
+                    ResourcesCostCategoryAssignment assignment = row.getValue();
+                    assignment.setCostCategory(comboitem.getValue());
                     row.setValue(assignment);
                 }
             }
@@ -139,14 +130,10 @@ public class ResourcesCostCategoryAssignmentController extends GenericForwardCom
     }
 
     public void confirmRemove(ResourcesCostCategoryAssignment assignment) {
-        try {
-            int status = Messagebox.show(_("Confirm deleting this hour cost. Are you sure?"), _("Delete"),
-                    Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION);
-            if (Messagebox.OK == status) {
-                removeCostCategoryAssignment(assignment);
-            }
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+        int status = Messagebox.show(_("Confirm deleting this hour cost. Are you sure?"), _("Delete"),
+                Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION);
+        if (Messagebox.OK == status) {
+            removeCostCategoryAssignment(assignment);
         }
     }
 
@@ -163,7 +150,7 @@ public class ResourcesCostCategoryAssignmentController extends GenericForwardCom
         delete.addEventListener(Events.ON_CLICK, new EventListener() {
             @Override
             public void onEvent(Event event) {
-                confirmRemove((ResourcesCostCategoryAssignment) row.getValue());
+                confirmRemove(row.getValue());
             }
         });
         row.appendChild(delete);
@@ -176,7 +163,7 @@ public class ResourcesCostCategoryAssignmentController extends GenericForwardCom
      */
     private void appendDateboxInitDate(final Row row) {
         Datebox initDateBox = new Datebox();
-        bindDateboxInitDate(initDateBox, (ResourcesCostCategoryAssignment) row.getValue());
+        bindDateboxInitDate(initDateBox, row.getValue());
         initDateBox.setConstraint("no empty:" + _("Start date cannot be empty"));
         row.appendChild(initDateBox);
 
@@ -202,7 +189,7 @@ public class ResourcesCostCategoryAssignmentController extends GenericForwardCom
      * @param hourCost
      */
     private void bindDateboxInitDate(final Datebox dateBoxInitDate,
-            final ResourcesCostCategoryAssignment assignment) {
+                                     final ResourcesCostCategoryAssignment assignment) {
         Util.bind(dateBoxInitDate, new Util.Getter<Date>() {
 
             @Override
@@ -237,7 +224,7 @@ public class ResourcesCostCategoryAssignmentController extends GenericForwardCom
      */
     private void appendDateboxEndDate(Row row) {
         Datebox endDateBox = new Datebox();
-        bindDateboxEndDate(endDateBox, (ResourcesCostCategoryAssignment) row.getValue());
+        bindDateboxEndDate(endDateBox, row.getValue());
         LocalDate initDate = ((ResourcesCostCategoryAssignment)row.getValue()).getInitDate();
         if (initDate != null) {
             endDateBox.setConstraint("after " +
@@ -255,7 +242,7 @@ public class ResourcesCostCategoryAssignmentController extends GenericForwardCom
      * @param hourCost
      */
     private void bindDateboxEndDate(final Datebox dateBoxEndDate,
-            final ResourcesCostCategoryAssignment assignment) {
+                                    final ResourcesCostCategoryAssignment assignment) {
         Util.bind(dateBoxEndDate, new Util.Getter<Date>() {
 
             @Override
@@ -265,16 +252,16 @@ public class ResourcesCostCategoryAssignmentController extends GenericForwardCom
                     return new Date(dateTime.getYear()-1900,
                             dateTime.getMonthOfYear()-1,dateTime.getDayOfMonth());
                 }
+
                 return null;
             }
 
         }, new Util.Setter<Date>() {
-
             @Override
             public void set(Date value) {
                 if (value != null) {
-                    assignment.setEndDate(new LocalDate(value.getYear()+1900,
-                            value.getMonth()+1,value.getDate()));
+                    /* TODO resolve deprecated */
+                    assignment.setEndDate(new LocalDate(value.getYear() + 1900, value.getMonth() + 1, value.getDate()));
                 }
                 else {
                     assignment.setEndDate(null);
@@ -288,17 +275,16 @@ public class ResourcesCostCategoryAssignmentController extends GenericForwardCom
     }
 
     /**
-     * RowRenderer for a @{HourCost} element
+     * RowRenderer for a @{HourCost} element.
      *
      * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
      *
      */
-    public class CostCategoryAssignmentRenderer implements RowRenderer {
+    private class CostCategoryAssignmentRenderer implements RowRenderer {
 
         @Override
-        public void render(Row row, Object data) {
-            ResourcesCostCategoryAssignment assignment =
-                (ResourcesCostCategoryAssignment) data;
+        public void render(Row row, Object data, int i) {
+            ResourcesCostCategoryAssignment assignment = (ResourcesCostCategoryAssignment) data;
 
             row.setValue(assignment);
 
@@ -321,18 +307,19 @@ public class ResourcesCostCategoryAssignmentController extends GenericForwardCom
     }
 
     /**
-     * Check there are not category assignment overlaps
+     * Check there are not category assignment overlaps.
      *
-     * @return
+     * @return boolean
      */
     public boolean validate() {
-        List<ResourcesCostCategoryAssignment> costCategoryAssignments = resourcesCostCategoryAssignmentModel
-                .getCostCategoryAssignments();
+        List<ResourcesCostCategoryAssignment> costCategoryAssignments =
+                resourcesCostCategoryAssignmentModel.getCostCategoryAssignments();
         try {
             CostCategory.validateCostCategoryOverlapping(costCategoryAssignments);
         } catch (ValidationException e) {
             ValidationExceptionPrinter.showAt(listResourcesCostCategoryAssignments, e);
         }
+
         return true;
     }
 

@@ -47,7 +47,7 @@ function templateProjectAssignTemplate($template){
     _click(_link("Projects"));
     _click(_image("ico_add.png"));
     _setValue(_textbox(0, _near(_span("Name"))), "ProjectTemplate");
-    _click(_italic(0, _cell("z-caption-l")));
+    _click(_italic(0, _cell(.z-caption-content")));
     _click(_div($template));
     _click(_cell("Accept"));
     _click(_image("ico_save.png"));
@@ -79,7 +79,7 @@ function templateTaskCreateTemplate(){
 function templateTaskAssignTemplate($projectName, $taskName){
     commonEditProject($projectName);
     _click(_cell("Add From Template"));
-    _click(_italic(0, _cell("z-caption-l")));
+    _click(_italic(0, _cell(.z-caption-content")));
     _click(_div("taskfortasks"));
     _click(_cell("Create task"));
     _click(_image("ico_save.png"));

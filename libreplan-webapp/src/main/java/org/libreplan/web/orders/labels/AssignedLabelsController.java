@@ -30,7 +30,6 @@ import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.web.common.Util;
 import org.libreplan.web.common.components.Autocomplete;
 import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
-import org.libreplan.web.orders.IOrderElementModel;
 import org.libreplan.web.security.SecurityUtils;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
@@ -41,10 +40,8 @@ import org.zkoss.zul.Textbox;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
- *
  */
-public abstract class AssignedLabelsController<T, M> extends
-        GenericForwardComposer {
+public abstract class AssignedLabelsController<T, M> extends GenericForwardComposer {
 
     private Autocomplete cbLabelType;
 
@@ -74,15 +71,12 @@ public abstract class AssignedLabelsController<T, M> extends
         Util.reloadBindings(self);
     }
 
-    IOrderElementModel orderElementModel;
-
     protected abstract void setOuterModel(M orderElementModel);
 
     protected abstract T getElement();
 
     /**
-     * Executed on pressing Assign button Adds selected label to direct labels
-     * list
+     * Executed on pressing Assign button Adds selected label to direct labels list.
      */
     public void onAssignLabel() {
         Label label = (Label) bdLabels.getSelectedElement();
@@ -102,10 +96,10 @@ public abstract class AssignedLabelsController<T, M> extends
 
     /**
      * Executed on pressing createAndAssign button Creates a new label for a
-     * type, in case it does not exist, and added it to the list of direct
-     * labels
+     * type, in case it does not exist, and added it to the list of direct labels.
      */
     public void onCreateAndAssign() {
+
         // Check if user has permissions to create labels
         if (!SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_LABELS)) {
             throw new WrongValueException(buttonCreateAndAssign,
@@ -115,28 +109,23 @@ public abstract class AssignedLabelsController<T, M> extends
         // Check LabelType is not null
         final Comboitem comboitem = cbLabelType.getSelectedItem();
         if (comboitem == null || comboitem.getValue() == null) {
-            throw new WrongValueException(cbLabelType,
-                    _("please, select an item"));
+            throw new WrongValueException(cbLabelType, _("please, select an item"));
         }
 
         // Check Label is not null or empty
         final String labelName = txtLabelName.getValue();
         if (labelName == null || labelName.isEmpty()) {
-            throw new WrongValueException(txtLabelName,
-                    _("cannot be empty"));
+            throw new WrongValueException(txtLabelName, _("cannot be empty"));
         }
 
         // Label does not exist, create
-        final LabelType labelType = (LabelType) comboitem.getValue();
-        Label label = getModel().findLabelByNameAndType(
-                labelName, labelType);
+        final LabelType labelType = comboitem.getValue();
+        Label label = getModel().findLabelByNameAndType(labelName, labelType);
         if (label == null) {
             label = addLabel(labelName, labelType);
         } else {
-            // Label is already assigned?
             if (isAssigned(label)) {
-                throw new WrongValueException(txtLabelName,
-                        _("already assigned"));
+                throw new WrongValueException(txtLabelName, _("already assigned"));
             }
         }
         try {
@@ -154,16 +143,11 @@ public abstract class AssignedLabelsController<T, M> extends
     }
 
     private Label createLabel(String labelName, LabelType labelType) {
-        return getModel().createLabel(labelName,
-                labelType);
+        return getModel().createLabel(labelName, labelType);
     }
 
     private void clear(Textbox textbox) {
         textbox.setValue("");
-    }
-
-    public void clear() {
-
     }
 
     private void assignLabel(Label label) {
@@ -190,10 +174,6 @@ public abstract class AssignedLabelsController<T, M> extends
 
     public List<Label> getAllLabels() {
         return getModel().getAllLabels();
-    }
-
-    public void close() {
-
     }
 
 }

@@ -51,9 +51,7 @@ import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.MenuBuilder;
-import org.zkoss.ganttz.util.MenuBuilder.ItemAction;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zk.ui.sys.ContentRenderer;
 import org.zkoss.zul.Div;
@@ -62,18 +60,13 @@ import org.zkoss.zul.impl.XulElement;
 
 /**
  * This class wraps ResourceLoad data inside an specific HTML Div component.
+ *
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
 public class QueueComponent extends XulElement implements AfterCompose {
 
     private static final int DEADLINE_MARK_HALF_WIDTH = 5;
-
-    public static QueueComponent create(QueueListComponent queueListComponent,
-                                        TimeTracker timeTracker,
-                                        LimitingResourceQueue limitingResourceQueue) {
-
-        return new QueueComponent(queueListComponent, timeTracker, limitingResourceQueue);
-    }
 
     private final QueueListComponent queueListComponent;
 
@@ -94,8 +87,9 @@ public class QueueComponent extends XulElement implements AfterCompose {
         this.timeTracker = timeTracker;
 
         createChildren(limitingResourceQueue, timeTracker.getMapper());
-        zoomChangedListener = new IZoomLevelChangedListener() {
 
+        /* Do not replace it with lamda */
+        zoomChangedListener = new IZoomLevelChangedListener() {
             @Override
             public void zoomLevelChanged(ZoomLevel detailLevel) {
                 getChildren().clear();
@@ -109,6 +103,13 @@ public class QueueComponent extends XulElement implements AfterCompose {
     @Override
     public void afterCompose() {
         appendContextMenus();
+    }
+
+    public static QueueComponent create(QueueListComponent queueListComponent,
+                                        TimeTracker timeTracker,
+                                        LimitingResourceQueue limitingResourceQueue) {
+
+        return new QueueComponent(queueListComponent, timeTracker, limitingResourceQueue);
     }
 
     public List<QueueTask> getQueueTasks() {
@@ -152,6 +153,13 @@ public class QueueComponent extends XulElement implements AfterCompose {
 
     private void appendQueueTask(QueueTask queueTask) {
         queueTasks.add(queueTask);
+
+        /*
+         * In this case after we migrated from ZK5 to ZK8, ZK was appending div to QueueComponent,
+         * on every allocation it was creating new QueueComponents, but DOM tree was still the same.
+         */
+        getLimitingResourcesPanel().getFellow("insertionPointRightPanel").invalidate();
+
         appendChild(queueTask);
     }
 
@@ -182,9 +190,7 @@ public class QueueComponent extends XulElement implements AfterCompose {
                 }
 
             } else {
-
                 result.add(createQueueTask(datesMapper, each));
-
             }
         }
 
@@ -212,21 +218,23 @@ public class QueueComponent extends XulElement implements AfterCompose {
         final OrderElement order = getRootOrder(task);
 
         StringBuilder result = new StringBuilder();
-        result.append(_("Project: {0}", order.getName()) + " ");
-        result.append(_("Task: {0}", task.getName()) + " ");
-        result.append(_("Completed: {0}%", element.getAdvancePercentage().multiply(new BigDecimal(100))) + " ");
+        result.append(_("Project: {0}", order.getName())).append(" ");
+        result.append(_("Task: {0}", task.getName())).append(" ");
+        result.append(_("Completed: {0}%", element.getAdvancePercentage().multiply(new BigDecimal(100)))).append(" ");
 
         final ResourceAllocation<?> resourceAllocation = element.getResourceAllocation();
 
         if ( resourceAllocation instanceof SpecificResourceAllocation ) {
 
             final SpecificResourceAllocation specific = (SpecificResourceAllocation) resourceAllocation;
-            result.append(_("Resource: {0}", specific.getResource().getName()) + " ");
+            result.append(_("Resource: {0}", specific.getResource().getName())).append(" ");
 
         } else if ( resourceAllocation instanceof GenericResourceAllocation ) {
 
             final GenericResourceAllocation generic = (GenericResourceAllocation) resourceAllocation;
-            result.append(_("Criteria: {0}", Criterion.getCaptionFor(generic.getCriterions())) + " ");
+
+            /* TODO resolve deprecated */
+            result.append(_("Criteria: {0}", Criterion.getCaptionFor(generic.getCriterions()))).append(" ");
 
         }
         result.append(_("Allocation: [{0},{1}]", element.getStartDate().toString(), element.getEndDate()));
@@ -235,7 +243,7 @@ public class QueueComponent extends XulElement implements AfterCompose {
     }
 
     /**
-     * Returns end date considering % of task completion
+     * Returns end date considering % of task completion.
      *
      * @param element
      * @return
@@ -247,7 +255,8 @@ public class QueueComponent extends XulElement implements AfterCompose {
 
         if ( element.hasDayAssignments() ) {
 
-            final int estimatedWorkedHours = estimatedWorkedHours(element.getIntentedTotalHours(), element.getAdvancePercentage());
+            final int estimatedWorkedHours =
+                    estimatedWorkedHours(element.getIntentedTotalHours(), element.getAdvancePercentage());
 
             for (DayAssignment each: dayAssignments) {
                 hoursWorked += each.getDuration().getHours();
@@ -262,6 +271,7 @@ public class QueueComponent extends XulElement implements AfterCompose {
 
         if ( hoursWorked != 0 ) {
             DayAssignment lastDayAssignment = dayAssignments.get(dayAssignments.size() - 1);
+
             return new DateAndHour(lastDayAssignment.getDay(), lastDayAssignment.getDuration().getHours());
         }
 
@@ -296,8 +306,7 @@ public class QueueComponent extends XulElement implements AfterCompose {
             taskWidth = datesMapper.getHorizontalSize() - startPixels;
             cssClass += " truncated-end ";
         } else {
-            result.appendChild(generateNonWorkableShade(datesMapper,
-                    queueElement));
+            result.appendChild(generateNonWorkableShade(datesMapper, queueElement));
         }
         result.setWidth(forCSS(taskWidth));
 
@@ -335,7 +344,7 @@ public class QueueComponent extends XulElement implements AfterCompose {
 
         result.setClass(cssClass);
         result.appendChild(generateCompletionShade(datesMapper, queueElement));
-        Component progressBar = generateProgressBar(datesMapper, queueElement, task, startPixels);
+        Component progressBar = generateProgressBar(datesMapper, queueElement);
 
         if ( progressBar != null ) {
             result.appendChild(progressBar);
@@ -344,10 +353,7 @@ public class QueueComponent extends XulElement implements AfterCompose {
         return result;
     }
 
-    private static Component generateProgressBar(IDatesMapper datesMapper,
-                                                 LimitingResourceQueueElement queueElement,
-                                                 Task task,
-                                                 int startPixels) {
+    private static Component generateProgressBar(IDatesMapper datesMapper, LimitingResourceQueueElement queueElement) {
 
         DateAndHour advancementEndDate = getAdvanceEndDate(queueElement);
 
@@ -355,8 +361,9 @@ public class QueueComponent extends XulElement implements AfterCompose {
             return null;
         }
 
-        Duration durationBetween = new Duration(queueElement.getStartTime().toDateTime().getMillis(),
-                advancementEndDate.toDateTime().getMillis());
+        Duration durationBetween = new Duration(
+                queueElement.getStartTime().toDateTime().getMillis(), advancementEndDate.toDateTime().getMillis());
+
         Div progressBar = new Div();
 
         if ( !queueElement.getStartDate().isEqual(advancementEndDate.getDate()) ) {
@@ -376,21 +383,20 @@ public class QueueComponent extends XulElement implements AfterCompose {
                 .getCapacityOn(PartialDay.wholeDay(queueElement.getEndDate()))
                 .roundToHours();
 
-        int shadeWidth = Long
-                .valueOf((24 - workableHours) * DatesMapperOnInterval.MILISECONDS_PER_HOUR
-                        / datesMapper.getMilisecondsPerPixel())
-                .intValue();
+        Long shadeWidth = (24 - workableHours) *
+                DatesMapperOnInterval.MILISECONDS_PER_HOUR / datesMapper.getMilisecondsPerPixel();
 
-        int shadeLeft = Long
-                .valueOf((workableHours - queueElement.getEndHour()) * DatesMapperOnInterval.MILISECONDS_PER_HOUR
-                        / datesMapper.getMilisecondsPerPixel()).intValue() + shadeWidth;
+        Long lShadeLeft =  (workableHours - queueElement.getEndHour()) *
+                DatesMapperOnInterval.MILISECONDS_PER_HOUR / datesMapper.getMilisecondsPerPixel();
+
+        int shadeLeft =  lShadeLeft.intValue() + shadeWidth.intValue();
 
         Div notWorkableHoursShade = new Div();
 
         notWorkableHoursShade.setTooltiptext(_("Workable capacity for this period ") + workableHours + _(" hours"));
         notWorkableHoursShade.setContext("");
         notWorkableHoursShade.setSclass("not-workable-hours");
-        notWorkableHoursShade.setStyle("left: " + shadeLeft + "px; width: " + shadeWidth + "px;");
+        notWorkableHoursShade.setStyle("left: " + shadeLeft + "px; width: " + shadeWidth.intValue() + "px;");
 
         return notWorkableHoursShade;
     }
@@ -404,19 +410,19 @@ public class QueueComponent extends XulElement implements AfterCompose {
                 .getCapacityOn(PartialDay.wholeDay(queueElement.getEndDate()))
                 .roundToHours();
 
-        int shadeWidth = new Long((24 - workableHours) * DatesMapperOnInterval.MILISECONDS_PER_HOUR
-                / datesMapper.getMilisecondsPerPixel())
-                .intValue();
+        Long shadeWidth = (24 - workableHours) *
+                DatesMapperOnInterval.MILISECONDS_PER_HOUR / datesMapper.getMilisecondsPerPixel();
 
-        int shadeLeft = new Long((workableHours - queueElement.getEndHour()) * DatesMapperOnInterval.MILISECONDS_PER_HOUR
-                / datesMapper.getMilisecondsPerPixel())
-                .intValue() + shadeWidth;
+        Long lShadeLeft = (workableHours - queueElement.getEndHour()) *
+                DatesMapperOnInterval.MILISECONDS_PER_HOUR / datesMapper.getMilisecondsPerPixel();
+
+        int shadeLeft = lShadeLeft.intValue() + shadeWidth.intValue();
 
         Div notWorkableHoursShade = new Div();
 
         notWorkableHoursShade.setContext("");
         notWorkableHoursShade.setSclass("limiting-completion");
-        notWorkableHoursShade.setStyle("left: " + shadeLeft + "px; width: " + shadeWidth + "px;");
+        notWorkableHoursShade.setStyle("left: " + shadeLeft + "px; width: " + shadeWidth.intValue() + "px;");
 
         return notWorkableHoursShade;
     }
@@ -436,9 +442,8 @@ public class QueueComponent extends XulElement implements AfterCompose {
 
     private static int getStartPixels(IDatesMapper datesMapper, LimitingResourceQueueElement queueElement) {
         return datesMapper.toPixelsAbsolute(
-                        (queueElement.getStartDate().toDateTimeAtStartOfDay().getMillis()
-                        + queueElement.getStartHour() * DatesMapperOnInterval.MILISECONDS_PER_HOUR)
-                );
+                queueElement.getStartDate().toDateTimeAtStartOfDay().getMillis() +
+                        queueElement.getStartHour() * DatesMapperOnInterval.MILISECONDS_PER_HOUR);
     }
 
     public void appendQueueElements(SortedSet<LimitingResourceQueueElement> elements) {
@@ -494,26 +499,12 @@ public class QueueComponent extends XulElement implements AfterCompose {
         if ( divElement.getPage() != null ) {
             MenuBuilder<QueueTask> menuBuilder = MenuBuilder.on(divElement.getPage(), divElement);
 
-            menuBuilder.item(_("Edit"), "/common/img/ico_editar.png", new ItemAction<QueueTask>() {
-                        @Override
-                        public void onEvent(QueueTask choosen, Event event) {
-                            editResourceAllocation(choosen);
-                        }
-                    });
+            menuBuilder.item(
+                    _("Edit"), "/common/img/ico_editar.png", (chosen, event) -> editResourceAllocation(chosen));
 
-            menuBuilder.item(_("Unassign"), "/common/img/ico_borrar.png", new ItemAction<QueueTask>() {
-                        @Override
-                        public void onEvent(QueueTask choosen, Event event) {
-                            unnasign(choosen);
-                        }
-                    });
+            menuBuilder.item(_("Unassign"), "/common/img/ico_borrar.png", (chosen, event) -> unassign(chosen));
 
-            menuBuilder.item(_("Move"), "", new ItemAction<QueueTask>() {
-                        @Override
-                        public void onEvent(QueueTask choosen, Event event) {
-                            moveQueueTask(choosen);
-                        }
-                    });
+            menuBuilder.item(_("Move"), "", (chosen, event) -> moveQueueTask(chosen));
 
             divElement.setContext(menuBuilder.createWithoutSettingContext());
         }
@@ -527,8 +518,8 @@ public class QueueComponent extends XulElement implements AfterCompose {
         getLimitingResourcesPanel().moveQueueTask(queueTask);
     }
 
-    private void unnasign(QueueTask choosen) {
-        getLimitingResourcesPanel().unschedule(choosen);
+    private void unassign(QueueTask chosen) {
+        getLimitingResourcesPanel().unschedule(chosen);
     }
 
     private void appendContextMenus() {
@@ -539,7 +530,6 @@ public class QueueComponent extends XulElement implements AfterCompose {
 
     public void renderProperties(ContentRenderer renderer) throws IOException{
         super.renderProperties(renderer);
-
         render(renderer, "_resourceName", getResourceName());
     }
 

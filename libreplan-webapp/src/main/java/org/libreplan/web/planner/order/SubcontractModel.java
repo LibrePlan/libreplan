@@ -27,7 +27,6 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.joda.time.LocalDate;
-import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.externalcompanies.daos.IExternalCompanyDAO;
 import org.libreplan.business.externalcompanies.entities.EndDateCommunication;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
@@ -44,8 +43,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Model for UI operations related with subcontract process and
- * {@link SubcontractedTaskData} entity.
+ * Model for UI operations related with subcontract process and {@link SubcontractedTaskData} entity.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
@@ -58,9 +56,13 @@ public class SubcontractModel implements ISubcontractModel {
      * Conversation state
      */
     private Task task;
+
     private org.zkoss.ganttz.data.Task ganttTask;
+
     private IntraDayDate startDate;
+
     private IntraDayDate endDate;
+
     private SubcontractedTaskData subcontractedTaskData;
 
     private SubcontractedTaskData currentSubcontractedTaskData;
@@ -80,13 +82,13 @@ public class SubcontractModel implements ISubcontractModel {
 
         this.ganttTask = ganttTask;
 
-        SubcontractedTaskData subcontractedTaskData = task
-                .getSubcontractedTaskData();
+        SubcontractedTaskData subcontractedTaskData = task.getSubcontractedTaskData();
 
         this.currentSubcontractedTaskData = subcontractedTaskData;
 
         if (subcontractedTaskData == null) {
             this.subcontractedTaskData = SubcontractedTaskData.create(task);
+
             if (task.getDeadline() != null) {
                 this.addDeliverDate(task.getDeadline().toDateTimeAtStartOfDay().toDate());
             } else {
@@ -96,15 +98,13 @@ public class SubcontractModel implements ISubcontractModel {
             subcontractedTaskDataDAO.reattach(subcontractedTaskData);
             loadRequiredDeliveringDates(subcontractedTaskData);
             loadAskedEndDatesFromSubcontractor(subcontractedTaskData);
-            this.subcontractedTaskData = SubcontractedTaskData
-                    .createFrom(subcontractedTaskData);
+            this.subcontractedTaskData = SubcontractedTaskData.createFrom(subcontractedTaskData);
         }
     }
 
     private void loadAskedEndDatesFromSubcontractor(SubcontractedTaskData subcontractedTaskData) {
         if (subcontractedTaskData != null) {
-            for (EndDateCommunication askedEndDate : subcontractedTaskData
-                    .getEndDatesCommunicatedFromSubcontractor()) {
+            for (EndDateCommunication askedEndDate : subcontractedTaskData.getEndDatesCommunicatedFromSubcontractor()) {
                 askedEndDate.getEndDate();
             }
         }
@@ -112,8 +112,7 @@ public class SubcontractModel implements ISubcontractModel {
 
     private void loadRequiredDeliveringDates(SubcontractedTaskData subcontractedTaskData){
         if(subcontractedTaskData != null){
-            for (SubcontractorDeliverDate subDeliverDate : subcontractedTaskData
-                    .getRequiredDeliveringDates()) {
+            for (SubcontractorDeliverDate subDeliverDate : subcontractedTaskData.getRequiredDeliveringDates()) {
                 subDeliverDate.getSaveDate();
             }
         }
@@ -126,7 +125,7 @@ public class SubcontractModel implements ISubcontractModel {
 
     @Override
     @Transactional(readOnly = true)
-    public void confirm() throws ValidationException {
+    public void confirm() {
         if (task != null) {
             if (subcontractedTaskData == null) {
                 task.setSubcontractedTaskData(null);
@@ -137,13 +136,11 @@ public class SubcontractModel implements ISubcontractModel {
                     task.setSubcontractedTaskData(subcontractedTaskData);
                     currentSubcontractedTaskData = subcontractedTaskData;
                 } else {
-                    currentSubcontractedTaskData
-                            .applyChanges(subcontractedTaskData);
+                    currentSubcontractedTaskData.applyChanges(subcontractedTaskData);
                 }
 
                 task.removeAllSatisfiedResourceAllocations();
-                task.setDeadline(new LocalDate(currentSubcontractedTaskData
-                        .getLastRequiredDeliverDate()));
+                task.setDeadline(new LocalDate(currentSubcontractedTaskData.getLastRequiredDeliverDate()));
                 Task.convertOnStartInFixedDate(task);
             }
 
@@ -182,16 +179,12 @@ public class SubcontractModel implements ISubcontractModel {
 
     @Override
     public boolean hasResourceAllocations() {
-        if (task != null) {
-            return !task.getSatisfiedResourceAllocations().isEmpty();
-        }
-        return false;
+        return task != null && !task.getSatisfiedResourceAllocations().isEmpty();
     }
 
     @Override
     public void setEndDate(Date endDate) {
-        this.endDate = IntraDayDate.startOfDay(LocalDate
-                .fromDateFields(endDate));
+        this.endDate = IntraDayDate.startOfDay(LocalDate.fromDateFields(endDate));
     }
 
     @Override
@@ -204,7 +197,8 @@ public class SubcontractModel implements ISubcontractModel {
         if(subcontractedTaskData != null){
             return subcontractedTaskData.getRequiredDeliveringDates();
         }
-        return new TreeSet<SubcontractorDeliverDate>();
+
+        return new TreeSet<>();
     }
 
     @Override
@@ -212,27 +206,23 @@ public class SubcontractModel implements ISubcontractModel {
         if(subcontractedTaskData != null){
             SubcontractorDeliverDate subcontractorDeliverDate = SubcontractorDeliverDate
                     .create(new Date(), subDeliverDate, null);
-            subcontractedTaskData
-                    .addRequiredDeliveringDates(subcontractorDeliverDate);
+            subcontractedTaskData.addRequiredDeliveringDates(subcontractorDeliverDate);
 
-            //update the state of the subcontracted task data
+            // Update the state of the subcontracted task data
             updateStateToPendingUpdateDeliveringDate();
         }
     }
 
     private void updateStateToPendingUpdateDeliveringDate(){
-        if ((subcontractedTaskData.getState() != null)
-                && (subcontractedTaskData.getState()
-                        .equals(SubcontractState.SUCCESS_SENT))) {
-            subcontractedTaskData
-                    .setState(SubcontractState.PENDING_UPDATE_DELIVERING_DATE);
+        if ((subcontractedTaskData.getState() != null) &&
+                (subcontractedTaskData.getState().equals(SubcontractState.SUCCESS_SENT))) {
+            subcontractedTaskData.setState(SubcontractState.PENDING_UPDATE_DELIVERING_DATE);
         }
     }
 
     @Override
     public boolean alreadyExistsRepeatedDeliverDate(Date newDeliverDate) {
-        if (this.getSubcontractedTaskData().getRequiredDeliveringDates()
-                .isEmpty()) {
+        if (this.getSubcontractedTaskData().getRequiredDeliveringDates().isEmpty()) {
             return false;
         }
 
@@ -246,12 +236,11 @@ public class SubcontractModel implements ISubcontractModel {
                 currentSubDeliverDate.getSubcontractorDeliverDate())
                 .toDateTimeAtStartOfDay().toDate();
 
-        return (currentDeliverDate.compareTo(deliverDate) == 0);
+        return currentDeliverDate.compareTo(deliverDate) == 0;
     }
 
     @Override
-    public void removeRequiredDeliverDate(
-            SubcontractorDeliverDate subcontractorDeliverDate) {
+    public void removeRequiredDeliverDate(SubcontractorDeliverDate subcontractorDeliverDate) {
         if(subcontractedTaskData != null){
             subcontractedTaskData.removeRequiredDeliveringDates(subcontractorDeliverDate);
             updateStateFromPendingDeliveringDateToSuccessSent();
@@ -261,10 +250,13 @@ public class SubcontractModel implements ISubcontractModel {
     private void updateStateFromPendingDeliveringDateToSuccessSent(){
         if (subcontractedTaskData.getState() != null) {
             switch (subcontractedTaskData.getState()) {
+
                 case PENDING_UPDATE_DELIVERING_DATE:
                 case FAILED_UPDATE:
-                    subcontractedTaskData
-                            .setState(SubcontractState.SUCCESS_SENT);
+                    subcontractedTaskData.setState(SubcontractState.SUCCESS_SENT);
+                    break;
+
+                default:
                     break;
             }
         }
@@ -275,7 +267,8 @@ public class SubcontractModel implements ISubcontractModel {
         if (subcontractedTaskData != null) {
             return subcontractedTaskData.getEndDatesCommunicatedFromSubcontractor();
         }
-        return new TreeSet<EndDateCommunication>();
+
+        return new TreeSet<>();
     }
 
 }

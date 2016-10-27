@@ -24,7 +24,7 @@ import java.util.Date;
 import org.libreplan.business.common.BaseEntity;
 
 /**
- * Entity EndDateCommunication
+ * Entity EndDateCommunication.
  *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
@@ -46,8 +46,7 @@ public class EndDateCommunication extends BaseEntity {
         this.setSaveDate(new Date());
     }
 
-    protected EndDateCommunication(Date saveDate, Date endDate,
- Date communicationDate) {
+    protected EndDateCommunication(Date saveDate, Date endDate, Date communicationDate) {
         this.setSaveDate(saveDate);
         this.setEndDate(endDate);
         this.setCommunicationDate(communicationDate);
@@ -61,8 +60,7 @@ public class EndDateCommunication extends BaseEntity {
         return create(new EndDateCommunication(endDate));
     }
 
-    public static EndDateCommunication create(Date saveDate, Date endDate,
-            Date communicationDate) {
+    public static EndDateCommunication create(Date saveDate, Date endDate, Date communicationDate) {
         return create(new EndDateCommunication(saveDate, endDate, communicationDate));
     }
 

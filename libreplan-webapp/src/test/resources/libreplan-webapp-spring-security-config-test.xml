@@ -23,7 +23,7 @@
         p:dbPasswordEncoderService-ref="dbPasswordEncoderService" />
 
     <!--
-    Beans used by the LibrePlan Web Application when users are registerd in LDAP.
+    Beans used by the LibrePlan Web Application when users are registered in LDAP.
     At this moment users MUST be also in database with same username.
     This will be changed in the near future.
     The url, base, userDN and password properties must be set with the proper values -->

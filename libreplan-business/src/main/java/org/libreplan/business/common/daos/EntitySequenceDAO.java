@@ -40,6 +40,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * DAO for {@link EntitySequence}.
+ *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 @Repository
@@ -53,7 +54,7 @@ public class EntitySequenceDAO extends GenericDAOHibernate<EntitySequence, Long>
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<EntitySequence> findEntitySquencesNotIn(List<EntitySequence> entitySequences) {
+    public List<EntitySequence> findEntitySequencesNotIn(List<EntitySequence> entitySequences) {
         List<Long> entitySequenceIds = new ArrayList<>();
         for (EntitySequence entitySequence : entitySequences) {
             if ( !entitySequence.isNewObject() ) {
@@ -61,8 +62,10 @@ public class EntitySequenceDAO extends GenericDAOHibernate<EntitySequence, Long>
             }
         }
 
-        return getSession().createCriteria(EntitySequence.class)
-                .add(Restrictions.not(Restrictions.in("id", entitySequenceIds))).list();
+        return getSession()
+                .createCriteria(EntitySequence.class)
+                .add(Restrictions.not(Restrictions.in("id", entitySequenceIds)))
+                .list();
     }
 
     @Override
@@ -79,9 +82,11 @@ public class EntitySequenceDAO extends GenericDAOHibernate<EntitySequence, Long>
     public EntitySequence getActiveEntitySequence(EntityNameEnum entityName)
             throws InstanceNotFoundException, NonUniqueResultException {
 
-        EntitySequence entitySequence = (EntitySequence) getSession().createCriteria(EntitySequence.class)
+        EntitySequence entitySequence = (EntitySequence) getSession()
+                .createCriteria(EntitySequence.class)
                 .add(Restrictions.eq("entityName", entityName))
-                .add(Restrictions.eq("active", true)).uniqueResult();
+                .add(Restrictions.eq("active", true))
+                .uniqueResult();
 
         if ( entitySequence == null ) {
             throw new InstanceNotFoundException(entitySequence, "Entity sequence not exist");
@@ -109,9 +114,8 @@ public class EntitySequenceDAO extends GenericDAOHibernate<EntitySequence, Long>
 
                 save(entitySequence);
                 return code;
-            } catch (HibernateOptimisticLockingFailureException |
-                    InstanceNotFoundException |
-                    NonUniqueResultException e) {
+
+            } catch (HibernateOptimisticLockingFailureException | InstanceNotFoundException | NonUniqueResultException e) {
                 // Do nothing (optimistic approach 5 attempts)
             }
         }
@@ -124,8 +128,8 @@ public class EntitySequenceDAO extends GenericDAOHibernate<EntitySequence, Long>
         Validate.notNull(entitySequence);
         try {
             EntitySequence t = getActiveEntitySequence(entitySequence.getEntityName());
-
             return (t != null && t != entitySequence);
+
         } catch (InstanceNotFoundException e) {
             return false;
         } catch (NonUniqueResultException e) {

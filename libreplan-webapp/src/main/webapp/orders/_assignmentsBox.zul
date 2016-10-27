@@ -19,48 +19,64 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-        <newdatasortablegrid id="gridMaterials"
-            sizedByContent="true"
-            model="@{assignedMaterialsController.assignedMaterials}">
-            <columns width="100%">
-                <newdatasortablecolumn label="${i18n:_('Code')}" />
-                <newdatasortablecolumn label="${i18n:_('Name')}" hflex="1" />
-                <newdatasortablecolumn label="${i18n:_('Reception date')}" />
-                <newdatasortablecolumn label="${i18n:_('Units')}" />
-                <newdatasortablecolumn label="${i18n:_('Unit type')}" align="center" />
-                <newdatasortablecolumn label="${i18n:_('Unit price')}" />
-                <newdatasortablecolumn label="${i18n:_('Total price')}" />
-                <newdatasortablecolumn label="${i18n:_('Status')}" />
-                <newdatasortablecolumn label="${i18n:_('Op.')}" />
-            </columns>
-            <rows>
-                <row self="@{each='assignedMaterial'}" value="@{assignedMaterial}" tooltiptext="@{assignedMaterial.material.category.name}">
-                    <label value="@{assignedMaterial.material.code}" hflex="true" />
-                    <label value="@{assignedMaterial.material.description}" hflex="true" />
-                    <datebox value="@{assignedMaterial.estimatedAvailability}" />
-                    <doublebox value="@{assignedMaterial.units}"
-                        onChange="assignedMaterialsController.updateTotalPrice(self.parent)" style="text-align:right" />
-                    <label value="@{assignedMaterial.material.unitType.measure}"/>
-                    <decimalbox value="@{assignedMaterial.unitPrice}"
-                        onChange="assignedMaterialsController.updateTotalPrice(self.parent)" style="text-align:right"
+<newdatasortablegrid id="gridMaterials"
+                     fixedLayout="true"
+                     model="@{assignedMaterialsController.assignedMaterials}">
+
+    <columns width="100%">
+        <newdatasortablecolumn label="${i18n:_('Code')}" width="20%"/>
+        <newdatasortablecolumn label="${i18n:_('Name')}" width="15%"/>
+        <newdatasortablecolumn label="${i18n:_('Reception date')}" align="center" width="14%"/>
+        <newdatasortablecolumn label="${i18n:_('Units')}" align="center" width="11%"/>
+        <newdatasortablecolumn label="${i18n:_('Unit type')}" align="center" width="7%"/>
+        <newdatasortablecolumn label="${i18n:_('Unit price')}" align="center" width="11%"/>
+        <newdatasortablecolumn label="${i18n:_('Total price')}" align="center" width="11%" />
+        <newdatasortablecolumn label="${i18n:_('Status')}" align="center" width="13%" />
+        <newdatasortablecolumn label="${i18n:_('Op.')}" width="10%"/>
+    </columns>
+
+    <rows>
+        <row self="@{each='assignedMaterial'}" value="@{assignedMaterial}"
+             tooltiptext="@{assignedMaterial.material.category.name}">
+
+            <label value="@{assignedMaterial.material.code}" hflex="true" />
+
+            <label value="@{assignedMaterial.material.description}" hflex="true" />
+
+            <datebox value="@{assignedMaterial.estimatedAvailability}" />
+
+            <doublebox value="@{assignedMaterial.units}"
+                       onChange="assignedMaterialsController.updateTotalPrice(self.parent)"
+                       style="text-align:right" />
+
+            <label value="@{assignedMaterial.material.unitType.measure}"/>
+
+            <decimalbox value="@{assignedMaterial.unitPrice}"
+                        onChange="assignedMaterialsController.updateTotalPrice(self.parent)"
+                        style="text-align:right"
                         format="@{assignedMaterialsController.moneyFormat}" />
-                    <decimalbox value="@{assignedMaterial.totalPrice}" style="text-align:right" disabled="true"
+
+            <decimalbox value="@{assignedMaterial.totalPrice}"
+                        style="text-align:right"
+                        disabled="true"
                         format="@{assignedMaterialsController.moneyFormat}" />
-                    <listbox mold="select" model="@{materialStatus}"
-                        selectedItem="@{assignedMaterial.status}"
-                        itemRenderer="org.libreplan.web.common.EnumsListitemRenderer" />
-                    <hbox>
-                        <button sclass="icono"
-                            image="/common/img/ico_borrar1.png"
-                            hoverImage="/common/img/ico_borrar.png"
-                            tooltiptext="${i18n:_('Delete')}"
-                            onClick="assignedMaterialsController.showRemoveMaterialAssignmentDlg(self.parent.parent.value)">
-                        </button>
-                        <button label="${i18n:_('Split')}"
-                            tooltiptext="${i18n:_('Split assignment')}"
-                            onClick="assignedMaterialsController.showSplitMaterialAssignmentDlg(self.parent.parent.value)">
-                        </button>
-                    </hbox>
-                </row>
-            </rows>
-        </newdatasortablegrid>
+
+            <listbox mold="select" model="@{materialStatus}"
+                     selectedItem="@{assignedMaterial.status}"
+                     itemRenderer="org.libreplan.web.common.EnumsListitemRenderer" />
+
+            <hbox>
+                <button sclass="icono"
+                        image="/common/img/ico_borrar1.png"
+                        hoverImage="/common/img/ico_borrar.png"
+                        tooltiptext="${i18n:_('Delete')}"
+                        onClick="assignedMaterialsController.showRemoveMaterialAssignmentDlg(self.parent.parent.value)"/>
+
+                <button label="${i18n:_('Split')}" sclass="add-button"
+                        tooltiptext="${i18n:_('Split assignment')}"
+                        onClick="assignedMaterialsController.showSplitMaterialAssignmentDlg(self.parent.parent.value)"/>
+            </hbox>
+        </row>
+    </rows>
+</newdatasortablegrid>
+

@@ -30,33 +30,32 @@ import org.apache.commons.lang3.Validate;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
- *
  */
-public class SeveralModificators implements IDetailItemModificator {
+public class SeveralModifiers implements IDetailItemModifier { 
 
-    public static IDetailItemModificator empty() {
-        return new SeveralModificators(Collections.<IDetailItemModificator> emptyList());
+    private final List<IDetailItemModifier> modifiers;
+
+    public static IDetailItemModifier empty() {
+        return new SeveralModifiers(Collections.emptyList());
     }
 
-    public static IDetailItemModificator create(IDetailItemModificator... modificators) {
-        return new SeveralModificators(Arrays.asList(modificators));
+    public static IDetailItemModifier create(IDetailItemModifier... modifiers) {
+        return new SeveralModifiers(Arrays.asList(modifiers));
     }
 
-    public static IDetailItemModificator create(Collection<? extends IDetailItemModificator> modificators) {
-        return new SeveralModificators(modificators);
+    public static IDetailItemModifier create(Collection<? extends IDetailItemModifier> modifiers) {
+        return new SeveralModifiers(modifiers);
     }
 
-    private final List<IDetailItemModificator> modificators;
-
-    private SeveralModificators(Collection<? extends IDetailItemModificator> modificators) {
-        Validate.noNullElements(modificators);
-        this.modificators = new ArrayList<>(modificators);
+    private SeveralModifiers(Collection<? extends IDetailItemModifier> modifiers) {
+        Validate.noNullElements(modifiers);
+        this.modifiers = new ArrayList<>(modifiers);
     }
 
     @Override
     public DetailItem applyModificationsTo(DetailItem item, ZoomLevel z) {
         DetailItem result = item;
-        for (IDetailItemModificator each : modificators) {
+        for (IDetailItemModifier each : modifiers) {
             result = each.applyModificationsTo(result, z);
         }
 

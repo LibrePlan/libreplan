@@ -50,29 +50,25 @@ import org.zkoss.zul.Label;
 
 /**
  * <p>
- * It shows messages from the application to the user with different
- * {@link Level levels} of severity. Once the user does some action in the page,
- * like clicking a button or changing some input the messages automatically
- * disappear.
+ *     It shows messages from the application to the user with different {@link Level levels} of severity.
+ *     Once the user does some action in the page, like clicking a button or changing some input the messages automatically disappear.
+ * </p>
  *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public class MessagesForUser extends GenericForwardComposer implements
-        IMessagesForUser {
+public class MessagesForUser extends GenericForwardComposer implements IMessagesForUser {
 
-    // 2 seconds
-    private static final long DEFAULT_MINIMUM_VISUALIZATION_TIME_MILLIS = 1000 * 2;
+    /** 2 seconds */
+    private static final long DEFAULT_MINIMUM_VISUALIZATION_TIME_MILLIS = 1000 * 2L;
 
     private static final Log LOG = LogFactory.getLog(MessagesForUser.class);
 
-    private static final class PreviousMessagesDiscarder implements
-            EventInterceptor {
+    private static final class PreviousMessagesDiscarder implements EventInterceptor {
 
         private final WeakReference<MessagesForUser> messagesForUserRef;
 
         public PreviousMessagesDiscarder(MessagesForUser messagesForUser) {
-            this.messagesForUserRef = new WeakReference<MessagesForUser>(
-                    messagesForUser);
+            this.messagesForUserRef = new WeakReference<>(messagesForUser);
         }
 
         @Override
@@ -88,17 +84,20 @@ public class MessagesForUser extends GenericForwardComposer implements
         public Event beforeProcessEvent(Event event) {
             MessagesForUser messagesForUser = messagesForUserRef.get();
 
-            if (messagesForUser == null
-                    || messagesForUser.pendingToDetach.isEmpty()
-                    || !eventIndicatesUserActivity(event)) {
+            if ( messagesForUser == null ||
+                    messagesForUser.pendingToDetach.isEmpty() ||
+                    !eventIndicatesUserActivity(event) )
+
                 return event;
-            }
+
 
             long currentTime = System.currentTimeMillis();
-            ComponentHolderTimestamped currrent = null;
-            while ((currrent = messagesForUser.pendingToDetach.peek()) != null
-                    && currrent.minimumVisualizationTimeSurpased(currentTime)) {
-                currrent.component.detach();
+            ComponentHolderTimestamped current;
+
+            while ( (current = messagesForUser.pendingToDetach.peek()) != null &&
+                    current.minimumVisualizationTimeSurpased(currentTime) ) {
+
+                current.component.detach();
                 messagesForUser.pendingToDetach.poll();
             }
             return event;
@@ -107,10 +106,13 @@ public class MessagesForUser extends GenericForwardComposer implements
         private boolean eventIndicatesUserActivity(Event event) {
             if (event instanceof MouseEvent) {
                 MouseEvent e = (MouseEvent) event;
+
                 return e.getName().equals("onClick");
             }
+
             if (event instanceof InputEvent) {
                 InputEvent e = (InputEvent) event;
+
                 return !e.getName().equals("onBlur");
             }
             return event instanceof CheckEvent || event instanceof SelectEvent;
@@ -123,7 +125,9 @@ public class MessagesForUser extends GenericForwardComposer implements
     }
 
     private class ComponentHolderTimestamped {
+
         private final Component component;
+
         private final long timestamp;
 
         ComponentHolderTimestamped(Component component) {
@@ -140,7 +144,7 @@ public class MessagesForUser extends GenericForwardComposer implements
 
     private final long minimumVisualizationTimeMilliseconds;
 
-    private Queue<ComponentHolderTimestamped> pendingToDetach = new ConcurrentLinkedQueue<ComponentHolderTimestamped>();
+    private Queue<ComponentHolderTimestamped> pendingToDetach = new ConcurrentLinkedQueue<>();
 
     private static final String DETACH_EVENT_NAME = "onMarkDetached";
 
@@ -148,22 +152,19 @@ public class MessagesForUser extends GenericForwardComposer implements
         this(container, DEFAULT_MINIMUM_VISUALIZATION_TIME_MILLIS);
     }
 
-    public MessagesForUser(Component container,
-            long minimumVisualizationTimeMilliseconds) {
+    public MessagesForUser(Component container, long minimumVisualizationTimeMilliseconds) {
         this.container = container;
         this.minimumVisualizationTimeMilliseconds = minimumVisualizationTimeMilliseconds;
-        container.getPage().getDesktop()
-                .addListener(new PreviousMessagesDiscarder(this));
+        container.getPage().getDesktop().addListener(new PreviousMessagesDiscarder(this));
     }
 
     @Override
     public void invalidValue(InvalidValue invalidValue, ICustomLabelCreator customLabelCreator) {
-        if (customLabelCreator == null) {
+        if (customLabelCreator == null)
             invalidValue(invalidValue);
-        } else {
-            addMessage(Level.WARNING, customLabelCreator
-                    .createLabelFor(invalidValue));
-        }
+        else
+            addMessage(Level.WARNING, customLabelCreator.createLabelFor(invalidValue));
+
     }
 
     @Override
@@ -174,6 +175,7 @@ public class MessagesForUser extends GenericForwardComposer implements
     public static Label createLabelFor(InvalidValue invalidValue) {
         Label result = new Label();
         result.setValue(_(invalidValue.getMessage()));
+
         return result;
     }
 
@@ -186,14 +188,10 @@ public class MessagesForUser extends GenericForwardComposer implements
         final Div messageEntry = createMessage(level, label);
         container.appendChild(messageEntry);
         Events.echoEvent(DETACH_EVENT_NAME, messageEntry, "");
-        messageEntry.addEventListener(DETACH_EVENT_NAME, new EventListener() {
 
-            @Override
-            public void onEvent(Event event) {
-                pendingToDetach.offer(new ComponentHolderTimestamped(
-                        messageEntry));
-            }
-        });
+        messageEntry.addEventListener(
+                DETACH_EVENT_NAME,
+                (EventListener) event -> pendingToDetach.offer(new ComponentHolderTimestamped(messageEntry)));
     }
 
     private Div createMessage(Level level, final Component label) {
@@ -203,12 +201,14 @@ public class MessagesForUser extends GenericForwardComposer implements
         div.setSclass("message_" + level.toString());
         div.appendChild(tick);
         div.appendChild(label);
+
         return div;
     }
 
     @Override
     public void clearMessages() {
-        List<Object> children = new ArrayList<Object>(container.getChildren());
+        List<Object> children = new ArrayList<>(container.getChildren());
+
         for (Object child : children) {
             Component c = (Component) child;
             c.detach();
@@ -223,13 +223,12 @@ public class MessagesForUser extends GenericForwardComposer implements
 
     @Override
     public void showInvalidValues(ValidationException e, ICustomLabelCreator customLabelCreator) {
-        for (InvalidValue invalidValue : e.getInvalidValues()) {
+        for (InvalidValue invalidValue : e.getInvalidValues())
             invalidValue(invalidValue, customLabelCreator);
-        }
-        if (!StringUtils.isEmpty(e.getMessage())
-                && e.getInvalidValues().isEmpty()) {
+
+        if (!StringUtils.isEmpty(e.getMessage()) && e.getInvalidValues().isEmpty())
             showMessage(Level.WARNING, e.getMessage());
-        }
+
         LOG.warn(e.getMessage());
     }
 

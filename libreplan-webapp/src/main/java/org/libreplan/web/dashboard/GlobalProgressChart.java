@@ -33,10 +33,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.zkoss.zk.ui.util.Clients;
 
 /**
-*
-* @author Diego Pino García <dpino@igalia.com>
-*
-*/
+ * @author Diego Pino García <dpino@igalia.com>
+ */
 public class GlobalProgressChart {
 
     public static String SPREAD_PROGRESS;
@@ -47,11 +45,11 @@ public class GlobalProgressChart {
 
     public static String CRITICAL_PATH_DURATION;
 
-    private Map<String, BigDecimal> current = new LinkedHashMap<String, BigDecimal>();
+    private Map<String, BigDecimal> current = new LinkedHashMap<>();
 
-    private Map<String, BigDecimal> expected = new LinkedHashMap<String, BigDecimal>();
+    private Map<String, BigDecimal> expected = new LinkedHashMap<>();
 
-    private List<Series> series = new ArrayList<Series>();
+    private List<Series> series = new ArrayList<>();
 
     private GlobalProgressChart() {
         series.add(Series.create(_("Current"), "#004469"));
@@ -82,7 +80,7 @@ public class GlobalProgressChart {
     }
 
     private String jsonifyPercentages(Collection<BigDecimal> array) {
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
 
         int i = 1;
         for (BigDecimal each : array) {
@@ -92,7 +90,7 @@ public class GlobalProgressChart {
     }
 
     private String jsonify(Collection<?> list) {
-        Collection<String> result = new ArrayList<String>();
+        Collection<String> result = new ArrayList<>();
         for (Object each : list) {
             result.add(jsonify(each));
         }
@@ -110,9 +108,9 @@ public class GlobalProgressChart {
     }
 
     /**
-     * The order of the ticks is taken from the keys in current
+     * The order of the ticks is taken from the keys in current.
      *
-     * @return
+     * @return {@link String}
      */
     public String getTicks() {
         return jsonify(current.keySet());
@@ -124,46 +122,38 @@ public class GlobalProgressChart {
                 jsonify(_("Project progress percentage")),
                 jsonify(_("Progress percentage per progress type")),
                 getTicks(), getSeries());
-        String command = String.format("global_progress.render(%s, %s);",
-                getPercentages(), params);
+
+        String command = String.format("global_progress.render(%s, %s);", getPercentages(), params);
         Clients.evalJavaScript(command);
     }
 
+    static class Series {
 
-    /**
-    *
-    * @author Diego Pino García <dpino@igalia.com>
-    *
-    */
-   static class Series {
+        private String label;
 
-       private String label;
+        private String color;
 
-       private String color;
+        private Series() {
+        }
 
-       private Series() {
+        public static Series create(String label) {
+            Series series = new Series();
+            series.label = label;
+            return series;
+        }
 
-       }
+        public static Series create(String label, String color) {
+            Series series = new Series();
+            series.label = label;
+            series.color = color;
+            return series;
+        }
 
-       public static Series create(String label) {
-           Series series = new Series();
-           series.label = label;
-           return series;
-       }
+        @Override
+        public String toString() {
+            return String.format("{\"label\": \"%s\", \"color\": \"%s\"}", label, color);
+        }
 
-       public static Series create(String label, String color) {
-           Series series = new Series();
-           series.label = label;
-           series.color = color;
-           return series;
-       }
-
-       @Override
-       public String toString() {
-           return String.format("{\"label\": \"%s\", \"color\": \"%s\"}",
-                   label, color);
-       }
-
-   }
+    }
 
 }

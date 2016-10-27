@@ -27,6 +27,7 @@ import java.util.Map;
 
 import org.libreplan.business.resources.entities.CriterionType;
 import org.libreplan.business.resources.entities.PredefinedCriterionTypes;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -37,7 +38,7 @@ import org.springframework.stereotype.Component;
  * @author Diego Pino García <dpino@igalia.com>
  */
 @Component
-@Scope("singleton")
+@Scope(BeanDefinition.SCOPE_SINGLETON)
 public class PredefinedCriterionTypesProvider implements ICriterionTypeProvider {
 
     public PredefinedCriterionTypesProvider() {
@@ -45,10 +46,12 @@ public class PredefinedCriterionTypesProvider implements ICriterionTypeProvider 
 
     @Override
     public Map<CriterionType, List<String>> getRequiredCriterions() {
-        Map<CriterionType, List<String>> result = new HashMap<CriterionType, List<String>>();
+        Map<CriterionType, List<String>> result = new HashMap<>();
+
         for (PredefinedCriterionTypes type : PredefinedCriterionTypes.values()) {
             result.put(CriterionType.fromPredefined(type), type.getPredefined());
         }
+
         return result;
     }
 }

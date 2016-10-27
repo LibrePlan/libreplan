@@ -28,6 +28,7 @@ import org.libreplan.business.resources.entities.Resource;
 
 /**
  * Calendar for a {@link Resource}.
+ *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
@@ -41,6 +42,7 @@ public class ResourceCalendar extends BaseCalendar {
         if (capacity == null) {
             return 1;
         }
+
         return capacity;
     }
 
@@ -60,8 +62,7 @@ public class ResourceCalendar extends BaseCalendar {
 
     private ResourceCalendar(CalendarData calendarData) {
         super(calendarData);
-        CalendarAvailability calendarAvailability = CalendarAvailability
-                .create(new LocalDate(), null);
+        CalendarAvailability calendarAvailability = CalendarAvailability.create(new LocalDate(), null);
         addNewCalendarAvailability(calendarAvailability);
     }
 

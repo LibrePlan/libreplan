@@ -37,30 +37,32 @@ import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.resources.entities.ResourceEnum;
 
 /**
- * A collection of HoursGroup with the same name required <br />
+ * A collection of HoursGroup with the same name required.
+ * <br />
+ *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public class AggregatedHoursGroup {
 
     private static class GroupingCriteria {
 
-        private static Map<GroupingCriteria, List<HoursGroup>> byCriterions(
-                Collection<? extends HoursGroup> hours) {
-            Map<GroupingCriteria, List<HoursGroup>> result = new HashMap<GroupingCriteria, List<HoursGroup>>();
+        private static Map<GroupingCriteria, List<HoursGroup>> byCriterions(Collection<? extends HoursGroup> hours) {
+            Map<GroupingCriteria, List<HoursGroup>> result = new HashMap<>();
             for (HoursGroup each : hours) {
                 GroupingCriteria key = asGroupingCriteria(each);
+
                 if (!result.containsKey(key)) {
-                    result.put(key,
-                            new ArrayList<HoursGroup>());
+                    result.put(key, new ArrayList<>());
                 }
+
                 result.get(key).add(each);
             }
+
             return result;
         }
 
         private static GroupingCriteria asGroupingCriteria(HoursGroup hoursGroup) {
-            return new GroupingCriteria(hoursGroup.getResourceType(),
-                    hoursGroup.getValidCriterions());
+            return new GroupingCriteria(hoursGroup.getResourceType(), hoursGroup.getValidCriterions());
         }
 
         private final ResourceEnum type;
@@ -74,18 +76,16 @@ public class AggregatedHoursGroup {
 
         @Override
         public int hashCode() {
-            return new HashCodeBuilder().append(type).append(criterions)
-                    .toHashCode();
+            return new HashCodeBuilder().append(type).append(criterions).toHashCode();
         }
 
         @Override
         public boolean equals(Object obj) {
             if (obj instanceof GroupingCriteria) {
                 GroupingCriteria other = (GroupingCriteria) obj;
-                return new EqualsBuilder().append(type, other.type).append(
-                        criterions,
-                        other.criterions).isEquals();
+                return new EqualsBuilder().append(type, other.type).append(criterions, other.criterions).isEquals();
             }
+
             return false;
         }
     }
@@ -94,15 +94,12 @@ public class AggregatedHoursGroup {
         return aggregate(Arrays.asList(hours));
     }
 
-    public static List<AggregatedHoursGroup> aggregate(
-            Collection<? extends HoursGroup> hours) {
-        List<AggregatedHoursGroup> result = new ArrayList<AggregatedHoursGroup>();
-        for (Entry<GroupingCriteria, List<HoursGroup>> entry : GroupingCriteria
-                .byCriterions(hours)
-                .entrySet()) {
-            result.add(new AggregatedHoursGroup(entry.getKey(), entry
-                    .getValue()));
+    public static List<AggregatedHoursGroup> aggregate(Collection<? extends HoursGroup> hours) {
+        List<AggregatedHoursGroup> result = new ArrayList<>();
+        for (Entry<GroupingCriteria, List<HoursGroup>> entry : GroupingCriteria.byCriterions(hours).entrySet()) {
+            result.add(new AggregatedHoursGroup(entry.getKey(), entry.getValue()));
         }
+
         return result;
     }
 
@@ -111,6 +108,7 @@ public class AggregatedHoursGroup {
         for (AggregatedHoursGroup each : aggregated) {
             result += each.getHours();
         }
+
         return result;
     }
 
@@ -121,10 +119,8 @@ public class AggregatedHoursGroup {
     private ResourceEnum resourceType;
 
 
-    private AggregatedHoursGroup(GroupingCriteria groupingCriteria,
-            List<HoursGroup> hours) {
-        this.criterions = Collections
-                .unmodifiableSet(groupingCriteria.criterions);
+    private AggregatedHoursGroup(GroupingCriteria groupingCriteria, List<HoursGroup> hours) {
+        this.criterions = Collections.unmodifiableSet(groupingCriteria.criterions);
         this.hoursGroup = Collections.unmodifiableList(hours);
         this.resourceType = groupingCriteria.type;
     }
@@ -146,20 +142,23 @@ public class AggregatedHoursGroup {
         for (HoursGroup each : hoursGroup) {
             result += each.getWorkingHours();
         }
+
         return result;
     }
 
     public String getCriterionsJoinedByComma() {
         List<String> criterionNames = asNames(criterions);
         Collections.sort(criterionNames);
+
         return StringUtils.join(criterionNames, ", ");
     }
 
     private List<String> asNames(Set<Criterion> criterions) {
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
         for (Criterion each : criterions) {
             result.add(each.getName());
         }
+
         return result;
     }
 

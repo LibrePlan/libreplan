@@ -175,7 +175,7 @@ function commonResourceEditAssignedCostCategoryForm($element, $name, $cell, $cca
     _click(_cell("Save"));
     commonResourceEmptyCategoryDate();
     _click(_italic(1, _near(_div("Category name"))));
-    _click(_cell("z-calendar-wkday z-calendar-seld", _near(_div("Category name"))));
+    _click(_cell("z-calendar-weekday z-calendar-selected", _near(_div("Category name"))));
     _click(_cell("Save"));
 }
 

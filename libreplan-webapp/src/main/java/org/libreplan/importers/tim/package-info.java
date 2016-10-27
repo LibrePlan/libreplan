@@ -18,14 +18,15 @@
  */
 
 /**
- * An xmlAdapaters that will be applied within this package
+ * An XMLAdapaters that will be applied within this package.
  *
  * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
  */
 @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapters({
         @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(type = DateTime.class, value = org.libreplan.importers.tim.TimDateTimeAdapter.class),
         @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(type = LocalDate.class, value = org.libreplan.importers.tim.TimLocalDateAdapter.class),
-        @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(type = Date.class, value = org.libreplan.importers.tim.TimTimeAdapter.class) })
+        @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(type = Date.class, value = org.libreplan.importers.tim.TimTimeAdapter.class)
+})
 package org.libreplan.importers.tim;
 
 import java.util.Date;

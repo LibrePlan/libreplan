@@ -31,13 +31,15 @@ import org.zkoss.zk.ui.util.GenericForwardComposer;
 
 /**
  * Controller for enable/disable the autocomplete login.
+ *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 
-// TODO resolve deprecated methods
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class LoginController extends GenericForwardComposer {
+
+    private static final String autocompletedLoginValue = "admin";
 
     @Autowired
     private IConfigurationDAO configurationDAO;
@@ -45,7 +47,7 @@ public class LoginController extends GenericForwardComposer {
     @Override
     public void doAfterCompose(org.zkoss.zk.ui.Component comp) throws Exception {
         super.doAfterCompose(comp);
-        comp.setVariable("loginController", this, true);
+        comp.setAttribute("loginController", this, true);
     }
 
     /**
@@ -53,12 +55,10 @@ public class LoginController extends GenericForwardComposer {
      */
     public String getLoginValue() {
         Configuration configuration = configurationDAO.getConfigurationWithReadOnlyTransaction();
-        String autocompleteLoginValue = "admin";
 
-        boolean condition =
-                ((configuration.isAutocompleteLogin()) && (!configuration.getChangedDefaultAdminPassword()));
-
-        return condition ? autocompleteLoginValue : null;
+        return ((configuration.isAutocompleteLogin()) && (!configuration.getChangedDefaultAdminPassword()))
+                ? this.autocompletedLoginValue
+                : null;
     }
 
 }

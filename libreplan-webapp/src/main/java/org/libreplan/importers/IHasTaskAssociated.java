@@ -22,7 +22,7 @@ package org.libreplan.importers;
 import org.libreplan.business.planner.entities.TaskElement;
 
 /**
- * Contract for the {@link OrderElmentDTO} and {@link MilestoneDTO}.
+ * Contract for the {@link OrderElementDTO} and {@link MilestoneDTO}.
  *
  * Has the method needed to successfully get the task associated.
  *
@@ -35,5 +35,5 @@ public interface IHasTaskAssociated {
      *
      * @return TaskElement associated.
      */
-    public TaskElement getTaskAssociated();
+    TaskElement getTaskAssociated();
 }

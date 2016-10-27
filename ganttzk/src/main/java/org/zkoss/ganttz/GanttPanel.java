@@ -60,56 +60,60 @@ public class GanttPanel extends XulElement implements AfterCompose {
             CommandOnTaskContextualized<?> doubleClickCommand,
             IDisabilityConfiguration disabilityConfiguration,
             FilterAndParentExpandedPredicates predicate) {
+
         this.planner = planner;
-        FunctionalityExposedForExtensions<?> context = (FunctionalityExposedForExtensions<?>) planner
-                .getContext();
+        FunctionalityExposedForExtensions<?> context = (FunctionalityExposedForExtensions<?>) planner.getContext();
+
         if (planner.isShowingCriticalPath()) {
             context.showCriticalPath();
         }
+
         this.diagramGraph = context.getDiagramGraph();
-        timeTrackerComponent = timeTrackerForGanttPanel(context
-                .getTimeTracker());
+        timeTrackerComponent = timeTrackerForGanttPanel(context.getTimeTracker());
+
         appendChild(timeTrackerComponent);
         dependencyList = new DependencyList(context);
-        tasksLists = TaskList.createFor(context, doubleClickCommand,
-                commandsOnTasksContextualized, disabilityConfiguration,
-                predicate);
+
+        tasksLists = TaskList.createFor(
+                context, doubleClickCommand, commandsOnTasksContextualized, disabilityConfiguration, predicate);
+
         appendChild(tasksLists);
         appendChild(dependencyList);
     }
 
-    private TimeTrackerComponent timeTrackerForGanttPanel(
-            TimeTracker timeTracker) {
+    private TimeTrackerComponent timeTrackerForGanttPanel(TimeTracker timeTracker) {
         return new TimeTrackerComponent(timeTracker) {
             @Override
             protected void scrollHorizontalPercentage(int daysDisplacement) {
-                response("scroll_horizontal", new AuInvoke(GanttPanel.this,
-                        "scroll_horizontal", "" + daysDisplacement));
+
+                response(
+                        "scroll_horizontal",
+                        new AuInvoke(GanttPanel.this, "scroll_horizontal", Integer.toString(daysDisplacement)));
+
                 moveCurrentPositionScroll();
             }
 
             // FIXME: this is quite awful, it should be simple
             @Override
             protected void moveCurrentPositionScroll() {
-                // get the previous data.
+                // Get the previous data.
                 LocalDate previousStart = getPreviousStart();
 
-                // get the current data
-                int diffDays = getTimeTrackerComponent().getDiffDays(
-                        previousStart);
+                // Get the current data
+                int diffDays = getTimeTrackerComponent().getDiffDays(previousStart);
                 double pixelPerDay = getTimeTrackerComponent().getPixelPerDay();
 
-                response("move_scroll", new AuInvoke(GanttPanel.this,
-                        "move_scroll", "" + diffDays, "" + pixelPerDay));
+                response("move_scroll", new AuInvoke(GanttPanel.this, "move_scroll",
+                        Integer.toString(diffDays),
+                        Double.toString(pixelPerDay)));
             }
 
             protected void updateCurrentDayScroll() {
-                double previousPixelPerDay = getTimeTracker().getMapper()
-                        .getPixelsPerDay()
-                        .doubleValue();
+                double previousPixelPerDay = getTimeTracker().getMapper().getPixelsPerDay().doubleValue();
 
-                response("update_day_scroll", new AuInvoke(GanttPanel.this,
-                        "update_day_scroll", "" + previousPixelPerDay));
+                response(
+                        "update_day_scroll",
+                        new AuInvoke(GanttPanel.this, "update_day_scroll", Double.toString(previousPixelPerDay)));
 
             }
 
@@ -119,14 +123,16 @@ public class GanttPanel extends XulElement implements AfterCompose {
     @Override
     public void afterCompose() {
         tasksLists.afterCompose();
-        dependencyList.setDependencyComponents(tasksLists
-                .asDependencyComponents(diagramGraph.getVisibleDependencies()));
+
+        dependencyList.setDependencyComponents(
+                tasksLists.asDependencyComponents(diagramGraph.getVisibleDependencies()));
+
         timeTrackerComponent.afterCompose();
         dependencyList.afterCompose();
         savePreviousData();
+
         if (planner.isExpandAll()) {
-            FunctionalityExposedForExtensions<?> context = (FunctionalityExposedForExtensions<?>) planner
-                    .getContext();
+            FunctionalityExposedForExtensions<?> context = (FunctionalityExposedForExtensions<?>) planner.getContext();
             context.expandAll();
         }
 
@@ -141,6 +147,7 @@ public class GanttPanel extends XulElement implements AfterCompose {
         for (Task task : this.tasksLists.getAllTasks()) {
             task.updateTooltipText();
         }
+
         for (TaskComponent taskComponent : this.tasksLists.getTaskComponents()) {
             taskComponent.invalidate();
         }
@@ -195,12 +202,7 @@ public class GanttPanel extends XulElement implements AfterCompose {
 
     private void registerZoomLevelChangedListener() {
         if (zoomLevelChangedListener == null) {
-            zoomLevelChangedListener = new IZoomLevelChangedListener() {
-                @Override
-                public void zoomLevelChanged(ZoomLevel detailLevel) {
-                    adjustZoomColumnsHeight();
-                }
-            };
+            zoomLevelChangedListener = detailLevel -> adjustZoomColumnsHeight();
             getTimeTracker().addZoomListener(zoomLevelChangedListener);
         }
     }

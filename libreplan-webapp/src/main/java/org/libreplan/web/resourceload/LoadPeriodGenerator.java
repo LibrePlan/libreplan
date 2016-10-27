@@ -25,7 +25,6 @@ import static org.libreplan.business.workingday.IntraDayDate.max;
 import static org.libreplan.business.workingday.IntraDayDate.min;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -42,7 +41,6 @@ import org.libreplan.business.resources.entities.CriterionCompounder;
 import org.libreplan.business.resources.entities.ICriterion;
 import org.libreplan.business.resources.entities.Resource;
 import org.libreplan.business.workingday.EffortDuration;
-import org.libreplan.business.workingday.EffortDuration.IEffortFrom;
 import org.libreplan.business.workingday.IntraDayDate;
 import org.libreplan.business.workingday.IntraDayDate.PartialDay;
 import org.libreplan.web.planner.TaskElementAdapter;
@@ -50,47 +48,55 @@ import org.zkoss.ganttz.data.GanttDate;
 import org.zkoss.ganttz.data.resourceload.LoadLevel;
 import org.zkoss.ganttz.data.resourceload.LoadPeriod;
 
-interface LoadPeriodGeneratorFactory {
-    LoadPeriodGenerator create(ResourceAllocation<?> allocation);
-}
-
 
 abstract class LoadPeriodGenerator {
 
     private static final Log LOG = LogFactory.getLog(LoadPeriodGenerator.class);
 
+    protected final IntraDayDate start;
+
+    protected final IntraDayDate end;
+
+    private List<ResourceAllocation<?>> allocationsOnInterval = new ArrayList<>();
+
+    protected LoadPeriodGenerator(
+            IntraDayDate start, IntraDayDate end, List<ResourceAllocation<?>> allocationsOnInterval) {
+
+        Validate.notNull(start);
+        Validate.notNull(end);
+        Validate.notNull(allocationsOnInterval);
+        this.start = start;
+        this.end = end;
+        this.allocationsOnInterval = ResourceAllocation.getSatisfied(allocationsOnInterval);
+    }
+
     public static LoadPeriodGeneratorFactory onResource(Resource resource) {
         return new OnResourceFactory(resource);
     }
 
-    public static LoadPeriodGeneratorFactory onResourceSatisfying(
-            Resource resource, Collection<Criterion> criterions) {
+    public static LoadPeriodGeneratorFactory onResourceSatisfying(Resource resource, Collection<Criterion> criterions) {
         return new OnResourceFactory(resource, criterions);
     }
 
-    private static class OnResourceFactory implements
-            LoadPeriodGeneratorFactory {
+    private static class OnResourceFactory implements LoadPeriodGeneratorFactory {
 
         private final Resource resource;
 
         private final ICriterion criterion;
 
         public OnResourceFactory(Resource resource) {
-            this(resource, Collections.<Criterion> emptyList());
+            this(resource, Collections.emptyList());
         }
 
-        public OnResourceFactory(Resource resource,
-                Collection<Criterion> criterionsToSatisfy) {
+        public OnResourceFactory(Resource resource, Collection<Criterion> criterionsToSatisfy) {
             Validate.notNull(resource);
             this.resource = resource;
-            this.criterion = CriterionCompounder.buildAnd(criterionsToSatisfy)
-                            .getResult();
+            this.criterion = CriterionCompounder.buildAnd(criterionsToSatisfy).getResult();
         }
 
         @Override
         public LoadPeriodGenerator create(ResourceAllocation<?> allocation) {
-            return new LoadPeriodGeneratorOnResource(resource, allocation,
-                    criterion);
+            return new LoadPeriodGeneratorOnResource(resource, allocation, criterion);
         }
 
     }
@@ -98,54 +104,30 @@ abstract class LoadPeriodGenerator {
     public static LoadPeriodGeneratorFactory onCriterion(
             final Criterion criterion, final IResourcesSearcher resourceSearch) {
 
-        final List<Resource> potentialResources = resourceSearch.searchBoth()
-                .byCriteria(Collections.singletonList(criterion)).execute();
+        final List<Resource> potentialResources =
+                resourceSearch.searchBoth().byCriteria(Collections.singletonList(criterion)).execute();
 
-        return new LoadPeriodGeneratorFactory() {
-            @Override
-            public LoadPeriodGenerator create(ResourceAllocation<?> allocation) {
-                return new LoadPeriodGeneratorOnCriterion(criterion,
-                        allocation, potentialResources);
-            }
-        };
-    }
-
-    protected final IntraDayDate start;
-    protected final IntraDayDate end;
-
-    private List<ResourceAllocation<?>> allocationsOnInterval = new ArrayList<ResourceAllocation<?>>();
-
-    protected LoadPeriodGenerator(IntraDayDate start, IntraDayDate end,
-            List<ResourceAllocation<?>> allocationsOnInterval) {
-        Validate.notNull(start);
-        Validate.notNull(end);
-        Validate.notNull(allocationsOnInterval);
-        this.start = start;
-        this.end = end;
-        this.allocationsOnInterval = ResourceAllocation
-                .getSatisfied(allocationsOnInterval);
+        return allocation -> new LoadPeriodGeneratorOnCriterion(criterion, allocation, potentialResources);
     }
 
     public List<LoadPeriodGenerator> join(LoadPeriodGenerator next) {
         if (!overlaps(next)) {
             return stripEmpty(this, next);
         }
+
         if (isIncluded(next)) {
-            return stripEmpty(this.until(next.start), intersect(next), this
-                    .from(next.end));
+            return stripEmpty(this.until(next.start), intersect(next), this.from(next.end));
         }
         assert overlaps(next) && !isIncluded(next);
-        return stripEmpty(this.until(next.start), intersect(next), next
-                .from(end));
+        return stripEmpty(this.until(next.start), intersect(next), next.from(end));
     }
 
     protected List<ResourceAllocation<?>> getAllocationsOnInterval() {
         return allocationsOnInterval;
     }
 
-    private List<LoadPeriodGenerator> stripEmpty(
-            LoadPeriodGenerator... generators) {
-        List<LoadPeriodGenerator> result = new ArrayList<LoadPeriodGenerator>();
+    private List<LoadPeriodGenerator> stripEmpty(LoadPeriodGenerator... generators) {
+        List<LoadPeriodGenerator> result = new ArrayList<>();
         for (LoadPeriodGenerator loadPeriodGenerator : generators) {
             if (!loadPeriodGenerator.isEmpty()) {
                 result.add(loadPeriodGenerator);
@@ -158,19 +140,18 @@ abstract class LoadPeriodGenerator {
         return start.equals(end);
     }
 
-    protected abstract LoadPeriodGenerator create(IntraDayDate start,
-            IntraDayDate end, List<ResourceAllocation<?>> allocationsOnInterval);
+    protected abstract LoadPeriodGenerator create(
+            IntraDayDate start, IntraDayDate end, List<ResourceAllocation<?>> allocationsOnInterval);
 
     private LoadPeriodGenerator intersect(LoadPeriodGenerator other) {
-        return create(max(this.start, other.start),
-                min(this.end, other.end), plusAllocations(other));
+        return create(max(this.start, other.start), min(this.end, other.end), plusAllocations(other));
     }
 
-    private List<ResourceAllocation<?>> plusAllocations(
-            LoadPeriodGenerator other) {
-        List<ResourceAllocation<?>> result = new ArrayList<ResourceAllocation<?>>();
+    private List<ResourceAllocation<?>> plusAllocations(LoadPeriodGenerator other) {
+        List<ResourceAllocation<?>> result = new ArrayList<>();
         result.addAll(allocationsOnInterval);
         result.addAll(other.allocationsOnInterval);
+
         return result;
     }
 
@@ -183,13 +164,11 @@ abstract class LoadPeriodGenerator {
     }
 
     boolean overlaps(LoadPeriodGenerator other) {
-        return (start.compareTo(other.end) < 0 && other.start
-                .compareTo(this.end) < 0);
+        return start.compareTo(other.end) < 0 && other.start.compareTo(this.end) < 0;
     }
 
     private boolean isIncluded(LoadPeriodGenerator other) {
-        return other.start.compareTo(start) >= 0
-                && other.end.compareTo(end) <= 0;
+        return other.start.compareTo(start) >= 0 && other.end.compareTo(end) <= 0;
     }
 
     /**
@@ -197,32 +176,32 @@ abstract class LoadPeriodGenerator {
      */
     public LoadPeriod build() {
         if (start.compareTo(end) > 0) {
-            LOG
-                    .warn("the start date is after end date. Inconsistent state for "
-                            + allocationsOnInterval + ". LoadPeriod ignored");
+
+            LOG.warn("the start date is after end date. Inconsistent state for " +
+                    allocationsOnInterval + ". LoadPeriod ignored");
+
             return null;
         }
         EffortDuration totalEffort = getTotalAvailableEffort();
         EffortDuration effortAssigned = getEffortAssigned();
-        return new LoadPeriod(asGantt(start), asGantt(end),
+
+        return new LoadPeriod(
+                asGantt(start),
+                asGantt(end),
                 totalEffort.toFormattedString(),
                 effortAssigned.toFormattedString(),
-                new LoadLevel(calculateLoadPercentage(totalEffort,
-                        effortAssigned)));
+                new LoadLevel(calculateLoadPercentage(totalEffort, effortAssigned)));
     }
 
     private GanttDate asGantt(IntraDayDate date) {
-        return TaskElementAdapter.toGantt(
-                date,
-                inferDayCapacity(allocationsOnInterval,
-                        PartialDay.wholeDay(date.getDate())));
+        return TaskElementAdapter.toGantt(date, inferDayCapacity(allocationsOnInterval, PartialDay.wholeDay(date.getDate())));
     }
 
-    private EffortDuration inferDayCapacity(
-            List<ResourceAllocation<?>> allocationsOnInterval, PartialDay day) {
+    private EffortDuration inferDayCapacity(List<ResourceAllocation<?>> allocationsOnInterval, PartialDay day) {
         if (allocationsOnInterval.isEmpty()) {
             return null;
         }
+
         EffortDuration result = EffortDuration.zero();
         for (ResourceAllocation<?> each : allocationsOnInterval) {
             ICalendar allocationCalendar = each.getAllocationCalendar();
@@ -233,37 +212,30 @@ abstract class LoadPeriodGenerator {
 
     protected abstract EffortDuration getTotalAvailableEffort();
 
-    private int calculateLoadPercentage(EffortDuration totalEffort,
-            EffortDuration effortAssigned) {
+    private int calculateLoadPercentage(EffortDuration totalEffort, EffortDuration effortAssigned) {
         if (totalEffort.isZero()) {
             return effortAssigned.isZero() ? 0 : Integer.MAX_VALUE;
         }
+
         if (effortAssigned.isZero()) {
-            LOG.warn("total effort is " + totalEffort
-                    + " but effortAssigned is zero");
+            LOG.warn("total effort is " + totalEffort + " but effortAssigned is zero");
             getEffortAssigned();
+
             return 0;
         }
         Fraction fraction = effortAssigned.divivedBy(totalEffort);
         Fraction percentage = fraction.multiplyBy(Fraction.getFraction(100, 1));
+
         return percentage.intValue();
     }
 
     protected abstract EffortDuration getEffortAssigned();
 
     protected final EffortDuration sumAllocations() {
-        return EffortDuration.sum(allocationsOnInterval,
-                new IEffortFrom<ResourceAllocation<?>>() {
-
-                    @Override
-                    public EffortDuration from(ResourceAllocation<?> each) {
-                        return getAssignedEffortFor(each);
-                    }
-                });
+        return EffortDuration.sum(allocationsOnInterval, this::getAssignedEffortFor);
     }
 
-    protected abstract EffortDuration getAssignedEffortFor(
-            ResourceAllocation<?> resourceAllocation);
+    protected abstract EffortDuration getAssignedEffortFor(ResourceAllocation<?> resourceAllocation);
 
     public IntraDayDate getStart() {
         return start;
@@ -280,28 +252,28 @@ class LoadPeriodGeneratorOnResource extends LoadPeriodGenerator {
 
     private final ICriterion criterion;
 
-    LoadPeriodGeneratorOnResource(Resource resource, IntraDayDate start,
-            IntraDayDate end,
-            List<ResourceAllocation<?>> allocationsOnInterval,
-            ICriterion criterion) {
+    LoadPeriodGeneratorOnResource(Resource resource,
+                                  IntraDayDate start,
+                                  IntraDayDate end,
+                                  List<ResourceAllocation<?>> allocationsOnInterval,
+                                  ICriterion criterion) {
+
         super(start, end, allocationsOnInterval);
         this.resource = resource;
         this.criterion = criterion;
     }
 
-    LoadPeriodGeneratorOnResource(Resource resource,
-            ResourceAllocation<?> initial, ICriterion criterion) {
-        super(initial.getIntraDayStartDate(), initial.getIntraDayEndDate(),
-                Arrays.<ResourceAllocation<?>> asList(initial));
+    LoadPeriodGeneratorOnResource(Resource resource, ResourceAllocation<?> initial, ICriterion criterion) {
+        super(initial.getIntraDayStartDate(), initial.getIntraDayEndDate(), Collections.singletonList(initial));
         this.resource = resource;
         this.criterion = criterion;
     }
 
     @Override
-    protected LoadPeriodGenerator create(IntraDayDate start, IntraDayDate end,
-            List<ResourceAllocation<?>> allocationsOnInterval) {
-        return new LoadPeriodGeneratorOnResource(resource, start, end,
-                allocationsOnInterval, criterion);
+    protected LoadPeriodGenerator create(
+            IntraDayDate start, IntraDayDate end, List<ResourceAllocation<?>> allocationsOnInterval) {
+
+        return new LoadPeriodGeneratorOnResource(resource, start, end, allocationsOnInterval, criterion);
     }
 
     @Override
@@ -310,8 +282,7 @@ class LoadPeriodGeneratorOnResource extends LoadPeriodGenerator {
     }
 
     @Override
-    protected EffortDuration getAssignedEffortFor(
-            ResourceAllocation<?> resourceAllocation) {
+    protected EffortDuration getAssignedEffortFor(ResourceAllocation<?> resourceAllocation) {
         return resourceAllocation.getAssignedEffort(resource, start, end);
     }
 
@@ -325,52 +296,48 @@ class LoadPeriodGeneratorOnResource extends LoadPeriodGenerator {
 class LoadPeriodGeneratorOnCriterion extends LoadPeriodGenerator {
 
     private final Criterion criterion;
+
     private final List<Resource> resourcesSatisfyingCriterionAtSomePoint;
 
     public LoadPeriodGeneratorOnCriterion(Criterion criterion,
-            ResourceAllocation<?> allocation,
-            List<Resource> resourcesSatisfyingCriterionAtSomePoint) {
-        this(criterion, allocation.getIntraDayStartDate(), allocation
-                .getIntraDayEndDate(),
-                Arrays.<ResourceAllocation<?>> asList(allocation),
+                                          ResourceAllocation<?> allocation,
+                                          List<Resource> resourcesSatisfyingCriterionAtSomePoint) {
+
+        this(
+                criterion,
+                allocation.getIntraDayStartDate(),
+                allocation.getIntraDayEndDate(),
+                Collections.singletonList(allocation),
                 resourcesSatisfyingCriterionAtSomePoint);
     }
 
     public LoadPeriodGeneratorOnCriterion(Criterion criterion,
-            IntraDayDate startDate, IntraDayDate endDate,
-            List<ResourceAllocation<?>> allocations,
-            List<Resource> resourcesSatisfyingCriterionAtSomePoint) {
+                                          IntraDayDate startDate, IntraDayDate endDate,
+                                          List<ResourceAllocation<?>> allocations,
+                                          List<Resource> resourcesSatisfyingCriterionAtSomePoint) {
+
         super(startDate, endDate, allocations);
         this.criterion = criterion;
         this.resourcesSatisfyingCriterionAtSomePoint = resourcesSatisfyingCriterionAtSomePoint;
     }
 
     @Override
-    protected LoadPeriodGenerator create(IntraDayDate start, IntraDayDate end,
-            List<ResourceAllocation<?>> allocationsOnInterval) {
-        LoadPeriodGeneratorOnCriterion result = new LoadPeriodGeneratorOnCriterion(
-                criterion, start, end, allocationsOnInterval,
-                resourcesSatisfyingCriterionAtSomePoint);
-        return result;
+    protected LoadPeriodGenerator create(
+            IntraDayDate start, IntraDayDate end, List<ResourceAllocation<?>> allocationsOnInterval) {
+
+        return new LoadPeriodGeneratorOnCriterion(
+                criterion, start, end, allocationsOnInterval, resourcesSatisfyingCriterionAtSomePoint);
     }
 
     @Override
-    protected EffortDuration getAssignedEffortFor(
-            ResourceAllocation<?> resourceAllocation) {
+    protected EffortDuration getAssignedEffortFor(ResourceAllocation<?> resourceAllocation) {
         return resourceAllocation.getAssignedEffort(criterion, start, end);
     }
 
     @Override
     protected EffortDuration getTotalAvailableEffort() {
-        return EffortDuration.sum(resourcesSatisfyingCriterionAtSomePoint,
-                new IEffortFrom<Resource>() {
-
-                    @Override
-                    public EffortDuration from(Resource resource) {
-                        return resource
-                                .getTotalEffortFor(start, end, criterion);
-                    }
-                });
+        return EffortDuration.sum(
+                resourcesSatisfyingCriterionAtSomePoint, resource -> resource.getTotalEffortFor(start, end, criterion));
     }
 
     @Override
@@ -378,4 +345,8 @@ class LoadPeriodGeneratorOnCriterion extends LoadPeriodGenerator {
         return sumAllocations();
     }
 
+}
+
+interface LoadPeriodGeneratorFactory {
+    LoadPeriodGenerator create(ResourceAllocation<?> allocation);
 }

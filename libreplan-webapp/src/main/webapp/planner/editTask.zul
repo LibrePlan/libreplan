@@ -18,33 +18,28 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<?component name="tabPanelTaskProperties"
-    macroURI="/planner/taskpanels/_tabPanelTaskProperties.zul"
-    inline="true" ?>
+<?component name="tabPanelTaskProperties"macroURI="/planner/taskpanels/_tabPanelTaskProperties.zul" inline="true" ?>
 
 <?component name="tabPanelNonLimitingResourceAllocation"
-    macroURI="/planner/taskpanels/_tabPanelNonLimitingResourceAllocation.zul"
-    inline="true" ?>
+        macroURI="/planner/taskpanels/_tabPanelNonLimitingResourceAllocation.zul" inline="true" ?>
 
 <?component name="tabPanelLimitingResourceAllocation"
-    macroURI="/planner/taskpanels/_tabPanelLimitingResourceAllocation.zul"
-    inline="true" ?>
+        macroURI="/planner/taskpanels/_tabPanelLimitingResourceAllocation.zul" inline="true" ?>
 
-<?component name="tabPanelSubcontract"
-    macroURI="/planner/taskpanels/_tabPanelSubcontract.zul"
-    inline="true" ?>
+<?component name="tabPanelSubcontract" macroURI="/planner/taskpanels/_tabPanelSubcontract.zul" inline="true" ?>
 
 <zk>
 
-    <zscript><![CDATA[
-        editController = arg.get("editController");
+    <zscript>
+        <![CDATA[
+            editController = arg.get("editController");
 
-        propertiesController = editController.taskPropertiesController;
-        allocationController = editController.resourceAllocationController;
-        limitingAllocationController = editController.limitingResourceAllocationController;
+            propertiesController = editController.taskPropertiesController;
+            allocationController = editController.resourceAllocationController;
+            limitingAllocationController = editController.limitingResourceAllocationController;
 
-        subController = editController.subcontractController;
-    ]]>
+            subController = editController.subcontractController;
+        ]]>
     </zscript>
 
     <window id="editTaskWindow"
@@ -63,32 +58,33 @@
         <tabbox id="editTaskTabbox">
             <tabs>
                 <tab id="taskPropertiesTab" label="${i18n:_('Task properties')}"
-                    onSelect = "propertiesController.refreshTaskEndDate();"/>
+                     onSelect = "propertiesController.refreshTaskEndDate();"/>
                 <tab id="resourceAllocationTab" label="${i18n:_('Normal resource allocation')}" />
                 <tab id="limitingResourceAllocationTab" label="${i18n:_('Queue-based resource allocation')}" />
                 <tab id="subcontractTab" label="${i18n:_('Subcontract')}"
-                    onSelect = "subController.refressGridEndDates();"/>
+                     onSelect = "subController.refreshGridEndDates();"/>
             </tabs>
             <tabpanels>
                 <tabPanelTaskProperties id="taskPropertiesTabpanel" />
                 <tabPanelNonLimitingResourceAllocation id="resourceAllocationTabpanel" />
-                <tabPanelLimitingResourceAllocation id="limitingResourceAllocationTabpanel" />
+                <tabPanelLimitingResourceAllocation id="limitingResourceAllocationTabpanel"/>
                 <tabPanelSubcontract id="subcontractTabpanel" />
             </tabpanels>
         </tabbox>
 
         <hbox>
             <button id="ok" label="${i18n:_('Accept')}"
-                onClick="editController.accept()" sclass="save-button global-action" />
+                    onClick="editController.accept()" sclass="save-button global-action" />
             <button id="cancel" label="${i18n:_('Cancel')}"
-                onClick="editController.cancel()" sclass="cancel-button global-action" />
+                    onClick="editController.cancel()" sclass="cancel-button global-action" />
         </hbox>
 
     </window>
 
-    <zscript><![CDATA[
-        editTaskWindow.setVariable("editController", editController, true);
-    ]]>
+    <zscript>
+        <![CDATA[
+            editTaskWindow.setAttribute("editController", editController, true);
+        ]]>
     </zscript>
 
 </zk>

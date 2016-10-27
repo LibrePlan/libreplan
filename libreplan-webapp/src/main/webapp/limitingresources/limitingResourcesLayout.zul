@@ -20,17 +20,13 @@
 -->
 
 <?xel-method prefix="i18n" name="_" class="org.libreplan.web.I18nHelper"
-    signature="java.lang.String _(java.lang.String name)" ?>
+        signature="java.lang.String _(java.lang.String name)" ?>
 
 <?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
 
-<?component name="manualAllocationWindow"
-    macroURI="/limitingresources/manualAllocation.zul"
-    inline="true" ?>
+<?component name="manualAllocationWindow" macroURI="/limitingresources/manualAllocation.zul" inline="true" ?>
 
-<?component name="editTaskWindow"
-    macroURI="/planner/editTask.zul"
-    inline="true" ?>
+<?component name="editTaskWindow" macroURI="/planner/editTask.zul" inline="true" ?>
 
 <zk xmlns:n="http://www.zkoss.org/2005/zk/native">
 
@@ -42,12 +38,14 @@
 
     <n:script type="text/javascript" src="${contextPath}/js/highlightDaysInInterval.js" />
 
-    <zscript><![CDATA[
-        limitingResourcesPanel = self;
-        editController = editTaskController;
-    ]]>
+    <zscript>
+        <![CDATA[
+            limitingResourcesPanel = self;
+            editController = editTaskController;
+        ]]>
     </zscript>
-    <borderlayout sclass="resourcesloadlayout" width="auto">
+
+    <borderlayout sclass="resourcesloadlayout" width="auto" height="100%">
 
         <!-- Top control button bar -->
         <north height="30px" border="0" sclass="toolbar-box">
@@ -55,17 +53,17 @@
 
                 <separator/>
 
-                <button image="/common/img/ico_save.png" style="margin-top: -4px"
-                    tooltiptext="${i18n:_('Save')}"
-                    onClick="limitingResourcesController.saveQueues()"/>
+                <button image="/common/img/ico_save.png"
+                        tooltiptext="${i18n:_('Save')}"
+                        onClick="limitingResourcesController.saveQueues()"/>
 
                 <separator/>
 
                 <!-- Zoom -->
                 <label>${i18n:_('Zoom')}:</label>
                 <listbox id="listZoomLevels" mold="select" rows="1"
-                    model="${limitingResourcesPanel.zoomLevels}"
-                    onSelect="limitingResourcesPanel.setZoomLevel(self.selectedItem.value);" >
+                         model="${limitingResourcesPanel.zoomLevels}"
+                         onSelect="limitingResourcesPanel.setZoomLevel(self.selectedItem.value);" >
                 </listbox>
 
                 <separator/>
@@ -74,8 +72,10 @@
                 <button id="paginationDownButton" tooltiptext="${i18n:_('Page down')}" disabled="true"
                         image="/common/img/ico_left.png"
                         onClick="limitingResourcesPanel.paginationDown();" />
+
                 <listbox id="horizontalPagination" mold="select" rows="1" visible="true"
-                        onSelect="limitingResourcesPanel.goToSelectedHorizontalPage();" />
+                         onSelect="limitingResourcesPanel.goToSelectedHorizontalPage();" />
+
                 <button id="paginationUpButton" tooltiptext="${i18n:_('Page up')}"
                         image="/common/img/ico_right.png"
                         onClick="limitingResourcesPanel.paginationUp();" />
@@ -85,12 +85,11 @@
 
         <!-- List of queues -->
         <center border="0">
-            <borderlayout sclass="resourcesload limitingresources">
-                <west size="250px" flex="true" collapsible="true"
-                    splittable="true" autoscroll="true">
+            <borderlayout sclass="resources-load limiting-resources">
+                <west width="250px" vflex="1" collapsible="true" splittable="true" autoscroll="true">
 
                     <borderlayout >
-                        <north border="0" height="31px" flex="true" collapsible="true">
+                        <north border="0" height="31px" vflex="min" hflex="1" collapsible="true">
                             <tree fixedLayout="true">
                                 <treecols>
                                     <treecol label="${i18n:_('Name')}" height="26px"/>
@@ -98,48 +97,60 @@
                             </tree>
                         </north>
                         <center border="0" style="overflow-x:scroll">
-                            <div sclass="leftpanelgap" id="insertionPointLeftPanel"></div>
+                            <div sclass="leftpanelgap" id="insertionPointLeftPanel" height="100%"/>
                         </center>
                     </borderlayout>
                 </west>
 
                 <center sclass="taskspanel">
                     <borderlayout>
-                        <north border="0"><div sclass="timetrackergap" height="30px" id="insertionPointTimetracker"></div></north>
-                        <center autoscroll="true" border="0" sclass="rightpanellayout">
-                            <div id="insertionPointRightPanel" sclass="taskspanelgap"></div>
+                        <north border="0">
+                            <div sclass="timetrackergap" height="30px" id="insertionPointTimetracker"/>
+                        </north>
+
+                        <center autoscroll="true" border="0" sclass="rightpanel-layout">
+                            <div id="insertionPointRightPanel" sclass="taskspanel-gap" height="100%"/>
                         </center>
                     </borderlayout>
                 </center>
             </borderlayout>
         </center>
 
-        <south height="170px" collapsible="true" title="${i18n:_('Tasks input buffer')}" sclass="limiting-resources-buffer">
+        <south height="187px" collapsible="true" title="${i18n:_('Tasks input buffer')}"
+               sclass="limiting-resources-buffer">
+
             <vbox width="100%">
                 <!-- Assign selected elements -->
                 <hbox style="padding-left: 10px; padding-top: 3px">
                     <button id="btnAssignSelectedItems"
-                            label="${i18n:_('Assign selected items')}"
+                            label="${i18n:_('Assign selected items')}" sclass="add-button"
                             onClick="limitingResourcesController.assignAllSelectedElements()"/>
                 </hbox>
 
                 <!-- List of unassigned queue elements -->
                 <newdatasortablegrid id="gridUnassignedLimitingResourceQueueElements"
-                        sizedByContent="false" height="100px"
-                        style="margin: 10px" >
+                                     sizedByContent="false" height="100px"
+                                     style="margin: 10px" >
+
                     <columns sizable="true">
                         <newdatasortablecolumn width="40px" >
                             <hbox pack="center" style="margin-left:2px">
                                 <checkbox id="cbSelectAll"
-                                    onCheck="limitingResourcesController.selectedAllUnassignedQueueElements()"
-                                    tooltiptext="Select/deselect all"/>
+                                          onCheck="limitingResourcesController.selectedAllUnassignedQueueElements()"
+                                          tooltiptext="Select/deselect all"/>
                             </hbox>
                         </newdatasortablecolumn>
+
                         <newdatasortablecolumn label="${i18n:_('Project')}" sort="auto(lower(orderName))"/>
+
                         <newdatasortablecolumn label="${i18n:_('Task')}" sort="auto(lower(taskName))"/>
+
                         <newdatasortablecolumn label="${i18n:_('Resource / Criteria')}" sort="auto(resourceOrCriteria)"/>
+
                         <newdatasortablecolumn label="${i18n:_('Earlier starting date')}" sort="auto(date)"/>
+
                         <newdatasortablecolumn label="${i18n:_('Hours to allocate')}" sort="auto(hoursToAllocate)"/>
+
                         <newdatasortablecolumn label="${i18n:_('Operations')}" width="200px"/>
                     </columns>
                 </newdatasortablegrid>

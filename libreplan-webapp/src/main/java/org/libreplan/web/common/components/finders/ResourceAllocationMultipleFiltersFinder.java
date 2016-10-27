@@ -35,13 +35,12 @@ import org.libreplan.business.resources.entities.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * Implements all the methods needed to search the criterion and resources to
- * allocate to the tasks. Provides multiples searches to allocate several
- * {@link Criterion} or an especific {@link Resource}.
+ * Implements all the methods needed to search the criterion and resources to allocate to the tasks.
+ * Provides multiples searches to allocate several {@link Criterion} or an especific {@link Resource}.
+ *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
-public class ResourceAllocationMultipleFiltersFinder extends
-        MultipleFiltersFinder {
+public class ResourceAllocationMultipleFiltersFinder extends MultipleFiltersFinder {
 
     private IFilterEnum mode = FilterEnumNone.None;
 
@@ -50,9 +49,7 @@ public class ResourceAllocationMultipleFiltersFinder extends
     @Autowired
     private PredefinedDatabaseSnapshots databaseSnapshots;
 
-    protected ResourceAllocationMultipleFiltersFinder() {
-
-    }
+    protected ResourceAllocationMultipleFiltersFinder() {}
 
     protected ResourceAllocationMultipleFiltersFinder(
             boolean isLimitingResourceAllocation) {
@@ -217,7 +214,7 @@ public class ResourceAllocationMultipleFiltersFinder extends
         }
         if (!isModeResource()
                 && filter.getType().equals(
-                        ResourceAllocationFilterEnum.Resource)) {
+                ResourceAllocationFilterEnum.Resource)) {
             return false;
         }
         return true;
@@ -264,9 +261,8 @@ public class ResourceAllocationMultipleFiltersFinder extends
         return result;
     }
 
-    public boolean updateDeletedFiltersInModeResource(List filterValues,
-            String value) {
-        List<FilterPair> list = new ArrayList<FilterPair>();
+    public boolean updateDeletedFiltersInModeResource(List filterValues, String value) {
+        List<FilterPair> list = new ArrayList<>();
         list.addAll(filterValues);
         if (filterValues.size() == 1) {
             FilterPair filterPair = list.get(0);
@@ -280,8 +276,7 @@ public class ResourceAllocationMultipleFiltersFinder extends
         return false;
     }
 
-    public boolean updateDeletedFiltersInModeCriterion(List filterValues,
-            String value) {
+    public boolean updateDeletedFiltersInModeCriterion(List filterValues, String value) {
         return super.updateDeletedFilters(filterValues, value);
     }
 

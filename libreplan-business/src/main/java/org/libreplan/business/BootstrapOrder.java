@@ -29,11 +29,10 @@ import java.lang.annotation.Target;
 
 /**
  * <p>
- * It can be applied to a {@link IDataBootstrap} to indicate the order in which it will be executed.
- * It's ensured that if a data bootstrap has a priority value greater than another one it will be executed before.
- *
- * If two data bootstraps have the same priority value the order is unspecified.
- * If a data bootstrap doesn't have this annotation it's like it would have a value of zero.
+ *     It can be applied to a {@link IDataBootstrap} to indicate the order in which it will be executed.
+ *     It's ensured that if a data bootstrap has a priority value greater than another one it will be executed before.
+ *     If two data bootstraps have the same priority value the order is unspecified.
+ *     If a data bootstrap doesn't have this annotation it's like it would have a value of zero.
  * </p>
  *
  * It accepts negative values.

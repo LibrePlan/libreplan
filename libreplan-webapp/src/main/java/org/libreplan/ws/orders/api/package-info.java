@@ -24,7 +24,10 @@
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-@javax.xml.bind.annotation.XmlSchema(elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED, namespace = WSCommonGlobalNames.REST_NAMESPACE)
+@javax.xml.bind.annotation.XmlSchema(
+        elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED,
+        namespace = WSCommonGlobalNames.REST_NAMESPACE)
+
 package org.libreplan.ws.orders.api;
 
 import org.libreplan.ws.common.api.WSCommonGlobalNames;

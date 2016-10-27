@@ -34,15 +34,20 @@ import org.zkoss.zul.RowRenderer;
 
 public class OnColumnsRowRenderer<C, T> implements RowRenderer {
 
+    private final List<C> columns;
+
+    private final ICellForDetailItemRenderer<C, T> cellRenderer;
+
+    private Class<T> type;
+
     public static <C, T> OnColumnsRowRenderer<C, T> create(ICellForDetailItemRenderer<C, T> cellRenderer,
                                                            Collection<C> columns) {
 
         return create(inferGenericType(cellRenderer), cellRenderer, columns);
     }
 
-    public static <C, T> OnColumnsRowRenderer<C, T> create(Class<T> type,
-                                                           ICellForDetailItemRenderer<C, T> cellRenderer,
-                                                           Collection<C> columns) {
+    public static <C, T> OnColumnsRowRenderer<C, T> create(
+            Class<T> type, ICellForDetailItemRenderer<C, T> cellRenderer, Collection<C> columns) {
 
         return new OnColumnsRowRenderer<>(type, cellRenderer, columns);
     }
@@ -95,19 +100,12 @@ public class OnColumnsRowRenderer<C, T> implements RowRenderer {
 
     private static void informCannotBeInferred(ICellForDetailItemRenderer<?, ?> renderer) {
         throw new IllegalArgumentException(
-                "the generic type cannot be inferred " +
-                "if actual type parameters are not declared " +
-                "or implements the raw interface: " +
-                renderer.getClass().getName());
+                "the generic type cannot be inferred if actual type parameters are not declared " +
+                        "or implements the raw interface: " + renderer.getClass().getName());
     }
 
-    private final List<C> columns;
-    private final ICellForDetailItemRenderer<C, T> cellRenderer;
-    private Class<T> type;
+    private OnColumnsRowRenderer(Class<T> type, ICellForDetailItemRenderer<C, T> cellRenderer, Collection<C> columns) {
 
-    private OnColumnsRowRenderer(Class<T> type,
-                                 ICellForDetailItemRenderer<C, T> cellRenderer,
-                                 Collection<C> columns) {
         Validate.notNull(type);
         Validate.notNull(columns);
         Validate.notNull(cellRenderer);
@@ -119,15 +117,16 @@ public class OnColumnsRowRenderer<C, T> implements RowRenderer {
     }
 
     @Override
-    public void render(Row row, Object data) {
-        if ( !type.isInstance(data) ) {
-            throw new IllegalArgumentException(data + " is not instance of " + type);
+    public void render(Row row, Object o, int index) throws Exception {
+        if ( !type.isInstance(o) ) {
+            throw new IllegalArgumentException(o + " is not instance of " + type);
         }
 
         for (C item : columns) {
-            Component child = cellRenderer.cellFor(item, type.cast(data));
+            Component child = cellRenderer.cellFor(item, type.cast(o));
             child.setParent(row);
         }
     }
+
 
 }

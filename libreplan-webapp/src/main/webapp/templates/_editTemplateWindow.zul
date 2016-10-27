@@ -20,59 +20,65 @@
 -->
 
 <?component name="advancesAssignment"
-    class="org.libreplan.web.templates.advances.AdvancesAssignmentComponent"
-    macroURI="/templates/_advances.zul"?>
+        class="org.libreplan.web.templates.advances.AdvancesAssignmentComponent"
+        macroURI="/templates/_advances.zul"?>
 
 <?component name="listOrderElementLabels"
-    class="org.libreplan.web.templates.labels.LabelsAssignmentToTemplateComponent"
-    macroURI="/orders/components/_listOrderElementLabels.zul"?>
+        class="org.libreplan.web.templates.labels.LabelsAssignmentToTemplateComponent"
+        macroURI="/orders/components/_listOrderElementLabels.zul"?>
 
 <?component name="listOrderElementMaterials"
-    class="org.libreplan.web.templates.materials.MaterialAssignmentTemplateComponent"
-    macroURI="/orders/components/_listOrderElementMaterials.zul"?>
+        class="org.libreplan.web.templates.materials.MaterialAssignmentTemplateComponent"
+        macroURI="/orders/components/_listOrderElementMaterials.zul"?>
 
 <?component name="listOrderElementCriterionRequirements"
-    class="org.libreplan.web.templates.criterionrequirements.CriterionRequirementTemplateComponent"
-    macroURI="/orders/_listOrderElementCriterionRequirements.zul"?>
+        class="org.libreplan.web.templates.criterionrequirements.CriterionRequirementTemplateComponent"
+        macroURI="/orders/_listOrderElementCriterionRequirements.zul"?>
 
 <?component name="assignedQualityForms"
-    class="org.libreplan.web.templates.quality.QualityFormAssignerComponent"
-    macroURI="/templates/_assignedQualityForms.zul" ?>
+        class="org.libreplan.web.templates.quality.QualityFormAssignerComponent"
+        macroURI="/templates/_assignedQualityForms.zul" ?>
 
 <window id="editTemplateWindow" title="${i18n:_('Edit task')}"
-    width="950px" left="50px" top="50px"
-    closable="true" onClose="self.visible = false; event.stopPropagation()"
-    visible="false" >
+        width="950px" left="50px" top="50px"
+        closable="true"
+        onClose="self.visible = false; event.stopPropagation()"
+        visible="false" >
 
-<tabbox height="620px" id="tabboxOrderElement">
-    <tabs>
-        <tab label="${i18n:_('Progress')}" />
-        <tab label="${i18n:_('Labels')}" />
-        <tab label="${i18n:_('Criterion requirement')}" />
-        <tab label="${i18n:_('Materials')}" />
-        <tab label="${i18n:_('Quality Forms')}" />
-    </tabs>
-    <tabpanels>
-        <tabpanel>
-            <advancesAssignment id="advancesAssignment" />
-        </tabpanel>
-        <tabpanel>
-            <listOrderElementLabels id="listOrderElementLabels"/>
-        </tabpanel>
-        <tabpanel>
-            <listOrderElementCriterionRequirements id="listOrderElementCriterionRequirements"/>
-        </tabpanel>
-        <tabpanel>
-            <listOrderElementMaterials id="listOrderElementMaterials"/>
-        </tabpanel>
-        <tabpanel>
-            <assignedQualityForms id="assignedQualityForms"/>
-        </tabpanel>
-    </tabpanels>
-</tabbox>
+    <tabbox height="620px" id="tabboxOrderElement">
+        <tabs>
+            <tab label="${i18n:_('Progress')}" />
+            <tab label="${i18n:_('Labels')}" />
+            <tab label="${i18n:_('Criterion requirement')}" />
+            <tab label="${i18n:_('Materials')}" />
+            <tab label="${i18n:_('Quality Forms')}" />
+        </tabs>
 
-<hbox>
-     <button id="backButton" label="${i18n:_('Back')}" sclass="back-button global-action"/>
-</hbox>
+        <tabpanels>
+            <tabpanel>
+                <advancesAssignment id="advancesAssignment" />
+            </tabpanel>
+
+            <tabpanel>
+                <listOrderElementLabels id="listOrderElementLabels"/>
+            </tabpanel>
+
+            <tabpanel>
+                <listOrderElementCriterionRequirements id="listOrderElementCriterionRequirements"/>
+            </tabpanel>
+
+            <tabpanel>
+                <listOrderElementMaterials id="listOrderElementMaterials"/>
+            </tabpanel>
+
+            <tabpanel>
+                <assignedQualityForms id="assignedQualityForms"/>
+            </tabpanel>
+        </tabpanels>
+    </tabbox>
+
+    <hbox>
+        <button id="backButton" label="${i18n:_('Back')}" sclass="back-button global-action"/>
+    </hbox>
 
 </window>

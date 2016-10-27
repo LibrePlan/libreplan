@@ -47,6 +47,19 @@ public class OrderLine extends OrderElement {
 
     private HoursGroupOrderLineHandler hoursGroupOrderLineHandler = HoursGroupOrderLineHandler.getInstance();
 
+    private BigDecimal budget = BigDecimal.ZERO.setScale(2);
+
+    private Set<HoursGroup> hoursGroups = new HashSet<>();
+
+    private Integer lastHoursGroupSequenceCode = 0;
+
+    private boolean convertedToContainer = false;
+
+    /**
+     * Constructor for hibernate. Do not use!
+     */
+    public OrderLine() {}
+
     public static OrderLine create() {
         OrderLine result = new OrderLine();
         result.setNewObject(true);
@@ -74,20 +87,6 @@ public class OrderLine extends OrderElement {
 
         return result;
     }
-
-    private BigDecimal budget = BigDecimal.ZERO.setScale(2);
-
-    /**
-     * Constructor for hibernate. Do not use!
-     */
-    public OrderLine() {
-    }
-
-    private Set<HoursGroup> hoursGroups = new HashSet<>();
-
-    private Integer lastHoursGroupSequenceCode = 0;
-
-    private boolean convertedToContainer = false;
 
     @Override
     public Integer getWorkHours() {
@@ -352,7 +351,6 @@ public class OrderLine extends OrderElement {
     @Override
     public DirectAdvanceAssignment calculateFakeDirectAdvanceAssignment(
             IndirectAdvanceAssignment indirectAdvanceAssignment) {
-
         return null;
     }
 

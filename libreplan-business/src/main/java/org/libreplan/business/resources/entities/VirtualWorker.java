@@ -98,9 +98,7 @@ public class VirtualWorker extends Worker {
     @AssertTrue(message = "Virtual worker group name must be unique")
     public boolean isUniqueVirtualGroupNameConstraint() {
 
-        List<Worker> list = Registry.getWorkerDAO()
-                .findByFirstNameAnotherTransactionCaseInsensitive(
-                        this.getFirstName());
+        List<Worker> list = Registry.getWorkerDAO().findByFirstNameAnotherTransactionCaseInsensitive(this.getFirstName());
 
         if ((isNewObject() && list.isEmpty()) || list.isEmpty()) {
             return true;

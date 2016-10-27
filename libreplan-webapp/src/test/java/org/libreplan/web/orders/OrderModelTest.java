@@ -43,11 +43,9 @@ import javax.annotation.Resource;
 
 import org.easymock.EasyMock;
 import org.hibernate.SessionFactory;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.libreplan.business.IDataBootstrap;
-import org.libreplan.business.calendars.daos.IBaseCalendarDAO;
 import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.IOnTransaction;
@@ -78,6 +76,7 @@ import org.libreplan.web.calendars.BaseCalendarModel;
 import org.libreplan.web.planner.order.PlanningStateCreator;
 import org.libreplan.web.planner.order.PlanningStateCreator.PlanningState;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -86,7 +85,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.zk.ui.Desktop;
 
 /**
- * Tests for {@link OrderModel}. <br />
+ * Tests for {@link OrderModel}.
+ * <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
@@ -95,6 +95,14 @@ import org.zkoss.zk.ui.Desktop;
         WEBAPP_SPRING_CONFIG_FILE, WEBAPP_SPRING_CONFIG_TEST_FILE,
         WEBAPP_SPRING_SECURITY_CONFIG_FILE,
         WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE })
+/**
+ * This annotation drops context and force it to reload.
+ * Action described above prevents tests from falling
+ * due to "Row was updated or deleted by another transaction" exception.
+ * Also this trick clears cache and that's why there is no troubles with commands caching
+ * in the PlanningState.getSaveCommand() method.
+ */
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class OrderModelTest {
 
     public static OrderVersion setupVersionUsing(IScenarioManager scenarioManager, Order order) {
@@ -114,7 +122,7 @@ public class OrderModelTest {
     private IDataBootstrap scenariosBootstrap;
 
     @BeforeTransaction
-    public void loadRequiredaData() {
+    public void loadRequiredData() {
         defaultAdvanceTypesBootstrapListener.loadRequiredData();
         configurationBootstrap.loadRequiredData();
         scenariosBootstrap.loadRequiredData();
@@ -155,9 +163,6 @@ public class OrderModelTest {
     private IExternalCompanyDAO externalCompanyDAO;
 
     @Autowired
-    private IBaseCalendarDAO calendarDAO;
-
-    @Autowired
     private PlanningStateCreator planningStateCreator;
 
     private Criterion criterion;
@@ -169,11 +174,11 @@ public class OrderModelTest {
     private PlanningState createPlanningStateFor(final Order newOrder) {
         return adHocTransaction.runOnAnotherReadOnlyTransaction(new IOnTransaction<PlanningState>() {
 
-                    @Override
-                    public PlanningState execute() {
-                        return planningStateCreator.createOn(mockDesktop(), newOrder);
-                    }
-                });
+            @Override
+            public PlanningState execute() {
+                return planningStateCreator.createOn(mockDesktop(), newOrder);
+            }
+        });
     }
 
     private Order createValidOrder() {
@@ -186,16 +191,16 @@ public class OrderModelTest {
 
         BaseCalendar calendar = adHocTransaction.runOnReadOnlyTransaction(new IOnTransaction<BaseCalendar>() {
 
-                    @Override
-                    public BaseCalendar execute() {
+            @Override
+            public BaseCalendar execute() {
 
-                        BaseCalendar result =
-                                configurationDAO.getConfigurationWithReadOnlyTransaction().getDefaultCalendar();
+                BaseCalendar result =
+                        configurationDAO.getConfigurationWithReadOnlyTransaction().getDefaultCalendar();
 
-                        BaseCalendarModel.forceLoadBaseCalendar(result);
-                        return result;
-                    }
-                });
+                BaseCalendarModel.forceLoadBaseCalendar(result);
+                return result;
+            }
+        });
 
         order.setCalendar(calendar);
         return order;
@@ -215,13 +220,11 @@ public class OrderModelTest {
     @Rollback(false)
     public void testNotRollback() {
         // Just to do not make rollback in order to have the default
-        // configuration, needed for prepareForCreate in order to autogenerate
-        // the order code
+        // configuration, needed for prepareForCreate in order to autogenerate the order code
     }
 
     @Test
     @Transactional
-    @Ignore("FIXME pending review after rename to libreplan")
     public void testCreation() throws ValidationException {
         Order order = createValidOrder();
         order.setCustomer(createValidExternalCompany());
@@ -231,25 +234,25 @@ public class OrderModelTest {
     }
 
     private Order givenOrderFromPrepareForCreate() {
-        adHocTransaction
-                .runOnAnotherReadOnlyTransaction(new IOnTransaction<Void>() {
-                    @Override
-                    public Void execute() {
-                        orderModel.prepareForCreate(mockDesktop());
-                        return null;
-                    }
-                });
+        adHocTransaction.runOnAnotherReadOnlyTransaction(new IOnTransaction<Void>() {
+            @Override
+            public Void execute() {
+                orderModel.prepareForCreate(mockDesktop());
+                return null;
+            }
+        });
+
         Order order = orderModel.getOrder();
         order.setName("name");
         order.setCode("code");
         order.setInitDate(new Date());
         order.setCustomer(createValidExternalCompany());
+
         return order;
     }
 
     @Test
     @Transactional
-    @Ignore("FIXME pending review after rename to libreplan")
     public void testCreationUsingPrepareForCreate() {
         Order order = givenOrderFromPrepareForCreate();
         orderModel.save();
@@ -258,7 +261,6 @@ public class OrderModelTest {
 
     @Test
     @Transactional
-    @Ignore("FIXME pending review after rename to libreplan")
     public void createOrderWithScheduledOrderLine() {
         Order order = givenOrderFromPrepareForCreate();
         OrderElement line = OrderLine.createOrderLineWithUnfixedPercentage(20);
@@ -285,22 +287,17 @@ public class OrderModelTest {
         assertTrue(order.getSchedulingState().isSomewhatScheduled());
     }
 
-    @Ignore("Test ignored until having the possibility to have a user " +
-            "session from tests")
     @Test
     @Transactional
     public void testListing() {
-        List<Order> list = orderModel.getOrders();
-        Order order = createValidOrder();
-        order.setCustomer(createValidExternalCompany());
-        orderModel.setPlanningState(createPlanningStateFor(order));
-        orderModel.save();
-        assertThat(orderModel.getOrders().size(), equalTo(list.size() + 1));
+        List<Order> orderList = orderDAO.getOrders();
+        Order newOrder = createValidOrder();
+        orderDAO.save(newOrder);
+        assertThat(orderDAO.getOrders().size(), equalTo(orderList.size() + 1));
     }
 
     @Test
     @Transactional
-    @Ignore("FIXME pending review after rename to libreplan")
     public void testRemove() {
         Order order = createValidOrder();
         orderModel.setPlanningState(createPlanningStateFor(order));
@@ -312,7 +309,6 @@ public class OrderModelTest {
 
     @Test(expected = ValidationException.class)
     @Transactional
-    @Ignore("FIXME pending review after rename to libreplan")
     public void shouldSendValidationExceptionIfEndDateIsBeforeThanStartingDate() throws ValidationException {
         Order order = createValidOrder();
         order.setDeadline(year(0));
@@ -322,7 +318,6 @@ public class OrderModelTest {
 
     @Test
     @Transactional
-    @Ignore("FIXME pending review after rename to libreplan")
     public void testFind() throws InstanceNotFoundException {
         Order order = createValidOrder();
         orderModel.setPlanningState(createPlanningStateFor(order));
@@ -331,7 +326,7 @@ public class OrderModelTest {
     }
 
     @Test
-    @Ignore("FIXME pending review after rename to libreplan")
+    @Transactional
     public void testOrderPreserved() throws ValidationException, InstanceNotFoundException {
         final Order order = createValidOrder();
         orderModel.setPlanningState(createPlanningStateFor(order));
@@ -414,17 +409,22 @@ public class OrderModelTest {
     }
 
     @Test
-    @Ignore("FIXME pending review after rename to libreplan")
     public void testAddingOrderElement() {
+
+        defaultAdvanceTypesBootstrapListener.loadRequiredData();
+        configurationBootstrap.loadRequiredData();
+        scenariosBootstrap.loadRequiredData();
+
         final Order order = createValidOrder();
         orderModel.setPlanningState(createPlanningStateFor(order));
-        OrderLineGroup container = adHocTransaction
-                .runOnTransaction(new IOnTransaction<OrderLineGroup>() {
-                    @Override
-                    public OrderLineGroup execute() {
-                        return OrderLineGroup.create();
-                    }
-                });
+
+        OrderLineGroup container = adHocTransaction.runOnTransaction(new IOnTransaction<OrderLineGroup>() {
+            @Override
+            public OrderLineGroup execute() {
+                return OrderLineGroup.create();
+            }
+        });
+
         order.add(container);
         container.setName("bla");
         container.setCode("code-" + UUID.randomUUID());
@@ -437,6 +437,7 @@ public class OrderModelTest {
         hoursGroup.setWorkingHours(3);
         leaf.addHoursGroup(hoursGroup);
         orderModel.save();
+
         adHocTransaction.runOnTransaction(new IOnTransaction<Void>() {
 
             @Override
@@ -463,7 +464,7 @@ public class OrderModelTest {
     }
 
     @Test
-    @Ignore("FIXME pending review after rename to libreplan")
+    @Transactional
     public void testManyToManyHoursGroupCriterionMapping() {
         givenCriterion();
         final Order order = createValidOrder();
@@ -482,15 +483,13 @@ public class OrderModelTest {
         hoursGroup2.setWorkingHours(5);
 
         orderLine.addHoursGroup(hoursGroup);
-        //orderLine.addHoursGroup(hoursGroup2);
 
-        CriterionRequirement criterionRequirement =
-                DirectCriterionRequirement.create(criterion);
+        CriterionRequirement criterionRequirement = DirectCriterionRequirement.create(criterion);
 
         hoursGroup.addCriterionRequirement(criterionRequirement);
-        //hoursGroup2.addCriterionRequirement(criterionRequirement);
 
         orderModel.save();
+
         adHocTransaction.runOnTransaction(new IOnTransaction<Void>() {
 
             @Override
@@ -498,20 +497,16 @@ public class OrderModelTest {
                 try {
                     sessionFactory.getCurrentSession().flush();
                     Order reloaded = orderDAO.find(order.getId());
-                    List<OrderElement> orderElements = reloaded
-                            .getOrderElements();
+                    List<OrderElement> orderElements = reloaded.getOrderElements();
                     assertThat(orderElements.size(), equalTo(1));
 
-                    List<HoursGroup> hoursGroups = orderElements.get(0)
-                            .getHoursGroups();
+                    List<HoursGroup> hoursGroups = orderElements.get(0).getHoursGroups();
                     assertThat(hoursGroups.size(), equalTo(1));
 
-                    Set<CriterionRequirement> criterionRequirements = hoursGroups.get(0)
-                            .getCriterionRequirements();
+                    Set<CriterionRequirement> criterionRequirements = hoursGroups.get(0).getCriterionRequirements();
                     assertThat(criterionRequirements.size(), equalTo(1));
 
-                    Set<Criterion> criterions = hoursGroups.get(0)
-                            .getValidCriterions();
+                    Set<Criterion> criterions = hoursGroups.get(0).getValidCriterions();
                     assertThat(criterions.size(), equalTo(1));
 
                 } catch (InstanceNotFoundException e) {
@@ -524,33 +519,31 @@ public class OrderModelTest {
     }
 
     private void givenCriterion() throws ValidationException {
-        this.criterion = adHocTransaction
-                .runOnTransaction(new IOnTransaction<Criterion>() {
+        this.criterion = adHocTransaction.runOnTransaction(new IOnTransaction<Criterion>() {
+            @Override
+            public Criterion execute() {
+                CriterionType criterionType = CriterionType.create(
+                        "test" + UUID.randomUUID(), "");
+                criterionType.setResource(ResourceEnum.WORKER);
+                criterionTypeDAO.save(criterionType);
+                Criterion criterion = Criterion.create("Test"
+                        + UUID.randomUUID(), criterionType);
 
-                    @Override
-                    public Criterion execute() {
-                        CriterionType criterionType = CriterionType.create(
-                                "test" + UUID.randomUUID(), "");
-                        criterionType.setResource(ResourceEnum.WORKER);
-                        criterionTypeDAO.save(criterionType);
-                        Criterion criterion = Criterion.create("Test"
-                                + UUID.randomUUID(), criterionType);
+                try {
+                    criterionDAO.save(criterion);
+                } catch (ValidationException e) {
+                    throw new RuntimeException(e);
+                }
+                return criterion;
+            }
+        });
 
-                        try {
-                            criterionDAO.save(criterion);
-                        } catch (ValidationException e) {
-                            throw new RuntimeException(e);
-                        }
-                        return criterion;
-                    }
-                });
         this.criterion.dontPoseAsTransientObjectAnymore();
         this.criterion.getType().dontPoseAsTransientObjectAnymore();
     }
 
     @Test(expected = ValidationException.class)
     @Transactional
-    @Ignore("FIXME pending review after rename to libreplan")
     public void testAtLeastOneHoursGroup() {
         Order order = createValidOrder();
         orderModel.setPlanningState(createPlanningStateFor(order));

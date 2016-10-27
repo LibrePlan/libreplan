@@ -33,32 +33,31 @@ import org.libreplan.business.labels.entities.LabelType;
 import org.libreplan.web.common.BaseCRUDController;
 import org.libreplan.web.common.Level;
 import org.libreplan.web.common.Util;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.CheckEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.InputEvent;
+import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Column;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Hbox;
-import org.zkoss.zul.ListModelExt;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Textbox;
-import org.zkoss.zul.api.Rows;
+import org.zkoss.zul.Rows;
+import org.zkoss.zul.ext.Sortable;
 
 /**
- * CRUD Controller for {@link LabelType}
+ * CRUD Controller for {@link LabelType}.
  *
  * @author Diego Pino Garcia <dpino@igalia.com>
  * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 public class LabelTypeCRUDController extends BaseCRUDController<LabelType> {
 
-    @Autowired
     private ILabelTypeModel labelTypeModel;
 
     private Grid gridLabelTypes;
@@ -68,7 +67,7 @@ public class LabelTypeCRUDController extends BaseCRUDController<LabelType> {
     private Textbox newLabelTextbox;
 
     public LabelTypeCRUDController() {
-
+        labelTypeModel = (ILabelTypeModel) SpringUtil.getBean("labelTypeModel");
     }
 
     @Override
@@ -76,12 +75,12 @@ public class LabelTypeCRUDController extends BaseCRUDController<LabelType> {
         super.doAfterCompose(comp);
         initializeLabelsGrid();
         initializeLabelTypesGrid();
-        newLabelTextbox = (Textbox) editWindow
-                .getFellowIfAny("newLabelTextbox");
+        newLabelTextbox = (Textbox) editWindow.getFellowIfAny("newLabelTextbox");
     }
 
     private void initializeLabelsGrid() {
         gridLabels = (Grid) editWindow.getFellowIfAny("gridLabels");
+
         // Renders grid and enables delete button if label is new
         gridLabels.addEventListener("onInitRender", new EventListener() {
 
@@ -92,22 +91,22 @@ public class LabelTypeCRUDController extends BaseCRUDController<LabelType> {
                 final Rows rows = gridLabels.getRows();
                 for (Iterator i = rows.getChildren().iterator(); i.hasNext();) {
                     final Row row = (Row) i.next();
-                    final Label label = (Label) row.getValue();
+                    final Label label = row.getValue();
                     Button btnDelete = (Button) row.getChildren().get(2);
-                    if (!canRemoveLabel(label)) {
+                    if ( !canRemoveLabel(label) ) {
                         btnDelete.setDisabled(true);
                         btnDelete.setImage("/common/img/ico_borrar_out.png");
-                        btnDelete
-                                .setHoverImage("/common/img/ico_borrar_out.png");
+                        btnDelete.setHoverImage("/common/img/ico_borrar_out.png");
                         btnDelete.setTooltiptext("");
                     }
                 }
             }
 
             private boolean canRemoveLabel(Label label) {
-                if (label.isNewObject()) {
+                if ( label.isNewObject() ){
                     return true;
                 }
+
                 return label.getOrderElements().isEmpty();
             }
 
@@ -126,14 +125,13 @@ public class LabelTypeCRUDController extends BaseCRUDController<LabelType> {
                 final Rows rows = gridLabelTypes.getRows();
                 for (Iterator i = rows.getChildren().iterator(); i.hasNext();) {
                     final Row row = (Row) i.next();
-                    final LabelType labelType = (LabelType) row.getValue();
+                    final LabelType labelType = row.getValue();
                     Hbox hbox = (Hbox) row.getChildren().get(2);
                     Button btnDelete = (Button) hbox.getChildren().get(1);
-                    if (!canRemoveLabelType(labelType)) {
+                    if ( !canRemoveLabelType(labelType) ) {
                         btnDelete.setDisabled(true);
                         btnDelete.setImage("/common/img/ico_borrar_out.png");
-                        btnDelete
-                                .setHoverImage("/common/img/ico_borrar_out.png");
+                        btnDelete.setHoverImage("/common/img/ico_borrar_out.png");
                         btnDelete.setTooltiptext("");
                     }
                 }
@@ -141,17 +139,17 @@ public class LabelTypeCRUDController extends BaseCRUDController<LabelType> {
 
             private boolean canRemoveLabelType(LabelType labelType) {
                 boolean canRemove = true;
-                if (labelType.isNewObject()) {
+                if ( labelType.isNewObject() ) {
                     return canRemove;
                 }
-                // If at least one of its labels is being used by and
-                // orderelement, cannot remove labelType
+                // If at least one of its labels is being used by and orderElement, cannot remove labelType
                 for (Label each: labelType.getLabels()) {
-                    if (!each.getOrderElements().isEmpty()) {
+                    if ( !each.getOrderElements().isEmpty() ) {
                         canRemove = false;
                         break;
                     }
                 }
+
                 return canRemove;
             }
 
@@ -159,16 +157,16 @@ public class LabelTypeCRUDController extends BaseCRUDController<LabelType> {
     }
 
     /**
-     * Return all {@link LabelType}
-     * @return
+     * Return all {@link LabelType}.
+     * @return {@link List<LabelType>}
      */
     public List<LabelType> getLabelTypes() {
         return labelTypeModel.getLabelTypes();
     }
 
     /**
-     * Return current {@link LabelType}
-     * @return
+     * Return current {@link LabelType}.
+     * @return {@link LabelType}
      */
     public LabelType getLabelType() {
         return labelTypeModel.getLabelType();
@@ -184,7 +182,7 @@ public class LabelTypeCRUDController extends BaseCRUDController<LabelType> {
     }
 
     /**
-     * Validates all {@link Textbox} in the form
+     * Validates all {@link Textbox} in the form.
      */
     private void validate() {
         validate((Textbox) editWindow.getFellowIfAny("label_type_name"));
@@ -195,9 +193,8 @@ public class LabelTypeCRUDController extends BaseCRUDController<LabelType> {
 
     @SuppressWarnings("unchecked")
     private void validate(Row row) {
-        for (Iterator i = row.getChildren().iterator(); i.hasNext();) {
-            final Component comp = (Component) i.next();
-            if (comp instanceof Textbox) {
+        for (final Component comp : row.getChildren()) {
+            if ( comp instanceof Textbox ) {
                 validate((Textbox) comp);
             }
         }
@@ -209,11 +206,11 @@ public class LabelTypeCRUDController extends BaseCRUDController<LabelType> {
     }
 
     /**
-     * Validates {@link Textbox} checking {@link Constraint}
+     * Validates {@link Textbox} checking {@link Constraint}.
      * @param comp
      */
     private void validate(Textbox comp) {
-        if (comp != null && comp.getConstraint() != null && !comp.isDisabled()) {
+        if ( comp != null && comp.getConstraint() != null && !comp.isDisabled() ) {
             final Constraint constraint = comp.getConstraint();
             constraint.validate(comp, comp.getValue());
         }
@@ -225,9 +222,7 @@ public class LabelTypeCRUDController extends BaseCRUDController<LabelType> {
             validate();
             labelTypeModel.addLabel(newLabelTextbox.getValue());
             Util.reloadBindings(gridLabels);
-            // After adding a new row, model might be disordered, so we force it
-            // to
-            // sort again respecting previous settings
+            // After adding a new row, model might be disordered, so we force it to sort again respecting previous settings
             forceSortGridLabels();
             newLabelTextbox.setValue("");
         } catch (ValidationException e) {
@@ -239,37 +234,38 @@ public class LabelTypeCRUDController extends BaseCRUDController<LabelType> {
         String name = newLabelTextbox.getValue();
         labelTypeModel.validateNameNotEmpty(name);
         labelTypeModel.thereIsOtherWithSameNameAndType(name);
+
         return name;
     }
 
     /**
-     * Sorts {@link Grid} model by first column, respecting sort order
-     * FIXME: This is a temporary solution, there should be a better/smarter way
-     * of preserving order in the Grid every time a new element is added to its
-     * model
+     * Sorts {@link Grid} model by first column, respecting sort order.
+     *
+     * FIXME:
+     * This is a temporary solution, there should be a better/smarter way
+     * of preserving order in the Grid every time a new element is added to its model.
      */
     private void forceSortGridLabels() {
         Column column = (Column) gridLabels.getColumns().getFirstChild();
-        ListModelExt model = (ListModelExt) gridLabels.getModel();
-        if ("ascending".equals(column.getSortDirection())) {
+        Sortable model = (Sortable) gridLabels.getModel();
+        if ( "ascending".equals(column.getSortDirection()) ) {
             model.sort(column.getSortAscending(), true);
         }
-        if ("descending".equals(column.getSortDirection())) {
+        if ( "descending".equals(column.getSortDirection()) ) {
             model.sort(column.getSortDescending(), false);
         }
     }
 
     public void onChangeLabelName(Event e) {
         InputEvent ie = (InputEvent) e;
-        if (!labelTypeModel.labelNameIsUnique(ie.getValue())) {
-            throw new WrongValueException(e.getTarget(), _(
-                    "{0} already exists", ie.getValue()));
+        if ( !labelTypeModel.labelNameIsUnique(ie.getValue()) ) {
+            throw new WrongValueException(e.getTarget(), _("{0} already exists", ie.getValue()));
         }
     }
 
     /**
-     * Pop up confirm remove dialog
-     * @param labelType
+     * Pop up confirm remove dialog.
+     * @param label
      */
     public void confirmDeleteLabel(Label label) {
         labelTypeModel.confirmDeleteLabel(label);
@@ -278,7 +274,7 @@ public class LabelTypeCRUDController extends BaseCRUDController<LabelType> {
 
     public void onCheckGenerateCode(Event e) {
         CheckEvent ce = (CheckEvent) e;
-        if (ce.isChecked()) {
+        if ( ce.isChecked() ) {
             try {
                 labelTypeModel.setCodeAutogenerated(ce.isChecked());
             } catch (ConcurrentModificationException err) {

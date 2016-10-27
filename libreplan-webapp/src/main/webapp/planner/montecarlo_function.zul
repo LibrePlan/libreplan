@@ -21,54 +21,56 @@
 
 <?page title="${i18n:_('LibrePlan: Scheduling')}"?>
 <?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n"?>
-<zk xmlns:n="http://www.zkoss.org/2005/zk/native">
 
-<zscript><![CDATA[
-    monteCarloGraphController = arg.get("monteCarloGraphController");
-]]>
-</zscript>
+<zk>
+    <zscript><![CDATA[
+        monteCarloGraphController = arg.get("monteCarloGraphController");
+        ]]>
+    </zscript>
 
-<window title="${i18n:_('MonteCarlo')}"
-        apply="${monteCarloGraphController}"
-        closable="true" width="850px">
+    <window title="${i18n:_('MonteCarlo')}"
+            apply="${monteCarloGraphController}"
+            closable="true"
+            width="850px">
 
-    <vbox width="100%" pack="center" align="center">
-        <label style="font-family: Tahoma; font-weight: bold; font-size: 18px;padding:5px;" value="${i18n:_('MonteCarlo chart')}" />
-    </vbox>
+        <vbox width="100%" pack="center" align="center">
+            <label style="font-family: Tahoma; font-weight: bold; font-size: 18px;padding:5px;"
+                   value="${i18n:_('MonteCarlo chart')}" />
+        </vbox>
 
         <grid sizedByContent="false">
             <rows>
                 <row>
                     <label value="${i18n:_('Start date')}" />
                     <datebox id="dateboxStartDateProbability"
-                        onChange="monteCarloGraphController.showProbabilityDensity(self, dateboxEndDateProbability)" />
+                             onChange="monteCarloGraphController.showProbabilityDensity(self, dateboxEndDateProbability)" />
                     <label value="${i18n:_('End date')}" />
                     <datebox id="dateboxEndDateProbability"
-                        onChange="monteCarloGraphController.showProbabilityDensity(dateboxStartDateProbability, self)" />
+                             onChange="monteCarloGraphController.showProbabilityDensity(dateboxStartDateProbability, self)" />
                     <label value="${i18n:_('Probability')}" />
                     <decimalbox id="dbIntervalProbability" />
                 </row>
             </rows>
         </grid>
 
-    <hbox>
-        <vbox id="charts">
-            <chart id="monteCarloChart"
-                height="600px" width="800px"
-                type="bar"
-                period="day"
-                threeD="true"
-                xAxis= "${i18n:_('End date')}"
-                paneColor="#FFFFFF"
-                showLegend="false"/>
-        </vbox>
-    </hbox>
+        <hbox>
+            <vbox id="charts">
+                <chart id="monteCarloChart"
+                       height="600px" width="800px"
+                       type="bar"
+                       period="day"
+                       threeD="true"
+                       xAxis= "${i18n:_('End date')}"
+                       paneColor="#FFFFFF"
+                       showLegend="false"/>
+            </vbox>
+        </hbox>
 
-    <hbox>
-        <button label="${i18n:_('Back')}"
-            onClick="monteCarloGraphController.cancel()" />
-    </hbox>
+        <hbox>
+            <button label="${i18n:_('Back')}"
+                    onClick="monteCarloGraphController.cancel()" sclass="add-button" />
+        </hbox>
 
-</window>
+    </window>
 
 </zk>

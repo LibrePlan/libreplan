@@ -21,8 +21,6 @@
 
 package org.libreplan.web.common.components.finders;
 
-import java.util.List;
-
 import org.libreplan.business.scenarios.daos.IScenarioDAO;
 import org.libreplan.business.scenarios.entities.Scenario;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +29,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
+
+import java.util.List;
 
 /**
  * Bandbox finder for {@link Scenario}.
@@ -57,6 +57,7 @@ public class ScenarioBandboxFinder extends BandboxFinder implements IBandboxFind
     public List<Scenario> getAll() {
         List<Scenario> scenarios = scenarioDAO.getAll();
         forceLoad(scenarios);
+
         return scenarios;
     }
 
@@ -70,6 +71,7 @@ public class ScenarioBandboxFinder extends BandboxFinder implements IBandboxFind
     public boolean entryMatchesText(Object obj, String text) {
         final Scenario scenario = (Scenario) obj;
         text = text.trim().toLowerCase();
+
         return scenario.getName().toLowerCase().contains(text);
     }
 
@@ -91,7 +93,7 @@ public class ScenarioBandboxFinder extends BandboxFinder implements IBandboxFind
     private final ListitemRenderer scenarioRenderer = new ListitemRenderer() {
 
         @Override
-        public void render(Listitem item, Object data) {
+        public void render(Listitem item, Object data, int i) {
             Scenario scenario = (Scenario) data;
             item.setValue(scenario);
 

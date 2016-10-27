@@ -29,9 +29,7 @@ import java.util.Date;
  * This class is intended to work as a Hibernate component.
  * It represents the LibrePlan File to be stored in customer`s HDD.
  *
- * Created by
- * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
- * on 25.12.2015.
+ * @author Created by Vova Perebykivskyi <vova@libreplan-enterprise.com> on 25.12.2015.
  */
 
 public class OrderFile extends BaseEntity {
@@ -49,6 +47,7 @@ public class OrderFile extends BaseEntity {
     public String getName() {
         return name;
     }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -56,6 +55,7 @@ public class OrderFile extends BaseEntity {
     public String getType() {
         return type;
     }
+
     public void setType(String type) {
         this.type = type;
     }
@@ -63,6 +63,7 @@ public class OrderFile extends BaseEntity {
     public Date getDate() {
         return date;
     }
+
     public void setDate(Date date) {
         this.date = date;
     }
@@ -70,6 +71,7 @@ public class OrderFile extends BaseEntity {
     public User getUploader() {
         return uploader;
     }
+
     public void setUploader(User uploader) {
         this.uploader = uploader;
     }
@@ -77,6 +79,7 @@ public class OrderFile extends BaseEntity {
     public OrderElement getParent() {
         return parent;
     }
+
     public void setParent(OrderElement parent) {
         this.parent = parent;
     }

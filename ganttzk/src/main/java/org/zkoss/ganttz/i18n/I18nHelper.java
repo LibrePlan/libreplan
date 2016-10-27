@@ -34,7 +34,7 @@ public class I18nHelper {
     private static HashMap<Locale, I18n> localesCache = new HashMap<>();
 
     public static I18n getI18n() {
-        if ( localesCache.keySet().contains(Locales.getCurrent()) ) {
+        if (localesCache.keySet().contains(Locales.getCurrent())) {
             return localesCache.get(Locales.getCurrent());
         }
 
@@ -48,7 +48,15 @@ public class I18nHelper {
 
         return i18n;
     }
-    // TODO refactor symbol _
+
+
+    //TODO It should be changed since JDK9.
+    /**
+     * Use of '_' as an identifier might not be supported in releases after Java SE 8.
+     *
+     * @param str
+     * @return Text depends on locale
+     */
     public static String _(String str) {
         return getI18n().tr(str);
     }
@@ -65,8 +73,7 @@ public class I18nHelper {
         return getI18n().tr(text, o1, o2, o3);
     }
 
-    public static String _(String text, Object o1, Object o2, Object o3,
-            Object o4) {
+    public static String _(String text, Object o1, Object o2, Object o3, Object o4) {
         return getI18n().tr(text, o1, o2, o3, o4);
     }
 

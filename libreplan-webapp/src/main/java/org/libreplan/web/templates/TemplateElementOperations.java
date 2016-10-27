@@ -27,9 +27,7 @@ import org.zkoss.zul.Tree;
 import org.zkoss.zul.Treeitem;
 
 /**
- *
  * @author Diego Pino García <dpino@igalia.com>
- *
  */
 class TemplateElementOperations extends TreeElementOperationsController<OrderElementTemplate> {
 
@@ -47,23 +45,25 @@ class TemplateElementOperations extends TreeElementOperationsController<OrderEle
 
     public TemplateElementOperations tree(Tree tree) {
         super.tree = tree;
+
         return this;
     }
 
     public TemplateElementOperations treeController(TemplatesTreeController treeController) {
         this.treeController = treeController;
+
         return this;
     }
 
-    public TemplateElementOperations orderTemplatesController(
-            OrderTemplatesController orderTemplatesController) {
+    public TemplateElementOperations orderTemplatesController(OrderTemplatesController orderTemplatesController) {
         this.orderTemplatesController = orderTemplatesController;
+
         return this;
     }
 
     @Override
     protected void showEditElement(Treeitem item) {
-        OrderElementTemplate orderElement = (OrderElementTemplate) item.getValue();
+        OrderElementTemplate orderElement = item.getValue();
         treeController.markModifiedTreeitem(item.getTreerow());
         orderTemplatesController.showEditionFor(orderElement);
         treeController.refreshRow(item);

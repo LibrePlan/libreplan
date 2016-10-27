@@ -21,13 +21,6 @@
 
 package org.libreplan.web.resources.worker;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.resources.entities.CriterionSatisfaction;
@@ -42,10 +35,18 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Listbox;
 
+import java.util.List;
+import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import static org.libreplan.web.I18nHelper._;
 
 /**
- * Subcontroller for {@link Worker} resource <br />
+ * Subcontroller for {@link Worker} resource.
+ * <br />
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
@@ -78,9 +79,9 @@ public class WorkRelationshipsController extends GenericForwardComposer {
         this.workerModel = workerModel;
         this.workerCRUDController = workerCRUDController;
         this.messagesForUser = messagesForUser;
-        this.workCriterions = new ArrayList<Criterion>();
+        this.workCriterions = new ArrayList<>();
         Map<ICriterionType<?>, Collection<Criterion>> map = workerModel.getLaboralRelatedCriterions();
-        this.fromCriterionToType = new HashMap<Criterion, CriterionWithItsType>();
+        this.fromCriterionToType = new HashMap<>();
 
         for (Entry<ICriterionType<?>, Collection<Criterion>> entry : map.entrySet()) {
             this.workCriterions.addAll(entry.getValue());
@@ -93,15 +94,13 @@ public class WorkRelationshipsController extends GenericForwardComposer {
 
     public List<CriterionSatisfaction> getCriterionSatisfactions() {
         if (getWorker() == null) {
-            return new ArrayList<CriterionSatisfaction>();
+            return new ArrayList<>();
         } else {
-            return workerModel
-                    .getLaboralRelatedCriterionSatisfactions();
+            return workerModel.getLaboralRelatedCriterionSatisfactions();
         }
     }
 
-    public void deleteCriterionSatisfaction(CriterionSatisfaction satisfaction)
-            throws InstanceNotFoundException {
+    public void deleteCriterionSatisfaction(CriterionSatisfaction satisfaction) throws InstanceNotFoundException {
         workerModel.removeSatisfaction(satisfaction);
         this.workerCRUDController.goToEditForm();
     }
@@ -133,46 +132,46 @@ public class WorkRelationshipsController extends GenericForwardComposer {
             }
             i++;
         }
+
         throw new RuntimeException("Could not find the criterion " + criterion);
     }
 
     public void saveCriterionSatisfaction() {
-        Criterion choosenCriterion = getChoosenCriterion();
-        CriterionWithItsType criterionWithItsType = fromCriterionToType
-                .get(choosenCriterion);
-        satisfactionEdited.setCriterion(choosenCriterion);
+        Criterion chosenCriterion = getChosenCriterion();
+        CriterionWithItsType criterionWithItsType = fromCriterionToType.get(chosenCriterion);
+        satisfactionEdited.setCriterion(chosenCriterion);
         AddingSatisfactionResult addSatisfaction = workerModel.addSatisfaction(
                 criterionWithItsType.getType(), originalSatisfaction,
                 satisfactionEdited);
         switch (addSatisfaction) {
-        case OK:
-            messagesForUser.showMessage(Level.INFO, _("Time period saved"));
-            this.workerCRUDController.goToEditForm();
-            break;
-        case SATISFACTION_WRONG:
-            messagesForUser
-                    .showMessage(Level.WARNING,
-                            _("Time period contains non valid data. Ending data must be older than starting date"));
-            break;
-        case DONT_COMPLY_OVERLAPPING_RESTRICTIONS:
-            messagesForUser
-                    .showMessage(Level.WARNING,
-                            _("Could not save time period. Time period overlaps with another non-compatible time period"));
-            this.workerCRUDController.goToEditForm();
-            break;
-        default:
-            throw new RuntimeException(_("Unexpected: {0}", addSatisfaction));
+            case OK:
+                messagesForUser.showMessage(Level.INFO, _("Time period saved"));
+                this.workerCRUDController.goToEditForm();
+                break;
+            case SATISFACTION_WRONG:
+                messagesForUser
+                        .showMessage(Level.WARNING,
+                                _("Time period contains non valid data. Ending data must be older than starting date"));
+                break;
+            case DONT_COMPLY_OVERLAPPING_RESTRICTIONS:
+                messagesForUser
+                        .showMessage(Level.WARNING,
+                                _("Could not save time period. Time period overlaps with another non-compatible time period"));
+                this.workerCRUDController.goToEditForm();
+                break;
+            default:
+                throw new RuntimeException(_("Unexpected: {0}", addSatisfaction));
         }
     }
 
-    private Criterion getChoosenCriterion() {
+    private Criterion getChosenCriterion() {
         Criterion criterion;
         if (editing) {
             criterion = satisfactionEdited.getCriterion();
         } else {
-            criterion = (Criterion) this.selectedWorkCriterion
-                    .getSelectedItemApi().getValue();
+            criterion = this.selectedWorkCriterion.getSelectedItem().getValue();
         }
+
         return criterion;
     }
 

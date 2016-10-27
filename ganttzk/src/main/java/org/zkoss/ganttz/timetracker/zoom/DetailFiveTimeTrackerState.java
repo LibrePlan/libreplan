@@ -21,57 +21,51 @@
 
 package org.zkoss.ganttz.timetracker.zoom;
 
-import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.joda.time.ReadablePeriod;
 
 /**
- * Zoom level for weeks in the first level and days in the second level
+ * Zoom level for weeks in the first level and days in the second level.
+ *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
-public class DetailFiveTimeTrackerState extends
-        TimeTrackerStateWithSubintervalsFitting {
+public class DetailFiveTimeTrackerState extends TimeTrackerStateWithSubintervalsFitting {
 
     private static final int NUMBER_OF_DAYS_MINIMUM = 50;
-    public static final int FIRST_LEVEL_SIZE = 210;
-    public static final int SECOND_LEVEL_SIZE = 30;
 
-    DetailFiveTimeTrackerState(IDetailItemModificator firstLevelModificator,
-            IDetailItemModificator secondLevelModificator) {
-        super(firstLevelModificator, secondLevelModificator);
+    private static final int FIRST_LEVEL_SIZE = 210;
+
+    private static final int SECOND_LEVEL_SIZE = 30;
+
+    DetailFiveTimeTrackerState(
+            IDetailItemModifier firstLevelModifier, IDetailItemModifier secondLevelModifier) {
+
+        super(firstLevelModifier, secondLevelModifier);
     }
 
+    @Override
     public final double daysPerPixel() {
-        return ((double) 1 / SECOND_LEVEL_SIZE);
+        return (double) 1 / SECOND_LEVEL_SIZE;
     }
 
     @Override
     protected IDetailItemCreator getDetailItemCreatorFirstLevel() {
-        return new IDetailItemCreator() {
-
-            @Override
-            public DetailItem create(DateTime dateTime) {
-                return new DetailItem(FIRST_LEVEL_SIZE, dateTime
-                        .getWeekOfWeekyear()
-                        + dateTime.toString(", MMM YYYY"), dateTime, dateTime
-                        .plusDays(7));
-            }
-        };
+        return dateTime -> new DetailItem(
+                FIRST_LEVEL_SIZE,
+                dateTime.getWeekOfWeekyear() + dateTime.toString(", MMM YYYY"),
+                dateTime,
+                dateTime.plusDays(7));
     }
 
     @Override
     protected IDetailItemCreator getDetailItemCreatorSecondLevel() {
-        return new IDetailItemCreator() {
-
-            @Override
-            public DetailItem create(DateTime dateTime) {
-                return new DetailItem(SECOND_LEVEL_SIZE, dateTime
-                        .getDayOfMonth()
-                        + "", dateTime, dateTime.plusDays(1));
-            }
-        };
+        return dateTime -> new DetailItem(
+                SECOND_LEVEL_SIZE,
+                Integer.toString(dateTime.getDayOfMonth()),
+                dateTime,
+                dateTime.plusDays(1));
     }
 
     @Override
@@ -87,11 +81,12 @@ public class DetailFiveTimeTrackerState extends
     @Override
     protected LocalDate round(LocalDate date, boolean down) {
         int dayOfWeek = date.getDayOfWeek();
+
         if (dayOfWeek == 1) {
             return date;
         }
-        return down ? date.withDayOfWeek(1) : date.withDayOfWeek(1)
-                .plusWeeks(1);
+
+        return down ? date.withDayOfWeek(1) : date.withDayOfWeek(1).plusWeeks(1);
     }
 
     @Override

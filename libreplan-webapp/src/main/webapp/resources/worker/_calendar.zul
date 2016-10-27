@@ -23,35 +23,37 @@
 <?component name="createNewVersion" inline="true" macroURI="/calendars/_createNewVersion.zul"?>
 <vbox id="resourceCalendarContainer" width="100%">
 
-<div visible="@{controller.isCalendarNull}">
+    <div visible="@{controller.isCalendarNull}">
 
-    <grid fixedLayout="true">
-        <columns>
-            <column width="200px" />
-            <column />
-        </columns>
-        <rows>
-            <row>
-                <label value="${i18n:_('Select parent calendar')}" />
-                <combobox id="createDerivedCalendar" model="@{controller.baseCalendars}"
-                    itemRenderer="@{controller.baseCalendarsComboitemRenderer}" />
-            </row>
-        </rows>
-    </grid>
+        <grid fixedLayout="true">
+            <columns>
+                <column width="200px" />
+                <column />
+            </columns>
 
-</div>
+            <rows>
+                <row>
+                    <label value="${i18n:_('Select parent calendar')}" />
+                    <combobox id="createDerivedCalendar"
+                              model="@{controller.baseCalendars}"
+                              itemRenderer="@{controller.baseCalendarsComboitemRenderer}" />
+                </row>
+            </rows>
+        </grid>
+
+    </div>
 
 
-<div visible="@{controller.isCalendarNotNull}">
+    <div visible="@{controller.isCalendarNotNull}">
 
-    <calendarEdition top_id="editCalendarWindow" title="${i18n:_('Edit Calendar')}"
-        save_button_label="${i18n:_('Save changes')}"
-        save_button_visible="false"
-        cancel_button_label="${i18n:_('Remove calendar')}" />
+        <calendarEdition top_id="editCalendarWindow" title="${i18n:_('Edit Calendar')}"
+                         save_button_label="${i18n:_('Save changes')}"
+                         save_button_visible="false"
+                         cancel_button_label="${i18n:_('Remove calendar')}" />
 
-    <createNewVersion />
+        <createNewVersion />
 
-</div>
+    </div>
 
 
 </vbox>

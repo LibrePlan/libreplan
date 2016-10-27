@@ -10,7 +10,8 @@ Summary
 These are the most representative changes:
 
 * Update SDK to JDK8
-* Update all libraries
+* Update ZK5 to ZK8
+* Update all other libraries
 
 Contributors
 ~~~~~~~~~~~~
@@ -20,6 +21,7 @@ Thanks to all the contributors to this new version:
 * Vova Perebykivskyi
 * Bodgan Bodnarjuk
 * Jeroen Baten
+* Paul Luchyn
 
 Changes
 ~~~~~~~
@@ -80,15 +82,16 @@ Changes
 * Update BeanShell
 * Update Quartz Framework
 * Update Usertype.Core
+* Update ZK Framework
 
 * Add Javax EL
 
 * Update LibrePlan version to 1.6.0
 
-
 * Remove Ezmorph
 * Remove Json-lib
 * Remove M2E plugin
+* Remove DBUnit
 
 * Code refactoring
 
@@ -265,7 +268,7 @@ Changes
 * jira and tim-connector: Constraints for JobSchedulerConfiguration
 * Fix NonUniqueObjectException on the project gantt when loading the same criteria of the user filter setting
 * Sort the list of resources and triggers the sort after refreshing it.
-* Adds graphic representation of the avaliability as a color progress bar and a icon for warning non-zero overload.
+* Adds graphic representation of the availability as a color progress bar and a icon for warning non-zero overload.
 * Adds margins additional to task limits(start, end) for default load ratios calculation in resource allocation advance search.
 * Recalculates the load ratios on changing the filtering dates and incorporates interface validations in the filtering dates dateboxes
 * Add the suitable casting on getting items of the list of resources with their load ratios.
@@ -1268,7 +1271,7 @@ Changes
 * Bug: Configures right ascending sorting in companies list.
 * Bug #1527: Several interface disabling configurations modified.
 * Bug #1528: Check if name is null before truncating it.
-* Bug #1528: Change datatype for field TaskElement.notes to TEXT, which has no lenght limit.
+* Bug #1528: Change datatype for field TaskElement.notes to TEXT, which has no length limit.
 * Bug #1528: Trucate too long task names so they don't cause problems on save.
 * Small code refactor.
 * Bug #1523: Fix NPE in company view returning zero if progress is null
@@ -2039,7 +2042,7 @@ Changes
 * set the fields "Subcontracting date" and "Subcontracting communication date" in the subcontractor pop-up in read only mode.
 * Remove unneeded throws in MoneyCostCalculatorTest
 * Add unit tests to check MoneyCostCalculator with a different type of hours
-* set the progress values, which are sent from a subcontrated task, in read only mode.
+* set the progress values, which are sent from a subcontracted task, in read only mode.
 * Remove commented lines in MoneyCostCalculatorTest
 * Update Copyright info in user documentation
 * Update Copyright info in user documentation
@@ -2562,7 +2565,7 @@ Changes
 * [Bug #1291] Fix NPE when a task with a dependency is removed
 * [Bug #1291] Fix NPE when a task with a dependency is removed
 * Remove duplicated method in TaskElement
-* creates a new field in the SubcontratedTaskData to store the collection of subcontrator delivering dates.
+* creates a new field in the SubcontractedTaskData to store the collection of subcontrator delivering dates.
 * create the interface DeliverDate and the comparator DeliverDateComparator to sort the SubcontractorDeliverDate and the DeadlineCommunications.
 * [Bug #1229] Look for new resources when moving a task
 * [Bug #1229] Wrap all position mofications
@@ -2661,7 +2664,7 @@ Changes
 * Update the routing of the css with libreplan.
 * Add the relationship from order entity with its customer comunications.
 * Create a customer comunication when a subcontractor receives the communication of a new project to be developed.
-* Add the external code when a whole order is imported as subcontrated task.
+* Add the external code when a whole order is imported as subcontracted task.
 * Create a list of incoming projects accepted by customers and contracted with the company
 * Create the entity CustomerComunication, the dao CustomerComunicationDAO, the test CustomerComunicationDAOTest and add the changes of the database in a new file db.changelog-1.2.xml
 * Fix 2 style mini-issues

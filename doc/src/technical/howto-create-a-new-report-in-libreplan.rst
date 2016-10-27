@@ -7,15 +7,14 @@ How To Create A New Report In LibrePlan
 :Contact: mrego@igalia.com
 :Date: 11/09/2012
 :Copyright:
-  Some rights reserved. This document is distributed under the Creative
-  Commons Attribution-ShareAlike 3.0 licence, available in
-  http://creativecommons.org/licenses/by-sa/3.0/.
+      Some rights reserved. This document is distributed under the Creative
+      Commons Attribution-ShareAlike 3.0 licence, available in
+      http://creativecommons.org/licenses/by-sa/3.0/.
 :Abstract:
-  LibrePlan uses **JasperReports** [1]_ to create reports in the application. This
-  document tries to explain how to create a new report in LibrePlan.
+      LibrePlan uses **JasperReports** [1]_ to create reports in the application.
+  This document tries to explain how to create a new report in LibrePlan.
 
-  During this tutorial you are going to create a report that will show the list of
-  resources in LibrePlan.
+  During this tutorial you are going to create a report that will show the list of resources in LibrePlan.
 
 .. contents:: Table of Contents
 
@@ -105,7 +104,7 @@ Steps:
 
  <?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
 
- <?component name="combobox_output_format" macroURI="combobox_output_format.zul"
+ <?component name="comboboxOutputFormat" macroURI="comboboxOutputFormat.zul"
      class="org.libreplan.web.reports.ComboboxOutputFormat" ?>
 
  <zk>
@@ -127,7 +126,7 @@ Steps:
                      <rows>
                          <row>
                              <label value="${i18n:_('Output format:')}" />
-                             <combobox_output_format id="outputFormat" />
+                             <comboboxOutputFormat id="outputFormat" />
                          </row>
                      </rows>
                  </grid>
@@ -167,8 +166,8 @@ charge to manage users interaction with report interface and call the proper
 methods to generate the report itself and show it to the user.
 
 There is already a controller called ``LibrePlanReportController`` which
-implements most of the stuff needed for report controllers. So, controllers for
-new reports are going to extend this class and re-implement some methods.
+implements most of the stuff needed for report controllers.
+So, controllers for new reports are going to extend this class and re-implement some methods.
 
 Steps:
 
@@ -335,8 +334,7 @@ Steps:
   layout and save it with the name of the new report
   ``resourcesListReport.jrxml`` in the same folder.
 
-  This will allow us to keep coherence between reports in regard to design,
-  header, footer, etc.
+  This will allow us to keep coherence between reports in regard to design, header, footer, etc.
 
 * Set report name to ``resourcesList``.
 
@@ -381,18 +379,24 @@ with other LibrePlan reports like header and footer. The result in iReport would
 be something similar to the screenshot.
 
 .. figure:: img/ireport-resources-list-report.png
-   :alt: iRerpot screenshot for Resources List report
+:alt: iRerpot screenshot for Resources List report
    :width: 100%
 
-   iReport screenshot for Resources List report
+       iReport screenshot for Resources List report
 
-You can even check the XML ``resourcesListReport.jrxml`` that should have
+    You can even check the XML ``resourcesListReport.jrxml`` that should have
 something similar to the following content:
 
 ::
 
  <?xml version="1.0" encoding="UTF-8"?>
- <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="resourcesList" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" resourceBundle="resourcesList" uuid="f83422af-00de-4fa5-b137-580b559f1453">
+ <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports
+ http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="resourcesList" pageWidth="595" pageHeight="842"
+ columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20"
+ resourceBundle="resourcesList" uuid="f83422af-00de-4fa5-b137-580b559f1453">
+
      <property name="ireport.zoom" value="1.0"/>
      <property name="ireport.x" value="0"/>
      <property name="ireport.y" value="0"/>
@@ -419,7 +423,7 @@ something similar to the following content:
                  </textElement>
                  <textFieldExpression><![CDATA[$R{subtitle}]]></textFieldExpression>
              </textField>
-             <image scaleImage="RetainShape">
+             <image scaleImage="RetainShape" isLazy="true">
                  <reportElement uuid="e033fa20-c68f-4716-9b43-e1435be185a8" x="318" y="0" width="180" height="53"/>
                  <imageExpression><![CDATA[$P{logo}]]></imageExpression>
              </image>
@@ -552,27 +556,25 @@ Steps:
      }
 
 Then if you run LibrePlan and go to the new menu entry called *Resources List*
-in *Reports* you will be able to generate a report with the resources added as
-example data. The report still lacks a good design and format, but at least you
-are able to see how the basic functionality of JasperReports in LibrePlan is
-integrated. The next step will be to show real data in the report getting it
-from database.
+in *Reports* you will be able to generate a report with the resources added as example data.
+The report still lacks a good design and format, but at least you
+are able to see how the basic functionality of JasperReports in LibrePlan is integrated.
+The next step will be to show real data in the report getting it from database.
 
 .. figure:: img/resources-list-report-example-data-pdf.png
-   :alt: Resources List report with example data in PDF format
+:alt: Resources List report with example data in PDF format
    :width: 100%
 
-   Resources List report with example data in PDF format
+       Resources List report with example data in PDF format
 
 
 Show real data from database
 ----------------------------
 
-Now you need to query database and get information about resources. In order to
-follow LibrePlan architecture you are going to create a model that will be in
-charge to retrieve information from database, process it if needed and return
-the information to the controller. Then controller will send this information to
-JasperReports in order to generate the report with real data.
+Now you need to query database and get information about resources.
+In order to follow LibrePlan architecture you are going to create a model that will be in
+charge to retrieve information from database, process it if needed and return the information to the controller.
+Then controller will send this information to JasperReports in order to generate the report with real data.
 
 Steps:
 
@@ -828,8 +830,8 @@ Steps:
     }
 
 * Modify report file ``resourcesListReport.jrxml`` with iReport to add the new
-  parameter and show it in some part of the report layout. You could use iReport
-  for this task, or, for example, add the following lines in XML file::
+  parameter and show it in some part of the report layout.
+  You could use iReport for this task, or, for example, add the following lines in XML file::
 
     <parameter name="type" class="java.lang.String"/>
 

@@ -35,7 +35,9 @@ import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.resources.daos.ICriterionSatisfactionDAO;
 import org.libreplan.business.resources.daos.ICriterionTypeDAO;
 /**
- * Declares a interval of time in which the criterion is satisfied <br />
+ * Declares a interval of time in which the criterion is satisfied.
+ * <br />
+ *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
@@ -45,30 +47,55 @@ public class CriterionSatisfaction extends IntegrationEntity {
 
     static {
         BY_START_COMPARATOR = new Comparator<CriterionSatisfaction>() {
-
             @Override
-            public int compare(CriterionSatisfaction o1,
-                    CriterionSatisfaction o2) {
+            public int compare(CriterionSatisfaction o1, CriterionSatisfaction o2) {
                 return o1.getStartDate().compareTo(o2.getStartDate());
             }
         };
+    }
+
+    private LocalDate startDate;
+
+    private LocalDate finishDate;
+
+    private Criterion criterion;
+
+    private Resource resource;
+
+    private Boolean isDeleted = false;
+
+    /**
+     * Constructor for hibernate. Do not use!
+     */
+    public CriterionSatisfaction() {}
+
+    private CriterionSatisfaction(LocalDate startDate, Criterion criterion, Resource resource) {
+        Validate.notNull(startDate, "startDate must be not null");
+        Validate.notNull(criterion, "criterion must be not null");
+        Validate.notNull(resource, "resource must be not null");
+
+        this.startDate = startDate;
+        this.criterion = criterion;
+        this.resource = resource;
+    }
+
+    private CriterionSatisfaction(Criterion criterion, Resource resource, Interval interval) {
+        this(interval.getStart(), criterion, resource);
+        if (interval.getEnd() != null) {
+            this.finish(interval.getEnd());
+        }
     }
 
     public static CriterionSatisfaction create() {
         return create(new CriterionSatisfaction());
     }
 
-    public static CriterionSatisfaction create(LocalDate startDate,
-            Criterion criterion, Resource resource) {
-        return create(
-            new CriterionSatisfaction(startDate, criterion, resource));
+    public static CriterionSatisfaction create(LocalDate startDate, Criterion criterion, Resource resource) {
+        return create(new CriterionSatisfaction(startDate, criterion, resource));
     }
 
-    public static CriterionSatisfaction create(Criterion criterion,
-            Resource resource, Interval interval) {
-
+    public static CriterionSatisfaction create(Criterion criterion, Resource resource, Interval interval) {
         return create(new CriterionSatisfaction(criterion, resource, interval));
-
     }
 
     /**
@@ -76,24 +103,22 @@ public class CriterionSatisfaction extends IntegrationEntity {
      *         not exist
      */
     public static CriterionSatisfaction createUnvalidated(String code,
-            String criterionTypeName, String criterionName, Resource resource,
-            LocalDate startDate, LocalDate finishDate)
-            throws InstanceNotFoundException {
+                                                          String criterionTypeName,
+                                                          String criterionName,
+                                                          Resource resource,
+                                                          LocalDate startDate,
+                                                          LocalDate finishDate) throws InstanceNotFoundException {
 
-        ICriterionTypeDAO criterionTypeDAO =
-            Registry.getCriterionTypeDAO();
+        ICriterionTypeDAO criterionTypeDAO = Registry.getCriterionTypeDAO();
 
-        /* Get CriterionType. */
-        CriterionType criterionType = criterionTypeDAO.findUniqueByName(
-            criterionTypeName);
+        /* Get CriterionType */
+        CriterionType criterionType = criterionTypeDAO.findUniqueByName(criterionTypeName);
 
-        /* Get Criterion. */
-        Criterion criterion = criterionType.getCriterion(
-            criterionName);
+        /* Get Criterion */
+        Criterion criterion = criterionType.getCriterion(criterionName);
 
-        /* Create instance of CriterionSatisfaction. */
-        CriterionSatisfaction criterionSatisfaction =
-            create(new CriterionSatisfaction(), code);
+        /* Create instance of CriterionSatisfaction */
+        CriterionSatisfaction criterionSatisfaction = create(new CriterionSatisfaction(), code);
 
         criterionSatisfaction.criterion = criterion;
         criterionSatisfaction.resource = resource;
@@ -109,19 +134,19 @@ public class CriterionSatisfaction extends IntegrationEntity {
      *         not exist
      */
     public void updateUnvalidated(String criterionTypeName,
-            String criterionName, LocalDate startDate, LocalDate finishDate)
-        throws InstanceNotFoundException {
+                                  String criterionName,
+                                  LocalDate startDate,
+                                  LocalDate finishDate) throws InstanceNotFoundException {
 
-        CriterionType criterionType = null;
+        CriterionType criterionType;
 
         if (StringUtils.isBlank(criterionTypeName)) {
             criterionType = criterion.getType();
         } else {
-            criterionType = Registry.getCriterionTypeDAO().findUniqueByName(
-                criterionTypeName);
+            criterionType = Registry.getCriterionTypeDAO().findUniqueByName(criterionTypeName);
         }
 
-        String newCriterionName = null;
+        String newCriterionName;
 
         if (StringUtils.isBlank(criterionName)) {
             newCriterionName = StringUtils.trim(criterion.getName());
@@ -138,43 +163,7 @@ public class CriterionSatisfaction extends IntegrationEntity {
         if (finishDate != null) {
             this.finishDate = finishDate;
         }
-
     }
-
-    /**
-     * Constructor for hibernate. Do not use!
-     */
-    public CriterionSatisfaction() {
-
-    }
-
-    private CriterionSatisfaction(LocalDate startDate, Criterion criterion,
-            Resource resource) {
-        Validate.notNull(startDate, "startDate must be not null");
-        Validate.notNull(criterion, "criterion must be not null");
-        Validate.notNull(resource, "resource must be not null");
-        this.startDate = startDate;
-        this.criterion = criterion;
-        this.resource = resource;
-    }
-
-    private CriterionSatisfaction(Criterion criterion, Resource resource,
-            Interval interval) {
-        this(interval.getStart(), criterion, resource);
-        if (interval.getEnd() != null) {
-            this.finish(interval.getEnd());
-        }
-    }
-
-    private LocalDate startDate;
-
-    private LocalDate finishDate;
-
-    private Criterion criterion;
-
-    private Resource resource;
-
-    private Boolean isDeleted = false;
 
     @Override
     public String toString() {
@@ -187,6 +176,7 @@ public class CriterionSatisfaction extends IntegrationEntity {
         result.finishDate = finishDate;
         result.criterion = criterion;
         result.resource = resource;
+
         return result;
     }
 
@@ -237,10 +227,11 @@ public class CriterionSatisfaction extends IntegrationEntity {
 
     public void finish(LocalDate finish) {
         Validate.notNull(finish);
-        Validate.isTrue(getStartDate() == null
-                || getStartDate().compareTo(finish) <= 0);
-        Validate.isTrue(finishDate == null || isNewObject()
-                || getEndDate().equals(finish) || getEndDate().isBefore(finish));
+        Validate.isTrue(getStartDate() == null || getStartDate().compareTo(finish) <= 0);
+
+        Validate.isTrue(
+                finishDate == null || isNewObject() || getEndDate().equals(finish) || getEndDate().isBefore(finish));
+
         this.finishDate = finish;
     }
 
@@ -260,10 +251,10 @@ public class CriterionSatisfaction extends IntegrationEntity {
     }
 
     public void setStartDate(LocalDate date) {
-        if(date != null){
-            Validate.isTrue(startDate == null || isNewObject()
-                    || getStartDate().equals(date)
-                    || getStartDate().isAfter(date));
+        if(date != null) {
+
+            Validate.isTrue(
+                    startDate == null || isNewObject() || getStartDate().equals(date) || getStartDate().isAfter(date));
         }
         startDate = date;
     }
@@ -297,17 +288,17 @@ public class CriterionSatisfaction extends IntegrationEntity {
     @AssertTrue(message = "criterion satisfaction with end date before start")
     public boolean isPositiveTimeInterval() {
 
-        /* Check if it makes sense to check the constraint .*/
+        /* Check if it makes sense to check the constraint */
         if (!isStartDateSpecified()) {
             return true;
         }
 
-        /* Check the constraint. */
+        /* Check the constraint */
         if (finishDate == null) {
             return true;
         }
 
-        return (finishDate.isAfter(startDate) || startDate.equals(finishDate));
+        return finishDate.isAfter(startDate) || startDate.equals(finishDate);
 
     }
 

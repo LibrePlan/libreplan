@@ -35,22 +35,20 @@ import org.libreplan.business.users.entities.User;
  *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  * @author Manuel Rego Casasnovas <rego@igalia.com>
- * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
 public interface IUserDAO extends IGenericDAO<User, Long>{
 
     /**
      * NOTE: Username comparison is case-insensitive.
      */
-    public User findByLoginName(String loginName)
-        throws InstanceNotFoundException;
+    public User findByLoginName(String loginName) throws InstanceNotFoundException;
 
     /**
      * NOTE: Username comparison is case-insensitive, and the method is executed
      * in another transaction.
      */
-    public User findByLoginNameAnotherTransaction(String loginName)
-        throws InstanceNotFoundException;
+    public User findByLoginNameAnotherTransaction(String loginName) throws InstanceNotFoundException;
 
     /**
      * NOTE: Username comparison is case-insensitive.
@@ -73,8 +71,7 @@ public interface IUserDAO extends IGenericDAO<User, Long>{
      * @return a {@link User} object.
      * @throws InstanceNotFoundException
      */
-    User findByLoginNameNotDisabled(String loginName)
-            throws InstanceNotFoundException;
+    User findByLoginNameNotDisabled(String loginName) throws InstanceNotFoundException;
 
     /**
      * Retrieves a list of the User entities which attribute 'disabled' has

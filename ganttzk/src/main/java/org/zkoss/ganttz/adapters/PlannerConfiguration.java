@@ -40,12 +40,12 @@ import org.zkoss.ganttz.extensions.ICommand;
 import org.zkoss.ganttz.extensions.ICommandOnTask;
 import org.zkoss.ganttz.extensions.IContext;
 import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
-import org.zkoss.ganttz.timetracker.zoom.IDetailItemModificator;
-import org.zkoss.ganttz.timetracker.zoom.SeveralModificators;
+import org.zkoss.ganttz.timetracker.zoom.IDetailItemModifier;
+import org.zkoss.ganttz.timetracker.zoom.SeveralModifiers;
 import org.zkoss.zk.ui.Component;
 
 /**
- * A object that defines several extension points for gantt planner
+ * A object that defines several extension points for gantt planner.
  *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Manuel Rego Casasnovas <rego@igalia.com>
@@ -68,7 +68,7 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
 
         @Override
         public void doAction(IContext<T> context) {
-            // do nothing
+            // Do nothing
         }
 
         @Override
@@ -97,7 +97,7 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
 
         @Override
         public void doAction(IContextWithPlannerTask<T> context, T task) {
-            // do nothing
+            // Do nothing
         }
 
         @Override
@@ -165,11 +165,9 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
 
     private boolean treeEditable = true;
 
-    // private String identifier = null;
+    private IDetailItemModifier firstLevelModifiers = SeveralModifiers.empty();
 
-    private IDetailItemModificator firstLevelModificators = SeveralModificators.empty();
-
-    private IDetailItemModificator secondLevelModificators = SeveralModificators.empty();
+    private IDetailItemModifier secondLevelModifiers = SeveralModifiers.empty();
 
     private List<IReloadChartListener> reloadChartListeners = new ArrayList<>();
 
@@ -395,20 +393,20 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
         return renamingTasksEnabled;
     }
 
-    public IDetailItemModificator getSecondLevelModificators() {
-        return secondLevelModificators;
+    public IDetailItemModifier getSecondLevelModifiers() {
+        return secondLevelModifiers;
     }
 
-    public void setSecondLevelModificators(IDetailItemModificator... secondLevelModificators) {
-        this.secondLevelModificators = SeveralModificators.create(secondLevelModificators);
+    public void setSecondLevelModifiers(IDetailItemModifier... secondLevelModifiers) {
+        this.secondLevelModifiers = SeveralModifiers.create(secondLevelModifiers);
     }
 
-    public IDetailItemModificator getFirstLevelModificators() {
-        return firstLevelModificators;
+    public IDetailItemModifier getFirstLevelModifiers() {
+        return firstLevelModifiers;
     }
 
-    public void setFirstLevelModificators(IDetailItemModificator... firstLevelModificators) {
-        this.firstLevelModificators = SeveralModificators.create(firstLevelModificators);
+    public void setFirstLevelModifiers(IDetailItemModifier... firstLevelModifiers) {
+        this.firstLevelModifiers = SeveralModifiers.create(firstLevelModifiers);
     }
 
     public void addReloadChartListener(IReloadChartListener reloadChartListener) {

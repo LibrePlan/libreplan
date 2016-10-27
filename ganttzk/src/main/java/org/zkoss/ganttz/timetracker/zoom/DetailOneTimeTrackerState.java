@@ -27,27 +27,26 @@ import org.joda.time.Months;
 import org.joda.time.ReadablePeriod;
 import org.joda.time.Years;
 
-
 /**
- * Zoom level with years in the first level and semesters in the second level
+ * Zoom level with years in the first level and semesters in the second level.
+ *
  * @author Francisco Javier Moran Rúa
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
-public class DetailOneTimeTrackerState extends
-        TimeTrackerStateWithSubintervalsFitting {
+public class DetailOneTimeTrackerState extends TimeTrackerStateWithSubintervalsFitting {
 
-    public static final Period MINIMUN_PERIOD = PeriodType.YEARS.amount(6);
+    static final Period MINIMUM_PERIOD = PeriodType.YEARS.amount(6);
 
     private static final int FIRST_LEVEL_ITEM_SIZE = 200;
+
     private static final int SECOND_LEVEL_ITEM_SIZE = 100;
 
     public final double daysPerPixel() {
-        return ((double) 365 / FIRST_LEVEL_ITEM_SIZE);
+        return (double) 365 / FIRST_LEVEL_ITEM_SIZE;
     }
 
-    DetailOneTimeTrackerState(IDetailItemModificator firstLevelModificator,
-            IDetailItemModificator secondLevelModificator) {
-        super(firstLevelModificator, secondLevelModificator);
+    DetailOneTimeTrackerState(IDetailItemModifier firstLevelModifier, IDetailItemModifier secondLevelModifier) {
+        super(firstLevelModifier, secondLevelModifier);
     }
 
     @Override
@@ -62,15 +61,11 @@ public class DetailOneTimeTrackerState extends
 
     @Override
     protected IDetailItemCreator getDetailItemCreatorFirstLevel() {
-        return new IDetailItemCreator() {
-            @Override
-            public DetailItem create(DateTime start) {
-                int year = start.getYear();
-                DateTime end = new LocalDate(year + 1, 1, 1)
-                        .toDateTimeAtStartOfDay();
-                return new DetailItem(FIRST_LEVEL_ITEM_SIZE, start.getYear()
-                        + "", start, end);
-            }
+        return start -> {
+            int year = start.getYear();
+            DateTime end = new LocalDate(year + 1, 1, 1).toDateTimeAtStartOfDay();
+
+            return new DetailItem(FIRST_LEVEL_ITEM_SIZE, Integer.toString(start.getYear()), start, end);
         };
     }
 
@@ -81,15 +76,8 @@ public class DetailOneTimeTrackerState extends
 
     @Override
     protected IDetailItemCreator getDetailItemCreatorSecondLevel() {
-        return new IDetailItemCreator() {
-
-            @Override
-            public DetailItem create(DateTime dateTime) {
-                return new DetailItem(SECOND_LEVEL_ITEM_SIZE,
-                        dateTime.getMonthOfYear() == 1 ? "H1" : "H2", dateTime,
-                        dateTime.plusMonths(6));
-            }
-        };
+        return dateTime -> new DetailItem(
+                SECOND_LEVEL_ITEM_SIZE, dateTime.getMonthOfYear() == 1 ? "H1" : "H2", dateTime, dateTime.plusMonths(6));
     }
 
     @Override
@@ -103,12 +91,12 @@ public class DetailOneTimeTrackerState extends
     }
 
     public static LocalDate doYearRound(LocalDate date, boolean down) {
-        return new LocalDate(date.getYear() + (down?0:1), 1, 1);
+        return new LocalDate(date.getYear() + (down ? 0 : 1), 1, 1);
     }
 
     @Override
     protected Period getMinimumPeriod() {
-        return MINIMUN_PERIOD;
+        return MINIMUM_PERIOD;
     }
 
 }

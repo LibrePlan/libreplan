@@ -64,8 +64,24 @@ public class HoursGroup extends IntegrationEntity implements Cloneable, ICriteri
     private HoursGroup origin;
 
     protected CriterionRequirementOrderElementHandler criterionRequirementHandler =
-        CriterionRequirementOrderElementHandler.getInstance();
+                CriterionRequirementOrderElementHandler.getInstance();
 
+    /**
+     * Constructor for hibernate. Do not use!
+     */
+    public HoursGroup() {}
+
+    private HoursGroup(OrderLine parentOrderLine) {
+        this.parentOrderLine = parentOrderLine;
+        String code = parentOrderLine.getCode();
+        this.setCode(code != null ? code : "");
+        this.setOrderLineTemplate(null);
+    }
+
+    private HoursGroup(OrderLineTemplate orderLineTemplate) {
+        this.orderLineTemplate = orderLineTemplate;
+        this.setParentOrderLine(null);
+    }
 
     public static HoursGroup create(OrderLine parentOrderLine) {
         HoursGroup result = new HoursGroup(parentOrderLine);
@@ -91,17 +107,17 @@ public class HoursGroup extends IntegrationEntity implements Cloneable, ICriteri
     }
 
     /**
-     * Returns a copy of hoursGroup, and sets parent as its parent
+     * Returns a copy of hoursGroup, and sets parent as its parent.
      *
      * @param hoursGroup
      * @param parent
-     * @return
+     * @return {@link HoursGroup}
      */
     public static HoursGroup copyFrom(HoursGroup hoursGroup, OrderLineTemplate parent) {
         HoursGroup result = copyFrom(hoursGroup);
 
-        result.setCriterionRequirements(copyDirectCriterionRequirements(
-                result, hoursGroup.getDirectCriterionRequirement()));
+        result.setCriterionRequirements(
+                copyDirectCriterionRequirements(result, hoursGroup.getDirectCriterionRequirement()));
 
         result.setOrderLineTemplate(parent);
         result.setParentOrderLine(null);
@@ -128,8 +144,8 @@ public class HoursGroup extends IntegrationEntity implements Cloneable, ICriteri
     public static HoursGroup copyFrom(HoursGroup hoursGroup, OrderLine parent) {
         HoursGroup result = copyFrom(hoursGroup);
 
-        result.setCriterionRequirements(copyDirectCriterionRequirements(
-                result, hoursGroup.getDirectCriterionRequirement()));
+        result.setCriterionRequirements(
+                copyDirectCriterionRequirements(result, hoursGroup.getDirectCriterionRequirement()));
 
         result.setOrderLineTemplate(null);
         result.setParentOrderLine(parent);
@@ -149,25 +165,6 @@ public class HoursGroup extends IntegrationEntity implements Cloneable, ICriteri
         result.origin = hoursGroup;
 
         return result;
-    }
-
-    /**
-     * Constructor for hibernate. Do not use!
-     */
-    public HoursGroup() {
-
-    }
-
-    private HoursGroup(OrderLine parentOrderLine) {
-        this.parentOrderLine = parentOrderLine;
-        String code = parentOrderLine.getCode();
-        this.setCode(code != null ? code : "");
-        this.setOrderLineTemplate(null);
-    }
-
-    private HoursGroup(OrderLineTemplate orderLineTemplate) {
-        this.orderLineTemplate = orderLineTemplate;
-        this.setParentOrderLine(null);
     }
 
     public ResourceEnum getResourceType() {
@@ -259,6 +256,7 @@ public class HoursGroup extends IntegrationEntity implements Cloneable, ICriteri
             throw new IllegalStateException(
                     "Criterion cannot be assigned to this Hours Group. Criterion Resource Type is of a different type");
         }
+
         if ( existSameCriterionRequirement(requirement) ) {
             throw new IllegalStateException(
                     "Criterion cannot be assigned to this Hours Group. Criterion already exist within Hours Group");
@@ -327,14 +325,15 @@ public class HoursGroup extends IntegrationEntity implements Cloneable, ICriteri
     }
 
     private Set<CriterionRequirement> getCriterionRequirementsFromParent() {
-        return (parentOrderLine != null) ? parentOrderLine.getCriterionRequirements() :
-                orderLineTemplate.getCriterionRequirements();
+        return (parentOrderLine != null)
+                ? parentOrderLine.getCriterionRequirements()
+                : orderLineTemplate.getCriterionRequirements();
     }
 
     public Set<IndirectCriterionRequirement> getIndirectCriterionRequirement() {
         Set<IndirectCriterionRequirement> list = new HashSet<>();
-        for(CriterionRequirement criterionRequirement : criterionRequirements ){
-            if ( criterionRequirement instanceof IndirectCriterionRequirement ){
+        for (CriterionRequirement criterionRequirement : criterionRequirements ) {
+            if ( criterionRequirement instanceof IndirectCriterionRequirement ) {
                 list.add((IndirectCriterionRequirement) criterionRequirement);
             }
         }
@@ -343,8 +342,8 @@ public class HoursGroup extends IntegrationEntity implements Cloneable, ICriteri
 
     public Set<DirectCriterionRequirement> getDirectCriterionRequirement() {
         Set<DirectCriterionRequirement> list = new HashSet<>();
-        for(CriterionRequirement criterionRequirement : criterionRequirements ){
-            if ( criterionRequirement instanceof DirectCriterionRequirement ){
+        for (CriterionRequirement criterionRequirement : criterionRequirements ) {
+            if ( criterionRequirement instanceof DirectCriterionRequirement ) {
                 list.add((DirectCriterionRequirement) criterionRequirement);
             }
         }
@@ -357,6 +356,14 @@ public class HoursGroup extends IntegrationEntity implements Cloneable, ICriteri
         return resourceType == null ||
                 (resourceType.equals(resourceTypeRequirement) ||
                         (resourceTypeRequirement.equals(ResourceEnum.getDefault())));
+    }
+
+    /**
+     * Duplicate of {@link HoursGroup#isValidResourceType(CriterionRequirement)}.
+     * Needed because in my case I do not need to check equality with {@link ResourceEnum#getDefault()}.
+     */
+    public boolean isValidResourceTypeChanged(CriterionRequirement newRequirement) {
+        return resourceType == null || resourceType.equals(newRequirement.getCriterion().getType().getResource());
     }
 
     boolean existSameCriterionRequirement(CriterionRequirement newRequirement) {
@@ -390,9 +397,11 @@ public class HoursGroup extends IntegrationEntity implements Cloneable, ICriteri
         return Registry.getHoursGroupDAO();
     }
 
+    /**
+     * The automatic checking of this constraint is avoided because it uses the wrong code property.
+     */
     @Override
     public boolean isUniqueCodeConstraint() {
-        // The automatic checking of this constraint is avoided because it uses the wrong code property
         return true;
     }
 

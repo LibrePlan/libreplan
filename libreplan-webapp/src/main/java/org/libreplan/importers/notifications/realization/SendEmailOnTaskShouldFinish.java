@@ -44,10 +44,10 @@ import java.util.List;
 
 /**
  * Sends E-mail to users with data that storing in notification_queue table
- * and that are treat to {@link EmailTemplateEnum#TEMPLATE_TODAY_TASK_SHOULD_FINISH}
+ * and that are treat to {@link EmailTemplateEnum#TEMPLATE_TODAY_TASK_SHOULD_FINISH}.
  * Data will be send when current day equals to finish date.
  *
- * @author Created by Vova Perebykivskiy <vova@libreplan-enterprise.com> on 21.01.2016.
+ * @author Created by Vova Perebykivskyi <vova@libreplan-enterprise.com> on 21.01.2016.
  */
 
 @Component

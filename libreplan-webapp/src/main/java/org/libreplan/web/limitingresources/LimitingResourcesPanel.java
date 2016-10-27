@@ -51,8 +51,6 @@ import org.zkoss.zk.mesg.MZk;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 import org.zkoss.zk.ui.UiException;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.ListModel;
@@ -64,11 +62,12 @@ import org.zkoss.zul.SimpleListModel;
 public class LimitingResourcesPanel extends HtmlMacroComponent {
 
     public interface IToolbarCommand {
-        public void doAction();
 
-        public String getLabel();
+        void doAction();
 
-        public String getImage();
+        String getLabel();
+
+        String getImage();
     }
 
     private LimitingResourcesController limitingResourcesController;
@@ -83,8 +82,6 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
 
     private QueueListComponent queueListComponent;
 
-    private MutableTreeModel<LimitingResourceQueue> treeModel;
-
     private Listbox listZoomLevels;
 
     private Button paginationDownButton;
@@ -93,91 +90,88 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
 
     private Listbox horizontalPagination;
 
-    private LimitingDependencyList dependencyList = new LimitingDependencyList(
-            this);
+    private LimitingDependencyList dependencyList = new LimitingDependencyList(this);
 
     private PaginatorFilter paginatorFilter;
 
     private Component insertionPointLeftPanel;
+
     private Component insertionPointRightPanel;
+
     private Component insertionPointTimetracker;
 
     private LocalDate previousStart;
+
     private Interval previousInterval;
 
+    public LimitingResourcesPanel(LimitingResourcesController limitingResourcesController, TimeTracker timeTracker) {
+        init(limitingResourcesController, timeTracker);
+    }
+
     public void paginationDown() {
-        horizontalPagination.setSelectedIndex(horizontalPagination
-                .getSelectedIndex() - 1);
+        horizontalPagination.setSelectedIndex(horizontalPagination.getSelectedIndex() - 1);
         goToSelectedHorizontalPage();
     }
 
     public void paginationUp() {
-        horizontalPagination.setSelectedIndex(Math.max(1, horizontalPagination
-                .getSelectedIndex() + 1));
+        horizontalPagination.setSelectedIndex(Math.max(1, horizontalPagination.getSelectedIndex() + 1));
         goToSelectedHorizontalPage();
     }
 
     /**
-     * Returns the closest upper {@link LimitingResourcesPanel} instance going
-     * all the way up from comp
+     * Returns the closest upper {@link LimitingResourcesPanel} instance going all the way up from comp.
      *
      * @param comp
-     * @return
+     * @return {@link LimitingResourcesPanel}
      */
-    public static LimitingResourcesPanel getLimitingResourcesPanel(
-            Component comp) {
+    public static LimitingResourcesPanel getLimitingResourcesPanel(Component comp) {
         if (comp == null) {
             return null;
         }
+
         if (comp instanceof LimitingResourcesPanel) {
             return (LimitingResourcesPanel) comp;
         }
+
         return getLimitingResourcesPanel(comp.getParent());
     }
 
-    public LimitingResourcesPanel(
-            LimitingResourcesController limitingResourcesController,
-            TimeTracker timeTracker) {
-        init(limitingResourcesController, timeTracker);
-    }
-
-    public void init(LimitingResourcesController limitingResourcesController,
-            TimeTracker timeTracker) {
+    public void init(LimitingResourcesController limitingResourcesController, TimeTracker timeTracker) {
         this.limitingResourcesController = limitingResourcesController;
         this.timeTracker = timeTracker;
-        this.setVariable("limitingResourcesController",
-                limitingResourcesController, true);
+        this.setAttribute("limitingResourcesController", limitingResourcesController, true);
 
-        treeModel = createModelForTree();
+        MutableTreeModel<LimitingResourceQueue> treeModel = createModelForTree();
 
-        queueListComponent = new QueueListComponent(this, timeTracker,
-                treeModel);
+        queueListComponent = new QueueListComponent(this, timeTracker, treeModel);
 
         leftPane = new LimitingResourcesLeftPane(treeModel);
 
-        setAuService(new AuService(){
-            public boolean service(AuRequest request, boolean everError){
+        setAuService(new AuService() {
+            public boolean service(AuRequest request, boolean everError) {
+
                 String command = request.getCommand();
                 int zoomindex;
                 int scrollLeft;
 
-                if (command.equals("onZoomLevelChange")){
+                if ( "onZoomLevelChange".equals(command) ) {
                     zoomindex=  (Integer) retrieveData(request, "zoomindex");
                     scrollLeft = (Integer) retrieveData(request, "scrollLeft");
 
-                    setZoomLevel((ZoomLevel)((Listbox)getFellow("listZoomLevels"))
-                            .getModel().getElementAt(zoomindex),
-                            scrollLeft);
+                    setZoomLevel(
+                            (ZoomLevel)((Listbox) getFellow("listZoomLevels")).getModel().getElementAt(zoomindex),
+                            scrollLeft );
+
                     return true;
                 }
+
                 return false;
             }
 
-            private Object retrieveData(AuRequest request, String key){
+            private Object retrieveData(AuRequest request, String key) {
                 Object value = request.getData().get(key);
-                if ( value == null)
-                    throw new UiException(MZk.ILLEGAL_REQUEST_WRONG_DATA,
-                            new Object[] { key, this });
+                if (value == null)
+                    throw new UiException(MZk.ILLEGAL_REQUEST_WRONG_DATA, new Object[] { key, this });
 
                 return value;
             }
@@ -201,11 +195,12 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
     }
 
     private MutableTreeModel<LimitingResourceQueue> createModelForTree() {
-        MutableTreeModel<LimitingResourceQueue> result = MutableTreeModel
-                .create(LimitingResourceQueue.class);
+        MutableTreeModel<LimitingResourceQueue> result = MutableTreeModel.create(LimitingResourceQueue.class);
+
         for (LimitingResourceQueue LimitingResourceQueue : getLimitingResourceQueues()) {
             result.addToRoot(LimitingResourceQueue);
         }
+
         return result;
     }
 
@@ -214,10 +209,13 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
     }
 
     public ListModel getZoomLevels() {
-        ZoomLevel[] selectableZoomlevels = { ZoomLevel.DETAIL_THREE,
-                ZoomLevel.DETAIL_FOUR, ZoomLevel.DETAIL_FIVE,
-                ZoomLevel.DETAIL_SIX };
-        return new SimpleListModel(selectableZoomlevels);
+        ZoomLevel[] selectableZoomlevels = {
+                ZoomLevel.DETAIL_THREE,
+                ZoomLevel.DETAIL_FOUR,
+                ZoomLevel.DETAIL_FIVE,
+        };
+
+        return new SimpleListModel<>(selectableZoomlevels);
     }
 
     public void setZoomLevel(final ZoomLevel zoomLevel) {
@@ -248,69 +246,25 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
 
     private Button asButton(final IToolbarCommand c) {
         Button result = new Button();
-        result.addEventListener(Events.ON_CLICK, new EventListener() {
-            @Override
-            public void onEvent(Event event) {
-                c.doAction();
-            }
-        });
+        result.addEventListener(Events.ON_CLICK, event -> c.doAction());
+
         if (!StringUtils.isEmpty(c.getImage())) {
             result.setImage(c.getImage());
             result.setTooltiptext(c.getLabel());
         } else {
             result.setLabel(c.getLabel());
         }
+
         return result;
     }
 
     @SuppressWarnings("unchecked")
     private Separator getSeparator() {
-        List<Component> children = getToolbar().getChildren();
-        Separator separator = ComponentsFinder.findComponentsOfType(
-                Separator.class, children).get(0);
-        return separator;
+        return ComponentsFinder.findComponentsOfType(Separator.class, getToolbar().getChildren()).get(0);
     }
 
     private Component getToolbar() {
-        Component toolbar = getFellow("toolbar");
-        return toolbar;
-    }
-
-    private TimeTrackerComponent timeTrackerForLimitingResourcesPanel(
-            TimeTracker timeTracker) {
-        return new TimeTrackerComponent(timeTracker) {
-            @Override
-            protected void scrollHorizontalPercentage(int daysDisplacement) {
-                response("", new AuInvoke(queueListComponent,
-                        "scroll_horizontal", daysDisplacement + ""));
-                moveCurrentPositionScroll();
-            }
-
-            @Override
-            protected void moveCurrentPositionScroll() {
-                // get the previous data.
-                LocalDate previousStart = getPreviousStart();
-
-                // get the current data
-                int diffDays = getTimeTrackerComponent().getDiffDays(
-                        previousStart);
-                double pixelPerDay = getTimeTrackerComponent().getPixelPerDay();
-
-                response("move_scroll", new AuInvoke(queueListComponent,
-                        "move_scroll", "" + diffDays, "" + pixelPerDay));
-            }
-
-            @Override
-            protected void updateCurrentDayScroll() {
-                System.out.println("updateCurrentDayScroll");
-                double previousPixelPerDay = getTimeTracker().getMapper()
-                        .getPixelsPerDay().doubleValue();
-
-                response("update_day_scroll", new AuInvoke(queueListComponent,
-                        "update_day_scroll", "" + previousPixelPerDay));
-
-            }
-        };
+        return getFellow("toolbar");
     }
 
     @Override
@@ -321,8 +275,7 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
         initializeBindings();
         initializeTimetracker();
 
-        listZoomLevels
-                .setSelectedIndex(timeTracker.getDetailLevel().ordinal() - 2);
+        listZoomLevels.setSelectedIndex(timeTracker.getDetailLevel().ordinal() - 2);
 
         // Insert leftPane component with limitingresources list
         insertionPointLeftPanel.appendChild(leftPane);
@@ -341,21 +294,21 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
 
     /**
      * Apparently it's necessary to append {@link DependencyList} to
-     * insertionPointRightPanel again every time the list of dependencies is
-     * regenerated. Otherwise tasks overflow if they don't fit in current page
-     *
+     * insertionPointRightPanel again every time the list of dependencies is regenerated.
+     * Otherwise tasks overflow if they don't fit in current page.
      */
     private void rebuildDependencies() {
         dependencyList.clear();
+
         for (LimitingResourceQueueElement each : getLimitingResourceQueueElements()) {
             dependencyList.addDependenciesFor(each);
         }
+
         insertionPointRightPanel.appendChild(dependencyList);
     }
 
     private Set<LimitingResourceQueueElement> getLimitingResourceQueueElements() {
-        return queueListComponent.getLimitingResourceElementToQueueTaskMap()
-                .keySet();
+        return queueListComponent.getLimitingResourceElementToQueueTaskMap().keySet();
     }
 
     private void initializeTimetracker() {
@@ -376,6 +329,7 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
             }
 
         });
+
         timeTrackerHeader = createTimeTrackerHeader();
         timeTrackerComponent = createTimeTrackerComponent();
         insertionPointTimetracker.appendChild(timeTrackerHeader);
@@ -389,19 +343,13 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
         return new TimeTrackerComponent(timeTracker) {
 
             @Override
-            protected void scrollHorizontalPercentage(int pixelsDisplacement) {
-
-            }
+            protected void scrollHorizontalPercentage(int pixelsDisplacement) {}
 
             @Override
-            protected void moveCurrentPositionScroll() {
-                // TODO Auto-generated method stub
-            }
+            protected void moveCurrentPositionScroll() {}
 
             @Override
-            protected void updateCurrentDayScroll() {
-                // TODO Auto-generated method stub
-            }
+            protected void updateCurrentDayScroll() {}
         };
     }
 
@@ -414,20 +362,15 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
         return new TimeTrackerComponent(timeTracker) {
             @Override
             protected void scrollHorizontalPercentage(int pixelsDisplacement) {
-                response("", new AuInvoke(queueListComponent,
-                        "adjustScrollHorizontalPosition", pixelsDisplacement
-                                + ""));
+                response("", new AuInvoke(
+                        queueListComponent, "adjustScrollHorizontalPosition", Integer.toString(pixelsDisplacement)));
             }
 
             @Override
-            protected void moveCurrentPositionScroll() {
-                // TODO Auto-generated method stub
-            }
+            protected void moveCurrentPositionScroll() {}
 
             @Override
-            protected void updateCurrentDayScroll() {
-                // TODO Auto-generated method stub
-            }
+            protected void updateCurrentDayScroll() {}
         };
     }
 
@@ -491,8 +434,7 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
     }
 
     public void editResourceAllocation(QueueTask queueTask) {
-        limitingResourcesController.editResourceAllocation(queueTask
-                .getLimitingResourceQueueElement());
+        limitingResourcesController.editResourceAllocation(queueTask.getLimitingResourceQueueElement());
     }
 
     public void removeDependenciesFor(LimitingResourceQueueElement element) {
@@ -515,8 +457,7 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
     }
 
     public void goToSelectedHorizontalPage() {
-        paginatorFilter.goToHorizontalPage(horizontalPagination
-                .getSelectedIndex());
+        paginatorFilter.goToHorizontalPage(horizontalPagination.getSelectedIndex());
         reloadComponent();
     }
 
@@ -541,9 +482,11 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
     private class PaginatorFilter implements IDetailItemFilter {
 
         private DateTime intervalStart;
+
         private DateTime intervalEnd;
 
         private DateTime paginatorStart;
+
         private DateTime paginatorEnd;
 
         @Override
@@ -553,31 +496,38 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
 
         private Period intervalIncrease() {
             switch (timeTracker.getDetailLevel()) {
-            case DETAIL_ONE:
-                return Period.years(5);
-            case DETAIL_TWO:
-                return Period.years(5);
-            case DETAIL_THREE:
-                return Period.years(2);
-            case DETAIL_FOUR:
-                return Period.months(12);
-            case DETAIL_FIVE:
-                return Period.weeks(12);
-            case DETAIL_SIX:
-                return Period.weeks(12);
+
+                case DETAIL_ONE:
+                case DETAIL_TWO:
+                    return Period.years(5);
+
+                case DETAIL_THREE:
+                    return Period.years(2);
+
+                case DETAIL_FOUR:
+                    return Period.months(12);
+
+                case DETAIL_FIVE:
+                    return Period.weeks(12);
+
+                default:
+                    // Default month
+                    return Period.years(2);
             }
-            // Default month
-            return Period.years(2);
+
         }
 
         public void setInterval(Interval realInterval) {
             intervalStart = realInterval.getStart().toDateTimeAtStartOfDay();
             intervalEnd = realInterval.getFinish().toDateTimeAtStartOfDay();
             paginatorStart = intervalStart;
+
             paginatorEnd = intervalStart.plus(intervalIncrease());
-            if ((paginatorEnd.plus(intervalIncrease()).isAfter(intervalEnd))) {
+
+            if (paginatorEnd.plus(intervalIncrease()).isAfter(intervalEnd)) {
                 paginatorEnd = intervalEnd;
             }
+
             updatePaginationButtons();
             dependencyList.recreateDependencyComponents();
         }
@@ -588,48 +538,60 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
         }
 
         @Override
-        public Collection<DetailItem> selectsFirstLevel(
-                Collection<DetailItem> firstLevelDetails) {
-            ArrayList<DetailItem> result = new ArrayList<DetailItem>();
+        public Collection<DetailItem> selectsFirstLevel(Collection<DetailItem> firstLevelDetails) {
+            ArrayList<DetailItem> result = new ArrayList<>();
+            boolean itemIsNotBeforePaginatorStartAndAfterEnd;
+
             for (DetailItem each : firstLevelDetails) {
-                if ((each.getStartDate() == null)
-                        || !(each.getStartDate().isBefore(paginatorStart))
-                        && (each.getStartDate().isBefore(paginatorEnd))) {
+
+                itemIsNotBeforePaginatorStartAndAfterEnd = (each.getStartDate() == null) ||
+                        !(each.getStartDate().isBefore(paginatorStart)) &&
+                                (each.getStartDate().isBefore(paginatorEnd));
+
+                if ( itemIsNotBeforePaginatorStartAndAfterEnd ) {
                     result.add(each);
                 }
             }
+
             return result;
         }
 
         @Override
-        public Collection<DetailItem> selectsSecondLevel(
-                Collection<DetailItem> secondLevelDetails) {
-            ArrayList<DetailItem> result = new ArrayList<DetailItem>();
+        public Collection<DetailItem> selectsSecondLevel(Collection<DetailItem> secondLevelDetails) {
+            ArrayList<DetailItem> result = new ArrayList<>();
+            boolean itemIsNotBeforePaginatorStartAndAfterEnd;
+
             for (DetailItem each : secondLevelDetails) {
-                if ((each.getStartDate() == null)
-                        || !(each.getStartDate().isBefore(paginatorStart))
-                        && (each.getStartDate().isBefore(paginatorEnd))) {
+
+                itemIsNotBeforePaginatorStartAndAfterEnd = (each.getStartDate() == null) ||
+                        !(each.getStartDate().isBefore(paginatorStart)) &&
+                                (each.getStartDate().isBefore(paginatorEnd));
+
+                if ( itemIsNotBeforePaginatorStartAndAfterEnd ) {
                     result.add(each);
                 }
             }
+
             return result;
         }
 
         public void populateHorizontalListbox() {
             horizontalPagination.getItems().clear();
-            DateTime intervalStart = timeTracker.getRealInterval().getStart()
-                    .toDateTimeAtStartOfDay();
+            DateTime intervalStart = timeTracker.getRealInterval().getStart().toDateTimeAtStartOfDay();
+
             if (intervalStart != null) {
                 DateTime itemStart = intervalStart;
                 DateTime itemEnd = intervalStart.plus(intervalIncrease());
+
                 while (intervalEnd.isAfter(itemStart)) {
-                    if (intervalEnd.isBefore(itemEnd)
-                            || !intervalEnd.isAfter(itemEnd
-                                    .plus(intervalIncrease()))) {
+
+                    if (intervalEnd.isBefore(itemEnd) || !intervalEnd.isAfter(itemEnd.plus(intervalIncrease()))) {
                         itemEnd = intervalEnd;
                     }
-                    Listitem item = new Listitem(Util.formatDate(itemStart)
-                            + " - " + Util.formatDate(itemEnd.minusDays(1)));
+
+                    Listitem item =
+                            new Listitem(Util.formatDate(itemStart) + " - " + Util.formatDate(itemEnd.minusDays(1)));
+
                     horizontalPagination.appendChild(item);
                     itemStart = itemEnd;
                     itemEnd = itemEnd.plus(intervalIncrease());
@@ -644,14 +606,15 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
 
         public void goToHorizontalPage(int interval) {
             paginatorStart = intervalStart;
-            paginatorStart = timeTracker.getDetailsFirstLevel().iterator()
-                    .next().getStartDate();
+            paginatorStart = timeTracker.getDetailsFirstLevel().iterator().next().getStartDate();
 
             for (int i = 0; i < interval; i++) {
                 paginatorStart = paginatorStart.plus(intervalIncrease());
             }
+
             paginatorEnd = paginatorStart.plus(intervalIncrease());
-            if ((paginatorEnd.plus(intervalIncrease()).isAfter(intervalEnd))) {
+
+            if (paginatorEnd.plus(intervalIncrease()).isAfter(intervalEnd)) {
                 paginatorEnd = paginatorEnd.plus(intervalIncrease());
             }
             timeTracker.resetMapper();
@@ -664,21 +627,19 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
         }
 
         public boolean isFirstPage() {
-            return (horizontalPagination.getSelectedIndex() <= 0)
-                    || horizontalPagination.isDisabled();
+            return (horizontalPagination.getSelectedIndex() <= 0) || horizontalPagination.isDisabled();
         }
 
         private boolean isLastPage() {
-            return (horizontalPagination.getItemCount() == (horizontalPagination
-                    .getSelectedIndex() + 1))
-                    || horizontalPagination.isDisabled();
+            return (horizontalPagination.getItemCount() == (horizontalPagination.getSelectedIndex() + 1)) ||
+                    horizontalPagination.isDisabled();
         }
     }
 
     private void savePreviousData() {
-        TimeTracker timeTracker = getTimeTrackerComponent().getTimeTracker();
-        this.previousStart = timeTracker.getRealInterval().getStart();
-        this.previousInterval = timeTracker.getMapper().getInterval();
+        TimeTracker tracker = getTimeTrackerComponent().getTimeTracker();
+        this.previousStart = tracker.getRealInterval().getStart();
+        this.previousInterval = tracker.getMapper().getInterval();
     }
 
     public LocalDate getPreviousStart() {

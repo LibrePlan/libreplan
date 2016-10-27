@@ -20,95 +20,114 @@
 -->
 
 <panel title="${i18n:_('Criteria Requirement')}" border="normal">
-<panelchildren >
-    <newdatasortablegrid mold="paging" pageSize="5" fixedLayout="true"
-            model="@{hoursGroupWrapper.criterionRequirementWrappersView}">
+    <panelchildren >
+        <newdatasortablegrid mold="paging" pageSize="5" fixedLayout="true"
+                             emptyMessage="${i18n:_('No criterions')}"
+                             model="@{hoursGroupWrapper.criterionRequirementWrappersView}">
             <columns>
-                <newdatasortablecolumn label="${i18n:_('Criterion name')}" sort="auto(lower(criterionAndType))" sortDirection="ascending"/>
+                <newdatasortablecolumn label="${i18n:_('Criterion name')}" sort="auto(lower(criterionAndType))"
+                                       sortDirection="ascending"/>
+
                 <newdatasortablecolumn label="${i18n:_('Type')}" sort="auto(type)" width="120px" align="center"/>
+
                 <newdatasortablecolumn label="${i18n:_('Operations')}" width="90px" align="center"/>
             </columns>
+
             <rows>
                 <row self="@{each='criterionRequirementWrapper'}" value="@{criterionRequirementWrapper}">
                     <hbox>
-                    <bandbox onChanging = "criterionRequirementsController.onChangingText(event);"
-                        width="480px"
-                        visible ="@{criterionRequirementWrapper.newDirectAndItsHoursGroupIsWorker}"
-                        value = "@{criterionRequirementWrapper.criterionAndType}">
-                        <bandpopup>
-                                <listbox width="500px" height="150px" fixedLayout="true"
-                                model="@{assignedCriterionRequirementController.criterionWithItsTypesWorker}"
-                                onSelect="assignedCriterionRequirementController.selectCriterionToHoursGroup(self.selectedItem,
-                                    self.parent.parent,self.parent.parent.parent.parent.value);">
-                                <listhead>
-                                    <listheader label="Type" />
-                                    <listheader label="Criterion" />
-                                </listhead>
-                                <listitem self="@{each='criterionWithItsType'}" value="@{criterionWithItsType}">
-                                    <listcell label="@{criterionWithItsType.type.name}" />
-                                    <listcell label="@{criterionWithItsType.nameHierarchy}" />
-                                </listitem>
-                             </listbox>
-                        </bandpopup>
-                    </bandbox>
-                    <bandbox onChanging = "criterionRequirementsController.onChangingText(event);"
-                        width="480px"
-                        visible ="@{criterionRequirementWrapper.newDirectAndItsHoursGroupIsMachine}"
-                        value = "@{criterionRequirementWrapper.criterionAndType}">
-                        <bandpopup>
-                                <listbox width="500px" height="150px" fixedLayout="true"
-                                model="@{assignedCriterionRequirementController.criterionWithItsTypesMachine}"
-                                onSelect="assignedCriterionRequirementController.selectCriterionToHoursGroup(self.selectedItem,
-                                    self.parent.parent,self.parent.parent.parent.parent.value);">
-                                <listhead>
-                                    <listheader label="Type" />
-                                    <listheader label="Criterion" />
-                                </listhead>
-                                <listitem self="@{each='criterionWithItsType'}" value="@{criterionWithItsType}">
-                                    <listcell label="@{criterionWithItsType.type.name}" />
-                                    <listcell label="@{criterionWithItsType.nameHierarchy}" />
-                                </listitem>
-                             </listbox>
-                        </bandpopup>
-                    </bandbox>
-                    <bandbox onChanging = "criterionRequirementsController.onChangingText(event);"
-                        width="480px"
-                        visible ="@{criterionRequirementWrapper.newException}"
-                        value = "@{criterionRequirementWrapper.criterionAndType}">
-                        <bandpopup>
-                                <listbox width="500px" height="150px" fixedLayout="true"
-                                model="@{hoursGroupWrapper.validCriterions}"
-                                onSelect="assignedCriterionRequirementController.selectCriterionToHoursGroup(self.selectedItem,
-                                    self.parent.parent,self.parent.parent.parent.parent.value);">
-                                <listhead>
-                                    <listheader label="Type" />
-                                    <listheader label="Criterion" />
-                                </listhead>
-                                <listitem self="@{each='criterionWithItsType'}" value="@{criterionWithItsType}">
-                                    <listcell label="@{criterionWithItsType.type.name}" />
-                                    <listcell label="@{criterionWithItsType.nameHierarchy}" />
-                                </listitem>
-                             </listbox>
-                        </bandpopup>
-                    </bandbox>
-                    <label visible="@{criterionRequirementWrapper.oldDirectOrException}"
-                     value="@{criterionRequirementWrapper.criterionAndType}"/>
+                        <bandbox onChanging="criterionRequirementsController.onChangingText(event);"
+                                 width="480px"
+                                 visible="@{criterionRequirementWrapper.newDirectAndItsHoursGroupIsWorker}"
+                                 value="@{criterionRequirementWrapper.criterionAndType}">
+                            <bandpopup>
+                                <listbox width="500px" height="150px" sizedByContent="false"
+                                         model="@{assignedCriterionRequirementController.criterionWithItsTypesWorker}"
+                                         onSelect="assignedCriterionRequirementController.selectCriterionToHoursGroup(self.selectedItem, self.parent.parent,self.parent.parent.parent.parent.value);">
+                                    <listhead>
+                                        <listheader label="Type" />
+                                        <listheader label="Criterion" />
+                                    </listhead>
+
+                                    <listitem self="@{each='criterionWithItsType'}" value="@{criterionWithItsType}">
+                                        <listcell label="@{criterionWithItsType.type.name}" />
+                                        <listcell label="@{criterionWithItsType.nameHierarchy}" />
+                                    </listitem>
+                                </listbox>
+                            </bandpopup>
+                        </bandbox>
+
+                        <bandbox onChanging = "criterionRequirementsController.onChangingText(event);"
+                                 width="480px"
+                                 visible="@{criterionRequirementWrapper.newDirectAndItsHoursGroupIsMachine}"
+                                 value="@{criterionRequirementWrapper.criterionAndType}">
+                            <bandpopup>
+                                <listbox width="500px" height="150px" sizedByContent="true"
+                                         model="@{assignedCriterionRequirementController.criterionWithItsTypesMachine}"
+                                         onSelect="assignedCriterionRequirementController.selectCriterionToHoursGroup(self.selectedItem, self.parent.parent,self.parent.parent.parent.parent.value);">
+                                    <listhead>
+                                        <listheader label="Type" />
+                                        <listheader label="Criterion" />
+                                    </listhead>
+
+                                    <listitem self="@{each='criterionWithItsType'}" value="@{criterionWithItsType}">
+                                        <listcell label="@{criterionWithItsType.type.name}" />
+                                        <listcell label="@{criterionWithItsType.nameHierarchy}" />
+                                    </listitem>
+                                </listbox>
+                            </bandpopup>
+                        </bandbox>
+
+                        <bandbox onChanging ="criterionRequirementsController.onChangingText(event);"
+                                 width="480px"
+                                 visible ="@{criterionRequirementWrapper.newException}"
+                                 value = "@{criterionRequirementWrapper.criterionAndType}">
+                            <bandpopup>
+                                <!--
+                                I used forEach because of issue:
+                                if you are using 'each' you should specify unique name for this variable.
+
+                                http://forum.zkoss.org/question/37635/how-to-bind-2-listboxes-to-the-same-model-class/
+                                http://forum.zkoss.org/question/48489/cannot-find-associated-collectionitem-problem-in-gridcolumnlayout-with-two-listbox-in-two-columns/
+                                -->
+                                <listbox width="500px" height="150px" sizedByContent="true" forEach="@{hoursGroupWrapper.validCriterions}"
+                                         onSelect="assignedCriterionRequirementController.selectCriterionToHoursGroup(self.selectedItem, self.parent.parent,self.parent.parent.parent.parent.value);">
+                                    <listhead>
+                                        <listheader label="Type" />
+                                        <listheader label="Criterion" />
+                                    </listhead>
+
+                                    <listitem self="@{each='criterionWithItsType'}" value="@{criterionWithItsType}">
+                                        <listcell label="@{criterionWithItsType.type.name}" />
+                                        <listcell label="@{criterionWithItsType.nameHierarchy}" />
+                                    </listitem>
+                                </listbox>
+                            </bandpopup>
+                        </bandbox>
+
+                        <label visible="@{criterionRequirementWrapper.oldDirectOrException}"
+                               value="@{criterionRequirementWrapper.criterionAndType}"/>
                     </hbox>
-                        <label value="@{criterionRequirementWrapper.typeToHoursGroup}"/>
+
+                    <label value="@{criterionRequirementWrapper.typeToHoursGroup}"/>
+
                     <hbox>
                         <button visible = "@{assignedCriterionRequirementController.editableHoursGroup}"
-                            sclass="icono" image="/common/img/ico_borrar1.png"
-                            hoverImage="/common/img/ico_borrar.png"
-                            tooltiptext="${i18n:_('Delete')}"
-                            onClick="assignedCriterionRequirementController.removeCriterionToHoursGroup(self);">
+                                sclass="icono"
+                                image="/common/img/ico_borrar1.png"
+                                hoverImage="/common/img/ico_borrar.png"
+                                tooltiptext="${i18n:_('Delete')}"
+                                onClick="assignedCriterionRequirementController.removeCriterionToHoursGroup(self);">
                         </button>
+
                         <button visible = "@{assignedCriterionRequirementController.readOnly}"
-                            sclass="icono" image="/common/img/ico_borrar_out.png"
-                            tooltiptext="${i18n:_('Disable Delete')}">
+                                sclass="icono"
+                                image="/common/img/ico_borrar_out.png"
+                                tooltiptext="${i18n:_('Disable Delete')}">
                         </button>
                     </hbox>
                 </row>
             </rows>
-</newdatasortablegrid>
-</panelchildren>
+        </newdatasortablegrid>
+    </panelchildren>
 </panel>

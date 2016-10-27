@@ -21,17 +21,17 @@
 
 <!-- Manual allocation -->
 <window id="manualAllocationWindow"
-    apply="org.libreplan.web.limitingresources.ManualAllocationController"
-    title="${i18n:_('Manual allocation')}"
-    width="600px" left="50px" top="50px"
-    visible="false"
-    closable="true"
-    onClose="manualAllocationController.close(event)">
+        apply="org.libreplan.web.limitingresources.ManualAllocationController"
+        title="${i18n:_('Manual allocation')}"
+        width="610px" left="50px" top="50px"
+        visible="false"
+        closable="true"
+        onClose="manualAllocationController.close(event)">
 
     <!-- Queue element general information  -->
-    <panel title="${i18n:_('Queue Element Information')}:" border="normal">
+    <panel title="${i18n:_('Queue Element Information')}:" border="normal" sclass="queue-element-information">
         <panelchildren>
-            <grid id="gridLimitingOrderElementHours">
+            <grid id="gridLimitingOrderElementHours" sclass="queue-element-information">
                 <columns>
                     <column label="${i18n:_('Criteria')}" width="300px" align="center" />
                     <column label="${i18n:_('Hours')}" align="center" />
@@ -46,63 +46,70 @@
         </panelchildren>
     </panel>
 
-
     <hbox align="top">
 
-
-    <!-- Select assignable queues -->
-    <panel title="${i18n:_('Select queue')}" border="normal" width="280px">
-        <panelchildren>
-
-            <listbox id="listAssignableQueues"
-                mold="select" width="235px"/>
-
-            <separator />
-
-            <grid id="gridCurrentQueue" sclass="current-queue-information">
-                <columns>
-                    <column width="95px"/>
-                </columns>
-                <rows>
-                    <row><label value="Current queue" /><label value="@{manualAllocationController.currentQueue}" /></row>
-                    <row><label value="Start date" /><label value="@{manualAllocationController.currentStart}" /></row>
-                    <row><label value="End date" /><label value="@{manualAllocationController.currentEnd}" /></row>
-                </rows>
-            </grid>
-        </panelchildren>
-    </panel>
-
-
-    <!-- Select date -->
-
-        <panel title="${i18n:_('Allocation configuration')}" border="normal">
+        <!-- Select assignable queues -->
+        <panel title="${i18n:_('Select queue')}" border="normal" width="278px" sclass="queue-element-information">
             <panelchildren>
-                <vbox>
-                    <radiogroup id="radioAllocationDate"
-                        orient="vertical"
-                        onCheck="manualAllocationController.selectRadioAllocationDate(event)">
 
-                        <grid id="calculationTypesGrid" >
-                            <columns>
-                                <column width="270px"/>
-                                </columns>
-                             <rows>
+                <listbox id="listAssignableQueues" style="margin: 5px 5px -5px 5px;" mold="select" width="245px"/>
 
-                        <row><radio id="earliestDate" label="${i18n:_('Earliest date')}" selected="true" /></row>
-                        <row><radio id="latestDate" label="${i18n:_('Latest date')}" /></row>
-                        <row><hbox><radio id="selectStartDate" label="${i18n:_('Select start date')}" />
-                    <datebox id="startAllocationDate"
-                        onFocus="manualAllocationController.highlightCalendar(event)" /></hbox>
+                <separator />
+
+                <grid id="gridCurrentQueue" sclass="current-queue-information">
+                    <columns>
+                        <column width="95px"/>
+                    </columns>
+                    <rows>
+                        <row>
+                            <label value="Current queue" />
+                            <label value="@{manualAllocationController.currentQueue}" />
                         </row>
 
-                             </rows>
+                        <row>
+                            <label value="Start date" />
+                            <label value="@{manualAllocationController.currentStart}" />
+                        </row>
+
+                        <row>
+                            <label value="End date" />
+                            <label value="@{manualAllocationController.currentEnd}" />
+                        </row>
+                    </rows>
+                </grid>
+            </panelchildren>
+        </panel>
+
+        <!-- Select date -->
+        <panel title="${i18n:_('Allocation configuration')}" border="normal" sclass="queue-element-information">
+            <panelchildren>
+                <vbox sclass="padding-bottom-queue">
+                    <radiogroup id="radioAllocationDate"
+                                orient="vertical"
+                                onCheck="manualAllocationController.selectRadioAllocationDate(event)">
+                        <grid id="calculationTypesGrid" sclass="current-queue-information">
+                            <columns>
+                                <column width="270px"/>
+                            </columns>
+                            <rows>
+
+                                <row><radio id="earliestDate" label="${i18n:_('Earliest date')}" selected="true" /></row>
+                                <row><radio id="latestDate" label="${i18n:_('Latest date')}" /></row>
+                                <row>
+                                    <hbox>
+                                        <radio id="selectStartDate" label="${i18n:_('Select start date')}" />
+                                        <datebox id="startAllocationDate"
+                                                 onFocus="manualAllocationController.highlightCalendar(event)" />
+                                    </hbox>
+                                </row>
+                            </rows>
                         </grid>
 
                     </radiogroup>
 
-                    <checkbox id="cbAllocationType"
-                        label="${i18n:_('Appropriative allocation')}"
-                        onCheck="manualAllocationController.onCheckAllocationType(event)" />
+                    <checkbox id="cbAllocationType" style="margin: -5px 5px 10px 5px;"
+                              label="${i18n:_('Appropriative allocation')}"
+                              onCheck="manualAllocationController.onCheckAllocationType(event)" />
                 </vbox>
             </panelchildren>
         </panel>
@@ -110,16 +117,16 @@
 
     <!-- Select gap -->
     <vbox>
-        <panel title="${i18n:_('Select gap')}" border="normal">
+        <panel title="${i18n:_('Select gap')}" border="normal" sclass="queue-element-information">
             <panelchildren>
-                <listbox id="listCandidateGaps"
-                        itemRenderer="@{manualAllocationController.candidateGapRenderer}"
-                        multiple="false"
-                        onSelect="manualAllocationController.setStartAllocationDate(event)">
-                     <listhead>
-                         <listheader label="${i18n:_('Start')}" />
-                         <listheader label="${i18n:_('End')}" />
-                     </listhead>
+                <listbox id="listCandidateGaps" sclass="queue-element-information"
+                         itemRenderer="@{manualAllocationController.candidateGapRenderer}"
+                         multiple="false"
+                         onSelect="manualAllocationController.setStartAllocationDate(event)">
+                    <listhead>
+                        <listheader label="${i18n:_('Start')}" />
+                        <listheader label="${i18n:_('End')}" />
+                    </listhead>
                 </listbox>
             </panelchildren>
         </panel>
@@ -130,9 +137,10 @@
 
     <!-- Controls -->
     <hbox>
-        <button id="ok" label="${i18n:_('Accept')}"
-            onClick="manualAllocationController.accept(event)" />
-        <button id="cancel" label="${i18n:_('Cancel')}"
-            onClick="manualAllocationController.cancel()" />
+        <button id="ok" label="${i18n:_('Accept')}" sclass="add-button"
+                onClick="manualAllocationController.accept(event)" />
+
+        <button id="cancel" label="${i18n:_('Cancel')}" sclass="add-button"
+                onClick="manualAllocationController.cancel()" />
     </hbox>
 </window>

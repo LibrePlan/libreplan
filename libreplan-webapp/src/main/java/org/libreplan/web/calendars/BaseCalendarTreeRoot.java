@@ -33,12 +33,12 @@ import org.libreplan.business.calendars.entities.BaseCalendar;
  */
 public class BaseCalendarTreeRoot {
 
-    private List<BaseCalendar> rootCalendars = new ArrayList<BaseCalendar>();
-    private List<BaseCalendar> derivedCalendars = new ArrayList<BaseCalendar>();
+    private List<BaseCalendar> rootCalendars = new ArrayList<>();
+
+    private List<BaseCalendar> derivedCalendars = new ArrayList<>();
 
     /**
-     * Creates a {@link BaseCalendarTreeRoot} using the list of {@link BaseCalendar}
-     * passed as argument.
+     * Creates a {@link BaseCalendarTreeRoot} using the list of {@link BaseCalendar} passed as argument.
      *
      * @param baseCalendars
      *            All the {@link BaseCalendar} that will be shown in the tree.

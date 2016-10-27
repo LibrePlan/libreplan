@@ -36,7 +36,8 @@ import org.zkoss.ganttz.data.Position;
 import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 
 /**
- * Command to add a new {@link TaskMilestone} <br />
+ * Command to add a new {@link TaskMilestone}.
+ *
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
 @Component
@@ -48,8 +49,7 @@ public class AddMilestoneCommand implements IAddMilestoneCommand {
 
     @Override
     @Transactional(readOnly = true)
-    public void doAction(IContextWithPlannerTask<TaskElement> context,
-            TaskElement task) {
+    public void doAction(IContextWithPlannerTask<TaskElement> context, TaskElement task) {
         TaskMilestone milestone = TaskMilestone.create(task.getEndDate());
         milestone.setName(_("new milestone"));
         taskElementDAO.reattach(task);

@@ -45,13 +45,13 @@ public class AggregateOfResourceAllocationsTest {
     private AggregateOfResourceAllocations aggregate;
 
     @Test(expected = NullPointerException.class)
-    public void doesntAcceptNullResourceAllocations() {
+    public void doesNotAcceptNullResourceAllocations() {
         AggregateOfResourceAllocations.createFromSatisfied(null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void noNullElements() {
-        List<ResourceAllocation<?>> list = new ArrayList<ResourceAllocation<?>>();
+        List<ResourceAllocation<?>> list = new ArrayList<>();
         list.add(null);
         AggregateOfResourceAllocations.createFromSatisfied(list);
     }
@@ -70,8 +70,7 @@ public class AggregateOfResourceAllocationsTest {
 
     @Test
     public void unsatisfiedAllocationsAreIgnored() {
-        List<ResourceAllocation<?>> allocationsList = Collections
-                .<ResourceAllocation<?>> singletonList(givenUnsatisfiedResourceAllocation());
+        List<ResourceAllocation<?>> allocationsList = Collections.singletonList(givenUnsatisfiedResourceAllocation());
         AggregateOfResourceAllocations aggregate = AggregateOfResourceAllocations.createFromSatisfied(allocationsList);
         assertTrue(aggregate.isEmpty());
     }
@@ -84,24 +83,18 @@ public class AggregateOfResourceAllocationsTest {
 
     @Test
     public void canCalculateTheResourcesPerDay() {
-        givenAggregateOfResourceAllocationsWithResourcesPerDay(ResourcesPerDay
-                .amount(2), ResourcesPerDay.amount(3));
-        Map<ResourceAllocation<?>, ResourcesPerDay> resourcesPerDay = aggregate
-                .getResourcesPerDay();
+        givenAggregateOfResourceAllocationsWithResourcesPerDay(ResourcesPerDay.amount(2), ResourcesPerDay.amount(3));
+        Map<ResourceAllocation<?>, ResourcesPerDay> resourcesPerDay = aggregate.getResourcesPerDay();
         assertThat(resourcesPerDay.size(), equalTo(2));
-        assertThat(resourcesPerDay.values(), hasItem(equalTo(ResourcesPerDay
-                .amount(2))));
-        assertThat(resourcesPerDay.values(), hasItem(equalTo(ResourcesPerDay
-                .amount(3))));
+        assertThat(resourcesPerDay.values(), hasItem(equalTo(ResourcesPerDay.amount(2))));
+        assertThat(resourcesPerDay.values(), hasItem(equalTo(ResourcesPerDay.amount(3))));
     }
 
-    private void givenAggregateOfResourceAllocationsWithResourcesPerDay(
-            ResourcesPerDay... resourcesPerDay) {
-        Collection<ResourceAllocation<?>> list = new ArrayList<ResourceAllocation<?>>();
+    private void givenAggregateOfResourceAllocationsWithResourcesPerDay(ResourcesPerDay... resourcesPerDay) {
+        Collection<ResourceAllocation<?>> list = new ArrayList<>();
         for (ResourcesPerDay r : resourcesPerDay) {
             ResourceAllocation<?> resourceAllocation = createMock(ResourceAllocation.class);
-            expect(resourceAllocation.getResourcesPerDay()).andReturn(r)
-                    .anyTimes();
+            expect(resourceAllocation.getResourcesPerDay()).andReturn(r).anyTimes();
             expect(resourceAllocation.isSatisfied()).andReturn(true).anyTimes();
             replay(resourceAllocation);
             list.add(resourceAllocation);
@@ -116,15 +109,12 @@ public class AggregateOfResourceAllocationsTest {
         return result;
     }
 
-    private void givenAggregateOfResourceAllocationsWithAssignedHours(
-            int... hours) {
-        ArrayList<ResourceAllocation<?>> list = new ArrayList<ResourceAllocation<?>>();
+    private void givenAggregateOfResourceAllocationsWithAssignedHours(int... hours) {
+        ArrayList<ResourceAllocation<?>> list = new ArrayList<>();
         for (int h : hours) {
             ResourceAllocation<?> resourceAllocation = createMock(ResourceAllocation.class);
-            expect(resourceAllocation.getAssignedHours()).andReturn(h)
-                    .anyTimes();
-            expect(resourceAllocation.isSatisfied()).andReturn(true)
-                    .anyTimes();
+            expect(resourceAllocation.getAssignedHours()).andReturn(h).anyTimes();
+            expect(resourceAllocation.isSatisfied()).andReturn(true).anyTimes();
             replay(resourceAllocation);
             list.add(resourceAllocation);
         }

@@ -22,22 +22,20 @@
 package org.libreplan.web.users.services;
 
 /**
- * Service for encoding passwords when information about users
- * is stored in the database. In particular, it must be used to encode a
- * password when creating a user and to change a user's password.
+ * Service for encoding passwords when information about users is stored in the database.
+ * In particular, it must be used to encode a password when creating a user and to change a user's password.
  * <b/>
- * When information about users is maintained externally (e.g. in a LDAP
- * server), this service is not used, since the Web application is not
- * in charge of creating users or changing passwords.
+ * When information about users is maintained externally (e.g. in a LDAP server), this service is not used,
+ * since the Web application is not in charge of creating users or changing passwords.
  *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
+@FunctionalInterface
 public interface IDBPasswordEncoderService {
 
     /**
-     * Encodes a clear password. The second parameter (which must be the
-     * username) may be used as a salt.
+     * Encodes a clear password. The second parameter (which must be the username) may be used as a salt.
      */
-    public String encodePassword(String clearPassword, String loginName);
+    String encodePassword(String clearPassword, String loginName);
 
 }

@@ -83,15 +83,15 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Tests for {@link OrderElementTreeModel}
+ * Tests for {@link OrderElementTreeModel}.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
+@ContextConfiguration(locations = {
+        BUSINESS_SPRING_CONFIG_FILE,
         WEBAPP_SPRING_CONFIG_FILE, WEBAPP_SPRING_CONFIG_TEST_FILE,
-        WEBAPP_SPRING_SECURITY_CONFIG_FILE,
-        WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE })
+        WEBAPP_SPRING_SECURITY_CONFIG_FILE, WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE })
 public class OrderElementTreeModelTest {
 
     private static final BigDecimal HUNDRED = new BigDecimal(100);
@@ -141,7 +141,7 @@ public class OrderElementTreeModelTest {
     private OrderLine element, element2, element3;
 
     @Before
-    public void loadRequiredaData() {
+    public void loadRequiredData() {
         cleanCriteria(workReportDAO, resourceDAO, criterionTypeDAO);
 
         // Load data
@@ -154,8 +154,8 @@ public class OrderElementTreeModelTest {
         givenModel();
     }
 
-    public static void cleanCriteria(IWorkReportDAO workReportDAO,
-                                     IResourceDAO resourceDAO, ICriterionTypeDAO criterionTypeDAO) {
+    public static void cleanCriteria(IWorkReportDAO workReportDAO, IResourceDAO resourceDAO,
+                                     ICriterionTypeDAO criterionTypeDAO) {
         try {
             List<WorkReport> reports = workReportDAO.findAll();
             for (WorkReport each : reports) {
@@ -471,7 +471,7 @@ public class OrderElementTreeModelTest {
                         each.getHoursGroups().get(0).getCriterionRequirements().iterator().next(),
                         criterion);
             } else {
-                fail("Unexpected OrderElment name: " + each.getName());
+                fail("Unexpected OrderElement name: " + each.getName());
             }
         }
     }
@@ -1095,10 +1095,10 @@ public class OrderElementTreeModelTest {
      * This will create the following tree:
      *
      * <pre>
-     * order
-     *   |-- container
-     *         |-- element
-     *   |-- element2
+     *     order
+     *       |-- container
+     *             |-- element
+     *       |-- element2
      * </pre>
      */
     private void createTreeWithContainerAndTask() {
@@ -1168,12 +1168,12 @@ public class OrderElementTreeModelTest {
      * This will create the following tree:
      *
      * <pre>
-     * order
-     *   |-- container
-     *         |-- element
-     *   |-- container2
-     *         |-- element2
-     *         |-- element3
+     *     order
+     *       |-- container
+     *             |-- element
+     *       |-- container2
+     *             |-- element2
+     *             |-- element3
      * </pre>
      */
     private void createTreeWithContainerAndContainer() {
@@ -1664,16 +1664,12 @@ public class OrderElementTreeModelTest {
         assertTrue(order.getCriterionRequirements().isEmpty());
 
         assertThat(container.getCriterionRequirements().size(), equalTo(1));
-        assertDirectCriterion(container.getCriterionRequirements().iterator()
-                .next(), criterion);
+        assertDirectCriterion(container.getCriterionRequirements().iterator().next(), criterion);
 
         assertThat(element.getCriterionRequirements().size(), equalTo(1));
-        assertIndirectCriterion(element.getCriterionRequirements().iterator()
-                .next(), criterion);
-        assertThat(element.getHoursGroups().get(0).getCriterionRequirements()
-                .size(), equalTo(1));
-        assertIndirectCriterion(element.getHoursGroups().get(0)
-                .getCriterionRequirements().iterator().next(), criterion);
+        assertIndirectCriterion(element.getCriterionRequirements().iterator().next(), criterion);
+        assertThat(element.getHoursGroups().get(0).getCriterionRequirements().size(), equalTo(1));
+        assertIndirectCriterion(element.getHoursGroups().get(0).getCriterionRequirements().iterator().next(), criterion);
 
         assertThat(container2.getCriterionRequirements().size(), equalTo(2));
         for (CriterionRequirement each : container2.getCriterionRequirements()) {
@@ -1688,20 +1684,16 @@ public class OrderElementTreeModelTest {
 
         assertThat(element2.getCriterionRequirements().size(), equalTo(2));
         for (CriterionRequirement each : element2.getCriterionRequirements()) {
-            if (each.getCriterion().isEquivalent(criterion)
-                    || each.getCriterion().isEquivalent(criterion2)) {
+            if (each.getCriterion().isEquivalent(criterion) || each.getCriterion().isEquivalent(criterion2)) {
                 assertTrue(each instanceof IndirectCriterionRequirement);
             } else {
                 fail("Unexpected criterion: " + each.getCriterion());
             }
         }
 
-        assertThat(element2.getHoursGroups().get(0).getCriterionRequirements()
-                .size(), equalTo(2));
-        for (CriterionRequirement each : element2.getHoursGroups().get(0)
-                .getCriterionRequirements()) {
-            if (each.getCriterion().isEquivalent(criterion)
-                    || each.getCriterion().isEquivalent(criterion2)) {
+        assertThat(element2.getHoursGroups().get(0).getCriterionRequirements().size(), equalTo(2));
+        for (CriterionRequirement each : element2.getHoursGroups().get(0).getCriterionRequirements()) {
+            if (each.getCriterion().isEquivalent(criterion) || each.getCriterion().isEquivalent(criterion2)) {
                 assertTrue(each instanceof IndirectCriterionRequirement);
             } else {
                 fail("Unexpected criterion: " + each.getCriterion());
@@ -1710,20 +1702,16 @@ public class OrderElementTreeModelTest {
 
         assertThat(element3.getCriterionRequirements().size(), equalTo(2));
         for (CriterionRequirement each : element3.getCriterionRequirements()) {
-            if (each.getCriterion().isEquivalent(criterion)
-                    || each.getCriterion().isEquivalent(criterion2)) {
+            if (each.getCriterion().isEquivalent(criterion) || each.getCriterion().isEquivalent(criterion2)) {
                 assertTrue(each instanceof IndirectCriterionRequirement);
             } else {
                 fail("Unexpected criterion: " + each.getCriterion());
             }
         }
 
-        assertThat(element3.getHoursGroups().get(0).getCriterionRequirements()
-                .size(), equalTo(2));
-        for (CriterionRequirement each : element3.getHoursGroups().get(0)
-                .getCriterionRequirements()) {
-            if (each.getCriterion().isEquivalent(criterion)
-                    || each.getCriterion().isEquivalent(criterion2)) {
+        assertThat(element3.getHoursGroups().get(0).getCriterionRequirements().size(), equalTo(2));
+        for (CriterionRequirement each : element3.getHoursGroups().get(0).getCriterionRequirements()) {
+            if (each.getCriterion().isEquivalent(criterion) || each.getCriterion().isEquivalent(criterion2)) {
                 assertTrue(each instanceof IndirectCriterionRequirement);
             } else {
                 fail("Unexpected criterion: " + each.getCriterion());
@@ -1747,16 +1735,12 @@ public class OrderElementTreeModelTest {
         assertTrue(order.getCriterionRequirements().isEmpty());
 
         assertThat(container.getCriterionRequirements().size(), equalTo(1));
-        assertDirectCriterion(container.getCriterionRequirements().iterator()
-                .next(), criterion);
+        assertDirectCriterion(container.getCriterionRequirements().iterator().next(), criterion);
 
         assertThat(element.getCriterionRequirements().size(), equalTo(1));
-        assertIndirectCriterion(element.getCriterionRequirements().iterator()
-                .next(), criterion);
-        assertThat(element.getHoursGroups().get(0).getCriterionRequirements()
-                .size(), equalTo(1));
-        assertIndirectCriterion(element.getHoursGroups().get(0)
-                .getCriterionRequirements().iterator().next(), criterion);
+        assertIndirectCriterion(element.getCriterionRequirements().iterator().next(), criterion);
+        assertThat(element.getHoursGroups().get(0).getCriterionRequirements().size(), equalTo(1));
+        assertIndirectCriterion(element.getHoursGroups().get(0).getCriterionRequirements().iterator().next(), criterion);
 
         assertThat(container2.getCriterionRequirements().size(), equalTo(2));
         for (CriterionRequirement each : container2.getCriterionRequirements()) {
@@ -1771,20 +1755,16 @@ public class OrderElementTreeModelTest {
 
         assertThat(element2.getCriterionRequirements().size(), equalTo(2));
         for (CriterionRequirement each : element2.getCriterionRequirements()) {
-            if (each.getCriterion().isEquivalent(criterion)
-                    || each.getCriterion().isEquivalent(criterion2)) {
+            if (each.getCriterion().isEquivalent(criterion) || each.getCriterion().isEquivalent(criterion2)) {
                 assertTrue(each instanceof IndirectCriterionRequirement);
             } else {
                 fail("Unexpected criterion: " + each.getCriterion());
             }
         }
 
-        assertThat(element2.getHoursGroups().get(0).getCriterionRequirements()
-                .size(), equalTo(2));
-        for (CriterionRequirement each : element2.getHoursGroups().get(0)
-                .getCriterionRequirements()) {
-            if (each.getCriterion().isEquivalent(criterion)
-                    || each.getCriterion().isEquivalent(criterion2)) {
+        assertThat(element2.getHoursGroups().get(0).getCriterionRequirements().size(), equalTo(2));
+        for (CriterionRequirement each : element2.getHoursGroups().get(0).getCriterionRequirements()) {
+            if (each.getCriterion().isEquivalent(criterion) || each.getCriterion().isEquivalent(criterion2)) {
                 assertTrue(each instanceof IndirectCriterionRequirement);
             } else {
                 fail("Unexpected criterion: " + each.getCriterion());
@@ -1793,20 +1773,16 @@ public class OrderElementTreeModelTest {
 
         assertThat(element3.getCriterionRequirements().size(), equalTo(2));
         for (CriterionRequirement each : element3.getCriterionRequirements()) {
-            if (each.getCriterion().isEquivalent(criterion)
-                    || each.getCriterion().isEquivalent(criterion2)) {
+            if (each.getCriterion().isEquivalent(criterion) || each.getCriterion().isEquivalent(criterion2)) {
                 assertTrue(each instanceof IndirectCriterionRequirement);
             } else {
                 fail("Unexpected criterion: " + each.getCriterion());
             }
         }
 
-        assertThat(element3.getHoursGroups().get(0).getCriterionRequirements()
-                .size(), equalTo(2));
-        for (CriterionRequirement each : element3.getHoursGroups().get(0)
-                .getCriterionRequirements()) {
-            if (each.getCriterion().isEquivalent(criterion)
-                    || each.getCriterion().isEquivalent(criterion2)) {
+        assertThat(element3.getHoursGroups().get(0).getCriterionRequirements().size(), equalTo(2));
+        for (CriterionRequirement each : element3.getHoursGroups().get(0).getCriterionRequirements()) {
+            if (each.getCriterion().isEquivalent(criterion) || each.getCriterion().isEquivalent(criterion2)) {
                 assertTrue(each instanceof IndirectCriterionRequirement);
             } else {
                 fail("Unexpected criterion: " + each.getCriterion());
@@ -1830,20 +1806,15 @@ public class OrderElementTreeModelTest {
         assertTrue(order.getCriterionRequirements().isEmpty());
 
         assertThat(container.getCriterionRequirements().size(), equalTo(1));
-        assertDirectCriterion(container.getCriterionRequirements().iterator()
-                .next(), criterion);
+        assertDirectCriterion(container.getCriterionRequirements().iterator().next(), criterion);
 
         assertThat(element.getCriterionRequirements().size(), equalTo(1));
-        assertIndirectCriterion(element.getCriterionRequirements().iterator()
-                .next(), criterion);
-        assertThat(element.getHoursGroups().get(0).getCriterionRequirements()
-                .size(), equalTo(1));
-        assertIndirectCriterion(element.getHoursGroups().get(0)
-                .getCriterionRequirements().iterator().next(), criterion);
+        assertIndirectCriterion(element.getCriterionRequirements().iterator().next(), criterion);
+        assertThat(element.getHoursGroups().get(0).getCriterionRequirements().size(), equalTo(1));
+        assertIndirectCriterion(element.getHoursGroups().get(0).getCriterionRequirements().iterator().next(), criterion);
 
         assertThat(container2.getCriterionRequirements().size(), equalTo(1));
-        assertIndirectCriterion(container2.getCriterionRequirements()
-                .iterator().next(), criterion);
+        assertIndirectCriterion(container2.getCriterionRequirements().iterator().next(), criterion);
 
         assertThat(element2.getCriterionRequirements().size(), equalTo(2));
         for (CriterionRequirement each : element2.getCriterionRequirements()) {
@@ -1856,12 +1827,9 @@ public class OrderElementTreeModelTest {
             }
         }
 
-        assertThat(element2.getHoursGroups().get(0).getCriterionRequirements()
-                .size(), equalTo(2));
-        for (CriterionRequirement each : element2.getHoursGroups().get(0)
-                .getCriterionRequirements()) {
-            if (each.getCriterion().isEquivalent(criterion)
-                    || each.getCriterion().isEquivalent(criterion2)) {
+        assertThat(element2.getHoursGroups().get(0).getCriterionRequirements().size(), equalTo(2));
+        for (CriterionRequirement each : element2.getHoursGroups().get(0).getCriterionRequirements()) {
+            if (each.getCriterion().isEquivalent(criterion) || each.getCriterion().isEquivalent(criterion2)) {
                 assertTrue(each instanceof IndirectCriterionRequirement);
             } else {
                 fail("Unexpected criterion: " + each.getCriterion());
@@ -1869,13 +1837,10 @@ public class OrderElementTreeModelTest {
         }
 
         assertThat(element3.getCriterionRequirements().size(), equalTo(1));
-        assertIndirectCriterion(element3.getCriterionRequirements().iterator()
-                .next(), criterion);
+        assertIndirectCriterion(element3.getCriterionRequirements().iterator().next(), criterion);
 
-        assertThat(element3.getHoursGroups().get(0).getCriterionRequirements()
-                .size(), equalTo(1));
-        assertIndirectCriterion(element3.getHoursGroups().get(0)
-                .getCriterionRequirements().iterator().next(), criterion);
+        assertThat(element3.getHoursGroups().get(0).getCriterionRequirements().size(), equalTo(1));
+        assertIndirectCriterion(element3.getHoursGroups().get(0).getCriterionRequirements().iterator().next(), criterion);
 
     }
 
@@ -1894,20 +1859,15 @@ public class OrderElementTreeModelTest {
         assertTrue(order.getCriterionRequirements().isEmpty());
 
         assertThat(container.getCriterionRequirements().size(), equalTo(1));
-        assertDirectCriterion(container.getCriterionRequirements().iterator()
-                .next(), criterion);
+        assertDirectCriterion(container.getCriterionRequirements().iterator().next(), criterion);
 
         assertThat(element.getCriterionRequirements().size(), equalTo(1));
-        assertIndirectCriterion(element.getCriterionRequirements().iterator()
-                .next(), criterion);
-        assertThat(element.getHoursGroups().get(0).getCriterionRequirements()
-                .size(), equalTo(1));
-        assertIndirectCriterion(element.getHoursGroups().get(0)
-                .getCriterionRequirements().iterator().next(), criterion);
+        assertIndirectCriterion(element.getCriterionRequirements().iterator().next(), criterion);
+        assertThat(element.getHoursGroups().get(0).getCriterionRequirements().size(), equalTo(1));
+        assertIndirectCriterion(element.getHoursGroups().get(0).getCriterionRequirements().iterator().next(), criterion);
 
         assertThat(container2.getCriterionRequirements().size(), equalTo(1));
-        assertIndirectCriterion(container2.getCriterionRequirements()
-                .iterator().next(), criterion);
+        assertIndirectCriterion(container2.getCriterionRequirements().iterator().next(), criterion);
 
         assertThat(element2.getCriterionRequirements().size(), equalTo(2));
         for (CriterionRequirement each : element2.getCriterionRequirements()) {
@@ -1920,12 +1880,9 @@ public class OrderElementTreeModelTest {
             }
         }
 
-        assertThat(element2.getHoursGroups().get(0).getCriterionRequirements()
-                .size(), equalTo(2));
-        for (CriterionRequirement each : element2.getHoursGroups().get(0)
-                .getCriterionRequirements()) {
-            if (each.getCriterion().isEquivalent(criterion)
-                    || each.getCriterion().isEquivalent(criterion2)) {
+        assertThat(element2.getHoursGroups().get(0).getCriterionRequirements().size(), equalTo(2));
+        for (CriterionRequirement each : element2.getHoursGroups().get(0).getCriterionRequirements()) {
+            if (each.getCriterion().isEquivalent(criterion) || each.getCriterion().isEquivalent(criterion2)) {
                 assertTrue(each instanceof IndirectCriterionRequirement);
             } else {
                 fail("Unexpected criterion: " + each.getCriterion());
@@ -1933,13 +1890,10 @@ public class OrderElementTreeModelTest {
         }
 
         assertThat(element3.getCriterionRequirements().size(), equalTo(1));
-        assertIndirectCriterion(element3.getCriterionRequirements().iterator()
-                .next(), criterion);
+        assertIndirectCriterion(element3.getCriterionRequirements().iterator().next(), criterion);
 
-        assertThat(element3.getHoursGroups().get(0).getCriterionRequirements()
-                .size(), equalTo(1));
-        assertIndirectCriterion(element3.getHoursGroups().get(0)
-                .getCriterionRequirements().iterator().next(), criterion);
+        assertThat(element3.getHoursGroups().get(0).getCriterionRequirements().size(), equalTo(1));
+        assertIndirectCriterion(element3.getHoursGroups().get(0).getCriterionRequirements().iterator().next(), criterion);
 
     }
 
@@ -1947,9 +1901,9 @@ public class OrderElementTreeModelTest {
      * This will create the following tree:
      *
      * <pre>
-     * order
-     *   |-- element1
-     *   |-- element2
+     *     order
+     *       |-- element1
+     *       |-- element2
      * </pre>
      */
     private void createTreeWith2Task() {

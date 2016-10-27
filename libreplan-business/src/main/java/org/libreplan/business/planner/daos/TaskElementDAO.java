@@ -42,12 +42,11 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Jacobo Aragunde Pérez <jaragunde@igalia.com>
- * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
-public class TaskElementDAO extends GenericDAOHibernate<TaskElement, Long>
-        implements ITaskElementDAO {
+public class TaskElementDAO extends GenericDAOHibernate<TaskElement, Long> implements ITaskElementDAO {
 
     @SuppressWarnings("unchecked")
     @Override
@@ -102,7 +101,8 @@ public class TaskElementDAO extends GenericDAOHibernate<TaskElement, Long>
     }
 
     private void updateSumOfAllocatedHoursToParent(TaskGroup taskGroup,
-            EffortDuration oldAssignedEffort, EffortDuration newAssignedEffort) {
+                                                   EffortDuration oldAssignedEffort,
+                                                   EffortDuration newAssignedEffort) {
         if (taskGroup != null) {
             if (!Hibernate.isInitialized(taskGroup)) {
                 reattach(taskGroup);

@@ -16,19 +16,20 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 -->
-
+<?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n"?>
 
 <window id="orderElementFiles" apply="org.libreplan.web.orders.files.OrderFilesController" width="100%">
 
     <vbox id="messagesContainer">
     </vbox>
 
-    <button label="${i18n:_('Upload')}" disabled="@{orderFilesController.isUploadButtonDisabled}"
+    <button label="${i18n:_('Upload')}" disabled="@{orderFilesController.isUploadButtonDisabled}" sclass="add-button"
             onClick="orderFilesController.upload();"/>
 
     <separator spacing="15px"/>
 
     <listbox id="filesList"
+             emptyMessage="${i18n:_('No files')}"
              width="99%"
              visible="@{orderFilesController.isRepositoryExists}"
              itemRenderer="@{orderFilesController.filesRenderer}">

@@ -31,21 +31,15 @@ import org.libreplan.web.common.components.finders.IFinder;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
 
 /**
- * Autocomplete component
+ * Autocomplete component.
  *
  * Extends a {@link Combobox} component providing extra functionality for
- * filling the list of elements with entries, thanks to a class implementing
- * {@link IFinder}
- *
- * FIXME: Typing <shift> in a combobox causes the text to be automatically
- * autocompleted, even when autocomplete is set to false. This implies that's
- * not possible to type major letters inside combobox.
+ * filling the list of elements with entries, thanks to a class implementing {@link IFinder}.
  *
  * @author Diego Pino García <dpino@igalia.com>
  */
@@ -66,41 +60,35 @@ public class Autocomplete extends Combobox {
     }
 
     /**
-     * When there's only one possible item, autocomplete option automatically
-     * fills text with that option, but it doesn't set the compenent with the
-     * option selected
+     * When there is only one possible item, autocomplete option automatically fills text with that option,
+     * but it does not set the component with the option selected.
      *
-     * To solve this problem, what I did was, when an onChange happens, search
-     * among all options the text filled by in the textbox. If there's one that
-     * matches, select that option. Otherwise, raise a WrongValueException
-     * prompting user to select a valid option
+     * To solve this problem, what I did was, when an onChange happens,
+     * search among all options the text filled by in the TextBox.
+     * If there is one that matches, select that option.
+     * Otherwise, raise a WrongValueException prompting user to select a valid option.
      *
      * @param autocomplete
      */
     private void bindOnChangeAutocomplete(final Autocomplete autocomplete) {
-        autocomplete.addEventListener("onChange", new EventListener() {
-
-            @Override
-            public void onEvent(Event event) {
-                String text = autocomplete.getValue();
-                Object object = getItemByText(text);
-                autocomplete.setSelectedItem(object);
-            }
+        autocomplete.addEventListener("onChange", (EventListener) event -> {
+            String text = autocomplete.getValue();
+            Object object = getItemByText(text);
+            autocomplete.setSelectedItem(object);
         });
     }
 
     /**
-     * Searches for text among list of items, and returns item.value that
-     * matches
+     * Searches for text among list of items, and returns item.value that matches.
      *
      * @param text
-     * @return
+     * @return {@link Object}
      */
     public Object getItemByText(String text) {
         final List<Comboitem> items = this.getItems();
         for (Comboitem item: items) {
             final String itemtext = finder._toString(item.getValue());
-            if (itemtext.toLowerCase().equals(text.toLowerCase())) {
+            if ( itemtext.equalsIgnoreCase(text) ) {
                 return item.getValue();
             }
         }
@@ -108,7 +96,7 @@ public class Autocomplete extends Combobox {
     }
 
     public void setSelectedItem(Object object) {
-        if(object != null) {
+        if ( object != null ) {
             this.setValue(finder._toString(object));
         }
     }
@@ -121,12 +109,12 @@ public class Autocomplete extends Combobox {
     }
 
     private Object getBean(String classname) {
-        HttpServletRequest servletRequest = (HttpServletRequest) Executions
-                .getCurrent().getNativeRequest();
-        ServletContext servletContext = servletRequest.getSession()
-                .getServletContext();
-        WebApplicationContext webApplicationContext = WebApplicationContextUtils
-                .getWebApplicationContext(servletContext);
+        HttpServletRequest servletRequest = (HttpServletRequest) Executions.getCurrent().getNativeRequest();
+        ServletContext servletContext = servletRequest.getSession().getServletContext();
+
+        WebApplicationContext webApplicationContext =
+                WebApplicationContextUtils.getWebApplicationContext(servletContext);
+
         return webApplicationContext.getBean(classname);
     }
 

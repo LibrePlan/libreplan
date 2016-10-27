@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
         "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
 <hibernate-mapping default-access="field" package="org.libreplan.business.common.entities">
 
     <!-- Configuration -->
-    <class name="Configuration" table="configuration">
+    <!--
+        dynamic-update=true makes possible to update only 1 column instead of row.
+        So, performance increasing.
+     -->
+    <class name="Configuration" table="configuration" dynamic-update="false">
         <id name="id" column="id" type="long" access="property">
             <generator class="increment">
                 <param name="max_lo">100</param>

@@ -21,38 +21,31 @@
 
 package org.zkoss.ganttz.timetracker.zoom;
 
-import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.Months;
 import org.joda.time.ReadablePeriod;
 import org.joda.time.Years;
 
 /**
- * Zoom level with years in the first level and quarters in the second level
+ * Zoom level with years in the first level and quarters in the second level.
+ *
  * @author Francisco Javier Moran Rúa
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
-public class DetailTwoTimeTrackerState extends
-        TimeTrackerStateWithSubintervalsFitting {
+public class DetailTwoTimeTrackerState extends TimeTrackerStateWithSubintervalsFitting {
 
     private static final int FIRST_LEVEL_ITEM_SIZE = 400;
+
     private static final int SECOND_LEVEL_ITEM_SIZE = 100;
 
-    protected DetailTwoTimeTrackerState(
-            IDetailItemModificator firstLevelModificator,
-            IDetailItemModificator secondLevelModificator) {
-        super(firstLevelModificator, secondLevelModificator);
+    protected DetailTwoTimeTrackerState(IDetailItemModifier firstLevelModifier, IDetailItemModifier secondLevelModifier) {
+        super(firstLevelModifier, secondLevelModifier);
     }
 
     @Override
     protected IDetailItemCreator getDetailItemCreatorFirstLevel() {
-        return new IDetailItemCreator() {
-            @Override
-            public DetailItem create(DateTime dateTime) {
-                return new DetailItem(FIRST_LEVEL_ITEM_SIZE, dateTime.getYear()
-                        + "", dateTime, dateTime);
-            }
-        };
+        return dateTime ->
+                new DetailItem(FIRST_LEVEL_ITEM_SIZE, Integer.toString(dateTime.getYear()), dateTime, dateTime);
     }
 
     @Override
@@ -62,14 +55,11 @@ public class DetailTwoTimeTrackerState extends
 
     @Override
     protected IDetailItemCreator getDetailItemCreatorSecondLevel() {
-        return new IDetailItemCreator() {
-            @Override
-            public DetailItem create(DateTime dateTime) {
-                int quarterNumber = dateTime.getMonthOfYear() / 3 + 1;
-                String quarterCaption = "Q" + quarterNumber;
-                return new DetailItem(SECOND_LEVEL_ITEM_SIZE, quarterCaption,
-                        dateTime, dateTime.plusMonths(3));
-            }
+        return dateTime ->  {
+            int quarterNumber = dateTime.getMonthOfYear() / 3 + 1;
+            String quarterCaption = "Q" + quarterNumber;
+
+            return new DetailItem(SECOND_LEVEL_ITEM_SIZE, quarterCaption, dateTime, dateTime.plusMonths(3));
         };
     }
 
@@ -85,12 +75,12 @@ public class DetailTwoTimeTrackerState extends
 
     @Override
     protected Period getMinimumPeriod() {
-        return DetailOneTimeTrackerState.MINIMUN_PERIOD;
+        return DetailOneTimeTrackerState.MINIMUM_PERIOD;
     }
 
     @Override
     public double daysPerPixel() {
-        return ((double) 365 / FIRST_LEVEL_ITEM_SIZE);
+        return (double) 365 / FIRST_LEVEL_ITEM_SIZE;
     }
 
     @Override

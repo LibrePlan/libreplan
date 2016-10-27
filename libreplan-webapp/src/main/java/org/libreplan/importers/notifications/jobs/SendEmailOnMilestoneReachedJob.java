@@ -28,12 +28,9 @@ import org.springframework.scheduling.quartz.QuartzJobBean;
 
 /**
  * Sends E-mail to users with data that storing in notification_queue table
- * and that are treat to {@link EmailTemplateEnum.TEMPLATE_MILESTONE_REACHED}
+ * and that are treat to {@link org.libreplan.business.email.entities.EmailTemplateEnum#TEMPLATE_MILESTONE_REACHED}
  *
- * Created by
- * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
- * on 20.01.2016.
- *
+ * @author Created by Vova Perebykivskyi <vova@libreplan-enterprise.com> on 20.01.2016.
  */
 public class SendEmailOnMilestoneReachedJob extends QuartzJobBean {
 
@@ -47,5 +44,4 @@ public class SendEmailOnMilestoneReachedJob extends QuartzJobBean {
 
         milestoneReached.sendEmail();
     }
-
 }

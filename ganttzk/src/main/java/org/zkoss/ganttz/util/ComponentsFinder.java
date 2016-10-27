@@ -29,7 +29,7 @@ import org.zkoss.zul.Grid;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Row;
-import org.zkoss.zul.api.Rows;
+import org.zkoss.zul.Rows;
 
 /**
  * Utility methods to find components
@@ -40,55 +40,63 @@ public class ComponentsFinder {
     private ComponentsFinder() {
     }
 
-    public static <T> List<T> findComponentsOfType(Class<T> type,
-            List<? extends Object> children) {
-        ArrayList<T> result = new ArrayList<T>();
+    public static <T> List<T> findComponentsOfType(Class<T> type, List<?> children) {
+        ArrayList<T> result = new ArrayList<>();
         for (Object child : children) {
-            if (type.isInstance(child)) {
+
+            if ( type.isInstance(child) ) {
                 result.add(type.cast(child));
             }
         }
+
         return result;
     }
 
-    public static Component findById(String id,
-            List<? extends Component> children) {
+    public static Component findById(String id, List<? extends Component> children) {
         for (Component child : children) {
-            if (child.getId().equals(id)) {
+
+            if ( child.getId().equals(id) ) {
                 return child;
             }
         }
+
         return null;
     }
 
     public static Row findRowByValue(Grid grid, Object needle) {
-        if (grid == null || needle == null) {
+        if ( grid == null || needle == null ) {
             return null;
         }
         Rows rows = grid.getRows();
         for (Object each : rows.getChildren()) {
-            if (each instanceof Row) {
+
+            if ( each instanceof Row ) {
                 Row row = (Row) each;
                 Object value = row.getValue();
-                if (needle.equals(value)) {
+
+                if ( needle.equals(value) ) {
                     return row;
                 }
             }
         }
+
         return null;
     }
 
     public static Listitem findItemByValue(Listbox listbox, Object needle) {
-        if (listbox == null || needle == null) {
+        if ( listbox == null || needle == null ) {
             return null;
         }
+
         for (Object each : listbox.getItems()) {
             Listitem item = (Listitem) each;
             Object value = item.getValue();
-            if (needle.toString().equals(value.toString())) {
+
+            if ( needle.toString().equals(value.toString()) ) {
                 return item;
             }
         }
+
         return null;
     }
 

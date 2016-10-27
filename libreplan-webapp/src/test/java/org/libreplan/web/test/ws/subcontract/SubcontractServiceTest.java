@@ -70,12 +70,8 @@ import org.springframework.transaction.annotation.Transactional;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
         BUSINESS_SPRING_CONFIG_FILE,
-
-        WEBAPP_SPRING_CONFIG_FILE,
-        WEBAPP_SPRING_CONFIG_TEST_FILE,
-
-        WEBAPP_SPRING_SECURITY_CONFIG_FILE,
-        WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE })
+        WEBAPP_SPRING_CONFIG_FILE, WEBAPP_SPRING_CONFIG_TEST_FILE,
+        WEBAPP_SPRING_SECURITY_CONFIG_FILE, WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE })
 public class SubcontractServiceTest {
 
     @Resource
@@ -88,7 +84,7 @@ public class SubcontractServiceTest {
     private IScenariosBootstrap scenariosBootstrap;
 
     @Before
-    public void loadRequiredaData() {
+    public void loadRequiredData() {
         defaultAdvanceTypesBootstrapListener.loadRequiredData();
         configurationBootstrap.loadRequiredData();
         scenariosBootstrap.loadRequiredData();
@@ -133,8 +129,7 @@ public class SubcontractServiceTest {
     @Rollback(false)
     public void testNotRollback() {
         // Just to do not make rollback in order to have the default
-        // configuration, needed for prepareForCreate in order to autogenerate
-        // the order code
+        // configuration, needed for prepareForCreate in order to autogenerate the order code
     }
 
     @Test

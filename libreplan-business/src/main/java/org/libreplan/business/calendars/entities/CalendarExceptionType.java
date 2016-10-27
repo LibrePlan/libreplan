@@ -23,8 +23,6 @@ package org.libreplan.business.calendars.entities;
 
 import static org.libreplan.business.i18n.I18nHelper._;
 
-import java.util.EnumMap;
-
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
@@ -38,7 +36,6 @@ import org.libreplan.business.common.IntegrationEntity;
 import org.libreplan.business.common.Registry;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.workingday.EffortDuration;
-import org.libreplan.business.workingday.EffortDuration.Granularity;
 import org.springframework.orm.hibernate5.HibernateOptimisticLockingFailureException;
 
 /**
@@ -56,6 +53,18 @@ public class CalendarExceptionType extends IntegrationEntity implements IHumanId
     private CalendarExceptionTypeColor color = CalendarExceptionTypeColor.DEFAULT;
 
     private Capacity capacity = Capacity.zero();
+
+    /**
+     * Constructor for hibernate. Do not use!
+     */
+    protected CalendarExceptionType() {}
+
+    public CalendarExceptionType(String name, CalendarExceptionTypeColor color, Boolean notOverAssignable) {
+        this.name = name;
+        this.color = color;
+        this.capacity = Capacity.zero();
+        this.capacity = this.capacity.overAssignableWithoutLimit(!BooleanUtils.isTrue(notOverAssignable));
+    }
 
     public static CalendarExceptionType create() {
         return create(new CalendarExceptionType());
@@ -90,19 +99,6 @@ public class CalendarExceptionType extends IntegrationEntity implements IHumanId
         calendarExceptionType.setDuration(duration);
 
         return create(calendarExceptionType, code);
-    }
-
-    /**
-     * Constructor for hibernate. Do not use!
-     */
-    protected CalendarExceptionType() {
-    }
-
-    public CalendarExceptionType(String name, CalendarExceptionTypeColor color, Boolean notOverAssignable) {
-        this.name = name;
-        this.color = color;
-        this.capacity = Capacity.zero();
-        this.capacity = this.capacity.overAssignableWithoutLimit(!BooleanUtils.isTrue(notOverAssignable));
     }
 
     public boolean isUpdatable() {
@@ -155,18 +151,6 @@ public class CalendarExceptionType extends IntegrationEntity implements IHumanId
         return capacity.getStandardEffort();
     }
 
-    private String asString(EffortDuration duration) {
-        if ( duration == null ) {
-            return "";
-        }
-
-        EnumMap<Granularity, Integer> values = duration.decompose();
-        Integer hours = values.get(Granularity.HOURS);
-        Integer minutes = values.get(Granularity.MINUTES);
-
-        return hours + ":" + minutes;
-    }
-
     public void setDuration(EffortDuration duration) {
         this.capacity = this.capacity.withStandardEffort(duration);
     }
@@ -191,12 +175,10 @@ public class CalendarExceptionType extends IntegrationEntity implements IHumanId
                         calendarExceptionTypeDAO.findUniqueByNameAnotherTransaction(name);
 
                 return calendarExceptionType.getId().equals(getId());
-            } catch (InstanceNotFoundException e) {
+            } catch (InstanceNotFoundException | HibernateOptimisticLockingFailureException e) {
                 return true;
             } catch (NonUniqueResultException e) {
                 return false;
-            } catch (HibernateOptimisticLockingFailureException e) {
-                return true;
             }
 
         }

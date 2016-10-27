@@ -22,155 +22,158 @@
 <?page title="${i18n:_('LibrePlan: Scheduling')}"?>
 <?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n" ?>
 
-<?component name="editTaskWindow"
-    macroURI="/planner/editTask.zul"
-    inline="true" ?>
-
-<?component name="listOrderElementAdvances"
-    macroURI="/orders/_listOrderElementAdvances.zul"
-    inline="true" ?>
+<?component name="editTaskWindow"macroURI="/planner/editTask.zul" inline="true" ?>
+<?component name="listOrderElementAdvances"macroURI="/orders/_listOrderElementAdvances.zul" inline="true" ?>
 
 <zk>
-    <zscript><![CDATA[
-        planningController = arg.get("orderPlanningController");
-        switcher = planningController.viewSwitcher;
+    <zscript>
+        <![CDATA[
+            planningController = arg.get("orderPlanningController");
+            switcher = planningController.viewSwitcher;
 
-        editController = planningController.editTaskController;
-        planningController.advancedAllocationTaskController.switcher = switcher;
-        calendarController = planningController.calendarAllocationController;
-        advanceController = planningController.advanceConsolidationController;
-        advanceAssignmentController = planningController.advanceAssignmentPlanningController;
-    ]]>
+            editController = planningController.editTaskController;
+            planningController.advancedAllocationTaskController.switcher = switcher;
+            calendarController = planningController.calendarAllocationController;
+            advanceController = planningController.advanceConsolidationController;
+            advanceAssignmentController = planningController.advanceAssignmentPlanningController;
+        ]]>
     </zscript>
-    <div>
-    <div apply="${switcher}" >
-        <planner id="planner" apply="${planningController}">
-        </planner>
-    </div>
+    <div height="100%">
+        <div apply="${switcher}" sclass="parentProjectScheduling scroll-collapse" height="100%">
 
-    <editTaskWindow id="editTaskWindow" editController="${editController}" />
+            <planner id="planner" apply="${planningController}" sclass="projectScheduling"
+                     style="display: block; height: 100%;">
+            </planner>
 
-    <!-- Progress assignment window -->
-    <window id="advanceAssignmentPlanningWindow"
-            apply="${advanceAssignmentController}"
-            title="${advanceAssignmentController.title}"
-            width="950px"
-            visible="false"
-            closable="true"
-            onClose="advanceAssignmentController.onClose(event);" >
+        </div>
 
-        <vbox id="messagesAdvanceAssignmentContainer" />
+        <editTaskWindow id="editTaskWindow" editController="${editController}" />
 
-        <listOrderElementAdvances id="orderElementAdvances"/>
+        <!-- Progress assignment window -->
+        <window id="advanceAssignmentPlanningWindow"
+                apply="${advanceAssignmentController}"
+                title="${advanceAssignmentController.title}"
+                width="950px"
+                visible="false"
+                closable="true"
+                onClose="advanceAssignmentController.onClose(event);" >
 
-        <separator />
+            <vbox id="messagesAdvanceAssignmentContainer" />
 
-        <!-- Control buttons -->
-        <hbox>
-            <button label="${i18n:_('Back')}"
-                    sclass="back-button global-action"
-                    onClick="advanceAssignmentController.accept();" />
-        </hbox>
+            <listOrderElementAdvances id="orderElementAdvances"/>
 
-    </window>
+            <separator />
 
-    <!-- Progress consolidation -->
-    <window id="advanceWindow"
-            apply="${advanceController}"
-            title="${i18n:_('Progress consolidation')}"
-            width="700px"
-            visible="false"
-            closable="true"
-            onClose="self.visible = false; event.stopPropagation();" >
+            <!-- Control buttons -->
+            <hbox>
+                <button label="${i18n:_('Back')}"
+                        sclass="back-button global-action"
+                        onClick="advanceAssignmentController.accept();" />
+            </hbox>
 
-        <vbox>
+        </window>
 
-            <groupbox closable="false" style="overflow:auto" visible="@{advanceController.isVisibleMessages}">
-                <caption label="${i18n:_('Check consolidated progresses')}" />
-                <label value="@{advanceController.infoMessages}" />
-            </groupbox>
+        <!-- Progress consolidation -->
+        <window id="advanceWindow"
+                apply="${advanceController}"
+                title="${i18n:_('Progress consolidation')}"
+                width="700px"
+                visible="false"
+                closable="true"
+                onClose="self.visible = false; event.stopPropagation();" >
+
+            <vbox>
+
+                <groupbox closable="false" style="overflow:auto" visible="@{advanceController.isVisibleMessages}">
+                    <caption label="${i18n:_('Check consolidated progresses')}" />
+                    <label value="@{advanceController.infoMessages}" />
+                </groupbox>
 
 
-            <groupbox closable="false" style="overflow:auto" visible="@{advanceController.isVisibleAdvances}">
-                <caption label="${i18n:_('Check consolidated progresses')}" />
-                <vbox>
-                    <label value="@{advanceController.infoAdvance}"/>
-                    <grid id="advancesGrid"
-                            model="@{advanceController.advances}"
-                            mold="paging"
-                            pageSize="10"
-                            sclass="@{advanceController.readOnlySclass}"
-                            span="true">
-                        <columns>
-                            <column label="${i18n:_('Value')}" align="center" visible="@{advanceController.unitType}"/>
-                            <column label="${i18n:_('Percentage')}" align="center"/>
-                            <column label="${i18n:_('Date')}" align="center"/>
-                            <column label="${i18n:_('Consolidated')}" align="center"/>
-                        </columns>
-                        <rows>
-                            <row self="@{each='advanceConsolidationDTO'}" value="@{advanceConsolidationDTO}">
-                                <label value="@{advanceConsolidationDTO.labelUnits}"
-                                    visible="@{advanceController.unitType}"/>
-                                <label value="@{advanceConsolidationDTO.labelPercentage}" />
-                                <label value="@{advanceConsolidationDTO.date,converter='org.libreplan.web.common.typeconverters.DateConverter'}" />
-                                <checkbox checked="@{advanceConsolidationDTO.consolidated}"
-                                    onCheck="advanceController.reloadAdvanceGrid();"
-                                    disabled="@{advanceConsolidationDTO.canNotBeConsolidated}"/>
-                             </row>
-                        </rows>
-                    </grid>
+                <groupbox closable="false" style="overflow:auto" visible="@{advanceController.isVisibleAdvances}">
+                    <caption label="${i18n:_('Check consolidated progresses')}" />
+                    <vbox>
+                        <label value="@{advanceController.infoAdvance}"/>
+                        <grid id="advancesGrid"
+                              model="@{advanceController.advances}"
+                              mold="paging"
+                              pageSize="10"
+                              sclass="@{advanceController.readOnlySclass}"
+                              span="true">
+                            <columns>
+                                <column label="${i18n:_('Value')}" align="center" visible="@{advanceController.unitType}"/>
+                                <column label="${i18n:_('Percentage')}" align="center"/>
+                                <column label="${i18n:_('Date')}" align="center"/>
+                                <column label="${i18n:_('Consolidated')}" align="center"/>
+                            </columns>
+                            <rows>
+                                <row self="@{each='advanceConsolidationDTO'}" value="@{advanceConsolidationDTO}">
+
+                                    <label value="@{advanceConsolidationDTO.labelUnits}"
+                                           visible="@{advanceController.unitType}"/>
+
+                                    <label value="@{advanceConsolidationDTO.labelPercentage}" />
+
+                                    <label value="@{advanceConsolidationDTO.date,converter='org.libreplan.web.common.typeconverters.DateConverter'}" />
+
+                                    <checkbox checked="@{advanceConsolidationDTO.consolidated}"
+                                              onCheck="advanceController.reloadAdvanceGrid();"
+                                              disabled="@{advanceConsolidationDTO.canNotBeConsolidated}"/>
+                                </row>
+                            </rows>
+                        </grid>
                     </vbox>
-            </groupbox>
+                </groupbox>
 
 
-            <!-- Control buttons -->
-            <hbox>
-                <button label="${i18n:_('Accept')}"
-                        sclass="save-button global-action"
-                        onClick="advanceController.accept();" />
-                <button label="${i18n:_('Cancel')}"
-                        sclass="cancel-button global-action"
-                        onClick="advanceController.cancel();" />
-            </hbox>
+                <!-- Control buttons -->
+                <hbox>
+                    <button label="${i18n:_('Accept')}"
+                            sclass="save-button global-action"
+                            onClick="advanceController.accept();" />
+                    <button label="${i18n:_('Cancel')}"
+                            sclass="cancel-button global-action"
+                            onClick="advanceController.cancel();" />
+                </hbox>
 
-        </vbox>
+            </vbox>
 
-    </window>
+        </window>
 
-    <!-- Calendar allocation -->
-    <window id="calendarAllocationWindow"
-            apply="${calendarController}"
-            title="${i18n:_('Calendar allocation')}"
-            width="600px"
-            visible="false"
-            closable="true"
-            onClose="self.visible = false; event.stopPropagation();" >
+        <!-- Calendar allocation -->
+        <window id="calendarAllocationWindow"
+                apply="${calendarController}"
+                title="${i18n:_('Calendar allocation')}"
+                width="600px"
+                visible="false"
+                closable="true"
+                onClose="self.visible = false; event.stopPropagation();" >
 
-        <vbox>
+            <vbox>
 
-            <panel title="${i18n:_('Calendar')}"
-                    border="normal" style="overflow:auto" >
-                <panelchildren>
-                    <combobox id="calendarCombo">
-                        <comboitem self="@{each='baseCalendar'}" value="@{baseCalendar}"
-                                label="@{baseCalendar.name}" />
-                    </combobox>
-                </panelchildren>
-            </panel>
+                <panel title="${i18n:_('Calendar')}" border="normal" style="overflow:auto" >
+                    <panelchildren>
+                        <combobox id="calendarCombo" style="margin: 10px;">
+                            <comboitem self="@{each='baseCalendar'}"
+                                       value="@{baseCalendar}"
+                                       label="@{baseCalendar.name}" />
+                        </combobox>
+                    </panelchildren>
+                </panel>
 
-            <!-- Control buttons -->
-            <hbox>
-                <button label="${i18n:_('Accept')}"
-                        sclass="save-button global-action"
-                        onClick="calendarController.assign(calendarCombo.selectedItem);" />
-                <button label="${i18n:_('Cancel')}"
-                        sclass="cancel-button global-action"
-                        onClick="calendarController.cancel();" />
-            </hbox>
+                <!-- Control buttons -->
+                <hbox>
+                    <button label="${i18n:_('Accept')}"
+                            sclass="save-button global-action"
+                            onClick="calendarController.assign(calendarCombo.selectedItem);" />
 
-        </vbox>
+                    <button label="${i18n:_('Cancel')}"
+                            sclass="cancel-button global-action"
+                            onClick="calendarController.cancel();" />
+                </hbox>
 
-    </window>
+            </vbox>
 
+        </window>
     </div>
 </zk>

@@ -69,9 +69,9 @@ public class CalendarAllocationModel implements ICalendarAllocationModel {
 
     private void initializeCalendarData(List<CalendarData> calendarData) {
         calendarData.size();
-        for (CalendarData each: calendarData) {
+
+        for (CalendarData each: calendarData)
             each.getCapacityPerDay().size();
-        }
     }
 
     @Override

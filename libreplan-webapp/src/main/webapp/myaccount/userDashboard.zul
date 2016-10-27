@@ -33,7 +33,7 @@
 <zk>
 
     <window self="@{define(content)}" title="${i18n:_('My dashboard')}"
-        apply="org.libreplan.web.users.dashboard.UserDashboardController">
+            apply="org.libreplan.web.users.dashboard.UserDashboardController">
 
         <vbox id="messagesContainer" />
 

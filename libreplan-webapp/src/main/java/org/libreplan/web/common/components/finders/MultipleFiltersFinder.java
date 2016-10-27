@@ -21,12 +21,6 @@
 
 package org.libreplan.web.common.components.finders;
 
-import static org.libreplan.web.I18nHelper._;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.Callable;
-
 import org.apache.commons.lang3.StringUtils;
 import org.libreplan.business.common.AdHocTransactionService;
 import org.libreplan.business.common.IAdHocTransactionService;
@@ -36,7 +30,13 @@ import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
 
-public abstract class MultipleFiltersFinder implements IMultipleFiltersFinder {
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Callable;
+
+import static org.libreplan.web.I18nHelper._;
+
+abstract class MultipleFiltersFinder implements IMultipleFiltersFinder {
 
     @Autowired
     private IAdHocTransactionService adHocTransactionService;
@@ -44,14 +44,16 @@ public abstract class MultipleFiltersFinder implements IMultipleFiltersFinder {
     @Autowired
     private ISnapshotRefresherService snapshotRefresherService;
 
-    private List<FilterPair> listMatching = new ArrayList<FilterPair>();
+    private List<FilterPair> listMatching = new ArrayList<>();
 
     private final String headers[] = {};
 
     MultipleFiltersFinder() {
+
     }
 
     public void reset() {
+        /* Do nothing */
     }
 
     public IAdHocTransactionService getAdHocTransactionService() {
@@ -64,16 +66,14 @@ public abstract class MultipleFiltersFinder implements IMultipleFiltersFinder {
 
     @SuppressWarnings("unchecked")
     protected <T> Callable<T> onTransaction(Callable<T> callable) {
-        return AdHocTransactionService.readOnlyProxy(
-                getAdHocTransactionService(), Callable.class, callable);
+        return AdHocTransactionService.readOnlyProxy(getAdHocTransactionService(), Callable.class, callable);
     }
 
-    public void setAdHocTransactionService(
-            IAdHocTransactionService adHocTransactionService) {
+    public void setAdHocTransactionService(IAdHocTransactionService adHocTransactionService) {
         this.adHocTransactionService = adHocTransactionService;
     }
 
-    public List<FilterPair> getListMatching() {
+    List<FilterPair> getListMatching() {
         return listMatching;
     }
 
@@ -85,23 +85,18 @@ public abstract class MultipleFiltersFinder implements IMultipleFiltersFinder {
         return filterPairRenderer;
     }
 
-    protected void addNoneFilter() {
-        getListMatching().add(
-                new FilterPair(FilterEnumNone.None, FilterEnumNone.None
-                        .toString(), null));
+    void addNoneFilter() {
+        getListMatching().add(new FilterPair(FilterEnumNone.None, FilterEnumNone.None.toString(), null));
     }
 
     public String objectToString(Object obj) {
         FilterPair filterPair = (FilterPair) obj;
-        String text = filterPair.getType() + "(" + filterPair.getPattern()
-                + "); ";
-        return text;
+        return filterPair.getType() + "(" + filterPair.getPattern() + "); ";
     }
 
     public String getNewFilterText(String inputText) {
         String[] filtersText = inputText.split(";");
-        String newFilterText = getLastText(filtersText);
-        return newFilterText;
+        return getLastText(filtersText);
     }
 
     private String getLastText(String[] texts) {
@@ -109,16 +104,14 @@ public abstract class MultipleFiltersFinder implements IMultipleFiltersFinder {
         if (texts.length > 0) {
             return texts[last];
         } else {
-            return new String("");
+            return "";
         }
     }
 
     public boolean isValidNewFilter(List filterValues, Object obj) {
         FilterPair filter = (FilterPair) obj;
-        if (filter.getType().equals(FilterEnumNone.None)) {
-            return false;
-        }
-        return true;
+
+        return !filter.getType().equals(FilterEnumNone.None);
     }
 
     public boolean isValidFormatText(List filterValues, String value) {
@@ -133,21 +126,20 @@ public abstract class MultipleFiltersFinder implements IMultipleFiltersFinder {
             return false;
         }
 
-        int i = 0;
         for (FilterPair filterPair : (List<FilterPair>) filterValues) {
             String filterPairText = filterPair.getType() + "("
                     + filterPair.getPattern() + ")";
             if (!isFilterAdded(values, filterPairText)) {
                 return false;
             }
-            i++;
         }
+
         return true;
     }
 
     public boolean updateDeletedFilters(List filterValues, String value) {
         String[] values = value.split(";");
-        List<FilterPair> list = new ArrayList<FilterPair>();
+        List<FilterPair> list = new ArrayList<>();
         list.addAll(filterValues);
 
         boolean someRemoved = false;
@@ -161,12 +153,12 @@ public abstract class MultipleFiltersFinder implements IMultipleFiltersFinder {
                 }
             }
         }
+
         return someRemoved;
     }
 
-    protected boolean isFilterAdded(String[] values, String filter) {
-        for (int i = 0; i < values.length; i++) {
-            String value = values[i];
+    private boolean isFilterAdded(String[] values, String filter) {
+        for (String value : values) {
             if (isFilterEquals(value, filter)) {
                 return true;
             }
@@ -174,9 +166,10 @@ public abstract class MultipleFiltersFinder implements IMultipleFiltersFinder {
         return false;
     }
 
-    protected boolean isFilterEquals(String value, String filter) {
+    boolean isFilterEquals(String value, String filter) {
         value = value.replace(" ", "");
         filter = StringUtils.deleteWhitespace(filter);
+
         return (filter.equals(value));
     }
 
@@ -189,13 +182,14 @@ public abstract class MultipleFiltersFinder implements IMultipleFiltersFinder {
     }
 
     /**
-     * Render for {@link FilterPair}
+     * Render for {@link FilterPair}.
+     *
      * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
      */
     private final ListitemRenderer filterPairRenderer = new ListitemRenderer() {
 
         @Override
-        public void render(Listitem item, Object data) {
+        public void render(Listitem item, Object data, int i) {
             FilterPair filterPair = (FilterPair) data;
             item.setValue(data);
 

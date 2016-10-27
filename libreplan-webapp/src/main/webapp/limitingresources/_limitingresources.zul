@@ -23,10 +23,13 @@
 
 <zk>
 
-    <zscript><![CDATA[
-        rsController = arg.get("LimitingResourcesController");;
-    ]]>
+    <zscript>
+        <![CDATA[
+            rsController = arg.get("LimitingResourcesController");;
+        ]]>
     </zscript>
-    <div apply="${rsController}" self="@{define(content)}">
+
+    <div apply="${rsController}" sclass="parentLimitingResource" style="display: block; height: 100%;"
+         self="@{define(content_tabSwitcher)}">
     </div>
 </zk>

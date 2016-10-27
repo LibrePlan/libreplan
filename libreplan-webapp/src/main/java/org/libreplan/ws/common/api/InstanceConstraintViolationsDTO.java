@@ -36,13 +36,14 @@ import javax.xml.bind.annotation.XmlElement;
  */
 public class InstanceConstraintViolationsDTO {
 
-    public final static String NUM_ITEM_ATTRIBUTE_NAME = "num-item";
-    public final static String CODE_ATTRIBUTE_NAME =
-        IntegrationEntityDTO.CODE_ATTRIBUTE_NAME;
-    public final static String ENTITY_TYPE_ATTRIBUTE_NAME = "entity-type";
+    public static final String NUM_ITEM_ATTRIBUTE_NAME = "num-item";
+
+    public static final String CODE_ATTRIBUTE_NAME = IntegrationEntityDTO.CODE_ATTRIBUTE_NAME;
+
+    public static final String ENTITY_TYPE_ATTRIBUTE_NAME = "entity-type";
 
     @Deprecated
-    public final static String INSTANCE_ID_ATTRIBUTE_NAME = "instance-id";
+    public static final String INSTANCE_ID_ATTRIBUTE_NAME = "instance-id";
 
     @Deprecated
     @XmlAttribute(name=INSTANCE_ID_ATTRIBUTE_NAME)
@@ -69,17 +70,14 @@ public class InstanceConstraintViolationsDTO {
     public InstanceConstraintViolationsDTO() {}
 
     @Deprecated
-    public InstanceConstraintViolationsDTO(String instanceId,
-        List<ConstraintViolationDTO> constraintViolations) {
-
+    public InstanceConstraintViolationsDTO(String instanceId, List<ConstraintViolationDTO> constraintViolations) {
+        /* TODO resolve deprecated */
         this.instanceId = instanceId;
         this.constraintViolations = constraintViolations;
 
     }
 
-    private InstanceConstraintViolationsDTO(
-        InstanceConstraintViolationsDTOId instanceId) {
-
+    private InstanceConstraintViolationsDTO(InstanceConstraintViolationsDTOId instanceId) {
         this.numItem = instanceId.getNumItem();
         this.code = instanceId.getCode();
         this.entityType = instanceId.getEntityType();
@@ -87,8 +85,7 @@ public class InstanceConstraintViolationsDTO {
     }
 
     public InstanceConstraintViolationsDTO(
-        InstanceConstraintViolationsDTOId instanceId,
-        List<ConstraintViolationDTO> constraintViolations) {
+            InstanceConstraintViolationsDTOId instanceId, List<ConstraintViolationDTO> constraintViolations) {
 
         this(instanceId);
         this.constraintViolations = constraintViolations;
@@ -96,47 +93,38 @@ public class InstanceConstraintViolationsDTO {
     }
 
     public InstanceConstraintViolationsDTO(
-        InstanceConstraintViolationsDTOId instanceId,
-        RecoverableErrorDTO recoverableError) {
+            InstanceConstraintViolationsDTOId instanceId, RecoverableErrorDTO recoverableError) {
 
         this(instanceId);
         this.recoverableError = recoverableError;
 
     }
 
-    public InstanceConstraintViolationsDTO(
-        InstanceConstraintViolationsDTOId instanceId,
-        InternalErrorDTO internalError) {
-
+    public InstanceConstraintViolationsDTO(InstanceConstraintViolationsDTOId instanceId, InternalErrorDTO internalError) {
         this(instanceId);
         this.internalError = internalError;
 
     }
 
     @Deprecated
-    public static InstanceConstraintViolationsDTO create(String instanceId,
-        String message) {
+    public static InstanceConstraintViolationsDTO create(String instanceId, String message) {
 
-        List<ConstraintViolationDTO> constraintViolations =
-            new ArrayList<ConstraintViolationDTO>();
+        List<ConstraintViolationDTO> constraintViolations = new ArrayList<>();
 
         constraintViolations.add(new ConstraintViolationDTO(null, message));
 
-        return new InstanceConstraintViolationsDTO(instanceId,
-            constraintViolations);
+        /* TODO resolve deprecated */
+        return new InstanceConstraintViolationsDTO(instanceId, constraintViolations);
 
     }
 
-    public static InstanceConstraintViolationsDTO create(
-        InstanceConstraintViolationsDTOId instanceId, String message) {
+    public static InstanceConstraintViolationsDTO create(InstanceConstraintViolationsDTOId instanceId, String message) {
 
-        List<ConstraintViolationDTO> constraintViolations =
-            new ArrayList<ConstraintViolationDTO>();
+        List<ConstraintViolationDTO> constraintViolations = new ArrayList<>();
 
         constraintViolations.add(new ConstraintViolationDTO(null, message));
 
-        return new InstanceConstraintViolationsDTO(instanceId,
-            constraintViolations);
+        return new InstanceConstraintViolationsDTO(instanceId, constraintViolations);
 
     }
 
@@ -146,14 +134,14 @@ public class InstanceConstraintViolationsDTO {
         StringWriter stringWriter = new StringWriter();
         PrintWriter printWriter = new PrintWriter(stringWriter);
 
-        printWriter.println("** " + INSTANCE_ID_ATTRIBUTE_NAME + " = " +
-            instanceId + " **");
+        /* TODO resolve deprecated */
+        printWriter.println("** " + INSTANCE_ID_ATTRIBUTE_NAME + " = " + instanceId + " **");
 
         printWriter.println("** " +
-            NUM_ITEM_ATTRIBUTE_NAME + " = " + numItem + " - " +
-            CODE_ATTRIBUTE_NAME + " = " + code + " - " +
-            ENTITY_TYPE_ATTRIBUTE_NAME + " = " + entityType +
-            " **");
+                NUM_ITEM_ATTRIBUTE_NAME + " = " + numItem + " - " +
+                CODE_ATTRIBUTE_NAME + " = " + code + " - " +
+                ENTITY_TYPE_ATTRIBUTE_NAME + " = " + entityType +
+                " **");
 
         if (internalError != null) {
 

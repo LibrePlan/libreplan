@@ -67,8 +67,7 @@ import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Vbox;
 
 /**
- * Controller for company planning view. Representation of company orders in the
- * planner.
+ * Controller for company planning view. Representation of company orders in the planner.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
@@ -85,11 +84,15 @@ public class CompanyPlanningController implements Composer {
     private Planner planner;
 
     private Vbox orderFilter;
+
     private Datebox filterStartDate;
+
     private Datebox filterFinishDate;
+
     private Textbox filterProjectName;
 
     private BandboxMultipleSearch bdFilters;
+
     private Checkbox checkIncludeOrderElements;
 
     private ICommandOnTask<TaskElement> doubleClickCommand;
@@ -98,18 +101,18 @@ public class CompanyPlanningController implements Composer {
 
     private MultipleTabsPlannerController tabsController;
 
+    private Combobox cbProgressTypes;
+
+    private Button btnShowAdvances;
+
     public CompanyPlanningController() {
     }
 
-    private Combobox cbProgressTypes;
-    private Button btnShowAdvances;
-
     @Override
-    public void doAfterCompose(org.zkoss.zk.ui.Component comp) {
+    public void doAfterCompose(Component comp) {
         planner = (Planner) comp;
         String zoomLevelParameter = null;
-        if ( (parameters != null) && (parameters.get("zoom") != null)
-                && !(parameters.isEmpty()) ) {
+        if ( (parameters != null) && (parameters.get("zoom") != null) && !(parameters.isEmpty()) ) {
             zoomLevelParameter = parameters.get("zoom")[0];
         }
         if ( zoomLevelParameter != null ) {
@@ -125,16 +128,19 @@ public class CompanyPlanningController implements Composer {
         planner.setAreShownMoneyCostBarByDefault(Planner.guessShowMoneyCostBarByDefault(parameters));
 
         orderFilter = (Vbox) planner.getFellow("orderFilter");
+
         // Configuration of the order filter
-        Component filterComponent = Executions.createComponents("/orders/_orderFilter.zul", orderFilter,
-                                                                new HashMap<String, String>());
-        filterComponent.setVariable("orderFilterController", this, true);
+        Component filterComponent =
+                Executions.createComponents("/orders/_orderFilter.zul", orderFilter, new HashMap<String, String>());
+
+        filterComponent.setAttribute("orderFilterController", this, true);
         filterStartDate = (Datebox) filterComponent.getFellow("filterStartDate");
         filterFinishDate = (Datebox) filterComponent.getFellow("filterFinishDate");
         filterProjectName = (Textbox) filterComponent.getFellow("filterProjectName");
 
         bdFilters = (BandboxMultipleSearch) filterComponent.getFellow("bdFilters");
         bdFilters.setFinder("taskGroupsMultipleFiltersFinder");
+
         loadPredefinedBandboxFilter();
 
         checkIncludeOrderElements = (Checkbox) filterComponent.getFellow("checkIncludeOrderElements");
@@ -150,15 +156,19 @@ public class CompanyPlanningController implements Composer {
             bdFilters.addSelectedElements(sessionFilterPairs);
         } else if ( (user != null) && (user.getProjectsFilterLabel() != null) ) {
             bdFilters.clear();
-            bdFilters.addSelectedElement(new FilterPair(TaskGroupFilterEnum.Label, user.getProjectsFilterLabel()
-                                                                                        .getFinderPattern(),
-                                                                                    user.getProjectsFilterLabel()) );
+
+            bdFilters.addSelectedElement(new FilterPair(
+                    TaskGroupFilterEnum.Label,
+                    user.getProjectsFilterLabel().getFinderPattern(),
+                    user.getProjectsFilterLabel()));
         }
 
         // Calculate filter based on user preferences
         if (user != null) {
+
             if ( (filterStartDate.getValue() == null) && !FilterUtils.hasProjectsStartDateChanged() &&
                     (user.getProjectsFilterPeriodSince() != null) ) {
+
                 filterStartDate.setValue(new LocalDate()
                         .minusMonths(user.getProjectsFilterPeriodSince())
                         .toDateTimeAtStartOfDay()
@@ -166,6 +176,7 @@ public class CompanyPlanningController implements Composer {
             }
             if ( filterFinishDate.getValue() == null && !FilterUtils.hasProjectsEndDateChanged() &&
                     (user.getProjectsFilterPeriodTo() != null) ) {
+
                 filterFinishDate.setValue(new LocalDate().plusMonths(user.getProjectsFilterPeriodTo())
                         .toDateTimeAtStartOfDay()
                         .toDate());
@@ -176,8 +187,7 @@ public class CompanyPlanningController implements Composer {
     }
 
     /**
-     * Checks the creation permissions of the current user and enables/disables
-     * the create buttons accordingly.
+     * Checks the creation permissions of the current user and enables/disables the create buttons accordingly.
      */
     private void checkCreationPermissions() {
         if ( !SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_CREATE_PROJECTS) ) {
@@ -196,7 +206,7 @@ public class CompanyPlanningController implements Composer {
             btnShowAdvances = (Button) planner.getFellow("showAdvances");
         }
 
-        cbProgressTypes.setModel(new ListModelList(ProgressType.getAll()));
+        cbProgressTypes.setModel(new ListModelList<>(ProgressType.getAll()));
         cbProgressTypes.setItemRenderer(new ProgressTypeRenderer());
 
         // Update completion of tasks on selecting new progress type
@@ -226,20 +236,19 @@ public class CompanyPlanningController implements Composer {
     private class ProgressTypeRenderer implements ComboitemRenderer {
 
         @Override
-        public void render(Comboitem item, Object data) {
+        public void render(Comboitem item, Object data, int i) {
             final ProgressType progressType = (ProgressType) data;
             item.setValue(progressType);
             item.setLabel(_(progressType.getValue()));
 
             ProgressType configuredProgressType = getProgressTypeFromConfiguration();
-            if ( (configuredProgressType != null) &&
-                    configuredProgressType.equals(progressType) ) {
+            if ( (configuredProgressType != null) && configuredProgressType.equals(progressType) ) {
                 cbProgressTypes.setSelectedItem(item);
             }
         }
     }
 
-    public ProgressType getProgressTypeFromConfiguration() {
+    private ProgressType getProgressTypeFromConfiguration() {
         return model.getProgressTypeFromConfiguration();
     }
 
@@ -266,17 +275,18 @@ public class CompanyPlanningController implements Composer {
     }
 
     /**
-     * Operations to filter the tasks by multiple filters
+     * Operations to filter the tasks by multiple filters.
      */
 
     public Constraint checkConstraintFinishDate() {
         return new Constraint() {
             @Override
-            public void validate(Component comp, Object value)
-                    throws WrongValueException {
+            public void validate(Component comp, Object value) throws WrongValueException {
                 Date finishDate = (Date) value;
+
                 if ( (finishDate != null) && (filterStartDate.getRawValue() != null) &&
                         (finishDate.compareTo((Date) filterStartDate.getRawValue()) < 0)) {
+
                     filterFinishDate.setValue(null);
                     throw new WrongValueException(comp, _("must be after start date"));
                 }
@@ -287,11 +297,12 @@ public class CompanyPlanningController implements Composer {
     public Constraint checkConstraintStartDate() {
         return new Constraint() {
             @Override
-            public void validate(Component comp, Object value)
-                    throws WrongValueException {
+            public void validate(Component comp, Object value) throws WrongValueException {
                 Date startDate = (Date) value;
+
                 if ( (startDate != null) && (filterFinishDate.getRawValue() != null) &&
-                         (startDate.compareTo((Date) filterFinishDate.getRawValue()) > 0)) {
+                        (startDate.compareTo((Date) filterFinishDate.getRawValue()) > 0)) {
+
                     filterStartDate.setValue(null);
                     throw new WrongValueException(comp, _("must be lower than end date"));
                 }
@@ -307,10 +318,12 @@ public class CompanyPlanningController implements Composer {
     }
 
     public void onApplyFilter() {
-        FilterUtils.writeProjectsFilter(filterStartDate.getValue(),
-                                        filterFinishDate.getValue(),
-                                        bdFilters.getSelectedElements(),
-                                        filterProjectName.getValue());
+        FilterUtils.writeProjectsFilter(
+                filterStartDate.getValue(),
+                filterFinishDate.getValue(),
+                bdFilters.getSelectedElements(),
+                filterProjectName.getValue());
+
         FilterUtils.writeProjectPlanningFilterChanged(true);
         filterByPredicate(createPredicate());
     }
@@ -331,10 +344,12 @@ public class CompanyPlanningController implements Composer {
 
         if ( startDate == null && finishDate == null ) {
             TaskGroupPredicate predicate = model.getDefaultPredicate(includeOrderElements);
-            //show filter dates calculated by default on screen
+
+            // Show filter dates calculated by default on screen
             if ( model.getFilterStartDate() != null && !FilterUtils.hasProjectsStartDateChanged()) {
                 filterStartDate.setValue(model.getFilterStartDate());
             }
+
             if (model.getFilterFinishDate() != null && !FilterUtils.hasProjectsEndDateChanged()) {
                 filterFinishDate.setValue(model.getFilterFinishDate());
             }

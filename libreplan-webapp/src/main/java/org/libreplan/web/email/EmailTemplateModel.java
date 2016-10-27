@@ -36,7 +36,7 @@ import java.util.List;
 /**
  * Model for operations related to {@link EmailTemplate}.
  *
- * @author Created by Vova Perebykivskiy <vova@libreplan-enterprise.com> on 25.09.2015.
+ * @author Created by Vova Perebykivskyi <vova@libreplan-enterprise.com> on 25.09.2015.
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -104,6 +104,7 @@ public class EmailTemplateModel implements IEmailTemplateModel {
     public Language getLanguage() {
         return this.emailTemplate.getLanguage();
     }
+
     @Override
     public void setLanguage(Language language){
         this.emailTemplate.setLanguage(language);
@@ -113,6 +114,7 @@ public class EmailTemplateModel implements IEmailTemplateModel {
     public EmailTemplateEnum getEmailTemplateEnum() {
         return this.emailTemplate.getType();
     }
+
     @Override
     public void setEmailTemplateEnum(EmailTemplateEnum emailTemplateEnum) {
         this.emailTemplate.setType(emailTemplateEnum);
@@ -131,14 +133,12 @@ public class EmailTemplateModel implements IEmailTemplateModel {
     @Override
     public String getContent(Language language, EmailTemplateEnum type) {
         EmailTemplate template = getEmailTemplateByTypeAndLanguage(type, language);
-
         return template != null ? template.getContent() : "";
     }
 
     @Override
     public String getSubject(Language language, EmailTemplateEnum type) {
         EmailTemplate template = getEmailTemplateByTypeAndLanguage(type, language);
-
         return template != null ? template.getSubject() : "";
     }
 

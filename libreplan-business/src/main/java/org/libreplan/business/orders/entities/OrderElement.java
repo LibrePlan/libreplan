@@ -49,7 +49,6 @@ import org.libreplan.business.advance.entities.DirectAdvanceAssignment;
 import org.libreplan.business.advance.entities.IndirectAdvanceAssignment;
 import org.libreplan.business.advance.exceptions.DuplicateAdvanceAssignmentForOrderElementException;
 import org.libreplan.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
-import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.IntegrationEntity;
 import org.libreplan.business.common.Registry;
 import org.libreplan.business.common.daos.IIntegrationEntityDAO;
@@ -61,7 +60,6 @@ import org.libreplan.business.costcategories.entities.CostCategory;
 import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
 import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.materials.entities.MaterialAssignment;
-import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.entities.SchedulingState.Type;
 import org.libreplan.business.orders.entities.TaskSource.TaskSourceSynchronization;
 import org.libreplan.business.planner.entities.Task;
@@ -80,7 +78,6 @@ import org.libreplan.business.trees.ITreeNode;
 import org.libreplan.business.util.deepcopy.DeepCopy;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workingday.IntraDayDate;
-import org.libreplan.business.workreports.daos.IWorkReportLineDAO;
 import org.libreplan.business.workreports.entities.WorkReportLine;
 
 public abstract class OrderElement extends IntegrationEntity implements ICriterionRequirable, ITreeNode<OrderElement> {
@@ -109,13 +106,14 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
     protected CriterionRequirementOrderElementHandler criterionRequirementHandler =
             CriterionRequirementOrderElementHandler.getInstance();
 
-
-    // This field is transient
+    /**
+     * This field is transient.
+     */
     private SchedulingState schedulingState = null;
 
     private OrderElementTemplate template;
 
-    private BigDecimal lastAdvanceMeausurementForSpreading = BigDecimal.ZERO;
+    private BigDecimal lastAdvanceMeasurementForSpreading = BigDecimal.ZERO;
 
     private Boolean dirtyLastAdvanceMeasurementForSpreading = true;
 
@@ -123,30 +121,29 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
 
     private SumExpenses sumExpenses;
 
+    private String externalCode;
+
+    private Map<OrderVersion, SchedulingDataForVersion> schedulingDataForVersion = new HashMap<>();
+
+    private SchedulingDataForVersion.Data current = null;
+
     public OrderElementTemplate getTemplate() {
         return template;
     }
 
-    private String externalCode;
-
-    private Map<OrderVersion, SchedulingDataForVersion> schedulingDatasForVersion = new HashMap<>();
-
     protected void removeVersion(OrderVersion orderVersion) {
-        schedulingDatasForVersion.remove(orderVersion);
+        schedulingDataForVersion.remove(orderVersion);
         for (OrderElement each : getChildren()) {
             each.removeVersion(orderVersion);
         }
     }
 
-    private SchedulingDataForVersion.Data current = null;
-
     public SchedulingDataForVersion.Data getCurrentSchedulingData() {
         if ( current == null ) {
             throw new IllegalStateException(
                     "in order to use scheduling state related data " +
-                    "useSchedulingDataFor(OrderVersion orderVersion) must be called first");
+                            "useSchedulingDataFor(OrderVersion orderVersion) must be called first");
         }
-
         return current;
     }
 
@@ -170,11 +167,8 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
     public SchedulingState getSchedulingState() {
         if ( schedulingState == null ) {
             ensureSchedulingStateInitializedFromTop();
-
-            // Maybe this order element was added later
-            initializeSchedulingState();
+            initializeSchedulingState(); // Maybe this order element was added later
         }
-
         return schedulingState;
     }
 
@@ -190,8 +184,11 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
         if ( schedulingState != null ) {
             return schedulingState;
         }
-        return schedulingState = SchedulingState.createSchedulingState(getSchedulingStateType(), getChildrenStates(),
-                getCurrentSchedulingData().onTypeChangeListener());
+
+        schedulingState = SchedulingState.createSchedulingState(
+                getSchedulingStateType(), getChildrenStates(), getCurrentSchedulingData().onTypeChangeListener());
+
+        return schedulingState;
     }
 
     private List<SchedulingState> getChildrenStates() {
@@ -204,10 +201,10 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
     }
 
     public boolean hasSchedulingDataBeingModified() {
-        return getCurrentSchedulingData().hasPendingChanges() || someSchedullingDataModified();
+        return getCurrentSchedulingData().hasPendingChanges() || someSchedulingDataModified();
     }
 
-    private boolean someSchedullingDataModified() {
+    private boolean someSchedulingDataModified() {
         for (OrderElement each : getChildren()) {
             if (each.hasSchedulingDataBeingModified()) {
                 return true;
@@ -237,11 +234,10 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
     }
 
     private SchedulingDataForVersion schedulingVersionFor(OrderVersion orderVersion) {
-        SchedulingDataForVersion currentSchedulingData = schedulingDatasForVersion.get(orderVersion);
-
-        if ( currentSchedulingData == null ) {
+        SchedulingDataForVersion currentSchedulingData = schedulingDataForVersion.get(orderVersion);
+        if (currentSchedulingData == null) {
             currentSchedulingData = SchedulingDataForVersion.createInitialFor(this);
-            schedulingDatasForVersion.put(orderVersion, currentSchedulingData);
+            schedulingDataForVersion.put(orderVersion, currentSchedulingData);
         }
 
         return currentSchedulingData;
@@ -266,6 +262,7 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
     protected void removeSpuriousDayAssignments(Scenario scenario) {
         removeAtNotCurrent(scenario);
         removeAtCurrent(scenario);
+
         for (OrderElement each : getChildren()) {
             each.removeSpuriousDayAssignments(scenario);
         }
@@ -273,11 +270,10 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
 
     private void removeAtNotCurrent(Scenario scenario) {
         SchedulingDataForVersion currentDataForVersion = getCurrentSchedulingDataForVersion();
-
-        for (Entry<OrderVersion, SchedulingDataForVersion> each : schedulingDatasForVersion.entrySet()) {
+        for (Entry<OrderVersion, SchedulingDataForVersion> each : schedulingDataForVersion.entrySet()) {
             SchedulingDataForVersion dataForVersion = each.getValue();
 
-            if ( !currentDataForVersion.equals(dataForVersion) ) {
+            if (!currentDataForVersion.equals(dataForVersion)) {
                 dataForVersion.removeSpuriousDayAssignments(scenario);
             }
         }
@@ -285,74 +281,71 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
 
     private void removeAtCurrent(Scenario scenario) {
         TaskElement associatedTaskElement = getAssociatedTaskElement();
-        if ( associatedTaskElement != null ) {
+        if (associatedTaskElement != null) {
             associatedTaskElement.removePredecessorsDayAssignmentsFor(scenario);
         }
     }
 
     public List<TaskSourceSynchronization> calculateSynchronizationsNeeded() {
-        SchedulingDataForVersion schedulingDataForVersion = getCurrentSchedulingData().getVersion();
-
-        return calculateSynchronizationsNeeded(schedulingDataForVersion);
+        return calculateSynchronizationsNeeded(getCurrentSchedulingData().getVersion());
     }
 
     private List<TaskSourceSynchronization> calculateSynchronizationsNeeded(
             SchedulingDataForVersion schedulingDataForVersion) {
+
         List<TaskSourceSynchronization> result = new ArrayList<>();
+        if (isSchedulingPoint()) {
+            if (!wasASchedulingPoint()) {
 
-        if ( isSchedulingPoint() ) {
-            if ( !wasASchedulingPoint() ) {
-
-                // This element was a container but now it's a scheduling point.
-                // We have to remove the TaskSource which contains a TaskGroup instead of TaskElement.
+                // This element was a container but now it's a scheduling point
+                // we have to remove the TaskSource which contains a TaskGroup instead of TaskElement
                 removeTaskSource(result);
             } else {
-                if ( hadATaskSource() && currentTaskSourceIsNotTheSame() ) {
+                if (hadATaskSource() && currentTaskSourceIsNotTheSame()) {
 
                     // This element was unscheduled and then scheduled again.
                     // Its TaskSource has been recreated but we have to remove the old one.
+                    if (!getParent().currentTaskSourceIsNotTheSame()) {
 
-                    if( !getParent().currentTaskSourceIsNotTheSame() ) {
-                        // We have to remove the TaskSource if the parent is not in the same situation.
-                        // In case the parent is in the same situation,
-                        // it will remove the related TaskSources in children tasks.
+                        // We only remove the TaskSource if the parent is not in the same situation.
+                        // In case the parent is in the same situation, it will remove the related
+                        // TaskSources in children tasks.
                         removeTaskSource(result);
                     }
                 }
             }
+
             result.addAll(synchronizationForSchedulingPoint(schedulingDataForVersion));
 
-        } else if ( isSuperElementPartialOrCompletelyScheduled() ) {
+        } else if (isSuperElementPartialOrCompletelyScheduled()) {
             removeUnscheduled(result);
-            if ( wasASchedulingPoint() ) {
+            if (wasASchedulingPoint()) {
                 removeTaskSource(result);
             } else {
-                if ( hadATaskSource() && currentTaskSourceIsNotTheSame() ) {
+                if (hadATaskSource() && currentTaskSourceIsNotTheSame()) {
 
                     // All the children of this element were unscheduled and then scheduled again,
                     // its TaskSource has been recreated but we have to remove the old one.
+                    if (getParent() == null || !getParent().currentTaskSourceIsNotTheSame()) {
 
-                    if ( getParent() == null || !getParent().currentTaskSourceIsNotTheSame() ) {
-
-                        // If it is a container node inside another container we could have the
+                        // If it's a container node inside another container we could have the
                         // same problem than in the case of leaf tasks.
                         result.add(taskSourceRemoval());
                     }
                 }
             }
             result.add(synchronizationForSuperelement(schedulingDataForVersion));
-        } else if ( schedulingState.isNoScheduled() ) {
+        } else if (schedulingState.isNoScheduled()) {
             removeTaskSource(result);
         }
-
         return result;
     }
 
     private TaskSourceSynchronization synchronizationForSuperelement(SchedulingDataForVersion schedulingState) {
         List<TaskSourceSynchronization> childrenSynchronizations = childrenSynchronizations();
-
-        if ( thereIsNoTaskSource() ) {
+        if (thereIsNoTaskSource()) {
             getCurrentSchedulingData().requestedCreationOf(TaskSource.createForGroup(schedulingState));
+
             return TaskSource.mustAddGroup(getTaskSource(), childrenSynchronizations);
         } else {
             return getTaskSource().modifyGroup(childrenSynchronizations);
@@ -362,19 +355,15 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
     private boolean wasASchedulingPoint() {
         TaskSource currentTaskSource = getTaskSource();
         // Check if the existing TaskSource is inconsistent with the current scheduling state
-
-        boolean condition = currentTaskSource != null &&
+        if (currentTaskSource != null &&
                 currentTaskSource.getTask().isLeaf() &&
-                getSchedulingStateType() != Type.SCHEDULING_POINT;
+                getSchedulingStateType() != Type.SCHEDULING_POINT) {
 
-        if ( condition ) {
             return true;
         }
 
         // Check if the scheduling state has changed WRT the DB
-        SchedulingDataForVersion currentVersionOnDB = getCurrentVersionOnDB();
-
-        return SchedulingState.Type.SCHEDULING_POINT == currentVersionOnDB.getSchedulingStateType();
+        return SchedulingState.Type.SCHEDULING_POINT == getCurrentVersionOnDB().getSchedulingStateType();
     }
 
     protected boolean currentTaskSourceIsNotTheSame() {
@@ -390,7 +379,6 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
         for (OrderElement orderElement : getSomewhatScheduledOrderElements()) {
             childrenOfGroup.addAll(orderElement.calculateSynchronizationsNeeded());
         }
-
         return childrenOfGroup;
     }
 
@@ -403,11 +391,11 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
     private List<TaskSourceSynchronization> synchronizationForSchedulingPoint(
             SchedulingDataForVersion schedulingState) {
 
-        if ( thereIsNoTaskSource() ) {
+        if (thereIsNoTaskSource()) {
             getCurrentSchedulingData().requestedCreationOf(TaskSource.create(schedulingState, getHoursGroups()));
 
             return Collections.singletonList(TaskSource.mustAdd(getTaskSource()));
-        } else if ( getTaskSource().getTask().isLeaf() ) {
+        } else if (getTaskSource().getTask().isLeaf()) {
             return Collections.singletonList(getTaskSource().withCurrentHoursGroup(getHoursGroups()));
         } else {
             return synchronizationsForFromPartiallyScheduledToSchedulingPoint(schedulingState);
@@ -418,7 +406,6 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
             SchedulingDataForVersion schedulingState) {
 
         List<TaskSourceSynchronization> result = new ArrayList<>();
-
         for (TaskSource each : getTaskSourcesFromBottomToTop()) {
             OrderElement orderElement = each.getOrderElement();
             result.add(orderElement.taskSourceRemoval());
@@ -438,32 +425,30 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
     private List<OrderElement> getSomewhatScheduledOrderElements() {
         List<OrderElement> result = new ArrayList<>();
         for (OrderElement orderElement : getChildren()) {
-            if ( orderElement.getSchedulingStateType().isSomewhatScheduled() ) {
+            if (orderElement.getSchedulingStateType().isSomewhatScheduled()) {
                 result.add(orderElement);
             }
         }
-
         return result;
     }
 
     private List<OrderElement> getNoScheduledOrderElements() {
         List<OrderElement> result = new ArrayList<>();
         for (OrderElement orderElement : getChildren()) {
-            if ( orderElement.getSchedulingState().isNoScheduled() ) {
+            if (orderElement.getSchedulingState().isNoScheduled()) {
                 result.add(orderElement);
             }
         }
-
         return result;
     }
 
     private void removeTaskSource(List<TaskSourceSynchronization> result) {
         removeChildrenTaskSource(result);
-        if ( getOnDBTaskSource() != null ) {
+        if (getOnDBTaskSource() != null) {
             result.add(taskSourceRemoval());
         } else {
             TaskSource taskSource = getTaskSource();
-            if ( taskSource != null ) {
+            if (taskSource != null) {
                 taskSource.getTask().detach();
                 getCurrentSchedulingData().taskSourceRemovalRequested();
             }
@@ -471,15 +456,11 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
     }
 
     private TaskSource getOnDBTaskSource() {
-        SchedulingDataForVersion schedulingDataForVersion = getCurrentVersionOnDB();
-
-        return schedulingDataForVersion.getTaskSource();
+        return getCurrentVersionOnDB().getTaskSource();
     }
 
     SchedulingDataForVersion getCurrentVersionOnDB() {
-        OrderVersion version = getCurrentSchedulingData().getOriginOrderVersion();
-
-        return schedulingDatasForVersion.get(version);
+        return schedulingDataForVersion.get(getCurrentSchedulingData().getOriginOrderVersion());
     }
 
     private TaskSourceSynchronization taskSourceRemoval() {
@@ -502,7 +483,7 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
     }
 
     public void initializeType(SchedulingState.Type type) {
-        if ( !isNewObject() ) {
+        if (!isNewObject()) {
             throw new IllegalStateException();
         }
         getCurrentSchedulingData().initializeType(type);
@@ -510,11 +491,11 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
     }
 
     public void initializeTemplate(OrderElementTemplate template) {
-        if ( !isNewObject() ) {
+        if (!isNewObject()) {
             throw new IllegalStateException();
         }
 
-        if ( this.template != null ) {
+        if (this.template != null) {
             throw new IllegalStateException("already initialized");
         }
 
@@ -530,11 +511,7 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
     }
 
     public TaskElement getAssociatedTaskElement() {
-        if ( getTaskSource() == null ) {
-            return null;
-        } else {
-            return getTaskSource().getTask();
-        }
+        return getTaskSource() == null ? null : getTaskSource().getTask();
     }
 
     protected void setParent(OrderLineGroup parent) {
@@ -554,6 +531,7 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
         if ( name != null && name.length() > 255 ) {
             name = name.substring(0, 255);
         }
+
         this.getInfoComponent().setName(name);
     }
 
@@ -594,18 +572,18 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
     }
 
     public boolean checkAtLeastOneHoursGroup() {
-        return (getHoursGroups().size() > 0);
+        return !getHoursGroups().isEmpty();
     }
 
     public boolean isFormatCodeValid(String code) {
-        return !code.contains("_") && !code.equals("");
+        return !code.contains("_") && !"".equals(code);
     }
 
     public void setCode(String code) {
         this.getInfoComponent().setCode(code);
     }
 
-    @NotEmpty(message = "code not specified")
+
     public String getCode() {
         return getInfoComponent().getCode();
     }
@@ -619,9 +597,9 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
     public abstract DirectAdvanceAssignment getAdvanceAssignmentByType(AdvanceType type);
 
     public DirectAdvanceAssignment getDirectAdvanceAssignmentByType(AdvanceType advanceType) {
-        if ( advanceType != null ) {
+        if (advanceType != null) {
             for (DirectAdvanceAssignment directAdvanceAssignment : getDirectAdvanceAssignments()) {
-                if ( directAdvanceAssignment.getAdvanceType().getId().equals(advanceType.getId()) ) {
+                if (directAdvanceAssignment.getAdvanceType().getId().equals(advanceType.getId())) {
                     return directAdvanceAssignment;
                 }
             }
@@ -643,9 +621,9 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
     protected abstract Set<DirectAdvanceAssignment> getAllDirectAdvanceAssignmentsReportGlobal();
 
     public void removeAdvanceAssignment(AdvanceAssignment advanceAssignment) {
-        if ( directAdvanceAssignments.contains(advanceAssignment) ) {
+        if (directAdvanceAssignments.contains(advanceAssignment)) {
             directAdvanceAssignments.remove(advanceAssignment);
-            if ( this.getParent() != null ) {
+            if (this.getParent() != null) {
                 this.getParent().removeIndirectAdvanceAssignment(advanceAssignment.getAdvanceType());
                 removeChildrenAdvanceInParents(this.getParent());
             }
@@ -661,7 +639,7 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
     public Set<Label> getAllLabels() {
         Set<Label> allLabels = new HashSet<>();
         allLabels.addAll(this.labels);
-        if ( parent != null ) {
+        if (parent != null) {
             allLabels.addAll(parent.getAllLabels());
         }
 
@@ -675,10 +653,10 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
     public void addLabel(Label label) {
         Validate.notNull(label);
 
-        if ( !checkAncestorsNoOtherLabelRepeated(label) ) {
+        if (!checkAncestorsNoOtherLabelRepeated(label)) {
             throw new IllegalArgumentException(
                     "An ancestor has the same label assigned, " +
-                    "so this element is already inheriting this label");
+                            "so this element is already inheriting this label");
         }
 
         removeLabelOnChildren(label);
@@ -687,10 +665,10 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
     }
 
     protected void updateLabels() {
-        if ( parent != null ) {
+        if (parent != null) {
             Set<Label> toRemove = new HashSet<>();
             for (Label each : labels) {
-                if ( !parent.checkAncestorsNoOtherLabelRepeated(each) ) {
+                if (!parent.checkAncestorsNoOtherLabelRepeated(each)) {
                     toRemove.add(each);
                 }
             }
@@ -707,10 +685,10 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
     }
 
     /**
-     * Validate if the advanceAssignment can be added to the order element.The
-     * list of advanceAssignments must be attached.
+     * Validate if the advanceAssignment can be added to the order element.
+     * The list of advanceAssignments must be attached.
      *
-     * @param advanceAssignment
+     * @param newAdvanceAssignment
      *            must be attached
      * @throws DuplicateValueTrueReportGlobalAdvanceException
      * @throws DuplicateAdvanceAssignmentForOrderElementException
@@ -731,7 +709,6 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
 
         if ( this.getParent() != null ) {
             addChildrenAdvanceInParents(this.getParent());
-
             this.getParent()
                     .addIndirectAdvanceAssignment(newAdvanceAssignment.createIndirectAdvanceFor(this.getParent()));
         }
@@ -746,28 +723,24 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
     }
 
     public void removeChildrenAdvanceInParents(OrderLineGroup parent) {
-        if ( (parent != null) && (parent.existChildrenAdvance()) && (!itsChildrenHasAdvances(parent)) ) {
+        if ( (parent != null) && (parent.existChildrenAdvance() ) && (!itsChildrenHasAdvances(parent))) {
             parent.removeChildrenAdvanceOrderLineGroup();
             removeChildrenAdvanceInParents(parent.getParent());
         }
     }
 
     private boolean itsChildrenHasAdvances(OrderElement orderElement) {
-        boolean condition;
         for (OrderElement child : orderElement.getChildren()) {
 
-            condition = (!child.getIndirectAdvanceAssignments().isEmpty()) ||
-                    (!child.getDirectAdvanceAssignments().isEmpty());
+            if ( (!child.getIndirectAdvanceAssignments().isEmpty()) ||
+                    (!child.getDirectAdvanceAssignments().isEmpty()) ) {
 
-            if ( condition ) {
                 return true;
             }
-
             if ( itsChildrenHasAdvances(child) ) {
                 return true;
             }
         }
-
         return false;
     }
 
@@ -777,42 +750,36 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
         if ( !newAdvanceAssignment.getReportGlobalAdvance() ) {
             return;
         }
+
         for (DirectAdvanceAssignment directAdvanceAssignment : directAdvanceAssignments) {
             if ( directAdvanceAssignment.getReportGlobalAdvance() ) {
                 throw new DuplicateValueTrueReportGlobalAdvanceException(
-                        _("Cannot spread two progress in the same task"),
-                        this, OrderElement.class);
+                        _("Cannot spread two progress in the same task"), this, OrderElement.class);
             }
         }
     }
 
     /**
-     * It checks there are no {@link DirectAdvanceAssignment} with the same type
-     * in {@link OrderElement} and ancestors
+     * It checks there are no {@link DirectAdvanceAssignment} with the same type in {@link OrderElement} and ancestors.
      *
      * @param orderElement
      * @param newAdvanceAssignment
      * @throws DuplicateAdvanceAssignmentForOrderElementException
      */
-    public void checkAncestorsNoOtherAssignmentWithSameAdvanceType(OrderElement orderElement,
-                                                                   DirectAdvanceAssignment newAdvanceAssignment)
+    public void checkAncestorsNoOtherAssignmentWithSameAdvanceType(
+            OrderElement orderElement, DirectAdvanceAssignment newAdvanceAssignment)
             throws DuplicateAdvanceAssignmentForOrderElementException {
-        boolean condition;
 
         for (DirectAdvanceAssignment directAdvanceAssignment : orderElement.getDirectAdvanceAssignments()) {
 
-            condition = AdvanceType.equivalentInDB(
-                    directAdvanceAssignment.getAdvanceType(), newAdvanceAssignment.getAdvanceType());
+            if ( AdvanceType.equivalentInDB(
+                    directAdvanceAssignment.getAdvanceType(), newAdvanceAssignment.getAdvanceType()) ) {
 
-            if ( condition ) {
                 throw new DuplicateAdvanceAssignmentForOrderElementException(
-                        _("Duplicate Progress Assignment For Task"),
-                        this,
-                        OrderElement.class);
+                        _("Duplicate Progress Assignment For Task"), this, OrderElement.class);
             }
         }
-
-        if ( orderElement.getParent() != null ) {
+        if (orderElement.getParent() != null) {
             checkAncestorsNoOtherAssignmentWithSameAdvanceType(orderElement.getParent(), newAdvanceAssignment);
         }
     }
@@ -824,18 +791,17 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
      * @param newAdvanceAssignment
      * @throws DuplicateAdvanceAssignmentForOrderElementException
      */
-    protected void checkChildrenNoOtherAssignmentWithSameAdvanceType(OrderElement orderElement,
-                                                                     DirectAdvanceAssignment newAdvanceAssignment)
+    protected void checkChildrenNoOtherAssignmentWithSameAdvanceType(
+            OrderElement orderElement, DirectAdvanceAssignment newAdvanceAssignment)
             throws DuplicateAdvanceAssignmentForOrderElementException {
 
-        if ( orderElement.existsDirectAdvanceAssignmentWithTheSameType(newAdvanceAssignment.getAdvanceType()) ) {
+        if (orderElement.existsDirectAdvanceAssignmentWithTheSameType(newAdvanceAssignment.getAdvanceType())) {
             throw new DuplicateAdvanceAssignmentForOrderElementException(
                     _("Duplicate Progress Assignment For Task"),
                     this,
                     OrderElement.class);
         }
-
-        if ( !orderElement.getChildren().isEmpty() ) {
+        if (!orderElement.getChildren().isEmpty()) {
             for (OrderElement child : orderElement.getChildren()) {
                 checkChildrenNoOtherAssignmentWithSameAdvanceType(child, newAdvanceAssignment);
             }
@@ -844,21 +810,20 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
 
     public boolean existsDirectAdvanceAssignmentWithTheSameType(AdvanceType type) {
         for (DirectAdvanceAssignment directAdvanceAssignment : directAdvanceAssignments) {
-            if ( AdvanceType.equivalentInDB(directAdvanceAssignment.getAdvanceType(), type) ) {
+            if (AdvanceType.equivalentInDB(directAdvanceAssignment.getAdvanceType(), type)) {
                 return true;
             }
         }
-
         return false;
     }
 
     public BigDecimal getAdvancePercentage() {
-        if ( (dirtyLastAdvanceMeasurementForSpreading == null) || dirtyLastAdvanceMeasurementForSpreading ) {
-            lastAdvanceMeausurementForSpreading = getAdvancePercentage(null);
+        if ((dirtyLastAdvanceMeasurementForSpreading == null) || dirtyLastAdvanceMeasurementForSpreading) {
+            lastAdvanceMeasurementForSpreading = getAdvancePercentage(null);
             dirtyLastAdvanceMeasurementForSpreading = false;
         }
 
-        return lastAdvanceMeausurementForSpreading;
+        return lastAdvanceMeasurementForSpreading;
     }
 
     public abstract BigDecimal getAdvancePercentage(LocalDate date);
@@ -878,7 +843,6 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
             result.add(orderElement);
             result.addAll(orderElement.getAllChildren());
         }
-
         return result;
     }
 
@@ -894,25 +858,24 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
 
     /*
      * Operations to manage the criterion requirements of a orderElement
-     * (remove, adding, update of the criterion requirement
-     * of the orderElement such as the descendant's criterion requirement)
+     * (remove, adding, update of the criterion requirement of the orderElement
+     * such as the descendant's criterion requirement)
      */
 
-    public void setValidCriterionRequirement(IndirectCriterionRequirement requirement,boolean valid){
+    public void setValidCriterionRequirement(IndirectCriterionRequirement requirement,boolean valid) {
         requirement.setValid(valid);
         criterionRequirementHandler.propagateValidCriterionRequirement(this, requirement.getParent(), valid);
     }
 
-    public void removeDirectCriterionRequirement(DirectCriterionRequirement criterionRequirement){
+    public void removeDirectCriterionRequirement(DirectCriterionRequirement criterionRequirement) {
         criterionRequirementHandler.propagateRemoveCriterionRequirement(this, criterionRequirement);
         removeCriterionRequirement(criterionRequirement);
-
     }
 
     @Override
     public void removeCriterionRequirement(CriterionRequirement requirement) {
         criterionRequirements.remove(requirement);
-        if ( requirement instanceof IndirectCriterionRequirement ) {
+        if (requirement instanceof IndirectCriterionRequirement) {
             ((IndirectCriterionRequirement)requirement).getParent().getChildren().remove(requirement);
         }
     }
@@ -931,8 +894,8 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
     }
 
     protected void basicAddCriterionRequirement(CriterionRequirement criterionRequirement) {
-            criterionRequirement.setOrderElement(this);
-            this.criterionRequirements.add(criterionRequirement);
+        criterionRequirement.setOrderElement(this);
+        this.criterionRequirements.add(criterionRequirement);
     }
 
     public void updateCriterionRequirements() {
@@ -954,11 +917,10 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
 
     public void applyInitialPositionConstraintTo(Task task) {
         boolean applied = applyConstraintsInOrderElementParents(task);
-        if ( applied ) {
+        if (applied) {
             return;
         }
-
-        if ( getOrder().isScheduleBackwards() ) {
+        if (getOrder().isScheduleBackwards()) {
             task.getPositionConstraint().asLateAsPossible();
         } else {
             task.getPositionConstraint().asSoonAsPossible();
@@ -978,7 +940,7 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
 
         while (current != null) {
             boolean applied = current.applyConstraintBasedOnInitOrEndDate(task, scheduleBackwards);
-            if ( applied ) {
+            if (applied) {
                 return true;
             }
             current = current.getParent();
@@ -989,9 +951,9 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
 
     protected boolean applyConstraintBasedOnInitOrEndDate(Task task, boolean scheduleBackwards) {
         TaskPositionConstraint constraint = task.getPositionConstraint();
-        if ( getInitDate() != null && (getDeadline() == null || !scheduleBackwards) ) {
-            constraint.notEarlierThan(IntraDayDate.startOfDay(LocalDate.fromDateFields(this.getInitDate())));
 
+        if (getInitDate() != null && (getDeadline() == null || !scheduleBackwards)) {
+            constraint.notEarlierThan(IntraDayDate.startOfDay(LocalDate.fromDateFields(this.getInitDate())));
             return true;
         }
 
@@ -1012,39 +974,30 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
 
     public TaskElement getTaskElement() {
         TaskSource taskSource = getTaskSource();
-        if ( taskSource == null ) {
-            return null;
-        }
-
-        return taskSource.getTask();
+        return taskSource == null ? null : taskSource.getTask();
     }
 
     public Set<TaskElement> getTaskElements() {
-        if ( getTaskSource() == null ) {
-            return Collections.emptySet();
-        }
-
-        return Collections.singleton(getTaskSource().getTask());
+        return getTaskSource() == null
+                ? Collections.emptySet()
+                : Collections.singleton(getTaskSource().getTask());
     }
 
     public List<TaskSource> getTaskSourcesFromBottomToTop() {
         List<TaskSource> result = new ArrayList<>();
         taskSourcesFromBottomToTop(result);
-
         return result;
     }
 
     public List<TaskSource> getAllScenariosTaskSourcesFromBottomToTop() {
         List<TaskSource> result = new ArrayList<>();
         allScenariosTaskSourcesFromBottomToTop(result);
-
         return result;
     }
 
-    public List<SchedulingDataForVersion> getSchedulingDatasForVersionFromBottomToTop() {
+    public List<SchedulingDataForVersion> getSchedulingDataForVersionFromBottomToTop() {
         List<SchedulingDataForVersion> result = new ArrayList<>();
         schedulingDataForVersionFromBottomToTop(result);
-
         return result;
     }
 
@@ -1052,7 +1005,7 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
         for (OrderElement each : getChildren()) {
             each.schedulingDataForVersionFromBottomToTop(result);
         }
-        result.addAll(schedulingDatasForVersion.values());
+        result.addAll(schedulingDataForVersion.values());
     }
 
     private void taskSourcesFromBottomToTop(List<TaskSource> result) {
@@ -1070,9 +1023,9 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
             each.allScenariosTaskSourcesFromBottomToTop(result);
         }
 
-        for (Entry<OrderVersion, SchedulingDataForVersion> each : schedulingDatasForVersion.entrySet()) {
+        for (Entry<OrderVersion, SchedulingDataForVersion> each : schedulingDataForVersion.entrySet()) {
             TaskSource taskSource = each.getValue().getTaskSource();
-            if ( taskSource != null ) {
+            if (taskSource != null) {
                 result.add(taskSource);
             }
         }
@@ -1092,33 +1045,30 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
         materialAssignments.remove(materialAssignment);
     }
 
-    public BigDecimal getTotalMaterialAssigmentUnits() {
+    public BigDecimal getTotalMaterialAssignmentUnits() {
         BigDecimal result = BigDecimal.ZERO;
 
-        final Set<MaterialAssignment> materialAssigments = getMaterialAssignments();
-        for (MaterialAssignment each: materialAssigments) {
+        final Set<MaterialAssignment> materialAssignments = getMaterialAssignments();
+
+        for (MaterialAssignment each: materialAssignments) {
             result = result.add(each.getUnits());
         }
-
         return result;
     }
 
-    public BigDecimal getTotalMaterialAssigmentPrice() {
+    public BigDecimal getTotalMaterialAssignmentPrice() {
         BigDecimal result = new BigDecimal(0);
 
-        final Set<MaterialAssignment> materialAssigments = getMaterialAssignments();
-        for (MaterialAssignment each: materialAssigments) {
+        final Set<MaterialAssignment> materialAssignments = getMaterialAssignments();
+
+        for (MaterialAssignment each: materialAssignments) {
             result = result.add(each.getTotalPrice());
         }
-
         return result;
     }
 
     public Order getOrder() {
-        if ( parent == null ) {
-            return null;
-        }
-        return parent.getOrder();
+        return parent == null ? null : parent.getOrder();
     }
 
     @Valid
@@ -1131,7 +1081,6 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
         for (TaskQualityForm each : taskQualityForms) {
             result.add(each.getQualityForm());
         }
-
         return result;
     }
 
@@ -1140,7 +1089,7 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
     }
 
     public TaskQualityForm addTaskQualityForm(QualityForm qualityForm) throws ValidationException {
-        ckeckUniqueQualityForm(qualityForm);
+        checkUniqueQualityForm(qualityForm);
         TaskQualityForm taskQualityForm = TaskQualityForm.create(this, qualityForm);
         this.taskQualityForms.add(taskQualityForm);
 
@@ -1151,10 +1100,12 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
         this.taskQualityForms.remove(taskQualityForm);
     }
 
-    private void ckeckUniqueQualityForm(QualityForm qualityForm) throws ValidationException, IllegalArgumentException {
+    private void checkUniqueQualityForm(QualityForm qualityForm) throws ValidationException, IllegalArgumentException {
         Validate.notNull(qualityForm);
         for (TaskQualityForm taskQualityForm : getTaskQualityForms()) {
+
             if ( qualityForm.equals(taskQualityForm.getQualityForm()) ) {
+
                 throw new ValidationException(ValidationException.invalidValue(
                         _("Quality form already exists"),
                         "name",
@@ -1174,7 +1125,6 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
     public boolean isCodeRepeatedInAnotherOrderConstraint() {
         return StringUtils.isBlank(getCode()) ||
                 !Registry.getOrderElementDAO().existsByCodeInAnotherOrderAnotherTransaction(this);
-
     }
 
     @AssertTrue(message = "a label can not be assigned twice in the same branch")
@@ -1185,14 +1135,13 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
     private boolean checkConstraintLabelNotRepeatedInTheSameBranch(HashSet<Label> parentLabels) {
         HashSet<Label> withThisLabels = new HashSet<>(parentLabels);
         for (Label label : getLabels()) {
-            if ( containsLabel(withThisLabels, label) ) {
+            if (containsLabel(withThisLabels, label)) {
                 return false;
             }
             withThisLabels.add(label);
         }
-
         for (OrderElement child : getChildren()) {
-            if ( !child.checkConstraintLabelNotRepeatedInTheSameBranch(withThisLabels) ) {
+            if (!child.checkConstraintLabelNotRepeatedInTheSameBranch(withThisLabels)) {
                 return false;
             }
         }
@@ -1202,7 +1151,7 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
 
     private boolean containsLabel(HashSet<Label> labels, Label label) {
         for (Label each : labels) {
-            if ( each.isEqualTo(label) ) {
+            if (each.isEqualTo(label)) {
                 return true;
             }
         }
@@ -1212,31 +1161,25 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
 
     public boolean checkAncestorsNoOtherLabelRepeated(Label newLabel) {
         for (Label label : labels) {
-            if ( label.isEqualTo(newLabel) ) {
+            if (label.isEqualTo(newLabel)) {
                 return false;
             }
         }
 
-        if ( parent != null ) {
-            if (!parent.checkAncestorsNoOtherLabelRepeated(newLabel)) {
-                return false;
-            }
-        }
-
-        return true;
+        return !(parent != null && !parent.checkAncestorsNoOtherLabelRepeated(newLabel));
     }
 
     private void removeLabelOnChildren(Label newLabel) {
         Label toRemove = null;
 
         for (Label label : labels) {
-            if ( label.equals(newLabel) ) {
+            if (label.equals(newLabel)) {
                 toRemove = label;
                 break;
             }
         }
 
-        if ( toRemove != null ) {
+        if (toRemove != null) {
             removeLabel(toRemove);
         }
 
@@ -1247,7 +1190,7 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
 
     public boolean containsOrderElement(String code) {
         for (OrderElement child : getChildren()) {
-            if ( child.getCode().equals(code) ) {
+            if (child.getCode().equals(code)) {
                 return true;
             }
         }
@@ -1256,12 +1199,12 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
     }
 
     public OrderElement getOrderElement(String code) {
-        if ( code == null ) {
+        if (code == null) {
             return null;
         }
 
         for (OrderElement child : getChildren()) {
-            if ( child.getCode().equals(code) ) {
+            if (child.getCode().equals(code)) {
                 return child;
             }
         }
@@ -1271,7 +1214,7 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
 
     public boolean containsLabel(String code) {
         for (Label label : getLabels()) {
-            if ( label.getCode().equals(code) ) {
+            if (label.getCode().equals(code)) {
                 return true;
             }
         }
@@ -1282,17 +1225,16 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
     public boolean containsLabels(Set<Label> labels) {
         Integer matches = 0;
         for (Label label : labels) {
-            if ( containsLabel(label.getCode()) ) {
+            if (containsLabel(label.getCode())) {
                 matches++;
             }
         }
-
         return matches == labels.size();
     }
 
     public boolean containsCriterion(String code) {
         for (CriterionRequirement criterionRequirement : getDirectCriterionRequirement()) {
-            if ( criterionRequirement.getCriterion().getCode().equals(code) ) {
+            if (criterionRequirement.getCriterion().getCode().equals(code)) {
                 return true;
             }
         }
@@ -1303,7 +1245,7 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
     public boolean containsCriteria(Set<Criterion> criteria) {
         Integer matches = 0;
         for (Criterion criterion : criteria) {
-            if ( containsCriterion(criterion.getCode()) ) {
+            if (containsCriterion(criterion.getCode())) {
                 matches++;
             }
         }
@@ -1312,7 +1254,7 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
 
     public boolean containsMaterialAssignment(String materialCode) {
         for (MaterialAssignment materialAssignment : getMaterialAssignments()) {
-            if ( materialAssignment.getMaterial().getCode().equals(materialCode) ) {
+            if (materialAssignment.getMaterial().getCode().equals(materialCode)) {
                 return true;
             }
         }
@@ -1322,7 +1264,7 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
 
     public MaterialAssignment getMaterialAssignment(String materialCode) {
         for (MaterialAssignment materialAssignment : getMaterialAssignments()) {
-            if ( materialAssignment.getMaterial().getCode().equals(materialCode) ) {
+            if (materialAssignment.getMaterial().getCode().equals(materialCode)) {
                 return materialAssignment;
             }
         }
@@ -1331,13 +1273,11 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
     }
 
     public DirectAdvanceAssignment getDirectAdvanceAssignmentSubcontractor() {
-        boolean condition;
         for (DirectAdvanceAssignment directAdvanceAssignment : directAdvanceAssignments) {
 
-            condition = directAdvanceAssignment.getAdvanceType().getUnitName()
-                    .equals(PredefinedAdvancedTypes.SUBCONTRACTOR.getTypeName());
+            if (directAdvanceAssignment.getAdvanceType().getUnitName()
+                    .equals(PredefinedAdvancedTypes.SUBCONTRACTOR.getTypeName())) {
 
-            if ( condition ) {
                 return directAdvanceAssignment;
             }
         }
@@ -1349,7 +1289,7 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
             throws DuplicateValueTrueReportGlobalAdvanceException, DuplicateAdvanceAssignmentForOrderElementException {
 
         boolean reportGlobalAdvance = false;
-        if ( getReportGlobalAdvanceAssignment() == null ) {
+        if (getReportGlobalAdvanceAssignment() == null) {
             reportGlobalAdvance = true;
         }
 
@@ -1364,7 +1304,7 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
     }
 
     public InfoComponentWithCode getInfoComponent() {
-        if ( infoComponent == null ) {
+        if (infoComponent == null) {
             infoComponent = new InfoComponentWithCode();
         }
 
@@ -1399,50 +1339,47 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
     }
 
     /**
-     * Calculate if the tasks of the planification point has finished
+     * Calculate if the tasks of the planification point has finished.
      */
 
     public boolean isFinishPlanificationPointTask() {
         // Look up into the order elements tree
         TaskElement task = lookToUpAssignedTask();
-        if ( task != null ) {
+        if (task != null) {
             return task.getOrderElement().isFinishedAdvance();
         }
 
         // Look down into the order elements tree
         List<TaskElement> listTask = lookToDownAssignedTask();
-        if ( !listTask.isEmpty() ) {
+        if (!listTask.isEmpty()) {
             for (TaskElement taskElement : listTask) {
-                if ( !taskElement.getOrderElement().isFinishedAdvance() ) {
+                if (!taskElement.getOrderElement().isFinishedAdvance()) {
                     return false;
                 }
             }
         }
 
         // Not exist assigned task
-        IOrderDAO orderDAO = Registry.getOrderDAO();
-
-        return (orderDAO.loadOrderAvoidingProxyFor(this)).isFinishedAdvance();
+        return (Registry.getOrderDAO().loadOrderAvoidingProxyFor(this)).isFinishedAdvance();
     }
 
     private TaskElement lookToUpAssignedTask() {
         OrderElement current = this;
         while (current != null) {
-            if ( isSchedulingPoint() ) {
+            if (isSchedulingPoint()) {
                 return getAssociatedTaskElement();
             }
             current = current.getParent();
         }
-
         return null;
     }
 
     private List<TaskElement> lookToDownAssignedTask() {
         List<TaskElement> resultTask = new ArrayList<>();
         for (OrderElement child : getAllChildren()) {
-            if ( child.isSchedulingPoint() ) {
+            if (child.isSchedulingPoint()) {
                 TaskElement task = child.getAssociatedTaskElement();
-                if ( task != null ) {
+                if (task != null) {
                     resultTask.add(task);
                 }
             }
@@ -1453,9 +1390,9 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
 
     public boolean isFinishedAdvance() {
         BigDecimal measuredProgress = getAdvancePercentage();
-        measuredProgress = (measuredProgress.setScale(0, BigDecimal.ROUND_UP).multiply(new BigDecimal(100)));
+        measuredProgress = measuredProgress.setScale(0, BigDecimal.ROUND_UP).multiply(new BigDecimal(100));
 
-        return (measuredProgress.compareTo(new BigDecimal(100)) == 0);
+        return measuredProgress.compareTo(new BigDecimal(100)) == 0;
     }
 
     @Override
@@ -1464,9 +1401,10 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
     }
 
     public void markAsDirtyLastAdvanceMeasurementForSpreading() {
-        if ( parent != null ) {
+        if (parent != null) {
             parent.markAsDirtyLastAdvanceMeasurementForSpreading();
         }
+
         dirtyLastAdvanceMeasurementForSpreading = true;
     }
 
@@ -1480,13 +1418,11 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
 
     public void updateAdvancePercentageTaskElement() {
         BigDecimal advancePercentage = this.getAdvancePercentage();
-        if ( this.getTaskSource() != null ) {
-            if ( this.getTaskSource().getTask() != null ) {
-                this.getTaskSource().getTask().setAdvancePercentage(advancePercentage);
-            }
+        if (this.getTaskSource() != null && this.getTaskSource().getTask() != null) {
+            this.getTaskSource().getTask().setAdvancePercentage(advancePercentage);
         }
 
-        if ( parent != null ) {
+        if (parent != null) {
             parent.updateAdvancePercentageTaskElement();
         }
     }
@@ -1507,7 +1443,6 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
     @AssertTrue(message = "a quality form cannot be assigned twice to the same task")
     public boolean isUniqueQualityFormConstraint() {
         Set<QualityForm> qualityForms = new HashSet<>();
-
         for (TaskQualityForm each : taskQualityForms) {
             QualityForm qualityForm = each.getQualityForm();
 
@@ -1517,7 +1452,6 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
 
             qualityForms.add(qualityForm);
         }
-
         return true;
     }
 
@@ -1544,20 +1478,15 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
     }
 
     protected void updateSpreadAdvance() {
-        boolean condition;
-
         if ( getReportGlobalAdvanceAssignment() == null ) {
-
             // Set PERCENTAGE type as spread if any
             String type = PredefinedAdvancedTypes.PERCENTAGE.getTypeName();
-
             for (DirectAdvanceAssignment each : directAdvanceAssignments) {
 
-                condition = each.getAdvanceType() != null &&
+                if ( each.getAdvanceType() != null &&
                         each.getAdvanceType().getType() != null &&
-                        each.getAdvanceType().getType().equals(type);
+                        each.getAdvanceType().getType().equals(type) ) {
 
-                if ( condition ) {
                     each.setReportGlobalAdvance(true);
 
                     return;
@@ -1567,27 +1496,28 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
             // Otherwise, set first advance assignment
             if ( !directAdvanceAssignments.isEmpty() ) {
                 directAdvanceAssignments.iterator().next().setReportGlobalAdvance(true);
+
+                return;
             }
         }
     }
 
     public List<OrderVersion> getOrderVersions() {
-        return new ArrayList<>(schedulingDatasForVersion.keySet());
+        return new ArrayList<>(schedulingDataForVersion.keySet());
     }
 
+    @Override
     public String toString() {
         return super.toString() + " :: " + getName();
     }
 
     public List<WorkReportLine> getWorkReportLines(boolean sortedByDate) {
-        IWorkReportLineDAO workReportLineDAO = Registry.getWorkReportLineDAO();
-
-        return workReportLineDAO.findByOrderElementAndChildren(this, sortedByDate);
+        return Registry.getWorkReportLineDAO().findByOrderElementAndChildren(this, sortedByDate);
     }
 
     /**
      * Gets workReportLines of this order-element between the specified
-     * <code>startDate</code> and <code>endDate</code>
+     * <code>startDate</code> and <code>endDate</code>.
      *
      * @param startDate
      *            the startDate
@@ -1597,9 +1527,9 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
      * @return list of workReportLines
      */
     public List<WorkReportLine> getWorkReportLines(Date startDate, Date endDate, boolean sortedByDate) {
-        IWorkReportLineDAO workReportLineDAO = Registry.getWorkReportLineDAO();
-
-        return workReportLineDAO.findByOrderElementAndChildrenFilteredByDate(this, startDate, endDate, sortedByDate);
+        return Registry
+                .getWorkReportLineDAO()
+                .findByOrderElementAndChildrenFilteredByDate(this, startDate, endDate, sortedByDate);
     }
 
     /**
@@ -1607,19 +1537,22 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
      */
     public boolean hasAnyConsolidatedAdvance() {
         for (DirectAdvanceAssignment each : directAdvanceAssignments) {
-            if ( each.hasAnyConsolidationValue() ) {
+            if (each.hasAnyConsolidationValue()) {
                 return true;
             }
         }
 
         for (IndirectAdvanceAssignment each : getIndirectAdvanceAssignments()) {
-            if ( each.hasAnyConsolidationValue() ) {
+            if (each.hasAnyConsolidationValue()) {
                 return true;
             }
         }
 
-        return parent != null && parent.hasAnyConsolidatedAdvance();
+        if (parent != null) {
+            return parent.hasAnyConsolidatedAdvance();
+        }
 
+        return false;
     }
 
     public abstract BigDecimal getBudget();
@@ -1641,37 +1574,22 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
     }
 
     public boolean isFinishedTimesheets() {
-        if ( sumChargedEffort == null ) {
-            return false;
-        }
-
-        return sumChargedEffort.isFinishedTimesheets();
+        return sumChargedEffort == null ? false : sumChargedEffort.isFinishedTimesheets();
     }
 
     @Override
     public boolean isUpdatedFromTimesheets() {
         TaskElement taskElement = getTaskElement();
-        if ( taskElement == null ) {
-            return false;
-        }
 
-        return taskElement.isUpdatedFromTimesheets();
+        return taskElement == null ? false : taskElement.isUpdatedFromTimesheets();
     }
 
     public Date getFirstTimesheetDate() {
-        if ( sumChargedEffort == null ) {
-            return null;
-        }
-
-        return sumChargedEffort.getFirstTimesheetDate();
+        return sumChargedEffort == null ? null : sumChargedEffort.getFirstTimesheetDate();
     }
 
     public Date getLastTimesheetDate() {
-        if ( sumChargedEffort == null ) {
-            return null;
-        }
-
-        return sumChargedEffort.getLastTimesheetDate();
+        return sumChargedEffort == null ? null : sumChargedEffort.getLastTimesheetDate();
     }
 
     public void detachFromParent() {
@@ -1680,26 +1598,24 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
 
     public AdvanceMeasurement getLastAdvanceMeasurement() {
         DirectAdvanceAssignment advanceAssignment = getReportGlobalAdvanceAssignment();
-        if ( advanceAssignment == null ) {
-            return null;
-        }
-
-        return advanceAssignment.getLastAdvanceMeasurement();
+        return advanceAssignment == null ? null : advanceAssignment.getLastAdvanceMeasurement();
     }
 
     public String getEffortAsString() {
         SumChargedEffort sumChargedEffort = getSumChargedEffort();
 
-        EffortDuration effort =
-                sumChargedEffort != null ? sumChargedEffort.getTotalChargedEffort() : EffortDuration.zero();
+        EffortDuration effort = sumChargedEffort != null
+                ? sumChargedEffort.getTotalChargedEffort()
+                : EffortDuration.zero();
 
         return effort.toFormattedString();
     }
 
     public boolean isJiraIssue() {
         String code = getCode();
-
-        return code != null && code.startsWith(PredefinedConnectorProperties.JIRA_CODE_PREFIX);
+        return code == null
+                ? false
+                : code.startsWith(PredefinedConnectorProperties.JIRA_CODE_PREFIX);
     }
 
     public boolean isConvertedToContainer() {
@@ -1715,8 +1631,8 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
     }
 
     public BigDecimal getResourcesBudget() {
-        return Registry.getTransactionService().runOnReadOnlyTransaction(() ->
-                calculateBudgetFromCriteriaAndCostCategories());
+        return Registry.getTransactionService().runOnReadOnlyTransaction(
+                () -> calculateBudgetFromCriteriaAndCostCategories());
     }
 
     public BigDecimal calculateBudgetFromCriteriaAndCostCategories() {
@@ -1738,16 +1654,15 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
             for (CriterionRequirement crit : hoursGroup.getCriterionRequirements()) {
                 CostCategory costcat = crit.getCriterion().getCostCategory();
 
-                if ( costcat != null ) {
+                if (costcat != null) {
 
                     IHourCostDAO hourCostDAO = Registry.getHourCostDAO();
                     costPerHour = hourCostDAO.getPriceCostFromCriterionAndType(costcat, typeofWorkHours);
 
                 }
-
                 totalBudget = totalBudget.add(costPerHour.multiply(hours));
             }
-            if ( hoursGroup.getCriterionRequirements().size() > 1 ) {
+            if (hoursGroup.getCriterionRequirements().size() > 1) {
                 totalBudget = totalBudget.divide(new BigDecimal(hoursGroup.getCriterionRequirements().size()));
             }
         }
@@ -1756,22 +1671,22 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
     }
 
     /**
-     * Returns with margin calculated hours for this orderElement
+     * Returns with margin calculated hours for this orderElement.
      */
     public EffortDuration getWithMarginCalculatedHours() {
         return calculateWorkHoursWithMargin();
     }
 
     /**
-     * Calculates the work hours with the margin {@link Order#getHoursMargin()}
-     * for this orderElement
+     * Calculates the work hours with the margin {@link Order#getHoursMargin()} for this orderElement.
      *
      * @return calculated work hours
      */
     private EffortDuration calculateWorkHoursWithMargin() {
-        boolean condition = this.getOrder().getHoursMargin() != null;
-
-        BigDecimal margin = condition ? new BigDecimal(this.getOrder().getHoursMargin()).setScale(2) : BigDecimal.ZERO;
+        BigDecimal margin =
+                this.getOrder().getHoursMargin() != null
+                        ? new BigDecimal(this.getOrder().getHoursMargin()).setScale(2)
+                        : BigDecimal.ZERO;
 
         BigDecimal hundred = new BigDecimal(100);
 
@@ -1785,22 +1700,22 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
     }
 
     /**
-     * Returns with margin calculated budget for this orderElement
+     * Returns with margin calculated budget for this orderElement.
      */
     public BigDecimal getWithMarginCalculatedBudget() {
         return calculateBudgetWithMargin();
     }
 
     /**
-     * Calculates the budget with the margin {@link Order#getBudgetMargin()} for
-     * this orderElement
+     * Calculates the budget with the margin {@link Order#getBudgetMargin()} for this orderElement.
      *
      * @return calculated budget
      */
     private BigDecimal calculateBudgetWithMargin() {
-        boolean condition = this.getOrder().getBudgetMargin() != null;
-
-        BigDecimal margin = condition ? new BigDecimal(this.getOrder().getBudgetMargin()) : BigDecimal.ZERO;
+        BigDecimal margin =
+                this.getOrder().getBudgetMargin() != null
+                        ? new BigDecimal(this.getOrder().getBudgetMargin())
+                        : BigDecimal.ZERO;
 
         BigDecimal hundred = new BigDecimal(100);
 

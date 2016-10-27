@@ -30,8 +30,8 @@
 <?component name="edition" inline="true" macroURI="_editCostCategory.zul"?>
 <zk>
     <window self="@{define(content)}"
-        apply="org.libreplan.web.costcategories.CostCategoryCRUDController">
-        <vbox id="messagesContainer"></vbox>
+            apply="org.libreplan.web.costcategories.CostCategoryCRUDController">
+        <vbox id="messagesContainer"/>
 
         <list top_id="listWindow" />
         <edition top_id="editWindow" />

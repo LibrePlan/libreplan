@@ -64,8 +64,12 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Messagebox;
 
 /**
+ * Handles reassign functionality.
+ * There is a green button on Project Scheduling page ( toolbar section ).
+ *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Manuel Rego Casasnovas <rego@igalia.com>
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -86,7 +90,7 @@ public class ReassignCommand implements IReassignCommand {
     private ICriterionTypeDAO criterionTypeDAO;
 
     public interface IConfigurationResult {
-        public void result(ReassignConfiguration configuration);
+        void result(ReassignConfiguration configuration);
     }
 
     @Override
@@ -97,151 +101,99 @@ public class ReassignCommand implements IReassignCommand {
 
     @Override
     public void doAction(final IContext<TaskElement> context) {
-        ReassignController.openOn(context.getRelativeTo(),
-                new IConfigurationResult() {
-                    @Override
-                    public void result(final ReassignConfiguration configuration) {
-                        final List<WithAssociatedEntity> reassignations = getReassignations(
-                                context, configuration);
-                        LongOperationFeedback.progressive(getDesktop(context),
-                                reassignations(context, reassignations));
-                    }
-                });
+        ReassignController.openOn(context.getRelativeTo(), configuration ->  {
+            final List<WithAssociatedEntity> reassignations = getReassignations(context, configuration);
+            LongOperationFeedback.progressive(getDesktop(context), reassignations(context, reassignations));
+        });
     }
 
     private IBackGroundOperation<IDesktopUpdate> reassignations(
-            final IContext<TaskElement> context,
-            final List<WithAssociatedEntity> reassignations) {
-        return new IBackGroundOperation<IDesktopUpdate>() {
+            final IContext<TaskElement> context, final List<WithAssociatedEntity> reassignations) {
 
-            @Override
-            public void doOperation(
-                    final IDesktopUpdatesEmitter<IDesktopUpdate> updater) {
-                updater.doUpdate(busyStart(reassignations.size()));
-                GanttDiagramGraph<Task, Dependency>.DeferedNotifier notifications = null;
-                try {
-                    GanttDiagramGraph<Task, Dependency> ganttDiagramGraph = context
-                            .getGanttDiagramGraph();
-                    notifications = ganttDiagramGraph
-                            .manualNotificationOn(doReassignations(
-                                    ganttDiagramGraph, reassignations, updater));
-                } finally {
-                    if (notifications != null) {
-                        // null if error
-                        updater.doUpdate(and(doNotifications(notifications),
-                                reloadCharts(context), busyEnd(),
-                                tellUserOnEnd(context, Messagebox.INFORMATION,
-                                        new Callable<String>() {
+        return updater -> {
+            updater.doUpdate(busyStart(reassignations.size()));
+            GanttDiagramGraph<Task, Dependency>.DeferedNotifier notifications = null;
+            try {
+                GanttDiagramGraph<Task, Dependency> ganttDiagramGraph = context.getGanttDiagramGraph();
 
-                                    @Override
-                                    public String call() {
-                                        return _("{0} reassignations finished",
-                                                reassignations.size());
-                                    }
-                                })));
-                    } else {
-                        updater.doUpdate(and(busyEnd(),
-                                tellUserOnEnd(context, Messagebox.EXCLAMATION,
-                                        new Callable<String>() {
+                notifications = ganttDiagramGraph.manualNotificationOn(
+                        doReassignations(ganttDiagramGraph, reassignations, updater));
+            } finally {
+                if (notifications != null) {
 
-                                    @Override
-                                    public String call() {
-                                        return _("Assignments could not be completed");
-                                    }
-                                })));
-                    }
+                    // null if error
+                    updater.doUpdate(and(
+                            doNotifications(notifications),
+                            reloadCharts(context),
+                            busyEnd(),
+                            tellUserOnEnd(context, () -> _("{0} reassignations finished", reassignations.size()))));
+                } else {
+                    updater.doUpdate(and(
+                            busyEnd(),
+                            tellUserOnEnd(context, () -> _("Assignments could not be completed"))));
                 }
             }
-
         };
     }
 
     private IAction doReassignations(final GanttDiagramGraph<Task, Dependency> diagramGraph,
-            final List<WithAssociatedEntity> reassignations,
-            final IDesktopUpdatesEmitter<IDesktopUpdate> updater) {
-        return new IAction() {
+                                     final List<WithAssociatedEntity> reassignations,
+                                     final IDesktopUpdatesEmitter<IDesktopUpdate> updater) {
+        return () -> {
+            int i = 1;
+            final int total = reassignations.size();
 
-            @Override
-            public void doAction() {
-                int i = 1;
-                final int total = reassignations.size();
-                for (final WithAssociatedEntity each : reassignations) {
-                    Task ganttTask = each.ganntTask;
-                    GanttDate previousStart = ganttTask.getBeginDate();
-                    GanttDate previousEnd = ganttTask.getEndDate();
+            for (final WithAssociatedEntity each : reassignations) {
+                Task ganttTask = each.ganntTask;
+                GanttDate previousStart = ganttTask.getBeginDate();
+                GanttDate previousEnd = ganttTask.getEndDate();
 
-                    transactionService
-                            .runOnReadOnlyTransaction(reassignmentTransaction(each));
-                    diagramGraph.enforceRestrictions(each.ganntTask);
-                    ganttTask.enforceDependenciesDueToPositionPotentiallyModified();
-                    ganttTask.updateSizeDueToDateChanges(previousStart, previousEnd);
+                transactionService.runOnReadOnlyTransaction(reassignmentTransaction(each));
+                diagramGraph.enforceRestrictions(each.ganntTask);
+                ganttTask.enforceDependenciesDueToPositionPotentiallyModified();
+                ganttTask.updateSizeDueToDateChanges(previousStart, previousEnd);
 
-                    updater.doUpdate(showCompleted(i, total));
-                    i++;
-                }
+                updater.doUpdate(showCompleted(i, total));
+                i++;
             }
         };
     }
 
     private IDesktopUpdate busyStart(final int total) {
-        return new IDesktopUpdate() {
-            @Override
-            public void doUpdate() {
-                Clients.showBusy(_("Doing {0} reassignations", total), true);
-            }
-        };
+        return () -> Clients.showBusy(_("Doing {0} reassignations", total));
     }
 
     private IDesktopUpdate showCompleted(final int number, final int total) {
-        return new IDesktopUpdate() {
-
-            @Override
-            public void doUpdate() {
-                Clients.showBusy(_("Done {0} of {1}", number, total), true);
-            }
-        };
+        return () -> Clients.showBusy(_("Done {0} of {1}", number, total));
     }
 
     private IDesktopUpdate reloadCharts(final IContext<?> context) {
-        return new IDesktopUpdate() {
-            @Override
-            public void doUpdate() {
-                context.reloadCharts();
-            }
-        };
+        return () -> context.reloadCharts();
     }
 
-    private IDesktopUpdate doNotifications(
-            final GanttDiagramGraph<Task, Dependency>.DeferedNotifier notifier) {
-        return new IDesktopUpdate() {
-            @Override
-            public void doUpdate() {
-                notifier.doNotifications();
-            }
-        };
+    private IDesktopUpdate doNotifications(final GanttDiagramGraph<Task, Dependency>.DeferedNotifier notifier) {
+        return () -> notifier.doNotifications();
     }
 
+    /**
+     * After migration from ZK5 to ZK8 API has changed for {@link Clients#clearBusy()}.
+     * My investigation:
+     * http://forum.zkoss.org/question/101181/infinite-clientsshowbusy/?answer=101256#post-id-101256
+     */
     private IDesktopUpdate busyEnd() {
-        return new IDesktopUpdate() {
-
-            @Override
-            public void doUpdate() {
-                Clients.showBusy(null, false);
-            }
-        };
+        return () -> Clients.clearBusy();
     }
 
     private IDesktopUpdate tellUserOnEnd(final IContext<TaskElement> context,
-            String icon, final Callable<String> message) {
-        // using callable so the message is built inside a zk execution and the
-        // locale is correctly retrieved
+                                         final Callable<String> message) {
+
+        // Using callable so the message is built inside a zk execution and the locale is correctly retrieved
 
         return new IDesktopUpdate() {
 
             @Override
             public void doUpdate() {
-                final org.zkoss.zk.ui.Component relativeTo = context
-                        .getRelativeTo();
+                final org.zkoss.zk.ui.Component relativeTo = context.getRelativeTo();
                 final String eventName = "onLater";
 
                 Events.echoEvent(eventName, relativeTo, null);
@@ -252,10 +204,11 @@ public class ReassignCommand implements IReassignCommand {
                     public void onEvent(Event event) {
                         relativeTo.removeEventListener(eventName, this);
                         try {
-                            Messagebox.show(resolve(message),
+                            Messagebox.show(
+                                    resolve(message),
                                     _("Reassignation"),
                                     Messagebox.OK, Messagebox.INFORMATION);
-                        } catch (InterruptedException e) {
+                        } catch (Exception e) {
                             throw new RuntimeException(e);
                         }
                     }
@@ -273,11 +226,6 @@ public class ReassignCommand implements IReassignCommand {
     }
 
     private static class WithAssociatedEntity {
-        static WithAssociatedEntity create(
-                IDomainAndBeansMapper<TaskElement> mapper, Task each) {
-            return new WithAssociatedEntity(mapper
-                    .findAssociatedDomainObject(each), each);
-        }
 
         private TaskElement domainEntity;
 
@@ -290,58 +238,63 @@ public class ReassignCommand implements IReassignCommand {
             this.ganntTask = ganntTask;
         }
 
+        static WithAssociatedEntity create(IDomainAndBeansMapper<TaskElement> mapper, Task each) {
+            return new WithAssociatedEntity(mapper.findAssociatedDomainObject(each), each);
+        }
     }
 
     private List<WithAssociatedEntity> getReassignations(
             IContext<TaskElement> context, ReassignConfiguration configuration) {
+
         Validate.notNull(configuration);
-        List<Task> taskToReassign = configuration.filterForReassignment(context
-                .getTasksOrderedByStartDate());
+        List<Task> taskToReassign = configuration.filterForReassignment(context.getTasksOrderedByStartDate());
+
         return withEntities(context.getMapper(), taskToReassign);
     }
 
     private List<WithAssociatedEntity> withEntities(
             IDomainAndBeansMapper<TaskElement> mapper,
             List<Task> forReassignment) {
-        List<WithAssociatedEntity> result = new ArrayList<WithAssociatedEntity>();
+
+        List<WithAssociatedEntity> result = new ArrayList<>();
         for (Task each : forReassignment) {
             result.add(WithAssociatedEntity.create(mapper, each));
         }
+
         return result;
     }
 
-    private IOnTransaction<Void> reassignmentTransaction(
-            final WithAssociatedEntity withAssociatedEntity) {
-        return new IOnTransaction<Void>() {
+    private IOnTransaction<Void> reassignmentTransaction(final WithAssociatedEntity withAssociatedEntity) {
+        return () -> {
+            reattach(withAssociatedEntity);
+            reassign(withAssociatedEntity.domainEntity);
 
-            @Override
-            public Void execute() {
-                reattach(withAssociatedEntity);
-                reassign(withAssociatedEntity.domainEntity);
-                return null;
-            }
+            return null;
         };
     }
 
     private void reattach(WithAssociatedEntity each) {
         planningState.reassociateResourcesWithSession();
-        Set<Long> idsOfTypesAlreadyAttached = new HashSet<Long>();
+        Set<Long> idsOfTypesAlreadyAttached = new HashSet<>();
         taskElementDAO.reattach(each.domainEntity);
-        Set<ResourceAllocation<?>> resourceAllocations = each.domainEntity
-                .getSatisfiedResourceAllocations();
-        List<GenericResourceAllocation> generic = ResourceAllocation.getOfType(
-                GenericResourceAllocation.class, resourceAllocations);
-        reattachCriterionTypesToAvoidLazyInitializationExceptionOnType(
-                idsOfTypesAlreadyAttached, generic);
+        Set<ResourceAllocation<?>> resourceAllocations = each.domainEntity.getSatisfiedResourceAllocations();
+
+        List<GenericResourceAllocation> generic =
+                ResourceAllocation.getOfType(GenericResourceAllocation.class, resourceAllocations);
+
+        reattachCriterionTypesToAvoidLazyInitializationExceptionOnType(idsOfTypesAlreadyAttached, generic);
     }
 
     private void reattachCriterionTypesToAvoidLazyInitializationExceptionOnType(
             Set<Long> idsOfTypesAlreadyAttached,
             List<GenericResourceAllocation> generic) {
+
         for (GenericResourceAllocation eachGenericAllocation : generic) {
             Set<Criterion> criterions = eachGenericAllocation.getCriterions();
+
             for (Criterion eachCriterion : criterions) {
                 CriterionType type = eachCriterion.getType();
+
                 if (!idsOfTypesAlreadyAttached.contains(type.getId())) {
                     idsOfTypesAlreadyAttached.add(type.getId());
                     criterionTypeDAO.reattachUnmodifiedEntity(type);
@@ -352,8 +305,7 @@ public class ReassignCommand implements IReassignCommand {
 
     private void reassign(TaskElement taskElement) {
         org.libreplan.business.planner.entities.Task t = (org.libreplan.business.planner.entities.Task) taskElement;
-        t.reassignAllocationsWithNewResources(
-                planningState.getCurrentScenario(), resourcesSearcher);
+        t.reassignAllocationsWithNewResources(planningState.getCurrentScenario(), resourcesSearcher);
     }
 
     @Override

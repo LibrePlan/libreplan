@@ -52,7 +52,9 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import static org.easymock.EasyMock.*;
+import static org.easymock.EasyMock.createNiceMock;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.expect;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.libreplan.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
@@ -67,7 +69,7 @@ import static org.libreplan.web.test.WebappGlobalNames.WEBAPP_SPRING_SECURITY_CO
 /**
  * Tests for {@link EmailTemplate}, {@link EmailNotification}.
  *
- * @author Created by Vova Perebykivskyi on 06.22.2016.
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
 
 @RunWith(SpringJUnit4ClassRunner.class)

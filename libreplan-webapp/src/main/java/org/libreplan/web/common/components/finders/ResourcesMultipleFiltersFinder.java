@@ -34,9 +34,8 @@ import org.libreplan.business.resources.entities.CriterionType;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * Implements all the methods needed to search the criterion to filter the
- * resources. Provides multiples criteria to filter like {@link Criterion} or
- * {@link CostCategory}.
+ * Implements all the methods needed to search the criterion to filter the resources.
+ * Provides multiples criteria to filter like {@link Criterion} or {@link CostCategory}.
  *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
@@ -45,8 +44,7 @@ public class ResourcesMultipleFiltersFinder extends MultipleFiltersFinder {
     @Autowired
     private PredefinedDatabaseSnapshots databaseSnapshots;
 
-    protected ResourcesMultipleFiltersFinder() {
-    }
+    protected ResourcesMultipleFiltersFinder() {}
 
     @Override
     public List<FilterPair> getFirstTenFilters() {

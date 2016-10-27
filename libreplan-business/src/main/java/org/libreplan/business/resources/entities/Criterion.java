@@ -31,7 +31,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.collections.ComparatorUtils;
+import org.apache.commons.collections4.ComparatorUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -48,12 +48,12 @@ import org.libreplan.business.requirements.entities.CriterionRequirement;
 import org.libreplan.business.resources.daos.ICriterionDAO;
 
 /**
- * A criterion stored in the database <br />
+ * A criterion stored in the database.
+ * <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
-public class Criterion extends IntegrationEntity implements ICriterion,
-        Comparable<Criterion> {
+public class Criterion extends IntegrationEntity implements ICriterion, Comparable<Criterion> {
 
     public static Criterion createUnvalidated(String code, String name, CriterionType type, Criterion parent,
                                               Boolean active) {
@@ -72,9 +72,8 @@ public class Criterion extends IntegrationEntity implements ICriterion,
 
     }
 
-    public static Set<Criterion> withAllDescendants(
-            Collection<? extends Criterion> originalCriteria) {
-        Set<Criterion> result = new HashSet<Criterion>();
+    public static Set<Criterion> withAllDescendants(Collection<? extends Criterion> originalCriteria) {
+        Set<Criterion> result = new HashSet<>();
         for (Criterion each : originalCriteria) {
             result.add(each);
             result.addAll(withAllDescendants(each.getChildren()));
@@ -83,42 +82,42 @@ public class Criterion extends IntegrationEntity implements ICriterion,
     }
 
     public static final Comparator<Criterion> byName = new Comparator<Criterion>() {
-
         @Override
         public int compare(Criterion o1, Criterion o2) {
             if (o1.getName() == null) {
                 return 1;
             }
+
             if (o2.getName() == null) {
                 return -1;
             }
-            return o1.getName().toLowerCase()
-                    .compareTo(o2.getName().toLowerCase());
+
+            return o1.getName().toLowerCase().compareTo(o2.getName().toLowerCase());
         }
     };
 
     public static final Comparator<Criterion> byType = new Comparator<Criterion>() {
-
         @Override
         public int compare(Criterion o1, Criterion o2) {
             if (o1.getType().getName() == null) {
                 return 1;
             }
+
             if (o2.getType().getName() == null) {
                 return -1;
             }
-            return o1.getType().getName().toLowerCase()
-                    .compareTo(o2.getType().getName().toLowerCase());
+
+            return o1.getType().getName().toLowerCase().compareTo(o2.getType().getName().toLowerCase());
         }
     };
 
     public static final Comparator<Criterion> byInclusion = new Comparator<Criterion>() {
-
         @Override
         public int compare(Criterion o1, Criterion o2) {
             if (o1.isEquivalent(o2)) {
                 return 0;
             }
+
             if (o1.includes(o2)) {
                 return -1;
             } else {
@@ -127,62 +126,54 @@ public class Criterion extends IntegrationEntity implements ICriterion,
         }
     };
 
-    public static List<Criterion> sortByName(
-            Collection<? extends Criterion> criterions) {
-        List<Criterion> result = new ArrayList<Criterion>(criterions);
+    public static List<Criterion> sortByName(Collection<? extends Criterion> criterions) {
+        List<Criterion> result = new ArrayList<>(criterions);
         Collections.sort(result, byName);
         return result;
     }
 
     @SuppressWarnings("unchecked")
-    public static List<Criterion> sortByTypeAndName(
-            Collection<? extends Criterion> criterions) {
-        List<Criterion> result = new ArrayList<Criterion>(criterions);
-        Collections.sort(result,
-                ComparatorUtils.chainedComparator(byType, byName));
+    public static List<Criterion> sortByTypeAndName(Collection<? extends Criterion> criterions) {
+        List<Criterion> result = new ArrayList<>(criterions);
+        Collections.sort(result, ComparatorUtils.chainedComparator(byType, byName));
         return result;
     }
 
     @SuppressWarnings("unchecked")
-    public static List<Criterion> sortByInclusionTypeAndName(
-            Collection<? extends Criterion> criterions) {
-        List<Criterion> result = new ArrayList<Criterion>(criterions);
-        Collections.sort(
-                result,
-                ComparatorUtils.chainedComparator(new Comparator[] {
-                        byInclusion, byType, byName }));
+    public static List<Criterion> sortByInclusionTypeAndName(Collection<? extends Criterion> criterions) {
+        List<Criterion> result = new ArrayList<>(criterions);
+        Collections.sort(result, ComparatorUtils.chainedComparator(byInclusion, byType, byName));
         return result;
     }
 
     /**
-     * Returns a string of criterion names separated by comma
+     * Returns a string of criterion names separated by comma.
+     *
      * @deprecated use {@link #getCaptionFor(ResourceEnum, Collection)} instead
      * @param criteria
-     * @return
+     * @return {@link String}
      */
     @Deprecated
     public static String getCaptionFor(Collection<? extends Criterion> criteria) {
         return getCaptionFor(ResourceEnum.WORKER, criteria);
     }
 
-    public static String getCaptionFor(
-            GenericResourceAllocation allocation) {
-        return getCaptionFor(allocation.getResourceType(),
-                allocation.getCriterions());
+    public static String getCaptionFor(GenericResourceAllocation allocation) {
+        return getCaptionFor(allocation.getResourceType(), allocation.getCriterions());
     }
 
     /**
-     * Returns a string of criterion names separated by comma
+     * Returns a string of criterion names separated by comma.
      * @param resourceType
      * @param criteria
-     * @return
+     * @return {@link String}
      */
-    public static String getCaptionFor(ResourceEnum resourceType,
-            Collection<? extends Criterion> criteria) {
+    public static String getCaptionFor(ResourceEnum resourceType, Collection<? extends Criterion> criteria) {
         if (criteria.isEmpty()) {
             return allCaptionFor(resourceType);
         }
-        List<String> result = new ArrayList<String>();
+
+        List<String> result = new ArrayList<>();
         for (Criterion each : criteria) {
             result.add(each.getCompleteName());
         }
@@ -191,12 +182,15 @@ public class Criterion extends IntegrationEntity implements ICriterion,
 
     private static String allCaptionFor(ResourceEnum resourceType) {
         switch (resourceType) {
-        case WORKER:
-            return allWorkersCaption();
-        case MACHINE:
-            return allMachinesCaption();
-        default:
-            throw new RuntimeException("cant handle " + resourceType);
+
+            case WORKER:
+                return allWorkersCaption();
+
+            case MACHINE:
+                return allMachinesCaption();
+
+            default:
+                throw new RuntimeException("cant handle " + resourceType);
         }
     }
 
@@ -242,14 +236,13 @@ public class Criterion extends IntegrationEntity implements ICriterion,
 
     private Criterion parent = null;
 
-    private Set<Criterion> children =  new HashSet<Criterion>();
+    private Set<Criterion> children = new HashSet<>();
 
     private boolean active = true;
 
-    private Set<CriterionRequirement> criterionRequirements = new HashSet<CriterionRequirement>();
-    /*
-     * Just for Hibernate mapping in order to have an unique constraint with
-     * name and type properties.
+    private Set<CriterionRequirement> criterionRequirements = new HashSet<>();
+    /**
+     * Just for Hibernate mapping in order to have an unique constraint with name and type properties.
      */
     private Long typeId;
 
@@ -271,7 +264,6 @@ public class Criterion extends IntegrationEntity implements ICriterion,
 
     private Criterion(CriterionType type) {
         Validate.notNull(type);
-
         this.type = type;
     }
 
@@ -290,14 +282,12 @@ public class Criterion extends IntegrationEntity implements ICriterion,
 
     @Override
     public boolean isSatisfiedBy(Resource resource, LocalDate start, LocalDate end) {
-        return !resource.query().from(this).enforcedInAll(
-                Interval.range(start, end)).result().isEmpty();
+        return !resource.query().from(this).enforcedInAll(Interval.range(start, end)).result().isEmpty();
     }
 
     @Override
     public boolean isSatisfiedBy(Resource resource, LocalDate atThisDate) {
-        return !resource.query().from(this).enforcedInAll(
-                Interval.point(atThisDate)).result().isEmpty();
+        return !resource.query().from(this).enforcedInAll(Interval.point(atThisDate)).result().isEmpty();
     }
 
     @NotEmpty(message="criterion name not specified")
@@ -357,13 +347,15 @@ public class Criterion extends IntegrationEntity implements ICriterion,
 
     @Valid
     public List<Criterion> getSortedChildren() {
-        List<Criterion> children = new ArrayList<Criterion>(getChildren());
+        List<Criterion> children = new ArrayList<>(getChildren());
+
         Collections.sort(children, new Comparator<Criterion>() {
             @Override
             public int compare(Criterion o1, Criterion o2) {
                 return o1.getName().compareTo(o2.getName());
             }
         });
+
         return children;
     }
 
@@ -380,11 +372,12 @@ public class Criterion extends IntegrationEntity implements ICriterion,
                 parent.getChildren().add(this);
             }
 
-        } else { // parent != null
+        } else {
 
             if (!parent.equals(newParent)) {
                 parent.getChildren().remove(this);
                 parent = newParent;
+
                 if (parent != null) {
                     parent.getChildren().add(this);
                 }
@@ -395,8 +388,7 @@ public class Criterion extends IntegrationEntity implements ICriterion,
     }
 
     public boolean isEquivalent(Criterion other) {
-        return new EqualsBuilder().append(getName(), other.getName())
-                .append(getType(), other.getType()).isEquals();
+        return new EqualsBuilder().append(getName(), other.getName()).append(getType(), other.getType()).isEquals();
     }
 
     public boolean isEquivalentOrIncludedIn(Criterion other) {
@@ -415,6 +407,7 @@ public class Criterion extends IntegrationEntity implements ICriterion,
         if (isEquivalent(other)) {
             return true;
         }
+
         for (Criterion each : this.getChildren()) {
             if (each.includes(other)) {
                 return true;
@@ -441,18 +434,15 @@ public class Criterion extends IntegrationEntity implements ICriterion,
         return Collections.unmodifiableSet(criterionRequirements);
     }
 
-    public void setCriterionRequirements(
-            Set<CriterionRequirement> criterionRequirements) {
+    public void setCriterionRequirements(Set<CriterionRequirement> criterionRequirements) {
         this.criterionRequirements = criterionRequirements;
     }
 
-    public void removeCriterionRequirement(
-            CriterionRequirement criterionRequirement) {
+    public void removeCriterionRequirement(CriterionRequirement criterionRequirement) {
         this.criterionRequirements.remove(criterionRequirement);
     }
 
-    public void addCriterionRequirement(
-            CriterionRequirement criterionRequirement) {
+    public void addCriterionRequirement(CriterionRequirement criterionRequirement) {
         criterionRequirement.setCriterion(this);
         this.criterionRequirements.add(criterionRequirement);
     }
@@ -464,7 +454,7 @@ public class Criterion extends IntegrationEntity implements ICriterion,
 
     @Override
     public void setCodeAutogenerated(Boolean codeAutogenerated) {
-        // do nothing
+        /* Do nothing */
     }
 
     @Override

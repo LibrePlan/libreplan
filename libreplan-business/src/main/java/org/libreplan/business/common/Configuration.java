@@ -28,12 +28,12 @@ import org.apache.commons.lang3.BooleanUtils;
  *
  * Currently we have three options:
  * <ul>
- * <li>Enable/Disable the warning changing default password</li>
- *
- * <li>Enable/Disable default users
- * (such as wsreader, wswriter, wssubcontracting, manager, hresources, outsourcing and reports)</li>
- *
- * <li>Enable/Disable E-mail sending functionality</li>
+ *     <li>Enable/Disable the warning changing default password</li>
+ *     <li>
+ *         Enable/Disable default users
+ *         (such as wsreader, wswriter, wssubcontracting, manager, hresources, outsourcing and reports)
+ *     </li>
+ *     <li>Enable/Disable E-mail sending functionality</li>
  * </ul>
  *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
@@ -64,38 +64,44 @@ public class Configuration {
     public static Boolean isDefaultPasswordsControl() {
         return singleton.getDefaultPasswordsControl() != null ? singleton.getDefaultPasswordsControl() : true;
     }
+
     public Boolean getDefaultPasswordsControl() {
         return defaultPasswordsControl;
     }
+
     public void setDefaultPasswordsControl(Boolean defaultPasswordsControl) {
         this.defaultPasswordsControl = defaultPasswordsControl;
     }
 
 
     /**
-     * Returns the value of example users disabled compilation option
+     * Returns the value of example users disabled compilation option.
      */
     public static boolean isExampleUsersDisabled() {
         return BooleanUtils.isNotFalse(singleton.getExampleUsersDisabled());
     }
+
     public Boolean getExampleUsersDisabled() {
         return exampleUsersDisabled;
     }
+
     public void setExampleUsersDisabled(Boolean exampleUsersDisabled) {
         this.exampleUsersDisabled = exampleUsersDisabled;
     }
 
 
     /**
-     * Returns the value of E-mail sending disabled compilation option
+     * Returns the value of E-mail sending disabled compilation option.
      */
-    public static boolean isEmailSendingEnabled(){
+    public static boolean isEmailSendingEnabled() {
         return BooleanUtils.isNotFalse(singleton.getEmailSendingEnabled());
     }
-    public Boolean getEmailSendingEnabled(){
+
+    public Boolean getEmailSendingEnabled() {
         return emailSendingEnabled;
     }
-    public void setEmailSendingEnabled(Boolean emailSendingEnabled){
+
+    public void setEmailSendingEnabled(Boolean emailSendingEnabled) {
         this.emailSendingEnabled = emailSendingEnabled;
     }
 

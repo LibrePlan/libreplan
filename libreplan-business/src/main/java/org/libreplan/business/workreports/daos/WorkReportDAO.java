@@ -34,7 +34,6 @@ import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
 import org.joda.time.LocalDate;
 import org.libreplan.business.common.IAdHocTransactionService;
-import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.daos.IntegrationEntityDAO;
 import org.libreplan.business.common.entities.PersonalTimesheetsPeriodicityEnum;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
@@ -51,14 +50,13 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
 
 /**
- * Dao for {@link WorkReportDAO}
+ * Dao for {@link WorkReportDAO}.
  *
  * @author Diego Pino García <dpino@igalia.com>
  */
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
-public class WorkReportDAO extends IntegrationEntityDAO<WorkReport>
-        implements IWorkReportDAO {
+public class WorkReportDAO extends IntegrationEntityDAO<WorkReport> implements IWorkReportDAO {
 
     @Autowired
     private IAdHocTransactionService adHocTransactionService;
@@ -69,11 +67,15 @@ public class WorkReportDAO extends IntegrationEntityDAO<WorkReport>
     @Autowired
     private IWorkReportTypeDAO workReportTypeDAO;
 
+    private final String WORK_REPORT_TYPE_COLUMN = "workReportType";
+
     @SuppressWarnings("unchecked")
     @Override
     public List<WorkReport> getAllByWorkReportType(WorkReportType workReportType) {
-        final Criteria criteria = getSession().createCriteria(WorkReport.class);
-        return criteria.add(Restrictions.eq("workReportType", workReportType)).list();
+        return getSession()
+                .createCriteria(WorkReport.class)
+                .add(Restrictions.eq(WORK_REPORT_TYPE_COLUMN, workReportType))
+                .list();
     }
 
     @Override
@@ -89,25 +91,20 @@ public class WorkReportDAO extends IntegrationEntityDAO<WorkReport>
 
     private void forceOrdersUnproxied() {
         List<OrderElement> elements = adHocTransactionService
-                .runOnAnotherReadOnlyTransaction(new IOnTransaction<List<OrderElement>>() {
+                .runOnAnotherReadOnlyTransaction(() -> getOrderElementsAssociatedWithWorkReports());
 
-                    @Override
-                    public List<OrderElement> execute() {
-                        return getOrderElementsAssociatedWithWorkReports();
-                    }
-                });
         orderDAO.loadOrdersAvoidingProxyFor(elements);
     }
 
     private List<OrderElement> getOrderElementsAssociatedWithWorkReports() {
-        Set<OrderElement> result = new HashSet<OrderElement>();
-        result.addAll(elementsFrom(getSession().createQuery(
-                "select w.orderElement from WorkReport w")));
-        result
-                .addAll(elementsFrom(getSession()
-                        .createQuery(
-                                "select line.orderElement from WorkReport w JOIN w.workReportLines line")));
-        return new ArrayList<OrderElement>(result);
+        Set<OrderElement> result = new HashSet<>();
+
+        result.addAll(elementsFrom(getSession().createQuery("select w.orderElement from WorkReport w")));
+
+        result.addAll(elementsFrom(
+                getSession().createQuery("select line.orderElement from WorkReport w JOIN w.workReportLines line")));
+
+        return new ArrayList<>(result);
     }
 
     @SuppressWarnings("unchecked")
@@ -119,9 +116,11 @@ public class WorkReportDAO extends IntegrationEntityDAO<WorkReport>
     public int getFirstReportYear() {
         final String query = "select min(w.date) from WorkReportLine w";
         Date minDate = (Date) getSession().createQuery(query).uniqueResult();
+
         if (minDate != null) {
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(minDate);
+
             return calendar.get(Calendar.YEAR);
         }
         return 0;
@@ -131,9 +130,11 @@ public class WorkReportDAO extends IntegrationEntityDAO<WorkReport>
     public int getLastReportYear() {
         final String query = "select max(w.date) from WorkReportLine w";
         Date maxDate = (Date) getSession().createQuery(query).uniqueResult();
+
         if (maxDate != null) {
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(maxDate);
+
             return calendar.get(Calendar.YEAR);
         }
         return 0;
@@ -141,26 +142,23 @@ public class WorkReportDAO extends IntegrationEntityDAO<WorkReport>
 
     @Override
     @SuppressWarnings("unchecked")
-    public WorkReport getPersonalTimesheetWorkReport(Resource resource,
-            LocalDate date, PersonalTimesheetsPeriodicityEnum periodicity) {
+    public WorkReport getPersonalTimesheetWorkReport(
+            Resource resource, LocalDate date, PersonalTimesheetsPeriodicityEnum periodicity) {
+
         Criteria criteria = getSession().createCriteria(WorkReport.class);
-        criteria.add(Restrictions.eq("workReportType",
-                getPersonalTimesheetsWorkReportType()));
-        List<WorkReport> personalTimesheets = criteria.add(
-                Restrictions.eq("resource", resource)).list();
+        criteria.add(Restrictions.eq(WORK_REPORT_TYPE_COLUMN, getPersonalTimesheetsWorkReportType()));
+        List<WorkReport> personalTimesheets = criteria.add(Restrictions.eq("resource", resource)).list();
 
         LocalDate start = periodicity.getStart(date);
         LocalDate end = periodicity.getEnd(date);
 
         for (WorkReport workReport : personalTimesheets) {
-            Set<WorkReportLine> workReportLines = workReport
-                    .getWorkReportLines();
-            if (workReportLines.size() > 0) {
-                LocalDate workReportDate = LocalDate
-                        .fromDateFields(workReportLines.iterator().next()
-                                .getDate());
-                if (workReportDate.compareTo(start) >= 0
-                        && workReportDate.compareTo(end) <= 0) {
+            Set<WorkReportLine> workReportLines = workReport.getWorkReportLines();
+
+            if ( !workReportLines.isEmpty() ) {
+                LocalDate workReportDate = LocalDate.fromDateFields(workReportLines.iterator().next().getDate());
+
+                if (workReportDate.compareTo(start) >= 0 && workReportDate.compareTo(end) <= 0) {
                     return workReport;
                 }
             }
@@ -172,37 +170,33 @@ public class WorkReportDAO extends IntegrationEntityDAO<WorkReport>
     private WorkReportType getPersonalTimesheetsWorkReportType() {
         WorkReportType workReportType;
         try {
-            workReportType = workReportTypeDAO
-                    .findUniqueByName(PredefinedWorkReportTypes.PERSONAL_TIMESHEETS
-                            .getName());
-        } catch (NonUniqueResultException e) {
-            throw new RuntimeException(e);
-        } catch (InstanceNotFoundException e) {
+            workReportType =
+                    workReportTypeDAO.findUniqueByName(PredefinedWorkReportTypes.PERSONAL_TIMESHEETS.getName());
+
+        } catch (NonUniqueResultException | InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }
+
         return workReportType;
     }
 
     @Override
     public boolean isAnyPersonalTimesheetAlreadySaved() {
-        WorkReportType workReportType = getPersonalTimesheetsWorkReportType();
-
-        Criteria criteria = getSession().createCriteria(WorkReport.class);
-        criteria.add(Restrictions.eq("workReportType", workReportType));
-        return criteria.list().isEmpty();
+        return getSession()
+                .createCriteria(WorkReport.class)
+                .add(Restrictions.eq(WORK_REPORT_TYPE_COLUMN, getPersonalTimesheetsWorkReportType()))
+                .list()
+                .isEmpty();
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<WorkReport> findPersonalTimesheetsByResourceAndOrderElement(
-            Resource resource) {
-        Criteria criteria = getSession().createCriteria(WorkReport.class);
-
-        criteria.add(Restrictions.eq("workReportType",
-                getPersonalTimesheetsWorkReportType()));
-        criteria.add(Restrictions.eq("resource", resource));
-
-        return  criteria.list();
+    public List<WorkReport> findPersonalTimesheetsByResourceAndOrderElement(Resource resource) {
+        return getSession()
+                .createCriteria(WorkReport.class)
+                .add(Restrictions.eq(WORK_REPORT_TYPE_COLUMN, getPersonalTimesheetsWorkReportType()))
+                .add(Restrictions.eq("resource", resource))
+                .list();
     }
 
 }

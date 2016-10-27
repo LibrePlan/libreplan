@@ -37,14 +37,13 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Hibernate DAO for {@link ExternalCompany}
+ * Hibernate DAO for {@link ExternalCompany}.
  *
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  */
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
-public class ExternalCompanyDAO extends GenericDAOHibernate<ExternalCompany, Long>
-        implements IExternalCompanyDAO {
+public class ExternalCompanyDAO extends GenericDAOHibernate<ExternalCompany, Long> implements IExternalCompanyDAO {
 
     @Override
     public boolean existsByName(String name) {
@@ -63,8 +62,7 @@ public class ExternalCompanyDAO extends GenericDAOHibernate<ExternalCompany, Lon
     }
 
     @Override
-    public ExternalCompany findUniqueByName(String name)
-            throws InstanceNotFoundException {
+    public ExternalCompany findUniqueByName(String name) throws InstanceNotFoundException {
         Criteria c = getSession().createCriteria(ExternalCompany.class);
         c.add(Restrictions.eq("name", name));
 
@@ -78,8 +76,7 @@ public class ExternalCompanyDAO extends GenericDAOHibernate<ExternalCompany, Lon
 
     @Override
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
-    public ExternalCompany findUniqueByNameInAnotherTransaction(String name)
-            throws InstanceNotFoundException {
+    public ExternalCompany findUniqueByNameInAnotherTransaction(String name) throws InstanceNotFoundException {
         return findUniqueByName(name);
     }
 
@@ -101,10 +98,12 @@ public class ExternalCompanyDAO extends GenericDAOHibernate<ExternalCompany, Lon
 
     @Override
     public ExternalCompany findUniqueByNif(String nif) throws InstanceNotFoundException {
-        Criteria c = getSession().createCriteria(ExternalCompany.class);
-        c.add(Restrictions.eq("nif", nif));
 
-        ExternalCompany found = (ExternalCompany) c.uniqueResult();
+        ExternalCompany found = (ExternalCompany) getSession()
+                .createCriteria(ExternalCompany.class)
+                .add(Restrictions.eq("nif", nif))
+                .uniqueResult();
+
         if (found == null) {
             throw new InstanceNotFoundException(nif, ExternalCompany.class.getName());
         }
@@ -114,17 +113,16 @@ public class ExternalCompanyDAO extends GenericDAOHibernate<ExternalCompany, Lon
 
     @Override
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
-    public ExternalCompany findUniqueByNifInAnotherTransaction(String nif)
-            throws InstanceNotFoundException {
+    public ExternalCompany findUniqueByNifInAnotherTransaction(String nif) throws InstanceNotFoundException {
         return findUniqueByNif(nif);
     }
 
     @Override
     public List<ExternalCompany> findSubcontractor() {
-        Criteria c = getSession().createCriteria(ExternalCompany.class);
-        c.add(Restrictions.eq("subcontractor", true));
-
-        return c.list();
+        return getSession()
+                .createCriteria(ExternalCompany.class)
+                .add(Restrictions.eq("subcontractor", true))
+                .list();
     }
 
     public List<ExternalCompany> getAll() {
@@ -133,11 +131,10 @@ public class ExternalCompanyDAO extends GenericDAOHibernate<ExternalCompany, Lon
 
     @Override
     public List<ExternalCompany> getExternalCompaniesAreClient() {
-        Criteria c = getSession().createCriteria(ExternalCompany.class);
-        c.add(Restrictions.eq("client", true));
-
-        return c.list();
-
+        return getSession()
+                .createCriteria(ExternalCompany.class)
+                .add(Restrictions.eq("client", true))
+                .list();
     }
 
     @Override
@@ -145,13 +142,20 @@ public class ExternalCompanyDAO extends GenericDAOHibernate<ExternalCompany, Lon
         if (company.isNewObject()) {
             return false;
         }
-        boolean usedInOrders = !getSession().createCriteria(Order.class).add(
-                Restrictions.eq("customer", company)).list()
+
+        boolean usedInOrders = !getSession()
+                .createCriteria(Order.class)
+                .add(Restrictions.eq("customer", company))
+                .list()
                 .isEmpty();
-        boolean usedInSubcontratedTask = !getSession().createCriteria(
-                SubcontractedTaskData.class).add(
-                Restrictions.eq("externalCompany", company)).list().isEmpty();
-        return usedInOrders || usedInSubcontratedTask;
+
+        boolean usedInSubcontractedTask = !getSession()
+                .createCriteria(SubcontractedTaskData.class)
+                .add(Restrictions.eq("externalCompany", company))
+                .list()
+                .isEmpty();
+
+        return usedInOrders || usedInSubcontractedTask;
     }
 
 }

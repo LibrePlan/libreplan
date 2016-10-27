@@ -21,7 +21,7 @@
 
 package org.zkoss.ganttz.timetracker;
 
-import org.zkoss.zul.api.Column;
+import org.zkoss.zul.Column;
 
 public interface IConvertibleToColumn {
 

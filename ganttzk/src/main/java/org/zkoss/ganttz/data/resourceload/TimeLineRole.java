@@ -21,8 +21,6 @@
 
 package org.zkoss.ganttz.data.resourceload;
 
-import org.zkoss.ganttz.i18n.I18nHelper;
-
 /**
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
@@ -39,7 +37,7 @@ public class TimeLineRole<T> {
     }
 
     public boolean isVisibleScheduled() {
-        return type != null ? type.isVisibleScheduled() : false;
+        return type != null && type.isVisibleScheduled();
     }
 
     public T getEntity() {
@@ -55,7 +53,10 @@ public class TimeLineRole<T> {
      */
     public enum TimeLineRoleEnum {
 
-        NONE(_("None")), WORKER(_("Worker")), ORDER(_("Project")), TASK(_("Task")) {
+        NONE(_("None")),
+        WORKER(_("Worker")),
+        ORDER(_("Project")),
+        TASK(_("Task")) {
             @Override
             public boolean isVisibleScheduled() {
                 return true;
@@ -63,17 +64,17 @@ public class TimeLineRole<T> {
         },
         CRITERION(_("Criterion"));
 
+        private String name;
+
+        TimeLineRoleEnum(String name) {
+            this.name = name;
+        }
+
         /**
-         * Forces to mark the string as needing translation
+         * Forces to mark the string as needing translation.
          */
         private static String _(String string) {
             return string;
-        }
-
-        private String name;
-
-        private TimeLineRoleEnum(String name) {
-            this.name = name;
         }
 
         public static TimeLineRoleEnum create(String name) {
@@ -88,8 +89,9 @@ public class TimeLineRole<T> {
             return requiredTimeLineRole;
         }
 
+        @Override
         public String toString() {
-            return I18nHelper._(this.name);
+            return _(this.name);
         }
 
         public boolean isVisibleScheduled() {

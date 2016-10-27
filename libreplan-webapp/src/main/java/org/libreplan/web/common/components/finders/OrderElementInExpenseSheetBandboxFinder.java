@@ -19,8 +19,6 @@
 
 package org.libreplan.web.common.components.finders;
 
-import java.util.List;
-
 import org.libreplan.business.orders.daos.IOrderElementDAO;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
@@ -30,6 +28,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
+
+import java.util.List;
 
 /**
  * Bandbox finder for {@link OrderElement} in ExpenseSheet.
@@ -45,7 +45,7 @@ public class OrderElementInExpenseSheetBandboxFinder extends BandboxFinder imple
     private final String headers[] = { _("Task name (Task code)"), _("Project name (Project code)") };
 
     /**
-     * Forces to mark the string as needing translation
+     * Forces to mark the string as needing translation.
      */
     private static String _(String string) {
         return string;
@@ -54,16 +54,15 @@ public class OrderElementInExpenseSheetBandboxFinder extends BandboxFinder imple
     @Override
     @Transactional(readOnly = true)
     public List<OrderElement> getAll() {
-        List<OrderElement> orders = orderElementDAO.findAll();
-        return orders;
+        return orderElementDAO.findAll();
     }
 
     @Override
     public boolean entryMatchesText(Object obj, String text) {
         OrderElement order = (OrderElement) obj;
         text = text.trim().toLowerCase();
-        return (order.getCode().toLowerCase().contains(text) || order.getName().toLowerCase()
-                .contains(text));
+
+        return (order.getCode().toLowerCase().contains(text) || order.getName().toLowerCase().contains(text));
     }
 
     @Override
@@ -86,11 +85,11 @@ public class OrderElementInExpenseSheetBandboxFinder extends BandboxFinder imple
     private final ListitemRenderer orderRenderer = new ListitemRenderer() {
 
         @Override
-        public void render(Listitem item, Object data) {
+        public void render(Listitem item, Object data, int i) {
             OrderElement orderElement = (OrderElement) data;
             item.setValue(orderElement);
 
-            Order order = (Order) orderElement.getOrder();
+            Order order = orderElement.getOrder();
 
             Listcell infoTask = new Listcell();
             String valueTask = orderElement.getName() + " (" + orderElement.getCode() + ")";

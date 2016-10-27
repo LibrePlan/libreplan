@@ -100,7 +100,7 @@
 
         <!-- Indexed -->
         <many-to-one name="resource" class="org.libreplan.business.resources.entities.Resource" column="resource_id"
-                     index="idx_resource_costcategory_assigment_on_resource"/>
+                     index="idx_resource_costcategory_assignment_on_resource"/>
 
     </class>
 

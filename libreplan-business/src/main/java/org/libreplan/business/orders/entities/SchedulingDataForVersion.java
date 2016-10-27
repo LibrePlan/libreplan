@@ -33,15 +33,18 @@ import org.libreplan.business.util.deepcopy.DeepCopy;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
- *
  */
 public class SchedulingDataForVersion extends BaseEntity {
 
-    public static class Data {
+    @NotNull
+    private SchedulingState.Type schedulingStateType;
 
-        private static Data from(SchedulingDataForVersion version, OrderVersion orderVersion) {
-            return new Data(orderVersion, version, version.getTaskSource(), version.getSchedulingStateType());
-        }
+    @NotNull
+    private OrderElement orderElement;
+
+    private TaskSource taskSource;
+
+    public static class Data {
 
         private SchedulingDataForVersion originVersion;
 
@@ -66,6 +69,10 @@ public class SchedulingDataForVersion extends BaseEntity {
             this.taskSource = taskSource;
             this.schedulingStateType = schedulingStateType;
             this.initialSchedulingStateType = schedulingStateType;
+        }
+
+        private static Data from(SchedulingDataForVersion version, OrderVersion orderVersion) {
+            return new Data(orderVersion, version, version.getTaskSource(), version.getSchedulingStateType());
         }
 
         public TaskSource getTaskSource() {
@@ -134,12 +141,11 @@ public class SchedulingDataForVersion extends BaseEntity {
             return hasPendingChanges;
         }
 
-        public Data pointsTo(DeepCopy deepCopy, OrderVersion orderVersion,
-                SchedulingDataForVersion schedulingVersion) {
+        public Data pointsTo(DeepCopy deepCopy, OrderVersion orderVersion, SchedulingDataForVersion schedulingVersion) {
             Validate.isTrue(!this.originVersion.equals(schedulingVersion));
-            Data data = new Data(orderVersion, schedulingVersion, copy(
-                    deepCopy, taskSource), schedulingStateType);
+            Data data = new Data(orderVersion, schedulingVersion, copy(deepCopy, taskSource), schedulingStateType);
             data.hasPendingChanges = true;
+
             return data;
         }
 
@@ -160,14 +166,6 @@ public class SchedulingDataForVersion extends BaseEntity {
     private static Type defaultTypeFor(OrderElement orderElement) {
         return orderElement.isLeaf() ? Type.SCHEDULING_POINT : Type.NO_SCHEDULED;
     }
-
-    @NotNull
-    private SchedulingState.Type schedulingStateType;
-
-    @NotNull
-    private OrderElement orderElement;
-
-    private TaskSource taskSource;
 
     public SchedulingState.Type getSchedulingStateType() {
         return schedulingStateType;

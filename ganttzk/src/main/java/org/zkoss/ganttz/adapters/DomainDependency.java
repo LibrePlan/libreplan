@@ -33,11 +33,25 @@ import org.zkoss.ganttz.data.IDependency;
 
 /**
  * Represents a dependency in the domain.
+ *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public class DomainDependency<T> implements IDependency<T> {
 
     private static final Log LOG = LogFactory.getLog(DomainDependency.class);
+
+    private final T source;
+
+    private final T destination;
+
+    private final DependencyType type;
+
+    private DomainDependency(T source, T destination, DependencyType type) {
+        super();
+        this.source = source;
+        this.destination = destination;
+        this.type = type;
+    }
 
     public static <T> List<Dependency> toDependencies(
             IDomainAndBeansMapper<T> mapper, Collection<DomainDependency<T>> dependencies) {
@@ -55,20 +69,7 @@ public class DomainDependency<T> implements IDependency<T> {
     }
 
     public static <T> DomainDependency<T> createDependency(T source, T destination, DependencyType type) {
-        return new DomainDependency<T>(source, destination, type);
-    }
-
-    private final T source;
-
-    private final T destination;
-
-    private final DependencyType type;
-
-    private DomainDependency(T source, T destination, DependencyType type) {
-        super();
-        this.source = source;
-        this.destination = destination;
-        this.type = type;
+        return new DomainDependency<>(source, destination, type);
     }
 
     public T getSource() {

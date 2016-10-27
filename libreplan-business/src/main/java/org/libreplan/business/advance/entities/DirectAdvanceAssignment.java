@@ -38,8 +38,7 @@ import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.planner.entities.consolidations.NonCalculatedConsolidation;
 
 /**
- * Represents an {@link AdvanceAssignment} that is own of this
- * {@link OrderElement}.
+ * Represents an {@link AdvanceAssignment} that is own of this {@link OrderElement}.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
@@ -52,7 +51,7 @@ public class DirectAdvanceAssignment extends AdvanceAssignment {
     }
 
     public static DirectAdvanceAssignment create(boolean reportGlobalAdvance,
-            BigDecimal maxValue) {
+                                                 BigDecimal maxValue) {
         DirectAdvanceAssignment advanceAssignment = new DirectAdvanceAssignment(
                 reportGlobalAdvance, maxValue);
         advanceAssignment.setNewObject(true);
@@ -62,8 +61,7 @@ public class DirectAdvanceAssignment extends AdvanceAssignment {
     private BigDecimal maxValue;
 
     @Valid
-    private SortedSet<AdvanceMeasurement> advanceMeasurements = new TreeSet<AdvanceMeasurement>(
-            new AdvanceMeasurementComparator());
+    private SortedSet<AdvanceMeasurement> advanceMeasurements = new TreeSet<>(new AdvanceMeasurementComparator());
 
     @Valid
     private Set<NonCalculatedConsolidation> nonCalculatedConsolidations = new HashSet<NonCalculatedConsolidation>();
@@ -75,7 +73,7 @@ public class DirectAdvanceAssignment extends AdvanceAssignment {
     }
 
     private DirectAdvanceAssignment(boolean reportGlobalAdvance,
-            BigDecimal maxValue) {
+                                    BigDecimal maxValue) {
         super(reportGlobalAdvance);
         this.maxValue = maxValue;
         this.maxValue.setScale(2, BigDecimal.ROUND_HALF_UP);
@@ -207,7 +205,7 @@ public class DirectAdvanceAssignment extends AdvanceAssignment {
                     && (currentAdvance.getDate() != null)
                     && (nextAdvance.getDate() != null)
                     && (currentAdvance.getValue().compareTo(
-                            nextAdvance.getValue()) < 0)) {
+                    nextAdvance.getValue()) < 0)) {
                 return false;
             }
             currentAdvance = nextAdvance;

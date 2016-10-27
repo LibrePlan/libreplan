@@ -31,33 +31,27 @@ import org.libreplan.web.orders.CriterionRequirementWrapper;
 import org.libreplan.web.orders.HoursGroupWrapper;
 
 /**
- *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  * @author Diego Pino Garcia <dpino@igalia.com>
  */
 public interface IAssignedCriterionRequirementModel<T, M> {
 
-    void addCriterionToHoursGroupWrapper(
-            HoursGroupWrapper hoursGroupWrapper);
+    void addCriterionToHoursGroupWrapper(HoursGroupWrapper hoursGroupWrapper);
 
-    CriterionRequirementWrapper addExceptionToHoursGroupWrapper(
-            HoursGroupWrapper hoursGroupWrapper);
+    CriterionRequirementWrapper addExceptionToHoursGroupWrapper(HoursGroupWrapper hoursGroupWrapper);
 
     void addNewHoursGroupWrapper();
 
     void assignCriterionRequirementWrapper();
 
     void changeCriterionAndType(
-            CriterionRequirementWrapper criterionRequirementWrapper,
-            CriterionWithItsType newCriterionAndType);
+            CriterionRequirementWrapper criterionRequirementWrapper, CriterionWithItsType newCriterionAndType);
 
     void confirm()throws ValidationException;
 
-    void deleteCriterionRequirementWrapper(
-            CriterionRequirementWrapper requirement);
+    void deleteCriterionRequirementWrapper(CriterionRequirementWrapper requirement);
 
-    void deleteCriterionToHoursGroup(HoursGroupWrapper hoursGroupWrapper,
-            CriterionRequirementWrapper requirementWrapper);
+    void deleteCriterionToHoursGroup(HoursGroupWrapper hoursGroupWrapper, CriterionRequirementWrapper requirementWrapper);
 
     void deleteHoursGroupWrapper(HoursGroupWrapper hoursGroupWrapper);
 
@@ -86,15 +80,12 @@ public interface IAssignedCriterionRequirementModel<T, M> {
 
     void setModel(M model);
 
-    void setValidCriterionRequirementWrapper(
-            CriterionRequirementWrapper requirement, boolean valid);
+    void setValidCriterionRequirementWrapper(CriterionRequirementWrapper requirement, boolean valid);
 
-    void updateCriterionsWithDiferentResourceType(
-            HoursGroupWrapper hoursGroupWrapper);
+    void updateCriterionsWithDifferentResourceType(HoursGroupWrapper hoursGroupWrapper);
 
     CriterionRequirementWrapper validateHoursGroupWrappers();
 
-    CriterionRequirementWrapper validateWrappers(
-            List<CriterionRequirementWrapper> list);
+    CriterionRequirementWrapper validateWrappers(List<CriterionRequirementWrapper> list);
 
 }

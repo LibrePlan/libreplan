@@ -20,33 +20,29 @@
  */
 package org.libreplan.web.templates;
 
-import static org.libreplan.web.I18nHelper._;
-
-import java.math.BigDecimal;
-
 import org.apache.commons.lang3.StringUtils;
 import org.libreplan.business.orders.entities.SchedulingState;
 import org.libreplan.business.templates.entities.OrderElementTemplate;
 import org.libreplan.business.templates.entities.OrderLineTemplate;
 import org.libreplan.web.common.Util;
-import org.libreplan.web.common.Util.Getter;
-import org.libreplan.web.common.Util.Setter;
 import org.libreplan.web.tree.EntitiesTree;
 import org.libreplan.web.tree.TreeController;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Treeitem;
 
+import java.math.BigDecimal;
+
+import static org.libreplan.web.I18nHelper._;
+
 /**
  * Controller for template element tree <br />
+ *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public class TemplatesTreeController extends
-        TreeController<OrderElementTemplate> {
+public class TemplatesTreeController extends TreeController<OrderElementTemplate> {
 
     private final IOrderTemplatesModel model;
 
@@ -63,24 +59,20 @@ public class TemplatesTreeController extends
     final class TemplatesTreeRenderer extends Renderer {
 
         @Override
-        protected void addOperationsCell(Treeitem item,
-                OrderElementTemplate currentElement) {
-            addCell(createEditButton(currentElement),
-                    createRemoveButton(currentElement));
+        protected void addOperationsCell(Treeitem item, OrderElementTemplate currentElement) {
+            addCell(createEditButton(), createRemoveButton(currentElement));
         }
 
-        private Button createEditButton(
-                final OrderElementTemplate currentTemplate) {
-            Button result = createButton("/common/img/ico_editar1.png",
-                    _("Edit"), "/common/img/ico_editar.png", "icono",
-                    new EventListener() {
-                        @Override
-                        public void onEvent(Event event) {
-                            Treeitem item = getTreeitem(event.getTarget());
-                            operationsForOrderTemplate.showEditElement(item);
-                        }
+        private Button createEditButton() {
+            return createButton(
+                    "/common/img/ico_editar1.png",
+                    _("Edit"),
+                    "/common/img/ico_editar.png",
+                    "icono",
+                    event -> {
+                        Treeitem item = getTreeitem(event.getTarget());
+                        operationsForOrderTemplate.showEditElement(item);
                     });
-            return result;
         }
 
         private Treeitem getTreeitem(Component comp) {
@@ -89,20 +81,11 @@ public class TemplatesTreeController extends
 
         @Override
         protected void addDescriptionCell(final OrderElementTemplate element) {
-            Textbox textBox = Util.bind(new Textbox(),
-                    new Util.Getter<String>() {
+            Textbox textBox = Util.bind(
+                    new Textbox(),
+                    () -> element.getName(),
+                    value -> element.setName(value));
 
-                        @Override
-                        public String get() {
-                            return element.getName();
-                        }
-                    }, new Util.Setter<String>() {
-
-                        @Override
-                        public void set(String value) {
-                            element.setName(value);
-                        }
-                    });
             textBox.setConstraint("no empty:" + _("cannot be empty"));
             addCell(textBox);
             putNameTextbox(element, textBox);
@@ -110,85 +93,71 @@ public class TemplatesTreeController extends
 
         @Override
         protected void addCodeCell(final OrderElementTemplate element) {
-            //empty because templates don't have code attribute
+            // Empty because templates don't have code attribute
         }
+
 
         void addInitCell(final OrderElementTemplate currentElement) {
             final Intbox intbox = new Intbox();
-            Util.bind(intbox, new Getter<Integer>() {
 
-                @Override
-                public Integer get() {
-                    return currentElement.getStartAsDaysFromBeginning();
-                }
-            }, new Setter<Integer>() {
+            Util.bind(
+                    intbox,
+                    () -> currentElement.getStartAsDaysFromBeginning(),
+                    value -> {
+                        checkInvalidValues("startAsDaysFromBeginning", value, intbox);
+                        currentElement.setStartAsDaysFromBeginning(value);
+                    });
 
-                @Override
-                public void set(Integer value) {
-                    checkInvalidValues(OrderElementTemplate.class,
-                            "startAsDaysFromBeginning",
-                            value, intbox);
-                    currentElement.setStartAsDaysFromBeginning(value);
-                }
-            });
             addCell(intbox);
         }
 
         void addEndCell(final OrderElementTemplate currentElement) {
             final Intbox intbox = new Intbox();
-            Util.bind(intbox, new Getter<Integer>() {
 
-                @Override
-                public Integer get() {
-                    return currentElement.getDeadlineAsDaysFromBeginning();
-                }
-            }, new Setter<Integer>() {
+            Util.bind(
+                    intbox,
+                    () -> currentElement.getDeadlineAsDaysFromBeginning(),
+                    value -> {
+                        checkInvalidValues("deadlineAsDaysFromBeginning", value, intbox);
+                        currentElement.setDeadlineAsDaysFromBeginning(value);
+                    });
 
-                @Override
-                public void set(Integer value) {
-                    checkInvalidValues(OrderElementTemplate.class,
-                            "deadlineAsDaysFromBeginning", value, intbox);
-                    currentElement.setDeadlineAsDaysFromBeginning(value);
-                }
-            });
             addCell(intbox);
         }
 
         @Override
-        protected void onDoubleClickForSchedulingStateCell(
-                OrderElementTemplate currentElement) {
-            // do nothing
+        protected void onDoubleClickForSchedulingStateCell(OrderElementTemplate currentElement) {
+            // Do nothing
         }
 
         @Override
-        protected SchedulingState getSchedulingStateFrom(
-                OrderElementTemplate currentElement) {
+        protected SchedulingState getSchedulingStateFrom(OrderElementTemplate currentElement) {
             return currentElement.getSchedulingState();
         }
 
     }
 
-    public TemplatesTreeController(IOrderTemplatesModel model,
-            OrderTemplatesController orderTemplatesController) {
+    public TemplatesTreeController(IOrderTemplatesModel model, OrderTemplatesController orderTemplatesController) {
         super(OrderElementTemplate.class);
+
         this.model = model;
         this.orderTemplatesController = orderTemplatesController;
         initializeOperationsForOrderTemplate();
     }
 
     /**
-     * Initializes operationsForOrderTemplate. A reference to variable tree is
-     * needed to be added later in doAfterCompose()
+     * Initializes operationsForOrderTemplate.
+     * A reference to variable tree is needed to be added later in doAfterCompose()
      */
     private void initializeOperationsForOrderTemplate() {
-        operationsForOrderTemplate = TemplateElementOperations.build()
-            .treeController(this)
-            .orderTemplatesController(this.orderTemplatesController);
+        operationsForOrderTemplate = TemplateElementOperations
+                .build()
+                .treeController(this)
+                .orderTemplatesController(this.orderTemplatesController);
     }
 
     @Override
-    protected void reloadTreeUIAfterChanges() {
-    }
+    protected void reloadTreeUIAfterChanges() {}
 
     @Override
     protected EntitiesTree<OrderElementTemplate> getModel() {
@@ -212,21 +181,24 @@ public class TemplatesTreeController extends
 
     @Override
     protected String createTooltipText(OrderElementTemplate elem) {
-            StringBuilder tooltipText = new StringBuilder();
-            tooltipText.append(elem.getName() + ". ");
-            if ((elem.getDescription() != null)
-                    && (!elem.getDescription().equals(""))) {
-                tooltipText.append(elem.getDescription());
-                tooltipText.append(". ");
-            }
-            if ((elem.getLabels() != null) && (!elem.getLabels().isEmpty())) {
-                tooltipText.append(" " + _("Labels") + ":");
-            tooltipText.append(StringUtils.join(elem.getLabels(), ","));
-                tooltipText.append(".");
-            }
-        // There are no CriterionRequirement or advances in templates
-            return tooltipText.toString();
+        StringBuilder tooltipText = new StringBuilder();
+        tooltipText.append(elem.getName()).append(". ");
+
+        if ((elem.getDescription() != null) && (!elem.getDescription().equals(""))) {
+            tooltipText.append(elem.getDescription());
+            tooltipText.append(". ");
         }
+
+        if ((elem.getLabels() != null) && (!elem.getLabels().isEmpty())) {
+
+            tooltipText.append(" ").append(_("Labels")).append(":");
+            tooltipText.append(StringUtils.join(elem.getLabels(), ","));
+            tooltipText.append(".");
+        }
+
+        // There are no CriterionRequirement or advances in templates
+        return tooltipText.toString();
+    }
 
     @Override
     protected IHoursGroupHandler<OrderElementTemplate> getHoursGroupHandler() {
@@ -238,8 +210,7 @@ public class TemplatesTreeController extends
             }
 
             @Override
-            public boolean isTotalHoursValid(OrderElementTemplate line,
-                    Integer value) {
+            public boolean isTotalHoursValid(OrderElementTemplate line, Integer value) {
                 return ((OrderLineTemplate) line).isTotalHoursValid(value);
             }
 
@@ -268,8 +239,7 @@ public class TemplatesTreeController extends
             }
 
             @Override
-            public void setBudgetHours(OrderElementTemplate element,
-                    BigDecimal budget) {
+            public void setBudgetHours(OrderElementTemplate element, BigDecimal budget) {
                 if (element instanceof OrderLineTemplate) {
                     OrderLineTemplate line = (OrderLineTemplate) element;
                     line.setBudget(budget);
@@ -281,42 +251,27 @@ public class TemplatesTreeController extends
 
     @Override
     protected INameHandler<OrderElementTemplate> getNameHandler() {
-        return new INameHandler<OrderElementTemplate>() {
-
-            @Override
-            public String getNameFor(OrderElementTemplate element) {
-                return element.getName();
-            }
-
-        };
+        return element -> element.getName();
     }
 
     @Override
     protected ICodeHandler<OrderElementTemplate> getCodeHandler() {
-        return new ICodeHandler<OrderElementTemplate>() {
-
-            @Override
-            public String getCodeFor(OrderElementTemplate element) {
-                // Empty as OrderElementTemplate doesn't have code
-                return "";
-            }
-
-        };
+        // Empty as OrderElementTemplate doesn't have code
+        return element -> "";
     }
 
     public void refreshRow(Treeitem item) {
         try {
-            OrderElementTemplate orderElement = (OrderElementTemplate) item
-                    .getValue();
+            OrderElementTemplate orderElement = item.getValue();
             getRenderer().updateColumnsFor(orderElement);
-            getRenderer().render(item, orderElement);
+            getRenderer().render(item, orderElement, 0);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     /**
-     * Operations for a node
+     * Operations for a node.
      */
 
     public void editSelectedElement() {

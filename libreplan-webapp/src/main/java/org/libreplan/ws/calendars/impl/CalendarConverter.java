@@ -121,8 +121,8 @@ public final class CalendarConverter {
         }
 
         List<CalendarData> calendarDataVersions = new ArrayList<CalendarData>();
-        if (baseCalendarDTO.calendarDatas != null) {
-            for (CalendarDataDTO calendarDataDTO : baseCalendarDTO.calendarDatas) {
+        if (baseCalendarDTO.calendarData != null) {
+            for (CalendarDataDTO calendarDataDTO : baseCalendarDTO.calendarData) {
                 calendarDataVersions.add(toEntity(calendarDataDTO));
             }
             calendarDataVersions = getVersionsOrderedByExpiringDate(calendarDataVersions);
@@ -214,9 +214,9 @@ public final class CalendarConverter {
             }
         }
 
-        if (baseCalendarDTO.calendarDatas != null) {
+        if (baseCalendarDTO.calendarData != null) {
 
-            for (CalendarDataDTO calendarDataDTO : baseCalendarDTO.calendarDatas) {
+            for (CalendarDataDTO calendarDataDTO : baseCalendarDTO.calendarData) {
 
                 if (StringUtils.isBlank(calendarDataDTO.code)) {
                     throw new ValidationException(

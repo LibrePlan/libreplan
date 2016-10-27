@@ -69,8 +69,8 @@ import org.libreplan.business.workreports.daos.IWorkReportTypeDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * A registry, AKA service locator, for objects in which dependency injection (DI) is not directly supported by Spring
- * (e.g. entities) must use this class to access DAOs.
+ * A registry, AKA service locator, for objects in which dependency injection
+ * (DI) is not directly supported by Spring (e.g. entities) must use this class to access DAOs.
  * For the rest of classes (e.g. services, tests, etc.), Spring DI is a more convenient option.
  * The DAOs or services are added to the registry as needed.
  *
@@ -223,8 +223,7 @@ public class Registry {
     @Autowired
     private IAdHocTransactionService transactionServiceDAO;
 
-    private Registry() {
-    }
+    private Registry() {}
 
     public static Registry getInstance() {
         return singleton;

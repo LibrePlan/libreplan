@@ -32,34 +32,34 @@ import org.libreplan.business.INewObject;
  */
 public class SubcontractorCommunicationValue implements INewObject {
 
-    public static SubcontractorCommunicationValue create() {
-        SubcontractorCommunicationValue subcontractorCommunicationValue = new SubcontractorCommunicationValue();
-        subcontractorCommunicationValue.setNewObject(true);
-        return subcontractorCommunicationValue;
-    }
+    private boolean newObject = false;
 
-    public static SubcontractorCommunicationValue create(Date date,
-            BigDecimal progress) {
-        SubcontractorCommunicationValue subcontractorCommunicationValue = new SubcontractorCommunicationValue(
-                date, progress);
-        subcontractorCommunicationValue.setNewObject(true);
-        return subcontractorCommunicationValue;
-    }
+    private Date date;
 
-    protected SubcontractorCommunicationValue() {
+    private BigDecimal progress;
 
-    }
+    protected SubcontractorCommunicationValue() {}
 
     private SubcontractorCommunicationValue(Date date, BigDecimal progress) {
         this.setDate(date);
         this.setProgress(progress);
     }
 
-    private boolean newObject = false;
+    public static SubcontractorCommunicationValue create() {
+        SubcontractorCommunicationValue subcontractorCommunicationValue = new SubcontractorCommunicationValue();
+        subcontractorCommunicationValue.setNewObject(true);
 
-    private Date date;
+        return subcontractorCommunicationValue;
+    }
 
-    private BigDecimal progress;
+    public static SubcontractorCommunicationValue create(Date date, BigDecimal progress) {
+        SubcontractorCommunicationValue subcontractorCommunicationValue =
+                new SubcontractorCommunicationValue(date, progress);
+
+        subcontractorCommunicationValue.setNewObject(true);
+
+        return subcontractorCommunicationValue;
+    }
 
     public boolean isNewObject() {
         return newObject;
@@ -72,11 +72,9 @@ public class SubcontractorCommunicationValue implements INewObject {
     @SuppressWarnings("unused")
     @AssertTrue(message = "progress should be greater than 0% and less than 100%")
     public boolean isQualityFormItemPercentageConstraint() {
-        if (getProgress() == null) {
-            return true;
-        }
-        return ((getProgress().compareTo(new BigDecimal(100).setScale(2)) <= 0) && (getProgress()
-                .compareTo(new BigDecimal(0).setScale(2)) > 0));
+        return getProgress() == null ||
+                (getProgress().compareTo(new BigDecimal(100).setScale(2)) <= 0 &&
+                        (getProgress().compareTo(new BigDecimal(0).setScale(2)) > 0));
     }
 
     public void setDate(Date date) {
@@ -97,8 +95,6 @@ public class SubcontractorCommunicationValue implements INewObject {
 
     @Override
     public String toString() {
-        String progress_reported = progress != null ? progress.toString()
-                + "% - " : "";
-        return progress_reported + date;
+        return progress != null ? progress.toString() + "% - " + date : date.toString();
     }
 }

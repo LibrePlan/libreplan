@@ -27,12 +27,11 @@ import org.libreplan.web.orders.materials.IAssignedMaterialsModel;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
- *
  */
-public interface IAssignedMaterialsToOrderElementTemplateModel extends
-        IAssignedMaterialsModel<OrderElementTemplate, MaterialAssignmentTemplate> {
+public interface IAssignedMaterialsToOrderElementTemplateModel
+        extends IAssignedMaterialsModel<OrderElementTemplate, MaterialAssignmentTemplate> {
 
-    public boolean isCurrentUnitType(Object assigment, UnitType unitType);
+    boolean isCurrentUnitType(Object assignment, UnitType unitType);
 
     OrderElementTemplate getTemplate();
 

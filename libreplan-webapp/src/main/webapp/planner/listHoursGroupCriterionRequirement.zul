@@ -20,16 +20,16 @@
 -->
 
 <vbox>
-    <grid fixedLayout="true" model="@{hoursGroup.criterionRequirements}">
-                    <columns>
-                        <column label="Criterion Name"/>
-                        <column label="Hours"/>
-                    </columns>
-                    <rows>
-                        <row self="@{each='criterionRequirement'}" value="@{criterionRequirement}">
-                            <label value="@{criterionRequirement.criterion.name}"/>
-                            <intbox value="@{hoursGroup.workingHours}"/>
-                        </row>
-                    </rows>
+    <grid sizedByContent="true" model="@{hoursGroup.criterionRequirements}">
+        <columns>
+            <column label="Criterion Name"/>
+            <column label="Hours"/>
+        </columns>
+        <rows>
+            <row self="@{each='criterionRequirement'}" value="@{criterionRequirement}">
+                <label value="@{criterionRequirement.criterion.name}"/>
+                <intbox value="@{hoursGroup.workingHours}"/>
+            </row>
+        </rows>
     </grid>
 </vbox>

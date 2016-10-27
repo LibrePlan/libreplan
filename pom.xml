@@ -1,7 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-         http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.libreplan</groupId>
@@ -20,9 +19,9 @@
 
 
     <!--
-        Default values for properties. These default values are expected
-        to be valid for most profiles. Specific profiles can overwrite
-        values when necessary.
+        Default values for properties.
+        These default values are expected to be valid for most profiles.
+        Specific profiles can overwrite values when necessary.
     -->
     <properties>
         <!--  Data source properties -->
@@ -38,6 +37,9 @@
         <default.emailSendingEnabled>true</default.emailSendingEnabled>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <jetty-port>8081</jetty-port>
+        <jetty-stop-port>9967</jetty-stop-port>
     </properties>
 
 
@@ -158,12 +160,12 @@
 
     </profiles>
 
-
+    <!-- TODO make changes to  http://nexus.libreplan.org/nexus/content/repositories/thirdparty -->
     <repositories>
         <!-- LibrePlan repository -->
         <repository>
             <id>thirdparty</id>
-            <url>http://nexus.libreplan.org/content/repositories/thirdparty</url>
+            <url>http://nexus.libreplan.org/nexus/content/repositories/test/</url>
         </repository>
     </repositories>
 
@@ -173,10 +175,11 @@
 
             <!-- Jasper Reports -->
             <dependency>
-              <groupId>net.sf.jasperreports</groupId>
-              <artifactId>jasperreports</artifactId>
-              <version>6.2.2</version>
+                <groupId>net.sf.jasperreports</groupId>
+                <artifactId>jasperreports</artifactId>
+                <version>6.2.2</version>
             </dependency>
+
             <dependency>
                 <groupId>net.sf.jasperreports</groupId>
                 <artifactId>jasperreports-fonts</artifactId>
@@ -185,23 +188,23 @@
 
             <!-- GPL Jasperreport Component for ZK -->
             <dependency>
-              <groupId>com.igalia.java.zk.components</groupId>
-              <artifactId>jasperreportcomponent</artifactId>
-              <version>1.0</version>
+                <groupId>com.libreplan.java.zk.components</groupId>
+                <artifactId>jasperreportcomponent</artifactId>
+                <version>1.1</version>
             </dependency>
 
             <!-- GPL JFreechartEngine for ZK -->
             <dependency>
-                <groupId>com.igalia.java.zk.components</groupId>
+                <groupId>com.libreplan.java.zk.components</groupId>
                 <artifactId>jfreechartengine</artifactId>
-                <version>1.1</version>
+                <version>1.2</version>
             </dependency>
 
             <!-- GPL detailrow Component for ZK -->
             <dependency>
-                <groupId>com.igalia.java.zk.components</groupId>
+                <groupId>com.libreplan.java.zk.components</groupId>
                 <artifactId>customdetailrowcomponent</artifactId>
-                <version>1.0.0</version>
+                <version>1.1</version>
             </dependency>
 
             <!-- Gettext commons -->
@@ -243,17 +246,17 @@
                 <version>3.0.0</version>
             </dependency>
 
-            <!-- Usertype.Core -->
+            <!-- Usertype.Core ( Significant for Hibernate ) -->
             <dependency>
               <groupId>org.jadira.usertype</groupId>
               <artifactId>usertype.core</artifactId>
               <version>5.0.0.GA</version>
                   <exclusions>
                     <exclusion>
-                      <groupId>org.hibernate</groupId>
-                      <artifactId>hibernate-entitymanager</artifactId>
+                        <groupId>org.hibernate</groupId>
+                        <artifactId>hibernate-entitymanager</artifactId>
                     </exclusion>
-                  </exclusions>
+                </exclusions>
             </dependency>
 
             <!-- JDBC driver -->
@@ -271,10 +274,10 @@
                 <version>1.0.1.Final</version>
                 <scope>compile</scope>
                 <exclusions>
-                  <exclusion>
-                    <artifactId>xml-apis</artifactId>
-                    <groupId>xml-apis</groupId>
-                  </exclusion>
+                    <exclusion>
+                        <artifactId>xml-apis</artifactId>
+                        <groupId>xml-apis</groupId>
+                    </exclusion>
                 </exclusions>
             </dependency>
 
@@ -290,6 +293,18 @@
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-web</artifactId>
                 <version>4.2.6.RELEASE</version>
+            </dependency>
+
+            <!--
+            Various Application Context utilities, including EhCache, JavaMail, Quartz, and Freemarker integration.
+            We use QuartzJobBean.
+            -->
+
+            <!-- AspectJ Weaver -->
+            <dependency>
+                <groupId>org.aspectj</groupId>
+                <artifactId>aspectjweaver</artifactId>
+                <version>1.8.9</version>
             </dependency>
 
             <!-- Spring context support -->
@@ -331,18 +346,6 @@
                 <scope>test</scope>
             </dependency>
 
-            <!--
-            Various Application Context utilities, including EhCache, JavaMail, Quartz, and Freemarker integration.
-            We use QuartzJobBean.
-            -->
-
-            <!-- AspectJ Weaver -->
-            <dependency>
-                <groupId>org.aspectj</groupId>
-                <artifactId>aspectjweaver</artifactId>
-                <version>1.8.9</version>
-            </dependency>
-
             <!-- JUnit -->
             <dependency>
                 <groupId>junit</groupId>
@@ -351,12 +354,12 @@
                 <scope>test</scope>
             </dependency>
 
-            <!-- datasource for testing -->
+            <!-- Datasource for testing -->
             <dependency>
-              <groupId>com.jolbox</groupId>
-              <artifactId>bonecp</artifactId>
-              <version>0.8.0.RELEASE</version>
-              <scope>test</scope>
+                <groupId>com.jolbox</groupId>
+                <artifactId>bonecp</artifactId>
+                <version>0.8.0.RELEASE</version>
+                <scope>test</scope>
             </dependency>
 
             <!-- Easy mock -->
@@ -366,6 +369,7 @@
                 <version>3.4</version>
                 <scope>test</scope>
             </dependency>
+
             <dependency>
                 <groupId>org.easymock</groupId>
                 <artifactId>easymockclassextension</artifactId>
@@ -427,7 +431,7 @@
             <dependency>
                 <groupId>commons-fileupload</groupId>
                 <artifactId>commons-fileupload</artifactId>
-                <version>1.3.1</version>
+                <version>1.3.2</version>
                 <scope>runtime</scope>
             </dependency>
 
@@ -435,17 +439,25 @@
             <dependency>
                 <groupId>org.zkoss.zk</groupId>
                 <artifactId>zul</artifactId>
-                <version>5.0.11</version>
+                <version>8.0.1.1</version>
             </dependency>
+
             <dependency>
                 <groupId>org.zkoss.zk</groupId>
                 <artifactId>zkplus</artifactId>
-                <version>5.0.11</version>
+                <version>8.0.1.1</version>
             </dependency>
+
+            <dependency>
+                <groupId>org.zkoss.zk</groupId>
+                <artifactId>zkbind</artifactId>
+                <version>8.0.1.1</version>
+            </dependency>
+
             <dependency>
                 <groupId>org.zkoss.zk</groupId>
                 <artifactId>zk</artifactId>
-                <version>5.0.11</version>
+                <version>8.0.1.1</version>
                 <exclusions>
                     <exclusion>
                         <groupId>org.jruby</groupId>
@@ -492,13 +504,6 @@
                 <groupId>org.libreplan</groupId>
                 <artifactId>libreplan-business</artifactId>
                 <version>${project.version}</version>
-            </dependency>
-
-            <!-- DBUnit -->
-            <dependency>
-                <groupId>org.dbunit</groupId>
-                <artifactId>dbunit</artifactId>
-                <version>2.5.2</version>
             </dependency>
 
             <!-- Servlet -->
@@ -586,16 +591,17 @@
                 <artifactId>timeplotz</artifactId>
                 <version>1.1_50_1</version>
             </dependency>
+
             <dependency>
                 <groupId>org.zkoss.zkforge</groupId>
                 <artifactId>timelinez</artifactId>
                 <version>2.3.1_50</version>
                 <exclusions>
-                <exclusion>
-                    <groupId>org.zkoss.common</groupId>
-                    <artifactId>zcommon</artifactId>
-                </exclusion>
-            </exclusions>
+                    <exclusion>
+                        <groupId>org.zkoss.common</groupId>
+                        <artifactId>zcommon</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <!-- LiquiBase -->
@@ -604,6 +610,7 @@
                 <artifactId>liquibase-core</artifactId>
                 <version>3.5.1</version>
             </dependency>
+
             <dependency>
                 <groupId>org.liquibase</groupId>
                 <artifactId>liquibase-maven-plugin</artifactId>
@@ -614,7 +621,7 @@
             <dependency>
                 <groupId>br.com.digilabs.jqplot</groupId>
                 <artifactId>jqplot4java</artifactId>
-                <version>1.2.3-javascript</version>
+                <version>1.3.2-javascript</version>
             </dependency>
 
             <!-- MPXJ Library -->
@@ -626,9 +633,9 @@
 
             <!-- ZK fileupload -->
             <dependency>
-              <groupId>commons-io</groupId>
-              <artifactId>commons-io</artifactId>
-              <version>2.5</version>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>2.5</version>
             </dependency>
 
             <!-- Quartz framework -->
@@ -641,7 +648,6 @@
                         <groupId>org.slf4j</groupId>
                         <artifactId>slf4j-api</artifactId>
                     </exclusion>
-
                     <exclusion>
                         <groupId>org.slf4j</groupId>
                         <artifactId>slf4j-log4j12</artifactId>
@@ -693,27 +699,35 @@
             <resource>
                 <directory>../libreplan-webapp/src/main/jasper/workingArrangementsPerOrder_Bundle/</directory>
             </resource>
+
             <resource>
                 <directory>../libreplan-webapp/src/main/jasper/completedEstimatedHours_Bundle/</directory>
             </resource>
+
             <resource>
                 <directory>../libreplan-webapp/src/main/jasper/hoursWorkedPerWorker_Bundle/</directory>
             </resource>
+
             <resource>
                 <directory>../libreplan-webapp/src/main/jasper/hoursWorkedPerWorkerInAMonth_Bundle/</directory>
             </resource>
+
             <resource>
                 <directory>../libreplan-webapp/src/main/jasper/orderCostsPerResource_Bundle/</directory>
             </resource>
+
             <resource>
                 <directory>../libreplan-webapp/src/main/jasper/schedulingProgressPerOrder_Bundle/</directory>
             </resource>
+
             <resource>
                 <directory>../libreplan-webapp/src/main/jasper/timeLineRequiredMaterial_Bundle/</directory>
             </resource>
+
             <resource>
                 <directory>../libreplan-webapp/src/main/jasper/workingProgressPerTask_Bundle/</directory>
             </resource>
+
             <resource>
                 <directory>../libreplan-webapp/src/main/jasper/projectStatus_Bundle/</directory>
             </resource>
@@ -799,62 +813,73 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.19.1</version>
                 <configuration>
-                   <runOrder>alphabetical</runOrder>
+                    <runOrder>alphabetical</runOrder>
                 </configuration>
             </plugin>
 
             <!-- =========================================================== -->
             <!-- Jetty configuration -->
             <plugin>
-                <!-- TODO  Change version for JDK8 -->
-                <groupId>org.mortbay.jetty</groupId>
-                <artifactId>maven-jetty-plugin</artifactId>
-                <version>6.1.18</version>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
+                <version>9.3.8.v20160314</version>
                 <configuration>
-                    <jettyEnvXml>target/jetty/jetty-env.xml</jettyEnvXml>
+                    <systemProperties>
+                        <systemProperty>
+                            <name>org.zkoss.zel.impl.parser.SKIP_IDENTIFIER_CHECK</name>
+                            <value>true</value>
+                        </systemProperty>
+                    </systemProperties>
+                    <jettyXml>target/jetty/jetty-env.xml</jettyXml>
                     <reload>manual</reload>
-                    <stopPort>9966</stopPort>
+                    <stopPort>${jetty-stop-port}</stopPort>
                     <stopKey>stop</stopKey>
                     <!-- Log to the console. -->
-                    <requestLog implementation="org.mortbay.jetty.NCSARequestLog">
+                    <requestLog implementation="org.eclipse.jetty.server.NCSARequestLog">
                         <!--
-                            This do anything for Jetty, but is a workaround for a Maven bug
+                            This do anything for Jetty,
+                            but is aworkaround for a Maven bug
                             that prevents the requestLog from being set.
                         -->
                         <append>true</append>
                     </requestLog>
+                    <httpConnector>
+                        <port>${jetty-port}</port>
+                    </httpConnector>
                 </configuration>
 
                 <dependencies>
-                  <dependency>
-                    <groupId>${jdbcDriver.groupId}</groupId>
-                    <artifactId>${jdbcDriver.artifactId}</artifactId>
-                    <version>${jdbcDriver.version}</version>
-                  </dependency>
+                    <dependency>
+                        <groupId>${jdbcDriver.groupId}</groupId>
+                        <artifactId>${jdbcDriver.artifactId}</artifactId>
+                        <version>${jdbcDriver.version}</version>
+                    </dependency>
 
-                  <!-- connection pooling -->
-                  <dependency>
-                    <groupId>com.jolbox</groupId>
-                    <artifactId>bonecp</artifactId>
-                    <version>0.8.0.RELEASE</version>
-                  </dependency>
+                    <!-- connection pooling -->
+                    <dependency>
+                        <groupId>com.jolbox</groupId>
+                        <artifactId>bonecp</artifactId>
+                        <version>0.8.0.RELEASE</version>
+                    </dependency>
 
-                  <!-- connection pooling dependencies -->
-                  <dependency>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                    <version>1.7.21</version>
-                  </dependency>
-                  <dependency>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-simple</artifactId>
-                    <version>1.7.21</version>
-                  </dependency>
-                  <dependency>
-                    <groupId>com.google.guava</groupId>
-                    <artifactId>guava</artifactId>
-                    <version>19.0</version>
-                  </dependency>
+                    <!-- connection pooling dependencies -->
+                    <dependency>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-api</artifactId>
+                        <version>1.7.21</version>
+                    </dependency>
+
+                    <dependency>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-simple</artifactId>
+                        <version>1.7.21</version>
+                    </dependency>
+
+                    <dependency>
+                        <groupId>com.google.guava</groupId>
+                        <artifactId>guava</artifactId>
+                        <version>19.0</version>
+                    </dependency>
                 </dependencies>
             </plugin>
 

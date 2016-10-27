@@ -28,25 +28,25 @@ import org.joda.time.ReadablePeriod;
 import org.zkoss.util.Locales;
 
 /**
- * Zoom level with semesters in the first level and months in the second level
+ * Zoom level with semesters in the first level and months in the second level.
+ *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
-public class DetailThreeTimeTrackerState extends
-        TimeTrackerStateWithSubintervalsFitting {
+public class DetailThreeTimeTrackerState extends TimeTrackerStateWithSubintervalsFitting {
 
     private static final int NUMBER_OF_MONTHS_MINIMUM = 30;
 
-    DetailThreeTimeTrackerState(IDetailItemModificator firstLevelModificator,
-            IDetailItemModificator secondLevelModificator) {
-        super(firstLevelModificator, secondLevelModificator);
-    }
-
     private static final int FIRST_LEVEL_SIZE = 300;
+
     protected static final int SECOND_LEVEL_SIZE = 50;
 
+    DetailThreeTimeTrackerState(IDetailItemModifier firstLevelModifier, IDetailItemModifier secondLevelModifier) {
+        super(firstLevelModifier, secondLevelModifier);
+    }
+
     public final double daysPerPixel() {
-        return ((double) 182.5 / FIRST_LEVEL_SIZE);
+        return 182.5 / FIRST_LEVEL_SIZE;
     }
 
     @Override
@@ -61,31 +61,22 @@ public class DetailThreeTimeTrackerState extends
 
     @Override
     protected IDetailItemCreator getDetailItemCreatorSecondLevel() {
-        return new IDetailItemCreator() {
-
-            @Override
-            public DetailItem create(DateTime dateTime) {
-                return new DetailItem(SECOND_LEVEL_SIZE,
-                        getMonthString(dateTime),
-                        dateTime, dateTime.plusMonths(1));
-            }
-        };
+        return dateTime -> new DetailItem(
+                SECOND_LEVEL_SIZE, getMonthString(dateTime), dateTime, dateTime.plusMonths(1));
     }
 
     @Override
     protected LocalDate round(LocalDate date, boolean down) {
-        if (date.getMonthOfYear() == 1 && date.getDayOfMonth() == 1) {
+        if ( (date.getMonthOfYear() == 1 || date.getMonthOfYear() == 7) && date.getDayOfMonth() == 1) {
             return date;
         }
-        if (date.getMonthOfYear() == 7 && date.getDayOfMonth() == 1) {
-            return date;
-        }
+
         date = date.withDayOfMonth(1);
+
         if (date.getMonthOfYear() < 7) {
             return down ? date.withMonthOfYear(1) : date.withMonthOfYear(7);
         } else {
-            return down ? date.withMonthOfYear(7) : date.plusYears(1)
-                    .withMonthOfYear(1);
+            return down ? date.withMonthOfYear(7) : date.plusYears(1).withMonthOfYear(1);
         }
     }
 
@@ -94,20 +85,13 @@ public class DetailThreeTimeTrackerState extends
     }
 
     private String getYearWithSemesterString(DateTime dateTime) {
-        return dateTime.getYear() + ","
-                + (dateTime.getMonthOfYear() < 6 ? "H1" : "H2");
+        return dateTime.getYear() + "," + (dateTime.getMonthOfYear() < 6 ? "H1" : "H2");
     }
 
     @Override
     protected IDetailItemCreator getDetailItemCreatorFirstLevel() {
-        return new IDetailItemCreator() {
-            @Override
-            public DetailItem create(DateTime dateTime) {
-                return new DetailItem(FIRST_LEVEL_SIZE,
-                        getYearWithSemesterString(dateTime), dateTime, dateTime
-                                .plusMonths(6));
-            }
-        };
+        return dateTime -> new DetailItem(
+                FIRST_LEVEL_SIZE, getYearWithSemesterString(dateTime), dateTime, dateTime.plusMonths(6));
     }
 
     @Override

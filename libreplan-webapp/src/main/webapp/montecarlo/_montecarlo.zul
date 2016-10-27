@@ -23,9 +23,10 @@
 
 <zk>
 
-    <zscript><![CDATA[
-        rsController = arg.get("monteCarloController");
-    ]]>
+    <zscript>
+        <![CDATA[
+            rsController = arg.get("monteCarloController");
+        ]]>
     </zscript>
 
     <div self="@{define(content)}" >
@@ -33,9 +34,9 @@
 
             <!--Lists of tasks in the critical path -->
             <grid id="gridCriticalPathTasks"
-                    mold="paging"
-                    pageSize="10"
-                    fixedLayout="true">
+                  mold="paging"
+                  pageSize="10"
+                  fixedLayout="true">
 
                 <auxhead>
                     <auxheader colspan="2"/>
@@ -63,6 +64,7 @@
                     <columns>
                         <column width="200px"/>
                         <column width="150px"/>
+                        <column hflex="1"/>
                     </columns>
                     <rows>
                         <row>
@@ -82,19 +84,20 @@
                         <column width="200px" />
                         <column width="220px"/>
                         <column width="200px"/>
+                        <column hflex="1"/>
                     </columns>
                     <rows>
                         <row spans="1,3">
                             <label value="${i18n:_('Group by weeks')}" />
                             <checkbox id="cbGroupByWeeks" checked="true"
-                                width="200px" />
+                                      width="200px" />
                         </row>
                         <row>
                             <label value="${i18n:_('Number of iterations')}" />
                             <intbox id="ibIterations"
-                                width="200px"
-                                constraint="no empty:${i18n:_('cannot be empty')}" />
-                            <button id="btnRunMonteCarlo" label="${i18n:_('Go!')}" />
+                                    width="200px"
+                                    constraint="${rsController.checkConstraintIterationNumber}" />
+                            <button id="btnRunMonteCarlo" label="${i18n:_('Go!')}" sclass="add-button"/>
                             <progressmeter id="progressMonteCarloCalculation" value="0" />
                         </row>
                     </rows>

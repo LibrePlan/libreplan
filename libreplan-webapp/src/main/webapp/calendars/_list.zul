@@ -21,9 +21,9 @@
 
 <window id="${arg.top_id}" title="${i18n:_('Calendars List')}">
     <tree id="tree" model="@{calendarController.baseCalendarsTreeModel}"
-        treeitemRenderer="@{calendarController.baseCalendarsTreeitemRenderer}"
-        zclass="z-dottree"
-        nonselectableTags="*">
+          treeitemRenderer="@{calendarController.baseCalendarsTreeitemRenderer}"
+          nonselectableTags="*">
+
         <treecols sizable="true">
             <treecol label="${i18n:_('Name')}" />
             <treecol label="${i18n:_('Inherits from date')}" width="150px" align="center"/>
@@ -31,7 +31,8 @@
             <treecol label="${i18n:_('Operations')}" width="150px" align="center"/>
         </treecols>
     </tree>
+
     <button id="show_create_form" onClick="calendarController.goToCreateForm();"
-        label="${i18n:_('Create')}" sclass="create-button global-action">
+            label="${i18n:_('Create')}" sclass="create-button global-action">
     </button>
 </window>

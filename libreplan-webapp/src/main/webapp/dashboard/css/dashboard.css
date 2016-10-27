@@ -21,8 +21,7 @@
 
 .dashboard-label-remarked.positive,
 .dashboard-label-remarked.negative {
-    background-position: 100%;
-    background-repeat: no-repeat;
+    background: no-repeat 100%;
     padding-right: 30px;
 }
 
@@ -41,8 +40,8 @@
 }
 
 .jqplot-title {
-   font-size: 12px !important;
-   font-weight: bold;
+    font-size: 12px !important;
+    font-weight: bold;
 }
 
 .jqplot-legend {

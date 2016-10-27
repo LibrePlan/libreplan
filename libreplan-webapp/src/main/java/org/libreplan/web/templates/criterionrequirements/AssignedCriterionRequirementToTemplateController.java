@@ -35,20 +35,26 @@ import org.libreplan.web.orders.CriterionRequirementWrapper;
 import org.libreplan.web.orders.HoursGroupWrapper;
 import org.libreplan.web.orders.criterionrequirements.AssignedCriterionRequirementController;
 import org.libreplan.web.templates.IOrderTemplatesModel;
+import org.zkoss.zkplus.spring.SpringUtil;
 
 /**
- *
  * @author Diego Pino Garcia <dpino@igalia.com>
- *
  */
-public class AssignedCriterionRequirementToTemplateController extends
-    AssignedCriterionRequirementController<OrderElementTemplate, IOrderTemplatesModel> {
+public class AssignedCriterionRequirementToTemplateController
+        extends AssignedCriterionRequirementController<OrderElementTemplate, IOrderTemplatesModel> {
 
     protected IAssignedCriterionRequirementToTemplateModel assignedCriterionRequirementToTemplateModel;
 
+    public AssignedCriterionRequirementToTemplateController() {
+        if ( assignedCriterionRequirementToTemplateModel == null ) {
+            assignedCriterionRequirementToTemplateModel = (IAssignedCriterionRequirementToTemplateModel)
+                    SpringUtil.getBean("assignedCriterionRequirementToTemplateModel");
+        }
+    }
+
     @Override
     public OrderElementTemplate getElement() {
-       return getOrderElement();
+        return getOrderElement();
     }
 
     public OrderElementTemplate getOrderElement() {
@@ -85,126 +91,98 @@ public class AssignedCriterionRequirementToTemplateController extends
     }
 
     public List<CriterionRequirementWrapper> criterionRequirementWrappers() {
-        return assignedCriterionRequirementToTemplateModel
-                .getCriterionRequirementWrappers();
+        return assignedCriterionRequirementToTemplateModel.getCriterionRequirementWrappers();
     }
 
     public List<CriterionWithItsType> getCriterionWithItsTypes() {
-        return assignedCriterionRequirementToTemplateModel
-                .getCriterionWithItsTypes();
+        return assignedCriterionRequirementToTemplateModel.getCriterionWithItsTypes();
     }
 
     public void addCriterionRequirementWrapper() {
-        assignedCriterionRequirementToTemplateModel
-                .assignCriterionRequirementWrapper();
+        assignedCriterionRequirementToTemplateModel.assignCriterionRequirementWrapper();
         reload();
     }
 
     public void remove(CriterionRequirementWrapper requirement) {
-        assignedCriterionRequirementToTemplateModel
-                .deleteCriterionRequirementWrapper(requirement);
+        assignedCriterionRequirementToTemplateModel.deleteCriterionRequirementWrapper(requirement);
         reload();
     }
 
     public void invalidate(CriterionRequirementWrapper requirement) {
-        assignedCriterionRequirementToTemplateModel
-                .setValidCriterionRequirementWrapper(requirement, false);
+        assignedCriterionRequirementToTemplateModel.setValidCriterionRequirementWrapper(requirement, false);
         reload();
     }
 
     public void validate(CriterionRequirementWrapper requirement) {
-        assignedCriterionRequirementToTemplateModel
-                .setValidCriterionRequirementWrapper(requirement, true);
+        assignedCriterionRequirementToTemplateModel.setValidCriterionRequirementWrapper(requirement, true);
         reload();
     }
 
-    protected void changeCriterionAndType(
-            CriterionRequirementWrapper requirementWrapper,
-            CriterionWithItsType newCriterionAndType) {
-        assignedCriterionRequirementToTemplateModel.changeCriterionAndType(
-                requirementWrapper, newCriterionAndType);
+    protected void changeCriterionAndType(CriterionRequirementWrapper requirementWrapper,
+                                          CriterionWithItsType newCriterionAndType) {
+
+        assignedCriterionRequirementToTemplateModel.changeCriterionAndType(requirementWrapper, newCriterionAndType);
     }
 
-    protected void updateCriterionsWithDiferentResourceType(
-            HoursGroupWrapper hoursGroupWrapper) {
-        assignedCriterionRequirementToTemplateModel
-                .updateCriterionsWithDiferentResourceType(hoursGroupWrapper);
+    protected void updateCriterionsWithDifferentResourceType(HoursGroupWrapper hoursGroupWrapper) {
+        assignedCriterionRequirementToTemplateModel.updateCriterionsWithDifferentResourceType(hoursGroupWrapper);
     }
 
-    protected CriterionRequirementWrapper validateWrappers(
-            List<CriterionRequirementWrapper> list) {
-        return assignedCriterionRequirementToTemplateModel
-                .validateWrappers(criterionRequirementWrappers());
+    protected CriterionRequirementWrapper validateWrappers(List<CriterionRequirementWrapper> list) {
+        return assignedCriterionRequirementToTemplateModel.validateWrappers(criterionRequirementWrappers());
     }
 
     protected CriterionRequirementWrapper validateHoursGroupWrappers() {
-        return assignedCriterionRequirementToTemplateModel
-                .validateHoursGroupWrappers();
+        return assignedCriterionRequirementToTemplateModel.validateHoursGroupWrappers();
     }
 
     public List<HoursGroupWrapper> getHoursGroupWrappers() {
-        return assignedCriterionRequirementToTemplateModel
-                .getHoursGroupsWrappers();
+        return assignedCriterionRequirementToTemplateModel.getHoursGroupsWrappers();
     }
 
     public void addHoursGroup() {
-        assignedCriterionRequirementToTemplateModel
-                .addNewHoursGroupWrapper();
+        assignedCriterionRequirementToTemplateModel.addNewHoursGroupWrapper();
         Util.reloadBindings(listHoursGroups);
     }
 
     protected void deleteHoursGroupWrapper(HoursGroupWrapper hoursGroupWrapper) {
-        assignedCriterionRequirementToTemplateModel
-                .deleteHoursGroupWrapper(hoursGroupWrapper);
+        assignedCriterionRequirementToTemplateModel.deleteHoursGroupWrapper(hoursGroupWrapper);
     }
 
-    protected void addCriterionToHoursGroupWrapper(
-            HoursGroupWrapper hoursGroupWrapper) {
-        assignedCriterionRequirementToTemplateModel
-                .addCriterionToHoursGroupWrapper(hoursGroupWrapper);
+    protected void addCriterionToHoursGroupWrapper(HoursGroupWrapper hoursGroupWrapper) {
+        assignedCriterionRequirementToTemplateModel.addCriterionToHoursGroupWrapper(hoursGroupWrapper);
     }
 
-    protected CriterionRequirementWrapper addExceptionToHoursGroupWrapper(
-            HoursGroupWrapper hoursGroupWrapper) {
-        return assignedCriterionRequirementToTemplateModel
-                .addExceptionToHoursGroupWrapper(hoursGroupWrapper);
+    protected CriterionRequirementWrapper addExceptionToHoursGroupWrapper(HoursGroupWrapper hoursGroupWrapper) {
+        return assignedCriterionRequirementToTemplateModel.addExceptionToHoursGroupWrapper(hoursGroupWrapper);
     }
 
-    public void deleteCriterionToHoursGroup(
-            HoursGroupWrapper hoursGroupWrapper,
-            CriterionRequirementWrapper requirementWrapper) {
+    public void deleteCriterionToHoursGroup(HoursGroupWrapper hoursGroupWrapper,
+                                            CriterionRequirementWrapper requirementWrapper) {
 
-        assignedCriterionRequirementToTemplateModel
-                .deleteCriterionToHoursGroup(hoursGroupWrapper,
-                        requirementWrapper);
+        assignedCriterionRequirementToTemplateModel.deleteCriterionToHoursGroup(hoursGroupWrapper, requirementWrapper);
     }
 
-    protected void selectCriterionToHoursGroup(
-            HoursGroupWrapper hoursGroupWrapper,
-            CriterionRequirementWrapper requirementWrapper,
-            CriterionWithItsType criterionAndType) {
+    protected void selectCriterionToHoursGroup(HoursGroupWrapper hoursGroupWrapper,
+                                               CriterionRequirementWrapper requirementWrapper,
+                                               CriterionWithItsType criterionAndType) {
 
         assignedCriterionRequirementToTemplateModel
-                .selectCriterionToHoursGroup(hoursGroupWrapper,
-                        requirementWrapper, criterionAndType);
+                .selectCriterionToHoursGroup(hoursGroupWrapper, requirementWrapper, criterionAndType);
     }
 
     public void recalculateHoursGroup() {
-        ((OrderLineTemplate) assignedCriterionRequirementToTemplateModel
-                .getElement()).recalculateHoursGroups();
+        ((OrderLineTemplate) assignedCriterionRequirementToTemplateModel.getElement()).recalculateHoursGroups();
     }
 
     public boolean isCodeAutogenerated() {
-        return assignedCriterionRequirementToTemplateModel
-                .isCodeAutogenerated();
+        return assignedCriterionRequirementToTemplateModel.isCodeAutogenerated();
     }
 
     public List<HoursGroup> getHoursGroups() {
-        if ((getElement() == null)
-                || (assignedCriterionRequirementToTemplateModel == null)) {
-            return new ArrayList<HoursGroup>();
-        }
-        return super.getHoursGroups();
+        return (getElement() == null) || (assignedCriterionRequirementToTemplateModel == null)
+                ? new ArrayList<>()
+                : super.getHoursGroups();
     }
 
     @Override

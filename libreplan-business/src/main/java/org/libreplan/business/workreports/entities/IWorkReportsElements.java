@@ -27,8 +27,7 @@ import org.libreplan.business.resources.entities.Resource;
 import org.libreplan.business.workreports.valueobjects.DescriptionValue;
 
 /**
- * Interface which must be implemented by {@link WorkReport} and
- * {@link WorkReportLine}
+ * Interface which must be implemented by {@link WorkReport} and {@link WorkReportLine}.
  *
  * @author Ignacio Diaz Teijido <ignacio.diaz@comtecsf.es>
  *

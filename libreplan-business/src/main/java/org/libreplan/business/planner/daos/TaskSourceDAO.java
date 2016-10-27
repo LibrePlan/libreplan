@@ -28,11 +28,7 @@ import org.springframework.stereotype.Repository;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
- *
  */
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
-public class TaskSourceDAO extends GenericDAOHibernate<TaskSource, Long>
-        implements ITaskSourceDAO {
-
-}
+public class TaskSourceDAO extends GenericDAOHibernate<TaskSource, Long> implements ITaskSourceDAO {}

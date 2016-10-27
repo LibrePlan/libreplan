@@ -38,9 +38,7 @@ import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 
 /**
- *
  * @author Diego Pino García <dpino@igalia.com>
- *
  */
 public class AllocationConfiguration extends HtmlMacroComponent {
 
@@ -59,7 +57,7 @@ public class AllocationConfiguration extends HtmlMacroComponent {
     @Override
     public void afterCompose() {
         super.afterCompose();
-        this.setVariable("allocationConfigurationController", this, true);
+        this.setAttribute("allocationConfigurationController", this, true);
 
         lbTaskStart = (Label) getFellowIfAny("lbTaskStart");
         lbTaskEnd = (Label) getFellowIfAny("lbTaskEnd");
@@ -68,13 +66,13 @@ public class AllocationConfiguration extends HtmlMacroComponent {
 
     private void initializeCalculationTypeSelector() {
         calculationTypeSelector = (Radiogroup) getFellowIfAny("calculationTypeSelector");
+
         calculationTypeSelector.addEventListener(Events.ON_CHECK, new EventListener() {
 
             @Override
             public void onEvent(Event event) {
                 taskWorkableDays.clearErrorMessage(true);
-                setCalculationTypeSelected(calculationTypeSelector
-                        .getSelectedItem().getValue());
+                setCalculationTypeSelected((String) calculationTypeSelector.getSelectedItem().getValue());
             }
 
             private void setCalculationTypeSelected(String calculationType) {
@@ -87,46 +85,42 @@ public class AllocationConfiguration extends HtmlMacroComponent {
 
     private void initializeCalculationTypesGrid() {
         calculationTypesGrid = (Grid) getFellowIfAny("calculationTypesGrid");
-        calculationTypesGrid.setModel(new ListModelList(Arrays
-                .asList(CalculationTypeRadio.values())));
+        calculationTypesGrid.setModel(new ListModelList<>(Arrays.asList(CalculationTypeRadio.values())));
         calculationTypesGrid.setRowRenderer(getCalculationTypesRenderer());
     }
 
     private RowRenderer getCalculationTypesRenderer() {
         return new RowRenderer() {
-
             @Override
-            public void render(Row row, Object data) throws Exception {
+            public void render(Row row, Object data, int i) throws Exception {
                 CalculationTypeRadio type = (CalculationTypeRadio) data;
 
                 Radio radio = type.createRadio();
                 row.appendChild(radio);
 
                 if (formBinder != null) {
-                    if (type == CalculationTypeRadio.from(formBinder
-                            .getCalculatedValue())) {
+                    if (type == CalculationTypeRadio.from(formBinder.getCalculatedValue())) {
                         radio.setChecked(true);
                     }
-                    radio.setDisabled(formBinder.isAnyManual()
-                            || formBinder.isTaskUpdatedFromTimesheets());
+                    radio.setDisabled(formBinder.isAnyManual() || formBinder.isTaskUpdatedFromTimesheets());
                 }
             }
         };
     }
 
-    public Intbox getTaskWorkableDays() {
+    Intbox getTaskWorkableDays() {
         return taskWorkableDays;
     }
 
-    public Label getTaskStart() {
+    Label getTaskStart() {
         return lbTaskStart;
     }
 
-    public Label getTaskEnd() {
+    Label getTaskEnd() {
         return lbTaskEnd;
     }
 
-    public Radiogroup getCalculationTypeSelector() {
+    Radiogroup getCalculationTypeSelector() {
         return calculationTypeSelector;
     }
 

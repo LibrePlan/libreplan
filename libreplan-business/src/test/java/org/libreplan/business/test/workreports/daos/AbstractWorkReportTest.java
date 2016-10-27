@@ -43,7 +43,7 @@ import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workreports.daos.IWorkReportDAO;
 import org.libreplan.business.workreports.daos.IWorkReportTypeDAO;
 import org.libreplan.business.workreports.entities.WorkReport;
-import org.libreplan.business.workreports.entities.WorkReportLabelTypeAssigment;
+import org.libreplan.business.workreports.entities.WorkReportLabelTypeAssignment;
 import org.libreplan.business.workreports.entities.WorkReportLine;
 import org.libreplan.business.workreports.entities.WorkReportType;
 import org.libreplan.business.workreports.valueobjects.DescriptionField;
@@ -73,8 +73,7 @@ public abstract class AbstractWorkReportTest {
     ILabelTypeDAO labelTypeDAO;
 
     public WorkReportType createValidWorkReportType() {
-        return WorkReportType.create(UUID.randomUUID().toString(), UUID
-                .randomUUID().toString());
+        return WorkReportType.create(UUID.randomUUID().toString(), UUID.randomUUID().toString());
     }
 
     public WorkReportLine createValidWorkReportLine() {
@@ -90,14 +89,17 @@ public abstract class AbstractWorkReportTest {
         workReportLine.setResource(resource);
         workReportLine.setOrderElement(createValidOrderElement());
         workReportLine.setTypeOfWorkHours(createValidTypeOfWorkHours());
+
         return workReportLine;
     }
 
     private TypeOfWorkHours createValidTypeOfWorkHours() {
-        TypeOfWorkHours typeOfWorkHours = TypeOfWorkHours.create(UUID
-                .randomUUID().toString(), UUID.randomUUID().toString());
+        TypeOfWorkHours typeOfWorkHours =
+                TypeOfWorkHours.create(UUID.randomUUID().toString(), UUID.randomUUID().toString());
+
         typeOfWorkHours.setDefaultPrice(BigDecimal.TEN);
         typeOfWorkHoursDAO.save(typeOfWorkHours);
+
         return typeOfWorkHours;
 
     }
@@ -108,6 +110,7 @@ public abstract class AbstractWorkReportTest {
         worker.setSurname(UUID.randomUUID().toString());
         worker.setNif(UUID.randomUUID().toString());
         resourceDAO.save(worker);
+
         return worker;
     }
 
@@ -116,11 +119,12 @@ public abstract class AbstractWorkReportTest {
         orderLine.setName(UUID.randomUUID().toString());
         orderLine.setCode(UUID.randomUUID().toString());
         orderElementDAO.save(orderLine);
+
         return orderLine;
     }
 
     public Set<WorkReportLine> createValidWorkReportLines() {
-        Set<WorkReportLine> workReportLines = new HashSet<WorkReportLine>();
+        Set<WorkReportLine> workReportLines = new HashSet<>();
 
         WorkReportLine workReportLine = createValidWorkReportLine();
         workReportLines.add(workReportLine);
@@ -131,26 +135,26 @@ public abstract class AbstractWorkReportTest {
     public WorkReport createValidWorkReport() {
         WorkReportType workReportType = createValidWorkReportType();
         workReportTypeDAO.save(workReportType);
-        WorkReport workReport = WorkReport.create(workReportType);
-        return workReport;
+
+        return WorkReport.create(workReportType);
     }
 
     public DescriptionField createValidDescriptionField() {
         return DescriptionField.create(UUID.randomUUID().toString(), 1);
     }
 
-    public WorkReportLabelTypeAssigment createValidWorkReportLabelTypeAssigment() {
+    public WorkReportLabelTypeAssignment createValidWorkReportLabelTypeAssignment() {
         LabelType labelType = LabelType.create(UUID.randomUUID().toString());
         labelTypeDAO.save(labelType);
         Label label = Label.create(UUID.randomUUID().toString());
         label.setType(labelType);
         labelDAO.save(label);
 
-        WorkReportLabelTypeAssigment labelAssigment = WorkReportLabelTypeAssigment
-                .create();
-        labelAssigment.setDefaultLabel(label);
-        labelAssigment.setLabelType(labelType);
-        return labelAssigment;
+        WorkReportLabelTypeAssignment labelAssignment = WorkReportLabelTypeAssignment.create();
+        labelAssignment.setDefaultLabel(label);
+        labelAssignment.setLabelType(labelType);
+
+        return labelAssignment;
     }
 
 }

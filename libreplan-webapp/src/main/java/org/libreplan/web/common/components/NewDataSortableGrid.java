@@ -20,24 +20,21 @@
 
 package org.libreplan.web.common.components;
 
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.ListModel;
-import org.zkoss.zul.ListModelExt;
-import org.zkoss.zul.api.Column;
+import org.zkoss.zul.Column;
+import org.zkoss.zul.ext.Sortable;
 
 /**
- * NewDataSortableGrid is a macrocomponent which extends {@link Grid}
- *<p>
- * NewDataSortableGrid objects must include inside it
- * {@link NewDataSortableColumn} components. They notify their grid when they
- * are sorted. The first time it is rendered the NewDataSortableGrid the first
- * of the {@link Column} is used to order the model. So, in the case the model
- * is not given in a proper order, it is ordered before showing the data.
- *<p>
+ * NewDataSortableGrid is a macrocomponent which extends {@link Grid}.
+ * <p>
+ *     NewDataSortableGrid objects must include inside it {@link NewDataSortableColumn} components.
+ *     They notify their grid when they are sorted.
+ *     The first time it is rendered the NewDataSortableGrid the first of the {@link Column} is used to order the model.
+ *     So, in the case the model is not given in a proper order, it is ordered before showing the data.
+ * </p>
  *
  * @author Javier Moran Rua <jmoran@igalia.com>
  */
@@ -45,21 +42,16 @@ import org.zkoss.zul.api.Column;
 public class NewDataSortableGrid extends Grid implements AfterCompose {
 
     private Column lastSortedColumn;
+
     private boolean lastSortedColumnAscending;
 
     public NewDataSortableGrid() {
-        addEventListener(Events.ON_SORT, new EventListener() {
-            @Override
-            public void onEvent(Event event) {
-                    sortByLastColumn();
-            }
-        });
+        addEventListener(Events.ON_SORT, event -> sortByLastColumn());
     }
 
     public void setSortedColumn(Column c) {
-        if (c == null) {
-            throw new IllegalArgumentException("The column parameter cannot"
-                    + "cannot be null");
+        if ( c == null ) {
+            throw new IllegalArgumentException("The column parameter cannot" + "cannot be null");
         }
         this.lastSortedColumn = c;
     }
@@ -77,10 +69,10 @@ public class NewDataSortableGrid extends Grid implements AfterCompose {
         return lastSortedColumnAscending;
     }
 
+    @Override
     public void afterCompose() {
-        // We post the ON_SORT event to order the grid. It is needed
-        // to use an event because at this point the columns
-        // inside the component are not still accessible
+        // We post the ON_SORT event to order the grid.
+        // It is needed to use an event because at this point the columns inside the component are not still accessible.
         Events.postEvent(Events.ON_SORT, this, null);
     }
 
@@ -91,17 +83,16 @@ public class NewDataSortableGrid extends Grid implements AfterCompose {
     }
 
     private void sortByLastColumn() {
-        if (!(getModel() instanceof ListModelExt)) {
+        if (!(getModel() instanceof Sortable)) {
             return;
         }
 
-        ListModelExt model = (ListModelExt) getModel();
-        if (lastSortedColumnAscending) {
-            model.sort(lastSortedColumn.getSortAscending(),
-                    lastSortedColumnAscending);
+        Sortable model = (Sortable) getModel();
+
+        if ( lastSortedColumnAscending ) {
+            model.sort(lastSortedColumn.getSortAscending(), lastSortedColumnAscending);
         } else {
-            model.sort(lastSortedColumn.getSortDescending(),
-                    lastSortedColumnAscending);
+            model.sort(lastSortedColumn.getSortDescending(), lastSortedColumnAscending);
         }
     }
 }

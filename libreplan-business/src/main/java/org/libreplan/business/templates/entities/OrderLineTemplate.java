@@ -46,23 +46,26 @@ import org.libreplan.business.orders.entities.OrderLineGroup;
 public class OrderLineTemplate extends OrderElementTemplate {
 
     @Valid
-    private Set<HoursGroup> hoursGroups = new HashSet<HoursGroup>();
+    private Set<HoursGroup> hoursGroups = new HashSet<>();
 
     private Integer lastHoursGroupSequenceCode = 0;
+
+    private BigDecimal budget = BigDecimal.ZERO.setScale(2);
+
+    private HoursGroupOrderLineTemplateHandler hoursGroupOrderLineTemplateHandler =
+            HoursGroupOrderLineTemplateHandler.getInstance();
 
     public static OrderLineTemplate create(OrderLine orderLine) {
         OrderLineTemplate beingBuilt = new OrderLineTemplate();
         copyHoursGroup(orderLine.getHoursGroups(), beingBuilt);
         beingBuilt.setBudget(orderLine.getBudget());
+
         return create(beingBuilt, orderLine);
     }
 
-    private static void copyHoursGroup(
-            final Collection<HoursGroup> hoursGroups,
-            OrderLineTemplate orderLineTemplate) {
+    private static void copyHoursGroup(final Collection<HoursGroup> hoursGroups, OrderLineTemplate orderLineTemplate) {
         for (HoursGroup each: hoursGroups) {
-            orderLineTemplate.addHoursGroup(HoursGroup.copyFrom(each,
-                    orderLineTemplate));
+            orderLineTemplate.addHoursGroup(HoursGroup.copyFrom(each, orderLineTemplate));
         }
     }
 
@@ -70,17 +73,16 @@ public class OrderLineTemplate extends OrderElementTemplate {
         return createNew(new OrderLineTemplate());
     }
 
-    private BigDecimal budget = BigDecimal.ZERO.setScale(2);
-
     protected <T extends OrderElement> T setupElementParts(T orderElement) {
         super.setupElementParts(orderElement);
         setupHoursGroups((OrderLine) orderElement);
         setupBudget((OrderLine) orderElement);
+
         return orderElement;
     }
 
     private void setupHoursGroups(OrderLine orderLine) {
-        Set<HoursGroup> result = new HashSet<HoursGroup>();
+        Set<HoursGroup> result = new HashSet<>();
         for (HoursGroup each: getHoursGroups()) {
             result.add(HoursGroup.copyFrom(each, orderLine));
         }
@@ -105,12 +107,13 @@ public class OrderLineTemplate extends OrderElementTemplate {
     public OrderLineGroupTemplate toContainer() {
         OrderLineGroupTemplate result = OrderLineGroupTemplate.createNew();
         copyTo(result);
+
         return result;
     }
 
     @Override
     public List<OrderElementTemplate> getChildren() {
-        return new ArrayList<OrderElementTemplate>();
+        return new ArrayList<>();
     }
 
     @Override
@@ -123,18 +126,23 @@ public class OrderLineTemplate extends OrderElementTemplate {
         if (getWorkHours() != 0) {
             return false;
         }
+
         if (!getDirectCriterionRequirements().isEmpty()) {
             return false;
         }
+
         if (!getAdvanceAssignmentTemplates().isEmpty()) {
             return false;
         }
+
         if (!getQualityForms().isEmpty()) {
             return false;
         }
+
         if (!getLabels().isEmpty()) {
             return false;
         }
+
         if (!getMaterialAssignments().isEmpty()) {
             return false;
         }
@@ -144,10 +152,12 @@ public class OrderLineTemplate extends OrderElementTemplate {
 
     @Override
     public OrderElement createElement(OrderLineGroup parent) {
-        OrderLine line = setupSchedulingStateType(setupVersioningInfo(parent,
-                OrderLine.createOrderLineWithUnfixedPercentage(getWorkHours())));
+        OrderLine line = setupSchedulingStateType(
+                setupVersioningInfo(parent, OrderLine.createOrderLineWithUnfixedPercentage(getWorkHours())));
+
         line.initializeTemplate(this);
         parent.add(line);
+
         return setupElementParts(line);
     }
 
@@ -161,7 +171,7 @@ public class OrderLineTemplate extends OrderElementTemplate {
     }
 
     public void incrementLastHoursGroupSequenceCode() {
-        if(lastHoursGroupSequenceCode==null){
+        if (lastHoursGroupSequenceCode == null) {
             lastHoursGroupSequenceCode = 0;
         }
         lastHoursGroupSequenceCode++;
@@ -178,7 +188,7 @@ public class OrderLineTemplate extends OrderElementTemplate {
 
     @Override
     public List<HoursGroup> getHoursGroups() {
-        return new ArrayList<HoursGroup>(hoursGroups);
+        return new ArrayList<>(hoursGroups);
     }
 
     public Set<HoursGroup> myHoursGroups() {
@@ -206,9 +216,6 @@ public class OrderLineTemplate extends OrderElementTemplate {
         recalculateHoursGroups();
     }
 
-    private HoursGroupOrderLineTemplateHandler hoursGroupOrderLineTemplateHandler = HoursGroupOrderLineTemplateHandler
-            .getInstance();
-
     public void setWorkHours(Integer workHours) throws IllegalArgumentException {
         hoursGroupOrderLineTemplateHandler.setWorkHours(this, workHours);
     }
@@ -226,8 +233,7 @@ public class OrderLineTemplate extends OrderElementTemplate {
     }
 
     public void setBudget(BigDecimal budget) {
-        Validate.isTrue(budget.compareTo(BigDecimal.ZERO) >= 0,
-                "budget cannot be negative");
+        Validate.isTrue(budget.compareTo(BigDecimal.ZERO) >= 0, "budget cannot be negative");
         this.budget = budget.setScale(2);
     }
 

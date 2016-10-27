@@ -44,10 +44,10 @@ public class SubcontractorCommunication extends BaseEntity {
 
     private List<SubcontractorCommunicationValue> subcontractorCommunicationValues = new ArrayList<>();
 
-    // Default constructor, needed by Hibernate
-    protected SubcontractorCommunication() {
-
-    }
+    /**
+     * Default constructor, needed by Hibernate.
+     */
+    protected SubcontractorCommunication() {}
 
     private SubcontractorCommunication(SubcontractedTaskData subcontractedTaskData,
                                        CommunicationType communicationType,
@@ -77,7 +77,7 @@ public class SubcontractorCommunication extends BaseEntity {
         this.subcontractedTaskData = subcontractedTaskData;
     }
 
-    @NotNull(message="subcontrated task data not specified")
+    @NotNull(message="subcontracted task data not specified")
     public SubcontractedTaskData getSubcontractedTaskData() {
         return subcontractedTaskData;
     }
@@ -116,17 +116,14 @@ public class SubcontractorCommunication extends BaseEntity {
         return subcontractorCommunicationValues;
     }
 
-    public SubcontractorCommunicationValue getLastSubcontractorCommunicationValues(){
-        if ( subcontractorCommunicationValues.isEmpty() ){
-            return null;
-        }
-
-        return subcontractorCommunicationValues.get(subcontractorCommunicationValues.size()-1);
+    public SubcontractorCommunicationValue getLastSubcontractorCommunicationValues() {
+        return subcontractorCommunicationValues.isEmpty()
+                ? null
+                : subcontractorCommunicationValues.get(subcontractorCommunicationValues.size() - 1);
     }
 
     public Date getLastSubcontractorCommunicationValueDate(){
         SubcontractorCommunicationValue value = getLastSubcontractorCommunicationValues();
-
         return (value == null) ? null : value.getDate();
     }
 }

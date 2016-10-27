@@ -71,6 +71,7 @@ import org.libreplan.business.workingday.IntraDayDate.PartialDay;
 
 /**
  * This class acts as the base class for all resources.
+ *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
@@ -135,7 +136,7 @@ public abstract class Resource extends IntegrationEntity implements IHumanIdenti
     private Map<LocalDate, List<DayAssignment>> assignmentsByDayCached = null;
 
     private Set<ResourcesCostCategoryAssignment> resourcesCostCategoryAssignments =
-        new HashSet<ResourcesCostCategoryAssignment>();
+            new HashSet<ResourcesCostCategoryAssignment>();
 
     private ResourceType resourceType = ResourceType.NON_LIMITING_RESOURCE;
 
@@ -438,7 +439,7 @@ public abstract class Resource extends IntegrationEntity implements IHumanIdenti
     private static class EnsureSatisfactionIsCorrect {
 
         private EnsureSatisfactionIsCorrect(Resource resource,
-                ICriterionType<?> type, CriterionSatisfaction satisfaction) {
+                                            ICriterionType<?> type, CriterionSatisfaction satisfaction) {
             Validate.notNull(resource);
             Validate.notNull(satisfaction.getResource());
             Validate.notNull(satisfaction);
@@ -469,7 +470,7 @@ public abstract class Resource extends IntegrationEntity implements IHumanIdenti
     }
 
     public CriterionSatisfaction addSatisfaction(ICriterionType<?> type,
-            CriterionSatisfaction satisfaction) {
+                                                 CriterionSatisfaction satisfaction) {
         return new EnsureSatisfactionIsCorrect(this, type, satisfaction)
                 .addSatisfaction();
     }
@@ -503,7 +504,7 @@ public abstract class Resource extends IntegrationEntity implements IHumanIdenti
     }
 
     private CriterionSatisfaction createNewSatisfaction(Interval interval,
-            Criterion criterion) {
+                                                        Criterion criterion) {
         CriterionSatisfaction newSatisfaction = CriterionSatisfaction.create(criterion, this, interval);
         return newSatisfaction;
     }
@@ -521,7 +522,7 @@ public abstract class Resource extends IntegrationEntity implements IHumanIdenti
      *         </ul>
      */
     private int findPlace(List<CriterionSatisfaction> orderedSatisfactions,
-            CriterionSatisfaction newSatisfaction) {
+                          CriterionSatisfaction newSatisfaction) {
         int position = Collections.binarySearch(orderedSatisfactions,
                 newSatisfaction, CriterionSatisfaction.BY_START_COMPARATOR);
         if (position >= 0) {
@@ -538,7 +539,7 @@ public abstract class Resource extends IntegrationEntity implements IHumanIdenti
     }
 
     public List<CriterionSatisfaction> finishEnforcedAt(Criterion criterion,
-            LocalDate date) {
+                                                        LocalDate date) {
         ArrayList<CriterionSatisfaction> result = new ArrayList<CriterionSatisfaction>();
         for (CriterionSatisfaction criterionSatisfaction : query()
                 .exactly(criterion).at(date).result()) {
@@ -549,7 +550,7 @@ public abstract class Resource extends IntegrationEntity implements IHumanIdenti
     }
 
     public void modifySatisfaction(CriterionSatisfaction original,
-            Interval interval){
+                                   Interval interval){
         /* Create a temporal criterion satisfaction. */
         CriterionType type = original.getCriterion().getType();
         CriterionSatisfaction temporal = createNewSatisfaction(interval,
@@ -570,13 +571,13 @@ public abstract class Resource extends IntegrationEntity implements IHumanIdenti
                 criterionSatisfactions.add(original);
                 if(!canAdd){
                     throw new IllegalStateException(
-                        "This interval "+original.getCriterion().getName()+" not is valid because exists overlap with other criterion satisfaction");
+                            "This interval "+original.getCriterion().getName()+" not is valid because exists overlap with other criterion satisfaction");
                 }
             }catch(IllegalArgumentException e){
                 throw new IllegalArgumentException (original.getCriterion().getName()+" : "+e.getMessage());
             }
         }else{
-             throw new IllegalStateException(
+            throw new IllegalStateException(
                     "The criterion satisfaction "+original.getCriterion().getName()+" not is activated for this resource");
         }
     }
@@ -596,9 +597,9 @@ public abstract class Resource extends IntegrationEntity implements IHumanIdenti
         }
 
         CriterionSatisfaction previousSameCriterion = getPreviousSameCriterion
-        (criterion, satisfaction, satisfactions);
+                (criterion, satisfaction, satisfactions);
         CriterionSatisfaction posteriorSameCriterion = getNextSameCriterion
-        (criterion, satisfaction, satisfactions);
+                (criterion, satisfaction, satisfactions);
 
         boolean canAdd = ((previousSameCriterion == null ||
                 !previousSameCriterion.overlapsWith(interval)) &&
@@ -616,7 +617,7 @@ public abstract class Resource extends IntegrationEntity implements IHumanIdenti
         CriterionSatisfaction posterior = getNext(type, satisfaction, satisfactions);
 
         return (previous == null || !previous.overlapsWith(interval)) &&
-        ( posterior == null || !posterior.overlapsWith(interval));
+                ( posterior == null || !posterior.overlapsWith(interval));
     }
 
     public boolean _canAddSatisfaction(
@@ -638,7 +639,7 @@ public abstract class Resource extends IntegrationEntity implements IHumanIdenti
         boolean canAdd = ((previousSameCriterion == null ||
                 !previousSameCriterion.overlapsWith(interval)) &&
                 ( posteriorSameCriterion == null ||
-                !posteriorSameCriterion.overlapsWith(interval)));
+                        !posteriorSameCriterion.overlapsWith(interval)));
 
         if(!canAdd) {
             return false;
@@ -657,14 +658,14 @@ public abstract class Resource extends IntegrationEntity implements IHumanIdenti
     }
 
     public boolean canAddSatisfaction(ICriterionType<?> type,
-            CriterionSatisfaction satisfaction) {
+                                      CriterionSatisfaction satisfaction) {
         EnsureSatisfactionIsCorrect ensureSatisfactionIsCorrect = new EnsureSatisfactionIsCorrect(
                 this, type, satisfaction);
         return ensureSatisfactionIsCorrect.canAddSatisfaction();
     }
 
     private CriterionSatisfaction getNext(ICriterionType<?> type,
-            CriterionSatisfaction newSatisfaction,Set<CriterionSatisfaction> list) {
+                                          CriterionSatisfaction newSatisfaction,Set<CriterionSatisfaction> list) {
         List<CriterionSatisfaction> ordered = query().from(type).result(list);
         int position = findPlace(ordered, newSatisfaction);
         CriterionSatisfaction next = position != ordered.size() ? ordered
@@ -673,7 +674,7 @@ public abstract class Resource extends IntegrationEntity implements IHumanIdenti
     }
 
     private CriterionSatisfaction getPrevious(ICriterionType<?> type,
-            CriterionSatisfaction newSatisfaction,Set<CriterionSatisfaction> list) {
+                                              CriterionSatisfaction newSatisfaction,Set<CriterionSatisfaction> list) {
         List<CriterionSatisfaction> ordered = query().from(type).result(list);
         int position = findPlace(ordered, newSatisfaction);
         CriterionSatisfaction previous = position > 0 ? ordered
@@ -683,7 +684,7 @@ public abstract class Resource extends IntegrationEntity implements IHumanIdenti
 
 
     private CriterionSatisfaction getNextSameCriterion(Criterion criterion,
-            CriterionSatisfaction newSatisfaction,Set<CriterionSatisfaction> list) {
+                                                       CriterionSatisfaction newSatisfaction,Set<CriterionSatisfaction> list) {
         List<CriterionSatisfaction> ordered = query().from(criterion).result(list);
         int position = findPlace(ordered, newSatisfaction);
         CriterionSatisfaction next = position != ordered.size() ? ordered
@@ -692,7 +693,7 @@ public abstract class Resource extends IntegrationEntity implements IHumanIdenti
     }
 
     private CriterionSatisfaction getPreviousSameCriterion(Criterion criterion,
-            CriterionSatisfaction newSatisfaction,Set<CriterionSatisfaction> list) {
+                                                           CriterionSatisfaction newSatisfaction,Set<CriterionSatisfaction> list) {
         List<CriterionSatisfaction> ordered = query().from(criterion).result(list);
         int position = findPlace(ordered, newSatisfaction);
         CriterionSatisfaction previous = position > 0 ? ordered
@@ -753,7 +754,7 @@ public abstract class Resource extends IntegrationEntity implements IHumanIdenti
      * @throws IllegalArgumentException in case of overlapping
      */
     private void checkNotOverlaps(CriterionSatisfaction before,
-            CriterionSatisfaction after) {
+                                  CriterionSatisfaction after) {
 
         CriterionType criterionType = before.getCriterion().getType();
 
@@ -763,10 +764,10 @@ public abstract class Resource extends IntegrationEntity implements IHumanIdenti
          * criterion satisfactions per resource).
          */
         if (before.getCriterion().equals(after.getCriterion()) &&
-            !before.goesBeforeWithoutOverlapping(after)) {
-                throw new IllegalArgumentException(createOverlapsMessage(before,
-                        after));
-         }
+                !before.goesBeforeWithoutOverlapping(after)) {
+            throw new IllegalArgumentException(createOverlapsMessage(before,
+                    after));
+        }
 
         /*
          * If CriterionType does not allow simultaneous criterion satisfactions
@@ -774,7 +775,7 @@ public abstract class Resource extends IntegrationEntity implements IHumanIdenti
          * of they refer to different Criterion objects).
          */
         if (!criterionType.isAllowSimultaneousCriterionsPerResource() &&
-            !before.goesBeforeWithoutOverlapping(after)) {
+                !before.goesBeforeWithoutOverlapping(after)) {
             throw new IllegalArgumentException(createOverlapsMessage(before,
                     after));
         }
@@ -782,7 +783,7 @@ public abstract class Resource extends IntegrationEntity implements IHumanIdenti
     }
 
     private String createOverlapsMessage(CriterionSatisfaction before,
-            CriterionSatisfaction after) {
+                                         CriterionSatisfaction after) {
         return new StringBuilder("the satisfaction").append(before).append(
                 "overlaps with").append(after).toString();
     }
@@ -824,13 +825,13 @@ public abstract class Resource extends IntegrationEntity implements IHumanIdenti
     }
 
     public void setResourceCalendar(String calendarCode)
-        throws InstanceNotFoundException, MultipleInstancesException {
+            throws InstanceNotFoundException, MultipleInstancesException {
 
         ResourceCalendar calendar;
 
         if (StringUtils.isBlank(calendarCode)) {
             calendar = Registry.getConfigurationDAO().getConfiguration().
-                getDefaultCalendar().newDerivedResourceCalendar();
+                    getDefaultCalendar().newDerivedResourceCalendar();
 
         } else {
             BaseCalendar baseCalendar = Registry.getBaseCalendarDAO()
@@ -849,7 +850,7 @@ public abstract class Resource extends IntegrationEntity implements IHumanIdenti
     public EffortDuration getAssignedDurationDiscounting(
             Map<Long, Set<BaseEntity>> allocationsFromWhichDiscountHours,
             LocalDate day) {
-        
+
         EffortDuration result = zero();
         for (DayAssignment dayAssignment : getAssignmentsForDay(day)) {
 
@@ -886,19 +887,19 @@ public abstract class Resource extends IntegrationEntity implements IHumanIdenti
     }
 
     public int getTotalWorkHours(LocalDate start, LocalDate endExclusive,
-            ICriterion criterion) {
+                                 ICriterion criterion) {
         return getTotalEffortFor(IntraDayDate.startOfDay(start),
                 IntraDayDate.startOfDay(endExclusive), criterion)
                 .roundToHours();
     }
 
     public EffortDuration getTotalEffortFor(IntraDayDate startInclusive,
-            IntraDayDate endExclusive) {
+                                            IntraDayDate endExclusive) {
         return getTotalEffortFor(startInclusive, endExclusive, null);
     }
 
     public EffortDuration getTotalEffortFor(IntraDayDate startInclusive,
-            IntraDayDate endExclusive, ICriterion criterion) {
+                                            IntraDayDate endExclusive, ICriterion criterion) {
         return getTotalEffortFor(getCalendarOrDefault(), startInclusive,
                 endExclusive, criterion);
     }
@@ -909,8 +910,8 @@ public abstract class Resource extends IntegrationEntity implements IHumanIdenti
     }
 
     private EffortDuration getTotalEffortFor(final ICalendar calendar,
-            IntraDayDate startInclusive, IntraDayDate endExclusive,
-            final ICriterion criterionToSatisfy) {
+                                             IntraDayDate startInclusive, IntraDayDate endExclusive,
+                                             final ICriterion criterionToSatisfy) {
 
         Iterable<PartialDay> daysBetween = startInclusive
                 .daysUntil(endExclusive);
@@ -923,7 +924,7 @@ public abstract class Resource extends IntegrationEntity implements IHumanIdenti
                         .getCapacityOn(current);
                 if (capacityCurrent != null
                         && (criterionToSatisfy == null || satisfiesCriterionAt(
-                                criterionToSatisfy, current.getDate()))) {
+                        criterionToSatisfy, current.getDate()))) {
                     return capacityCurrent;
                 }
                 return zero();
@@ -932,12 +933,12 @@ public abstract class Resource extends IntegrationEntity implements IHumanIdenti
     }
 
     private boolean satisfiesCriterionAt(ICriterion criterionToSatisfy,
-            LocalDate current) {
+                                         LocalDate current) {
         return criterionToSatisfy.isSatisfiedBy(this, current);
     }
 
     public void addUnvalidatedSatisfaction(CriterionSatisfaction
-        criterionSatisfaction) {
+                                                   criterionSatisfaction) {
 
         criterionSatisfactions.add(criterionSatisfaction);
 
@@ -975,7 +976,7 @@ public abstract class Resource extends IntegrationEntity implements IHumanIdenti
     }
 
     private void validateSatisfaction(CriterionSatisfaction satisfaction, Set<CriterionSatisfaction> satisfactions)
-    throws ValidationException {
+            throws ValidationException {
 
         if ( !canAddSatisfaction(satisfaction, satisfactions) ) {
             String message = getReasonForNotAddingSatisfaction(satisfaction.getCriterion().getType());
@@ -1004,16 +1005,16 @@ public abstract class Resource extends IntegrationEntity implements IHumanIdenti
     }
 
     public ResourcesCostCategoryAssignment
-        getResourcesCostCategoryAssignmentByCode(String code)
-        throws InstanceNotFoundException {
+    getResourcesCostCategoryAssignmentByCode(String code)
+            throws InstanceNotFoundException {
 
         if (StringUtils.isBlank(code)) {
             throw new InstanceNotFoundException(code,
-                ResourcesCostCategoryAssignment.class.getName());
+                    ResourcesCostCategoryAssignment.class.getName());
         }
 
         for (ResourcesCostCategoryAssignment i :
-            resourcesCostCategoryAssignments) {
+                resourcesCostCategoryAssignments) {
 
             if (i.getCode().equalsIgnoreCase(StringUtils.trim(code))) {
                 return i;
@@ -1022,7 +1023,7 @@ public abstract class Resource extends IntegrationEntity implements IHumanIdenti
         }
 
         throw new InstanceNotFoundException(code,
-            ResourcesCostCategoryAssignment.class.getName());
+                ResourcesCostCategoryAssignment.class.getName());
 
     }
 
@@ -1034,7 +1035,7 @@ public abstract class Resource extends IntegrationEntity implements IHumanIdenti
     }
 
     public void addUnvalidatedResourcesCostCategoryAssignment(
-        ResourcesCostCategoryAssignment assignment) {
+            ResourcesCostCategoryAssignment assignment) {
 
         resourcesCostCategoryAssignments.add(assignment);
 
@@ -1093,7 +1094,7 @@ public abstract class Resource extends IntegrationEntity implements IHumanIdenti
          * Check assignment overlapping.
          */
         List<ResourcesCostCategoryAssignment> assignmentsList =
-            new ArrayList<ResourcesCostCategoryAssignment>();
+                new ArrayList<ResourcesCostCategoryAssignment>();
         assignmentsList.addAll(getResourcesCostCategoryAssignments());
 
         try {
@@ -1112,7 +1113,7 @@ public abstract class Resource extends IntegrationEntity implements IHumanIdenti
     }
 
     @AssertTrue(message="there exist criterion satisfactions referring to " +
-        "criterion types not applicable to this resource")
+            "criterion types not applicable to this resource")
     public boolean isCriterionSatisfactionsWithCorrectTypeConstraint() {
 
         for (CriterionSatisfaction c : getCriterionSatisfactions()) {
@@ -1126,13 +1127,13 @@ public abstract class Resource extends IntegrationEntity implements IHumanIdenti
     }
 
     @AssertTrue(message="criterion satisfaction codes must be unique inside " +
-        "a resource")
+            "a resource")
     public boolean isNonRepeatedCriterionSatisfactionCodesConstraint() {
         return getFirstRepeatedCode(criterionSatisfactions) == null;
     }
 
     @AssertTrue(message="resource cost category assignments codes must be " +
-        "unique inside a resource")
+            "unique inside a resource")
     public boolean isNonRepeatedResourcesCostCategoryAssignmentCodesConstraint() {
         return getFirstRepeatedCode(resourcesCostCategoryAssignments) == null;
     }
@@ -1174,30 +1175,30 @@ public abstract class Resource extends IntegrationEntity implements IHumanIdenti
     @AssertTrue(message = "You have exceeded the maximum limit of resources")
     public boolean isMaxResourcesConstraint() {
         return Registry.getTransactionService().runOnAnotherReadOnlyTransaction(new IOnTransaction<Boolean>() {
-                    @Override
-                    public Boolean execute() {
-                        Configuration configuration = Registry.getConfigurationDAO().getConfiguration();
-                        if ( configuration == null ) {
-                            return true;
-                        }
+            @Override
+            public Boolean execute() {
+                Configuration configuration = Registry.getConfigurationDAO().getConfiguration();
+                if ( configuration == null ) {
+                    return true;
+                }
 
-                        Integer maxResources = configuration.getMaxResources();
-                        
-                        if ( maxResources != null && maxResources > 0 ) {
-                            List<Resource> resources = Registry.getResourceDAO().findAll();
-                            int resourcesNumber = resources.size();
-                            
-                            if ( isNewObject() ) {
-                                resourcesNumber++;
-                            }
-                            
-                            if ( resourcesNumber > maxResources ) {
-                                return false;
-                            }
-                        }
-                        return true;
+                Integer maxResources = configuration.getMaxResources();
+
+                if ( maxResources != null && maxResources > 0 ) {
+                    List<Resource> resources = Registry.getResourceDAO().findAll();
+                    int resourcesNumber = resources.size();
+
+                    if ( isNewObject() ) {
+                        resourcesNumber++;
                     }
-                });
+
+                    if ( resourcesNumber > maxResources ) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        });
     }
 
     public boolean isActiveBetween(LocalDate startDate, LocalDate endDate) {

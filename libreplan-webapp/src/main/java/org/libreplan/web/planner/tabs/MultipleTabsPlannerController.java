@@ -22,11 +22,6 @@
  */
 package org.libreplan.web.planner.tabs;
 
-import static org.libreplan.web.I18nHelper._;
-import static org.zkoss.ganttz.adapters.TabsConfiguration.configure;
-
-import java.util.Map;
-
 import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.daos.IConfigurationDAO;
 import org.libreplan.business.orders.daos.IOrderDAO;
@@ -35,7 +30,6 @@ import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.resources.daos.IResourcesSearcher;
 import org.libreplan.business.templates.entities.OrderTemplate;
-import org.libreplan.business.users.daos.IUserDAO;
 import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.web.common.ConfirmCloseUtil;
 import org.libreplan.web.common.GatheredUsageStats;
@@ -43,25 +37,17 @@ import org.libreplan.web.common.entrypoints.EntryPointsHandler;
 import org.libreplan.web.common.entrypoints.URLHandlerRegistry;
 import org.libreplan.web.dashboard.DashboardController;
 import org.libreplan.web.dashboard.DashboardControllerGlobal;
-import org.libreplan.web.expensesheet.IExpenseSheetModel;
 import org.libreplan.web.limitingresources.LimitingResourcesController;
 import org.libreplan.web.logs.LogsController;
-import org.libreplan.web.materials.IMaterialsModel;
 import org.libreplan.web.montecarlo.MonteCarloController;
-import org.libreplan.web.orders.IAssignedTaskQualityFormsToOrderElementModel;
-import org.libreplan.web.orders.IOrderModel;
 import org.libreplan.web.orders.OrderCRUDController;
 import org.libreplan.web.planner.allocation.AdvancedAllocationController.IBack;
 import org.libreplan.web.planner.company.CompanyPlanningController;
 import org.libreplan.web.planner.order.IOrderPlanningGate;
 import org.libreplan.web.planner.order.OrderPlanningController;
 import org.libreplan.web.planner.order.PlanningStateCreator;
-import org.libreplan.web.planner.tabs.Mode.ModeTypeChangedListener;
 import org.libreplan.web.resourceload.ResourceLoadController;
-import org.libreplan.web.resources.machine.IMachineModel;
-import org.libreplan.web.resources.worker.IWorkerModel;
 import org.libreplan.web.security.SecurityUtils;
-import org.libreplan.web.workreports.IWorkReportModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -84,99 +70,82 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Composer;
+import org.zkoss.zkplus.spring.SpringUtil;
+
+import java.util.Map;
+
+import static org.libreplan.web.I18nHelper._;
+import static org.zkoss.ganttz.adapters.TabsConfiguration.configure;
 
 /**
- * Creates and handles several tabs
+ * Creates and handles several tabs.
  *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
- * @author Vova Perebykivskiy <vova@libreplan-enterprise.com>
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class MultipleTabsPlannerController implements Composer, IGlobalViewEntryPoints {
 
+    /**
+     * URL used for Email Template functionality
+     */
     public static String WELCOME_URL = "-- no URL provided --";
-
-    private final class TabWithLoadingFeedback extends TabProxy {
-        private boolean feedback = true;
-
-        private TabWithLoadingFeedback(ITab tab) {
-            super(tab);
-        }
-
-        @Override
-        public void show() {
-            if ( feedback ) {
-                showWithFeedback();
-            } else {
-                showWithoutFeedback();
-            }
-        }
-
-        private void showWithFeedback() {
-            LongOperationFeedback.execute(tabsSwitcher,
-                new ILongOperation() {
-
-                    @Override
-                    public String getName() {
-                        return _("changing perspective");
-                    }
-
-                    @Override
-                    public void doAction() {
-                        proxiedTab.show();
-                    }
-                });
-        }
-
-        private void showWithoutFeedback() {
-            proxiedTab.show();
-        }
-
-        public void toggleToNoFeedback() {
-            feedback = false;
-        }
-
-        public void toggleToFeedback() {
-            feedback = true;
-        }
-    }
-
-    public static String getSchedulingLabel() {
-        return _("Planning");
-    };
 
     public static final String BREADCRUMBS_SEPARATOR = "/common/img/migas_separacion.gif";
 
     private Mode mode = Mode.initial();
 
-    @Autowired
     private CompanyPlanningController companyPlanningController;
 
-    @Autowired
     private OrderCRUDController orderCRUDController;
 
-    @Autowired
     private PlanningStateCreator planningStateCreator;
 
+    /**
+     * Projects Planning.
+     */
     private TabWithLoadingFeedback planningTab;
 
+    /**
+     * Resources Load.
+     */
     private ITab resourceLoadTab;
 
+    /**
+     * Queue-based Resources Planning.
+     */
     private ITab limitingResourcesTab;
 
+    /**
+     * Monte Carlo Method.
+     */
     private ITab monteCarloTab;
 
+    /**
+     * Projects List.
+     */
     private ITab ordersTab;
 
+    /**
+     * Advanced Allocation.
+     */
     private ITab advancedAllocationTab;
 
+    /**
+     * Dashboard.
+     */
     private ITab dashboardTab;
 
+    /**
+     * Logs.
+     */
     private ITab logsTab;
 
     private TabSwitcher tabsSwitcher;
+
+    private org.zkoss.zk.ui.Component breadcrumbs;
 
     @Autowired
     private OrderPlanningController orderPlanningController;
@@ -186,9 +155,6 @@ public class MultipleTabsPlannerController implements Composer, IGlobalViewEntry
 
     @Autowired
     private ResourceLoadController resourceLoadControllerGlobal;
-
-    @Autowired
-    private LimitingResourcesController limitingResourcesController;
 
     @Autowired
     private MonteCarloController monteCarloController;
@@ -208,8 +174,6 @@ public class MultipleTabsPlannerController implements Composer, IGlobalViewEntry
     @Autowired
     private  LogsController logsControllerGlobal;
 
-    private org.zkoss.zk.ui.Component breadcrumbs;
-
     @Autowired
     private IAdHocTransactionService transactionService;
 
@@ -225,55 +189,82 @@ public class MultipleTabsPlannerController implements Composer, IGlobalViewEntry
     @Autowired
     private URLHandlerRegistry registry;
 
-    @Autowired
-    private IUserDAO userDAO;
+    private final class TabWithLoadingFeedback extends TabProxy {
 
-    @Autowired
-    private IOrderModel orderModel;
+        private boolean feedback = true;
 
-    @Autowired
-    private IWorkReportModel workReportModel;
+        private TabWithLoadingFeedback(ITab tab) {
+            super(tab);
+        }
 
-    @Autowired
-    private IWorkerModel workerModel;
+        @Override
+        public void show() {
+            if ( feedback ) {
+                showWithFeedback();
+            } else {
+                showWithoutFeedback();
+            }
+        }
 
-    @Autowired
-    private IMachineModel machineModel;
+        private void showWithFeedback() {
+            LongOperationFeedback.execute(tabsSwitcher, new ILongOperation() {
+                @Override
+                public String getName() {
+                    return _("changing perspective");
+                }
 
-    @Autowired
-    private IExpenseSheetModel expenseSheetModel;
+                @Override
+                public void doAction() {
+                    proxiedTab.show();
+                }
+            });
+        }
 
-    @Autowired
-    private IMaterialsModel materialsModel;
+        private void showWithoutFeedback() {
+            proxiedTab.show();
+        }
 
-    @Autowired
-    private IAssignedTaskQualityFormsToOrderElementModel assignedQualityFormsModel;
+        public void toggleToNoFeedback() {
+            feedback = false;
+        }
+
+        public void toggleToFeedback() {
+            feedback = true;
+        }
+    }
+
+    public static String getSchedulingLabel() {
+        return _("Planning");
+    }
+
+    public MultipleTabsPlannerController() {
+        orderCRUDController = (OrderCRUDController) SpringUtil.getBean("orderCRUDController");
+        companyPlanningController = (CompanyPlanningController) SpringUtil.getBean("companyPlanningController");
+        planningStateCreator = (PlanningStateCreator) SpringUtil.getBean("planningStateCreator");
+    }
 
 
     private TabsConfiguration buildTabsConfiguration(final Desktop desktop) {
 
         Map<String, String[]> parameters = getURLQueryParametersMap();
 
-        mode.addListener(new ModeTypeChangedListener() {
+        mode.addListener((oldType, newType) -> {
+            switch (newType) {
 
-            @Override
-            public void typeChanged(ModeType oldType, ModeType newType) {
-                switch (newType) {
-                    case GLOBAL:
-                        ConfirmCloseUtil.resetConfirmClose();
-                        break;
+                case GLOBAL:
+                    ConfirmCloseUtil.resetConfirmClose();
+                    break;
 
-                    case ORDER:
-                        if ( SecurityUtils.loggedUserCanWrite(mode.getOrder()) ) {
-                            ConfirmCloseUtil.setConfirmClose(
-                                    desktop,
-                                    _("You are about to leave the planning editing. Unsaved changes will be lost!"));
-                        }
-                        break;
+                case ORDER:
+                    if ( SecurityUtils.loggedUserCanWrite(mode.getOrder()) ) {
+                        ConfirmCloseUtil.setConfirmClose(
+                                desktop,
+                                _("You are about to leave the planning editing. Unsaved changes will be lost!"));
+                    }
+                    break;
 
-                    default:
-                        break;
-                }
+                default:
+                    break;
             }
         });
 
@@ -281,16 +272,17 @@ public class MultipleTabsPlannerController implements Composer, IGlobalViewEntry
                 mode, companyPlanningController, orderPlanningController, orderDAO, breadcrumbs, parameters, this));
 
         resourceLoadTab = ResourcesLoadTabCreator.create(
-                mode, resourceLoadController, resourceLoadControllerGlobal, new IOrderPlanningGate() {
+                mode,
+                resourceLoadController,
+                resourceLoadControllerGlobal,
+                new IOrderPlanningGate() {
                     @Override
                     public void goToScheduleOf(Order order) {
                         getTabsRegistry().show(planningTab, changeModeTo(order));
                     }
 
                     @Override
-                    public void goToOrderDetails(Order order) {
-                        // it do nothing
-                    }
+                    public void goToOrderDetails(Order order) {}
 
                     @Override
                     public void goToTaskResourceAllocation(Order order, TaskElement task) {
@@ -303,47 +295,17 @@ public class MultipleTabsPlannerController implements Composer, IGlobalViewEntry
                     }
 
                     @Override
-                    public void goToDashboard(Order order) {
-                        // do nothing
-                    }
-                }, breadcrumbs);
+                    public void goToDashboard(Order order) {}
+                },
+                breadcrumbs);
 
-        limitingResourcesTab = LimitingResourcesTabCreator.create(
-                mode, limitingResourcesController, limitingResourcesControllerGlobal, breadcrumbs);
+        limitingResourcesTab = LimitingResourcesTabCreator.create(mode, limitingResourcesControllerGlobal, breadcrumbs);
 
-        ordersTab = OrdersTabCreator.create(mode, orderCRUDController, breadcrumbs, new IOrderPlanningGate() {
-            @Override
-            public void goToScheduleOf(Order order) {
-                getTabsRegistry().show(planningTab, changeModeTo(order));
-            }
-
-            @Override
-            public void goToOrderDetails(Order order) {
-                getTabsRegistry().show(ordersTab, changeModeTo(order));
-            }
-
-            @Override
-            public void goToTaskResourceAllocation(Order order, TaskElement task) {
-                // do nothing
-            }
-
-            @Override
-            public void goToDashboard(Order order) {
-                // do nothing
-            }
-        }, parameters);
-
-        dashboardTab = DashboardTabCreator.create(
+        ordersTab = OrdersTabCreator.create(
                 mode,
-                planningStateCreator,
-                dashboardController,
-                dashboardControllerGlobal,
-                orderPlanningController,
+                orderCRUDController,
                 breadcrumbs,
-                resourcesSearcher);
-
-        logsTab = LogsTabCreator.create(
-                mode, logsController, logsControllerGlobal, breadcrumbs, new IOrderPlanningGate() {
+                new IOrderPlanningGate() {
                     @Override
                     public void goToScheduleOf(Order order) {
                         getTabsRegistry().show(planningTab, changeModeTo(order));
@@ -355,18 +317,49 @@ public class MultipleTabsPlannerController implements Composer, IGlobalViewEntry
                     }
 
                     @Override
-                    public void goToTaskResourceAllocation(Order order, TaskElement task) {
-                        // do nothing
+                    public void goToTaskResourceAllocation(Order order, TaskElement task) {}
+
+                    @Override
+                    public void goToDashboard(Order order) {}
+                },
+                parameters);
+
+        dashboardTab = DashboardTabCreator.create(
+                mode,
+                planningStateCreator,
+                dashboardController,
+                dashboardControllerGlobal,
+                orderPlanningController,
+                breadcrumbs,
+                resourcesSearcher);
+
+        logsTab = LogsTabCreator.create(
+                mode,
+                logsController,
+                logsControllerGlobal,
+                breadcrumbs,
+                new IOrderPlanningGate() {
+                    @Override
+                    public void goToScheduleOf(Order order) {
+                        getTabsRegistry().show(planningTab, changeModeTo(order));
                     }
 
                     @Override
-                    public void goToDashboard(Order order) {
-                        // do nothing
+                    public void goToOrderDetails(Order order) {
+                        getTabsRegistry().show(ordersTab, changeModeTo(order));
                     }
-                }, parameters);
+
+                    @Override
+                    public void goToTaskResourceAllocation(Order order, TaskElement task) {}
+
+                    @Override
+                    public void goToDashboard(Order order) {}
+                },
+                parameters);
 
         final boolean isMontecarloVisible = isMonteCarloVisible();
-        if ( isMontecarloVisible ) {
+        if (isMontecarloVisible) {
+
             monteCarloTab = MonteCarloTabCreator.create(
                     mode,
                     planningStateCreator,
@@ -381,22 +374,26 @@ public class MultipleTabsPlannerController implements Composer, IGlobalViewEntry
         advancedAllocationTab = doFeedbackOn(AdvancedAllocationTabCreator.create(
                 mode, transactionService, planningStateCreator, returnToPlanningTab(), breadcrumbs));
 
-        TabsConfiguration tabsConfiguration = TabsConfiguration.create()
-            .add(tabWithNameReloading(planningTab, typeChanged))
-            .add(tabWithNameReloading(ordersTab, typeChanged));
+        TabsConfiguration tabsConfiguration = TabsConfiguration
+                .create()
+                .add(tabWithNameReloading(planningTab, typeChanged))
+                .add(tabWithNameReloading(ordersTab, typeChanged));
 
-        if ( SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_PLANNING) ) {
+        if (SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_PLANNING)) {
+
             tabsConfiguration
                     .add(tabWithNameReloading(resourceLoadTab, typeChanged))
                     .add(tabWithNameReloading(limitingResourcesTab, typeChanged));
+
         } else {
             tabsConfiguration.add(visibleOnlyAtOrderModeWithNameReloading(resourceLoadTab, typeChanged));
         }
+
         tabsConfiguration
                 .add(visibleOnlyAtOrderMode(advancedAllocationTab))
                 .add(tabWithNameReloading(dashboardTab, typeChanged));
 
-        if ( isMontecarloVisible ) {
+        if (isMontecarloVisible) {
             tabsConfiguration.add(visibleOnlyAtOrderMode(monteCarloTab));
         }
 
@@ -407,7 +404,7 @@ public class MultipleTabsPlannerController implements Composer, IGlobalViewEntry
 
     private boolean isMonteCarloVisible() {
         Boolean result = configurationDAO.getConfiguration().isMonteCarloMethodTabVisible();
-        return result != null ? result : false;
+        return result != null && result;
     }
 
     @SuppressWarnings("unchecked")
@@ -421,18 +418,15 @@ public class MultipleTabsPlannerController implements Composer, IGlobalViewEntry
 
     private IBack returnToPlanningTab() {
         return new IBack() {
+
             private String eventName = "onShowPlanningTab";
+
             {
                 tabsSwitcher.addEventListener(eventName, showPlanningTab());
             }
 
             private EventListener showPlanningTab() {
-                return new EventListener() {
-                    @Override
-                    public void onEvent(Event event) {
-                        getTabsRegistry().show(planningTab);
-                    }
-                };
+                return event -> getTabsRegistry().show(planningTab);
             }
 
             @Override
@@ -457,13 +451,7 @@ public class MultipleTabsPlannerController implements Composer, IGlobalViewEntry
 
     private State<Void> typeChangedState() {
         final State<Void> typeChanged = State.create();
-        mode.addListener(new ModeTypeChangedListener() {
-
-            @Override
-            public void typeChanged(ModeType oldType, ModeType newType) {
-                typeChanged.changeValueTo(null);
-            }
-        });
+        mode.addListener((oldType, newType) -> typeChanged.changeValueTo(null));
 
         return typeChanged;
     }
@@ -476,18 +464,12 @@ public class MultipleTabsPlannerController implements Composer, IGlobalViewEntry
         final State<Boolean> state = State.create(mode.isOf(ModeType.ORDER));
         ChangeableTab result;
 
-        if ( typeChanged == null ) {
+        if (typeChanged == null) {
             result = configure(tab).visibleOn(state);
         } else {
             result = configure(tab).visibleOn(state).reloadNameOn(typeChanged);
         }
-        mode.addListener(new ModeTypeChangedListener() {
-
-            @Override
-            public void typeChanged(ModeType oldType, ModeType newType) {
-                state.changeValueTo(ModeType.ORDER == newType);
-            }
-        });
+        mode.addListener((oldType, newType) -> state.changeValueTo(ModeType.ORDER == newType));
 
         return result;
     }
@@ -497,57 +479,43 @@ public class MultipleTabsPlannerController implements Composer, IGlobalViewEntry
     public void doAfterCompose(org.zkoss.zk.ui.Component comp) {
 
         Execution execution = Executions.getCurrent();
-        WELCOME_URL = "http://" + execution.getServerName() + ":" + execution.getServerPort() +
-                Executions.encodeURL("/planner/index.zul");
+        WELCOME_URL = "http://" + execution.getServerName() + ":" +
+                execution.getServerPort() + Executions.encodeURL("/planner/index.zul");
 
         tabsSwitcher = (TabSwitcher) comp;
         breadcrumbs = comp.getPage().getFellow("breadcrumbs");
+
         tabsSwitcher.setConfiguration(buildTabsConfiguration(comp.getDesktop()));
 
         final EntryPointsHandler<IGlobalViewEntryPoints> handler =
                 registry.getRedirectorFor(IGlobalViewEntryPoints.class);
 
-        if ( !handler.applyIfMatches(this) ) {
+        if (!handler.applyIfMatches(this)) {
             planningTab.toggleToNoFeedback();
             goToCompanyScheduling();
             planningTab.toggleToFeedback();
         }
-
         handler.registerBookmarkListener(this, comp.getPage());
 
-        if ( SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_CREATE_PROJECTS) ) {
+        if (SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_CREATE_PROJECTS)) {
             org.zkoss.zk.ui.Component createOrderButton = comp.getPage().getFellowIfAny("createOrderButton");
-
-            if ( createOrderButton != null ) {
-                createOrderButton.addEventListener(Events.ON_CLICK, new EventListener() {
-                    @Override
-                    public void onEvent(Event event) throws Exception {
-                        goToCreateForm();
-                    }
-                });
+            if (createOrderButton != null) {
+                createOrderButton.addEventListener(Events.ON_CLICK, event -> goToCreateForm());
 
             }
         }
 
         // Send data to server
         if ( !SecurityUtils.isGatheredStatsAlreadySent &&
-                configurationDAO.getConfiguration().isAllowToGatherUsageStatsEnabled() )
+                configurationDAO.getConfiguration().isAllowedToGatherUsageStatsEnabled() ) {
+
             sendDataToServer();
+        }
+
     }
 
-    private void sendDataToServer(){
+    private void sendDataToServer() {
         GatheredUsageStats gatheredUsageStats = new GatheredUsageStats();
-
-        gatheredUsageStats.setupNotAutowiredClasses(
-                userDAO,
-                orderModel,
-                workReportModel,
-                workerModel,
-                machineModel,
-                expenseSheetModel,
-                materialsModel,
-                assignedQualityFormsModel);
-
         gatheredUsageStats.sendGatheredUsageStatsToServer();
         SecurityUtils.isGatheredStatsAlreadySent = true;
     }
@@ -580,7 +548,6 @@ public class MultipleTabsPlannerController implements Composer, IGlobalViewEntry
     public void goToCreateForm() {
         orderCRUDController.prepareForCreate(tabsSwitcher.getDesktop());
         orderCRUDController.getCreationPopup().showWindow(orderCRUDController, this);
-
     }
 
     @Override
@@ -617,7 +584,7 @@ public class MultipleTabsPlannerController implements Composer, IGlobalViewEntry
     }
 
     @Override
-    public void goToCreateotherOrderFromTemplate(OrderTemplate template) {
+    public void goToCreateOtherOrderFromTemplate(OrderTemplate template) {
         getTabsRegistry().show(ordersTab);
         orderCRUDController.showCreateFormFromTemplate(template);
     }
@@ -626,19 +593,16 @@ public class MultipleTabsPlannerController implements Composer, IGlobalViewEntry
     public void goToAdvanceTask(Order order,TaskElement task) {
         orderPlanningController.setShowedTask(task);
 
-        orderPlanningController
-                .setCurrentControllerToShow(orderPlanningController.getAdvanceAssignmentPlanningController());
+        orderPlanningController.setCurrentControllerToShow(
+                orderPlanningController.getAdvanceAssignmentPlanningController());
 
         getTabsRegistry().show(planningTab, changeModeTo(order));
     }
 
     private IBeforeShowAction changeModeTo(final Order order) {
+        /* Makes possible to show Risk/Issue Logs only for specific Order */
         LogsController.goToOrderMode(order);
-        return new IBeforeShowAction() {
-            @Override
-            public void doAction() {
-                mode.goToOrderMode(order);
-            }
-        };
+
+        return () -> mode.goToOrderMode(order);
     }
 }

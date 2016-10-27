@@ -22,29 +22,29 @@
 <?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n" ?>
 
 <?component name="newAllocationSelectorCombo"
-    class="org.libreplan.web.common.components.NewAllocationSelectorCombo"
-    macroURI="/resources/search/allocation_selector_combo.zul" ?>
+        class="org.libreplan.web.common.components.NewAllocationSelectorCombo"
+        macroURI="/resources/search/allocation_selector_combo.zul" ?>
 
 <?component name="newAllocationSelector"
-    class="org.libreplan.web.common.components.NewAllocationSelector"
-    macroURI="/resources/search/allocation_selector.zul" ?>
+        class="org.libreplan.web.common.components.NewAllocationSelector"
+        macroURI="/resources/search/allocation_selector.zul" ?>
 
 <?component name="taskInformation"
-    class="org.libreplan.web.planner.allocation.TaskInformation"
-    macroURI="_taskInformation.zul" ?>
+        class="org.libreplan.web.planner.allocation.TaskInformation"
+        macroURI="_taskInformation.zul" ?>
 
 <?component name="allocationConfiguration"
-    class="org.libreplan.web.planner.allocation.AllocationConfiguration"
-    macroURI="_allocationConfiguration.zul" ?>
+        class="org.libreplan.web.planner.allocation.AllocationConfiguration"
+        macroURI="_allocationConfiguration.zul" ?>
 
 <tabpanel id="resourceAllocationTabpanel">
- <tabbox mold="accordion">
+    <tabbox mold="accordion">
         <tabs>
             <tab id="tbResourceAllocation" />
             <tab id="workerSearchTab" />
         </tabs>
-        <tabpanels>
-            <tabpanel>
+        <tabpanels sclass="tabNormalAllocation">
+            <tabpanel sclass="tabNormalAllocation">
                 <hbox align="end" width="100%">
 
                     <!-- Task Information -->
@@ -63,40 +63,68 @@
 
                     <hbox align="center" sclass="add-resources-or-criteria">
                         <newAllocationSelectorCombo id="newAllocationSelectorCombo" behaviour="NON_LIMITING"/>
-                        <button label="${i18n:_('Add')}" onClick="allocationController.onSelectWorkers(newAllocationSelectorCombo)"
-                            disabled="@{allocationController.isAnyManualOrTaskUpdatedFromTimesheets}" />
-                        <button id="advancedSearchButton" label="${i18n:_('Advanced search')}" onClick="allocationController.goToAdvancedSearch()" />
+
+                        <button label="${i18n:_('Add')}"
+                                onClick="allocationController.onSelectWorkers(newAllocationSelectorCombo)"
+                                sclass="add-button"
+                                disabled="@{allocationController.isAnyManualOrTaskUpdatedFromTimesheets}" />
+
+                        <button id="advancedSearchButton" label="${i18n:_('Advanced search')}"
+                                sclass="add-button"
+                                onClick="allocationController.goToAdvancedSearch()" />
+
                         <checkbox id="extendedViewCheckbox" label="${i18n:_('Extended view')}"
-                            onCheck="allocationController.onCheckExtendedView()"/>
+                                  sclass="resource-allocation-checkbox"
+                                  onCheck="allocationController.onCheckExtendedView()"/>
                     </hbox>
 
                     <separator spacing="20px"/>
 
                     <grid id="allocationsGrid"
-                        model="@{allocationController.resourceAllocations}"
-                        rowRenderer="@{allocationController.resourceAllocationRenderer}"
-                        style="margin-bottom: 5px" fixedLayout="true">
+                          model="@{allocationController.resourceAllocations}"
+                          rowRenderer="@{allocationController.resourceAllocationRenderer}"
+                          style="margin-bottom: 5px" fixedLayout="true">
+
                         <auxhead>
                             <auxheader colspan="1"/>
                             <auxheader label="${i18n:_('Name')}" colspan="1" align="center"/>
-                            <auxheader label="${i18n:_('Hours')}" colspan="@{allocationController.colspanHours}" align="center"/>
-                            <auxheader label="${i18n:_('Resources Per Day')}" colspan="@{allocationController.colspanResources}" align="center"/>
+
+                            <auxheader label="${i18n:_('Hours')}" colspan="4" align="center"/>
+
+                            <auxheader label="${i18n:_('Resources Per Day')}" colspan="3" align="center"/>
+
                             <auxheader label="${i18n:_('Function')}" colspan="1" align="center"
-                                visible="@{allocationController.anyNotFlat}" />
+                                       visible="@{allocationController.anyNotFlat}" />
+
                             <auxheader label="${i18n:_('Op.')}" colspan="1" align="center"/>
                         </auxhead>
+
                         <columns sclass="details">
                             <column width="20px"/>
                             <column />
-                            <column label="${i18n:_('Original')}" align="center" visible="@{allocationController.extendedView}" width="70px"/>
-                            <column label="${i18n:_('Total')}" align="center" visible="@{allocationController.extendedView}" width="70px"/>
-                            <column label="${i18n:_('Consolidated')}" align="center" visible="@{allocationController.extendedView}" width="70px"/>
+
+                            <column label="${i18n:_('Original')}" align="center"
+                                    visible="@{allocationController.extendedView}" width="70px"/>
+
+                            <column label="${i18n:_('Total')}" align="center"
+                                    visible="@{allocationController.extendedView}" width="70px"/>
+
+                            <column label="${i18n:_('Consolidated')}" align="center"
+                                    visible="@{allocationController.extendedView}" width="75px"/>
+
                             <column label="${i18n:_('Non Consolidated')}" align="center" width="120px"/>
-                            <column label="${i18n:_('Total')}" align="center" visible="@{allocationController.extendedView}" width="70px"/>
-                            <column label="${i18n:_('Consolidated')}" align="center" visible="@{allocationController.extendedView}" width="70px"/>
+
+                            <column label="${i18n:_('Total')}" align="center"
+                                    visible="@{allocationController.extendedView}" width="70px"/>
+
+                            <column label="${i18n:_('Consolidated')}" align="center"
+                                    visible="@{allocationController.extendedView}" width="75px"/>
+
                             <column label="${i18n:_('Non Consolidated')}" align="center" width="120px"/>
+
                             <column label="" align="center" width="95px"
-                                visible="@{allocationController.anyNotFlat}" />
+                                    visible="@{allocationController.anyNotFlat}" />
+
                             <column label="" align="center" width="40px"/>
                         </columns>
                     </grid>
@@ -104,13 +132,16 @@
             </tabpanel>
 
             <!-- Worker search -->
-            <tabpanel>
+            <tabpanel sclass="tabNormalAllocation">
                 <newAllocationSelector id="newAllocationSelector" behaviour="NON_LIMITING" />
 
                 <!--  Select worker -->
                 <hbox>
-                    <button label="${i18n:_('Select')}" onClick="allocationController.onSelectWorkers(newAllocationSelector)" />
-                    <button label="${i18n:_('Close')}" onClick="allocationController.onCloseSelectWorkers()" />
+                    <button label="${i18n:_('Select')}"
+                            onClick="allocationController.onSelectWorkers(newAllocationSelector)"
+                            sclass="add-button"/>
+                    <button label="${i18n:_('Close')}" onClick="allocationController.onCloseSelectWorkers()"
+                            sclass="add-button"/>
                 </hbox>
             </tabpanel>
         </tabpanels>
@@ -118,6 +149,6 @@
 
     <!-- Control buttons -->
     <hbox>
-        <button label="${i18n:_('Apply tab changes')}" id="applyButton" sclass="global-action" />
+        <button label="${i18n:_('Apply tab changes')}" id="applyButton" sclass="add-button global-action" />
     </hbox>
 </tabpanel>

@@ -45,13 +45,13 @@ import org.libreplan.business.workingday.EffortDuration.IEffortFrom;
 import org.libreplan.business.workingday.IntraDayDate.PartialDay;
 
 /**
- * This class groups the calculation of the three values needed for the
- * chart of the company global resource load. The purpose of the class is
- * having these data pre-calculated to prevent heavy algorithms being
+ * This class groups the calculation of the three values needed for the chart of the company global resource load.
+ * The purpose of the class is having these data pre-calculated to prevent heavy algorithms being
  * run each time the chart is shown.
- * @see PredefinedDatabaseSnapshots
- * @author Jacobo Aragunde Pérez<jaragunde@igalia.com>
  *
+ * @see PredefinedDatabaseSnapshots
+ *
+ * @author Jacobo Aragunde Pérez<jaragunde@igalia.com>
  */
 public class ResourceLoadChartData implements ILoadChartData {
 
@@ -66,25 +66,24 @@ public class ResourceLoadChartData implements ILoadChartData {
     }
 
     public ResourceLoadChartData(List<DayAssignment> dayAssignments,
-            List<Resource> resources, LocalDate startInclusive,
-            LocalDate endExclusive) {
+                                 List<Resource> resources,
+                                 LocalDate startInclusive,
+                                 LocalDate endExclusive) {
 
-        ContiguousDaysLine<List<DayAssignment>> assignments = ContiguousDaysLine
-                .byDay(dayAssignments);
+        ContiguousDaysLine<List<DayAssignment>> assignments = ContiguousDaysLine.byDay(dayAssignments);
+
         if (startInclusive != null && endExclusive != null) {
             assignments = assignments.subInterval(startInclusive, endExclusive);
         }
-        ContiguousDaysLine<EffortDuration> load = assignments
-                .transform(extractLoad());
 
-        ContiguousDaysLine<EffortDuration> overload = assignments
-                .transform(extractOverload());
+        ContiguousDaysLine<EffortDuration> load = assignments.transform(extractLoad());
 
-        ContiguousDaysLine<EffortDuration> availabilityOnAllResources = assignments
-                .transform(extractAvailabilityOnAllResources(resources));
+        ContiguousDaysLine<EffortDuration> overload = assignments.transform(extractOverload());
 
-        this.load = toSortedMap(ContiguousDaysLine.min(load,
-                availabilityOnAllResources));
+        ContiguousDaysLine<EffortDuration> availabilityOnAllResources =
+                assignments.transform(extractAvailabilityOnAllResources(resources));
+
+        this.load = toSortedMap(ContiguousDaysLine.min(load, availabilityOnAllResources));
         this.overload = toSortedMap(sum(overload, availabilityOnAllResources));
         this.availability = toSortedMap(availabilityOnAllResources);
     }
@@ -97,15 +96,11 @@ public class ResourceLoadChartData implements ILoadChartData {
         return new IValueTransformer<List<DayAssignment>, Map<Resource, EffortDuration>>() {
 
             @Override
-            public Map<Resource, EffortDuration> transform(LocalDate day,
-                    List<DayAssignment> previousValue) {
-                Map<Resource, List<DayAssignment>> byResource = DayAssignment
-                        .byResource(previousValue);
-                Map<Resource, EffortDuration> result = new HashMap<Resource, EffortDuration>();
-                for (Entry<Resource, List<DayAssignment>> each : byResource
-                        .entrySet()) {
-                    result.put(each.getKey(),
-                            DayAssignment.sum(each.getValue()));
+            public Map<Resource, EffortDuration> transform(LocalDate day, List<DayAssignment> previousValue) {
+                Map<Resource, List<DayAssignment>> byResource = DayAssignment.byResource(previousValue);
+                Map<Resource, EffortDuration> result = new HashMap<>();
+                for (Entry<Resource, List<DayAssignment>> each : byResource.entrySet()) {
+                    result.put(each.getKey(), DayAssignment.sum(each.getValue()));
                 }
                 return result;
             }
@@ -114,24 +109,20 @@ public class ResourceLoadChartData implements ILoadChartData {
 
     public static IValueTransformer<Map<Resource, EffortDuration>, EffortDuration> calculateOverload() {
         return new IValueTransformer<Map<Resource, EffortDuration>, EffortDuration>() {
-
             @Override
-            public EffortDuration transform(LocalDate day,
-                    Map<Resource, EffortDuration> previousValue) {
+            public EffortDuration transform(LocalDate day, Map<Resource, EffortDuration> previousValue) {
 
                 final PartialDay wholeDay = PartialDay.wholeDay(day);
-                return EffortDuration.sum(previousValue.entrySet(),
-                        new IEffortFrom<Entry<Resource, EffortDuration>>() {
 
-                            @Override
-                            public EffortDuration from(
-                                    Entry<Resource, EffortDuration> each) {
-                                EffortDuration capacity = calendarCapacityFor(
-                                        each.getKey(), wholeDay);
-                                EffortDuration assigned = each.getValue();
-                                return assigned.minus(min(capacity, assigned));
-                            }
-                        });
+                return EffortDuration.sum(previousValue.entrySet(), new IEffortFrom<Entry<Resource, EffortDuration>>() {
+                    @Override
+                    public EffortDuration from(Entry<Resource, EffortDuration> each) {
+                        EffortDuration capacity = calendarCapacityFor(each.getKey(), wholeDay);
+                        EffortDuration assigned = each.getValue();
+
+                        return assigned.minus(min(capacity, assigned));
+                    }
+                });
             }
         };
     }
@@ -140,8 +131,7 @@ public class ResourceLoadChartData implements ILoadChartData {
         return new IValueTransformer<List<DayAssignment>, EffortDuration>() {
 
             @Override
-            public EffortDuration transform(LocalDate day,
-                    List<DayAssignment> previousValue) {
+            public EffortDuration transform(LocalDate day, List<DayAssignment> previousValue) {
                 return DayAssignment.sum(previousValue);
             }
         };
@@ -151,14 +141,14 @@ public class ResourceLoadChartData implements ILoadChartData {
         return new IValueTransformer<List<DayAssignment>, EffortDuration>() {
 
             @Override
-            public EffortDuration transform(LocalDate day,
-                    List<DayAssignment> previousValue) {
+            public EffortDuration transform(LocalDate day, List<DayAssignment> previousValue) {
                 Set<Resource> resources = getResources(previousValue);
+
                 return sumCalendarCapacitiesForDay(resources, day);
             }
 
             private Set<Resource> getResources(List<DayAssignment> assignments) {
-                Set<Resource> resources = new HashSet<Resource>();
+                Set<Resource> resources = new HashSet<>();
                 for (DayAssignment dayAssignment : assignments) {
                     resources.add(dayAssignment.getResource());
                 }
@@ -169,11 +159,11 @@ public class ResourceLoadChartData implements ILoadChartData {
 
     private IValueTransformer<List<DayAssignment>, EffortDuration> extractAvailabilityOnAllResources(
             final List<Resource> resources) {
+
         return new IValueTransformer<List<DayAssignment>, EffortDuration>() {
 
             @Override
-            public EffortDuration transform(LocalDate day,
-                    List<DayAssignment> previousValue) {
+            public EffortDuration transform(LocalDate day, List<DayAssignment> previousValue) {
                 return sumCalendarCapacitiesForDay(resources, day);
             }
         };
@@ -191,13 +181,14 @@ public class ResourceLoadChartData implements ILoadChartData {
         return availability;
     }
 
-    public ILoadChartData on(final LocalDate startInclusive,
-            final LocalDate endExclusive) {
+    public ILoadChartData on(final LocalDate startInclusive, final LocalDate endExclusive) {
 
         final ResourceLoadChartData original = ResourceLoadChartData.this;
+
         if (startInclusive == null && endExclusive == null) {
             return original;
         }
+
         return new ILoadChartData() {
 
             @Override
@@ -215,21 +206,21 @@ public class ResourceLoadChartData implements ILoadChartData {
                 return filter(original.getAvailability());
             }
 
-            private SortedMap<LocalDate, EffortDuration> filter(
-                    SortedMap<LocalDate, EffortDuration> map) {
+            private SortedMap<LocalDate, EffortDuration> filter(SortedMap<LocalDate, EffortDuration> map) {
                 if (startInclusive != null) {
                     return map.tailMap(startInclusive);
                 }
+
                 if (endExclusive != null) {
                     return map.headMap(endExclusive);
                 }
+
                 return map.subMap(startInclusive, endExclusive);
             }
         };
     }
 
-    private static EffortDuration sumCalendarCapacitiesForDay(
-            Collection<? extends Resource> resources, LocalDate day) {
+    private static EffortDuration sumCalendarCapacitiesForDay(Collection<? extends Resource> resources, LocalDate day) {
 
         final PartialDay wholeDay = PartialDay.wholeDay(day);
 
@@ -241,8 +232,7 @@ public class ResourceLoadChartData implements ILoadChartData {
         });
     }
 
-    protected static EffortDuration calendarCapacityFor(Resource resource,
-            PartialDay day) {
+    protected static EffortDuration calendarCapacityFor(Resource resource, PartialDay day) {
         return resource.getCalendarOrDefault().getCapacityOn(day);
     }
 

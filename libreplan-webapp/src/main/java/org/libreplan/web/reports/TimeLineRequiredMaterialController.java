@@ -21,18 +21,8 @@
 
 package org.libreplan.web.reports;
 
-import static org.libreplan.web.I18nHelper._;
-
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+import com.libreplan.java.zk.components.JasperreportComponent;
 import net.sf.jasperreports.engine.JRDataSource;
-
 import org.libreplan.business.materials.entities.Material;
 import org.libreplan.business.materials.entities.MaterialCategory;
 import org.libreplan.business.materials.entities.MaterialStatusEnum;
@@ -41,6 +31,8 @@ import org.libreplan.web.common.Util;
 import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
+import org.zkoss.zkplus.spring.SpringUtil;
+
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
@@ -51,13 +43,20 @@ import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.TreeitemRenderer;
 import org.zkoss.zul.Treerow;
 
-import com.igalia.java.zk.components.JasperreportComponent;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import static org.libreplan.web.I18nHelper._;
 
 /**
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
-public class TimeLineRequiredMaterialController extends
-        LibrePlanReportController {
+public class TimeLineRequiredMaterialController extends LibrePlanReportController {
 
     private static final String REPORT_NAME = "timeLineRequiredMaterial";
 
@@ -79,14 +78,17 @@ public class TimeLineRequiredMaterialController extends
 
     private BandboxSearch bdOrders;
 
-    List<MaterialCategory> filterCategories = new ArrayList<MaterialCategory>();
+    private List<MaterialCategory> filterCategories = new ArrayList<>();
 
-    List<Material> filterMaterials = new ArrayList<Material>();
+    public TimeLineRequiredMaterialController(){
+        timeLineRequiredMaterialModel =
+                (ITimeLineRequiredMaterialModel) SpringUtil.getBean("timeLineRequiredMaterialModel");
+    }
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        comp.setVariable("controller", this, true);
+        comp.setAttribute("controller", this, true);
         timeLineRequiredMaterialModel.init();
         prepareAllCategoriesTree();
     }
@@ -96,8 +98,7 @@ public class TimeLineRequiredMaterialController extends
     }
 
     public List<Order> getSelectedOrders() {
-        return Collections.unmodifiableList(timeLineRequiredMaterialModel
-                .getSelectedOrders());
+        return Collections.unmodifiableList(timeLineRequiredMaterialModel.getSelectedOrders());
     }
 
     public void onSelectOrder() {
@@ -105,8 +106,8 @@ public class TimeLineRequiredMaterialController extends
         if (order == null) {
             throw new WrongValueException(bdOrders, _("please, select a project"));
         }
-        boolean result = timeLineRequiredMaterialModel
-                .addSelectedOrder(order);
+
+        boolean result = timeLineRequiredMaterialModel.addSelectedOrder(order);
         if (!result) {
             throw new WrongValueException(bdOrders,
                     _("This project has already been added."));
@@ -129,9 +130,11 @@ public class TimeLineRequiredMaterialController extends
     @Override
     protected JRDataSource getDataSource() {
         return timeLineRequiredMaterialModel.getTimeLineRequiredMaterial(
-                getStartingDate(), getEndingDate(),
+                getStartingDate(),
+                getEndingDate(),
                 getCorrespondentStatus(selectedStatus),
-                getSelectedOrders(), getSelectedCategories(),
+                getSelectedOrders(),
+                getSelectedCategories(),
                 getSelectedMaterials());
     }
 
@@ -165,16 +168,17 @@ public class TimeLineRequiredMaterialController extends
         }
     }
 
-    public Date getDefaultEndingDate() {
+    private Date getDefaultEndingDate() {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(getStartingDate());
-        calendar.add(calendar.MONTH, 1);
+        calendar.add(Calendar.MONTH, 1);
 
         int date = calendar.get(Calendar.DAY_OF_MONTH);
-        int month = calendar.get(calendar.MONTH);
+        int month = calendar.get(Calendar.MONTH);
         int year = calendar.get(Calendar.YEAR);
 
         calendar.set(year, month, date);
+
         return calendar.getTime();
     }
 
@@ -190,20 +194,21 @@ public class TimeLineRequiredMaterialController extends
         return result;
     }
 
-    public void showReport(JasperreportComponent jasperreport){
+    public void showReport(JasperreportComponent jasperreport) {
         super.showReport(jasperreport);
     }
 
     public List<String> getMaterialStatus() {
-        List<String> status = new ArrayList<String>();
+        List<String> status = new ArrayList<>();
         status.add(getDefaultStatus());
         for (MaterialStatusEnum matStatus : MaterialStatusEnum.values()) {
             status.add(matStatus.name());
         }
+
         return status;
     }
 
-    public String getDefaultStatus() {
+    private String getDefaultStatus() {
         return _("All");
     }
 
@@ -215,20 +220,18 @@ public class TimeLineRequiredMaterialController extends
         selectedStatus = status;
     }
 
-    private MaterialStatusEnum getCorrespondentStatus(String status) {
+    public MaterialStatusEnum getCorrespondentStatus(String status) {
         for (MaterialStatusEnum matStatus : MaterialStatusEnum.values()) {
             if (status.equals(matStatus.name())) {
                 return matStatus;
             }
         }
+
         return null;
     }
 
-    private String getSelectedStatusName() {
-        if (getSelectedStatus().equals(getDefaultStatus())) {
-            return null;
-        }
-        return selectedStatus;
+    public String getSelectedStatusName() {
+        return getSelectedStatus().equals(getDefaultStatus()) ? null : selectedStatus;
     }
 
     /**
@@ -236,9 +239,8 @@ public class TimeLineRequiredMaterialController extends
      */
 
     private void prepareAllCategoriesTree() {
-        if (allCategoriesTree.getTreeitemRenderer() == null) {
-            allCategoriesTree
-                    .setTreeitemRenderer(getMaterialCategoryRenderer());
+        if (allCategoriesTree.getItemRenderer() == null) {
+            allCategoriesTree.setItemRenderer(getMaterialCategoryRenderer());
         }
         allCategoriesTree.setModel(getAllMaterialCategories());
     }
@@ -261,7 +263,7 @@ public class TimeLineRequiredMaterialController extends
          * Copied verbatim from org.zkoss.zul.Tree;
          */
         @Override
-        public void render(Treeitem ti, Object node) {
+        public void render(Treeitem ti, Object node, int i) {
             Label lblName = null;
             if (node instanceof MaterialCategory) {
                 final MaterialCategory materialCategory = (MaterialCategory) node;
@@ -271,7 +273,7 @@ public class TimeLineRequiredMaterialController extends
                 lblName = new Label(material.getDescription());
             }
 
-            Treerow tr = null;
+            Treerow tr;
             ti.setValue(node);
             if (ti.getTreerow() == null) {
                 tr = new Treerow();
@@ -283,27 +285,28 @@ public class TimeLineRequiredMaterialController extends
             }
             // Add category name
             Treecell cellName = new Treecell();
-            lblName.setParent(cellName);
+            if (lblName != null) {
+                lblName.setParent(cellName);
+            }
             cellName.setParent(tr);
         }
     }
 
-    private ITimeLineRequiredMaterialModel getModel() {
+    public ITimeLineRequiredMaterialModel getModel() {
         return this.timeLineRequiredMaterialModel;
     }
 
-    private List<MaterialCategory> getSelectedCategories() {
+    public List<MaterialCategory> getSelectedCategories() {
         filterCategories.clear();
-        Set<Treeitem> setItems = (Set<Treeitem>) allCategoriesTree
-                .getSelectedItems();
+        Set<Treeitem> setItems = allCategoriesTree.getSelectedItems();
 
         for (Treeitem ti : setItems) {
-            if ((ti.getValue() != null)
-                    && (ti.getValue() instanceof MaterialCategory)) {
-                filterCategories.add((MaterialCategory) ti.getValue());
-                addSubCategories((MaterialCategory) ti.getValue());
+            if ((ti.getValue() != null) && (ti.getValue() instanceof MaterialCategory)) {
+                filterCategories.add(ti.getValue());
+                addSubCategories(ti.getValue());
             }
         }
+
         return filterCategories;
     }
 
@@ -314,23 +317,23 @@ public class TimeLineRequiredMaterialController extends
         }
     }
 
-    private List<Material> getSelectedMaterials() {
-        List<Material> materials = new ArrayList<Material>();
-        Set<Treeitem> setItems = (Set<Treeitem>) allCategoriesTree
-                .getSelectedItems();
+    public List<Material> getSelectedMaterials() {
+        List<Material> materials = new ArrayList<>();
+        Set<Treeitem> setItems = allCategoriesTree.getSelectedItems();
         for (Treeitem ti : setItems) {
-            if ((ti.getValue() != null) && (ti.getValue() instanceof Material)
-                    && (!isContainedInCategories((Material) ti.getValue()))) {
-                materials.add((Material) ti.getValue());
+
+            if ( (ti.getValue() != null) &&
+                    (ti.getValue() instanceof Material) &&
+                    (!isContainedInCategories(ti.getValue())) ) {
+
+                materials.add(ti.getValue());
             }
         }
+
         return materials;
     }
 
     private boolean isContainedInCategories(Material material) {
-        if (material != null) {
-            return getSelectedCategories().contains(material.getCategory());
-        }
-        return false;
+        return material != null && getSelectedCategories().contains(material.getCategory());
     }
 }

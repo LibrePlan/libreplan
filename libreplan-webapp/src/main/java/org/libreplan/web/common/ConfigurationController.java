@@ -23,9 +23,15 @@ package org.libreplan.web.common;
 
 import static org.libreplan.web.I18nHelper._;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.InputStream;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.io.IOException;
 import java.util.List;
 import java.util.ConcurrentModificationException;
-import java.util.Comparator;
 import java.util.Properties;
 import java.util.ArrayList;
 import java.util.Set;
@@ -38,7 +44,6 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.AuthenticationFailedException;
 import javax.mail.MessagingException;
-
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -62,25 +67,18 @@ import org.libreplan.business.common.entities.PredefinedConnectors;
 import org.libreplan.business.common.entities.ProgressType;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
-import org.libreplan.business.users.daos.IUserDAO;
 import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.importers.JiraRESTClient;
 import org.libreplan.importers.TimSoapClient;
 import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
-import org.libreplan.web.orders.IOrderModel;
-import org.libreplan.web.expensesheet.IExpenseSheetModel;
-import org.libreplan.web.materials.IMaterialsModel;
-import org.libreplan.web.orders.IAssignedTaskQualityFormsToOrderElementModel;
-import org.libreplan.web.resources.machine.IMachineModel;
-import org.libreplan.web.resources.worker.IWorkerModel;
 import org.libreplan.web.security.SecurityUtils;
-import org.libreplan.web.workreports.IWorkReportModel;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ldap.core.DistinguishedName;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.core.support.DefaultDirObjectFactory;
 import org.springframework.ldap.core.support.LdapContextSource;
 import org.springframework.ldap.filter.EqualsFilter;
+import org.springframework.web.context.ContextLoaderListener;
+import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
@@ -89,6 +87,7 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 
+import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Grid;
@@ -108,7 +107,7 @@ import org.zkoss.zul.Rows;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Messagebox;
 
-import org.zkoss.zul.api.Window;
+import org.zkoss.zul.Window;
 import org.zkoss.zul.impl.InputElement;
 
 /**
@@ -136,28 +135,6 @@ public class ConfigurationController extends GenericForwardComposer {
 
     private IConfigurationDAO configurationDAO;
 
-    private IUserDAO userDAO;
-
-    private IOrderModel orderModel;
-
-    @Autowired
-    private IWorkReportModel workReportModel;
-
-    @Autowired
-    private IWorkerModel workerModel;
-
-    @Autowired
-    private IMachineModel machineModel;
-
-    @Autowired
-    private IExpenseSheetModel expenseSheetModel;
-
-    @Autowired
-    private IMaterialsModel materialsModel;
-
-    @Autowired
-    private IAssignedTaskQualityFormsToOrderElementModel assignedTaskQualityFormsToOrderElementModel;
-
     private IMessagesForUser messages;
 
     private Component messagesContainer;
@@ -169,8 +146,6 @@ public class ConfigurationController extends GenericForwardComposer {
     private Intbox numDigitBox;
 
     private Textbox prefixBox;
-
-    private UserRole roles;
 
     private Textbox ldapGroupPath;
 
@@ -190,18 +165,27 @@ public class ConfigurationController extends GenericForwardComposer {
 
     private Textbox emailSenderTextbox;
 
+    private Textbox companyLogoURL;
+
+    private String STARTTLS_PROTOCOL = "STARTTLS";
+
+    private String LOGO_PREVIEW_COMPONENT = "logoPreview";
+
+
+    public ConfigurationController() {}
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
 
-        // TODO resolve deprecated
-        comp.setVariable("configurationController", this, true);
+        injectsObjects();
 
+        comp.setAttribute("configurationController", this, true);
         configurationModel.init();
 
         defaultCalendarBandboxSearch.setListboxEventListener(Events.ON_SELECT, event -> {
             Listitem selectedItem = (Listitem) ((SelectEvent) event).getSelectedItems().iterator().next();
-            setDefaultCalendar((BaseCalendar) selectedItem.getValue());
+            setDefaultCalendar(selectedItem.getValue());
         });
 
         initializeProgressTypeList();
@@ -210,8 +194,22 @@ public class ConfigurationController extends GenericForwardComposer {
         loadRoleStrategyRows();
     }
 
+    private void injectsObjects() {
+        if ( configurationModel == null ) {
+            configurationModel = (IConfigurationModel) SpringUtil.getBean("configurationModel");
+        }
+
+        if ( configurationDAO == null ) {
+            configurationDAO = (IConfigurationDAO) SpringUtil.getBean("configurationDAO");
+        }
+    }
+
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public void changeRoleStrategy() {
-        this.getLdapConfiguration().setLdapGroupStrategy(strategy.getSelectedItem().getValue().equals("group"));
+        this.getLdapConfiguration().setLdapGroupStrategy("group".equals(strategy.getSelectedItem().getValue()));
         loadRoleStrategyRows();
     }
 
@@ -231,29 +229,41 @@ public class ConfigurationController extends GenericForwardComposer {
             @Override
             public void onEvent(Event event) {
                 Listitem selectedItem = getSelectedItem((SelectEvent) event);
+
                 if ( selectedItem != null ) {
-                    ProgressType progressType = (ProgressType) selectedItem.getValue();
+                    ProgressType progressType = selectedItem.getValue();
                     configurationModel.setProgressType(progressType);
                 }
             }
 
             private Listitem getSelectedItem(SelectEvent event) {
                 final Set<Listitem> selectedItems = event.getSelectedItems();
-
                 return selectedItems.iterator().next();
             }
 
         });
     }
 
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public List<ProgressType> getProgressTypes() {
-        return configurationModel.getProgresTypes();
+        return configurationModel.getProgressTypes();
     }
 
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public ProgressType getSelectedProgressType() {
         return configurationModel.getProgressType();
     }
 
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public void setSelectedProgressType(ProgressType progressType) {
         configurationModel.setProgressType(progressType);
     }
@@ -272,11 +282,10 @@ public class ConfigurationController extends GenericForwardComposer {
 
     public void save() throws InterruptedException {
 
-        boolean connectorIsEmailAndFieldsAreInvalid = getSelectedConnector() != null &&
-                getSelectedConnector().getName().equals("E-mail") &&
-                !areEmailFieldsValid();
+        if ( getSelectedConnector() != null &&
+                "E-mail".equals(getSelectedConnector().getName()) &&
+                !areEmailFieldsValid() ) {
 
-        if ( connectorIsEmailAndFieldsAreInvalid ) {
             messages.clearMessages();
             messages.showMessage(Level.ERROR, _("Check all fields"));
 
@@ -288,25 +297,25 @@ public class ConfigurationController extends GenericForwardComposer {
                     configurationModel.init();
                     messages.showMessage(Level.INFO, _("Changes saved"));
 
-                    boolean gatheredDataNotSentAndItIsNotRestricted = !SecurityUtils.isGatheredStatsAlreadySent &&
-                            configurationDAO
-                                    .getConfigurationWithReadOnlyTransaction()
-                                    .isAllowToGatherUsageStatsEnabled();
-
                     // Send data to server
-                    if ( gatheredDataNotSentAndItIsNotRestricted )
+                    if ( !SecurityUtils.isGatheredStatsAlreadySent &&
+                            configurationDAO.getConfigurationWithReadOnlyTransaction().isAllowedToGatherUsageStatsEnabled() ) {
+
                         sendDataToServer();
+                    }
+
 
                     if ( getSelectedConnector() != null &&
-                            !configurationModel.scheduleOrUnscheduleJobs(getSelectedConnector()) ) {
+                            !configurationModel.scheduleOrUnscheduleJobs(getSelectedConnector())) {
 
-                        messages.showMessage(
-                                Level.ERROR,
+                        messages.showMessage(Level.ERROR,
                                 _("Scheduling or unscheduling of jobs for this connector is not completed"));
                     }
+
                     reloadWindow();
                     reloadEntitySequences();
                     reloadConnectors();
+
                 } catch (ValidationException e) {
                     messages.showInvalidValues(e);
                 } catch (ConcurrentModificationException e) {
@@ -322,17 +331,6 @@ public class ConfigurationController extends GenericForwardComposer {
 
     private void sendDataToServer() {
         GatheredUsageStats gatheredUsageStats = new GatheredUsageStats();
-
-        gatheredUsageStats.setupNotAutowiredClasses(
-                userDAO,
-                orderModel,
-                workReportModel,
-                workerModel,
-                machineModel,
-                expenseSheetModel,
-                materialsModel,
-                assignedTaskQualityFormsToOrderElementModel);
-
         gatheredUsageStats.sendGatheredUsageStatsToServer();
         SecurityUtils.isGatheredStatsAlreadySent = true;
     }
@@ -346,11 +344,15 @@ public class ConfigurationController extends GenericForwardComposer {
         reloadConnectors();
     }
 
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public void testLDAPConnection() {
         LdapContextSource source = new LdapContextSource();
 
-        source.setUrl(configurationModel.getLdapConfiguration().getLdapHost()
-                + ":" + configurationModel.getLdapConfiguration().getLdapPort());
+        source.setUrl(configurationModel.getLdapConfiguration().getLdapHost() + ":" +
+                configurationModel.getLdapConfiguration().getLdapPort());
 
         source.setBase(configurationModel.getLdapConfiguration().getLdapBase());
         source.setUserDn(configurationModel.getLdapConfiguration().getLdapUserDn());
@@ -365,7 +367,7 @@ public class ConfigurationController extends GenericForwardComposer {
 
         LdapTemplate template = new LdapTemplate(source);
         try {
-            // TODO resolve deprecated
+            /* TODO resolve deprecated */
             template.authenticate(
                     DistinguishedName.EMPTY_PATH,
                     new EqualsFilter(configurationModel.getLdapConfiguration().getLdapUserId(), "test").toString(),
@@ -379,11 +381,15 @@ public class ConfigurationController extends GenericForwardComposer {
     }
 
     /**
-     * Tests connection
+     * Tests connection.
+     *
+     * Used in configuration.zul
+     * Should be public!
      */
     public void testConnection() {
-        if ( selectedConnector == null ) {
+        if (selectedConnector == null) {
             messages.showMessage(Level.ERROR, _("Please select a connector to test it"));
+
             return;
         }
 
@@ -394,8 +400,10 @@ public class ConfigurationController extends GenericForwardComposer {
 
         if ( selectedConnector.getName().equals(PredefinedConnectors.TIM.getName()) ) {
             testTimConnection(url, username, password);
+
         } else if ( selectedConnector.getName().equals(PredefinedConnectors.JIRA.getName()) ) {
             testJiraConnection(url, username, password);
+
         } else if( selectedConnector.getName().equals(PredefinedConnectors.EMAIL.getName()) ) {
             String host = properties.get(PredefinedConnectorProperties.HOST);
             username = properties.get(PredefinedConnectorProperties.EMAIL_USERNAME);
@@ -408,7 +416,7 @@ public class ConfigurationController extends GenericForwardComposer {
     }
 
     /**
-     * Test tim connection
+     * Test tim connection.
      *
      * @param url
      *            the url of the server
@@ -426,7 +434,7 @@ public class ConfigurationController extends GenericForwardComposer {
     }
 
     /**
-     * Test JIRA connection
+     * Test JIRA connection.
      *
      * @param url
      *            the url
@@ -460,7 +468,7 @@ public class ConfigurationController extends GenericForwardComposer {
     }
 
     /**
-     * Test E-mail connection
+     * Test E-mail connection.
      *
      * @param host
      *            the host
@@ -472,46 +480,51 @@ public class ConfigurationController extends GenericForwardComposer {
      *            the password
      */
     private void testEmailConnection(String host, String port, String username, String password) {
-        Properties props = new Properties();
+        Properties props = System.getProperties();
         Transport transport = null;
 
         try {
-            if ( protocolsCombobox.getSelectedItem().getLabel().equals("SMTP") ) {
+            if ("SMTP".equals(protocolsCombobox.getSelectedItem().getLabel())) {
                 props.setProperty("mail.smtp.port", port);
                 props.setProperty("mail.smtp.host", host);
                 Session session = Session.getInstance(props, null);
 
                 transport = session.getTransport("smtp");
-                if ( username.equals("") && password.equals(""))
+                if ("".equals(username) && "".equals(password)) {
                     transport.connect();
+                }
             }
-            else if ( protocolsCombobox.getSelectedItem().getLabel().equals("STARTTLS") ) {
+            else if (STARTTLS_PROTOCOL.equals(protocolsCombobox.getSelectedItem().getLabel())) {
                 props.setProperty("mail.smtps.port", port);
                 props.setProperty("mail.smtps.host", host);
                 Session session = Session.getInstance(props, null);
 
                 transport = session.getTransport("smtps");
-                if ( !username.equals("") && password != null )
+                if ( !"".equals(username) && password != null ) {
                     transport.connect(host, username, password);
+                }
             }
 
             messages.clearMessages();
-            if ( transport.isConnected() )
-                messages.showMessage(Level.INFO, _("Connection successful!"));
-            else if ( !transport.isConnected() )
-                messages.showMessage(Level.WARNING, _("Connection unsuccessful"));
+            if (transport != null) {
+                if ( transport.isConnected() ) {
+                    messages.showMessage(Level.INFO, _("Connection successful!"));
+                }
+                else if ( !transport.isConnected() ) {
+                    messages.showMessage(Level.WARNING, _("Connection unsuccessful"));
+                }
+            }
         }
-        catch (AuthenticationFailedException e){
-            LOG.error(e);
+        catch (AuthenticationFailedException e) {
             messages.clearMessages();
             messages.showMessage(Level.ERROR, _("Invalid credentials"));
         }
-        catch (MessagingException e){
+        catch (MessagingException e) {
             LOG.error(e);
             messages.clearMessages();
             messages.showMessage(Level.ERROR, _("Cannot connect"));
         }
-        catch (Exception e){
+        catch (Exception e) {
             LOG.error(e);
             messages.clearMessages();
             messages.showMessage(Level.ERROR, _("Failed to connect"));
@@ -520,13 +533,16 @@ public class ConfigurationController extends GenericForwardComposer {
 
     private boolean checkValidEntitySequenceRows() {
         Rows rows = entitySequencesGrid.getRows();
-        for (Row row : (List<Row>) rows.getChildren()) {
+        List<Row> listRows = rows.getChildren();
 
-            EntitySequence seq = (EntitySequence) row.getValue();
+        for (Row row : listRows) {
+
+            EntitySequence seq = row.getValue();
             if ( seq != null ) {
                 Textbox prefixBox = (Textbox) row.getChildren().get(2);
                 if ( !seq.isAlreadyInUse() ) {
                     String errorMessage = this.validPrefix(seq, prefixBox.getValue());
+
                     if ( errorMessage != null ) {
                         throw new WrongValueException(prefixBox, errorMessage);
                     }
@@ -541,12 +557,12 @@ public class ConfigurationController extends GenericForwardComposer {
                     throw new WrongValueException(
                             digitsBox,
                             _("number of digits must be between {0} and {1}",
-                                    EntitySequence.MIN_NUMBER_OF_DIGITS,
-                                    EntitySequence.MAX_NUMBER_OF_DIGITS));
+                                    EntitySequence.MIN_NUMBER_OF_DIGITS, EntitySequence.MAX_NUMBER_OF_DIGITS));
                 }
             }
 
         }
+
         return true;
     }
 
@@ -555,7 +571,7 @@ public class ConfigurationController extends GenericForwardComposer {
     }
 
     private void reloadEntitySequences() {
-        entitySequencesGrid.setModel(new SimpleListModel(getAllEntitySequences().toArray()));
+        entitySequencesGrid.setModel(new SimpleListModel<>(getAllEntitySequences().toArray()));
         entitySequencesGrid.invalidate();
     }
 
@@ -567,66 +583,130 @@ public class ConfigurationController extends GenericForwardComposer {
         Util.reloadBindings(connectorPropertriesGrid);
     }
 
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public String getCompanyCode() {
         return configurationModel.getCompanyCode();
     }
 
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public void setCompanyCode(String companyCode) {
         configurationModel.setCompanyCode(companyCode);
     }
 
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public String getCompanyLogoURL() {
         return configurationModel.getCompanyLogoURL();
     }
 
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public void setCompanyLogoURL(String companyLogoURL) {
         configurationModel.setCompanyLogoURL(companyLogoURL);
     }
 
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public Boolean getGenerateCodeForCriterion() {
         return configurationModel.getGenerateCodeForCriterion();
     }
 
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public void setGenerateCodeForCriterion(Boolean generateCodeForCriterion) {
         configurationModel.setGenerateCodeForCriterion(generateCodeForCriterion);
     }
 
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public Boolean getGenerateCodeForWorkReportType() {
         return configurationModel.getGenerateCodeForWorkReportType();
     }
 
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public void setGenerateCodeForWorkReportType(Boolean generateCodeForWorkReportType) {
         configurationModel.setGenerateCodeForWorkReportType(generateCodeForWorkReportType);
     }
 
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public Boolean getGenerateCodeForCalendarExceptionType() {
         return configurationModel.getGenerateCodeForCalendarExceptionType();
     }
 
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public void setGenerateCodeForCalendarExceptionType(Boolean generateCodeForCalendarExceptionType) {
         configurationModel.setGenerateCodeForCalendarExceptionType(generateCodeForCalendarExceptionType);
     }
 
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public Boolean getGenerateCodeForCostCategory() {
         return configurationModel.getGenerateCodeForCostCategory();
     }
 
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public void setGenerateCodeForCostCategory(Boolean generateCodeForCostCategory) {
         configurationModel.setGenerateCodeForCostCategory(generateCodeForCostCategory);
     }
 
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public Boolean getGenerateCodeForLabel() {
         return configurationModel.getGenerateCodeForLabel();
     }
 
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public void setGenerateCodeForLabel(Boolean generateCodeForLabel) {
         configurationModel.setGenerateCodeForLabel(generateCodeForLabel);
     }
 
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public Boolean getGenerateCodeForWorkReport() {
         return configurationModel.getGenerateCodeForWorkReport();
     }
 
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public void setGenerateCodeForWorkReport(Boolean generateCodeForWorkReport) {
         configurationModel.setGenerateCodeForWorkReport(generateCodeForWorkReport);
     }
@@ -635,58 +715,114 @@ public class ConfigurationController extends GenericForwardComposer {
         return configurationModel.getGenerateCodeForResources();
     }
 
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public void setGenerateCodeForResources(Boolean generateCodeForResources) {
         configurationModel.setGenerateCodeForResources(generateCodeForResources);
     }
 
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public Boolean getGenerateCodeForTypesOfWorkHours() {
         return configurationModel.getGenerateCodeForTypesOfWorkHours();
     }
 
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public void setGenerateCodeForTypesOfWorkHours(Boolean generateCodeForTypesOfWorkHours) {
         configurationModel.setGenerateCodeForTypesOfWorkHours(generateCodeForTypesOfWorkHours);
     }
 
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public Boolean getGenerateCodeForMaterialCategories() {
         return configurationModel.getGenerateCodeForMaterialCategories();
     }
 
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public void setGenerateCodeForMaterialCategories(Boolean generateCodeForMaterialCategories) {
         configurationModel.setGenerateCodeForMaterialCategories(generateCodeForMaterialCategories);
     }
 
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public Boolean getGenerateCodeForExpenseSheets() {
         return configurationModel.getGenerateCodeForExpenseSheets();
     }
 
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public void setGenerateCodeForExpenseSheets(Boolean generateCodeForExpenseSheets) {
         configurationModel.setGenerateCodeForExpenseSheets(generateCodeForExpenseSheets);
     }
 
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public void reloadGeneralConfiguration() {
         reloadWindow();
     }
 
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public Boolean getGenerateCodeForUnitTypes() {
         return configurationModel.getGenerateCodeForUnitTypes();
     }
 
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public void setGenerateCodeForUnitTypes(Boolean generateCodeForUnitTypes) {
         configurationModel.setGenerateCodeForUnitTypes(generateCodeForUnitTypes);
     }
 
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public Boolean getGenerateCodeForBaseCalendars() {
         return configurationModel.getGenerateCodeForBaseCalendars();
     }
 
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public void setGenerateCodeForBaseCalendars(Boolean generateCodeForBaseCalendars) {
         configurationModel.setGenerateCodeForBaseCalendars(generateCodeForBaseCalendars);
     }
 
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public Boolean isAutocompleteLogin() {
         return configurationModel.isAutocompleteLogin();
     }
 
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public void setAutocompleteLogin(Boolean autocompleteLogin) {
         configurationModel.setAutocompleteLogin(autocompleteLogin);
     }
@@ -700,34 +836,43 @@ public class ConfigurationController extends GenericForwardComposer {
         reloadEntitySequences();
     }
 
-
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public void setMonteCarloMethodTabVisible(Boolean expandResourceLoadViewCharts) {
         configurationModel.setMonteCarloMethodTabVisible(expandResourceLoadViewCharts);
     }
 
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public Boolean isMonteCarloMethodTabVisible() {
         return configurationModel.isMonteCarloMethodTabVisible();
     }
 
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public ProgressTypeRenderer getProgressTypeRenderer() {
         return progressTypeRenderer;
     }
 
     private static class ProgressTypeRenderer implements ListitemRenderer {
         @Override
-        public void render(Listitem item, Object data) {
-            ProgressType progressType = (ProgressType) data;
-            item.setLabel(_(progressType.getValue()));
-            item.setValue(progressType);
+        public void render(Listitem listitem, Object o, int i) throws Exception {
+            ProgressType progressType = (ProgressType) o;
+            listitem.setLabel(_(progressType.getValue()));
+            listitem.setValue(progressType);
         }
-
     }
 
-    public class EntitySequenceGroupRenderer implements RowRenderer {
+    private class EntitySequenceGroupRenderer implements RowRenderer {
         @Override
-        public void render(Row row, Object data) {
-
-            EntitySequence entitySequence = (EntitySequence) data;
+        public void render(Row row, Object o, int i) throws Exception {
+            EntitySequence entitySequence = (EntitySequence) o;
             final EntityNameEnum entityName = entitySequence.getEntityName();
 
             row.setValue(entityName);
@@ -745,27 +890,102 @@ public class ConfigurationController extends GenericForwardComposer {
             }
 
             if ( (row.getPreviousSibling() != null) &&
-                    !((EntitySequence) ((Row)
-                            row.getPreviousSibling()).getValue()).getEntityName().equals(entityName) ) {
+                    !((EntitySequence) ((Row) row.getPreviousSibling()).getValue()).getEntityName()
+                            .equals(entityName)) {
 
                 row.setClass("separator");
             }
         }
-    }
 
-    private void appendActiveRadiobox(final Row row, final EntitySequence entitySequence) {
+        private void appendActiveRadiobox(final Row row, final EntitySequence entitySequence) {
+            final Radio radiobox = Util.bind(
+                    new Radio(),
+                    entitySequence::isActive,
+                    value -> {
+                        updateOtherSequences(entitySequence);
+                        entitySequence.setActive(value);
+                        Util.reloadBindings(entitySequencesGrid);
+                        reloadEntitySequences();
+                    });
 
-        final Radio radiobox = Util.bind(
-                new Radio(),
-                () -> entitySequence.isActive(),
-                value -> {
-                    updateOtherSequences(entitySequence);
-                    entitySequence.setActive(value);
-                    Util.reloadBindings(entitySequencesGrid);
-                    reloadEntitySequences();
-                });
+            row.appendChild(radiobox);
+        }
 
-        row.appendChild(radiobox);
+
+        private void appendPrefixTextbox(Row row, final EntitySequence entitySequence) {
+            final Textbox tempTextbox = new Textbox();
+            tempTextbox.setWidth("200px");
+
+            Textbox textbox = Util.bind(
+                    tempTextbox,
+                    entitySequence::getPrefix,
+                    value -> {
+                        try {
+                            entitySequence.setPrefix(value);
+                        } catch (IllegalArgumentException e) {
+                            throw new WrongValueException(tempTextbox, e.getMessage());
+                        }
+                    });
+
+            textbox.setConstraint(checkConstraintFormatPrefix());
+
+            if ( entitySequence.isAlreadyInUse() ) {
+                textbox.setDisabled(true);
+            }
+
+            row.appendChild(textbox);
+        }
+
+        private void appendNumberOfDigitsInbox(Row row, final EntitySequence entitySequence) {
+            final Intbox tempIntbox = new Intbox();
+
+            Intbox intbox = Util.bind(
+                    tempIntbox,
+                    entitySequence::getNumberOfDigits,
+                    value -> {
+                        try {
+                            entitySequence.setNumberOfDigits(value);
+                        } catch (IllegalArgumentException e) {
+                            throw new WrongValueException(
+                                    tempIntbox,
+                                    _("number of digits must be between {0} and {1}",
+                                            EntitySequence.MIN_NUMBER_OF_DIGITS, EntitySequence.MAX_NUMBER_OF_DIGITS));
+                        }
+                    });
+
+            intbox.setConstraint(checkConstraintNumberOfDigits());
+
+            if ( entitySequence.isAlreadyInUse() ) {
+                intbox.setDisabled(true);
+            }
+
+            row.appendChild(intbox);
+        }
+
+        private void appendLastValueInbox(Row row, final EntitySequence entitySequence) {
+            Textbox textbox = Util.bind(
+                    new Textbox(),
+                    () -> EntitySequence.formatValue(
+                            entitySequence.getNumberOfDigits(), entitySequence.getLastValue()));
+
+            row.appendChild(textbox);
+        }
+
+        private void appendOperations(final Row row, final EntitySequence entitySequence) {
+            final Button removeButton = Util.createRemoveButton(event -> {
+                if ( isLastOne(entitySequence) ) {
+                    showMessageNotDelete();
+                } else {
+                    removeEntitySequence(entitySequence);
+                }
+            });
+
+            if ( entitySequence.isAlreadyInUse() ) {
+                removeButton.setDisabled(true);
+            }
+
+            row.appendChild(removeButton);
+        }
     }
 
     private void updateOtherSequences(final EntitySequence activeSequence) {
@@ -774,86 +994,11 @@ public class ConfigurationController extends GenericForwardComposer {
         }
     }
 
-    private void appendPrefixTextbox(Row row, final EntitySequence entitySequence) {
-        final Textbox tempTextbox = new Textbox();
-        tempTextbox.setWidth("200px");
-
-        Textbox textbox = Util.bind(
-                tempTextbox,
-                () -> entitySequence.getPrefix(),
-                value -> {
-                    try {
-                        entitySequence.setPrefix(value);
-                    } catch (IllegalArgumentException e) {
-                        throw new WrongValueException(tempTextbox, e.getMessage());
-                    }
-                });
-
-        textbox.setConstraint(checkConstraintFormatPrefix());
-
-        if ( entitySequence.isAlreadyInUse() ) {
-            textbox.setDisabled(true);
-        }
-
-        row.appendChild(textbox);
-    }
-
-    private void appendNumberOfDigitsInbox(Row row, final EntitySequence entitySequence) {
-        final Intbox tempIntbox = new Intbox();
-
-        Intbox intbox = Util.bind(
-                tempIntbox,
-                () -> entitySequence.getNumberOfDigits(),
-                value -> {
-                    try {
-                        entitySequence.setNumberOfDigits(value);
-                    } catch (IllegalArgumentException e) {
-                        throw new WrongValueException(
-                                tempIntbox,
-                                _("number of digits must be between {0} and {1}",
-                                        EntitySequence.MIN_NUMBER_OF_DIGITS,
-                                        EntitySequence.MAX_NUMBER_OF_DIGITS));
-                    }
-                });
-
-        intbox.setConstraint(checkConstraintNumberOfDigits());
-
-        if ( entitySequence.isAlreadyInUse() ) {
-            intbox.setDisabled(true);
-        }
-
-        row.appendChild(intbox);
-    }
-
-    private void appendLastValueInbox(Row row, final EntitySequence entitySequence) {
-        Textbox textbox = Util.bind(
-                new Textbox(),
-                () -> EntitySequence.formatValue(entitySequence.getNumberOfDigits(), entitySequence.getLastValue()));
-
-        row.appendChild(textbox);
-    }
-
-    private void appendOperations(final Row row, final EntitySequence entitySequence) {
-        final Button removeButton = Util.createRemoveButton(event -> {
-            if ( isLastOne(entitySequence) ) {
-                showMessageNotDelete();
-            } else {
-                removeEntitySequence(entitySequence);
-            }
-        });
-
-        if ( entitySequence.isAlreadyInUse() ) {
-            removeButton.setDisabled(true);
-        }
-
-        row.appendChild(removeButton);
-    }
-
-
-    public Constraint checkConstraintFormatPrefix() {
+    private Constraint checkConstraintFormatPrefix() {
         return (comp, value) -> {
+
             Row row = (Row) comp.getParent();
-            EntitySequence sequence = (EntitySequence) row.getValue();
+            EntitySequence sequence = row.getValue();
             if ( !sequence.isAlreadyInUse() ) {
                 String errorMessage = validPrefix(sequence, (String) value);
                 if ( errorMessage != null ) {
@@ -865,43 +1010,45 @@ public class ConfigurationController extends GenericForwardComposer {
 
     private String validPrefix(EntitySequence sequence, String prefixValue) {
         sequence.setPrefix(prefixValue);
-        if ( !configurationModel.checkFrefixFormat(sequence) ) {
-            String message = _("Invalid format prefix. Format prefix cannot be empty, contain '_' or contain whitespaces.");
+        if ( !configurationModel.checkPrefixFormat(sequence) ) {
+
+            String message =
+                    _("Invalid format prefix. Format prefix cannot be empty, contain '_' or contain whitespaces.");
+
             if ( sequence.getEntityName().canContainLowBar() ) {
                 message = _("format prefix invalid. It cannot be empty or contain whitespaces.");
             }
+
             return message;
         }
+
         return null;
     }
 
-    public Constraint checkConstraintNumberOfDigits() {
+    private Constraint checkConstraintNumberOfDigits() {
         return (comp, value) -> {
             Row row = (Row) comp.getParent();
-            EntitySequence sequence = (EntitySequence) row.getValue();
-
+            EntitySequence sequence = row.getValue();
             if ( !sequence.isAlreadyInUse() ) {
                 Integer numberOfDigits = (Integer) value;
                 try {
                     sequence.setNumberOfDigits(numberOfDigits);
                 } catch (IllegalArgumentException e) {
-
                     throw new WrongValueException(
                             comp,
                             _("number of digits must be between {0} and {1}",
-                                    EntitySequence.MIN_NUMBER_OF_DIGITS,
-                                    EntitySequence.MAX_NUMBER_OF_DIGITS));
+                                    EntitySequence.MIN_NUMBER_OF_DIGITS, EntitySequence.MAX_NUMBER_OF_DIGITS));
                 }
             }
         };
     }
 
-    public void addEntitySequence(EntityNameEnum entityName, String prefix, Integer digits) {
+    private void addEntitySequence(EntityNameEnum entityName, String prefix, Integer digits) {
         configurationModel.addEntitySequence(entityName, prefix, digits);
         reloadEntitySequences();
     }
 
-    public List<EntitySequence> getEntitySequences(EntityNameEnum entityName) {
+    private List<EntitySequence> getEntitySequences(EntityNameEnum entityName) {
         return configurationModel.getEntitySequences(entityName);
     }
 
@@ -910,36 +1057,33 @@ public class ConfigurationController extends GenericForwardComposer {
     }
 
     private void showMessageNotDelete() {
-        try {
-            Messagebox.show(
-                    _("It can not be deleted. At least one sequence is necessary."),
-                    _("Deleting sequence"), Messagebox.OK, Messagebox.INFORMATION);
-
-        } catch (InterruptedException e) {
-            messages.showMessage(Level.ERROR, e.getMessage());
-        }
+        Messagebox.show(
+                _("It can not be deleted. At least one sequence is necessary."), _("Deleting sequence"),
+                Messagebox.OK, Messagebox.INFORMATION);
     }
 
-    public static class EntitySequenceComparator implements Comparator<EntitySequence> {
-
-        @Override
-        public int compare(EntitySequence seq1, EntitySequence seq2) {
-            return seq1.getEntityName().compareTo(seq2.getEntityName());
-        }
-    }
-
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public EntitySequenceGroupRenderer getEntitySequenceGroupRenderer() {
         return new EntitySequenceGroupRenderer();
     }
 
     private List<EntitySequence> getAllEntitySequences() {
         List<EntitySequence> allSequences = new ArrayList<>();
+
         for (final EntityNameEnum entityName : EntityNameEnum.values()) {
             allSequences.addAll(this.getEntitySequences(entityName));
         }
+
         return allSequences;
     }
 
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public void addNewEntitySequence() {
         if ( entityCombo != null && numDigitBox != null ) {
             if ( entityCombo.getSelectedItem() == null ) {
@@ -952,8 +1096,7 @@ public class ConfigurationController extends GenericForwardComposer {
 
             try {
                 addEntitySequence(
-                        (EntityNameEnum) entityCombo.getSelectedItem().getValue(),
-                        prefixBox.getValue(), numDigitBox.getValue());
+                        entityCombo.getSelectedItem().getValue(), prefixBox.getValue(), numDigitBox.getValue());
 
             } catch (IllegalArgumentException e) {
                 throw new WrongValueException(numDigitBox, e.getMessage());
@@ -961,27 +1104,39 @@ public class ConfigurationController extends GenericForwardComposer {
         }
     }
 
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public EntityNameEnum[] getEntityNames() {
         return EntityNameEnum.values();
     }
 
-    // Tab LDAP properties
+    /**
+     * Tab LDAP properties.
+     */
     public LDAPConfiguration getLdapConfiguration() {
         return configurationModel.getLdapConfiguration();
     }
 
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public void setLdapConfiguration(LDAPConfiguration ldapConfiguration) {
         configurationModel.setLdapConfiguration(ldapConfiguration);
     }
 
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public RowRenderer getAllUserRolesRenderer() {
-        return (row, data) -> {
-
-            final UserRole role = (UserRole) data;
+        return (row, o, i) -> {
+            final UserRole role = (UserRole) o;
             row.appendChild(new Label(role.getDisplayName()));
 
             final Textbox tempTextbox = new Textbox();
-
             Textbox textbox = Util.bind(
                     tempTextbox,
                     () -> {
@@ -1007,128 +1162,203 @@ public class ConfigurationController extends GenericForwardComposer {
         return UserRole.values();
     }
 
-    public void setRoles(UserRole roles) {
-        this.roles = roles;
-    }
-
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public boolean isChangedDefaultPasswdAdmin() {
         return configurationModel.isChangedDefaultPasswdAdmin();
     }
 
-    public boolean isLdapGroupStrategy() {
-        return getLdapConfiguration().getLdapGroupStrategy();
-    }
-
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public boolean isLdapPropertyStrategy() {
         return !getLdapConfiguration().getLdapGroupStrategy();
     }
 
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public boolean isCheckNewVersionEnabled() {
         return configurationModel.isCheckNewVersionEnabled();
     }
 
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public void setCheckNewVersionEnabled(boolean checkNewVersionEnabled) {
         configurationModel.setCheckNewVersionEnabled(checkNewVersionEnabled);
     }
 
-    public boolean isAllowToGatherUsageStatsEnabled() {
-        return configurationModel.isAllowToGatherUsageStatsEnabled();
-    }
-
-    public void setAllowToGatherUsageStatsEnabled(boolean allowToGatherUsageStatsEnabled) {
-        configurationModel.setAllowToGatherUsageStatsEnabled(allowToGatherUsageStatsEnabled);
-    }
-
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public Set<String> getCurrencies() {
         return configurationModel.getCurrencies();
     }
 
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public ListitemRenderer getCurrencyRenderer() {
-        return (item, data) -> {
-            String currencyCode = (String) data;
-            item.setLabel(currencyCode + " - " + configurationModel.getCurrencySymbol(currencyCode));
-            item.setValue(currencyCode);
+        return (listitem, o, i) -> {
+            String currencyCode = (String) o;
+            listitem.setLabel(currencyCode + " - " + configurationModel.getCurrencySymbol(currencyCode));
+            listitem.setValue(currencyCode);
         };
     }
 
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public String getSelectedCurrency() {
         return configurationModel.getCurrencyCode();
     }
 
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public void setSelectedCurrency(String currencyCode) {
         configurationModel.setCurrency(currencyCode);
     }
 
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public TypeOfWorkHours getPersonalTimesheetsTypeOfWorkHours() {
         return configurationModel.getPersonalTimesheetsTypeOfWorkHours();
     }
 
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public void setPersonalTimesheetsTypeOfWorkHours(TypeOfWorkHours typeOfWorkHours) {
         configurationModel.setPersonalTimesheetsTypeOfWorkHours(typeOfWorkHours);
     }
 
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public TypeOfWorkHours getBudgetDefaultTypeOfWorkHours() {
         return configurationModel.getBudgetDefaultTypeOfWorkHours();
     }
 
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public void setBudgetDefaultTypeOfWorkHours(TypeOfWorkHours typeOfWorkHours) {
         configurationModel.setBudgetDefaultTypeOfWorkHours(typeOfWorkHours);
     }
 
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public Boolean getEnabledAutomaticBudget() {
         return configurationModel.getEnabledAutomaticBudget();
     }
 
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public void setEnabledAutomaticBudget(Boolean enabledAutomaticBudget) {
         configurationModel.setEnabledAutomaticBudget(enabledAutomaticBudget);
     }
 
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public List<PersonalTimesheetsPeriodicityEnum> getPersonalTimesheetsPeriodicities() {
         return Arrays.asList(PersonalTimesheetsPeriodicityEnum.values());
     }
 
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public ListitemRenderer getPersonalTimesheetsPeriodicityRenderer() {
-        return (item, data) -> {
-            PersonalTimesheetsPeriodicityEnum periodicity = (PersonalTimesheetsPeriodicityEnum) data;
-            item.setLabel(_(periodicity.getName()));
-            item.setValue(periodicity);
+        return (listitem, o, i) -> {
+            PersonalTimesheetsPeriodicityEnum periodicity = (PersonalTimesheetsPeriodicityEnum) o;
+            listitem.setLabel(_(periodicity.getName()));
+            listitem.setValue(periodicity);
         };
     }
 
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public PersonalTimesheetsPeriodicityEnum getSelectedPersonalTimesheetsPeriodicity() {
         return configurationModel.getPersonalTimesheetsPeriodicity();
     }
 
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public void setSelectedPersonalTimesheetsPeriodicity(
             PersonalTimesheetsPeriodicityEnum personalTimesheetsPeriodicity) {
 
         configurationModel.setPersonalTimesheetsPeriodicity(personalTimesheetsPeriodicity);
     }
 
-    public boolean isPersonalTimesheetsPeriodicityDisabled() {
+    private boolean isPersonalTimesheetsPeriodicityDisabled() {
         return configurationModel.isAnyPersonalTimesheetAlreadySaved();
     }
 
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public String getPersonalTimesheetsPeriodicityTooltip() {
-        if ( isPersonalTimesheetsPeriodicityDisabled() ) {
-            return _("Periocity cannot be changed because there is already any personal timesheet stored");
-        }
-        return "";
+        return isPersonalTimesheetsPeriodicityDisabled()
+                ? _("Periocity cannot be changed because there is already any personal timesheet stored")
+                : "";
     }
 
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public Integer getSecondsPlanningWarning() {
         return configurationModel.getSecondsPlanningWarning();
     }
 
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public void setSecondsPlanningWarning(Integer secondsPlanningWarning) {
         configurationModel.setSecondsPlanningWarning(secondsPlanningWarning);
     }
 
-    public String getRepositoryLocation(){
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
+    public String getRepositoryLocation() {
         return configurationModel.getRepositoryLocation();
     }
 
-    public void setRepositoryLocation(String location){
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
+    public void setRepositoryLocation(String location) {
         configurationModel.setRepositoryLocation(location);
     }
 
@@ -1140,30 +1370,41 @@ public class ConfigurationController extends GenericForwardComposer {
         return selectedConnector;
     }
 
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public void setSelectedConnector(Connector connector) {
         selectedConnector = connector;
         Util.reloadBindings(connectorPropertriesGrid);
     }
 
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public List<ConnectorProperty> getConnectorPropertries() {
         return selectedConnector == null ? Collections.emptyList() : selectedConnector.getProperties();
     }
 
-    /* Should be public! */
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public RowRenderer getConnectorPropertriesRenderer() {
         return new RowRenderer() {
             @Override
-            public void render(Row row, Object data) {
-                ConnectorProperty property = (ConnectorProperty) data;
+            public void render(Row row, Object o, int i) throws Exception {
+                ConnectorProperty property = (ConnectorProperty) o;
                 row.setValue(property);
 
                 Util.appendLabel(row, _(property.getKey()));
 
-                // FIXME this is not perfect solution
-                if ( property.getKey().equals("Protocol") )
+                if ("Protocol".equals(property.getKey())) {
                     appendValueCombobox(row, property);
-
-                else appendValueTextbox(row, property);
+                } else {
+                    appendValueTextbox(row, property);
+                }
             }
 
             private void appendValueTextbox(Row row, final ConnectorProperty property) {
@@ -1171,60 +1412,60 @@ public class ConfigurationController extends GenericForwardComposer {
                 textbox.setWidth("400px");
                 textbox.setConstraint(checkPropertyValue(property));
 
-                Util.bind(
-                        textbox,
-                        () -> property.getValue(),
-                        value -> property.setValue(value));
+                Util.bind(textbox, property::getValue, property::setValue);
 
-                boolean propertyEqualsPasswordOrEmailPassword =
-                        property.getKey().equals(PredefinedConnectorProperties.PASSWORD) ||
-                                property.getKey().equals(PredefinedConnectorProperties.EMAIL_PASSWORD);
+                if ( property.getKey().equals(PredefinedConnectorProperties.PASSWORD) ||
+                        property.getKey().equals(PredefinedConnectorProperties.EMAIL_PASSWORD) ) {
 
-                if ( propertyEqualsPasswordOrEmailPassword ) {
                     textbox.setType("password");
                 }
 
-                // Needed for method validateEmailFields()
-                if ( property.getKey().equals(PredefinedConnectorProperties.EMAIL_USERNAME) )
+                // Need for method validateEmailFields()
+                if ( property.getKey().equals(PredefinedConnectorProperties.EMAIL_USERNAME) ) {
                     emailUsernameTextbox = textbox;
+                }
 
-                if ( property.getKey().equals(PredefinedConnectorProperties.EMAIL_PASSWORD) )
+                if ( property.getKey().equals(PredefinedConnectorProperties.EMAIL_PASSWORD) ) {
                     emailPasswordTextbox = textbox;
+                }
 
-                if ( property.getKey().equals(PredefinedConnectorProperties.EMAIL_SENDER) )
+                if ( property.getKey().equals(PredefinedConnectorProperties.EMAIL_SENDER) ) {
                     emailSenderTextbox = textbox;
+                }
 
                 row.appendChild(textbox);
             }
 
-            private void appendValueCombobox(Row row, final ConnectorProperty property) {
+            private void appendValueCombobox(Row row, final ConnectorProperty property){
 
                 final Combobox combobox = new Combobox();
                 combobox.setWidth("400px");
                 final List<String> protocols = new ArrayList<>();
                 protocols.add("SMTP");
-                protocols.add("STARTTLS");
+                protocols.add(STARTTLS_PROTOCOL);
 
-                for (String item : protocols) {
+                for (String item : protocols){
                     Comboitem comboitem = new Comboitem();
                     comboitem.setValue(item);
                     comboitem.setLabel(item);
                     comboitem.setParent(combobox);
 
-                    if ( (!"".equals(property.getValue())) && (item.equals(property.getValue())) ){
+                    if ( (!"".equals(property.getValue())) && (item.equals(property.getValue())) ) {
                         combobox.setSelectedItem(comboitem);
                     }
                 }
 
-                combobox.addEventListener(Events.ON_SELECT, event -> {
-                    if ( combobox.getSelectedItem() != null ) {
-                        property.setValue(combobox.getSelectedItem().getValue().toString());
-                    }
-                });
+                combobox.addEventListener(
+                        Events.ON_SELECT,
+                        event -> {
+                            if ( combobox.getSelectedItem() != null ){
+                                property.setValue(combobox.getSelectedItem().getValue().toString());
+                            }
+                        });
 
                 Util.bind(
                         combobox,
-                        () -> combobox.getSelectedItem(),
+                        combobox::getSelectedItem,
                         item -> {
                             if ( (item != null) && (item.getValue() != null) && (item.getValue() instanceof String) ) {
                                 property.setValue(combobox.getSelectedItem().getValue().toString());
@@ -1238,11 +1479,12 @@ public class ConfigurationController extends GenericForwardComposer {
                 protocolsCombobox = combobox;
             }
 
-            public Constraint checkPropertyValue(final ConnectorProperty property) {
+            Constraint checkPropertyValue(final ConnectorProperty property) {
                 final String key = property.getKey();
+
                 return (comp, value) -> {
                     if ( key.equals(PredefinedConnectorProperties.ACTIVATED) ) {
-                        if ( !((String) value).equalsIgnoreCase("Y") && !((String) value).equalsIgnoreCase("N") ) {
+                        if ( !"Y".equalsIgnoreCase((String) value) && !"N".equalsIgnoreCase((String) value)) {
                             throw new WrongValueException(comp, _("Only {0} allowed", "Y/N"));
                         }
                     } else if ( key.equals(PredefinedConnectorProperties.SERVER_URL) ||
@@ -1281,19 +1523,134 @@ public class ConfigurationController extends GenericForwardComposer {
 
     private boolean areEmailFieldsValid() {
         if ( protocolsCombobox != null && protocolsCombobox.getSelectedItem() != null ) {
-            if ( protocolsCombobox.getSelectedItem().getLabel().equals("STARTTLS") &&
-                    emailUsernameTextbox.getValue() != null &&
+
+            boolean isNotNullValue =  emailUsernameTextbox.getValue() != null &&
                     emailPasswordTextbox.getValue() != null &&
                     emailUsernameTextbox.getValue().length() != 0 &&
-                    emailPasswordTextbox.getValue().length() != 0 &&
-                    emailSenderTextbox.getValue().matches("^\\S+@\\S+\\.\\S+$") )
-                return true;
+                    emailPasswordTextbox.getValue().length() != 0;
 
-            if ( protocolsCombobox != null && protocolsCombobox.getSelectedItem() != null ) {
-                if ( protocolsCombobox.getSelectedItem().getLabel().equals("SMTP") )
-                    return true;
+            if ( STARTTLS_PROTOCOL.equals(protocolsCombobox.getSelectedItem().getLabel()) && isNotNullValue &&
+                    emailSenderTextbox.getValue().matches("^\\S+@\\S+\\.\\S+$") ) {
+
+                return true;
+            }
+
+            if ( protocolsCombobox.getSelectedItem() != null  &&
+                    "SMTP".equals(protocolsCombobox.getSelectedItem().getLabel()) ) {
+
+                return true;
             }
         }
+
         return false;
+    }
+
+    /**
+     * Upload image to classes folder via ZK Fileupload.
+     *
+     * Used in configuration.zul
+     * Should be public!
+     *
+     * @param media
+     */
+    public void importLogo(Media media) {
+
+        if ( Util.logo != null ) {
+            /* We are going to overwrite existing logo */
+            removeLogo();
+        }
+
+        if ( Util.logo == null ) {
+            if ( checkFormat(media.getFormat()) ) {
+                BufferedInputStream in;
+                BufferedOutputStream out = null;
+                File fileToSave;
+
+                InputStream inputStream = media.getStreamData();
+                in = new BufferedInputStream(inputStream);
+
+                try {
+                    fileToSave = new File(
+                            ContextLoaderListener
+                                    .getCurrentWebApplicationContext()
+                                    .getResource("/")
+                                    .getFile()
+                                    .getPath() + "\\" + media.getName());
+
+                    OutputStream outputStream = new FileOutputStream(fileToSave);
+                    out = new BufferedOutputStream(outputStream);
+
+                    byte[] buffer = new byte[1024];
+                    int ch = in.read(buffer);
+
+                    while ( ch != -1 ) {
+                        out.write(buffer, 0, ch);
+                        ch = in.read(buffer);
+                    }
+
+                } catch (IOException ignored) {}
+
+                finally {
+                    try {
+                        if (out != null)
+                            out.close();
+
+                        in.close();
+                    } catch (IOException ignored) {}
+                }
+
+                Util.setLogoFromTarget(media.getName());
+                configurationModel.setCompanyLogoURL(media.getName());
+                ((Textbox) configurationWindow.getFellow("companyLogoURL")).setValue(media.getName());
+                ((org.zkoss.zul.Image) configurationWindow.getFellow(LOGO_PREVIEW_COMPONENT)).setContent(Util.logo);
+
+            } else {
+                messages.showMessage(Level.WARNING, _("The only current supported formats are png and jpeg"));
+            }
+        }
+    }
+
+    private boolean checkFormat(String format) {
+        /* http://stackoverflow.com/questions/23424399/jpg-vs-jpeg-image-formats */
+        return format.matches("(?i).*png") || format.matches("(?i).*jpeg") || format.matches("(?i).*jpg");
+    }
+
+    /**
+     * Handler of remove logo button.
+     *
+     * Should be public!
+     */
+    public void removeLogo() {
+        if ( !"".equals(companyLogoURL.getValue()) ) {
+            ((org.zkoss.zul.Image) configurationWindow.getFellow(LOGO_PREVIEW_COMPONENT)).setSrc("");
+            findAndRemoveLogoFromTarget(companyLogoURL.getValue());
+            Util.logo = null;
+        }
+
+        companyLogoURL.setValue("");
+        configurationModel.setCompanyLogoURL("");
+    }
+
+    /**
+     * Setting preview image.
+     *
+     * Used in configuration.zul
+     * Should be public!
+     */
+    public void setPreviewLogo() {
+        if ( !"".equals(companyLogoURL.getValue()) ) {
+            ((org.zkoss.zul.Image) configurationWindow.getFellow(LOGO_PREVIEW_COMPONENT)).setContent(Util.logo);
+        }
+    }
+
+    /**
+     * Trying to delete file from classes folder.
+     */
+    private void findAndRemoveLogoFromTarget(String name) {
+        File fileToDelete;
+        try {
+            fileToDelete = ContextLoaderListener.getCurrentWebApplicationContext().getResource(name).getFile();
+            fileToDelete.delete();
+        } catch (IOException ignored) {}
     }
 }

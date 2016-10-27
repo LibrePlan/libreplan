@@ -21,6 +21,7 @@ package org.libreplan.business.common.entities;
 
 import org.libreplan.business.common.daos.IConnectorDAO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,7 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 @Component
-@Scope("singleton")
+@Scope(BeanDefinition.SCOPE_SINGLETON)
 public class ConnectorBootstrap implements IConnectorBootstrap {
 
     @Autowired

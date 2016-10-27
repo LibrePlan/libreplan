@@ -56,86 +56,82 @@ import org.libreplan.business.workingday.ResourcesPerDay;
 
 /**
  * Represents the relation between {@link Task} and a generic {@link Resource}.
+ *
  * @author Diego Pino García <dpino@igalia.com>
  */
-public class GenericResourceAllocation extends
-        ResourceAllocation<GenericDayAssignment> {
+public class GenericResourceAllocation extends ResourceAllocation<GenericDayAssignment> {
+
+    @OnCopy(Strategy.SHARE_COLLECTION_ELEMENTS)
+    private Set<Criterion> criterions = new HashSet<>();
+
+    @OnCopy(Strategy.SHARE)
+    private ResourceEnum resourceType;
+
+    private Set<GenericDayAssignmentsContainer> genericDayAssignmentsContainers = new HashSet<>();
+
+    private IAssignedEffortForResource assignedEffortForResource = null;
+
+    /**
+     * Constructor for Hibernate. DO NOT USE!
+     */
+    public GenericResourceAllocation() {}
 
     public static GenericResourceAllocation create() {
         return create(new GenericResourceAllocation());
     }
 
-    public static GenericResourceAllocation createForTesting(
-            ResourcesPerDay resourcesPerDay, Task task) {
-        return create(new GenericResourceAllocation(
-                resourcesPerDay, task));
+    public static GenericResourceAllocation createForTesting(ResourcesPerDay resourcesPerDay, Task task) {
+        return create(new GenericResourceAllocation(resourcesPerDay, task));
     }
 
     public static Map<Set<Criterion>, List<GenericResourceAllocation>> byCriterions(
             Collection<GenericResourceAllocation> genericAllocations) {
 
-        Map<Set<Criterion>, List<GenericResourceAllocation>> result = new HashMap<Set<Criterion>, List<GenericResourceAllocation>>();
+        Map<Set<Criterion>, List<GenericResourceAllocation>> result = new HashMap<>();
         for (GenericResourceAllocation genericResourceAllocation : genericAllocations) {
             Set<Criterion> criterions = genericResourceAllocation.getCriterions();
-            if( !result.containsKey(criterions) ){
-                result.put(criterions, new ArrayList<GenericResourceAllocation>());
+
+            if ( !result.containsKey(criterions) ) {
+                result.put(criterions, new ArrayList<>());
             }
             result.get(criterions).add(genericResourceAllocation);
         }
         return result;
     }
 
-    @OnCopy(Strategy.SHARE_COLLECTION_ELEMENTS)
-    private Set<Criterion> criterions = new HashSet<Criterion>();
-
-    @OnCopy(Strategy.SHARE)
-    private ResourceEnum resourceType;
-
-    private Set<GenericDayAssignmentsContainer> genericDayAssignmentsContainers = new HashSet<GenericDayAssignmentsContainer>();
-
     @Valid
     @SuppressWarnings("unused")
     private Set<GenericDayAssignmentsContainer> getGenericDayAssignmentsContainers() {
-        return new HashSet<GenericDayAssignmentsContainer>(
-                genericDayAssignmentsContainers);
+        return new HashSet<>(genericDayAssignmentsContainers);
     }
 
     private GenericResourceAllocation(ResourcesPerDay resourcesPerDay, Task task) {
         super(resourcesPerDay, task);
     }
 
-    /**
-     * Constructor for Hibernate. DO NOT USE!
-     */
-    public GenericResourceAllocation() {
-    }
-
     public static GenericResourceAllocation create(Task task) {
-        return create(new GenericResourceAllocation(
-                task));
+        return create(new GenericResourceAllocation(task));
     }
 
-    public static GenericResourceAllocation create(Task task,
-            Collection<? extends Criterion> criterions) {
+    public static GenericResourceAllocation create(Task task, Collection<? extends Criterion> criterions) {
         return create(task, inferType(criterions), criterions);
     }
 
-    public static ResourceEnum inferType(
-            Collection<? extends Criterion> criterions) {
-        if (criterions.isEmpty()) {
-            return ResourceEnum.WORKER;
-        }
-        Criterion first = criterions.iterator().next();
-        return first.getType().getResource();
+    public static ResourceEnum inferType(Collection<? extends Criterion> criterions) {
+        return criterions.isEmpty()
+                ? ResourceEnum.WORKER
+                : criterions.iterator().next().getType().getResource();
     }
 
-    public static GenericResourceAllocation create(Task task, ResourceEnum resourceType,
-                                                   Collection<? extends Criterion> criterions) {
+    public static GenericResourceAllocation create(
+            Task task, ResourceEnum resourceType, Collection<? extends Criterion> criterions) {
+
         Validate.notNull(resourceType);
         GenericResourceAllocation result = new GenericResourceAllocation(task);
-        result.criterions = new HashSet<Criterion>(criterions);
+        result.criterions = new HashSet<>(criterions);
         result.resourceType = resourceType;
         result.setResourcesPerDayToAmount(1);
+
         return create(result);
     }
 
@@ -145,27 +141,25 @@ public class GenericResourceAllocation extends
     }
 
     @Override
-    protected GenericDayAssignmentsContainer retrieveOrCreateContainerFor(
-            Scenario scenario) {
+    protected GenericDayAssignmentsContainer retrieveOrCreateContainerFor(Scenario scenario) {
         GenericDayAssignmentsContainer retrieved = retrieveContainerFor(scenario);
         if (retrieved != null) {
             return retrieved;
         }
-        GenericDayAssignmentsContainer result = GenericDayAssignmentsContainer
-                .create(this, scenario);
+
+        GenericDayAssignmentsContainer result = GenericDayAssignmentsContainer.create(this, scenario);
         genericDayAssignmentsContainers.add(result);
+
         return result;
     }
 
     @Override
-    protected GenericDayAssignmentsContainer retrieveContainerFor(
-            Scenario scenario) {
-        Map<Scenario, GenericDayAssignmentsContainer> containers = containersByScenario();
-        return containers.get(scenario);
+    protected GenericDayAssignmentsContainer retrieveContainerFor(Scenario scenario) {
+        return containersByScenario().get(scenario);
     }
 
     private Map<Scenario, GenericDayAssignmentsContainer> containersByScenario() {
-        Map<Scenario, GenericDayAssignmentsContainer> result = new HashMap<Scenario, GenericDayAssignmentsContainer>();
+        Map<Scenario, GenericDayAssignmentsContainer> result = new HashMap<>();
         for (GenericDayAssignmentsContainer each : genericDayAssignmentsContainers) {
             assert !result.containsKey(each);
             result.put(each.getScenario(), each);
@@ -174,30 +168,25 @@ public class GenericResourceAllocation extends
     }
 
     public List<GenericDayAssignment> getOrderedAssignmentsFor(Resource resource) {
-        List<GenericDayAssignment> list = getOrderedAssignmentsFor().get(
-                resource);
-        if (list == null) {
-            return Collections.emptyList();
-        }
-        return Collections.unmodifiableList(list);
+        List<GenericDayAssignment> list = getOrderedAssignmentsFor().get(resource);
+
+        return list == null ? Collections.emptyList() : Collections.unmodifiableList(list);
     }
 
     private Map<Resource, List<GenericDayAssignment>> getOrderedAssignmentsFor() {
-        return DayAssignment.byResourceAndOrdered(getDayAssignmentsState()
-                .getUnorderedAssignments());
+        return DayAssignment.byResourceAndOrdered(getDayAssignmentsState().getUnorderedAssignments());
     }
 
     public Set<Criterion> getCriterions() {
         return Collections.unmodifiableSet(criterions);
     }
 
-    private final class ResourcesSatisfyingCriterionsSelector implements
-            IResourceSelector {
+    private final class ResourcesSatisfyingCriterionsSelector implements IResourceSelector {
 
         @Override
         public boolean isSelectable(Resource resource, LocalDate day) {
-            ICriterion compoundCriterion = CriterionCompounder.buildAnd(
-                    criterions).getResult();
+            ICriterion compoundCriterion = CriterionCompounder.buildAnd(criterions).getResult();
+
             return compoundCriterion.isSatisfiedBy(resource, day);
         }
     }
@@ -205,22 +194,21 @@ public class GenericResourceAllocation extends
     private class GenericAllocation extends AssignmentsAllocator {
 
         private EffortDistributor hoursDistributor;
+
         private final List<Resource> resources;
 
         public GenericAllocation(List<Resource> resources) {
             this.resources = resources;
-            hoursDistributor = new EffortDistributor(resources, getAssignedEffortForResource(),
-                    new ResourcesSatisfyingCriterionsSelector());
+
+            hoursDistributor = new EffortDistributor(
+                    resources, getAssignedEffortForResource(), new ResourcesSatisfyingCriterionsSelector());
         }
 
         @Override
-        public List<GenericDayAssignment> distributeForDay(PartialDay day,
-                EffortDuration effort) {
-            List<GenericDayAssignment> result = new ArrayList<GenericDayAssignment>();
-            for (ResourceWithAssignedDuration each : hoursDistributor
-                    .distributeForDay(day, effort)) {
-                result.add(GenericDayAssignment.create(day.getDate(),
-                        each.duration, each.resource));
+        public List<GenericDayAssignment> distributeForDay(PartialDay day, EffortDuration effort) {
+            List<GenericDayAssignment> result = new ArrayList<>();
+            for (ResourceWithAssignedDuration each : hoursDistributor.distributeForDay(day, effort)) {
+                result.add(GenericDayAssignment.create(day.getDate(), each.duration, each.resource));
             }
             return result;
         }
@@ -237,19 +225,14 @@ public class GenericResourceAllocation extends
 
     }
 
-    private IAssignedEffortForResource assignedEffortForResource = null;
-
-    public void setAssignedEffortForResource(
-            IAssignedEffortForResource assignedEffortForResource) {
+    public void setAssignedEffortForResource(IAssignedEffortForResource assignedEffortForResource) {
         this.assignedEffortForResource = assignedEffortForResource;
     }
 
     private IAssignedEffortForResource getAssignedEffortForResource() {
-        if (assignedEffortForResource != null) {
-            return assignedEffortForResource;
-        }
-        return AssignedEffortForResource.effortDiscounting(Collections
-                .singletonList(this));
+        return assignedEffortForResource != null
+                ? assignedEffortForResource
+                : AssignedEffortForResource.effortDiscounting(Collections.singletonList(this));
     }
 
     @Override
@@ -258,7 +241,7 @@ public class GenericResourceAllocation extends
     }
 
     public IAllocatable forResources(Collection<? extends Resource> resources) {
-        return new GenericAllocation(new ArrayList<Resource>(resources));
+        return new GenericAllocation(new ArrayList<>(resources));
     }
 
     @Override
@@ -273,8 +256,7 @@ public class GenericResourceAllocation extends
 
     @Override
     public List<Resource> getAssociatedResources() {
-        return new ArrayList<Resource>(DayAssignment
-                .getAllResources(getAssignments()));
+        return new ArrayList<>(DayAssignment.getAllResources(getAssignments()));
     }
 
     @Override
@@ -285,34 +267,32 @@ public class GenericResourceAllocation extends
     @Override
     ResourceAllocation<GenericDayAssignment> createCopy(Scenario scenario) {
         GenericResourceAllocation allocation = create();
-        allocation.criterions = new HashSet<Criterion>(criterions);
+        allocation.criterions = new HashSet<>(criterions);
+
         return allocation;
     }
 
     @Override
-    public ResourcesPerDayModification withDesiredResourcesPerDay(
-            ResourcesPerDay resourcesPerDay) {
-        return ResourcesPerDayModification.create(this, resourcesPerDay,
-                getAssociatedResources());
+    public ResourcesPerDayModification withDesiredResourcesPerDay(ResourcesPerDay resourcesPerDay) {
+        return ResourcesPerDayModification.create(this, resourcesPerDay, getAssociatedResources());
     }
 
     @Override
-    public List<Resource> querySuitableResources(
-            IResourcesSearcher resourcesSearcher) {
-        return resourcesSearcher.searchBoth().byCriteria(getCriterions())
-                .execute();
+    public List<Resource> querySuitableResources(IResourcesSearcher resourcesSearcher) {
+        return resourcesSearcher.searchBoth().byCriteria(getCriterions()).execute();
     }
 
     public static Map<Criterion, List<GenericResourceAllocation>> byCriterion(
             List<GenericResourceAllocation> generics) {
-        Map<Criterion, List<GenericResourceAllocation>> result = new HashMap<Criterion, List<GenericResourceAllocation>>();
+
+        Map<Criterion, List<GenericResourceAllocation>> result = new HashMap<>();
+
         for (GenericResourceAllocation genericResourceAllocation : generics) {
-            Set<Criterion> criterions = genericResourceAllocation
-                    .getCriterions();
+            Set<Criterion> criterions = genericResourceAllocation.getCriterions();
+
             for (Criterion criterion : criterions) {
                 if (!result.containsKey(criterion)) {
-                    result.put(criterion,
-                            new ArrayList<GenericResourceAllocation>());
+                    result.put(criterion, new ArrayList<>());
                 }
                 result.get(criterion).add(genericResourceAllocation);
             }
@@ -347,20 +327,16 @@ public class GenericResourceAllocation extends
 
     @Override
     protected void removeContainersFor(Scenario scenario) {
-        GenericDayAssignmentsContainer container = containersByScenario().get(
-                scenario);
+        GenericDayAssignmentsContainer container = containersByScenario().get(scenario);
         if (container != null) {
             genericDayAssignmentsContainers.remove(container);
         }
     }
 
-    public void overrideConsolidatedDayAssignments(
-            GenericResourceAllocation origin) {
+    public void overrideConsolidatedDayAssignments(GenericResourceAllocation origin) {
         if (origin != null) {
-            List<GenericDayAssignment> originAssignments = origin
-                    .getConsolidatedAssignments();
-            resetAssignmentsTo(GenericDayAssignment
-                    .copyToAssignmentsWithoutParent(originAssignments));
+            List<GenericDayAssignment> originAssignments = origin.getConsolidatedAssignments();
+            resetAssignmentsTo(GenericDayAssignment.copyToAssignmentsWithoutParent(originAssignments));
         }
     }
 
@@ -369,13 +345,13 @@ public class GenericResourceAllocation extends
     }
 
     @Override
-    public EffortDuration getAssignedEffort(Criterion criterion,
-            IntraDayDate startInclusive, IntraDayDate endExclusive) {
+    public EffortDuration getAssignedEffort(
+            Criterion criterion, IntraDayDate startInclusive, IntraDayDate endExclusive) {
+
         return super.getAssignedDuration(startInclusive, endExclusive);
     }
 
-    public IEffortDistributor<GenericDayAssignment> createEffortDistributor(
-            List<Resource> resources) {
+    public IEffortDistributor<GenericDayAssignment> createEffortDistributor(List<Resource> resources) {
         return new GenericAllocation(resources);
     }
 

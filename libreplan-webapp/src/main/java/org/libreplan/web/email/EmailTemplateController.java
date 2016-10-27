@@ -30,14 +30,13 @@ import org.libreplan.web.common.IMessagesForUser;
 import org.libreplan.web.common.Level;
 import org.libreplan.web.common.MessagesForUser;
 import org.libreplan.web.security.SecurityUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.zk.ui.Component;
-
 
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 
+import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Textbox;
 
@@ -51,11 +50,11 @@ import static org.libreplan.web.I18nHelper._;
 /**
  * Controller for page Edit email templates.
  *
- * @author Created by Vova Perebykivskiy <vova@libreplan-enterprise.com> on 25.09.2015.
+ * @author Created by Vova Perebykivskyi <vova@libreplan-enterprise.com> on 25.09.2015.
  */
-public class EmailTemplateController extends GenericForwardComposer{
 
-    @Autowired
+public class EmailTemplateController extends GenericForwardComposer<Component> {
+
     private IUserDAO userDAO;
 
     private User user;
@@ -70,24 +69,28 @@ public class EmailTemplateController extends GenericForwardComposer{
 
     private Textbox subjectTextbox;
 
-
-    public static ListitemRenderer languagesRenderer = (item, data) -> {
+    private static ListitemRenderer languagesRenderer = (item, data, i) -> {
         Language language = (Language) data;
         String displayName = language.getDisplayName();
         item.setLabel(displayName);
     };
 
+
+    public EmailTemplateController() {
+        userDAO = (IUserDAO) SpringUtil.getBean("userDAO");
+        emailTemplateModel = (IEmailTemplateModel) SpringUtil.getBean("emailTemplateModel");
+    }
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-
-        // TODO resolve deprecated
-        comp.setVariable("emailTemplateController", this, true);
-
+        comp.setAttribute("emailTemplateController", this, true);
         messages = new MessagesForUser(messagesContainer);
 
-        // Set default template and language for user.
-        // And content and subject for that language & template.
+        /*
+         * Set default template and language for user.
+         * And content and subject for that language & template.
+         */
         setUser();
         setSelectedLanguage(Language.ENGLISH_LANGUAGE);
 
@@ -107,6 +110,7 @@ public class EmailTemplateController extends GenericForwardComposer{
         } catch (ValidationException e) {
             messages.showInvalidValues(e);
         }
+
         return false;
     }
 
@@ -114,10 +118,18 @@ public class EmailTemplateController extends GenericForwardComposer{
         Executions.getCurrent().sendRedirect("../planner/index.zul");
     }
 
+    /**
+     * Used in email_templates.zul
+     * Should be public!
+     */
     public Language getSelectedLanguage() {
         return emailTemplateModel.getLanguage();
     }
 
+    /**
+     * Used in email_templates.zul
+     * Should be public!
+     */
     public void setSelectedLanguage(Language language) {
         emailTemplateModel.setLanguage(language);
 
@@ -125,9 +137,18 @@ public class EmailTemplateController extends GenericForwardComposer{
         getContentDataBySelectedLanguage();
     }
 
+    /**
+     * Used in email_templates.zul
+     * Should be public!
+     */
     public static ListitemRenderer getLanguagesRenderer() {
         return languagesRenderer;
     }
+
+    /**
+     * Used in email_templates.zul
+     * Should be public!
+     */
     public List<Language> getLanguages() {
         List<Language> languages = new LinkedList<>(Arrays.asList(Language.values()));
         Collections.sort(languages, (o1, o2) -> {
@@ -144,10 +165,18 @@ public class EmailTemplateController extends GenericForwardComposer{
         return languages;
     }
 
-
+    /**
+     * Used in email_templates.zul
+     * Should be public!
+     */
     public EmailTemplateEnum getSelectedEmailTemplateEnum() {
         return emailTemplateModel.getEmailTemplateEnum();
     }
+
+    /**
+     * Used in email_templates.zul
+     * Should be public!
+     */
     public void setSelectedEmailTemplateEnum(EmailTemplateEnum emailTemplateEnum) {
         emailTemplateModel.setEmailTemplateEnum(emailTemplateEnum);
 
@@ -155,23 +184,31 @@ public class EmailTemplateController extends GenericForwardComposer{
         getContentDataBySelectedTemplate();
     }
 
+    /**
+     * Used in email_templates.zul
+     * Should be public!
+     */
     public ListitemRenderer getEmailTemplateEnumRenderer() {
-        return (item, data) -> {
+        return (item, data, i) -> {
             EmailTemplateEnum template = (EmailTemplateEnum) data;
             item.setLabel(_(template.getTemplateType()));
             item.setValue(template);
         };
     }
+
+    /**
+     * Used in email_templates.zul
+     * Should be public!
+     */
     public List<EmailTemplateEnum> getEmailTemplateEnum() {
         return Arrays.asList(EmailTemplateEnum.values());
     }
 
-
-    public void setSelectedContent() {
+    void setSelectedContent() {
         emailTemplateModel.setContent(contentsTextbox.getValue());
     }
 
-    public void setSelectedSubject() {
+    void setSelectedSubject() {
         emailTemplateModel.setSubject(subjectTextbox.getValue());
     }
 

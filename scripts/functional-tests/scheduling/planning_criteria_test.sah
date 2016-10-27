@@ -48,7 +48,7 @@ function planningIncludeEndDates($worker, $dates, $dates2){
 
 function planningIncludeCriterionEndDate($dates){
     _click(_span("Assigned criteria"));
-    _setValue(_textbox("z-datebox-inp", _near(_div("Starting date"))), $dates[0]);
+    _setValue(_textbox("z-datebox-input", _near(_div("Starting date"))), $dates[0]);
     _setValue(_textbox(3, _near(_div("Starting date"))), $dates[1]);
     _click(_cell("Save & Continue"));
     commonWorkerAcctionValidation("saved");

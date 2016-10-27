@@ -38,10 +38,8 @@ import org.zkoss.zul.TreeModel;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
- *
  */
-public abstract class AssignedMaterialsModel<T, A> implements
-        IAssignedMaterialsModel<T, A> {
+public abstract class AssignedMaterialsModel<T, A> implements IAssignedMaterialsModel<T, A> {
 
     @Autowired
     private IMaterialCategoryDAO categoryDAO;
@@ -52,28 +50,27 @@ public abstract class AssignedMaterialsModel<T, A> implements
     @Autowired
     private IUnitTypeDAO unitTypeDAO;
 
-    private MutableTreeModel<MaterialCategory> materialCategories = MutableTreeModel
-            .create(MaterialCategory.class);
+    private MutableTreeModel<MaterialCategory> materialCategories = MutableTreeModel.create(MaterialCategory.class);
 
-    private MutableTreeModel<MaterialCategory> allMaterialCategories = MutableTreeModel
-            .create(MaterialCategory.class);
+    private MutableTreeModel<MaterialCategory> allMaterialCategories = MutableTreeModel.create(MaterialCategory.class);
 
-    private List<Material> matchingMaterials = new ArrayList<Material>();
+    private List<Material> matchingMaterials = new ArrayList<>();
 
-    private List<UnitType> unitTypes = new ArrayList<UnitType>();
+    private List<UnitType> unitTypes = new ArrayList<>();
 
     @Transactional(readOnly = true)
     public void initEdit(T element) {
         assignAndReattach(element);
         materialCategories = MutableTreeModel.create(MaterialCategory.class);
-        initializeMaterialAssigments();
+        initializeMaterialAssignments();
+
         // Initialize matching materials
         matchingMaterials.clear();
         matchingMaterials.addAll(materialDAO.getAll());
         initializeMaterials(matchingMaterials);
     }
 
-    protected abstract void initializeMaterialAssigments();
+    protected abstract void initializeMaterialAssignments();
 
     protected abstract void assignAndReattach(T element);
 
@@ -120,8 +117,7 @@ public abstract class AssignedMaterialsModel<T, A> implements
 
     protected abstract Material getMaterial(A assignment);
 
-    private void feedTree(MutableTreeModel<MaterialCategory> tree,
-            Collection<? extends A> materialAssignments) {
+    private void feedTree(MutableTreeModel<MaterialCategory> tree, Collection<? extends A> materialAssignments) {
         for (A each : materialAssignments) {
             final Material material = getMaterial(each);
             addCategory(tree, material.getCategory());
@@ -129,12 +125,10 @@ public abstract class AssignedMaterialsModel<T, A> implements
     }
 
     /**
-     * Adds category to treeModel If category.parent is not in treeModel add it
-     * to treeModel recursively.
+     * Adds category to treeModel If category.parent is not in treeModel add it to treeModel recursively.
      */
     private void addCategory(
-            MutableTreeModel<MaterialCategory> materialCategories,
-            MaterialCategory materialCategory) {
+            MutableTreeModel<MaterialCategory> materialCategories, MaterialCategory materialCategory) {
 
         categoryDAO.reattach(materialCategory);
         final MaterialCategory parent = materialCategory.getParent();
@@ -157,8 +151,7 @@ public abstract class AssignedMaterialsModel<T, A> implements
         return allMaterialCategories;
     }
 
-    private void feedTree(MutableTreeModel<MaterialCategory> tree,
-            List<MaterialCategory> materialCategories) {
+    private void feedTree(MutableTreeModel<MaterialCategory> tree, List<MaterialCategory> materialCategories) {
         for (MaterialCategory each : materialCategories) {
             addCategory(tree, each);
         }
@@ -167,24 +160,26 @@ public abstract class AssignedMaterialsModel<T, A> implements
     protected abstract boolean isInitialized();
 
     public List<A> getAssignedMaterials(MaterialCategory materialCategory) {
-        List<A> result = new ArrayList<A>();
+        List<A> result = new ArrayList<>();
+
         if (isInitialized()) {
+
             for (A each : getAssignments()) {
+
                 final Material material = getMaterial(each);
-                if (materialCategory == null
-                        || materialCategory.getId().equals(
-                                material.getCategory().getId())) {
+
+                if (materialCategory == null || materialCategory.getId().equals(material.getCategory().getId())) {
                     result.add(each);
                 }
             }
         }
+
         return result;
     }
 
     @Transactional(readOnly = true)
     public void searchMaterials(String text, MaterialCategory materialCategory) {
-        matchingMaterials = materialDAO
-                .findMaterialsInCategoryAndSubCategories(text, materialCategory);
+        matchingMaterials = materialDAO.findMaterialsInCategoryAndSubCategories(text, materialCategory);
         initializeMaterials(matchingMaterials);
     }
 
@@ -209,12 +204,13 @@ public abstract class AssignedMaterialsModel<T, A> implements
     }
 
     private void removeCategory(
-            MutableTreeModel<MaterialCategory> materialCategories,
-            MaterialCategory materialCategory) {
+            MutableTreeModel<MaterialCategory> materialCategories, MaterialCategory materialCategory) {
 
         categoryDAO.reattach(materialCategory);
-        final boolean canDelete = materialCategory.getSubcategories().isEmpty()
-                && getAssignedMaterials(materialCategory).isEmpty();
+
+        final boolean canDelete =
+                materialCategory.getSubcategories().isEmpty() && getAssignedMaterials(materialCategory).isEmpty();
+
         if (canDelete) {
             materialCategories.remove(materialCategory);
             final MaterialCategory parent = materialCategory.getParent();
@@ -238,7 +234,7 @@ public abstract class AssignedMaterialsModel<T, A> implements
         return result;
     }
 
-    protected abstract BigDecimal getUnits(A assigment);
+    protected abstract BigDecimal getUnits(A assignment);
 
     public BigDecimal getPrice(MaterialCategory category) {
         BigDecimal result = new BigDecimal(0);

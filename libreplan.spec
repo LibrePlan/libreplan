@@ -1,5 +1,5 @@
 Name:           libreplan
-Version:        1.4.0
+Version:        1.6.0
 Release:        1
 Summary:        Web application for project planning, monitoring and control
 License:        AGPLv3
@@ -10,27 +10,27 @@ Source1:        http://downloads.sourceforge.net/project/libreplan/LibrePlan/%{n
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
-#BuildRequires:  java-1.6.0-openjdk
-#BuildRequires:  maven2
+#BuildRequires: java-1.8.0-openjdk
+#BuildRequires: maven2
 #BuildRequires:	maven2-common-poms
-#BuildRequires:  python-docutils
+#BuildRequires: python-docutils
 #BuildRequires:	javamail
 #BuildRequires:	javacc
 #BuildRequires:	ant
 #BuildRequires:	jpackage-utils
-#BuildRequires:  postgresql-server
+#BuildRequires: postgresql-server
 
 %if 0%{?fedora} || 0%{?centos}
 Requires:       postgresql-jdbc
 %endif
 %if 0%{?fedora} >= 17
-Requires:	java-1.7.0-openjdk
+Requires:	java-1.8.0-openjdk
 %else
-Requires:       java-1.6.0-openjdk
+Requires:       java-1.8.0-openjdk
 %endif
 Requires:       postgresql
 Requires:       postgresql-server
-Requires:       tomcat6
+Requires:       tomcat8
 %if 0%{?centos}
 %else
 Requires:       cutycapt
@@ -84,7 +84,7 @@ cp ${CURDIR}/scripts/database/upgrade_*.sql ${RPM_BUILD_ROOT}%{_datadir}/%{name}
 
 # Install Policy file
 #mkdir -p ${RPM_BUILD_ROOT}/etc/tomcat6/policy.d
-#cp ${CURDIR}/debian/51libreplan.policy ${RPM_BUILD_ROOT}/etc/tomcat6/policy.d/
+#cp ${CURDIR}/debian/51libreplan.policy ${RPM_BUILD_ROOT}/etc/tomcat8/policy.d/
 
 # Install Tomcat6 configuration file
 mkdir -p ${RPM_BUILD_ROOT}%{_datadir}/%{name}/conf

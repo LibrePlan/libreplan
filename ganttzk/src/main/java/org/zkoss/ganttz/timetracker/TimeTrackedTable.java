@@ -41,8 +41,9 @@ public class TimeTrackedTable<T> extends HtmlMacroComponent {
     private transient IZoomLevelChangedListener zoomListener;
 
     public TimeTrackedTable(Callable<List<T>> dataSource,
-            ICellForDetailItemRenderer<DetailItem, T> cellRenderer,
-            TimeTracker timeTracker) {
+                            ICellForDetailItemRenderer<DetailItem, T> cellRenderer,
+                            TimeTracker timeTracker) {
+
         this.data = dataSource;
         this.cellRenderer = cellRenderer;
         this.timeTracker = timeTracker;
@@ -56,8 +57,8 @@ public class TimeTrackedTable<T> extends HtmlMacroComponent {
         this.timeTracker.addZoomListener(zoomListener);
     }
 
-    public ListModel getTableModel() {
-        return new ListModelList(getData());
+    public ListModel<T> getTableModel() {
+        return new ListModelList<>(getData());
     }
 
     private List<T> getData() {
@@ -69,8 +70,7 @@ public class TimeTrackedTable<T> extends HtmlMacroComponent {
     }
 
     public RowRenderer getRowRenderer() {
-        return OnColumnsRowRenderer.create(cellRenderer, timeTracker
-                .getDetailsSecondLevel());
+        return OnColumnsRowRenderer.create(cellRenderer, timeTracker.getDetailsSecondLevel());
     }
 
     public Collection<DetailItem> getDetailsSecondLevel() {

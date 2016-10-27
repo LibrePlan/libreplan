@@ -42,16 +42,15 @@ import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 
 /**
- * Model for UI operations related to {@link Task}
+ * Model for UI operations related to {@link Task}.
+ *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
-public class AdvanceAssignmentPlanningModel implements
-        IAdvanceAssignmentPlanningModel {
+public class AdvanceAssignmentPlanningModel implements IAdvanceAssignmentPlanningModel {
 
-    private static final Log LOG = LogFactory
-            .getLog(AdvanceAssignmentPlanningModel.class);
+    private static final Log LOG = LogFactory.getLog(AdvanceAssignmentPlanningModel.class);
 
     @Autowired
     private ITaskElementDAO taskElementDAO;
@@ -71,8 +70,8 @@ public class AdvanceAssignmentPlanningModel implements
     @Override
     @Transactional(readOnly = true)
     public void initAdvancesFor(TaskElement task,
-            IContextWithPlannerTask<TaskElement> context,
-            PlanningState planningState) {
+                                IContextWithPlannerTask<TaskElement> context,
+                                PlanningState planningState) {
         initTask(task);
         initOrderElement();
     }
@@ -97,7 +96,7 @@ public class AdvanceAssignmentPlanningModel implements
         OrderElement parent = orderElement.getParent();
         while (parent != null) {
             loadAdvances(parent);
-            for(OrderElement child : parent.getChildren()){
+            for (OrderElement child : parent.getChildren()) {
                 loadAdvances(child);
             }
             parent = parent.getParent();
@@ -105,24 +104,22 @@ public class AdvanceAssignmentPlanningModel implements
     }
 
     private void loadAdvances(OrderElement orderElement) {
-        for (DirectAdvanceAssignment advance : orderElement
-                .getDirectAdvanceAssignments()) {
+        for (DirectAdvanceAssignment advance : orderElement.getDirectAdvanceAssignments()) {
             loadDataAdvance(advance);
             forceLoadAdvanceConsolidatedValues(advance);
             advance.getNonCalculatedConsolidation().size();
         }
-        for (IndirectAdvanceAssignment advance : orderElement
-                .getIndirectAdvanceAssignments()) {
+
+        for (IndirectAdvanceAssignment advance : orderElement.getIndirectAdvanceAssignments()) {
             loadDataAdvance(advance);
             advance.getCalculatedConsolidation().size();
-            DirectAdvanceAssignment fakedDirect = orderElement
-                    .calculateFakeDirectAdvanceAssignment(advance);
+            DirectAdvanceAssignment fakedDirect = orderElement.calculateFakeDirectAdvanceAssignment(advance);
+
             if (fakedDirect != null) {
                 forceLoadAdvanceConsolidatedValues(fakedDirect);
             } else {
-                LOG
-                        .warn("Fake direct advance assignment shouldn't be NULL for type '"
-                                + advance.getAdvanceType().getUnitName() + "'");
+                LOG.warn("Fake direct advance assignment shouldn't be NULL for type '"
+                        + advance.getAdvanceType().getUnitName() + "'");
             }
         }
     }
@@ -132,8 +129,7 @@ public class AdvanceAssignmentPlanningModel implements
         advance.getOrderElement().getName();
     }
 
-    private void forceLoadAdvanceConsolidatedValues(
-            DirectAdvanceAssignment advance) {
+    private void forceLoadAdvanceConsolidatedValues(DirectAdvanceAssignment advance) {
         for (AdvanceMeasurement measure : advance.getAdvanceMeasurements()) {
             measure.getAdvanceAssignment();
             measure.getNonCalculatedConsolidatedValues().size();

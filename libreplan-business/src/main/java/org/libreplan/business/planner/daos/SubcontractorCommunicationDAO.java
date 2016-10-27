@@ -21,7 +21,6 @@ package org.libreplan.business.planner.daos;
 
 import java.util.List;
 
-import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.libreplan.business.common.daos.GenericDAOHibernate;
 import org.libreplan.business.planner.entities.SubcontractorCommunication;
@@ -31,12 +30,14 @@ import org.springframework.stereotype.Repository;
 
 /**
  * DAO for {@link SubcontractorCommunication}
+ *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
-public class SubcontractorCommunicationDAO extends GenericDAOHibernate<SubcontractorCommunication, Long>
+public class SubcontractorCommunicationDAO
+        extends GenericDAOHibernate<SubcontractorCommunication, Long>
         implements ISubcontractorCommunicationDAO {
 
     @Override
@@ -46,8 +47,9 @@ public class SubcontractorCommunicationDAO extends GenericDAOHibernate<Subcontra
 
     @Override
     public List<SubcontractorCommunication> getAllNotReviewed(){
-        Criteria c = getSession().createCriteria(SubcontractorCommunication.class);
-        c.add(Restrictions.eq("reviewed", false));
-        return c.list();
+        return getSession()
+                .createCriteria(SubcontractorCommunication.class)
+                .add(Restrictions.eq("reviewed", false))
+                .list();
     }
 }

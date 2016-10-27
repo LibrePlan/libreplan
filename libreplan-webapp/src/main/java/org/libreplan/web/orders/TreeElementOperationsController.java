@@ -22,21 +22,19 @@
 
 package org.libreplan.web.orders;
 
-import static org.libreplan.web.I18nHelper._;
-
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.web.templates.IOrderTemplatesControllerEntryPoints;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Tree;
 import org.zkoss.zul.Treeitem;
 
+import static org.libreplan.web.I18nHelper._;
+
 /**
+ * Encapsulates the operations (up, down, indent, unindent, etc) for an element of the tree.
+ * The element can be an OrderElement or a TemplateElement
  *
  * @author Diego Pino García <dpino@igalia.com>
- *
- *         Encapsulates the operations (up, down, indent, unindent, etc) for an
- *         element of the tree. The element can be an OrderElement or a
- *         TemplateElement
  */
 public abstract class TreeElementOperationsController<T> {
 
@@ -51,11 +49,7 @@ public abstract class TreeElementOperationsController<T> {
     }
 
     protected void showSelectAnElementError() {
-        try {
-            Messagebox.show(_("Please select a task"));
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        Messagebox.show(_("Please select a task"));
     }
 
     protected abstract void showEditElement(Treeitem treeitem);
@@ -63,8 +57,9 @@ public abstract class TreeElementOperationsController<T> {
     public void moveSelectedElementUp() {
         if (tree.getSelectedCount() == 1) {
             Treeitem item =  tree.getSelectedItem();
-            up((T)item.getValue());
+            up(item.getValue());
             Treeitem brother = (Treeitem) item.getPreviousSibling();
+
             if (brother != null) {
                 brother.setSelected(true);
             }
@@ -78,8 +73,9 @@ public abstract class TreeElementOperationsController<T> {
     public void moveSelectedElementDown() {
         if (tree.getSelectedCount() == 1) {
             Treeitem item =  tree.getSelectedItem();
-            down((T)item.getValue());
+            down(item.getValue());
             Treeitem brother = (Treeitem) item.getNextSibling();
+
             if (brother != null) {
                 brother.setSelected(true);
             }
@@ -94,6 +90,7 @@ public abstract class TreeElementOperationsController<T> {
         if (tree.getSelectedCount() == 1) {
             int page = tree.getActivePage();
             indent(getSelectedElement());
+
             if (tree.getPageCount() > page) {
                 tree.setActivePage(page);
             }
@@ -129,11 +126,9 @@ public abstract class TreeElementOperationsController<T> {
 }
 
 /**
+ * Implements tree operations for an {@link OrderElement}
  *
  * @author Diego Pino García <dpino@igalia.com>
- *
- *      Implements tree operations for an {@link OrderElement}
- *
  */
 class OrderElementOperations extends TreeElementOperationsController<OrderElement> {
 
@@ -145,37 +140,39 @@ class OrderElementOperations extends TreeElementOperationsController<OrderElemen
 
     private IOrderTemplatesControllerEntryPoints orderTemplates;
 
+    private OrderElementOperations() {}
+
     public static OrderElementOperations build() {
         return new OrderElementOperations();
     }
 
-    private OrderElementOperations() {
-
-    }
-
     public OrderElementOperations tree(Tree tree) {
         super.tree = tree;
+
         return this;
     }
 
     public OrderElementOperations treeController(OrderElementTreeController treeController) {
         this.treeController = treeController;
+
         return this;
     }
 
     public OrderElementOperations orderModel(IOrderModel orderModel) {
         this.orderModel = orderModel;
+
         return this;
     }
 
     public OrderElementOperations orderElementController(OrderElementController orderElementController) {
         this.orderElementController = orderElementController;
+
         return this;
     }
 
-    public OrderElementOperations orderTemplates(
-            IOrderTemplatesControllerEntryPoints orderTemplates) {
+    public OrderElementOperations orderTemplates(IOrderTemplatesControllerEntryPoints orderTemplates) {
         this.orderTemplates = orderTemplates;
+
         return this;
     }
 
@@ -211,10 +208,9 @@ class OrderElementOperations extends TreeElementOperationsController<OrderElemen
 
     @Override
     protected void showEditElement(Treeitem item) {
-        OrderElement orderElement = (OrderElement) item.getValue();
+        OrderElement orderElement = item.getValue();
         treeController.markModifiedTreeitem(item.getTreerow());
-        IOrderElementModel model = orderModel
-                .getOrderElementModel(orderElement);
+        IOrderElementModel model = orderModel.getOrderElementModel(orderElement);
         orderElementController.openWindow(model);
         treeController.refreshRow(item);
     }
@@ -230,6 +226,7 @@ class OrderElementOperations extends TreeElementOperationsController<OrderElemen
     private void createTemplate(OrderElement element) {
         if (element.isNewObject()) {
             notifyTemplateCantBeCreated();
+
             return;
         }
         if (showConfirmCreateTemplateDialog() == Messagebox.OK) {
@@ -238,27 +235,17 @@ class OrderElementOperations extends TreeElementOperationsController<OrderElemen
     }
 
     private int showConfirmCreateTemplateDialog() {
-        try {
-            return Messagebox
-                    .show(_("Unsaved changes will be lost. Would you like to continue?"),
-                            _("Confirm create template"), Messagebox.OK
-                                    | Messagebox.CANCEL, Messagebox.QUESTION);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        return Messagebox.show(
+                _("Unsaved changes will be lost. Would you like to continue?"),
+                _("Confirm create template"), Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION);
     }
 
     private void notifyTemplateCantBeCreated() {
-        try {
-            Messagebox.show(
-                    _("Templates can only be created out of existent tasks."
-                            + "You are trying to create a template out of a new task.\n"
-                            + "Please save your project before proceeding."),
-                    _("Operation cannot be done"), Messagebox.OK,
-                    Messagebox.INFORMATION);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        Messagebox.show(
+                _("Templates can only be created out of existent tasks." +
+                        "You are trying to create a template out of a new task.\n" +
+                        "Please save your project before proceeding."),
+                _("Operation cannot be done"), Messagebox.OK, Messagebox.INFORMATION);
     }
 
 }

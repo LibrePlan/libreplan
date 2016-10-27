@@ -106,7 +106,7 @@
             </set>
 
             <!-- Already indexed because it's unique -->
-            <many-to-one name="subcontractedTaskData" column="subcontrated_task_data_id" unique="true" cascade="all"
+            <many-to-one name="subcontractedTaskData" column="subcontracted_task_data_id" unique="true" cascade="all"
                          lazy="false" />
 
             <property name="priority" />
@@ -119,7 +119,7 @@
             <one-to-one name="planningData" class="PlanningData" cascade="all" />
 
             <!-- Indexed on the other side -->
-            <list name="taskElements" cascade="all">
+            <list name="taskElements" cascade="all" lazy="false">
                 <key column="parent" not-null="false"/>
                 <index column="position_in_parent"/>
                 <one-to-many class="TaskElement" />

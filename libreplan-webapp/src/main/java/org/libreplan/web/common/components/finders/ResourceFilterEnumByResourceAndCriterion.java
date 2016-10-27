@@ -22,7 +22,7 @@ package org.libreplan.web.common.components.finders;
 import org.libreplan.business.resources.entities.Resource;
 
 /**
- * Diferent filters for {@link Resource}.
+ * Different filters for {@link Resource}.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
@@ -39,7 +39,7 @@ public enum ResourceFilterEnumByResourceAndCriterion implements IFilterEnum {
 
     private String description;
 
-    private ResourceFilterEnumByResourceAndCriterion(String description) {
+    ResourceFilterEnumByResourceAndCriterion(String description) {
         this.description = description;
     }
 

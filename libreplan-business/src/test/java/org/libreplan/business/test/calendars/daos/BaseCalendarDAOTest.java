@@ -61,13 +61,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Tests for {@link BaseCalendarDAO}
+ * Tests for {@link BaseCalendarDAO}.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
-        BUSINESS_SPRING_CONFIG_TEST_FILE })
+@ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE, BUSINESS_SPRING_CONFIG_TEST_FILE })
 public class BaseCalendarDAOTest {
 
     @Autowired
@@ -120,11 +119,11 @@ public class BaseCalendarDAOTest {
     }
 
     private void addChristmasAsExceptionDay(BaseCalendar calendar) {
-        CalendarExceptionType type = calendarExceptionTypeDAO.list(
-                CalendarExceptionType.class).get(0);
-        CalendarException christmasDay = CalendarException.create(
-                BaseCalendarTest.CHRISTMAS_DAY_LOCAL_DATE,
-                EffortDuration.zero(), type);
+        CalendarExceptionType type = calendarExceptionTypeDAO.list(CalendarExceptionType.class).get(0);
+
+        CalendarException christmasDay =
+                CalendarException.create(BaseCalendarTest.CHRISTMAS_DAY_LOCAL_DATE, EffortDuration.zero(), type);
+
         calendar.addExceptionDay(christmasDay);
     }
 
@@ -143,8 +142,7 @@ public class BaseCalendarDAOTest {
             BaseCalendar savedCalendar = baseCalendarDAO.find(calendar.getId());
             assertFalse(savedCalendar.isDerived());
 
-            BaseCalendar savedDerivedCalendar = baseCalendarDAO
-                    .find(derivedCalendar.getId());
+            BaseCalendar savedDerivedCalendar = baseCalendarDAO.find(derivedCalendar.getId());
             assertTrue(savedDerivedCalendar.isDerived());
 
         } catch (InstanceNotFoundException e) {
@@ -165,8 +163,7 @@ public class BaseCalendarDAOTest {
         try {
 
             BaseCalendar savedCalendar = baseCalendarDAO.find(calendar.getId());
-            assertThat(savedCalendar.getCalendarDataVersions().size(),
-                    equalTo(2));
+            assertThat(savedCalendar.getCalendarDataVersions().size(), equalTo(2));
 
         } catch (InstanceNotFoundException e) {
             fail("It should not throw an exception");
@@ -175,8 +172,7 @@ public class BaseCalendarDAOTest {
 
     @Test(expected = DataIntegrityViolationException.class)
     @Transactional
-    public void notAllowRemoveCalendarWithChildren()
-            throws InstanceNotFoundException {
+    public void notAllowRemoveCalendarWithChildren() throws InstanceNotFoundException {
         BaseCalendar calendar = BaseCalendarTest.createBasicCalendar();
         baseCalendarDAO.save(calendar);
         BaseCalendar derivedCalendar = calendar.newDerivedCalendar();
@@ -231,8 +227,10 @@ public class BaseCalendarDAOTest {
 
         List<BaseCalendar> children = baseCalendarDAO.findByParent(calendar);
         assertThat(children.size(), equalTo(2));
-        assertTrue(children.get(0).getId().equals(derivedCalendar.getId())
-                || children.get(0).getId().equals(derivedCalendar2.getId()));
+
+        assertTrue(
+                children.get(0).getId().equals(derivedCalendar.getId()) ||
+                        children.get(0).getId().equals(derivedCalendar2.getId()));
 
         children = baseCalendarDAO.findByParent(derivedCalendar);
         assertThat(children.size(), equalTo(0));
@@ -243,8 +241,7 @@ public class BaseCalendarDAOTest {
 
     @Test(expected = DataIntegrityViolationException.class)
     @Transactional
-    public void notAllowRemoveCalendarWithChildrenInOtherVersions()
-            throws InstanceNotFoundException {
+    public void notAllowRemoveCalendarWithChildrenInOtherVersions() throws InstanceNotFoundException {
         BaseCalendar parent1 = BaseCalendarTest.createBasicCalendar();
         BaseCalendar parent2 = BaseCalendarTest.createBasicCalendar();
         baseCalendarDAO.save(parent1);
@@ -256,21 +253,17 @@ public class BaseCalendarDAOTest {
         baseCalendarDAO.save(calendar);
         baseCalendarDAO.flush();
 
-        assertThat(baseCalendarDAO.findByParent(parent1).get(0).getId(),
-                equalTo(calendar.getId()));
+        assertThat(baseCalendarDAO.findByParent(parent1).get(0).getId(), equalTo(calendar.getId()));
 
-        calendar.newVersion((new LocalDate())
-                .plusDays(1));
+        calendar.newVersion((new LocalDate()).plusDays(1));
         calendar.setParent(parent2);
 
         baseCalendarDAO.save(calendar);
         baseCalendarDAO.flush();
 
-        assertThat(baseCalendarDAO.findByParent(parent2).get(0).getId(),
-                equalTo(calendar.getId()));
+        assertThat(baseCalendarDAO.findByParent(parent2).get(0).getId(), equalTo(calendar.getId()));
 
-        assertThat(baseCalendarDAO.findByParent(parent1).get(0).getId(),
-                equalTo(calendar.getId()));
+        assertThat(baseCalendarDAO.findByParent(parent1).get(0).getId(), equalTo(calendar.getId()));
 
         baseCalendarDAO.remove(parent1.getId());
         baseCalendarDAO.flush();
@@ -336,8 +329,7 @@ public class BaseCalendarDAOTest {
     @Test(expected = ValidationException.class)
     @Transactional
     public void doNotAllowToSaveCalendarWithZeroHours() {
-        BaseCalendar calendar = BaseCalendar.create("calendar-"
-                + UUID.randomUUID());
+        BaseCalendar calendar = BaseCalendar.create("calendar-" + UUID.randomUUID());
         calendar.setName("calendar-name-" + UUID.randomUUID());
         baseCalendarDAO.save(calendar);
     }
@@ -349,9 +341,8 @@ public class BaseCalendarDAOTest {
         baseCalendarDAO.save(calendar);
         try {
             baseCalendarDAO.remove(calendar.getId());
-        } catch (InstanceNotFoundException e) {
+        } catch (InstanceNotFoundException ignored) {}
 
-        }
         assertTrue(!baseCalendarDAO.exists(calendar.getId()));
     }
 
@@ -375,9 +366,8 @@ public class BaseCalendarDAOTest {
             baseCalendarDAO.remove(resourceCalendar.getId());
             worker.setCalendar(null);
             resourceDAO.save(worker);
-        } catch (InstanceNotFoundException e) {
+        } catch (InstanceNotFoundException ignored) {}
 
-        }
         assertTrue(!baseCalendarDAO.exists(resourceCalendar.getId()));
     }
 

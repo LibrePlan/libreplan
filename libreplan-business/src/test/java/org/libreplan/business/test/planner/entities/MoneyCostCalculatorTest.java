@@ -74,22 +74,16 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Test for {@link MoneyCostCalculator}
+ * Test for {@link MoneyCostCalculator}.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
-        BUSINESS_SPRING_CONFIG_TEST_FILE })
+@ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE, BUSINESS_SPRING_CONFIG_TEST_FILE })
 public class MoneyCostCalculatorTest {
 
     @javax.annotation.Resource
     private IDataBootstrap scenariosBootstrap;
-
-    @Before
-    public void loadRequiredaData() {
-        scenariosBootstrap.loadRequiredData();
-    }
 
     @Autowired
     private IMoneyCostCalculator moneyCostCalculator;
@@ -127,42 +121,58 @@ public class MoneyCostCalculatorTest {
     @Autowired
     private IAdHocTransactionService transactionService;
 
-    private List<TypeOfWorkHours> typesOfWorkHours = new ArrayList<TypeOfWorkHours>();
+    private List<TypeOfWorkHours> typesOfWorkHours = new ArrayList<>();
+
     private CostCategory costCategory;
+
     private Resource resource;
+
     private ExpenseSheet expenseSheet;
-    private List<OrderElement> orderElements = new ArrayList<OrderElement>();
+
+    private List<OrderElement> orderElements = new ArrayList<>();
+
     private WorkReportType workReportType;
+
     private WorkReport workReport;
+
+    @Before
+    public void loadRequiredData() {
+        scenariosBootstrap.loadRequiredData();
+    }
 
     private void givenTypeOfWorkHours(BigDecimal defaultPrice) {
         TypeOfWorkHours typeOfWorkHours = TypeOfWorkHours.createUnvalidated(
                 "default-type-of-work-hours-" + UUID.randomUUID(),
-                "default-type-of-work-hours-" + UUID.randomUUID(), true,
-                defaultPrice);
+                "default-type-of-work-hours-" + UUID.randomUUID(),
+                true, defaultPrice);
+
         typeOfWorkHoursDAO.save(typeOfWorkHours);
         typesOfWorkHours.add(typeOfWorkHours);
     }
 
     private void givenCostCategory() {
-        costCategory = CostCategory.createUnvalidated("default-cost-category" + UUID.randomUUID(),
-                "default-cost-category" + UUID.randomUUID(), true);
-        HourCost hourCost = HourCost.createUnvalidated("default-hour-cost" + UUID.randomUUID(),
+        costCategory = CostCategory.createUnvalidated(
+                "default-cost-category" + UUID.randomUUID(),
+                "default-cost-category" + UUID.randomUUID(),
+                true);
+
+        HourCost hourCost = HourCost.createUnvalidated(
+                "default-hour-cost" + UUID.randomUUID(),
                 new BigDecimal(50), new LocalDate());
+
         hourCost.setType(typesOfWorkHours.get(0));
         costCategory.addHourCost(hourCost);
         costCategoryDAO.save(costCategory);
     }
 
     private void givenResource(boolean relatedWithCostCategory) {
-        resource = Worker.createUnvalidated("default-resource" + UUID.randomUUID(),
+        resource = Worker.createUnvalidated(
+                "default-resource" + UUID.randomUUID(),
                 "default-resource", "default-resource", "default-resource");
 
         if (relatedWithCostCategory) {
-            ResourcesCostCategoryAssignment resourcesCostCategoryAssignment = ResourcesCostCategoryAssignment
-                    .create();
-            resourcesCostCategoryAssignment.setCode("resources-cost-category-assignment"
-                    + UUID.randomUUID());
+            ResourcesCostCategoryAssignment resourcesCostCategoryAssignment = ResourcesCostCategoryAssignment.create();
+            resourcesCostCategoryAssignment.setCode("resources-cost-category-assignment" + UUID.randomUUID());
             resourcesCostCategoryAssignment.setCostCategory(costCategory);
             resourcesCostCategoryAssignment.setInitDate(new LocalDate());
 
@@ -175,8 +185,7 @@ public class MoneyCostCalculatorTest {
         OrderElement orderElement = OrderLine.createOrderLineWithUnfixedPercentage(100);
         orderElement.setCode("default-order-element-" + UUID.randomUUID());
         orderElement.setName("default-order-element-" + UUID.randomUUID());
-        orderElement.getHoursGroups().get(0)
-                .setCode("default-hours-group-" + UUID.randomUUID());
+        orderElement.getHoursGroups().get(0).setCode("default-hours-group-" + UUID.randomUUID());
         orderElementDAO.save(orderElement);
 
         orderElements.add(orderElement);
@@ -187,25 +196,20 @@ public class MoneyCostCalculatorTest {
         orderLineGroup.setCode("default-order-line-group-" + UUID.randomUUID());
         orderLineGroup.setName("default-order-line-group-" + UUID.randomUUID());
 
-        OrderVersion orderVersion = OrderVersion
-                .createInitialVersion(scenarioManager.getCurrent());
+        OrderVersion orderVersion = OrderVersion.createInitialVersion(scenarioManager.getCurrent());
         orderVersionDAO.save(orderVersion);
         orderLineGroup.useSchedulingDataFor(orderVersion);
 
-        OrderLine orderLine1 = OrderLine
-                .createOrderLineWithUnfixedPercentage(100);
+        OrderLine orderLine1 = OrderLine.createOrderLineWithUnfixedPercentage(100);
         orderLine1.setCode("order-line-1-" + UUID.randomUUID());
         orderLine1.setName("order-line-1-" + UUID.randomUUID());
-        orderLine1.getHoursGroups().get(0)
-                .setCode("hours-group-1-" + UUID.randomUUID());
+        orderLine1.getHoursGroups().get(0).setCode("hours-group-1-" + UUID.randomUUID());
         orderLineGroup.add(orderLine1);
 
-        OrderLine orderLine2 = OrderLine
-                .createOrderLineWithUnfixedPercentage(100);
+        OrderLine orderLine2 = OrderLine.createOrderLineWithUnfixedPercentage(100);
         orderLine2.setCode("order-line-2-" + UUID.randomUUID());
         orderLine2.setName("order-line-2-" + UUID.randomUUID());
-        orderLine2.getHoursGroups().get(0)
-                .setCode("hours-group-2-" + UUID.randomUUID());
+        orderLine2.getHoursGroups().get(0).setCode("hours-group-2-" + UUID.randomUUID());
         orderLineGroup.add(orderLine2);
 
         orderElementDAO.save(orderLineGroup);
@@ -216,8 +220,7 @@ public class MoneyCostCalculatorTest {
     }
 
     private void giveWorkReportType() {
-        workReportType = WorkReportType.create("default-work-report-type",
-                "default-work-report-type");
+        workReportType = WorkReportType.create("default-work-report-type", "default-work-report-type");
         workReportTypeDAO.save(workReportType);
     }
 
@@ -240,21 +243,18 @@ public class MoneyCostCalculatorTest {
         workReportDAO.save(workReport);
     }
 
-    private void givenWorkReportWithSeveralLines(List<Integer> hoursList,
-            List<TypeOfWorkHours> types) {
+    private void givenWorkReportWithSeveralLines(List<Integer> hoursList, List<TypeOfWorkHours> types) {
         workReport = WorkReport.create(workReportType);
         workReport.setCode("default-work-report");
 
         for (Integer hour : hoursList) {
-            workReport.addWorkReportLine(createWorkReportLine(hour,
-                    types.get(hoursList.indexOf(hour))));
+            workReport.addWorkReportLine(createWorkReportLine(hour, types.get(hoursList.indexOf(hour))));
         }
 
         workReportDAO.save(workReport);
     }
 
-    private WorkReportLine createWorkReportLine(OrderElement orderElement,
-            Integer hours) {
+    private WorkReportLine createWorkReportLine(OrderElement orderElement, Integer hours) {
         WorkReportLine workReportLine = WorkReportLine.create(workReport);
         workReportLine.setCode("default-work-report-line-" + UUID.randomUUID());
         workReportLine.setDate(new Date());
@@ -262,11 +262,11 @@ public class MoneyCostCalculatorTest {
         workReportLine.setOrderElement(orderElement);
         workReportLine.setTypeOfWorkHours(typesOfWorkHours.get(0));
         workReportLine.setEffort(EffortDuration.hours(hours));
+
         return workReportLine;
     }
 
-    private WorkReportLine createWorkReportLine(Integer hours,
-            TypeOfWorkHours type) {
+    private WorkReportLine createWorkReportLine(Integer hours, TypeOfWorkHours type) {
         WorkReportLine workReportLine = WorkReportLine.create(workReport);
         workReportLine.setCode("default-work-report-line-" + UUID.randomUUID());
         workReportLine.setDate(new Date());
@@ -274,6 +274,7 @@ public class MoneyCostCalculatorTest {
         workReportLine.setOrderElement(orderElements.get(0));
         workReportLine.setTypeOfWorkHours(type);
         workReportLine.setEffort(EffortDuration.hours(hours));
+
         return workReportLine;
     }
 
@@ -303,8 +304,7 @@ public class MoneyCostCalculatorTest {
         givenWorkReport();
     }
 
-    private void givenExampleOrderLineGroupWithDifferentHours(
-            List<Integer> hoursList) {
+    private void givenExampleOrderLineGroupWithDifferentHours(List<Integer> hoursList) {
         givenTypeOfWorkHours(new BigDecimal(30));
         givenCostCategory();
         givenResource(true);
@@ -313,8 +313,8 @@ public class MoneyCostCalculatorTest {
         givenWorkReport(hoursList);
     }
 
-    private void givenExampleWithoutCostCategoryRelationshipButDifferentTypeOfHours(
-            List<Integer> hoursList, List<BigDecimal> pricesList) {
+    private void givenExampleWithoutCostCategoryRelationshipButDifferentTypeOfHours(List<Integer> hoursList,
+                                                                                    List<BigDecimal> pricesList) {
         for (BigDecimal price : pricesList) {
             givenTypeOfWorkHours(price);
         }
@@ -329,6 +329,7 @@ public class MoneyCostCalculatorTest {
     @Transactional
     public void basicTest() {
         givenBasicExample();
+
         assertThat(moneyCostCalculator.getHoursMoneyCost(orderElements.get(0)),
                 equalTo(new BigDecimal(500).setScale(2)));
     }
@@ -337,6 +338,7 @@ public class MoneyCostCalculatorTest {
     @Transactional
     public void basicTestWithoutCostCategoryRelationship() {
         givenBasicExampleWithoutCostCategoryRelationship();
+
         assertThat(moneyCostCalculator.getHoursMoneyCost(orderElements.get(0)),
                 equalTo(new BigDecimal(300).setScale(2)));
     }
@@ -345,10 +347,13 @@ public class MoneyCostCalculatorTest {
     @Transactional
     public void exampleOrderLineGroup() {
         givenExampleOrderLineGroup();
+
         assertThat(moneyCostCalculator.getHoursMoneyCost(orderElements.get(0)),
                 equalTo(new BigDecimal(1500).setScale(2)));
+
         assertThat(moneyCostCalculator.getHoursMoneyCost(orderElements.get(1)),
                 equalTo(new BigDecimal(500).setScale(2)));
+
         assertThat(moneyCostCalculator.getHoursMoneyCost(orderElements.get(2)),
                 equalTo(new BigDecimal(500).setScale(2)));
     }
@@ -357,10 +362,13 @@ public class MoneyCostCalculatorTest {
     @Transactional
     public void exampleOrderLineGroupWithDifferentHours1() {
         givenExampleOrderLineGroupWithDifferentHours(Arrays.asList(0, 10, 5));
+
         assertThat(moneyCostCalculator.getHoursMoneyCost(orderElements.get(0)),
                 equalTo(new BigDecimal(750).setScale(2)));
+
         assertThat(moneyCostCalculator.getHoursMoneyCost(orderElements.get(1)),
                 equalTo(new BigDecimal(500).setScale(2)));
+
         assertThat(moneyCostCalculator.getHoursMoneyCost(orderElements.get(2)),
                 equalTo(new BigDecimal(250).setScale(2)));
     }
@@ -369,22 +377,25 @@ public class MoneyCostCalculatorTest {
     @Transactional
     public void exampleOrderLineGroupWithDifferentHours2() {
         givenExampleOrderLineGroupWithDifferentHours(Arrays.asList(6, 0, 0));
+
         assertThat(moneyCostCalculator.getHoursMoneyCost(orderElements.get(0)),
                 equalTo(new BigDecimal(300).setScale(2)));
-        assertThat(moneyCostCalculator.getHoursMoneyCost(orderElements.get(1)),
-                equalTo(new BigDecimal(0).setScale(2)));
-        assertThat(moneyCostCalculator.getHoursMoneyCost(orderElements.get(2)),
-                equalTo(new BigDecimal(0).setScale(2)));
+
+        assertThat(moneyCostCalculator.getHoursMoneyCost(orderElements.get(1)), equalTo(new BigDecimal(0).setScale(2)));
+        assertThat(moneyCostCalculator.getHoursMoneyCost(orderElements.get(2)), equalTo(new BigDecimal(0).setScale(2)));
     }
 
     @Test
     @Transactional
     public void exampleOrderLineGroupWithDifferentHours3() {
         givenExampleOrderLineGroupWithDifferentHours(Arrays.asList(6, 5, 10));
+
         assertThat(moneyCostCalculator.getHoursMoneyCost(orderElements.get(0)),
                 equalTo(new BigDecimal(1050).setScale(2)));
+
         assertThat(moneyCostCalculator.getHoursMoneyCost(orderElements.get(1)),
                 equalTo(new BigDecimal(250).setScale(2)));
+
         assertThat(moneyCostCalculator.getHoursMoneyCost(orderElements.get(2)),
                 equalTo(new BigDecimal(500).setScale(2)));
     }
@@ -395,6 +406,7 @@ public class MoneyCostCalculatorTest {
         givenExampleWithoutCostCategoryRelationshipButDifferentTypeOfHours(
                 Arrays.asList(10, 5),
                 Arrays.asList(new BigDecimal(30), new BigDecimal(50)));
+
         assertThat(moneyCostCalculator.getHoursMoneyCost(orderElements.get(0)),
                 equalTo(new BigDecimal(550).setScale(2)));
     }
@@ -403,8 +415,8 @@ public class MoneyCostCalculatorTest {
     @Transactional
     public void exampleWithoutCostCategoryRelationshipButDifferentTypeOfHours2() {
         givenExampleWithoutCostCategoryRelationshipButDifferentTypeOfHours(
-                Arrays.asList(10, 5, 8), Arrays.asList(new BigDecimal(30),
-                        new BigDecimal(50), new BigDecimal(40)));
+                Arrays.asList(10, 5, 8), Arrays.asList(new BigDecimal(30), new BigDecimal(50), new BigDecimal(40)));
+
         assertThat(moneyCostCalculator.getHoursMoneyCost(orderElements.get(0)),
                 equalTo(new BigDecimal(870).setScale(2)));
     }
@@ -412,17 +424,20 @@ public class MoneyCostCalculatorTest {
     private ExpenseSheet givenExpenseSheet() {
         expenseSheet = ExpenseSheet.create();
         expenseSheet.setCode("default-expense-sheet" + UUID.randomUUID());
+
         return expenseSheet;
     }
 
-    private ExpenseSheetLine createExpenseSheetLine(BigDecimal value, String concept,
-            int indiceOrder) {
-        ExpenseSheetLine expenseSheetLine = ExpenseSheetLine.create(value, concept,
-                new LocalDate(), orderElements.get(indiceOrder));
+    private ExpenseSheetLine createExpenseSheetLine(BigDecimal value, String concept, int indiceOrder) {
+
+        ExpenseSheetLine expenseSheetLine =
+                ExpenseSheetLine.create(value, concept, new LocalDate(), orderElements.get(indiceOrder));
+
         expenseSheetLine.setCode("default-expense-sheet-line-" + UUID.randomUUID());
         expenseSheetLine.setResource(resource);
         expenseSheetLine.setExpenseSheet(expenseSheet);
         expenseSheet.add(expenseSheetLine);
+
         return expenseSheetLine;
     }
 
@@ -445,11 +460,9 @@ public class MoneyCostCalculatorTest {
     }
 
     private void saveExpensesSheetLines() {
-        Set<ExpenseSheetLine> deletedExpenseSheetLinesSet = new HashSet<ExpenseSheetLine>();
-        sumExpensesDAO
-                .updateRelatedSumExpensesWithDeletedExpenseSheetLineSet(deletedExpenseSheetLinesSet);
-        sumExpensesDAO.updateRelatedSumExpensesWithExpenseSheetLineSet(expenseSheet
-                .getExpenseSheetLines());
+        Set<ExpenseSheetLine> deletedExpenseSheetLinesSet = new HashSet<>();
+        sumExpensesDAO.updateRelatedSumExpensesWithDeletedExpenseSheetLineSet(deletedExpenseSheetLinesSet);
+        sumExpensesDAO.updateRelatedSumExpensesWithExpenseSheetLineSet(expenseSheet.getExpenseSheetLines());
         sumExpensesDAO.flush();
 
         expenseSheet.updateCalculatedProperties();
@@ -468,16 +481,18 @@ public class MoneyCostCalculatorTest {
                 return null;
             }
         });
+
         transactionService.runOnTransaction(new IOnTransaction<Void>() {
             @Override
             public Void execute() {
                 OrderElement orderElement;
                 try {
                     orderElement = orderElementDAO.findByCode(orderElements.get(0).getCode());
+
                     assertThat(moneyCostCalculator.getExpensesMoneyCost(orderElement),
                             equalTo(new BigDecimal(65).setScale(2)));
+
                 } catch (InstanceNotFoundException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
                 return null;
@@ -496,20 +511,23 @@ public class MoneyCostCalculatorTest {
                 return null;
             }
         });
+
         transactionService.runOnTransaction(new IOnTransaction<Void>() {
             @Override
             public Void execute() {
                 OrderElement orderElement;
                 try {
                     orderElement = orderElementDAO.findByCode(orderElements.get(0).getCode());
+
                     assertThat(moneyCostCalculator.getExpensesMoneyCost(orderElement),
                             equalTo(new BigDecimal(130).setScale(2)));
 
                     orderElement = orderElementDAO.findByCode(orderElements.get(1).getCode());
+
                     assertThat(moneyCostCalculator.getExpensesMoneyCost(orderElement),
                             equalTo(new BigDecimal(65).setScale(2)));
+
                 } catch (InstanceNotFoundException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
                 return null;
