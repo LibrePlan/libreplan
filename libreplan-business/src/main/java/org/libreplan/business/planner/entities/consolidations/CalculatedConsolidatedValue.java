@@ -35,24 +35,22 @@ public class CalculatedConsolidatedValue extends ConsolidatedValue {
 
     private CalculatedConsolidation consolidation;
 
-    public static CalculatedConsolidatedValue create() {
-        return create(new CalculatedConsolidatedValue());
-    }
-
-    public static CalculatedConsolidatedValue create(LocalDate date,
-            BigDecimal value, IntraDayDate taskEndDate) {
-        return create(new CalculatedConsolidatedValue(date, value, taskEndDate));
-    }
-
-    protected CalculatedConsolidatedValue(LocalDate date, BigDecimal value,
-            IntraDayDate taskEndDate) {
-        super(date, value, taskEndDate);
-    }
-
     /**
      * Constructor for {@link DeepCopy}. DO NOT USE!
      */
     public CalculatedConsolidatedValue() {
+    }
+
+    protected CalculatedConsolidatedValue(LocalDate date, BigDecimal value, IntraDayDate taskEndDate) {
+        super(date, value, taskEndDate);
+    }
+
+    public static CalculatedConsolidatedValue create() {
+        return create(new CalculatedConsolidatedValue());
+    }
+
+    public static CalculatedConsolidatedValue create(LocalDate date, BigDecimal value, IntraDayDate taskEndDate) {
+        return create(new CalculatedConsolidatedValue(date, value, taskEndDate));
     }
 
     public void setConsolidation(CalculatedConsolidation consolidation) {

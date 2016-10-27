@@ -63,7 +63,7 @@
                                  value="@{criterionRequirementWrapper.criterionAndType}">
                             <bandpopup>
                                 <listbox width="500px" height="150px" sizedByContent="true"
-                                         model="@{assignedCriterionRequirementController.criterionWithItsTypesMachine}"
+                                         forEach="@{assignedCriterionRequirementController.criterionWithItsTypesMachine}"
                                          onSelect="assignedCriterionRequirementController.selectCriterionToHoursGroup(self.selectedItem, self.parent.parent,self.parent.parent.parent.parent.value);">
                                     <listhead>
                                         <listheader label="Type" />
