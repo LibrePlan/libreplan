@@ -47,18 +47,22 @@ import org.libreplan.business.workingday.EffortDuration;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
- *
  */
 public class DeepCopy {
-    private static Set<Class<?>> inmmutableTypes = new HashSet<Class<?>>(Arrays
-            .<Class<?>> asList(Boolean.class, String.class, BigDecimal.class,
-                    Double.class, Float.class, Integer.class, Short.class,
-                    Byte.class, Character.class, LocalDate.class,
-                    DateTime.class, EffortDuration.class));
+
+    private static Set<Class<?>> inmmutableTypes = new HashSet<>(Arrays.<Class<?>>asList(
+            Boolean.class, String.class, BigDecimal.class,
+            Double.class, Float.class, Integer.class,
+            Short.class, Byte.class, Character.class,
+            LocalDate.class, DateTime.class, EffortDuration.class));
+
+    private static List<ICustomCopy> DEFAULT_CUSTOM_COPIERS =
+            Arrays.asList(new DateCopy(), new SetCopy(), new MapCopy(), new ListCopy());
+
+    private Map<ByIdentity, Object> alreadyCopiedObjects = new HashMap<>();
 
     public static boolean isImmutableType(Class<?> klass) {
-        return klass.isPrimitive() || isEnum(klass)
-                || inmmutableTypes.contains(klass);
+        return klass.isPrimitive() || isEnum(klass) || inmmutableTypes.contains(klass);
     }
 
     private static boolean isEnum(Class<?> klass) {
@@ -69,16 +73,17 @@ public class DeepCopy {
             }
             currentClass = currentClass.getSuperclass();
         } while (currentClass != null);
+
         return false;
     }
 
     public interface ICustomCopy {
-        public boolean canHandle(Object object);
 
-        public Object instantiateCopy(Strategy strategy, Object originValue);
+        boolean canHandle(Object object);
 
-        public void copyDataToResult(DeepCopy deepCopy, Object origin,
-                Strategy strategy, Object result);
+        Object instantiateCopy(Strategy strategy, Object originValue);
+
+        void copyDataToResult(DeepCopy deepCopy, Object origin, Strategy strategy, Object result);
     }
 
     private static class DateCopy implements ICustomCopy {
@@ -89,9 +94,8 @@ public class DeepCopy {
         }
 
         @Override
-        public void copyDataToResult(DeepCopy deepCopy, Object origin,
-                Strategy strategy, Object result) {
-            // already completed
+        public void copyDataToResult(DeepCopy deepCopy, Object origin, Strategy strategy, Object result) {
+            // Already completed
         }
 
         @Override
@@ -102,7 +106,7 @@ public class DeepCopy {
 
     }
 
-    private static abstract class CollectionCopy implements ICustomCopy {
+    private abstract static class CollectionCopy implements ICustomCopy {
 
         @Override
         public Object instantiateCopy(Strategy strategy, Object originValue) {
@@ -112,13 +116,11 @@ public class DeepCopy {
         protected abstract Collection<Object> getResultData(Object originValue);
 
         @Override
-        public void copyDataToResult(DeepCopy deepCopy, Object origin,
-                Strategy strategy, Object result) {
+        public void copyDataToResult(DeepCopy deepCopy, Object origin, Strategy strategy, Object result) {
             copy(deepCopy, origin, strategy, (Collection<Object>) result);
         }
 
-        private void copy(DeepCopy deepCopy, Object origin, Strategy strategy,
-                Collection<Object> destination) {
+        private void copy(DeepCopy deepCopy, Object origin, Strategy strategy, Collection<Object> destination) {
             Strategy childrenStrategy = getChildrenStrategy(strategy);
             for (Object each : originDataAsIterable(origin)) {
                 destination.add(deepCopy.copy(each, childrenStrategy));
@@ -126,10 +128,7 @@ public class DeepCopy {
         }
 
         private Strategy getChildrenStrategy(Strategy strategy) {
-            if (strategy == Strategy.SHARE_COLLECTION_ELEMENTS) {
-                return Strategy.SHARE;
-            }
-            return strategy;
+            return strategy == Strategy.SHARE_COLLECTION_ELEMENTS ? Strategy.SHARE : strategy;
         }
 
         private Iterable<Object> originDataAsIterable(Object originValue) {
@@ -153,10 +152,7 @@ public class DeepCopy {
             return new ImplementationInstantiation() {
                 @Override
                 protected Set<?> createDefault() {
-                    if (SortedSet.class.isAssignableFrom(klass)) {
-                        return new TreeSet<Object>();
-                    }
-                    return new HashSet<Object>();
+                    return SortedSet.class.isAssignableFrom(klass) ? new TreeSet<>() : new HashSet<>();
                 }
             }.instantiate(klass);
         }
@@ -177,21 +173,20 @@ public class DeepCopy {
             return new ImplementationInstantiation() {
                 @Override
                 protected Object createDefault() {
-                    return new HashMap<Object, Object>();
+                    return new HashMap<>();
                 }
             }.instantiate(klass);
         }
 
         @Override
-        public void copyDataToResult(DeepCopy deepCopy, Object origin,
-                Strategy strategy, Object result) {
-            doCopy(deepCopy, (Map<?, ?>) ((Map<?, ?>) origin), strategy, ((Map<Object, Object>) result));
+        public void copyDataToResult(DeepCopy deepCopy, Object origin, Strategy strategy, Object result) {
+            doCopy(deepCopy, (Map<?, ?>) origin, strategy, ((Map<Object, Object>) result));
         }
 
-        private void doCopy(DeepCopy deepCopy, Map<?, ?> origin,
-                Strategy strategy, Map<Object, Object> resultMap) {
+        private void doCopy(DeepCopy deepCopy, Map<?, ?> origin, Strategy strategy, Map<Object, Object> resultMap) {
             Strategy keyStrategy = getKeysStrategy(strategy);
             Strategy valueStrategy = getValuesStrategy(strategy);
+
             for (Entry<?, ?> entry : origin.entrySet()) {
                 Object key = deepCopy.copy(entry.getKey(), keyStrategy);
                 Object value = deepCopy.copy(entry.getValue(), valueStrategy);
@@ -200,19 +195,15 @@ public class DeepCopy {
         }
 
         private Strategy getKeysStrategy(Strategy strategy) {
-            if (Strategy.ONLY_SHARE_KEYS == strategy
-                    || Strategy.SHARE_COLLECTION_ELEMENTS == strategy) {
-                return Strategy.SHARE;
-            }
-            return strategy;
+            return Strategy.ONLY_SHARE_KEYS == strategy || Strategy.SHARE_COLLECTION_ELEMENTS == strategy
+                    ? Strategy.SHARE
+                    : strategy;
         }
 
         private Strategy getValuesStrategy(Strategy strategy) {
-            if (Strategy.ONLY_SHARE_VALUES == strategy
-                    || Strategy.SHARE_COLLECTION_ELEMENTS == strategy) {
-                return Strategy.SHARE;
-            }
-            return strategy;
+            return Strategy.ONLY_SHARE_VALUES == strategy || Strategy.SHARE_COLLECTION_ELEMENTS == strategy
+                    ? Strategy.SHARE
+                    : strategy;
         }
     }
 
@@ -232,7 +223,7 @@ public class DeepCopy {
             return new ImplementationInstantiation() {
                 @Override
                 protected Object createDefault() {
-                    return new ArrayList<Object>();
+                    return new ArrayList<>();
                 }
             }.instantiate(klass);
         }
@@ -242,8 +233,8 @@ public class DeepCopy {
     private static abstract class ImplementationInstantiation {
 
         private static final String[] VETOED_IMPLEMENTATIONS = {
-                "PersistentSet", "PersistentList", "PersistentMap",
-                "PersistentSortedSet" };
+                "PersistentSet", "PersistentList", "PersistentMap", "PersistentSortedSet"
+        };
 
         ImplementationInstantiation() {
         }
@@ -251,10 +242,9 @@ public class DeepCopy {
         <T> T instantiate(Class<?> type) {
             if (!isVetoed(type)) {
                 try {
-                    Constructor<? extends Object> constructor = type
-                            .getConstructor();
+                    Constructor<? extends Object> constructor = type.getConstructor();
                     return (T) type.cast(constructor.newInstance());
-                } catch (Exception e) {
+                } catch (Exception ignored) {
                 }
             }
             return (T) createDefault();
@@ -272,12 +262,6 @@ public class DeepCopy {
 
         protected abstract Object createDefault();
     }
-
-    private static List<ICustomCopy> DEFAULT_CUSTOM_COPIERS = Arrays
-            .<ICustomCopy> asList(new DateCopy(), new SetCopy(), new MapCopy(),
-                    new ListCopy());
-
-    private Map<ByIdentity, Object> alreadyCopiedObjects = new HashMap<ByIdentity, Object>();
 
     private static class ByIdentity {
 
@@ -318,13 +302,16 @@ public class DeepCopy {
         if (couldBeProxyValue == null) {
             return null;
         }
+
         T value = desproxify(couldBeProxyValue);
         if (alreadyCopiedObjects.containsKey(byIdentity(value))) {
             return (T) alreadyCopiedObjects.get(byIdentity(value));
         }
+
         if (Strategy.SHARE == strategy || isImmutable(value)) {
             return value;
         }
+
         ICustomCopy copier = findCopier(value);
         if (copier != null) {
             Object resultData = copier.instantiateCopy(strategy, value);
@@ -332,18 +319,18 @@ public class DeepCopy {
             copier.copyDataToResult(this, value, strategy, resultData);
             return (T) resultData;
         }
+
         T result = instantiateUsingDefaultConstructor(getTypedClassFrom(value));
         alreadyCopiedObjects.put(byIdentity(value), result);
         copyProperties(value, result);
-        callAferCopyHooks(result);
+        callAfterCopyHooks(result);
         return result;
     }
 
     private <T> T desproxify(T value) {
         if (value instanceof HibernateProxy) {
             HibernateProxy proxy = (HibernateProxy) value;
-            return (T) proxy.getHibernateLazyInitializer()
-                    .getImplementation();
+            return (T) proxy.getHibernateLazyInitializer().getImplementation();
         }
         return value;
     }
@@ -364,9 +351,7 @@ public class DeepCopy {
         } catch (SecurityException e) {
             throw new RuntimeException(e);
         } catch (NoSuchMethodException e) {
-            throw new IllegalArgumentException(
-                    "could not invoke default no-args constructor for "
-                            + klass, e);
+            throw new IllegalArgumentException("could not invoke default no-args constructor for " + klass, e);
         }
         try {
             return constructor.newInstance();
@@ -382,7 +367,7 @@ public class DeepCopy {
             if (!isIgnored(each)) {
                 Object sourceValue = readFieldValue(source, each);
                 if (sourceValue != null) {
-                    Strategy strategy = getStrategy(each, sourceValue);
+                    Strategy strategy = getStrategy(each);
                     try {
                         writeFieldValue(target, each, copy(sourceValue, strategy));
                     } catch (Exception e) {
@@ -395,7 +380,7 @@ public class DeepCopy {
     }
 
     private List<Field> getAllFieldsFor(Object source) {
-        List<Field> result = new ArrayList<Field>();
+        List<Field> result = new ArrayList<>();
         Class<? extends Object> currentClass = source.getClass();
         while (currentClass != null) {
             result.addAll(Arrays.asList(currentClass.getDeclaredFields()));
@@ -433,7 +418,7 @@ public class DeepCopy {
         }
     }
 
-    private Strategy getStrategy(Field field, Object sourceValue) {
+    private Strategy getStrategy(Field field) {
         OnCopy onCopy = field.getAnnotation(OnCopy.class);
         return onCopy != null ? onCopy.value() : null;
     }
@@ -447,7 +432,7 @@ public class DeepCopy {
         return null;
     }
 
-    private void callAferCopyHooks(Object value) {
+    private void callAfterCopyHooks(Object value) {
         assert value != null;
         for (Method each : getAfterCopyHooks(value.getClass())) {
             each.setAccessible(true);
@@ -461,7 +446,7 @@ public class DeepCopy {
 
     private List<Method> getAfterCopyHooks(Class<?> klass) {
         Class<?> current = klass;
-        List<Method> result = new ArrayList<Method>();
+        List<Method> result = new ArrayList<>();
         while (current != null) {
             result.addAll(getAfterCopyDeclaredAt(current));
             current = current.getSuperclass();
@@ -470,7 +455,7 @@ public class DeepCopy {
     }
 
     private List<Method> getAfterCopyDeclaredAt(Class<?> klass) {
-        List<Method> result = new ArrayList<Method>();
+        List<Method> result = new ArrayList<>();
         for (Method each : klass.getDeclaredMethods()) {
             if (isAfterCopyHook(each)) {
                 result.add(each);

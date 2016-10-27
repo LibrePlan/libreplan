@@ -18,13 +18,13 @@
     <http auto-config="false" realm="LibrePlan Web Application" >
 
         <!-- Web services -->
-        <intercept-url pattern="/ws/rest/bounduser/**" access="ROLE_BOUND_USER" method="GET" />
-        <intercept-url pattern="/ws/rest/bounduser/**" access="ROLE_BOUND_USER" method="POST" />
-        <intercept-url pattern="/ws/rest/subcontracting/**" access="ROLE_WS_SUBCONTRACTING" method="GET" />
-        <intercept-url pattern="/ws/rest/subcontracting/**" access="ROLE_WS_SUBCONTRACTING" method="POST" />
-        <intercept-url pattern="/ws/rest/**" access="ROLE_WS_READER" method="GET" />
-        <intercept-url pattern="/ws/rest/**" access="ROLE_WS_WRITER" method="POST" />
-        <intercept-url pattern="/ws/rest/**" access="ROLE_WS_WRITER" method="DELETE" />
+        <intercept-url pattern="/ws/rest/bounduser/**" access="hasAnyRole('ROLE_BOUND_USER')" method="GET" />
+        <intercept-url pattern="/ws/rest/bounduser/**" access="hasAnyRole('ROLE_BOUND_USER')" method="POST" />
+        <intercept-url pattern="/ws/rest/subcontracting/**" access="hasAnyRole('ROLE_WS_SUBCONTRACTING')" method="GET" />
+        <intercept-url pattern="/ws/rest/subcontracting/**" access="hasAnyRole('ROLE_WS_SUBCONTRACTING')" method="POST" />
+        <intercept-url pattern="/ws/rest/**" access="hasAnyRole('ROLE_WS_READER')" method="GET" />
+        <intercept-url pattern="/ws/rest/**" access="hasAnyRole('ROLE_WS_WRITER')" method="POST" />
+        <intercept-url pattern="/ws/rest/**" access="hasAnyRole('ROLE_WS_WRITER')" method="DELETE" />
 
         <!-- Web application -->
         <intercept-url pattern="/common/img/**" access="permitAll" />
@@ -116,7 +116,7 @@
         <intercept-url pattern="/reports/projectStatusReport.zul"
                        access="hasAnyRole('ROLE_SUPERUSER', 'ROLE_PROJECT_STATUS_REPORT')" />
 
-        <intercept-url pattern="/myaccount/userDashboard.zul" access="ROLE_BOUND_USER" />
+        <intercept-url pattern="/myaccount/userDashboard.zul" access="hasAnyRole('ROLE_BOUND_USER')" />
 
         <intercept-url pattern="/myaccount/monthlyTimesheet.zul"
                        access="hasAnyRole('ROLE_SUPERUSER', 'ROLE_TIMESHEETS', 'ROLE_BOUND_USER')" />

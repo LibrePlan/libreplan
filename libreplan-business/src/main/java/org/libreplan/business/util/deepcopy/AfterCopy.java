@@ -28,11 +28,9 @@ import java.lang.annotation.Target;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
- *
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface AfterCopy {
-
 }

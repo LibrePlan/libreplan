@@ -593,11 +593,11 @@ public abstract class AllocationRow {
     }
 
     private Constraint constraintForHoursInput() {
-        return (effortInput.isDisabled()) ? null : CONSTRAINT_FOR_HOURS_INPUT;
+        return effortInput.isDisabled() ? null : CONSTRAINT_FOR_HOURS_INPUT;
     }
 
     private Constraint constraintForResourcesPerDayInput() {
-        return (intendedResourcesPerDayInput.isDisabled()) ? null : CONSTRAINT_FOR_RESOURCES_PER_DAY;
+        return intendedResourcesPerDayInput.isDisabled() ? null : CONSTRAINT_FOR_RESOURCES_PER_DAY;
     }
 
     private void updateUIWithModificationsDone() {

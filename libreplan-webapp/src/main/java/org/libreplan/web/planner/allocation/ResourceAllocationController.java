@@ -141,8 +141,10 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
     private EditTaskController editTaskController;
 
-    public ResourceAllocationController(){
-        resourceAllocationModel = (IResourceAllocationModel) SpringUtil.getBean("resourceAllocationModel");
+    public ResourceAllocationController() {
+        if ( resourceAllocationModel == null ) {
+            resourceAllocationModel = (IResourceAllocationModel) SpringUtil.getBean("resourceAllocationModel");
+        }
     }
 
     @Override
@@ -508,7 +510,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
     private List<Object> plusAggregatingRow(List<AllocationRow> currentRows) {
         List<Object> result = new ArrayList<>(currentRows);
         result.add(null);
-
         return result;
     }
 

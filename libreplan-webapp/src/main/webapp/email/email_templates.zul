@@ -137,14 +137,6 @@
         <button onClick="emailTemplateController.cancel()"
                 label="${i18n:_('Cancel')}" sclass="cancel-button global-action"/>
 
-        <button upload="true, maxsize=999">
-            <attribute name="onUpload">
-                <![CDATA[
-                    System.out.println(event.getMedia());
-                ]]>
-            </attribute>
-        </button>
-
         <script>
             <!-- Hack for removing unnecessary border of grid column -->
             zk.afterMount(function() {

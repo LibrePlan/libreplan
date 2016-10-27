@@ -199,7 +199,7 @@ public class OrderLine extends OrderElement {
     }
 
     /**
-     * Operations for manipulating {@link HoursGroup}
+     * Operations for manipulating {@link HoursGroup}.
      */
 
     public void setWorkHours(Integer workHours) throws IllegalArgumentException {
@@ -349,8 +349,7 @@ public class OrderLine extends OrderElement {
     }
 
     @Override
-    public DirectAdvanceAssignment calculateFakeDirectAdvanceAssignment(
-            IndirectAdvanceAssignment indirectAdvanceAssignment) {
+    public DirectAdvanceAssignment calculateFakeDirectAdvanceAssignment(IndirectAdvanceAssignment indirectAdvanceAssignment) {
         return null;
     }
 
