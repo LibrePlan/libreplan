@@ -987,6 +987,10 @@ public class WorkReportCRUDController
             // Create the fields and labels
             appendFieldsAndLabelsInLines(row);
 
+            NewDataSortableGrid grid = (NewDataSortableGrid) row.getParent().getParent();
+            NewDataSortableColumn priorityColumn = (NewDataSortableColumn) grid.getChildren().get(1).getChildren().get(2);
+            priorityColumn.setWidth("110px");
+
             if (!getWorkReport().getWorkReportType().getHoursManagement().equals(HoursManagementEnum.NUMBER_OF_HOURS)) {
                 appendHoursStartAndFinish(row);
             }
@@ -1374,7 +1378,7 @@ public class WorkReportCRUDController
                 descriptionValue::setValue);
     }
 
-    private Autocomplete createAutocompleteLabels(LabelType labelType,Label selectedLabel) {
+    private Autocomplete createAutocompleteLabels(LabelType labelType, Label selectedLabel) {
         Autocomplete comboLabels = new Autocomplete();
         comboLabels.setButtonVisible(true);
         comboLabels.setWidth("100px");

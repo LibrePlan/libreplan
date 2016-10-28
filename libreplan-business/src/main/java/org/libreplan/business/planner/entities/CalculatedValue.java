@@ -22,10 +22,11 @@
 package org.libreplan.business.planner.entities;
 
 /**
- * It represents the value that is calculated
+ * It represents the value that is calculated.
+ *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public enum CalculatedValue {
 
-    NUMBER_OF_HOURS, END_DATE, RESOURCES_PER_DAY;
+    NUMBER_OF_HOURS, END_DATE, RESOURCES_PER_DAY
 }
