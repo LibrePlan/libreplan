@@ -20,8 +20,7 @@
 package org.libreplan.business.util;
 
 /**
- * This class represents an abstract visitor to traverse
- * task graphs.
+ * This class represents an abstract visitor to traverse task graphs.
  *
  * @author Nacho Barrientos <nacho@igalia.com>
  */
@@ -36,8 +35,7 @@ public abstract class TaskElementVisitor {
     public abstract void visit(TaskGroup taskGroup);
 
     /**
-     * As most of the visitors doesn't need to process the {@link TaskMilestone
-     * TaskMilestones} is provided a default implementation doing nothing.
+     * As most of the visitors doesn't need to process the {@link TaskMilestones} is provided a default implementation doing nothing.
      */
     public void visit(TaskMilestone taskMilestone) {
         // Do nothing

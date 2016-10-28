@@ -160,12 +160,11 @@
 
     </profiles>
 
-    <!-- TODO make changes to  http://nexus.libreplan.org/nexus/content/repositories/thirdparty -->
     <repositories>
         <!-- LibrePlan repository -->
         <repository>
             <id>thirdparty</id>
-            <url>http://nexus.libreplan.org/nexus/content/repositories/test/</url>
+            <url>http://nexus.libreplan.org/nexus/content/repositories/thirdparty-libreplan16/</url>
         </repository>
     </repositories>
 
