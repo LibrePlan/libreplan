@@ -30,8 +30,6 @@ import static org.libreplan.web.test.WebappGlobalNames.WEBAPP_SPRING_CONFIG_TEST
 import static org.libreplan.web.test.WebappGlobalNames.WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE;
 import static org.libreplan.web.test.ws.common.Util.getUniqueName;
 
-import java.util.*;
-
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.hibernate.Query;
@@ -69,6 +67,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.AfterTransaction;
 import org.springframework.test.context.transaction.BeforeTransaction;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Collections;
 
 /**
  * Tests for <code>ICalendarService</code>.

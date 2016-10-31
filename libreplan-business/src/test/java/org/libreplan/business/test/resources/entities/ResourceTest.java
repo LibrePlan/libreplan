@@ -33,8 +33,6 @@ import static org.libreplan.business.test.resources.daos.CriterionSatisfactionDA
 import static org.libreplan.business.test.resources.daos.CriterionSatisfactionDAOTest.year;
 import static org.libreplan.business.workingday.EffortDuration.hours;
 
-import java.util.*;
-
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.junit.Before;
@@ -59,6 +57,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
 
 /**
  * Tests for {@link Resource}.
