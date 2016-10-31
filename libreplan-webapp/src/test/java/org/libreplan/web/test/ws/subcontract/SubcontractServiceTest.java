@@ -172,7 +172,7 @@ public class SubcontractServiceTest {
 
     @Test
     @Transactional
-    /** TODO Test could fail sometimes */
+    /** FIXME Test could fail sometimes */
     public void validSubcontractedTaskData() {
         int previous = orderDAO.getOrders().size();
 

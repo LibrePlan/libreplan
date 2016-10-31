@@ -27,7 +27,9 @@ import static org.junit.Assert.assertTrue;
 import static org.libreplan.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.libreplan.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 
+import java.util.Date;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.annotation.Resource;
 
@@ -48,7 +50,6 @@ import org.libreplan.business.scenarios.daos.IOrderVersionDAO;
 import org.libreplan.business.scenarios.daos.IScenarioDAO;
 import org.libreplan.business.scenarios.entities.OrderVersion;
 import org.libreplan.business.scenarios.entities.Scenario;
-import org.libreplan.business.test.scenarios.daos.ScenarioDAOTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
@@ -106,8 +107,7 @@ public class ScenariosBootstrapTest {
             deleteSchedulingStatesByOrderVersion.executeUpdate();
             session.flush();
 
-            Query deleteSchedulingDataForVersion =
-                    session.createSQLQuery("DELETE FROM scheduling_data_for_version");
+            Query deleteSchedulingDataForVersion = session.createSQLQuery("DELETE FROM scheduling_data_for_version");
 
             deleteSchedulingDataForVersion.executeUpdate();
             session.flush();
@@ -115,17 +115,22 @@ public class ScenariosBootstrapTest {
             for (Order order : orderDAO.findAll()) {
                 orderDAO.remove(order.getId());
             }
-            // TODO: replace with Hibernate Criteria
-            for (Scenario scenario : scenarioDAO.getAll()) {
-                if (!"master".equals(scenario.getName())) {
+
+            Scenario masterScenario = null;
+            try {
+                masterScenario = PredefinedScenarios.MASTER.getScenario();
+            } catch (RuntimeException ignored) {
+            }
+
+            if ( masterScenario != null ) {
+                for (Scenario scenario : scenarioDAO.getAllExcept(masterScenario)) {
                     scenarioDAO.remove(scenario.getId());
                 }
-                else {
-                    for (OrderVersion orderVersion : orderVersionDAO.list(OrderVersion.class)) {
-                        scenario.removeVersion(orderVersion);
-                    }
-                    session.flush();
+
+                for (OrderVersion orderVersion : orderVersionDAO.list(OrderVersion.class)) {
+                    masterScenario.removeVersion(orderVersion);
                 }
+                session.flush();
             }
 
             for (OrderVersion orderVersion : orderVersionDAO.list(OrderVersion.class)) {
@@ -140,8 +145,18 @@ public class ScenariosBootstrapTest {
 
 
     private Order givenOrderStored() {
-        // TODO : refactor this ( do not use method from other testClass )
-        return ScenarioDAOTest.createOrderStored(orderDAO, configurationDAO);
+        return createOrderStored(orderDAO, configurationDAO);
+    }
+
+    public Order createOrderStored(IOrderDAO orderDAO, IConfigurationDAO configurationDAO) {
+        Order order = Order.create();
+        order.setInitDate(new Date());
+        order.setName("name-" + UUID.randomUUID().toString());
+        order.setCode("code-" + UUID.randomUUID().toString());
+        order.setCalendar(configurationDAO.getConfiguration().getDefaultCalendar());
+        orderDAO.save(order);
+
+        return order;
     }
 
     @Test

@@ -36,40 +36,38 @@ import org.libreplan.web.planner.allocation.INewAllocationsAdder;
 import org.zkoss.zk.ui.Component;
 
 /**
- * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
+ * Controller for searching for {@link Resource}.
  *
- *         Controller for searching for {@link Resource}
+ * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
-public class NewAllocationSelectorComboController extends
-        AllocationSelectorController {
+public class NewAllocationSelectorComboController extends AllocationSelectorController {
 
-    private ResourceAllocationBehaviour behaviour;
+    private ResourceAllocationBehaviour currentBehaviour;
 
     private BandboxMultipleSearch bbMultipleSearch;
 
     public NewAllocationSelectorComboController(ResourceAllocationBehaviour behaviour) {
-        this.behaviour = behaviour;
+        this.currentBehaviour = behaviour;
     }
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        bbMultipleSearch.setFinder(behaviour.getFinder());
+        bbMultipleSearch.setFinder(currentBehaviour.getFinder());
     }
 
     /**
-     * Does the actual search for workers
+     * Does the actual search for workers.
      *
      * @param criteria
      */
     private List<? extends Resource> searchResources(List<Criterion> criteria) {
-        return query(inferType(criteria)).byCriteria(criteria)
-                .byResourceType(behaviour.getType()).execute();
+        return query(inferType(criteria)).byCriteria(criteria).byResourceType(currentBehaviour.getType()).execute();
     }
 
     private static ResourceEnum inferType(List<Criterion> criteria) {
         if (criteria.isEmpty()) {
-            // FIXME resolve the ambiguity. One option is asking the user
+            // FIXME resolve the ambiguity; one option is asking the user
             return ResourceEnum.WORKER;
         }
         return first(criteria).getType().getResource();
@@ -84,12 +82,12 @@ public class NewAllocationSelectorComboController extends
     }
 
     /**
-     * Returns list of selected {@link Criterion}, selects only those which are
-     * leaf nodes
-     * @return
+     * Returns list of selected {@link Criterion}, selects only those which are leaf nodes.
+     *
+     * @return {@link List<Criterion>}
      */
     public List<Criterion> getSelectedCriterions() {
-        List<Criterion> criteria = new ArrayList<Criterion>();
+        List<Criterion> criteria = new ArrayList<>();
         for (FilterPair pair : getSelectedItems()) {
             if (pair.getType().equals(ResourceAllocationFilterEnum.Criterion)) {
                 criteria.add((Criterion) pair.getValue());
@@ -99,13 +97,11 @@ public class NewAllocationSelectorComboController extends
     }
 
     private List<FilterPair> getSelectedItems() {
-        return ((List<FilterPair>) bbMultipleSearch
-                .getSelectedElements());
+        return ((List<FilterPair>) bbMultipleSearch.getSelectedElements());
     }
 
     private boolean isGeneric() {
-        return ((FilterPair) getSelectedItems().get(0)).getType().equals(
-                ResourceAllocationFilterEnum.Criterion);
+        return getSelectedItems().get(0).getType().equals(ResourceAllocationFilterEnum.Criterion);
     }
 
     public void onClose() {
@@ -117,7 +113,7 @@ public class NewAllocationSelectorComboController extends
     }
 
     public List<Resource> getSelectedResources() {
-        List<Resource> resources = new ArrayList<Resource>();
+        List<Resource> resources = new ArrayList<>();
         for (FilterPair pair : getSelectedItems()) {
             if (pair.getType().equals(ResourceAllocationFilterEnum.Resource)) {
                 resources.add((Resource) pair.getValue());

@@ -89,6 +89,8 @@ import org.zkoss.zul.Tabpanel;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class TaskPropertiesController extends GenericForwardComposer<Component> {
 
+    private final String WARNING = "Warning";
+
     private IScenarioManager scenarioManager;
 
     private TaskEditFormComposer taskEditFormComposer = new TaskEditFormComposer();
@@ -140,9 +142,17 @@ public class TaskPropertiesController extends GenericForwardComposer<Component> 
     private List<Resource> listToAdd = new ArrayList<>();
 
     public TaskPropertiesController() {
-        emailNotificationModel = (IEmailNotificationModel) SpringUtil.getBean("emailNotificationModel");
-        workerModel = (IWorkerModel) SpringUtil.getBean("workerModel");
-        scenarioManager = (IScenarioManager) SpringUtil.getBean("scenarioManager");
+        if ( emailNotificationModel == null ) {
+            emailNotificationModel = (IEmailNotificationModel) SpringUtil.getBean("emailNotificationModel");
+        }
+
+        if ( workerModel == null ) {
+            workerModel = (IWorkerModel) SpringUtil.getBean("workerModel");
+        }
+
+        if ( scenarioManager == null ) {
+            scenarioManager = (IScenarioManager) SpringUtil.getBean("scenarioManager");
+        }
     }
 
     public void init(final EditTaskController editTaskController,
@@ -317,8 +327,8 @@ public class TaskPropertiesController extends GenericForwardComposer<Component> 
         TaskPositionConstraint taskConstraint = currentTaskElementAsTaskLeafConstraint().getPositionConstraint();
         PositionConstraintType type = startConstraintTypes.getSelectedItem().getValue();
 
-        IntraDayDate inputDate = type.isAssociatedDateRequired() ?
-                IntraDayDate.startOfDay(LocalDate.fromDateFields(startConstraintDate.getValue()))
+        IntraDayDate inputDate = type.isAssociatedDateRequired()
+                ? IntraDayDate.startOfDay(LocalDate.fromDateFields(startConstraintDate.getValue()))
                 : null;
 
         if ( taskConstraint.isValid(type, inputDate) ) {
@@ -466,7 +476,6 @@ public class TaskPropertiesController extends GenericForwardComposer<Component> 
      * Enum for showing type of resource assignation option list.
      *
      * @author Diego Pino Garcia <dpino@igalia.com>
-     *
      */
     enum ResourceAllocationTypeEnum {
         NON_LIMITING_RESOURCES(_("Normal resource assignment")),
@@ -542,7 +551,8 @@ public class TaskPropertiesController extends GenericForwardComposer<Component> 
      *
      * @param resourceAllocation
      */
-    public void setResourceAllocationType(ResourceAllocationTypeEnum resourceAllocation) {}
+    public void setResourceAllocationType(ResourceAllocationTypeEnum resourceAllocation) {
+    }
 
     ResourceAllocationTypeEnum getResourceAllocationType(TaskElement taskElement) {
         return taskElement == null || !isTask(taskElement)
@@ -604,7 +614,7 @@ public class TaskPropertiesController extends GenericForwardComposer<Component> 
         if ( task.hasResourceAllocations() ) {
             if ( Messagebox.show(
                     _("Assigned resources for this task will be deleted. Are you sure?"),
-                    _("Warning"), Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION) == Messagebox.OK) {
+                    _(WARNING), Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION) == Messagebox.OK) {
                 task.removeAllResourceAllocations();
                 setStateTo(newState);
             } else {
@@ -640,7 +650,7 @@ public class TaskPropertiesController extends GenericForwardComposer<Component> 
         if (task.hasResourceAllocations()) {
             if (Messagebox.show(
                     _("Assigned resources for this task will be deleted. Are you sure?"),
-                    _("Warning"), Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION) == Messagebox.OK ) {
+                    _(WARNING), Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION) == Messagebox.OK ) {
                 task.removeAllResourceAllocations();
                 setStateTo(newState);
             } else {
@@ -667,9 +677,11 @@ public class TaskPropertiesController extends GenericForwardComposer<Component> 
 
             // Notification has been sent
             if ( communicationDate != null ) {
-                if ( Messagebox.show(_("IMPORTANT: Don't forget to communicate to subcontractor that " +
-                                "his contract has been cancelled"), _("Warning"),
-                        Messagebox.OK, Messagebox.EXCLAMATION) == Messagebox.OK ) {
+
+                if ( Messagebox.show(
+                        _("IMPORTANT: Don't forget to communicate to subcontractor that his contract has been cancelled"),
+                        _(WARNING), Messagebox.OK, Messagebox.EXCLAMATION) == Messagebox.OK ) {
+
                     setStateTo(newState);
                 } else {
                     resetStateTo(ResourceAllocationTypeEnum.SUBCONTRACT);
@@ -731,14 +743,12 @@ public class TaskPropertiesController extends GenericForwardComposer<Component> 
         return Util.getMoneyFormat();
     }
 
+    /**
+     * Check if resources in allocation are bound by user and in what ROLE they are.
+     * setUser method calling manually because, after initialization user will be null.
+     * Then send valid data to notification_queue table.
+     */
     public void emailNotificationAddNew() {
-
-        /*
-         * Check if resources in allocation are bound by user and in what ROLE they are.
-         * setUser method calling manually because, after initialization user will be null.
-         * Then send valid data to notification_queue table.
-         */
-
         proceedList(EmailTemplateEnum.TEMPLATE_TASK_ASSIGNED_TO_RESOURCE, listToAdd);
         proceedList(EmailTemplateEnum.TEMPLATE_RESOURCE_REMOVED_FROM_TASK, listToDelete);
         listToAdd.clear();
@@ -764,9 +774,10 @@ public class TaskPropertiesController extends GenericForwardComposer<Component> 
 
                         if ( currentUser != null &&
                                 (currentUser.isInRole(UserRole.ROLE_EMAIL_TASK_ASSIGNED_TO_RESOURCE) ||
-                                        currentUser.isInRole(UserRole.ROLE_EMAIL_RESOURCE_REMOVED_FROM_TASK)) )
-
+                                        currentUser.isInRole(UserRole.ROLE_EMAIL_RESOURCE_REMOVED_FROM_TASK)) ) {
                             setEmailNotificationEntity(enumeration, currentResource);
+                        }
+
                         break;
                     }
                 }
@@ -777,11 +788,11 @@ public class TaskPropertiesController extends GenericForwardComposer<Component> 
         try {
             emailNotificationModel.setNewObject();
 
-            if ( enumeration.equals(EmailTemplateEnum.TEMPLATE_TASK_ASSIGNED_TO_RESOURCE) )
+            if ( enumeration.equals(EmailTemplateEnum.TEMPLATE_TASK_ASSIGNED_TO_RESOURCE) ) {
                 emailNotificationModel.setType(EmailTemplateEnum.TEMPLATE_TASK_ASSIGNED_TO_RESOURCE);
-
-            else if ( enumeration.equals(EmailTemplateEnum.TEMPLATE_RESOURCE_REMOVED_FROM_TASK) )
+            } else if ( enumeration.equals(EmailTemplateEnum.TEMPLATE_RESOURCE_REMOVED_FROM_TASK) ) {
                 emailNotificationModel.setType(EmailTemplateEnum.TEMPLATE_RESOURCE_REMOVED_FROM_TASK);
+            }
 
             emailNotificationModel.setUpdated(new Date());
 
@@ -792,7 +803,7 @@ public class TaskPropertiesController extends GenericForwardComposer<Component> 
             emailNotificationModel.setProject(currentTaskElement.getParent().getTaskSource().getTask());
 
             emailNotificationModel.confirmSave();
-        } catch (DataIntegrityViolationException e){
+        } catch (DataIntegrityViolationException e) {
             Messagebox.show(
                     _("You cannot email user twice with the same info"), _("Error"),
                     Messagebox.OK, Messagebox.ERROR);

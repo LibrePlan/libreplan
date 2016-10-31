@@ -50,7 +50,7 @@ import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 
 /**
- * Controller for CRUD actions over a {@link ResourcesCostCategoryAssignment}
+ * Controller for CRUD actions over a {@link ResourcesCostCategoryAssignment}.
  *
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  */
@@ -67,8 +67,10 @@ public class ResourcesCostCategoryAssignmentController extends GenericForwardCom
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
 
-        resourcesCostCategoryAssignmentModel =
-                (IResourcesCostCategoryAssignmentModel) SpringUtil.getBean("resourcesCostCategoryAssignmentModel");
+        if ( resourcesCostCategoryAssignmentModel == null ) {
+            resourcesCostCategoryAssignmentModel =
+                    (IResourcesCostCategoryAssignmentModel) SpringUtil.getBean("resourcesCostCategoryAssignmentModel");
+        }
 
         comp.setAttribute("assignmentController", this, true);
         this.listResourcesCostCategoryAssignments = (Grid) comp.getFellowIfAny("listResourcesCostCategoryAssignments");
@@ -90,12 +92,11 @@ public class ResourcesCostCategoryAssignmentController extends GenericForwardCom
 
     private CostCategory getCostCategory(Row listitem) {
         ResourcesCostCategoryAssignment assignment = listitem.getValue();
-
         return assignment.getCostCategory();
     }
 
     /**
-     * Append a Autocomplete @{link CostCategory} to row
+     * Append a Autocomplete @{link CostCategory} to row.
      *
      * @param row
      */
@@ -118,7 +119,7 @@ public class ResourcesCostCategoryAssignmentController extends GenericForwardCom
             public void onEvent(Event event) {
                 final Comboitem comboitem = autocomplete.getSelectedItem();
 
-                if(comboitem != null) {
+                if (comboitem != null) {
                     // Update resourcesCostCategoryAssignment
                     ResourcesCostCategoryAssignment assignment = row.getValue();
                     assignment.setCostCategory(comboitem.getValue());
@@ -130,15 +131,17 @@ public class ResourcesCostCategoryAssignmentController extends GenericForwardCom
     }
 
     public void confirmRemove(ResourcesCostCategoryAssignment assignment) {
-        int status = Messagebox.show(_("Confirm deleting this hour cost. Are you sure?"), _("Delete"),
+        int status = Messagebox.show(
+                _("Confirm deleting this hour cost. Are you sure?"), _("Delete"),
                 Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION);
+
         if (Messagebox.OK == status) {
             removeCostCategoryAssignment(assignment);
         }
     }
 
     /**
-     * Append a delete {@link Button} to {@link Row}
+     * Append a delete {@link Button} to {@link Row}.
      *
      * @param row
      */
@@ -147,6 +150,7 @@ public class ResourcesCostCategoryAssignmentController extends GenericForwardCom
         delete.setHoverImage("/common/img/ico_borrar.png");
         delete.setSclass("icono");
         delete.setTooltiptext(_("Delete"));
+
         delete.addEventListener(Events.ON_CLICK, new EventListener() {
             @Override
             public void onEvent(Event event) {
@@ -157,7 +161,7 @@ public class ResourcesCostCategoryAssignmentController extends GenericForwardCom
     }
 
     /**
-     * Append a Datebox "init date" to row
+     * Append a Datebox "init date" to row.
      *
      * @param row
      */
@@ -183,42 +187,41 @@ public class ResourcesCostCategoryAssignmentController extends GenericForwardCom
     }
 
     /**
-     * Binds Datebox "init date" to the corresponding attribute of a {@link ResourcesCostCategoryAssignment}
+     * Binds Datebox "init date" to the corresponding attribute of a {@link ResourcesCostCategoryAssignment}.
      *
      * @param dateBoxInitDate
-     * @param hourCost
+     * @param assignment
      */
-    private void bindDateboxInitDate(final Datebox dateBoxInitDate,
-                                     final ResourcesCostCategoryAssignment assignment) {
-        Util.bind(dateBoxInitDate, new Util.Getter<Date>() {
+    private void bindDateboxInitDate(final Datebox dateBoxInitDate, final ResourcesCostCategoryAssignment assignment) {
 
-            @Override
-            public Date get() {
-                LocalDate dateTime = assignment.getInitDate();
-                if (dateTime != null) {
-                    return new Date(dateTime.getYear()-1900,
-                            dateTime.getMonthOfYear()-1,dateTime.getDayOfMonth());
-                }
-                return null;
-            }
-
-        }, new Util.Setter<Date>() {
-
-            @Override
-            public void set(Date value) {
-                if (value != null) {
-                    assignment.setInitDate(new LocalDate(value.getYear()+1900,
-                            value.getMonth()+1,value.getDate()));
-                }
-                else {
-                    assignment.setInitDate(null);
-                }
-            }
-        });
+        Util.bind(
+                dateBoxInitDate,
+                new Util.Getter<Date>() {
+                    @Override
+                    public Date get() {
+                        LocalDate dateTime = assignment.getInitDate();
+                        /* TODO resolve deprecated */
+                        return dateTime != null
+                                ? new Date(dateTime.getYear() - 1900, dateTime.getMonthOfYear() - 1, dateTime.getDayOfMonth())
+                                : null;
+                    }
+                },
+                new Util.Setter<Date>() {
+                    @Override
+                    public void set(Date value) {
+                        if (value != null) {
+                            /* TODO resolve deprecated */
+                            assignment.setInitDate(new LocalDate(value.getYear() + 1900, value.getMonth() + 1,value.getDate()));
+                        }
+                        else {
+                            assignment.setInitDate(null);
+                        }
+                    }
+                });
     }
 
     /**
-     * Append a Datebox "end date" to row
+     * Append a Datebox "end date" to row.
      *
      * @param row
      */
@@ -226,6 +229,7 @@ public class ResourcesCostCategoryAssignmentController extends GenericForwardCom
         Datebox endDateBox = new Datebox();
         bindDateboxEndDate(endDateBox, row.getValue());
         LocalDate initDate = ((ResourcesCostCategoryAssignment)row.getValue()).getInitDate();
+
         if (initDate != null) {
             endDateBox.setConstraint("after " +
                     String.format("%04d", initDate.getYear()) +
@@ -236,38 +240,36 @@ public class ResourcesCostCategoryAssignmentController extends GenericForwardCom
     }
 
     /**
-     * Binds Datebox "init date" to the corresponding attribute of a {@link ResourcesCostCategoryAssignment}
+     * Binds Datebox "init date" to the corresponding attribute of a {@link ResourcesCostCategoryAssignment}.
      *
-     * @param dateBoxInitDate
-     * @param hourCost
+     * @param dateBoxEndDate
+     * @param assignment
      */
-    private void bindDateboxEndDate(final Datebox dateBoxEndDate,
-                                    final ResourcesCostCategoryAssignment assignment) {
-        Util.bind(dateBoxEndDate, new Util.Getter<Date>() {
-
-            @Override
-            public Date get() {
-                LocalDate dateTime = assignment.getEndDate();
-                if (dateTime != null) {
-                    return new Date(dateTime.getYear()-1900,
-                            dateTime.getMonthOfYear()-1,dateTime.getDayOfMonth());
-                }
-
-                return null;
-            }
-
-        }, new Util.Setter<Date>() {
-            @Override
-            public void set(Date value) {
-                if (value != null) {
-                    /* TODO resolve deprecated */
-                    assignment.setEndDate(new LocalDate(value.getYear() + 1900, value.getMonth() + 1, value.getDate()));
-                }
-                else {
-                    assignment.setEndDate(null);
-                }
-            }
-        });
+    private void bindDateboxEndDate(final Datebox dateBoxEndDate, final ResourcesCostCategoryAssignment assignment) {
+        Util.bind(
+                dateBoxEndDate,
+                new Util.Getter<Date>() {
+                    @Override
+                    public Date get() {
+                        LocalDate dateTime = assignment.getEndDate();
+                        /* TODO resolve deprecated */
+                        return dateTime != null
+                                ? new Date(dateTime.getYear() - 1900, dateTime.getMonthOfYear() - 1,dateTime.getDayOfMonth())
+                                : null;
+                    }
+                },
+                new Util.Setter<Date>() {
+                    @Override
+                    public void set(Date value) {
+                        if (value != null) {
+                            /* TODO resolve deprecated */
+                            assignment.setEndDate(new LocalDate(value.getYear() + 1900, value.getMonth() + 1, value.getDate()));
+                        }
+                        else {
+                            assignment.setEndDate(null);
+                        }
+                    }
+                });
     }
 
     public CostCategoryAssignmentRenderer getCostCategoryAssignmentsRenderer() {

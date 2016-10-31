@@ -33,6 +33,7 @@ import org.libreplan.business.scenarios.entities.Scenario;
  * Contract for {@link ScenarioDAO}.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
 public interface IScenarioDAO extends IGenericDAO<Scenario, Long> {
 
@@ -44,6 +45,14 @@ public interface IScenarioDAO extends IGenericDAO<Scenario, Long> {
 
     List<Scenario> getAll();
 
+    /**
+     * Gets all {@link Scenario}s except chosen.
+     *
+     * @param scenario Selected {@link Scenario} that you want to exclude
+     * @return {@link List<Scenario>}
+     */
+    List<Scenario> getAllExcept(Scenario scenario);
+
     boolean thereIsOtherWithSameName(Scenario scenario);
 
     List<Scenario> findByPredecessor(Scenario scenario);
@@ -51,7 +60,6 @@ public interface IScenarioDAO extends IGenericDAO<Scenario, Long> {
     List<Scenario> getDerivedScenarios(Scenario scenario);
 
     void updateDerivedScenariosWithNewVersion(
-            OrderVersion previousOrderVersion, Order order,
-            Scenario currentScenario, OrderVersion newOrderVersion);
+            OrderVersion previousOrderVersion, Order order, Scenario currentScenario, OrderVersion newOrderVersion);
 
 }

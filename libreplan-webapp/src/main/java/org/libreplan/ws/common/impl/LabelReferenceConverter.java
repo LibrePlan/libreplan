@@ -40,35 +40,23 @@ public final class LabelReferenceConverter {
     }
 
     public final static Set<LabelReferenceDTO> toDTO(Set<Label> labels) {
-        Set<LabelReferenceDTO> labelDTOs = new HashSet<LabelReferenceDTO>();
+        Set<LabelReferenceDTO> labelDTOs = new HashSet<>();
         for (Label label : labels) {
             labelDTOs.add(toDTO(label));
         }
         return labelDTOs;
     }
 
-    public final static LabelReferenceDTO toDTO(Label label) {
+    public static final LabelReferenceDTO toDTO(Label label) {
         return new LabelReferenceDTO(label.getCode());
     }
 
-    public static Set<Label> toEntity(Set<LabelReferenceDTO> labels)
-            throws InstanceNotFoundException {
-        Set<Label> result = new HashSet<Label>();
+    public static Set<Label> toEntity(Set<LabelReferenceDTO> labels) throws InstanceNotFoundException {
+        Set<Label> result = new HashSet<>();
         for (LabelReferenceDTO labelReferenceDTO : labels) {
-            result.add(toEntity(labelReferenceDTO));
+            result.add(Registry.getLabelDAO().findByCode(labelReferenceDTO.code));
         }
         return result;
-    }
-
-    public final static Label toEntity(LabelReferenceDTO labelReferenceDTO)
-            throws InstanceNotFoundException {
-        // FIXME review if this check could be moved to findByCode at
-        // IntegrationEntityDAO
-        if (labelReferenceDTO.code == null) {
-            throw new InstanceNotFoundException(null, Label.class.getName());
-        }
-
-        return Registry.getLabelDAO().findByCode(labelReferenceDTO.code);
     }
 
 }

@@ -2,6 +2,7 @@ package org.libreplan.web.dashboard;
 
 import org.libreplan.business.orders.entities.Order;
 
+import org.libreplan.business.orders.entities.OrderStatusEnum;
 import org.libreplan.web.orders.IOrderModel;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -24,14 +25,15 @@ import java.util.List;
  *
  * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
-
 @org.springframework.stereotype.Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class DashboardControllerGlobal extends GenericForwardComposer {
 
-    // TODO enumns instead of numbers ( 0, 1, 2, 3, ... )
     // TODO 1 list instead of 8
+
     // TODO insert Label only in needed Cell
+    // ( is it possible at all? Seems that we need to make own Grid )
+    // Because we cannot createCell at selected row-index, column-index
 
     private IOrderModel orderModel;
 
@@ -61,7 +63,11 @@ public class DashboardControllerGlobal extends GenericForwardComposer {
     public void doAfterCompose(Component component) throws Exception {
         super.doAfterCompose(component);
         component.setAttribute("dashboardControllerGlobal", this, true);
-        orderModel = (IOrderModel) SpringUtil.getBean("orderModel");
+
+        if ( orderModel == null ) {
+            orderModel = (IOrderModel) SpringUtil.getBean("orderModel");
+        }
+
         fillOrderLists();
         setupPipelineGrid();
         showStoredColumn();
@@ -128,7 +134,8 @@ public class DashboardControllerGlobal extends GenericForwardComposer {
                 onHoldOrders.size(),
                 finishedOrders.size(),
                 cancelledOrders.size(),
-                storedOrders.size() };
+                storedOrders.size()
+        };
 
         int rowsCount = findMaxList(sizes);
 
@@ -146,18 +153,18 @@ public class DashboardControllerGlobal extends GenericForwardComposer {
         pipelineGrid.appendChild(rows);
 
         // Fill data into first column and so on with other columns divided by Enter in code
-        processList(preSalesOrders, 0);
-        processList(offeredOrders, 1);
-        processList(outsourcedOrders, 2);
-        processList(acceptedOrders, 3);
-        processList(startedOrders, 4);
-        processList(onHoldOrders, 5);
-        processList(finishedOrders, 6);
-        processList(cancelledOrders, 7);
-        processList(storedOrders, 8);
+        processList(preSalesOrders, OrderStatusEnum.PRE_SALES);
+        processList(offeredOrders, OrderStatusEnum.OFFERED);
+        processList(outsourcedOrders, OrderStatusEnum.OUTSOURCED);
+        processList(acceptedOrders, OrderStatusEnum.ACCEPTED);
+        processList(startedOrders, OrderStatusEnum.STARTED);
+        processList(onHoldOrders, OrderStatusEnum.ON_HOLD);
+        processList(finishedOrders, OrderStatusEnum.FINISHED);
+        processList(cancelledOrders, OrderStatusEnum.CANCELLED);
+        processList(storedOrders, OrderStatusEnum.STORED);
     }
 
-    private void processList(List<Order> currentList, int index) {
+    private void processList(List<Order> currentList, OrderStatusEnum orderStatus) {
         if ( !currentList.isEmpty() ) {
             for (int i = 0; i < currentList.size(); i++) {
 
@@ -165,14 +172,14 @@ public class DashboardControllerGlobal extends GenericForwardComposer {
                     String outputInit = getOrderInitDate(currentList.get(i));
                     String outputDeadline = getOrderDeadline(currentList.get(i));
 
-                    ( (Label) pipelineGrid.getCell(i, index) ).setValue(currentList.get(i).getName());
+                    ( (Label) pipelineGrid.getCell(i, orderStatus.getIndex()) ).setValue(currentList.get(i).getName());
 
                     String tooltipText = "Start date: " + outputInit +
                             "\n" + "End date: " + outputDeadline +
                             "\n" + "Progress: " + currentList.get(i).getAdvancePercentage() + " %";
 
-                    ( (Label) pipelineGrid.getCell(i, index) ).setTooltiptext(tooltipText);
-                    ( (Label) pipelineGrid.getCell(i, index) ).setClass("label-highlight");
+                    ( (Label) pipelineGrid.getCell(i, orderStatus.getIndex()) ).setTooltiptext(tooltipText);
+                    ( (Label) pipelineGrid.getCell(i, orderStatus.getIndex()) ).setClass("label-highlight");
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }

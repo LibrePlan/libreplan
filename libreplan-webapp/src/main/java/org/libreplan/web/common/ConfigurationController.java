@@ -172,7 +172,8 @@ public class ConfigurationController extends GenericForwardComposer {
     private String LOGO_PREVIEW_COMPONENT = "logoPreview";
 
 
-    public ConfigurationController() {}
+    public ConfigurationController() {
+    }
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -389,7 +390,6 @@ public class ConfigurationController extends GenericForwardComposer {
     public void testConnection() {
         if (selectedConnector == null) {
             messages.showMessage(Level.ERROR, _("Please select a connector to test it"));
-
             return;
         }
 
@@ -1588,7 +1588,8 @@ public class ConfigurationController extends GenericForwardComposer {
                         ch = in.read(buffer);
                     }
 
-                } catch (IOException ignored) {}
+                } catch (IOException ignored) {
+                }
 
                 finally {
                     try {
@@ -1596,7 +1597,8 @@ public class ConfigurationController extends GenericForwardComposer {
                             out.close();
 
                         in.close();
-                    } catch (IOException ignored) {}
+                    } catch (IOException ignored) {
+                    }
                 }
 
                 Util.setLogoFromTarget(media.getName());
@@ -1651,6 +1653,7 @@ public class ConfigurationController extends GenericForwardComposer {
         try {
             fileToDelete = ContextLoaderListener.getCurrentWebApplicationContext().getResource(name).getFile();
             fileToDelete.delete();
-        } catch (IOException ignored) {}
+        } catch (IOException ignored) {
+        }
     }
 }

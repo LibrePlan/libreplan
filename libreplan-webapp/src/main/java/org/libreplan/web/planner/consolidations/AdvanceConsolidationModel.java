@@ -26,10 +26,9 @@ import static org.libreplan.web.I18nHelper._;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.SortedSet;
 
 import org.joda.time.LocalDate;
 import org.libreplan.business.advance.entities.AdvanceMeasurement;
@@ -277,10 +276,8 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
             } else {
                 AdvanceMeasurement measure = dto.getAdvanceMeasurement();
 
-                NonCalculatedConsolidatedValue consolidatedValue = NonCalculatedConsolidatedValue
-                        .create(LocalDate.fromDateFields(dto.getDate()),
-                                dto.getPercentage(), measure,
-                                task.getIntraDayEndDate());
+                NonCalculatedConsolidatedValue consolidatedValue = NonCalculatedConsolidatedValue.create(
+                        LocalDate.fromDateFields(dto.getDate()), dto.getPercentage(), measure, task.getIntraDayEndDate());
 
                 measure.getNonCalculatedConsolidatedValues().add(consolidatedValue);
                 return consolidatedValue;
@@ -417,20 +414,22 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
         if (consolidation != null) {
             if (!consolidation.isCalculated()) {
 
-                /* TODO check it */
-                consolidationDTOs
-                        .addAll(((NonCalculatedConsolidation) consolidation)
-                        .getNonCalculatedConsolidatedValues()
-                        .stream()
-                        .map(consolidatedValue -> new AdvanceConsolidationDTO(
-                                consolidatedValue.getAdvanceMeasurement(), consolidatedValue))
-                        .collect(Collectors.toList()));
+                SortedSet<NonCalculatedConsolidatedValue> nonCalculatedConsolidatedValues =
+                        ((NonCalculatedConsolidation) consolidation).getNonCalculatedConsolidatedValues();
+
+                for (NonCalculatedConsolidatedValue consolidatedValue : nonCalculatedConsolidatedValues) {
+
+                    consolidationDTOs.add(
+                            new AdvanceConsolidationDTO(consolidatedValue.getAdvanceMeasurement(), consolidatedValue));
+                }
             } else {
-                consolidationDTOs
-                        .addAll(((CalculatedConsolidation) consolidation)
-                                .getCalculatedConsolidatedValues()
-                                .stream().map(consolidatedValue -> new AdvanceConsolidationDTO(null, consolidatedValue))
-                                .collect(Collectors.toList()));
+
+                SortedSet<CalculatedConsolidatedValue> consolcalculatedConsolidatedValuestedValues =
+                        ((CalculatedConsolidation) consolidation).getCalculatedConsolidatedValues();
+
+                for (CalculatedConsolidatedValue consolidatedValue : consolcalculatedConsolidatedValuestedValues) {
+                    consolidationDTOs.add(new AdvanceConsolidationDTO(null, consolidatedValue));
+                }
             }
         }
     }
@@ -445,26 +444,18 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
     }
 
     private boolean canBeConsolidateAndShow(AdvanceMeasurement advanceMeasurement) {
-        Date date = advanceMeasurement.getDate().toDateTimeAtStartOfDay().toDate();
-        return AdvanceConsolidationDTO.canBeConsolidateAndShow(date) && !containsAdvance(advanceMeasurement);
+        return AdvanceConsolidationDTO
+                .canBeConsolidateAndShow(advanceMeasurement.getDate().toDateTimeAtStartOfDay().toDate()) &&
+                !containsAdvance(advanceMeasurement);
     }
 
     @Override
     public String getInfoAdvanceAssignment() {
-        if (this.spreadAdvance == null || this.orderElement == null) {
-            return "";
-        }
-        return getInfoAdvanceAssignment(this.spreadAdvance);
+        return this.spreadAdvance == null || this.orderElement == null ? "" : getInfoAdvanceAssignment(this.spreadAdvance);
     }
 
     private String getInfoAdvanceAssignment(DirectAdvanceAssignment assignment) {
-        if (assignment == null) {
-            return "";
-        }
-        if (assignment.getMaxValue() == null) {
-            return "";
-        }
-        return _("( max: {0} )", assignment.getMaxValue());
+        return assignment == null || assignment.getMaxValue() == null ? "" : _("( max: {0} )", assignment.getMaxValue());
     }
 
     private List<AdvanceMeasurement> getAdvances() {
@@ -473,16 +464,16 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
 
     @Override
     public boolean isVisibleAdvances() {
-        return (!isVisibleMessages());
+        return !isVisibleMessages();
     }
 
     @Override
     public boolean isVisibleMessages() {
-        return ((getAdvances().size() == 0) || (isSubcontracted()) || (!hasResourceAllocation()));
+        return getAdvances().size() == 0 || isSubcontracted() || !hasResourceAllocation();
     }
 
     private boolean advanceIsCalculated(){
-        return ((spreadAdvance != null) && (spreadAdvance.isFake()));
+        return spreadAdvance != null && spreadAdvance.isFake();
     }
 
     public String infoMessages() {
@@ -500,15 +491,15 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
     }
 
     private boolean hasResourceAllocation() {
-        return ((task != null) && (task.hasResourceAllocations()));
+        return task != null && task.hasResourceAllocations();
     }
 
     private boolean isSubcontracted() {
-        return ((task != null) && (task.isSubcontracted()));
+        return task != null && task.isSubcontracted();
     }
 
     public boolean hasLimitingResourceAllocation() {
-        return ((task != null) && (task.hasLimitedResourceAllocation()));
+        return task != null && task.hasLimitedResourceAllocation();
     }
 
     @Override

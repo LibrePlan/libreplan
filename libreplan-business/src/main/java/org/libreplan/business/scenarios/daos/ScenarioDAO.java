@@ -45,6 +45,7 @@ import org.springframework.transaction.annotation.Transactional;
  * DAO implementation for {@link Scenario}.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
@@ -118,6 +119,14 @@ public class ScenarioDAO extends GenericDAOHibernate<Scenario, Long> implements 
         return list(Scenario.class);
     }
 
+    @Override
+    public List<Scenario> getAllExcept(Scenario scenario) {
+        return getSession()
+                .createCriteria(Scenario.class)
+                .add(Restrictions.ne("name", scenario.getName()))
+                .list();
+    }
+
     @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
     @Override
     public boolean thereIsOtherWithSameName(Scenario scenario) {
@@ -135,14 +144,12 @@ public class ScenarioDAO extends GenericDAOHibernate<Scenario, Long> implements 
 
     @Override
     public List<Scenario> findByPredecessor(Scenario scenario) {
-        if (scenario == null) {
-            return Collections.emptyList();
-        }
-
-        return getSession()
-                .createCriteria(Scenario.class)
-                .add(Restrictions.eq("predecessor", scenario))
-                .list();
+        return scenario == null
+                ? Collections.emptyList()
+                : getSession()
+                    .createCriteria(Scenario.class)
+                    .add(Restrictions.eq("predecessor", scenario))
+                    .list();
     }
 
     @Override
