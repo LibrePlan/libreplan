@@ -55,7 +55,6 @@ public final class SecurityUtils {
     public static boolean isGatheredStatsAlreadySent = false;
 
     private SecurityUtils() {
-
     }
 
     public static boolean isUserInRole(UserRole role) {

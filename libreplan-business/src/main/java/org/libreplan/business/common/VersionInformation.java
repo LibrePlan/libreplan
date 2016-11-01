@@ -30,7 +30,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * It contains the current version of project and implements of singleton pattern. <br />
+ * It contains the current version of project and implements of singleton pattern.
+ * <br />
  * It also has a cached value with information about last project version published.
  * It checks the last version against a URL.
  *
@@ -42,15 +43,16 @@ public class VersionInformation {
     private static final Log LOG = LogFactory.getLog(VersionInformation.class);
 
     /**
-     * URL with a text file only with last number version of LibrePlan
+     * URL with a text file only with last number version of LibrePlan.
      */
     private static final String LIBREPLAN_VERSION_URL = "http://libreplan.org/VERSION";
 
 
     /**
-     * Delay to wait till we check the URL again
+     * Delay to wait till we check the URL again.
+     * 1 Day.
      */
-    private static final long DELAY_TO_CHECK_URL = 24 * 60 * 60 * 1000L; // 1 day
+    private static final long DELAY_TO_CHECK_URL = 24 * 60 * 60 * 1000L;
 
     private static final VersionInformation singleton = new VersionInformation();
 
@@ -69,14 +71,15 @@ public class VersionInformation {
             URL url = getURL();
             String lastVersion = (new BufferedReader(new InputStreamReader(url.openStream()))).readLine();
             if (projectVersion != null && lastVersion != null) {
-                newVersionCached = !projectVersion.equals(lastVersion);
+                Integer currentVersion = Integer.parseInt(projectVersion.replace(".", ""));
+                Integer versionFromURL = Integer.parseInt(lastVersion.replace(".", ""));
+                newVersionCached = versionFromURL > currentVersion;
             }
         } catch (MalformedURLException e) {
             LOG.warn("Problems generating URL to check LibrePlan version. MalformedURLException: " + e.getMessage());
         } catch (IOException e) {
-            LOG.info(
-                    "Could not check LibrePlan version information from " +
-                            LIBREPLAN_VERSION_URL + ". IOException: " + e.getMessage());
+            LOG.info("Could not check LibrePlan version information from " +
+                    LIBREPLAN_VERSION_URL + ". IOException: " + e.getMessage());
         }
     }
 

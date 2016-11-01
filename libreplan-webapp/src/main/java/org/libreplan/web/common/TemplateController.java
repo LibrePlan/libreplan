@@ -91,11 +91,7 @@ public class TemplateController extends GenericForwardComposer {
     }
 
     public List<Scenario> getScenarios() {
-        if ( templateModel == null ) {
-            return Collections.emptyList();
-        }
-
-        return templateModel.getScenarios();
+        return templateModel == null ? Collections.emptyList() : templateModel.getScenarios();
     }
 
     public String getCompanyLogoURL() {
@@ -183,7 +179,6 @@ public class TemplateController extends GenericForwardComposer {
         return asDisplayProperty(templateModel.hasChangedDefaultPassword(mandatoryUser));
     }
 
-
     private String asDisplayProperty(boolean passwordChanged) {
         return passwordChanged ? "none" : "inline";
     }
@@ -229,13 +224,9 @@ public class TemplateController extends GenericForwardComposer {
     }
 
     public boolean isNewVersionAvailable() {
-        if ( templateModel.isCheckNewVersionEnabled() ) {
-
-            if ( VersionInformation.isNewVersionAvailable() ){
-                lastVersionNumber = VersionInformation.getLastVersion();
-
-                return true;
-            }
+        if ( templateModel.isCheckNewVersionEnabled() && VersionInformation.isNewVersionAvailable() ) {
+            lastVersionNumber = VersionInformation.getLastVersion();
+            return true;
         }
 
         return false;
@@ -243,14 +234,15 @@ public class TemplateController extends GenericForwardComposer {
 
     public String getUsername() {
         CustomUser user = SecurityUtils.getLoggedUser();
-
         return (user == null) ? "" : user.getUsername();
     }
 
-    public String getVersionMessage(){
-        return _("A new version ") +
-                lastVersionNumber +
-                _(" of LibrePlan is available. Please check next link for more information:");
+    /**
+     * Should be public!
+     * Used in template.zul
+     */
+    public String getVersionMessage() {
+        return _("A new version ") + lastVersionNumber + _(" of LibrePlan is available. Please check next link for more information:");
     }
 
 }

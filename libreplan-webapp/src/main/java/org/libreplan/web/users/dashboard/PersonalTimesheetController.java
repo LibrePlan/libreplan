@@ -251,7 +251,10 @@ public class PersonalTimesheetController extends GenericForwardComposer implemen
 
         private void openPersonalTimesheetPopup(Textbox textbox, OrderElement orderElement, LocalDate textboxDate) {
             Textbox toFocus = setupPersonalTimesheetPopup(textbox, orderElement, textboxDate);
+
             personalTimesheetPopup.open(textbox, "after_start");
+            ((Column) personalTimesheetPopup.getChildren().get(0).getChildren().get(0).getChildren().get(0)).setWidth("60px");
+
             toFocus.setFocus(true);
         }
 
@@ -419,16 +422,16 @@ public class PersonalTimesheetController extends GenericForwardComposer implemen
 
         private void renderCapacityRow(Row row) {
             appendLabelSpaningTwoColumns(row, _("Capacity"));
-            appendCapcityForDaysAndTotal(row);
+            appendCapacityForDaysAndTotal(row);
         }
 
-        private void appendCapcityForDaysAndTotal(Row row) {
+        private void appendCapacityForDaysAndTotal(Row row) {
             EffortDuration totalCapacity = EffortDuration.zero();
 
             for (LocalDate day = first; day.compareTo(last) <= 0; day = day.plusDays(1)) {
                 EffortDuration capacity = personalTimesheetModel.getResourceCapacity(day);
 
-                Cell cell = getCenteredCell(getDisabledTextbox(getCapcityColumnTextboxId(day), capacity));
+                Cell cell = getCenteredCell(getDisabledTextbox(getCapacityColumnTextboxId(day), capacity));
 
                 if ( personalTimesheetModel.getResourceCapacity(day).isZero() ) {
                     setBackgroundNonCapacityCell(cell);
@@ -471,7 +474,7 @@ public class PersonalTimesheetController extends GenericForwardComposer implemen
 
         private void updateExtraRow(LocalDate date) {
             EffortDuration total = getEffortDuration(getTotalColumnTextboxId(date));
-            EffortDuration capacity = getEffortDuration(getCapcityColumnTextboxId(date));
+            EffortDuration capacity = getEffortDuration(getCapacityColumnTextboxId(date));
 
             EffortDuration extra = EffortDuration.zero();
             if ( total.compareTo(capacity) > 0 ) {
@@ -837,7 +840,7 @@ public class PersonalTimesheetController extends GenericForwardComposer implemen
         return "textbox-other-capacity";
     }
 
-    private static String getCapcityColumnTextboxId(LocalDate date) {
+    private static String getCapacityColumnTextboxId(LocalDate date) {
         return "textbox-capacity-column-" + date;
     }
 

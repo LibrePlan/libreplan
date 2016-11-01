@@ -166,7 +166,7 @@
                                    visible="@{controller.areRolesAndProfilesDisabled}" />
                         </vbox>
                         <hbox align="center" style="margin: 2px 0 2px 0">
-                            <combobox id="profilesCombo" autodrop="true" />
+                            <combobox id="profilesCombo" autodrop="true" width="250px" />
                             <button label="${i18n:_('Add profile')}" sclass="add-button"
                                     onClick="controller.addSelectedProfile()"
                                     disabled="@{controller.areRolesAndProfilesDisabled}" />

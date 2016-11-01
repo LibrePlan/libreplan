@@ -1712,7 +1712,7 @@ Changes
 * Use disabled textbox for capacity row in monthly timesheets
 * Set a pink background for days with zero capacity in the monthly timesheet
 * Fix align issues due to colspan in the first column of capacity and total rows
-* Add capcity row to monthly timesheets
+* Add capacity row to monthly timesheets
 * Add total row to monthly timesheets
 * Remove commented line
 * Add button to hide/show extra filtering options

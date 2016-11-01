@@ -487,6 +487,7 @@ public class ConfigurationController extends GenericForwardComposer {
             if ("SMTP".equals(protocolsCombobox.getSelectedItem().getLabel())) {
                 props.setProperty("mail.smtp.port", port);
                 props.setProperty("mail.smtp.host", host);
+                props.setProperty("mail.smtp.connectiontimeout", Integer.toString(3000));
                 Session session = Session.getInstance(props, null);
 
                 transport = session.getTransport("smtp");
@@ -497,6 +498,7 @@ public class ConfigurationController extends GenericForwardComposer {
             else if (STARTTLS_PROTOCOL.equals(protocolsCombobox.getSelectedItem().getLabel())) {
                 props.setProperty("mail.smtps.port", port);
                 props.setProperty("mail.smtps.host", host);
+                props.setProperty("mail.smtps.connectiontimeout", Integer.toString(3000));
                 Session session = Session.getInstance(props, null);
 
                 transport = session.getTransport("smtps");

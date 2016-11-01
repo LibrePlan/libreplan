@@ -424,10 +424,10 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
                 }
             } else {
 
-                SortedSet<CalculatedConsolidatedValue> consolcalculatedConsolidatedValuestedValues =
+                SortedSet<CalculatedConsolidatedValue> calculatedConsolidatedValuestedValues =
                         ((CalculatedConsolidation) consolidation).getCalculatedConsolidatedValues();
 
-                for (CalculatedConsolidatedValue consolidatedValue : consolcalculatedConsolidatedValuestedValues) {
+                for (CalculatedConsolidatedValue consolidatedValue : calculatedConsolidatedValuestedValues) {
                     consolidationDTOs.add(new AdvanceConsolidationDTO(null, consolidatedValue));
                 }
             }
@@ -469,7 +469,7 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
 
     @Override
     public boolean isVisibleMessages() {
-        return getAdvances().size() == 0 || isSubcontracted() || !hasResourceAllocation();
+        return getAdvances().isEmpty() || isSubcontracted() || !hasResourceAllocation();
     }
 
     private boolean advanceIsCalculated(){
@@ -477,7 +477,7 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
     }
 
     public String infoMessages() {
-        return getAdvances().size() > 0
+        return !getAdvances().isEmpty()
                 ? _("Progress cannot be consolidated.")
                 : _("There is not any assigned progress to current task");
     }

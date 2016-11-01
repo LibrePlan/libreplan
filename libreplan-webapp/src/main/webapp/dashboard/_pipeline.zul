@@ -1,4 +1,5 @@
 <window apply="org.libreplan.web.dashboard.DashboardControllerGlobal" contentStyle="overflow:auto;">
+
         <checkbox id="storedColumnVisible" label="${i18n:_('Show archived column data')}"
                   checked="true" onCheck="dashboardControllerGlobal.showStoredColumn()"/>
 
