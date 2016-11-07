@@ -236,7 +236,7 @@
                 <param name="enumClass">org.libreplan.business.orders.entities.SchedulingState$Type</param>
             </type>
         </property>
-        <many-to-one name="orderElement" column="order_element_id" lazy="false"></many-to-one>
+        <many-to-one name="orderElement" column="order_element_id" ></many-to-one>
         <one-to-one name="taskSource" class="TaskSource" cascade="delete" access="field" property-ref="schedulingData" />
     </class>
 
@@ -248,7 +248,7 @@
         </id>
         <version name="version" access="property" type="long" />
         <many-to-one name="schedulingData" class="SchedulingDataForVersion"
-                     cascade="none" unique="true" access="field" lazy="false" />
+                     cascade="none" unique="true" access="field" />
         <one-to-one name="task" class="org.libreplan.business.planner.entities.TaskElement"
                     constrained="true" cascade="delete" access="field" lazy="false"/>
 

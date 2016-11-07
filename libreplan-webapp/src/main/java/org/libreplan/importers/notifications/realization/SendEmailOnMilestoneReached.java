@@ -38,6 +38,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -72,7 +73,15 @@ public class SendEmailOnMilestoneReached implements IEmailNotificationJob {
     @Autowired
     EmailConnectionValidator emailConnectionValidator;
 
+    /**
+     * Transactional here is needed because without this annotation we are getting
+     * "LazyInitializationException: could not initialize proxy - no Session" error,
+     * when "item.getParent().getOrderElement().getOrder().getResponsible()" method was called.
+     * Earlier this trouble was not present because in Tasks.hbm.xml for "TaskElement" class field
+     * named "parent", which has relation "many-to-one" to "TaskGroup", lazy was set to "false".
+     */
     @Override
+    @Transactional
     public void sendEmail() {
         // Gathering data
         checkMilestoneDate();
@@ -106,11 +115,13 @@ public class SendEmailOnMilestoneReached implements IEmailNotificationJob {
         emailNotificationModel.setUpdated(new Date());
 
         String responsible = "";
-        if ( item.getParent().getOrderElement().getOrder().getResponsible() != null )
+        if ( item.getParent().getOrderElement().getOrder().getResponsible() != null ) {
             responsible = item.getParent().getOrderElement().getOrder().getResponsible();
+        }
 
         User user = null;
         try {
+            // FIXME : Code below can produce NullPointerException if "Responsible" field is not set in Project Details -> General data
             user = userDAO.findByLoginName(responsible);
         } catch (InstanceNotFoundException e) {
             e.printStackTrace();
