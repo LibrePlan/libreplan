@@ -34,7 +34,6 @@ import org.zkoss.zul.Treeitem;
 /**
  * Macro component for order elements tree and similar pages.
  * <br />
- *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
@@ -44,27 +43,21 @@ public abstract class TreeComponent extends HtmlMacroComponent {
 
     protected Column codeColumn = new Column(_("Code"), "code") {
         @Override
-        public <T extends ITreeNode<T>> void doCell(
-                TreeController<T>.Renderer renderer, Treeitem item, T currentElement) {
-
+        public <T extends ITreeNode<T>> void doCell(TreeController<T>.Renderer renderer, Treeitem item, T currentElement) {
             renderer.addCodeCell(currentElement);
         }
     };
 
     protected final Column nameAndDescriptionColumn = new Column(_("Name"), "name") {
         @Override
-        public <T extends ITreeNode<T>> void doCell(
-                TreeController<T>.Renderer renderer, Treeitem item, T currentElement) {
-
+        public <T extends ITreeNode<T>> void doCell(TreeController<T>.Renderer renderer, Treeitem item, T currentElement) {
             renderer.addDescriptionCell(currentElement);
         }
     };
 
     protected final Column operationsColumn = new Column(_("Op."), "operations", _("Operations")) {
         @Override
-        public <T extends ITreeNode<T>> void doCell(
-                TreeController<T>.Renderer renderer, Treeitem item, T currentElement) {
-
+        public <T extends ITreeNode<T>> void doCell(TreeController<T>.Renderer renderer, Treeitem item, T currentElement) {
             renderer.addOperationsCell(item, currentElement);
         }
     };
@@ -75,9 +68,7 @@ public abstract class TreeComponent extends HtmlMacroComponent {
             _("Fully, Partially or Unscheduled. (Drag and drop to move tasks)")) {
 
         @Override
-        public <T extends ITreeNode<T>> void doCell(
-                TreeController<T>.Renderer renderer, Treeitem item, T currentElement) {
-
+        public <T extends ITreeNode<T>> void doCell(TreeController<T>.Renderer renderer, Treeitem item, T currentElement) {
             renderer.addSchedulingStateCell(currentElement);
         }
     };
@@ -125,34 +116,27 @@ public abstract class TreeComponent extends HtmlMacroComponent {
 
         /* TODO remove me, if ZK Load on demand issue will be resolved */
         public String getHflex() {
-            return cssClass.equals("name") ? "1" : "min";
+            return "name".equals(cssClass) ? "1" : "min";
         }
 
         /* TODO remove me, if ZK Load on demand issue will be resolved */
         public String getWidth() {
             if (cssClass.contains("scheduling_state")) {
                 return "135px";
-            } else if (cssClass.equals("code")) {
+            } else if ("code".equals(cssClass)) {
                 return "106px";
-            } else if (cssClass.equals("name")) {
+            } else if ("name".equals(cssClass)) {
                 return "950px";
-            } else if (cssClass.equals("hours")) {
+            } else if ("hours".equals(cssClass) || "budget".equals(cssClass) || "operations".equals(cssClass)) {
                 return "50px";
-            } else if (cssClass.equals("budget")) {
-                return "50px";
-            } else if (cssClass.equals("estimated_init")) {
+            } else if ("estimated_init".equals(cssClass) || "estimated_end".equals(cssClass)) {
                 return "100px";
-            } else if (cssClass.equals("estimated_end")) {
-                return "100px";
-            } else if (cssClass.equals("operations") ) {
-                return "50px";
             }
 
             return "";
         }
 
-        public abstract <T extends ITreeNode<T>> void doCell(
-                TreeController<T>.Renderer renderer, Treeitem item, T currentElement);
+        public abstract <T extends ITreeNode<T>> void doCell(TreeController<T>.Renderer renderer, Treeitem item, T currentElement);
     }
 
     public abstract List<Column> getColumns();

@@ -108,19 +108,19 @@ public class LimitingResourcesController extends GenericForwardComposer<org.zkos
     private Window editTaskWindow;
 
     private final LimitingResourceQueueElementsRenderer limitingResourceQueueElementsRenderer =
-            new LimitingResourceQueueElementsRenderer();
+                new LimitingResourceQueueElementsRenderer();
 
-    public LimitingResourcesController()
-    {}
-
-    public void add(IToolbarCommand... commands) {
-        Validate.noNullElements(commands);
-        this.commands.addAll(Arrays.asList(commands));
+    public LimitingResourcesController() {
     }
 
     @Override
     public void doAfterCompose(org.zkoss.zk.ui.Component comp) throws Exception {
         super.doAfterCompose(comp);
+    }
+
+    public void add(IToolbarCommand... commands) {
+        Validate.noNullElements(commands);
+        this.commands.addAll(Arrays.asList(commands));
     }
 
     public void reload() {
@@ -133,7 +133,7 @@ public class LimitingResourcesController extends GenericForwardComposer<org.zkos
             }
 
             private void reloadInTransaction() {
-                // FIXME: Temporary fix.
+                // FIXME: Temporary fix
                 // It seems the page was already rendered, so clear it all as it's going to be rendered again
                 self.getChildren().clear();
 
@@ -196,12 +196,14 @@ public class LimitingResourcesController extends GenericForwardComposer<org.zkos
     }
 
     private TimeTracker buildTimeTracker() {
-        return timeTracker = new TimeTracker(
+        timeTracker = new TimeTracker(
                 limitingResourceQueueModel.getViewInterval(),
                 ZoomLevel.DETAIL_THREE,
                 SeveralModifiers.create(),
                 SeveralModifiers.create(BankHolidaysMarker.create(getDefaultCalendar())),
                 self);
+
+        return timeTracker;
     }
 
     private BaseCalendar getDefaultCalendar() {
@@ -222,7 +224,6 @@ public class LimitingResourcesController extends GenericForwardComposer<org.zkos
      * @return {@link List<LimitingResourceQueueElementDTO>}
      */
     public List<LimitingResourceQueueElementDTO> getUnassignedLimitingResourceQueueElements() {
-        // TODO check it
         return limitingResourceQueueModel
                 .getUnassignedLimitingResourceQueueElements()
                 .stream()
@@ -528,7 +529,6 @@ public class LimitingResourcesController extends GenericForwardComposer<org.zkos
 
     public boolean moveTask(LimitingResourceQueueElement element) {
         showManualAllocationWindow(element);
-
         return getManualAllocationWindowStatus() == Messagebox.OK;
     }
 
@@ -560,9 +560,7 @@ public class LimitingResourcesController extends GenericForwardComposer<org.zkos
 
     @SuppressWarnings("unchecked")
     private Checkbox getAutoQueueing(Row row) {
-        List<org.zkoss.zk.ui.Component> children = row.getChildren();
-
-        return (Checkbox) children.get(0);
+        return (Checkbox) row.getChildren().get(0);
     }
 
     public void assignAllSelectedElements() {

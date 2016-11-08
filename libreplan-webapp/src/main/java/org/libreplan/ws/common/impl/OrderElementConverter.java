@@ -87,116 +87,116 @@ public final class OrderElementConverter {
     private OrderElementConverter() {
     }
 
-    public final static OrderElementDTO toDTO(OrderElement orderElement,
-            ConfigurationOrderElementConverter configuration) {
+    public static final OrderElementDTO toDTO(OrderElement orderElement, ConfigurationOrderElementConverter configuration) {
         String name = orderElement.getName();
         String code = orderElement.getCode();
-        XMLGregorianCalendar initDate = DateConverter
-                .toXMLGregorianCalendar(orderElement.getInitDate());
-        XMLGregorianCalendar deadline = DateConverter
-                .toXMLGregorianCalendar(orderElement.getDeadline());
+        XMLGregorianCalendar initDate = DateConverter.toXMLGregorianCalendar(orderElement.getInitDate());
+        XMLGregorianCalendar deadline = DateConverter.toXMLGregorianCalendar(orderElement.getDeadline());
         String description = orderElement.getDescription();
 
-        Set<LabelReferenceDTO> labels = new HashSet<LabelReferenceDTO>();
+        Set<LabelReferenceDTO> labels = new HashSet<>();
         if (configuration.isLabels()) {
             for (Label label : orderElement.getLabels()) {
                 labels.add(LabelReferenceConverter.toDTO(label));
             }
         }
 
-        Set<MaterialAssignmentDTO> materialAssignments = new HashSet<MaterialAssignmentDTO>();
+        Set<MaterialAssignmentDTO> materialAssignments = new HashSet<>();
         if (configuration.isMaterialAssignments()) {
-            for (MaterialAssignment materialAssignment : orderElement
-                    .getMaterialAssignments()) {
+            for (MaterialAssignment materialAssignment : orderElement.getMaterialAssignments()) {
                 materialAssignments.add(toDTO(materialAssignment));
             }
         }
 
-        Set<AdvanceMeasurementDTO> advanceMeasurements = new HashSet<AdvanceMeasurementDTO>();
+        Set<AdvanceMeasurementDTO> advanceMeasurements = new HashSet<>();
         if (configuration.isAdvanceMeasurements()) {
-            advanceMeasurements = toDTO(orderElement
-                    .getReportGlobalAdvanceAssignment());
+            advanceMeasurements = toDTO(orderElement.getReportGlobalAdvanceAssignment());
         }
 
-        Set<CriterionRequirementDTO> criterionRequirements = new HashSet<CriterionRequirementDTO>();
+        Set<CriterionRequirementDTO> criterionRequirements = new HashSet<>();
         if (configuration.isCriterionRequirements()) {
-            for (CriterionRequirement criterionRequirement : orderElement
-                    .getCriterionRequirements()) {
+            for (CriterionRequirement criterionRequirement : orderElement.getCriterionRequirements()) {
                 criterionRequirements.add(toDTO(criterionRequirement));
             }
         }
 
         if (orderElement instanceof OrderLine) {
-            Set<HoursGroupDTO> hoursGroups = new HashSet<HoursGroupDTO>();
+            Set<HoursGroupDTO> hoursGroups = new HashSet<>();
             if (configuration.isHoursGroups()) {
-                for (HoursGroup hoursGroup : ((OrderLine) orderElement)
-                        .getHoursGroups()) {
+                for (HoursGroup hoursGroup : orderElement.getHoursGroups()) {
                     hoursGroups.add(toDTO(hoursGroup, configuration));
                 }
             }
 
-            return new OrderLineDTO(name, code, initDate, deadline,
-                    description, labels, materialAssignments,
-                    advanceMeasurements, criterionRequirements, hoursGroups);
+            return new OrderLineDTO(
+                    name, code, initDate,
+                    deadline, description, labels,
+                    materialAssignments, advanceMeasurements, criterionRequirements,
+                    hoursGroups);
+
         } else { // orderElement instanceof OrderLineGroup
-            List<OrderElementDTO> children = new ArrayList<OrderElementDTO>();
+            List<OrderElementDTO> children = new ArrayList<>();
             for (OrderElement element : orderElement.getChildren()) {
                 children.add(toDTO(element, configuration));
             }
 
             if (orderElement instanceof Order) {
-                Boolean dependenciesConstraintsHavePriority = ((Order) orderElement)
-                        .getDependenciesConstraintsHavePriority();
+
+                Boolean dependenciesConstraintsHavePriority =
+                        ((Order) orderElement).getDependenciesConstraintsHavePriority();
+
                 BaseCalendar calendar = ((Order) orderElement).getCalendar();
                 String calendarName = null;
+
                 if (calendar != null) {
                     calendarName = calendar.getName();
                 }
 
-                return new OrderDTO(name, code, initDate, deadline,
-                        description, labels, materialAssignments,
-                        advanceMeasurements, criterionRequirements, children,
-                        dependenciesConstraintsHavePriority, calendarName);
+                return new OrderDTO(
+                        name, code, initDate, deadline,
+                        description, labels, materialAssignments, advanceMeasurements,
+                        criterionRequirements, children, dependenciesConstraintsHavePriority, calendarName);
+
             } else { // orderElement instanceof OrderLineGroup
-                return new OrderLineGroupDTO(name, code, initDate, deadline,
-                        description, labels, materialAssignments,
-                        advanceMeasurements, criterionRequirements, children);
+                return new OrderLineGroupDTO(
+                        name, code,
+                        initDate, deadline,
+                        description, labels,
+                        materialAssignments, advanceMeasurements,
+                        criterionRequirements, children);
             }
         }
     }
 
-    public static CriterionRequirementDTO toDTO(
-            CriterionRequirement criterionRequirement) {
+    public static CriterionRequirementDTO toDTO(CriterionRequirement criterionRequirement) {
         String name = criterionRequirement.getCriterion().getName();
         String type = criterionRequirement.getCriterion().getType().getName();
 
         if (criterionRequirement instanceof IndirectCriterionRequirement) {
-            boolean isValid = ((IndirectCriterionRequirement) criterionRequirement)
-                    .isValid();
+            boolean isValid = criterionRequirement.isValid();
             return new IndirectCriterionRequirementDTO(name, type, isValid);
         } else { // criterionRequirement instanceof DirectCriterionRequirement
             return new DirectCriterionRequirementDTO(name, type);
         }
     }
 
-    public final static Set<AdvanceMeasurementDTO> toDTO(
-            DirectAdvanceAssignment advanceAssignment) {
-        Set<AdvanceMeasurementDTO> advanceMeasurements = new HashSet<AdvanceMeasurementDTO>();
+    public static final Set<AdvanceMeasurementDTO> toDTO(DirectAdvanceAssignment advanceAssignment) {
+        Set<AdvanceMeasurementDTO> advanceMeasurements = new HashSet<>();
 
         if (advanceAssignment != null) {
             BigDecimal maxValue = advanceAssignment.getMaxValue();
-            for (AdvanceMeasurement advanceMeasurement : advanceAssignment
-                    .getAdvanceMeasurements()) {
-                advanceMeasurements.add(toDTO(maxValue, advanceAssignment
-                        .getAdvanceType().getPercentage(), advanceMeasurement));
+            for (AdvanceMeasurement advanceMeasurement : advanceAssignment.getAdvanceMeasurements()) {
+
+                advanceMeasurements.add(
+                        toDTO(maxValue, advanceAssignment.getAdvanceType().getPercentage(), advanceMeasurement));
             }
         }
-
         return advanceMeasurements;
     }
 
-    public final static AdvanceMeasurementDTO toDTO(BigDecimal maxValue,
-            boolean isPercentage, AdvanceMeasurement advanceMeasurement) {
+    public static final AdvanceMeasurementDTO toDTO(
+            BigDecimal maxValue, boolean isPercentage, AdvanceMeasurement advanceMeasurement) {
+
         BigDecimal value;
         if (isPercentage) {
             value = advanceMeasurement.getValue();
@@ -204,59 +204,54 @@ public final class OrderElementConverter {
             value = advanceMeasurement.getValue().divide(maxValue,
                     RoundingMode.DOWN);
         }
-        XMLGregorianCalendar date = DateConverter
-                .toXMLGregorianCalendar(advanceMeasurement.getDate());
-        return new AdvanceMeasurementDTO(date, value);
+
+        return new AdvanceMeasurementDTO(DateConverter.toXMLGregorianCalendar(advanceMeasurement.getDate()), value);
     }
 
-    public final static MaterialAssignmentDTO toDTO(
-            MaterialAssignment materialAssignment) {
+    public final static MaterialAssignmentDTO toDTO(MaterialAssignment materialAssignment) {
 
-        XMLGregorianCalendar estimatedAvailability = DateConverter
-                .toXMLGregorianCalendar(materialAssignment
-                        .getEstimatedAvailability());
+        XMLGregorianCalendar estimatedAvailability =
+                DateConverter.toXMLGregorianCalendar(materialAssignment.getEstimatedAvailability());
 
-        return new MaterialAssignmentDTO(materialAssignment.getMaterial()
-                .getCode(), materialAssignment.getUnits(), materialAssignment
-                .getUnitPrice(), estimatedAvailability);
+        return new MaterialAssignmentDTO(
+                materialAssignment.getMaterial().getCode(),
+                materialAssignment.getUnits(),
+                materialAssignment.getUnitPrice(),
+                estimatedAvailability);
     }
 
-    public final static HoursGroupDTO toDTO(HoursGroup hoursGroup,
-            ConfigurationOrderElementConverter configuration) {
-        ResourceEnumDTO resourceType = ResourceEnumConverter.toDTO(hoursGroup
-                .getResourceType());
+    public final static HoursGroupDTO toDTO(HoursGroup hoursGroup, ConfigurationOrderElementConverter configuration) {
+        ResourceEnumDTO resourceType = ResourceEnumConverter.toDTO(hoursGroup.getResourceType());
 
-        Set<CriterionRequirementDTO> criterionRequirements = new HashSet<CriterionRequirementDTO>();
+        Set<CriterionRequirementDTO> criterionRequirements = new HashSet<>();
         if (configuration.isCriterionRequirements()) {
-            for (CriterionRequirement criterionRequirement : hoursGroup
-                    .getCriterionRequirements()) {
+            for (CriterionRequirement criterionRequirement : hoursGroup.getCriterionRequirements()) {
                 criterionRequirements.add(toDTO(criterionRequirement));
             }
         }
 
-        return new HoursGroupDTO(hoursGroup.getCode(), resourceType, hoursGroup
-                .getWorkingHours(), criterionRequirements);
+        return new HoursGroupDTO(hoursGroup.getCode(), resourceType, hoursGroup.getWorkingHours(), criterionRequirements);
     }
 
-    public final static OrderElement toEntity(OrderElementDTO orderElementDTO,
-            ConfigurationOrderElementConverter configuration)
+    public final static OrderElement toEntity(OrderElementDTO orderElementDTO, ConfigurationOrderElementConverter configuration)
             throws ValidationException {
+
         return toEntity(null, orderElementDTO, configuration);
     }
 
-    public final static OrderElement toEntity(OrderVersion orderVersion,
-            OrderElementDTO orderElementDTO,
-            ConfigurationOrderElementConverter configuration) {
+    public static final OrderElement toEntity(
+            OrderVersion orderVersion, OrderElementDTO orderElementDTO, ConfigurationOrderElementConverter configuration) {
+
+        OrderVersion newOrderVersion = orderVersion;
 
         if (orderVersion == null) {
             Scenario current = Registry.getScenarioManager().getCurrent();
-            orderVersion = OrderVersion.createInitialVersion(current);
+            newOrderVersion = OrderVersion.createInitialVersion(current);
         }
-        OrderElement orderElement = toEntityExceptCriterionRequirements(
-                orderVersion, orderElementDTO, configuration);
+        OrderElement orderElement = toEntityExceptCriterionRequirements(newOrderVersion, orderElementDTO, configuration);
 
-        // FIXME Review why this validation is needed here, it breaks the
-        // subcontract service. This was introduced at commit 341145a5
+        // FIXME Review why this validation is needed here, it breaks the subcontract service.
+        // This was introduced in commit 341145a5
         // Validate OrderElement.code and HoursGroup.code must be unique
         // Order.checkConstraintOrderUniqueCode(orderElement);
         // HoursGroup.checkConstraintHoursGroupUniqueCode(orderElement);
@@ -268,34 +263,26 @@ public final class OrderElementConverter {
         return orderElement;
     }
 
-    private static void checkOrderElementDTOCode(
-            OrderElementDTO orderElementDTO,
-            String instance) {
+    private static void checkOrderElementDTOCode(OrderElementDTO orderElementDTO, String instance) {
         if (orderElementDTO.code == null) {
-            throw new ValidationException(MessageFormat.format(
-                    "{0}: code not found", instance));
+            throw new ValidationException(MessageFormat.format("{0}: code not found", instance));
         }
     }
 
-    private static void addOrCriterionRequirements(OrderElement orderElement,
-            OrderElementDTO orderElementDTO) {
-        addOrCriterionRequirementsEntities(orderElement,
-                orderElementDTO.criterionRequirements);
+    private static void addOrCriterionRequirements(OrderElement orderElement, OrderElementDTO orderElementDTO) {
+        addOrCriterionRequirementsEntities(orderElement, orderElementDTO.criterionRequirements);
 
         if (orderElement != null) {
         if (orderElementDTO instanceof OrderLineDTO) {
             for (HoursGroupDTO hoursGroupDTO : ((OrderLineDTO) orderElementDTO).hoursGroups) {
-                HoursGroup hoursGroup = ((OrderLine) orderElement)
-                        .getHoursGroup(hoursGroupDTO.code);
+                HoursGroup hoursGroup = ((OrderLine) orderElement).getHoursGroup(hoursGroupDTO.code);
                 if (hoursGroup != null) {
-                    addOrCriterionRequirementsEntities(hoursGroup,
-                            hoursGroupDTO.criterionRequirements);
+                    addOrCriterionRequirementsEntities(hoursGroup, hoursGroupDTO.criterionRequirements);
                 }
             }
         } else { // orderElementDTO instanceof OrderLineGroupDTO
             for (OrderElementDTO childDTO : ((OrderLineGroupDTO) orderElementDTO).children) {
-                OrderElement child = ((OrderLineGroup) orderElement)
-                        .getOrderElement(childDTO.code);
+                OrderElement child = orderElement.getOrderElement(childDTO.code);
                 addOrCriterionRequirements(child, childDTO);
             }
         }
@@ -303,42 +290,38 @@ public final class OrderElementConverter {
     }
 
     private static void addOrCriterionRequirementsEntities(
-            ICriterionRequirable criterionRequirable,
-            Set<CriterionRequirementDTO> criterionRequirements) {
+            ICriterionRequirable criterionRequirable, Set<CriterionRequirementDTO> criterionRequirements) {
+
         for (CriterionRequirementDTO criterionRequirementDTO : criterionRequirements) {
-            Criterion criterion = getCriterion(criterionRequirementDTO.name,
-                    criterionRequirementDTO.type);
+            Criterion criterion = getCriterion(criterionRequirementDTO.name, criterionRequirementDTO.type);
             if (criterion != null) {
                 if (criterionRequirementDTO instanceof DirectCriterionRequirementDTO) {
-                    DirectCriterionRequirement directCriterionRequirement = getDirectCriterionRequirementByCriterion(
-                            criterionRequirable, criterion);
+
+                    DirectCriterionRequirement directCriterionRequirement =
+                            getDirectCriterionRequirementByCriterion(criterionRequirable, criterion);
+
                     if (directCriterionRequirement == null) {
                         try {
-                            criterionRequirable
-                                .addCriterionRequirement(DirectCriterionRequirement
-                                        .create(criterion));
+                            criterionRequirable.addCriterionRequirement(DirectCriterionRequirement.create(criterion));
                         } catch (IllegalStateException e) {
                             throw new ValidationException(e.getMessage());
                         }
                     }
-                } else { // criterionRequirementDTO instanceof
-                    // IndirectCriterionRequirementDTO
-                    IndirectCriterionRequirement indirectCriterionRequirement = getIndirectCriterionRequirementByCriterion(
-                            criterionRequirable, criterion);
+                } else { // criterionRequirementDTO instanceof IndirectCriterionRequirementDTO
+                    IndirectCriterionRequirement indirectCriterionRequirement =
+                            getIndirectCriterionRequirementByCriterion(criterionRequirable, criterion);
+
                     if (indirectCriterionRequirement != null) {
-                        indirectCriterionRequirement
-                                .setValid(((IndirectCriterionRequirementDTO) criterionRequirementDTO).valid);
+                        indirectCriterionRequirement.setValid(((IndirectCriterionRequirementDTO) criterionRequirementDTO).valid);
                     }
                 }
             } else {
-                if (criterionRequirementDTO.name == null
-                        || criterionRequirementDTO.type == null) {
-                    throw new ValidationException(
-                            "the criterion format is incorrect");
+                if (criterionRequirementDTO.name == null || criterionRequirementDTO.type == null) {
+                    throw new ValidationException("the criterion format is incorrect");
                 } else {
-                    throw new ValidationException("the criterion "
-                        + criterionRequirementDTO.name + " which type is "
-                        + criterionRequirementDTO.type + " not found");
+                    throw new ValidationException("the criterion " +
+                            criterionRequirementDTO.name + " which type is " +
+                            criterionRequirementDTO.type + " not found");
                 }
             }
         }
@@ -346,8 +329,8 @@ public final class OrderElementConverter {
 
     private static DirectCriterionRequirement getDirectCriterionRequirementByCriterion(
             ICriterionRequirable criterionRequirable, Criterion criterion) {
-        for (CriterionRequirement criterionRequirement : criterionRequirable
-                .getCriterionRequirements()) {
+
+        for (CriterionRequirement criterionRequirement : criterionRequirable.getCriterionRequirements()) {
             if (criterionRequirement instanceof DirectCriterionRequirement) {
                 if (criterionRequirement.getCriterion().isEquivalent(criterion)) {
                     return (DirectCriterionRequirement) criterionRequirement;
@@ -359,8 +342,8 @@ public final class OrderElementConverter {
 
     private static IndirectCriterionRequirement getIndirectCriterionRequirementByCriterion(
             ICriterionRequirable criterionRequirable, Criterion criterion) {
-        for (CriterionRequirement criterionRequirement : criterionRequirable
-                .getCriterionRequirements()) {
+
+        for (CriterionRequirement criterionRequirement : criterionRequirable.getCriterionRequirements()) {
             if (criterionRequirement instanceof IndirectCriterionRequirement) {
                 if (criterionRequirement.getCriterion().isEquivalent(criterion)) {
                     return (IndirectCriterionRequirement) criterionRequirement;
@@ -370,30 +353,28 @@ public final class OrderElementConverter {
         return null;
     }
 
-    private final static OrderElement toEntityExceptCriterionRequirements(
+    private static final OrderElement toEntityExceptCriterionRequirements(
             OrderVersion parentOrderVersion,
             OrderElementDTO orderElementDTO,
-            ConfigurationOrderElementConverter configuration)
-            throws ValidationException {
+            ConfigurationOrderElementConverter configuration) {
 
         Validate.notNull(parentOrderVersion);
         OrderElement orderElement;
 
         if (orderElementDTO instanceof OrderLineDTO) {
             checkOrderElementDTOCode(orderElementDTO, "OrderLineDTO");
-            if ((configuration.isHoursGroups())
-                    && (!((OrderLineDTO) orderElementDTO).hoursGroups.isEmpty())) {
+
+            if ((configuration.isHoursGroups()) && (!((OrderLineDTO) orderElementDTO).hoursGroups.isEmpty())) {
+
                 orderElement = OrderLine.createUnvalidated(orderElementDTO.code);
                 for (HoursGroupDTO hoursGroupDTO : ((OrderLineDTO) orderElementDTO).hoursGroups) {
-                    HoursGroup hoursGroup = toEntity(hoursGroupDTO,
-                            configuration);
+                    HoursGroup hoursGroup = toEntity(hoursGroupDTO);
                     ((OrderLine) orderElement).addHoursGroup(hoursGroup);
                 }
             } else {
                 orderElement = OrderLine.createUnvalidatedWithUnfixedPercentage(orderElementDTO.code, 0);
                 if (!orderElement.getHoursGroups().isEmpty()) {
-                    orderElement.getHoursGroups().get(0).setCode(
-                            UUID.randomUUID().toString());
+                    orderElement.getHoursGroups().get(0).setCode(UUID.randomUUID().toString());
                 }
             }
         } else { // orderElementDTO instanceof OrderLineGroupDTO
@@ -402,30 +383,30 @@ public final class OrderElementConverter {
                 checkOrderElementDTOCode(orderElementDTO, "OrderDTO");
                 orderElement = Order.createUnvalidated(orderElementDTO.code);
                 Scenario current = Registry.getScenarioManager().getCurrent();
-                ((Order) orderElement).setVersionForScenario(current,
-                        parentOrderVersion);
-                ((Order) orderElement)
-                        .setDependenciesConstraintsHavePriority(((OrderDTO) orderElementDTO).dependenciesConstraintsHavePriority);
-                List<BaseCalendar> calendars = Registry.getBaseCalendarDAO()
-                        .findByName(((OrderDTO) orderElementDTO).calendarName);
+                ((Order) orderElement).setVersionForScenario(current, parentOrderVersion);
+
+                ((Order) orderElement).setDependenciesConstraintsHavePriority(
+                        ((OrderDTO) orderElementDTO).dependenciesConstraintsHavePriority);
+
+                List<BaseCalendar> calendars =
+                        Registry.getBaseCalendarDAO().findByName(((OrderDTO) orderElementDTO).calendarName);
+
                 BaseCalendar calendar;
                 if ((calendars != null) && (calendars.size() == 1)) {
                     calendar = calendars.get(0);
                 } else {
-                    calendar = Registry.getConfigurationDAO()
-                            .getConfiguration().getDefaultCalendar();
+                    calendar = Registry.getConfigurationDAO().getConfiguration().getDefaultCalendar();
                 }
                 ((Order) orderElement).setCalendar(calendar);
+
             } else { // orderElementDTO instanceof OrderLineGroupDTO
                 checkOrderElementDTOCode(orderElementDTO, "OrderLineGroupDTO");
-                orderElement = OrderLineGroup
-                        .createUnvalidated(orderElementDTO.code);
+                orderElement = OrderLineGroup.createUnvalidated(orderElementDTO.code);
             }
             orderElement.useSchedulingDataFor(parentOrderVersion);
-            List<OrderElement> children = new ArrayList<OrderElement>();
+            List<OrderElement> children = new ArrayList<>();
             for (OrderElementDTO element : ((OrderLineGroupDTO) orderElementDTO).children) {
-                children.add(toEntity(parentOrderVersion, element,
-                        configuration));
+                children.add(toEntity(parentOrderVersion, element, configuration));
             }
 
             for (OrderElement child : children) {
@@ -435,27 +416,23 @@ public final class OrderElementConverter {
 
         orderElement.setName(orderElementDTO.name);
         orderElement.setCode(orderElementDTO.code);
-        orderElement
-                .setInitDate(DateConverter.toDate(orderElementDTO.initDate));
-        orderElement
-                .setDeadline(DateConverter.toDate(orderElementDTO.deadline));
+        orderElement.setInitDate(DateConverter.toDate(orderElementDTO.initDate));
+        orderElement.setDeadline(DateConverter.toDate(orderElementDTO.deadline));
         orderElement.setDescription(orderElementDTO.description);
 
         if (configuration.isLabels()) {
             for (LabelReferenceDTO labelDTO : orderElementDTO.labels) {
                 try {
-                orderElement.addLabel(LabelReferenceConverter.toEntity(labelDTO));
+                orderElement.addLabel(Registry.getLabelDAO().findByCode(labelDTO.code));
                 } catch (InstanceNotFoundException e) {
-                    throw new ValidationException("Label " + labelDTO.code
-                            + " not found.");
+                    throw new ValidationException("Label " + labelDTO.code + " not found.");
                 }
             }
         }
 
         if (configuration.isMaterialAssignments()) {
             for (MaterialAssignmentDTO materialAssignmentDTO : orderElementDTO.materialAssignments) {
-                orderElement
-                        .addMaterialAssignment(toEntity(materialAssignmentDTO));
+                orderElement.addMaterialAssignment(toEntity(materialAssignmentDTO));
             }
         }
 
@@ -467,113 +444,87 @@ public final class OrderElementConverter {
     }
 
     private static Criterion getCriterion(String name, String type) {
-        List<Criterion> criterions = Registry.getCriterionDAO()
-                .findByNameAndType(name, type);
-        if (criterions.size() != 1) {
-            return null;
-        }
-        return criterions.get(0);
+        List<Criterion> criterions = Registry.getCriterionDAO().findByNameAndType(name, type);
+        return criterions.size() != 1 ? null : criterions.get(0);
     }
 
-    public static DirectCriterionRequirement toEntity(
-            DirectCriterionRequirementDTO criterionRequirementDTO) {
-        Criterion criterion = getCriterion(criterionRequirementDTO.name,
-                criterionRequirementDTO.type);
-        if (criterion == null) {
-            return null;
-        }
-
-        return DirectCriterionRequirement.create(criterion);
+    public static DirectCriterionRequirement toEntity(DirectCriterionRequirementDTO criterionRequirementDTO) {
+        Criterion criterion = getCriterion(criterionRequirementDTO.name, criterionRequirementDTO.type);
+        return criterion == null ? null : DirectCriterionRequirement.create(criterion);
     }
 
-    public final static MaterialAssignment toEntity(
-            MaterialAssignmentDTO materialAssignmentDTO) {
-        Material material = null;
+    public static final MaterialAssignment toEntity(MaterialAssignmentDTO materialAssignmentDTO) {
+        Material material;
 
         try {
-            material = Registry.getMaterialDAO()
-                    .findUniqueByCodeInAnotherTransaction(
-                            materialAssignmentDTO.materialCode);
+            material = Registry.getMaterialDAO().findUniqueByCodeInAnotherTransaction(materialAssignmentDTO.materialCode);
         } catch (InstanceNotFoundException e) {
             material = Material.create(materialAssignmentDTO.materialCode);
-            material.setDescription("material-"
-                    + materialAssignmentDTO.materialCode);
+            material.setDescription("material-" + materialAssignmentDTO.materialCode);
 
-            MaterialCategory defaultMaterialCategory = PredefinedMaterialCategories.IMPORTED_MATERIALS_WITHOUT_CATEGORY
-                    .getMaterialCategory();
+            MaterialCategory defaultMaterialCategory =
+                    PredefinedMaterialCategories.IMPORTED_MATERIALS_WITHOUT_CATEGORY.getMaterialCategory();
+
             material.setCategory(defaultMaterialCategory);
 
-            /*
-             * "validate" method avoids that "material" goes to the Hibernate's
-             * session if "material" is not valid.
-             */
+            /* "validate" method avoids that "material" goes to the Hibernate's session if "material" is not valid */
             material.validate();
             Registry.getMaterialDAO().save(material);
             material.dontPoseAsTransientObjectAnymore();
         }
 
-        MaterialAssignment materialAssignment = MaterialAssignment
-                .create(material);
-        materialAssignment
-                .setUnitsWithoutNullCheck(materialAssignmentDTO.units);
-        materialAssignment
-                .setUnitPriceWithoutNullCheck(materialAssignmentDTO.unitPrice);
+        MaterialAssignment materialAssignment = MaterialAssignment.create(material);
+        materialAssignment.setUnitsWithoutNullCheck(materialAssignmentDTO.units);
+        materialAssignment.setUnitPriceWithoutNullCheck(materialAssignmentDTO.unitPrice);
 
-        Date estimatedAvailability = DateConverter
-                .toDate(materialAssignmentDTO.estimatedAvailability);
+        Date estimatedAvailability = DateConverter.toDate(materialAssignmentDTO.estimatedAvailability);
         materialAssignment.setEstimatedAvailability(estimatedAvailability);
 
         return materialAssignment;
     }
 
-    public final static HoursGroup toEntity(HoursGroupDTO hoursGroupDTO,
-            ConfigurationOrderElementConverter configuration) {
-        ResourceEnum resourceType = ResourceEnumConverter
-                .fromDTO(hoursGroupDTO.resourceType);
-        HoursGroup hoursGroup = HoursGroup.createUnvalidated(
-                hoursGroupDTO.code, resourceType, hoursGroupDTO.workingHours);
-        return hoursGroup;
+    public static final HoursGroup toEntity(HoursGroupDTO hoursGroupDTO) {
+        ResourceEnum resourceType = ResourceEnumConverter.fromDTO(hoursGroupDTO.resourceType);
+        return HoursGroup.createUnvalidated(hoursGroupDTO.code, resourceType, hoursGroupDTO.workingHours);
     }
 
-    public final static void update(OrderElement orderElement,
-            OrderElementDTO orderElementDTO,
-            ConfigurationOrderElementConverter configuration)
-            throws ValidationException {
+    public static final void update(
+            OrderElement orderElement, OrderElementDTO orderElementDTO, ConfigurationOrderElementConverter configuration) {
+
         update(null, orderElement, orderElementDTO, configuration);
     }
 
-    private final static void update(OrderVersion orderVersion,
-            OrderElement orderElement, OrderElementDTO orderElementDTO,
-            ConfigurationOrderElementConverter configuration)
-            throws ValidationException {
-        updateExceptCriterionRequirements(orderVersion, orderElement,
-                orderElementDTO, configuration);
+    private static final void update(
+            OrderVersion orderVersion, OrderElement orderElement, OrderElementDTO orderElementDTO,
+            ConfigurationOrderElementConverter configuration) {
+
+        updateExceptCriterionRequirements(orderVersion, orderElement, orderElementDTO, configuration);
         if (configuration.isCriterionRequirements()) {
             addOrCriterionRequirements(orderElement, orderElementDTO);
         }
     }
 
-    private final static void updateExceptCriterionRequirements(
+    private static final void updateExceptCriterionRequirements(
             OrderVersion orderVersion,
-            OrderElement orderElement, OrderElementDTO orderElementDTO,
-            ConfigurationOrderElementConverter configuration)
-            throws ValidationException {
+            OrderElement orderElement,
+            OrderElementDTO orderElementDTO,
+            ConfigurationOrderElementConverter configuration) {
+
+        OrderVersion newOrderVersion = orderVersion;
 
         if (orderElementDTO instanceof OrderLineDTO) {
             if (!(orderElement instanceof OrderLine)) {
                 throw new ValidationException(MessageFormat.format(
                         "Task {0}: Task group is incompatible type with {1}",
-                        orderElement.getCode(), orderElement.getClass()
-                                .getName()));
+                        orderElement.getCode(), orderElement.getClass().getName()));
             }
 
             if (configuration.isHoursGroups()) {
                 for (HoursGroupDTO hoursGroupDTO : ((OrderLineDTO) orderElementDTO).hoursGroups) {
                     if ( ((OrderLine) orderElement).containsHoursGroup(hoursGroupDTO.code) ) {
-                        update( ((OrderLine) orderElement)
-                                .getHoursGroup(hoursGroupDTO.code), hoursGroupDTO, configuration);
+                        update( ((OrderLine) orderElement).getHoursGroup(hoursGroupDTO.code), hoursGroupDTO);
                     } else {
-                        ((OrderLine) orderElement).addHoursGroup(toEntity(hoursGroupDTO, configuration));
+                        ((OrderLine) orderElement).addHoursGroup(toEntity(hoursGroupDTO));
                     }
                 }
             }
@@ -582,64 +533,51 @@ public final class OrderElementConverter {
                 if (!(orderElement instanceof Order)) {
                     throw new ValidationException(MessageFormat.format(
                             "Task {0}: Project is incompatible type with {1}",
-                            orderElement.getCode(), orderElement.getClass()
-                                    .getName()));
+                            orderElement.getCode(), orderElement.getClass().getName()));
 
                 }
                 Order order = (Order) orderElement;
-                orderVersion = order.getOrderVersionFor(Registry
-                        .getScenarioManager()
-                        .getCurrent());
-                order.useSchedulingDataFor(orderVersion);
+                newOrderVersion = order.getOrderVersionFor(Registry.getScenarioManager().getCurrent());
+                order.useSchedulingDataFor(newOrderVersion);
                 Boolean dependenciesConstraintsHavePriority = ((OrderDTO) orderElementDTO).dependenciesConstraintsHavePriority;
+
                 if (dependenciesConstraintsHavePriority != null) {
-                    ((Order) orderElement)
-                            .setDependenciesConstraintsHavePriority(dependenciesConstraintsHavePriority);
+                    ((Order) orderElement).setDependenciesConstraintsHavePriority(dependenciesConstraintsHavePriority);
                 }
 
                 String calendarName = ((OrderDTO) orderElementDTO).calendarName;
-                if (calendarName != null) {
-                    if (!((Order) orderElement).getCalendar().getName().equals(
-                            calendarName)) {
-                        List<BaseCalendar> calendars = Registry
-                                .getBaseCalendarDAO()
-                                .findByName(
-                                        ((OrderDTO) orderElementDTO).calendarName);
-                        if (calendars.size() == 1) {
-                            ((Order) orderElement)
-                                    .setCalendar(calendars.get(0));
-                        }
+                if (calendarName != null && !((Order) orderElement).getCalendar().getName().equals(calendarName)) {
+
+                    List<BaseCalendar> calendars =
+                            Registry.getBaseCalendarDAO().findByName(((OrderDTO) orderElementDTO).calendarName);
+
+                    if (calendars.size() == 1) {
+                        ((Order) orderElement).setCalendar(calendars.get(0));
                     }
                 }
             } else { // orderElementDTO instanceof OrderLineGroupDTO
                 if (!(orderElement instanceof OrderLineGroup)) {
-                    throw new ValidationException(
-                            MessageFormat
-                                    .format("Task {0}: Task group is incompatible type with {1}",
-                                            orderElement.getCode(),
-                                            orderElement.getClass().getName()));
+
+                    throw new ValidationException(MessageFormat.format(
+                            "Task {0}: Task group is incompatible type with {1}",
+                            orderElement.getCode(), orderElement.getClass().getName()));
                 }
             }
 
             for (OrderElementDTO childDTO : ((OrderLineGroupDTO) orderElementDTO).children) {
                 if (orderElement.containsOrderElement(childDTO.code)) {
-                    update(orderVersion,
-                            orderElement.getOrderElement(childDTO.code),
-                            childDTO, configuration);
+                    update(newOrderVersion, orderElement.getOrderElement(childDTO.code), childDTO, configuration);
                 } else {
                     if (checkConstraintUniqueOrderCode(childDTO)) {
-                        throw new ValidationException(
-                                MessageFormat.format(
-                                        "Task {0}: Duplicate code in DB",
-                                        childDTO.code));
+                        throw new ValidationException(MessageFormat.format(
+                                "Task {0}: Duplicate code in DB", childDTO.code));
                     }
+
                     if (checkConstraintUniqueHoursGroupCode(childDTO)) {
                         throw new ValidationException(MessageFormat.format(
-                                "Hours Group {0}: Duplicate code in DB",
-                                childDTO.code));
+                                "Hours Group {0}: Duplicate code in DB", childDTO.code));
                     }
-                    ((OrderLineGroup) orderElement).add(toEntity(orderVersion,
-                            childDTO, configuration));
+                    ((OrderLineGroup) orderElement).add(toEntity(newOrderVersion, childDTO, configuration));
                 }
             }
 
@@ -649,11 +587,9 @@ public final class OrderElementConverter {
             for (LabelReferenceDTO labelDTO : orderElementDTO.labels) {
                 if (!orderElement.containsLabel(labelDTO.code)) {
                     try {
-                        orderElement.addLabel(LabelReferenceConverter
-                                .toEntity(labelDTO));
+                        orderElement.addLabel(Registry.getLabelDAO().findByCode(labelDTO.code));
                     } catch (InstanceNotFoundException e) {
-                        throw new ValidationException("Label " + labelDTO.code
-                                + " not found");
+                        throw new ValidationException("Label " + labelDTO.code + " not found");
                     } catch (IllegalArgumentException e) {
                         throw new ValidationException(e.getMessage());
                     }
@@ -663,15 +599,10 @@ public final class OrderElementConverter {
 
         if (configuration.isMaterialAssignments()) {
             for (MaterialAssignmentDTO materialAssignmentDTO : orderElementDTO.materialAssignments) {
-                if (orderElement
-                        .containsMaterialAssignment(materialAssignmentDTO.materialCode)) {
-                    update(
-                            orderElement
-                                    .getMaterialAssignment(materialAssignmentDTO.materialCode),
-                            materialAssignmentDTO);
+                if (orderElement.containsMaterialAssignment(materialAssignmentDTO.materialCode)) {
+                    update(orderElement.getMaterialAssignment(materialAssignmentDTO.materialCode), materialAssignmentDTO);
                 } else {
-                    orderElement
-                            .addMaterialAssignment(toEntity(materialAssignmentDTO));
+                    orderElement.addMaterialAssignment(toEntity(materialAssignmentDTO));
                 }
             }
         }
@@ -685,13 +616,11 @@ public final class OrderElementConverter {
         }
 
         if (orderElementDTO.initDate != null) {
-            orderElement.setInitDate(DateConverter
-                    .toDate(orderElementDTO.initDate));
+            orderElement.setInitDate(DateConverter.toDate(orderElementDTO.initDate));
         }
 
         if (orderElementDTO.deadline != null) {
-            orderElement.setDeadline(DateConverter
-                    .toDate(orderElementDTO.deadline));
+            orderElement.setDeadline(DateConverter.toDate(orderElementDTO.deadline));
         }
 
         if (orderElementDTO.description != null) {
@@ -701,15 +630,14 @@ public final class OrderElementConverter {
     }
 
     /**
-     * Returns true is there's another {@link OrderElement} in DB with the same code
+     * Returns true is there's another {@link OrderElement} in DB with the same code.
      *
      * @param orderElement
-     * @return
+     * @return boolean
      */
     private static boolean checkConstraintUniqueOrderCode(OrderElementDTO orderElement) {
         try {
-            OrderElement existsByCode = Registry.getOrderElementDAO()
-                    .findByCode(orderElement.code);
+            OrderElement existsByCode = Registry.getOrderElementDAO().findByCode(orderElement.code);
             return existsByCode != null;
         } catch (InstanceNotFoundException e) {
             return false;
@@ -717,16 +645,13 @@ public final class OrderElementConverter {
     }
 
     /**
-     * Returns true if there's another {@link HoursGroup} in DB with the same code
+     * Returns true if there's another {@link HoursGroup} in DB with the same code.
      *
      * @param orderElement
-     * @return
+     * @return boolean
      */
     private static boolean checkConstraintUniqueHoursGroupCode(OrderElementDTO orderElement) {
-        if (orderElement instanceof OrderLineDTO) {
-            return checkConstraintUniqueHoursGroupCode((OrderLineDTO) orderElement);
-        }
-        return false;
+        return orderElement instanceof OrderLineDTO && checkConstraintUniqueHoursGroupCode((OrderLineDTO) orderElement);
     }
 
     private static boolean checkConstraintUniqueHoursGroupCode(OrderLineDTO orderLine) {
@@ -739,18 +664,15 @@ public final class OrderElementConverter {
                     return true;
                 }
             }
-        } catch (InstanceNotFoundException e) {
+        } catch (InstanceNotFoundException ignored) {
             // Do nothing
         }
         return false;
     }
 
-    public final static void update(HoursGroup hoursGroup,
-            HoursGroupDTO hoursGroupDTO,
-            ConfigurationOrderElementConverter configuration) {
+    public final static void update(HoursGroup hoursGroup, HoursGroupDTO hoursGroupDTO) {
         if (!hoursGroup.getCode().equals(hoursGroupDTO.code)) {
-            throw new ValidationException(
-                    "Not the same hours group, impossible to update");
+            throw new ValidationException("Not the same hours group, impossible to update");
         }
 
         if (hoursGroupDTO.workingHours != null) {
@@ -758,34 +680,30 @@ public final class OrderElementConverter {
         }
 
         if (hoursGroupDTO.resourceType != null) {
-            hoursGroup.setResourceType(ResourceEnumConverter
-                    .fromDTO(hoursGroupDTO.resourceType));
+            hoursGroup.setResourceType(ResourceEnumConverter.fromDTO(hoursGroupDTO.resourceType));
         }
     }
 
-    public final static void update(MaterialAssignment materialAssignment,
-            MaterialAssignmentDTO materialAssignmentDTO) {
-        if (!materialAssignment.getMaterial().getCode().equals(
-                materialAssignmentDTO.materialCode)) {
-            throw new ValidationException(
-                    "Not the same material, impossible to update");
+    public static final void update(MaterialAssignment materialAssignment, MaterialAssignmentDTO materialAssignmentDTO) {
+        if (!materialAssignment.getMaterial().getCode().equals(materialAssignmentDTO.materialCode)) {
+            throw new ValidationException("Not the same material, impossible to update");
         }
 
         if (materialAssignmentDTO.units != null) {
             materialAssignment.setUnits(materialAssignmentDTO.units);
         }
+
         if (materialAssignmentDTO.unitPrice != null) {
             materialAssignment.setUnitPrice(materialAssignmentDTO.unitPrice);
         }
+
         if (materialAssignmentDTO.estimatedAvailability != null) {
-            Date estimatedAvailability = DateConverter
-                    .toDate(materialAssignmentDTO.estimatedAvailability);
+            Date estimatedAvailability = DateConverter.toDate(materialAssignmentDTO.estimatedAvailability);
             materialAssignment.setEstimatedAvailability(estimatedAvailability);
         }
     }
 
-    private static void addAdvanceMeasurements(OrderElement orderElement,
-            OrderElementDTO orderElementDTO) {
+    private static void addAdvanceMeasurements(OrderElement orderElement, OrderElementDTO orderElementDTO) {
         if (!orderElementDTO.advanceMeasurements.isEmpty()) {
             DirectAdvanceAssignment directAdvanceAssignment = getDirectAdvanceAssignmentSubcontractor(orderElement);
 
@@ -793,17 +711,13 @@ public final class OrderElementConverter {
                 AdvanceMeasurement advanceMeasurement = null;
                 LocalDate date = null;
                 if (advanceMeasurementDTO.date != null) {
-                    date = new LocalDate(DateConverter
-                            .toLocalDate(advanceMeasurementDTO.date));
-                    advanceMeasurement = directAdvanceAssignment
-                            .getAdvanceMeasurementAtExactDate(date);
+                    date = new LocalDate(DateConverter.toLocalDate(advanceMeasurementDTO.date));
+                    advanceMeasurement = directAdvanceAssignment.getAdvanceMeasurementAtExactDate(date);
                 }
 
                 if (advanceMeasurement == null) {
-                    advanceMeasurement = AdvanceMeasurement.create(date,
-                            advanceMeasurementDTO.value);
-                    directAdvanceAssignment
-                            .addAdvanceMeasurements(advanceMeasurement);
+                    advanceMeasurement = AdvanceMeasurement.create(date, advanceMeasurementDTO.value);
+                    directAdvanceAssignment.addAdvanceMeasurements(advanceMeasurement);
                 } else {
                     advanceMeasurement.setValue(advanceMeasurementDTO.value);
                 }
@@ -811,63 +725,49 @@ public final class OrderElementConverter {
         }
     }
 
-    private static DirectAdvanceAssignment getDirectAdvanceAssignmentSubcontractor(
-            OrderElement orderElement) {
-        DirectAdvanceAssignment directAdvanceAssignment = orderElement
-                .getDirectAdvanceAssignmentSubcontractor();
+    private static DirectAdvanceAssignment getDirectAdvanceAssignmentSubcontractor(OrderElement orderElement) {
+        DirectAdvanceAssignment directAdvanceAssignment = orderElement.getDirectAdvanceAssignmentSubcontractor();
         if (directAdvanceAssignment == null) {
             try {
-                directAdvanceAssignment = orderElement
-                        .addSubcontractorAdvanceAssignment();
+                directAdvanceAssignment = orderElement.addSubcontractorAdvanceAssignment();
             } catch (DuplicateValueTrueReportGlobalAdvanceException e) {
-                throw new ValidationException(
-                        MessageFormat
-                                .format("More than one progress marked as report global for task {0}",
-                                        orderElement.getCode()));
+
+                throw new ValidationException(MessageFormat.format(
+                        "More than one progress marked as report global for task {0}", orderElement.getCode()));
+
             } catch (DuplicateAdvanceAssignmentForOrderElementException e) {
                 throw new ValidationException(MessageFormat.format(
-                        "Duplicate progress assignment for task {0}",
-                        orderElement.getCode()));
+                        "Duplicate progress assignment for task {0}", orderElement.getCode()));
             }
         }
         return directAdvanceAssignment;
     }
 
-    public static AdvanceMeasurement toEntity(
-            AdvanceMeasurementDTO advanceMeasurementDTO) {
-        LocalDate date = DateConverter.toLocalDate(advanceMeasurementDTO.date);
-        AdvanceMeasurement advanceMeasurement = AdvanceMeasurement.create(date,
-                        advanceMeasurementDTO.value);
-        return advanceMeasurement;
+    public static AdvanceMeasurement toEntity(AdvanceMeasurementDTO advanceMeasurementDTO) {
+        return AdvanceMeasurement.create(DateConverter.toLocalDate(advanceMeasurementDTO.date), advanceMeasurementDTO.value);
     }
 
-    public static AdvanceMeasurementDTO toDTO(
-            AdvanceMeasurement advanceMeasurement) {
-        XMLGregorianCalendar date = DateConverter
-                .toXMLGregorianCalendar(advanceMeasurement.getDate());
-        return new AdvanceMeasurementDTO(date, advanceMeasurement
-                .getValue());
+    public static AdvanceMeasurementDTO toDTO(AdvanceMeasurement advanceMeasurement) {
+        return new AdvanceMeasurementDTO(
+                DateConverter.toXMLGregorianCalendar(advanceMeasurement.getDate()),
+                advanceMeasurement.getValue());
     }
 
-    public static EndDateCommunication toEntity(
-            EndDateCommunicationToCustomerDTO endDateCommunicationToCustomerDTO) {
+    public static EndDateCommunication toEntity(EndDateCommunicationToCustomerDTO endDateCommunicationToCustomerDTO) {
         Date endDate = DateConverter.toDate(endDateCommunicationToCustomerDTO.endDate);
-        Date communicationDate = DateConverter
-                .toDate(endDateCommunicationToCustomerDTO.communicationDate);
+        Date communicationDate = DateConverter.toDate(endDateCommunicationToCustomerDTO.communicationDate);
         Date saveDate = DateConverter.toDate(endDateCommunicationToCustomerDTO.saveDate);
-        EndDateCommunication endDateCommunicationToCustomer = EndDateCommunication
-                .create(saveDate, endDate, communicationDate);
-        return endDateCommunicationToCustomer;
+
+        return EndDateCommunication.create(saveDate, endDate, communicationDate);
     }
 
-    public static EndDateCommunicationToCustomerDTO toDTO(
-            EndDateCommunication endDateCommunicationToCustomer) {
-        XMLGregorianCalendar endDate = DateConverter
-                .toXMLGregorianCalendar(endDateCommunicationToCustomer.getEndDate());
-        XMLGregorianCalendar saveDate = DateConverter
-                .toXMLGregorianCalendar(endDateCommunicationToCustomer.getSaveDate());
-        XMLGregorianCalendar communicationDate = DateConverter
-                .toXMLGregorianCalendar(endDateCommunicationToCustomer.getCommunicationDate());
+    public static EndDateCommunicationToCustomerDTO toDTO(EndDateCommunication endDateCommunicationToCustomer) {
+        XMLGregorianCalendar endDate = DateConverter.toXMLGregorianCalendar(endDateCommunicationToCustomer.getEndDate());
+        XMLGregorianCalendar saveDate = DateConverter.toXMLGregorianCalendar(endDateCommunicationToCustomer.getSaveDate());
+
+        XMLGregorianCalendar communicationDate =
+                DateConverter.toXMLGregorianCalendar(endDateCommunicationToCustomer.getCommunicationDate());
+
         return new EndDateCommunicationToCustomerDTO(saveDate, endDate, communicationDate);
     }
 

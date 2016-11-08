@@ -49,7 +49,7 @@ import java.util.List;
  * and that are treat to {@link EmailTemplateEnum#TEMPLATE_TODAY_TASK_SHOULD_START}.
  * Data will be send if current data equals to start date.
  *
- * @author Created by Vova Perebykivskyi <vova@libreplan-enterprise.com> on 20.01.2016.
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
 
 @Component
@@ -89,8 +89,9 @@ public class SendEmailOnTaskShouldStart implements IEmailNotificationJob {
                         emailNotificationModel.getAllByType(EmailTemplateEnum.TEMPLATE_TODAY_TASK_SHOULD_START);
 
                 for (EmailNotification notification : notifications)
-                    if ( composeMessageForUser(notification) )
+                    if ( composeMessageForUser(notification) ) {
                         deleteSingleNotification(notification);
+                    }
             }
         }
     }
@@ -122,11 +123,10 @@ public class SendEmailOnTaskShouldStart implements IEmailNotificationJob {
     }
 
     private void sendEmailNotificationAboutTaskShouldStart(TaskElement item) {
-        List<ResourceAllocation<?>> list = new ArrayList<>();
-        list.addAll(item.getAllResourceAllocations());
+        List<ResourceAllocation<?>> resourceAllocations = new ArrayList<>(item.getAllResourceAllocations());
 
         List<Resource> resources = new ArrayList<>();
-        for (ResourceAllocation<?> allocation : list)
+        for (ResourceAllocation<?> allocation : resourceAllocations)
             resources.add(allocation.getAssociatedResources().get(0));
 
         for (Resource resourceItem : resources) {

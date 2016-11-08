@@ -186,6 +186,7 @@ public class QueueComponent extends XulElement implements AfterCompose {
                 if ( each.getEndDate().toDateTimeAtStartOfDay().isAfter(interval.getStart().toDateTimeAtStartOfDay()) &&
                         each.getStartDate().toDateTimeAtStartOfDay()
                                 .isBefore(interval.getFinish().toDateTimeAtStartOfDay()) ) {
+
                     result.add(createQueueTask(datesMapper, each));
                 }
 
@@ -246,7 +247,7 @@ public class QueueComponent extends XulElement implements AfterCompose {
      * Returns end date considering % of task completion.
      *
      * @param element
-     * @return
+     * @return {@link DateAndHour}
      */
     private static DateAndHour getAdvanceEndDate(LimitingResourceQueueElement element) {
         int hoursWorked = 0;
@@ -279,9 +280,8 @@ public class QueueComponent extends XulElement implements AfterCompose {
     }
 
     private static int estimatedWorkedHours(Integer totalHours, BigDecimal percentageWorked) {
-        boolean bool = totalHours != null && percentageWorked != null;
-
-        return bool ? percentageWorked.multiply(new BigDecimal(totalHours)).intValue() : 0;
+        boolean condition = totalHours != null && percentageWorked != null;
+        return condition ? percentageWorked.multiply(new BigDecimal(totalHours)).intValue() : 0;
     }
 
     private static QueueTask createDivForElement(IDatesMapper datesMapper, LimitingResourceQueueElement queueElement) {
@@ -472,7 +472,6 @@ public class QueueComponent extends XulElement implements AfterCompose {
                 return each;
             }
         }
-
         return null;
     }
 

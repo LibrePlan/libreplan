@@ -38,7 +38,15 @@ import static org.libreplan.business.workingday.EffortDuration.hours;
 import static org.libreplan.business.workingday.EffortDuration.zero;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Collection;
+import java.util.Collections;
 
 import org.apache.commons.lang3.Validate;
 import org.easymock.IAnswer;

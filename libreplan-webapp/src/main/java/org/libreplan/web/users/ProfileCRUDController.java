@@ -45,7 +45,7 @@ import java.util.List;
 import static org.libreplan.web.I18nHelper._;
 
 /**
- * Controller for CRUD actions over a {@link Profile}
+ * Controller for CRUD actions over a {@link Profile}.
  *
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  * @author Diego Pino García <dpino@igalia.com>
@@ -57,8 +57,10 @@ public class ProfileCRUDController extends BaseCRUDController<Profile> {
 
     private Combobox userRolesCombo;
 
-    public ProfileCRUDController(){
-        profileModel = (IProfileModel) SpringUtil.getBean("profileModel");
+    public ProfileCRUDController() {
+        if ( profileModel == null ) {
+            profileModel = (IProfileModel) SpringUtil.getBean("profileModel");
+        }
     }
 
     @Override
@@ -70,6 +72,7 @@ public class ProfileCRUDController extends BaseCRUDController<Profile> {
 
     /**
      * Appends the existing UserRoles to the Combobox passed.
+     *
      * @param combo
      */
     private void appendAllUserRolesExceptRoleBoundUser(Combobox combo) {
@@ -82,7 +85,7 @@ public class ProfileCRUDController extends BaseCRUDController<Profile> {
         }
     }
 
-    protected void save() throws ValidationException{
+    protected void save() throws ValidationException {
         profileModel.confirmSave();
     }
 
@@ -96,8 +99,8 @@ public class ProfileCRUDController extends BaseCRUDController<Profile> {
 
     public void addSelectedRole() {
         Comboitem comboItem = userRolesCombo.getSelectedItem();
-        if(comboItem != null) {
-            addRole((UserRole)comboItem.getValue());
+        if (comboItem != null) {
+            addRole(comboItem.getValue());
         }
     }
 
@@ -145,8 +148,7 @@ public class ProfileCRUDController extends BaseCRUDController<Profile> {
             profileModel.checkHasUsers(profile);
             return false;
         } catch (ValidationException e) {
-            showCannotDeleteProfileDialog(e.getInvalidValue().getMessage()
-            );
+            showCannotDeleteProfileDialog(e.getInvalidValue().getMessage());
         }
 
         return true;

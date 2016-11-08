@@ -34,7 +34,6 @@ import javax.xml.bind.Marshaller;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.cxf.jaxrs.client.WebClient;
-import org.libreplan.business.common.daos.IConfigurationDAO;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.orders.daos.IOrderDAO;
@@ -88,9 +87,6 @@ public class SubcontractedTasksModel implements ISubcontractedTasksModel {
 
     @Autowired
     private IOrderDAO orderDAO;
-
-    @Autowired
-    private IConfigurationDAO configurationDAO;
 
     @Override
     @Transactional(readOnly = true)

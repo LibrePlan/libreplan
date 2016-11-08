@@ -172,7 +172,7 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements IOrderDAO {
             // Apply filtering
             if (matchFilterCriterion(each.getOrderElement(), criterions) && isOrderContained(order, orders)) {
 
-                // Attach ordername value
+                // Attach orderName value
                 each.setOrderName(order.getName());
                 each.setOrderCode(order.getCode());
 
@@ -455,14 +455,16 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements IOrderDAO {
      * Otherwise, it returns the list of orders identifiers for which the user has read permissions.
      */
     private List<Long> getOrdersIdsByReadAuthorization(User user) {
-        if (user.isInRole(UserRole.ROLE_SUPERUSER)
-                || user.isInRole(UserRole.ROLE_READ_ALL_PROJECTS)
-                || user.isInRole(UserRole.ROLE_EDIT_ALL_PROJECTS)) {
+        if (user.isInRole(UserRole.ROLE_SUPERUSER) ||
+                user.isInRole(UserRole.ROLE_READ_ALL_PROJECTS) ||
+                user.isInRole(UserRole.ROLE_EDIT_ALL_PROJECTS)) {
+
             return null;
         } else {
-            String strQuery = "SELECT oa.order.id "
-                    + "FROM OrderAuthorization oa "
-                    + "WHERE oa.user = :user ";
+            String strQuery = "SELECT oa.order.id " +
+                    "FROM OrderAuthorization oa " +
+                    "WHERE oa.user = :user ";
+
             if (!user.getProfiles().isEmpty()) {
                 strQuery += "OR oa.profile IN (:profiles) ";
             }
@@ -479,8 +481,7 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements IOrderDAO {
 
     @Override
     public List<Order> getOrdersByWriteAuthorization(User user) {
-        if (user.isInRole(UserRole.ROLE_SUPERUSER)
-                || user.isInRole(UserRole.ROLE_EDIT_ALL_PROJECTS)) {
+        if (user.isInRole(UserRole.ROLE_SUPERUSER) || user.isInRole(UserRole.ROLE_EDIT_ALL_PROJECTS)) {
             return getOrders();
         }
         else {
@@ -489,8 +490,8 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements IOrderDAO {
             for(OrderAuthorization authorization : authorizations) {
                 if (authorization.getAuthorizationType() == OrderAuthorizationType.WRITE_AUTHORIZATION) {
                     Order order = authorization.getOrder();
-                    if(!orders.contains(order)) {
-                        order.getName(); //this lines forces the load of the basic attributes of the order
+                    if (!orders.contains(order)) {
+                        order.getName(); // this lines forces the load of the basic attributes of the order
                         orders.add(order);
                     }
                 }
@@ -695,8 +696,7 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements IOrderDAO {
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
     public boolean existsByNameAnotherTransaction(String name) {
         try {
-            Order order = findByName(name);
-            return order != null;
+            return findByName(name)!= null;
         } catch (InstanceNotFoundException e) {
             return false;
         }
@@ -762,6 +762,15 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements IOrderDAO {
             }
         }
         return filteredList;
+    }
+
+    @Override
+    public List<Order> getOrdersWithNotEmptyCustomersReferences() {
+        return getSession()
+                .createCriteria(Order.class)
+                .add(Restrictions.isNotNull("customerReference"))
+                .add(Restrictions.ne("customerReference", ""))
+                .list();
     }
 
 }

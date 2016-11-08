@@ -74,7 +74,8 @@ public class GenericResourceAllocation extends ResourceAllocation<GenericDayAssi
     /**
      * Constructor for Hibernate. DO NOT USE!
      */
-    public GenericResourceAllocation() {}
+    public GenericResourceAllocation() {
+    }
 
     public static GenericResourceAllocation create() {
         return create(new GenericResourceAllocation());
@@ -168,9 +169,8 @@ public class GenericResourceAllocation extends ResourceAllocation<GenericDayAssi
     }
 
     public List<GenericDayAssignment> getOrderedAssignmentsFor(Resource resource) {
-        List<GenericDayAssignment> list = getOrderedAssignmentsFor().get(resource);
-
-        return list == null ? Collections.emptyList() : Collections.unmodifiableList(list);
+        List<GenericDayAssignment> assignments = getOrderedAssignmentsFor().get(resource);
+        return assignments == null ? Collections.emptyList() : Collections.unmodifiableList(assignments);
     }
 
     private Map<Resource, List<GenericDayAssignment>> getOrderedAssignmentsFor() {
@@ -186,7 +186,6 @@ public class GenericResourceAllocation extends ResourceAllocation<GenericDayAssi
         @Override
         public boolean isSelectable(Resource resource, LocalDate day) {
             ICriterion compoundCriterion = CriterionCompounder.buildAnd(criterions).getResult();
-
             return compoundCriterion.isSatisfiedBy(resource, day);
         }
     }
@@ -268,7 +267,6 @@ public class GenericResourceAllocation extends ResourceAllocation<GenericDayAssi
     ResourceAllocation<GenericDayAssignment> createCopy(Scenario scenario) {
         GenericResourceAllocation allocation = create();
         allocation.criterions = new HashSet<>(criterions);
-
         return allocation;
     }
 

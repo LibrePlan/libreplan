@@ -20,7 +20,6 @@
 package org.libreplan.importers.notifications;
 
 import org.libreplan.business.common.daos.IConnectorDAO;
-import org.libreplan.business.common.entities.Connector;
 import org.libreplan.business.common.entities.ConnectorProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -94,26 +93,30 @@ public class EmailConnectionValidator {
         Transport transport = null;
 
         try {
-            if ( protocol.equals("SMTP") ) {
+            if ( "SMTP".equals(protocol) ) {
                 properties.setProperty("mail.smtp.port", port);
                 properties.setProperty("mail.smtp.host", host);
                 properties.setProperty("mail.smtp.connectiontimeout", Integer.toString(3000));
                 Session session = Session.getInstance(properties, null);
 
                 transport = session.getTransport("smtp");
-                if ( "".equals(usrnme) && "".equals(psswrd) )
+                if ( "".equals(usrnme) && "".equals(psswrd) ) {
                     transport.connect();
+                }
 
-            } else if ( protocol.equals("STARTTLS") ) {
+
+            } else if ( "STARTTLS".equals(protocol) ) {
                 properties.setProperty("mail.smtps.port", port);
                 properties.setProperty("mail.smtps.host", host);
-                properties.setProperty("mail.smtp.connectiontimeout", Integer.toString(3000));
+                properties.setProperty("mail.smtps.connectiontimeout", Integer.toString(3000));
                 Session session = Session.getInstance(properties, null);
 
                 transport = session.getTransport("smtps");
 
-                if ( !"".equals(usrnme) && psswrd != null )
+                if ( !"".equals(usrnme) && psswrd != null ) {
                     transport.connect(host, usrnme, psswrd);
+                }
+
             }
             if ( transport != null && transport.isConnected() )
                 return true;
@@ -128,19 +131,20 @@ public class EmailConnectionValidator {
     }
 
     public List<ConnectorProperty> getEmailConnectorProperties() {
-        Connector connector = connectorDAO.findUniqueByName("E-mail");
-
-        return connector.getProperties();
+        return connectorDAO.findUniqueByName("E-mail").getProperties();
     }
 
     public boolean isConnectionActivated() {
         List<ConnectorProperty> emailConnectorProperties = getEmailConnectorProperties();
 
         for (ConnectorProperty item : emailConnectorProperties) {
-            if ( item.getKey().equals("Activated") )
-                if ( item.getValue().equals("Y") )
+            if ( "Activated".equals(item.getKey()) ) {
+                if ( "Y".equals(item.getValue()) ) {
                     return true;
-                else break;
+                } else {
+                    break;
+                }
+            }
         }
         return false;
     }

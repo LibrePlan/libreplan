@@ -36,19 +36,6 @@ import org.libreplan.business.planner.entities.consolidations.NonCalculatedConso
 
 public class AdvanceMeasurement extends BaseEntity {
 
-    public static AdvanceMeasurement create(LocalDate date, BigDecimal value) {
-        AdvanceMeasurement advanceMeasurement = new AdvanceMeasurement(date,
-                value);
-        advanceMeasurement.setNewObject(true);
-        return advanceMeasurement;
-    }
-
-    public static AdvanceMeasurement create() {
-        AdvanceMeasurement advanceMeasurement = new AdvanceMeasurement();
-        advanceMeasurement.setNewObject(true);
-        return advanceMeasurement;
-    }
-
     private LocalDate date;
 
     private BigDecimal value;
@@ -58,7 +45,7 @@ public class AdvanceMeasurement extends BaseEntity {
     private Date communicationDate;
 
     @Valid
-    private Set<NonCalculatedConsolidatedValue> nonCalculatedConsolidatedValues = new HashSet<NonCalculatedConsolidatedValue>();
+    private Set<NonCalculatedConsolidatedValue> nonCalculatedConsolidatedValues = new HashSet<>();
 
     public AdvanceMeasurement() {
     }
@@ -71,9 +58,20 @@ public class AdvanceMeasurement extends BaseEntity {
         }
     }
 
+    public static AdvanceMeasurement create(LocalDate date, BigDecimal value) {
+        AdvanceMeasurement advanceMeasurement = new AdvanceMeasurement(date, value);
+        advanceMeasurement.setNewObject(true);
+        return advanceMeasurement;
+    }
+
+    public static AdvanceMeasurement create() {
+        AdvanceMeasurement advanceMeasurement = new AdvanceMeasurement();
+        advanceMeasurement.setNewObject(true);
+        return advanceMeasurement;
+    }
+
     public void setDate(LocalDate date) {
-        if ((date != null) && (this.date != null)
-                && (this.date.compareTo(date) != 0)) {
+        if ((date != null) && (this.date != null) && (this.date.compareTo(date) != 0)) {
             resetCommunicationDate();
         }
         this.date = date;
@@ -89,13 +87,13 @@ public class AdvanceMeasurement extends BaseEntity {
         if (value != null) {
             this.value.setScale(2, BigDecimal.ROUND_DOWN);
         }
-        if ((this.value != null) && (value != null)
-                && (this.value.compareTo(value) != 0)) {
+
+        if ((this.value != null) && (value != null) && (this.value.compareTo(value) != 0)) {
             resetCommunicationDate();
         }
+
         if (advanceAssignment != null) {
-            advanceAssignment.getOrderElement()
-                    .markAsDirtyLastAdvanceMeasurementForSpreading();
+            advanceAssignment.getOrderElement().markAsDirtyLastAdvanceMeasurementForSpreading();
         }
     }
 
@@ -122,8 +120,8 @@ public class AdvanceMeasurement extends BaseEntity {
     }
 
     /**
-     * Just set the communication date if it was <code>null</code>. Otherwise
-     * keep the old value stored.
+     * Just set the communication date if it was <code>null</code>.
+     * Otherwise keep the old value stored.
      *
      * @param communicationDate
      */
@@ -131,14 +129,13 @@ public class AdvanceMeasurement extends BaseEntity {
         DirectAdvanceAssignment advanceAssignment = (DirectAdvanceAssignment) getAdvanceAssignment();
         if (advanceAssignment.isFake()) {
             OrderElement orderElement = advanceAssignment.getOrderElement();
-            Set<DirectAdvanceAssignment> directAdvanceAssignments = orderElement
-                    .getAllDirectAdvanceAssignments(advanceAssignment
-                            .getAdvanceType());
+
+            Set<DirectAdvanceAssignment> directAdvanceAssignments =
+                    orderElement.getAllDirectAdvanceAssignments(advanceAssignment.getAdvanceType());
+
             for (DirectAdvanceAssignment directAdvanceAssignment : directAdvanceAssignments) {
-                for (AdvanceMeasurement advanceMeasurement : directAdvanceAssignment
-                        .getAdvanceMeasurements()) {
-                    advanceMeasurement
-                            .updateCommunicationDate(communicationDate);
+                for (AdvanceMeasurement advanceMeasurement : directAdvanceAssignment.getAdvanceMeasurements()) {
+                    advanceMeasurement.updateCommunicationDate(communicationDate);
                 }
             }
         } else {
@@ -159,32 +156,26 @@ public class AdvanceMeasurement extends BaseEntity {
         }
 
         if (this.advanceAssignment instanceof DirectAdvanceAssignment) {
-            BigDecimal defaultMaxValue = ((DirectAdvanceAssignment) this.advanceAssignment)
-                    .getMaxValue();
-            return (this.value.compareTo(defaultMaxValue) <= 0);
+            BigDecimal defaultMaxValue = ((DirectAdvanceAssignment) this.advanceAssignment).getMaxValue();
+            return this.value.compareTo(defaultMaxValue) <= 0;
         }
         return true;
     }
 
     @AssertTrue(message = "The current value must be less than the max value.")
     public boolean isValidPrecisionConstraint() {
-        if ((this.value == null) || (this.advanceAssignment == null)
-                || (this.advanceAssignment.getAdvanceType() == null)) {
+        if ((this.value == null) || (this.advanceAssignment == null) || (this.advanceAssignment.getAdvanceType() == null)) {
             return true;
         }
 
-        BigDecimal precision = this.advanceAssignment.getAdvanceType()
-                .getUnitPrecision();
+        BigDecimal precision = this.advanceAssignment.getAdvanceType().getUnitPrecision();
         BigDecimal result[] = value.divideAndRemainder(precision);
         BigDecimal zero = (BigDecimal.ZERO).setScale(4);
-        if (result[1].compareTo(zero) == 0) {
-            return true;
-        }
-        return false;
+
+        return result[1].compareTo(zero) == 0;
     }
 
-    public void setNonCalculatedConsolidatedValues(
-            Set<NonCalculatedConsolidatedValue> nonCalculatedConsolidatedValues) {
+    public void setNonCalculatedConsolidatedValues(Set<NonCalculatedConsolidatedValue> nonCalculatedConsolidatedValues) {
         this.nonCalculatedConsolidatedValues = nonCalculatedConsolidatedValues;
     }
 

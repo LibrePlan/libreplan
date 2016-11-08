@@ -49,7 +49,7 @@ import java.util.List;
  * and that are treat to {@link EmailTemplateEnum#TEMPLATE_TODAY_TASK_SHOULD_FINISH}.
  * Data will be send when current day equals to finish date.
  *
- * @author Created by Vova Perebykivskyi <vova@libreplan-enterprise.com> on 21.01.2016.
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
 
 @Component
@@ -87,9 +87,11 @@ public class SendEmailOnTaskShouldFinish implements IEmailNotificationJob {
                 List<EmailNotification> notifications =
                         emailNotificationModel.getAllByType(EmailTemplateEnum.TEMPLATE_TODAY_TASK_SHOULD_FINISH);
 
-                for (int i = 0; i < notifications.size(); i++)
-                    if ( composeMessageForUser(notifications.get(i)) )
+                for (int i = 0; i < notifications.size(); i++) {
+                    if ( composeMessageForUser(notifications.get(i)) ) {
                         deleteSingleNotification(notifications.get(i));
+                    }
+                }
             }
         }
     }
@@ -122,11 +124,10 @@ public class SendEmailOnTaskShouldFinish implements IEmailNotificationJob {
 
 
     private void sendEmailNotificationAboutTaskShouldFinish(TaskElement item){
-        List<ResourceAllocation<?>> list = new ArrayList<>();
-        list.addAll(item.getAllResourceAllocations());
+        List<ResourceAllocation<?>> resourceAllocations = new ArrayList<>(item.getAllResourceAllocations());
 
         List<Resource> resources = new ArrayList<>();
-        for (ResourceAllocation<?> allocation : list)
+        for (ResourceAllocation<?> allocation : resourceAllocations)
             resources.add(allocation.getAssociatedResources().get(0));
 
         for (Resource resourceItem : resources){

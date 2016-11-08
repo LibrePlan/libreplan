@@ -28,7 +28,7 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zkplus.databind.TypeConverter;
 
 /**
- * Converter for the type java.util.Date
+ * Converter for the type {@link Date}.
  *
  * @author Diego Pino Garcia <dpino@igalia.com>
  *

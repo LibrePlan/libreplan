@@ -133,8 +133,6 @@ public class ResourceLoadModel implements IResourceLoadModel {
 
         return new ResourceLoadDisplayData(
                 loadTimeLines,
-                parameters.getInitDateFilter(),
-                parameters.getEndDateFilter(),
                 allocationsFinder.getPaginator(),
                 allocationsFinder.lazilyGetResourcesIncluded(),
                 allocationsFinder.lazilyGetAssignmentsShown());

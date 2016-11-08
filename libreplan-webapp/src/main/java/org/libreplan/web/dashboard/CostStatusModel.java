@@ -32,16 +32,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
+ * Model for UI operations related to CostStatus in Dashboard view.
+ *
+ * FIXME: This Model contains several operations for calculating 'Earned Value' measures related with cost.
+ * The code for calculating the basic measures: BCWP, ACWP and BCWS is copied from {@link OrderPlanningModel}.
+ * At this moment this code cannot be reused as it's coupled with the logic for displaying the 'Earned Value' chart.
+ * We may consider to refactor this code in the future.
+ *
  * @author Diego Pino García <ltilve@igalia.com>
- *
- * Model for UI operations related to CostStatus in Dashboard view
- *
- * FIXME: This Model contains several operations for calculating 'Earned
- * Value' measures related with cost. The code for calculating the basic
- * measures: BCWP, ACWP and BCWS is copied from
- * {@link OrderPlanningModel}. At this moment this code cannot be reused
- * as it's coupled with the logic for displaying the 'Earned Value'
- * chart. We may consider to refactor this code in the future.
  */
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -53,7 +51,6 @@ public class CostStatusModel implements ICostStatusModel {
     private Order order;
 
     public CostStatusModel() {
-
     }
 
     @Override
@@ -64,8 +61,7 @@ public class CostStatusModel implements ICostStatusModel {
 
     @Override
     public BigDecimal getCostPerformanceIndex(BigDecimal budgetedCost, BigDecimal actualCost) {
-        return earnedValueCalculator.getCostPerformanceIndex(budgetedCost,
-                actualCost);
+        return earnedValueCalculator.getCostPerformanceIndex(budgetedCost, actualCost);
     }
 
     @Override
@@ -75,8 +71,7 @@ public class CostStatusModel implements ICostStatusModel {
 
     @Override
     public BigDecimal getEstimateAtCompletion(BigDecimal budgetAtCompletion, BigDecimal costPerformanceIndex) {
-        return earnedValueCalculator.getEstimateAtCompletion(
-                budgetAtCompletion, costPerformanceIndex);
+        return earnedValueCalculator.getEstimateAtCompletion(budgetAtCompletion, costPerformanceIndex);
     }
 
     @Override

@@ -37,58 +37,50 @@ import org.libreplan.business.util.deepcopy.Strategy;
 
 public class CalculatedConsolidation extends Consolidation {
 
-    private SortedSet<CalculatedConsolidatedValue> consolidatedValues = new TreeSet<CalculatedConsolidatedValue>(
-            new ConsolidatedValueComparator());
-
-    @AfterCopy
-    private void instantiateConsolidatedValuesWithComparator() {
-        SortedSet<CalculatedConsolidatedValue> previous = consolidatedValues;
-        consolidatedValues = new TreeSet<CalculatedConsolidatedValue>(
-                new ConsolidatedValueComparator());
-        consolidatedValues.addAll(previous);
-    }
+    private SortedSet<CalculatedConsolidatedValue> consolidatedValues = new TreeSet<>(new ConsolidatedValueComparator());
 
     @OnCopy(Strategy.SHARE)
     private IndirectAdvanceAssignment indirectAdvanceAssignment;
-
-    public static CalculatedConsolidation create(Task task,
-            IndirectAdvanceAssignment indirectAdvanceAssignment) {
-        return create(new CalculatedConsolidation(task,
-                indirectAdvanceAssignment));
-    }
-
-    public static CalculatedConsolidation create(Task task,
-            IndirectAdvanceAssignment indirectAdvanceAssignment,
-            SortedSet<CalculatedConsolidatedValue> consolidatedValues) {
-        return create(new CalculatedConsolidation(task,
-                indirectAdvanceAssignment,
-                consolidatedValues));
-    }
 
     /**
      * Constructor for {@link DeepCopy}. DO NOT USE!
      */
     public CalculatedConsolidation() {
-
     }
 
-    protected CalculatedConsolidation(Task task,
-            IndirectAdvanceAssignment indirectAdvanceAssignment,
-            SortedSet<CalculatedConsolidatedValue> consolidatedValues) {
-        this(task, indirectAdvanceAssignment);
-        this.setConsolidatedValues(consolidatedValues);
-    }
-
-    public CalculatedConsolidation(Task task,
-            IndirectAdvanceAssignment indirectAdvanceAssignment) {
+    public CalculatedConsolidation(Task task, IndirectAdvanceAssignment indirectAdvanceAssignment) {
         super(task);
         this.indirectAdvanceAssignment = indirectAdvanceAssignment;
     }
 
+    protected CalculatedConsolidation(Task task, IndirectAdvanceAssignment indirectAdvanceAssignment,
+                                      SortedSet<CalculatedConsolidatedValue> consolidatedValues) {
+
+        this(task, indirectAdvanceAssignment);
+        this.setConsolidatedValues(consolidatedValues);
+    }
+
+    @AfterCopy
+    private void instantiateConsolidatedValuesWithComparator() {
+        SortedSet<CalculatedConsolidatedValue> previous = consolidatedValues;
+        consolidatedValues = new TreeSet<>(new ConsolidatedValueComparator());
+        consolidatedValues.addAll(previous);
+    }
+
+    public static CalculatedConsolidation create(Task task, IndirectAdvanceAssignment indirectAdvanceAssignment) {
+        return create(new CalculatedConsolidation(task, indirectAdvanceAssignment));
+    }
+
+    public static CalculatedConsolidation create(Task task, IndirectAdvanceAssignment indirectAdvanceAssignment,
+                                                 SortedSet<CalculatedConsolidatedValue> consolidatedValues) {
+
+        return create(new CalculatedConsolidation(task, indirectAdvanceAssignment, consolidatedValues));
+    }
+
     @Override
     public SortedSet<ConsolidatedValue> getConsolidatedValues() {
-        SortedSet<ConsolidatedValue> result = new TreeSet<ConsolidatedValue>(
-                new ConsolidatedValueComparator());
+        SortedSet<ConsolidatedValue> result;
+        result = new TreeSet<>(new ConsolidatedValueComparator());
         result.addAll(consolidatedValues);
         return result;
     }
@@ -97,13 +89,11 @@ public class CalculatedConsolidation extends Consolidation {
         return consolidatedValues;
     }
 
-    public void setConsolidatedValues(
-            SortedSet<CalculatedConsolidatedValue> consolidatedValues) {
+    public void setConsolidatedValues(SortedSet<CalculatedConsolidatedValue> consolidatedValues) {
         this.consolidatedValues = consolidatedValues;
     }
 
-    public void setIndirectAdvanceAssignment(
-            IndirectAdvanceAssignment indirectAdvanceAssignment) {
+    public void setIndirectAdvanceAssignment(IndirectAdvanceAssignment indirectAdvanceAssignment) {
         this.indirectAdvanceAssignment = indirectAdvanceAssignment;
     }
 

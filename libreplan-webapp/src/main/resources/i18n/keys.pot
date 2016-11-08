@@ -9433,3 +9433,15 @@ msgstr ""
 #: libreplan-webapp/src/main/webapp/orders/_listOrderElementFiles.zul:32
 msgid "No files"
 msgstr ""
+
+#: libreplan-webapp/src/main/webapp/common/pageNotFound.zul:57
+msgid "Help/Info pages are not generated"
+msgstr ""
+
+#: libreplan-webapp/src/main/webapp/common/pageNotFound.zul:59
+msgid "If you want to see help/info page then"
+msgstr ""
+
+#: libreplan-webapp/src/main/webapp/common/pageNotFound.zul:61
+msgid "Open file HACKING.rst in project directory and read Part LibrePlan documentation generation, how to generate help/info pages"
+msgstr ""

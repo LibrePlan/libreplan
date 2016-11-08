@@ -49,7 +49,6 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.transaction.annotation.Transactional;
@@ -70,7 +69,8 @@ import org.springframework.transaction.annotation.Transactional;
  */
 
 // TODO resolve deprecated methods
-public class LDAPCustomAuthenticationProvider extends AbstractUserDetailsAuthenticationProvider
+public class LDAPCustomAuthenticationProvider
+        extends AbstractUserDetailsAuthenticationProvider
         implements AuthenticationProvider {
 
     @Autowired
@@ -84,7 +84,7 @@ public class LDAPCustomAuthenticationProvider extends AbstractUserDetailsAuthent
 
     private LDAPConfiguration configuration;
 
-    // Template to search in LDAP
+    /** Template to search in LDAP */
     private LdapTemplate ldapTemplate;
 
     private UserDetailsService userDetailsService;
@@ -98,21 +98,18 @@ public class LDAPCustomAuthenticationProvider extends AbstractUserDetailsAuthent
     private static final Log LOG = LogFactory.getLog(LDAPCustomAuthenticationProvider.class);
 
     /**
-     * LDAP role matching could be configured using an asterix (*)
-     * to specify all users or groups
+     * LDAP role matching could be configured using an asterix (*) to specify all users or groups
      */
     private static final String WILDCHAR_ALL = "*";
 
     @Override
-    protected void additionalAuthenticationChecks(UserDetails arg0, UsernamePasswordAuthenticationToken arg1)
-            throws AuthenticationException {
+    protected void additionalAuthenticationChecks(UserDetails arg0, UsernamePasswordAuthenticationToken arg1) {
         // No needed at this time
     }
 
     @Transactional(readOnly = true)
     @Override
-    public UserDetails retrieveUser(String username, UsernamePasswordAuthenticationToken authentication)
-            throws AuthenticationException {
+    public UserDetails retrieveUser(String username, UsernamePasswordAuthenticationToken authentication) {
 
         String clearPassword = authentication.getCredentials().toString();
 
@@ -130,6 +127,7 @@ public class LDAPCustomAuthenticationProvider extends AbstractUserDetailsAuthent
         }
 
         // If it's a LDAP or null user, then we must authenticate against LDAP
+
         // Load LDAPConfiguration properties
         configuration = loadLDAPConfiguration();
 
@@ -191,12 +189,14 @@ public class LDAPCustomAuthenticationProvider extends AbstractUserDetailsAuthent
         User user = User.create();
         user.setLoginName(username);
 
+        String newEncodedPassword = encodedPassword;
+
         // we must check if it is needed to save LDAP passwords in DB
         if ( !configuration.isLdapSavePasswordsDB() ) {
-            encodedPassword = null;
+            newEncodedPassword = null;
         }
 
-        user.setPassword(encodedPassword);
+        user.setPassword(newEncodedPassword);
         user.setLibrePlanUser(false);
         user.setDisabled(false);
         setRoles(user);
@@ -243,8 +243,7 @@ public class LDAPCustomAuthenticationProvider extends AbstractUserDetailsAuthent
         try {
             context.afterPropertiesSet();
         } catch (Exception e) {
-            // This exception will be never reached if the LDAP
-            // properties are well-formed.
+            // This exception will be never reached if the LDAP properties are well-formed.
             LOG.error("There is a problem in LDAP connection: ", e);
         }
 
@@ -259,13 +258,12 @@ public class LDAPCustomAuthenticationProvider extends AbstractUserDetailsAuthent
     }
 
     private void saveUserOnTransaction(User user) {
-        final User userLibrePlan = user;
+        final User librePlanUser = user;
 
         transactionService.runOnTransaction(new IOnTransaction<Void>() {
             @Override
             public Void execute() {
-                userDAO.save(userLibrePlan);
-
+                userDAO.save(librePlanUser);
                 return null;
             }
         });
@@ -355,17 +353,14 @@ public class LDAPCustomAuthenticationProvider extends AbstractUserDetailsAuthent
 
         try {
             if ( !configuration.getLdapGroupStrategy() ) {
-                // The LDAP has a node strategy for groups,
-                // we must check the roleProperty in user node.
+                // The LDAP has a node strategy for groups, we must check the roleProperty in user node
                 return getRolesUsingNodeStrategy(rolesLdap, queryRoles, configuration);
             } else {
-                // The LDAP has a branch strategy for groups
-                // we must check if the user is in one of the groups.
+                // The LDAP has a branch strategy for groups we must check if the user is in one of the groups
                 return getRolesUsingBranchStrategy(rolesLdap, queryRoles, configuration);
             }
         } catch (Exception e) {
             LOG.error("Configuration of LDAP role-matching is wrong. Please check it.", e);
-
             return Collections.emptyList();
         }
     }
@@ -378,7 +373,6 @@ public class LDAPCustomAuthenticationProvider extends AbstractUserDetailsAuthent
         this.passwordEncoderService = passwordEncoderService;
     }
 
-    // Getters and setters
     public LdapTemplate getLdapTemplate() {
         return ldapTemplate;
     }
