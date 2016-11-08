@@ -19,6 +19,8 @@
 
 package org.libreplan.importers.notifications.realization;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeComparator;
 import org.libreplan.business.common.Configuration;
 
 import org.libreplan.business.email.entities.EmailNotification;
@@ -66,7 +68,15 @@ public class SendEmailOnTaskShouldStart implements IEmailNotificationJob {
     @Autowired
     private EmailConnectionValidator emailConnectionValidator;
 
+    /**
+     * Transactional here is needed because without this annotation we are getting
+     * "LazyInitializationException: could not initialize proxy - no Session" error,
+     * when "item.getAllResourceAllocations()" method was called.
+     * Earlier this trouble was not present because in Tasks.hbm.xml for joined subclass "Task" field
+     * named "resourceAllocations", which has relation "one-to-many" to "ResourceAllocation", lazy was set to "false".
+     */
     @Override
+    @Transactional
     public void sendEmail() {
         // Gather data
         taskShouldStart();
@@ -97,20 +107,14 @@ public class SendEmailOnTaskShouldStart implements IEmailNotificationJob {
     @Transactional
     public void taskShouldStart() {
         // Check if current date equals with item date
-        Date date = new Date();
-        // TODO resolve deprecated
-        int currentYear = date.getYear();
-        int currentMonth = date.getMonth();
-        int currentDay = date.getDay();
+        DateTime currentDate = new DateTime();
+        DateTimeComparator dateTimeComparator = DateTimeComparator.getDateOnlyInstance();
 
         List<TaskElement> tasks = taskElementDAO.getTaskElementsWithParentsWithoutMilestones();
         for (TaskElement item : tasks) {
-            Date startDate = item.getStartDate();
-            int startYear = startDate.getYear();
-            int startMonth = startDate.getMonth();
-            int startDay = startDate.getDay();
+            DateTime startDate = new DateTime(item.getStartDate());
 
-            if ( currentYear == startYear && currentMonth == startMonth && currentDay == startDay ) {
+            if ( dateTimeComparator.compare(currentDate, startDate) == 0) {
                 // Get all resources for current task and send them email notification
                 sendEmailNotificationAboutTaskShouldStart(item);
             }
