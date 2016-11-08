@@ -20,9 +20,8 @@
 package org.libreplan.business.planner.entities.visitors;
 
 /**
- * FIXME
- * This visitor calculates allocated/spent hours deviation
- * for finished tasks.
+ * This visitor calculates allocated/spent hours deviation for finished tasks.
+ *
  * @author Nacho Barrientos <nacho@igalia.com>
  */
 import java.util.ArrayList;
@@ -40,39 +39,32 @@ public class CalculateFinishedTasksEstimationDeviationVisitor extends TaskElemen
     private List<Double> deviations;
 
     public CalculateFinishedTasksEstimationDeviationVisitor() {
-        this.deviations = new ArrayList<Double>();
+        this.deviations = new ArrayList<>();
     }
 
     public List<Double> getDeviations() {
         return this.deviations;
     }
 
-    public int getNumberOfConsideredTasks(){
-        return deviations.size();
-    }
-
+    @Override
     public void visit(Task task) {
         if (task.isFinished()) {
             EffortDuration effort = task.getAssignedEffort();
             if (effort.isZero()) {
-                effort = EffortDuration.hours(task.getOrderElement()
-                        .getWorkHours());
+                effort = EffortDuration.hours(task.getOrderElement().getWorkHours());
             }
             if (!effort.isZero()) {
-                SumChargedEffort sumChargedEffort = task.getOrderElement()
-                        .getSumChargedEffort();
-                EffortDuration spentEffort = sumChargedEffort == null ? EffortDuration
-                        .zero() : sumChargedEffort.getTotalChargedEffort();
+                SumChargedEffort sumChargedEffort = task.getOrderElement().getSumChargedEffort();
+
+                EffortDuration spentEffort =
+                        sumChargedEffort == null ? EffortDuration.zero() : sumChargedEffort.getTotalChargedEffort();
+
                 if (!spentEffort.isZero()) {
                     double deviation;
                     if (spentEffort.compareTo(effort) >= 0) {
-                        deviation = spentEffort.minus(effort)
-                                .dividedByAndResultAsBigDecimal(effort)
-                                .doubleValue();
+                        deviation = spentEffort.minus(effort).dividedByAndResultAsBigDecimal(effort).doubleValue();
                     } else {
-                        deviation = -effort.minus(spentEffort)
-                                .dividedByAndResultAsBigDecimal(effort)
-                                .doubleValue();
+                        deviation = -effort.minus(spentEffort).dividedByAndResultAsBigDecimal(effort).doubleValue();
 
                     }
                     deviations.add(deviation * 100);
@@ -81,6 +73,7 @@ public class CalculateFinishedTasksEstimationDeviationVisitor extends TaskElemen
         }
     }
 
+    @Override
     public void visit(TaskGroup taskGroup) {
         for (TaskElement each: taskGroup.getChildren()) {
             each.acceptVisitor(this);

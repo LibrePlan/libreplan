@@ -104,7 +104,8 @@ public class Util {
      */
     public static Image logo;
 
-    private Util() {}
+    private Util() {
+    }
 
     /**
      * Forces to reload the bindings of the provided components if there is an associated {@link DefaultBinder}.
@@ -201,7 +202,7 @@ public class Util {
 
     public static void saveBindings(Component... toReload) {
         for (Component reload : toReload) {
-
+            /* TODO resolve deprecated */
             DataBinder binder = Util.getBinder(reload);
 
             if (binder != null) {
@@ -224,7 +225,7 @@ public class Util {
         }
     }
 
-    public static void createBindingsFor(org.zkoss.zk.ui.Component result) {
+    public static void createBindingsFor(Component result) {
         if (ignoreCreateBindings.get()) {
             return;
         }
@@ -290,7 +291,6 @@ public class Util {
     public static Textbox bind(Textbox textBox, Getter<String> getter) {
         textBox.setValue(getter.get());
         textBox.setDisabled(true);
-
         return textBox;
     }
 
@@ -323,16 +323,15 @@ public class Util {
      * Binds a {@link Textbox} with a {@link Getter}. The {@link Getter} will be
      * used to get the value that is going to be showed in the {@link Textbox}.
      *
-     * @param textBox
-     *            The {@link Textbox} to be bound
+     * @param comboBox
+     *            The {@link Combobox} to be bound
      * @param getter
      *            The {@link Getter} interface that will implement a get method.
-     * @return The {@link Textbox} bound
+     * @return The {@link Combobox} bound
      */
     public static Combobox bind(Combobox comboBox, Getter<Comboitem> getter) {
         comboBox.setSelectedItem(getter.get());
         comboBox.setDisabled(true);
-
         return comboBox;
     }
 
@@ -340,13 +339,14 @@ public class Util {
      * Binds a {@link Textbox} with a {@link Getter}. The {@link Getter} will be
      * used to get the value that is going to be showed in the {@link Textbox}.
      * The {@link Setter} will be used to store the value inserted by the user in the {@link Textbox}.
-     * @param textBox
-     *            The {@link Textbox} to be bound
+     *
+     * @param comboBox
+     *            The {@link Combobox} to be bound
      * @param getter
      *            The {@link Getter} interface that will implement a get method.
      * @param setter
      *            The {@link Setter} interface that will implement a set method.
-     * @return The {@link Textbox} bound
+     * @return The {@link Combobox} bound
      */
     public static Combobox bind(final Combobox comboBox,
                                 final Getter<Comboitem> getter,
@@ -455,7 +455,7 @@ public class Util {
      * Binds a {@link Timebox} with a {@link Getter}.
      * The {@link Getter} will be used to get the value that is going to be showed in the {@link Timebox}.
      *
-     * @param dateBox
+     * @param timeBox
      *            The {@link Timebox} to be bound
      * @param getter
      *            The {@link Getter} interface that will implement a get method.
@@ -549,7 +549,6 @@ public class Util {
     public static Checkbox bind(final Checkbox checkBox, final Getter<Boolean> getter) {
         checkBox.setChecked(getter.get());
         checkBox.setDisabled(true);
-
         return checkBox;
     }
 
@@ -558,7 +557,7 @@ public class Util {
      * The {@link Getter} will be used to get the value that is going to be showed in the {@link Checkbox}.
      * The {@link Setter} will be used to store the value inserted by the user in the {@link Checkbox}.
      *
-     * @param decimalBox
+     * @param checkBox
      * @param getter
      *            The {@link Getter} interface that will implement a get method.
      * @param setter
@@ -579,7 +578,7 @@ public class Util {
      * Binds a {@link Checkbox} with a {@link Getter}.
      * The {@link Getter} will be used to get the value that is going to be showed in the {@link Checkbox}.
      *
-     * @param Radio
+     * @param radio
      *            The {@link Radio} to be bound
      * @param getter
      *            The {@link Getter} interface that will implement a get method.
@@ -588,7 +587,6 @@ public class Util {
     public static Radio bind(final Radio radio, final Getter<Boolean> getter) {
         radio.setSelected(getter.get());
         radio.setDisabled(true);
-
         return radio;
     }
 
@@ -597,7 +595,7 @@ public class Util {
      * The {@link Getter} will be used to get the value that is going to be showed in the {@link Radio}.
      * The {@link Setter} will be used to store the value inserted by the user in the {@link Radio}.
      *
-     * @param decimalBox
+     * @param radio
      *            The {@link Radio} to be bound
      * @param getter
      *            he {@link Getter} interface that will implement a get method.
@@ -629,7 +627,6 @@ public class Util {
     public static Bandbox bind(Bandbox bandBox, Getter<String> getter) {
         bandBox.setValue(getter.get());
         bandBox.setDisabled(true);
-
         return bandBox;
     }
 
@@ -663,7 +660,7 @@ public class Util {
      * Creates an edit button with class and icon already set.
      *
      * @param eventListener
-     *            A event listener for {@link Events.ON_CLICK}
+     *            A event listener for {@link Events#ON_CLICK}
      * @return An edit {@link Button}
      */
     public static Button createEditButton(EventListener eventListener) {
@@ -682,7 +679,7 @@ public class Util {
      * Creates a remove button with class and icon already set.
      *
      * @param eventListener
-     *            A event listener for {@link Events.ON_CLICK}
+     *            A event listener for {@link Events#ON_CLICK}
      * @return A remove {@link Button}
      */
     public static Button createRemoveButton(EventListener eventListener) {
@@ -740,7 +737,7 @@ public class Util {
      *            new listeners to add
      */
     public static void ensureUniqueListeners(Component component, String eventName, EventListener... uniqueListeners) {
-        //TODO Replace deprecated method
+        // TODO Replace deprecated method
         Iterator<?> listenerIterator = component.getListenerIterator(eventName);
 
         while (listenerIterator.hasNext()) {
@@ -784,10 +781,9 @@ public class Util {
 
     /**
      * Gets money format for a {@link Decimalbox} using 2 figures for the
-     * decimal part and concatenating the currency symbol
+     * decimal part and concatenating the currency symbol.
      *
-     * @return Format for a {@link Decimalbox} <code>###.##</code> plus currency
-     *         symbol
+     * @return Format for a {@link Decimalbox} <code>###.##</code> plus currency symbol
      */
     public static String getMoneyFormat() {
         return "###.## " + escapeDecimalFormatSpecialChars(getCurrencySymbol());
@@ -893,8 +889,8 @@ public class Util {
         return dateTime == null
                 ? ""
                 : DateFormat
-                .getDateTimeInstance(DateFormat.DEFAULT, DateFormat.DEFAULT, Locales.getCurrent())
-                .format(dateTime);
+                    .getDateTimeInstance(DateFormat.DEFAULT, DateFormat.DEFAULT, Locales.getCurrent())
+                    .format(dateTime);
     }
 
     /**
@@ -919,8 +915,7 @@ public class Util {
     }
 
     /**
-     * Format specific <code>time</code> using the {@link DateFormat#SHORT}
-     * format and showing only the time.
+     * Format specific <code>time</code> using the {@link DateFormat#SHORT} format and showing only the time.
      */
     public static String formatTime(LocalTime time) {
         return time == null ? "" : formatTime(time.toDateTimeToday().toDate());
@@ -940,7 +935,8 @@ public class Util {
                     .getFile()
                     .getPath());
 
-        } catch (IOException ignored) {}
+        } catch (IOException ignored) {
+        }
     }
 
     /**
@@ -962,7 +958,8 @@ public class Util {
                         .getFile()
                         .getPath());
             }
-        } catch (IOException ignored) {}
+        } catch (IOException ignored) {
+        }
     }
 
 }

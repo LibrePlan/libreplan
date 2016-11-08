@@ -104,7 +104,7 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
     protected OrderLineGroup parent;
 
     protected CriterionRequirementOrderElementHandler criterionRequirementHandler =
-            CriterionRequirementOrderElementHandler.getInstance();
+                    CriterionRequirementOrderElementHandler.getInstance();
 
     /**
      * This field is transient.
@@ -355,7 +355,7 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
     private boolean wasASchedulingPoint() {
         TaskSource currentTaskSource = getTaskSource();
         // Check if the existing TaskSource is inconsistent with the current scheduling state
-        if (currentTaskSource != null &&
+        if (currentTaskSource != null && currentTaskSource.getTask() != null &&
                 currentTaskSource.getTask().isLeaf() &&
                 getSchedulingStateType() != Type.SCHEDULING_POINT) {
 
@@ -535,10 +535,6 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
         this.getInfoComponent().setName(name);
     }
 
-    public abstract boolean isLeaf();
-
-    public abstract List<OrderElement> getChildren();
-
     public Date getInitDate() {
         return initDate;
     }
@@ -654,9 +650,8 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
         Validate.notNull(label);
 
         if (!checkAncestorsNoOtherLabelRepeated(label)) {
-            throw new IllegalArgumentException(
-                    "An ancestor has the same label assigned, " +
-                            "so this element is already inheriting this label");
+            throw new IllegalArgumentException("An ancestor has the same label assigned, " +
+                    "so this element is already inheriting this label");
         }
 
         removeLabelOnChildren(label);
@@ -856,10 +851,9 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
         return Collections.unmodifiableSet(criterionRequirements);
     }
 
-    /*
+    /**
      * Operations to manage the criterion requirements of a orderElement
-     * (remove, adding, update of the criterion requirement of the orderElement
-     * such as the descendant's criterion requirement)
+     * (remove, adding, update of the criterion requirement of the orderElement such as the descendant's criterion requirement)
      */
 
     public void setValidCriterionRequirement(IndirectCriterionRequirement requirement,boolean valid) {

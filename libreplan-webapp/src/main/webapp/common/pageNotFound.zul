@@ -54,11 +54,11 @@
 
                 <separator height="5px"/>
 
-                <label value="Help/Info pages are not generated!"/>
+                <label value="${i18n:_('Help/Info pages are not generated')}!"/>
 
-                <label value="If you want to see help/info page then:"/>
+                <label value="${i18n:_('If you want to see help/info page then')}:"/>
 
-                <label value="Open file HACKING.rst in project directory and read Part 'LibrePlan documentation generation', how to generate help/info pages."/>
+                <label value="${i18n:_('Open file HACKING.rst in project directory and read Part LibrePlan documentation generation, how to generate help/info pages')}."/>
             </vbox>
         </vbox>
     </window>

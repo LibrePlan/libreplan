@@ -172,6 +172,7 @@ public class SubcontractServiceTest {
 
     @Test
     @Transactional
+    /** FIXME Test could fail sometimes */
     public void validSubcontractedTaskData() {
         int previous = orderDAO.getOrders().size();
 

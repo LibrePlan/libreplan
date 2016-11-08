@@ -35,7 +35,6 @@ import org.libreplan.web.common.BaseCRUDController;
 import org.libreplan.web.common.Util;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
-import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Column;
 import org.zkoss.zul.Constraint;
@@ -53,6 +52,8 @@ import org.zkoss.zul.ext.Sortable;
  */
 public class QualityFormCRUDController extends BaseCRUDController<QualityForm> {
 
+    private final String CANNOT_BE_EMPTY = "cannot be empty";
+
     private IQualityFormModel qualityFormModel;
 
     private Grid gridQualityForms;
@@ -64,7 +65,9 @@ public class QualityFormCRUDController extends BaseCRUDController<QualityForm> {
     private Textbox txtFilter;
 
     public QualityFormCRUDController() {
-        qualityFormModel = (IQualityFormModel) SpringUtil.getBean("qualityFormModel");
+        if ( qualityFormModel == null ) {
+            qualityFormModel = (IQualityFormModel) SpringUtil.getBean("qualityFormModel");
+        }
     }
 
     @Override
@@ -77,38 +80,40 @@ public class QualityFormCRUDController extends BaseCRUDController<QualityForm> {
     }
 
     /**
-     * Return all {@link QualityForm}
-     * @return
+     * Return all {@link QualityForm}.
+     *
+     * @return {@link List<QualityForm>}
      */
     public List<QualityForm> getQualityForms() {
         return qualityFormModel.getQualityForms(predicate);
     }
 
     /**
-     * Return current {@link QualityForm}
-     * @return
+     * Return current {@link QualityForm}.
+     *
+     * @return {@link QualityForm}
      */
     public QualityForm getQualityForm() {
         return qualityFormModel.getQualityForm();
     }
 
     /**
-     * Return all {@link QualityFormItem} assigned to the current
-     * {@link QualityForm}
-     * @return
+     * Return all {@link QualityFormItem} assigned to the current {@link QualityForm}.
+     *
+     * @return {@link List<QualityFormItem>}
      */
     public List<QualityFormItem> getQualityFormItems() {
         return qualityFormModel.getQualityFormItems();
     }
 
     @Override
-    protected void beforeSaving() throws ValidationException {
+    protected void beforeSaving() {
         super.beforeSaving();
         validateReportProgress();
     }
 
     @Override
-    protected void save() throws ValidationException {
+    protected void save() {
         qualityFormModel.confirmSave();
     }
 
@@ -122,11 +127,10 @@ public class QualityFormCRUDController extends BaseCRUDController<QualityForm> {
     }
 
     /**
-     * Sorts {@link Grid} model by first column, respecting sort order
+     * Sorts {@link Grid} model by first column, respecting sort order.
      *
-     * FIXME: This is a temporary solution, there should be a better/smarter way
-     * of preserving order in the Grid every time a new element is added to its
-     * model
+     * FIXME: This is a temporary solution
+     * There should be a better/smarter way Preserving order in the Grid every time a new element is added to its model.
      */
     private void forceSortGridQualityFormItems() {
         Column column = (Column) gridQualityFormItems.getColumns().getChildren().get(2);
@@ -140,19 +144,19 @@ public class QualityFormCRUDController extends BaseCRUDController<QualityForm> {
     }
 
     /**
-     * Pop up confirm remove dialog
-     * @param QualityFormItem
+     * Pop up confirm remove dialog.
+     *
+     * @param item
      */
     public void confirmDeleteQualityFormItem(QualityFormItem item) {
         if (qualityFormModel.isTotalPercentage(item)) {
-            if (Messagebox
-                    .show(
-                            _("Deleting this item will disable the report progress option. Are you sure?"),
-                            _("Confirm"),
-                            Messagebox.OK | Messagebox.CANCEL,
-                            Messagebox.QUESTION) == Messagebox.OK) {
+
+            if (Messagebox.show(
+                    _("Deleting this item will disable the report progress option. Are you sure?"), _("Confirm"),
+                    Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION) == Messagebox.OK) {
+
                 Checkbox reportProgress = (Checkbox) editWindow.getFellowIfAny("checkBoxReportProgress");
-                disabledCheckbocReportProgress(reportProgress);
+                disabledCheckboxReportProgress(reportProgress);
             } else {
                 return;
             }
@@ -171,7 +175,7 @@ public class QualityFormCRUDController extends BaseCRUDController<QualityForm> {
     }
 
     public void onChangeQualityFormItemPercentage() {
-        // it must update the order of the items if it is necessary.
+        // It must update the order of the items if it is necessary
         getQualityForm().updateAndSortQualityFormItem();
         Util.reloadBindings(gridQualityFormItems);
     }
@@ -179,8 +183,8 @@ public class QualityFormCRUDController extends BaseCRUDController<QualityForm> {
     public Constraint checkConstraintUniqueQualityFormName() {
         return (comp, value) -> {
             getQualityForm().setName((String) value);
-            if((value == null) || (((String)value)).isEmpty()){
-                throw new WrongValueException(comp, _("cannot be empty"));
+            if ((value == null) || ((String)value).isEmpty()) {
+                throw new WrongValueException(comp, _(CANNOT_BE_EMPTY));
             } else if (!qualityFormModel.checkConstraintUniqueQualityFormName()) {
                 getQualityForm().setName(null);
                 throw new WrongValueException(comp, _("{0} already exists", value));
@@ -192,9 +196,9 @@ public class QualityFormCRUDController extends BaseCRUDController<QualityForm> {
         return (comp, value) -> {
             QualityFormItem item = ((Row) comp.getParent()).getValue();
             item.setName((String)value);
-            if ((value == null) || (((String) value)).isEmpty()) {
+            if ((value == null) || ((String) value).isEmpty()) {
                 item.setName(null);
-                throw new WrongValueException(comp, _("cannot be empty"));
+                throw new WrongValueException(comp, _(CANNOT_BE_EMPTY));
             } else if (!qualityFormModel.checkConstraintUniqueQualityFormItemName()) {
                 item.setName(null);
                 throw new WrongValueException(comp, _("{0} already exists", value));
@@ -211,7 +215,7 @@ public class QualityFormCRUDController extends BaseCRUDController<QualityForm> {
 
             if (newPercentage == null) {
                 item.setPercentage(null);
-                throw new WrongValueException(comp, _("cannot be empty"));
+                throw new WrongValueException(comp, _(CANNOT_BE_EMPTY));
             }
             if (qualityFormModel.checkConstraintOutOfRangeQualityFormItemPercentage(item)) {
                 item.setPercentage(null);
@@ -225,8 +229,7 @@ public class QualityFormCRUDController extends BaseCRUDController<QualityForm> {
     }
 
     public boolean isByPercentage() {
-        return this.getQualityForm() != null &&
-                getQualityForm().getQualityFormType().equals(QualityFormType.BY_PERCENTAGE);
+        return this.getQualityForm() != null && getQualityForm().getQualityFormType().equals(QualityFormType.BY_PERCENTAGE);
     }
 
     public boolean isByItems() {
@@ -248,10 +251,9 @@ public class QualityFormCRUDController extends BaseCRUDController<QualityForm> {
     }
 
     /**
-     * Apply filter to quality forms
-     * @param event
+     * Apply filter to quality forms.
      */
-    public void onApplyFilter(Event event) {
+    public void onApplyFilter() {
         // Filter quality forms by name
         predicate = getSelectedName();
         Util.reloadBindings(gridQualityForms);
@@ -261,14 +263,10 @@ public class QualityFormCRUDController extends BaseCRUDController<QualityForm> {
         return txtFilter.getValue();
     }
 
-    private void clearFilter() {
-        txtFilter.setValue("");
-        predicate = getSelectedName();
-    }
-
     public void validateReportProgress() {
         if ((getQualityForm().isReportAdvance()) && (!hasItemWithTotalPercentage())) {
             Checkbox checkBoxReportProgress = (Checkbox) editWindow.getFellowIfAny("checkBoxReportProgress");
+
             throw new WrongValueException(
                     checkBoxReportProgress,
                     _("Quality form should include an item with a value of 100% in order to report progress"));
@@ -279,7 +277,7 @@ public class QualityFormCRUDController extends BaseCRUDController<QualityForm> {
         return this.qualityFormModel.hasItemWithTotalPercentage();
     }
 
-    private void disabledCheckbocReportProgress(Checkbox reportProgress) {
+    private void disabledCheckboxReportProgress(Checkbox reportProgress) {
         if (reportProgress != null) {
             getQualityForm().setReportAdvance(false);
             reportProgress.setChecked(false);
@@ -332,8 +330,7 @@ public class QualityFormCRUDController extends BaseCRUDController<QualityForm> {
             qualityFormModel.checkHasTasks(qualityForm);
             return false;
         } catch (ValidationException e) {
-            showCannotDeleteQualityFormDialog(e.getInvalidValue().getMessage()
-            );
+            showCannotDeleteQualityFormDialog(e.getInvalidValue().getMessage());
         }
         return true;
     }

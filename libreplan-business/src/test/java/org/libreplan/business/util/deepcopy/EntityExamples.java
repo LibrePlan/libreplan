@@ -30,7 +30,6 @@ import java.util.Set;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
- *
  */
 public class EntityExamples {
 
@@ -40,15 +39,14 @@ public class EntityExamples {
     public enum TestEnum {
         A {
         },
-        B;
+        B
     }
 
     public static class Parent {
+
         private EntityA entityAProperty;
 
-        private String prueba = "bar";
-
-        private Set<Object> setProperty = new HashSet<Object>();
+        private Set<Object> setProperty = new HashSet<>();
 
         public EntityA getEntityAProperty() {
             return entityAProperty;
@@ -70,9 +68,8 @@ public class EntityExamples {
 
     public static class EntityA {
 
-        private static final String staticProperty = "foo";
-
         private final String finalProperty = "bar";
+
         private String stringProperty;
 
         private int intProperty = 2;
@@ -83,7 +80,7 @@ public class EntityExamples {
 
         private Set<Object> setProperty;
 
-        private Map<Object, Object> mapProperty = new HashMap<Object, Object>();
+        private Map<Object, Object> mapProperty = new HashMap<>();
 
         private List<Object> listProperty;
 
@@ -314,9 +311,6 @@ public class EntityExamples {
     }
 
     public static class SubClassExample extends SuperclassExample {
-
-        private int intProperty;
-
     }
 
 }

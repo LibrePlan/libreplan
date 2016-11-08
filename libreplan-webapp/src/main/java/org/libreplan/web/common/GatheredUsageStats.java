@@ -121,16 +121,38 @@ public class GatheredUsageStats {
     private String oldestDate;
 
     public GatheredUsageStats() {
-        this.userDAO = (IUserDAO) SpringUtil.getBean("userDAO");
-        this.orderModel = (IOrderModel) SpringUtil.getBean("orderModel");
-        this.workReportModel = (IWorkReportModel) SpringUtil.getBean("workReportModel");
-        this.workerModel = (IWorkerModel) SpringUtil.getBean("workerModel");
-        this.machineModel = (IMachineModel) SpringUtil.getBean("machineModel");
-        this.expenseSheetModel = (IExpenseSheetModel) SpringUtil.getBean("expenseSheetModel");
-        this.materialsModel = (IMaterialsModel) SpringUtil.getBean("materialsModel");
+        if ( this.userDAO == null ) {
+            this.userDAO = (IUserDAO) SpringUtil.getBean("userDAO");
+        }
 
-        this.assignedTaskQualityFormsToOrderElementModel = (IAssignedTaskQualityFormsToOrderElementModel)
-                SpringUtil.getBean("assignedTaskQualityFormsToOrderElementModel");
+        if ( this.orderModel == null ) {
+            this.orderModel = (IOrderModel) SpringUtil.getBean("orderModel");
+        }
+
+        if ( this.workReportModel == null ) {
+            this.workReportModel = (IWorkReportModel) SpringUtil.getBean("workReportModel");
+        }
+
+        if ( this.workerModel == null ) {
+            this.workerModel = (IWorkerModel) SpringUtil.getBean("workerModel");
+        }
+
+        if ( this.machineModel == null ) {
+            this.machineModel = (IMachineModel) SpringUtil.getBean("machineModel");
+        }
+
+        if ( this.expenseSheetModel == null ) {
+            this.expenseSheetModel = (IExpenseSheetModel) SpringUtil.getBean("expenseSheetModel");
+        }
+
+        if ( this.materialsModel == null ) {
+            this.materialsModel = (IMaterialsModel) SpringUtil.getBean("materialsModel");
+        }
+
+        if ( this.assignedTaskQualityFormsToOrderElementModel == null ) {
+            this.assignedTaskQualityFormsToOrderElementModel = (IAssignedTaskQualityFormsToOrderElementModel)
+                    SpringUtil.getBean("assignedTaskQualityFormsToOrderElementModel");
+        }
 
         initialize();
     }
@@ -160,7 +182,8 @@ public class GatheredUsageStats {
                 sb.append(Integer.toString((anEncoded & 0xff) + 0x100, 16).substring(1));
             }
 
-        } catch (NoSuchAlgorithmException | UnsupportedEncodingException ignored) {}
+        } catch (NoSuchAlgorithmException | UnsupportedEncodingException ignored) {
+        }
 
         return sb.toString();
     }
@@ -229,7 +252,6 @@ public class GatheredUsageStats {
             connection.getInputStream();
 
         } catch (IOException ignored) {
-
         } finally {
             if ( connection != null ) {
                 connection.disconnect();

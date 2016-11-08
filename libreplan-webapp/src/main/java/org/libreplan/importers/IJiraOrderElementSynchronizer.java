@@ -30,24 +30,21 @@ import org.libreplan.business.orders.entities.OrderSyncInfo;
 import org.libreplan.importers.jira.IssueDTO;
 
 /**
- * Synchronize order elements inclusive progress assignments and measurements of
- * an existing order with Jira issues.
- *
- * Jira issues will be retrieved from Jira RESTful web service using
- * {@link JiraRESTClient}
+ * Synchronize order elements inclusive progress assignments and measurements of an existing order with Jira issues.
+ * Jira issues will be retrieved from Jira RESTful web service using {@link JiraRESTClient}.
  *
  * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
  */
 public interface IJiraOrderElementSynchronizer {
 
     /**
-     * Gets all distinct jira lables from an external 'php' script.
+     * Gets all distinct JIRA lables from an external 'php' script.
      *
-     * FIXME: This is because at this moment Jira doesn't support Labels
-     * request. As workaround we build a simple php script to do the query in
-     * Jira database and returns a comma separated string(labels). Once Jira
-     * supports the labels request this method will be modified. More info:
-     * https://jira.atlassian.com/browse/JRA-29409
+     * FIXME: This is because at this moment Jira doesn't support Labels request.
+     * As workaround we build a simple php script to do the query in
+     * Jira database and returns a comma separated string(labels).
+     * Once Jira supports the labels request this method will be modified.
+     * More info: https://jira.atlassian.com/browse/JRA-29409
      *
      * @return A list of labels
      * @throws ConnectorException
@@ -56,13 +53,12 @@ public interface IJiraOrderElementSynchronizer {
     List<String> getAllJiraLabels() throws ConnectorException;
 
     /**
-     * Get all jira issues based on the specified <code>label</code> parameter
-     * from jira RESTFul web service
+     * Get all JIRA issues based on the specified <code>label</code> parameter from JIRA RESTFul web service.
      *
      * @param label
-     *            search criteria for jira issues
+     *            search criteria for JIRA issues
      *
-     * @return list of jira issues
+     * @return list of JIRA issues
      * @throws ConnectorException
      *             if connector not found or contains invalid connection values
      */
@@ -70,26 +66,23 @@ public interface IJiraOrderElementSynchronizer {
 
     /**
      * Synchronizes the list of {@link OrderElement}s,
-     * {@link DirectAdvanceAssignment}s and {@link AdvanceMeasurement}s of the
-     * given {@link Order} with jira issues.
+     * {@link DirectAdvanceAssignment}s and {@link AdvanceMeasurement}s of the given {@link Order} with JIRA issues.
      *
-     * Loops through all jira <code>issues</code> and check if an
-     * {@link OrderElement} of the given <code>order</code> exists. If it
-     * exists, update the {@link OrderElement} with the issue item. If not
-     * create new {@link OrderElement}, update it with the issue item and add to
-     * the <code>order</code> and start synchronization of
-     * {@link DirectAdvanceAssignment} and {@link AdvanceMeasurement}
+     * Loops through all JIRA <code>issues</code> and check if an {@link OrderElement} of the given <code>order</code> exists.
+     * If it exists, update the {@link OrderElement} with the issue item.
+     * If not create new {@link OrderElement}, update it with the issue item and add to
+     * the <code>order</code> and start synchronization of {@link DirectAdvanceAssignment} and {@link AdvanceMeasurement}.
      *
      * @param order
      *            an existing order where its orderElements will be synchronized
-     *            with jira issues
+     *            with JIRA issues
      * @param issues
-     *            jira issues
+     *            JIRA issues
      */
     void syncOrderElementsWithJiraIssues(List<IssueDTO> issues, Order order);
 
     /**
-     * Saves synchronization info
+     * Saves synchronization info.
      *
      * @param key
      *            the key(label)
@@ -99,7 +92,7 @@ public interface IJiraOrderElementSynchronizer {
     void saveSyncInfo(String key, Order order);
 
     /**
-     * Gets the most recent synchronized info
+     * Gets the most recent synchronized info.
      *
      * @param order
      *            the order
@@ -108,17 +101,15 @@ public interface IJiraOrderElementSynchronizer {
     OrderSyncInfo getOrderLastSyncInfo(Order order);
 
     /**
-     * returns synchronization info, success or fail info
+     * Returns synchronization info, success or fail info.
      */
     SynchronizationInfo getSynchronizationInfo();
 
     /**
-     * Synchronize order elements with JIRA issues if they already synchronized
-     * using
-     * {@link IJiraOrderElementSynchronizer#syncOrderElementsWithJiraIssues(List, Order)
+     * Synchronize order elements with JIRA issues if they already synchronized using
+     * {@link IJiraOrderElementSynchronizer#syncOrderElementsWithJiraIssues(List, Order).
      *
-     * It gets then an already synchronized orders from the
-     * {@link OrderSyncInfo} and re-synchronize them
+     * It gets then an already synchronized orders from the {@link OrderSyncInfo} and re-synchronize them.
      *
      * @return a list of {@link SynchronizationInfo}
      *

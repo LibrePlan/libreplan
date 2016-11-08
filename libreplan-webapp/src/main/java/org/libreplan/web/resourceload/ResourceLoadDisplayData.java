@@ -15,6 +15,34 @@ import org.zkoss.ganttz.util.Interval;
 
 public class ResourceLoadDisplayData {
 
+    private final List<LoadTimeLine> timeLines;
+
+    private final Interval viewInterval;
+
+    private final Paginator<? extends BaseEntity> paginator;
+
+    private final Callable<List<Resource>> resourcesConsidered;
+
+    private final Callable<List<DayAssignment>> assignmentsConsidered;
+
+    public ResourceLoadDisplayData(
+            List<LoadTimeLine> timeLines,
+            Paginator<? extends BaseEntity> paginator,
+            Callable<List<Resource>> resourcesConsidered,
+            Callable<List<DayAssignment>> assignmentsConsidered) {
+
+        Validate.notNull(timeLines);
+        Validate.notNull(paginator);
+        Validate.notNull(resourcesConsidered);
+        Validate.notNull(assignmentsConsidered);
+
+        this.timeLines = timeLines;
+        this.viewInterval = getViewIntervalFrom(timeLines);
+        this.paginator = paginator;
+        this.resourcesConsidered = cached(resourcesConsidered);
+        this.assignmentsConsidered = cached(assignmentsConsidered);
+    }
+
     private static <T> Callable<T> cached(Callable<T> callable) {
         return new CachedCallable<>(callable);
     }
@@ -28,6 +56,7 @@ public class ResourceLoadDisplayData {
     }
 
     private static class CachedCallable<T> implements Callable<T> {
+
         private final Callable<T> callable;
 
         private T result;
@@ -42,45 +71,12 @@ public class ResourceLoadDisplayData {
             if (result != null) {
                 return result;
             }
-            return result = callable.call();
+
+            result = callable.call();
+
+            return result;
         }
 
-    }
-
-    private final List<LoadTimeLine> timeLines;
-
-    private final Interval viewInterval;
-
-    private final Paginator<? extends BaseEntity> paginator;
-
-    private final Callable<List<Resource>> resourcesConsidered;
-
-    private final Callable<List<DayAssignment>> assignmentsConsidered;
-
-    private final LocalDate filterStart;
-
-    private final LocalDate filterEnd;
-
-    public ResourceLoadDisplayData(
-            List<LoadTimeLine> timeLines,
-            LocalDate filterStart,
-            LocalDate filterEnd,
-            Paginator<? extends BaseEntity> paginator,
-            Callable<List<Resource>> resourcesConsidered,
-            Callable<List<DayAssignment>> assignmentsConsidered) {
-
-        Validate.notNull(timeLines);
-        Validate.notNull(paginator);
-        Validate.notNull(resourcesConsidered);
-        Validate.notNull(assignmentsConsidered);
-
-        this.timeLines = timeLines;
-        this.filterStart = filterStart;
-        this.filterEnd = filterEnd;
-        this.viewInterval = getViewIntervalFrom(timeLines);
-        this.paginator = paginator;
-        this.resourcesConsidered = cached(resourcesConsidered);
-        this.assignmentsConsidered = cached(assignmentsConsidered);
     }
 
     private static Interval getViewIntervalFrom(List<LoadTimeLine> timeLines) {
@@ -113,14 +109,6 @@ public class ResourceLoadDisplayData {
 
     public List<DayAssignment> getDayAssignmentsConsidered() {
         return resolve(assignmentsConsidered);
-    }
-
-    public LocalDate getFilterStart() {
-        return filterStart;
-    }
-
-    public LocalDate getFilterEnd() {
-        return filterEnd;
     }
 
 }

@@ -26,8 +26,8 @@ import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.planner.entities.TaskElement;
 
 /**
- * Class that represents no persistent imported tasks. <br />
- *
+ * Class that represents no persistent imported tasks.
+ * <br />
  * At these moment it only represent the tasks that can have any subtasks.
  *
  * @author Alba Carro Pérez <alba.carro@gmail.com>
@@ -81,7 +81,7 @@ public class OrderElementDTO implements IHasTaskAssociated {
     public ConstraintDTO constraint;
 
     /**
-     * Contraint date of this task.
+     * Constraint date of this task.
      */
     public Date constraintDate;
 
@@ -90,14 +90,14 @@ public class OrderElementDTO implements IHasTaskAssociated {
      */
     public TaskElement taskElement;
 
-    @Override
-    public TaskElement getTaskAssociated() {
-        return taskElement;
-    }
-
     /**
      * Name of the calendar that this OrderElementDTO is linked to.
      */
     public String calendarName = null;
+
+    @Override
+    public TaskElement getTaskAssociated() {
+        return taskElement;
+    }
 
 }

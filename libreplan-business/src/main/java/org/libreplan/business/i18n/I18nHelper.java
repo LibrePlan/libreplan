@@ -24,20 +24,21 @@ package org.libreplan.business.i18n;
 
 /**
  * This class provides a function to mark strings to be translated.
- * Real translation have to be done in webapp module depending on user language and
- * not done here depending on server language.
+ * Real translation have to be done in webapp module depending on user language and not done here depending on server language.
  *
  * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 public class I18nHelper {
 
-    private I18nHelper() {}
+    private I18nHelper() {
+    }
 
-    //TODO It should be changed since JDK9.
     /**
+     * TODO It should be changed since JDK9
+     *
      * Use of '_' as an identifier might not be supported in releases after Java SE 8.
      *
-     * @param str
+     * @param text
      * @return Text depends on locale
      */
     public static String _(String text) {

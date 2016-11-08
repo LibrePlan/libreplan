@@ -45,6 +45,7 @@ public abstract class Finder implements IFinder {
     }
 
     @Transactional(readOnly = true)
+    @Override
     public SimpleListModelExt getModel() {
         return new SimpleListModelExt(getAll());
     }
@@ -73,13 +74,11 @@ public abstract class Finder implements IFinder {
      * Use _toString() to indicate how an object is shown in the list of matching elements.
      */
     private class ComboWorkerRenderer implements ComboitemRenderer {
-
         @Override
         public void render(Comboitem item, Object data, int i) {
             item.setLabel(_toString(data));
             item.setValue(data);
         }
-
     }
 
     /**
@@ -102,8 +101,8 @@ public abstract class Finder implements IFinder {
         /**
          * Searches for value among all model entries.
          *
-         * entryMatchesText method is used to check if an entry matches or not.
-         * Overwrite this method to provide your own behaviour
+         * {@link #entryMatchesText(String, String)}is used to check if an entry matches or not.
+         * Overwrite this method to provide your own behaviour.
          *
          * @param value
          *            String to search
@@ -120,10 +119,10 @@ public abstract class Finder implements IFinder {
 
             final LinkedList data = new LinkedList();
             for (int i = 0; i < getSize(); i++) {
-                if ( idx.equals("") || entryMatchesText(_toString(getElementAt(i)), idx) ) {
+                if ( "".equals(idx) || entryMatchesText(_toString(getElementAt(i)), idx) ) {
                     data.add(getElementAt(i));
                     if ( --nRows <= 0 ) {
-                        break; // done
+                        break; // Done
                     }
                 }
             }

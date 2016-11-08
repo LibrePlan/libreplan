@@ -29,27 +29,40 @@ import java.util.EnumSet;
 /**
  * @author Susana Montes Pedreiera <smotnes@wirelessgalicia.com>
  * @author Manuel Rego Casasnovas <rego@igalia.com>
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
 public enum OrderStatusEnum {
 
-    PRE_SALES(_("PRE-SALES")),
-    OFFERED(_("OFFERED")),
-    OUTSOURCED(_("OUTSOURCED")),
-    ACCEPTED(_("ACCEPTED")),
-    STARTED(_("STARTED")),
-    ON_HOLD(_("ON HOLD")),
-    FINISHED(_("FINISHED")),
-    CANCELLED(_("CANCELLED")),
-    STORED(_("ARCHIVED"));
+    PRE_SALES(_("PRE-SALES"), 0),
+    OFFERED(_("OFFERED"), 1),
+    OUTSOURCED(_("OUTSOURCED"), 2),
+    ACCEPTED(_("ACCEPTED"), 3),
+    STARTED(_("STARTED"), 4),
+    ON_HOLD(_("ON HOLD"), 5),
+    FINISHED(_("FINISHED"), 6),
+    CANCELLED(_("CANCELLED"), 7),
+    STORED(_("ARCHIVED"), 8);
 
     private String description;
 
-    private OrderStatusEnum(String description) {
+    /**
+     * For {@link DashboardControllerGlobal}.
+     * When I am building Global Dashboard page I need to know order of enums in {@link Grid}.
+     */
+    private final int index;
+
+    OrderStatusEnum(String description, int index) {
         this.description = description;
+        this.index = index;
     }
 
+    @Override
     public String toString() {
         return this.description;
+    }
+
+    public int getIndex() {
+        return this.index;
     }
 
     public static OrderStatusEnum getDefault() {
@@ -57,7 +70,8 @@ public enum OrderStatusEnum {
     }
 
     public static EnumSet<OrderStatusEnum> getVisibleStatus() {
-        return EnumSet.of(OrderStatusEnum.PRE_SALES, OrderStatusEnum.OFFERED,
+        return EnumSet.of(
+                OrderStatusEnum.PRE_SALES, OrderStatusEnum.OFFERED,
                 OrderStatusEnum.OUTSOURCED, OrderStatusEnum.ACCEPTED,
                 OrderStatusEnum.STARTED, OrderStatusEnum.ON_HOLD,
                 OrderStatusEnum.FINISHED);

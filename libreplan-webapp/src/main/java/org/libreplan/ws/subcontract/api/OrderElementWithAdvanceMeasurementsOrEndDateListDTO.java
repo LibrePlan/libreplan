@@ -44,6 +44,10 @@ public class OrderElementWithAdvanceMeasurementsOrEndDateListDTO {
     @XmlElement(name = "order-element")
     public List<OrderElementWithAdvanceMeasurementsOrEndDateDTO> orderElements = new ArrayList<>();
 
+    /** Do not remove default constructor */
+    public OrderElementWithAdvanceMeasurementsOrEndDateListDTO() {
+    }
+
     public OrderElementWithAdvanceMeasurementsOrEndDateListDTO(
             String externalCompanyNif, List<OrderElementWithAdvanceMeasurementsOrEndDateDTO> orderElements) {
 

@@ -153,18 +153,14 @@ public class AssignedHoursToOrderElementModel implements IAssignedHoursToOrderEl
 
     @Override
     public EffortDuration getAssignedDirectEffort() {
-        if (orderElement == null) {
-            return EffortDuration.zero();
-        }
-        return this.assignedDirectEffort;
+        return orderElement == null ? EffortDuration.zero() : this.assignedDirectEffort;
     }
 
     @Override
     public EffortDuration getTotalAssignedEffort() {
-        if (orderElement == null || orderElement.getSumChargedEffort() == null) {
-            return EffortDuration.zero();
-        }
-        return this.orderElement.getSumChargedEffort().getTotalChargedEffort();
+        return orderElement == null || orderElement.getSumChargedEffort() == null
+                ? EffortDuration.zero()
+                : this.orderElement.getSumChargedEffort().getTotalChargedEffort();
     }
 
     @Override
@@ -218,52 +214,39 @@ public class AssignedHoursToOrderElementModel implements IAssignedHoursToOrderEl
         if (orderElement == null) {
             return EffortDuration.zero();
         }
-        //TODO this must be changed when changing HoursGroup
+        // TODO this must be changed when changing HoursGroup
         return EffortDuration.hours(orderElement.getWorkHours());
     }
 
     @Override
     @Transactional(readOnly = true)
     public int getProgressWork() {
-        if (orderElement == null) {
-            return 0;
-        }
-        return orderElementDAO.getHoursAdvancePercentage(orderElement).multiply(new BigDecimal(100)).intValue();
+        return orderElement == null
+                ? 0
+                : orderElementDAO.getHoursAdvancePercentage(orderElement).multiply(new BigDecimal(100)).intValue();
     }
 
     @Override
     public BigDecimal getBudget() {
-        if (orderElement == null) {
-            return BigDecimal.ZERO;
-        }
-        return orderElement.getBudget();
+        return orderElement == null ? BigDecimal.ZERO : orderElement.getBudget();
     }
 
     @Override
     @Transactional(readOnly = true)
     public BigDecimal getCalculatedBudget() {
-        if (orderElement == null) {
-            return BigDecimal.ZERO;
-        }
-        return getBudget().subtract(getResourcesBudget());
+        return orderElement == null ? BigDecimal.ZERO : getBudget().subtract(getResourcesBudget());
     }
 
     @Override
     @Transactional(readOnly = true)
     public BigDecimal getResourcesBudget() {
-        if (orderElement == null) {
-            return BigDecimal.ZERO;
-        }
-        return orderElement.getResourcesBudget();
+        return orderElement == null ? BigDecimal.ZERO : orderElement.getResourcesBudget();
     }
 
     @Override
     @Transactional(readOnly = true)
     public BigDecimal getMoneyCost() {
-        if (orderElement == null) {
-            return BigDecimal.ZERO;
-        }
-        return moneyCostCalculator.getTotalMoneyCost(orderElement);
+        return orderElement == null ? BigDecimal.ZERO : moneyCostCalculator.getTotalMoneyCost(orderElement);
     }
 
     @Override
@@ -285,30 +268,23 @@ public class AssignedHoursToOrderElementModel implements IAssignedHoursToOrderEl
 
     @Override
     public BigDecimal getCostOfExpenses() {
-        if (orderElement == null) {
-            return BigDecimal.ZERO.setScale(2);
-        }
-        return moneyCostCalculator.getExpensesMoneyCost(orderElement);
+        return orderElement == null ? BigDecimal.ZERO.setScale(2) : moneyCostCalculator.getExpensesMoneyCost(orderElement);
     }
 
     @Override
     @Transactional(readOnly = true)
     public BigDecimal getCostOfHours() {
-        if (orderElement == null) {
-            return BigDecimal.ZERO.setScale(2);
-        }
-        return moneyCostCalculator.getHoursMoneyCost(orderElement);
+        return orderElement == null ? BigDecimal.ZERO.setScale(2) : moneyCostCalculator.getHoursMoneyCost(orderElement);
     }
 
     @Override
     @Transactional(readOnly = true)
     public BigDecimal getMoneyCostPercentage() {
-        if (orderElement == null) {
-            return BigDecimal.ZERO;
-        }
-        return MoneyCostCalculator.getMoneyCostProportion(
-                moneyCostCalculator.getTotalMoneyCost(orderElement),
-                orderElement.getTotalBudget()).multiply(new BigDecimal(100));
+        return orderElement == null
+                ? BigDecimal.ZERO
+                : MoneyCostCalculator.getMoneyCostProportion(
+                    moneyCostCalculator.getTotalMoneyCost(orderElement),
+                    orderElement.getTotalBudget()).multiply(new BigDecimal(100));
     }
 
     @Override

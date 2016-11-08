@@ -26,10 +26,9 @@ import static org.libreplan.web.I18nHelper._;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.SortedSet;
 
 import org.joda.time.LocalDate;
 import org.libreplan.business.advance.entities.AdvanceMeasurement;
@@ -158,7 +157,7 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
     private void createConsolidationIfNeeded() {
         if (consolidation == null && task != null) {
             if (advanceIsCalculated()) {
-                IndirectAdvanceAssignment indirectAdvanceAssignment = getIndirecAdvanceAssignment();
+                IndirectAdvanceAssignment indirectAdvanceAssignment = getIndirectAdvanceAssignment();
                 consolidation = CalculatedConsolidation.create(task, indirectAdvanceAssignment);
             } else {
                 consolidation = NonCalculatedConsolidation.create(task, spreadAdvance);
@@ -167,7 +166,7 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
         }
     }
 
-    private IndirectAdvanceAssignment getIndirecAdvanceAssignment() {
+    private IndirectAdvanceAssignment getIndirectAdvanceAssignment() {
         if (orderElement != null) {
             Set<IndirectAdvanceAssignment> indirects = orderElement.getIndirectAdvanceAssignments();
             for (IndirectAdvanceAssignment indirectAdvanceAssignment : indirects) {
@@ -277,10 +276,8 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
             } else {
                 AdvanceMeasurement measure = dto.getAdvanceMeasurement();
 
-                NonCalculatedConsolidatedValue consolidatedValue = NonCalculatedConsolidatedValue
-                        .create(LocalDate.fromDateFields(dto.getDate()),
-                                dto.getPercentage(), measure,
-                                task.getIntraDayEndDate());
+                NonCalculatedConsolidatedValue consolidatedValue = NonCalculatedConsolidatedValue.create(
+                        LocalDate.fromDateFields(dto.getDate()), dto.getPercentage(), measure, task.getIntraDayEndDate());
 
                 measure.getNonCalculatedConsolidatedValues().add(consolidatedValue);
                 return consolidatedValue;
@@ -331,7 +328,7 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
 
     private void removeConsolidationInAdvance() {
         if (advanceIsCalculated()) {
-            IndirectAdvanceAssignment indirectAdvanceAssignment = getIndirecAdvanceAssignment();
+            IndirectAdvanceAssignment indirectAdvanceAssignment = getIndirectAdvanceAssignment();
             indirectAdvanceAssignment.getCalculatedConsolidation().remove(consolidation);
             ((CalculatedConsolidation) consolidation).setIndirectAdvanceAssignment(null);
         } else {
@@ -342,7 +339,7 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
 
     private void addConsolidationInAdvance() {
         if (advanceIsCalculated()) {
-            IndirectAdvanceAssignment indirectAdvanceAssignment = getIndirecAdvanceAssignment();
+            IndirectAdvanceAssignment indirectAdvanceAssignment = getIndirectAdvanceAssignment();
             if (!indirectAdvanceAssignment.getCalculatedConsolidation().contains(consolidation)) {
                 indirectAdvanceAssignment.getCalculatedConsolidation().add((CalculatedConsolidation) consolidation);
                 ((CalculatedConsolidation) consolidation).setIndirectAdvanceAssignment(indirectAdvanceAssignment);
@@ -368,7 +365,6 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
     private void initTask(Task task) {
         this.task = task;
         taskElementDAO.reattach(this.task);
-
         orderElement = task.getOrderElement();
         orderElementDAO.reattach(orderElement);
     }
@@ -387,7 +383,7 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
 
     private void initAdvanceConsolidationsDTOs() {
         if (spreadAdvance != null) {
-            isUnitType = (!spreadAdvance.getAdvanceType().getPercentage());
+            isUnitType = !spreadAdvance.getAdvanceType().getPercentage();
             createAdvanceConsolidationDTOs();
             initConsolidatedDates();
             addNonConsolidatedAdvances();
@@ -398,7 +394,7 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
     private void initSpreadAdvance() {
         if (spreadAdvance != null) {
             if (advanceIsCalculated()) {
-                IndirectAdvanceAssignment indirectAdvanceAssignment = getIndirecAdvanceAssignment();
+                IndirectAdvanceAssignment indirectAdvanceAssignment = getIndirectAdvanceAssignment();
                 indirectAdvanceAssignment.getCalculatedConsolidation().size();
             } else {
                 spreadAdvance.getNonCalculatedConsolidation().size();
@@ -418,20 +414,22 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
         if (consolidation != null) {
             if (!consolidation.isCalculated()) {
 
-                /* TODO check it */
-                consolidationDTOs
-                        .addAll(((NonCalculatedConsolidation) consolidation)
-                        .getNonCalculatedConsolidatedValues()
-                        .stream()
-                        .map(consolidatedValue -> new AdvanceConsolidationDTO(
-                                consolidatedValue.getAdvanceMeasurement(), consolidatedValue))
-                        .collect(Collectors.toList()));
+                SortedSet<NonCalculatedConsolidatedValue> nonCalculatedConsolidatedValues =
+                        ((NonCalculatedConsolidation) consolidation).getNonCalculatedConsolidatedValues();
+
+                for (NonCalculatedConsolidatedValue consolidatedValue : nonCalculatedConsolidatedValues) {
+
+                    consolidationDTOs.add(
+                            new AdvanceConsolidationDTO(consolidatedValue.getAdvanceMeasurement(), consolidatedValue));
+                }
             } else {
-                consolidationDTOs
-                        .addAll(((CalculatedConsolidation) consolidation)
-                                .getCalculatedConsolidatedValues()
-                                .stream().map(consolidatedValue -> new AdvanceConsolidationDTO(null, consolidatedValue))
-                                .collect(Collectors.toList()));
+
+                SortedSet<CalculatedConsolidatedValue> calculatedConsolidatedValuestedValues =
+                        ((CalculatedConsolidation) consolidation).getCalculatedConsolidatedValues();
+
+                for (CalculatedConsolidatedValue consolidatedValue : calculatedConsolidatedValuestedValues) {
+                    consolidationDTOs.add(new AdvanceConsolidationDTO(null, consolidatedValue));
+                }
             }
         }
     }
@@ -446,54 +444,42 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
     }
 
     private boolean canBeConsolidateAndShow(AdvanceMeasurement advanceMeasurement) {
-        Date date = advanceMeasurement.getDate().toDateTimeAtStartOfDay().toDate();
-        return ((AdvanceConsolidationDTO.canBeConsolidateAndShow(date)) && (!containsAdvance(advanceMeasurement)));
+        return AdvanceConsolidationDTO
+                .canBeConsolidateAndShow(advanceMeasurement.getDate().toDateTimeAtStartOfDay().toDate()) &&
+                !containsAdvance(advanceMeasurement);
     }
 
     @Override
     public String getInfoAdvanceAssignment() {
-        if (this.spreadAdvance == null || this.orderElement == null) {
-            return "";
-        }
-        return getInfoAdvanceAssignment(this.spreadAdvance);
+        return this.spreadAdvance == null || this.orderElement == null ? "" : getInfoAdvanceAssignment(this.spreadAdvance);
     }
 
     private String getInfoAdvanceAssignment(DirectAdvanceAssignment assignment) {
-        if (assignment == null) {
-            return "";
-        }
-        if (assignment.getMaxValue() == null) {
-            return "";
-        }
-        return _("( max: {0} )", assignment.getMaxValue());
+        return assignment == null || assignment.getMaxValue() == null ? "" : _("( max: {0} )", assignment.getMaxValue());
     }
 
     private List<AdvanceMeasurement> getAdvances() {
-        if (spreadAdvance != null) {
-            return new ArrayList<>(spreadAdvance.getAdvanceMeasurements());
-        }
-        return new ArrayList<>();
+        return spreadAdvance != null ? new ArrayList<>(spreadAdvance.getAdvanceMeasurements()) : new ArrayList<>();
     }
 
     @Override
     public boolean isVisibleAdvances() {
-        return (!isVisibleMessages());
+        return !isVisibleMessages();
     }
 
     @Override
     public boolean isVisibleMessages() {
-        return ((getAdvances().size() == 0) || (isSubcontracted()) || (!hasResourceAllocation()));
+        return getAdvances().isEmpty() || isSubcontracted() || !hasResourceAllocation();
     }
 
     private boolean advanceIsCalculated(){
-        return ((spreadAdvance != null) && (spreadAdvance.isFake()));
+        return spreadAdvance != null && spreadAdvance.isFake();
     }
 
     public String infoMessages() {
-        if (getAdvances().size() > 0) {
-            return _("Progress cannot be consolidated.");
-        }
-        return _("There is not any assigned progress to current task");
+        return !getAdvances().isEmpty()
+                ? _("Progress cannot be consolidated.")
+                : _("There is not any assigned progress to current task");
     }
 
     public void setConsolidationDTOs(List<AdvanceConsolidationDTO> consolidationDTOs) {
@@ -501,22 +487,19 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
     }
 
     public List<AdvanceConsolidationDTO> getConsolidationDTOs() {
-        if (spreadAdvance != null && orderElement != null) {
-            return consolidationDTOs;
-        }
-        return new ArrayList<>();
+        return spreadAdvance != null && orderElement != null ? consolidationDTOs : new ArrayList<>();
     }
 
     private boolean hasResourceAllocation() {
-        return ((task != null) && (task.hasResourceAllocations()));
+        return task != null && task.hasResourceAllocations();
     }
 
     private boolean isSubcontracted() {
-        return ((task != null) && (task.isSubcontracted()));
+        return task != null && task.isSubcontracted();
     }
 
     public boolean hasLimitingResourceAllocation() {
-        return ((task != null) && (task.hasLimitedResourceAllocation()));
+        return task != null && task.hasLimitedResourceAllocation();
     }
 
     @Override
