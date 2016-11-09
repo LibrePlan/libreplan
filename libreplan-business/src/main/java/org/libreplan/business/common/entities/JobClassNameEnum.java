@@ -40,6 +40,7 @@ public enum JobClassNameEnum {
     SEND_EMAIL_TIMESHEET_DATA_MISSING("org.libreplan.importers.notifications.jobs", "SendEmailOnTimesheetDataMissingJob");
 
     private String packageName;
+
     private String name;
 
     JobClassNameEnum(String packageName, String name) {
