@@ -28,7 +28,7 @@ import java.util.List;
 /**
  * Contract for {@link EmailNotificationDAO}
  *
- * @author Created by Vova Perebykivskyi <vova@libreplan-enterprise.com> on 19.10.2015.
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
 public interface IEmailNotificationDAO extends IGenericDAO<EmailNotification, Long> {
 

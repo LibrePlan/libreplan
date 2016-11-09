@@ -36,7 +36,7 @@ import java.util.List;
 /**
  * Model for operations related to {@link EmailTemplate}.
  *
- * @author Created by Vova Perebykivskyi <vova@libreplan-enterprise.com> on 25.09.2015.
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -142,6 +142,7 @@ public class EmailTemplateModel implements IEmailTemplateModel {
         return template != null ? template.getSubject() : "";
     }
 
+    @Override
     public EmailTemplate getEmailTemplateByTypeAndLanguage(EmailTemplateEnum type, Language language) {
         return emailTemplateDAO.findByTypeAndLanguage(type, language);
     }

@@ -29,8 +29,11 @@ import org.springframework.scheduling.quartz.QuartzJobBean;
  * Sends E-mail to users with data that storing in notification_queue table and that are treat to
  * {@link org.libreplan.business.email.entities.EmailTemplateEnum#TEMPLATE_ENTER_DATA_IN_TIMESHEET}.
  *
- * @author Created by Vova Perebykivskyi <vova@libreplan-enterprise.com> on 20.01.2016.
+ * It is used in {@link org.libreplan.web.common.JobSchedulerModel}.
+ *
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
+@SuppressWarnings("unused")
 public class SendEmailOnTimesheetDataMissingJob extends QuartzJobBean {
 
     @Override

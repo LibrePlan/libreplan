@@ -112,7 +112,7 @@ public class SendEmailOnTaskShouldFinish implements IEmailNotificationJob {
         DateTimeComparator dateTimeComparator = DateTimeComparator.getDateOnlyInstance();
 
         List<TaskElement> tasks = taskElementDAO.getTaskElementsWithParentsWithoutMilestones();
-        for (TaskElement item : tasks){
+        for (TaskElement item : tasks) {
             DateTime endDate = new DateTime(item.getEndDate());
 
             if ( dateTimeComparator.compare(currentDate, endDate) == 0 ) {

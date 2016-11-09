@@ -31,7 +31,7 @@ import java.util.Date;
  * This class is intended to work as a Hibernate component.
  * It represents the Email notification to be send to user.
  *
- * @author Created by Vova Perebykivskyi <vova@libreplan-enterprise.com> on 19.10.2015.
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
 public class EmailNotification extends BaseEntity {
 
@@ -49,6 +49,7 @@ public class EmailNotification extends BaseEntity {
     public EmailTemplateEnum getType() {
         return type;
     }
+
     public void setType(EmailTemplateEnum type) {
         this.type = type;
     }
@@ -56,6 +57,7 @@ public class EmailNotification extends BaseEntity {
     public Date getUpdated() {
         return updated;
     }
+
     public void setUpdated(Date updated) {
         this.updated = updated;
     }
@@ -63,6 +65,7 @@ public class EmailNotification extends BaseEntity {
     public Resource getResource() {
         return resource;
     }
+
     public void setResource(Resource resource) {
         this.resource = resource;
     }
@@ -70,6 +73,7 @@ public class EmailNotification extends BaseEntity {
     public TaskElement getTask() {
         return task;
     }
+
     public void setTask(TaskElement task) {
         this.task = task;
     }
@@ -77,6 +81,7 @@ public class EmailNotification extends BaseEntity {
     public TaskElement getProject() {
         return project;
     }
+
     public void setProject(TaskElement project) {
         this.project = project;
     }

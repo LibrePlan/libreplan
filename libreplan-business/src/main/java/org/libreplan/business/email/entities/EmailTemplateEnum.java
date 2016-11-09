@@ -24,10 +24,10 @@ import static org.libreplan.business.i18n.I18nHelper._;
 /**
  * Available E-mail templates.
  *
- * @author Created by Vova Perebykivskyi <vova@libreplan-enterprise.com> on 28.09.2015.
- *
  * TEMPLATE_N(_("Template N")) - for i18n
  * TEMPLATE_A("Template A") - for general use (no internationalizing)
+ *
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
 public enum EmailTemplateEnum {
 

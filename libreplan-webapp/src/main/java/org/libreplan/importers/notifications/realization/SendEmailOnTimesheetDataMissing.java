@@ -63,7 +63,7 @@ import java.util.List;
  * and that are treat to {@link EmailTemplateEnum#TEMPLATE_ENTER_DATA_IN_TIMESHEET}
  * Data will be send for bound users with empty timesheet lines.
  *
- * @author Created by Vova Perebykivskyi <vova@libreplan-enterprise.com> on 20.01.2016.
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
 
 @Component
@@ -99,9 +99,11 @@ public class SendEmailOnTimesheetDataMissing implements IEmailNotificationJob {
                 List<EmailNotification> notifications =
                         emailNotificationModel.getAllByType(EmailTemplateEnum.TEMPLATE_ENTER_DATA_IN_TIMESHEET);
 
-                for (int i = 0; i < notifications.size(); i++)
-                    if ( composeMessageForUser(notifications.get(i)) )
+                for (int i = 0; i < notifications.size(); i++) {
+                    if ( composeMessageForUser(notifications.get(i)) ) {
                         deleteSingleNotification(notifications.get(i));
+                    }
+                }
             }
         }
     }
@@ -111,7 +113,7 @@ public class SendEmailOnTimesheetDataMissing implements IEmailNotificationJob {
         return composeMessage.composeMessageForUser(notification);
     }
 
-    private void deleteSingleNotification(EmailNotification notification){
+    private void deleteSingleNotification(EmailNotification notification) {
         emailNotificationModel.deleteById(notification);
     }
 
@@ -205,8 +207,7 @@ public class SendEmailOnTimesheetDataMissing implements IEmailNotificationJob {
     private PersonalTimesheetsPeriodicityEnum getPersonalTimesheetsPeriodicity() {
         return configurationDAO.getConfiguration().getPersonalTimesheetsPeriodicity();
     }
-    private WorkReport getWorkReport(Resource resource, LocalDate date,
-                                     PersonalTimesheetsPeriodicityEnum periodicity) {
+    private WorkReport getWorkReport(Resource resource, LocalDate date, PersonalTimesheetsPeriodicityEnum periodicity) {
 
         WorkReport workReport = workReportDAO.getPersonalTimesheetWorkReport(resource, date, periodicity);
         forceLoad(workReport);

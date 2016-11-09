@@ -35,17 +35,17 @@ import org.libreplan.business.resources.entities.ResourceType;
 import org.libreplan.business.resources.entities.Worker;
 
 /**
- * Conversation for worker search
+ * Conversation for worker search.
  *
  * @author Diego Pino Garcia <dpino@igalia.com>
  */
 public interface IResourcesSearcher {
 
-    public interface IResourcesQuery<T extends Resource> {
+    interface IResourcesQuery<T extends Resource> {
 
         /**
-         * Restrict the result to resources that have name as a substring. The
-         * match is case insensitive.
+         * Restrict the result to resources that have name as a substring.
+         * The match is case insensitive.
          *
          * @param name
          * @return this same object in order to cascade calls
@@ -53,8 +53,7 @@ public interface IResourcesSearcher {
         IResourcesQuery<T> byName(String name);
 
         /**
-         * Restrict the result to a list of {@link Resource} satisfying all
-         * criteria at some point in time
+         * Restrict the result to a list of {@link Resource} satisfying all criteria at some point in time.
          *
          * @param criteria
          * @return this same object in order to cascade calls
@@ -62,9 +61,9 @@ public interface IResourcesSearcher {
         IResourcesQuery<T> byCriteria(Collection<? extends Criterion> criteria);
 
         /**
-         * Restrict resources to the ones having the provided type. By default
-         * if this method is not called, the resources are restricted to the
-         * type NON_LIMITING_RESOURCE.
+         * Restrict resources to the ones having the provided type.
+         * By default if this method is not called, the resources are restricted to the type NON_LIMITING_RESOURCE.
+         *
          * @param type
          * @return this same object in order to cascade calls
          */
@@ -73,48 +72,49 @@ public interface IResourcesSearcher {
         /**
          * Retrieve the list of resources that match the restrictions specified.
          *
-         * @return
+         * @return {@link List<T>}
          */
         List<T> execute();
 
         /**
          * <p>
-         * Gets all {@link Criterion} and groups then by {@link CriterionType}
-         * with the condition that the {@link CriterionType#getResource()} is of
-         * a type compatible for this query.
+         *     Gets all {@link Criterion} and groups then by {@link CriterionType} with the condition
+         *     that the {@link CriterionType#getResource()} is of a type compatible for this query.
+         *     For example if this query has been created by {@link IResourcesSearcher#searchWorkers()}
+         *     only the criteria with criterion type such its resource is {@link ResourceEnum#WORKER}.
          * </p>
-         * For example if this query has been created by
-         * {@link IResourcesSearcher#searchWorkers()} only the criteria with
-         * criterion type such its resource is {@link ResourceEnum.WORKER}
+         *
          * @return HashMap<CriterionType, Set<Criterion>>
          */
         Map<CriterionType, Set<Criterion>> getCriteria();
     }
 
     /**
-     * Do the search limited to workers
+     * Do the search limited to workers.
      *
-     * @return
+     * @return {@link IResourcesQuery<Worker>}
      */
-    public IResourcesQuery<Worker> searchWorkers();
+    IResourcesQuery<Worker> searchWorkers();
 
     /**
-     * Do the search limited to machines
-     * @return
+     * Do the search limited to machines.
+     * @return {@link IResourcesQuery<Machine>}
      */
-    public IResourcesQuery<Machine> searchMachines();
+    IResourcesQuery<Machine> searchMachines();
 
     /**
-     * Search machines or workers based on the value of resourceType
+     * Search machines or workers based on the value of resourceType.
+     *
      * @param resourceType
-     * @return
+     * @return {@link IResourcesQuery<?>}
      */
-    public IResourcesQuery<?> searchBy(ResourceEnum resourceType);
+    IResourcesQuery<?> searchBy(ResourceEnum resourceType);
 
     /**
-     * Search both resources and machines
-     * @return
+     * Search both resources and machines.
+     *
+     * @return {@link IResourcesQuery<Resource>}
      */
-    public IResourcesQuery<Resource> searchBoth();
+    IResourcesQuery<Resource> searchBoth();
 
 }

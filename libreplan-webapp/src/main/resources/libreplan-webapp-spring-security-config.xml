@@ -17,7 +17,7 @@
 
     <http auto-config="false" realm="LibrePlan Web Application" >
 
-        <!-- In Spring 4.1.0 it is useless to use hasRole() for single role because Spring calling hasAnyRole() anyway -->
+        <!-- In Spring Security 4.1.0 it is useless to use hasRole() for single role because Spring is calling hasAnyRole() anyway -->
 
         <!-- Web services -->
         <intercept-url pattern="/ws/rest/bounduser/**" access="hasAnyRole('ROLE_BOUND_USER')" method="GET" />

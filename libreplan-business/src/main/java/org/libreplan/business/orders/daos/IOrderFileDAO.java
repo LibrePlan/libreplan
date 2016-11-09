@@ -26,7 +26,7 @@ import org.libreplan.business.orders.entities.OrderFile;
 import java.util.List;
 
 /**
- * @author Created by Vova Perebykivskyi <vova@libreplan-enterprise.com> on 12.24.2015.
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
 
 public interface IOrderFileDAO extends IGenericDAO<OrderFile, Long> {
