@@ -46,11 +46,11 @@ import java.util.List;
 /**
  * Sends E-mail to manager user (it writes in responsible field in project properties)
  * with data that storing in notification_queue table
- * and that are treat to {@link EmailTemplateEnum.TEMPLATE_MILESTONE_REACHED}
- * Date will be send on current date equals to deadline date of {@link Milestone}
+ * and that are treat to {@link EmailTemplateEnum#TEMPLATE_MILESTONE_REACHED}
+ * Date will be send on current date equals to deadline date of {@link org.zkoss.ganttz.data.Milestone}
  * But it will be only send to Manager (you can assign him in project properties)
  *
- * @author Created by Vova Perebykivskyi <vova@libreplan-enterprise.com> on 20.01.2016
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
 
 @Component
@@ -100,7 +100,7 @@ public class SendEmailOnMilestoneReached implements IEmailNotificationJob {
         emailNotificationModel.deleteById(notification);
     }
 
-    private void sendEmailNotificationToManager(TaskElement item){
+    private void sendEmailNotificationToManager(TaskElement item) {
         emailNotificationModel.setNewObject();
         emailNotificationModel.setType(EmailTemplateEnum.TEMPLATE_MILESTONE_REACHED);
         emailNotificationModel.setUpdated(new Date());
@@ -116,7 +116,10 @@ public class SendEmailOnMilestoneReached implements IEmailNotificationJob {
             e.printStackTrace();
         }
 
-        if ( user.getWorker() != null && user.isInRole(UserRole.ROLE_EMAIL_MILESTONE_REACHED) ) {
+        boolean userHasNeededRoles =
+                user.isInRole(UserRole.ROLE_SUPERUSER) || user.isInRole(UserRole.ROLE_EMAIL_MILESTONE_REACHED);
+
+        if ( user.getWorker() != null && userHasNeededRoles ) {
             emailNotificationModel.setResource(user.getWorker());
             emailNotificationModel.setTask(item);
             emailNotificationModel.setProject(item.getParent());
@@ -125,15 +128,15 @@ public class SendEmailOnMilestoneReached implements IEmailNotificationJob {
     }
 
     public void checkMilestoneDate() {
-        List<TaskElement> list = taskElementDAO.getTaskElementsWithMilestones();
+        List<TaskElement> milestones = taskElementDAO.getTaskElementsWithMilestones();
 
         LocalDate date = new LocalDate();
         int currentYear = date.getYear();
         int currentMonth = date.getMonthOfYear();
         int currentDay = date.getDayOfMonth();
 
-        for (TaskElement item : list){
-            if ( item.getDeadline() != null ){
+        for (TaskElement item : milestones){
+            if ( item.getDeadline() != null ) {
                 LocalDate deadline = item.getDeadline();
                 int deadlineYear = deadline.getYear();
                 int deadlineMonth = deadline.getMonthOfYear();
