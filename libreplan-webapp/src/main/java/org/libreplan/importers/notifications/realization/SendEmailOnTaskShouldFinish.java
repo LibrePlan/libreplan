@@ -20,6 +20,8 @@
 package org.libreplan.importers.notifications.realization;
 
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeComparator;
 import org.libreplan.business.common.Configuration;
 import org.libreplan.business.email.entities.EmailNotification;
 import org.libreplan.business.email.entities.EmailTemplateEnum;
@@ -66,7 +68,15 @@ public class SendEmailOnTaskShouldFinish implements IEmailNotificationJob {
     @Autowired
     private EmailConnectionValidator emailConnectionValidator;
 
+    /**
+     * Transactional here is needed because without this annotation we are getting
+     * "LazyInitializationException: could not initialize proxy - no Session" error,
+     * when "item.getAllResourceAllocations()" method was called.
+     * Earlier this trouble was not present because in Tasks.hbm.xml for joined subclass "Task" field
+     * named "resourceAllocations", which has relation "one-to-many" to "ResourceAllocation", lazy was set to "false".
+     */
     @Override
+    @Transactional
     public void sendEmail() {
         // Gather data for email sending
         taskShouldFinish();
@@ -95,23 +105,15 @@ public class SendEmailOnTaskShouldFinish implements IEmailNotificationJob {
 
     @Transactional
     public void taskShouldFinish() {
-        // TODO resolve deprecated
         // Check if current date equals with item date
-        Date date = new Date();
-        int currentYear = date.getYear();
-        int currentMonth = date.getMonth();
-        int currentDay = date.getDay();
+        DateTime currentDate = new DateTime();
+        DateTimeComparator dateTimeComparator = DateTimeComparator.getDateOnlyInstance();
 
         List<TaskElement> tasks = taskElementDAO.getTaskElementsWithParentsWithoutMilestones();
         for (TaskElement item : tasks){
-            Date endDate = item.getEndDate();
-            int endYear = endDate.getYear();
-            int endMonth = endDate.getMonth();
-            int endDay = endDate.getDay();
+            DateTime endDate = new DateTime(item.getEndDate());
 
-            if ( currentYear == endYear &&
-                    currentMonth == endMonth &&
-                    currentDay == endDay ) {
+            if ( dateTimeComparator.compare(currentDate, endDate) == 0 ) {
                 // Get all resources for current task and send them email notification
                 sendEmailNotificationAboutTaskShouldFinish(item);
             }
