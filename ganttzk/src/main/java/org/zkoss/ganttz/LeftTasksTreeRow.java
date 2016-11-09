@@ -23,15 +23,21 @@ package org.zkoss.ganttz;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Properties;
+import java.util.GregorianCalendar;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.zkoss.ganttz.adapters.IDisabilityConfiguration;
 import org.zkoss.ganttz.data.GanttDate;
@@ -42,11 +48,13 @@ import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.util.Locales;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Treecell;
@@ -54,6 +62,9 @@ import org.zkoss.zul.api.Div;
 import org.zkoss.zul.api.Hlayout;
 import org.zkoss.zul.api.Label;
 import org.zkoss.zul.api.Treerow;
+
+import static org.zkoss.ganttz.i18n.I18nHelper._;
+
 
 /**
  * Row composer for Tasks details Tree <br />
@@ -101,6 +112,16 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
 
     private final IDisabilityConfiguration disabilityConfiguration;
 
+    private Properties properties;
+
+    private static final String PROPERTIES_FILENAME = "libreplan.properties";
+
+    private static final int CALENDAR_START_YEAR = 2001;
+
+    private static final int MINIMUM_MONTH = 1;
+
+    private static final int MINIMUM_DAY = 1;
+
     public static LeftTasksTreeRow create(
             IDisabilityConfiguration disabilityConfiguration, Task bean,
             ILeftTasksTreeNavigator taskDetailnavigator, Planner planner) {
@@ -117,6 +138,24 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
                 .getCurrent());
         this.leftTasksTreeNavigator = leftTasksTreeNavigator;
         this.planner = planner;
+        setUpProperties();
+    }
+
+    private void setUpProperties () {
+        // Getting properties from file (libreplan-business/src/main/resources/libreplan.properties)
+        properties = new Properties();
+        InputStream inputStream = LeftTasksTreeRow.class.getClassLoader().getResourceAsStream(PROPERTIES_FILENAME);
+        try {
+            properties.load(inputStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                inputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public Task getTask() {
@@ -174,6 +213,79 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
         textbox.getParent().appendChild(openedDateBox);
         openedDateBox.setFocus(true);
         openedDateBox.setOpen(true);
+
+        openedDateBox.setConstraint(generateConstraintForDates());
+    }
+
+    private Constraint generateConstraintForDates() {
+        return  new Constraint() {
+            @Override
+            public void validate(Component comp, Object value) throws WrongValueException {
+
+                // Getting parameters from properties file
+                int yearLimit = Integer.parseInt(properties.getProperty("yearLimit"));
+                int minimumYear = Integer.parseInt(properties.getProperty("minimumYear"));
+
+                DateTime today = new DateTime();
+                DateTime maximum = today.plusYears(yearLimit);
+
+                DateTime minimum =
+                        new DateTime(new GregorianCalendar(minimumYear, MINIMUM_MONTH, MINIMUM_DAY).getTime());
+
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yy");
+
+                // Need to call dateFormat.set2DigitYearStart to force parser not to parse date to previous century
+                simpleDateFormat.set2DigitYearStart(
+                        new GregorianCalendar(CALENDAR_START_YEAR, MINIMUM_MONTH, MINIMUM_DAY).getTime());
+
+                Date date = null;
+
+                /*
+                 * Need to check value type because constraint is created for textbox and datebox.
+                 * Textbox returns value in String. Datebox returns value in java.util.Date.
+                 * Also need to take last two year digits because Datebox component formats it's value.
+                 */
+
+                if (value instanceof Date) {
+                    try {
+
+                        // Using DateTime (Joda Time class) because java.util.Date.getYear() returns invalid value
+                        DateTime correct = new DateTime(value);
+                        String year = Integer.valueOf(correct.getYear()).toString().substring(2);
+
+                        // TODO Resolve deprecated methods
+                        date = simpleDateFormat
+                                .parse(((Date) value).getMonth() + "/" + ((Date) value).getDate() + "/" +year);
+
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+                else {
+                    try {
+                        date = simpleDateFormat.parse((String) value);
+                    } catch (ParseException ignored) {
+                    }
+                }
+
+                DateTime dateTimeInTextbox = new DateTime(date);
+
+                if (dateTimeInTextbox.isAfter(maximum)) {
+                    throw new WrongValueException(
+                            comp,
+                            _("The date you entered is invalid") + ". " +
+                                    _("Please enter date not before") + " " + minimumYear +
+                                    " " + _("and no later than") + " " + maximum.getYear());
+                }
+                if (dateTimeInTextbox.isBefore(minimum)) {
+                    throw new WrongValueException(
+                            comp,
+                            _("The date you entered is invalid") + ". " +
+                                    _("Please enter date not before") + " " + minimumYear +
+                                    " " + _("and no later than") + " " + maximum.getYear());
+                }
+            }
+        };
     }
 
     private enum Navigation {
@@ -270,6 +382,13 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
             registerOnEnterListener(endDateTextBox);
             registerOnChange(startDateTextBox);
             registerOnChange(endDateTextBox);
+
+            /*
+             * Setting constraints right after creating texboxes.
+             * This need to be done because constraints must work at first change of textbox.
+             */
+            startDateTextBox.setConstraint(generateConstraintForDates());
+            endDateTextBox.setConstraint(generateConstraintForDates());
         }
     }
 

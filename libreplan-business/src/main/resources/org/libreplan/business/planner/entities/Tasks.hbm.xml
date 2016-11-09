@@ -32,7 +32,7 @@
 
         <!-- Indexed -->
         <many-to-one name="parent" class="TaskGroup" cascade="none" column="parent"
-            index="idx_task_element_on_task_group" lazy="false" />
+            index="idx_task_element_on_task_group" />
 
         <one-to-one name="taskSource" cascade="delete" />
 
@@ -89,7 +89,7 @@
                 cascade="all"/>
 
             <!-- Indexed on the other side -->
-            <set name="resourceAllocations" cascade="all-delete-orphan" lazy="false">
+            <set name="resourceAllocations" cascade="all-delete-orphan" >
                 <key column="task" />
                 <one-to-many class="ResourceAllocation" />
             </set>
