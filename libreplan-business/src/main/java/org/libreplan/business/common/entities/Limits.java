@@ -26,7 +26,7 @@ import org.libreplan.business.common.BaseEntity;
  * This class is intended to work as a Hibernate component.
  * It represents the limit that can be modified only in database.
  *
- * @author Created by Vova Perebykivskyi <vova@libreplan-enterprise.com> on 17.12.2015.
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
 public class Limits extends BaseEntity {
 
@@ -38,6 +38,7 @@ public class Limits extends BaseEntity {
     public String getType() {
         return type;
     }
+
     public void setType(String type) {
         this.type = type;
     }
@@ -45,6 +46,7 @@ public class Limits extends BaseEntity {
     public Integer getValue() {
         return value;
     }
+
     public void setValue(Integer value) {
         this.value = value;
     }

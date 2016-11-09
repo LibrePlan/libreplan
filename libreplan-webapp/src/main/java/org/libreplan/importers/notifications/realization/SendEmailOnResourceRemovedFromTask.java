@@ -39,7 +39,7 @@ import java.util.List;
  * and that are treat to {@link EmailTemplateEnum#TEMPLATE_RESOURCE_REMOVED_FROM_TASK}.
  * Data will be send if resource has been removed from task (in resource allocation)
  *
- * @author Created by Vova Perebykivskyi <vova@libreplan-enterprise.com> on 20.01.2016.
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
 
 @Component
@@ -65,9 +65,11 @@ public class SendEmailOnResourceRemovedFromTask implements IEmailNotificationJob
                 List<EmailNotification> notifications =
                         emailNotificationModel.getAllByType(EmailTemplateEnum.TEMPLATE_RESOURCE_REMOVED_FROM_TASK);
 
-                for (int i = 0; i < notifications.size(); i++)
-                    if ( composeMessageForUser(notifications.get(i)) )
+                for (int i = 0; i < notifications.size(); i++) {
+                    if ( composeMessageForUser(notifications.get(i)) ) {
                         deleteSingleNotification(notifications.get(i));
+                    }
+                }
             }
         }
     }

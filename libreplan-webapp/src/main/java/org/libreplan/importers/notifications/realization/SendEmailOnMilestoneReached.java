@@ -50,7 +50,7 @@ import java.util.List;
  * Date will be send on current date equals to deadline date of {@link org.zkoss.ganttz.data.Milestone}.
  * But it will be only send to Manager (you can assign him in project properties).
  *
- * @author Created by Vova Perebykivskyi <vova@libreplan-enterprise.com> on 20.01.2016.
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
 
 @Component
@@ -118,7 +118,10 @@ public class SendEmailOnMilestoneReached implements IEmailNotificationJob {
             e.printStackTrace();
         }
 
-        if ( user.getWorker() != null && user.isInRole(UserRole.ROLE_EMAIL_MILESTONE_REACHED) ) {
+        boolean userHasNeededRoles =
+                user.isInRole(UserRole.ROLE_SUPERUSER) || user.isInRole(UserRole.ROLE_EMAIL_MILESTONE_REACHED);
+
+        if ( user.getWorker() != null && userHasNeededRoles ) {
             emailNotificationModel.setResource(user.getWorker());
             emailNotificationModel.setTask(item);
             emailNotificationModel.setProject(item.getParent());
@@ -127,14 +130,14 @@ public class SendEmailOnMilestoneReached implements IEmailNotificationJob {
     }
 
     public void checkMilestoneDate() {
-        List<TaskElement> list = taskElementDAO.getTaskElementsWithMilestones();
+        List<TaskElement> milestones = taskElementDAO.getTaskElementsWithMilestones();
 
         LocalDate date = new LocalDate();
         int currentYear = date.getYear();
         int currentMonth = date.getMonthOfYear();
         int currentDay = date.getDayOfMonth();
 
-        for (TaskElement item : list) {
+        for (TaskElement item : milestones) {
             if ( item.getDeadline() != null ) {
 
                 LocalDate deadline = item.getDeadline();

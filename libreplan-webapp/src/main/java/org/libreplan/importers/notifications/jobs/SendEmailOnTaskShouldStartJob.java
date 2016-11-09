@@ -30,7 +30,7 @@ import org.springframework.scheduling.quartz.QuartzJobBean;
  * {@link org.libreplan.business.email.entities.EmailTemplateEnum#TEMPLATE_TODAY_TASK_SHOULD_START}.
  *
  *
- * @author Created by Vova Perebykivskyi <vova@libreplan-enterprise.com> on 20.01.2016
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
 public class SendEmailOnTaskShouldStartJob extends QuartzJobBean {
 

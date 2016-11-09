@@ -98,6 +98,7 @@ public class SendEmailOnTaskShouldFinish implements IEmailNotificationJob {
     @Transactional
     public void taskShouldFinish() {
         // TODO resolve deprecated
+
         // Check if current date equals with item date
         Date date = new Date();
         int currentYear = date.getYear();
@@ -114,6 +115,7 @@ public class SendEmailOnTaskShouldFinish implements IEmailNotificationJob {
             if ( currentYear == endYear &&
                     currentMonth == endMonth &&
                     currentDay == endDay ) {
+
                 // Get all resources for current task and send them email notification
                 sendEmailNotificationAboutTaskShouldFinish(item);
             }

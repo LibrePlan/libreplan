@@ -27,7 +27,7 @@ import java.util.List;
 /**
  * DAO for {@link Limits}.
  *
- * @author Created by Vova Perebykivskyi <vova@libreplan-enterprise.com> on 24.09.2015.
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
 
 @Repository
@@ -41,16 +41,22 @@ public class LimitsDAO extends GenericDAOHibernate<Limits, Long> implements ILim
     @Override
     public Limits getUsersType() {
         List<Limits> list = list(Limits.class);
-        for (Limits item : list)
-            if (item.getType().equals("users")) return item;
+        for (Limits item : list) {
+            if ("users".equals(item.getType())) {
+                return item;
+            }
+        }
         return null;
     }
 
     @Override
     public Limits getResourcesType() {
         List<Limits> list = list(Limits.class);
-        for (Limits item : list)
-            if (item.getType().equals("workers+machines")) return item;
+        for (Limits item : list) {
+            if ("workers+machines".equals(item.getType())) {
+                return item;
+            }
+        }
         return null;
     }
 }

@@ -41,7 +41,7 @@ import java.util.List;
  * and that are treat to {@link EmailTemplateEnum#TEMPLATE_ENTER_DATA_IN_TIMESHEET}.
  * Data will be send after user will be assigned to some task.
  *
- * @author Created by Vova Perebykivskyi <vova@libreplan-enterprise.com> on 13.10.2015.
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
