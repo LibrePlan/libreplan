@@ -65,6 +65,17 @@ import java.util.Date;
 
         WEBAPP_SPRING_SECURITY_CONFIG_FILE,
         WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE })
+
+/**
+ * CRUD test
+ * 1. Add row to files table
+ * 2. Read it
+ * 3. Update it
+ * 4. Delete it
+ *
+ * Negative test
+ * 1. Create row with null field value and try to save it
+ */
 public class OrderFilesTest {
 
     @Autowired
@@ -82,30 +93,27 @@ public class OrderFilesTest {
     @Autowired
     private IHoursGroupDAO hoursGroupDAO;
 
-    /**
-     * CRUD test
-     * 1. Add row to files table
-     * 2. Read it
-     * 3. Update it
-     * 4. Delete it
-     *
-     * Negative test
-     * 1. Create row with null field value and try to save it
-     */
-
     @Test
     @Transactional
-    public void testCRUD() {
+    public void testCreate() {
 
-        // Create
         int sizeBefore = orderFileModel.getAll().size();
+
         createEntities();
+
         int sizeWithNewRow = orderFileModel.getAll().size();
         assertEquals(sizeBefore + 1, sizeWithNewRow);
 
-        OrderFile orderFile = null;
 
-        // Read
+        removeEntities();
+    }
+
+    @Test
+    @Transactional
+    public void testRead() {
+        createEntities();
+
+        OrderFile orderFile = null;
         try {
             orderFile = orderFileModel.findByParent(orderElementDAO.findUniqueByCode("1a1k1k1k")).get(0);
             assertEquals(orderFile.getName(), "Index");
@@ -113,21 +121,38 @@ public class OrderFilesTest {
             e.printStackTrace();
         }
 
-        // Update
-        orderFile.setName("yii2");
-        orderFileModel.confirmSave();
+        removeEntities();
+    }
 
+    @Test
+    @Transactional
+    public void testUpdate() {
+        createEntities();
+
+        OrderFile orderFile = null;
         try {
             orderFile = orderFileModel.findByParent(orderElementDAO.findUniqueByCode("1a1k1k1k")).get(0);
+            orderFile.setName("yii2");
+            orderFileModel.confirmSave();
             assertTrue(orderFile.getName().equals("yii2"));
         } catch (InstanceNotFoundException e) {
             e.printStackTrace();
         }
 
-        // Delete
         removeEntities();
+    }
+
+    @Test
+    @Transactional
+    public void testDelete() {
+        createEntities();
+
+        int sizeBefore = orderFileModel.getAll().size();
+
+        removeEntities();
+
         int sizeAfter = orderFileModel.getAll().size();
-        assertEquals(sizeBefore, sizeAfter);
+        assertEquals(sizeBefore - 1, sizeAfter);
     }
 
     @Transactional
