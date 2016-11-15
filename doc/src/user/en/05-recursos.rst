@@ -31,7 +31,7 @@ Users can create, edit and invalidate (never delete definitively) workers from t
 * List of machines: Machines will be shown in lists and will be numbered. This is where their details can be managed.
 
 Management of workers
-========================
+=====================
 
 The management of workers is carried out by going to the "Resources" tab and then the feature "List of workers". Users can edit all of the workers on the resource list by clicking the standard editing icon.
 

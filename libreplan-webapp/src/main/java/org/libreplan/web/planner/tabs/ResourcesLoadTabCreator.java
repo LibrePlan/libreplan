@@ -41,13 +41,13 @@ import org.zkoss.zul.Image;
 import org.zkoss.zul.Label;
 
 /**
- * Handles Resources Load tab creation (Global and Local)
+ * Handles Resources Load tab creation (Global and Local).
  *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public class ResourcesLoadTabCreator {
 
-    private String RESOURCES_LOAD = "Resources Load";
+    private static final String RESOURCES_LOAD = "Resources Load";
 
     private final IOrderPlanningGate orderPlanningGate;
 

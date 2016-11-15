@@ -1,5 +1,5 @@
 Task planning
-#######################
+#############
 
 .. _planificacion:
 .. contents::
@@ -8,14 +8,17 @@ Task planning
 Task planning
 =============
 
-Planning in "LibrePlan" is a process that has been described throughout all of the chapters of the user guide, the chapters on orders and the assigning of resources being particularly important in this respect. This chapter describes basic planning procedures after the order and the Gantt charts have been configured properly.
+Planning in "LibrePlan" is a process that has been described throughout all of the chapters of the user guide,
+the chapters on orders and the assigning of resources being particularly important in this respect.
+This chapter describes basic planning procedures after the order and the Gantt charts have been configured properly.
 
 .. figure:: images/planning-view.png
    :scale: 35
 
    Work planning view
 
-As with the company overview, the project planning view is divided into several views based on the information it is analysing. The views of a specific project are:
+As with the company overview, the project planning view is divided into several views based on the information it is analysing.
+The views of a specific project are:
 
 * Planning view
 * Resource load view
@@ -23,7 +26,7 @@ As with the company overview, the project planning view is divided into several 
 * Advanced assignment view
 
 Planning view
-----------------------
+-------------
 The planning view combines three different views:
 
 * Project planning. Project planning can be viewed in the upper right-hand part of the program. It represents the planning in a Gantt chart. This is the view where users can temporarily move tasks, assign dependencies among them, define milestones and establish restrictions.
@@ -73,8 +76,10 @@ The planning view also offers several procedures that ultimately function as vie
 * Print: Enabling users to print the Gantt chart being viewed at that moment.
 
 Resource load view
---------------------------
-The resource load view provides a list of resources that contains a list of tasks or criteria that generate workloads. Each task or criterion is shown as a Gantt chart so that the start and end date of the load can be seen. A different colour is shown depending on whether the resource has a load that is higher or lower than 100%:
+------------------
+The resource load view provides a list of resources that contains a list of tasks or criteria that generate workloads.
+Each task or criterion is shown as a Gantt chart so that the start and end date of the load can be seen.
+A different colour is shown depending on whether the resource has a load that is higher or lower than 100%:
 
 * Green: load lower than 100%
 * Orange: 100% load
@@ -93,7 +98,7 @@ The order list view allows users to go to the order editing and deleting options
 
 
 Advanced assignment view
-----------------------------
+------------------------
 The advanced assignment view is explained in depth in the "Resource assignment" chapter.
 
 

@@ -40,7 +40,7 @@ import org.libreplan.business.expensesheet.daos.IExpenseSheetDAO;
 import org.libreplan.business.resources.entities.Resource;
 
 /**
- * ExpenseSheet Entity
+ * ExpenseSheet Entity.
  *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
@@ -57,8 +57,7 @@ public class ExpenseSheet extends IntegrationEntity implements IHumanIdentifiabl
     private boolean personal = false;
 
     @Valid
-    private SortedSet<ExpenseSheetLine> expenseSheetLines = new TreeSet<>(
-            new ExpenseSheetLineComparator());
+    private SortedSet<ExpenseSheetLine> expenseSheetLines = new TreeSet<>(new ExpenseSheetLineComparator());
 
     private Integer lastExpenseSheetLineSequenceCode = 0;
 
@@ -78,8 +77,7 @@ public class ExpenseSheet extends IntegrationEntity implements IHumanIdentifiabl
         return create(new ExpenseSheet());
     }
 
-    public static ExpenseSheet create(LocalDate firstExpense, LocalDate lastExpense,
-            BigDecimal total) {
+    public static ExpenseSheet create(LocalDate firstExpense, LocalDate lastExpense, BigDecimal total) {
         return create(new ExpenseSheet(firstExpense, lastExpense, total));
     }
 
@@ -120,6 +118,7 @@ public class ExpenseSheet extends IntegrationEntity implements IHumanIdentifiabl
         return Collections.unmodifiableSortedSet(expenseSheetLines);
     }
 
+    /** Field setter of entity, do not remove! */
     public void setLastExpenseSheetLineSequenceCode(Integer lastExpenseSheetLineSequenceCode) {
         this.lastExpenseSheetLineSequenceCode = lastExpenseSheetLineSequenceCode;
     }
@@ -144,11 +143,9 @@ public class ExpenseSheet extends IntegrationEntity implements IHumanIdentifiabl
 
     public void generateExpenseSheetLineCodes(int numberOfDigits) {
         for (ExpenseSheetLine line : this.getExpenseSheetLines()) {
-            if ((line.getCode() == null) || (line.getCode().isEmpty())
-                    || (!line.getCode().startsWith(this.getCode()))) {
+            if ((line.getCode() == null) || (line.getCode().isEmpty()) || (!line.getCode().startsWith(this.getCode()))) {
                 this.incrementLastExpenseSheetLineSequenceCode();
-                String lineCode = EntitySequence.formatValue(numberOfDigits,
-                        this.getLastExpenseSheetLineSequenceCode());
+                String lineCode = EntitySequence.formatValue(numberOfDigits, this.getLastExpenseSheetLineSequenceCode());
                 line.setCode(this.getCode() + EntitySequence.CODE_SEPARATOR_CHILDREN + lineCode);
             }
         }
@@ -161,8 +158,7 @@ public class ExpenseSheet extends IntegrationEntity implements IHumanIdentifiabl
         lastExpenseSheetLineSequenceCode++;
     }
 
-    public void keepSortedExpenseSheetLines(ExpenseSheetLine expenseSheetLine,
-            LocalDate newDate) {
+    public void keepSortedExpenseSheetLines(ExpenseSheetLine expenseSheetLine, LocalDate newDate) {
         this.expenseSheetLines.remove(expenseSheetLine);
         expenseSheetLine.setDate(newDate);
         this.expenseSheetLines.add(expenseSheetLine);
@@ -210,12 +206,10 @@ public class ExpenseSheet extends IntegrationEntity implements IHumanIdentifiabl
         return getCode() + (description != null ? description : "");
     }
 
-    public ExpenseSheetLine getExpenseSheetLineByCode(String code)
-            throws ValidationException {
+    public ExpenseSheetLine getExpenseSheetLineByCode(String code) throws ValidationException {
 
         if (StringUtils.isBlank(code)) {
-            throw new ValidationException(
-                    "missing the code with which find the expense sheet line");
+            throw new ValidationException("missing the code with which find the expense sheet line");
         }
 
         for (ExpenseSheetLine l : this.expenseSheetLines) {
@@ -252,8 +246,7 @@ public class ExpenseSheet extends IntegrationEntity implements IHumanIdentifiabl
 
         for (ExpenseSheetLine line : expenseSheetLines) {
             Resource resourceLine = line.getResource();
-            if ((resourceLine == null)
-                    || (!resourceLine.getId().equals(resource.getId()))) {
+            if ((resourceLine == null) || (!resourceLine.getId().equals(resource.getId()))) {
                 return false;
             }
         }

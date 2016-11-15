@@ -42,12 +42,14 @@ import org.apache.log4j.xml.DOMConfigurator;
  */
 public class LoggingConfiguration implements ServletContextListener {
 
-    private static final String lineSeparator = System.getProperty("line.separator");
+    private static final String LINE_SEPARATOR = System.getProperty("line.separator");
+
+    private static Pattern propertyPattern = Pattern.compile("\\$\\{\\s*(.+?)\\s*\\}");
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         if ( System.getProperty("libreplan-log-directory") != null ) {
-            // log4j will do the replacement automatically.
+            // log4j will do the replacement automatically
             return;
         }
 
@@ -58,17 +60,13 @@ public class LoggingConfiguration implements ServletContextListener {
             new DOMConfigurator().doConfigure(newConfiguration, LogManager.getLoggerRepository());
         } catch (IOException e) {
             e.printStackTrace();
-            // let log4j be loaded without replacements
+            // Let log4j be loaded without replacements
         }
     }
 
     private String findLogDirectory(ServletContext servletContext) {
         File result = logDirectoryFile(servletContext);
-        if ( result != null ) {
-            return result.getAbsolutePath() + "/";
-        }
-
-        return "";
+        return result != null ? result.getAbsolutePath() + "/" : "";
     }
 
     private File logDirectoryFile(ServletContext servletContext) {
@@ -85,11 +83,8 @@ public class LoggingConfiguration implements ServletContextListener {
         }
 
         File home = new File(System.getProperty("user.home"));
-        if ( home.canWrite() ) {
-            return tryToAppendApplicationName(home, applicationName);
-        }
 
-        return null;
+        return home.canWrite() ? tryToAppendApplicationName(home, applicationName) : null;
     }
 
     private File findTomcatLogDirectory() {
@@ -98,29 +93,18 @@ public class LoggingConfiguration implements ServletContextListener {
             return null;
         }
 
-        File[] tomcatLogDirectories = file.listFiles(pathname -> {
-            return pathname.getName().contains("tomcat");
-        });
+        File[] tomcatLogDirectories = file.listFiles(pathname -> pathname.getName().contains("tomcat"));
 
-        if ( tomcatLogDirectories.length == 0 ) {
-            return null;
-        }
-
-        return tomcatLogDirectories[0];
+        return tomcatLogDirectories.length == 0 ? null : tomcatLogDirectories[0];
     }
 
     private File tryToAppendApplicationName(File logDirectory, String applicationName) {
         File forApplication = new File(logDirectory, applicationName);
-        if ( forApplication.mkdir() || forApplication.canWrite() ) {
-            return forApplication;
-        }
-
-        return logDirectory;
+        return forApplication.mkdir() || forApplication.canWrite() ? forApplication : logDirectory;
     }
 
     private boolean isTomcat(ServletContext servletContext) {
         String serverInfo = servletContext.getServerInfo();
-
         return serverInfo != null && serverInfo.contains("Tomcat");
     }
 
@@ -130,7 +114,6 @@ public class LoggingConfiguration implements ServletContextListener {
                 return each;
             }
         }
-
         return "";
     }
 
@@ -142,20 +125,17 @@ public class LoggingConfiguration implements ServletContextListener {
         return new BufferedReader(new InputStreamReader(getClass().getClassLoader().getResourceAsStream("log4j.xml")));
     }
 
-    private String withReplacements(Map<String, String> replacements, BufferedReader originalConfiguration)
-            throws IOException {
+    private String withReplacements(Map<String, String> replacements, BufferedReader originalConfiguration) throws IOException {
 
         StringBuilder result = new StringBuilder();
         String line;
 
         while ((line = originalConfiguration.readLine()) != null) {
-            result.append(doReplacement(replacements, line)).append(lineSeparator);
+            result.append(doReplacement(replacements, line)).append(LINE_SEPARATOR);
         }
 
         return result.toString();
     }
-
-    private static Pattern propertyPattern = Pattern.compile("\\$\\{\\s*(.+?)\\s*\\}");
 
     private static String doReplacement(Map<String, String> propertyReplacements, String line) {
 

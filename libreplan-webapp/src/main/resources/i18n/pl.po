@@ -2977,6 +2977,9 @@ msgid "Project"
 msgstr "Projekt"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/components/TwoWaySelector.java:79
+#: libreplan-webapp/src/main/java/org/libreplan/web/limitingresources/ManualAllocationController.java:575
+#: libreplan-webapp/src/main/java/org/libreplan/web/limitingresources/ManualAllocationController.java:584
+#: libreplan-webapp/src/main/java/org/libreplan/web/limitingresources/ManualAllocationController.java:592
 msgid "Unassigned"
 msgstr "Nieprzypisany"
 
@@ -6031,12 +6034,6 @@ msgstr "Liczba zakończonych aplikacji"
 #: libreplan-webapp/src/main/java/org/libreplan/web/limitingresources/QueueComponent.java:469
 msgid "Invalid queue element"
 msgstr "Nieprawidłowy element kolejki"
-
-#: libreplan-webapp/src/main/java/org/libreplan/web/limitingresources/ManualAllocationController.java:575
-#: libreplan-webapp/src/main/java/org/libreplan/web/limitingresources/ManualAllocationController.java:584
-#: libreplan-webapp/src/main/java/org/libreplan/web/limitingresources/ManualAllocationController.java:592
-msgid "Unassigned"
-msgstr "Nieprzypisany"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/criterionrequirements/AssignedCriterionRequirementController.java:405
 msgid "At least one HoursGroup is needed"

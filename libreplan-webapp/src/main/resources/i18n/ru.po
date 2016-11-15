@@ -2978,6 +2978,9 @@ msgid "Project"
 msgstr "Проект"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/components/TwoWaySelector.java:79
+#: libreplan-webapp/src/main/java/org/libreplan/web/limitingresources/ManualAllocationController.java:575
+#: libreplan-webapp/src/main/java/org/libreplan/web/limitingresources/ManualAllocationController.java:584
+#: libreplan-webapp/src/main/java/org/libreplan/web/limitingresources/ManualAllocationController.java:592
 msgid "Unassigned"
 msgstr "Нераспределенные"
 
@@ -5961,12 +5964,6 @@ msgstr "Количество законченных приложений"
 #: libreplan-webapp/src/main/java/org/libreplan/web/limitingresources/QueueComponent.java:465
 msgid "Invalid queue element"
 msgstr "Неверный элемент очереди"
-
-#: libreplan-webapp/src/main/java/org/libreplan/web/limitingresources/ManualAllocationController.java:575
-#: libreplan-webapp/src/main/java/org/libreplan/web/limitingresources/ManualAllocationController.java:584
-#: libreplan-webapp/src/main/java/org/libreplan/web/limitingresources/ManualAllocationController.java:592
-msgid "Unassigned"
-msgstr "Нераспределенный"
 
 #: libreplan-webapp/src/main/webapp/externalcompanies/_editExternalCompany.zul:61
 #: libreplan-webapp/src/main/webapp/common/layout/login.zul:70

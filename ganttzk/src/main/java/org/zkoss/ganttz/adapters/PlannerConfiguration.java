@@ -52,12 +52,14 @@ import org.zkoss.zk.ui.Component;
  */
 public class PlannerConfiguration<T> implements IDisabilityConfiguration {
 
+    private static final String PRINT_NOT_SUPPORTED = "print not supported";
+
     public interface IPrintAction {
         void doPrint();
 
         void doPrint(Map<String, String> parameters);
 
-        void doPrint(HashMap<String, String> parameters, Planner planner);
+        void doPrint(Map<String, String> parameters, Planner planner);
     }
 
     public interface IReloadChartListener {
@@ -290,11 +292,9 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
     }
 
     public static List<Constraint<GanttDate>> getStartConstraintsGiven(GanttDate notBeforeThan) {
-        if ( notBeforeThan != null ) {
-            return Collections.singletonList(biggerOrEqualThan(notBeforeThan));
-        }
-
-        return Collections.emptyList();
+        return notBeforeThan != null
+                ? Collections.singletonList(biggerOrEqualThan(notBeforeThan))
+                : Collections.emptyList();
     }
 
     public List<Constraint<GanttDate>> getStartConstraints() {
@@ -302,11 +302,9 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
     }
 
     public static List<Constraint<GanttDate>> getEndConstraintsGiven(GanttDate notAfterThan) {
-        if ( notAfterThan != null ) {
-            return Collections.singletonList(lessOrEqualThan(notAfterThan));
-        }
-
-        return Collections.emptyList();
+        return notAfterThan != null
+                ? Collections.singletonList(lessOrEqualThan(notAfterThan))
+                : Collections.emptyList();
     }
 
     public List<Constraint<GanttDate>> getEndConstraints() {
@@ -430,21 +428,21 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
 
     public void print() {
         if ( !isPrintEnabled() ) {
-            throw new UnsupportedOperationException("print not supported");
+            throw new UnsupportedOperationException(PRINT_NOT_SUPPORTED);
         }
         printAction.doPrint();
     }
 
     public void print(Map<String, String> parameters) {
         if ( !isPrintEnabled() ) {
-            throw new UnsupportedOperationException("print not supported");
+            throw new UnsupportedOperationException(PRINT_NOT_SUPPORTED);
         }
         printAction.doPrint(parameters);
     }
 
     public void print(HashMap<String, String> parameters, Planner planner) {
         if ( !isPrintEnabled() ) {
-            throw new UnsupportedOperationException("print not supported");
+            throw new UnsupportedOperationException(PRINT_NOT_SUPPORTED);
         }
         printAction.doPrint(parameters, planner);
     }

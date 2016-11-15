@@ -38,7 +38,7 @@
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <jetty-port>8081</jetty-port>
+        <jetty-port>8080</jetty-port>
         <jetty-stop-port>9967</jetty-stop-port>
     </properties>
 
@@ -165,6 +165,12 @@
         <repository>
             <id>thirdparty</id>
             <url>http://nexus.libreplan.org/nexus/content/repositories/thirdparty-libreplan16/</url>
+        </repository>
+
+        <!-- ZK CE repository -->
+        <repository>
+            <id>ZK CE</id>
+            <url>http://mavensync.zkoss.org/maven2/</url>
         </repository>
     </repositories>
 
@@ -404,13 +410,6 @@
                 <version>1.2</version>
             </dependency>
 
-            <!-- Slf4j -->
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-api</artifactId>
-                <version>1.7.21</version>
-            </dependency>
-
             <!-- Log4j -->
             <dependency>
                 <groupId>org.slf4j</groupId>
@@ -462,8 +461,25 @@
                         <groupId>org.jruby</groupId>
                         <artifactId>jruby</artifactId>
                     </exclusion>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-jdk14</artifactId>
+                    </exclusion>
                 </exclusions>
             </dependency>
+
+            <dependency>
+                <groupId>org.zkoss.common</groupId>
+                <artifactId>zcommon</artifactId>
+                <version>8.0.1.1</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-jdk14</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
 
             <!-- JGraphT -->
             <dependency>
@@ -588,7 +604,7 @@
             <dependency>
                 <groupId>org.zkoss.zkforge</groupId>
                 <artifactId>timeplotz</artifactId>
-                <version>1.1_50_1</version>
+                <version>1.1_50</version>
             </dependency>
 
             <dependency>
@@ -833,12 +849,11 @@
                     <reload>manual</reload>
                     <stopPort>${jetty-stop-port}</stopPort>
                     <stopKey>stop</stopKey>
-                    <!-- Log to the console. -->
+                    <!-- Log to the console -->
                     <requestLog implementation="org.eclipse.jetty.server.NCSARequestLog">
                         <!--
                             This do anything for Jetty,
-                            but is aworkaround for a Maven bug
-                            that prevents the requestLog from being set.
+                            but is a workaround for a Maven bug that prevents the requestLog from being set.
                         -->
                         <append>true</append>
                     </requestLog>
@@ -854,18 +869,11 @@
                         <version>${jdbcDriver.version}</version>
                     </dependency>
 
-                    <!-- connection pooling -->
+                    <!-- Connection pooling -->
                     <dependency>
                         <groupId>com.jolbox</groupId>
                         <artifactId>bonecp</artifactId>
                         <version>0.8.0.RELEASE</version>
-                    </dependency>
-
-                    <!-- connection pooling dependencies -->
-                    <dependency>
-                        <groupId>org.slf4j</groupId>
-                        <artifactId>slf4j-api</artifactId>
-                        <version>1.7.21</version>
                     </dependency>
 
                     <dependency>

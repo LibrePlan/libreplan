@@ -1,5 +1,5 @@
 Scheduler
-##################
+#########
 
 .. contents::
 
@@ -44,7 +44,7 @@ The ``job scheduling list`` view allows users to
 * start a process manually
 
 Add or Edit Job
-=================
+===============
 From the ``job scheduling list`` view, click
 
 * ``Create`` button to add a new Job or 
@@ -84,4 +84,3 @@ Start Job Manually
 ==================
 As an alternative to wait until the Job is run as scheduled by the scheduler, you can click this button to start the 
 process directly. Afterwards the success/failure info will be shown in ``pop-up window``.
-

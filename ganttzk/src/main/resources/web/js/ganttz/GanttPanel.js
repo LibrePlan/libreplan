@@ -64,7 +64,7 @@ ganttz.GanttPanel = zk.$extends(
         /*
          * The canvas is inserted in the DOM after this component, so it's not available right now.
          * It is queried instead.
-         * Using throttle to not re-query it constantly
+         * Using throttle to not re-query it constantly.
          */
         _getTimeplotContainer: common.Common.throttle(500, function() {
             return jq('canvas.timeplot-canvas').parent();
@@ -81,7 +81,7 @@ ganttz.GanttPanel = zk.$extends(
             jq('#ganttpanel_inner_scroller_y').height(px);
         },
         
-        reScrollX : function(px){
+        reScrollX : function(px) {
             jq('#ganttpanel_inner_scroller_x').width(px);
         }
     },
@@ -90,7 +90,7 @@ ganttz.GanttPanel = zk.$extends(
             return this._instance;
         },
         
-        setInstance : function(instance){
+        setInstance : function(instance) {
             this._instance = instance;
         }
     });
