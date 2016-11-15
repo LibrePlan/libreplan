@@ -2,102 +2,115 @@
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
 
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
-  <appender name="console" class="org.apache.log4j.ConsoleAppender">
-    <layout class="org.apache.log4j.PatternLayout">
-      <!-- Pattern to output the caller's file name and line number -->
-      <param name="ConversionPattern" value="%-5p [%d{dd-MMMM HH:mm:ss}] [%t] %c %x - %m%n" />
-    </layout>
-  </appender>
 
-  <appender name="rolling" class="org.apache.log4j.DailyRollingFileAppender">
-    <param name="file" value="${libreplan-log-directory}libreplan.log" />
-    <param name="datePattern" value="'.'yyyy-MM-dd" /> <!-- Rollover each midnight -->
+    <appender name="console" class="org.apache.log4j.ConsoleAppender">
+        <layout class="org.apache.log4j.PatternLayout">
+            <!-- Pattern to output the caller's file name and line number -->
+            <param name="ConversionPattern" value="%-5p [%d{dd-MMMM HH:mm:ss}] [%t] %c %x - %m%n" />
+        </layout>
+    </appender>
 
-    <layout class="org.apache.log4j.PatternLayout">
-      <param name="ConversionPattern" value="%-5p [%d{dd-MMMM HH:mm:ss}] [%t] %c %x - %m%n" />
-    </layout>
-  </appender>
+    <appender name="rolling" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="file" value="${libreplan-log-directory}libreplan.log" />
+        <param name="datePattern" value="'.'yyyy-MM-dd" /> <!-- Rollover each midnight -->
 
-  <appender name="rolling-errors" class="org.apache.log4j.DailyRollingFileAppender">
-    <param name="file" value="${libreplan-log-directory}libreplan-error.log" />
-    <param name="datePattern" value="'.'yyyy-MM-dd" /> <!-- Rollover each midnight -->
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%-5p [%d{dd-MMMM HH:mm:ss}] [%t] %c %x - %m%n" />
+        </layout>
+    </appender>
 
-    <layout class="org.apache.log4j.PatternLayout">
-      <param name="ConversionPattern" value="%-5p [%d{dd-MMMM HH:mm:ss}] [%t] %c %x - %m%n" />
-    </layout>
+    <appender name="rolling-errors" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="file" value="${libreplan-log-directory}libreplan-error.log" />
+        <param name="datePattern" value="'.'yyyy-MM-dd" /> <!-- Rollover each midnight -->
 
-    <filter class="org.apache.log4j.varia.LevelRangeFilter">
-      <param name="levelMin" value="ERROR" />
-    </filter>
-  </appender>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%-5p [%d{dd-MMMM HH:mm:ss}] [%t] %c %x - %m%n" />
+        </layout>
 
-  <appender name="rolling-profiling" class="org.apache.log4j.DailyRollingFileAppender">
-    <param name="file" value="${libreplan-log-directory}libreplan-profile.log" />
-    <param name="datePattern" value="'.'yyyy-MM-dd" /> <!-- Rollover each midnight -->
+        <filter class="org.apache.log4j.varia.LevelRangeFilter">
+            <param name="levelMin" value="ERROR" />
+        </filter>
+    </appender>
 
-    <layout class="org.apache.log4j.PatternLayout">
-      <param name="ConversionPattern" value="%-5p [%d{dd-MMMM HH:mm:ss}] [%t] %c %x - %m%n" />
-    </layout>
+    <appender name="rolling-profiling" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="file" value="${libreplan-log-directory}libreplan-profile.log" />
+        <param name="datePattern" value="'.'yyyy-MM-dd" /> <!-- Rollover each midnight -->
 
-    <filter class="org.apache.log4j.varia.LevelRangeFilter">
-      <param name="levelMin" value="INFO" />
-    </filter>
-  </appender>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%-5p [%d{dd-MMMM HH:mm:ss}] [%t] %c %x - %m%n" />
+        </layout>
 
-  <appender name="ASYNC" class="org.apache.log4j.AsyncAppender">
-    <param name="BufferSize" value="1000" />
-    <appender-ref ref="console" />
-    <appender-ref ref="rolling" />
-    <appender-ref ref="rolling-errors" />
-  </appender>
+        <filter class="org.apache.log4j.varia.LevelRangeFilter">
+            <param name="levelMin" value="INFO" />
+        </filter>
+    </appender>
 
-  <appender name="ASYNC-profiling" class="org.apache.log4j.AsyncAppender">
-    <param name="BufferSize" value="1000" />
-    <appender-ref ref="rolling-profiling" />
-    <appender-ref ref="console" />
-  </appender>
+    <appender name="ASYNC" class="org.apache.log4j.AsyncAppender">
+        <param name="BufferSize" value="1000" />
+        <appender-ref ref="console" />
+        <appender-ref ref="rolling" />
+        <appender-ref ref="rolling-errors" />
+    </appender>
 
-  <logger name="profiling" additivity="false">
-    <level value="INFO" />
-    <appender-ref ref="ASYNC-profiling" />
-   </logger>
+    <appender name="ASYNC-profiling" class="org.apache.log4j.AsyncAppender">
+        <param name="BufferSize" value="1000" />
+        <appender-ref ref="rolling-profiling" />
+        <appender-ref ref="console" />
+    </appender>
 
-  <appender name="logins" class="org.apache.log4j.DailyRollingFileAppender">
-    <param name="file" value="${libreplan-log-directory}libreplan-logins.log" />
-    <param name="datePattern" value="'.'yyyy-MM-dd" /> <!-- Rollover each midnight -->
+    <appender name="logins" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="file" value="${libreplan-log-directory}libreplan-logins.log" />
+        <param name="datePattern" value="'.'yyyy-MM-dd" /> <!-- Rollover each midnight -->
 
-    <layout class="org.apache.log4j.PatternLayout">
-      <param name="ConversionPattern" value="%-5p [%d{dd-MMMM HH:mm:ss}] [%t] %c %x - %m%n" />
-    </layout>
-  </appender>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%-5p [%d{dd-MMMM HH:mm:ss}] [%t] %c %x - %m%n" />
+        </layout>
+    </appender>
 
-  <appender name="ASYNC-logins" class="org.apache.log4j.AsyncAppender">
-    <param name="BufferSize" value="1000" />
-    <appender-ref ref="logins" />
-  </appender>
+    <appender name="ASYNC-logins" class="org.apache.log4j.AsyncAppender">
+        <param name="BufferSize" value="1000" />
+        <appender-ref ref="logins" />
+    </appender>
 
-  <logger name="org.libreplan.web.users.services.AuthenticationProviderLoggingDecorator"
-          additivity="true">
-    <level value="INFO" />
-    <appender-ref ref="ASYNC-logins" />
-  </logger>
+    <appender name="second-level-cache-file" class="org.apache.log4j.RollingFileAppender">
+        <param name="file" value="${libreplan-log-directory}libreplan-second-level-cache.log" />
+        <param name="MaxFileSize" value="5000KB"/>
+        <param name="MaxBackupIndex" value="4"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%-5p [%d{dd-MMMM HH:mm:ss}] [%t] %c %x - %m%n" />
+        </layout>
+    </appender>
 
-  <appender name="second-level-cache-file" class="org.apache.log4j.RollingFileAppender">
-      <param name="file" value="${libreplan-log-directory}libreplan-second-level-cache.log" />
-      <param name="MaxFileSize" value="5000KB"/>
-      <param name="MaxBackupIndex" value="4"/>
-      <layout class="org.apache.log4j.PatternLayout">
-          <param name="ConversionPattern" value="%-5p [%d{dd-MMMM HH:mm:ss}] [%t] %c %x - %m%n" />
-      </layout>
-  </appender>
+    <logger name="org.libreplan.web.users.services.AuthenticationProviderLoggingDecorator" additivity="true">
+        <level value="INFO" />
+        <appender-ref ref="ASYNC-logins" />
+    </logger>
 
-  <logger name="org.hibernate.cache">
-      <level value="INFO"/>
-      <appender-ref ref="second-level-cache-file" />
-  </logger>
+    <logger name="profiling" additivity="false">
+        <level value="INFO" />
+        <appender-ref ref="ASYNC-profiling" />
+    </logger>
 
-  <root>
-    <priority value="INFO" />
-    <appender-ref ref="ASYNC" />
-  </root>
+    <logger name="org.hibernate.cache">
+        <level value="INFO"/>
+        <appender-ref ref="second-level-cache-file" />
+    </logger>
+
+    <!-- To filter empty lazy objects -->
+    <logger name="org.hibernate.engine.internal.StatefulPersistenceContext">
+        <level value="ERROR"/>
+        <appender-ref ref="ASYNC"/>
+    </logger>
+
+    <!-- To filter roles -->
+    <logger name="org.springframework.security.config.http.FilterInvocationSecurityMetadataSourceParser">
+        <level value="ERROR"/>
+        <appender-ref ref="ASYNC"/>
+    </logger>
+
+    <root>
+        <priority value="INFO" />
+        <appender-ref ref="ASYNC" />
+    </root>
+
 </log4j:configuration>

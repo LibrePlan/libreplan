@@ -29,8 +29,7 @@ import org.zkoss.ganttz.data.Task;
  */
 public class MilestoneComponent extends TaskComponent {
 
-    public MilestoneComponent(Task task,
-            IDisabilityConfiguration disabilityConfiguration) {
+    public MilestoneComponent(Task task, IDisabilityConfiguration disabilityConfiguration) {
         super(task, disabilityConfiguration);
     }
 

@@ -23,26 +23,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public class Emitter<T> {
 
     public interface IEmissionListener<T> {
 
-        public void newEmission(T value);
+        void newEmission(T value);
     }
 
     private T lastValue;
 
-    private List<IEmissionListener<? super T>> listeners = new ArrayList<IEmissionListener<? super T>>();
-
-    public static <T> Emitter<T> withInitial(T initialValue) {
-        return new Emitter<T>(initialValue);
-    }
+    private List<IEmissionListener<? super T>> listeners = new ArrayList<>();
 
     private Emitter(T initialValue) {
         this.lastValue = initialValue;
+    }
+
+    public static <T> Emitter<T> withInitial(T initialValue) {
+        return new Emitter<>(initialValue);
     }
 
     public T getLastValue() {

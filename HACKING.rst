@@ -1,8 +1,8 @@
 Hacking
 =======
 
-This is a guide about how to start hacking on *LibrePlan* project. If you want
-more information about *LibrePlan* development you should visit the wiki
+This is a guide about how to start hacking on *LibrePlan* project.
+If you want more information about *LibrePlan* development you should visit the wiki
 available at: http://wiki.libreplan.org/.
 
 .. contents::
@@ -15,13 +15,13 @@ Compilation requirements
 
   Needed to clone source code repository
 
-* *Maven 2* - Java software project management and comprehension tool
+* *Maven 3* - Java software project management and comprehension tool
 
   Needed to build and compile the project
 
-* *JDK 6* - Java Development Kit
+* *JDK 8* - Java Development Kit
 
-  Project depends on Java 6 and JDK is needed in order to compile it
+  Project depends on Java 8 and JDK is needed in order to compile it
 
 * *PostgreSQL* - Object-relational SQL database
 
@@ -56,7 +56,7 @@ Debian/Ubuntu
 
 * Install requirements::
 
-    # apt-get install git-core maven2 openjdk-6-jdk postgresql postgresql-client python-docutils make gettext cutycapt
+    # apt-get install git-core maven openjdk-8-jdk postgresql postgresql-client python-docutils make gettext cutycapt
 
 * Connect to database::
 
@@ -72,7 +72,7 @@ Debian/Ubuntu
 
 * Download source code::
 
-    $ git clone git://github.com/Igalia/libreplan.git
+    $ git clone git://github.com/LibrePlan/libreplan.git
 
 * Compile project::
 
@@ -84,18 +84,18 @@ Debian/Ubuntu
     $ cd libreplan-webapp/
     $ mvn jetty:run
 
-* Go to http://localhost:8080/libreplan-webapp/
+* Go to http://localhost:8080/
 
 Fedora
 ~~~~~~
 
 * Install requirements::
 
-    # yum install git maven java-1.7.0-openjdk-devel postgresql postgresql-server python-docutils make gettext gnu-free-fonts-compat
+    # yum install git maven java-1.8.0-openjdk-devel postgresql postgresql-server python-docutils make gettext gnu-free-fonts-compat
 
 .. WARNING:: Use the following command in Fedora 16 or below::
 
-               # yum install git maven java-1.6.0-openjdk postgresql postgresql-server python-docutils make gettext gnu-free-fonts-compat
+               # yum install git maven java-1.8.0-openjdk postgresql postgresql-server python-docutils make gettext gnu-free-fonts-compat
 
 * Start database service::
 
@@ -133,7 +133,7 @@ Fedora
 
 * Download source code::
 
-    $ git clone git://github.com/Igalia/libreplan.git
+    $ git clone git://github.com/LibrePlan/libreplan.git
 
 * Compile project::
 
@@ -145,26 +145,26 @@ Fedora
     $ cd libreplan-webapp/
     $ mvn jetty:run
 
-* Go to http://localhost:8080/libreplan-webapp/
+* Go to http://localhost:8080/
 
 openSUSE
 ~~~~~~~~
 
 * Install requirements::
 
-    # zypper install git-core java-1_6_0-openjdk-devel postgresql-server postgresql docutils make gettext-tools
+    # zypper install git-core java-1_8_0-openjdk-devel postgresql-server postgresql docutils make gettext-tools
 
 * Install Maven::
 
     # cd /opt/
-    # wget http://www.apache.org/dist//maven/binaries/apache-maven-2.2.1-bin.tar.gz
-    # tar -xzvf apache-maven-2.2.1-bin.tar.gz
+    # wget http://www.apache.org/dist//maven/binaries/apache-maven-3.0.5-bin.tar.gz
+    # tar -xzvf apache-maven-3.0.5-bin.tar.gz
 
   Edit ``/etc/bash.bashrc.local`` and add the following lines::
 
-    export M2_HOME=/opt/apache-maven-2.2.1
-    export M2=$M2_HOME/bin
-    export PATH=$M2:$PATH
+    export M2_HOME=/opt/apache-maven-3.0.5
+    export MVN=$M2_HOME/bin
+    export PATH=$MVN:$PATH
 
 * Start database service::
 
@@ -194,7 +194,7 @@ openSUSE
 
 * Download source code::
 
-    $ git clone git://github.com/Igalia/libreplan.git
+    $ git clone git://github.com/LibrePlan/libreplan.git
 
 * Compile project::
 
@@ -206,31 +206,31 @@ openSUSE
     $ cd libreplan-webapp/
     $ mvn jetty:run
 
-* Go to http://localhost:8080/libreplan-webapp/
+* Go to http://localhost:8080/
 
 
 Microsoft Windows
-~~~~~~~~
+~~~~~~~~~~~~~~~~~
 
-* Download and install latest Java Development Kit 7uXX (JDK7uXX)::
+* Download and install latest Java Development Kit 8uXX (JDK8uXX)::
 
-    # http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html
+    # http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
 
 * Download and install latest PostgreSQL database::
 
     # http://www.enterprisedb.com/products-services-training/pgdownload#windows
 
-* Download and install Apache Tomcat 6::
+* Download and install Apache Tomcat 8::
 
-    # http://tomcat.apache.org/download-60.cgi
+    # http://tomcat.apache.org/download-80.cgi
     # Note: in JDK folder there is JRE folder
 
 * Set up JDBC41 PostgreSQL Driver::
 
     # Download latest driver: https://jdbc.postgresql.org/download.html
-    # Copy downloaded *.jar file to JRE location: (e.g. C:\Program Files\Java\jre7\lib\ext)
-    # Copy downloaded *.jar file to JAVA_HOME location: (e.g. C:\Program Files\Java\jdk1.7.0_80\jre\lib\ext)
-    # Put downloaded *.jar file to Tomcat lib location: (e.g. C:\Program Files\Apache Software Foundation\Tomcat 6.0\lib)
+    # Copy downloaded *.jar file to JRE location: (e.g. C:\Program Files\Java\jre8\lib\ext)
+    # Copy downloaded *.jar file to JAVA_HOME location: (e.g. C:\Program Files\Java\jdk1.8.0_111\jre\lib\ext)
+    # Put downloaded *.jar file to Tomcat lib location: (e.g. C:\Program Files\Apache Software Foundation\Tomcat 8.0\lib)
 
 * Create database::
 
@@ -272,7 +272,7 @@ Microsoft Windows
 
 * Configure Apache Tomcat Server
 
-* Go to (e.g. C:/Program Files/Apache Software Foundation/Tomcat 6.0/conf/Catalina/localhost/)
+* Go to (e.g. C:/Program Files/Apache Software Foundation/Tomcat 8.0/conf/Catalina/localhost/)
   and create there libreplan.xml file with this lines of code::
 
     <?xml version="1.0" encoding="UTF-8"?>
@@ -295,7 +295,7 @@ Microsoft Windows
 
 * Set JAVA_HOME environment variable::
 
-    # You need to set it to your JDK installed directory (e.g. C:\Program Files\Java\jdk1.7.0_80)
+    # You need to set it to your JDK installed directory (e.g. C:\Program Files\Java\jdk1.8.0_111)
 
 * Add path of unpacked distributions bin directory of Maven to 'Path' environment variable
 
@@ -310,12 +310,12 @@ Microsoft Windows
 
     * Get *.war file from project folder (e.g ../libreplan/libreplan-webapp/target/libreplan-webapp.war)
     * Rename it to libreplan.war
-    * Put your libreplan.war file to Apache Tomcat webapps folder (e.g. C:\Program Files\Apache Software Foundation\Tomcat 6.0\webapps\)
+    * Put your libreplan.war file to Apache Tomcat webapps folder (e.g. C:\Program Files\Apache Software Foundation\Tomcat 8.0\webapps\)
     * Start Apache Tomcat server
 
-    # Possible location: C:\Program Files\Apache Software Foundation\Tomcat 6.0\bin\Tomcat6.exe
+    # Possible location: C:\Program Files\Apache Software Foundation\Tomcat 8.0\bin\Tomcat8.exe
 
-* Go to http://localhost:8080/libreplan-webapp/
+* Go to http://localhost:8080/
 
 
 CutyCapt compilation
@@ -398,9 +398,8 @@ LibrePlan documentation generation
 ----------------------------------
 
 In the doc/src folder you'll find several types of documentation
-available: technical documentation, user manual, some training
-documentation and training exercises. This documentation is available
-in several languages.
+available: technical documentation, user manual, some training documentation and training exercises.
+This documentation is available in several languages.
 
 The supported outputs are HTML and PDF.
 

@@ -22,11 +22,10 @@
 <?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n" ?>
 
 <zk>
-
-    <zscript><![CDATA[
-        rsController = arg.get("resourceLoadController");;
-    ]]>
+    <zscript>
+        <![CDATA[
+            rsController = arg.get("resourceLoadController");;
+        ]]>
     </zscript>
-    <div apply="${rsController}" sclass="parentResourceLoad" self="@{define(content_tabSwitcher)}" height="100%">
-    </div>
+    <div apply="${rsController}" sclass="parentResourceLoad" self="@{define(content_tabSwitcher)}" height="100%"/>
 </zk>

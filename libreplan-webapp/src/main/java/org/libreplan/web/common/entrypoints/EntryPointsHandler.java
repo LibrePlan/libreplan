@@ -46,9 +46,9 @@ import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.BookmarkEvent;
 
 /**
- * Handler for EntryPoints. In other way it is also wrapper for URL redirecting.
+ * Handler for EntryPoints.
+ * In other way it is also wrapper for URL redirecting.
  * <br />
- *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
@@ -82,55 +82,6 @@ public class EntryPointsHandler<T> {
 
     private static final ThreadLocal<List<String>> linkCapturer = new ThreadLocal<>();
 
-    public static void setupEntryPointsForThisRequest(HttpServletRequest request, Map<String, String> entryPoints) {
-        request.setAttribute(MANUALLY_SET_PARAMS, entryPoints);
-    }
-
-    public interface ICapture {
-
-        void capture();
-    }
-
-    /**
-     * It capture the first redirect done via an {@link EntryPoint} in the
-     * provided {@link ICapture} and returns the path.
-     *
-     * @see #capturePaths(ICapture)
-     * @param redirects
-     * @throws IllegalStateException
-     *             if no {@link EntryPoint} point call is done.
-     */
-    public static String capturePath(ICapture redirects) {
-        List<? extends String> result = capturePaths(redirects);
-        if (result.isEmpty()) {
-            throw new IllegalStateException("a call to an entry point should be done");
-        }
-        return result.get(0);
-    }
-
-    /**
-     * It captures the redirects done via {@link EntryPoint} in the provided
-     * {@link ICapture} and returns the paths.
-     *
-     * @param redirects
-     * @return
-     */
-    public static List<? extends String> capturePaths(ICapture redirects) {
-        linkCapturer.set(new ArrayList<>());
-        try {
-            redirects.capture();
-            List<String> list = linkCapturer.get();
-
-            if (list == null) {
-                throw new RuntimeException(ICapture.class.getName() + " cannot be nested");
-            }
-
-            return Collections.unmodifiableList(list);
-        } finally {
-            linkCapturer.set(null);
-        }
-    }
-
     public EntryPointsHandler(IConverterFactory converterFactory,
                               IExecutorRetriever executorRetriever,
                               Class<T> interfaceDefiningEntryPoints) {
@@ -157,6 +108,53 @@ public class EntryPointsHandler<T> {
         }
     }
 
+    public static void setupEntryPointsForThisRequest(HttpServletRequest request, Map<String, String> entryPoints) {
+        request.setAttribute(MANUALLY_SET_PARAMS, entryPoints);
+    }
+
+    public interface ICapture {
+
+        void capture();
+    }
+
+    /**
+     * It capture the first redirect done via an {@link EntryPoint} in the provided {@link ICapture} and returns the path.
+     *
+     * @see #capturePaths(ICapture)
+     * @param redirects
+     * @throws IllegalStateException
+     *             if no {@link EntryPoint} point call is done.
+     */
+    public static String capturePath(ICapture redirects) {
+        List<? extends String> result = capturePaths(redirects);
+        if (result.isEmpty()) {
+            throw new IllegalStateException("a call to an entry point should be done");
+        }
+        return result.get(0);
+    }
+
+    /**
+     * It captures the redirects done via {@link EntryPoint} in the provided {@link ICapture} and returns the paths.
+     *
+     * @param redirects
+     * @return {@link List<? extends String>}
+     */
+    public static List<? extends String> capturePaths(ICapture redirects) {
+        linkCapturer.set(new ArrayList<>());
+        try {
+            redirects.capture();
+            List<String> list = linkCapturer.get();
+
+            if (list == null) {
+                throw new RuntimeException(ICapture.class.getName() + " cannot be nested");
+            }
+
+            return Collections.unmodifiableList(list);
+        } finally {
+            linkCapturer.set(null);
+        }
+    }
+
     public void doTransition(String methodName, Object... values) {
         if (!metadata.containsKey(methodName)) {
             LOG.error("Method " + methodName +
@@ -173,7 +171,7 @@ public class EntryPointsHandler<T> {
             return;
         }
 
-        if (isFlagedInThisRequest()) {
+        if ( isFlaggedInThisRequest()) {
             return;
         }
         flagAlreadyExecutedInThisRequest();
@@ -202,7 +200,7 @@ public class EntryPointsHandler<T> {
         return getFragment(parameterNames, stringRepresentations);
     }
 
-    private boolean isFlagedInThisRequest() {
+    private boolean isFlaggedInThisRequest() {
         return getRequest().getAttribute(FLAG_ATTRIBUTE) == this;
     }
 
@@ -227,9 +225,9 @@ public class EntryPointsHandler<T> {
      * After migration from ZK 5 to ZK 8 it starts to throw 404 error on pages that were redirected with parameters.
      * Solution is to make question mark (?) symbol after page.
      *
-     * Before: http://localhost:8081/myaccount/personalTimesheet.zul;date=2016-07-08;resource=WORKER0004
+     * Before: http://localhost:8080/myaccount/personalTimesheet.zul;date=2016-07-08;resource=WORKER0004
      *
-     * After: http://localhost:8081/myaccount/personalTimesheet.zul?date=2016-07-08;resource=WORKER0004
+     * After: http://localhost:8080/myaccount/personalTimesheet.zul?date=2016-07-08;resource=WORKER0004
      */
     private String buildRedirectURL(String fragment) {
         return page + "?" + stripPound(fragment);
@@ -260,16 +258,12 @@ public class EntryPointsHandler<T> {
 
     private static void callMethod(Object target, Method superclassMethod, Object[] params) {
         try {
-            Method method = target.getClass().getMethod(
-                    superclassMethod.getName(),
-                    superclassMethod.getParameterTypes());
-
+            Method method = target.getClass().getMethod(superclassMethod.getName(), superclassMethod.getParameterTypes());
             method.invoke(target, params);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
-
 
     public <S extends T> boolean applyIfMatches(S controller) {
         HttpServletRequest request = getRequest();
@@ -288,7 +282,7 @@ public class EntryPointsHandler<T> {
     }
 
     public <S extends T> boolean applyIfMatches(S controller, String fragment) {
-        if (isFlagedInThisRequest()) {
+        if ( isFlaggedInThisRequest()) {
             return false;
         }
 
@@ -312,8 +306,9 @@ public class EntryPointsHandler<T> {
             HashSet<String> requiredParams = new HashSet<>(Arrays.asList(entryPointAnnotation.value()));
 
             if (matrixParamsNames.equals(requiredParams)) {
-                final Object[] arguments = retrieveArguments(matrixParams,
-                        entryPointAnnotation, entryPointMetadata.method.getParameterTypes());
+
+                final Object[] arguments =
+                        retrieveArguments(matrixParams, entryPointAnnotation, entryPointMetadata.method.getParameterTypes());
 
                 Util.executeIgnoringCreationOfBindings(
                         () -> callMethod(controller, entryPointMetadata.method, arguments));
@@ -342,9 +337,8 @@ public class EntryPointsHandler<T> {
         return !uri.startsWith(";") ? ";" + uri : uri;
     }
 
-    private Object[] retrieveArguments(Map<String, String> matrixParams,
-                                       EntryPoint linkToStateAnnotation,
-                                       Class<?>[] parameterTypes) {
+    private Object[] retrieveArguments(
+            Map<String, String> matrixParams, EntryPoint linkToStateAnnotation, Class<?>[] parameterTypes) {
 
         Object[] result = new Object[parameterTypes.length];
 

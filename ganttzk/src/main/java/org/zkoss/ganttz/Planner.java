@@ -74,11 +74,9 @@ import org.zkoss.zul.Combobox;
 
 public class Planner extends HtmlMacroComponent  {
 
+    private static final String PLANNER_COMMAND = "planner-command";
+
     private static final Log PROFILING_LOG = ProfilingLogFactory.getLog(Planner.class);
-
-    private static int PIXELS_PER_TASK_LEVEL = 21;
-
-    private static int PIXELS_PER_CHARACTER = 5;
 
     private String EXPAND_ALL_BUTTON = "expandAll";
 
@@ -120,8 +118,7 @@ public class Planner extends HtmlMacroComponent  {
 
     private Listbox listZoomLevels = null;
 
-    private WeakReferencedListeners<IChartVisibilityChangedListener> chartVisibilityListeners =
-            WeakReferencedListeners.create();
+    private WeakReferencedListeners<IChartVisibilityChangedListener> chartVisibilityListeners = WeakReferencedListeners.create();
 
     private IGraphChangeListener showCriticalPathOnChange = new IGraphChangeListener() {
         @Override
@@ -163,7 +160,8 @@ public class Planner extends HtmlMacroComponent  {
 
     private boolean visibleChart;
 
-    public Planner() {}
+    public Planner() {
+    }
 
     public static boolean guessContainersExpandedByDefaultGivenPrintParameters(Map<String, String> printParameters) {
         return guessContainersExpandedByDefault(convertToURLParameters(printParameters));
@@ -180,30 +178,22 @@ public class Planner extends HtmlMacroComponent  {
 
     public static boolean guessContainersExpandedByDefault(Map<String, String[]> queryURLParameters) {
         String[] values = queryURLParameters.get("expanded");
-
         return values != null && toLowercaseSet(values).contains("all");
-
     }
 
     public static boolean guessShowAdvancesByDefault(Map<String, String[]> queryURLParameters) {
         String[] values = queryURLParameters.get("advances");
-
         return values != null && toLowercaseSet(values).contains("all");
-
     }
 
     public static boolean guessShowReportedHoursByDefault(Map<String, String[]> queryURLParameters) {
         String[] values = queryURLParameters.get("reportedHours");
-
         return values != null && toLowercaseSet(values).contains("all");
-
     }
 
     public static boolean guessShowMoneyCostBarByDefault(Map<String, String[]> queryURLParameters) {
         String[] values = queryURLParameters.get("moneyCostBar");
-
         return values != null && toLowercaseSet(values).contains("all");
-
     }
 
     private static Set<String> toLowercaseSet(String[] values) {
@@ -233,6 +223,8 @@ public class Planner extends HtmlMacroComponent  {
 
         IDomainAndBeansMapper<?> mapper = getContext().getMapper();
         int widest = 0;
+        int pixelsPerTaskLevel = 21;
+        int pixelsPerCharacter = 5;
 
         for (Task task : tasks) {
             int numberOfAncestors = mapper.findPositionFor(task).getAncestors().size();
@@ -240,7 +232,7 @@ public class Planner extends HtmlMacroComponent  {
 
             widest = Math.max(
                     widest,
-                    numberOfCharacters * PIXELS_PER_CHARACTER + numberOfAncestors * PIXELS_PER_TASK_LEVEL);
+                    numberOfCharacters * pixelsPerCharacter + numberOfAncestors * pixelsPerTaskLevel);
 
             if ( expand && !task.isLeaf() ) {
                 widest = Math.max(widest, calculateMinimumWidthForTaskNameColumn(expand, task.getTasks()));
@@ -451,7 +443,7 @@ public class Planner extends HtmlMacroComponent  {
                 + (System.currentTimeMillis() - timeSetupingAndAddingComponents) + " ms");
 
         setAuService(new AuService() {
-            public boolean service(AuRequest request, boolean everError){
+            public boolean service(AuRequest request, boolean everError) {
                 String command = request.getCommand();
                 int zoomindex;
                 int scrollLeft;
@@ -493,6 +485,7 @@ public class Planner extends HtmlMacroComponent  {
 
     private <T> List<CommandOnTaskContextualized<T>> contextualize(FunctionalityExposedForExtensions<T> context,
                                                                    List<ICommandOnTask<T>> commands) {
+
         List<CommandOnTaskContextualized<T>> result = new ArrayList<>();
         for (ICommandOnTask<T> c : commands) {
             result.add(contextualize(context, c));
@@ -551,11 +544,11 @@ public class Planner extends HtmlMacroComponent  {
 
     @SuppressWarnings("unchecked")
     private void insertGlobalCommands() {
-        Component commontoolbar = getCommonCommandsInsertionPoint();
+        Component commonToolbar = getCommonCommandsInsertionPoint();
         Component plannerToolbar = getSpecificCommandsInsertionPoint();
 
         if ( !contextualizedGlobalCommands.isEmpty() ) {
-            commontoolbar.getChildren().removeAll(commontoolbar.getChildren());
+            commonToolbar.getChildren().removeAll(commonToolbar.getChildren());
         }
 
         for (CommandContextualized<?> c : contextualizedGlobalCommands) {
@@ -569,7 +562,7 @@ public class Planner extends HtmlMacroComponent  {
                     plannerToolbar.appendChild(c.toButton());
                 }
             } else {
-                commontoolbar.appendChild(c.toButton());
+                commonToolbar.appendChild(c.toButton());
             }
         }
 
@@ -616,12 +609,12 @@ public class Planner extends HtmlMacroComponent  {
             if ( isShowingCriticalPath ) {
                 context.hideCriticalPath();
                 diagramGraph.removePostGraphChangeListener(showCriticalPathOnChange);
-                showCriticalPathButton.setSclass("planner-command");
+                showCriticalPathButton.setSclass(PLANNER_COMMAND);
                 showCriticalPathButton.setTooltiptext(_("Show critical path"));
             } else {
                 context.showCriticalPath();
                 diagramGraph.addPostGraphChangeListener(showCriticalPathOnChange);
-                showCriticalPathButton.setSclass("planner-command clicked");
+                showCriticalPathButton.setSclass(PLANNER_COMMAND + " clicked");
                 showCriticalPathButton.setTooltiptext(_("Hide critical path"));
             }
 
@@ -643,7 +636,7 @@ public class Planner extends HtmlMacroComponent  {
             if ( isShowingAdvances ) {
                 context.hideAdvances();
                 diagramGraph.removePostGraphChangeListener(showAdvanceOnChange);
-                showAdvancesButton.setSclass("planner-command");
+                showAdvancesButton.setSclass(PLANNER_COMMAND);
                 showAdvancesButton.setTooltiptext(_("Show progress"));
 
                 if ( progressTypesCombo.getItemCount() > 0 ) {
@@ -652,7 +645,7 @@ public class Planner extends HtmlMacroComponent  {
             } else {
                 context.showAdvances();
                 diagramGraph.addPostGraphChangeListener(showAdvanceOnChange);
-                showAdvancesButton.setSclass("planner-command clicked");
+                showAdvancesButton.setSclass(PLANNER_COMMAND + " clicked");
                 showAdvancesButton.setTooltiptext(_("Hide progress"));
             }
 
@@ -667,12 +660,12 @@ public class Planner extends HtmlMacroComponent  {
             if ( isShowingReportedHours ) {
                 context.hideReportedHours();
                 diagramGraph.removePostGraphChangeListener(showReportedHoursOnChange);
-                showReportedHoursButton.setSclass("planner-command");
+                showReportedHoursButton.setSclass(PLANNER_COMMAND);
                 showReportedHoursButton.setTooltiptext(_("Show reported hours"));
             } else {
                 context.showReportedHours();
                 diagramGraph.addPostGraphChangeListener(showReportedHoursOnChange);
-                showReportedHoursButton.setSclass("planner-command clicked");
+                showReportedHoursButton.setSclass(PLANNER_COMMAND + " clicked");
                 showReportedHoursButton.setTooltiptext(_("Hide reported hours"));
             }
 
@@ -686,12 +679,12 @@ public class Planner extends HtmlMacroComponent  {
             if ( isShowingMoneyCostBar ) {
                 context.hideMoneyCostBar();
                 diagramGraph.removePostGraphChangeListener(showMoneyCostBarOnChange);
-                showMoneyCostBarButton.setSclass("planner-command");
+                showMoneyCostBarButton.setSclass(PLANNER_COMMAND);
                 showMoneyCostBarButton.setTooltiptext(_("Show money cost bar"));
             } else {
                 context.showMoneyCostBar();
                 diagramGraph.addPostGraphChangeListener(showMoneyCostBarOnChange);
-                showMoneyCostBarButton.setSclass("planner-command clicked");
+                showMoneyCostBarButton.setSclass(PLANNER_COMMAND + " clicked");
                 showMoneyCostBarButton.setTooltiptext(_("Hide money cost bar"));
             }
 
@@ -792,10 +785,10 @@ public class Planner extends HtmlMacroComponent  {
 
             if ( isExpandAll ) {
                 context.collapseAll();
-                expandAllButton.setSclass("planner-command");
+                expandAllButton.setSclass(PLANNER_COMMAND);
             } else {
                 context.expandAll();
-                expandAllButton.setSclass("planner-command clicked");
+                expandAllButton.setSclass(PLANNER_COMMAND + " clicked");
             }
         }
 
@@ -806,7 +799,7 @@ public class Planner extends HtmlMacroComponent  {
         Button expandAllButton = (Button) getFellow(EXPAND_ALL_BUTTON);
         if ( disabilityConfiguration.isExpandAllEnabled() ) {
             context.expandAll();
-            expandAllButton.setSclass("planner-command clicked");
+            expandAllButton.setSclass(PLANNER_COMMAND + " clicked");
         }
     }
 
@@ -841,10 +834,10 @@ public class Planner extends HtmlMacroComponent  {
         if ( disabilityConfiguration.isFlattenTreeEnabled() ) {
             if (isFlattenTree) {
                 predicate.setFilterContainers(false);
-                flattenTreeButton.setSclass("planner-command");
+                flattenTreeButton.setSclass(PLANNER_COMMAND);
             } else {
                 predicate.setFilterContainers(true);
-                flattenTreeButton.setSclass("planner-command clicked");
+                flattenTreeButton.setSclass(PLANNER_COMMAND + " clicked");
             }
 
             setTaskListPredicate(predicate);
@@ -906,7 +899,6 @@ public class Planner extends HtmlMacroComponent  {
                 return c.toButton();
             }
         }
-
         return null;
     }
 
@@ -941,7 +933,6 @@ public class Planner extends HtmlMacroComponent  {
                 }
             }
         }
-
         return null;
     }
 

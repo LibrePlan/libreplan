@@ -119,7 +119,7 @@ overload)**.
    *  > 0 is bad, meaning that the resources are overloaded.
 
 Availability ratio
--------------------
+------------------
 
 It sums up the capacity that is free in the resources currently allocated to the
 project. Therefore it is a measurement of the resource availability to receive more allocations without

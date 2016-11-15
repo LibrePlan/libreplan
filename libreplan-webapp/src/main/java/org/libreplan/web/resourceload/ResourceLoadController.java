@@ -134,14 +134,13 @@ public class ResourceLoadController implements Composer {
         }
     };
 
-
-    public ResourceLoadController() {}
+    public ResourceLoadController() {
+    }
 
     @Override
     public void doAfterCompose(org.zkoss.zk.ui.Component comp) {
         this.parent = comp;
     }
-
 
     public void add(IToolbarCommand... commands) {
         Validate.noNullElements(commands);
@@ -179,7 +178,6 @@ public class ResourceLoadController implements Composer {
         });
     }
 
-
     public interface IListenerAdder {
 
         Object addAndReturnListener(ResourcesLoadPanel panel);
@@ -197,10 +195,12 @@ public class ResourceLoadController implements Composer {
             super(onChange, filterBy);
         }
 
+        @Override
         void setup(ResourcesLoadPanel panel) {
             panel.setLoadChart(buildChart(emitter));
         }
 
+        @Override
         public Object addAndReturnListener(ResourcesLoadPanel panel) {
             IChartVisibilityChangedListener visibilityChangedListener = fillOnChartVisibilityChange();
             panel.addChartVisibilityListener(visibilityChangedListener);
@@ -209,8 +209,7 @@ public class ResourceLoadController implements Composer {
         }
 
         private IChartVisibilityChangedListener fillOnChartVisibilityChange() {
-            IChartVisibilityChangedListener result = new IChartVisibilityChangedListener() {
-
+            return new IChartVisibilityChangedListener() {
                 @Override
                 public void chartVisibilityChanged(final boolean visible) {
                     if (visible && loadChart != null) {
@@ -218,7 +217,6 @@ public class ResourceLoadController implements Composer {
                     }
                 }
             };
-            return result;
         }
 
         private Tabbox buildChart(Emitter<Timeplot> timePlot) {
@@ -291,7 +289,6 @@ public class ResourceLoadController implements Composer {
         private Timeplot createEmptyTimeplot() {
             Timeplot timeplot = new Timeplot();
             timeplot.appendChild(new Plotinfo());
-
             return timeplot;
         }
     }
@@ -318,13 +315,17 @@ public class ResourceLoadController implements Composer {
             return filterBy != null;
         }
 
-        void setup(ResourcesLoadPanel panel) {}
+        void setup(ResourcesLoadPanel panel) {
+        }
 
-        void checkDependencies() {}
+        void checkDependencies() {
+        }
 
-        void applyToParameters(ResourceLoadParameters parameters) {}
+        void applyToParameters(ResourceLoadParameters parameters) {
+        }
 
-        void updateUI(ResourcesLoadPanel panel, ResourceLoadDisplayData generatedData) {}
+        void updateUI(ResourcesLoadPanel panel, ResourceLoadDisplayData generatedData) {
+        }
     }
 
     private abstract static class DependingOnFiltering extends VisualizationModifier {
@@ -514,7 +515,6 @@ public class ResourceLoadController implements Composer {
             if ( isAppliedToOrder() ) {
                 return;
             }
-
             panel.setSecondOptionalFilter(buildBandboxFilterer());
         }
 
@@ -543,7 +543,6 @@ public class ResourceLoadController implements Composer {
 
         private Label getLabel() {
             updateLabelValue();
-
             return label;
         }
 
@@ -711,11 +710,9 @@ public class ResourceLoadController implements Composer {
 
                 // TODO resolve deprecated
                 if ( !ObjectUtils.equals(aElement.getId(), bElement.getId()) ) {
-
                     return false;
                 }
             }
-
             return true;
         }
 
@@ -801,7 +798,8 @@ public class ResourceLoadController implements Composer {
 
         private List<IListenerAdder> listenersToAdd = null;
 
-        public Reloader() {}
+        public Reloader() {
+        }
 
         private List<VisualizationModifier> getVisualizationModifiers() {
             if ( visualizationModifiers != null ) {
@@ -897,7 +895,6 @@ public class ResourceLoadController implements Composer {
         public IOnTransaction<Void> reload() {
             return () -> {
                 reloadInTransaction();
-
                 return null;
             };
         }
@@ -1065,7 +1062,6 @@ public class ResourceLoadController implements Composer {
         }
 
     }
-
 
     public void setPlanningControllerEntryPoints(IOrderPlanningGate planningControllerEntryPoints) {
         this.planningControllerEntryPoints = planningControllerEntryPoints;

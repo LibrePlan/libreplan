@@ -1,5 +1,5 @@
 About
-#################
+#####
 
 .. _acercade:
 .. contents::
@@ -21,7 +21,7 @@ S.L.
 
 
 Licence
-========
+=======
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published by
@@ -38,7 +38,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 Written by
-================
+==========
 
 LibrePlan Team
 --------------
@@ -109,15 +109,19 @@ Contributors
 
 
 Public funding
-================================
+==============
 
-Inside the global scope that LibrePlan is designed for regarding planning management, a project was developed to solve some common polanning problems. This project is partially financed by Xunta de Galicia, Ministerio de Industria, Turismo e Comercio, and by the European Union, Fondo Europeo de Desenvolvemento Rexional.
+Inside the global scope that LibrePlan is designed for regarding planning management,
+a project was developed to solve some common planning problems.
+This project is partially financed by Xunta de Galicia, Ministerio de Industria, Turismo e Comercio, and by the European Union,
+Fondo Europeo de Desenvolvemento Rexional.
 
 .. figure:: images/logos.png
+
 :scale: 100
 
 This project was part of Plan Avanza:
 
 .. figure:: images/avanza.png
-:scale: 100
 
+:scale: 100

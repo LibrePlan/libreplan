@@ -60,83 +60,39 @@ public class CutyPrint {
 
     private static final String CUTYCAPT_COMMAND = "cutycapt";
 
-    // Estimated maximum execution time (ms)
+    private static final String INDEX_ZUL = "/planner/index.zul";
+
+    private static final String PX_IMPORTANT = "px !important; } \n";
+
+    /**  Estimated maximum execution time (ms) */
     private static final int CAPTURE_DELAY = 10000;
 
     /**
      * Default width in pixels of the task name text field for depth level 1.
-     * <p />
-     * Got from .listdetails .depth_1 input.task_title { width: 121px; } at
-     * src/main/webapp/planner/css/ganttzk.css
+     * Got from .listdetails .depth_1 input.task_title { width: 121px; } at src/main/webapp/planner/css/ganttzk.css
      */
     private static final int BASE_TASK_NAME_PIXELS = 121;
 
     private static int TASK_HEIGHT = 25;
-
-    public static void print(Order order) {
-        print("/planner/index.zul", entryPointForShowingOrder(order), Collections.<String, String> emptyMap());
-    }
-
-    public static void print(Order order, Map<String, String> parameters) {
-        print("/planner/index.zul", entryPointForShowingOrder(order), parameters);
-    }
-
-    public static void print(Order order, HashMap<String, String> parameters, Planner planner) {
-        print("/planner/index.zul", entryPointForShowingOrder(order), parameters, planner);
-    }
-
-    public static void print() {
-        print("/planner/index.zul", Collections.<String, String> emptyMap(), Collections.<String, String> emptyMap());
-    }
-
-    public static void print(Map<String, String> parameters) {
-        print("/planner/index.zul", Collections.<String, String> emptyMap(), parameters);
-    }
-
-    public static void print(HashMap<String, String> parameters, Planner planner) {
-        print("/planner/index.zul", Collections.<String, String> emptyMap(), parameters, planner);
-    }
-
-    private static Map<String, String> entryPointForShowingOrder(Order order) {
-        final Map<String, String> result = new HashMap<>();
-        result.put("order", order.getCode() + "");
-
-        return result;
-    }
-
-    public static void print(
-            final String forwardURL, final Map<String, String> entryPointsMap, Map<String, String> parameters) {
-        print(forwardURL, entryPointsMap, parameters, null);
-    }
-
-    public static void print(final String forwardURL,
-                             final Map<String, String> entryPointsMap,
-                             Map<String, String> parameters,
-                             Planner planner) {
-
-        CutyCaptParameters params = new CutyCaptParameters(forwardURL, entryPointsMap, parameters, planner);
-        String generatedSnapshotServerPath = takeSnapshot(params);
-
-        openInAnotherTab(generatedSnapshotServerPath);
-    }
-
-    private static void openInAnotherTab(String producedPrintFilePath) {
-        Executions.getCurrent().sendRedirect(producedPrintFilePath, "_blank");
-    }
 
     private static class CutyCaptParameters {
 
         private static final AtomicLong counter = new AtomicLong();
 
         private final HttpServletRequest request = (HttpServletRequest) Executions.getCurrent().getNativeRequest();
+
         private final ServletContext context = request.getSession().getServletContext();
 
         private final String forwardURL;
+
         private final Map<String, String> entryPointsMap;
+
         private final Map<String, String> printParameters;
+
         private final Planner planner;
 
         private final boolean containersExpandedByDefault;
+
         private final int minWidthForTaskNameColumn;
 
         private final String generatedSnapshotServerPath;
@@ -149,10 +105,9 @@ public class CutyPrint {
                                   Planner planner) {
 
             this.forwardURL = forwardURL;
-            this.entryPointsMap = (entryPointsMap != null) ? entryPointsMap : Collections.<String, String> emptyMap();
+            this.entryPointsMap = (entryPointsMap != null) ? entryPointsMap : Collections.emptyMap();
 
-            this.printParameters =
-                    (printParameters != null) ? printParameters : Collections.<String, String> emptyMap();
+            this.printParameters = (printParameters != null) ? printParameters : Collections.emptyMap();
 
             this.planner = planner;
 
@@ -166,11 +121,13 @@ public class CutyPrint {
         }
 
         private String buildCaptureDestination(String extension) {
-            if ( StringUtils.isEmpty(extension) ) {
-                extension = ".pdf";
+            String newExtension = extension;
+
+            if ( StringUtils.isEmpty(newExtension) ) {
+                newExtension = ".pdf";
             }
-            
-            return String.format("/print/%tY%<tm%<td%<tH%<tM%<tS-%s%s", new Date(), recentUniqueToken, extension);
+
+            return String.format("/print/%tY%<tm%<td%<tH%<tM%<tS-%s%s", new Date(), recentUniqueToken, newExtension);
         }
 
         /**
@@ -197,10 +154,10 @@ public class CutyPrint {
             result.put("url", buildSnapshotURLParam());
 
             int width = buildMinWidthParam();
-            result.put("min-width", width + "");
+            result.put("min-width", Integer.toString(width));
 
-            result.put("min-height", buildMinHeightParam() + "");
-            result.put("delay", CAPTURE_DELAY + "");
+            result.put("min-height", Integer.toString(buildMinHeightParam()));
+            result.put("delay", Integer.toString(CAPTURE_DELAY));
             result.put("user-style-path", buildCustomCSSParam(width));
             result.put("out", buildPathToOutputFileParam());
             result.put("header", String.format("Accept-Language:%s", Locales.getCurrent().getLanguage()));
@@ -216,8 +173,8 @@ public class CutyPrint {
                         HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
                     EntryPointsHandler.setupEntryPointsForThisRequest(request, entryPointsMap);
-                    // Pending to forward and process additional parameters
-                    // as show labels, resources, zoom or expand all
+
+                    // Pending to forward and process additional parameters as show labels, resources, zoom or expand all
                     request.getRequestDispatcher(forwardURL).forward(request, response);
                 }
             });
@@ -241,20 +198,16 @@ public class CutyPrint {
 
         private String resolveLocalHost() {
             try {
-                InetAddress host = InetAddress.getByName(request.getLocalName());
-
-                return host.getHostName();
+                return InetAddress.getByName(request.getLocalName()).getHostName();
             } catch (UnknownHostException e) {
                 throw new RuntimeException(e);
             }
         }
 
         private int buildMinWidthParam() {
-            if ( planner != null && planner.getTimeTracker() != null ) {
-                return planner.getTimeTracker().getHorizontalSize() + calculateTaskDetailsWidth();
-            }
-
-            return 0;
+            return planner != null && planner.getTimeTracker() != null
+                    ? planner.getTimeTracker().getHorizontalSize() + calculateTaskDetailsWidth()
+                    : 0;
         }
 
         private int calculateTaskDetailsWidth() {
@@ -264,8 +217,10 @@ public class CutyPrint {
 
         private int buildMinHeightParam() {
             int PRINT_VERTICAL_SPACING = 160;
-            return (containersExpandedByDefault ? planner.getAllTasksNumber() :
-                    planner.getTaskNumber()) * TASK_HEIGHT + PRINT_VERTICAL_SPACING;
+            return (containersExpandedByDefault
+                    ? planner.getAllTasksNumber()
+                    : planner.getTaskNumber())
+                    * TASK_HEIGHT + PRINT_VERTICAL_SPACING;
         }
 
         private String buildCustomCSSParam(int plannerWidth) {
@@ -283,14 +238,12 @@ public class CutyPrint {
                 FileUtils.copyFile(new File(sourceFile), destination);
             } catch (IOException e) {
                 LOG.error("Can't create a temporal file for storing the CSS files", e);
-
                 return sourceFile;
             }
 
             FileWriter appendToFile = null;
             try {
                 appendToFile = new FileWriter(destination, true);
-
                 appendToFile.write(cssLinesToAppend);
                 appendToFile.flush();
             } catch (IOException e) {
@@ -329,10 +282,10 @@ public class CutyPrint {
             int PRINT_VERTICAL_PADDING = 50;
             int height = (tasksNumber * TASK_HEIGHT) + PRINT_VERTICAL_PADDING;
             String heightCSS = "";
-            heightCSS += " body div#scroll_container { height: " + height + "px !important;} \n"; /* 1110 */
-            heightCSS += " body div#timetracker { height: " + (height + 20) + "px !important; } \n";
-            heightCSS += " body div.plannerlayout { height: " + (height + 80) + "px !important; } \n";
-            heightCSS += " body div.main-layout { height: " + (height + 90) + "px !important; } \n";
+            heightCSS += " body div#scroll_container { height: " + height + PX_IMPORTANT; /* 1110 */
+            heightCSS += " body div#timetracker { height: " + (height + 20) + PX_IMPORTANT;
+            heightCSS += " body div.plannerlayout { height: " + (height + 80) + PX_IMPORTANT;
+            heightCSS += " body div.main-layout { height: " + (height + 90) + PX_IMPORTANT;
 
             return heightCSS;
         }
@@ -351,6 +304,71 @@ public class CutyPrint {
             return context.getRealPath(generatedSnapshotServerPath);
         }
 
+        private static IServletRequestHandler executeOnOriginalContext(final IServletRequestHandler original) {
+            final SecurityContext originalContext = SecurityContextHolder.getContext();
+            final Locale current = Locales.getCurrent();
+
+            return new IServletRequestHandler() {
+                @Override
+                public void handle(
+                        HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+                    Locales.setThreadLocal(current);
+                    SecurityContextHolder.setContext(originalContext);
+                    original.handle(request, response);
+                }
+            };
+        }
+
+    }
+
+    public static void print(Order order) {
+        print(INDEX_ZUL, entryPointForShowingOrder(order), Collections.emptyMap());
+    }
+
+    public static void print(Order order, Map<String, String> parameters) {
+        print(INDEX_ZUL, entryPointForShowingOrder(order), parameters);
+    }
+
+    public static void print(Order order, Map<String, String> parameters, Planner planner) {
+        print(INDEX_ZUL, entryPointForShowingOrder(order), parameters, planner);
+    }
+
+    public static void print() {
+        print(INDEX_ZUL, Collections.emptyMap(), Collections.emptyMap());
+    }
+
+    public static void print(Map<String, String> parameters) {
+        print(INDEX_ZUL, Collections.emptyMap(), parameters);
+    }
+
+    public static void print(Map<String, String> parameters, Planner planner) {
+        print(INDEX_ZUL, Collections.emptyMap(), parameters, planner);
+    }
+
+    private static Map<String, String> entryPointForShowingOrder(Order order) {
+        final Map<String, String> result = new HashMap<>();
+        result.put("order", order.getCode() + "");
+        return result;
+    }
+
+    public static void print(final String forwardURL, final Map<String, String> entryPointsMap, Map<String, String> parameters) {
+        print(forwardURL, entryPointsMap, parameters, null);
+    }
+
+    public static void print(final String forwardURL,
+                             final Map<String, String> entryPointsMap,
+                             Map<String, String> parameters,
+                             Planner planner) {
+
+        CutyCaptParameters params = new CutyCaptParameters(forwardURL, entryPointsMap, parameters, planner);
+        String generatedSnapshotServerPath = takeSnapshot(params);
+
+        openInAnotherTab(generatedSnapshotServerPath);
+    }
+
+    private static void openInAnotherTab(String producedPrintFilePath) {
+        Executions.getCurrent().sendRedirect(producedPrintFilePath, "_blank");
     }
 
     /**
@@ -381,7 +399,7 @@ public class CutyPrint {
             printProcess = capture.start();
             printProcess.waitFor();
 
-            // once the printProcess finishes, the print snapshot is available
+            // Once the printProcess finishes, the print snapshot is available
             return generatedSnapshotServerPath;
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
@@ -404,22 +422,6 @@ public class CutyPrint {
         } catch (Exception e) {
             LOG.error("error stoping process " + process, e);
         }
-    }
-
-    private static IServletRequestHandler executeOnOriginalContext(final IServletRequestHandler original) {
-        final SecurityContext originalContext = SecurityContextHolder.getContext();
-        final Locale current = Locales.getCurrent();
-
-        return new IServletRequestHandler() {
-            @Override
-            public void handle(
-                    HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-                Locales.setThreadLocal(current);
-                SecurityContextHolder.setContext(originalContext);
-                original.handle(request, response);
-            }
-        };
     }
 
     }

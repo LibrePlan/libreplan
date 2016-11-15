@@ -32,7 +32,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.EnumSet;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -122,6 +121,13 @@ import org.zkoss.zul.Vbox;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class CompanyPlanningModel implements ICompanyPlanningModel {
 
+    /** All the status but CANCELLED and STORED */
+    private static final EnumSet<OrderStatusEnum> STATUS_VISUALIZED = OrderStatusEnum.getVisibleStatus();
+
+    private static final String CENTER = "center";
+
+    private static final String INDICATOR = "indicator";
+
     @Autowired
     private IOrderDAO orderDAO;
 
@@ -134,12 +140,6 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
     @Autowired
     private ICompanyEarnedValueCalculator earnedValueCalculator;
 
-    private List<IZoomLevelChangedListener> keepAliveZoomListeners = new ArrayList<>();
-
-    private List<Checkbox> earnedValueChartConfigurationCheckboxes = new ArrayList<>();
-
-    private List<IChartVisibilityChangedListener> keepAliveChartVisibilityListeners = new ArrayList<>();
-
     @Autowired
     private IConfigurationDAO configurationDAO;
 
@@ -149,17 +149,20 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
     @Autowired
     private TaskElementAdapter taskElementAdapterCreator;
 
-    private Scenario currentScenario;
-
     @Autowired
     private PredefinedDatabaseSnapshots databaseSnapshots;
+
+    private List<IZoomLevelChangedListener> keepAliveZoomListeners = new ArrayList<>();
+
+    private List<Checkbox> earnedValueChartConfigurationCheckboxes = new ArrayList<>();
+
+    private List<IChartVisibilityChangedListener> keepAliveChartVisibilityListeners = new ArrayList<>();
+
+    private Scenario currentScenario;
 
     private LocalDate filterStartDate;
 
     private LocalDate filterFinishDate;
-
-    /** All the status but CANCELLED and STORED */
-    private static final EnumSet<OrderStatusEnum> STATUS_VISUALIZED = OrderStatusEnum.getVisibleStatus();
 
     private static final class TaskElementNavigator implements IStructureNavigator<TaskElement> {
 
@@ -229,18 +232,18 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
         }
         else {
             // If the chart is not expanded, we load the data later with a listener
-            (planner.getFellow("graphics")).addEventListener("onOpen",
-                    new EventListener() {
-                        @Override
-                        public void onEvent(Event event) {
-                            transactionService.runOnReadOnlyTransaction((IOnTransaction<Void>) () -> {
-                                setupChartAndItsContent(planner, chartComponent);
-                                return null;
-                            });
-                            // Data is loaded only once, then we remove the listener
-                            event.getTarget().removeEventListener("onOpen", this);
-                        }
+            planner.getFellow("graphics").addEventListener("onOpen", new EventListener() {
+                @Override
+                public void onEvent(Event event) {
+                    transactionService.runOnReadOnlyTransaction((IOnTransaction<Void>) () -> {
+                        setupChartAndItsContent(planner, chartComponent);
+                        return null;
                     });
+
+                    // Data is loaded only once, then we remove the listener
+                    event.getTarget().removeEventListener("onOpen", this);
+                }
+            });
         }
     }
 
@@ -313,7 +316,6 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
     private Timeplot createEmptyTimeplot() {
         Timeplot timeplot = new Timeplot();
         timeplot.appendChild(new Plotinfo());
-
         return timeplot;
     }
 
@@ -341,7 +343,7 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
         datebox.addEventListener(Events.ON_CHANGE,  event -> {
             LocalDate date = new LocalDate(datebox.getValue());
             updateEarnedValueChartLegend(vbox, earnedValueChartFiller, date);
-            dateInfutureMessage(datebox);
+            dateInFutureMessage(datebox);
         });
     }
 
@@ -355,7 +357,7 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
         }
     }
 
-    private void dateInfutureMessage(Datebox datebox) {
+    private void dateInFutureMessage(Datebox datebox) {
         Date value = datebox.getValue();
         Date today = LocalDate.fromDateFields(new Date()).toDateTimeAtStartOfDay().toDate();
 
@@ -374,15 +376,18 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
 
         final Div div = new Div();
         Timeplot timePlot = loadChartEmitter.getLastValue();
+
         if (timePlot != null) {
             div.appendChild(timePlot);
         }
+
         loadChartEmitter.addListener(timePlot1 -> {
             div.getChildren().clear();
             if (timePlot1 != null) {
                 div.appendChild(timePlot1);
             }
         });
+
         div.setSclass("plannergraph");
         hbox.appendChild(div);
 
@@ -394,8 +399,8 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
     public static org.zkoss.zk.ui.Component getLoadChartLegend() {
         Hbox hbox = new Hbox();
         hbox.setClass("legend-container");
-        hbox.setAlign("center");
-        hbox.setPack("center");
+        hbox.setAlign(CENTER);
+        hbox.setPack(CENTER);
         Executions.createComponents("/planner/_legendLoadChartCompany.zul", hbox, null);
 
         return hbox;
@@ -407,8 +412,8 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
 
         Vbox vbox = new Vbox();
         vbox.setClass("legend-container");
-        vbox.setAlign("center");
-        vbox.setPack("center");
+        vbox.setAlign(CENTER);
+        vbox.setPack(CENTER);
 
         Hbox dateHbox = new Hbox();
         dateHbox.appendChild(new Label(_("Select date")));
@@ -438,6 +443,7 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
 
     private org.zkoss.zk.ui.Component getEarnedValueChartConfigurableLegend(
             CompanyEarnedValueChartFiller earnedValueChartFiller, LocalDate date) {
+
         Hbox mainhbox = new Hbox();
         mainhbox.setId("indicatorsTable");
 
@@ -456,7 +462,7 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
         for (EarnedValueType type : EarnedValueType.values()) {
             Checkbox checkbox = new Checkbox(type.getAcronym());
             checkbox.setTooltiptext(type.getName());
-            checkbox.setAttribute("indicator", type);
+            checkbox.setAttribute(INDICATOR, type);
             checkbox.setStyle("color: " + type.getColor());
 
             Label valueLabel = new Label(getLabelTextEarnedValueType(
@@ -468,6 +474,7 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
             hbox.appendChild(valueLabel);
 
             columnNumber = columnNumber + 1;
+
             switch (columnNumber) {
 
                 case 1:
@@ -518,7 +525,7 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
     private void markAsSelectedDefaultIndicators() {
         for (Checkbox checkbox : earnedValueChartConfigurationCheckboxes) {
 
-            EarnedValueType type = (EarnedValueType) checkbox.getAttribute("indicator");
+            EarnedValueType type = (EarnedValueType) checkbox.getAttribute(INDICATOR);
 
             switch (type) {
 
@@ -541,7 +548,7 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
         for (Checkbox checkbox : earnedValueChartConfigurationCheckboxes) {
             if (checkbox.isChecked()) {
 
-                EarnedValueType type = (EarnedValueType) checkbox.getAttribute("indicator");
+                EarnedValueType type = (EarnedValueType) checkbox.getAttribute(INDICATOR);
                 result.add(type);
             }
         }
@@ -593,7 +600,7 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
             }
 
             @Override
-            public void doPrint(HashMap<String, String> parameters, Planner planner) {
+            public void doPrint(Map<String, String> parameters, Planner planner) {
                 CutyPrint.print(parameters, planner);
             }
 
@@ -626,6 +633,7 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
                 });
 
         keepAliveChartVisibilityListeners.add(chartVisibilityChangedListener);
+
         return chartVisibilityChangedListener;
     }
 
@@ -679,6 +687,7 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
             }
         }
         Collections.sort(result, (arg0, arg1) -> arg0.getStartDate().compareTo(arg1.getStartDate()));
+
         return result;
     }
 
@@ -724,6 +733,9 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
                     }
                     state = (OrderStatusEnum) filterPair.getValue();
                     break;
+
+                default:
+                    break;
             }
         }
 
@@ -739,8 +751,8 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
         Date endDate = FilterUtils.readProjectsEndDate();
         String name = FilterUtils.readProjectsName();
 
-        boolean calculateStartDate = (startDate == null);
-        boolean calculateEndDate = (endDate == null);
+        boolean calculateStartDate = startDate == null;
+        boolean calculateEndDate = endDate == null;
 
         // Filter predicate needs to be calculated based on the projects dates
         if ( (calculateStartDate) || (calculateEndDate) ) {
@@ -762,6 +774,7 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
                         startDate = Collections.min(
                                 notNull(startDate, each.getInitDate(), associatedTaskElement.getStartDate()));
                     }
+
                     if ( calculateEndDate ) {
                         endDate = Collections.max(
                                 notNull(endDate, each.getDeadline(), associatedTaskElement.getEndDate()));
@@ -789,15 +802,11 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
 
     @Override
     public Date getFilterStartDate() {
-        return ((filterStartDate == null) ? null : filterStartDate.toDateTimeAtStartOfDay().toDate());
+        return filterStartDate == null ? null : filterStartDate.toDateTimeAtStartOfDay().toDate();
     }
     @Override
     public Date getFilterFinishDate() {
-        return ((filterStartDate == null) ? null : filterFinishDate.toDateTimeAtStartOfDay().toDate());
-    }
-
-    private AvailabilityTimeLine.Interval getFilterInterval() {
-        return AvailabilityTimeLine.Interval.create(filterStartDate, filterFinishDate);
+        return filterStartDate == null ? null : filterFinishDate.toDateTimeAtStartOfDay().toDate();
     }
 
     private class CompanyLoadChartFiller extends StandardLoadChartFiller {
@@ -829,25 +838,35 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
 
         @Override
         protected void calculateBudgetedCostWorkScheduled(Interval interval) {
-            setIndicatorInInterval(EarnedValueType.BCWS, interval,
+            setIndicatorInInterval(
+                    EarnedValueType.BCWS,
+                    interval,
                     earnedValueCalculator.calculateBudgetedCostWorkScheduled(getFilterInterval()));
         }
 
         @Override
         protected void calculateActualCostWorkPerformed(Interval interval) {
-            setIndicatorInInterval(EarnedValueType.ACWP, interval,
+            setIndicatorInInterval(
+                    EarnedValueType.ACWP,
+                    interval,
                     earnedValueCalculator.calculateActualCostWorkPerformed(getFilterInterval()));
         }
 
         @Override
         protected void calculateBudgetedCostWorkPerformed(Interval interval) {
-            setIndicatorInInterval(EarnedValueType.BCWP, interval,
+            setIndicatorInInterval(
+                    EarnedValueType.BCWP,
+                    interval,
                     earnedValueCalculator.calculateBudgetedCostWorkPerformed(getFilterInterval()));
         }
 
         @Override
         protected Set<EarnedValueType> getSelectedIndicators() {
             return getEarnedValueSelectedIndicators();
+        }
+
+        private AvailabilityTimeLine.Interval getFilterInterval() {
+            return AvailabilityTimeLine.Interval.create(filterStartDate, filterFinishDate);
         }
 
     }

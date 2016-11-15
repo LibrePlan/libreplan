@@ -1,9 +1,14 @@
 Criteria
-#########
+########
 
 .. contents::
 
-Criteria are elements that are used in the program to categorise resources and tasks. Tasks need criteria and the resources fulfil them. The following sequence is an example of how to use criteria: A resource is designated the criterion of "welder" (that is the resource fulfils the "welder" category) and a task requires the "welder" criterion to be carried out. As a result, when resources are allocated to tasks, workers with the "welder" criterion are used when allocating resources generically (not applicable to specific allocation). See the chapter on allocating resources to find out more about the different kinds of allocation.
+Criteria are elements that are used in the program to categorise resources and tasks. Tasks need criteria and the resources fulfil them.
+The following sequence is an example of how to use criteria:
+A resource is designated the criterion of "welder" (that is the resource fulfils the "welder" category) and a task requires the "welder"
+criterion to be carried out. As a result, when resources are allocated to tasks, workers with the "welder"
+criterion are used when allocating resources generically (not applicable to specific allocation).
+See the chapter on allocating resources to find out more about the different kinds of allocation.
 
 Several operations can be carried out with criteria in the program:
 
@@ -12,11 +17,12 @@ Several operations can be carried out with criteria in the program:
 * Allocation of criteria to tasks.
 * Filtering entities according to criteria. Tasks and order items can be filtered according to criteria to carry out operations in the program.
 
-Only the first function out of the three described above will be explained in this section. The two kinds of allocation will be dealt with later, the allocation of resources in the chapter on "Resource management" and the filtering function in the chapter on "Task planning".
+Only the first function out of the three described above will be explained in this section. The two kinds of allocation will be dealt with later,
+the allocation of resources in the chapter on "Resource management" and the filtering function in the chapter on "Task planning".
 
 
 Criteria administration
-===========================
+=======================
 Criteria administration can be accessed from the administration menu:
 
 .. figure:: images/menu.png

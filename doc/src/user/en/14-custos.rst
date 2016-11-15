@@ -1,5 +1,5 @@
 ﻿Cost management
-#################
+###############
 
 .. _costes:
 .. contents::
@@ -25,7 +25,7 @@ Cost management allows users to estimate the costs of resources used in a projec
 
 
 Managing hour types worked
-------------------------------------------
+--------------------------
 
 Users need to carry out the following steps to register hour types worked:
 
@@ -55,7 +55,7 @@ Users need to carry out the following steps to register hour types worked:
 * Click "Save" or "Save and continue".
 
 Cost categories
--------------------
+---------------
 
 Users need to carry out the following steps to register cost categories:
 
