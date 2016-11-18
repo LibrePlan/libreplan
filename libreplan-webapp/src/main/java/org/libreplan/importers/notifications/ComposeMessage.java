@@ -19,6 +19,8 @@
 
 package org.libreplan.importers.notifications;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.libreplan.business.common.entities.ConnectorProperty;
 import org.libreplan.business.email.entities.EmailNotification;
 import org.libreplan.business.email.entities.EmailTemplate;
@@ -83,6 +85,8 @@ public class ComposeMessage {
 
     private Properties properties;
 
+    private static final Log LOG = LogFactory.getLog(ComposeMessage.class);
+
 
     public boolean composeMessageForUser(EmailNotification notification) {
         // Gather data about EmailTemplate needs to be used
@@ -101,6 +105,11 @@ public class ComposeMessage {
             }
 
             EmailTemplate currentEmailTemplate = findCurrentEmailTemplate(type, locale);
+
+            if (currentEmailTemplate == null) {
+                LOG.error("Email template is null");
+                return false;
+            }
 
             // Modify text that will be composed
             String text = currentEmailTemplate.getContent();
