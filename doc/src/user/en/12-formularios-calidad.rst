@@ -1,5 +1,5 @@
 Quality forms
-######################
+#############
 
 .. _calidad:
 .. contents::
@@ -8,7 +8,8 @@ Quality forms
 Administration of quality forms
 ===============================
 
-Quality forms consist of a list of questions or sentences that indicate the tasks or processes that should have been completed so that a task can be marked as complete by the company. These forms consist of the following fields:
+Quality forms consist of a list of questions or sentences that indicate the tasks or processes that should have been
+completed so that a task can be marked as complete by the company. These forms consist of the following fields:
 
 * Name
 * Description

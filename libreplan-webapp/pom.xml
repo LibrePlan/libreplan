@@ -354,6 +354,11 @@
             <artifactId>zk</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.zkoss.common</groupId>
+            <artifactId>zcommon</artifactId>
+        </dependency>
+
         <!-- LibrePlan ZK Components  -->
         <dependency>
             <groupId>org.libreplan</groupId>

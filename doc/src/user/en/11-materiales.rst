@@ -1,5 +1,5 @@
 Materials
-##########
+#########
 .. _materiales:
 .. contents::
 
@@ -9,7 +9,8 @@ Administration of materials
 
 Users can manage a basic database of materials, organised by categories.
 
-The categories are containers that can be assigned specific materials and also more categories. They are stored in a tree structure as the materials can belong to leaf or intermediary categories.
+The categories are containers that can be assigned specific materials and also more categories.
+They are stored in a tree structure as the materials can belong to leaf or intermediary categories.
 
 Users have to do the following to manage categories:
 

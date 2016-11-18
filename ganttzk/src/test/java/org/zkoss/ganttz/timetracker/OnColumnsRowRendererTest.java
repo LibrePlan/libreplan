@@ -43,7 +43,8 @@ import org.zkoss.zul.Label;
 
 public class OnColumnsRowRendererTest {
 
-    private static class Data {}
+    private static class Data {
+    }
 
     private static class CellRenderer implements ICellForDetailItemRenderer<DetailItem, Data> {
         @Override
@@ -103,27 +104,27 @@ public class OnColumnsRowRendererTest {
 
     @Test(expected = NullPointerException.class)
     public void itNeedsTheTypeAsClass() {
-        OnColumnsRowRenderer.create(null, createStub(), new ArrayList<DetailItem>());
+        OnColumnsRowRenderer.create(null, createStub(), new ArrayList<>());
     }
 
     @Test
     public void itCanHaveEmptyDetailItems() {
-        OnColumnsRowRenderer.create(Data.class, createStub(), new ArrayList<DetailItem>());
+        OnColumnsRowRenderer.create(Data.class, createStub(), new ArrayList<>());
     }
 
     @Test
     public void itCanInferTheGenericType() {
-        OnColumnsRowRenderer.create(new CellRenderer(), new ArrayList<DetailItem>());
+        OnColumnsRowRenderer.create(new CellRenderer(), new ArrayList<>());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void ifComesFromRawTypeIsNotInferrable() {
-        OnColumnsRowRenderer.create(createStub(), new ArrayList<DetailItem>());
+        OnColumnsRowRenderer.create(createStub(), new ArrayList<>());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void ifItNotShowsTheActualTypeIsNotInferrable() {
-        OnColumnsRowRenderer.create(new CellRendererNotInferable<Data>(), new ArrayList<DetailItem>());
+        OnColumnsRowRenderer.create(new CellRendererNotInferable<Data>(), new ArrayList<>());
     }
 
     @SuppressWarnings("serial")

@@ -28,9 +28,9 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 /**
- * Dao for {@link EmailNotification}
+ * DAO for {@link EmailNotification}.
  *
- * @author Created by Vova Perebykivskyi <vova@libreplan-enterprise.com> on 19.10.2015.
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
 @Repository
 public class EmailNotificationDAO
@@ -54,11 +54,11 @@ public class EmailNotificationDAO
     public boolean deleteAll() {
         List<EmailNotification> notifications = list(EmailNotification.class);
 
-        for (Object item : notifications){
+        for (Object item : notifications) {
             getSession().delete(item);
         }
 
-        return list(EmailNotification.class).size() == 0;
+        return list(EmailNotification.class).isEmpty();
     }
 
     @Override
@@ -76,7 +76,7 @@ public class EmailNotificationDAO
                 .createCriteria(EmailNotification.class)
                 .add(Restrictions.eq("type", enumeration.ordinal()))
                 .list()
-                .size() == 0;
+                .isEmpty();
     }
 
     @Override

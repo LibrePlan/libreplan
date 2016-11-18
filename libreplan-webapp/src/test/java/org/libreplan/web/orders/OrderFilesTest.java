@@ -53,7 +53,7 @@ import java.util.Date;
 /**
  * Tests for {@link OrderFile}.
  *
- * @author Created by Vova Perebykivskyi <vova@libreplan-enterprise.com> on 11.01.2016.
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
 
 @RunWith(SpringJUnit4ClassRunner.class)

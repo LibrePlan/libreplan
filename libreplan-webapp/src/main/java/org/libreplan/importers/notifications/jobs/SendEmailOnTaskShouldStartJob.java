@@ -29,9 +29,11 @@ import org.springframework.scheduling.quartz.QuartzJobBean;
  * Sends E-mail to users with data that storing in notification_queue table and that are treat to
  * {@link org.libreplan.business.email.entities.EmailTemplateEnum#TEMPLATE_TODAY_TASK_SHOULD_START}.
  *
+ * It is used in {@link org.libreplan.web.common.JobSchedulerModel}.
  *
- * @author Created by Vova Perebykivskyi <vova@libreplan-enterprise.com> on 20.01.2016
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
+@SuppressWarnings("unused")
 public class SendEmailOnTaskShouldStartJob extends QuartzJobBean {
 
     @Override

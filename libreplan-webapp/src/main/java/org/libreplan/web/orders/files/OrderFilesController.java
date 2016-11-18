@@ -62,7 +62,7 @@ import static org.libreplan.web.I18nHelper._;
 /**
  * Controller for managing Order files.
  *
- * @author Created by Vova Perebykivskyi <vova@libreplan-enterprise.com> on 12.24.2015.
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
 
 public class OrderFilesController extends GenericForwardComposer {
@@ -82,10 +82,21 @@ public class OrderFilesController extends GenericForwardComposer {
     private Listbox filesList;
 
     public OrderFilesController() {
-        configurationModel = (IConfigurationModel) SpringUtil.getBean("configurationModel");
-        userDAO = (IUserDAO) SpringUtil.getBean("userDAO");
-        orderElementModel = (IOrderElementModel) SpringUtil.getBean("orderElementModel");
-        orderFileModel = (IOrderFileModel) SpringUtil.getBean("orderFileModel");
+        if ( configurationModel == null ) {
+            configurationModel = (IConfigurationModel) SpringUtil.getBean("configurationModel");
+        }
+
+        if ( userDAO == null ) {
+            userDAO = (IUserDAO) SpringUtil.getBean("userDAO");
+        }
+
+        if ( orderElementModel == null ) {
+            orderElementModel = (IOrderElementModel) SpringUtil.getBean("orderElementModel");
+        }
+
+        if ( orderFileModel == null ) {
+            orderFileModel = (IOrderFileModel) SpringUtil.getBean("orderFileModel");
+        }
     }
 
     @Override
@@ -99,8 +110,10 @@ public class OrderFilesController extends GenericForwardComposer {
         configurationModel.init();
 
         File repositoryDirectory = null;
-        if ( configurationModel.getRepositoryLocation() != null )
+
+        if ( configurationModel.getRepositoryLocation() != null ) {
             repositoryDirectory = new File(configurationModel.getRepositoryLocation());
+        }
 
         return repositoryDirectory != null && repositoryDirectory.exists();
     }
@@ -233,8 +246,9 @@ public class OrderFilesController extends GenericForwardComposer {
 
                 if ( inputStream != null ) {
                     byte[] buffer = new byte[1024];
-                    for ( int count; (count = inputStream.read(buffer)) != -1; )
+                    for ( int count; (count = inputStream.read(buffer)) != -1; ) {
                         outputStream.write(buffer, 0, count);
+                    }
                 }
 
                 outputStream.flush();
@@ -281,14 +295,15 @@ public class OrderFilesController extends GenericForwardComposer {
     public void openWindow(IOrderElementModel orderElementModel) {
         setOrderElementModel(orderElementModel);
 
-        if ( isRepositoryExists() )
+        if ( isRepositoryExists() ) {
             updateListbox();
+        }
     }
 
     /**
      * Listbox is updating after re set the model for it.
      */
-    private void updateListbox(){
+    private void updateListbox() {
         OrderElement currentOrder = orderElementModel.getOrderElement();
         filesList.setModel(new ListModelList<>(orderFileModel.findByParent(currentOrder)));
     }

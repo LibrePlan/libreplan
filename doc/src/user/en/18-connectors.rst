@@ -1,5 +1,5 @@
 Connectors
-##################
+##########
 
 .. contents::
 
@@ -214,7 +214,7 @@ not available for that ``total duration``. But in Libreplan if the worker is on 
 The Tim connector also takes care of this translation.
 
 E-mail connector
-==============
+================
  
 E-mail is a method of exchanging digital messages from an author to one or more recipients.
 
@@ -273,4 +273,4 @@ gathering data and sending it to user`s e-mail. See also the Scheduler manual.
 
 
 .. NOTE::
-The success or failure information would be displayed in pop-up window.
+   The success or failure information would be displayed in pop-up window.

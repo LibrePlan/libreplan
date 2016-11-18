@@ -27,14 +27,15 @@ import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workreports.entities.WorkReport;
 
 /**
- * Simple class to represent the personal timesheets to be shown in the list.<br />
- *
- * This is only a utility class for the UI, everything will be saved using
- * {@link WorkReport} class.
+ * Simple class to represent the personal timesheets to be shown in the list.
+ * <br />
+ * This is only a utility class for the UI, everything will be saved using {@link WorkReport} class.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 public class PersonalTimesheetDTO {
+
+    private static final String MMMM_Y_PATTERN = "MMMM y";
 
     private LocalDate date;
 
@@ -61,9 +62,8 @@ public class PersonalTimesheetDTO {
      * @param tasksNumber
      *            Number of tasks in the personal timesheet
      */
-    public PersonalTimesheetDTO(LocalDate date, WorkReport workReport,
-            EffortDuration resourceCapacity, EffortDuration totalHours,
-            int tasksNumber) {
+    public PersonalTimesheetDTO(LocalDate date, WorkReport workReport, EffortDuration resourceCapacity,
+                                EffortDuration totalHours, int tasksNumber) {
         this.date = date;
         this.workReport = workReport;
         this.resourceCapacity = resourceCapacity;
@@ -101,30 +101,31 @@ public class PersonalTimesheetDTO {
      */
     public static String toString(PersonalTimesheetsPeriodicityEnum periodicity, LocalDate date) {
         switch (periodicity) {
+
             case WEEKLY:
                 LocalDate start = periodicity.getStart(date);
                 LocalDate end = periodicity.getEnd(date);
 
                 String string = date.toString("w");
                     if (start.getMonthOfYear() == end.getMonthOfYear()) {
-                    string += " (" + date.toString("MMMM y") + ")";
+                    string += " (" + date.toString(MMMM_Y_PATTERN) + ")";
                 } else {
                     if (start.getYear() == end.getYear()) {
-                        string += " (" + start.toString("MMMM") + " - "
-                                + end.toString("MMMM y") + ")";
+                        string += " (" + start.toString("MMMM") + " - " + end.toString(MMMM_Y_PATTERN) + ")";
                     } else {
-                        string += " (" + start.toString("MMMM y") + " - "
-                                + end.toString("MMMM y") + ")";
+                        string += " (" + start.toString(MMMM_Y_PATTERN) + " - " + end.toString(MMMM_Y_PATTERN) + ")";
                     }
                 }
                 return _("Week {0}", string);
+
             case TWICE_MONTHLY:
-                return (date.getDayOfMonth() <= 15) ?
-                        _("{0} 1st fortnight", date.toString("MMMM y")) :
-                            _("{0} 2nd fortnight", date.toString("MMMM y"));
+                return (date.getDayOfMonth() <= 15)
+                        ? _("{0} 1st fortnight", date.toString(MMMM_Y_PATTERN))
+                        : _("{0} 2nd fortnight", date.toString(MMMM_Y_PATTERN));
+
             case MONTHLY:
             default:
-                return date.toString("MMMM y");
+                return date.toString(MMMM_Y_PATTERN);
         }
     }
 

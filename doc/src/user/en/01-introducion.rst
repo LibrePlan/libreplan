@@ -1,5 +1,5 @@
 Introduction
-#############
+############
 
 .. contents::
 
@@ -17,7 +17,8 @@ For any specific information you may need about this software, please contact th
 Company overview and view management
 ====================================================
 
-As can be seen in the program's main screen (shot given previously) and the company overview, users can see the list of planned projects to find out about the company's overall situation in relation to orders and the use of resources. The company overview contains 3 views:
+As can be seen in the program's main screen (shot given previously) and the company overview, users can see the list of planned projects
+to find out about the company's overall situation in relation to orders and the use of resources. The company overview contains 3 views:
 
 * Planning view: View that combines two points of view:
 
@@ -39,7 +40,8 @@ As can be seen in the program's main screen (shot given previously) and the comp
    Work Breakdown Structure
 
 
-The view management commented on previously for the company overview is very similar to the management planned for a single project. A project can be accessed in several ways:
+The view management commented on previously for the company overview is very similar to the management planned for a single project.
+A project can be accessed in several ways:
 
 * By right clicking on the Gantt chart for the order and then selecting *Plan*.
 * By accessing the order list and clicking on the icon for the Gantt diagrams.
@@ -80,10 +82,10 @@ On top of the functions offered by the program, there are other features that ma
 * History management: The program does not erase information, it only makes it invalid, so users can check older information using date filters.
 
 Usability conventions
-==========================
+=====================
 
 Information about forms
----------------------------------
+-----------------------
 Before describing the various functions associated with the most important modules, we need to give a general explanation on how to browse and the forms.
 
 Essentially, there are 3 kinds of editing forms:
@@ -102,13 +104,18 @@ Standard icons and buttons
 * Search: The magnifying glass is the icon that indicates that the text entry to the left is intended for searching for elements.
 
 Tabs
---------
-The program will have content editing and administration forms, which will be represented by graphic components based on tabs. This method is used to organise information from a comprehensive form into different sections that can be accessed by clicking on the names of the different tabs, the others keeping their status. In all cases, the save and cancel options affect the group of sub-forms on the different tabs.
+----
+The program will have content editing and administration forms, which will be represented by graphic components based on tabs.
+This method is used to organise information from a comprehensive form into different sections that can be accessed by clicking on the
+names of the different tabs, the others keeping their status. In all cases, the save and cancel options affect the group of sub-forms on
+the different tabs.
 
 Explicit actions and context help
---------------------------------------
+---------------------------------
 
 The program contains components that provide additional descriptions about the element when hovering over them for one second.
-The actions the user may carry out in the program are stated on the button tabs and in the help texts about them, the browsing menu options and the options on the context menus that open out when right clicking on the planner area.
-Furthermore, short cuts are given for the main operations by double clicking the listed elements or by associating key events with cursors and the enter key, which is how to add elements when moving through the forms.
+The actions the user may carry out in the program are stated on the button tabs and in the help texts about them, the browsing menu
+options and the options on the context menus that open out when right clicking on the planner area.
+Furthermore, short cuts are given for the main operations by double clicking the listed elements or by associating key events with
+cursors and the enter key, which is how to add elements when moving through the forms.
 

@@ -1,19 +1,23 @@
 Orders and order elements
-##############################
+#########################
 
 .. contents::
 
 Orders describe the work to be carried out by the users who use the program.
 Each order corresponds with the projects that the companies are going to offer their clients.
 
-An order consists of one or several order lines. Each order line corresponds with the planning the works on the order should follow when being implemented. Order lines are organised hierarchically without any limitations on depth. The fact that order lines are organised hierarchically shows how several inheritable features work, such as labels.
+An order consists of one or several order lines.
+Each order line corresponds with the planning the works on the order should follow when being implemented.
+Order lines are organised hierarchically without any limitations on depth.
+The fact that order lines are organised hierarchically shows how several inheritable features work, such as labels.
 
 The following sections will describe the operations that users can carry out with orders and order lines.
 
 Order
-======
+=====
 
-An order is a project or work that a client requests from a company. The order for the planned works identifies the project in the company.  The difference with comprehensive management programs such as "LibrePlan" is that they only need to use certain order details. These details are:
+An order is a project or work that a client requests from a company. The order for the planned works identifies the project in the company.
+The difference with comprehensive management programs such as "LibrePlan" is that they only need to use certain order details. These details are:
 
 * Order name
 * Order code
@@ -128,7 +132,8 @@ Users can access the following tabs from the editing order option:
 Editing order elements
 ==============================
 
-Editing order elements is carried out from the "Order element list" tab by clicking the editing icon, which shows a new screen from which the user can carry out the following:
+Editing order elements is carried out from the "Order element list" tab by clicking the editing icon, which shows a new screen
+from which the user can carry out the following:
 
 * Edit information about the order element.
 * View hours attributed to order elements.
@@ -141,7 +146,7 @@ Editing order elements is carried out from the "Order element list" tab by click
 The following subsections describe each one of the operations in depth.
 
 Editing information about the order element
-------------------------------------------------
+-------------------------------------------
 
 Editing information about the order element includes the editing of the following details:
 
@@ -161,7 +166,8 @@ Editing information about the order element includes the editing of the followin
 Viewing hours attributed to order elements
 ------------------------------------------------------
 
-The "Assigned hours" tab enables users to view the work reports associated with an order element and also how many of the estimated hours have already been carried out.
+The "Assigned hours" tab enables users to view the work reports associated with an order element and also how many of the estimated hours have
+already been carried out.
 
 .. figure:: images/order-element-hours.png
    :scale: 50
@@ -174,16 +180,19 @@ The screen is divided into two parts:
 * Use of estimated hours: The system calculates the total number of hours devoted to a task and compares them with the estimated hours.
 
 Managing progress of order elements
----------------------------------------------
+-----------------------------------
 
 Entering types of progress and the management of order element progress has been described in the "Progress" chapter.
 
 Managing order labels
-------------------------------
+---------------------
 
-Labels, as described in the chapter on labels, enable users to categorise order elements. Consequently, users can group planning or order information based on them.
+Labels, as described in the chapter on labels, enable users to categorise order elements.
+Consequently, users can group planning or order information based on them.
 
-Users can assign labels directly to an order element or even to a previous order element in the hierarchy. From the moment a label from one of the two previous methods is assigned, the order element and the related planning task are associated with the label, and used for subsequent filtering.
+Users can assign labels directly to an order element or even to a previous order element in the hierarchy.
+From the moment a label from one of the two previous methods is assigned, the order element and the related planning task are associated with the label,
+and used for subsequent filtering.
 
 .. figure:: images/order-element-tags.png
    :scale: 50
@@ -199,14 +208,16 @@ As can be seen in the image, users can carry out the following procedures from t
 
 
 Managing criteria required by the order element and hour groups
---------------------------------------------------------------------------------
+---------------------------------------------------------------
 
 Both an order and an order element can be assigned criteria that need to be fulfilled for it to be carried out. Criteria can be direct or indirect:
 
 * Direct criteria: These are assigned directly to the order element. They are criteria that are required by the hour groups on the order element.
 * Indirect criteria: These are assigned on order elements that are higher in the hierarchy and are inherited by the element that is being edited.
 
-Apart from the required criterion, one or various hour groups that are part of the order element can be defined. It all depends on whether the order element contains other order elements as child nodes or if it is a leaf node. In the first case the information about hours and hour groups can only be viewed, but leaf nodes can be edited. The latter case works as follows:
+Apart from the required criterion, one or various hour groups that are part of the order element can be defined.
+It all depends on whether the order element contains other order elements as child nodes or if it is a leaf node.
+In the first case the information about hours and hour groups can only be viewed, but leaf nodes can be edited. The latter case works as follows:
 
 * The system creates an hour group by default, which is associated to the order element. The details that can be modified for an hour group are:
 
@@ -225,7 +236,8 @@ Apart from the required criterion, one or various hour groups that are part of t
 Managing materials
 ------------------------
 
-Materials are managed in the projects as a list associated with each order line or an order in general. The list of materials is made up of the following fields:
+Materials are managed in the projects as a list associated with each order line or an order in general.
+The list of materials is made up of the following fields:
 
 * Code
 * Date
@@ -262,19 +274,22 @@ Working with materials is carried out as follows:
 
 * Users select the units, status and date of assigned materials.
 
-For subsequent monitoring of materials, it is possible to change the status of a unit group of the received material. This procedure is carried out as follows:
+For subsequent monitoring of materials, it is possible to change the status of a unit group of the received material.
+This procedure is carried out as follows:
 
 * Users click the "Divide" button on the list of materials to the right of each row.
 * Users select the number of units they want the row to be divided into.
 * The program shows two rows with the material divided.
 * Users change the status of the row containing the material.
 
-The advantage of using this dividing tool is the possibility of receiving partial deliveries of material without having to wait to receive it all in order to mark it as received.
+The advantage of using this dividing tool is the possibility of receiving partial deliveries of material without having to wait
+to receive it all in order to mark it as received.
 
 Managing quality forms
-------------------------------------
+----------------------
 
-Some order elements must certify that certain tasks have been carried out in order for them to be marked as complete. This is why the program has quality forms, which consist of a list of questions that can be considered important if they are answered positively.
+Some order elements must certify that certain tasks have been carried out in order for them to be marked as complete.
+This is why the program has quality forms, which consist of a list of questions that can be considered important if they are answered positively.
 
 It is important to mention that a quality form has to be created previously so that it can be assigned to an order element.
 

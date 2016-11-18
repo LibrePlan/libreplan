@@ -19,18 +19,13 @@
 
 package org.libreplan.web.email;
 
-import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.settings.entities.Language;
 
 import org.libreplan.business.email.entities.EmailTemplateEnum;
-import org.libreplan.business.users.daos.IUserDAO;
-import org.libreplan.business.users.entities.User;
 import org.libreplan.web.common.IMessagesForUser;
 import org.libreplan.web.common.Level;
 import org.libreplan.web.common.MessagesForUser;
-import org.libreplan.web.security.SecurityUtils;
-import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.zk.ui.Component;
 
 import org.zkoss.zk.ui.Executions;
@@ -50,14 +45,10 @@ import static org.libreplan.web.I18nHelper._;
 /**
  * Controller for page Edit email templates.
  *
- * @author Created by Vova Perebykivskyi <vova@libreplan-enterprise.com> on 25.09.2015.
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
 
 public class EmailTemplateController extends GenericForwardComposer<Component> {
-
-    private IUserDAO userDAO;
-
-    private User user;
 
     private IEmailTemplateModel emailTemplateModel;
 
@@ -77,8 +68,9 @@ public class EmailTemplateController extends GenericForwardComposer<Component> {
 
 
     public EmailTemplateController() {
-        userDAO = (IUserDAO) SpringUtil.getBean("userDAO");
-        emailTemplateModel = (IEmailTemplateModel) SpringUtil.getBean("emailTemplateModel");
+        if ( emailTemplateModel == null ) {
+            emailTemplateModel = (IEmailTemplateModel) SpringUtil.getBean("emailTemplateModel");
+        }
     }
 
     @Override
@@ -91,7 +83,6 @@ public class EmailTemplateController extends GenericForwardComposer<Component> {
          * Set default template and language for user.
          * And content and subject for that language & template.
          */
-        setUser();
         setSelectedLanguage(Language.ENGLISH_LANGUAGE);
 
         getContentDataBySelectedLanguage();
@@ -226,12 +217,4 @@ public class EmailTemplateController extends GenericForwardComposer<Component> {
         subjectTextbox.setValue(emailTemplateModel.getSubject(getSelectedLanguage(), getSelectedEmailTemplateEnum()));
     }
 
-    @Transactional
-    private void setUser() {
-        try {
-            user = userDAO.findByLoginName(SecurityUtils.getSessionUserLoginName());
-        } catch (InstanceNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-    }
 }

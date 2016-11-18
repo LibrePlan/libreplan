@@ -33,10 +33,10 @@ import java.util.List;
 /**
  * DAO for {@link EmailTemplate}
  *
- * @author Created by Vova Perebykivskyi <vova@libreplan-enterprise.com> on 24.09.2015.
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
 @Repository
-public class EmailTemplateDAO extends GenericDAOHibernate<EmailTemplate, Long> implements IEmailTemplateDAO{
+public class EmailTemplateDAO extends GenericDAOHibernate<EmailTemplate, Long> implements IEmailTemplateDAO {
 
     @Override
     @Transactional(readOnly = true)
@@ -68,6 +68,7 @@ public class EmailTemplateDAO extends GenericDAOHibernate<EmailTemplate, Long> i
     public void delete(EmailTemplate entity) {
         try {
             remove(entity.getId());
-        } catch (InstanceNotFoundException ignored) {}
+        } catch (InstanceNotFoundException ignored) {
+        }
     }
 }

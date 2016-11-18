@@ -29,7 +29,9 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 /**
- * @author Created by Vova Perebykivskyi <vova@libreplan-enterprise.com> on 12.24.2015.
+ * DAO for {@link OrderFile}.
+ *
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
 
 @Repository
@@ -44,7 +46,8 @@ public class OrderFileDAO extends GenericDAOHibernate<OrderFile, Long> implement
     public void delete(OrderFile file) {
         try {
             remove(file.getId());
-        } catch (InstanceNotFoundException ignored) {}
+        } catch (InstanceNotFoundException ignored) {
+        }
     }
 
     @Override

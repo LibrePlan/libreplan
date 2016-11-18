@@ -17,7 +17,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * @author Created by Vova Perebykivskyi <vova@libreplan-enterprise.com> on 12.24.2015.
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
 
 @Service
@@ -100,6 +100,7 @@ public class OrderFileModel implements IOrderFileModel {
         return fileDAO.findByParent(parent);
     }
 
+    @Override
     public OrderFile getOrderFile() {
         return orderFile;
     }

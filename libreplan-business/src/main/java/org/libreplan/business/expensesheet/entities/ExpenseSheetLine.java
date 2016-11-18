@@ -31,7 +31,7 @@ import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.resources.entities.Resource;
 
 /**
- * ExpenseSheetLine Entity
+ * ExpenseSheetLine Entity.
  *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
@@ -53,19 +53,16 @@ public class ExpenseSheetLine extends IntegrationEntity {
      * Constructor for Hibernate. Do not use!
      */
     protected ExpenseSheetLine() {
-
     }
 
-    private ExpenseSheetLine(BigDecimal value, String concept, LocalDate date,
-            OrderElement orderElement) {
+    private ExpenseSheetLine(BigDecimal value, String concept, LocalDate date, OrderElement orderElement) {
         this.orderElement = orderElement;
         this.concept = concept;
         this.value = value;
         this.setDate(date);
     }
 
-    public static ExpenseSheetLine create(BigDecimal value, String concept, LocalDate date,
-            OrderElement orderElement) {
+    public static ExpenseSheetLine create(BigDecimal value, String concept, LocalDate date, OrderElement orderElement) {
         return create(new ExpenseSheetLine(value, concept, date, orderElement));
     }
 
@@ -80,13 +77,10 @@ public class ExpenseSheetLine extends IntegrationEntity {
     }
 
     private boolean isDifferent(BigDecimal value) {
-        if (this.value == null && value == null) {
+        if ( this.value == null && value == null ) {
             return false;
         }
-        if (this.value != null && value != null) {
-            return (this.value.compareTo(value) != 0);
-        }
-        return true;
+        return !(this.value != null && value != null) || this.value.compareTo(value) != 0;
     }
 
     @Min(message = "value must be greater or equal than 0", value = 0)
@@ -134,13 +128,10 @@ public class ExpenseSheetLine extends IntegrationEntity {
     }
 
     private boolean isDifferent(LocalDate date) {
-        if (this.date == null && date == null) {
+        if ( this.date == null && date == null ) {
             return false;
         }
-        if (this.date != null && date != null) {
-            return (this.date.compareTo(date) != 0);
-        }
-        return true;
+        return !(this.date != null && date != null) || this.date.compareTo(date) != 0;
     }
 
     @NotNull(message = "date not specified")

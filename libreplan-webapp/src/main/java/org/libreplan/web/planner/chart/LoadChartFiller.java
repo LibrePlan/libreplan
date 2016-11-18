@@ -27,9 +27,14 @@ import org.zkoss.zk.ui.util.Clients;
 
 public abstract class LoadChartFiller extends ChartFiller {
 
-    public static final String COLOR_CAPABILITY_LINE = "#000000"; // Black
-    public static final String COLOR_ASSIGNED_LOAD = "#98D471"; // Green
-    public static final String COLOR_OVERLOAD = "#FF5A11"; // Red
+    /** Black */
+    public static final String COLOR_CAPABILITY_LINE = "#000000";
+
+    /** Green */
+    public static final String COLOR_ASSIGNED_LOAD = "#98D471";
+
+    /** Red */
+    public static final String COLOR_OVERLOAD = "#FF5A11";
 
     @Override
     public void fillChart(Timeplot chart, Interval interval, Integer size) {
@@ -43,7 +48,7 @@ public abstract class LoadChartFiller extends ChartFiller {
 
         ValueGeometry valueGeometry = getValueGeometry();
         TimeGeometry timeGeometry = getTimeGeometry(interval);
-        Plotinfo[] plotInfos = getPlotInfos(interval);
+        Plotinfo[] plotInfos = getPlotInfo(interval);
         for (Plotinfo each : plotInfos) {
             appendPlotinfo(chart, each, valueGeometry, timeGeometry);
         }
@@ -58,8 +63,8 @@ public abstract class LoadChartFiller extends ChartFiller {
      * The order must be from the topmost one to the lowest one.
      *
      * @param interval
-     * @return the {@link Plotinfo plot infos} to show
+     * @return the {@link Plotinfo plot info} to show
      */
-    protected abstract Plotinfo[] getPlotInfos(Interval interval);
+    protected abstract Plotinfo[] getPlotInfo(Interval interval);
 
 }

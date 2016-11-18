@@ -27,7 +27,7 @@ import java.util.List;
  * DAO interface for the <code>Limits</code> entity.
  * Contract for {@link LimitsDAO}.
  *
- * @author Created by Vova Perebykivskyi <vova@libreplan-enterprise.com> on 17.12.2015.
+ * @author Vova Perebykivskyi <vova@libreplan-enterprise.com>
  */
 public interface ILimitsDAO extends IGenericDAO<Limits, Long> {
     
