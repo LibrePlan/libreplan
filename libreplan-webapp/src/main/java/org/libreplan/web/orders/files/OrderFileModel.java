@@ -107,19 +107,27 @@ public class OrderFileModel implements IOrderFileModel {
 
     private boolean deletePhysicalFile(OrderFile file) {
 
-        configurationModel = (IConfigurationModel) SpringUtil.getBean("configurationModel");
-        configurationModel.init();
+        try {
+            configurationModel = (IConfigurationModel) SpringUtil.getBean("configurationModel");
+            configurationModel.init();
 
-        String projectCode = file.getParent().getCode();
-        String directory = configurationModel.getRepositoryLocation() + "orders" + "/" + projectCode;
-        File fileToDelete;
+            String projectCode = file.getParent().getCode();
+            String directory = configurationModel.getRepositoryLocation() + "orders" + "/" + projectCode;
+            File fileToDelete;
 
-        if (UNKNOWN_FILE_EXTENSION.equals(file.getType())) {
-            fileToDelete = new File(directory + "/" + file.getName());
-        } else {
-            fileToDelete = new File(directory + "/" + file.getName() + "." + file.getType());
+            if (UNKNOWN_FILE_EXTENSION.equals(file.getType())) {
+                fileToDelete = new File(directory + "/" + file.getName());
+            } else {
+                fileToDelete = new File(directory + "/" + file.getName() + "." + file.getType());
+            }
+
+            return fileToDelete.delete();
+        } catch (Exception ignored) {
+            /*
+             * org.zkoss.zk.ui.Execution("SpringUtil can be called only under ZK environment!") can occur if
+             * ZK environment is not raised, this can occur in JUnit tests
+             */
+            return false;
         }
-
-        return fileToDelete.delete();
     }
 }
