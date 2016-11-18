@@ -59,6 +59,7 @@ import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderLineGroup;
 import org.libreplan.business.orders.entities.OrderStatusEnum;
+import org.libreplan.business.orders.entities.OrderFile;
 import org.libreplan.business.planner.entities.PositionConstraintType;
 import org.libreplan.business.qualityforms.daos.IQualityFormDAO;
 import org.libreplan.business.qualityforms.entities.QualityForm;
@@ -84,6 +85,7 @@ import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.web.calendars.BaseCalendarModel;
 import org.libreplan.web.common.IntegrationEntityModel;
 import org.libreplan.web.common.concurrentdetection.OnConcurrentModification;
+import org.libreplan.web.orders.files.IOrderFileModel;
 import org.libreplan.web.orders.labels.LabelsOnConversation;
 import org.libreplan.web.planner.order.ISaveCommand.IBeforeSaveActions;
 import org.libreplan.web.planner.order.PlanningStateCreator;
@@ -168,6 +170,9 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
 
     @Autowired
     private IOrderVersionDAO orderVersionDAO;
+
+    @Autowired
+    private IOrderFileModel orderFileModel;
 
     private List<Order> orderList = new ArrayList<>();
 
@@ -508,6 +513,10 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
     @Transactional
     public void remove(Order detachedOrder) {
         Order order = orderDAO.findExistingEntity(detachedOrder.getId());
+
+        List<OrderFile> orderFiles = orderFileModel.findByParent(order);
+        orderFiles.forEach((orderFile -> orderFileModel.delete(orderFile)));
+
         removeVersions(order);
 
         if ( order.hasNoVersions() ) {
