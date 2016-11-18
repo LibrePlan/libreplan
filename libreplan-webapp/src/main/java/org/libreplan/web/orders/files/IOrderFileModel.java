@@ -32,7 +32,14 @@ public interface IOrderFileModel {
 
     List<OrderFile> getAll();
 
-    void delete(OrderFile file);
+    /**
+     * This method is used to delete OrderFile and physical file asociated with it
+     *
+     * @param file {@link OrderFile} that need to be deleted
+     * @return true if file was deleted successfully.
+     * @return false if file was not deleted successfully.
+     */
+    boolean delete(OrderFile file);
 
     List<OrderFile> findByParent(OrderElement parent);
 
