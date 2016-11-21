@@ -122,9 +122,13 @@
     padding-left: 4px;
 }
 
-.taskdetail-company-view .z-tree-ico  {
+.taskdetail-company-view .z-tree-line  {
     display:none;
+}
 
+/* Order name will be in single row */
+.taskdetail-company-view .z-label {
+    white-space: nowrap;
 }
 
 .order-startdate, .order-enddate  {
@@ -157,7 +161,15 @@
 .row {
     height: 12px;
     border-bottom: dotted 1px #CCCCCC;
-    margin-bottom: 10px;
+    margin-bottom: 9px;
+    margin-top: 9px;
+    width: 100%;
+}
+
+.parentProjectScheduling .row {
+    height: 12px;
+    border-bottom: dotted 1px #CCCCCC;
+    margin-bottom: 12px;
     margin-top: 10px;
     width: 100%;
 }
@@ -607,7 +619,7 @@ tr.z-vbox-separator {
     height: 10px;
     border: 1px;
     width: 100%;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
     margin-top: 10px;
     border-bottom: 1px dotted #CCCCCC;
 }
@@ -778,7 +790,7 @@ tr.z-vbox-separator {
 }
 
 .limitingresources-list .row_resourceload {
-    height: 24px;
+    height: 25px;
 }
 
 .limiting-resources .z-tree-line {
