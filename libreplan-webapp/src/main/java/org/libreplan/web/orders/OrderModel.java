@@ -52,6 +52,8 @@ import org.libreplan.business.externalcompanies.entities.EndDateCommunication;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.labels.daos.ILabelDAO;
 import org.libreplan.business.labels.entities.Label;
+import org.libreplan.business.logs.entities.IssueLog;
+import org.libreplan.business.logs.entities.RiskLog;
 import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.daos.IOrderElementDAO;
 import org.libreplan.business.orders.entities.HoursGroup;
@@ -86,6 +88,8 @@ import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.web.calendars.BaseCalendarModel;
 import org.libreplan.web.common.IntegrationEntityModel;
 import org.libreplan.web.common.concurrentdetection.OnConcurrentModification;
+import org.libreplan.web.logs.IIssueLogModel;
+import org.libreplan.web.logs.IRiskLogModel;
 import org.libreplan.web.orders.files.IOrderFileModel;
 import org.libreplan.web.orders.labels.LabelsOnConversation;
 import org.libreplan.web.planner.order.ISaveCommand.IBeforeSaveActions;
@@ -180,6 +184,12 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
 
     @Autowired
     private IOrderFileModel orderFileModel;
+
+    @Autowired
+    private IRiskLogModel riskLogModel;
+
+    @Autowired
+    private IIssueLogModel issueLogModel;
 
     @Override
     @Transactional(readOnly = true)
@@ -530,15 +540,30 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
     public void remove(Order detachedOrder) {
         Order order = orderDAO.findExistingEntity(detachedOrder.getId());
 
-        List<OrderFile> orderFiles = orderFileModel.findByParent(order);
-        for (OrderFile current : orderFiles) {
-            orderFileModel.delete(current);
-        }
+        removeFiles(order);
+
+        removeLogs(order);
 
         removeVersions(order);
 
         if ( order.hasNoVersions() ) {
             removeOrderFromDB(order);
+        }
+    }
+
+    private void removeLogs(Order order) {
+        for (RiskLog riskLog : riskLogModel.getByParent(order)) {
+            riskLogModel.remove(riskLog);
+        }
+
+        for (IssueLog issueLog : issueLogModel.getByParent(order)) {
+            issueLogModel.remove(issueLog);
+        }
+    }
+
+    private void removeFiles(Order order) {
+        for (OrderFile orderFile : orderFileModel.findByParent(order)) {
+            orderFileModel.delete(orderFile);
         }
     }
 
