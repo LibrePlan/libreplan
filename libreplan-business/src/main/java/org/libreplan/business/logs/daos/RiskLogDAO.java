@@ -21,8 +21,10 @@ package org.libreplan.business.logs.daos;
 
 import java.util.List;
 
+import org.hibernate.criterion.Restrictions;
 import org.libreplan.business.common.daos.IntegrationEntityDAO;
 import org.libreplan.business.logs.entities.RiskLog;
+import org.libreplan.business.orders.entities.Order;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
@@ -41,6 +43,14 @@ public class RiskLogDAO extends IntegrationEntityDAO<RiskLog> implements
     @Override
     public List<RiskLog> getRiskLogs() {
         return list(RiskLog.class);
+    }
+
+    @Override
+    public List<RiskLog> getByParent(Order order) {
+        return getSession()
+                .createCriteria(RiskLog.class)
+                .add(Restrictions.eq("project", order))
+                .list();
     }
 
 }

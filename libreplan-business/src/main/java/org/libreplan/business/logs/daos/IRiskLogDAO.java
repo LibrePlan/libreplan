@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.libreplan.business.common.daos.IIntegrationEntityDAO;
 import org.libreplan.business.logs.entities.RiskLog;
+import org.libreplan.business.orders.entities.Order;
 
 public interface IRiskLogDAO extends IIntegrationEntityDAO<RiskLog> {
 
@@ -32,5 +33,12 @@ public interface IRiskLogDAO extends IIntegrationEntityDAO<RiskLog> {
      * @return a list of {@link RiskLog} objects
      */
     List<RiskLog> getRiskLogs();
+
+    /**
+     * Returns a list of {@link RiskLog} for a specified {@link Order}
+     *
+     * @param order parent element for RiskLogs
+     */
+    List<RiskLog> getByParent(Order order);
 
 }

@@ -142,6 +142,11 @@ public class RiskLogModel extends IntegrationEntityModel implements
     }
 
     @Override
+    public List<RiskLog> getByParent(Order order) {
+        return riskLogDAO.getByParent(order);
+    }
+
+    @Override
     public EntityNameEnum getEntityName() {
         return EntityNameEnum.RISK_LOG;
     }
