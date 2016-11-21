@@ -140,6 +140,11 @@ public class IssueLogModel extends IntegrationEntityModel implements IIssueLogMo
     }
 
     @Override
+    public List<IssueLog> getByParent(Order order) {
+        return issueLogDAO.getByParent(order);
+    }
+
+    @Override
     public EntityNameEnum getEntityName() {
         return EntityNameEnum.ISSUE_LOG;
     }
