@@ -115,5 +115,12 @@ public interface IRiskLogModel {
      */
     void remove(RiskLog riskLog);
 
+    /**
+     * Returns a list of {@link RiskLog} for a specified {@link Order}
+     *
+     * @param order parent element for RiskLogs
+     */
+    List<RiskLog> getByParent(Order order);
+
 
 }
