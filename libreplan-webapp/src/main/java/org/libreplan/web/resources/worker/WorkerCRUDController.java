@@ -1114,22 +1114,43 @@ public class WorkerCRUDController extends GenericForwardComposer implements IWor
                 : "";
     }
 
+    /**
+     * Should be public!
+     * Used in resources/worker/_list.zul
+     */
     public boolean isCreateButtonDisabled() {
         Limits resourcesTypeLimit = limitsModel.getResourcesType();
-        Integer resourcesCount = resourceDAO.getRowCount().intValue();
-
-        return resourcesTypeLimit != null && resourcesCount >= resourcesTypeLimit.getValue();
+        if (isNullOrZeroValue(resourcesTypeLimit)) {
+            return false;
+        } else {
+            Integer resources = resourceDAO.getRowCount().intValue();
+            return resources >= resourcesTypeLimit.getValue();
+        }
     }
 
+    /**
+     * Should be public!
+     * Used in resources/worker/_list.zul
+     */
     public String getShowCreateFormLabel() {
         Limits resourcesTypeLimit = limitsModel.getResourcesType();
-        Integer resourcesCount = resourceDAO.getRowCount().intValue();
 
-        int resourcesLeft = resourcesTypeLimit.getValue() - resourcesCount;
-        if (resourcesCount >= resourcesTypeLimit.getValue())
-            return _("Workers limit reached");
+        if (isNullOrZeroValue(resourcesTypeLimit)) {
+            return _("Create");
+        }
 
-        return _("Create") + " ( " + resourcesLeft + " " + _("left") + " )";
+        Integer resources = resourceDAO.getRowCount().intValue();
+        int resourcesLeft = resourcesTypeLimit.getValue() - resources;
+
+        return resources >= resourcesTypeLimit.getValue()
+                ? _("Workers limit reached")
+                : _("Create") + " ( " + resourcesLeft + " " + _("left") + " )";
+    }
+
+    private boolean isNullOrZeroValue (Limits resourcesTypeLimit) {
+        return resourcesTypeLimit == null ||
+                resourcesTypeLimit.getValue() == null ||
+                resourcesTypeLimit.getValue().equals(0);
     }
 
 }
