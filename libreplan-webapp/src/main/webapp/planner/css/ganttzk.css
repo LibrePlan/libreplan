@@ -96,7 +96,7 @@
     overflow:visible;
 }
 
-.listdetails .taskdetail_grid {
+.listdetails .taskdetail-grid {
     height: 23px;
 }
 
@@ -111,7 +111,7 @@
 }
 
 
-.taskdetail_grid table {
+.taskdetail-grid table {
     height: 30px;
     width: 285px; /* Ganntz.ListdetailsWidth */
 }
@@ -1444,17 +1444,35 @@ div.z-grid-header .second_level_ tr {
     font-size: 12px;
 }
 
+/* Workaround for Chrome */
+@supports (-webkit-appearance: none) {
+    .z-treerow.z-treerow-selected > .z-treecell > .z-treecell-content,
+    .z-treerow.z-treerow > .z-treecell > .z-treecell-content {
+        color: black;
+    }
+}
+
+/* Workaround for FireFox */
+_:-moz-tree-row(hover),
 .z-treerow.z-treerow-selected > .z-treecell > .z-treecell-content,
 .z-treerow.z-treerow > .z-treecell > .z-treecell-content {
     color: black;
 }
 
-.taskdetail_grid .z-treecell .z-treecell-content {
+/* Workaround for FireFox */
+_:-moz-tree-row(hover),
+.z-treerow.z-treerow-selected > .z-treecell > .z-treecell-content,
+.parentProjectScheduling .z-treerow.z-treerow > .z-treecell > .z-treecell-content {
+    height: 21px;
+    padding-top: 3px;
+}
+
+.taskdetail-grid .z-treecell .z-treecell-content {
     display: inline-flex;
     width: 100%;
 }
 
-.taskdetail_grid.taskdetail-company-view .z-treecell .z-treecell-content {
+.taskdetail-grid.taskdetail-company-view .z-treecell .z-treecell-content {
     display: inline-table;
     width: 100%;
 }

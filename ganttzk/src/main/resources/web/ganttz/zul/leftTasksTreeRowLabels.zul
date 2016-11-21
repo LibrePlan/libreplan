@@ -19,7 +19,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<treerow sclass="taskdetail_grid taskdetail-company-view">
+<treerow sclass="taskdetail-grid taskdetail-company-view">
 
     <treecell>
         <label sclass="task_title"/>
