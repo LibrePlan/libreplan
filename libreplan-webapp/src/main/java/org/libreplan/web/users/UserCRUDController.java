@@ -503,23 +503,43 @@ public class UserCRUDController extends BaseCRUDController<User> implements
         }
     }
 
-    public boolean isCreateButtonDisabled(){
+    /**
+     * Should be public!
+     * Used in _listUsers.zul
+     */
+    public boolean isCreateButtonDisabled() {
         Limits usersTypeLimit = limitsModel.getUsersType();
-        Integer usersCount = (Integer) userModel.getRowCount();
-        if (usersTypeLimit != null)
-            if ( usersCount >= usersTypeLimit.getValue() )
-                return true;
-        return false;
+        if (isNullOrZeroValue(usersTypeLimit)) {
+            return false;
+        } else {
+            Integer users = userModel.getRowCount().intValue();
+            return users >= usersTypeLimit.getValue();
+        }
     }
 
-    public String getShowCreateFormLabel(){
+    /**
+     * Should be public!
+     * Used in _listUsers.zul
+     */
+    public String getShowCreateFormLabel() {
         Limits usersTypeLimit = limitsModel.getUsersType();
-        Integer usersCount = (Integer) userModel.getRowCount();
-        int usersLeft = usersTypeLimit.getValue() - usersCount;
-        if (usersTypeLimit != null)
-            if ( usersCount >= usersTypeLimit.getValue() )
-                return _("User limit reached");
 
-        return _("Create") + " ( " + usersLeft  + " " + _("left") + " )";
+        if (isNullOrZeroValue(usersTypeLimit)) {
+            return _("Create");
+        }
+
+        Integer users = userModel.getRowCount().intValue();
+        int usersLeft = usersTypeLimit.getValue() - users;
+
+        return users >= usersTypeLimit.getValue()
+                ? _("User limit reached")
+                : _("Create") + " ( " + usersLeft  + " " + _("left") + " )";
     }
+
+    private boolean isNullOrZeroValue (Limits usersTypeLimit) {
+        return usersTypeLimit == null ||
+                usersTypeLimit.getValue() == null ||
+                usersTypeLimit.getValue().equals(0);
+    }
+    
 }
