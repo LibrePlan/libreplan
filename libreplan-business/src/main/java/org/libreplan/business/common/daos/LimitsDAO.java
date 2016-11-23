@@ -19,6 +19,7 @@
 
 package org.libreplan.business.common.daos;
 
+import org.hibernate.criterion.Restrictions;
 import org.libreplan.business.common.entities.Limits;
 import org.springframework.stereotype.Repository;
 
@@ -41,18 +42,12 @@ public class LimitsDAO extends GenericDAOHibernate<Limits, Long> implements ILim
     }
 
     @Override
-    public Limits getUsersType() {
-        List<Limits> list = list(Limits.class);
-        for (Limits item : list)
-            if (item.getType().equals("users")) return item;
-        return null;
+    public Limits getLimitsByType(String type) {
+
+        return (Limits) getSession()
+                .createCriteria(Limits.class)
+                .add(Restrictions.eq("type", type))
+                .uniqueResult();
     }
 
-    @Override
-    public Limits getResourcesType() {
-        List<Limits> list = list(Limits.class);
-        for (Limits item : list)
-            if (item.getType().equals("workers+machines")) return item;
-        return null;
-    }
 }

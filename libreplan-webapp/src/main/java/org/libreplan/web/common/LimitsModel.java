@@ -41,6 +41,10 @@ import java.util.List;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class LimitsModel implements ILimitsModel {
 
+    public static final String USER_LIMITS_TYPE = "users";
+
+    public static final String RESOURCES_LIMITS_TYPE = "workers+machines";
+
     @Autowired
     private ILimitsDAO limitsDAO;
 
@@ -53,12 +57,13 @@ public class LimitsModel implements ILimitsModel {
     @Override
     @Transactional(readOnly = true)
     public Limits getUsersType() {
-        return limitsDAO.getUsersType();
+        return limitsDAO.getLimitsByType(USER_LIMITS_TYPE);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Limits getResourcesType() {
-        return limitsDAO.getResourcesType();
+        return limitsDAO.getLimitsByType(RESOURCES_LIMITS_TYPE);
     }
+
 }
