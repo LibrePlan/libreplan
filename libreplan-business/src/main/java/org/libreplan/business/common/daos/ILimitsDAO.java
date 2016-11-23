@@ -32,8 +32,9 @@ import java.util.List;
  * on 17.12.2015.
  */
 public interface ILimitsDAO extends IGenericDAO<Limits, Long> {
+
     List<Limits> getAll();
 
-    Limits getUsersType();
-    Limits getResourcesType();
+    Limits getLimitsByType(String type);
+
 }
