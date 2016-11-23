@@ -224,6 +224,10 @@ public class Order extends OrderLineGroup implements Comparable {
         return getCurrentVersionInfo().isUsingTheOwnerScenario();
     }
 
+    /**
+     * Should be public!
+     * Used in orders/_edition.zul
+     */
     public BigDecimal getWorkBudget() {
         if (workBudget == null) {
             return BigDecimal.ZERO;
@@ -238,6 +242,10 @@ public class Order extends OrderLineGroup implements Comparable {
         this.workBudget = workBudget;
     }
 
+    /**
+     * Should be public!
+     * Used in orders/_edition.zul
+     */
     public BigDecimal getMaterialsBudget() {
         if (materialsBudget == null) {
             return BigDecimal.ZERO;
@@ -252,6 +260,10 @@ public class Order extends OrderLineGroup implements Comparable {
         this.materialsBudget = materialsBudget;
     }
 
+    /**
+     * Should be public!
+     * Used in orders/_edition.zul
+     */
     public BigDecimal getTotalManualBudget() {
         return getWorkBudget().add(getMaterialsBudget());
     }

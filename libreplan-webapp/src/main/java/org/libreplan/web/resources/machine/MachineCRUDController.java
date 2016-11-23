@@ -584,26 +584,43 @@ public class MachineCRUDController extends BaseCRUDController<Machine> {
         return machineModel.getMachine();
     }
 
-    public boolean isCreateButtonDisabled(){
+    /**
+     * Should be public!
+     * Used in _listMachines.zul
+     */
+    public boolean isCreateButtonDisabled() {
         Limits resourcesTypeLimit = limitsModel.getResourcesType();
-        Integer resourcesCount = resourceDAO.getRowCount().intValue();
-
-        if ( resourcesTypeLimit != null )
-            if ( resourcesCount >= resourcesTypeLimit.getValue() )
-                return true;
-
-        return false;
+        if (isNullOrZeroValue(resourcesTypeLimit)) {
+            return false;
+        } else {
+            Integer resources = resourceDAO.getRowCount().intValue();
+            return resources >= resourcesTypeLimit.getValue();
+        }
     }
 
+    /**
+     * Should be public!
+     * Used in _listMachines.zul
+     */
     public String getShowCreateFormLabel(){
         Limits resourcesTypeLimit = limitsModel.getResourcesType();
-        Integer resourcesCount = resourceDAO.getRowCount().intValue();
 
-        int resourcesLeft = resourcesTypeLimit.getValue() - resourcesCount;
-        if ( resourcesCount >= resourcesTypeLimit.getValue() )
-            return _("Machines limit reached");
+        if (isNullOrZeroValue(resourcesTypeLimit)) {
+            return _("Create");
+        }
 
-        return _("Create") + " ( " + resourcesLeft  + " " + _("left") + " )";
+        Integer resources = resourceDAO.getRowCount().intValue();
+        int resourcesLeft = resourcesTypeLimit.getValue() - resources;
+
+        return resources >= resourcesTypeLimit.getValue()
+                ? _("Machines limit reached")
+                : _("Create") + " ( " + resourcesLeft  + " " + _("left") + " )";
+    }
+
+    private boolean isNullOrZeroValue (Limits resourcesTypeLimit) {
+        return resourcesTypeLimit == null ||
+                resourcesTypeLimit.getValue() == null ||
+                resourcesTypeLimit.getValue().equals(0);
     }
 
 }
