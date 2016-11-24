@@ -42,7 +42,8 @@
 
             <row>
                 <label value="${i18n:_('Status')}" />
-                <textbox value="@{riskLogController.riskLog.status}" width="605px" rows="1" multiline="false" />
+                <textbox value="@{riskLogController.riskLog.status}" width="605px" rows="1" multiline="false"
+                         maxlength="25"/>
             </row>
 
             <row>
@@ -106,12 +107,12 @@
             <row>
                 <label value="${i18n:_('Description')}" />
                 <textbox id="descriptionNameTextBox" width="605px" rows="3"
-                         value="@{riskLogController.riskLog.description}"/>
+                         value="@{riskLogController.riskLog.description}" maxlength="512"/>
             </row>
             <row>
                 <label value="${i18n:_('Counter measures (CM)')}" />
                 <textbox id="counterMeasuresTextbox" width="605px" rows="3"
-                         value="@{riskLogController.riskLog.counterMeasures}"/>
+                         value="@{riskLogController.riskLog.counterMeasures}" maxlength="50"/>
             </row>
             <row>
                 <label value="${i18n:_('Risk Score After CM')}" />
@@ -123,7 +124,7 @@
             <row>
                 <label value="${i18n:_('Contingency')}" />
                 <textbox id="contingencyBox" width="605px" rows="3"
-                         value="@{riskLogController.riskLog.contingency}"/>
+                         value="@{riskLogController.riskLog.contingency}" maxlength="50"/>
             </row>
             <row>
                 <label value="${i18n:_('Prevention')}" />
@@ -144,14 +145,15 @@
 
                             <label value="${i18n:_('Responsible')}" />
                             <textbox id="responsibleBox" width="315px" rows="1"
-                                     value="@{riskLogController.riskLog.responsible}"/>
+                                     value="@{riskLogController.riskLog.responsible}" maxlength="25"/>
                         </row>
                     </rows>
                 </grid>
             </row>
             <row>
                 <label value="${i18n:_('Notes')}" />
-                <textbox value="@{riskLogController.riskLog.notes}" width="605px" rows="5" multiline="true" />
+                <textbox value="@{riskLogController.riskLog.notes}" width="605px" rows="5" multiline="true"
+                         maxlength="256"/>
             </row>
         </rows>
     </grid>
