@@ -158,6 +158,7 @@ public class DashboardControllerGlobal extends GenericForwardComposer {
 
                 ( (Label) pipelineGrid.getCell(i, 0) ).setTooltiptext(tooltipText);
                 ( (Label) pipelineGrid.getCell(i, 0) ).setClass("label-highlight");
+                ( (Label) pipelineGrid.getCell(i, 0) ).setStyle("word-wrap: break-word");
             }
 
 
@@ -174,6 +175,7 @@ public class DashboardControllerGlobal extends GenericForwardComposer {
 
                 ( (Label) pipelineGrid.getCell(i, 1) ).setTooltiptext(tooltipText);
                 ( (Label) pipelineGrid.getCell(i, 1) ).setClass("label-highlight");
+                ( (Label) pipelineGrid.getCell(i, 1) ).setStyle("word-wrap: break-word");
             }
 
 
@@ -190,6 +192,7 @@ public class DashboardControllerGlobal extends GenericForwardComposer {
 
                 ( (Label) pipelineGrid.getCell(i, 2) ).setTooltiptext(tooltipText);
                 ( (Label) pipelineGrid.getCell(i, 2) ).setClass("label-highlight");
+                ( (Label) pipelineGrid.getCell(i, 2) ).setStyle("word-wrap: break-word");
             }
 
 
@@ -206,6 +209,7 @@ public class DashboardControllerGlobal extends GenericForwardComposer {
 
                 ( (Label) pipelineGrid.getCell(i, 3) ).setTooltiptext(tooltipText);
                 ( (Label) pipelineGrid.getCell(i, 3) ).setClass("label-highlight");
+                ( (Label) pipelineGrid.getCell(i, 3) ).setStyle("word-wrap: break-word");
             }
 
 
@@ -222,6 +226,7 @@ public class DashboardControllerGlobal extends GenericForwardComposer {
 
                 ( (Label) pipelineGrid.getCell(i, 4) ).setTooltiptext(tooltipText);
                 ( (Label) pipelineGrid.getCell(i, 4) ).setClass("label-highlight");
+                ( (Label) pipelineGrid.getCell(i, 4) ).setStyle("word-wrap: break-word");
             }
 
 
@@ -238,6 +243,7 @@ public class DashboardControllerGlobal extends GenericForwardComposer {
 
                 ( (Label) pipelineGrid.getCell(i, 5) ).setTooltiptext(tooltipText);
                 ( (Label) pipelineGrid.getCell(i, 5) ).setClass("label-highlight");
+                ( (Label) pipelineGrid.getCell(i, 5) ).setStyle("word-wrap: break-word");
             }
 
 
@@ -254,6 +260,7 @@ public class DashboardControllerGlobal extends GenericForwardComposer {
 
                 ( (Label) pipelineGrid.getCell(i, 6) ).setTooltiptext(tooltipText);
                 ( (Label) pipelineGrid.getCell(i, 6) ).setClass("label-highlight");
+                ( (Label) pipelineGrid.getCell(i, 6) ).setStyle("word-wrap: break-word");
             }
 
 
@@ -271,6 +278,7 @@ public class DashboardControllerGlobal extends GenericForwardComposer {
 
                 ( (Label) pipelineGrid.getCell(i, 7) ).setTooltiptext(tooltipText);
                 ( (Label) pipelineGrid.getCell(i, 7) ).setClass("label-highlight");
+                ( (Label) pipelineGrid.getCell(i, 7) ).setStyle("word-wrap: break-word");
             }
     }
 
