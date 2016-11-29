@@ -115,5 +115,12 @@ public interface IIssueLogModel {
      */
     void remove(IssueLog issueLog);
 
+    /**
+     * Returns a list of {@link IssueLog} for a specified {@link Order}
+     *
+     * @param order parent element for IssueLogs
+     */
+    List<IssueLog> getByParent(Order order);
+
 
 }

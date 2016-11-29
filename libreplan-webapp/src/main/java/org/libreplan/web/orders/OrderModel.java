@@ -84,6 +84,9 @@ import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.web.calendars.BaseCalendarModel;
 import org.libreplan.web.common.IntegrationEntityModel;
 import org.libreplan.web.common.concurrentdetection.OnConcurrentModification;
+import org.libreplan.web.logs.IIssueLogModel;
+import org.libreplan.web.logs.IRiskLogModel;
+import org.libreplan.web.orders.files.IOrderFileModel;
 import org.libreplan.web.orders.labels.LabelsOnConversation;
 import org.libreplan.web.planner.order.ISaveCommand.IBeforeSaveActions;
 import org.libreplan.web.planner.order.PlanningStateCreator;
@@ -168,6 +171,15 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
 
     @Autowired
     private IOrderVersionDAO orderVersionDAO;
+
+    @Autowired
+    private IOrderFileModel orderFileModel;
+
+    @Autowired
+    private IRiskLogModel riskLogModel;
+
+    @Autowired
+    private IIssueLogModel issueLogModel;
 
     private List<Order> orderList = new ArrayList<>();
 
@@ -508,11 +520,25 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
     @Transactional
     public void remove(Order detachedOrder) {
         Order order = orderDAO.findExistingEntity(detachedOrder.getId());
+
+        removeFiles(order);
+
+        removeLogs(order);
+
         removeVersions(order);
 
         if ( order.hasNoVersions() ) {
             removeOrderFromDB(order);
         }
+    }
+
+    private void removeLogs(Order order) {
+        riskLogModel.getByParent(order).forEach(riskLog -> riskLogModel.remove(riskLog));
+        issueLogModel.getByParent(order).forEach(issueLog -> issueLogModel.remove(issueLog));
+    }
+
+    private void removeFiles(Order order) {
+        orderFileModel.findByParent(order).forEach(orderFile -> orderFileModel.delete(orderFile));
     }
 
     private void removeVersions(Order order) {

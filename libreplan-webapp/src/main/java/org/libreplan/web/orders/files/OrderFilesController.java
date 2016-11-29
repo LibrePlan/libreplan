@@ -187,19 +187,13 @@ public class OrderFilesController extends GenericForwardComposer {
             return;
         }
 
-
         if ( isRepositoryExists() ) {
 
-            String projectCode = orderElementModel.getOrderElement().getCode();
             configurationModel.init();
-            String directory = configurationModel.getRepositoryLocation() + "orders" + "/" + projectCode;
 
-            File fileToDelete = new File(directory + "/" + file.getName() + "." + file.getType());
+            boolean deleted = orderFileModel.delete(file);
 
-            boolean deleted = fileToDelete.delete();
-
-            if ( deleted ) {
-                orderFileModel.delete(file);
+            if ( deleted ){
 
                 messages.clearMessages();
                 messages.showMessage(Level.INFO, "File successfully deleted");
@@ -266,7 +260,11 @@ public class OrderFilesController extends GenericForwardComposer {
 
                 orderFileModel.createNewFileObject();
                 orderFileModel.setFileName(FilenameUtils.getBaseName(media.getName()));
-                orderFileModel.setFileType(FilenameUtils.getExtension(media.getName()));
+
+                orderFileModel.setFileType(FilenameUtils.getExtension(media.getName()).isEmpty()
+                            ? OrderFileModel.UNKNOWN_FILE_EXTENSION
+                            : FilenameUtils.getExtension(media.getName()));
+
                 orderFileModel.setUploadDate(new Date());
                 orderFileModel.setUploader(userDAO.findByLoginName(SecurityUtils.getSessionUserLoginName()));
                 orderFileModel.setParent(orderElementModel.getOrderElement());

@@ -440,10 +440,18 @@ public class UserCRUDController extends BaseCRUDController<User> implements IUse
         }
     }
 
+    /**
+     * Should be public!
+     * Used in _listUsers.zul
+     */
     public boolean isCreateButtonDisabled() {
         Limits usersTypeLimit = limitsModel.getUsersType();
-        Integer usersCount = userModel.getRowCount().intValue();
-        return usersTypeLimit != null && usersCount >= usersTypeLimit.getValue();
+        if (isNullOrZeroValue(usersTypeLimit)) {
+            return false;
+        } else {
+            Integer users = userModel.getRowCount().intValue();
+            return users >= usersTypeLimit.getValue();
+        }
     }
 
     /**
@@ -452,11 +460,23 @@ public class UserCRUDController extends BaseCRUDController<User> implements IUse
      */
     public String getShowCreateFormLabel() {
         Limits usersTypeLimit = limitsModel.getUsersType();
-        Integer usersCount = userModel.getRowCount().intValue();
-        int usersLeft = usersTypeLimit.getValue() - usersCount;
 
-        return usersCount >= usersTypeLimit.getValue()
+        if (isNullOrZeroValue(usersTypeLimit)) {
+            return _("Create");
+        }
+
+        Integer users = userModel.getRowCount().intValue();
+        int usersLeft = usersTypeLimit.getValue() - users;
+        
+        return users >= usersTypeLimit.getValue()
                 ? _("User limit reached")
                 : _("Create") + " ( " + usersLeft  + " " + _("left") + " )";
     }
+
+    private boolean isNullOrZeroValue (Limits usersTypeLimit) {
+        return usersTypeLimit == null ||
+                usersTypeLimit.getValue() == null ||
+                usersTypeLimit.getValue().equals(0);
+    }
+
 }

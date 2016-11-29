@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.libreplan.business.common.daos.IIntegrationEntityDAO;
 import org.libreplan.business.logs.entities.IssueLog;
+import org.libreplan.business.orders.entities.Order;
 
 /**
  * Contract for {@link IssueLogDAO}
@@ -37,4 +38,11 @@ public interface IIssueLogDAO extends IIntegrationEntityDAO<IssueLog> {
      * @return a list of {@link IssueLog} objects
      */
     List<IssueLog> getIssueLogs();
+
+    /**
+     * Returns a list of {@link IssueLog} for a specified {@link Order}
+     *
+     * @param order parent element for IssueLogs
+     */
+    List<IssueLog> getByParent(Order order);
 }

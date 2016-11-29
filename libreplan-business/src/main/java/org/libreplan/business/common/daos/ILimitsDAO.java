@@ -33,7 +33,6 @@ public interface ILimitsDAO extends IGenericDAO<Limits, Long> {
     
     List<Limits> getAll();
 
-    Limits getUsersType();
+    Limits getLimitsByType(String type);
 
-    Limits getResourcesType();
 }
