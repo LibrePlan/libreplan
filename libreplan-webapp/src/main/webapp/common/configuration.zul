@@ -356,7 +356,8 @@
                                     <hbox>
                                         <textbox id="ldapPort"
                                                  value="@{configurationController.ldapConfiguration.ldapPort}"
-                                                 width="300px"/>
+                                                 width="300px"
+                                                 maxlength="5"/>
                                         <label value="${i18n:__('Example: {0}', '389')}" />
                                     </hbox>
                                 </row>

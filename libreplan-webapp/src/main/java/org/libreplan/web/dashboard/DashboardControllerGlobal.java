@@ -180,6 +180,7 @@ public class DashboardControllerGlobal extends GenericForwardComposer {
 
                     ( (Label) pipelineGrid.getCell(i, orderStatus.getIndex()) ).setTooltiptext(tooltipText);
                     ( (Label) pipelineGrid.getCell(i, orderStatus.getIndex()) ).setClass("label-highlight");
+                    ( (Label) pipelineGrid.getCell(i, orderStatus.getIndex()) ).setStyle("word-wrap: break-word");
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
