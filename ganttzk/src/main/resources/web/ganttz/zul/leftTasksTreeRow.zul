@@ -19,7 +19,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<treerow sclass="taskdetail_grid">
+<treerow sclass="taskdetail-grid">
     <treecell hflex="min">
         <textbox ctrlKeys="#down#up" hflex="1" sclass="task-name" />
     </treecell>

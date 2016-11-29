@@ -96,7 +96,7 @@
     overflow:visible;
 }
 
-.listdetails .taskdetail_grid {
+.listdetails .taskdetail-grid {
     height: 23px;
 }
 
@@ -111,7 +111,7 @@
 }
 
 
-.taskdetail_grid table {
+.taskdetail-grid table {
     height: 30px;
     width: 285px; /* Ganntz.ListdetailsWidth */
 }
@@ -122,9 +122,13 @@
     padding-left: 4px;
 }
 
-.taskdetail-company-view .z-tree-ico  {
+.taskdetail-company-view .z-tree-line  {
     display:none;
+}
 
+/* Order name will be in single row */
+.taskdetail-company-view .z-label {
+    white-space: nowrap;
 }
 
 .order-startdate, .order-enddate  {
@@ -157,7 +161,15 @@
 .row {
     height: 12px;
     border-bottom: dotted 1px #CCCCCC;
-    margin-bottom: 10px;
+    margin-bottom: 9px;
+    margin-top: 9px;
+    width: 100%;
+}
+
+.parentProjectScheduling .row {
+    height: 12px;
+    border-bottom: dotted 1px #CCCCCC;
+    margin-bottom: 12px;
     margin-top: 10px;
     width: 100%;
 }
@@ -607,7 +619,7 @@ tr.z-vbox-separator {
     height: 10px;
     border: 1px;
     width: 100%;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
     margin-top: 10px;
     border-bottom: 1px dotted #CCCCCC;
 }
@@ -778,7 +790,7 @@ tr.z-vbox-separator {
 }
 
 .limitingresources-list .row_resourceload {
-    height: 24px;
+    height: 25px;
 }
 
 .limiting-resources .z-tree-line {
@@ -1432,17 +1444,35 @@ div.z-grid-header .second_level_ tr {
     font-size: 12px;
 }
 
+/* Workaround for Chrome */
+@supports (-webkit-appearance: none) {
+    .z-treerow.z-treerow-selected > .z-treecell > .z-treecell-content,
+    .z-treerow.z-treerow > .z-treecell > .z-treecell-content {
+        color: black;
+    }
+}
+
+/* Workaround for FireFox */
+_:-moz-tree-row(hover),
 .z-treerow.z-treerow-selected > .z-treecell > .z-treecell-content,
 .z-treerow.z-treerow > .z-treecell > .z-treecell-content {
     color: black;
 }
 
-.taskdetail_grid .z-treecell .z-treecell-content {
+/* Workaround for FireFox */
+_:-moz-tree-row(hover),
+.z-treerow.z-treerow-selected > .z-treecell > .z-treecell-content,
+.parentProjectScheduling .z-treerow.z-treerow > .z-treecell > .z-treecell-content {
+    height: 21px;
+    padding-top: 3px;
+}
+
+.taskdetail-grid .z-treecell .z-treecell-content {
     display: inline-flex;
     width: 100%;
 }
 
-.taskdetail_grid.taskdetail-company-view .z-treecell .z-treecell-content {
+.taskdetail-grid.taskdetail-company-view .z-treecell .z-treecell-content {
     display: inline-table;
     width: 100%;
 }
