@@ -52,7 +52,7 @@ public interface ICompanyPlanningModel {
 
     ProgressType getProgressTypeFromConfiguration();
 
-    TaskGroupPredicate getDefaultPredicate(Boolean includeOrderElements);
+    TaskGroupPredicate getDefaultPredicate();
 
     User getUser();
 }

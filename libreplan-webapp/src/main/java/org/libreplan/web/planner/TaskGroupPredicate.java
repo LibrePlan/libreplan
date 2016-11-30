@@ -56,14 +56,11 @@ public class TaskGroupPredicate implements IPredicate {
 
     private String name;
 
-    private Boolean includeChildren;
-
     public TaskGroupPredicate(List<FilterPair> filters, Date startDate,
-            Date finishDate, Boolean includeChildren, String name) {
+            Date finishDate, String name) {
         this.filters = filters;
         this.startDate = startDate;
         this.finishDate = finishDate;
-        this.includeChildren = includeChildren;
         this.name = name;
     }
 
@@ -122,14 +119,6 @@ public class TaskGroupPredicate implements IPredicate {
                 taskElement)) {
             return true;
         }
-        if (includeChildren) {
-            for (TaskElement each : taskElement.getAllChildren()) {
-                if (existCriterionInTaskElementResourceAllocations(
-                        filterCriterion, each)) {
-                    return true;
-                }
-            }
-        }
         return false;
     }
 
@@ -163,13 +152,6 @@ public class TaskGroupPredicate implements IPredicate {
         Order order = (Order) taskGroup.getOrderElement();
         if (existLabelInOrderElement(filterLabel, order)) {
             return true;
-        }
-        if (this.includeChildren) {
-            for (OrderElement orderElement : order.getAllOrderElements()) {
-                if (existLabelInOrderElement(filterLabel, orderElement)) {
-                    return true;
-                }
-            }
         }
         return false;
     }
@@ -286,10 +268,6 @@ public class TaskGroupPredicate implements IPredicate {
             }
         }
         return false;
-    }
-
-    public boolean isIncludeChildren() {
-        return includeChildren;
     }
 
     public List<FilterPair> getFilters() {
