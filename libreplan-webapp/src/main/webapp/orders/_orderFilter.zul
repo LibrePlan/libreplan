@@ -41,11 +41,6 @@
     <datebox id="filterFinishDate" constraint = "@{orderFilterController.checkConstraintFinishDate}"
              onChange="orderFilterController.onApplyFilter()"/>
 
-    <label value="${i18n:_('subelements')}"/>
-
-    <!-- TODO Jeroen is thinking about tooltip for this checkbox -->
-    <checkbox id="checkIncludeOrderElements"/>
-
     <button mold="trendy" image="/common/img/ico_filter.png" style="margin-top: -4px"
             tooltiptext="${i18n:_('Apply filtering to tasks satisfying required criteria')}"
             onClick="orderFilterController.onApplyFilter()"/>

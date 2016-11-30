@@ -673,15 +673,11 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
 
             if (associatedTaskElement != null) {
                 if (predicate != null) {
-                    // If predicate includeChildren then we check if it accepts the element
                     if (!predicate.accepts(associatedTaskElement)) {
-                        // If it doesn't accept the element we move on to the next order
+                        // If predicate doesn't accept the element we move on to the next order
                         continue;
                     }
                 }
-                // If predicate doesn't includeChildren then the orders where already filtered in the DB query.
-                // Otherwise they've been filtered with the predicate above, and
-                // if they didn't pass the filter the execution doesn't reach this point.
                 associatedTaskElement.setSimplifiedAssignedStatusCalculationEnabled(true);
                 result.add(associatedTaskElement);
             }
@@ -693,10 +689,6 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
 
     private List<Order> getOrders(TaskGroupPredicate predicate) {
         String username = SecurityUtils.getSessionUserLoginName();
-
-        if (predicate.isIncludeChildren()) {
-            return orderDAO.getOrdersByReadAuthorizationByScenario(username, currentScenario);
-        }
 
         Date startDate = predicate.getStartDate();
         Date endDate = predicate.getFinishDate();
@@ -745,7 +737,7 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
 
     @Override
     @Transactional(readOnly = true)
-    public TaskGroupPredicate getDefaultPredicate(Boolean includeOrderElements) {
+    public TaskGroupPredicate getDefaultPredicate() {
 
         Date startDate = FilterUtils.readProjectsStartDate();
         Date endDate = FilterUtils.readProjectsEndDate();
@@ -785,7 +777,7 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
         filterStartDate = startDate != null ? LocalDate.fromDateFields(startDate) : null;
         filterFinishDate = endDate != null ? LocalDate.fromDateFields(endDate) : null;
 
-        return new TaskGroupPredicate(null, startDate, endDate, includeOrderElements, name);
+        return new TaskGroupPredicate(null, startDate, endDate, name);
     }
 
     private static <T> List<T> notNull(T... values) {

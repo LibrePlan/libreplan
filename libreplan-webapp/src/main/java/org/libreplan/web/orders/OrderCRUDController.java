@@ -180,8 +180,6 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private BandboxMultipleSearch bdFilters;
 
-    private Checkbox checkIncludeOrderElements;
-
     private BandboxSearch bdExternalCompanies;
 
     private OnlyOneVisible cachedOnlyOneVisible;
@@ -247,7 +245,6 @@ public class OrderCRUDController extends GenericForwardComposer {
         filterStartDate = (Datebox) filterComponent.getFellow("filterStartDate");
         filterFinishDate = (Datebox) filterComponent.getFellow("filterFinishDate");
         bdFilters = (BandboxMultipleSearch) filterComponent.getFellow("bdFilters");
-        checkIncludeOrderElements = (Checkbox) filterComponent.getFellow("checkIncludeOrderElements");
 
         filterProjectName = (Textbox) filterComponent.getFellow("filterProjectName");
 
@@ -781,10 +778,6 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     public List<Order> getOrders() {
-        if ( checkIncludeOrderElements.isChecked() ) {
-            return orderModel.getOrders();
-        }
-
         return getOrdersFiltered();
     }
 
@@ -1471,12 +1464,11 @@ public class OrderCRUDController extends GenericForwardComposer {
 
         Date startDate = filterStartDate.getValue();
         Date finishDate = filterFinishDate.getValue();
-        Boolean includeOrderElements = checkIncludeOrderElements.isChecked();
         String name = filterProjectName.getValue();
 
         return listFilters.isEmpty() && startDate == null && finishDate == null && name == null
                 ? null
-                : new OrderPredicate(listFilters, startDate, finishDate, includeOrderElements, name);
+                : new OrderPredicate(listFilters, startDate, finishDate, name);
     }
 
     private void filterByPredicate(OrderPredicate predicate) {

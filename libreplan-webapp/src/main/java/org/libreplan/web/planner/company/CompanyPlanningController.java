@@ -93,8 +93,6 @@ public class CompanyPlanningController implements Composer {
 
     private BandboxMultipleSearch bdFilters;
 
-    private Checkbox checkIncludeOrderElements;
-
     private ICommandOnTask<TaskElement> doubleClickCommand;
 
     private Map<String, String[]> parameters;
@@ -143,7 +141,6 @@ public class CompanyPlanningController implements Composer {
 
         loadPredefinedBandboxFilter();
 
-        checkIncludeOrderElements = (Checkbox) filterComponent.getFellow("checkIncludeOrderElements");
         filterComponent.setVisible(true);
         checkCreationPermissions();
 
@@ -336,14 +333,13 @@ public class CompanyPlanningController implements Composer {
         List<FilterPair> listFilters = (List<FilterPair>) bdFilters.getSelectedElements();
         Date startDate = filterStartDate.getValue();
         Date finishDate = filterFinishDate.getValue();
-        Boolean includeOrderElements = checkIncludeOrderElements.isChecked();
 
         String name = filterProjectName.getValue();
 
         filterProjectName.setValue(name);
 
         if ( startDate == null && finishDate == null ) {
-            TaskGroupPredicate predicate = model.getDefaultPredicate(includeOrderElements);
+            TaskGroupPredicate predicate = model.getDefaultPredicate();
 
             // Show filter dates calculated by default on screen
             if ( model.getFilterStartDate() != null && !FilterUtils.hasProjectsStartDateChanged()) {
@@ -358,7 +354,7 @@ public class CompanyPlanningController implements Composer {
             return predicate;
         }
 
-        return new TaskGroupPredicate(listFilters, startDate, finishDate, includeOrderElements, name);
+        return new TaskGroupPredicate(listFilters, startDate, finishDate, name);
     }
 
     private void filterByPredicate(TaskGroupPredicate predicate) {

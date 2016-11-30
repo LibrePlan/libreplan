@@ -54,15 +54,12 @@ public class OrderPredicate implements IPredicate {
 
     private String name;
 
-    private Boolean includeOrderElements;
-
     public OrderPredicate(List<FilterPair> filters, Date startDate,
-            Date finishDate, Boolean includeOrderElements, String name) {
+            Date finishDate, String name) {
         this.filters = filters;
         this.startDate = startDate;
         this.finishDate = finishDate;
         this.name = name;
-        this.includeOrderElements = includeOrderElements;
     }
 
     @Override
@@ -117,13 +114,6 @@ public class OrderPredicate implements IPredicate {
         if (existCriterionInOrderElement(filterCriterion, order)) {
             return true;
         }
-        if (includeOrderElements) {
-            for (OrderElement orderElement : order.getAllOrderElements()) {
-                if (existCriterionInOrderElement(filterCriterion, orderElement)) {
-                    return true;
-                }
-            }
-        }
         return false;
     }
 
@@ -148,13 +138,6 @@ public class OrderPredicate implements IPredicate {
         Label filterLabel = (Label) filter.getValue();
         if (existLabelInOrderElement(filterLabel, order)) {
             return true;
-        }
-        if (this.includeOrderElements) {
-            for (OrderElement orderElement : order.getAllOrderElements()) {
-                if (existLabelInOrderElement(filterLabel, orderElement)) {
-                    return true;
-                }
-            }
         }
         return false;
     }
