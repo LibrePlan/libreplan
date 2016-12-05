@@ -122,5 +122,9 @@ public interface IRiskLogModel {
      */
     List<RiskLog> getByParent(Order order);
 
+    /**
+     * Setter for {@link RiskLog}
+     */
+    void setRisklog (RiskLog log);
 
 }
