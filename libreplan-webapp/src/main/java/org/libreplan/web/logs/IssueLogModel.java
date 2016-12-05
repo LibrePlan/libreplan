@@ -145,6 +145,11 @@ public class IssueLogModel extends IntegrationEntityModel implements IIssueLogMo
     }
 
     @Override
+    public void setIssueLog(IssueLog log) {
+        this.issueLog = log;
+    }
+
+    @Override
     public EntityNameEnum getEntityName() {
         return EntityNameEnum.ISSUE_LOG;
     }

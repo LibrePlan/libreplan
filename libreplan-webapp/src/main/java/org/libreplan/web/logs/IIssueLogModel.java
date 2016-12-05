@@ -122,5 +122,8 @@ public interface IIssueLogModel {
      */
     List<IssueLog> getByParent(Order order);
 
-
+    /**
+     * Setter for {@link IssueLog}
+     */
+    void setIssueLog(IssueLog log);
 }

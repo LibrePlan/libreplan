@@ -55,7 +55,6 @@
                        visible="@{subController.sent}"/>
             </row>
             <row>
-                <!--TODO Create tooltips like help link, from Bogdan)-->
                 <hbox>
                     <label value="${i18n:_('Work description')}" />
                     <image height="15px" src="/common/img/axuda.gif" tooltip="subcontractor-description-popup" />

@@ -69,6 +69,8 @@ public class IssueLogCRUDController extends BaseCRUDController<IssueLog> {
 
     private Listbox status;
 
+    private boolean saved;
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
@@ -436,6 +438,7 @@ public class IssueLogCRUDController extends BaseCRUDController<IssueLog> {
         }
         getIssueLog().setStatus(status.getSelectedItem().getLabel());
         issueLogModel.confirmSave();
+        saved = true;
     }
 
     @Override
@@ -448,5 +451,15 @@ public class IssueLogCRUDController extends BaseCRUDController<IssueLog> {
         issueLogModel.remove(entity);
     }
 
+    public void setIssueLogToModel (IssueLog log) {
+        this.issueLogModel.setIssueLog(log);
+    }
 
+    public Boolean isIssueLogSaved () {
+        return saved;
+    }
+
+    public void setDefaultStatus() {
+        status.setSelectedIndex(0);
+    }
 }

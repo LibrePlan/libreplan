@@ -67,6 +67,8 @@ public class RiskLogCRUDController extends BaseCRUDController<RiskLog> {
 
     private Textbox riskScore;
 
+    private boolean saved;
+
     /**
      * Renders LOW, MEDIUM, HIGH enums.
      *
@@ -416,6 +418,7 @@ public class RiskLogCRUDController extends BaseCRUDController<RiskLog> {
         }
 
         riskLogModel.confirmSave();
+        saved = true;
     }
 
     @Override
@@ -426,6 +429,14 @@ public class RiskLogCRUDController extends BaseCRUDController<RiskLog> {
     @Override
     protected void delete(RiskLog entity) throws InstanceNotFoundException {
         riskLogModel.remove(entity);
+    }
+
+    public Boolean isRiskLogSaved () {
+        return saved;
+    }
+
+    public void setRiskLogToModel (RiskLog log) {
+        this.riskLogModel.setRisklog(log);
     }
 
 }

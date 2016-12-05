@@ -18,6 +18,11 @@
  */
 
 package org.libreplan.web.logs;
+import org.libreplan.business.logs.entities.IssueLog;
+import org.libreplan.business.logs.entities.RiskLog;
+import org.libreplan.business.logs.entities.IssueTypeEnum;
+import org.libreplan.business.logs.entities.LowMediumHighEnum;
+import org.libreplan.business.logs.entities.RiskScoreStatesEnum;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.web.common.Util;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -50,6 +55,10 @@ public class LogsController extends GenericForwardComposer {
 
     private static Order order = null;
 
+    private IssueLog issueLogInMemory = null;
+
+    private RiskLog riskLogInMemory = null;
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
@@ -67,6 +76,28 @@ public class LogsController extends GenericForwardComposer {
             issueLogController = new IssueLogCRUDController();
         }
         try {
+            // Saving risk log, if it was created, but not saved
+            saveRiskLogState();
+
+            /*
+             * Code below is needed to save issue log if it was created and changed, but not saved.
+             * If the issue log was not saved - we set it to issue model and show when user go back to issue log tab.
+             */
+            if (issueLogController.isIssueLogSaved()) {
+                issueLogInMemory = null;
+            }
+            if (issueLogInMemory != null) {
+                issueLogController.setIssueLogToModel(issueLogInMemory);
+                issueLogController.doAfterCompose(issueLogWindow);
+                issueLogController.goToEditForm(issueLogInMemory);
+                issueLogController.setDefaultStatus();
+                return;
+            }
+
+            /*
+             * Normal logic flow: no issue log created, and not saved.
+             * This will show to user issue log list.
+             */
             issueLogController.doAfterCompose(issueLogWindow);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -81,6 +112,27 @@ public class LogsController extends GenericForwardComposer {
             riskLogController = new RiskLogCRUDController();
         }
         try {
+            // Saving issue log, if it was created, but not saved.
+            saveIssueLogState();
+
+            /*
+             * Code below is needed to save risk log if it was created and changed, but not saved.
+             * If the risk log was not saved - we set it to risk model and show when user go back to risk log tab.
+             */
+            if (riskLogController.isRiskLogSaved()) {
+                riskLogInMemory = null;
+            }
+            if (riskLogInMemory != null) {
+                riskLogController.setRiskLogToModel(riskLogInMemory);
+                riskLogController.doAfterCompose(riskLogWindow);
+                riskLogController.goToEditForm(riskLogInMemory);
+                return;
+            }
+
+            /*
+             * Normal logic flow: no risk log created, and not saved.
+             * This will show to user risk log list.
+             */
             riskLogController.doAfterCompose(riskLogWindow);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -103,5 +155,60 @@ public class LogsController extends GenericForwardComposer {
 
     public static Order getOrder() {
         return order;
+    }
+
+    private boolean isIssueLogChanged() {
+        if (issueLogController.getIssueLog() != null) {
+            IssueLog issueLog = issueLogController.getIssueLog();
+
+            // "Date raised" and "Created by" are not handled
+            if (!(issueLog.getOrder() == null &&
+                    issueLog.getType() == IssueTypeEnum.getDefault() &&
+                    "LOW".equals(issueLog.getStatus()) &&
+                    issueLog.getDescription() == null &&
+                    issueLog.getPriority() == LowMediumHighEnum.getDefault() &&
+                    issueLog.getSeverity() == LowMediumHighEnum.getDefault() &&
+                    issueLog.getAssignedTo() == null &&
+                    issueLog.getDeadline() == null &&
+                    issueLog.getDateResolved() == null &&
+                    issueLog.getNotes() == null)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isRiskLogChanged() {
+        if (riskLogController.getRiskLog() != null) {
+            RiskLog riskLog = riskLogController.getRiskLog();
+
+            // "Date created" and "Created by" are not handled
+            if (!(riskLog.getProjectName() == null &&
+                    riskLog.getStatus() == null &&
+                    riskLog.getProbability() == LowMediumHighEnum.getDefault() &&
+                    riskLog.getImpact() == LowMediumHighEnum.getDefault() &&
+                    riskLog.getDescription() == null &&
+                    riskLog.getCounterMeasures() == null &&
+                    riskLog.getScoreAfterCM() == RiskScoreStatesEnum.ZERO &&
+                    riskLog.getContingency() == null &&
+                    riskLog.getActionWhen() == null &&
+                    riskLog.getResponsible() == null &&
+                    riskLog.getNotes() == null)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void saveIssueLogState() {
+        if (issueLogController!=null && issueLogController.getIssueLog()!=null && isIssueLogChanged()) {
+            issueLogInMemory = issueLogController.getIssueLog();
+        }
+    }
+
+    private void saveRiskLogState() {
+        if (riskLogController!=null && riskLogController.getRiskLog()!=null && isRiskLogChanged()) {
+            riskLogInMemory = riskLogController.getRiskLog();
+        }
     }
 }

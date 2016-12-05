@@ -146,6 +146,11 @@ public class RiskLogModel extends IntegrationEntityModel implements IRiskLogMode
     }
 
     @Override
+    public void setRisklog(RiskLog log) {
+        this.riskLog = log;
+    }
+
+    @Override
     public EntityNameEnum getEntityName() {
         return EntityNameEnum.RISK_LOG;
     }
