@@ -164,7 +164,7 @@ Debian/Ubuntu
 
 * Install requirements::
 
-    # apt-get install openjdk-7-jre postgresql postgresql-client tomcat7 libpg-java cutycapt xvfb
+    # apt-get install openjdk-8-jre postgresql postgresql-client tomcat8 libpg-java cutycapt xvfb
 
 * Connect to database::
 
@@ -201,9 +201,9 @@ Debian/Ubuntu
 
     $ wget -O libreplan.war http://downloads.sourceforge.net/project/libreplan/LibrePlan/libreplan_1.4.1.war
 
-* Create a new file ``/etc/tomcat7/Catalina/localhost/libreplan.xml`` (file
+* Create a new file ``/etc/tomcat8/Catalina/localhost/libreplan.xml`` (file
   name has to match with ``.war`` name) with database configuration for
-  Tomcat 7::
+  Tomcat 8::
 
     <?xml version="1.0" encoding="UTF-8"?>
 
@@ -216,21 +216,18 @@ Debian/Ubuntu
             url="jdbc:postgresql://localhost/libreplan" />
     </Context>
 
-* Add next lines to Tomcat 7 policy file ``/etc/tomcat7/catalina.policy`` or ``/var/lib/tomcat7/conf``  or ``/etc/tomcat7/policy.d/03catalina.policy``
+* Add next lines to Tomcat 8 policy file ``/etc/tomcat8/catalina.policy`` or ``/var/lib/tomcat8/conf``  or ``/etc/tomcat8/policy.d/03catalina.policy``
   with the following content::
 
-    grant codeBase "file:/var/lib/tomcat7/webapps/libreplan/-" {
+    grant codeBase "file:/var/lib/tomcat8/webapps/libreplan/-" {
        permission java.security.AllPermission;
     };
-    grant codeBase "file:/var/lib/tomcat7/webapps/libreplan.war" {
+    grant codeBase "file:/var/lib/tomcat8/webapps/libreplan.war" {
        permission java.security.AllPermission;
     };
 
-  .. NOTE::
 
-    For Tomcat 6, create a ``/etc/tomcat6/policy.d/51libreplan.policy`` and replace `̀ tomcat7`` by ``tomcat6``.
-
-* Also add next lines to Tomcat 7 policy file::
+* Also add next lines to Tomcat 8 policy file::
 
     grant codeBase "file:${catalina.home}/bin/tomcat-juli.jar" {
       ...
@@ -240,21 +237,17 @@ Debian/Ubuntu
       ...
     };
 
-  .. NOTE::
+* Add link to Java JDBC driver for PostgreSQL in Tomcat8 libraries directory::
 
-    For Tomcat 6, this is the ``/etc/tomcat6/policy.d/03catalina.policy``.
+    # ln -s /usr/share/java/postgresql-jdbc4.jar /usr/share/tomcat8/lib/
 
-* Add link to Java JDBC driver for PostgreSQL in Tomcat6 libraries directory::
+* Copy war to Tomcat 8 web applications directory::
 
-    # ln -s /usr/share/java/postgresql-jdbc4.jar /usr/share/tomcat7/lib/
+    # cp libreplan.war /var/lib/tomcat8/webapps/
 
-* Copy war to Tomcat 7 web applications directory::
+* Restart Tomcat 8::
 
-    # cp libreplan.war /var/lib/tomcat7/webapps/
-
-* Restart Tomcat 7::
-
-    # /etc/init.d/tomcat7 restart
+    # /etc/init.d/tomcat8 restart
 
 * Go to http://localhost:8080/libreplan/
 
@@ -269,7 +262,7 @@ openSUSE
 
 * Install requirements::
 
-    # zypper install java-1_7_0-openjdk postgresql-server postgresql tomcat7 xorg-x11-server
+    # zypper install java-1_8_0-openjdk postgresql-server postgresql tomcat8 xorg-x11-server
 
 * JDBC Driver manual installation::
 
@@ -324,9 +317,9 @@ openSUSE
 
     $ wget -O libreplan.war http://downloads.sourceforge.net/project/libreplan/LibrePlan/libreplan_1.4.1.war
 
-* Create a new file ``/etc/tomcat7/Catalina/localhost/libreplan.xml`` (file
+* Create a new file ``/etc/tomcat8/Catalina/localhost/libreplan.xml`` (file
   name has to match with ``.war`` name) with database configuration for
-  Tomcat 7::
+  Tomcat 8::
 
     <?xml version="1.0" encoding="UTF-8"?>
 
@@ -339,17 +332,17 @@ openSUSE
             url="jdbc:postgresql://localhost/libreplan" />
     </Context>
 
-* Add link to Java JDBC driver for PostgreSQL in Tomcat7 libraries directory::
+* Add link to Java JDBC driver for PostgreSQL in Tomcat8 libraries directory::
 
-    # ln -s /usr/share/java/postgresql-jdbc4.jar /usr/share/tomcat7/lib/
+    # ln -s /usr/share/java/postgresql-jdbc4.jar /usr/share/tomcat8/lib/
 
-* Copy war to Tomcat 7 web applications directory::
+* Copy war to Tomcat 8 web applications directory::
 
-    # cp libreplan.war /srv/tomcat7/webapps/
+    # cp libreplan.war /srv/tomcat8/webapps/
 
-* Restart Tomcat 7:
+* Restart Tomcat 8:
 
-    # /etc/init.d/tomcat7 restart
+    # /etc/init.d/tomcat8 restart
 
 * Go to http://localhost:8080/libreplan/
 
@@ -358,17 +351,17 @@ Microsoft Windows
 
 Instructions:
 
-* Download and install latest Java Runtime Environment 7uXX (JRE7uXX)::
+* Download and install latest Java Runtime Environment 8uXX (JRE8uXX)::
 
-    # http://www.oracle.com/technetwork/java/javase/downloads/jre7-downloads-1880261.html
+    # http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html
 
 * Download and install latest PostgreSQL database::
 
     # http://www.enterprisedb.com/products-services-training/pgdownload#windows
 
-* Download and install Apache Tomcat 6::
+* Download and install Apache Tomcat 8::
 
-    # http://tomcat.apache.org/download-60.cgi
+    # https://tomcat.apache.org/download-80.cgi
 
 .. NOTE::
 
@@ -377,7 +370,7 @@ Instructions:
 * Set up JDBC41 PostgreSQL Driver::
 
     # Download latest driver: https://jdbc.postgresql.org/download.html
-    # Copy downloaded *.jar file to JRE location: (e.g. C:\Program Files\Java\jre7\lib\ext)
+    # Copy downloaded *.jar file to JRE location: (e.g. C:\Program Files\Java\jre8\lib\ext)
 
 * Download latest ``.war`` file from SourceForge.net (for PostgreSQL) and rename it to libreplan.war::
 
@@ -407,9 +400,9 @@ Instructions:
 
 * Configure Apache Tomcat Server
 
-* Put libreplan.war file to Apache Tomcat webapps folder (e.g. C:/Program Files/Apache Software Foundation/Tomcat 6.0/webapps/)
+* Put libreplan.war file to Apache Tomcat webapps folder (e.g. C:/Program Files/Apache Software Foundation/Tomcat 8.0/webapps/)
 
-* Go to localhost folder (e.g. C:/Program Files/Apache Software Foundation/Tomcat 6.0/conf/Catalina/localhost/)
+* Go to localhost folder (e.g. C:/Program Files/Apache Software Foundation/Tomcat 8.0/conf/Catalina/localhost/)
   and create there libreplan.xml file with this lines of code::
 
     <?xml version="1.0" encoding="UTF-8"?>
@@ -425,7 +418,7 @@ Instructions:
 
 * Start Apache Tomcat server
 
-    # Example location: C:/Program Files/Apache Software Foundation/Tomcat 6.0/bin/Tomcat6.exe
+    # Example location: C:/Program Files/Apache Software Foundation/Tomcat 8.0/bin/Tomcat8.exe
 
 If you will face SKIP_IDENTIFIER_CHECK error, refer to:
   http://stackoverflow.com/questions/24546304/how-to-skip-java-reserve-keyword-identifier-check-in-tomcat
@@ -436,8 +429,8 @@ Logs
 ----
 
 Since *LibrePlan 1.1.1* log system is configured automatically creating a new
-folder under ``/var/log/tomcat6/`` with ``.war`` name. For example:
-``/var/log/tomcat6/libreplan/``.
+folder under ``/var/log/tomcat8/`` with ``.war`` name. For example:
+``/var/log/tomcat8/libreplan/``.
 
 Inside this new directory there will be two files (``libreplan.log`` and
 ``libreplan-error.log``) that will be rotated every day.
@@ -449,8 +442,8 @@ Anyway if you want to set manually LibrePlan log path you will have to
 configure ``JAVA_OPTS`` variable in your server. This variable is configured in
 different files depending on the distribution:
 
-* Debian or Ubuntu: ``/etc/default/tomcat6``
-* Fedora or openSUSE: ``/etc/tomcat6/tomcat6.conf``
+* Debian or Ubuntu: ``/etc/default/tomcat8``
+* Fedora or openSUSE: ``/etc/tomcat8/tomcat8.conf``
 
 Where you will need to add the next line::
 
@@ -459,7 +452,7 @@ Where you will need to add the next line::
 
 .. WARNING::
 
-  You have to be sure that the user running Tomcat (usually ``tomcat6``) has
+  You have to be sure that the user running Tomcat (usually ``tomcat8``) has
   permissions to write in the specified directory.
 
 
@@ -512,8 +505,8 @@ In order to avoid this problem you need to configure properly ``JAVA_OPTS``
 variable in your server. This is configured in different files depending on the
 distribution:
 
-* Debian or Ubuntu: ``/etc/default/tomcat6``
-* Fedora or openSUSE: ``/etc/tomcat6/tomcat6.conf``
+* Debian or Ubuntu: ``/etc/default/tomcat8``
+* Fedora or openSUSE: ``/etc/tomcat8/tomcat8.conf``
 
 The next lines show a possible configuration to fix the memory errors (the exact
 values depends on the server features)::

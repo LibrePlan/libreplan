@@ -153,7 +153,7 @@ Configure project to run
    Configure how to run LibrePlan in Eclipse
 
 * Click *Run* and application will be available at
-  http://localhost:8080/libreplan-webapp/
+  http://localhost:8080/
 
 
 Configure Maven profiles
