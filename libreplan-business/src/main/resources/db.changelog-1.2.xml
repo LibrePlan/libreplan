@@ -177,24 +177,16 @@
     </changeSet>
 
     <changeSet id="add-new-column-allow_to_gather_usage_stats_enabled" author="mrego">
-        <comment>Add new column allow_to_gather_usage_stats_enabled with default value TRUE to configuration table</comment>
+        <comment>Add new column allow_to_gather_usage_stats_enabled with default value FALSE to configuration table</comment>
         <addColumn tableName="configuration">
             <column name="allow_to_gather_usage_stats_enabled" type="BOOLEAN" />
         </addColumn>
         <addDefaultValue tableName="configuration" columnName="allow_to_gather_usage_stats_enabled"
-           defaultValueBoolean="TRUE" />
+           defaultValueBoolean="FALSE" />
         <addNotNullConstraint tableName="configuration"
-            columnName="allow_to_gather_usage_stats_enabled"
-            defaultNullValue="TRUE"
+           columnName="allow_to_gather_usage_stats_enabled"
+            defaultNullValue="FALSE"
             columnDataType="BOOLEAN" />
-
-    </changeSet>
-
-    <changeSet id="update allow_to_gather_usage_stats_enabled" author="bogdan/jeroen" runAlways="true">
-        <comment>Update allow_to_gather_usage_stats_enabled field</comment>
-        <update tableName="configuration">
-            <column name="allow_to_gather_usage_stats_enabled" valueBoolean="TRUE"/>
-        </update>
     </changeSet>
 
     <changeSet id="change-column-description-in-order_element-to-text"
@@ -659,6 +651,22 @@
             columnName="changed_default_reports_password"
             defaultNullValue="FALSE"
             columnDataType="BOOLEAN" />
+    </changeSet>
+
+    <changeSet id="update allow_to_gather_usage_stats_enabled" author="bogdan/jeroen" runAlways="true">
+        <comment>Update allow_to_gather_usage_stats_enabled field</comment>
+        <update tableName="configuration">
+            <column name="allow_to_gather_usage_stats_enabled" valueBoolean="TRUE"/>
+        </update>
+    </changeSet>
+
+    <changeSet author="pluchyn" id="change_default_value_for_gather_usage_stats">
+        <addDefaultValue tableName="configuration" columnName="allow_to_gather_usage_stats_enabled"
+                         defaultValueBoolean="TRUE"/>
+        <addNotNullConstraint tableName="configuration"
+                              columnName="allow_to_gather_usage_stats_enabled"
+                              defaultNullValue="TRUE"
+                              columnDataType="BOOLEAN" />
     </changeSet>
 
 </databaseChangeLog>
