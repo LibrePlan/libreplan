@@ -143,6 +143,7 @@
         <property name="defaultPasswordsControl" value="${default.passwordsControl}"/>
         <property name="exampleUsersDisabled" value="${default.exampleUsersDisabled}"/>
         <property name="emailSendingEnabled" value="${default.emailSendingEnabled}"/>
+        <property name="deleteAllProjectsButtonDisabled" value="${default.deleteAllProjectsButtonDisabled}"/>
     </bean>
 
     <bean id="scenarioManager" class="org.libreplan.business.scenarios.OnlyMainScenarioAwareManager"/>
