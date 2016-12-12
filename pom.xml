@@ -35,6 +35,7 @@
         <default.passwordsControl>true</default.passwordsControl>
         <default.exampleUsersDisabled>true</default.exampleUsersDisabled>
         <default.emailSendingEnabled>true</default.emailSendingEnabled>
+        <default.deleteAllProjectsButtonDisabled>true</default.deleteAllProjectsButtonDisabled>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
@@ -94,6 +95,9 @@
                 <!-- Enable example users
                 (wsreader, wswriter, wssubcontracting, manager, hresources, outsourcing and reports) -->
                 <default.exampleUsersDisabled>false</default.exampleUsersDisabled>
+
+                <!-- Enabling "Delete all projects" button -->
+                <default.deleteAllProjectsButtonDisabled>false</default.deleteAllProjectsButtonDisabled>
             </properties>
         </profile>
 

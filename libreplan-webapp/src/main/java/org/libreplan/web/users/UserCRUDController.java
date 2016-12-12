@@ -158,6 +158,7 @@ public class UserCRUDController extends BaseCRUDController<User> implements IUse
         List<UserRole> roles = new ArrayList<>(Arrays.asList(UserRole.values()));
         roles.remove(UserRole.ROLE_BOUND_USER);
 
+        // Sorting by ASC
         Collections.sort(roles, (arg0, arg1) -> _(arg0.getDisplayName()).compareTo(_(arg1.getDisplayName())));
 
         for (UserRole role : roles) {
@@ -202,6 +203,10 @@ public class UserCRUDController extends BaseCRUDController<User> implements IUse
 
         if (comboItem != null) {
             addRole(comboItem.getValue());
+
+            userRolesCombo.removeItemAt(comboItem.getIndex());
+            userRolesCombo.setSelectedItem(null);
+            userRolesCombo.setText(null);
         }
     }
 
@@ -212,7 +217,32 @@ public class UserCRUDController extends BaseCRUDController<User> implements IUse
 
     public void removeRole(UserRole role) {
         userModel.removeRole(role);
+
+        userRolesCombo.getItems().clear();
+        appendAllUserRolesExcept(UserRole.ROLE_BOUND_USER, userModel.getRoles(), userRolesCombo);
+
         Util.reloadBindings(editWindow);
+    }
+
+    /**
+     * Appends the existing UserRoles to the {@link Combobox} passed.
+     *
+     * @param boundUserRole {@link UserRole#ROLE_BOUND_USER} that need to be excluded
+     * @param userRoles a list of {@link UserRole} that need to be excluded
+     * @param combo {@link Combobox} to which a list of user roles will be appended
+     */
+    private void appendAllUserRolesExcept(UserRole boundUserRole, List<UserRole> userRoles, Combobox combo) {
+        List<UserRole> roles = new ArrayList<>(Arrays.asList(UserRole.values()));
+        roles.remove(boundUserRole);
+        roles.removeAll(userRoles);
+
+        // Sorting by ASC
+        Collections.sort(roles, (arg0, arg1) -> _(arg0.getDisplayName()).compareTo(_(arg1.getDisplayName())));
+
+        for (UserRole role : roles) {
+            Comboitem item = combo.appendItem(_(role.getDisplayName()));
+            item.setValue(role);
+        }
     }
 
     public List<Profile> getProfiles() {

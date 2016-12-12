@@ -24,6 +24,7 @@ package org.libreplan.web.orders;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.LocalDate;
 import org.libreplan.business.calendars.entities.BaseCalendar;
+import org.libreplan.business.common.Configuration;
 import org.libreplan.business.common.Registry;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.externalcompanies.entities.DeadlineCommunication;
@@ -77,7 +78,6 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
-import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Column;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
@@ -293,6 +293,22 @@ public class OrderCRUDController extends GenericForwardComposer {
 
         loadLabels();
         FilterUtils.writeProjectPlanningFilterChanged(false);
+
+        createDeleteAllProjectsButton();
+    }
+
+    /**
+     * This method is needed to create "Delete all projects" button,
+     * that is visible only for developers on orders list page.
+     */
+    private void createDeleteAllProjectsButton() {
+        if (!isDeleteAllProjectsButtonDisabled()) {
+            Button deleteAllProjectButton = new Button();
+            deleteAllProjectButton.setLabel("Delete all projects");
+            deleteAllProjectButton.setDisabled(isDeleteAllProjectsButtonDisabled());
+            deleteAllProjectButton.addEventListener(Events.ON_CLICK, event -> deleteAllProjects());
+            orderFilter.appendChild(deleteAllProjectButton);
+        }
     }
 
     private void loadLabels() {
@@ -1796,6 +1812,31 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     public BigDecimal getTotalBudget() {
         return getOrder().getBudget().add(getResourcesBudget());
+    }
+
+    private Boolean isDeleteAllProjectsButtonDisabled() {
+        return Configuration.getInstance().isDeleteAllProjectsButtonDisabled();
+    }
+
+    /**
+     * Should be public!
+     * Used in orders/_orderFilter.zul
+     */
+    public void deleteAllProjects() {
+        boolean canNotDelete = false;
+        for (Order order : orderModel.getOrders()) {
+            try {
+                orderModel.remove(order);
+            } catch (Exception ignored) {
+                canNotDelete = true;
+                continue;
+            }
+        }
+        if (canNotDelete) {
+            messagesForUser.showMessage(Level.ERROR, "Not all projects were removed") ;
+        }
+        listing.setModel(new SimpleListModel<>(orderModel.getOrders()));
+        listing.invalidate();
     }
 
 }

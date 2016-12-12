@@ -20,7 +20,7 @@ How To Start Development With JetBrains Intellij IDEA
 Download LibrePlan source code
 ------------------------------
 
-* You need to download LibrePlan_ source code to start hacking on it. You have two options:
+* You need to download LibrePlan source code to start hacking on it. You have two options:
 
 a) Clone Git repository (recommended)::
 
@@ -45,7 +45,7 @@ Import LibrePlan project
 
 * Select directory with source code of Libreplan
 
-    # e.g. C/Users/PC-User/IdeaProjects/libreplan
+    # e.g. C:/Users/PC-User/IdeaProjects/libreplan
 
 * Select *Import project from external model* > *Maven* and click *Next*
 
@@ -55,7 +55,7 @@ Import LibrePlan project
 
 * Then leave all by default
 
-* Then choose your JDK(SDK), 1.7 strongly preferred
+* Then choose your JDK(SDK), 1.8 strongly preferred
 
 * Then define project name or leave default name
 
