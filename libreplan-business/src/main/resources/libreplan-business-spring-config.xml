@@ -161,6 +161,9 @@
         <property name="exampleUsersDisabled">
             <value>${default.exampleUsersDisabled}</value>
         </property>
+        <property name="deleteAllProjectsButtonDisabled">
+            <value>${default.deleteAllProjectsButtonDisabled}</value>
+        </property>
     </bean>
 
     <bean id="scenarioManager"
