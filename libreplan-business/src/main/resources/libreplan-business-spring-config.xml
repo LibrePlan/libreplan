@@ -155,6 +155,9 @@
         <property name="emailSendingEnabled">
             <value>${default.emailSendingEnabled}</value>
         </property>
+        <property name="deleteAllProjectsButtonDisabled">
+            <value>${default.deleteAllProjectsButtonDisabled}</value>
+        </property>
     </bean>
 
     <bean id="scenarioManager"
