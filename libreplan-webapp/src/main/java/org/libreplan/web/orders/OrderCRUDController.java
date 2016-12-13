@@ -41,6 +41,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.LogFactory;
 import org.joda.time.LocalDate;
 import org.libreplan.business.calendars.entities.BaseCalendar;
+import org.libreplan.business.common.Configuration;
 import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.Registry;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
@@ -171,7 +172,9 @@ public class OrderCRUDController extends GenericForwardComposer {
     private Vbox orderElementFilter;
 
     private Button createOrderButton;
+
     private Button saveOrderAndContinueButton;
+
     private Button cancelEditionButton;
 
     private Datebox filterStartDate;
@@ -273,6 +276,28 @@ public class OrderCRUDController extends GenericForwardComposer {
 
         loadLabels();
         FilterUtils.writeProjectPlanningFilterChanged(false);
+
+        createDeleteAllProjectsButton();
+    }
+
+    /**
+     * This method is needed to create "Delete all projects" button,
+     * that is visible only for developers on orders list page.
+     */
+    private void createDeleteAllProjectsButton() {
+        if (!isDeleteAllProjectsButtonDisabled()) {
+            Button deleteAllProjectButton = new Button();
+            deleteAllProjectButton.setLabel("Delete all projects");
+            deleteAllProjectButton.setDisabled(isDeleteAllProjectsButtonDisabled());
+            deleteAllProjectButton.addEventListener(Events.ON_CLICK,
+                    new EventListener() {
+                        @Override
+                        public void onEvent(Event event) throws Exception {
+                            deleteAllProjects();
+                        }
+                    });
+            orderFilter.appendChild(deleteAllProjectButton);
+        }
     }
 
     private void loadLabels() {
@@ -1900,5 +1925,30 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     public BigDecimal getTotalBudget() {
         return getOrder().getBudget().add(getResourcesBudget());
+    }
+
+    private Boolean isDeleteAllProjectsButtonDisabled() {
+        return Configuration.getInstance().isDeleteAllProjectsButtonDisabled();
+    }
+
+    /**
+     * Should be public!
+     * Used in orders/_orderFilter.zul
+     */
+    public void deleteAllProjects() {
+        boolean canNotDelete = false;
+        for (Order order : orderModel.getOrders()) {
+            try {
+                orderModel.remove(order);
+            } catch (Exception ignored) {
+                canNotDelete = true;
+                continue;
+            }
+        }
+        if (canNotDelete) {
+            messagesForUser.showMessage(Level.ERROR, "Not all projects were removed") ;
+        }
+        listing.setModel(new SimpleListModel(orderModel.getOrders()));
+        listing.invalidate();
     }
 }
