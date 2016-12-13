@@ -26,11 +26,12 @@ import org.apache.commons.lang.BooleanUtils;
 /**
  * This is a singleton that contains the compilation options passed from Maven.
  *
- * Currently we have two options:
+ * Currently we have three options:
  * <ul>
  * <li>Enable/Disable the warning changing default password</li>
  * <li>Enable/Disable default users (such as wsreader, wswriter,
  * wssubcontracting, manager, hresources, outsourcing and reports)</li>
+ * <li>Enable/Disable "Delete all projects" button</li>
  * </ul>
  *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
@@ -42,7 +43,9 @@ public class Configuration {
 
     private Boolean defaultPasswordsControl;
 
-    private Boolean exampleUsersDisabled;
+    private boolean exampleUsersDisabled;
+
+    private boolean deleteAllProjectsButtonDisabled;
 
     private Configuration() {
     }
@@ -68,19 +71,24 @@ public class Configuration {
         return defaultPasswordsControl;
     }
 
-    public void setExampleUsersDisabled(Boolean exampleUsersDisabled) {
+    public void setExampleUsersDisabled(boolean exampleUsersDisabled) {
         this.exampleUsersDisabled = exampleUsersDisabled;
     }
 
-    public Boolean getExampleUsersDisabled() {
+    public boolean getExampleUsersDisabled() {
         return exampleUsersDisabled;
     }
 
-    /**
-     * Returns the value of example users disabled compilation option
-     */
     public static boolean isExampleUsersDisabled() {
         return BooleanUtils.isNotFalse(singleton.getExampleUsersDisabled());
+    }
+
+    public boolean isDeleteAllProjectsButtonDisabled() {
+        return deleteAllProjectsButtonDisabled;
+    }
+
+    public void setDeleteAllProjectsButtonDisabled(boolean deleteAllProjectsButtonDisabled) {
+        this.deleteAllProjectsButtonDisabled = deleteAllProjectsButtonDisabled;
     }
 
 }
