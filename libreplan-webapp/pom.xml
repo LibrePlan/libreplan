@@ -165,6 +165,7 @@
                                         </copy>
                                         <copy todir="src/main/webapp/help/zh_CN" failonerror="false">
                                           <fileset dir="../doc/src/user/en/html"/>
+                                        </copy>
                                     </tasks>
                                 </configuration>
                             </execution>
