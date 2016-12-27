@@ -1,243 +1,267 @@
-# Russian translations for LibrePlan - GanttZK module.
-# Copyright (C) 2011 Pavel Rudensky <prudensky@gmail.com>
-# This file is distributed under the same license as the LibrePlan package.
-# Pavel Rudensky <prudensky@gmail.com>, 2011.
-#
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# 
+# Translators:
+# Akir <akirsoft@gmail.com>, 2013
+# Alexander <alexander.s72@gmail.com>, 2015
+# Andrey Voronin, 2016
+# Pavel Rudensky <prudensky@gmail.com>, 2011
+# Sinder <griptrip@gmail.com>, 2012
+# Yaroslav Petrov <lankme@gmail.com>, 2012
 msgid ""
 msgstr ""
-"Project-Id-Version: 1.1.0\n"
+"Project-Id-Version: LibrePlan\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-05-11 18:16+0200\n"
-"PO-Revision-Date: 2011-08-30 16:46+0400\n"
-"Last-Translator: Pavel Rudensky <prudensky@gmail.com>\n"
-"Language-Team: Russian\n"
-"Language: ru\n"
+"POT-Creation-Date: 2016-10-10 17:54+0200\n"
+"PO-Revision-Date: 2016-10-11 09:52+0000\n"
+"Last-Translator: Andrey Voronin\n"
+"Language-Team: Russian (http://www.transifex.com/rego/libreplan/language/ru/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Language: ru\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/DependencyList.java:215
-#: ganttzk/src/main/java/org/zkoss/ganttz/DependencyList.java:234
-msgid "Erase"
-msgstr "Стереть"
-
-#: ganttzk/src/main/java/org/zkoss/ganttz/TaskList.java:319
-msgid "Add Dependency"
-msgstr "Добавить зависимости"
-
-#: ganttzk/src/main/java/org/zkoss/ganttz/data/resourceload/TimeLineRole.java:58
-msgid "Worker"
-msgstr "Работник"
-
-#: ganttzk/src/main/resources/web/ganttz/zul/leftTasksTree.zul:29
-msgid "Start"
-msgstr "Начало"
-
-#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:592
-msgid "Show reported hours"
-msgstr "Показать затраченные часы"
-
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:78
-msgid "Show/Hide Progress"
-msgstr "Показать/Убрать "
-
-#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:92
-msgid "by criteria"
-msgstr "по критериям"
-
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:70
-msgid "Show/Hide reported hours"
-msgstr "Показать/Скрыть сообщенные часы"
-
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:45
-#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:36
-msgid "Zoom"
-msgstr "Масштаб"
-
-#: ganttzk/src/main/java/org/zkoss/ganttz/TabsRegistry.java:121
-msgid "Limiting resources"
-msgstr "Ограничение ресурсов"
-
-#: ganttzk/src/main/java/org/zkoss/ganttz/DependencyList.java:68
-msgid "The specified dependency is not allowed"
-msgstr "Указанные зависимости не допускаются"
-
-#: ganttzk/src/main/java/org/zkoss/ganttz/DependencyList.java:254
+#: org/zkoss/ganttz/DependencyList.java:255
 msgid "Set End-End"
 msgstr "Установить Конец-Конец"
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/data/resourceload/TimeLineRole.java:58
-msgid "Task"
-msgstr "Задача"
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:91
+msgid "Show/Hide money cost bar"
+msgstr "Показать/Скрыть панель стоимости"
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:91
-msgid "by resources"
-msgstr "по ресурсам"
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:67
+msgid "Expand/Collapse all"
+msgstr "Развернуть/Свернуть все"
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/data/resourceload/TimeLineRole.java:64
-msgid "Criterion"
-msgstr "Критерий"
+#: org/zkoss/ganttz/Planner.java:675
+msgid "Hide money cost bar"
+msgstr "Скрыть панель стоимости"
 
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:40
+#: org/zkoss/ganttz/DependencyList.java:251
+msgid "Set Start-Start"
+msgstr "Установить Начало-Начало"
+
+#: org/zkoss/ganttz/Planner.java:670
+msgid "Show money cost bar"
+msgstr "Показать панель стоимость денег"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:44
 msgid "Print"
 msgstr "Печать"
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourceLoadComponent.java:190
-msgid "total work hours: {0}, assigned hours: {1}"
-msgstr "Общее количество часов: {0}, назначенные часы: {1}"
+#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:90
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:120
+msgid "Graphics"
+msgstr "Графика"
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:71
-msgid "Week"
-msgstr "Неделя"
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:64
+msgid "Show/Hide resources"
+msgstr "Показать/Скрыть ресурсы"
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourceLoadLeftPane.java:111
+#: org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:58
+msgid "Month"
+msgstr "Месяц"
+
+#: org/zkoss/ganttz/DependencyList.java:67
+msgid "The specified dependency is not allowed"
+msgstr "Указанные зависимости не допускаются"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:47
+msgid "Group by"
+msgstr "Группировать по"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:61
+msgid "Show/Hide labels"
+msgstr "Показать/Скрыть метки"
+
+#: org/zkoss/ganttz/LeftTasksTreeRow.java:237
+#: org/zkoss/ganttz/LeftTasksTreeRow.java:244
+msgid "and no later than"
+msgstr "и не позже чем"
+
+#: org/zkoss/ganttz/Planner.java:607
+msgid "Hide critical path"
+msgstr "Скрыть критический путь"
+
+#: org/zkoss/ganttz/Planner.java:657
+msgid "Hide reported hours"
+msgstr "Скрыть затраченные часы"
+
+#: org/zkoss/ganttz/resourceload/ResourceLoadComponent.java:152
+msgid "See resource allocation"
+msgstr "Просмотр распределения ресурсов"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:78
+msgid "Show/Hide progress"
+msgstr "Показать/спрятать прогресс"
+
+#: org/zkoss/ganttz/data/resourceload/TimeLineRole.java:58
+msgid "Task"
+msgstr "Задача"
+
+#: org/zkoss/ganttz/Planner.java:602
+msgid "Show critical path"
+msgstr "Показать критический путь"
+
+#: org/zkoss/ganttz/LeftTasksTreeRow.java:235
+#: org/zkoss/ganttz/LeftTasksTreeRow.java:242
+msgid "The date you entered is invalid"
+msgstr "Введенная дата неверна"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:35
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:49
+msgid "Zoom"
+msgstr "Масштаб"
+
+#: org/zkoss/ganttz/resourceload/ResourceLoadComponent.java:199
+msgid "available effort: {0}, assigned effort: {1}"
+msgstr "доступный объем работ: {0}, назначенный объем работ: {1}"
+
+#: org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:90
+msgid "Generic allocation criteria"
+msgstr "Критерии общего распределения"
+
+#: org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:501
+msgid "filtering by name"
+msgstr "фильтрация по имени"
+
+#: org/zkoss/ganttz/timetracker/TimeTracker.java:232
+msgid "changing zoom"
+msgstr "изменение масштаба"
+
+#: org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:89
+msgid "Resources"
+msgstr "Ресурсы"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:85
+msgid "Show/Hide reported hours"
+msgstr "Показать/Скрыть сообщенные часы"
+
+#: org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:97
+msgid "Hour"
+msgstr "Час"
+
+#: org/zkoss/ganttz/Planner.java:639
+msgid "Hide progress"
+msgstr "Спрятать шкалу развития"
+
+#: org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:45
+msgid "Quarter"
+msgstr "Квартал"
+
+#: org/zkoss/ganttz/resourceload/ResourceLoadLeftPane.java:111
 msgid "See scheduling"
 msgstr "Просмотр планирования"
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:489
-msgid "filtering by name"
-msgstr "фильтрация по имени"
+#: org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:467
+msgid "Show all elements"
+msgstr "Посмотреть все элементы"
+
+#: org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:150
+msgid "showing criteria"
+msgstr "показаны критерии"
+
+#: org/zkoss/ganttz/data/resourceload/TimeLineRole.java:58
+msgid "None"
+msgstr "Ничто"
+
+#: org/zkoss/ganttz/Planner.java:291
+msgid "decreasing zoom"
+msgstr "уменьшить масштаб"
+
+#: org/zkoss/ganttz/LeftTasksTreeRow.java:236
+#: org/zkoss/ganttz/LeftTasksTreeRow.java:243
+msgid "Please enter date not before"
+msgstr "Укажите дату не раньше"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:71
+msgid "Flatten/Unflatten tree"
+msgstr "Развернуть/Свернуть дерево"
+
+#: org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:466
+msgid "All"
+msgstr "Все"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/leftTasksTree.zul:28
+#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:67
+msgid "Name"
+msgstr "Наименование"
+
+#: org/zkoss/ganttz/resourceload/ResourceLoadComponent.java:193
+msgid "Load: {0}%"
+msgstr "Загрузка: {0}%"
+
+#: org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:71
+msgid "Week"
+msgstr "Неделя"
+
+#: org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:84
+msgid "Day"
+msgstr "День"
+
+#: org/zkoss/ganttz/TaskList.java:296
+msgid "Add Dependency"
+msgstr "Добавить зависимости"
+
+#: org/zkoss/ganttz/Planner.java:274
+msgid "increasing zoom"
+msgstr "увеличить масштаб"
+
+#: org/zkoss/ganttz/data/resourceload/TimeLineRole.java:64
+msgid "Criterion"
+msgstr "Критерий"
+
+#: org/zkoss/ganttz/data/resourceload/TimeLineRole.java:58
+msgid "Project"
+msgstr "Проект"
+
+#: org/zkoss/ganttz/Planner.java:652
+msgid "Show reported hours"
+msgstr "Показать затраченные часы"
+
+#: org/zkoss/ganttz/DependencyList.java:247
+msgid "Set End-Start"
+msgstr "Установить Конец-Начало"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:43
+msgid "Page"
+msgstr "Страница"
 
 #: ganttzk/src/main/resources/web/ganttz/zul/leftTasksTree.zul:30
 msgid "End"
 msgstr "Конец"
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/timetracker/TimeTracker.java:243
-msgid "changing zoom"
-msgstr "изменение масштаба"
+#: ganttzk/src/main/resources/web/ganttz/zul/leftTasksTree.zul:29
+msgid "Start"
+msgstr "Начало"
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:45
-msgid "Quarter"
-msgstr "Квартал"
-
-#: ganttzk/src/main/java/org/zkoss/ganttz/data/resourceload/TimeLineRole.java:58
-msgid "None"
-msgstr "Ничто"
-
-#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:44
-msgid "Filter"
-msgstr "Фильтр"
-
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:67
-msgid "Flatten/Unflatten tree"
-msgstr "Развернуть/Свернуть дерево"
-
-#: ganttzk/src/main/java/org/zkoss/ganttz/data/resourceload/TimeLineRole.java:58
-msgid "Project"
-msgstr "Проект"
-
-#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:51
-msgid "Name filter"
-msgstr "Наименование фильтра"
-
-#: ganttzk/src/main/resources/web/ganttz/zul/leftTasksTree.zul:28
-#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:69
-msgid "Name"
-msgstr "Наименование"
-
-#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:572
-msgid "Show progress"
-msgstr "Показать шкалу развития"
-
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:64
-msgid "Expand/Collapse all"
-msgstr "Развернуть/Свернуть все"
-
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:36
-msgid "Create Project"
-msgstr "Создать проект"
-
-#: ganttzk/src/main/java/org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:32
+#: org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:32
 msgid "Year"
 msgstr "Год"
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:145
-msgid "showing criteria"
-msgstr "показаны критерии"
+#: org/zkoss/ganttz/data/resourceload/TimeLineRole.java:58
+msgid "Worker"
+msgstr "Работник"
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:58
-msgid "Month"
-msgstr "Месяц"
+#: org/zkoss/ganttz/Planner.java:629
+msgid "Show progress"
+msgstr "Показать шкалу хода работ"
 
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:61
-msgid "Show/Hide resources"
-msgstr "Показать/Скрыть ресурсы"
+#: org/zkoss/ganttz/DependencyList.java:216
+#: org/zkoss/ganttz/DependencyList.java:235
+msgid "Erase"
+msgstr "Удалить"
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/DependencyList.java:246
-msgid "Set End-Start"
-msgstr "Установить Конец-Начало"
-
-#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:302
-msgid "decreasing zoom"
-msgstr "уменьшить масштаб"
-
-#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:559
-msgid "Hide critical path"
-msgstr "Скрыть критическую часть"
-
-#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:599
-msgid "Hide reported hours"
-msgstr "Скрыть затраченные часы"
-
-#: ganttzk/src/main/java/org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:84
-msgid "Day"
-msgstr "День"
-
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:55
-msgid "Show/Hide Critical path"
-msgstr "Показать/Скрыть критическую часть"
-
-#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:142
+#: org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:147
 msgid "showing resources"
-msgstr "Показать ресурсы"
-
-#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourceLoadComponent.java:184
-msgid "Load: {0}%"
-msgstr "Загрузка: {0}%"
+msgstr "показаны ресурсы"
 
 #: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:58
-msgid "Show/Hide labels"
-msgstr "Показать/Скрыть метки"
-
-#: ganttzk/src/main/java/org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:97
-msgid "Hour"
-msgstr "Час"
-
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:114
-#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:92
-msgid "Graphics"
-msgstr "Графика"
-
-#: ganttzk/src/main/java/org/zkoss/ganttz/DependencyList.java:250
-msgid "Set Start-Start"
-msgstr "Установить Начало-Начало"
-
-#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourceLoadComponent.java:143
-msgid "See resource allocation"
-msgstr "Просмотр распределения ресурсов"
-
-#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:285
-msgid "increasing zoom"
-msgstr "увеличить масштаб"
-
-#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:455
-msgid "Show all elements"
-msgstr "Посмотреть все элементы"
-
-#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:454
-msgid "All"
-msgstr "Все"
+msgid "Show/Hide critical path"
+msgstr "Показать/Скрыть критический путь"
 
 #: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:38
 msgid "Refresh"
 msgstr "Обновить"
-
-#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:577
-msgid "Hide progress"
-msgstr "Спрятать шкалу развития"
-
-#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:554
-msgid "Show critical path"
-msgstr "Показать критическую часть"

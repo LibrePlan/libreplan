@@ -46,8 +46,12 @@ public enum Language {
     CZECH_LANGUAGE("Čeština", new Locale("cs")),
     GERMAN_LANGUAGE("Deutsch", new Locale("de")),
     CATALAN_LANGUAGE("Català", new Locale("ca")),
-    CHINESE_LANGUAGE("中文", new Locale("zh")),
+    CHINESE_LANGUAGE("中文", new Locale("zh_CN")),
     NORWEGIAN_LANGUAGE("Norwegian Bokmål", new Locale("nb"));
+    PERSIAN_LANGUAGE("پﺍﺮﺳی", new Locale("fa_IR"));
+    JAPANESE_LANGUAGE("日本語", new Locale("ja"));
+    PORTUGESE_BRAZIL_LANGUAGE("Portugese (Brazil) ", new Locale("pt_BR"));
+    SWEDISCH_LANGUAGE("Svenska", new Locale("sv_SE"));
 
     private final String displayName;
 

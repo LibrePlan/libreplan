@@ -1,0 +1,263 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# 
+# Translators:
+# Hideto Yoshida <Hideto.Yoshida@gmail.com>, 2014-2016
+# Hideto Yoshida <Hideto.Yoshida@gmail.com>, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version: LibrePlan\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-10-10 17:54+0200\n"
+"PO-Revision-Date: 2016-10-10 21:05+0000\n"
+"Last-Translator: Hideto Yoshida <Hideto.Yoshida@gmail.com>\n"
+"Language-Team: Japanese (http://www.transifex.com/rego/libreplan/language/ja/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ja\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: org/zkoss/ganttz/DependencyList.java:255
+msgid "Set End-End"
+msgstr "終了-終了"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:91
+msgid "Show/Hide money cost bar"
+msgstr "費用バーグラフの表示／非表示"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:67
+msgid "Expand/Collapse all"
+msgstr "すべて展開／縮小"
+
+#: org/zkoss/ganttz/Planner.java:675
+msgid "Hide money cost bar"
+msgstr "費用バーグラフの非表示"
+
+#: org/zkoss/ganttz/DependencyList.java:251
+msgid "Set Start-Start"
+msgstr "開始-開始"
+
+#: org/zkoss/ganttz/Planner.java:670
+msgid "Show money cost bar"
+msgstr "費用バーグラフの表示"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:44
+msgid "Print"
+msgstr "印刷"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:90
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:120
+msgid "Graphics"
+msgstr "グラフ"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:64
+msgid "Show/Hide resources"
+msgstr "リソースの表示／非表示"
+
+#: org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:58
+msgid "Month"
+msgstr "月"
+
+#: org/zkoss/ganttz/DependencyList.java:67
+msgid "The specified dependency is not allowed"
+msgstr "指定された依存関係は設定できません"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:47
+msgid "Group by"
+msgstr "グループ設定"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:61
+msgid "Show/Hide labels"
+msgstr "ラベルの表示／非表示"
+
+#: org/zkoss/ganttz/LeftTasksTreeRow.java:237
+#: org/zkoss/ganttz/LeftTasksTreeRow.java:244
+msgid "and no later than"
+msgstr "遅くともこれまでに"
+
+#: org/zkoss/ganttz/Planner.java:607
+msgid "Hide critical path"
+msgstr "クリティカルパスの非表示"
+
+#: org/zkoss/ganttz/Planner.java:657
+msgid "Hide reported hours"
+msgstr "報告時間数の非表示"
+
+#: org/zkoss/ganttz/resourceload/ResourceLoadComponent.java:152
+msgid "See resource allocation"
+msgstr "リソース配置の参照"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:78
+msgid "Show/Hide progress"
+msgstr "進捗の表示／非表示"
+
+#: org/zkoss/ganttz/data/resourceload/TimeLineRole.java:58
+msgid "Task"
+msgstr "タスク"
+
+#: org/zkoss/ganttz/Planner.java:602
+msgid "Show critical path"
+msgstr "クリティカルパスの表示"
+
+#: org/zkoss/ganttz/LeftTasksTreeRow.java:235
+#: org/zkoss/ganttz/LeftTasksTreeRow.java:242
+msgid "The date you entered is invalid"
+msgstr "入力した日付が無効です"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:35
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:49
+msgid "Zoom"
+msgstr "ズーム"
+
+#: org/zkoss/ganttz/resourceload/ResourceLoadComponent.java:199
+msgid "available effort: {0}, assigned effort: {1}"
+msgstr "最大工数:{0}, 設定工数:{1}"
+
+#: org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:90
+msgid "Generic allocation criteria"
+msgstr "総称型割付の基準"
+
+#: org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:501
+msgid "filtering by name"
+msgstr "名称によるフィルタ"
+
+#: org/zkoss/ganttz/timetracker/TimeTracker.java:232
+msgid "changing zoom"
+msgstr "拡大／縮小"
+
+#: org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:89
+msgid "Resources"
+msgstr "リソース"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:85
+msgid "Show/Hide reported hours"
+msgstr "報告時間数の表示／非表示"
+
+#: org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:97
+msgid "Hour"
+msgstr "時"
+
+#: org/zkoss/ganttz/Planner.java:639
+msgid "Hide progress"
+msgstr "進捗の非表示"
+
+#: org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:45
+msgid "Quarter"
+msgstr "四半期"
+
+#: org/zkoss/ganttz/resourceload/ResourceLoadLeftPane.java:111
+msgid "See scheduling"
+msgstr "スケジュール参照"
+
+#: org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:467
+msgid "Show all elements"
+msgstr "すべて表示"
+
+#: org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:150
+msgid "showing criteria"
+msgstr "基準の表示"
+
+#: org/zkoss/ganttz/data/resourceload/TimeLineRole.java:58
+msgid "None"
+msgstr "なし"
+
+#: org/zkoss/ganttz/Planner.java:291
+msgid "decreasing zoom"
+msgstr "ズームアウト"
+
+#: org/zkoss/ganttz/LeftTasksTreeRow.java:236
+#: org/zkoss/ganttz/LeftTasksTreeRow.java:243
+msgid "Please enter date not before"
+msgstr "最早開始日を入力してください"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:71
+msgid "Flatten/Unflatten tree"
+msgstr "ツリーのフラット化／非フラット化"
+
+#: org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:466
+msgid "All"
+msgstr "すべて"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/leftTasksTree.zul:28
+#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:67
+msgid "Name"
+msgstr "名称"
+
+#: org/zkoss/ganttz/resourceload/ResourceLoadComponent.java:193
+msgid "Load: {0}%"
+msgstr "負荷率:{0}%"
+
+#: org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:71
+msgid "Week"
+msgstr "週"
+
+#: org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:84
+msgid "Day"
+msgstr "日"
+
+#: org/zkoss/ganttz/TaskList.java:296
+msgid "Add Dependency"
+msgstr "依存性を追加"
+
+#: org/zkoss/ganttz/Planner.java:274
+msgid "increasing zoom"
+msgstr "ズームイン"
+
+#: org/zkoss/ganttz/data/resourceload/TimeLineRole.java:64
+msgid "Criterion"
+msgstr "基準"
+
+#: org/zkoss/ganttz/data/resourceload/TimeLineRole.java:58
+msgid "Project"
+msgstr "プロジェクト"
+
+#: org/zkoss/ganttz/Planner.java:652
+msgid "Show reported hours"
+msgstr "報告時間数の表示"
+
+#: org/zkoss/ganttz/DependencyList.java:247
+msgid "Set End-Start"
+msgstr "終了-開始"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:43
+msgid "Page"
+msgstr "ページ"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/leftTasksTree.zul:30
+msgid "End"
+msgstr "終了"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/leftTasksTree.zul:29
+msgid "Start"
+msgstr "開始"
+
+#: org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:32
+msgid "Year"
+msgstr "年"
+
+#: org/zkoss/ganttz/data/resourceload/TimeLineRole.java:58
+msgid "Worker"
+msgstr "ワーカー"
+
+#: org/zkoss/ganttz/Planner.java:629
+msgid "Show progress"
+msgstr "進捗の表示"
+
+#: org/zkoss/ganttz/DependencyList.java:216
+#: org/zkoss/ganttz/DependencyList.java:235
+msgid "Erase"
+msgstr "削除"
+
+#: org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:147
+msgid "showing resources"
+msgstr "リソースの表示"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:58
+msgid "Show/Hide critical path"
+msgstr "クリティカルパスの表示／非表示"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:38
+msgid "Refresh"
+msgstr "更新"

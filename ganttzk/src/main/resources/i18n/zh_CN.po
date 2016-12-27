@@ -1,0 +1,267 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# 
+# Translators:
+# spaceship <lacidophilin@yahoo.com>, 2013
+# Pernus Bernus <tom9383@gmail.com>, 2016
+# spaceship <lacidophilin@yahoo.com>, 2013
+# spaceship <lacidophilin@yahoo.com>, 2013
+# tigergm <tigergm@gmail.com>, 2013
+# Zamba Lee <zambalee@gmail.com>, 2016
+msgid ""
+msgstr ""
+"Project-Id-Version: LibrePlan\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-10-10 17:54+0200\n"
+"PO-Revision-Date: 2016-11-21 16:21+0000\n"
+"Last-Translator: Pernus Bernus <tom9383@gmail.com>\n"
+"Language-Team: Chinese (China) (http://www.transifex.com/rego/libreplan/language/zh_CN/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_CN\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: org/zkoss/ganttz/DependencyList.java:255
+msgid "Set End-End"
+msgstr "设置结束-结束"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:91
+msgid "Show/Hide money cost bar"
+msgstr "显示/隐藏资金成本栏"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:67
+msgid "Expand/Collapse all"
+msgstr "展开/折叠所有"
+
+#: org/zkoss/ganttz/Planner.java:675
+msgid "Hide money cost bar"
+msgstr "隐藏资金成本栏"
+
+#: org/zkoss/ganttz/DependencyList.java:251
+msgid "Set Start-Start"
+msgstr "设置开始-开始"
+
+#: org/zkoss/ganttz/Planner.java:670
+msgid "Show money cost bar"
+msgstr "显示资金成本栏"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:44
+msgid "Print"
+msgstr "打印"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:90
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:120
+msgid "Graphics"
+msgstr "图像"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:64
+msgid "Show/Hide resources"
+msgstr "显示/隐藏资源"
+
+#: org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:58
+msgid "Month"
+msgstr "月"
+
+#: org/zkoss/ganttz/DependencyList.java:67
+msgid "The specified dependency is not allowed"
+msgstr "指定的依赖不允许"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:47
+msgid "Group by"
+msgstr "分组"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:61
+msgid "Show/Hide labels"
+msgstr "显示/隐藏标签"
+
+#: org/zkoss/ganttz/LeftTasksTreeRow.java:237
+#: org/zkoss/ganttz/LeftTasksTreeRow.java:244
+msgid "and no later than"
+msgstr "不得晚于"
+
+#: org/zkoss/ganttz/Planner.java:607
+msgid "Hide critical path"
+msgstr "隐藏关键路径"
+
+#: org/zkoss/ganttz/Planner.java:657
+msgid "Hide reported hours"
+msgstr "隐藏报告小时"
+
+#: org/zkoss/ganttz/resourceload/ResourceLoadComponent.java:152
+msgid "See resource allocation"
+msgstr "查看资源分配"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:78
+msgid "Show/Hide progress"
+msgstr "显示/隐藏进度"
+
+#: org/zkoss/ganttz/data/resourceload/TimeLineRole.java:58
+msgid "Task"
+msgstr "任务"
+
+#: org/zkoss/ganttz/Planner.java:602
+msgid "Show critical path"
+msgstr "显示关键路径"
+
+#: org/zkoss/ganttz/LeftTasksTreeRow.java:235
+#: org/zkoss/ganttz/LeftTasksTreeRow.java:242
+msgid "The date you entered is invalid"
+msgstr "您输入的日期无效"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:35
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:49
+msgid "Zoom"
+msgstr "缩放"
+
+#: org/zkoss/ganttz/resourceload/ResourceLoadComponent.java:199
+msgid "available effort: {0}, assigned effort: {1}"
+msgstr "可用的付出：{0}，已分配付出：{1}"
+
+#: org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:90
+msgid "Generic allocation criteria"
+msgstr "通用的分配标准"
+
+#: org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:501
+msgid "filtering by name"
+msgstr "按名称过滤"
+
+#: org/zkoss/ganttz/timetracker/TimeTracker.java:232
+msgid "changing zoom"
+msgstr "更改缩放"
+
+#: org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:89
+msgid "Resources"
+msgstr "资源"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:85
+msgid "Show/Hide reported hours"
+msgstr "显示/隐藏报告工时"
+
+#: org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:97
+msgid "Hour"
+msgstr "工时"
+
+#: org/zkoss/ganttz/Planner.java:639
+msgid "Hide progress"
+msgstr "隐藏进度"
+
+#: org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:45
+msgid "Quarter"
+msgstr "季"
+
+#: org/zkoss/ganttz/resourceload/ResourceLoadLeftPane.java:111
+msgid "See scheduling"
+msgstr "查看日程"
+
+#: org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:467
+msgid "Show all elements"
+msgstr "显示所有元素"
+
+#: org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:150
+msgid "showing criteria"
+msgstr "显示标准"
+
+#: org/zkoss/ganttz/data/resourceload/TimeLineRole.java:58
+msgid "None"
+msgstr "无"
+
+#: org/zkoss/ganttz/Planner.java:291
+msgid "decreasing zoom"
+msgstr "缩小"
+
+#: org/zkoss/ganttz/LeftTasksTreeRow.java:236
+#: org/zkoss/ganttz/LeftTasksTreeRow.java:243
+msgid "Please enter date not before"
+msgstr ""
+
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:71
+msgid "Flatten/Unflatten tree"
+msgstr "平铺/折叠"
+
+#: org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:466
+msgid "All"
+msgstr "所有"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/leftTasksTree.zul:28
+#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:67
+msgid "Name"
+msgstr "名称"
+
+#: org/zkoss/ganttz/resourceload/ResourceLoadComponent.java:193
+msgid "Load: {0}%"
+msgstr "负载：{0}％"
+
+#: org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:71
+msgid "Week"
+msgstr "周"
+
+#: org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:84
+msgid "Day"
+msgstr "日"
+
+#: org/zkoss/ganttz/TaskList.java:296
+msgid "Add Dependency"
+msgstr "添加依赖"
+
+#: org/zkoss/ganttz/Planner.java:274
+msgid "increasing zoom"
+msgstr "放大"
+
+#: org/zkoss/ganttz/data/resourceload/TimeLineRole.java:64
+msgid "Criterion"
+msgstr "标准"
+
+#: org/zkoss/ganttz/data/resourceload/TimeLineRole.java:58
+msgid "Project"
+msgstr "项目"
+
+#: org/zkoss/ganttz/Planner.java:652
+msgid "Show reported hours"
+msgstr "显示报告工时"
+
+#: org/zkoss/ganttz/DependencyList.java:247
+msgid "Set End-Start"
+msgstr "设置结束-开始"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:43
+msgid "Page"
+msgstr "页"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/leftTasksTree.zul:30
+msgid "End"
+msgstr "结束"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/leftTasksTree.zul:29
+msgid "Start"
+msgstr "开始"
+
+#: org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:32
+msgid "Year"
+msgstr "年"
+
+#: org/zkoss/ganttz/data/resourceload/TimeLineRole.java:58
+msgid "Worker"
+msgstr "员工"
+
+#: org/zkoss/ganttz/Planner.java:629
+msgid "Show progress"
+msgstr "显示进度"
+
+#: org/zkoss/ganttz/DependencyList.java:216
+#: org/zkoss/ganttz/DependencyList.java:235
+msgid "Erase"
+msgstr "删除"
+
+#: org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:147
+msgid "showing resources"
+msgstr "显示资源"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:58
+msgid "Show/Hide critical path"
+msgstr "显示/隐藏关键路径"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:38
+msgid "Refresh"
+msgstr "刷新"

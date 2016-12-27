@@ -1,0 +1,264 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# 
+# Translators:
+# Nazanin <l.taghizadeh@sbu.ac.ir>, 2016
+# reza juzdani <hr_juzdani@sbu.ac.ir>, 2016
+# Sharifi <sharifi_translator@yahoo.com>, 2016
+msgid ""
+msgstr ""
+"Project-Id-Version: LibrePlan\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-10-10 17:54+0200\n"
+"PO-Revision-Date: 2016-10-31 10:50+0000\n"
+"Last-Translator: Sharifi <sharifi_translator@yahoo.com>\n"
+"Language-Team: Persian (Iran) (http://www.transifex.com/rego/libreplan/language/fa_IR/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fa_IR\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: org/zkoss/ganttz/DependencyList.java:255
+msgid "Set End-End"
+msgstr "تعیین خاتمه - خاتمه"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:91
+msgid "Show/Hide money cost bar"
+msgstr "نمایش/پنهان سازی نوار هزینه مالی"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:67
+msgid "Expand/Collapse all"
+msgstr "باز کردن/بستن همه"
+
+#: org/zkoss/ganttz/Planner.java:675
+msgid "Hide money cost bar"
+msgstr "پنهان سازی نوار هزینه مالی"
+
+#: org/zkoss/ganttz/DependencyList.java:251
+msgid "Set Start-Start"
+msgstr "تعیین شروع-شروع"
+
+#: org/zkoss/ganttz/Planner.java:670
+msgid "Show money cost bar"
+msgstr "نمایش نوار هزینه مالی"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:44
+msgid "Print"
+msgstr "چاپ"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:90
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:120
+msgid "Graphics"
+msgstr "گرافیک"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:64
+msgid "Show/Hide resources"
+msgstr "نمایش/پنهان سازی منابع"
+
+#: org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:58
+msgid "Month"
+msgstr "ماه"
+
+#: org/zkoss/ganttz/DependencyList.java:67
+msgid "The specified dependency is not allowed"
+msgstr "وابستگی تعیین شده مجاز نیست"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:47
+msgid "Group by"
+msgstr "گروه بندی بر اساس"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:61
+msgid "Show/Hide labels"
+msgstr "نمایش/پنهان سازی برچسب ها"
+
+#: org/zkoss/ganttz/LeftTasksTreeRow.java:237
+#: org/zkoss/ganttz/LeftTasksTreeRow.java:244
+msgid "and no later than"
+msgstr "و نه دیرتر از"
+
+#: org/zkoss/ganttz/Planner.java:607
+msgid "Hide critical path"
+msgstr "پنهان سازی مسیر بحرانی"
+
+#: org/zkoss/ganttz/Planner.java:657
+msgid "Hide reported hours"
+msgstr "پنهان سازی ساعات گزارش شده"
+
+#: org/zkoss/ganttz/resourceload/ResourceLoadComponent.java:152
+msgid "See resource allocation"
+msgstr "مشاهده تخصیص منابع"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:78
+msgid "Show/Hide progress"
+msgstr "نمایش/پنهان سازی پشرفت"
+
+#: org/zkoss/ganttz/data/resourceload/TimeLineRole.java:58
+msgid "Task"
+msgstr "وظیفه"
+
+#: org/zkoss/ganttz/Planner.java:602
+msgid "Show critical path"
+msgstr "نمایش مسیر بحرانی"
+
+#: org/zkoss/ganttz/LeftTasksTreeRow.java:235
+#: org/zkoss/ganttz/LeftTasksTreeRow.java:242
+msgid "The date you entered is invalid"
+msgstr "تاریخی که وارد کرده اید معتبر نیست"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:35
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:49
+msgid "Zoom"
+msgstr "بزرگنمایی"
+
+#: org/zkoss/ganttz/resourceload/ResourceLoadComponent.java:199
+msgid "available effort: {0}, assigned effort: {1}"
+msgstr "اقدام موجود: {0}، اقدام واگذار شده: {1}"
+
+#: org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:90
+msgid "Generic allocation criteria"
+msgstr "شرایط عمومی تخصیص"
+
+#: org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:501
+msgid "filtering by name"
+msgstr "در حال فیلترسازی بر اساس نام"
+
+#: org/zkoss/ganttz/timetracker/TimeTracker.java:232
+msgid "changing zoom"
+msgstr "در حال تغییر بزرگنمایی"
+
+#: org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:89
+msgid "Resources"
+msgstr "منابع"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:85
+msgid "Show/Hide reported hours"
+msgstr "نمایش/پنهان سازی ساعات گزارش شده"
+
+#: org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:97
+msgid "Hour"
+msgstr "ساعت"
+
+#: org/zkoss/ganttz/Planner.java:639
+msgid "Hide progress"
+msgstr "پنهان سازی پیشرفت"
+
+#: org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:45
+msgid "Quarter"
+msgstr "فصل"
+
+#: org/zkoss/ganttz/resourceload/ResourceLoadLeftPane.java:111
+msgid "See scheduling"
+msgstr "مشاهده زمانبندی"
+
+#: org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:467
+msgid "Show all elements"
+msgstr "نمایش همه عناصر"
+
+#: org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:150
+msgid "showing criteria"
+msgstr "در حال نمایش شرایط"
+
+#: org/zkoss/ganttz/data/resourceload/TimeLineRole.java:58
+msgid "None"
+msgstr "                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    هیچ یک"
+
+#: org/zkoss/ganttz/Planner.java:291
+msgid "decreasing zoom"
+msgstr "در حال کاهش بزرگنمایی"
+
+#: org/zkoss/ganttz/LeftTasksTreeRow.java:236
+#: org/zkoss/ganttz/LeftTasksTreeRow.java:243
+msgid "Please enter date not before"
+msgstr "لطفا تاریخ را وارد کنید نه قبل از"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:71
+msgid "Flatten/Unflatten tree"
+msgstr "تسطیح / عدم تسطیح درخت"
+
+#: org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:466
+msgid "All"
+msgstr "همه"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/leftTasksTree.zul:28
+#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:67
+msgid "Name"
+msgstr "نام"
+
+#: org/zkoss/ganttz/resourceload/ResourceLoadComponent.java:193
+msgid "Load: {0}%"
+msgstr "بارگذاری: [0]%"
+
+#: org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:71
+msgid "Week"
+msgstr "هفته"
+
+#: org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:84
+msgid "Day"
+msgstr "روز"
+
+#: org/zkoss/ganttz/TaskList.java:296
+msgid "Add Dependency"
+msgstr "افزودن وابستگی"
+
+#: org/zkoss/ganttz/Planner.java:274
+msgid "increasing zoom"
+msgstr "در حال افزایش بزرگنمایی"
+
+#: org/zkoss/ganttz/data/resourceload/TimeLineRole.java:64
+msgid "Criterion"
+msgstr "معیار"
+
+#: org/zkoss/ganttz/data/resourceload/TimeLineRole.java:58
+msgid "Project"
+msgstr "پروژه"
+
+#: org/zkoss/ganttz/Planner.java:652
+msgid "Show reported hours"
+msgstr "نمایش ساعات گزارش شده"
+
+#: org/zkoss/ganttz/DependencyList.java:247
+msgid "Set End-Start"
+msgstr "تعیین خاتمه - شروع"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:43
+msgid "Page"
+msgstr "صفحه"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/leftTasksTree.zul:30
+msgid "End"
+msgstr "خاتمه"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/leftTasksTree.zul:29
+msgid "Start"
+msgstr "شروع"
+
+#: org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:32
+msgid "Year"
+msgstr "سال"
+
+#: org/zkoss/ganttz/data/resourceload/TimeLineRole.java:58
+msgid "Worker"
+msgstr "مجری"
+
+#: org/zkoss/ganttz/Planner.java:629
+msgid "Show progress"
+msgstr "نمایش پیشرفت"
+
+#: org/zkoss/ganttz/DependencyList.java:216
+#: org/zkoss/ganttz/DependencyList.java:235
+msgid "Erase"
+msgstr "پاک کردن"
+
+#: org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:147
+msgid "showing resources"
+msgstr "در حال نمایش منابع"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:58
+msgid "Show/Hide critical path"
+msgstr "نمایش/پنهان سازی مسیر بحرانی"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:38
+msgid "Refresh"
+msgstr "باز آمد کردن"
