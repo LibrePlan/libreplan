@@ -716,7 +716,7 @@ msgid "Move"
 msgstr "حرکت"
 
 #: libreplan-webapp/src/main/webapp/orders/_jiraSyncInfo.zul:20
-msgid "LibrePlan: Jira synchronization info"
+msgid "LibrePlan: JIRA synchronization info"
 msgstr "لیبرپلن: اطلاعات همگام سازی JIRA"
 
 #: org/libreplan/web/common/components/finders/OrderFilterEnum.java:31
@@ -2906,7 +2906,7 @@ msgid "The same resource is assigned twice inside an interval"
 msgstr "منبع یکسان در یک بازه دو بار منتسب شده است"
 
 #: libreplan-business/src/main/java/org/libreplan/business/workreports/entities/WorkReport.java:263
-msgid "label type:the timesheet have not assigned this label type"
+msgid "label type: the timesheet have not assigned this label type"
 msgstr "نوع برچسب: برگه زمانی به این نوع برچسب منتسب نشده است"
 
 #: libreplan-webapp/src/main/webapp/typeofworkhours/typeOfWorkHours.zul:23
@@ -4773,7 +4773,7 @@ msgid ""
 msgstr "مقدار روزهای کاری اصلی [0] هنگامی که تلفیق انجام شده قابل ویرایش نیست"
 
 #: libreplan-webapp/src/main/webapp/orders/components/_jiraOrderElementSync.zul:22
-msgid "Jira sync information"
+msgid "JIRA sync information"
 msgstr "همگام سازی اطلاعات JIRA"
 
 #: org/libreplan/web/common/CustomMenuController.java:482
@@ -5760,7 +5760,7 @@ msgid "Edit Calendar"
 msgstr "ویرایش تقویم"
 
 #: org/libreplan/web/calendars/BaseCalendarEditionController.java:1411
-msgid "End date can only be deleted in the the last activation"
+msgid "End date can only be deleted in the last activation"
 msgstr "تاریخ خاتمه تنها در آخرین فعال سازی قابل حذف است"
 
 #: libreplan-business/src/main/java/org/libreplan/business/common/entities/Configuration.java:191
@@ -6720,7 +6720,7 @@ msgid "Task Code"
 msgstr "کد وظیفه"
 
 #: libreplan-business/src/main/java/org/libreplan/business/advance/entities/DirectAdvanceAssignment.java:226
-msgid "maxixum value of percentage progress type must be 100"
+msgid "maximum value of percentagee progress type must be 100"
 msgstr "مقدار بیشینه درصد نوع پیشرفت باید 100 باشد"
 
 #: libreplan-business/src/main/java/org/libreplan/business/workreports/valueobjects/DescriptionField.java:80

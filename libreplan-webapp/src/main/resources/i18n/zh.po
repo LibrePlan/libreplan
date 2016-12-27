@@ -1328,7 +1328,7 @@ msgid "Split new assignment"
 msgstr "分割新任务"
 
 #: libreplan-business/src/main/java/org/libreplan/business/advance/entities/DirectAdvanceAssignment.java:226
-msgid "maxixum value of percentage progress type must be 100"
+msgid "maximum value of percentagee progress type must be 100"
 msgstr "maxixum进度百分比值的类型必须是100"
 
 #: libreplan-webapp/src/main/webapp/myaccount/personalTimesheet.zul:84
@@ -1625,7 +1625,7 @@ msgid "worker's first name not specified"
 msgstr "没有指定工人的名字"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/calendars/BaseCalendarEditionController.java:1411
-msgid "End date can only be deleted in the the last activation"
+msgid "End date can only be deleted in the last activation"
 msgstr "结束日期只能被删除的最后一个激活"
 
 #: libreplan-webapp/src/main/webapp/common/configuration.zul:374
@@ -7782,7 +7782,7 @@ msgid "Number of iterations"
 msgstr "迭代次数。"
 
 #: libreplan-business/src/main/java/org/libreplan/business/workreports/entities/WorkReport.java:263
-msgid "label type:the timesheet have not assigned this label type"
+msgid "label type: the timesheet have not assigned this label type"
 msgstr "标签类型：时间表已指定了这个标签类型"
 
 #: libreplan-webapp/src/main/webapp/templates/_editTemplate.zul:42

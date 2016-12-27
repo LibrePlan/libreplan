@@ -715,7 +715,7 @@ msgid "Move"
 msgstr ""
 
 #: libreplan-webapp/src/main/webapp/orders/_jiraSyncInfo.zul:20
-msgid "LibrePlan: Jira synchronization info"
+msgid "LibrePlan: JIRA synchronization info"
 msgstr ""
 
 #: org/libreplan/web/common/components/finders/OrderFilterEnum.java:31
@@ -2905,7 +2905,7 @@ msgid "The same resource is assigned twice inside an interval"
 msgstr ""
 
 #: libreplan-business/src/main/java/org/libreplan/business/workreports/entities/WorkReport.java:263
-msgid "label type:the timesheet have not assigned this label type"
+msgid "label type: the timesheet have not assigned this label type"
 msgstr ""
 
 #: libreplan-webapp/src/main/webapp/typeofworkhours/typeOfWorkHours.zul:23
@@ -4772,7 +4772,7 @@ msgid ""
 msgstr ""
 
 #: libreplan-webapp/src/main/webapp/orders/components/_jiraOrderElementSync.zul:22
-msgid "Jira sync information"
+msgid "JIRA sync information"
 msgstr ""
 
 #: org/libreplan/web/common/CustomMenuController.java:482
@@ -5759,7 +5759,7 @@ msgid "Edit Calendar"
 msgstr ""
 
 #: org/libreplan/web/calendars/BaseCalendarEditionController.java:1411
-msgid "End date can only be deleted in the the last activation"
+msgid "End date can only be deleted in the last activation"
 msgstr ""
 
 #: libreplan-business/src/main/java/org/libreplan/business/common/entities/Configuration.java:191
@@ -6719,7 +6719,7 @@ msgid "Task Code"
 msgstr ""
 
 #: libreplan-business/src/main/java/org/libreplan/business/advance/entities/DirectAdvanceAssignment.java:226
-msgid "maxixum value of percentage progress type must be 100"
+msgid "maximum value of percentagee progress type must be 100"
 msgstr ""
 
 #: libreplan-business/src/main/java/org/libreplan/business/workreports/valueobjects/DescriptionField.java:80

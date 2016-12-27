@@ -1267,7 +1267,7 @@ public abstract class BaseCalendarEditionController extends GenericForwardCompos
                 if (baseCalendarModel.isLastActivationPeriod(calendarAvailability)) {
                     return null;
                 } else {
-                    throw new IllegalArgumentException(_("End date can only be deleted in the the last activation"));
+                    throw new IllegalArgumentException(_("End date can only be deleted in the last activation"));
                 }
             }
 

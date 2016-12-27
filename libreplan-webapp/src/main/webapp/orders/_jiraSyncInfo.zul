@@ -17,7 +17,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<window id="winJiraSyncInfo" title="${i18n:_('LibrePlan: Jira synchronization info')}"
+<window id="winJiraSyncInfo" title="${i18n:_('LibrePlan: JIRA synchronization info')}"
     width="500px" border="normal" mode="modal">
     <div  height="250px" style="overflow:auto">
         <vbox>

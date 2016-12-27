@@ -249,7 +249,7 @@ public class WorkReport extends IntegrationEntity implements IWorkReportsElement
     }
 
     @SuppressWarnings("unused")
-    @AssertTrue(message = "label type:the timesheet have not assigned this label type")
+    @AssertTrue(message = "label type: the timesheet have not assigned this label type")
     public boolean isAssignedLabelTypesConstraint() {
         if (this.workReportType == null) {
             return true;

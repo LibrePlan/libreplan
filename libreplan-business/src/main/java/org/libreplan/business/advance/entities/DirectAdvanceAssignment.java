@@ -221,7 +221,7 @@ public class DirectAdvanceAssignment extends AdvanceAssignment {
         return fake;
     }
 
-    @AssertTrue(message = "maxixum value of percentage progress type must be 100")
+    @AssertTrue(message = "maximum value of percentagee progress type must be 100")
     public boolean isMaxValueMustBe100ForPercentageConstraint() {
         AdvanceType advanceType = getAdvanceType();
         if ((advanceType != null) && (advanceType.getPercentage())) {
