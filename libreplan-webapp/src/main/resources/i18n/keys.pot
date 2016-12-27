@@ -825,7 +825,7 @@ msgid "finished not specified"
 msgstr ""
 
 #: libreplan-business/src/main/java/org/libreplan/business/advance/entities/DirectAdvanceAssignment.java:226
-msgid "maxixum value of percentage progress type must be 100"
+msgid "maximum value of percentage progress type must be 100"
 msgstr ""
 
 #: libreplan-webapp/src/main/webapp/common/layout/login.zul:142
@@ -2418,7 +2418,7 @@ msgid "Indent selected task"
 msgstr ""
 
 #: libreplan-webapp/src/main/webapp/orders/components/_jiraOrderElementSync.zul:22
-msgid "Jira sync information"
+msgid "JIRA sync information"
 msgstr ""
 
 #: org/libreplan/web/planner/allocation/AdvancedAllocationController.java:942
@@ -2634,7 +2634,7 @@ msgid "User already bound to other worker"
 msgstr ""
 
 #: org/libreplan/web/calendars/BaseCalendarEditionController.java:1411
-msgid "End date can only be deleted in the the last activation"
+msgid "End date can only be deleted in the last activation"
 msgstr ""
 
 #: libreplan-business/src/main/java/org/libreplan/business/advance/entities/AdvanceType.java:221
@@ -5880,7 +5880,7 @@ msgid ""
 msgstr ""
 
 #: libreplan-webapp/src/main/webapp/orders/_jiraSyncInfo.zul:20
-msgid "LibrePlan: Jira synchronization info"
+msgid "JIRA synchronization info"
 msgstr ""
 
 #: libreplan-webapp/src/main/webapp/workreports/workReport.zul:236
@@ -7247,7 +7247,7 @@ msgid "This project has already been added."
 msgstr ""
 
 #: libreplan-business/src/main/java/org/libreplan/business/workreports/entities/WorkReport.java:263
-msgid "label type:the timesheet have not assigned this label type"
+msgid "label type: the timesheet have not assigned this label type"
 msgstr ""
 
 #: libreplan-webapp/src/main/webapp/planner/_legendLoadChartOrder.zul:32

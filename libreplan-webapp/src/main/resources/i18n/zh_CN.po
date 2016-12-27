@@ -723,7 +723,7 @@ msgid "Move"
 msgstr "移动"
 
 #: libreplan-webapp/src/main/webapp/orders/_jiraSyncInfo.zul:20
-msgid "LibrePlan: Jira synchronization info"
+msgid "JIRA synchronization info"
 msgstr "LibrePlan：Jira同步信息"
 
 #: org/libreplan/web/common/components/finders/OrderFilterEnum.java:31
@@ -2913,7 +2913,7 @@ msgid "The same resource is assigned twice inside an interval"
 msgstr "相同的资源被分配的时间间隔内两次"
 
 #: libreplan-business/src/main/java/org/libreplan/business/workreports/entities/WorkReport.java:263
-msgid "label type:the timesheet have not assigned this label type"
+msgid "label type: the timesheet have not assigned this label type"
 msgstr "标签类型：工时表还未指定这个标签类型"
 
 #: libreplan-webapp/src/main/webapp/typeofworkhours/typeOfWorkHours.zul:23
@@ -4780,7 +4780,7 @@ msgid ""
 msgstr "原来的可作业天数的价值{0}不能被修改，因为它有合并"
 
 #: libreplan-webapp/src/main/webapp/orders/components/_jiraOrderElementSync.zul:22
-msgid "Jira sync information"
+msgid "JIRA sync information"
 msgstr "Jira同步信息"
 
 #: org/libreplan/web/common/CustomMenuController.java:482
@@ -5767,7 +5767,7 @@ msgid "Edit Calendar"
 msgstr "编辑日历"
 
 #: org/libreplan/web/calendars/BaseCalendarEditionController.java:1411
-msgid "End date can only be deleted in the the last activation"
+msgid "End date can only be deleted in the last activation"
 msgstr "结束日期只能在最后的激活中删除"
 
 #: libreplan-business/src/main/java/org/libreplan/business/common/entities/Configuration.java:191
@@ -6727,7 +6727,7 @@ msgid "Task Code"
 msgstr "任务代码"
 
 #: libreplan-business/src/main/java/org/libreplan/business/advance/entities/DirectAdvanceAssignment.java:226
-msgid "maxixum value of percentage progress type must be 100"
+msgid "maximum value of percentage progress type must be 100"
 msgstr "进度百分比值的类型的最大值必须是100"
 
 #: libreplan-business/src/main/java/org/libreplan/business/workreports/valueobjects/DescriptionField.java:80

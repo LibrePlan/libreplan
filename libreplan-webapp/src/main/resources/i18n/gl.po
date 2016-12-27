@@ -719,7 +719,7 @@ msgid "Move"
 msgstr "Mover"
 
 #: libreplan-webapp/src/main/webapp/orders/_jiraSyncInfo.zul:20
-msgid "LibrePlan: Jira synchronization info"
+msgid "JIRA synchronization info"
 msgstr "LibrePlan: Información de sincronización Jira"
 
 #: org/libreplan/web/common/components/finders/OrderFilterEnum.java:31
@@ -2909,7 +2909,7 @@ msgid "The same resource is assigned twice inside an interval"
 msgstr "O mesmo recurso está asignado dúas veces dentro do intervalo"
 
 #: libreplan-business/src/main/java/org/libreplan/business/workreports/entities/WorkReport.java:263
-msgid "label type:the timesheet have not assigned this label type"
+msgid "label type: the timesheet have not assigned this label type"
 msgstr "o parte de traballo non ten asignado este tipo de etiqueta"
 
 #: libreplan-webapp/src/main/webapp/typeofworkhours/typeOfWorkHours.zul:23
@@ -4776,7 +4776,7 @@ msgid ""
 msgstr "O valor orixinal de días laborais {0} non se pode modificar porque ten consolidacións"
 
 #: libreplan-webapp/src/main/webapp/orders/components/_jiraOrderElementSync.zul:22
-msgid "Jira sync information"
+msgid "JIRA sync information"
 msgstr "Información de sincronización con Jira"
 
 #: org/libreplan/web/common/CustomMenuController.java:482
@@ -5763,7 +5763,7 @@ msgid "Edit Calendar"
 msgstr "Editar calendario"
 
 #: org/libreplan/web/calendars/BaseCalendarEditionController.java:1411
-msgid "End date can only be deleted in the the last activation"
+msgid "End date can only be deleted in the last activation"
 msgstr "A data de fin só se pode borrar no último período de activación"
 
 #: libreplan-business/src/main/java/org/libreplan/business/common/entities/Configuration.java:191
@@ -6723,7 +6723,7 @@ msgid "Task Code"
 msgstr "Código da tarefa"
 
 #: libreplan-business/src/main/java/org/libreplan/business/advance/entities/DirectAdvanceAssignment.java:226
-msgid "maxixum value of percentage progress type must be 100"
+msgid "maximum value of percentage progress type must be 100"
 msgstr "o valor máximo do tipo de progreso porcentaxe debe ser 100"
 
 #: libreplan-business/src/main/java/org/libreplan/business/workreports/valueobjects/DescriptionField.java:80
