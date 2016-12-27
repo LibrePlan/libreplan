@@ -723,7 +723,7 @@ msgid "Move"
 msgstr "Mover"
 
 #: libreplan-webapp/src/main/webapp/orders/_jiraSyncInfo.zul:20
-msgid "JIRA synchronization info"
+msgid "LibrePlan: JIRA synchronization info"
 msgstr "LibrePlan: información de sincronización Jira"
 
 #: org/libreplan/web/common/components/finders/OrderFilterEnum.java:31
