@@ -717,7 +717,7 @@ msgid "Move"
 msgstr "Muovi"
 
 #: libreplan-webapp/src/main/webapp/orders/_jiraSyncInfo.zul:20
-msgid "LibrePlan: Jira synchronization info"
+msgid "LibrePlan: JIRA synchronization info"
 msgstr "LibrePlan: Informazioni di sincronizzazione con JIRA"
 
 #: org/libreplan/web/common/components/finders/OrderFilterEnum.java:31
@@ -2907,7 +2907,7 @@ msgid "The same resource is assigned twice inside an interval"
 msgstr "La stessa risorsa è assegnata due volte in un intervallo"
 
 #: libreplan-business/src/main/java/org/libreplan/business/workreports/entities/WorkReport.java:263
-msgid "label type:the timesheet have not assigned this label type"
+msgid "label type: the timesheet have not assigned this label type"
 msgstr "tipo d'etichetta: il foglio ore non ha assegnato questo tipo di etichetta"
 
 #: libreplan-webapp/src/main/webapp/typeofworkhours/typeOfWorkHours.zul:23
@@ -4774,7 +4774,7 @@ msgid ""
 msgstr "Il numero di giorni {0} nella tabella di lavoro non può essere modificato perché ci sono dei consolidamenti"
 
 #: libreplan-webapp/src/main/webapp/orders/components/_jiraOrderElementSync.zul:22
-msgid "Jira sync information"
+msgid "JIRA sync information"
 msgstr "Informazioni di sincronizzazione con JIRA"
 
 #: org/libreplan/web/common/CustomMenuController.java:482
@@ -5761,7 +5761,7 @@ msgid "Edit Calendar"
 msgstr "Modifica calendario"
 
 #: org/libreplan/web/calendars/BaseCalendarEditionController.java:1411
-msgid "End date can only be deleted in the the last activation"
+msgid "End date can only be deleted in the last activation"
 msgstr "La data di fine può essere eliminata solo nell'ultima attivazione"
 
 #: libreplan-business/src/main/java/org/libreplan/business/common/entities/Configuration.java:191
@@ -6721,7 +6721,7 @@ msgid "Task Code"
 msgstr "Codice compito"
 
 #: libreplan-business/src/main/java/org/libreplan/business/advance/entities/DirectAdvanceAssignment.java:226
-msgid "maxixum value of percentage progress type must be 100"
+msgid "maximum value of percentage progress type must be 100"
 msgstr "il valore massimo della percentuale di progresso è 100"
 
 #: libreplan-business/src/main/java/org/libreplan/business/workreports/valueobjects/DescriptionField.java:80

@@ -716,7 +716,7 @@ msgid "Move"
 msgstr "Moure"
 
 #: libreplan-webapp/src/main/webapp/orders/_jiraSyncInfo.zul:20
-msgid "LibrePlan: Jira synchronization info"
+msgid "LibrePlan: JIRA synchronization info"
 msgstr "LibrePlan: Info Sincronització JIRA"
 
 #: org/libreplan/web/common/components/finders/OrderFilterEnum.java:31
@@ -2906,7 +2906,7 @@ msgid "The same resource is assigned twice inside an interval"
 msgstr "El mateix recurs està assignat dos cops dins un interval"
 
 #: libreplan-business/src/main/java/org/libreplan/business/workreports/entities/WorkReport.java:263
-msgid "label type:the timesheet have not assigned this label type"
+msgid "label type: the timesheet have not assigned this label type"
 msgstr "tipus d'etiqueta: el full d'hores no té assignat aquest tipus d'etiqueta"
 
 #: libreplan-webapp/src/main/webapp/typeofworkhours/typeOfWorkHours.zul:23
@@ -4773,7 +4773,7 @@ msgid ""
 msgstr "El valor original de dies laborables {0} no pot ser modificat per tenir consolidacions"
 
 #: libreplan-webapp/src/main/webapp/orders/components/_jiraOrderElementSync.zul:22
-msgid "Jira sync information"
+msgid "JIRA sync information"
 msgstr "Sincronització de la informació de Jira"
 
 #: org/libreplan/web/common/CustomMenuController.java:482
@@ -5760,7 +5760,7 @@ msgid "Edit Calendar"
 msgstr "Editar Calendari"
 
 #: org/libreplan/web/calendars/BaseCalendarEditionController.java:1411
-msgid "End date can only be deleted in the the last activation"
+msgid "End date can only be deleted in the last activation"
 msgstr "Data finalització només pot ser eliminada en l'última activació"
 
 #: libreplan-business/src/main/java/org/libreplan/business/common/entities/Configuration.java:191
@@ -6720,7 +6720,7 @@ msgid "Task Code"
 msgstr "Codi de tasca"
 
 #: libreplan-business/src/main/java/org/libreplan/business/advance/entities/DirectAdvanceAssignment.java:226
-msgid "maxixum value of percentage progress type must be 100"
+msgid "maximum value of percentage progress type must be 100"
 msgstr "màxim valor del percentatge del tipus de progrés ha de ser 100"
 
 #: libreplan-business/src/main/java/org/libreplan/business/workreports/valueobjects/DescriptionField.java:80

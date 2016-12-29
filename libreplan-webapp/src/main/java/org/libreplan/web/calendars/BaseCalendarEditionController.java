@@ -1408,7 +1408,7 @@ public abstract class BaseCalendarEditionController extends
                     return null;
                 } else {
                     throw new IllegalArgumentException(
-                            _("End date can only be deleted in the the last activation"));
+                            _("End date can only be deleted in the last activation"));
                 }
             }
             return new LocalDate(endDate);

@@ -714,7 +714,7 @@ msgid "Move"
 msgstr "Flytt"
 
 #: libreplan-webapp/src/main/webapp/orders/_jiraSyncInfo.zul:20
-msgid "LibrePlan: Jira synchronization info"
+msgid "LibrePlan: JIRA synchronization info"
 msgstr "LibrePlan: Jira synkronisering info"
 
 #: org/libreplan/web/common/components/finders/OrderFilterEnum.java:31
@@ -2904,7 +2904,7 @@ msgid "The same resource is assigned twice inside an interval"
 msgstr "Den samme kilde er tilordnet to ganger inne i et intervall"
 
 #: libreplan-business/src/main/java/org/libreplan/business/workreports/entities/WorkReport.java:263
-msgid "label type:the timesheet have not assigned this label type"
+msgid "label type: the timesheet have not assigned this label type"
 msgstr "etikett Type: time har ikke fått tildelt denne type etikett"
 
 #: libreplan-webapp/src/main/webapp/typeofworkhours/typeOfWorkHours.zul:23
@@ -4771,7 +4771,7 @@ msgid ""
 msgstr "Den opprinnelige gjennomførbar dager verdien {0} kan ikke endres som den har konsolideringer"
 
 #: libreplan-webapp/src/main/webapp/orders/components/_jiraOrderElementSync.zul:22
-msgid "Jira sync information"
+msgid "JIRA sync information"
 msgstr "Jira sync informasjon"
 
 #: org/libreplan/web/common/CustomMenuController.java:482
@@ -5758,7 +5758,7 @@ msgid "Edit Calendar"
 msgstr "Rediger kalender"
 
 #: org/libreplan/web/calendars/BaseCalendarEditionController.java:1411
-msgid "End date can only be deleted in the the last activation"
+msgid "End date can only be deleted in the last activation"
 msgstr "Sluttdato kan bare bli slettet i det siste aktivering"
 
 #: libreplan-business/src/main/java/org/libreplan/business/common/entities/Configuration.java:191
@@ -6718,7 +6718,7 @@ msgid "Task Code"
 msgstr "Task Kode"
 
 #: libreplan-business/src/main/java/org/libreplan/business/advance/entities/DirectAdvanceAssignment.java:226
-msgid "maxixum value of percentage progress type must be 100"
+msgid "maximum value of percentage progress type must be 100"
 msgstr "Maksimal prosentverdi for progress er 100"
 
 #: libreplan-business/src/main/java/org/libreplan/business/workreports/valueobjects/DescriptionField.java:80

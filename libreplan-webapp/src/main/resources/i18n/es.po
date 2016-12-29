@@ -723,7 +723,7 @@ msgid "Move"
 msgstr "Mover"
 
 #: libreplan-webapp/src/main/webapp/orders/_jiraSyncInfo.zul:20
-msgid "LibrePlan: Jira synchronization info"
+msgid "LibrePlan: JIRA synchronization info"
 msgstr "LibrePlan: información de sincronización Jira"
 
 #: org/libreplan/web/common/components/finders/OrderFilterEnum.java:31
@@ -2913,7 +2913,7 @@ msgid "The same resource is assigned twice inside an interval"
 msgstr "El mismo recurso está asignado dos veces dentro del intervalo"
 
 #: libreplan-business/src/main/java/org/libreplan/business/workreports/entities/WorkReport.java:263
-msgid "label type:the timesheet have not assigned this label type"
+msgid "label type: the timesheet have not assigned this label type"
 msgstr "el parte de trabajo no tiene asignado este tipo de etiqueta"
 
 #: libreplan-webapp/src/main/webapp/typeofworkhours/typeOfWorkHours.zul:23
@@ -4780,7 +4780,7 @@ msgid ""
 msgstr "El valor original de días laborables {0} no se puede modificar porque tiene consolidaciones"
 
 #: libreplan-webapp/src/main/webapp/orders/components/_jiraOrderElementSync.zul:22
-msgid "Jira sync information"
+msgid "JIRA sync information"
 msgstr "Información de sincronización con Jira"
 
 #: org/libreplan/web/common/CustomMenuController.java:482
@@ -5767,7 +5767,7 @@ msgid "Edit Calendar"
 msgstr "Editar calendario"
 
 #: org/libreplan/web/calendars/BaseCalendarEditionController.java:1411
-msgid "End date can only be deleted in the the last activation"
+msgid "End date can only be deleted in the last activation"
 msgstr "La fecha de fin sólo se puede borrar en el último periodo de activación"
 
 #: libreplan-business/src/main/java/org/libreplan/business/common/entities/Configuration.java:191
@@ -6727,7 +6727,7 @@ msgid "Task Code"
 msgstr "Código de la tarea"
 
 #: libreplan-business/src/main/java/org/libreplan/business/advance/entities/DirectAdvanceAssignment.java:226
-msgid "maxixum value of percentage progress type must be 100"
+msgid "maximum value of percentage progress type must be 100"
 msgstr "el valor máximo del tipo de progreso porcentaje debe ser 100"
 
 #: libreplan-business/src/main/java/org/libreplan/business/workreports/valueobjects/DescriptionField.java:80

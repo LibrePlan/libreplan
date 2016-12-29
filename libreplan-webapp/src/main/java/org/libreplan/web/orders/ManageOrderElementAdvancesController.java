@@ -1237,7 +1237,7 @@ public class ManageOrderElementAdvancesController extends
                     && (advance.getAdvanceType().isReadOnly())) {
                 removeButton.setDisabled(true);
                 removeButton
-                        .setTooltiptext(_("This progress type cannot cannot be removed"));
+                        .setTooltiptext(_("This progress type cannot be removed"));
             } else if (advance.isFake()) {
                 removeButton.setDisabled(true);
                 removeButton

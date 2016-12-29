@@ -19,7 +19,7 @@
 
 <groupbox id="jiraGroupBox"
     style="margin-top: 5px" closable="false">
-    <caption label="${i18n:_('Jira sync information')}" />
+    <caption label="${i18n:_('JIRA sync information')}" />
     <separator spacing="10px"/>
     <hbox width="100%">
         <separator spacing="10px" width="100%"/>
