@@ -22,7 +22,7 @@ package org.libreplan.business.planner.entities;
 import static org.libreplan.business.i18n.I18nHelper._;
 
 /**
- * Enumerate of {@Link Task} deadline violation statuses.
+ * Enumerate of {@link Task} deadline violation statuses.
  *
  * NO_DEADLINE: Task has no deadline set.
  * DEADLINE_VIOLATED: Task didn't finish on time.

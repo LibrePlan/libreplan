@@ -43,6 +43,9 @@ import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workingday.IntraDayDate;
 
 /**
+ * Represents a parent task which can hold child tasks.
+ * The project itself is also an {@link TaskGroup}.
+ *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Javier Moran Rua <jmoran@igalia.com>
  * @author Manuel Rego Casasnovas <rego@igalia.com>

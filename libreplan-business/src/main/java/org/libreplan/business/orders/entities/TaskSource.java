@@ -41,6 +41,8 @@ import org.libreplan.business.util.deepcopy.OnCopy;
 import org.libreplan.business.util.deepcopy.Strategy;
 
 /**
+ * This class is kind of data source for {@link TaskElement}
+ *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public class TaskSource extends BaseEntity {

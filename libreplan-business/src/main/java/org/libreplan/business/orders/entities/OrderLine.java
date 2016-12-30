@@ -43,6 +43,10 @@ import org.libreplan.business.planner.entities.DayAssignment.FilterType;
 import org.libreplan.business.requirements.entities.CriterionRequirement;
 import org.libreplan.business.templates.entities.OrderLineTemplate;
 
+/**
+ * Used in WBS (Work Breakdown Structure).
+ * Represents every task without children.
+ */
 public class OrderLine extends OrderElement {
 
     private HoursGroupOrderLineHandler hoursGroupOrderLineHandler = HoursGroupOrderLineHandler.getInstance();
