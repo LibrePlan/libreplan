@@ -19,6 +19,18 @@ CafédeRed Solutions, S.L.
 Copyright (C) 2012 Igalia, S.L.; Wireless Galicia, S.L.; CafédeRed Solutions,
 S.L.
 
+Copyright (C) 2013 Igalia, S.L.; Wireless Galicia, S.L.; CafédeRed Solutions,
+S.L.
+
+Copyright (C) 2014 i2rs, Igalia, S.L.; Wireless Galicia, S.L.; CafédeRed Solutions,
+S.L.
+
+Copyright (C) 2015 i2rs, Igalia, S.L.; Wireless Galicia, S.L.; CafédeRed Solutions,
+S.L.
+
+Copyright (C) 2016 i2rs, Igalia, S.L.; Wireless Galicia, S.L.; CafédeRed Solutions,
+S.L.
+
 
 Licence
 ========
@@ -42,6 +54,15 @@ Written by
 
 LibrePlan Team
 --------------
+* Jeroen Baten <sales@libreplan-enterprise.nl>
+* Bjorn Vos <sales@libreplan-enterprise.nl>
+* Edwin Zuijdendorp <edwin@glooni.com>
+* Philippe Poumaroux <philippe.poumaroux@free.fr>
+* Vova Perebykivskiy <vova235@gmail.com>
+* Paul Lunchyn <p.luchyn@gisua.com>
+
+Previous Team Members
+---------------------
 
 * Cristina Alvariño Pérez <cristina.alvarino@cafedered.es>
 * Jacobo Aragunde Pérez <jaragunde@igalia.com>
@@ -53,10 +74,6 @@ LibrePlan Team
 * Diego Pino García <dpino@igalia.com>
 * Manuel Rego Casasnovas <rego@igalia.com>
 * Lorenzo Tilve Álvaro <ltilve@igalia.com>
-
-Previous Team Members
----------------------
-
 * Fernando Bellas Permuy <fbellas@udc.es>
 * José María Casanova Crespo <jmcasanova@igalia.com>
 * Óscar González Fernández <ogonzalez@igalia.com>
@@ -89,6 +106,10 @@ Translators
 * [ru] Pavel Rudensky <prudensky@gmail.com>
 * [zh] Swanson Chan <lacidophilin@yahoo.com>
 * [nb] Kent Thoresen <kt@norwegianoceanpower.com>
+* [fa_IR] Leila Taghizadeh <l.taghizadeh@sbu.ac.ir>
+* [ja] Hideto Yoshida
+* [pt_BR] Ernani Gouvea, Vinicius Batista, aalmeida
+* [sv_SE] Joakim Lindqvist
 
 Contributors
 ------------

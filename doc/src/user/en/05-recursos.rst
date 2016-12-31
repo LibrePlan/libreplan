@@ -39,10 +39,10 @@ When users are in the editing option of a resource, they can access the followin
 
 1) Worker details tab. This tab lets users edit the basic ID details of workers.
 
-   * Name
-   * Surname(s)
-   * National ID document (DNI)
-   * Limiting resource (see section)
+   - First Name
+   - Surname(s)
+   - ID of worker
+   - Resource type (queue-based or not) (see section)
 
 
 .. figure:: images/worker-personal-data.png
@@ -52,15 +52,11 @@ When users are in the editing option of a resource, they can access the followin
 
 2) Criteria tab. This is where the criteria fulfilled by a worker can be configured. Users can assign any worker or generic criteria that they consider suitable to a worker. It is important that the workers fulfil criteria in order for the program to be used to its full extent. Users must do the following to assign criteria:
 
-   i. Click the "Add criteria" button.
-
-   ii. Search for the criterion to be added and select the most appropriate.
-
-   iii. Click the add button.
-
-   iv. Select the start date of the criterion when it becomes applicable.
-
-   v. Select the end date for applying the criterion to the resource. This date is not obligatory if the criterion is shown as being indefinite.
+   1. Click the "Add criteria" button.
+   2. Search for the criterion to be added and select the most appropriate.
+   3. Click the add button.
+   4. Select the start date of the criterion when it becomes applicable.
+   5. Select the end date for applying the criterion to the resource. This date is not obligatory if the criterion is shown as being indefinite.
 
 .. figure:: images/worker-criterions.png
    :scale: 50
@@ -94,11 +90,9 @@ When editing machines, the system shows a series of tabs that can be used to man
 
 1) Machine details tab. This tab can be used to edit the ID details of the machines. The details that can be changed on this tab are:
 
-   i Name.
-
-   ii Machine code.
-
-   iii Description of the machine.
+   - Name.
+   - Machine code.
+   - Description of the machine.
 
 
 .. figure:: images/machine-data.png
@@ -108,15 +102,11 @@ When editing machines, the system shows a series of tabs that can be used to man
 
 2) Criteria tab. As stated in the previous section on worker resources, this tab is used to add criteria that are fulfilled by the different machines on the system. There are two types of criteria that can be assigned to machines: machine or generic. Worker criteria cannot be assigned to machines. Users must do the following to assign criteria:
 
-   i. Click the "Add criteria" button.
-
-   ii. Search for the criterion to be added and select the most appropriate.
-
-   iii. Select the start date for the criterion when it becomes applicable.
-
-   iv. Select the end date for applying the criterion to the resource. This date is not obligatory if the criterion is shown as being indefinite.
-
-   v. Click the "Save and continue" button.
+   1. Click the "Add criteria" button.
+   2. Search for the criterion to be added and select the most appropriate.
+   3. Select the start date for the criterion when it becomes applicable.
+   4. Select the end date for applying the criterion to the resource. This date is not obligatory if the criterion is shown as being indefinite.
+   5. Click the "Save and continue" button.
 
 .. figure:: images/machine-criterions.png
    :scale: 50
@@ -132,9 +122,8 @@ When editing machines, the system shows a series of tabs that can be used to man
 
 4) Machine configuration tab. On this tab, it is possible to configure the ratio of machines to existing worker resources. A machine has an alpha value that indicates the machine/involved resources ratio. As has already been mentioned, an alpha value of 0.5 indicates that 0.5 people are used for each full day's operation of a machine.  The system, based on an alpha value, automatically assigns workers who are in some way associated with a machine once the machine is assigned to a task. Associating a worker with a machine can be done in two ways:
 
-   i Specifically assigning a range of dates on which the worker is to be assigned to a machine. This is a specific assignment as the system automatically assigns hours to the worker when the machine is planned.
-
-   ii Specifically assigning criteria to be fulfilled by workers who are assigned to machines. This creates a generic assignment of workers who fulfil the criteria.
+   1. Specifically assigning a range of dates on which the worker is to be assigned to a machine. This is a specific assignment as the system automatically assigns hours to the worker when the machine is planned.
+   2. Specifically assigning criteria to be fulfilled by workers who are assigned to machines. This creates a generic assignment of workers who fulfil the criteria.
 
 .. figure:: images/machine-configuration.png
    :scale: 50
@@ -169,9 +158,9 @@ The difference with respect to workers is that virtual worker groups have a name
 
    Virtual resources
 
-Limiting resources
+Queue-based resources
 ================================
 
-Limiting resources are an specific type of productive elements which just can be either not assigned or with a 100% of dedication. What it the same, they are not capable of having more than one task scheduled at the same time nor overassigned.
+A queue-based resources is a specific type of productive elements which can be either not assigned at all or has 100% of dedication. They can only handle one task at a time and never be overallocated.
 
-For each limiting resource a queue is automatically created so the tasks they have scheduled can be managed in an specific manner using the assignment methods provided, creating automatic assignments between the tasks and the queues matching required criteria or moving tasks between queues.
+For each queue-based resource a queue is automatically created so the tasks they have scheduled can be managed in a specific manner using the assignment methods provided, creating automatic assignments between the tasks and the queues matching required criteria or moving tasks between queues.

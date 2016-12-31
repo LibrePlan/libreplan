@@ -56,7 +56,7 @@ Users can create new types of progress in the following way:
   * Maximum value accepted by the type of progress.
   * Precision value for the type of progress.
 
-Entering progress based on t
+Entering progress
 ======================================
 
 Entering progress is done on order elements, but it can also be done using a short cut from the planning tasks. The decision on what type of progress users want to associate with each order element is their own responsibility.
