@@ -26,6 +26,7 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
+import org.libreplan.business.common.Registry;
 import org.libreplan.business.common.daos.GenericDAOHibernate;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.users.entities.OrderAuthorization;
@@ -68,6 +69,7 @@ public class OrderAuthorizationDAO extends GenericDAOHibernate<OrderAuthorizatio
     public List<OrderAuthorization> listByUserAndItsProfiles(User user) {
         List<OrderAuthorization> list = new ArrayList<OrderAuthorization>();
         list.addAll(listByUser(user));
+        Registry.getUserDAO().reattach(user);
         for(Profile profile : user.getProfiles()) {
             list.addAll(listByProfile(profile));
         }
@@ -79,6 +81,7 @@ public class OrderAuthorizationDAO extends GenericDAOHibernate<OrderAuthorizatio
         if (!listByUser(user).isEmpty()) {
             return true;
         }
+        Registry.getUserDAO().reattach(user);
         for (Profile profile : user.getProfiles()) {
             if (!listByProfile(profile).isEmpty()) {
                 return true;
@@ -108,6 +111,7 @@ public class OrderAuthorizationDAO extends GenericDAOHibernate<OrderAuthorizatio
     public List<OrderAuthorization> listByOrderUserAndItsProfiles(Order order, User user) {
         List<OrderAuthorization> list = new ArrayList<OrderAuthorization>();
         list.addAll(listByOrderAndUser(order,user));
+        Registry.getUserDAO().reattach(user);
         for(Profile profile : user.getProfiles()) {
             list.addAll(listByOrderAndProfile(order, profile));
         }

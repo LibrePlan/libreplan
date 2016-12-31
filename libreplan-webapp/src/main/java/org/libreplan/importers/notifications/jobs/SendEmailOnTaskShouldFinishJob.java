@@ -43,7 +43,7 @@ public class SendEmailOnTaskShouldFinishJob extends QuartzJobBean {
                 (ApplicationContext) context.getJobDetail().getJobDataMap().get("applicationContext");
 
         IEmailNotificationJob taskShouldFinish =
-                (IEmailNotificationJob) applicationContext.getBean("SendEmailOnTaskShouldFinish");
+                (IEmailNotificationJob) applicationContext.getBean("sendEmailOnTaskShouldFinish");
 
         taskShouldFinish.sendEmail();
     }

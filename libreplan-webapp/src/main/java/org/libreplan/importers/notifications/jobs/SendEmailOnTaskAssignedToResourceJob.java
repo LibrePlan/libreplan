@@ -43,7 +43,7 @@ public class SendEmailOnTaskAssignedToResourceJob extends QuartzJobBean {
                 (ApplicationContext) context.getJobDetail().getJobDataMap().get("applicationContext");
 
         IEmailNotificationJob taskAssignedToResource =
-                (IEmailNotificationJob) applicationContext.getBean("SendEmailOnTaskAssignedToResource");
+                (IEmailNotificationJob) applicationContext.getBean("sendEmailOnTaskAssignedToResource");
 
         taskAssignedToResource.sendEmail();
     }

@@ -43,7 +43,7 @@ public class SendEmailOnTaskShouldStartJob extends QuartzJobBean {
                 context.getJobDetail().getJobDataMap().get("applicationContext");
 
         IEmailNotificationJob taskShouldStart =
-                (IEmailNotificationJob) applicationContext.getBean("SendEmailOnTaskShouldStart");
+                (IEmailNotificationJob) applicationContext.getBean("sendEmailOnTaskShouldStart");
 
         taskShouldStart.sendEmail();
     }

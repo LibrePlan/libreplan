@@ -40,6 +40,8 @@ import org.libreplan.business.labels.entities.LabelType;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.resources.entities.Resource;
 import org.libreplan.business.resources.entities.Worker;
+import org.libreplan.business.users.entities.User;
+import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workreports.entities.HoursManagementEnum;
 import org.libreplan.business.workreports.entities.WorkReport;
@@ -48,6 +50,7 @@ import org.libreplan.business.workreports.entities.WorkReportLine;
 import org.libreplan.business.workreports.entities.WorkReportType;
 import org.libreplan.business.workreports.valueobjects.DescriptionField;
 import org.libreplan.business.workreports.valueobjects.DescriptionValue;
+import org.libreplan.web.UserUtil;
 import org.libreplan.web.common.ConstraintChecker;
 import org.libreplan.web.common.IMessagesForUser;
 import org.libreplan.web.common.Level;
@@ -59,6 +62,7 @@ import org.libreplan.web.common.components.NewDataSortableColumn;
 import org.libreplan.web.common.components.NewDataSortableGrid;
 import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
 import org.libreplan.web.common.entrypoints.IURLHandlerRegistry;
+import org.libreplan.web.security.SecurityUtils;
 import org.libreplan.web.users.dashboard.IPersonalTimesheetController;
 import org.zkoss.ganttz.IPredicate;
 import org.zkoss.ganttz.util.ComponentsFinder;
@@ -689,16 +693,29 @@ public class WorkReportCRUDController
 
     @Override
     public void goToEditForm(WorkReport workReport) {
-        if ( workReportModel.isPersonalTimesheet(workReport) ) {
-            goToEditPersonalTimeSheet(workReport);
-        } else {
+        if (SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_TIMESHEETS)) {
             workReportModel.initEdit(workReport);
             createWindow.setTitle(_("Edit Timesheet"));
             loadComponents(createWindow);
             prepareWorkReportList();
             getVisibility().showOnly(createWindow);
             Util.reloadBindings(createWindow);
+
+        } else if (SecurityUtils.isUserInRole(UserRole.ROLE_BOUND_USER) &&
+                workReportModel.isPersonalTimesheet(workReport) &&
+                belongsToCurrentUser(workReport)) {
+
+                goToEditPersonalTimeSheet(workReport);
+        } else {
+                messagesForUser.showMessage(Level.WARNING, _("You do not have permissions to edit this timesheet"));
         }
+    }    	
+    	
+    private boolean belongsToCurrentUser(WorkReport workReport) {
+        User user = UserUtil.getUserFromSession();
+        assert user != null;
+
+        return workReport.getResource().getId().equals(user.getWorker().getId());
     }
 
     private void goToEditPersonalTimeSheet(WorkReport workReport) {
@@ -989,7 +1006,8 @@ public class WorkReportCRUDController
 
             NewDataSortableGrid grid = (NewDataSortableGrid) row.getParent().getParent();
             NewDataSortableColumn priorityColumn = (NewDataSortableColumn) grid.getChildren().get(1).getChildren().get(2);
-            priorityColumn.setWidth("110px");
+            // DISCUSS:  Are there any implications to not setting a width on this column??
+            //priorityColumn.setWidth("110px");
 
             if (!getWorkReport().getWorkReportType().getHoursManagement().equals(HoursManagementEnum.NUMBER_OF_HOURS)) {
                 appendHoursStartAndFinish(row);
