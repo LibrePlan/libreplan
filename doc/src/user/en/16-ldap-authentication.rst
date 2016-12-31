@@ -6,6 +6,11 @@ LDAP Configuration
 This screen allows to establish a connection with LDAP to delegate
 authentication and/or authorization.
 
+.. figure:: images/ldap.png
+   :scale: 50
+
+   The LDAP configuration window
+
 It is divided in four different areas related which are explained below:
 
 Activation

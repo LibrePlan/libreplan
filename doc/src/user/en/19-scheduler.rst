@@ -3,7 +3,7 @@ Scheduler
 
 .. contents::
 
-The scheduler is designed to schedule Jobs dynamically. It is developed with the help of *Spring framework Quartz scheduler*.
+The scheduler is designed to schedule Jobs dynamically. It is developed with the help of the *Spring framework Quartz scheduler*.
 
 In order to use this scheduler effectively the Jobs(Quartz jobs) that should be scheduled must be created first. Then these 
 jobs could be added to the database as all jobs to be scheduled is stored in the database. 
@@ -36,6 +36,12 @@ For all jobs:
    
 Job scheduling list view
 ========================
+
+.. figure:: images/cron-list.png
+   :scale: 50
+
+   The Tim configuration window
+
 The ``job scheduling list`` view allows users to
 
 * add a new Job
@@ -45,6 +51,12 @@ The ``job scheduling list`` view allows users to
 
 Add or Edit Job
 =================
+
+.. figure:: images/cron-edit.png
+   :scale: 50
+
+   The Tim configuration window
+
 From the ``job scheduling list`` view, click
 
 * ``Create`` button to add a new Job or 
@@ -71,6 +83,12 @@ Both actions will lead you to a create/edit ``job form``. The ``form`` displayed
 
 Cron expression pop-up
 ---------------------- 
+
+.. figure:: images/cronjob-edit.png
+   :scale: 50
+
+   The Tim configuration window
+
 In order to enter the ``cron expression`` correctly a ``cron expression`` pop-up form is used. In this form you can enter
 the desired ``cron expression``. See also the hint about the ``cron expression``. In case you enter a wrong ``cron expression``, 
 you will be directly notified that the ``cron expression`` you entered is illegal.   

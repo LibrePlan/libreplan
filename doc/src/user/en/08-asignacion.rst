@@ -64,7 +64,7 @@ steps are necessary:
 
    Resource assignment
 
-* Users select "Search resources".
+* Users select "Advanced search".
 
 * The program shows a new screen consisting of a criteria tree and a list to
   the right of workers that fulfil the selected criteria:
@@ -108,7 +108,7 @@ assigned to a task.
 Specific assignment can be carried out on the screen shown in this image:
 
 
-.. figure:: images/asignacion-especifica.png
+.. figure:: images/resource-assignment-specific2.png
    :scale: 50
 
    Specific resource assignment
@@ -146,7 +146,7 @@ Generic assignment occurs when users do not choose resources specifically,
 but leave the decision to the program, which distributes the loads among the
 company's available resources.
 
-.. figure:: images/asignacion-xenerica.png
+.. figure:: images/resource-assignment-generic2.png
    :scale: 50
 
    Generic resource assignment

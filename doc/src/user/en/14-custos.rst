@@ -1,4 +1,4 @@
-﻿Cost management
+Cost management
 #################
 
 .. _costes:
@@ -29,7 +29,7 @@ Managing hour types worked
 
 Users need to carry out the following steps to register hour types worked:
 
-* Select "Manage hour types worked"  on the "Administration" menu.
+* Select "Hour Types"  on the "Cost" menu.
 * The program shows a list of existing hour types.
 
 .. figure:: images/hour-type-list.png

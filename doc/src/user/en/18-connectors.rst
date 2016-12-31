@@ -39,6 +39,11 @@ The connector gets the response, in this case the issues and convert them to Lib
 
 The *JIRA connector* should be configured properly before being used. 
 
+.. figure:: images/JIRA.png
+   :scale: 50
+
+   The JIRA configuration window
+
 Configuration
 -------------
 
@@ -121,6 +126,13 @@ Tim connector is an application that can be used to communicate with Tim Enterpr
 * import all rosters of the worker(user) in order to plan the resource effectively. 
    
 The *Tim connector* should be configured properly before being used. 
+
+.. figure:: images/tim.png
+   :scale: 50
+
+   The Tim configuration window
+
+
 
 Configuration
 -------------

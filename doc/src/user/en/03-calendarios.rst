@@ -58,10 +58,11 @@ In order to create a new calendar, users need to click the "Create" button. The 
 
 With these procedures, users of the program can fully personalise the calendars according to their needs. Users need to click the "Save" button to store changes made to the form.
 
-.. figure:: images/calendar-edition.png
+.. figure:: images/calendar-editing.png
    :scale: 50
 
-   Editing calendars
+The next image shows how a user can add an exception day of type "bank holiday" during the creation of a calendar.
+
 
 .. figure:: images/calendar-exceptions.png
    :scale: 50
@@ -71,11 +72,11 @@ With these procedures, users of the program can fully personalise the calendars 
 Creating derived calendars
 ----------------------------------
 
-A derived calendar is a calendar created from another existing one. For example, it has all the features of the original one, but users can change it to contain other options.
+A derived calendar is a calendar created from an existing one. It has all the features of the original calendar, but users can change it to contain other options.
 
-An example of using derived calendars is when there is a general calendar for Spain, and the creation of a derived calendar to include public holidays in Galicia in additional to the ones defined in the general calendar.
+An example of using derived calendars is when there is a general calendar foryour country, and the creation of a derived calendar is used to include all the public holidays in additional to the ones defined in the general calendar.
 
-It is important to point out that any change made to the original calendar is made directly to the derived calendar, providing that a specific exception against this was not defined. For example, the calendar for Spain has an 8-hour working day on 17 May, but the calendar for Galicia (a derived calendar) has no working hours on the very same day, as it is a public holiday. If the Spanish calendar was changed to have 4 hours available per day for the week of 17 May, the Galician calendar would also change to have 4 hours available for every day on the same week, except 17 May, which would have no working hours for the reason stated above.
+It is important to point out that any change made to the original calendar is also made indirectly to the derived calendar, providing that a specific exception against this was not defined. For example, the calendar for Spain has an 8-hour working day on 17 May, but the calendar for Galicia (a derived calendar) has no working hours on the very same day, as it is a public holiday. If the Spanish calendar was changed to have 4 hours available per day for the week of 17 May, the Galician calendar would also change to have 4 hours available for every day on the same week, except 17 May, which would have no working hours for the reason stated above.
 
 .. figure:: images/calendar-create-derived.png
    :scale: 50
@@ -108,13 +109,13 @@ To create a copied calendar in the program, it is necessary to do the following:
 Default calendar
 ----------------------
 
-One of the existing calendars in the system can be marked as the default calendar. This calendar is the one that will be designated to any entity in the system that is managed with calendars.
+One of the existing calendars in the system can be marked as the default calendar. This calendar is the one that will be assigned to any entity in the system that is managed with calendars.
 
 The following must be carried out to set up a default calendar:
 
-* Go to the *Administration* menu.
-* Click the *Configuration* procedure.
-* Where *Default calendar* appears, select the calendar to be used as the program's default calendar.
+* Go to the *Configuration* menu.
+* Click the *Main Settings* menu.
+* Where the option for *Default calendar* appears, select the calendar to be used as the program's default calendar.
 * Click *Save*.
 
 .. figure:: images/default-calendar.png

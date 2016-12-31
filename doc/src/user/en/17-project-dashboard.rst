@@ -11,6 +11,12 @@ which help to know how is performing a project according to:
    * the status of the resources allocated
    * the time constraints
 
+.. figure:: images/dashboard.png
+   :scale: 50
+
+   An example of a dashboard screen
+
+
 Progress performance indicators
 ===============================
 
