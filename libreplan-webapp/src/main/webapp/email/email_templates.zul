@@ -118,6 +118,11 @@
                                                     <label value="{url}"/>
                                                     <label value="${i18n:_('Welcome page')}"/>
                                                 </row>
+
+                                                <row>
+                                                    <label value="{projecturl}"/>
+                                                    <label value="${i18n:_('Project details page')}"/>
+                                                </row>
                                             </rows>
 
                                         </grid>
