@@ -1577,7 +1577,7 @@ public class ConfigurationController extends GenericForwardComposer {
                                     .getCurrentWebApplicationContext()
                                     .getResource("/")
                                     .getFile()
-                                    .getPath() + "\\" + media.getName());
+                                    .getPath() + "/" + media.getName());
 
                     OutputStream outputStream = new FileOutputStream(fileToSave);
                     out = new BufferedOutputStream(outputStream);
@@ -1628,9 +1628,9 @@ public class ConfigurationController extends GenericForwardComposer {
         if ( !"".equals(companyLogoURL.getValue()) ) {
             ((org.zkoss.zul.Image) configurationWindow.getFellow(LOGO_PREVIEW_COMPONENT)).setSrc("");
             findAndRemoveLogoFromTarget(companyLogoURL.getValue());
-            Util.logo = null;
         }
 
+        Util.logo = null;
         companyLogoURL.setValue("");
         configurationModel.setCompanyLogoURL("");
     }
