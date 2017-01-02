@@ -110,15 +110,6 @@ public class ComposeMessage {
 	@Autowired
 	private EmailConnectionValidator emailConnectionValidator;
 
-	// @Autowired
-	// private Environment environment;
-
-	@Autowired
-	private WebApplicationContext webApplicationContext;
-
-	// @Autowired
-	// private ServletContext servletContext;
-
 	private String protocol;
 
 	private String host;
