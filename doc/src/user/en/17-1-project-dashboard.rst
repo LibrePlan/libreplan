@@ -30,6 +30,8 @@ The progress is represented with two bars:
    * *Expected progress*. It is the progress the project should have at the
      moment according to the planning created.
 
+To view each bar's actual measured valued hover the mouse cursor over the bar.
+
 The project global progress is estimated in several different ways as there
 is not a unique right method to do it:
 
@@ -79,7 +81,6 @@ There are several *Earned Value Management* cost indicators calculated:
      * = 100 is also good, means the cost is right on plan.
      * < 100 is bad, means that the cost of completing the work is higher than
        planned.
-
    * **ETC (Estimate To Complete)**. It is the time that is pending to devote
       to the project to finish it.
    * **BAC (Budget At Completion)**. It is the total amount of work allocated

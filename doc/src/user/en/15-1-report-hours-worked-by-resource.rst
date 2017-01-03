@@ -8,22 +8,22 @@ Purpose
 
 This report allows to extract a list of the tasks and time devoted to them by workers in a period of time. There are several filters which allow users to adjust the query to get just the wanted information and avoiding extra data.
 
-Input paratemers and filters
+Input parameters and filters
 ============================
 
    * **Dates**.
       * *Type*: Optional.
       * *Two date fields*:
-         * *Start Date.* This is the minimum date of the work reports which are wanted. Work reports with an earlier date than the *start date* are ignored. If this parameter is not filled, there is not inferior filtering date.
-         * *End Date.* This is the maximum date of the work reports which will be included in the results. Work reports with a later date than the *end date* will be skipped. If this parameter is not filled, there is not upper limit of the work reports filtered.
+         * *Start Date.* This is the minimum date of the work reports which are wanted. Work reports with an earlier date than the *start date* are ignored. If this parameter is not filled, there is no filtering of work reports by *start date*.
+         * *End Date.* This is the maximum date of the work reports which will be included in the results. Work reports with a later date than the *end date* will be ignored. If this parameter is not filled, there is no filtering of work reports by *end date*.
 
    * **Filter by workers**
       * *Type*: Optional.
-      * *How it works*: You can select one worker to restrict the work reports to the time tracking of that particular worker. If you leave it empty, the work reports are retrieved independently of the worker.
+      * *How it works*: You can select one or several workers to restrict the work reports to the time tracking of that particular worker. You can add a worker to be used as a filter by searching them in the selector and by pressing the *Add* button.  If you leave it empty, the work reports are retrieved independently of the worker.
 
    * **Filter by labels**
       * *Type:* Optional.
-      * *How it works*: You can add one or several labels by searching them in the selector and by pressing the *Add* button to be used as filter. They are used to select the tasks that will be included in the results to compute the hours devoted in them.
+      * *How it works*: You can add one or several labels to be used as filter by searching them in the selector and by pressing the *Add* button. They are used to select the tasks that will be included in the results to compute the hours devoted in them. This filter can be applied to timesheets, tasks, both, or any.
 
    * **Filter by criteria**
       * *Type:* Optional.
@@ -39,7 +39,7 @@ In the heading of the report is informed about the filters that were configured 
 
 Foot page
 ---------
-The date in which the repot was got is showed.
+The date on which the report was run is listed.
 
 Body
 ----
