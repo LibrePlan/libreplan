@@ -212,6 +212,12 @@ Microsoft Windows
 
     # http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html
 
+* Download and install latest Gettext runtime::
+
+    # https://mlocati.github.io/articles/gettext-iconv-windows.html
+
+* Add Gettext_installed_directory\bin (for example ``C:\Program Files\gettext-iconv\bin``) to ``Path`` variable
+
 * Download and install latest PostgreSQL database::
 
     # http://www.enterprisedb.com/products-services-training/pgdownload#windows
