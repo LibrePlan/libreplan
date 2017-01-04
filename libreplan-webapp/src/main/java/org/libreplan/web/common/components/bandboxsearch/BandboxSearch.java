@@ -111,24 +111,29 @@ public class BandboxSearch extends HtmlMacroComponent {
             }
         });
 
-        bandbox.setCtrlKeys("#down");
-        bandbox.addEventListener(Events.ON_CTRL_KEY, new EventListener() {
-
-            @Override
-            public void onEvent(Event event) {
-                int selectedItemIndex = listbox.getSelectedIndex();
-                if (selectedItemIndex != -1) {
-                    listbox.getItemAtIndexApi(selectedItemIndex).setFocus(true);
-                } else {
-                    List<Listitem> items = listbox.getItems();
-                    if (!items.isEmpty()) {
-                        listbox.setSelectedIndex(0);
-                        pickElementFromList();
-                        items.get(0).setFocus(true);
-                    }
-                }
-            }
-        });
+        // TODO: Refactor CtrlKeys logic
+        /**
+         * There is NullPointerException when choosing elements with keyboard arrows.
+         * Arrows selection is now disabled.
+         */
+//        bandbox.setCtrlKeys("#down");
+//        bandbox.addEventListener(Events.ON_CTRL_KEY, new EventListener() {
+//
+//            @Override
+//            public void onEvent(Event event) {
+//                int selectedItemIndex = listbox.getSelectedIndex();
+//                if (selectedItemIndex != -1) {
+//                    listbox.getItemAtIndexApi(selectedItemIndex).setFocus(true);
+//                } else {
+//                    List<Listitem> items = listbox.getItems();
+//                    if (!items.isEmpty()) {
+//                        listbox.setSelectedIndex(0);
+//                        pickElementFromList();
+//                        items.get(0).setFocus(true);
+//                    }
+//                }
+//            }
+//        });
 
         /**
          * Pick element from list when selecting
