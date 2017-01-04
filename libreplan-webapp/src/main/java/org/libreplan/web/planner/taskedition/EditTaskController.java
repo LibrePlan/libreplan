@@ -50,7 +50,7 @@ import org.zkoss.zul.Tabpanel;
 import org.zkoss.zul.Window;
 
 /**
- * Controller for edit a {@link Task}.
+ * Controller for editing a {@link Task} on a project scheduling view.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */

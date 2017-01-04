@@ -33,13 +33,10 @@ import org.libreplan.business.planner.entities.DayAssignment.FilterType;
 import org.libreplan.business.workingday.EffortDuration;
 
 /**
+ * This is a class, directly associated with a {@link TaskGroup} with no parent element,
+ * which is used to store data about the whole scheduling.
  *
  * @author Diego Pino García <dpino@igalia.com>
- *
- *         This is a class, directly associated with a TaskGroup with no parent
- *         (TaskRoot element), which is used to store data about the whole
- *         scheduling
- *
  */
 public class PlanningData extends BaseEntity {
 

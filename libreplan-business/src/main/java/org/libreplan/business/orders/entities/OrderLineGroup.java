@@ -60,8 +60,8 @@ import org.libreplan.business.trees.ITreeParentNode;
 
 
 /**
- * Represents every container in the WBS view. A task of the WBS that has some children.
- * <br />
+ * Represents every container in the WBS (Work Breakdown Structure) view.
+ * A task of the WBS that has some children.
  * The project itself is also an {@link OrderLineGroup}.
  *
  * @author Manuel Rego Casasnovas <rego@igalia.com>

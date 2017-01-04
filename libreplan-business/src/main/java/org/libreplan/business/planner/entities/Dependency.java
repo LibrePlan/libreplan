@@ -30,8 +30,7 @@ import org.libreplan.business.util.deepcopy.Strategy;
 import org.libreplan.business.util.deepcopy.OnCopy;
 
 /**
- * Entity which represents an associated with properties
- * between two @{link Task}
+ * Entity which represents an association with properties between two {@link Task}
  *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Javier Moran Rua <jmoran@igalia.com>

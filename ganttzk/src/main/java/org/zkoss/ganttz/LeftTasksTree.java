@@ -384,6 +384,16 @@ public class LeftTasksTree extends HtmlMacroComponent {
         fillModel(this.tasksTreeModel.getRoot(), 0, tasks, firstTime);
     }
 
+    /**
+     * This method is used to fill {@link LeftTasksTree} model.
+     * It is using recursive go-round to go over all tasks.
+     * For top-level tasks parent is null, for child tasks the parent is parent task.
+     *
+     * @param parent parent for current {@link Task}
+     * @param insertionPosition
+     * @param children child elements of a current {@link Task}
+     * @param firstTime
+     */
     private void fillModel(Task parent,
                            Integer insertionPosition,
                            Collection<? extends Task> children,
