@@ -217,8 +217,10 @@ public class DashboardModel implements IDashboardModel {
 
         BigDecimal outcome = new BigDecimal(deadlineOffset.getDays(), MathContext.DECIMAL32);
 
-        this.marginWithDeadLine =
-                outcome.divide(new BigDecimal(orderDuration.getDays()), 8, BigDecimal.ROUND_HALF_EVEN);
+        this.marginWithDeadLine = orderDuration.getDays()!= 0
+                ? outcome.divide(new BigDecimal(orderDuration.getDays()), 8, BigDecimal.ROUND_HALF_EVEN)
+                : new BigDecimal(
+                Days.daysBetween(rootTask.getStartAsLocalDate(), deadLineAsLocalDate.plusDays(1)).getDays());
     }
 
     @Override

@@ -32,7 +32,10 @@ import org.zkoss.zk.ui.util.Clients;
 
 /**
  * This class contains the information of a task container. It can be modified
- * and notifies of the changes to the interested parties. <br/>
+ * and notifies of the changes to the interested parties.
+ * This class is used in {@link org.zkoss.ganttz.LeftTasksTree} as a container for tasks and is put
+ * as {@link org.zkoss.ganttz.util.MutableTreeModel} node.
+ *
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
 public class TaskContainer extends Task {

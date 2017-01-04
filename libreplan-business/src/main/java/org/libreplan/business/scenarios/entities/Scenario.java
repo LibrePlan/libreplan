@@ -46,6 +46,7 @@ import org.libreplan.business.scenarios.daos.IScenarioDAO;
 
 /**
  * Represents a scenario in the application.
+ * Scenario is like a context for each user that holds all his projects.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
