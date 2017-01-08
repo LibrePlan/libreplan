@@ -34,7 +34,7 @@
             <column label="${i18n:_('Customer')}" sort="auto(customerReference)" hflex="min"/>
             <column label="${i18n:_('Total Budget')}" sort="auto(totalBudget)" align="right" hflex="min"/>
             <column label="${i18n:_('Hours')}" sort="auto(totalHours)" align="right" hflex="min"/>
-            <column label="${i18n:_('State')}" sort="auto(totalBudget)" align="center" hflex="min"/>
+            <column label="${i18n:_('State')}" sort="auto(lower(state))" align="center" hflex="min"/>
             <column label="${i18n:_('Operations')}" sclass="operations" width="120px"/>
         </columns>
     </grid>
