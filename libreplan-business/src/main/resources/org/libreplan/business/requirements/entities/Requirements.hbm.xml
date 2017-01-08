@@ -35,7 +35,7 @@
         <!-- Inverse navigation from CriterionRequirement to Criterion -->
         <!-- Not indexed. Other side navigation not useful -->
         <many-to-one class="org.libreplan.business.resources.entities.Criterion" column="criterion_id"
-                     name="criterion"/>
+                     name="criterion" lazy="false"/>
 
         <subclass discriminator-value="direct" name="DirectCriterionRequirement">
             <set access="field" name="children" cascade="delete-orphan" inverse="true" batch-size="10">
