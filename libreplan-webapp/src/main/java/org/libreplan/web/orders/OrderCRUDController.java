@@ -1286,6 +1286,7 @@ public class OrderCRUDController extends GenericForwardComposer {
             appendDate(row, order.getDeadline());
             appendCustomer(row, order.getCustomer());
             appendObject(row, Util.addCurrencySymbol(order.getTotalManualBudget()));
+            appendObject(row, Util.addCurrencySymbol(order.getTotalBudget()));
             appendObject(row, order.getTotalHours());
             appendObject(row, _(order.getState().toString()));
             appendOperations(row, order);
