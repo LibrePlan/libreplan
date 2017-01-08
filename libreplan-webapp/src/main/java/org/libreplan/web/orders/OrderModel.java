@@ -436,7 +436,8 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
         newOrder.setCustomer(getOrder().getCustomer());
         newOrder.setCalendar(getCalendar());
         newOrder.setInitDate(getOrder().getInitDate());
-
+        newOrder.setDescription(getOrder().getDescription());
+        
         if ( getOrder().getDeadline() != null ) {
             newOrder.setDeadline(getOrder().getDeadline());
         }

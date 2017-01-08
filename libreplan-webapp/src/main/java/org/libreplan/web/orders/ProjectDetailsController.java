@@ -80,6 +80,8 @@ public class ProjectDetailsController extends GenericForwardComposer<Component> 
 
     private Textbox txtName;
 
+    private Textbox txtDescription;
+    
     private Datebox deadline;
 
     private Checkbox generateCode;

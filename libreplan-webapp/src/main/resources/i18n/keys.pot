@@ -1674,7 +1674,7 @@ msgstr ""
 #: libreplan-webapp/src/main/webapp/templates/_editTemplate.zul:90
 #: libreplan-webapp/src/main/webapp/common/configuration.zul:178
 #: libreplan-webapp/src/main/webapp/orders/_edition.zul:140
-#: libreplan-webapp/src/main/webapp/orders/_projectDetails.zul:76
+#: libreplan-webapp/src/main/webapp/orders/_projectDetails.zul:82
 msgid "Calendar"
 msgstr ""
 
@@ -3532,7 +3532,7 @@ msgstr ""
 #: libreplan-webapp/src/main/webapp/costcategories/_editCostCategory.zul:98
 #: libreplan-webapp/src/main/webapp/profiles/_editProfile.zul:74
 #: libreplan-webapp/src/main/webapp/orders/components/_listOrderElementMaterials.zul:132
-#: libreplan-webapp/src/main/webapp/orders/_projectDetails.zul:90
+#: libreplan-webapp/src/main/webapp/orders/_projectDetails.zul:95
 #: libreplan-webapp/src/main/webapp/unittypes/unitTypes.zul:43
 #: libreplan-webapp/src/main/webapp/qualityforms/_editQualityForm.zul:137
 #: libreplan-webapp/src/main/webapp/limitingresources/manualAllocation.zul:135
@@ -3725,7 +3725,7 @@ msgstr ""
 
 #: libreplan-webapp/src/main/webapp/workreports/workReport.zul:43
 #: libreplan-webapp/src/main/webapp/workreports/workReport.zul:65
-#: libreplan-webapp/src/main/webapp/orders/_projectDetails.zul:42
+#: libreplan-webapp/src/main/webapp/orders/_projectDetails.zul:48
 msgid "Template"
 msgstr ""
 
@@ -4300,7 +4300,7 @@ msgstr ""
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/components/finders/TaskGroupFilterEnum.java:30
 #: libreplan-webapp/src/main/webapp/subcontract/customerCommunications.zul:56
 #: libreplan-webapp/src/main/webapp/orders/_edition.zul:227
-#: libreplan-webapp/src/main/webapp/orders/_projectDetails.zul:69
+#: libreplan-webapp/src/main/webapp/orders/_projectDetails.zul:75
 #: libreplan-webapp/src/main/webapp/orders/_list.zul:32
 msgid "Customer"
 msgstr ""
@@ -4447,7 +4447,7 @@ msgstr ""
 #: libreplan-webapp/src/main/webapp/orders/_orderElementDetails.zul:35
 #: libreplan-webapp/src/main/webapp/orders/_orderElementDetails.zul:41
 #: libreplan-webapp/src/main/webapp/orders/_projectDetails.zul:38
-#: libreplan-webapp/src/main/webapp/orders/_projectDetails.zul:52
+#: libreplan-webapp/src/main/webapp/orders/_projectDetails.zul:58
 msgid "cannot be empty"
 msgstr ""
 
@@ -7209,7 +7209,7 @@ msgstr ""
 #: libreplan-webapp/src/main/webapp/workreports/_editWorkReportType.zul:60
 #: libreplan-webapp/src/main/webapp/costcategories/_editCostCategory.zul:45
 #: libreplan-webapp/src/main/webapp/orders/_edition.zul:90
-#: libreplan-webapp/src/main/webapp/orders/_projectDetails.zul:53
+#: libreplan-webapp/src/main/webapp/orders/_projectDetails.zul:59
 #: libreplan-webapp/src/main/webapp/unittypes/_editUnitType.zul:45
 msgid "Generate code"
 msgstr ""
@@ -7452,7 +7452,7 @@ msgstr ""
 #: libreplan-webapp/src/main/webapp/planner/editTask.zul:81
 #: libreplan-webapp/src/main/webapp/planner/reassign.zul:48
 #: libreplan-webapp/src/main/webapp/common/layout/template.zul:102
-#: libreplan-webapp/src/main/webapp/orders/_projectDetails.zul:88
+#: libreplan-webapp/src/main/webapp/orders/_projectDetails.zul:94
 #: libreplan-webapp/src/main/webapp/limitingresources/manualAllocation.zul:133
 msgid "Accept"
 msgstr ""
@@ -7590,7 +7590,7 @@ msgstr ""
 #: libreplan-webapp/src/main/webapp/costcategories/_editCostCategory.zul:78
 #: libreplan-webapp/src/main/webapp/orders/components/_listOrderElementMaterials.zul:109
 #: libreplan-webapp/src/main/webapp/orders/_edition.zul:85
-#: libreplan-webapp/src/main/webapp/orders/_projectDetails.zul:48
+#: libreplan-webapp/src/main/webapp/orders/_projectDetails.zul:54
 #: libreplan-webapp/src/main/webapp/orders/_assignmentsBox.zul:26
 #: libreplan-webapp/src/main/webapp/orders/_list.zul:29
 #: libreplan-webapp/src/main/webapp/unittypes/_editUnitType.zul:37
@@ -7767,6 +7767,7 @@ msgstr ""
 #: libreplan-webapp/src/main/webapp/scenarios/_edition.zul:43
 #: libreplan-webapp/src/main/webapp/orders/_edition.zul:100
 #: libreplan-webapp/src/main/webapp/orders/_orderElementDetails.zul:59
+#: libreplan-webapp/src/main/webapp/orders/_projectDetails.zul:44
 #: libreplan-webapp/src/main/webapp/qualityforms/_listQualityForm.zul:37
 #: libreplan-webapp/src/main/webapp/qualityforms/_editQualityForm.zul:49
 #: libreplan-webapp/src/main/webapp/email/email_templates.zul:83
@@ -7896,7 +7897,7 @@ msgstr ""
 #: libreplan-webapp/src/main/webapp/reports/schedulingProgressPerOrderReport.zul:53
 #: libreplan-webapp/src/main/webapp/orders/_edition.zul:129
 #: libreplan-webapp/src/main/webapp/orders/_orderElementDetails.zul:45
-#: libreplan-webapp/src/main/webapp/orders/_projectDetails.zul:58
+#: libreplan-webapp/src/main/webapp/orders/_projectDetails.zul:64
 #: libreplan-webapp/src/main/webapp/orders/_list.zul:30
 msgid "Starting date"
 msgstr ""
@@ -8357,7 +8358,7 @@ msgstr ""
 #: libreplan-webapp/src/main/webapp/subcontract/customerCommunications.zul:54
 #: libreplan-webapp/src/main/webapp/orders/_edition.zul:134
 #: libreplan-webapp/src/main/webapp/orders/_orderElementDetails.zul:52
-#: libreplan-webapp/src/main/webapp/orders/_projectDetails.zul:64
+#: libreplan-webapp/src/main/webapp/orders/_projectDetails.zul:70
 #: libreplan-webapp/src/main/webapp/orders/_list.zul:31
 msgid "Deadline"
 msgstr ""

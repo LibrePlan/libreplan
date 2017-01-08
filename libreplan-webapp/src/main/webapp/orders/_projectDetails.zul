@@ -40,6 +40,10 @@
                          constraint="no empty:${i18n:_('cannot be empty')}"
                          onOK="projectController.accept();"/>
             </row>
+             <row>
+                <label value="${i18n:_('Description')}" />
+                <textbox id="txtDescription" value="@{projectController.order.description}" width="500px" rows="7"/>
+            </row>
             <row>
                 <label value="${i18n:_('Template')}" />
                 <bandboxSearch id="bdProjectTemplate" finder="TemplatesEligibleForOrder"
