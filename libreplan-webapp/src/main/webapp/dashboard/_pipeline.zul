@@ -3,7 +3,7 @@
         <checkbox id="storedColumnVisible" label="${i18n:_('Show archived column data')}"
                   checked="true" onCheck="dashboardControllerGlobal.showStoredColumn()"/>
 
-        <grid id="pipelineGrid" sclass="global-dashboard-grid">
+        <grid id="pipelineGrid" sclass="global-dashboard-grid" height="500px">
                 <columns>
                         <column label="${i18n:_('PRE-SALES')}"/>
                         <column label="${i18n:_('OFFERED')}"/>
