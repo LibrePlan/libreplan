@@ -1,9 +1,5 @@
 <zk>
-    <log>
-        <log-base/>
-    </log>
-
-    <desktop-config>
+        <desktop-config>
         <!--
         Seconds it takes between requests for a desktop to be invalidated.
         A timer is introduced to avoid invalidation of pages still open.

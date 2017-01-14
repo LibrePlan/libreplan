@@ -156,6 +156,10 @@ public class Planner extends HtmlMacroComponent  {
 
     private boolean shownMoneyCostBarByDefault = false;
 
+    private boolean shownLabelsByDefault = false;
+
+    private boolean shownResourcesByDefault = false;
+
     private FilterAndParentExpandedPredicates predicate;
 
     private boolean visibleChart;
@@ -430,6 +434,27 @@ public class Planner extends HtmlMacroComponent  {
             showMoneyCostBarButton.setVisible(false);
         }
 
+        // view buttons toggle state so set all off prior to toggling
+        if ( configuration.isShowResourcesOn() ) {
+            showAllResources();
+        }
+
+        if ( configuration.isShowAdvancesOn() ) {
+            showAdvances();
+        }
+
+        if ( configuration.isShowReportedHoursOn() ) {
+            showReportedHours();
+        }
+
+        if ( configuration.isShowLabelsOn() ) {
+           showAllLabels();
+        }
+
+        if ( configuration.isShowMoneyCostBarOn() ) {
+            showMoneyCostBar();
+        }
+
         listZoomLevels.setSelectedIndex(getZoomLevel().ordinal());
 
         this.visibleChart = configuration.isExpandPlanningViewCharts();
@@ -656,7 +681,6 @@ public class Planner extends HtmlMacroComponent  {
     public void showReportedHours() {
         Button showReportedHoursButton = (Button) getFellow("showReportedHours");
         if ( disabilityConfiguration.isReportedHoursEnabled() ) {
-
             if ( isShowingReportedHours ) {
                 context.hideReportedHours();
                 diagramGraph.removePostGraphChangeListener(showReportedHoursOnChange);
@@ -694,28 +718,33 @@ public class Planner extends HtmlMacroComponent  {
 
     public void showAllLabels() {
         Button showAllLabelsButton = (Button) getFellow("showAllLabels");
-        if ( isShowingLabels ) {
-            Clients.evalJavaScript("ganttz.TaskList.getInstance().hideAllTaskLabels()");
-            showAllLabelsButton.setSclass("planner-command show-labels");
-        } else {
-            Clients.evalJavaScript("ganttz.TaskList.getInstance().showAllTaskLabels()");
-            showAllLabelsButton.setSclass("planner-command show-labels clicked");
-        }
+        if ( disabilityConfiguration.isLabelsEnabled() ) {
+	        if ( isShowingLabels ) {
+	            Clients.evalJavaScript("ganttz.TaskList.getInstance().hideAllTaskLabels()");
+	            showAllLabelsButton.setSclass("planner-command show-labels");
+	        } else {
+	            Clients.evalJavaScript("ganttz.TaskList.getInstance().showAllTaskLabels()");
+	            showAllLabelsButton.setSclass("planner-command show-labels clicked");
+	        }
 
-        isShowingLabels = !isShowingLabels;
+	        isShowingLabels = !isShowingLabels;
+        }
     }
 
     public void showAllResources() {
         Button showAllLabelsButton = (Button) getFellow("showAllResources");
-        if ( isShowingResources ) {
-            Clients.evalJavaScript("ganttz.TaskList.getInstance().hideResourceTooltips()");
-            showAllLabelsButton.setSclass("planner-command show-resources");
-        } else {
-            Clients.evalJavaScript("ganttz.TaskList.getInstance().showResourceTooltips()");
-            showAllLabelsButton.setSclass("planner-command show-resources clicked");
-        }
+        if ( disabilityConfiguration.isResourcesEnabled() ) {
+	        if ( isShowingResources ) {
+	            Clients.evalJavaScript("ganttz.TaskList.getInstance().hideResourceTooltips()");
+	            showAllLabelsButton.setSclass("planner-command show-resources");
+	        } else {
+	            Clients.evalJavaScript("ganttz.TaskList.getInstance().showResourceTooltips()");
+	            showAllLabelsButton.setSclass("planner-command show-resources clicked");
+	        }
 
-        isShowingResources = !isShowingResources;
+	        isShowingResources = !isShowingResources;
+
+        }
     }
 
     public void print() {
@@ -752,7 +781,6 @@ public class Planner extends HtmlMacroComponent  {
 
     public void setAreShownAdvancesByDefault(boolean shownAdvanceByDefault) {
         this.shownAdvanceByDefault = shownAdvanceByDefault;
-        this.isShowingAdvances = shownAdvanceByDefault;
     }
 
     public void setAreShownReportedHoursByDefault(boolean shownReportedHoursByDefault) {
@@ -777,6 +805,30 @@ public class Planner extends HtmlMacroComponent  {
 
     public boolean showMoneyCostBarRightNow() {
         return areShownMoneyCostBarByDefault() || isShowingMoneyCostBar;
+    }
+
+    public void setAreShownLabelsByDefault(boolean shownLabelsByDefault) {
+        this.shownLabelsByDefault = shownLabelsByDefault;
+    }
+
+    public boolean areShownLabelsByDefault() {
+        return shownLabelsByDefault;
+    }
+
+    public boolean showLabelsRightNow() {
+        return areShownLabelsByDefault() || isShowingLabels;
+    }
+
+    public void setAreShownResourcesByDefault(boolean shownResourcesByDefault) {
+        this.shownResourcesByDefault = shownResourcesByDefault;
+    }
+
+    public boolean areShownResourcesByDefault() {
+        return shownResourcesByDefault;
+    }
+
+    public boolean showResourcesRightNow() {
+        return areShownResourcesByDefault() || isShowingResources;
     }
 
     public void expandAll() {

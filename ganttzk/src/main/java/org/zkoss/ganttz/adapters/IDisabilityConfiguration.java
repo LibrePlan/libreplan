@@ -42,6 +42,10 @@ public interface IDisabilityConfiguration {
 
     public boolean isMoneyCostBarEnabled();
 
+    public boolean isLabelsEnabled();
+
+    public boolean isResourcesEnabled();
+
     public boolean isExpandAllEnabled();
 
     public boolean isFlattenTreeEnabled();
