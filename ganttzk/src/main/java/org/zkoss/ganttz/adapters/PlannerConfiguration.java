@@ -157,6 +157,10 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
 
     private boolean moneyCostBarEnabled = true;
 
+    private boolean labelsEnabled = true;
+
+    private boolean ResourcesEnabled = true;
+
     private boolean expandAllEnabled = true;
 
     private boolean flattenTreeEnabled = true;
@@ -166,6 +170,16 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
     private boolean renamingTasksEnabled = true;
 
     private boolean treeEditable = true;
+
+    private boolean showResourcesOn = false;
+
+    private boolean showAdvancesOn = false;
+
+    private boolean showReportedHoursOn = false;
+
+    private boolean showLabelsOn = false;
+
+    private boolean showMoneyCostBarOn = false;
 
     private IDetailItemModifier firstLevelModifiers = SeveralModifiers.empty();
 
@@ -355,6 +369,24 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
         return moneyCostBarEnabled;
     }
 
+    public void setLabelsEnabled(boolean labelsEnabled) {
+        this.labelsEnabled = labelsEnabled;
+    }
+
+    @Override
+    public boolean isLabelsEnabled() {
+        return labelsEnabled;
+    }
+
+    public void setResourcesEnabled(boolean ResourcesEnabled) {
+        this.ResourcesEnabled = ResourcesEnabled;
+    }
+
+    @Override
+    public boolean isResourcesEnabled() {
+        return ResourcesEnabled;
+    }
+
     public void setExpandAllEnabled(boolean expandAllEnabled) {
         this.expandAllEnabled = expandAllEnabled;
     }
@@ -493,6 +525,46 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
 
     public void setScheduleBackwards(boolean scheduleBackwards) {
         this.scheduleBackwards = scheduleBackwards;
+    }
+
+    public boolean isShowResourcesOn() {
+        return showResourcesOn;
+    }
+
+    public void setShowResourcesOn(boolean showResourcesOn) {
+        this.showResourcesOn = showResourcesOn;
+    }
+
+    public boolean isShowAdvancesOn() {
+        return showAdvancesOn;
+    }
+
+    public void setShowAdvancesOn(boolean showAdvancesOn) {
+        this.showAdvancesOn = showAdvancesOn;
+    }
+
+    public boolean isShowReportedHoursOn() {
+        return showReportedHoursOn;
+    }
+
+    public void setShowReportedHoursOn(boolean showReportedHoursOn) {
+        this.showReportedHoursOn = showReportedHoursOn;
+    }
+
+    public boolean isShowLabelsOn() {
+        return showLabelsOn;
+    }
+
+    public void setShowLabelsOn(boolean showLabelsOn) {
+        this.showLabelsOn = showLabelsOn;
+    }
+
+    public boolean isShowMoneyCostBarOn() {
+        return showMoneyCostBarOn;
+    }
+
+    public void setShowMoneyCostBarOn(boolean showMoneyCostBarOn) {
+        this.showMoneyCostBarOn = showMoneyCostBarOn;
     }
 
 }

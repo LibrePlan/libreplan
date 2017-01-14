@@ -218,6 +218,7 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
         addAdditionalCommands(additional, configuration);
         addPrintSupport(configuration);
         disableSomeFeatures(configuration);
+        setDefaultButtonState(configuration,user);
 
         planner.setInitialZoomLevel(getZoomLevel(configuration));
 
@@ -246,6 +247,23 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
             });
         }
     }
+
+    private void setDefaultButtonState(PlannerConfiguration<TaskElement> configuration, User user) {
+
+// set initial button show mode
+    if ( user.isShowAdvancesOn() ) {
+        configuration.setShowAdvancesOn(user.isShowAdvancesOn());
+	}
+
+    if ( user.isShowReportedHoursOn() ) {
+        configuration.setShowReportedHoursOn(user.isShowReportedHoursOn());
+    }
+
+    if ( user.isShowLabelsOn() ) {
+        configuration.setShowLabelsOn(user.isShowLabelsOn());
+    }
+
+}
 
     private ZoomLevel getZoomLevel(PlannerConfiguration<TaskElement> configuration) {
         ZoomLevel sessionZoom = FilterUtils.readZoomLevelCompanyView();
