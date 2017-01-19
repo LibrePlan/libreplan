@@ -70,6 +70,16 @@
 
         <property name="resourcesLoadFilterPeriodTo" column="resources_load_filter_period_to"/>
 
+        <property name="showResourcesOn" column="show_resources_on"/>
+
+        <property name="showAdvancesOn" column="show_advances_on"/>
+
+        <property name="showReportedHoursOn" column="show_reported_hours_on"/>
+
+        <property name="showLabelsOn" column="show_labels_on"/>
+
+        <property name="showMoneyCostBarOn" column="show_money_cost_bar_on"/>
+
         <many-to-one name="projectsFilterLabel" cascade="none" lazy="false" column="projects_filter_label_id" />
 
         <many-to-one name="resourcesLoadFilterCriterion" cascade="none" lazy="false"

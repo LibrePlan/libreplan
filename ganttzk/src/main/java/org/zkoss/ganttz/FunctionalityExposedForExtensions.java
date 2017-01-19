@@ -243,6 +243,8 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
         result.setShowingReportedHours(planner.showReportedHoursRightNow());
         result.setShowingMoneyCostBar(planner.showMoneyCostBarRightNow());
         result.setShowingAdvances(planner.showAdvancesRightNow());
+        result.setShowingLabels(planner.showLabelsRightNow());
+        result.setShowingResources(planner.showResourcesRightNow());
 
         mapper.register(position, result, data);
 

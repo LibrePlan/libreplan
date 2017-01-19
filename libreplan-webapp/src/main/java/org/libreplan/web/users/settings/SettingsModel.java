@@ -311,4 +311,53 @@ public class SettingsModel implements ISettingsModel {
         user.setResourcesLoadFilterCriterion(criterion);
     }
 
+    @Override
+    public boolean isShowResourcesOn() {
+        return user.isShowResourcesOn();
+    }
+
+    @Override
+    public void setShowResourcesOn(boolean showResourcesOn) {
+        user.setShowResourcesOn(showResourcesOn);
+    }
+
+    @Override
+    public boolean isShowAdvancesOn() {
+        return user.isShowAdvancesOn();
+    }
+
+    @Override
+    public void setShowAdvancesOn(boolean showAdvancesOn) {
+        user.setShowAdvancesOn(showAdvancesOn);
+    }
+
+    @Override
+    public boolean isShowReportedHoursOn() {
+        return user.isShowReportedHoursOn();
+    }
+
+    @Override
+    public void setShowReportedHoursOn(boolean showReportedHoursOn) {
+        user.setShowReportedHoursOn(showReportedHoursOn);
+    }
+
+    @Override
+    public boolean isShowLabelsOn() {
+        return user.isShowLabelsOn();
+    }
+
+    @Override
+    public void setShowLabelsOn(boolean showLabelsOn) {
+        user.setShowLabelsOn(showLabelsOn);
+    }
+
+    @Override
+    public boolean isShowMoneyCostBarOn() {
+        return user.isShowMoneyCostBarOn();
+    }
+
+    @Override
+    public void setShowMoneyCostBarOn(boolean showMoneyCostBarOn) {
+            user.setShowMoneyCostBarOn(showMoneyCostBarOn);
+    }
 }
