@@ -28,16 +28,22 @@ import org.libreplan.business.email.entities.EmailTemplateEnum;
 import org.libreplan.business.planner.daos.ITaskElementDAO;
 import org.libreplan.business.planner.entities.ResourceAllocation;
 import org.libreplan.business.planner.entities.TaskElement;
+import org.libreplan.business.resources.daos.IWorkerDAO;
 import org.libreplan.business.resources.entities.Resource;
+import org.libreplan.business.resources.entities.Worker;
+import org.libreplan.business.users.entities.User;
+import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.importers.notifications.ComposeMessage;
 import org.libreplan.importers.notifications.EmailConnectionValidator;
 import org.libreplan.importers.notifications.IEmailNotificationJob;
 import org.libreplan.web.email.IEmailNotificationModel;
+import org.libreplan.web.resources.worker.IWorkerModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.zkoss.zkplus.spring.SpringUtil;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -67,6 +73,9 @@ public class SendEmailOnTaskShouldStart implements IEmailNotificationJob {
 
     @Autowired
     private EmailConnectionValidator emailConnectionValidator;
+
+    @Autowired
+    private IWorkerDAO workerDAO;
 
     /**
      * Transactional here is needed because without this annotation we are getting
@@ -130,13 +139,17 @@ public class SendEmailOnTaskShouldStart implements IEmailNotificationJob {
             resources.add(allocation.getAssociatedResources().get(0));
 
         for (Resource resourceItem : resources) {
-            emailNotificationModel.setNewObject();
-            emailNotificationModel.setType(EmailTemplateEnum.TEMPLATE_TODAY_TASK_SHOULD_START);
-            emailNotificationModel.setUpdated(new Date());
-            emailNotificationModel.setResource(resourceItem);
-            emailNotificationModel.setTask(item);
-            emailNotificationModel.setProject(item.getParent());
-            emailNotificationModel.confirmSave();
+            Worker currentWorker = workerDAO.getCurrentWorker(resourceItem.getId());
+
+            if (currentWorker != null && (currentWorker.getUser() != null) && currentWorker.getUser().isInRole(UserRole.ROLE_EMAIL_TASK_SHOULD_START)) {
+                emailNotificationModel.setNewObject();
+                emailNotificationModel.setType(EmailTemplateEnum.TEMPLATE_TODAY_TASK_SHOULD_START);
+                emailNotificationModel.setUpdated(new Date());
+                emailNotificationModel.setResource(resourceItem);
+                emailNotificationModel.setTask(item);
+                emailNotificationModel.setProject(item.getParent());
+                emailNotificationModel.confirmSave();
+            }
         }
     }
 

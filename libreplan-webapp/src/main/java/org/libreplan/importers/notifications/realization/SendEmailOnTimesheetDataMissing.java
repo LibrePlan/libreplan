@@ -33,6 +33,7 @@ import org.libreplan.business.resources.entities.Resource;
 import org.libreplan.business.resources.entities.Worker;
 
 import org.libreplan.business.users.entities.User;
+import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workingday.IntraDayDate;
 import org.libreplan.business.workreports.daos.IWorkReportDAO;
@@ -159,11 +160,13 @@ public class SendEmailOnTimesheetDataMissing implements IEmailNotificationJob {
 
     private void addRowsToNotificationTable(List<User> users){
         for (User user : users){
-            emailNotificationModel.setNewObject();
-            emailNotificationModel.setResource(user.getWorker());
-            emailNotificationModel.setType(EmailTemplateEnum.TEMPLATE_ENTER_DATA_IN_TIMESHEET);
-            emailNotificationModel.setUpdated(new Date());
-            emailNotificationModel.confirmSave();
+            if ( user.isInRole(UserRole.ROLE_EMAIL_TIMESHEET_DATA_MISSING) ) {
+                emailNotificationModel.setNewObject();
+                emailNotificationModel.setResource(user.getWorker());
+                emailNotificationModel.setType(EmailTemplateEnum.TEMPLATE_ENTER_DATA_IN_TIMESHEET);
+                emailNotificationModel.setUpdated(new Date());
+                emailNotificationModel.confirmSave();
+            }
         }
     }
 
