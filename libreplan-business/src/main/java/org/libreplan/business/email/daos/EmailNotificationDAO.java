@@ -23,8 +23,12 @@ import org.hibernate.criterion.Restrictions;
 import org.libreplan.business.common.daos.GenericDAOHibernate;
 import org.libreplan.business.email.entities.EmailNotification;
 import org.libreplan.business.email.entities.EmailTemplateEnum;
+import org.libreplan.business.orders.entities.Order;
+import org.libreplan.business.planner.entities.TaskElement;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
+//import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -47,6 +51,22 @@ public class EmailNotificationDAO
         return getSession()
                 .createCriteria(EmailNotification.class)
                 .add(Restrictions.eq("type", enumeration))
+                .list();
+    }
+
+    @Override
+    public List<EmailNotification> getAllByProject(TaskElement taskElement) {
+       return getSession()
+               .createCriteria(EmailNotification.class)
+               .add(Restrictions.eq("project", taskElement))
+               .list();
+    }
+
+    @Override
+    public List<EmailNotification> getAllByTask(TaskElement taskElement) {
+        return getSession()
+                .createCriteria(EmailNotification.class)
+                .add(Restrictions.eq("task", taskElement))
                 .list();
     }
 
@@ -87,6 +107,28 @@ public class EmailNotificationDAO
                 .createCriteria(EmailNotification.class)
                 .add(Restrictions.eq("id", notification.getId()))
                 .uniqueResult() == null;
+    }
+
+    @Override
+    public boolean deleteByProject(TaskElement taskElement) {
+        List<EmailNotification> notifications = getAllByProject(taskElement);
+
+        for (Object item : notifications){
+            getSession().delete(item);
+        }
+
+        return getAllByProject(taskElement).isEmpty();
+    }
+
+    @Override
+    public boolean deleteByTask(TaskElement taskElement) {
+        List<EmailNotification> notifications = getAllByTask(taskElement);
+
+        for (Object item : notifications){
+            getSession().delete(item);
+        }
+
+        return getAllByTask(taskElement).isEmpty();
     }
 
 }

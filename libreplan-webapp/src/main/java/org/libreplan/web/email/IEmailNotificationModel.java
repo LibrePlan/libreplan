@@ -21,6 +21,7 @@ package org.libreplan.web.email;
 
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.email.entities.EmailTemplateEnum;
+import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.email.entities.EmailNotification;
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.resources.entities.Resource;
@@ -41,11 +42,19 @@ public interface IEmailNotificationModel {
 
     List<EmailNotification> getAllByType(EmailTemplateEnum enumeration);
 
+    List<EmailNotification> getAllByProject(TaskElement taskElement);
+
+    List<EmailNotification> getAllByTask(TaskElement taskElement);
+
     boolean deleteAll();
 
     boolean deleteAllByType(EmailTemplateEnum enumeration);
 
     boolean deleteById(EmailNotification notification);
+
+    boolean deleteByProject(TaskElement taskElement);
+
+    boolean deleteByTask(TaskElement taskElement);
 
     void setType(EmailTemplateEnum type);
 
@@ -60,4 +69,5 @@ public interface IEmailNotificationModel {
     EmailNotification getEmailNotification();
 
     void setNewObject();
+
 }

@@ -2,7 +2,9 @@ package org.libreplan.web.test.ws.email;
 
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 
 import org.libreplan.business.common.Registry;
@@ -165,6 +167,20 @@ public class EmailTest {
         emailNotificationDAO.deleteAll();
 
         assertTrue(EmailConnectionValidator.exceptionType instanceof MessagingException);
+    }
+
+    @Test
+    @Transactional
+    public void testDDeleteEmailNotification() {
+        EmailTemplate emailTemplate = createEmailTemplate();
+        emailTemplateDAO.save(emailTemplate);
+
+        EmailNotification emailNotification = createEmailNotification();
+        emailNotificationDAO.save(emailNotification);
+
+        emailTemplateDAO.delete(emailTemplate);
+        boolean result = emailNotificationDAO.deleteByProject(emailNotification.getProject());
+        assertTrue(result);
     }
 
     private EmailTemplate createEmailTemplate() {
