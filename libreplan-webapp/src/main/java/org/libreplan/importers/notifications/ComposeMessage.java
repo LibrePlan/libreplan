@@ -27,6 +27,7 @@ import org.libreplan.business.common.entities.ConnectorProperty;
 import org.libreplan.business.email.entities.EmailNotification;
 import org.libreplan.business.email.entities.EmailTemplate;
 import org.libreplan.business.email.entities.EmailTemplateEnum;
+import org.libreplan.business.resources.daos.IWorkerDAO;
 import org.libreplan.business.resources.entities.Resource;
 import org.libreplan.business.resources.entities.Worker;
 import org.libreplan.business.settings.entities.Language;
@@ -102,7 +103,7 @@ import static org.libreplan.web.I18nHelper._;
 public class ComposeMessage {
 
 	@Autowired
-	private IWorkerModel workerModel;
+	private IWorkerDAO workerDAO;
 
 	@Autowired
 	private IEmailTemplateModel emailTemplateModel;
@@ -131,11 +132,11 @@ public class ComposeMessage {
 		Resource resource = notification.getResource();
 		EmailTemplateEnum type = notification.getType();
 		Locale locale;
-		Worker currentWorker = getCurrentWorker(resource.getId());
+		Worker currentWorker = workerDAO.getCurrentWorker(resource.getId());
 
 		UserRole currentUserRole = getCurrentUserRole(notification.getType());
 
-		if (currentWorker != null && currentWorker.getUser().isInRole(currentUserRole)) {
+		if (currentWorker != null && (currentWorker.getUser() != null) && currentWorker.getUser().isInRole(currentUserRole)) {
 			if (currentWorker.getUser().getApplicationLanguage().equals(Language.BROWSER_LANGUAGE)) {
 				locale = new Locale(System.getProperty("user.language"));
 			} else {
@@ -195,18 +196,6 @@ public class ComposeMessage {
 			}
 		}
 		return false;
-	}
-
-	private Worker getCurrentWorker(Long resourceID) {
-		List<Worker> workerList = workerModel.getWorkers();
-
-		for (Worker aWorkerList : workerList) {
-			if (aWorkerList.getId().equals(resourceID)) {
-				return aWorkerList;
-			}
-		}
-
-		return null;
 	}
 
 	private EmailTemplate findCurrentEmailTemplate(EmailTemplateEnum templateEnum, Locale locale) {
