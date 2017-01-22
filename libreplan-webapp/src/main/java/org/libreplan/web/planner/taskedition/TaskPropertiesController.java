@@ -826,4 +826,12 @@ public class TaskPropertiesController extends GenericForwardComposer<Component> 
         return this;
     }
 
+    public TaskElement getCurrentTaskElement() {
+        return currentTaskElement;
+    }
+
+    public void setCurrentTaskElement(TaskElement taskElement) {
+        currentTaskElement = taskElement;
+    }
+
 }

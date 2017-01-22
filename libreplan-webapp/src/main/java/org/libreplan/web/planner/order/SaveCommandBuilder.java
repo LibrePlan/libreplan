@@ -589,8 +589,18 @@ public class SaveCommandBuilder {
                 removeEmptyConsolidation(taskElement);
                 updateLimitingResourceQueueElementDates(taskElement);
 
-                if (taskElement.getTaskSource() != null && taskElement.getTaskSource().isNewObject())
+                if (taskElement.getTaskSource() != null && taskElement.getTaskSource().isNewObject()) {
                     saveTaskSources(taskElement);
+
+                    // hack to update taskPropertiesController reference to current currentTaskElement
+                    if (SaveCommandBuilder.taskPropertiesController != null) {
+                        TaskElement taskControllerTaskElement = SaveCommandBuilder.taskPropertiesController.getCurrentTaskElement();
+                        if ( taskControllerTaskElement != null && taskControllerTaskElement.getOrderElement() == taskElement.getOrderElement() &&
+                                taskControllerTaskElement.isNewObject()) {
+                            SaveCommandBuilder.taskPropertiesController.setCurrentTaskElement(taskElement);
+                        }
+                    }
+                }
 
                 updateLimitingQueueDependencies(taskElement);
             }
