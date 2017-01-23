@@ -2,6 +2,6 @@
     <config-name>i18n</config-name>
     <taglib>
         <taglib-uri>http://org.libreplan.web/i18n</taglib-uri>
-        <taglib-location>libreplan-webapp/WEB-INF/tld/i18n.tld</taglib-location>
+        <taglib-location>/metainfo/tld/i18n.tld</taglib-location>
     </taglib>
 </config>
