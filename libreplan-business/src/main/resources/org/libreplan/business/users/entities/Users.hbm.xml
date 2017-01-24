@@ -99,7 +99,7 @@
         <property name="profileName" not-null="true" unique="true" column="profile_name" />
 
         <!-- Index created in a database-object section -->
-        <set name="roles" table="profile_roles">
+        <set name="roles" table="profile_roles" lazy="false">
             <key column="profile_id"/>
             <element column="role">
                 <type name="org.hibernate.type.EnumType">
