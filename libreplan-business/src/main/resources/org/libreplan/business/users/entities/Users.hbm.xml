@@ -53,7 +53,7 @@
         </set>
 
         <!-- Index created in a database-object section -->
-        <set name="profiles" table="user_profiles">
+        <set name="profiles" table="user_profiles" lazy="false">
             <key column="user_id"/>
             <many-to-many column="profile_id" class="org.libreplan.business.users.entities.Profile"/>
         </set>
