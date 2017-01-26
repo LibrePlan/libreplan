@@ -609,7 +609,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends GenericForw
 
                     int myPosition = parent.getIndex();
 
-                    if (myPosition < treeItems.size() - 1) {
+                    if ((myPosition < treeItems.size() - 1) && myPosition > -1) {
                         // The current node is not the last one
                         Treerow downTreerow = treeItems.get(myPosition + 1).getTreerow();
 
