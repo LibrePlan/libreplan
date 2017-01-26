@@ -38,7 +38,9 @@ public abstract class LoadChartFiller extends ChartFiller {
 
     @Override
     public void fillChart(Timeplot chart, Interval interval, Integer size) {
-        chart.getChildren().clear();
+        if (chart.getChildren() != null) {
+            chart.getChildren().clear();
+        }
         chart.invalidate();
 
         if (getOptionalJavascriptCall() != null) {
