@@ -124,7 +124,7 @@ public class SendEmailOnTaskShouldStart implements IEmailNotificationJob {
         for (TaskElement item : tasks) {
             DateTime startDate = new DateTime(item.getStartDate());
 
-            if ( dateTimeComparator.compare(currentDate, startDate) == 0) {
+            if ( dateTimeComparator.compare(currentDate, startDate) == 0 && item.isLeaf() ) {
                 // Get all resources for current task and send them email notification
                 sendEmailNotificationAboutTaskShouldStart(item);
             }
