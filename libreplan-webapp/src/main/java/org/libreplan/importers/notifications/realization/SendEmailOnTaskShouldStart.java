@@ -147,7 +147,7 @@ public class SendEmailOnTaskShouldStart implements IEmailNotificationJob {
                 emailNotificationModel.setUpdated(new Date());
                 emailNotificationModel.setResource(resourceItem);
                 emailNotificationModel.setTask(item);
-                emailNotificationModel.setProject(item.getParent());
+                emailNotificationModel.setProject(item.getTopMost());
                 emailNotificationModel.confirmSave();
             }
         }

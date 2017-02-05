@@ -113,8 +113,8 @@ public class SendEmailOnMilestoneReached implements IEmailNotificationJob {
 
     private void sendEmailNotificationToManager(TaskElement item) {
         String responsible = "";
-        if ( item.getParent().getOrderElement().getOrder().getResponsible() != null ) {
-            responsible = item.getParent().getOrderElement().getOrder().getResponsible();
+        if ( item.getTopMost().getOrderElement().getOrder().getResponsible() != null ) {
+            responsible = item.getTopMost().getOrderElement().getOrder().getResponsible();
         }
 
         User user = null;
@@ -130,7 +130,7 @@ public class SendEmailOnMilestoneReached implements IEmailNotificationJob {
 	            emailNotificationModel.setUpdated(new Date());
 	            emailNotificationModel.setResource(user.getWorker());
 	            emailNotificationModel.setTask(item);
-	            emailNotificationModel.setProject(item.getParent());
+	            emailNotificationModel.setProject(item.getTopMost());
 	            emailNotificationModel.confirmSave();
 	        }
 	    } catch (InstanceNotFoundException e) {
