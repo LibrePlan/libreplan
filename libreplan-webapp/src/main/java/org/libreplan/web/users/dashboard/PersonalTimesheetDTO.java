@@ -35,7 +35,13 @@ import org.libreplan.business.workreports.entities.WorkReport;
  */
 public class PersonalTimesheetDTO {
 
+    private static final String d_Y_PATTERN = "d Y";
+
+    private static final String MMMM_d_PATTERN = "MMMM d";
+
     private static final String MMMM_Y_PATTERN = "MMMM y";
+
+    private static final String MMMM_d_Y_PATTERN = "MMMM d y";
 
     private LocalDate date;
 
@@ -108,20 +114,20 @@ public class PersonalTimesheetDTO {
 
                 String string = date.toString("w");
                     if (start.getMonthOfYear() == end.getMonthOfYear()) {
-                    string += " (" + date.toString(MMMM_Y_PATTERN) + ")";
+                        string += " (" + start.toString(MMMM_d_PATTERN)  + " - " + end.toString(d_Y_PATTERN) + ")";
                 } else {
                     if (start.getYear() == end.getYear()) {
-                        string += " (" + start.toString("MMMM") + " - " + end.toString(MMMM_Y_PATTERN) + ")";
+                        string += " (" + start.toString(MMMM_d_PATTERN) + " - " + end.toString(MMMM_d_Y_PATTERN) + ")";
                     } else {
-                        string += " (" + start.toString(MMMM_Y_PATTERN) + " - " + end.toString(MMMM_Y_PATTERN) + ")";
+                        string += " (" + start.toString(MMMM_d_Y_PATTERN) + " - " + end.toString(MMMM_d_Y_PATTERN) + ")";
                     }
                 }
                 return _("Week {0}", string);
 
             case TWICE_MONTHLY:
                 return (date.getDayOfMonth() <= 15)
-                        ? _("{0} 1st fortnight", date.toString(MMMM_Y_PATTERN))
-                        : _("{0} 2nd fortnight", date.toString(MMMM_Y_PATTERN));
+                        ? _("{0} 1st fortnight", date.toString(MMMM_d_Y_PATTERN))
+                        : _("{0} 2nd fortnight", date.toString(MMMM_d_Y_PATTERN));
 
             case MONTHLY:
             default:
