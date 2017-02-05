@@ -122,7 +122,7 @@ public class SendEmailOnTaskShouldFinish implements IEmailNotificationJob {
         for (TaskElement item : tasks) {
             DateTime endDate = new DateTime(item.getEndDate());
 
-            if ( dateTimeComparator.compare(currentDate, endDate) == 0 ) {
+            if ( dateTimeComparator.compare(currentDate, endDate) == 0 && item.isLeaf() ) {
                 // Get all resources for current task and send them email notification
                 sendEmailNotificationAboutTaskShouldFinish(item);
             }
