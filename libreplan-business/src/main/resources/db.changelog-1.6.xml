@@ -39,6 +39,13 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="add-new-columns-projects-filter-finished" author="lmann">
+        <comment>Add columns to store user default setting of filter finished projects in views</comment>
+        <addColumn tableName="user_table">
+            <column name="projects_filter_finished_on" type="BOOLEAN" />
+        </addColumn>
+    </changeSet>
+
     <changeSet id="set-default-value-show-reported-hours" author="lmann">
         <addDefaultValue tableName="user_table"
            columnName="show_reported_hours_on"
@@ -85,6 +92,16 @@
            defaultValueBoolean="FALSE" />
        <addNotNullConstraint tableName="user_table"
            columnName="show_money_cost_bar_on"
+           defaultNullValue="FALSE"
+           columnDataType="BOOLEAN" />
+    </changeSet>
+
+    <changeSet id="set-default-value-projects-filter-finished" author="lmann">
+        <addDefaultValue tableName="user_table"
+           columnName="projects_filter_finished_on"
+           defaultValueBoolean="FALSE" />
+       <addNotNullConstraint tableName="user_table"
+           columnName="projects_filter_finished_on"
            defaultNullValue="FALSE"
            columnDataType="BOOLEAN" />
     </changeSet>

@@ -231,9 +231,10 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements IOrderDAO {
             List<Label> labels,
             List<Criterion> criteria,
             ExternalCompany customer,
-            OrderStatusEnum state) {
+            OrderStatusEnum state,
+            Boolean excludeFinishedProject) {
 
-        List<Long> ordersIdsFiltered = getOrdersIdsFiltered(user, labels, criteria, customer, state);
+        List<Long> ordersIdsFiltered = getOrdersIdsFiltered(user, labels, criteria, customer, state, excludeFinishedProject);
         if (ordersIdsFiltered != null && ordersIdsFiltered.isEmpty()) {
             return Collections.emptyList();
         }
@@ -354,7 +355,8 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements IOrderDAO {
                                             List<Label> labels,
                                             List<Criterion> criteria,
                                             ExternalCompany customer,
-                                            OrderStatusEnum state) {
+                                            OrderStatusEnum state,
+                                            Boolean excludeFinishedProject) {
 
         List<Long> ordersIdsByReadAuthorization = getOrdersIdsByReadAuthorization(user);
 
@@ -403,6 +405,15 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements IOrderDAO {
                 where += "AND ";
             }
             where += "o.state = :state ";
+        }
+
+        if (excludeFinishedProject != null && excludeFinishedProject == true) {
+            if (where.isEmpty()) {
+                where += "WHERE ";
+            } else {
+                where += "AND ";
+            }
+            where += "o.state <> '" + OrderStatusEnum.FINISHED.getIndex() + "'";
         }
 
         // If not restrictions by labels, criteria, customer or state
@@ -550,7 +561,8 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements IOrderDAO {
             List<Label> labels,
             List<Criterion> criteria,
             ExternalCompany customer,
-            OrderStatusEnum state) {
+            OrderStatusEnum state,
+            Boolean excludeFinishedProject) {
 
         User user;
         try {
@@ -559,7 +571,7 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements IOrderDAO {
             throw new RuntimeException(e);
         }
         return existsInScenario(getOrdersByReadAuthorizationBetweenDatesByLabelsCriteriaCustomerAndState(
-                user, startDate, endDate, labels, criteria, customer, state), scenario);
+                user, startDate, endDate, labels, criteria, customer, state, excludeFinishedProject), scenario);
     }
 
     private List<Order> existsInScenario(List<Order> orders, Scenario scenario) {

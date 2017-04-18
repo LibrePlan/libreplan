@@ -56,12 +56,15 @@ public class TaskGroupPredicate implements IPredicate {
 
     private String name;
 
+    private Boolean excludeFinishedProject;
+
     public TaskGroupPredicate(List<FilterPair> filters, Date startDate,
-            Date finishDate, String name) {
+            Date finishDate, String name, Boolean excludeFinishedProject) {
         this.filters = filters;
         this.startDate = startDate;
         this.finishDate = finishDate;
         this.name = name;
+        this.excludeFinishedProject = excludeFinishedProject;
     }
 
     @Override
@@ -162,6 +165,15 @@ public class TaskGroupPredicate implements IPredicate {
             if (label.getId().equals(filterLabel.getId())) {
                 return true;
             }
+        }
+        return false;
+    }
+
+    private boolean acceptFinishedProject(FilterPair filter, TaskGroup taskGroup) {
+        Label filterLabel = (Label) filter.getValue();
+        Order order = (Order) taskGroup.getOrderElement();
+        if (order.getState() != OrderStatusEnum.FINISHED) {
+            return true;
         }
         return false;
     }
@@ -298,6 +310,10 @@ public class TaskGroupPredicate implements IPredicate {
             return true;
         }
         return false;
+    }
+
+    public Boolean getExcludeFinishedProjects() {
+        return excludeFinishedProject;
     }
 
 }

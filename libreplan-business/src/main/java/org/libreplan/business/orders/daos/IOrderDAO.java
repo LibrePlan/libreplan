@@ -86,7 +86,7 @@ public interface IOrderDAO extends IIntegrationEntityDAO<Order> {
     List<Order> getOrdersByReadAuthorizationBetweenDatesByLabelsCriteriaCustomerAndState(
             String username, Scenario scenario, Date startDate, Date endDate,
             List<Label> labels, List<Criterion> criteria,
-            ExternalCompany customer, OrderStatusEnum state);
+            ExternalCompany customer, OrderStatusEnum state, Boolean excludeFinishedProject);
 
     /**
      * Returns the order filtered by the name.

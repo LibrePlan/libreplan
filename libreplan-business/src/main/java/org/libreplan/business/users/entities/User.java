@@ -93,6 +93,8 @@ public class User extends BaseEntity implements IHumanIdentifiable{
 
     private Integer projectsFilterPeriodTo;
 
+    private Boolean projectsFilterFinishedOn = false;
+
     private Criterion resourcesLoadFilterCriterion = null;
 
     private Integer resourcesLoadFilterPeriodSince;
@@ -442,6 +444,14 @@ public class User extends BaseEntity implements IHumanIdentifiable{
 
     public void setProjectsFilterPeriodTo(Integer period) {
         projectsFilterPeriodTo = period;
+    }
+
+    public boolean isProjectsFilterFinishedOn() {
+        return projectsFilterFinishedOn;
+    }
+
+    public void setProjectsFilterFinishedOn(boolean projectsFilterFinishedOn) {
+        this.projectsFilterFinishedOn = projectsFilterFinishedOn;
     }
 
     public Integer getResourcesLoadFilterPeriodSince() {

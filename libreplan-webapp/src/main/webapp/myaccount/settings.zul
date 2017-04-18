@@ -172,6 +172,9 @@
                                                 value="@{settingsController.projectsFilterPeriodTo}"
                                                 width="50px"
                                                 constraint="@{settingsController.checkMonthsMaxValue}"/>
+                                        <checkbox id="projectsFilterFinishedOn"
+                                                          label="${i18n:_('Exclude finished projects')}"
+                                                          checked="@{settingsController.projectsFilterFinishedOn}"/>
                                     </hbox>
                                 </row>
 

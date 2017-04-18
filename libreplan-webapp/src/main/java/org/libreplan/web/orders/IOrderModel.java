@@ -91,7 +91,7 @@ public interface IOrderModel extends IIntegrationEntityModel {
 
     List<Order> getOrders(Date startDate, Date endDate, List<Label> labels,
             List<Criterion> criteria, ExternalCompany customer,
-            OrderStatusEnum state);
+            OrderStatusEnum state, Boolean excludeFinishedProject);
 
     void initEdit(Order order, Desktop desktop);
 
