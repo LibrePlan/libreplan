@@ -120,4 +120,8 @@ public interface ISettingsModel {
     boolean isShowMoneyCostBarOn();
 
     void setShowMoneyCostBarOn(boolean showMoneyCostBarOn);
+
+    boolean isProjectsFilterFinishedOn();
+
+    void setProjectsFilterFinishedOn(boolean projectsFilterFinishedOn);
 }

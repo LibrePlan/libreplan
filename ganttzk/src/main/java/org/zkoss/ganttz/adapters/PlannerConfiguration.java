@@ -181,6 +181,8 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
 
     private boolean showMoneyCostBarOn = false;
 
+    private boolean filterExcludeFinishedProject = false;
+
     private IDetailItemModifier firstLevelModifiers = SeveralModifiers.empty();
 
     private IDetailItemModifier secondLevelModifiers = SeveralModifiers.empty();
@@ -565,6 +567,14 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
 
     public void setShowMoneyCostBarOn(boolean showMoneyCostBarOn) {
         this.showMoneyCostBarOn = showMoneyCostBarOn;
+    }
+
+    public boolean isFilterExcludeFinishedProject() {
+        return filterExcludeFinishedProject;
+    }
+
+    public void setFilterExcludeFinishedProject(boolean filterExcludeFinishedProject) {
+        this.filterExcludeFinishedProject = filterExcludeFinishedProject;
     }
 
 }

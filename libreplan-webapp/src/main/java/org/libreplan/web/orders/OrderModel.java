@@ -241,13 +241,13 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
     @Transactional(readOnly = true)
     public List<Order> getOrders(Date startDate, Date endDate,
                                  List<Label> labels, List<Criterion> criteria,
-                                 ExternalCompany customer, OrderStatusEnum state) {
+                                 ExternalCompany customer, OrderStatusEnum state, Boolean excludeFinishedProject) {
         getLabelsOnConversation().reattachLabels();
         List<Order> orders = orderDAO
                 .getOrdersByReadAuthorizationBetweenDatesByLabelsCriteriaCustomerAndState(
                         SecurityUtils.getSessionUserLoginName(),
                         scenarioManager.getCurrent(), startDate, endDate,
-                        labels, criteria, customer, state);
+                        labels, criteria, customer, state, excludeFinishedProject);
 
         initializeOrders(orders);
 

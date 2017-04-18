@@ -66,6 +66,8 @@
 
         <property name="projectsFilterPeriodTo" column="projects_filter_period_to"/>
 
+        <property name="projectsFilterFinishedOn" column="projects_filter_finished_on"/>
+
         <property name="resourcesLoadFilterPeriodSince" column="resources_load_filter_period_since"/>
 
         <property name="resourcesLoadFilterPeriodTo" column="resources_load_filter_period_to"/>

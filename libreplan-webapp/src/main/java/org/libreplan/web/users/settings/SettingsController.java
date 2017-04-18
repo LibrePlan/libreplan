@@ -353,4 +353,13 @@ public class SettingsController extends GenericForwardComposer {
     public void setShowMoneyCostBarOn(boolean showMoneyCostBarOn) {
         settingsModel.setShowMoneyCostBarOn(showMoneyCostBarOn);
     }
+
+    public boolean isProjectsFilterFinishedOn() {
+        return settingsModel.isProjectsFilterFinishedOn();
+    }
+
+    public void setProjectsFilterFinishedOn(boolean projectsFilterFinishedOn) {
+        settingsModel.setProjectsFilterFinishedOn(projectsFilterFinishedOn);
+    }
+
 }

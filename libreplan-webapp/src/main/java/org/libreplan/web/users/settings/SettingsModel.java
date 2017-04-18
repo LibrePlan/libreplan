@@ -360,4 +360,15 @@ public class SettingsModel implements ISettingsModel {
     public void setShowMoneyCostBarOn(boolean showMoneyCostBarOn) {
             user.setShowMoneyCostBarOn(showMoneyCostBarOn);
     }
+
+    @Override
+    public boolean isProjectsFilterFinishedOn() {
+        return user.isProjectsFilterFinishedOn();
+    }
+
+    @Override
+    public void setProjectsFilterFinishedOn(boolean projectsFilterFinishedOn) {
+        user.setProjectsFilterFinishedOn(projectsFilterFinishedOn);
+    }
+
 }

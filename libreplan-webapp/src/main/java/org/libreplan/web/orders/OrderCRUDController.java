@@ -78,6 +78,7 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Column;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
@@ -220,6 +221,8 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private Textbox filterProjectName;
 
+    private Checkbox filterExcludeFinishedProject;
+
     private Runnable onUp;
 
     private boolean readOnly = true;
@@ -247,6 +250,8 @@ public class OrderCRUDController extends GenericForwardComposer {
         bdFilters = (BandboxMultipleSearch) filterComponent.getFellow("bdFilters");
 
         filterProjectName = (Textbox) filterComponent.getFellow("filterProjectName");
+
+        filterExcludeFinishedProject = (Checkbox) filterComponent.getFellow("filterExcludeFinishedProject");
 
         checkCreationPermissions();
         setupGlobalButtons();
@@ -290,6 +295,8 @@ public class OrderCRUDController extends GenericForwardComposer {
         filterFinishDate.setValue(endDate);
 
         filterProjectName.setValue(FilterUtils.readProjectsName());
+
+        filterExcludeFinishedProject.setValue(FilterUtils.readExcludeFinishedProjects());
 
         loadLabels();
         FilterUtils.writeProjectPlanningFilterChanged(false);
@@ -802,6 +809,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         List<Criterion> criteria = new ArrayList<>();
         ExternalCompany customer = null;
         OrderStatusEnum state = null;
+        //Boolean excludeFinishedProject = false;
 
         for (FilterPair filterPair : (List<FilterPair>) bdFilters.getSelectedElements()) {
             OrderFilterEnum type = (OrderFilterEnum) filterPair.getType();
@@ -837,7 +845,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         }
 
         return orderModel.getOrders(
-                filterStartDate.getValue(), filterFinishDate.getValue(), labels, criteria, customer, state);
+                filterStartDate.getValue(), filterFinishDate.getValue(), labels, criteria, customer, state, filterExcludeFinishedProject.isChecked());
     }
 
     private OnlyOneVisible getVisibility() {
@@ -1438,7 +1446,8 @@ public class OrderCRUDController extends GenericForwardComposer {
                 filterStartDate.getValue(),
                 filterFinishDate.getValue(),
                 getSelectedBandboxAsTaskGroupFilters(),
-                filterProjectName.getValue());
+                filterProjectName.getValue(),
+                filterExcludeFinishedProject.getValue());
     }
 
     private List<FilterPair> getSelectedBandboxAsTaskGroupFilters() {
@@ -1769,6 +1778,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         filterStartDate.setValue(FilterUtils.readProjectsStartDate());
         filterFinishDate.setValue(FilterUtils.readProjectsEndDate());
         filterProjectName.setValue(FilterUtils.readProjectsName());
+        filterExcludeFinishedProject.setValue(FilterUtils.readExcludeFinishedProjects());
 
         loadLabels();
     }
