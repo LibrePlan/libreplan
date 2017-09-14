@@ -288,7 +288,7 @@ msgstr "费用估算的子任务的总和"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/ManageOrderElementAdvancesController.java:714
 msgid "Progress that are reported by quality forms can not be modified"
-msgstr "不能修改由质量表格所报告的进展"
+msgstr "不能修改由质量表格所报告的进度"
 
 #: libreplan-webapp/src/main/webapp/excetiondays/_editExceptionDayType.zul:66
 msgid "Own exception"
@@ -553,7 +553,7 @@ msgstr "LDAP连接成功"
 msgid ""
 "This resource allocation type is incompatible. The task has an associated "
 "order element which has a progress that is of type subcontractor. "
-msgstr "这种资源分配类型是不兼容的。任务有相关的Order元素，其中有一个进步，是类型的分包商。"
+msgstr "这种资源分配类型是不兼容的。任务有相关的Order元素，其中有一个进度，是类型的分包商。"
 
 #: libreplan-business/src/main/java/org/libreplan/business/qualityforms/entities/TaskQualityFormItem.java:87
 msgid "position not specified"
@@ -667,7 +667,7 @@ msgstr "推算小时"
 
 #: libreplan-business/src/main/java/org/libreplan/business/planner/entities/SubcontractorCommunicationValue.java:73
 msgid "progress should be greater than 0% and less than 100%"
-msgstr "进展应该是大于0% 且小于100％的"
+msgstr "进度应该是大于0% 且小于100％的"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/workreports/WorkReportTypeCRUDController.java:668
 msgid "A description field with the same name already exists."
@@ -906,7 +906,7 @@ msgstr "添加新的任务分配"
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/ManageOrderElementAdvancesController.java:1342
 msgid ""
 "Value must be a multiple of the precision value of the progress type: {0}"
-msgstr "值必须是一个多精度值的进展类型：{0}"
+msgstr "值必须是一个多精度值的进度类型：{0}"
 
 #: libreplan-webapp/src/main/webapp/orders/_orderElementTreeFilter.zul:32
 msgid "Set Filter Options"
@@ -1005,7 +1005,7 @@ msgstr "结束日期"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/consolidations/AdvanceConsolidationModel.java:517
 msgid "There is not any assigned progress to current task"
-msgstr "没有任何分配到当前的任务方面取得的进展"
+msgstr "没有任何分配到当前的任务方面取得的进度"
 
 #: libreplan-webapp/src/main/webapp/common/pageNotFound.zul:22
 msgid "LibrePlan: Page not found"
@@ -1226,7 +1226,7 @@ msgstr "值"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/advance/AdvanceTypeModel.java:91
 msgid "Progress type cannot be modified"
-msgstr "进展类型不能被修改"
+msgstr "进度类型不能被修改"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/AllocationRow.java:809
 msgid "there are no valid periods for this calendar"
@@ -1258,7 +1258,7 @@ msgstr "伸展日期不得早于任务开始日期："
 
 #: libreplan-webapp/src/main/webapp/advance/_listAdvanceTypes.zul:22
 msgid "Progress Types List"
-msgstr "进展类型列表"
+msgstr "进度类型列表"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/resources/worker/AssignedCriterionsModel.java:335
 #: libreplan-webapp/src/main/java/org/libreplan/web/resources/machine/AssignedMachineCriterionsModel.java:398
@@ -1505,7 +1505,7 @@ msgstr "状态不指定"
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/ManageOrderElementAdvancesController.java:1319
 msgid ""
 "Spread progress cannot be removed. Please select another progress as spread."
-msgstr "传播进步不能被删除。请选择另一个进步为传播。"
+msgstr "传播进度不能被删除。请选择另一个进度为传播。"
 
 #: libreplan-webapp/src/main/webapp/common/concurrentModification.zul:34
 msgid "Please try it again."
@@ -1699,7 +1699,7 @@ msgstr "SPI"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/advance/AdvanceTypeCRUDController.java:232
 msgid "Progress Type"
-msgstr "进展类型"
+msgstr "进度类型"
 
 #: libreplan-business/src/main/java/org/libreplan/business/workreports/entities/WorkReportType.java:85
 msgid "name not specified or empty"
@@ -1827,7 +1827,7 @@ msgstr "标准之前选择的"
 msgid ""
 "Spread progress cannot be changed if there is a consolidation in any "
 "progress assignment from root task"
-msgstr "从根任务，如果有一个整合的任何任务分配，传播进步不能改变"
+msgstr "从根任务，如果有一个整合的任何任务分配，传播进度不能改变"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/OrderCRUDController.java:313
 msgid "Schedule from deadline to start"
@@ -2346,7 +2346,7 @@ msgstr "任务Completation超前/滞后"
 #: libreplan-webapp/src/main/webapp/users/_editUser.zul:127
 #: libreplan-webapp/src/main/webapp/profiles/_editProfile.zul:51
 msgid "Association with roles"
-msgstr "协会与角色"
+msgstr "关联角色"
 
 #: libreplan-webapp/src/main/webapp/expensesheet/expenseSheet.zul:36
 #: libreplan-webapp/src/main/webapp/myaccount/_expensesArea.zul:44
@@ -2490,7 +2490,7 @@ msgstr "确认取消"
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/CustomMenuController.java:470
 #: libreplan-webapp/src/main/webapp/reports/workingProgressPerTaskReport.zul:39
 msgid "Work And Progress Per Task"
-msgstr "每个任务的工作及进展情况"
+msgstr "每个任务的工作及进度情况"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/OrderCRUDController.java:1529
 msgid "project code already being used"
@@ -2603,7 +2603,7 @@ msgstr "新"
 
 #: libreplan-webapp/src/main/webapp/subcontract/reportAdvances.zul:49
 msgid "Date last progress measurement"
-msgstr "日期最近的进展测量"
+msgstr "日期最近的进度估算"
 
 #: libreplan-webapp/src/main/webapp/externalcompanies/externalcompanies.zul:23
 msgid "LibrePlan: Companies"
@@ -2952,7 +2952,7 @@ msgstr "角色属性"
 
 #: libreplan-business/src/main/java/org/libreplan/business/advance/entities/AdvanceAssignment.java:75
 msgid "progress type not specified"
-msgstr "不指定进步型"
+msgstr "不指定进度类型"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/users/dashboard/ExpensesAreaController.java:108
 msgid "Expense sheet \"{1}\" could not be deleted, it was already removed"
@@ -2973,7 +2973,7 @@ msgstr "授权"
 msgid ""
 "Progress Measurement cannot be deleted. Progress Measurement already "
 "consolidated"
-msgstr "进展测量不能被删除。进展测量已经巩固"
+msgstr "进度估算不能被删除。进度估算已经巩固"
 
 #: libreplan-webapp/src/main/webapp/planner/taskpanels/_taskInformation.zul:47
 msgid "Recommended allocation"
@@ -2985,7 +2985,7 @@ msgstr "激活"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/ManageOrderElementAdvancesController.java:759
 msgid "Calculated progress cannot be removed"
-msgstr "计算的进步不能被删除"
+msgstr "计算的进度不能被删除"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/materials/MaterialsController.java:375
 msgid "Materials saved"
@@ -3105,7 +3105,7 @@ msgstr "更改密码"
 
 #: libreplan-webapp/src/main/webapp/reports/workingProgressPerTaskReport.zul:21
 msgid "LibrePlan: Work And Progress Per Task"
-msgstr "LibrePlan：每个任务的工作和进展"
+msgstr "LibrePlan：每个任务的工作和进度"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/CustomMenuController.java:270
 #: libreplan-webapp/src/main/webapp/scenarios/_edition.zul:48
@@ -3159,7 +3159,7 @@ msgstr "因为启用了LDAP身份验证密码不能为LDAP的用户管理。"
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/ManageOrderElementAdvancesController.java:1325
 msgid ""
 "Progress measurement cannot be canged to {0}, because it is consolidated"
-msgstr "进展测量不能canged {0}“，因为它是综合"
+msgstr "进度估算不能canged {0}“，因为它是综合"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/workreports/WorkReportTypeCRUDController.java:826
 msgid "Text field"
@@ -3387,7 +3387,7 @@ msgstr "登录"
 
 #: libreplan-webapp/src/main/webapp/excetiondays/_editExceptionDayType.zul:68
 msgid "Inherited exception"
-msgstr "继承的例外"
+msgstr "继承的异常"
 
 #: libreplan-webapp/src/main/webapp/orders/_edition.zul:57
 msgid "Authorizations"
@@ -3528,7 +3528,7 @@ msgstr "应用更改并返回到调度"
 #: libreplan-webapp/src/main/java/org/libreplan/web/dashboard/GlobalProgressChart.java:60
 #: libreplan-business/src/main/java/org/libreplan/business/common/entities/ProgressType.java:36
 msgid "Spreading progress"
-msgstr "传播进步"
+msgstr "传播进度"
 
 #: libreplan-webapp/src/main/webapp/workreports/workReportQuery.zul:108
 #: libreplan-webapp/src/main/webapp/templates/_historicalAssignment.zul:38
@@ -3885,7 +3885,7 @@ msgstr "初始化"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/ManageOrderElementAdvancesController.java:1296
 msgid "Add new progress measurement"
-msgstr "添加新的进展测量"
+msgstr "添加新的进度估算"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/limitingresources/LimitingResourcesController.java:530
 msgid "Select for automatic queuing"
@@ -4113,7 +4113,7 @@ msgstr "标题字段"
 #: libreplan-webapp/src/main/webapp/reports/schedulingProgressPerOrderReport.zul:72
 #: libreplan-webapp/src/main/webapp/reports/schedulingProgressPerOrderReport.zul:82
 msgid "Progress type"
-msgstr "进展型"
+msgstr "进度类型"
 
 #: libreplan-business/src/main/java/org/libreplan/business/workreports/entities/WorkReportType.java:198
 msgid "Assigned Label Type cannot be repeated in a Timesheet Template."
@@ -4388,15 +4388,15 @@ msgstr "- 个人开支片必须具有相同的的所有行中的资源"
 #: libreplan-webapp/src/main/webapp/planner/main.zul:61
 #: libreplan-webapp/src/main/webapp/planner/taskpanels/_tabPanelTaskProperties.zul:50
 msgid "Notes"
-msgstr "笔记"
+msgstr "备注"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/scenarios/ScenarioCRUDController.java:178
 msgid "Connect"
-msgstr "连"
+msgstr "连接"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/ManageOrderElementAdvancesController.java:1240
 msgid "This progress type cannot cannot be removed"
-msgstr "这一进展类型不能不能被删除"
+msgstr "这一进度类型不能不能被删除"
 
 #: libreplan-webapp/src/main/webapp/expensesheet/expenseSheet.zul:145
 #: libreplan-webapp/src/main/webapp/expensesheet/expenseSheet.zul:169
@@ -4425,11 +4425,11 @@ msgstr "见调度"
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/ManageOrderElementAdvancesController.java:338
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/ManageOrderElementAdvancesController.java:341
 msgid "Progress measurements"
-msgstr "进展测量"
+msgstr "进度估算"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/ManageOrderElementAdvancesController.java:1295
 msgid "Add measure"
-msgstr "新增措施"
+msgstr "新增估算"
 
 #: libreplan-webapp/src/main/webapp/resources/search/allocation_selector.zul:52
 msgid "Found resources"
@@ -4509,7 +4509,7 @@ msgstr "已绑定资源"
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/ManageOrderElementAdvancesController.java:1235
 msgid ""
 "Progress measurements that are reported by quality forms cannot be removed"
-msgstr "进展测量所报告的质量形式不能被删除"
+msgstr "进度估算所报告的质量形式不能被删除"
 
 #: libreplan-business/src/main/java/org/libreplan/business/workreports/entities/WorkReportLine.java:426
 msgid ""
@@ -4521,7 +4521,7 @@ msgstr "根据开始日期和结束日期的小时数，不能正确计算"
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/CustomMenuController.java:332
 #: libreplan-business/src/main/java/org/libreplan/business/users/entities/UserRole.java:55
 msgid "Progress Types"
-msgstr "进展类型"
+msgstr "进度类型"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/components/finders/ResourceFilterEnum.java:29
 #: libreplan-webapp/src/main/webapp/common/configuration.zul:193
@@ -4530,7 +4530,7 @@ msgstr "成本类别"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/AssignedTaskQualityFormsToOrderElementModel.java:342
 msgid "Quality form cannot be removed as it is spreading progress"
-msgstr "质量形式不能被删除，因为它是传播进步"
+msgstr "质量形式不能被删除，因为它是传播进度"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/ConfigurationController.java:712
 msgid "It can not be deleted. At least one sequence is necessary."
@@ -4592,7 +4592,7 @@ msgstr "添加新的标签类型字段"
 msgid ""
 "Progress measurements must have a value lower than their following progress "
 "measurements."
-msgstr "进展的测量必须有一个值低于其下面的进度测量。"
+msgstr "进度的测量必须有一个值低于其下面的进度测量。"
 
 #: libreplan-webapp/src/main/webapp/orders/_edition.zul:233
 msgid "Customer reference"
@@ -4692,7 +4692,7 @@ msgstr "一些标准的满意度在时间上重叠"
 
 #: libreplan-webapp/src/main/webapp/subcontract/reportAdvances.zul:50
 msgid "Value last progress measurement"
-msgstr "值最后的进步测量"
+msgstr "值最后的进度测量"
 
 #: libreplan-webapp/src/main/webapp/reports/timeLineMaterialReport.zul:21
 msgid "LibrePlan: Materials Needed At Date"
@@ -4822,7 +4822,7 @@ msgstr "主要的喜好"
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/consolidations/AdvanceConsolidationCommand.java:67
 #: libreplan-webapp/src/main/webapp/planner/order.zul:80
 msgid "Progress consolidation"
-msgstr "进展合并"
+msgstr "进度合并"
 
 #: libreplan-webapp/src/main/webapp/resources/machine/_machineConfigurationUnits.zul:47
 msgid "Add new worker assignment"
@@ -4842,7 +4842,7 @@ msgstr "任务信息"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/consolidations/AdvanceConsolidationModel.java:515
 msgid "Progress cannot be consolidated."
-msgstr "进展不能合并。"
+msgstr "进度不能合并。"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/workreports/WorkReportTypeModel.java:403
 msgid "There is another timesheet template with the same name"
@@ -4896,7 +4896,7 @@ msgstr "LDAP配置"
 
 #: libreplan-business/src/main/java/org/libreplan/business/qualityforms/entities/QualityForm.java:406
 msgid "progress type should must be defined if quality form reports progress"
-msgstr "进步类型应该必须被定义，如果质量形式报告进度"
+msgstr "进度类型应该必须被定义，如果质量形式报告进度"
 
 #: libreplan-webapp/src/main/webapp/users/_listUsers.zul:30
 #: libreplan-business/src/main/java/org/libreplan/business/users/entities/UserRole.java:35
@@ -4937,7 +4937,7 @@ msgstr "成本差异"
 #: libreplan-webapp/src/main/webapp/myaccount/personalTimesheet.zul:92
 #: libreplan-webapp/src/main/webapp/orders/_edition.zul:182
 msgid "Total"
-msgstr "总"
+msgstr "总计"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/CustomMenuController.java:403
 #: libreplan-business/src/main/java/org/libreplan/business/users/entities/UserRole.java:66
@@ -4996,7 +4996,7 @@ msgstr "不能为空或小于零"
 #: libreplan-webapp/src/main/webapp/planner/order.zul:89
 #: libreplan-webapp/src/main/webapp/planner/order.zul:95
 msgid "Check consolidated progresses"
-msgstr "检查综合进展"
+msgstr "检查综合进度"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/order/SubcontractController.java:287
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/order/SubcontractController.java:290
@@ -5083,7 +5083,7 @@ msgstr "综合进度也不会被删除"
 msgid ""
 "Spread progress cannot be changed if there is a consolidation in any "
 "progress assignment"
-msgstr "不能改变任何任务分配中，如果有一个巩固传播进步"
+msgstr "不能改变任何任务分配中，如果有一个巩固传播进度"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/dashboard/GlobalProgressChart.java:63
 msgid "By critical path duration"
@@ -5099,7 +5099,7 @@ msgstr "保存新的时间表"
 
 #: libreplan-webapp/src/main/webapp/subcontract/reportAdvances.zul:48
 msgid "Value last progress reported"
-msgstr "值最后报告进展"
+msgstr "值最后报告进度"
 
 #: libreplan-webapp/src/main/webapp/workreports/workReportQuery.zul:118
 msgid "Timesheet"
@@ -5224,7 +5224,7 @@ msgstr "在可用时段{0} {1}小时。"
 
 #: libreplan-webapp/src/main/webapp/users/_editUser.zul:148
 msgid "Association with profiles"
-msgstr "协会与配置文件"
+msgstr "关联配置文件"
 
 #: libreplan-webapp/src/main/webapp/common/error.zul:30
 #: libreplan-webapp/src/main/webapp/common/eventError.zul:25
@@ -5234,7 +5234,7 @@ msgstr "留言 - {0}"
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/ManageOrderElementAdvancesController.java:1379
 msgid ""
 "Date is not valid, it must be later than the last progress consolidation"
-msgstr "日期是无效的，它必须比过去进步盘整"
+msgstr "日期是无效的，它必须比过去进度盘整"
 
 #: libreplan-webapp/src/main/webapp/common/configuration.zul:214
 msgid "Seconds planning warning"
@@ -5483,7 +5483,7 @@ msgstr "在正向模式下，开始日期不能为空"
 #: libreplan-webapp/src/main/webapp/resources/machine/_editMachine.zul:33
 #: libreplan-webapp/src/main/webapp/common/configuration.zul:287
 msgid "Configuration"
-msgstr "组态"
+msgstr "设置"
 
 #: libreplan-business/src/main/java/org/libreplan/business/costcategories/entities/HourCost.java:122
 msgid "cost category not specified"
@@ -5552,7 +5552,7 @@ msgstr "保存项目"
 #: libreplan-webapp/src/main/java/org/libreplan/web/advance/AdvanceTypeCRUDController.java:119
 msgid ""
 "The name is not valid, there is another progress type with the same name. "
-msgstr "名称是无效的，还有另一种具有相同名称的类型进展。"
+msgstr "名称是无效的，还有另一种具有相同名称的类型进度。"
 
 #: libreplan-webapp/src/main/webapp/workreports/workReportQuery.zul:49
 msgid "task"
@@ -5579,7 +5579,7 @@ msgstr "没有指定的质量形式的项目位置"
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/CustomMenuController.java:306
 #: libreplan-business/src/main/java/org/libreplan/business/users/entities/UserRole.java:50
 msgid "Machines"
-msgstr "机"
+msgstr "机器"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/users/dashboard/PersonalTimesheetController.java:611
 msgid "My account"
@@ -5592,7 +5592,7 @@ msgstr "目标的情况"
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/CustomMenuController.java:264
 #: libreplan-webapp/src/main/webapp/myaccount/settings.zul:108
 msgid "Company view"
-msgstr "公司风貌"
+msgstr "公司视图"
 
 #: libreplan-business/src/main/java/org/libreplan/business/common/entities/Configuration.java:461
 msgid "currency symbol not specified"
@@ -5605,7 +5605,7 @@ msgstr "都"
 #: libreplan-business/src/main/java/org/libreplan/business/qualityforms/entities/QualityForm.java:389
 #: libreplan-business/src/main/java/org/libreplan/business/qualityforms/entities/TaskQualityForm.java:171
 msgid "report progress not specified"
-msgstr "报告未指定的进展"
+msgstr "报告未指定的进度"
 
 #: libreplan-webapp/src/main/webapp/resources/search/_resourceFilter.zul:25
 msgid "Filter by"
@@ -5628,7 +5628,7 @@ msgstr "类别"
 
 #: libreplan-webapp/src/main/webapp/advance/advanceTypes.zul:22
 msgid "LibrePlan: Progress Types"
-msgstr "LibrePlan进展"
+msgstr "LibrePlan进度"
 
 #: libreplan-webapp/src/main/webapp/resources/search/allocation_selector.zul:79
 #: libreplan-business/src/main/java/org/libreplan/business/resources/entities/Criterion.java:203
@@ -5735,7 +5735,7 @@ msgstr "配置单元的名称"
 
 #: libreplan-webapp/src/main/webapp/subcontract/reportAdvances.zul:47
 msgid "Date last progress reported"
-msgstr "日期最近的进展报告"
+msgstr "日期最近的进度报告"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/entrypoints/RedirectorSynthetiser.java:125
 msgid "Could not load any resource"
@@ -5744,7 +5744,7 @@ msgstr "无法加载任何资源"
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/CustomMenuController.java:464
 #: libreplan-webapp/src/main/webapp/reports/schedulingProgressPerOrderReport.zul:39
 msgid "Work And Progress Per Project"
-msgstr "每个项目的工作及进展情况"
+msgstr "每个项目的工作及进度情况"
 
 #: libreplan-business/src/main/java/org/libreplan/business/common/entities/Configuration.java:497
 msgid "seconds planning warning not specified"
@@ -5778,7 +5778,7 @@ msgstr "标签类型：时间表已经指定了这个标签类型"
 
 #: libreplan-business/src/main/java/org/libreplan/business/advance/entities/AdvanceType.java:221
 msgid "progress type marked as quality form but is updatable"
-msgstr "进步型标记为质量形式，但更新"
+msgstr "进度类型标记为质量形式，但更新"
 
 #: libreplan-webapp/src/main/webapp/orders/components/_orderElementTree.zul:64
 msgid "Move selected task up"
@@ -5996,7 +5996,7 @@ msgstr "子目录名称必须是唯一的。"
 
 #: libreplan-webapp/src/main/webapp/reports/schedulingProgressPerOrderReport.zul:21
 msgid "LibrePlan: Work And Progress Per Project"
-msgstr "LibrePlan：每个项目的工作及进展情况"
+msgstr "LibrePlan：每个项目的工作及进度情况"
 
 #: libreplan-webapp/src/main/webapp/workreports/workReport.zul:54
 #: libreplan-webapp/src/main/webapp/workreports/workReportQuery.zul:83
@@ -6013,7 +6013,7 @@ msgstr "调度模式"
 
 #: libreplan-webapp/src/main/webapp/common/configuration.zul:78
 msgid "Personal timesheets peridocity"
-msgstr "个人时间表peridocity"
+msgstr "个人工时表周期"
 
 #: libreplan-business/src/main/java/org/libreplan/business/planner/entities/TaskMilestone.java:121
 msgid "a milestone cannot have a task associated"
@@ -6053,7 +6053,7 @@ msgstr "报告进度"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/dashboard/GlobalProgressChart.java:124
 msgid "Progress percentage per progress type"
-msgstr "每进步型的进度百分比"
+msgstr "每进度类型的进度百分比"
 
 #: libreplan-webapp/src/main/webapp/myaccount/personalTimesheet.zul:168
 msgid "Ok"
@@ -6089,7 +6089,7 @@ msgstr "Subcontrated任务"
 #: libreplan-webapp/src/main/webapp/templates/_editTemplateWindow.zul:75
 #: libreplan-webapp/src/main/webapp/orders/_editOrderElement.zul:86
 msgid "Back"
-msgstr "背面"
+msgstr "返回"
 
 #: libreplan-webapp/src/main/webapp/externalcompanies/_editExternalCompany.zul:85
 msgid "Our company username"
@@ -6312,7 +6312,7 @@ msgstr "成本类别分配"
 
 #: libreplan-business/src/main/java/org/libreplan/business/advance/entities/AdvanceType.java:246
 msgid "progress type name is already in use"
-msgstr "进步类型的名称已在使用中"
+msgstr "进度类型的名称已在使用中"
 
 #: libreplan-business/src/main/java/org/libreplan/business/common/entities/EntitySequence.java:140
 msgid "number of digits not specified"
@@ -6480,15 +6480,15 @@ msgstr "添加任务"
 #: libreplan-webapp/src/main/webapp/orders/_edition.zul:46
 #: libreplan-webapp/src/main/webapp/dashboard/_dashboardfororder.zul:58
 msgid "Progress"
-msgstr "进步"
+msgstr "进度"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/ManageOrderElementAdvancesController.java:1305
 msgid "All progress types have already been assigned."
-msgstr "一切进步的类型已经被分配。"
+msgstr "一切进度的类型已经被分配。"
 
 #: libreplan-webapp/src/main/webapp/costcategories/_editCostCategory.zul:80
 msgid "Price per hour"
-msgstr "价格每小时"
+msgstr "每小时价格"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/stretches/StretchesFunctionModel.java:177
 msgid "Last stretch should have 100% for length and amount of work"
@@ -6715,7 +6715,7 @@ msgstr "分配"
 
 #: libreplan-webapp/src/main/webapp/myaccount/settings.zul:98
 msgid "Planning charts expanded"
-msgstr "规划图扩大"
+msgstr "规划图展开"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/calendars/BaseCalendarEditionController.java:702
 msgid "Inh"
@@ -6835,7 +6835,7 @@ msgstr "时间成本：{1} {0}，费用成本："
 #: libreplan-webapp/src/main/webapp/templates/_advances.zul:27
 #: libreplan-webapp/src/main/webapp/orders/_listOrderElementAdvances.zul:25
 msgid "Progress assignments"
-msgstr "进展的任务"
+msgstr "进度分配"
 
 #: libreplan-webapp/src/main/webapp/calendars/_edition.zul:252
 #: libreplan-webapp/src/main/webapp/calendars/_edition.zul:274
@@ -6920,7 +6920,7 @@ msgstr "计算"
 
 #: libreplan-webapp/src/main/webapp/common/layout/login.zul:56
 msgid "Access to the system"
-msgstr "到系统中的访问"
+msgstr "访问系统"
 
 #: libreplan-webapp/src/main/webapp/planner/montecarlo_function.zul:48
 msgid "Probability"
@@ -6941,7 +6941,7 @@ msgstr "外部负载"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/subcontract/ReportAdvancesController.java:207
 msgid "Progress sent successfully"
-msgstr "进展发送成功"
+msgstr "进度发送成功"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/resources/worker/WorkerModel.java:416
 msgid ""
@@ -7013,7 +7013,7 @@ msgstr "花的钱"
 #: libreplan-webapp/src/main/webapp/typeofworkhours/_listTypesOfWorkHours.zul:26
 #: libreplan-webapp/src/main/webapp/typeofworkhours/_editTypeOfWorkHours.zul:40
 msgid "Code"
-msgstr "码"
+msgstr "代码"
 
 #: libreplan-webapp/src/main/webapp/planner/stretches_function.zul:40
 msgid "Add stretch"
@@ -7024,7 +7024,7 @@ msgstr "添加拉伸"
 msgid ""
 "Progress Assignment cannot be deleted or changed. Progress Assignment "
 "contains Progress Consolidations values"
-msgstr "任务分配，不能删除或更改。任务分配的进展合并值"
+msgstr "任务分配，不能删除或更改。任务分配的进度合并值"
 
 #: libreplan-webapp/src/main/webapp/planner/taskpanels/_tabPanelLimitingResourceAllocation.zul:70
 msgid "Assignation type"
@@ -7079,7 +7079,7 @@ msgstr "单位名称"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/ManageOrderElementAdvancesController.java:750
 msgid "Progress that are reported by quality forms cannot be modified"
-msgstr "所报告的质量形式的进展，不能修改"
+msgstr "所报告的质量形式的进度，不能修改"
 
 #: libreplan-webapp/src/main/webapp/common/configuration.zul:23
 msgid "LibrePlan: Main Settings"
@@ -7149,7 +7149,7 @@ msgstr "概率％"
 #: libreplan-webapp/src/main/java/org/libreplan/web/resourceload/ResourceLoadController.java:854
 #: libreplan-webapp/src/main/webapp/planner/_legendLoadChartOrder.zul:49
 msgid "Load"
-msgstr "加载"
+msgstr "负载"
 
 #: libreplan-webapp/src/main/webapp/resources/_criterions.zul:27
 #: libreplan-webapp/src/main/webapp/resources/criterions/_criterionsTree.zul:28
@@ -7181,7 +7181,7 @@ msgstr "资源：{0}"
 #: libreplan-webapp/src/main/webapp/planner/advance_allocation.zul:39
 #: libreplan-webapp/src/main/webapp/planner/advance_allocation.zul:45
 msgid "Apply"
-msgstr "申请"
+msgstr "应用"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/resources/worker/WorkerCRUDController.java:969
 msgid "Do you want to remove bound user \"{0}\" too?"
@@ -7214,7 +7214,7 @@ msgstr "前"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/ManageOrderElementAdvancesController.java:1359
 msgid "Invalid date. Date must be unique for this Progress Assignment"
-msgstr "无效的日期。取得这一进展的分配必须是唯一的日期"
+msgstr "无效的日期。取得这一进度的分配必须是唯一的日期"
 
 #: libreplan-webapp/src/main/webapp/templates/_historicalStatistics.zul:43
 msgid "Number of finished applications"
@@ -7433,7 +7433,7 @@ msgstr "没有足够的权限来创建模板"
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/ManageOrderElementAdvancesController.java:1369
 msgid ""
 "Invalid value. Value must be greater than the value of previous progress."
-msgstr "无效值。值必须大于比以前进步的价值。"
+msgstr "无效值。值必须大于比以前进度的价值。"
 
 #: libreplan-webapp/src/main/webapp/planner/taskpanels/_tabPanelSubcontract.zul:109
 #: libreplan-webapp/src/main/webapp/planner/taskpanels/_tabPanelSubcontract.zul:126
@@ -7547,7 +7547,7 @@ msgstr "标准满意代码必须是独特的内部资源"
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/ManageOrderElementAdvancesController.java:719
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/ManageOrderElementAdvancesController.java:755
 msgid "This progress type cannot be modified"
-msgstr "这一进展类型不能被修改"
+msgstr "这一进度类型不能被修改"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/qualityforms/QualityFormCRUDController.java:253
 msgid "percentage should be between 1 and 100"
@@ -7704,7 +7704,7 @@ msgstr "确认这种情况下，衍生创建一个新的项目版本。你确定
 #: libreplan-webapp/src/main/webapp/orders/_listOrderElementCriterionRequirements.zul:166
 #: libreplan-webapp/src/main/webapp/orders/_edition.zul:268
 msgid "Add"
-msgstr "加"
+msgstr "添加"
 
 #: libreplan-webapp/src/main/webapp/common/error.zul:48
 #: libreplan-webapp/src/main/webapp/common/eventError.zul:43
@@ -8132,7 +8132,7 @@ msgstr "新项目"
 
 #: libreplan-business/src/main/java/org/libreplan/business/externalcompanies/entities/CommunicationType.java:31
 msgid "Progress Update"
-msgstr "最新进展"
+msgstr "最新进度"
 
 #: libreplan-business/src/main/java/org/libreplan/business/externalcompanies/entities/CommunicationType.java:32
 msgid "Update Delivering Date"
@@ -8352,11 +8352,11 @@ msgstr "总工作小时的资源在一个月内报告"
 
 #: libreplan-business/src/main/java/org/libreplan/business/users/entities/UserRole.java:76
 msgid "Work And Progress Per Project Report"
-msgstr "每个项目的工作和进展报告"
+msgstr "每个项目的工作和进度报告"
 
 #: libreplan-business/src/main/java/org/libreplan/business/users/entities/UserRole.java:77
 msgid "Work And Progress Per Task Report"
-msgstr "每个任务的工作和进展报告"
+msgstr "每个任务的工作和进度报告"
 
 #: libreplan-business/src/main/java/org/libreplan/business/users/entities/UserRole.java:78
 msgid "Estimated/Planned Hours Per Task Report"
@@ -8534,15 +8534,15 @@ msgstr "每周"
 
 #: libreplan-business/src/main/java/org/libreplan/business/common/entities/ProgressType.java:37
 msgid "Progress with all tasks by hours"
-msgstr "几个小时的所有任务的进展"
+msgstr "几个小时的所有任务的进度"
 
 #: libreplan-business/src/main/java/org/libreplan/business/common/entities/ProgressType.java:38
 msgid "Progress with critical path tasks by hours"
-msgstr "关键路径任务的进展小时"
+msgstr "关键路径任务的进度小时"
 
 #: libreplan-business/src/main/java/org/libreplan/business/common/entities/ProgressType.java:39
 msgid "Progress with critical path tasks by duration"
-msgstr "关键路径任务的持续时间的研究进展"
+msgstr "关键路径任务的持续时间的研究进度"
 
 #: libreplan-business/src/main/java/org/libreplan/business/common/daos/EntitySequenceDAO.java:82
 msgid "Entity Sequence cannot be deleted. Entity Sequence already in use"
