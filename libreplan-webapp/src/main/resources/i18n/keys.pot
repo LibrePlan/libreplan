@@ -772,7 +772,7 @@ msgid "from {0}"
 msgstr ""
 
 #: org/libreplan/web/orders/ManageOrderElementAdvancesController.java:1240
-msgid "This progress type cannot cannot be removed"
+msgid "This progress type cannot be removed"
 msgstr ""
 
 #: org/libreplan/web/users/dashboard/PersonalTimesheetController.java:480
