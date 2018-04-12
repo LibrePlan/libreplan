@@ -141,7 +141,9 @@ public class BandboxSearch extends HtmlMacroComponent {
 
             @Override
             public void onEvent(Event event) {
-                pickElementFromList();
+                if(!listbox.getItems().isEmpty()) {
+                    pickElementFromList();
+                }
                 close();
             }
         });
