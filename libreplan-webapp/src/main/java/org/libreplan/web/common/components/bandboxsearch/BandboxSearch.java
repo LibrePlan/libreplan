@@ -114,17 +114,20 @@ public class BandboxSearch extends HtmlMacroComponent {
 
             @Override
             public void onEvent(Event event) {
-                int selectedItemIndex = listbox.getSelectedIndex();
-                if (selectedItemIndex != -1) {
-                    listbox.getItemAtIndexApi(selectedItemIndex).setSelected(true);
-                    listbox.getItemAtIndexApi(selectedItemIndex).setFocus(true);
-                } else {
-                    List<Listitem> items = listbox.getItems();
-                    if (!items.isEmpty()) {
-                        listbox.setSelectedIndex(0);
-                        items.get(0).setFocus(true);
-                        items.get(0).setSelected(true);
+                String selectedValue = bandbox.getValue();
+                List<Listitem> items = listbox.getItems();
+                if (StringUtils.isNotBlank(selectedValue)) {
+                    for (Listitem item : items) {
+                        String value = finder.objectToString(item.getValue());
+                        if (selectedValue.equals(value)) {
+                            listbox.getItemAtIndexApi(item.getIndex()).setFocus(true);
+                            listbox.getItemAtIndexApi(item.getIndex()).setSelected(true);
+                            break;
+                        }
                     }
+                    selectFirstElement(items);
+                } else {
+                    selectFirstElement(items);
                 }
             }
         });
@@ -154,6 +157,13 @@ public class BandboxSearch extends HtmlMacroComponent {
 
         addHeaders();
         updateWidth();
+    }
+
+    private void selectFirstElement(List<Listitem> items) {
+        if (!items.isEmpty()) {
+            items.get(0).setFocus(true);
+            items.get(0).setSelected(true);
+        }
     }
 
     private void pickElementFromList() {
