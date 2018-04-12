@@ -141,7 +141,7 @@ public class BandboxSearch extends HtmlMacroComponent {
 
             @Override
             public void onEvent(Event event) {
-                if(!listbox.getItems().isEmpty()) {
+                if (!listbox.getItems().isEmpty()) {
                     pickElementFromList();
                 }
                 close();
@@ -168,10 +168,12 @@ public class BandboxSearch extends HtmlMacroComponent {
     }
 
     private void pickElementFromList() {
-        final Object object = getSelectedItem().getValue();
-        bandbox.setValue(finder.objectToString(object));
-        setSelectedElement(object);
-        Util.getBinder(this).saveAttribute(this, "selectedElement");
+        if (getSelectedItem() != null) {
+            final Object object = getSelectedItem().getValue();
+            bandbox.setValue(finder.objectToString(object));
+            setSelectedElement(object);
+            Util.getBinder(this).saveAttribute(this, "selectedElement");
+        }
     }
 
     private void clearSelectedElement() {
