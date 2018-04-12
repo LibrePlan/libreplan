@@ -116,6 +116,8 @@ public class BandboxSearch extends HtmlMacroComponent {
             public void onEvent(Event event) {
                 String selectedValue = bandbox.getValue();
                 List<Listitem> items = listbox.getItems();
+                selectFirstElement(items);
+
                 if (StringUtils.isNotBlank(selectedValue)) {
                     for (Listitem item : items) {
                         String value = finder.objectToString(item.getValue());
@@ -125,9 +127,6 @@ public class BandboxSearch extends HtmlMacroComponent {
                             break;
                         }
                     }
-                    selectFirstElement(items);
-                } else {
-                    selectFirstElement(items);
                 }
             }
         });
