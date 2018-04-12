@@ -21,14 +21,6 @@
 
 package org.libreplan.web.common.components.bandboxsearch;
 
-import static org.libreplan.web.I18nHelper._;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.lang.StringUtils;
 import org.libreplan.business.common.BaseEntity;
 import org.libreplan.business.labels.entities.Label;
@@ -43,19 +35,21 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zkplus.databind.DataBinder;
-import org.zkoss.zul.Bandbox;
-import org.zkoss.zul.Constraint;
-import org.zkoss.zul.ListModel;
-import org.zkoss.zul.Listhead;
-import org.zkoss.zul.Listheader;
-import org.zkoss.zul.Listitem;
-import org.zkoss.zul.SimpleListModel;
+import org.zkoss.zul.*;
 import org.zkoss.zul.api.Listbox;
+
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.libreplan.web.I18nHelper._;
+
 @SuppressWarnings("serial")
 public class BandboxSearch extends HtmlMacroComponent {
 
     public static BandboxSearch create(String finderClassName,
-            List<? extends BaseEntity> model) {
+                                       List<? extends BaseEntity> model) {
         BandboxSearch bandboxSearch = new BandboxSearch();
         bandboxSearch.setFinder(finderClassName);
         bandboxSearch.afterCompose();
@@ -106,51 +100,46 @@ public class BandboxSearch extends HtmlMacroComponent {
             public void onEvent(Event event) {
                 clearSelectedElement();
                 final String inputText = ((InputEvent) event).getValue();
-                listbox.setModel(getSubModel(inputText));
+                if (StringUtils.isBlank(inputText)) {
+                    setModel(new SimpleListModel(model));
+                } else {
+                    listbox.setModel(getSubModel(inputText));
+                }
                 listbox.invalidate();
             }
         });
 
-        // TODO: Refactor CtrlKeys logic
-        /**
-         * There is NullPointerException when choosing elements with keyboard arrows.
-         * Arrows selection is now disabled.
-         */
-//        bandbox.setCtrlKeys("#down");
-//        bandbox.addEventListener(Events.ON_CTRL_KEY, new EventListener() {
-//
-//            @Override
-//            public void onEvent(Event event) {
-//                int selectedItemIndex = listbox.getSelectedIndex();
-//                if (selectedItemIndex != -1) {
-//                    listbox.getItemAtIndexApi(selectedItemIndex).setFocus(true);
-//                } else {
-//                    List<Listitem> items = listbox.getItems();
-//                    if (!items.isEmpty()) {
-//                        listbox.setSelectedIndex(0);
-//                        pickElementFromList();
-//                        items.get(0).setFocus(true);
-//                    }
-//                }
-//            }
-//        });
+        bandbox.setCtrlKeys("#down");
+        bandbox.addEventListener(Events.ON_CTRL_KEY, new EventListener() {
+
+            @Override
+            public void onEvent(Event event) {
+                int selectedItemIndex = listbox.getSelectedIndex();
+                if (selectedItemIndex != -1) {
+                    listbox.getItemAtIndexApi(selectedItemIndex).setSelected(true);
+                    listbox.getItemAtIndexApi(selectedItemIndex).setFocus(true);
+                } else {
+                    List<Listitem> items = listbox.getItems();
+                    if (!items.isEmpty()) {
+                        listbox.setSelectedIndex(0);
+                        items.get(0).setFocus(true);
+                        items.get(0).setSelected(true);
+                    }
+                }
+            }
+        });
 
         /**
          * Pick element from list when selecting
          */
-        listbox.addEventListener(Events.ON_SELECT, new EventListener() {
-
-            @Override
-            public void onEvent(Event event) {
-                pickElementFromList();
-            }
-        });
-
+        listbox.setCtrlKeys("#down");
+        listbox.setCtrlKeys("#up");
         // Close bandbox for events onClick and onOK
         listbox.addEventListener(Events.ON_CLICK, new EventListener() {
 
             @Override
             public void onEvent(Event event) {
+                pickElementFromList();
                 close();
             }
         });
@@ -167,7 +156,7 @@ public class BandboxSearch extends HtmlMacroComponent {
         updateWidth();
     }
 
-    public void pickElementFromList() {
+    private void pickElementFromList() {
         final Object object = getSelectedItem().getValue();
         bandbox.setValue(finder.objectToString(object));
         setSelectedElement(object);
@@ -277,7 +266,7 @@ public class BandboxSearch extends HtmlMacroComponent {
 
     /**
      * Clears {@link Bandbox}
-     *
+     * <p>
      * Fills bandbox list model, clear bandbox textbox, and set selected label
      * to null
      *
@@ -310,7 +299,7 @@ public class BandboxSearch extends HtmlMacroComponent {
     }
 
     public void setListboxEventListener(String event,
-            EventListener listener) {
+                                        EventListener listener) {
         listbox.addEventListener(event, listener);
     }
 
