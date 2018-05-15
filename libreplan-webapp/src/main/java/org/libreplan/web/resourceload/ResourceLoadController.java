@@ -315,8 +315,6 @@ public class ResourceLoadController implements Composer {
                 filterBy);
         result.add(filterTypeChanger);
 
-        // Only by dates and bandbox filter on global resources load
-        if (filterBy == null) {
         LocalDate startDate = FilterUtils.readResourceLoadsStartDate();
         LocalDate endDate = FilterUtils.readResourceLoadsEndDate();
 
@@ -324,8 +322,8 @@ public class ResourceLoadController implements Composer {
 
         // Calculate filter based on user preferences
         if (user != null) {
-                if (startDate == null
-                        && !FilterUtils.hasResourceLoadsStartDateChanged()) {
+            if (startDate == null
+                    && !FilterUtils.hasResourceLoadsStartDateChanged()) {
                 if (user.getResourcesLoadFilterPeriodSince() != null) {
                     startDate = new LocalDate().minusMonths(user
                             .getResourcesLoadFilterPeriodSince());
@@ -334,8 +332,8 @@ public class ResourceLoadController implements Composer {
                     startDate = new LocalDate().minusDays(1);
                 }
             }
-                if ((endDate == null)
-                        && !FilterUtils.hasResourceLoadsEndDateChanged()
+            if ((endDate == null)
+                    && !FilterUtils.hasResourceLoadsEndDateChanged()
                     && (user.getResourcesLoadFilterPeriodTo() != null)) {
                 endDate = new LocalDate().plusMonths(user
                         .getResourcesLoadFilterPeriodTo());
@@ -344,16 +342,16 @@ public class ResourceLoadController implements Composer {
 
         result.add(new ByDatesFilter(onChange, filterBy, startDate, endDate));
 
-        List<FilterPair> filterPairs = (List<FilterPair>) FilterUtils
+        List<FilterPair> filterPairs = FilterUtils
                 .readResourceLoadsBandbox();
         if ((filterPairs == null || filterPairs.isEmpty())
                 && user.getResourcesLoadFilterCriterion() != null) {
             filterPairs = new ArrayList<FilterPair>();
             filterPairs.add(new FilterPair(
                     ResourceAllocationFilterEnum.Criterion, user
-                            .getResourcesLoadFilterCriterion()
-                            .getFinderPattern(), user
-                            .getResourcesLoadFilterCriterion()));
+                    .getResourcesLoadFilterCriterion()
+                    .getFinderPattern(), user
+                    .getResourcesLoadFilterCriterion()));
         }
 
         WorkersOrCriteriaBandbox bandbox = new WorkersOrCriteriaBandbox(
@@ -362,7 +360,6 @@ public class ResourceLoadController implements Composer {
         result.add(bandbox);
         result.add(new ByNamePaginator(onChange, filterBy, filterTypeChanger,
                 bandbox));
-        }
         result.add(new LoadChart(onChange, filterBy));
         return result;
     }
