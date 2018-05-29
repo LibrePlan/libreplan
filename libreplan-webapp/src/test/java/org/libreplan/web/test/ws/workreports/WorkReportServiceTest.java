@@ -21,28 +21,6 @@
 
 package org.libreplan.web.test.ws.workreports;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.libreplan.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
-import static org.libreplan.web.WebappGlobalNames.WEBAPP_SPRING_CONFIG_FILE;
-import static org.libreplan.web.WebappGlobalNames.WEBAPP_SPRING_SECURITY_CONFIG_FILE;
-import static org.libreplan.web.test.WebappGlobalNames.WEBAPP_SPRING_CONFIG_TEST_FILE;
-import static org.libreplan.web.test.WebappGlobalNames.WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE;
-
-import java.lang.reflect.Method;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-
-import javax.annotation.Resource;
-import javax.xml.datatype.XMLGregorianCalendar;
-
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 import org.junit.Test;
@@ -65,27 +43,34 @@ import org.libreplan.business.resources.entities.Worker;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workreports.daos.IWorkReportDAO;
 import org.libreplan.business.workreports.daos.IWorkReportTypeDAO;
-import org.libreplan.business.workreports.entities.HoursManagementEnum;
-import org.libreplan.business.workreports.entities.WorkReport;
-import org.libreplan.business.workreports.entities.WorkReportLabelTypeAssigment;
-import org.libreplan.business.workreports.entities.WorkReportLine;
-import org.libreplan.business.workreports.entities.WorkReportType;
+import org.libreplan.business.workreports.entities.*;
 import org.libreplan.business.workreports.valueobjects.DescriptionField;
 import org.libreplan.ws.common.api.InstanceConstraintViolationsDTO;
 import org.libreplan.ws.common.api.InstanceConstraintViolationsListDTO;
 import org.libreplan.ws.common.api.LabelReferenceDTO;
 import org.libreplan.ws.common.impl.DateConverter;
-import org.libreplan.ws.workreports.api.DescriptionValueDTO;
-import org.libreplan.ws.workreports.api.IWorkReportService;
-import org.libreplan.ws.workreports.api.WorkReportDTO;
-import org.libreplan.ws.workreports.api.WorkReportLineDTO;
-import org.libreplan.ws.workreports.api.WorkReportListDTO;
+import org.libreplan.ws.workreports.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.NotTransactional;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.BeforeTransaction;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+import javax.xml.datatype.XMLGregorianCalendar;
+import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.util.*;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.libreplan.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
+import static org.libreplan.web.WebappGlobalNames.WEBAPP_SPRING_CONFIG_FILE;
+import static org.libreplan.web.WebappGlobalNames.WEBAPP_SPRING_SECURITY_CONFIG_FILE;
+import static org.libreplan.web.test.WebappGlobalNames.WEBAPP_SPRING_CONFIG_TEST_FILE;
+import static org.libreplan.web.test.WebappGlobalNames.WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE;
 
 /**
  * Tests for {@link IWorkReportService}.
@@ -160,6 +145,8 @@ public class WorkReportServiceTest {
     private final String labelA2 = "labelA2";
 
     private final String labelB1 = "labelB1";
+
+    private WorkReportDTO workReportDTO;
 
     @Resource
     private IDataBootstrap configurationBootstrap;
@@ -525,42 +512,79 @@ public class WorkReportServiceTest {
     }
 
     @Test
+    @NotTransactional
     public void importValidWorkReportWithDateAtWorkReportLevel() {
-        int previous = workReportDAO.getAll().size();
-
-        WorkReportDTO workReportDTO = createWorkReportDTO(workReportTypeCode2);
-        Date date = new LocalDate().toDateTimeAtStartOfDay().toDate();
-        workReportDTO.date = DateConverter.toXMLGregorianCalendar(date);
-
-        WorkReportListDTO workReportListDTO = new WorkReportListDTO(Collections.singletonList(workReportDTO));
-
-        InstanceConstraintViolationsListDTO instanceConstraintViolationsListDTO =
-                workReportService.addWorkReports(workReportListDTO);
-
-        assertThat(instanceConstraintViolationsListDTO.instanceConstraintViolationsList.size(), equalTo(0));
-
-        List<WorkReport> workReports = workReportDAO.getAll();
-        assertThat(workReports.size(), equalTo(previous + 1));
-
-        WorkReport imported = workReportDAO.findExistingEntityByCode(workReportDTO.code);
-        assertThat(imported.getDate(), equalTo(date));
-
-        List<WorkReportLine> importedLines = new ArrayList<WorkReportLine>(imported.getWorkReportLines());
-        Collections.sort(importedLines);
-
-        List<WorkReportLineDTO> exportedLines = new ArrayList<WorkReportLineDTO>(workReportDTO.workReportLines);
-
-        Collections.sort(exportedLines, new Comparator<WorkReportLineDTO>() {
+        int previous = transactionService.runOnTransaction(new IOnTransaction<Integer>() {
             @Override
-            public int compare(WorkReportLineDTO o1, WorkReportLineDTO o2) {
-                return o1.date.compare(o2.date);
+            public Integer execute() {
+                return workReportDAO.getAll().size();
             }
         });
 
-        for (WorkReportLineDTO each : exportedLines) {
-            WorkReportLine line = importedLines.remove(0);
-            assertThat(line.getDate().getTime(), equalTo(asTime(each.getDate())));
-        }
+        WorkReportDTO workReportDTO = transactionService.runOnTransaction(new IOnTransaction<WorkReportDTO>() {
+            @Override
+            public WorkReportDTO execute() {
+                WorkReportDTO workReportDTO = createWorkReportDTO(workReportTypeCode2);
+                Date date = new LocalDate().toDateTimeAtStartOfDay().toDate();
+                workReportDTO.date = DateConverter.toXMLGregorianCalendar(date);
+
+                WorkReportListDTO workReportListDTO = new WorkReportListDTO(Collections.singletonList(workReportDTO));
+
+                InstanceConstraintViolationsListDTO instanceConstraintViolationsListDTO =
+                        workReportService.addWorkReports(workReportListDTO);
+
+                assertThat(instanceConstraintViolationsListDTO.instanceConstraintViolationsList.size(), equalTo(0));
+
+                return workReportDTO;
+            }
+        });
+
+        setWorkReportDto(workReportDTO);
+
+        List<WorkReport> workReports = transactionService.runOnTransaction(new IOnTransaction<List<WorkReport>>() {
+            @Override
+            public List<WorkReport> execute() {
+                List<WorkReport> list = workReportDAO.getAll();
+                for (WorkReport workReport : list) {
+                    Set<WorkReportLine> workReportLines = workReport.getWorkReportLines();
+                    for (WorkReportLine line : workReportLines) {
+                        line.getEffort().getHours();
+                    }
+                }
+                return list;
+            }
+        });
+        assertThat(workReports.size(), equalTo(previous + 1));
+
+        transactionService.runOnTransaction(new IOnTransaction<List<Void>>() {
+            @Override
+            public List<Void> execute() {
+                WorkReport imported = workReportDAO.findExistingEntityByCode(WorkReportServiceTest.this.workReportDTO.code);
+                assertThat(imported.getDate(), equalTo(new LocalDate().toDateTimeAtStartOfDay().toDate()));
+
+                List<WorkReportLine> importedLines = new ArrayList<WorkReportLine>(imported.getWorkReportLines());
+                Collections.sort(importedLines);
+
+                List<WorkReportLineDTO> exportedLines = new ArrayList<WorkReportLineDTO>(WorkReportServiceTest.this.workReportDTO.workReportLines);
+
+                Collections.sort(exportedLines, new Comparator<WorkReportLineDTO>() {
+                    @Override
+                    public int compare(WorkReportLineDTO o1, WorkReportLineDTO o2) {
+                        return o1.date.compare(o2.date);
+                    }
+                });
+
+                for (WorkReportLineDTO each : exportedLines) {
+                    WorkReportLine line = importedLines.remove(0);
+                    assertThat(line.getDate().getTime(), equalTo(asTime(each.getDate())));
+                }
+                return null;
+            }
+        });
+    }
+
+    private void setWorkReportDto(WorkReportDTO workReportDTO) {
+        this.workReportDTO = workReportDTO;
     }
 
     private long asTime(XMLGregorianCalendar date2) {
