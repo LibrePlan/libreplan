@@ -467,3 +467,5 @@ For MySQL users here are specific instructions.
 
     $ cd libreplan-webapp/
     $ mvn -Pdev,mysql jetty:run
+
+* Go to http://localhost:8080/libreplan-webapp/
