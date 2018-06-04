@@ -243,7 +243,8 @@ public abstract class TaskElement extends BaseEntity {
     }
 
     public String getProjectCode() {
-        return getOrderElement().getOrder().getCode();
+        //then get the top level project code
+        return getTopMost().getOrderElement().getOrder().getCode();
     }
 
     public void setName(String name) {

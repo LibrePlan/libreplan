@@ -112,32 +112,30 @@ public class SendEmailOnMilestoneReached implements IEmailNotificationJob {
     }
 
     private void sendEmailNotificationToManager(TaskElement item) {
-        emailNotificationModel.setNewObject();
-        emailNotificationModel.setType(EmailTemplateEnum.TEMPLATE_MILESTONE_REACHED);
-        emailNotificationModel.setUpdated(new Date());
-
         String responsible = "";
-        if ( item.getParent().getOrderElement().getOrder().getResponsible() != null ) {
-            responsible = item.getParent().getOrderElement().getOrder().getResponsible();
+        if ( item.getTopMost().getOrderElement().getOrder().getResponsible() != null ) {
+            responsible = item.getTopMost().getOrderElement().getOrder().getResponsible();
         }
 
         User user = null;
         try {
-            // FIXME: Code below can produce NullPointerException if "Responsible" field is not set in Project Details -> General data
             user = userDAO.findByLoginName(responsible);
-        } catch (InstanceNotFoundException e) {
-            e.printStackTrace();
-        }
 
-        boolean userHasNeededRoles =
+            boolean userHasNeededRoles =
                 user.isInRole(UserRole.ROLE_SUPERUSER) || user.isInRole(UserRole.ROLE_EMAIL_MILESTONE_REACHED);
 
-        if ( user.getWorker() != null && userHasNeededRoles ) {
-            emailNotificationModel.setResource(user.getWorker());
-            emailNotificationModel.setTask(item);
-            emailNotificationModel.setProject(item.getParent());
-            emailNotificationModel.confirmSave();
-        }
+	        if ( user.getWorker() != null && userHasNeededRoles ) {
+	            emailNotificationModel.setNewObject();
+	            emailNotificationModel.setType(EmailTemplateEnum.TEMPLATE_MILESTONE_REACHED);
+	            emailNotificationModel.setUpdated(new Date());
+	            emailNotificationModel.setResource(user.getWorker());
+	            emailNotificationModel.setTask(item);
+	            emailNotificationModel.setProject(item.getTopMost());
+	            emailNotificationModel.confirmSave();
+	        }
+	    } catch (InstanceNotFoundException e) {
+	        // do nothing, responsible user is either blank or free text in order
+	    }
     }
 
     public void checkMilestoneDate() {

@@ -43,7 +43,7 @@ public class SendEmailOnMilestoneReachedJob extends QuartzJobBean {
                 (ApplicationContext) context.getJobDetail().getJobDataMap().get("applicationContext");
 
         IEmailNotificationJob milestoneReached =
-                (SendEmailOnMilestoneReached) applicationContext.getBean("SendEmailOnMilestoneReached");
+                (IEmailNotificationJob) applicationContext.getBean("sendEmailOnMilestoneReached");
 
         milestoneReached.sendEmail();
     }

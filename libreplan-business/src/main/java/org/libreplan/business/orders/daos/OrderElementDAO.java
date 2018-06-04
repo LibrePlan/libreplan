@@ -39,6 +39,7 @@ import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
 import org.libreplan.business.common.daos.IntegrationEntityDAO;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
+import org.libreplan.business.email.daos.IEmailNotificationDAO;
 import org.libreplan.business.expensesheet.daos.IExpenseSheetLineDAO;
 import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.orders.entities.Order;
@@ -46,6 +47,7 @@ import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.SchedulingDataForVersion;
 import org.libreplan.business.orders.entities.TaskSource;
 import org.libreplan.business.planner.daos.ITaskSourceDAO;
+import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.templates.entities.OrderElementTemplate;
 import org.libreplan.business.workingday.EffortDuration;
@@ -83,6 +85,9 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement> implemen
 
     @Autowired
     private ITaskSourceDAO taskSourceDAO;
+
+    @Autowired
+    private IEmailNotificationDAO emailNotificationDAO;
 
     @Override
     public List<OrderElement> findWithoutParent() {
@@ -142,6 +147,9 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement> implemen
     @Override
     public void remove(Long id) throws InstanceNotFoundException {
         OrderElement orderElement = find(id);
+
+        removeNotifications(orderElement);
+
         removeTaskSourcesFor(this.taskSourceDAO, orderElement);
 
         for (WorkReport each : getWorkReportsPointingTo(orderElement)) {
@@ -149,6 +157,17 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement> implemen
         }
 
         super.remove(id);
+    }
+
+    public void removeNotifications(OrderElement orderElement) {
+
+        List<SchedulingDataForVersion> allVersions = orderElement.getSchedulingDataForVersionFromBottomToTop();
+        for (TaskSource each : taskSourcesFrom(allVersions)) {
+            TaskElement taskElement = each.getTask();
+            if ( taskElement != null) {
+                emailNotificationDAO.deleteByTask(taskElement);
+            }
+        }
     }
 
     public static void removeTaskSourcesFor(ITaskSourceDAO taskSourceDAO, OrderElement orderElement)

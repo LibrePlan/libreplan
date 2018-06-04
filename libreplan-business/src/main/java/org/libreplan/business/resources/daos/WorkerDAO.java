@@ -198,4 +198,18 @@ public class WorkerDAO extends IntegrationEntityDAO<Worker>
         criteria.add(Restrictions.isNotNull("user"));
         return criteria.list();
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Worker getCurrentWorker(Long resourceID) {
+        List<Worker> workerList = getWorkers();
+
+        for (Worker worker : workerList) {
+            if (worker.getId().equals(resourceID)) {
+                return worker;
+            }
+        }
+
+        return null;
+    }
 }

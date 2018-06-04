@@ -73,6 +73,10 @@ public abstract class Task implements ITaskFundamentalProperties {
 
     private PropertyChangeSupport moneyCostBarProperty = new PropertyChangeSupport(this);
 
+    private PropertyChangeSupport labelsProperty = new PropertyChangeSupport(this);
+
+    private PropertyChangeSupport resourcesProperty = new PropertyChangeSupport(this);
+
     private final ITaskFundamentalProperties fundamentalProperties;
 
     private boolean visible = true;
@@ -84,6 +88,10 @@ public abstract class Task implements ITaskFundamentalProperties {
     private boolean showingReportedHours = false;
 
     private boolean showingMoneyCostBar = false;
+
+    private boolean showingLabels = false;
+
+    private boolean showingResources = false;
 
     private ConstraintViolationNotificator<GanttDate> violationNotificator = ConstraintViolationNotificator.create();
 
@@ -229,6 +237,26 @@ public abstract class Task implements ITaskFundamentalProperties {
 
     public boolean isShowingMoneyCostBar() {
         return showingMoneyCostBar;
+    }
+
+    public void setShowingResources(boolean showingResources) {
+        boolean previousValue = this.showingResources;
+        this.showingResources = showingResources;
+        resourcesProperty.firePropertyChange("showingResources", previousValue, this.showingResources);
+    }
+
+    public boolean isShowingResources() {
+        return showingResources;
+    }
+
+    public void setShowingLabels(boolean showingLabels) {
+        boolean previousValue = this.showingLabels;
+        this.showingLabels = showingLabels;
+        labelsProperty.firePropertyChange("showingLabels", previousValue, this.showingLabels);
+    }
+
+    public boolean isShowingLabels() {
+        return showingLabels;
     }
 
     public String getName() {

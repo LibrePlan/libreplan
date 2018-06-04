@@ -122,8 +122,11 @@ public interface IWorkerDAO extends IIntegrationEntityDAO<Worker> {
     public List<Worker> findByFirstNameSecondNameAnotherTransaction(
             String firstname, String secondname);
 
+    public Worker getCurrentWorker(Long resourceID);
+
     /**
      * Return the list of {@link Worker Workers} bound to any {@link User}.
      */
     List<Worker> getBound();
+
 }

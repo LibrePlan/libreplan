@@ -22,6 +22,7 @@ package org.libreplan.web.email;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.email.daos.IEmailNotificationDAO;
 import org.libreplan.business.email.entities.EmailTemplateEnum;
+import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.email.entities.EmailNotification;
 
 import org.libreplan.business.planner.entities.TaskElement;
@@ -70,6 +71,17 @@ public class EmailNotificationModel implements IEmailNotificationModel {
 
     @Override
     @Transactional
+    public List<EmailNotification> getAllByProject(TaskElement taskElement) {
+        return emailNotificationDAO.getAllByProject(taskElement);
+    }
+    @Override
+    @Transactional
+    public List<EmailNotification> getAllByTask(TaskElement taskElement) {
+        return emailNotificationDAO.getAllByTask(taskElement);
+    }
+
+    @Override
+    @Transactional
     public boolean deleteAll() {
         return emailNotificationDAO.deleteAll();
     }
@@ -83,6 +95,18 @@ public class EmailNotificationModel implements IEmailNotificationModel {
     @Transactional
     public boolean deleteById(EmailNotification notification){
         return emailNotificationDAO.deleteById(notification);
+    }
+
+    @Override
+    @Transactional
+    public boolean deleteByProject(TaskElement taskElement) {
+        return emailNotificationDAO.deleteByProject(taskElement);
+    }
+
+    @Override
+    @Transactional
+    public boolean deleteByTask(TaskElement taskElement) {
+        return emailNotificationDAO.deleteByTask(taskElement);
     }
 
     @Override
@@ -110,11 +134,12 @@ public class EmailNotificationModel implements IEmailNotificationModel {
         this.emailNotification.setProject(project);
     }
 
-
+    @Override
     public EmailNotification getEmailNotification() {
         return emailNotification;
     }
 
+    @Override
     public void setNewObject(){
         this.emailNotification = new EmailNotification();
     }

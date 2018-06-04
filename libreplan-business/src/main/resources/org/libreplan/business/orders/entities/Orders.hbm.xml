@@ -40,7 +40,7 @@
         </set>
 
         <!-- Indexed the other side -->
-        <set name="criterionRequirements" access="field" cascade="all,delete-orphan" inverse="true" batch-size="10">
+        <set name="criterionRequirements" access="field" cascade="all,delete-orphan" inverse="true" batch-size="10" lazy="false">
             <key column="order_element_id" not-null="false"/>
             <one-to-many class="org.libreplan.business.requirements.entities.CriterionRequirement"/>
         </set>
@@ -86,7 +86,7 @@
             <key column="order_element_id"/>
 
             <!-- Indexed the other side -->
-            <list name="children" access="field" cascade="all">
+            <list name="children" access="field" cascade="all" lazy="false">
                 <key column="parent" not-null="false"/>
                 <index column="position_in_container"/>
                 <one-to-many class="OrderElement" />
@@ -216,7 +216,7 @@
         <property name="fixedPercentage" column="fixed_percentage" access="field" />
 
         <!-- Indexed the other side -->
-        <set name="criterionRequirements" access="field" cascade="save-update,delete-orphan" inverse="true" batch-size="10">
+        <set name="criterionRequirements" access="field" cascade="save-update,delete-orphan" inverse="true" batch-size="10" lazy="false">
             <key column="hours_group_id" not-null="false"/>
             <one-to-many class="org.libreplan.business.requirements.entities.CriterionRequirement"/>
         </set>

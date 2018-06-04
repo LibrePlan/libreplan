@@ -101,4 +101,27 @@ public interface ISettingsModel {
 
     void setResourcesLoadFilterCriterion(Criterion criterion);
 
+    boolean isShowResourcesOn();
+
+    void setShowResourcesOn(boolean showResourcesOn);
+
+    boolean isShowAdvancesOn();
+
+    void setShowAdvancesOn(boolean showAdvancesOn);
+
+    boolean isShowReportedHoursOn();
+
+    void setShowReportedHoursOn(boolean showReportedHoursOn);
+
+    boolean isShowLabelsOn();
+
+    void setShowLabelsOn(boolean showLabelsOn);
+
+    boolean isShowMoneyCostBarOn();
+
+    void setShowMoneyCostBarOn(boolean showMoneyCostBarOn);
+
+    boolean isProjectsFilterFinishedOn();
+
+    void setProjectsFilterFinishedOn(boolean projectsFilterFinishedOn);
 }

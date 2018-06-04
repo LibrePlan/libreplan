@@ -32,9 +32,10 @@
                     sort="auto(initDate,deadline)" sortDirection="ascending" sclass="date" hflex="min"/>
             <column label="${i18n:_('Deadline')}" sort="auto(deadline,initDate)" align="center" sclass="date" hflex="min"/>
             <column label="${i18n:_('Customer')}" sort="auto(customerReference)" hflex="min"/>
-            <column label="${i18n:_('Total Budget')}" sort="auto(totalBudget)" align="right" hflex="min"/>
+            <column label="${i18n:_('Total Budget')}" sort="auto(totalManualBudget)" align="right" hflex="min"/>
+            <column label="${i18n:_('Planned Budget')}" sort="auto(totalBudget)" align="right" hflex="min"/>
             <column label="${i18n:_('Hours')}" sort="auto(totalHours)" align="right" hflex="min"/>
-            <column label="${i18n:_('State')}" sort="auto(totalBudget)" align="center" hflex="min"/>
+            <column label="${i18n:_('State')}" sort="auto(lower(state))" align="center" hflex="min"/>
             <column label="${i18n:_('Operations')}" sclass="operations" width="120px"/>
         </columns>
     </grid>

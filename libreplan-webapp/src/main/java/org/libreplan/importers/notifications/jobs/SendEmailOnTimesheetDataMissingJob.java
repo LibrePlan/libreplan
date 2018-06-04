@@ -42,7 +42,7 @@ public class SendEmailOnTimesheetDataMissingJob extends QuartzJobBean {
                 (ApplicationContext) context.getJobDetail().getJobDataMap().get("applicationContext");
 
         IEmailNotificationJob timesheetMissing =
-                (IEmailNotificationJob) applicationContext.getBean("SendEmailOnTimesheetDataMissing");
+                (IEmailNotificationJob) applicationContext.getBean("sendEmailOnTimesheetDataMissing");
 
         timesheetMissing.sendEmail();
     }

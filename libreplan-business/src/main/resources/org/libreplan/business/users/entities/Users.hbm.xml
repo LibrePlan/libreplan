@@ -53,7 +53,7 @@
         </set>
 
         <!-- Index created in a database-object section -->
-        <set name="profiles" table="user_profiles">
+        <set name="profiles" table="user_profiles" lazy="false">
             <key column="user_id"/>
             <many-to-many column="profile_id" class="org.libreplan.business.users.entities.Profile"/>
         </set>
@@ -66,9 +66,21 @@
 
         <property name="projectsFilterPeriodTo" column="projects_filter_period_to"/>
 
+        <property name="projectsFilterFinishedOn" column="projects_filter_finished_on"/>
+
         <property name="resourcesLoadFilterPeriodSince" column="resources_load_filter_period_since"/>
 
         <property name="resourcesLoadFilterPeriodTo" column="resources_load_filter_period_to"/>
+
+        <property name="showResourcesOn" column="show_resources_on"/>
+
+        <property name="showAdvancesOn" column="show_advances_on"/>
+
+        <property name="showReportedHoursOn" column="show_reported_hours_on"/>
+
+        <property name="showLabelsOn" column="show_labels_on"/>
+
+        <property name="showMoneyCostBarOn" column="show_money_cost_bar_on"/>
 
         <many-to-one name="projectsFilterLabel" cascade="none" lazy="false" column="projects_filter_label_id" />
 
@@ -89,7 +101,7 @@
         <property name="profileName" not-null="true" unique="true" column="profile_name" />
 
         <!-- Index created in a database-object section -->
-        <set name="roles" table="profile_roles">
+        <set name="roles" table="profile_roles" lazy="false">
             <key column="profile_id"/>
             <element column="role">
                 <type name="org.hibernate.type.EnumType">

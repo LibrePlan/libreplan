@@ -47,6 +47,7 @@ import org.libreplan.business.common.daos.IConfigurationDAO;
 import org.libreplan.business.common.entities.Configuration;
 import org.libreplan.business.common.entities.EntityNameEnum;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
+import org.libreplan.business.email.entities.EmailNotification;
 import org.libreplan.business.externalcompanies.daos.IExternalCompanyDAO;
 import org.libreplan.business.externalcompanies.entities.EndDateCommunication;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
@@ -60,6 +61,7 @@ import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderLineGroup;
 import org.libreplan.business.orders.entities.OrderStatusEnum;
 import org.libreplan.business.planner.entities.PositionConstraintType;
+import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.qualityforms.daos.IQualityFormDAO;
 import org.libreplan.business.qualityforms.entities.QualityForm;
 import org.libreplan.business.requirements.entities.DirectCriterionRequirement;
@@ -84,6 +86,7 @@ import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.web.calendars.BaseCalendarModel;
 import org.libreplan.web.common.IntegrationEntityModel;
 import org.libreplan.web.common.concurrentdetection.OnConcurrentModification;
+import org.libreplan.web.email.IEmailNotificationModel;
 import org.libreplan.web.logs.IIssueLogModel;
 import org.libreplan.web.logs.IRiskLogModel;
 import org.libreplan.web.orders.files.IOrderFileModel;
@@ -181,6 +184,9 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
     @Autowired
     private IIssueLogModel issueLogModel;
 
+    @Autowired
+    private IEmailNotificationModel emailNotificationModel;
+
     private List<Order> orderList = new ArrayList<>();
 
     @Override
@@ -235,13 +241,13 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
     @Transactional(readOnly = true)
     public List<Order> getOrders(Date startDate, Date endDate,
                                  List<Label> labels, List<Criterion> criteria,
-                                 ExternalCompany customer, OrderStatusEnum state) {
+                                 ExternalCompany customer, OrderStatusEnum state, Boolean excludeFinishedProject) {
         getLabelsOnConversation().reattachLabels();
         List<Order> orders = orderDAO
                 .getOrdersByReadAuthorizationBetweenDatesByLabelsCriteriaCustomerAndState(
                         SecurityUtils.getSessionUserLoginName(),
                         scenarioManager.getCurrent(), startDate, endDate,
-                        labels, criteria, customer, state);
+                        labels, criteria, customer, state, excludeFinishedProject);
 
         initializeOrders(orders);
 
@@ -436,7 +442,8 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
         newOrder.setCustomer(getOrder().getCustomer());
         newOrder.setCalendar(getCalendar());
         newOrder.setInitDate(getOrder().getInitDate());
-
+        newOrder.setDescription(getOrder().getDescription());
+        
         if ( getOrder().getDeadline() != null ) {
             newOrder.setDeadline(getOrder().getDeadline());
         }
@@ -521,6 +528,8 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
     public void remove(Order detachedOrder) {
         Order order = orderDAO.findExistingEntity(detachedOrder.getId());
 
+        removeNotifications(order);
+
         removeFiles(order);
 
         removeLogs(order);
@@ -539,6 +548,18 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
 
     private void removeFiles(Order order) {
         orderFileModel.findByParent(order).forEach(orderFile -> orderFileModel.delete(orderFile));
+    }
+
+    private void removeNotifications(Order order) {
+
+        for ( Scenario scenario: currentAndDerivedScenarios()) {
+            order.useSchedulingDataFor(scenario.getOrderVersion(order));
+
+            TaskElement taskElement = order.getTaskElement();
+            if ( taskElement != null) {
+                emailNotificationModel.deleteByProject(taskElement);
+            }
+        }
     }
 
     private void removeVersions(Order order) {

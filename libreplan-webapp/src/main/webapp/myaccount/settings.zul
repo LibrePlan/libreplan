@@ -122,6 +122,35 @@
                                     </grid>
                                 </row>
                                 <row>
+                                    <label value="${i18n:_('Planning view modes on')}" />
+                                    <grid>
+                                        <columns>
+                                            <column />
+                                            <column />
+                                            <column />
+                                        </columns>
+                                        <rows>
+                                            <row>
+                                                <checkbox id="showResourcesOn"
+                                                          label="${i18n:_('Show resources')}"
+                                                          checked="@{settingsController.showResourcesOn}"/>
+                                                <checkbox id="showAdvancesOn"
+                                                          label="${i18n:_('Show progress')}"
+                                                          checked="@{settingsController.showAdvancesOn}"/>
+                                                <checkbox id="showReportedHoursOn"
+                                                          label="${i18n:_('Show reported hours')}"
+                                                          checked="@{settingsController.showReportedHoursOn}"/>
+                                                <checkbox id="showLabelsOn"
+                                                          label="${i18n:_('Show labels')}"
+                                                          checked="@{settingsController.showLabelsOn}"/>
+                                                <checkbox id="showMoneyCostBarOn"
+                                                          label="${i18n:_('Show money cost bar')}"
+                                                          checked="@{settingsController.showMoneyCostBarOn}"/>
+                                            </row>
+                                        </rows>
+                                    </grid>
+                                </row>
+                                <row>
                                     <label value="${i18n:_('Projects view filtering')}" />
                                     <hbox>
                                         <label value="${i18n:_('Label filter')}" />
@@ -143,6 +172,9 @@
                                                 value="@{settingsController.projectsFilterPeriodTo}"
                                                 width="50px"
                                                 constraint="@{settingsController.checkMonthsMaxValue}"/>
+                                        <checkbox id="projectsFilterFinishedOn"
+                                                          label="${i18n:_('Exclude finished projects')}"
+                                                          checked="@{settingsController.projectsFilterFinishedOn}"/>
                                     </hbox>
                                 </row>
 

@@ -800,7 +800,7 @@ public class TaskPropertiesController extends GenericForwardComposer<Component> 
 
             emailNotificationModel.setTask(currentTaskElement.getTaskSource().getTask());
 
-            emailNotificationModel.setProject(currentTaskElement.getParent().getTaskSource().getTask());
+            emailNotificationModel.setProject(currentTaskElement.getTopMost().getTaskSource().getTask());
 
             emailNotificationModel.confirmSave();
         } catch (DataIntegrityViolationException e) {
@@ -824,6 +824,14 @@ public class TaskPropertiesController extends GenericForwardComposer<Component> 
 
     public TaskPropertiesController getObject() {
         return this;
+    }
+
+    public TaskElement getCurrentTaskElement() {
+        return currentTaskElement;
+    }
+
+    public void setCurrentTaskElement(TaskElement taskElement) {
+        currentTaskElement = taskElement;
     }
 
 }

@@ -305,6 +305,42 @@ public class TaskElementDAOTest {
 
     @Test
     @Transactional
+    public void theTopMostPropertyIsTheToplevelTask() {
+        TaskGroup taskGroup = createValidTaskGroup();
+        TaskElement taskElement = createValidTask();
+        taskGroup.addTaskElement(taskElement);
+        taskElementDAO.save(taskGroup);
+
+        TaskGroup taskGroup2 = createValidTaskGroup();
+        TaskElement taskElement2 = createValidTask();
+        taskGroup2.addTaskElement(taskElement2);
+        taskElementDAO.save(taskGroup2);
+
+        taskGroup.addTaskElement(taskGroup2);
+        taskElementDAO.save(taskGroup);
+
+        flushAndEvict(taskGroup);
+        flushAndEvict(taskGroup2);
+
+        TaskElement reloaded;
+        try {
+            reloaded = taskElementDAO.find(taskGroup.getId());
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        List<TaskElement> children = reloaded.getChildren();
+
+        for (TaskElement child : children) {
+            if (child instanceof TaskGroup) {
+                TaskElement child2 = child.getChildren().get(0);
+                assertThat(child2.getTopMost(), equalTo(reloaded));
+            }
+        }
+    }
+
+    @Test
+    @Transactional
     public void savingGroupSavesAssociatedTaskElements() {
         Task child1 = createValidTask();
         Task child2 = createValidTask();

@@ -354,6 +354,8 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         chartComponent.setHeight("200px");
         appendTabs(chartComponent);
 
+        setDefaultButtonState(configuration,user);
+
         configuration.setChartComponent(chartComponent);
         configureModifiers(planningState.getOrder(), configuration);
         long setConfigurationTime = System.currentTimeMillis();
@@ -393,6 +395,36 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         planner.addGraphChangeListenersFromConfiguration(configuration);
         long overallProgressContentTime = System.currentTimeMillis();
         PROFILING_LOG.debug("overallProgressContent took: " + (System.currentTimeMillis() - overallProgressContentTime));
+    }
+
+    private void setDefaultButtonState(PlannerConfiguration<TaskElement> configuration, User user) {
+
+        // set initial button show mode
+        if ( !planner.areShownAdvancesByDefault() && user.isShowAdvancesOn() ) {
+            configuration.setShowAdvancesOn(user.isShowAdvancesOn());
+            planner.setAreShownAdvancesByDefault(user.isShowAdvancesOn());
+        }
+
+        if ( !planner.areShownReportedHoursByDefault() && user.isShowReportedHoursOn() ) {
+            configuration.setShowReportedHoursOn(user.isShowReportedHoursOn());
+            planner.setAreShownReportedHoursByDefault(user.isShowReportedHoursOn());
+        }
+
+        if ( !planner.areShownMoneyCostBarByDefault() && user.isShowMoneyCostBarOn() ) {
+            configuration.setShowMoneyCostBarOn(user.isShowMoneyCostBarOn());
+            planner.setAreShownMoneyCostBarByDefault(user.isShowMoneyCostBarOn());
+        }
+
+        if ( !planner.areShownLabelsByDefault() && user.isShowLabelsOn() ) {
+            configuration.setShowLabelsOn(user.isShowLabelsOn());
+            planner.setAreShownLabelsByDefault(user.isShowLabelsOn());
+        }
+
+        if ( !planner.areShownResourcesByDefault() && user.isShowResourcesOn() ) {
+            configuration.setShowResourcesOn(user.isShowResourcesOn());
+            planner.setAreShownResourcesByDefault(user.isShowResourcesOn());
+        }
+
     }
 
     private ZoomLevel getZoomLevel(PlannerConfiguration<TaskElement> configuration, Order order) {

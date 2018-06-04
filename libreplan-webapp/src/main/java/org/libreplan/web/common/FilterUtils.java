@@ -50,6 +50,11 @@ public class FilterUtils {
         return (String) Sessions.getCurrent().getAttribute("companyFilterOrderName");
     }
 
+    public static Boolean readExcludeFinishedProjects() {
+        Boolean res = (Boolean) Sessions.getCurrent().getAttribute("companyFilterFinished");
+        return res;
+    }
+
     public static List<FilterPair> readProjectsParameters() {
         return (List<FilterPair>) Sessions.getCurrent().getAttribute("companyFilterLabel");
     }
@@ -76,6 +81,15 @@ public class FilterUtils {
         Sessions.getCurrent().setAttribute("companyFilterOrderName", name);
     }
 
+    public static void writeExcludeFinishedProjects(Boolean excludeFinishedProject) {
+        Sessions.getCurrent().setAttribute("companyFilterFinished", excludeFinishedProject);
+        Sessions.getCurrent().setAttribute("companyFilterFinishedChanged", true);
+    }
+
+    public static boolean hasExcludeFinishedProjects() {
+        return Sessions.getCurrent().hasAttribute("companyFilterFinishedChanged");
+    }
+
     public static void writeProjectsParameters(List<FilterPair> parameters) {
         Sessions.getCurrent().setAttribute("companyFilterLabel", parameters);
     }
@@ -83,12 +97,14 @@ public class FilterUtils {
     public static void writeProjectsFilter(Date startDate,
                                            Date endDate,
                                            List<FilterPair> parameters,
-                                           String projectName) {
+                                           String projectName,
+                                           Boolean excludeFinishedProject) {
 
         writeProjectsStartDate(startDate);
         writeProjectsEndDate(endDate);
         writeProjectsParameters(parameters);
         writeProjectsName(projectName);
+        writeExcludeFinishedProjects(excludeFinishedProject);
     }
 
     public static void writeProjectFilterChanged(boolean changed) {
@@ -157,6 +173,10 @@ public class FilterUtils {
 
     public static String readOrderTaskName(Order order) {
         return (String) Sessions.getCurrent().getAttribute(order.getCode() + "-tasknameFilter");
+    }
+
+    public static String readOrderStatus(Order order) {
+        return (String) Sessions.getCurrent().getAttribute(order.getCode() + "-orderStatus");
     }
 
     public static List<FilterPair> readOrderParameters(Order order) {

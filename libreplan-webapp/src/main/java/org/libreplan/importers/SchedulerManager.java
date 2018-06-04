@@ -150,7 +150,7 @@ public class SchedulerManager implements ISchedulerManager {
         String triggerName = jobSchedulerConfiguration.getJobName() + TRIGGER_SUFFIX;
         String triggerGroup = jobSchedulerConfiguration.getJobGroup() + TRIGGER_SUFFIX;
 
-        CronTriggerFactoryBean trigger = getTriggerBean(triggerName, triggerGroup);
+        CronTrigger trigger = getTriggerBean(triggerName, triggerGroup);
         if ( trigger == null ) {
             LOG.warn("Trigger not found");
 
@@ -164,7 +164,7 @@ public class SchedulerManager implements ISchedulerManager {
         }
 
         // deleteJob doesn't work using unscheduleJob
-        this.scheduler.unscheduleJob(trigger.getObject().getKey());
+        this.scheduler.unscheduleJob(trigger.getKey());
     }
 
     /**
@@ -230,7 +230,7 @@ public class SchedulerManager implements ISchedulerManager {
      *         create it
      */
     private CronTriggerFactoryBean createCronTriggerBean(JobSchedulerConfiguration jobSchedulerConfiguration) {
-        CronTriggerFactoryBean cronTriggerBean = new CronTriggerFactoryBean();
+        final CronTriggerFactoryBean cronTriggerBean = new CronTriggerFactoryBean();
         cronTriggerBean.setName(jobSchedulerConfiguration.getJobName() + TRIGGER_SUFFIX);
         cronTriggerBean.setGroup(jobSchedulerConfiguration.getJobGroup() + TRIGGER_SUFFIX);
 
@@ -238,9 +238,8 @@ public class SchedulerManager implements ISchedulerManager {
             cronTriggerBean.setCronExpression(
                     String.valueOf(new CronExpression(jobSchedulerConfiguration.getCronExpression())));
 
-            cronTriggerBean.setName(jobSchedulerConfiguration.getJobName());
-            cronTriggerBean.setGroup(jobSchedulerConfiguration.getJobGroup());
-
+            cronTriggerBean.afterPropertiesSet();
+            
             return cronTriggerBean;
 
         } catch (ParseException e) {
@@ -259,7 +258,7 @@ public class SchedulerManager implements ISchedulerManager {
      * @return the created <code>JobDetailFactoryBean</code> or null if unable to it
      */
     private JobDetailFactoryBean createJobDetailBean(JobSchedulerConfiguration jobSchedulerConfiguration) {
-        JobDetailFactoryBean jobDetailBean = new JobDetailFactoryBean();
+        final JobDetailFactoryBean jobDetailBean = new JobDetailFactoryBean();
 
         Class<?> jobClass = getJobClass(jobSchedulerConfiguration.getJobClassName());
         if ( jobClass == null ) {
@@ -273,6 +272,8 @@ public class SchedulerManager implements ISchedulerManager {
         Map<String, Object> jobDataAsMap = new HashMap<>();
         jobDataAsMap.put("applicationContext", applicationContext);
         jobDetailBean.setJobDataAsMap(jobDataAsMap);
+
+        jobDetailBean.afterPropertiesSet();
 
         return jobDetailBean;
     }
@@ -322,9 +323,9 @@ public class SchedulerManager implements ISchedulerManager {
      *            the trigger group
      * @return CronTriggerFactoryBean if found, otherwise null
      */
-    private CronTriggerFactoryBean getTriggerBean(String triggerName, String triggerGroup) {
+    private CronTrigger getTriggerBean(String triggerName, String triggerGroup) {
         try {
-            return (CronTriggerFactoryBean) this.scheduler.getTrigger(TriggerKey.triggerKey(triggerName, triggerGroup));
+            return (CronTrigger) this.scheduler.getTrigger(TriggerKey.triggerKey(triggerName, triggerGroup));
         } catch (SchedulerException e) {
             LOG.error("Unable to get job trigger", e);
         }
@@ -333,3 +334,4 @@ public class SchedulerManager implements ISchedulerManager {
     }
 
 }
+

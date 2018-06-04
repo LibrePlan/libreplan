@@ -164,6 +164,8 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
 
     private LocalDate filterFinishDate;
 
+    private Boolean filterExcludeFinishedProject;
+
     private static final class TaskElementNavigator implements IStructureNavigator<TaskElement> {
 
         @Override
@@ -204,6 +206,9 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
         boolean expandPlanningViewChart = user.isExpandCompanyPlanningViewCharts();
         configuration.setExpandPlanningViewCharts(expandPlanningViewChart);
 
+        boolean projectsFilterFinished = user.isProjectsFilterFinishedOn();
+        configuration.setFilterExcludeFinishedProject(projectsFilterFinished);
+
         final Tabbox chartComponent = new Tabbox();
         chartComponent.setOrient("vertical");
         chartComponent.setHeight("200px");
@@ -218,6 +223,7 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
         addAdditionalCommands(additional, configuration);
         addPrintSupport(configuration);
         disableSomeFeatures(configuration);
+        setDefaultButtonState(configuration,user);
 
         planner.setInitialZoomLevel(getZoomLevel(configuration));
 
@@ -246,6 +252,23 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
             });
         }
     }
+
+    private void setDefaultButtonState(PlannerConfiguration<TaskElement> configuration, User user) {
+
+// set initial button show mode
+    if ( user.isShowAdvancesOn() ) {
+        configuration.setShowAdvancesOn(user.isShowAdvancesOn());
+	}
+
+    if ( user.isShowReportedHoursOn() ) {
+        configuration.setShowReportedHoursOn(user.isShowReportedHoursOn());
+    }
+
+    if ( user.isShowLabelsOn() ) {
+        configuration.setShowLabelsOn(user.isShowLabelsOn());
+    }
+
+}
 
     private ZoomLevel getZoomLevel(PlannerConfiguration<TaskElement> configuration) {
         ZoomLevel sessionZoom = FilterUtils.readZoomLevelCompanyView();
@@ -692,6 +715,7 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
 
         Date startDate = predicate.getStartDate();
         Date endDate = predicate.getFinishDate();
+        Boolean excludeFinishedProject = predicate.getExcludeFinishedProjects();
         List<org.libreplan.business.labels.entities.Label> labels = new ArrayList<>();
         List<Criterion> criteria = new ArrayList<>();
         ExternalCompany customer = null;
@@ -732,7 +756,7 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
         }
 
         return orderDAO.getOrdersByReadAuthorizationBetweenDatesByLabelsCriteriaCustomerAndState(
-                username, currentScenario, startDate, endDate, labels, criteria, customer, state);
+                username, currentScenario, startDate, endDate, labels, criteria, customer, state, excludeFinishedProject);
     }
 
     @Override
@@ -742,6 +766,12 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
         Date startDate = FilterUtils.readProjectsStartDate();
         Date endDate = FilterUtils.readProjectsEndDate();
         String name = FilterUtils.readProjectsName();
+        Boolean projectsFinished = FilterUtils.readExcludeFinishedProjects();
+
+        if ( projectsFinished == null ) {
+            User user = getUser();
+            projectsFinished = user.isProjectsFilterFinishedOn();
+        }
 
         boolean calculateStartDate = startDate == null;
         boolean calculateEndDate = endDate == null;
@@ -776,8 +806,9 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
         }
         filterStartDate = startDate != null ? LocalDate.fromDateFields(startDate) : null;
         filterFinishDate = endDate != null ? LocalDate.fromDateFields(endDate) : null;
+        //filterExcludeFinishedProject =  projectsFinished != null ? projectsFinished : false;
 
-        return new TaskGroupPredicate(null, startDate, endDate, name);
+        return new TaskGroupPredicate(null, startDate, endDate, name, projectsFinished);
     }
 
     private static <T> List<T> notNull(T... values) {
@@ -884,6 +915,14 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
         }
 
         return user;
+    }
+
+    public Boolean getFilterExcludeFinishedProject() {
+        return filterExcludeFinishedProject;
+    }
+
+    public void setFilterExcludeFinishedProject(Boolean filterExcludeFinishedProject) {
+        this.filterExcludeFinishedProject = filterExcludeFinishedProject;
     }
 
 }

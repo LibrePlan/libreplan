@@ -93,11 +93,23 @@ public class User extends BaseEntity implements IHumanIdentifiable{
 
     private Integer projectsFilterPeriodTo;
 
+    private Boolean projectsFilterFinishedOn = false;
+
     private Criterion resourcesLoadFilterCriterion = null;
 
     private Integer resourcesLoadFilterPeriodSince;
 
     private Integer resourcesLoadFilterPeriodTo;
+
+    private boolean showResourcesOn = false;
+
+    private boolean showAdvancesOn = false;
+
+    private boolean showReportedHoursOn = false;
+
+    private boolean showLabelsOn = false;
+
+    private boolean showMoneyCostBarOn = false;
 
     /**
      * Necessary for Hibernate. Please, do not call it.
@@ -434,6 +446,14 @@ public class User extends BaseEntity implements IHumanIdentifiable{
         projectsFilterPeriodTo = period;
     }
 
+    public boolean isProjectsFilterFinishedOn() {
+        return projectsFilterFinishedOn;
+    }
+
+    public void setProjectsFilterFinishedOn(boolean projectsFilterFinishedOn) {
+        this.projectsFilterFinishedOn = projectsFilterFinishedOn;
+    }
+
     public Integer getResourcesLoadFilterPeriodSince() {
         return resourcesLoadFilterPeriodSince;
     }
@@ -448,6 +468,46 @@ public class User extends BaseEntity implements IHumanIdentifiable{
 
     public void setResourcesLoadFilterPeriodTo(Integer period) {
         resourcesLoadFilterPeriodTo = period;
+    }
+
+    public boolean isShowResourcesOn() {
+        return showResourcesOn;
+    }
+
+    public void setShowResourcesOn(boolean showResourcesOn) {
+        this.showResourcesOn = showResourcesOn;
+    }
+
+    public boolean isShowAdvancesOn() {
+        return showAdvancesOn;
+    }
+
+    public void setShowAdvancesOn(boolean showAdvancesOn) {
+        this.showAdvancesOn = showAdvancesOn;
+    }
+
+    public boolean isShowReportedHoursOn() {
+        return showReportedHoursOn;
+    }
+
+    public void setShowReportedHoursOn(boolean showReportedHoursOn) {
+        this.showReportedHoursOn = showReportedHoursOn;
+    }
+
+    public boolean isShowLabelsOn() {
+        return showLabelsOn;
+    }
+
+    public void setShowLabelsOn(boolean showLabelsOn) {
+        this.showLabelsOn = showLabelsOn;
+    }
+
+    public boolean isShowMoneyCostBarOn() {
+        return showMoneyCostBarOn;
+    }
+
+    public void setShowMoneyCostBarOn(boolean showMoneyCostBarOn) {
+            this.showMoneyCostBarOn = showMoneyCostBarOn;
     }
 
 }

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="add-new-column-show-reported-hours" author="lmann">
+        <comment>Add columns to store user default setting of show/hide reported hours button</comment>
+        <addColumn tableName="user_table">
+            <column name="show_reported_hours_on" type="BOOLEAN" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add-new-columns-show-resources" author="lmann">
+        <comment>Add columns to store user default setting of show/hide resources button</comment>
+        <addColumn tableName="user_table">
+            <column name="show_resources_on" type="BOOLEAN" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add-new-columns-show-advances" author="lmann">
+        <comment>Add columns to store user default setting of show/hide advances button</comment>
+        <addColumn tableName="user_table">
+            <column name="show_advances_on" type="BOOLEAN" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add-new-columns-show-labels" author="lmann">
+        <comment>Add columns to store user default setting of show/hide labels button</comment>
+        <addColumn tableName="user_table">
+            <column name="show_labels_on" type="BOOLEAN" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add-new-columns-show-moneycostbar" author="lmann">
+        <comment>Add columns to store user default setting of show/hide moneycostbar button</comment>
+        <addColumn tableName="user_table">
+            <column name="show_money_cost_bar_on" type="BOOLEAN" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add-new-columns-projects-filter-finished" author="lmann">
+        <comment>Add columns to store user default setting of filter finished projects in views</comment>
+        <addColumn tableName="user_table">
+            <column name="projects_filter_finished_on" type="BOOLEAN" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="set-default-value-show-reported-hours" author="lmann">
+        <addDefaultValue tableName="user_table"
+           columnName="show_reported_hours_on"
+           defaultValueBoolean="FALSE" />
+       <addNotNullConstraint tableName="user_table"
+           columnName="show_reported_hours_on"
+           defaultNullValue="FALSE"
+           columnDataType="BOOLEAN" />
+    </changeSet>
+
+    <changeSet id="set-default-value-show-resources" author="lmann">
+        <addDefaultValue tableName="user_table"
+           columnName="show_resources_on"
+           defaultValueBoolean="FALSE" />
+       <addNotNullConstraint tableName="user_table"
+           columnName="show_resources_on"
+           defaultNullValue="FALSE"
+           columnDataType="BOOLEAN" />
+    </changeSet>
+
+    <changeSet id="set-default-value-show-advances" author="lmann">
+        <addDefaultValue tableName="user_table"
+           columnName="show_advances_on"
+           defaultValueBoolean="FALSE" />
+       <addNotNullConstraint tableName="user_table"
+           columnName="show_advances_on"
+           defaultNullValue="FALSE"
+           columnDataType="BOOLEAN" />
+    </changeSet>
+
+    <changeSet id="set-default-value-show-labels" author="lmann">
+        <addDefaultValue tableName="user_table"
+           columnName="show_labels_on"
+           defaultValueBoolean="FALSE" />
+       <addNotNullConstraint tableName="user_table"
+           columnName="show_labels_on"
+           defaultNullValue="FALSE"
+           columnDataType="BOOLEAN" />
+    </changeSet>
+
+    <changeSet id="set-default-value-show-money_cost_bar" author="lmann">
+        <addDefaultValue tableName="user_table"
+           columnName="show_money_cost_bar_on"
+           defaultValueBoolean="FALSE" />
+       <addNotNullConstraint tableName="user_table"
+           columnName="show_money_cost_bar_on"
+           defaultNullValue="FALSE"
+           columnDataType="BOOLEAN" />
+    </changeSet>
+
+    <changeSet id="set-default-value-projects-filter-finished" author="lmann">
+        <addDefaultValue tableName="user_table"
+           columnName="projects_filter_finished_on"
+           defaultValueBoolean="FALSE" />
+       <addNotNullConstraint tableName="user_table"
+           columnName="projects_filter_finished_on"
+           defaultNullValue="FALSE"
+           columnDataType="BOOLEAN" />
+    </changeSet>
+
+</databaseChangeLog>

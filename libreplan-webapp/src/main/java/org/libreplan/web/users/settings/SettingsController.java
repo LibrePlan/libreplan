@@ -314,4 +314,52 @@ public class SettingsController extends GenericForwardComposer {
         settingsModel.setResourcesLoadFilterCriterion(criterion);
     }
 
+    public boolean isShowResourcesOn() {
+        return settingsModel.isShowResourcesOn();
+    }
+
+    public void setShowResourcesOn(boolean showResourcesOn) {
+        settingsModel.setShowResourcesOn(showResourcesOn);
+    }
+
+    public boolean isShowAdvancesOn() {
+        return settingsModel.isShowAdvancesOn();
+    }
+
+    public void setShowAdvancesOn(boolean showAdvancesOn) {
+        settingsModel.setShowAdvancesOn(showAdvancesOn);
+    }
+
+    public boolean isShowReportedHoursOn() {
+        return settingsModel.isShowReportedHoursOn();
+    }
+
+    public void setShowReportedHoursOn(boolean showReportedHoursOn) {
+        settingsModel.setShowReportedHoursOn(showReportedHoursOn);
+    }
+
+    public boolean isShowLabelsOn() {
+        return settingsModel.isShowLabelsOn();
+    }
+
+    public void setShowLabelsOn(boolean showLabelsOn) {
+        settingsModel.setShowLabelsOn(showLabelsOn);
+    }
+
+    public boolean isShowMoneyCostBarOn() {
+        return settingsModel.isShowMoneyCostBarOn();
+    }
+
+    public void setShowMoneyCostBarOn(boolean showMoneyCostBarOn) {
+        settingsModel.setShowMoneyCostBarOn(showMoneyCostBarOn);
+    }
+
+    public boolean isProjectsFilterFinishedOn() {
+        return settingsModel.isProjectsFilterFinishedOn();
+    }
+
+    public void setProjectsFilterFinishedOn(boolean projectsFilterFinishedOn) {
+        settingsModel.setProjectsFilterFinishedOn(projectsFilterFinishedOn);
+    }
+
 }

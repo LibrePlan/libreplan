@@ -849,7 +849,6 @@ public class ManageOrderElementAdvancesController extends GenericForwardComposer
         this.manageOrderElementAdvancesModel.sortListAdvanceMeasurement();
         Util.reloadBindings(editAdvancesMeasurement);
 
-        this.setCurrentDate();
         this.setPercentage();
         this.setCurrentValue();
         Util.reloadBindings(chart);

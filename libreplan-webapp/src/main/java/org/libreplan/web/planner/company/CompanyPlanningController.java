@@ -91,6 +91,8 @@ public class CompanyPlanningController implements Composer {
 
     private Textbox filterProjectName;
 
+    private Checkbox filterExcludeFinishedProject;
+
     private BandboxMultipleSearch bdFilters;
 
     private ICommandOnTask<TaskElement> doubleClickCommand;
@@ -135,6 +137,7 @@ public class CompanyPlanningController implements Composer {
         filterStartDate = (Datebox) filterComponent.getFellow("filterStartDate");
         filterFinishDate = (Datebox) filterComponent.getFellow("filterFinishDate");
         filterProjectName = (Textbox) filterComponent.getFellow("filterProjectName");
+        filterExcludeFinishedProject = (Checkbox) filterComponent.getFellow("filterExcludeFinishedProject");
 
         bdFilters = (BandboxMultipleSearch) filterComponent.getFellow("bdFilters");
         bdFilters.setFinder("taskGroupsMultipleFiltersFinder");
@@ -179,6 +182,8 @@ public class CompanyPlanningController implements Composer {
                         .toDate());
             }
             filterProjectName.setValue(FilterUtils.readProjectsName());
+
+            filterExcludeFinishedProject.setChecked(user.isProjectsFilterFinishedOn());
         }
 
     }
@@ -311,6 +316,10 @@ public class CompanyPlanningController implements Composer {
         filterStartDate.setValue(FilterUtils.readProjectsStartDate());
         filterFinishDate.setValue(FilterUtils.readProjectsEndDate());
         filterProjectName.setValue(FilterUtils.readProjectsName());
+        Boolean excludeFinishedProjects = FilterUtils.readExcludeFinishedProjects();
+        if ( excludeFinishedProjects != null ) {
+            filterExcludeFinishedProject.setChecked(excludeFinishedProjects);
+        }
         loadPredefinedBandboxFilter();
     }
 
@@ -319,7 +328,8 @@ public class CompanyPlanningController implements Composer {
                 filterStartDate.getValue(),
                 filterFinishDate.getValue(),
                 bdFilters.getSelectedElements(),
-                filterProjectName.getValue());
+                filterProjectName.getValue(),
+                filterExcludeFinishedProject.isChecked());
 
         FilterUtils.writeProjectPlanningFilterChanged(true);
         filterByPredicate(createPredicate());
@@ -333,6 +343,7 @@ public class CompanyPlanningController implements Composer {
         List<FilterPair> listFilters = (List<FilterPair>) bdFilters.getSelectedElements();
         Date startDate = filterStartDate.getValue();
         Date finishDate = filterFinishDate.getValue();
+        Boolean excludeFinishedProject = filterExcludeFinishedProject.isChecked();
 
         String name = filterProjectName.getValue();
 
@@ -354,7 +365,7 @@ public class CompanyPlanningController implements Composer {
             return predicate;
         }
 
-        return new TaskGroupPredicate(listFilters, startDate, finishDate, name);
+        return new TaskGroupPredicate(listFilters, startDate, finishDate, name, excludeFinishedProject);
     }
 
     private void filterByPredicate(TaskGroupPredicate predicate) {

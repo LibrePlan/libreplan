@@ -42,7 +42,7 @@ public class SendEmailOnResourceRemovedFromTaskJob extends QuartzJobBean {
                 (ApplicationContext) context.getJobDetail().getJobDataMap().get("applicationContext");
 
         IEmailNotificationJob resourceRemovedFromTask =
-                (IEmailNotificationJob) applicationContext.getBean("SendEmailOnResourceRemovedFromTask");
+                (IEmailNotificationJob) applicationContext.getBean("sendEmailOnResourceRemovedFromTask");
 
         resourceRemovedFromTask.sendEmail();
     }
