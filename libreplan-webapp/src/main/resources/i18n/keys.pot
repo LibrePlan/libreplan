@@ -4784,7 +4784,7 @@ msgid "Connect"
 msgstr ""
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/ManageOrderElementAdvancesController.java:1240
-msgid "This progress type cannot cannot be removed"
+msgid "This progress type cannot be removed"
 msgstr ""
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/limitingresources/QueueComponent.java:223
