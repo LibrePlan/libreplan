@@ -4392,7 +4392,7 @@ msgid "Connect"
 msgstr "连"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/ManageOrderElementAdvancesController.java:1240
-msgid "This progress type cannot cannot be removed"
+msgid "This progress type cannot be removed"
 msgstr "这一进展类型不能不能被删除"
 
 #: libreplan-webapp/src/main/webapp/expensesheet/expenseSheet.zul:145
