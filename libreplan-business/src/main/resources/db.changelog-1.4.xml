@@ -22,10 +22,14 @@
     <changeSet id="add-new-column-automatic_budget_enabled" author="ltilve">
         <comment>Add new column automatic_budget_enabled with default value FALSE to configuration table</comment>
         <addColumn tableName="configuration">
-            <column name="automatic_budget_enabled" type="BOOLEAN" defaultValueBoolean="false">
-                <constraints nullable="false"/>
-            </column>
+            <column name="automatic_budget_enabled" type="BOOLEAN" />
         </addColumn>
+        <addDefaultValue tableName="configuration" columnName="automatic_budget_enabled"
+                         defaultValueBoolean="FALSE" />
+        <addNotNullConstraint tableName="configuration"
+                              columnName="automatic_budget_enabled"
+                              defaultNullValue="FALSE"
+                              columnDataType="BOOLEAN" />
     </changeSet>
 
     <changeSet id="add-automatic_budget_type_of_work_hours-to-configuration" author="ltilve">
@@ -43,7 +47,7 @@
 
     <changeSet id="adding-limits" author="vova/jeroen">
         <createTable tableName="limits">
-            <column name="id" type="BIGINT">
+            <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false" primaryKeyName="limits_pkey"/>
             </column>
 
@@ -53,15 +57,15 @@
 
         </createTable>
         <addUniqueConstraint
-                constraintName="limits_type"
+                constraintName="type"
                 columnNames="type"
                 deferrable="false"
                 disabled="false"
                 initiallyDeferred="false"
                 tableName="limits"/>
         <sql>
-            INSERT INTO limits VALUES(0, 'users', 0);
-            INSERT INTO limits VALUES(1, 'workers+machines', 0);
+            INSERT INTO limits VALUES(0, 'users', 5);
+            INSERT INTO limits VALUES(1, 'workers+machines', 10);
         </sql>
     </changeSet>
 
