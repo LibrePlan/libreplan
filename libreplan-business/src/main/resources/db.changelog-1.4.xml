@@ -7,7 +7,7 @@
     <changeSet id="add-id_cost_category-column-to-criterion-table" author="ltilve">
         <comment>Add column to criterion table to store the relationship with cost category</comment>
         <addColumn tableName="criterion">
-            <column name="id_cost_category" type="BIGINT" />
+            <column name="id_cost_category" type="BIGINT"/>
         </addColumn>
     </changeSet>
 
@@ -16,15 +16,20 @@
         <addForeignKeyConstraint constraintName="cost_category_fkey"
                                  baseTableName="criterion" baseColumnNames="id_cost_category"
                                  referencedTableName="cost_category" referencedColumnNames="id"
-                                 onDelete="SET NULL" />
+                                 onDelete="SET NULL"/>
     </changeSet>
 
     <changeSet id="add-new-column-automatic_budget_enabled" author="ltilve">
         <comment>Add new column automatic_budget_enabled with default value FALSE to configuration table</comment>
         <addColumn tableName="configuration">
-            <column name="automatic_budget_enabled" type="BOOLEAN" />
+            <column name="automatic_budget_enabled" type="BOOLEAN"/>
         </addColumn>
-        <addDefaultValue tableName="configuration" columnName="automatic_budget_enabled" defaultValueBoolean="FALSE" />
+        <addDefaultValue tableName="configuration" columnName="automatic_budget_enabled"
+                         defaultValueBoolean="FALSE"/>
+        <addNotNullConstraint tableName="configuration"
+                              columnName="automatic_budget_enabled"
+                              defaultNullValue="FALSE"
+                              columnDataType="BOOLEAN"/>
     </changeSet>
 
     <changeSet id="add-automatic_budget_type_of_work_hours-to-configuration" author="ltilve">
@@ -33,16 +38,16 @@
             configuration table.
         </comment>
         <addColumn tableName="configuration">
-            <column name="automatic_budget_type_of_work_hours" type="BIGINT" />
+            <column name="automatic_budget_type_of_work_hours" type="BIGINT"/>
         </addColumn>
         <addForeignKeyConstraint constraintName="automatic_budget_type_of_work_hours_fkey"
                                  baseTableName="configuration" baseColumnNames="automatic_budget_type_of_work_hours"
-                                 referencedTableName="type_of_work_hours" referencedColumnNames="id" />
+                                 referencedTableName="type_of_work_hours" referencedColumnNames="id"/>
     </changeSet>
 
     <changeSet id="adding-limits" author="vova/jeroen">
         <createTable tableName="limits">
-            <column name="id" type="BIGINT">
+            <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false" primaryKeyName="limits_pkey"/>
             </column>
 
@@ -52,15 +57,15 @@
 
         </createTable>
         <addUniqueConstraint
-                constraintName="limits_type_uc"
+                constraintName="type"
                 columnNames="type"
                 deferrable="false"
                 disabled="false"
                 initiallyDeferred="false"
                 tableName="limits"/>
         <sql>
-            INSERT INTO limits VALUES(1, 'users', 0);
-            INSERT INTO limits VALUES(2, 'workers+machines', 0);
+            INSERT INTO limits VALUES(0, 'users', 5);
+            INSERT INTO limits VALUES(1, 'workers+machines', 10);
         </sql>
     </changeSet>
 
