@@ -2,12 +2,12 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
     <changeSet id="add-id_cost_category-column-to-criterion-table" author="ltilve">
         <comment>Add column to criterion table to store the relationship with cost category</comment>
         <addColumn tableName="criterion">
-            <column name="id_cost_category" type="BIGINT" />
+            <column name="id_cost_category" type="BIGINT"/>
         </addColumn>
     </changeSet>
 
@@ -16,20 +16,20 @@
         <addForeignKeyConstraint constraintName="cost_category_fkey"
                                  baseTableName="criterion" baseColumnNames="id_cost_category"
                                  referencedTableName="cost_category" referencedColumnNames="id"
-                                 onDelete="SET NULL" />
+                                 onDelete="SET NULL"/>
     </changeSet>
 
     <changeSet id="add-new-column-automatic_budget_enabled" author="ltilve">
         <comment>Add new column automatic_budget_enabled with default value FALSE to configuration table</comment>
         <addColumn tableName="configuration">
-            <column name="automatic_budget_enabled" type="BOOLEAN" />
+            <column name="automatic_budget_enabled" type="BOOLEAN"/>
         </addColumn>
         <addDefaultValue tableName="configuration" columnName="automatic_budget_enabled"
-                         defaultValueBoolean="FALSE" />
+                         defaultValueBoolean="FALSE"/>
         <addNotNullConstraint tableName="configuration"
                               columnName="automatic_budget_enabled"
                               defaultNullValue="FALSE"
-                              columnDataType="BOOLEAN" />
+                              columnDataType="BOOLEAN"/>
     </changeSet>
 
     <changeSet id="add-automatic_budget_type_of_work_hours-to-configuration" author="ltilve">
@@ -38,11 +38,11 @@
             configuration table.
         </comment>
         <addColumn tableName="configuration">
-            <column name="automatic_budget_type_of_work_hours" type="BIGINT" />
+            <column name="automatic_budget_type_of_work_hours" type="BIGINT"/>
         </addColumn>
         <addForeignKeyConstraint constraintName="automatic_budget_type_of_work_hours_fkey"
                                  baseTableName="configuration" baseColumnNames="automatic_budget_type_of_work_hours"
-                                 referencedTableName="type_of_work_hours" referencedColumnNames="id" />
+                                 referencedTableName="type_of_work_hours" referencedColumnNames="id"/>
     </changeSet>
 
     <changeSet id="adding-limits" author="vova/jeroen">
