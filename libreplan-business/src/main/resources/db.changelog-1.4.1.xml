@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="change-primary-key" author="vmazurashu">
+        <sql>
+            ALTER TABLE limits ADD tmp_id BIGINT;
+            UPDATE limits SET tmp_id = id;
+            ALTER TABLE limits DROP CONSTRAINT limits_pkey;
+            ALTER TABLE limits DROP COLUMN id;
+            ALTER TABLE limits RENAME COLUMN tmp_id TO id;
+        </sql>
+        <addPrimaryKey columnNames="id"
+                       constraintName="limits_pkey"
+                       tableName="limits"/>
+    </changeSet>
+
+    <changeSet id="update-values" author="vmazurashu">
+        <sql>
+            UPDATE limits SET value = 0;
+        </sql>
+    </changeSet>
+    <changeSet id="update-unique-constraint" author="vmazurashu">
+        <dropUniqueConstraint constraintName="type"
+                              tableName="limits"/>
+
+        <addUniqueConstraint constraintName="limits_type"
+                             columnNames="type"
+                             deferrable="false"
+                             disabled="false"
+                             initiallyDeferred="false"
+                             tableName="limits"/>
+    </changeSet>
+</databaseChangeLog>
