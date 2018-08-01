@@ -125,7 +125,7 @@
                 <!-- JDBC driver properties -->
                 <jdbcDriver.groupId>org.postgresql</jdbcDriver.groupId>
                 <jdbcDriver.artifactId>postgresql</jdbcDriver.artifactId>
-                <jdbcDriver.version>9.4.1208.jre7</jdbcDriver.version>
+                <jdbcDriver.version>42.2.4.jre7</jdbcDriver.version>
                 <jdbcDriver.className>org.postgresql.Driver</jdbcDriver.className>
                 <!-- Data source properties -->
                 <dataSource.url>jdbc:postgresql://localhost/libreplan${libreplan.mode}</dataSource.url>
@@ -466,6 +466,11 @@
                     </exclusion>
                 </exclusions>
             </dependency>
+            <dependency>
+                <groupId>org.zkoss.common</groupId>
+                <artifactId>zweb</artifactId>
+                <version>5.0.11</version>
+            </dependency>
 
             <!-- JGraphT -->
             <dependency>
@@ -601,6 +606,10 @@
                     <exclusion>
                         <groupId>org.zkoss.common</groupId>
                         <artifactId>zcommon</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.zkoss.common</groupId>
+                        <artifactId>zweb</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
@@ -867,11 +876,11 @@
                         <artifactId>slf4j-simple</artifactId>
                         <version>1.7.21</version>
 					   <exclusions>
-					      <exclusion> 
+					      <exclusion>
 					        <groupId>org.slf4j</groupId>
 					        <artifactId>slf4j-simple</artifactId>
 					      </exclusion>
-					    </exclusions> 
+					    </exclusions>
                     </dependency>
 
                     <dependency>
