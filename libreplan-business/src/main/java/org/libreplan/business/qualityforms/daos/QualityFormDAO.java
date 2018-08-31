@@ -58,6 +58,7 @@ public class QualityFormDAO extends GenericDAOHibernate<QualityForm, Long>
     private IAdvanceTypeDAO advanceTypeDAO;
 
     @Override
+    @Transactional(readOnly = true)
     public List<QualityForm> getAll() {
         return list(QualityForm.class);
     }
