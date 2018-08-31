@@ -95,9 +95,6 @@ public class GatheredUsageStats {
     // The oldestDate in the projects
     private String oldestDate;
 
-    public GatheredUsageStats() {
-    }
-
     private String generateID() {
         String ip = null;
         String hostname = null;
