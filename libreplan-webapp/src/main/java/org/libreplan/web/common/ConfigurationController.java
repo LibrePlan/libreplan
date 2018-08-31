@@ -21,38 +21,13 @@
 
 package org.libreplan.web.common;
 
-import static org.libreplan.web.I18nHelper._;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.ConcurrentModificationException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.common.daos.IConfigurationDAO;
-import org.libreplan.business.common.entities.Configuration;
-import org.libreplan.business.common.entities.Connector;
-import org.libreplan.business.common.entities.ConnectorProperty;
-import org.libreplan.business.common.entities.EntityNameEnum;
-import org.libreplan.business.common.entities.EntitySequence;
-import org.libreplan.business.common.entities.LDAPConfiguration;
-import org.libreplan.business.common.entities.PersonalTimesheetsPeriodicityEnum;
-import org.libreplan.business.common.entities.PredefinedConnectorProperties;
-import org.libreplan.business.common.entities.PredefinedConnectors;
-import org.libreplan.business.common.entities.ProgressType;
+import org.libreplan.business.common.entities.*;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
 import org.libreplan.business.users.daos.IUserDAO;
@@ -81,25 +56,16 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
-import org.zkoss.zul.Button;
-import org.zkoss.zul.Combobox;
-import org.zkoss.zul.Constraint;
-import org.zkoss.zul.Grid;
-import org.zkoss.zul.Intbox;
-import org.zkoss.zul.Label;
-import org.zkoss.zul.Listbox;
-import org.zkoss.zul.Listitem;
-import org.zkoss.zul.ListitemRenderer;
-import org.zkoss.zul.Messagebox;
-import org.zkoss.zul.Radio;
-import org.zkoss.zul.Radiogroup;
-import org.zkoss.zul.Row;
-import org.zkoss.zul.RowRenderer;
-import org.zkoss.zul.Rows;
-import org.zkoss.zul.SimpleListModel;
-import org.zkoss.zul.Textbox;
+import org.zkoss.zul.*;
 import org.zkoss.zul.api.Window;
 import org.zkoss.zul.impl.InputElement;
+
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import java.util.*;
+
+import static org.libreplan.web.I18nHelper._;
 
 /**
  * Controller for {@link Configuration} entity.
@@ -256,7 +222,7 @@ public class ConfigurationController extends GenericForwardComposer {
         configurationModel.setDefaultCalendar(calendar);
     }
 
-    public void save() throws InterruptedException {
+    public void save() {
         ConstraintChecker.isValid(configurationWindow);
         if (checkValidEntitySequenceRows()) {
             try {
@@ -265,8 +231,8 @@ public class ConfigurationController extends GenericForwardComposer {
                 messages.showMessage(Level.INFO, _("Changes saved"));
 
                 // Send data to server
-                if ( !SecurityUtils.isGatheredStatsAlreadySent &&
-                        configurationDAO.getConfigurationWithReadOnlyTransaction().isAllowToGatherUsageStatsEnabled() )
+                if (!SecurityUtils.isGatheredStatsAlreadySent &&
+                        configurationDAO.getConfigurationWithReadOnlyTransaction().isAllowToGatherUsageStatsEnabled())
                     sendDataToServer();
 
                 if (getSelectedConnector() != null
@@ -301,7 +267,7 @@ public class ConfigurationController extends GenericForwardComposer {
         SecurityUtils.isGatheredStatsAlreadySent = true;
     }
 
-    public void cancel() throws InterruptedException {
+    public void cancel() {
         configurationModel.cancel();
         messages.showMessage(Level.INFO, _("Changes have been canceled"));
         reloadWindow();
