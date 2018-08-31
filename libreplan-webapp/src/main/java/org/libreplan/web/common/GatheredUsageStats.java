@@ -95,49 +95,49 @@ public class GatheredUsageStats {
     // The oldestDate in the projects
     private String oldestDate;
 
-    private String generateID() {
-        String ip = null;
-        String hostname = null;
+	private String generateID() {
+		String ip = null;
+		String hostname = null;
 
-        // Make hash of ip + hostname
-        try {
-            WebAuthenticationDetails details = (WebAuthenticationDetails) SecurityContextHolder.getContext()
-                    .getAuthentication().getDetails();
-            ip = details.getRemoteAddress();
-            Execution execution = Executions.getCurrent();
-            hostname = execution.getServerName();
-        } catch (Exception e) {
-            try {
-                InetAddress address = InetAddress.getLocalHost();
-                ip = address.getHostAddress();
-                hostname = address.getHostName();
-            } catch (UnknownHostException uhe) {
-                uhe.printStackTrace();
-            }
-        }
+		// Make hash of ip + hostname
+		try {
+			WebAuthenticationDetails details = (WebAuthenticationDetails) SecurityContextHolder.getContext()
+					.getAuthentication().getDetails();
+			ip = details.getRemoteAddress();
+			Execution execution = Executions.getCurrent();
+			hostname = execution.getServerName();
+		} catch (Exception e) {
+			try {
+				InetAddress address = InetAddress.getLocalHost();
+				ip = address.getHostAddress();
+				hostname = address.getHostName();
+			} catch (UnknownHostException uhe) {
+				uhe.printStackTrace();
+			}
+		}
 
-        String message = ip + hostname;
-        byte[] encoded;
-        StringBuffer sb = null;
+		String message = ip + hostname;
+		byte[] encoded;
+		StringBuffer sb = null;
 
-        try {
-            byte[] bytesOfMessage = message.getBytes("UTF-8");
-            MessageDigest md5 = MessageDigest.getInstance("MD5");
-            encoded = md5.digest(bytesOfMessage);
+		try {
+			byte[] bytesOfMessage = message.getBytes("UTF-8");
+			MessageDigest md5 = MessageDigest.getInstance("MD5");
+			encoded = md5.digest(bytesOfMessage);
 
-            // Convert bytes to hex format
-            sb = new StringBuffer();
-            for (int i = 0; i < encoded.length; i++)
-                sb.append(Integer.toString((encoded[i] & 0xff) + 0x100, 16)
-                        .substring(1));
-
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        return sb.toString();
-    }
+			// Convert bytes to hex format
+			sb = new StringBuffer();
+			for (int i = 0; i < encoded.length; i++) {
+				sb.append(Integer.toString((encoded[i] & 0xff) + 0x100, 16)
+						.substring(1));
+			}
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		return sb.toString();
+	}
 
     // It needed because i do not need to call default constructor on Autowiring
     private void myConstructor() {
