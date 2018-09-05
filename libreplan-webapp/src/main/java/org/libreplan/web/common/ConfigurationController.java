@@ -60,6 +60,10 @@ import org.zkoss.zul.*;
 import org.zkoss.zul.api.Window;
 import org.zkoss.zul.impl.InputElement;
 
+import javax.mail.AuthenticationFailedException;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Transport;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
