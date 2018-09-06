@@ -20,9 +20,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
@@ -59,7 +57,6 @@ public class GatheredUsageStats {
     private IMaterialsModel materialsModel;
 
     private IAssignedTaskQualityFormsToOrderElementModel assignedQualityFormModel;
-
 
     // Version of this statistics implementation.
     // Just increment it, if you will change something related to JSON object.
@@ -98,49 +95,64 @@ public class GatheredUsageStats {
     // The oldestDate in the projects
     private String oldestDate;
 
-    private String generateID(){
-        // Make hash of ip + hostname
-        WebAuthenticationDetails details = (WebAuthenticationDetails) SecurityContextHolder.getContext()
-                .getAuthentication().getDetails();
-        String ip = details.getRemoteAddress();
+	private String generateID() {
+		String ip = null;
+		String hostname = null;
 
-        Execution execution = Executions.getCurrent();
-        String hostname = execution.getServerName();
+		// Make hash of ip + hostname
+		try {
+			WebAuthenticationDetails details = (WebAuthenticationDetails) SecurityContextHolder.getContext()
+					.getAuthentication().getDetails();
+			ip = details.getRemoteAddress();
+			Execution execution = Executions.getCurrent();
+			hostname = execution.getServerName();
+		} catch (Exception e) {
+			try {
+				InetAddress address = InetAddress.getLocalHost();
+				ip = address.getHostAddress();
+				hostname = address.getHostName();
+			} catch (UnknownHostException uhe) {
+				uhe.printStackTrace();
+			}
+		}
 
-        String message = ip + hostname;
-        byte[] encoded = null;
-        StringBuffer sb = null;
+		String message = ip + hostname;
+		byte[] encoded;
+		StringBuffer sb = null;
 
-        try {
-            byte[] bytesOfMessage = message.getBytes("UTF-8");
-            MessageDigest md5 = MessageDigest.getInstance("MD5");
-            encoded = md5.digest(bytesOfMessage);
+		try {
+			byte[] bytesOfMessage = message.getBytes("UTF-8");
+			MessageDigest md5 = MessageDigest.getInstance("MD5");
+			encoded = md5.digest(bytesOfMessage);
 
-            // Convert bytes to hex format
-            sb = new StringBuffer();
-            for (int i = 0; i < encoded.length; i++) sb.append(Integer.toString((encoded[i] & 0xff) + 0x100, 16)
-                    .substring(1));
-
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        return sb.toString();
-    }
+			// Convert bytes to hex format
+			sb = new StringBuffer();
+			for (int i = 0; i < encoded.length; i++) {
+				sb.append(Integer.toString((encoded[i] & 0xff) + 0x100, 16)
+						.substring(1));
+			}
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		return sb.toString();
+	}
 
     // It needed because i do not need to call default constructor on Autowiring
-    private void myConstructor(){
+    private void myConstructor() {
+        List<Order> allOrders = orderModel.getAllOrders();
+
         setId(generateID());
         setUsers(getUserRows());
-        setProjects(orderModel.getOrders().size());
+        setProjects(allOrders.size());
         setTimesheets(workReportModel.getWorkReportDTOs().size());
         setWorkers(workerModel.getWorkers().size());
         setMachines(machineModel.getMachines().size());
         setExpensesheets(expenseSheetModel.getExpenseSheets().size());
         setMaterials(materialsModel.getMaterials().size());
         setQualityForms(assignedQualityFormModel.getAssignedQualityForms().size());
-        setOldestDate(orderModel.getOrders());
+        setOldestDate(allOrders);
     }
 
     public void sendGatheredUsageStatsToServer(){

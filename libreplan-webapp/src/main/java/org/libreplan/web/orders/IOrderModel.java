@@ -89,6 +89,8 @@ public interface IOrderModel extends IIntegrationEntityModel {
 
     List<Order> getOrders();
 
+    List<Order> getAllOrders();
+
     List<Order> getOrders(Date startDate, Date endDate, List<Label> labels,
             List<Criterion> criteria, ExternalCompany customer,
             OrderStatusEnum state);
