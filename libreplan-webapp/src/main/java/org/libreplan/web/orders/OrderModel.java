@@ -239,6 +239,16 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
 
     @Override
     @Transactional(readOnly = true)
+    public List<Order> getAllOrders() {
+        getLabelsOnConversation().reattachLabels();
+        List<Order> orders = orderDAO.getOrders();
+
+        initializeOrders(orders);
+        return orders;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<Order> getOrders(Date startDate, Date endDate,
                                  List<Label> labels, List<Criterion> criteria,
                                  ExternalCompany customer, OrderStatusEnum state, Boolean excludeFinishedProject) {

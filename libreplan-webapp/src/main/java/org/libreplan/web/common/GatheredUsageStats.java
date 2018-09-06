@@ -21,8 +21,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.net.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
@@ -57,7 +56,6 @@ public class GatheredUsageStats {
     private IMaterialsModel materialsModel;
 
     private IAssignedTaskQualityFormsToOrderElementModel assignedTaskQualityFormsToOrderElementModel;
-
 
     /**
      * Version of this statistics implementation.
@@ -158,14 +156,25 @@ public class GatheredUsageStats {
     }
 
     private String generateID() {
+	    String ip = null;
+	    String hostname = null;
+
         // Make hash of ip + hostname
-        WebAuthenticationDetails details =
+        try {WebAuthenticationDetails details =
                 (WebAuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails();
 
-        String ip = details.getRemoteAddress();
-
-        Execution execution = Executions.getCurrent();
-        String hostname = execution.getServerName();
+         ip = details.getRemoteAddress();
+            Execution execution = Executions.getCurrent();
+            hostname = execution.getServerName();
+        } catch (Exception e) {
+            try {
+                InetAddress address = InetAddress.getLocalHost();
+                ip = address.getHostAddress();
+                hostname = address.getHostName();
+            } catch (UnknownHostException uhe) {
+                uhe.printStackTrace();
+            }
+        }
 
         String message = ip + hostname;
         byte[] encoded;
@@ -189,16 +198,17 @@ public class GatheredUsageStats {
     }
 
     private void initialize() {
+        List<Order> allOrders = orderModel.getAllOrders();
         setId(generateID());
         setUsers(getUserRows());
-        setProjects(orderModel.getOrders().size());
+        setProjects(allOrders.size());
         setTimesheets(workReportModel.getWorkReportDTOs().size());
         setWorkers(workerModel.getWorkers().size());
         setMachines(machineModel.getMachines().size());
         setExpensesheets(expenseSheetModel.getExpenseSheets().size());
         setMaterials(materialsModel.getMaterials().size());
         setQualityForms(assignedTaskQualityFormsToOrderElementModel.getAssignedQualityForms().size());
-        setOldestDate(orderModel.getOrders());
+        setOldestDate(allOrders);
     }
 
     public void sendGatheredUsageStatsToServer(){

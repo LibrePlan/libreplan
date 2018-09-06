@@ -21,50 +21,13 @@
 
 package org.libreplan.web.common;
 
-import static org.libreplan.web.I18nHelper._;
-
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.InputStream;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.io.IOException;
-import java.util.List;
-import java.util.ConcurrentModificationException;
-import java.util.Properties;
-import java.util.ArrayList;
-import java.util.Set;
-import java.util.Map;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Arrays;
-
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.AuthenticationFailedException;
-import javax.mail.MessagingException;
-
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.common.daos.IConfigurationDAO;
-import org.libreplan.business.common.entities.Configuration;
-import org.libreplan.business.common.entities.Connector;
-import org.libreplan.business.common.entities.ConnectorProperty;
-import org.libreplan.business.common.entities.EntityNameEnum;
-import org.libreplan.business.common.entities.EntitySequence;
-import org.libreplan.business.common.entities.LDAPConfiguration;
-import org.libreplan.business.common.entities.PersonalTimesheetsPeriodicityEnum;
-import org.libreplan.business.common.entities.PredefinedConnectorProperties;
-import org.libreplan.business.common.entities.PredefinedConnectors;
-import org.libreplan.business.common.entities.ProgressType;
+import org.libreplan.business.common.entities.*;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
 import org.libreplan.business.users.entities.UserRole;
@@ -86,29 +49,21 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
-
 import org.zkoss.zkplus.spring.SpringUtil;
-import org.zkoss.zul.ListitemRenderer;
-import org.zkoss.zul.Listbox;
-import org.zkoss.zul.Grid;
-import org.zkoss.zul.Combobox;
-import org.zkoss.zul.Intbox;
-import org.zkoss.zul.Textbox;
-import org.zkoss.zul.Radiogroup;
-import org.zkoss.zul.Listitem;
-import org.zkoss.zul.Row;
-import org.zkoss.zul.Constraint;
-import org.zkoss.zul.RowRenderer;
-import org.zkoss.zul.Comboitem;
-import org.zkoss.zul.Radio;
-import org.zkoss.zul.Button;
-import org.zkoss.zul.Label;
-import org.zkoss.zul.Rows;
-import org.zkoss.zul.SimpleListModel;
-import org.zkoss.zul.Messagebox;
-
-import org.zkoss.zul.Window;
+import org.zkoss.zul.*;
 import org.zkoss.zul.impl.InputElement;
+
+import javax.mail.AuthenticationFailedException;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import java.io.*;
+import java.util.*;
+
+import static org.libreplan.web.I18nHelper._;
 
 /**
  * Controller for {@link Configuration} entity.
@@ -281,7 +236,7 @@ public class ConfigurationController extends GenericForwardComposer {
         configurationModel.setDefaultCalendar(calendar);
     }
 
-    public void save() throws InterruptedException {
+    public void save() {
 
         if ( getSelectedConnector() != null &&
                 "E-mail".equals(getSelectedConnector().getName()) &&
@@ -304,7 +259,6 @@ public class ConfigurationController extends GenericForwardComposer {
 
                         sendDataToServer();
                     }
-
 
                     if ( getSelectedConnector() != null &&
                             !configurationModel.scheduleOrUnscheduleJobs(getSelectedConnector())) {
@@ -336,7 +290,7 @@ public class ConfigurationController extends GenericForwardComposer {
         SecurityUtils.isGatheredStatsAlreadySent = true;
     }
 
-    public void cancel() throws InterruptedException {
+    public void cancel() {
         configurationModel.cancel();
         messages.clearMessages();
         messages.showMessage(Level.INFO, _("Changes have been canceled"));
