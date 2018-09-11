@@ -232,8 +232,9 @@ public class ConfigurationController extends GenericForwardComposer {
 
                 // Send data to server
                 if (!SecurityUtils.isGatheredStatsAlreadySent &&
-                        configurationDAO.getConfigurationWithReadOnlyTransaction().isAllowToGatherUsageStatsEnabled())
+                        configurationDAO.getConfigurationWithReadOnlyTransaction().isAllowToGatherUsageStatsEnabled()) {
                     sendDataToServer();
+                }
 
                 if (getSelectedConnector() != null
                         && !configurationModel
