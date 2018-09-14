@@ -62,16 +62,16 @@
             <column name="code" type="varchar(25)"/>
             <column name="project" type="BIGINT"/>
             <column name="type" type="integer"/>
-            <column name="description" type="varchar(512)"/>
+            <column name="description" type="varchar(1024)"/>
             <column name="priority" type="integer"/>
             <column name="severity" type="integer"/>
             <column name="created_by" type="BIGINT"/>
-            <column name="assigned_to" type="varchar(50)"/>
+            <column name="assigned_to" type="varchar(512)"/>
             <column name="status" type="varchar(50)"/>
             <column name="date_raised" type="timestamp"/>
             <column name="deadline" type="timestamp"/>
             <column name="date_resolved" type="timestamp"/>
-            <column name="notes" type="varchar(256)"/>
+            <column name="notes" type="varchar(1024)"/>
         </createTable>
 
         <addForeignKeyConstraint baseTableName="issue_log" baseColumnNames="project"
@@ -99,18 +99,18 @@
             </column>
             <column name="code" type="varchar(25)"/>
             <column name="project" type="BIGINT"/>
-            <column name="description" type="varchar(512)"/>
+            <column name="description" type="varchar(1024)"/>
             <column name="probability" type="integer"/>
             <column name="impact" type="integer"/>
             <column name="score" type="integer"/>
             <column name="created_by" type="BIGINT"/>
-            <column name="responsible" type="varchar(25)"/>
-            <column name="status" type="varchar(25)"/>
-            <column name="contingency" type="varchar(50)"/>
-            <column name="counter_measures" type="varchar(50)"/>
+            <column name="responsible" type="varchar(512)"/>
+            <column name="status" type="varchar(512)"/>
+            <column name="contingency" type="varchar(1024)"/>
+            <column name="counter_measures" type="varchar(1024)"/>
             <column name="action_when" type="timestamp"/>
             <column name="date_created" type="timestamp"/>
-            <column name="notes" type="varchar(256)"/>
+            <column name="notes" type="varchar(1024)"/>
         </createTable>
         <addForeignKeyConstraint baseTableName="risk_log" baseColumnNames="project"
                                  constraintName="project_order_element_table"
