@@ -93,7 +93,7 @@
             <row>
                 <label value="${i18n:_('Description')}" />
                 <textbox id="descriptionNameTextBox" width="636px" rows="4"
-                         value="@{issueLogController.issueLog.description}" maxlength="512"/>
+                         value="@{issueLogController.issueLog.description}" maxlength="1024"/>
             </row>
             <row>
                 <label value="${i18n:_('Categories')}" />
@@ -124,7 +124,7 @@
             <row>
                 <label value="${i18n:_('Assigned to')}" />
                 <textbox id="assignedToTextBox" width="636px"
-                         value="@{issueLogController.issueLog.assignedTo}" maxlength="50"/>
+                         value="@{issueLogController.issueLog.assignedTo}" maxlength="512"/>
             </row>
             <row>
                 <label value="${i18n:_('Timing')}" />
@@ -153,7 +153,7 @@
             <row>
                 <label value="${i18n:_('Notes')}" />
                 <textbox value="@{issueLogController.issueLog.notes}" width="636px" rows="8" multiline="true"
-                         maxlength="256"/>
+                         maxlength="1024"/>
             </row>
         </rows>
     </grid>
