@@ -57,10 +57,8 @@ public class StartupApplicationListener implements ApplicationListener {
 		if (SecurityUtils.isGatheredStatsAlreadySent) {
 			return;
 		}
-		if (configurationDAO.getConfigurationWithReadOnlyTransaction() == null || configurationDAO.getConfigurationWithReadOnlyTransaction().isAllowToGatherUsageStatsEnabled()) {
-			GatheredUsageStats gatheredUsageStats = new GatheredUsageStats();
-
-			gatheredUsageStats.setupNotAutowiredClasses(userDAO, orderModel, workReportModel, workerModel, machineModel,
+		if (configurationDAO.getConfigurationWithReadOnlyTransaction() == null || configurationDAO.getConfigurationWithReadOnlyTransaction().isAllowedToGatherUsageStatsEnabled()) {
+			GatheredUsageStats gatheredUsageStats = new GatheredUsageStats(userDAO, orderModel, workReportModel, workerModel, machineModel,
 					expenseSheetModel, materialsModel, assignedQualityFormsModel);
 
 			gatheredUsageStats.sendGatheredUsageStatsToServer();
