@@ -155,6 +155,20 @@ public class GatheredUsageStats {
         initialize();
     }
 
+    public GatheredUsageStats(IUserDAO userDAO, IOrderModel orderModel, IWorkReportModel workReportModel, IWorkerModel workerModel,
+                              IMachineModel machineModel, IExpenseSheetModel expenseSheetModel, IMaterialsModel materialsModel, IAssignedTaskQualityFormsToOrderElementModel assignedTaskQualityFormsToOrderElementModel) {
+        this.userDAO = userDAO;
+        this.orderModel = orderModel;
+        this.workReportModel = workReportModel;
+        this.workerModel = workerModel;
+        this.machineModel = machineModel;
+        this.expenseSheetModel = expenseSheetModel;
+        this.materialsModel = materialsModel;
+        this.assignedTaskQualityFormsToOrderElementModel = assignedTaskQualityFormsToOrderElementModel;
+
+        initialize();
+    }
+
     private String generateID() {
 	    String ip = null;
 	    String hostname = null;

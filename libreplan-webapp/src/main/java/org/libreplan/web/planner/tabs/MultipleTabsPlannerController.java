@@ -506,9 +506,8 @@ public class MultipleTabsPlannerController implements Composer, IGlobalViewEntry
         }
 
         // Send data to server
-        if ( !SecurityUtils.isGatheredStatsAlreadySent &&
-                configurationDAO.getConfiguration().isAllowedToGatherUsageStatsEnabled() ) {
-
+        if (!SecurityUtils.isGatheredStatsAlreadySent
+                && (configurationDAO.getConfigurationWithReadOnlyTransaction() == null || configurationDAO.getConfigurationWithReadOnlyTransaction().isAllowedToGatherUsageStatsEnabled())) {
             sendDataToServer();
         }
 

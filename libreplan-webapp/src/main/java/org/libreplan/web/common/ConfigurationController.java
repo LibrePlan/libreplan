@@ -27,6 +27,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.common.daos.IConfigurationDAO;
+import org.libreplan.business.common.entities.*;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
 import org.libreplan.business.users.entities.UserRole;
@@ -253,10 +254,9 @@ public class ConfigurationController extends GenericForwardComposer {
                     messages.showMessage(Level.INFO, _("Changes saved"));
 
                     // Send data to server
-	                if (!SecurityUtils.isGatheredStatsAlreadySent &&
-			                configurationDAO.getConfigurationWithReadOnlyTransaction().isAllowedToGatherUsageStatsEnabled()) {
-		                sendDataToServer();
-	                }
+                    if (!SecurityUtils.isGatheredStatsAlreadySent && (configurationDAO.getConfigurationWithReadOnlyTransaction() == null || configurationDAO.getConfigurationWithReadOnlyTransaction().isAllowedToGatherUsageStatsEnabled())) {
+                        sendDataToServer();
+                    }
 
                     if ( getSelectedConnector() != null &&
                             !configurationModel.scheduleOrUnscheduleJobs(getSelectedConnector())) {
