@@ -168,7 +168,7 @@
         <!-- LibrePlan repository -->
         <repository>
             <id>thirdparty</id>
-            <url>http://nexus.libreplan.org/nexus/content/repositories/thirdparty-libreplan16/</url>
+            <url>https://nexus.libreplan.dev/repository/thirdparty-libreplan16/</url>
         </repository>
     </repositories>
 
@@ -595,7 +595,7 @@
             <dependency>
                 <groupId>org.zkoss.zkforge</groupId>
                 <artifactId>timeplotz</artifactId>
-                <version>1.1_50_1</version>
+                <version>1.1_50</version>
             </dependency>
 
             <dependency>
@@ -631,7 +631,7 @@
             <dependency>
                 <groupId>br.com.digilabs.jqplot</groupId>
                 <artifactId>jqplot4java</artifactId>
-                <version>1.3.2-javascript</version>
+                <version>1.3.3</version>
             </dependency>
 
             <!-- MPXJ Library -->
