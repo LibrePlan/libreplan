@@ -595,6 +595,13 @@
                 <scope>runtime</scope>
             </dependency>
 
+            <!-- https://mvnrepository.com/artifact/org.zkoss.common/zcommon -->
+            <dependency>
+                <groupId>org.zkoss.common</groupId>
+                <artifactId>zcommon</artifactId>
+                <version>5.0.11</version>
+            </dependency>
+
             <!-- ZK -->
             <dependency>
                 <groupId>org.zkoss.zk</groupId>
