@@ -160,7 +160,7 @@
         <!-- LibrePlan repository -->
         <repository>
             <id>thirdparty</id>
-            <url>http://nexus.libreplan.org/content/repositories/thirdparty</url>
+            <url>https://nexus.libreplan.dev/repository/thirdparty-libreplan16</url>
         </repository>
     </repositories>
 
@@ -254,7 +254,6 @@
                 <version>4.4</version>
                 <scope>test</scope>
             </dependency>
-
             <!-- Datasource for testing -->
             <dependency>
                 <groupId>com.jolbox</groupId>
@@ -279,26 +278,106 @@
             </dependency>
 
             <!-- Spring -->
+	    <!--
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring</artifactId>
                 <version>2.5.6</version>
             </dependency>
+            -->
+<!-- https://mvnrepository.com/artifact/org.springframework/spring-dao -->
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-dao</artifactId>
+    <version>2.0.8</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/org.springframework/spring-core -->
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-core</artifactId>
+    <version>3.2.18.RELEASE</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/org.springframework/spring-aop -->
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-aop</artifactId>
+    <version>3.2.18.RELEASE</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/org.springframework/spring-context -->
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-context</artifactId>
+    <version>3.2.18.RELEASE</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/org.springframework/spring-hibernate3 -->
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-hibernate3</artifactId>
+    <version>2.0.8</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/org.springframework/spring-beans -->
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-beans</artifactId>
+    <version>3.2.18.RELEASE</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/org.springframework/spring-tx -->
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-tx</artifactId>
+    <version>3.2.18.RELEASE</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/org.springframework/spring-web -->
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-web</artifactId>
+    <version>3.2.18.RELEASE</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/org.springframework/spring-context-support -->
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-context-support</artifactId>
+    <version>3.2.18.RELEASE</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/org.springframework/spring-test -->
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-test</artifactId>
+    <version>2.5.6.SEC03</version>
+    <scope>test</scope>
+</dependency>
+<!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-core -->
+<dependency>
+    <groupId>org.springframework.security</groupId>
+    <artifactId>spring-security-core</artifactId>
+    <version>2.0.8.RELEASE</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/org.springframework.ldap/spring-ldap-core -->
+<dependency>
+    <groupId>org.springframework.ldap</groupId>
+    <artifactId>spring-ldap-core</artifactId>
+    <version>2.3.2.RELEASE</version>
+</dependency>
+
+
+<!--
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-test</artifactId>
                 <version>2.5.6</version>
                 <scope>test</scope>
             </dependency>
-
+-->
             <!-- QuartzJobBean in spring-context-support.jar -->
+<!--
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-context-support</artifactId>
                 <version>2.5.6</version>
             </dependency>
-
+-->
             <!-- Spring security -->
+<!--
             <dependency>
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-core</artifactId>
@@ -358,8 +437,9 @@
                 <artifactId>spring-security-core-tiger</artifactId>
                 <version>2.0.5.RELEASE</version>
             </dependency>
-
+-->
             <!-- Spring Dependency LDAP -->
+<!--
             <dependency>
                 <groupId>org.springframework.ldap</groupId>
                 <artifactId>spring-ldap-core</artifactId>
@@ -515,7 +595,8 @@
                     </exclusion>
                 </exclusions>
             </dependency>
-
+-->
+		    <!--
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-aop</artifactId>
@@ -527,6 +608,7 @@
                     </exclusion>
                 </exclusions>
             </dependency>
+-->
 
             <!--  AspectJ -->
             <dependency>
@@ -593,6 +675,13 @@
                 <artifactId>commons-fileupload</artifactId>
                 <version>1.2.1</version>
                 <scope>runtime</scope>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/org.zkoss.common/zcommon -->
+            <dependency>
+                <groupId>org.zkoss.common</groupId>
+                <artifactId>zcommon</artifactId>
+                <version>5.0.11</version>
             </dependency>
 
             <!-- ZK -->
@@ -767,7 +856,7 @@
             <dependency>
                 <groupId>org.zkoss.zkforge</groupId>
                 <artifactId>timeplotz</artifactId>
-                <version>1.1_50_1</version>
+                <version>1.1_50</version>
             </dependency>
             <dependency>
                 <groupId>org.zkoss.zkforge</groupId>
@@ -806,7 +895,7 @@
             <dependency>
                 <groupId>br.com.digilabs.jqplot</groupId>
                 <artifactId>jqplot4java</artifactId>
-                <version>1.2.3-javascript</version>
+                <version>1.2.3</version>
             </dependency>
 
             <!-- MPXJ Library -->
