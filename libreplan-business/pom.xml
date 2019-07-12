@@ -65,20 +65,78 @@
         </dependency>
 
         <!-- Spring -->
+	<!--
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring</artifactId>
         </dependency>
+        -->
+<!-- https://mvnrepository.com/artifact/org.springframework/spring-dao -->
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-dao</artifactId>
+</dependency>
+<!-- https://mvnrepository.com/artifact/org.springframework/spring-core -->
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-core</artifactId>
+</dependency>
+<!-- https://mvnrepository.com/artifact/org.springframework/spring-aop -->
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-aop</artifactId>
+</dependency>
+<!-- https://mvnrepository.com/artifact/org.springframework/spring-context -->
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-context</artifactId>
+</dependency>
+<!-- https://mvnrepository.com/artifact/org.springframework/spring-hibernate3 -->
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-hibernate3</artifactId>
+</dependency>
+<!-- https://mvnrepository.com/artifact/org.springframework/spring-beans -->
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-beans</artifactId>
+</dependency>
+<!-- https://mvnrepository.com/artifact/org.springframework/spring-tx -->
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-tx</artifactId>
+</dependency>
+<!-- https://mvnrepository.com/artifact/org.springframework/spring-test -->
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-test</artifactId>
+    <scope>test</scope>
+</dependency>
+<!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-core -->
+<dependency>
+    <groupId>org.springframework.security</groupId>
+    <artifactId>spring-security-core</artifactId>
+</dependency>
+<!-- https://mvnrepository.com/artifact/org.springframework.ldap/spring-ldap-core -->
+<dependency>
+    <groupId>org.springframework.ldap</groupId>
+    <artifactId>spring-ldap-core</artifactId>
+</dependency>
+
+
+<!--
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
         </dependency>
-
+-->
         <!-- Spring AOP support -->
+	<!--
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-aop</artifactId>
         </dependency>
+        -->
 
         <!-- AspectJ -->
         <dependency>
