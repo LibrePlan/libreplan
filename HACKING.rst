@@ -56,7 +56,7 @@ Debian/Ubuntu
 
 * Connect to database::
 
-    # su postgres -c psql
+    # sudo -u postgres psql
 
 * Use SQL sentences::
 
