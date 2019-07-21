@@ -466,7 +466,7 @@
             <artifactId>timelinez</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.zkoss.zkforge</groupId>
+            <groupId>dev.libreplan.zkoss</groupId>
             <artifactId>timeplotz</artifactId>
         </dependency>
 
