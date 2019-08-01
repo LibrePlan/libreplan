@@ -599,9 +599,9 @@
 
             <!-- ZK Timeplot -->
             <dependency>
-                <groupId>org.zkoss.zkforge</groupId>
+                <groupId>dev.libreplan.zkoss</groupId>
                 <artifactId>timeplotz</artifactId>
-                <version>1.1_50</version>
+                <version>1.1_50b</version>
             </dependency>
 
             <dependency>
