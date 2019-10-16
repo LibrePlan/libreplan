@@ -38,7 +38,7 @@ import org.zkoss.zk.ui.HtmlMacroComponent;
  *
  * @author Javier Moran Rua <jmoran@igalia.com>
  */
-public abstract class TimeTrackerComponent extends HtmlMacroComponent {
+public abstract class TimeTrackerComponent extends HtmlMacroComponent implements IZoomLevelChangedListener {
 
     private final TimeTracker timeTracker;
 
@@ -52,18 +52,29 @@ public abstract class TimeTrackerComponent extends HtmlMacroComponent {
         this(timeTracker, "~./ganttz/zul/timetracker/timetrackersecondlevel.zul", "timetracker");
     }
 
+    /** Event handler when zoom level changes.
+     *
+    * Please do not refactor the .zoomLevelChanged method into a delta
+    * function since the GC will remove that function once it is only
+    * referenced by a WeakReference. In that case zoom events will
+    * not be propagated correctly.
+    *
+    * @param detailLevel  requested zoom level.
+     */
+    public void zoomLevelChanged(ZoomLevel detailLevel)
+    {
+        if ( isInPage() ) {
+            recreate();
+            changeDetailLevel(getDaysFor(scrollLeft));
+        }
+    }
+
     TimeTrackerComponent(TimeTracker timeTracker, String secondLevelZul, String timetrackerId) {
         this.secondLevelZul = secondLevelZul;
         this.timeTracker = timeTracker;
 
-        IZoomLevelChangedListener zoomListener = detailLevel ->  {
-            if ( isInPage() ) {
-                recreate();
-                changeDetailLevel(getDaysFor(scrollLeft));
-            }
-        };
 
-        this.timeTracker.addZoomListener(zoomListener);
+        this.timeTracker.addZoomListener(this);
         timeTrackerElementId = timetrackerId;
     }
 
