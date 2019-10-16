@@ -29,8 +29,12 @@ ganttz.TaskList = zk.$extends(
         },
 
         legendResize : function() {
+            console.log("LegendResize");
+            // Calculate width dependant to the preceeding elements. Otherwise
+            // the elements will be horizontally shifted.
             var taskdetailsContainer = jq('.taskdetailsContainer')[0];
-            jq('.legend-container').width(taskdetailsContainer.clientWidth - 75);
+            var tabControl = jq('.legend-container').closest('.z-tabbox').find('.charts-tabbox');
+            jq('.legend-container').width(taskdetailsContainer.clientWidth - tabControl.width()); // 75px is the width of the tabs on the left
         },
 
         refreshTooltips : function() {
