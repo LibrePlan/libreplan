@@ -620,7 +620,12 @@ public class Planner extends HtmlMacroComponent  {
 
         westContainer.addEventListener(
                 Events.ON_SIZE,
-                event -> Clients.evalJavaScript("ganttz.TaskList.getInstance().legendResize();"));
+                event -> Clients.evalJavaScript("ganttz.TaskList.getInstance().legendResize();")
+        );
+
+        // Force layout resize after composition. Otherwise the legend will be
+        // too small and the chart will be out of sync to the Gantt diagram.
+        Clients.evalJavaScript("ganttz.TaskList.getInstance().legendResize();");
 
     }
 
