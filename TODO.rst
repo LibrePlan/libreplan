@@ -93,9 +93,9 @@ Future & wish list
 
   * *Complete the configuration unit mechanism for machines*: Several analysis stories not started have been written for this:
 
-    * `AnA17S01ConfigurationUnitInterfaceCorrections <http://wiki.libreplan.org/twiki/bin/view/LibrePlan/AnA17S01ConfigurationUnitInterfaceCorrections>`_
-    * `AnA17S02TakingIntoAccountDerivedDayAssigments <http://wiki.libreplan.org/twiki/bin/view/LibrePlan/AnA17S02TakingIntoAccountDerivedDayAssigments>`_
-    * `AnA17S03EnforceDerivedDayAssignmentsWithAllocations <http://wiki.libreplan.org/twiki/bin/view/LibrePlan/AnA17S03EnforceDerivedDayAssignmentsWithAllocations>`_
+    * `AnA17S01ConfigurationUnitInterfaceCorrections <https://github.com/LibrePlan/twiki2github/wiki/AnA17S01ConfigurationUnitInterfaceCorrections>`_
+    * `AnA17S02TakingIntoAccountDerivedDayAssigments <https://github.com/LibrePlan/twiki2github/wiki/AnA17S02TakingIntoAccountDerivedDayAssigments>`_
+    * `AnA17S03EnforceDerivedDayAssignmentsWithAllocations <https://github.com/LibrePlan/twiki2github/wiki/AnA17S03EnforceDerivedDayAssignmentsWithAllocations>`_
 
   * *Allow to reassign just one task*
 

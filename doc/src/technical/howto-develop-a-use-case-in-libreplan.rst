@@ -2642,7 +2642,7 @@ provided in order to check implementation.
 .. _CRUD: http://en.wikipedia.org/wiki/Create,_read,_update_and_delete
 .. _Hibernate: http://www.hibernate.org/
 .. _`Optimistic Locking`: http://en.wikipedia.org/wiki/Optimistic_locking
-.. _`LibrePlan wiki`: http://wiki.libreplan.org/
+.. _`LibrePlan wiki`: https://wiki.libreplan.dev/
 .. _MVC: http://en.wikipedia.org/wiki/Model_view_controller
 .. _DAO: http://en.wikipedia.org/wiki/Data_Access_Object
 .. _DDD: http://en.wikipedia.org/wiki/Domain_driven_design

@@ -9,7 +9,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libreplan-1.3.3\n"
-"Report-Msgid-Bugs-To: http://bugs.libreplan.org/\n"
+"Report-Msgid-Bugs-To: http://bugs.libreplan.dev/\n"
 "POT-Creation-Date: 2012-12-07 13:59+0100\n"
 "PO-Revision-Date: 2013-03-12 07:35+0000\n"
 "Last-Translator: Swanson Chan <lacidophilin@yahoo.com>\n"

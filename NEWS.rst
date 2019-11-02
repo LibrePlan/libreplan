@@ -2096,8 +2096,8 @@ Changes
 * Update database scripts for LibrePlan 1.2.2
 * Remove some unneeded lines in libreplan.spec
 * Remove some unneeded lines in libreplan.spec
-* www: Add new README files for Fedora and openSUSE in libreplan.org
-* www: Add new README files for Fedora and openSUSE in libreplan.org
+* www: Add new README files for Fedora and openSUSE in libreplan.dev
+* www: Add new README files for Fedora and openSUSE in libreplan.dev
 * Rename database scripts to create database and user
 * Prepare libreplan spec file for the release 1.2.2.
 * Add LibrePlan RPM spec file
@@ -2426,8 +2426,8 @@ Changes
 * Bug #1327: Fix issue changing method to do reassignments in consolidation process
 * Modify GenericDayAssignment.toString to add info about consolidation
 * Bug #1327: Fix issue changing method to do reassignments in consolidation process
-* www: Folder and script for libreplan.org documentation
-* www: Folder and script for libreplan.org documentation
+* www: Folder and script for libreplan.dev documentation
+* www: Folder and script for libreplan.dev documentation
 * [Bug #1326] Fix issue calculating properly hours to allocate
 * [Bug #1326] Fix issue calculating properly hours to allocate
 * [Bug #1325] Fix issue remove criteria from configuration unit
@@ -3112,7 +3112,7 @@ Changes
 * Update Debian package for LibrePlan 1.2.2
 * Update database scripts for LibrePlan 1.2.2
 * Remove some unneeded lines in libreplan.spec
-* www: Add new README files for Fedora and openSUSE in libreplan.org
+* www: Add new README files for Fedora and openSUSE in libreplan.dev
 * Rename database scripts to create database and user
 * Prepare libreplan spec file for the release 1.2.2.
 * Add LibrePlan RPM spec file
@@ -3319,7 +3319,7 @@ Changes
 * Bug #1261: Extract method createTab with common functionality for each tab
 * Bug #1261: Allows tabs to be memorized when changing perspective
 * Bug #1327: Fix issue changing method to do reassignments in consolidation process
-* www: Folder and script for libreplan.org documentation
+* www: Folder and script for libreplan.dev documentation
 * [Bug #1326] Fix issue calculating properly hours to allocate
 * [Bug #1325] Fix issue remove criteria from configuration unit
 * Allow reported hours bar in gantt diagram to be wider than the task.

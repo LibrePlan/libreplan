@@ -21,7 +21,7 @@ $ sudo apt-get install libqt4-webkit libqt4-svg xvfb
 
 Descargamos a utilidade CutyCapt
 
-$ wget http://libreplan.org/downloads/cutycapt_20100108_i386.deb
+$ wget https://libreplan.dev/downloads/cutycapt_20100108_i386.deb
 
 Instalamos CutyCapt
 
@@ -83,7 +83,7 @@ Instalamos a librería de acceso a jdbc a postgresql en tomcat, o jar está no p
 Instalamos a última versión da aplicación no tomcat
 
 $ cd /var/lib/tomcat6/webapps
-$ sudo wget http://libreplan.org/downloads/libreplan-webapp.war
+$ sudo wget https://libreplan.dev/downloads/libreplan-webapp.war
 $ sudo chown tomcat6.tomcat6 libreplan-webapp.war
 
 Reiniciamos o tomcat para que recolla todas as modificacións da configuración:

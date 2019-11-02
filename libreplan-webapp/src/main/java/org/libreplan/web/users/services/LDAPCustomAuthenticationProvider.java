@@ -58,7 +58,7 @@ import org.springframework.transaction.annotation.Transactional;
  * used to implement the authentication against LDAP.
  *
  * This provider implements the process explained in
- * <https://wiki.libreplan.org/twiki/bin/view/LibrePlan/AnA04S06LdapAuthentication>
+ * <https://github.com/LibrePlan/twiki2github/wiki/AnA04S06LdapAuthentication>
  *
  * At this time it authenticates user against LDAP and then searches it in BD to
  * use the BD user in application.

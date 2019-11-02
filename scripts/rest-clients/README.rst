@@ -108,7 +108,7 @@ the server to execute the tests:
 Demo environment (``without parameters``) - default
 
   Use server where demo is launched using the following URL:
-  ``http://demo.libreplan.org/libreplan/``
+  ``http://demo.libreplan.dev/libreplan/``
 
   Example::
 

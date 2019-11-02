@@ -3,7 +3,7 @@ Hacking
 
 This is a guide about how to start hacking on *LibrePlan* project.
 If you want more information about *LibrePlan* development you should visit the wiki
-available at: http://wiki.libreplan.org/.
+available at: https://wiki.libreplan.dev/.
 
 .. contents::
 

@@ -132,16 +132,16 @@ Webpage
 -------
 
 You can find more information about *LibrePlan* at
-http://www.libreplan.org/home/
+https://www.libreplan.dev/home/
 
 For information related with *LibrePlan* development you can visit the wiki at
-http://wiki.libreplan.org/twiki/bin/view/LibrePlan
+https://wiki.libreplan.dev
 
 
 Reporting bugs
 --------------
 
-Please use the bug tracker to report bugs at http://bugs.libreplan.org/
+Please use the bug tracker to report bugs at http://bugs.libreplan.dev/
 
 
 License

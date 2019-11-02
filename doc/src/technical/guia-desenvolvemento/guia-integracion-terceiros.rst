@@ -233,7 +233,7 @@ Se existe un erro de programación que xorde froito da invocación dun servizo n
 ::
 
   <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-    <internal-error xmlns="http://rest.ws.libreplan.org"
+    <internal-error xmlns="http://rest.ws.libreplan.dev"
      message="">
     <stack-trace>
     </stack-trace>
@@ -312,7 +312,7 @@ Os fluxos de integración detallan a secuencia que ten que facer unha aplicació
 Os servizos web atópanse dispoñibles a partir da URL_BASE da aplicación en /ws/rest/:
 
    * URL Base de Servizos: URL_BASE_LIBREPLAN_WEBAPP/ws/rest
-   * Exemplo: http://www.libreplan.org/libreplan-webapp/ws/rest
+   * Exemplo: https://www.libreplan.dev/libreplan-webapp/ws/rest
 
 A partir deste intre denominase a esta URL de servizos coma *BASE_SERVICES_URL*.
 
@@ -356,7 +356,7 @@ Descrición do fluxo
 Exemplo de ficheiro de importación
  ::
 
-  <material-units-list xmlns="http://rest.ws.libreplan.org">
+  <material-units-list xmlns="http://rest.ws.libreplan.dev">
      <material-unit code="10" name="Unidades"/>
      <material-unit code="20" name="M3"/>
      <material-unit code="30" name="Metros Lineales"/>
@@ -364,7 +364,7 @@ Exemplo de ficheiro de importación
 
 
 
-  <material-category-list xmlns="http://rest.ws.libreplan.org">
+  <material-category-list xmlns="http://rest.ws.libreplan.dev">
     <material-category code="10" name="Tornillos" >
        <material-list>
          <material code="TOR12" description="Tornillos Serie-12" price="123.12" unit-type="10" disabled="false"/>
@@ -428,7 +428,7 @@ Descrición do fluxo
 Exemplo de ficheiro de importación
  ::
 
-  <labels-type-list xmlns="http://rest.ws.libreplan.org">
+  <labels-type-list xmlns="http://rest.ws.libreplan.dev">
     <label-type code="10" name="Prioridad" >
        <labels-list>
          <label code="1001" name="Baja" />
@@ -492,7 +492,7 @@ Descrición do fluxo
 
 Información de realización da chamada
    * *URL Servizo*: BASE_SERVICE_URL/criteriontypes
-   * *Exemplo URL*:http://www.libreplan.org/libreplan-webapp/ws/rest/services/criteriontypes
+   * *Exemplo URL*:https://www.libreplan.dev/libreplan-webapp/ws/rest/services/criteriontypes
    * *Método POST*
 
 Descrición do formato do ficheiro XML::
@@ -524,7 +524,7 @@ Exemplo de ficheiro de importación
 
   <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 
-  <criterion-type-list xmlns="http://rest.ws.libreplan.org">
+  <criterion-type-list xmlns="http://rest.ws.libreplan.dev">
     <criterion-type code="CRITYPE4" name="ct-4" description="ct-4 desc" allow-hierarchy="true"
         allow-simultaneous-criterions-per-resource="true" enabled="true"
         resource="RESOURCE">
@@ -583,7 +583,7 @@ Descrición do fluxo
 Exemplo de ficheiro de importación
  ::
 
-  <hours-type-list xmlns="http://rest.ws.libreplan.org">
+  <hours-type-list xmlns="http://rest.ws.libreplan.dev">
     <hours-type code="12" name="Ordinaria" default-price="10.2" enabled="true" />
     <hours-type code="13" name="Extra" default-price="14.2" enabled="true" />
     <hours-type code="14" name="Nocturna" default-price="14.2" enabled="true" />
@@ -631,7 +631,7 @@ Exemplo de ficheiro de importación
  ::
 
   <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-  <cost-category-list xmlns="http://rest.ws.libreplan.org">
+  <cost-category-list xmlns="http://rest.ws.libreplan.dev">
     <cost-category enabled="true" name="Categoria A"
     code="18d6ef79-5b45-4928-bfd5-ec80a374699c">
       <hour-cost-list>
@@ -699,7 +699,7 @@ Descrición do fluxo
 
 Información de realización da chamada
    * *URL Servizo*: BASE_SERVICE_URL/resources
-   * *Exemplo URL*:http://www.libreplan.org/libreplan-webapp/ws/rest/services/resources
+   * *Exemplo URL*:https://www.libreplan.dev/libreplan-webapp/ws/rest/services/resources
    * *Método POST*
 
 Descrición do formato do ficheiro XML::
@@ -744,7 +744,7 @@ Exemplo de ficheiro de importación
 
   <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 
-  <resource-list xmlns="http://rest.ws.libreplan.org">
+  <resource-list xmlns="http://rest.ws.libreplan.dev">
     <!-- [It assumes existence of "TestLocationGroupCriterion" and
          "TestCostCategory"] OK. -->
     <machine code="machineA" name="name" description="desc">
@@ -830,7 +830,7 @@ Descrición do fluxo
 Exemplo de ficheiro de importación:
  ::
 
-  <work-report-list xmlns="http://rest.ws.libreplan.org">
+  <work-report-list xmlns="http://rest.ws.libreplan.dev">
    <work-report code="312321" work-report-type="30" @date="2009-10-21" @resource="121" work-order="4323">
     <label-list>
       <label code="adfsdf" value="urxente" type="prioridade"/>
@@ -909,7 +909,7 @@ Exemplo de ficheiro de importación
  ::
 
   <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-  <order-lists xmlns="http://rest.ws.libreplan.org">
+  <order-lists xmlns="http://rest.ws.libreplan.dev">
    <order code="ORDER-1" name="Order" init-date="2010-01-01" deadline="2010-05-30">
     <label-list>
      <label code="10" name="low" type="priority" />
@@ -1029,7 +1029,7 @@ Exemplo de ficheiro de importación
  ::
 
   <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-  <base-calendar-list xmlns="http://rest.ws.libreplan.org">
+  <base-calendar-list xmlns="http://rest.ws.libreplan.dev">
   <base-calendar name="Spanish Calendar" code="000-001">
       <calendar-exception-list>
         <calendar-exception calendar-exception-type-code="BANK_HOLIDAY"
@@ -1134,7 +1134,7 @@ Exemplo de ficheiro de importación
  ::
 
   <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-  <type-work-hours-list xmlns="http://rest.ws.libreplan.org">
+  <type-work-hours-list xmlns="http://rest.ws.libreplan.dev">
   <!-- Ok-->
     <type-work-hours enabled="true" defaultPrice="8.00" name="Hora Extra" code="t1" />
 
@@ -1201,7 +1201,7 @@ Descrición do fluxo
 Exemplo de ficheiro de exportación:
  ::
 
-  <resource-worked-hours-list xmlns="http://rest.ws.libreplan.org" start-date="2009-10-01" end-date="2009-10-31">
+  <resource-worked-hours-list xmlns="http://rest.ws.libreplan.dev" start-date="2009-10-01" end-date="2009-10-31">
    <resource-worked-hours resource="321" hours="160" >
    <resource-worked-hours resource="322" hours="165" >
    <resource-worked-hours resource="323" hours="142" >
@@ -1238,7 +1238,7 @@ Descrición do fluxo
 Exemplo de ficheiro de exportación:
  ::
 
-  <calendar-exception-type-list xmlns="http://rest.ws.libreplan.org">
+  <calendar-exception-type-list xmlns="http://rest.ws.libreplan.dev">
     <calendar-exception-type over-assignable="false" color="red"
       name="BANK_HOLIDAY" code="BANK_HOLIDAY" />
     <calendar-exception-type over-assignable="false" color="red"
@@ -1294,7 +1294,7 @@ Exemplo de ficheiro de importación
  ::
 
   <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-   <subcontracted-task-data xmlns="http://rest.ws.libreplan.org" work-description="Pedido de 100 puertas"
+   <subcontracted-task-data xmlns="http://rest.ws.libreplan.dev" work-description="Pedido de 100 puertas"
     subcontracted-code="REFERENCE-CODE-1" subcontracted-price="152200.03" external-company-nif="B15323232">
     <materials>
      <material code="MAT-1" material-reference="MATERIAL-1" name="Tuercas 2x20" descripcion="Tuercas moi resistentes"  unit-price="10.5"/>
@@ -1368,7 +1368,7 @@ Exemplo de ficheiro de importación de avances.
  ::
 
   <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-   <subcontracted-task-data xmlns="http://rest.ws.libreplan.org" work-description="Pedido de 100 puertas"
+   <subcontracted-task-data xmlns="http://rest.ws.libreplan.dev" work-description="Pedido de 100 puertas"
     subcontracted-code="REFERENCE-CODE-1" subcontracted-price="152200.03" external-company-nif="B15323232">
    <children>
     <order-line-group code="ORDER-1-OE-1" name="Order element 1" description="Descripcion">
@@ -1412,7 +1412,7 @@ O seguinte script permite interactuar co servizo de importación de recursos emp
  #!/bin/sh
 
  DEVELOPMENT_BASE_SERVICE_URL=http://localhost:8080/libreplan-webapp/ws/rest
- PRODUCTION_BASE_SERVICE_URL=http://www.libreplan.org/libreplan-webapp/ws/rest
+ PRODUCTION_BASE_SERVICE_URL=https://www.libreplan.dev/libreplan-webapp/ws/rest
 
  DEVELOPMENT_CERTIFICATE=""
  PRODUCTION_CERTIFICATE=-k
@@ -1455,7 +1455,7 @@ O seguinte código de exemplo fai unha petición por GET que nos devolve o lista
  #!/bin/sh
 
  DEVELOPMENT_BASE_SERVICE_URL=http://localhost:8080/libreplan-webapp/ws/rest
- PRODUCTION_BASE_SERVICE_URL=http://www.libreplan.org/libreplan-webapp/ws/rest
+ PRODUCTION_BASE_SERVICE_URL=https://www.libreplan.dev/libreplan-webapp/ws/rest
 
  DEVELOPMENT_CERTIFICATE=""
  PRODUCTION_CERTIFICATE=-k

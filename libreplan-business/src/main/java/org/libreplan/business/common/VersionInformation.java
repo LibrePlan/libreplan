@@ -45,7 +45,7 @@ public class VersionInformation {
     /**
      * URL with a text file only with last number version of LibrePlan.
      */
-    private static final String LIBREPLAN_VERSION_URL = "http://libreplan.org/VERSION";
+    private static final String LIBREPLAN_VERSION_URL = "https://libreplan.dev/VERSION";
 
 
     /**

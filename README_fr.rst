@@ -116,13 +116,13 @@ Vous pourrez trouver plus d'informations concernant *LibrePlan* sur
 http://www.libreplan.com/.
 
 Pour les informations relatives au développement de *LibrePlan*, vous pouvez aller sur le wiki sur
-http://wiki.libreplan.org/.
+https://wiki.libreplan.dev/.
 
 
 Signaler des bugs
 -----------------
 
-Merci d'utiliser le gestionnaire de bugs pour signaler les bugs sur http://bugs.libreplan.org/.
+Merci d'utiliser le gestionnaire de bugs pour signaler les bugs sur http://bugs.libreplan.dev/.
 
 
 Licence

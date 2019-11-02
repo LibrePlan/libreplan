@@ -5,7 +5,7 @@
     complete list of test cases.
  -->
 
-<resource-list xmlns="http://rest.ws.libreplan.org">
+<resource-list xmlns="http://rest.ws.libreplan.dev">
 
     <!--  *** Machines *** -->
 

@@ -29,7 +29,7 @@ package org.libreplan.ws.common.api;
 public class WSCommonGlobalNames {
 
     public final static String REST_NAMESPACE =
-        "http://rest.ws.libreplan.org";
+        "http://rest.ws.libreplan.dev";
 
     private WSCommonGlobalNames() {}
 
