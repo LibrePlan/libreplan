@@ -644,7 +644,7 @@
             <dependency>
                 <groupId>net.sf.mpxj</groupId>
                 <artifactId>mpxj</artifactId>
-                <version>5.2.2</version>
+                <version>8.3.5</version>
             </dependency>
 
             <!-- ZK fileupload -->
