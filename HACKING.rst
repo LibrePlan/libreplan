@@ -58,6 +58,10 @@ Debian/Ubuntu
 
     # apt-get install git-core maven openjdk-8-jdk postgresql postgresql-client python-docutils make gettext cutycapt
 
+* Set default OpenJDK version (required for Ubuntu 18.04, 20.04 and newer)::
+
+    # update-java-alternatives -s java-1.8.0-openjdk-amd64
+
 * Connect to database::
 
     # su postgres -c psql
@@ -74,15 +78,36 @@ Debian/Ubuntu
 
     $ git clone git://github.com/LibrePlan/libreplan.git
 
-* Compile project::
+* Compile project while skipping tests (since they currently do not work at least on Ubuntu 18.04, 20.04 and newer)::
 
     $ cd libreplan/
-    $ mvn clean install
+    $ mvn -DskipTests clean install
 
 * Launch application::
 
     $ cd libreplan-webapp/
     $ mvn jetty:run
+
+* Alternatively start application as systemd service::
+
+    $ nano /lib/systemd/system/libreplan.service
+    [Unit]
+    Description=libreplan
+    After=network.target
+    Wants=network.target
+
+    [Service]
+    Type=simple
+    WorkingDirectory=/root/libreplan/libreplan-webapp
+    ExecStart=/usr/bin/mvn jetty:run
+    Restart=always
+
+    [Install]
+    WantedBy=multi-user.target
+    
+    $ systemctl daemon-reload
+    $ systemctl enable libreplan.service
+    $ systemctl start libreplan.service
 
 * Go to http://localhost:8080/
 
