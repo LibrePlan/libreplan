@@ -398,6 +398,13 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- Open Java API for OLAP -->
+        <dependency>
+            <groupId>org.olap4j</groupId>
+            <artifactId>olap4j</artifactId>
+            <version>1.2.0</version>
+        </dependency>
+
         <!-- Easymock -->
         <dependency>
             <groupId>org.easymock</groupId>
