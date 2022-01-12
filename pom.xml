@@ -170,6 +170,12 @@
             <id>thirdparty</id>
             <url>https://nexus.libreplan.dev/repository/thirdparty-libreplan16/</url>
         </repository>
+
+        <!-- JFrog Artifactory SaaS repository -->
+        <repository>
+            <id>jaspersoft-third-party</id>
+            <url>https://jaspersoft.jfrog.io/jaspersoft/third-party-ce-artifacts/</url>
+        </repository>
     </repositories>
 
     <!-- Dependency management -->
