@@ -42,10 +42,10 @@ jobs:
       run: |
         sudo -u postgres psql --command="CREATE USER libreplan PASSWORD 'libreplan'" --command="\du"
     
-    - name: Create timetable database
+    - name: Create libreplandev database
       run: |
-        sudo -u postgres createdb --owner=libreplan libreplan
-        PGPASSWORD=libreplan psql --username=libreplan --host=localhost --list libreplan
+        sudo -u postgres createdb --owner=libreplan libreplandev
+        PGPASSWORD=libreplan psql --username=libreplan --host=localhost --list libreplandev
 
     - name: Set up JDK 8
       uses: actions/setup-java@v3
