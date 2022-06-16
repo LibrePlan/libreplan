@@ -38,9 +38,14 @@ jobs:
         sudo systemctl start postgresql.service
         pg_isready
     
+    - name: Set scram password encryption
+      run: |
+        sudo -u postgres psql --command="ALTER SYSTEM SET password_encryption = 'scram-sha-256';"
+    
     - name: Create libreplan user
       run: |
-        sudo -u postgres psql --command="ALTER SYSTEM SET password_encryption = 'scram-sha-256'; CREATE USER libreplan PASSWORD 'libreplan'" --command="\du"
+        sudo -u postgres psql --command="CREATE USER libreplan PASSWORD 'libreplan'; "
+#" --command="\du"
     
     - name: Create libreplandev database
       run: |
