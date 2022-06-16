@@ -23,5 +23,5 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Build with Maven
-       run: mvn -DskipTests -Ddefault.passwordsControl=false -Ddefault.exampleUsersDisabled=false clean install
+        run: mvn -DskipTests -Ddefault.passwordsControl=false -Ddefault.exampleUsersDisabled=false clean install
 
