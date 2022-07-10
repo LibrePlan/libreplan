@@ -152,9 +152,9 @@ public class ResourceTest {
         CriterionWithItsType otherCriterionWithItsType = new CriterionWithItsType(type, otherCriterion);
         Worker worker = Worker.create("firstName", "surName", "2333232");
         assertThat(worker.getCurrentCriterionsFor(type).size(), equalTo(0));
-        worker.addSatisfaction(criterionWithItsType, Interval.range(year(2000),year(2020)));
+        worker.addSatisfaction(criterionWithItsType, Interval.range(year(2000),year(2038)));
         assertThat(worker.getCurrentCriterionsFor(type).size(), equalTo(1));
-        worker.addSatisfaction(criterionWithItsType, Interval.from(year(2020)));
+        worker.addSatisfaction(criterionWithItsType, Interval.from(year(2038)));
         assertThat(worker.getCurrentCriterionsFor(type).size(), equalTo(1));
         worker.addSatisfaction(otherCriterionWithItsType, Interval.from(year(2000)));
         assertThat(worker.getCurrentCriterionsFor(type).size(), equalTo(2));
