@@ -1,7 +1,7 @@
 # This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
 # For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
 
-name: Ubuntu 20.04 Java 8 CI with Maven, PostgreSQL and skipTests option
+name: Ubuntu 22.04 with Java 8
 
 on:
   push:
@@ -12,11 +12,11 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     
     services:
       postgres:
-        image: postgres:13.0
+        image: postgres:14.0
         env:
           POSTGRES_DB: libreplandev       
           POSTGRES_PASSWORD: libreplan
@@ -32,26 +32,8 @@ jobs:
           
     steps:
     - uses: actions/checkout@v3
-    
-#    - name: Start PostgreSQL on Ubuntu
-#      run: |
-#        sudo systemctl start postgresql.service
-#        pg_isready
-    
-#    - name: Set scram password encryption
-#      run: |
-#        sudo -u postgres psql --command="ALTER SYSTEM SET password_encryption = 'scram-sha-256';"
-    
-#    - name: Create libreplan user
-#      run: |
-#        sudo -u postgres psql --command="CREATE USER libreplan PASSWORD 'libreplan'; "
-##" --command="\du"
-    
- #   - name: Create libreplandev database
- #     run: |
- #       sudo -u postgres createdb --owner=libreplan libreplandev
- #       PGPASSWORD=libreplan psql --username=libreplan --host=localhost --list libreplandev
-
+    - name: Set up Maven for nektos act
+      uses: stCarolas/setup-maven@v4.4
     - name: Set up JDK 8
       uses: actions/setup-java@v3
       with:
@@ -59,5 +41,4 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Build with Maven
-      run: mvn -DskipTests -Ddefault.passwordsControl=false -Ddefault.exampleUsersDisabled=false clean install
-
+      run: mvn -Ddefault.passwordsControl=false -Ddefault.exampleUsersDisabled=false clean install
