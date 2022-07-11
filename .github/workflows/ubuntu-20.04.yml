@@ -41,9 +41,6 @@ jobs:
       with:
         commands: PGPASSWORD=libreplan psql -U libreplan -h postgres -p 5432 -c "CREATE DATABASE libreplandevtest;"
 
-    - name: Set up Maven for nektos act
-      uses: stCarolas/setup-maven@v4.4
-
     - name: Set up JDK 8
       uses: actions/setup-java@v3
       with:
