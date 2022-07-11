@@ -78,10 +78,10 @@ Debian/Ubuntu
 
     $ git clone git://github.com/LibrePlan/libreplan.git
 
-* Compile project while skipping tests (since they currently do not work at least on Ubuntu 18.04, 20.04 and newer)::
+* Compile project::
 
     $ cd libreplan/
-    $ mvn -DskipTests clean install
+    $ mvn clean install
 
 * Launch application::
 
