@@ -125,7 +125,7 @@
                 <!-- JDBC driver properties -->
                 <jdbcDriver.groupId>org.postgresql</jdbcDriver.groupId>
                 <jdbcDriver.artifactId>postgresql</jdbcDriver.artifactId>
-                <jdbcDriver.version>42.2.4.jre7</jdbcDriver.version>
+                <jdbcDriver.version>42.2.25.jre7</jdbcDriver.version>
                 <jdbcDriver.className>org.postgresql.Driver</jdbcDriver.className>
                 <!-- Data source properties -->
                 <dataSource.url>jdbc:postgresql://localhost/libreplan${libreplan.mode}</dataSource.url>
@@ -254,13 +254,6 @@
                 <groupId>javax.el</groupId>
                 <artifactId>javax.el-api</artifactId>
                 <version>3.0.0</version>
-			</dependency>
-
-			<!-- Annotation-api added to support jdk8 -->
-			<dependency>
-                <groupId>javax.annotation</groupId>
-                <artifactId>javax.annotation-api</artifactId>
-                <version>1.3.2</version>
             </dependency>
 
             <!-- Usertype.Core ( Significant for Hibernate ) -->
