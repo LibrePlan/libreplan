@@ -56,7 +56,7 @@ Debian/Ubuntu
 
 * Install requirements::
 
-    # apt-get install git-core maven openjdk-8-jdk postgresql postgresql-client python-docutils make gettext cutycapt
+    # apt-get install git-core maven openjdk-8-jdk postgresql postgresql-client python3-docutils make gettext cutycapt
 
 * Set default OpenJDK version (required for Ubuntu 18.04, 20.04 and newer)::
 
@@ -68,15 +68,13 @@ Debian/Ubuntu
 
 * Use SQL sentences::
 
-    CREATE DATABASE libreplandev;
-    CREATE DATABASE libreplandevtest;
     CREATE USER libreplan WITH PASSWORD 'libreplan';
-    GRANT ALL PRIVILEGES ON DATABASE libreplandev TO libreplan;
-    GRANT ALL PRIVILEGES ON DATABASE libreplandevtest TO libreplan;
+    CREATE DATABASE libreplandev owner libreplan;
+    CREATE DATABASE libreplandevtest owner libreplan;
 
 * Download source code::
 
-    $ git clone git://github.com/LibrePlan/libreplan.git
+    $ git clone https://github.com/LibrePlan/libreplan.git
 
 * Compile project::
 
