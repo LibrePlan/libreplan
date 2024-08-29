@@ -1,1 +1,3 @@
-include: $LIBREPLAN_BUIlDTOOLS_URL
+include:
+    remote: $LIBREPLAN_BUILDTOOLS_URL
+    
