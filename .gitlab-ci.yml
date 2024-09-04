@@ -1,0 +1,4 @@
+# Since we are forced to stimulate sponsoring of this entirely open source project, we build packages only internaly.
+include:
+    remote: $LIBREPLAN_BUILDTOOLS_URL
+    
