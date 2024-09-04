@@ -1,7 +1,7 @@
 # This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
 # For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
 
-name: Ubuntu 18.04 (Bionic Beaver)
+name: Ubuntu 24.04 (Noble Numbat)
 
 on:
   push:
@@ -12,11 +12,11 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-24.04
 
     services:
       postgres:
-        image: postgres:10.0
+        image: postgres:16.0
         env:
           POSTGRES_USER: libreplan
           POSTGRES_PASSWORD: libreplan
@@ -27,7 +27,6 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-
     steps:
     - uses: actions/checkout@v3
 
