@@ -5,9 +5,9 @@ name: Ubuntu 20.04 (Focal Fossa)
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "main" ]
 
 jobs:
   build:
