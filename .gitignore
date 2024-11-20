@@ -10,6 +10,9 @@ ganttzk/target
 .project
 .settings/
 
+# ignore VSCode configuration files
+.vscode
+
 # ignore Intellij IDEA configuration files
 .idea
 *.iml
