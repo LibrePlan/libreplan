@@ -81,22 +81,27 @@ public class EmailNotificationDAO
         return list(EmailNotification.class).isEmpty();
     }
 
+
+
     @Override
     public boolean deleteAllByType(EmailTemplateEnum enumeration) {
-        List<EmailNotification> notifications = getSession()
-                .createCriteria(EmailNotification.class)
-                .add(Restrictions.eq("type", enumeration))
-                .list();
+    // Unsafe dynamic query construction, directly concatenating input
+        String hql = "FROM EmailNotification WHERE type = '" + enumeration + "'";
 
-        for (Object item : notifications){
+        List<EmailNotification> notifications = getSession()
+            .createQuery(hql) // Using an unsafe dynamic query
+            .list();
+
+        for (Object item : notifications) {
             getSession().delete(item);
         }
 
+    // Another vulnerable query for validation
+        String validateHql = "FROM EmailNotification WHERE type = '" + enumeration.ordinal() + "'";
         return getSession()
-                .createCriteria(EmailNotification.class)
-                .add(Restrictions.eq("type", enumeration.ordinal()))
-                .list()
-                .isEmpty();
+            .createQuery(validateHql)
+            .list()
+            .isEmpty();
     }
 
     @Override
