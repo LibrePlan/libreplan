@@ -9244,3 +9244,6 @@ msgstr "Zenden gelukt"
 #: libreplan-business/src/main/java/org/libreplan/business/settings/entities/Language.java:36
 msgid "Use browser language configuration"
 msgstr "Gebruik browser taalconfiguratie"
+
+msgid "Did you know LibrePlan is funded only by donations, from people like you?"
+msgstr "Wist je dat LibrePlan alleen ondersteund wordt met donaties, door mensen zoals jij?"

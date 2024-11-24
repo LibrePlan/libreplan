@@ -162,6 +162,17 @@
             </properties>
         </profile>
 
+        <!-- enable sponsoring request on login screen -->
+        <profile>
+            <id>sponsoring</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+               <sponsor-mode>true</sponsor-mode>
+            </properties>
+        </profile>
+
     </profiles>
 
     <repositories>
