@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 # Jeroen Baten <jeroen@libreplan.dev>, 2012-2013
 # Jeroen Baten <jeroen@libreplan.dev>, 2024
@@ -59,7 +59,8 @@ msgstr "de waardes zijn ongeldig, de waardes mogen niet ongedefinieerd zijn"
 
 #: libreplan-business/src/main/java/org/libreplan/business/orders/entities/OrderElement.java:1437
 msgid "a quality form cannot be assigned twice to the same task"
-msgstr "een kwaliteitsformulier kan niet twee keer aan dezelfde taak worden toegekend"
+msgstr ""
+"een kwaliteitsformulier kan niet twee keer aan dezelfde taak worden toegekend"
 
 #: libreplan-business/src/main/java/org/libreplan/business/common/IntegrationEntity.java:106
 msgid "code is already used"
@@ -108,11 +109,15 @@ msgstr "Voer wijzigingen door en ga terug naar planning"
 
 #: libreplan-business/src/main/java/org/libreplan/business/workreports/entities/WorkReportLine.java:391
 msgid "fields should match with timesheet data if are shared by lines"
-msgstr "velden moeten overeen komen met onkostensheet gegevens indien zijn gedeeld met regels"
+msgstr ""
+"velden moeten overeen komen met onkostensheet gegevens indien zijn gedeeld "
+"met regels"
 
 #: org/libreplan/web/exceptionDays/CalendarExceptionTypeModel.java:96
 msgid "Cannot remove {0}, since it is being used by some exception day"
-msgstr "Kan {0} niet verwijderen omdat het in gebruik is bij een andere uitzonderingsdag"
+msgstr ""
+"Kan {0} niet verwijderen omdat het in gebruik is bij een andere "
+"uitzonderingsdag"
 
 #: org/libreplan/web/planner/allocation/stretches/StretchesFunctionModel.java:278
 msgid "Stretch date must not be before task start date: "
@@ -125,7 +130,8 @@ msgstr "Achternaam"
 
 #: org/libreplan/web/exceptionDays/CalendarExceptionTypeCRUDController.java:211
 msgid "Cannot remove the predefined calendar exception day \"{0}\""
-msgstr "Kan de voorgedefinieerde kalender uitzonderingsdag \"{0}\" niet verwijderen"
+msgstr ""
+"Kan de voorgedefinieerde kalender uitzonderingsdag \"{0}\" niet verwijderen"
 
 #: org/libreplan/web/logs/IssueLogCRUDController.java:415
 #: org/libreplan/web/logs/RiskLogCRUDController.java:397
@@ -151,7 +157,9 @@ msgstr "Projecten sinds"
 
 #: libreplan-business/src/main/java/org/libreplan/business/qualityforms/entities/QualityForm.java:406
 msgid "progress type should must be defined if quality form reports progress"
-msgstr "voortgangstype moet zijn gedefinieerd als het kwaliteitsformulier de voortgang rapporteerd"
+msgstr ""
+"voortgangstype moet zijn gedefinieerd als het kwaliteitsformulier de "
+"voortgang rapporteerd"
 
 #: org/libreplan/web/planner/TaskElementAdapter.java:871
 msgid "Budget: {0}, Consumed: {1} ({2}%)"
@@ -162,7 +170,9 @@ msgstr "Budget: {0}, Verbruikt: {1} ({2}%)"
 msgid ""
 "Cannot allocate selected element. There is not any queue that matches "
 "resource allocation criteria at any interval of time"
-msgstr "Kan geselecteerd element niet alloceren. Er is geen wachtrij die overeenkomt met de resource allocatie criteria voor elke interval of tijd"
+msgstr ""
+"Kan geselecteerd element niet alloceren. Er is geen wachtrij die overeenkomt "
+"met de resource allocatie criteria voor elke interval of tijd"
 
 #: org/libreplan/web/planner/milestone/AddMilestoneCommand.java:67
 msgid "Add Milestone"
@@ -176,7 +186,8 @@ msgstr "Gebruiker uitgeschakeld"
 msgid ""
 "All machine worker assignments must have a start date earlier than the end "
 "date"
-msgstr "Alle machine werkopdrachten moeten een startdatum hebben voor de einddatum"
+msgstr ""
+"Alle machine werkopdrachten moeten een startdatum hebben voor de einddatum"
 
 #: org/libreplan/web/workreports/WorkReportCRUDController.java:870
 #: libreplan-webapp/src/main/webapp/workreports/workReportQuery.zul:121
@@ -331,9 +342,11 @@ msgstr "Upload Project"
 
 #: org/libreplan/web/resources/worker/WorkRelationshipsController.java:159
 msgid ""
-"Could not save time period. Time period overlaps with another non-compatible"
-" time period"
-msgstr "Kon tijdsperiode niet opslaan. Tijdsperiode overlapt met een andere niet-caompatibele tijdsperiode"
+"Could not save time period. Time period overlaps with another non-compatible "
+"time period"
+msgstr ""
+"Kon tijdsperiode niet opslaan. Tijdsperiode overlapt met een andere niet-"
+"caompatibele tijdsperiode"
 
 #: org/libreplan/web/orders/AssignedTaskQualityFormsToOrderElementController.java:367
 msgid "Checked"
@@ -544,10 +557,13 @@ msgid "Failed to connect"
 msgstr "Kon niet verbinden"
 
 #: org/libreplan/web/workreports/WorkReportTypeModel.java:427
+#: libreplan-business/src/main/java/org/libreplan/business/workreports/entities/WorkReportType.java:154
 msgid ""
 "Value is not valid.\n"
 " Code cannot contain chars like '_'."
-msgstr "Waarde is ongeldig.\n Code mag geen karakters zoals '_' bevatten."
+msgstr ""
+"Waarde is ongeldig.\n"
+" Code mag geen karakters zoals '_' bevatten."
 
 #: libreplan-webapp/src/main/webapp/common/pageNotFound.zul:51
 msgid "Sorry for the inconvenience."
@@ -592,7 +608,9 @@ msgstr "Niet in staat om een tijdregistratie te maken voor request"
 msgid ""
 "Profiles of LDAP users cannot be managed because LDAP is enabled and LDAP "
 "roles are being used."
-msgstr "Profielen van LDAP gebruikers kunnen niet beheerd worden omdat LDAP aan staat en LDAP rollen worden gebruikt."
+msgstr ""
+"Profielen van LDAP gebruikers kunnen niet beheerd worden omdat LDAP aan "
+"staat en LDAP rollen worden gebruikt."
 
 #: org/libreplan/importers/JiraOrderElementSynchronizer.java:182
 msgid "Order-element for \"{0}\" issue not found"
@@ -675,7 +693,8 @@ msgstr "{0} kan niet vervuld worden"
 
 #: org/libreplan/web/planner/allocation/FormBinder.java:899
 msgid "{0} could not be allocated. Cannot allocate more than one resource"
-msgstr "{0} kon niet gealloceerd worden. Kan niet meer dan één resource alloceren"
+msgstr ""
+"{0} kon niet gealloceerd worden. Kan niet meer dan één resource alloceren"
 
 #: org/libreplan/web/resources/worker/WorkerCRUDController.java:979
 msgid "Worker deleted"
@@ -836,13 +855,17 @@ msgstr "Naam van de resource"
 msgid ""
 "Periocity cannot be changed because there is already any personal timesheet "
 "stored"
-msgstr "Periodiciteit kan niet gewijzigd worden omdat er al persoonlijke urenstaten zijn opgeslagen"
+msgstr ""
+"Periodiciteit kan niet gewijzigd worden omdat er al persoonlijke urenstaten "
+"zijn opgeslagen"
 
 #: org/libreplan/web/orders/ManageOrderElementAdvancesController.java:714
 msgid ""
 "Advance assignment cannot be removed as it has advance measures that have "
 "already been reported to the customer"
-msgstr "Gevorderde toekenning kan niet verwijderd worden omdat het gevorderde metingen heeft die al aan de klant zijn gerapporteerd"
+msgstr ""
+"Gevorderde toekenning kan niet verwijderd worden omdat het gevorderde "
+"metingen heeft die al aan de klant zijn gerapporteerd"
 
 #: libreplan-webapp/src/main/webapp/excetiondays/_editExceptionDayType.zul:88
 #: libreplan-webapp/src/main/webapp/calendars/_edition.zul:218
@@ -872,7 +895,9 @@ msgstr "Aktieve periode vanaf"
 msgid ""
 "If you reached this page from another page of LibrePlan please notify us in "
 "order to fix it as soon as possible."
-msgstr "Als u deze pagina bereikt vanuit een andere pagina van LibrePlan laat het ons dan weten zodat we het zo snel mogelijk kunnen repareren."
+msgstr ""
+"Als u deze pagina bereikt vanuit een andere pagina van LibrePlan laat het "
+"ons dan weten zodat we het zo snel mogelijk kunnen repareren."
 
 #: org/libreplan/web/dashboard/CostStatusController.java:115
 #: org/libreplan/web/users/dashboard/MyTasksAreaController.java:73
@@ -956,7 +981,9 @@ msgstr "Zend naar klanten"
 msgid ""
 "Machine cannot be deleted. Machine is allocated to a project or contains "
 "imputed hours"
-msgstr "Machine kan niet verwijderd worden. Machine is toegekend aan een project of bevat gewerkte uren"
+msgstr ""
+"Machine kan niet verwijderd worden. Machine is toegekend aan een project of "
+"bevat gewerkte uren"
 
 #: org/libreplan/web/calendars/BaseCalendarCRUDController.java:453
 #: org/libreplan/web/common/BaseCRUDController.java:131
@@ -1015,7 +1042,9 @@ msgstr "Virtuele werkersgroep"
 msgid ""
 "Spread progress cannot be changed if there is a consolidation in any "
 "progress assignment from root task"
-msgstr "Spreidingsvoortgang kan niet gewijzigd worden als er een consolidatie in een van de voortgangstaken van de root taak is"
+msgstr ""
+"Spreidingsvoortgang kan niet gewijzigd worden als er een consolidatie in een "
+"van de voortgangstaken van de root taak is"
 
 #: org/libreplan/web/templates/OrderTemplatesController.java:232
 #: org/libreplan/web/templates/OrderTemplatesController.java:250
@@ -1132,7 +1161,9 @@ msgstr "Bron- en bestemmingsscenarios moeten verschillend zijn"
 msgid ""
 "It will only be possible to add a Deliver Date if all the deliver date "
 "exiting in the table have a CommunicationDate not empty. "
-msgstr "Het is alleen mogelijk om een leverdatum toe te voegen als alle leverdata in de tabel een niet lege CommunicationDate hebben."
+msgstr ""
+"Het is alleen mogelijk om een leverdatum toe te voegen als alle leverdata in "
+"de tabel een niet lege CommunicationDate hebben."
 
 #: libreplan-webapp/src/main/webapp/common/pageNotFound.zul:22
 msgid "LibrePlan: Page not found"
@@ -1173,9 +1204,11 @@ msgstr "maanden tot"
 
 #: org/libreplan/web/common/ConfigurationController.java:970
 msgid ""
-"Invalid format prefix. Format prefix cannot be empty, contain '_' or contain"
-" whitespaces."
-msgstr "Ongeldige opmaakvoorvoegsel. Opmaakvoorvoegsels kunnen niet leeg zijn, ' _' of spaties bevatten"
+"Invalid format prefix. Format prefix cannot be empty, contain '_' or contain "
+"whitespaces."
+msgstr ""
+"Ongeldige opmaakvoorvoegsel. Opmaakvoorvoegsels kunnen niet leeg zijn, ' _' "
+"of spaties bevatten"
 
 #: org/libreplan/web/common/ConfigurationController.java:254
 msgid "Changes saved"
@@ -1191,7 +1224,8 @@ msgstr "materiaal niet gespecificeerd"
 
 #: libreplan-business/src/main/java/org/libreplan/business/planner/entities/TaskGroup.java:114
 msgid "element associated to a task group have to be defined"
-msgstr "elementen die geassocieerd zijn met een takengroep moeten worden gedefinieerd"
+msgstr ""
+"elementen die geassocieerd zijn met een takengroep moeten worden gedefinieerd"
 
 #: libreplan-webapp/src/main/webapp/templates/_assignedQualityForms.zul:31
 msgid "Quality forms"
@@ -1236,7 +1270,9 @@ msgstr "Opnieuw toekennen"
 msgid ""
 "Another task in the same branch is already reporting progress for this "
 "quality form"
-msgstr "Een andere taak in dezelfde tak vermeld reeds de voortgang voor dit kwaliteitsformulier"
+msgstr ""
+"Een andere taak in dezelfde tak vermeld reeds de voortgang voor dit "
+"kwaliteitsformulier"
 
 #: org/libreplan/web/costcategories/TypeOfWorkHoursCRUDController.java:106
 msgid "Hours Type"
@@ -1304,7 +1340,8 @@ msgstr "kan niet negatief of leeg zijn"
 
 #: libreplan-webapp/src/main/webapp/myaccount/personalTimesheet.zul:37
 msgid "Warning: Not editing from home page of bound users"
-msgstr "Waarschuwing: Niet te wijzigen vanaf de homepage van gekoppelde gebruikers"
+msgstr ""
+"Waarschuwing: Niet te wijzigen vanaf de homepage van gekoppelde gebruikers"
 
 #: libreplan-webapp/src/main/webapp/workreports/workReportQuery.zul:23
 msgid "LibrePlan: Timesheet Lines List"
@@ -1361,9 +1398,11 @@ msgstr "Er is geen voortgang toegekend aan de huidige taak"
 
 #: libreplan-webapp/src/main/webapp/common/configuration.zul:151
 msgid ""
-"Check this option if you would like to send feedback to LibrePlan developers"
-" about program usage"
-msgstr "Vink deze optie aan als u feedback wilt sturen naar de LibrePlan ontwikkelaars omtrent het gebruik van het programma"
+"Check this option if you would like to send feedback to LibrePlan developers "
+"about program usage"
+msgstr ""
+"Vink deze optie aan als u feedback wilt sturen naar de LibrePlan "
+"ontwikkelaars omtrent het gebruik van het programma"
 
 #: org/libreplan/web/templates/TemplatesTree.java:43
 #: org/libreplan/web/templates/TemplatesTree.java:51
@@ -1384,9 +1423,11 @@ msgstr "Einddatum"
 
 #: org/libreplan/web/resources/worker/WorkerModel.java:428
 msgid ""
-"Please, allow Multiple Active Criteria in this type in order to use selected"
-" Assignment Strategy"
-msgstr "Sta aub meerdere actieve criteria toe in dit type voor het toepassen van de gekozen toekenningsstrategie"
+"Please, allow Multiple Active Criteria in this type in order to use selected "
+"Assignment Strategy"
+msgstr ""
+"Sta aub meerdere actieve criteria toe in dit type voor het toepassen van de "
+"gekozen toekenningsstrategie"
 
 #: libreplan-webapp/src/main/webapp/orders/_jiraSyncInfo.zul:20
 msgid "LibrePlan: JIRA synchronization info"
@@ -1426,7 +1467,9 @@ msgstr "Toegewezen criteria"
 msgid ""
 "The original workable days value {0} cannot be modified as it has "
 "consolidations"
-msgstr "Het originele aantal van {0} werkdagen kan niet gewijzigd worden omdat het consolidaties bevat"
+msgstr ""
+"Het originele aantal van {0} werkdagen kan niet gewijzigd worden omdat het "
+"consolidaties bevat"
 
 #: libreplan-webapp/src/main/webapp/externalcompanies/_editExternalCompany.zul:77
 msgid "Application URI"
@@ -1517,7 +1560,9 @@ msgstr "Bevestig verwijderen {0}. Weet u het zeker?"
 #: org/libreplan/web/orders/ManageOrderElementAdvancesController.java:1214
 msgid ""
 "Invalid value. Value must be greater than the value of previous progress."
-msgstr "Ongeldige waarde.Waarde moet hoger zijn dan de waarde van de vorige voortgang."
+msgstr ""
+"Ongeldige waarde.Waarde moet hoger zijn dan de waarde van de vorige "
+"voortgang."
 
 #: org/libreplan/web/planner/TaskElementAdapter.java:1215
 msgid "Project margin: {0}% ({1} hours)={2} hours"
@@ -1571,7 +1616,9 @@ msgstr "Waarde"
 msgid ""
 "Load percentage of resources participating in the project while they are "
 "assigned"
-msgstr "Belastingspercentage van resources betrokken bij het project terwijl ze zijn toegekend"
+msgstr ""
+"Belastingspercentage van resources betrokken bij het project terwijl ze zijn "
+"toegekend"
 
 #: libreplan-webapp/src/main/webapp/orders/_edition.zul:268
 msgid "External code"
@@ -1595,7 +1642,9 @@ msgstr "Taakkwaliteitsformulier itemnaam niet gespecificeerd"
 msgid ""
 "You cannot remove the task \"{0}\" because it is the only child of its "
 "parent and its parent has tracked time or imputed expenses"
-msgstr "U kunt taak \"{0}\" niet verwijderen omdat het de enige afgeleide is en de bovenliggende taak reeds tijd bijhoudt of gedeclareerde uren"
+msgstr ""
+"U kunt taak \"{0}\" niet verwijderen omdat het de enige afgeleide is en de "
+"bovenliggende taak reeds tijd bijhoudt of gedeclareerde uren"
 
 #: org/libreplan/web/reports/OrderCostsPerResourceModel.java:323
 msgid "Total dedication"
@@ -1870,7 +1919,9 @@ msgstr ": Kalender import succesvol!"
 msgid ""
 "Progress Measurement cannot be deleted. Progress Measurement already "
 "consolidated"
-msgstr "Voortgangsmeting kan niet verwijderd worden. Voortgangsmeting al al geconsolideerd"
+msgstr ""
+"Voortgangsmeting kan niet verwijderd worden. Voortgangsmeting al al "
+"geconsolideerd"
 
 #: libreplan-webapp/src/main/webapp/orders/_jiraSyncInfo.zul:32
 msgid "Synchronization of timesheets was successful"
@@ -2042,9 +2093,12 @@ msgstr "{0} \"{1}\" opgeslagen"
 
 #: libreplan-webapp/src/main/webapp/common/pageNotFound.zul:43
 msgid ""
-"If you entered the URL directly in the navigation bar of the browser, please"
-" review it or click in the following link in order to go to initial page: "
-msgstr "Als u de URL rechtstreeks in de adresbalk van de browser heeft ingevoerd, controleer deze dan of klik op de volgende link om naar de startpagina te gaan."
+"If you entered the URL directly in the navigation bar of the browser, please "
+"review it or click in the following link in order to go to initial page: "
+msgstr ""
+"Als u de URL rechtstreeks in de adresbalk van de browser heeft ingevoerd, "
+"controleer deze dan of klik op de volgende link om naar de startpagina te "
+"gaan."
 
 #: libreplan-webapp/src/main/webapp/workreports/workReport.zul:123
 #: libreplan-webapp/src/main/webapp/workreports/_listWorkReportTypes.zul:47
@@ -2134,7 +2188,9 @@ msgstr "Urenmarge"
 msgid ""
 "Giving a gift today means LibrePlan continues to remain available and in "
 "active development tomorrow!"
-msgstr "Een donatie betekent dat LibrePlan ook morgen beschikbaar blijft en in actieve ontwikkeling!"
+msgstr ""
+"Een donatie betekent dat LibrePlan ook morgen beschikbaar blijft en in "
+"actieve ontwikkeling!"
 
 #: org/libreplan/web/orders/OrderCRUDController.java:1386
 #: org/libreplan/web/orders/OrderElementTreeController.java:320
@@ -2271,7 +2327,9 @@ msgstr "U heeft geen rechten voor het toevoegen van gebruikers"
 
 #: org/libreplan/web/orders/ProjectDetailsController.java:299
 msgid "Set Code as autogenerated to create a new project from templates"
-msgstr "Stel code in op automatisch-gegenereerd om een nieuw project te maken vanaf een sjabloon"
+msgstr ""
+"Stel code in op automatisch-gegenereerd om een nieuw project te maken vanaf "
+"een sjabloon"
 
 #: libreplan-business/src/main/java/org/libreplan/business/planner/entities/SubcontractedTaskData.java:257
 msgid "delivery date not specified"
@@ -2350,9 +2408,10 @@ msgstr "naam reeds in gebruik"
 
 #: org/libreplan/web/resources/worker/WorkRelationshipsController.java:154
 msgid ""
-"Time period contains non valid data. Ending data must be older than starting"
-" date"
-msgstr "Tijdsperiode bevat ongeldige gegevens. Einddatum moet na startdatum liggen"
+"Time period contains non valid data. Ending data must be older than starting "
+"date"
+msgstr ""
+"Tijdsperiode bevat ongeldige gegevens. Einddatum moet na startdatum liggen"
 
 #: libreplan-webapp/src/main/webapp/myaccount/changePassword.zul:65
 msgid "Current password"
@@ -2395,9 +2454,11 @@ msgstr "Verbindingsinstellingen van de Tim-connector zijn ongeldig"
 
 #: org/libreplan/web/orders/OrderElementTreeController.java:785
 msgid ""
-"You cannot remove the task \"{0}\" because it has work reported on it or any"
-" of its children"
-msgstr "U kunt de taak \"{0}\" niet verwijderen omdat hierop, of op afgeleide taken, werk is gerapporteerd."
+"You cannot remove the task \"{0}\" because it has work reported on it or any "
+"of its children"
+msgstr ""
+"U kunt de taak \"{0}\" niet verwijderen omdat hierop, of op afgeleide taken, "
+"werk is gerapporteerd."
 
 #: org/libreplan/web/scenarios/ScenarioCRUDController.java:227
 msgid "Scenario"
@@ -2473,7 +2534,9 @@ msgstr "Splits nieuwe toewijzing"
 msgid ""
 "Estimated end date for the task (press enter in textbox to open calendar "
 "popup or type in date directly)"
-msgstr "Geschatte einddatum voor de taak (druk enter in tekstbox om een kalender venster te openen of type datum rechtstreeks in)"
+msgstr ""
+"Geschatte einddatum voor de taak (druk enter in tekstbox om een kalender "
+"venster te openen of type datum rechtstreeks in)"
 
 #: libreplan-webapp/src/main/webapp/common/_editJobScheduling.zul:139
 #: libreplan-webapp/src/main/webapp/common/_editJobScheduling.zul:190
@@ -2527,7 +2590,9 @@ msgstr "is niet voltooit om de volgende reden:"
 msgid ""
 "It will only be possible to add an end date if all the exiting ones in the "
 "table have already been sent to the customer."
-msgstr "Het is alleen mogelijk om een nieuwe einddatum toe te voegen als alle bestaande einddata in de tabel al naar de klant zijn verstuurd."
+msgstr ""
+"Het is alleen mogelijk om een nieuwe einddatum toe te voegen als alle "
+"bestaande einddata in de tabel al naar de klant zijn verstuurd."
 
 #: org/libreplan/web/templates/OrderTemplatesController.java:306
 #: org/libreplan/web/common/CustomMenuController.java:313
@@ -2556,7 +2621,8 @@ msgstr "Leverdata gevraagd door de onderaannemer"
 
 #: org/libreplan/web/planner/allocation/AdvancedAllocationController.java:1620
 msgid "Task contains consolidated progress. Cannot apply sigmoid function."
-msgstr "Taak bevat geconsolideerde voortgang. Kan sigmoid functie niet toepassen."
+msgstr ""
+"Taak bevat geconsolideerde voortgang. Kan sigmoid functie niet toepassen."
 
 #: org/libreplan/web/workreports/WorkReportCRUDController.java:892
 msgid "Task finished"
@@ -2572,7 +2638,8 @@ msgstr " uren"
 
 #: org/libreplan/web/users/settings/SettingsController.java:182
 msgid "Resources load since should be lower than resources load to"
-msgstr "Resourcebelasting sinds zou lager moeten zijn dan resourcebelasting naar"
+msgstr ""
+"Resourcebelasting sinds zou lager moeten zijn dan resourcebelasting naar"
 
 #: libreplan-webapp/src/main/webapp/logs/_listRiskLog.zul:27
 #: libreplan-webapp/src/main/webapp/logs/_editRiskLog.zul:69
@@ -2668,7 +2735,9 @@ msgstr "Er bestaat al een criterium met dezelfde naam"
 #: libreplan-business/src/main/java/org/libreplan/business/workreports/entities/WorkReport.java:477
 msgid ""
 "In personal timesheets, all timesheet lines should be in the same period"
-msgstr "In persoonlijke urenstaten dienen alle urenstaatregels in dezelfde periode te vallen"
+msgstr ""
+"In persoonlijke urenstaten dienen alle urenstaatregels in dezelfde periode "
+"te vallen"
 
 #: org/libreplan/web/common/components/finders/OrderElementBandboxFinder.java:51
 #: libreplan-webapp/src/main/webapp/templates/_historicalAssignment.zul:37
@@ -2795,7 +2864,9 @@ msgstr "Label toekennen"
 
 #: org/libreplan/web/orders/ManageOrderElementAdvancesController.java:665
 msgid "Progress that are reported by quality forms can not be modified"
-msgstr "Voortgang die gerapporteerd worden door kwaliteitsformulieren kan niet gewijzigd worden"
+msgstr ""
+"Voortgang die gerapporteerd worden door kwaliteitsformulieren kan niet "
+"gewijzigd worden"
 
 #: libreplan-webapp/src/main/webapp/orders/_listOrderElementAdvances.zul:49
 msgid "Current value"
@@ -2926,7 +2997,8 @@ msgstr "Wachtwoord mag niet leeg zijn"
 
 #: libreplan-business/src/main/java/org/libreplan/business/workreports/entities/WorkReport.java:506
 msgid "resource has to be bound to a user in personal timesheets"
-msgstr "resource moet gekoppeld zijn aan een gebruiker bij een persoonlijke urenstaat"
+msgstr ""
+"resource moet gekoppeld zijn aan een gebruiker bij een persoonlijke urenstaat"
 
 #: org/libreplan/web/common/components/finders/OrderElementInExpenseSheetBandboxFinder.java:45
 msgid "Task name (Task code)"
@@ -2949,7 +3021,8 @@ msgstr "Ontvangstdatum"
 
 #: org/libreplan/web/common/ConfigurationController.java:973
 msgid "format prefix invalid. It cannot be empty or contain whitespaces."
-msgstr "format prefix ongeldig. het kan niet leeg zijn of alleen spaties bevatten."
+msgstr ""
+"format prefix ongeldig. het kan niet leeg zijn of alleen spaties bevatten."
 
 #: org/libreplan/web/resources/worker/WorkerCRUDController.java:1113
 msgid "You do not have permissions to go to edit user window"
@@ -3008,7 +3081,8 @@ msgstr "Toon afhankelijkheden"
 #: libreplan-webapp/src/main/webapp/resources/criterions/_edition.zul:51
 msgid ""
 "Allow multiple values of this type of criterion in the same period of time"
-msgstr "Sta meerdere waardes van dit type criterium toe in de zelfde tijdsperiode"
+msgstr ""
+"Sta meerdere waardes van dit type criterium toe in de zelfde tijdsperiode"
 
 #: libreplan-business/src/main/java/org/libreplan/business/orders/entities/OrderElement.java:1124
 msgid "a label can not be assigned twice in the same branch"
@@ -3028,7 +3102,8 @@ msgstr "Ga naar wijzig gebruiker venster"
 
 #: org/libreplan/web/orders/ManageOrderElementAdvancesController.java:1105
 msgid "Values already sent to the customer. Values cannot be changed "
-msgstr "Waardes reeds naar de klant gezonden.Waardes kunnen niet worden gewijzigd"
+msgstr ""
+"Waardes reeds naar de klant gezonden.Waardes kunnen niet worden gewijzigd"
 
 #: libreplan-business/src/main/java/org/libreplan/business/costcategories/entities/HourCost.java:121
 msgid "cost category not specified"
@@ -3094,7 +3169,9 @@ msgstr "Eind uur"
 msgid ""
 "Spread progress cannot be changed if there is a consolidation in any "
 "progress assignment"
-msgstr "Spreid voortgang kan niet gewijzigd worden als er een consolidatie is in een voortgangs toekenning"
+msgstr ""
+"Spreid voortgang kan niet gewijzigd worden als er een consolidatie is in een "
+"voortgangs toekenning"
 
 #: libreplan-webapp/src/main/webapp/orders/_ordersTab.zul:34
 msgid "Save Project"
@@ -3102,15 +3179,18 @@ msgstr "Opslaan project"
 
 #: libreplan-business/src/main/java/org/libreplan/business/workreports/entities/WorkReportLine.java:259
 msgid ""
-"closckStart:the clockStart must be not null if number of hours is calcultate"
-" by clock"
-msgstr "clockstart: de clockstart moet niet null zijn als het berekende aantal uren berekend wordt per clock"
+"closckStart:the clockStart must be not null if number of hours is calcultate "
+"by clock"
+msgstr ""
+"clockstart: de clockstart moet niet null zijn als het berekende aantal uren "
+"berekend wordt per clock"
 
 #: org/libreplan/web/users/OrderAuthorizationController.java:108
 msgid ""
 "Could not add those authorizations to user {0} because they were already "
 "present."
-msgstr "Kon deze autorisaties niet toevoegen aan gebruiker {0} omdat deze ze al had."
+msgstr ""
+"Kon deze autorisaties niet toevoegen aan gebruiker {0} omdat deze ze al had."
 
 #: org/libreplan/web/logs/IssueLogCRUDController.java:433
 #: org/libreplan/web/logs/RiskLogCRUDController.java:413
@@ -3213,7 +3293,9 @@ msgstr "instantie niet gevonden"
 msgid ""
 "Another user has modified the same data, so the operation cannot be safely "
 "completed."
-msgstr "Een andere gebruiker heeft dezelfde gegevens gewijzigd, dus deze handeling kan niet veilig voltooid worden."
+msgstr ""
+"Een andere gebruiker heeft dezelfde gegevens gewijzigd, dus deze handeling "
+"kan niet veilig voltooid worden."
 
 #: libreplan-webapp/src/main/webapp/calendars/_edition.zul:204
 msgid "Exceptions list"
@@ -3285,7 +3367,8 @@ msgstr "Perspectieven"
 
 #: libreplan-business/src/main/java/org/libreplan/business/advance/entities/AdvanceType.java:224
 msgid "progress type marked as quality form but is updatable"
-msgstr "voortgangstype is gemarkeerd als kwaliteitsformulier maar is te wijzigen"
+msgstr ""
+"voortgangstype is gemarkeerd als kwaliteitsformulier maar is te wijzigen"
 
 #: org/libreplan/web/planner/TaskElementAdapter.java:1241
 msgid ". Already spent: {0}"
@@ -3440,7 +3523,8 @@ msgstr "Label Type"
 #: libreplan-business/src/main/java/org/libreplan/business/workreports/entities/WorkReportType.java:381
 msgid ""
 "In the heading part, index labels and fields must be unique and consecutive"
-msgstr "In het kopgedeelte moeten indexlabels en velden uniek en opvolgend zijn"
+msgstr ""
+"In het kopgedeelte moeten indexlabels en velden uniek en opvolgend zijn"
 
 #: libreplan-business/src/main/java/org/libreplan/business/costcategories/entities/HourCost.java:152
 msgid "The end date cannot be before the start date"
@@ -3792,7 +3876,8 @@ msgstr "Wijzig E-mail sjabloon"
 #: org/libreplan/web/orders/ManageOrderElementAdvancesController.java:1223
 msgid ""
 "Date is not valid, it must be later than the last progress consolidation"
-msgstr "Datum is ongeldig. Het moet na de laatste voortgangs consolidatie liggen"
+msgstr ""
+"Datum is ongeldig. Het moet na de laatste voortgangs consolidatie liggen"
 
 #: libreplan-webapp/src/main/webapp/reports/orderCostsPerResource.zul:43
 msgid "Select report data"
@@ -3829,9 +3914,13 @@ msgstr "Resource: {0}"
 
 #: org/libreplan/web/orders/TreeElementOperationsController.java:245
 msgid ""
-"Templates can only be created out of existent tasks.You are trying to create a template out of a new task.\n"
+"Templates can only be created out of existent tasks.You are trying to create "
+"a template out of a new task.\n"
 "Please save your project before proceeding."
-msgstr "Sjablonen kunnen alleen gemaakt worden uit bestaande taken. U probeert een nieuwe sjabloon te maken uit een nieuwe taak.⏎\nSla aub uw project op voordat u verder gaat."
+msgstr ""
+"Sjablonen kunnen alleen gemaakt worden uit bestaande taken. U probeert een "
+"nieuwe sjabloon te maken uit een nieuwe taak.⏎\n"
+"Sla aub uw project op voordat u verder gaat."
 
 #: libreplan-webapp/src/main/webapp/planner/taskpanels/_taskInformation.zul:47
 msgid "Recommended allocation"
@@ -3846,7 +3935,9 @@ msgstr "Datum geconstateerd"
 msgid ""
 "Password cannot be managed for LDAP users because LDAP authentication is "
 "enabled."
-msgstr "Wachtwoorden kunnen niet beheerd worden voor LDAP gebruikers omdat LDAP authenticatie aan staat"
+msgstr ""
+"Wachtwoorden kunnen niet beheerd worden voor LDAP gebruikers omdat LDAP "
+"authenticatie aan staat"
 
 #: libreplan-business/src/main/java/org/libreplan/business/resources/entities/Worker.java:127
 msgid "worker's first name not specified"
@@ -3868,7 +3959,9 @@ msgstr "Aktie als/indien"
 msgid ""
 "Open file HACKING.rst in project directory and read Part LibrePlan "
 "documentation generation, how to generate help/info pages"
-msgstr "Open het bestand HACKING.rst in de project directory en lees het deel LibrePlan document generatie, hoe help/info pagina's te genereren"
+msgstr ""
+"Open het bestand HACKING.rst in de project directory en lees het deel "
+"LibrePlan document generatie, hoe help/info pagina's te genereren"
 
 #: org/libreplan/web/resources/machine/MachineConfigurationController.java:124
 msgid "No worker selected"
@@ -3878,13 +3971,17 @@ msgstr "Geen werker geselecteerd"
 msgid ""
 "This criterion type cannot be deleted because it is assigned to projects or "
 "resources"
-msgstr "Dit criteriumtype kan niet worden verwijderd omdat het aan een project of resource is toegekend"
+msgstr ""
+"Dit criteriumtype kan niet worden verwijderd omdat het aan een project of "
+"resource is toegekend"
 
 #: org/libreplan/web/calendars/BaseCalendarCRUDController.java:377
 msgid ""
 "Default calendar cannot be removed. Please, change the default calendar in "
 "the Main Settings window before."
-msgstr "Standaard kalender kan niet worden verwijderd. Wissel aub eerst de standaard kalender in het instellingenscherm."
+msgstr ""
+"Standaard kalender kan niet worden verwijderd. Wissel aub eerst de standaard "
+"kalender in het instellingenscherm."
 
 #: libreplan-webapp/src/main/webapp/orders/_listOrderElementCriterionRequirements.zul:177
 msgid "Hours Group"
@@ -3900,9 +3997,11 @@ msgstr "Jaar (optioneel)"
 
 #: org/libreplan/web/advance/AdvanceTypeCRUDController.java:96
 msgid ""
-"Value is not valid, the default max value must be greater than the precision"
-" value "
-msgstr "Waarde is ongeldig, de standaard maximum waarde moet groter zijn dan de nauwkeurigheidswaarde"
+"Value is not valid, the default max value must be greater than the precision "
+"value "
+msgstr ""
+"Waarde is ongeldig, de standaard maximum waarde moet groter zijn dan de "
+"nauwkeurigheidswaarde"
 
 #: libreplan-webapp/src/main/webapp/orders/components/_jiraOrderElementSync.zul:22
 msgid "JIRA sync information"
@@ -3930,7 +4029,9 @@ msgstr "Geplande werkdagen"
 msgid ""
 "You can not remove the project \"{0}\" because it has time tracked at some "
 "of its tasks"
-msgstr " U kunt het project \"{0}\" niet verwijderen omdat er uren zijn geschreven op een of meer van de taken"
+msgstr ""
+" U kunt het project \"{0}\" niet verwijderen omdat er uren zijn geschreven "
+"op een of meer van de taken"
 
 #: libreplan-webapp/src/main/webapp/users/_editUser.zul:75
 #: libreplan-webapp/src/main/webapp/myaccount/changePassword.zul:77
@@ -3966,9 +4067,11 @@ msgstr "Complementaire tekstvelden"
 
 #: libreplan-webapp/src/main/webapp/users/_editUser.zul:140
 msgid ""
-"Roles of LDAP users cannot be managed because LDAP is enabled and LDAP roles"
-" are being used."
-msgstr "Rollen van LDAP gebruikers kunnen niet beheerd worden omdat LDAP aan staat en LDAP rollen worden gebruikt."
+"Roles of LDAP users cannot be managed because LDAP is enabled and LDAP roles "
+"are being used."
+msgstr ""
+"Rollen van LDAP gebruikers kunnen niet beheerd worden omdat LDAP aan staat "
+"en LDAP rollen worden gebruikt."
 
 #: libreplan-business/src/main/java/org/libreplan/business/materials/entities/MaterialCategory.java:242
 msgid "There are repeated material category codes"
@@ -3986,7 +4089,8 @@ msgstr "Filter op criteria"
 #: org/libreplan/web/advance/AdvanceTypeCRUDController.java:113
 msgid ""
 "The name is not valid, there is another progress type with the same name. "
-msgstr "De naam is niet geldig, er is een ander voortgangstype met dezelfde naam"
+msgstr ""
+"De naam is niet geldig, er is een ander voortgangstype met dezelfde naam"
 
 #: libreplan-business/src/main/java/org/libreplan/business/planner/entities/SubcontractedTaskData.java:243
 msgid "state not specified"
@@ -4075,7 +4179,8 @@ msgstr "Sommige criteria satisfactions overlappen in tijd"
 
 #: libreplan-webapp/src/main/webapp/orders/imports/projectImport.zul:37
 msgid "The formats supported for import are MPP and PLANNER files."
-msgstr "De enige op dit moment ondersteunde bestandsformaten zijn mpp en planner."
+msgstr ""
+"De enige op dit moment ondersteunde bestandsformaten zijn mpp en planner."
 
 #: libreplan-webapp/src/main/webapp/common/concurrentModification.zul:31
 msgid "Please try it again."
@@ -4231,12 +4336,15 @@ msgstr "Dagen vanaf de aanvang tot de deadline"
 #: libreplan-business/src/main/java/org/libreplan/business/resources/entities/Resource.java:1136
 msgid ""
 "resource cost category assignments codes must be unique inside a resource"
-msgstr "resource kostencategorietoekenningscodes moeten uniek zijn binnen een resource"
+msgstr ""
+"resource kostencategorietoekenningscodes moeten uniek zijn binnen een "
+"resource"
 
 #: org/libreplan/web/advance/AdvanceTypeCRUDController.java:80
 msgid ""
 "Invalid value. Precission value must be lower than the Default Max value."
-msgstr "Ongeldige waarde. Exacte waarde moet lager zijn dan de standaard max waarde"
+msgstr ""
+"Ongeldige waarde. Exacte waarde moet lager zijn dan de standaard max waarde"
 
 #: libreplan-webapp/src/main/webapp/orders/_edition.zul:213
 msgid "WBS calculated budget"
@@ -4244,7 +4352,8 @@ msgstr "WBS gecalculeerd budget"
 
 #: org/libreplan/importers/JiraTimesheetSynchronizer.java:120
 msgid "Order \"{0}\" not found. Order probalbly not synchronized"
-msgstr "Order \"{0}\" niet gevonden. Order waarschijnlijk niet gesynchroniseerd"
+msgstr ""
+"Order \"{0}\" niet gevonden. Order waarschijnlijk niet gesynchroniseerd"
 
 #: org/libreplan/web/orders/ManageOrderElementAdvancesController.java:1101
 msgid "Consolidated progress measurement cannot be removed"
@@ -4260,7 +4369,8 @@ msgstr "LibrePlan Rol"
 
 #: org/libreplan/importers/JiraOrderElementSynchronizer.java:524
 msgid "No items found in 'OrderSyncInfo' to synchronize with JIRA issues"
-msgstr "Geen items gevonden in  'OrderSyncInfo' om te synchroniseren met Jira issues"
+msgstr ""
+"Geen items gevonden in  'OrderSyncInfo' om te synchroniseren met Jira issues"
 
 #: libreplan-webapp/src/main/webapp/dashboard/_dashboardfororder.zul:100
 msgid "Availability ratio"
@@ -4289,7 +4399,9 @@ msgstr "Criterium heeft subelementen"
 msgid ""
 "Subcontractor values are read only because they were reported by the "
 "subcontractor company."
-msgstr "Onderaannemerswaardes zijn alleen-lezen want ze worden afgegeven door het onderaannemende bedrijf"
+msgstr ""
+"Onderaannemerswaardes zijn alleen-lezen want ze worden afgegeven door het "
+"onderaannemende bedrijf"
 
 #: org/libreplan/web/users/dashboard/UserDashboardController.java:64
 msgid "Personal timesheet \"{0}\" saved"
@@ -4316,7 +4428,9 @@ msgstr "eigenaar scenario niet gespecificeerd"
 #: org/libreplan/web/orders/ManageOrderElementAdvancesController.java:1088
 msgid ""
 "Progress measurements that are reported by quality forms cannot be removed"
-msgstr "Voortgansmetingen die gerapporteerd zijn door kwaliteitsformulier kunnen niet worden verwijderd"
+msgstr ""
+"Voortgansmetingen die gerapporteerd zijn door kwaliteitsformulier kunnen "
+"niet worden verwijderd"
 
 #: libreplan-webapp/src/main/webapp/orders/_edition.zul:134
 msgid "Planning Configuration"
@@ -4359,7 +4473,8 @@ msgstr "Bedenk dat alleen opgeslagen wijzigingen kunnen worden afgedrukt"
 
 #: org/libreplan/web/materials/MaterialsController.java:493
 msgid "Cannot delete that material because it is assigned to a project."
-msgstr "Kan dat materiaal niet verwijderen want het is toegekend aan een project."
+msgstr ""
+"Kan dat materiaal niet verwijderen want het is toegekend aan een project."
 
 #: libreplan-webapp/src/main/webapp/myaccount/personalTimesheet.zul:115
 msgid "Total extra"
@@ -4423,7 +4538,8 @@ msgstr "Concept"
 
 #: libreplan-webapp/src/main/webapp/common/configuration.zul:147
 msgid "Enable/Disable warning about new LibrePlan versions available"
-msgstr "In-/Uitschakelen waarschuwing over een beschikbare nieuwe LibrePlan versie"
+msgstr ""
+"In-/Uitschakelen waarschuwing over een beschikbare nieuwe LibrePlan versie"
 
 #: org/libreplan/web/scenarios/TransferOrdersModel.java:148
 msgid "Please, select a destination scenario"
@@ -4437,9 +4553,11 @@ msgstr "Splits"
 #: org/libreplan/web/planner/limiting/allocation/LimitingResourceAllocationModel.java:153
 #: org/libreplan/web/planner/allocation/FormBinder.java:655
 msgid ""
-"there are no resources for required criteria: {0}. So the generic allocation"
-" can't be added"
-msgstr "Er zijn geen resources voor dit vereiste criterium: {0}. Dus de automatische toekenning kan niet worden toegevoegd"
+"there are no resources for required criteria: {0}. So the generic allocation "
+"can't be added"
+msgstr ""
+"Er zijn geen resources voor dit vereiste criterium: {0}. Dus de automatische "
+"toekenning kan niet worden toegevoegd"
 
 #: libreplan-business/src/main/java/org/libreplan/business/workreports/valueobjects/DescriptionValue.java:71
 #: libreplan-business/src/main/java/org/libreplan/business/workreports/valueobjects/DescriptionField.java:71
@@ -4475,7 +4593,9 @@ msgstr "Laatste uitgave"
 msgid ""
 "Starting date cannot be empty because there is a task with constraint \"as "
 "soon as possible\""
-msgstr "Startdatum kan niet leeg zijn omdat er een taak is met de randvoorwaarde \"zo snel mogelijk\""
+msgstr ""
+"Startdatum kan niet leeg zijn omdat er een taak is met de randvoorwaarde "
+"\"zo snel mogelijk\""
 
 #: org/libreplan/web/workreports/WorkReportCRUDController.java:486
 msgid "cannot be empty."
@@ -4603,7 +4723,9 @@ msgstr "Profielen Lijst"
 msgid ""
 "Please try to contact with any administrator in order to review your "
 "permissions in LibrePlan."
-msgstr "Neem contact op met een LibrePlan beheerder om uw toegangsrechten te wijzigen."
+msgstr ""
+"Neem contact op met een LibrePlan beheerder om uw toegangsrechten te "
+"wijzigen."
 
 #: libreplan-webapp/src/main/webapp/externalcompanies/_editExternalCompany.zul:90
 msgid "Company password"
@@ -4651,7 +4773,9 @@ msgstr "Resourcebelasting sinds"
 #: org/libreplan/web/qualityforms/QualityFormCRUDController.java:155
 msgid ""
 "Deleting this item will disable the report progress option. Are you sure?"
-msgstr "Als u dit item verwijdert is daarna het rapporteren van de voortgang niet meer mogelijk. Weet u het zeker?"
+msgstr ""
+"Als u dit item verwijdert is daarna het rapporteren van de voortgang niet "
+"meer mogelijk. Weet u het zeker?"
 
 #: libreplan-webapp/src/main/webapp/common/_editJobScheduling.zul:113
 msgid "Field"
@@ -4685,7 +4809,9 @@ msgstr "Kwaliteitsformulier"
 msgid ""
 "Date is not valid, it must be later than the last progress reported to the "
 "customer"
-msgstr "Datum is ongeldig. Het moet liggen na de laatste voortgangsrapportage die naar de klant is gerapporteerd."
+msgstr ""
+"Datum is ongeldig. Het moet liggen na de laatste voortgangsrapportage die "
+"naar de klant is gerapporteerd."
 
 #: org/libreplan/web/resources/worker/CriterionsMachineController.java:213
 #: org/libreplan/web/resources/worker/CriterionsController.java:244
@@ -4744,7 +4870,8 @@ msgstr "Bedrijf"
 
 #: libreplan-business/src/main/java/org/libreplan/business/resources/entities/Worker.java:252
 msgid "Queue-based resources cannot be bound to any user"
-msgstr "Wachrij-gebaseerde resource kan niet gekoppeld worden aan een gebruiker"
+msgstr ""
+"Wachrij-gebaseerde resource kan niet gekoppeld worden aan een gebruiker"
 
 #: libreplan-webapp/src/main/webapp/common/eventError.zul:49
 #: libreplan-webapp/src/main/webapp/common/error.zul:54
@@ -4761,7 +4888,8 @@ msgstr "Lijst voortgangstypes"
 
 #: org/libreplan/web/materials/MaterialsModel.java:282
 msgid "both {0} of category {1} and {2} of category {3} have the same code"
-msgstr "zowel {0} van categorie {1} en {2} van categorie {3} hebben dezelfde code"
+msgstr ""
+"zowel {0} van categorie {1} en {2} van categorie {3} hebben dezelfde code"
 
 #: libreplan-webapp/src/main/webapp/subcontract/reportAdvances.zul:48
 msgid "Value last progress reported"
@@ -4790,7 +4918,8 @@ msgstr "Voorganger"
 #: org/libreplan/web/resources/worker/AssignedCriterionsModel.java:338
 #: org/libreplan/web/resources/machine/AssignedMachineCriterionsModel.java:401
 msgid "The {0} is not valid. Other value exists from the same criterion type"
-msgstr "De {0} is ongeldig. Andere waarde bestaat vanaf het zelfde criteriumtype"
+msgstr ""
+"De {0} is ongeldig. Andere waarde bestaat vanaf het zelfde criteriumtype"
 
 #: org/libreplan/web/orders/ManageOrderElementAdvancesController.java:1141
 msgid "Add new progress measurement"
@@ -4831,7 +4960,8 @@ msgstr "Verwijder geselecteerde taak"
 
 #: libreplan-business/src/main/java/org/libreplan/business/qualityforms/entities/TaskQualityForm.java:112
 msgid "items cannot be checked until the previous items are checked before."
-msgstr "iitems kunnen niet afgevinkt worden totdat de vorige items zijn afgevinkt"
+msgstr ""
+"iitems kunnen niet afgevinkt worden totdat de vorige items zijn afgevinkt"
 
 #: libreplan-webapp/src/main/webapp/workreports/_editWorkReportType.zul:29
 msgid "Report structure"
@@ -4886,7 +5016,9 @@ msgstr "u heeft geen rechten voor het maken van nieuwe labels"
 #: org/libreplan/web/planner/taskedition/TaskPropertiesController.java:616
 #: org/libreplan/web/planner/taskedition/TaskPropertiesController.java:652
 msgid "Assigned resources for this task will be deleted. Are you sure?"
-msgstr "Toegekende resources voor deze taak zullen verwijderd worden. Weet u het zeker?"
+msgstr ""
+"Toegekende resources voor deze taak zullen verwijderd worden. Weet u het "
+"zeker?"
 
 #: org/libreplan/web/qualityforms/QualityFormCRUDController.java:226
 msgid "percentage must be unique"
@@ -4896,7 +5028,9 @@ msgstr "percentage moet uniek zijn"
 msgid ""
 "Subcontractor values are read only because they were reported by the "
 "subcontractor company"
-msgstr "Onderaannemer waardes zijn alleen-lezen omdat ze zijn gerapporteerd door het onderaannemersbedrijf"
+msgstr ""
+"Onderaannemer waardes zijn alleen-lezen omdat ze zijn gerapporteerd door het "
+"onderaannemersbedrijf"
 
 #: org/libreplan/web/planner/allocation/AdvancedAllocationController.java:1662
 msgid "Not configurable"
@@ -4993,7 +5127,9 @@ msgstr "Ondersteund Chrome, Firefox, Safari en Epiphany browsers"
 #: org/libreplan/web/orders/ManageOrderElementAdvancesController.java:1193
 msgid ""
 "Value must be a multiple of the precision value of the progress type: {0}"
-msgstr "Waarde moet een veelvoud zijn van de precisiewaarde van het voortgangstype: {0}"
+msgstr ""
+"Waarde moet een veelvoud zijn van de precisiewaarde van het voortgangstype: "
+"{0}"
 
 #: org/libreplan/web/materials/UnitTypeController.java:184
 #: org/libreplan/web/common/CustomMenuController.java:377
@@ -5024,7 +5160,9 @@ msgstr "naam kan niet leeg zijn"
 msgid ""
 "User is bound to resource \"{0}\" and it will be unbound. Do you want to "
 "continue with user removal?"
-msgstr "Gebruiker is gekoppeld aan resource \"{0}\" en zal worden losgekoppeld. Wilt u doorgaan met het verwijderen van de gebruiker?"
+msgstr ""
+"Gebruiker is gekoppeld aan resource \"{0}\" en zal worden losgekoppeld. Wilt "
+"u doorgaan met het verwijderen van de gebruiker?"
 
 #: org/libreplan/web/resources/criterion/CriterionTreeModel.java:342
 msgid "Name of criterion is empty."
@@ -5208,7 +5346,9 @@ msgstr "Eerste onkosten"
 msgid ""
 "Synchronization order elements with JIRA issues was not completed for the "
 "following reasons:"
-msgstr "Synchronisatie van orderelementen met JIRA issues is niet voltooid om de volgende redenen:"
+msgstr ""
+"Synchronisatie van orderelementen met JIRA issues is niet voltooid om de "
+"volgende redenen:"
 
 #: org/libreplan/web/common/CustomMenuController.java:504
 #: libreplan-webapp/src/main/webapp/reports/hoursWorkedPerWorkerReport.zul:39
@@ -5254,12 +5394,16 @@ msgstr "Georven uitzondering"
 msgid ""
 "Help the project developers to collect information about which LibrePlan "
 "version you are using"
-msgstr "Help de ontwikkelaars van LibrePlan bij het verzamelen van informatie over welke versie u gebruikt"
+msgstr ""
+"Help de ontwikkelaars van LibrePlan bij het verzamelen van informatie over "
+"welke versie u gebruikt"
 
 #: org/libreplan/web/orders/ManageOrderElementAdvancesController.java:1179
 msgid ""
 "Spread progress cannot be removed. Please select another progress as spread."
-msgstr "De spread voortgang kan niet worden verwijderd. Kies aub een andere voortgang als spread."
+msgstr ""
+"De spread voortgang kan niet worden verwijderd. Kies aub een andere "
+"voortgang als spread."
 
 #: org/libreplan/web/templates/OrderTemplatesController.java:380
 msgid "Template cannot be removed because it has applications"
@@ -5737,7 +5881,9 @@ msgstr "Knooppunt zonder kinderen"
 msgid ""
 "Please use some of the compatible browsers: Chrome, Firefox, Safari or "
 "Epiphany."
-msgstr "Gebruik aub één van de ondersteunde browsers: Chrome, Firefox, Safari of Epiphany."
+msgstr ""
+"Gebruik aub één van de ondersteunde browsers: Chrome, Firefox, Safari of "
+"Epiphany."
 
 #: org/libreplan/web/planner/tabs/MultipleTabsPlannerController.java:213
 msgid "changing perspective"
@@ -5765,7 +5911,9 @@ msgstr "Bevestig"
 
 #: org/libreplan/web/users/UserCRUDController.java:109
 msgid "Default user \"admin\" cannot be removed as it is mandatory"
-msgstr "De standaard gebruiker \"admin\" kan niet worden verwijderd omdat hij verplicht aanwezig is."
+msgstr ""
+"De standaard gebruiker \"admin\" kan niet worden verwijderd omdat hij "
+"verplicht aanwezig is."
 
 #: libreplan-webapp/src/main/webapp/orders/_orderFilter.zul:40
 #: libreplan-webapp/src/main/webapp/orders/_orderElementTreeFilter.zul:54
@@ -5777,7 +5925,9 @@ msgstr "tot"
 
 #: libreplan-webapp/src/main/webapp/common/layout/template.zul:148
 msgid "The admin's account password remains the default one. This is insecure"
-msgstr "Het wachtwoord van het beheersaccount is nog steeds het origineel. Dit is niet veilig"
+msgstr ""
+"Het wachtwoord van het beheersaccount is nog steeds het origineel. Dit is "
+"niet veilig"
 
 #: org/libreplan/web/orders/assigntemplates/TemplateFinderPopup.java:134
 msgid "Choosing Template"
@@ -5819,7 +5969,8 @@ msgstr "Maak nieuwe werkweek"
 msgid ""
 "Each date must be greater than the dates of the previous task quality form "
 "items."
-msgstr "Elke datum moet liggen na de data van het vorige taakkwaliteitsformulier"
+msgstr ""
+"Elke datum moet liggen na de data van het vorige taakkwaliteitsformulier"
 
 #: org/libreplan/web/orders/files/OrderFilesController.java:183
 msgid "Confirm deleting this file. Are you sure?"
@@ -5835,9 +5986,11 @@ msgstr "Alleen {0} resources per dag zijn gelukt voor de huidige toekenning"
 
 #: org/libreplan/web/orders/OrderCRUDController.java:1055
 msgid ""
-"This project is a subcontracted project. If you delete it, you won't be able"
-" to report progress anymore. Are you sure?"
-msgstr "Dit project is een onderaangenomen project. Als u het verwijderd kunt u de voortgang niet meer rapporteren. Weet u het zeker?"
+"This project is a subcontracted project. If you delete it, you won't be able "
+"to report progress anymore. Are you sure?"
+msgstr ""
+"Dit project is een onderaangenomen project. Als u het verwijderd kunt u de "
+"voortgang niet meer rapporteren. Weet u het zeker?"
 
 #: org/libreplan/web/labels/LabelTypeModel.java:278
 msgid "The name of the label is empty."
@@ -5859,7 +6012,9 @@ msgstr "Pas filtering toe op issues"
 
 #: org/libreplan/web/orders/TimSynchronizationController.java:147
 msgid "Exporting timesheets to Tim failed. Check the Tim connector"
-msgstr "Het exporteren van urenstaten naar Tim is mislukt. Controleer de Tim connector"
+msgstr ""
+"Het exporteren van urenstaten naar Tim is mislukt. Controleer de Tim "
+"connector"
 
 #: org/libreplan/web/orders/ManageOrderElementAdvancesController.java:1190
 msgid "Value is not valid. It must be smaller than max value"
@@ -5873,7 +6028,9 @@ msgstr "Datum kan niet de hele volgende werkweek bevatten"
 msgid ""
 "IMPORTANT: Don't forget to communicate to subcontractor that his contract "
 "has been cancelled"
-msgstr "BELANGRIJK: Vergeet niet aan de onderaannemer te melden dat zijn contract is beeindigd"
+msgstr ""
+"BELANGRIJK: Vergeet niet aan de onderaannemer te melden dat zijn contract is "
+"beeindigd"
 
 #: libreplan-webapp/src/main/webapp/users/_listUsers.zul:30
 msgid "Superuser"
@@ -5962,7 +6119,8 @@ msgstr "Externe overbelasting"
 #: libreplan-webapp/src/main/webapp/reports/orderCostsPerResource.zul:237
 #: libreplan-webapp/src/main/webapp/reports/completedEstimatedHoursPerTask.zul:187
 msgid "if the report is not opened automatically or use save as..."
-msgstr "als het rapport niet automatisch geopend wordt of gebruik opslaan als..."
+msgstr ""
+"als het rapport niet automatisch geopend wordt of gebruik opslaan als..."
 
 #: libreplan-webapp/src/main/webapp/reports/timeLineMaterialReport.zul:124
 msgid "Filter by categories or materials"
@@ -6007,7 +6165,8 @@ msgstr "Leverdatum"
 
 #: org/libreplan/web/dashboard/DashboardController.java:171
 msgid "There is a margin of {0} days with the project global deadline ({1}%)."
-msgstr "Er is een marge van {0} dagen op de overall deadline van het project ({1}%)."
+msgstr ""
+"Er is een marge van {0} dagen op de overall deadline van het project ({1}%)."
 
 #: org/libreplan/web/workreports/WorkReportQueryController.java:285
 msgid "Task not found"
@@ -6079,7 +6238,9 @@ msgstr "Zend"
 msgid ""
 "This worker cannot be deleted because it has assignments to projects or "
 "imputed hours"
-msgstr "Deze werker kan niet verwijderd worden omdat het toegekend is aan projecten of toegerekende uren"
+msgstr ""
+"Deze werker kan niet verwijderd worden omdat het toegekend is aan projecten "
+"of toegerekende uren"
 
 #: org/libreplan/web/common/components/NewAllocationSelector.java:93
 msgid "specific allocation"
@@ -6127,11 +6288,14 @@ msgstr "Ongeldig queue element"
 #: org/libreplan/web/materials/MaterialsController.java:464
 #: libreplan-webapp/src/main/webapp/materials/materials.zul:74
 msgid "List of materials for all categories (select one to filter)"
-msgstr "Lijst met materialen voor alle categorieën (kies er een om te filteren)"
+msgstr ""
+"Lijst met materialen voor alle categorieën (kies er een om te filteren)"
 
 #: org/libreplan/web/orders/ManageOrderElementAdvancesController.java:693
 msgid "Progress that are reported by quality forms cannot be modified"
-msgstr "De voortgang die is gerapporteerd door kwaliteitsformuliere kan niet worden aangepast"
+msgstr ""
+"De voortgang die is gerapporteerd door kwaliteitsformuliere kan niet worden "
+"aangepast"
 
 #: libreplan-webapp/src/main/webapp/resources/worker/_edition.zul:39
 #: libreplan-webapp/src/main/webapp/resources/_costCategoryAssignment.zul:26
@@ -6278,13 +6442,17 @@ msgstr "Communicatietype"
 #: org/libreplan/web/resources/criterion/CriterionAdminController.java:96
 msgid ""
 "Disable hierarchy will cause criteria tree to be flattened. Are you sure?"
-msgstr "Hierarchie uitschakelen zal de criteria-boomstructuur afvlakken. Wete u het zeker?"
+msgstr ""
+"Hierarchie uitschakelen zal de criteria-boomstructuur afvlakken. Wete u het "
+"zeker?"
 
 #: org/libreplan/web/qualityforms/QualityFormCRUDController.java:272
 msgid ""
 "Quality form should include an item with a value of 100% in order to report "
 "progress"
-msgstr "Kwaliteitsformulier moet een onderdeel bevatten met een waarde van 100% om de voortgang te kunnen rapporteren"
+msgstr ""
+"Kwaliteitsformulier moet een onderdeel bevatten met een waarde van 100% om "
+"de voortgang te kunnen rapporteren"
 
 #: libreplan-business/src/main/java/org/libreplan/business/workreports/entities/WorkReportLine.java:268
 msgid "clock finish cannot be empty if number of hours is calcultate by clock"
@@ -6389,7 +6557,9 @@ msgstr "Totaal gecalculeerd budget"
 #: org/libreplan/web/orders/ManageOrderElementAdvancesController.java:1131
 msgid ""
 "Progress measurement cannot be canged to {0}, because it is consolidated"
-msgstr "Voortgangsmeting kan niet gewijzigd worden naar {0} omdat hij is geconsolideerd."
+msgstr ""
+"Voortgangsmeting kan niet gewijzigd worden naar {0} omdat hij is "
+"geconsolideerd."
 
 #: libreplan-webapp/src/main/webapp/planner/stretches_function.zul:85
 msgid "Accumulated hours chart"
@@ -6442,9 +6612,11 @@ msgstr "{0} \"{1}\" kon niet verwijderd worden, het was reeds verwijderd"
 
 #: org/libreplan/web/planner/taskedition/EditTaskController.java:371
 msgid ""
-"The task has got progress consolidations. To change resource allocation type"
-" all consolidations must be removed before"
-msgstr "De taak heeft voortgansconsoolidaties. Om het resource allocatietype te wijzigen moeten eerst alle consolidaties verwijderd worden"
+"The task has got progress consolidations. To change resource allocation type "
+"all consolidations must be removed before"
+msgstr ""
+"De taak heeft voortgansconsoolidaties. Om het resource allocatietype te "
+"wijzigen moeten eerst alle consolidaties verwijderd worden"
 
 #: org/libreplan/web/limitingresources/QueueComponent.java:241
 msgid "Allocation: [{0},{1}]"
@@ -6453,7 +6625,8 @@ msgstr "Allocatie: [{0},{1}]"
 #: org/libreplan/web/workreports/WorkReportTypeCRUDController.java:902
 msgid ""
 "Cannot delete timesheet template. There are some timesheets bound to it."
-msgstr "Kan urenstaatsjabloon niet verwijderen. Er zijn urenstaten mee verbonden"
+msgstr ""
+"Kan urenstaatsjabloon niet verwijderen. Er zijn urenstaten mee verbonden"
 
 #: libreplan-webapp/src/main/webapp/planner/editTask.zul:63
 msgid "Queue-based resource allocation"
@@ -6601,7 +6774,8 @@ msgstr "projectnaam is reeds in gebruik"
 
 #: org/libreplan/web/resources/worker/CriterionsMachineController.java:211
 msgid "End date is not valid, the new end date must be after the start date"
-msgstr "Einddatum is ongeldig, de nieuwe einddatum moet na de startdatum liggen"
+msgstr ""
+"Einddatum is ongeldig, de nieuwe einddatum moet na de startdatum liggen"
 
 #: libreplan-webapp/src/main/webapp/planner/stretches_function.zul:76
 msgid "Dedication chart"
@@ -6614,7 +6788,9 @@ msgstr "Autorisatie"
 #: libreplan-business/src/main/java/org/libreplan/business/qualityforms/entities/QualityForm.java:248
 msgid ""
 "The quality item positions must be correct in function to the percentage."
-msgstr "De kwaliteitsonderdeelposities moeten overeenkomen met het bijbehorende percentage"
+msgstr ""
+"De kwaliteitsonderdeelposities moeten overeenkomen met het bijbehorende "
+"percentage"
 
 #: libreplan-webapp/src/main/webapp/common/configuration.zul:83
 msgid "Personal timesheets peridocity"
@@ -6636,7 +6812,9 @@ msgstr "Geen respons of fout in respons"
 msgid ""
 "The planning of this task is not in the current scenenario.\n"
 "You should change to any of the following scenarios: {0}"
-msgstr "De planning van deze taak is niet in het actuele scenario. U moet overschakelen naar een van de volgende scenario's: {0}"
+msgstr ""
+"De planning van deze taak is niet in het actuele scenario. U moet "
+"overschakelen naar een van de volgende scenario's: {0}"
 
 #: libreplan-webapp/src/main/webapp/planner/montecarlo_function.zul:38
 msgid "MonteCarlo chart"
@@ -6853,7 +7031,8 @@ msgstr "Niet toegewezen naam"
 msgid ""
 "there is a timesheet line in another work report marking as finished the "
 "same task"
-msgstr "er is een urenstaatregel die dezelfde taak als zijnde voltooid aangeeft"
+msgstr ""
+"er is een urenstaatregel die dezelfde taak als zijnde voltooid aangeeft"
 
 #: libreplan-webapp/src/main/webapp/resources/worker/_calendar.zul:49
 #: libreplan-webapp/src/main/webapp/resources/machine/_calendar.zul:40
@@ -6951,7 +7130,9 @@ msgstr "maximumwaarde van procentueel voortgangstype moet 100 zijn"
 
 #: org/libreplan/web/calendars/BaseCalendarCRUDController.java:370
 msgid "Calendar cannot be removed as it has other derived calendars from it"
-msgstr "kalender kan niet worden verwijderd omdat er andere kalenders van zijn afgeleid"
+msgstr ""
+"kalender kan niet worden verwijderd omdat er andere kalenders van zijn "
+"afgeleid"
 
 #: org/libreplan/web/orders/OrderCRUDController.java:378
 #: org/libreplan/web/planner/order/OrderPlanningModel.java:1027
@@ -6984,7 +7165,9 @@ msgstr "Automatisch budget"
 msgid ""
 "Progress measurements must have a value lower than their following progress "
 "measurements."
-msgstr "Voortgangsmeting moeten een waarde hebben die lager is dan hun latere voortgangsmeting"
+msgstr ""
+"Voortgangsmeting moeten een waarde hebben die lager is dan hun latere "
+"voortgangsmeting"
 
 #: libreplan-business/src/main/java/org/libreplan/business/qualityforms/entities/TaskQualityForm.java:71
 #: libreplan-business/src/main/java/org/libreplan/business/workreports/entities/WorkReportLine.java:185
@@ -7090,7 +7273,9 @@ msgstr "Periode"
 msgid ""
 "The {0} can not be assigned to this resource. Its interval overlaps with "
 "other criterion"
-msgstr "De {0} kan niet toegekend worden aan deze resource. Zijn interval overlapt met een ander criterium"
+msgstr ""
+"De {0} kan niet toegekend worden aan deze resource. Zijn interval overlapt "
+"met een ander criterium"
 
 #: libreplan-webapp/src/main/webapp/calendars/_list.zul:30
 msgid "Inherits up to date"
@@ -7171,7 +7356,10 @@ msgid ""
 "Value is not valid.\n"
 " Code cannot contain chars like '_' \n"
 " and should not be empty"
-msgstr "Waarde is niet geldig.\nCode kan geen letters bevatten zoals '_'\nen mag niet leeg zijn"
+msgstr ""
+"Waarde is niet geldig.\n"
+"Code kan geen letters bevatten zoals '_'\n"
+"en mag niet leeg zijn"
 
 #: org/libreplan/web/common/BaseCRUDController.java:306
 msgid "Delete {0} \"{1}\". Are you sure?"
@@ -7194,7 +7382,8 @@ msgstr "Urentype"
 
 #: libreplan-webapp/src/main/webapp/common/layout/timeout.zul:27
 msgid "Your session has expired because of inactivity. Please log in again."
-msgstr "Uw sessie is verlopen i.v.m. inactiviteit. Meld uzelf a.u.b. opnieuw aan."
+msgstr ""
+"Uw sessie is verlopen i.v.m. inactiviteit. Meld uzelf a.u.b. opnieuw aan."
 
 #: libreplan-business/src/main/java/org/libreplan/business/orders/entities/OrderElement.java:525
 #: libreplan-business/src/main/java/org/libreplan/business/templates/entities/OrderElementTemplate.java:379
@@ -7486,7 +7675,9 @@ msgstr "Ongeldige inspanningsduur"
 msgid ""
 "You can not remove the project \"{0}\" because this one has imputed expense "
 "sheets."
-msgstr "U kunt het project \"{0}\" niet verwijderen want het heeft toegewezen declaratieformulieren."
+msgstr ""
+"U kunt het project \"{0}\" niet verwijderen want het heeft toegewezen "
+"declaratieformulieren."
 
 #: libreplan-webapp/src/main/webapp/orders/_editOrderElement.zul:44
 msgid "Details"
@@ -7554,7 +7745,9 @@ msgstr "Belasting door huidig project"
 msgid ""
 "Estimated start date for the task (press enter in textbox to open calendar "
 "popup or type in date directly)"
-msgstr "Geschatte startdatum voor de taak (druk Enter in de tekstbox om een kalender popup te openen, of type de datum rechtstreeks in)"
+msgstr ""
+"Geschatte startdatum voor de taak (druk Enter in de tekstbox om een kalender "
+"popup te openen, of type de datum rechtstreeks in)"
 
 #: org/libreplan/web/planner/chart/EarnedValueChartFiller.java:251
 msgid "VAC"
@@ -7570,13 +7763,17 @@ msgstr "Pas filtering toe op resources zodat vereiste criteria worden vervuld"
 
 #: org/libreplan/web/orders/AssignedTaskQualityFormsToOrderElementModel.java:344
 msgid "Quality form cannot be removed as it is spreading progress"
-msgstr "Kwaliteistformulier kan niet worden verwijderd omdat het de voortgang  rapporteert"
+msgstr ""
+"Kwaliteistformulier kan niet worden verwijderd omdat het de voortgang  "
+"rapporteert"
 
 #: org/libreplan/web/planner/order/SaveCommandBuilder.java:863
 msgid ""
 "Confirm creating a new project version for this scenario and derived. Are "
 "you sure?"
-msgstr "Bevestig het maken van een nieuwe projectversie voor dit scenario en afgeleiden. Weet u het zeker?"
+msgstr ""
+"Bevestig het maken van een nieuwe projectversie voor dit scenario en "
+"afgeleiden. Weet u het zeker?"
 
 #: libreplan-webapp/src/main/webapp/costcategories/_editCostCategory.zul:77
 msgid "Hour costs"
@@ -7631,7 +7828,9 @@ msgstr "type werkuren niet gespecificeerd"
 msgid ""
 "There are unsaved changes in the current personal timesheet, please save "
 "before moving"
-msgstr "Er zijn nog niet opgeslagen wijzigingen in de actuele persoonlijke urenstaat. aub opslaan voor verplaatsen"
+msgstr ""
+"Er zijn nog niet opgeslagen wijzigingen in de actuele persoonlijke "
+"urenstaat. aub opslaan voor verplaatsen"
 
 #: libreplan-business/src/main/java/org/libreplan/business/common/entities/EntitySequence.java:93
 msgid "prefix not specified"
@@ -7740,7 +7939,8 @@ msgstr "De onkostendeclaratielijnencode moet uniek zijn"
 #: org/libreplan/web/resources/worker/CriterionsController.java:242
 #: org/libreplan/web/resources/machine/MachineConfigurationController.java:215
 msgid "End date is not valid, the new end date must be after start date"
-msgstr "Einddatum is ongeldig. De nieuwe einddatum moet na de startdatum liggen"
+msgstr ""
+"Einddatum is ongeldig. De nieuwe einddatum moet na de startdatum liggen"
 
 #: libreplan-webapp/src/main/webapp/planner/taskpanels/_tabPanelTaskProperties.zul:59
 msgid "Duration (days)"
@@ -7802,11 +8002,14 @@ msgstr "Kan niet verbinden met Tim server"
 #: org/libreplan/web/common/TemplateController.java:245
 msgid ""
 " of LibrePlan is available. Please check next link for more information:"
-msgstr "van LibrePlan is beschikbaar. Zie de volgende link voor meer informatie:"
+msgstr ""
+"van LibrePlan is beschikbaar. Zie de volgende link voor meer informatie:"
 
 #: libreplan-business/src/main/java/org/libreplan/business/expensesheet/entities/ExpenseSheet.java:235
 msgid "a personal expense sheet must have the same resource in all the lines"
-msgstr "een persoonlijk declaratieformulier moet dezelfde resource hebben op alle regels"
+msgstr ""
+"een persoonlijk declaratieformulier moet dezelfde resource hebben op alle "
+"regels"
 
 #: org/libreplan/web/planner/allocation/AllocationRow.java:814
 msgid "there are no valid periods for this calendar"
@@ -7854,7 +8057,8 @@ msgstr "Toegestane waardes"
 
 #: org/libreplan/web/users/dashboard/ExpensesAreaController.java:94
 msgid "Expense sheet \"{1}\" could not be deleted, it was already removed"
-msgstr "Onkostendeclaratie \"{1}\" kon niet verwijderd worden, dat was nl al gebeurd"
+msgstr ""
+"Onkostendeclaratie \"{1}\" kon niet verwijderd worden, dat was nl al gebeurd"
 
 #: org/libreplan/web/resources/criterion/CriterionAdminController.java:200
 msgid "Criterion Type"
@@ -8008,7 +8212,10 @@ msgstr "moet na startdatum liggen"
 msgid ""
 "This resource allocation type is incompatible. The task has an associated "
 "order element which has a progress that is of type subcontractor. "
-msgstr "Dit resource toekenningstype is niet compatibel. De taak heeft een geassocieerd order element welke een voortgang heeft van het type onderaannemer"
+msgstr ""
+"Dit resource toekenningstype is niet compatibel. De taak heeft een "
+"geassocieerd order element welke een voortgang heeft van het type "
+"onderaannemer"
 
 #: org/libreplan/web/common/components/ResourceAllocationBehaviour.java:63
 #: libreplan-webapp/src/main/webapp/resources/worker/_list.zul:39
@@ -8097,7 +8304,9 @@ msgstr "bedrijfsnaam moet uniek zijn. Bedrijfsnaam reeds gebruikt"
 #: libreplan-business/src/main/java/org/libreplan/business/workreports/entities/WorkReport.java:455
 msgid ""
 "only one timesheet line per day and task is allowed in personal timesheets"
-msgstr "slechts één urenstaatregel per dag en taak is toegestaan in individuele urenstaten"
+msgstr ""
+"slechts één urenstaatregel per dag en taak is toegestaan in individuele "
+"urenstaten"
 
 #: libreplan-business/src/main/java/org/libreplan/business/qualityforms/entities/TaskQualityFormItem.java:78
 msgid "percentage not specified"
@@ -8107,7 +8316,8 @@ msgstr "percentage niet gespecificeerd"
 #: org/libreplan/web/users/UserCRUDController.java:421
 #: org/libreplan/web/resources/worker/WorkerCRUDController.java:1103
 msgid "Unsaved changes will be lost. Would you like to continue?"
-msgstr "Niet opgeslagen wijzigiingen zullen verloren gaan. Wilt u toch doorgaan?"
+msgstr ""
+"Niet opgeslagen wijzigiingen zullen verloren gaan. Wilt u toch doorgaan?"
 
 #: org/libreplan/web/workreports/WorkReportCRUDController.java:496
 msgid "task is already marked as finished in another timesheet"
@@ -8132,7 +8342,11 @@ msgstr "Stuksprijs niet gespecificeerd"
 #: libreplan-webapp/src/main/webapp/common/layout/login.zul:180
 msgid ""
 "Did you know LibrePlan is funded only by donations, from people like you?"
-msgstr "Wist u dat LibrePlan alleen ondersteund wordt met donaties, door mensen zoals jij?\n\n "
+msgstr ""
+"Wist u dat LibrePlan alleen ondersteund wordt met donaties, door mensen "
+"zoals jij?\n"
+"\n"
+" "
 
 #: libreplan-webapp/src/main/webapp/limitingresources/limitingResourcesLayout.zul:119
 msgid "Tasks input buffer"
@@ -8147,7 +8361,9 @@ msgstr "Referentie datum"
 #: org/libreplan/web/dashboard/DashboardController.java:266
 msgid ""
 "% Deviation interval (difference % between consumed and estimated hours)"
-msgstr "% Deviatie interval (procentueel verschil tussen verbruikte en geschatte uren)"
+msgstr ""
+"% Deviatie interval (procentueel verschil tussen verbruikte en geschatte "
+"uren)"
 
 #: org/libreplan/web/orders/OrderCRUDController.java:1693
 msgid "It already exists a end date with the same date. "
@@ -8177,13 +8393,17 @@ msgstr "Start sync"
 msgid ""
 "interaction fields are empty and company is marked as interact with "
 "applications"
-msgstr "interactievelden zijn leeg en het bedrijf is gemarkeerd als interacterend met applicaties"
+msgstr ""
+"interactievelden zijn leeg en het bedrijf is gemarkeerd als interacterend "
+"met applicaties"
 
 #: org/libreplan/web/planner/order/SaveCommandBuilder.java:328
 msgid ""
 "Error saving the project\n"
 "{0}"
-msgstr "Fout bij opslaan van het project⏎\n{0}"
+msgstr ""
+"Fout bij opslaan van het project⏎\n"
+"{0}"
 
 #: org/libreplan/web/workreports/WorkReportTypeCRUDController.java:835
 msgid "Index fields and labels must be unique and consecutive"
@@ -8419,14 +8639,17 @@ msgstr "Verwijderd {0}"
 
 #: org/libreplan/web/tree/TreeComponent.java:68
 msgid "Fully, Partially or Unscheduled. (Drag and drop to move tasks)"
-msgstr "Volledig, Gedeeltelijk of Ongepland. (Sleur en pleur om taken te verplaatsen)"
+msgstr ""
+"Volledig, Gedeeltelijk of Ongepland. (Sleur en pleur om taken te verplaatsen)"
 
 #: org/libreplan/web/orders/ManageOrderElementAdvancesController.java:300
 #: org/libreplan/web/orders/ManageOrderElementAdvancesController.java:429
 msgid ""
 "Progress Assignment cannot be deleted or changed. Progress Assignment "
 "contains Progress Consolidations values"
-msgstr "Voortgangstoekenning kan niet worden verwijderd of gewijzigd. De voortgangstoekenning bevat voortgangsconsolidaties"
+msgstr ""
+"Voortgangstoekenning kan niet worden verwijderd of gewijzigd. De "
+"voortgangstoekenning bevat voortgangsconsolidaties"
 
 #: org/libreplan/web/limitingresources/ManualAllocationController.java:328
 #: org/libreplan/web/limitingresources/ManualAllocationController.java:335
@@ -8441,7 +8664,9 @@ msgstr "Kies taal"
 msgid ""
 "Deadline cannot be empty because there is a task with constraint \"as late "
 "as possible\""
-msgstr "Deadline kan niet leeg zijn omdat er een taak is met de randvoorwaarde \"zo laat mogelijk\""
+msgstr ""
+"Deadline kan niet leeg zijn omdat er een taak is met de randvoorwaarde \"zo "
+"laat mogelijk\""
 
 #: libreplan-webapp/src/main/webapp/limitingresources/manualAllocation.zul:32
 msgid "Queue Element Information"
@@ -8472,7 +8697,9 @@ msgstr "Toevoegen criterium vereiste"
 msgid ""
 "Periods available depend on the satisfaction of the criteria of resources "
 "and their calendars."
-msgstr "Beschikbare periodes zijn afhankelijk van de vervulling van de criteria van resources en hun kalenders"
+msgstr ""
+"Beschikbare periodes zijn afhankelijk van de vervulling van de criteria van "
+"resources en hun kalenders"
 
 #: org/libreplan/web/planner/allocation/stretches/StretchesFunctionModel.java:169
 msgid "Some stretch has higher or equal values than the previous stretch"
@@ -8616,12 +8843,6 @@ msgstr "Mislukt: {0}"
 #: libreplan-webapp/src/main/webapp/planner/taskpanels/_allocationConfiguration.zul:35
 msgid "Planned end"
 msgstr "Gepland einde"
-
-#: libreplan-business/src/main/java/org/libreplan/business/workreports/entities/WorkReportType.java:154
-msgid ""
-"Value is not valid.\n"
-" Code cannot contain chars like '_'."
-msgstr "Waarde is ongeldig.\n Code mag geen karakters zoals '_' bevatten."
 
 #: libreplan-webapp/src/main/webapp/common/configuration.zul:46
 msgid "Connectors"
@@ -8784,7 +9005,9 @@ msgstr "Kwaliteitsformuliernaam reeds in gebruik"
 msgid ""
 "Are you sure of changing the resource type? You will lose the criteria with "
 "different resource type."
-msgstr "Weet u zeker dat u het resource type wilt wijzigen? U verlies de criteria bij een ander resource type."
+msgstr ""
+"Weet u zeker dat u het resource type wilt wijzigen? U verlies de criteria "
+"bij een ander resource type."
 
 #: libreplan-webapp/src/main/webapp/planner/print_configuration.zul:35
 msgid "Expand taskgroups"
@@ -8799,7 +9022,9 @@ msgstr "Kalender uitzonderingsdagen"
 #: org/libreplan/web/planner/order/SaveCommandBuilder.java:355
 msgid ""
 "You are about to leave the planning editing. Unsaved changes will be lost!"
-msgstr "U staat op het punt om de planningswijziging af te breken. Opgeslagen wijzigingen zullen verloren gaan!"
+msgstr ""
+"U staat op het punt om de planningswijziging af te breken. Opgeslagen "
+"wijzigingen zullen verloren gaan!"
 
 #: libreplan-business/src/main/java/org/libreplan/business/common/entities/Configuration.java:423
 msgid "currency code not specified"
@@ -8824,7 +9049,9 @@ msgstr "Criteria requirements"
 msgid ""
 "LDAP users cannot change their password if LDAP authentication is enabled. "
 "Talk to one of the administrators"
-msgstr "LDAP gebruikers kunnen hun wachtwoord niet wijzigen als LDAP authenticatie aan staat. Neem contact op met een van de beheerders"
+msgstr ""
+"LDAP gebruikers kunnen hun wachtwoord niet wijzigen als LDAP authenticatie "
+"aan staat. Neem contact op met een van de beheerders"
 
 #: libreplan-webapp/src/main/webapp/email/email_templates.zul:94
 msgid "First name of user"
@@ -8894,7 +9121,9 @@ msgstr "type"
 msgid ""
 "The meausure name is not valid. There is another unit type with the same "
 "measure name"
-msgstr "De eenheidsnaam is niet geldig. Er is een ander unittype met de zelfde eenheidsnaam"
+msgstr ""
+"De eenheidsnaam is niet geldig. Er is een ander unittype met de zelfde "
+"eenheidsnaam"
 
 #: org/libreplan/web/expensesheet/ExpenseSheetCRUDController.java:479
 msgid "The code cannot be empty and it must be unique."
@@ -9043,8 +9272,7 @@ msgid "Cancel"
 msgstr "Afbreken"
 
 #: libreplan-business/src/main/java/org/libreplan/business/workreports/entities/WorkReportLine.java:459
-msgid ""
-"description value: the timesheet has not assigned the description field"
+msgid "description value: the timesheet has not assigned the description field"
 msgstr "omschrijving: de urenstaat heeft geen omschrijvingsveld"
 
 #: libreplan-business/src/main/java/org/libreplan/business/orders/entities/Order.java:383
@@ -9078,7 +9306,9 @@ msgstr "Totale beschikbaarheid"
 msgid ""
 "there exist criterion satisfactions referring to criterion types not "
 "applicable to this resource"
-msgstr "er bestaan criterium overeenkomsten die verwijzen naar criterium types die niet relevant zijn voor deze resource "
+msgstr ""
+"er bestaan criterium overeenkomsten die verwijzen naar criterium types die "
+"niet relevant zijn voor deze resource "
 
 #: org/libreplan/web/planner/chart/EarnedValueChartFiller.java:246
 msgid "Actual Cost Work Performed"
@@ -9092,7 +9322,8 @@ msgstr "Project marge: {0}% ({1})={2}"
 msgid ""
 "Could not add those authorizations to profile {0} because they were already "
 "present."
-msgstr "Kon deze autorisaties niet toevoegen aan profiel {0} omdat ze er al in zaten."
+msgstr ""
+"Kon deze autorisaties niet toevoegen aan profiel {0} omdat ze er al in zaten."
 
 #: org/libreplan/web/common/ConfigurationController.java:833
 msgid "{0} sequences"
@@ -9157,7 +9388,8 @@ msgstr "Afmelden"
 
 #: libreplan-business/src/main/java/org/libreplan/business/workreports/entities/WorkReport.java:524
 msgid "the same task is marked as finished by more than one timesheet line"
-msgstr "dezelfde taak is gemarkeerd als voltooid door meerdere andere urenstaatregels"
+msgstr ""
+"dezelfde taak is gemarkeerd als voltooid door meerdere andere urenstaatregels"
 
 #: org/libreplan/web/users/dashboard/ExpensesAreaController.java:80
 msgid "Delete expense sheet \"{0}\". Are you sure?"
@@ -9210,7 +9442,9 @@ msgstr "Geoffreerd"
 msgid ""
 "Start date is not valid, the new start date must be previous the current "
 "start date"
-msgstr "Startdatum is ongeldig, de nieuwe startdatum moet voor de huidige startdatum liggen"
+msgstr ""
+"Startdatum is ongeldig, de nieuwe startdatum moet voor de huidige startdatum "
+"liggen"
 
 #: libreplan-webapp/src/main/webapp/advance/_editAdvanceTypes.zul:52
 msgid "Default max value"
