@@ -179,7 +179,9 @@
                 <n:div align="left">
                     <n:p><n:strong>${i18n:_('Did you know LibrePlan is funded only by donations, from people like you?')}</n:strong></n:p>
                     <n:p>${i18n:_('We don’t show advertisements or sell your data.')} 
-                    <n:strong>${i18n:_('Ever!')}</n:strong> ${i18n:_('But')} <n:strong>${i18n:_('without you, LibrePlan can’t exist.')}</n:strong></n:p>
+                    <n:strong>${i18n:_('Ever!')}</n:strong> 
+		       ${i18n:_('But')} <n:strong>
+                       ${i18n:_('without you, LibrePlan can’t exist.')}</n:strong></n:p>
                     <n:p>${i18n:_('Giving a gift today means LibrePlan continues to remain available and in active development tomorrow!')}</n:p>
                     <n:p><n:script src="https://opencollective.com/libreplan/donate/button.js" color="blue"></n:script></n:p>
                 </n:div>
