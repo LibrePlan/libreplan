@@ -2684,12 +2684,6 @@ msgstr "Cabecera"
 msgid "LibrePlan: Personal timesheet"
 msgstr "LibrePlan: Parte de horas personal"
 
-#: org/libreplan/web/workreports/WorkReportTypeModel.java:427
-msgid ""
-"Value is not valid.\n"
-" Code cannot contain chars like '_'."
-msgstr "Valor no válido. El código no puede contener caracters como '_'."
-
 #: libreplan-webapp/src/main/webapp/resources/worker/_edition.zul:76
 msgid "Group name"
 msgstr "Nombre del grupo"
