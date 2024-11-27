@@ -5,9 +5,9 @@ name: Ubuntu 24.04 (Noble Numbat)
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "main" ]
 
 jobs:
   build:

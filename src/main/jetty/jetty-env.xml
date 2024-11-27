@@ -15,7 +15,7 @@
                 <Set name="minConnectionsPerPartition">5</Set>
                 <Set name="maxConnectionsPerPartition">100</Set>
                 <Set name="acquireIncrement">5</Set>
-                <Set name="idleConnectionTestPeriod">30</Set>
+                <Set name="idleConnectionTestPeriodInMinutes">30</Set>
             </New>
         </Arg>
     </New>
