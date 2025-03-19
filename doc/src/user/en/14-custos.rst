@@ -1,5 +1,5 @@
 ﻿Cost management
-###############
+################
 
 .. _costes:
 .. contents::
