@@ -1,9 +1,10 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 
 import sys, shlex, subprocess
 from optparse import OptionParser, OptionGroup
 from docutils.writers import latex2e
 import re
+from functools import reduce
 
 try:
     import locale
@@ -78,7 +79,7 @@ class DupRefsRemover(object):
 
     def handle_line(self, line):
         if line.startswith(".. _") and ":" in line:
-            r = map(lambda x: x.strip(), line[4:].split(":", 1))
+            r = [x.strip() for x in line[4:].split(":", 1)]
             if r[0] in self.ref:
                 # Do some sanity check
                 if self.ref[r[0]] != r[1]:
@@ -291,14 +292,14 @@ class DocTool(object):
         opts, args = optparser(OPT.docinfo).parse_args(list(args))
 
         if opts.docinfo:
-            f = file(opts.docinfo, "rU")
+            f = open(opts.docinfo, "r")
             e = ShellEscapeRunner(sys.stdout)
-            map(e.handle_line, f.readlines())
+            list(map(e.handle_line, f.readlines()))
             f.close()
-            print
+            print()
 
-        print ".. contents::"
-        print
+        print(".. contents::")
+        print()
 
         out = DupRefsRemover(sys.stdout)
         out_xlate = UnderlineXlate(out)
@@ -310,47 +311,47 @@ class DocTool(object):
             if not name.endswith(".rst"):
                 continue
 
-            f = file(name, "rU")
-            map(is_index_filename(name) and out.handle_line or out_xlate.handle_line,
-                    filter(lambda l: ".. contents::" not in l,
-                        f.readlines())
-                    )
+            f = open(name, "r")
+            list(map(is_index_filename(name) and out.handle_line or out_xlate.handle_line,
+                    [l for l in f.readlines() if ".. contents::" not in l]
+                    ))
             f.close()
-            print
+            print()
 
 
     def cmd_htmlindex(self, cmd, *args):
         opts, args = optparser(OPT.docinfo).parse_args(list(args))
 
         if opts.docinfo:
-            f = file(opts.docinfo, "rU")
+            f = open(opts.docinfo, "r")
             e = ShellEscapeRunner(sys.stdout)
-            map(e.handle_line, f.readlines())
+            list(map(e.handle_line, f.readlines()))
             f.close()
-            print
+            print()
 
         args = list(args)
-        args.sort(str_tuple_sort)
+        #args.sort(key=str_tuple_sort)
+        args.sort()
 
         for name in args:
             # Skip non-RST inputs
             if not name.endswith(".rst") or not is_index_filename(name):
                 continue
 
-            f = file(name, "rU")
+            f = open(name, "r")
             line = f.readline().strip()
             f.close()
-            print "#. `%s <%s.html>`__" % (line, name[:-4])
+            print("#. `%s <%s.html>`__" % (line, name[:-4]))
 
 
     def cmd_help(self, cmd, *args):
         if args:
             self.main([args[0], args[0], "--help"])
         else:
-            print "Available commands:"
+            print("Available commands:")
             for k in dir(self):
                 if k.startswith("cmd_"):
-                    print " ", k[4:].replace("_", "-")
+                    print(" ", k[4:].replace("_", "-"))
 
     cmd_commands = cmd_help
 

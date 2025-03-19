@@ -114,7 +114,7 @@ Fedora
 
 * Install requirements::
 
-    # yum install git maven java-1.8.0-openjdk-devel postgresql postgresql-server python-docutils make gettext gnu-free-fonts-compat
+    # yum install git maven java-1.8.0-openjdk-devel postgresql postgresql-server python3-docutils make gettext gnu-free-fonts-compat
 
 .. WARNING:: Use the following command in Fedora 16 or below::
 
@@ -437,11 +437,11 @@ Debian/Ubuntu
 
 * Install requirements if generating HTML::
 
-    # apt-get install make python-docutils
+    # apt-get install make python3-docutils
 
 * Install requirements if generating PDF::
 
-    # apt-get install make python-docutils texlive-latex-base texlive-latex-recommended texlive-latex-extra textlive-fonts-recommended
+    # apt-get install make python3-docutils texlive-latex-base texlive-latex-recommended texlive-latex-extra textlive-fonts-recommended
 
 * Go to the directory where the documentation you want to generate is.
   For example, if you want to generate the user manual in English::
