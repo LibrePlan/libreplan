@@ -1,164 +1,116 @@
-Project dashboard
+Project Dashboard
 #################
 
 .. contents::
 
-The project dashboard is a *LibrePlan* perspective which contains a set of **KPI (Key Performance Indicators)**
-which help to know how is performing a project according to:
+The project dashboard is a *LibrePlan* perspective that contains a set of **KPIs (Key Performance Indicators)** to help assess a project's performance in terms of:
 
-   * how the work is progressing 
-   * how much is costing
-   * the status of the resources allocated
-   * the time constraints
+   *   Work progress
+   *   Cost
+   *   Status of allocated resources
+   *   Time constraints
 
-Progress performance indicators
+Progress Performance Indicators
 ===============================
 
-There are two indicators calculated: project progress percentage and task
-status.
+Two indicators are calculated: project progress percentage and task status.
 
-Project progress percentage
+Project Progress Percentage
 ---------------------------
 
-It is a chart where the global progress of a project is calculated and compared to
-the expected value of progress the project should have according to the *Gantt*.
+This chart displays the overall progress of a project, comparing it to the expected progress based on the *Gantt* chart.
 
-The progress is represented with two bars:
+Progress is represented by two bars:
 
-   * *Current progress*. It is the progress existing at the moment according to
-     the measurements done.
-   * *Expected progress*. It is the progress the project should have at the
-     moment according to the planning created.
+   *   *Current Progress:* The current progress based on the measurements taken.
+   *   *Expected Progress:* The progress the project should have achieved at this point, according to the project plan.
 
-To view each bar's actual measured valued hover the mouse cursor over the bar.
+To view the actual measured value for each bar, hover the mouse cursor over the bar.
 
-The project global progress is estimated in several different ways as there
-is not a unique right method to do it:
+The overall project progress is estimated using several different methods, as there is no single, universally correct approach:
 
-   * **Spreading progress**. It is the progress type set as spreading progress
-     at project level. In this case, there is not way to calculate an expected
-     value and only the current bar is displayed.
-   * **By all tasks hours**. The progress of all project tasks is averaged to
-     calculate the global value. It is a weighted average taking into account
-     the number of hours allocated at each task.
-   * **By critical path hours**.  The progress of the tasks belonging to any of
-     the critical paths of the project is averaged to obtain the global value.
-     It is done a weighted average taking into account the total allocated hours
-     of each of the involved tasks.
-   * **By critical path duration**. The progress of the tasks belonging to any of
-     the critical paths is averaged by doing a weighted average but this time taking
-     into account the duration of each involved task instead of the assigned
-     hours.
+   *   **Spreading Progress:** This is the progress type set as the spreading progress at the project level. In this case, there is no way to calculate an expected value, and only the current bar is displayed.
+   *   **By All Task Hours:** The progress of all project tasks is averaged to calculate the overall value. This is a weighted average that considers the number of hours allocated to each task.
+   *   **By Critical Path Hours:** The progress of tasks belonging to any of the project's critical paths is averaged to obtain the overall value. This is a weighted average that considers the total allocated hours for each involved task.
+   *   **By Critical Path Duration:** The progress of tasks belonging to any of the critical paths is averaged using a weighted average, but this time considering the duration of each involved task instead of the assigned hours.
 
-Task status
+Task Status
 -----------
 
-A pie chart showing the percentage of the project tasks being at different
-states. The defined states are the next ones:
+A pie chart shows the percentage of project tasks in different states. The defined states are:
 
-   * **Finished**. They are the completed tasks, detected by a 100% progress value measured.
-   * **In progress**. They are the tasks which are underway. They have a
-     progress value distinct from 0% and 100% or some worked time tracked.
-   * **Ready to start**. They have a progress of 0%, do not have time tracked, all their *FINISH_TO_START* dependent tasks are *finished* 
-     and all their *START_TO_START* dependent tasks are *finished* or *in progress*.
-   * **Blocked**. These are the tasks with a 0% of progress, without time
-     tracked  and with previous dependent tasks neither *in progress* not in *ready to start* state.
+   *   **Finished:** Completed tasks, identified by a 100% progress value.
+   *   **In Progress:** Tasks that are currently underway. These tasks have a progress value other than 0% or 100%, or some work time has been tracked.
+   *   **Ready to Start:** Tasks with 0% progress, no tracked time, all their *FINISH_TO_START* dependent tasks are *finished*, and all their *START_TO_START* dependent tasks are *finished* or *in progress*.
+   *   **Blocked:** Tasks with 0% progress, no tracked time, and with previous dependent tasks that are neither *in progress* nor in the *ready to start* state.
 
-Cost indicators
+Cost Indicators
 ===============
 
-There are several *Earned Value Management* cost indicators calculated:
+Several *Earned Value Management* cost indicators are calculated:
 
-   * **CV (Cost Variance)**. Difference between the *Earned Value curve* and the
-     *Actual Cost curve* at the moment. Positive values indicate benefit and
-     negative ones loss.
-   * **ACWP (Actual Cost Work Performed)**. It is the total number of hours tracked in the project at the
-     moment.
-   * **CPI (Cost Performance Index)**. It is the *Earned Value / Actual
-     Cost* ratio.
+   *   **CV (Cost Variance):** The difference between the *Earned Value curve* and the *Actual Cost curve* at the current moment. Positive values indicate a benefit, and negative values indicate a loss.
+   *   **ACWP (Actual Cost of Work Performed):** The total number of hours tracked in the project at the current moment.
+   *   **CPI (Cost Performance Index):** The *Earned Value / Actual Cost* ratio.
 
-     * > 100 is good, means to be under budget.
-     * = 100 is also good, means the cost is right on plan.
-     * < 100 is bad, means that the cost of completing the work is higher than
-       planned.
-   * **ETC (Estimate To Complete)**. It is the time that is pending to devote
-      to the project to finish it.
-   * **BAC (Budget At Completion)**. It is the total amount of work allocated
-      in the project plan.
-   * **EAC (Estimate At Completion)**. It is the manager projection of the total
-      cost at project completion time according to the *CPI*.
-   *  **VAC (Variance At Completion)**. It is the difference between the *BAC*
-      and the *ETC*. 
+        *   > 100 is favorable, indicating that the project is under budget.
+        *   = 100 is also favorable, indicating that the cost is right on plan.
+        *   < 100 is unfavorable, indicating that the cost of completing the work is higher than planned.
+   *   **ETC (Estimate To Complete):** The time remaining to complete the project.
+   *   **BAC (Budget At Completion):** The total amount of work allocated in the project plan.
+   *   **EAC (Estimate At Completion):** The manager's projection of the total cost at project completion, based on the *CPI*.
+   *   **VAC (Variance At Completion):** The difference between the *BAC* and the *EAC*.
 
-      * < 0 is over budget.
-      * > 0 is under budget.
+        *   < 0 indicates that the project is over budget.
+        *   > 0 indicates that the project is under budget.
 
 Resources
 =========
 
-To analyze the project from resources' point of view two ratios and a histogram
-are provided.
+To analyze the project from the resources' point of view, two ratios and a histogram are provided.
 
-Estimation deviation on completed task histogram
+Estimation Deviation on Completed Task Histogram
 ------------------------------------------------
 
-It is calculated the deviation between the number of hours allocated to the
-project tasks and the eventual number of hours dedicated to them.
+This histogram calculates the deviation between the number of hours allocated to the project tasks and the actual number of hours dedicated to them.
 
-The deviation is calculated in percentage for all the finished tasks and the
-calculated deviations are represented in a histogram. In the vertical axis the number of tasks which are in an 
-interval of deviation is shown. Six deviation intervals are dynamically calculated.
+The deviation is calculated as a percentage for all finished tasks, and the calculated deviations are represented in a histogram. The vertical axis shows the number of tasks within each deviation interval. Six deviation intervals are dynamically calculated.
 
-Overtime ratio
+Overtime Ratio
 --------------
 
-It sums up the overload of the resources that are allocated in the project tasks.
-It is calculated according to the formula: **overtime ratio = overload / (load +
-overload)**.
+This ratio summarizes the overload of resources allocated to the project tasks. It is calculated using the formula: **overtime ratio = overload / (load + overload)**.
 
-   *  = 0 is good, meaning that the resources are not overloaded.
-   *  > 0 is bad, meaning that the resources are overloaded.
+   *   = 0 is favorable, indicating that the resources are not overloaded.
+   *   > 0 is unfavorable, indicating that the resources are overloaded.
 
-Availability ratio
+Availability Ratio
 ------------------
 
-It sums up the capacity that is free in the resources currently allocated to the
-project. Therefore it is a measurement of the resource availability to receive more allocations without
-being overloaded. It is calculated as: **availability ratio = (1 - load/capacity)*100**
+This ratio summarizes the free capacity of the resources currently allocated to the project. Therefore, it measures the resources' availability to receive more allocations without being overloaded. It is calculated as: **availability ratio = (1 - load/capacity) * 100**
 
-   * Possible values are between 0% (fully assigned) and 100 (not assigned).
+   *   Possible values are between 0% (fully assigned) and 100% (not assigned).
 
 Time
 ====
 
-They are included two charts: a histogram for the time deviation in the finish
-time of project tasks and a pie chart for the deadline violations.
+Two charts are included: a histogram for the time deviation in the finish time of project tasks and a pie chart for deadline violations.
 
-Task completion lead or lag
+Task Completion Lead or Lag
 ---------------------------
 
-It is calculated the difference in days between the planned end time for the project
-tasks and their actual end time. The planned completion date is got from the
-*Gantt* and the actual finish date is got from the last time tracked at the task.
+This calculation determines the difference in days between the planned end time for project tasks and their actual end time. The planned completion date is taken from the *Gantt* chart, and the actual finish date is taken from the last time tracked for the task.
 
-The lag or lead in task completion is represented in a histogram. In the
-vertical axis the number of tasks with a lead/lag day difference value
-corresponding to the abscissa days interval is represented. Six
-dynamic task completion deviation intervals are calculated.
+The lag or lead in task completion is represented in a histogram. The vertical axis shows the number of tasks with a lead/lag day difference value corresponding to the abscissa days interval. Six dynamic task completion deviation intervals are calculated.
 
-   * Negative values mean finishing ahead of time.
-   * Positive values mean finishing with a delay.
+   *   Negative values mean finishing ahead of schedule.
+   *   Positive values mean finishing behind schedule.
 
-Deadline violations
+Deadline Violations
 -------------------
 
-On one hand it is calculated the margin with the project deadline, if set. On the other hand a pie chart with
-the percentage of tasks hitting their deadline is painted. Three types of values
-are included in the chart:
+This section calculates the margin with the project deadline, if set. Additionally, a pie chart shows the percentage of tasks meeting their deadline. Three types of values are included in the chart:
 
-   * Percentage of task without deadline configured.
-   * Percentage of ended tasks with an actual end date later than their
-     deadline. The actual end date is got from the last time tracked in the
-     task.
-   * Percentage of ended tasks with an actual end date sooner than their
-
+   *   Percentage of tasks without a deadline configured.
+   *   Percentage of ended tasks with an actual end date later than their deadline. The actual end date is taken from the last time tracked for the task.
+   *   Percentage of ended tasks with an actual end date earlier than their deadline.

@@ -1,4 +1,4 @@
-Total hours worked by resource in a month report
+Total Hours Worked by Resource in a Month Report
 ################################################
 
 .. contents::
@@ -6,39 +6,39 @@ Total hours worked by resource in a month report
 Purpose
 =======
 
-This reports allows to get the total number of worked hours by the resources in a month. This can be useful to know the overtime a worker did or, depending of the organization, the quantity of hours that have to be paid to each resource.
+This report provides the total number of hours worked by each resource in a given month. This information can be useful for determining worker overtime or, depending on the organization, the number of hours for which each resource should be compensated.
 
-The application allows to track work reports for the workers and for the machines. According to this, the report in the case of machines sums up the number of hours they were functioning in a month.
+The application tracks work reports for both workers and machines. For machines, the report sums up the number of hours they were in operation during the month.
 
-Input parameters and filters
+Input Parameters and Filters
 ============================
 
-The report needs the user specify the year and month to get the total number of hours that the resources worked.
+To generate this report, users must specify the year and month for which they want to retrieve the total number of hours worked by each resource.
 
 Output
 ======
 
-The format of the output is the following:
+The output format is as follows:
 
 Header
 ------
 
-In the header of the report it is showed:
+The report header displays:
 
-   * The *year* to which the data in the report belong.
-   * The *month* to which the data in the report belong.
+   *   The *year* to which the data in the report pertains.
+   *   The *month* to which the data in the report pertains.
 
-Foot page
----------
+Footer
+------
 
-The date in which the report was asked to be obtained.
+The footer displays the date on which the report was generated.
 
 Body
 ----
 
-The data area of the report consists of just one section at which a table with two columns is shown:
+The data section of the report consists of a single table with two columns:
 
-   * One column called **Name** for the name of the resource.
-   * One column called **Hours** with the addition of all the hours devoted by the resource the row is of.
+   *   One column labeled **Name** for the name of the resource.
+   *   One column labeled **Hours** with the total number of hours worked by the resource in that row.
 
-There is a final line aggregating the total of the hours devoted by any resource in the *month*, *year* the report is about.
+There is a final row that aggregates the total number of hours worked by all resources during the specified *month* and *year*.
