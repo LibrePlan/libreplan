@@ -1,63 +1,59 @@
-Users
-########
+User Management
+###############
 
 .. _tareas:
 .. contents::
 
-
-Managing users
+Managing Users
 ==============
 
-"LibrePlan"'s system enables users to manage profiles, authorisations and users. Users belong to user profiles, which may have a series of predefined roles to access the program. Roles are defined authorisations in "LibrePlan". Examples of roles:
+LibrePlan's system allows administrators to manage user profiles, authorizations, and users. Users are assigned to user profiles, which can have a series of predefined roles that grant access to the program's features. Roles are defined authorizations within LibrePlan. Examples of roles include:
 
-* Administration: A role to which administrators must be assigned in order to be able to carry out administration operations.
-* Web service reader: A role that users need to be able to consult the program's web services.
-* Web service writer: A role that users need to be able to write via the program's web services.
+*   **Administration:** A role that must be assigned to administrators to enable them to perform administrative operations.
+*   **Web Service Reader:** A role required for users to consult the program's web services.
+*   **Web Service Writer:** A role required for users to write data via the program's web services.
 
-Roles are predefined in the system. A user profile consists of one or several roles. Users must have certain roles to carry out certain operations.
+Roles are predefined within the system. A user profile consists of one or more roles. Users must have specific roles to perform certain operations.
 
-Users have one or several profiles or one or several roles directly so that specific or generic authorisation can be assigned.
+Users can be assigned one or more profiles, or one or more roles directly, allowing for specific or generic authorization to be granted.
 
-It is necessary to carry out the following steps to manage users:
+To manage users, follow these steps:
 
-* Go to "Manage users" on the "Administration" menu.
-* The program shows a form with a list of users.
-* Click the editing button for the chosen user or click the "Create" button.
-* A form will appear with the following fields:
+*   Go to "Manage users" in the "Administration" menu.
+*   The program displays a form with a list of users.
+*   Click the edit button for the desired user or click the "Create" button.
+*   A form will appear with the following fields:
 
-   * User name.
-   * Password
-   * Authorised/unauthorised.
-   * Email
-   * List of associated roles. Users need to search for one of the roles shown on the selection list and click "Assign" to add a new role.
-   * List of associated profiles. Users need to search for one of the profiles shown on the selection list and click "Assign" to add a new profile.
+    *   **User Name:** The user's login name.
+    *   **Password:** The user's password.
+    *   **Authorized/Unauthorized:** A setting to enable or disable the user's account.
+    *   **Email:** The user's email address.
+    *   **List of Associated Roles:** To add a new role, users must search for a role in the selection list and click "Assign."
+    *   **List of Associated Profiles:** To add a new profile, users must search for a profile in the selection list and click "Assign."
 
 .. figure:: images/manage-user.png
    :scale: 50
 
-   Managing users
+   Managing Users
 
-* Click "Save" or "Save and continue".
+*   Click "Save" or "Save and continue."
 
-
-Managing profiles
+Managing Profiles
 -----------------
 
-Users need to carry out the following steps to manage the program's profiles.
+To manage the program's profiles, users must follow these steps:
 
-* Go to "Manage user profiles" on the "Administration" menu.
-* The program shows a list of profiles.
-* Click the editing button for the chosen profile or click "Create".
-* A form appears in the program with the following fields:
+*   Go to "Manage user profiles" in the "Administration" menu.
+*   The program displays a list of profiles.
+*   Click the edit button for the desired profile or click "Create."
+*   A form appears in the program with the following fields:
 
-   * Name
-   * List of roles (authorisations) associated with the profile. Users must select a role from the role list and click "Add" to add one that is associated with the profile.
+    *   **Name:** The name of the user profile.
+    *   **List of Roles (Authorizations):** To add a role to the profile, users must select a role from the role list and click "Add."
 
 .. figure:: images/manage-user-profile.png
    :scale: 50
 
-   Managing user profiles
+   Managing User Profiles
 
-* Click "Save" or "Save and continue" and the system will store the created or modified profile.
-
-
+*   Click "Save" or "Save and continue," and the system will store the created or modified profile.

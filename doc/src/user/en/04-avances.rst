@@ -3,107 +3,86 @@ Progress
 
 .. contents::
 
-The progress of a project shows the degree to which the estimated time of completion of the project is being fulfilled,
-and the progress of a task indicates the degree to which it is being fulfilled in terms of estimated completion.
+Project progress indicates the degree to which the estimated completion time of the project is being met. Task progress indicates the degree to which the task is being completed according to its estimated completion.
 
-In general, progress cannot be measured automatically; a member of staff with experience or a checklist has to determine the degree
-of completion of a task or project.
+Generally, progress cannot be measured automatically. A staff member with experience or a checklist must determine the degree of completion for a task or project.
 
-It should be noted that there is a significant difference between the use of hours assigned to a task or project and the degree
-of progress of that task or project. While the number of used hours may be more or less than they should be, the project may be behind
-or ahead of its estimated completion on the day that is being monitored. Several possible situations may arise due to these two measurements:
+It's important to note the distinction between the hours assigned to a task or project and the progress of that task or project. While the number of hours used may be more or less than expected, the project may be ahead of or behind its estimated completion on the monitored day. Several situations can arise from these two measurements:
 
-* Less hours are consumed than expected for the element that is to be measured and, at the same time, the project is more behind than expected because progress is lower than estimated for the day that is being monitored.
-* Less hours are consumed than expected for the element that is to be measured and, at the same time, the project is more ahead than expected because progress is lower than estimated for the day that is being monitored.
-* More hours are consumed than expected and, at the same time, the project is more behind than expected because progress is lower than estimated for the day that is being monitored.
-* More hours are consumed than expected and, at the same time, the project is more ahead than expected because progress is lower than expected for the day that is being monitored.
+*   **Fewer hours consumed than expected, but the project is behind schedule:** Progress is lower than estimated for the monitored day.
+*   **Fewer hours consumed than expected, and the project is ahead of schedule:** Progress is higher than estimated for the monitored day.
+*   **More hours consumed than expected, and the project is behind schedule:** Progress is lower than estimated for the monitored day.
+*   **More hours consumed than expected, but the project is ahead of schedule:** Progress is higher than estimated for the monitored day.
 
-It is possible to compare these possible situations from the planning itself by using information relating to the degree of progress
-made and also the degree to which the hours have been used. This chapter will deal with the entering of information in order to carry out
-the monitoring of progress.
+The planning view allows you to compare these situations by using information about the progress made and the hours used. This chapter will explain how to enter information to monitor progress.
 
-The philosophy of the project for monitoring progress is based on the users stating how far they want to monitor the progress of their projects.
-As a result, if users want to monitor orders, they only have to enter information for level-1 elements. If they want monitoring to be more precise
-in relation to tasks, they have to enter information about progress at lower levels, and it is the system that transmits all of the data upwards
-in the hierarchy.
+The philosophy behind progress monitoring is based on users defining the level at which they want to monitor their projects. For example, if users want to monitor orders, they only need to enter information for level-1 elements. If they want more precise monitoring at the task level, they must enter progress information at lower levels. The system will then aggregate the data upward through the hierarchy.
 
-Managing types of progress
-==========================
+Managing Progress Types
+=======================
 
-All companies have different needs when monitoring project progress, specifically the tasks they consist of. It was therefore necessary
-to consider the existence of entities in the system called “types of progress”. Users can register the different types of progress in the system
-to measure a task's progress. For example, a task can be measured in percentage terms, but at the same time, this percentage progress can be
-translated to progress in *Tonnes* on the agreed amount with the client.
+Companies have varying needs when monitoring project progress, particularly the tasks involved. Therefore, the system includes "progress types." Users can define different progress types to measure a task's progress. For example, a task can be measured as a percentage, but this percentage can also be translated into progress in *Tonnes* based on the agreement with the client.
 
-A type of progress is given a name, a maximum value and a precision value:
+A progress type has a name, a maximum value, and a precision value:
 
-* Name: This is a representative name that users must remember so that when selecting the progress designation, they understand what kind of progress is to be measured.
-* Maximum value: This is the maximum value that can be established for a task or project as the total progress measurement. For example, when working with *Tonnes*, if we take the normal maximum of tonnes to be 4000 and there are never going to be tasks that need more than 4000 tonnes of any material, this would be the maximum established amount.
-* Precision value: The value of the increases allowed for the type of progress created. For example, if progress in *Tonnes* is to be measured in rounded values, 1 could be the precision value. From that moment on, only progress measurements with whole numbers can be entered, for example 1, 2, 300, etc.
+*   **Name:** A descriptive name that users will recognize when selecting the progress type. This name should clearly indicate what kind of progress is being measured.
+*   **Maximum Value:** The maximum value that can be established for a task or project as the total progress measurement. For example, if you're working with *Tonnes* and the normal maximum is 4000 tonnes, and no task will ever require more than 4000 tonnes of any material, then 4000 would be the maximum value.
+*   **Precision Value:** The increment value allowed for the progress type. For example, if progress in *Tonnes* is to be measured in whole numbers, the precision value would be 1. From that point on, only whole numbers can be entered as progress measurements (e.g., 1, 2, 300).
 
-The system has two types of default progress:
+The system has two default progress types:
 
-* Percentage: a type of general progress that enables the progress of a project or task to be measured based on an estimated completion percentage. For example, a task is 30% complete out of the 100% estimated for a specific day.
-* Units: a type of general progress that enables the progress to be measured in units without the need to state specific units. For example, a task consists of creating 3000 units and the progress is 500 units out of the total of 3000.
+*   **Percentage:** A general progress type that measures the progress of a project or task based on an estimated completion percentage. For example, a task is 30% complete out of the 100% estimated for a specific day.
+*   **Units:** A general progress type that measures progress in units without specifying the type of unit. For example, a task involves creating 3000 units, and the progress is 500 units out of the total of 3000.
 
 .. figure:: images/tipos-avances.png
    :scale: 50
 
-   Administration of types of progress
+   Administration of Progress Types
 
-Users can create new types of progress in the following way:
+Users can create new progress types as follows:
 
-* Go to the "Administration" section.
-* Click the second level menu option "Manage types of progress".
-* The system will then show a list of existing types of progress.
-* Users may do the following with each type of progress:
+*   Go to the "Administration" section.
+*   Click the "Manage types of progress" option in the second-level menu.
+*   The system will display a list of existing progress types.
+*   For each progress type, users can:
 
-  * Edit
-  * Delete
+    *   Edit
+    *   Delete
 
-* Then users can create a new type of progress.
-* When editing or creating, the system shows a form with the following information:
+*   Users can then create a new progress type.
+*   When editing or creating a progress type, the system displays a form with the following information:
 
-  * Name of the type of progress.
-  * Maximum value accepted by the type of progress.
-  * Precision value for the type of progress.
+    *   Name of the progress type.
+    *   Maximum value allowed for the progress type.
+    *   Precision value for the progress type.
 
-Entering progress based on type
+Entering Progress Based on Type
 ===============================
 
-Entering progress is done on order elements, but it can also be done using a short cut from the planning tasks.
-The decision on what type of progress users want to associate with each order element is their own responsibility.
+Progress is entered for order elements, but it can also be entered using a shortcut from the planning tasks. Users are responsible for deciding which progress type to associate with each order element.
 
-Users can enter a unique and default type of progress for the whole order.
+Users can enter a single, default progress type for the entire order.
 
-Before carrying out progress measurements, users need to associate the chosen type with the order.
-For example, progress in percentage terms to measure progress made on the entire task or an agreed progress rate if progress
-measurements agreed with the client are to be entered in the future.
+Before measuring progress, users must associate the chosen progress type with the order. For example, they might choose percentage progress to measure progress on the entire task or an agreed progress rate if progress measurements agreed upon with the client will be entered in the future.
 
 .. figure:: images/avance.png
    :scale: 40
 
-   Progress entering screen with graphic visualisation.
+   Progress Entry Screen with Graphic Visualization
 
-The following must be done to enter progress measurements:
+To enter progress measurements:
 
-* Select the type of progress to which the progress is going to be added.
+*   Select the progress type to which the progress will be added.
+    *   If no progress type exists, a new one must be created.
+*   In the form that appears under the "Value" and "Date" fields, enter the absolute value of the measurement and the date of the measurement.
+*   The system automatically stores the entered data.
 
-  * If there is no type of progress, a new type of progress must be added.
+Comparing Progress for an Order Element
+=======================================
 
-* In the form that appears under the "Value" and "Date" fields, enter the absolute value of the measurement and the date that is to be given to the measurement taken.
-* The system automatically stores the entered data.
-
-
-Comparison of progress with an order element
-============================================
-
-Users can compare graphically how much progress is being made on the orders with the measurements taken.
-All types of progress have a column with a check button (called "Show").
-When this is marked, the progress chart of measurements taken is shown on the order element.
+Users can graphically compare the progress made on orders with the measurements taken. All progress types have a column with a check button ("Show"). When this button is selected, the progress chart of measurements taken is displayed for the order element.
 
 .. figure:: images/contraste-avance.png
    :scale: 40
 
-   Comparison of several kinds of progress.
-
+   Comparison of Several Progress Types

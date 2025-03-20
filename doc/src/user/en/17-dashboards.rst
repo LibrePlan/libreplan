@@ -4,16 +4,15 @@ Dashboards
 .. _informes:
 .. contents::
 
+*LibrePlan* offers dashboard views for projects, providing an overview of their current status.
 
-"LibrePlan" has dashboard views for projects that provide an overview of the current state of projects.
-
-The two dashboard views are:
+The two available dashboard views are:
 
 .. raw:: html
 
   <ul>
    <li>
-    <a href="17-1-project-dashboard.html">Individual project dashboard</a>
+    <a href="17-1-project-dashboard.html">Individual Project Dashboard</a>
    </li><li>
-    <a href="17-2-pipeline-dashboard.html">All projects pipeline dashboard</a>
+    <a href="17-2-pipeline-dashboard.html">All Projects Pipeline Dashboard</a>
   </ul>

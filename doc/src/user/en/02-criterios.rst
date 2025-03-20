@@ -3,66 +3,59 @@ Criteria
 
 .. contents::
 
-Criteria are elements that are used in the program to categorise resources and tasks. Tasks need criteria and the resources fulfil them.
-The following sequence is an example of how to use criteria:
-A resource is designated the criterion of "welder" (that is the resource fulfils the "welder" category) and a task requires the "welder"
-criterion to be carried out. As a result, when resources are allocated to tasks, workers with the "welder"
-criterion are used when allocating resources generically (not applicable to specific allocation).
-See the chapter on allocating resources to find out more about the different kinds of allocation.
+Criteria are elements used within the program to categorize both resources and tasks. Tasks require specific criteria, and resources must meet those criteria.
 
-Several operations can be carried out with criteria in the program:
+Here's an example of how criteria are used: A resource is assigned the criterion "welder" (meaning the resource fulfills the "welder" category), and a task requires the "welder" criterion to be completed. Consequently, when resources are allocated to tasks using generic allocation (as opposed to specific allocation), workers with the "welder" criterion will be considered. For more information on the different types of allocation, refer to the chapter on resource allocation.
 
-* Criteria administration
-* Allocation of criteria to resources.
-* Allocation of criteria to tasks.
-* Filtering entities according to criteria. Tasks and order items can be filtered according to criteria to carry out operations in the program.
+The program allows for several operations involving criteria:
 
-Only the first function out of the three described above will be explained in this section. The two kinds of allocation will be dealt with later,
-the allocation of resources in the chapter on "Resource management" and the filtering function in the chapter on "Task planning".
+*   Criteria administration
+*   Assigning criteria to resources
+*   Assigning criteria to tasks
+*   Filtering entities based on criteria. Tasks and order items can be filtered by criteria to perform various operations within the program.
 
+This section will only explain the first function, criteria administration. The two types of allocation will be covered later: resource allocation in the "Resource Management" chapter, and filtering in the "Task Planning" chapter.
 
-Criteria administration
+Criteria Administration
 =======================
-Criteria administration can be accessed from the administration menu:
+
+Criteria administration can be accessed through the administration menu:
 
 .. figure:: images/menu.png
    :scale: 50
 
-   First level menu tabs
+   First-Level Menu Tabs
 
-The specific operation to manage criteria is *Manage criteria*. The criteria available in the system can be listed by using this operation.
+The specific operation for managing criteria is *Manage criteria*. This operation allows you to list the criteria available in the system.
 
 .. figure:: images/lista-criterios.png
    :scale: 50
 
-   List of criteria
+   List of Criteria
 
-The create/edit criterion form can be accessed by clicking on the *Create* button. A criterion can be edited by clicking on the edit icon.
+You can access the create/edit criterion form by clicking the *Create* button. To edit an existing criterion, click the edit icon.
 
 .. figure:: images/edicion-criterio.png
    :scale: 50
 
-   Editing criteria
+   Editing Criteria
 
-The following operations can be carried out using the criteria editing form shown in the previous image:
+The criteria editing form, as shown in the previous image, allows you to perform the following operations:
 
-* Editing the name of the criterion
-* Indicating whether several values can be allocated at the same time or just one element for the kind of criterion selected. For example, a resource that fulfils two criteria, welder and lathe operator.
-* Indicating the kind of criteria:
+*   **Edit the criterion's name.**
+*   **Specify whether multiple values can be assigned simultaneously or only one value for the selected criterion type.** For example, a resource could fulfill two criteria, "welder" and "lathe operator."
+*   **Specify the criterion type:**
 
-  * Generic kind: A criterion that may be used for machines or workers alike.
-  * Worker kind: A criterion that may be used only for a worker.
-  * Machine kind: A criterion that may be used only for a machine.
+    *   **Generic:** A criterion that can be used for both machines and workers.
+    *   **Worker:** A criterion that can only be used for workers.
+    *   **Machine:** A criterion that can only be used for machines.
 
-* Indicating whether the criterion is hierarchical or not. Sometimes criteria must be treated hierarchically, for example, the fact that a criterion has been allocated to an element does not mean that this criterion is automatically allocated to issues that stem from it. A clear example of criteria hierarchy is the location criterion as it is hierarchical, for example, a person who has designated Galicia as their location will belong to Spain.
-* Indicating whether the criterion is authorised or not. This is the way users erase criteria. As a criterion cannot be changed once it has been created and used in historic data, the criterion must be on the system. It can be invalidated to avoid the criterion from appearing in different selection elements.
-* Describing the criterion.
-* Adding new values. A text entry with the *New criterion* button is on the second part of the form.
-* Editing the name of existing criteria.
-* Moving the criteria up or down the list of current criteria.
-* Removing a criteria value from the list.
+*   **Indicate whether the criterion is hierarchical.** Sometimes, criteria need to be treated hierarchically. For example, assigning a criterion to an element does not automatically assign it to elements derived from it. A clear example of a hierarchical criterion is "location." For instance, a person designated with the location "Galicia" will also belong to "Spain."
+*   **Indicate whether the criterion is authorized.** This is how users deactivate criteria. Once a criterion has been created and used in historical data, it cannot be changed. Instead, it can be deactivated to prevent it from appearing in selection lists.
+*   **Describe the criterion.**
+*   **Add new values.** A text entry field with the *New criterion* button is located in the second part of the form.
+*   **Edit the names of existing criteria values.**
+*   **Move criteria values up or down in the list of current criteria values.**
+*   **Remove a criterion value from the list.**
 
-The criteria administration form responds to the characteristics of the forms described in the introduction as 3 operations (save, save and close, and close).
-
-
-
+The criteria administration form follows the form behavior described in the introduction, offering three actions: *Save*, *Save and Close*, and *Close*.

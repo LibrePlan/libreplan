@@ -3,119 +3,105 @@ Introduction
 
 .. contents::
 
-The purpose of this document is to describe the features of LibrePlan and provide user information on how to configure and use the application.
+This document describes the features of LibrePlan and provides user information on how to configure and use the application.
 
-LibrePlan is an opensource web application for project planning. Its main goal is to provide a complete solution for company project management.
-For any specific information you may need about this software, please contact the development team at http://www.libreplan.com/contact/
-
+LibrePlan is an open-source web application for project planning. Its primary goal is to provide a comprehensive solution for company project management. For any specific information you may need about this software, please contact the development team at http://www.libreplan.com/contact/
 
 .. figure:: images/company_view.png
    :scale: 50
 
-   Company overview
+   Company Overview
 
-Company overview and view management
-====================================================
+Company Overview and View Management
+====================================
 
-As can be seen in the program's main screen (shot given previously) and the company overview, users can see the list of planned projects
-to find out about the company's overall situation in relation to orders and the use of resources. The company overview contains 3 views:
+As shown in the program's main screen (see the previous screenshot) and the company overview, users can view a list of planned projects. This allows them to understand the company's overall status regarding orders and resource utilization. The company overview offers three distinct views:
 
-* Planning view: View that combines two points of view:
+* **Planning View:** This view combines two perspectives:
 
-   * View of orders and the time taken: Each project uses Gantt charts, which indicate the start and end date of the project. This information is combined with the chart showing the agreed deadline and then a comparison is made between a percentage of progress and time that is actually dedicated to each project. This information gives a clear picture of how the company is doing at a given time. This view is the program's opening page.
-   * Graph showing the company's use of resources: Graph that searches for information on the allocation of resources to projects, which also gives a summary on the entire company's use of resources: Green indicates that the allocation of resources is under 100%, the black line shows the available load of resources and yellow indicates that allocation of resources is above 100%. It is possible for allocation to be less than available resources and to have over allocation for specific resources at the same time.
+   * **Order and Time Tracking:** Each project is represented by a Gantt chart, indicating the project's start and end dates. This information is displayed alongside the agreed-upon deadline. A comparison is then made between the percentage of progress achieved and the actual time dedicated to each project. This provides a clear picture of the company's performance at any given time. This view is the program's default landing page.
+   * **Company Resource Utilization Graph:** This graph displays information on resource allocation across projects, providing a summary of the entire company's resource usage. Green indicates that resource allocation is below 100% of capacity. The black line represents the total available resource capacity. Yellow indicates that resource allocation exceeds 100%. It's possible to have under-allocation overall while simultaneously experiencing over-allocation for specific resources.
 
-* Resource load view: Screen that shows the list of workers in the company and the load of specific allocation to tasks or generic allocation as the resource fulfils a list of criteria. See the following image. You need to click on *Overall load of resources* to access this view.
-* Orders administration view. Screen that shows the list of company orders, where the user can carry out the following operations: filter, edit, erase, visualise planning or create a new order. You need to click on *Order list* to access this view.
-
+* **Resource Load View:** This screen displays a list of the company's workers and their specific task allocations, or generic allocations based on defined criteria. To access this view, click on *Overall load of resources*. See the following image for an example.
+* **Orders Administration View:** This screen displays a list of company orders, allowing users to perform the following actions: filter, edit, delete, visualize planning, or create a new order. To access this view, click on *Order list*.
 
 .. figure:: images/resources_global.png
    :scale: 50
 
-   Resource overview
+   Resource Overview
 
 .. figure:: images/order_list.png
    :scale: 50
 
    Work Breakdown Structure
 
+The view management described above for the company overview is very similar to the management available for a single project. A project can be accessed in several ways:
 
-The view management commented on previously for the company overview is very similar to the management planned for a single project.
-A project can be accessed in several ways:
+* Right-click on the Gantt chart for the order and select *Plan*.
+* Access the order list and click on the Gantt diagram icon.
+* Create a new order and change the current order view.
 
-* By right clicking on the Gantt chart for the order and then selecting *Plan*.
-* By accessing the order list and clicking on the icon for the Gantt diagrams.
-* By creating a new order and changing the current order view.
+The program offers the following views for an order:
 
-The program has the following views for an order:
+* **Planning View:** This view allows users to visualize task planning, dependencies, milestones, and more. See the *Planning* section for further details.
+* **Resource Load View:** This view allows users to check the designated resource load for a project. The color code is consistent with the company overview: green for a load less than 100%, yellow for a load equal to 100%, and red for a load over 100%. The load may originate from a specific task or a set of criteria (generic allocation).
+* **Editing Order View:** This view allows users to modify the details of the order. See the *Orders* section for more information.
+* **Advanced Resource Allocation View:** This view allows users to allocate resources with advanced options, such as specifying hours per day or the allocated functions to be performed. See the *Resource allocation* section for more information.
 
-* Planning view. View where the user can visualise the task planning, dependencies, milestones, etc. See the *Planning* section for more information.
-* Resource load view. View where the user can check the designated resource load for a project. The colour code is the same for the company overview: Green for a load less than 100%, yellow for a load equal to 100% and red for a load over 100%. The load may come from a task or a list of criteria (generic allocation).
-* Editing order view. View where the user can change the details of the order. See the *Orders* section for more information.
-* Advanced resource allocation view. View where the user can allocate resources including advanced options: choosing hours per day or the allocated functions to be carried out. See the *Resource allocation* section for more information.
-
-What makes LibrePlan useful?
+What Makes LibrePlan Useful?
 ============================
 
-LibrePlan is an application that has been developed as a general purpose planning tool. It is based on a series of concepts discovered by analysing problems in industrial project planning that were not fully covered by any existing planning tool. Also the motivations for the development of LibrePlan were based on providing a free software alternative, and completely web, for existing privative plannig tools.
+LibrePlan is a general-purpose planning tool developed to address challenges in industrial project planning that were not adequately covered by existing tools. The development of LibrePlan was also motivated by the desire to provide a free, open-source, and entirely web-based alternative to proprietary planning tools.
 
-The essential concepts used for the program are as follows:
+The core concepts underpinning the program are as follows:
 
-* Company and multi-project overview: LibrePlan is a program that has been developed specifically to provide information about projects that are being carried out in a company to users, therefore it is a multi-project program. It was decided that the program's focus would not be individual to each project. However, it is also possible to have several specific views, individual projects among them.
-* View management: The company overview or multi-project view comes with the views on the information that is stored. For example, the company overview enables users to view orders and compare their status, view the company's general resource load and process orders. Users can also view the planning, the resource load, the advanced resource allocation view and the editing order view on the project view.
-* Criteria: Criteria are a system entity that enables resources (both humans and machines) and tasks to be classified. Resources must fulfil criteria and tasks require criteria to be fulfilled. These are one of the program's most important aspects, as criteria are the basis of generic allocation in the program and resolve one of the most important problems for the sector: the long time taken in human resources and the difficulty in having long-term company load estimations.
-* Resources: There are two different kinds: humans and machines. Human resources are workers in a company that are used to plan, monitor and control the company's load. On the other hand, machines, dependent on the people that manage them, are resources that act in a similar way to human resources.
-* Resource allocation: One of the key points of the program is having the possibility of two kinds of designation: specific and generic. Generic allocation is based on criteria that are required to carry out a task and must be fulfilled by resources that are capable of performing them. In order to understand generic allocation, the following case must be understood: John Smith is a welder. Generally, John Smith is allocated to the planned task, but "LibrePlan" offers the possibility of choosing a resource in general among welders in the company, not worrying if John Smith is the person who has been allocated the task.
-* Company load control: The program offers the possibility of controlling the company's resource load easily. The control is carried out in the mid and long term as current projects and future projects can be managed by the program. "LibrePlan" has graphics that indicate the use of resources.
-* Labels: These are elements that are used to label project tasks. With these labels, the user of the program can group tasks together according to concept, which can then be checked at a later date as a group or after being filtered.
-* Filters: As the system naturally has elements that label or characterise tasks and resources, criteria filters or labels can be used. This is very useful to check categorised information or to get specific reports based on criteria or labels.
-* Calendars: Calendars determine the available productive hours for different resources. The user may create general calendars for the company or input characteristics for more specific calendars, meaning that calendars for resources and tasks can be made.
-* Orders and order elements: Work requested by clients is treated by the application as an order, which is structured in order elements. The order and its elements adhere to a hierarchical structure of *x* levels. This element tree is the basis when planning work.
-* Progress: The program can manage several kinds of progress. A project can be measured in a percentage that indicates its progress and also in units, the agreed budget, etc. Deciding what kind of progress is to be used to compare progress at upper stages of the project is the responsibility of the person who is managing the planning.
-* Tasks: Tasks are the program's planning elements. They are used to programme works that are to be carried out. The most important characteristics of the tasks are: They have dependencies among themselves and may require criteria to be fulfilled in order to allocate resources.
-* Work reports: These are the reports of the companies' workers, which indicate the hours worked and also the tasks allocated to the hours a worker has worked. With this information, the system can calculate how many hours it took to complete a task in relation to the total number of hours that were budgeted. Progress can be compared with the use of actual hours.
+* **Company and Multi-Project Overview:** LibrePlan is specifically designed to provide users with information about multiple projects being carried out within a company. Therefore, it is inherently a multi-project program. The program's focus is not limited to individual projects, although specific views for individual projects are also available.
+* **View Management:** The company overview, or multi-project view, is accompanied by various views of the stored information. For example, the company overview allows users to view orders and compare their status, view the company's overall resource load, and manage orders. Users can also access the planning view, resource load view, advanced resource allocation view, and editing order view for individual projects.
+* **Criteria:** Criteria are a system entity that enables the classification of both resources (human and machine) and tasks. Resources must meet certain criteria, and tasks require specific criteria to be fulfilled. This is one of the program's most important features, as criteria form the basis of generic allocation and address a significant challenge in the industry: the time-consuming nature of human resource management and the difficulty of long-term company load estimations.
+* **Resources:** There are two types of resources: human and machine. Human resources are the company's workers, used for planning, monitoring, and controlling the company's workload. Machine resources, dependent on the people who operate them, function similarly to human resources.
+* **Resource Allocation:** A key feature of the program is the ability to designate resources in two ways: specifically and generically. Generic allocation is based on the criteria required to complete a task and must be fulfilled by resources capable of meeting those criteria. To understand generic allocation, consider this example: John Smith is a welder. Typically, John Smith would be specifically assigned to a planned task. However, LibrePlan offers the option of selecting any welder within the company, without needing to specify that John Smith is the assigned person.
+* **Company Load Control:** The program allows for easy control of the company's resource load. This control extends to both the mid-term and long-term, as current and future projects can be managed within the program. LibrePlan provides graphs that visually represent resource utilization.
+* **Labels:** Labels are used to categorize project tasks. With these labels, users can group tasks by concept, allowing for later review as a group or after filtering.
+* **Filters:** Because the system naturally includes elements that label or characterize tasks and resources, criteria filters or labels can be used. This is very useful for reviewing categorized information or generating specific reports based on criteria or labels.
+* **Calendars:** Calendars define the available productive hours for different resources. Users can create general company calendars or define more specific calendars, allowing for the creation of calendars for individual resources and tasks.
+* **Orders and Order Elements:** Work requested by clients is treated as an order within the application, structured into order elements. The order and its elements follow a hierarchical structure with *x* levels. This element tree forms the basis for work planning.
+* **Progress:** The program can manage various types of progress. A project's progress can be measured as a percentage, in units, against the agreed budget, and more. The responsibility for determining which type of progress to use for comparison at higher project levels lies with the planning manager.
+* **Tasks:** Tasks are the fundamental planning elements within the program. They are used to schedule work to be carried out. Key characteristics of tasks include: dependencies between tasks, and the potential requirement for specific criteria to be met before resources can be allocated.
+* **Work Reports:** These reports, submitted by the company's workers, detail the hours worked and the tasks associated with those hours. This information allows the system to calculate the actual time taken to complete a task compared to the budgeted time. Progress can then be compared against the actual hours used.
 
-On top of the functions offered by the program, there are other features that make it stand out from similar programs:
+In addition to the core functions, LibrePlan offers other features that distinguish it from similar programs:
 
-* Integration with ERP: The program imports information directly from companies' ERPs for orders, human resources, work reports and specific criteria.
-* Version management: The program can manage different planning versions and, at the same time, still allows users to check the information on every version.
-* History management: The program does not erase information, it only makes it invalid, so users can check older information using date filters.
+* **Integration with ERP:** The program can directly import information from company ERP systems, including orders, human resources, work reports, and specific criteria.
+* **Version Management:** The program can manage multiple planning versions, while still allowing users to review the information from each version.
+* **History Management:** The program does not delete information; it only marks it as invalid. This allows users to review historical information using date filters.
 
-Usability conventions
+Usability Conventions
 =====================
 
-Information about forms
+Information About Forms
 -----------------------
-Before describing the various functions associated with the most important modules, we need to give a general explanation on how to browse and the forms.
+Before describing the various functions associated with the most important modules, we need to explain the general navigation and form behavior.
 
-Essentially, there are 3 kinds of editing forms:
+There are essentially three types of editing forms:
 
-* Forms with a *Return* button. These forms are part of a wider picture and the changes that are made are stored in the memory. The changes are only applied when the user explicitly stores all the details on the screen from which the form came.
-* Forms with the *Save* and *Close* buttons. These forms enable 2 operations to take place. The first one stores and closes the current window and the second one closes without saving the changes.
-* Forms with the *Save and continue*, "Save" and "Close" buttons. These forms enable 3 operations to take place. The first one stores and continues the current form. The second one stores and closes the form. Lastly, the third one closes the window without storing changes.
+* **Forms with a *Return* button:** These forms are part of a larger context, and the changes made are stored in memory. The changes are only applied when the user explicitly saves all the details on the screen from which the form originated.
+* **Forms with *Save* and *Close* buttons:** These forms allow for two actions. The first saves the changes and closes the current window. The second closes the window without saving any changes.
+* **Forms with *Save and continue*, *Save*, and *Close* buttons:** These forms allow for three actions. The first saves the changes and keeps the current form open. The second saves the changes and closes the form. The third closes the window without saving any changes.
 
-Standard icons and buttons
+Standard Icons and Buttons
 --------------------------
 
-* Editing: In general, editing records in the program may be done by clicking on an icon consisting of a pencil on a white notebook.
-* Left indent: In general, these operations are needed for elements of a tree that intend to move into internal levels. This operation may be done by clicking the icon consisting of a green arrow pointing right.
-* Right indent: In general, these operations are needed for elements of a tree that intend to move from internal to external levels. This operation may be done by clicking the icon consisting of a green arrow pointing left.
-* Erasing: Users can erase information by clicking on the paper basket icon.
-* Search: The magnifying glass is the icon that indicates that the text entry to the left is intended for searching for elements.
+* **Editing:** In general, records in the program can be edited by clicking on an icon that looks like a pencil on a white notebook.
+* **Left Indent:** These operations are generally used for elements within a tree structure that need to be moved to a deeper level. This is done by clicking on the icon that looks like a green arrow pointing to the right.
+* **Right Indent:** These operations are generally used for elements within a tree structure that need to be moved to a higher level. This is done by clicking on the icon that looks like a green arrow pointing to the left.
+* **Deleting:** Users can delete information by clicking on the trash can icon.
+* **Search:** The magnifying glass icon indicates that the text field to its left is used for searching for elements.
 
 Tabs
 ----
-The program will have content editing and administration forms, which will be represented by graphic components based on tabs.
-This method is used to organise information from a comprehensive form into different sections that can be accessed by clicking on the
-names of the different tabs, the others keeping their status. In all cases, the save and cancel options affect the group of sub-forms on
-the different tabs.
+The program uses tabs to organize content editing and administration forms. This method is used to divide a comprehensive form into different sections, accessible by clicking on the tab names. The other tabs retain their current status. In all cases, the save and cancel options apply to all sub-forms within the different tabs.
 
-Explicit actions and context help
+Explicit Actions and Context Help
 ---------------------------------
 
-The program contains components that provide additional descriptions about the element when hovering over them for one second.
-The actions the user may carry out in the program are stated on the button tabs and in the help texts about them, the browsing menu
-options and the options on the context menus that open out when right clicking on the planner area.
-Furthermore, short cuts are given for the main operations by double clicking the listed elements or by associating key events with
-cursors and the enter key, which is how to add elements when moving through the forms.
-
+The program includes components that provide additional descriptions of elements when the mouse hovers over them for one second. The actions that the user can perform are indicated on the button labels, in the help texts associated with them, in the browsing menu options, and in the context menus that appear when right-clicking in the planner area. Furthermore, shortcuts are provided for the main operations, such as double-clicking on listed elements or using key events with the cursor and the Enter key to add elements when navigating through forms.

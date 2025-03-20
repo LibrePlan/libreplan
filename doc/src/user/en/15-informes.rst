@@ -4,18 +4,17 @@ Reports
 .. _informes:
 .. contents::
 
+LibrePlan integrates with *JasperReports* to provide report management, enabling users to generate various reports for analyzing the data available in the program.
 
-"LibrePlan" is integrated with *JasperReports* to manage reports, which allows users to enter various reports to analyse available data in the program.
-
-The defined reports are:
+The available reports are:
 
 .. raw:: html
 
   <ul>
    <li>
-    <a href="15-1-report-hours-worked-by-resource.html">Report on worked hours by resource</a>
+    <a href="15-1-report-hours-worked-by-resource.html">Hours Worked by Resource Report</a>
    </li><li>
-    <a href="15-2-total-hours-by-resource-month.html">Report on the total hours worked by resource in a month</a>
+    <a href="15-2-total-hours-by-resource-month.html">Total Hours Worked by Resource in a Month Report</a>
    </li><li>
-    <a href="15-3-work-progress-per-project.html">Report on the work and progress per report</a>
+    <a href="15-3-work-progress-per-project.html">Work and Progress per Project Report</a>
   </ul>

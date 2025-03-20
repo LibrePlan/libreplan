@@ -37,4 +37,6 @@ doc/src/user/fr/html/
 doc/src/user/fr/index.rst
 doc/src/user/gl/html/
 doc/src/user/gl/index.rst
-libreplan-webapp/src/main/webapp/help/
+
+#ignore files that need ignoring
+*.ignore
