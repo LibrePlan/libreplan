@@ -23,6 +23,13 @@ import org.libreplan.business.common.Registry;
 import org.libreplan.business.users.entities.User;
 import org.libreplan.web.users.bootstrap.PredefinedUsers;
 import org.zkoss.zk.ui.util.Clients;
+import org.libreplan.web.users.settings.PasswordEncoderUtil;
+import org.libreplan.web.users.settings.SecretFileReader;
+import org.springframework.beans.factory.annotation.Autowired;
+import java.util.HashMap;
+import java.util.Map;
+
+
 
 /**
  * A class which is used to encapsulate some common behaviour of passwords.
@@ -32,52 +39,69 @@ import org.zkoss.zk.ui.util.Clients;
  */
 public class PasswordUtil {
 
+    @Autowired
+    private static PasswordEncoderUtil passwordEncoderUtil;
+
+    @Autowired
+    private static SecretFileReader secretFileReader;
+
+
+    public static boolean checkPassword(User user,String clearPassword)
+    {
+        Map<String,String> usrMap = new HashMap<>();
+        //TODO:: ADDED THE DYNAMIC PATH INSTEAD OF HARDCODING
+        usrMap = secretFileReader.readAndEncodeUsers("../Secrets.txt");
+        String hashedPassword = passwordEncoderUtil.encode(clearPassword);
+        String userFromSecretFile = usrMap.get(user.getLoginName());
+
+        if(user.getLoginName().equalsIgnoreCase(userFromSecretFile))
+        {
+            return hashedPassword.equals(usrMap.get(user.getLoginName()));
+        }
+        return false;
+    }
+
+    
     public static void checkIfChangeDefaultPasswd(User user, String clearPassword) {
         if (user.getLoginName().equalsIgnoreCase(PredefinedUsers.ADMIN.getLoginName())) {
-            checkIfChangeDefaultPasswd(PredefinedUsers.ADMIN, clearPassword);
-
+            checkPassword(user, clearPassword);
             return;
         }
 
         if (user.getLoginName().equalsIgnoreCase(PredefinedUsers.WSREADER.getLoginName())) {
-            checkIfChangeDefaultPasswd(PredefinedUsers.WSREADER, clearPassword);
-
+            checkPassword(user, clearPassword);
             return;
         }
 
         if (user.getLoginName().equalsIgnoreCase(PredefinedUsers.WSWRITER.getLoginName())) {
-            checkIfChangeDefaultPasswd(PredefinedUsers.WSWRITER, clearPassword);
-
+            checkPassword(user, clearPassword);
             return;
         }
 
         if (user.getLoginName().equalsIgnoreCase(PredefinedUsers.WSSUBCONTRACTING.getLoginName())) {
-            checkIfChangeDefaultPasswd(PredefinedUsers.WSSUBCONTRACTING, clearPassword);
+            checkPassword(user, clearPassword);
 
             return;
         }
 
         if (user.getLoginName().equalsIgnoreCase(PredefinedUsers.MANAGER.getLoginName())) {
-            checkIfChangeDefaultPasswd(PredefinedUsers.MANAGER, clearPassword);
-
+            checkPassword(user, clearPassword);
             return;
         }
 
         if (user.getLoginName().equalsIgnoreCase(PredefinedUsers.HRESOURCES.getLoginName())) {
-            checkIfChangeDefaultPasswd(PredefinedUsers.HRESOURCES, clearPassword);
-
+            checkPassword(user, clearPassword);
             return;
         }
 
         if (user.getLoginName().equalsIgnoreCase(PredefinedUsers.OUTSOURCING.getLoginName())) {
-            checkIfChangeDefaultPasswd(PredefinedUsers.OUTSOURCING, clearPassword);
+            checkPassword(user, clearPassword);
 
             return;
         }
 
         if (user.getLoginName().equalsIgnoreCase(PredefinedUsers.REPORTS.getLoginName())) {
-            checkIfChangeDefaultPasswd(PredefinedUsers.REPORTS, clearPassword);
-
+            checkPassword(user, clearPassword);
             return;
         }
     }
