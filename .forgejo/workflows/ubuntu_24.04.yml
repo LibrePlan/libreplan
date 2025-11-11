@@ -13,8 +13,8 @@ jobs:
   build:
 
     runs-on: docker
-      container:
-        image: ubuntu:24.04
+    container:
+      image: ubuntu:24.04
 
     services:
       postgres:
