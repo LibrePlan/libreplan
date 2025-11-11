@@ -22,6 +22,7 @@ jobs:
         env:
           POSTGRES_USER: libreplan
           POSTGRES_PASSWORD: libreplan
+          POSTGRES_DB: libreplandev
         ports:
           - 5432:5432
         options: >-
@@ -29,25 +30,83 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
-    - name: Create libreplandev database
-      uses: akanieski/setup-postgres-cli@v0.1.2
-      with:
-        commands: PGPASSWORD=libreplan psql -U libreplan -h postgres -p 5432 -c "CREATE DATABASE libreplandev;"
+    - name: Install psql client
+      run: |
+        apt-get update
+        apt-get install -y postgresql-client
 
+    - name: Show Postgres info (debug)
+      env:
+        PGPASSWORD: ${{ secrets.PG_PASSWORD }}
+      run: |
+        psql -h postgres -U libreplan -d libreplandev -c "SELECT version();"
+        psql -h postgres -U libreplan -d libreplandev -c "SELECT current_database(), current_user;"
+
+#   - name: Create libreplandev database
+#     uses: akanieski/setup-postgres-cli@v0.1.2
+#     with:
+#       commands: PGPASSWORD=libreplan psql -U libreplan -h postgres -p 5432 -c "CREATE DATABASE libreplandev;"
+
+#   - name: Create libreplandevtest database
+#     uses: akanieski/setup-postgres-cli@v0.1.2
+#     with:
+#       commands: PGPASSWORD=libreplan psql -U libreplan -h postgres -p 5432 -c "CREATE DATABASE libreplandevtest;"
+
+    # ▶️ Voorbeeld 1: extra database expliciet aanmaken
     - name: Create libreplandevtest database
-      uses: akanieski/setup-postgres-cli@v0.1.2
-      with:
-        commands: PGPASSWORD=libreplan psql -U libreplan -h postgres -p 5432 -c "CREATE DATABASE libreplandevtest;"
+      env:
+        PGPASSWORD: ${{ secrets.PG_PASSWORD }}
+      run: |
+        psql -h postgres -U libreplan -d postgres -v ON_ERROR_STOP=1 -c "CREATE DATABASE libreplandevtest;"
 
-    - name: Set up JDK 8
-      uses: actions/setup-java@v3
-      with:
-        java-version: '8'
-        distribution: 'temurin'
-        cache: maven
+#   # ▶️ Voorbeeld 2: schema/rollen in je default DB aanmaken
+#   - name: Create schema and role
+#     env:
+#       PGPASSWORD: ${{ secrets.PG_PASSWORD }}
+#     run: |
+#       psql -h postgres -U libreplan -d libreplandev -v ON_ERROR_STOP=1 <<'SQL'
+#       DO $$
+#       BEGIN
+#         IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'appuser') THEN
+#           CREATE ROLE appuser LOGIN PASSWORD 'appuserpass';
+#         END IF;
+#       END $$;
+#       CREATE SCHEMA IF NOT EXISTS app AUTHORIZATION ci;
+#       GRANT ALL ON SCHEMA app TO appuser;
+#       SQL
+
+#   # ▶️ Voorbeeld 3: init-SQL uit je repo draaien
+#   - name: Run init SQL from repo
+#     if: ${{ hashFiles('db/init.sql') != '' }}
+#     env:
+#       PGPASSWORD: ${{ secrets.PG_PASSWORD }}
+#     run: |
+#       psql -h postgres -U libreplan -d libreplandev -v ON_ERROR_STOP=1 -f db/init.sql
+  
+#   - name: Set up JDK 8
+#     uses: actions/setup-java@v3
+#     with:
+#       java-version: '8'
+#       distribution: 'temurin'
+#       cache: maven
+#
+    - name: Set up Java 8
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin     # of adopt, zulu, corretto, liberica …
+          java-version: 8
+
+    - name: Verify Java version
+      run: java -version
 
     - name: Build with Maven
       run: mvn -Ddefault.passwordsControl=false -Ddefault.exampleUsersDisabled=false clean install
+
+
+#   - name: Build with Maven
+#     run: mvn -B clean package
+        
