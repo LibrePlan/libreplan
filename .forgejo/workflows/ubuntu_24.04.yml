@@ -1,0 +1,92 @@
+
+# The first Forgejo action of this project.
+# This builds the main branch on jdk8.
+
+name: Ubuntu 24.04 (Noble Numbat)
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: docker
+    container:
+      image: ubuntu:24.04
+
+    services:
+      postgres:
+        image: postgres:16.0
+        env:
+          POSTGRES_USER: libreplan
+          POSTGRES_PASSWORD: libreplan
+          POSTGRES_DB: libreplandev
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+    - name: install needed software
+      run: |
+        apt-get update
+        apt-get install -y postgresql-client nodejs git maven libpostgresql-jdbc-java
+
+    - uses: actions/checkout@v3
+
+    # Let's test caching maven stuff.
+    - name: Cache Maven repository
+      uses: actions/cache@v4
+      with:
+        path: ~/.m2/repository
+        key: maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: maven-
+
+    # Create extra database
+    - name: Create libreplandevtest database
+      env:
+        PGPASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+      run: |
+        PGPASSWORD='libreplan' psql -h postgres -U libreplan -d postgres -v ON_ERROR_STOP=1 -c "CREATE DATABASE libreplandevtest;"
+
+    - name: Set up Java 8
+      uses: actions/setup-java@v4
+      with:
+        distribution: temurin     # of adopt, zulu, corretto, liberica …
+        java-version: 8
+
+    - name: Verify Java version
+      run: java -version
+
+    # Determine maven version in container
+    - name: Show maven version number
+      run: mvn -v
+
+    - name: Wait for PostgreSQL to be ready
+      shell: bash
+      env:
+        PGPASSWORD: libreplan
+      run: |
+        for i in {1..30}; do
+          psql -h postgres -U libreplan -d libreplandev -c 'select 1' && break
+          sleep 2
+        done
+
+    - name: Build with Maven
+      run: mvn clean install --no-transfer-progress  -Ddefault.passwordsControl=false  -Ddefault.exampleUsersDisabled=false   -DdataSource.url=jdbc:postgresql://postgres:5432/libreplandev -DdataSource.user=libreplan -DdataSource.password=libreplan     -DjdbcDriver.className=org.postgresql.Driver  
+
+    # Are we brave enough to upload the result?
+    - uses: actions/upload-artifact@v3
+      with:
+        name: libreplan.war
+        path: libreplan-webapp/target/libreplan-webapp.war
+        retention-days: 3  
+
+    - name: Output artifact ID
+      run:  echo 'Artifact ID is ${{ steps.artifact-upload-step.outputs.artifact-id }}'
