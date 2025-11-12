@@ -1,5 +1,6 @@
-# This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
-# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
+
+# The first Forgejo action of this project.
+# This builds the main branch on jdk8.
 
 name: Ubuntu 24.04 (Noble Numbat)
 
@@ -32,81 +33,60 @@ jobs:
           --health-retries 5
 
     steps:
-    - uses: actions/checkout@v4
-
-    - name: Install psql client
+    - name: install needed software
       run: |
         apt-get update
-        apt-get install -y postgresql-client
+        apt-get install -y postgresql-client nodejs git maven libpostgresql-jdbc-java
 
-    - name: Show Postgres info (debug)
-      env:
-        PGPASSWORD: ${{ secrets.PG_PASSWORD }}
-      run: |
-        psql -h postgres -U libreplan -d libreplandev -c "SELECT version();"
-        psql -h postgres -U libreplan -d libreplandev -c "SELECT current_database(), current_user;"
+    - uses: actions/checkout@v3
 
-#   - name: Create libreplandev database
-#     uses: akanieski/setup-postgres-cli@v0.1.2
-#     with:
-#       commands: PGPASSWORD=libreplan psql -U libreplan -h postgres -p 5432 -c "CREATE DATABASE libreplandev;"
+    # Let's test caching maven stuff.
+    - name: Cache Maven repository
+      uses: actions/cache@v4
+      with:
+        path: ~/.m2/repository
+        key: maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: maven-
 
-#   - name: Create libreplandevtest database
-#     uses: akanieski/setup-postgres-cli@v0.1.2
-#     with:
-#       commands: PGPASSWORD=libreplan psql -U libreplan -h postgres -p 5432 -c "CREATE DATABASE libreplandevtest;"
-
-    # ▶️ Voorbeeld 1: extra database expliciet aanmaken
+    # Create extra database
     - name: Create libreplandevtest database
       env:
-        PGPASSWORD: ${{ secrets.PG_PASSWORD }}
+        PGPASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
       run: |
-        psql -h postgres -U libreplan -d postgres -v ON_ERROR_STOP=1 -c "CREATE DATABASE libreplandevtest;"
+        PGPASSWORD='libreplan' psql -h postgres -U libreplan -d postgres -v ON_ERROR_STOP=1 -c "CREATE DATABASE libreplandevtest;"
 
-#   # ▶️ Voorbeeld 2: schema/rollen in je default DB aanmaken
-#   - name: Create schema and role
-#     env:
-#       PGPASSWORD: ${{ secrets.PG_PASSWORD }}
-#     run: |
-#       psql -h postgres -U libreplan -d libreplandev -v ON_ERROR_STOP=1 <<'SQL'
-#       DO $$
-#       BEGIN
-#         IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'appuser') THEN
-#           CREATE ROLE appuser LOGIN PASSWORD 'appuserpass';
-#         END IF;
-#       END $$;
-#       CREATE SCHEMA IF NOT EXISTS app AUTHORIZATION ci;
-#       GRANT ALL ON SCHEMA app TO appuser;
-#       SQL
-
-#   # ▶️ Voorbeeld 3: init-SQL uit je repo draaien
-#   - name: Run init SQL from repo
-#     if: ${{ hashFiles('db/init.sql') != '' }}
-#     env:
-#       PGPASSWORD: ${{ secrets.PG_PASSWORD }}
-#     run: |
-#       psql -h postgres -U libreplan -d libreplandev -v ON_ERROR_STOP=1 -f db/init.sql
-  
-#   - name: Set up JDK 8
-#     uses: actions/setup-java@v3
-#     with:
-#       java-version: '8'
-#       distribution: 'temurin'
-#       cache: maven
-#
     - name: Set up Java 8
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin     # of adopt, zulu, corretto, liberica …
-          java-version: 8
+      uses: actions/setup-java@v4
+      with:
+        distribution: temurin     # of adopt, zulu, corretto, liberica …
+        java-version: 8
 
     - name: Verify Java version
       run: java -version
 
+    # Determine maven version in container
+    - name: Show maven version number
+      run: mvn -v
+
+    - name: Wait for PostgreSQL to be ready
+      shell: bash
+      env:
+        PGPASSWORD: libreplan
+      run: |
+        for i in {1..30}; do
+          psql -h postgres -U libreplan -d libreplandev -c 'select 1' && break
+          sleep 2
+        done
+
     - name: Build with Maven
-      run: mvn -Ddefault.passwordsControl=false -Ddefault.exampleUsersDisabled=false clean install
+      run: mvn clean install --no-transfer-progress  -Ddefault.passwordsControl=false  -Ddefault.exampleUsersDisabled=false   -DdataSource.url=jdbc:postgresql://postgres:5432/libreplandev -DdataSource.user=libreplan -DdataSource.password=libreplan     -DjdbcDriver.className=org.postgresql.Driver  
 
+    # Are we brave enough to upload the result?
+    - uses: actions/upload-artifact@v3
+      with:
+        name: libreplan.war
+        path: libreplan-webapp/target/libreplan-webapp.war
+        retention-days: 3  
 
-#   - name: Build with Maven
-#     run: mvn -B clean package
-        
+    - name: Output artifact ID
+      run:  echo 'Artifact ID is ${{ steps.artifact-upload-step.outputs.artifact-id }}'
