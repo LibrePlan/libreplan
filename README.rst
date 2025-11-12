@@ -135,7 +135,7 @@ You can find more information about *LibrePlan* at
 https://www.libreplan.dev/home/
 
 For information related with *LibrePlan* development you can visit the wiki at
-https://wiki.libreplan.dev
+https://wiki.libreplan.dev or have a look at the DeepWiki documentation: [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/LibrePlan/libreplan)
 
 
 Reporting bugs
