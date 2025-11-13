@@ -1,6 +1,5 @@
-
-# The first Forgejo action of this project.
-# This builds the main branch on jdk8.
+# This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
 
 name: Ubuntu 24.04 (Noble Numbat)
 
@@ -9,6 +8,11 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
+
+# Prevent cancellation of already running actions when pushing concurrently. Test
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
   build:
@@ -33,12 +37,19 @@ jobs:
           --health-retries 5
 
     steps:
+
+    # Define job-id  
+    - name: actions prep
+      id: artifact-upload-prep
+      run: echo ::set-output name=artifact-id::$(git rev-parse --short=10 HEAD)
+
     - name: install needed software
       run: |
         apt-get update
         apt-get install -y postgresql-client nodejs git maven libpostgresql-jdbc-java
 
-    - uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v3
 
     # Let's test caching maven stuff.
     - name: Cache Maven repository
@@ -48,7 +59,7 @@ jobs:
         key: maven-${{ hashFiles('**/pom.xml') }}
         restore-keys: maven-
 
-    # Create extra database
+    # Example 1: create extra database
     - name: Create libreplandevtest database
       env:
         PGPASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
@@ -78,15 +89,25 @@ jobs:
           sleep 2
         done
 
+    # Yes, this looks ugly. But when cleanup over several lines mvn
+    # starts complaining: The POM for  -DdataSource.url=jdbc:postgresql:jar://postgres is missing
+    # Starts thinking the datasource url is a pom it should download. Weird.
     - name: Build with Maven
-      run: mvn clean install --no-transfer-progress  -Ddefault.passwordsControl=false  -Ddefault.exampleUsersDisabled=false   -DdataSource.url=jdbc:postgresql://postgres:5432/libreplandev -DdataSource.user=libreplan -DdataSource.password=libreplan     -DjdbcDriver.className=org.postgresql.Driver  
+      shell: bash
+      run: mvn clean install --no-transfer-progress -Ddefault.passwordsControl=false -Ddefault.exampleUsersDisabled=false -DdataSource.url=jdbc:postgresql://postgres:5432/libreplandev -DdataSource.user=libreplan -DdataSource.password=libreplan -DjdbcDriver.className=org.postgresql.Driver  
 
-    # Are we brave enough to upload the result?
-    - uses: actions/upload-artifact@v3
+    # Upload the result
+    - name: Upload libreplan.war attempt 1
+      uses: actions/upload-artifact@v3
       with:
         name: libreplan.war
         path: libreplan-webapp/target/libreplan-webapp.war
         retention-days: 3  
 
-    - name: Output artifact ID
-      run:  echo 'Artifact ID is ${{ steps.artifact-upload-step.outputs.artifact-id }}'
+    - name: Upload libreplan.war with git hash
+      uses: actions/upload-artifact@v3
+      with:
+        name: libreplan-${{ steps.artifact-upload-prep.outputs.artifact-id }}.war
+        path: libreplan-webapp/target/libreplan-webapp.war
+        retention-days: 3  
+
