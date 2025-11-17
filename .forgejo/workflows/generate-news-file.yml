@@ -1,0 +1,194 @@
+# This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
+#
+# It could, in theory, be possible to grep the current version number from the pom.xml file,
+# and, again, in theory, get the last release name from the git tag list.
+# But, sofar, this has been a road with major obstacles. And in the end you've just got to ask yourself:
+# "Is the juice worth the squeeze.". (Movie: "The girl next door")
+
+name: Generate NEWS file.
+
+on:
+  workflow_dispatch:
+    inputs:
+      full-last-release:
+        description: 'What was the full name of the last release'
+        default: "libreplan-"
+        required: true
+        type: string
+      short-last-release:
+        description: 'What was the short name of the last release'
+        default: "1.4."
+        required: true
+        type: string
+      full-new-release:
+        description: 'What is the full name of the new release'
+        default: "libreplan-"
+        required: true
+        type: string
+      short-new-release:
+        description: 'What is the short name of the new release'
+        default: "1.4."
+        required: true
+        type: string
+
+jobs:
+  build:
+
+    runs-on: docker
+    container:
+      image: ubuntu:24.04
+
+    steps:
+      # Define job-id
+      - name: Debug info
+        run: |
+          cat <<'EOF'
+          ${{ toJSON(forgejo) }}
+          EOF
+
+      - name: My current run-id
+        run: echo "${{ forgejo.run_id }}"
+
+      - name: install needed software
+        run: |
+          apt-get update
+          apt-get install -y nodejs git sed
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-tags: true # Also get the tags!!!
+          fetch-depth: 0
+
+        # This is only possible AFTER the checkout step.
+      - name: actions prep test to prove it works.
+        id: artifact-upload-prep
+        run: echo "artifact-id=$(git rev-parse --short=10 HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Start writing NEWS.rst.head file
+        shell: bash
+        run: |
+          FILE="NEWS.rst.head"
+          echo "Writing to file: $FILE"
+          #Version 1.4.0 (29 Apr 2013)
+          #---------------------------
+          headstr="Version ${{ inputs.short-new-release }} ($(LANG=en;date '+%d %b %Y'))"
+          headstrlen=${#headstr}
+          # echo "headstrlen: $headstrlen"
+          headline="$(printf -- '-%.0s' $(seq 1 "$headstrlen"))"
+          # echo "headline: $headline"
+          echo    "$headstr" | tee -a "${FILE}"
+          echo -e "$headline\n\n" | tee -a "${FILE}"
+
+      - name: Start writing summary NEWS.rst.summary
+        shell: bash
+        run: |
+          filepart=summary
+          FILE="NEWS.rst.summary"
+          #verstr="Version ${{ inputs.short-new-release }} ($(LANG=en;date +'%d %b %Y'))"
+          #echo "$verstr"
+          #verstrlen=${#verstr} | tee -a "${FILE}"
+          #echo "$verstrlen"
+          #linestr="$(printf -- '-%.0s' $(seq 1 $verstrlen))"
+          #echo "$linestr" | tee -a "${FILE}"
+          echo    "Summary"  | tee -a "${FILE}"
+          echo -e "~~~~~~~\n"  | tee -a "${FILE}"
+          echo "Description of the new version, explaining the main features and bugs "  | tee -a "${FILE}"
+          echo "included. It's usually similar to the piece of news that will be published  "  | tee -a "${FILE}"
+          echo "on the website.  "  | tee -a "${FILE}"
+          echo ""  | tee -a "${FILE}"
+
+      - name: Start writing NEWS.rst.notes for NEWS.
+        shell: bash
+        run: |
+          # Hm, in this stage we have not enough information for this part.
+          filepart=notes
+          FILE="NEWS.rst.notes"
+          echo "Writing to file: $FILE"
+          # yes, I know about HERE files. I just don't like them!
+          echo "Notes" | tee -a "${FILE}"
+          echo -e "~~~~~\n\n" | tee -a "${FILE}"
+          echo "If you are upgrading from ${{ inputs.short-last-release }} without using a "  | tee -a "${FILE}"
+          echo "package, you will need to manually execute on your database the SQL commands" | tee -a "${FILE}"
+          echo "from file: 'scripts/database/upgrade_${{ inputs.short-new-release }}.sql'." | tee -a "${FILE}"
+          echo "" | tee -a "${FILE}"
+          echo "If you are upgrading from earlier version without using the Debian package," | tee -a "${FILE}"
+          echo "you will need to manually execute on your database the SQL commands from all files." | tee -a "${FILE}"
+          echo "" | tee -a "${FILE}"
+
+      - name: Start writing NEWS.rst.contributors for NEWS.
+        shell: bash
+        run: |
+          filepart=contributers
+          FILE="NEWS.rst.contributers"
+          echo    "Contributors" | tee -a "${FILE}"
+          echo -e "~~~~~~~~~~~~\n" | tee -a "${FILE}"
+          echo -e "A big thanks to all the contributors to version ${{ inputs.short-new-release }} :\n" | tee -a "${FILE}"
+          #git shortlog -ns "${{ steps.set-release-tag.outputs.last-release-tag }}.."  | cut  -f2-  | sed -e 's/^/* /' | sort -u | tee -a "${FILE}"
+          git shortlog -ns "${{ inputs.full-last-release }}.."  | cut  -f2-  | sed -e 's/^/* /' | sort -u | tee -a "${FILE}"
+          echo "" | tee -a "${FILE}"
+
+      - name: Start writing NEWS.rst.translators for NEWS.
+        shell: bash
+        run: |
+          #     If there're changes in the translations we add the name and language of
+          #     each of them in this section.
+          filepart=translators
+          FILE="NEWS.rst.translators"
+          # We do not insert new Translators block as we already copy the old block including the header.
+          # echo    "Translators" | tee -a "${FILE}"
+          # echo -e "~~~~~~~~~~~\n\n" | tee -a "${FILE}"
+          echo "Inserting translator block from last release."  | tee -a $LOG
+          cat NEWS.rst | sed -n -e '/^Translators/,/^Changes/p' | sed -e '/^Changes/,$d' | tee -a "${FILE}"
+
+      - name: Start writing NEWS.rst.changes
+        shell: bash
+        run: |
+          # Comprehensive list of changes done in the repository since previous
+          # version.
+          filepart=changes
+          FILE="NEWS.rst.changes"
+          echo "Writing to file: $FILE"
+          echo    "Changes" | tee -a "${FILE}"
+          echo -e "~~~~~~~\n" | tee -a "${FILE}"
+          #git log --pretty="* %s" "${{ steps.set-release-tag.outputs.last-release-tag }}.." | tee -a "${FILE}"
+          git log --pretty="* %s" "${{ inputs.full-last-release }}.." | tee -a "${FILE}"
+
+      # Concatenate the files
+      - name: Generate resulting NEWS.rst.part
+        shell: bash
+        run: |
+          echo "Building changes to NEWS.rst file"
+          echo    "NEWS"    > /tmp/lpnews.$$
+          echo -e "====\n" >> /tmp/lpnews.$$
+          for filepart in head summary notes contributers translators changes
+          do
+            cat "NEWS.rst.$filepart" >> /tmp/lpnews.$$
+          done
+          cat /tmp/lpnews.$$  > /tmp/lpnews2.$$
+          cp /tmp/lpnews.$$ LATEST-NEWS.rst
+          echo "Cut 2 lines from original NEWS.rst file" | tee -a $LOG
+          cat NEWS.rst | sed -e '1,2d' >> /tmp/lpnews2.$$
+          echo "Check NEWS.rst file before continueing..."
+          cp /tmp/lpnews2.$$ NEWS.rst
+
+      # Upload the result
+      - name: Upload NEWS.rst
+        uses: actions/upload-artifact@v3
+        with:
+          name: NEWS.rst
+          path: NEWS.rst
+          compression-level: 0 # no compression
+          retention-days: 3
+
+      - name: Upload LATEST-NEWS.rst
+        uses: actions/upload-artifact@v3
+        with:
+          name: LATEST-NEWS.rst
+          path: LATEST-NEWS.rst
+          compression-level: 0 # no compression
+          retention-days: 3
+
+
+
