@@ -4,10 +4,19 @@
 name: Ubuntu 24.04 (Noble Numbat)
 
 on:
+  workflow_dispatch:
+    inputs:
+      create-release:
+        description: 'Create a release from this build?'
+        default: false
+        type: boolean
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+#   branches: [ "main" ]
+    tags:
+      - "v*"
+# pull_request:
+#   branches: [ "main" ]
+
 
 # Prevent cancellation of already running actions when pushing concurrently. Test
 concurrency:
@@ -39,9 +48,14 @@ jobs:
     steps:
 
     # Define job-id  
-    - name: actions prep
-      id: artifact-upload-prep
-      run: echo ::set-output name=artifact-id::$(git rev-parse --short=10 HEAD)
+    - name: Debug info
+      run: |
+        cat <<'EOF'
+        ${{ toJSON(forgejo) }}
+        EOF
+
+    - name: My current run-id
+      run: echo "${{ forgejo.run_id }}"
 
     - name: install needed software
       run: |
@@ -50,6 +64,12 @@ jobs:
 
     - name: Checkout code
       uses: actions/checkout@v3
+
+    # This is only possible AFTER the checkout step.    
+    - name: actions prep
+      id: artifact-upload-prep
+      run: echo "artifact-id=$(git rev-parse --short=10 HEAD)" >> "$GITHUB_OUTPUT"
+
 
     # Let's test caching maven stuff.
     - name: Cache Maven repository
@@ -96,18 +116,37 @@ jobs:
       shell: bash
       run: mvn clean install --no-transfer-progress -Ddefault.passwordsControl=false -Ddefault.exampleUsersDisabled=false -DdataSource.url=jdbc:postgresql://postgres:5432/libreplandev -DdataSource.user=libreplan -DdataSource.password=libreplan -DjdbcDriver.className=org.postgresql.Driver  
 
+    - name: Copy libreplan-webapp.war to libreplan.war
+      run: cp libreplan-webapp/target/libreplan-webapp.war libreplan-webapp/target/libreplan.war
+
     # Upload the result
     - name: Upload libreplan.war attempt 1
       uses: actions/upload-artifact@v3
       with:
         name: libreplan.war
-        path: libreplan-webapp/target/libreplan-webapp.war
+        path: libreplan-webapp/target/libreplan.war
         retention-days: 3  
 
     - name: Upload libreplan.war with git hash
       uses: actions/upload-artifact@v3
       with:
         name: libreplan-${{ steps.artifact-upload-prep.outputs.artifact-id }}.war
-        path: libreplan-webapp/target/libreplan-webapp.war
+        path: libreplan-webapp/target/libreplan.war
         retention-days: 3  
 
+    - name: Prep release dir for upload
+      run: |
+        mkdir -p dist/release
+        cp libreplan-webapp/target/libreplan.war dist/release/libreplan.war
+
+    # Also store as a release.
+    - uses: actions/forgejo-release@v2.7.3
+      with:
+        direction: upload
+        url: http://10.1.1.158:3000
+        repo: jeroen/libreplan
+        token: ${{ secrets.WRITE_TOKEN_TO_MYREPO }}
+        tag: v2025
+        release-dir: dist/release
+        release-notes: "No RELEASE NOTES"
+        verbose: true
