@@ -1,0 +1,186 @@
+# This workflow will generate the database upgrade script for PostgreSQL
+
+name: Generate PostgreSQL database upgrade script.
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+
+    runs-on: docker
+    container:
+      image: ubuntu:24.04
+
+    services:
+      postgres:
+        image: postgres:16.0
+        env:
+          POSTGRES_USER: libreplan
+          POSTGRES_PASSWORD: libreplan
+          POSTGRES_DB: libreplandev
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      # Define job-id
+      - name: Debug info
+        run: |
+          cat <<'EOF'
+          ${{ toJSON(forgejo) }}
+          EOF
+
+      - name: My current run-id
+        run: echo "${{ forgejo.run_id }}"
+
+      # Define job-id  
+      - name: install needed software
+        run: |
+          apt-get update
+          apt-get install -y postgresql-client nodejs git maven libpostgresql-jdbc-java
+
+      # Define job-id
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+          show-progress: true
+
+      # This is only possible AFTER the checkout step.    
+      - name: actions prep
+        id: artifact-upload-prep
+        run: echo "artifact-id=$(git rev-parse --short=10 HEAD)" >> "$GITHUB_OUTPUT"
+
+      # Let's try caching maven stuff.
+      - name: Cache Maven repository
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: maven-
+
+      # Example 1: create extra database
+      # - name: Create libreplandevtest database
+      #   env:
+      #     PGPASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+      #   run: |
+      #     PGPASSWORD='libreplan' psql -h postgres -U libreplan -d postgres -v ON_ERROR_STOP=1 -c "CREATE DATABASE libreplandevtest;"
+
+      - name: Set up Java 8
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin     # of adopt, zulu, corretto, liberica …
+          java-version: 8
+
+      - name: Verify Java version
+        run: java -version
+
+      # Determine maven version in container
+      - name: Show maven version number
+        run: mvn -v
+
+      # Wait for PostgreSQL to be ready
+      - name: Wait for PostgreSQL to be ready
+        shell: bash
+        env:
+          PGPASSWORD: libreplan
+        run: |
+          for i in {1..30}; do
+            psql -h postgres -U libreplan -d libreplandev -c 'select 1' && break
+            sleep 2
+          done
+      
+      # - name: "Checkout LibrePlan ${{ vars.full_last_release}} first."
+      #   shell: bash
+      #   run: |  
+      #     echo "First checkout older LibrePlan ${{ vars.full_last_release}} release"
+      #     git checkout ${{ vars.full_last_release }}
+      #     echo "Current branch: $(git rev-parse --abbrev-ref HEAD)"
+
+      # - name: Intermediare patch step. Fix old HTTP repo URLs in POMs
+      #   shell: bash
+      #   run: |
+      #     find . -name "pom.xml" -print0 | xargs -0 sed -i \
+      #       -e 's#http://gettext-commons.googlecode.com/svn/maven-repository#https://gettext-commons.googlecode.com/svn/maven-repository#g' \
+      #       -e 's#http://nexus.***.org/content/repositories/thirdparty#https://nexus.***.org/content/repositories/thirdparty#g'
+      
+      # # Setup clean empty database
+      # - name: Build clean ${{ vars.short_last_release }} db with Maven
+      #   shell: bash
+      #   run: |
+      #     echo "Running maven to setup a ${{ vars.short_last_release }} database for a clean install"
+      #     mvn clean install --no-transfer-progress -DskipTests -P-userguide,-reports,-i18n 
+
+      # Instead of trying to do a build of the old version, just load the old database from the repo files.
+
+      - name: Populate database with database layout of last release.
+        shell: bash
+        run: |
+          echo "Populate database with database layout of ${{ vars.full_last_release }}"
+          cat scripts/database/install.sql | PGPASSWORD='libreplan' psql -h postgres -U libreplan -d libreplandev
+
+      - name: Switch to the new release.
+        shell: bash
+        run: |
+          echo "Switch to ${{ vars.short_new_release }}." 
+          echo "We do not need to switch as we did not swotch before :-)"
+          # git checkout "${{ vars.full_new_release }}"
+          echo "Current branch: $(git rev-parse --abbrev-ref HEAD)"
+      
+      # Yes, this looks ugly. But when cleanup over several lines mvn
+      # starts complaining: The POM for  -DdataSource.url=jdbc:postgresql:jar://postgres is missing
+      # Starts thinking the datasource url is a pom it should download. Weird.
+      - name: "Generate database changes since version ${{ vars.short_last_release }}"
+        shell: bash
+        run: |
+          mvn clean install -DskipTests -P-userguide,-reports,-i18n,-liquibase-update,liquibase-updatesql -DdataSource.url=jdbc:postgresql://postgres:5432/libreplandev -DdataSource.user=libreplan -DdataSource.password=libreplan -DjdbcDriver.className=org.postgresql.Driver  
+          # This will/should generate a file libreplan-business/target/liquibase/migrate.sql
+          #  with the SQL script to migrate from previous version to the new one.
+          ls -l libreplan-business/target/liquibase/migrate.sql
+
+      - name: "The details of the generated migration script are:"
+        shell: bash
+        run: |
+          ls -l libreplan-business/target/liquibase/migrate.sql
+          lines=$( cat libreplan-business/target/liquibase/migrate.sql | grep -v '^--' | wc -l )
+          echo "The resulting migration script contained $lines lines. Processing migration script."
+    
+      - name: "Copy the sql-file to database scripts folder"
+        shell: bash
+        run: |
+          cp -v libreplan-business/target/liquibase/migrate.sql scripts/database/upgrade_${{ vars.short_new_release }}.sql
+    
+      - name: "Add information about version in the script"
+        shell: bash
+        run: |
+          sed -i "s/-- Update Database Script/-- Update Database Script - LibrePlan ${{ vars.short_new_release }}/" scripts/database/upgrade_${{ vars.short_new_release }}.sql
+
+      - name: "Append script at the end of ``install.sql`` file (with a separation of 2 new lines)" 
+        shell: bash
+        run: |
+          echo -ne "\n\n" >> scripts/database/install.sql
+          cat scripts/database/upgrade_${{ vars.short_new_release }}.sql >> scripts/database/install.sql
+
+        # Upload the result
+      - name: Upload upgrade_${{ vars.short_new_release }}.sql
+        uses: actions/upload-artifact@v3
+        with:
+          name: upgrade_${{ vars.short_new_release }}.sql
+          path: scripts/database/upgrade_${{ vars.short_new_release }}.sql
+          retention-days: 3
+
+      - name: Upload install.sql
+        uses: actions/upload-artifact@v3
+        with:
+          name: install.sql
+          path: scripts/database/install.sql
+          retention-days: 3
+
+
+

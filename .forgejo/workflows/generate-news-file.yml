@@ -10,27 +10,6 @@ name: Generate NEWS file.
 
 on:
   workflow_dispatch:
-    inputs:
-      full-last-release:
-        description: 'What was the full name of the last release'
-        default: "libreplan-"
-        required: true
-        type: string
-      short-last-release:
-        description: 'What was the short name of the last release'
-        default: "1.4."
-        required: true
-        type: string
-      full-new-release:
-        description: 'What is the full name of the new release'
-        default: "libreplan-"
-        required: true
-        type: string
-      short-new-release:
-        description: 'What is the short name of the new release'
-        default: "1.4."
-        required: true
-        type: string
 
 jobs:
   build:
@@ -73,7 +52,7 @@ jobs:
           echo "Writing to file: $FILE"
           #Version 1.4.0 (29 Apr 2013)
           #---------------------------
-          headstr="Version ${{ inputs.short-new-release }} ($(LANG=en;date '+%d %b %Y'))"
+          headstr="Version ${{ vars.short_new_release }} ($(LANG=en;date '+%d %b %Y'))"
           headstrlen=${#headstr}
           # echo "headstrlen: $headstrlen"
           headline="$(printf -- '-%.0s' $(seq 1 "$headstrlen"))"
@@ -86,7 +65,7 @@ jobs:
         run: |
           filepart=summary
           FILE="NEWS.rst.summary"
-          #verstr="Version ${{ inputs.short-new-release }} ($(LANG=en;date +'%d %b %Y'))"
+          #verstr="Version ${{ vars.short_new_release }} ($(LANG=en;date +'%d %b %Y'))"
           #echo "$verstr"
           #verstrlen=${#verstr} | tee -a "${FILE}"
           #echo "$verstrlen"
@@ -94,7 +73,7 @@ jobs:
           #echo "$linestr" | tee -a "${FILE}"
           echo    "Summary"  | tee -a "${FILE}"
           echo -e "~~~~~~~\n"  | tee -a "${FILE}"
-          echo "Description of the new version, explaining the main features and bugs "  | tee -a "${FILE}"
+          echo "Description of the new version ${{ vars.short_new_release }}, explaining the main features and bugs "  | tee -a "${FILE}"
           echo "included. It's usually similar to the piece of news that will be published  "  | tee -a "${FILE}"
           echo "on the website.  "  | tee -a "${FILE}"
           echo ""  | tee -a "${FILE}"
@@ -109,9 +88,9 @@ jobs:
           # yes, I know about HERE files. I just don't like them!
           echo "Notes" | tee -a "${FILE}"
           echo -e "~~~~~\n\n" | tee -a "${FILE}"
-          echo "If you are upgrading from ${{ inputs.short-last-release }} without using a "  | tee -a "${FILE}"
+          echo "If you are upgrading from ${{ vars.short_last_release }} without using a "  | tee -a "${FILE}"
           echo "package, you will need to manually execute on your database the SQL commands" | tee -a "${FILE}"
-          echo "from file: 'scripts/database/upgrade_${{ inputs.short-new-release }}.sql'." | tee -a "${FILE}"
+          echo "from file: 'scripts/database/upgrade_${{ vars.short_new_release }}.sql'." | tee -a "${FILE}"
           echo "" | tee -a "${FILE}"
           echo "If you are upgrading from earlier version without using the Debian package," | tee -a "${FILE}"
           echo "you will need to manually execute on your database the SQL commands from all files." | tee -a "${FILE}"
@@ -125,8 +104,8 @@ jobs:
           echo    "Contributors" | tee -a "${FILE}"
           echo -e "~~~~~~~~~~~~\n" | tee -a "${FILE}"
           echo -e "A big thanks to all the contributors to version ${{ inputs.short-new-release }} :\n" | tee -a "${FILE}"
-          #git shortlog -ns "${{ steps.set-release-tag.outputs.last-release-tag }}.."  | cut  -f2-  | sed -e 's/^/* /' | sort -u | tee -a "${FILE}"
-          git shortlog -ns "${{ inputs.full-last-release }}.."  | cut  -f2-  | sed -e 's/^/* /' | sort -u | tee -a "${FILE}"
+          #git shortlog -ns "${{ vars.full_last_release }}.."  | cut  -f2-  | sed -e 's/^/* /' | sort -u | tee -a "${FILE}"
+          git shortlog -ns "${{ vars.full_last_release }}.."  | cut  -f2-  | sed -e 's/^/* /' | sort -u | tee -a "${FILE}"
           echo "" | tee -a "${FILE}"
 
       - name: Start writing NEWS.rst.translators for NEWS.
@@ -152,8 +131,7 @@ jobs:
           echo "Writing to file: $FILE"
           echo    "Changes" | tee -a "${FILE}"
           echo -e "~~~~~~~\n" | tee -a "${FILE}"
-          #git log --pretty="* %s" "${{ steps.set-release-tag.outputs.last-release-tag }}.." | tee -a "${FILE}"
-          git log --pretty="* %s" "${{ inputs.full-last-release }}.." | tee -a "${FILE}"
+          git log --pretty="* %s" "${{ vars.full_last_release }}.." | tee -a "${FILE}"
 
       # Concatenate the files
       - name: Generate resulting NEWS.rst.part
@@ -185,7 +163,7 @@ jobs:
       - name: Upload LATEST-NEWS.rst
         uses: actions/upload-artifact@v3
         with:
-          name: LATEST-NEWS.rst
+          name: LATEST-NEWS-for-${{ vars.short_new_release }}.rst
           path: LATEST-NEWS.rst
           compression-level: 0 # no compression
           retention-days: 3
