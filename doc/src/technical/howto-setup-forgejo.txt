@@ -1,0 +1,50 @@
+How to setup Forgejo
+
+Forgo is a git repository tool that is completely open source and
+contains powerful CI/CD capabilities in the form of 'actions' defined in
+'workflow' files.
+Those are located in the .forgejo/workflows directory.
+
+Why Forgejo? Well, because it is completely open source and currently has
+the best chance that time invested is not wasted because features become
+closed or behind a paywall.
+
+Currently a lot of work is being done to ease the compilation and packaging
+of LibrePlan.
+
+First result was a simple workflow to build the current LibrePlan repo.
+
+Next step was creating a workflow that would generate the NEWS.rst file
+that is needed during packaging. At first that needed user input in the
+form of strings describing version numbering (old and new), but I realised
+it would be much easier if I store those in repository environment
+variables because they do not change very often.
+
+So, the repository needs the follwing environment variables:
+
+     full_last_release:
+        description: 'What was the full name of the last release'
+        default: "libreplan-"
+        required: true
+        type: string
+      short_last_release:
+        description: 'What was the short name of the last release'
+        default: "1.4.1"
+        required: true
+        type: string
+      full_new_release:
+        description: 'What is the full name of the new release'
+        default: "libreplan-1.5.0"
+        required: true
+        type: string
+      short_new_release:
+        description: 'What is the short name of the new release'
+        default: "1.5.0"
+        required: true
+        type: string
+
+You can define those if you go to your repository settings page, 
+and under 'actions' create them in the 'variables' section.
+
+One might think that it would be possible to generate the short name from the long name,
+but it is very likely the release name is going to change.
