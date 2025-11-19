@@ -20,31 +20,36 @@ form of strings describing version numbering (old and new), but I realised
 it would be much easier if I store those in repository environment
 variables because they do not change very often.
 
-So, the repository needs the follwing environment variables:
+So, the repository needs the following environment variables:
 
      full_last_release:
         description: 'What was the full name of the last release'
         default: "libreplan-"
         required: true
-        type: string
       short_last_release:
         description: 'What was the short name of the last release'
         default: "1.4.1"
         required: true
-        type: string
       full_new_release:
         description: 'What is the full name of the new release'
         default: "libreplan-1.5.0"
         required: true
-        type: string
       short_new_release:
         description: 'What is the short name of the new release'
         default: "1.5.0"
         required: true
-        type: string
+      patch_release:
+        description: 'What is patch release number to use for packaging'
+        default: "1"
+        required: true
 
 You can define those if you go to your repository settings page, 
 and under 'actions' create them in the 'variables' section.
+
+If you also want to puch releases from workflows to the releases section of the repo, 
+you have to first create an api key in your user profile that has write rights to the repository 
+as well as read rights to users. After that, copy the api key to the secrets section of the repo
+(repo settings -> actions -> secrets).
 
 One might think that it would be possible to generate the short name from the long name,
 but it is very likely the release name is going to change.
