@@ -1,0 +1,17 @@
+# services:
+    db:
+        image: postgres
+        environment:
+            - POSTGRES_DB=libreplandev
+            - POSTGRES_USER=libreplan
+            - POSTGRES_PASSWORD=libreplan
+        volumes:
+            - postgres_data:/var/lib/postgresql/18/docker/
+            - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+        ports:
+            - 5432:5432
+        command: ["postgres", "-c", "log_statement=all"]
+        expose:
+            - 5432
+volumes:
+    postgres_data:
