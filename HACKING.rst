@@ -51,6 +51,20 @@ Compilation requirements
 LibrePlan compilation
 ---------------------
 
+Setup database using docker compose
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+You can setup the Postgres database using docker compose.
+
+Run `docker compose up` and you will have Postgres exposed on port 5432.
+
+Docker compose is configured to run `init.sql` which creates the test database.
+Aditionally, it uses the `log_statement=all` with Postgres to show all SQL statements
+being processed, which is very convenient during development.
+
+If you want to reset the database content, run `docker compose down --volumes` which
+also deletes the volumes.
+
 Debian/Ubuntu
 ~~~~~~~~~~~~~
 
@@ -102,7 +116,7 @@ Debian/Ubuntu
 
     [Install]
     WantedBy=multi-user.target
-    
+
     $ systemctl daemon-reload
     $ systemctl enable libreplan.service
     $ systemctl start libreplan.service
