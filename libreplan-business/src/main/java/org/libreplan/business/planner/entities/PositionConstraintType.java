@@ -73,7 +73,7 @@ public enum PositionConstraintType {
     /**
      * Forces to mark the string as needing translation
      */
-    private static String _(String string) {
+    private static String _t(String string) {
         return string;
     }
 

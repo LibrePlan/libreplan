@@ -100,7 +100,7 @@ public enum ZoomLevel {
     /**
      * Forces to mark the string as needing translation.
      */
-    private static String _(String string) {
+    private static String _t(String string) {
         return string;
     }
 
@@ -129,7 +129,7 @@ public enum ZoomLevel {
 
     @Override
     public String toString() {
-        return _(internalName);
+        return _t(internalName);
     }
 
     public static ZoomLevel getFromString(String zoomLevelParameter) {

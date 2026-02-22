@@ -73,7 +73,7 @@ public class TimeLineRole<T> {
         /**
          * Forces to mark the string as needing translation.
          */
-        private static String _(String string) {
+        private static String _t(String string) {
             return string;
         }
 
@@ -91,7 +91,7 @@ public class TimeLineRole<T> {
 
         @Override
         public String toString() {
-            return _(this.name);
+            return _t(this.name);
         }
 
         public boolean isVisibleScheduled() {
