@@ -23,7 +23,7 @@ package org.libreplan.web.planner.allocation;
 
 import static org.libreplan.business.workingday.EffortDuration.hours;
 import static org.libreplan.business.workingday.EffortDuration.zero;
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 import static org.libreplan.web.planner.allocation.AllocationRow.assignEfforts;
 import static org.libreplan.web.planner.allocation.AllocationRow.sumAllEffortFromInputs;
 import static org.libreplan.web.planner.allocation.AllocationRow.sumAllOriginalEffort;

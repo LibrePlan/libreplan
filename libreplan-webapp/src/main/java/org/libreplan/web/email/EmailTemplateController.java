@@ -40,7 +40,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 /**
  * Controller for page Edit email templates.

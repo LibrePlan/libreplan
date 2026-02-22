@@ -22,7 +22,7 @@
 package org.libreplan.web.resourceload;
 
 import static org.libreplan.business.planner.entities.TaskElement.justTasks;
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 import static org.libreplan.web.planner.order.PlanningStateCreator.and;
 
 import java.util.ArrayList;

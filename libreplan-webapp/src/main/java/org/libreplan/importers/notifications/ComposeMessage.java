@@ -88,7 +88,7 @@ import java.io.UnsupportedEncodingException;
 
 import org.springframework.core.env.MapPropertySource;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 /**
  * Sends E-mail to users with data that storing in notification_queue table and

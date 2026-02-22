@@ -20,7 +20,7 @@
 package org.libreplan.importers;
 
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 import java.io.InputStream;
 import java.util.ArrayList;

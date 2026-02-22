@@ -64,7 +64,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 /**
  * Controller for CRUD actions over a {@link ExpenseSheet}.

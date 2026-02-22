@@ -20,7 +20,7 @@
  */
 package org.libreplan.web.subcontract;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 import java.io.StringWriter;
 import java.util.ArrayList;

@@ -26,7 +26,7 @@ import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 /**
  * {@link Enum} types needs to be translated in the webapp module, because of it

@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 abstract class MultipleFiltersFinder implements IMultipleFiltersFinder {
 

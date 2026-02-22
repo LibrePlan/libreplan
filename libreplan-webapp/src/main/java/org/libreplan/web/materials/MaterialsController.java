@@ -65,7 +65,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.ArrayList;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 /**
  * Controller for {@link Material} materials

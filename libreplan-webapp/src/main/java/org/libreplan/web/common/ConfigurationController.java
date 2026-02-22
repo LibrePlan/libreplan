@@ -63,7 +63,7 @@ import javax.ws.rs.core.Response.Status;
 import java.io.*;
 import java.util.*;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 /**
  * Controller for {@link Configuration} entity.

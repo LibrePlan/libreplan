@@ -40,7 +40,7 @@ import org.zkoss.zul.SimpleListModel;
 
 import java.util.List;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 /**
  * Controller for CRUD actions over a {@link CustomerCommunication}.

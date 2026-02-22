@@ -22,7 +22,7 @@ package org.libreplan.web.planner.reassign;
 
 import org.zkoss.zul.Radio;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 public enum Type {
 
     ALL {

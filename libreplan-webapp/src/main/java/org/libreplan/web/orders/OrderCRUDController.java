@@ -116,7 +116,7 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 /**
  * Controller for CRUD actions.

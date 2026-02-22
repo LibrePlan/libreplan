@@ -21,7 +21,7 @@
 
 package org.libreplan.web.resourceload;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 import static org.libreplan.web.resourceload.ResourceLoadModel.asDate;
 import static org.libreplan.web.resourceload.ResourceLoadModel.toLocal;
 

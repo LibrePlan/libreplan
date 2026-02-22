@@ -39,7 +39,7 @@ import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Messagebox;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 /**
  * Controller for advanced allocation of a {@link Task}.

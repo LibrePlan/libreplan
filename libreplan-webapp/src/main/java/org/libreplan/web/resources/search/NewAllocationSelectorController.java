@@ -21,7 +21,7 @@
 
 package org.libreplan.web.resources.search;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;

@@ -20,7 +20,7 @@
  */
 package org.libreplan.web.planner.reassign;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 import static org.zkoss.ganttz.util.LongOperationFeedback.and;
 
 import java.util.ArrayList;

@@ -37,7 +37,7 @@ import org.zkoss.zul.RowRenderer;
 
 import java.util.List;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 /**
  * Controller for "Expenses" area in the user dashboard window.

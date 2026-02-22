@@ -22,7 +22,7 @@
 package org.libreplan.web.labels;
 
 import static org.libreplan.business.common.exceptions.ValidationException.invalidValue;
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 import java.util.ArrayList;
 import java.util.Collections;

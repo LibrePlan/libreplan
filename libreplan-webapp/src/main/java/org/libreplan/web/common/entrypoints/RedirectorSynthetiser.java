@@ -21,7 +21,7 @@
 
 package org.libreplan.web.common.entrypoints;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationHandler;

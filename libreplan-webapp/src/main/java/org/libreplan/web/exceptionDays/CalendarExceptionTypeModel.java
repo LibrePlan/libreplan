@@ -18,7 +18,7 @@
  */
 package org.libreplan.web.exceptionDays;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 import java.util.HashSet;
 import java.util.List;

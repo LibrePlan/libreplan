@@ -57,7 +57,7 @@ import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 /**
  * Controller for managing Order files.

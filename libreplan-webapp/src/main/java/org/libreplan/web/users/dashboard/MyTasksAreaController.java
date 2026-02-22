@@ -38,7 +38,7 @@ import org.zkoss.zul.RowRenderer;
 import java.text.MessageFormat;
 import java.util.List;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 /**
  * Controller for "My tasks" area in the user dashboard window.

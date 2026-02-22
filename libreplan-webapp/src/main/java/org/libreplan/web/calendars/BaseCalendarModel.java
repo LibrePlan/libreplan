@@ -22,7 +22,7 @@
 package org.libreplan.web.calendars;
 
 import static org.libreplan.business.common.exceptions.ValidationException.invalidValue;
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 import java.util.Date;
 import java.util.HashSet;

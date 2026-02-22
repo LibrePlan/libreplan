@@ -134,7 +134,7 @@ import org.zkoss.zul.Vbox;
 import static org.libreplan.business.planner.chart.ContiguousDaysLine.toSortedMap;
 import static org.libreplan.business.planner.chart.ContiguousDaysLine.min;
 import static org.libreplan.business.planner.chart.ContiguousDaysLine.sum;
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>

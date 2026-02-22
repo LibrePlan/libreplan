@@ -52,7 +52,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 /**
  * Controller for page Hours Worked Per Resource.

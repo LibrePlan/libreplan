@@ -24,7 +24,7 @@ package org.libreplan.web.common.components;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 import org.zkoss.zul.Label;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 /**
  * ZK macro component for translating texts created dynamically, that means, those which need one or more parameters.

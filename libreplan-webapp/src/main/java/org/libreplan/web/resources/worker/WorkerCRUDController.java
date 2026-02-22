@@ -21,7 +21,7 @@
 
 package org.libreplan.web.resources.worker;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 import java.util.ConcurrentModificationException;
 import java.util.Date;

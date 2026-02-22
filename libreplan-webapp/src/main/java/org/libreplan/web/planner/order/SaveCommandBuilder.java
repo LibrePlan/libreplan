@@ -109,7 +109,7 @@ import java.util.Set;
 import java.util.SortedSet;
 
 import static org.libreplan.business.planner.limiting.entities.LimitingResourceQueueDependency.toQueueDependencyType;
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 /**
  * Builds a command that saves the changes in the taskElements.

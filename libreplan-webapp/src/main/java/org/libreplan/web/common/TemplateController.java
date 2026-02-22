@@ -44,7 +44,7 @@ import org.zkoss.zul.Window;
 import java.util.Collections;
 import java.util.List;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 /**
  * Controller to manage UI operations from main template.

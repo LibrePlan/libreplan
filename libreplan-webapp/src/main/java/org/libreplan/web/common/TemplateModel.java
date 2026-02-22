@@ -74,7 +74,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 /**
  * Model to manage UI operations from main template.

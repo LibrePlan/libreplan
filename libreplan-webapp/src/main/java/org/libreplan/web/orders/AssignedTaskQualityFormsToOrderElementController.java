@@ -59,7 +59,7 @@ import java.util.List;
 
 import com.libreplan.java.zk.components.customdetailrowcomponent.Detail;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 /**
  * Controller for showing OrderElement assigned task quality forms.

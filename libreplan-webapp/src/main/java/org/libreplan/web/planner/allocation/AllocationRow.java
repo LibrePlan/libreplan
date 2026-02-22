@@ -82,7 +82,7 @@ import java.util.List;
 import com.libreplan.java.zk.components.customdetailrowcomponent.Detail;
 
 import static org.libreplan.business.workingday.EffortDuration.zero;
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 /**
  * It connects the GUI widgets of the allocation row in the GUI with the

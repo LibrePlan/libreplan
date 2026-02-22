@@ -20,7 +20,7 @@
  */
 package org.libreplan.web.templates;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 import java.util.ArrayList;
 import java.util.List;

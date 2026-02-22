@@ -21,7 +21,7 @@
 
 package org.libreplan.web.orders;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 import java.text.DateFormat;
 import java.text.ParseException;

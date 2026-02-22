@@ -42,7 +42,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 /**
  * Subcontroller for {@link Worker} resource.

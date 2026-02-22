@@ -43,7 +43,7 @@ import org.zkoss.zul.Tab;
 import org.zkoss.zul.Tabpanel;
 import org.zkoss.zul.Window;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 /**
  * Controller for {@link OrderElement} view of {@link Order} entities.

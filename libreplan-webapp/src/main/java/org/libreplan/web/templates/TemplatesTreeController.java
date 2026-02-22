@@ -35,7 +35,7 @@ import org.zkoss.zul.Treeitem;
 
 import java.math.BigDecimal;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 /**
  * Controller for template element tree <br />

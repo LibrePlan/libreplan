@@ -21,7 +21,7 @@
 
 package org.libreplan.web.planner.milestone;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 import org.libreplan.business.planner.daos.ITaskElementDAO;
 import org.libreplan.business.planner.entities.TaskElement;

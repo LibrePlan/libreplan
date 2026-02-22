@@ -21,7 +21,7 @@
 
 package org.libreplan.web.planner.allocation.stretches;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 import java.math.BigDecimal;
 import java.text.DateFormat;

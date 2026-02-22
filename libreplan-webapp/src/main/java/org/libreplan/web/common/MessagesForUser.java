@@ -21,7 +21,7 @@
 
 package org.libreplan.web.common;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;

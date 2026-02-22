@@ -21,7 +21,7 @@
 
 package org.libreplan.web.calendars;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 import static org.libreplan.web.common.Util.findOrCreate;
 
 import java.text.DateFormatSymbols;

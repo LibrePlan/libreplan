@@ -19,7 +19,7 @@
 
 package org.libreplan.web.users.dashboard;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 import org.joda.time.LocalDate;
 import org.libreplan.business.common.entities.PersonalTimesheetsPeriodicityEnum;

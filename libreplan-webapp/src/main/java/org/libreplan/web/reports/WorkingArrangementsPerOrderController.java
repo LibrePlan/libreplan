@@ -44,7 +44,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 /**
  * @author Diego Pino Garcia <dpino@igalia.com>

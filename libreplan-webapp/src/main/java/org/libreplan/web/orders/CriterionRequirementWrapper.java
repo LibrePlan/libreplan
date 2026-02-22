@@ -25,7 +25,7 @@
 
 package org.libreplan.web.orders;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 import org.libreplan.business.INewObject;
 import org.libreplan.business.requirements.entities.CriterionRequirement;

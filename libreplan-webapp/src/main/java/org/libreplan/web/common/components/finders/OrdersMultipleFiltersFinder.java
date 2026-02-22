@@ -36,7 +36,7 @@ import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.resources.entities.CriterionType;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 
 /**

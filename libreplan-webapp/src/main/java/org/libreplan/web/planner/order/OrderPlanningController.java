@@ -22,7 +22,7 @@
 
 package org.libreplan.web.planner.order;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 import java.util.ArrayList;
 import java.util.Arrays;

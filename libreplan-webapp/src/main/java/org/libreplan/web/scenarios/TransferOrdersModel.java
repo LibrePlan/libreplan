@@ -21,7 +21,7 @@
 
 package org.libreplan.web.scenarios;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 import java.util.HashMap;
 import java.util.HashSet;

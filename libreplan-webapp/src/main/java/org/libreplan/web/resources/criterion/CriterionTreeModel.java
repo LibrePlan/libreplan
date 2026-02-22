@@ -27,7 +27,7 @@
 package org.libreplan.web.resources.criterion;
 
 import static org.libreplan.business.common.exceptions.ValidationException.invalidValue;
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 import java.util.ArrayList;
 import java.util.Arrays;

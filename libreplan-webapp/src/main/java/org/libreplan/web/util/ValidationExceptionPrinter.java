@@ -19,7 +19,7 @@
 
 package org.libreplan.web.util;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.common.exceptions.ValidationException.InvalidValue;

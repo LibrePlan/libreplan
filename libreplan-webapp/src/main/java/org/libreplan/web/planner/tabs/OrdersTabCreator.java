@@ -20,7 +20,7 @@
  */
 package org.libreplan.web.planner.tabs;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 import static org.libreplan.web.planner.tabs.MultipleTabsPlannerController.BREADCRUMBS_SEPARATOR;
 import static org.libreplan.web.planner.tabs.MultipleTabsPlannerController.getSchedulingLabel;
 

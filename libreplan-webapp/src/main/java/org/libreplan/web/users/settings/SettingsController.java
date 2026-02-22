@@ -44,7 +44,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 /**
  * Controller for user settings.

@@ -21,7 +21,7 @@
 
 package org.libreplan.web.limitingresources;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 import java.io.IOException;
 import java.math.BigDecimal;

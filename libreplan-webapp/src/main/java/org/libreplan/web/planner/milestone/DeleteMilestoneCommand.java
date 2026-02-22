@@ -20,7 +20,7 @@
  */
 package org.libreplan.web.planner.milestone;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.planner.entities.TaskMilestone;

@@ -22,7 +22,7 @@
  */
 package org.libreplan.web.subcontract;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 import java.io.IOException;
 import java.util.List;

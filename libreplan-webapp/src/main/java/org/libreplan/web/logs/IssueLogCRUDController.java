@@ -48,7 +48,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 
 /**

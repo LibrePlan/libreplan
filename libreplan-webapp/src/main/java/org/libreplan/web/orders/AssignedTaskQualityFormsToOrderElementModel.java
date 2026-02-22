@@ -22,7 +22,7 @@
 package org.libreplan.web.orders;
 
 import static org.libreplan.business.common.exceptions.ValidationException.invalidValue;
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;

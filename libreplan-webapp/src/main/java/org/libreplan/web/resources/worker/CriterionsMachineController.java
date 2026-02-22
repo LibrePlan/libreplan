@@ -24,7 +24,7 @@
  */
 package org.libreplan.web.resources.worker;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 import static org.libreplan.web.common.InvalidInputsChecker.isInvalid;
 import static org.libreplan.web.common.InvalidInputsChecker.thereAreInvalidInputsOn;
 

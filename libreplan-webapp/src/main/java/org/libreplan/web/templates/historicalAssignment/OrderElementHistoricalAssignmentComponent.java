@@ -51,7 +51,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 /**
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>

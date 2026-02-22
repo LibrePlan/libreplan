@@ -74,7 +74,7 @@ import org.zkoss.zkplus.spring.SpringUtil;
 
 import java.util.Map;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 import static org.zkoss.ganttz.adapters.TabsConfiguration.configure;
 
 /**

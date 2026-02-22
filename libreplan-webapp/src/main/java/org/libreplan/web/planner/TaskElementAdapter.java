@@ -21,7 +21,7 @@
 
 package org.libreplan.web.planner;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 import static org.libreplan.web.common.Util.addCurrencySymbol;
 import static org.zkoss.ganttz.data.constraint.ConstraintOnComparableValues.biggerOrEqualThan;
 import static org.zkoss.ganttz.data.constraint.ConstraintOnComparableValues.equalTo;

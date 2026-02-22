@@ -28,7 +28,7 @@ import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Tree;
 import org.zkoss.zul.Treeitem;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 /**
  * Encapsulates the operations (up, down, indent, unindent, etc) for an element of the tree.

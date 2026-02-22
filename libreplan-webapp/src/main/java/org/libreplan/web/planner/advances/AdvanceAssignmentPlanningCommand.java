@@ -21,7 +21,7 @@
 
 package org.libreplan.web.planner.advances;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.planner.entities.TaskElement;

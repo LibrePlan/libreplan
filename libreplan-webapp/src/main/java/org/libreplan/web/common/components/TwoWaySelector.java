@@ -40,7 +40,7 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.Arrays;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 /**
  * ZK macro component that shows two {@link Listbox} allowing to move objects

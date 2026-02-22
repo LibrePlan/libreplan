@@ -19,7 +19,7 @@
 
 package org.libreplan.web.dashboard;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 import java.io.BufferedReader;
 import java.io.IOException;
