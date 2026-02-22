@@ -65,7 +65,7 @@ public class MonteCarloModel implements IMonteCarloModel {
     @Autowired
     private ITaskElementDAO taskDAO;
 
-    private static String criticalPath = _("Critical path");
+    private static String criticalPath = _t("Critical path");
 
     private static String defaultCriticalPath = criticalPath + " 1";
 

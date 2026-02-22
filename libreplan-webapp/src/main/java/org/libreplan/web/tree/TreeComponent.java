@@ -41,21 +41,21 @@ public abstract class TreeComponent extends HtmlMacroComponent {
 
     private static final String CONTROLLER_NAME = "treeController";
 
-    protected Column codeColumn = new Column(_("Code"), "code") {
+    protected Column codeColumn = new Column(_t("Code"), "code") {
         @Override
         public <T extends ITreeNode<T>> void doCell(TreeController<T>.Renderer renderer, Treeitem item, T currentElement) {
             renderer.addCodeCell(currentElement);
         }
     };
 
-    protected final Column nameAndDescriptionColumn = new Column(_("Name"), "name") {
+    protected final Column nameAndDescriptionColumn = new Column(_t("Name"), "name") {
         @Override
         public <T extends ITreeNode<T>> void doCell(TreeController<T>.Renderer renderer, Treeitem item, T currentElement) {
             renderer.addDescriptionCell(currentElement);
         }
     };
 
-    protected final Column operationsColumn = new Column(_("Op."), "operations", _("Operations")) {
+    protected final Column operationsColumn = new Column(_t("Op."), "operations", _t("Operations")) {
         @Override
         public <T extends ITreeNode<T>> void doCell(TreeController<T>.Renderer renderer, Treeitem item, T currentElement) {
             renderer.addOperationsCell(item, currentElement);
@@ -63,9 +63,9 @@ public abstract class TreeComponent extends HtmlMacroComponent {
     };
 
     protected final Column schedulingStateColumn = new Column(
-            _("Scheduling state"),
+            _t("Scheduling state"),
             "scheduling_state",
-            _("Fully, Partially or Unscheduled. (Drag and drop to move tasks)")) {
+            _t("Fully, Partially or Unscheduled. (Drag and drop to move tasks)")) {
 
         @Override
         public <T extends ITreeNode<T>> void doCell(TreeController<T>.Renderer renderer, Treeitem item, T currentElement) {
@@ -157,7 +157,7 @@ public abstract class TreeComponent extends HtmlMacroComponent {
     }
 
     public String getAddElementLabel() {
-        return _("Add");
+        return _t("Add");
     }
 
     public boolean isCreateTemplateEnabled() {
@@ -169,6 +169,6 @@ public abstract class TreeComponent extends HtmlMacroComponent {
     }
 
     public String getRemoveElementLabel() {
-        return _("Delete task");
+        return _t("Delete task");
     }
 }

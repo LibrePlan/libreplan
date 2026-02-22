@@ -27,9 +27,9 @@ package org.libreplan.web.common.components.finders;
 
 public enum OrderFilterEnum implements IFilterEnum {
 
-    Criterion(_("Criterion")), Label(_("Label")), ExternalCompany(_("Customer")), State(
-            _("State")), Code(_("Code")), CustomerReference(
-            _("Customer Reference"));
+    Criterion(_t("Criterion")), Label(_t("Label")), ExternalCompany(_t("Customer")), State(
+            _t("State")), Code(_t("Code")), CustomerReference(
+            _t("Customer Reference"));
     /**
      * Forces to mark the string as needing translation
      */

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Critères</title>
+<link rel="stylesheet" href="html/lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="criteres">
+<h1 class="title">Critères</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#administration-des-criteres" id="toc-entry-1">Administration des critères</a></li>
+</ul>
+</div>
+<p>Les critères sont des éléments qui sont utilisés pour catégoriser les ressources et les tâches. Les tâches nécessitent des critères et les ressources les satisfont. Voici un exemple d'utilisation des critères : une ressource est dotée du critère &quot;soudeur&quot; (c'est-à-dire que la ressource satisfait à la catégorie &quot;soudeur&quot;) et une tâche nécessite le critère &quot;soudeur&quot; pour être menée à bien. Au résultat, quand les ressources sont affectées aux tâches, les employés dotés du critère &quot;soudeur&quot; sont utilisés lorsqu'on procède à une affectation générique (ce n'est pas applicable pour une affectation spécifique). Voir le chapitre concernant l'affectation des ressources pour en savoir plus sur les différentes sortes d'affectation.</p>
+<p>Plusieurs opérations peuvent être réalisées à l'aide des critères :</p>
+<ul class="simple">
+<li>Administration des critères</li>
+<li>Affectation de critères à des ressources</li>
+<li>Affectation de critères à des tâches</li>
+<li>Filtrage d'entités selon les critères. Les tâches et les projets peuvent être filtrés selon des critères en vue de réaliser une opération.</li>
+</ul>
+<p>Seule la première de ces opérations sera expliquée dans cette section. Les deux sortes d'affectations seront traitées ultérieurement, l'affectation de ressources dans le chapitre &quot;gestion des ressources&quot; et la fonction de filtrage dans le chapitre &quot;planification des tâches&quot;.</p>
+<div class="section" id="administration-des-criteres">
+<h1><a class="toc-backref" href="#toc-entry-1">Administration des critères</a></h1>
+<p>On accède à l'administration des critères depuis le menu <em>Ressources</em>, sous-menu <em>Critères</em> :</p>
+<div class="figure">
+<img alt="images/menu.png" src="images/menu.png" style="width: 307.5px; height: 158.0px;" />
+<p class="caption">Onglets du menu de premier niveau</p>
+</div>
+<div class="figure">
+<img alt="images/lista-criterios.png" src="images/lista-criterios.png" style="width: 510.0px; height: 82.5px;" />
+<p class="caption">Liste des critères</p>
+</div>
+<p>On accède au formulaire de création/modification en cliquant sur le bouton <em>Créer</em>. Un critère peut être modifié en cliquant sur l'icône de modification.</p>
+<div class="figure">
+<img alt="images/edicion_criterio.png" src="images/edicion_criterio.png" style="width: 510.0px; height: 237.5px;" />
+<p class="caption">Modifier un critère</p>
+</div>
+<p>Les opérations suivantes peuvent être réalisées en utilisant le formulaire de modification des critères montré dans l'image précédente :</p>
+<ul class="simple">
+<li>Modifier le nom du critère</li>
+<li>Indiquer le type du critère :<ul>
+<li>type générique : le critère peut être utilisé aussi bien pour les machines que pour les employés.</li>
+<li>type employé : le critère ne peut être utilisé que pour les employés.</li>
+<li>type machine : le critère ne peut être utilisé que pour les machines.</li>
+</ul>
+</li>
+<li>Indiquer si, pour le type de critère sélectionné, plusieurs valeurs peuvent être affectées en même temps ou si on est limité à une seule. Par exemple, une ressource qui remplirait deux critères : soudeur et opérateur tourneur.</li>
+<li>Indiquer si le critère est hiérarchique ou non. Si c'est le cas, un critère affecté à un élément est également affecté aux sous-éléments. Un bon exemple est le critère de localisation: un employé auquel on attribue le critère de localisation <tt class="docutils literal">Paris</tt> possédera automatiquement le critère de localisation <tt class="docutils literal">France</tt>.</li>
+<li>Indiquer si le critère est activé ou ou pas. C'est de cette manière que l'on peut supprimer des critères. Étant donné qu'un critère ne peut pas être modifié une fois qu'il a été créé et qu'il est utilisé dans les données historisées, le critère doit rester dans le système. Il peut être désactivé pour éviter qu'il n'apparaisse dans les différents éléments de choix lors de nouvelles affectations.</li>
+<li>Décrire le critère</li>
+<li>Ajouter de nouvelles valeurs. Une entrée texte suivie du bouton <em>Ajouter</em> se trouve dans la seconde partie du formulaire.</li>
+</ul>
+<p>Dans la liste qui suit, on peut :</p>
+<ul class="simple">
+<li>monter ou descendre un critère dans la liste des critères actuels avec les icônes flèches gauche et droite ou par drag'n'drop</li>
+<li>décaler le critère vers un niveau supérieur ou inférieur si le type de critère est hiérarchique à l'aide des icônes flèches avec barre droite et gauche ou par drag'n'drop.</li>
+<li>supprimer une valeur de critère de la liste.</li>
+</ul>
+<p>Le formulaire de gestion des critères se comporte comme les formulaires dotés des 3 opérations (<em>enregistrer</em>, <em>enregistrer et continuer</em>, <em>fermer</em>) décrits dans l'introduction.</p>
+</div>
+</div>
+</body>
+</html>

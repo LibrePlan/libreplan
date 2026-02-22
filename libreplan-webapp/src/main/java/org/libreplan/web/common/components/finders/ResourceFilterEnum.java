@@ -26,7 +26,7 @@ package org.libreplan.web.common.components.finders;
 
 public enum ResourceFilterEnum implements IFilterEnum {
 
-    Criterion(_("Criterion")), CostCategory(_("Cost category"));
+    Criterion(_t("Criterion")), CostCategory(_t("Cost category"));
 
     /**
      * Forces to mark the string as needing translation

@@ -122,12 +122,12 @@ public class PersonalTimesheetDTO {
                         string += " (" + start.toString(MMMM_d_Y_PATTERN) + " - " + end.toString(MMMM_d_Y_PATTERN) + ")";
                     }
                 }
-                return _("Week {0}", string);
+                return _t("Week {0}", string);
 
             case TWICE_MONTHLY:
                 return (date.getDayOfMonth() <= 15)
-                        ? _("{0} 1st fortnight", date.toString(MMMM_d_Y_PATTERN))
-                        : _("{0} 2nd fortnight", date.toString(MMMM_d_Y_PATTERN));
+                        ? _t("{0} 1st fortnight", date.toString(MMMM_d_Y_PATTERN))
+                        : _t("{0} 2nd fortnight", date.toString(MMMM_d_Y_PATTERN));
 
             case MONTHLY:
             default:

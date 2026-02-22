@@ -53,16 +53,16 @@ public class TimeLineRole<T> {
      */
     public enum TimeLineRoleEnum {
 
-        NONE(_("None")),
-        WORKER(_("Worker")),
-        ORDER(_("Project")),
-        TASK(_("Task")) {
+        NONE(_t("None")),
+        WORKER(_t("Worker")),
+        ORDER(_t("Project")),
+        TASK(_t("Task")) {
             @Override
             public boolean isVisibleScheduled() {
                 return true;
             }
         },
-        CRITERION(_("Criterion"));
+        CRITERION(_t("Criterion"));
 
         private String name;
 

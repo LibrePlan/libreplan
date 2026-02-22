@@ -52,7 +52,7 @@ public class NewAllocationSelector extends AllocationSelector {
 
     public enum AllocationType {
 
-        GENERIC_WORKERS(_("generic workers allocation")) {
+        GENERIC_WORKERS(_t("generic workers allocation")) {
             @Override
             public void addTo(NewAllocationSelectorController controller, INewAllocationsAdder allocationsAdder) {
                 allocationsAdder.addGeneric(
@@ -72,7 +72,7 @@ public class NewAllocationSelector extends AllocationSelector {
             }
         },
 
-        GENERIC_MACHINES(_("generic machines allocation")) {
+        GENERIC_MACHINES(_t("generic machines allocation")) {
             @Override
             public void addTo(NewAllocationSelectorController controller, INewAllocationsAdder allocationsAdder) {
                 List<Criterion> criteria = controller.getSelectedCriterions();
@@ -90,7 +90,7 @@ public class NewAllocationSelector extends AllocationSelector {
             }
         },
 
-        SPECIFIC(_("specific allocation")) {
+        SPECIFIC(_t("specific allocation")) {
             @Override
             public void addTo(NewAllocationSelectorController controller, INewAllocationsAdder allocationsAdder) {
                 allocationsAdder.addSpecific(controller.getSelectedWorkers());

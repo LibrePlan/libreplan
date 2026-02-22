@@ -95,8 +95,8 @@ public class UserCRUDController extends BaseCRUDController<User> implements IUse
         row.setValue(user);
 
         Util.appendLabel(row, user.getLoginName());
-        Util.appendLabel(row, user.isDisabled() ? _("Yes") : _("No"));
-        Util.appendLabel(row, user.isSuperuser() ? _("Yes") : _("No"));
+        Util.appendLabel(row, user.isDisabled() ? _t("Yes") : _t("No"));
+        Util.appendLabel(row, user.isSuperuser() ? _t("Yes") : _t("No"));
         Util.appendLabel(row, _(user.getUserType().toString()));
         Util.appendLabel(row, user.isBound() ? user.getWorker().getShortDescription() : "");
 
@@ -106,7 +106,7 @@ public class UserCRUDController extends BaseCRUDController<User> implements IUse
         // Disable remove button for default admin as it's mandatory
         if ( isDefaultAdmin(user) ) {
             buttons[1].setDisabled(true);
-            buttons[1].setTooltiptext(_("Default user \"admin\" cannot be removed as it is mandatory"));
+            buttons[1].setTooltiptext(_t("Default user \"admin\" cannot be removed as it is mandatory"));
         }
     };
 
@@ -283,19 +283,19 @@ public class UserCRUDController extends BaseCRUDController<User> implements IUse
             ((Textbox) comp).setRawValue(value);
 
             if (!value.equals(passwordBox.getValue())) {
-                throw new WrongValueException(comp, _("passwords don't match"));
+                throw new WrongValueException(comp, _t("passwords don't match"));
             }
         };
     }
 
     @Override
     protected String getEntityType() {
-        return _("User");
+        return _t("User");
     }
 
     @Override
     protected String getPluralEntityType() {
-        return _("Users");
+        return _t("Users");
     }
 
     @Override
@@ -303,7 +303,7 @@ public class UserCRUDController extends BaseCRUDController<User> implements IUse
         userModel.initCreate();
 
         // Password is compulsory when creating
-        passwordBox.setConstraint("no empty:" + _("Password cannot be empty"));
+        passwordBox.setConstraint("no empty:" + _t("Password cannot be empty"));
 
         // Clean the password boxes, they are not cleared automatically because they are not directly associated to an attribute
         passwordBox.setRawValue("");
@@ -352,9 +352,9 @@ public class UserCRUDController extends BaseCRUDController<User> implements IUse
         Worker worker = user.getWorker();
 
         return worker == null ||
-                Messagebox.show(_("User is bound to resource \"{0}\" and it will be unbound. " +
+                Messagebox.show(_t("User is bound to resource \"{0}\" and it will be unbound. " +
                                 "Do you want to continue with user removal?", worker.getShortDescription()),
-                        _("Confirm remove user"), Messagebox.YES | Messagebox.NO, Messagebox.QUESTION) == Messagebox.YES;
+                        _t("Confirm remove user"), Messagebox.YES | Messagebox.NO, Messagebox.QUESTION) == Messagebox.YES;
     }
 
     @Override
@@ -396,7 +396,7 @@ public class UserCRUDController extends BaseCRUDController<User> implements IUse
 
     public String hasBoundResource() {
         User user = getUser();
-        return user != null && user.isBound() ? _("Yes") : _("No");
+        return user != null && user.isBound() ? _t("Yes") : _t("No");
     }
 
     public String getBoundResource() {
@@ -418,8 +418,8 @@ public class UserCRUDController extends BaseCRUDController<User> implements IUse
     }
 
     private int showConfirmWorkerEditionDialog() {
-        return Messagebox.show(_("Unsaved changes will be lost. Would you like to continue?"),
-                _("Confirm edit worker"), Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION);
+        return Messagebox.show(_t("Unsaved changes will be lost. Would you like to continue?"),
+                _t("Confirm edit worker"), Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION);
     }
 
     public void unboundResource() {
@@ -432,7 +432,7 @@ public class UserCRUDController extends BaseCRUDController<User> implements IUse
     }
 
     public String getWorkerEditionButtonTooltip() {
-        return isNoRoleWorkers() ? _("You do not have permissions to go to edit worker window") : "";
+        return isNoRoleWorkers() ? _t("You do not have permissions to go to edit worker window") : "";
     }
 
     private boolean isDefaultAdmin(final User user) {
@@ -459,7 +459,7 @@ public class UserCRUDController extends BaseCRUDController<User> implements IUse
 
     public void setAuthenticationType(Comboitem item) {
         if (item == null) {
-            throw new WrongValueException(editWindow.getFellowIfAny("authenticationTypeCombo"), _("cannot be empty"));
+            throw new WrongValueException(editWindow.getFellowIfAny("authenticationTypeCombo"), _t("cannot be empty"));
         }
 
         UserAuthenticationType authenticationType = item.getValue();
@@ -492,15 +492,15 @@ public class UserCRUDController extends BaseCRUDController<User> implements IUse
         Limits usersTypeLimit = limitsModel.getUsersType();
 
         if (isNullOrZeroValue(usersTypeLimit)) {
-            return _("Create");
+            return _t("Create");
         }
 
         Integer users = userModel.getRowCount().intValue();
         int usersLeft = usersTypeLimit.getValue() - users;
         
         return users >= usersTypeLimit.getValue()
-                ? _("User limit reached")
-                : _("Create") + " ( " + usersLeft  + " " + _("left") + " )";
+                ? _t("User limit reached")
+                : _t("Create") + " ( " + usersLeft  + " " + _t("left") + " )";
     }
 
     private boolean isNullOrZeroValue (Limits usersTypeLimit) {

@@ -43,7 +43,7 @@ public class ResourceBandboxFinder extends BandboxFinder implements IBandboxFind
     @Autowired
     private IResourceDAO resourceDAO;
 
-    private final String headers[] = { _("Resource") };
+    private final String headers[] = { _t("Resource") };
 
     /**
      * Forces to mark the string as needing translation

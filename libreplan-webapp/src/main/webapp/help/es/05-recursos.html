@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Gestión de recursos</title>
+<link rel="stylesheet" href="html/lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="gestion-de-recursos">
+<h1 class="title">Gestión de recursos</h1>
+
+<div class="contents topic" id="contents">
+<span id="recursos"></span><p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#gestion-de-trabajadores" id="toc-entry-1">Gestión de trabajadores</a></li>
+<li><a class="reference internal" href="#gestion-de-maquinas" id="toc-entry-2">Gestión de máquinas</a></li>
+<li><a class="reference internal" href="#grupos-de-trabajadores-virtuales" id="toc-entry-3">Grupos de trabajadores virtuales</a></li>
+<li><a class="reference internal" href="#recursos-limitantes" id="toc-entry-4">Recursos limitantes</a></li>
+</ul>
+</div>
+<p>La aplicación gestiona dos tipos de recursos diferentes: recursos trabajadores y recursos máquinas.</p>
+<p>Los recursos trabajadores representan los trabajadores de las empresas. Las características principales son:</p>
+<ul class="simple">
+<li>Satisfacen uno o varios criterios de tipo genérico o tipo trabajador.</li>
+<li>Son asignables específicamente a una tarea.</li>
+<li>Son asignables como parte de la asignación genérica a una tarea que requiera un criterio de tipo recurso.</li>
+<li>Dispondrán de un calendario por defecto o específico si así lo decide el usuario.</li>
+</ul>
+<p>Los recursos máquina representan las máquinas de las empresas. Las características principales son:</p>
+<ul class="simple">
+<li>Satisfacen uno o varios criterios de tipo genérico o tipo máquina.</li>
+<li>Son asignables específicamente a una tarea.</li>
+<li>Son asignables como parte de la asignación genérica a una tarea que requiera un criterio de tipo máquina.</li>
+<li>Dispondrán de un calendario por defecto o específico si así lo decide el usuario.</li>
+<li>Contará con una pantalla de configuración en la que se podrá establecer un valor <em>alfa</em> que represente la relación entre máquina y trabajador.<ul>
+<li>El <em>alfa</em> representa cuanto tiempo de un trabajador es necesario para que la máquina funcione. Por ejemplo, un alfa de 0.5 indica que de cada 8 horas de máquina son necesarias 4 de un trabajador.</li>
+<li>Es posible asignar un <em>alfa</em> de manera específica a un trabajador, es decir, se elige el trabajador que estará ocupado ese porcentaje de su tiempo con la máquina.</li>
+<li>O bien, es posible hacer una asignación genérica en base a un criterio, de modo que se asigna un porcentaje del uso a todos los criterios que satisfacen ese criterio y tienen tiempo disponible. El funcionamiento de la asignación genérica es la misma que la explicada para asignaciones genéricas a tareas.</li>
+</ul>
+</li>
+</ul>
+<p>El usuario puede crear, editar e invalidar (nunca borrar definitivamente) trabajadores de la empresa desde la pestaña de &quot;Recursos&quot;. Desde dicha pestaña existen las siguientes operaciones:</p>
+<ul class="simple">
+<li>Listado de trabajadores: Los trabajadores se mostrarán listados y paginados, desde donde pueden gestionar sus datos.</li>
+<li>Listado de máquinas: Las máquinas se mostrarán listados y paginados, desde donde pueden gestionar sus datos.</li>
+</ul>
+<div class="section" id="gestion-de-trabajadores">
+<h1><a class="toc-backref" href="#toc-entry-1">Gestión de trabajadores</a></h1>
+<p>La gestión de trabajadores se realiza desde la pestaña de &quot;Recursos&quot; y la operación de &quot;Lista de trabajadores&quot;. Desde la lista de recursos es posible editar cada uno de los trabajadores presionando en el icono estándar de edición.</p>
+<p>Una vez en la edición de un recurso, el usuario puede acceder a las siguientes pestañas:</p>
+<ol class="arabic simple">
+<li>Pestaña de datos de trabajador. Esta pestaña permite editar los datos básicos de identificación del trabajador.<ul>
+<li>Nombre</li>
+<li>Apellidos</li>
+<li>DNI</li>
+<li>Recursos limitantes (ver sección)</li>
+</ul>
+</li>
+</ol>
+<div class="figure">
+<img alt="images/worker-personal-data.png" src="images/worker-personal-data.png" style="width: 444.5px; height: 102.0px;" />
+<p class="caption">Edición de datos personales de trabajador</p>
+</div>
+<ol class="arabic simple" start="2">
+<li>Pestaña de criterios. Desde este punto se podrá configurar los criterios que un trabajador satisface. El usuario puede asignar cualquier valor de criterio de tipo trabajador o genérico que así considere a un trabajador. ES importante, para que la aplicación sea utilizada en todo su valor, que los trabajadores satisfagan criterios. Para asignar criterios el usuario debe:<ol class="lowerroman">
+<li>Presionar en el botón &quot;Añadir criterio&quot;.</li>
+<li>Buscar el criterio que desea añadir y seleccionar lo que encaje con su búsqueda.</li>
+<li>Presionar en el botón de añadir.</li>
+<li>Seleccionar fecha de inicio del criterio desde el momento que se aplica.</li>
+<li>Seleccionar la fecha de fin de aplicación del criterio al recurso. Dicha fecha no es obligatoria indicando que el criterio es indefinido.</li>
+</ol>
+</li>
+</ol>
+<div class="figure">
+<img alt="images/worker-criterions.png" src="images/worker-criterions.png" style="width: 443.5px; height: 147.0px;" />
+<p class="caption">Asociación de criterios a trabajador</p>
+</div>
+<ol class="arabic simple" start="3">
+<li>Pestaña de calendario. Pestaña desde la que se puede configurar un calendario específico para el recurso trabajador. Cada trabajador dispone de un calendario por defecto asignado, sin embargo, es posible asignar un calendario específico para cada uno a partir de uno existente.</li>
+</ol>
+<div class="figure">
+<img alt="images/worker-calendar.png" src="images/worker-calendar.png" style="width: 442.5px; height: 247.0px;" />
+<p class="caption">Pestaña de calendario para un recurso</p>
+</div>
+<ol class="arabic simple" start="4">
+<li>Pestaña de categoría de coste. Pestaña desde la que se puede configurar la categoría de coste que satisface un recurso en un período dado. Estos datos son utilizados para posteriormente calcular los costes asociados al trabajador en un proyecto.</li>
+</ol>
+<div class="figure">
+<img alt="images/worker-costcategory.png" src="images/worker-costcategory.png" style="width: 443.0px; height: 129.0px;" />
+<p class="caption">Pestaña de categoría de coste para recurso</p>
+</div>
+<p>La asignación de recursos se explica en la sección de asignación de recursos.</p>
+</div>
+<div class="section" id="gestion-de-maquinas">
+<h1><a class="toc-backref" href="#toc-entry-2">Gestión de máquinas</a></h1>
+<p>Las máquinas son recursos a todos los efectos, por lo cual, tal y como sucede con los trabajadores, las máquinas son administrables y asignables a tareas. La asignación de recursos se tratará en la sección de asignación. En este punto se explicarán las características específicas de las máquinas.</p>
+<p>Las máquinas son administradas desde la entrada de menú &quot;Recursos&quot;. En dicha sección existe una operación llamada &quot;Listado de máquinas&quot; que permite la visualización de las máquinas que disponen en una empresa. A partir de este listado se podrá editar o borrar una máquina.</p>
+<p>En la edición de una máquina el sistema muestra una serie de pestañas desde las cuáles se permite administrar diferentes datos:</p>
+<ol class="arabic">
+<li><p class="first">Pestaña de datos de la máquina. Pestaña para la edición de datos identificativos de las máquinas. Los datos modificables en esta pestaña son:</p>
+<p>i Nombre.</p>
+<p>ii Código de la máquina.</p>
+<p>iii Descripción de la máquina.</p>
+</li>
+</ol>
+<div class="figure">
+<img alt="images/machine-data.png" src="images/machine-data.png" style="width: 444.0px; height: 97.0px;" />
+<p class="caption">Edición de datos de máquina</p>
+</div>
+<ol class="arabic simple" start="2">
+<li>Pestaña de criterios. Tal y como se comentó en la anterior sección de recursos trabajadores, esta es la pestaña en la que se pueden añadir criterios que satisfacen las diversas máquinas del sistema. Los criterios que son asignables a las máquinas son los de criterios de tipo máquina o genéricos. No se pueden asignar criterios de trabajadores. Para asignar criterios, el usuario debe:<ol class="lowerroman">
+<li>Presionar en el botón &quot;Añadir criterio&quot;.</li>
+<li>Buscar el criterio que desea añadir y seleccionar lo que encaje con su búsqueda.</li>
+<li>Seleccionar fecha de inicio del criterio desde el momento que deba aplicarse.</li>
+<li>Seleccionar la fecha de fin de aplicación del criterio al recurso. Dicha fecha no es obligatoria indicando que el criterio es indefinido.</li>
+<li>Presionar en el botón de &quot;Guardar y Continuar&quot;.</li>
+</ol>
+</li>
+</ol>
+<div class="figure">
+<img alt="images/machine-criterions.png" src="images/machine-criterions.png" style="width: 444.0px; height: 140.0px;" />
+<p class="caption">Asignación de criterios a máquinas</p>
+</div>
+<ol class="arabic simple" start="3">
+<li>Pestaña de calendario. Pestaña desde la que se puede configurar un calendario específico para el recurso máquina. Cada trabajador dispone de un calendario por defecto asignado, sin embargo, es posible asignar un calendario específico para cada uno a partir de un existente.</li>
+</ol>
+<div class="figure">
+<img alt="images/machine-calendar.png" src="images/machine-calendar.png" style="width: 443.5px; height: 216.5px;" />
+<p class="caption">Asignación de calendario a máquina</p>
+</div>
+<ol class="arabic" start="4">
+<li><p class="first">Pestaña de configuración de máquinas: Desde esta pestaña es posible configurar la relación de las máquinas con los recursos trabajadores existentes. Una máquina dispone de un alfa que indica la relación entre la máquina y los recursos implicados, tal y como ya se comentó, un alfa de 0.5 indica que se consume trabajo de 0.5 personas para cada jornada completa de máquina. El sistema, a partir de un alfa, crea automáticamente asignaciones a los trabajadores que estén de alguna manera relacionados con la máquina una vez se asigna una máquina a una tarea. La forma de relacionar un trabajador con una máquina se puede hacer de dos maneras:</p>
+<p>i Asignando específicamente un rango de fechas en las que el trabajador se desea asignar a una máquina. Es una asignación específica de modo que el sistema asigna automáticamente horas al trabajador cuando se planifique la máquina.</p>
+<p>ii Asignando específicamente criterios que se desea satisfagan los trabajadores que sean asignados a las máquinas. De este modo se hará una asignación genérica a los trabajadores que satisfacen los criterios.</p>
+</li>
+</ol>
+<div class="figure">
+<img alt="images/machine-configuration.png" src="images/machine-configuration.png" style="width: 442.5px; height: 231.5px;" />
+<p class="caption">Configuración de máquina</p>
+</div>
+<ol class="arabic simple" start="5">
+<li>Pestaña de categoría de coste. Pestaña desde la que se puede configurar la categoría de coste que satisface una máquina en un período dado. Estos datos son utilizados para posteriormente calcular los costes asociados al trabajador en un proyecto.</li>
+</ol>
+<div class="figure">
+<img alt="images/machine-costcategory.png" src="images/machine-costcategory.png" style="width: 439.5px; height: 103.0px;" />
+<p class="caption">Asignación de categoría de coste a máquina</p>
+</div>
+</div>
+<div class="section" id="grupos-de-trabajadores-virtuales">
+<h1><a class="toc-backref" href="#toc-entry-3">Grupos de trabajadores virtuales</a></h1>
+<p>La aplicación permite la creación de recursos en el sistema, los cuales no son trabajadores reales, sino que son personal simulado  que permite aumentar la capacidad productiva en un momento determinado según las configuraciones que se definan de su calendario.</p>
+<p>Mediante los grupos de trabajadores virtuales es posible comprobar cómo se vería afectada la planificación de los proyectos, contratando y asignando personal que satisfaga los criterios que se definan, ayudando de este modo en el proceso de toma de decisiones.</p>
+<p>Las pestañas de las que consta el formulario de creación de grupos de trabajadores virtuales son las mismas que las que permiten configurar los trabajadores, y decir:</p>
+<blockquote>
+<ul class="simple">
+<li>Datos generales</li>
+<li>Criterios asignados</li>
+<li>Calendarios</li>
+<li>Horas asociadas</li>
+</ul>
+</blockquote>
+<p>La diferencia con respeto a los trabajadores, es que en los grupos de trabajadores virtuales se especifica un nombre para el grupo y una cantidad que se corresponde con el número de personas reales que forman este grupo. Adicionalmente existe un campo de observaciones en el que se puede aportar información adicional como, por ejemplo, para que proyecto estaría prevista la contratación del equivalente del grupo de recursos virtuales, etc.</p>
+<div class="figure">
+<img alt="images/virtual-resources.png" src="images/virtual-resources.png" style="width: 424.5px; height: 109.0px;" />
+<p class="caption">Recursos virtuales</p>
+</div>
+</div>
+<div class="section" id="recursos-limitantes">
+<h1><a class="toc-backref" href="#toc-entry-4">Recursos limitantes</a></h1>
+<p>Los recursos limitantes son un tipo especial de elementos productivos que sólamente pueden encontrarse no asignados o con un 100% de dedicación. Lo que es lo mismo, no pueden de tener más de una tarea asignada al mismo tiempo o encontrarse sobreplanificados.</p>
+<p>Por cada recurso limitante se crea automáticamente una cola para que las tareas que tiene planificadas puedan ser gestionadas de forma específica mediante los métodos de asignación proporcionados, realizando asignaciones automáticas de las tareas a las colas que cumplan los criterios que requieren o moviendo tareas entre colas.</p>
+</div>
+</div>
+</body>
+</html>

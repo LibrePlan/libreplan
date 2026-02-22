@@ -43,7 +43,7 @@ public class ScenarioBandboxFinder extends BandboxFinder implements IBandboxFind
     @Autowired
     private IScenarioDAO scenarioDAO;
 
-    private final String headers[] = { _("Name") };
+    private final String headers[] = { _t("Name") };
 
     /**
      * Forces to mark the string as needing translation

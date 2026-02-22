@@ -105,7 +105,7 @@ public class ResourcesCostCategoryAssignmentController extends GenericForwardCom
         autocomplete.setAutodrop(true);
         autocomplete.applyProperties();
         autocomplete.setFinder("CostCategoryFinder");
-        autocomplete.setConstraint("no empty:" + _("A category must be selected"));
+        autocomplete.setConstraint("no empty:" + _t("A category must be selected"));
 
         // Getter, show type selected
         if (getCostCategory(row) != null) {
@@ -132,7 +132,7 @@ public class ResourcesCostCategoryAssignmentController extends GenericForwardCom
 
     public void confirmRemove(ResourcesCostCategoryAssignment assignment) {
         int status = Messagebox.show(
-                _("Confirm deleting this hour cost. Are you sure?"), _("Delete"),
+                _t("Confirm deleting this hour cost. Are you sure?"), _t("Delete"),
                 Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION);
 
         if (Messagebox.OK == status) {
@@ -149,7 +149,7 @@ public class ResourcesCostCategoryAssignmentController extends GenericForwardCom
         Button delete = new Button("", "/common/img/ico_borrar1.png");
         delete.setHoverImage("/common/img/ico_borrar.png");
         delete.setSclass("icono");
-        delete.setTooltiptext(_("Delete"));
+        delete.setTooltiptext(_t("Delete"));
 
         delete.addEventListener(Events.ON_CLICK, new EventListener() {
             @Override
@@ -168,7 +168,7 @@ public class ResourcesCostCategoryAssignmentController extends GenericForwardCom
     private void appendDateboxInitDate(final Row row) {
         Datebox initDateBox = new Datebox();
         bindDateboxInitDate(initDateBox, row.getValue());
-        initDateBox.setConstraint("no empty:" + _("Start date cannot be empty"));
+        initDateBox.setConstraint("no empty:" + _t("Start date cannot be empty"));
         row.appendChild(initDateBox);
 
         initDateBox.addEventListener("onChange", new EventListener() {

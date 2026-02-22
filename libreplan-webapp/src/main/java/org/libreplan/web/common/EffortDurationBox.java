@@ -46,7 +46,7 @@ public class EffortDurationBox extends Textbox {
         EffortDuration result = EffortDuration.parseFromFormattedString(value);
         if (result == null) {
             throw new WrongValueException(this,
-                    _("Invalid Effort Duration"));
+                    _t("Invalid Effort Duration"));
         }
         return result;
     }

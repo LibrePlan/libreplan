@@ -126,7 +126,7 @@ public class ScenarioCRUDController extends BaseCRUDController<Scenario> {
             Treecell operationsTreecell = new Treecell();
 
             Button createDerivedButton = new Button();
-            createDerivedButton.setTooltiptext(_("Create derived"));
+            createDerivedButton.setTooltiptext(_t("Create derived"));
             createDerivedButton.setSclass("icono");
             createDerivedButton.setImage("/common/img/ico_derived1.png");
             createDerivedButton.setHoverImage("/common/img/ico_derived.png");
@@ -168,7 +168,7 @@ public class ScenarioCRUDController extends BaseCRUDController<Scenario> {
             }
             operationsTreecell.appendChild(removeButton);
 
-            Button connectButton = new Button(_("Connect"));
+            Button connectButton = new Button(_t("Connect"));
             connectButton.addEventListener(Events.ON_CLICK,
                     new EventListener() {
 
@@ -210,7 +210,7 @@ public class ScenarioCRUDController extends BaseCRUDController<Scenario> {
 
     private void errorHappenedDoingReassignation(Exception exceptionHappened) {
         LOG.error("error happened doing reassignation", exceptionHappened);
-        messagesForUser.showMessage(Level.ERROR, _("error doing reassignment: {0}", exceptionHappened));
+        messagesForUser.showMessage(Level.ERROR, _t("error doing reassignment: {0}", exceptionHappened));
     }
 
     public Set<Order> getOrders() {
@@ -224,12 +224,12 @@ public class ScenarioCRUDController extends BaseCRUDController<Scenario> {
 
     @Override
     protected String getEntityType() {
-        return _("Scenario");
+        return _t("Scenario");
     }
 
     @Override
     protected String getPluralEntityType() {
-        return _("Scenarios");
+        return _t("Scenarios");
     }
 
     @Override

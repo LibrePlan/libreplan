@@ -276,7 +276,7 @@ public class MachineCRUDController extends BaseCRUDController<Machine> {
         Combobox combobox = (Combobox) editWindow.getFellow("createDerivedCalendar");
         Comboitem selectedItem = combobox.getSelectedItem();
         if (selectedItem == null) {
-            throw new WrongValueException(combobox, _("Please, select a calendar"));
+            throw new WrongValueException(combobox, _t("Please, select a calendar"));
         }
 
         BaseCalendar parentCalendar = combobox.getSelectedItem().getValue();
@@ -404,7 +404,7 @@ public class MachineCRUDController extends BaseCRUDController<Machine> {
                         (finishDate.compareTo(filterStartDate.getValue()) < 0)) {
 
                     filterFinishDate.setValue(null);
-                    throw new WrongValueException(comp, _("must be after start date"));
+                    throw new WrongValueException(comp, _t("must be after start date"));
                 }
             }
         };
@@ -420,7 +420,7 @@ public class MachineCRUDController extends BaseCRUDController<Machine> {
                         (startDate.compareTo(filterFinishDate.getValue()) > 0)) {
 
                     filterStartDate.setValue(null);
-                    throw new WrongValueException(comp, _("must be lower than end date"));
+                    throw new WrongValueException(comp, _t("must be lower than end date"));
                 }
             }
         };
@@ -533,7 +533,7 @@ public class MachineCRUDController extends BaseCRUDController<Machine> {
 
             messagesForUser.showMessage(
                     Level.WARNING,
-                    _("Machine cannot be deleted. Machine is allocated to a project or contains imputed hours"));
+                    _t("Machine cannot be deleted. Machine is allocated to a project or contains imputed hours"));
 
             return false;
         }
@@ -546,7 +546,7 @@ public class MachineCRUDController extends BaseCRUDController<Machine> {
         try {
             machineModel.confirmRemove(machine);
         } catch (InstanceNotFoundException e) {
-            messagesForUser.showMessage(Level.INFO, _("Machine was already removed"));
+            messagesForUser.showMessage(Level.INFO, _t("Machine was already removed"));
         }
     }
 
@@ -560,7 +560,7 @@ public class MachineCRUDController extends BaseCRUDController<Machine> {
             row.appendChild(new Label(machine.getName()));
             row.appendChild(new Label(machine.getDescription()));
             row.appendChild(new Label(machine.getCode()));
-            row.appendChild(new Label((Boolean.TRUE.equals(machine.isLimitingResource())) ? _("yes") : _("no")));
+            row.appendChild(new Label((Boolean.TRUE.equals(machine.isLimitingResource())) ? _t("yes") : _t("no")));
 
             Hbox hbox = new Hbox();
             hbox.appendChild(Util.createEditButton(event -> goToEditForm(machine)));
@@ -571,12 +571,12 @@ public class MachineCRUDController extends BaseCRUDController<Machine> {
 
     @Override
     protected String getEntityType() {
-        return _("Machine");
+        return _t("Machine");
     }
 
     @Override
     protected String getPluralEntityType() {
-        return _("Machines");
+        return _t("Machines");
     }
 
     @Override
@@ -606,15 +606,15 @@ public class MachineCRUDController extends BaseCRUDController<Machine> {
         Limits resourcesTypeLimit = limitsModel.getResourcesType();
 
         if (isNullOrZeroValue(resourcesTypeLimit)) {
-            return _("Create");
+            return _t("Create");
         }
 
         Integer resources = resourceDAO.getRowCount().intValue();
         int resourcesLeft = resourcesTypeLimit.getValue() - resources;
 
         return resources >= resourcesTypeLimit.getValue()
-                ? _("Machines limit reached")
-                : _("Create") + " ( " + resourcesLeft  + " " + _("left") + " )";
+                ? _t("Machines limit reached")
+                : _t("Create") + " ( " + resourcesLeft  + " " + _t("left") + " )";
     }
 
     private boolean isNullOrZeroValue (Limits resourcesTypeLimit) {

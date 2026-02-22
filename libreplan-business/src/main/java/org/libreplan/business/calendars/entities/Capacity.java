@@ -19,7 +19,7 @@
 package org.libreplan.business.calendars.entities;
 
 
-import static org.libreplan.business.i18n.I18nHelper._;
+import static org.libreplan.business.i18n.I18nHelper._t;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -170,7 +170,7 @@ public class Capacity {
 
     public String getExtraEffortString() {
         if (getAllowedExtraEffort() == null) {
-            return _("unlimited");
+            return _t("unlimited");
         }
         return asString(getAllowedExtraEffort());
     }

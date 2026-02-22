@@ -325,14 +325,14 @@ public class ManualAllocationController extends GenericForwardComposer {
             if (isAppropriative()) {
                 LimitingResourceQueueElement beingEdited = getBeingEditedElement();
                 if (selectedDay.compareTo(new LocalDate(beingEdited.getEarliestStartDateBecauseOfGantt())) < 0) {
-                    throw new WrongValueException(startAllocationDate, _("Day is not valid"));
+                    throw new WrongValueException(startAllocationDate, _t("Day is not valid"));
                 }
 
                 return new DateAndHour(selectedDay, 0);
             } else {
                 DateAndHour allocationTime = getValidDayInGap(selectedDay, getSelectedGap());
                 if (allocationTime == null) {
-                    throw new WrongValueException(startAllocationDate, _("Day is not valid"));
+                    throw new WrongValueException(startAllocationDate, _t("Day is not valid"));
                 }
 
                 return allocationTime;
@@ -506,7 +506,7 @@ public class ManualAllocationController extends GenericForwardComposer {
         }
 
         private String formatTime(DateAndHour time) {
-            return time == null ? _("END") : Util.formatDate(time.getDate()) + " - " + time.getHour();
+            return time == null ? _t("END") : Util.formatDate(time.getDate()) + " - " + time.getHour();
         }
 
     }
@@ -519,7 +519,7 @@ public class ManualAllocationController extends GenericForwardComposer {
             Util.reloadBindings(gridLimitingOrderElementHours);
             Util.reloadBindings(gridCurrentQueue);
             ((Window) self).doModal();
-            ((Window) self).setTitle(_("Manual assignment"));
+            ((Window) self).setTitle(_t("Manual assignment"));
         } catch (SuspendNotAllowedException e) {
             e.printStackTrace();
         }
@@ -582,7 +582,7 @@ public class ManualAllocationController extends GenericForwardComposer {
 
     public String getCurrentQueue() {
         if (getBeingEditedElement() == null || getBeingEditedElement().getLimitingResourceQueue() == null) {
-            return _("Unassigned");
+            return _t("Unassigned");
         }
 
         return getBeingEditedElement().getLimitingResourceQueue().getResource().getName();
@@ -590,7 +590,7 @@ public class ManualAllocationController extends GenericForwardComposer {
 
     public String getCurrentStart() {
         if (getBeingEditedElement() == null || getBeingEditedElement().getStartDate() == null) {
-            return _("Unassigned");
+            return _t("Unassigned");
         }
 
         return getBeingEditedElement().getStartDate().toString();
@@ -598,7 +598,7 @@ public class ManualAllocationController extends GenericForwardComposer {
 
     public String getCurrentEnd() {
         if (getBeingEditedElement() == null || getBeingEditedElement().getEndDate() == null) {
-            return _("Unassigned");
+            return _t("Unassigned");
         }
 
         return getBeingEditedElement().getEndDate().toString();

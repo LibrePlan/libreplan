@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Rapport des heures travaillées par ressources</title>
+<link rel="stylesheet" href="html/lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="rapport-des-heures-travaillees-par-ressources">
+<h1 class="title">Rapport des heures travaillées par ressources</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#objet" id="toc-entry-1">Objet</a></li>
+<li><a class="reference internal" href="#parametres-en-entree-et-filtres" id="toc-entry-2">Paramètres en entrée et filtres</a></li>
+<li><a class="reference internal" href="#resultats" id="toc-entry-3">Résultats</a><ul>
+<li><a class="reference internal" href="#en-tete" id="toc-entry-4">En-tête</a></li>
+<li><a class="reference internal" href="#pied-de-page" id="toc-entry-5">Pied de page</a></li>
+<li><a class="reference internal" href="#corps" id="toc-entry-6">Corps</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="objet">
+<h1><a class="toc-backref" href="#toc-entry-1">Objet</a></h1>
+<p>Ce rapport permet d'extraire la liste des tâches et le temps qui leur a été consacré par les ressources sur une période de temps. Il existe plusieurs filtres qui permettent d'ajuster la requête pour obtenir les informations souhaitées et éviter les données superflues.</p>
+</div>
+<div class="section" id="parametres-en-entree-et-filtres">
+<h1><a class="toc-backref" href="#toc-entry-2">Paramètres en entrée et filtres</a></h1>
+<blockquote>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt><strong>Dates</strong>.</dt>
+<dd><ul class="first last">
+<li><em>Date de début.</em> C'est la date minimum des rapports de travail qui sont demandés. Les rapports avec des dates antérieures à la <em>date de début</em> sont ignorés. Si le paramètre n'est pas renseigné, il n'y a pas de date de filtrage d'antériorité.</li>
+<li><em>Date de fin.</em> C'est la date maximum des rapports de travail qui seront inclus dans les résultats. Les rapports de travail avec une date postérieure à la <em>date de fin</em> seront sautés. Si le paramètre n'est pas renseigné, il n'y a pas de limite supérieure de filtrage des rapports de travail.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>Filtrer par ressources</strong></dt>
+<dd><ul class="first last">
+<li>Vous pouvez choisir un ou plusieurs employés (ou machines) pour restreindre les rapports de travail au suivi des heures de travail de ces employés et/ou machines. Si vous laissez ce filtre vide, les rapports de travail sont récupérés indépendemment des employés et des machines.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>Filtrer par étiquettes</strong></dt>
+<dd><ul class="first last">
+<li>Vous pouvez ajouter une ou plusieurs étiquettes en les cherchant dans le sélecteur et en appuyant sur le bouton <em>Ajouter</em>. Il faut choisir si on ne retient que les relevés des heures de travail ayant ces étiquettes, ou que les tâches, ou les relevés et les tâches associés ayant en commun ces étiquettes ou n'importe lequel des deux (valeur par défaut).</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>Filtrer par critères</strong></dt>
+<dd><ul class="first last">
+<li>Vous pouvez choisir un ou plusieurs critères en les cherchant dans le sélecteur et, ensuite, en cliquant sur le bouton <em>Ajouter</em>. Ces critères sont utilisés pour choisir les ressources qui satisfont au moins l'un d'eux. Le rapport affichera le cumul du temps consacré par les ressources satisfaisant l'un des critères du filtrage.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>Format de sortie</strong></dt>
+<dd><ul class="first last">
+<li>Peut être HTML, ODT ou PDF.</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="resultats">
+<h1><a class="toc-backref" href="#toc-entry-3">Résultats</a></h1>
+<div class="section" id="en-tete">
+<h2><a class="toc-backref" href="#toc-entry-4">En-tête</a></h2>
+<p>Dans l'en-tête du rapport, les filtres appliqués lors de l'extraction des données utilisées pour le rapport sont rappelés.</p>
+</div>
+<div class="section" id="pied-de-page">
+<h2><a class="toc-backref" href="#toc-entry-5">Pied de page</a></h2>
+<p>La date à laquelle le rapport a été généré est indiquée.</p>
+</div>
+<div class="section" id="corps">
+<h2><a class="toc-backref" href="#toc-entry-6">Corps</a></h2>
+<p>Le corps du rapport comporte plusieurs groupes d'informations.</p>
+<ul>
+<li><p class="first">On trouve d'abord une première agrégation des informations par ressource et par jour, pour chaque tâche. Chaque ressource est identifiée par :</p>
+<blockquote>
+<ul class="simple">
+<li><em>Employé</em> : Nom, Prénom</li>
+<li><em>Machine</em> : Nom.</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<p>Suit une ligne récapitulant le nombre total d'heures travaillées par jour par la ressource.</p>
+<ul class="simple">
+<li>Il y a un deuxième niveau de regroupement selon la <em>date</em>. Tous les relevés d'heures de travail provenant d'une ressource concrète à la même date sont regroupés ensembles.</li>
+</ul>
+<p>Il y a une ligne de récapitulation avec le nombre total d'heures travaillées par ressource sur l'ensemble de la période.</p>
+<ul>
+<li><p class="first">il y a un dernier niveau où sont listés les relevés des heures de travail appartenant au même jour pour l'employé. Les informations qui sont affichées dans les colonnes de chaque ligne du rapport sont :</p>
+<blockquote>
+<ul class="simple">
+<li><em>Code/nom de la tâche</em> l'imputation des heures comptabilisées.</li>
+<li><em>Heure de début</em> Elle n'est pas obligatoire. C'est l'heure de début de travail pour la ressource sur la tâche considérée.</li>
+<li><em>Heure de fin</em>. Elle n'est pas obligatoire. C'est l'heure de fin de travail pour la ressource sur la tâche considérée.</li>
+<li><em>Champs texte</em>. Il est facultatif. Si les lignes de rapport de travail ont des champs textes renseignés, ils sont affichés ici. Le format est : &lt;nom du champ texte&gt;:&lt;valeur&gt;</li>
+<li><em>Étiquettes</em>. Cette colonne est présente si le relevé d'heures travaillées possède un champ étiquette dans sa définition. S'il y a plusieurs étiquettes, elles sont affichées dans la même colonne. Le format est &lt;nom du type d'étiquette&gt;:&lt;valeur de l'étiquette&gt;.</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</body>
+</html>

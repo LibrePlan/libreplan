@@ -47,7 +47,7 @@ public class ExternalCompanyBandboxFinder extends BandboxFinder implements IBand
     @Autowired
     private IExternalCompanyDAO externalCompanyDAO;
 
-    private final String headers[] = { _("ID"), _("Name") };
+    private final String headers[] = { _t("ID"), _t("Name") };
 
     /**
      * Forces to mark the string as needing translation.

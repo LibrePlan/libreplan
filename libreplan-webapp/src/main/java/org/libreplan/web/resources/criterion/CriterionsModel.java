@@ -176,7 +176,7 @@ public class CriterionsModel extends IntegrationEntityModel implements ICriterio
                 return each;
             }
         }
-        throw new RuntimeException(_("{0} not found type for criterion ", criterion));
+        throw new RuntimeException(_t("{0} not found type for criterion ", criterion));
     }
 
     @Override
@@ -213,8 +213,8 @@ public class CriterionsModel extends IntegrationEntityModel implements ICriterio
 
     private <T extends Resource> List<T> getResourcesSatisfying(
             Class<T> resourceType, Criterion criterion) {
-        Validate.notNull(resourceType, _("Resource type cannot be empty"));
-        Validate.notNull(criterion, _("Criterion cannot be empty"));
+        Validate.notNull(resourceType, _t("Resource type cannot be empty"));
+        Validate.notNull(criterion, _t("Criterion cannot be empty"));
         List<T> result = new ArrayList<T>();
         for (T r : resourceDAO.list(resourceType)) {
             if (criterion.isSatisfiedBy(r)) {

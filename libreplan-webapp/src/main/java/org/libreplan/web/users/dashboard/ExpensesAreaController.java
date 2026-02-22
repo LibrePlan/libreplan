@@ -77,21 +77,21 @@ public class ExpensesAreaController extends GenericForwardComposer {
                     event ->  {
                         try {
                             if (Messagebox.show(
-                                    _("Delete expense sheet \"{0}\". Are you sure?", expenseSheet.getHumanId()),
-                                    _("Confirm"),
+                                    _t("Delete expense sheet \"{0}\". Are you sure?", expenseSheet.getHumanId()),
+                                    _t("Confirm"),
                                     Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION) == Messagebox.OK) {
 
                                 expenseSheetModel.removeExpenseSheet(expenseSheet);
 
                                 messagesForUser.showMessage(
-                                        Level.INFO, _("Expense sheet \"{0}\" deleted", expenseSheet.getHumanId()));
+                                        Level.INFO, _t("Expense sheet \"{0}\" deleted", expenseSheet.getHumanId()));
 
                                 Util.reloadBindings(expenseSheetsList);
                             }
                         } catch (InstanceNotFoundException e) {
                             messagesForUser.showMessage(
                                     Level.ERROR,
-                                    _("Expense sheet \"{1}\" could not be deleted, it was already removed",
+                                    _t("Expense sheet \"{1}\" could not be deleted, it was already removed",
                                             expenseSheet.getHumanId()));
                         }
                     });

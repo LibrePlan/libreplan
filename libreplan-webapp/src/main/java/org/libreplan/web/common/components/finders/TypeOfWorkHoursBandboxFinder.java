@@ -40,7 +40,7 @@ public class TypeOfWorkHoursBandboxFinder extends BandboxFinder implements IBand
     @Autowired
     private ITypeOfWorkHoursDAO typeOfWorkHoursDAO;
 
-    private final String headers[] = { _("Name") };
+    private final String headers[] = { _t("Name") };
 
     /**
      * Forces to mark the string as needing translation

@@ -124,7 +124,7 @@ public class SettingsController extends GenericForwardComposer {
                 checkEmptyBandboxes();
                 clearSessionVariables();
                 settingsModel.confirmSave();
-                messages.showMessage(Level.INFO, _("Settings saved"));
+                messages.showMessage(Level.INFO, _t("Settings saved"));
 
                 return true;
             }
@@ -158,7 +158,7 @@ public class SettingsController extends GenericForwardComposer {
         return (comp, value) -> {
             if ( value != null && (Integer) value > 999 ) {
                 ((Intbox) comp).setValue(null);
-                throw new WrongValueException(comp, _("Max value = 999"));
+                throw new WrongValueException(comp, _t("Max value = 999"));
             }
         };
     }
@@ -169,7 +169,7 @@ public class SettingsController extends GenericForwardComposer {
 
         if ( projectsTo != null && projectsSince != null && projectsSince > projectsTo ) {
             messages.clearMessages();
-            messages.showMessage(Level.WARNING, _("Project since should be lower than project to"));
+            messages.showMessage(Level.WARNING, _t("Project since should be lower than project to"));
 
             return false;
         }
@@ -179,7 +179,7 @@ public class SettingsController extends GenericForwardComposer {
 
         if ( resourcesTo != null && resourcesSince != null && resourcesSince > resourcesTo ) {
             messages.clearMessages();
-            messages.showMessage(Level.WARNING, _("Resources load since should be lower than resources load to"));
+            messages.showMessage(Level.WARNING, _t("Resources load since should be lower than resources load to"));
 
             return false;
         }

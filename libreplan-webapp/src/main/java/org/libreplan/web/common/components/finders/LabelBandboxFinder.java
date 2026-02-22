@@ -48,7 +48,7 @@ public class LabelBandboxFinder extends BandboxFinder implements IBandboxFinder 
     @Autowired
     private ILabelDAO labelDAO;
 
-    private final String headers[] = { _("Type"), _("Name") };
+    private final String headers[] = { _t("Type"), _t("Name") };
 
     /**
      * Forces to mark the string as needing translation.

@@ -41,7 +41,7 @@ public class CriterionBandboxFinder extends BandboxFinder implements IBandboxFin
     @Autowired
     private ICriterionDAO criterionDAO;
 
-    private final String headers[] = { _("Type"), _("Criterion Name") };
+    private final String headers[] = { _t("Type"), _t("Criterion Name") };
 
     private final ListitemRenderer orderRenderer = (item, data, i) -> {
         Criterion criterion = (Criterion)data;

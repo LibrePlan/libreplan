@@ -47,7 +47,7 @@ import org.zkoss.zul.Label;
  */
 public class OrdersTabCreator {
 
-    private final String PROJECT_DETAILS = _("Project Details");
+    private final String PROJECT_DETAILS = _t("Project Details");
 
     public static ITab create(Mode mode,
                               OrderCRUDController orderCRUDController, Component breadcrumbs,
@@ -102,7 +102,7 @@ public class OrdersTabCreator {
     }
 
     private ITab createGlobalOrdersTab() {
-        return new CreatedOnDemandTab(_("Projects List"), "orders",
+        return new CreatedOnDemandTab(_t("Projects List"), "orders",
                 ordersTabCreator) {
             @Override
             protected void beforeShowAction() {
@@ -134,7 +134,7 @@ public class OrdersTabCreator {
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(getSchedulingLabel()));
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-                breadcrumbs.appendChild(new Label(_("Projects List")));
+                breadcrumbs.appendChild(new Label(_t("Projects List")));
             }
         };
     }

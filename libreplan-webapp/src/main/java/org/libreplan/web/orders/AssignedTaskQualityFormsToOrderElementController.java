@@ -168,11 +168,11 @@ public class AssignedTaskQualityFormsToOrderElementController extends GenericFor
         QualityForm qualityForm = (QualityForm) qualityFormFinder.getSelectedElement();
 
         if (qualityForm == null) {
-            throw new WrongValueException(qualityFormFinder, _("please, select a quality form"));
+            throw new WrongValueException(qualityFormFinder, _t("please, select a quality form"));
         }
 
         if (checkQualityFormAssigned.isAssigned(qualityForm)) {
-            throw new WrongValueException(qualityFormFinder, _("already assigned"));
+            throw new WrongValueException(qualityFormFinder, _t("already assigned"));
         }
         qualityFormFinder.clear();
 
@@ -190,7 +190,7 @@ public class AssignedTaskQualityFormsToOrderElementController extends GenericFor
 
     public void confirmRemove(TaskQualityForm taskQualityForm) {
         int status = Messagebox.show(
-                _("Confirm deleting {0}. Are you sure?", getTaskQualityFormName(taskQualityForm)),
+                _t("Confirm deleting {0}. Are you sure?", getTaskQualityFormName(taskQualityForm)),
                 _(DELETE_ACTION), Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION);
 
         if (Messagebox.OK == status) {
@@ -299,7 +299,7 @@ public class AssignedTaskQualityFormsToOrderElementController extends GenericFor
                         } catch (DuplicateAdvanceAssignmentForOrderElementException e) {
                             messages.showMessage(
                                     Level.ERROR,
-                                    _("Another task in the same branch is already reporting progress" +
+                                    _t("Another task in the same branch is already reporting progress" +
                                             " for this quality form"));
 
                             tmpCheckbox.setChecked(false);
@@ -350,25 +350,25 @@ public class AssignedTaskQualityFormsToOrderElementController extends GenericFor
 
             // Add static headers
             Column columnName = new Column();
-            columnName.setLabel(_("Name"));
+            columnName.setLabel(_t("Name"));
             Util.setSort(columnName, "auto=(name)");
             columnName.setSortDirection(ASCENDING);
             columns.appendChild(columnName);
 
             Column columnPosition = new Column();
-            columnPosition.setLabel(_("Position"));
+            columnPosition.setLabel(_t("Position"));
             columns.appendChild(columnPosition);
 
             Column columnPercentage = new Column();
-            columnPercentage.setLabel(_("Percentage"));
+            columnPercentage.setLabel(_t("Percentage"));
             columns.appendChild(columnPercentage);
 
             Column columnPassed = new Column();
-            columnPassed.setLabel(_("Checked"));
+            columnPassed.setLabel(_t("Checked"));
             columns.appendChild(columnPassed);
 
             Column columnDate = new Column();
-            columnDate.setLabel(_("Date"));
+            columnDate.setLabel(_t("Date"));
             columns.appendChild(columnDate);
 
             columns.setParent(gridItems);
@@ -465,11 +465,11 @@ public class AssignedTaskQualityFormsToOrderElementController extends GenericFor
 
                     if ((value == null) && (!item.isIfDateCanBeNullConstraint())) {
                         item.setDate(null);
-                        throw new WrongValueException(comp, _("date not specified"));
+                        throw new WrongValueException(comp, _t("date not specified"));
                     }
                     if (!assignedTaskQualityFormsToOrderElementModel.isCorrectConsecutiveDate(taskQualityForm, item)) {
                         item.setDate(null);
-                        throw new WrongValueException(comp, _("must be after the previous date"));
+                        throw new WrongValueException(comp, _t("must be after the previous date"));
                     }
                 }
             };

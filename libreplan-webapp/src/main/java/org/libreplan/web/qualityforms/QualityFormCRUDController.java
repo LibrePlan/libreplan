@@ -152,7 +152,7 @@ public class QualityFormCRUDController extends BaseCRUDController<QualityForm> {
         if (qualityFormModel.isTotalPercentage(item)) {
 
             if (Messagebox.show(
-                    _("Deleting this item will disable the report progress option. Are you sure?"), _("Confirm"),
+                    _t("Deleting this item will disable the report progress option. Are you sure?"), _t("Confirm"),
                     Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION) == Messagebox.OK) {
 
                 Checkbox reportProgress = (Checkbox) editWindow.getFellowIfAny("checkBoxReportProgress");
@@ -187,7 +187,7 @@ public class QualityFormCRUDController extends BaseCRUDController<QualityForm> {
                 throw new WrongValueException(comp, _(CANNOT_BE_EMPTY));
             } else if (!qualityFormModel.checkConstraintUniqueQualityFormName()) {
                 getQualityForm().setName(null);
-                throw new WrongValueException(comp, _("{0} already exists", value));
+                throw new WrongValueException(comp, _t("{0} already exists", value));
             }
         };
     }
@@ -201,7 +201,7 @@ public class QualityFormCRUDController extends BaseCRUDController<QualityForm> {
                 throw new WrongValueException(comp, _(CANNOT_BE_EMPTY));
             } else if (!qualityFormModel.checkConstraintUniqueQualityFormItemName()) {
                 item.setName(null);
-                throw new WrongValueException(comp, _("{0} already exists", value));
+                throw new WrongValueException(comp, _t("{0} already exists", value));
             }
         };
     }
@@ -219,11 +219,11 @@ public class QualityFormCRUDController extends BaseCRUDController<QualityForm> {
             }
             if (qualityFormModel.checkConstraintOutOfRangeQualityFormItemPercentage(item)) {
                 item.setPercentage(null);
-                throw new WrongValueException(comp, _("percentage should be between 1 and 100"));
+                throw new WrongValueException(comp, _t("percentage should be between 1 and 100"));
             }
             if (!qualityFormModel.checkConstraintUniqueQualityFormItemPercentage()) {
                 item.setPercentage(null);
-                throw new WrongValueException(comp, _("percentage must be unique"));
+                throw new WrongValueException(comp, _t("percentage must be unique"));
             }
         };
     }
@@ -269,7 +269,7 @@ public class QualityFormCRUDController extends BaseCRUDController<QualityForm> {
 
             throw new WrongValueException(
                     checkBoxReportProgress,
-                    _("Quality form should include an item with a value of 100% in order to report progress"));
+                    _t("Quality form should include an item with a value of 100% in order to report progress"));
         }
     }
 
@@ -287,12 +287,12 @@ public class QualityFormCRUDController extends BaseCRUDController<QualityForm> {
 
     @Override
     protected String getEntityType() {
-        return _("Quality Form");
+        return _t("Quality Form");
     }
 
     @Override
     protected String getPluralEntityType() {
-        return _("Quality Forms");
+        return _t("Quality Forms");
     }
 
     @Override
@@ -336,6 +336,6 @@ public class QualityFormCRUDController extends BaseCRUDController<QualityForm> {
     }
 
     private void showCannotDeleteQualityFormDialog(String message) {
-        Messagebox.show(_(message), _("Warning"), Messagebox.OK, Messagebox.EXCLAMATION);
+        Messagebox.show(_(message), _t("Warning"), Messagebox.OK, Messagebox.EXCLAMATION);
     }
 }

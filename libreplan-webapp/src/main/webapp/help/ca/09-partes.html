@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Partes de trabajo</title>
+<link rel="stylesheet" href="html/lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="partes-de-trabajo">
+<h1 class="title">Partes de trabajo</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#tipos-de-partes-de-trabajo" id="toc-entry-1">Tipos de partes de trabajo</a></li>
+<li><a class="reference internal" href="#listado-de-partes-de-trabajo" id="toc-entry-2">Listado de partes de trabajo</a></li>
+</ul>
+</div>
+<p>Los partes de trabajo permiten el seguimiento de las horas que dedican los recursos existentes a las tareas en las que están planificados.</p>
+<p>La aplicación permite configurar nuevos formularios de introducción de horas dedicadas, especificando los campos que se desea que figuren en estos modelos, así como incorporar los partes de las tareas que son realizadas por los trabajadores y hacer un seguimiento de los mismos.</p>
+<p>Antes de poder añadir entradas con dedicación de los recursos, es necesario especificar como mínimo un tipo de parte de trabajo que defina la estructura que tienen todas las filas que se añadan en él. Pueden crearse tantos tipos de partes de trabajo en el sistema como sea necesario.</p>
+<div class="section" id="tipos-de-partes-de-trabajo">
+<h1><a class="toc-backref" href="#toc-entry-1">Tipos de partes de trabajo</a></h1>
+<p>Un parte de trabajo consta de una serie de campos comunes para todo el parte, y un conjunto de líneas de parte de trabajo con valores específicos para los campos definidos en cada una de las filas. Por ejemplo, el recurso y la tarea son comunes para todos los partes, sin embargo, puede haber campos nuevos como &quot;incidencias&quot;, que no se deseen en todos los tipos.</p>
+<p>Es posible configurar diferentes tipos de partes de trabajo para que una empresa diseñe sus partes dependiendo de las necesidades para cada caso:</p>
+<div class="figure">
+<img alt="images/work-report-types.png" src="images/work-report-types.png" style="width: 326.8px; height: 91.60000000000001px;" />
+<p class="caption">Tipos de partes de trabajo</p>
+</div>
+<p>La administración de los tipos de partes de trabajo permite configurar este tipo de características, así como añadir nuevos campos de texto o de etiquetas opcionales. Dentro de la primera de las pestañas de edición de los tipos de partes de trabajo se puede configurar el tipo para los atributos obligatorios (si son globales para todo el parte, o se especifican a nivel de línea), y añadir nuevos campos opcionales.</p>
+<p>Los campos obligatorios que deben figurar en todos los partes de trabajo son los siguientes:</p>
+<ul class="simple">
+<li>Nombre y código: Campos identificativos del nombre del tipo de parte de trabajo y código del mismo.</li>
+<li>Fecha: Campo de fecha a la que corresponde el parte.</li>
+<li>Recurso: Trabajador o máquina que figura en el parte o línea de parte de trabajo.</li>
+<li>Elemento de pedido: Código del elemento de pedido al que imputar las horas del trabajo realizado.</li>
+<li><dl class="first docutils">
+<dt>Gestión de horas: Determina la política de imputación de horas a llevar a cabo, la cual puede ser:</dt>
+<dd><ul class="first last">
+<li>Por número de horas asignadas.</li>
+<li>Por horas de comienzo y fin.</li>
+<li>Por número de horas y rango de comienzo y fin (permite divergencia y tiene prioridad el número de horas).</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<p>Existe la posibilidad de añadir nuevos campos a los partes:</p>
+<ul class="simple">
+<li>Tipo de etiqueta: Es posible solicitar que se indique una etiqueta del sistema a la hora de rellenar el parte de trabajo. Por ejemplo, el tipo de etiqueta cliente si deseamos que en cada parte se introduzca el cliente para el cual se trabajó.</li>
+<li>Campos libres: Campos de tipo entrada de texto libre que se pueden introducir en el parte de trabajo.</li>
+</ul>
+<div class="figure">
+<img alt="images/work-report-type.png" src="images/work-report-type.png" style="width: 397.5px; height: 227.0px;" />
+<p class="caption">Creación de tipo de parte de trabajo con campos personalizados</p>
+</div>
+<p>Para los campos de fecha, recurso y elemento de pedido, pueden configurarse se figuran en la cabecera del parte y por lo tanto son globales al mismo, o si son añadidos en cada una de las filas.</p>
+<p>Finalmente, pueden añadirse nuevos campos de texto adicionales o etiquetas a las existentes en el sistema, tanto para la cabecera de los partes de trabajo como en cada una de las líneas, mediante los campos de &quot;Texto Complementario&quot; y &quot;Tipos de Etiquetas&quot;, respectivamente. En la pestaña de &quot;Gestión de campos adicionales y etiquetas&quot;, el usuario puede configurar el orden en la que introducir dichos elementos en los partes de trabajo.</p>
+</div>
+<div class="section" id="listado-de-partes-de-trabajo">
+<h1><a class="toc-backref" href="#toc-entry-2">Listado de partes de trabajo</a></h1>
+<p>Una vez configurados los formatos de los partes a incorporar al sistema, se pueden introducir los datos en el formulario creado según la estructura definida en el tipo de parte de trabajo correspondiente. Para hacerlo, es necesario seguir los siguientes pasos:</p>
+<ul class="simple">
+<li>Presionar en el botón &quot;Nuevo parte de trabajo&quot; asociado el tipo de parte que se desee del listado de tipos de partes de trabajo.</li>
+<li>La aplicación muestra el parte construído a partir de la configuración dada para el tipo. Ver siguiente imagen.</li>
+</ul>
+<div class="figure">
+<img alt="images/work-report-type.png" src="images/work-report-type.png" style="width: 397.5px; height: 227.0px;" />
+<p class="caption">Estructura del parte de trabajo a partir del tipo</p>
+</div>
+<ul>
+<li><p class="first">Seleccionar cada uno de los campos que se muestra para el parte:</p>
+<blockquote>
+<ul class="simple">
+<li>Recurso: Si se eligió la cabecera, sólo se indica el recurso una vez. En caso contrario, para cada línea del parte es necesario elegir un recurso.</li>
+<li>Código de la tarea: Código de la tarea a la que se está asignando el parte de trabajo. Al igual que el resto de campos, si el campo es de cabecera se introducirá el valor una vez o tantas veces como líneas del parte.</li>
+<li>Fecha: Fecha del parte o de cada línea dependiendo de se la configuración es por cabecera o línea.</li>
+<li>Número de horas. El número de horas de trabajo del proyecto.</li>
+<li>Horas de inicio y fin. Horas de comienzo y fin de trabajo para calcular las horas de trabajo definitivas. Este campo sólo aparece en los casos de políticas de imputación de horas de &quot;Por horas de comienzo y fin&quot; y &quot;Por número de horas y rango de comienzo y fin&quot;.</li>
+<li>Tipo de horas: Permite elegir entre tipos de horas &quot;Normales&quot;, &quot;Extraordinarias&quot;, etc.</li>
+</ul>
+</blockquote>
+</li>
+<li><p class="first">Presionar en &quot;Guardar&quot; o &quot;Guardar y Continuar&quot;.</p>
+</li>
+</ul>
+</div>
+</div>
+</body>
+</html>

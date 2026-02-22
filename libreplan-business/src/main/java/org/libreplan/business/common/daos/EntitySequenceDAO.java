@@ -72,7 +72,7 @@ public class EntitySequenceDAO extends GenericDAOHibernate<EntitySequence, Long>
     public void remove(final EntitySequence entitySequence) throws InstanceNotFoundException, IllegalArgumentException {
         if ( entitySequence.getLastValue() > 0 ) {
             throw new IllegalArgumentException(
-                    I18nHelper._("Entity Sequence cannot be deleted. Entity Sequence already in use"));
+                    I18nHelper._t("Entity Sequence cannot be deleted. Entity Sequence already in use"));
         }
 
         remove(entitySequence.getId());

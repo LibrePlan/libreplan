@@ -576,7 +576,7 @@ public class WorkReportModel extends IntegrationEntityModel implements
     /**
      * Set the selected default work report type to filter the work reports.
      */
-    public final String SHOW_ALL_TYPES = _("Show all");
+    public final String SHOW_ALL_TYPES = _t("Show all");
 
     private final WorkReportType defaultType = WorkReportType.create(SHOW_ALL_TYPES, "");
 

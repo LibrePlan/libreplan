@@ -89,21 +89,21 @@ public class ExportTimesheetsToTim implements IExportTimesheetsToTim {
     public List<SynchronizationInfo> exportTimesheets() throws ConnectorException {
         Connector connector = getTimConnector();
         if (connector == null) {
-            throw new ConnectorException(_("Tim connector not found"));
+            throw new ConnectorException(_t("Tim connector not found"));
         }
         if (!connector.areConnectionValuesValid()) {
             throw new ConnectorException(
-                    _("Connection values of Tim connector are invalid"));
+                    _t("Connection values of Tim connector are invalid"));
         }
 
-        synchronizationInfo = new SynchronizationInfo(_("Export"));
+        synchronizationInfo = new SynchronizationInfo(_t("Export"));
 
         List<SynchronizationInfo> syncInfos = new ArrayList<SynchronizationInfo>();
 
         List<OrderSyncInfo> orderSyncInfos = orderSyncInfoDAO.findByConnectorName(PredefinedConnectors.TIM.getName());
         if (orderSyncInfos == null || orderSyncInfos.isEmpty()) {
             LOG.warn("No items found in 'OrderSyncInfo' to export to Tim");
-            synchronizationInfo.addFailedReason(_("No items found in 'OrderSyncInfo' to export to Tim"));
+            synchronizationInfo.addFailedReason(_t("No items found in 'OrderSyncInfo' to export to Tim"));
             syncInfos.add(synchronizationInfo);
             return syncInfos;
         }
@@ -124,20 +124,20 @@ public class ExportTimesheetsToTim implements IExportTimesheetsToTim {
     public void exportTimesheets(String productCode, Order order)
             throws ConnectorException {
         if (productCode == null || productCode.isEmpty()) {
-            throw new ConnectorException(_("Product code should not be empty"));
+            throw new ConnectorException(_t("Product code should not be empty"));
         }
         if (order == null) {
-            throw new ConnectorException(_("Order should not be empty"));
+            throw new ConnectorException(_t("Order should not be empty"));
         }
 
         Connector connector = getTimConnector();
         if (connector == null) {
-            throw new ConnectorException(_("Tim connector not found"));
+            throw new ConnectorException(_t("Tim connector not found"));
         }
 
         if (!connector.areConnectionValuesValid()) {
             throw new ConnectorException(
-                    _("Connection values of Tim connector are invalid"));
+                    _t("Connection values of Tim connector are invalid"));
         }
 
         exportTimesheets(productCode, order, connector);
@@ -200,7 +200,7 @@ public class ExportTimesheetsToTim implements IExportTimesheetsToTim {
         if (timeRegistrationDTOs.isEmpty()) {
             LOG.warn("Unable to crate timeregistration for request");
             synchronizationInfo
-                    .addFailedReason(_("Unable to crate time registration for request"));
+                    .addFailedReason(_t("Unable to crate time registration for request"));
             return;
         }
 
@@ -214,14 +214,14 @@ public class ExportTimesheetsToTim implements IExportTimesheetsToTim {
         if (timeRegistrationResponseDTO == null) {
             LOG.error("No response or exception in response");
             synchronizationInfo
-                    .addFailedReason(_("No response or exception in response"));
+                    .addFailedReason(_t("No response or exception in response"));
             return;
         }
 
         if (isRefsListEmpty(timeRegistrationResponseDTO.getRefs())) {
             LOG.warn("Registration response with empty refs");
             synchronizationInfo
-                    .addFailedReason(_("Registration response with empty refs"));
+                    .addFailedReason(_t("Registration response with empty refs"));
             return;
         }
         saveSyncInfoOnAnotherTransaction(productCode, order);
@@ -288,7 +288,7 @@ public class ExportTimesheetsToTim implements IExportTimesheetsToTim {
             worker = workerDAO.findByCode(workerCode);
         } catch (InstanceNotFoundException e) {
             LOG.warn("Worker '" + workerCode + "' not found");
-            synchronizationInfo.addFailedReason(_("Worker \"{0}\" not found",
+            synchronizationInfo.addFailedReason(_t("Worker \"{0}\" not found",
                     workerCode));
             return null;
         }

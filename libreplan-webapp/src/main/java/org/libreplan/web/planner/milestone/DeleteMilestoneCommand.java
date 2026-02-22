@@ -56,7 +56,7 @@ public class DeleteMilestoneCommand implements IDeleteMilestoneCommand {
 
     @Override
     public String getName() {
-        return (_("Delete Milestone"));
+        return (_t("Delete Milestone"));
     }
 
     @Override

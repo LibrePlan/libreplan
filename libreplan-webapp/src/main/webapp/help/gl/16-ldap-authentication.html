@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Configuracion LDAP</title>
+<link rel="stylesheet" href="html/lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="configuracion-ldap">
+<h1 class="title">Configuracion LDAP</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#activacion" id="toc-entry-1">Activación</a></li>
+<li><a class="reference internal" href="#configuracion" id="toc-entry-2">Configuración</a></li>
+<li><a class="reference internal" href="#autenticacion" id="toc-entry-3">Autenticación</a></li>
+<li><a class="reference internal" href="#autorizacion" id="toc-entry-4">Autorización</a><ul>
+<li><a class="reference internal" href="#estratexia-de-grupo" id="toc-entry-5">Estratexia de grupo</a></li>
+<li><a class="reference internal" href="#estratexia-de-propiedade" id="toc-entry-6">Estratexia de propiedade</a></li>
+<li><a class="reference internal" href="#correspondencia-de-roles" id="toc-entry-7">Correspondencia de roles</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>Esta pantalla permite establecer unha conexión LDAP para delegar autenticación
+e/ou autorización.</p>
+<p>Está dividida en catro áreas diferentes relacionadas que se explican debaixo:</p>
+<div class="section" id="activacion">
+<h1><a class="toc-backref" href="#toc-entry-1">Activación</a></h1>
+<p>Esta área úsase para establecer as propiedades que configuran como <em>LibrePlan</em>
+usa LDAP.</p>
+<p>Se o campo <em>Habilita autenticación LDAP</em> está marcado, <em>LibrePlan</em> utiliza o
+LDAP para autenticar cada vez que o usuario tenta entrar na aplicación.</p>
+<p>O campo <em>Usar LDAP roles</em> marcado significa que o mapping entre os roles LDAP
+e os roles de LibrePlan está establecido, de maneira que os permisos en
+LibrePlan dependen dos roles que o usuario ten no LDAP.</p>
+</div>
+<div class="section" id="configuracion">
+<h1><a class="toc-backref" href="#toc-entry-2">Configuración</a></h1>
+<p>Esta sección ten os parámentros para o acceso ao LDAP. Os parámetros
+<em>Base</em>, <em>UserDN</em> e <em>Contrasinal</em> son os parámetros para conectar ao LDAP e
+buscar aos usuarios. O usuario configurado debe ter permiso no LDAP. Na última
+parte desta sección hai un botón para comprobar que a conexión co LDAP é posible
+cos parámetros configurados. É unha boa idea probar a conexión antes de
+continuar coa configuración.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Se o seu LDAP está configurado para traballar con autenticación anónima pode
+deixar baleiros oos atributos <em>UserDN</em> e <em>Contrasinal</em>.</p>
+</div>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p>Sobre a configuración de <em>Active Directory (AD)</em>, o campo <em>Base</em> debe ser
+a localización exacta onde reside o usuario vinculado no AD.</p>
+<p class="last">Exemplo: <tt class="docutils literal">ou=organizational_unit,dc=example,dc=org</tt></p>
+</div>
+</div>
+<div class="section" id="autenticacion">
+<h1><a class="toc-backref" href="#toc-entry-3">Autenticación</a></h1>
+<p>Nesta sección configúranse a propiedade dos nodos de LDAP onde se atopa
+almacenada o login do usuario. A propiedade <em>UserId</em> debe ser
+enchido co nome da propiedade onde o login está almacenado no
+LDAP.</p>
+<p>O checkbox <em>Almacenar contrasinais na base de datos</em> cando se atopa
+marcado, indica que a contrasinal se almacena tamén na base de datos
+LibrePlan. Desta forma, se o LDAP está offline ou non existe conectividad, os
+usuarios do LDAP poden autenticarse contra a base de datos de LibrePlan. Se
+non está marcado, o usuario de LDAP só poden ser autenticados contro o
+LDAP.</p>
+</div>
+<div class="section" id="autorizacion">
+<h1><a class="toc-backref" href="#toc-entry-4">Autorización</a></h1>
+<p>Esta sección permite definir a estratexia para asociar os roles de LDAP cos
+roles de LibrePlan.</p>
+<div class="section" id="estratexia-de-grupo">
+<h2><a class="toc-backref" href="#toc-entry-5">Estratexia de grupo</a></h2>
+<p>Cando se usa esta estratexia, implica que o LDAP está a usar unha estratexia de
+grupo de rol. Significa que os usuarios no LDAP son nodos que colgan
+directamente dunha rama que representa o grupo.</p>
+<p>O seguiente exemplo representa unha estrutura de LDAP válida para usar a
+estratexia de grupo.</p>
+<ul>
+<li><p class="first">Estrutura do LDAP:</p>
+<pre class="literal-block">
+dc=example,dc=org
+|- ou=groups
+   |- cn=admins
+   |- cn=itpeople
+   |- cn=workers
+|- ou=people
+   |- uid=admin1
+   |- uid=it1
+   |- uid=it2
+   |- uid=worker1
+   |- uid=worker2
+   |- uid=worker3
+</pre>
+</li>
+</ul>
+<p>Neste caso, cada grupo tenrá un atributo, por exemplo chamado <tt class="docutils literal">member</tt>,
+coa lista de usuarios que pertencen ao grupo:</p>
+<ul class="simple">
+<li><tt class="docutils literal">cn=admins</tt>:<ul>
+<li><tt class="docutils literal">member: uid=admin1,ou=people,dc=example,dc=org</tt></li>
+<li><tt class="docutils literal">member: uid=it1,ou=people,dc=example,dc=org</tt></li>
+</ul>
+</li>
+<li><tt class="docutils literal">cn=itpeople</tt>:<ul>
+<li><tt class="docutils literal">member: uid=it1,ou=people,dc=example,dc=org</tt></li>
+<li><tt class="docutils literal">member: uid=it2,ou=people,dc=example,dc=org</tt></li>
+</ul>
+</li>
+<li><tt class="docutils literal">cn=workers</tt>:<ul>
+<li><tt class="docutils literal">member: uid=worker1,ou=people,dc=example,dc=org</tt></li>
+<li><tt class="docutils literal">member: uid=worker2,ou=people,dc=example,dc=org</tt></li>
+<li><tt class="docutils literal">member: uid=worker3,ou=people,dc=example,dc=org</tt></li>
+</ul>
+</li>
+</ul>
+<p>A configuración para este caso é a seguinte:</p>
+<ul class="simple">
+<li>Estratexia para a búsqueda de roles: <tt class="docutils literal">Estratexia de grupo</tt></li>
+<li>Path do grupo: <tt class="docutils literal">ou=groups</tt></li>
+<li>Propiedade do rol: <tt class="docutils literal">member</tt></li>
+<li>Consulta para a búsqueda de roles: <tt class="docutils literal"><span class="pre">uid=[USER_ID],ou=people,dc=example,dc=org</span></tt></li>
+</ul>
+<p>E por exemplo se quere facer algunha correspondencia de roles:</p>
+<ul class="simple">
+<li>Administration: <tt class="docutils literal">cn=admins;cn=itpeople</tt></li>
+<li>Web service reader: <tt class="docutils literal">cn=itpeople</tt></li>
+<li>Web service writer: <tt class="docutils literal">cn=itpeople</tt></li>
+<li>All projects read allowed: <tt class="docutils literal">cn=admins</tt></li>
+<li>All projects edition allowed: <tt class="docutils literal">cn=admins</tt></li>
+<li>Project creation allowed: <tt class="docutils literal">cn=workers</tt></li>
+</ul>
+</div>
+<div class="section" id="estratexia-de-propiedade">
+<h2><a class="toc-backref" href="#toc-entry-6">Estratexia de propiedade</a></h2>
+<p>Cando o administrador decide usar esta estratexia, implica que cada usuario é
+un nodo de LDAP e que no nodo existe unha propiedade que representa o grupo ou
+grupos ao que pertence o usuairo. Neste caso, a configuración non necesita
+o parámetro <em>Path do grupo</em>:</p>
+<p>O seguiente exemplo representa unha estrutura de LDAP válida para usar a
+estratexia de propiedade.</p>
+<ul>
+<li><p class="first">Estrutura do LDAP:</p>
+<pre class="literal-block">
+dc=example,dc=org
+|- ou=people
+   |- uid=admin1
+   |- uid=it1
+   |- uid=it2
+   |- uid=worker1
+   |- uid=worker2
+   |- uid=worker3
+</pre>
+</li>
+</ul>
+<p><strong>Con atributo</strong></p>
+<p>Neste caso, cada usuario tenrá un atributo, por exemplo chamado <tt class="docutils literal">group`</tt>
+co nome do grupo ao que pertence:</p>
+<ul class="simple">
+<li><tt class="docutils literal">uid=admin1</tt>:<ul>
+<li><tt class="docutils literal">group: admins</tt></li>
+</ul>
+</li>
+<li><tt class="docutils literal">uid=it1</tt>:<ul>
+<li><tt class="docutils literal">group: itpeople</tt></li>
+</ul>
+</li>
+<li><tt class="docutils literal">uid=it2</tt>:<ul>
+<li><tt class="docutils literal">group: itpeople</tt></li>
+</ul>
+</li>
+<li><tt class="docutils literal">uid=worker1</tt>:<ul>
+<li><tt class="docutils literal">group: workers</tt></li>
+</ul>
+</li>
+<li><tt class="docutils literal">uid=worker2</tt>:<ul>
+<li><tt class="docutils literal">group: workers</tt></li>
+</ul>
+</li>
+<li><tt class="docutils literal">uid=worker3</tt>:<ul>
+<li><tt class="docutils literal">group: workers</tt></li>
+</ul>
+</li>
+</ul>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Esta estratexia ten unha restricción, cada usuario pode pertencer só a un
+grupo.</p>
+</div>
+<p>A configuración para este caso é a seguinte:</p>
+<ul class="simple">
+<li>Estratexia para a búsqueda de roles: <tt class="docutils literal">Estratexia de propiedade</tt></li>
+<li>Path do grupo:</li>
+<li>Propiedade do rol: <tt class="docutils literal">group</tt></li>
+<li>Consulta para a búsqueda de roles: <tt class="docutils literal">[USER_ID]</tt></li>
+</ul>
+<p>E por exemplo se quere facer algunha correspondencia de roles:</p>
+<ul class="simple">
+<li>Administration: <tt class="docutils literal">admins;itpeople</tt></li>
+<li>Web service reader: <tt class="docutils literal">itpeople</tt></li>
+<li>Web service writer: <tt class="docutils literal">itpeople</tt></li>
+<li>All projects read allowed: <tt class="docutils literal">admins</tt></li>
+<li>All projects edition allowed: <tt class="docutils literal">admins</tt></li>
+<li>Project creation allowed: <tt class="docutils literal">workers</tt></li>
+</ul>
+<p><strong>Por identificador de usuario</strong></p>
+<p>Incluso pode ter unha solución para especificar os roles de LibrePlan
+directamente aos usuarios, sen ter un atributo en cada usuario de LDAP.</p>
+<p>Neste caso, especificará que usuarios teñen os diferentes roles por <tt class="docutils literal">uid</tt>.</p>
+<p>A configuración para este caso é a seguinte:</p>
+<ul class="simple">
+<li>Estratexia para a búsqueda de roles: <tt class="docutils literal">Estratexia de propiedade</tt></li>
+<li>Path do grupo:</li>
+<li>Propiedade do rol: <tt class="docutils literal">uid</tt></li>
+<li>Consulta para a búsqueda de roles: <tt class="docutils literal">[USER_ID]</tt></li>
+</ul>
+<p>E por exemplo se quere facer algunha correspondencia de roles:</p>
+<ul class="simple">
+<li>Administration: <tt class="docutils literal">admin1;it1</tt></li>
+<li>Web service reader: <tt class="docutils literal">it1;it2</tt></li>
+<li>Web service writer: <tt class="docutils literal">it1;it2</tt></li>
+<li>All projects read allowed: <tt class="docutils literal">admin1</tt></li>
+<li>All projects edition allowed: <tt class="docutils literal">admin1</tt></li>
+<li>Project creation allowed: <tt class="docutils literal">worker1;worker2;worker3</tt></li>
+</ul>
+</div>
+<div class="section" id="correspondencia-de-roles">
+<h2><a class="toc-backref" href="#toc-entry-7">Correspondencia de roles</a></h2>
+<p>No fondo da pantalla desta sección hai unha táboa con todos os roles de
+LibrePlan e un campo de texto anexo a cada un deles. Esta área é para a
+asociación dos roles. Por exemplo, se un usuario administrador de LibrePlan
+decide que rol de LibrePlan <em>Administración</em> correspóndese cos roles
+<em>admin</em> e <em>administrators</em> do LDAP no campo de texto hai que configurar:
+&quot;<tt class="docutils literal">admin;administrators</tt>&quot;. O carácter de separación de roles é &quot;<tt class="docutils literal">;</tt>&quot;.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Se quere especificar que todos os usuarios ou todos os roles teñan un
+permiso pode usar un asterisco (<tt class="docutils literal">*</tt>) coma comodín para referirse a eles.
+Por exemplo, se quere que todo o mundo teña o rol <em>Project creation
+allowed</em> configurará a correspondica de roles coma segue:</p>
+<ul class="last simple">
+<li>Project creation allowed: <tt class="docutils literal">*</tt></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

@@ -24,14 +24,15 @@
  */
 package org.libreplan.business.qualityforms.entities;
 
+import org.libreplan.business.i18n.I18nHelper;
 public enum QualityFormType {
 
-    BY_PERCENTAGE(_("by percentage")), BY_ITEMS(_("by items"));
+    BY_PERCENTAGE(I18nHelper._t("by percentage")), BY_ITEMS(I18nHelper._t("by items"));
 
     /**
      * Forces to mark the string as needing translation
      */
-    private static String _(String string) {
+    private static String _t(String string) {
         return string;
     }
 

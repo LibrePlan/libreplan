@@ -211,7 +211,7 @@ public class WorkReportCRUDController
     private void showMessageIfPersonalTimesheetWasSaved() {
         String timesheetSave = Executions.getCurrent().getParameter("timesheet_saved");
         if ( !StringUtils.isBlank(timesheetSave) ) {
-            messagesForUser.showMessage(Level.INFO, _("Personal timesheet saved"));
+            messagesForUser.showMessage(Level.INFO, _t("Personal timesheet saved"));
         }
     }
 
@@ -230,12 +230,12 @@ public class WorkReportCRUDController
         final String workReportName = formatWorkReportName(workReport);
 
         int status = Messagebox.show(
-                _("Confirm deleting {0}. Are you sure?", workReportName),
+                _t("Confirm deleting {0}. Are you sure?", workReportName),
                 "Delete", Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION);
 
         if ( Messagebox.OK == status ) {
             workReportModel.remove(workReport);
-            messagesForUser.showMessage(Level.INFO, _("Timesheet removed successfully"));
+            messagesForUser.showMessage(Level.INFO, _t("Timesheet removed successfully"));
             loadComponentslist(listWindow);
             Util.reloadBindings(listWindow);
         }
@@ -270,7 +270,7 @@ public class WorkReportCRUDController
         workReportModel.generateWorkReportLinesIfIsNecessary();
         try {
             workReportModel.confirmSave();
-            messagesForUser.showMessage(Level.INFO, _("Timesheet saved"));
+            messagesForUser.showMessage(Level.INFO, _t("Timesheet saved"));
 
             return true;
         } catch (ValidationException e) {
@@ -334,19 +334,19 @@ public class WorkReportCRUDController
 
         if ( !getWorkReport().isDateMustBeNotNullIfIsSharedByLinesConstraint() ) {
             Datebox datebox = (Datebox) createWindow.getFellowIfAny("date");
-            showInvalidMessage(datebox, _("cannot be empty"));
+            showInvalidMessage(datebox, _t("cannot be empty"));
 
             return false;
         }
 
         if ( !getWorkReport().isResourceMustBeNotNullIfIsSharedByLinesConstraint() ) {
-            showInvalidMessage(autocompleteResource, _("cannot be empty"));
+            showInvalidMessage(autocompleteResource, _t("cannot be empty"));
 
             return false;
         }
 
         if ( !getWorkReport().isOrderElementMustBeNotNullIfIsSharedByLinesConstraint() ) {
-            showInvalidMessage(bandboxSelectOrderElementInHead, _("cannot be empty"));
+            showInvalidMessage(bandboxSelectOrderElementInHead, _t("cannot be empty"));
 
             return false;
         }
@@ -375,7 +375,7 @@ public class WorkReportCRUDController
         } else if ( workReportLine.getDate() == null)  {
             Datebox date = getDateboxDate(row);
             if ( date != null ) {
-                String message = _("cannot be empty");
+                String message = _t("cannot be empty");
                 showInvalidMessage(date, message);
             }
 
@@ -389,7 +389,7 @@ public class WorkReportCRUDController
         } else if ( workReportLine.getResource() == null ) {
             Autocomplete autoResource = getTextboxResource(row);
             if ( autoResource != null ) {
-                String message = _("cannot be empty");
+                String message = _t("cannot be empty");
                 showInvalidMessage(autoResource, message);
             }
 
@@ -404,7 +404,7 @@ public class WorkReportCRUDController
             BandboxSearch bandboxOrder = getTextboxOrder(row);
 
             if ( bandboxOrder != null ) {
-                String message = _("cannot be empty");
+                String message = _t("cannot be empty");
                 bandboxOrder.clear();
                 showInvalidMessage(bandboxOrder, message);
             }
@@ -416,7 +416,7 @@ public class WorkReportCRUDController
             Timebox timeStart = getTimeboxStart(row);
 
             if ( timeStart != null ) {
-                String message = _("cannot be empty");
+                String message = _t("cannot be empty");
                 showInvalidMessage(timeStart, message);
             }
 
@@ -427,7 +427,7 @@ public class WorkReportCRUDController
             Timebox timeFinish = getTimeboxFinish(row);
 
             if ( timeFinish != null ) {
-                String message = _("cannot be empty");
+                String message = _t("cannot be empty");
                 showInvalidMessage(timeFinish, message);
             }
 
@@ -438,13 +438,13 @@ public class WorkReportCRUDController
             Textbox effort = getEffort(row);
 
             if ( effort == null ) {
-                String message = _("cannot be empty");
+                String message = _t("cannot be empty");
                 showInvalidMessage(null, message);
             }
 
             if ( effort != null &&
                     EffortDuration.zero().compareTo(EffortDuration.parseFromFormattedString(effort.getValue())) <= 0 ) {
-                String message = _("Effort must be greater than zero");
+                String message = _t("Effort must be greater than zero");
                 showInvalidMessage(effort, message);
             }
 
@@ -455,7 +455,7 @@ public class WorkReportCRUDController
             Textbox effort = getEffort(row);
 
             if ( effort != null ) {
-                String message = _("effort is not properly calculated based on clock");
+                String message = _t("effort is not properly calculated based on clock");
                 showInvalidMessage(effort, message);
             }
 
@@ -469,8 +469,8 @@ public class WorkReportCRUDController
             if ( autoTypeOfHours != null ) {
 
                 String message = autoTypeOfHours.getItems().isEmpty() ?
-                        _("Hours types are empty. Please, create some hours types before proceeding") :
-                        _("cannot be empty");
+                        _t("Hours types are empty. Please, create some hours types before proceeding") :
+                        _t("cannot be empty");
 
                 showInvalidMessage(autoTypeOfHours, message);
             }
@@ -483,7 +483,7 @@ public class WorkReportCRUDController
             // Locate TextboxCode
             Textbox txtCode = getCode(row);
             if ( txtCode != null ) {
-                String message = _("cannot be empty.");
+                String message = _t("cannot be empty.");
                 showInvalidMessage(txtCode, message);
             }
 
@@ -493,7 +493,7 @@ public class WorkReportCRUDController
         if ( !workReportLine.isOrderElementFinishedInAnotherWorkReportConstraint() ) {
             Checkbox checkboxFinished = getFinished(row);
             if ( checkboxFinished != null ) {
-                String message = _("task is already marked as finished in another timesheet");
+                String message = _t("task is already marked as finished in another timesheet");
                 showInvalidMessage(checkboxFinished, message);
             }
 
@@ -680,7 +680,7 @@ public class WorkReportCRUDController
             cameBackList = false;
             workReportModel.initCreate(workReportType);
             prepareWorkReportList();
-            createWindow.setTitle(_("Create Timesheet"));
+            createWindow.setTitle(_t("Create Timesheet"));
             getVisibility().showOnly(createWindow);
             loadComponents(createWindow);
             Util.reloadBindings(createWindow);
@@ -695,7 +695,7 @@ public class WorkReportCRUDController
     public void goToEditForm(WorkReport workReport) {
         if (SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_TIMESHEETS)) {
             workReportModel.initEdit(workReport);
-            createWindow.setTitle(_("Edit Timesheet"));
+            createWindow.setTitle(_t("Edit Timesheet"));
             loadComponents(createWindow);
             prepareWorkReportList();
             getVisibility().showOnly(createWindow);
@@ -707,7 +707,7 @@ public class WorkReportCRUDController
 
                 goToEditPersonalTimeSheet(workReport);
         } else {
-                messagesForUser.showMessage(Level.WARNING, _("You do not have permissions to edit this timesheet"));
+                messagesForUser.showMessage(Level.WARNING, _t("You do not have permissions to edit this timesheet"));
         }
     }    	
     	
@@ -814,7 +814,7 @@ public class WorkReportCRUDController
         if ( getWorkReport() != null ) {
             if ( !getWorkReport().getWorkReportType().getDateIsSharedByLines() ) {
                 NewDataSortableColumn columnDate = new NewDataSortableColumn();
-                columnDate.setLabel(_("Date"));
+                columnDate.setLabel(_t("Date"));
                 columnDate.setSclass("date-column");
                 columnDate.setHflex("1");
                 Util.setSort(columnDate, "auto=(date)");
@@ -826,7 +826,7 @@ public class WorkReportCRUDController
 
             if ( !getWorkReport().getWorkReportType().getResourceIsSharedInLines() ) {
                 NewDataSortableColumn columnResource = new NewDataSortableColumn();
-                columnResource.setLabel(_("Resource"));
+                columnResource.setLabel(_t("Resource"));
                 columnResource.setHflex("1");
                 columnResource.setSclass("resource-column");
                 columns.appendChild(columnResource);
@@ -834,7 +834,7 @@ public class WorkReportCRUDController
 
             if ( !getWorkReport().getWorkReportType().getOrderElementIsSharedInLines() ) {
                 NewDataSortableColumn columnCode = new NewDataSortableColumn();
-                columnCode.setLabel(_("Task"));
+                columnCode.setLabel(_t("Task"));
                 columnCode.setSclass("order-code-column");
                 columnCode.setHflex("1");
                 columns.appendChild(columnCode);
@@ -867,39 +867,39 @@ public class WorkReportCRUDController
                     .equals(HoursManagementEnum.NUMBER_OF_HOURS) ) {
 
                 NewDataSortableColumn columnHourStart = new NewDataSortableColumn();
-                columnHourStart.setLabel(_("Start hour"));
+                columnHourStart.setLabel(_t("Start hour"));
                 columnHourStart.setSclass("column-hour-start");
                 columnHourStart.setHflex("min");
                 columns.appendChild(columnHourStart);
                 NewDataSortableColumn columnHourFinish = new NewDataSortableColumn();
-                columnHourFinish.setLabel(_("Finish Hour"));
+                columnHourFinish.setLabel(_t("Finish Hour"));
                 columnHourStart.setSclass("column-hour-finish");
                 columns.appendChild(columnHourFinish);
             }
         }
 
         NewDataSortableColumn columnNumHours = new NewDataSortableColumn();
-        columnNumHours.setLabel(_("Hours"));
+        columnNumHours.setLabel(_t("Hours"));
         columnNumHours.setSclass("hours-column");
         columns.appendChild(columnNumHours);
         NewDataSortableColumn columnHoursType = new NewDataSortableColumn();
-        columnHoursType.setLabel(_("Hours type"));
+        columnHoursType.setLabel(_t("Hours type"));
         columnHoursType.setSclass("hours-type-column");
         columns.appendChild(columnHoursType);
         NewDataSortableColumn columnFinsihed = new NewDataSortableColumn();
-        columnFinsihed.setLabel(_("Done"));
+        columnFinsihed.setLabel(_t("Done"));
         columnFinsihed.setSclass("finished-column");
-        columnFinsihed.setTooltiptext(_("Task finished"));
+        columnFinsihed.setTooltiptext(_t("Task finished"));
         NewDataSortableColumn columnCode = new NewDataSortableColumn();
         columns.appendChild(columnFinsihed);
-        columnCode.setLabel(_("Code"));
+        columnCode.setLabel(_t("Code"));
         columnCode.setSclass("code-column");
         columnCode.setHflex("1");
         columns.appendChild(columnCode);
         NewDataSortableColumn columnOperations = new NewDataSortableColumn();
-        columnOperations.setLabel(_("Op."));
+        columnOperations.setLabel(_t("Op."));
         columnOperations.setSclass("operations-column");
-        columnOperations.setTooltiptext(_("Operations"));
+        columnOperations.setTooltiptext(_t("Operations"));
         columnOperations.setHflex("min");
         columns.appendChild(columnOperations);
 
@@ -945,14 +945,14 @@ public class WorkReportCRUDController
         final Date endingDate = ending.getValue();
 
         if ( endingDate == null || startingDate == null || startingDate.compareTo(endingDate) > 0 ) {
-            throw new WrongValueException(starting, _("Cannot be higher than finish hour"));
+            throw new WrongValueException(starting, _t("Cannot be higher than finish hour"));
         }
     }
 
     public void confirmRemove(WorkReportLine workReportLine) {
         int status = Messagebox.show(
-                _("Confirm deleting {0}. Are you sure?", getWorkReportLineName(workReportLine)),
-                _("Delete"), Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION);
+                _t("Confirm deleting {0}. Are you sure?", getWorkReportLineName(workReportLine)),
+                _t("Delete"), Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION);
 
         if ( Messagebox.OK == status ) {
             removeWorkReportLine(workReportLine);
@@ -1104,7 +1104,7 @@ public class WorkReportCRUDController
             TypeOfWorkHours value = item != null ? (TypeOfWorkHours) item.getValue() : null;
             workReportLine.setTypeOfWorkHours(value);
             if (value == null && item != null) {
-                throw new WrongValueException(item.getParent(), _("Please, select an item"));
+                throw new WrongValueException(item.getParent(), _t("Please, select an item"));
             }
         }
 
@@ -1119,7 +1119,7 @@ public class WorkReportCRUDController
 
             effort.setConstraint((comp, value) -> {
                 if ( !Pattern.matches("(\\d+)(\\s*:\\s*\\d+\\s*)*", (String) value))
-                    throw new WrongValueException(comp, _("Please, enter a valid effort"));
+                    throw new WrongValueException(comp, _t("Please, enter a valid effort"));
             });
 
             bindEffort(effort, workReportLine);
@@ -1193,7 +1193,7 @@ public class WorkReportCRUDController
             Button delete = new Button("", "/common/img/ico_borrar1.png");
             delete.setHoverImage("/common/img/ico_borrar.png");
             delete.setSclass("icono");
-            delete.setTooltiptext(_("Delete"));
+            delete.setTooltiptext(_t("Delete"));
             delete.addEventListener(Events.ON_CLICK, event -> confirmRemove(row.getValue()));
 
             row.appendChild(delete);
@@ -1336,7 +1336,7 @@ public class WorkReportCRUDController
             final Comboitem comboitem = autocomplete.getSelectedItem();
             if ( (comboitem == null) || (comboitem.getValue() == null)) {
                 workReportLine.setResource(null);
-                throw new WrongValueException(autocomplete, _("Please, select an item"));
+                throw new WrongValueException(autocomplete, _t("Please, select an item"));
             } else {
                 workReportLine.setResource(comboitem.getValue());
             }
@@ -1508,7 +1508,7 @@ public class WorkReportCRUDController
                     (finishDate.compareTo(filterStartDate.getValue()) < 0) ) {
 
                 filterFinishDate.setValue(null);
-                throw new WrongValueException(comp, _("must be later than start date"));
+                throw new WrongValueException(comp, _t("must be later than start date"));
             }
         };
     }
@@ -1522,7 +1522,7 @@ public class WorkReportCRUDController
                     (startDate.compareTo(filterFinishDate.getValue()) > 0) ) {
 
                 filterStartDate.setValue(null);
-                throw new WrongValueException(comp, _("must be before end date"));
+                throw new WrongValueException(comp, _t("must be before end date"));
             }
         };
     }
@@ -1572,12 +1572,12 @@ public class WorkReportCRUDController
     public void onCreateNewWorkReport() {
         Listitem selectedItem = listTypeToAssign.getSelectedItem();
         if ( selectedItem == null ) {
-            throw new WrongValueException(listTypeToAssign, _("please, select a timesheet template type"));
+            throw new WrongValueException(listTypeToAssign, _t("please, select a timesheet template type"));
         }
 
         WorkReportType type = selectedItem.getValue();
         if ( type == null ) {
-            throw new WrongValueException(listTypeToAssign, _("please, select a timesheet template type"));
+            throw new WrongValueException(listTypeToAssign, _t("please, select a timesheet template type"));
         }
 
         goToCreateForm(type);
@@ -1633,11 +1633,11 @@ public class WorkReportCRUDController
     public void createOrEditPersonalTimesheet() {
         Date date = personalTimesheetsDatebox.getValue();
         if ( date == null ) {
-            throw new WrongValueException(personalTimesheetsDatebox, _("Please set a date"));
+            throw new WrongValueException(personalTimesheetsDatebox, _t("Please set a date"));
         }
         Resource resource = (Resource) personalTimesheetsBandboxSearch.getSelectedElement();
         if ( resource == null ) {
-            throw new WrongValueException(personalTimesheetsBandboxSearch, _("Please select a worker"));
+            throw new WrongValueException(personalTimesheetsBandboxSearch, _t("Please select a worker"));
         }
 
         personalTimesheetController.goToCreateOrEditFormForResource(LocalDate.fromDateFields(date), resource);

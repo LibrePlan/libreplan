@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Asignación de recursos</title>
+<link rel="stylesheet" href="html/lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="asignacion-de-recursos">
+<h1 class="title">Asignación de recursos</h1>
+
+<!-- asigacion_ -->
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#asignacion-especifica" id="toc-entry-1">Asignación específica</a><ul>
+<li><a class="reference internal" href="#asignacion-especifica-de-maquinas" id="toc-entry-2">Asignación específica de máquinas</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#asignacion-generica" id="toc-entry-3">Asignación genérica</a><ul>
+<li><a class="reference internal" href="#asignacion-generica-de-maquinas" id="toc-entry-4">Asignación genérica de máquinas</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#asignacion-avanzada" id="toc-entry-5">Asignación avanzada</a></li>
+</ul>
+</div>
+<p>La asignación de recursos es una de las partes más importantes de la aplicación. La asignación de recursos puede realizarse de dos maneras diferentes:</p>
+<ul class="simple">
+<li>Asignaciones específicas.</li>
+<li>Asignaciones genéricas.</li>
+</ul>
+<p>Cada una de las asignaciones es explicada en las siguientes secciones.</p>
+<p>Para realizar cualquiera de las dos asignaciones de recursos es necesario dar los siguientes pasos:</p>
+<ul class="simple">
+<li>Acceder a la planificación de un pedido.</li>
+<li>Presionar con el botón derecho sobre la tarea que se desea planificar.</li>
+</ul>
+<div class="figure">
+<img alt="images/resource-assignment-planning.png" src="images/resource-assignment-planning.png" style="width: 459.0px; height: 151.5px;" />
+<p class="caption">Menú de asignación de recursos</p>
+</div>
+<ul>
+<li><p class="first">La aplicación muestra una pantalla en la que se puede visualizar la siguiente información.</p>
+<blockquote>
+<ul>
+<li><p class="first">Listado de criterios que deben ser satisfechos. Por cada grupo de horas, se muestra un listado de grupos de horas y cada grupo de horas exige su listado de criterios.</p>
+</li>
+<li><p class="first">Información de la tarea: fecha de inicio y fecha de fin de la tarea.</p>
+</li>
+<li><p class="first">Tipo de cálculo: El sistema permite elegir la estrategia que se desea llevar a cabo para calcular las asignaciones:</p>
+<blockquote>
+<ul class="simple">
+<li>Calcular número de horas: Calcula el número de horas que haría falta que dedicaran los recursos asignados dados una fecha de fin y un número de recursos por día.</li>
+<li>Calcular fecha fin: Calcula la fecha de fin de la tarea a partir de los número de recursos de la tarea y de las horas totales dedicar para finalizar la tarea.</li>
+<li>Calcular número de recursos: Calcula el número de recursos necesarios para finalizar la tarea en una fecha específica y dedicando una serie de horas conocidas.</li>
+</ul>
+</blockquote>
+</li>
+<li><p class="first">Asignación recomendada: Opción que le permite a la aplicación recoger los criterios que deben ser satisfechos y las horas totales de cada grupo de horas y hace una propuesta de asignación genérica recomendada. Si había una asignación previa, el sistema elimina dicha asignación sustituyéndola por la nueva.</p>
+</li>
+<li><p class="first">Asignaciones: Listado de asignaciones realizadas. En este listado se podrán ver las asignaciones genéricas (el nombre sería la lista de criterios satisfecha, horas y número de recursos por día). Cada asignación realizada puede ser borrada explícitamente presionando en el botón de borrar.</p>
+</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<div class="figure">
+<img alt="images/resource-assignment.png" src="images/resource-assignment.png" style="width: 326.5px; height: 306.5px;" />
+<p class="caption">Asignación de recursos</p>
+</div>
+<ul class="simple">
+<li>El usuario selecciona &quot;Búsqueda de recursos&quot;.</li>
+<li>La aplicación muestra una nueva pantalla formada por un árbol de criterios y un listado a la derecha de los trabajadores que cumplen los criterios seleccionados:</li>
+</ul>
+<div class="figure">
+<img alt="images/resource-assignment-search.png" src="images/resource-assignment-search.png" style="width: 319.5px; height: 272.0px;" />
+<p class="caption">Búsqueda de asignación de recursos</p>
+</div>
+<ul>
+<li><p class="first">El usuario puede seleccionar:</p>
+<blockquote>
+<ul class="simple">
+<li>Asignación específica. Ver sección &quot;Asignación específica&quot; para conocer que significa elegir esta opción.</li>
+<li>Asignación genérica. Ver sección &quot;Asignación genérica&quot; para conocer que significa elegir esta opción.</li>
+</ul>
+</blockquote>
+</li>
+<li><p class="first">El usuario selecciona una lista de criterios (genérica) o una lista de trabajadores (específica). La elección múltiple se realiza presionando en el botón &quot;Crtl&quot; a la hora de pulsar en cada trabajador o criterio.</p>
+</li>
+<li><p class="first">El usuario presiona en el botón &quot;Seleccionar&quot;. Es importante tener en cuenta que, si no se marca asignación genérica, es necesario escoger un trabajador o máquina para poder realizar una asignación, en caso contrario llega con elegir uno o varios criterios.</p>
+</li>
+<li><p class="first">La aplicación muestra en el listado de asignaciones de la pantalla original de asignación de recursos a lista de criterios o recursos seleccionados.</p>
+</li>
+<li><p class="first">El usuario debe elegir las horas o los recursos por día dependiendo de la estrategia de asignación que le solicitó llevar a cabo a la aplicación.</p>
+</li>
+</ul>
+<div class="section" id="asignacion-especifica">
+<h1><a class="toc-backref" href="#toc-entry-1">Asignación específica</a></h1>
+<p>La asignación específica es aquella asignación de un recurso de modo concreto y específica a una tarea de un proyecto, es decir, el usuario de la aplicación está decidiendo qué &quot;nombre y apellidos&quot; o qué &quot;máquina&quot; concreta debe ser asignada a una tarea.</p>
+<p>La asignación específica es realizable desde la pantalla que se puede ver en la imagen:</p>
+<div class="figure">
+<img alt="images/asignacion-especifica.png" src="images/asignacion-especifica.png" style="width: 334.0px; height: 216.0px;" />
+<p class="caption">Asignación específica de recursos</p>
+</div>
+<p>La aplicación, cuando un recurso es asignado específicamente, crea asignaciones diarias en relación al porcentaje de recurso diario que se eligió para asignación, contrastando previamente con el calendario disponible del recurso. Ejemplo: una asignación de 0.5 recursos para una tarea de 32 horas implica que se asignen al recurso específico (suponiendo un calendario laboral de 8 horas diarias) 4 horas diarias para realizar la tarea.</p>
+<div class="section" id="asignacion-especifica-de-maquinas">
+<h2><a class="toc-backref" href="#toc-entry-2">Asignación específica de máquinas</a></h2>
+<p>La asignación específica de máquinas actúa igual que la de trabajadores, es decir, cuando se asigna una máquina a una tarea, el sistema almacena una asignación de horas específica a la máquina elegida. La diferencia principal es que en el momento de asignar una máquina, el sistema busca el listado de trabajadores o criterios asignados a la máquina:</p>
+<ul class="simple">
+<li>Si la máquina tenía un listado de trabajadores asignados, elige entre el número de ellos que requiera la máquina para el calendario asignado. Por ejemplo, si el calendario de la máquina es de 16 horas diarias y de los recursos de 8, asigna dos recursos de la lista de recursos disponibles.</li>
+<li>Si la máquina tenía un criterio o varios asignados, realiza asignaciones genéricas entre los recursos que satisfacen los criterios asignados a la máquina.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="asignacion-generica">
+<h1><a class="toc-backref" href="#toc-entry-3">Asignación genérica</a></h1>
+<p>La asignación genérica es aquella asignación donde el usuario no elige los recursos concretamente dejando la decisión a la aplicación, eligiendo ésta como reparte las cargas entre los recursos disponibles de la empresa.</p>
+<div class="figure">
+<img alt="images/asignacion-xenerica.png" src="images/asignacion-xenerica.png" style="width: 311.0px; height: 59.0px;" />
+<p class="caption">Asignación genérica de recursos</p>
+</div>
+<p>El sistema de asignación utiliza como base los siguientes supuestos:</p>
+<ul class="simple">
+<li>Las tareas cuentan con criterios requeridos a los recursos.</li>
+<li>Los recursos están configurados para que satisfagan los criterios.</li>
+</ul>
+<p>Sin embargo, el sistema no falla en aquellos casos en los que no se asignen criterios sino que todos los recursos satisfacen el no requirimiento de criterios.</p>
+<p>El algoritmo de asignación genérica actúa del siguiente modo:</p>
+<ul class="simple">
+<li>Cada recurso y día es tratado como un contenedor donde caben asignaciones diarias de horas, basándose la capacidad máxima de asignación en el calendario de la tarea.</li>
+<li>El sistema busca los recursos que satisfacen el criterio.</li>
+<li>El sistema analiza qué asignaciones tienen actualmente los diferentes recursos que cumplen los criterios.</li>
+<li>De entre los que satisfacen los criterios se escogen los recursos que tienen disponibilidad suficiente.</li>
+<li>Si los recursos más libres van siendo ocupados, se siguen realizando asignaciones en los recursos que tenían menor disponibilidad.</li>
+<li>Sólo cuando todos los recursos que satisfacen los criterios correspondientes están asignados al 100% se comienza con la sobreasignación de recursos hasta completar el total necesario para realizar la tarea.</li>
+</ul>
+<div class="section" id="asignacion-generica-de-maquinas">
+<h2><a class="toc-backref" href="#toc-entry-4">Asignación genérica de máquinas</a></h2>
+<p>La asignación genérica de máquinas actúa de igual modo que la de trabajadores, es decir, cuando se asigna una máquina a una tarea, el sistema almacena una asignación de horas genérica a cada una de las máquinas que satisfacen los criterios, tal y como se describió genericamente para los recursos en general. Sin embargo, tratándose de máquinas el sistema realiza la siguiente operación a mayores:</p>
+<ul class="simple">
+<li>Para cada máquina elegida para la asignación genérica:<ul>
+<li>Recoge la información de configuración de la máquina, es decir, alfa, trabajadores y criterios asignados.</li>
+<li>Si la máquina tenía un listado de trabajadores asignados, elige entre el número de ellos que requiera la máquina dependiendo del calendario asignado. Por ejemplo, si el calendario de la máquina es de 16 horas diarias y de los recursos de 8, asigna dos recursos de la lista de recursos disponibles.</li>
+<li>Si la máquina tenía un criterio o varios asignados, realiza asignaciones genéricas entre los recursos que satisfacen los criterios asignados a la máquina.</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="asignacion-avanzada">
+<h1><a class="toc-backref" href="#toc-entry-5">Asignación avanzada</a></h1>
+<p>La asignación avanzada permite diseñar las asignaciones que se realizan automáticamente por la aplicación de manera más personalizada. Esta operación permite elegir manualmente las horas diarias que dedican los recursos a las tareas que están asignadas o definir una función que se le aplica a dichas asignaciones.</p>
+<p>Para gestionar la asignación avanzada los pasos a dar son los siguientes:</p>
+<ul>
+<li><p class="first">Acceder a la ventana de asignación avanzada. Existen dos modos de acceder a la asignación avanzada:</p>
+<blockquote>
+<ul class="simple">
+<li>Accediendo a un pedido concreto y cambiar de perspectiva para asignación avanzada. En este caso se mostrarán todas las tareas del pedido y los recursos asignados (tanto específicos cómo genéricos).</li>
+<li>Accediendo a la asignación de recursos y presionando en el botón &quot;Asignación avanzada&quot;. En este caso se mostrarán las asignaciones de la tarea para la que se está asignando recursos (se muestran tanto las genéricas como las específicas).</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<div class="figure">
+<img alt="images/advance-assignment.png" src="images/advance-assignment.png" style="width: 459.0px; height: 294.3px;" />
+<p class="caption">Asignación avanzada de recursos</p>
+</div>
+<ul>
+<li><p class="first">El usuario puede acceder al zoom que desee:</p>
+<blockquote>
+<ul class="simple">
+<li>Si el zoom elegido es un zoom superior a día. Si el usuario modifica el valor de horas asignado a la semana, mes, cuatrimestre o semestre, el sistema reparte las horas de manera lineal durante todos los días del período elegido.</li>
+<li>Si el zoom elegido es un zoom de día. Si el usuario modifica el valor de horas asignado al día, estas horas sólo aplican al día. De este modo el usuario puede decidir cuantas horas se asignan diariamente a los recursos de la tarea.</li>
+</ul>
+</blockquote>
+</li>
+<li><p class="first">El usuario puede elegir diseñar una función de asignación avanzada. Para realizarlo:</p>
+<blockquote>
+<ul>
+<li><p class="first">Elegir la función en la lista de selección que aparece al lado de cada recurso y presionar en &quot;Configurar&quot;.</p>
+</li>
+<li><p class="first">El sistema muestra una nueva ventana si la función elegida requiere de configuración específica. Las funciones soportadas son:</p>
+<blockquote>
+<ul>
+<li><p class="first">Tramos: Función que permite definir tramos en los que se aplica una función polinómica. La función por tramos se configura del siguiente modo:</p>
+<blockquote>
+<ul class="simple">
+<li>Fecha. Fecha en la que finaliza el tramo. Si se establece el siguiente valor (longitud) la fecha es calculada, en caso contrario, se calcula la longitud.</li>
+<li>Definición de la longitud de cada tramo. Indica que porcentaje de duración de la tarea se desea para el tramo.</li>
+<li>Definición de la cantidad de trabajo. Indica que porcentaje de carga de trabajo se espera tener hecho en ese tramo. La cantidad de trabajo debe ser incremental, de modo que si hay un tramo del 10% el siguiente tramo debe ser superior (por ejemplo, 20%).</li>
+<li>Gráficas de tramos y carga acumulada.</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+</blockquote>
+</li>
+<li><p class="first">El usuario presiona en &quot;Aceptar&quot;.</p>
+</li>
+<li><p class="first">La aplicación almacena la función y la aplica en las asignaciones diarias del recurso.</p>
+</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<div class="figure">
+<img alt="images/stretches.png" src="images/stretches.png" style="width: 428.8px; height: 233.20000000000002px;" />
+<p class="caption">Configuración de función por tramos</p>
+</div>
+</div>
+</div>
+</body>
+</html>

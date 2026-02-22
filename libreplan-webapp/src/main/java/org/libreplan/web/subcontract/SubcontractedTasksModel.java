@@ -237,7 +237,7 @@ public class SubcontractedTasksModel implements ISubcontractedTasksModel {
 
             String message = _(CONNECTION_PROBLEM);
             if ( e.getMessage() != null ) {
-                message += ". " + _("Error: {0}", e.getMessage());
+                message += ". " + _t("Error: {0}", e.getMessage());
             }
 
             throw new ConnectionProblemsException(message, e);
@@ -274,7 +274,7 @@ public class SubcontractedTasksModel implements ISubcontractedTasksModel {
 
             String message = _(CONNECTION_PROBLEM);
             if ( e.getMessage() != null ) {
-                message += ". " + _("Error: {0}", e.getMessage());
+                message += ". " + _t("Error: {0}", e.getMessage());
             }
 
             throw new ConnectionProblemsException(message, e);

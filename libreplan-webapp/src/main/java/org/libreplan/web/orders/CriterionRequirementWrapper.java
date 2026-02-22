@@ -43,7 +43,7 @@ import org.libreplan.business.resources.entities.ResourceEnum;
  */
 public class CriterionRequirementWrapper  implements INewObject {
 
-    private final String DIRECT = _("Direct");
+    private final String DIRECT = _t("Direct");
 
     private String type;
 
@@ -84,7 +84,7 @@ public class CriterionRequirementWrapper  implements INewObject {
     }
 
     public static String getIndirectTypeLabel() {
-        return _("Inherited");
+        return _t("Inherited");
     }
 
     public CriterionWithItsType getCriterionWithItsType() {
@@ -213,7 +213,7 @@ public class CriterionRequirementWrapper  implements INewObject {
     }
 
     public String getLabelValidate() {
-        return isValid() ? _("Invalidate") : _("Validate");
+        return isValid() ? _t("Invalidate") : _t("Validate");
     }
 
     public boolean isUpdatable(){

@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Introdución</title>
+<link rel="stylesheet" href="html/lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="introducion">
+<h1 class="title">Introdución</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#vista-global-da-empresa-e-xestion-de-perspectivas" id="toc-entry-1">Vista global da empresa e xestión de perspectivas</a></li>
+<li><a class="reference internal" href="#por-que-me-e-util-libreplan" id="toc-entry-2">¿Por que me é útil LibrePlan?</a></li>
+<li><a class="reference internal" href="#convencions-de-usabilidade" id="toc-entry-3">Convencións de usabilidade</a><ul>
+<li><a class="reference internal" href="#comportamento-dos-formularios" id="toc-entry-4">Comportamento dos formularios</a></li>
+<li><a class="reference internal" href="#iconas-e-botons-estandar" id="toc-entry-5">Iconas e botóns estándar</a></li>
+<li><a class="reference internal" href="#pestanas" id="toc-entry-6">Pestanas</a></li>
+<li><a class="reference internal" href="#accions-explicitas-e-axuda-contextual" id="toc-entry-7">Accións explícitas e axuda contextual</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>O propósito deste documento é describir as características de LibrePlan e
+proporcionar información ós usuarios sobre como configurar e utilizar a
+aplicación.</p>
+<p>LibrePlan é unha aplicación web de código aberto para a planificación de
+proxectos. O seu obxectivo principal é proporcionar unha solución completa para a
+xestión dos proxectos da empresa.
+Para calquera información específica que necesites sobre este software, por
+favor ponte en contacto co equipo de desenvolvemento en
+<a class="reference external" href="http://www.libreplan.com/contact/">http://www.libreplan.com/contact/</a></p>
+<div class="figure">
+<img alt="images/company_view.png" src="images/company_view.png" style="width: 504.5px; height: 327.0px;" />
+<p class="caption">Vista global de empresa</p>
+</div>
+<div class="section" id="vista-global-da-empresa-e-xestion-de-perspectivas">
+<h1><a class="toc-backref" href="#toc-entry-1">Vista global da empresa e xestión de perspectivas</a></h1>
+<p>Tal e como se visualiza na anterior captura, a principal pantalla da aplicación e a vista global da empresa, unha vista na que o usuario poderá visualizar a lista de proxectos planificados para coñecer o estado global da empresa, tanto a nivel de pedidos, como de uso de recursos. A vista global de empresa está, asimesmo, formada por 3 perspectivas:</p>
+<ul>
+<li><p class="first">Vista de planificación: Vista que conxuga dous puntos de vista:</p>
+<blockquote>
+<ul class="simple">
+<li>Vista dos pedidos e a sua temporalidade: Cada proxecto é unha caixa de diagramas de Gantt indicando a data de comezo e de fin do proxecto. Ademais, combínase dita información co amosado da data acordada de finalización (<em>deadline</em>) e con un contraste entre porcentaxe de avance e horas adicadas realmente a cada proxecto. Esta información da unha visión clara de como se atopa a empresa nun momento dado. Esta vista é a portada da aplicación.</li>
+<li>Gráfica de uso dos recursos da empresa: Gráfica que busca a información de asignacións dos recursos ós proxectos e que ofrece un resumo de como está o uso dos recursos de toda a empresa: a cor verde indica asignacións de recursos por debaixo do 100%, a liña negra indica a carga dispoñible de recursos e a cor amarela indica as asignacións a recursos que están por enriba do 100%. É posible dispor de menos asignacións que recursos dispoñibles e ó mesmo tempo contar con sobreasignacións en recursos concretos.</li>
+</ul>
+</blockquote>
+</li>
+<li><p class="first">Vista de carga de recursos: Pantalla que amosa o listado de traballadores da empresa e a carga debido a asignacións específicas a tarefas ou asignacións xenéricas debido a que o recurso satisfai unha lista de criterios. Ver a seguinte imaxe. Para acceder a esta vista é necesario premer en <em>Carga global de recursos</em>.</p>
+</li>
+<li><p class="first">Vista de administración de pedidos. Pantalla que amosa o listado de pedidos da empresa onde o usuario poderá realizar as seguintes operacións: filtrar, editar, borrar, visualizar en planificación ou crear novo pedido. Para acceder a esta vista é necesario premer en <em>Lista de pedidos</em>.</p>
+</li>
+</ul>
+<div class="figure">
+<img alt="images/resources_global.png" src="images/resources_global.png" style="width: 505.0px; height: 327.0px;" />
+<p class="caption">Vista global de recursos</p>
+</div>
+<div class="figure">
+<img alt="images/order_list.png" src="images/order_list.png" style="width: 506.0px; height: 293.5px;" />
+<p class="caption">Estructura de Descomposición de Traballo</p>
+</div>
+<p>A xestión de perspectivas que se comentou para a vista global de empresa é moi similar á prantexada para un só proxecto. O acceso a un proxecto pódese realizar de varias formas:</p>
+<ul class="simple">
+<li>Premendo no botón dereito sobre a caixa de diagrama de Gantt do pedido e seleccionando en <em>Planificar</em>.</li>
+<li>Accedendo ó listado de pedidos e premendo na icona simbolizando os diagramas de Gantt.</li>
+<li>Creando un novo pedido e cambiar de perspectiva sobre o pedido sendo visualizado.</li>
+</ul>
+<p>Sobre un pedido, a aplicación amosa as seguintes perspectivas:</p>
+<ul class="simple">
+<li>Vista de planificación. Vista na que o usuario pode visualizar a planificación das tarefas, dependencias, fitos, etc. Ver sección de <em>Planificación</em> para máis información.</li>
+<li>Vista de carga de recursos. Vista na que o usuario pode comprobar a carga dos recursos asignados ó proxecto. O código de cores é o mesmo que na vista global de empresa: verde para carga menor ó 100%, amarelo para carga igual a 100% e vermello para carga maior a 100%. A carga pode vir dada por unha tarefa ou por unha lista de criterios (asignación xenérica).</li>
+<li>Vista de edición de pedido. Vista na que o usuario pode administrar os datos do pedido. Ver sección de <em>Pedidos</em> para máis información..</li>
+<li>Vista de asignación avanzada de recursos. Vista na que o usuario pode asignar os recursos de xeito avanzado, seleccionando as horas por día ou as funcións de asignación que desexa aplicar. Ver sección de <em>Asignación de recursos</em> para máis información.</li>
+</ul>
+</div>
+<div class="section" id="por-que-me-e-util-libreplan">
+<h1><a class="toc-backref" href="#toc-entry-2">¿Por que me é útil LibrePlan?</a></h1>
+<p>LibrePlan é unha aplicación desenvolvida como unha ferramenta de
+planificación de propósito xeral. Baséase nunha serie de conceptos
+descubertos mediante o análisis de problemas na planificación de proxectos
+industriais que non estaban completamente cubertos por ningunha ferramenta de
+planificación existente. Outras das motivacións para o desenvolvemento de
+LibrePlan se baseaban en proporcionar unha alternativa de software libre, e
+completamente web, ás ferramentas de planficación privativas existentes.</p>
+<p>Os conceptos esenciais que se utilizan para o programa son os seguintes:</p>
+<ul class="simple">
+<li>Vista global de empresa e multiproxecto: LibrePlan é unha aplicación orientada especificamente a dotar de información ós usuarios dos proxectos que se levan a cabo nunha empresa, polo que a base é multiproxecto. Non se determinou que o enfoque do proxecto sexa orientado individualmente a cada proxecto. Sen embargo, tamén será posible dispoñer de varias vistas específicas, entre elas a de proxectos individuais.</li>
+<li>Xestión de perspectivas: A vista global de empresa ou vista multiproxecto vese complementada coas perspectivas sobre a información que se almacena. Por exemplo, a vista global de empresa permite visualizar os pedidos e contrastar o estado dos mesmos, visualizar a carga xeral de recursos da empresa e administrar os pedidos. Por outro lado, na vista de proxecto, é posible visualizar a planificación, a carga de recursos, a vista de asignación de recursos avanzada e a edición do pedido relacionado.</li>
+<li>Criterios: Os criterios son unha entidade do sistema que permitirán clasificar os recursos (tanto humanos como máquinas) e as tarefas. Dende o punto de vista dos recursos, estes satisfarán criterios e, dende o punto de vista das tarefas, estas requirirán criterios a ser satisfeitos. Correspóndense con un dos aspectos máis importantes da aplicación, xa que os criterios formarán parte da base das asignacións xenéricas na aplicación, resolvendo un dos problemas máis importantes para o sector, a alta temporalidade dos recursos humanos e a dificultade para ter estimacións de carga da empresa a longo prazo.</li>
+<li>Recursos: Son de dous tipos diferentes: humanos e máquinas. Os recursos humanos son os traballadores da empresa que se utilizan para planificar, monitorizar e controlar a carga da empresa. E por outro lado, as máquinas, dependentes das persoas que as xestionan, son outros recursos que actúan de xeito similar ós recursos humanos.</li>
+<li>Asignación de recursos: Unha das claves é o feito de ofrecer a posibilidade de dous tipos diferentes de asignación: asignación específica e asignación xenérica. A xenérica é unha asignación baseada nos criterios que se requiren para realizar a unha tarefa, e que deben ser satisfeitos polos recursos que teñen a capacidade de realizala. Para entender a asignación xenérica, é necesario, imaxinarse o seguinte caso: Jonh Smith é soldador, xeralmente o propio Jonh Smith é asignado á tarefa planificada, pero &quot;LibrePlan&quot; ofrece a posibilidade de elixir un recurso en xeral entre os soldadores da empresa, sen preocuparse de se Jonh Smith é o asignado á tarefa.</li>
+<li>Control de carga da empresa: a aplicación da a posibilidade de ter un control sinxelo da carga dos recursos da empresa. Este control realízase a medio e longo prazo xa que se poden controlar tanto os proxectos presentes como os potenciais proxectos. &quot;LibrePlan&quot; ofrece gráficos de uso de recursos.</li>
+<li>Etiquetas: Son elementos que se usan para o etiquetado das tarefas dos proxectos. Con estas etiquetas o usuario da aplicación pode realizar agrupacións conceptuais das tarefas para posteriormente poder consultalas de xeito agrupado e filtrado.</li>
+<li>Filtrados: Dado que o sistema dispón de xeito natural de elementos que etiquetan ou caracterízan tarefas e recursos, é posible utilizar filtrado de criterios ou etiquetas, o cal dota de unha gran potencia para poder consultar información categorizada ou extraer informes específicos en base a criterios ou etiquetas.</li>
+<li>Calendarios: Os calendarios determinan as horas produtivas dispoñibles dos diferentes recursos. O usuario pode crear calendarios xerais da empresa e derivar as características para calendarios máis concretos, chegando ata a nivel de calendario por recurso ou tarefa.</li>
+<li>Pedido e elementos de pedido: Os traballos solicitados polos clientes teñen un reflexo na aplicación en forma de pedido, que se estrutura en elementos de pedido. O pedido cos seus elementos conforman unha estrutura xerárquica en <em>n</em> niveis. Esta árbore de elementos é sobre a que se traballe á hora de planificar traballos.</li>
+<li>Avances: A aplicación permite xestionar diversos tipos de avances. Un proxecto pode ser medido en porcentaxe de avance, sen embargo, pode querer ser medido en unidades, presuposto acordado, etc. É responsabilidade da persoa que xestiona a planificación decidir que tipo de avance é utilizado para contrastar avances a niveis superiores de proxecto.</li>
+<li>Tarefas: As tarefas son los elementos de planificación da aplicación. Son utilizadas para temporalizar os traballos a realizar. As características máis importantes das tarefas son: teñen dependencias entre si e poden requirir criterios a ser satisfeitos para asignar recursos.</li>
+<li>Partes de traballo: Son os partes dos traballadores das empresas, indicando as horas traballadas e por outro lado as tarefas asignadas ás horas que un traballador realizou. Con esta información, o sistema é capaz de calcular cantas horas foron consumidas dunha tarefa con respecto ó total de horas presupostadas, permitindo contrastar os avances respecto do consumo de horas real.</li>
+</ul>
+<p>A maiores das funcionalidades que ofrece a aplicación caben destacar outras características que o distinguen de aplicacións similares:</p>
+<ul class="simple">
+<li>Integración con ERP: A aplicación importará información directamente dos ERP das empresas para os pedidos, recursos humanos, partes de traballo e certos criterios.</li>
+<li>Xestión de versións: A aplicación permitirá a xestión de diversas versións de planificacións e ó mesmo tempo a posibilidade de consultar a información de cada unha delas.</li>
+<li>Xestión de históricos: A aplicación non borra información, solo a invalida, polo que é posible consultar mediante filtrados por datas a información antiga.</li>
+</ul>
+</div>
+<div class="section" id="convencions-de-usabilidade">
+<h1><a class="toc-backref" href="#toc-entry-3">Convencións de usabilidade</a></h1>
+<div class="section" id="comportamento-dos-formularios">
+<h2><a class="toc-backref" href="#toc-entry-4">Comportamento dos formularios</a></h2>
+<p>Antes de realizar unha exposición das distintas funcionalidades asociadas ós módulos máis importantes, é necesario facer unha explicación xeral da filosofía de navegación e formularios.</p>
+<p>Existen fundamentalmente 3 tipos de formularios de edición:</p>
+<ul class="simple">
+<li>Formularios con botón de <em>Voltar</em>. Estes formularios forman parte de unha navegación máis completa, e os cambios que se van realizando vanse almacenando en memoria. Os cambios só se aplican cando o usuario almacena explicitamente toda pantalla dende a que chegou a dito formulario.</li>
+<li>Formularios con botón de <em>Gardar</em> e <em>Pechar</em>. Estes formularios permiten realizar 2 operacións. A primeira delas almacena e pecha a ventá actual e a segunda delas pecha sen almacenar os cambios.</li>
+<li>Formularios con botón de <em>Gardar e Continuar</em>, &quot;Gardar&quot; e &quot;Pechar&quot;. Permiten realizar 3 operacións. A primeira delas almacena pero continúa no formulario actual. A segunda almacena e pecha o formulario. E a terceira pecha a ventá sen almacenar os cambios.</li>
+</ul>
+</div>
+<div class="section" id="iconas-e-botons-estandar">
+<h2><a class="toc-backref" href="#toc-entry-5">Iconas e botóns estándar</a></h2>
+<ul class="simple">
+<li>Edición: A edición dos rexistros da aplicación pode ser realizada xeralmente a través dunha icona formada por un lápis sobre unha libreta branca.</li>
+<li>Indentado esquerda: Xeralmente estas operacións son necesarias para elementos dunha árbore que se desexan mover cara niveis internos. Esta operación pode ser feita coa icona formada por unha frecha cara a dereita de cor verde.</li>
+<li>Indentado dereita: Xeralmente estas operacións son necesarias para elementos dunha árbore que se desexan mover desde niveis internos cara externos. Esta operación pode ser feita coa icona formada por unha frecha cara a esquerda de cor verde.</li>
+<li>Borrado: Os borrados poden ser realizados coa icona da papeleira.</li>
+<li>Procura: A lupa é unha icona que indica que a entrada de texto á esquerda da mesma está pensada para a procura de elementos.</li>
+</ul>
+</div>
+<div class="section" id="pestanas">
+<h2><a class="toc-backref" href="#toc-entry-6">Pestanas</a></h2>
+<p>Existen formularios de edición e administración de contidos que se atopan representados mediante compoñentes gráficos baseados en pestanas. Dita presentación é un mecanismo para organizar a información de un formulario global en diferentes seccións que poden ser accedidas premendo nos títulos das diferentes pestanas, mantendo o estado no que se atopaban as demáis. En todos estes casos, as operacións de gardar ou cancelar que se executen afectan ó conxunto de subformularios das diferentes pestanas.</p>
+</div>
+<div class="section" id="accions-explicitas-e-axuda-contextual">
+<h2><a class="toc-backref" href="#toc-entry-7">Accións explícitas e axuda contextual</a></h2>
+<p>Están implementados na aplicación compoñentes que proporcionan un texto descritivo adicional do elemento sobre que se atopa enfocado o transcorrer un segundo sobre os mesmos.
+As accións que o usuario pode executar na aplicación están explicitadas tanto nas etiquetas dos botóns e nos textos de axuda que aparecen sobre os mesmos, nas opcións do menú de navegación ou nas opcións dos menús contextuais que se despregan o premer co botón dereito na área do planificador.
+Asimesmo, tamén se proporcionan atallos ás operacións principais facendo dobre click nos elementos que se listan, ou asociando os eventos de teclado cos cursores e a tecla de retorno ó desprazamento polos formularios é á acción de engadir elementos, respectivamente.</p>
+</div>
+</div>
+</div>
+</body>
+</html>

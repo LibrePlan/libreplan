@@ -59,14 +59,14 @@ public class EffortDurationPicker extends Hbox {
         minutes = new Spinner();
         minutes.setCols(2);
         setRangeFor(minutes, 0, 59);
-        appendWithTooltipText(hours, _("Hours"));
-        appendWithTooltipText(minutes, _("Minutes"));
+        appendWithTooltipText(hours, _t("Hours"));
+        appendWithTooltipText(minutes, _t("Minutes"));
 
         if (withseconds) {
             seconds = new Spinner();
             seconds.setCols(2);
             setRangeFor(seconds, 0, 59);
-            appendWithTooltipText(seconds, _("Seconds"));
+            appendWithTooltipText(seconds, _t("Seconds"));
         }
     }
 

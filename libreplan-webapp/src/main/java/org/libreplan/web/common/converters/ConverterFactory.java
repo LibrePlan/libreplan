@@ -61,6 +61,6 @@ public class ConverterFactory implements IConverterFactory {
                 return (IConverter<? super T>) result;
             }
         }
-        throw new RuntimeException(_("Not found converter for {0}",  klass));
+        throw new RuntimeException(_t("Not found converter for {0}",  klass));
     }
 }

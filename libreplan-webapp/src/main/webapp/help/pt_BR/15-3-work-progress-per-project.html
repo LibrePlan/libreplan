@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Work and Progress per Project Report</title>
+<link rel="stylesheet" href="html/lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="work-and-progress-per-project-report">
+<h1 class="title">Work and Progress per Project Report</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#purpose" id="toc-entry-1">Purpose</a></li>
+<li><a class="reference internal" href="#input-parameters-and-filters" id="toc-entry-2">Input Parameters and Filters</a></li>
+<li><a class="reference internal" href="#output" id="toc-entry-3">Output</a><ul>
+<li><a class="reference internal" href="#heading" id="toc-entry-4">Heading</a></li>
+<li><a class="reference internal" href="#footer" id="toc-entry-5">Footer</a></li>
+<li><a class="reference internal" href="#body" id="toc-entry-6">Body</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="purpose">
+<h1><a class="toc-backref" href="#toc-entry-1">Purpose</a></h1>
+<p>This report provides an overview of the status of projects, considering both progress and cost.</p>
+<p>It analyzes the current progress of each project, comparing it with the planned progress and the work completed.</p>
+<p>The report also displays several ratios related to project cost, comparing current performance with the planned performance.</p>
+</div>
+<div class="section" id="input-parameters-and-filters">
+<h1><a class="toc-backref" href="#toc-entry-2">Input Parameters and Filters</a></h1>
+<p>There are several mandatory parameters:</p>
+<blockquote>
+<ul class="simple">
+<li><strong>Reference Date:</strong> This is the date used as a reference point for comparing the planned status of the project with its actual performance. <em>The default value for this field is the current date</em>.</li>
+<li><strong>Progress Type:</strong> This is the progress type used to measure project progress. The application allows a project to be measured simultaneously with different progress types. The type selected by the user in the dropdown menu is used for calculating the report data. The default value for the <em>progress type</em> is <em>spread</em>, which is a special progress type that uses the preferred method of measuring progress configured for each WBS element.</li>
+</ul>
+</blockquote>
+<p>The optional parameters are:</p>
+<blockquote>
+<ul class="simple">
+<li><strong>Starting Date:</strong> This is the earliest start date for projects to be included in the report. If this field is left blank, there is no minimum start date for the projects.</li>
+<li><strong>Ending Date:</strong> This is the latest end date for projects to be included in the report. All projects that finish after the <em>Ending Date</em> will be excluded.</li>
+<li><strong>Filter by Projects:</strong> This filter allows users to select the specific projects to be included in the report. If no projects are added to the filter, the report will include all projects in the database. A searchable dropdown menu is provided to find the desired project. Projects are added to the filter by clicking the <em>Add</em> button.</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="output">
+<h1><a class="toc-backref" href="#toc-entry-3">Output</a></h1>
+<p>The output format is as follows:</p>
+<div class="section" id="heading">
+<h2><a class="toc-backref" href="#toc-entry-4">Heading</a></h2>
+<p>The report header displays the following fields:</p>
+<blockquote>
+<ul class="simple">
+<li><strong>Starting Date:</strong> The filtering start date. This is not displayed if the report is not filtered by this field.</li>
+<li><strong>Ending Date:</strong> The filtering end date. This is not displayed if the report is not filtered by this field.</li>
+<li><strong>Progress Type:</strong> The progress type used for the report.</li>
+<li><strong>Projects:</strong> This indicates the filtered projects for which the report is generated. It will show the string <em>All</em> when the report includes all projects that satisfy the other filters.</li>
+<li><strong>Reference Date:</strong> The mandatory input reference date selected for the report.</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="footer">
+<h2><a class="toc-backref" href="#toc-entry-5">Footer</a></h2>
+<p>The footer displays the date on which the report was generated.</p>
+</div>
+<div class="section" id="body">
+<h2><a class="toc-backref" href="#toc-entry-6">Body</a></h2>
+<p>The body of the report consists of a list of projects selected based on the input filters.</p>
+<p>Filters work by adding conditions, except for the set formed by the date filters (<em>Starting Date</em>, <em>Ending Date</em>) and the <em>Filter by Projects</em>. In this case, if one or both date filters are filled and the <em>Filter by Projects</em> has a list of selected projects, the latter filter takes precedence. This means that the projects included in the report are those provided by the <em>Filter by Projects</em>, regardless of the date filters.</p>
+<p>It's important to note that progress in the report is calculated as a fraction of unity, ranging between 0 and 1.</p>
+<p>For each project selected for inclusion in the report output, the following information is displayed:</p>
+<blockquote>
+<ul class="simple">
+<li><em>Project Name</em>.</li>
+<li><dl class="first docutils">
+<dt><em>Total Hours</em>. The total hours for the project are shown by adding the hours for each task. Two types of total hours are shown:</dt>
+<dd><ul class="first last">
+<li><em>Estimated (TE)</em>. This is the sum of all the estimated hours in the project's WBS. It represents the total number of hours estimated to complete the project.</li>
+<li><em>Planned (TP)</em>. In <em>LibrePlan</em>, it's possible to have two different quantities: the estimated number of hours for a task (the number of hours initially estimated to complete the task) and the planned hours (the hours allocated in the plan to complete the task). The planned hours can be equal to, less than, or greater than the estimated hours and are determined in a later phase, the assignment operation. Therefore, the total planned hours for a project are the sum of all the allocated hours for its tasks.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>Progress</em>. Three measurements related to the overall progress of the type specified in the progress input filter for each project at the reference date are shown:</dt>
+<dd><ul class="first last">
+<li><em>Measured (PM)</em>. This is the overall progress considering the progress measurements with a date earlier than the <em>Reference Date</em> in the input parameters of the report. All tasks are taken into account, and the sum is weighted by the number of hours for each task.</li>
+<li><em>Imputed (PI)</em>. This is the progress assuming that work continues at the same pace as the hours completed for a task. If X hours out of Y hours for a task are completed, the overall imputed progress is considered to be X/Y.</li>
+<li><em>Planned (PP)</em>. This is the overall progress of the project according to the planned schedule at the reference date. If everything happened exactly as planned, the measured progress should be the same as the planned progress.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>Hours up to Date</em>. There are two fields that show the number of hours up to the reference date from two perspectives:</dt>
+<dd><ul class="first last">
+<li><em>Planned (HP)</em>. This number is the sum of the hours allocated to any task in the project with a date less than or equal to the <em>Reference Date</em>.</li>
+<li><em>Actual (HR)</em>. This number is the sum of the hours reported in the work reports for any of the tasks in the project with a date less than or equal to the <em>Reference Date</em>.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>Difference</em>. Under this heading, there are several metrics related to cost:</dt>
+<dd><ul class="first last">
+<li><em>Cost</em>. This is the difference in hours between the number of hours spent, considering the measured progress, and the hours completed up to the reference date. The formula is: <em>PM*TP - HR</em>.</li>
+<li><em>Planned</em>. This is the difference between the hours spent according to the overall measured project progress and the number planned up to the <em>Reference Date</em>. It measures the advantage or delay in time. The formula is: <em>PM*TP - HP</em>.</li>
+<li><em>Cost Ratio</em>. This is calculated by dividing <em>PM</em> / <em>PI</em>. If it is greater than 1, it means that the project is profitable at this point. If it is less than 1, it means that the project is losing money.</li>
+<li><em>Planned Ratio</em>. This is calculated by dividing <em>PM</em> / <em>PP</em>. If it is greater than 1, it means that the project is ahead of schedule. If it is less than 1, it means that the project is behind schedule.</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</blockquote>
+</div>
+</div>
+</div>
+</body>
+</html>

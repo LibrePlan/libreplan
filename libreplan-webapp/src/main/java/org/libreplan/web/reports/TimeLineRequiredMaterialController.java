@@ -104,13 +104,13 @@ public class TimeLineRequiredMaterialController extends LibrePlanReportControlle
     public void onSelectOrder() {
         Order order = (Order) bdOrders.getSelectedElement();
         if (order == null) {
-            throw new WrongValueException(bdOrders, _("please, select a project"));
+            throw new WrongValueException(bdOrders, _t("please, select a project"));
         }
 
         boolean result = timeLineRequiredMaterialModel.addSelectedOrder(order);
         if (!result) {
             throw new WrongValueException(bdOrders,
-                    _("This project has already been added."));
+                    _t("This project has already been added."));
         } else {
             Util.reloadBindings(lbOrders);
         }
@@ -209,7 +209,7 @@ public class TimeLineRequiredMaterialController extends LibrePlanReportControlle
     }
 
     private String getDefaultStatus() {
-        return _("All");
+        return _t("All");
     }
 
     public String getSelectedStatus(){

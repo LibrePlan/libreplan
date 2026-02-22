@@ -22,7 +22,7 @@
 
 package org.libreplan.business.planner.entities;
 
-import static org.libreplan.business.i18n.I18nHelper._;
+import static org.libreplan.business.i18n.I18nHelper._t;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -423,7 +423,7 @@ public class StretchesFunction extends AssignmentFunction {
         BigDecimal left = calculateLeftFor(sumOfProportions);
 
         if ( !left.equals(BigDecimal.ZERO) ) {
-            throw new IllegalStateException(_("Stretches must sum 100%"));
+            throw new IllegalStateException(_t("Stretches must sum 100%"));
         }
     }
 

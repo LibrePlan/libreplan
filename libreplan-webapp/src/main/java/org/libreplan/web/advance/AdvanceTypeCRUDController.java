@@ -72,12 +72,12 @@ public class AdvanceTypeCRUDController extends BaseCRUDController<AdvanceType> {
     public Constraint lessThanDefaultMaxValue() {
         return (comp, value) -> {
             if (value == null) {
-                throw new WrongValueException(comp, _("Value is not valid, the precision value must not be empty"));
+                throw new WrongValueException(comp, _t("Value is not valid, the precision value must not be empty"));
             }
 
             if (!(advanceTypeModel.isPrecisionValid((BigDecimal) value))) {
                 throw new WrongValueException(
-                        comp, _("Invalid value. Precission value must be lower than the Default Max value."));
+                        comp, _t("Invalid value. Precission value must be lower than the Default Max value."));
             }
         };
     }
@@ -88,12 +88,12 @@ public class AdvanceTypeCRUDController extends BaseCRUDController<AdvanceType> {
     public Constraint greaterThanPrecision() {
         return (comp, value) -> {
             if (value == null) {
-                throw new WrongValueException(comp, _("Invalid value. Default Max Value cannot be empty"));
+                throw new WrongValueException(comp, _t("Invalid value. Default Max Value cannot be empty"));
             }
             if (!(advanceTypeModel.isDefaultMaxValueValid((BigDecimal) value))) {
                 throw new WrongValueException(
                         comp,
-                        _("Value is not valid, the default max value must be greater than the precision value "));
+                        _t("Value is not valid, the default max value must be greater than the precision value "));
             }
         };
     }
@@ -104,13 +104,13 @@ public class AdvanceTypeCRUDController extends BaseCRUDController<AdvanceType> {
     public Constraint distinctNames() {
         return (comp, value) -> {
             if (((String) value).isEmpty()) {
-                throw new WrongValueException(comp, _("The name is not valid, the name must not be null "));
+                throw new WrongValueException(comp, _t("The name is not valid, the name must not be null "));
             }
 
             if (!advanceTypeModel.distinctNames((String) value)) {
                 throw new WrongValueException(
                         comp,
-                        _("The name is not valid, there is another progress type with the same name. "));
+                        _t("The name is not valid, there is another progress type with the same name. "));
             }
         };
 
@@ -207,12 +207,12 @@ public class AdvanceTypeCRUDController extends BaseCRUDController<AdvanceType> {
 
     @Override
     protected String getEntityType() {
-        return _("Progress Type");
+        return _t("Progress Type");
     }
 
     @Override
     protected String getPluralEntityType() {
-        return _("Progress Types");
+        return _t("Progress Types");
     }
 
     @Override

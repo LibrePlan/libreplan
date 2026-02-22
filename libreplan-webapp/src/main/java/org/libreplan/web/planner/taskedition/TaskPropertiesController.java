@@ -384,9 +384,9 @@ public class TaskPropertiesController extends GenericForwardComposer<Component> 
                     } else {
                         if( newState.equals(ResourceAllocationTypeEnum.SUBCONTRACT ) && !checkCompatibleAllocation()){
                             restoreOldState();
-                            Messagebox.show(_("This resource allocation type is incompatible. The task has " +
+                            Messagebox.show(_t("This resource allocation type is incompatible. The task has " +
                                             "an associated order element which has a progress that is of type subcontractor. "),
-                                    _("Error"), Messagebox.OK , Messagebox.ERROR);
+                                    _t("Error"), Messagebox.OK , Messagebox.ERROR);
                         } else {
                             changeResourceAllocationType(oldState,newState);
                             editTaskController.selectAssignmentTab(lbResourceAllocationType.getSelectedIndex() + 1);
@@ -478,9 +478,9 @@ public class TaskPropertiesController extends GenericForwardComposer<Component> 
      * @author Diego Pino Garcia <dpino@igalia.com>
      */
     enum ResourceAllocationTypeEnum {
-        NON_LIMITING_RESOURCES(_("Normal resource assignment")),
-        LIMITING_RESOURCES(_("Queue-based resource assignation")),
-        SUBCONTRACT(_("Subcontract"));
+        NON_LIMITING_RESOURCES(_t("Normal resource assignment")),
+        LIMITING_RESOURCES(_t("Queue-based resource assignation")),
+        SUBCONTRACT(_t("Subcontract"));
 
         private String option;
 
@@ -613,7 +613,7 @@ public class TaskPropertiesController extends GenericForwardComposer<Component> 
         Task task = asTask(currentTaskElement);
         if ( task.hasResourceAllocations() ) {
             if ( Messagebox.show(
-                    _("Assigned resources for this task will be deleted. Are you sure?"),
+                    _t("Assigned resources for this task will be deleted. Are you sure?"),
                     _(WARNING), Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION) == Messagebox.OK) {
                 task.removeAllResourceAllocations();
                 setStateTo(newState);
@@ -649,7 +649,7 @@ public class TaskPropertiesController extends GenericForwardComposer<Component> 
         Task task = asTask(currentTaskElement);
         if (task.hasResourceAllocations()) {
             if (Messagebox.show(
-                    _("Assigned resources for this task will be deleted. Are you sure?"),
+                    _t("Assigned resources for this task will be deleted. Are you sure?"),
                     _(WARNING), Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION) == Messagebox.OK ) {
                 task.removeAllResourceAllocations();
                 setStateTo(newState);
@@ -679,7 +679,7 @@ public class TaskPropertiesController extends GenericForwardComposer<Component> 
             if ( communicationDate != null ) {
 
                 if ( Messagebox.show(
-                        _("IMPORTANT: Don't forget to communicate to subcontractor that his contract has been cancelled"),
+                        _t("IMPORTANT: Don't forget to communicate to subcontractor that his contract has been cancelled"),
                         _(WARNING), Messagebox.OK, Messagebox.EXCLAMATION) == Messagebox.OK ) {
 
                     setStateTo(newState);
@@ -805,7 +805,7 @@ public class TaskPropertiesController extends GenericForwardComposer<Component> 
             emailNotificationModel.confirmSave();
         } catch (DataIntegrityViolationException e) {
             Messagebox.show(
-                    _("You cannot email user twice with the same info"), _("Error"),
+                    _t("You cannot email user twice with the same info"), _t("Error"),
                     Messagebox.OK, Messagebox.ERROR);
         }
     }

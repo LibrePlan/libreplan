@@ -328,7 +328,7 @@ public class LimitingResourcesController extends GenericForwardComposer<org.zkos
     }
 
     private void notifyUserThatSavingIsDone() {
-        Messagebox.show(_("Scheduling saved"), _("Information"), Messagebox.OK, Messagebox.INFORMATION);
+        Messagebox.show(_t("Scheduling saved"), _t("Information"), Messagebox.OK, Messagebox.INFORMATION);
     }
 
     public void editResourceAllocation(LimitingResourceQueueElement oldElement) {
@@ -432,7 +432,7 @@ public class LimitingResourcesController extends GenericForwardComposer<org.zkos
             Button result = new Button("", "/common/img/ico_editar1.png");
             result.setHoverImage("/common/img/ico_editar.png");
             result.setSclass("icono");
-            result.setTooltiptext(_("Edit queue-based resource element"));
+            result.setTooltiptext(_t("Edit queue-based resource element"));
 
             result.addEventListener(Events.ON_CLICK, event -> {
                 LimitingResourceQueueElement queueElement = element.getOriginal();
@@ -448,9 +448,9 @@ public class LimitingResourcesController extends GenericForwardComposer<org.zkos
 
         private Button manualButton(final LimitingResourceQueueElementDTO element) {
             Button result = new Button();
-            result.setLabel(_("Manual"));
+            result.setLabel(_t("Manual"));
             result.setClass("add-button");
-            result.setTooltiptext(_("Assign element to queue manually"));
+            result.setTooltiptext(_t("Assign element to queue manually"));
 
             result.addEventListener(Events.ON_CLICK, event -> showManualAllocationWindow(element.getOriginal()));
 
@@ -461,7 +461,7 @@ public class LimitingResourcesController extends GenericForwardComposer<org.zkos
             Button result = new Button("", "/common/img/ico_borrar1.png");
             result.setHoverImage("/common/img/ico_borrar.png");
             result.setSclass("icono");
-            result.setTooltiptext(_("Remove queue-based resource element"));
+            result.setTooltiptext(_t("Remove queue-based resource element"));
 
             result.addEventListener(Events.ON_CLICK, event -> removeUnassignedLimitingResourceQueueElement(element));
 
@@ -476,9 +476,9 @@ public class LimitingResourcesController extends GenericForwardComposer<org.zkos
 
         private Button automaticButton(final LimitingResourceQueueElementDTO element) {
             Button result = new Button();
-            result.setLabel(_("Automatic"));
+            result.setLabel(_t("Automatic"));
             result.setClass("add-button");
-            result.setTooltiptext(_("Assign element to queue automatically"));
+            result.setTooltiptext(_t("Assign element to queue automatically"));
             result.setStyle("margin-right: 5px");
 
             result.addEventListener(Events.ON_CLICK, event -> assignLimitingResourceQueueElement(element));
@@ -492,7 +492,7 @@ public class LimitingResourcesController extends GenericForwardComposer<org.zkos
 
             if ( inserted.isEmpty() ) {
                 showErrorMessage(
-                        _("Cannot allocate selected element. There is not any queue " +
+                        _t("Cannot allocate selected element. There is not any queue " +
                                 "that matches resource allocation criteria at any interval of time"));
                 return;
             }
@@ -503,7 +503,7 @@ public class LimitingResourcesController extends GenericForwardComposer<org.zkos
 
         private Checkbox automaticQueueing() {
             Checkbox result = new Checkbox();
-            result.setTooltiptext(_("Select for automatic queuing"));
+            result.setTooltiptext(_t("Select for automatic queuing"));
             result.setStyle("margin-left: 2px");
 
             return result;
@@ -575,7 +575,7 @@ public class LimitingResourcesController extends GenericForwardComposer<org.zkos
 
             if ( inserted.isEmpty() ) {
 
-                showErrorMessage(_("Cannot allocate selected element. There is not any queue " +
+                showErrorMessage(_t("Cannot allocate selected element. There is not any queue " +
                         "that matches resource allocation criteria at any interval of time"));
                 return;
             }
@@ -608,6 +608,6 @@ public class LimitingResourcesController extends GenericForwardComposer<org.zkos
     }
 
     private void showErrorMessage(String error) {
-        Messagebox.show(error, _("Error"), Messagebox.OK, Messagebox.ERROR);
+        Messagebox.show(error, _t("Error"), Messagebox.OK, Messagebox.ERROR);
     }
 }

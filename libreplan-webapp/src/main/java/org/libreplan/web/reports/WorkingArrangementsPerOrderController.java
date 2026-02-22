@@ -144,7 +144,7 @@ public class WorkingArrangementsPerOrderController extends LibrePlanReportContro
 
     public void showReport(JasperreportComponent jasperreport){
         if (getSelectedOrder() == null) {
-            throw new WrongValueException(bdOrder, _("Please, select a project"));
+            throw new WrongValueException(bdOrder, _t("Please, select a project"));
         }
         super.showReport(jasperreport);
     }
@@ -171,12 +171,12 @@ public class WorkingArrangementsPerOrderController extends LibrePlanReportContro
     public void onSelectLabel() {
         Label label = (Label) bdLabels.getSelectedElement();
         if (label == null) {
-            throw new WrongValueException(bdLabels, _("please, select a label"));
+            throw new WrongValueException(bdLabels, _t("please, select a label"));
         }
 
         boolean result = workingArrangementsPerOrderModel.addSelectedLabel(label);
         if (!result) {
-            throw new WrongValueException(bdLabels, _("Label has already been added."));
+            throw new WrongValueException(bdLabels, _t("Label has already been added."));
         } else {
             Util.reloadBindings(lbLabels);
         }
@@ -203,12 +203,12 @@ public class WorkingArrangementsPerOrderController extends LibrePlanReportContro
     public void onSelectCriterion() {
         Criterion criterion = (Criterion) bdCriterions.getSelectedElement();
         if (criterion == null) {
-            throw new WrongValueException(bdCriterions, _("please, select a Criterion"));
+            throw new WrongValueException(bdCriterions, _t("please, select a Criterion"));
         }
 
         boolean result = workingArrangementsPerOrderModel.addSelectedCriterion(criterion);
         if (!result) {
-            throw new WrongValueException(bdCriterions, _("This Criterion has already been added."));
+            throw new WrongValueException(bdCriterions, _t("This Criterion has already been added."));
         } else {
             Util.reloadBindings(lbCriterions);
         }

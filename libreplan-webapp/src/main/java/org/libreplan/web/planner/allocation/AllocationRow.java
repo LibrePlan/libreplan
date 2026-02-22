@@ -625,7 +625,7 @@ public abstract class AllocationRow {
             @Override
             public Void onHours(EffortModification modification) {
                 EffortDuration goal = modification.getEffort();
-                Clients.response(new AuWrongValue(effortInput, _("{0} cannot be fulfilled", goal.toFormattedString())));
+                Clients.response(new AuWrongValue(effortInput, _t("{0} cannot be fulfilled", goal.toFormattedString())));
 
                 return null;
             }
@@ -811,7 +811,7 @@ public abstract class AllocationRow {
                 AvailabilityTimeLine otherAvailability = result.getSpecifiedAdditionalAvailability();
 
                 if (calendarValidPeriods.isEmpty()) {
-                    throw new WrongValueException(row, _("there are no valid periods for this calendar"));
+                    throw new WrongValueException(row, _t("there are no valid periods for this calendar"));
                 } else if (otherAvailability.getValidPeriods().isEmpty()) {
                     throw new WrongValueException(row, allocationAttempt.getNoValidPeriodsMessage());
                 } else {
@@ -831,17 +831,17 @@ public abstract class AllocationRow {
                         sumReached.getHours());
 
                 String secondLine = isGeneric()
-                        ? _("Periods available depend on the satisfaction of " +
+                        ? _t("Periods available depend on the satisfaction of " +
                         "the criteria of resources and their calendars.")
 
-                        : _("Periods available depend on resources' calendar.");
+                        : _t("Periods available depend on resources' calendar.");
 
                 throw new WrongValueException(effortInput, firstLine + "\n" + secondLine);
             }
 
             @Override
             public Void on(ResourcesPerDayIsZero result) {
-                throw new WrongValueException(intendedResourcesPerDayInput, _("Resources per day are zero"));
+                throw new WrongValueException(intendedResourcesPerDayInput, _t("Resources per day are zero"));
             }
         });
     }

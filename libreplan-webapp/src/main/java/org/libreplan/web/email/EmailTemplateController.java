@@ -95,7 +95,7 @@ public class EmailTemplateController extends GenericForwardComposer<Component> {
             setSelectedSubject();
             emailTemplateModel.confirmSave();
             messages.clearMessages();
-            messages.showMessage(Level.INFO, _("E-mail template saved"));
+            messages.showMessage(Level.INFO, _t("E-mail template saved"));
 
             return true;
         } catch (ValidationException e) {

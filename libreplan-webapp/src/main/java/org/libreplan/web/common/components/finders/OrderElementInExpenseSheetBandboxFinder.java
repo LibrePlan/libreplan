@@ -42,7 +42,7 @@ public class OrderElementInExpenseSheetBandboxFinder extends BandboxFinder imple
     @Autowired
     private IOrderElementDAO orderElementDAO;
 
-    private final String headers[] = { _("Task name (Task code)"), _("Project name (Project code)") };
+    private final String headers[] = { _t("Task name (Task code)"), _t("Project name (Project code)") };
 
     /**
      * Forces to mark the string as needing translation.

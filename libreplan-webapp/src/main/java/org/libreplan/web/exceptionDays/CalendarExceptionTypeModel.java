@@ -93,7 +93,7 @@ public class CalendarExceptionTypeModel extends IntegrationEntityModel implement
         if (calendarExceptionTypeDAO.hasCalendarExceptions(exceptionType)) {
 
             throw new IllegalSyntaxException(
-                    _("Cannot remove {0}, since it is being used by some exception day", exceptionType.getName()));
+                    _t("Cannot remove {0}, since it is being used by some exception day", exceptionType.getName()));
         }
         if (!exceptionType.isNewObject()) {
             calendarExceptionTypeDAO.remove(exceptionType.getId());

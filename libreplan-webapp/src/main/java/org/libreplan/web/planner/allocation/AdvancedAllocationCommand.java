@@ -44,7 +44,7 @@ public class AdvancedAllocationCommand implements IAdvancedAllocationCommand {
 
     @Override
     public String getName() {
-        return _("Advanced allocation");
+        return _t("Advanced allocation");
     }
 
     @Override

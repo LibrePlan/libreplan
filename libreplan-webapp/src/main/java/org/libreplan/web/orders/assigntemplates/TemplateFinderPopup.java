@@ -118,12 +118,12 @@ public class TemplateFinderPopup extends HtmlMacroComponent {
         super.afterCompose();
 
         acceptButton = (Button) getFellow("acceptButton");
-        acceptButton.setLabel(_("Create task"));
+        acceptButton.setLabel(_t("Create task"));
         acceptButton.setClass("add-button");
         acceptButton.addEventListener(Events.ON_CLICK, event -> onAccept());
 
         cancelButton = (Button) getFellow("cancelButton");
-        cancelButton.setLabel(_("Cancel"));
+        cancelButton.setLabel(_t("Cancel"));
         cancelButton.setClass("add-button");
         cancelButton.addEventListener(Events.ON_CLICK, event -> onCancel());
 
@@ -131,7 +131,7 @@ public class TemplateFinderPopup extends HtmlMacroComponent {
         popup = (Popup) getFellow("finderPopup");
 
         caption = (Caption) getFellow("finderCaption");
-        caption.setLabel(_("Choosing Template"));
+        caption.setLabel(_t("Choosing Template"));
     }
 
 }

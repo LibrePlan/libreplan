@@ -19,7 +19,7 @@
 
 package org.libreplan.business.planner.entities;
 
-import static org.libreplan.business.i18n.I18nHelper._;
+import static org.libreplan.business.i18n.I18nHelper._t;
 
 /**
  * Enumerate of {@link Task} deadline violation statuses.
@@ -31,9 +31,9 @@ import static org.libreplan.business.i18n.I18nHelper._;
  * @author Nacho Barrientos <nacho@igalia.com>
  */
 public enum TaskDeadlineViolationStatusEnum {
-    NO_DEADLINE(_("No deadline")),
-    DEADLINE_VIOLATED(_("Deadline violated")),
-    ON_SCHEDULE(_("On schedule"));
+    NO_DEADLINE(_t("No deadline")),
+    DEADLINE_VIOLATED(_t("Deadline violated")),
+    ON_SCHEDULE(_t("On schedule"));
 
     private String value;
 

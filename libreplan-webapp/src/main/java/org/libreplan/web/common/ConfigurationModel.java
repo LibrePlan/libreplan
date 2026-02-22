@@ -199,11 +199,11 @@ public class ConfigurationModel implements IConfigurationModel {
             String entity = entityName.getDescription();
             List<EntitySequence> sequences = entitySequences.get(entityName);
             if (sequences.isEmpty()) {
-                throw new ValidationException(_("At least one {0} sequence is needed", entity));
+                throw new ValidationException(_t("At least one {0} sequence is needed", entity));
             }
 
             if (!isAnyActive(sequences)) {
-                throw new ValidationException(_("At least one {0} sequence must be active", entity));
+                throw new ValidationException(_t("At least one {0} sequence must be active", entity));
             }
 
             if (!checkConstraintPrefixNotRepeated(sequences)) {
@@ -251,7 +251,7 @@ public class ConfigurationModel implements IConfigurationModel {
             try {
                 entitySequenceDAO.remove(entitySequence);
             } catch (InstanceNotFoundException e) {
-                throw new ValidationException(_("Some sequences to be removed do not exist"));
+                throw new ValidationException(_t("Some sequences to be removed do not exist"));
             } catch (IllegalArgumentException e) {
                 throw new ValidationException(e.getMessage());
             }

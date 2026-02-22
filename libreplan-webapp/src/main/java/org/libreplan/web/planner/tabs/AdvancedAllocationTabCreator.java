@@ -150,7 +150,7 @@ public class AdvancedAllocationTabCreator {
         }
     }
 
-    private final String ADVANCED_ALLOCATION_VIEW = _("Advanced Allocation");
+    private final String ADVANCED_ALLOCATION_VIEW = _t("Advanced Allocation");
 
     private final Mode mode;
 
@@ -235,7 +235,7 @@ public class AdvancedAllocationTabCreator {
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(getSchedulingLabel()));
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-                breadcrumbs.appendChild(new Label(_("Advanced Allocation")));
+                breadcrumbs.appendChild(new Label(_t("Advanced Allocation")));
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(mode.getOrder().getName()));
 

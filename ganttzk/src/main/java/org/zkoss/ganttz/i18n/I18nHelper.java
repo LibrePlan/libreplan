@@ -57,27 +57,27 @@ public class I18nHelper {
      * @param str
      * @return Text depends on locale
      */
-    public static String _(String str) {
+    public static String _t(String str) {
         return getI18n().tr(str);
     }
 
-    public static String _(String text, Object o1) {
+    public static String _t(String text, Object o1) {
         return getI18n().tr(text, o1);
     }
 
-    public static String _(String text, Object o1, Object o2) {
+    public static String _t(String text, Object o1, Object o2) {
         return getI18n().tr(text, o1, o2);
     }
 
-    public static String _(String text, Object o1, Object o2, Object o3) {
+    public static String _t(String text, Object o1, Object o2, Object o3) {
         return getI18n().tr(text, o1, o2, o3);
     }
 
-    public static String _(String text, Object o1, Object o2, Object o3, Object o4) {
+    public static String _t(String text, Object o1, Object o2, Object o3, Object o4) {
         return getI18n().tr(text, o1, o2, o3, o4);
     }
 
-    public static String _(String text, Object[] objects) {
+    public static String _t(String text, Object[] objects) {
         return getI18n().tr(text, objects);
     }
 

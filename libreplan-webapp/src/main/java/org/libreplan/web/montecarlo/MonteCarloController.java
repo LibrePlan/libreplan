@@ -137,11 +137,11 @@ public class MonteCarloController extends GenericForwardComposer {
                 int iterations = ibIterations.getValue() != null ? ibIterations.getValue().intValue() : 0;
 
                 if ( iterations == 0 ) {
-                    throw new WrongValueException(ibIterations, _("cannot be empty"));
+                    throw new WrongValueException(ibIterations, _t("cannot be empty"));
                 }
 
                 if ( iterations < 0 || iterations > MAX_NUMBER_ITERATIONS ) {
-                    throw new WrongValueException(ibIterations, _("Number of iterations should be between 1 and {0}",
+                    throw new WrongValueException(ibIterations, _t("Number of iterations should be between 1 and {0}",
                             MAX_NUMBER_ITERATIONS));
                 }
 
@@ -169,7 +169,7 @@ public class MonteCarloController extends GenericForwardComposer {
 
                     if ( sum != 100 ) {
                         gridCriticalPathTasks.setActivePage(page);
-                        throw new WrongValueException(row, _("Percentages should sum 100"));
+                        throw new WrongValueException(row, _t("Percentages should sum 100"));
                     }
 
                     counter++;
@@ -268,9 +268,9 @@ public class MonteCarloController extends GenericForwardComposer {
             Integer iterationNumber = value != null ? (Integer) value : -1;
 
             if (iterationNumber == -1) {
-                throw new WrongValueException(comp, _("cannot be empty"));
+                throw new WrongValueException(comp, _t("cannot be empty"));
             } else if (iterationNumber < 1 || iterationNumber > 100_000) {
-                throw new WrongValueException(comp, _("Number of iterations should be between 1 and {0}",
+                throw new WrongValueException(comp, _t("Number of iterations should be between 1 and {0}",
                         MAX_NUMBER_ITERATIONS));
             }
         };

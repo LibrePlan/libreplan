@@ -65,7 +65,7 @@ public class TwoWaySelector extends HtmlMacroComponent {
     /**
      * Title for the left {@link Listbox} (where assigned objects are shown)
      */
-    private String assignedTitle = _("Assigned");
+    private String assignedTitle = _t("Assigned");
 
     /**
      * A {@link Set} of objects that are not assigned (so they're shown on the
@@ -76,7 +76,7 @@ public class TwoWaySelector extends HtmlMacroComponent {
     /**
      * Title for the right {@link Listbox} (where unassigned objects are shown)
      */
-    private String unassignedTitle = _("Unassigned");
+    private String unassignedTitle = _t("Unassigned");
 
     /**
      * A {@link List} of properties to be shown on the {@link Listbox} for each
@@ -105,7 +105,7 @@ public class TwoWaySelector extends HtmlMacroComponent {
                     // Call the method to get the information
                     PropertyDescriptor propertyDescriptor = propertiesByName.get(column);
                     if (propertyDescriptor == null) {
-                        throw new RuntimeException(_("Unknown attribute '{0}' in class {1}", column, klass.getName()));
+                        throw new RuntimeException(_t("Unknown attribute '{0}' in class {1}", column, klass.getName()));
                     }
 
                     String label = Objects.toString(propertyDescriptor.getReadMethod().invoke(data));

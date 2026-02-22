@@ -605,6 +605,6 @@ public class OrderImporterMPXJ implements IOrderImporter {
             }
         }
 
-        throw new ValidationException(_("Linked calendar not found"));
+        throw new ValidationException(_t("Linked calendar not found"));
     }
 }

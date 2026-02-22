@@ -101,14 +101,14 @@ public class JiraTimesheetSynchronizer implements IJiraTimesheetSynchronizer {
     @Override
     @Transactional
     public void syncJiraTimesheetWithJiraIssues(List<IssueDTO> issues, Order order) throws ConnectorException {
-        synchronizationInfo = new SynchronizationInfo(_("Synchronization"));
+        synchronizationInfo = new SynchronizationInfo(_t("Synchronization"));
 
         workReportType = getJiraTimesheetsWorkReportType();
         typeOfWorkHours = getTypeOfWorkHours();
 
         workers = getWorkers();
         if (workers == null && workers.isEmpty()) {
-            synchronizationInfo.addFailedReason(_("No workers found"));
+            synchronizationInfo.addFailedReason(_t("No workers found"));
             return;
         }
 
@@ -117,11 +117,11 @@ public class JiraTimesheetSynchronizer implements IJiraTimesheetSynchronizer {
 
         if (orderSyncInfo == null) {
             synchronizationInfo.addFailedReason(
-                    _("Order \"{0}\" not found. Order probalbly not synchronized", order.getName()));
+                    _t("Order \"{0}\" not found. Order probalbly not synchronized", order.getName()));
             return;
         }
         if (StringUtils.isBlank(orderSyncInfo.getKey())) {
-            synchronizationInfo.addFailedReason(_("Key for Order \"{0}\" is empty", order.getName()));
+            synchronizationInfo.addFailedReason(_t("Key for Order \"{0}\" is empty", order.getName()));
             return;
         }
 
@@ -132,11 +132,11 @@ public class JiraTimesheetSynchronizer implements IJiraTimesheetSynchronizer {
         for (IssueDTO issue : issues) {
             WorkLogDTO workLog = issue.getFields().getWorklog();
             if (workLog == null) {
-                synchronizationInfo.addFailedReason(_("No worklogs found for \"{0}\" key", issue.getKey()));
+                synchronizationInfo.addFailedReason(_t("No worklogs found for \"{0}\" key", issue.getKey()));
             } else {
                 List<WorkLogItemDTO> workLogItems = workLog.getWorklogs();
                 if (workLogItems == null || workLogItems.isEmpty()) {
-                    synchronizationInfo.addFailedReason(_("No worklog items found for \"{0}\" issue", issue.getKey()));
+                    synchronizationInfo.addFailedReason(_t("No worklog items found for \"{0}\" issue", issue.getKey()));
                 } else {
 
                     String codeOrderElement =
@@ -145,7 +145,7 @@ public class JiraTimesheetSynchronizer implements IJiraTimesheetSynchronizer {
                     OrderElement orderElement = order.getOrderElement(codeOrderElement);
 
                     if (orderElement == null) {
-                        synchronizationInfo.addFailedReason(_("Order element \"{0}\" not found", code));
+                        synchronizationInfo.addFailedReason(_t("Order element \"{0}\" not found", code));
                     } else {
                         updateOrCreateWorkReportLineAndAddToWorkReport(workReport, orderElement, workLogItems);
                     }
@@ -297,14 +297,14 @@ public class JiraTimesheetSynchronizer implements IJiraTimesheetSynchronizer {
     private TypeOfWorkHours getTypeOfWorkHours() throws ConnectorException {
         Connector connector = connectorDAO.findUniqueByName(PredefinedConnectors.JIRA.getName());
         if (connector == null) {
-            throw new ConnectorException(_("JIRA connector not found"));
+            throw new ConnectorException(_t("JIRA connector not found"));
         }
 
         TypeOfWorkHours typeOfWorkHours;
         String name = connector.getPropertiesAsMap().get(PredefinedConnectorProperties.JIRA_HOURS_TYPE);
 
         if (StringUtils.isBlank(name)) {
-            throw new ConnectorException(_("Hours type should not be empty to synchronine timesheets"));
+            throw new ConnectorException(_t("Hours type should not be empty to synchronine timesheets"));
         }
 
         try {
@@ -354,7 +354,7 @@ public class JiraTimesheetSynchronizer implements IJiraTimesheetSynchronizer {
                 return worker;
             }
         }
-        synchronizationInfo.addFailedReason(_("Worker \"{0}\" not found", nif));
+        synchronizationInfo.addFailedReason(_t("Worker \"{0}\" not found", nif));
         return null;
     }
 

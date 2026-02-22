@@ -257,25 +257,25 @@ public class IssueLogCRUDController extends BaseCRUDController<IssueLog> {
     public ArrayList<String> getIssueStatusEnum() {
         ArrayList<String> result = new ArrayList<>();
         if (getIssueLog().getType() == IssueTypeEnum.REQUEST_FOR_CHANGE){
-            result.add(_("Must have"));
-            result.add(_("Should have"));
-            result.add(_("Could have"));
-            result.add(_("Won't have"));
+            result.add(_t("Must have"));
+            result.add(_t("Should have"));
+            result.add(_t("Could have"));
+            result.add(_t("Won't have"));
 
             return result;
         }
         if (getIssueLog().getType() == IssueTypeEnum.PROBLEM_OR_CONCERN) {
-            result.add(_("Minor"));
-            result.add(_("Significant"));
-            result.add(_("Major"));
-            result.add(_("Critical"));
+            result.add(_t("Minor"));
+            result.add(_t("Significant"));
+            result.add(_t("Major"));
+            result.add(_t("Critical"));
 
             return result;
         }
 
-        result.add(_("Low"));
-        result.add(_("Medium"));
-        result.add(_("High"));
+        result.add(_t("Low"));
+        result.add(_t("Medium"));
+        result.add(_t("High"));
         return result;
     }
 
@@ -407,12 +407,12 @@ public class IssueLogCRUDController extends BaseCRUDController<IssueLog> {
 
     @Override
     protected String getEntityType() {
-        return _("issuelog-number");
+        return _t("issuelog-number");
     }
 
     @Override
     protected String getPluralEntityType() {
-        return _("Issue logs");
+        return _t("Issue logs");
     }
 
     @Override
@@ -430,11 +430,11 @@ public class IssueLogCRUDController extends BaseCRUDController<IssueLog> {
     @Override
     protected void save() throws ValidationException {
         if (getIssueLog().getOrder() == null) {
-            throw new WrongValueException(bdProjectIssueLog, _("please select a project"));
+            throw new WrongValueException(bdProjectIssueLog, _t("please select a project"));
         }
 
         if (getIssueLog().getCreatedBy() == null) {
-            throw new WrongValueException(bdUserIssueLog, _("please select an author"));
+            throw new WrongValueException(bdUserIssueLog, _t("please select an author"));
         }
         getIssueLog().setStatus(status.getSelectedItem().getLabel());
         issueLogModel.confirmSave();

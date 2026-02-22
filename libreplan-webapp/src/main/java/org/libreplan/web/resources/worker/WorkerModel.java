@@ -251,7 +251,7 @@ public class WorkerModel extends IntegrationEntityModel implements IWorkerModel 
     @Override
     @Transactional(readOnly = true)
     public void prepareEditFor(Worker worker) {
-        Validate.notNull(worker, _("Worker must be not-null"));
+        Validate.notNull(worker, _t("Worker must be not-null"));
         try {
             this.worker = (Worker) resourceDAO.find(worker.getId());
             forceLoadSatisfactions(this.worker);
@@ -425,7 +425,7 @@ public class WorkerModel extends IntegrationEntityModel implements IWorkerModel 
                 ICriterionType<?> type) {
 
             Validate.isTrue(type.isAllowSimultaneousCriterionsPerResource(),
-                    _("Please, allow Multiple Active Criteria in this type " +
+                    _t("Please, allow Multiple Active Criteria in this type " +
                             "in order to use selected Assignment Strategy"));
 
             this.criterionDAO = criterionDAO;

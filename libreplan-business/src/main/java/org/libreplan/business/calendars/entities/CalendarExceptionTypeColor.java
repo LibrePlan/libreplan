@@ -19,7 +19,7 @@
 
 package org.libreplan.business.calendars.entities;
 
-import static org.libreplan.business.i18n.I18nHelper._;
+import static org.libreplan.business.i18n.I18nHelper._t;
 
 /**
  * Enum representing the possible colors to choose for a {@link CalendarExceptionType}.
@@ -27,15 +27,15 @@ import static org.libreplan.business.i18n.I18nHelper._;
  * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 public enum CalendarExceptionTypeColor {
-    DEFAULT(_("red (default)"), "#FF3333", "#FF9999"),
-    GREEN(_("green"),"#2ee62e", "#8ae68a"),
-    BLUE(_("blue"), "#3333FF", "#9999FF"),
-    CYAN(_("cyan"), "#33FFFF", "#99FFFF"),
-    MAGENTA(_("magenta"), "#FF33FF", "#FF99FF"),
-    YELLOW(_("yellow"), "#e6e62e", "#e6e6a1"),
-    BLACK(_("black"), "#333333", "#999999"),
-    ORANGE(_("orange"), "#ffb733", "#ffdb99"),
-    PURPLE(_("purple"), "#801a80", "#b38eb3");
+    DEFAULT(_t("red (default)"), "#FF3333", "#FF9999"),
+    GREEN(_t("green"),"#2ee62e", "#8ae68a"),
+    BLUE(_t("blue"), "#3333FF", "#9999FF"),
+    CYAN(_t("cyan"), "#33FFFF", "#99FFFF"),
+    MAGENTA(_t("magenta"), "#FF33FF", "#FF99FF"),
+    YELLOW(_t("yellow"), "#e6e62e", "#e6e6a1"),
+    BLACK(_t("black"), "#333333", "#999999"),
+    ORANGE(_t("orange"), "#ffb733", "#ffdb99"),
+    PURPLE(_t("purple"), "#801a80", "#b38eb3");
 
     private final String name;
 

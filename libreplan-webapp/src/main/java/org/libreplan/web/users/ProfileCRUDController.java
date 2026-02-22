@@ -120,12 +120,12 @@ public class ProfileCRUDController extends BaseCRUDController<Profile> {
 
     @Override
     protected String getEntityType() {
-        return _("Profile");
+        return _t("Profile");
     }
 
     @Override
     protected String getPluralEntityType() {
-        return _("Profiles");
+        return _t("Profiles");
     }
 
     @Override
@@ -155,7 +155,7 @@ public class ProfileCRUDController extends BaseCRUDController<Profile> {
     }
 
     private void showCannotDeleteProfileDialog(String message) {
-        Messagebox.show(_(message), _("Warning"), Messagebox.OK, Messagebox.EXCLAMATION);
+        Messagebox.show(_(message), _t("Warning"), Messagebox.OK, Messagebox.EXCLAMATION);
     }
     @Override
     protected boolean beforeDeleting(Profile profile){

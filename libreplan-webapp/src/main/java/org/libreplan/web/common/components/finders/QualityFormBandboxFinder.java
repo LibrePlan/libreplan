@@ -47,7 +47,7 @@ public class QualityFormBandboxFinder extends BandboxFinder implements IBandboxF
     @Autowired
     private IQualityFormDAO qualityFormDAO;
 
-    private final String headers[] = { _("Name"), _("Type") };
+    private final String headers[] = { _t("Name"), _t("Type") };
 
     /**
      * Forces to mark the string as needing translation

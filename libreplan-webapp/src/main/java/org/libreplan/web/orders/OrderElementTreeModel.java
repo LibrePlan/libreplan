@@ -50,7 +50,7 @@ public class OrderElementTreeModel extends EntitiesTree<OrderElement> {
     protected OrderElement createNewElement() {
         OrderElement newOrderElement = OrderLine
                 .createOrderLineWithUnfixedPercentage(0);
-        newOrderElement.setName(_("New task"));
+        newOrderElement.setName(_t("New task"));
         return newOrderElement;
     }
 

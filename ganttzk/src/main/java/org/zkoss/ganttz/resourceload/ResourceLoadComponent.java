@@ -21,7 +21,7 @@
 
 package org.zkoss.ganttz.resourceload;
 
-import static org.zkoss.ganttz.i18n.I18nHelper._;
+import static org.zkoss.ganttz.i18n.I18nHelper._t;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -144,7 +144,7 @@ public class ResourceLoadComponent extends XulElement {
             MenuBuilder<Div> menuBuilder = MenuBuilder.on(getPage(), divs);
 
             menuBuilder.item(
-                    _("See resource allocation"),
+                    _t("See resource allocation"),
                     "/common/img/ico_allocation.png",
                     (chosen, event) -> schedule(loadLine));
 
@@ -181,7 +181,7 @@ public class ResourceLoadComponent extends XulElement {
         Div result = new Div();
         result.setClass(String.format("taskassignmentinterval %s", loadPeriod.getLoadLevel().getCategory()));
 
-        String load = _("Load: {0}%", loadPeriod.getLoadLevel().getPercentage()) + ", ";
+        String load = _t("Load: {0}%", loadPeriod.getLoadLevel().getPercentage()) + ", ";
 
         if (loadPeriod.getLoadLevel().getPercentage() == Integer.MAX_VALUE) {
             load = "";
@@ -189,7 +189,7 @@ public class ResourceLoadComponent extends XulElement {
 
         result.setTooltiptext(
                 load +
-                        _("available effort: {0}, assigned effort: {1}",
+                        _t("available effort: {0}, assigned effort: {1}",
                                 loadPeriod.getAvailableEffort(),
                                 loadPeriod.getAssignedEffort()));
 

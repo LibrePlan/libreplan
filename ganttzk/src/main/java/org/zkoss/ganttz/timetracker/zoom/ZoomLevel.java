@@ -31,7 +31,7 @@ import org.joda.time.LocalDate;
  */
 public enum ZoomLevel {
 
-    DETAIL_ONE(_("Year")) {
+    DETAIL_ONE(_t("Year")) {
         @Override
         public TimeTrackerState getTimeTrackerState(IDetailItemModifier firstLevel, IDetailItemModifier secondLevel) {
             return new DetailOneTimeTrackerState(firstLevel, secondLevel);
@@ -43,7 +43,7 @@ public enum ZoomLevel {
         }
     },
 
-    DETAIL_TWO(_("Quarter")) {
+    DETAIL_TWO(_t("Quarter")) {
         @Override
         public TimeTrackerState getTimeTrackerState(IDetailItemModifier firstLevel, IDetailItemModifier secondLevel) {
             return new DetailTwoTimeTrackerState(firstLevel, secondLevel);
@@ -55,7 +55,7 @@ public enum ZoomLevel {
         }
     },
 
-    DETAIL_THREE(_("Month")) {
+    DETAIL_THREE(_t("Month")) {
         @Override
         public TimeTrackerState getTimeTrackerState(IDetailItemModifier firstLevel, IDetailItemModifier secondLevel) {
             return new DetailThreeTimeTrackerState(firstLevel, secondLevel);
@@ -67,7 +67,7 @@ public enum ZoomLevel {
         }
     },
 
-    DETAIL_FOUR(_("Week")) {
+    DETAIL_FOUR(_t("Week")) {
         @Override
         public TimeTrackerState getTimeTrackerState(IDetailItemModifier firstLevel, IDetailItemModifier secondLevel) {
             return new DetailFourTimeTrackerState(firstLevel, secondLevel);
@@ -79,7 +79,7 @@ public enum ZoomLevel {
         }
     },
 
-    DETAIL_FIVE(_("Day")) {
+    DETAIL_FIVE(_t("Day")) {
         @Override
         public TimeTrackerState getTimeTrackerState(IDetailItemModifier firstLevel, IDetailItemModifier secondLevel) {
             return new DetailFiveTimeTrackerState(firstLevel, secondLevel);

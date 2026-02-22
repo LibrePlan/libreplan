@@ -317,7 +317,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
         if ( createTemplateButton != null ) {
             if ( !SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_TEMPLATES) ) {
                 createTemplateButton.setDisabled(true);
-                createTemplateButton.setTooltiptext(_("Not enough permissions to create templates"));
+                createTemplateButton.setTooltiptext(_t("Not enough permissions to create templates"));
             }
         }
     }
@@ -339,7 +339,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
         final Button expandAllButton = new Button();
         expandAllButton.setId("expandAllButton");
         expandAllButton.setClass("planner-command");
-        expandAllButton.setTooltiptext(_("Expand/Collapse all"));
+        expandAllButton.setTooltiptext(_t("Expand/Collapse all"));
         expandAllButton.setImage("/common/img/ico_expand.png");
 
         expandAllButton.addEventListener("onClick",  event -> {
@@ -412,7 +412,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                 textBox.setDisabled(true);
             }
 
-            textBox.setConstraint("no empty:" + _("cannot be empty"));
+            textBox.setConstraint("no empty:" + _t("cannot be empty"));
             addCell(cssClass, textBox);
             putNameTextbox(orderElementForThisRow, textBox);
         }
@@ -452,7 +452,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
 
                     throw new WrongValueException(
                             comp,
-                            _("Value is not valid.\n Code cannot contain chars like '_' \n " +
+                            _t("Value is not valid.\n Code cannot contain chars like '_' \n " +
                                     "and should not be empty"));
                 }
             });
@@ -536,7 +536,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
 
             return createButton(
                     "/common/img/ico_editar1.png",
-                    _("Edit"),
+                    _t("Edit"),
                     "/common/img/ico_editar.png",
                     "icono",
                     event -> showEditionOrderElement(item));
@@ -678,7 +678,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
         }
 
         if ( (elem.getLabels() != null) && (!elem.getLabels().isEmpty()) ) {
-            tooltipText.append(" ").append(_("Labels")).append(":");
+            tooltipText.append(" ").append(_t("Labels")).append(":");
             tooltipText.append(StringUtils.join(elem.getLabels(), ","));
             tooltipText.append(".");
         }
@@ -694,13 +694,13 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
             }
 
             if ( !criterionNames.isEmpty() ) {
-                tooltipText.append(" " + _("Criteria") + ":");
+                tooltipText.append(" " + _t("Criteria") + ":");
                 tooltipText.append(StringUtils.join(criterionNames, ","));
                 tooltipText.append(".");
             }
         }
         // To calculate other unit advances implement getOtherAdvancesPercentage()
-        tooltipText.append(" ").append(_("Progress")).append(":").append(elem.getAdvancePercentage());
+        tooltipText.append(" ").append(_t("Progress")).append(":").append(elem.getAdvancePercentage());
         tooltipText.append(".");
 
         return tooltipText.toString();
@@ -747,7 +747,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                     (finishDate.compareTo(filterStartDateOrderElement.getValue()) < 0) ) {
 
                 filterFinishDateOrderElement.setValue(null);
-                throw new WrongValueException(comp, _("must be after start date"));
+                throw new WrongValueException(comp, _t("must be after start date"));
             }
         };
     }
@@ -761,7 +761,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                     (startDate.compareTo(filterFinishDateOrderElement.getValue()) > 0) ) {
 
                 filterStartDateOrderElement.setValue(null);
-                throw new WrongValueException(comp, _("must be lower than end date"));
+                throw new WrongValueException(comp, _t("must be lower than end date"));
             }
         };
     }
@@ -773,7 +773,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
         if ( hasImputedExpenseSheets ) {
             messagesForUser.showMessage(
                     Level.ERROR,
-                    _("You can not remove the project \"{0}\" because this one has imputed expense sheets.",
+                    _t("You can not remove the project \"{0}\" because this one has imputed expense sheets.",
                             element.getName()));
             return;
         }
@@ -782,7 +782,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
         if ( alreadyInUse ) {
             messagesForUser.showMessage(
                     Level.ERROR,
-                    _("You cannot remove the task \"{0}\" because it has work reported on it or any of its children",
+                    _t("You cannot remove the task \"{0}\" because it has work reported on it or any of its children",
                             element.getName()));
             return;
         }
@@ -793,7 +793,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
         if ( onlyChildAndParentAlreadyInUseByHoursOrExpenses ) {
             messagesForUser.showMessage(
                     Level.ERROR,
-                    _("You cannot remove the task \"{0}\" because it is the only child of its parent " +
+                    _t("You cannot remove the task \"{0}\" because it is the only child of its parent " +
                                     "and its parent has tracked time or imputed expenses",
                             element.getName()));
             return;

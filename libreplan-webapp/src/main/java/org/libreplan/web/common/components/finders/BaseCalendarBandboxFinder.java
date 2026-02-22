@@ -43,7 +43,7 @@ public class BaseCalendarBandboxFinder extends BandboxFinder implements IBandbox
     @Autowired
     private IBaseCalendarDAO baseCalendarDAO;
 
-    private final String headers[] = { _("Name") };
+    private final String headers[] = { _t("Name") };
 
     /**
      * Forces to mark the string as needing translation.

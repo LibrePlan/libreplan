@@ -327,7 +327,7 @@ public class CriterionTreeModel implements ICriterionTreeModel {
         for(CriterionDTO criterion : criterions){
             if(criterion.getName().equals(name)){
                 throw new ValidationException(invalidValue(
-                        _("Already exists another "
+                        _t("Already exists another "
                                 + "criterion with the same name"), "name",
                         criterion.getName(), criterion));
             }
@@ -339,7 +339,7 @@ public class CriterionTreeModel implements ICriterionTreeModel {
         throws ValidationException{
         if(name.isEmpty()){
             throw new ValidationException(
-                    invalidValue(_("Name of criterion is empty."), "name",
+                    invalidValue(_t("Name of criterion is empty."), "name",
                         "",criterionType));
             }
     }

@@ -121,7 +121,7 @@ public class MachineConfigurationController extends GenericForwardComposer {
         Autocomplete a = (Autocomplete) c.getPreviousSibling();
         Worker worker = (Worker) a.getItemByText(a.getValue());
         if (worker == null) {
-            messages.showMessage(Level.ERROR, _("No worker selected"));
+            messages.showMessage(Level.ERROR, _t("No worker selected"));
         } else {
             machineModel.addWorkerAssignmentToConfigurationUnit(unit, worker);
             Util.reloadBindings(c.getNextSibling());
@@ -145,7 +145,7 @@ public class MachineConfigurationController extends GenericForwardComposer {
             CriterionWithItsType criterionAndType = item.getValue();
             bandbox.setValue(criterionAndType.getNameAndType());
             if (checkExistingCriterion(unit, criterionAndType.getCriterion())) {
-                messages.showMessage(Level.ERROR, _("Criterion previously selected"));
+                messages.showMessage(Level.ERROR, _t("Criterion previously selected"));
             } else {
                 machineModel.addCriterionRequirementToConfigurationUnit(unit, criterionAndType.getCriterion());
                 bandbox.setValue("");
@@ -203,7 +203,7 @@ public class MachineConfigurationController extends GenericForwardComposer {
 
     private void validateEndDate(Component comp, Object value) {
         if (value == null) {
-            throw new WrongValueException(comp, _("End date is not valid, the date field can not be blank"));
+            throw new WrongValueException(comp, _t("End date is not valid, the date field can not be blank"));
         }
         else {
             Datebox startDateBox = (Datebox) comp.getPreviousSibling();
@@ -212,7 +212,7 @@ public class MachineConfigurationController extends GenericForwardComposer {
                     if (startDateBox.getValue().compareTo((Date) value) > 0) {
 
                         throw new WrongValueException(
-                                comp, _("End date is not valid, the new end date must be after start date"));
+                                comp, _t("End date is not valid, the new end date must be after start date"));
                     }
                 }
             }

@@ -228,7 +228,7 @@ public class BandboxMultipleSearch extends HtmlMacroComponent {
             if ( (filter.getType().equals(newFilter.getType())) &&
                     (filter.getPattern().equals(newFilter.getPattern())) ) {
 
-                throw new WrongValueException(bandbox, _("filter already exists"));
+                throw new WrongValueException(bandbox, _t("filter already exists"));
             }
         }
         selectedFilters.add(obj);
@@ -238,7 +238,7 @@ public class BandboxMultipleSearch extends HtmlMacroComponent {
         updateBandboxValue();
         if ( this.multipleFiltersFinder != null ) {
             if ( !multipleFiltersFinder.isValidFormatText(selectedFilters, bandbox.getValue()) ) {
-                throw new WrongValueException(bandbox, _("format filters are not valid"));
+                throw new WrongValueException(bandbox, _t("format filters are not valid"));
             }
         }
 

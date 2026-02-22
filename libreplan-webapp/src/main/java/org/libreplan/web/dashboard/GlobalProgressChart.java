@@ -52,13 +52,13 @@ public class GlobalProgressChart {
     private List<Series> series = new ArrayList<>();
 
     private GlobalProgressChart() {
-        series.add(Series.create(_("Current"), "#004469"));
-        series.add(Series.create(_("Expected"), "#3C90BE"));
+        series.add(Series.create(_t("Current"), "#004469"));
+        series.add(Series.create(_t("Expected"), "#3C90BE"));
 
-        SPREAD_PROGRESS = _("Spreading progress");
-        ALL_TASKS_HOURS = _("By all tasks hours");
-        CRITICAL_PATH_HOURS = _("By critical path hours");
-        CRITICAL_PATH_DURATION = _("By critical path duration");
+        SPREAD_PROGRESS = _t("Spreading progress");
+        ALL_TASKS_HOURS = _t("By all tasks hours");
+        CRITICAL_PATH_HOURS = _t("By critical path hours");
+        CRITICAL_PATH_DURATION = _t("By critical path duration");
     }
 
     public void current(String key, BigDecimal value) {
@@ -119,8 +119,8 @@ public class GlobalProgressChart {
     public void render() {
         String params = String.format(
                 "'{\"title\": %s, \"label\": %s, \"ticks\": %s, \"series\": %s}'",
-                jsonify(_("Project progress percentage")),
-                jsonify(_("Progress percentage per progress type")),
+                jsonify(_t("Project progress percentage")),
+                jsonify(_t("Progress percentage per progress type")),
                 getTicks(), getSeries());
 
         String command = String.format("global_progress.render(%s, %s);", getPercentages(), params);

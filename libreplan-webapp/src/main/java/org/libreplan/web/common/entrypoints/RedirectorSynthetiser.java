@@ -123,7 +123,7 @@ public class RedirectorSynthetiser implements BeanFactoryPostProcessor {
                             ClassUtils.convertClassNameToResourcePath("org.libreplan.web") + "/" + "**/*.class");
 
         } catch (IOException e) {
-            throw new RuntimeException(_("Could not load any resource"), e);
+            throw new RuntimeException(_t("Could not load any resource"), e);
         }
     }
 

@@ -292,7 +292,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends GenericForw
         Intbox hours = (Intbox) cmp.getFellow("newOrderElementHours");
 
         if (StringUtils.isEmpty(name.getValue())) {
-            throw new WrongValueException(name, _("cannot be empty"));
+            throw new WrongValueException(name, _t("cannot be empty"));
         }
 
         if (hours.getValue() == null) {
@@ -1010,11 +1010,11 @@ public abstract class TreeController<T extends ITreeNode<T>> extends GenericForw
             return (comp, value) -> {
 
                 if (value == null) {
-                    throw new WrongValueException(comp, _("cannot be empty"));
+                    throw new WrongValueException(comp, _t("cannot be empty"));
                 }
 
                 if (((BigDecimal) value).compareTo(BigDecimal.ZERO) < 0) {
-                    throw new WrongValueException(comp, _("cannot be negative"));
+                    throw new WrongValueException(comp, _t("cannot be negative"));
                 }
             };
         }
@@ -1035,7 +1035,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends GenericForw
             if (!readOnly && element.isLeaf()) {
                 if (getHoursGroupHandler().hasMoreThanOneHoursGroup(element)) {
                     boxHours.setReadonly(true);
-                    tc.setTooltiptext(_("Disabled because of it contains more than one hours group"));
+                    tc.setTooltiptext(_t("Disabled because of it contains more than one hours group"));
                 } else {
                     boxHours.setReadonly(false);
                     tc.setTooltiptext("");
@@ -1140,7 +1140,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends GenericForw
                 if (!getHoursGroupHandler().isTotalHoursValid(line, ((Integer) value))) {
                     throw new WrongValueException(
                             comp,
-                            _("Value is not valid in current list of Hours Group"));
+                            _t("Value is not valid in current list of Hours Group"));
                 }
             };
         }
@@ -1160,7 +1160,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends GenericForw
             if (readOnly) {
                 result = createButton(
                         "/common/img/ico_borrar_out.png",
-                        _("Delete"),
+                        _t("Delete"),
                         "/common/img/ico_borrar_out.png",
                         "icono",
                         removeListener);
@@ -1169,7 +1169,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends GenericForw
             } else {
                 result = createButton(
                         "/common/img/ico_borrar1.png",
-                        _("Delete"),
+                        _t("Delete"),
                         "/common/img/ico_borrar.png",
                         "icono",
                         removeListener);
@@ -1296,7 +1296,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends GenericForw
         // Check if marked label has been previously added
         if (!(tc.getLastChild() instanceof org.zkoss.zul.Label)) {
             org.zkoss.zul.Label modifiedMark = new org.zkoss.zul.Label("*");
-            modifiedMark.setTooltiptext(_("Modified"));
+            modifiedMark.setTooltiptext(_t("Modified"));
             modifiedMark.setSclass("modified-mark");
             tc.appendChild(modifiedMark);
             cellsMarkedAsModified.add(tc);

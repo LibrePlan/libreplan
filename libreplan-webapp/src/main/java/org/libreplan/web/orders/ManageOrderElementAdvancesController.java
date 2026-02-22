@@ -137,11 +137,11 @@ public class ManageOrderElementAdvancesController extends GenericForwardComposer
 
     private void validate() {
         if ( !validateDataForm() )
-            throw new IllegalSyntaxException(_("values are not valid, the values must not be null"));
+            throw new IllegalSyntaxException(_t("values are not valid, the values must not be null"));
 
 
         if ( !validateReportGlobalAdvance() )
-            throw new IllegalSyntaxException(_("Invalid Spread values. At least one value should be true"));
+            throw new IllegalSyntaxException(_t("Invalid Spread values. At least one value should be true"));
     }
 
     public boolean save() {
@@ -151,9 +151,9 @@ public class ManageOrderElementAdvancesController extends GenericForwardComposer
 
             return true;
         } catch (DuplicateAdvanceAssignmentForOrderElementException e) {
-            messagesForUser.showMessage(Level.ERROR, _("Cannot create another progress of the same type"));
+            messagesForUser.showMessage(Level.ERROR, _t("Cannot create another progress of the same type"));
         } catch (DuplicateValueTrueReportGlobalAdvanceException e) {
-            messagesForUser.showMessage(Level.ERROR, _("Invalid Spread values. At least one value should be true"));
+            messagesForUser.showMessage(Level.ERROR, _t("Invalid Spread values. At least one value should be true"));
         } catch (IllegalSyntaxException e) {
             messagesForUser.showMessage(Level.ERROR, e.getMessage());
         } catch (InstanceNotFoundException e) {
@@ -257,7 +257,7 @@ public class ManageOrderElementAdvancesController extends GenericForwardComposer
 
     private void showInfoAbout(AdvanceAssignment advance) {
         if ( manageOrderElementAdvancesModel.isSubcontractedAdvanceTypeAndSubcontractedTask(advance) )
-            showErrorMessage(_("Subcontractor values are read only " +
+            showErrorMessage(_t("Subcontractor values are read only " +
                     "because they were reported by the subcontractor company."));
 
     }
@@ -297,7 +297,7 @@ public class ManageOrderElementAdvancesController extends GenericForwardComposer
             showMessageDeleteSpread();
 
         else if ( manageOrderElementAdvancesModel.hasConsolidatedAdvances(advance) )
-            showErrorMessage(_("Progress Assignment cannot be deleted or changed. " +
+            showErrorMessage(_t("Progress Assignment cannot be deleted or changed. " +
                     "Progress Assignment contains Progress Consolidations values"));
         else {
             manageOrderElementAdvancesModel.removeLineAdvanceAssignment(advance);
@@ -322,7 +322,7 @@ public class ManageOrderElementAdvancesController extends GenericForwardComposer
             manageOrderElementAdvancesModel.removeLineAdvanceMeasurement(advance);
             reloadAdvances();
         } else
-            showErrorMessage(_("Progress Measurement cannot be deleted. Progress Measurement already consolidated"));
+            showErrorMessage(_t("Progress Measurement cannot be deleted. Progress Measurement already consolidated"));
     }
 
     /** It should be public! */
@@ -330,8 +330,8 @@ public class ManageOrderElementAdvancesController extends GenericForwardComposer
         String infoAdvanceAssignment = manageOrderElementAdvancesModel.getInfoAdvanceAssignment();
 
         return infoAdvanceAssignment.isEmpty()
-                ? _("Progress measurements")
-                : _("Progress measurements") + ": " + infoAdvanceAssignment;
+                ? _t("Progress measurements")
+                : _t("Progress measurements") + ": " + infoAdvanceAssignment;
     }
 
     public boolean isReadOnlyAdvanceMeasurements() {
@@ -426,7 +426,7 @@ public class ManageOrderElementAdvancesController extends GenericForwardComposer
                 if (manageOrderElementAdvancesModel.hasConsolidatedAdvances(advanceAssignment))
                     throw new WrongValueException(
                             maxValue,
-                            _("Progress Assignment cannot be deleted or changed. " +
+                            _t("Progress Assignment cannot be deleted or changed. " +
                                     "Progress Assignment contains Progress Consolidations values"));
                 else {
                     setPercentage();
@@ -662,19 +662,19 @@ public class ManageOrderElementAdvancesController extends GenericForwardComposer
 
             if ( (advance.getAdvanceType() != null) && (advance.getAdvanceType().isQualityForm()) ) {
                 addMeasurementButton.setDisabled(true);
-                addMeasurementButton.setTooltiptext(_("Progress that are reported by quality forms can not be modified"));
+                addMeasurementButton.setTooltiptext(_t("Progress that are reported by quality forms can not be modified"));
 
             } else if ( (advance.getAdvanceType() != null) && (advance.getAdvanceType().isReadOnly()) ) {
                 addMeasurementButton.setDisabled(true);
-                addMeasurementButton.setTooltiptext(_("This progress type cannot be modified"));
+                addMeasurementButton.setTooltiptext(_t("This progress type cannot be modified"));
 
             } else if ( advance instanceof IndirectAdvanceAssignment ) {
                 addMeasurementButton.setDisabled(true);
-                addMeasurementButton.setTooltiptext(_("Calculated progress can not be modified"));
+                addMeasurementButton.setTooltiptext(_t("Calculated progress can not be modified"));
 
             } else if ( readOnly ) {
                 addMeasurementButton.setDisabled(true);
-                addMeasurementButton.setTooltiptext(_("Subcontractor values are read only " +
+                addMeasurementButton.setTooltiptext(_t("Subcontractor values are read only " +
                         "because they were reported by the subcontractor company."));
             }
 
@@ -690,28 +690,28 @@ public class ManageOrderElementAdvancesController extends GenericForwardComposer
 
             if ( (advance.getAdvanceType() != null) && (advance.getAdvanceType().isQualityForm()) ) {
                 removeButton.setDisabled(true);
-                removeButton.setTooltiptext(_("Progress that are reported by quality forms cannot be modified"));
+                removeButton.setTooltiptext(_t("Progress that are reported by quality forms cannot be modified"));
 
             } else if ( (advance.getAdvanceType() != null) && (advance.getAdvanceType().isReadOnly()) ) {
                 removeButton.setDisabled(true);
-                removeButton.setTooltiptext(_("This progress type cannot be modified"));
+                removeButton.setTooltiptext(_t("This progress type cannot be modified"));
 
             } else if ( advance instanceof IndirectAdvanceAssignment ) {
                 removeButton.setDisabled(true);
-                removeButton.setTooltiptext(_("Calculated progress cannot be removed"));
+                removeButton.setTooltiptext(_t("Calculated progress cannot be removed"));
 
             } else if ( manageOrderElementAdvancesModel.hasConsolidatedAdvances(advance) ) {
                 removeButton.setDisabled(true);
-                removeButton.setTooltiptext(_("Consolidated progress cannot be removed"));
+                removeButton.setTooltiptext(_t("Consolidated progress cannot be removed"));
 
             } else if ( readOnly ) {
                 removeButton.setDisabled(true);
-                removeButton.setTooltiptext(_("Subcontractor values are read only " +
+                removeButton.setTooltiptext(_t("Subcontractor values are read only " +
                         "because they were reported by the subcontractor company"));
 
             } else if ( manageOrderElementAdvancesModel.hasReportedProgress(advance) ) {
                 removeButton.setDisabled(true);
-                removeButton.setTooltiptext(_("Advance assignment cannot be removed as " +
+                removeButton.setTooltiptext(_t("Advance assignment cannot be removed as " +
                         "it has advance measures that have already been reported to the customer"));
             }
 
@@ -722,7 +722,7 @@ public class ManageOrderElementAdvancesController extends GenericForwardComposer
             boolean spread = true;
 
             if ( manageOrderElementAdvancesModel.hasAnyConsolidatedAdvanceCurrentOrderElement() ) {
-                showErrorMessage(_("Spread progress cannot be changed " +
+                showErrorMessage(_t("Spread progress cannot be changed " +
                         "if there is a consolidation in any progress assignment from root task"));
                 spread = false;
             } else if ( !radioSpreadIsConsolidated() )
@@ -745,7 +745,7 @@ public class ManageOrderElementAdvancesController extends GenericForwardComposer
                 if ( (advance.getReportGlobalAdvance()) &&
                         (manageOrderElementAdvancesModel.hasConsolidatedAdvances(advance)) ) {
 
-                    showErrorMessage(_("Spread progress cannot be changed " +
+                    showErrorMessage(_t("Spread progress cannot be changed " +
                             "if there is a consolidation in any progress assignment"));
 
                     return true;
@@ -781,7 +781,7 @@ public class ManageOrderElementAdvancesController extends GenericForwardComposer
                     (value == null || (BigDecimal.ZERO.compareTo((BigDecimal) value) >= 0)) ){
                 ((Decimalbox) comp).setValue(advance.getAdvanceType().getDefaultMaxValue());(comp).invalidate();
 
-                throw new WrongValueException(comp, _("The max value must be greater than 0"));
+                throw new WrongValueException(comp, _t("The max value must be greater than 0"));
             }
         };
     }
@@ -873,7 +873,7 @@ public class ManageOrderElementAdvancesController extends GenericForwardComposer
                 if ( advance != null ) {
 
                     if (advance.getAdvanceType() == null )
-                        throw new WrongValueException(getComboboxTypeBy(listItem), _("cannot be empty"));
+                        throw new WrongValueException(getComboboxTypeBy(listItem), _t("cannot be empty"));
 
                     DirectAdvanceAssignment directAdvanceAssignment;
 
@@ -885,7 +885,7 @@ public class ManageOrderElementAdvancesController extends GenericForwardComposer
                         directAdvanceAssignment = (DirectAdvanceAssignment) advance;
 
                     if ( directAdvanceAssignment != null && directAdvanceAssignment.getMaxValue() == null )
-                        throw new WrongValueException(getDecimalboxMaxValueBy(listItem), _("cannot be empty"));
+                        throw new WrongValueException(getDecimalboxMaxValueBy(listItem), _t("cannot be empty"));
                 }
             }
 
@@ -1004,7 +1004,7 @@ public class ManageOrderElementAdvancesController extends GenericForwardComposer
                     updatesValue();
                     validateMeasurementValue(decimalbox, decimalbox.getValue());
                 } else
-                    throw new WrongValueException(decimalbox, _("Progress Measurement cannot be deleted." +
+                    throw new WrongValueException(decimalbox, _t("Progress Measurement cannot be deleted." +
                             " Progress Measurement already consolidated"));
             });
 
@@ -1049,7 +1049,7 @@ public class ManageOrderElementAdvancesController extends GenericForwardComposer
                     validateMeasurementDate(date, date.getValue());
                     setCurrentDate();
                 } else
-                    throw new WrongValueException(date, _("Progress Measurement cannot be deleted." +
+                    throw new WrongValueException(date, _t("Progress Measurement cannot be deleted." +
                             " Progress Measurement already consolidated"));
             });
 
@@ -1085,29 +1085,29 @@ public class ManageOrderElementAdvancesController extends GenericForwardComposer
             if ( (advance.getAdvanceType() != null) && (advance.getAdvanceType().isQualityForm()) ) {
                 removeButton.setDisabled(true);
 
-                removeButton.setTooltiptext(_("Progress measurements that are reported " +
+                removeButton.setTooltiptext(_t("Progress measurements that are reported " +
                         "by quality forms cannot be removed"));
 
             } else if ( (advance.getAdvanceType() != null) && (advance.getAdvanceType().isReadOnly()) ) {
                 removeButton.setDisabled(true);
-                removeButton.setTooltiptext(_("This progress type cannot cannot be removed"));
+                removeButton.setTooltiptext(_t("This progress type cannot cannot be removed"));
 
             } else if ( advance.isFake() ) {
                 removeButton.setDisabled(true);
-                removeButton.setTooltiptext(_("Calculated progress measurements cannot be removed") );
+                removeButton.setTooltiptext(_t("Calculated progress measurements cannot be removed") );
 
             } else if ( manageOrderElementAdvancesModel.hasConsolidatedAdvances(measure) ) {
                 removeButton.setDisabled(true);
-                removeButton.setTooltiptext(_("Consolidated progress measurement cannot be removed"));
+                removeButton.setTooltiptext(_t("Consolidated progress measurement cannot be removed"));
 
             } else if ( manageOrderElementAdvancesModel.isAlreadyReportedProgress(measure) ) {
                 removeButton.setDisabled(true);
-                removeButton.setTooltiptext(_("Values already sent to the customer. Values cannot be changed "));
+                removeButton.setTooltiptext(_t("Values already sent to the customer. Values cannot be changed "));
 
             } else if ( isReadOnlyAdvanceMeasurements() ) {
                 removeButton.setDisabled(isReadOnlyAdvanceMeasurements());
 
-                removeButton.setTooltiptext(_("Subcontractor values are read only" +
+                removeButton.setTooltiptext(_t("Subcontractor values are read only" +
                         " because they were reported by the subcontractor company."));
             }
 
@@ -1128,7 +1128,7 @@ public class ManageOrderElementAdvancesController extends GenericForwardComposer
         }
 
         private void showMessagesConsolidation(LocalDate date) {
-            String message = _("Progress measurement cannot be canged to {0}, because it is consolidated", date);
+            String message = _t("Progress measurement cannot be canged to {0}, because it is consolidated", date);
             showErrorMessage(message);
         }
 
@@ -1136,9 +1136,9 @@ public class ManageOrderElementAdvancesController extends GenericForwardComposer
 
     private Button createAddMeasurementButton() {
         Button addButton = new Button();
-        addButton.setLabel(_("Add measure"));
+        addButton.setLabel(_t("Add measure"));
         addButton.setClass("add-button");
-        addButton.setTooltiptext(_("Add new progress measurement"));
+        addButton.setTooltiptext(_t("Add new progress measurement"));
 
         return addButton;
     }
@@ -1153,7 +1153,7 @@ public class ManageOrderElementAdvancesController extends GenericForwardComposer
         removeButton.setSclass("icono");
         removeButton.setImage("/common/img/ico_borrar1.png");
         removeButton.setHoverImage("/common/img/ico_borrar.png");
-        removeButton.setTooltiptext(_("Delete"));
+        removeButton.setTooltiptext(_t("Delete"));
 
         return removeButton;
     }
@@ -1163,7 +1163,7 @@ public class ManageOrderElementAdvancesController extends GenericForwardComposer
     }
 
     private void showMessageNotAddMoreAdvances() {
-        String message = _("All progress types have already been assigned.");
+        String message = _t("All progress types have already been assigned.");
         increaseScreenHeight();
         messagesForUser.showMessage(Level.ERROR, message);
     }
@@ -1176,7 +1176,7 @@ public class ManageOrderElementAdvancesController extends GenericForwardComposer
     }
 
     private void showMessageDeleteSpread() {
-        String message = _("Spread progress cannot be removed. Please select another progress as spread.");
+        String message = _t("Spread progress cannot be removed. Please select another progress as spread.");
         showErrorMessage(message);
     }
 
@@ -1187,14 +1187,14 @@ public class ManageOrderElementAdvancesController extends GenericForwardComposer
 
     private String validateValueAdvanceMeasurement(AdvanceMeasurement measurement) {
         if ( manageOrderElementAdvancesModel.greatThanMaxValue(measurement) )
-            return _("Value is not valid. It must be smaller than max value");
+            return _t("Value is not valid. It must be smaller than max value");
 
         if ( !manageOrderElementAdvancesModel.isPrecisionValid(measurement) )
-            return _("Value must be a multiple of the precision value of the progress type: {0}",
+            return _t("Value must be a multiple of the precision value of the progress type: {0}",
                     manageOrderElementAdvancesModel.getUnitPrecision().stripTrailingZeros().toPlainString());
 
         if ( manageOrderElementAdvancesModel.lessThanPreviousMeasurements() )
-            return _("Invalid value. Value must be greater than the value of previous progress.");
+            return _t("Invalid value. Value must be greater than the value of previous progress.");
 
         return null;
     }
@@ -1204,14 +1204,14 @@ public class ManageOrderElementAdvancesController extends GenericForwardComposer
         measurement.setDate(value);
 
         if ( !manageOrderElementAdvancesModel.isDistinctValidDate(value, measurement))
-            return _("Invalid date. Date must be unique for this Progress Assignment");
+            return _t("Invalid date. Date must be unique for this Progress Assignment");
 
         if ( manageOrderElementAdvancesModel.hasConsolidatedAdvances(measurement) )
             measurement.setDate(oldDate);
         else {
             manageOrderElementAdvancesModel.sortListAdvanceMeasurement();
             if ( manageOrderElementAdvancesModel.lessThanPreviousMeasurements() )
-                return _("Invalid value. Value must be greater than the value of previous progress.");
+                return _t("Invalid value. Value must be greater than the value of previous progress.");
         }
 
         if ( !isReadOnlyAdvanceMeasurements() ) {
@@ -1220,10 +1220,10 @@ public class ManageOrderElementAdvancesController extends GenericForwardComposer
                     .getLastConsolidatedMeasurementDate(measurement.getAdvanceAssignment());
 
             if ( consolidatedUntil != null  && consolidatedUntil.compareTo(measurement.getDate()) >= 0 ) {
-                return _("Date is not valid, it must be later than the last progress consolidation");
+                return _t("Date is not valid, it must be later than the last progress consolidation");
             }
             if ( manageOrderElementAdvancesModel.isAlreadyReportedProgressWith(value) ) {
-                return _("Date is not valid, it must be later than the last progress reported to the customer");
+                return _t("Date is not valid, it must be later than the last progress reported to the customer");
             }
         }
 
@@ -1284,7 +1284,7 @@ public class ManageOrderElementAdvancesController extends GenericForwardComposer
             if ( value == null && advanceMeasurement != null ) {
                 advanceMeasurement.setDate(null);
                 ((Datebox) comp).setValue(null);
-                throw new WrongValueException(comp, _("cannot be empty"));
+                throw new WrongValueException(comp, _t("cannot be empty"));
 
             } else {
                 String errorMessage = validateDateAdvanceMeasurement(new LocalDate(value), advanceMeasurement);
@@ -1310,7 +1310,7 @@ public class ManageOrderElementAdvancesController extends GenericForwardComposer
             ((Decimalbox) comp).setValue((BigDecimal) value);
 
             if ( (value) == null )
-                throw new WrongValueException(comp, _("cannot be empty"));
+                throw new WrongValueException(comp, _t("cannot be empty"));
             else {
                 String errorMessage = validateValueAdvanceMeasurement(advanceMeasurement);
                 if ( errorMessage != null )

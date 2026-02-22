@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Hours Worked by Resource Report</title>
+<link rel="stylesheet" href="html/lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="hours-worked-by-resource-report">
+<h1 class="title">Hours Worked by Resource Report</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#purpose" id="toc-entry-1">Purpose</a></li>
+<li><a class="reference internal" href="#input-parameters-and-filters" id="toc-entry-2">Input Parameters and Filters</a></li>
+<li><a class="reference internal" href="#output" id="toc-entry-3">Output</a><ul>
+<li><a class="reference internal" href="#heading" id="toc-entry-4">Heading</a></li>
+<li><a class="reference internal" href="#footer" id="toc-entry-5">Footer</a></li>
+<li><a class="reference internal" href="#body" id="toc-entry-6">Body</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="purpose">
+<h1><a class="toc-backref" href="#toc-entry-1">Purpose</a></h1>
+<p>This report extracts a list of tasks and the time resources have dedicated to them within a specified period. Several filters allow users to refine the query to obtain only the desired information and exclude extraneous data.</p>
+</div>
+<div class="section" id="input-parameters-and-filters">
+<h1><a class="toc-backref" href="#toc-entry-2">Input Parameters and Filters</a></h1>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt><strong>Dates</strong>.</dt>
+<dd><ul class="first last">
+<li><em>Type</em>: Optional.</li>
+<li><dl class="first docutils">
+<dt><em>Two date fields</em>:</dt>
+<dd><ul class="first last">
+<li><em>Start Date:</em> This is the earliest date for work reports to be included. Work reports with dates earlier than the <em>Start Date</em> are excluded. If this parameter is left blank, work reports are not filtered by <em>Start Date</em>.</li>
+<li><em>End Date:</em> This is the latest date for work reports to be included. Work reports with dates later than the <em>End Date</em> are excluded. If this parameter is left blank, work reports are not filtered by <em>End Date</em>.</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><strong>Filter by Workers:</strong>
+*   <em>Type:</em> Optional.
+*   <em>How it works:</em> You can select one or more workers to restrict the work reports to the time tracked by those specific workers. To add a worker as a filter, search for them in the selector and click the <em>Add</em> button. If this filter is left empty, work reports are retrieved regardless of the worker.</li>
+<li><strong>Filter by Labels:</strong>
+*   <em>Type:</em> Optional.
+*   <em>How it works:</em> You can add one or more labels to use as filters by searching for them in the selector and clicking the <em>Add</em> button. These labels are used to select the tasks to be included in the results when calculating the hours dedicated to them. This filter can be applied to timesheets, tasks, both, or neither.</li>
+<li><strong>Filter by Criteria:</strong>
+*   <em>Type:</em> Optional.
+*   <em>How it works:</em> You can select one or more criteria by searching for them in the selector and then clicking the <em>Add</em> button. These criteria are used to select the resources that satisfy at least one of them. The report will show all the time dedicated by the resources that meet one of the selected criteria.</li>
+</ul>
+</div>
+<div class="section" id="output">
+<h1><a class="toc-backref" href="#toc-entry-3">Output</a></h1>
+<div class="section" id="heading">
+<h2><a class="toc-backref" href="#toc-entry-4">Heading</a></h2>
+<p>The report heading displays the filters that were configured and applied to the current report.</p>
+</div>
+<div class="section" id="footer">
+<h2><a class="toc-backref" href="#toc-entry-5">Footer</a></h2>
+<p>The date on which the report was generated is listed in the footer.</p>
+</div>
+<div class="section" id="body">
+<h2><a class="toc-backref" href="#toc-entry-6">Body</a></h2>
+<p>The report body consists of several groups of information.</p>
+<ul>
+<li><p class="first">The first level of aggregation is by resource. All the time dedicated by a resource is shown together below the header. Each resource is identified by:</p>
+<ul class="simple">
+<li><em>Worker:</em> Surname, First Name.</li>
+<li><em>Machine:</em> Name.</li>
+</ul>
+<p>A summary line shows the total number of hours worked by the resource.</p>
+</li>
+<li><p class="first">The second level of grouping is by <em>date</em>. All the reports from a specific resource on the same date are shown together.</p>
+<p>A summary line shows the total number of hours worked by the resource on that date.</p>
+</li>
+<li><p class="first">The final level lists the work reports for the worker on that day. The information displayed for each work report line is:</p>
+<ul class="simple">
+<li><em>Task Code:</em> The code of the task to which the tracked hours are attributed.</li>
+<li><em>Task Name:</em> The name of the task to which the tracked hours are attributed.</li>
+<li><em>Starting Time:</em> This is optional. It is the time at which the resource began working on the task.</li>
+<li><em>Ending Time:</em> This is optional. It is the time at which the resource finished working on the task on the specified date.</li>
+<li><em>Text Fields:</em> This is optional. If the work report line has text fields, the filled values are shown here. The format is: &lt;Name of the text field&gt;:&lt;Value&gt;</li>
+<li><em>Labels:</em> This depends on whether the work report model has a label field in its definition. If there are multiple labels, they are shown in the same column. The format is: &lt;Name of the label type&gt;:&lt;Value of the label&gt;</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</body>
+</html>

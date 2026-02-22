@@ -31,7 +31,7 @@ import org.libreplan.business.planner.entities.TaskElement;
  */
 public enum TaskElementFilterEnum implements IFilterEnum {
 
-    Criterion(_("Criterion")), Label(_("Label")), Resource(_("Resource"));
+    Criterion(_t("Criterion")), Label(_t("Label")), Resource(_t("Resource"));
 
     /**
      * Forces to mark the string as needing translation

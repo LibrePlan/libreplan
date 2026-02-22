@@ -52,7 +52,7 @@ public class GenericAllocationRow extends AllocationRow {
     private static GenericAllocationRow initializeDefault(
             GenericAllocationRow result, ResourceEnum resourceType) {
         Validate.notNull(resourceType);
-        result.setName(_("Generic"));
+        result.setName(_t("Generic"));
         result.resourceType = resourceType;
         return result;
     }

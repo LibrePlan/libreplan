@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Scheduler</title>
+<link rel="stylesheet" href="html/lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="scheduler">
+<h1 class="title">Scheduler</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#job-scheduling-list-view" id="toc-entry-1">Job Scheduling List View</a></li>
+<li><a class="reference internal" href="#add-or-edit-job" id="toc-entry-2">Add or Edit Job</a><ul>
+<li><a class="reference internal" href="#cron-expression-pop-up" id="toc-entry-3">Cron Expression Pop-up</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#remove-job" id="toc-entry-4">Remove Job</a></li>
+<li><a class="reference internal" href="#start-job-manually" id="toc-entry-5">Start Job Manually</a></li>
+</ul>
+</div>
+<p>The scheduler is designed to schedule jobs dynamically. It is developed using the <em>Spring Framework Quartz scheduler</em>.</p>
+<p>To use this scheduler effectively, the jobs (Quartz jobs) that should be scheduled must be created first. Then, these jobs can be added to the database, as all jobs to be scheduled are stored in the database.</p>
+<p>When the scheduler starts, it reads the jobs to be scheduled or unscheduled from the database and schedules or removes them accordingly. Afterward, jobs can be added, updated, or removed dynamically using the <tt class="docutils literal">Job scheduling</tt> user interface.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The scheduler starts when the LibrePlan web application starts and stops when the application stops.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This scheduler supports only <tt class="docutils literal">cron expressions</tt> to schedule jobs.</p>
+</div>
+<p>The criteria that the scheduler uses to schedule or remove jobs when it starts are as follows:</p>
+<p>For all jobs:</p>
+<ul class="simple">
+<li>Schedule<ul>
+<li>Job has a <em>Connector</em>, and the <em>Connector</em> is activated, and the job is allowed to be scheduled.</li>
+<li>Job has no <em>Connector</em> and is allowed to be scheduled.</li>
+</ul>
+</li>
+<li>Remove<ul>
+<li>Job has a <em>Connector</em>, and the <em>Connector</em> is not activated.</li>
+<li>Job has a <em>Connector</em>, and the <em>Connector</em> is activated, but the job is not allowed to be scheduled.</li>
+<li>Job has no <em>Connector</em> and is not allowed to be scheduled.</li>
+</ul>
+</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Jobs cannot be rescheduled or unscheduled if they are currently running.</p>
+</div>
+<div class="section" id="job-scheduling-list-view">
+<h1><a class="toc-backref" href="#toc-entry-1">Job Scheduling List View</a></h1>
+<p>The <tt class="docutils literal">Job scheduling list</tt> view allows users to:</p>
+<ul class="simple">
+<li>Add a new job.</li>
+<li>Edit an existing job.</li>
+<li>Remove a job.</li>
+<li>Start a process manually.</li>
+</ul>
+</div>
+<div class="section" id="add-or-edit-job">
+<h1><a class="toc-backref" href="#toc-entry-2">Add or Edit Job</a></h1>
+<p>From the <tt class="docutils literal">Job scheduling list</tt> view, click:</p>
+<ul class="simple">
+<li><tt class="docutils literal">Create</tt> to add a new job, or</li>
+<li><tt class="docutils literal">Edit</tt> to modify the selected job.</li>
+</ul>
+<p>Both actions will open a create/edit <tt class="docutils literal">job form</tt>. The <tt class="docutils literal">form</tt> displays the following properties:</p>
+<ul class="simple">
+<li>Fields:<ul>
+<li><strong>Job group:</strong> The name of the job group.</li>
+<li><strong>Job name:</strong> The name of the job.</li>
+<li><strong>Cron expression:</strong> A read-only field with an <tt class="docutils literal">Edit</tt> button to open the <tt class="docutils literal">cron expression</tt> input window.</li>
+<li><strong>Job class name:</strong> A <tt class="docutils literal"><span class="pre">pull-down</span> list</tt> to select the job (an existing job).</li>
+<li><strong>Connector:</strong> A <tt class="docutils literal"><span class="pre">pull-down</span> list</tt> to select a connector. This is not mandatory.</li>
+<li><strong>Schedule:</strong> A checkbox to indicate whether to schedule this job.</li>
+</ul>
+</li>
+<li>Buttons:<ul>
+<li><strong>Save:</strong> To save or update a job in both the database and the scheduler. The user is then returned to the <tt class="docutils literal">Job scheduling list view</tt>.</li>
+<li><strong>Save and continue:</strong> The same as &quot;Save,&quot; but the user is not returned to the <tt class="docutils literal">Job scheduling list view</tt>.</li>
+<li><strong>Cancel:</strong> Nothing is saved, and the user is returned to the <tt class="docutils literal">Job scheduling list view</tt>.</li>
+</ul>
+</li>
+<li>And a hint section about cron expression syntax.</li>
+</ul>
+<div class="section" id="cron-expression-pop-up">
+<h2><a class="toc-backref" href="#toc-entry-3">Cron Expression Pop-up</a></h2>
+<p>To enter the <tt class="docutils literal">cron expression</tt> correctly, a <tt class="docutils literal">cron expression</tt> pop-up form is used. In this form, you can enter the desired <tt class="docutils literal">cron expression</tt>. See also the hint about the <tt class="docutils literal">cron expression</tt>. If you enter an invalid <tt class="docutils literal">cron expression</tt>, you will be notified immediately.</p>
+</div>
+</div>
+<div class="section" id="remove-job">
+<h1><a class="toc-backref" href="#toc-entry-4">Remove Job</a></h1>
+<p>Click the <tt class="docutils literal">Remove</tt> button to delete the job from both the database and the scheduler. The success or failure of this action will be displayed.</p>
+</div>
+<div class="section" id="start-job-manually">
+<h1><a class="toc-backref" href="#toc-entry-5">Start Job Manually</a></h1>
+<p>As an alternative to waiting for the job to run as scheduled, you can click this button to start the process directly. Afterward, the success or failure information will be displayed in a <tt class="docutils literal"><span class="pre">pop-up</span> window</tt>.</p>
+</div>
+</div>
+</body>
+</html>

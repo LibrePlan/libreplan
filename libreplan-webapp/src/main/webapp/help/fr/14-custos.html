@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Gestion des coûts</title>
+<link rel="stylesheet" href="html/lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="gestion-des-couts">
+<h1 class="title">Gestion des coûts</h1>
+
+<div class="contents topic" id="contents">
+<span id="costes"></span><p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#couts" id="toc-entry-1">Coûts</a><ul>
+<li><a class="reference internal" href="#gestion-des-types-d-heures-de-travail" id="toc-entry-2">Gestion des types d'heures de travail</a></li>
+<li><a class="reference internal" href="#categories-de-couts" id="toc-entry-3">Catégories de coûts</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="couts">
+<h1><a class="toc-backref" href="#toc-entry-1">Coûts</a></h1>
+<p>La gestion des coûts permet aux utilisateurs d'estimer les coûts des ressources utilisées dans un projet. De façon à gérer ces coûts, les entités suivantes doivent être indiquées :</p>
+<ul>
+<li><p class="first">type d'heures de travail : ceci indique le type d'heures de travail pour la ressource. On peut ajouter des types d'heures pour les machines et les employés. Un exemple de type d'heures pourrait être : heures supplémentaires, payées généralement 20€. Les champs suivant définissent les types d'heures de travail :</p>
+<blockquote>
+<ul class="simple">
+<li>Code : code pour le type d'heures, modifiable s'il n'est pas généré automatiquement</li>
+<li>Nom : nom du type d'heures. Par exemple, &quot;supplémentaire&quot;.</li>
+<li>Prix par défaut : prix par défaut pour le type d'heures.</li>
+<li>Activé : indique si le type d'heures est activé ou pas.</li>
+</ul>
+</blockquote>
+</li>
+<li><p class="first">Catégories de coûts : indiquent les catégories de coûts à utiliser pour calculer les coûts en fonction du type d'heures et de la période (ces périodes peuvent ne pas être limitées dans le temps). Par exemple, le coûts des heures supplémentaires pour des employés de première catégorie de qualification pour l'année à venir est de 24€ par heure. Les catégories de coûts comportent les informations suivantes :</p>
+<blockquote>
+<ul class="simple">
+<li>Nom : nom de la catégorie de coûts.</li>
+<li>Activé : indique si la catégorie de coûts est activée ou non.</li>
+<li>Liste des types d'heures affectés aux catégories de coûts. Elle contient plusieurs périodes et le prix associé pour ces types d'heures. Par exemple, comme les prix changent, on pourra trouver une période couvrant chaque année associée à un type d'heures et un prix horaire différent pour chacune (qui pourra être différent du prix par défaut associé au type d'heures concerné).</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<div class="section" id="gestion-des-types-d-heures-de-travail">
+<h2><a class="toc-backref" href="#toc-entry-2">Gestion des types d'heures de travail</a></h2>
+<p>Pour gérer les types d'heures de travail, procéder comme suit :</p>
+<ul class="simple">
+<li>Choisir le menu <em>Coûts</em>, sous-menu <em>Types d'heures de travail</em>.</li>
+<li>Le programme affiche une liste des types d'heures existants.</li>
+</ul>
+<div class="figure">
+<img alt="images/hour-type-list.png" src="images/hour-type-list.png" style="width: 357.0px; height: 166.6px;" />
+<p class="caption">Liste des types d'heures de travail</p>
+</div>
+<ul class="simple">
+<li>Cliquer sur &quot;Modifier&quot; ou &quot;Créer&quot;.</li>
+<li>Le programme affiche un formulaire de modification du type d'heures de travail.</li>
+</ul>
+<div class="figure">
+<img alt="images/hour-type-edit.png" src="images/hour-type-edit.png" style="width: 510.0px; height: 235.5px;" />
+<p class="caption">Modifier les types d'heures de travail</p>
+</div>
+<ul>
+<li><p class="first">Saisir ou modifier :</p>
+<blockquote>
+<ul class="simple">
+<li>le nom du type d'heures de travail.</li>
+<li>le code du type d'heures si ce code n'est pas généré automatiquement.</li>
+<li>le prix par défaut.</li>
+<li>l'activation/désactivation du type d'heures de travail.</li>
+</ul>
+</blockquote>
+</li>
+<li><p class="first">Cliquer sur &quot;Enregistrer&quot; ou &quot;Enregistrer et continuer&quot;.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="categories-de-couts">
+<h2><a class="toc-backref" href="#toc-entry-3">Catégories de coûts</a></h2>
+<p>Procéder comme suit pour créer ou modifier une catégorie de coûts :</p>
+<ul class="simple">
+<li>Choisir le menu <em>Coûts</em>, sous-menu <em>Catégories de coûts</em>.</li>
+<li>Le programme affiche une liste des catégories de coûts existantes.</li>
+</ul>
+<div class="figure">
+<img alt="images/category-cost-list.png" src="images/category-cost-list.png" style="width: 510.0px; height: 236.5px;" />
+<p class="caption">Liste des catégories de coûts</p>
+</div>
+<ul class="simple">
+<li>Cliquer sur le bouton &quot;Modifier&quot; ou &quot;Créer&quot;.</li>
+<li>Le programme affiche un formulaire de modification d'une catégorie de coûts.</li>
+</ul>
+<div class="figure">
+<img alt="images/category-cost-edit.png" src="images/category-cost-edit.png" style="width: 510.0px; height: 235.0px;" />
+<p class="caption">Modifier une catégorie de coûts</p>
+</div>
+<ul>
+<li><p class="first">Saisir ou modifier :</p>
+<blockquote>
+<ul>
+<li><p class="first">Le code s'il n'est pas généré automatiquement.</p>
+</li>
+<li><p class="first">Le nom de la catégorie de coûts.</p>
+</li>
+<li><p class="first">L'activation/désactivation de la catégorie de coût.</p>
+</li>
+<li><p class="first">La liste des types d'heures inclus dans la catégorie. Tous les types d'heures possèdent les champs suivants :</p>
+<blockquote>
+<ul class="simple">
+<li>Type d'heures : choisir l'un des types d'heures existant dans le système. Il doit exister au moins un type avant de procéder (la création des types d'heures est expliquée dans la sous-section précédente).</li>
+<li>Prix horaire associé.</li>
+<li>Date de début et de fin (cette dernière est facultative) pour la période durant laquelle s'applique la catégorie de coûts.</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+</blockquote>
+</li>
+<li><p class="first">Cliquer sur &quot;Enregistrer&quot; ou &quot;Enregistrer et continuer&quot;.</p>
+</li>
+</ul>
+<p>L'affectation des catégories de coûts aux ressources est décrite dans le chapitre &quot;Ressources&quot;.</p>
+</div>
+</div>
+</div>
+</body>
+</html>

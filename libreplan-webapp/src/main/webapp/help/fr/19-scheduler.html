@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Ordonnanceur</title>
+<link rel="stylesheet" href="html/lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="ordonnanceur">
+<h1 class="title">Ordonnanceur</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#vue-de-la-liste-de-programmation-des-taches-systemes" id="toc-entry-1">Vue de la liste de programmation des tâches systèmes</a></li>
+<li><a class="reference internal" href="#ajouter-ou-modifier-une-tache-systeme" id="toc-entry-2">Ajouter ou modifier une tâche système</a><ul>
+<li><a class="reference internal" href="#fenetre-surgissante-des-expressions-cron" id="toc-entry-3">Fenêtre surgissante des expressions cron</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#supprimer-une-tache-systeme" id="toc-entry-4">Supprimer une tâche système</a></li>
+<li><a class="reference internal" href="#demarrer-la-tache-systeme-manuellement" id="toc-entry-5">Démarrer la tâche système manuellement</a></li>
+</ul>
+</div>
+<p>L'ordonnanceur est conçu pour programmer des tâches système dynamiquement. Il a été implémenté avec l'aide de <em>l'ordonnanceur Quartz du framework Spring</em>.</p>
+<p>De façon à utiliser cet ordonnanceur efficacement, les tâches système (jobs Quartz) qui doivent être programmées doivent être créées au préalable. Ensuite, ces tâches système pourront être ajoutées à la base de données puisque toutes les tâches système à programmer sont enregistrées en base de données.</p>
+<p>Quand l'ordonnanceur démarre la première fois, il lit les tâches système à programmer/déprogrammer dans la base de données et les programme/supprime en conséquence. Après cela, des tâches système peuvent être ajoutées/mises à jour ou supprimées dynamiquement en utilisant l'interface utilisateur <tt class="docutils literal">Ordonnancement de tâches système</tt>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">L'ordonnanceur démarre quand l'application web LibrePlan démarre et s'arrête quand l'application s'arrête.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Cet ordonnanceur ne gère que les <tt class="docutils literal">expressions cron</tt> pour programmer les tâches système.</p>
+</div>
+<p>Les critères que l'ordonnanceur utilise pour programmer/supprimer des tâches système quand il démarre la première fois :</p>
+<p>Pour toutes les tâches système :</p>
+<ul class="simple">
+<li>Programmer<ul>
+<li>La tâche système possède un <em>Connecteur</em> et le <em>Connecteur</em> est activé et une tâche système est autorisée à être programmée</li>
+<li>La tâche système n'a pas de <em>Connecteur</em> et est autorisée à être programmée</li>
+</ul>
+</li>
+<li>Supprimer<ul>
+<li>La tâche système a un <em>Connecteur</em> et le <em>Connecteur</em> n'est pas activé</li>
+<li>La tâche système a un <em>Connecteur</em> et le <em>Connecteur</em> est activé mais la tâche système n'est pas autorisée à être programmé</li>
+<li>La tâche système n'a pas de <em>Connecteur</em> et n'est pas autorisée à être programmée</li>
+</ul>
+</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Les tâches système ne peuvent pas être reprogrammées/déprogrammées si elles sont en cours d'exécution</p>
+</div>
+<div class="section" id="vue-de-la-liste-de-programmation-des-taches-systemes">
+<h1><a class="toc-backref" href="#toc-entry-1">Vue de la liste de programmation des tâches systèmes</a></h1>
+<p>La vue <tt class="docutils literal">liste de programmation des tâches système</tt> permet aux utilisateurs de :</p>
+<ul class="simple">
+<li>ajouter une nouvelle tâche système</li>
+<li>modifier une tâche système existante</li>
+<li>supprimer une tâche système</li>
+<li>démarrer manuellement un processus</li>
+</ul>
+</div>
+<div class="section" id="ajouter-ou-modifier-une-tache-systeme">
+<h1><a class="toc-backref" href="#toc-entry-2">Ajouter ou modifier une tâche système</a></h1>
+<p>À partir de la vue <tt class="docutils literal">liste de programmation des tâches système</tt>, cliquer sur :</p>
+<ul class="simple">
+<li>le bouton <tt class="docutils literal">Créer</tt> pour ajouter une nouvelle tâche système, ou</li>
+<li>le bouton <tt class="docutils literal">Modifier</tt> pour modifier la tâche système choisie.</li>
+</ul>
+<p>Ces deux actions vous conduiront à un <tt class="docutils literal">formulaire création/modification de tâches système</tt>. Le <tt class="docutils literal">formulaire</tt> affiche les propriétés suivantes :</p>
+<ul class="simple">
+<li>Champs :<ul>
+<li>Groupe de tâches système : le nom du groupe de tâches système</li>
+<li>Nom de tâche système : le nom de la tâche système</li>
+<li>Expression cron : champ en lecture seule avec un bouton <tt class="docutils literal">Modifier</tt> pour ouvrir une fenêtre de saisie d'une <tt class="docutils literal">expression cron</tt></li>
+<li>Nom de classe de la tâche système : <tt class="docutils literal">liste déroulante</tt> pour choisir un connecteur. Ce n'est pas obligatoire.</li>
+<li>Programmation: case à cocher pour indiquer si vous voulez programmer la tâche système ou non</li>
+</ul>
+</li>
+<li>Boutons :<ul>
+<li>Enregistrer : pour enregistrer/mettre à jour une tâche système à la fois en base de données et dans l'ordonnanceur. L'utilisateur est alors ramené à la <tt class="docutils literal">vue de la liste de programmation des tâches système</tt></li>
+<li>Enregistrer et continuer : la même chose que ci-dessus à la différence que l'utilisateur n'est pas ramené à la <tt class="docutils literal">vue de la liste de programmation des tâches système</tt>.</li>
+<li>Annuler : ne rien enregistrer et l'utilisateur est ramené à la <tt class="docutils literal">vue de la liste de programmation des tâches système</tt></li>
+</ul>
+</li>
+<li>Et une aide concernant la syntaxe des expressions cron</li>
+</ul>
+<div class="section" id="fenetre-surgissante-des-expressions-cron">
+<h2><a class="toc-backref" href="#toc-entry-3">Fenêtre surgissante des expressions cron</a></h2>
+<p>De façon à saisir correctement l' <tt class="docutils literal">expression cron</tt>, un formulaire surgissant d'<tt class="docutils literal">expression cron</tt> est utilisé. Dans ce formulaire, vous pouvez saisir l'<tt class="docutils literal">expression cron</tt> souhaitée. Voir également l'astuce concernant l'<tt class="docutils literal">expression cron</tt>. Dans le cas où vous saisiriez une <tt class="docutils literal">expression cron</tt> incorrecte, vous seriez immédiatement averti que l'<tt class="docutils literal">expression cron</tt> saisie n'est pas conforme.</p>
+</div>
+</div>
+<div class="section" id="supprimer-une-tache-systeme">
+<h1><a class="toc-backref" href="#toc-entry-4">Supprimer une tâche système</a></h1>
+<p>Cliquer sur le bouton <tt class="docutils literal">Supprimer</tt> pour supprimer la tâche système à la fois dans la base de données et dans l'ordonnanceur. L'information de réussite/d'échec de cette action sera affichée.</p>
+</div>
+<div class="section" id="demarrer-la-tache-systeme-manuellement">
+<h1><a class="toc-backref" href="#toc-entry-5">Démarrer la tâche système manuellement</a></h1>
+<p>Au lieu d'attendre jusqu'à ce que la tâche système soit exécutée comme planifié par l'ordonnanceur, vous pouvez cliquer ce bouton pour lancer le processus directement. A l'issue, l'information de réussite/d'échec sera affichée dans une <tt class="docutils literal">fenêtre surgissante</tt>.</p>
+</div>
+</div>
+</body>
+</html>

@@ -119,9 +119,9 @@ public class ExternalCompanyCRUDController extends BaseCRUDController<ExternalCo
         appURI.setDisabled(false);
         ourCompanyLogin.setDisabled(false);
         ourCompanyPassword.setDisabled(false);
-        appURI.setConstraint("no empty:" + _("cannot be empty"));
-        ourCompanyLogin.setConstraint("no empty:" + _("cannot be empty"));
-        ourCompanyPassword.setConstraint("no empty:" + _("cannot be empty"));
+        appURI.setConstraint("no empty:" + _t("cannot be empty"));
+        ourCompanyLogin.setConstraint("no empty:" + _t("cannot be empty"));
+        ourCompanyPassword.setConstraint("no empty:" + _t("cannot be empty"));
     }
 
     private void disableInteractionFields() {
@@ -135,12 +135,12 @@ public class ExternalCompanyCRUDController extends BaseCRUDController<ExternalCo
 
     @Override
     protected String getEntityType() {
-        return _("Company");
+        return _t("Company");
     }
 
     @Override
     protected String getPluralEntityType() {
-        return _("Companies");
+        return _t("Companies");
     }
 
     @Override
@@ -172,7 +172,7 @@ public class ExternalCompanyCRUDController extends BaseCRUDController<ExternalCo
         if (externalCompanyModel.isAlreadyInUse(company)) {
             messagesForUser.showMessage(
                     Level.WARNING,
-                    _("{0} \"{1}\" can not be deleted because of it is being used", getEntityType(), company.getHumanId()));
+                    _t("{0} \"{1}\" can not be deleted because of it is being used", getEntityType(), company.getHumanId()));
             return false;
         }
         return true;

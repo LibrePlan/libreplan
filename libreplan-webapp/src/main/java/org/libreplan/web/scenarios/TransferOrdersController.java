@@ -178,7 +178,7 @@ public class TransferOrdersController extends GenericForwardComposer {
         }
 
         private Button getTransferButton(final Order order) {
-            Button transferButton = new Button(_("Transfer"));
+            Button transferButton = new Button(_t("Transfer"));
             transferButton.addEventListener(Events.ON_CLICK,
                     new EventListener() {
                         @Override
@@ -187,7 +187,7 @@ public class TransferOrdersController extends GenericForwardComposer {
                                 transferOrdersModel.transfer(order);
                                 Util.reloadBindings(destinationScenarioOrders);
                                 messagesForUser.showMessage(Level.INFO,
-                                        _("Project {0} transfered", order
+                                        _t("Project {0} transfered", order
                                                 .getName()));
                             } catch (ValidationException e) {
                                 messagesForUser.showInvalidValues(e);

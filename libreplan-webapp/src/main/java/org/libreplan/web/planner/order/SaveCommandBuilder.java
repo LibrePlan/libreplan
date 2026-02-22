@@ -325,8 +325,8 @@ public class SaveCommandBuilder {
                 LOG.warn("Error saving the project", validationException);
 
                 Messagebox.show(
-                        _("Error saving the project\n{0}", message.toString()),
-                        _("Error"), Messagebox.OK, Messagebox.ERROR);
+                        _t("Error saving the project\n{0}", message.toString()),
+                        _t("Error"), Messagebox.OK, Messagebox.ERROR);
 
             }
 
@@ -344,7 +344,7 @@ public class SaveCommandBuilder {
                 return;
             }
 
-            Messagebox.show(_("Project saved"), _("Information"), Messagebox.OK, Messagebox.INFORMATION);
+            Messagebox.show(_t("Project saved"), _t("Information"), Messagebox.OK, Messagebox.INFORMATION);
             if ( Executions.getCurrent() != null ) {
                 // Reset timer of warning on leaving page
                 ConfirmCloseUtil.resetConfirmClose();
@@ -352,7 +352,7 @@ public class SaveCommandBuilder {
                 if ( SecurityUtils.loggedUserCanWrite(state.getOrder()) )
                     ConfirmCloseUtil.setConfirmClose(
                             Executions.getCurrent().getDesktop(),
-                            _("You are about to leave the planning editing. Unsaved changes will be lost!"));
+                            _t("You are about to leave the planning editing. Unsaved changes will be lost!"));
 
             }
 
@@ -491,7 +491,7 @@ public class SaveCommandBuilder {
                 repeatedOrder = ((OrderLineGroup) order).findRepeatedOrderCode();
 
                 if (repeatedOrder != null)
-                    throw new ValidationException(_("Repeated Project code {0} in Project {1}", repeatedOrder.getCode(),
+                    throw new ValidationException(_t("Repeated Project code {0} in Project {1}", repeatedOrder.getCode(),
                             repeatedOrder.getName()));
 
             }
@@ -840,7 +840,7 @@ public class SaveCommandBuilder {
 
         @Override
         public String getName() {
-            return _("Save");
+            return _t("Save");
         }
 
         @Override
@@ -860,8 +860,8 @@ public class SaveCommandBuilder {
 
         private boolean userAcceptsCreateANewOrderVersion() {
             int status = Messagebox.show(
-                    _("Confirm creating a new project version for this scenario and derived. Are you sure?"),
-                    _("New project version"), Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION);
+                    _t("Confirm creating a new project version for this scenario and derived. Are you sure?"),
+                    _t("New project version"), Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION);
 
             return Messagebox.OK == status;
         }
@@ -1005,9 +1005,9 @@ public class SaveCommandBuilder {
                 String orderElementName;
 
                 if ( invalidValue.getRootBean() instanceof Order )
-                    orderElementName = _("Project");
+                    orderElementName = _t("Project");
                 else
-                    orderElementName = _("Task {0}", ((OrderElement) invalidValue.getRootBean()).getName());
+                    orderElementName = _t("Task {0}", ((OrderElement) invalidValue.getRootBean()).getName());
 
 
                 result.setValue(orderElementName + ": " + _(invalidValue.getMessage()));
@@ -1019,7 +1019,7 @@ public class SaveCommandBuilder {
                 HoursGroup hoursGroup = (HoursGroup) invalidValue.getRootBean();
 
                 result.setValue(
-                        _("Hours Group at {0}", getParentName(hoursGroup)) + ": " + _(invalidValue.getMessage()));
+                        _t("Hours Group at {0}", getParentName(hoursGroup)) + ": " + _(invalidValue.getMessage()));
 
                 return result;
             } else {

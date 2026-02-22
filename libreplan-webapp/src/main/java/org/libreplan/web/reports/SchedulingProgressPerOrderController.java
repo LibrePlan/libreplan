@@ -99,12 +99,12 @@ public class SchedulingProgressPerOrderController extends LibrePlanReportControl
     public void onSelectOrder() {
         Order order = (Order) bdOrders.getSelectedElement();
         if (order == null) {
-            throw new WrongValueException(bdOrders, _("please, select a project"));
+            throw new WrongValueException(bdOrders, _t("please, select a project"));
         }
 
         boolean result = schedulingProgressPerOrderModel.addSelectedOrder(order);
         if (!result) {
-            throw new WrongValueException(bdOrders, _("This project has already been added."));
+            throw new WrongValueException(bdOrders, _t("This project has already been added."));
         } else {
             Util.reloadBindings(lbOrders);
         }
@@ -166,7 +166,7 @@ public class SchedulingProgressPerOrderController extends LibrePlanReportControl
     }
 
     private String asString(AdvanceTypeDTO advanceTypeDTO) {
-        return (advanceTypeDTO != null) ? advanceTypeDTO.getName() : _("SPREAD");
+        return (advanceTypeDTO != null) ? advanceTypeDTO.getName() : _t("SPREAD");
     }
 
     public AdvanceType getAdvanceType() {
@@ -183,7 +183,7 @@ public class SchedulingProgressPerOrderController extends LibrePlanReportControl
             orderNames.add(order.getName());
         }
 
-        return (!orderNames.isEmpty()) ? StringUtils.join(orderNames, ",") : _("All");
+        return (!orderNames.isEmpty()) ? StringUtils.join(orderNames, ",") : _t("All");
     }
 
     public List<AdvanceTypeDTO> getAdvanceTypeDTOs() {
@@ -192,7 +192,7 @@ public class SchedulingProgressPerOrderController extends LibrePlanReportControl
         // Add value Spread
         AdvanceTypeDTO advanceTypeDTO = new AdvanceTypeDTO();
         advanceTypeDTO.setAdvanceType(null);
-        advanceTypeDTO.setName(_("SPREAD"));
+        advanceTypeDTO.setName(_t("SPREAD"));
         result.add(advanceTypeDTO);
 
         final List<AdvanceType> advanceTypes = schedulingProgressPerOrderModel.getAdvanceTypes();
@@ -211,7 +211,7 @@ public class SchedulingProgressPerOrderController extends LibrePlanReportControl
         final Date endingDate = dbEnding.getValue();
 
         if (endingDate != null && startingDate != null && startingDate.compareTo(endingDate) > 0) {
-            throw new WrongValueException(dbStarting, _("Cannot be higher than Ending Date"));
+            throw new WrongValueException(dbStarting, _t("Cannot be higher than Ending Date"));
         }
     }
 

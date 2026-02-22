@@ -68,7 +68,7 @@ public class ResourceAllocationCommand implements IResourceAllocationCommand {
 
     @Override
     public String getName() {
-        return _("Resource allocation");
+        return _t("Resource allocation");
     }
 
     @Override

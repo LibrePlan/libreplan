@@ -50,7 +50,7 @@ public class SubcontractCommand implements ISubcontractCommand {
 
     @Override
     public String getName() {
-        return _("Subcontract");
+        return _t("Subcontract");
     }
 
     @Override

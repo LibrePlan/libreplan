@@ -136,7 +136,7 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
             baseCalendarModel.confirmSave();
 
             messagesForUser.showMessage(
-                    Level.INFO, _("Base calendar \"{0}\" saved", baseCalendarModel.getBaseCalendar().getName()));
+                    Level.INFO, _t("Base calendar \"{0}\" saved", baseCalendarModel.getBaseCalendar().getName()));
 
             goToList();
         } catch (ValidationException e) {
@@ -153,7 +153,7 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
             baseCalendarModel.confirmSaveAndContinue();
 
             messagesForUser.showMessage(
-                    Level.INFO, _("Base calendar \"{0}\" saved", baseCalendarModel.getBaseCalendar().getName()));
+                    Level.INFO, _t("Base calendar \"{0}\" saved", baseCalendarModel.getBaseCalendar().getName()));
 
         } catch (ValidationException e) {
             messagesForUser.showInvalidValues(e);
@@ -315,7 +315,7 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
             Treecell operationsTreecell = new Treecell();
 
             Button createDerivedButton = new Button();
-            createDerivedButton.setTooltiptext(_("Create derived"));
+            createDerivedButton.setTooltiptext(_t("Create derived"));
             createDerivedButton.setSclass("icono");
             createDerivedButton.setImage("/common/img/ico_derived1.png");
             createDerivedButton.setHoverImage("/common/img/ico_derived.png");
@@ -324,7 +324,7 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
             operationsTreecell.appendChild(createDerivedButton);
             Button createCopyButton = new Button();
             createCopyButton.setSclass("icono");
-            createCopyButton.setTooltiptext(_("Create copy"));
+            createCopyButton.setTooltiptext(_t("Create copy"));
             createCopyButton.setImage("/common/img/ico_copy1.png");
             createCopyButton.setHoverImage("/common/img/ico_copy.png");
 
@@ -332,7 +332,7 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
             operationsTreecell.appendChild(createCopyButton);
 
             Button editButton = new Button();
-            editButton.setTooltiptext(_("Edit"));
+            editButton.setTooltiptext(_t("Edit"));
             editButton.setSclass("icono");
             editButton.setImage("/common/img/ico_editar1.png");
             editButton.setHoverImage("/common/img/ico_editar.png");
@@ -341,7 +341,7 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
             operationsTreecell.appendChild(editButton);
 
             Button removeButton = new Button();
-            removeButton.setTooltiptext(_("Remove"));
+            removeButton.setTooltiptext(_t("Remove"));
             removeButton.setSclass("icono");
             removeButton.setImage("/common/img/ico_borrar1.png");
             removeButton.setHoverImage("/common/img/ico_borrar.png");
@@ -367,14 +367,14 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
 
             if (hasParent(calendar)) {
                 messagesForUser.showMessage(
-                        Level.ERROR, _("Calendar cannot be removed as it has other derived calendars from it"));
+                        Level.ERROR, _t("Calendar cannot be removed as it has other derived calendars from it"));
                 return;
             }
 
             if (isDefault(calendar)) {
                 messagesForUser.showMessage(
                         Level.ERROR,
-                        _("Default calendar cannot be removed. "
+                        _t("Default calendar cannot be removed. "
                                 + "Please, change the default calendar in the Main Settings window before."));
                 return;
             }
@@ -388,7 +388,7 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
                 if (result == Messagebox.OK) {
                     final String calendarName = calendar.getName();
                     baseCalendarModel.confirmRemove(calendar);
-                    messagesForUser.showMessage(Level.INFO, _("Removed calendar \"{0}\"", calendarName));
+                    messagesForUser.showMessage(Level.INFO, _t("Removed calendar \"{0}\"", calendarName));
                     Util.reloadBindings(listWindow);
                 }
             }
@@ -396,8 +396,8 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
 
         private int showConfirmDeleteCalendar(BaseCalendar calendar) {
             return Messagebox.show(
-                    _("Confirm deleting {0}. Are you sure?", calendar.getName()),
-                    _("Delete"), Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION);
+                    _t("Confirm deleting {0}. Are you sure?", calendar.getName()),
+                    _t("Delete"), Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION);
         }
 
         private boolean isReferencedByOtherEntities(BaseCalendar calendar) {
@@ -412,7 +412,7 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
         }
 
         private void showCannotDeleteCalendarDialog(String message) {
-            Messagebox.show(_(message), _("Warning"), Messagebox.OK, Messagebox.EXCLAMATION);
+            Messagebox.show(_(message), _t("Warning"), Messagebox.OK, Messagebox.EXCLAMATION);
         }
 
     }
@@ -439,7 +439,7 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
 
     public void updateWindowTitle() {
         if (editWindow != null && state != CRUDControllerState.LIST) {
-            String entityType = _("Calendar");
+            String entityType = _t("Calendar");
             String humanId = getBaseCalendar().getHumanId();
 
             String title;
@@ -448,14 +448,14 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
 
                 case CREATE:
                     if (StringUtils.isEmpty(humanId)) {
-                        title = _("Create {0}", entityType);
+                        title = _t("Create {0}", entityType);
                     } else {
-                        title = _("Create {0}: {1}", entityType, humanId);
+                        title = _t("Create {0}: {1}", entityType, humanId);
                     }
                     break;
 
                 case EDIT:
-                    title = _("Edit {0}: {1}", entityType, humanId);
+                    title = _t("Edit {0}: {1}", entityType, humanId);
                     break;
 
                 default:

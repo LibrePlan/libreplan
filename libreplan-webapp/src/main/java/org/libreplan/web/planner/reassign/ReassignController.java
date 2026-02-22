@@ -125,7 +125,7 @@ public class ReassignController extends GenericForwardComposer {
         if (currentType.needsAssociatedDate()) {
             Date value = associatedDate.getValue();
             if (value == null) {
-                throw new WrongValueException(associatedDate, _("cannot be empty"));
+                throw new WrongValueException(associatedDate, _t("cannot be empty"));
             }
         }
         window.setVisible(false);

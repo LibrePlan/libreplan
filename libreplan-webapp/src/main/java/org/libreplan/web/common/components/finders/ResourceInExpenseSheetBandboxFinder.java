@@ -41,7 +41,7 @@ public class ResourceInExpenseSheetBandboxFinder extends BandboxFinder implement
     @Autowired
     private IResourceDAO resourceDAO;
 
-    private final String headers[] = { _("Resource name (Resource code)"), _("Type") };
+    private final String headers[] = { _t("Resource name (Resource code)"), _t("Type") };
 
     /**
      * Forces to mark the string as needing translation

@@ -130,7 +130,7 @@ public class OrderElementController extends GenericForwardComposer {
             name = ": " + getOrderElement().getName();
         }
 
-        return _("Edit task {0}", name);
+        return _t("Edit task {0}", name);
     }
 
     public void setupManageOrderElementAdvancesController() {

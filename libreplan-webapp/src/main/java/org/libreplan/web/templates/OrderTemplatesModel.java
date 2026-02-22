@@ -295,13 +295,13 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
     @Transactional(readOnly = true)
     public void validateTemplateName(String name) throws IllegalArgumentException {
         if ((name == null) || (name.isEmpty())) {
-            throw new IllegalArgumentException(_("name cannot be empty"));
+            throw new IllegalArgumentException(_t("name cannot be empty"));
         }
 
         getTemplate().setName(name);
 
         if (!getTemplate().isUniqueRootTemplateNameConstraint()) {
-            throw new IllegalArgumentException(_("Already exists another template with the same name"));
+            throw new IllegalArgumentException(_t("Already exists another template with the same name"));
         }
     }
 

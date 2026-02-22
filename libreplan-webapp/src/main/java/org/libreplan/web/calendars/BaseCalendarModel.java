@@ -485,7 +485,7 @@ public class BaseCalendarModel extends IntegrationEntityModel implements IBaseCa
             if (version.equals(getBaseCalendar().getFirstCalendarData())) {
                 return;
             } else {
-                throw new ValidationException(_("This date cannot be empty"));
+                throw new ValidationException(_t("This date cannot be empty"));
             }
         }
 
@@ -505,7 +505,7 @@ public class BaseCalendarModel extends IntegrationEntityModel implements IBaseCa
             }
         }
         throw new ValidationException(
-                _("This date can not include the whole previous work week"));
+                _t("This date can not include the whole previous work week"));
     }
 
     @Override
@@ -517,7 +517,7 @@ public class BaseCalendarModel extends IntegrationEntityModel implements IBaseCa
             if (version.equals(getBaseCalendar().getLastCalendarData())) {
                 return;
             } else {
-                throw new ValidationException(_("This date cannot be empty"));
+                throw new ValidationException(_t("This date cannot be empty"));
             }
         }
 
@@ -531,7 +531,7 @@ public class BaseCalendarModel extends IntegrationEntityModel implements IBaseCa
             }
         }
         throw new ValidationException(
-                _("Date cannot include the entire next work week"));
+                _t("Date cannot include the entire next work week"));
     }
 
     @Override
@@ -598,8 +598,8 @@ public class BaseCalendarModel extends IntegrationEntityModel implements IBaseCa
     public void checkInvalidValuesCalendar(BaseCalendar entity)
             throws ValidationException {
         if (baseCalendarDAO.thereIsOtherWithSameName(entity)) {
-            throw new ValidationException(_("Could not save the new calendar"),
-                    invalidValue(_("{0} already exists", entity.getName()),
+            throw new ValidationException(_t("Could not save the new calendar"),
+                    invalidValue(_t("{0} already exists", entity.getName()),
                             "name", entity.getName(), entity));
         }
     }

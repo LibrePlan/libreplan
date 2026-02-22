@@ -33,7 +33,7 @@ import org.libreplan.business.orders.entities.OrderElement;
  */
 public enum OrderElementFilterEnum implements IFilterEnum {
 
-    Criterion(_("Criterion")), Label(_("Label"));
+    Criterion(_t("Criterion")), Label(_t("Label"));
 
     /**
      * Forces to mark the string as needing translation

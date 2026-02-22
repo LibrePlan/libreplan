@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Calendarios</title>
+<link rel="stylesheet" href="html/lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="calendarios">
+<h1 class="title">Calendarios</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#administracion-de-calendarios" id="toc-entry-1">Administración de calendarios</a><ul>
+<li><a class="reference internal" href="#creacion-dun-novo-calendario" id="toc-entry-2">Creación dun novo calendario</a></li>
+<li><a class="reference internal" href="#creacion-dun-calendario-derivado" id="toc-entry-3">Creación dun calendario derivado</a></li>
+<li><a class="reference internal" href="#creacion-dun-calendario-por-copia" id="toc-entry-4">Creación dun calendario por copia</a></li>
+<li><a class="reference internal" href="#calendario-por-defecto" id="toc-entry-5">Calendario por defecto</a></li>
+<li><a class="reference internal" href="#asignacion-de-calendario-a-recursos" id="toc-entry-6">Asignación de calendario a recursos</a></li>
+<li><a class="reference internal" href="#asignacion-de-calendario-a-pedidos" id="toc-entry-7">Asignación de calendario a pedidos</a></li>
+<li><a class="reference internal" href="#asignacion-de-calendario-a-tarefas" id="toc-entry-8">Asignación de calendario a tarefas</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>Os calendarios son as entidades da aplicación que determinan as capacidade de carga dos distintos recursos. Un calendario está formado por unha serie de días anuais, onde cada día dispón de horas dispoñibles para traballar.</p>
+<p>Por exemplo, un festivo pode ter 0 horas dispoñibles e, se as horas de traballo dentro dun día laboral son 8, é este número que se asigna como tempo dispoñible para ese día.</p>
+<p>Existen dous modos de indicarlle ó sistema cantas horas de traballo ten un día:</p>
+<ul class="simple">
+<li>Por día da semana. Por exemplo, os luns trabállanse 8 horas xeralmente.</li>
+<li>Por excepcións. Por exemplo, o luns 30 de Xaneiro trabállanse 10 horas.</li>
+</ul>
+<div class="section" id="administracion-de-calendarios">
+<h1><a class="toc-backref" href="#toc-entry-1">Administración de calendarios</a></h1>
+<p>O sistema de calendarios é xerárquico, de modo que se poden crear calendarios base o calendarios que herdan destes calendarios, mantendo unha estrutura arbórea. Un calendario que herda dun calendario de nivel superior da árbore, herda as adicacións diarias e as excepcións, sempre e cando non sexan modificadas explicitamente para o calendario fillo. Ademais, é necesario entender os seguintes conceptos para administrar calendarios:</p>
+<ul class="simple">
+<li>Cada día é independente entre si e cada ano ten días diferentes, é dicir, se se marca o 8 de Decembro de 2009 como festivo iso non quere dicir que o ano 2010 xa teña o día 8 de Decembro como festivo.</li>
+<li>Os días laborais márcanse en base a días da semana, é dicir, se se determina que o normal é traballar 8 horas os luns, quedan todos os luns de todas as semanas dos diferentes anos marcados como 8 horas dispoñibles.</li>
+<li>É posible marcar excepcións ou intervalos de excepción, é dicir, elixir un día concreto ou grupo de días nos que as horas dispoñibles sexan diferentes á regra xeral para ditos días da semana.</li>
+</ul>
+<div class="figure">
+<img alt="images/calendar-administration.png" src="images/calendar-administration.png" style="width: 443.5px; height: 146.0px;" />
+<p class="caption">Administración de calendarios</p>
+</div>
+<p>A administración de calendarios es accesible dende as operacións da pestana de &quot;Administración&quot;. Desde dito punto o usuario pode realizar as seguintes operacións:</p>
+<ol class="arabic simple">
+<li>Crear un novo calendario dende cero.</li>
+<li>Crear un calendario derivado de outro calendario.</li>
+<li>Crear un calendario como copia de outro calendario.</li>
+<li>Editar un calendario existente.</li>
+</ol>
+<div class="section" id="creacion-dun-novo-calendario">
+<h2><a class="toc-backref" href="#toc-entry-2">Creación dun novo calendario</a></h2>
+<p>Para a creación dun novo calendario é necesario premer no botón &quot;Crear&quot;. O sistema amosa un formulario no que o usuario pode realizar as seguintes operacións:</p>
+<ul>
+<li><p class="first">Elixir a pestana na que desexa traballar:</p>
+<blockquote>
+<ul class="simple">
+<li>Marcado de excepcións</li>
+<li>Selección de horas traballadas por día.</li>
+</ul>
+</blockquote>
+</li>
+<li><dl class="first docutils">
+<dt>Se o usuario selecciona o marcado de excepcións:</dt>
+<dd><ul class="first last simple">
+<li>Seleccionar un día específico do calendario.</li>
+<li>Marcar o tipo de excepción. Os tipos dispoñibles son: vacacións, baixa, folga, festivo, festivo traballable.</li>
+<li>Seleccionar a data de fin do intervalo de excepción (para marcar excepcións de 1 día de duración non se necesita modificar este campo).</li>
+<li>Marcar o número de horas traballadas durante os días excepcionais.</li>
+<li>Borrar excepcións previas.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p class="first">Se o usuario elixe a selección de horas traballadas por día:</p>
+<blockquote>
+<ul class="simple">
+<li>Marcar as horas dispoñibles para cada día da semana (luns, martes, mércores, xoves, venres, sábados e domingos).</li>
+<li>Crear novas distribucións de horas semanais aplicables no futuro.</li>
+<li>Borrar distribucións de horas realizadas previamente.</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<p>Con estas operacións un usuario da aplicación ten a capacidade de personalizar os calendarios completamente ás súas necesidades. Para almacenar os cambios no formulario é necesario premer no botón &quot;Gardar&quot;.</p>
+<div class="figure">
+<img alt="images/calendar-edition.png" src="images/calendar-edition.png" style="width: 443.0px; height: 234.5px;" />
+<p class="caption">Edición de calendario</p>
+</div>
+<div class="figure">
+<img alt="images/calendar-exceptions.png" src="images/calendar-exceptions.png" style="width: 443.0px; height: 194.0px;" />
+<p class="caption">Inclusión de excepción en calendario</p>
+</div>
+</div>
+<div class="section" id="creacion-dun-calendario-derivado">
+<h2><a class="toc-backref" href="#toc-entry-3">Creación dun calendario derivado</a></h2>
+<p>Un calendario derivado é un calendario que se crea como fillo dun existente, é dicir, herda todas as características do orixinal e ó mesmo tempo é posible modificalo para que conteña as súas particularidades.</p>
+<p>Un exemplo de uso de calendarios derivados é a existencia dun calendario xeral para España e a creación dun derivado para só incluir os festivos galegos engadidos sobre os que xa estaban definidos no xeral.</p>
+<p>É importante destacar que ante calquera modificación realizada sobre o calendario orixinal o calendario derivado é directamente afectado, sempre e cando, non se definira unha actuación concreta sobre el mesmo. Por exemplo, no calendario de España inclúese un día laboral no 17 de Maio con 8 horas de traballo e no calendario galego, que se creou como derivación, o día 17 de Maio é considerado un día de 0 horas de traballo por ser festivo. Se sobre o calendario español se cambian os días da semana do 17 Maio para que as horas dispoñibles sexan 4 diarias, no galego o que sucede é que todos os días da semana do 17 de Maio ten 4 horas dispoñibles excepto o mesmo día 17 que ten 0 horas, tal e como explicitamente se establecera antes.</p>
+<div class="figure">
+<img alt="images/calendar-create-derived.png" src="images/calendar-create-derived.png" style="width: 438.0px; height: 210.5px;" />
+<p class="caption">Creación de calendario derivado</p>
+</div>
+<p>Para crear un calendario derivado na aplicación, é necesario facer o seguinte:</p>
+<ul class="simple">
+<li>Acceder ó menú de <em>Administración</em>.</li>
+<li>Premer na operación de administración de calendarios.</li>
+<li>Elixir un dos calendarios sobre o que se desexa realizar un derivado e premer no botón &quot;Crear&quot;.</li>
+<li>Unha vez realizada esta operación o sistema amosa un formulario de edición coas mesmas características que os formularios para crear calendarios dende cero, coa diferencia de que as excepcións e as horas por día da semana se propoñen en base ó calendario orixinal.</li>
+</ul>
+</div>
+<div class="section" id="creacion-dun-calendario-por-copia">
+<h2><a class="toc-backref" href="#toc-entry-4">Creación dun calendario por copia</a></h2>
+<p>Un calendario copiado é un calendario que se crea como copia exacta de outro existente, é dicir, que recibe todas as características do orixinal e ó mesmo tempo é posible modificalo para que conteña as súas particularidades.</p>
+<p>A diferencia entre copiar e derivar un calendario radica nos cambios no orixinal. No caso de copias, se o orixinal é modificado, non afecta á copia, sen embargo, cando se deriva, si afecta ó fillo.</p>
+<p>Un exemplo de uso de calendario por copia é o dispor de un calendario para Pontevedra e necesitar un calendario para A Coruña onde a maioría das características son as mesmas, sen embargo, non se espera que os cambios nun afecten ó outro.</p>
+<p>Para crear un calendario copiado na aplicación, é necesario facer o seguinte:</p>
+<ul class="simple">
+<li>Acceder ó menú de <em>Administración</em>.</li>
+<li>Premer na operación de administración de calendarios.</li>
+<li>Elixir un dos calendarios sobre o que se desexa realizar un derivado e premer no botón &quot;Crear&quot;.</li>
+<li>Unha vez realizada esta operación o sistema amosa un formulario de edición coas mesmas características que os formularios para crear calendarios dende cero, coa diferencia de que as excepcións e as horas por día da semana se propoñen en base ó calendario orixinal.</li>
+</ul>
+</div>
+<div class="section" id="calendario-por-defecto">
+<h2><a class="toc-backref" href="#toc-entry-5">Calendario por defecto</a></h2>
+<p>Un dos calendarios existentes no sistema pode ser dado de alta como por defecto. Este calendario é o que se asigna a calquera entidade que no sistema sexa xestionado con calendarios.</p>
+<p>Para configurar o calendario por defecto débese realizar o seguinte:</p>
+<ul class="simple">
+<li>Acceder ó menú de <em>Administración</em>.</li>
+<li>Premer na operación <em>Configuración</em>.</li>
+<li>Onde aparece o texto <em>Calendario por defecto</em>, seleccionar o que se desexe establecer como calendario por defecto da aplicación.</li>
+<li>Premer en <em>Gardar</em>.</li>
+</ul>
+<div class="figure">
+<img alt="images/default-calendar.png" src="images/default-calendar.png" style="width: 332.0px; height: 158.5px;" />
+<p class="caption">Creación de calendario por defecto</p>
+</div>
+</div>
+<div class="section" id="asignacion-de-calendario-a-recursos">
+<h2><a class="toc-backref" href="#toc-entry-6">Asignación de calendario a recursos</a></h2>
+<p>Os recursos só teñen activación, é dicir, horas dispoñibles para traballar, se dispoñen de un calendario asignado con un período válido de activación. Se non se lle asignou ningún calendario ós recursos, os recursos teñen asignado o calendario por defecto con un período de activación que comeza na data de alta e sen data de caducidade.</p>
+<div class="figure">
+<img alt="images/resource-calendar.png" src="images/resource-calendar.png" style="width: 449.0px; height: 257.0px;" />
+<p class="caption">Calendario de recursos</p>
+</div>
+<p>Sen embargo, é posible eliminar o calendario asignado previamente a un recurso e crear un calendario novo a partir de un existente. Deste xeito hai recursos que poidan ser completamente personalizados a nivel de calendario.</p>
+<p>Para asignar un calendario a un recurso é necesario dar os seguintes pasos:</p>
+<ul>
+<li><p class="first">Acceder á edición de recursos.</p>
+</li>
+<li><p class="first">Elixir un recurso e premer en editar.</p>
+</li>
+<li><p class="first">Seleccionar a pestana de &quot;Calendario&quot;.</p>
+</li>
+<li><p class="first">A partir da pestana anterior aparece un calendario coas excepcións, as horas traballables por día e os períodos de activación.</p>
+</li>
+<li><p class="first">Para cada pestana:</p>
+<blockquote>
+<ul class="simple">
+<li>Excepcións: É posible elixir o tipo de excepción e un período no que se aplica para poder incluír as vacacións, días festivos, laborables diferentes, etc.</li>
+<li>Semana de traballo: É posible modificar as horas traballadas durante os distintos días da semana (luns, martes, etc.).</li>
+<li>Períodos de activación: É posible crear novos períodos de activación que reflicte as datas de inicio e fin dos contratos asociados ó recurso. Ver a seguinte imaxe.</li>
+</ul>
+</blockquote>
+</li>
+<li><p class="first">Para almacenar é necesario premer en <em>Gardar</em>.</p>
+</li>
+<li><p class="first">O usuario pode premer en <em>Borrar</em> se desexa cambiar o calendario asignado ó recurso.</p>
+</li>
+</ul>
+<div class="figure">
+<img alt="images/new-resource-calendar.png" src="images/new-resource-calendar.png" style="width: 443.0px; height: 242.5px;" />
+<p class="caption">Asignación de novo calendario a recurso</p>
+</div>
+</div>
+<div class="section" id="asignacion-de-calendario-a-pedidos">
+<h2><a class="toc-backref" href="#toc-entry-7">Asignación de calendario a pedidos</a></h2>
+<p>Os proxectos poden dispor de un calendario diferente do calendario por defecto. Para cambiar o calendario do pedido é necesario:</p>
+<blockquote>
+<ul class="simple">
+<li>Acceder ó listado de pedidos dentro da vista global de empresa.</li>
+<li>Editar o pedido en cuestión.</li>
+<li>Acceder á pestana de &quot;Datos xerais&quot;.</li>
+<li>Seleccionar no despregable de selección o calendario que se desexa asignar.</li>
+<li>Premer en &quot;Gardar&quot; ou &quot;Gardar e Continuar&quot;.</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="asignacion-de-calendario-a-tarefas">
+<h2><a class="toc-backref" href="#toc-entry-8">Asignación de calendario a tarefas</a></h2>
+<p>Do mesmo xeito que se permite asignar calendarios a recursos ou pedidos, é posible realizar a mesma operación para tarefas planificadas. Esta operación permite definir calendarios específicos para momentos concretos dun proxecto. Para realizar esta operación é necesario:</p>
+<blockquote>
+<ul class="simple">
+<li>Acceder á planificación de un proxecto.</li>
+<li>Premer no botón dereito sobre a tarefa á que se desexa asignar calendario.</li>
+<li>Seleccionar a operación &quot;Asignación de calendario&quot;.</li>
+<li>Elixir o que se desexa asignar á tarefa.</li>
+<li>Premer en &quot;Aceptar&quot;.</li>
+</ul>
+</blockquote>
+</div>
+</div>
+</div>
+</body>
+</html>

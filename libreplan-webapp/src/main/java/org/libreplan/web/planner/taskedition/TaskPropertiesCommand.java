@@ -57,7 +57,7 @@ public class TaskPropertiesCommand implements ITaskPropertiesCommand {
 
     @Override
     public String getName() {
-        return _("Task Properties");
+        return _t("Task Properties");
     }
 
     @Override

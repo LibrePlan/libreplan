@@ -190,12 +190,12 @@ public class ReportAdvancesController extends GenericForwardComposer {
         }
 
         private Button getSendButton(final Order order, boolean sendButtonDisabled) {
-            Button sendButton = new Button(_("Send"));
+            Button sendButton = new Button(_t("Send"));
             sendButton.setSclass("add-button");
             sendButton.addEventListener(Events.ON_CLICK,  event -> {
                 try {
                     reportAdvancesModel.sendAdvanceMeasurements(order);
-                    messagesForUser.showMessage(Level.INFO, _("Progress sent successfully"));
+                    messagesForUser.showMessage(Level.INFO, _t("Progress sent successfully"));
                 } catch (UnrecoverableErrorServiceException e) {
                     messagesForUser.showMessage(Level.ERROR, e.getMessage());
                 } catch (ConnectionProblemsException e) {

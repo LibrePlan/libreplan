@@ -27,7 +27,7 @@ package org.libreplan.web.common.components.finders;
 
 public enum ResourceAllocationFilterEnum implements IFilterEnum {
 
-    Criterion(_("Criterion")), Resource(_("Resource"));
+    Criterion(_t("Criterion")), Resource(_t("Resource"));
 
     /**
      * Forces to mark the string as needing translation

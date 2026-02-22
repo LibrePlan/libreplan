@@ -156,7 +156,7 @@ public class OrderCostsPerResourceModel implements IOrderCostsPerResourceModel {
                 List<OrderCostsPerResourceDTO> listWorkReportLineDTO = mapWRL.get(orderElement);
                 if (listWorkReportLineDTO == null || listWorkReportLineDTO.isEmpty()) {
                     Order order = Order.create();
-                    order.setName(_("All projects"));
+                    order.setName(_t("All projects"));
                     listWorkReportLineDTO = createEmptyWorkReportLineList(order);
                 }
 
@@ -259,7 +259,7 @@ public class OrderCostsPerResourceModel implements IOrderCostsPerResourceModel {
     private OrderCostMasterDTO createEmptyOrderCostMasterDTO() {
         // Create empty order
         Order order = Order.create();
-        order.setName(_("All projects"));
+        order.setName(_t("All projects"));
 
         // Create empty subreport to expense sheets
         JRDataSource emptyES = new JRBeanCollectionDataSource(
@@ -305,7 +305,7 @@ public class OrderCostsPerResourceModel implements IOrderCostsPerResourceModel {
 
     private WorkReportLine createEmptyWorkReportLine(Worker worker) {
         OrderLine leaf = OrderLine.create();
-        leaf.setCode(_("All project tasks"));
+        leaf.setCode(_t("All project tasks"));
 
         TypeOfWorkHours w = TypeOfWorkHours.create();
         w.setDefaultPrice(new BigDecimal(0));
@@ -320,7 +320,7 @@ public class OrderCostsPerResourceModel implements IOrderCostsPerResourceModel {
 
     private Worker createFictitiousWorker() {
         Worker unassigned = new Worker();
-        unassigned.setFirstName(_("Total dedication"));
+        unassigned.setFirstName(_t("Total dedication"));
         unassigned.setSurname(" ");
         return unassigned;
     }

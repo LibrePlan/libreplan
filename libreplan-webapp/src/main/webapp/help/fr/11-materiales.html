@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Matériaux</title>
+<link rel="stylesheet" href="html/lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="materiaux">
+<h1 class="title">Matériaux</h1>
+
+<div class="contents topic" id="contents">
+<span id="materiales"></span><p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#gestion-des-materiaux" id="toc-entry-1">Gestion des matériaux</a></li>
+</ul>
+</div>
+<div class="section" id="gestion-des-materiaux">
+<h1><a class="toc-backref" href="#toc-entry-1">Gestion des matériaux</a></h1>
+<p>On peut gérer une base de données rudimentaire de matériaux organisés par catégories.</p>
+<p>Les catégories sont des conteneurs auxquels on peut affecter des matériaux spécifiques ainsi que d'autres catégories. Elles sont enregistrées dans une structure arborescente et les matériaux peuvent appartenir à une feuille ou à des catégories intermédiaires.</p>
+<p>Procéder comme suit pour gérer les catégories :</p>
+<ul class="simple">
+<li>Utiliser le menu <em>Ressources</em>, sous-menu <em>Matériaux</em>.</li>
+<li>Le programme affiche un arbre des catégories des matériaux.</li>
+<li>Sélectionner éventuellement une catégorie dans l'arbre puis saisir un nom de catégorie dans le champs texte.</li>
+<li>Cliquer sur le bouton <em>Ajouter</em>.</li>
+</ul>
+<p>La catégorie est alors ajoutée dans l'arbre, comme sous-catégorie de la catégorie sélectionnée ou comme catégorie de premier niveau sinon.
+Cliquer le bouton <em>Désélectionner</em> pour ne plus avoir de catégorie sélectionnée.</p>
+<div class="figure">
+<img alt="images/material.png" src="images/material.png" style="width: 510.0px; height: 236.0px;" />
+<p class="caption">Écran de gestion des matériaux</p>
+</div>
+<p>Pour gérer les matériaux proprement dit, procéder comme suit :</p>
+<ul>
+<li><p class="first">Choisir la catégorie dans laquelle inclure les matériaux puis cliquer sur &quot;Nouveau&quot; en haut de la seconde liste.</p>
+</li>
+<li><p class="first">Le programme ajoute une nouvelle ligne vide avec des champs pour saisir les détails relatifs à ce nouveau matériau :</p>
+<blockquote>
+<ul class="simple">
+<li>Code : code du type de matériau (qui peut être un code externe provenant d'un ERP ou un code généré automatiquement par le système; dans le premier cas, la case &quot;Générer le code&quot; est décochée dans l'arbre des catégories).</li>
+<li>Description : description du matériau.</li>
+<li>Prix de l'unité : prix unitaire de chaque unité de matériau.</li>
+<li>Unité : unité qui est utilisée pour mesurer la quantité de matériau.</li>
+<li>Catégorie : catégorie à laquelle il appartient (lecture seule).</li>
+<li>Désactivé : si la case est cochée, le matériau ne sera pas disponible.</li>
+</ul>
+</blockquote>
+</li>
+<li><p class="first">Cliquer sur <em>Enregistrer</em> une fois les champs renseignés.</p>
+</li>
+</ul>
+<p>L'affectation des matériaux aux tâches est expliquée dans le chapitre &quot;Projets&quot;.</p>
+</div>
+</div>
+</body>
+</html>

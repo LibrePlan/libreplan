@@ -41,7 +41,7 @@ public class OrderInExpenseSheetBandboxFinder extends BandboxFinder implements I
     @Autowired
     private IOrderDAO orderDAO;
 
-    private final String headers[] = { _("Project name (Project code)") };
+    private final String headers[] = { _t("Project name (Project code)") };
 
     /**
      * Forces to mark the string as needing translation

@@ -102,7 +102,7 @@ public class JiraOrderElementSynchronizer implements IJiraOrderElementSynchroniz
     public List<String> getAllJiraLabels() throws ConnectorException {
         Connector connector = getJiraConnector();
         if (connector == null) {
-            throw new ConnectorException(_("JIRA connector not found"));
+            throw new ConnectorException(_t("JIRA connector not found"));
         }
 
         String jiraLabels = connector.getPropertiesAsMap().get(
@@ -124,12 +124,12 @@ public class JiraOrderElementSynchronizer implements IJiraOrderElementSynchroniz
 
         Connector connector = getJiraConnector();
         if (connector == null) {
-            throw new ConnectorException(_("JIRA connector not found"));
+            throw new ConnectorException(_t("JIRA connector not found"));
         }
 
         if (!connector.areConnectionValuesValid()) {
             throw new ConnectorException(
-                    _("Connection values of JIRA connector are invalid"));
+                    _t("Connection values of JIRA connector are invalid"));
         }
 
         return getJiraIssues(label, connector);
@@ -504,24 +504,24 @@ public class JiraOrderElementSynchronizer implements IJiraOrderElementSynchroniz
     public List<SynchronizationInfo> syncOrderElementsWithJiraIssues() throws ConnectorException {
         Connector connector = getJiraConnector();
         if (connector == null) {
-            throw new ConnectorException(_("JIRA connector not found"));
+            throw new ConnectorException(_t("JIRA connector not found"));
         }
         if (!connector.areConnectionValuesValid()) {
             throw new ConnectorException(
-                    _("Connection values of JIRA connector are invalid"));
+                    _t("Connection values of JIRA connector are invalid"));
         }
 
         List<OrderSyncInfo> orderSyncInfos = orderSyncInfoDAO
                 .findByConnectorName(PredefinedConnectors.JIRA.getName());
 
-        synchronizationInfo = new SynchronizationInfo(_("Synchronization"));
+        synchronizationInfo = new SynchronizationInfo(_t("Synchronization"));
 
         List<SynchronizationInfo> syncInfos = new ArrayList<SynchronizationInfo>();
 
         if (orderSyncInfos == null || orderSyncInfos.isEmpty()) {
             LOG.warn("No items found in 'OrderSyncInfo' to synchronize with JIRA issues");
             synchronizationInfo
-                    .addFailedReason(_("No items found in 'OrderSyncInfo' to synchronize with JIRA issues"));
+                    .addFailedReason(_t("No items found in 'OrderSyncInfo' to synchronize with JIRA issues"));
             syncInfos.add(synchronizationInfo);
             return syncInfos;
         }

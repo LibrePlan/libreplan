@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Projets et tâches</title>
+<link rel="stylesheet" href="html/lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="projets-et-taches">
+<h1 class="title">Projets et tâches</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#projet" id="toc-entry-1">Projet</a></li>
+<li><a class="reference internal" href="#modifier-les-taches" id="toc-entry-2">Modifier les tâches</a><ul>
+<li><a class="reference internal" href="#modifier-les-informations-concernant-la-tache" id="toc-entry-3">Modifier les informations concernant la tâche</a></li>
+<li><a class="reference internal" href="#voir-les-couts-affectes-a-la-tache" id="toc-entry-4">Voir les coûts affectés à la tâche</a></li>
+<li><a class="reference internal" href="#gerer-l-avancement-des-taches" id="toc-entry-5">Gérer l'avancement des tâches</a></li>
+<li><a class="reference internal" href="#gerer-les-etiquettes-des-projets" id="toc-entry-6">Gérer les étiquettes des projets</a></li>
+<li><a class="reference internal" href="#gerer-les-criteres-requis-pour-les-taches-et-les-groupes-d-heures" id="toc-entry-7">Gérer les critères requis pour les tâches et les groupes d'heures</a></li>
+<li><a class="reference internal" href="#gerer-les-materiaux" id="toc-entry-8">Gérer les matériaux</a></li>
+<li><a class="reference internal" href="#gerer-les-formulaires-qualite" id="toc-entry-9">Gérer les formulaires qualité</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>Les projets décrivent le travail à mener par les utilisateurs.
+Chaque projet est une prestation délivrée par la compagnie à un client (qui peut être elle-même).</p>
+<p>Un projet comporte une ou plusieurs tâches. Chaque tâche s'inscrit dans une planification de projet. Les tâches sont organisées de manière hiérarchique sans aucune limitation de profondeur. Le fait que les tâches soient organisées hiérarchiquement explique le comportement par héritage de plusieurs fonctionnalités telles que les étiquettes.</p>
+<p>Les sections suivantes vont décrire les opérations que les utilisateurs peuvent effectuer sur les projets et les tâches.</p>
+<div class="section" id="projet">
+<h1><a class="toc-backref" href="#toc-entry-1">Projet</a></h1>
+<p>Un projet est un travail qu'un client demande à une compagnie. Pour identifier ce projet au sein de la compagnie, on n'a besoin que de quelques informations :</p>
+<ul class="simple">
+<li>Nom du projet</li>
+<li>Code du projet</li>
+<li>Montant total du projet</li>
+<li>Date estimée de début</li>
+<li>Date de fin</li>
+<li>Personne responsable</li>
+<li>Description</li>
+<li>Calendrier affecté</li>
+<li>Génération automatique de code. Un champ utilisé pour indiquer au système de générer automatiquement les codes des tâches et des groupes horaires.</li>
+<li>Préférence entre les dépendances et les restrictions. Les utilisateurs peuvent décider si ce sont les dépendances ou les restrictions qui seront prises en compte en priorité en cas de conflit.</li>
+</ul>
+<p>Cependant, les vrais projets réels nécessitent d'autres entités pour être complets :</p>
+<ul class="simple">
+<li>Heures affectées au projet</li>
+<li>Avancement attribué au projet</li>
+<li>Étiquettes</li>
+<li>Critères affectés au projet</li>
+<li>Matériaux</li>
+<li>Formulaires qualité</li>
+</ul>
+<p>Modifier ou créer un projet peut être réalisé à partir de différents endroits du programme :</p>
+<ul class="simple">
+<li>À partir de la &quot;liste des projets&quot; dans la vue globale de la compagnie.<ul>
+<li>Cliquer sur le nom du projet ou sur l'icône de modification correspondante pour modifier un projet.</li>
+<li>Cliquer sur l'icône &quot;Créer un nouveau projet&quot; en haut à gauche pour créer un nouveau projet.</li>
+</ul>
+</li>
+<li>À partir d'un projet dans le diagramme de Gantt et en allant dans la vue des détails du projet.</li>
+</ul>
+<p>Ceci fait, on dispose alors de plusieurs onglets :</p>
+<ul class="simple">
+<li><em>SDP (tâches)</em> : il s'agit de la liste arborescente des tâches du projet à partir de laquelle on peut :<ul>
+<li>Créer ou modifier une tâche.</li>
+<li>Remonter une tâche dans la hiérarchie d'un rang.</li>
+<li>Descendre une tâche dans la hiérarchie d'un rang.</li>
+<li>Indenter une tâche, ce qui est la même chose que de la descendre d'un niveau dans la hiérarchie.</li>
+<li>Désindenter une tâche, ce qui est la même chose que de le monter d'un niveau dans la hiérarchie.</li>
+<li>Filtrer les tâches.</li>
+<li>Supprimer des tâches.</li>
+<li>Déplacer en rang ou en niveau une tâche dans la hiérarchie par drag'n'drop (glisser-déposer).</li>
+<li>Créer un modèle de tâche à partir d'une tâche.</li>
+</ul>
+</li>
+</ul>
+<div class="figure">
+<img alt="images/order-elements-list.png" src="images/order-elements-list.png" style="width: 408.0px; height: 190.0px;" />
+<p class="caption">Liste des tâches du projet</p>
+</div>
+<ul class="simple">
+<li><em>Données générales</em> : permet de modifier les détails du projet. Actuellement, il s'agit de :<ul>
+<li>Nom</li>
+<li>Code</li>
+<li>Responsable</li>
+<li>Description</li>
+<li>État</li>
+<li>Client et référence</li>
+<li>Date de début</li>
+<li>Échéance</li>
+<li>Calendrier</li>
+<li>Mode de planification : vers l'avant (depuis la date de début) ou à rebours (depuis la date d'échéance)</li>
+<li>Choix donnant la priorité aux dépendances durant la planification</li>
+<li>Le budget alloué au travail et aux matériaux</li>
+</ul>
+</li>
+</ul>
+<div class="figure">
+<img alt="images/order-edition.png" src="images/order-edition.png" style="width: 510.0px; height: 238.0px;" />
+<p class="caption">Modification du projet</p>
+</div>
+<ul class="simple">
+<li><em>Coûts</em> : écran qui présente les heures et les coûts imputés groupés par ressource et par type et les compare aux prévisions.</li>
+</ul>
+<div class="figure">
+<img alt="images/order-assigned-hours.png" src="images/order-assigned-hours.png" style="width: 510.0px; height: 237.0px;" />
+<p class="caption">Coûts constatés du projet</p>
+</div>
+<ul class="simple">
+<li><em>Avancement</em> : un écran où il est possible d'affecter des types d'avancement et de saisir des mesures d'avancements pour le projet. Voir la section &quot;Avancement&quot; pour voir comment cela fonctionne.</li>
+<li>Étiquettes. Un écran où l'on peut affecter des étiquettes à un projet et identifier des étiquettes affectées précédemment de manière directe ou indirecte. Voir la section suivante relative à la modification des tâches pour une description en détail de la façon de procéder pour gérer ces étiquettes.</li>
+</ul>
+<div class="figure">
+<img alt="images/order-labels.png" src="images/order-labels.png" style="width: 357.0px; height: 163.45px;" />
+<p class="caption">Étiquettes du projet</p>
+</div>
+<ul class="simple">
+<li><em>Critères</em> : écran dans lequel il est possible d'affecter des critères à l'ensemble des tâches du projet. Ces critères vont s'appliquer automatiquement à toutes les tâches, à l'exception de celles où ils sont explicitement invalidés. Les heures des tâches, regroupées par critère, sont également affichées, ce qui permet d'identifier les critères requis pour un projet.</li>
+</ul>
+<div class="figure">
+<img alt="images/order-criterions.png" src="images/order-criterions.png" style="width: 510.0px; height: 232.5px;" />
+<p class="caption">Critères du projet</p>
+</div>
+<ul>
+<li><p class="first"><em>Matériaux</em> : écran où il est possible d'indiquer les matériaux nécessaires au projet. Ces matériaux peuvent être choisis dans les catégories de matériaux disponibles. Les matériaux sont gérés de la façon suivante :</p>
+<blockquote>
+<ul class="simple">
+<li>Sélectionner un matériau dans la liste affichée à droite.</li>
+<li>Pour retrouver plus facilement un matériel, on peut restreindre la liste à une catégorie à l'aide de l'arborescence de gauche. On peut aussi saisir une partie du nom dans le champ texte puis cliquer sur <em>Chercher</em>. La recherche se fera sur la catégorie sélectionnée.</li>
+<li>Il est possible de sélectionner plusieurs matériaux en une fois en appuyant sur la touche &quot;Ctrl&quot; (Contrôle).</li>
+<li>Cliquer ensuite sur <em>Affecter</em>.</li>
+<li>Le système affiche alors la liste des matériaux qui ont déjà été affectés au projet. Dans l'écran précédent, cliquer sur <em>Annuler</em> pour arriver directement à cette liste.</li>
+<li>Dans la liste des matériaux affectés, on peut alors indiquer la date de réception, le nombre d'unités et le prix unitaire.</li>
+<li>Si un même matériau possède des lots ayant des caractéristiques différentes (livraison partielle par exemple), on peut cliquer sur &quot;Différencier&quot; pour créer deux lignes permettant de prendre en compte ces différences.</li>
+<li>Cliquer sur <em>Ajouter des matériaux</em> pour revenir à l'écran précédent.</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<div class="figure">
+<img alt="images/order-material.png" src="images/order-material.png" style="width: 510.0px; height: 237.5px;" />
+<p class="caption">Matériaux associés au projet</p>
+</div>
+<ul class="simple">
+<li>Formulaires qualité de tâche : écran qui permet d'affecter un formulaire qualité au projet, lequel devra ensuite être complété pour s'assurer que certaines activités associées au projet ont été réalisées. Voir la section suivante relative à la modification des tâches pour la façon de gérer ces formulaires qualité.</li>
+</ul>
+<div class="figure">
+<img alt="images/order-quality.png" src="images/order-quality.png" style="width: 510.0px; height: 237.5px;" />
+<p class="caption">Formulaires qualité associés au projet</p>
+</div>
+<ul class="simple">
+<li><em>Autorisations</em> : écran qui permet d'affecter des droits en lecture et/ou écriture aux utilisateurs et aux profils.</li>
+</ul>
+</div>
+<div class="section" id="modifier-les-taches">
+<h1><a class="toc-backref" href="#toc-entry-2">Modifier les tâches</a></h1>
+<p>La modification des tâches est réalisé à partir de l'onglet &quot;SDP (tâches)&quot; en cliquant sur l'icône de modification correspondant à la tâche, ou en double-cliquant sur la tâche. S'affiche alors un nouvel écran comportant plusieurs onglets à partir desquels on peut effectuer les actions suivantes :</p>
+<ul class="simple">
+<li>Modifier les informations concernant la tâche.</li>
+<li>Voir les coûts associés à la tâche.</li>
+<li>Gérer l'avancement de la tâche.</li>
+<li>Gérer les étiquettes de la tâche.</li>
+<li>Gérer les critères requis par la tâche et les groupes d'heures.</li>
+<li>Gérer les matériaux requis par la tâche.</li>
+<li>Gérer les formulaires qualité.</li>
+</ul>
+<p>Les sous-sections suivantes décrivent chacune de ces opérations en détail.</p>
+<div class="section" id="modifier-les-informations-concernant-la-tache">
+<h2><a class="toc-backref" href="#toc-entry-3">Modifier les informations concernant la tâche</a></h2>
+<p>L'onglet <em>Détails</em> permet de modifier les informations concernant la tâche :</p>
+<ul class="simple">
+<li>Nom de la tâche</li>
+<li>Code de la tâche (lecture seule)</li>
+<li>Date de début de la tâche</li>
+<li>Date d'échéance</li>
+<li>Description</li>
+<li>Budget pour la tâche</li>
+</ul>
+<div class="figure">
+<img alt="images/order-element-edition.png" src="images/order-element-edition.png" style="width: 475.5px; height: 147.0px;" />
+<p class="caption">Modifier une tâche</p>
+</div>
+</div>
+<div class="section" id="voir-les-couts-affectes-a-la-tache">
+<h2><a class="toc-backref" href="#toc-entry-4">Voir les coûts affectés à la tâche</a></h2>
+<p>L'onglet &quot;Coûts&quot; permet de consulter les heures et les coûts dépensées pour la tâche, directement ou indirectement, par groupe et ressource et de les comparer aux prévisions.</p>
+<div class="figure">
+<img alt="images/order-element-hours.png" src="images/order-element-hours.png" style="width: 477.5px; height: 306.0px;" />
+<p class="caption">Coûts d'une tâche</p>
+</div>
+<p>L'écran est divisé en deux parties :</p>
+<ul class="simple">
+<li>Calcul des heures et des dépenses imputées regroupées respectivement par ressource et type d'heures d'une part et par catégorie et par ressource d'autre part.</li>
+<li>Utilisation par rapport aux estimations : heures consommées par rapport aux heures budgétisées d'une part, et dépenses par rapport au budget financier d'autre part. On trouve également le coût horaire et le coût des dépenses. Ces informations sont également présentées sous forme de pourcentages.</li>
+</ul>
+</div>
+<div class="section" id="gerer-l-avancement-des-taches">
+<h2><a class="toc-backref" href="#toc-entry-5">Gérer l'avancement des tâches</a></h2>
+<p>La saisie des types d'avancement et la gestion des avancements des tâches a été décrit dans le chapitre &quot;Avancement&quot;.</p>
+</div>
+<div class="section" id="gerer-les-etiquettes-des-projets">
+<h2><a class="toc-backref" href="#toc-entry-6">Gérer les étiquettes des projets</a></h2>
+<p>Les étiquettes, telles que décrites dans le chapitre sur les étiquettes, permettent de catégoriser les tâches. Ainsi, elles permettent de regrouper des informations de planification ou de projet.</p>
+<p>Il est possible d'affecter des étiquettes à une tâche, soit directement, soit par héritage en les affectant à une tâche de plus haut niveau. Une fois cette affectation réalisée à l'aide de l'une ou l'autre de ces méthodes, la tâches et ses sous-tâches sont associées à cette étiquette qui peut alors être utilisée pour tout filtrage ultérieur.</p>
+<div class="figure">
+<img alt="images/order-element-tags.png" src="images/order-element-tags.png" style="width: 478.0px; height: 161.0px;" />
+<p class="caption">Affecter des étiquettes à une tâche</p>
+</div>
+<p>Comme on peut le voir dans l'image, il est possible de réaliser les actions suivantes dans l'onglet <strong>étiquettes</strong> :</p>
+<ul class="simple">
+<li>Voir la liste des étiquettes affectées à la tâche par héritage d'une tâche de plus haut niveau. Toute tâche associée à une tâche de plus haut niveau hérite des étiquettes de cette dernière.</li>
+<li>Voir la liste des étiquettes affectée directement à la tâche via le formulaire situé juste en dessous. Ces étiquettes seront également affectées aux tâches de niveaux inférieurs.</li>
+<li>Affecter des étiquettes existantes : il est possible d'affecter des étiquettes en en cherchant une parmi celles qui sont disponibles dans le formulaire qui est sous la liste des étiquettes affectées directement. Pour chercher une étiquette, cliquer sur l'icône loupe ou écrire les premières lettres du nom de l'étiquette dans le champ texte, les valeurs possibles vont alors être affichées. Une fois choisie, cliquer sur <em>Affecter</em>.</li>
+<li>Créer et affecter de nouvelles étiquettes : il est également possible de créer de nouvelles étiquettes associées avec un type existant d'étiquettes à partir de ce formulaire. On commence par choisir un type d'étiquette à associer, puis il faut entrer le nom de l'étiquette à créer. Quand on clique sur <em>Créer et affecter</em>, l'étiquette est automatiquement créée et associée à la tâche.</li>
+<li>Supprimer une étiquette affectée directement en cliquant sur l'icône <em>supprimer</em> (poubelle) de la ligne correspondante.</li>
+</ul>
+</div>
+<div class="section" id="gerer-les-criteres-requis-pour-les-taches-et-les-groupes-d-heures">
+<h2><a class="toc-backref" href="#toc-entry-7">Gérer les critères requis pour les tâches et les groupes d'heures</a></h2>
+<p>Les projets et les tâches peuvent de la même façon se voir affecter des critères à remplir afin qu'ils puissent être menés à bien. Les critères peuvent être directs ou indirects :</p>
+<ul class="simple">
+<li>Critères directs : ceux-ci sont affectés directement à la tâche. Ce sont des critères qui sont requis par les groupes d'heures de la tâche.</li>
+<li>Critères indirects : ceux-là sont affectés sur les tâches de plus haut niveau. La tâche que l'on modifie en hérite.</li>
+</ul>
+<p>Il est alors possible :</p>
+<ul class="simple">
+<li>d'ajouter un critère direct à la tâche entière en cliquant sur le bouton <em>Ajouter</em>. Choisir alors le critère dans la liste qui apparaît.</li>
+<li>de supprimer un critère direct en cliquant sur l'icône <tt class="docutils literal">Supprimer</tt> présente à la fin de la ligne correspondante.</li>
+<li>d'invalider un critère hérité en cliquant sur le bouton <em>Invalider</em></li>
+<li>de valider à nouveau un critère hérité précédemment invalidé en cliquant sur le bouton <em>Valider</em></li>
+</ul>
+<p>Se trouve ensuite le total des heures de la tâche. Ces heures peuvent être calculées à partir des groupes d'heures ajoutés ou saisies directement dans ce champ. Dans ce cas, les heures seront distribuées entre les groupes d'heures existant et, si les pourcentages ne coïncident pas, un nouveau groupe d'heures sera créé.</p>
+<p>Enfin, il est possible, si la tâche ne possède pas de sous-tâches, de définir un ou plusieurs groupes d'heures faisant partie de la tâche. Ces groupes d'heures doivent être renseignés pour permettre une affectation générique. Si la tâche possède des sous-tâches, il ne sera possible que de consulter les informations relatives aux heures et aux groupes d'heures. À l'inverse, si la tâche n'a pas de sous-tâche, on procède comme suit :</p>
+<ul>
+<li><p class="first">Par défaut, un groupe d'heures associé à la tâche est créé automatiquement en même temps que la tâche. Ce groupe d'heures possède les caractéristiques modifiables suivantes :</p>
+<blockquote>
+<ul class="simple">
+<li>Code pour le groupe d'heures s'il n'a pas été automatiquement généré.</li>
+<li>Type de critère. Les utilisateurs peuvent choisir d'affecter un critère de machine ou d'employé.</li>
+<li>Nombre d'heures dans le groupe d'heures si la case &quot;% fixe&quot; n'est pas cochée. La sommes des heures des différents groupes est répercutée dans le champ <em>Total des heures de la tâche</em>.</li>
+<li>Pourcentage d'heures du groupe d'heures par rapport au total des heures de la tâche si la case &quot;% fixe&quot; est cochée.</li>
+<li>Choix d'une saisie en pourcentage (cochée) ou en nombre d'heures (non cochée, état par défaut).</li>
+<li>Liste des critères à appliquer au groupe d'heures. Pour ajouter un nouveau critère, cliquer sur &quot;Ajouter un critère&quot; et en choisir un à partir du moteur de recherche qui apparaît alors. Ce critère pourra être supprimé en cliquant sur l'icône 'Supprimer' (poubelle) situé en fin de ligne. Le critère aura le type 'Direct'.</li>
+<li>Liste des exceptions à appliquer au groupe d'heures. Pour ajouter une nouvelle exception, cliquer sur &quot;Ajouter une exception&quot; et en choisir une à partir du moteur de recherche qui apparaît alors. Ce critère pourra être supprimé en cliquant sur l'icône 'Supprimer' (poubelle) situé en fin de ligne. L'exception aura le type 'Exception héritée'.</li>
+</ul>
+</blockquote>
+</li>
+<li><p class="first">Il est possible d'ajouter d'autres groupes d'heures différents les uns des autres. Ceci peut être utile, par exemple, pour une tâche de 70 heures nécessitant 30h de travail d'un soudeur et 40h d'un peintre.</p>
+</li>
+</ul>
+<div class="figure">
+<img alt="images/order-element-criterion.png" src="images/order-element-criterion.png" style="width: 479.5px; height: 264.0px;" />
+<p class="caption">Affecter des critères à la tâche</p>
+</div>
+</div>
+<div class="section" id="gerer-les-materiaux">
+<h2><a class="toc-backref" href="#toc-entry-8">Gérer les matériaux</a></h2>
+<p>Les matériaux sont gérés sous forme d'une liste associée à chaque tâche du projet ou globalement au projet en général. Les matériaux comportent les caractéristiques suivantes :</p>
+<ul class="simple">
+<li>Code</li>
+<li>Date de réception</li>
+<li>Nom</li>
+<li>Nombre d'unités requis (nombre ou quantité selon le type d'unité)</li>
+<li>Type d'unité : le type d'unité utilisée pour mesurer le matériau</li>
+<li>Prix unitaire</li>
+<li>Prix total : le prix est calculé en multipliant le prix unitaire par le nombre d'unités</li>
+<li>Unités: unités requises</li>
+<li>État : reçu, commandé, en attente, en cours, annulé</li>
+<li>Catégorie : la catégorie à laquelle le matériau appartient.</li>
+</ul>
+<p>Travailler avec les matériaux se fait de la façon suivante :</p>
+<ul class="simple">
+<li>Choisir l'onglet &quot;Matériaux&quot; d'une tâche.</li>
+<li>Apparaît alors le formulaire de recherche des matériaux avec la liste des catégories à gauche et celle des matériaux à droite.</li>
+</ul>
+<div class="figure">
+<img alt="images/order-element-material-search.png" src="images/order-element-material-search.png" style="width: 478.5px; height: 209.5px;" />
+<p class="caption">Recherche d'un matériau</p>
+</div>
+<ul class="simple">
+<li>Choisir une catégorie pour affiner les recherches de matériaux.</li>
+<li>On peut aussi saisir le début du nom du matériau dans le champ texte puis cliquer sur le bouton <em>Chercher</em>.</li>
+<li>Sélectionner un ou plusieurs matériaux (via la touche CTRL)</li>
+<li>Cliquer sur <em>Affecter</em>.</li>
+</ul>
+<div class="figure">
+<img alt="images/order-element-material-assign.png" src="images/order-element-material-assign.png" style="width: 477.0px; height: 128.0px;" />
+<p class="caption">Affecter des matériaux à la tâche</p>
+</div>
+<ul class="simple">
+<li>Renseigner alors la date de réception éventuelle, la quantité, le prix unitaire et l'état.</li>
+</ul>
+<p>Pour le suivi ultérieur des matériaux, il est possible de ne modifier l'état que d'une partie du matériel reçu. Procéder comme suit :</p>
+<ul class="simple">
+<li>Cliquer sur le bouton &quot;Répartir&quot; dans la liste des matériaux à droite de chaque ligne.</li>
+<li>Choisir le nombre d'unités qu'on veut traiter de manière différenciée.</li>
+<li>On a maintenant deux lignes pour le matériau en question.</li>
+<li>Modifier l'état de la ligne qui vient d'être ajoutée.</li>
+</ul>
+<p>L'avantage d'utiliser cet outil de répartition est la possibilité de recevoir des livraisons partielles de matériau sans devoir attendre de tout recevoir pour l'indiquer. Ceci permet d'exécuter des tâches qui n'auraient pas besoin de la totalité du matériel commandé.</p>
+</div>
+<div class="section" id="gerer-les-formulaires-qualite">
+<h2><a class="toc-backref" href="#toc-entry-9">Gérer les formulaires qualité</a></h2>
+<p>Pour certaines tâches, il peut s'avérer nécessaire de devoir procéder à certaines vérifications avant de pouvoir les déclarer comme étant terminées. C'est la raison d'être des formulaires qualités qui sont en fait des listes de questions auxquelles on doit répondre positivement pour pouvoir déclarer les tâches associées comme étant terminées.</p>
+<p>Avant de pouvoir affecter un formulaire qualité à une tâche, il faut le créer en utilisant le menu <em>Ressources</em>, sous-menu <em>Formulaires qualité</em>. Ceci ne peut pas être fait en même temps que l'affectation à la tâche.</p>
+<p>Pour gérer des formulaires de qualité :</p>
+<ul class="simple">
+<li>Aller dans l'onglet &quot;Formulaires qualité des tâches&quot; de la tâche considérée.</li>
+</ul>
+<div class="figure">
+<img alt="images/order-element-quality.png" src="images/order-element-quality.png" style="width: 477.0px; height: 262.5px;" />
+<p class="caption">Affecter des formulaires qualité à une tâche</p>
+</div>
+<ul>
+<li><p class="first">Il existe deux types de formulaires qualité : par élément ou en pourcentage.</p>
+<blockquote>
+<ul class="simple">
+<li>Élément : chaque élément est indépendant.</li>
+<li>Pourcentage : chaque question augmente l'avancement de la tâche d'un certain pourcentage pour finir par une question ayant 100% comme pourcentage, signalant que la tâche est achevée.</li>
+</ul>
+</blockquote>
+</li>
+<li><p class="first">Utiliser le formulaire de recherche pour chercher le formulaire qualité souhaité, si besoin en saisissant le début de son nom.</p>
+</li>
+<li><p class="first">Une fois le formulaire sélectionné, cliquer sur <em>Affecter</em>.</p>
+</li>
+<li><p class="first">Le formulaire apparaît dans la liste affichée en dessous.</p>
+</li>
+<li><p class="first">Cliquer sur l'icône <tt class="docutils literal">plus</tt> au début de la ligne pour afficher les questions du formulaire.</p>
+</li>
+<li><dl class="first docutils">
+<dt>Renseigner alors au fur et à mesure les lignes réalisées :</dt>
+<dd><ul class="first last simple">
+<li>Si le formulaire qualité est basé sur les pourcentages, les questions sont posées dans l'ordre. Cocher la case <tt class="docutils literal">Contrôlé</tt> et renseigner la date. La ligne suivante devient accessible.</li>
+<li>Si le formulaire qualité est basé sur les éléments, on peut répondre aux questions dans n'importe quel ordre. Cocher la case <tt class="docutils literal">Contrôlé</tt> et renseigner la date.</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<p>Pour supprimer un formulaire qualité, cliquer sur l'icône poubelle en fin de ligne correspondante.</p>
+</div>
+</div>
+</div>
+</body>
+</html>

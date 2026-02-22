@@ -123,12 +123,12 @@ public class UnitTypeController extends BaseCRUDController<UnitType> {
             public void validate(Component comp, Object value) {
                 String strValue = (String) value;
                 if (StringUtils.isBlank(strValue)) {
-                    throw new WrongValueException(comp, _("cannot be empty"));
+                    throw new WrongValueException(comp, _t("cannot be empty"));
                 }
 
                 if (unitTypeModel.existsAnotherUnitTypeWithName(strValue)) {
                     throw new WrongValueException(comp,
-                            _("The meausure name is not valid. There is " +
+                            _t("The meausure name is not valid. There is " +
                                     "another unit type with the same " +
                                     "measure name"));
                 }
@@ -143,12 +143,12 @@ public class UnitTypeController extends BaseCRUDController<UnitType> {
             public void validate(Component comp, Object value) {
                 String strValue = (String) value;
                 if (StringUtils.isBlank(strValue)) {
-                    throw new WrongValueException(comp, _("cannot be empty"));
+                    throw new WrongValueException(comp, _t("cannot be empty"));
                 }
 
                 if (unitTypeModel.existsAnotherUnitTypeWithCode(strValue)) {
                     throw new WrongValueException(comp,
-                            _("The code is not valid. There is another " +
+                            _t("The code is not valid. There is another " +
                                     "unit type with the same code"));
                 }
             }
@@ -176,12 +176,12 @@ public class UnitTypeController extends BaseCRUDController<UnitType> {
 
     @Override
     protected String getEntityType() {
-        return _("Material Unit");
+        return _t("Material Unit");
     }
 
     @Override
     protected String getPluralEntityType() {
-        return _("Material Units");
+        return _t("Material Units");
     }
 
     @Override

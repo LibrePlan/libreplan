@@ -57,7 +57,7 @@ import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Treerow;
 
-import static org.zkoss.ganttz.i18n.I18nHelper._;
+import static org.zkoss.ganttz.i18n.I18nHelper._t;
 
 /**
  * Row composer for Tasks details Tree <br />
@@ -268,16 +268,16 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
                 if (dateTimeInTextbox.isAfter(maximum)) {
                     throw new WrongValueException(
                             comp,
-                            _("The date you entered is invalid") + ". " +
-                                    _("Please enter date not before") + " " + minimumYear +
-                                    " " + _("and no later than") + " " + maximum.getYear());
+                            _t("The date you entered is invalid") + ". " +
+                                    _t("Please enter date not before") + " " + minimumYear +
+                                    " " + _t("and no later than") + " " + maximum.getYear());
                 }
                 if (dateTimeInTextbox.isBefore(minimum)) {
                     throw new WrongValueException(
                             comp,
-                            _("The date you entered is invalid") + ". " +
-                                    _("Please enter date not before") + " " + minimumYear +
-                                    " " + _("and no later than") + " " + maximum.getYear());
+                            _t("The date you entered is invalid") + ". " +
+                                    _t("Please enter date not before") + " " + minimumYear +
+                                    " " + _t("and no later than") + " " + maximum.getYear());
                 }
             }
         };

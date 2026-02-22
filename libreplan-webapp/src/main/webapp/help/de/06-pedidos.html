@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Orders and Order Elements</title>
+<link rel="stylesheet" href="html/lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="orders-and-order-elements">
+<h1 class="title">Orders and Order Elements</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#orders" id="toc-entry-1">Orders</a></li>
+<li><a class="reference internal" href="#editing-order-elements" id="toc-entry-2">Editing Order Elements</a><ul>
+<li><a class="reference internal" href="#editing-information-about-the-order-element" id="toc-entry-3">Editing Information about the Order Element</a></li>
+<li><a class="reference internal" href="#viewing-hours-attributed-to-order-elements" id="toc-entry-4">Viewing Hours Attributed to Order Elements</a></li>
+<li><a class="reference internal" href="#managing-progress-of-order-elements" id="toc-entry-5">Managing Progress of Order Elements</a></li>
+<li><a class="reference internal" href="#managing-order-labels" id="toc-entry-6">Managing Order Labels</a></li>
+<li><a class="reference internal" href="#managing-criteria-required-by-the-order-element-and-hour-groups" id="toc-entry-7">Managing Criteria Required by the Order Element and Hour Groups</a></li>
+<li><a class="reference internal" href="#managing-materials" id="toc-entry-8">Managing Materials</a></li>
+<li><a class="reference internal" href="#managing-quality-forms" id="toc-entry-9">Managing Quality Forms</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>Orders represent the work to be performed by users of the program. Each order corresponds to a project that the company will offer to its clients.</p>
+<p>An order consists of one or more order elements. Each order element represents a specific part of the work to be done and defines how the work on the order should be planned and executed. Order elements are organized hierarchically, with no limitations on the depth of the hierarchy. This hierarchical structure allows for the inheritance of certain features, such as labels.</p>
+<p>The following sections describe the operations that users can perform with orders and order elements.</p>
+<div class="section" id="orders">
+<h1><a class="toc-backref" href="#toc-entry-1">Orders</a></h1>
+<p>An order represents a project or work requested by a client from the company. The order identifies the project within the company's planning. Unlike comprehensive management programs, LibrePlan only requires certain key details for an order. These details are:</p>
+<ul class="simple">
+<li><strong>Order Name:</strong> The name of the order.</li>
+<li><strong>Order Code:</strong> A unique code for the order.</li>
+<li><strong>Total Order Amount:</strong> The total financial value of the order.</li>
+<li><strong>Estimated Start Date:</strong> The planned start date for the order.</li>
+<li><strong>End Date:</strong> The planned completion date for the order.</li>
+<li><strong>Person in Charge:</strong> The individual responsible for the order.</li>
+<li><strong>Description:</strong> A description of the order.</li>
+<li><strong>Assigned Calendar:</strong> The calendar associated with the order.</li>
+<li><strong>Automatic Generation of Codes:</strong> A setting to instruct the system to automatically generate codes for order elements and hour groups.</li>
+<li><strong>Preference between Dependencies and Restrictions:</strong> Users can choose whether dependencies or restrictions take priority in case of conflicts.</li>
+</ul>
+<p>However, a complete order also includes other associated entities:</p>
+<ul class="simple">
+<li><strong>Hours Assigned to the Order:</strong> The total hours allocated to the order.</li>
+<li><strong>Progress Attributed to the Order:</strong> The progress made on the order.</li>
+<li><strong>Labels:</strong> Labels assigned to the order.</li>
+<li><strong>Criteria Assigned to the Order:</strong> Criteria associated with the order.</li>
+<li><strong>Materials:</strong> Materials required for the order.</li>
+<li><strong>Quality Forms:</strong> Quality forms associated with the order.</li>
+</ul>
+<p>Creating or editing an order can be done from several locations within the program:</p>
+<ul class="simple">
+<li><strong>From the &quot;Order List&quot; in the Company Overview:</strong><ul>
+<li><strong>Editing:</strong> Click the edit button on the desired order.</li>
+<li><strong>Creating:</strong> Click &quot;New order.&quot;</li>
+</ul>
+</li>
+<li><strong>From an Order in the Gantt Chart:</strong> Change to the order details view.</li>
+</ul>
+<p>Users can access the following tabs when editing an order:</p>
+<ul>
+<li><p class="first"><strong>Editing Order Details:</strong> This screen allows users to edit basic order details:</p>
+<ul class="simple">
+<li>Name</li>
+<li>Code</li>
+<li>Estimated Start Date</li>
+<li>End Date</li>
+<li>Person in Charge</li>
+<li>Client</li>
+<li>Description</li>
+</ul>
+<div class="figure">
+<img alt="images/order-edition.png" src="images/order-edition.png" style="width: 429.0px; height: 227.5px;" />
+<p class="caption">Editing Orders</p>
+</div>
+</li>
+<li><p class="first"><strong>Order Element List:</strong> This screen allows users to perform several operations on order elements:</p>
+<ul class="simple">
+<li>Creating new order elements.</li>
+<li>Promoting an order element one level up in the hierarchy.</li>
+<li>Demoting an order element one level down in the hierarchy.</li>
+<li>Indenting an order element (moving it down the hierarchy).</li>
+<li>Unindenting an order element (moving it up the hierarchy).</li>
+<li>Filtering order elements.</li>
+<li>Deleting order elements.</li>
+<li>Moving an element within the hierarchy by dragging and dropping.</li>
+</ul>
+<div class="figure">
+<img alt="images/order-elements-list.png" src="images/order-elements-list.png" style="width: 496.8px; height: 107.60000000000001px;" />
+<p class="caption">Order Element List</p>
+</div>
+</li>
+<li><p class="first"><strong>Assigned Hours:</strong> This screen displays the total hours attributed to the project, grouping the hours entered in the order elements.</p>
+<div class="figure">
+<img alt="images/order-assigned-hours.png" src="images/order-assigned-hours.png" style="width: 432.0px; height: 202.5px;" />
+<p class="caption">Assigning Hours Attributed to the Order by Workers</p>
+</div>
+</li>
+<li><p class="first"><strong>Progress:</strong> This screen allows users to assign progress types and enter progress measurements for the order. See the &quot;Progress&quot; section for more details.</p>
+</li>
+<li><p class="first"><strong>Labels:</strong> This screen allows users to assign labels to an order and view previously assigned direct and indirect labels. See the following section on editing order elements for a detailed description of label management.</p>
+<div class="figure">
+<img alt="images/order-labels.png" src="images/order-labels.png" style="width: 402.5px; height: 180.95px;" />
+<p class="caption">Order Labels</p>
+</div>
+</li>
+<li><p class="first"><strong>Criteria:</strong> This screen allows users to assign criteria that will apply to all tasks within the order. These criteria will be automatically applied to all order elements, except those that have been explicitly invalidated. The hour groups of order elements, which are grouped by criteria, can also be viewed, allowing users to identify the criteria required for an order.</p>
+<div class="figure">
+<img alt="images/order-criterions.png" src="images/order-criterions.png" style="width: 423.5px; height: 261.5px;" />
+<p class="caption">Order Criteria</p>
+</div>
+</li>
+<li><p class="first"><strong>Materials:</strong> This screen allows users to assign materials to orders. Materials can be selected from the available material categories in the program. Materials are managed as follows:</p>
+<ul class="simple">
+<li>Select the &quot;Search materials&quot; tab at the bottom of the screen.</li>
+<li>Enter text to search for materials or select the categories for which you want to find materials.</li>
+<li>The system filters the results.</li>
+<li>Select the desired materials (multiple materials can be selected by pressing the &quot;Ctrl&quot; key).</li>
+<li>Click &quot;Assign.&quot;</li>
+<li>The system displays the list of materials already assigned to the order.</li>
+<li>Select the units and the status to assign to the order.</li>
+<li>Click &quot;Save&quot; or &quot;Save and continue.&quot;</li>
+<li>To manage the receipt of materials, click &quot;Divide&quot; to change the status of a partial quantity of material.</li>
+</ul>
+<div class="figure">
+<img alt="images/order-material.png" src="images/order-material.png" style="width: 430.0px; height: 204.0px;" />
+<p class="caption">Materials Associated with an Order</p>
+</div>
+</li>
+<li><p class="first"><strong>Quality:</strong> Users can assign a quality form to the order. This form is then completed to ensure that certain activities associated with the order are carried out. See the following section on editing order elements for details on managing quality forms.</p>
+<div class="figure">
+<img alt="images/order-quality.png" src="images/order-quality.png" style="width: 428.0px; height: 259.0px;" />
+<p class="caption">Quality Form Associated with the Order</p>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="editing-order-elements">
+<h1><a class="toc-backref" href="#toc-entry-2">Editing Order Elements</a></h1>
+<p>Order elements are edited from the &quot;Order element list&quot; tab by clicking the edit icon. This opens a new screen where users can:</p>
+<ul class="simple">
+<li>Edit information about the order element.</li>
+<li>View hours attributed to order elements.</li>
+<li>Manage progress of order elements.</li>
+<li>Manage order labels.</li>
+<li>Manage criteria required by the order element.</li>
+<li>Manage materials.</li>
+<li>Manage quality forms.</li>
+</ul>
+<p>The following subsections describe each of these operations in detail.</p>
+<div class="section" id="editing-information-about-the-order-element">
+<h2><a class="toc-backref" href="#toc-entry-3">Editing Information about the Order Element</a></h2>
+<p>Editing information about the order element includes modifying the following details:</p>
+<ul class="simple">
+<li><strong>Order Element Name:</strong> The name of the order element.</li>
+<li><strong>Order Element Code:</strong> A unique code for the order element.</li>
+<li><strong>Start Date:</strong> The planned start date of the order element.</li>
+<li><strong>Estimated End Date:</strong> The planned completion date of the order element.</li>
+<li><strong>Total Hours:</strong> The total hours allocated to the order element. These hours can be calculated from the added hour groups or entered directly. If entered directly, the hours must be distributed among the hour groups, and a new hour group created if the percentages do not match the initial percentages.</li>
+<li><strong>Hour Groups:</strong> One or more hour groups can be added to the order element. <strong>The purpose of these hour groups</strong> is to define the requirements for the resources that will be assigned to perform the work.</li>
+<li><strong>Criteria:</strong> Criteria can be added that must be met to enable generic assignment for the order element.</li>
+</ul>
+<div class="figure">
+<img alt="images/order-element-edition.png" src="images/order-element-edition.png" style="width: 477.5px; height: 345.0px;" />
+<p class="caption">Editing Order Elements</p>
+</div>
+</div>
+<div class="section" id="viewing-hours-attributed-to-order-elements">
+<h2><a class="toc-backref" href="#toc-entry-4">Viewing Hours Attributed to Order Elements</a></h2>
+<p>The &quot;Assigned hours&quot; tab allows users to view the work reports associated with an order element and see how many of the estimated hours have already been completed.</p>
+<div class="figure">
+<img alt="images/order-element-hours.png" src="images/order-element-hours.png" style="width: 478.5px; height: 344.5px;" />
+<p class="caption">Hours Assigned to Order Elements</p>
+</div>
+<p>The screen is divided into two parts:</p>
+<ul class="simple">
+<li><strong>Work Report List:</strong> Users can view the list of work reports associated with the order element, including the date and time, resource, and number of hours devoted to the task.</li>
+<li><strong>Use of Estimated Hours:</strong> The system calculates the total number of hours devoted to the task and compares them with the estimated hours.</li>
+</ul>
+</div>
+<div class="section" id="managing-progress-of-order-elements">
+<h2><a class="toc-backref" href="#toc-entry-5">Managing Progress of Order Elements</a></h2>
+<p>Entering progress types and managing order element progress is described in the &quot;Progress&quot; chapter.</p>
+</div>
+<div class="section" id="managing-order-labels">
+<h2><a class="toc-backref" href="#toc-entry-6">Managing Order Labels</a></h2>
+<p>Labels, as described in the chapter on labels, allow users to categorize order elements. This enables users to group planning or order information based on these labels.</p>
+<p>Users can assign labels directly to an order element or to a higher-level order element in the hierarchy. Once a label is assigned using either method, the order element and the related planning task are associated with the label and can be used for subsequent filtering.</p>
+<div class="figure">
+<img alt="images/order-element-tags.png" src="images/order-element-tags.png" style="width: 476.5px; height: 344.0px;" />
+<p class="caption">Assigning Labels for Order Elements</p>
+</div>
+<p>As shown in the image, users can perform the following actions from the <strong>Labels</strong> tab:</p>
+<ul class="simple">
+<li><strong>View Inherited Labels:</strong> View labels associated with the order element that were inherited from a higher-level order element. The planning task associated with each order element has the same associated labels.</li>
+<li><strong>View Directly Assigned Labels:</strong> View labels directly associated with the order element using the assignment form for lower-level labels.</li>
+<li><strong>Assign Existing Labels:</strong> Assign labels by searching for them among the available labels in the form below the direct label list. To search for a label, click the magnifying glass icon or enter the first letters of the label in the text box to display the available options.</li>
+<li><strong>Create and Assign New Labels:</strong> Create new labels associated with an existing label type from this form. To do this, select a label type and enter the label value for the selected type. The system automatically creates the label and assigns it to the order element when &quot;Create and assign&quot; is clicked.</li>
+</ul>
+</div>
+<div class="section" id="managing-criteria-required-by-the-order-element-and-hour-groups">
+<h2><a class="toc-backref" href="#toc-entry-7">Managing Criteria Required by the Order Element and Hour Groups</a></h2>
+<p>Both an order and an order element can have criteria assigned that must be met for the work to be performed. Criteria can be direct or indirect:</p>
+<ul class="simple">
+<li><strong>Direct Criteria:</strong> These are assigned directly to the order element. They are criteria required by the hour groups on the order element.</li>
+<li><strong>Indirect Criteria:</strong> These are assigned to higher-level order elements in the hierarchy and are inherited by the element being edited.</li>
+</ul>
+<p>In addition to the required criteria, one or more hour groups that are part of the order element can be defined. This depends on whether the order element contains other order elements as child nodes or if it is a leaf node. In the first case, information about hours and hour groups can only be viewed. However, leaf nodes can be edited. Leaf nodes work as follows:</p>
+<ul class="simple">
+<li>The system creates a default hour group associated with the order element. The details that can be modified for an hour group are:<ul>
+<li><strong>Code:</strong> The code for the hour group (if not automatically generated).</li>
+<li><strong>Criterion Type:</strong> Users can choose to assign a machine or worker criterion.</li>
+<li><strong>Number of Hours:</strong> The number of hours in the hour group.</li>
+<li><strong>List of Criteria:</strong> The criteria to be applied to the hour group. To add new criteria, click &quot;Add criterion&quot; and select one from the search engine that appears after clicking the button.</li>
+</ul>
+</li>
+<li>Users can add new hour groups with different features than previous hour groups. For example, an order element might require a welder (30 hours) and a painter (40 hours).</li>
+</ul>
+<div class="figure">
+<img alt="images/order-element-criterion.png" src="images/order-element-criterion.png" style="width: 476.0px; height: 344.0px;" />
+<p class="caption">Assigning Criteria to Order Elements</p>
+</div>
+</div>
+<div class="section" id="managing-materials">
+<h2><a class="toc-backref" href="#toc-entry-8">Managing Materials</a></h2>
+<p>Materials are managed in projects as a list associated with each order element or an order in general. The list of materials includes the following fields:</p>
+<ul class="simple">
+<li><strong>Code:</strong> The material code.</li>
+<li><strong>Date:</strong> The date associated with the material.</li>
+<li><strong>Units:</strong> The required number of units.</li>
+<li><strong>Unit Type:</strong> The type of unit used to measure the material.</li>
+<li><strong>Unit Price:</strong> The price per unit.</li>
+<li><strong>Total Price:</strong> The total price (calculated by multiplying the unit price by the number of units).</li>
+<li><strong>Category:</strong> The category to which the material belongs.</li>
+<li><strong>Status:</strong> The status of the material (e.g., Received, Requested, Pending, Processing, Cancelled).</li>
+</ul>
+<p>Working with materials is done as follows:</p>
+<ul class="simple">
+<li>Select the &quot;Materials&quot; tab on an order element.</li>
+<li>The system displays two sub-tabs: &quot;Materials&quot; and &quot;Search materials.&quot;</li>
+<li>If the order element has no assigned materials, the first tab will be empty.</li>
+<li>Click &quot;Search materials&quot; in the lower-left part of the window.</li>
+<li>The system displays the list of available categories and associated materials.</li>
+</ul>
+<div class="figure">
+<img alt="images/order-element-material-search.png" src="images/order-element-material-search.png" style="width: 476.0px; height: 343.0px;" />
+<p class="caption">Searching for Materials</p>
+</div>
+<ul class="simple">
+<li>Select categories to refine the material search.</li>
+<li>The system displays the materials that belong to the selected categories.</li>
+<li>From the materials list, select the materials to assign to the order element.</li>
+<li>Click &quot;Assign.&quot;</li>
+<li>The system displays the selected list of materials on the &quot;Materials&quot; tab with new fields to complete.</li>
+</ul>
+<div class="figure">
+<img alt="images/order-element-material-assign.png" src="images/order-element-material-assign.png" style="width: 475.5px; height: 341.5px;" />
+<p class="caption">Assigning Materials to Order Elements</p>
+</div>
+<ul class="simple">
+<li>Select the units, status, and date for the assigned materials.</li>
+</ul>
+<p>For subsequent monitoring of materials, it's possible to change the status of a group of units of the received material. This is done as follows:</p>
+<ul class="simple">
+<li>Click the &quot;Divide&quot; button on the list of materials to the right of each row.</li>
+<li>Select the number of units to divide the row into.</li>
+<li>The program displays two rows with the material divided.</li>
+<li>Change the status of the row containing the material.</li>
+</ul>
+<p>The advantage of using this dividing tool is the ability to receive partial deliveries of material without having to wait for the entire delivery to mark it as received.</p>
+</div>
+<div class="section" id="managing-quality-forms">
+<h2><a class="toc-backref" href="#toc-entry-9">Managing Quality Forms</a></h2>
+<p>Some order elements require certification that certain tasks have been completed before they can be marked as complete. This is why the program has quality forms, which consist of a list of questions that are considered important if answered positively.</p>
+<p>It's important to note that a quality form must be created beforehand to be assigned to an order element.</p>
+<p>To manage quality forms:</p>
+<ul>
+<li><p class="first">Go to the &quot;Quality forms&quot; tab.</p>
+<div class="figure">
+<img alt="images/order-element-quality.png" src="images/order-element-quality.png" style="width: 475.5px; height: 343.5px;" />
+<p class="caption">Assigning Quality Forms to Order Elements</p>
+</div>
+</li>
+<li><p class="first">The program has a search engine for quality forms. There are two types of quality forms: by element or by percentage.</p>
+<ul class="simple">
+<li><strong>Element:</strong> Each element is independent.</li>
+<li><strong>Percentage:</strong> Each question increases the progress of the order element by a percentage. The percentages must be able to add up to 100%.</li>
+</ul>
+</li>
+<li><p class="first">Select one of the forms created in the administration interface and click &quot;Assign.&quot;</p>
+</li>
+<li><p class="first">The program assigns the chosen form from the list of forms assigned to the order element.</p>
+</li>
+<li><p class="first">Click the &quot;Edit&quot; button on the order element.</p>
+</li>
+<li><p class="first">The program displays the questions from the quality form in the lower list.</p>
+</li>
+<li><p class="first">Mark the questions that have been completed as achieved.</p>
+<ul class="simple">
+<li>If the quality form is based on percentages, the questions are answered in order.</li>
+<li>If the quality form is based on elements, the questions can be answered in any order.</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</body>
+</html>

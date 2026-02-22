@@ -141,16 +141,16 @@ public class TransferOrdersModel implements ITransferOrdersModel {
 
         if (sourceScenario == null) {
             throw new ValidationException(
-                    _("Please select a source scenario"));
+                    _t("Please select a source scenario"));
         }
         if (destinationScenario == null) {
             throw new ValidationException(
-                    _("Please, select a destination scenario"));
+                    _t("Please, select a destination scenario"));
         }
 
         if (sourceScenario.getId().equals(destinationScenario.getId())) {
             throw new ValidationException(
-                    _("Source and destination scenarios should be different"));
+                    _t("Source and destination scenarios should be different"));
         }
 
         orderDAO.save(order);
@@ -167,7 +167,7 @@ public class TransferOrdersModel implements ITransferOrdersModel {
                 && (sourceOrderVersion.getId().equals(destinationOrderVersion
                         .getId()))) {
             throw new ValidationException(
-                    _("Project version is the same in source and destination scenarios"));
+                    _t("Project version is the same in source and destination scenarios"));
         }
 
         order.useSchedulingDataFor(sourceOrderVersion);

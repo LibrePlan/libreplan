@@ -337,7 +337,7 @@ public class CalendarImporterMPXJ implements ICalendarImporter {
         if (calendars.isEmpty()) {
             return name;
         } else {
-            throw new ValidationException(_("Calendar name already in use"));
+            throw new ValidationException(_t("Calendar name already in use"));
         }
 
     }

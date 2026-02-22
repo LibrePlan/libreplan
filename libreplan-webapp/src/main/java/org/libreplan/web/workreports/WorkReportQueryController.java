@@ -136,7 +136,7 @@ public class WorkReportQueryController extends GenericForwardComposer {
                         (finishDateLine.compareTo(filterStartDateLine.getValue()) < 0)) {
 
                     filterFinishDateLine.setValue(null);
-                    throw new WrongValueException(comp, _("must be after start date"));
+                    throw new WrongValueException(comp, _t("must be after start date"));
                 }
             }
         };
@@ -152,7 +152,7 @@ public class WorkReportQueryController extends GenericForwardComposer {
                         (startDateLine.compareTo(filterFinishDateLine.getValue()) > 0)) {
 
                     filterStartDateLine.setValue(null);
-                    throw new WrongValueException(comp, _("must be lower than end date"));
+                    throw new WrongValueException(comp, _t("must be lower than end date"));
                 }
             }
         };
@@ -249,16 +249,16 @@ public class WorkReportQueryController extends GenericForwardComposer {
                                                                               TypeOfWorkHours hoursType) {
 
         Set<WorkReportLinePredicate> result = new HashSet<>();
-        if (type.equals(_("All"))) {
+        if (type.equals(_t("All"))) {
             result.add(new WorkReportLinePredicate(resource, startDate, finishDate, orderElement, hoursType));
             if (orderElement != null) {
                 for (OrderElement each : orderElement.getChildren()) {
                     result.add(new WorkReportLinePredicate(resource, startDate, finishDate, each, hoursType));
                 }
             }
-        } else if (type.equals(_("Direct"))) {
+        } else if (type.equals(_t("Direct"))) {
             result.add(new WorkReportLinePredicate(resource, startDate, finishDate, orderElement, hoursType));
-        } else if (type.equals(_("Indirect")) && orderElement != null) {
+        } else if (type.equals(_t("Indirect")) && orderElement != null) {
             for (OrderElement each : orderElement.getChildren()) {
                 result.add(new WorkReportLinePredicate(resource, startDate, finishDate, each, hoursType));
             }
@@ -282,7 +282,7 @@ public class WorkReportQueryController extends GenericForwardComposer {
             try {
                 return workReportModel.findOrderElement(orderElement.getCode());
             } catch (InstanceNotFoundException e) {
-                throw new WrongValueException(bandboxFilterOrderElement, _("Task not found"));
+                throw new WrongValueException(bandboxFilterOrderElement, _t("Task not found"));
             }
         }
 
@@ -333,7 +333,7 @@ public class WorkReportQueryController extends GenericForwardComposer {
 
             personalTimesheetController.goToCreateOrEditForm(line.getLocalDate());
         } else {
-            messagesForUser.showMessage(Level.WARNING, _("You do not have permissions to edit this timesheet"));
+            messagesForUser.showMessage(Level.WARNING, _t("You do not have permissions to edit this timesheet"));
         }
     }
 
@@ -369,7 +369,7 @@ public class WorkReportQueryController extends GenericForwardComposer {
         }
 
         public String toString() {
-            return _("Tasks") + " " + getTotalTasks() + ". " + _("Total hours") + " " + getTotalHours() + ".";
+            return _t("Tasks") + " " + getTotalTasks() + ". " + _t("Total hours") + " " + getTotalHours() + ".";
         }
 
     }

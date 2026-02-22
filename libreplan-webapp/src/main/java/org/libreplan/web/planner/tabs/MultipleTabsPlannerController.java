@@ -210,7 +210,7 @@ public class MultipleTabsPlannerController implements Composer, IGlobalViewEntry
             LongOperationFeedback.execute(tabsSwitcher, new ILongOperation() {
                 @Override
                 public String getName() {
-                    return _("changing perspective");
+                    return _t("changing perspective");
                 }
 
                 @Override
@@ -234,7 +234,7 @@ public class MultipleTabsPlannerController implements Composer, IGlobalViewEntry
     }
 
     public static String getSchedulingLabel() {
-        return _("Planning");
+        return _t("Planning");
     }
 
     public MultipleTabsPlannerController() {
@@ -259,7 +259,7 @@ public class MultipleTabsPlannerController implements Composer, IGlobalViewEntry
                     if ( SecurityUtils.loggedUserCanWrite(mode.getOrder()) ) {
                         ConfirmCloseUtil.setConfirmClose(
                                 desktop,
-                                _("You are about to leave the planning editing. Unsaved changes will be lost!"));
+                                _t("You are about to leave the planning editing. Unsaved changes will be lost!"));
                     }
                     break;
 

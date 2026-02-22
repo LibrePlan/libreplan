@@ -184,7 +184,7 @@ public abstract class AssignedCriterionRequirementModel<T, M> implements IAssign
 
             // Set generated name
             int number = (asOrderLine()).getHoursGroups().size() - 1;
-            newHoursGroup.setCode(_("New hours group ") + number);
+            newHoursGroup.setCode(_t("New hours group ") + number);
 
             return newHoursGroup;
         }

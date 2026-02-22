@@ -25,8 +25,8 @@ package org.libreplan.web.subcontract;
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 public enum FilterCommunicationEnum {
-    ALL(_("All")),
-    NOT_REVIEWED(_("Not Reviewed"));
+    ALL(_t("All")),
+    NOT_REVIEWED(_t("Not Reviewed"));
 
     private String displayName;
 

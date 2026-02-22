@@ -19,7 +19,7 @@
 
 package org.libreplan.business.externalcompanies.entities;
 
-import static org.libreplan.business.i18n.I18nHelper._;
+import static org.libreplan.business.i18n.I18nHelper._t;
 
 /**
  * Enum for specified the type of {@link CustomerCommunication}
@@ -28,10 +28,10 @@ import static org.libreplan.business.i18n.I18nHelper._;
  */
 public enum CommunicationType {
 
-    NEW_PROJECT(_("New project")),
-    PROGRESS_UPDATE(_("Progress Update")),
-    UPDATE_DELIVERING_DATE(_("Update Delivering Date")),
-    END_DATE_UPDATE(_("End date update"));
+    NEW_PROJECT(_t("New project")),
+    PROGRESS_UPDATE(_t("Progress Update")),
+    UPDATE_DELIVERING_DATE(_t("Update Delivering Date")),
+    END_DATE_UPDATE(_t("End date update"));
 
     private String description;
 

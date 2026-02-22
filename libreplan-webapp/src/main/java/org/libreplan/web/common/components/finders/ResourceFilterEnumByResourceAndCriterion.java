@@ -28,7 +28,7 @@ import org.libreplan.business.resources.entities.Resource;
  */
 public enum ResourceFilterEnumByResourceAndCriterion implements IFilterEnum {
 
-    RESOURCE(_("Resource")), CRITERION(_("Criterion"));
+    RESOURCE(_t("Resource")), CRITERION(_t("Criterion"));
 
     /**
      * Forces to mark the string as needing translation

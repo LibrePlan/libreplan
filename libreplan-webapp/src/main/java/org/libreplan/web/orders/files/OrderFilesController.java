@@ -180,7 +180,7 @@ public class OrderFilesController extends GenericForwardComposer {
     public void confirmRemove(OrderFile file){
 
         int status = Messagebox.show(
-                _("Confirm deleting this file. Are you sure?"), _("Delete"),
+                _t("Confirm deleting this file. Are you sure?"), _t("Delete"),
                 Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION);
 
         if ( Messagebox.OK != status ) {
@@ -280,7 +280,7 @@ public class OrderFilesController extends GenericForwardComposer {
                 updateListbox();
             }
 
-        } else messages.showMessage(Level.ERROR, _("Please, make repository"));
+        } else messages.showMessage(Level.ERROR, _t("Please, make repository"));
 
     }
 

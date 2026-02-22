@@ -118,13 +118,13 @@ public class StretchesFunctionController extends GenericForwardComposer {
             stretchesFunctionModel.confirm();
             exit();
         } catch (ValidationException e) {
-            Messagebox.show(e.getMessage(), _("Error"), Messagebox.OK, Messagebox.ERROR);
+            Messagebox.show(e.getMessage(), _t("Error"), Messagebox.OK, Messagebox.ERROR);
         }
     }
 
     public void cancel() throws InterruptedException {
-        int status = Messagebox.show(_("All changes will be lost. Are you sure?"),
-                _("Confirm cancel"), Messagebox.YES | Messagebox.NO, Messagebox.QUESTION);
+        int status = Messagebox.show(_t("All changes will be lost. Are you sure?"),
+                _t("Confirm cancel"), Messagebox.YES | Messagebox.NO, Messagebox.QUESTION);
         if ( Messagebox.YES == status ) {
             stretchesFunctionModel.cancel();
             close();
@@ -325,7 +325,7 @@ public class StretchesFunctionController extends GenericForwardComposer {
                         private void checkBetweenZeroAndOneHundred(BigDecimal percent) {
                             if (percent.toBigInteger().intValue() > 100 || percent.toBigInteger().intValue() < 0) {
                                 throw new WrongValueException(tempDecimalbox,
-                                        _("Length percentage should be between 0 and 100"));
+                                        _t("Length percentage should be between 0 and 100"));
                             }
                         }
 
@@ -364,7 +364,7 @@ public class StretchesFunctionController extends GenericForwardComposer {
                         } catch (IllegalArgumentException e) {
                             throw new WrongValueException(
                                     decimalBox,
-                                    _("Amount work percentage should be between 0 and 100"));
+                                    _t("Amount work percentage should be between 0 and 100"));
                         }
                     });
 
@@ -384,7 +384,7 @@ public class StretchesFunctionController extends GenericForwardComposer {
                 button = new Button("", "/common/img/ico_borrar1.png");
                 button.setHoverImage("/common/img/ico_borrar.png");
                 button.setSclass("icono");
-                button.setTooltiptext(_("Delete"));
+                button.setTooltiptext(_t("Delete"));
 
                 button.addEventListener(Events.ON_CLICK, event -> {
                     stretchesFunctionModel.removeStretch(stretch);

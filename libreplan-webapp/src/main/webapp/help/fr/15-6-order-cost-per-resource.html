@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Rapport des coûts de projets</title>
+<link rel="stylesheet" href="html/lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="rapport-des-couts-de-projets">
+<h1 class="title">Rapport des coûts de projets</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#objet" id="toc-entry-1">Objet</a></li>
+<li><a class="reference internal" href="#parametres-d-entree-et-filtres" id="toc-entry-2">Paramètres d'entrée et filtres</a></li>
+<li><a class="reference internal" href="#sortie" id="toc-entry-3">Sortie</a><ul>
+<li><a class="reference internal" href="#en-tete" id="toc-entry-4">En-tête</a></li>
+<li><a class="reference internal" href="#pied-de-page" id="toc-entry-5">Pied de page</a></li>
+<li><a class="reference internal" href="#corps" id="toc-entry-6">Corps</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="objet">
+<h1><a class="toc-backref" href="#toc-entry-1">Objet</a></h1>
+<p>Ce rapport vous permet de voir le coût d'un ou plusieurs projets, qu'il s'agisse des coûts horaires des ressources ou des dépenses effectuées.</p>
+</div>
+<div class="section" id="parametres-d-entree-et-filtres">
+<h1><a class="toc-backref" href="#toc-entry-2">Paramètres d'entrée et filtres</a></h1>
+<p>Il y a plusieurs paramètres facultatifs disponibles. Ce sont :</p>
+<blockquote>
+<ul class="simple">
+<li><strong>Filtrer par projet</strong>. C'est le ou les projets pour les tâches duquel ou desquels on veut générer le rapport. Si aucun projet n'est renseigné, les coûts de tous les projets seront successivement indiqués.</li>
+<li><dl class="first docutils">
+<dt><strong>Dates</strong>.</dt>
+<dd><ul class="first last">
+<li><em>Travail effectué depuis</em>. C'est la date minimum des rapports de travail qui sont demandés. Les rapports avec des dates antérieures à cette date de début sont ignorés. Si le paramètre n'est pas renseigné, il n'y a pas de date de filtrage d'antériorité.</li>
+<li><em>Travail effectué jusqu'au</em>. C'est la date maximum des rapports de travail qui seront inclus dans les résultats. Les rapports de travail avec une date postérieure à cette date ne seront pas pris en compte. Si le paramètre n'est pas renseigné, il n'y a pas de limite supérieure de filtrage des rapports de travail.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><strong>Filtrer par critères</strong>. Permet de ne retenir que les tâches disposant du ou des critères indiqués. Choisir un critère et cliquer sur le bouton <em>Ajouter</em>.</li>
+<li><strong>Filtrer par étiquettes</strong>. Permet de ne retenir que les tâches disposant de la ou des étiquettes indiquées. Choisir une étiquette et cliquer sur le bouton <em>Ajouter</em>.</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="sortie">
+<h1><a class="toc-backref" href="#toc-entry-3">Sortie</a></h1>
+<p>Le format de sortie est le suivant :</p>
+<div class="section" id="en-tete">
+<h2><a class="toc-backref" href="#toc-entry-4">En-tête</a></h2>
+<p>Dans l'en-tête de rapport les champs suivants sont affichés :</p>
+<blockquote>
+<ul class="simple">
+<li><strong>Les dates de début et/ou de fin</strong> si elles ont été renseignées.</li>
+<li><strong>Projet</strong>. Les projets pour lesquels le rapport est généré. Si aucun n'est indiqué, <em>Tous les projets</em> sera indiqué.</li>
+<li><strong>Étiquettes</strong>. Les étiquettes si certaines ont été indiquées.</li>
+<li><strong>Critères</strong>. Les critères si certains ont été indiqués.</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="pied-de-page">
+<h2><a class="toc-backref" href="#toc-entry-5">Pied de page</a></h2>
+<p>La date à laquelle le rapport a été généré est affichée.</p>
+</div>
+<div class="section" id="corps">
+<h2><a class="toc-backref" href="#toc-entry-6">Corps</a></h2>
+<p>Le corps contient une liste de sections et de sous-sections.
+On trouve d'abord une section par projet indiquant le nom et le code du projet. Dans chacune, on trouve des sous-sections concernant chacune des tâches du projet ayant fait l'objet de relevés d'heures de travail. Figurent le nom et le code de la tâche.
+Enfin, dans chacune de ces sous-sections, on trouve un tableau par ressource indiquant:</p>
+<blockquote>
+<ul>
+<li><p class="first">les noms et prénoms des employés ou le nom des machines.</p>
+</li>
+<li><p class="first">un tableau comportant les colonnes suivantes :</p>
+<blockquote>
+<ul class="simple">
+<li><em>Date</em>. La date du relevé des heures de travail</li>
+<li><em>Type d'heures</em>. Le type d'heures concerné (par exemple: par défaut, heures supplémentaires ...).</li>
+<li><em>Salaire</em>. Le prix horaire de ce type d'heures.</li>
+<li><em>Heures</em>. Le nombre d'heures réalisées.</li>
+<li><em>Coûts</em>. Le coût de ces heures obtenu en multipliant les deux colonnes précédentes.</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+</blockquote>
+<p>Sous chaque tableau on trouve le total des heures et des coûts de la ressource concernée.</p>
+<p>On trouve ensuite un tableau avec pour chaque relevé de dépenses les colonnes suivantes :</p>
+<blockquote>
+<ul class="simple">
+<li><em>Date</em>. La date de la dépense.</li>
+<li><em>Catégorie</em>. La catégorie de la dépense.</li>
+<li><em>Ressource</em>. La ressource à l'origine de la dépense.</li>
+<li><em>Coûts</em>. Les coûts de la dépense.</li>
+</ul>
+</blockquote>
+<p>Sous ce tableau, on trouve le total des dépenses pour la tâche.</p>
+<p>En fin de chaque section, on trouve le total des heures et des coûts de toutes les ressources ayant travaillé sur la tâche concernée.</p>
+<p>En fin de chaque section de projet, on trouve le <em>Total projet</em> comportant :</p>
+<blockquote>
+<ul>
+<li><p class="first">Le <em>temps passé</em>. Somme des heures effectuées pour l'ensemble des tâches par toutes les ressources impliquées</p>
+</li>
+<li><p class="first">L'<em>argent dépensé</em> qui présente successivement :</p>
+<blockquote>
+<ul class="simple">
+<li>le <em>coût des heures</em></li>
+<li>le <em>coût des dépenses</em></li>
+<li>le <em>total</em> des 2 coûts précédents</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+</blockquote>
+</div>
+</div>
+</div>
+</body>
+</html>

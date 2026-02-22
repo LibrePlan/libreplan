@@ -41,7 +41,7 @@ public class OrderBandboxFinder extends BandboxFinder implements IBandboxFinder 
     @Autowired
     private IOrderDAO orderDAO;
 
-    private final String headers[] = { _("Project code"), _("Project name") };
+    private final String headers[] = { _t("Project code"), _t("Project name") };
 
     /**
      * Forces to mark the string as needing translation.

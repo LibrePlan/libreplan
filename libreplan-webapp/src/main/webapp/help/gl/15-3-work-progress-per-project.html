@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Informe de traballo e progres por proxecto</title>
+<link rel="stylesheet" href="html/lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="informe-de-traballo-e-progres-por-proxecto">
+<h1 class="title">Informe de traballo e progres por proxecto</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#proposito" id="toc-entry-1">Propósito</a></li>
+<li><a class="reference internal" href="#parametros-de-entrada-e-filtros" id="toc-entry-2">Parámetros de entrada e filtros</a></li>
+<li><a class="reference internal" href="#saida" id="toc-entry-3">Saída</a><ul>
+<li><a class="reference internal" href="#cabeceira" id="toc-entry-4">Cabeceira</a></li>
+<li><a class="reference internal" href="#pe-de-paxina" id="toc-entry-5">Pé de páxina</a></li>
+<li><a class="reference internal" href="#corpo" id="toc-entry-6">Corpo</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="proposito">
+<h1><a class="toc-backref" href="#toc-entry-1">Propósito</a></h1>
+<p>Este informe permite mostrar cal é o estado global dos proxectos tendo en conta dúas variables: o progreso e o custo.</p>
+<p>Analízase o estado actual de progreso dun proxecto comparándoo co previsto de acordo á planificación e ao traballo dedicado.</p>
+<p>Tamén se mostran varios indicadores relacionados ao custo do proxecto comparándoo o rendemento actual co teórico.</p>
+</div>
+<div class="section" id="parametros-de-entrada-e-filtros">
+<h1><a class="toc-backref" href="#toc-entry-2">Parámetros de entrada e filtros</a></h1>
+<p>Hai varios parámetros obrigatorios. Estes son:</p>
+<blockquote>
+<ul class="simple">
+<li><strong>Data de referencia</strong>. É a data de referencia para facer a comparación do estado previsto de planificación do proxecto nesa data co rendemento real do proxecto nesa citada data.</li>
+<li><strong>Tipo de progreso</strong>. É o tipo de progreso que se quere usar para medir o progreso global. Na aplicación un proxecto pode ser medido simultaneamente con diferentes tipos de progresos, e o seleccionado polo usuario no combo de selección é o usado para calcular o informe. O valor por defecto para o tipo de progreso a usar é <em>propagado</em>, que é un tipo especial de progreso consistente no uso en cada elemento do WBS do valor alí configurado como que propaga.</li>
+</ul>
+</blockquote>
+<p>Con respecto aos campos opcións, son os seguintes:</p>
+<blockquote>
+<ul class="simple">
+<li><strong>Data de inicio</strong>. A data de inicio mínima dos proxectos que se queren incluír no informe. É opcional. Se non se especifica <em>data de inicio</em>, non existe data mínima para os proxectos a incluír.</li>
+<li><strong>Data de fin</strong>. É a data máxima de fin dos proxectos para que estes sexan incluídos no informe. Todos os proxectos que terminan tras a <em>data de fin</em> son descartados.</li>
+<li><strong>Filtro por proxectos</strong>. Este filtro permite seleccionar un conxunto de proxectos aos que limitar os resultados do informe. Se non se engade ningún proxecto ao filtro, móstrase o informe para todos os proxectos da base de datos. Hai un selector autcompletable para atopar os proxectos requiridos. Engádense ao filtro mediante a pulsación no botón <em>Engadir</em>.</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="saida">
+<h1><a class="toc-backref" href="#toc-entry-3">Saída</a></h1>
+<p>O formato de saída é a seguinte:</p>
+<div class="section" id="cabeceira">
+<h2><a class="toc-backref" href="#toc-entry-4">Cabeceira</a></h2>
+<p>Na cabeceira do informe inclúense os seguintes parámetros de entrada:</p>
+<blockquote>
+<ul class="simple">
+<li><strong>Data de inicio</strong>. É o filtro por data de inicio. Non se mostra se o informe non é filtrado por este campo.</li>
+<li><strong>Data de fin</strong>. É o filtro por data fin. Non se mostra se o usuario non o enche.</li>
+<li><strong>Tipo de progreso</strong>. É o tipo de progreso usado por este informe.</li>
+<li><strong>Proxectos</strong>. É un campo que informa acerca dos proxectos filtrados para os que se obtén o proxecto. Consiste na cadea de texto <em>Todos</em> cando o informe obtense para todos os proxectos que satisfán o resto dos filtros.</li>
+<li><strong>Data de referencia</strong>. Mostra o campo de entrada obrigatorio <em>data de referencia</em> utilizado na extracción do informe.</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="pe-de-paxina">
+<h2><a class="toc-backref" href="#toc-entry-5">Pé de páxina</a></h2>
+<p>Móstrase a data na que o informe foi extraído.</p>
+</div>
+<div class="section" id="corpo">
+<h2><a class="toc-backref" href="#toc-entry-6">Corpo</a></h2>
+<p>O corpo do informe consiste na lista de proxectos que foron seleccionados como resultado dos filtros de entrada.</p>
+<p>Outra cousa importante é que o progreso no informe é calculado en tantos por un. Son valores entre o 0 e o 1.</p>
+<p>Os filtros funcionan engadindo condicións que se aplican en cadea a excepción do conxunto formado polos filtros de data (<em>data de inicio</em>, <em>data de fin</em>) e o <em>filtro por proxectos</em>. Neste caso, se un dos filtros de data contén algún valor e tamén o <em>filtro por proxectos</em> ten algun proxecto configurado ao mesmo tempo, entón este último filtro é o que manda na selección. Isto significa que os proxectos que se inclúen no informe son os proporcionados polo <em>filtro por proxectos</em> independentemente do que haxa nos <em>filtros de datas</em></p>
+<dl class="docutils">
+<dt>Para cada proxecto seleccionado a ser incluído na saída do informe, móstrase a seguinte información:</dt>
+<dd><ul class="first last simple">
+<li><em>O nome do proxecto.</em></li>
+<li><dl class="first docutils">
+<dt><em>As horas totais.</em> As horas totais do proxecto móstranse mediante a adición das horas de cada tarefa. Calcúlanse dous tipos de horas totais:</dt>
+<dd><ul class="first last">
+<li><em>Estimadas (HE)</em>. Esta cantidade é a suma de todas as horas do WBS do proxecto. É o número total de horas nas que un proxecto está estimado para ser completado.</li>
+<li><em>Planificadas (TP)</em>. En <em>LibrePlan</em> é posible ter dúas cantidades diferentes. As horas estimadas dunha tarefa, que son o número de horas que a priori se pensa que son necesaras para terminar unha tarefa, e as horas planificadas, que son as horas asignadas no plan para facer a tarefa. As horas planificadas poden ser igual, menos ou máis que as horas estimadas e decídense nunha fase posterior, na operación de asignación. Por tanto, as horas totais planificadas dun proxecto é a suma de todas as horas asignadas das súas tarefas.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>Progreso</em>. Móstranse tres medidas relacionadas co tipo de progreso especificado no filtro de entrada na data de referencia:</dt>
+<dd><ul class="first last">
+<li><em>Medidas (PM)</em>. É o progreso global considerando as medidas de progreso cunha data menor ou igual á <em>data de referencia</em> nos campos de entrada para o informe. Ademais, tense en conta a todas as tarefas e a suma pondérase polo número de horas de cada tarefa.</li>
+<li><em>Imputado (PI)</em>. Este é o progreso considerando que o traballo realizado vai á mesma velocidade que as horas dedicadas nas tarefas. Se se fan X horas de E totais dunha tarefa, considérase que o progreso imputado global é X/E.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>Horas até a data</em>. Son dous campos que mostran o número de horas até a data de referencia desde dous puntos de vista:</dt>
+<dd><ul class="first last">
+<li><em>Planeadas (HP)</em>. Este número é a adición das horas asignadas en calquera tarefa cunha data inferior á <em>data de referencia</em>.</li>
+<li><em>Reais (HR).</em>. Este número é a adición das horas imputadas nos partes de traballo a calquera das tarefas dun proxecto cunha data os partes de traballo igual ou inferior á <em>data de referencia</em>.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>Diferenza</em>. Englobadas nesta sección atópanse varias maneiras de medir o custo:</dt>
+<dd><ul class="first last">
+<li><em>En custo</em>. É a diferenza en horas entre o número de horas gastadas tendo en conta o progreso medido e as horas dedicadas até a <em>data de referencia</em>. A fórmula é: <em>PM*TP - HR</em>.</li>
+<li><em>En planificación</em>. É a diferenza entre as horas gastadas de acordo ao progreso medido global e o número de horas planificadas até a data de referencia. Mide o adianto ou o atraso. A fórmula é: <em>PM*TP - HR</em>.</li>
+<li><em>Cociente de custo</em>. Calcúlase dividindo <em>PM</em>/<em>PI</em>. Se é maior que 1, significa que o proxecto vai en beneficios e se é menor que 1, que se está perdendo diñeiro</li>
+<li><em>Cociente en planificación.</em> Se calcula dividindo <em>PM</em>/<em>PP</em>. Se é maior que 1, significa que o proxecto vai adiantado e se é menor que 1 que vai con atraso.</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+</body>
+</html>

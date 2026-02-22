@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Avances</title>
+<link rel="stylesheet" href="html/lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="avances">
+<h1 class="title">Avances</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#gestion-de-tipos-de-avance" id="toc-entry-1">Gestión de tipos de avance</a></li>
+<li><a class="reference internal" href="#introduccion-de-avances-en-base-a-tipo" id="toc-entry-2">Introducción de avances en base a tipo</a></li>
+<li><a class="reference internal" href="#contraste-de-avances-sobre-un-elemento-del-pedido" id="toc-entry-3">Contraste de avances sobre un elemento del pedido</a></li>
+</ul>
+</div>
+<p>El avance de un proyecto marca el grado en el que se está cumpliendo con el alcance estimado para la realización del mismo, además, el avance de una tarea indica ese mismo grado para el alcance estimado para dicha tarea.</p>
+<p>Generalmente los avances no tienen un modo automático de ser medidos, y es una persona quien en base a la experiencia o a la realización de una lista de chequeo determina el grado de compleción de una tarea o un proyecto.</p>
+<p>Cabe destacar que hay una diferencia importante entre el uso de horas asignadas a una tarea o proyecto, con el grado de avance en esa misma tarea o proyecto. Mientras que el uso de horas puede estar en desvío o no, el proyecto puede estar en un grado de avance inferior o superior al estimado para el día en el que se está controlando. Se producen, debido la estas dos medidas, varias posibles situaciones:</p>
+<ul class="simple">
+<li>Se consumieron menos horas de las estimadas para el elemento a medir y, al mismo tiempo, el proyecto está yendo más lento de lo estimado, porque el avance es inferior al estimado para el día de control.</li>
+<li>Se consumieron menos horas de las estimadas para el elemento a medir y, al mismo tiempo, el proyecto está yendo más rápido del estimado, porque el avance es inferior al estimado para el día de control.</li>
+<li>Se consumieron más horas de las estimadas y, al mismo tiempo, el proyecto está yendo más lento del estimado, porque el avance es inferior al estimado para el día de control.</li>
+<li>Se consumieron más horas de las estimadas y, al mismo, tiempo el proyecto está yendo más rápido del estimado, porque el avance es inferior al estimado para el día de control.</li>
+</ul>
+<p>El contraste de estas posibles situaciones es posible realizarlo desde la propia planificación, utilizando información del grado de avance y por otro lado del grado de uso de horas. En este capítulo se tratará la introducción de la información para poder llevar un control del avance.</p>
+<p>La filosofía implantada en el proyecto para el control del avance está basada en que el usuario divida hasta el punto en el que desea el control de avances de sus proyectos. En consecuencia, si el usuario desea controlar a nivel de pedido, sólo debe introducir información en los elementos de nivel 1, cuando se desea poder disponer de un control más fino sobre las tareas, debe introducir información de avances en niveles inferiores, siendo el sistema que propaga hacia arriba en la jerarquía todos los datos.</p>
+<div class="section" id="gestion-de-tipos-de-avance">
+<h1><a class="toc-backref" href="#toc-entry-1">Gestión de tipos de avance</a></h1>
+<p>Cada empresa puede tener unas necesidades diferentes de control del avance de sus proyectos, y concretamente de las tareas que los componen. Por esta razón fue necesario contemplar la existencia de unas entidades en el sistema llamadas &quot;tipos de avance&quot;. Los tipos de avance son diferentes tipologías que cada usuario puede dar de alta en el sistema para medir el avance de una tarea. Por ejemplo, una tarea puede ser medida porcentualmente, pero al mismo tiempo ese avance porcentual se traduce en un avance en <em>Toneladas</em> sobre lo acordado con el cliente.</p>
+<p>Un tipo de avance está caracterizado por un nombre, un valor máximo y una precisión:</p>
+<ul class="simple">
+<li>Nombre: Será un nombre representativo que el usuario debe recordar para cuando seleccione la asignación de avances sea capaz de entender que tipo de avance está midiendo.</li>
+<li>Valor máximo: Es el valor máximo que se le permite a una tarea o proyecto establecer como medida total de avance. Por ejemplo, trabajando con <em>Toneladas</em>, si se considera que el máximo normal en toneladas es de 4000 y nunca va a haber tareas que requieran realizar más de 4000 toneladas de algún material, ese debería ser el valor máximo establecido.</li>
+<li>Precisión: Es el valor de los incrementos que se permiten para el tipo de avance creado. Por ejemplo, si el avance en <em>Toneladas</em> se va a medir en valores redondeados, podría ser 1 la precisión. Desde ese momento, sólo se podrían introducir medidas de avance con números enteros, por ejemplo, 1, 2, 300, etc.</li>
+</ul>
+<p>El sistema cuenta con dos tipos de avance creados por defecto:</p>
+<ul class="simple">
+<li>Porcentual: Tipo de avance general que permite medir el avance de un proyecto o tarea en base al porcentaje que se estima de compleción, por ejemplo, una tarea está al 30% respeto al 100% estimado en un día concreto.</li>
+<li>Unidades: Tipo de avance general que permite medir el avance en unidades sin necesidad de especificar las unidades concretas. La tarea comprendía la creación de 3000 unidades y el avance son 500 unidades sobre las 3000 estimadas.</li>
+</ul>
+<div class="figure">
+<img alt="images/tipos-avances.png" src="images/tipos-avances.png" style="width: 376.5px; height: 164.5px;" />
+<p class="caption">Administración de tipos de avances</p>
+</div>
+<p>El usuario puede crear nuevos tipos de avance de la siguiente manera:</p>
+<ul class="simple">
+<li>El usuario accede a la sección de &quot;Administración&quot;.</li>
+<li>Presiona en la opción del menú de segundo nivel &quot;Gestionar tipos de avance&quot;.</li>
+<li>El sistema muestra un listado de tipos de avance existentes.</li>
+<li>Con cada tipo de avance el usuario puede:<ul>
+<li>Editar</li>
+<li>Borrar</li>
+</ul>
+</li>
+<li>A mayores, el usuario puede crear un tipo de avance nuevo.</li>
+<li>Con la edición o la creación, el sistema muestra un formulario con la siguiente información:<ul>
+<li>Nombre del tipo de avance.</li>
+<li>Valor máximo que acepta el tipo de avance.</li>
+<li>Precisión del tipo de avance.</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="introduccion-de-avances-en-base-a-tipo">
+<h1><a class="toc-backref" href="#toc-entry-2">Introducción de avances en base a tipo</a></h1>
+<p>La introducción de los avances se realiza sobre los elementos de pedido, sin embargo, es posible hacerlo con un atajo desde las tareas de planificación. Es responsabilidad del usuario la decisión sobre qué tipos de avance desea asociar a cada elemento de pedido.</p>
+<p>Es posible introducir un tipo de avance único y defectivo para todo un pedido.</p>
+<p>Antes de poder realizar medidas de avance, es necesario asociar el tipo elegido al pedido, por ejemplo, un avance de tipo porcentaje para medir porcentualmente los avances realizados sobre el total de la tarea, o un avance de tipo pactado por se se quieren introducir a futuro mediciones de avances pactadas con el cliente.</p>
+<div class="figure">
+<img alt="images/avance.png" src="images/avance.png" style="width: 424.0px; height: 290.8px;" />
+<p class="caption">Pantalla de introducción de avances con visualización gráfica.</p>
+</div>
+<p>Para introducir mediciones de avance es necesario realizar el siguiente:</p>
+<ul class="simple">
+<li>Seleccionar el tipo de avance para lo cual desea introducir el avance.<ul>
+<li>Si no existe ningún tipo de avance es necesario añadir un tipo de avance.</li>
+</ul>
+</li>
+<li>En el formulario que aparece debajo con los campos &quot;Valor&quot; y &quot;Fecha&quot; introducir el valor absoluto de la medida y la fecha que se le desea asignar a la medida tomada.</li>
+<li>El sistema almacena automáticamente los datos introducidos.</li>
+</ul>
+</div>
+<div class="section" id="contraste-de-avances-sobre-un-elemento-del-pedido">
+<h1><a class="toc-backref" href="#toc-entry-3">Contraste de avances sobre un elemento del pedido</a></h1>
+<p>Es posible contrastar graficamente las evoluciones de los avances de los pedidos en base a las mediciones realizadas. Cada tipo de avance dispone de una columna con botones de chequeo (de título &quot;Mostrar&quot;) el cual al ser marcado se muestra la gráfica de evoluciones de medidas realizadas sobre el elemento de pedido.</p>
+<div class="figure">
+<img alt="images/contraste-avance.png" src="images/contraste-avance.png" style="width: 422.0px; height: 290.0px;" />
+<p class="caption">Contraste de varios avances.</p>
+</div>
+</div>
+</div>
+</body>
+</html>

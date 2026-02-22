@@ -112,7 +112,7 @@ public class CostStatusController extends GenericForwardComposer {
     }
 
     private void setHoursLabel(Label label, BigDecimal value) {
-        label.setValue(_("{0} h", value.setScale(2, RoundingMode.HALF_UP)));
+        label.setValue(_t("{0} h", value.setScale(2, RoundingMode.HALF_UP)));
     }
 
     private void setPercentageLabel(Label label, BigDecimal value) {

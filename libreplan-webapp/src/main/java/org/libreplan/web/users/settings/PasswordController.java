@@ -70,7 +70,7 @@ public class PasswordController extends GenericForwardComposer {
         ConstraintChecker.isValid(passwordWindow);
         try {
             passwordModel.confirmSave();
-            messages.showMessage(Level.INFO, _("Password saved"));
+            messages.showMessage(Level.INFO, _t("Password saved"));
             PasswordUtil.showOrHideDefaultPasswordWarnings();
         } catch (ValidationException e) {
             messages.showInvalidValues(e);
@@ -95,10 +95,10 @@ public class PasswordController extends GenericForwardComposer {
             @Override
             public void validate(Component comp, Object value) throws WrongValueException {
                 if (StringUtils.isEmpty((String)value) || StringUtils.isEmpty(password.getValue())) {
-                    throw new WrongValueException(comp, _("passwords can not be empty"));
+                    throw new WrongValueException(comp, _t("passwords can not be empty"));
                 }
                 if (!value.equals(password.getValue())) {
-                    throw new WrongValueException(comp, _("passwords don't match"));
+                    throw new WrongValueException(comp, _t("passwords don't match"));
                 }
             }
         };
@@ -109,7 +109,7 @@ public class PasswordController extends GenericForwardComposer {
             @Override
             public void validate(Component comp, Object value) throws WrongValueException {
                 if (!passwordModel.validateCurrentPassword((String)value)) {
-                    throw new WrongValueException(comp, _("Current password is incorrect"));
+                    throw new WrongValueException(comp, _t("Current password is incorrect"));
                 }
             }
         };

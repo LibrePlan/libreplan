@@ -151,7 +151,7 @@ public class LabelTypeModel extends IntegrationEntityModel implements
     }
 
     private InvalidValue createInvalidValue(LabelType labelType) {
-        return invalidValue(_("{0} already exists", labelType.getName()),
+        return invalidValue(_t("{0} already exists", labelType.getName()),
                 "name", labelType.getName(), labelType);
     }
 
@@ -177,7 +177,7 @@ public class LabelTypeModel extends IntegrationEntityModel implements
     }
 
     private InvalidValue createInvalidValue(Label label) {
-        return invalidValue(_("{0} already exists", label.getName()), "name",
+        return invalidValue(_t("{0} already exists", label.getName()), "name",
                 label.getName(), label);
     }
 
@@ -264,7 +264,7 @@ public class LabelTypeModel extends IntegrationEntityModel implements
         for (Label label : labelType.getLabels()) {
             if (name.equals(label.getName())) {
                 throw new ValidationException(
-                        invalidValue(_("Already exists other "
+                        invalidValue(_t("Already exists other "
                                 + "label with the same name"), "name", name,
                                 getLabelType()));
             }
@@ -275,7 +275,7 @@ public class LabelTypeModel extends IntegrationEntityModel implements
     public void validateNameNotEmpty(String name) throws ValidationException {
         if (name.isEmpty()) {
             throw new ValidationException(invalidValue(
-                    _("The name of the label is empty."),
+                    _t("The name of the label is empty."),
                     "name", "", getLabelType()));
         }
     }

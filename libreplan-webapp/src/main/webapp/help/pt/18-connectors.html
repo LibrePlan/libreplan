@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Connectors</title>
+<link rel="stylesheet" href="html/lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="connectors">
+<h1 class="title">Connectors</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#configuration" id="toc-entry-1">Configuration</a></li>
+<li><a class="reference internal" href="#jira-connector" id="toc-entry-2">JIRA Connector</a><ul>
+<li><a class="reference internal" href="#configuration-1" id="toc-entry-3">Configuration</a></li>
+<li><a class="reference internal" href="#synchronization" id="toc-entry-4">Synchronization</a></li>
+<li><a class="reference internal" href="#scheduling" id="toc-entry-5">Scheduling</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#tim-enterprise-connector" id="toc-entry-6">Tim Enterprise Connector</a><ul>
+<li><a class="reference internal" href="#configuration-2" id="toc-entry-7">Configuration</a></li>
+<li><a class="reference internal" href="#export" id="toc-entry-8">Export</a></li>
+<li><a class="reference internal" href="#scheduling-export" id="toc-entry-9">Scheduling Export</a></li>
+<li><a class="reference internal" href="#import" id="toc-entry-10">Import</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#e-mail-connector" id="toc-entry-11">E-mail Connector</a><ul>
+<li><a class="reference internal" href="#configuration-3" id="toc-entry-12">Configuration</a></li>
+<li><a class="reference internal" href="#edit-e-mail-template" id="toc-entry-13">Edit E-mail Template</a></li>
+<li><a class="reference internal" href="#scheduling-e-mails" id="toc-entry-14">Scheduling E-mails</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>Connectors are <em>LibrePlan</em> client applications that can be used to communicate with (web) servers to retrieve data, process it, and store it. Currently, there are three connectors: the JIRA connector, the Tim Enterprise connector, and the E-mail connector.</p>
+<div class="section" id="configuration">
+<h1><a class="toc-backref" href="#toc-entry-1">Configuration</a></h1>
+<p>Connectors must be configured properly before they can be used. They can be configured from the &quot;Main Settings&quot; screen under the &quot;Connectors&quot; tab.</p>
+<p>The connector screen includes:</p>
+<ul class="simple">
+<li><strong>Pull-down list:</strong> A list of available connectors.</li>
+<li><strong>Properties edit screen:</strong> A property edit form for the selected connector.</li>
+<li><strong>Test connection button:</strong> A button to test the connection with the connector.</li>
+</ul>
+<p>Select the connector you want to configure from the pull-down list of connectors. A property editor form for the selected connector will be displayed. In the property editor form, you can change the property values as needed and test your configurations using the &quot;Test connection&quot; button.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The properties are configured with default values. The most important property is &quot;Activated.&quot; By default, it is set to &quot;N.&quot; This indicates that the connector will not be used unless you change the value to &quot;Y&quot; and save the changes.</p>
+</div>
+</div>
+<div class="section" id="jira-connector">
+<h1><a class="toc-backref" href="#toc-entry-2">JIRA Connector</a></h1>
+<p>JIRA is an issue and project tracking system.</p>
+<p>The JIRA connector is an application that can be used to request JIRA web server data for JIRA issues and process the response. The request is based on JIRA labels. In JIRA, labels can be used to categorize issues. The request is structured as follows: retrieve all issues that are categorized by this label name.</p>
+<p>The connector receives the response, which in this case is the issues, and converts them to <em>LibrePlan</em> &quot;Order elements&quot; and &quot;Time sheets.&quot;</p>
+<p>The <em>JIRA connector</em> must be configured properly before it can be used.</p>
+<div class="section" id="configuration-1">
+<h2><a class="toc-backref" href="#toc-entry-3">Configuration</a></h2>
+<p>From the &quot;Main Settings&quot; screen, choose the &quot;Connectors&quot; tab. In the connectors screen, select the JIRA connector from the pull-down list. A property editor screen will then be displayed.</p>
+<p>In this screen, you can configure the following property values:</p>
+<ul class="simple">
+<li><strong>Activated:</strong> Y/N, indicating whether you want to use the JIRA connector. The default is &quot;N.&quot;</li>
+<li><strong>Server URL:</strong> The absolute path to the JIRA web server.</li>
+<li><strong>User name and password:</strong> The user credentials for authorization.</li>
+<li><strong>JIRA labels: comma-separated list of labels or URL:</strong> You can either enter the label URL or a comma-separated list of labels.</li>
+<li><strong>Hours type:</strong> The type of work hours. The default is &quot;Default.&quot;</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><strong>JIRA labels:</strong> Currently, the JIRA web server does not support providing a list of all available labels. As a workaround, we have developed a simple PHP script that performs a simple SQL query in the JIRA database to fetch all distinct labels. You can either use this PHP script as the &quot;JIRA labels URL&quot; or enter the labels you want as comma-separated text in the &quot;JIRA labels&quot; field.</p>
+</div>
+<p>Finally, click the &quot;Test connection&quot; button to test if you can connect to the JIRA web server and that your configurations are correct.</p>
+</div>
+<div class="section" id="synchronization">
+<h2><a class="toc-backref" href="#toc-entry-4">Synchronization</a></h2>
+<p>From the project window, under &quot;General data,&quot; you can start synchronizing order elements with JIRA issues.</p>
+<p>Click the &quot;Sync with JIRA&quot; button to start the synchronization.</p>
+<ul class="simple">
+<li>If this is the first time, a pop-up window (with an auto-completed list of labels) will be displayed. In this window, you can select a label to synchronize with and click the &quot;Start sync&quot; button to begin the synchronization process, or click the &quot;Cancel&quot; button to cancel it.</li>
+<li>If a label is already synchronized, the last synchronized date and the label will be displayed in the JIRA screen. In this case, no pop-up window to select a label will be displayed. Instead, the synchronization process will start directly for that displayed (already synchronized) label.</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The relationship between &quot;Order&quot; and &quot;label&quot; is one-to-one. Only one label can be synchronized with one &quot;Order.&quot;</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Upon successful (re)synchronization, the information will be written to the database, and the JIRA screen will be updated with the last synchronized date and label.</p>
+</div>
+<p>(Re)synchronization is performed in two phases:</p>
+<ul class="simple">
+<li><strong>Phase 1:</strong> Synchronizing order elements, including progress assignment and measurements.</li>
+<li><strong>Phase 2:</strong> Synchronizing time sheets.</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If Phase 1 fails, Phase 2 will not be performed, and no information will be written to the database.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The success or failure information will be displayed in a pop-up window.</p>
+</div>
+<p>Upon successful completion of synchronization, the result will be displayed in the &quot;Work Breakdown Structure (WBS tasks)&quot; tab of the &quot;Project details&quot; screen. In this UI, there are two changes from the standard WBS:</p>
+<ul class="simple">
+<li>The &quot;Total task hours&quot; column is unmodifiable (read-only) because the synchronization is one-way. Task hours can only be updated in the JIRA web server.</li>
+<li>The &quot;Code&quot; column displays the JIRA issue keys, and they are also hyperlinks to the JIRA issues. Click the desired key if you want to go to the document for that key (JIRA issue).</li>
+</ul>
+</div>
+<div class="section" id="scheduling">
+<h2><a class="toc-backref" href="#toc-entry-5">Scheduling</a></h2>
+<p>Re-synchronization of JIRA issues can also be performed through the scheduler. Go to the &quot;Job scheduling&quot; screen. In that screen, you can configure a JIRA job to perform synchronization. The job searches for the last synchronized labels in the database and re-synchronizes them accordingly. See also the Scheduler Manual.</p>
+</div>
+</div>
+<div class="section" id="tim-enterprise-connector">
+<h1><a class="toc-backref" href="#toc-entry-6">Tim Enterprise Connector</a></h1>
+<p>Tim Enterprise is a Dutch product from Aenova. It is a web-based application for the administration of time spent on projects and tasks.</p>
+<p>The Tim connector is an application that can be used to communicate with the Tim Enterprise server to:</p>
+<ul class="simple">
+<li>Export all hours spent by a worker (user) on a project that could be registered in Tim Enterprise.</li>
+<li>Import all rosters of the worker (user) to plan the resource effectively.</li>
+</ul>
+<p>The <em>Tim connector</em> must be configured properly before it can be used.</p>
+<div class="section" id="configuration-2">
+<h2><a class="toc-backref" href="#toc-entry-7">Configuration</a></h2>
+<p>From the &quot;Main Settings&quot; screen, choose the &quot;Connectors&quot; tab. In the connectors screen, select the Tim connector from the pull-down list. A property editor screen will then be displayed.</p>
+<p>In this screen, you can configure the following property values:</p>
+<ul class="simple">
+<li><strong>Activated:</strong> Y/N, indicating whether you want to use the Tim connector. The default is &quot;N.&quot;</li>
+<li><strong>Server URL:</strong> The absolute path to the Tim Enterprise server.</li>
+<li><strong>User name and password:</strong> The user credentials for authorization.</li>
+<li><strong>Number of days timesheet to Tim:</strong> The number of days back you want to export the time sheets.</li>
+<li><strong>Number of days roster from Tim:</strong> The number of days forward you want to import the rosters.</li>
+<li><strong>Productivity factor:</strong> Effective working hours in percentage. The default is &quot;100%.&quot;</li>
+<li><strong>Department IDs to import roster:</strong> Comma-separated department IDs.</li>
+</ul>
+<p>Finally, click the &quot;Test connection&quot; button to test if you can connect to the Tim Enterprise server and that your configurations are correct.</p>
+</div>
+<div class="section" id="export">
+<h2><a class="toc-backref" href="#toc-entry-8">Export</a></h2>
+<p>From the project window, under &quot;General data,&quot; you can start exporting time sheets to the Tim Enterprise server.</p>
+<p>Enter the &quot;Tim product code&quot; and click the &quot;Export to Tim&quot; button to start the export.</p>
+<p>The Tim connector adds the following fields along with the product code:</p>
+<ul class="simple">
+<li>The worker/user's full name.</li>
+<li>The date the worker worked on a task.</li>
+<li>The effort, or hours worked on the task.</li>
+<li>An option indicating whether Tim Enterprise should update the registration or insert a new one.</li>
+</ul>
+<p>The Tim Enterprise response contains only a list of record IDs (integers). This makes it difficult to determine what went wrong, as the response list contains only numbers not related to the request fields. The export request (registration in Tim) is assumed to have succeeded if all the list entries do not contain &quot;0&quot; values. Otherwise, the export request has failed for those entries that contain &quot;0&quot; values. Therefore, you cannot see which request failed, as the list entries only contain the value &quot;0.&quot; The only way to determine this is to examine the log file on the Tim Enterprise server.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Upon successful exporting, the information will be written to the database, and the Tim screen will be updated with the last exported date and product code.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The success or failure information will be displayed in a pop-up window.</p>
+</div>
+</div>
+<div class="section" id="scheduling-export">
+<h2><a class="toc-backref" href="#toc-entry-9">Scheduling Export</a></h2>
+<p>The export process can also be performed through the scheduler. Go to the &quot;Job Scheduling&quot; screen. In that screen, you can configure a Tim Export job. The job searches for the last exported time sheets in the database and re-exports them accordingly. See also the Scheduler manual.</p>
+</div>
+<div class="section" id="import">
+<h2><a class="toc-backref" href="#toc-entry-10">Import</a></h2>
+<p>Importing rosters only works with the help of the scheduler. There is no user interface designed for this, as no input is needed from the user. Go to the &quot;Job scheduling&quot; screen and configure a Tim Import job. The job loops through all departments configured in the connector properties and imports all rosters for each department. See also the Scheduler Manual.</p>
+<p>For import, the Tim connector adds the following fields in the request:</p>
+<ul class="simple">
+<li><strong>Period:</strong> The period (date from - date to) for which you want to import the roster. This can be provided as a filter criterion.</li>
+<li><strong>Department:</strong> The department for which you want to import the roster. Departments are configurable.</li>
+<li>The fields you are interested in (like Person info, RosterCategory, etc.) that the Tim server should include in its response.</li>
+</ul>
+<p>The import response contains the following fields, which are sufficient to manage the exception days in <em>LibrePlan</em>:</p>
+<ul class="simple">
+<li><strong>Person info:</strong> Name and network name.</li>
+<li><strong>Department:</strong> The department the worker is working in.</li>
+<li><strong>Roster category:</strong> Information on the presence/absence (Aanwzig/afwezig) of the worker and the reason (<em>LibrePlan</em> exception type) in case the worker is absent.</li>
+<li><strong>Date:</strong> The date the worker is present/absent.</li>
+<li><strong>Time:</strong> The start time of presence/absence, for example, 08:00.</li>
+<li><strong>Duration:</strong> The number of hours that the worker is present/absent.</li>
+</ul>
+<p>By converting the import response to <em>LibrePlan</em>'s &quot;Exception day,&quot; the following translations are taken into account:</p>
+<ul class="simple">
+<li>If the roster category contains the name &quot;Vakantie,&quot; it will be translated to &quot;RESOURCE HOLIDAY.&quot;</li>
+<li>The roster category &quot;Feestdag&quot; will be translated to &quot;BANK HOLIDAY.&quot;</li>
+<li>All the rest, like &quot;Jus uren,&quot; &quot;PLB uren,&quot; etc., should be added to the &quot;Calendar Exception Days&quot; manually.</li>
+</ul>
+<p>Moreover, in the import response, the roster is divided into two or three parts per day: for example, roster-morning, roster-afternoon, and roster-evening. However, <em>LibrePlan</em> allows only one &quot;Exception type&quot; per day. The Tim connector is then responsible for merging these parts as one exception type. That is, the roster category with the highest duration is assumed to be a valid exception type, but the total duration is the sum of all durations of these category parts.</p>
+<p>Contrary to <em>LibrePlan</em>, in Tim Enterprise, the total duration in case the worker is on holiday means the worker is not available for that total duration. However, in <em>LibrePlan</em>, if the worker is on holiday, the total duration should be zero. The Tim connector also handles this translation.</p>
+</div>
+</div>
+<div class="section" id="e-mail-connector">
+<h1><a class="toc-backref" href="#toc-entry-11">E-mail Connector</a></h1>
+<p>E-mail is a method of exchanging digital messages from an author to one or more recipients.</p>
+<p>The E-mail connector can be used to set Simple Mail Transfer Protocol (SMTP) server connection properties.</p>
+<p>The <em>E-mail connector</em> must be configured properly before it can be used.</p>
+<div class="section" id="configuration-3">
+<h2><a class="toc-backref" href="#toc-entry-12">Configuration</a></h2>
+<p>From the &quot;Main Settings&quot; screen, choose the &quot;Connectors&quot; tab. In the connectors screen, select the E-mail connector from the pull-down list. A property editor screen will then be displayed.</p>
+<p>In this screen, you can configure the following property values:</p>
+<ul class="simple">
+<li><strong>Activated:</strong> Y/N, indicating whether you want to use the E-mail connector. The default is &quot;N.&quot;</li>
+<li><strong>Protocol:</strong> The type of SMTP protocol.</li>
+<li><strong>Host:</strong> The absolute path to the SMTP server.</li>
+<li><strong>Port:</strong> The port of the SMTP server.</li>
+<li><strong>From address:</strong> The e-mail address of the message sender.</li>
+<li><strong>Username:</strong> The username for the SMTP server.</li>
+<li><strong>Password:</strong> The password for the SMTP server.</li>
+</ul>
+<p>Finally, click the &quot;Test connection&quot; button to test if you can connect to the SMTP server and that your configurations are correct.</p>
+</div>
+<div class="section" id="edit-e-mail-template">
+<h2><a class="toc-backref" href="#toc-entry-13">Edit E-mail Template</a></h2>
+<p>From the project window, under &quot;Configuration&quot; and then &quot;Edit E-mail Templates,&quot; you can modify the e-mail templates for messages.</p>
+<p>You can choose:</p>
+<ul class="simple">
+<li><strong>Template language:</strong></li>
+<li><strong>Template type:</strong></li>
+<li><strong>E-mail subject:</strong></li>
+<li><strong>Template contents:</strong></li>
+</ul>
+<p>You need to specify the language because the web application will send e-mails to users in the language they have chosen in their preferences. You need to choose the template type. The type is the user role, meaning that this e-mail will be sent only to users who are in the selected role (type). You need to set the e-mail subject. The subject is a brief summary of the topic of the message. You need to set the e-mail contents. This is any information that you want to send to the user. There are also some keywords that you may use in the message; the web application will parse them and set a new value instead of the keyword.</p>
+</div>
+<div class="section" id="scheduling-e-mails">
+<h2><a class="toc-backref" href="#toc-entry-14">Scheduling E-mails</a></h2>
+<p>Sending e-mails can only be performed through the scheduler. Go to &quot;Configuration,&quot; then the &quot;Job Scheduling&quot; screen. In that screen, you can configure an e-mail sending job. The job takes a list of e-mail notifications, gathers data, and sends it to the user's e-mail. See also the Scheduler manual.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The success or failure information will be displayed in a pop-up window.</p>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

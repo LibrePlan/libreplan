@@ -64,7 +64,7 @@ public class AdvanceConsolidationCommand implements
 
     @Override
     public String getName() {
-        return _("Progress consolidation");
+        return _t("Progress consolidation");
     }
 
     @Override

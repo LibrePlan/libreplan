@@ -135,7 +135,7 @@ class TimSynchronizationController extends GenericForwardComposer {
 
 
     public void startExportToTim() {
-        txtProductCode.setConstraint("no empty:" + _("cannot be empty"));
+        txtProductCode.setConstraint("no empty:" + _t("cannot be empty"));
         try {
             exportTimesheetsToTim.exportTimesheets(txtProductCode.getValue(), getOrder());
 
@@ -144,7 +144,7 @@ class TimSynchronizationController extends GenericForwardComposer {
             shwoImpExpInfo();
 
         } catch (ConnectorException e) {
-            messagesForUser.showMessage(Level.ERROR, _("Exporting timesheets to Tim failed. Check the Tim connector"));
+            messagesForUser.showMessage(Level.ERROR, _t("Exporting timesheets to Tim failed. Check the Tim connector"));
         }
     }
 

@@ -43,7 +43,7 @@ public class UserBandboxFinder extends BandboxFinder implements IBandboxFinder {
     @Autowired
     private IUserDAO userDAO;
 
-    private final String headers[] = { _("Username"), _("Full name") };
+    private final String headers[] = { _t("Username"), _t("Full name") };
 
     private final ListitemRenderer usersRenderer = (item, data, i) -> {
         User user = (User) data;

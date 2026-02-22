@@ -20,7 +20,7 @@
  */
 package org.libreplan.business.orders.entities;
 
-import static org.libreplan.business.i18n.I18nHelper._;
+import static org.libreplan.business.i18n.I18nHelper._t;
 
 import java.math.BigDecimal;
 import java.util.Collection;
@@ -206,7 +206,7 @@ public class HoursGroup extends IntegrationEntity implements Cloneable, ICriteri
 
         if ( !isPercentageValidForParent() ) {
             this.percentage = oldPercentage;
-            throw new IllegalArgumentException(_("Total percentage should be less than 100%"));
+            throw new IllegalArgumentException(_t("Total percentage should be less than 100%"));
         }
     }
 

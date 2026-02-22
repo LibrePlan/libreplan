@@ -114,7 +114,7 @@ public class ScenarioModel implements IScenarioModel {
         boolean isMainScenario = PredefinedScenarios.MASTER.getScenario().getId().equals(scenario.getId());
         if (isMainScenario) {
             throw new IllegalArgumentException(
-                    _("You cannot remove the default scenario \"{0}\"", PredefinedScenarios.MASTER.getName()));
+                    _t("You cannot remove the default scenario \"{0}\"", PredefinedScenarios.MASTER.getName()));
         }
 
         Scenario currentScenario = scenarioManager.getCurrent();
@@ -122,13 +122,13 @@ public class ScenarioModel implements IScenarioModel {
                 scenario.getId());
         if (isCurrentScenario) {
             throw new IllegalArgumentException(
-                    _("You cannot remove the current scenario"));
+                    _t("You cannot remove the current scenario"));
         }
 
         List<Scenario> derivedScenarios = getDerivedScenarios(scenario);
         if (!derivedScenarios.isEmpty()) {
             throw new IllegalArgumentException(
-                    _("You cannot remove a scenario with derived scenarios"));
+                    _t("You cannot remove a scenario with derived scenarios"));
         }
 
         List<User> users = userDAO.findByLastConnectedScenario(scenario);
@@ -216,8 +216,8 @@ public class ScenarioModel implements IScenarioModel {
     @Transactional
     public void confirmSave() throws ValidationException {
         if (scenarioDAO.thereIsOtherWithSameName(scenario)) {
-            throw new ValidationException(_("Could not save the scenario"),
-                    invalidValue(_("{0} already exists", scenario.getName()),
+            throw new ValidationException(_t("Could not save the scenario"),
+                    invalidValue(_t("{0} already exists", scenario.getName()),
                             "name", scenario.getName(), scenario));
         }
 

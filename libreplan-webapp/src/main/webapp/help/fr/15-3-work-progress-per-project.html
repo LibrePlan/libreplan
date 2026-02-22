@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Rapport de travail et d'avancement par projet</title>
+<link rel="stylesheet" href="html/lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="rapport-de-travail-et-d-avancement-par-projet">
+<h1 class="title">Rapport de travail et d'avancement par projet</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#objet" id="toc-entry-1">Objet</a></li>
+<li><a class="reference internal" href="#parametres-d-entree-et-filtres" id="toc-entry-2">Paramètres d'entrée et filtres</a></li>
+<li><a class="reference internal" href="#sortie" id="toc-entry-3">Sortie</a><ul>
+<li><a class="reference internal" href="#en-tete" id="toc-entry-4">En-tête</a></li>
+<li><a class="reference internal" href="#pied-de-page" id="toc-entry-5">Pied de page</a></li>
+<li><a class="reference internal" href="#corps" id="toc-entry-6">Corps</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="objet">
+<h1><a class="toc-backref" href="#toc-entry-1">Objet</a></h1>
+<p>Ce rapport vous permet de voir l'état global des projets en tenant compte de deux variables : l'avancement et le coût.</p>
+<p>L'état courant de l'avancement du projet est analysé en le comparant avec la prévision selon la planification et selon le travail consacré.</p>
+<p>Sont également affichés plusieurs taux liés aux coûts des projets en comparant les performances actuelles avec les performances théoriques.</p>
+</div>
+<div class="section" id="parametres-d-entree-et-filtres">
+<h1><a class="toc-backref" href="#toc-entry-2">Paramètres d'entrée et filtres</a></h1>
+<p>Il y a plusieurs paramètres obligatoires. Ce sont :</p>
+<blockquote>
+<ul class="simple">
+<li><strong>Date de référence</strong>. C'est la date à prendre comme référence pour faire la comparaison avec l'état planifié anticipé du projet à cette date avec la performance réelle du projet à cette même date. <em>La valeur par défaut pour ce champ est la date actuelle</em>.</li>
+<li><strong>Type d'avancement</strong>. C'est le type d'avancement qui est souhaité pour être utilisé pour mesurer les progrès des projets. Dans l'application un projet peut être mesuré simultanément avec différents types d'avancement et celui sélectionné par le composant déroulant par l'utilisateur est celui utilisé pour calculer les données du rapport. La valeur par défaut pour le <em>type d'avancement</em> est <em>étendu</em> qui est un type d'avancement spécial consistant à utiliser la façon préférée de mesurer l'avancement configuré dans chaque élément de la structure hiérarchique arborescente.</li>
+</ul>
+</blockquote>
+<p>Quant aux champs facultatifs, ce sont :</p>
+<blockquote>
+<ul class="simple">
+<li><strong>Date de début</strong>. C'est la date minimum de démarrage des projets à inclure dans le rapport. Il est facultatif. Si aucune date de début n'est renseignée, il n'y a pas de date minimum pour les projets.</li>
+<li><strong>Date de fin</strong>. C'est la date maximum de fin des projets à inclure dans le rapport. Tous les projets qui finissent après la <em>Date de fin</em> seront exclus.</li>
+<li><strong>Filtre par projet</strong>. Ce filtre permet de choisir les projets pour lesquels l'utilisateur veut limiter les données du rapport à extraire. Si aucun projet n'est ajouté au filtre, le rapport est affiché pour tous les projets dans la base de données. Il existe une liste déroulante pour trouver le projet désiré. Ils sont ajoutés au filtre en appuyant au bouton <em>Ajouter</em>.</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="sortie">
+<h1><a class="toc-backref" href="#toc-entry-3">Sortie</a></h1>
+<p>Le format de sortie est le suivant :</p>
+<div class="section" id="en-tete">
+<h2><a class="toc-backref" href="#toc-entry-4">En-tête</a></h2>
+<p>Dans l'en-tête de rapport les champs suivants sont affichés :</p>
+<blockquote>
+<ul class="simple">
+<li><strong>Type d'avancement</strong>. Le type d'avancement utilisé pour le rapport.</li>
+<li><strong>Projets</strong>. Les projets pour lequel le rapport a été obtenu. Il affichera <em>Tous</em> quand ce filtre n'est pas utilisé.</li>
+<li><strong>Date de début</strong>. La date de début de filtrage. Ne sera pas affichée si ce filtre n'a pas été renseigné.</li>
+<li><strong>Date de fin</strong>. La date de fin de filtrage. Ne sera pas affichée si ce filtre n'a pas été renseigné.</li>
+<li><strong>Date de référence</strong>. La date de référence d'entrée obligatoire choisie pour extraire le rapport.</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="pied-de-page">
+<h2><a class="toc-backref" href="#toc-entry-5">Pied de page</a></h2>
+<p>La date à laquelle le rapport a été généré est affichée.</p>
+</div>
+<div class="section" id="corps">
+<h2><a class="toc-backref" href="#toc-entry-6">Corps</a></h2>
+<p>Le corps contient une liste de tableaux relatifs à chacun des projets qui ont été retenus par les filtres d'entrée.</p>
+<p>Les filtres fonctionnent en ajoutant des conditions à l'exception des filtres de date (<em>Date de début</em>, <em>Date de fin</em>) pris ensemble et du <em>filtre par projets</em>. Dans ce cas, si l'un ou les deux filtres date sont renseignés et qu'en même temps le <em>filtre par projets</em> est renseigné avec une liste de projets, c'est ce dernier filtre qui a la priorité. Ceci signifie que les projets qui sont inclus dans le rapport sont ceux fournis par le <em>filtre par projets</em> sans tenir compte des filtres de date.</p>
+<p>Une autre chose importante est que les avancements présents dans le rapport généré sont calculés en fraction d'unité. Leurs valeurs seront donc comprises entre 0 et 1.</p>
+<p>Pour chaque projet retenu pour faire partie du rapport généré, les informations suivantes sont affichées :</p>
+<blockquote>
+<ul>
+<li><p class="first"><em>Le nom du projet</em>.</p>
+</li>
+<li><p class="first"><em>Total des heures</em>.</p>
+<blockquote>
+<p>Le total des heures du projet est affiché en ajoutant les heures de chaque tâche. Deux types de totaux d'heures sont affichés :</p>
+<ul class="simple">
+<li><em>Estimées (TE)</em>. Cette quantité est l'addition de toutes les heures dans la structure hiérarchique arborescente. C'est le nombre total d'heures estimé nécessaire pour achever le projet.</li>
+<li><em>Planifiées (TP)</em>. Dans <em>LibrePlan</em>, il est possible d'avoir deux valeurs différentes. Le nombre estimé à l'avance des heures nécessaires pour réaliser une tâche et les heures planifiées qui sont les heures affectées dans la planification pour réaliser la tâche. Les heures planifiées peuvent être égales, inférieures ou supérieures aux heures estimées et sont déterminées dans une phase ultérieure, l'opération d'affectation. Ainsi, le total des heures planifiées d'un projet est l'addition de toutes les heures affectées aux tâches.</li>
+</ul>
+</blockquote>
+</li>
+<li><p class="first"><em>Avancement</em>.</p>
+<blockquote>
+<p>Trois mesures liées à l'avancement au moment de la date de référence et en fonction du type d'avancement indiqué dans le filtre sont affichées :</p>
+<ul class="simple">
+<li><em>Mesuré (AM) ou Mesured Progress (PM)</em>. C'est l'avancement global établi en additionnant toutes les mesures d'avancement ayant une date inférieure à la <em>date de référence</em> indiquée. En parallèle, toutes les tâches sont prises en compte et l'addition est pondérée par le nombre d'heures de toutes ces tâches.</li>
+<li><em>Imputé (AI) ou Progress Imputed (PI)</em>. C'est l'avancement calculé en considérant que le travail avancera sur le même rythme que celui des heures consacrées pour la tâche. Si X heures sur Y d'une tâche ont été faites, on considère que l'avancement global imputé est de X/Y.</li>
+<li><em>Planifié (AP) ou Planned Progress (PP)</em>. C'est l'avancement global du projet conformément à la planification théorique à la date de référence. Si les choses se passent exactement comme planifié, l'avancement mesuré doit être le même que celui planifié.</li>
+</ul>
+</blockquote>
+</li>
+<li><p class="first"><em>Heures à ce jour</em>.</p>
+<blockquote>
+<p>Il existe deux champs qui affichent le nombre d'heures jusqu'à la date de référence selon deux points de vue :</p>
+<ul class="simple">
+<li><em>Planifiées (HP)</em>. Ce nombre est l'addition des heures affectées à toutes les tâches du projet qui ont une date inférieure ou égale à la <em>date de référence</em>.</li>
+<li><em>Réelles (HR)</em>. Ce nombre est l'addition des heures rapportées dans les relevés d'heures de travail de toutes les tâches du projet ayant une date inférieure ou égale à la <em>date de référence</em>.</li>
+</ul>
+</blockquote>
+</li>
+<li><p class="first"><em>Différence</em>.</p>
+<blockquote>
+<p>Sous ce titre il y a plusieurs métriques liées au coûts :</p>
+<ul class="simple">
+<li><em>Coût</em>. C'est la différence en heures entre le nombre d'heures dépensées en prenant en compte l'avancement mesuré et les heures consacrées jusqu'à la <em>date de référence</em>. La formule est <em>AM*TP - HR</em> (<em>PM*TP - HR</em>).</li>
+<li><em>Planifiée</em>. C'est la différence entre les heures dépensées selon la mesure globale du projet global et le nombre d'heures planifiées jusqu'à la <em>date de référence</em>. Cela mesure l'avance ou le retard en temps.</li>
+<li><em>Ratio de coût</em>. Il est calculé en divisant <em>AM</em> / <em>AI</em> (<em>PM</em> / <em>PI</em>). S'il est supérieur à 1, cela signifie que le projet est bénéficiaire à ce point et s'il est inférieur à 1, cela signifie que le projet perd de l'argent.</li>
+<li><em>Ratio planifié</em>. Il est calculé en divisant <em>AM</em> / <em>AP</em> (<em>PM</em> / <em>PP</em>). S'il est supérieur à 1, cela signifie que le projet est en avance et s'il est inférieur à 1, que le projet est en retard</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+</blockquote>
+</div>
+</div>
+</div>
+</body>
+</html>

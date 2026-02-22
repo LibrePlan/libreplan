@@ -244,7 +244,7 @@ public class MaterialsController extends GenericForwardComposer {
         Button btnDelete = new Button("", "/common/img/ico_borrar1.png");
         btnDelete.setHoverImage("/common/img/ico_borrar.png");
         btnDelete.setSclass("icono");
-        btnDelete.setTooltiptext(_("Delete"));
+        btnDelete.setTooltiptext(_t("Delete"));
         btnDelete.addEventListener(Events.ON_CLICK, event -> confirmRemove(materialCategory));
         btnDelete.setDisabled(hasSubcategoriesOrMaterials(materialCategory));
         Treecell tc = new Treecell();
@@ -258,8 +258,8 @@ public class MaterialsController extends GenericForwardComposer {
 
     public void confirmRemove(MaterialCategory materialCategory) {
 
-        int status = Messagebox.show(_("Confirm deleting {0}. Are you sure?",
-                materialCategory.getName()), _("Delete"),
+        int status = Messagebox.show(_t("Confirm deleting {0}. Are you sure?",
+                materialCategory.getName()), _t("Delete"),
                 Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION);
 
         if (Messagebox.OK == status) {
@@ -275,7 +275,7 @@ public class MaterialsController extends GenericForwardComposer {
     public void addMaterialCategory() {
         String categoryName = txtCategory.getValue();
         if (categoryName == null || categoryName.isEmpty()) {
-            throw new WrongValueException(txtCategory, _("cannot be empty"));
+            throw new WrongValueException(txtCategory, _t("cannot be empty"));
         }
 
         MaterialCategory parent = null;
@@ -332,7 +332,7 @@ public class MaterialsController extends GenericForwardComposer {
 
     public void addMaterialToMaterialCategory(Treeitem treeitem) {
         if (treeitem == null) {
-            throw new WrongValueException(btnAddMaterial, _("Cannot insert material in general view. Please, select a category"));
+            throw new WrongValueException(btnAddMaterial, _t("Cannot insert material in general view. Please, select a category"));
         }
         final MaterialCategory materialCategory = treeitem.getValue();
         materialsModel.addMaterialToMaterialCategory(materialCategory);
@@ -341,7 +341,7 @@ public class MaterialsController extends GenericForwardComposer {
 
     public void saveAndContinue() {
         if (save()) {
-            messagesForUser.showMessage(Level.INFO, _("Materials saved"));
+            messagesForUser.showMessage(Level.INFO, _t("Materials saved"));
             // Reload materials and categories, keep track of category currently being selected
             final Treeitem treeitem = categoriesTree.getSelectedItem();
             materialsModel.reloadMaterialCategories();
@@ -458,10 +458,10 @@ public class MaterialsController extends GenericForwardComposer {
         Treeitem treeitem = categoriesTree.getSelectedItem();
         if (treeitem != null) {
             materialsCaption.setLabel(
-                    _("List of materials for category: {0}", ((MaterialCategory) treeitem.getValue()).getName()));
+                    _t("List of materials for category: {0}", ((MaterialCategory) treeitem.getValue()).getName()));
         }
         else {
-            materialsCaption.setLabel(_("List of materials for all categories (select one to filter)"));
+            materialsCaption.setLabel(_t("List of materials for all categories (select one to filter)"));
         }
     }
 
@@ -490,7 +490,7 @@ public class MaterialsController extends GenericForwardComposer {
             Util.reloadBindings(gridMaterials);
         }
         else {
-            messagesForUser.showMessage(Level.ERROR, _("Cannot delete that material because it is assigned to a project."));
+            messagesForUser.showMessage(Level.ERROR, _t("Cannot delete that material because it is assigned to a project."));
         }
     }
 

@@ -256,7 +256,7 @@ public abstract class AssignedCriterionRequirementController<T, M> extends Gener
 
         if (combobox.getSelectedItem() != null) {
             int status = Messagebox.show(
-                    _("Are you sure of changing the resource type? " +
+                    _t("Are you sure of changing the resource type? " +
                             "You will lose the criteria with different resource type."),
                     "Question", Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION);
 
@@ -329,7 +329,7 @@ public abstract class AssignedCriterionRequirementController<T, M> extends Gener
         if (row != null) {
             Bandbox bandType = getBandType(requirementWrapper, row);
             bandType.setValue(null);
-            throw new WrongValueException(bandType, _("cannot be empty"));
+            throw new WrongValueException(bandType, _t("cannot be empty"));
         }
     }
 
@@ -408,8 +408,8 @@ public abstract class AssignedCriterionRequirementController<T, M> extends Gener
         if (getHoursGroupWrappers().size() < 2) {
 
             Messagebox.show(
-                    _("At least one HoursGroup is needed"),
-                    _("Error"), Messagebox.OK, Messagebox.ERROR);
+                    _t("At least one HoursGroup is needed"),
+                    _t("Error"), Messagebox.OK, Messagebox.ERROR);
             return;
         }
 

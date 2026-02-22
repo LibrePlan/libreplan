@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Calendars</title>
+<link rel="stylesheet" href="html/lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="calendars">
+<h1 class="title">Calendars</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#calendar-administration" id="toc-entry-1">Calendar Administration</a><ul>
+<li><a class="reference internal" href="#creating-a-new-calendar" id="toc-entry-2">Creating a New Calendar</a></li>
+<li><a class="reference internal" href="#creating-derived-calendars" id="toc-entry-3">Creating Derived Calendars</a></li>
+<li><a class="reference internal" href="#creating-a-calendar-by-copying" id="toc-entry-4">Creating a Calendar by Copying</a></li>
+<li><a class="reference internal" href="#default-calendar" id="toc-entry-5">Default Calendar</a></li>
+<li><a class="reference internal" href="#assigning-a-calendar-to-resources" id="toc-entry-6">Assigning a Calendar to Resources</a></li>
+<li><a class="reference internal" href="#assigning-calendars-to-orders" id="toc-entry-7">Assigning Calendars to Orders</a></li>
+<li><a class="reference internal" href="#assigning-calendars-to-tasks" id="toc-entry-8">Assigning Calendars to Tasks</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>Calendars are entities within the program that define the working capacity of resources. A calendar consists of a series of days throughout the year, with each day divided into available working hours.</p>
+<p>For example, a public holiday might have 0 available working hours. Conversely, a typical workday might have 8 hours designated as available working time.</p>
+<p>There are two primary ways to define the number of working hours in a day:</p>
+<ul class="simple">
+<li><strong>By Weekday:</strong> This method sets a standard number of working hours for each day of the week. For example, Mondays might typically have 8 working hours.</li>
+<li><strong>By Exception:</strong> This method allows for specific deviations from the standard weekday schedule. For example, Monday, January 30th, might have 10 working hours, overriding the standard Monday schedule.</li>
+</ul>
+<div class="section" id="calendar-administration">
+<h1><a class="toc-backref" href="#toc-entry-1">Calendar Administration</a></h1>
+<p>The calendar system is hierarchical, allowing you to create base calendars and then derive new calendars from them, forming a tree structure. A calendar derived from a higher-level calendar will inherit its daily schedules and exceptions unless explicitly modified. To effectively manage calendars, it's important to understand the following concepts:</p>
+<ul class="simple">
+<li><strong>Day Independence:</strong> Each day is treated independently, and each year has its own set of days. For example, if December 8th, 2009, is a public holiday, this does not automatically mean that December 8th, 2010, is also a public holiday.</li>
+<li><strong>Weekday-Based Working Days:</strong> Standard working days are based on weekdays. For example, if Mondays typically have 8 working hours, then all Mondays in all weeks of all years will have 8 available hours unless an exception is defined.</li>
+<li><strong>Exceptions and Exception Periods:</strong> You can define exceptions or exception periods to deviate from the standard weekday schedule. For example, you can specify a single day or a range of days with a different number of available working hours than the general rule for those weekdays.</li>
+</ul>
+<div class="figure">
+<img alt="images/calendar-administration.png" src="images/calendar-administration.png" style="width: 443.5px; height: 146.0px;" />
+<p class="caption">Calendar Administration</p>
+</div>
+<p>Calendar administration is accessible through the &quot;Administration&quot; menu. From there, users can perform the following actions:</p>
+<ol class="arabic simple">
+<li>Create a new calendar from scratch.</li>
+<li>Create a calendar derived from an existing one.</li>
+<li>Create a calendar as a copy of an existing one.</li>
+<li>Edit an existing calendar.</li>
+</ol>
+<div class="section" id="creating-a-new-calendar">
+<h2><a class="toc-backref" href="#toc-entry-2">Creating a New Calendar</a></h2>
+<p>To create a new calendar, click the &quot;Create&quot; button. The system will display a form where you can configure the following:</p>
+<ul class="simple">
+<li><strong>Select the Tab:</strong> Choose the tab you want to work on:<ul>
+<li><strong>Marking Exceptions:</strong> Define exceptions to the standard schedule.</li>
+<li><strong>Working Hours per Day:</strong> Define the standard working hours for each weekday.</li>
+</ul>
+</li>
+<li><strong>Marking Exceptions:</strong> If you select the &quot;Marking Exceptions&quot; option, you can:<ul>
+<li>Select a specific day on the calendar.</li>
+<li>Select the type of exception. The available types are: holiday, illness, strike, public holiday, and working holiday.</li>
+<li>Select the end date of the exception period. (This field does not need to be changed for single-day exceptions.)</li>
+<li>Define the number of working hours during the days of the exception period.</li>
+<li>Delete previously defined exceptions.</li>
+</ul>
+</li>
+<li><strong>Working Hours per Day:</strong> If you select the &quot;Working Hours per Day&quot; option, you can:<ul>
+<li>Define the available working hours for each weekday (Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, and Sunday).</li>
+<li>Define different weekly hour distributions for future periods.</li>
+<li>Delete previously defined hour distributions.</li>
+</ul>
+</li>
+</ul>
+<p>These options allow users to fully customize calendars according to their specific needs. Click the &quot;Save&quot; button to store any changes made to the form.</p>
+<div class="figure">
+<img alt="images/calendar-edition.png" src="images/calendar-edition.png" style="width: 443.0px; height: 234.5px;" />
+<p class="caption">Editing Calendars</p>
+</div>
+<div class="figure">
+<img alt="images/calendar-exceptions.png" src="images/calendar-exceptions.png" style="width: 443.0px; height: 194.0px;" />
+<p class="caption">Adding an Exception to a Calendar</p>
+</div>
+</div>
+<div class="section" id="creating-derived-calendars">
+<h2><a class="toc-backref" href="#toc-entry-3">Creating Derived Calendars</a></h2>
+<p>A derived calendar is created based on an existing calendar. It inherits all the features of the original calendar, but you can modify it to include different options.</p>
+<p>A common use case for derived calendars is when you have a general calendar for a country, such as Spain, and you need to create a derived calendar to include additional public holidays specific to a region, such as Galicia.</p>
+<p>It's important to note that any changes made to the original calendar will automatically propagate to the derived calendar, unless a specific exception has been defined in the derived calendar. For example, the calendar for Spain might have an 8-hour working day on May 17th. However, the calendar for Galicia (a derived calendar) might have no working hours on that same day because it's a regional public holiday. If the Spanish calendar is later changed to have 4 available working hours per day for the week of May 17th, the Galician calendar will also change to have 4 available working hours for every day in that week, except for May 17th, which will remain a non-working day due to the defined exception.</p>
+<div class="figure">
+<img alt="images/calendar-create-derived.png" src="images/calendar-create-derived.png" style="width: 438.0px; height: 210.5px;" />
+<p class="caption">Creating a Derived Calendar</p>
+</div>
+<p>To create a derived calendar:</p>
+<ul class="simple">
+<li>Go to the <em>Administration</em> menu.</li>
+<li>Click the <em>Calendar administration</em> option.</li>
+<li>Select the calendar you want to use as the basis for the derived calendar and click the &quot;Create&quot; button.</li>
+<li>The system will display an editing form with the same characteristics as the form used to create a calendar from scratch, except that the proposed exceptions and the working hours per weekday will be based on the original calendar.</li>
+</ul>
+</div>
+<div class="section" id="creating-a-calendar-by-copying">
+<h2><a class="toc-backref" href="#toc-entry-4">Creating a Calendar by Copying</a></h2>
+<p>A copied calendar is an exact duplicate of an existing calendar. It inherits all the features of the original calendar, but you can modify it independently.</p>
+<p>The key difference between a copied calendar and a derived calendar is how they are affected by changes to the original. If the original calendar is modified, the copied calendar remains unchanged. However, derived calendars are affected by changes made to the original, unless an exception is defined.</p>
+<p>A common use case for copied calendars is when you have a calendar for one location, such as &quot;Pontevedra,&quot; and you need a similar calendar for another location, such as &quot;A Coruña,&quot; where most of the features are the same. However, changes to one calendar should not affect the other.</p>
+<p>To create a copied calendar:</p>
+<ul class="simple">
+<li>Go to the <em>Administration</em> menu.</li>
+<li>Click the <em>Calendar administration</em> option.</li>
+<li>Select the calendar you want to copy and click the &quot;Create&quot; button.</li>
+<li>The system will display an editing form with the same characteristics as the form used to create a calendar from scratch, except that the proposed exceptions and the working hours per weekday will be based on the original calendar.</li>
+</ul>
+</div>
+<div class="section" id="default-calendar">
+<h2><a class="toc-backref" href="#toc-entry-5">Default Calendar</a></h2>
+<p>One of the existing calendars can be designated as the default calendar. This calendar will be automatically assigned to any entity in the system that is managed with calendars unless a different calendar is specified.</p>
+<p>To set up a default calendar:</p>
+<ul class="simple">
+<li>Go to the <em>Administration</em> menu.</li>
+<li>Click the <em>Configuration</em> option.</li>
+<li>In the <em>Default calendar</em> field, select the calendar you want to use as the program's default calendar.</li>
+<li>Click <em>Save</em>.</li>
+</ul>
+<div class="figure">
+<img alt="images/default-calendar.png" src="images/default-calendar.png" style="width: 332.0px; height: 158.5px;" />
+<p class="caption">Setting a Default Calendar</p>
+</div>
+</div>
+<div class="section" id="assigning-a-calendar-to-resources">
+<h2><a class="toc-backref" href="#toc-entry-6">Assigning a Calendar to Resources</a></h2>
+<p>Resources can only be activated (i.e., have available working hours) if they have an assigned calendar with a valid activation period. If no calendar is assigned to a resource, the default calendar is assigned automatically, with an activation period that begins on the start date and has no expiry date.</p>
+<div class="figure">
+<img alt="images/resource-calendar.png" src="images/resource-calendar.png" style="width: 449.0px; height: 257.0px;" />
+<p class="caption">Resource Calendar</p>
+</div>
+<p>However, you can delete the calendar that has been previously assigned to a resource and create a new calendar based on an existing one. This allows for complete customization of calendars for individual resources.</p>
+<p>To assign a calendar to a resource:</p>
+<ul class="simple">
+<li>Go to the <em>Edit resources</em> option.</li>
+<li>Select a resource and click <em>Edit</em>.</li>
+<li>Select the &quot;Calendar&quot; tab.</li>
+<li>The calendar, along with its exceptions, working hours per day, and activation periods, will be displayed.</li>
+<li>Each tab will have the following options:<ul>
+<li><strong>Exceptions:</strong> Define exceptions and the period to which they apply, such as holidays, public holidays, or different workdays.</li>
+<li><strong>Working Week:</strong> Modify the working hours for each weekday (Monday, Tuesday, etc.).</li>
+<li><strong>Activation Periods:</strong> Create new activation periods to reflect the start and end dates of contracts associated with the resource. See the following image.</li>
+</ul>
+</li>
+<li>Click <em>Save</em> to store the information.</li>
+<li>Click <em>Delete</em> if you want to change the calendar assigned to a resource.</li>
+</ul>
+<div class="figure">
+<img alt="images/new-resource-calendar.png" src="images/new-resource-calendar.png" style="width: 443.0px; height: 242.5px;" />
+<p class="caption">Assigning a New Calendar to a Resource</p>
+</div>
+</div>
+<div class="section" id="assigning-calendars-to-orders">
+<h2><a class="toc-backref" href="#toc-entry-7">Assigning Calendars to Orders</a></h2>
+<p>Projects can have a different calendar than the default calendar. To change the calendar for an order:</p>
+<ul class="simple">
+<li>Access the order list in the company overview.</li>
+<li>Edit the order in question.</li>
+<li>Access the &quot;General information&quot; tab.</li>
+<li>Select the calendar to be assigned from the drop-down menu.</li>
+<li>Click &quot;Save&quot; or &quot;Save and continue.&quot;</li>
+</ul>
+</div>
+<div class="section" id="assigning-calendars-to-tasks">
+<h2><a class="toc-backref" href="#toc-entry-8">Assigning Calendars to Tasks</a></h2>
+<p>Similar to resources and orders, you can assign specific calendars to individual tasks. This allows you to define different calendars for specific stages of a project. To assign a calendar to a task:</p>
+<ul class="simple">
+<li>Access the planning view of a project.</li>
+<li>Right-click the task to which you want to assign a calendar.</li>
+<li>Select the &quot;Assign calendar&quot; option.</li>
+<li>Select the calendar to be assigned to the task.</li>
+<li>Click <em>Accept</em>.</li>
+</ul>
+</div>
+</div>
+</div>
+</body>
+</html>

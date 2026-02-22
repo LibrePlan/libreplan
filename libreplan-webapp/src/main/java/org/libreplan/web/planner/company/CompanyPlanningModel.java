@@ -344,8 +344,8 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
 
     private void appendTabs(Tabbox chartComponent) {
         Tabs chartTabs = new Tabs();
-        chartTabs.appendChild(new Tab(_("Load")));
-        chartTabs.appendChild(new Tab(_("Earned value")));
+        chartTabs.appendChild(new Tab(_t("Load")));
+        chartTabs.appendChild(new Tab(_t("Earned value")));
 
         chartComponent.appendChild(chartTabs);
         chartTabs.setWidth("124px");
@@ -385,7 +385,7 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
         Date today = LocalDate.fromDateFields(new Date()).toDateTimeAtStartOfDay().toDate();
 
         if ( value != null && (value.compareTo(today) > 0) ) {
-            throw new WrongValueException(datebox, _("date in the future"));
+            throw new WrongValueException(datebox, _t("date in the future"));
         }
     }
 
@@ -439,7 +439,7 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
         vbox.setPack(CENTER);
 
         Hbox dateHbox = new Hbox();
-        dateHbox.appendChild(new Label(_("Select date")));
+        dateHbox.appendChild(new Label(_t("Select date")));
 
         LocalDate initialDate = earnedValueChartFiller.initialDateForIndicatorValues();
         Datebox datebox = new Datebox(initialDate.toDateTimeAtStartOfDay().toDate());
@@ -535,7 +535,7 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
                 ? earnedValueChartFiller.getIndicator(type, date)
                 : BigDecimal.ZERO;
 
-        String units = _("h");
+        String units = _t("h");
 
         if (type.equals(EarnedValueType.CPI) || type.equals(EarnedValueType.SPI)) {
             value = value.multiply(new BigDecimal(100));

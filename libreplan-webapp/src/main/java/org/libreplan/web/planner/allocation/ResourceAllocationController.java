@@ -365,7 +365,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
         WORKABLE_DAYS(CalculatedValue.END_DATE) {
             @Override
             public String getName() {
-                return _("Calculate Workable Days");
+                return _t("Calculate Workable Days");
             }
 
             @Override
@@ -377,7 +377,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
         NUMBER_OF_HOURS(CalculatedValue.NUMBER_OF_HOURS) {
             @Override
             public String getName() {
-                return _("Calculate Number of Hours");
+                return _t("Calculate Number of Hours");
             }
 
             @Override
@@ -389,7 +389,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
         RESOURCES_PER_DAY(CalculatedValue.RESOURCES_PER_DAY) {
             @Override
             public String getName() {
-                return _("Calculate Resources per Day");
+                return _t("Calculate Resources per Day");
             }
 
             @Override
@@ -435,21 +435,21 @@ public class ResourceAllocationController extends GenericForwardComposer {
     }
 
     public enum DerivedAllocationColumn implements IConvertibleToColumn {
-        NAME(_("Name")) {
+        NAME(_t("Name")) {
             @Override
             public Component cellFor(DerivedAllocation data) {
                 return new Label(data.getName());
             }
         },
 
-        ALPHA(_("Alpha")) {
+        ALPHA(_t("Alpha")) {
             @Override
             public Component cellFor(DerivedAllocation data) {
                 return new Label(String.format("%3.2f", data.getAlpha()));
             }
         },
 
-        HOURS(_("Total Hours")) {
+        HOURS(_t("Total Hours")) {
             @Override
             public Component cellFor(DerivedAllocation data) {
                 return new Label(Integer.toString(data.getHours()));
@@ -605,7 +605,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
         private void renderAggregatingRow(Row row) {
             ResourceAllocationController controller = ResourceAllocationController.this;
             append(row, new Label());
-            append(row, new Label(_("Total")));
+            append(row, new Label(_t("Total")));
             append(row, allOriginalEffort);
             append(row, allTotalEffort);
             append(row, allConsolidatedEffort);
@@ -626,7 +626,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
             button.setSclass("icono");
             button.setImage("/common/img/ico_borrar1.png");
             button.setHoverImage("/common/img/ico_borrar.png");
-            button.setTooltiptext(_("Delete"));
+            button.setTooltiptext(_t("Delete"));
 
             return append(row, button);
         }

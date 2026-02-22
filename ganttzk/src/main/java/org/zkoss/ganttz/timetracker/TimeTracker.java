@@ -21,7 +21,7 @@
 
 package org.zkoss.ganttz.timetracker;
 
-import static org.zkoss.ganttz.i18n.I18nHelper._;
+import static org.zkoss.ganttz.i18n.I18nHelper._t;
 
 import java.util.Collection;
 import java.util.Date;
@@ -226,7 +226,7 @@ public class TimeTracker {
 
             @Override
             public String getName() {
-                return _("changing zoom");
+                return _t("changing zoom");
             }
         });
     }

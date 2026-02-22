@@ -52,7 +52,7 @@ public class CalendarAllocationCommand implements ICalendarAllocationCommand {
 
     @Override
     public String getName() {
-        return _("Calendar allocation");
+        return _t("Calendar allocation");
     }
 
     @Override

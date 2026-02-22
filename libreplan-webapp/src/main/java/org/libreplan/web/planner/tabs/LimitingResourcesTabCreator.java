@@ -81,7 +81,7 @@ public class LimitingResourcesTabCreator {
             return Executions.createComponents("/limitingresources/_limitingresources.zul", parent, arguments);
         };
 
-        return new CreatedOnDemandTab(_("Queue-based Resources Planning"), "limiting-resources", componentCreator) {
+        return new CreatedOnDemandTab(_t("Queue-based Resources Planning"), "limiting-resources", componentCreator) {
             @Override
             protected void beforeShowAction() {
                 if (!SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_PLANNING)) {
@@ -100,7 +100,7 @@ public class LimitingResourcesTabCreator {
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(getSchedulingLabel()));
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-                breadcrumbs.appendChild(new Label(_("Queue-based Resources Planning")));
+                breadcrumbs.appendChild(new Label(_t("Queue-based Resources Planning")));
             }
         };
     }

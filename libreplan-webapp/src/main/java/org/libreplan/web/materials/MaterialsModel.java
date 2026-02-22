@@ -176,7 +176,7 @@ public class MaterialsModel extends IntegrationEntityModel implements IMaterials
         final MaterialCategory materialCategory = findMaterialCategory(child);
         if ( materialCategory != null ) {
             throw new ValidationException(invalidValue(
-                    _("{0} already exists", materialCategory.getName()),
+                    _t("{0} already exists", materialCategory.getName()),
                     "name", materialCategory.getName(), materialCategory));
         }
 

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Rapport d'état de planification des tâches d'un projet</title>
+<link rel="stylesheet" href="html/lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="rapport-d-etat-de-planification-des-taches-d-un-projet">
+<h1 class="title">Rapport d'état de planification des tâches d'un projet</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#objet" id="toc-entry-1">Objet</a></li>
+<li><a class="reference internal" href="#parametres-d-entree-et-filtres" id="toc-entry-2">Paramètres d'entrée et filtres</a></li>
+<li><a class="reference internal" href="#sortie" id="toc-entry-3">Sortie</a><ul>
+<li><a class="reference internal" href="#en-tete" id="toc-entry-4">En-tête</a></li>
+<li><a class="reference internal" href="#pied-de-page" id="toc-entry-5">Pied de page</a></li>
+<li><a class="reference internal" href="#corps" id="toc-entry-6">Corps</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="objet">
+<h1><a class="toc-backref" href="#toc-entry-1">Objet</a></h1>
+<p>Ce rapport vous permet de voir l'état d'avancement et de prévision des tâches d'un projet.</p>
+</div>
+<div class="section" id="parametres-d-entree-et-filtres">
+<h1><a class="toc-backref" href="#toc-entry-2">Paramètres d'entrée et filtres</a></h1>
+<p>Le projet est le seul paramètre obligatoire. Il existe d'autres paramètres facultatifs :</p>
+<blockquote>
+<ul class="simple">
+<li><strong>Filtre par état des tâches</strong>. <tt class="docutils literal">Tous</tt> par défaut. Il est possible de se limiter à un état particulier parmi les états suivants: <tt class="docutils literal">Bloquée</tt>, <tt class="docutils literal">Finie</tt>, <tt class="docutils literal">En cours</tt>, <tt class="docutils literal">En attente</tt> ou <tt class="docutils literal">Prête à démarrer</tt>.</li>
+<li><strong>Montrer les dépendances</strong>. Cocher cette case pour afficher les dépendances des tâches dans le rapport.</li>
+<li><strong>Filtrer par étiquettes</strong>. Permet de ne retenir que les tâches disposant de la ou des étiquettes indiquées. Choisir une étiquette et cliquer sur le bouton <em>Ajouter</em>.</li>
+<li><strong>Filtrer par critères</strong>. Permet de ne retenir que les tâches disposant du ou des critères indiqués. Choisir un critère et cliquer sur le bouton <em>Ajouter</em>.</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="sortie">
+<h1><a class="toc-backref" href="#toc-entry-3">Sortie</a></h1>
+<p>Le format de sortie est le suivant :</p>
+<div class="section" id="en-tete">
+<h2><a class="toc-backref" href="#toc-entry-4">En-tête</a></h2>
+<p>Dans l'en-tête de rapport les champs suivants sont affichés :</p>
+<blockquote>
+<ul class="simple">
+<li><strong>Projet</strong>. Le projet pour lequel le rapport a été obtenu.</li>
+<li><strong>État</strong>. L'état des tâches objet du rapport. <tt class="docutils literal">Toutes</tt> par défaut.</li>
+<li><strong>Étiquettes</strong>. Les étiquettes choisies s'il y en a.</li>
+<li><strong>Critères</strong>. Les critères choisis s'il y en a.</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="pied-de-page">
+<h2><a class="toc-backref" href="#toc-entry-5">Pied de page</a></h2>
+<p>La date à laquelle le rapport a été généré est affichée.</p>
+</div>
+<div class="section" id="corps">
+<h2><a class="toc-backref" href="#toc-entry-6">Corps</a></h2>
+<p>Le corps contient une liste de tableaux relatifs à chacune des tâches du projet qui ont été retenues par les filtres d'entrée.</p>
+<p>Sont d'abord affichés le nom et le code de la tâche puis un tableau comportant les colonnes suivantes :</p>
+<blockquote>
+<ul>
+<li><p class="first"><em>Date de début</em>. Comporte à son tour deux sous-colonnes :</p>
+<blockquote>
+<ul class="simple">
+<li><em>Estimée</em> : la date de début estimée</li>
+<li><em>Premier relevé</em> : date du premier relevé d'heures de travail</li>
+</ul>
+</blockquote>
+</li>
+<li><p class="first"><em>Date de fin</em>. Comporte à son tour trois sous-colonnes :</p>
+<blockquote>
+<ul class="simple">
+<li><em>Estimée</em> : la date de fin estimée</li>
+<li><em>Dernier relevé</em> : date du dernier relevé d'heures de travail</li>
+<li><em>Date limite</em> : date limite pour terminer la tâche</li>
+</ul>
+</blockquote>
+</li>
+<li><p class="first"><em>Avancement</em> : le pourcentage d'avancement de la tâche</p>
+</li>
+<li><p class="first"><em>État</em> : l'état de la tâche parmi ceux mentionnés plus hauts</p>
+</li>
+<li><p class="first"><em>Date limite</em> : date d'échéance de la tâche</p>
+</li>
+</ul>
+</blockquote>
+<p>Si la case <em>Montrer les dépendances</em> a été cochée, un second tableau suit le premier. Il comporte une ligne par dépendance comprenant les colonnes suivantes :</p>
+<blockquote>
+<ul class="simple">
+<li><em>Nom</em> : nom de la tâche dont dépend la tâche courante</li>
+<li><em>Code</em> : le code de cette tâche</li>
+<li><em>Type</em> : le type de la dépendance</li>
+<li><em>Avancement</em> : avancement de la tâche, sous forme fractionnaire (de 0 à 1).</li>
+</ul>
+</blockquote>
+</div>
+</div>
+</div>
+</body>
+</html>

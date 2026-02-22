@@ -161,7 +161,7 @@ public class EditTaskController extends GenericForwardComposer {
 
         taskPropertiesController.init(this, context, taskElement);
 
-        window.setTitle(_("Edit task: {0}", taskElement.getName()));
+        window.setTitle(_t("Edit task: {0}", taskElement.getName()));
         showSelectedTabPanel();
         Util.createBindingsFor(window);
         Util.reloadBindings(window);
@@ -368,10 +368,10 @@ public class EditTaskController extends GenericForwardComposer {
     }
 
     void showNonPermitChangeResourceAllocationType() {
-        String message = _("The task has got progress consolidations. " +
+        String message = _t("The task has got progress consolidations. " +
                 "To change resource allocation type all consolidations must be removed before");
 
-        Messagebox.show(message, _("Information"), Messagebox.OK, Messagebox.INFORMATION);
+        Messagebox.show(message, _t("Information"), Messagebox.OK, Messagebox.INFORMATION);
     }
 
     public void close(Event event) {

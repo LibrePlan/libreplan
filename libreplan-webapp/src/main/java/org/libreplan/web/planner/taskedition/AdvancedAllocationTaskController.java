@@ -69,7 +69,7 @@ public class AdvancedAllocationTaskController extends GenericForwardComposer {
                 planningState.getCurrentScenario(), task);
 
         if (allocationResult.getAggregate().isEmpty()) {
-            Messagebox.show(_("Some allocations needed"), _("Warning"),
+            Messagebox.show(_t("Some allocations needed"), _t("Warning"),
                     Messagebox.OK, Messagebox.EXCLAMATION);
             return;
         }

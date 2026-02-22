@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Connecteurs</title>
+<link rel="stylesheet" href="html/lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="connecteurs">
+<h1 class="title">Connecteurs</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#configuration" id="toc-entry-1">Configuration</a></li>
+<li><a class="reference internal" href="#connecteur-jira" id="toc-entry-2">Connecteur JIRA</a><ul>
+<li><a class="reference internal" href="#configuration-1" id="toc-entry-3">Configuration</a></li>
+<li><a class="reference internal" href="#synchronisation" id="toc-entry-4">Synchronisation</a></li>
+<li><a class="reference internal" href="#programmation" id="toc-entry-5">Programmation</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#connecteur-tim-enterprise" id="toc-entry-6">Connecteur Tim Enterprise</a><ul>
+<li><a class="reference internal" href="#configuration-2" id="toc-entry-7">Configuration</a></li>
+<li><a class="reference internal" href="#export" id="toc-entry-8">Export</a></li>
+<li><a class="reference internal" href="#export-programme" id="toc-entry-9">Export programmé</a></li>
+<li><a class="reference internal" href="#import" id="toc-entry-10">Import</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>Les connecteurs sont des applications clientes de LibrePlan qui peuvent être utilisées pour communiquer avec des serveurs (web) pour obtenir des données, les traiter et les enregistrer. Actuellement, il existe deux connecteurs, le connecteur JIRA et le connecteur Tim Enterprise.</p>
+<div class="section" id="configuration">
+<h1><a class="toc-backref" href="#toc-entry-1">Configuration</a></h1>
+<p>Les connecteurs doivent être configurés de manière appropriée avant d'être utilisés. Ils peuvent être configurés à partir de l'écran de configuration <tt class="docutils literal">Réglages principaux</tt>, onglet <tt class="docutils literal">Connecteurs</tt>.</p>
+<p>L'écran des connecteurs comporte :</p>
+<ul class="simple">
+<li><tt class="docutils literal">une liste déroulante</tt> : une liste des connecteurs disponibles</li>
+<li><tt class="docutils literal">un écran de modification des propriétés</tt> : un formulaire de modification des propriétés pour le connecteur choisi</li>
+<li><tt class="docutils literal">un bouton de test de la connexion</tt> : pour tester la connexion avec les connecteurs</li>
+</ul>
+<p>Choisir le connecteur que vous voulez configurer à partir de la <tt class="docutils literal">liste déroulante</tt> des connecteurs. Un <tt class="docutils literal">formulaire de modification des propriétés</tt> pour le connecteur choisi va apparaître. Dans ce <tt class="docutils literal">formulaire de modification des propriétés</tt> vous pouvez modifier les valeurs des propriétés que vous souhaitez et tester votre configuration en utilisant le bouton <tt class="docutils literal">Tester la connexion</tt>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Les propriétés sont configurées avec des valeurs par défaut. La plus importante est la propriété <tt class="docutils literal">Activé</tt>. Par défaut, elle est positionné à <tt class="docutils literal">N</tt>. Ceci indique que le connecteur ne sera pas utilisé à moins de changer sa valeur à <tt class="docutils literal">Y</tt> et d'enregistrer les modifications.</p>
+</div>
+</div>
+<div class="section" id="connecteur-jira">
+<h1><a class="toc-backref" href="#toc-entry-2">Connecteur JIRA</a></h1>
+<p>JIRA est un système de suivi d'incidents et de projets.</p>
+<p>Le connecteur JIRA est une application qui peut être utilisée pour récupérer depuis le serveur web JIRA des incidents et traiter les réponses.
+La requête est basée sur les <tt class="docutils literal">étiquettes JIRA</tt> (<tt class="docutils literal">JIRA labels</tt>). Dans JIRA, les étiquettes peuvent être utilisées pour catégoriser les incidents.
+Aussi, la requête est aussi simple que : obtenir tous les incidents qui sont catégorisés par ce <tt class="docutils literal"><span class="pre">nom-d-etiquette</span></tt>.</p>
+<p>Le connecteur obtient la réponse, dans ce cas les incidents puis les convertit en <tt class="docutils literal">tâches</tt> et <tt class="docutils literal">relevés des heures de travail</tt> de LibrePlan.</p>
+<p>Le <em>connecteur JIRA</em> doit être configuré correctement avant de pouvoir être utilisé.</p>
+<div class="section" id="configuration-1">
+<h2><a class="toc-backref" href="#toc-entry-3">Configuration</a></h2>
+<p>À partir de <tt class="docutils literal">l'écran de configuration principal</tt>, choisir l'onglet <tt class="docutils literal">Connecteurs</tt>.
+Dans l'écran des connecteurs, choisir le connecteur JIRA dans la <tt class="docutils literal">liste déroulante</tt>. Un <tt class="docutils literal">écran de modification des propriétés</tt> est alors affiché.</p>
+<p>Dans cet écran, vous pouvez configurer les valeurs des propriétés suivantes :</p>
+<ul class="simple">
+<li><tt class="docutils literal">Activé</tt>: Y/N, selon que vous voulez utiliser le connecteur JIRA ou pas. La valeur par défaut est <tt class="docutils literal">N</tt>.</li>
+<li><tt class="docutils literal">URL du serveur</tt>: le chemin absolu vers le serveur web JIRA.</li>
+<li><tt class="docutils literal">Nom d'utilisateur</tt> et <tt class="docutils literal">Mot de passe</tt>: les informations de connexion de l'utilisateur pour l'autorisation</li>
+<li><tt class="docutils literal">Étiquettes JIRA : liste séparée par des virgules des étiquettes ou des URL</tt>: Soit vous entrez l'URL de l'étiquette ou des étiquettes séparées par des virgules.</li>
+<li><tt class="docutils literal">Type d'heures</tt>: type des heures de travail. La valeur par défaut est <tt class="docutils literal">Default</tt></li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Étiquettes JIRA : actuellement, le serveur web JIRA ne gère pas la fourniture d'une liste de toutes les étiquettes disponibles. Comme contournement, nous avons développé un simple script PHP qui effectue une requête SQL simple dans la base de données pour récupérer toutes les différentes étiquettes. Vous pouvez soit utiliser ce script comme <tt class="docutils literal">URL des étiquettes JIRA</tt> soit saisir les étiquettes que vous souhaitez séparées par des virgules dans le champ des étiquettes JIRA.</p>
+</div>
+<p>Enfin, cliquer sur le bouton  <tt class="docutils literal">Tester la connexion</tt> pour tester si vous arrivez à vous connecter au serveur web JIRA et que votre configuration est correcte.</p>
+</div>
+<div class="section" id="synchronisation">
+<h2><a class="toc-backref" href="#toc-entry-4">Synchronisation</a></h2>
+<p>À partir de la vue <tt class="docutils literal">Détails du projet</tt>, onglet <tt class="docutils literal">Données générales</tt>, vous pouvez lancer la synchronisation des tâches avec les incidents JIRA.</p>
+<p>Cliquer sur le bouton <tt class="docutils literal">Synchroniser avec JIRA</tt> pour lancer la synchronisation.</p>
+<ul class="simple">
+<li>Si c'est la première fois, une fenêtre <tt class="docutils literal">surgissante</tt> s'affiche (avec la liste auto-complétée des étiquettes). Dans cette fenêtre, vous pouvez choisir une <tt class="docutils literal">étiquette</tt> avec laquelle effectuer la synchronisation puis cliquer sur le bouton <tt class="docutils literal">Démarrer la synchronisation</tt> pour lancer le processus de synchronisation, ou cliquer sur le bouton <tt class="docutils literal">Annuler</tt> pour l'annuler.</li>
+<li>Si l'étiquette est déjà synchronisée, la <tt class="docutils literal">date de dernière synchronisation</tt> et l' <tt class="docutils literal">étiquette</tt> sont affichées dans l'écran JIRA. Dans ce cas, aucune fenêtre <tt class="docutils literal">surgissante</tt> de sélection des étiquettes ne sera affichée. À la place, le processus de synchronisation va démarrer directement pour l'étiquette (déjà synchronisée) affichée.</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">La relation entre <tt class="docutils literal">projet</tt> et <tt class="docutils literal">étiquette</tt> est de un pour un. Une Seule <tt class="docutils literal">étiquette</tt> est autorisée à se synchroniser avec un <tt class="docutils literal">Projet</tt>.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Pour une (re)synchronisation réussie, les informations seront écrites en base de données et l'écran JIRA sera mis à jour avec les dernières <tt class="docutils literal">dates</tt> et <tt class="docutils literal">étiquettes</tt> synchronisées.</p>
+</div>
+<p>Le processus de (re)synchronisation est réalisé en deux phases :</p>
+<ul class="simple">
+<li>phase-1: Synchronisation des tâches dont les affectations d'avancement et les mesures.</li>
+<li>phase-2: Synchronisation des relevés des heures de travail.</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Si la phase-1 échoue, la phase-2 ne sera pas réalisée et aucune information ne sera écrite en base de données.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Les informations de réussite ou d'échec seront affichées dans la fenêtre surgissante.</p>
+</div>
+<p>Après l'achèvement avec succès d'une synchronisation, le résultat sera affiché dans l'onglet <tt class="docutils literal">SDP (Tâches)</tt> de l'écran <tt class="docutils literal">Détails du projet</tt>. Dans cette IHM, il y a deux modifications par rapport à la structure hiérarchique arborescente habituelle des tâches (<tt class="docutils literal">SDP</tt>) :</p>
+<ul class="simple">
+<li>La colonne <tt class="docutils literal">total des heures de la tâche</tt> n'est pas modifiable (lecture seule) du fait que la synchronisation ne fonctionne que dans un sens.  Les heures des tâches ne peuvent être mises à jour que depuis le serveur web JIRA.</li>
+<li>La colonne <tt class="docutils literal">Code</tt> affiche les <tt class="docutils literal">clefs des incidents JIRA</tt> qui sont en même temps des <tt class="docutils literal">liens hypertexte</tt> vers ces incidents JIRA. Cliquer sur la clef souhaitée si vous voulez accéder au document de cette clef (incident JIRA).</li>
+</ul>
+</div>
+<div class="section" id="programmation">
+<h2><a class="toc-backref" href="#toc-entry-5">Programmation</a></h2>
+<p>La re-synchronisation des incidents JIRA peut également se faire via l'ordonnanceur. Allez à l'écran <tt class="docutils literal">Ordonnancement des tâches</tt>. Dans cet écran, vous pouvez configurer une <tt class="docutils literal">tâche (job)</tt> JIRA pour faire la synchronisation. La <tt class="docutils literal">tâche</tt> recherche les dernières <tt class="docutils literal">étiquettes</tt> synchronisées dans la base de données et les resynchronise en conséquence. Voir également la section relative à l'ordonnanceur.</p>
+</div>
+</div>
+<div class="section" id="connecteur-tim-enterprise">
+<h1><a class="toc-backref" href="#toc-entry-6">Connecteur Tim Enterprise</a></h1>
+<p>Tim Enterprise est un projet hollandais de Aénova. C'est une application web pour la gestion du temps passé sur les projets et les tâches.</p>
+<p>Le connecteur TIM est une application qui peut être utilisée pour communiquer avec le serveur Tim Enterprise pour :</p>
+<ul class="simple">
+<li>exporter toutes les heures passées par l'employé (utilisateur) sur un projet qui peut être enregistré dans Tim Enterprise.</li>
+<li>importer toutes les contraintes de l'employé (utilisateur) de façon à planifier l'utilisation des ressources efficacement.</li>
+</ul>
+<p>Le <em>connecteur Tim</em> doit être configuré correctement avant d'être utilisé.</p>
+<div class="section" id="configuration-2">
+<h2><a class="toc-backref" href="#toc-entry-7">Configuration</a></h2>
+<p>Depuis l'écran de configuration des <tt class="docutils literal">Réglages principaux</tt>, choisir l'onglet <tt class="docutils literal">Connecteurs</tt>.
+Dans l'écran des connecteurs, choisir le connecteur Tim dans la liste <tt class="docutils literal">déroulante</tt>. Un <tt class="docutils literal">écran de modification des propriétés</tt> est maintenant affiché.</p>
+<p>Dans cet écran, vous pouvez configurer les valeurs des propriétés suivantes :</p>
+<ul class="simple">
+<li><tt class="docutils literal">Activé</tt>: Y/N, selon que vous voulez utiliser le connecteur Tim ou non. La valeur par défaut est <tt class="docutils literal">N</tt>.</li>
+<li><tt class="docutils literal">URL du serveur</tt>: le chemin d'accès absolu au serveur Tim Enterprise</li>
+<li><tt class="docutils literal">Nom d'utilisateur</tt> et <tt class="docutils literal">mot de passe</tt> : les informations de l'utilisateur pour se connecter</li>
+<li><tt class="docutils literal">Nombre de relevés journaliers des heures de travail pour Tim</tt>: le nombre de jours écoulés pour lesquels vous voulez exporter les relevés des heures de travail</li>
+<li><tt class="docutils literal">Nombre de listes de jours provenant de Tim</tt>: le nombre de jours à venir pour lesquels vous voulez importer les feuilles de service</li>
+<li><tt class="docutils literal">Facteur de productivité</tt> : Heures de travail efficaces en pourcentage. La valeur par défaut est <tt class="docutils literal">100%</tt></li>
+<li><tt class="docutils literal">Liste des ID de département à importer</tt>: identifiants des départements séparés par des virgules.</li>
+</ul>
+<p>Enfin, cliquez sur le bouton <tt class="docutils literal">Tester la connexion</tt> pour vérifier que vous pouvez vous connecter au serveur Tim Enterprise et que votre configuration est correcte.</p>
+</div>
+<div class="section" id="export">
+<h2><a class="toc-backref" href="#toc-entry-8">Export</a></h2>
+<p>Depuis la fenêtre projet, onglet <tt class="docutils literal">Données générales</tt>, vous pouvez lancer l'exportation des relevés des heures de travail vers le serveur Tim Enterprise.</p>
+<p>Saisir le <tt class="docutils literal">code produit Tim</tt> et cliquer sur le bouton <tt class="docutils literal">Exporter vers Tim</tt> pour lancer l'export.</p>
+<p>Le connecteur Tim ajoute les champs suivants avec le code produit :</p>
+<ul class="simple">
+<li>le nom complet de l'employé/utilisateur</li>
+<li>la date à laquelle l'employé a travaillé sur une tâche</li>
+<li>l'effort, les heures passées sur la tâche</li>
+<li>et une option indiquant si Tim Enterprise doit mettre à jour l'enregistrement ou en insérer un nouveau</li>
+</ul>
+<p>La <em>réponse</em> de Tim Enterprise ne contient qu'une liste d' <tt class="docutils literal">identifiants d'enregistrement (entiers)</tt>. Du coup, il est difficile de voir ce qui n'a pas fonctionné car la liste de réponse ne contient que des nombres qui ne sont pas reliés aux champs de la requête.
+La requête d' <tt class="docutils literal">export</tt> a échoué pour les entrées qui contiennent des valeurs <tt class="docutils literal">0</tt>. Aussi vous ne pouvez pas voir ici quelle requête a échoué car les entrées de la liste ne contiennent que la valeur <tt class="docutils literal">0</tt>. La seule façon de comprendre est de regarder le fichier journal du serveur Tim Enterprise.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Pour un export réussi, les informations seront écrites dans la base de données et l'écran Tim sera mis à jour avec les dernières <tt class="docutils literal">date</tt> - <tt class="docutils literal">code produit</tt> exportés.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Les information de réussite ou d'échec seront affichées dans une fenêtre surgissante.</p>
+</div>
+</div>
+<div class="section" id="export-programme">
+<h2><a class="toc-backref" href="#toc-entry-9">Export programmé</a></h2>
+<p>Le processus d'export peut également se faire via l'ordonnanceur. Aller à l'écran <tt class="docutils literal">Ordonnanceur de tâches</tt>. Dans cet écran, vous pouvez configurer une <tt class="docutils literal">tâche système</tt> d'export vers Tim. La <tt class="docutils literal">tâche système</tt> recherche les derniers relevés des heures de travail exportés dans la base de données et les réexporte en conséquence. Voir également la section relative à l'ordonnanceur.</p>
+</div>
+<div class="section" id="import">
+<h2><a class="toc-backref" href="#toc-entry-10">Import</a></h2>
+<p>L'import des listes de service ne fonctionne qu'avec l'aide de l'<em>ordonnanceur</em>. Il n'y a pas d'interface utilisateur dédiée étant donné qu'aucune saisie de l'utilisateur n'est nécessaire. Aller à l'écran <tt class="docutils literal">Ordonnancement des tâches</tt> et configurer la <tt class="docutils literal">tâche</tt> d'import Tim. La <tt class="docutils literal">tâche</tt> boucle sur tous les départements configurés dans la <tt class="docutils literal">propriété des connecteurs</tt> et importe toutes les feuilles de service de chaque département. Voir également la section relative à l'ordonnanceur.</p>
+<p>Pour l'import, le connecteur Tim ajoute les champs suivants dans la <em>requête</em> :</p>
+<ul class="simple">
+<li>Période : la période (date à partir du - date jusqu'au) pour laquelle vous voulez importer les feuilles de service. Ceci peut être fourni sous forme de critères de filtrage.</li>
+<li>Département : pour quel département vous voulez importer la feuille de services. Les départements sont configurables.</li>
+<li>Les champs qui vous intéressent (telles que informations personnelles, catégorie de feuilles de service, etc.) et que le serveur Tim doit inclure dans sa réponse.</li>
+</ul>
+<p>La <em>réponse</em> d'import contient les champs suivants qui sont suffisants pour gérer les <tt class="docutils literal">jours exceptionnels</tt> dans LibrePlan :</p>
+<ul class="simple">
+<li>Information personnelles : nom et nom du réseau</li>
+<li>Département : le département dans lequel l'employé travaille</li>
+<li>Catégorie de feuilles de service : information sur la présence/l'absence de l'employé et le motif (type d'exception LibrePlan) dans le cas où l'employé est absent</li>
+<li>Date: la date à laquelle l'employé est présent/absent</li>
+<li>Temps : l'heure de début d'absence/présence, par exemple 08:00</li>
+<li>Durée : nombre d'heures pendant lesquelles l'employé est présent / absent</li>
+</ul>
+<p>En convertissant la <em>réponse</em> d'import en <tt class="docutils literal">jours exceptionnels</tt> de LibrePlan, les transformations suivantes sont prises en compte :</p>
+<ul class="simple">
+<li>Si la catégorie de feuilles de service contient le nom <tt class="docutils literal">Vakantie</tt> elle sera traduite en <tt class="docutils literal">RESOURCE VACANCY</tt> (VACANCES DES RESSOURCES).</li>
+<li>La catégorie <tt class="docutils literal">Feestdag</tt> sera traduite en <tt class="docutils literal">BANK HOLIDAY</tt> (jour férié)</li>
+<li>Toutes les autres comme <tt class="docutils literal">Jus uren</tt>, <tt class="docutils literal">PLB uren</tt>, etc. doivent être ajoutées manuellement aux <tt class="docutils literal">jours exceptionnels du calendrier</tt>.</li>
+</ul>
+<p>Après la <em>réponse</em> d'import, la feuille de service est divisée en deux ou trois parties par jour : par exemple, roster-morning, roster-afternoon et roster-evening. Mais LibrePlan n'autorise qu'un seul <tt class="docutils literal">type d'exception</tt> par jour. Le connecteur Tim est alors responsable de fusionner ces parties en un seul <tt class="docutils literal">type d'exception</tt>. Cela signifie que la catégorie de feuilles de service avec la <tt class="docutils literal">durée</tt> la plus longue est supposée être un <tt class="docutils literal">type d'exception</tt> valide mais la durée totale est la somme de toutes les durées de ces parties de catégorie.</p>
+<p>Contrairement à LibrePlan, dans Tim Enterprise, la <tt class="docutils literal">durée totale</tt> dans le cas où l'employé est en vacances signifie que l'employé n'est pas disponible pour cette <tt class="docutils literal">durée totale</tt>. Dans LibrePlan au contraire, si l'employé est en vacances, la durée totale sera <tt class="docutils literal">Zéro</tt>. Le connecteur Tim prend également en charge de cette transformation.</p>
+</div>
+</div>
+</div>
+</body>
+</html>

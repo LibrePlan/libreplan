@@ -191,7 +191,7 @@ public class ComposeMessage {
 			} catch (NullPointerException e) {
 				if (receiver == null) {
 					Messagebox.show(_(currentWorker.getUser().getLoginName() + " - this user have not filled E-mail"),
-							_("Error"), Messagebox.OK, Messagebox.ERROR);
+							_t("Error"), Messagebox.OK, Messagebox.ERROR);
 				}
 			}
 		}

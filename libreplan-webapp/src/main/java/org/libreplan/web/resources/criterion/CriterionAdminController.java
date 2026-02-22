@@ -93,8 +93,8 @@ public class CriterionAdminController extends BaseCRUDController<CriterionType> 
 
     private void showConfirmingHierarchyWindow() {
         int status = Messagebox.show(
-                _("Disable hierarchy will cause criteria tree to be flattened. Are you sure?"),
-                _("Question"), Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION);
+                _t("Disable hierarchy will cause criteria tree to be flattened. Are you sure?"),
+                _t("Question"), Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION);
 
         if (Messagebox.OK == status) {
             disableHierarchy();
@@ -109,7 +109,7 @@ public class CriterionAdminController extends BaseCRUDController<CriterionType> 
 
         messagesForUser.showMessage(
                 Level.INFO,
-                _("Tree {0} sucessfully flattened", criterionsModel.getCriterionType().getName()));
+                _t("Tree {0} sucessfully flattened", criterionsModel.getCriterionType().getName()));
 
         Util.reloadBindings(listWindow);
     }
@@ -197,12 +197,12 @@ public class CriterionAdminController extends BaseCRUDController<CriterionType> 
 
     @Override
     protected String getEntityType() {
-        return _("Criterion Type");
+        return _t("Criterion Type");
     }
 
     @Override
     protected String getPluralEntityType() {
-        return _("Criterion Types");
+        return _t("Criterion Types");
     }
 
     @Override
@@ -248,7 +248,7 @@ public class CriterionAdminController extends BaseCRUDController<CriterionType> 
         if (!criterionsModel.canRemove(criterionType)) {
             messagesForUser.showMessage(
                     Level.WARNING,
-                    _("This criterion type cannot be deleted because it is assigned to projects or resources"));
+                    _t("This criterion type cannot be deleted because it is assigned to projects or resources"));
 
             return false;
         }

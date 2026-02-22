@@ -199,13 +199,13 @@ public class SubcontractedTasksController extends GenericForwardComposer {
         }
 
         private Button getSendButton(final SubcontractedTaskData subcontractedTaskData) {
-            Button sendButton = new Button(_("Send"));
+            Button sendButton = new Button(_t("Send"));
             sendButton.setClass("add-button");
             sendButton.addEventListener(Events.ON_CLICK, event -> {
                 try {
                     subcontractedTasksModel.sendToSubcontractor(subcontractedTaskData);
                     messagesForUser.showMessage(Level.INFO,
-                            _("Subcontracted task sent successfully"));
+                            _t("Subcontracted task sent successfully"));
                 } catch (UnrecoverableErrorServiceException e) {
                     messagesForUser.showMessage(Level.ERROR, e.getMessage());
                 } catch (ConnectionProblemsException e) {

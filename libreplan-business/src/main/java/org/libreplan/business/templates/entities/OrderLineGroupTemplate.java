@@ -270,7 +270,7 @@ public class OrderLineGroupTemplate extends OrderElementTemplate implements
 
     @Override
     public String getType() {
-        return I18nHelper._("Group");
+        return I18nHelper._t("Group");
     }
 
     @Override

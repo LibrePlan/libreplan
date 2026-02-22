@@ -27,9 +27,9 @@ import org.libreplan.business.planner.entities.TaskGroup;
  */
 public enum TaskGroupFilterEnum implements IFilterEnum {
 
-    Criterion(_("Criterion")), Label(_("Label")), ExternalCompany(_("Customer")), State(
-            _("State")), Code(_("Code")), CustomerReference(
-            _("Customer Reference")), Resource(_("Resource"));
+    Criterion(_t("Criterion")), Label(_t("Label")), ExternalCompany(_t("Customer")), State(
+            _t("State")), Code(_t("Code")), CustomerReference(
+            _t("Customer Reference")), Resource(_t("Resource"));
     /**
      * Forces to mark the string as needing translation
      */
