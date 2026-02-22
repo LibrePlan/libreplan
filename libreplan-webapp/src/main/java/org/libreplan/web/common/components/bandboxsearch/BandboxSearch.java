@@ -203,7 +203,7 @@ public class BandboxSearch extends HtmlMacroComponent {
         final String[] headers = finder.getHeaders();
 
         for (String header : headers) {
-            listhead.getChildren().add(new Listheader(_(header)));
+            listhead.getChildren().add(new Listheader(_t(header)));
         }
     }
 

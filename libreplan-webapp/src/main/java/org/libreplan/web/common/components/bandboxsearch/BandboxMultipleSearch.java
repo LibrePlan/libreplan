@@ -274,7 +274,7 @@ public class BandboxMultipleSearch extends HtmlMacroComponent {
         clearHeaderIfNecessary();
         final String[] headers = multipleFiltersFinder.getHeaders();
         for (String header : headers) {
-            listhead.getChildren().add(new Listheader(_(header)));
+            listhead.getChildren().add(new Listheader(_t(header)));
         }
     }
 

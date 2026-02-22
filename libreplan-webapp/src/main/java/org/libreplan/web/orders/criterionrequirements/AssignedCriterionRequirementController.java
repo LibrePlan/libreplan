@@ -497,7 +497,7 @@ public abstract class AssignedCriterionRequirementController<T, M> extends Gener
 
     private void showInvalidConstraint(Bandbox bandbox, IllegalStateException e) {
         bandbox.setValue("");
-        throw new WrongValueException(bandbox, _(e.getMessage()));
+        throw new WrongValueException(bandbox, _t(e.getMessage()));
     }
 
     /**
@@ -526,7 +526,7 @@ public abstract class AssignedCriterionRequirementController<T, M> extends Gener
                         ((OrderLine) getElement()).setWorkHours(intValue);
                     }
                 } catch (IllegalArgumentException e) {
-                    throw new WrongValueException(comp, _(e.getMessage()));
+                    throw new WrongValueException(comp, _t(e.getMessage()));
                 }
             }
         };
@@ -538,7 +538,7 @@ public abstract class AssignedCriterionRequirementController<T, M> extends Gener
             try {
                 hoursGroupWrapper.setPercentage((BigDecimal) value);
             } catch (IllegalArgumentException e) {
-                throw new WrongValueException(comp, _(e.getMessage()));
+                throw new WrongValueException(comp, _t(e.getMessage()));
             }
         };
     }

@@ -885,7 +885,7 @@ public class OrderCRUDController extends GenericForwardComposer {
             }
         } else {
             Messagebox.show(
-                    _t("You don't have read access to this project"), _(INFORMATION),
+                    _t("You don't have read access to this project"), _t(INFORMATION),
                     Messagebox.OK, Messagebox.INFORMATION);
 
             goToList();
@@ -1024,7 +1024,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         }
         else {
             Messagebox.show(
-                    _t("Not enough permissions to edit this project"), _(INFORMATION),
+                    _t("Not enough permissions to edit this project"), _t(INFORMATION),
                     Messagebox.OK, Messagebox.INFORMATION);
         }
     }
@@ -1078,12 +1078,12 @@ public class OrderCRUDController extends GenericForwardComposer {
 
             } else {
                 Messagebox.show(
-                        _t("The project has no scheduled elements"), _(INFORMATION),
+                        _t("The project has no scheduled elements"), _t(INFORMATION),
                         Messagebox.OK, Messagebox.INFORMATION);
             }
         } else {
             Messagebox.show(
-                    _t("You don't have read access to this project"), _(INFORMATION),
+                    _t("You don't have read access to this project"), _t(INFORMATION),
                     Messagebox.OK, Messagebox.INFORMATION);
         }
     }
@@ -1111,7 +1111,7 @@ public class OrderCRUDController extends GenericForwardComposer {
     public void checkUserCanRead(Order order) {
         if ( !orderModel.userCanRead(order, SecurityUtils.getSessionUserLoginName()) ) {
             Messagebox.show(
-                    _t("Sorry, you do not have permissions to access this project"), _(INFORMATION),
+                    _t("Sorry, you do not have permissions to access this project"), _t(INFORMATION),
                     Messagebox.OK, Messagebox.INFORMATION);
         }
     }
@@ -1296,7 +1296,7 @@ public class OrderCRUDController extends GenericForwardComposer {
             appendObject(row, Util.addCurrencySymbol(order.getTotalManualBudget()));
             appendObject(row, Util.addCurrencySymbol(order.getTotalBudget()));
             appendObject(row, order.getTotalHours());
-            appendObject(row, _(order.getState().toString()));
+            appendObject(row, _t(order.getState().toString()));
             appendOperations(row, order);
 
             row.setTooltiptext(getTooltipText(order));
@@ -1357,7 +1357,7 @@ public class OrderCRUDController extends GenericForwardComposer {
                 buttonDelete.setSclass(ICONO_CLASS);
                 buttonDelete.setImage("/common/img/ico_borrar1.png");
                 buttonDelete.setHoverImage("/common/img/ico_borrar.png");
-                buttonDelete.setTooltiptext(_(DELETE));
+                buttonDelete.setTooltiptext(_t(DELETE));
                 buttonDelete.addEventListener(ON_CLICK_EVENT, event -> confirmRemove(order));
                 hbox.appendChild(buttonDelete);
             }
@@ -1745,7 +1745,7 @@ public class OrderCRUDController extends GenericForwardComposer {
             deleteButton.setSclass(ICONO_CLASS);
             deleteButton.setImage("/common/img/ico_borrar1.png");
             deleteButton.setHoverImage("/common/img/ico_borrar.png");
-            deleteButton.setTooltiptext(_(DELETE));
+            deleteButton.setTooltiptext(_t(DELETE));
             deleteButton.addEventListener(Events.ON_CLICK, event -> removeAskedEndDate(endDate));
 
             return deleteButton;

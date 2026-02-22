@@ -922,9 +922,9 @@ public abstract class BaseCalendarEditionController extends GenericForwardCompos
             baseCalendarModel.createNewVersion(startDate, expiringDate, selected);
         } catch (IllegalArgumentException e) {
             if ( e.getMessage().contains("Wrong expiring date") ) {
-                throw new WrongValueException(compExpiringDate, _(e.getMessage()));
+                throw new WrongValueException(compExpiringDate, _t(e.getMessage()));
             } else {
-                throw new WrongValueException(compStartDate, _(e.getMessage()));
+                throw new WrongValueException(compStartDate, _t(e.getMessage()));
             }
         }
 
@@ -1037,13 +1037,13 @@ public abstract class BaseCalendarEditionController extends GenericForwardCompos
 
     private void appendStandardEffortListcell(Listitem item, Capacity capacity) {
         Listcell listcell = new Listcell();
-        listcell.appendChild(new Label(_(capacity.getStandardEffortString())));
+        listcell.appendChild(new Label(_t(capacity.getStandardEffortString())));
         item.appendChild(listcell);
     }
 
     private void appendExtraEffortListcell(Listitem item, Capacity capacity) {
         Listcell listcell = new Listcell();
-        listcell.appendChild(new Label(_(capacity.getExtraEffortString())));
+        listcell.appendChild(new Label(_t(capacity.getExtraEffortString())));
         item.appendChild(listcell);
     }
 

@@ -167,7 +167,7 @@ public class DashboardController extends GenericForwardComposer {
         BigDecimal relativeMargin = dashboardModel.getMarginWithDeadLine();
 
         if ( (lblAbsolute != null) && (absoluteMargin != null) ) {
-            lblAbsolute.setValue(_(
+            lblAbsolute.setValue(_t(
                     "There is a margin of {0} days with the project global deadline ({1}%).",
                     absoluteMargin,
                     (new DecimalFormat("#.##")).format(relativeMargin.doubleValue() * 100)));
@@ -271,7 +271,7 @@ public class DashboardController extends GenericForwardComposer {
     }
 
     private String statusLegend(TaskStatusEnum status, Map<TaskStatusEnum, Integer> taskStatus) {
-        return _(status.toString()) + String.format(_t(" (%d tasks)"), taskStatus.get(status));
+        return _t(status.toString()) + String.format(_t(" (%d tasks)"), taskStatus.get(status));
     }
 
     private void renderTaskStatus() {

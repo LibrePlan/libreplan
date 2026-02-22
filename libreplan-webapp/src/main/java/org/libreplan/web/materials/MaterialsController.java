@@ -294,7 +294,7 @@ public class MaterialsController extends GenericForwardComposer {
                     MaterialCategory materialCategory = (MaterialCategory) value;
                     Component comp = findInMaterialCategoryTree(materialCategory);
                     if (comp != null) {
-                        throw new WrongValueException(comp, _(invalidValue.getMessage()));
+                        throw new WrongValueException(comp, _t(invalidValue.getMessage()));
                     }
                 }
             }
@@ -390,10 +390,10 @@ public class MaterialsController extends GenericForwardComposer {
                 final Treeitem treeitem = findTreeItemByMaterialCategory(categoriesTree, materialCategory);
                 if (treeitem != null) {
                     if (each.getPropertyPath().equals("name")) {
-                        throw new WrongValueException(getCategoryTextbox(treeitem), _(each.getMessage()));
+                        throw new WrongValueException(getCategoryTextbox(treeitem), _t(each.getMessage()));
                     }
                     if (each.getPropertyPath().equals("code")) {
-                        throw new WrongValueException(getCategoryCodeTextbox(treeitem), _(each.getMessage()));
+                        throw new WrongValueException(getCategoryCodeTextbox(treeitem), _t(each.getMessage()));
                     }
                 }
             }

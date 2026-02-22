@@ -190,7 +190,7 @@ public class ComposeMessage {
 				throw new RuntimeException(e);
 			} catch (NullPointerException e) {
 				if (receiver == null) {
-					Messagebox.show(_(currentWorker.getUser().getLoginName() + " - this user have not filled E-mail"),
+					Messagebox.show(_t(currentWorker.getUser().getLoginName() + " - this user have not filled E-mail"),
 							_t("Error"), Messagebox.OK, Messagebox.ERROR);
 				}
 			}

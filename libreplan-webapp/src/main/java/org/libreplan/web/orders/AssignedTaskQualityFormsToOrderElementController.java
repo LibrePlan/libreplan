@@ -191,7 +191,7 @@ public class AssignedTaskQualityFormsToOrderElementController extends GenericFor
     public void confirmRemove(TaskQualityForm taskQualityForm) {
         int status = Messagebox.show(
                 _t("Confirm deleting {0}. Are you sure?", getTaskQualityFormName(taskQualityForm)),
-                _(DELETE_ACTION), Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION);
+                _t(DELETE_ACTION), Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION);
 
         if (Messagebox.OK == status) {
             deleteTaskQualityForm(taskQualityForm);
@@ -268,7 +268,7 @@ public class AssignedTaskQualityFormsToOrderElementController extends GenericFor
 
             appendDetails(row, taskQualityForm);
             appendNewLabel(row, taskQualityForm.getQualityForm().getName());
-            appendNewLabel(row, _(taskQualityForm.getQualityForm().getQualityFormType().toString()));
+            appendNewLabel(row, _t(taskQualityForm.getQualityForm().getQualityFormType().toString()));
             appendCheckboxReportAdvance(row, taskQualityForm);
             appendOperations(row);
         }
@@ -380,7 +380,7 @@ public class AssignedTaskQualityFormsToOrderElementController extends GenericFor
             buttonRemove.setClass("icono");
             buttonRemove.setImage("/common/img/ico_borrar1.png");
             buttonRemove.setHoverImage("/common/img/ico_borrar.png");
-            buttonRemove.setTooltiptext(_(DELETE_ACTION));
+            buttonRemove.setTooltiptext(_t(DELETE_ACTION));
 
             buttonRemove.addEventListener(Events.ON_CLICK, event -> confirmRemove(row.getValue()));
         }
@@ -391,7 +391,7 @@ public class AssignedTaskQualityFormsToOrderElementController extends GenericFor
     }
 
     private void showInformativeMessage(String message) {
-        Messagebox.show(_(message), _(DELETE_ACTION), Messagebox.OK, Messagebox.ERROR);
+        Messagebox.show(_t(message), _t(DELETE_ACTION), Messagebox.OK, Messagebox.ERROR);
     }
 
     private class TaskQualityFormItemsRowRenderer implements RowRenderer {
@@ -562,13 +562,13 @@ public class AssignedTaskQualityFormsToOrderElementController extends GenericFor
                     if (TaskQualityFormItem.propertyDate.equals(propertyName)) {
                         openDetails(rowItem);
                         Datebox datebox = getDatebox(rowItem);
-                        throw new WrongValueException(datebox, _(invalidValue.getMessage()));
+                        throw new WrongValueException(datebox, _t(invalidValue.getMessage()));
                     }
 
                     if (TaskQualityFormItem.propertyPassed.equals(propertyName)) {
                         openDetails(rowItem);
                         Checkbox checkbox = getCheckbox(rowItem);
-                        throw new WrongValueException(checkbox, _(invalidValue.getMessage()));
+                        throw new WrongValueException(checkbox, _t(invalidValue.getMessage()));
                     }
                 }
             }
