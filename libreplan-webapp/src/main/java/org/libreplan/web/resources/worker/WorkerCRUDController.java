@@ -192,7 +192,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements IWor
         /**
          * Helper function to mark text to be translated.
          */
-        private static String _(String text) {
+        private static String _t(String text) {
             return text;
         }
 
@@ -508,7 +508,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements IWor
     private void initUserBindingOptions() {
         UserBindingOption[] values = UserBindingOption.values();
         for (UserBindingOption option : values) {
-            Radio radio = new Radio(_(option.label));
+            Radio radio = new Radio(_t(option.label));
 
             if ( option.equals(UserBindingOption.CREATE_NEW_USER) &&
                     !SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_USER_ACCOUNTS) ) {
@@ -861,7 +861,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements IWor
 
         @Override
         public String toString() {
-            return _(option);
+            return _t(option);
         }
 
         public static LimitingResourceEnum valueOf(Boolean isLimitingResource) {

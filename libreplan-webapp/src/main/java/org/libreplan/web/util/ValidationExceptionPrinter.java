@@ -49,14 +49,14 @@ public class ValidationExceptionPrinter {
     }
 
     private static void showAt(Component comp, InvalidValue invalidValue) {
-        throw new WrongValueException(comp, _(invalidValue.getMessage()));
+        throw new WrongValueException(comp, _t(invalidValue.getMessage()));
     }
 
     private static void showAt(Grid comp, InvalidValue invalidValue) {
         Row row = ComponentsFinder.findRowByValue(comp,
                 invalidValue.getInvalidValue());
         if (row != null) {
-            throw new WrongValueException(row, _(invalidValue.getMessage()));
+            throw new WrongValueException(row, _t(invalidValue.getMessage()));
         }
     }
 

@@ -33,6 +33,9 @@ import org.zkoss.zul.ListitemRenderer;
 
 import java.util.List;
 
+import static org.libreplan.web.I18nHelper._t;
+
+
 /**
  * Implements all the methods needed to comply IBandboxFinder.
  *
@@ -53,7 +56,7 @@ public class LabelBandboxFinder extends BandboxFinder implements IBandboxFinder 
     /**
      * Forces to mark the string as needing translation.
      */
-    private static String _(String string) {
+    private static String _t(String string) {
         return string;
     }
 

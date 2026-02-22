@@ -77,7 +77,7 @@ public class CalendarExceptionTypeCRUDController extends BaseCRUDController<Cale
         public void render(Listitem item, Object data, int i) throws Exception {
             CalendarExceptionTypeColor color = (CalendarExceptionTypeColor) data;
             item.setValue(color);
-            item.appendChild(new Listcell(_(color.getName())));
+            item.appendChild(new Listcell(_t(color.getName())));
         }
     };
 
@@ -97,7 +97,7 @@ public class CalendarExceptionTypeCRUDController extends BaseCRUDController<Cale
             }
 
             row.appendChild(new Label(calendarExceptionType.getName()));
-            row.appendChild(new Label(_(calendarExceptionType.getColor().getName())));
+            row.appendChild(new Label(_t(calendarExceptionType.getColor().getName())));
             row.appendChild(new Label(calendarExceptionType.getOverAssignableStr()));
             row.appendChild(new Label(calendarExceptionType.getCapacity().getStandardEffortString()));
             row.appendChild(new Label(calendarExceptionType.getCapacity().getExtraEffortString()));

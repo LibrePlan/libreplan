@@ -128,7 +128,7 @@ public class ReportAdvancesController extends GenericForwardComposer {
 
             // append the status
             String status = reportAdvancesModel.getStatus(order);
-            appendLabel(row, _(status));
+            appendLabel(row, _t(status));
 
             // append the operations
             if ("Updated".equals(status)) {

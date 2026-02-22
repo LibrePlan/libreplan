@@ -241,7 +241,7 @@ public class CompanyPlanningController implements Composer {
         public void render(Comboitem item, Object data, int i) {
             final ProgressType progressType = (ProgressType) data;
             item.setValue(progressType);
-            item.setLabel(_(progressType.getValue()));
+            item.setLabel(_t(progressType.getValue()));
 
             ProgressType configuredProgressType = getProgressTypeFromConfiguration();
             if ( (configuredProgressType != null) && configuredProgressType.equals(progressType) ) {

@@ -138,7 +138,7 @@ public class OrderAuthorizationController extends GenericForwardComposer{
             final ProfileOrderAuthorization profileOrderAuthorization = (ProfileOrderAuthorization) data;
 
             row.appendChild(new Label(profileOrderAuthorization.getProfile().getProfileName()));
-            row.appendChild(new Label(_(profileOrderAuthorization.getAuthorizationType().getDisplayName())));
+            row.appendChild(new Label(_t(profileOrderAuthorization.getAuthorizationType().getDisplayName())));
 
             row.appendChild(Util.createRemoveButton(event -> removeOrderAuthorization(profileOrderAuthorization)));
         };

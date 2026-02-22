@@ -206,7 +206,7 @@ public class TaskPropertiesController extends GenericForwardComposer<Component> 
             boolean thirdCondition = type == PositionConstraintType.AS_SOON_AS_POSSIBLE && order.getInitDate() != null;
 
             if (firstCondition || secondCondition || thirdCondition) {
-                Comboitem comboitem = new Comboitem(_(type.getName()));
+                Comboitem comboitem = new Comboitem(_t(type.getName()));
                 comboitem.setValue(type);
                 startConstraintTypes.appendChild(comboitem);
             }
@@ -499,13 +499,13 @@ public class TaskPropertiesController extends GenericForwardComposer<Component> 
         /**
          * Forces to mark the string as needing translation.
          */
-        private static String _(String string) {
+        private static String _t(String string) {
             return string;
         }
 
         @Override
         public String toString() {
-            return I18nHelper._(option);
+            return I18nHelper._t(option);
         }
 
         public static List<ResourceAllocationTypeEnum> getOptionList() {
@@ -614,7 +614,7 @@ public class TaskPropertiesController extends GenericForwardComposer<Component> 
         if ( task.hasResourceAllocations() ) {
             if ( Messagebox.show(
                     _t("Assigned resources for this task will be deleted. Are you sure?"),
-                    _(WARNING), Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION) == Messagebox.OK) {
+                    _t(WARNING), Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION) == Messagebox.OK) {
                 task.removeAllResourceAllocations();
                 setStateTo(newState);
             } else {
@@ -650,7 +650,7 @@ public class TaskPropertiesController extends GenericForwardComposer<Component> 
         if (task.hasResourceAllocations()) {
             if (Messagebox.show(
                     _t("Assigned resources for this task will be deleted. Are you sure?"),
-                    _(WARNING), Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION) == Messagebox.OK ) {
+                    _t(WARNING), Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION) == Messagebox.OK ) {
                 task.removeAllResourceAllocations();
                 setStateTo(newState);
             } else {
@@ -680,7 +680,7 @@ public class TaskPropertiesController extends GenericForwardComposer<Component> 
 
                 if ( Messagebox.show(
                         _t("IMPORTANT: Don't forget to communicate to subcontractor that his contract has been cancelled"),
-                        _(WARNING), Messagebox.OK, Messagebox.EXCLAMATION) == Messagebox.OK ) {
+                        _t(WARNING), Messagebox.OK, Messagebox.EXCLAMATION) == Messagebox.OK ) {
 
                     setStateTo(newState);
                 } else {

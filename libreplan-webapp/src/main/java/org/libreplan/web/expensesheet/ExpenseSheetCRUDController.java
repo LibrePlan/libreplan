@@ -192,11 +192,11 @@ public class ExpenseSheetCRUDController
 
     private boolean validateNewLine() {
         if (expenseSheetModel.getNewExpenseSheetLine().getDate() == null) {
-            throw new WrongValueException(this.dateboxExpenseDate, _(NOT_EMPTY));
+            throw new WrongValueException(this.dateboxExpenseDate, _t(NOT_EMPTY));
         }
 
         if (expenseSheetModel.getNewExpenseSheetLine().getOrderElement() == null) {
-            throw new WrongValueException(this.bandboxTasks, _(NOT_EMPTY));
+            throw new WrongValueException(this.bandboxTasks, _t(NOT_EMPTY));
         }
 
         BigDecimal value = expenseSheetModel.getNewExpenseSheetLine().getValue();
@@ -335,7 +335,7 @@ public class ExpenseSheetCRUDController
                         }
                     });
 
-            dateboxExpense.setConstraint("no empty:" + _(NOT_EMPTY));
+            dateboxExpense.setConstraint("no empty:" + _t(NOT_EMPTY));
             row.appendChild(dateboxExpense);
         }
 
@@ -426,7 +426,7 @@ public class ExpenseSheetCRUDController
             bandboxSearch.setListboxEventListener(Events.ON_SELECT, eventListenerUpdateOrderElement);
             bandboxSearch.setListboxEventListener(Events.ON_OK, eventListenerUpdateOrderElement);
             bandboxSearch.setBandboxEventListener(Events.ON_CHANGING, eventListenerUpdateOrderElement);
-            bandboxSearch.setBandboxConstraint("no empty:" + _(NOT_EMPTY));
+            bandboxSearch.setBandboxConstraint("no empty:" + _t(NOT_EMPTY));
             row.appendChild(bandboxSearch);
         }
 

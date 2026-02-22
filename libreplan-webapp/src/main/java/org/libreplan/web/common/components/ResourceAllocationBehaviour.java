@@ -23,6 +23,9 @@ import org.libreplan.business.planner.entities.ResourceAllocation;
 import org.libreplan.business.resources.entities.ResourceType;
 import org.libreplan.web.common.components.NewAllocationSelector.AllocationType;
 
+import static org.libreplan.web.I18nHelper._t;
+
+
 /**
  *
  * @author Diego Pino García <dpino@igalia.com>
@@ -89,7 +92,7 @@ public enum ResourceAllocationBehaviour {
     /**
      * Forces to mark the string as needing translation
      */
-    private static String _(String string) {
+    private static String _t(String string) {
         return string;
     }
 

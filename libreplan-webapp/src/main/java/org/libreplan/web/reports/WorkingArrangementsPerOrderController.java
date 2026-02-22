@@ -88,7 +88,7 @@ public class WorkingArrangementsPerOrderController extends LibrePlanReportContro
             Listitem item = new Listitem();
             item.setParent(lbTaskStatus);
             item.setValue(status);
-            item.appendChild(new Listcell(_(status.toString())));
+            item.appendChild(new Listcell(_t(status.toString())));
             lbTaskStatus.appendChild(item);
 
             if (status.equals(TaskStatusEnum.ALL)) {
@@ -137,7 +137,7 @@ public class WorkingArrangementsPerOrderController extends LibrePlanReportContro
 
         // Task status
         final TaskStatusEnum taskStatus = getSelectedTaskStatus();
-        result.put("taskStatus", _(taskStatus.toString()));
+        result.put("taskStatus", _t(taskStatus.toString()));
 
         return result;
     }

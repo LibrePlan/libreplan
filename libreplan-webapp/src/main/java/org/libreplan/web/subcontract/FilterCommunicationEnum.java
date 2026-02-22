@@ -19,6 +19,8 @@
 
 package org.libreplan.web.subcontract;
 
+import static org.libreplan.web.I18nHelper._t;
+
 /**
  * Enum to filter the {@link CustomerCommunication} list.
  *
@@ -37,7 +39,7 @@ public enum FilterCommunicationEnum {
     /**
      * Forces to mark the string as needing translation.
      */
-    private static String _(String string) {
+    private static String _t(String string) {
         return string;
     }
 

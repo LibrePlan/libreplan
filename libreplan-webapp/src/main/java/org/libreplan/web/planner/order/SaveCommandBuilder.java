@@ -500,7 +500,7 @@ public class SaveCommandBuilder {
             repeatedOrder = Registry.getOrderElementDAO().findRepeatedOrderCodeInDB(order);
 
             if (repeatedOrder != null)
-                throw new ValidationException(_(
+                throw new ValidationException(_t(
                         "Repeated Project code {0} in Project {1}", repeatedOrder.getCode(), repeatedOrder.getName()));
 
         }
@@ -512,7 +512,7 @@ public class SaveCommandBuilder {
                 repeatedHoursGroup = (order).findRepeatedHoursGroupCode();
 
                 if (repeatedHoursGroup != null)
-                    throw new ValidationException(_(
+                    throw new ValidationException(_t(
                             "Repeated Hours Group code {0} in Project {1}",
                             repeatedHoursGroup.getCode(),
                             repeatedHoursGroup.getParentOrderLine().getName()));
@@ -522,7 +522,7 @@ public class SaveCommandBuilder {
             repeatedHoursGroup = Registry.getHoursGroupDAO().findRepeatedHoursGroupCodeInDB(order.getHoursGroups());
 
             if (repeatedHoursGroup != null)
-                throw new ValidationException(_(
+                throw new ValidationException(_t(
                         "Repeated Hours Group code {0} in Project {1}",
                         repeatedHoursGroup.getCode(),
                         repeatedHoursGroup.getParentOrderLine().getName()));
@@ -1010,7 +1010,7 @@ public class SaveCommandBuilder {
                     orderElementName = _t("Task {0}", ((OrderElement) invalidValue.getRootBean()).getName());
 
 
-                result.setValue(orderElementName + ": " + _(invalidValue.getMessage()));
+                result.setValue(orderElementName + ": " + _t(invalidValue.getMessage()));
 
                 return result;
 
@@ -1019,7 +1019,7 @@ public class SaveCommandBuilder {
                 HoursGroup hoursGroup = (HoursGroup) invalidValue.getRootBean();
 
                 result.setValue(
-                        _t("Hours Group at {0}", getParentName(hoursGroup)) + ": " + _(invalidValue.getMessage()));
+                        _t("Hours Group at {0}", getParentName(hoursGroup)) + ": " + _t(invalidValue.getMessage()));
 
                 return result;
             } else {

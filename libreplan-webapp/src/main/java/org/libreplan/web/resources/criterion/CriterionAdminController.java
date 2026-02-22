@@ -146,7 +146,7 @@ public class CriterionAdminController extends BaseCRUDController<CriterionType> 
 
     private void setupResourceCombobox(Combobox combo) {
         for (ResourceEnum resource : ResourceEnum.values()) {
-            Comboitem item = combo.appendItem(_(resource.getDisplayName()));
+            Comboitem item = combo.appendItem(_t(resource.getDisplayName()));
             item.setValue(resource);
         }
     }

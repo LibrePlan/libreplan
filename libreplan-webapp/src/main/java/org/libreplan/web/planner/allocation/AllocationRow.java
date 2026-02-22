@@ -409,7 +409,7 @@ public abstract class AllocationRow {
 
         AssignmentFunction function = getAssignmentFunction();
         if (function != null) {
-            Listitem listitem = new Listitem(_(function.getName()));
+            Listitem listitem = new Listitem(_t(function.getName()));
             listitem.setDisabled(true);
             assignmentFunctionListbox.appendChild(listitem);
             assignmentFunctionListbox.setSelectedItem(listitem);
@@ -417,7 +417,7 @@ public abstract class AllocationRow {
     }
 
     private void initializeAndAppendFlatFunction() {
-        Listitem listitem = new Listitem(_(AssignmentFunctionName.FLAT.toString()));
+        Listitem listitem = new Listitem(_t(AssignmentFunctionName.FLAT.toString()));
         assignmentFunctionListbox.getChildren().clear();
         assignmentFunctionListbox.appendChild(listitem);
         assignmentFunctionListbox.setSelectedItem(listitem);
@@ -442,7 +442,7 @@ public abstract class AllocationRow {
     private void onDifferentRealResourcesPerDay(ResourcesPerDay realResourcesPerDay) {
         this.realResourcesPerDay.setSclass("assigned-resources-label");
 
-        this.realResourcesPerDay.setTooltiptext(_(
+        this.realResourcesPerDay.setTooltiptext(_t(
                 "Only {0} resources per day were achieved for current allocation",
                 realResourcesPerDay.getAmount().toPlainString()));
 
@@ -825,7 +825,7 @@ public abstract class AllocationRow {
                 EffortDuration sumReached = result.getSumReached();
                 List<Interval> validPeriods = result.getValidPeriods();
 
-                String firstLine = _(
+                String firstLine = _t(
                         "In the available periods {0} only {1} hours are available.",
                         validPeriods,
                         sumReached.getHours());

@@ -158,7 +158,7 @@ public class ExportTimesheetsToTim implements IExportTimesheetsToTim {
     private void exportTimesheets(String productCode, Order order,
             Connector connector) {
 
-        synchronizationInfo = new SynchronizationInfo(_(
+        synchronizationInfo = new SynchronizationInfo(_t(
                 "Export product code {0}, project {1}", productCode,
                 order.getName()));
 
@@ -181,7 +181,7 @@ public class ExportTimesheetsToTim implements IExportTimesheetsToTim {
         if (workReportLines == null || workReportLines.isEmpty()) {
             LOG.warn("No work reportlines are found for order: '"
                     + order.getName() + "'");
-            synchronizationInfo.addFailedReason(_(
+            synchronizationInfo.addFailedReason(_t(
                     "No work reportlines are found for order: \"{0}\"",
                     order.getName()));
             return;

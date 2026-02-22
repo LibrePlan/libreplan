@@ -102,7 +102,7 @@ public class ProjectImportController extends GenericForwardComposer {
 
                 try {
                     importCalendar(media.getStreamData(), file);
-                    messages.showMessage(Level.INFO, _(file + ": Calendar import successfully!"));
+                    messages.showMessage(Level.INFO, _t(file + ": Calendar import successfully!"));
                 } catch (InstanceNotFoundException e) {
                     messages.showMessage(Level.ERROR, _t("Instance not found."));
                 } catch (ValidationException e) {
@@ -112,13 +112,13 @@ public class ProjectImportController extends GenericForwardComposer {
             } else if (importTasks.isChecked()) {
                 importProject(media.getStreamData(), file);
 
-                messages.showMessage(Level.INFO, _(file + ": Task import successfully!"));
+                messages.showMessage(Level.INFO, _t(file + ": Task import successfully!"));
 
             } else if (importAll.isChecked()) {
 
                 try {
                     importAll(media.getStreamData(), file);
-                    messages.showMessage(Level.INFO, _(file + ": Import successfully!"));
+                    messages.showMessage(Level.INFO, _t(file + ": Import successfully!"));
                 } catch (InstanceNotFoundException e) {
                     messages.showMessage(Level.ERROR, _t("Instance not found."));
                 } catch (ValidationException e) {

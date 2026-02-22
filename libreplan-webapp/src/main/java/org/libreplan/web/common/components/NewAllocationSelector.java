@@ -35,6 +35,8 @@ import org.libreplan.web.resources.search.NewAllocationSelectorController;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Radiogroup;
 
+import static org.libreplan.web.I18nHelper._t;
+
 /**
  * ZK macro component for searching {@link Worker} entities.
  *
@@ -110,7 +112,7 @@ public class NewAllocationSelector extends AllocationSelector {
         /**
          * Forces to mark the string as needing translation.
          */
-        private static String _(String string) {
+        private static String _t(String string) {
             return string;
         }
 
@@ -121,7 +123,7 @@ public class NewAllocationSelector extends AllocationSelector {
         }
 
         public String getName() {
-            return I18nHelper._(name);
+            return I18nHelper._t(name);
         }
 
         public void doTheSelectionOn(Radiogroup radioGroup) {

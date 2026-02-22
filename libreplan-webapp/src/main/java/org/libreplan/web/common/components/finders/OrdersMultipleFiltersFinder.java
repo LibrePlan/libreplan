@@ -255,7 +255,7 @@ public class OrdersMultipleFiltersFinder extends MultipleFiltersFinder {
 
     private void searchInOrderStatus(String filter) {
         for (OrderStatusEnum state : OrderStatusEnum.values()) {
-            String name = StringUtils.deleteWhitespace(_(state.name()).toLowerCase());
+            String name = StringUtils.deleteWhitespace(_t(state.name()).toLowerCase());
 
             if (name.contains(filter)) {
                 addState(state);
@@ -313,7 +313,7 @@ public class OrdersMultipleFiltersFinder extends MultipleFiltersFinder {
     }
 
     private void addState(OrderStatusEnum state) {
-        getListMatching().add(new FilterPair(OrderFilterEnum.State, _(state.name()), state));
+        getListMatching().add(new FilterPair(OrderFilterEnum.State, _t(state.name()), state));
     }
 
     private void addCode(String code) {

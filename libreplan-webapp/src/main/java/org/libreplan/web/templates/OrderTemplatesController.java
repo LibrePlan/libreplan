@@ -289,7 +289,7 @@ public class OrderTemplatesController extends GenericForwardComposer implements 
         try {
             model.validateTemplateName(name.getValue());
         } catch (IllegalArgumentException e) {
-            throw new WrongValueException(name, _(e.getMessage()));
+            throw new WrongValueException(name, _t(e.getMessage()));
         }
     }
 
@@ -354,7 +354,7 @@ public class OrderTemplatesController extends GenericForwardComposer implements 
             try {
                 model.validateTemplateName((String) value);
             } catch (IllegalArgumentException e) {
-                throw new WrongValueException(comp, _(e.getMessage()));
+                throw new WrongValueException(comp, _t(e.getMessage()));
             }
         };
     }

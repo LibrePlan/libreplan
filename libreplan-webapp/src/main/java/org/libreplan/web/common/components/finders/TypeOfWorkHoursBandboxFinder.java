@@ -29,6 +29,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.zul.Bandbox;
 
+import static org.libreplan.web.I18nHelper._t;
+
+
 /**
  * This is a finder for {@link TypeOfWorkHours} in a {@link Bandbox}
  *
@@ -45,7 +48,7 @@ public class TypeOfWorkHoursBandboxFinder extends BandboxFinder implements IBand
     /**
      * Forces to mark the string as needing translation
      */
-    private static String _(String string) {
+    private static String _t(String string) {
         return string;
     }
 

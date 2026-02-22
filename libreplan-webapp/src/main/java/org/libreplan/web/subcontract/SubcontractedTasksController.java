@@ -123,7 +123,7 @@ public class SubcontractedTasksController extends GenericForwardComposer {
             row.setTooltiptext(subcontractedTaskData.getWorkDescription());
             appendLabel(row, Util.addCurrencySymbol(subcontractedTaskData.getSubcontractPrice()));
             appendLabel(row, Util.formatDate(subcontractedTaskData.getLastRequiredDeliverDate()));
-            appendLabel(row, _(toString(subcontractedTaskData.getState())));
+            appendLabel(row, _t(toString(subcontractedTaskData.getState())));
             appendOperations(row, subcontractedTaskData);
         }
 

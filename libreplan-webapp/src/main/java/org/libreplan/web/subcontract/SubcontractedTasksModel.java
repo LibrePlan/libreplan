@@ -235,7 +235,7 @@ public class SubcontractedTasksModel implements ISubcontractedTasksModel {
         } catch (WebApplicationException e) {
             LOG.error(CONNECTION_PROBLEM, e);
 
-            String message = _(CONNECTION_PROBLEM);
+            String message = _t(CONNECTION_PROBLEM);
             if ( e.getMessage() != null ) {
                 message += ". " + _t("Error: {0}", e.getMessage());
             }
@@ -272,7 +272,7 @@ public class SubcontractedTasksModel implements ISubcontractedTasksModel {
         } catch (WebApplicationException e) {
             LOG.error(CONNECTION_PROBLEM, e);
 
-            String message = _(CONNECTION_PROBLEM);
+            String message = _t(CONNECTION_PROBLEM);
             if ( e.getMessage() != null ) {
                 message += ". " + _t("Error: {0}", e.getMessage());
             }

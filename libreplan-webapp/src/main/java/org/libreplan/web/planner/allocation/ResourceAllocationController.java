@@ -287,7 +287,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
                 case MACHINE:
                 case WORKER:
-                    return _(resourceType.getDisplayName());
+                    return _t(resourceType.getDisplayName());
 
                 default:
                     LOG.warn("no i18n for " + resourceType.name());
@@ -468,12 +468,12 @@ public class ResourceAllocationController extends GenericForwardComposer {
         /**
          * Forces to mark the string as needing translation.
          */
-        private static String _(String string) {
+        private static String _t(String string) {
             return string;
         }
 
         public String getName() {
-            return I18nHelper._(name);
+            return I18nHelper._t(name);
         }
 
         @Override

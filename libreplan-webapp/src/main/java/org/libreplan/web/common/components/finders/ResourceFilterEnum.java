@@ -24,6 +24,8 @@
  */
 package org.libreplan.web.common.components.finders;
 
+import static org.libreplan.web.I18nHelper._t;
+
 public enum ResourceFilterEnum implements IFilterEnum {
 
     Criterion(_t("Criterion")), CostCategory(_t("Cost category"));
@@ -31,7 +33,7 @@ public enum ResourceFilterEnum implements IFilterEnum {
     /**
      * Forces to mark the string as needing translation
      */
-    private static String _(String string) {
+    private static String _t(String string) {
         return string;
     }
 

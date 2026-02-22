@@ -93,7 +93,7 @@ public class EntryPointsHandler<T> {
 
         Validate.notNull(
                 entryPoints,
-                _(
+                _t(
                         "{0} annotation required on {1}",
                         EntryPoints.class.getName(),
                         interfaceDefiningEntryPoints.getName()));

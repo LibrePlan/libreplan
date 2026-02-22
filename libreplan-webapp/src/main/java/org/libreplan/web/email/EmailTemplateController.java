@@ -182,7 +182,7 @@ public class EmailTemplateController extends GenericForwardComposer<Component> {
     public ListitemRenderer getEmailTemplateEnumRenderer() {
         return (item, data, i) -> {
             EmailTemplateEnum template = (EmailTemplateEnum) data;
-            item.setLabel(_(template.getTemplateType()));
+            item.setLabel(_t(template.getTemplateType()));
             item.setValue(template);
         };
     }

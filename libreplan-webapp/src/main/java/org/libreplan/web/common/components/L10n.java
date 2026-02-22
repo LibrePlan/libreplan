@@ -46,7 +46,7 @@ public class L10n extends Label {
 
     @Override
     public void setValue(String value) {
-        super.setValue(I18nHelper._(value));
+        super.setValue(I18nHelper._t(value));
     }
 
 }

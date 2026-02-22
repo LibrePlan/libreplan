@@ -97,7 +97,7 @@ public class UserCRUDController extends BaseCRUDController<User> implements IUse
         Util.appendLabel(row, user.getLoginName());
         Util.appendLabel(row, user.isDisabled() ? _t("Yes") : _t("No"));
         Util.appendLabel(row, user.isSuperuser() ? _t("Yes") : _t("No"));
-        Util.appendLabel(row, _(user.getUserType().toString()));
+        Util.appendLabel(row, _t(user.getUserType().toString()));
         Util.appendLabel(row, user.isBound() ? user.getWorker().getShortDescription() : "");
 
         Button[] buttons =
@@ -159,10 +159,10 @@ public class UserCRUDController extends BaseCRUDController<User> implements IUse
         roles.remove(UserRole.ROLE_BOUND_USER);
 
         // Sorting by ASC
-        Collections.sort(roles, (arg0, arg1) -> _(arg0.getDisplayName()).compareTo(_(arg1.getDisplayName())));
+        Collections.sort(roles, (arg0, arg1) -> _t(arg0.getDisplayName()).compareTo(_t(arg1.getDisplayName())));
 
         for (UserRole role : roles) {
-            Comboitem item = combo.appendItem(_(role.getDisplayName()));
+            Comboitem item = combo.appendItem(_t(role.getDisplayName()));
             item.setValue(role);
         }
     }
@@ -237,10 +237,10 @@ public class UserCRUDController extends BaseCRUDController<User> implements IUse
         roles.removeAll(userRoles);
 
         // Sorting by ASC
-        Collections.sort(roles, (arg0, arg1) -> _(arg0.getDisplayName()).compareTo(_(arg1.getDisplayName())));
+        Collections.sort(roles, (arg0, arg1) -> _t(arg0.getDisplayName()).compareTo(_t(arg1.getDisplayName())));
 
         for (UserRole role : roles) {
-            Comboitem item = combo.appendItem(_(role.getDisplayName()));
+            Comboitem item = combo.appendItem(_t(role.getDisplayName()));
             item.setValue(role);
         }
     }
@@ -331,7 +331,7 @@ public class UserCRUDController extends BaseCRUDController<User> implements IUse
         Combobox combo = (Combobox) editWindow.getFellowIfAny("authenticationTypeCombo");
         combo.getChildren().clear();
         for (UserAuthenticationType type : UserAuthenticationType.values()) {
-            Comboitem item = combo.appendItem(_(type.toString()));
+            Comboitem item = combo.appendItem(_t(type.toString()));
             item.setValue(type);
             if (type.equals(getAuthenticationType())) {
                 combo.setSelectedItem(item);
@@ -379,7 +379,7 @@ public class UserCRUDController extends BaseCRUDController<User> implements IUse
         return (row, data, i) -> {
             final UserRole role = (UserRole) data;
 
-            row.appendChild(new Label(_(role.getDisplayName())));
+            row.appendChild(new Label(_t(role.getDisplayName())));
 
             Button removeButton = Util.createRemoveButton(event -> removeRole(role));
 

@@ -911,7 +911,7 @@ public class TaskElementAdapter {
                 } else {
                     cssClass = "order-closed";
                 }
-                return "<font class='" + cssClass + "'>" + _(state.toString()) + "</font>";
+                return "<font class='" + cssClass + "'>" + _t(state.toString()) + "</font>";
             }
 
             @Override

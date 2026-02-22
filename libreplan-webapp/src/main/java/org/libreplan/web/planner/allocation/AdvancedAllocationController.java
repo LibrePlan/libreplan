@@ -1104,7 +1104,7 @@ abstract class ColumnOnRow implements IConvertibleToColumn {
     @Override
     public Column toColumn() {
         Column column = new Column();
-        column.setLabel(_(columnName));
+        column.setLabel(_t(columnName));
         column.setSclass(columnName.toLowerCase());
 
         if ( width != null )
@@ -1571,7 +1571,7 @@ class Row {
         }
 
         private Listitem listItem(IAssignmentFunctionConfiguration assignmentFunction) {
-            Listitem listitem = new Listitem(_(assignmentFunction.getName()));
+            Listitem listitem = new Listitem(_t(assignmentFunction.getName()));
             listitem.setValue(assignmentFunction);
 
             return listitem;

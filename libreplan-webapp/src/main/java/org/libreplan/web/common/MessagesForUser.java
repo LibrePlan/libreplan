@@ -174,7 +174,7 @@ public class MessagesForUser extends GenericForwardComposer implements IMessages
 
     public static Label createLabelFor(InvalidValue invalidValue) {
         Label result = new Label();
-        result.setValue(_(invalidValue.getMessage()));
+        result.setValue(_t(invalidValue.getMessage()));
 
         return result;
     }

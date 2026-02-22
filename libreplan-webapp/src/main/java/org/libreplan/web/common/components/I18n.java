@@ -89,22 +89,22 @@ public class I18n extends HtmlMacroComponent {
 
     public String getI18n() {
         if (arg0 != null && arg1 != null && arg2 != null && arg3 != null) {
-            return _(value, arg0, arg1, arg2, arg3);
+            return _t(value, arg0, arg1, arg2, arg3);
         }
 
         if (arg0 != null && arg1 != null && arg2 != null) {
-            return _(value, arg0, arg1, arg2);
+            return _t(value, arg0, arg1, arg2);
         }
 
         if (arg0 != null && arg1 != null) {
-            return _(value, arg0, arg1);
+            return _t(value, arg0, arg1);
         }
 
         if (arg0 != null) {
-            return _(value, arg0);
+            return _t(value, arg0);
         }
 
-        return _(value);
+        return _t(value);
     }
 
     public void forceLoad() {

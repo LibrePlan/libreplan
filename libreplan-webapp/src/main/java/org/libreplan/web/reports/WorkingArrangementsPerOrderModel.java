@@ -247,7 +247,7 @@ Order order,
         WorkingArrangementPerOrderDTO workingArrangementPerOrderDTO = new WorkingArrangementPerOrderDTO(
                 deadLineOrder, task, taskStatus, showDependencies
                         && !dependencies.isEmpty());
-        workingArrangementPerOrderDTO.setStatus(_(workingArrangementPerOrderDTO
+        workingArrangementPerOrderDTO.setStatus(_t(workingArrangementPerOrderDTO
                 .getStatus()));
         result.add(workingArrangementPerOrderDTO);
 
@@ -263,7 +263,7 @@ Order order,
                                 .getAdvancePercentage());
                 WorkingArrangementPerOrderDTO dto = new WorkingArrangementPerOrderDTO(
                         task, taskStatus, dependencyDTO);
-                dto.setStatus(_(dto.getStatus()));
+                dto.setStatus(_t(dto.getStatus()));
                 result.add(dto);
             }
         }

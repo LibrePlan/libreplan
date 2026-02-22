@@ -857,7 +857,7 @@ public class WorkReportCRUDController
                     columnName = ((WorkReportLabelTypeAssignment) fieldOrLabel).getLabelType().getName();
                 }
                 NewDataSortableColumn columnFieldOrLabel = new NewDataSortableColumn();
-                columnFieldOrLabel.setLabel(_(columnName));
+                columnFieldOrLabel.setLabel(_t(columnName));
                 columnFieldOrLabel.setSclass("columnFieldOrLabel");
                 columnFieldOrLabel.setWidth(width + "px");
                 columns.appendChild(columnFieldOrLabel);

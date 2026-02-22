@@ -80,7 +80,7 @@ public class ProfileCRUDController extends BaseCRUDController<Profile> {
         roles.remove(UserRole.ROLE_BOUND_USER);
 
         for (UserRole role : roles) {
-            Comboitem item = combo.appendItem(_(role.getDisplayName()));
+            Comboitem item = combo.appendItem(_t(role.getDisplayName()));
             item.setValue(role);
         }
     }
@@ -155,7 +155,7 @@ public class ProfileCRUDController extends BaseCRUDController<Profile> {
     }
 
     private void showCannotDeleteProfileDialog(String message) {
-        Messagebox.show(_(message), _t("Warning"), Messagebox.OK, Messagebox.EXCLAMATION);
+        Messagebox.show(_t(message), _t("Warning"), Messagebox.OK, Messagebox.EXCLAMATION);
     }
     @Override
     protected boolean beforeDeleting(Profile profile){
@@ -173,7 +173,7 @@ public class ProfileCRUDController extends BaseCRUDController<Profile> {
             public void render(Row row, Object data, int i) throws Exception {
                 final UserRole role = (UserRole) data;
 
-                row.appendChild(new Label(_(role.getDisplayName())));
+                row.appendChild(new Label(_t(role.getDisplayName())));
 
                 row.appendChild(Util.createRemoveButton(new EventListener() {
                     @Override

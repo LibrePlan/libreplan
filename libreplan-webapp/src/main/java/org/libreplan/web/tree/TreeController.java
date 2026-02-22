@@ -774,7 +774,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends GenericForw
         protected void checkInvalidValues(String property, Integer value, final Intbox component) {
             Set<ConstraintViolation<T>> violations = validator.validateValue(type, property, value);
             if (!violations.isEmpty()) {
-                throw new WrongValueException(component, _(violations.iterator().next().getMessage()));
+                throw new WrongValueException(component, _t(violations.iterator().next().getMessage()));
             }
         }
 

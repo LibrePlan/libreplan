@@ -242,9 +242,9 @@ public class WorkReportTypeCRUDController
         labelPosition.setParent(row);
 
         if (workReportTypeModel.isHeadingDescriptionField(row.getValue())) {
-            labelPosition.setValue(_(PositionInWorkReportEnum.HEADING.toString()));
+            labelPosition.setValue(_t(PositionInWorkReportEnum.HEADING.toString()));
         } else {
-            labelPosition.setValue(_(PositionInWorkReportEnum.LINE.toString()));
+            labelPosition.setValue(_t(PositionInWorkReportEnum.LINE.toString()));
         }
     }
 
@@ -385,7 +385,7 @@ public class WorkReportTypeCRUDController
     private void appendLabelPosition(Row row) {
         org.zkoss.zul.Label labelPosition = new org.zkoss.zul.Label();
         labelPosition.setParent(row);
-        labelPosition.setValue(_(workReportTypeModel.getLabelAssignmentPosition(row.getValue()).toString()));
+        labelPosition.setValue(_t(workReportTypeModel.getLabelAssignmentPosition(row.getValue()).toString()));
     }
 
     private void appendLabel(Row row) {
@@ -567,7 +567,7 @@ public class WorkReportTypeCRUDController
             try {
                 workReportTypeModel.validateWorkReportTypeName((String) value);
             } catch (IllegalArgumentException e) {
-                throw new WrongValueException(comp, _(e.getMessage()));
+                throw new WrongValueException(comp, _t(e.getMessage()));
             }
         };
     }
@@ -577,7 +577,7 @@ public class WorkReportTypeCRUDController
             try {
                 workReportTypeModel.validateWorkReportTypeCode((String) value);
             } catch (IllegalArgumentException e) {
-                throw new WrongValueException(comp, _(e.getMessage()));
+                throw new WrongValueException(comp, _t(e.getMessage()));
             }
         };
     }
@@ -682,7 +682,7 @@ public class WorkReportTypeCRUDController
         try {
             workReportTypeModel.validateWorkReportTypeName(name.getValue());
         } catch (IllegalArgumentException e) {
-            throw new WrongValueException(name, _(e.getMessage()));
+            throw new WrongValueException(name, _t(e.getMessage()));
         }
     }
 
@@ -690,7 +690,7 @@ public class WorkReportTypeCRUDController
         try {
             workReportTypeModel.validateWorkReportTypeCode(code.getValue());
         } catch (IllegalArgumentException e) {
-            throw new WrongValueException(code, _(e.getMessage()));
+            throw new WrongValueException(code, _t(e.getMessage()));
         }
     }
 
@@ -724,7 +724,7 @@ public class WorkReportTypeCRUDController
             comboLabelType = (Combobox) row.getChildren().get(combo);
         }
 
-        throw new WrongValueException(comboLabelType, _(message));
+        throw new WrongValueException(comboLabelType, _t(message));
     }
 
     private Row findRowByValue(Rows rows, Object value) {

@@ -646,7 +646,7 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
     public Object addMenuItem(String name, String cssClass, EventListener eventListener) {
         Vbox insertionPoint = getRegisteredItemsInsertionPoint();
         Button button = new Button();
-        button.setLabel(_(name));
+        button.setLabel(_t(name));
 
         if ( cssClass != null ) {
             toggleDomainCssClass(cssClass, button);

@@ -184,7 +184,7 @@ public class QualityFormCRUDController extends BaseCRUDController<QualityForm> {
         return (comp, value) -> {
             getQualityForm().setName((String) value);
             if ((value == null) || ((String)value).isEmpty()) {
-                throw new WrongValueException(comp, _(CANNOT_BE_EMPTY));
+                throw new WrongValueException(comp, _t(CANNOT_BE_EMPTY));
             } else if (!qualityFormModel.checkConstraintUniqueQualityFormName()) {
                 getQualityForm().setName(null);
                 throw new WrongValueException(comp, _t("{0} already exists", value));
@@ -198,7 +198,7 @@ public class QualityFormCRUDController extends BaseCRUDController<QualityForm> {
             item.setName((String)value);
             if ((value == null) || ((String) value).isEmpty()) {
                 item.setName(null);
-                throw new WrongValueException(comp, _(CANNOT_BE_EMPTY));
+                throw new WrongValueException(comp, _t(CANNOT_BE_EMPTY));
             } else if (!qualityFormModel.checkConstraintUniqueQualityFormItemName()) {
                 item.setName(null);
                 throw new WrongValueException(comp, _t("{0} already exists", value));
@@ -215,7 +215,7 @@ public class QualityFormCRUDController extends BaseCRUDController<QualityForm> {
 
             if (newPercentage == null) {
                 item.setPercentage(null);
-                throw new WrongValueException(comp, _(CANNOT_BE_EMPTY));
+                throw new WrongValueException(comp, _t(CANNOT_BE_EMPTY));
             }
             if (qualityFormModel.checkConstraintOutOfRangeQualityFormItemPercentage(item)) {
                 item.setPercentage(null);
@@ -336,6 +336,6 @@ public class QualityFormCRUDController extends BaseCRUDController<QualityForm> {
     }
 
     private void showCannotDeleteQualityFormDialog(String message) {
-        Messagebox.show(_(message), _t("Warning"), Messagebox.OK, Messagebox.EXCLAMATION);
+        Messagebox.show(_t(message), _t("Warning"), Messagebox.OK, Messagebox.EXCLAMATION);
     }
 }

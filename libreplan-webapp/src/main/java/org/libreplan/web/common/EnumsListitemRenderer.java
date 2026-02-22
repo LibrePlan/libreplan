@@ -42,7 +42,7 @@ public class EnumsListitemRenderer implements ListitemRenderer {
     @Override
     public void render(Listitem item, Object data, int i) {
         item.setValue(data);
-        item.appendChild(new Listcell(_(data.toString())));
+        item.appendChild(new Listcell(_t(data.toString())));
     }
 
 }

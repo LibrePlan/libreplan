@@ -818,7 +818,7 @@ public class ConfigurationController extends GenericForwardComposer {
         @Override
         public void render(Listitem listitem, Object o, int i) throws Exception {
             ProgressType progressType = (ProgressType) o;
-            listitem.setLabel(_(progressType.getValue()));
+            listitem.setLabel(_t(progressType.getValue()));
             listitem.setValue(progressType);
         }
     }
@@ -1247,7 +1247,7 @@ public class ConfigurationController extends GenericForwardComposer {
     public ListitemRenderer getPersonalTimesheetsPeriodicityRenderer() {
         return (listitem, o, i) -> {
             PersonalTimesheetsPeriodicityEnum periodicity = (PersonalTimesheetsPeriodicityEnum) o;
-            listitem.setLabel(_(periodicity.getName()));
+            listitem.setLabel(_t(periodicity.getName()));
             listitem.setValue(periodicity);
         };
     }
@@ -1352,7 +1352,7 @@ public class ConfigurationController extends GenericForwardComposer {
                 ConnectorProperty property = (ConnectorProperty) o;
                 row.setValue(property);
 
-                Util.appendLabel(row, _(property.getKey()));
+                Util.appendLabel(row, _t(property.getKey()));
 
                 if ("Protocol".equals(property.getKey())) {
                     appendValueCombobox(row, property);

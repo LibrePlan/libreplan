@@ -166,7 +166,7 @@ public class MaterialsModel extends IntegrationEntityModel implements IMaterials
         Validate.notNull(categoryName);
 
         Boolean generateCode = configurationDAO.getConfiguration().getGenerateCodeForMaterialCategories();
-        MaterialCategory child = MaterialCategory.createUnvalidated("", _(categoryName));
+        MaterialCategory child = MaterialCategory.createUnvalidated("", _t(categoryName));
         if ( generateCode ) {
             setCurrentMaterialCategory(child);
             setDefaultCode();
@@ -278,7 +278,7 @@ public class MaterialsModel extends IntegrationEntityModel implements IMaterials
     }
 
     private String sameCodeMessage(Material first, Material second) {
-        return _(
+        return _t(
                 "both {0} of category {1} and {2} of category {3} have the same code",
                 asStringForUser(first), first.getCategory().getName(),
                 asStringForUser(second), second.getCategory().getName());

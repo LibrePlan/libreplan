@@ -98,7 +98,7 @@ public class TypeOfWorkHoursCRUDController extends BaseCRUDController<TypeOfWork
     }
 
     private void showCannotDeleteWorkHoursTypeDialog(String message) {
-        Messagebox.show(_(message), _t("Warning"), Messagebox.OK, Messagebox.EXCLAMATION);
+        Messagebox.show(_t(message), _t("Warning"), Messagebox.OK, Messagebox.EXCLAMATION);
     }
 
     @Override

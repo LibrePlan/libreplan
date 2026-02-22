@@ -38,6 +38,7 @@ import org.zkforge.timeplot.geometry.TimeGeometry;
 import org.zkforge.timeplot.geometry.ValueGeometry;
 import org.zkoss.ganttz.util.Interval;
 
+import static org.libreplan.web.I18nHelper._t;
 
 /**
  *
@@ -258,7 +259,7 @@ public abstract class EarnedValueChartFiller extends ChartFiller {
         /**
          * Forces to mark the string as needing translation
          */
-        private static String _(String string) {
+        private static String _t(String string) {
             return string;
         }
 
@@ -273,11 +274,11 @@ public abstract class EarnedValueChartFiller extends ChartFiller {
         }
 
         public String getAcronym() {
-            return I18nHelper._(acronym);
+            return I18nHelper._t(acronym);
         }
 
         public String getName() {
-            return I18nHelper._(name);
+            return I18nHelper._t(name);
         }
 
         public String getColor() {

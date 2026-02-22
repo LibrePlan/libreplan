@@ -71,7 +71,7 @@ public class SettingsController extends GenericForwardComposer {
         String displayName = language.getDisplayName();
 
         if (language.equals(Language.BROWSER_LANGUAGE)) {
-            displayName = _(language.getDisplayName());
+            displayName = _t(language.getDisplayName());
         }
 
         item.setLabel(displayName);

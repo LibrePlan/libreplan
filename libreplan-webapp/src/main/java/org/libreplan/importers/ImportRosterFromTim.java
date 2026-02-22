@@ -161,7 +161,7 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
         for (String department : departmentIdsArray) {
             LOG.info("Department: " + department);
 
-            synchronizationInfo = new SynchronizationInfo(_(
+            synchronizationInfo = new SynchronizationInfo(_t(
                     "Import roster for department {0}", department));
 
             RosterRequestDTO rosterRequestDTO = createRosterRequest(department,
@@ -178,7 +178,7 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
                 }
             } else {
                 LOG.error("No valid response for department " + department);
-                synchronizationInfo.addFailedReason(_(
+                synchronizationInfo.addFailedReason(_t(
                                 "No valid response for department \"{0}\"",
                                 department));
                 syncInfos.add(synchronizationInfo);
@@ -235,7 +235,7 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
                 worker = workerDAO.findUniqueByNif(workerCode);
             } catch (InstanceNotFoundException e) {
                 LOG.warn("Worker '" + workerCode + "' not found");
-                synchronizationInfo.addFailedReason(_(
+                synchronizationInfo.addFailedReason(_t(
                         "Worker \"{0}\" not found",
                         workerCode));
             }

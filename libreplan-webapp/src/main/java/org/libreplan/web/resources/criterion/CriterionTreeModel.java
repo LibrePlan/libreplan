@@ -41,6 +41,9 @@ import org.libreplan.business.resources.entities.CriterionType;
 import org.zkoss.ganttz.util.MutableTreeModel;
 import org.zkoss.zul.TreeModel;
 
+import static org.libreplan.web.I18nHelper._t;
+
+
 /**
  * Model for a the {@link Criterion} tree for a {@link CriterionType} <br />
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
@@ -120,7 +123,7 @@ public class CriterionTreeModel implements ICriterionTreeModel {
 
     private CriterionDTO createNewCriterion(String name) {
         CriterionDTO newCriterion = new CriterionDTO();
-        newCriterion.setName(_(name));
+        newCriterion.setName(_t(name));
         Criterion criterion = Criterion.create(criterionType);
         newCriterion.setCriterion(criterion);
         return newCriterion;
