@@ -120,7 +120,7 @@ public class I18nHelper {
         return getI18n().tr(text, o1, o2, o3, o4);
     }
 
-    public static String _(String text, Object[] objects) {
+    public static String _t(String text, Object[] objects) {
         return getI18n().tr(text, objects);
     }
 
