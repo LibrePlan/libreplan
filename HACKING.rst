@@ -19,9 +19,9 @@ Compilation requirements
 
   Needed to build and compile the project
 
-* *JDK 8* - Java Development Kit
+* *JDK 11* - Java Development Kit
 
-  Project depends on Java 8 and JDK is needed in order to compile it
+  Project depends on Java 11 and JDK is needed in order to compile it
 
 * *PostgreSQL* - Object-relational SQL database
 
@@ -70,11 +70,11 @@ Debian/Ubuntu
 
 * Install requirements::
 
-    # apt-get install git-core maven openjdk-8-jdk postgresql postgresql-client python3-docutils make gettext cutycapt
+    # apt-get install git-core maven openjdk-11-jdk postgresql postgresql-client python3-docutils make gettext cutycapt
 
-* Set default OpenJDK version (required for Ubuntu 18.04, 20.04 and newer)::
+* Set default OpenJDK version (required for Ubuntu 24.04 and newer)::
 
-    # update-java-alternatives -s java-1.8.0-openjdk-amd64
+    # update-java-alternatives -s java-1.11.0-openjdk-amd64
 
 * Connect to database::
 
@@ -128,11 +128,11 @@ Fedora
 
 * Install requirements::
 
-    # yum install git maven java-1.8.0-openjdk-devel postgresql postgresql-server python3-docutils make gettext gnu-free-fonts-compat
+    # yum install git maven java-1.11.0-openjdk-devel postgresql postgresql-server python3-docutils make gettext gnu-free-fonts-compat
 
 .. WARNING:: Use the following command in Fedora 16 or below::
 
-               # yum install git maven java-1.8.0-openjdk postgresql postgresql-server python-docutils make gettext gnu-free-fonts-compat
+               # yum install git maven java-1.11.0-openjdk postgresql postgresql-server python-docutils make gettext gnu-free-fonts-compat
 
 * Start database service::
 
@@ -189,7 +189,7 @@ openSUSE
 
 * Install requirements::
 
-    # zypper install git-core java-1_8_0-openjdk-devel postgresql-server postgresql docutils make gettext-tools
+    # zypper install git-core java-1_11_0-openjdk-devel postgresql-server postgresql docutils make gettext-tools
 
 * Install Maven::
 
@@ -249,9 +249,9 @@ openSUSE
 Microsoft Windows
 ~~~~~~~~~~~~~~~~~
 
-* Download and install latest Java Development Kit 8uXX (JDK8uXX)::
+* Download and install latest Java Development Kit 11uXX (JDK11uXX)::
 
-    # http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
+    # http://www.oracle.com/technetwork/java/javase/downloads/jdk11-downloads-2133151.html
 
 * Download and install latest Gettext runtime::
 
@@ -263,7 +263,7 @@ Microsoft Windows
 
     # http://www.enterprisedb.com/products-services-training/pgdownload#windows
 
-* Download and install Apache Tomcat 8::
+* Download and install Apache Tomcat 9::
 
     # http://tomcat.apache.org/download-80.cgi
     # Note: in JDK folder there is JRE folder
@@ -271,9 +271,9 @@ Microsoft Windows
 * Set up JDBC41 PostgreSQL Driver::
 
     # Download latest driver: https://jdbc.postgresql.org/download.html
-    # Copy downloaded *.jar file to JRE location: (e.g. C:\Program Files\Java\jre8\lib\ext)
-    # Copy downloaded *.jar file to JAVA_HOME location: (e.g. C:\Program Files\Java\jdk1.8.0_111\jre\lib\ext)
-    # Put downloaded *.jar file to Tomcat lib location: (e.g. C:\Program Files\Apache Software Foundation\Tomcat 8.0\lib)
+    # Copy downloaded *.jar file to JRE location: (e.g. C:\Program Files\Java\jre11\lib\ext)
+    # Copy downloaded *.jar file to JAVA_HOME location: (e.g. C:\Program Files\Java\jdk1.11.0_111\jre\lib\ext)
+    # Put downloaded *.jar file to Tomcat lib location: (e.g. C:\Program Files\Apache Software Foundation\Tomcat 9.0\lib)
 
 * Create database::
 
@@ -315,7 +315,7 @@ Microsoft Windows
 
 * Configure Apache Tomcat Server
 
-* Go to (e.g. C:/Program Files/Apache Software Foundation/Tomcat 8.0/conf/Catalina/localhost/)
+* Go to (e.g. C:/Program Files/Apache Software Foundation/Tomcat 9.0/conf/Catalina/localhost/)
   and create there libreplan.xml file with this lines of code::
 
     <?xml version="1.0" encoding="UTF-8"?>
@@ -338,7 +338,7 @@ Microsoft Windows
 
 * Set JAVA_HOME environment variable::
 
-    # You need to set it to your JDK installed directory (e.g. C:\Program Files\Java\jdk1.8.0_111)
+    # You need to set it to your JDK installed directory (e.g. C:\Program Files\Java\jdk1.11.0_111)
 
 * Add path of unpacked distributions bin directory of Maven to 'Path' environment variable
 
@@ -353,10 +353,10 @@ Microsoft Windows
 
     * Get *.war file from project folder (e.g ../libreplan/libreplan-webapp/target/libreplan-webapp.war)
     * Rename it to libreplan.war
-    * Put your libreplan.war file to Apache Tomcat webapps folder (e.g. C:\Program Files\Apache Software Foundation\Tomcat 8.0\webapps\)
+    * Put your libreplan.war file to Apache Tomcat webapps folder (e.g. C:\Program Files\Apache Software Foundation\Tomcat 9.0\webapps\)
     * Start Apache Tomcat server
 
-    # Possible location: C:\Program Files\Apache Software Foundation\Tomcat 8.0\bin\Tomcat8.exe
+    # Possible location: C:\Program Files\Apache Software Foundation\Tomcat 9.0\bin\Tomcat9.exe
 
 * Go to http://localhost:8080/
 
