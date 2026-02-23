@@ -1,0 +1,152 @@
+# This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
+
+name: Ubuntu 24.04 jdk-17 (Noble Numbat)
+
+on:
+  workflow_dispatch:
+    inputs:
+      create-release:
+        description: 'Create a release from this build?'
+        default: false
+        type: boolean
+  push:
+#   branches: [ "main" ]
+    tags:
+      - "v*"
+# pull_request:
+#   branches: [ "main" ]
+
+
+# Prevent cancellation of already running actions when pushing concurrently. Test
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+
+    runs-on: docker
+    container:
+      image: ubuntu:24.04
+
+    services:
+      postgres:
+        image: postgres:16.0
+        env:
+          POSTGRES_USER: libreplan
+          POSTGRES_PASSWORD: libreplan
+          POSTGRES_DB: libreplandev
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+
+    # Define job-id  
+    - name: Debug info
+      run: |
+        cat <<'EOF'
+        ${{ toJSON(forgejo) }}
+        EOF
+
+    - name: My current run-id
+      run: echo "${{ forgejo.run_id }}"
+
+    - name: install needed software
+      run: |
+        apt-get update
+        apt-get install -y postgresql-client nodejs git maven libpostgresql-jdbc-java
+
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # This is only possible AFTER the checkout step.    
+    - name: actions prep
+      id: artifact-upload-prep
+      run: echo "artifact-id=$(git rev-parse --short=10 HEAD)" >> "$GITHUB_OUTPUT"
+
+
+    # Let's test caching maven stuff.
+    - name: Cache Maven repository
+      uses: actions/cache@v4
+      with:
+        path: ~/.m2/repository
+        key: maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: maven-
+
+    # Example 1: create extra database
+    - name: Create libreplandevtest database
+      env:
+        PGPASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+      run: |
+        PGPASSWORD='libreplan' psql -h postgres -U libreplan -d postgres -v ON_ERROR_STOP=1 -c "CREATE DATABASE libreplandevtest;"
+
+    - name: Set up Java 17
+      uses: actions/setup-java@v4
+      with:
+        distribution: temurin     # of adopt, zulu, corretto, liberica …
+        java-version: 17
+
+    - name: Verify Java version
+      run: java -version
+
+    # Determine maven version in container
+    - name: Show maven version number
+      run: mvn -v
+
+    - name: Wait for PostgreSQL to be ready
+      shell: bash
+      env:
+        PGPASSWORD: libreplan
+      run: |
+        for i in {1..30}; do
+          psql -h postgres -U libreplan -d libreplandev -c 'select 1' && break
+          sleep 2
+        done
+
+    # Yes, this looks ugly. But when cleanup over several lines mvn
+    # starts complaining: The POM for  -DdataSource.url=jdbc:postgresql:jar://postgres is missing
+    # Starts thinking the datasource url is a pom it should download. Weird.
+    - name: Build with Maven
+      shell: bash
+      run: mvn clean install --no-transfer-progress -Ddefault.passwordsControl=false -Ddefault.exampleUsersDisabled=false -DdataSource.url=jdbc:postgresql://postgres:5432/libreplandev -DdataSource.user=libreplan -DdataSource.password=libreplan -DjdbcDriver.className=org.postgresql.Driver  
+
+    - name: Copy libreplan-webapp.war to libreplan.war
+      run: cp libreplan-webapp/target/libreplan-webapp.war libreplan-webapp/target/libreplan.war
+
+    # Upload the result
+    - name: Upload libreplan.war attempt 1
+      uses: actions/upload-artifact@v3
+      with:
+        name: libreplan.war
+        path: libreplan-webapp/target/libreplan.war
+        retention-days: 3  
+
+    - name: Upload libreplan.war with git hash
+      uses: actions/upload-artifact@v3
+      with:
+        name: libreplan-${{ steps.artifact-upload-prep.outputs.artifact-id }}.war
+        path: libreplan-webapp/target/libreplan.war
+        retention-days: 3  
+
+    - name: Prep release dir for upload
+      run: |
+        mkdir -p dist/release
+        cp libreplan-webapp/target/libreplan.war dist/release/libreplan.war
+
+    # Also store as a release.
+    - uses: actions/forgejo-release@v2.7.3
+      with:
+        direction: upload
+        url: http://10.1.1.158:3000
+        repo: jeroen/libreplan
+        token: ${{ secrets.WRITE_TOKEN_TO_MYREPO }}
+        tag: v2025
+        release-dir: dist/release
+        release-notes: "No RELEASE NOTES"
+        verbose: true
