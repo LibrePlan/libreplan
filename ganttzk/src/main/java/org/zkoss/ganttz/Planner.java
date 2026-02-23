@@ -21,7 +21,7 @@
 
 package org.zkoss.ganttz;
 
-import static org.zkoss.ganttz.i18n.I18nHelper._;
+import static org.zkoss.ganttz.i18n.I18nHelper._t;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -323,7 +323,7 @@ public class Planner extends HtmlMacroComponent  {
 
             @Override
             public String getName() {
-                return _("increasing zoom");
+                return _t("increasing zoom");
             }
 
             @Override
@@ -341,7 +341,7 @@ public class Planner extends HtmlMacroComponent  {
         LongOperationFeedback.execute(ganttPanel, new ILongOperation() {
             @Override
             public String getName() {
-                return _("decreasing zoom");
+                return _t("decreasing zoom");
             }
 
             @Override
@@ -461,7 +461,7 @@ public class Planner extends HtmlMacroComponent  {
         ((South) getFellow("graphics")).setOpen(this.visibleChart);
 
         if (!visibleChart) {
-            ((South) getFellow("graphics")).setTitle(_("Graphics are disabled"));
+            ((South) getFellow("graphics")).setTitle(_t("Graphics are disabled"));
         }
 
         PROFILING_LOG.debug("it took doing the setup of components and adding them: "
@@ -640,12 +640,12 @@ public class Planner extends HtmlMacroComponent  {
                 context.hideCriticalPath();
                 diagramGraph.removePostGraphChangeListener(showCriticalPathOnChange);
                 showCriticalPathButton.setSclass(PLANNER_COMMAND);
-                showCriticalPathButton.setTooltiptext(_("Show critical path"));
+                showCriticalPathButton.setTooltiptext(_t("Show critical path"));
             } else {
                 context.showCriticalPath();
                 diagramGraph.addPostGraphChangeListener(showCriticalPathOnChange);
                 showCriticalPathButton.setSclass(PLANNER_COMMAND + " clicked");
-                showCriticalPathButton.setTooltiptext(_("Hide critical path"));
+                showCriticalPathButton.setTooltiptext(_t("Hide critical path"));
             }
 
             isShowingCriticalPath = !isShowingCriticalPath;
@@ -667,7 +667,7 @@ public class Planner extends HtmlMacroComponent  {
                 context.hideAdvances();
                 diagramGraph.removePostGraphChangeListener(showAdvanceOnChange);
                 showAdvancesButton.setSclass(PLANNER_COMMAND);
-                showAdvancesButton.setTooltiptext(_("Show progress"));
+                showAdvancesButton.setTooltiptext(_t("Show progress"));
 
                 if ( progressTypesCombo.getItemCount() > 0 ) {
                     progressTypesCombo.setSelectedIndex(0);
@@ -676,7 +676,7 @@ public class Planner extends HtmlMacroComponent  {
                 context.showAdvances();
                 diagramGraph.addPostGraphChangeListener(showAdvanceOnChange);
                 showAdvancesButton.setSclass(PLANNER_COMMAND + " clicked");
-                showAdvancesButton.setTooltiptext(_("Hide progress"));
+                showAdvancesButton.setTooltiptext(_t("Hide progress"));
             }
 
             isShowingAdvances = !isShowingAdvances;
@@ -690,12 +690,12 @@ public class Planner extends HtmlMacroComponent  {
                 context.hideReportedHours();
                 diagramGraph.removePostGraphChangeListener(showReportedHoursOnChange);
                 showReportedHoursButton.setSclass(PLANNER_COMMAND);
-                showReportedHoursButton.setTooltiptext(_("Show reported hours"));
+                showReportedHoursButton.setTooltiptext(_t("Show reported hours"));
             } else {
                 context.showReportedHours();
                 diagramGraph.addPostGraphChangeListener(showReportedHoursOnChange);
                 showReportedHoursButton.setSclass(PLANNER_COMMAND + " clicked");
-                showReportedHoursButton.setTooltiptext(_("Hide reported hours"));
+                showReportedHoursButton.setTooltiptext(_t("Hide reported hours"));
             }
 
             isShowingReportedHours = !isShowingReportedHours;
@@ -709,12 +709,12 @@ public class Planner extends HtmlMacroComponent  {
                 context.hideMoneyCostBar();
                 diagramGraph.removePostGraphChangeListener(showMoneyCostBarOnChange);
                 showMoneyCostBarButton.setSclass(PLANNER_COMMAND);
-                showMoneyCostBarButton.setTooltiptext(_("Show money cost bar"));
+                showMoneyCostBarButton.setTooltiptext(_t("Show money cost bar"));
             } else {
                 context.showMoneyCostBar();
                 diagramGraph.addPostGraphChangeListener(showMoneyCostBarOnChange);
                 showMoneyCostBarButton.setSclass(PLANNER_COMMAND + " clicked");
-                showMoneyCostBarButton.setTooltiptext(_("Hide money cost bar"));
+                showMoneyCostBarButton.setTooltiptext(_t("Hide money cost bar"));
             }
 
             isShowingMoneyCostBar = !isShowingMoneyCostBar;

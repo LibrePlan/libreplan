@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Informe de horas traballadas por recurso</title>
+<link rel="stylesheet" href="html/lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="informe-de-horas-traballadas-por-recurso">
+<h1 class="title">Informe de horas traballadas por recurso</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#proposito" id="toc-entry-1">Propósito</a></li>
+<li><a class="reference internal" href="#datos-de-entrada-e-filtros" id="toc-entry-2">Datos de entrada e filtros</a></li>
+<li><a class="reference internal" href="#saida" id="toc-entry-3">Saída</a><ul>
+<li><a class="reference internal" href="#cabeceira" id="toc-entry-4">Cabeceira</a></li>
+<li><a class="reference internal" href="#pe-de-paxina" id="toc-entry-5">Pé de páxina</a></li>
+<li><a class="reference internal" href="#corpo" id="toc-entry-6">Corpo</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="proposito">
+<h1><a class="toc-backref" href="#toc-entry-1">Propósito</a></h1>
+<p>Este informe permite extraer unha lista de tarefas e tempo dedicado por parte dos recursos da organización nun período de tempo. Hai varios filtros que permiten configurar a consulta para obter a información desexada e evitar datos superfluos.</p>
+</div>
+<div class="section" id="datos-de-entrada-e-filtros">
+<h1><a class="toc-backref" href="#toc-entry-2">Datos de entrada e filtros</a></h1>
+<blockquote>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt><strong>Datas</strong>.</dt>
+<dd><ul class="first last">
+<li><em>Tipo</em>: Opcional.</li>
+<li><dl class="first docutils">
+<dt><em>Dous campos de data</em>:</dt>
+<dd><ul class="first last">
+<li><em>Data de inicio.</em> É a data mínima dos partes de traballo que se desexan. Os partes de traballo con data inferior á <em>data de inicio</em> ignóranse. Se non se especifica este parámetro, non hai data inferior de filtrado.</li>
+<li><em>Data de fin.</em> É a data máxima de partir de traballo que se incorporarán nos resultados do informe. Os partes de traballo cunha data posterior que a <em>data de fin</em> óbvianse. Se non se cobre o parámetro, non existe data tope para os partes de traballo a seleccionar.</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>Filtrado por traballadores</strong></dt>
+<dd><ul class="first last">
+<li><em>Tipo</em>: Opcional.</li>
+<li><em>Como funciona:</em> Pódese seleccionar un traballador para restrinxir o conxunto de partes de traballo a aqueles correspondentes ao traballador seleccionado. Se se deixa en branco, selecciónanse os partes de traballo de forma independente ao traballador ao que pertencen.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>Filtrado por etiquetas</strong></dt>
+<dd><ul class="first last">
+<li><em>Tipo:</em> Opcional.</li>
+<li><em>Como funciona:</em> Pódese seleccionar unha ou varias etiquetas a través do compoñente de interfaz para a súa procura e pulsando no botón <em>Engadir</em> para incorporalas ao filtro. Úsanse para seleccionar as tarefas que serán incluídas nos resultados do informe.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>Filtrado por criterio</strong></dt>
+<dd><ul class="first last">
+<li><em>Tipo:</em> Opcional.</li>
+<li><em>Como funciona:</em> Pódese seleccionar un ou varios criterios a través do compoñente de procura e, despois, mediante o pulsado do botón de <em>Engadir</em>. Estes criterios úsanse para seleccionar os recursos que satisfagan polo menos un deles. O informe terá en conta o tempo dedicado dos recursos que satisfagan polo menos un dos criterios engadidos en leste filtro.</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="saida">
+<h1><a class="toc-backref" href="#toc-entry-3">Saída</a></h1>
+<div class="section" id="cabeceira">
+<h2><a class="toc-backref" href="#toc-entry-4">Cabeceira</a></h2>
+<p>Na cabeceira do informe indícase que filtros foi configurados e aplicados para a extracción do informe á que corresponde unha cabeceira concreta.</p>
+</div>
+<div class="section" id="pe-de-paxina">
+<h2><a class="toc-backref" href="#toc-entry-5">Pé de páxina</a></h2>
+<p>Include a data na que o reporte sacouse.</p>
+</div>
+<div class="section" id="corpo">
+<h2><a class="toc-backref" href="#toc-entry-6">Corpo</a></h2>
+<p>O corpo do informe contén os seguintes grupos de información:</p>
+<ul>
+<li><p class="first">Hai un primeiro nivel de agregación de información por recurso. Todo o tempo dedicado por un recurso móstrase xunto debaixo da cabeceira. Cada recurso identifícase por:</p>
+<blockquote>
+<ul class="simple">
+<li><em>Traballador</em>: Apelidos, Nomee</li>
+<li><em>Máquina</em>: Nome.</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<p>Móstrase unha liña de resumo co total das  horas traballadas por un recurso.</p>
+<ul class="simple">
+<li>Hai un segundo nivel de agrupamiento consistente na <em>data</em>. Todos os partes de traballo dun recurso concreto no mesmo día móstrase de forma conxunta.</li>
+</ul>
+<p>Hai unha liña de resumo co total das horas traballadas por recurso.</p>
+<ul>
+<li><p class="first">Hai un terceiro e último nivel no cal se listan os partes de traballo do mesmo día dun traballador. A información que se mostra para cada liña de parte de traballo desta agrupación é:</p>
+<blockquote>
+<ul class="simple">
+<li><em>Código de tarefa</em> ao que as horas reportadas imputan tempo.</li>
+<li><em>Nome da tarefa</em> ao que as horas reportadas imputan.</li>
+<li><em>Hora de inicio</em>. Non é obrigatorio. É a hora de inicio á que o recurso empezou a realizar o traballo da tarefa.</li>
+<li><em>Hora de fin</em>- É opcional. É a hora de fin até a cal o recurso traballou na tarefa na data especificada.</li>
+<li><em>Campos de texto</em>. É opcional. Se o tipo de parte de traballo ten campos de texto enchidos con valores, estes valores se muestrann nesta columna segundo o formato: &lt;Nome do campo de texto&gt;:&lt;Valor&gt;</li>
+<li><em>Etiquetas</em>. Contén valor dependendo de se o tipo de parte de traballo contén polo menos un campo de etiquetas na súa definición. Se hai varias etiquetas móstranse na mesma columna. O formato é: &lt;Nome do tipo de etiqueta&gt;.&lt;Valor da etiqueta asociada&gt;.</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</body>
+</html>

@@ -20,7 +20,7 @@
  */
 package org.libreplan.web.templates;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 import static org.libreplan.web.planner.tabs.MultipleTabsPlannerController.BREADCRUMBS_SEPARATOR;
 
 import java.util.List;
@@ -229,7 +229,7 @@ public class OrderTemplatesController extends GenericForwardComposer implements 
         if (isAllValid()) {
             try {
                 model.confirmSave();
-                messagesForUser.showMessage(Level.INFO, _("Template saved"));
+                messagesForUser.showMessage(Level.INFO, _t("Template saved"));
                 show(listWindow);
             } catch (ValidationException e) {
                 messagesForUser.showInvalidValues(e);
@@ -247,7 +247,7 @@ public class OrderTemplatesController extends GenericForwardComposer implements 
                 model.confirmSave();
                 model.initEdit(getTemplate());
                 bindTemplatesTreeWithModel();
-                messagesForUser.showMessage(Level.INFO, _("Template saved"));
+                messagesForUser.showMessage(Level.INFO, _t("Template saved"));
             } catch (ValidationException e) {
                 messagesForUser.showInvalidValues(e);
             }
@@ -270,7 +270,7 @@ public class OrderTemplatesController extends GenericForwardComposer implements 
         if (model.getTemplate().isOrderTemplate()) {
             OrderTemplate orderTemplate = (OrderTemplate) model.getTemplate();
             if (orderTemplate.getCalendar() == null) {
-                throw new WrongValueException(editWindow.getFellow("calendar"), _("calendar not specified"));
+                throw new WrongValueException(editWindow.getFellow("calendar"), _t("calendar not specified"));
             }
         }
 
@@ -289,7 +289,7 @@ public class OrderTemplatesController extends GenericForwardComposer implements 
         try {
             model.validateTemplateName(name.getValue());
         } catch (IllegalArgumentException e) {
-            throw new WrongValueException(name, _(e.getMessage()));
+            throw new WrongValueException(name, _t(e.getMessage()));
         }
     }
 
@@ -301,9 +301,9 @@ public class OrderTemplatesController extends GenericForwardComposer implements 
         }
 
         breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-        breadcrumbs.appendChild(new Label(_("Planning")));
+        breadcrumbs.appendChild(new Label(_t("Planning")));
         breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-        breadcrumbs.appendChild(new Label(_("Templates")));
+        breadcrumbs.appendChild(new Label(_t("Templates")));
     }
 
     /**
@@ -354,7 +354,7 @@ public class OrderTemplatesController extends GenericForwardComposer implements 
             try {
                 model.validateTemplateName((String) value);
             } catch (IllegalArgumentException e) {
-                throw new WrongValueException(comp, _(e.getMessage()));
+                throw new WrongValueException(comp, _t(e.getMessage()));
             }
         };
     }
@@ -366,7 +366,7 @@ public class OrderTemplatesController extends GenericForwardComposer implements 
      */
     public void confirmDelete(OrderElementTemplate template) {
         if (Messagebox.show(
-                _("Delete template. Are you sure?"), _("Confirm"),
+                _t("Delete template. Are you sure?"), _t("Confirm"),
                 Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION) == Messagebox.OK) {
 
             if (this.model.hasNotApplications(template)) {
@@ -377,7 +377,7 @@ public class OrderTemplatesController extends GenericForwardComposer implements 
                     Util.reloadBindings(gridOrderTemplates);
                 }
             } else {
-                messagesForUser.showMessage(Level.ERROR, _("Template cannot be removed because it has applications"));
+                messagesForUser.showMessage(Level.ERROR, _t("Template cannot be removed because it has applications"));
             }
         }
 

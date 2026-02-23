@@ -19,7 +19,7 @@
 
 package org.libreplan.web.reports;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -111,7 +111,7 @@ public class ProjectStatusReportController extends LibrePlanReportController {
     public void showReport(JasperreportComponent jasperreport) {
         final Order order = getSelectedOrder();
         if (order == null && projectStatusReportModel.isNotFiltering()) {
-            messagesForUser.showMessage(Level.ERROR, _("You should filter the report by project, labels or criteria"));
+            messagesForUser.showMessage(Level.ERROR, _t("You should filter the report by project, labels or criteria"));
         } else {
             super.showReport(jasperreport);
         }
@@ -164,7 +164,7 @@ public class ProjectStatusReportController extends LibrePlanReportController {
             for (Label label : labels) {
                 labelNames.add(label.getName());
             }
-            filter += _("Labels") + ": " + StringUtils.join(labelNames.toArray(), ", ");
+            filter += _t("Labels") + ": " + StringUtils.join(labelNames.toArray(), ", ");
         }
 
         Set<Criterion> criteria = projectStatusReportModel.getSelectedCriteria();
@@ -176,7 +176,7 @@ public class ProjectStatusReportController extends LibrePlanReportController {
             if (!filter.isEmpty()) {
                 filter += ". ";
             }
-            filter += _("Criteria") + ": " + StringUtils.join(criterionNames.toArray(), ", ");
+            filter += _t("Criteria") + ": " + StringUtils.join(criterionNames.toArray(), ", ");
         }
 
         return filter;
@@ -189,7 +189,7 @@ public class ProjectStatusReportController extends LibrePlanReportController {
     public void addLabel() {
         Label label = (Label) bandboxLabels.getSelectedElement();
         if (label == null) {
-            throw new WrongValueException(bandboxLabels, _("please, select a label"));
+            throw new WrongValueException(bandboxLabels, _t("please, select a label"));
         }
         projectStatusReportModel.addSelectedLabel(label);
         Util.reloadBindings(listboxLabels);
@@ -212,7 +212,7 @@ public class ProjectStatusReportController extends LibrePlanReportController {
     public void addCriterion() {
         Criterion criterion = (Criterion) bandboxCriteria.getSelectedElement();
         if (criterion == null) {
-            throw new WrongValueException(bandboxCriteria, _("please, select a criterion"));
+            throw new WrongValueException(bandboxCriteria, _t("please, select a criterion"));
         }
         projectStatusReportModel.addSelectedCriterion(criterion);
         Util.reloadBindings(listboxCriteria);

@@ -39,7 +39,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 /**
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
@@ -110,11 +110,11 @@ public class OrderCostsPerResourceController extends LibrePlanReportController {
     public void onSelectOrder() {
         Order order = (Order) bdOrders.getSelectedElement();
         if (order == null) {
-            throw new WrongValueException(bdOrders, _("please, select a project"));
+            throw new WrongValueException(bdOrders, _t("please, select a project"));
         }
         boolean result = orderCostsPerResourceModel.addSelectedOrder(order);
         if (!result) {
-            throw new WrongValueException(bdOrders, _("This project has already been added."));
+            throw new WrongValueException(bdOrders, _t("This project has already been added."));
         } else {
             Util.reloadBindings(lbOrders);
         }
@@ -143,7 +143,7 @@ public class OrderCostsPerResourceController extends LibrePlanReportController {
                         (startDateLine.compareTo(getEndingDate()) > 0)) {
 
                     ((Datebox) comp).setValue(null);
-                    throw new WrongValueException(comp, _("must be lower than end date"));
+                    throw new WrongValueException(comp, _t("must be lower than end date"));
                 }
             }
         };
@@ -157,7 +157,7 @@ public class OrderCostsPerResourceController extends LibrePlanReportController {
                 if ((endingDate != null) && (getStartingDate() != null) &&
                         (endingDate.compareTo(getStartingDate()) < 0)) {
                     ((Datebox) comp).setValue(null);
-                    throw new WrongValueException(comp, _("must be after end date"));
+                    throw new WrongValueException(comp, _t("must be after end date"));
                 }
             }
         };
@@ -170,11 +170,11 @@ public class OrderCostsPerResourceController extends LibrePlanReportController {
     public void onSelectLabel() {
         Label label = (Label) bdLabels.getSelectedElement();
         if (label == null) {
-            throw new WrongValueException(bdLabels, _("please, select a label"));
+            throw new WrongValueException(bdLabels, _t("please, select a label"));
         }
         boolean result = orderCostsPerResourceModel.addSelectedLabel(label);
         if (!result) {
-            throw new WrongValueException(bdLabels, _("Label has already been added."));
+            throw new WrongValueException(bdLabels, _t("Label has already been added."));
         } else {
             Util.reloadBindings(lbLabels);
         }
@@ -201,11 +201,11 @@ public class OrderCostsPerResourceController extends LibrePlanReportController {
     public void onSelectCriterion() {
         Criterion criterion = (Criterion) bdCriterions.getSelectedElement();
         if (criterion == null) {
-            throw new WrongValueException(bdCriterions, _("please, select a Criterion"));
+            throw new WrongValueException(bdCriterions, _t("please, select a Criterion"));
         }
         boolean result = orderCostsPerResourceModel.addSelectedCriterion(criterion);
         if (!result) {
-            throw new WrongValueException(bdCriterions, _("This Criterion has already been added."));
+            throw new WrongValueException(bdCriterions, _t("This Criterion has already been added."));
         } else {
             Util.reloadBindings(lbCriterions);
         }

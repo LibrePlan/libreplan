@@ -20,7 +20,7 @@
  */
 package org.libreplan.web.orders.labels;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 import java.util.List;
 
@@ -81,10 +81,10 @@ public abstract class AssignedLabelsController<T, M> extends GenericForwardCompo
     public void onAssignLabel() {
         Label label = (Label) bdLabels.getSelectedElement();
         if (label == null) {
-            throw new WrongValueException(bdLabels, _("please, select a label"));
+            throw new WrongValueException(bdLabels, _t("please, select a label"));
         }
         if (isAssigned(label)) {
-            throw new WrongValueException(bdLabels, _("already assigned"));
+            throw new WrongValueException(bdLabels, _t("already assigned"));
         }
         try {
             assignLabel(label);
@@ -103,19 +103,19 @@ public abstract class AssignedLabelsController<T, M> extends GenericForwardCompo
         // Check if user has permissions to create labels
         if (!SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_LABELS)) {
             throw new WrongValueException(buttonCreateAndAssign,
-                    _("you do not have permissions to create new labels"));
+                    _t("you do not have permissions to create new labels"));
         }
 
         // Check LabelType is not null
         final Comboitem comboitem = cbLabelType.getSelectedItem();
         if (comboitem == null || comboitem.getValue() == null) {
-            throw new WrongValueException(cbLabelType, _("please, select an item"));
+            throw new WrongValueException(cbLabelType, _t("please, select an item"));
         }
 
         // Check Label is not null or empty
         final String labelName = txtLabelName.getValue();
         if (labelName == null || labelName.isEmpty()) {
-            throw new WrongValueException(txtLabelName, _("cannot be empty"));
+            throw new WrongValueException(txtLabelName, _t("cannot be empty"));
         }
 
         // Label does not exist, create
@@ -125,7 +125,7 @@ public abstract class AssignedLabelsController<T, M> extends GenericForwardCompo
             label = addLabel(labelName, labelType);
         } else {
             if (isAssigned(label)) {
-                throw new WrongValueException(txtLabelName, _("already assigned"));
+                throw new WrongValueException(txtLabelName, _t("already assigned"));
             }
         }
         try {

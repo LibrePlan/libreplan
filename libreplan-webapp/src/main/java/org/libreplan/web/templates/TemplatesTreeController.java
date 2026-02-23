@@ -35,7 +35,7 @@ import org.zkoss.zul.Treeitem;
 
 import java.math.BigDecimal;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 /**
  * Controller for template element tree <br />
@@ -66,7 +66,7 @@ public class TemplatesTreeController extends TreeController<OrderElementTemplate
         private Button createEditButton() {
             return createButton(
                     "/common/img/ico_editar1.png",
-                    _("Edit"),
+                    _t("Edit"),
                     "/common/img/ico_editar.png",
                     "icono",
                     event -> {
@@ -86,7 +86,7 @@ public class TemplatesTreeController extends TreeController<OrderElementTemplate
                     () -> element.getName(),
                     value -> element.setName(value));
 
-            textBox.setConstraint("no empty:" + _("cannot be empty"));
+            textBox.setConstraint("no empty:" + _t("cannot be empty"));
             addCell(textBox);
             putNameTextbox(element, textBox);
         }
@@ -191,7 +191,7 @@ public class TemplatesTreeController extends TreeController<OrderElementTemplate
 
         if ((elem.getLabels() != null) && (!elem.getLabels().isEmpty())) {
 
-            tooltipText.append(" ").append(_("Labels")).append(":");
+            tooltipText.append(" ").append(_t("Labels")).append(":");
             tooltipText.append(StringUtils.join(elem.getLabels(), ","));
             tooltipText.append(".");
         }

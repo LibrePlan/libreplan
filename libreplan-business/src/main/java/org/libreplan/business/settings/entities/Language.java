@@ -20,7 +20,7 @@
 
 package org.libreplan.business.settings.entities;
 
-import static org.libreplan.business.i18n.I18nHelper._;
+import static org.libreplan.business.i18n.I18nHelper._t;
 
 import java.util.Locale;
 
@@ -33,7 +33,7 @@ import java.util.Locale;
  */
 public enum Language {
 
-    BROWSER_LANGUAGE(_("Use browser language configuration"), null),
+    BROWSER_LANGUAGE(_t("Use browser language configuration"), null),
     GALICIAN_LANGUAGE("Galego", new Locale("gl")),
     SPANISH_LANGUAGE("Español", new Locale("es")),
     ENGLISH_LANGUAGE("English", Locale.ENGLISH),

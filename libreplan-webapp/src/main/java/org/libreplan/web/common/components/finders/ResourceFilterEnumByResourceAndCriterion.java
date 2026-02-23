@@ -20,6 +20,7 @@
 package org.libreplan.web.common.components.finders;
 
 import org.libreplan.business.resources.entities.Resource;
+import static org.libreplan.web.I18nHelper._t;
 
 /**
  * Different filters for {@link Resource}.
@@ -28,12 +29,12 @@ import org.libreplan.business.resources.entities.Resource;
  */
 public enum ResourceFilterEnumByResourceAndCriterion implements IFilterEnum {
 
-    RESOURCE(_("Resource")), CRITERION(_("Criterion"));
+    RESOURCE(_t("Resource")), CRITERION(_t("Criterion"));
 
     /**
      * Forces to mark the string as needing translation
      */
-    private static String _(String string) {
+    private static String _t(String string) {
         return string;
     }
 

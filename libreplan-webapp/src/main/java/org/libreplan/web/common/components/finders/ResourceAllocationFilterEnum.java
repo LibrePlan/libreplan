@@ -24,15 +24,17 @@
  */
 package org.libreplan.web.common.components.finders;
 
+import static org.libreplan.web.I18nHelper._t;
+
 
 public enum ResourceAllocationFilterEnum implements IFilterEnum {
 
-    Criterion(_("Criterion")), Resource(_("Resource"));
+    Criterion(_t("Criterion")), Resource(_t("Resource"));
 
     /**
      * Forces to mark the string as needing translation
      */
-    private static String _(String string) {
+    private static String _t(String string) {
         return string;
     }
 

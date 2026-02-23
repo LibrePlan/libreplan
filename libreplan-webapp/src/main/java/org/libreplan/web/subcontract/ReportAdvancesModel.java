@@ -20,7 +20,7 @@
  */
 package org.libreplan.web.subcontract;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -220,9 +220,9 @@ public class ReportAdvancesModel implements IReportAdvancesModel {
         } catch (WebApplicationException e) {
             LOG.error("Problems connecting with client web service", e);
 
-            String message = _("Problems connecting with client web service");
+            String message = _t("Problems connecting with client web service");
             if (e.getMessage() != null) {
-                message += ". " + _("Error: {0}", e.getMessage());
+                message += ". " + _t("Error: {0}", e.getMessage());
             }
 
             throw new ConnectionProblemsException(message, e);

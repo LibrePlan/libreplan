@@ -31,6 +31,8 @@ import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
 
+import static org.libreplan.web.I18nHelper._t;
+
 import java.util.List;
 
 /**
@@ -47,12 +49,12 @@ public class ExternalCompanyBandboxFinder extends BandboxFinder implements IBand
     @Autowired
     private IExternalCompanyDAO externalCompanyDAO;
 
-    private final String headers[] = { _("ID"), _("Name") };
+    private final String headers[] = { _t("ID"), _t("Name") };
 
     /**
      * Forces to mark the string as needing translation.
      */
-    private static String _(String string) {
+    private static String _t(String string) {
         return string;
     }
 

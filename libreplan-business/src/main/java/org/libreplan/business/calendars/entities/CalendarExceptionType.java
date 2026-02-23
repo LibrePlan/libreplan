@@ -21,7 +21,7 @@
 
 package org.libreplan.business.calendars.entities;
 
-import static org.libreplan.business.i18n.I18nHelper._;
+import static org.libreplan.business.i18n.I18nHelper._t;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -144,7 +144,7 @@ public class CalendarExceptionType extends IntegrationEntity implements IHumanId
     }
 
     public String getOverAssignableStr() {
-        return isOverAssignableWithoutLimit() ? _("Yes") : _("No");
+        return isOverAssignableWithoutLimit() ? _t("Yes") : _t("No");
     }
 
     public EffortDuration getDuration() {

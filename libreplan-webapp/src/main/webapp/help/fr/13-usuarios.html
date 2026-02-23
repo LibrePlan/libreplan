@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Utilisateurs</title>
+<link rel="stylesheet" href="html/lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="utilisateurs">
+<h1 class="title">Utilisateurs</h1>
+
+<div class="contents topic" id="contents">
+<span id="tareas"></span><p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#gestion-des-utilisateurs" id="toc-entry-1">Gestion des utilisateurs</a><ul>
+<li><a class="reference internal" href="#gerer-les-profils" id="toc-entry-2">Gérer les profils</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="gestion-des-utilisateurs">
+<h1><a class="toc-backref" href="#toc-entry-1">Gestion des utilisateurs</a></h1>
+<p>&quot;LibrePlan&quot; permet de gérer des profils, des autorisations et des utilisateurs. Les utilisateurs appartiennent à des profils utilisateurs qui peuvent disposer d'une série de rôles prédéfinis pour accéder aux fonctions du programme. Les rôles sont des autorisations définies dans &quot;LibrePlan&quot;. Exemples de rôles :</p>
+<ul class="simple">
+<li>Administration : un rôle auxquels les administrateurs doivent être affectés de façon à pouvoir réaliser des opérations d'administration.</li>
+<li>Lecteur de web service : un rôle pour les utilisateurs qui ont besoin de pouvoir consulter des informations via les web services du programme.</li>
+<li>Rédacteur de web service : un rôle pour les utilisateurs qui ont besoin d'écrire des informations dans LibrePlan via les web services du programme.</li>
+</ul>
+<p>Les rôles sont prédéfinis dans le système. Le profil d'un utilisateur comporte un ou plusieurs rôles. Les utilisateurs doivent avoir certains rôles pour réaliser certaines opérations.</p>
+<p>Les utilisateurs ont un ou plusieurs profils ou directement un ou plusieurs rôles de sorte que des autorisations spécifiques ou génériques peuvent être affectées.</p>
+<p>Il est nécessaire de réaliser les étapes suivantes pour gérer les utilisateurs :</p>
+<ul>
+<li><p class="first">Aller à &quot;Comptes utilisateurs&quot; dans le menu &quot;Configuration&quot;.</p>
+</li>
+<li><p class="first">Le programme affiche un formulaire avec la liste des utilisateurs.</p>
+</li>
+<li><p class="first">Cliquer sur le bouton &quot;Modifier&quot; pour modifier un utilisateur choisi ou cliquer sur le bouton &quot;Créer&quot;.</p>
+</li>
+<li><p class="first">Un formulaire va apparaître avec les champs suivants :</p>
+<blockquote>
+<ul class="simple">
+<li>Nom d'utilisateur : l'identifiant de connexion</li>
+<li>Prénom</li>
+<li>Nom</li>
+<li>Mot de passe et confirmation du mot de passe</li>
+<li>Désactivé : si la case est cochée, le compte utilisateur correspondant est bloqué</li>
+<li>Adresse de messagerie</li>
+<li>Type d'authentification: choisir entre &quot;Base de données&quot; pour une gestion par LibrePlan et &quot;LDAP&quot; pour déléguer cette fonction à un annuaire LDAP (cf. le chapitre LDAP).</li>
+<li>Ressource liée : nom d'employé éventuellement associé à cet utilisateur</li>
+<li>Liste des rôles associés : chercher l'un des rôles affichés dans la liste déroulante et cliquer sur &quot;Ajouter un rôle&quot; pour associer ce rôle à l'utilisateur.</li>
+<li>Liste des profils associés : chercher l'un des profils affichés dans la liste déroulante et cliquer sur &quot;Ajouter un profil&quot; pour ajouter un nouveau profil.</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<div class="figure">
+<img alt="images/manage-user.png" src="images/manage-user.png" style="width: 510.0px; height: 236.5px;" />
+<p class="caption">Gestion des utilisateurs</p>
+</div>
+<ul class="simple">
+<li>Cliquer sur &quot;Enregistrer&quot; ou &quot;Enregistrer et continuer&quot;.</li>
+</ul>
+<div class="section" id="gerer-les-profils">
+<h2><a class="toc-backref" href="#toc-entry-2">Gérer les profils</a></h2>
+<p>Suivre les étapes suivantes pour gérer les profils du programme.</p>
+<ul>
+<li><p class="first">Utiliser le menu <em>Configuration</em>, sous-menu <em>Profils</em> : s'affiche la liste des profils.</p>
+</li>
+<li><p class="first">Le programme affiche une liste de profils.</p>
+</li>
+<li><p class="first">Cliquer sur le bouton modifier pour modifier le profil correspondant ou cliquer sur &quot;Créer&quot;.</p>
+</li>
+<li><p class="first">Un formulaire apparaît avec les champs suivants :</p>
+<blockquote>
+<ul class="simple">
+<li>Nom : le nom du profil</li>
+<li>Liste des rôles (autorisations) associés au profil. Choisir un rôle dans la liste des rôles et cliquer sur &quot;Ajouter un rôle&quot; pour ajouter ce rôle au profil.</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<div class="figure">
+<img alt="images/manage-user-profile.png" src="images/manage-user-profile.png" style="width: 510.0px; height: 236.5px;" />
+<p class="caption">Gérer les profils utilisateur</p>
+</div>
+<ul class="simple">
+<li>Cliquer sur &quot;Enregistrer&quot; ou &quot;Enregistrer et continuer&quot;.</li>
+</ul>
+</div>
+</div>
+</div>
+</body>
+</html>

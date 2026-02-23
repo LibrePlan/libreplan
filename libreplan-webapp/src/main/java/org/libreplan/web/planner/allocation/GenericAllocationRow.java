@@ -21,7 +21,7 @@
 
 package org.libreplan.web.planner.allocation;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -52,7 +52,7 @@ public class GenericAllocationRow extends AllocationRow {
     private static GenericAllocationRow initializeDefault(
             GenericAllocationRow result, ResourceEnum resourceType) {
         Validate.notNull(resourceType);
-        result.setName(_("Generic"));
+        result.setName(_t("Generic"));
         result.resourceType = resourceType;
         return result;
     }

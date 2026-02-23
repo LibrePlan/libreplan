@@ -21,7 +21,7 @@
 
 package org.libreplan.web.resources.search;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -696,9 +696,9 @@ public class NewAllocationSelectorController extends AllocationSelectorControlle
         return (comp, value) -> {
             if ( value == null ) {
                 if ( comp.getId().equals("startDateLoadRatiosDatebox") ) {
-                    throw new WrongValueException(comp, _("Start filtering date cannot be empty"));
+                    throw new WrongValueException(comp, _t("Start filtering date cannot be empty"));
                 } else if ( comp.getId().equals("endDateLoadRatiosDatebox") ) {
-                    throw new WrongValueException(comp, _("End filtering date cannot be empty"));
+                    throw new WrongValueException(comp, _t("End filtering date cannot be empty"));
                 }
             }
 
@@ -719,7 +719,7 @@ public class NewAllocationSelectorController extends AllocationSelectorControlle
 
             if ( (startDate != null) && (endDate != null) ) {
                 if ( (startDate.after(endDate)) || (startDate.equals(endDate)) ) {
-                    throw new WrongValueException(comp, _("Start filtering date must be before than end filtering date"));
+                    throw new WrongValueException(comp, _t("Start filtering date must be before than end filtering date"));
                 }
             }
         };

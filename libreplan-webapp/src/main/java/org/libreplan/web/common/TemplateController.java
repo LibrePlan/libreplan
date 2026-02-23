@@ -44,7 +44,7 @@ import org.zkoss.zul.Window;
 import java.util.Collections;
 import java.util.List;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 /**
  * Controller to manage UI operations from main template.
@@ -130,7 +130,7 @@ public class TemplateController extends GenericForwardComposer {
             @Override
             public void errorHappened(Exception exceptionHappened) {
                 LOG.error("error doing reassignation", exceptionHappened);
-                windowMessages.showMessage(Level.ERROR, _("error doing reassignment: {0}", exceptionHappened));
+                windowMessages.showMessage(Level.ERROR, _t("error doing reassignment: {0}", exceptionHappened));
             }
         });
     }
@@ -242,7 +242,7 @@ public class TemplateController extends GenericForwardComposer {
      * Used in template.zul
      */
     public String getVersionMessage() {
-        return _("A new version ") + lastVersionNumber + _(" of LibrePlan is available. Please check next link for more information:");
+        return _t("A new version ") + lastVersionNumber + _t(" of LibrePlan is available. Please check next link for more information:");
     }
 
 }

@@ -21,7 +21,7 @@
 
 package org.libreplan.business.planner.limiting.entities;
 
-import static org.libreplan.business.i18n.I18nHelper._;
+import static org.libreplan.business.i18n.I18nHelper._t;
 
 import org.apache.commons.lang3.Validate;
 import org.joda.time.LocalDate;
@@ -50,7 +50,7 @@ public class QueuePosition {
     }
 
     public void setHour(int hour) {
-        Validate.isTrue(hour >= 0 && hour <= 23, _("Hour should be between 0 and 23"));
+        Validate.isTrue(hour >= 0 && hour <= 23, _t("Hour should be between 0 and 23"));
         this.hour = hour;
     }
 

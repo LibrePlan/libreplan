@@ -64,7 +64,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 /**
  * Controller for CRUD actions over a {@link ExpenseSheet}.
@@ -192,25 +192,25 @@ public class ExpenseSheetCRUDController
 
     private boolean validateNewLine() {
         if (expenseSheetModel.getNewExpenseSheetLine().getDate() == null) {
-            throw new WrongValueException(this.dateboxExpenseDate, _(NOT_EMPTY));
+            throw new WrongValueException(this.dateboxExpenseDate, _t(NOT_EMPTY));
         }
 
         if (expenseSheetModel.getNewExpenseSheetLine().getOrderElement() == null) {
-            throw new WrongValueException(this.bandboxTasks, _(NOT_EMPTY));
+            throw new WrongValueException(this.bandboxTasks, _t(NOT_EMPTY));
         }
 
         BigDecimal value = expenseSheetModel.getNewExpenseSheetLine().getValue();
 
         if (value == null || value.compareTo(BigDecimal.ZERO) < 0) {
-            throw new WrongValueException(this.dboxValue, _("cannot be empty or less than zero"));
+            throw new WrongValueException(this.dboxValue, _t("cannot be empty or less than zero"));
         }
         return true;
     }
 
     public void confirmRemove(ExpenseSheetLine expenseSheetLine) {
         int status = Messagebox.show(
-                _("Confirm deleting {0}. Are you sure?", getExpenseSheetLineName(expenseSheetLine)),
-                _("Delete"), Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION);
+                _t("Confirm deleting {0}. Are you sure?", getExpenseSheetLineName(expenseSheetLine)),
+                _t("Delete"), Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION);
 
         if (Messagebox.OK == status)
             removeExpenseSheetLine(expenseSheetLine);
@@ -228,10 +228,10 @@ public class ExpenseSheetCRUDController
             OrderElement task = expenseSheetLine.getOrderElement();
 
             if (date != null && task != null) {
-                return _("expense line of the ") + task.getName() + " - " + date;
+                return _t("expense line of the ") + task.getName() + " - " + date;
             }
         }
-        return _("item");
+        return _t("item");
     }
 
     private void reloadExpenseSheetLines() {
@@ -335,7 +335,7 @@ public class ExpenseSheetCRUDController
                         }
                     });
 
-            dateboxExpense.setConstraint("no empty:" + _(NOT_EMPTY));
+            dateboxExpense.setConstraint("no empty:" + _t(NOT_EMPTY));
             row.appendChild(dateboxExpense);
         }
 
@@ -382,7 +382,7 @@ public class ExpenseSheetCRUDController
             Button delete = new Button("", "/common/img/ico_borrar1.png");
             delete.setHoverImage("/common/img/ico_borrar.png");
             delete.setSclass("icono");
-            delete.setTooltiptext(_("Delete"));
+            delete.setTooltiptext(_t("Delete"));
             delete.addEventListener(Events.ON_CLICK, event -> confirmRemove(row.getValue()));
             row.appendChild(delete);
         }
@@ -426,7 +426,7 @@ public class ExpenseSheetCRUDController
             bandboxSearch.setListboxEventListener(Events.ON_SELECT, eventListenerUpdateOrderElement);
             bandboxSearch.setListboxEventListener(Events.ON_OK, eventListenerUpdateOrderElement);
             bandboxSearch.setBandboxEventListener(Events.ON_CHANGING, eventListenerUpdateOrderElement);
-            bandboxSearch.setBandboxConstraint("no empty:" + _(NOT_EMPTY));
+            bandboxSearch.setBandboxConstraint("no empty:" + _t(NOT_EMPTY));
             row.appendChild(bandboxSearch);
         }
 
@@ -436,14 +436,14 @@ public class ExpenseSheetCRUDController
                     String code = (String) value;
 
                     if (code == null || code.isEmpty()) {
-                        throw new WrongValueException(comp, _("Code cannot be empty."));
+                        throw new WrongValueException(comp, _t("Code cannot be empty."));
                     } else {
                         String oldCode = line.getCode();
                         line.setCode(code);
 
                         if (!getExpenseSheet().isNonRepeatedExpenseSheetLinesCodesConstraint()) {
                             line.setCode(oldCode);
-                            throw new WrongValueException(comp, _("The code must be unique."));
+                            throw new WrongValueException(comp, _t("The code must be unique."));
                         }
                     }
                 }
@@ -465,7 +465,7 @@ public class ExpenseSheetCRUDController
         return (comp, value) -> {
             BigDecimal expenseValue = (BigDecimal) value;
             if (expenseValue == null || expenseValue.compareTo(BigDecimal.ZERO) < 0) {
-                throw new WrongValueException(comp, _("must be greater or equal than 0"));
+                throw new WrongValueException(comp, _t("must be greater or equal than 0"));
             }
         };
     }
@@ -476,11 +476,11 @@ public class ExpenseSheetCRUDController
                 String code = (String) value;
 
                 if (code == null || code.isEmpty()) {
-                    throw new WrongValueException(comp, _("The code cannot be empty and it must be unique."));
+                    throw new WrongValueException(comp, _t("The code cannot be empty and it must be unique."));
                 } else if (!getExpenseSheet().isUniqueCodeConstraint()) {
 
                     throw new WrongValueException(
-                            comp, _("it already exists another expense sheet with the same code."));
+                            comp, _t("it already exists another expense sheet with the same code."));
                 }
             }
         };
@@ -530,12 +530,12 @@ public class ExpenseSheetCRUDController
 
     @Override
     protected String getEntityType() {
-        return _("Expense Sheet");
+        return _t("Expense Sheet");
     }
 
     @Override
     protected String getPluralEntityType() {
-        return _("Expense Sheets");
+        return _t("Expense Sheets");
     }
 
     public String getCurrencySymbol() {
@@ -603,7 +603,7 @@ public class ExpenseSheetCRUDController
     }
 
     private String getType(ExpenseSheet expenseSheet) {
-        return expenseSheet != null && expenseSheet.isPersonal() ? _("Personal") : _("Regular");
+        return expenseSheet != null && expenseSheet.isPersonal() ? _t("Personal") : _t("Regular");
     }
 
     public RowRenderer getExpenseSheetsRenderer() {

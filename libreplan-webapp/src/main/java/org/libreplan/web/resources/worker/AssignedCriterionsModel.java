@@ -25,7 +25,7 @@
 
 package org.libreplan.web.resources.worker;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -330,12 +330,12 @@ public class AssignedCriterionsModel extends IntegrationEntityModel implements
                     .getCriterion();
             if (checkSameCriterionAndSameInterval(satisfactionDTO)) {
                 throw new IllegalStateException(
-                        _("The {0} can not be assigned to this resource. Its interval overlaps with other criterion",
+                        _t("The {0} can not be assigned to this resource. Its interval overlaps with other criterion",
                                 criterion.getName()));
             }
             if (checkNotAllowSimultaneousCriterionsPerResource(satisfactionDTO)) {
                 throw new IllegalStateException(
-                        _("The {0} is not valid. Other value exists from the same criterion type",
+                        _t("The {0} is not valid. Other value exists from the same criterion type",
                                 criterion.getName()));
             }
         }

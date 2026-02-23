@@ -21,7 +21,7 @@
 
 package org.libreplan.web.common;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -665,7 +665,7 @@ public class Util {
      */
     public static Button createEditButton(EventListener eventListener) {
         Button result = new Button();
-        result.setTooltiptext(_("Edit"));
+        result.setTooltiptext(_t("Edit"));
         result.setSclass("icono");
         result.setImage("/common/img/ico_editar1.png");
         result.setHoverImage("/common/img/ico_editar.png");
@@ -684,7 +684,7 @@ public class Util {
      */
     public static Button createRemoveButton(EventListener eventListener) {
         Button result = new Button();
-        result.setTooltiptext(_("Remove"));
+        result.setTooltiptext(_t("Remove"));
         result.setSclass("icono");
         result.setImage("/common/img/ico_borrar1.png");
         result.setHoverImage("/common/img/ico_borrar.png");

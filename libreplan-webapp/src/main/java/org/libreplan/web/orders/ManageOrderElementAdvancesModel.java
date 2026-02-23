@@ -24,7 +24,7 @@
 
 package org.libreplan.web.orders;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -125,7 +125,7 @@ public class ManageOrderElementAdvancesModel implements IManageOrderElementAdvan
         if ((assignment.getAdvanceType() == null) || assignment.getMaxValue() == null) {
             return "";
         }
-        return _("{0} (max: {1})", assignment.getAdvanceType().getUnitName(), assignment.getMaxValue());
+        return _t("{0} (max: {1})", assignment.getAdvanceType().getUnitName(), assignment.getMaxValue());
     }
 
     @Override

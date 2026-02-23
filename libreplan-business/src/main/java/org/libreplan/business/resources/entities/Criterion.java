@@ -21,7 +21,7 @@
 
 package org.libreplan.business.resources.entities;
 
-import static org.libreplan.business.i18n.I18nHelper._;
+import static org.libreplan.business.i18n.I18nHelper._t;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -195,11 +195,11 @@ public class Criterion extends IntegrationEntity implements ICriterion, Comparab
     }
 
     private static String allWorkersCaption() {
-        return _("[generic all workers]");
+        return _t("[generic all workers]");
     }
 
     private static String allMachinesCaption() {
-        return _("[generic all machines]");
+        return _t("[generic all machines]");
     }
 
     public void updateUnvalidated(String name, Boolean active) {

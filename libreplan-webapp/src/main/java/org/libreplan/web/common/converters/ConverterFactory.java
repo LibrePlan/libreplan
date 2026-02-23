@@ -30,7 +30,7 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 /**
  * Default implementation for {@link IConverterFactory} <br />
@@ -61,6 +61,6 @@ public class ConverterFactory implements IConverterFactory {
                 return (IConverter<? super T>) result;
             }
         }
-        throw new RuntimeException(_("Not found converter for {0}",  klass));
+        throw new RuntimeException(_t("Not found converter for {0}",  klass));
     }
 }

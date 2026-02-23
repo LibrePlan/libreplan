@@ -21,7 +21,7 @@
 
 package org.libreplan.web.planner.limiting.allocation;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -150,7 +150,7 @@ public class LimitingResourceAllocationModel implements ILimitingResourceAllocat
         if (resources.isEmpty()) {
             getMessagesForUser()
                     .showMessage(Level.ERROR,
-                            _("there are no resources for required criteria: {0}. " +
+                            _t("there are no resources for required criteria: {0}. " +
                                     "So the generic allocation can't be added",
                             Criterion.getCaptionFor(resourceType, criteria)));
         }
@@ -219,7 +219,7 @@ public class LimitingResourceAllocationModel implements ILimitingResourceAllocat
 
         if (!areAllLimitingResources(resources)) {
             getMessagesForUser().showMessage(Level.ERROR,
-                    _("All resources must be queue-based"));
+                    _t("All resources must be queue-based"));
             return;
         }
 

@@ -52,7 +52,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 /**
  * Controller for page Hours Worked Per Resource.
@@ -191,7 +191,7 @@ public class HoursWorkedPerWorkerController extends LibrePlanReportController {
             boolean result = hoursWorkedPerWorkerModel.addSelectedResource(resource);
 
             if ( !result ) {
-                throw new WrongValueException(filterResource, _("This resource has already been added."));
+                throw new WrongValueException(filterResource, _t("This resource has already been added."));
             } else {
                 Util.reloadBindings(lbResources);
             }
@@ -277,7 +277,7 @@ public class HoursWorkedPerWorkerController extends LibrePlanReportController {
         Button delete = new Button("", "/common/img/ico_borrar1.png");
         delete.setHoverImage("/common/img/ico_borrar.png");
         delete.setSclass("icono");
-        delete.setTooltiptext(_("Delete"));
+        delete.setTooltiptext(_t("Delete"));
         delete.addEventListener(Events.ON_CLICK, event -> onRemoveResource(item.getValue()));
 
         Listcell deleteResourceCell = new Listcell();
@@ -294,9 +294,9 @@ public class HoursWorkedPerWorkerController extends LibrePlanReportController {
     private String getType(Resource resource) {
         if ( resource instanceof Worker )
             if ( ((Worker) resource).isReal() )
-                return _("Worker");
+                return _t("Worker");
             else
-                return _("Virtual worker");
+                return _t("Virtual worker");
 
         return "Machine";
     }
@@ -309,13 +309,13 @@ public class HoursWorkedPerWorkerController extends LibrePlanReportController {
         Label label = (Label) bdLabels.getSelectedElement();
 
         if ( label == null ) {
-            throw new WrongValueException(bdLabels, _("please, select a label"));
+            throw new WrongValueException(bdLabels, _t("please, select a label"));
         }
 
         boolean result = hoursWorkedPerWorkerModel.addSelectedLabel(label);
 
         if ( !result ) {
-            throw new WrongValueException(bdLabels, _("Label has already been added."));
+            throw new WrongValueException(bdLabels, _t("Label has already been added."));
         } else {
             Util.reloadBindings(lbLabels);
         }
@@ -339,13 +339,13 @@ public class HoursWorkedPerWorkerController extends LibrePlanReportController {
         Criterion criterion = (Criterion) bdCriterions.getSelectedElement();
 
         if ( criterion == null )
-            throw new WrongValueException(bdCriterions, _("please, select a Criterion"));
+            throw new WrongValueException(bdCriterions, _t("please, select a Criterion"));
 
 
         boolean result = hoursWorkedPerWorkerModel.addSelectedCriterion(criterion);
 
         if ( !result ) {
-            throw new WrongValueException(bdCriterions, _("This Criterion has already been added."));
+            throw new WrongValueException(bdCriterions, _t("This Criterion has already been added."));
         } else {
             Util.reloadBindings(lbCriterions);
         }

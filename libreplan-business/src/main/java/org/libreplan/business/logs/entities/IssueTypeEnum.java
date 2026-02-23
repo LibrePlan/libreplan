@@ -1,6 +1,6 @@
 package org.libreplan.business.logs.entities;
 
-import static org.libreplan.business.i18n.I18nHelper._;
+import static org.libreplan.business.i18n.I18nHelper._t;
 
 /**
  * Defines PROBLEM_OR_CONCERN, REQUEST_FOR_CHANGE, OFF_SPECIFICATION enums
@@ -10,7 +10,7 @@ import static org.libreplan.business.i18n.I18nHelper._;
  * @author Misha Gozhda <misha@libreplan-enterprise.com>
  */
 public enum IssueTypeEnum {
-    PROBLEM_OR_CONCERN(_("Problem or concern")), REQUEST_FOR_CHANGE(_("Request for change")), OFF_SPECIFICATION(_("Off specification"));
+    PROBLEM_OR_CONCERN(_t("Problem or concern")), REQUEST_FOR_CHANGE(_t("Request for change")), OFF_SPECIFICATION(_t("Off specification"));
 
     private final String issueTypeEnum;
 

@@ -20,7 +20,7 @@
  */
 package org.libreplan.web.templates;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 import org.libreplan.business.templates.entities.OrderElementTemplate;
 import org.libreplan.business.templates.entities.OrderLineTemplate;
@@ -39,8 +39,8 @@ public class TemplatesTree extends EntitiesTree<OrderElementTemplate> {
     @Override
     protected OrderElementTemplate createNewElement() {
         OrderLineTemplate result = OrderLineTemplate.createNew();
-        result.setName(_("New template"));
-        result.setDescription(_("New Description"));
+        result.setName(_t("New template"));
+        result.setDescription(_t("New Description"));
         return result;
     }
 
@@ -48,7 +48,7 @@ public class TemplatesTree extends EntitiesTree<OrderElementTemplate> {
     protected OrderElementTemplate createNewElement(String name, int hours) {
         OrderLineTemplate result = OrderLineTemplate.createNew();
         result.setName(name);
-        result.setDescription(_("New Description"));
+        result.setDescription(_t("New Description"));
         result.setWorkHours(hours);
         return result;
     }

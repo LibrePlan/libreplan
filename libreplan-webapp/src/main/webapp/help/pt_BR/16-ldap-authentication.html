@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>LDAP Configuration</title>
+<link rel="stylesheet" href="html/lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="ldap-configuration">
+<h1 class="title">LDAP Configuration</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#activation" id="toc-entry-1">Activation</a></li>
+<li><a class="reference internal" href="#configuration" id="toc-entry-2">Configuration</a></li>
+<li><a class="reference internal" href="#authentication" id="toc-entry-3">Authentication</a></li>
+<li><a class="reference internal" href="#authorization" id="toc-entry-4">Authorization</a><ul>
+<li><a class="reference internal" href="#group-strategy" id="toc-entry-5">Group Strategy</a></li>
+<li><a class="reference internal" href="#property-strategy" id="toc-entry-6">Property Strategy</a></li>
+<li><a class="reference internal" href="#role-matching" id="toc-entry-7">Role Matching</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>This screen allows you to establish a connection with LDAP to delegate
+authentication and/or authorization.</p>
+<p>It is divided into four different areas, which are explained below:</p>
+<div class="section" id="activation">
+<h1><a class="toc-backref" href="#toc-entry-1">Activation</a></h1>
+<p>This area is used to set the properties that determine how <em>LibrePlan</em> uses
+LDAP.</p>
+<p>If the field <em>Enable LDAP authentication</em> is checked, <em>LibrePlan</em> will query
+LDAP each time a user attempts to log in to the application.</p>
+<p>The field <em>Use LDAP roles</em> checked means that a mapping between LDAP roles and
+LibrePlan roles is established. Consequently, the permissions for a user in
+LibrePlan will depend on the roles the user has in LDAP.</p>
+</div>
+<div class="section" id="configuration">
+<h1><a class="toc-backref" href="#toc-entry-2">Configuration</a></h1>
+<p>This section contains the parameter values for accessing LDAP. <em>Base</em>, <em>UserDN</em>, and
+<em>Password</em> are parameters used to connect to LDAP and search for users. Therefore,
+the specified user must have permission to perform this operation in LDAP. At the
+bottom of this section, there is a button to check if an LDAP connection is
+possible with the given parameters. It is advisable to test the connection before
+continuing the configuration.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If your LDAP is configured to work with anonymous authentication, you can
+leave the <em>UserDN</em> and <em>Password</em> attributes empty.</p>
+</div>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p>Regarding <em>Active Directory (AD)</em> configuration, the <em>Base</em> field must be the
+exact location where the bound user resides in AD.</p>
+<p class="last">Example: <tt class="docutils literal">ou=organizational_unit,dc=example,dc=org</tt></p>
+</div>
+</div>
+<div class="section" id="authentication">
+<h1><a class="toc-backref" href="#toc-entry-3">Authentication</a></h1>
+<p>Here, you can configure the property in LDAP nodes where the given username
+should be found. The property <em>UserId</em> must be filled with the name of the
+property where the username is stored in LDAP.</p>
+<p>The checkbox <em>Save passwords in database</em>, when checked, means that the
+password is also stored in the LibrePlan database. In this way, if LDAP is
+offline or unreachable, LDAP users can authenticate against the LibrePlan
+database. If it is not checked, LDAP users can only be authenticated against
+LDAP.</p>
+</div>
+<div class="section" id="authorization">
+<h1><a class="toc-backref" href="#toc-entry-4">Authorization</a></h1>
+<p>This section allows you to define a strategy for matching LDAP roles with
+LibrePlan roles. The first choice is the strategy to use, depending on the
+LDAP implementation.</p>
+<div class="section" id="group-strategy">
+<h2><a class="toc-backref" href="#toc-entry-5">Group Strategy</a></h2>
+<p>When this strategy is used, it indicates that LDAP has a role-group strategy.
+This means that users in LDAP are nodes that are directly under a branch that
+represents the group.</p>
+<p>The next example represents a valid LDAP structure for using the group strategy.</p>
+<ul>
+<li><p class="first">LDAP structure:</p>
+<pre class="literal-block">
+dc=example,dc=org
+|- ou=groups
+   |- cn=admins
+   |- cn=itpeople
+   |- cn=workers
+|- ou=people
+   |- uid=admin1
+   |- uid=it1
+   |- uid=it2
+   |- uid=worker1
+   |- uid=worker2
+   |- uid=worker3
+</pre>
+</li>
+</ul>
+<p>In this case, each group will have an attribute, for example, called <tt class="docutils literal">member</tt>,
+with the list of users belonging to the group:</p>
+<ul class="simple">
+<li><tt class="docutils literal">cn=admins</tt>:<ul>
+<li><tt class="docutils literal">member: uid=admin1,ou=people,dc=example,dc=org</tt></li>
+<li><tt class="docutils literal">member: uid=it1,ou=people,dc=example,dc=org</tt></li>
+</ul>
+</li>
+<li><tt class="docutils literal">cn=itpeople</tt>:<ul>
+<li><tt class="docutils literal">member: uid=it1,ou=people,dc=example,dc=org</tt></li>
+<li><tt class="docutils literal">member: uid=it2,ou=people,dc=example,dc=org</tt></li>
+</ul>
+</li>
+<li><tt class="docutils literal">cn=workers</tt>:<ul>
+<li><tt class="docutils literal">member: uid=worker1,ou=people,dc=example,dc=org</tt></li>
+<li><tt class="docutils literal">member: uid=worker2,ou=people,dc=example,dc=org</tt></li>
+<li><tt class="docutils literal">member: uid=worker3,ou=people,dc=example,dc=org</tt></li>
+</ul>
+</li>
+</ul>
+<p>The configuration for this case is as follows:</p>
+<ul class="simple">
+<li>Role search strategy: <tt class="docutils literal">Group strategy</tt></li>
+<li>Group path: <tt class="docutils literal">ou=groups</tt></li>
+<li>Role property: <tt class="docutils literal">member</tt></li>
+<li>Role search query: <tt class="docutils literal"><span class="pre">uid=[USER_ID],ou=people,dc=example,dc=org</span></tt></li>
+</ul>
+<p>And, for example, if you want to match some roles:</p>
+<ul class="simple">
+<li>Administration: <tt class="docutils literal">cn=admins;cn=itpeople</tt></li>
+<li>Web service reader: <tt class="docutils literal">cn=itpeople</tt></li>
+<li>Web service writer: <tt class="docutils literal">cn=itpeople</tt></li>
+<li>All projects read allowed: <tt class="docutils literal">cn=admins</tt></li>
+<li>All projects edition allowed: <tt class="docutils literal">cn=admins</tt></li>
+<li>Project creation allowed: <tt class="docutils literal">cn=workers</tt></li>
+</ul>
+</div>
+<div class="section" id="property-strategy">
+<h2><a class="toc-backref" href="#toc-entry-6">Property Strategy</a></h2>
+<p>When an administrator decides to use this strategy, it indicates that each user
+is an LDAP node, and within the node, there exists a property that represents
+the group(s) for the user. In this case, the configuration does not require the
+<em>Group path</em> parameter.</p>
+<p>The next example represents a valid LDAP structure for using the property strategy.</p>
+<ul>
+<li><p class="first">LDAP structure:</p>
+<pre class="literal-block">
+dc=example,dc=org
+|- ou=people
+   |- uid=admin1
+   |- uid=it1
+   |- uid=it2
+   |- uid=worker1
+   |- uid=worker2
+   |- uid=worker3
+</pre>
+</li>
+</ul>
+<p><strong>With Attribute</strong></p>
+<p>In this case, each user will have an attribute, for example, called <tt class="docutils literal">group</tt>,
+with the name of the group to which they belong:</p>
+<ul class="simple">
+<li><tt class="docutils literal">uid=admin1</tt>:<ul>
+<li><tt class="docutils literal">group: admins</tt></li>
+</ul>
+</li>
+<li><tt class="docutils literal">uid=it1</tt>:<ul>
+<li><tt class="docutils literal">group: itpeople</tt></li>
+</ul>
+</li>
+<li><tt class="docutils literal">uid=it2</tt>:<ul>
+<li><tt class="docutils literal">group: itpeople</tt></li>
+</ul>
+</li>
+<li><tt class="docutils literal">uid=worker1</tt>:<ul>
+<li><tt class="docutils literal">group: workers</tt></li>
+</ul>
+</li>
+<li><tt class="docutils literal">uid=worker2</tt>:<ul>
+<li><tt class="docutils literal">group: workers</tt></li>
+</ul>
+</li>
+<li><tt class="docutils literal">uid=worker3</tt>:<ul>
+<li><tt class="docutils literal">group: workers</tt></li>
+</ul>
+</li>
+</ul>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">This strategy has a restriction: each user can belong to only one group.</p>
+</div>
+<p>The configuration for this case is as follows:</p>
+<ul class="simple">
+<li>Role search strategy: <tt class="docutils literal">Property strategy</tt></li>
+<li>Group path:</li>
+<li>Role property: <tt class="docutils literal">group</tt></li>
+<li>Role search query: <tt class="docutils literal">[USER_ID]</tt></li>
+</ul>
+<p>And, for example, if you want to match some roles:</p>
+<ul class="simple">
+<li>Administration: <tt class="docutils literal">admins;itpeople</tt></li>
+<li>Web service reader: <tt class="docutils literal">itpeople</tt></li>
+<li>Web service writer: <tt class="docutils literal">itpeople</tt></li>
+<li>All projects read allowed: <tt class="docutils literal">admins</tt></li>
+<li>All projects edition allowed: <tt class="docutils literal">admins</tt></li>
+<li>Project creation allowed: <tt class="docutils literal">workers</tt></li>
+</ul>
+<p><strong>By User Identifier</strong></p>
+<p>You can even use a workaround to specify LibrePlan roles directly to users
+without having an attribute in each LDAP user.</p>
+<p>In this case, you will specify which users have the different LibrePlan roles
+by <tt class="docutils literal">uid</tt>.</p>
+<p>The configuration for this case is as follows:</p>
+<ul class="simple">
+<li>Role search strategy: <tt class="docutils literal">Property strategy</tt></li>
+<li>Group path:</li>
+<li>Role property: <tt class="docutils literal">uid</tt></li>
+<li>Role search query: <tt class="docutils literal">[USER_ID]</tt></li>
+</ul>
+<p>And, for example, if you want to match some roles:</p>
+<ul class="simple">
+<li>Administration: <tt class="docutils literal">admin1;it1</tt></li>
+<li>Web service reader: <tt class="docutils literal">it1;it2</tt></li>
+<li>Web service writer: <tt class="docutils literal">it1;it2</tt></li>
+<li>All projects read allowed: <tt class="docutils literal">admin1</tt></li>
+<li>All projects edition allowed: <tt class="docutils literal">admin1</tt></li>
+<li>Project creation allowed: <tt class="docutils literal">worker1;worker2;worker3</tt></li>
+</ul>
+</div>
+<div class="section" id="role-matching">
+<h2><a class="toc-backref" href="#toc-entry-7">Role Matching</a></h2>
+<p>At the bottom of this section, there is a table with all the LibrePlan roles
+and a text field next to each one. This is for matching roles. For instance,
+if an administrator decides that the <em>Administration</em> LibrePlan role matches
+the <em>admin</em> and <em>administrators</em> roles of LDAP, the text field should contain:
+&quot;<tt class="docutils literal">admin;administrators</tt>&quot;. The character for splitting roles is &quot;<tt class="docutils literal">;</tt>&quot;.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>If you want to specify that all users or all groups have one permission, you
+can use an asterisk (<tt class="docutils literal">*</tt>) as a wildcard to refer to them. For example, if
+you want everyone to have the <em>Project creation allowed</em> role, you will
+configure the role matching as follows:</p>
+<ul class="last simple">
+<li>Project creation allowed: <tt class="docutils literal">*</tt></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

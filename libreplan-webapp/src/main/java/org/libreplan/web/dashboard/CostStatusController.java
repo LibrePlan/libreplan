@@ -19,7 +19,7 @@
 
 package org.libreplan.web.dashboard;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -112,7 +112,7 @@ public class CostStatusController extends GenericForwardComposer {
     }
 
     private void setHoursLabel(Label label, BigDecimal value) {
-        label.setValue(_("{0} h", value.setScale(2, RoundingMode.HALF_UP)));
+        label.setValue(_t("{0} h", value.setScale(2, RoundingMode.HALF_UP)));
     }
 
     private void setPercentageLabel(Label label, BigDecimal value) {

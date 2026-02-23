@@ -1,6 +1,6 @@
 package org.libreplan.web.importers;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 import java.io.InputStream;
 import java.util.List;
@@ -79,9 +79,9 @@ public class ProjectImportController extends GenericForwardComposer {
         }
 
         breadCrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-        breadCrumbs.appendChild(new Label(_("Planning")));
+        breadCrumbs.appendChild(new Label(_t("Planning")));
         breadCrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-        breadCrumbs.appendChild(new Label(_("Import project")));
+        breadCrumbs.appendChild(new Label(_t("Import project")));
     }
     /**
      * Method called when the onUpload event happens.
@@ -102,9 +102,9 @@ public class ProjectImportController extends GenericForwardComposer {
 
                 try {
                     importCalendar(media.getStreamData(), file);
-                    messages.showMessage(Level.INFO, _(file + ": Calendar import successfully!"));
+                    messages.showMessage(Level.INFO, _t(file + ": Calendar import successfully!"));
                 } catch (InstanceNotFoundException e) {
-                    messages.showMessage(Level.ERROR, _("Instance not found."));
+                    messages.showMessage(Level.ERROR, _t("Instance not found."));
                 } catch (ValidationException e) {
                     messages.showMessage(Level.ERROR, e.getMessage());
                 }
@@ -112,25 +112,25 @@ public class ProjectImportController extends GenericForwardComposer {
             } else if (importTasks.isChecked()) {
                 importProject(media.getStreamData(), file);
 
-                messages.showMessage(Level.INFO, _(file + ": Task import successfully!"));
+                messages.showMessage(Level.INFO, _t(file + ": Task import successfully!"));
 
             } else if (importAll.isChecked()) {
 
                 try {
                     importAll(media.getStreamData(), file);
-                    messages.showMessage(Level.INFO, _(file + ": Import successfully!"));
+                    messages.showMessage(Level.INFO, _t(file + ": Import successfully!"));
                 } catch (InstanceNotFoundException e) {
-                    messages.showMessage(Level.ERROR, _("Instance not found."));
+                    messages.showMessage(Level.ERROR, _t("Instance not found."));
                 } catch (ValidationException e) {
                     messages.showMessage(Level.ERROR, e.getMessage());
                 }
 
             } else {
-                messages.showMessage(Level.WARNING, _("Select one of the options."));
+                messages.showMessage(Level.WARNING, _t("Select one of the options."));
             }
 
         } else {
-            messages.showMessage(Level.ERROR, _("The only current supported formats are mpp and planner."));
+            messages.showMessage(Level.ERROR, _t("The only current supported formats are mpp and planner."));
         }
 
     }

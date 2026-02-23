@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Relevés des heures de travail</title>
+<link rel="stylesheet" href="html/lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="releves-des-heures-de-travail">
+<h1 class="title">Relevés des heures de travail</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#modele-de-releve-des-heures-de-travail" id="toc-entry-1">Modèle de relevé des heures de travail</a></li>
+<li><a class="reference internal" href="#liste-des-releves-des-heures-de-travail" id="toc-entry-2">Liste des relevés des heures de travail</a></li>
+</ul>
+</div>
+<p>Les relevés des heures de travail (Timesheet) permettent de suivre les heures de travail que les ressources ont consacrées aux tâches planifiées.</p>
+<p>Le programme permet de configurer de nouveaux modèles de relevé des heures de travail en indiquant les champs qu'on veut voir apparaître afin de pouvoir y renseigner les relevés relatifs aux tâches qui sont réalisées par les employés dont on peut ainsi suivre l'activité.</p>
+<p>Avant de pouvoir saisir un relevé d'heures de travail pour une ressource, il faut au minimum préciser le modèle de relevé des heures de travail qui en définit la structure qui contiendra toutes les lignes qui lui seront ajoutées. Il est possible de créer autant de relevés d'heures de travail que nécessaire.</p>
+<div class="section" id="modele-de-releve-des-heures-de-travail">
+<h1><a class="toc-backref" href="#toc-entry-1">Modèle de relevé des heures de travail</a></h1>
+<p>Un relevé des heures de travail possède une série de champs qui s'appliquent à l'ensemble du rapport et une série de lignes de relevé d'heures de travail possédant des valeurs spécifiques pour ces champs. Par exemple, les ressources et les tâches sont communes à tous les rapports mais on peut trouver de nouveaux champs tels que &quot;incidents&quot; que l'on ne retrouvera pas nécessairement dans tous les modèles.</p>
+<p>Il est possible de définir différents modèles de relevés des heures de travail pour correspondre aux besoins de la compagnie.</p>
+<div class="figure">
+<img alt="images/work-report-types.png" src="images/work-report-types.png" style="width: 408.0px; height: 190.0px;" />
+<p class="caption">Modèles de relevés des heures de travail</p>
+</div>
+<p>La gestion des modèles de relevés des heures de travail permet de configurer ces caractéristiques et d'ajouter de nouveaux champs texte ou des étiquettes additionnels. Dans le premier onglet de modification des modèles de relevé des heures de travail, accessible via le menu <em>Coûts</em>, sous-menu <em>Modèles des relevés des heures de travail</em>, il est possible de préciser le type des attributs obligatoires (c'est-à-dire s'ils s'appliquent à l'ensemble du relevé ou s'ils doivent être renseignés ligne par ligne). On peut également ajouter des champs et des étiquettes additionnels.</p>
+<p>Les champs obligatoires qui doivent apparaître dans tous les relevés des heures de travail sont les suivants :</p>
+<ul class="simple">
+<li>Nom et code : Nom et code du modèle de relevé des heures de travail</li>
+<li>Date : champ pour la date du relevé des heures de travail</li>
+<li>Ressource : employé ou machine apparaissant dans le relevé ou la ligne du relevé des heures de travail.</li>
+<li>Tâche : code de la tâche à laquelle le travail réalisé est attribué.</li>
+<li><dl class="first docutils">
+<dt>Gestion des heures (détermine la politique d'attribution des heures réalisées) qui peut être :</dt>
+<dd><ul class="first last">
+<li>selon le nombre d'heures effectuées.</li>
+<li>selon les heures de début et de fin.</li>
+<li>selon le nombre d'heures effectuées et les heures de début et de fin (les interruptions sont autorisées et le nombre d'heures l'emporte).</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<p>Il est possible d'ajouter de nouveaux champs au relevé des heures de travail :</p>
+<ul class="simple">
+<li>Catégorie d'étiquettes : permet de demander de préciser une étiquette lors de la saisie d'un relevé ou d'une ligne de relevé des heures de travail. Par exemple, la catégorie &quot;Client&quot; pour permettre d'indiquer le client pour lequel le travail a été effectué.</li>
+<li>Champs texte additionnels : champs dans lesquels du texte peut être saisi librement.</li>
+</ul>
+<div class="figure">
+<img alt="images/work-report-type.png" src="images/work-report-type.png" style="width: 510.0px; height: 235.5px;" />
+<p class="caption">Créer un modèle de relevé des heures de travail avec des données personnalisées</p>
+</div>
+<p>On peut configurer les champs date, ressource et tâche de façon à ce qu'ils apparaissent dans l'en-tête du relevé des heures de travail, ce qui signifie qu'ils s'appliquent globalement au relevé entier, ou bien pour qu'ils doivent être renseignés pour chaque ligne du relevé des heures de travail.</p>
+<p>De même, les champs texte et les étiquettes additionnels qui peuvent être ajoutés au relevé des heures de travail peuvent s'appliquer au relevé dans sa globalité ou devoir être renseignés pour chaque ligne. Il est également possible de configurer l'ordre dans lequel ils apparaissent via l'onglet &quot;Ordre des champs texte et des étiquettes additionnels&quot;.</p>
+<p>Un modèle ne peut plus être modifié à partir du moment où des relevés lui sont attachés.</p>
+</div>
+<div class="section" id="liste-des-releves-des-heures-de-travail">
+<h1><a class="toc-backref" href="#toc-entry-2">Liste des relevés des heures de travail</a></h1>
+<p>Dès que le format des relevés des heures de travail a été configuré, il est possible de saisir des informations dans des formulaires correspondant à ce format de la façon suivante :</p>
+<ul class="simple">
+<li>Cliquer sur le bouton &quot;Nouveau relevé des heures de travail&quot; associé au modèle de relevé souhaité dans la liste accessible via le menu <em>Coûts</em>, sous-menu <em>Modèles des relevés des heures de travail</em>.</li>
+<li>S'affiche alors un relevé conforme à la configuration du modèle dont il est issu. Voir l'image suivante :</li>
+</ul>
+<div class="figure">
+<img alt="images/work-report-hours.png" src="images/work-report-hours.png" style="width: 510.0px; height: 235.0px;" />
+<p class="caption">Structure du relevé des heures de travail conforme au modèle associé</p>
+</div>
+<ul>
+<li><p class="first">Renseigner tous les champs affichés pour le relevé :</p>
+<blockquote>
+<ul class="simple">
+<li>Ressource : si ce champ est configuré pour apparaître dans l'en-tête, la ressource n'est affichée qu'une fois. Dans le cas contraire, il faut sélectionner une valeur pour chaque ligne du relevé.</li>
+<li>Date : date du relevé ou de chaque ligne, selon que la date est configurée pour apparaître dans l'en-tête ou sur chaque ligne.</li>
+<li>nombre d'heures : le nombre d'heures de travail effectuées par la ressource à la date indiquée pour la tâche considérée (mode de calcul selon le nombre d'heures effectuées ou selon le nombre d'heures effectuées et les heures de début et de fin).</li>
+<li>Heures de début et de fin : Les heures (heures et minutes) de début et de fin du travail de façon à calculer le nombre d'heures de travail effectuées. Ce champ n'apparaît que dans le cas des politiques d'affectation des heures &quot;Selon les heures de début et de fin&quot; et &quot;Selon le nombre d'heures effectuées et les heures de début et de fin&quot;.</li>
+<li>Type d'heures : permet aux utilisateurs de choisir le type d'heures, par exemple &quot;par défaut&quot;, &quot;heures supplémentaires&quot;, etc.</li>
+<li>Terminée : si la case est cochée, signale que cette ligne de relevé des heures de travail marque l'achèvement de la tâche concernée.</li>
+<li>Code de la tâche : est renseigné automatiquement quand la ressource est indiquée, soit une seule fois si le champ doit apparaître dans l'en-tête, soit à chaque ligne dans le cas contraire.</li>
+</ul>
+</blockquote>
+</li>
+<li><p class="first">Cliquer sur &quot;Enregistrer&quot;, &quot;Enregistrer et continuer&quot; ou &quot;Enregistrer et créer un nouveau relevé des heures de travail&quot;.</p>
+</li>
+</ul>
+</div>
+</div>
+</body>
+</html>

@@ -42,7 +42,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 /**
  * Subcontroller for {@link Worker} resource.
@@ -145,22 +145,22 @@ public class WorkRelationshipsController extends GenericForwardComposer {
                 satisfactionEdited);
         switch (addSatisfaction) {
             case OK:
-                messagesForUser.showMessage(Level.INFO, _("Time period saved"));
+                messagesForUser.showMessage(Level.INFO, _t("Time period saved"));
                 this.workerCRUDController.goToEditForm();
                 break;
             case SATISFACTION_WRONG:
                 messagesForUser
                         .showMessage(Level.WARNING,
-                                _("Time period contains non valid data. Ending data must be older than starting date"));
+                                _t("Time period contains non valid data. Ending data must be older than starting date"));
                 break;
             case DONT_COMPLY_OVERLAPPING_RESTRICTIONS:
                 messagesForUser
                         .showMessage(Level.WARNING,
-                                _("Could not save time period. Time period overlaps with another non-compatible time period"));
+                                _t("Could not save time period. Time period overlaps with another non-compatible time period"));
                 this.workerCRUDController.goToEditForm();
                 break;
             default:
-                throw new RuntimeException(_("Unexpected: {0}", addSatisfaction));
+                throw new RuntimeException(_t("Unexpected: {0}", addSatisfaction));
         }
     }
 

@@ -21,7 +21,7 @@
 
 package org.libreplan.business.costcategories.entities;
 
-import static org.libreplan.business.i18n.I18nHelper._;
+import static org.libreplan.business.i18n.I18nHelper._t;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -130,7 +130,7 @@ public class CostCategory extends IntegrationEntity implements IHumanIdentifiabl
                                     .getInitDate().compareTo(endDate) <= 0)) {
                         throw ValidationException
                                 .invalidValueException(
-                                        _("Two Hour Cost of the same type overlap in time"),
+                                        _t("Two Hour Cost of the same type overlap in time"),
                                         listElement);
                     } else if ((endDate != null && listElement.getEndDate() != null)
                             && ((listElement.getEndDate().compareTo(initDate) >= 0 && listElement
@@ -139,7 +139,7 @@ public class CostCategory extends IntegrationEntity implements IHumanIdentifiabl
                                     .getInitDate().compareTo(endDate) <= 0))) {
                         throw ValidationException
                                 .invalidValueException(
-                                        _("Two Hour Cost of the same type overlap in time"),
+                                        _t("Two Hour Cost of the same type overlap in time"),
                                         listElement);
                     }
                 }
@@ -159,7 +159,7 @@ public class CostCategory extends IntegrationEntity implements IHumanIdentifiabl
                 if (endDate == null && costCategory.getEndDate() == null) {
                     throw ValidationException
                             .invalidValueException(
-                                    _("Some cost category assignments overlap in time"),
+                                    _t("Some cost category assignments overlap in time"),
                                     costCategory);
                 } else if ((endDate == null && costCategory.getEndDate()
                         .compareTo(initDate) >= 0)
@@ -167,7 +167,7 @@ public class CostCategory extends IntegrationEntity implements IHumanIdentifiabl
                                 .getInitDate().compareTo(endDate) <= 0)) {
                     throw ValidationException
                             .invalidValueException(
-                                    _("Some cost category assignments overlap in time"),
+                                    _t("Some cost category assignments overlap in time"),
                                     costCategory);
                 } else if ((endDate != null && costCategory.getEndDate() != null)
                         && ((costCategory.getEndDate().compareTo(initDate) >= 0 && // (1)
@@ -190,7 +190,7 @@ public class CostCategory extends IntegrationEntity implements IHumanIdentifiabl
                                                                                // endDate]
                     throw ValidationException
                             .invalidValueException(
-                                    _("Some cost category assignments overlap in time"),
+                                    _t("Some cost category assignments overlap in time"),
                                     costCategory);
                 }
             }

@@ -21,7 +21,7 @@
 
 package org.libreplan.business.orders.entities;
 
-import static org.libreplan.business.i18n.I18nHelper._;
+import static org.libreplan.business.i18n.I18nHelper._t;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -749,7 +749,7 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
         for (DirectAdvanceAssignment directAdvanceAssignment : directAdvanceAssignments) {
             if ( directAdvanceAssignment.getReportGlobalAdvance() ) {
                 throw new DuplicateValueTrueReportGlobalAdvanceException(
-                        _("Cannot spread two progress in the same task"), this, OrderElement.class);
+                        _t("Cannot spread two progress in the same task"), this, OrderElement.class);
             }
         }
     }
@@ -771,7 +771,7 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
                     directAdvanceAssignment.getAdvanceType(), newAdvanceAssignment.getAdvanceType()) ) {
 
                 throw new DuplicateAdvanceAssignmentForOrderElementException(
-                        _("Duplicate Progress Assignment For Task"), this, OrderElement.class);
+                        _t("Duplicate Progress Assignment For Task"), this, OrderElement.class);
             }
         }
         if (orderElement.getParent() != null) {
@@ -792,7 +792,7 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
 
         if (orderElement.existsDirectAdvanceAssignmentWithTheSameType(newAdvanceAssignment.getAdvanceType())) {
             throw new DuplicateAdvanceAssignmentForOrderElementException(
-                    _("Duplicate Progress Assignment For Task"),
+                    _t("Duplicate Progress Assignment For Task"),
                     this,
                     OrderElement.class);
         }
@@ -1101,7 +1101,7 @@ public abstract class OrderElement extends IntegrationEntity implements ICriteri
             if ( qualityForm.equals(taskQualityForm.getQualityForm()) ) {
 
                 throw new ValidationException(ValidationException.invalidValue(
-                        _("Quality form already exists"),
+                        _t("Quality form already exists"),
                         "name",
                         qualityForm.getName(),
                         qualityForm));

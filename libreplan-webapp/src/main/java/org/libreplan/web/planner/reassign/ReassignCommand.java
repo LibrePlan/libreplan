@@ -20,7 +20,7 @@
  */
 package org.libreplan.web.planner.reassign;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 import static org.zkoss.ganttz.util.LongOperationFeedback.and;
 
 import java.util.ArrayList;
@@ -126,11 +126,11 @@ public class ReassignCommand implements IReassignCommand {
                             doNotifications(notifications),
                             reloadCharts(context),
                             busyEnd(),
-                            tellUserOnEnd(context, () -> _("{0} reassignations finished", reassignations.size()))));
+                            tellUserOnEnd(context, () -> _t("{0} reassignations finished", reassignations.size()))));
                 } else {
                     updater.doUpdate(and(
                             busyEnd(),
-                            tellUserOnEnd(context, () -> _("Assignments could not be completed"))));
+                            tellUserOnEnd(context, () -> _t("Assignments could not be completed"))));
                 }
             }
         };
@@ -160,11 +160,11 @@ public class ReassignCommand implements IReassignCommand {
     }
 
     private IDesktopUpdate busyStart(final int total) {
-        return () -> Clients.showBusy(_("Doing {0} reassignations", total));
+        return () -> Clients.showBusy(_t("Doing {0} reassignations", total));
     }
 
     private IDesktopUpdate showCompleted(final int number, final int total) {
-        return () -> Clients.showBusy(_("Done {0} of {1}", number, total));
+        return () -> Clients.showBusy(_t("Done {0} of {1}", number, total));
     }
 
     private IDesktopUpdate reloadCharts(final IContext<?> context) {
@@ -206,7 +206,7 @@ public class ReassignCommand implements IReassignCommand {
                         try {
                             Messagebox.show(
                                     resolve(message),
-                                    _("Reassignation"),
+                                    _t("Reassignation"),
                                     Messagebox.OK, Messagebox.INFORMATION);
                         } catch (Exception e) {
                             throw new RuntimeException(e);
@@ -310,7 +310,7 @@ public class ReassignCommand implements IReassignCommand {
 
     @Override
     public String getName() {
-        return _("Reassign");
+        return _t("Reassign");
     }
 
     @Override

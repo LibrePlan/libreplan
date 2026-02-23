@@ -134,7 +134,7 @@ import org.zkoss.zul.Vbox;
 import static org.libreplan.business.planner.chart.ContiguousDaysLine.toSortedMap;
 import static org.libreplan.business.planner.chart.ContiguousDaysLine.min;
 import static org.libreplan.business.planner.chart.ContiguousDaysLine.sum;
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -517,7 +517,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         vbox.setPack(CENTER);
 
         Hbox dateHbox = new Hbox();
-        dateHbox.appendChild(new Label(_("Select date")));
+        dateHbox.appendChild(new Label(_t("Select date")));
 
         LocalDate initialDateForIndicatorValues = earnedValueChartFiller.initialDateForIndicatorValues();
 
@@ -701,8 +701,8 @@ public class OrderPlanningModel implements IOrderPlanningModel {
 
     private void appendTabs(Tabbox chartComponent) {
         Tabs chartTabs = new Tabs();
-        chartTabs.appendChild(createTab(_("Load"), "load_tab"));
-        chartTabs.appendChild(createTab(_("Earned value"), "earned_value_tab"));
+        chartTabs.appendChild(createTab(_t("Load"), "load_tab"));
+        chartTabs.appendChild(createTab(_t("Earned value"), "earned_value_tab"));
 
         chartComponent.appendChild(chartTabs);
         chartTabs.setSclass("charts-tabbox");
@@ -736,7 +736,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
             if ( value != null && !EarnedValueChartFiller.includes(
                     earnedValueChartFiller.getIndicatorsDefinitionInterval(), LocalDate.fromDateFields(value)) ) {
 
-                throw new WrongValueException(comp, _("Date must be inside visualization area"));
+                throw new WrongValueException(comp, _t("Date must be inside visualization area"));
             }
 
         };
@@ -746,7 +746,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         Date value = datebox.getValue();
         Date today = LocalDate.fromDateFields(new Date()).toDateTimeAtStartOfDay().toDate();
         if ( value != null && (value.compareTo(today) > 0) ) {
-            throw new WrongValueException(datebox, _("date in the future"));
+            throw new WrongValueException(datebox, _t("date in the future"));
         }
     }
 
@@ -846,7 +846,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
                                                LocalDate date) {
 
         BigDecimal value = earnedValueChartFiller.getIndicator(type, date);
-        String units = _("h");
+        String units = _t("h");
         if ( type.equals(EarnedValueType.CPI) || type.equals(EarnedValueType.SPI) ) {
             value = value.multiply(new BigDecimal(100));
             units = "%";
@@ -1017,14 +1017,14 @@ public class OrderPlanningModel implements IOrderPlanningModel {
 
             @Override
             public String getName() {
-                return _("Cancel");
+                return _t("Cancel");
             }
 
             @Override
             public void doAction(IContext<TaskElement> context) {
 
                 Messagebox.show(
-                        _("Unsaved changes will be lost. Are you sure?"), _("Confirm exit dialog"),
+                        _t("Unsaved changes will be lost. Are you sure?"), _t("Confirm exit dialog"),
                         Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION,
                         evt -> {
                             if ("onOK".equals(evt.getName())) {

@@ -39,7 +39,7 @@ import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Messagebox;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 /**
  * Controller for advanced allocation of a {@link Task}.
@@ -69,7 +69,7 @@ public class AdvancedAllocationTaskController extends GenericForwardComposer {
                 planningState.getCurrentScenario(), task);
 
         if (allocationResult.getAggregate().isEmpty()) {
-            Messagebox.show(_("Some allocations needed"), _("Warning"),
+            Messagebox.show(_t("Some allocations needed"), _t("Warning"),
                     Messagebox.OK, Messagebox.EXCLAMATION);
             return;
         }

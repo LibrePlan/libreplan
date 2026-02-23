@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Project Dashboard</title>
+<link rel="stylesheet" href="html/lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="project-dashboard">
+<h1 class="title">Project Dashboard</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#progress-performance-indicators" id="toc-entry-1">Progress Performance Indicators</a><ul>
+<li><a class="reference internal" href="#project-progress-percentage" id="toc-entry-2">Project Progress Percentage</a></li>
+<li><a class="reference internal" href="#task-status" id="toc-entry-3">Task Status</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#cost-indicators" id="toc-entry-4">Cost Indicators</a></li>
+<li><a class="reference internal" href="#resources" id="toc-entry-5">Resources</a><ul>
+<li><a class="reference internal" href="#estimation-deviation-on-completed-task-histogram" id="toc-entry-6">Estimation Deviation on Completed Task Histogram</a></li>
+<li><a class="reference internal" href="#overtime-ratio" id="toc-entry-7">Overtime Ratio</a></li>
+<li><a class="reference internal" href="#availability-ratio" id="toc-entry-8">Availability Ratio</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#time" id="toc-entry-9">Time</a><ul>
+<li><a class="reference internal" href="#task-completion-lead-or-lag" id="toc-entry-10">Task Completion Lead or Lag</a></li>
+<li><a class="reference internal" href="#deadline-violations" id="toc-entry-11">Deadline Violations</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>The project dashboard is a <em>LibrePlan</em> perspective that contains a set of <strong>KPIs (Key Performance Indicators)</strong> to help assess a project's performance in terms of:</p>
+<blockquote>
+<ul class="simple">
+<li>Work progress</li>
+<li>Cost</li>
+<li>Status of allocated resources</li>
+<li>Time constraints</li>
+</ul>
+</blockquote>
+<div class="section" id="progress-performance-indicators">
+<h1><a class="toc-backref" href="#toc-entry-1">Progress Performance Indicators</a></h1>
+<p>Two indicators are calculated: project progress percentage and task status.</p>
+<div class="section" id="project-progress-percentage">
+<h2><a class="toc-backref" href="#toc-entry-2">Project Progress Percentage</a></h2>
+<p>This chart displays the overall progress of a project, comparing it to the expected progress based on the <em>Gantt</em> chart.</p>
+<p>Progress is represented by two bars:</p>
+<blockquote>
+<ul class="simple">
+<li><em>Current Progress:</em> The current progress based on the measurements taken.</li>
+<li><em>Expected Progress:</em> The progress the project should have achieved at this point, according to the project plan.</li>
+</ul>
+</blockquote>
+<p>To view the actual measured value for each bar, hover the mouse cursor over the bar.</p>
+<p>The overall project progress is estimated using several different methods, as there is no single, universally correct approach:</p>
+<blockquote>
+<ul class="simple">
+<li><strong>Spreading Progress:</strong> This is the progress type set as the spreading progress at the project level. In this case, there is no way to calculate an expected value, and only the current bar is displayed.</li>
+<li><strong>By All Task Hours:</strong> The progress of all project tasks is averaged to calculate the overall value. This is a weighted average that considers the number of hours allocated to each task.</li>
+<li><strong>By Critical Path Hours:</strong> The progress of tasks belonging to any of the project's critical paths is averaged to obtain the overall value. This is a weighted average that considers the total allocated hours for each involved task.</li>
+<li><strong>By Critical Path Duration:</strong> The progress of tasks belonging to any of the critical paths is averaged using a weighted average, but this time considering the duration of each involved task instead of the assigned hours.</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="task-status">
+<h2><a class="toc-backref" href="#toc-entry-3">Task Status</a></h2>
+<p>A pie chart shows the percentage of project tasks in different states. The defined states are:</p>
+<blockquote>
+<ul class="simple">
+<li><strong>Finished:</strong> Completed tasks, identified by a 100% progress value.</li>
+<li><strong>In Progress:</strong> Tasks that are currently underway. These tasks have a progress value other than 0% or 100%, or some work time has been tracked.</li>
+<li><strong>Ready to Start:</strong> Tasks with 0% progress, no tracked time, all their <em>FINISH_TO_START</em> dependent tasks are <em>finished</em>, and all their <em>START_TO_START</em> dependent tasks are <em>finished</em> or <em>in progress</em>.</li>
+<li><strong>Blocked:</strong> Tasks with 0% progress, no tracked time, and with previous dependent tasks that are neither <em>in progress</em> nor in the <em>ready to start</em> state.</li>
+</ul>
+</blockquote>
+</div>
+</div>
+<div class="section" id="cost-indicators">
+<h1><a class="toc-backref" href="#toc-entry-4">Cost Indicators</a></h1>
+<p>Several <em>Earned Value Management</em> cost indicators are calculated:</p>
+<blockquote>
+<ul>
+<li><p class="first"><strong>CV (Cost Variance):</strong> The difference between the <em>Earned Value curve</em> and the <em>Actual Cost curve</em> at the current moment. Positive values indicate a benefit, and negative values indicate a loss.</p>
+</li>
+<li><p class="first"><strong>ACWP (Actual Cost of Work Performed):</strong> The total number of hours tracked in the project at the current moment.</p>
+</li>
+<li><p class="first"><strong>CPI (Cost Performance Index):</strong> The <em>Earned Value / Actual Cost</em> ratio.</p>
+<blockquote>
+<ul class="simple">
+<li>&gt; 100 is favorable, indicating that the project is under budget.</li>
+<li>= 100 is also favorable, indicating that the cost is right on plan.</li>
+<li>&lt; 100 is unfavorable, indicating that the cost of completing the work is higher than planned.</li>
+</ul>
+</blockquote>
+</li>
+<li><p class="first"><strong>ETC (Estimate To Complete):</strong> The time remaining to complete the project.</p>
+</li>
+<li><p class="first"><strong>BAC (Budget At Completion):</strong> The total amount of work allocated in the project plan.</p>
+</li>
+<li><p class="first"><strong>EAC (Estimate At Completion):</strong> The manager's projection of the total cost at project completion, based on the <em>CPI</em>.</p>
+</li>
+<li><p class="first"><strong>VAC (Variance At Completion):</strong> The difference between the <em>BAC</em> and the <em>EAC</em>.</p>
+<blockquote>
+<ul class="simple">
+<li>&lt; 0 indicates that the project is over budget.</li>
+<li>&gt; 0 indicates that the project is under budget.</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="resources">
+<h1><a class="toc-backref" href="#toc-entry-5">Resources</a></h1>
+<p>To analyze the project from the resources' point of view, two ratios and a histogram are provided.</p>
+<div class="section" id="estimation-deviation-on-completed-task-histogram">
+<h2><a class="toc-backref" href="#toc-entry-6">Estimation Deviation on Completed Task Histogram</a></h2>
+<p>This histogram calculates the deviation between the number of hours allocated to the project tasks and the actual number of hours dedicated to them.</p>
+<p>The deviation is calculated as a percentage for all finished tasks, and the calculated deviations are represented in a histogram. The vertical axis shows the number of tasks within each deviation interval. Six deviation intervals are dynamically calculated.</p>
+</div>
+<div class="section" id="overtime-ratio">
+<h2><a class="toc-backref" href="#toc-entry-7">Overtime Ratio</a></h2>
+<p>This ratio summarizes the overload of resources allocated to the project tasks. It is calculated using the formula: <strong>overtime ratio = overload / (load + overload)</strong>.</p>
+<blockquote>
+<ul class="simple">
+<li>= 0 is favorable, indicating that the resources are not overloaded.</li>
+<li>&gt; 0 is unfavorable, indicating that the resources are overloaded.</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="availability-ratio">
+<h2><a class="toc-backref" href="#toc-entry-8">Availability Ratio</a></h2>
+<p>This ratio summarizes the free capacity of the resources currently allocated to the project. Therefore, it measures the resources' availability to receive more allocations without being overloaded. It is calculated as: <strong>availability ratio = (1 - load/capacity) * 100</strong></p>
+<blockquote>
+<ul class="simple">
+<li>Possible values are between 0% (fully assigned) and 100% (not assigned).</li>
+</ul>
+</blockquote>
+</div>
+</div>
+<div class="section" id="time">
+<h1><a class="toc-backref" href="#toc-entry-9">Time</a></h1>
+<p>Two charts are included: a histogram for the time deviation in the finish time of project tasks and a pie chart for deadline violations.</p>
+<div class="section" id="task-completion-lead-or-lag">
+<h2><a class="toc-backref" href="#toc-entry-10">Task Completion Lead or Lag</a></h2>
+<p>This calculation determines the difference in days between the planned end time for project tasks and their actual end time. The planned completion date is taken from the <em>Gantt</em> chart, and the actual finish date is taken from the last time tracked for the task.</p>
+<p>The lag or lead in task completion is represented in a histogram. The vertical axis shows the number of tasks with a lead/lag day difference value corresponding to the abscissa days interval. Six dynamic task completion deviation intervals are calculated.</p>
+<blockquote>
+<ul class="simple">
+<li>Negative values mean finishing ahead of schedule.</li>
+<li>Positive values mean finishing behind schedule.</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="deadline-violations">
+<h2><a class="toc-backref" href="#toc-entry-11">Deadline Violations</a></h2>
+<p>This section calculates the margin with the project deadline, if set. Additionally, a pie chart shows the percentage of tasks meeting their deadline. Three types of values are included in the chart:</p>
+<blockquote>
+<ul class="simple">
+<li>Percentage of tasks without a deadline configured.</li>
+<li>Percentage of ended tasks with an actual end date later than their deadline. The actual end date is taken from the last time tracked for the task.</li>
+<li>Percentage of ended tasks with an actual end date earlier than their deadline.</li>
+</ul>
+</blockquote>
+</div>
+</div>
+</div>
+</body>
+</html>

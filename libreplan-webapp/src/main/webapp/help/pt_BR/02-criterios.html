@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Criteria</title>
+<link rel="stylesheet" href="html/lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="criteria">
+<h1 class="title">Criteria</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#criteria-administration" id="toc-entry-1">Criteria Administration</a></li>
+</ul>
+</div>
+<p>Criteria are elements used within the program to categorize both resources and tasks. Tasks require specific criteria, and resources must meet those criteria.</p>
+<p>Here's an example of how criteria are used: A resource is assigned the criterion &quot;welder&quot; (meaning the resource fulfills the &quot;welder&quot; category), and a task requires the &quot;welder&quot; criterion to be completed. Consequently, when resources are allocated to tasks using generic allocation (as opposed to specific allocation), workers with the &quot;welder&quot; criterion will be considered. For more information on the different types of allocation, refer to the chapter on resource allocation.</p>
+<p>The program allows for several operations involving criteria:</p>
+<ul class="simple">
+<li>Criteria administration</li>
+<li>Assigning criteria to resources</li>
+<li>Assigning criteria to tasks</li>
+<li>Filtering entities based on criteria. Tasks and order items can be filtered by criteria to perform various operations within the program.</li>
+</ul>
+<p>This section will only explain the first function, criteria administration. The two types of allocation will be covered later: resource allocation in the &quot;Resource Management&quot; chapter, and filtering in the &quot;Task Planning&quot; chapter.</p>
+<div class="section" id="criteria-administration">
+<h1><a class="toc-backref" href="#toc-entry-1">Criteria Administration</a></h1>
+<p>Criteria administration can be accessed through the administration menu:</p>
+<div class="figure">
+<img alt="images/menu.png" src="images/menu.png" style="width: 227.5px; height: 15.5px;" />
+<p class="caption">First-Level Menu Tabs</p>
+</div>
+<p>The specific operation for managing criteria is <em>Manage criteria</em>. This operation allows you to list the criteria available in the system.</p>
+<div class="figure">
+<img alt="images/lista-criterios.png" src="images/lista-criterios.png" style="width: 300.0px; height: 154.0px;" />
+<p class="caption">List of Criteria</p>
+</div>
+<p>You can access the create/edit criterion form by clicking the <em>Create</em> button. To edit an existing criterion, click the edit icon.</p>
+<div class="figure">
+<img alt="images/edicion-criterio.png" src="images/edicion-criterio.png" style="width: 446.5px; height: 279.0px;" />
+<p class="caption">Editing Criteria</p>
+</div>
+<p>The criteria editing form, as shown in the previous image, allows you to perform the following operations:</p>
+<ul class="simple">
+<li><strong>Edit the criterion's name.</strong></li>
+<li><strong>Specify whether multiple values can be assigned simultaneously or only one value for the selected criterion type.</strong> For example, a resource could fulfill two criteria, &quot;welder&quot; and &quot;lathe operator.&quot;</li>
+<li><strong>Specify the criterion type:</strong><ul>
+<li><strong>Generic:</strong> A criterion that can be used for both machines and workers.</li>
+<li><strong>Worker:</strong> A criterion that can only be used for workers.</li>
+<li><strong>Machine:</strong> A criterion that can only be used for machines.</li>
+</ul>
+</li>
+<li><strong>Indicate whether the criterion is hierarchical.</strong> Sometimes, criteria need to be treated hierarchically. For example, assigning a criterion to an element does not automatically assign it to elements derived from it. A clear example of a hierarchical criterion is &quot;location.&quot; For instance, a person designated with the location &quot;Galicia&quot; will also belong to &quot;Spain.&quot;</li>
+<li><strong>Indicate whether the criterion is authorized.</strong> This is how users deactivate criteria. Once a criterion has been created and used in historical data, it cannot be changed. Instead, it can be deactivated to prevent it from appearing in selection lists.</li>
+<li><strong>Describe the criterion.</strong></li>
+<li><strong>Add new values.</strong> A text entry field with the <em>New criterion</em> button is located in the second part of the form.</li>
+<li><strong>Edit the names of existing criteria values.</strong></li>
+<li><strong>Move criteria values up or down in the list of current criteria values.</strong></li>
+<li><strong>Remove a criterion value from the list.</strong></li>
+</ul>
+<p>The criteria administration form follows the form behavior described in the introduction, offering three actions: <em>Save</em>, <em>Save and Close</em>, and <em>Close</em>.</p>
+</div>
+</div>
+</body>
+</html>

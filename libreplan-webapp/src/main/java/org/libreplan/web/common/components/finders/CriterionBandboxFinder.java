@@ -16,6 +16,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
  */
 
 package org.libreplan.web.common.components.finders;
@@ -30,7 +31,9 @@ import org.zkoss.zul.ListitemRenderer;
 
 import java.util.List;
 
-/**
+import static org.libreplan.web.I18nHelper._t;
+
+/*
  * Bandbox finder for {@link Criterion}.
  *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
@@ -41,7 +44,7 @@ public class CriterionBandboxFinder extends BandboxFinder implements IBandboxFin
     @Autowired
     private ICriterionDAO criterionDAO;
 
-    private final String headers[] = { _("Type"), _("Criterion Name") };
+    private final String headers[] = { _t("Type"), _t("Criterion Name") };
 
     private final ListitemRenderer orderRenderer = (item, data, i) -> {
         Criterion criterion = (Criterion)data;
@@ -55,13 +58,6 @@ public class CriterionBandboxFinder extends BandboxFinder implements IBandboxFin
         criterionName.setLabel(getNamesHierarchy(criterion, ""));
         criterionName.setParent(item);
     };
-
-    /**
-     * Forces to mark the string as needing translation.
-     */
-    private static String _(String string) {
-        return string;
-    }
 
     @Override
     @Transactional(readOnly = true)

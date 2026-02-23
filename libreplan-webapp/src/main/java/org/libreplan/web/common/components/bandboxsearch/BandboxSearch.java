@@ -21,7 +21,7 @@
 
 package org.libreplan.web.common.components.bandboxsearch;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -203,7 +203,7 @@ public class BandboxSearch extends HtmlMacroComponent {
         final String[] headers = finder.getHeaders();
 
         for (String header : headers) {
-            listhead.getChildren().add(new Listheader(_(header)));
+            listhead.getChildren().add(new Listheader(_t(header)));
         }
     }
 

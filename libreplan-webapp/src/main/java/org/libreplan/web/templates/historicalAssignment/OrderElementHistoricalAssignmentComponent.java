@@ -51,7 +51,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 /**
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
@@ -141,8 +141,8 @@ public class OrderElementHistoricalAssignmentComponent extends HtmlMacroComponen
                 globalView.goToOrderElementDetails(order, orderElement);
             } else {
                 Messagebox
-                        .show(_("Not enough permissions to edit this project"),
-                                _("Warning"), Messagebox.OK,
+                        .show(_t("Not enough permissions to edit this project"),
+                                _t("Warning"), Messagebox.OK,
                                 Messagebox.EXCLAMATION);
             }
         } else {
@@ -150,9 +150,9 @@ public class OrderElementHistoricalAssignmentComponent extends HtmlMacroComponen
             for (Scenario scene : getScenarios(order)) {
                 scenarios = scenarios.concat(scene.getName() + "\n");
             }
-            Messagebox.show(_("The planning of this task is not in the current scenenario.\n" +
+            Messagebox.show(_t("The planning of this task is not in the current scenenario.\n" +
                     "You should change to any of the following scenarios: {0}", scenarios),
-                    _("Information"), Messagebox.OK, Messagebox.INFORMATION);
+                    _t("Information"), Messagebox.OK, Messagebox.INFORMATION);
         }
     }
 

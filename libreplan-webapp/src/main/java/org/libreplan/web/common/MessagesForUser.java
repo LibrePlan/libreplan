@@ -21,7 +21,7 @@
 
 package org.libreplan.web.common;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -174,7 +174,7 @@ public class MessagesForUser extends GenericForwardComposer implements IMessages
 
     public static Label createLabelFor(InvalidValue invalidValue) {
         Label result = new Label();
-        result.setValue(_(invalidValue.getMessage()));
+        result.setValue(_t(invalidValue.getMessage()));
 
         return result;
     }

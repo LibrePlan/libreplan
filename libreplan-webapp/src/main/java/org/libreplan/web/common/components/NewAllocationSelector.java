@@ -35,6 +35,8 @@ import org.libreplan.web.resources.search.NewAllocationSelectorController;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Radiogroup;
 
+import static org.libreplan.web.I18nHelper._t;
+
 /**
  * ZK macro component for searching {@link Worker} entities.
  *
@@ -52,7 +54,7 @@ public class NewAllocationSelector extends AllocationSelector {
 
     public enum AllocationType {
 
-        GENERIC_WORKERS(_("generic workers allocation")) {
+        GENERIC_WORKERS(_t("generic workers allocation")) {
             @Override
             public void addTo(NewAllocationSelectorController controller, INewAllocationsAdder allocationsAdder) {
                 allocationsAdder.addGeneric(
@@ -72,7 +74,7 @@ public class NewAllocationSelector extends AllocationSelector {
             }
         },
 
-        GENERIC_MACHINES(_("generic machines allocation")) {
+        GENERIC_MACHINES(_t("generic machines allocation")) {
             @Override
             public void addTo(NewAllocationSelectorController controller, INewAllocationsAdder allocationsAdder) {
                 List<Criterion> criteria = controller.getSelectedCriterions();
@@ -90,7 +92,7 @@ public class NewAllocationSelector extends AllocationSelector {
             }
         },
 
-        SPECIFIC(_("specific allocation")) {
+        SPECIFIC(_t("specific allocation")) {
             @Override
             public void addTo(NewAllocationSelectorController controller, INewAllocationsAdder allocationsAdder) {
                 allocationsAdder.addSpecific(controller.getSelectedWorkers());
@@ -110,7 +112,7 @@ public class NewAllocationSelector extends AllocationSelector {
         /**
          * Forces to mark the string as needing translation.
          */
-        private static String _(String string) {
+        private static String _t(String string) {
             return string;
         }
 
@@ -121,7 +123,7 @@ public class NewAllocationSelector extends AllocationSelector {
         }
 
         public String getName() {
-            return I18nHelper._(name);
+            return I18nHelper._t(name);
         }
 
         public void doTheSelectionOn(Radiogroup radioGroup) {

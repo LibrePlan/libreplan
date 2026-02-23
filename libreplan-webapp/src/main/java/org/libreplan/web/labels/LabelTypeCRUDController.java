@@ -21,7 +21,7 @@
 
 package org.libreplan.web.labels;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
@@ -259,7 +259,7 @@ public class LabelTypeCRUDController extends BaseCRUDController<LabelType> {
     public void onChangeLabelName(Event e) {
         InputEvent ie = (InputEvent) e;
         if ( !labelTypeModel.labelNameIsUnique(ie.getValue()) ) {
-            throw new WrongValueException(e.getTarget(), _("{0} already exists", ie.getValue()));
+            throw new WrongValueException(e.getTarget(), _t("{0} already exists", ie.getValue()));
         }
     }
 
@@ -286,12 +286,12 @@ public class LabelTypeCRUDController extends BaseCRUDController<LabelType> {
 
     @Override
     protected String getEntityType() {
-        return _("Label Type");
+        return _t("Label Type");
     }
 
     @Override
     protected String getPluralEntityType() {
-        return _("Label Types");
+        return _t("Label Types");
     }
 
     @Override

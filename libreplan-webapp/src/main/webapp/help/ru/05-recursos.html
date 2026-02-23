@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Resource Management</title>
+<link rel="stylesheet" href="html/lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="resource-management">
+<h1 class="title">Resource Management</h1>
+
+<div class="contents topic" id="contents">
+<span id="recursos"></span><p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#staff-resources" id="toc-entry-1">Staff Resources</a></li>
+<li><a class="reference internal" href="#machine-resources" id="toc-entry-2">Machine Resources</a></li>
+<li><a class="reference internal" href="#managing-resources" id="toc-entry-3">Managing Resources</a><ul>
+<li><a class="reference internal" href="#managing-workers" id="toc-entry-4">Managing Workers</a></li>
+<li><a class="reference internal" href="#managing-machines" id="toc-entry-5">Managing Machines</a></li>
+<li><a class="reference internal" href="#virtual-worker-groups" id="toc-entry-6">Virtual Worker Groups</a></li>
+<li><a class="reference internal" href="#queue-based-resources" id="toc-entry-7">Queue-based Resources</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>The program manages two distinct types of resources: staff and machines.</p>
+<div class="section" id="staff-resources">
+<h1><a class="toc-backref" href="#toc-entry-1">Staff Resources</a></h1>
+<p>Staff resources represent the company's workers. Their key characteristics are:</p>
+<ul class="simple">
+<li>They fulfill one or more generic or worker-specific criteria.</li>
+<li>They can be specifically assigned to a task.</li>
+<li>They can be assigned generically to a task that requires a resource criterion.</li>
+<li>They can have a default or a specific calendar, as needed.</li>
+</ul>
+</div>
+<div class="section" id="machine-resources">
+<h1><a class="toc-backref" href="#toc-entry-2">Machine Resources</a></h1>
+<p>Machine resources represent the company's machinery. Their key characteristics are:</p>
+<ul class="simple">
+<li>They fulfill one or more generic or machine-specific criteria.</li>
+<li>They can be specifically assigned to a task.</li>
+<li>They can be assigned generically to a task that requires a machine criterion.</li>
+<li>They can have a default or a specific calendar, as needed.</li>
+<li>The program includes a configuration screen where an <em>alpha</em> value can be defined to represent the machine/worker ratio.<ul>
+<li>The <em>alpha</em> value indicates the amount of worker time required to operate the machine. For example, an alpha value of 0.5 means that every 8 hours of machine operation requires 4 hours of a worker's time.</li>
+<li>Users can assign an <em>alpha</em> value specifically to a worker, designating that worker to operate the machine for that percentage of time.</li>
+<li>Users can also make a generic assignment based on a criterion, so that a percentage of use is assigned to all resources that meet that criterion and have available time. Generic assignment works similarly to generic assignment for tasks, as described previously.</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="managing-resources">
+<h1><a class="toc-backref" href="#toc-entry-3">Managing Resources</a></h1>
+<p>Users can create, edit, and deactivate (but not permanently delete) workers and machines within the company by navigating to the &quot;Resources&quot; section. This section provides the following features:</p>
+<ul class="simple">
+<li><strong>List of Workers:</strong> Displays a numbered list of workers, allowing users to manage their details.</li>
+<li><strong>List of Machines:</strong> Displays a numbered list of machines, allowing users to manage their details.</li>
+</ul>
+<div class="section" id="managing-workers">
+<h2><a class="toc-backref" href="#toc-entry-4">Managing Workers</a></h2>
+<p>Worker management is accessed by going to the &quot;Resources&quot; section and then selecting &quot;List of workers.&quot; Users can edit any worker in the list by clicking the standard edit icon.</p>
+<p>When editing a worker, users can access the following tabs:</p>
+<ol class="arabic">
+<li><p class="first"><strong>Worker Details:</strong> This tab allows users to edit the worker's basic identification details:</p>
+<ul class="simple">
+<li>Name</li>
+<li>Surname(s)</li>
+<li>National ID document (DNI)</li>
+<li>Queue-based resource (see section on Queue-based Resources)</li>
+</ul>
+<div class="figure">
+<img alt="images/worker-personal-data.png" src="images/worker-personal-data.png" style="width: 444.5px; height: 102.0px;" />
+<p class="caption">Editing Workers' Personal Details</p>
+</div>
+</li>
+<li><p class="first"><strong>Criteria:</strong> This tab is used to configure the criteria that a worker fulfills. Users can assign any worker or generic criteria they deem appropriate. It's crucial for workers to fulfill criteria to maximize the program's functionality. To assign criteria:</p>
+<ol class="lowerroman simple">
+<li>Click the &quot;Add criteria&quot; button.</li>
+<li>Search for the criterion to be added and select the most appropriate one.</li>
+<li>Click the &quot;Add&quot; button.</li>
+<li>Select the start date when the criterion becomes applicable.</li>
+<li>Select the end date for applying the criterion to the resource. This date is optional if the criterion is considered indefinite.</li>
+</ol>
+<div class="figure">
+<img alt="images/worker-criterions.png" src="images/worker-criterions.png" style="width: 443.5px; height: 147.0px;" />
+<p class="caption">Associating Criteria with Workers</p>
+</div>
+</li>
+<li><p class="first"><strong>Calendar:</strong> This tab allows users to configure a specific calendar for the worker. All workers have a default calendar assigned; however, it's possible to assign a specific calendar to each worker based on an existing calendar.</p>
+<div class="figure">
+<img alt="images/worker-calendar.png" src="images/worker-calendar.png" style="width: 442.5px; height: 247.0px;" />
+<p class="caption">Calendar Tab for a Resource</p>
+</div>
+</li>
+<li><p class="first"><strong>Cost Category:</strong> This tab allows users to configure the cost category that a worker fulfills during a given period. This information is used to calculate the costs associated with a worker on a project.</p>
+<div class="figure">
+<img alt="images/worker-costcategory.png" src="images/worker-costcategory.png" style="width: 443.0px; height: 129.0px;" />
+<p class="caption">Cost Category Tab for a Resource</p>
+</div>
+</li>
+</ol>
+<p>Resource assignment is explained in the &quot;Resource Assignment&quot; section.</p>
+</div>
+<div class="section" id="managing-machines">
+<h2><a class="toc-backref" href="#toc-entry-5">Managing Machines</a></h2>
+<p>Machines are treated as resources for all purposes. Therefore, similar to workers, machines can be managed and assigned to tasks. Resource assignment is covered in the &quot;Resource Assignment&quot; section, which will explain the specific features of machines.</p>
+<p>Machines are managed from the &quot;Resources&quot; menu entry. This section has an operation called &quot;Machine list,&quot; which displays the company's machines. Users can edit or delete a machine from this list.</p>
+<p>When editing machines, the system displays a series of tabs for managing different details:</p>
+<ol class="arabic">
+<li><p class="first"><strong>Machine Details:</strong> This tab allows users to edit the machine's identification details:</p>
+<ol class="lowerroman simple">
+<li>Name</li>
+<li>Machine code</li>
+<li>Description of the machine</li>
+</ol>
+<div class="figure">
+<img alt="images/machine-data.png" src="images/machine-data.png" style="width: 444.0px; height: 97.0px;" />
+<p class="caption">Editing Machine Details</p>
+</div>
+</li>
+<li><p class="first"><strong>Criteria:</strong> As with worker resources, this tab is used to add criteria that the machine fulfills. Two types of criteria can be assigned to machines: machine-specific or generic. Worker criteria cannot be assigned to machines. To assign criteria:</p>
+<ol class="lowerroman simple">
+<li>Click the &quot;Add criteria&quot; button.</li>
+<li>Search for the criterion to be added and select the most appropriate one.</li>
+<li>Select the start date when the criterion becomes applicable.</li>
+<li>Select the end date for applying the criterion to the resource. This date is optional if the criterion is considered indefinite.</li>
+<li>Click the &quot;Save and continue&quot; button.</li>
+</ol>
+<div class="figure">
+<img alt="images/machine-criterions.png" src="images/machine-criterions.png" style="width: 444.0px; height: 140.0px;" />
+<p class="caption">Assigning Criteria to Machines</p>
+</div>
+</li>
+<li><p class="first"><strong>Calendar:</strong> This tab allows users to configure a specific calendar for the machine. All machines have a default calendar assigned; however, it's possible to assign a specific calendar to each machine based on an existing calendar.</p>
+<div class="figure">
+<img alt="images/machine-calendar.png" src="images/machine-calendar.png" style="width: 443.5px; height: 216.5px;" />
+<p class="caption">Assigning Calendars to Machines</p>
+</div>
+</li>
+<li><p class="first"><strong>Machine Configuration:</strong> This tab allows users to configure the ratio of machines to worker resources. A machine has an alpha value that indicates the machine/worker ratio. As mentioned previously, an alpha value of 0.5 indicates that 0.5 people are required for each full day of machine operation. Based on the alpha value, the system automatically assigns workers who are associated with the machine once the machine is assigned to a task. Associating a worker with a machine can be done in two ways:</p>
+<ol class="lowerroman simple">
+<li><strong>Specific Assignment:</strong> Assign a range of dates during which the worker is assigned to the machine. This is a specific assignment, as the system automatically assigns hours to the worker when the machine is scheduled.</li>
+<li><strong>Generic Assignment:</strong> Assign criteria that must be fulfilled by workers assigned to the machine. This creates a generic assignment of workers who meet the criteria.</li>
+</ol>
+<div class="figure">
+<img alt="images/machine-configuration.png" src="images/machine-configuration.png" style="width: 442.5px; height: 231.5px;" />
+<p class="caption">Configuration of Machines</p>
+</div>
+</li>
+<li><p class="first"><strong>Cost Category:</strong> This tab allows users to configure the cost category that a machine fulfills during a given period. This information is used to calculate the costs associated with a machine on a project.</p>
+<div class="figure">
+<img alt="images/machine-costcategory.png" src="images/machine-costcategory.png" style="width: 439.5px; height: 103.0px;" />
+<p class="caption">Assigning Cost Categories to Machines</p>
+</div>
+</li>
+</ol>
+</div>
+<div class="section" id="virtual-worker-groups">
+<h2><a class="toc-backref" href="#toc-entry-6">Virtual Worker Groups</a></h2>
+<p>The program allows users to create virtual worker groups, which are not real workers but simulated staff. These groups enable users to model increased production capacity at specific times, based on the calendar settings.</p>
+<p>Virtual worker groups allow users to assess how project planning would be affected by hiring and assigning staff who meet specific criteria, thus aiding in the decision-making process.</p>
+<p>The tabs for creating virtual worker groups are the same as those for configuring workers:</p>
+<ul class="simple">
+<li>General Details</li>
+<li>Assigned Criteria</li>
+<li>Calendars</li>
+<li>Associated Hours</li>
+</ul>
+<p>The difference between virtual worker groups and actual workers is that virtual worker groups have a name for the group and a quantity, which represents the number of real people in the group. There is also a field for comments, where additional information can be provided, such as which project would require hiring equivalent to the virtual worker group.</p>
+<div class="figure">
+<img alt="images/virtual-resources.png" src="images/virtual-resources.png" style="width: 424.5px; height: 109.0px;" />
+<p class="caption">Virtual Resources</p>
+</div>
+</div>
+<div class="section" id="queue-based-resources">
+<h2><a class="toc-backref" href="#toc-entry-7">Queue-based Resources</a></h2>
+<p>Queue-based resources are a specific type of productive element that can either be unassigned or have 100% dedication. In other words, they cannot have more than one task scheduled at the same time, nor can they be over-allocated.</p>
+<p>For each queue-based resource, a queue is automatically created. The tasks scheduled for these resources can be managed specifically using the provided assignment methods, creating automatic assignments between tasks and queues that match the required criteria, or by moving tasks between queues.</p>
+</div>
+</div>
+</div>
+</body>
+</html>

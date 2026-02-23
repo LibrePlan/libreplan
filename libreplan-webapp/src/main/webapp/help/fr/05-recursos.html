@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Gestion des ressources</title>
+<link rel="stylesheet" href="html/lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="gestion-des-ressources">
+<h1 class="title">Gestion des ressources</h1>
+
+<div class="contents topic" id="contents">
+<span id="recursos"></span><p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#gestion-des-employes" id="toc-entry-1">Gestion des employés</a></li>
+<li><a class="reference internal" href="#gestion-des-machines" id="toc-entry-2">Gestion des machines</a></li>
+<li><a class="reference internal" href="#groupes-d-employes-virtuels" id="toc-entry-3">Groupes d'employés virtuels</a></li>
+<li><a class="reference internal" href="#ressources-limitantes" id="toc-entry-4">Ressources limitantes</a></li>
+</ul>
+</div>
+<p>Le programme gère deux types différents de ressources : les employés et les machines.</p>
+<p>Les employés sont ceux de la compagnie qui réalisent des tâches. Leurs principales caractéristiques sont :</p>
+<ul class="simple">
+<li>Ils satisfont à un ou plusieurs critères génériques ou d'employés.</li>
+<li>Ils peuvent être spécifiquement affectés à une tâche.</li>
+<li>Ils peuvent être affectés, via une affectation générique, à une tâche qui requiert un critère de ressource qu'ils détiennent.</li>
+<li>Ils peuvent avoir un calendrier par défaut ou spécifique si nécessaire.</li>
+</ul>
+<p>Les ressources machines sont les machines de l'entreprise. Leurs principales caractéristiques sont :</p>
+<ul class="simple">
+<li>Elles satisfont à un ou plusieurs critères génériques ou de machine.</li>
+<li>Elles peuvent être spécifiquement affectées à une tâche.</li>
+<li>Elles peuvent être affectées, via une affectation générique, à une tâche qui requiert un critère de machine qu'elles détiennent.</li>
+<li>Elles ont un calendrier par défaut ou spécifique si nécessaire.</li>
+<li>Elles sont dotées d'une valeur <em>alpha</em> configurable qui représente le ratio machine/employé à appliquer pour les mettre en oeuvre.<ul>
+<li>la valeur <em>alpha</em> représente le temps humain consommé pour faire fonctionner la machine. Par exemple, une valeur alpha de 0,5 signifie que 8 heures de fonctionnement de la machine nécessitent 4 heures du temps d'un employé.</li>
+<li>il est possible d'affecter spécifiquement une valeur <em>alpha</em> à un employé, c'est-à-dire en sélectionnant l'employé qui sera affecté à la machine pour ce pourcentage de temps.</li>
+<li>il est également possible d'effectuer une affectation générique via un critère, de telle façon que le pourcentage d'utilisation sera affecté à tout employé qui remplit le critère et est disponible. Cette affectation générique fonctionne de la même façon que l'affectation générique des tâches qui a déjà été expliquée.</li>
+</ul>
+</li>
+</ul>
+<p>Il est possible de créer, modifier et désactiver (jamais supprimer définitivement) des employés ou des machines en allant dans l'onglet &quot;Ressources&quot;. Cet onglet possède les sous-menus suivants :</p>
+<ul class="simple">
+<li>Employés : affiche la liste des employés à partir de laquelle il est possible de les créer ou de les modifier.</li>
+<li>Machines : affiche la liste des machines à partir de laquelle il est possible de les créer ou de les modifier.</li>
+</ul>
+<div class="section" id="gestion-des-employes">
+<h1><a class="toc-backref" href="#toc-entry-1">Gestion des employés</a></h1>
+<p>La gestion des employés est réalisée en allant dans l'onglet &quot;Ressources&quot;, sous-menus &quot;Employés&quot;. Il est alors possible de modifier chaque employé en cliquant sur l'icône &quot;Modifier&quot; correspondante de la liste qui s'affiche alors.</p>
+<p>Ceci fait, les onglets suivants sont accessibles :</p>
+<ol class="arabic simple">
+<li>Onglet <em>Données personnelles</em> de l'employé. Cet onglet permet de modifier les détails de base identifiant l'employé.<ul>
+<li>Code si la case à cocher &quot;Générer le code&quot; n'est pas activée</li>
+<li>Prénom</li>
+<li>Nom</li>
+<li>Identifiant</li>
+<li>Type de ressource (normale ou limitante) modifiable seulement lors de la création (voir la section correspondante).</li>
+</ul>
+</li>
+</ol>
+<p>Vient ensuite la possibilité de lier cet employé à un utilisateur existant ou à créer en modifiant les boutons radio.
+Dans le premier cas, un filtre de recherche permettra d'identifier l'utilisateur concerné. Dans le second, il faudra saisir :</p>
+<blockquote>
+<ul class="simple">
+<li>le nom d'utilisateur à créer</li>
+<li>son mot de passe et la confirmation associée</li>
+<li>l'adresse de messagerie associée.</li>
+</ul>
+</blockquote>
+<div class="figure">
+<img alt="images/worker-personal-data.png" src="images/worker-personal-data.png" style="width: 510.0px; height: 136.0px;" />
+<p class="caption">Modification des détails personnels de l'employé</p>
+</div>
+<ol class="arabic simple" start="2">
+<li>Onglet <em>Critère d'affectation</em>. C'est là que les critères remplis par l'employé peuvent être affectés. Il est important que l'employé satisfasse vraiment les critères indiqués pour que le programme soit utilisé au mieux. Procéder comme suit pour affecter des critères :<ol class="lowerroman">
+<li>Cliquer sur le bouton &quot;Ajouter un critère&quot;.</li>
+<li>Chercher le critère à ajouter et choisir le plus approprié.</li>
+<li>Choisir la date de début du critère à laquelle il devient applicable.</li>
+<li>Choisir la date de fin d'applicabilité du critère. Cette date n'est pas obligatoire.</li>
+<li>Cliquer sur le bouton &quot;Enregistrer et continuer&quot;.</li>
+</ol>
+</li>
+</ol>
+<p>Cliquer sur l'icône &quot;Supprimer&quot; (poubelle) pour supprimer l'affectation du critère correspondant.</p>
+<p>La case à cocher permet de limiter l'affichage des critères à ceux qui sont actuellement détenus.</p>
+<div class="figure">
+<img alt="images/worker-criterions.png" src="images/worker-criterions.png" style="width: 510.0px; height: 87.0px;" />
+<p class="caption">Associer des critères à des employés</p>
+</div>
+<ol class="arabic simple" start="3">
+<li>Onglet <em>Calendrier</em>. Cet onglet peut être utilisé pour configurer un calendrier spécifique à l'employé. Tous les employés ont un calendrier affecté par défaut; cependant, il est possible d'affecter un calendrier spécifique à chacun en dérivant un calendrier existant puis en apportant les modifications nécessaires.</li>
+</ol>
+<div class="figure">
+<img alt="images/worker-calendar.png" src="images/worker-calendar.png" style="width: 510.0px; height: 185.0px;" />
+<p class="caption">Onglet calendrier pour une ressource</p>
+</div>
+<ol class="arabic simple" start="4">
+<li>Onglet <em>Catégories de coût</em>. Cet onglet peut être utilisé pour configurer la catégorie de coût à laquelle un employé correspond à un moment donné. Ces informations sont utilisés ensuite pour calculer les coûts relatifs à un employé dans un projet.</li>
+</ol>
+<div class="figure">
+<img alt="images/worker-costcategory.png" src="images/worker-costcategory.png" style="width: 510.0px; height: 98.5px;" />
+<p class="caption">Onglet catégorie de coût pour une ressource</p>
+</div>
+<p>L'affectation de ressource est expliquée dans la section affectation des ressources.</p>
+</div>
+<div class="section" id="gestion-des-machines">
+<h1><a class="toc-backref" href="#toc-entry-2">Gestion des machines</a></h1>
+<p>Les machines sont des ressources permettant de remplir tous types d'objectifs; de plus, comme pour les employés, les machines peuvent être gérées et affectées à des tâches. L'affectation de ressources est décrite dans la section affectation des ressources où les spécificités des machines sont expliquées.</p>
+<p>Les machines sont gérées via l'entrée de menu &quot;Ressources&quot;, sous-menu &quot;Machines&quot;. S'affiche alors la liste des machines de la compagnie. À partir de cette liste, il est possible de créer, de modifier ou de supprimer une machine.</p>
+<p>Quand on modifie des machines, s'affiche une série d'onglets qui peuvent être utilisés pour gérer différents aspects :</p>
+<ol class="arabic simple">
+<li>Onglet détails des machines. Cet onglet peut être utilisé pour modifier les détails d'identification des machines. Les détails qui peuvent être modifiés sur cet onglet sont :<ul>
+<li>Code de la machine si la case à cocher &quot;Générer le code&quot; n'est pas activée</li>
+<li>Nom de la machine</li>
+<li>Description de la machine</li>
+<li>Type de ressource (normale ou limitante) modifiable seulement lors de la création (voir la section correspondante).</li>
+</ul>
+</li>
+</ol>
+<div class="figure">
+<img alt="images/machine-data.png" src="images/machine-data.png" style="width: 510.0px; height: 95.0px;" />
+<p class="caption">Modifier les détails de la machine</p>
+</div>
+<ol class="arabic simple" start="2">
+<li>Onglet <em>Critères d'affectation</em>. Comme expliqué dans la section précédente relatives aux employés, cet onglet est utilisé pour ajouter des critères qui sont remplis par la machine. Il existe deux types de critères qui peuvent être affectés aux machines : machine ou générique. Les critères des employés ne peuvent pas être affectés aux machines. Procéder comme suit pour affecter des critères :<ol class="lowerroman">
+<li>Cliquer sur le bouton &quot;Ajouter&quot;.</li>
+<li>Chercher le critère à ajouter et choisir le plus approprié.</li>
+<li>Choisir une date de début d'application du critère.</li>
+<li>Choisir une date de fin d'application du critère. Cette date n'est pas obligatoire.</li>
+<li>Cliquer sur le bouton &quot;Enregistrer et continuer&quot;.</li>
+</ol>
+</li>
+</ol>
+<p>Cliquer sur l'icône &quot;Supprimer&quot; (poubelle) pour supprimer l'affectation du critère correspondant.</p>
+<p>La case à cocher permet de limiter l'affichage des critères à ceux qui sont actuellement détenus.</p>
+<div class="figure">
+<img alt="images/machine-criterions.png" src="images/machine-criterions.png" style="width: 510.0px; height: 88.0px;" />
+<p class="caption">Affecter des critères aux machines</p>
+</div>
+<ol class="arabic simple" start="3">
+<li>Onglet <em>Calendrier</em>. Cet onglet peut être utilisé pour affecter un calendrier spécifique à une ressource machine. Toutes les machines possèdent un calendrier par défaut; il est cependant possible d'affecter un calendrier spécifique à chacune en se basant sur un calendrier existant.</li>
+</ol>
+<div class="figure">
+<img alt="images/machine-calendar.png" src="images/machine-calendar.png" style="width: 510.0px; height: 194.0px;" />
+<p class="caption">Affecter des calendriers à des machines</p>
+</div>
+<ol class="arabic simple" start="4">
+<li>Onglet <em>Configuration</em>. Sur cet onglet, il est possible de configurer le ratio machine / employés. Une machine possède une valeur alpha qui indique le ratio machine/ressources impliquées. Comme cela a déjà été mentionné, une valeur alpha de 0,5 indique que 0,5 heures d'un employé sont utilisées pour chaque heure complète de fonctionnement d'une machine. Le système, en s'appuyant sur la valeur alpha, affecte automatiquement des employés qui sont en quelque sorte associés avec une machine une fois que celle-ci a été affectée à une tâche. Associer un employé à une machine peut être fait de 2 façons :<ol class="lowerroman">
+<li>en affectant spécifiquement une plage de dates durant lesquelles un employé est affecté à cette machine. C'est une affectation spécifique qui fait que le système affecte automatiquement des heures à l'employé quand l'utilisation de la machine est planifiée.</li>
+<li>en affectant spécifiquement des critères à remplir par les employés qui sont affectés aux machines. Ceci permet une affectation générique d'employés qui satisfont aux critères.</li>
+</ol>
+</li>
+</ol>
+<div class="figure">
+<img alt="images/machine-configuration.png" src="images/machine-configuration.png" style="width: 510.0px; height: 167.0px;" />
+<p class="caption">Configuration des machines</p>
+</div>
+<ol class="arabic simple" start="5">
+<li>Onglet <em>Catégories de coût</em>. Cet onglet peut être utilisé pour configurer la catégorie de coûts à laquelle correspond la machine à un moment donné. Ces détails sont utilisés ensuite pour calculer les coûts liés à une machine dans un projet.</li>
+</ol>
+<div class="figure">
+<img alt="images/machine-costcategory.png" src="images/machine-costcategory.png" style="width: 510.0px; height: 97.5px;" />
+<p class="caption">Affecter des catégories de coûts à des machines</p>
+</div>
+</div>
+<div class="section" id="groupes-d-employes-virtuels">
+<h1><a class="toc-backref" href="#toc-entry-3">Groupes d'employés virtuels</a></h1>
+<p>Le programme permet de créer des ressources qui ne sont pas des employés réels mais des groupes d'employés virtuels qui permettent aux capacités de production d'être accrues à un moment donné en fonction des réglages effectués dans le calendrier.</p>
+<p>Via ces groupes d'employés virtuels, il est possible de contrôler comment la planification du projet serait affectée en embauchant et en affectant des personnes qui remplissent les critères définis, facilitant ainsi le processus de prise de décision.</p>
+<p>Les onglets pour créer des groupes d'employés virtuels sont accessibles via l'onglet <em>Ressources</em>, sous-menu <em>Groupes d'employés virtuels</em> et sont les mêmes que ceux utilisés pour configurer les employés :</p>
+<blockquote>
+<ul class="simple">
+<li>Données personnelles</li>
+<li>Critères d'affectation</li>
+<li>Calendrier</li>
+<li>Catégories de coût</li>
+</ul>
+</blockquote>
+<p>Les différences par rapport aux employés sont que :</p>
+<blockquote>
+<ul class="simple">
+<li>dans l'onglet <em>Données personnelles</em>, les groupes d'employés virtuels n'ont que les champs <tt class="docutils literal">code</tt> et <tt class="docutils literal">nom de groupe</tt> auxquels est ajouté un champ <tt class="docutils literal">observations</tt> dans lequel des informations additionnelles peuvent être fournies, comme par exemple, le projet qui a besoin de faire appel à ce groupe d'employés virtuels.</li>
+<li>dans l'onglet <em>Calendrier</em>, un champ capacité (valant 1 par défaut) qui fait référence au nombre de personnes dans le groupe.</li>
+</ul>
+</blockquote>
+<div class="figure">
+<img alt="images/virtual-resources.png" src="images/virtual-resources.png" style="width: 510.0px; height: 103.5px;" />
+<p class="caption">Ressources virtuelles</p>
+</div>
+</div>
+<div class="section" id="ressources-limitantes">
+<h1><a class="toc-backref" href="#toc-entry-4">Ressources limitantes</a></h1>
+<p>Les ressources limitantes sont un type spécifique de ressources qui ne peuvent être à un moment donné que dans deux états possibles : non affectées ou affectées à 100%. Autrement dit, les ressources limitantes ne peuvent pas être affectées à plus d'une tâche au même moment ni être sur-affectées.</p>
+<p>Pour chaque ressource limitante, une file est automatiquement créée de telle façon que les tâches qui ont été programmées peuvent être gérées d'une manière spécifique en utilisant les méthodes d'affectation fournies, en créant des affectations automatiques aux tâches depuis ces files conformément aux critères indiqués ou en déplaçant des tâches entre les files.</p>
+<p>Le caractère limitant d'une ressource est indiqué lors de sa création.</p>
+</div>
+</div>
+</body>
+</html>

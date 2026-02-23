@@ -21,7 +21,7 @@
 
 package org.libreplan.business.users.entities;
 
-import static org.libreplan.business.i18n.I18nHelper._;
+import static org.libreplan.business.i18n.I18nHelper._t;
 
 /**
  * Available types of {@link OrderAuthorization}.
@@ -30,8 +30,8 @@ import static org.libreplan.business.i18n.I18nHelper._;
  */
 public enum OrderAuthorizationType {
 
-    READ_AUTHORIZATION(_("Read authorization")),
-    WRITE_AUTHORIZATION(_("Write authorization"));
+    READ_AUTHORIZATION(_t("Read authorization")),
+    WRITE_AUTHORIZATION(_t("Write authorization"));
 
     private final String displayName;
 

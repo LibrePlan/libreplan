@@ -19,7 +19,7 @@
 
 package org.libreplan.web.users.dashboard;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 import static org.libreplan.web.planner.tabs.MultipleTabsPlannerController.BREADCRUMBS_SEPARATOR;
 
 import java.math.BigDecimal;
@@ -212,7 +212,7 @@ public class PersonalTimesheetController extends GenericForwardComposer implemen
                                 EffortDuration effortDuration = effortDurationFromString(value);
 
                                 if ( effortDuration == null ) {
-                                    throw new WrongValueException(textbox, _("Invalid Effort Duration"));
+                                    throw new WrongValueException(textbox, _t("Invalid Effort Duration"));
                                 }
 
                                 personalTimesheetModel.setEffortDuration(orderElement, textboxDate, effortDuration);
@@ -280,7 +280,7 @@ public class PersonalTimesheetController extends GenericForwardComposer implemen
 
                         if ( effortDuration == null ) {
                             throw new WrongValueException(
-                                    personalTimesheetPopupEffort, _("Invalid Effort Duration"));
+                                    personalTimesheetPopupEffort, _t("Invalid Effort Duration"));
                         }
 
                         Events.sendEvent(new InputEvent(Events.ON_CHANGE, textbox, value, textbox.getValue()));
@@ -337,7 +337,7 @@ public class PersonalTimesheetController extends GenericForwardComposer implemen
         }
 
         private void renderTotalRow(Row row) {
-            appendLabelSpaningTwoColumns(row, _("Total"));
+            appendLabelSpaningTwoColumns(row, _t("Total"));
             appendTotalForDays(row);
             row.setSclass("total-row");
             appendTotalColumn(row);
@@ -394,7 +394,7 @@ public class PersonalTimesheetController extends GenericForwardComposer implemen
         }
 
         private void renderOtherRow(Row row) {
-            appendLabelSpaningTwoColumns(row, _("Other"));
+            appendLabelSpaningTwoColumns(row, _t("Other"));
             appendOtherForDaysAndTotal(row);
         }
 
@@ -421,7 +421,7 @@ public class PersonalTimesheetController extends GenericForwardComposer implemen
         }
 
         private void renderCapacityRow(Row row) {
-            appendLabelSpaningTwoColumns(row, _("Capacity"));
+            appendLabelSpaningTwoColumns(row, _t("Capacity"));
             appendCapacityForDaysAndTotal(row);
         }
 
@@ -452,7 +452,7 @@ public class PersonalTimesheetController extends GenericForwardComposer implemen
         }
 
         private void renderExtraRow(Row row) {
-            appendLabelSpaningTwoColumns(row, _("Extra"));
+            appendLabelSpaningTwoColumns(row, _t("Extra"));
             appendExtraForDays(row);
             appendTotalExtra(row);
         }
@@ -602,13 +602,13 @@ public class PersonalTimesheetController extends GenericForwardComposer implemen
         }
 
         breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-        breadcrumbs.appendChild(new Label(_("My account")));
+        breadcrumbs.appendChild(new Label(_t("My account")));
 
         breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-        breadcrumbs.appendChild(new Label(_("My dashboard")));
+        breadcrumbs.appendChild(new Label(_t("My dashboard")));
 
         breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-        breadcrumbs.appendChild(new Label(_("Personal timesheet")));
+        breadcrumbs.appendChild(new Label(_t("Personal timesheet")));
     }
 
     @Override
@@ -661,12 +661,12 @@ public class PersonalTimesheetController extends GenericForwardComposer implemen
     private void createProjectAndTaskColumns() {
         /* setWidth() was used because setStyle(min-width) was not working */
 
-        Column project = new Column(_("Project"));
+        Column project = new Column(_t("Project"));
         project.setWidth("150px");
 
         columns.appendChild(project);
 
-        Column task = new Column(_("Task"));
+        Column task = new Column(_t("Task"));
         task.setWidth("150px");
 
         columns.appendChild(project);
@@ -686,7 +686,7 @@ public class PersonalTimesheetController extends GenericForwardComposer implemen
     }
 
     private void createOtherColumn() {
-        Column other = new Column(_("Other"));
+        Column other = new Column(_t("Other"));
         other.setWidth(TOTAL_DURATION_TEXTBOX_WIDTH);
         other.setSclass("totals-column");
         other.setAlign(ALIGN_CENTER);
@@ -694,7 +694,7 @@ public class PersonalTimesheetController extends GenericForwardComposer implemen
     }
 
     private void createTotalColumn() {
-        Column total = new Column(_("Total"));
+        Column total = new Column(_t("Total"));
         total.setWidth(TOTAL_DURATION_TEXTBOX_WIDTH);
         total.setSclass("totals-column");
         total.setAlign(ALIGN_CENTER);
@@ -746,7 +746,7 @@ public class PersonalTimesheetController extends GenericForwardComposer implemen
             goToCreateOrEditFormForResource(personalTimesheetModel.getDate(), personalTimesheetModel.getWorker());
         }
 
-        messagesForUser.showMessage(Level.INFO, _("Personal timesheet saved"));
+        messagesForUser.showMessage(Level.INFO, _t("Personal timesheet saved"));
         Util.reloadBindings(timesheet);
     }
 
@@ -786,7 +786,7 @@ public class PersonalTimesheetController extends GenericForwardComposer implemen
     public void previousPeriod() {
         if ( personalTimesheetModel.isModified() ) {
             throw new WrongValueException(previousPeriod,
-                    _("There are unsaved changes in the current personal timesheet, please save before moving"));
+                    _t("There are unsaved changes in the current personal timesheet, please save before moving"));
         }
 
         sendToPersonalTimesheet(personalTimesheetModel.getPrevious());
@@ -795,7 +795,7 @@ public class PersonalTimesheetController extends GenericForwardComposer implemen
     public void nextPeriod() {
         if ( personalTimesheetModel.isModified() ) {
             throw new WrongValueException(nextPeriod,
-                    _("There are unsaved changes in the current personal timesheet, please save before moving"));
+                    _t("There are unsaved changes in the current personal timesheet, please save before moving"));
         }
 
         sendToPersonalTimesheet(personalTimesheetModel.getNext());

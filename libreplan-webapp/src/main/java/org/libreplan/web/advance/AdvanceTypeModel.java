@@ -21,7 +21,7 @@
 
 package org.libreplan.web.advance;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -86,7 +86,7 @@ public class AdvanceTypeModel implements IAdvanceTypeModel {
 
     private void checkCanBeModified(AdvanceType advanceType) {
         if (!canBeModified(advanceType)) {
-            throw new IllegalArgumentException(_("Progress type cannot be modified"));
+            throw new IllegalArgumentException(_t("Progress type cannot be modified"));
         }
     }
 

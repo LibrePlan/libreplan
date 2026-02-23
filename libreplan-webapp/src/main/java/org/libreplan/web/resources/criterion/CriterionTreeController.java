@@ -21,7 +21,7 @@
 
 package org.libreplan.web.resources.criterion;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -128,7 +128,7 @@ public class CriterionTreeController extends GenericForwardComposer {
                         criterionForThisRow.setName(value);
                     }));
 
-            String message = _("cannot be empty");
+            String message = _t("cannot be empty");
             textboxName.setConstraint("no empty:"+message);
 
             Treecell cellForActive = new Treecell();
@@ -293,10 +293,10 @@ public class CriterionTreeController extends GenericForwardComposer {
         if ( this.criterionsModel.getCriterionType().allowHierarchy()) {
             unindentButton = new Button("", "/common/img/ico_izq1.png");
             unindentButton.setHoverImage("/common/img/ico_izq.png");
-            unindentButton.setTooltiptext(_("Unindent"));
+            unindentButton.setTooltiptext(_t("Unindent"));
         } else {
             unindentButton = new Button("", "/common/img/ico_izq_out.png");
-            unindentButton.setTooltiptext(_("Not indentable"));
+            unindentButton.setTooltiptext(_t("Not indentable"));
         }
         unindentButton.setSclass("icono");
 
@@ -308,10 +308,10 @@ public class CriterionTreeController extends GenericForwardComposer {
         if ( this.criterionsModel.getCriterionType().allowHierarchy()) {
             indentButton = new Button("", "/common/img/ico_derecha1.png");
             indentButton.setHoverImage("/common/img/ico_derecha.png");
-            indentButton.setTooltiptext(_("Indent"));
+            indentButton.setTooltiptext(_t("Indent"));
         } else {
             indentButton = new Button("", "/common/img/ico_derecha_out.png");
-            indentButton.setTooltiptext(_("Not indentable"));
+            indentButton.setTooltiptext(_t("Not indentable"));
         }
         indentButton.setSclass("icono");
 
@@ -326,13 +326,13 @@ public class CriterionTreeController extends GenericForwardComposer {
         if (criterionsModel.isDeletable(criterion.getCriterion())) {
             removeButton = new Button("", "/common/img/ico_borrar1.png");
             removeButton.setHoverImage("/common/img/ico_borrar.png");
-            removeButton.setTooltiptext(_("Delete"));
+            removeButton.setTooltiptext(_t("Delete"));
         } else {
             removeButton = new Button("", "/common/img/ico_borrar_out.png");
 
             removeButton.setTooltiptext(criterion.getCriterion().getChildren().isEmpty()
-                    ? (num + " " + _("references"))
-                    : _("Criterion has subelements"));
+                    ? (num + " " + _t("references"))
+                    : _t("Criterion has subelements"));
         }
 
         removeButton.setSclass("icono");

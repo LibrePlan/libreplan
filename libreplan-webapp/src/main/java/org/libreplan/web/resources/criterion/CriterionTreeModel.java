@@ -27,7 +27,7 @@
 package org.libreplan.web.resources.criterion;
 
 import static org.libreplan.business.common.exceptions.ValidationException.invalidValue;
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,6 +40,9 @@ import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.resources.entities.CriterionType;
 import org.zkoss.ganttz.util.MutableTreeModel;
 import org.zkoss.zul.TreeModel;
+
+import static org.libreplan.web.I18nHelper._t;
+
 
 /**
  * Model for a the {@link Criterion} tree for a {@link CriterionType} <br />
@@ -120,7 +123,7 @@ public class CriterionTreeModel implements ICriterionTreeModel {
 
     private CriterionDTO createNewCriterion(String name) {
         CriterionDTO newCriterion = new CriterionDTO();
-        newCriterion.setName(_(name));
+        newCriterion.setName(_t(name));
         Criterion criterion = Criterion.create(criterionType);
         newCriterion.setCriterion(criterion);
         return newCriterion;
@@ -327,7 +330,7 @@ public class CriterionTreeModel implements ICriterionTreeModel {
         for(CriterionDTO criterion : criterions){
             if(criterion.getName().equals(name)){
                 throw new ValidationException(invalidValue(
-                        _("Already exists another "
+                        _t("Already exists another "
                                 + "criterion with the same name"), "name",
                         criterion.getName(), criterion));
             }
@@ -339,7 +342,7 @@ public class CriterionTreeModel implements ICriterionTreeModel {
         throws ValidationException{
         if(name.isEmpty()){
             throw new ValidationException(
-                    invalidValue(_("Name of criterion is empty."), "name",
+                    invalidValue(_t("Name of criterion is empty."), "name",
                         "",criterionType));
             }
     }

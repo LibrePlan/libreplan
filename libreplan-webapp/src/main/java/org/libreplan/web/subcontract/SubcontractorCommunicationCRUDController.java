@@ -45,7 +45,7 @@ import org.zkoss.zul.SimpleListModel;
 
 import java.util.List;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 /**
  * Controller for CRUD actions over a {@link SubcontractorCommunication}
@@ -229,7 +229,7 @@ public class SubcontractorCommunicationCRUDController extends GenericForwardComp
             buttonEdit.setSclass("icono");
             buttonEdit.setImage("/common/img/ico_editar1.png");
             buttonEdit.setHoverImage("/common/img/ico_editar.png");
-            buttonEdit.setTooltiptext(_("Edit"));
+            buttonEdit.setTooltiptext(_t("Edit"));
             buttonEdit.addEventListener(Events.ON_CLICK, arg0 -> goToEdit(subcontractorCommunication));
             row.appendChild(buttonEdit);
         }

@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Planificación de tareas</title>
+<link rel="stylesheet" href="html/lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="planificacion-de-tareas">
+<h1 class="title">Planificación de tareas</h1>
+
+<div class="contents topic" id="contents">
+<span id="planificacion"></span><p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#planificacion-de-tareas-1" id="toc-entry-1">Planificación de tareas</a><ul>
+<li><a class="reference internal" href="#vista-de-planificacion" id="toc-entry-2">Vista de planificación</a></li>
+<li><a class="reference internal" href="#vista-de-carga-de-recursos" id="toc-entry-3">Vista de carga de recursos</a></li>
+<li><a class="reference internal" href="#vista-de-listado-de-pedidos" id="toc-entry-4">Vista de listado de pedidos</a></li>
+<li><a class="reference internal" href="#vista-de-asignacion-avanzada" id="toc-entry-5">Vista de asignación avanzada</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="planificacion-de-tareas-1">
+<h1><a class="toc-backref" href="#toc-entry-1">Planificación de tareas</a></h1>
+<p>La planificación en &quot;LibrePlan&quot; es un proceso que se describe a lo largo de todos los capítulos del documento de usuario, entre los cuales destacan los capítulos de pedidos y de asignación de recursos. En este capítulo se tratan las operaciones básicas de planificación, una vez el pedido está correctamente configurado y la interacción con los diagramas de Gantt.</p>
+<div class="figure">
+<img alt="images/planning-view.png" src="images/planning-view.png" style="width: 354.2px; height: 229.24999999999997px;" />
+<p class="caption">Vista de planificación de un trabajo</p>
+</div>
+<p>Tal y como sucede con la vista global de la empresa, la vista de planificación de un proyecto se divide en varias perspectivas que se muestran en base a la información que se está analizando del mismo. Las perspectivas de un proyecto concreto son:</p>
+<ul class="simple">
+<li>Vista de planificación</li>
+<li>Vista de carga de recursos</li>
+<li>Vista de listado de pedidos</li>
+<li>Vista de asignación avanzada</li>
+</ul>
+<div class="section" id="vista-de-planificacion">
+<h2><a class="toc-backref" href="#toc-entry-2">Vista de planificación</a></h2>
+<p>La perspectiva de planificación combina tres vistas diferentes:</p>
+<ul>
+<li><p class="first">Planificación del proyecto. La planificación del proyecto se visualiza en la zona superior derecha de la aplicación. Se representa la planificación en diagramación de Gantt. Es la vista en la que se permite mover temporalmente las tareas, asignar dependencias entre ellas, definir hitos o establecer restricciones.</p>
+</li>
+<li><p class="first">Vista de carga de recursos. La vista de carga de recursos es el gráfico inferior derecho en el que se muestra la disponibilidad de recursos según las asignacións que se realizaron, contrastada con las asignaciones realizadas a tareas. La información que se muestra en el gráfico es:</p>
+<blockquote>
+<ul class="simple">
+<li>Zona violeta: Indica la carga de recursos por debajo del 100% de su capacidad.</li>
+<li>Zona verde: Indica la carga de recursos por debajo del 100% derivado de que el recurso está planificado en otro proyecto.</li>
+<li>Zona naranja: Indica la carga de recursos por encima de su 100% debido al proyecto actual.</li>
+<li>Zona amarilla: Indica la carga de recursos por encima de su 100% debido a otros proyectos.</li>
+</ul>
+</blockquote>
+</li>
+<li><p class="first">Vista de gráfico e indicadores do valor ganado. Visible desde la pestaña de &quot;Valor Ganado&quot;. Gráfico que se genera en base a la técnica del valor ganado y os indicadores calculados cada uno de los días de trabajo del proyecto. Los indicadores calculados son:</p>
+<blockquote>
+<ul class="simple">
+<li>BCWS: función acumulativa en el tiempo del número de horas planificadas hasta una fecha. En el inicio planificado de la tarea será 0 y al final será el total de horas planificadas. Como toda gráfica acumulativa, esta siempre será creciente. La función para una tarea tendrá la suma de las asignaciones de día hasta el día de cálculo. Esta función tiene valores para todos los momentos en el tiempo siempre que tengamos asignación de recursos.</li>
+<li>ACWP: función acumulativa en el tiempo de las horas imputadas en los partes de trabajo hasta una fecha. Esta función solo tendrá valores iguales a 0 antes de la fecha del promer parte de trabajo de la tarea e irá incrementando su valor a medida que avanza el tiempo y se incorporen horas de partes de trabajo. No tendrá valor después de la fecha del último parte de trabajo.</li>
+<li>BCWP: función acumulativa en el tiempo que incorpora el valor resultante de multiplicar el avance de las tareas por la cantidad de trabajo que se estimaba que llevaría la tarea. Esta función tiene valores incrementales a medida que se incrementa el tiempo y tenemos valores de avance que se van incrementando. El avance se multiplica por el total de horas estimadas de cada una de las tareas. Y el valor de BCWP es la sume de estos valores para las tareas que es están calculando. Un avance se suma en el momento de tiempo que se configuró.</li>
+<li>CV: Variación en coste CV = BCWP - ACWP</li>
+<li>SV: Variación en planificación SV = BCWP - BCWS</li>
+<li>BAC: Total coste planificado BAC = max (BCWS)</li>
+<li>EAC: Estimación de coste total actual EAC = (ACWP/ BCWP) * BAC</li>
+<li>VAC: Desviación al coste final VAC = BAC - EAC</li>
+<li>ETC: Estimado del coste pendiente ETC = EAC - ACWP</li>
+<li>CPI: Índice de eficiencia de coste CPI = BCWP / ACWP</li>
+<li>SPI: Índice de eficiencia da planificación SPI = BCWP / BCWS</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<p>Dentro de la planificación del proyecto el usuario puede realizar las siguientes operaciones:</p>
+<blockquote>
+<ul>
+<li><p class="first">Asignar dependencias. Para realizar dicha operación es necesario pulsar con el botón derecho y elegir &quot;Añadir dependencia&quot;, arrastrar el puntero del ratón para la tarea destinataria de la dependencia.</p>
+<blockquote>
+<ul class="simple">
+<li>Para cambiar el tipo de dependencia, pulsar con el botón derecho sobre la dependencia y elegir el tipo que se desea asignar.</li>
+</ul>
+</blockquote>
+</li>
+<li><p class="first">Crear nuevo hito. Pulsar sobre la tarea anterior al hitoque se desea añadir y seleccionar la operación &quot;Añadir hito&quot;. Los hitos pueden ser movidos selecionando con el puntero sobre la tarea y arrastrando con el ratón el hito a la posición deseada.</p>
+</li>
+<li><p class="first">Mover tareas sin violar dependencias. Presionar con el ratón sobre el cuerpo de la tarea y sin soltar el ratón, arrastrar la tarea hacia la posición en la que se desea colocar. Si no se violan restricciones o dependencias el sistema actualiza las asignaciones de recursos diarias a la tarea y coloca la tarea en la fecha seleccionada.</p>
+</li>
+<li><p class="first">Asignar restricciones. Presionar sobre la tarea en cuestión y seleccionar la operación &quot;Propiedades de la tarea&quot;. Aparecerá un <em>pop-up</em> con un campo modificable que es &quot;Restricciones&quot;. Las restricciones pueden entrar en conflicto con las dependencias, por lo que será en cada pedido donde se indique si las dependencias tienen prioridad o no sobre las restricciones. Las que se pueden establecer son:</p>
+<blockquote>
+<ul class="simple">
+<li><em>Tan pronto como sea posible</em>: Indica que la tarea debe comenzar tan pronto como sea posible.</li>
+<li><em>No antes de</em>. Indica que la tarea no debe comenzar antes de una fecha.</li>
+<li><em>Comenzar en fecha fija</em>. Indica que la tarea debe comenzar en fecha fija.</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+</blockquote>
+<p>A mayores, dentro da perspectiva de planificación se ofrecen varias operaciones, que finalmente actuarán como opciones de visualización:</p>
+<ul class="simple">
+<li>Nivel de zoom: Es posible seleccionar el nivel de zoom que le interese al usuario. Existen varios niveles de zoom: por año, cuatrimestres, mensuales, semanales y diarios.</li>
+<li>Filtros de búsqueda: Es posible filtrar tareas en base a etiquetas o criterios.</li>
+<li>Camino crítico. Utilizando el algoritmo de <em>Dijkstra</em> para cálculo de caminos en grafos se implementó el camino crítico que se visualiza si se presiona en el botón &quot;Camino crítico&quot; de las opciones de visualización.</li>
+<li>Mostrar etiquetas: Permite mostrar las etiquetas asignadas a las tareas del proyecto en visualización e impresión.</li>
+<li>Mostrar recursos: Permite mostrar los recursos asignados a las tareas del proyecto en visualización e impresión.</li>
+<li>Imprimir: Permite imprimir el diagrama de Gantt que se está visualizando en el momento.</li>
+</ul>
+</div>
+<div class="section" id="vista-de-carga-de-recursos">
+<h2><a class="toc-backref" href="#toc-entry-3">Vista de carga de recursos</a></h2>
+<p>La vista de carga de recursos ofrece una lista de recursos que contiene una lista de tareas o criterios que generan carga de trabajo. Cada tarea o criterio es mostrado en modo diagrama de Gantt para dar visibilidad a la fecha de comienzo y final de dicha carga. Según un recurso tiene una carga superior o inferior al 100% se muestra un color:</p>
+<ul class="simple">
+<li>Color verde: carga inferior al 100%</li>
+<li>Color naranja: carga del 100%</li>
+<li>Color roja: carga superior al 100%</li>
+</ul>
+<div class="figure">
+<img alt="images/resource-load.png" src="images/resource-load.png" style="width: 353.5px; height: 228.89999999999998px;" />
+<p class="caption">Vista de carga de recursos para un pedido concreto</p>
+</div>
+<p>Si se coloca el ratón sobre una zona del diagrama de Gantt de un recurso se mostrará el porcentaje de carga del trabajador en ese momento dado.</p>
+</div>
+<div class="section" id="vista-de-listado-de-pedidos">
+<h2><a class="toc-backref" href="#toc-entry-4">Vista de listado de pedidos</a></h2>
+<p>La vista de listado de pedidos permite acceder a la edición y borrado de pedidos. Ver el capítulo de &quot;Pedidos&quot;.</p>
+</div>
+<div class="section" id="vista-de-asignacion-avanzada">
+<h2><a class="toc-backref" href="#toc-entry-5">Vista de asignación avanzada</a></h2>
+<p>La vista de asignación avanzada se explica en profundidad en el capítulo de &quot;Asignación de recursos&quot;.</p>
+</div>
+</div>
+</div>
+</body>
+</html>

@@ -58,7 +58,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -377,8 +377,8 @@ public abstract class AssignedMaterialsController<T, A> extends GenericForwardCo
      */
     public void showRemoveMaterialAssignmentDlg(A materialAssignment) {
         int status = Messagebox.show(
-                _("Delete item {0}. Are you sure?", getMaterial(materialAssignment).getCode()),
-                _("Delete"), Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION);
+                _t("Delete item {0}. Are you sure?", getMaterial(materialAssignment).getCode()),
+                _t("Delete"), Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION);
 
         if ( Messagebox.OK == status ) {
             removeMaterialAssignment(materialAssignment);
@@ -447,11 +447,11 @@ public abstract class AssignedMaterialsController<T, A> extends GenericForwardCo
         MessageboxDlg dialogSplitAssignment;
 
         final String message =
-                _("Do you want to split the material assignment {0}?", getMaterial(materialAssignment).getCode());
+                _t("Do you want to split the material assignment {0}?", getMaterial(materialAssignment).getCode());
 
         Map<String, java.io.Serializable> args = new HashMap<>();
         args.put("message", message);
-        args.put("title", _("Split new assignment"));
+        args.put("title", _t("Split new assignment"));
         args.put("OK", Messagebox.OK);
         args.put("CANCEL", Messagebox.CANCEL);
         args.put("icon", Messagebox.QUESTION);

@@ -29,6 +29,8 @@ import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
 
+import static org.libreplan.web.I18nHelper._t;
+
 import java.util.List;
 
 /**
@@ -42,12 +44,12 @@ public class OrderElementInExpenseSheetBandboxFinder extends BandboxFinder imple
     @Autowired
     private IOrderElementDAO orderElementDAO;
 
-    private final String headers[] = { _("Task name (Task code)"), _("Project name (Project code)") };
+    private final String headers[] = { _t("Task name (Task code)"), _t("Project name (Project code)") };
 
     /**
      * Forces to mark the string as needing translation.
      */
-    private static String _(String string) {
+    private static String _t(String string) {
         return string;
     }
 

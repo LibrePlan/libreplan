@@ -21,7 +21,7 @@
 
 package org.libreplan.web.planner.advances;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.planner.entities.TaskElement;
@@ -66,7 +66,7 @@ public class AdvanceAssignmentPlanningCommand implements IAdvanceAssignmentPlann
 
     @Override
     public String getName() {
-        return _("Progress assignment");
+        return _t("Progress assignment");
     }
 
     @Override

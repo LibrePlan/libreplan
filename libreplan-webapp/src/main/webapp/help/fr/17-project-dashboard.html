@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Tableau de bord projet</title>
+<link rel="stylesheet" href="html/lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="tableau-de-bord-projet">
+<h1 class="title">Tableau de bord projet</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#indicateurs-de-performance-d-avancement" id="toc-entry-1">Indicateurs de performance d'avancement</a><ul>
+<li><a class="reference internal" href="#pourcentage-d-avancement-projet" id="toc-entry-2">Pourcentage d'avancement projet</a></li>
+<li><a class="reference internal" href="#etat-des-taches" id="toc-entry-3">État des tâches</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#indicateurs-de-cout" id="toc-entry-4">Indicateurs de coût</a></li>
+<li><a class="reference internal" href="#ressources" id="toc-entry-5">Ressources</a><ul>
+<li><a class="reference internal" href="#histogramme-de-derive-d-estimation-sur-les-taches-achevees" id="toc-entry-6">Histogramme de dérive d'estimation sur les tâches achevées</a></li>
+<li><a class="reference internal" href="#taux-de-depassement-de-temps" id="toc-entry-7">Taux de dépassement de temps</a></li>
+<li><a class="reference internal" href="#taux-de-disponibilite" id="toc-entry-8">Taux de disponibilité</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#temps" id="toc-entry-9">Temps</a><ul>
+<li><a class="reference internal" href="#avance-ou-retard-d-achevement-des-taches" id="toc-entry-10">Avance ou retard d'achèvement des tâches</a></li>
+<li><a class="reference internal" href="#violation-des-echeances" id="toc-entry-11">Violation des échéances</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>Le tableau de bord projet est une perspective <em>LibrePlan</em> pour un projet donné qui contient une série d' <strong>indicateurs clefs de performance</strong> ou <strong>KPI (Key Performance Indicators)</strong> qui aident à connaître ses performances en fonction :</p>
+<blockquote>
+<ul class="simple">
+<li>de comment le travail avance</li>
+<li>de combien il coûte</li>
+<li>de l'état des ressources affectées</li>
+<li>des contraintes de temps.</li>
+</ul>
+</blockquote>
+<div class="section" id="indicateurs-de-performance-d-avancement">
+<h1><a class="toc-backref" href="#toc-entry-1">Indicateurs de performance d'avancement</a></h1>
+<p>Il existe deux indicateurs calculés : le pourcentage d'avancement projet et l'état des tâches.</p>
+<div class="section" id="pourcentage-d-avancement-projet">
+<h2><a class="toc-backref" href="#toc-entry-2">Pourcentage d'avancement projet</a></h2>
+<p>Il s'agit d'un graphique où l'avancement global d'un projet est calculé et comparé aux valeurs attendues d'avancement que le projet devrait avoir selon le diagramme de <em>Gantt</em>.</p>
+<p>L'avancement est représenté avec deux barres :</p>
+<blockquote>
+<ul class="simple">
+<li><em>Avancement actuel</em>. C'est l'avancement tel qu'il est réellement au moment où la mesure est faite.</li>
+<li><em>Avancement attendu</em>. C'est l'avancement que le projet devrait avoir en ce moment selon la planification qui a été réalisée.</li>
+</ul>
+</blockquote>
+<p>L'avancement global du projet est estimé de différentes façons car il n'y a pas qu'une seule bonne méthode pour le faire :</p>
+<blockquote>
+<ul class="simple">
+<li><strong>Avancement étendu</strong>. C'est le type d'avancement positionné comme avancement étendu au niveau projet. Dans ce cas, il n'y a aucun moyen de calculer une valeur attendue et seule la barre de la valeur actuelle est affichée.</li>
+<li><strong>Par heures de toutes les tâches</strong>. L'avancement de toutes les tâches du projet est moyenné pour calculer la valeur globale. C'est une moyenne pondérée prenant en compte le nombre d'heures affecté à chaque tâche.</li>
+<li><strong>Par heures du chemin critique</strong>. L'avancement des tâches appartenant à un quelconque chemin critique du projet est moyenné pour obtenir la valeur globale. On réalise une moyenne pondérée prenant en compte les heures totales allouées à chacune des tâches impliquées.</li>
+<li><strong>Par durée des chemins critiques</strong>. L'avancement des tâches appartenant à un quelconque chemin critique est moyenné pour obtenir une moyenne pondérée mais cette fois en prenant en compte la durée de chaque tâche impliquée au lieu des heures allouées.</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="etat-des-taches">
+<h2><a class="toc-backref" href="#toc-entry-3">État des tâches</a></h2>
+<p>Un diagramme camembert montrant le pourcentage des tâches du projet étant dans différents états. Les états définis sont les suivants :</p>
+<blockquote>
+<ul class="simple">
+<li><strong>Finies</strong>. Ce sont les tâches achevées, détectées par une valeur d'avancement mesurée de 100%.</li>
+<li><strong>En cours</strong>. Ce sont les tâches qui sont en cours. Elles ont une valeur d'avancement différente de 0% et de 100% et ayant du temps de travail enregistré.</li>
+<li><strong>Prêtes à démarrer</strong>. Elles ont un avancement de 0%, n'ont pas de temps de travail enregistré et toutes les tâches avec lesquelles elles ont une dépendance <em>FINI_POUR_DÉMARRER</em> sont finies et toutes les tâches avec lesquelles elles ont une dépendance <em>DÉMARRÉE_POUR_DÉMARRER</em> sont <em>finies</em> ou <em>en cours</em>.</li>
+<li><strong>Bloquées</strong>. Ce sont les tâches avec un avancement à 0%, sans temps de travail enregistré et avec des tâches dont elles dépendent ni dans l'état <em>en cours</em> ni <em>prête à démarrer</em>.</li>
+</ul>
+</blockquote>
+</div>
+</div>
+<div class="section" id="indicateurs-de-cout">
+<h1><a class="toc-backref" href="#toc-entry-4">Indicateurs de coût</a></h1>
+<p>Il existe plusieurs indicateurs de coûts de <em>gestion de la valeur acquise</em> qui sont calculés :</p>
+<blockquote>
+<ul class="simple">
+<li><strong>VC (Variance du coût) ou CV (Cost Variance)</strong>. Différence entre la <em>courbe de la valeur acquise</em> et la <em>courbe du coût actuel</em> à un instant donné. Les valeurs positives indiquent un bénéfice et les négatives une perte.</li>
+<li><strong>CRTR (Coût réel du travail réalisé) ou ACWP (Actual Cost Work Performed)</strong>. C'est le nombre total d'heures suivies dans le projet à un instant donné.</li>
+<li><strong>ICP (Indice de Coût Performance) ou CPI (Cost Performance Index)</strong>. C'est le rapport <em>Valeur acquise / Coût actuel</em>.<ul>
+<li>&gt; 100 est bon, signifie être sous le budget.</li>
+<li>= 100 est également bon, signifie que le coût est exactement conforme au coût planifié.</li>
+<li>&lt; 100 est mauvais, signifie que le coût pour achever le travail est plus élevé que planifié.</li>
+</ul>
+</li>
+<li><strong>TEA (Temps estimé d'achèvement) ou ETC (Estimate To Complete)</strong>. C'est le temps qu'il reste à consacrer au projet pour le terminer.</li>
+<li><strong>BAC (Budget à l'achèvement / Budget At Completion)</strong>. C'est le volume total de travail alloué dans le plan projet.</li>
+<li><strong>EAA (Estimation à l'achèvement) ou EAC (Estimate At Completion)</strong>. C'est la projection du gestionnaire du coût total au moment de l'achèvement du projet selon l'<em>ICP</em>.</li>
+<li><strong>VAA (Variance à l'achèvement) ou VAC (Variance At Completion)</strong>. C'est la différence entre le <em>BAC</em> et le <em>TEA</em>.<ul>
+<li>&lt; 0 est inférieur au budget.</li>
+<li>&gt; 0 est supérieur au budget.</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="ressources">
+<h1><a class="toc-backref" href="#toc-entry-5">Ressources</a></h1>
+<p>Pour analyser le projet du point de vue des ressources, deux taux et un histogramme sont fournis.</p>
+<div class="section" id="histogramme-de-derive-d-estimation-sur-les-taches-achevees">
+<h2><a class="toc-backref" href="#toc-entry-6">Histogramme de dérive d'estimation sur les tâches achevées</a></h2>
+<p>Il s'agit de la dérive calculée entre le nombre d'heures allouées aux tâches du projet et du nombre éventuel d'heures qui lui ont été consacrées.</p>
+<p>La dérive est calculée en pourcentage pour toutes les tâches terminées et les dérives calculées sont représentées dans un histogramme. Sur l'axe vertical, le nombre de tâches qui se trouvent dans un intervalle de dérive est affiché. Six intervalles de dérivations sont calculés dynamiquement.</p>
+</div>
+<div class="section" id="taux-de-depassement-de-temps">
+<h2><a class="toc-backref" href="#toc-entry-7">Taux de dépassement de temps</a></h2>
+<p>Il résume la surcharge des ressources qui sont affectées aux tâches du projet.
+Il est calculé selon la formule : <strong>taux de dépassement = surcharge / (charge + surcharge)</strong>.</p>
+<blockquote>
+<ul class="simple">
+<li>= 0 est bon, signifie que les ressources ne sont pas surchargées.</li>
+<li>&gt; 0 est mauvais, signifie que les ressources sont surchargées.</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="taux-de-disponibilite">
+<h2><a class="toc-backref" href="#toc-entry-8">Taux de disponibilité</a></h2>
+<p>Il résume la capacité encore libre des ressources actuellement affectées au projet. C'est donc une mesure de la disponibilité des ressources pour recevoir d'autres affectations sans être surchargées.
+Il est calculé par : <strong>taux de disponibilité = (1 - charge / capacité)*100</strong>.</p>
+<blockquote>
+<ul class="simple">
+<li>Les valeurs possibles sont entre 0% (totalement affectées) et 100% (non affectées).</li>
+</ul>
+</blockquote>
+</div>
+</div>
+<div class="section" id="temps">
+<h1><a class="toc-backref" href="#toc-entry-9">Temps</a></h1>
+<p>Sont inclus deux graphiques : un histogramme pour la dérive en temps dans le temps d'achèvement des tâches du projet et un diagramme camembert pour les violations de date d'échéance.</p>
+<div class="section" id="avance-ou-retard-d-achevement-des-taches">
+<h2><a class="toc-backref" href="#toc-entry-10">Avance ou retard d'achèvement des tâches</a></h2>
+<p>Est calculée la différence en jours entre la date planifiée d'achèvement des tâches du projet et leur date de fin réelle. La date d'achèvement planifiée est tirée du <em>Gantt</em> et la date de fin réelle du dernier temps suivi pour la tâche.</p>
+<p>Le retard ou l'avance dans l'achèvement des tâches est représenté dans un histogramme. Sur l'axe vertical le nombre de tâches avec une différence de jours d'avance ou de retard correspondant aux intervalles de jours représentés en abscisse. Six intervalles dynamiques de dérive d'achèvement de tâches sont calculés.</p>
+<blockquote>
+<ul class="simple">
+<li>Des valeurs négatives indiquent un achèvement en avance.</li>
+<li>Des valeurs positives indiquent un achèvement en retard.</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="violation-des-echeances">
+<h2><a class="toc-backref" href="#toc-entry-11">Violation des échéances</a></h2>
+<p>D'un coté est calculé l'écart avec l'échéance du projet, si elle est renseignée. De l'autre, un diagramme camembert avec le pourcentage de tâches atteignant l'échéance est dessiné. Trois types de valeurs sont inclus dans le diagramme :</p>
+<blockquote>
+<ul class="simple">
+<li>Pourcentage des tâches sans échéance indiquée.</li>
+<li>pourcentage des tâches complétées avec une date de fin réelle plus tardive que leur échéance. La date de fin réelle est obtenu à partir du dernier relevé de temps pour la tâche.</li>
+<li>Pourcentage des tâches achevées avec une date de fin réelle anticipée par rapport à l'échéance.</li>
+</ul>
+</blockquote>
+</div>
+</div>
+</div>
+</body>
+</html>

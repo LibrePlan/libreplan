@@ -21,7 +21,7 @@
 
 package org.zkoss.ganttz;
 
-import static org.zkoss.ganttz.i18n.I18nHelper._;
+import static org.zkoss.ganttz.i18n.I18nHelper._t;
 
 import org.apache.commons.lang3.math.Fraction;
 import org.joda.time.LocalDate;
@@ -295,7 +295,7 @@ public class TaskList extends XulElement implements AfterCompose {
             if ( disabilityConfiguration.isAddingDependenciesEnabled() ) {
 
                 menuBuilder.item(
-                        _("Add Dependency"), "/common/img/ico_dependency.png",
+                        _t("Add Dependency"), "/common/img/ico_dependency.png",
                         (chosen, event) -> chosen.addDependency());
             }
 

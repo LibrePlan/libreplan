@@ -20,7 +20,7 @@
  */
 package org.libreplan.web.planner.tabs;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 import static org.libreplan.web.planner.tabs.MultipleTabsPlannerController.BREADCRUMBS_SEPARATOR;
 import static org.libreplan.web.planner.tabs.MultipleTabsPlannerController.getSchedulingLabel;
 
@@ -99,7 +99,7 @@ public class ResourcesLoadTabCreator {
             return Executions.createComponents("/resourceload/_resourceloadfororder.zul", parent, arguments);
         };
 
-        return new CreatedOnDemandTab(_(RESOURCES_LOAD), "order-load", componentCreator) {
+        return new CreatedOnDemandTab(_t(RESOURCES_LOAD), "order-load", componentCreator) {
 
             @Override
             protected void afterShowAction() {
@@ -107,7 +107,7 @@ public class ResourcesLoadTabCreator {
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(getSchedulingLabel()));
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-                breadcrumbs.appendChild(new Label(_(RESOURCES_LOAD)));
+                breadcrumbs.appendChild(new Label(_t(RESOURCES_LOAD)));
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
 
                 Order currentOrder = mode.getOrder();
@@ -129,7 +129,7 @@ public class ResourcesLoadTabCreator {
             return Executions.createComponents("/resourceload/_resourceload.zul", parent, arguments);
         };
 
-        return new CreatedOnDemandTab(_(RESOURCES_LOAD), "company-load", componentCreator) {
+        return new CreatedOnDemandTab(_t(RESOURCES_LOAD), "company-load", componentCreator) {
             @Override
             protected void beforeShowAction() {
                 if (!SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_PLANNING)) {
@@ -150,7 +150,7 @@ public class ResourcesLoadTabCreator {
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(getSchedulingLabel()));
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-                breadcrumbs.appendChild(new Label(_(RESOURCES_LOAD)));
+                breadcrumbs.appendChild(new Label(_t(RESOURCES_LOAD)));
             }
         };
     }

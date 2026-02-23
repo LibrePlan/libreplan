@@ -21,7 +21,7 @@
 
 package org.libreplan.web.limitingresources;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -219,26 +219,26 @@ public class QueueComponent extends XulElement implements AfterCompose {
         final OrderElement order = getRootOrder(task);
 
         StringBuilder result = new StringBuilder();
-        result.append(_("Project: {0}", order.getName())).append(" ");
-        result.append(_("Task: {0}", task.getName())).append(" ");
-        result.append(_("Completed: {0}%", element.getAdvancePercentage().multiply(new BigDecimal(100)))).append(" ");
+        result.append(_t("Project: {0}", order.getName())).append(" ");
+        result.append(_t("Task: {0}", task.getName())).append(" ");
+        result.append(_t("Completed: {0}%", element.getAdvancePercentage().multiply(new BigDecimal(100)))).append(" ");
 
         final ResourceAllocation<?> resourceAllocation = element.getResourceAllocation();
 
         if ( resourceAllocation instanceof SpecificResourceAllocation ) {
 
             final SpecificResourceAllocation specific = (SpecificResourceAllocation) resourceAllocation;
-            result.append(_("Resource: {0}", specific.getResource().getName())).append(" ");
+            result.append(_t("Resource: {0}", specific.getResource().getName())).append(" ");
 
         } else if ( resourceAllocation instanceof GenericResourceAllocation ) {
 
             final GenericResourceAllocation generic = (GenericResourceAllocation) resourceAllocation;
 
             /* TODO resolve deprecated */
-            result.append(_("Criteria: {0}", Criterion.getCaptionFor(generic.getCriterions()))).append(" ");
+            result.append(_t("Criteria: {0}", Criterion.getCaptionFor(generic.getCriterions()))).append(" ");
 
         }
-        result.append(_("Allocation: [{0},{1}]", element.getStartDate().toString(), element.getEndDate()));
+        result.append(_t("Allocation: [{0},{1}]", element.getStartDate().toString(), element.getEndDate()));
 
         return result.toString();
     }
@@ -393,7 +393,7 @@ public class QueueComponent extends XulElement implements AfterCompose {
 
         Div notWorkableHoursShade = new Div();
 
-        notWorkableHoursShade.setTooltiptext(_("Workable capacity for this period ") + workableHours + _(" hours"));
+        notWorkableHoursShade.setTooltiptext(_t("Workable capacity for this period ") + workableHours + _t(" hours"));
         notWorkableHoursShade.setContext("");
         notWorkableHoursShade.setSclass("not-workable-hours");
         notWorkableHoursShade.setStyle("left: " + shadeLeft + "px; width: " + shadeWidth.intValue() + "px;");
@@ -490,7 +490,7 @@ public class QueueComponent extends XulElement implements AfterCompose {
 
     private static void validateQueueElement(LimitingResourceQueueElement queueElement) {
         if ( (queueElement.getStartDate() == null ) || ( queueElement.getEndDate() == null) ) {
-            throw new ValidationException(_("Invalid queue element"));
+            throw new ValidationException(_t("Invalid queue element"));
         }
     }
 
@@ -499,11 +499,11 @@ public class QueueComponent extends XulElement implements AfterCompose {
             MenuBuilder<QueueTask> menuBuilder = MenuBuilder.on(divElement.getPage(), divElement);
 
             menuBuilder.item(
-                    _("Edit"), "/common/img/ico_editar.png", (chosen, event) -> editResourceAllocation(chosen));
+                    _t("Edit"), "/common/img/ico_editar.png", (chosen, event) -> editResourceAllocation(chosen));
 
-            menuBuilder.item(_("Unassign"), "/common/img/ico_borrar.png", (chosen, event) -> unassign(chosen));
+            menuBuilder.item(_t("Unassign"), "/common/img/ico_borrar.png", (chosen, event) -> unassign(chosen));
 
-            menuBuilder.item(_("Move"), "", (chosen, event) -> moveQueueTask(chosen));
+            menuBuilder.item(_t("Move"), "", (chosen, event) -> moveQueueTask(chosen));
 
             divElement.setContext(menuBuilder.createWithoutSettingContext());
         }

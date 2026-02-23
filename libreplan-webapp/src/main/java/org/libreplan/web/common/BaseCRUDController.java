@@ -19,7 +19,7 @@
 
 package org.libreplan.web.common;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 import org.apache.commons.lang3.StringUtils;
 import org.libreplan.business.common.IHumanIdentifiable;
@@ -82,7 +82,7 @@ public abstract class BaseCRUDController<T extends IHumanIdentifiable> extends G
 
         messagesForUser = new MessagesForUser(messagesContainer);
 
-        listWindow.setTitle(_("{0} List", getPluralEntityType()));
+        listWindow.setTitle(_t("{0} List", getPluralEntityType()));
         showListWindow();
     }
 
@@ -126,13 +126,13 @@ public abstract class BaseCRUDController<T extends IHumanIdentifiable> extends G
 
             case CREATE:
                 if (StringUtils.isEmpty(humanId))
-                    title = _("Create {0}", getEntityType());
+                    title = _t("Create {0}", getEntityType());
                 else
-                    title = _("Create {0}: {1}", getEntityType(), humanId);
+                    title = _t("Create {0}: {1}", getEntityType(), humanId);
                 break;
 
             case EDIT:
-                title = _("Edit {0}: {1}", getEntityType(), humanId);
+                title = _t("Edit {0}: {1}", getEntityType(), humanId);
                 break;
 
             default:
@@ -230,7 +230,7 @@ public abstract class BaseCRUDController<T extends IHumanIdentifiable> extends G
         beforeSaving();
         messagesForUser.clearMessages();
         save();
-        messagesForUser.showMessage(Level.INFO, _("{0} \"{1}\" saved", getEntityType(), getEntityBeingEdited().getHumanId()));
+        messagesForUser.showMessage(Level.INFO, _t("{0} \"{1}\" saved", getEntityType(), getEntityBeingEdited().getHumanId()));
     }
 
     /**
@@ -303,21 +303,21 @@ public abstract class BaseCRUDController<T extends IHumanIdentifiable> extends G
 
         try {
             if (Messagebox.show(
-                    _("Delete {0} \"{1}\". Are you sure?", getEntityType(), entity.getHumanId()),
-                    _("Confirm"), Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION) == Messagebox.OK) {
+                    _t("Delete {0} \"{1}\". Are you sure?", getEntityType(), entity.getHumanId()),
+                    _t("Confirm"), Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION) == Messagebox.OK) {
 
                 delete(entity);
 
                 messagesForUser.showMessage(
                         Level.INFO,
-                        _("{0} \"{1}\" deleted", getEntityType(), entity.getHumanId()));
+                        _t("{0} \"{1}\" deleted", getEntityType(), entity.getHumanId()));
 
                 Util.reloadBindings(listWindow);
             }
         } catch (InstanceNotFoundException ie) {
             messagesForUser.showMessage(
                     Level.ERROR,
-                    _("{0} \"{1}\" could not be deleted, it was already removed", getEntityType(), entity.getHumanId()));
+                    _t("{0} \"{1}\" could not be deleted, it was already removed", getEntityType(), entity.getHumanId()));
         }
     }
 

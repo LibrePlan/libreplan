@@ -88,7 +88,7 @@ import java.io.UnsupportedEncodingException;
 
 import org.springframework.core.env.MapPropertySource;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 /**
  * Sends E-mail to users with data that storing in notification_queue table and
@@ -190,8 +190,8 @@ public class ComposeMessage {
 				throw new RuntimeException(e);
 			} catch (NullPointerException e) {
 				if (receiver == null) {
-					Messagebox.show(_(currentWorker.getUser().getLoginName() + " - this user have not filled E-mail"),
-							_("Error"), Messagebox.OK, Messagebox.ERROR);
+					Messagebox.show(_t(currentWorker.getUser().getLoginName() + " - this user have not filled E-mail"),
+							_t("Error"), Messagebox.OK, Messagebox.ERROR);
 				}
 			}
 		}

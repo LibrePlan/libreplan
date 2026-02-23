@@ -32,7 +32,7 @@ import org.zkoss.zul.Datebox;
 
 import java.util.Date;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 /**
  * Controller for {@link OrderElement} details.
@@ -117,7 +117,7 @@ public class DetailsOrderElementController extends GenericForwardComposer {
                 if ( startBefore2010 ) {
                     initDate.setValue(null);
                     getOrderElement().setInitDate(null);
-                    throw new WrongValueException(comp, _("Must be after 2010!"));
+                    throw new WrongValueException(comp, _t("Must be after 2010!"));
                 }
             }
         };
@@ -140,7 +140,7 @@ public class DetailsOrderElementController extends GenericForwardComposer {
                 if ( deadlineBeforeStart ) {
                     deadline.setValue(null);
                     getOrderElement().setDeadline(null);
-                    throw new WrongValueException(comp, _("must be after starting date"));
+                    throw new WrongValueException(comp, _t("must be after starting date"));
                 }
             }
         };

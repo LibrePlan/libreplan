@@ -19,7 +19,7 @@
 
 package org.libreplan.web.users.dashboard;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.LocalDate;
@@ -61,14 +61,14 @@ public class UserDashboardController extends GenericForwardComposer {
                     .getPersonalTimesheetsPeriodicity(), new LocalDate(
                     timesheetSave));
             messagesForUser.showMessage(Level.INFO,
-                    _("Personal timesheet \"{0}\" saved", personalTimesheet));
+                    _t("Personal timesheet \"{0}\" saved", personalTimesheet));
         }
 
         String expenseSheetSaved = Executions.getCurrent().getParameter(
                 "expense_sheet_saved");
         if (!StringUtils.isBlank(expenseSheetSaved)) {
             messagesForUser.showMessage(Level.INFO,
-                    _("Expense sheet \"{0}\" saved", expenseSheetSaved));
+                    _t("Expense sheet \"{0}\" saved", expenseSheetSaved));
         }
     }
 

@@ -21,7 +21,7 @@
 
 package org.libreplan.web.planner.company;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -241,7 +241,7 @@ public class CompanyPlanningController implements Composer {
         public void render(Comboitem item, Object data, int i) {
             final ProgressType progressType = (ProgressType) data;
             item.setValue(progressType);
-            item.setLabel(_(progressType.getValue()));
+            item.setLabel(_t(progressType.getValue()));
 
             ProgressType configuredProgressType = getProgressTypeFromConfiguration();
             if ( (configuredProgressType != null) && configuredProgressType.equals(progressType) ) {
@@ -290,7 +290,7 @@ public class CompanyPlanningController implements Composer {
                         (finishDate.compareTo((Date) filterStartDate.getRawValue()) < 0)) {
 
                     filterFinishDate.setValue(null);
-                    throw new WrongValueException(comp, _("must be after start date"));
+                    throw new WrongValueException(comp, _t("must be after start date"));
                 }
             }
         };
@@ -306,7 +306,7 @@ public class CompanyPlanningController implements Composer {
                         (startDate.compareTo((Date) filterFinishDate.getRawValue()) > 0)) {
 
                     filterStartDate.setValue(null);
-                    throw new WrongValueException(comp, _("must be lower than end date"));
+                    throw new WrongValueException(comp, _t("must be lower than end date"));
                 }
             }
         };

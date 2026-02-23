@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Criterios</title>
+<link rel="stylesheet" href="html/lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="criterios">
+<h1 class="title">Criterios</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#administracion-de-criterios" id="toc-entry-1">Administración de criterios</a></li>
+</ul>
+</div>
+<p>Os criterios son as entidades que se utilizan na aplicación para categorizar os recursos e as tarefas. As tarefas requiren criterios e os recursos satisfán criterios. Un exemplo de utilización de criterios é a seguinte secuencia: un recurso é asignado co criterio &quot;soldador&quot; (é dicir, satisfai o criterio &quot;soldador&quot;) e unha tarefa require o criterio &quot;soldador&quot; para ser realizada, en consecuencia ante unha asignación de recursos a tarefas os traballadores con criterio &quot;soldador&quot; son os que se utilicen á hora de asignar xenéricamente (non aplica nas asignacións específicas).</p>
+<p>No proxecto, existen varias operacións que se poden realizar con criterios:</p>
+<ul class="simple">
+<li>Administración de criterios</li>
+<li>Asignación de criterios a recursos.</li>
+<li>Asignación de criterios a tarefas.</li>
+<li>Filtrado de entidades por criterios. É posible filtrar tarefas e elementos de pedido por criterios para realizar operacións na aplicación. Asimesmo, os informes e gráficos de cargas de recursos son filtrables por criterios.</li>
+</ul>
+<p>Das tres funcionalidades anteriores só se explica a primeira delas nesta sección deixando para seccións posteriores os dous tipos de asignación, a de recursos no capitulo &quot;Xestión de recursos&quot; e a de tarefas no capítulo &quot;Planificación de tarefas&quot;.</p>
+<div class="section" id="administracion-de-criterios">
+<h1><a class="toc-backref" href="#toc-entry-1">Administración de criterios</a></h1>
+<p>A administración de criterios é accesible dende o menú de administración:</p>
+<div class="figure">
+<img alt="images/menu.png" src="images/menu.png" style="width: 227.5px; height: 15.5px;" />
+<p class="caption">Pestanas de menú de primeiro nivel</p>
+</div>
+<p>A operación específica para administrar criterios é <em>Xestionar Criterios</em>. A partir de dita operación é posible listar os criterios dispoñibles no sistema.</p>
+<div class="figure">
+<img alt="images/lista-criterios.png" src="images/lista-criterios.png" style="width: 300.0px; height: 154.0px;" />
+<p class="caption">Listado de criterios</p>
+</div>
+<p>Premendo no botón <em>Crear</em> poderase acceder ó formulario de creación/edición de un criterio. A edición de un criterio farase premendo na icona de edición do mesmo.</p>
+<div class="figure">
+<img alt="images/edicion-criterio.png" src="images/edicion-criterio.png" style="width: 446.5px; height: 279.0px;" />
+<p class="caption">Edición de criterios</p>
+</div>
+<p>No formulario de edición de criterios que se amosa na imaxe anterior poderanse realizar as seguintes operacións:</p>
+<ul class="simple">
+<li>Edición do nome do criterio</li>
+<li>Indicar se é posible asignar varios valores simultaneamente ó mesmo elemento para o tipo de criterio seleccionado. Por exemplo, un recurso que satisfai dous criterios, soldador e torneiro.</li>
+<li>Indicar o tipo do criterio:<ul>
+<li>Tipo xenérico: Criterio que pode satisfacer indistintamente unha máquina ou un traballador.</li>
+<li>Tipo traballador: Criterio que pode satisfacer un traballador exclusivamente.</li>
+<li>Tipo máquina: Criterio que pode satisfacer unha máquina exclusivamente.</li>
+</ul>
+</li>
+<li>Indicar se o criterio é xerárquico ou non. Existen casos nos que os criterios deben ser tratados xerarquicamente, é dicir, que o feito de ser un criterio asignado a un elemento non folla faga que este criterio estea asignado automaticamente ós fillos. Un exemplo claro de xerarquización de criterios é o criterio localización, unha persoa que teña asignado Galicia como localización pertence á localización España por ser xerárquico.</li>
+<li>Indicar se o criterio está habilitado e deshabilitado. Esta é a forma de borrar criterios. Debido a que unha vez creado un criterio, e utilizado en datos históricos, estes non poden ser borrados, o criterio debe existir no sistema. Para evitar que este criterio saia en diferentes elementos de selección, pode ser invalidado.</li>
+<li>Realizar unha descrición do criterio.</li>
+<li>Engadir novos valores. Na segunda parte do formulario aparece unha entrada de texto con un botón <em>Novo Criterio</em>.</li>
+<li>Editar o nome dos criterios existentes.</li>
+<li>Desprazar verticalmente os criterios na lista dos existentes.</li>
+<li>Eliminar un valor de criterio da lista.</li>
+</ul>
+<p>O formulario de administración de criterios é un formulario que responde ás características dos formularios comentados na introdución como de 3 operacións (gardar, gardar e pechar e pechar).</p>
+</div>
+</div>
+</body>
+</html>

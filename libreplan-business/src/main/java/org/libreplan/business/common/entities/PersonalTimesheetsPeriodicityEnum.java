@@ -19,7 +19,7 @@
 
 package org.libreplan.business.common.entities;
 
-import static org.libreplan.business.i18n.I18nHelper._;
+import static org.libreplan.business.i18n.I18nHelper._t;
 
 import org.joda.time.LocalDate;
 import org.joda.time.Months;
@@ -32,7 +32,7 @@ import org.joda.time.Weeks;
  */
 public enum PersonalTimesheetsPeriodicityEnum {
 
-    MONTHLY(_("Monthly")) {
+    MONTHLY(_t("Monthly")) {
         @Override
         public LocalDate getStart(LocalDate date) {
             return date.dayOfMonth().withMinimumValue();
@@ -63,7 +63,7 @@ public enum PersonalTimesheetsPeriodicityEnum {
             return getStart(date).plusMonths(1);
         }
     },
-    TWICE_MONTHLY(_("Twice-monthly")) {
+    TWICE_MONTHLY(_t("Twice-monthly")) {
         @Override
         public LocalDate getStart(LocalDate date) {
             if (date.getDayOfMonth() <= 15) {
@@ -120,7 +120,7 @@ public enum PersonalTimesheetsPeriodicityEnum {
             }
         }
     },
-    WEEKLY(_("Weekly")) {
+    WEEKLY(_t("Weekly")) {
         @Override
         public LocalDate getStart(LocalDate date) {
             return date.dayOfWeek().withMinimumValue();

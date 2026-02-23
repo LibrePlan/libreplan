@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Introduction</title>
+<link rel="stylesheet" href="html/lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="introduction">
+<h1 class="title">Introduction</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#company-overview-and-view-management" id="toc-entry-1">Company Overview and View Management</a></li>
+<li><a class="reference internal" href="#what-makes-libreplan-useful" id="toc-entry-2">What Makes LibrePlan Useful?</a></li>
+<li><a class="reference internal" href="#usability-conventions" id="toc-entry-3">Usability Conventions</a><ul>
+<li><a class="reference internal" href="#information-about-forms" id="toc-entry-4">Information About Forms</a></li>
+<li><a class="reference internal" href="#standard-icons-and-buttons" id="toc-entry-5">Standard Icons and Buttons</a></li>
+<li><a class="reference internal" href="#tabs" id="toc-entry-6">Tabs</a></li>
+<li><a class="reference internal" href="#explicit-actions-and-context-help" id="toc-entry-7">Explicit Actions and Context Help</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>This document describes the features of LibrePlan and provides user information on how to configure and use the application.</p>
+<p>LibrePlan is an open-source web application for project planning. Its primary goal is to provide a comprehensive solution for company project management. For any specific information you may need about this software, please contact the development team at <a class="reference external" href="http://www.libreplan.com/contact/">http://www.libreplan.com/contact/</a></p>
+<div class="figure">
+<img alt="images/company_view.png" src="images/company_view.png" style="width: 504.5px; height: 327.0px;" />
+<p class="caption">Company Overview</p>
+</div>
+<div class="section" id="company-overview-and-view-management">
+<h1><a class="toc-backref" href="#toc-entry-1">Company Overview and View Management</a></h1>
+<p>As shown in the program's main screen (see the previous screenshot) and the company overview, users can view a list of planned projects. This allows them to understand the company's overall status regarding orders and resource utilization. The company overview offers three distinct views:</p>
+<ul>
+<li><p class="first"><strong>Planning View:</strong> This view combines two perspectives:</p>
+<blockquote>
+<ul class="simple">
+<li><strong>Order and Time Tracking:</strong> Each project is represented by a Gantt chart, indicating the project's start and end dates. This information is displayed alongside the agreed-upon deadline. A comparison is then made between the percentage of progress achieved and the actual time dedicated to each project. This provides a clear picture of the company's performance at any given time. This view is the program's default landing page.</li>
+<li><strong>Company Resource Utilization Graph:</strong> This graph displays information on resource allocation across projects, providing a summary of the entire company's resource usage. Green indicates that resource allocation is below 100% of capacity. The black line represents the total available resource capacity. Yellow indicates that resource allocation exceeds 100%. It's possible to have under-allocation overall while simultaneously experiencing over-allocation for specific resources.</li>
+</ul>
+</blockquote>
+</li>
+<li><p class="first"><strong>Resource Load View:</strong> This screen displays a list of the company's workers and their specific task allocations, or generic allocations based on defined criteria. To access this view, click on <em>Overall load of resources</em>. See the following image for an example.</p>
+</li>
+<li><p class="first"><strong>Orders Administration View:</strong> This screen displays a list of company orders, allowing users to perform the following actions: filter, edit, delete, visualize planning, or create a new order. To access this view, click on <em>Order list</em>.</p>
+</li>
+</ul>
+<div class="figure">
+<img alt="images/resources_global.png" src="images/resources_global.png" style="width: 505.0px; height: 327.0px;" />
+<p class="caption">Resource Overview</p>
+</div>
+<div class="figure">
+<img alt="images/order_list.png" src="images/order_list.png" style="width: 506.0px; height: 293.5px;" />
+<p class="caption">Work Breakdown Structure</p>
+</div>
+<p>The view management described above for the company overview is very similar to the management available for a single project. A project can be accessed in several ways:</p>
+<ul class="simple">
+<li>Right-click on the Gantt chart for the order and select <em>Plan</em>.</li>
+<li>Access the order list and click on the Gantt diagram icon.</li>
+<li>Create a new order and change the current order view.</li>
+</ul>
+<p>The program offers the following views for an order:</p>
+<ul class="simple">
+<li><strong>Planning View:</strong> This view allows users to visualize task planning, dependencies, milestones, and more. See the <em>Planning</em> section for further details.</li>
+<li><strong>Resource Load View:</strong> This view allows users to check the designated resource load for a project. The color code is consistent with the company overview: green for a load less than 100%, yellow for a load equal to 100%, and red for a load over 100%. The load may originate from a specific task or a set of criteria (generic allocation).</li>
+<li><strong>Editing Order View:</strong> This view allows users to modify the details of the order. See the <em>Orders</em> section for more information.</li>
+<li><strong>Advanced Resource Allocation View:</strong> This view allows users to allocate resources with advanced options, such as specifying hours per day or the allocated functions to be performed. See the <em>Resource allocation</em> section for more information.</li>
+</ul>
+</div>
+<div class="section" id="what-makes-libreplan-useful">
+<h1><a class="toc-backref" href="#toc-entry-2">What Makes LibrePlan Useful?</a></h1>
+<p>LibrePlan is a general-purpose planning tool developed to address challenges in industrial project planning that were not adequately covered by existing tools. The development of LibrePlan was also motivated by the desire to provide a free, open-source, and entirely web-based alternative to proprietary planning tools.</p>
+<p>The core concepts underpinning the program are as follows:</p>
+<ul class="simple">
+<li><strong>Company and Multi-Project Overview:</strong> LibrePlan is specifically designed to provide users with information about multiple projects being carried out within a company. Therefore, it is inherently a multi-project program. The program's focus is not limited to individual projects, although specific views for individual projects are also available.</li>
+<li><strong>View Management:</strong> The company overview, or multi-project view, is accompanied by various views of the stored information. For example, the company overview allows users to view orders and compare their status, view the company's overall resource load, and manage orders. Users can also access the planning view, resource load view, advanced resource allocation view, and editing order view for individual projects.</li>
+<li><strong>Criteria:</strong> Criteria are a system entity that enables the classification of both resources (human and machine) and tasks. Resources must meet certain criteria, and tasks require specific criteria to be fulfilled. This is one of the program's most important features, as criteria form the basis of generic allocation and address a significant challenge in the industry: the time-consuming nature of human resource management and the difficulty of long-term company load estimations.</li>
+<li><strong>Resources:</strong> There are two types of resources: human and machine. Human resources are the company's workers, used for planning, monitoring, and controlling the company's workload. Machine resources, dependent on the people who operate them, function similarly to human resources.</li>
+<li><strong>Resource Allocation:</strong> A key feature of the program is the ability to designate resources in two ways: specifically and generically. Generic allocation is based on the criteria required to complete a task and must be fulfilled by resources capable of meeting those criteria. To understand generic allocation, consider this example: John Smith is a welder. Typically, John Smith would be specifically assigned to a planned task. However, LibrePlan offers the option of selecting any welder within the company, without needing to specify that John Smith is the assigned person.</li>
+<li><strong>Company Load Control:</strong> The program allows for easy control of the company's resource load. This control extends to both the mid-term and long-term, as current and future projects can be managed within the program. LibrePlan provides graphs that visually represent resource utilization.</li>
+<li><strong>Labels:</strong> Labels are used to categorize project tasks. With these labels, users can group tasks by concept, allowing for later review as a group or after filtering.</li>
+<li><strong>Filters:</strong> Because the system naturally includes elements that label or characterize tasks and resources, criteria filters or labels can be used. This is very useful for reviewing categorized information or generating specific reports based on criteria or labels.</li>
+<li><strong>Calendars:</strong> Calendars define the available productive hours for different resources. Users can create general company calendars or define more specific calendars, allowing for the creation of calendars for individual resources and tasks.</li>
+<li><strong>Orders and Order Elements:</strong> Work requested by clients is treated as an order within the application, structured into order elements. The order and its elements follow a hierarchical structure with <em>x</em> levels. This element tree forms the basis for work planning.</li>
+<li><strong>Progress:</strong> The program can manage various types of progress. A project's progress can be measured as a percentage, in units, against the agreed budget, and more. The responsibility for determining which type of progress to use for comparison at higher project levels lies with the planning manager.</li>
+<li><strong>Tasks:</strong> Tasks are the fundamental planning elements within the program. They are used to schedule work to be carried out. Key characteristics of tasks include: dependencies between tasks, and the potential requirement for specific criteria to be met before resources can be allocated.</li>
+<li><strong>Work Reports:</strong> These reports, submitted by the company's workers, detail the hours worked and the tasks associated with those hours. This information allows the system to calculate the actual time taken to complete a task compared to the budgeted time. Progress can then be compared against the actual hours used.</li>
+</ul>
+<p>In addition to the core functions, LibrePlan offers other features that distinguish it from similar programs:</p>
+<ul class="simple">
+<li><strong>Integration with ERP:</strong> The program can directly import information from company ERP systems, including orders, human resources, work reports, and specific criteria.</li>
+<li><strong>Version Management:</strong> The program can manage multiple planning versions, while still allowing users to review the information from each version.</li>
+<li><strong>History Management:</strong> The program does not delete information; it only marks it as invalid. This allows users to review historical information using date filters.</li>
+</ul>
+</div>
+<div class="section" id="usability-conventions">
+<h1><a class="toc-backref" href="#toc-entry-3">Usability Conventions</a></h1>
+<div class="section" id="information-about-forms">
+<h2><a class="toc-backref" href="#toc-entry-4">Information About Forms</a></h2>
+<p>Before describing the various functions associated with the most important modules, we need to explain the general navigation and form behavior.</p>
+<p>There are essentially three types of editing forms:</p>
+<ul class="simple">
+<li><strong>Forms with a *Return* button:</strong> These forms are part of a larger context, and the changes made are stored in memory. The changes are only applied when the user explicitly saves all the details on the screen from which the form originated.</li>
+<li><strong>Forms with *Save* and *Close* buttons:</strong> These forms allow for two actions. The first saves the changes and closes the current window. The second closes the window without saving any changes.</li>
+<li><strong>Forms with *Save and continue*, *Save*, and *Close* buttons:</strong> These forms allow for three actions. The first saves the changes and keeps the current form open. The second saves the changes and closes the form. The third closes the window without saving any changes.</li>
+</ul>
+</div>
+<div class="section" id="standard-icons-and-buttons">
+<h2><a class="toc-backref" href="#toc-entry-5">Standard Icons and Buttons</a></h2>
+<ul class="simple">
+<li><strong>Editing:</strong> In general, records in the program can be edited by clicking on an icon that looks like a pencil on a white notebook.</li>
+<li><strong>Left Indent:</strong> These operations are generally used for elements within a tree structure that need to be moved to a deeper level. This is done by clicking on the icon that looks like a green arrow pointing to the right.</li>
+<li><strong>Right Indent:</strong> These operations are generally used for elements within a tree structure that need to be moved to a higher level. This is done by clicking on the icon that looks like a green arrow pointing to the left.</li>
+<li><strong>Deleting:</strong> Users can delete information by clicking on the trash can icon.</li>
+<li><strong>Search:</strong> The magnifying glass icon indicates that the text field to its left is used for searching for elements.</li>
+</ul>
+</div>
+<div class="section" id="tabs">
+<h2><a class="toc-backref" href="#toc-entry-6">Tabs</a></h2>
+<p>The program uses tabs to organize content editing and administration forms. This method is used to divide a comprehensive form into different sections, accessible by clicking on the tab names. The other tabs retain their current status. In all cases, the save and cancel options apply to all sub-forms within the different tabs.</p>
+</div>
+<div class="section" id="explicit-actions-and-context-help">
+<h2><a class="toc-backref" href="#toc-entry-7">Explicit Actions and Context Help</a></h2>
+<p>The program includes components that provide additional descriptions of elements when the mouse hovers over them for one second. The actions that the user can perform are indicated on the button labels, in the help texts associated with them, in the browsing menu options, and in the context menus that appear when right-clicking in the planner area. Furthermore, shortcuts are provided for the main operations, such as double-clicking on listed elements or using key events with the cursor and the Enter key to add elements when navigating through forms.</p>
+</div>
+</div>
+</div>
+</body>
+</html>

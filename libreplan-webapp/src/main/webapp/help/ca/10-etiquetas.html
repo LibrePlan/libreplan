@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Etiquetas</title>
+<link rel="stylesheet" href="html/lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="etiquetas">
+<h1 class="title">Etiquetas</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#tipos-de-etiquetas" id="toc-entry-1">Tipos de etiquetas</a></li>
+<li><a class="reference internal" href="#etiquetas-1" id="toc-entry-2">Etiquetas</a></li>
+</ul>
+</div>
+<p>Las etiquetas son entidades que se utilizan en la aplicación para la organización conceptualmente de tareas o elementos de pedido.</p>
+<p>Las etiquetas se categorizan según los tipos de etiquetas. Una etiqueta sólo pertenece a un tipo de etiqueta, sin embargo, nada impide crear tantas etiquetas similares que pertenezcan a tipos de etiquetas diferentes.</p>
+<div class="section" id="tipos-de-etiquetas">
+<h1><a class="toc-backref" href="#toc-entry-1">Tipos de etiquetas</a></h1>
+<p>Los tipos de etiquetas se utilizan para agrupar tipologías de etiquetas que los usuarios deseen gestionar en la aplicación. Ejemplos de tipos de etiquetas posibles:</p>
+<ol class="lowerroman simple">
+<li>Cliente: El usuario podría estar interesado en etiquetar las tareas, pedidos o elementos de pedido en base al cliente que los solicitó.</li>
+<li>Zona: El usuario podría estar interesado en etiquetar las tareas, pedidos o elementos de pedido en base a la zona en la que se realizan.</li>
+</ol>
+<p>La administración de tipos de etiquetas se gestionará desde la opción de menú de &quot;Administración&quot;. Es desde esta opción, desde la que el usuario puede editar tipos de etiqueta, crear nuevos tipos de etiqueta o añadir etiquetas a tipos de etiquetas. Desde dicha operación puede accederse al listado de etiquetas.</p>
+<div class="figure">
+<img alt="images/tag-types-list.png" src="images/tag-types-list.png" style="width: 347.0px; height: 120.5px;" />
+<p class="caption">Lista de tipos de etiquetas</p>
+</div>
+<p>Desde el listado de tipos de etiquetas es posible:</p>
+<ol class="lowerroman simple">
+<li>Crear nuevo tipo de etiquetas.</li>
+<li>Editar un tipo de etiquetas existente.</li>
+<li>Borrar un tipo de etiquetas con todas sus etiquetas.</li>
+</ol>
+<p>Tanto la edición como la creación de etiquetas comparten formulario. Desde dicho formulario el usuario puede asignar un nombre al tipo de etiquetas, crear o borrar etiquetas y almacenar los cambios. Para realizar esto:</p>
+<ol class="lowerroman simple">
+<li>El usuario debería seleccionar una etiqueta a editar o presionar en el botón de creación de una nueva.</li>
+<li>El sistema muestra un formulario con una entrada de texto para el nombre y un listado de entradas de texto con las etiquetas existentes y asignadas.</li>
+<li>Si el usuario desea añadir una nueva etiqueta debe presionar en el botón &quot;Etiqueta nueva&quot;.</li>
+<li>El sistema muestra una nueva fila al listado con una entrada de texto vacía que el usuario debe editar.</li>
+<li>El usuario introduce un nombre para la etiqueta.</li>
+<li>El sistema añade el nombre al listado.</li>
+<li>El usuario presiona en &quot;Guardar&quot; para guardar y salir o &quot;Guardar y Continuar&quot; para guardar y continuar editando el formulario.</li>
+</ol>
+<div class="figure">
+<img alt="images/tag-types-edition.png" src="images/tag-types-edition.png" style="width: 345.0px; height: 292.0px;" />
+<p class="caption">Edición de tipos de etiquetas</p>
+</div>
+</div>
+<div class="section" id="etiquetas-1">
+<h1><a class="toc-backref" href="#toc-entry-2">Etiquetas</a></h1>
+<p>Las etiquetas son entidades que pertenecen a un tipo de etiqueta. Estas entidades pueden ser asignadas a elementos de pedido. El hecho de asignar una etiqueta a un elemento de pedido hace que todos los elementos descendientes de dicho elemento hereden la etiqueta a la que pertenecen. El hecho de contar con una etiqueta asignada permite que esos elementos salgan filtrados en los puntos en los que se ofrece la posibilidad de búsqueda:</p>
+<ol class="lowerroman simple">
+<li>Búsqueda de tareas en el diagrama de Gantt.</li>
+<li>Búsqueda de elementos de pedido en el listado de elementos de pedido.</li>
+<li>Filtrados para informes.</li>
+</ol>
+<p>La asignación de etiquetas a elementos de pedido es cubierta en el capítulo de pedidos.</p>
+</div>
+</div>
+</body>
+</html>

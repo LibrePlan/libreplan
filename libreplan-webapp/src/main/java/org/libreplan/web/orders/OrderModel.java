@@ -21,7 +21,7 @@
 
 package org.libreplan.web.orders;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -749,16 +749,16 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
     public String gettooltipText(Order order) {
         orderDAO.reattachUnmodifiedEntity(order);
         StringBuilder result = new StringBuilder();
-        result.append(_("Progress") + ": ").append(getEstimatedAdvance(order)).append("% , ");
-        result.append(_("Hours invested")).append(": ").append(getHoursAdvancePercentage(order)).append("%\n");
+        result.append(_t("Progress") + ": ").append(getEstimatedAdvance(order)).append("% , ");
+        result.append(_t("Hours invested")).append(": ").append(getHoursAdvancePercentage(order)).append("%\n");
 
         if (!getDescription(order).equals("")) {
-            result.append(" , " + _("Description") + ": " + getDescription(order) + "\n");
+            result.append(" , " + _t("Description") + ": " + getDescription(order) + "\n");
         }
 
         String labels = buildLabelsText(order);
         if (!labels.equals("")) {
-            result.append(" , " + _("Labels") + ": " + labels);
+            result.append(" , " + _t("Labels") + ": " + labels);
         }
 
         return result.toString();

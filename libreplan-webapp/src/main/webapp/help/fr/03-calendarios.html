@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Calendriers</title>
+<link rel="stylesheet" href="html/lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="calendriers">
+<h1 class="title">Calendriers</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#gestion-des-calendriers" id="toc-entry-1">Gestion des calendriers</a><ul>
+<li><a class="reference internal" href="#creer-un-nouveau-calendrier" id="toc-entry-2">Créer un nouveau calendrier</a></li>
+<li><a class="reference internal" href="#creer-des-calendriers-derives" id="toc-entry-3">Créer des calendriers dérivés</a></li>
+<li><a class="reference internal" href="#creer-un-calendrier-par-copie" id="toc-entry-4">Créer un calendrier par copie</a></li>
+<li><a class="reference internal" href="#calendrier-par-defaut" id="toc-entry-5">Calendrier par défaut</a></li>
+<li><a class="reference internal" href="#affecter-un-calendrier-a-des-ressources" id="toc-entry-6">Affecter un calendrier à des ressources</a></li>
+<li><a class="reference internal" href="#affecter-des-calendriers-a-des-projets" id="toc-entry-7">Affecter des calendriers à des projets</a></li>
+<li><a class="reference internal" href="#affecter-des-calendriers-a-des-taches" id="toc-entry-8">Affecter des calendriers à des tâches</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>Les calendriers sont des entités du programme qui définissent la capacité de charge des différentes ressources. Un calendrier comprend une série de jours de l'année, chaque jour étant divisé en heures de travail.</p>
+<p>Par exemple, un jour férié peut avoir 0 heures de disponibles tandis que si le nombre d'heures de travail d'un jour ouvré est 8, ce sera ce nombre d'heures qui sera indiqué comme temps disponible pour ce jour-là.</p>
+<p>Il existe deux façon d'informer le système du nombre d'heures disponibles pour un jour donné :</p>
+<ul class="simple">
+<li>Selon le jour de la semaine. Par exemple, le lundi, les gens travaillent généralement 8 heures.</li>
+<li>Selon des exceptions. Par exemple, 10 heures de travail le lundi 30 janvier.</li>
+</ul>
+<div class="section" id="gestion-des-calendriers">
+<h1><a class="toc-backref" href="#toc-entry-1">Gestion des calendriers</a></h1>
+<p>Le système de calendrier est hiérarchique, ce qui signifie que des calendriers de base ou des calendriers basés sur eux peuvent être créés, par le biais d'une structure hiérarchique. Un calendrier basé sur un calendrier de plus haut niveau dans l'arborescence prendra en compte les attendus journaliers et les exceptions sauf s'ils ont été explicitement modifiés pour ce calendrier. Les concepts suivants doivent être compris pour gérer les calendriers :</p>
+<ul class="simple">
+<li>chaque jour est indépendant et chaque année possède des jours différents. Par exemple, si le 8 décembre 2009 est férié, ceci ne signifie pas qu'en 2010, le 8 décembre sera signalé a priori comme jour férié.</li>
+<li>les jours ouvrés sont basés sur les jours de la semaine. Par exemple, s'il est normal de travailler 8 heures le lundi, tous les lundis de toutes les semaines de toutes les années auront 8 heures de disponibles.</li>
+<li>des exceptions ou des périodes d'exception peuvent être indiquées. Par exemple, il est possible d'affecter un nombre d'heures disponibles différent de la règle générale pour ce jour de la semaine à un ou plusieurs jours particuliers.</li>
+</ul>
+<div class="figure">
+<img alt="images/calendar-administration.png" src="images/calendar-administration.png" style="width: 510.0px; height: 78.5px;" />
+<p class="caption">Gestion des calendriers</p>
+</div>
+<p>On peut accéder à la gestion des calendriers via le menu <em>Ressources</em>, sous-menu <em>Calendriers</em>. On peut alors :</p>
+<ol class="arabic simple">
+<li>Créer un nouveau calendrier à partir de zéro.</li>
+<li>Créer un calendrier basé sur un autre.</li>
+<li>Créer un calendrier copie d'un autre.</li>
+<li>Modifier un calendrier existant.</li>
+</ol>
+<div class="section" id="creer-un-nouveau-calendrier">
+<h2><a class="toc-backref" href="#toc-entry-2">Créer un nouveau calendrier</a></h2>
+<p>De façon à créer un nouveau calendrier, cliquer sur le bouton &quot;Créer&quot;. Le système affiche alors un formulaire dans lequel on renseigne le nom de calendrier choisi puis on sélectionne l'onglet sur lequel on veut travailler :</p>
+<ul>
+<li><p class="first">Exceptions : pour signaler des exceptions</p>
+<blockquote>
+<ul class="simple">
+<li>Choisir un jour du calendrier (Date de début) soit en saisissant la date, soit en cliquant dans le calendrier à gauche</li>
+<li>Choisir la date de fin de la période d'exception (qui peut être identique à celle de la date de début si l'exception ne dure qu'un seul jour).</li>
+<li>Indiquer le nombre d'heures et minutes travaillés (Réservation / Effort normal)</li>
+<li>Indiquer le nombre d'heures supplémentaires autorisé si la case à cocher <em>Illimitée</em> n'est pas cochée</li>
+<li>Choisir le type d'exception. Les types disponibles sont : vacances, maladie, grève, jour férié, demi-journée de vacances, jour de travail et jour non travaillé (RESOURCE_HOLIDAY, LEAVE, STRIKE, BANK_HOLIDAY, HALF_DAY_HOLIDAY, WORKING_DAY et NOT_WORKING_DAY). Le type NO_EXCEPTION ne peut pas être choisi.</li>
+<li>Enregistrer en cliquant sur <em>Créer une exception</em>. Le calendrier à gauche et la liste en dessous sont mis à jour.</li>
+<li>Supprimer jour par jour des exceptions existantes depuis la liste en cliquant sur l'icône poubelle. Le calendrier à gauche et la liste sont mis à jour.</li>
+</ul>
+</blockquote>
+</li>
+<li><p class="first"><em>Semaine de travail</em> : pour choisir les heures travaillées par jour de la semaine</p>
+<blockquote>
+<ul class="simple">
+<li>Indiquer les heures et minutes disponibles pour chaque jour de la semaine (lundi, mardi, mercredi, jeudi, vendredi, samedi et dimanche).</li>
+<li>Indiquer les heures et minutes d'heures supplémentaires disponibles pour chaque jour de la semaine (lundi, mardi, mercredi, jeudi, vendredi, samedi et dimanche) si la case <em>Illimitée</em> n'est pas cochée.</li>
+<li>Enregistrer en cliquant sur <em>Créer une nouvelle semaine de travail</em> : renseigner au moins, soit la date de début d'applicabilité, soit la date de fin d'applicabilité puis cliquer sur <em>Créer</em> (ou <em>Annuler</em> éventuellement). La plage apparaît alors dans la liste en dessous.</li>
+<li>Modifier les dates d'applicabilité dans les champs date de la liste.</li>
+<li>Supprimer des listes de distributions d'heures existantes depuis la liste en cliquant sur l'icône poubelle.</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<p>De cette façon, il est possible de personnaliser totalement les calendriers selon ses besoins. Il faut cliquer sur le bouton <em>Enregistrer</em> ou <em>Enregistrer et continuer</em> pour conserver les modifications faites dans le formulaire.</p>
+<div class="figure">
+<img alt="images/calendar-edition.png" src="images/calendar-edition.png" style="width: 510.0px; height: 192.0px;" />
+<p class="caption">Modifier des calendriers</p>
+</div>
+<div class="figure">
+<img alt="images/calendar-exceptions.png" src="images/calendar-exceptions.png" style="width: 510.0px; height: 181.5px;" />
+<p class="caption">Ajouter une exception aux calendriers</p>
+</div>
+</div>
+<div class="section" id="creer-des-calendriers-derives">
+<h2><a class="toc-backref" href="#toc-entry-3">Créer des calendriers dérivés</a></h2>
+<p>Un calendrier dérivé est un calendrier créé à partir d'un calendrier existant. Cela signifie qu'il possède toutes les caractéristiques d'un original, mais qu'il peut ensuite être modifié de façon à en adapter certaines.</p>
+<p>Par exemple, il est possible de créer un calendrier de base pour la France puis un calendrier dérivé pour inclure les jours fériés spécifiques de l'Alsace en plus de ceux définis dans le calendrier de base.</p>
+<p>Il est important de signaler que toute modification faite dans le calendrier originel sera immédiatement répercutée sur les calendriers dérivés sauf si ces calendriers dérivés définissent eux-mêmes des exceptions qui surchargent ces modifications. Admettons que le calendrier France possède un jour de travail de 8 heures le 29 mars 2013 alors que le calendrier Alsace (calendrier dérivé) n'a pas d'heures de travail ce jour là car c'est un jour férié. Si le calendrier France était modifié pour n'avoir plus que 4 heures tous les jours de la semaine du 25 au 29 mars 2013, le calendrier Alsace serait également modifié de sorte de n'avoir plus que 4 heures de disponibles par jour pour cette semaine, sauf pour le 29 mars qui n'aurait aucune heure de travail pour la raison expliquée plus haut.</p>
+<div class="figure">
+<img alt="images/calendar-create-derived.png" src="images/calendar-create-derived.png" style="width: 510.0px; height: 80.5px;" />
+<p class="caption">Créer un calendrier dérivé</p>
+</div>
+<p>Pour créer un calendrier dérivé, il faut :</p>
+<ul class="simple">
+<li>Aller dans le menu <em>Ressources</em></li>
+<li>Cliquer le sous-menu <em>Calendriers</em></li>
+<li>Choisir un des calendriers comme étant la base d'un calendrier dérivé et cliquer sur l'icône <em>Créer un calendrier dérivé</em> : s'affiche un formulaire de modification similaire à celui de création d'un calendrier sauf qu'il contient des exceptions et des heures par jour de la semaine identiques à ceux du calendrier originel.</li>
+</ul>
+</div>
+<div class="section" id="creer-un-calendrier-par-copie">
+<h2><a class="toc-backref" href="#toc-entry-4">Créer un calendrier par copie</a></h2>
+<p>Un calendrier copié est un calendrier créé comme une copie exacte d'un autre calendrier existant. Il possède les mêmes données mais il est possible de les modifier ensuite.</p>
+<p>La différence entre un calendrier copié et un calendrier dérivé tient aux modifications apportées à l'original. Si l'original est modifié, la copie n'est pas affectée. A l'inverse, les calendriers dérivés sont affectés par les modifications faites à l'original.</p>
+<p>Pour créer un calendrier copié dans le programme, il faut faire ce qui suit :</p>
+<ul class="simple">
+<li>Aller dans le menu <em>Ressources</em></li>
+<li>Cliquer le sous-menu <em>Calendriers</em></li>
+<li>Choisir un des calendriers à copier cliquer sur l'icône <em>Créer une copie</em> : s'affiche un formulaire de modification similaire à celui de création d'un calendrier sauf qu'il contient des exceptions et des heures par jour de la semaine identiques à ceux du calendrier copié.</li>
+</ul>
+</div>
+<div class="section" id="calendrier-par-defaut">
+<h2><a class="toc-backref" href="#toc-entry-5">Calendrier par défaut</a></h2>
+<p>L'un des calendriers existants du système peut être défini comme le calendrier par défaut qui s'appliquera à toute entité faisant appel à des calendriers (ressources, projets et tâches).</p>
+<p>Ce qui suit doit être fait pour configurer un calendrier par défaut :</p>
+<ul class="simple">
+<li>Aller au menu <em>Configuration</em></li>
+<li>Cliquer sur le sous-menu <em>Réglages principaux</em></li>
+<li>Renseigner le champ <em>Calendrier par défaut</em> en saisissant le nom du calendrier et en s'aidant de la liste déroulante qui apparaît (ou en la faisant apparaître en cliquant sur l'icône loupe).</li>
+<li>Cliquer sur <em>Enregistrer</em>.</li>
+</ul>
+<div class="figure">
+<img alt="images/default-calendar.png" src="images/default-calendar.png" style="width: 510.0px; height: 229.0px;" />
+<p class="caption">Créer un calendrier par défaut</p>
+</div>
+</div>
+<div class="section" id="affecter-un-calendrier-a-des-ressources">
+<h2><a class="toc-backref" href="#toc-entry-6">Affecter un calendrier à des ressources</a></h2>
+<p>Les ressources ne peuvent être utilisées, c'est-à-dire disposer d'heures de travail disponibles, que si un calendrier activé sur la période considérée lui a été affecté. Si ce n'est pas fait explicitement, c'est le calendrier par défaut qui est affecté avec une période d'activation qui démarre à la création de la ressource et sans date d'expiration.</p>
+<div class="figure">
+<img alt="images/resource-calendar.png" src="images/resource-calendar.png" style="width: 510.0px; height: 189.0px;" />
+<p class="caption">Calendrier des ressources</p>
+</div>
+<p>Il reste cependant possible de supprimer le calendrier affecté par défaut et d'en choisir un autre, puis de le personnaliser totalement sous forme d'un calendrier dérivé.</p>
+<p>Les étapes suivantes doivent être effectuées pour affecter un calendrier :</p>
+<ul>
+<li><p class="first">Dans le menu <em>Ressources</em>, choisir le sous-menu correspondant à la ressource concernée (employés ou machines)</p>
+</li>
+<li><p class="first">Cliquer sur le nom de la ressource dans la liste ou cliquer sur l'icône Modifier.</p>
+</li>
+<li><p class="first">Choisir l'onglet &quot;Calendrier&quot;</p>
+</li>
+<li><p class="first">Un calendrier avec des onglets relatifs aux exceptions (onglet actif), à la semaine de travail et aux périodes d'activation va ensuite apparaître :</p>
+<blockquote>
+<ul class="simple">
+<li>exceptions : choisir le type d'exception et une période à laquelle elle s'applique de façon à inclure des vacances, des jours fériés, des jours de travail différents, etc.</li>
+<li>semaine de travail : modifier les heures travaillées durant les différents jours de la semaine (lundi, mardi, etc.).</li>
+<li>périodes d'activation : créer de nouvelles périodes d'activation qui reflètent les dates de début et de fin des contrats associés aux ressources. Voir l'image suivante.</li>
+</ul>
+</blockquote>
+</li>
+<li><p class="first">Cliquer sur <em>Enregistrer</em> pour conserver les modifications.</p>
+</li>
+<li><p class="first">Cliquer sur <em>Supprimer le calendrier</em> pour changer le calendrier par défaut dont la ressource hérite. Apparaît alors la liste des calendriers disponibles. En choisir un et cliquer sur <em>Enregistrer</em>.</p>
+</li>
+</ul>
+<div class="figure">
+<img alt="images/new-resource-calendar.png" src="images/new-resource-calendar.png" style="width: 510.0px; height: 180.0px;" />
+<p class="caption">Affecter un nouveau calendrier à des ressources</p>
+</div>
+</div>
+<div class="section" id="affecter-des-calendriers-a-des-projets">
+<h2><a class="toc-backref" href="#toc-entry-7">Affecter des calendriers à des projets</a></h2>
+<p>Les projets peuvent avoir un calendrier différent du calendrier par défaut. Procéder comme suit :</p>
+<blockquote>
+<ul class="simple">
+<li>Accéder à la liste des projets dans la vue globale de la compagnie.</li>
+<li>Modifier le projet en question (en cliquant dessus ou sur l'icône Modifier).</li>
+<li>Accéder à l'onglet <em>Informations générales</em>, zone &quot;Configuration du calendrier&quot; en haut à droite.</li>
+<li>Choisir le calendrier à affecter via le menu déroulant &quot;Calendrier&quot;.</li>
+<li>Cliquer sur l'icône en forme de disquette pour enregistrer la modification.</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="affecter-des-calendriers-a-des-taches">
+<h2><a class="toc-backref" href="#toc-entry-8">Affecter des calendriers à des tâches</a></h2>
+<p>De la même façon que des calendriers peuvent être affectés à des ressources ou des projets, ils peuvent également être affectés à des tâches planifiées. Ceci permet de définir des calendriers spécifiques pour des étapes particulières d'un projet. Pour ce faire, il est nécessaire de :</p>
+<blockquote>
+<ul class="simple">
+<li>Accéder à la planification d'un projet.</li>
+<li>Faire un clic droit sur la tâche à laquelle un calendrier doit être affecté.</li>
+<li>Choisir le menu &quot;Affecter un calendrier&quot;.</li>
+<li>Choisir le calendrier à affecter à la tâche.</li>
+<li>Cliquer sur <em>Valider</em>.</li>
+</ul>
+</blockquote>
+</div>
+</div>
+</div>
+</body>
+</html>

@@ -53,16 +53,16 @@ public class TimeLineRole<T> {
      */
     public enum TimeLineRoleEnum {
 
-        NONE(_("None")),
-        WORKER(_("Worker")),
-        ORDER(_("Project")),
-        TASK(_("Task")) {
+        NONE(_t("None")),
+        WORKER(_t("Worker")),
+        ORDER(_t("Project")),
+        TASK(_t("Task")) {
             @Override
             public boolean isVisibleScheduled() {
                 return true;
             }
         },
-        CRITERION(_("Criterion"));
+        CRITERION(_t("Criterion"));
 
         private String name;
 
@@ -73,7 +73,7 @@ public class TimeLineRole<T> {
         /**
          * Forces to mark the string as needing translation.
          */
-        private static String _(String string) {
+        private static String _t(String string) {
             return string;
         }
 
@@ -91,7 +91,7 @@ public class TimeLineRole<T> {
 
         @Override
         public String toString() {
-            return _(this.name);
+            return _t(this.name);
         }
 
         public boolean isVisibleScheduled() {

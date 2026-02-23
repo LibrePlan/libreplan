@@ -116,7 +116,7 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 /**
  * Controller for CRUD actions.
@@ -375,7 +375,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         saveOrderAndContinueButton.addEventListener(Events.ON_CLICK, event -> saveAndContinue());
 
         cancelEditionButton.addEventListener(Events.ON_CLICK, event -> Messagebox.show(
-                _("Unsaved changes will be lost. Are you sure?"), _("Confirm exit dialog"),
+                _t("Unsaved changes will be lost. Are you sure?"), _t("Confirm exit dialog"),
                 Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION,
                 evt -> {
                     if ( "onOK".equals(evt.getName()) ) {
@@ -441,10 +441,10 @@ public class OrderCRUDController extends GenericForwardComposer {
             if ( options != null && options.isEmpty() ) {
 
                 schedulingMode.appendChild(createCombo(
-                        SchedulingMode.FORWARD, _("Forward"), _("Schedule from start to deadline")));
+                        SchedulingMode.FORWARD, _t("Forward"), _t("Schedule from start to deadline")));
 
                 schedulingMode.appendChild(createCombo(
-                        SchedulingMode.BACKWARDS, _("Backwards"), _("Schedule from deadline to start")));
+                        SchedulingMode.BACKWARDS, _t("Backwards"), _t("Schedule from deadline to start")));
             }
         }
 
@@ -489,13 +489,13 @@ public class OrderCRUDController extends GenericForwardComposer {
                 if (value == null) {
 
                     if (mode == SchedulingMode.FORWARD) {
-                        throw new WrongValueException(comp, _("Starting date cannot be empty in forward mode"));
+                        throw new WrongValueException(comp, _t("Starting date cannot be empty in forward mode"));
                     }
 
                     if ( orderModel.isAnyTaskWithConstraint(PositionConstraintType.AS_SOON_AS_POSSIBLE) ) {
                         throw new WrongValueException(
                                 comp,
-                                _("Starting date cannot be empty because there is a task with constraint " +
+                                _t("Starting date cannot be empty because there is a task with constraint " +
                                         "\"as soon as possible\""));
                     }
                 }
@@ -504,13 +504,13 @@ public class OrderCRUDController extends GenericForwardComposer {
             deadline.setConstraint((comp, value) -> {
                 if (value == null) {
                     if (mode == SchedulingMode.BACKWARDS) {
-                        throw new WrongValueException(comp, _("Deadline cannot be empty in backwards mode"));
+                        throw new WrongValueException(comp, _t("Deadline cannot be empty in backwards mode"));
                     }
 
                     if (orderModel.isAnyTaskWithConstraint(PositionConstraintType.AS_LATE_AS_POSSIBLE)) {
                         throw new WrongValueException(
                                 comp,
-                                _("Deadline cannot be empty because there is a task with constraint " +
+                                _t("Deadline cannot be empty because there is a task with constraint " +
                                         "\"as late as possible\""));
                     }
                 }
@@ -531,7 +531,7 @@ public class OrderCRUDController extends GenericForwardComposer {
 
                     deadline.setValue(null);
                     getOrder().setDeadline(null);
-                    throw new WrongValueException(comp, _("must be after start date"));
+                    throw new WrongValueException(comp, _t("must be after start date"));
                 }
             };
         }
@@ -545,7 +545,7 @@ public class OrderCRUDController extends GenericForwardComposer {
 
                     initDate.setValue(null);
                     getOrder().setInitDate(null);
-                    throw new WrongValueException(comp, _("must be lower than end date"));
+                    throw new WrongValueException(comp, _t("must be lower than end date"));
                 }
             };
         }
@@ -885,7 +885,7 @@ public class OrderCRUDController extends GenericForwardComposer {
             }
         } else {
             Messagebox.show(
-                    _("You don't have read access to this project"), _(INFORMATION),
+                    _t("You don't have read access to this project"), _t(INFORMATION),
                     Messagebox.OK, Messagebox.INFORMATION);
 
             goToList();
@@ -1015,7 +1015,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         if ( orderModel.userCanWrite(order) ) {
 
             int status = Messagebox.show(
-                    _("Confirm deleting {0}. Are you sure?", order.getName()), DELETE,
+                    _t("Confirm deleting {0}. Are you sure?", order.getName()), DELETE,
                     Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION);
 
             if ( Messagebox.OK == status ) {
@@ -1024,7 +1024,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         }
         else {
             Messagebox.show(
-                    _("Not enough permissions to edit this project"), _(INFORMATION),
+                    _t("Not enough permissions to edit this project"), _t(INFORMATION),
                     Messagebox.OK, Messagebox.INFORMATION);
         }
     }
@@ -1036,7 +1036,7 @@ public class OrderCRUDController extends GenericForwardComposer {
 
             messagesForUser.showMessage(
                     Level.ERROR,
-                    _("You can not remove the project \"{0}\" because this one has imputed expense sheets.",
+                    _t("You can not remove the project \"{0}\" because this one has imputed expense sheets.",
                             order.getName()));
             return;
         }
@@ -1046,15 +1046,15 @@ public class OrderCRUDController extends GenericForwardComposer {
 
             messagesForUser.showMessage(
                     Level.ERROR,
-                    _("You can not remove the project \"{0}\" because it has time tracked at some of its tasks",
+                    _t("You can not remove the project \"{0}\" because it has time tracked at some of its tasks",
                             order.getName()));
         } else {
             if ( !StringUtils.isBlank(order.getExternalCode()) ) {
 
                 if ( Messagebox.show(
-                        _("This project is a subcontracted project. If you delete it, " +
+                        _t("This project is a subcontracted project. If you delete it, " +
                                 "you won't be able to report progress anymore. Are you sure?"),
-                        _("Confirm"),
+                        _t("Confirm"),
                         Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION) == Messagebox.CANCEL ) {
                     return;
                 }
@@ -1064,7 +1064,7 @@ public class OrderCRUDController extends GenericForwardComposer {
             Util.reloadBindings(self);
 
             messagesForUser.clearMessages();
-            messagesForUser.showMessage(Level.INFO, _("Removed {0}", order.getName()));
+            messagesForUser.showMessage(Level.INFO, _t("Removed {0}", order.getName()));
         }
     }
 
@@ -1078,12 +1078,12 @@ public class OrderCRUDController extends GenericForwardComposer {
 
             } else {
                 Messagebox.show(
-                        _("The project has no scheduled elements"), _(INFORMATION),
+                        _t("The project has no scheduled elements"), _t(INFORMATION),
                         Messagebox.OK, Messagebox.INFORMATION);
             }
         } else {
             Messagebox.show(
-                    _("You don't have read access to this project"), _(INFORMATION),
+                    _t("You don't have read access to this project"), _t(INFORMATION),
                     Messagebox.OK, Messagebox.INFORMATION);
         }
     }
@@ -1111,7 +1111,7 @@ public class OrderCRUDController extends GenericForwardComposer {
     public void checkUserCanRead(Order order) {
         if ( !orderModel.userCanRead(order, SecurityUtils.getSessionUserLoginName()) ) {
             Messagebox.show(
-                    _("Sorry, you do not have permissions to access this project"), _(INFORMATION),
+                    _t("Sorry, you do not have permissions to access this project"), _t(INFORMATION),
                     Messagebox.OK, Messagebox.INFORMATION);
         }
     }
@@ -1296,7 +1296,7 @@ public class OrderCRUDController extends GenericForwardComposer {
             appendObject(row, Util.addCurrencySymbol(order.getTotalManualBudget()));
             appendObject(row, Util.addCurrencySymbol(order.getTotalBudget()));
             appendObject(row, order.getTotalHours());
-            appendObject(row, _(order.getState().toString()));
+            appendObject(row, _t(order.getState().toString()));
             appendOperations(row, order);
 
             row.setTooltiptext(getTooltipText(order));
@@ -1346,7 +1346,7 @@ public class OrderCRUDController extends GenericForwardComposer {
             buttonEdit.setSclass(ICONO_CLASS);
             buttonEdit.setImage("/common/img/ico_editar1.png");
             buttonEdit.setHoverImage("/common/img/ico_editar.png");
-            buttonEdit.setTooltiptext(_("Edit"));
+            buttonEdit.setTooltiptext(_t("Edit"));
             buttonEdit.addEventListener(ON_CLICK_EVENT, event -> goToEditForm(order));
             hbox.appendChild(buttonEdit);
         }
@@ -1357,7 +1357,7 @@ public class OrderCRUDController extends GenericForwardComposer {
                 buttonDelete.setSclass(ICONO_CLASS);
                 buttonDelete.setImage("/common/img/ico_borrar1.png");
                 buttonDelete.setHoverImage("/common/img/ico_borrar.png");
-                buttonDelete.setTooltiptext(_(DELETE));
+                buttonDelete.setTooltiptext(_t(DELETE));
                 buttonDelete.addEventListener(ON_CLICK_EVENT, event -> confirmRemove(order));
                 hbox.appendChild(buttonDelete);
             }
@@ -1368,7 +1368,7 @@ public class OrderCRUDController extends GenericForwardComposer {
             buttonPlan.setSclass(ICONO_CLASS);
             buttonPlan.setImage("/common/img/ico_planificador1.png");
             buttonPlan.setHoverImage("/common/img/ico_planificador.png");
-            buttonPlan.setTooltiptext(_("See scheduling"));
+            buttonPlan.setTooltiptext(_t("See scheduling"));
             buttonPlan.addEventListener(ON_CLICK_EVENT, event -> schedule(order));
             hbox.appendChild(buttonPlan);
         }
@@ -1378,12 +1378,12 @@ public class OrderCRUDController extends GenericForwardComposer {
             buttonDerived.setSclass(ICONO_CLASS);
             buttonDerived.setImage("/common/img/ico_derived1.png");
             buttonDerived.setHoverImage("/common/img/ico_derived.png");
-            buttonDerived.setTooltiptext(_("Create Template"));
+            buttonDerived.setTooltiptext(_t("Create Template"));
             buttonDerived.addEventListener(ON_CLICK_EVENT, event -> createTemplate(order));
 
             if ( !SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_TEMPLATES) ) {
                 buttonDerived.setDisabled(true);
-                buttonDerived.setTooltiptext(_("Not enough permissions to create templates"));
+                buttonDerived.setTooltiptext(_t("Not enough permissions to create templates"));
             }
 
             hbox.appendChild(buttonDerived);
@@ -1409,7 +1409,7 @@ public class OrderCRUDController extends GenericForwardComposer {
             if ( (finishDate != null) && (filterStartDate.getRawValue() != null) &&
                     (finishDate.compareTo((Date) filterStartDate.getRawValue()) < 0) ) {
 
-                throw new WrongValueException(comp, _("must be after start date"));
+                throw new WrongValueException(comp, _t("must be after start date"));
             }
         };
     }
@@ -1421,7 +1421,7 @@ public class OrderCRUDController extends GenericForwardComposer {
             if ( (startDate != null) && (filterFinishDate.getRawValue() != null) &&
                     (startDate.compareTo((Date) filterFinishDate.getRawValue()) > 0) ) {
 
-                throw new WrongValueException(comp, _("must be lower than end date"));
+                throw new WrongValueException(comp, _t("must be lower than end date"));
             }
         };
     }
@@ -1609,13 +1609,13 @@ public class OrderCRUDController extends GenericForwardComposer {
         return (comp, value) -> {
 
             if ( StringUtils.isBlank((String) value) ) {
-                throw new WrongValueException(comp, _("cannot be empty"));
+                throw new WrongValueException(comp, _t("cannot be empty"));
             }
 
             try {
                 Order found = orderDAO.findByNameAnotherTransaction((String) value);
                 if ( !found.getId().equals(getOrder().getId()) ) {
-                    throw new WrongValueException(comp, _("project name already being used"));
+                    throw new WrongValueException(comp, _t("project name already being used"));
                 }
             } catch (InstanceNotFoundException ignored) {}
         };
@@ -1625,13 +1625,13 @@ public class OrderCRUDController extends GenericForwardComposer {
         return (comp, value) -> {
 
             if ( StringUtils.isBlank((String) value) ) {
-                throw new WrongValueException(comp, _("cannot be empty"));
+                throw new WrongValueException(comp, _t("cannot be empty"));
             }
 
             try {
                 Order found = orderDAO.findByCodeAnotherTransaction((String) value);
                 if ( !found.getId().equals(getOrder().getId()) ) {
-                    throw new WrongValueException(comp, _("project code already being used"));
+                    throw new WrongValueException(comp, _t("project code already being used"));
                 }
             } catch (InstanceNotFoundException ignored) {}
         };
@@ -1642,7 +1642,7 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     public String getProjectType() {
-        return isSubcontractedProject() ? _("Subcontracted by client") : _("Regular project");
+        return isSubcontractedProject() ? _t("Subcontracted by client") : _t("Regular project");
     }
 
     public void setCurrentDeliveryDate(Grid listDeliveryDates) {
@@ -1676,7 +1676,7 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     public void addAskedEndDate(Datebox newEndDate) {
         if ( newEndDate == null || newEndDate.getValue() == null ) {
-            messagesForUser.showMessage(Level.ERROR, _("You must select a valid date. "));
+            messagesForUser.showMessage(Level.ERROR, _t("You must select a valid date. "));
 
             return;
         }
@@ -1684,13 +1684,13 @@ public class OrderCRUDController extends GenericForwardComposer {
         if ( thereIsSomeCommunicationDateEmpty() ) {
             messagesForUser.showMessage(
                     Level.ERROR,
-                    _("It will only be possible to add an end date if all the exiting ones in the table " +
+                    _t("It will only be possible to add an end date if all the exiting ones in the table " +
                             "have already been sent to the customer."));
             return;
         }
 
         if ( orderModel.alreadyExistsRepeatedEndDate(newEndDate.getValue()) ) {
-            messagesForUser.showMessage(Level.ERROR, _("It already exists a end date with the same date. "));
+            messagesForUser.showMessage(Level.ERROR, _t("It already exists a end date with the same date. "));
 
             return;
         }
@@ -1745,7 +1745,7 @@ public class OrderCRUDController extends GenericForwardComposer {
             deleteButton.setSclass(ICONO_CLASS);
             deleteButton.setImage("/common/img/ico_borrar1.png");
             deleteButton.setHoverImage("/common/img/ico_borrar.png");
-            deleteButton.setTooltiptext(_(DELETE));
+            deleteButton.setTooltiptext(_t(DELETE));
             deleteButton.addEventListener(Events.ON_CLICK, event -> removeAskedEndDate(endDate));
 
             return deleteButton;

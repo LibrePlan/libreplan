@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Xestión de custos</title>
+<link rel="stylesheet" href="html/lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="xestion-de-custos">
+<h1 class="title">Xestión de custos</h1>
+
+<div class="contents topic" id="contents">
+<span id="custos"></span><p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#custos-1" id="toc-entry-1">Custos</a><ul>
+<li><a class="reference internal" href="#administracion-de-tipos-de-horas-traballadas" id="toc-entry-2">Administración de tipos de  horas traballadas</a></li>
+<li><a class="reference internal" href="#categorias-de-custo" id="toc-entry-3">Categorías de custo</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="custos-1">
+<h1><a class="toc-backref" href="#toc-entry-1">Custos</a></h1>
+<p>A xestión de custos está prantexada para poder realizar unha previsión estimativa dos custos dos recursos de un proxecto. Para a xestión de custos determinouse a existencia das seguintes entidades:</p>
+<ul>
+<li><p class="first">Tipos de horas traballadas: Indican os tipos de horas de traballo dos recursos. É posible incluír como tipos tanto os tipos de horas para máquinas como para traballadores. Exemplos de tipos de horas serían: Extraordinarias pagadas a 20 euros de xeito xenérico. Os campos que se poden incluír nos tipos de horas traballadas:</p>
+<blockquote>
+<ul class="simple">
+<li>Código: Código externo do tipo de horas.</li>
+<li>Nome: Nome do tipo de hora. Por exemplo, extraordinaria.</li>
+<li>Prezo por defecto: Prezo base por defecto para o tipo de horas.</li>
+<li>Activado: Indica se o tipo de hora está activado.</li>
+</ul>
+</blockquote>
+</li>
+<li><p class="first">Categorías de custo. As categorías de custo indican categorías que se utilizan para definir custos dependendo dos tipos de horas durante uns períodos (estes períodos poden ser indefinidos). Por exemplo, o custo das horas extraordinarias dos oficiais de 1ª durante o seguinte ano é de 24 euros hora. As categorías de custo están formadas por:</p>
+<blockquote>
+<ul class="simple">
+<li>Nome: Nome da categoría de custo.</li>
+<li>Activado: Indica se a categoría está activada ou non.</li>
+<li>Listado de tipos de hora asignados á categoría de custo. Indican diversos períodos e prezos para os tipos de hora. Por exemplo, cada ano con cambio de prezos incluese como un período de tipo de hora neste listado. Por outro lado, para cada tipo de horas mantense un prezo por hora (que pode ser diferente do prezo por hora por defecto que se incluiu para o tipo de hora).</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<div class="section" id="administracion-de-tipos-de-horas-traballadas">
+<h2><a class="toc-backref" href="#toc-entry-2">Administración de tipos de  horas traballadas</a></h2>
+<p>Para dar de alta tipos de horas traballadas é necesario dar os seguintes pasos:</p>
+<ul class="simple">
+<li>Seleccionar a operación &quot;Administrar tipos de hora de traballo&quot; no menú de &quot;Administración&quot;.</li>
+<li>A aplicación amosa o listado de tipos de hora existentes.</li>
+</ul>
+<div class="figure">
+<img alt="images/hour-type-list.png" src="images/hour-type-list.png" style="width: 443.09999999999997px; height: 81.19999999999999px;" />
+<p class="caption">Lista de tipos de horas</p>
+</div>
+<ul class="simple">
+<li>O usuario preme na icona de &quot;Editar&quot; ou preme no botón &quot;Crear&quot;.</li>
+<li>A aplicación amosa un formulario de edición do tipo de hora.</li>
+</ul>
+<div class="figure">
+<img alt="images/hour-type-edit.png" src="images/hour-type-edit.png" style="width: 428.5px; height: 106.5px;" />
+<p class="caption">Edición de tipos de horas</p>
+</div>
+<ul>
+<li><p class="first">O usuario introduce ou modifica:</p>
+<blockquote>
+<ul class="simple">
+<li>O nome do tipo de hora.</li>
+<li>O código do tipo de hora.</li>
+<li>O prezo por defecto.</li>
+<li>Activación/Desactivación do tipo de hora.</li>
+</ul>
+</blockquote>
+</li>
+<li><p class="first">O usuario preme en &quot;Gardar&quot; ou &quot;Gardar e Continuar&quot;.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="categorias-de-custo">
+<h2><a class="toc-backref" href="#toc-entry-3">Categorías de custo</a></h2>
+<p>Para dar de alta categorías de custo é necesario dar os seguintes pasos:</p>
+<ul class="simple">
+<li>Seleccionar a operación &quot;Administrar categorías de custo&quot; no menú de &quot;Administración&quot;.</li>
+<li>A aplicación amosa o listado de categorías existentes.</li>
+</ul>
+<div class="figure">
+<img alt="images/category-cost-list.png" src="images/category-cost-list.png" style="width: 431.5px; height: 94.5px;" />
+<p class="caption">Lista de categorías de custo</p>
+</div>
+<ul class="simple">
+<li>O usuario preme na icona de &quot;Editar&quot; ou preme no botón &quot;Crear&quot;.</li>
+<li>A aplicación amosa un formulario de edición da categoría de custo.</li>
+</ul>
+<div class="figure">
+<img alt="images/category-cost-edit.png" src="images/category-cost-edit.png" style="width: 434.5px; height: 169.0px;" />
+<p class="caption">Edición de categorías de custo</p>
+</div>
+<ul>
+<li><p class="first">O usuario introduce ou modifica:</p>
+<blockquote>
+<ul>
+<li><p class="first">O nome da categoría de custo.</p>
+</li>
+<li><p class="first">Activación/Desactivación do tipo de hora.</p>
+</li>
+<li><p class="first">Listado de tipos de hora que forman parte da categoría. Para cada tipo de hora:</p>
+<blockquote>
+<ul class="simple">
+<li>Tipo de hora: Elixir un dos tipos de hora existentes no sistema. Se non existen ningún é necesario crealo (explícase na subsección anterior).</li>
+<li>Data de inicio e data fin (opcional esta segunda) do período no que afecta a categoría de custo.</li>
+<li>Prezo por hora para esta categoría especificamente.</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+</blockquote>
+</li>
+<li><p class="first">O usuario preme en &quot;Gardar&quot; ou &quot;Gardar e Continuar&quot;.</p>
+</li>
+</ul>
+<p>A asignación de categorías de custo a recursos pode verse no capítulo de recursos. Acceder á sección de &quot;Recursos&quot;.</p>
+</div>
+</div>
+</div>
+</body>
+</html>

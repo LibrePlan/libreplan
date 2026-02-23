@@ -21,7 +21,7 @@
 
 package org.libreplan.web.montecarlo;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -65,7 +65,7 @@ public class MonteCarloModel implements IMonteCarloModel {
     @Autowired
     private ITaskElementDAO taskDAO;
 
-    private static String criticalPath = _("Critical path");
+    private static String criticalPath = _t("Critical path");
 
     private static String defaultCriticalPath = criticalPath + " 1";
 

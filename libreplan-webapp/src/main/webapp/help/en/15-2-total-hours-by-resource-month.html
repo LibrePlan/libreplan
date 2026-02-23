@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Total Hours Worked by Resource in a Month Report</title>
+<link rel="stylesheet" href="html/lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="total-hours-worked-by-resource-in-a-month-report">
+<h1 class="title">Total Hours Worked by Resource in a Month Report</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#purpose" id="toc-entry-1">Purpose</a></li>
+<li><a class="reference internal" href="#input-parameters-and-filters" id="toc-entry-2">Input Parameters and Filters</a></li>
+<li><a class="reference internal" href="#output" id="toc-entry-3">Output</a><ul>
+<li><a class="reference internal" href="#header" id="toc-entry-4">Header</a></li>
+<li><a class="reference internal" href="#footer" id="toc-entry-5">Footer</a></li>
+<li><a class="reference internal" href="#body" id="toc-entry-6">Body</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="purpose">
+<h1><a class="toc-backref" href="#toc-entry-1">Purpose</a></h1>
+<p>This report provides the total number of hours worked by each resource in a given month. This information can be useful for determining worker overtime or, depending on the organization, the number of hours for which each resource should be compensated.</p>
+<p>The application tracks work reports for both workers and machines. For machines, the report sums up the number of hours they were in operation during the month.</p>
+</div>
+<div class="section" id="input-parameters-and-filters">
+<h1><a class="toc-backref" href="#toc-entry-2">Input Parameters and Filters</a></h1>
+<p>To generate this report, users must specify the year and month for which they want to retrieve the total number of hours worked by each resource.</p>
+</div>
+<div class="section" id="output">
+<h1><a class="toc-backref" href="#toc-entry-3">Output</a></h1>
+<p>The output format is as follows:</p>
+<div class="section" id="header">
+<h2><a class="toc-backref" href="#toc-entry-4">Header</a></h2>
+<p>The report header displays:</p>
+<blockquote>
+<ul class="simple">
+<li>The <em>year</em> to which the data in the report pertains.</li>
+<li>The <em>month</em> to which the data in the report pertains.</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="footer">
+<h2><a class="toc-backref" href="#toc-entry-5">Footer</a></h2>
+<p>The footer displays the date on which the report was generated.</p>
+</div>
+<div class="section" id="body">
+<h2><a class="toc-backref" href="#toc-entry-6">Body</a></h2>
+<p>The data section of the report consists of a single table with two columns:</p>
+<blockquote>
+<ul class="simple">
+<li>One column labeled <strong>Name</strong> for the name of the resource.</li>
+<li>One column labeled <strong>Hours</strong> with the total number of hours worked by the resource in that row.</li>
+</ul>
+</blockquote>
+<p>There is a final row that aggregates the total number of hours worked by all resources during the specified <em>month</em> and <em>year</em>.</p>
+</div>
+</div>
+</div>
+</body>
+</html>

@@ -21,7 +21,7 @@
 
 package org.libreplan.web.planner.taskedition;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.web.planner.order.IEditTaskUtilities;
@@ -57,7 +57,7 @@ public class TaskPropertiesCommand implements ITaskPropertiesCommand {
 
     @Override
     public String getName() {
-        return _("Task Properties");
+        return _t("Task Properties");
     }
 
     @Override

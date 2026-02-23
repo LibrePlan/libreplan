@@ -21,7 +21,7 @@
 
 package org.libreplan.web.common.entrypoints;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -93,7 +93,7 @@ public class EntryPointsHandler<T> {
 
         Validate.notNull(
                 entryPoints,
-                _(
+                _t(
                         "{0} annotation required on {1}",
                         EntryPoints.class.getName(),
                         interfaceDefiningEntryPoints.getName()));

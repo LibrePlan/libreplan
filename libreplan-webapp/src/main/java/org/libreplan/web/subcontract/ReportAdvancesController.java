@@ -20,7 +20,7 @@
  */
 package org.libreplan.web.subcontract;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 import java.io.IOException;
 import java.util.List;
@@ -128,7 +128,7 @@ public class ReportAdvancesController extends GenericForwardComposer {
 
             // append the status
             String status = reportAdvancesModel.getStatus(order);
-            appendLabel(row, _(status));
+            appendLabel(row, _t(status));
 
             // append the operations
             if ("Updated".equals(status)) {
@@ -190,12 +190,12 @@ public class ReportAdvancesController extends GenericForwardComposer {
         }
 
         private Button getSendButton(final Order order, boolean sendButtonDisabled) {
-            Button sendButton = new Button(_("Send"));
+            Button sendButton = new Button(_t("Send"));
             sendButton.setSclass("add-button");
             sendButton.addEventListener(Events.ON_CLICK,  event -> {
                 try {
                     reportAdvancesModel.sendAdvanceMeasurements(order);
-                    messagesForUser.showMessage(Level.INFO, _("Progress sent successfully"));
+                    messagesForUser.showMessage(Level.INFO, _t("Progress sent successfully"));
                 } catch (UnrecoverableErrorServiceException e) {
                     messagesForUser.showMessage(Level.ERROR, e.getMessage());
                 } catch (ConnectionProblemsException e) {

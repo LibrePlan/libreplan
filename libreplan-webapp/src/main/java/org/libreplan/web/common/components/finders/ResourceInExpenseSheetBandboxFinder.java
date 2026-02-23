@@ -28,6 +28,8 @@ import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
 
+import static org.libreplan.web.I18nHelper._t;
+
 import java.util.List;
 
 /**
@@ -41,12 +43,12 @@ public class ResourceInExpenseSheetBandboxFinder extends BandboxFinder implement
     @Autowired
     private IResourceDAO resourceDAO;
 
-    private final String headers[] = { _("Resource name (Resource code)"), _("Type") };
+    private final String headers[] = { _t("Resource name (Resource code)"), _t("Type") };
 
     /**
      * Forces to mark the string as needing translation
      */
-    private static String _(String string) {
+    private static String _t(String string) {
         return string;
     }
 

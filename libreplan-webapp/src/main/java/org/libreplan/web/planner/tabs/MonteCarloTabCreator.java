@@ -20,7 +20,7 @@
  */
 package org.libreplan.web.planner.tabs;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 import static org.libreplan.web.planner.tabs.MultipleTabsPlannerController.BREADCRUMBS_SEPARATOR;
 import static org.libreplan.web.planner.tabs.MultipleTabsPlannerController.getSchedulingLabel;
 
@@ -48,7 +48,7 @@ import org.zkoss.zul.Label;
  */
 public class MonteCarloTabCreator {
 
-    private String ORDER_LIMITING_RESOURCES_VIEW = _("MonteCarlo Method");
+    private String ORDER_LIMITING_RESOURCES_VIEW = _t("MonteCarlo Method");
 
     public static ITab create(Mode mode,
             PlanningStateCreator planningStateCreator,
@@ -156,7 +156,7 @@ public class MonteCarloTabCreator {
             }
 
         };
-        return new CreatedOnDemandTab(_("MonteCarlo Method"),
+        return new CreatedOnDemandTab(_t("MonteCarlo Method"),
                 "montecarlo-simulation", componentCreator) {
             @Override
             protected void afterShowAction() {

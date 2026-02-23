@@ -38,7 +38,7 @@ import org.zkoss.zul.RowRenderer;
 import java.text.MessageFormat;
 import java.util.List;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 /**
  * Controller for "My tasks" area in the user dashboard window.
@@ -70,8 +70,8 @@ public class MyTasksAreaController extends GenericForwardComposer {
             Util.appendLabel(row, task.getStartAsLocalDate().toString());
             Util.appendLabel(row, task.getEndAsLocalDate().toString());
 
-            Util.appendLabel(row, _("{0} h", task.getSumOfAssignedEffort().toHoursAsDecimalWithScale(0).toString()));
-            Util.appendLabel(row, _("{0} h", orderElement.getEffortAsString()));
+            Util.appendLabel(row, _t("{0} h", task.getSumOfAssignedEffort().toHoursAsDecimalWithScale(0).toString()));
+            Util.appendLabel(row, _t("{0} h", orderElement.getEffortAsString()));
             Util.appendLabel(row, getProgress(orderElement));
             appendTimeTrackingButton(row, task);
         }
@@ -134,7 +134,7 @@ public class MyTasksAreaController extends GenericForwardComposer {
             Button button = Util.createEditButton(trackTimeButtonListener);
             row.addEventListener(Events.ON_CLICK, trackTimeButtonListener);
 
-            button.setTooltiptext(_("Track time"));
+            button.setTooltiptext(_t("Track time"));
 
             row.appendChild(button);
         }

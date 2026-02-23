@@ -38,6 +38,7 @@ import org.zkforge.timeplot.geometry.TimeGeometry;
 import org.zkforge.timeplot.geometry.ValueGeometry;
 import org.zkoss.ganttz.util.Interval;
 
+import static org.libreplan.web.I18nHelper._t;
 
 /**
  *
@@ -242,23 +243,23 @@ public abstract class EarnedValueChartFiller extends ChartFiller {
      */
     public enum EarnedValueType {
 
-        BCWS(_("BCWS"), _("Budgeted Cost Work Scheduled"), "#0000FF"), ACWP(
-                _("ACWP"), _("Actual Cost Work Performed"), "#FF0000"), BCWP(
-                _("BCWP"), _("Budgeted Cost Work Performed"), "#00FF00"), CV(
-                _("CV"), _("Cost Variance"), "#FF8800"), SV(_("SV"),
-                _("Schedule Variance"), "#00FFFF"), BAC(_("BAC"),
-                _("Budget At Completion"), "#FF00FF"), EAC(_("EAC"),
-                _("Estimate At Completion"), "#880000"), VAC(_("VAC"),
-                _("Variance At Completion"), "#000088"), ETC(_("ETC"),
-                _("Estimate To Complete"), "#008800"), CPI(_("CPI"),
-                _("Cost Performance Index"), "#888800"), SPI(_("SPI"),
-                _("Schedule Performance Index"), "#008888")
+        BCWS(_t("BCWS"), _t("Budgeted Cost Work Scheduled"), "#0000FF"), ACWP(
+                _t("ACWP"), _t("Actual Cost Work Performed"), "#FF0000"), BCWP(
+                _t("BCWP"), _t("Budgeted Cost Work Performed"), "#00FF00"), CV(
+                _t("CV"), _t("Cost Variance"), "#FF8800"), SV(_t("SV"),
+                _t("Schedule Variance"), "#00FFFF"), BAC(_t("BAC"),
+                _t("Budget At Completion"), "#FF00FF"), EAC(_t("EAC"),
+                _t("Estimate At Completion"), "#880000"), VAC(_t("VAC"),
+                _t("Variance At Completion"), "#000088"), ETC(_t("ETC"),
+                _t("Estimate To Complete"), "#008800"), CPI(_t("CPI"),
+                _t("Cost Performance Index"), "#888800"), SPI(_t("SPI"),
+                _t("Schedule Performance Index"), "#008888")
         ;
 
         /**
          * Forces to mark the string as needing translation
          */
-        private static String _(String string) {
+        private static String _t(String string) {
             return string;
         }
 
@@ -273,11 +274,11 @@ public abstract class EarnedValueChartFiller extends ChartFiller {
         }
 
         public String getAcronym() {
-            return I18nHelper._(acronym);
+            return I18nHelper._t(acronym);
         }
 
         public String getName() {
-            return I18nHelper._(name);
+            return I18nHelper._t(name);
         }
 
         public String getColor() {

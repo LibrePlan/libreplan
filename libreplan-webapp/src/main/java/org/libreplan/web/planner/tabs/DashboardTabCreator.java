@@ -18,7 +18,7 @@
  */
 package org.libreplan.web.planner.tabs;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 import static org.libreplan.web.planner.tabs.MultipleTabsPlannerController.BREADCRUMBS_SEPARATOR;
 import static org.libreplan.web.planner.tabs.MultipleTabsPlannerController.getSchedulingLabel;
 
@@ -110,7 +110,7 @@ public class DashboardTabCreator {
             }
 
         };
-        return new CreatedOnDemandTab(_("Dashboard"), "order-dashboard",
+        return new CreatedOnDemandTab(_t("Dashboard"), "order-dashboard",
                 componentCreator) {
 
             @Override
@@ -128,7 +128,7 @@ public class DashboardTabCreator {
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(getSchedulingLabel()));
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-                breadcrumbs.appendChild(new Label(_("Dashboard")));
+                breadcrumbs.appendChild(new Label(_t("Dashboard")));
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(currentOrder.getName()));
             }
@@ -148,7 +148,7 @@ public class DashboardTabCreator {
             }
 
         };
-        return new CreatedOnDemandTab(_("Dashboard"), "global-dashboard",
+        return new CreatedOnDemandTab(_t("Dashboard"), "global-dashboard",
                 componentCreator) {
 
             @Override
@@ -157,7 +157,7 @@ public class DashboardTabCreator {
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(getSchedulingLabel()));
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-                breadcrumbs.appendChild(new Label(_("Dashboard")));
+                breadcrumbs.appendChild(new Label(_t("Dashboard")));
             }
         };
 

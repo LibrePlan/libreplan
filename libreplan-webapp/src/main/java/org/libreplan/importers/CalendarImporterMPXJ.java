@@ -20,7 +20,7 @@
 package org.libreplan.importers;
 
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -337,7 +337,7 @@ public class CalendarImporterMPXJ implements ICalendarImporter {
         if (calendars.isEmpty()) {
             return name;
         } else {
-            throw new ValidationException(_("Calendar name already in use"));
+            throw new ValidationException(_t("Calendar name already in use"));
         }
 
     }

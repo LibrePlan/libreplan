@@ -21,7 +21,7 @@
 
 package org.libreplan.web.common;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -199,15 +199,15 @@ public class ConfigurationModel implements IConfigurationModel {
             String entity = entityName.getDescription();
             List<EntitySequence> sequences = entitySequences.get(entityName);
             if (sequences.isEmpty()) {
-                throw new ValidationException(_("At least one {0} sequence is needed", entity));
+                throw new ValidationException(_t("At least one {0} sequence is needed", entity));
             }
 
             if (!isAnyActive(sequences)) {
-                throw new ValidationException(_("At least one {0} sequence must be active", entity));
+                throw new ValidationException(_t("At least one {0} sequence must be active", entity));
             }
 
             if (!checkConstraintPrefixNotRepeated(sequences)) {
-                throw new ValidationException(_(
+                throw new ValidationException(_t(
                         "The {0} sequence prefixes cannot be repeated", entityName.getDescription()));
             }
         }
@@ -251,7 +251,7 @@ public class ConfigurationModel implements IConfigurationModel {
             try {
                 entitySequenceDAO.remove(entitySequence);
             } catch (InstanceNotFoundException e) {
-                throw new ValidationException(_("Some sequences to be removed do not exist"));
+                throw new ValidationException(_t("Some sequences to be removed do not exist"));
             } catch (IllegalArgumentException e) {
                 throw new ValidationException(e.getMessage());
             }

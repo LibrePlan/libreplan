@@ -21,7 +21,7 @@
 
 package org.zkoss.ganttz.resourceload;
 
-import static org.zkoss.ganttz.i18n.I18nHelper._;
+import static org.zkoss.ganttz.i18n.I18nHelper._t;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -167,7 +167,7 @@ public class ResourceLoadLeftPane extends HtmlMacroComponent {
                 buttonPlan.setSclass("icono");
                 buttonPlan.setImage("/common/img/ico_planificador1.png");
                 buttonPlan.setHoverImage("/common/img/ico_planificador.png");
-                buttonPlan.setTooltiptext(_("See scheduling"));
+                buttonPlan.setTooltiptext(_t("See scheduling"));
                 buttonPlan.addEventListener("onClick", event -> schedule(taskLine));
 
                 cell.appendChild(buttonPlan);

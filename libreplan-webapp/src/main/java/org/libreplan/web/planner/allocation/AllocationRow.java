@@ -82,7 +82,7 @@ import java.util.List;
 import com.libreplan.java.zk.components.customdetailrowcomponent.Detail;
 
 import static org.libreplan.business.workingday.EffortDuration.zero;
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 /**
  * It connects the GUI widgets of the allocation row in the GUI with the
@@ -409,7 +409,7 @@ public abstract class AllocationRow {
 
         AssignmentFunction function = getAssignmentFunction();
         if (function != null) {
-            Listitem listitem = new Listitem(_(function.getName()));
+            Listitem listitem = new Listitem(_t(function.getName()));
             listitem.setDisabled(true);
             assignmentFunctionListbox.appendChild(listitem);
             assignmentFunctionListbox.setSelectedItem(listitem);
@@ -417,7 +417,7 @@ public abstract class AllocationRow {
     }
 
     private void initializeAndAppendFlatFunction() {
-        Listitem listitem = new Listitem(_(AssignmentFunctionName.FLAT.toString()));
+        Listitem listitem = new Listitem(_t(AssignmentFunctionName.FLAT.toString()));
         assignmentFunctionListbox.getChildren().clear();
         assignmentFunctionListbox.appendChild(listitem);
         assignmentFunctionListbox.setSelectedItem(listitem);
@@ -442,7 +442,7 @@ public abstract class AllocationRow {
     private void onDifferentRealResourcesPerDay(ResourcesPerDay realResourcesPerDay) {
         this.realResourcesPerDay.setSclass("assigned-resources-label");
 
-        this.realResourcesPerDay.setTooltiptext(_(
+        this.realResourcesPerDay.setTooltiptext(_t(
                 "Only {0} resources per day were achieved for current allocation",
                 realResourcesPerDay.getAmount().toPlainString()));
 
@@ -625,7 +625,7 @@ public abstract class AllocationRow {
             @Override
             public Void onHours(EffortModification modification) {
                 EffortDuration goal = modification.getEffort();
-                Clients.response(new AuWrongValue(effortInput, _("{0} cannot be fulfilled", goal.toFormattedString())));
+                Clients.response(new AuWrongValue(effortInput, _t("{0} cannot be fulfilled", goal.toFormattedString())));
 
                 return null;
             }
@@ -811,7 +811,7 @@ public abstract class AllocationRow {
                 AvailabilityTimeLine otherAvailability = result.getSpecifiedAdditionalAvailability();
 
                 if (calendarValidPeriods.isEmpty()) {
-                    throw new WrongValueException(row, _("there are no valid periods for this calendar"));
+                    throw new WrongValueException(row, _t("there are no valid periods for this calendar"));
                 } else if (otherAvailability.getValidPeriods().isEmpty()) {
                     throw new WrongValueException(row, allocationAttempt.getNoValidPeriodsMessage());
                 } else {
@@ -825,23 +825,23 @@ public abstract class AllocationRow {
                 EffortDuration sumReached = result.getSumReached();
                 List<Interval> validPeriods = result.getValidPeriods();
 
-                String firstLine = _(
+                String firstLine = _t(
                         "In the available periods {0} only {1} hours are available.",
                         validPeriods,
                         sumReached.getHours());
 
                 String secondLine = isGeneric()
-                        ? _("Periods available depend on the satisfaction of " +
+                        ? _t("Periods available depend on the satisfaction of " +
                         "the criteria of resources and their calendars.")
 
-                        : _("Periods available depend on resources' calendar.");
+                        : _t("Periods available depend on resources' calendar.");
 
                 throw new WrongValueException(effortInput, firstLine + "\n" + secondLine);
             }
 
             @Override
             public Void on(ResourcesPerDayIsZero result) {
-                throw new WrongValueException(intendedResourcesPerDayInput, _("Resources per day are zero"));
+                throw new WrongValueException(intendedResourcesPerDayInput, _t("Resources per day are zero"));
             }
         });
     }

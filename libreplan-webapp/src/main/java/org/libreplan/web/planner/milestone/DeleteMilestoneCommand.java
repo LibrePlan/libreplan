@@ -20,7 +20,7 @@
  */
 package org.libreplan.web.planner.milestone;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.planner.entities.TaskMilestone;
@@ -56,7 +56,7 @@ public class DeleteMilestoneCommand implements IDeleteMilestoneCommand {
 
     @Override
     public String getName() {
-        return (_("Delete Milestone"));
+        return (_t("Delete Milestone"));
     }
 
     @Override

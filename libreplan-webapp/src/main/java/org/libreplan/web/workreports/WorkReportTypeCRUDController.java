@@ -21,7 +21,7 @@
 
 package org.libreplan.web.workreports;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 import java.util.ConcurrentModificationException;
 import java.util.List;
@@ -242,9 +242,9 @@ public class WorkReportTypeCRUDController
         labelPosition.setParent(row);
 
         if (workReportTypeModel.isHeadingDescriptionField(row.getValue())) {
-            labelPosition.setValue(_(PositionInWorkReportEnum.HEADING.toString()));
+            labelPosition.setValue(_t(PositionInWorkReportEnum.HEADING.toString()));
         } else {
-            labelPosition.setValue(_(PositionInWorkReportEnum.LINE.toString()));
+            labelPosition.setValue(_t(PositionInWorkReportEnum.LINE.toString()));
         }
     }
 
@@ -321,7 +321,7 @@ public class WorkReportTypeCRUDController
         removeButton.setSclass("icono");
         removeButton.setImage("/common/img/ico_borrar1.png");
         removeButton.setHoverImage("/common/img/ico_borrar.png");
-        removeButton.setTooltiptext(_("Delete"));
+        removeButton.setTooltiptext(_t("Delete"));
 
         return removeButton;
     }
@@ -385,7 +385,7 @@ public class WorkReportTypeCRUDController
     private void appendLabelPosition(Row row) {
         org.zkoss.zul.Label labelPosition = new org.zkoss.zul.Label();
         labelPosition.setParent(row);
-        labelPosition.setValue(_(workReportTypeModel.getLabelAssignmentPosition(row.getValue()).toString()));
+        labelPosition.setValue(_t(workReportTypeModel.getLabelAssignmentPosition(row.getValue()).toString()));
     }
 
     private void appendLabel(Row row) {
@@ -567,7 +567,7 @@ public class WorkReportTypeCRUDController
             try {
                 workReportTypeModel.validateWorkReportTypeName((String) value);
             } catch (IllegalArgumentException e) {
-                throw new WrongValueException(comp, _(e.getMessage()));
+                throw new WrongValueException(comp, _t(e.getMessage()));
             }
         };
     }
@@ -577,7 +577,7 @@ public class WorkReportTypeCRUDController
             try {
                 workReportTypeModel.validateWorkReportTypeCode((String) value);
             } catch (IllegalArgumentException e) {
-                throw new WrongValueException(comp, _(e.getMessage()));
+                throw new WrongValueException(comp, _t(e.getMessage()));
             }
         };
     }
@@ -590,7 +590,7 @@ public class WorkReportTypeCRUDController
                 (getWorkReportType().existRepeatedLabelType(workReportLabelTypeAssignment)) ) {
 
             workReportLabelTypeAssignment.setLabelType(null);
-            throw new WrongValueException(comboLabelTypes, _("Label type already assigned"));
+            throw new WrongValueException(comboLabelTypes, _t("Label type already assigned"));
         }
     }
 
@@ -599,7 +599,7 @@ public class WorkReportTypeCRUDController
             descriptionField.setFieldName((String) value);
             if ((getWorkReportType() != null) && (getWorkReportType().existSameFieldName(descriptionField))) {
                 descriptionField.setFieldName(null);
-                throw new WrongValueException(comp, _("A description field with the same name already exists."));
+                throw new WrongValueException(comp, _t("A description field with the same name already exists."));
             }
         };
     }
@@ -682,7 +682,7 @@ public class WorkReportTypeCRUDController
         try {
             workReportTypeModel.validateWorkReportTypeName(name.getValue());
         } catch (IllegalArgumentException e) {
-            throw new WrongValueException(name, _(e.getMessage()));
+            throw new WrongValueException(name, _t(e.getMessage()));
         }
     }
 
@@ -690,7 +690,7 @@ public class WorkReportTypeCRUDController
         try {
             workReportTypeModel.validateWorkReportTypeCode(code.getValue());
         } catch (IllegalArgumentException e) {
-            throw new WrongValueException(code, _(e.getMessage()));
+            throw new WrongValueException(code, _t(e.getMessage()));
         }
     }
 
@@ -701,7 +701,7 @@ public class WorkReportTypeCRUDController
         if (row != null) {
             fieldName = (Textbox) row.getFirstChild();
         }
-        throw new WrongValueException(fieldName, _("The field name must be unique and not empty"));
+        throw new WrongValueException(fieldName, _t("The field name must be unique and not empty"));
     }
 
     private void showInvalidDescriptionFieldLength(DescriptionField field) {
@@ -711,7 +711,7 @@ public class WorkReportTypeCRUDController
         if (row != null) {
             fieldName = (Intbox) row.getChildren().get(1);
         }
-        throw new WrongValueException(fieldName, _("The length must be greater than 0 and not empty"));
+        throw new WrongValueException(fieldName, _t("The length must be greater than 0 and not empty"));
     }
 
     private void showInvalidWorkReportLabelTypeAssignment(int combo,
@@ -724,7 +724,7 @@ public class WorkReportTypeCRUDController
             comboLabelType = (Combobox) row.getChildren().get(combo);
         }
 
-        throw new WrongValueException(comboLabelType, _(message));
+        throw new WrongValueException(comboLabelType, _t(message));
     }
 
     private Row findRowByValue(Rows rows, Object value) {
@@ -763,7 +763,7 @@ public class WorkReportTypeCRUDController
         public void render(Row row, Object data, int i) {
             row.setValue(data);
 
-            String name = _("Unallocated name");
+            String name = _t("Unallocated name");
             String type;
             if (data instanceof DescriptionField) {
 
@@ -772,7 +772,7 @@ public class WorkReportTypeCRUDController
 
                     name = ((DescriptionField) data).getFieldName();
                 }
-                type = _("Text field");
+                type = _t("Text field");
             } else {
 
                 if ( (((WorkReportLabelTypeAssignment) data).getLabelType() != null) &&
@@ -782,7 +782,7 @@ public class WorkReportTypeCRUDController
                     String label = ((WorkReportLabelTypeAssignment) data).getDefaultLabel().getName();
                     name = labelType + " :: " + label;
                 }
-                type = _("Label");
+                type = _t("Label");
             }
 
             appendNewLabel(row, name);
@@ -832,7 +832,7 @@ public class WorkReportTypeCRUDController
         if (messagesForUserSortedLabelsAndFields != null) {
             messagesForUserSortedLabelsAndFields.showMessage(
                     Level.ERROR,
-                    _("Index fields and labels must be unique and consecutive"));
+                    _t("Index fields and labels must be unique and consecutive"));
         }
     }
 
@@ -870,12 +870,12 @@ public class WorkReportTypeCRUDController
 
     @Override
     protected String getEntityType() {
-        return _("Timesheets Template");
+        return _t("Timesheets Template");
     }
 
     @Override
     protected String getPluralEntityType() {
-        return _("Timesheets Templates");
+        return _t("Timesheets Templates");
     }
 
     @Override
@@ -899,8 +899,8 @@ public class WorkReportTypeCRUDController
     protected boolean beforeDeleting(WorkReportType workReportType) {
         if (thereAreWorkReportsFor(workReportType)) {
             Messagebox.show(
-                    _("Cannot delete timesheet template. There are some timesheets bound to it."),
-                    _("Warning"), Messagebox.OK, Messagebox.EXCLAMATION);
+                    _t("Cannot delete timesheet template. There are some timesheets bound to it."),
+                    _t("Warning"), Messagebox.OK, Messagebox.EXCLAMATION);
             return false;
         }
 

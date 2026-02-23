@@ -22,7 +22,7 @@
 package org.libreplan.web.resourceload;
 
 import static org.libreplan.business.planner.entities.TaskElement.justTasks;
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 import static org.libreplan.web.planner.order.PlanningStateCreator.and;
 
 import java.util.ArrayList;
@@ -691,7 +691,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
             TimeLineRole<BaseEntity> role = getCurrentTimeLineRole(null);
 
             return new LoadTimeLine(
-                    buildTimeLine(resource, _("Other projects"), resourceAllocations, TYPE_RESOURCE, role),
+                    buildTimeLine(resource, _t("Other projects"), resourceAllocations, TYPE_RESOURCE, role),
                     buildTimeLinesGroupForOrder(resource, byOrder));
         }
 
@@ -981,7 +981,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
                     ResourceAllocation.getOfType(SpecificResourceAllocation.class, allocations);
 
             LoadTimeLine main = new LoadTimeLine(
-                    _("Specific Allocations"),
+                    _t("Specific Allocations"),
                     createPeriods(criterion, specific),
                     "related-specific",
                     getCurrentTimeLineRole(criterion));

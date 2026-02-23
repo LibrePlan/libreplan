@@ -21,7 +21,7 @@
 
 package org.libreplan.web.planner.allocation.stretches;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 import java.math.BigDecimal;
 import java.text.DateFormat;
@@ -162,21 +162,21 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
         if (stretchesFunction != null) {
             if (!stretchesFunction.isNoEmptyConstraint()) {
                 throw new ValidationException(
-                        _("At least one stretch is needed"));
+                        _t("At least one stretch is needed"));
             }
             if (!stretchesFunction.isStretchesOrderConstraint()) {
                 throw new ValidationException(
-                        _("Some stretch has higher or equal values than the "
+                        _t("Some stretch has higher or equal values than the "
                                 + "previous stretch"));
             }
             if (!stretchesFunction.isOneHundredPercentConstraint()) {
                 throw new ValidationException(
-                        _("Last stretch should have 100% for length and amount of work"));
+                        _t("Last stretch should have 100% for length and amount of work"));
             }
             if (stretchesFunction.isInterpolated()) {
                 if (!stretchesFunction.checkHasAtLeastTwoStretches()) {
                     throw new ValidationException(
-                            _("There must be at least 2 stretches for doing interpolation"));
+                            _t("There must be at least 2 stretches for doing interpolation"));
                 }
             }
             if (originalStretchesFunction != null) {
@@ -275,13 +275,13 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
             throws IllegalArgumentException {
         if (date.compareTo(task.getStartDate()) < 0) {
             throw new IllegalArgumentException(
-                    _("Stretch date must not be before task start date: "
+                    _t("Stretch date must not be before task start date: "
                             + sameFormatAsDefaultZK(task.getStartDate())));
         }
 
         if (date.compareTo(taskEndDate) > 0) {
             throw new IllegalArgumentException(
-                    _("Stretch date must be earlier than End date: "
+                    _t("Stretch date must be earlier than End date: "
                             + sameFormatAsDefaultZK(taskEndDate)));
         }
 

@@ -21,7 +21,7 @@
 
 package org.libreplan.web.resourceload;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 import static org.libreplan.web.resourceload.ResourceLoadModel.asDate;
 import static org.libreplan.web.resourceload.ResourceLoadModel.toLocal;
 
@@ -225,7 +225,7 @@ public class ResourceLoadController implements Composer {
             chartComponent.setHeight("200px");
 
             Tabs chartTabs = new Tabs();
-            chartTabs.appendChild(new Tab(_("Load")));
+            chartTabs.appendChild(new Tab(_t("Load")));
             chartComponent.appendChild(chartTabs);
             chartTabs.setWidth("124px");
 
@@ -452,9 +452,9 @@ public class ResourceLoadController implements Composer {
             });
 
             Hbox hbox = new Hbox();
-            hbox.appendChild(new Label(_("From") + ":"));
+            hbox.appendChild(new Label(_t("From") + ":"));
             hbox.appendChild(startBox);
-            hbox.appendChild(new Label(_("To") + ":"));
+            hbox.appendChild(new Label(_t("To") + ":"));
             hbox.appendChild(endBox);
             hbox.setAlign("center");
 
@@ -548,9 +548,9 @@ public class ResourceLoadController implements Composer {
 
         private void updateLabelValue() {
             if ( isFilteringByResource() ) {
-                label.setValue(_("Resources or criteria") + ":");
+                label.setValue(_t("Resources or criteria") + ":");
             } else {
-                label.setValue(_("Criteria") + ":");
+                label.setValue(_t("Criteria") + ":");
             }
         }
 
@@ -724,8 +724,8 @@ public class ResourceLoadController implements Composer {
             filterByNameCombo.getChildren().clear();
 
             Comboitem lastItem = new Comboitem();
-            lastItem.setLabel(_("All"));
-            lastItem.setDescription(_("Show all elements"));
+            lastItem.setLabel(_t("All"));
+            lastItem.setDescription(_t("Show all elements"));
             lastItem.setValue(ALL);
             pages.add(lastItem);
 
@@ -1050,12 +1050,12 @@ public class ResourceLoadController implements Composer {
                     planningControllerEntryPoints.goToTaskResourceAllocation(order, task);
                 } else {
                     Messagebox.show(
-                            _("The project has no scheduled elements"), _("Information"),
+                            _t("The project has no scheduled elements"), _t("Information"),
                             Messagebox.OK, Messagebox.INFORMATION);
                 }
             } else {
                 Messagebox.show(
-                        _("You don't have read access to this project"), _("Information"),
+                        _t("You don't have read access to this project"), _t("Information"),
                         Messagebox.OK, Messagebox.INFORMATION);
 
             }

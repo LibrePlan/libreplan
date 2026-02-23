@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Pedidos e elementos de pedidos</title>
+<link rel="stylesheet" href="html/lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="pedidos-e-elementos-de-pedidos">
+<h1 class="title">Pedidos e elementos de pedidos</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#pedido" id="toc-entry-1">Pedido</a></li>
+<li><a class="reference internal" href="#edicion-de-elementos-de-pedido" id="toc-entry-2">Edición de elementos de pedido</a><ul>
+<li><a class="reference internal" href="#edicion-da-informacion-do-elemento-de-pedido" id="toc-entry-3">Edición da información do elemento de pedido</a></li>
+<li><a class="reference internal" href="#visualizacion-de-horas-imputadas-a-elementos-de-pedido" id="toc-entry-4">Visualización de horas imputadas a elementos de pedido</a></li>
+<li><a class="reference internal" href="#xestion-de-avances-dos-elementos-de-pedido" id="toc-entry-5">Xestión de avances dos elementos de pedido</a></li>
+<li><a class="reference internal" href="#xestion-de-etiquetas-do-pedido" id="toc-entry-6">Xestión de etiquetas do pedido</a></li>
+<li><a class="reference internal" href="#xestionar-os-criterios-esixidos-polo-elemento-de-pedido-e-os-grupos-de-horas" id="toc-entry-7">Xestionar os criterios esixidos polo elemento de pedido e os grupos de horas</a></li>
+<li><a class="reference internal" href="#xestionar-os-materiais" id="toc-entry-8">Xestionar os materiais</a></li>
+<li><a class="reference internal" href="#xestionar-os-formularios-de-calidade" id="toc-entry-9">Xestionar os formularios de calidade</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>Os pedidos son as entidades que describen os traballos a realizar por parte dos usuarios que utilicen a aplicación.
+Cada pedido correspóndese cos proxectos que as empresas van a ofrecerlles ós seus clientes.</p>
+<p>Un pedido está formado por unha ou varias liñas de pedido. Cada liña de pedido correspóndese coa estruturación que se desexe realizar sobre os traballos dentro dese pedido. As liñas de pedido organízanse de xeito xerárquico sen limitacións de profundidade. O feito de que as liñas de pedido se organicen de xeito xerárquico marca o funcionamento de diversas características herdables, tal como as etiquetas.</p>
+<p>Nas seguintes seccións describiranse as operacións que un usuario pode realizar cos pedidos e as liñas de pedidos.</p>
+<div class="section" id="pedido">
+<h1><a class="toc-backref" href="#toc-entry-1">Pedido</a></h1>
+<p>Un pedido é un proxecto ou traballo que un cliente lle solicita a unha empresa. O pedido para o planificador identifica a entidade de proxecto dentro da empresa. A diferencia das aplicacións de xestión globais, &quot;LibrePlan&quot; só necesita utilizar certos datos dos pedidos. Estes datos son:</p>
+<ul class="simple">
+<li>Nome do pedido</li>
+<li>Código do pedido.</li>
+<li>Importe total do pedido</li>
+<li>Data de comezo estimada</li>
+<li>Data de finalización</li>
+<li>Responsable</li>
+<li>Descrición</li>
+<li>Calendario asignado.</li>
+<li>Autoxeneración de códigos. Campo para indicarlle ó sistema que autoxenere os códigos dos elementos de pedido e dos grupos de horas.</li>
+<li>Preferencia entre dependencias e restricións. O usuario pode elixir dependencias ou restricións como prioritarios á hora de ser aplicados cando entren en conflito.</li>
+</ul>
+<p>Sen embargo, o propio pedido está relacionado con outras entidades que finalmente o dotan de unha maior riqueza:</p>
+<ul class="simple">
+<li>Horas asignadas ó pedido.</li>
+<li>Avances imputados ó pedido.</li>
+<li>Etiquetas.</li>
+<li>Criterios asignados ó pedido.</li>
+<li>Materiais</li>
+<li>Formularios de calidade</li>
+</ul>
+<p>Para editar ou crear un pedido é posible realizalo dende varios puntos da aplicación:</p>
+<ul>
+<li><p class="first">Accedendo á perspectiva de &quot;Lista de pedidos&quot; dentro da vista global de empresa.</p>
+<blockquote>
+<ul class="simple">
+<li>A edición realízase premendo no botón de editar sobre o pedido elixido.</li>
+<li>A creación realízase premendo en &quot;Novo pedido&quot;.</li>
+</ul>
+</blockquote>
+</li>
+<li><p class="first">Accedendo a un pedido no diagrama de Gantt e cambiando de perspectiva á de detalles de pedido.</p>
+</li>
+</ul>
+<p>Dende a edición de pedido é posible acceder ás seguintes pestanas:</p>
+<ul class="simple">
+<li>Edición dos datos de pedidos. Dende dita pantalla é posible editar os datos básicos do pedido. Actualmente:<ul>
+<li>Nome</li>
+<li>Código</li>
+<li>Data de comezo estimada</li>
+<li>Data de finalización</li>
+<li>Responsable</li>
+<li>Cliente</li>
+<li>Descrición</li>
+</ul>
+</li>
+</ul>
+<div class="figure">
+<img alt="images/order-edition.png" src="images/order-edition.png" style="width: 429.0px; height: 227.5px;" />
+<p class="caption">Edición de pedido</p>
+</div>
+<ul class="simple">
+<li>Listado de elementos de pedido. Dende o listado de elenentos de pedido é posible realizar varias operacións:<ul>
+<li>Crear novos elementos de pedido.</li>
+<li>Subir nun mesmo nivel da xerarquía un elemento de pedido.</li>
+<li>Baixar nun mesmo nivel da xerarquía un elemento de pedido.</li>
+<li>Indentar un elemento de pedido, ou o que é o mesmo mover cara abaixo na xerarquía, cambiando de nivel o elemento.</li>
+<li>Des-indentar un elemento de pedido, ou o que é o mesmo mover cara arriba na xerarquía, cambiando de nivel o elemento.</li>
+<li>Filtrar os elementos de pedido.</li>
+<li>Borrar elementos de pedido.</li>
+<li>Mover arrastrando e soltando un elemento de pedido na xerarquía.</li>
+</ul>
+</li>
+</ul>
+<div class="figure">
+<img alt="images/order-elements-list.png" src="images/order-elements-list.png" style="width: 496.8px; height: 107.60000000000001px;" />
+<p class="caption">Listado de elementos de pedido</p>
+</div>
+<ul class="simple">
+<li>Horas asignadas. Pantalla na que se amosan as horas totais imputadas ó proxecto, tratándose de unha pantalla de visualización onde se agrupan as horas imputadas ós elementos de pedido.</li>
+</ul>
+<div class="figure">
+<img alt="images/order-assigned-hours.png" src="images/order-assigned-hours.png" style="width: 432.0px; height: 202.5px;" />
+<p class="caption">Asignación de horas imputadas ó pedido polos traballadores</p>
+</div>
+<ul class="simple">
+<li>Avances. Pantalla na que se permiten imputar tipos de avances e medidas de avances ó pedido. Ver sección de &quot;Avances&quot; para o funcionamento da mesma.</li>
+<li>Etiquetas. Pantalla na que se permite asignar etiquetas a un pedido e coñecer as etiquetas directas e indirectas que xa foron asignadas. Ver a seguinte sección de edición de elementos de pedido máis en profundidade para coñecer o procedemento de xestionar as etiquetas.</li>
+</ul>
+<div class="figure">
+<img alt="images/order-labels.png" src="images/order-labels.png" style="width: 402.5px; height: 180.95px;" />
+<p class="caption">Etiquetas de pedido</p>
+</div>
+<ul class="simple">
+<li>Criterios. Pantalla na que se poden asignar os criterios que se desexan aplicar globalmente a todas as tarefas de un pedido. Estes criterios serían aplicados de xeito automático a todos os elementos de pedido, excepto que estes fosen invalidados explicitamente. Asimesmo, pódense visualizar os grupos de horas dos elementos de pedidos agrupados por criterios, o cal permite coñecer os criterios que se esixen ó longo de un pedido.</li>
+</ul>
+<div class="figure">
+<img alt="images/order-criterions.png" src="images/order-criterions.png" style="width: 423.5px; height: 261.5px;" />
+<p class="caption">Criterios de pedido</p>
+</div>
+<ul>
+<li><p class="first">Materiais. Pantalla na que se pode asignar o material dispoñible ó pedido. O material é seleccionable de entre as categorías de material que existen na aplicación. Os materiais son xestionados do seguinte modo:</p>
+<blockquote>
+<ul class="simple">
+<li>O usuario selecciona a pestana que se amosa na zona inferior da pantalla chamada &quot;Procura de materiais&quot;.</li>
+<li>O usuario pode introducir un texto para a procura de materiais ou seleccionar as categorías para as que se desexa amosar materiais.</li>
+<li>O sistema filtra os resultados.</li>
+<li>O usuario selecciona os materiais que desexa (para seleccionar máis de un material o usuario pode premer no botón &quot;Ctrl&quot; que permite a selección múltiple no listado.</li>
+<li>O usuario preme en &quot;Asignar&quot;.</li>
+<li>O sistema amosa o listado de materiais xa asignado ó pedido.</li>
+<li>O usuario selecciona as unidades e o estado que desexa asignarlle ó pedido.</li>
+<li>O usuario preme en &quot;Gardar&quot; ou &quot;Gardar e Continuar&quot;.</li>
+<li>Se o usuario desexa xestionar a recepción de material, o sistema permite premer en &quot;Dividir&quot; para cambiar o estado dunha cantidade parcial de materiais.</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<div class="figure">
+<img alt="images/order-material.png" src="images/order-material.png" style="width: 430.0px; height: 204.0px;" />
+<p class="caption">Material asociado a un pedido</p>
+</div>
+<ul class="simple">
+<li>Calidade. É posible asignar un formulario de calidade ó pedido co obxectivo de ser cumprimentado para asegurar a realización de certas actividades asociadas ó pedido. Ver a seguinte sección de edición de elementos de pedido máis en profundidade para coñecer o procedemento de xestionar o formulario de calidade.</li>
+</ul>
+<div class="figure">
+<img alt="images/order-quality.png" src="images/order-quality.png" style="width: 428.0px; height: 259.0px;" />
+<p class="caption">Formulario de calidade asociado ó pedido</p>
+</div>
+</div>
+<div class="section" id="edicion-de-elementos-de-pedido">
+<h1><a class="toc-backref" href="#toc-entry-2">Edición de elementos de pedido</a></h1>
+<p>A edición de elementos de pedido realizase dende a pestana de listado de elementos de pedido a partir da icona de edición. Se o usuario preme na icona de edición, o sistema amosa unha nova pantalla dende a que o usuario pode realizar o seguinte:</p>
+<ul class="simple">
+<li>Editar a información do elemento de pedido.</li>
+<li>Visualización de horas imputadas a elemento de pedido.</li>
+<li>Xestionar os avances dos elementos de pedido.</li>
+<li>Xestionar as etiquetas do pedido.</li>
+<li>Xestionar os criterios esixidos polo elemento de pedido.</li>
+<li>Xestionar os materiais.</li>
+<li>Xestionar os formularios de calidade.</li>
+</ul>
+<p>As seguintes subseccións tratan cada un das operacións en profundidade.</p>
+<div class="section" id="edicion-da-informacion-do-elemento-de-pedido">
+<h2><a class="toc-backref" href="#toc-entry-3">Edición da información do elemento de pedido</a></h2>
+<p>A edición de información de elemento de pedido inclúe a edición dos seguintes datos:</p>
+<ul class="simple">
+<li>Nome do elemento de pedido.</li>
+<li>Código do elemento de pedido.</li>
+<li>Data de inicio do elemento de pedido.</li>
+<li>Data estimada de fin do elemento de pedido.</li>
+<li>Horas totais do elemento de pedido. Estas horas poden ser calculadas a partir dos grupos de horas engadidas ou introducidas directamente neste punto que se repartiran entre os grupos de horas, creando algún novo se as porcentaxes non coinciden coas porcentaxes iniciais.</li>
+<li><strong>Grupos de horas</strong>: É posible engadir un ou varios grupos de horas ó elemento de pedido. <strong>O significado destes grupos de horas</strong> é o establecemento dos requirimentos que se lle esixen ós recursos que vaian a ser asignados para realizalas.</li>
+<li>Criterios: É posible engadir criterios que se deben satisfacer para poder se asignado xenericamente para realizar dito elemento de pedido.</li>
+</ul>
+<div class="figure">
+<img alt="images/order-element-edition.png" src="images/order-element-edition.png" style="width: 477.5px; height: 345.0px;" />
+<p class="caption">Edición de elemento de pedido</p>
+</div>
+</div>
+<div class="section" id="visualizacion-de-horas-imputadas-a-elementos-de-pedido">
+<h2><a class="toc-backref" href="#toc-entry-4">Visualización de horas imputadas a elementos de pedido</a></h2>
+<p>A pestana de &quot;Horas asignadas&quot; permite visualizar os partes de traballo asociados a un elemento de pedido e ó mesmo tempo permite visualizar cantas horas das presupostadas están xa realizadas.</p>
+<div class="figure">
+<img alt="images/order-element-hours.png" src="images/order-element-hours.png" style="width: 478.5px; height: 344.5px;" />
+<p class="caption">Horas asignadas a elementos de pedido</p>
+</div>
+<p>A pantalla está dividida en dúas partes:</p>
+<ul class="simple">
+<li>Listado de partes de traballo: O usuario ve o listado de partes de traballo que están asociados ó elemento de pedido podendo comprobar a data e hora, recurso e número de horas adicadas á tarefa.</li>
+<li>Uso das horas presupostadas: O sistema calcula o total de horas adicadas á tarefa e as contrasta coas que estaban presupostadas.</li>
+</ul>
+</div>
+<div class="section" id="xestion-de-avances-dos-elementos-de-pedido">
+<h2><a class="toc-backref" href="#toc-entry-5">Xestión de avances dos elementos de pedido</a></h2>
+<p>A introdución de tipos de avances e xestión dos avances dos elementos de pedido foi descrita no capítulo de &quot;Avances&quot;.</p>
+</div>
+<div class="section" id="xestion-de-etiquetas-do-pedido">
+<h2><a class="toc-backref" href="#toc-entry-6">Xestión de etiquetas do pedido</a></h2>
+<p>As etiquetas, tal e como se describen no capítulo adicado ás mesmas, son entidades que permiten categorizar os elementos de pedido. Deste xeito, o usuario pode agrupar información de planificación ou pedidos en base a elas.</p>
+<p>Un usuario pode asignar etiquetas directamente a un elemento de pedido ou ben a un antecesor na xerarquía dese elemento de pedido. A partir do momento no que se asigna unha etiqueta dun dos dous xeitos anteriores, tanto o elemento de pedido como a tarefa de planificación asociada estan asociadas a dita etiqueta, sendo utilizadas para posteriores filtrados.</p>
+<div class="figure">
+<img alt="images/order-element-tags.png" src="images/order-element-tags.png" style="width: 476.5px; height: 344.0px;" />
+<p class="caption">Asignación de etiquetas para elementos de pedido</p>
+</div>
+<p>Tal e como se pode ver na imaxe, dende a pestana de <strong>etiquetas</strong>, o usuario pode realizar as seguintes operacións:</p>
+<ul class="simple">
+<li>Visualización das etiquetas que un elemento do pedido ten asociadas por herdanza dun elemento de pedido superior na xerarquía á que lle foi asignada directamente. A tarefa de planificación asociada a cada elemento de pedido ten as mesmas etiquetas asociadas.</li>
+<li>Visualización das etiquetas que un elemento do pedido ten asociadas directamente a través do seguinte formulario de asignación de etiquetas inferior.</li>
+<li>Asignar etiquetas existentes: Un usuario pode asignar etiquetas a partir da procura dunha entre as existentes no formulario inferior ó listado de etiquetas directas. Para buscar unha etiqueta chega con premer na icona coa lupa ou escribir o inicio da etiqueta na entrada de texto para que o sistema amose as opcións dispoñibles.</li>
+<li>Crear e asignar etiquetas novas: Un usuario pode crear novas etiquetas asociadas a un tipo de etiquetas existente dende dito formulario. Para realizar a operación é necesario que seleccione un tipo de etiqueta á que se asocia e se introduza o valor da etiqueta para o tipo seleccionado. Premendo en &quot;Crear e asignar&quot; o sistema xa a crea automáticamente e a asigna ó elemento de pedido.</li>
+</ul>
+</div>
+<div class="section" id="xestionar-os-criterios-esixidos-polo-elemento-de-pedido-e-os-grupos-de-horas">
+<h2><a class="toc-backref" href="#toc-entry-7">Xestionar os criterios esixidos polo elemento de pedido e os grupos de horas</a></h2>
+<p>Tanto un pedido como un elemento de pedido poden ter asignados os criterios que se esixen para ser realizados. Os criterios poden afectar de xeito directo ou de xeito indirecto:</p>
+<ul class="simple">
+<li>Criterios directos: Son os que se asignan directamente ó elemento de pedido. Son os criterios que se van a esixir ós grupos de horas que forman parte do elemento de pedido.</li>
+<li>Criterios indirectos: Son os criterios que se asignan en elementos de pedido superiores na xerarquía e son herdados polo elemento en edición.</li>
+</ul>
+<p>A maiores do criterio esixido, é posible definir un ou varios grupos de horas que forman parte do elemento de pedido. Dependendo de se o elemento de pedido contén outros elementos de pedido como fillos ou é un nodo folla. No primeiro dos casos os datos de horas e grupos de horas son solo visualizables e no caso de nodos folla son editables. O funcionamento neste segundo caso é o seguinte:</p>
+<ul>
+<li><p class="first">Por defecto, o sistema crea un grupo de horas asociado ó elemento de pedido. Os datos modificables para un grupo de horas son:</p>
+<blockquote>
+<ul class="simple">
+<li>Código do grupo de horas, se non é autoxenerado.</li>
+<li>Tipo de criterio. O usuario pode elixir se desexa asignar un criterio de tipo máquina ou traballador.</li>
+<li>Número de horas do grupo de horas.</li>
+<li>Lista de criterios que se aplican ó grupo de horas. Para engadir novos criterios o usuario debe premer en &quot;Engadir criterio&quot; e seleccionar un no buscador que aparece tras premer no botón.</li>
+</ul>
+</blockquote>
+</li>
+<li><p class="first">O usuario pode engadir novos grupos de horas con características diferentes que os grupos de horas anteriores. Exemplo disto sería que un elemento de pedido debe ser feito por un soldador (30h) e por un pintor (40h).</p>
+</li>
+</ul>
+<div class="figure">
+<img alt="images/order-element-criterion.png" src="images/order-element-criterion.png" style="width: 476.0px; height: 344.0px;" />
+<p class="caption">Asignación de criterios a elementos de pedidos</p>
+</div>
+</div>
+<div class="section" id="xestionar-os-materiais">
+<h2><a class="toc-backref" href="#toc-entry-8">Xestionar os materiais</a></h2>
+<p>Os materiais son xestionados nos proxectos como un listado asociado a cada liña de pedido ou a un pedido globalmente. O listado de materiais está formado polos seguintes campos:</p>
+<ul class="simple">
+<li>Código</li>
+<li>Data</li>
+<li>Unidades: Unidades necesarias.</li>
+<li>Tipo de unidade: Tipo de unidade no que se mide o material.</li>
+<li>Prezo da unidade: Prezo unitario.</li>
+<li>Prezo total: Prezo resultante de multiplicar o prezo unitario polas unidades.</li>
+<li>Categoría: Categoría de material á que pertence.</li>
+<li>Estado: Recibido, Solicitado, Pendente, Procesando, Cancelado.</li>
+</ul>
+<p>O modo de traballar cos materiais é o seguinte:</p>
+<ul class="simple">
+<li>O usuario selecciona a pestana de &quot;Materiais&quot; dun elemento de pedido.</li>
+<li>O sistema amosa dúas subpestanas: &quot;Materiais&quot; e &quot;Procura de materiais&quot;.</li>
+<li>Se o elemento de pedido non tiña materiais asignados, a primeira pestana amosa un listado baleiro.</li>
+<li>O usuario preme en &quot;Procura de materiais&quot; na zona inferior esquerda da ventana.</li>
+<li>O sistema amosa o listado de categorías dispoñibles e os materiais asociados.</li>
+</ul>
+<div class="figure">
+<img alt="images/order-element-material-search.png" src="images/order-element-material-search.png" style="width: 476.0px; height: 343.0px;" />
+<p class="caption">Procura de material</p>
+</div>
+<ul class="simple">
+<li>O usuario selecciona categorías nas que buscar para afinar a procura de materiais.</li>
+<li>O sistema amosa os materiais pertencentes ás categorías seleccionadas.</li>
+<li>O usuario selecciona no listado de materiais aqueles que desexa asignar ó elemento de pedido.</li>
+<li>O usuario preme en &quot;Asignar&quot;.</li>
+<li>O sistema amosa o listado seleccionado de materiais na pestana de &quot;Materiais&quot; con novos campos por cubrir.</li>
+</ul>
+<div class="figure">
+<img alt="images/order-element-material-assign.png" src="images/order-element-material-assign.png" style="width: 475.5px; height: 341.5px;" />
+<p class="caption">Asignación de material a elemento de pedido</p>
+</div>
+<ul class="simple">
+<li>O usuario selecciona as unidades, estado e data dos materiais asignados.</li>
+</ul>
+<p>Para control posterior dos materiais é posible cambiar o estado dun grupo de unidades do material recibido. Esta operación realízase do seguinte modo:</p>
+<ul class="simple">
+<li>O usuario preme no botón &quot;Dividir&quot; que se amosa no listado de materiais á dereita de cada fila.</li>
+<li>O usuario selecciona o número de unidades para os que desexa dividir a fila.</li>
+<li>A aplicación amosa dúas filas co material dividido.</li>
+<li>O usuario cambia o estado da fila de material que desexa.</li>
+</ul>
+<p>A utilidade desta operación de división é a de poder recibir entregas parciais de material sin necesidade de esperar a recibilo todo para marcalo como recibido.</p>
+</div>
+<div class="section" id="xestionar-os-formularios-de-calidade">
+<h2><a class="toc-backref" href="#toc-entry-9">Xestionar os formularios de calidade</a></h2>
+<p>Existen elementos de pedido que deben certificar que certas tarefas foron realizados para poder ser marcadas como completadas. É por iso que xurden os formularios de calidade, os cales están formados por unha lista de preguntas que poden ter asignado un peso segundo sexa contestada positivamente.</p>
+<p>É importante destacar que un formulario de calidade debe ser creado previamente para poder ser asignado ó elemento de pedido.</p>
+<p>Para xestionar os formulario de calidade:</p>
+<ul class="simple">
+<li>O usuario accede á pestana de &quot;Formularios de calidade&quot;.</li>
+</ul>
+<div class="figure">
+<img alt="images/order-element-quality.png" src="images/order-element-quality.png" style="width: 475.5px; height: 343.5px;" />
+<p class="caption">Asignación de formulario de calidade a elemento de pedido</p>
+</div>
+<ul>
+<li><p class="first">A aplicación amosa un buscador de formularios de calidade. Existen dous tipos de formularios de calidade: por elementos ou porcentaxe.</p>
+<blockquote>
+<ul class="simple">
+<li>Por elementos: Cada elemento é independente.</li>
+<li>Por porcentaxe: Cada pregunta incrementa o avance no elemento de pedido en un porcentaxe. As porcentaxes deben ser incrementales ata o 100%.</li>
+</ul>
+</blockquote>
+</li>
+<li><p class="first">O usuario selecciona un dos formularios dados de alta dende a interface de administración e preme en &quot;Asignar&quot;.</p>
+</li>
+<li><p class="first">A aplicación asigna o formulario elixido no listado de formularios asignados ó elemento de pedido.</p>
+</li>
+<li><p class="first">O usuario preme no botón &quot;Editar&quot; do elemento de pedido.</p>
+</li>
+<li><p class="first">A aplicación desprega as preguntas do formulario de calidade no listado inferior.</p>
+</li>
+<li><dl class="first docutils">
+<dt>O usuario marca como acadadas as preguntas que son realizadas.</dt>
+<dd><ul class="first last simple">
+<li>Se o tipo de formulario de calidade é por porcentaxe, as preguntas son contestadas por orde.</li>
+<li>Se o tipo de formulario de calidade é por elementos, as preguntas son contestadas en calquera orde.</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</body>
+</html>

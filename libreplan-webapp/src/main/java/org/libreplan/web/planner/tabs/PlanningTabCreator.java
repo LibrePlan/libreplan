@@ -44,7 +44,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 import static org.libreplan.web.planner.tabs.MultipleTabsPlannerController.BREADCRUMBS_SEPARATOR;
 import static org.libreplan.web.planner.tabs.MultipleTabsPlannerController.getSchedulingLabel;
 
@@ -148,7 +148,7 @@ public class PlanningTabCreator {
 
                     @Override
                     public String getName() {
-                        return _("Schedule");
+                        return _t("Schedule");
                     }
 
                     @Override
@@ -178,7 +178,7 @@ public class PlanningTabCreator {
 
                     @Override
                     public String getName() {
-                        return _("Project Details");
+                        return _t("Project Details");
                     }
 
                     @Override
@@ -194,7 +194,7 @@ public class PlanningTabCreator {
             }
 
         };
-        return new CreatedOnDemandTab(_("Projects Planning"), "company-scheduling", componentCreator) {
+        return new CreatedOnDemandTab(_t("Projects Planning"), "company-scheduling", componentCreator) {
             @Override
             protected void beforeShowAction() {
                 if (!SecurityUtils.isSuperuserOrRolePlanningOrHasAnyAuthorization()) {
@@ -222,7 +222,7 @@ public class PlanningTabCreator {
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(getSchedulingLabel()));
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-                breadcrumbs.appendChild(new Label(_("Projects Planning")));
+                breadcrumbs.appendChild(new Label(_t("Projects Planning")));
             }
         };
     }
@@ -237,7 +237,7 @@ public class PlanningTabCreator {
             Util.createBindingsFor(result);
             return result;
         };
-        return new CreatedOnDemandTab(_("Project Scheduling"), "order-scheduling", componentCreator) {
+        return new CreatedOnDemandTab(_t("Project Scheduling"), "order-scheduling", componentCreator) {
             @Override
             protected void afterShowAction() {
 
@@ -254,7 +254,7 @@ public class PlanningTabCreator {
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(getSchedulingLabel()));
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-                breadcrumbs.appendChild(new Label(_("Project Scheduling")));
+                breadcrumbs.appendChild(new Label(_t("Project Scheduling")));
                 if (mode.isOf(ModeType.ORDER)) {
 
                     orderPlanningController.getOrderCRUDController().checkUserCanRead(order);
@@ -262,10 +262,10 @@ public class PlanningTabCreator {
                     nameLabel.setTooltiptext(order.getName() + "." + order.getDescription());
                     nameLabel.setMaxlength(MAX_ORDERNAME_LENGTH);
 
-                    Label schedulingStateLabel = new Label(_(order.getState().toString()));
+                    Label schedulingStateLabel = new Label(_t(order.getState().toString()));
 
                     schedulingStateLabel.setSclass("scheduling-state " + order.getSchedulingState().getCssClass());
-                    schedulingStateLabel.setTooltiptext(_(order.getSchedulingState().getStateName()));
+                    schedulingStateLabel.setTooltiptext(_t(order.getSchedulingState().getStateName()));
 
                     breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                     breadcrumbs.appendChild(nameLabel);

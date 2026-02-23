@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Informe de trabajo y progres por proyecto</title>
+<link rel="stylesheet" href="html/lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="informe-de-trabajo-y-progres-por-proyecto">
+<h1 class="title">Informe de trabajo y progres por proyecto</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#proposito" id="toc-entry-1">Propósito</a></li>
+<li><a class="reference internal" href="#parametro-de-entrada-y-filtros" id="toc-entry-2">Parámetro de entrada y filtros</a></li>
+<li><a class="reference internal" href="#salida" id="toc-entry-3">Salida</a><ul>
+<li><a class="reference internal" href="#cabecera" id="toc-entry-4">Cabecera</a></li>
+<li><a class="reference internal" href="#pie-de-pagina" id="toc-entry-5">Pie de página</a></li>
+<li><a class="reference internal" href="#cuerpo" id="toc-entry-6">Cuerpo</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="proposito">
+<h1><a class="toc-backref" href="#toc-entry-1">Propósito</a></h1>
+<p>Este informe permite mostrar cúal es el estado global de los proyectos teniendo en cuenta dos variables: el progreso y el coste.</p>
+<p>Se analiza el estado actual de progreso de un proyecto comparándolo con lo previsto de acuerdo a la planificación y al trabajo dedicado.</p>
+<p>También se muestran varios ratios relacionados al coste del proyecto comparándolo el rendimiento actual con el teórico.</p>
+</div>
+<div class="section" id="parametro-de-entrada-y-filtros">
+<h1><a class="toc-backref" href="#toc-entry-2">Parámetro de entrada y filtros</a></h1>
+<p>Hay varios parámetros obligatorios. Estos son:</p>
+<blockquote>
+<ul class="simple">
+<li><strong>Fecha de referencia</strong>. Es la fecha de referencia para hacer la comparación del estado previsto de planificación del proyecto en esa fecha con el rendimiento real del proyecto en esa citada fecha.</li>
+<li><strong>Tipo de progreso</strong>. Es el tipo de progreso que se quiere usar para medir el progreso global. En la aplicación un proyecto puede ser medido simultáneamente con diferentes tipos de progresos, y el seleccionado por el usuario en el combo de selección es el usado para calcular el informe. El valor por defecto para el tipo de progreso a usar es <em>propagado</em>, que es un tipo especial de progreso consistente en el uso en cada elemento del WBS del valor allí configurado como que propaga.</li>
+</ul>
+</blockquote>
+<p>Con respecto a los campos opciones, son los siguientes:</p>
+<blockquote>
+<ul class="simple">
+<li><strong>Fecha de inicio</strong>. En la fecha de inicio mínima de los proyectos que se quieren incluir en el informe. Es opcional. Si no se especifica <em>fecha de inicio</em>, no existe fecha mínima para los proyectos a incluír.</li>
+<li><strong>Fecha de fin</strong>. Es la fecha máxima de fin de los proyectos para que estos sean incluidos en el informe. Todos los proyectos que terminan tras la <em>fecha de fin</em> son descartados.</li>
+<li><strong>Filtro por proyectos</strong>. Este filtro permite seleccionar un conjunto de proyectos a los que limitar los resultados del informe. Si no se añade ningún proyecto al filtro, se muestra el informe para todos los proyectos de la base de datos. Hay un selector autcompletable para encontrar los proyectos requeridos. Se añaden al filtro mediante la pulsación en el botón <em>Añadir</em>.</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="salida">
+<h1><a class="toc-backref" href="#toc-entry-3">Salida</a></h1>
+<p>El formato de salida es la siguiente:</p>
+<div class="section" id="cabecera">
+<h2><a class="toc-backref" href="#toc-entry-4">Cabecera</a></h2>
+<p>In the report header the following fields are showed:</p>
+<blockquote>
+<ul class="simple">
+<li><strong>Fecha de inicio</strong>. Es el filtro por fecha de inicio. No se muestra si el informe no es filtrado por este campo.</li>
+<li><strong>Fecha de fin</strong>. Es el filtro por fecha fin. No se muestra si el usuario no lo rellena.</li>
+<li><strong>Tipo de progreso</strong>. Es el tipo de progreso usado por este informe.</li>
+<li><strong>Proyectos</strong>. Es un campo que informa acerca de los proyectos filtrados para los que se obtiene el prooyecto. Consiste en la cadena de texto <em>Todos</em> cuando el informe se obtiene para todos los proyectos que satisfacen el resto de los filtros.</li>
+<li><strong>Fecha de referencia</strong>. Muestra el campo de entrada obligatorio <em>fecha de referencia</em> utilizado en la extracción del informe.</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="pie-de-pagina">
+<h2><a class="toc-backref" href="#toc-entry-5">Pie de página</a></h2>
+<p>Se muestra la fecha en la que el informe ha sido extraído.</p>
+</div>
+<div class="section" id="cuerpo">
+<h2><a class="toc-backref" href="#toc-entry-6">Cuerpo</a></h2>
+<p>El cuerpo del informe consiste en la lista de proyectos que han sido seleccionados como resultado de los filtros de entrada.</p>
+<p>Otra cosa importante es que el progreso en el informe es calculado en tantos por uno. Son valores entre el 0 y el 1.</p>
+<p>Los filtros funcionan añadiendo condiciones que se aplican en cadena a excepción del conjunto formado por los filtros de fecha (<em>fecha de inicio</em>, <em>fecha de fin</em>) y el <em>filtro por proyectos</em>. En este caso, si uno de los filtros de fecha contiene algún valor y también el <em>filtro por proyectos</em> tiene algun proyecto configurado al mismo tiempo, entonces este último filtro es el que manda en la selección. Esto significa que los proyectos que se incluyen en el informe son los proporcionados por el <em>filtro por proyectos</em> independientemente de lo que haya en los <em>filtros de fechas</em></p>
+<dl class="docutils">
+<dt>Para cada proyecto seleccionado a ser incluido en la salida del informe, se muestra la siguiente información:</dt>
+<dd><ul class="first last simple">
+<li><em>El nombre del proyecto.</em></li>
+<li><dl class="first docutils">
+<dt><em>Las horas totales.</em> Las horas totales del proyecto se muestran mediante la adición de las horas de cada tarea. Se calculan dos tipos de horas totales:</dt>
+<dd><ul class="first last">
+<li><em>Estimadas (TE)</em>. Esta cantidad es la suma de todas las horas del WBS del proyecto. Es el número total de horas en las que un proyecto está estimado para ser completado.</li>
+<li><em>Planificadas (TP)</em>. En <em>LibrePlan</em> es posible tener dos cantidades diferentes. Las horsa estimadas de una tarea, que son el número de horas que a priori se piensa que son necesaras para terminar una tarea, y las horas planificadas, que son las horas asignadas en el plan para hacer la tarea. Las horas planificadas pueden ser igual, menos o más que las horas estimadas y se deciden en una fase posterior, en la operación de asignación. Por tanto, las horas totales planificadas de un proyecto es la suma de todas las horas asignadas de sus tareas.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>Progreso</em>. Se muestran tres medidas relacionadas con el tipo de progreso especificado en el filtro de entrada en la fecha de referencia:</dt>
+<dd><ul class="first last">
+<li><em>Medidas (PM)</em>. Es el progreso global considerando las medidas de progreso con una fecha menor o igual a la <em>fecha de referencia</em> en los campos de entrada para el informe. Además, se tiene en cuenta a todas last areas y la suma se pondera por el número de horas de cada tarea.</li>
+<li><em>Imputado (PI)</em>. Este el el progreso considerando que el trabajo realizado va a la misma velocidad que las horas dedicadas en las tareas. Si se hacen X horas de Y totales de una tarea, se considera que el progreso imputado global es X/Y.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>Horas hasta la fecha</em>. Son dos campos que muestran el número de horas hasta la fecha de referencia desde dos puntos de vista:</dt>
+<dd><ul class="first last">
+<li><em>Planeadas (HP)</em>. Este número es la adición de las horas asignadas en cualquier tarea con una fecha inferior a la <em>fecha de referencia</em>.</li>
+<li><em>Reales (HR).</em>. Este número es la adición de las horas imputadas en los partes de trabajo a cualquiera de las tareas de un proyecto con una fecha los partes de trabajo igual o inferior a la <em>fecha de referencia</em>.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>Diferencia</em>. Englobadas en esta sección se encuentras varias maneras de medir el coste:</dt>
+<dd><ul class="first last">
+<li><em>En coste</em>. Es la diferencia en horas entre el número de horas gastadas teniendo en cuenta el progreso medido y las horas dedicadas hasta la <em>fecha de referencia</em>. La fórmula es: <em>PM*TP - HR</em>.</li>
+<li><em>En planificación</em>. Es la diferencia entre las horas gastadas de acuerdo al progreso medido global y el número de horas planificadas hasta la fecha de referencia. Mide el adelanto o el retraso. La fórmula es: <em>PM*TP - HR</em>.</li>
+<li><em>Ratio de coste</em>. Se calcula dividiendo <em>PM</em>/<em>PI</em>. Si es mayor que 1, significa que el proyecto va en beneficios y si es mejor que 1, que se está perdiendo dinero</li>
+<li><em>Ratio en planificación.</em> Se cualcula dividiendo <em>PM</em>/<em>PP</em>. Si es mayor que 1, significa que el proyecto va adelantado y si es menor que 1 que va con retraso.</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+</body>
+</html>

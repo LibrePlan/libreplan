@@ -40,7 +40,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 /**
  * Controller for page Edit email templates.
@@ -95,7 +95,7 @@ public class EmailTemplateController extends GenericForwardComposer<Component> {
             setSelectedSubject();
             emailTemplateModel.confirmSave();
             messages.clearMessages();
-            messages.showMessage(Level.INFO, _("E-mail template saved"));
+            messages.showMessage(Level.INFO, _t("E-mail template saved"));
 
             return true;
         } catch (ValidationException e) {
@@ -182,7 +182,7 @@ public class EmailTemplateController extends GenericForwardComposer<Component> {
     public ListitemRenderer getEmailTemplateEnumRenderer() {
         return (item, data, i) -> {
             EmailTemplateEnum template = (EmailTemplateEnum) data;
-            item.setLabel(_(template.getTemplateType()));
+            item.setLabel(_t(template.getTemplateType()));
             item.setValue(template);
         };
     }

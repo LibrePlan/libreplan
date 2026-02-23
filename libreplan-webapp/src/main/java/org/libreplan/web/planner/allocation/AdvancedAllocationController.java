@@ -21,7 +21,7 @@
 
 package org.libreplan.web.planner.allocation;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -761,7 +761,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         for (AllocationInput allocationInput : allocationInputs)
             allocationInput.getResultReceiver().accepted(allocationInput.getAggregate());
 
-        Messagebox.show(_("Changes applied"), _("Information"), Messagebox.OK, Messagebox.INFORMATION);
+        Messagebox.show(_t("Changes applied"), _t("Information"), Messagebox.OK, Messagebox.INFORMATION);
     }
 
     /**
@@ -1010,7 +1010,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     private List<ColumnOnRow> getColumnsForLeft() {
         List<ColumnOnRow> result = new ArrayList<>();
 
-        result.add(new ColumnOnRow(_("Name")) {
+        result.add(new ColumnOnRow(_t("Name")) {
 
             @Override
             public Component cellFor(Row row) {
@@ -1018,14 +1018,14 @@ public class AdvancedAllocationController extends GenericForwardComposer {
             }
         });
 
-        result.add(new ColumnOnRow(_("Efforts"), "52px") {
+        result.add(new ColumnOnRow(_t("Efforts"), "52px") {
             @Override
             public Component cellFor(Row row) {
                 return row.getAllEffort();
             }
         });
 
-        result.add(new ColumnOnRow(_("Function"), "130px") {
+        result.add(new ColumnOnRow(_t("Function"), "130px") {
             @Override
             public Component cellFor(Row row) {
                 return row.getFunction();
@@ -1104,7 +1104,7 @@ abstract class ColumnOnRow implements IConvertibleToColumn {
     @Override
     public Column toColumn() {
         Column column = new Column();
-        column.setLabel(_(columnName));
+        column.setLabel(_t(columnName));
         column.setSclass(columnName.toLowerCase());
 
         if ( width != null )
@@ -1259,7 +1259,7 @@ class Row {
 
         @Override
         protected String getTitle() {
-            return _("Stretches list");
+            return _t("Stretches list");
         }
 
         @Override
@@ -1282,7 +1282,7 @@ class Row {
 
         @Override
         protected String getTitle() {
-            return _("Stretches with Interpolation");
+            return _t("Stretches with Interpolation");
         }
 
         @Override
@@ -1514,7 +1514,7 @@ class Row {
             return new Label();
 
         else if ( isLimiting )
-            return new Label(_("Queue-based assignment"));
+            return new Label(_t("Queue-based assignment"));
 
         else {
             if ( hboxAssignmentFunctionsCombo == null )
@@ -1571,7 +1571,7 @@ class Row {
         }
 
         private Listitem listItem(IAssignmentFunctionConfiguration assignmentFunction) {
-            Listitem listitem = new Listitem(_(assignmentFunction.getName()));
+            Listitem listitem = new Listitem(_t(assignmentFunction.getName()));
             listitem.setValue(assignmentFunction);
 
             return listitem;
@@ -1617,13 +1617,13 @@ class Row {
 
         private void showCannotApplySigmoidFunction() {
             Messagebox.show(
-                    _("Task contains consolidated progress. Cannot apply sigmoid function."), _("Error"),
+                    _t("Task contains consolidated progress. Cannot apply sigmoid function."), _t("Error"),
                     Messagebox.OK, Messagebox.ERROR);
         }
 
         private int showConfirmChangeFunctionDialog() throws InterruptedException {
             return Messagebox.show(
-                    _("Assignment function will be changed. Are you sure?"), _("Confirm change"),
+                    _t("Assignment function will be changed. Are you sure?"), _t("Confirm change"),
                     Messagebox.YES | Messagebox.NO, Messagebox.QUESTION);
         }
 
@@ -1656,10 +1656,10 @@ class Row {
 
     private void updateAssignmentFunctionsConfigureButton(Button button, boolean configurable) {
         if ( configurable ) {
-            button.setTooltiptext(_("Configure"));
+            button.setTooltiptext(_t("Configure"));
             button.setDisabled(false);
         } else {
-            button.setTooltiptext(_("Not configurable"));
+            button.setTooltiptext(_t("Not configurable"));
             button.setDisabled(true);
         }
     }

@@ -22,7 +22,7 @@
 package org.libreplan.web.orders;
 
 import static org.libreplan.business.common.exceptions.ValidationException.invalidValue;
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -273,7 +273,7 @@ public class AssignedTaskQualityFormsToOrderElementModel implements IAssignedTas
             if ((!taskQualityForm.isByItems()) && (!taskQualityForm.isCorrectConsecutivePassed(item))) {
 
                 throw new ValidationException(invalidValue(
-                        _("cannot be checked until the previous item is checked before"),
+                        _t("cannot be checked until the previous item is checked before"),
                         "passed",
                         item.getName(),
                         taskQualityForm));
@@ -282,7 +282,7 @@ public class AssignedTaskQualityFormsToOrderElementModel implements IAssignedTas
 
             if ((!taskQualityForm.isByItems()) && (!taskQualityForm.isCorrectConsecutiveDate(item))) {
                 throw new ValidationException(invalidValue(
-                        _("must be after the previous date"),
+                        _t("must be after the previous date"),
                         "date",
                         item.getName(),
                         taskQualityForm));
@@ -290,7 +290,7 @@ public class AssignedTaskQualityFormsToOrderElementModel implements IAssignedTas
 
             if (!item.isIfDateCanBeNullConstraint()) {
                 throw new ValidationException(invalidValue(
-                        _("date not specified"),
+                        _t("date not specified"),
                         "date",
                         item.getName(),
                         taskQualityForm));
@@ -341,7 +341,7 @@ public class AssignedTaskQualityFormsToOrderElementModel implements IAssignedTas
     }
 
     private void showMessageDeleteSpread() throws ValidationException {
-        throw new ValidationException(_("Quality form cannot be removed as it is spreading progress"));
+        throw new ValidationException(_t("Quality form cannot be removed as it is spreading progress"));
     }
 
     @Override

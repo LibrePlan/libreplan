@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Panel de indicadores</title>
+<link rel="stylesheet" href="html/lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="panel-de-indicadores">
+<h1 class="title">Panel de indicadores</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#indicadores-de-rendemento-de-proxecto" id="toc-entry-1">Indicadores de rendemento de proxecto</a><ul>
+<li><a class="reference internal" href="#porcentaxe-de-progreso-de-proxecto" id="toc-entry-2">Porcentaxe de progreso de proxecto</a></li>
+<li><a class="reference internal" href="#estado-das-tarefas" id="toc-entry-3">Estado das tarefas</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#indicadores-de-custo" id="toc-entry-4">Indicadores de custo</a></li>
+<li><a class="reference internal" href="#recursos" id="toc-entry-5">Recursos</a><ul>
+<li><a class="reference internal" href="#histograma-de-desvio-estimado-en-tarefas-completadas" id="toc-entry-6">Histograma de desvío estimado en tarefas completadas</a></li>
+<li><a class="reference internal" href="#cociente-de-sobrecarga" id="toc-entry-7">Cociente de sobrecarga</a></li>
+<li><a class="reference internal" href="#cociente-de-disponibilidade" id="toc-entry-8">Cociente de dispoñibilidade</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#tempo" id="toc-entry-9">Tempo</a><ul>
+<li><a class="reference internal" href="#adianto-ou-atraso-na-complecion-das-tarefas" id="toc-entry-10">Adianto ou atraso na compleción das tarefas</a></li>
+<li><a class="reference internal" href="#violacions-de-data-de-entrega" id="toc-entry-11">Violacións de data de entrega</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>O panel de indicadores é unha perspectiva de <em>LibrePlan</em> que contén un
+conxunto de <em>indicadores de rendemento</em> que axudan a coñecer como está
+a resultar un proxecto de acordo a:</p>
+<blockquote>
+<ul class="simple">
+<li>como está a progresar o traballo que hai que realizar para levalo a cabo.</li>
+<li>canto está a custar.</li>
+<li>o estado dos recursos asignados.</li>
+<li>as restricións de tempo.</li>
+</ul>
+</blockquote>
+<div class="section" id="indicadores-de-rendemento-de-proxecto">
+<h1><a class="toc-backref" href="#toc-entry-1">Indicadores de rendemento de proxecto</a></h1>
+<p>Calculáronse dous indicadores: a porcentaxe de progreso de proxecto e o
+estado das tarefas.</p>
+<div class="section" id="porcentaxe-de-progreso-de-proxecto">
+<h2><a class="toc-backref" href="#toc-entry-2">Porcentaxe de progreso de proxecto</a></h2>
+<p>É unha gráfica onde o progreso global dun proxecto calcúlase e contrástase
+co valor esperado de progreso que o proxecto debería ter de acordo ao
+<em>Gantt</em></p>
+<p>O progreso represéntase a través de dúas barras:</p>
+<blockquote>
+<ul class="simple">
+<li><strong>Progreso actual</strong>. É o progreso existente no momento presente de acordo
+ás medicións realizadas.</li>
+<li><strong>Progreso esperado</strong>. É o progreso que o proxecto debería ter no
+momento actual de acordo á planificación creada.</li>
+</ul>
+</blockquote>
+<p>O progreso global de proxecto estímase de varias maneiras diferentes, xa que non
+existe unha maneira única correcta de facelo:</p>
+<blockquote>
+<ul class="simple">
+<li><strong>Progreso propagado</strong>. É o tipo de progreso marcado para propagar a nivel
+do proxecto. Neste caso, ademais, non existe maneira de calcular un
+valor de progreso esperado e, en consecuencia, unicamente móstrase a barra de progreso
+actual.</li>
+<li><strong>Por horas de todas as tarefas</strong>. O progreso de todas as tarefas do
+proxecto é promediado para calcular o valor global. É unha media
+ponderada que toma en conta o número de horas asignado a cada tarefa.</li>
+<li><strong>Por horas do camiño crítico</strong>. O progreso de todas as tarefas
+pertencentes a algún dos camiños críticos do proxecto é promediado
+para obter o valor global. Faise unha media ponderada que toma en conta
+as horas asignadas totais a cada unha das tarefas implicadas.</li>
+<li><strong>Por duración do camiño crítico</strong>. O progreso das tarefas
+pertencentes a algún dos camiños críticos se promedia a través dunha
+media ponderada pero, nesta ocasión, tendo en conta a duración das
+tarefas implicadas en lugar das horas asignadas.</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="estado-das-tarefas">
+<h2><a class="toc-backref" href="#toc-entry-3">Estado das tarefas</a></h2>
+<p>O estado das tarefas represéntase a través dun gráfico de torta que recolle a porcentaxe das tarefas
+do proxecto nos diferentes estados posibles. Estes estados posibles son os
+seguintes:</p>
+<blockquote>
+<ul class="simple">
+<li><strong>Finalizadas</strong>. Son as tarefas completadas, detectadas por un valor de progreso
+do 100% medido.</li>
+<li><strong>En curso</strong>. Son as tarefas que se atopan empezadas. Teñen un valor de progreso
+diferente de 0% e de 100% ou, tamén, algún tempo dedicado.</li>
+<li><strong>Preparadas para comezar</strong>. Teñen un valor de progreso do 0%, non teñen
+tempo traballado imputado, todas as tarefas dependentes <em>FIN_A_INICIO</em>
+están <em>finalizadas</em> e todas as tarefas dependentes <em>INICIO_A_INICIO</em> están
+<em>finalizadas</em> ou <em>en curso</em>.</li>
+<li><strong>Bloqueadas</strong>. Son tarefas que teñen un 0% de progreso, sen tempo
+imputado e coas tarefas das que se depende previas nun estado
+diferente a <em>en curso</em> e a <em>preparadas para comezar</em>.</li>
+</ul>
+</blockquote>
+</div>
+</div>
+<div class="section" id="indicadores-de-custo">
+<h1><a class="toc-backref" href="#toc-entry-4">Indicadores de custo</a></h1>
+<p>Hai varios indicadores de <em>Valor Gañado</em> calculados no panel:</p>
+<blockquote>
+<ul>
+<li><p class="first"><strong>CV (Varianza de custo)</strong>. É a diferenza entre a <em>Curva de Valor
+Gañado</em> e a <em>Curva de Custo Real</em> no momento presente. Valores
+positivos indican beneficio, mentres que valores negativos perda.</p>
+</li>
+<li><p class="first"><strong>ACWP (Custo real do traballo realizado)</strong>. É o número total de horas
+imputadas no proxecto até o momento actual.</p>
+</li>
+<li><p class="first"><strong>CPI (Indice de rendemento en custo)</strong>. É o cociente <em>Valor Gañado/ Custo
+real</em>.</p>
+<blockquote>
+<ul class="simple">
+<li>&gt; 100 é bo, significa que se está baixo orzamento.</li>
+<li>= 100 é bo igualmente, significa está cun custo exactamente igual
+ao plan trazado.</li>
+<li>&lt; 100 é malo, significa que o custo de completar o traballo é máis
+alto que o planificado.</li>
+</ul>
+</blockquote>
+</li>
+<li><p class="first"><strong>ETC (Estimación para compleción)</strong>. É o tempo que está pendente de realizar
+para finalizar o proxecto.</p>
+</li>
+<li><p class="first"><strong>BAC (Orzamento en compleción)</strong>. É o tempo total asignado no plan
+de proxecto.</p>
+</li>
+<li><p class="first"><strong>VAC (Varianza en compleción)</strong>. É a diferenza entre o <em>BAC</em> e o
+<em>ETC</em>.</p>
+<blockquote>
+<ul class="simple">
+<li>&lt; 0 é estar sobre orzamento.</li>
+<li>&gt; 0 é estar baixo orzamento.</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="recursos">
+<h1><a class="toc-backref" href="#toc-entry-5">Recursos</a></h1>
+<p>Para analizar o proxecto desde o punto de vista dos recursos proporciónanse 2 cocientes e 1 histograma.</p>
+<div class="section" id="histograma-de-desvio-estimado-en-tarefas-completadas">
+<h2><a class="toc-backref" href="#toc-entry-6">Histograma de desvío estimado en tarefas completadas</a></h2>
+<p>Calcúlase o desvío entre o número de horas asignadas ás tarefas do
+proxecto e o número final de horas dedicadas ás mesmas.</p>
+<p>O desvío calcúlase en porcentaxe para todas para todas as tarefas terminadas e
+os desvíos calculados represéntanse nun histograma. No eixo vertical móstranse o número de tarefas que están nun determinado intervalo de desvío.
+Seis intervalos de desvío calcúlanse dinámicamente.</p>
+</div>
+<div class="section" id="cociente-de-sobrecarga">
+<h2><a class="toc-backref" href="#toc-entry-7">Cociente de sobrecarga</a></h2>
+<p>Resume a sobrecarga dos recursos que se asignan nas tarefas do proxecto.
+Calcúlase de acordo á fórmula: <strong>cociente de sobrecarga = sobrecarga / (carga + sobrecarga)</strong>.</p>
+<blockquote>
+<ul class="simple">
+<li>= 0 é bo, significa que os recursos non están sobrecargados.</li>
+<li>&gt; 0 é malo, significa que os recursos están sobrecargados.</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="cociente-de-disponibilidade">
+<h2><a class="toc-backref" href="#toc-entry-8">Cociente de dispoñibilidade</a></h2>
+<p>Resume a capacidade que está dispoñible para asignar nos recursos do
+proxecto. Por tanto é unha medida da dispoñibilidade dos recursos para
+recibir máis asignacións sen ser sobrecargados. Calcúlase como: <strong>cociente de dispoñibilidade
+= (1 - carga/capacidade)*100</strong></p>
+<blockquote>
+<ul class="simple">
+<li>Os valores posibles están entre 0% (completamente asignados) e 100% (non
+asignados)</li>
+</ul>
+</blockquote>
+</div>
+</div>
+<div class="section" id="tempo">
+<h1><a class="toc-backref" href="#toc-entry-9">Tempo</a></h1>
+<p>Inclúense dúas gráficas de tempo: un histograma para a desviación de tempo
+á finalización das tarefas dos proxectos e un gráfico de torta
+para as violacións de data de entrega.</p>
+<div class="section" id="adianto-ou-atraso-na-complecion-das-tarefas">
+<h2><a class="toc-backref" href="#toc-entry-10">Adianto ou atraso na compleción das tarefas</a></h2>
+<p>Calcúlase a diferenza en días entre a data de finalización planificada
+para as tarefas do proxecto e o seu tempo de finalización real. A data de terminación
+prevista obtense do <em>Gantt</em> e a data de terminación real obtense a partir da data do traballo imputado á tarefa máis recente.</p>
+<p>O atraso ou adianto na compleción das tarefas represéntase a través dun
+histograma. No eixo vertical represéntanse o número de tarefas cun
+número de días de adianto ou atraso incluídas no intervalo indicado
+na abcisa. Calcúlase seis intervalos de desvío na compleción de tarefas de forma dinámica.</p>
+<blockquote>
+<ul class="simple">
+<li>Valores negativos indican terminación antes de tempo.</li>
+<li>Valores positivos indican terminación con atraso.</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="violacions-de-data-de-entrega">
+<h2><a class="toc-backref" href="#toc-entry-11">Violacións de data de entrega</a></h2>
+<p>Por unha banda calcúlase a marxe coa data de entrega de proxecto, se esta é configúrada. Doutra banda píntase un gráfico de sectores coa porcentaxe de tarefas
+que cumpren a data de entrega. Inclúense tres tipos de valores:</p>
+<blockquote>
+<ul class="simple">
+<li>Porcentaxe de tarefas sen data de entrega configurada.</li>
+<li>Porcentaxe de tares finalizadas cunha data de terminación real posterior
+á data de entrega configurada. A data de finalización real obtense
+o último traballo rexistrado na tarefa.</li>
+</ul>
+</blockquote>
+</div>
+</div>
+</div>
+</body>
+</html>

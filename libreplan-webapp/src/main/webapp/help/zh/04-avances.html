@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Progress</title>
+<link rel="stylesheet" href="html/lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="progress">
+<h1 class="title">Progress</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#managing-progress-types" id="toc-entry-1">Managing Progress Types</a></li>
+<li><a class="reference internal" href="#entering-progress-based-on-type" id="toc-entry-2">Entering Progress Based on Type</a></li>
+<li><a class="reference internal" href="#comparing-progress-for-an-order-element" id="toc-entry-3">Comparing Progress for an Order Element</a></li>
+</ul>
+</div>
+<p>Project progress indicates the degree to which the estimated completion time of the project is being met. Task progress indicates the degree to which the task is being completed according to its estimated completion.</p>
+<p>Generally, progress cannot be measured automatically. A staff member with experience or a checklist must determine the degree of completion for a task or project.</p>
+<p>It's important to note the distinction between the hours assigned to a task or project and the progress of that task or project. While the number of hours used may be more or less than expected, the project may be ahead of or behind its estimated completion on the monitored day. Several situations can arise from these two measurements:</p>
+<ul class="simple">
+<li><strong>Fewer hours consumed than expected, but the project is behind schedule:</strong> Progress is lower than estimated for the monitored day.</li>
+<li><strong>Fewer hours consumed than expected, and the project is ahead of schedule:</strong> Progress is higher than estimated for the monitored day.</li>
+<li><strong>More hours consumed than expected, and the project is behind schedule:</strong> Progress is lower than estimated for the monitored day.</li>
+<li><strong>More hours consumed than expected, but the project is ahead of schedule:</strong> Progress is higher than estimated for the monitored day.</li>
+</ul>
+<p>The planning view allows you to compare these situations by using information about the progress made and the hours used. This chapter will explain how to enter information to monitor progress.</p>
+<p>The philosophy behind progress monitoring is based on users defining the level at which they want to monitor their projects. For example, if users want to monitor orders, they only need to enter information for level-1 elements. If they want more precise monitoring at the task level, they must enter progress information at lower levels. The system will then aggregate the data upward through the hierarchy.</p>
+<div class="section" id="managing-progress-types">
+<h1><a class="toc-backref" href="#toc-entry-1">Managing Progress Types</a></h1>
+<p>Companies have varying needs when monitoring project progress, particularly the tasks involved. Therefore, the system includes &quot;progress types.&quot; Users can define different progress types to measure a task's progress. For example, a task can be measured as a percentage, but this percentage can also be translated into progress in <em>Tonnes</em> based on the agreement with the client.</p>
+<p>A progress type has a name, a maximum value, and a precision value:</p>
+<ul class="simple">
+<li><strong>Name:</strong> A descriptive name that users will recognize when selecting the progress type. This name should clearly indicate what kind of progress is being measured.</li>
+<li><strong>Maximum Value:</strong> The maximum value that can be established for a task or project as the total progress measurement. For example, if you're working with <em>Tonnes</em> and the normal maximum is 4000 tonnes, and no task will ever require more than 4000 tonnes of any material, then 4000 would be the maximum value.</li>
+<li><strong>Precision Value:</strong> The increment value allowed for the progress type. For example, if progress in <em>Tonnes</em> is to be measured in whole numbers, the precision value would be 1. From that point on, only whole numbers can be entered as progress measurements (e.g., 1, 2, 300).</li>
+</ul>
+<p>The system has two default progress types:</p>
+<ul class="simple">
+<li><strong>Percentage:</strong> A general progress type that measures the progress of a project or task based on an estimated completion percentage. For example, a task is 30% complete out of the 100% estimated for a specific day.</li>
+<li><strong>Units:</strong> A general progress type that measures progress in units without specifying the type of unit. For example, a task involves creating 3000 units, and the progress is 500 units out of the total of 3000.</li>
+</ul>
+<div class="figure">
+<img alt="images/tipos-avances.png" src="images/tipos-avances.png" style="width: 376.5px; height: 164.5px;" />
+<p class="caption">Administration of Progress Types</p>
+</div>
+<p>Users can create new progress types as follows:</p>
+<ul class="simple">
+<li>Go to the &quot;Administration&quot; section.</li>
+<li>Click the &quot;Manage types of progress&quot; option in the second-level menu.</li>
+<li>The system will display a list of existing progress types.</li>
+<li>For each progress type, users can:<ul>
+<li>Edit</li>
+<li>Delete</li>
+</ul>
+</li>
+<li>Users can then create a new progress type.</li>
+<li>When editing or creating a progress type, the system displays a form with the following information:<ul>
+<li>Name of the progress type.</li>
+<li>Maximum value allowed for the progress type.</li>
+<li>Precision value for the progress type.</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="entering-progress-based-on-type">
+<h1><a class="toc-backref" href="#toc-entry-2">Entering Progress Based on Type</a></h1>
+<p>Progress is entered for order elements, but it can also be entered using a shortcut from the planning tasks. Users are responsible for deciding which progress type to associate with each order element.</p>
+<p>Users can enter a single, default progress type for the entire order.</p>
+<p>Before measuring progress, users must associate the chosen progress type with the order. For example, they might choose percentage progress to measure progress on the entire task or an agreed progress rate if progress measurements agreed upon with the client will be entered in the future.</p>
+<div class="figure">
+<img alt="images/avance.png" src="images/avance.png" style="width: 424.0px; height: 290.8px;" />
+<p class="caption">Progress Entry Screen with Graphic Visualization</p>
+</div>
+<p>To enter progress measurements:</p>
+<ul class="simple">
+<li>Select the progress type to which the progress will be added.
+*   If no progress type exists, a new one must be created.</li>
+<li>In the form that appears under the &quot;Value&quot; and &quot;Date&quot; fields, enter the absolute value of the measurement and the date of the measurement.</li>
+<li>The system automatically stores the entered data.</li>
+</ul>
+</div>
+<div class="section" id="comparing-progress-for-an-order-element">
+<h1><a class="toc-backref" href="#toc-entry-3">Comparing Progress for an Order Element</a></h1>
+<p>Users can graphically compare the progress made on orders with the measurements taken. All progress types have a column with a check button (&quot;Show&quot;). When this button is selected, the progress chart of measurements taken is displayed for the order element.</p>
+<div class="figure">
+<img alt="images/contraste-avance.png" src="images/contraste-avance.png" style="width: 422.0px; height: 290.0px;" />
+<p class="caption">Comparison of Several Progress Types</p>
+</div>
+</div>
+</div>
+</body>
+</html>

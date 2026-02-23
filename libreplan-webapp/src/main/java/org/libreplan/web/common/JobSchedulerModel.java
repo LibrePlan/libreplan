@@ -45,7 +45,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 /**
  * Model for UI operations related to {@link JobSchedulerConfiguration}.
@@ -138,7 +138,7 @@ public class JobSchedulerModel implements IJobSchedulerModel {
 
         if ( name.equals(JobClassNameEnum.SEND_EMAIL_TASK_ASSIGNED_TO_RESOURCE.getName()) ) {
             synchronizationInfos = new ArrayList<>();
-            synchronizationInfos.add(new SynchronizationInfo(_("Task assigned to resource emails job")));
+            synchronizationInfos.add(new SynchronizationInfo(_t("Task assigned to resource emails job")));
             taskAssignedToResource.sendEmail();
 
             return;
@@ -146,7 +146,7 @@ public class JobSchedulerModel implements IJobSchedulerModel {
 
         if ( name.equals(JobClassNameEnum.SEND_EMAIL_RESOURCE_REMOVED_FROM_TASK.getName()) ) {
             synchronizationInfos = new ArrayList<>();
-            synchronizationInfos.add(new SynchronizationInfo(_("Resource removed from task job")));
+            synchronizationInfos.add(new SynchronizationInfo(_t("Resource removed from task job")));
             resourceRemovedFromTask.sendEmail();
 
             return;
@@ -154,7 +154,7 @@ public class JobSchedulerModel implements IJobSchedulerModel {
 
         if ( name.equals(JobClassNameEnum.SEND_EMAIL_MILESTONE_REACHED.getName()) ) {
             synchronizationInfos = new ArrayList<>();
-            synchronizationInfos.add(new SynchronizationInfo(_("Milestone reached job")));
+            synchronizationInfos.add(new SynchronizationInfo(_t("Milestone reached job")));
             milestoneReached.sendEmail();
 
             return;
@@ -162,7 +162,7 @@ public class JobSchedulerModel implements IJobSchedulerModel {
 
         if ( name.equals(JobClassNameEnum.SEND_EMAIL_TASK_SHOULD_START.getName()) ) {
             synchronizationInfos = new ArrayList<>();
-            synchronizationInfos.add(new SynchronizationInfo(_("Task should start job")));
+            synchronizationInfos.add(new SynchronizationInfo(_t("Task should start job")));
             taskShouldStart.sendEmail();
 
             return;
@@ -170,7 +170,7 @@ public class JobSchedulerModel implements IJobSchedulerModel {
 
         if ( name.equals(JobClassNameEnum.SEND_EMAIL_TASK_SHOULD_FINISH.getName()) ) {
             synchronizationInfos = new ArrayList<>();
-            synchronizationInfos.add(new SynchronizationInfo(_("Task should finish job")));
+            synchronizationInfos.add(new SynchronizationInfo(_t("Task should finish job")));
             taskShouldFinish.sendEmail();
 
             return;
@@ -178,7 +178,7 @@ public class JobSchedulerModel implements IJobSchedulerModel {
 
         if ( name.equals(JobClassNameEnum.SEND_EMAIL_TIMESHEET_DATA_MISSING.getName()) ) {
             synchronizationInfos = new ArrayList<>();
-            synchronizationInfos.add(new SynchronizationInfo(_("Timesheet data missing job")));
+            synchronizationInfos.add(new SynchronizationInfo(_t("Timesheet data missing job")));
             timesheetDataMissing.sendEmail();
 
             return;

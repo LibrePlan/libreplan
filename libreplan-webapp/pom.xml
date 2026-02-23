@@ -48,12 +48,12 @@
                             <dependency>
                                 <groupId>net.sf.jasperreports</groupId>
                                 <artifactId>jasperreports</artifactId>
-                                <version>4.7.0</version>
+                                <version>6.20.0</version>
                             </dependency>
                             <dependency>
                                 <groupId>net.sf.jasperreports</groupId>
                                 <artifactId>jasperreports-fonts</artifactId>
-                                <version>4.0.0</version>
+                                <version>6.0.0</version>
                             </dependency>
                         </dependencies>
                     </plugin>
@@ -421,6 +421,23 @@
         <dependency>
             <groupId>com.sun.mail</groupId>
             <artifactId>javax.mail</artifactId>
+        </dependency>
+
+        <!-- JAXB API (required for Java 9+) -->
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+        </dependency>
+
+        <!-- SOAP API (required for Java 9+) -->
+        <dependency>
+            <groupId>com.sun.xml.messaging.saaj</groupId>
+            <artifactId>saaj-impl</artifactId>
+            <version>1.5.1</version>
         </dependency>
 
         <!-- JAX-RS API -->

@@ -48,7 +48,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 /**
  * Controller for RiskLog CRUD actions.
@@ -389,12 +389,12 @@ public class RiskLogCRUDController extends BaseCRUDController<RiskLog> {
 
     @Override
     protected String getEntityType() {
-        return _("Issue log");
+        return _t("Issue log");
     }
 
     @Override
     protected String getPluralEntityType() {
-        return _("Issue logs");
+        return _t("Issue logs");
     }
 
     @Override
@@ -410,11 +410,11 @@ public class RiskLogCRUDController extends BaseCRUDController<RiskLog> {
     @Override
     protected void save() throws ValidationException {
         if (getRiskLog().getOrder() == null) {
-            throw new WrongValueException(bdProjectRiskLog, _("please select a project"));
+            throw new WrongValueException(bdProjectRiskLog, _t("please select a project"));
         }
 
         if (getRiskLog().getCreatedBy() == null) {
-            throw new WrongValueException(bdUserRiskLog, _("please select an author"));
+            throw new WrongValueException(bdUserRiskLog, _t("please select an author"));
         }
 
         riskLogModel.confirmSave();

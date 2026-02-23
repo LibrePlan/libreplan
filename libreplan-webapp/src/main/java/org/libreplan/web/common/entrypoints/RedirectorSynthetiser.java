@@ -21,7 +21,7 @@
 
 package org.libreplan.web.common.entrypoints;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
@@ -123,7 +123,7 @@ public class RedirectorSynthetiser implements BeanFactoryPostProcessor {
                             ClassUtils.convertClassNameToResourcePath("org.libreplan.web") + "/" + "**/*.class");
 
         } catch (IOException e) {
-            throw new RuntimeException(_("Could not load any resource"), e);
+            throw new RuntimeException(_t("Could not load any resource"), e);
         }
     }
 

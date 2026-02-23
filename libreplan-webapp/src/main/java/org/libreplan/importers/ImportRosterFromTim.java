@@ -19,7 +19,7 @@
 
 package org.libreplan.importers;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -121,12 +121,12 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
         Connector connector = connectorDAO
                 .findUniqueByName(PredefinedConnectors.TIM.getName());
         if (connector == null) {
-            throw new ConnectorException(_("Tim connector not found"));
+            throw new ConnectorException(_t("Tim connector not found"));
         }
 
         if (!connector.areConnectionValuesValid()) {
             throw new ConnectorException(
-                    _("Connection values of Tim connector are invalid"));
+                    _t("Connection values of Tim connector are invalid"));
         }
 
         Map<String, String> properties = connector.getPropertiesAsMap();
@@ -150,7 +150,7 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
 
         if (StringUtils.isBlank(departmentIds)) {
             LOG.warn("No departments configured");
-            throw new ConnectorException(_("No departments configured"));
+            throw new ConnectorException(_t("No departments configured"));
         }
 
         String[] departmentIdsArray = StringUtils.stripAll(StringUtils.split(
@@ -161,7 +161,7 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
         for (String department : departmentIdsArray) {
             LOG.info("Department: " + department);
 
-            synchronizationInfo = new SynchronizationInfo(_(
+            synchronizationInfo = new SynchronizationInfo(_t(
                     "Import roster for department {0}", department));
 
             RosterRequestDTO rosterRequestDTO = createRosterRequest(department,
@@ -178,7 +178,7 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
                 }
             } else {
                 LOG.error("No valid response for department " + department);
-                synchronizationInfo.addFailedReason(_(
+                synchronizationInfo.addFailedReason(_t(
                                 "No valid response for department \"{0}\"",
                                 department));
                 syncInfos.add(synchronizationInfo);
@@ -207,7 +207,7 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
                         } else {
                             LOG.info("No roster-exceptions found in the response");
                             synchronizationInfo
-                                    .addFailedReason(_("No roster-exceptions found in the response"));
+                                    .addFailedReason(_t("No roster-exceptions found in the response"));
                         }
                         return null;
                     }
@@ -235,7 +235,7 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
                 worker = workerDAO.findUniqueByNif(workerCode);
             } catch (InstanceNotFoundException e) {
                 LOG.warn("Worker '" + workerCode + "' not found");
-                synchronizationInfo.addFailedReason(_(
+                synchronizationInfo.addFailedReason(_t(
                         "Worker \"{0}\" not found",
                         workerCode));
             }
@@ -353,7 +353,7 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
         if (name == null || name.isEmpty()) {
             LOG.error("Exception name should not be empty");
             synchronizationInfo
-                    .addFailedReason(_("Exception name should not be empty"));
+                    .addFailedReason(_t("Exception name should not be empty"));
             return null;
         }
         try {
@@ -369,7 +369,7 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
         } catch (InstanceNotFoundException e) {
             LOG.error("Calendar exceptionType not found", e);
             synchronizationInfo
-                    .addFailedReason(_("Calendar exception day not found"));
+                    .addFailedReason(_t("Calendar exception day not found"));
         }
         return null;
     }

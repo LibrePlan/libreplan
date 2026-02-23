@@ -21,7 +21,7 @@
 
 package org.libreplan.web.orders;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -149,7 +149,7 @@ public class DynamicDatebox extends GenericForwardComposer {
                         } catch (ParseException e) {
                             throw new WrongValueException(
                                     dateTextBox,
-                                    _("Date format is wrong. Please, use the following format: {0}", asString(new Date())));
+                                    _t("Date format is wrong. Please, use the following format: {0}", asString(new Date())));
                         }
                     }
                 });

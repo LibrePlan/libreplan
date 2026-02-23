@@ -21,7 +21,7 @@
 
 package org.libreplan.business.common.entities;
 
-import static org.libreplan.business.i18n.I18nHelper._;
+import static org.libreplan.business.i18n.I18nHelper._t;
 
 import java.util.Arrays;
 import java.util.List;
@@ -33,10 +33,10 @@ import java.util.List;
 */
 public enum ProgressType {
 
-    SPREAD_PROGRESS(_("Spreading progress")),
-    ALL_NUMHOURS(_("Progress with all tasks by hours")),
-    CRITICAL_PATH_NUMHOURS(_("Progress with critical path tasks by hours")),
-    CRITICAL_PATH_DURATION(_("Progress with critical path tasks by duration"));
+    SPREAD_PROGRESS(_t("Spreading progress")),
+    ALL_NUMHOURS(_t("Progress with all tasks by hours")),
+    CRITICAL_PATH_NUMHOURS(_t("Progress with critical path tasks by hours")),
+    CRITICAL_PATH_DURATION(_t("Progress with critical path tasks by duration"));
 
     private String value;
 

@@ -21,7 +21,7 @@
 
 package org.libreplan.business.planner.entities.allocationalgorithms;
 
-import static org.libreplan.business.i18n.I18nHelper._;
+import static org.libreplan.business.i18n.I18nHelper._t;
 import static org.libreplan.business.workingday.EffortDuration.min;
 
 import java.util.ArrayList;
@@ -92,15 +92,15 @@ public abstract class ResourcesPerDayModification extends
 
         @Override
         public String getNoValidPeriodsMessage() {
-            String firstLine = _("There are no days available due to not satisfying the criteria.");
-            String secondLine = _("Another possibility is that the resources do not have days available due to their calendars.");
+            String firstLine = _t("There are no days available due to not satisfying the criteria.");
+            String secondLine = _t("Another possibility is that the resources do not have days available due to their calendars.");
             return firstLine + "\n" + secondLine;
         }
 
         @Override
         public String getNoValidPeriodsMessageDueToIntersectionMessage() {
-            String firstLine = _("There are no days available in the days marked available by the task calendar.");
-            String secondLine = _("Maybe the criteria are not satisfied in those days.");
+            String firstLine = _t("There are no days available in the days marked available by the task calendar.");
+            String secondLine = _t("Maybe the criteria are not satisfied in those days.");
             return firstLine + "\n" + secondLine;
         }
 
@@ -172,12 +172,12 @@ public abstract class ResourcesPerDayModification extends
 
         @Override
         public String getNoValidPeriodsMessage() {
-            return _("Resource is not available from task's start");
+            return _t("Resource is not available from task's start");
         }
 
         @Override
         public String getNoValidPeriodsMessageDueToIntersectionMessage() {
-            return _("Resource is not available according to task's calendar");
+            return _t("Resource is not available according to task's calendar");
         }
 
         private Resource getAssociatedResource() {

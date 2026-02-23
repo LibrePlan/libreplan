@@ -23,7 +23,7 @@ package org.libreplan.web.planner.allocation;
 
 import static org.libreplan.business.workingday.EffortDuration.hours;
 import static org.libreplan.business.workingday.EffortDuration.zero;
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 import static org.libreplan.web.planner.allocation.AllocationRow.assignEfforts;
 import static org.libreplan.web.planner.allocation.AllocationRow.sumAllEffortFromInputs;
 import static org.libreplan.web.planner.allocation.AllocationRow.sumAllOriginalEffort;
@@ -336,7 +336,7 @@ public class FormBinder {
 
                                 Clients.response(new AuWrongValue(
                                         taskWorkableDays,
-                                        _("The original workable days value {0} cannot be modified as it has consolidations",
+                                        _t("The original workable days value {0} cannot be modified as it has consolidations",
                                                 specifiedWorkableDays)) );
 
                                 taskWorkableDays.setValue(effectiveWorkableDays);
@@ -631,13 +631,13 @@ public class FormBinder {
     }
 
     void markAssignedHoursMustBePositive() {
-        throw new WrongValueException(effortInput, _("it must be greater than zero"));
+        throw new WrongValueException(effortInput, _t("it must be greater than zero"));
     }
 
     void markRepeatedResources(List<Resource> resources) {
         messagesForUser.showMessage(
                 Level.ERROR,
-                _("{0} already assigned to resource allocation list",
+                _t("{0} already assigned to resource allocation list",
                         StringUtils.join(getResourcesDescriptions(resources), ", ")));
     }
 
@@ -652,18 +652,18 @@ public class FormBinder {
 
     void markNoResourcesMatchedByCriterions(ResourceEnum resourceType, Collection<? extends Criterion> criterions) {
         messagesForUser.showMessage(Level.ERROR,
-                _("there are no resources for required criteria: {0}. So the generic allocation can't be added",
+                _t("there are no resources for required criteria: {0}. So the generic allocation can't be added",
                         Criterion.getCaptionFor(resourceType, criterions)));
     }
 
     void markThereisAlreadyAssignmentWith(ResourceEnum resourceType, Collection<? extends Criterion> criterions) {
         messagesForUser.showMessage(Level.ERROR,
-                _("already exists an allocation for criteria {0}", Criterion.getCaptionFor(resourceType, criterions)));
+                _t("already exists an allocation for criteria {0}", Criterion.getCaptionFor(resourceType, criterions)));
     }
 
     void markNoEmptyResourcesPerDay(List<AllocationRow> rows) {
         Validate.isTrue(!rows.isEmpty());
-        final String message = _("resources per day cannot be empty or less than zero");
+        final String message = _t("resources per day cannot be empty or less than zero");
         if ( !recommendedAllocation ) {
             AllocationRow first = rows.get(0);
             throw new WrongValueException(first.getIntendedResourcesPerDayInput(), message);
@@ -896,7 +896,7 @@ public class FormBinder {
 
     public void cannotAllocateMoreThanOneResource(List<Resource> resources) {
         messagesForUser.showMessage(Level.ERROR,
-                _("{0} could not be allocated. " + "Cannot allocate more than one resource",
+                _t("{0} could not be allocated. " + "Cannot allocate more than one resource",
                         Resource.getCaptionFor(resources)));
     }
 

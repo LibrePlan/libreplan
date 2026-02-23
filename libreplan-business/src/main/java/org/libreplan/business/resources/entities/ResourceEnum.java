@@ -21,13 +21,14 @@
 
 package org.libreplan.business.resources.entities;
 
+import org.libreplan.business.i18n.I18nHelper;
 /**
  * @author Diego Pino Garcia<dpino@igalia.com>
  */
 public enum ResourceEnum {
 
-    WORKER(Worker.class, _("WORKER")),
-    MACHINE(Machine.class, _("MACHINE"));
+    WORKER(Worker.class, I18nHelper._t("WORKER")),
+    MACHINE(Machine.class, I18nHelper._t("MACHINE"));
 
     private Class<? extends Resource> klass;
 
@@ -41,7 +42,7 @@ public enum ResourceEnum {
     /**
      * Forces to mark the string as needing translation.
      */
-    private static String _(String string) {
+    private static String _t(String string) {
         return string;
     }
 

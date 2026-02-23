@@ -18,7 +18,7 @@
  */
 package org.libreplan.web.planner.tabs;
 
-import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.I18nHelper._t;
 import static org.libreplan.web.planner.tabs.MultipleTabsPlannerController.BREADCRUMBS_SEPARATOR;
 import static org.libreplan.web.planner.tabs.MultipleTabsPlannerController.getSchedulingLabel;
 
@@ -86,7 +86,7 @@ public class LogsTabCreator {
             }
 
         };
-        return new CreatedOnDemandTab(_("Logs"), "logs-global", componentCreator) {
+        return new CreatedOnDemandTab(_t("Logs"), "logs-global", componentCreator) {
             @Override
             protected void beforeShowAction() {
                 if (!SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_PLANNING)) {
@@ -103,7 +103,7 @@ public class LogsTabCreator {
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(getSchedulingLabel()));
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-                breadcrumbs.appendChild(new Label(_("Logs")));
+                breadcrumbs.appendChild(new Label(_t("Logs")));
             }
         };
     }
@@ -118,7 +118,7 @@ public class LogsTabCreator {
             }
 
         };
-        return new CreatedOnDemandTab(_("Logs"), "logs-order", componentCreator) {
+        return new CreatedOnDemandTab(_t("Logs"), "logs-order", componentCreator) {
             @Override
             protected void beforeShowAction() {
                 if (!SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_PLANNING)) {
@@ -135,7 +135,7 @@ public class LogsTabCreator {
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(getSchedulingLabel()));
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-                breadcrumbs.appendChild(new Label(_("Logs")));
+                breadcrumbs.appendChild(new Label(_t("Logs")));
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(mode.getOrder().getName()));
             }
