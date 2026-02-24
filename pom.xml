@@ -935,7 +935,7 @@
                     <dependency>
                         <groupId>com.google.guava</groupId>
                         <artifactId>guava</artifactId>
-                        <version>19.0</version>
+                        <version>33.5.0-android</version>
                     </dependency>
                 </dependencies>
             </plugin>
