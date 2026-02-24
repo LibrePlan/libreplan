@@ -471,7 +471,7 @@
             <dependency>
                 <groupId>commons-fileupload</groupId>
                 <artifactId>commons-fileupload</artifactId>
-                <version>1.5</version>
+                <version>1.6.0</version>
                 <scope>runtime</scope>
             </dependency>
 
@@ -935,7 +935,7 @@
                     <dependency>
                         <groupId>com.google.guava</groupId>
                         <artifactId>guava</artifactId>
-                        <version>19.0</version>
+                        <version>33.5.0-android</version>
                     </dependency>
                 </dependencies>
             </plugin>
