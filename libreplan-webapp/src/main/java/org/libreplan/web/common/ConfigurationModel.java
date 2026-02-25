@@ -578,8 +578,13 @@ public class ConfigurationModel implements IConfigurationModel {
         Map<String, String> currencies = new TreeMap<>();
         for (Locale locale : Locale.getAvailableLocales()) {
             if (StringUtils.isNotBlank(locale.getCountry())) {
-                Currency currency = Currency.getInstance(locale);
-                currencies.put(currency.getCurrencyCode(), currency.getSymbol(locale));
+                try {
+                    Currency currency = Currency.getInstance(locale);
+                    currencies.put(currency.getCurrencyCode(), currency.getSymbol(locale));
+                } catch (IllegalArgumentException e) {
+                    // Skip locales that don't have valid currency instances
+                    // This can happen with certain locales in JDK 11+
+                }
             }
         }
         return currencies;
