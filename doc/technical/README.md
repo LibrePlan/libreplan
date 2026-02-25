@@ -1,8 +1,17 @@
-# 📚 LibrePlan Guava Upgrade - Technical Documentation
+# 📚 LibrePlan - Technical Documentation
 
 ## 🎯 Quick Start Guide
 
-This directory contains comprehensive technical documentation for the LibrePlan Guava upgrade project (version 19.0 → 33.5.0-android).
+This directory contains comprehensive technical documentation for recent LibrePlan infrastructure upgrades and dependency updates.
+
+### Recent Infrastructure Upgrades
+
+This documentation covers a series of recent infrastructure improvements made to enhance security and compatibility:
+
+1. **Guava Upgrade:** 19.0 → 33.5.0-android (Security & JDK 11 compatibility)
+2. **Commons-IO Upgrade:** Updated to version 2.11.0 (Security vulnerability fix)
+3. **Commons-FileUpload Upgrade:** Updated to version 1.5 (Security vulnerability fix)
+4. **JDK Compatibility:** Maintained Java 8 target with JDK 11 runtime support
 
 ### 📖 Documentation Structure
 
