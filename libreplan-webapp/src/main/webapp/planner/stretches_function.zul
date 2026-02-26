@@ -19,7 +19,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<?page title="${i18n:_('LibrePlan: Scheduling')}"?>
+<?page title="${i18n:_t('LibrePlan: Scheduling')}"?>
 <?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n"?>
 
 <zk>
@@ -29,7 +29,7 @@
     ]]>
     </zscript>
 
-    <window title="${i18n:_('Stretches function configuration')}"
+    <window title="${i18n:_t('Stretches function configuration')}"
             apply="${stretchesFunctionController}" closable="true">
 
         <hbox>
@@ -38,7 +38,7 @@
                 <groupbox closable="false">
                     <caption label="@{stretchesFunctionController.title}" />
 
-                    <button label="${i18n:_('Add stretch')}"
+                    <button label="${i18n:_t('Add stretch')}"
                             onClick="stretchesFunctionController.addStretch()"
                             style="margin-bottom: 5px;"
                             sclass="add-button" />
@@ -50,10 +50,10 @@
                              rows="15"
                              width="500px" >
                         <listhead>
-                            <listheader label="${i18n:_('Date')}" tooltiptext="${i18n:_('Measurement date')}" />
-                            <listheader label="${i18n:_('Length')}" tooltiptext="${i18n:_('Length percentage')}" />
-                            <listheader label="${i18n:_('Work amount')}" tooltiptext="${i18n:_('Amount work percentage')}" />
-                            <listheader label="${i18n:_('Op.')}" tooltiptext="${i18n:_('Operations')}" width="50px"/>
+                            <listheader label="${i18n:_t('Date')}" tooltiptext="${i18n:_t('Measurement date')}" />
+                            <listheader label="${i18n:_t('Length')}" tooltiptext="${i18n:_t('Length percentage')}" />
+                            <listheader label="${i18n:_t('Work amount')}" tooltiptext="${i18n:_t('Amount work percentage')}" />
+                            <listheader label="${i18n:_t('Op.')}" tooltiptext="${i18n:_t('Operations')}" width="50px"/>
                         </listhead>
                     </listbox>
 
@@ -63,7 +63,7 @@
             <vbox id="charts">
                 <div visible="@{stretchesFunctionController.chartsDisabled}" height="60px" style="padding:15px;">
                     <label visible="@{stretchesFunctionController.chartsDisabled}"
-                           class="message_WARNING">${i18n:_('Cannot calculate charts for current data')}</label>
+                           class="message_WARNING">${i18n:_t('Cannot calculate charts for current data')}</label>
                 </div>
 
                 <zscript>
@@ -73,20 +73,20 @@
                     Font lbfont = new Font(fontname, Font.PLAIN, 12); //for label
                 </zscript>
 
-                <chart id="dedicationChart" title="${i18n:_('Dedication chart')}"
+                <chart id="dedicationChart" title="${i18n:_t('Dedication chart')}"
                        titleFont="${tfont}"
                        type="time_series" threeD="false"
                        model="@{stretchesFunctionController.getDedicationChartData}"
-                       yAxis= "${i18n:_('Hours')}" paneColor="#FFFFFF"
+                       yAxis= "${i18n:_t('Hours')}" paneColor="#FFFFFF"
                        xAxisFont="${lbfont}" xAxisTickFont="${lbfont}"
                        yAxisFont="${lbfont}" yAxisTickFont="${lbfont}"
                        showLegend="false"/>
                 <chart id="accumulatedHoursChart"
-                       title="${i18n:_('Accumulated hours chart')}"
+                       title="${i18n:_t('Accumulated hours chart')}"
                        titleFont="${tfont}"
                        type="time_series" threeD="false"
                        model="@{stretchesFunctionController.getAccumulatedHoursChartData}"
-                       yAxis= "${i18n:_('Hours')}" paneColor="#FFFFFF"
+                       yAxis= "${i18n:_t('Hours')}" paneColor="#FFFFFF"
                        xAxisFont="${lbfont}" xAxisTickFont="${lbfont}"
                        yAxisFont="${lbfont}" yAxisTickFont="${lbfont}"
                        showLegend="false" />
@@ -94,9 +94,9 @@
         </hbox>
 
         <hbox>
-            <button label="${i18n:_('Accept')}"
+            <button label="${i18n:_t('Accept')}"
                     onClick="stretchesFunctionController.confirm()" sclass="save-button global-action"/>
-            <button label="${i18n:_('Cancel')}"
+            <button label="${i18n:_t('Cancel')}"
                     onClick="stretchesFunctionController.cancel()" sclass="cancel-button global-action"/>
         </hbox>
 

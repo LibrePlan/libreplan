@@ -24,18 +24,18 @@
 
     <groupbox height="230px" closable="false" >
 
-        <caption label="${i18n:_('Task Information')}" />
+        <caption label="${i18n:_t('Task Information')}" />
 
         <!-- Task rows  -->
         <grid id="gridTaskRows" sclass="normalResourceAllocation">
             <columns>
-                <column label="${i18n:_('Criteria')}" width="290px" align="center"/>
-                <column label="${i18n:_('Type')}" width="140px" align="center"/>
-                <column label="${i18n:_('Hours')}" width="80px" align="center"/>
+                <column label="${i18n:_t('Criteria')}" width="290px" align="center"/>
+                <column label="${i18n:_t('Type')}" width="140px" align="center"/>
+                <column label="${i18n:_t('Hours')}" width="80px" align="center"/>
             </columns>
             <foot>
                 <footer label=""/>
-                <footer label="${i18n:_('Total estimated hours')}:"/>
+                <footer label="${i18n:_t('Total estimated hours')}:"/>
                 <footer id="totalEstimatedHours" label="@{taskInformationController.totalHours}"/>
             </foot>
         </grid>
@@ -44,7 +44,7 @@
 
         <!-- Recommended Allocation -->
         <vbox align="bottom">
-            <button id="btnRecommendedAllocation" label="${i18n:_('Recommended allocation')}" sclass="add-button" />
+            <button id="btnRecommendedAllocation" label="${i18n:_t('Recommended allocation')}" sclass="add-button" />
         </vbox>
 
     </groupbox>

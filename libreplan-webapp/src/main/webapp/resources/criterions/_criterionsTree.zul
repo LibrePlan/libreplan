@@ -20,15 +20,15 @@
 -->
 
 <groupbox closable="false">
-    <caption label="${i18n:_('Criteria list')}" />
+    <caption label="${i18n:_t('Criteria list')}" />
 
     <vbox id="criterionsTree">
         <vbox>
             <hbox align="center">
-                <label value="${i18n:_('New criterion')}" />
+                <label value="${i18n:_t('New criterion')}" />
                 <textbox value="" id="criterionName" width="200px" onOK="criterionTreeController.addCriterion();"/>
 
-                <button id="add_new_criterion" label="${i18n:_('Add')}" sclass="add-button"
+                <button id="add_new_criterion" label="${i18n:_t('Add')}" sclass="add-button"
                         onClick="criterionTreeController.addCriterion();"/>
             </hbox>
         </vbox>
@@ -41,11 +41,11 @@
                   pageSize="10" fixedLayout="true" mold="paging">
 
                 <treecols sizable="true">
-                    <treecol label="${i18n:_('Name')}" />
-                    <treecol width="200px" label="${i18n:_('Cost category')}" />
-                    <treecol width="200px" label="${i18n:_('Code')}" />
-                    <treecol width="60px" align="center" label="${i18n:_('Active')}" />
-                    <treecol width="150px" align="center" label="${i18n:_('Operations')}" />
+                    <treecol label="${i18n:_t('Name')}" />
+                    <treecol width="200px" label="${i18n:_t('Cost category')}" />
+                    <treecol width="200px" label="${i18n:_t('Code')}" />
+                    <treecol width="60px" align="center" label="${i18n:_t('Active')}" />
+                    <treecol width="150px" align="center" label="${i18n:_t('Operations')}" />
                 </treecols>
             </tree>
         </vbox>

@@ -23,7 +23,7 @@
     <caption id="caption" sclass="caption-title" />
     <tabbox>
         <tabs>
-            <tab label="${i18n:_('Edit')}"/>
+            <tab label="${i18n:_t('Edit')}"/>
         </tabs>
         <tabpanels>
             <tabpanel>
@@ -35,7 +35,7 @@
 
                     <rows>
                         <row>
-                            <label value="${i18n:_('Unit name')}" />
+                            <label value="${i18n:_t('Unit name')}" />
                             <textbox id="unitName" value="@{controller.advanceType.unitName}"
                                      constraint="@{controller.distinctNames}"
                                      width="300px"
@@ -44,12 +44,12 @@
                                      sclass="focus-element" />
                         </row>
                         <row>
-                            <label value="${i18n:_('Active')}" />
+                            <label value="${i18n:_t('Active')}" />
                             <checkbox checked="@{controller.advanceType.active}"
                                       disabled="@{controller.immutable}" />
                         </row>
                         <row>
-                            <label value="${i18n:_('Default max value')}" />
+                            <label value="${i18n:_t('Default max value')}" />
                             <decimalbox id="defaultMaxValue"
                                         scale="2"
                                         width="300px"
@@ -58,7 +58,7 @@
                                         disabled="@{controller.percentage}" />
                         </row>
                         <row>
-                            <label value="${i18n:_('Precision')}" />
+                            <label value="${i18n:_t('Precision')}" />
                             <decimalbox id="precision"
                                         scale="4"
                                         width="300px"
@@ -67,11 +67,11 @@
                                         disabled="@{controller.immutable}" />
                         </row>
                         <row>
-                            <label value="${i18n:_('Type')}" />
+                            <label value="${i18n:_t('Type')}" />
                             <label value="@{controller.advanceType.type}" />
                         </row>
                         <row>
-                            <label value="${i18n:_('Percentage')}" />
+                            <label value="${i18n:_t('Percentage')}" />
                             <checkbox id="percentage"
                                       checked="@{controller.percentage}"
                                       disabled="@{controller.immutable}" />

@@ -20,7 +20,7 @@
 -->
 
 <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
-<?page id="work_report_admin" title="${i18n:_('LibrePlan: Scenarios Management')}" ?>
+<?page id="work_report_admin" title="${i18n:_t('LibrePlan: Scenarios Management')}" ?>
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/libreplan.css"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/libreplan_zk.css"?>

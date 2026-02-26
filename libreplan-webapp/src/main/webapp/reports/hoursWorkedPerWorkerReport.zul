@@ -18,7 +18,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<?page title="${i18n:_('LibrePlan: Hours Worked Per Resource')}" id="reports"?>
+<?page title="${i18n:_t('LibrePlan: Hours Worked Per Resource')}" id="reports"?>
 <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
 
@@ -36,12 +36,12 @@
 
     <window self="@{define(content)}"
             apply="org.libreplan.web.reports.HoursWorkedPerWorkerController"
-            title="${i18n:_('Hours Worked Per Resource')}"
+            title="${i18n:_t('Hours Worked Per Resource')}"
             border="normal" >
 
         <!-- Select dates -->
 
-        <panel title="${i18n:_('Dates')}" border="normal" style="overflow:auto" sclass="report-margin">
+        <panel title="${i18n:_t('Dates')}" border="normal" style="overflow:auto" sclass="report-margin">
 
             <panelchildren>
                 <grid width="700px" sclass="margin-border">
@@ -52,12 +52,12 @@
 
                     <rows>
                         <row>
-                            <label value="${i18n:_('Start date')}" />
+                            <label value="${i18n:_t('Start date')}" />
                             <datebox id="startingDate" />
                         </row>
 
                         <row>
-                            <label value="${i18n:_('End date')}" />
+                            <label value="${i18n:_t('End date')}" />
                             <datebox id="endingDate" />
                         </row>
                     </rows>
@@ -67,7 +67,7 @@
         </panel>
 
         <!-- Select workers -->
-        <panel title="${i18n:_('Filter by workers')}" border="normal" style="overflow:auto" sclass="report-margin">
+        <panel title="${i18n:_t('Filter by workers')}" border="normal" style="overflow:auto" sclass="report-margin">
             <panelchildren>
                 <vbox>
 
@@ -77,7 +77,7 @@
                         <autocomplete id="filterResource" buttonVisible="true"  width="400px"
                                       finder="ResourceFinder" sclass="bandbox-margin"/>
 
-                        <button label="${i18n:_('Add')}" sclass="add-button"
+                        <button label="${i18n:_t('Add')}" sclass="add-button"
                                 onClick="controller.onAddResource()"/>
                     </hbox>
 
@@ -90,11 +90,11 @@
                              itemRenderer="@{controller.renderer}"
                              sclass="margin-border">
                         <listhead>
-                            <listheader label="${i18n:_('Type')}" align="center" width="110px"/>
-                            <listheader label="${i18n:_('Queue-based')}" align="center" width="100px"/>
-                            <listheader label="${i18n:_('Name')}" sort="auto(name)" align="center" width="250px"/>
-                            <listheader label="${i18n:_('Code')}" align="center" width="270px"/>
-                            <listheader label="${i18n:_('Operations')}" align="center" width="78px"/>
+                            <listheader label="${i18n:_t('Type')}" align="center" width="110px"/>
+                            <listheader label="${i18n:_t('Queue-based')}" align="center" width="100px"/>
+                            <listheader label="${i18n:_t('Name')}" sort="auto(name)" align="center" width="250px"/>
+                            <listheader label="${i18n:_t('Code')}" align="center" width="270px"/>
+                            <listheader label="${i18n:_t('Operations')}" align="center" width="78px"/>
                         </listhead>
                     </listbox>
                 </vbox>
@@ -102,7 +102,7 @@
         </panel>
 
         <!-- Assign label -->
-        <panel title="${i18n:_('Filter by labels')}" border="normal" style="overflow:auto" sclass="report-margin">
+        <panel title="${i18n:_t('Filter by labels')}" border="normal" style="overflow:auto" sclass="report-margin">
             <panelchildren>
                 <vbox>
                     <separator spacing="5px"/>
@@ -113,15 +113,15 @@
                                        widthBandbox="350px"
                                        sclass="bandbox-margin"/>
 
-                        <button label="${i18n:_('Add')}" sclass="add-button" onClick="controller.onSelectLabel()"/>
+                        <button label="${i18n:_t('Add')}" sclass="add-button" onClick="controller.onSelectLabel()"/>
                     </hbox>
                     <hbox>
                         <radiogroup>
-                            <label value="${i18n:_('Apply filter to')}:"/>
-                            <radio id="filterByWorkReports" label="${i18n:_('Timesheets')}" />
-                            <radio id="filterByOrderElements" label="${i18n:_('Tasks')}" />
-                            <radio id="filterByBoth" label="${i18n:_('Both')}" />
-                            <radio id="filterByAny" label="${i18n:_('Any')}" checked="true" />
+                            <label value="${i18n:_t('Apply filter to')}:"/>
+                            <radio id="filterByWorkReports" label="${i18n:_t('Timesheets')}" />
+                            <radio id="filterByOrderElements" label="${i18n:_t('Tasks')}" />
+                            <radio id="filterByBoth" label="${i18n:_t('Both')}" />
+                            <radio id="filterByAny" label="${i18n:_t('Any')}" checked="true" />
                         </radiogroup>
                     </hbox>
 
@@ -133,9 +133,9 @@
                              model="@{controller.selectedLabels}"
                              sclass="margin-border">
                         <listhead>
-                            <listheader label="${i18n:_('Type')}" align="center" />
-                            <listheader label="${i18n:_('Name')}" align="center" />
-                            <listheader label="${i18n:_('Operations')}" align="center" width="100px"/>
+                            <listheader label="${i18n:_t('Type')}" align="center" />
+                            <listheader label="${i18n:_t('Name')}" align="center" />
+                            <listheader label="${i18n:_t('Operations')}" align="center" width="100px"/>
                         </listhead>
                         <listitem self="@{each='label'}" value="@{label}">
                             <listcell label="@{label.type.name}" />
@@ -143,7 +143,7 @@
                             <listcell>
                                 <button sclass="icono" image="/common/img/ico_borrar1.png"
                                         hoverImage="/common/img/ico_borrar.png"
-                                        tooltiptext="${i18n:_('Delete')}"
+                                        tooltiptext="${i18n:_t('Delete')}"
                                         onClick="controller.onRemoveLabel(self.parent.parent.value);">
                                 </button>
                             </listcell>
@@ -154,7 +154,7 @@
         </panel>
 
         <!-- Assign Criterion -->
-        <panel title="${i18n:_('Filter by criteria')}" border="normal" style="overflow:auto" sclass="report-margin">
+        <panel title="${i18n:_t('Filter by criteria')}" border="normal" style="overflow:auto" sclass="report-margin">
             <panelchildren>
                 <vbox>
                     <separator spacing="5px"/>
@@ -165,7 +165,7 @@
                                        widthBandbox="350px"
                                        sclass="bandbox-margin" />
 
-                        <button label="${i18n:_('Add')}" sclass="add-button" onClick="controller.onSelectCriterion()"/>
+                        <button label="${i18n:_t('Add')}" sclass="add-button" onClick="controller.onSelectCriterion()"/>
                     </hbox>
                 </vbox>
                 <separator spacing="10px"/>
@@ -175,9 +175,9 @@
                          model="@{controller.selectedCriterions}"
                          sclass="margin-border">
                     <listhead>
-                        <listheader label="${i18n:_('Type')}" align="center" />
-                        <listheader label="${i18n:_('Name')}" align="center" />
-                        <listheader label="${i18n:_('Operations')}" align="center" width="100px"/>
+                        <listheader label="${i18n:_t('Type')}" align="center" />
+                        <listheader label="${i18n:_t('Name')}" align="center" />
+                        <listheader label="${i18n:_t('Operations')}" align="center" width="100px"/>
                     </listhead>
                     <listitem self="@{each='criterion'}" value="@{criterion}">
                         <listcell label="@{criterion.type.name}" />
@@ -185,7 +185,7 @@
                         <listcell>
                             <button sclass="icono" image="/common/img/ico_borrar1.png"
                                     hoverImage="/common/img/ico_borrar.png"
-                                    tooltiptext="${i18n:_('Delete')}"
+                                    tooltiptext="${i18n:_t('Delete')}"
                                     onClick="controller.onRemoveCriterion(self.parent.parent.value);">
                             </button>
                         </listcell>
@@ -197,7 +197,7 @@
         <separator spacing="10px" orient="horizontal" />
 
         <!-- Select output format -->
-        <panel title="${i18n:_('Format')}" border="normal" style="overflow:auto" sclass="report-margin">
+        <panel title="${i18n:_t('Format')}" border="normal" style="overflow:auto" sclass="report-margin">
             <panelchildren>
                 <grid width="700px" sclass="margin-border">
                     <columns>
@@ -207,7 +207,7 @@
 
                     <rows>
                         <row>
-                            <label value="${i18n:_('Output format')}" />
+                            <label value="${i18n:_t('Output format')}" />
                             <comboboxOutputFormat id="outputFormat" />
                         </row>
                     </rows>
@@ -217,13 +217,13 @@
         </panel>
 
         <hbox style="display: none" id="URItext">
-            <label value="${i18n:_('Click on this')}" />
-            <a id="URIlink" sclass="z-label" zclass="z-label" label="${i18n:_('direct link')}" />
-            <label value="${i18n:_('if the report is not opened automatically or use save as...')}" />
+            <label value="${i18n:_t('Click on this')}" />
+            <a id="URIlink" sclass="z-label" zclass="z-label" label="${i18n:_t('direct link')}" />
+            <label value="${i18n:_t('if the report is not opened automatically or use save as...')}" />
         </hbox>
         <separator spacing="10px" orient="horizontal" />
 
-        <button label="${i18n:_('Show')}" sclass="add-button" onClick="controller.showReport(report)" />
+        <button label="${i18n:_t('Show')}" sclass="add-button" onClick="controller.showReport(report)" />
 
         <jasperreportcomponent id="report"/>
 

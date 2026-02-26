@@ -29,27 +29,27 @@
         </columns>
         <rows>
             <row>
-                <label value="${i18n:_('Name')}" />
+                <label value="${i18n:_t('Name')}" />
                 <textbox value="@{controller.scenario.name}" width="300px"
-                    constraint="no empty:${i18n:_('cannot be empty')}"
+                    constraint="no empty:${i18n:_t('cannot be empty')}"
                     disabled="@{controller.scenario.predefined}"
                     onBlur="controller.updateWindowTitle()" />
             </row>
             <row visible="@{controller.scenario.derived}">
-                <label value="${i18n:_('Predecessor')}" />
+                <label value="${i18n:_t('Predecessor')}" />
                 <label value="@{controller.scenario.predecessor.name}" />
             </row>
             <row>
-                <label value="${i18n:_('Description')}" />
+                <label value="${i18n:_t('Description')}" />
                 <textbox value="@{controller.scenario.description}"
                     rows="5" width="300px" />
             </row>
             <row>
-                <label value="${i18n:_('Projects')}" />
+                <label value="${i18n:_t('Projects')}" />
                 <listbox model="@{controller.orders}">
                     <listhead>
-                        <listheader label="${i18n:_('Code')}" />
-                        <listheader label="${i18n:_('Name')}" />
+                        <listheader label="${i18n:_t('Code')}" />
+                        <listheader label="${i18n:_t('Name')}" />
                     </listhead>
                     <listitem self="@{each='order'}" value="@{order}">
                         <listcell label="@{order.code}" />
@@ -61,13 +61,13 @@
     </grid>
 
     <hbox>
-        <button label="${i18n:_('Save')}"
+        <button label="${i18n:_t('Save')}"
             onClick="controller.saveAndExit()" autodisable="self"
             sclass="save-button global-action"/>
-        <button label="${i18n:_('Save &amp; Continue')}"
+        <button label="${i18n:_t('Save &amp; Continue')}"
             onClick="controller.saveAndContinue()"
             sclass="saveandcontinue-button global-action"/>
-        <button label="${i18n:_('Cancel')}"
+        <button label="${i18n:_t('Cancel')}"
             onClick="controller.cancelForm()"
             sclass="cancel-button global-action"/>
     </hbox>

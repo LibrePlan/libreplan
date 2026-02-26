@@ -27,7 +27,7 @@
         <!-- Order element historic assignment to templates-->
         <vbox>
             <vbox id="messagesContainerHistoricStatistics" />
-            <panel title="${i18n:_('Statistics list ')}" border="normal">
+            <panel title="${i18n:_t('Statistics list ')}" border="normal">
                 <panelchildren>
                     <grid sclass="margin-border">
                         <columns>
@@ -36,23 +36,23 @@
                         </columns>
                         <rows>
                             <row>
-                                <label value="${i18n:_('Number of applications')}"/>
+                                <label value="${i18n:_t('Number of applications')}"/>
                                 <label value="@{historicalStatistics.applications}"/>
                             </row>
                             <row>
-                                <label value="${i18n:_('Number of finished applications')}"/>
+                                <label value="${i18n:_t('Number of finished applications')}"/>
                                 <label value="@{historicalStatistics.finishApplications}"/>
                             </row>
                             <row>
-                                <label value="${i18n:_('Estimated hours average')}"/>
+                                <label value="${i18n:_t('Estimated hours average')}"/>
                                 <label value="@{historicalStatistics.averageEstimatedHours}"/>
                             </row>
                             <row>
-                                <label value="${i18n:_('Average of worked hours in finished applications')}"/>
+                                <label value="${i18n:_t('Average of worked hours in finished applications')}"/>
                                 <label value="@{historicalStatistics.averageWorkedHours}"/>
                             </row>
                             <row>
-                                <label value="${i18n:_('Maximum/minimum of estimated hours')}"/>
+                                <label value="${i18n:_t('Maximum/minimum of estimated hours')}"/>
                                 <hbox>
                                     <label value="@{historicalStatistics.maxEstimatedHours}"/>
                                     <label value=" / "/>
@@ -60,7 +60,7 @@
                                 </hbox>
                             </row>
                             <row>
-                                <label value="${i18n:_('Maximum/minimum of worked hours in finished applications')}"/>
+                                <label value="${i18n:_t('Maximum/minimum of worked hours in finished applications')}"/>
                                 <hbox>
                                     <label value="@{historicalStatistics.maxWorkedHours}"/>
                                     <label value=" / "/>

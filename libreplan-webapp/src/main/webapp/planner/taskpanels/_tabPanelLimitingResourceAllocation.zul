@@ -19,7 +19,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<?page title="${i18n:_('LibrePlan: Scheduling')}"?>
+<?page title="${i18n:_t('LibrePlan: Scheduling')}"?>
 <?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n" ?>
 
 <?component name="newAllocationSelectorCombo"
@@ -49,7 +49,7 @@
                 <!-- Allocations -->
                 <groupbox style="margin-top: 5px" sclass="assignedresources" closable="false">
 
-                    <caption label="${i18n:_('Allocations')}" />
+                    <caption label="${i18n:_t('Allocations')}" />
 
                     <!-- Multiple allocation selector -->
                     <separator spacing="10px"/>
@@ -57,10 +57,10 @@
                     <hbox>
                         <newAllocationSelectorCombo id="limitingNewAllocationSelectorCombo" behaviour="LIMITING" />
 
-                        <button label="${i18n:_('Add')}" sclass="add-button"
+                        <button label="${i18n:_t('Add')}" sclass="add-button"
                                 onClick="limitingAllocationController.selectWorkers(limitingNewAllocationSelectorCombo)" />
 
-                        <button label="${i18n:_('Advanced search')}"
+                        <button label="${i18n:_t('Advanced search')}"
                                 onClick="tabLimitingWorkerSearch.setSelected(true);"
                                 sclass="add-button"/>
                     </hbox>
@@ -72,10 +72,10 @@
                           rowRenderer="@{limitingAllocationController.gridLimitingAllocationRenderer}"
                           style="margin-bottom: 5px">
                         <columns>
-                            <column label="${i18n:_('Assignation type')}" align="center"/>
-                            <column label="${i18n:_('Assignation')}" align="center"/>
-                            <column label="${i18n:_('Hours')}" align="center"/>
-                            <column label="${i18n:_('Priority')}" align="center"/>
+                            <column label="${i18n:_t('Assignation type')}" align="center"/>
+                            <column label="${i18n:_t('Assignation')}" align="center"/>
+                            <column label="${i18n:_t('Hours')}" align="center"/>
+                            <column label="${i18n:_t('Priority')}" align="center"/>
                         </columns>
                     </grid>
 
@@ -86,9 +86,9 @@
             <tabpanel >
                 <newAllocationSelector id="limitingNewAllocationSelector"  behaviour="LIMITING" />
                 <hbox>
-                    <button label="${i18n:_('Select')}" sclass="add-button"
+                    <button label="${i18n:_t('Select')}" sclass="add-button"
                             onClick="limitingAllocationController.selectWorkers(limitingNewAllocationSelector)" />
-                    <button label="${i18n:_('Close')}"  sclass="add-button"
+                    <button label="${i18n:_t('Close')}"  sclass="add-button"
                             onClick="limitingAllocationController.closeSelectWorkers()" />
                 </hbox>
             </tabpanel>

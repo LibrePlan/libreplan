@@ -1,19 +1,19 @@
 <window apply="org.libreplan.web.dashboard.DashboardControllerGlobal" contentStyle="overflow:auto;">
 
-        <checkbox id="storedColumnVisible" label="${i18n:_('Show archived column data')}"
+        <checkbox id="storedColumnVisible" label="${i18n:_t('Show archived column data')}"
                   checked="true" onCheck="dashboardControllerGlobal.showStoredColumn()"/>
 
         <grid id="pipelineGrid" sclass="global-dashboard-grid" height="500px">
                 <columns>
-                        <column label="${i18n:_('PRE-SALES')}"/>
-                        <column label="${i18n:_('OFFERED')}"/>
-                        <column label="${i18n:_('OUTSOURCED')}"/>
-                        <column label="${i18n:_('ACCEPTED')}"/>
-                        <column label="${i18n:_('STARTED')}"/>
-                        <column label="${i18n:_('ON HOLD')}"/>
-                        <column label="${i18n:_('FINISHED')}"/>
-                        <column label="${i18n:_('CANCELLED')}"/>
-                        <column label="${i18n:_('ARCHIVED')}"/>
+                        <column label="${i18n:_t('PRE-SALES')}"/>
+                        <column label="${i18n:_t('OFFERED')}"/>
+                        <column label="${i18n:_t('OUTSOURCED')}"/>
+                        <column label="${i18n:_t('ACCEPTED')}"/>
+                        <column label="${i18n:_t('STARTED')}"/>
+                        <column label="${i18n:_t('ON HOLD')}"/>
+                        <column label="${i18n:_t('FINISHED')}"/>
+                        <column label="${i18n:_t('CANCELLED')}"/>
+                        <column label="${i18n:_t('ARCHIVED')}"/>
                 </columns>
         </grid>
 </window>

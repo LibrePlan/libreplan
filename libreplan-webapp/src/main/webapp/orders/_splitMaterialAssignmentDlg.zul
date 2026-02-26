@@ -35,7 +35,7 @@
             </columns>
             <rows>
                 <row>
-                    <label style="font-weight: bold" value="${i18n:_('Units')}:" width="150px" />
+                    <label style="font-weight: bold" value="${i18n:_t('Units')}:" width="150px" />
                     <decimalbox id="dbUnits" width="200px" />
                 </row>
             </rows>

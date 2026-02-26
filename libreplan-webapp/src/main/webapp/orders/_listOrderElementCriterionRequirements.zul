@@ -30,12 +30,12 @@
 
     <vbox apply="${criterionRequirementsController}" width="100%">
 
-        <panel title="${i18n:_('Assigned criterion requirements')}" border="normal"
+        <panel title="${i18n:_t('Assigned criterion requirements')}" border="normal"
                style="overflow:auto" >
             <panelchildren>
                 <hbox align="center">
-                    <button label="${i18n:_('Add')}" sclass="add-button"
-                            tooltiptext="${i18n:_('Add criterion requirement')}"
+                    <button label="${i18n:_t('Add')}" sclass="add-button"
+                            tooltiptext="${i18n:_t('Add criterion requirement')}"
                             style="margin: 5px;"
                             onClick="criterionRequirementsController.addCriterionRequirementWrapper()" />
                 </hbox>
@@ -47,13 +47,13 @@
                                      fixedLayout="true" >
 
                     <columns>
-                        <newdatasortablecolumn label="${i18n:_('Criterion name')}" sort="auto(criterionAndType)"
+                        <newdatasortablecolumn label="${i18n:_t('Criterion name')}" sort="auto(criterionAndType)"
                                                sortDirection="ascending"/>
 
-                        <newdatasortablecolumn label="${i18n:_('Type')}" sort="auto(type)" width="100px"
+                        <newdatasortablecolumn label="${i18n:_t('Type')}" sort="auto(type)" width="100px"
                                                align="center"/>
 
-                        <newdatasortablecolumn label="${i18n:_('Operations')}" width="150px" align="center"/>
+                        <newdatasortablecolumn label="${i18n:_t('Operations')}" width="150px" align="center"/>
                     </columns>
 
                     <rows>
@@ -100,17 +100,17 @@
                                 <button visible="@{criterionRequirementWrapper.direct}"
                                         sclass="icono" image="/common/img/ico_borrar1.png"
                                         hoverImage="/common/img/ico_borrar.png"
-                                        tooltiptext="${i18n:_('Delete')}"
+                                        tooltiptext="${i18n:_t('Delete')}"
                                         onClick="criterionRequirementsController.remove(self.parent.parent.value);">
                                 </button>
 
                                 <button visible="@{criterionRequirementWrapper.indirectInvalid}"
-                                        label="${i18n:_('Validate')}"
+                                        label="${i18n:_t('Validate')}"
                                         onClick="criterionRequirementsController.validate(self.parent.parent.value);">
                                 </button>
 
                                 <button visible="@{criterionRequirementWrapper.indirectValid}"
-                                        label="${i18n:_('Invalidate')}"
+                                        label="${i18n:_t('Invalidate')}"
                                         onClick="criterionRequirementsController.invalidate(self.parent.parent.value);">
                                 </button>
                             </hbox>
@@ -123,7 +123,7 @@
         <separator bar="false" spacing="80px" orient="vertical"/>
 
         <!-- Total hours order element -->
-        <panel title="${i18n:_('Total hours task')}"
+        <panel title="${i18n:_t('Total hours task')}"
                style="overflow:auto" >
             <panelchildren>
                 <grid fixedLayout="true">
@@ -135,7 +135,7 @@
                     <rows>
                         <row>
                             <label
-                                    value="${i18n:_('Total hours task')}:" />
+                                    value="${i18n:_t('Total hours task')}:" />
                             <hbox align="center">
                                 <intbox id="orderElementTotalHours"
                                         visible="@{criterionRequirementsController.editableHoursGroup}"
@@ -157,7 +157,7 @@
         <div id="messagesContainer" />
 
         <!-- List Hours Groups in OrdeLineGroup -->
-        <panel title="${i18n:_('Hours group')}"
+        <panel title="${i18n:_t('Hours group')}"
                visible="@{criterionRequirementsController.readOnly}"
                style="overflow: auto" >
             <panelchildren>
@@ -165,23 +165,23 @@
                          model="@{criterionRequirementsController.hoursGroups}"
                          itemRenderer="@{criterionRequirementsController.renderer}">
                     <listhead>
-                        <listheader label="${i18n:_('Criterion Requirements')}" hflex="1" />
-                        <listheader label="${i18n:_('Type')}" align="center" width="150px" />
-                        <listheader label="${i18n:_('Hours')}" align="center" width="150px" />
+                        <listheader label="${i18n:_t('Criterion Requirements')}" hflex="1" />
+                        <listheader label="${i18n:_t('Type')}" align="center" width="150px" />
+                        <listheader label="${i18n:_t('Hours')}" align="center" width="150px" />
                     </listhead>
                 </listbox>
             </panelchildren>
         </panel>
 
         <!-- Manage Hours Groups in OrdeLine -->
-        <panel title="${i18n:_('Hours Group')}" border="normal"
+        <panel title="${i18n:_t('Hours Group')}" border="normal"
                visible="@{criterionRequirementsController.editableHoursGroup}">
             <panelchildren>
                 <hbox align="center">
                     <button id="buttonAddHoursGroup"
-                            label="${i18n:_('Add')}"
+                            label="${i18n:_t('Add')}"
                             sclass="add-button"
-                            tooltiptext="${i18n:_('Add new hours group')}"
+                            tooltiptext="${i18n:_t('Add new hours group')}"
                             style="margin: 5px"
                             onClick="criterionRequirementsController.addHoursGroup()" />
                 </hbox>
@@ -238,16 +238,16 @@
                                 <button id="buttonDeleteHoursGroup"
                                         sclass="icono" image="/common/img/ico_borrar1.png"
                                         hoverImage="/common/img/ico_borrar.png"
-                                        tooltiptext="${i18n:_('Delete')}"
+                                        tooltiptext="${i18n:_t('Delete')}"
                                         onClick="criterionRequirementsController.deleteHoursGroups(self)" />
 
                                 <button id="buttonAddCriterion"
-                                        label="${i18n:_('Add Criterion')}" sclass="add-button"
+                                        label="${i18n:_t('Add Criterion')}" sclass="add-button"
                                         onClick="criterionRequirementsController.addCriterionToHoursGroup(self)" />
 
                                 <button id="buttonAddException"
                                         disabled = "@{hoursGroupWrapper.dontExistValidCriterions}"
-                                        label="${i18n:_('Add Exception')}" sclass="add-button"
+                                        label="${i18n:_t('Add Exception')}" sclass="add-button"
                                         onClick="criterionRequirementsController.addExceptionToHoursGroups(self)" />
                             </hbox>
                         </row>

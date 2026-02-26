@@ -22,7 +22,7 @@
     <hbox style="padding:20px 50px">
         <vbox width="450px">
             <hbox hflex="1" pack="center" vflex="1" style="margin-bottom:5px">
-                <label sclass="dashboard-title" value="${i18n:_('Current state indicators')}" />
+                <label sclass="dashboard-title" value="${i18n:_t('Current state indicators')}" />
             </hbox>
             <vbox width="20px" />
             <div sclass="dashboard-box" style="padding: 25px;">
@@ -35,7 +35,7 @@
                             <label sclass="dashboard-label dashboard-label-remarked" id="lblCV"/>
                         </vbox>
                         <label sclass="dashboard-label" value="@{controller.labelACWP}"
-                               tooltiptext="${i18n:_('Hours invested')}" />
+                               tooltiptext="${i18n:_t('Hours invested')}" />
                         <label sclass="dashboard-label dashboard-label-remarked" id="lblACWP" />
                     </vbox>
 
@@ -45,7 +45,7 @@
                             <label sclass="dashboard-label dashboard-label-remarked" id="lblCPI" />
                         </vbox>
                         <label sclass="dashboard-label" value="@{controller.labelETC}"
-                               tooltiptext="${i18n:_('Remaining time')}" />
+                               tooltiptext="${i18n:_t('Remaining time')}" />
                         <label sclass="dashboard-label dashboard-label-remarked" id="lblETC" />
                     </vbox>
                 </hbox>
@@ -57,7 +57,7 @@
 
         <vbox width="450px">
             <hbox hflex="1" pack="center" vflex="1" style="margin-bottom:5px">
-                <label sclass="dashboard-title" value="${i18n:_('Project closing previsions')}" />
+                <label sclass="dashboard-title" value="${i18n:_t('Project closing previsions')}" />
             </hbox>
 
             <div sclass="dashboard-box" style="padding: 25px;">

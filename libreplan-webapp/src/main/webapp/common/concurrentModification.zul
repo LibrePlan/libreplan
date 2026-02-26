@@ -27,10 +27,10 @@
     <window self="@{define(content)}" >
         <vbox apply="org.libreplan.web.common.concurrentdetection.ConcurrentModificationController"
               sclass="errorbox">
-            <label value="${i18n:_('Another user has modified the same data, so the operation cannot be safely completed.')}" />
-            <label value="${i18n:_('Please try it again.')}" />
+            <label value="${i18n:_t('Another user has modified the same data, so the operation cannot be safely completed.')}" />
+            <label value="${i18n:_t('Please try it again.')}" />
             <hbox style="margin-left:auto; margin-right:auto">
-                <button id="continue" label="${i18n:_('Continue')}" sclass="add-button" />
+                <button id="continue" label="${i18n:_t('Continue')}" sclass="add-button" />
             </hbox>
         </vbox>
     </window>

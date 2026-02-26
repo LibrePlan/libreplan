@@ -56,7 +56,7 @@
                 </hbox>
 
                 <groupbox style="margin-top: 5px" sclass="assignedresources" closable="false">
-                    <caption label="${i18n:_('Allocations')}" />
+                    <caption label="${i18n:_t('Allocations')}" />
 
                     <!-- Multiple allocation selector -->
                     <separator spacing="10px"/>
@@ -64,16 +64,16 @@
                     <hbox align="center" sclass="add-resources-or-criteria">
                         <newAllocationSelectorCombo id="newAllocationSelectorCombo" behaviour="NON_LIMITING"/>
 
-                        <button label="${i18n:_('Add')}"
+                        <button label="${i18n:_t('Add')}"
                                 onClick="allocationController.onSelectWorkers(newAllocationSelectorCombo)"
                                 sclass="add-button"
                                 disabled="@{allocationController.isAnyManualOrTaskUpdatedFromTimesheets}" />
 
-                        <button id="advancedSearchButton" label="${i18n:_('Advanced search')}"
+                        <button id="advancedSearchButton" label="${i18n:_t('Advanced search')}"
                                 sclass="add-button"
                                 onClick="allocationController.goToAdvancedSearch()" />
 
-                        <checkbox id="extendedViewCheckbox" label="${i18n:_('Extended view')}"
+                        <checkbox id="extendedViewCheckbox" label="${i18n:_t('Extended view')}"
                                   sclass="resource-allocation-checkbox"
                                   onCheck="allocationController.onCheckExtendedView()"/>
                     </hbox>
@@ -87,40 +87,40 @@
 
                         <auxhead>
                             <auxheader colspan="1"/>
-                            <auxheader label="${i18n:_('Name')}" colspan="1" align="center"/>
+                            <auxheader label="${i18n:_t('Name')}" colspan="1" align="center"/>
 
-                            <auxheader label="${i18n:_('Hours')}" colspan="4" align="center"/>
+                            <auxheader label="${i18n:_t('Hours')}" colspan="4" align="center"/>
 
-                            <auxheader label="${i18n:_('Resources Per Day')}" colspan="3" align="center"/>
+                            <auxheader label="${i18n:_t('Resources Per Day')}" colspan="3" align="center"/>
 
-                            <auxheader label="${i18n:_('Function')}" colspan="1" align="center"
+                            <auxheader label="${i18n:_t('Function')}" colspan="1" align="center"
                                        visible="@{allocationController.anyNotFlat}" />
 
-                            <auxheader label="${i18n:_('Op.')}" colspan="1" align="center"/>
+                            <auxheader label="${i18n:_t('Op.')}" colspan="1" align="center"/>
                         </auxhead>
 
                         <columns sclass="details">
                             <column width="20px"/>
                             <column />
 
-                            <column label="${i18n:_('Original')}" align="center"
+                            <column label="${i18n:_t('Original')}" align="center"
                                     visible="@{allocationController.extendedView}" width="70px"/>
 
-                            <column label="${i18n:_('Total')}" align="center"
+                            <column label="${i18n:_t('Total')}" align="center"
                                     visible="@{allocationController.extendedView}" width="70px"/>
 
-                            <column label="${i18n:_('Consolidated')}" align="center"
+                            <column label="${i18n:_t('Consolidated')}" align="center"
                                     visible="@{allocationController.extendedView}" width="75px"/>
 
-                            <column label="${i18n:_('Non Consolidated')}" align="center" width="120px"/>
+                            <column label="${i18n:_t('Non Consolidated')}" align="center" width="120px"/>
 
-                            <column label="${i18n:_('Total')}" align="center"
+                            <column label="${i18n:_t('Total')}" align="center"
                                     visible="@{allocationController.extendedView}" width="70px"/>
 
-                            <column label="${i18n:_('Consolidated')}" align="center"
+                            <column label="${i18n:_t('Consolidated')}" align="center"
                                     visible="@{allocationController.extendedView}" width="75px"/>
 
-                            <column label="${i18n:_('Non Consolidated')}" align="center" width="120px"/>
+                            <column label="${i18n:_t('Non Consolidated')}" align="center" width="120px"/>
 
                             <column label="" align="center" width="95px"
                                     visible="@{allocationController.anyNotFlat}" />
@@ -137,10 +137,10 @@
 
                 <!--  Select worker -->
                 <hbox>
-                    <button label="${i18n:_('Select')}"
+                    <button label="${i18n:_t('Select')}"
                             onClick="allocationController.onSelectWorkers(newAllocationSelector)"
                             sclass="add-button"/>
-                    <button label="${i18n:_('Close')}" onClick="allocationController.onCloseSelectWorkers()"
+                    <button label="${i18n:_t('Close')}" onClick="allocationController.onCloseSelectWorkers()"
                             sclass="add-button"/>
                 </hbox>
             </tabpanel>
@@ -149,6 +149,6 @@
 
     <!-- Control buttons -->
     <hbox>
-        <button label="${i18n:_('Apply tab changes')}" id="applyButton" sclass="add-button global-action" />
+        <button label="${i18n:_t('Apply tab changes')}" id="applyButton" sclass="add-button global-action" />
     </hbox>
 </tabpanel>

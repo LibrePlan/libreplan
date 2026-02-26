@@ -20,8 +20,8 @@
 -->
 <zk>
     <?component name="button" extends="button" mold="trendy"?>
-    <?xel-method prefix="ganttzk_i18n" name="_" class="org.zkoss.ganttz.i18n.I18nHelper"
-            signature="java.lang.String _(java.lang.String name)" ?>
+    <?xel-method prefix="ganttzk_i18n" name="_t" class="org.zkoss.ganttz.i18n.I18nHelper"
+            signature="java.lang.String _t(java.lang.String name)" ?>
 
     <zscript>
         <![CDATA[
@@ -39,14 +39,14 @@
 
                 <button onClick="planner.invalidate()"
                         image="/common/img/ico_refresh.png"
-                        tooltiptext="${ganttzk_i18n:_('Refresh')}" visible="false" />
+                        tooltiptext="${ganttzk_i18n:_t('Refresh')}" visible="false" />
 
                 <hbox id="plannerButtonsInsertionPoint" />
 
                 <button id="btnPrint" onClick="planner.print()"
                         image="/common/img/ico_print.png"
                         style="background: none; box-shadow: none;"
-                        tooltiptext="${ganttzk_i18n:_('Print')}" />
+                        tooltiptext="${ganttzk_i18n:_t('Print')}" />
                 <separator/>
 
                 <!--  Visualization modes -->
@@ -60,32 +60,32 @@
 
                 <button id="showCriticalPath" onClick="planner.showCriticalPath();"
                         image="/common/img/ico_criticalpath.png"
-                        tooltiptext="${ganttzk_i18n:_('Show/Hide critical path')}" />
+                        tooltiptext="${ganttzk_i18n:_t('Show/Hide critical path')}" />
 
                 <button id="showAllLabels" onClick="planner.showAllLabels();"
                         image="/common/img/ico_labels.png"
-                        tooltiptext="${ganttzk_i18n:_('Show/Hide labels')}" sclass="planner-command show-labels" />
+                        tooltiptext="${ganttzk_i18n:_t('Show/Hide labels')}" sclass="planner-command show-labels" />
 
                 <button id="showAllResources" onClick="planner.showAllResources();"
                         image="/common/img/ico_resources.png"
-                        tooltiptext="${ganttzk_i18n:_('Show/Hide resources')}"
+                        tooltiptext="${ganttzk_i18n:_t('Show/Hide resources')}"
                         sclass="planner-command show-resources" />
 
                 <button id="expandAll" onClick="planner.expandAll();"
                         image="/common/img/ico_expand.png"
-                        tooltiptext="${ganttzk_i18n:_('Expand/Collapse all')}"
+                        tooltiptext="${ganttzk_i18n:_t('Expand/Collapse all')}"
                         sclass="planner-command" />
 
                 <button id="flattenTree" onClick="planner.flattenTree();"
                         image="/common/img/ico_flatten.png"
-                        tooltiptext="${ganttzk_i18n:_('Flatten/Unflatten tree')}"
+                        tooltiptext="${ganttzk_i18n:_t('Flatten/Unflatten tree')}"
                         sclass="planner-command" />
 
                 <hbox class="show-advances" align="center">
                     <button id="showAdvances" onClick="planner.showAdvances();"
                             image="/common/img/ico_progress.png"
                             style="width:46px; margin-right: -5px;"
-                            tooltiptext="${ganttzk_i18n:_('Show/Hide progress')}"
+                            tooltiptext="${ganttzk_i18n:_t('Show/Hide progress')}"
                             sclass="planner-command" />
 
                     <combobox id="cbProgressTypes" width="1px" visible="false" sclass="progress-types"/>
@@ -93,13 +93,13 @@
 
                 <button id="showReportedHours" onClick="planner.showReportedHours();"
                         image="/common/img/ico_costs.png"
-                        tooltiptext="${ganttzk_i18n:_('Show/Hide reported hours')}"
+                        tooltiptext="${ganttzk_i18n:_t('Show/Hide reported hours')}"
                         sclass="planner-command"/>
                 <separator />
 
                 <button id="showMoneyCostBar" onClick="planner.showMoneyCostBar();"
                         image="/common/img/ico_money_cost_bar.png"
-                        tooltiptext="${ganttzk_i18n:_('Show/Hide money cost bar')}"
+                        tooltiptext="${ganttzk_i18n:_t('Show/Hide money cost bar')}"
                         sclass="planner-command"/>
                 <separator />
 
@@ -135,7 +135,7 @@
             </borderlayout>
         </center>
 
-        <south height="200px" collapsible="true" title="${ganttzk_i18n:_('Graphics')}"
+        <south height="200px" collapsible="true" title="${ganttzk_i18n:_t('Graphics')}"
                sclass="scheduling-graphics" id="graphics"
                onOpen="planner.changeChartVisibility(event.open);" >
 

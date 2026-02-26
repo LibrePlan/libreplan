@@ -19,7 +19,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<?page title="${i18n:_('LibrePlan: Advanced allocation')}"?>
+<?page title="${i18n:_t('LibrePlan: Advanced allocation')}"?>
 <?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n"?>
 <zk xmlns:n="http://www.zkoss.org/2005/zk/native">
 
@@ -32,7 +32,7 @@
     <n:div class="advanced-allocation-layout">
 
         <div id="noDataLayout">
-            <n:h4 class="message_WARNING">${i18n:_('No Allocations have been done')}</n:h4>
+            <n:h4 class="message_WARNING">${i18n:_t('No Allocations have been done')}</n:h4>
         </div>
 
         <borderlayout id="normalLayout" width="auto" apply="${advancedAllocationController}"
@@ -41,22 +41,22 @@
             <north height="30px" border="0" sclass="toolbar-box">
 
                 <hbox align="center">
-                    <button label="${i18n:_('Apply')}" id="acceptButton" image="/common/img/bt_ok.png"
+                    <button label="${i18n:_t('Apply')}" id="acceptButton" image="/common/img/bt_ok.png"
                             if="${advancedAllocationController.advancedAllocationOfSingleTask}"
-                            tooltiptext="${i18n:_('Apply changes and go back to scheduling')}" />
+                            tooltiptext="${i18n:_t('Apply changes and go back to scheduling')}" />
 
-                    <button label="${i18n:_('Cancel')}" id="cancelButton" image="/common/img/bt_cancel.png"
+                    <button label="${i18n:_t('Cancel')}" id="cancelButton" image="/common/img/bt_cancel.png"
                             if="${advancedAllocationController.advancedAllocationOfSingleTask}"
-                            tooltiptext="${i18n:_('Cancel changes and back to scheduling')}" />
+                            tooltiptext="${i18n:_t('Cancel changes and back to scheduling')}" />
 
-                    <button label="${i18n:_('Apply')}" id="saveButton" image="/common/img/bt_ok.png"
+                    <button label="${i18n:_t('Apply')}" id="saveButton" image="/common/img/bt_ok.png"
                             if="${!(advancedAllocationController.advancedAllocationOfSingleTask)}"
-                            tooltiptext="${i18n:_('Apply changes and continue editing')}" />
+                            tooltiptext="${i18n:_t('Apply changes and continue editing')}" />
 
                     <separator/>
 
                     <space bar="true" />
-                    <label>${i18n:_('Zoom level')}:</label>
+                    <label>${i18n:_t('Zoom level')}:</label>
 
                     <listbox mold="select" rows="1" id="advancedAllocationZoomLevel"
                              model="${advancedAllocationController.zoomLevels}"
@@ -65,7 +65,7 @@
 
                     <separator/>
 
-                    <label>${i18n:_('Pagination')}:</label>
+                    <label>${i18n:_t('Pagination')}:</label>
 
                     <button tooltiptext="Page down" image="/common/img/ico_left.png" id="paginationDownButton"
                             onClick="advancedAllocationController.paginationDown();" disabled="true" />

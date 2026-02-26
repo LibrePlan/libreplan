@@ -20,7 +20,7 @@
 -->
 
 <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
-<?page title="${i18n:_('LibrePlan: Timesheets Templates')}" id="List"?>
+<?page title="${i18n:_t('LibrePlan: Timesheets Templates')}" id="List"?>
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
 <?link rel="shortcut icon" href="/common/img/favicon.ico" type="image/x-icon"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/libreplan.css"?>
@@ -33,8 +33,8 @@
         <vbox id="messagesContainer"/>
         <list top_id="listWindow" />
         <edition top_id="editWindow"
-                 save_button_label="${i18n:_('Save')}"
-                 saveAndContinue_button_label="${i18n:_('Save &amp; Continue')}"
-                 cancel_button_label="${i18n:_('Cancel')}" />
+                 save_button_label="${i18n:_t('Save')}"
+                 saveAndContinue_button_label="${i18n:_t('Save &amp; Continue')}"
+                 cancel_button_label="${i18n:_t('Cancel')}" />
     </window>
 </zk>

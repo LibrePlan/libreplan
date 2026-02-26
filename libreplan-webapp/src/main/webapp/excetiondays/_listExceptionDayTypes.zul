@@ -28,15 +28,15 @@
                          fixedLayout="true">
 
         <columns>
-            <newdatasortablecolumn label="${i18n:_('Name')}" sort="auto(lower(name))" sortDirection="ascending" />
-            <newdatasortablecolumn label="${i18n:_('Color')}"/>
-            <newdatasortablecolumn label="${i18n:_('Overallocated')}" />
-            <newdatasortablecolumn label="${i18n:_('Standard Effort')}" />
-            <newdatasortablecolumn label="${i18n:_('Overtime Effort')}" />
-            <newdatasortablecolumn label="${i18n:_('Operations')}" />
+            <newdatasortablecolumn label="${i18n:_t('Name')}" sort="auto(lower(name))" sortDirection="ascending" />
+            <newdatasortablecolumn label="${i18n:_t('Color')}"/>
+            <newdatasortablecolumn label="${i18n:_t('Overallocated')}" />
+            <newdatasortablecolumn label="${i18n:_t('Standard Effort')}" />
+            <newdatasortablecolumn label="${i18n:_t('Overtime Effort')}" />
+            <newdatasortablecolumn label="${i18n:_t('Operations')}" />
         </columns>
     </newdatasortablegrid>
 
-    <button label="${i18n:_('Create')}" onClick="controller.goToCreateForm()" sclass="create-button global-action"/>
+    <button label="${i18n:_t('Create')}" onClick="controller.goToCreateForm()" sclass="create-button global-action"/>
 
 </window>

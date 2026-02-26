@@ -21,7 +21,7 @@
 
 <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
 
-<?page title="${i18n:_('LibrePlan: Criteria')}" id="criterions_admin"?>
+<?page title="${i18n:_t('LibrePlan: Criteria')}" id="criterions_admin"?>
 
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
 <?link rel="shortcut icon" href="/common/img/favicon.ico" type="image/x-icon"?>
@@ -42,8 +42,8 @@
         <list id="listWindow" />
 
         <edition id="editWindow"
-                save_button_label="${i18n:_('Save')}"
-                cancel_button_label="${i18n:_('Cancel')}" />
+                save_button_label="${i18n:_t('Save')}"
+                cancel_button_label="${i18n:_t('Cancel')}" />
 
     </window>
 </zk>

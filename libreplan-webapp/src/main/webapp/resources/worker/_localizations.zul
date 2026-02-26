@@ -23,14 +23,14 @@
     <hbox>
 
         <vbox>
-            <label sclass="subtitulo" value="${i18n:_('Assigned locations')}" />
+            <label sclass="subtitulo" value="${i18n:_t('Assigned locations')}" />
             <listbox id="activeSatisfactions" mold="paging"
                      model="@{controller.localizations.activeSatisfactions}"
                      height="200px" multiple="true" checkmark="true">
                 <listhead>
-                    <listheader label="${i18n:_('Group')}"
+                    <listheader label="${i18n:_t('Group')}"
                                 sort="auto(criterion.name)"/>
-                    <listheader label="${i18n:_('Starting date')}"
+                    <listheader label="${i18n:_t('Starting date')}"
                                 sort="auto(startDate)" />
                 </listhead>
                 <listitem self="@{each='satisfaction'}" value="@{satisfaction}">
@@ -45,12 +45,12 @@
         </vbox>
 
         <vbox>
-            <label sclass="subtitulo" value="${i18n:_('Non-assigned locations')}" />
+            <label sclass="subtitulo" value="${i18n:_t('Non-assigned locations')}" />
             <listbox id="criterionsNotAssigned" mold="paging"
                      model="@{controller.localizations.criterionsNotAssigned}"
                      height="200px" multiple="true" checkmark="true">
                 <listhead>
-                    <listheader label="${i18n:_('Group')}"
+                    <listheader label="${i18n:_t('Group')}"
                                 sort="auto(name)"/>
                 </listhead>
                 <listitem self="@{each='criterion'}" value="@{criterion}">
@@ -61,13 +61,13 @@
     </hbox>
 
 
-    <label sclass="subtitulo" value="${i18n:_('Log')}" />
+    <label sclass="subtitulo" value="${i18n:_t('Log')}" />
     <grid id="listing" model="@{controller.localizations.localizationsHistory}"
           mold="paging" pageSize="10">
         <columns>
-            <column label="${i18n:_('Group')}" sort="auto(criterion.name)" />
-            <column label="${i18n:_('Starting date')}" sort="auto(startDate)" />
-            <column label="${i18n:_('Ending date')}" sort="auto(endDate)" />
+            <column label="${i18n:_t('Group')}" sort="auto(criterion.name)" />
+            <column label="${i18n:_t('Starting date')}" sort="auto(startDate)" />
+            <column label="${i18n:_t('Ending date')}" sort="auto(endDate)" />
         </columns>
         <rows>
             <row self="@{each='satisfaction'}">

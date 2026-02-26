@@ -19,7 +19,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<?page title="${i18n:_('LibrePlan: Send To Customers')}"?>
+<?page title="${i18n:_t('LibrePlan: Send To Customers')}"?>
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
 <?link rel="shortcut icon" href="/common/img/favicon.ico" type="image/x-icon"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/libreplan.css"?>
@@ -32,7 +32,7 @@
 <div self="@{define(content)}">
 
 <window apply="${reportAdvancesController}"
-    title="${i18n:_('Communications To Customers')}">
+    title="${i18n:_t('Communications To Customers')}">
 
     <vbox id="messagesContainer" />
 
@@ -41,15 +41,15 @@
         rowRenderer="@{controller.reportAdvancesOrderRenderer}"
         mold="paging" pageSize="10" sizedByContent="true">
         <columns>
-            <column label="${i18n:_('Project code')}" />
-            <column label="${i18n:_('Customer reference code')}" />
-            <column label="${i18n:_('Name')}" hflex="1"/>
-            <column label="${i18n:_('Date last progress reported')}" />
-            <column label="${i18n:_('Value last progress reported')}" />
-            <column label="${i18n:_('Date last progress measurement')}" />
-            <column label="${i18n:_('Value last progress measurement')}" />
-            <column label="${i18n:_('State')}" />
-            <column label="${i18n:_('Operations')}" />
+            <column label="${i18n:_t('Project code')}" />
+            <column label="${i18n:_t('Customer reference code')}" />
+            <column label="${i18n:_t('Name')}" hflex="1"/>
+            <column label="${i18n:_t('Date last progress reported')}" />
+            <column label="${i18n:_t('Value last progress reported')}" />
+            <column label="${i18n:_t('Date last progress measurement')}" />
+            <column label="${i18n:_t('Value last progress measurement')}" />
+            <column label="${i18n:_t('State')}" />
+            <column label="${i18n:_t('Operations')}" />
         </columns>
     </grid>
 

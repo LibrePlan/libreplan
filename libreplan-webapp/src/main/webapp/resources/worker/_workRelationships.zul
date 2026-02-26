@@ -25,10 +25,10 @@
         model="@{controller.workRelationship.criterionSatisfactions}"
         mold="paging" pageSize="10">
         <columns>
-            <column label="${i18n:_('Starting date')}" width="150px"/>
-            <column label="${i18n:_('Ending date')}" width="150px"/>
-            <column label="${i18n:_('Relationship')}"/>
-            <column label="${i18n:_('Operations')}"/>
+            <column label="${i18n:_t('Starting date')}" width="150px"/>
+            <column label="${i18n:_t('Ending date')}" width="150px"/>
+            <column label="${i18n:_t('Relationship')}"/>
+            <column label="${i18n:_t('Operations')}"/>
         </columns>
         <rows>
             <row self="@{each='criterionSatisfaction'}"
@@ -39,18 +39,18 @@
                     value="@{criterionSatisfaction.endDate}" width="150px" />
                 <label value="@{criterionSatisfaction.criterion.name}" />
                 <hbox>
-                    <button label="${i18n:_('Edit')}"
+                    <button label="${i18n:_t('Edit')}"
                         onClick="controller.goToEditWorkRelationshipForm(
                         self.getParent().getParent().value);">
                     </button>
-                    <button label="${i18n:_('Delete')}"
+                    <button label="${i18n:_t('Delete')}"
                         onClick="controller.workRelationship.deleteCriterionSatisfaction(self.getParent().getParent().value);">
                     </button>
                 </hbox>
             </row>
         </rows>
       </grid>
-    <button label="${i18n:_('New entry')}"
+    <button label="${i18n:_t('New entry')}"
         onClick="controller.goToAddWorkRelationshipForm()">
     </button>
 </window>
