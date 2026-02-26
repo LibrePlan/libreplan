@@ -19,14 +19,14 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<window id="listWindow" title="${i18n:_('Criterion Types List')}">
+<window id="listWindow" title="${i18n:_t('Criterion Types List')}">
 <newdatasortablegrid model="@{controller.criterionTypes}" fixedLayout="true" sclass="clickable-rows">
    <columns>
-        <newdatasortablecolumn label="${i18n:_('Name')}" sort="auto(lower(name))" sortDirection="ascending" />
-        <newdatasortablecolumn label="${i18n:_('Code')}" />
-        <newdatasortablecolumn label="${i18n:_('Type')}" />
-        <newdatasortablecolumn width="60px" label="${i18n:_('Enabled')}"/>
-        <newdatasortablecolumn width="200px" label="${i18n:_('Operations')}"/>
+        <newdatasortablecolumn label="${i18n:_t('Name')}" sort="auto(lower(name))" sortDirection="ascending" />
+        <newdatasortablecolumn label="${i18n:_t('Code')}" />
+        <newdatasortablecolumn label="${i18n:_t('Type')}" />
+        <newdatasortablecolumn width="60px" label="${i18n:_t('Enabled')}"/>
+        <newdatasortablecolumn width="200px" label="${i18n:_t('Operations')}"/>
     </columns>
     <rows>
         <row self="@{each='criterionType'}" value="@{criterionType}" onClick="controller.goToEditForm(self.value);">
@@ -37,19 +37,19 @@
             <hbox>
                 <button sclass="icono" image="/common/img/ico_editar1.png"
                     hoverImage="/common/img/ico_editar.png"
-                    tooltiptext="${i18n:_('Edit')}"
+                    tooltiptext="${i18n:_t('Edit')}"
                     onClick="controller.goToEditForm(self.parent.parent.value);">
                 </button>
                 <button sclass="icono" image="/common/img/ico_borrar1.png"
                     hoverImage="/common/img/ico_borrar.png"
-                    tooltiptext="${i18n:_('Delete')}" disabled="@{criterionType.immutable}"
+                    tooltiptext="${i18n:_t('Delete')}" disabled="@{criterionType.immutable}"
                     onClick="controller.confirmDelete(self.parent.parent.value);">
                 </button>
             </hbox>
         </row>
     </rows>
 </newdatasortablegrid>
-<button id="show_create_form" onClick="controller.goToCreateForm();" label="${i18n:_('Create')}"
+<button id="show_create_form" onClick="controller.goToCreateForm();" label="${i18n:_t('Create')}"
     sclass="create-button global-action">
 </button>
 </window>

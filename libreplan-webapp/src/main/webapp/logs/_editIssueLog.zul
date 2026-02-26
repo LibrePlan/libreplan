@@ -26,20 +26,20 @@
         </columns>
         <rows>
             <row>
-                <label value="${i18n:_('Issue number')}" />
+                <label value="${i18n:_t('Issue number')}" />
                 <textbox id="issueNumberTextBox" width="636px"
                          value="@{issueLogController.issueLog.code}" disabled="true"/>
             </row>
             <row>
-                <label value="${i18n:_('Project')}" />
+                <label value="${i18n:_t('Project')}" />
                 <bandboxSearch id="bdProjectIssueLog" widthBandbox="636px" widthListbox="636px"
-                               constraint="no empty:${i18n:_('cannot be empty')}"
+                               constraint="no empty:${i18n:_t('cannot be empty')}"
                                finder="OrderBandboxFinder"
                                model="@{issueLogController.orders}"
                                selectedElement="@{issueLogController.order}"/>
             </row>
             <row>
-                <label value="${i18n:_('Type and status')}" />
+                <label value="${i18n:_t('Type and status')}" />
                 <grid>
                     <columns>
                         <column width="80px"/>
@@ -49,14 +49,14 @@
                     </columns>
                     <rows>
                         <row>
-                            <label value="${i18n:_('Type')}" />
+                            <label value="${i18n:_t('Type')}" />
                             <listbox id="listIssueLogType" mold="select" rows="1" width="237px"
                                      model="@{issueLogController.issueTypeEnum}"
                                      selectedItem="@{issueLogController.issueLog.type}"
                                      itemRenderer="@{issueLogController.issueTypeRenderer}"
                                      onSelect="issueLogController.updateStatusList(true)"/>
 
-                            <label value="${i18n:_('Status')}" />
+                            <label value="${i18n:_t('Status')}" />
                             <listbox id="listIssueLogStatus" mold="select" rows="1" width="237px">
 
                             </listbox>
@@ -66,7 +66,7 @@
             </row>
 
             <row>
-                <label value="${i18n:_('Creation info')}" />
+                <label value="${i18n:_t('Creation info')}" />
                 <grid>
                     <columns>
                         <column width="80px"/>
@@ -76,12 +76,12 @@
                     </columns>
                     <rows>
                         <row>
-                            <label value="${i18n:_('Date raised')}" />
+                            <label value="${i18n:_t('Date raised')}" />
                             <datebox id="dateRaisedBox" width="131px"
-                                     constraint="no empty:${i18n:_('cannot be empty')}"
+                                     constraint="no empty:${i18n:_t('cannot be empty')}"
                                      value="@{issueLogController.dateRaised}" />
 
-                            <label value="${i18n:_('Created by')}" />
+                            <label value="${i18n:_t('Created by')}" />
                             <bandboxSearch id="bdUserIssueLog" widthBandbox="315px" widthListbox="340px"
                                            finder="UserBandboxFinder"
                                            model="@{issueLogController.users}"
@@ -91,12 +91,12 @@
                 </grid>
             </row>
             <row>
-                <label value="${i18n:_('Description')}" />
+                <label value="${i18n:_t('Description')}" />
                 <textbox id="descriptionNameTextBox" width="636px" rows="4"
                          value="@{issueLogController.issueLog.description}" maxlength="1024"/>
             </row>
             <row>
-                <label value="${i18n:_('Categories')}" />
+                <label value="${i18n:_t('Categories')}" />
                 <grid>
                     <columns>
                         <column width="150px"/>
@@ -106,13 +106,13 @@
                     </columns>
                     <rows>
                         <row>
-                            <label value="${i18n:_('Priority')}" />
+                            <label value="${i18n:_t('Priority')}" />
                             <listbox id="listIssueLogPriority" mold="select" rows="1" width="157px"
                                      model="@{issueLogController.lowMediumHighEnum}"
                                      selectedItem="@{issueLogController.issueLog.priority}"
                                      itemRenderer="@{issueLogController.lowMediumHighEnumRenderer}" />
 
-                            <label value="${i18n:_('Severity')}"/>
+                            <label value="${i18n:_t('Severity')}"/>
                             <listbox id="listIssueLogSeverity" mold="select" rows="1" width="157px"
                                      model="@{issueLogController.lowMediumHighEnum}"
                                      selectedItem="@{issueLogController.issueLog.severity}"
@@ -122,12 +122,12 @@
                 </grid>
             </row>
             <row>
-                <label value="${i18n:_('Assigned to')}" />
+                <label value="${i18n:_t('Assigned to')}" />
                 <textbox id="assignedToTextBox" width="636px"
                          value="@{issueLogController.issueLog.assignedTo}" maxlength="512"/>
             </row>
             <row>
-                <label value="${i18n:_('Timing')}" />
+                <label value="${i18n:_t('Timing')}" />
                 <hbox>
                     <grid id="timing">
                         <columns>
@@ -138,11 +138,11 @@
                         </columns>
                         <rows>
                             <row>
-                                <label value="${i18n:_('Deadline')}"/>
+                                <label value="${i18n:_t('Deadline')}"/>
                                 <datebox id="deadline" width="153px"
                                          value="@{issueLogController.deadline}" />
 
-                                <label value="${i18n:_('Date resolved')}" />
+                                <label value="${i18n:_t('Date resolved')}" />
                                 <datebox id="dateResolved" width="153px"
                                          value="@{issueLogController.dateResolved}" />
                             </row>
@@ -151,7 +151,7 @@
                 </hbox>
             </row>
             <row>
-                <label value="${i18n:_('Notes')}" />
+                <label value="${i18n:_t('Notes')}" />
                 <textbox value="@{issueLogController.issueLog.notes}" width="636px" rows="8" multiline="true"
                          maxlength="1024"/>
             </row>
@@ -159,12 +159,12 @@
     </grid>
     <!-- Control buttons -->
     <button onClick="issueLogController.saveAndExit()"
-            label="${i18n:_('Save')}"
+            label="${i18n:_t('Save')}"
             sclass="save-button global-action" />
     <button onClick="issueLogController.saveAndContinue()"
-            label="${i18n:_('Save and Continue')}"
+            label="${i18n:_t('Save and Continue')}"
             sclass="save-button global-action" />
     <button onClick="issueLogController.cancelForm()"
-            label="${i18n:_('Cancel')}"
+            label="${i18n:_t('Cancel')}"
             sclass="cancel-button global-action" />
 </window>

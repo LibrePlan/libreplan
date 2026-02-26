@@ -49,4 +49,14 @@
         <value>sapphire</value>
     </library-property>
 
+    <!-- debug settings -->
+    <library-property>
+  <name>org.zkoss.zk.ui.definition.cache</name>
+  <value>false</value>
+</library-property>
+<library-property>
+  <name>org.zkoss.zk.ui.metainfo.cache</name>
+  <value>false</value>
+</library-property>
+
 </zk>

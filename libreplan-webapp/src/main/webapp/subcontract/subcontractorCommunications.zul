@@ -17,7 +17,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<?page title="${i18n:_('LibrePlan: Received From Subcontractors')}"?>
+<?page title="${i18n:_t('LibrePlan: Received From Subcontractors')}"?>
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
 <?link rel="shortcut icon" href="/common/img/favicon.ico" type="image/x-icon"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/libreplan.css"?>
@@ -30,12 +30,12 @@
 <zk>
     <window self="@{define(content)}"
             apply="org.libreplan.web.subcontract.SubcontractorCommunicationCRUDController"
-            title="${i18n:_('Communications From Subcontractors')}">
+            title="${i18n:_t('Communications From Subcontractors')}">
 
         <vbox id="messagesContainer" />
 
         <div align="right">
-            <label sclass="subtitulo" value="${i18n:_('Show')}:" />
+            <label sclass="subtitulo" value="${i18n:_t('Show')}:" />
 
             <listbox id="listFilter" mold="select" rows="1"
                      model="@{controller.filterItems}"
@@ -43,7 +43,7 @@
                      itemRenderer="org.libreplan.web.common.EnumsListitemRenderer">
             </listbox>
 
-            <button label="${i18n:_('Refresh')}" sclass="add-button"
+            <button label="${i18n:_t('Refresh')}" sclass="add-button"
                     onClick="controller.onApplyFilter();"/>
         </div>
 
@@ -54,30 +54,30 @@
               rowRenderer="@{controller.subcontractorCommunicationRenderer}"
               mold="paging" pageSize="10" fixedLayout="true">
             <columns>
-                <column label="${i18n:_('Communication Type')}" align="center" width="140px"
+                <column label="${i18n:_t('Communication Type')}" align="center" width="140px"
                         sort="auto(lower(communicationType))"/>
 
-                <column label="${i18n:_('Subcontracted task')}" align="center"
+                <column label="${i18n:_t('Subcontracted task')}" align="center"
                         sort="auto(lower(subcontractedTaskData.task.name))"/>
 
-                <column label="${i18n:_('Project name')}" width="150px" align="center"
+                <column label="${i18n:_t('Project name')}" width="150px" align="center"
                         sort="auto(lower(subcontractedTaskData.task.orderElement.name))"/>
 
-                <column label="${i18n:_('Project Code')}" width="150px" align="center"
+                <column label="${i18n:_t('Project Code')}" width="150px" align="center"
                         sort="auto(lower(subcontractedTaskData.task.orderElement.code))"/>
 
-                <column label="${i18n:_('Company')}" width="150px" align="center"
+                <column label="${i18n:_t('Company')}" width="150px" align="center"
                         sort="auto(lower(subcontractedTaskData.externalCompany.name))"/>
 
-                <column label="${i18n:_('Communication Date')}" width="150px" align="center"
+                <column label="${i18n:_t('Communication Date')}" width="150px" align="center"
                         sort="auto(lower(communicationDate))"/>
 
-                <column label="${i18n:_('Value')}" width="200px" align="center"
+                <column label="${i18n:_t('Value')}" width="200px" align="center"
                         sort="auto(lower(lastSubcontractorCommunicationValueDate))"/>
 
-                <column label="${i18n:_('Reviewed')}" width="80px" align="center"/>
+                <column label="${i18n:_t('Reviewed')}" width="80px" align="center"/>
 
-                <column label="${i18n:_('Operations')}" width="80px" align="center"/>
+                <column label="${i18n:_t('Operations')}" width="80px" align="center"/>
             </columns>
         </grid>
 
@@ -85,8 +85,8 @@
         <popup id="pp">
             <grid id="listingValues" width="300px" fixedLayout="true">
                 <columns>
-                    <column label="${i18n:_('Progress %')}" width="150px"/>
-                    <column label="${i18n:_('Date')}" width="150px"/>
+                    <column label="${i18n:_t('Progress %')}" width="150px"/>
+                    <column label="${i18n:_t('Date')}" width="150px"/>
                 </columns>
                 <rows>
                     <row self="@{each='value'}" value="@{value}">

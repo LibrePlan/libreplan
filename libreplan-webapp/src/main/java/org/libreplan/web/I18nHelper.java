@@ -45,6 +45,13 @@ public class I18nHelper {
     private I18nHelper() {
     }
 
+static {
+    System.err.println("I18nHelper loaded from: " +
+        org.libreplan.web.I18nHelper.class.getProtectionDomain()
+            .getCodeSource().getLocation());
+}
+
+
     public static I18n getI18n() {
         setPreferredLocale();
 

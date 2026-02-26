@@ -45,7 +45,7 @@
     <window id="editTaskWindow"
             sclass="edit-task-window"
             apply="${arg.editController}"
-            title="${i18n:_('Edit task')}"
+            title="${i18n:_t('Edit task')}"
             border="0"
             width="980px"
             visible="false"
@@ -57,11 +57,11 @@
 
         <tabbox id="editTaskTabbox">
             <tabs>
-                <tab id="taskPropertiesTab" label="${i18n:_('Task properties')}"
+                <tab id="taskPropertiesTab" label="${i18n:_t('Task properties')}"
                      onSelect = "propertiesController.refreshTaskEndDate();"/>
-                <tab id="resourceAllocationTab" label="${i18n:_('Normal resource allocation')}" />
-                <tab id="limitingResourceAllocationTab" label="${i18n:_('Queue-based resource allocation')}" />
-                <tab id="subcontractTab" label="${i18n:_('Subcontract')}"
+                <tab id="resourceAllocationTab" label="${i18n:_t('Normal resource allocation')}" />
+                <tab id="limitingResourceAllocationTab" label="${i18n:_t('Queue-based resource allocation')}" />
+                <tab id="subcontractTab" label="${i18n:_t('Subcontract')}"
                      onSelect = "subController.refreshGridEndDates();"/>
             </tabs>
             <tabpanels>
@@ -73,9 +73,9 @@
         </tabbox>
 
         <hbox>
-            <button id="ok" label="${i18n:_('Accept')}"
+            <button id="ok" label="${i18n:_t('Accept')}"
                     onClick="editController.accept()" sclass="save-button global-action" />
-            <button id="cancel" label="${i18n:_('Cancel')}"
+            <button id="cancel" label="${i18n:_t('Cancel')}"
                     onClick="editController.cancel()" sclass="cancel-button global-action" />
         </hbox>
 

@@ -19,19 +19,19 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<window id="${arg.top_id}" title="${i18n:_('Users List')}">
+<window id="${arg.top_id}" title="${i18n:_t('Users List')}">
     <newdatasortablegrid id="listing" model="@{controller.users}" mold="paging"
         pageSize="10" sclass="clickable-rows"
         rowRenderer="@{controller.usersRenderer}">
         <columns sizable="true">
-            <newdatasortablecolumn label="${i18n:_('Username')}" 
+            <newdatasortablecolumn label="${i18n:_t('Username')}" 
             sort="auto(lower(loginName))" sortDirection="ascending"/>
-            <newdatasortablecolumn label="${i18n:_('Disabled')}" />
-            <newdatasortablecolumn label="${i18n:_('Superuser')}" />
-            <newdatasortablecolumn label="${i18n:_('Authentication type')}" 
+            <newdatasortablecolumn label="${i18n:_t('Disabled')}" />
+            <newdatasortablecolumn label="${i18n:_t('Superuser')}" />
+            <newdatasortablecolumn label="${i18n:_t('Authentication type')}" 
             sort="auto(userType)"/>
-            <newdatasortablecolumn label="${i18n:_('Bound resource')}" />
-            <newdatasortablecolumn label="${i18n:_('Actions')}" />
+            <newdatasortablecolumn label="${i18n:_t('Bound resource')}" />
+            <newdatasortablecolumn label="${i18n:_t('Actions')}" />
         </columns>
     </newdatasortablegrid>
     <button id="show_create_form" onClick="controller.goToCreateForm();"

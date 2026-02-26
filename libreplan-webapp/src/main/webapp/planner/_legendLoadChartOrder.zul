@@ -24,29 +24,29 @@
 
 <vbox sclass="legend">
 
-    <hbox pack="center" sclass="legend-row" tooltiptext="${i18n:_('Overload due to other assignments')}">
+    <hbox pack="center" sclass="legend-row" tooltiptext="${i18n:_t('Overload due to other assignments')}">
         <n:div class="overload-other"/>
-        <n:label>${i18n:_('External overload')}</n:label>
+        <n:label>${i18n:_t('External overload')}</n:label>
     </hbox>
 
-    <hbox pack="center" sclass="legend-row" tooltiptext="${i18n:_('Overload due to current project')}">
+    <hbox pack="center" sclass="legend-row" tooltiptext="${i18n:_t('Overload due to current project')}">
         <n:div class="overload"/>
-        <n:label>${i18n:_('Overload')}</n:label>
+        <n:label>${i18n:_t('Overload')}</n:label>
     </hbox>
 
-    <hbox pack="center" sclass="legend-row" tooltiptext="${i18n:_('Resources capability')}">
+    <hbox pack="center" sclass="legend-row" tooltiptext="${i18n:_t('Resources capability')}">
         <n:div class="capability"/>
-        <n:label>${i18n:_('Total capability')}</n:label>
+        <n:label>${i18n:_t('Total capability')}</n:label>
     </hbox>
 
-    <hbox pack="center" sclass="legend-row" tooltiptext="${i18n:_('Load due to other assignments')}">
+    <hbox pack="center" sclass="legend-row" tooltiptext="${i18n:_t('Load due to other assignments')}">
         <n:div class="load-other"/>
-        <n:label>${i18n:_('External load')}</n:label>
+        <n:label>${i18n:_t('External load')}</n:label>
     </hbox>
 
-    <hbox pack="center" sclass="legend-row" tooltiptext="${i18n:_('Load due to current project')}">
+    <hbox pack="center" sclass="legend-row" tooltiptext="${i18n:_t('Load due to current project')}">
         <n:div class="load" />
-        <n:label>${i18n:_('Load')}</n:label>
+        <n:label>${i18n:_t('Load')}</n:label>
     </hbox>
 
 </vbox>

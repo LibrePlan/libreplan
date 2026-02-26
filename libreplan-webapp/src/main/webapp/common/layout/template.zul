@@ -69,7 +69,7 @@
                                 <n:table width="100%"  border="0" cellspacing="0" cellpadding="0">
                                     <n:tr>
                                         <n:td>
-                                            <customMenu top_id="customMenu" title="${i18n:_('Main menu')}"/>
+                                            <customMenu top_id="customMenu" title="${i18n:_t('Main menu')}"/>
                                         </n:td>
                                     </n:tr>
                                 </n:table></n:td>
@@ -81,17 +81,17 @@
                             <n:tr>
                                 <n:td class="usuario">
                                     <div if="${templateCtrl.scenariosVisible}">
-                                        ${i18n:_('scenario')}:
+                                        ${i18n:_t('scenario')}:
                                         <button onClick="templateCtrl.changeScenario();"
                                                 label="${templateCtrl.scenario.name}" />
                                         <window id="changeScenarioWindow" visible="false"
-                                                title="${i18n:_('Change scenario')}"
+                                                title="${i18n:_t('Change scenario')}"
                                                 style="width : 240px;">
                                             <div id="messagesContainer" />
                                             <grid>
                                                 <rows>
                                                     <row>
-                                                        <label value="${i18n:_('Select scenario')}" />
+                                                        <label value="${i18n:_t('Select scenario')}" />
                                                         <bandboxSearch
                                                                 id="scenarioBandboxSearch"
                                                                 finder="ScenarioBandboxFinder"
@@ -101,16 +101,16 @@
                                                 </rows>
                                             </grid>
                                             <button onClick="templateCtrl.accept();"
-                                                    label="${i18n:_('Accept')}" />
+                                                    label="${i18n:_t('Accept')}" />
                                             <button onClick="templateCtrl.cancel();"
-                                                    label="${i18n:_('Cancel')}" />
+                                                    label="${i18n:_t('Cancel')}" />
                                         </window>
                                     </div>
                                 </n:td>
-                                <n:td class="usuario">${i18n:_('user')}: ${templateCtrl.username}</n:td>
+                                <n:td class="usuario">${i18n:_t('user')}: ${templateCtrl.username}</n:td>
                                 <n:td>
                                     <n:a href="${contextPath}/j_spring_security_logout" class="cerrar_sesion">
-                                        [${i18n:_('Log out')}]
+                                        [${i18n:_t('Log out')}]
                                     </n:a>
                                 </n:td>
                             </n:tr>
@@ -126,7 +126,7 @@
                             <hbox id="perspectiveButtonsInsertionPoint" sclass="toolbar-box global-commands"
                                   height="30px" width="90px">
                                 <button id="createOrderButton" image="/common/img/ico_add.png" sclass="planner-icon"
-                                        tooltiptext="${i18n:_('Create New Project')}" />
+                                        tooltiptext="${i18n:_t('Create New Project')}" />
                             </hbox>
                             <vbox id="registeredItemsInsertionPoint" width="90px" style="overflow-y:auto;overflow-x:hidden;display:block" vflex="1" />
                         </vbox>
@@ -145,11 +145,11 @@
                                    style="display:${templateCtrl.defaultPasswdAdminVisible}">
                                 <div>
                                     <n:span>
-                                        ${i18n:_("The admin's account password remains the default one. This is insecure")}.
+                                        ${i18n:_t("The admin's account password remains the default one. This is insecure")}.
                                     </n:span>
 
                                     <n:a class="command" href="${contextPath}/users/users.zul#edit%3D${idAdminUser}">
-                                        [${i18n:_('Change the password')}]
+                                        [${i18n:_t('Change the password')}]
                                     </n:a>
                                 </div>
                             </n:div>
@@ -201,7 +201,7 @@
                                     </n:a>
 
                                     <n:span class="footer-messages-area">
-                                        ${i18n:_('default password was not changed')}.
+                                        ${i18n:_t('default password was not changed')}.
                                     </n:span>
                                 </div>
                             </n:div>

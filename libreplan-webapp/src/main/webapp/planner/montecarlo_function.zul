@@ -19,7 +19,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<?page title="${i18n:_('LibrePlan: Scheduling')}"?>
+<?page title="${i18n:_t('LibrePlan: Scheduling')}"?>
 <?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n"?>
 
 <zk>
@@ -28,26 +28,26 @@
         ]]>
     </zscript>
 
-    <window title="${i18n:_('MonteCarlo')}"
+    <window title="${i18n:_t('MonteCarlo')}"
             apply="${monteCarloGraphController}"
             closable="true"
             width="850px">
 
         <vbox width="100%" pack="center" align="center">
             <label style="font-family: Tahoma; font-weight: bold; font-size: 18px;padding:5px;"
-                   value="${i18n:_('MonteCarlo chart')}" />
+                   value="${i18n:_t('MonteCarlo chart')}" />
         </vbox>
 
         <grid sizedByContent="false">
             <rows>
                 <row>
-                    <label value="${i18n:_('Start date')}" />
+                    <label value="${i18n:_t('Start date')}" />
                     <datebox id="dateboxStartDateProbability"
                              onChange="monteCarloGraphController.showProbabilityDensity(self, dateboxEndDateProbability)" />
-                    <label value="${i18n:_('End date')}" />
+                    <label value="${i18n:_t('End date')}" />
                     <datebox id="dateboxEndDateProbability"
                              onChange="monteCarloGraphController.showProbabilityDensity(dateboxStartDateProbability, self)" />
-                    <label value="${i18n:_('Probability')}" />
+                    <label value="${i18n:_t('Probability')}" />
                     <decimalbox id="dbIntervalProbability" />
                 </row>
             </rows>
@@ -60,14 +60,14 @@
                        type="bar"
                        period="day"
                        threeD="true"
-                       xAxis= "${i18n:_('End date')}"
+                       xAxis= "${i18n:_t('End date')}"
                        paneColor="#FFFFFF"
                        showLegend="false"/>
             </vbox>
         </hbox>
 
         <hbox>
-            <button label="${i18n:_('Back')}"
+            <button label="${i18n:_t('Back')}"
                     onClick="monteCarloGraphController.cancel()" sclass="add-button" />
         </hbox>
 

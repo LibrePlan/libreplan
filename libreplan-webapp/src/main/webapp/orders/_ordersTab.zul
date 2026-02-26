@@ -31,10 +31,10 @@
             <hbox align="center" id="toolbar">
 
                 <button id="saveOrderAndContinueButton"  image="/common/img/ico_save.png" sclass="planner-icon"
-                        tooltiptext="${i18n:_('Save Project')}" />
+                        tooltiptext="${i18n:_t('Save Project')}" />
 
                 <button id="cancelEditionButton"  image="/common/img/ico_back.png" sclass="planner-icon"
-                        tooltiptext="${i18n:_('Cancel editing')}" />
+                        tooltiptext="${i18n:_t('Cancel editing')}" />
 
                 <hbox id="orderFilter" visible="false"/>
                 <vbox id="orderElementFilter" />

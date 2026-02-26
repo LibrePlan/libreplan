@@ -19,16 +19,16 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<?xel-method prefix="ganttzk_i18n" name="_" class="org.zkoss.ganttz.i18n.I18nHelper"
-        signature="java.lang.String _(java.lang.String name)" ?>
+<?xel-method prefix="ganttzk_i18n" name="_t" class="org.zkoss.ganttz.i18n.I18nHelper"
+        signature="java.lang.String _t(java.lang.String name)" ?>
 
 <div>
     <tree id="tasksTree" fixedLayout="true" sclass="taskTreeCols" hflex="1" >
         <treecols sizable="false" height="33px">
-            <treecol label="${ganttzk_i18n:_('Name')}" sclass="tree-text" />
-            <treecol label="${ganttzk_i18n:_('Start')}" width="60px" />
-            <treecol label="${ganttzk_i18n:_('End')}" width="60px" />
-            <treecol label="${ganttzk_i18n:_('T / M')}" width="55px" />
+            <treecol label="${ganttzk_i18n:_t('Name')}" sclass="tree-text" />
+            <treecol label="${ganttzk_i18n:_t('Start')}" width="60px" />
+            <treecol label="${ganttzk_i18n:_t('End')}" width="60px" />
+            <treecol label="${ganttzk_i18n:_t('T / M')}" width="55px" />
         </treecols>
     </tree>
 </div>

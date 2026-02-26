@@ -18,7 +18,7 @@
 -->
 
 
-<?page id="editEmailTemplate" title="${i18n:_('LibrePlan: Email Templates')}" ?>
+<?page id="editEmailTemplate" title="${i18n:_t('LibrePlan: Email Templates')}" ?>
 <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
@@ -30,18 +30,18 @@
 
 <zk>
     <window self="@{define(content)}" apply="org.libreplan.web.email.EmailTemplateController"
-            title="${i18n:_('Edit E-mail template')}">
+            title="${i18n:_t('Edit E-mail template')}">
 
         <vbox id="messagesContainer" />
 
         <tabbox>
             <tabs>
-                <tab label="${i18n:_('Template data')}"/>
+                <tab label="${i18n:_t('Template data')}"/>
             </tabs>
             <tabpanels>
                 <tabpanel>
                     <groupbox>
-                        <caption label="${i18n:_('General user data')}" />
+                        <caption label="${i18n:_t('General user data')}" />
 
                         <grid>
                             <columns>
@@ -51,7 +51,7 @@
                             </columns>
                             <rows>
                                 <row>
-                                    <label value="${i18n:_('Select template language')}"/>
+                                    <label value="${i18n:_t('Select template language')}"/>
                                     <listbox mold="select"
                                              id="templateLanguageListbox"
                                              model="@{emailTemplateController.languages}"
@@ -60,7 +60,7 @@
                                     </listbox>
                                 </row>
                                 <row>
-                                    <label value="${i18n:_('Select template type')}"/>
+                                    <label value="${i18n:_t('Select template type')}"/>
                                     <listbox id="emailTemplateTypeListbox"
                                              mold="select"
                                              model="@{emailTemplateController.emailTemplateEnum}"
@@ -68,60 +68,60 @@
                                              selectedItem="@{emailTemplateController.selectedEmailTemplateEnum}"/>
                                 </row>
                                 <row>
-                                    <label value="${i18n:_('E-mail subject')}"/>
+                                    <label value="${i18n:_t('E-mail subject')}"/>
                                     <textbox id="subjectTextbox" width="400px;" />
                                 </row>
                                 <row style="height: 270px;">
-                                    <label value="${i18n:_('Template contents')}"/>
+                                    <label value="${i18n:_t('Template contents')}"/>
                                     <textbox id="contentsTextbox" rows="20" width="400px;"/>
                                     <groupbox closable="false" width="270px" sclass="email-content-keywords">
-                                        <caption label="${i18n:_('Possible content keywords')}"
+                                        <caption label="${i18n:_t('Possible content keywords')}"
                                                  style="background: #F7F7F7;"/>
                                         <grid width="250px">
                                             <columns>
-                                                <column label="${i18n:_('Keyword')}"/>
-                                                <column label="${i18n:_('Description')}"/>
+                                                <column label="${i18n:_t('Keyword')}"/>
+                                                <column label="${i18n:_t('Description')}"/>
                                             </columns>
 
                                             <rows>
                                                 <row>
                                                     <label value="{username}"/>
-                                                    <label value="${i18n:_('Username of user')}"/>
+                                                    <label value="${i18n:_t('Username of user')}"/>
                                                 </row>
 
                                                 <row>
                                                     <label value="{firstname}"/>
-                                                    <label value="${i18n:_('First name of user')}"/>
+                                                    <label value="${i18n:_t('First name of user')}"/>
                                                 </row>
 
                                                 <row>
                                                     <label value="{lastname}"/>
-                                                    <label value="${i18n:_('Last name of user')}"/>
+                                                    <label value="${i18n:_t('Last name of user')}"/>
                                                 </row>
 
                                                 <row>
                                                     <label value="{project}"/>
-                                                    <label value="${i18n:_('Name of project')}"/>
+                                                    <label value="${i18n:_t('Name of project')}"/>
                                                 </row>
 
                                                 <row>
                                                     <label value="{resource}"/>
-                                                    <label value="${i18n:_('Name of resource')}"/>
+                                                    <label value="${i18n:_t('Name of resource')}"/>
                                                 </row>
 
                                                 <row>
                                                     <label value="{task}"/>
-                                                    <label value="${i18n:_('Name of task')}"/>
+                                                    <label value="${i18n:_t('Name of task')}"/>
                                                 </row>
 
                                                 <row>
                                                     <label value="{url}"/>
-                                                    <label value="${i18n:_('Welcome page')}"/>
+                                                    <label value="${i18n:_t('Welcome page')}"/>
                                                 </row>
 
                                                 <row>
                                                     <label value="{projecturl}"/>
-                                                    <label value="${i18n:_('Project details page')}"/>
+                                                    <label value="${i18n:_t('Project details page')}"/>
                                                 </row>
                                             </rows>
 
@@ -137,10 +137,10 @@
         </tabbox>
 
         <button onClick="emailTemplateController.save()"
-                autodisable="self" label="${i18n:_('Save')}" sclass="save-button global-action"/>
+                autodisable="self" label="${i18n:_t('Save')}" sclass="save-button global-action"/>
 
         <button onClick="emailTemplateController.cancel()"
-                label="${i18n:_('Cancel')}" sclass="cancel-button global-action"/>
+                label="${i18n:_t('Cancel')}" sclass="cancel-button global-action"/>
 
         <script>
             <!-- Hack for removing unnecessary border of grid column -->

@@ -29,7 +29,7 @@
         <window id="wnd" self="@{define(content)}" vflex="1">
             <tabbox width="100%">
                 <tabs>
-                    <tab label="${i18n:_('Pipeline')}"/>
+                    <tab label="${i18n:_t('Pipeline')}"/>
                 </tabs>
                 <tabpanels>
                     <tabpanel>

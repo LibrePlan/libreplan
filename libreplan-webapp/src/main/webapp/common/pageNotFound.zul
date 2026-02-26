@@ -19,7 +19,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<?page title="${i18n:_('LibrePlan: Page not found')}" ?>
+<?page title="${i18n:_t('LibrePlan: Page not found')}" ?>
 <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/libreplan.css"?>
@@ -37,28 +37,28 @@
 
         <vbox apply="org.libreplan.web.error.PageForErrorOnEvent" sclass="errorbox" width="96%">
 
-            <label value="${i18n:_('The page that you are requesting does not exist.')}" />
+            <label value="${i18n:_t('The page that you are requesting does not exist.')}" />
 
             <hbox>
-                <label value="${i18n:_('If you entered the URL directly in the navigation bar of the browser, please review it or click in the following link in order to go to initial page: ')}" />
+                <label value="${i18n:_t('If you entered the URL directly in the navigation bar of the browser, please review it or click in the following link in order to go to initial page: ')}" />
                 <n:a href="${contextPath}/">
-                    <label value="${i18n:_('Go to init')}" />
+                    <label value="${i18n:_t('Go to init')}" />
                 </n:a>
             </hbox>
 
-            <label value="${i18n:_('If you reached this page from another page of LibrePlan please notify us in order to fix it as soon as possible.')}" />
+            <label value="${i18n:_t('If you reached this page from another page of LibrePlan please notify us in order to fix it as soon as possible.')}" />
 
-            <label value="${i18n:_('Sorry for the inconvenience.')}" />
+            <label value="${i18n:_t('Sorry for the inconvenience.')}" />
 
             <vbox visible="@{pageErrorController.VisibleOnHelpPage}">
 
                 <separator height="5px"/>
 
-                <label value="${i18n:_('Help/Info pages are not generated')}!"/>
+                <label value="${i18n:_t('Help/Info pages are not generated')}!"/>
 
-                <label value="${i18n:_('If you want to see help/info page then')}:"/>
+                <label value="${i18n:_t('If you want to see help/info page then')}:"/>
 
-                <label value="${i18n:_('Open file HACKING.rst in project directory and read Part LibrePlan documentation generation, how to generate help/info pages')}."/>
+                <label value="${i18n:_t('Open file HACKING.rst in project directory and read Part LibrePlan documentation generation, how to generate help/info pages')}."/>
             </vbox>
         </vbox>
     </window>

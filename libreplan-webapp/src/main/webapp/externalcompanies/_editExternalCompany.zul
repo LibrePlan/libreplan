@@ -25,7 +25,7 @@
 
     <tabbox>
         <tabs>
-            <tab label="${i18n:_('Company data')}"/>
+            <tab label="${i18n:_t('Company data')}"/>
         </tabs>
         <tabpanels>
             <tabpanel>
@@ -37,30 +37,30 @@
                         </columns>
                         <rows>
                             <row>
-                                <label value="${i18n:_('Company name')}:" />
+                                <label value="${i18n:_t('Company name')}:" />
                                 <textbox id="name"
                                          value="@{controller.company.name}" width="500px"
-                                         constraint="no empty:${i18n:_('cannot be empty')}"
+                                         constraint="no empty:${i18n:_t('cannot be empty')}"
                                          onBlur="controller.updateWindowTitle()" sclass="focus-element" />
                             </row>
                             <row>
-                                <label value="${i18n:_('Company ID')}:" />
+                                <label value="${i18n:_t('Company ID')}:" />
                                 <textbox id="nif"
                                          value="@{controller.company.nif}"
-                                         constraint="no empty:${i18n:_('cannot be empty')}"/>
+                                         constraint="no empty:${i18n:_t('cannot be empty')}"/>
                             </row>
                             <row>
-                                <label value="${i18n:_('Client')}:" />
+                                <label value="${i18n:_t('Client')}:" />
                                 <checkbox id="client"
                                           checked="@{controller.company.client}" />
                             </row>
                             <row>
-                                <label value="${i18n:_('Subcontractor')}:" />
+                                <label value="${i18n:_t('Subcontractor')}:" />
                                 <checkbox id="subcontractor"
                                           checked="@{controller.company.subcontractor}" />
                             </row>
                             <row>
-                                <label value="${i18n:_('User')}:" />
+                                <label value="${i18n:_t('User')}:" />
                                 <autocomplete id="user"
                                               value="@{controller.company.companyUser}"
                                               onChange ="controller.setCompanyUser(self.selectedItem);"
@@ -68,13 +68,13 @@
                                               autodrop="true" finder="UserFinder" />
                             </row>
                             <row>
-                                <label value="${i18n:_('Interacts with applications')}:" />
+                                <label value="${i18n:_t('Interacts with applications')}:" />
                                 <checkbox id="interactsWithApplication"
                                           onCheck="controller.setInteractionFieldsActivation(self.checked);"
                                           checked="@{controller.company.interactsWithApplications}" />
                             </row>
                             <row>
-                                <label value="${i18n:_('Application URI')}:" />
+                                <label value="${i18n:_t('Application URI')}:" />
                                 <hbox>
                                     <textbox id="appURI"
                                              value="@{controller.company.appURI}" width="500px" />
@@ -82,12 +82,12 @@
                                 </hbox>
                             </row>
                             <row>
-                                <label value="${i18n:_('Our company username')}:" />
+                                <label value="${i18n:_t('Our company username')}:" />
                                 <textbox id="ourCompanyLogin"
                                          value="@{controller.company.ourCompanyLogin}" />
                             </row>
                             <row>
-                                <label value="${i18n:_('Company password')}:" />
+                                <label value="${i18n:_t('Company password')}:" />
                                 <textbox id="ourCompanyPassword" type="password"
                                          value="@{controller.company.ourCompanyPassword}" />
                             </row>
@@ -99,10 +99,10 @@
     </tabbox>
 
     <button onClick="controller.saveAndExit();" autodisable="self"
-            label="${i18n:_('Save')}" sclass="save-button global-action" />
+            label="${i18n:_t('Save')}" sclass="save-button global-action" />
     <button onClick="controller.saveAndContinue();"
-            label="${i18n:_('Save &amp; Continue')}" sclass="saveandcontinue-button global-action" />
+            label="${i18n:_t('Save &amp; Continue')}" sclass="saveandcontinue-button global-action" />
     <button onClick="controller.cancelForm();"
-            label="${i18n:_('Cancel')}" sclass="cancel-button global-action" />
+            label="${i18n:_t('Cancel')}" sclass="cancel-button global-action" />
 
 </window>

@@ -24,15 +24,15 @@
                      model="@{assignedMaterialsController.assignedMaterials}">
 
     <columns width="100%">
-        <newdatasortablecolumn label="${i18n:_('Code')}" width="20%"/>
-        <newdatasortablecolumn label="${i18n:_('Name')}" width="15%"/>
-        <newdatasortablecolumn label="${i18n:_('Reception date')}" align="center" width="14%"/>
-        <newdatasortablecolumn label="${i18n:_('Units')}" align="center" width="11%"/>
-        <newdatasortablecolumn label="${i18n:_('Unit type')}" align="center" width="7%"/>
-        <newdatasortablecolumn label="${i18n:_('Unit price')}" align="center" width="11%"/>
-        <newdatasortablecolumn label="${i18n:_('Total price')}" align="center" width="11%" />
-        <newdatasortablecolumn label="${i18n:_('Status')}" align="center" width="13%" />
-        <newdatasortablecolumn label="${i18n:_('Op.')}" width="10%"/>
+        <newdatasortablecolumn label="${i18n:_t('Code')}" width="20%"/>
+        <newdatasortablecolumn label="${i18n:_t('Name')}" width="15%"/>
+        <newdatasortablecolumn label="${i18n:_t('Reception date')}" align="center" width="14%"/>
+        <newdatasortablecolumn label="${i18n:_t('Units')}" align="center" width="11%"/>
+        <newdatasortablecolumn label="${i18n:_t('Unit type')}" align="center" width="7%"/>
+        <newdatasortablecolumn label="${i18n:_t('Unit price')}" align="center" width="11%"/>
+        <newdatasortablecolumn label="${i18n:_t('Total price')}" align="center" width="11%" />
+        <newdatasortablecolumn label="${i18n:_t('Status')}" align="center" width="13%" />
+        <newdatasortablecolumn label="${i18n:_t('Op.')}" width="10%"/>
     </columns>
 
     <rows>
@@ -69,11 +69,11 @@
                 <button sclass="icono"
                         image="/common/img/ico_borrar1.png"
                         hoverImage="/common/img/ico_borrar.png"
-                        tooltiptext="${i18n:_('Delete')}"
+                        tooltiptext="${i18n:_t('Delete')}"
                         onClick="assignedMaterialsController.showRemoveMaterialAssignmentDlg(self.parent.parent.value)"/>
 
-                <button label="${i18n:_('Split')}" sclass="add-button"
-                        tooltiptext="${i18n:_('Split assignment')}"
+                <button label="${i18n:_t('Split')}" sclass="add-button"
+                        tooltiptext="${i18n:_t('Split assignment')}"
                         onClick="assignedMaterialsController.showSplitMaterialAssignmentDlg(self.parent.parent.value)"/>
             </hbox>
         </row>

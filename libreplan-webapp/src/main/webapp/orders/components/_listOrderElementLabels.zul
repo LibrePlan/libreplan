@@ -27,13 +27,13 @@
     <vbox apply="${assignedLabelsController}" width="100%" sclass="report-margin">
         <!-- Inherited labels -->
         <vbox width="100%">
-            <panel title="${i18n:_('Inherited labels')}" border="normal">
+            <panel title="${i18n:_t('Inherited labels')}" border="normal">
                 <panelchildren>
                     <grid id="inheritedLabels" fixedLayout="true" sclass="margin-border"
                           model="@{assignedLabelsController.inheritedLabels}">
                         <columns>
-                            <column label="${i18n:_('Label type')}" />
-                            <column label="${i18n:_('Value')}" />
+                            <column label="${i18n:_t('Label type')}" />
+                            <column label="${i18n:_t('Value')}" />
                         </columns>
                         <rows>
                             <row self="@{each='label'}" value="@{label}">
@@ -48,14 +48,14 @@
 
         <!-- Direct labels -->
         <vbox width="100%" sclass="report-margin">
-            <panel title="${i18n:_('Direct labels')}" border="normal">
+            <panel title="${i18n:_t('Direct labels')}" border="normal">
                 <panelchildren>
                     <newdatasortablegrid id="directLabels" fixedLayout="true" sclass="margin-border"
                                          model="@{assignedLabelsController.labels}">
                         <columns>
-                            <newdatasortablecolumn label="${i18n:_('Label type')}" sort="auto(lower(type.name))"/>
-                            <newdatasortablecolumn label="${i18n:_('Value')}" />
-                            <newdatasortablecolumn label="${i18n:_('Operations')}" />
+                            <newdatasortablecolumn label="${i18n:_t('Label type')}" sort="auto(lower(type.name))"/>
+                            <newdatasortablecolumn label="${i18n:_t('Value')}" />
+                            <newdatasortablecolumn label="${i18n:_t('Operations')}" />
                         </columns>
                         <rows>
                             <row self="@{each='label'}" value="@{label}">
@@ -65,7 +65,7 @@
                                 <button sclass="icono"
                                         image="/common/img/ico_borrar1.png"
                                         hoverImage="/common/img/ico_borrar.png"
-                                        tooltiptext="${i18n:_('Delete')}"
+                                        tooltiptext="${i18n:_t('Delete')}"
                                         onClick="assignedLabelsController.deleteLabel(self.parent.value)">
                                 </button>
 
@@ -75,11 +75,11 @@
 
                     <!-- Assign label -->
                     <vbox>
-                        <label value="${i18n:_('Assign Label')}" />
+                        <label value="${i18n:_t('Assign Label')}" />
                         <hbox sclass="margin-border">
                             <bandboxSearch id="bdLabels" finder="LabelBandboxFinder"
                                            model="@{assignedLabelsController.allLabels}" />
-                            <button label="${i18n:_('Assign')}" sclass="add-button"
+                            <button label="${i18n:_t('Assign')}" sclass="add-button"
                                     onClick="assignedLabelsController.onAssignLabel()"
                             />
                         </hbox>
@@ -87,14 +87,14 @@
 
                     <!-- Create and assign label -->
                     <vbox>
-                        <label value="${i18n:_('Create and assign label')}" />
+                        <label value="${i18n:_t('Create and assign label')}" />
                     </vbox>
                     <hbox sclass="margin-border">
                         <autocomplete id="cbLabelType" onChange="txtLabelName.clearErrorMessage()"
                                       finder="LabelTypeFinder" buttonVisible="true" />
                         <textbox id="txtLabelName" />
                         <button id="buttonCreateAndAssign"
-                                label="${i18n:_('Create &amp; Assign')}" sclass="add-button"
+                                label="${i18n:_t('Create &amp; Assign')}" sclass="add-button"
                                 onClick="assignedLabelsController.onCreateAndAssign()" />
                     </hbox>
                 </panelchildren>

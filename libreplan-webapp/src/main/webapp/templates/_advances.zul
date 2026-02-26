@@ -24,7 +24,7 @@
 ]]>
     </zscript>
     <vbox>
-        <panel title="${i18n:_('Progress assignments')}" border="normal">
+        <panel title="${i18n:_t('Progress assignments')}" border="normal">
             <panelchildren>
                 <vbox id="messagesContainerAdvances" />
                 <vbox>
@@ -33,10 +33,10 @@
                              itemRenderer="@{advancesAssignmentComponent.advancesRenderer}" mold="paging"
                              pageSize="10">
                         <listhead sizable="true">
-                            <listheader label="${i18n:_('Type')}" tooltiptext="Progress unit type" />
-                            <listheader label="${i18n:_('Max value')}" tooltiptext="Maximum allowed value"/>
-                            <listheader label="${i18n:_('Spread')}"/>
-                            <listheader label="${i18n:_('Operations')}"/>
+                            <listheader label="${i18n:_t('Type')}" tooltiptext="Progress unit type" />
+                            <listheader label="${i18n:_t('Max value')}" tooltiptext="Maximum allowed value"/>
+                            <listheader label="${i18n:_t('Spread')}"/>
+                            <listheader label="${i18n:_t('Operations')}"/>
                         </listhead>
                     </listbox>
                 </vbox>

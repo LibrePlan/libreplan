@@ -33,7 +33,7 @@
 
             <rows>
                 <row>
-                    <label value="${i18n:_('Select parent calendar')}" />
+                    <label value="${i18n:_t('Select parent calendar')}" />
                     <combobox id="createDerivedCalendar"
                               model="@{controller.baseCalendars}"
                               itemRenderer="@{controller.baseCalendarsComboitemRenderer}" />
@@ -46,10 +46,10 @@
 
     <div visible="@{controller.isCalendarNotNull}">
 
-        <calendarEdition top_id="editCalendarWindow" title="${i18n:_('Edit Calendar')}"
-                         save_button_label="${i18n:_('Save changes')}"
+        <calendarEdition top_id="editCalendarWindow" title="${i18n:_t('Edit Calendar')}"
+                         save_button_label="${i18n:_t('Save changes')}"
                          save_button_visible="false"
-                         cancel_button_label="${i18n:_('Remove calendar')}" />
+                         cancel_button_label="${i18n:_t('Remove calendar')}" />
 
         <createNewVersion />
 

@@ -36,30 +36,30 @@
 
 <?component name="listOrderElementTaskQualityForms" inline="true" macroURI="_listOrderElementTaskQualityForms.zul"?>
 
-<window id="${arg.top_id}" title="@{i18n:_('Edit task')}" width="1050px" left="50px" visible="false" closable="true"
+<window id="${arg.top_id}" title="@{i18n:_t('Edit task')}" width="1050px" left="50px" visible="false" closable="true"
         onClose="orderElementController.close(event)" >
 
     <tabbox id="tabboxOrderElement">
         <tabs>
-            <tab id="tabDetails" label="${i18n:_('Details')}" selected="true"
+            <tab id="tabDetails" label="${i18n:_t('Details')}" selected="true"
                  onSelect="orderElementController.clearAll();"/>
 
-            <tab id="tabAssignedHours" label="${i18n:_('Cost')}"
+            <tab id="tabAssignedHours" label="${i18n:_t('Cost')}"
                  onSelect="orderElementController.setupAssignedHoursToOrderElementController();"/>
 
-            <tab id="tabAdvances" label="${i18n:_('Progress')}"
+            <tab id="tabAdvances" label="${i18n:_t('Progress')}"
                  onSelect="orderElementController.setupManageOrderElementAdvancesController();"/>
 
-            <tab id="tabLabels" label="${i18n:_('Labels')}"
+            <tab id="tabLabels" label="${i18n:_t('Labels')}"
                  onSelect="orderElementController.setupAssignedLabelsToOrderElementController();"/>
 
-            <tab id="tabRequirements" label="${i18n:_('Criterion Requirement')}"
+            <tab id="tabRequirements" label="${i18n:_t('Criterion Requirement')}"
                  onSelect="orderElementController.setupAssignedCriterionRequirementToOrderElementController();"/>
 
-            <tab id="tabMaterials" label="${i18n:_('Materials')}"
+            <tab id="tabMaterials" label="${i18n:_t('Materials')}"
                  onSelect="orderElementController.setupAssignedMaterialsToOrderElementController();"/>
 
-            <tab id="tabTaskQualityForm" label="${i18n:_('Task quality forms')}"
+            <tab id="tabTaskQualityForm" label="${i18n:_t('Task quality forms')}"
                  onSelect="orderElementController.setupAssignedTaskQualityFormsToOrderElementController();"/>
         </tabs>
 
@@ -97,7 +97,7 @@
     </tabbox>
 
     <hbox>
-        <button label="${i18n:_('Back')}" onClick="orderElementController.back()" sclass="back-button global-action"/>
+        <button label="${i18n:_t('Back')}" onClick="orderElementController.back()" sclass="back-button global-action"/>
     </hbox>
 
 </window>

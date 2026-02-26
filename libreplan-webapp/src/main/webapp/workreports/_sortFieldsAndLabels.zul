@@ -24,16 +24,16 @@
     </vbox>
 
         <!-- Ordered List Heading Fields and Labels -->
-        <panel title="${i18n:_('Heading')}" border="normal"
+        <panel title="${i18n:_t('Heading')}" border="normal"
             style="overflow:auto">
             <panelchildren>
                 <grid id="headingFieldsAndLabels" mold="paging" pageSize="5" fixedLayout="true"
                     model="@{controller.headingFieldsAndLabels}"
                     rowRenderer= "@{controller.orderedFieldsAndLabelsRowRenderer}">
                     <columns>
-                      <column label="${i18n:_('Name')}" />
-                      <column label="${i18n:_('Type')}" width="200px" align="center"/>
-                      <column visible = "@{controller.editable}" label="${i18n:_('Operations')}" width="150px" align="center"/>
+                      <column label="${i18n:_t('Name')}" />
+                      <column label="${i18n:_t('Type')}" width="200px" align="center"/>
+                      <column visible = "@{controller.editable}" label="${i18n:_t('Operations')}" width="150px" align="center"/>
                     </columns>
                 </grid>
                 </panelchildren>
@@ -41,15 +41,15 @@
                 <separator bar="false" spacing="40px" orient="vertical"/>
 
         <!-- Ordered List Line Fields and Labels -->
-        <panel title="${i18n:_('Lines')}" border="normal" style="overflow:auto">
+        <panel title="${i18n:_t('Lines')}" border="normal" style="overflow:auto">
             <panelchildren>
                 <grid id="linesFieldsAndLabels" mold="paging" pageSize="5" fixedLayout="true"
                     model="@{controller.linesFieldsAndLabels}"
                     rowRenderer= "@{controller.orderedFieldsAndLabelsRowRenderer}">
                     <columns>
-                      <column label="${i18n:_('Name')}"/>
-                      <column label="${i18n:_('Type')}" width="200px" align="center"/>
-                      <column visible = "@{controller.editable}" label="${i18n:_('Operations')}" width="150px" align="center"/>
+                      <column label="${i18n:_t('Name')}"/>
+                      <column label="${i18n:_t('Type')}" width="200px" align="center"/>
+                      <column visible = "@{controller.editable}" label="${i18n:_t('Operations')}" width="150px" align="center"/>
                     </columns>
                 </grid>
             </panelchildren>

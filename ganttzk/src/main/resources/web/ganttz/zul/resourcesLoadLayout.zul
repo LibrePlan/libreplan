@@ -19,8 +19,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<?xel-method prefix="ganttzk_i18n" name="_" class="org.zkoss.ganttz.i18n.I18nHelper"
-        signature="java.lang.String _(java.lang.String name)" ?>
+<?xel-method prefix="ganttzk_i18n" name="_t" class="org.zkoss.ganttz.i18n.I18nHelper"
+        signature="java.lang.String _t(java.lang.String name)" ?>
 
 <zk>
     <zscript>
@@ -35,7 +35,7 @@
 
                 <separator height="30px"/>
 
-                <label>${ganttzk_i18n:_('Zoom')}:</label>
+                <label>${ganttzk_i18n:_t('Zoom')}:</label>
 
                 <listbox id="listZoomLevels" mold="select" rows="1"
                          model="${resourcesLoadPanel.zoomLevels}"
@@ -47,13 +47,13 @@
 
                 <separator/>
 
-                <label id="filterByNameLabel">${ganttzk_i18n:_('Page')}:</label>
+                <label id="filterByNameLabel">${ganttzk_i18n:_t('Page')}:</label>
 
                 <combobox id="filterByNameCombo" width="62px" onChange="resourcesLoadPanel.onSelectFilterByName(self)" />
 
                 <separator/>
 
-                ${ganttzk_i18n:_('Group by')}:
+                ${ganttzk_i18n:_t('Group by')}:
 
                 <listbox id="listFilters" mold="select" rows="1" width="150px"
                          model="${resourcesLoadPanel.filters}"
@@ -74,7 +74,7 @@
                             <vbox pack="top" align="center">
                                 <tree fixedLayout="true" hflex="true" sclass="resourceload-details-container">
                                     <treecols>
-                                        <treecol label="${ganttzk_i18n:_('Name')}" height="29px"/>
+                                        <treecol label="${ganttzk_i18n:_t('Name')}" height="29px"/>
                                     </treecols>
                                 </tree>
                             </vbox>
@@ -100,7 +100,7 @@
             </borderlayout>
         </center>
 
-        <south height="200px" collapsible="true" title="${ganttzk_i18n:_('Graphics')}"
+        <south height="200px" collapsible="true" title="${ganttzk_i18n:_t('Graphics')}"
                sclass="scheduling-graphics" id="graphics"
                onOpen="resourcesLoadPanel.changeChartVisibility(event.open);">
 

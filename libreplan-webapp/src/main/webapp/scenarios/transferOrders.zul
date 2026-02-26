@@ -20,7 +20,7 @@
 -->
 
 <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
-<?page id="work_report_admin" title="${i18n:_('LibrePlan: Transfer Projects Between Scenarios')}" ?>
+<?page id="work_report_admin" title="${i18n:_t('LibrePlan: Transfer Projects Between Scenarios')}" ?>
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/libreplan.css"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/libreplan_zk.css"?>
@@ -28,20 +28,20 @@
 <zk>
 
 <window self="@{define(content)}" id="transferOrdersWindow"
-    title="${i18n:_('Transfer Projects Between Scenarios')}"
+    title="${i18n:_t('Transfer Projects Between Scenarios')}"
     apply="org.libreplan.web.scenarios.TransferOrdersController">
 
     <vbox id="messagesContainer"></vbox>
 
                 <grid fixedLayout="true">
                     <columns>
-                        <column label="${i18n:_('Source scenario')}"/>
-                        <column label="${i18n:_('Destination scenario')}"/>
+                        <column label="${i18n:_t('Source scenario')}"/>
+                        <column label="${i18n:_t('Destination scenario')}"/>
                     </columns>
                     <rows>
                         <row  style="padding:10px">
                         <hbox>
-                        <label value="${i18n:_('Select source')}"/>
+                        <label value="${i18n:_t('Select source')}"/>
                         <bandboxSearch
                     id="sourceScenarioBandboxSearch"
                     finder="ScenarioBandboxFinder"
@@ -49,7 +49,7 @@
                     selectedElement="@{transferOrdersController.sourceScenario}" />
                     </hbox>
                     <hbox>
-                      <label value="${i18n:_('Select destination')}"/>
+                      <label value="${i18n:_t('Select destination')}"/>
                 <bandboxSearch
                     id="destinationScenarioBandboxSearch"
                     finder="ScenarioBandboxFinder"
@@ -62,19 +62,19 @@
                 model="@{transferOrdersController.sourceScenarioOrders}"
                 itemRenderer="@{transferOrdersController.sourceOrderRenderer}">
                 <listhead>
-                    <listheader label="${i18n:_('Code')}" tooltiptext="${i18n:_('Code')}" sort="auto(lower(code))" />
-                    <listheader label="${i18n:_('Name')}" tooltiptext="${i18n:_('Name')}" sort="auto(lower(name))"/>
-                    <listheader label="${i18n:_('Version')}" tooltiptext="${i18n:_('Version')}" />
-                    <listheader label="${i18n:_('Operations')}" tooltiptext="${i18n:_('Operations')}" />
+                    <listheader label="${i18n:_t('Code')}" tooltiptext="${i18n:_t('Code')}" sort="auto(lower(code))" />
+                    <listheader label="${i18n:_t('Name')}" tooltiptext="${i18n:_t('Name')}" sort="auto(lower(name))"/>
+                    <listheader label="${i18n:_t('Version')}" tooltiptext="${i18n:_t('Version')}" />
+                    <listheader label="${i18n:_t('Operations')}" tooltiptext="${i18n:_t('Operations')}" />
                 </listhead>
             </listbox>
             <listbox id="destinationScenarioOrders"
                 model="@{transferOrdersController.destinationScenarioOrders}"
                 itemRenderer="@{transferOrdersController.destinationOrderRenderer}">
                 <listhead>
-                    <listheader label="${i18n:_('Code')}" tooltiptext="${i18n:_('Code')}" sort="auto(lower(code))" />
-                    <listheader label="${i18n:_('Name')}" tooltiptext="${i18n:_('Name')}" sort="auto(lower(name))"/>
-                    <listheader label="${i18n:_('Version')}" tooltiptext="${i18n:_('Version')}" />
+                    <listheader label="${i18n:_t('Code')}" tooltiptext="${i18n:_t('Code')}" sort="auto(lower(code))" />
+                    <listheader label="${i18n:_t('Name')}" tooltiptext="${i18n:_t('Name')}" sort="auto(lower(name))"/>
+                    <listheader label="${i18n:_t('Version')}" tooltiptext="${i18n:_t('Version')}" />
                 </listhead>
             </listbox>
                         </row>

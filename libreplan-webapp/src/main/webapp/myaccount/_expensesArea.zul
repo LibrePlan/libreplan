@@ -20,7 +20,7 @@
 
 <groupbox apply="org.libreplan.web.users.dashboard.ExpensesAreaController">
 
-    <caption label="${i18n:_('Expenses')}" />
+    <caption label="${i18n:_t('Expenses')}" />
 
     <grid id="expenseSheetsList"
           mold="paging" pageSize="10"
@@ -29,16 +29,16 @@
           sclass="clickable-rows" >
 
         <columns sizable="true">
-            <column label="${i18n:_('Description')}" sort="auto(description)" />
-            <column label="${i18n:_('Code')}" sort="auto(code)" />
-            <column label="${i18n:_('Total')}" sort="auto(total)" />
-            <column label="${i18n:_('First expense')}" sort="auto(firstExpense)" sortDirection="descending" />
-            <column label="${i18n:_('Last expense')}" sort="auto(lastExpense)" />
-            <column label="${i18n:_('Operations')}" />
+            <column label="${i18n:_t('Description')}" sort="auto(description)" />
+            <column label="${i18n:_t('Code')}" sort="auto(code)" />
+            <column label="${i18n:_t('Total')}" sort="auto(total)" />
+            <column label="${i18n:_t('First expense')}" sort="auto(firstExpense)" sortDirection="descending" />
+            <column label="${i18n:_t('Last expense')}" sort="auto(lastExpense)" />
+            <column label="${i18n:_t('Operations')}" />
         </columns>
     </grid>
 
-    <button label="${i18n:_('New expense sheet')}" onClick="controller.newExpenseSheet();" sclass="add-button"
+    <button label="${i18n:_t('New expense sheet')}" onClick="controller.newExpenseSheet();" sclass="add-button"
             style="margin-top: 2px;"/>
 
 </groupbox>
