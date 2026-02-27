@@ -4,10 +4,10 @@
     <description>
     </description>
     <function>
-        <name>_</name>
+        <name>_t</name>
         <function-class>org.libreplan.web.I18nHelper</function-class>
         <function-signature>
-            java.lang.String _(java.lang.String name)
+            java.lang.String _(tjava.lang.String name)
         </function-signature>
         <description>
         </description>
@@ -15,10 +15,10 @@
 
     <!-- Pass one extra argument -->
     <function>
-        <name>__</name>
+        <name>__t</name>
         <function-class>org.libreplan.web.I18nHelper</function-class>
         <function-signature>
-            java.lang.String _(java.lang.String name, java.lang.Object arg0)
+            java.lang.String _(tjava.lang.String name, java.lang.Object arg0)
         </function-signature>
         <description>
         </description>
