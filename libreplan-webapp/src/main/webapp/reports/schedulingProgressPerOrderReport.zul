@@ -18,7 +18,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<?page title="${i18n:_('LibrePlan: Work And Progress Per Project')}" id="reports"?>
+<?page title="${i18n:_t('LibrePlan: Work And Progress Per Project')}" id="reports"?>
 <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
 
@@ -36,11 +36,11 @@
 
     <window self="@{define(content)}"
             apply="org.libreplan.web.reports.SchedulingProgressPerOrderController"
-            title="${i18n:_('Work And Progress Per Project')}"
+            title="${i18n:_t('Work And Progress Per Project')}"
             border="normal" >
 
         <!-- Select dates -->
-        <panel title="${i18n:_('Date')}" border="normal" style="overflow:auto" sclass="report-margin">
+        <panel title="${i18n:_t('Date')}" border="normal" style="overflow:auto" sclass="report-margin">
             <panelchildren>
                 <grid width="600px" sclass="margin-border">
                     <columns>
@@ -50,19 +50,19 @@
 
                     <rows>
                         <row>
-                            <label value="${i18n:_('Starting date')}:" />
+                            <label value="${i18n:_t('Starting date')}:" />
                             <datebox id="startingDate"
                                      onChange="controller.checkCannotBeHigher(startingDate, endingDate)"/>
                         </row>
 
                         <row>
-                            <label value="${i18n:_('Ending date')}:" />
+                            <label value="${i18n:_t('Ending date')}:" />
                             <datebox id="endingDate"
                                      onChange="controller.checkCannotBeHigher(startingDate, endingDate)"/>
                         </row>
 
                         <row>
-                            <label value="${i18n:_('Reference date')}:" />
+                            <label value="${i18n:_t('Reference date')}:" />
                             <datebox id="referenceDate" onCreate="self.value = new Date()"/>
                         </row>
                     </rows>
@@ -71,7 +71,7 @@
         </panel>
 
         <!-- Advance type -->
-        <panel title="${i18n:_('Progress type')}" border="normal" style="overflow:auto" sclass="report-margin">
+        <panel title="${i18n:_t('Progress type')}" border="normal" style="overflow:auto" sclass="report-margin">
             <panelchildren>
                 <grid width="600px" sclass="margin-border">
                     <columns>
@@ -81,7 +81,7 @@
 
                     <rows>
                         <row>
-                            <label value="${i18n:_('Progress type')}:" />
+                            <label value="${i18n:_t('Progress type')}:" />
                             <listbox id="lbAdvanceType"
                                      model="@{controller.advanceTypeDTOs}"
                                      mold="select"
@@ -97,7 +97,7 @@
         </panel>
 
         <!-- Select orders -->
-        <panel title="${i18n:_('Filter by projects')}" border="normal" style="overflow:auto" sclass="report-margin">
+        <panel title="${i18n:_t('Filter by projects')}" border="normal" style="overflow:auto" sclass="report-margin">
             <panelchildren>
                 <vbox>
                     <separator spacing="5px"/>
@@ -107,7 +107,7 @@
                                        widthListbox="680px"
                                        widthBandbox="480px"
                                        sclass="bandbox-margin"/>
-                        <button label="${i18n:_('Add')}" sclass="add-button" onClick="controller.onSelectOrder()" />
+                        <button label="${i18n:_t('Add')}" sclass="add-button" onClick="controller.onSelectOrder()" />
                     </hbox>
                 </vbox>
                 <separator spacing="10px"/>
@@ -117,10 +117,10 @@
                          model="@{controller.selectedOrders}"
                          sclass="margin-border">
                     <listhead>
-                        <listheader label="${i18n:_('Name')}" align="center" sort="auto(name)" />
-                        <listheader label="${i18n:_('Code')}" sort="auto(code)" align="center" />
-                        <listheader label="${i18n:_('Start date')}" sort="auto(initDate)" align="center" />
-                        <listheader label="${i18n:_('Operations')}" sort="auto(initDate)" align="center" width="100px"/>
+                        <listheader label="${i18n:_t('Name')}" align="center" sort="auto(name)" />
+                        <listheader label="${i18n:_t('Code')}" sort="auto(code)" align="center" />
+                        <listheader label="${i18n:_t('Start date')}" sort="auto(initDate)" align="center" />
+                        <listheader label="${i18n:_t('Operations')}" sort="auto(initDate)" align="center" width="100px"/>
                     </listhead>
 
                     <listitem self="@{each='order'}" value="@{order}">
@@ -130,7 +130,7 @@
                         <listcell>
                             <button sclass="icono" image="/common/img/ico_borrar1.png"
                                     hoverImage="/common/img/ico_borrar.png"
-                                    tooltiptext="${i18n:_('Delete')}"
+                                    tooltiptext="${i18n:_t('Delete')}"
                                     onClick="controller.onRemoveOrder(self.parent.parent.value);">
                             </button>
                         </listcell>
@@ -140,7 +140,7 @@
         </panel>
 
         <!-- Select output format -->
-        <panel title="${i18n:_('Format')}" border="normal" style="overflow:auto" sclass="report-margin">
+        <panel title="${i18n:_t('Format')}" border="normal" style="overflow:auto" sclass="report-margin">
             <panelchildren>
                 <grid width="600px" sclass="margin-border">
                     <columns>
@@ -150,7 +150,7 @@
 
                     <rows>
                         <row>
-                            <label value="${i18n:_('Output format')}:" />
+                            <label value="${i18n:_t('Output format')}:" />
                             <comboboxOutputFormat id="outputFormat" />
                         </row>
                     </rows>
@@ -161,14 +161,14 @@
         <separator spacing="10px" orient="horizontal"/>
 
         <hbox style="display: none" id="URItext">
-            <label value="${i18n:_('Click on this')}" />
-            <a id="URIlink" sclass="z-label" zclass="z-label" label="${i18n:_('direct link')}" />
-            <label value="${i18n:_('if the report is not opened automatically or use save as...')}" />
+            <label value="${i18n:_t('Click on this')}" />
+            <a id="URIlink" sclass="z-label" zclass="z-label" label="${i18n:_t('direct link')}" />
+            <label value="${i18n:_t('if the report is not opened automatically or use save as...')}" />
         </hbox>
 
         <separator spacing="10px" orient="horizontal" />
 
-        <button label="${i18n:_('Show')}" sclass="add-button" onClick="controller.showReport(report)" />
+        <button label="${i18n:_t('Show')}" sclass="add-button" onClick="controller.showReport(report)" />
 
         <jasperreportcomponent id="report" />
     </window>

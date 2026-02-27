@@ -40,9 +40,9 @@
                     <vbox width="100%">
                         <!-- Categories -->
                         <vbox style="display:none;">
-                            <panel title="${i18n:_('Categories')}" border="normal">
+                            <panel title="${i18n:_t('Categories')}" border="normal">
                                 <panelchildren>
-                                    <button label="${i18n:_('Unselect')}"
+                                    <button label="${i18n:_t('Unselect')}"
                                             onClick="assignedMaterialsController.clearSelectionCategoriesTree()"/>
 
                                     <separator spacing="5px" orient="horizontal" />
@@ -61,9 +61,9 @@
                         </vbox>
 
                         <groupbox style="margin-top: 5px" closable="false">
-                            <caption label="${i18n:_('Required materials')}" />
+                            <caption label="${i18n:_t('Required materials')}" />
 
-                            <button label="${i18n:_('Add materials')}"
+                            <button label="${i18n:_t('Add materials')}"
                                     style="margin: 0 0 5px 0px"
                                     sclass="add-button"
                                     onClick="materialsAccordion.setSelectedIndex(1);" />
@@ -79,10 +79,10 @@
                     <!-- Material search -->
                     <hbox>
                         <!-- Categories  -->
-                        <panel title="${i18n:_('Categories')}" border="normal" width="280px">
+                        <panel title="${i18n:_t('Categories')}" border="normal" width="280px">
                             <panelchildren>
                                 <toolbarbutton style="text-decoration: none; margin-top: 5px;"
-                                               label="${i18n:_('Unselect')}"
+                                               label="${i18n:_t('Unselect')}"
                                                onClick="assignedMaterialsController.clearSelectionAllCategoriesTree()"/>
                                 <tree id="allCategoriesTree"
                                       rows="10"
@@ -98,15 +98,15 @@
                         </panel>
 
                         <!-- Found materials -->
-                        <panel title="${i18n:_('Available materials')}" border="normal" hflex="1">
+                        <panel title="${i18n:_t('Available materials')}" border="normal" hflex="1">
                             <panelchildren>
 
                                 <!-- Search textbox -->
                                 <hbox sclass="hbox-margin">
                                     <textbox id="txtSearchMaterial" width="250px"/>
-                                    <button label="${i18n:_('Search')}" sclass="add-button"
+                                    <button label="${i18n:_t('Search')}" sclass="add-button"
                                             onClick="assignedMaterialsController.searchMaterials()"/>
-                                    <button label="${i18n:_('Assign')}" sclass="add-button"
+                                    <button label="${i18n:_t('Assign')}" sclass="add-button"
                                             onClick="assignedMaterialsController.assignSelectedMaterials()" />
                                 </hbox>
 
@@ -116,11 +116,11 @@
                                          multiple="true" sclass="margin-border"
                                          model="@{assignedMaterialsController.matchingMaterials}" >
                                     <listhead sizable="false" >
-                                        <listheader label="${i18n:_('Code')}" width="230px"/>
-                                        <listheader label="${i18n:_('Name')}" hflex="1"/>
-                                        <listheader label="${i18n:_('Unit type')}" width="70px" />
-                                        <listheader label="${i18n:_('Unit price')}" width="70px"/>
-                                        <listheader label="${i18n:_('Category')}" width="120px"/>
+                                        <listheader label="${i18n:_t('Code')}" width="230px"/>
+                                        <listheader label="${i18n:_t('Name')}" hflex="1"/>
+                                        <listheader label="${i18n:_t('Unit type')}" width="70px" />
+                                        <listheader label="${i18n:_t('Unit price')}" width="70px"/>
+                                        <listheader label="${i18n:_t('Category')}" width="120px"/>
                                     </listhead>
                                     <listitem self="@{each='material'}" value="@{material}">
                                         <listcell label="@{material.code}" />
@@ -137,11 +137,11 @@
                         </panel>
                     </hbox>
 
-                    <button label="${i18n:_('Assign materials')}"
+                    <button label="${i18n:_t('Assign materials')}"
                             style="margin-left: 13px;"
                             sclass="add-button global-action"
                             onClick="assignedMaterialsController.assignSelectedMaterials()" />
-                    <button label="${i18n:_('Cancel')}"
+                    <button label="${i18n:_t('Cancel')}"
                             sclass="add-button global-action"
                             onClick="materialsAccordion.setSelectedIndex(0);" />
 

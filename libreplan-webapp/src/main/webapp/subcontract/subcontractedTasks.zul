@@ -19,7 +19,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<?page title="${i18n:_('LibrePlan: Send To Subcontractors')}"?>
+<?page title="${i18n:_t('LibrePlan: Send To Subcontractors')}"?>
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
 <?link rel="shortcut icon" href="/common/img/favicon.ico" type="image/x-icon"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/libreplan.css"?>
@@ -32,7 +32,7 @@
 <div self="@{define(content)}">
 
 <window apply="${subcontractedTasksController}"
-    title="${i18n:_('Communications To Subcontractors')}">
+    title="${i18n:_t('Communications To Subcontractors')}">
 
     <vbox id="messagesContainer" />
 
@@ -42,19 +42,19 @@
         mold="paging" pageSize="10" fixedLayout="true"
         onInitRender="controller.initRender();">
         <columns>
-            <column label="${i18n:_('Subcontracting date')}"
-                tooltiptext="${i18n:_('Subcontracting date')}" sort="auto(subcontratationDate)" />
-            <column label="${i18n:_('Last communication')}" sort="auto(subcontractCommunicationDate)"
-                tooltiptext="${i18n:_('Communication date')}" />
-            <column label="${i18n:_('Company')}" tooltiptext="${i18n:_('External company')}" sort="auto(externalCompany)" />
-            <column label="${i18n:_('Project code')}" tooltiptext="${i18n:_('Project code')}" />
-            <column label="${i18n:_('Project name')}" tooltiptext="${i18n:_('Project name')}" />
-            <column label="${i18n:_('Subcontracting code')}" tooltiptext="${i18n:_('Subcontracting code')}"/>
-            <column label="${i18n:_('Task name')}" tooltiptext="${i18n:_('Task name')}" />
-            <column label="${i18n:_('Budget')}" tooltiptext="${i18n:_('Budget')}" />
-            <column label="${i18n:_('Delivery date')}" tooltiptext="${i18n:_('Delivery date')}" />
-            <column id="columnBySort" label="${i18n:_('State')}" tooltiptext="${i18n:_('State')}" sort="auto(state)" sortDirection="ascending"/>
-            <column label="${i18n:_('Operations')}" tooltiptext="${i18n:_('Operations')}" width="100px"/>
+            <column label="${i18n:_t('Subcontracting date')}"
+                tooltiptext="${i18n:_t('Subcontracting date')}" sort="auto(subcontratationDate)" />
+            <column label="${i18n:_t('Last communication')}" sort="auto(subcontractCommunicationDate)"
+                tooltiptext="${i18n:_t('Communication date')}" />
+            <column label="${i18n:_t('Company')}" tooltiptext="${i18n:_t('External company')}" sort="auto(externalCompany)" />
+            <column label="${i18n:_t('Project code')}" tooltiptext="${i18n:_t('Project code')}" />
+            <column label="${i18n:_t('Project name')}" tooltiptext="${i18n:_t('Project name')}" />
+            <column label="${i18n:_t('Subcontracting code')}" tooltiptext="${i18n:_t('Subcontracting code')}"/>
+            <column label="${i18n:_t('Task name')}" tooltiptext="${i18n:_t('Task name')}" />
+            <column label="${i18n:_t('Budget')}" tooltiptext="${i18n:_t('Budget')}" />
+            <column label="${i18n:_t('Delivery date')}" tooltiptext="${i18n:_t('Delivery date')}" />
+            <column id="columnBySort" label="${i18n:_t('State')}" tooltiptext="${i18n:_t('State')}" sort="auto(state)" sortDirection="ascending"/>
+            <column label="${i18n:_t('Operations')}" tooltiptext="${i18n:_t('Operations')}" width="100px"/>
         </columns>
     </grid>
 

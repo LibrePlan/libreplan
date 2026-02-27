@@ -18,7 +18,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<?page id="projectImport" title="${i18n:_('LibrePlan: Import Project')}"?>
+<?page id="projectImport" title="${i18n:_t('LibrePlan: Import Project')}"?>
 <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
 
@@ -30,15 +30,15 @@
 <zk>
     <window id="importProject" self="@{define(content)}"
             apply="org.libreplan.web.importers.ProjectImportController"
-            title="${i18n:_('Import Project')}">
+            title="${i18n:_t('Import Project')}">
 
         <vbox id="messagesContainer" />
 
-        <label value="${i18n:_('The formats supported for import are MPP and PLANNER files.')}"/>
-        <label value="${i18n:_('The imported data are Gantt projects with their tasks, constraints,
+        <label value="${i18n:_t('The formats supported for import are MPP and PLANNER files.')}"/>
+        <label value="${i18n:_t('The imported data are Gantt projects with their tasks, constraints,
         dependencies and milestones and there is also the option to upload calendars.')}"/>
         <hbox>
-            <label style="font-weight: bold;" value="${i18n:_('Your project could only partially be imported.')}"/>
+            <label style="font-weight: bold;" value="${i18n:_t('Your project could only partially be imported.')}"/>
         </hbox>
 
 
@@ -46,18 +46,18 @@
 
         <groupbox closable="false" style="padding:10px; margin:10px;">
             <caption label="Options" />
-            <label value="${i18n:_('Select the elements to import into LibrePlan')}:"/>
+            <label value="${i18n:_t('Select the elements to import into LibrePlan')}:"/>
             <vbox style="padding:10px;" align="pack">
                 <radiogroup>
-                    <radio id="importCalendars" label="${i18n:_('Calendars')}"/>
-                    <radio id="importTasks" label="${i18n:_('Gantt charts')}" />
-                    <radio id="importAll" label="${i18n:_('Both calendars and gantt charts')}" selected="true"/>
+                    <radio id="importCalendars" label="${i18n:_t('Calendars')}"/>
+                    <radio id="importTasks" label="${i18n:_t('Gantt charts')}" />
+                    <radio id="importAll" label="${i18n:_t('Both calendars and gantt charts')}" selected="true"/>
                 </radiogroup>
             </vbox>
         </groupbox>
 
         <hbox>
-            <button id="btnImportProject" label="${i18n:_('Upload Project')}" upload="true,maxsize=9000"
+            <button id="btnImportProject" label="${i18n:_t('Upload Project')}" upload="true,maxsize=9000"
                     onUpload="projectImportController.importProject(event.getMedia())" sclass="create-button global-action"/>
         </hbox>
     </window>

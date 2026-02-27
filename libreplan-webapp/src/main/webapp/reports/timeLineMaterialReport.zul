@@ -18,7 +18,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<?page title="${i18n:_('LibrePlan: Materials Needed At Date')}" id="reports"?>
+<?page title="${i18n:_t('LibrePlan: Materials Needed At Date')}" id="reports"?>
 <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
 
@@ -36,12 +36,12 @@
 
     <window self="@{define(content)}"
             apply="org.libreplan.web.reports.TimeLineRequiredMaterialController"
-            title="${i18n:_('Materials Needed At Date')}"
+            title="${i18n:_t('Materials Needed At Date')}"
             border="normal">
         <hbox>
             <div>
                 <!-- Select dates -->
-                <panel title="${i18n:_('Dates')}" border="normal" style="overflow:auto" sclass="report-margin">
+                <panel title="${i18n:_t('Dates')}" border="normal" style="overflow:auto" sclass="report-margin">
                     <panelchildren>
                         <grid width="600px" sclass="margin-border">
                             <columns>
@@ -50,15 +50,15 @@
                             </columns>
                             <rows>
                                 <row>
-                                    <label value="${i18n:_('Start date')}:" />
+                                    <label value="${i18n:_t('Start date')}:" />
                                     <datebox id="startingDate" width="150px" value="@{controller.startingDate}"/>
                                 </row>
                                 <row>
-                                    <label value="${i18n:_('End date')}:" />
+                                    <label value="${i18n:_t('End date')}:" />
                                     <datebox id="endingDate" width="150px" value="@{controller.endingDate}"/>
                                 </row>
                                 <row>
-                                    <label value="${i18n:_('Status')}:" />
+                                    <label value="${i18n:_t('Status')}:" />
                                     <listbox id="listStatus" mold="select" rows="1"
                                              model="@{controller.materialStatus}" width="150px"
                                              selectedItem="@{controller.selectedStatus}">
@@ -71,7 +71,7 @@
                 </panel>
 
                 <!-- Select orders -->
-                <panel title="${i18n:_('Filter by projects')}" border="normal"
+                <panel title="${i18n:_t('Filter by projects')}" border="normal"
                        style="overflow:auto" sclass="report-margin">
                     <panelchildren>
                         <vbox>
@@ -82,7 +82,7 @@
                                                widthListbox="580px"
                                                widthBandbox="450px"
                                                sclass="bandbox-margin"/>
-                                <button label="${i18n:_('Add')}" sclass="add-button"
+                                <button label="${i18n:_t('Add')}" sclass="add-button"
                                         onClick="controller.onSelectOrder()"/>
                             </hbox>
                         </vbox>
@@ -95,10 +95,10 @@
                                  model="@{controller.selectedOrders}"
                                  sclass="margin-border">
                             <listhead>
-                                <listheader label="${i18n:_('Name')}" align="center" sort="auto(name)" />
-                                <listheader label="${i18n:_('Code')}" sort="auto(code)" align="center" />
-                                <listheader label="${i18n:_('Start date')}" sort="auto(initDate)" align="center" />
-                                <listheader label="${i18n:_('Operations')}" sort="auto(initDate)" align="center" width="100px"/>
+                                <listheader label="${i18n:_t('Name')}" align="center" sort="auto(name)" />
+                                <listheader label="${i18n:_t('Code')}" sort="auto(code)" align="center" />
+                                <listheader label="${i18n:_t('Start date')}" sort="auto(initDate)" align="center" />
+                                <listheader label="${i18n:_t('Operations')}" sort="auto(initDate)" align="center" width="100px"/>
                             </listhead>
                             <listitem self="@{each='order'}" value="@{order}">
                                 <listcell label="@{order.name}" />
@@ -107,7 +107,7 @@
                                 <listcell>
                                     <button sclass="icono" image="/common/img/ico_borrar1.png"
                                             hoverImage="/common/img/ico_borrar.png"
-                                            tooltiptext="${i18n:_('Delete')}"
+                                            tooltiptext="${i18n:_t('Delete')}"
                                             onClick="controller.onRemoveOrder(self.parent.parent.value);">
 
                                     </button>
@@ -121,9 +121,9 @@
             <div>
                 <!-- Categories  -->
                 <vbox>
-                    <panel title="${i18n:_('Filter by categories or materials')}" border="normal" sclass="report-margin">
+                    <panel title="${i18n:_t('Filter by categories or materials')}" border="normal" sclass="report-margin">
                         <panelchildren>
-                            <toolbarbutton style="text-decoration: none" label="${i18n:_('Unselect')}"
+                            <toolbarbutton style="text-decoration: none" label="${i18n:_t('Unselect')}"
                                            onClick="controller.clearSelectionAllCategoriesTree()" />
                             <tree id="allCategoriesTree"
                                   width="280px"
@@ -142,7 +142,7 @@
         </hbox>
 
         <!-- Select output format -->
-        <panel title="${i18n:_('Format')}" border="normal" style="overflow:auto" sclass="report-margin">
+        <panel title="${i18n:_t('Format')}" border="normal" style="overflow:auto" sclass="report-margin">
             <panelchildren>
                 <grid width="600px" sclass="margin-border">
                     <columns>
@@ -151,7 +151,7 @@
                     </columns>
                     <rows>
                         <row>
-                            <label value="${i18n:_('Output format')}:" />
+                            <label value="${i18n:_t('Output format')}:" />
                             <comboboxOutputFormat id="outputFormat" />
                         </row>
                     </rows>
@@ -162,14 +162,14 @@
         <separator spacing="10px" orient="horizontal"/>
 
         <hbox style="display: none" id="URItext">
-            <label value="${i18n:_('Click on this')}" />
-            <a id="URIlink" sclass="z-label" zclass="z-label" label="${i18n:_('direct link')}" />
-            <label value="${i18n:_('if the report is not opened automatically')}" />
+            <label value="${i18n:_t('Click on this')}" />
+            <a id="URIlink" sclass="z-label" zclass="z-label" label="${i18n:_t('direct link')}" />
+            <label value="${i18n:_t('if the report is not opened automatically')}" />
         </hbox>
 
         <separator spacing="10px" orient="horizontal" />
 
-        <button label="${i18n:_('Show')}" sclass="add-button" onClick="controller.showReport(report)" />
+        <button label="${i18n:_t('Show')}" sclass="add-button" onClick="controller.showReport(report)" />
 
         <jasperreportcomponent id="report" />
     </window>

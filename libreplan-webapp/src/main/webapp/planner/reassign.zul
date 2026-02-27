@@ -28,10 +28,10 @@
         ]]>
     </zscript>
 
-    <window border="none" title="${i18n:_('Reassigning')}" apply="${controllerForReassigning}" width="300px">
+    <window border="none" title="${i18n:_t('Reassigning')}" apply="${controllerForReassigning}" width="300px">
 
         <groupbox closable="false">
-            <caption label="${i18n:_('Reassigning type')}" />
+            <caption label="${i18n:_t('Reassigning type')}" />
 
             <vbox width="100%">
                 <radiogroup id="reassigningTypeSelector" width="100%">
@@ -46,8 +46,8 @@
         </groupbox>
 
         <hbox>
-            <button label="${i18n:_('Accept')}" onClick="controllerForReassigning.confirm()" sclass="add-button" />
-            <button label="${i18n:_('Cancel')}" onClick="controllerForReassigning.cancel()" sclass="add-button" />
+            <button label="${i18n:_t('Accept')}" onClick="controllerForReassigning.confirm()" sclass="add-button" />
+            <button label="${i18n:_t('Cancel')}" onClick="controllerForReassigning.cancel()" sclass="add-button" />
         </hbox>
 
     </window>

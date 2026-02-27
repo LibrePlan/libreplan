@@ -18,7 +18,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<?page id="reports" title="${i18n:_('LibrePlan: Project Costs')}" ?>
+<?page id="reports" title="${i18n:_t('LibrePlan: Project Costs')}" ?>
 <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
 
@@ -36,17 +36,17 @@
 
     <window self="@{define(content)}"
             apply="org.libreplan.web.reports.OrderCostsPerResourceController"
-            title="${i18n:_('Project Costs')}">
+            title="${i18n:_t('Project Costs')}">
 
         <tabbox>
             <tabs>
-                <tab label="${i18n:_('Select report data')}" />
+                <tab label="${i18n:_t('Select report data')}" />
             </tabs>
             <tabpanels>
                 <tabpanel>
 
                     <!-- Select output format -->
-                    <panel title="${i18n:_('Dates')}" border="normal" style="overflow:auto" sclass="report-margin">
+                    <panel title="${i18n:_t('Dates')}" border="normal" style="overflow:auto" sclass="report-margin">
                         <panelchildren>
                             <grid width="600px" sclass="margin-border">
                                 <columns>
@@ -55,13 +55,13 @@
                                 </columns>
                                 <rows>
                                     <row>
-                                        <label value="${i18n:_('Work done from starting date')}" />
+                                        <label value="${i18n:_t('Work done from starting date')}" />
                                         <datebox id="startingDate" width="200px"
                                                  constraint = "@{controller.checkConstraintStartingDate}"/>
                                     </row>
 
                                     <row>
-                                        <label value="${i18n:_('Work done until ending date')}" />
+                                        <label value="${i18n:_t('Work done until ending date')}" />
                                         <datebox id="endingDate" width="200px"
                                                  constraint = "@{controller.checkConstraintEndingDate}"/>
                                     </row>
@@ -71,7 +71,7 @@
                     </panel>
 
                     <!-- Select orders -->
-                    <panel title="${i18n:_('Filter by projects')}" border="normal" style="overflow:auto"
+                    <panel title="${i18n:_t('Filter by projects')}" border="normal" style="overflow:auto"
                            sclass="report-margin">
 
                         <panelchildren>
@@ -84,7 +84,7 @@
                                                    widthListbox="480px"
                                                    widthBandbox="450px" sclass="bandbox-margin"/>
 
-                                    <button label="${i18n:_('Add')}" sclass="add-button"
+                                    <button label="${i18n:_t('Add')}" sclass="add-button"
                                             onClick="controller.onSelectOrder()"/>
                                 </hbox>
                             </vbox>
@@ -97,10 +97,10 @@
                                      model="@{controller.selectedOrders}"
                                      sclass="margin-border">
                                 <listhead>
-                                    <listheader label="${i18n:_('Name')}" align="center" sort="auto(name)" />
-                                    <listheader label="${i18n:_('Code')}" sort="auto(code)" align="center" />
-                                    <listheader label="${i18n:_('Start date')}" sort="auto(initDate)" align="center" />
-                                    <listheader label="${i18n:_('Operations')}" sort="auto(initDate)" align="center"
+                                    <listheader label="${i18n:_t('Name')}" align="center" sort="auto(name)" />
+                                    <listheader label="${i18n:_t('Code')}" sort="auto(code)" align="center" />
+                                    <listheader label="${i18n:_t('Start date')}" sort="auto(initDate)" align="center" />
+                                    <listheader label="${i18n:_t('Operations')}" sort="auto(initDate)" align="center"
                                                 width="100px"/>
                                 </listhead>
 
@@ -111,7 +111,7 @@
                                     <listcell>
                                         <button sclass="icono" image="/common/img/ico_borrar1.png"
                                                 hoverImage="/common/img/ico_borrar.png"
-                                                tooltiptext="${i18n:_('Delete')}"
+                                                tooltiptext="${i18n:_t('Delete')}"
                                                 onClick="controller.onRemoveOrder(self.parent.parent.value);">
                                         </button>
                                     </listcell>
@@ -121,7 +121,7 @@
                     </panel>
 
                     <!-- Assign label -->
-                    <panel title="${i18n:_('Filter by labels')}" border="normal" style="overflow:auto"
+                    <panel title="${i18n:_t('Filter by labels')}" border="normal" style="overflow:auto"
                            sclass="report-margin">
 
                         <panelchildren>
@@ -134,7 +134,7 @@
                                                    widthBandbox="350px"
                                                    sclass="bandbox-margin"/>
 
-                                    <button label="${i18n:_('Add')}" sclass="add-button"
+                                    <button label="${i18n:_t('Add')}" sclass="add-button"
                                             onClick="controller.onSelectLabel()"/>
                                 </hbox>
                             </vbox>
@@ -145,9 +145,9 @@
                                      model="@{controller.selectedLabels}"
                                      sclass="margin-border">
                                 <listhead>
-                                    <listheader label="${i18n:_('Type')}" align="center" />
-                                    <listheader label="${i18n:_('Name')}" align="center" />
-                                    <listheader label="${i18n:_('Operations')}" align="center" width="100px"/>
+                                    <listheader label="${i18n:_t('Type')}" align="center" />
+                                    <listheader label="${i18n:_t('Name')}" align="center" />
+                                    <listheader label="${i18n:_t('Operations')}" align="center" width="100px"/>
                                 </listhead>
 
                                 <listitem self="@{each='label'}" value="@{label}">
@@ -156,7 +156,7 @@
                                     <listcell>
                                         <button sclass="icono" image="/common/img/ico_borrar1.png"
                                                 hoverImage="/common/img/ico_borrar.png"
-                                                tooltiptext="${i18n:_('Delete')}"
+                                                tooltiptext="${i18n:_t('Delete')}"
                                                 onClick="controller.onRemoveLabel(self.parent.parent.value);">
                                         </button>
                                     </listcell>
@@ -166,7 +166,7 @@
                     </panel>
 
                     <!-- Assign Criterion -->
-                    <panel title="${i18n:_('Filter by criteria')}" border="normal" style="overflow:auto" sclass="report-margin">
+                    <panel title="${i18n:_t('Filter by criteria')}" border="normal" style="overflow:auto" sclass="report-margin">
                         <panelchildren>
                             <vbox>
                                 <separator spacing="5px"/>
@@ -177,7 +177,7 @@
                                                    widthBandbox="350px"
                                                    sclass="bandbox-margin"/>
 
-                                    <button label="${i18n:_('Add')}" sclass="add-button"
+                                    <button label="${i18n:_t('Add')}" sclass="add-button"
                                             onClick="controller.onSelectCriterion()"/>
                                 </hbox>
                             </vbox>
@@ -188,9 +188,9 @@
                                      model="@{controller.selectedCriterions}"
                                      sclass="margin-border">
                                 <listhead>
-                                    <listheader label="${i18n:_('Type')}" align="center" />
-                                    <listheader label="${i18n:_('Name')}" align="center" />
-                                    <listheader label="${i18n:_('Operations')}" align="center" width="100px"/>
+                                    <listheader label="${i18n:_t('Type')}" align="center" />
+                                    <listheader label="${i18n:_t('Name')}" align="center" />
+                                    <listheader label="${i18n:_t('Operations')}" align="center" width="100px"/>
                                 </listhead>
 
                                 <listitem self="@{each='criterion'}" value="@{criterion}">
@@ -199,7 +199,7 @@
                                     <listcell>
                                         <button sclass="icono" image="/common/img/ico_borrar1.png"
                                                 hoverImage="/common/img/ico_borrar.png"
-                                                tooltiptext="${i18n:_('Delete')}"
+                                                tooltiptext="${i18n:_t('Delete')}"
                                                 onClick="controller.onRemoveCriterion(self.parent.parent.value);">
                                         </button>
                                     </listcell>
@@ -209,7 +209,7 @@
                     </panel>
 
                     <!-- Select output format -->
-                    <panel title="${i18n:_('Format')}" border="normal" style="overflow:auto" sclass="report-margin">
+                    <panel title="${i18n:_t('Format')}" border="normal" style="overflow:auto" sclass="report-margin">
                         <panelchildren>
                             <grid width="600px" sclass="margin-border">
                                 <columns>
@@ -218,7 +218,7 @@
                                 </columns>
                                 <rows>
                                     <row>
-                                        <label value="${i18n:_('Output format')}" />
+                                        <label value="${i18n:_t('Output format')}" />
                                         <comboboxOutputFormat id="outputFormat" />
                                     </row>
                                 </rows>
@@ -232,14 +232,14 @@
         </tabbox>
 
         <hbox style="display: none" id="URItext">
-            <label value="${i18n:_('Click on this')}" />
-            <a id="URIlink" sclass="z-label" label="${i18n:_('direct link')}" />
-            <label value="${i18n:_('if the report is not opened automatically or use save as...')}" />
+            <label value="${i18n:_t('Click on this')}" />
+            <a id="URIlink" sclass="z-label" label="${i18n:_t('direct link')}" />
+            <label value="${i18n:_t('if the report is not opened automatically or use save as...')}" />
         </hbox>
 
         <separator spacing="10px" orient="horizontal"/>
 
-        <button label="${i18n:_('Show')}" sclass="add-button" onClick="controller.showReport(report)" />
+        <button label="${i18n:_t('Show')}" sclass="add-button" onClick="controller.showReport(report)" />
 
         <jasperreportcomponent id="report" />
 

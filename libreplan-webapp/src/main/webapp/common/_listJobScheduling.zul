@@ -17,7 +17,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  -->
 
-<window id="${arg.id}" title="${i18n:_('Job Scheduling List')}">
+<window id="${arg.id}" title="${i18n:_t('Job Scheduling List')}">
 
     <grid id="listJobSchedulings"
           rowRenderer="@{controller.jobSchedulingRenderer}"
@@ -25,13 +25,13 @@
           mold="paging" pageSize="10" fixedLayout="true">
 
         <columns>
-            <column label="${i18n:_('Job group')}" />
-            <column label="${i18n:_('Job name')}" />
-            <column label="${i18n:_('Cron expression')}" />
-            <column label="${i18n:_('Next fire time')}" />
-            <column label="${i18n:_('Operations')}" />
+            <column label="${i18n:_t('Job group')}" />
+            <column label="${i18n:_t('Job name')}" />
+            <column label="${i18n:_t('Cron expression')}" />
+            <column label="${i18n:_t('Next fire time')}" />
+            <column label="${i18n:_t('Operations')}" />
         </columns>
 
     </grid>
-    <button label="${i18n:_('Create')}" onClick="controller.goToCreateForm()" sclass="add-button global-action"/>
+    <button label="${i18n:_t('Create')}" onClick="controller.goToCreateForm()" sclass="add-button global-action"/>
 </window>

@@ -18,11 +18,11 @@
  -->
  
 <hbox align="center" sclass="filtering-area">
-    <label value="${i18n:_('Name')}"
-        tooltiptext="${i18n:_('Select required issue/risk name and press filter button')}"/>
+    <label value="${i18n:_t('Name')}"
+        tooltiptext="${i18n:_t('Select required issue/risk name and press filter button')}"/>
     <textbox id="filterName" width="100px" onChange="logsFilterController.onApplyFilter()" />
         
     <button mold="trendy" image="/common/img/ico_filter.png" style="margin-top: -4px"
-        tooltiptext="${i18n:_('Apply filtering to issues')}"
+        tooltiptext="${i18n:_t('Apply filtering to issues')}"
         onClick="logsFilterController.onApplyFilter()"/>
 </hbox>

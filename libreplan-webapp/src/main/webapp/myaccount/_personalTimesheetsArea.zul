@@ -19,22 +19,22 @@
  -->
 
 <groupbox apply="org.libreplan.web.users.dashboard.PersonalTimesheetsAreaController">
-    <caption label="${i18n:_('Personal timesheets')}" />
+    <caption label="${i18n:_t('Personal timesheets')}" />
 
     <grid model="@{controller.personalTimesheets}" mold="paging"
         pageSize="10" rowRenderer="@{controller.personalTimesheetsRenderer}"
          sclass="clickable-rows">
         <columns sizable="true">
-            <column label="${i18n:_('Date')}"
+            <column label="${i18n:_t('Date')}"
                 sort="auto(date)"
                 sortDirection="descending" />
-            <column label="${i18n:_('Available hours')}"
+            <column label="${i18n:_t('Available hours')}"
                 sort="auto(resourceCapacity)" />
-            <column label="${i18n:_('Total work')}"
+            <column label="${i18n:_t('Total work')}"
                 sort="auto(totalHours)" />
-            <column label="${i18n:_('Number of tasks')}"
+            <column label="${i18n:_t('Number of tasks')}"
                 sort="auto(tasksNumber)" />
-            <column label="${i18n:_('Operations')}" />
+            <column label="${i18n:_t('Operations')}" />
         </columns>
     </grid>
 </groupbox>

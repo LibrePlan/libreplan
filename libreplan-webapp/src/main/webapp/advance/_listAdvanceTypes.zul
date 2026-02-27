@@ -19,18 +19,18 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<window id="${arg.top_id}" title="${i18n:_('Progress Types List')}">
+<window id="${arg.top_id}" title="${i18n:_t('Progress Types List')}">
     <newdatasortablegrid id="listing" model="@{controller.advanceTypes}" mold="paging"
                          pageSize="10" fixedLayout="true" sclass="clickable-rows"
                          rowRenderer="@{controller.advanceTypeRenderer}" >
         <columns>
-            <newdatasortablecolumn label="${i18n:_('Name')}" sort="auto(unitName)"/>
-            <newdatasortablecolumn label="${i18n:_('Enabled')}"/>
-            <newdatasortablecolumn label="${i18n:_('Predefined')}"/>
-            <newdatasortablecolumn label="${i18n:_('Operations')}"/>
+            <newdatasortablecolumn label="${i18n:_t('Name')}" sort="auto(unitName)"/>
+            <newdatasortablecolumn label="${i18n:_t('Enabled')}"/>
+            <newdatasortablecolumn label="${i18n:_t('Predefined')}"/>
+            <newdatasortablecolumn label="${i18n:_t('Operations')}"/>
         </columns>
     </newdatasortablegrid>
-    <button id="show_create_form" onClick="controller.goToCreateForm();" label="${i18n:_('Create')}"
+    <button id="show_create_form" onClick="controller.goToCreateForm();" label="${i18n:_t('Create')}"
             sclass="create-button global-action">
     </button>
 </window>

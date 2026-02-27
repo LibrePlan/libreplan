@@ -19,7 +19,7 @@
 
 <groupbox id="jiraGroupBox"
           style="margin-top: 5px" closable="false">
-    <caption label="${i18n:_('JIRA sync information')}" />
+    <caption label="${i18n:_t('JIRA sync information')}" />
     <separator spacing="10px"/>
     <hbox width="100%">
         <separator spacing="10px" width="100%"/>
@@ -31,12 +31,12 @@
             </columns>
             <rows>
                 <row>
-                    <label value="${i18n:_('JIRA label')}" width="50px"/>
+                    <label value="${i18n:_t('JIRA label')}" width="50px"/>
                     <hbox>
                         <textbox id="txtLastSyncDate" value="" width="130px" disabled="true"/>
                         <textbox id="txtImportedLabel" value=""
                                  width="220px" disabled="true"/>
-                        <button label="${i18n:_('Sync with JIRA')}" id="syncWithJiraButton"
+                        <button label="${i18n:_t('Sync with JIRA')}" id="syncWithJiraButton"
                                 onClick="jiraSynchroniaztionController.syncWithJira()" />
                     </hbox>
                 </row>
@@ -46,7 +46,7 @@
     <popup id="jirasyncPopup" sclass="finder-popup">
         <groupbox mold="3d" closable="false" width="420px">
             <caption id="jiraSyncCaption" label="Select a label" />
-            <combobox id="comboJiraLabel" autodrop="true" width="400px" constraint="no empty:${i18n:_('cannot be empty')}"/>
+            <combobox id="comboJiraLabel" autodrop="true" width="400px" constraint="no empty:${i18n:_t('cannot be empty')}"/>
             <separator/>
             <hbox>
                 <button id="startJiraSyncButton" />

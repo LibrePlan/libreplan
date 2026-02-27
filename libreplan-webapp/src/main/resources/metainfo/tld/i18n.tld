@@ -7,7 +7,7 @@
         <name>_t</name>
         <function-class>org.libreplan.web.I18nHelper</function-class>
         <function-signature>
-            java.lang.String _(tjava.lang.String name)
+            java.lang.String _t(java.lang.String name)
         </function-signature>
         <description>
         </description>
@@ -18,7 +18,7 @@
         <name>__t</name>
         <function-class>org.libreplan.web.I18nHelper</function-class>
         <function-signature>
-            java.lang.String _(tjava.lang.String name, java.lang.Object arg0)
+            java.lang.String _t(java.lang.String name, java.lang.Object arg0)
         </function-signature>
         <description>
         </description>

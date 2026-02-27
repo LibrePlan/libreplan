@@ -19,7 +19,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<?page title="${i18n:_('LibrePlan: Calendars')}"?>
+<?page title="${i18n:_t('LibrePlan: Calendars')}"?>
 <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
 
@@ -42,10 +42,10 @@
         <list top_id="listWindow" />
 
         <edition top_id="editWindow"
-                 save_button_label="${i18n:_('Save')}"
+                 save_button_label="${i18n:_t('Save')}"
                  save_button_visible="true"
-                 saveandcontinue_button_label="${i18n:_('Save and Continue')}"
-                 cancel_button_label="${i18n:_('Cancel')}" />
+                 saveandcontinue_button_label="${i18n:_t('Save and Continue')}"
+                 cancel_button_label="${i18n:_t('Cancel')}" />
 
         <createNewVersion />
 

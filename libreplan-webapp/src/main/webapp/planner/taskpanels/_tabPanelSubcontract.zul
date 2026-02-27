@@ -24,7 +24,7 @@
     <grid>
         <rows>
             <row>
-                <label value="${i18n:_('External company')}" />
+                <label value="${i18n:_t('External company')}" />
                 <hbox>
                     <combobox model="@{subController.subcontractorExternalCompanies}"
                               value="@{subController.subcontractedTaskData.externalCompany.name}"
@@ -42,13 +42,13 @@
             </row>
 
             <row>
-                <label value="${i18n:_('Subcontracting date')}" />
+                <label value="${i18n:_t('Subcontracting date')}" />
                 <label value="@{subController.subcontractedTaskData.subcontratationDate,
                    converter='org.libreplan.web.common.typeconverters.DateConverter'}"
                        visible="@{subController.sent}"/>
             </row>
             <row>
-                <label value="${i18n:_('Subcontracting communication date')}" />
+                <label value="${i18n:_t('Subcontracting communication date')}" />
                 <label value="@{
                 subController.subcontractedTaskData.subcontractCommunicationDate,
                 converter='org.libreplan.web.common.typeconverters.DateConverter'}"
@@ -56,35 +56,35 @@
             </row>
             <row>
                 <hbox>
-                    <label value="${i18n:_('Work description')}" />
+                    <label value="${i18n:_t('Work description')}" />
                     <image height="15px" src="/common/img/axuda.gif" tooltip="subcontractor-description-popup" />
                 </hbox>
                 <textbox value="@{subController.subcontractedTaskData.workDescription}"
                          readonly="@{subController.sent}" hflex="1"/>
             </row>
             <row>
-                <label value="${i18n:_('Subcontract price')}" />
+                <label value="${i18n:_t('Subcontract price')}" />
                 <decimalbox value="@{subController.subcontractedTaskData.subcontractPrice}"
                             readonly="@{subController.sent}" format="@{subController.moneyFormat}"/>
             </row>
             <row>
-                <label value="${i18n:_('Subcontracting code')}" />
+                <label value="${i18n:_t('Subcontracting code')}" />
                 <textbox value="@{subController.subcontractedTaskData.subcontractedCode}"
                          readonly="@{subController.sent}"/>
             </row>
             <row>
-                <label value="${i18n:_('Exportation options')}" />
+                <label value="${i18n:_t('Exportation options')}" />
                 <vbox>
-                    <checkbox label="${i18n:_('Node without children')}"
+                    <checkbox label="${i18n:_t('Node without children')}"
                               checked="@{subController.subcontractedTaskData.nodeWithoutChildrenExported}"
                               disabled="@{subController.sent}" />
-                    <checkbox label="${i18n:_('Labels')}"
+                    <checkbox label="${i18n:_t('Labels')}"
                               checked="@{subController.subcontractedTaskData.labelsExported}"
                               disabled="@{subController.sent}" />
-                    <checkbox label="${i18n:_('Material assignments')}"
+                    <checkbox label="${i18n:_t('Material assignments')}"
                               checked="@{subController.subcontractedTaskData.materialAssignmentsExported}"
                               disabled="@{subController.sent}" />
-                    <checkbox label="${i18n:_('Hours groups')}"
+                    <checkbox label="${i18n:_t('Hours groups')}"
                               checked="@{subController.subcontractedTaskData.hoursGroupsExported}"
                               disabled="@{subController.sent}" />
                 </vbox>
@@ -92,14 +92,14 @@
         </rows>
     </grid>
     <groupbox style="margin-top: 5px" sclass="assignedresources" closable="false">
-        <caption label="${i18n:_('Deliver date')}" />
+        <caption label="${i18n:_t('Deliver date')}" />
 
         <separator spacing="10px"/>
 
         <hbox align="bottom" sclass="add-resources-or-criteria">
-            <label value="${i18n:_('New delivery date')}" />
+            <label value="${i18n:_t('New delivery date')}" />
             <datebox id="newDeliverDate" />
-            <button label="${i18n:_('Add')}" onClick="subController.addDeliverDate(newDeliverDate)" sclass="add-button"/>
+            <button label="${i18n:_t('Add')}" onClick="subController.addDeliverDate(newDeliverDate)" sclass="add-button"/>
         </hbox>
 
         <separator spacing="20px"/>
@@ -109,16 +109,16 @@
               rowRenderer="@{subController.deliverDatesRenderer}"
               mold="paging" pageSize="10" fixedLayout="true" width="880px">
             <columns>
-                <column label="${i18n:_('Save date')}" sort="auto(saveDate)" align="center" width="220px"/>
-                <column label="${i18n:_('Deliver date')}" align="center" width="220px"/>
-                <column label="${i18n:_('Communication date')}" align="center" width="220px"/>
-                <column label="${i18n:_('Operations')}" align="center"/>
+                <column label="${i18n:_t('Save date')}" sort="auto(saveDate)" align="center" width="220px"/>
+                <column label="${i18n:_t('Deliver date')}" align="center" width="220px"/>
+                <column label="${i18n:_t('Communication date')}" align="center" width="220px"/>
+                <column label="${i18n:_t('Operations')}" align="center"/>
             </columns>
         </grid>
     </groupbox>
 
     <groupbox style="margin-top: 5px" sclass="assignedresources" closable="false">
-        <caption label="${i18n:_('End date communicated by the subcontractor.')}" />
+        <caption label="${i18n:_t('End date communicated by the subcontractor.')}" />
 
         <separator spacing="10px"/>
 
@@ -127,9 +127,9 @@
               rowRenderer="@{subController.endDatesRenderer}"
               mold="paging" pageSize="10" fixedLayout="true" width="880px">
             <columns>
-                <column label="${i18n:_('End date')}" sort="auto(saveDate)" align="center" width="320px"/>
-                <column label="${i18n:_('Communication date')}" align="center" width="320px"/>
-                <column label="${i18n:_('Operations')}" align="center"/>
+                <column label="${i18n:_t('End date')}" sort="auto(saveDate)" align="center" width="320px"/>
+                <column label="${i18n:_t('Communication date')}" align="center" width="320px"/>
+                <column label="${i18n:_t('Operations')}" align="center"/>
             </columns>
         </grid>
     </groupbox>
@@ -137,7 +137,7 @@
     <zscript>
         <![CDATA[
             i18iframe = org.libreplan.web.HelpLinkUtil.checkUrlPath(
-                "/help/" + org.libreplan.web.I18nHelper._("en") + "/21-communications.html#subcontractor-work-description");
+                "/help/" + org.libreplan.web.I18nHelper._t("en") + "/21-communications.html#subcontractor-work-description");
         ]]>
     </zscript>
 

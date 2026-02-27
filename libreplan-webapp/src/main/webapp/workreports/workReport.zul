@@ -20,7 +20,7 @@
 -->
 
 <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
-<?page title="${i18n:_('LibrePlan: Timesheets')}" id="work_report_admin"?>
+<?page title="${i18n:_t('LibrePlan: Timesheets')}" id="work_report_admin"?>
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
 <?link rel="shortcut icon" href="/common/img/favicon.ico" type="image/x-icon"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/libreplan.css"?>
@@ -35,13 +35,13 @@
 
         <vbox id="messagesContainer"/>
 
-        <window id="listWindow" title="${i18n:_('Timesheets List')}">
+        <window id="listWindow" title="${i18n:_t('Timesheets List')}">
             <vbox align="right">
                 <hbox id="hboxFilter" align="center">
 
                     <!-- Filter by type, start date and finish date -->
-                    <label value="${i18n:_('Filter timesheet by')}:"/>
-                    <label value="${i18n:_('Template')}"/>
+                    <label value="${i18n:_t('Filter timesheet by')}:"/>
+                    <label value="${i18n:_t('Template')}"/>
 
                     <listbox id="listType" mold="select" rows="1"
                              model="@{controller.filterWorkReportTypes}" width="150px">
@@ -52,12 +52,12 @@
 
                     </listbox>
 
-                    <label value="${i18n:_('from')}"/>
+                    <label value="${i18n:_t('from')}"/>
                     <datebox id="filterStartDate" constraint = "@{controller.checkConstraintStartDate}"/>
-                    <label value="${i18n:_('to')}"/>
+                    <label value="${i18n:_t('to')}"/>
                     <datebox id="filterFinishDate" constraint = "@{controller.checkConstraintFinishDate}"/>
 
-                    <button label="${i18n:_('Filter')}" style="margin-top: -4px"
+                    <button label="${i18n:_t('Filter')}" style="margin-top: -4px"
                             onClick="controller.onApplyFilter()" sclass="add-button"/>
                 </hbox>
 
@@ -69,14 +69,14 @@
                   onInitRender ="controller.sortWorkReports();">
 
                 <columns sizable="true">
-                    <column id="columnDateStart" label="${i18n:_('Date Start')}" sort="auto(dateStart, dateFinish)"
+                    <column id="columnDateStart" label="${i18n:_t('Date Start')}" sort="auto(dateStart, dateFinish)"
                             sortDirection="ascending"/>
-                    <column id="columnDateFinish" label="${i18n:_('Date Finish')}" sort="auto(dateFinish, dateStart)"
+                    <column id="columnDateFinish" label="${i18n:_t('Date Finish')}" sort="auto(dateFinish, dateStart)"
                             sortDirection="ascending"/>
-                    <column label="${i18n:_('Template')}" sort="auto(type)"/>
-                    <column label="${i18n:_('Total work')}" sort="auto(hours)" />
-                    <column label="${i18n:_('Code')}" />
-                    <column label="${i18n:_('Actions')}" />
+                    <column label="${i18n:_t('Template')}" sort="auto(type)"/>
+                    <column label="${i18n:_t('Total work')}" sort="auto(hours)" />
+                    <column label="${i18n:_t('Code')}" />
+                    <column label="${i18n:_t('Actions')}" />
                 </columns>
                 <rows>
                     <row self="@{each='workReportDTO'}" value="@{workReportDTO}"
@@ -90,13 +90,13 @@
                         <hbox>
                             <button sclass="icono" image="/common/img/ico_editar1.png"
                                     hoverImage="/common/img/ico_editar.png"
-                                    tooltiptext="${i18n:_('Edit')}"
+                                    tooltiptext="${i18n:_t('Edit')}"
                                     onClick="controller.goToEditForm(self.parent.parent.value);">
                             </button>
 
                             <button sclass="icono" image="/common/img/ico_borrar1.png"
                                     hoverImage="/common/img/ico_borrar.png"
-                                    tooltiptext="${i18n:_('Delete')}"
+                                    tooltiptext="${i18n:_t('Delete')}"
                                     onClick="controller.showConfirmDelete(self.parent.parent.value);">
                             </button>
                         </hbox>
@@ -110,7 +110,7 @@
                 <hbox align="center">
 
                     <!-- Create new Work Report  -->
-                    <label value="${i18n:_('Select template')}:"/>
+                    <label value="${i18n:_t('Select template')}:"/>
 
                     <listbox id="listTypeToAssign" mold="select" rows="1"
                              model="@{controller.workReportTypes}" width="150px"
@@ -120,7 +120,7 @@
                         </listitem>
                     </listbox>
 
-                    <button label="${i18n:_('New timesheet')}" sclass="add-button" style="margin-top: -4px"
+                    <button label="${i18n:_t('New timesheet')}" sclass="add-button" style="margin-top: -4px"
                             onClick="controller.onCreateNewWorkReport()"/>
                 </hbox>
             </div>
@@ -133,11 +133,11 @@
                     </columns>
                     <rows>
                         <row>
-                            <label value="${i18n:_('Date')}" />
+                            <label value="${i18n:_t('Date')}" />
                             <datebox id="personalTimesheetsDatebox" />
                         </row>
                         <row>
-                            <label value="${i18n:_('Worker')}" />
+                            <label value="${i18n:_t('Worker')}" />
                             <bandboxSearch id="personalTimesheetsBandboxSearch"
                                            finder="ResourceBandboxFinder"
                                            model="@{controller.boundWorkers}"
@@ -147,21 +147,21 @@
                     </rows>
                 </grid>
                 <button onClick="controller.createOrEditPersonalTimesheet();" sclass="add-button"
-                        label="${i18n:_('Go to personal timesheet')}" />
+                        label="${i18n:_t('Go to personal timesheet')}" />
             </popup>
         </window>
 
         <window id="createWindow">
             <tabbox>
                 <tabs>
-                    <tab label="${i18n:_('Report data')}"/>
+                    <tab label="${i18n:_t('Report data')}"/>
                 </tabs>
                 <tabpanels>
                     <tabpanel>
                         <vbox width="100%">
 
                             <groupbox closable="false">
-                                <caption label="${i18n:_('General data')}" />
+                                <caption label="${i18n:_t('General data')}" />
                                 <grid fixedLayout="false" width="100%" span="1">
                                     <columns>
                                         <column width="200px" />
@@ -169,16 +169,16 @@
                                     </columns>
                                     <rows>
                                         <row>
-                                            <label value="${i18n:_('Type')}" />
+                                            <label value="${i18n:_t('Type')}" />
                                             <label value="@{controller.workReport.workReportType.name}" />
                                         </row>
                                         <row>
-                                            <label value="${i18n:_('Code')}" />
+                                            <label value="${i18n:_t('Code')}" />
                                             <hbox>
                                                 <textbox width="350px" value="@{controller.workReport.code}"
-                                                         constraint="no empty:${i18n:_('cannot be empty')}"
+                                                         constraint="no empty:${i18n:_t('cannot be empty')}"
                                                          disabled="@{controller.workReport.codeAutogenerated}" />
-                                                <checkbox id="generateCode" label="${i18n:_('Generate code')}"
+                                                <checkbox id="generateCode" label="${i18n:_t('Generate code')}"
                                                           onCheck="controller.onCheckGenerateCode(event)"
                                                           checked="@{controller.workReport.codeAutogenerated}" />
                                             </hbox>
@@ -189,7 +189,7 @@
 
                             <groupbox closable="false">
 
-                                <caption label="${i18n:_('Heading Fields')}" />
+                                <caption label="${i18n:_t('Heading Fields')}" />
 
                                 <grid id="HeadingRequirementsFields" mold="paging" pageSize="4" fixedLayout="true"
                                       style="border-bottom:0">
@@ -200,12 +200,12 @@
 
                                     <rows>
                                         <row visible = "@{controller.workReport.workReportType.dateIsSharedByLines}">
-                                            <label value="${i18n:_('Date')}" />
+                                            <label value="${i18n:_t('Date')}" />
                                             <datebox id="date" value="@{controller.workReport.date}" />
                                         </row>
 
                                         <row visible = "@{controller.workReport.workReportType.resourceIsSharedInLines}">
-                                            <label value="${i18n:_('Resource')}" />
+                                            <label value="${i18n:_t('Resource')}" />
                                             <autocomplete id="autocompleteResource" buttonVisible="true"
                                                           value = "@{controller.workReport.resource}"
                                                           onChange ="controller.changeResource(self.selectedItem);"
@@ -214,7 +214,7 @@
                                         </row>
 
                                         <row visible = "@{controller.workReport.workReportType.orderElementIsSharedInLines}">
-                                            <label value="${i18n:_('Task')}" />
+                                            <label value="${i18n:_t('Task')}" />
                                             <bandboxSearch id="bandboxSelectOrderElementInHead"
                                                            finder="OrderElementBandboxFinder" widthBandbox="300px"
                                                            model="@{controller.orderElements}"
@@ -240,9 +240,9 @@
 
                             <!-- Work report lines -->
                             <groupbox closable="false" >
-                                <caption label="${i18n:_('Timesheet lines')}" />
+                                <caption label="${i18n:_t('Timesheet lines')}" />
                                 <hbox>
-                                    <button label="${i18n:_('Add new row')}" sclass="add-button"
+                                    <button label="${i18n:_t('Add new row')}" sclass="add-button"
                                             onClick="controller.addWorkReportLine()" />
                                 </hbox>
 
@@ -257,13 +257,13 @@
             </tabbox>
 
             <button onClick="controller.saveAndExit();" autodisable="self"
-                    label="${i18n:_('Save')}" sclass="save-button global-action"/>
+                    label="${i18n:_t('Save')}" sclass="save-button global-action"/>
             <button onClick="controller.saveAndContinue();"
-                    label="${i18n:_('Save &amp; Continue')}" sclass="saveandcontinue-button global-action"/>
+                    label="${i18n:_t('Save &amp; Continue')}" sclass="saveandcontinue-button global-action"/>
             <button onClick="controller.newWorkReportWithSameType();"
-                    label="${i18n:_('Save &amp; New timesheet')}" sclass="saveandcontinue-button global-action"/>
+                    label="${i18n:_t('Save &amp; New timesheet')}" sclass="saveandcontinue-button global-action"/>
             <button onClick="controller.cancel();"
-                    label="${i18n:_('Cancel')}" sclass="cancel-button global-action"/>
+                    label="${i18n:_t('Cancel')}" sclass="cancel-button global-action"/>
 
         </window>
 

@@ -20,7 +20,7 @@
 -->
 
 <window visible="@{calendarController.editionController.creatingNewVersion}"
-        id="createNewVersion" title="${i18n:_('Create new Workweek')}" width="452px"
+        id="createNewVersion" title="${i18n:_t('Create new Workweek')}" width="452px"
         closable="true" border="normal"
         onClose = "calendarController.editionController.cancelNewVersion();">
 
@@ -32,7 +32,7 @@
 
         <rows>
             <row>
-                <label value="${i18n:_('Base calendar type')}" />
+                <label value="${i18n:_t('Base calendar type')}" />
                 <hbox align="right">
                     <combobox id="parentCalendars"
                               model="@{calendarController.editionController.parentCalendars}"
@@ -42,24 +42,24 @@
             </row>
 
             <row>
-                <label value="${i18n:_('From date')}" />
+                <label value="${i18n:_t('From date')}" />
                 <datebox id="startDateValidFromNewVersion"
                          value="@{calendarController.editionController.dateValidFromNewVersion}"/>
             </row>
 
             <row>
-                <label value="${i18n:_('Up to date')}" />
+                <label value="${i18n:_t('Up to date')}" />
                 <datebox id="expiringDateValidFromNewVersion"
                          value="@{calendarController.editionController.dateValidToNewVersion}"/>
             </row>
         </rows>
     </grid>
     <hbox>
-        <button label="${i18n:_('Create')}"
+        <button label="${i18n:_t('Create')}"
                 onClick="calendarController.editionController.acceptCreateNewVersion();"
                 sclass="create-button global-action"/>
 
-        <button label="${i18n:_('Cancel')}"
+        <button label="${i18n:_t('Cancel')}"
                 onClick="calendarController.editionController.cancelNewVersion();"
                 sclass="cancel-button global-action"/>
     </hbox>

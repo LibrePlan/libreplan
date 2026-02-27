@@ -19,20 +19,20 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<window id="${arg.top_id}" title="${i18n:_('Calendars List')}">
+<window id="${arg.top_id}" title="${i18n:_t('Calendars List')}">
     <tree id="tree" model="@{calendarController.baseCalendarsTreeModel}"
           treeitemRenderer="@{calendarController.baseCalendarsTreeitemRenderer}"
           nonselectableTags="*">
 
         <treecols sizable="true">
-            <treecol label="${i18n:_('Name')}" />
-            <treecol label="${i18n:_('Inherits from date')}" width="150px" align="center"/>
-            <treecol label="${i18n:_('Inherits up to date')}" width="150px" align="center"/>
-            <treecol label="${i18n:_('Operations')}" width="150px" align="center"/>
+            <treecol label="${i18n:_t('Name')}" />
+            <treecol label="${i18n:_t('Inherits from date')}" width="150px" align="center"/>
+            <treecol label="${i18n:_t('Inherits up to date')}" width="150px" align="center"/>
+            <treecol label="${i18n:_t('Operations')}" width="150px" align="center"/>
         </treecols>
     </tree>
 
     <button id="show_create_form" onClick="calendarController.goToCreateForm();"
-            label="${i18n:_('Create')}" sclass="create-button global-action">
+            label="${i18n:_t('Create')}" sclass="create-button global-action">
     </button>
 </window>

@@ -17,15 +17,15 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<window id="winTimImpExpInfo" title="${i18n:_('LibrePlan: Tim import export info')}"
+<window id="winTimImpExpInfo" title="${i18n:_t('LibrePlan: Tim import export info')}"
     width="500px" border="normal" mode="modal">
     <div>
         <vbox>
-            <label value="${arg.action} ${i18n:_('was successful')}" sclass="remarked" if="${arg.showSuccess}"/>
-            <label value="${arg.action} ${i18n:_('is not completed for the following reasons:')}" sclass="remarked" if="${not arg.showSuccess}"/>
+            <label value="${arg.action} ${i18n:_t('was successful')}" sclass="remarked" if="${arg.showSuccess}"/>
+            <label value="${arg.action} ${i18n:_t('is not completed for the following reasons:')}" sclass="remarked" if="${not arg.showSuccess}"/>
             <listbox model="${arg.failedReasons}"/>
         </vbox>
     </div>
-    <button id="closeBtn" label="${i18n:_('Close')}" onClick="winTimImpExpInfo.detach()"
+    <button id="closeBtn" label="${i18n:_t('Close')}" onClick="winTimImpExpInfo.detach()"
         sclass="cancel-button global-action"/>
 </window>

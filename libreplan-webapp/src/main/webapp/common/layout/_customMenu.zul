@@ -31,16 +31,16 @@
     <menubar id="menubar" top="0px" left="0px"
              ctrlKeys="^k#f2" onCtrlKey="doCtrlKey()" sclass="mainmenu z-menubar" autodrop="true">
 
-        <menu forEach="${menuContainer.customMenuItems}" label="${i18n:_(each.name)}"
+        <menu forEach="${menuContainer.customMenuItems}" label="${i18n:_t(each.name)}"
               class="${each.activeParent?'current-section':''}" >
             <menupopup sclass="submenu">
-                <menuitem forEach="${each.children}" label="${i18n:_(each.name)}"
+                <menuitem forEach="${each.children}" label="${i18n:_t(each.name)}"
                           href='${each.url}' visible="${each.hasNotChildren}" />
 
-                <menu forEach="${each.children}" label="${i18n:_(each.name)}" visible="${each.hasChildren}" >
+                <menu forEach="${each.children}" label="${i18n:_t(each.name)}" visible="${each.hasChildren}" >
                     <menupopup>
                         <menuitem forEach="${forEachStatus.each.children}"
-                                  label="${i18n:_(each.name)}" href='${each.url}' />
+                                  label="${i18n:_t(each.name)}" href='${each.url}' />
                     </menupopup>
                 </menu>
             </menupopup>
@@ -56,7 +56,7 @@
                         <n:td width="10" height="25"/>
 
                         <n:td>
-                            <n:strong>${i18n:_('START')}</n:strong>
+                            <n:strong>${i18n:_t('START')}</n:strong>
                         </n:td>
 
                         <n:td width="5"/>
@@ -68,7 +68,7 @@
                                     <n:div align="center">
                                         <n:img src="${contextPath}/common/img/migas_separacion.gif" />
                                     </n:div>
-                                    <n:span class="ruta">${i18n:_(each.name)}</n:span>
+                                    <n:span class="ruta">${i18n:_t(each.name)}</n:span>
                                 </hbox>
                             </hbox>
                         </n:td>
@@ -79,8 +79,8 @@
             <n:td valign="top" align="right" class="help-link">
 
                 <div>
-                    <n:a href="${contextPath}/help/${i18n:_('en')}/${menuContainer.helpLink}" target="_blank">
-                        <n:span style="">${i18n:_('Help')}</n:span>
+                    <n:a href="${contextPath}/help/${i18n:_t('en')}/${menuContainer.helpLink}" target="_blank">
+                        <n:span style="">${i18n:_t('Help')}</n:span>
                     </n:a>
 
                     <div tooltip="help-popup" style="display:inline;">
@@ -101,10 +101,10 @@
     <zscript>
         <![CDATA[
             i18nHelpLink = org.libreplan.web.HelpLinkUtil.checkUrlPath(
-                "/help/" + org.libreplan.web.I18nHelper._("en") + "/" + menuContainer.getHelpLink());
+                "/help/" + org.libreplan.web.I18nHelper._t("en") + "/" + menuContainer.getHelpLink());
 
             i18nAboutLink = org.libreplan.web.HelpLinkUtil.checkUrlPath(
-                "/help/" + org.libreplan.web.I18nHelper._("en") + "/20-acerca-de.html");
+                "/help/" + org.libreplan.web.I18nHelper._t("en") + "/20-acerca-de.html");
         ]]>
     </zscript>
 
