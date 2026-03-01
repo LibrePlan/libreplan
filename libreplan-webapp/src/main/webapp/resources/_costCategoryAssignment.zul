@@ -23,11 +23,11 @@
       apply="org.libreplan.web.costcategories.ResourcesCostCategoryAssignmentController"
       width="100%">
 
-    <panel title="${i18n:_('Cost category assignment')}" border="normal">
+    <panel title="${i18n:_t('Cost category assignment')}" border="normal">
         <panelchildren>
 
             <hbox>
-                <button label="${i18n:_('Add new row')}"
+                <button label="${i18n:_t('Add new row')}"
                         sclass="add-button margin-border"
                         onClick="assignmentController.addCostCategory()" />
             </hbox>
@@ -36,10 +36,10 @@
                   model="@{assignmentController.costCategoryAssignments}"
                   rowRenderer="@{assignmentController.costCategoryAssignmentsRenderer}">
                 <columns>
-                    <column label="${i18n:_('Category name')}" align="center"/>
-                    <column label="${i18n:_('Start date')}" align="center"/>
-                    <column label="${i18n:_('End date')}" align="center"/>
-                    <column label="${i18n:_('Operations')}" width="150px" align="center"/>
+                    <column label="${i18n:_t('Category name')}" align="center"/>
+                    <column label="${i18n:_t('Start date')}" align="center"/>
+                    <column label="${i18n:_t('End date')}" align="center"/>
+                    <column label="${i18n:_t('Operations')}" width="150px" align="center"/>
                 </columns>
             </grid>
 

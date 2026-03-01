@@ -52,26 +52,26 @@
         macroURI="/templates/_historicalStatistics.zul" ?>
 
 
-<window id="${arg.top_id}" title="${i18n:_('Edit Template')}">
+<window id="${arg.top_id}" title="${i18n:_t('Edit Template')}">
 
     <editTemplateWindow />
 
     <tabbox>
         <tabs>
-            <tab id="tabGeneralData" label="${i18n:_('General data')}"
+            <tab id="tabGeneralData" label="${i18n:_t('General data')}"
                  onSelect="templatesForOrdersController.reloadBudget()" />
 
-            <tab label="${i18n:_('Template Tree')}"
+            <tab label="${i18n:_t('Template Tree')}"
                  disabled="@{templatesForOrdersController.templateTreeDisabled}"
                  onSelect="templatesForOrdersController.openTemplateTree()" />
 
-            <tab label="${i18n:_('Progress')}" />
-            <tab label="${i18n:_('Labels')}" />
-            <tab id="tabRequirements" label="${i18n:_('Criterion Requirement')}" />
-            <tab label="${i18n:_('Materials')}" />
-            <tab label="${i18n:_('Quality Forms')}" />
-            <tab label="${i18n:_('Assignment log')}" />
-            <tab label="${i18n:_('Statistics log')}" />
+            <tab label="${i18n:_t('Progress')}" />
+            <tab label="${i18n:_t('Labels')}" />
+            <tab id="tabRequirements" label="${i18n:_t('Criterion Requirement')}" />
+            <tab label="${i18n:_t('Materials')}" />
+            <tab label="${i18n:_t('Quality Forms')}" />
+            <tab label="${i18n:_t('Assignment log')}" />
+            <tab label="${i18n:_t('Statistics log')}" />
         </tabs>
 
         <tabpanels>
@@ -84,38 +84,38 @@
 
                     <rows>
                         <row>
-                            <label value="${i18n:_('Name')}" />
+                            <label value="${i18n:_t('Name')}" />
                             <textbox id="name" value="@{templatesForOrdersController.template.name}" width="500px"
                                      constraint = "@{templatesForOrdersController.validateTemplateName}"/>
                         </row>
 
                         <row>
-                            <label value="${i18n:_('Delay from beginning (days)')}" />
+                            <label value="${i18n:_t('Delay from beginning (days)')}" />
                             <intbox value="@{templatesForOrdersController.template.startAsDaysFromBeginning}"
                                     constraint="no negative"/>
                         </row>
 
                         <row>
-                            <label value="${i18n:_('Days from Beginning to Deadline')}" />
+                            <label value="${i18n:_t('Days from Beginning to Deadline')}" />
                             <intbox value="@{templatesForOrdersController.template.deadlineAsDaysFromBeginning}"
                                     constraint="no negative"/>
                         </row>
 
                         <row>
-                            <label value="${i18n:_('Description')}" />
+                            <label value="${i18n:_t('Description')}" />
                             <textbox rows="3" width="600px"
                                      value="@{templatesForOrdersController.template.description}" />
                         </row>
 
                         <row>
-                            <label value="${i18n:_('Budget')}" />
+                            <label value="${i18n:_t('Budget')}" />
                             <decimalbox value="@{templatesForOrdersController.template.budget}"
                                         disabled="@{templatesForOrdersController.container}"
-                                        constraint="no empty,no negative:${i18n:_('cannot be negative or empty')}"
+                                        constraint="no empty,no negative:${i18n:_t('cannot be negative or empty')}"
                                         format="@{templatesForOrdersController.moneyFormat}" />
                         </row>
                         <row visible="@{templatesForOrdersController.orderTemplate}">
-                            <label value="${i18n:_('Calendar')}" />
+                            <label value="${i18n:_t('Calendar')}" />
                             <bandboxSearch id="calendar"
                                            finder="BaseCalendarBandboxFinder"
                                            selectedElement="@{templatesForOrdersController.calendar, access='both'}" />
@@ -159,13 +159,13 @@
     </tabbox>
 
     <hbox>
-        <button label="${i18n:_('Save')}" onClick="templatesForOrdersController.saveAndExit()" autodisable="self"
+        <button label="${i18n:_t('Save')}" onClick="templatesForOrdersController.saveAndExit()" autodisable="self"
                 sclass="save-button global-action" />
 
-        <button label="${i18n:_('Save &amp; Continue')}" onClick="templatesForOrdersController.saveAndContinue()"
+        <button label="${i18n:_t('Save &amp; Continue')}" onClick="templatesForOrdersController.saveAndContinue()"
                 sclass="saveandcontinue-button global-action" />
 
-        <button label="${i18n:_('Cancel')}" onClick="templatesForOrdersController.cancel()"
+        <button label="${i18n:_t('Cancel')}" onClick="templatesForOrdersController.cancel()"
                 sclass="cancel-button global-action" />
     </hbox>
 

@@ -19,7 +19,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <?component name="filter" inline="true" macroURI="../search/_resourceFilter.zul"?>
-<window id="${arg.top_id}" title="${i18n:_('Workers List')}">
+<window id="${arg.top_id}" title="${i18n:_t('Workers List')}">
     <separator bar="false" spacing="5px" orient="horizontal"/>
 
     <div align="right">
@@ -32,12 +32,12 @@
         rowRenderer="@{controller.workersRenderer}"
         pageSize="15" fixedLayout="true" sclass="clickable-rows">
         <columns>
-            <newdatasortablecolumn label="${i18n:_('Surname')}" sort="auto(lower(surname))" sortDirection="ascending" />
-            <newdatasortablecolumn label="${i18n:_('First name')}" sort="auto(lower(firstName))" />
-            <newdatasortablecolumn label="${i18n:_('ID')}" sort="auto(nif)" />
-            <newdatasortablecolumn label="${i18n:_('Code')}"/>
-            <newdatasortablecolumn label="${i18n:_('Queue-based')}" sort="auto(limitingResource)" width="90px"/>
-            <newdatasortablecolumn label="${i18n:_('Operations')}" width="90px"/>
+            <newdatasortablecolumn label="${i18n:_t('Surname')}" sort="auto(lower(surname))" sortDirection="ascending" />
+            <newdatasortablecolumn label="${i18n:_t('First name')}" sort="auto(lower(firstName))" />
+            <newdatasortablecolumn label="${i18n:_t('ID')}" sort="auto(nif)" />
+            <newdatasortablecolumn label="${i18n:_t('Code')}"/>
+            <newdatasortablecolumn label="${i18n:_t('Queue-based')}" sort="auto(limitingResource)" width="90px"/>
+            <newdatasortablecolumn label="${i18n:_t('Operations')}" width="90px"/>
         </columns>
     </newdatasortablegrid>
 

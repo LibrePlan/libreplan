@@ -39,7 +39,7 @@
         class="org.libreplan.web.templates.quality.QualityFormAssignerComponent"
         macroURI="/templates/_assignedQualityForms.zul" ?>
 
-<window id="editTemplateWindow" title="${i18n:_('Edit task')}"
+<window id="editTemplateWindow" title="${i18n:_t('Edit task')}"
         width="950px" left="50px" top="50px"
         closable="true"
         onClose="self.visible = false; event.stopPropagation()"
@@ -47,11 +47,11 @@
 
     <tabbox height="620px" id="tabboxOrderElement">
         <tabs>
-            <tab label="${i18n:_('Progress')}" />
-            <tab label="${i18n:_('Labels')}" />
-            <tab label="${i18n:_('Criterion requirement')}" />
-            <tab label="${i18n:_('Materials')}" />
-            <tab label="${i18n:_('Quality Forms')}" />
+            <tab label="${i18n:_t('Progress')}" />
+            <tab label="${i18n:_t('Labels')}" />
+            <tab label="${i18n:_t('Criterion requirement')}" />
+            <tab label="${i18n:_t('Materials')}" />
+            <tab label="${i18n:_t('Quality Forms')}" />
         </tabs>
 
         <tabpanels>
@@ -78,7 +78,7 @@
     </tabbox>
 
     <hbox>
-        <button id="backButton" label="${i18n:_('Back')}" sclass="back-button global-action"/>
+        <button id="backButton" label="${i18n:_t('Back')}" sclass="back-button global-action"/>
     </hbox>
 
 </window>

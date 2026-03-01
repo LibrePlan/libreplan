@@ -95,7 +95,7 @@ Steps:
      along with this program.  If not, see <http://www.gnu.org/licenses/>.
  -->
 
- <?page title="${i18n:_('LibrePlan: Resources List')}" id="reports"?>
+ <?page title="${i18n:_t('LibrePlan: Resources List')}" id="reports"?>
  <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
  <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
 
@@ -111,11 +111,11 @@ Steps:
 
      <window self="@{define(content)}"
          apply="org.libreplan.web.reports.ResourcesListReportController"
-         title="${i18n:_('Resources List')}"
+         title="${i18n:_t('Resources List')}"
          border="normal" >
 
          <!-- Select output format -->
-         <panel title="${i18n:_('Format')}" border="normal"
+         <panel title="${i18n:_t('Format')}" border="normal"
              style="overflow:auto">
              <panelchildren>
                  <grid width="700px">
@@ -125,7 +125,7 @@ Steps:
                      </columns>
                      <rows>
                          <row>
-                             <label value="${i18n:_('Output format:')}" />
+                             <label value="${i18n:_t('Output format:')}" />
                              <comboboxOutputFormat id="outputFormat" />
                          </row>
                      </rows>
@@ -136,11 +136,11 @@ Steps:
          <separator spacing="10px" orient="horizontal" />
 
          <hbox style="display: none" id="URItext">
-             <label value="${i18n:_('Click on this')}" />
+             <label value="${i18n:_t('Click on this')}" />
              <a id="URIlink" class="z-label" zclass="z-label"
-                 label="${i18n:_('direct link')}" />
+                 label="${i18n:_t('direct link')}" />
              <label
-                 value="${i18n:_('if the report is not opened automatically')}" />
+                 value="${i18n:_t('if the report is not opened automatically')}" />
          </hbox>
 
          <separator spacing="10px" orient="horizontal" />
@@ -725,7 +725,7 @@ Steps:
 * Modify ``resourcesListReport.zul`` to add the following lines::
 
      <!-- Select type of resource -->
-     <panel title="${i18n:_('Type of resource')}" border="normal"
+     <panel title="${i18n:_t('Type of resource')}" border="normal"
          style="overflow:auto">
          <panelchildren>
              <grid width="700px">
@@ -735,14 +735,14 @@ Steps:
                  </columns>
                  <rows>
                      <row>
-                         <label value="${i18n:_('Type:')}" />
+                         <label value="${i18n:_t('Type:')}" />
                          <combobox id="resourcesType" autocomplete="true"
-                            autodrop="true" value="${i18n:_('All')}">
-                            <comboitem label="${i18n:_('All')}"
+                            autodrop="true" value="${i18n:_t('All')}">
+                            <comboitem label="${i18n:_t('All')}"
                                 value="all" />
-                            <comboitem label="${i18n:_('Workers')}"
+                            <comboitem label="${i18n:_t('Workers')}"
                                 value="workers" />
-                            <comboitem label="${i18n:_('Machines')}"
+                            <comboitem label="${i18n:_t('Machines')}"
                                 value="machines" />
                         </combobox>
                      </row>

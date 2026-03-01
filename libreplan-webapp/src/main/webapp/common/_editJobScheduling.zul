@@ -30,37 +30,37 @@
 
         <rows>
             <row>
-                <label value="${i18n:_('Job group')}" />
+                <label value="${i18n:_t('Job group')}" />
                 <textbox id="jobGroupTextBox" width="400px"
-                         constraint="no empty:${i18n:_('cannot be empty')}"
+                         constraint="no empty:${i18n:_t('cannot be empty')}"
                          value="@{controller.jobSchedulerConfiguration.jobGroup}"/>
             </row>
 
             <row>
-                <label value="${i18n:_('Job name')}" />
+                <label value="${i18n:_t('Job name')}" />
                 <textbox id="jobNameTextBox" width="400px"
-                         constraint="no empty:${i18n:_('cannot be empty')}"
+                         constraint="no empty:${i18n:_t('cannot be empty')}"
                          value="@{controller.jobSchedulerConfiguration.jobName}"/>
             </row>
 
             <row>
-                <label value="${i18n:_('Cron expression')}" />
+                <label value="${i18n:_t('Cron expression')}" />
                 <hbox>
                     <textbox id="cronExpressionTextBox"
                              value="@{controller.jobSchedulerConfiguration.cronExpression}"
-                             constraint="no empty:${i18n:_('cannot be empty')}"
+                             constraint="no empty:${i18n:_t('cannot be empty')}"
                              width="400px" disabled="true"/>
                     <button sclass="icono" image="/common/img/ico_editar1.png"
                             hoverImage="/common/img/ico_editar.png"
-                            tooltiptext="${i18n:_('Edit')}"
+                            tooltiptext="${i18n:_t('Edit')}"
                             onClick="controller.openPopup()"/>
                 </hbox>
             </row>
 
             <row>
-                <label value="${i18n:_('Job class name')}" />
+                <label value="${i18n:_t('Job class name')}" />
                 <combobox id="jobCombo" autodrop="true" width="400px"
-                          constraint="no empty:${i18n:_('cannot be empty')}"
+                          constraint="no empty:${i18n:_t('cannot be empty')}"
                           model="@{controller.jobNames}"
                           selectedItem="@{controller.jobSchedulerConfiguration.jobClassName}">
 
@@ -71,7 +71,7 @@
             </row>
 
             <row>
-                <label value="${i18n:_('Connector')}" />
+                <label value="${i18n:_t('Connector')}" />
                 <combobox id="connectorCombo" autodrop="true" width="400px"
                           model="@{controller.connectorNames}"
                           selectedItem="@{controller.jobSchedulerConfiguration.connectorName}">
@@ -83,7 +83,7 @@
             </row>
 
             <row>
-                <label value="${i18n:_('Schedule')}" />
+                <label value="${i18n:_t('Schedule')}" />
                 <checkbox checked="@{controller.jobSchedulerConfiguration.schedule}" />
             </row>
         </rows>
@@ -92,69 +92,69 @@
 
     <!-- Control buttons -->
     <button onClick="controller.saveAndExit()"
-            label="${i18n:_('Save')}"
+            label="${i18n:_t('Save')}"
             sclass="save-button global-action" />
     <button onClick="controller.saveAndContinue()"
-            label="${i18n:_('Save and Continue')}"
+            label="${i18n:_t('Save and Continue')}"
             sclass="save-button global-action" />
     <button onClick="controller.cancelForm()"
-            label="${i18n:_('Cancel')}"
+            label="${i18n:_t('Cancel')}"
             sclass="cancel-button global-action" />
 
     <div>
 
         <groupbox closable="false" >
 
-            <caption label="${i18n:_('Cron expression format')}" />
+            <caption label="${i18n:_t('Cron expression format')}" />
 
             <grid width="500px">
 
                 <columns>
-                    <column label="${i18n:_('Field')}" width="150px"/>
-                    <column label="${i18n:_('Allowed values')}" />
-                    <column label="${i18n:_('Allowed Special Characters')}" />
+                    <column label="${i18n:_t('Field')}" width="150px"/>
+                    <column label="${i18n:_t('Allowed values')}" />
+                    <column label="${i18n:_t('Allowed Special Characters')}" />
                 </columns>
 
                 <rows>
 
                     <row>
-                        <label value="${i18n:_('Seconds')}"/>
+                        <label value="${i18n:_t('Seconds')}"/>
                         <label value="0-59"/>
                         <label value=", - * /"/>
                     </row>
 
                     <row>
-                        <label value="${i18n:_('Minutes')}"/>
+                        <label value="${i18n:_t('Minutes')}"/>
                         <label value="0-59"/>
                         <label value=", - * /"/>
                     </row>
 
                     <row>
-                        <label value="${i18n:_('Hours')}"/>
+                        <label value="${i18n:_t('Hours')}"/>
                         <label value="0-23"/>
                         <label value=", - * /"/>
                     </row>
 
                     <row>
-                        <label value="${i18n:_('Day of month')}"/>
+                        <label value="${i18n:_t('Day of month')}"/>
                         <label value="1-31"/>
                         <label value=", - * ? / L W"/>
                     </row>
 
                     <row>
-                        <label value="${i18n:_('Month')}"/>
-                        <span>1-12 (<label value="${i18n:_('or names')}"/> [JAN-DEC])</span>
+                        <label value="${i18n:_t('Month')}"/>
+                        <span>1-12 (<label value="${i18n:_t('or names')}"/> [JAN-DEC])</span>
                         <label value=", - *"/>
                     </row>
 
                     <row>
-                        <label value="${i18n:_('Day of week')}"/>
-                        <span>1-7 (<label value="${i18n:_('1 or 7 is Sunday, or use names')}"/> [SUN-SAT])</span>
+                        <label value="${i18n:_t('Day of week')}"/>
+                        <span>1-7 (<label value="${i18n:_t('1 or 7 is Sunday, or use names')}"/> [SUN-SAT])</span>
                         <label value=", - * ? / L #"/>
                     </row>
 
                     <row>
-                        <label value="${i18n:_('Year (optional)')}"/>
+                        <label value="${i18n:_t('Year (optional)')}"/>
                         <label value="1970-2099"/>
                         <label value=", - *"/>
                     </row>
@@ -166,12 +166,12 @@
             <div>
 
                 <div>
-                    ${i18n:_("The '?' character is allowed for the day-of-month and day-of-week fields.
+                    ${i18n:_t("The '?' character is allowed for the day-of-month and day-of-week fields.
                     It is used to specify “no specific value”. ")}
                 </div>
 
-                ${i18n:_("For more details on cron expression click")}
-                <a href="http://www.manpagez.com/man/5/crontab/">${i18n:_('here')}.</a>
+                ${i18n:_t("For more details on cron expression click")}
+                <a href="http://www.manpagez.com/man/5/crontab/">${i18n:_t('here')}.</a>
             </div>
 
         </groupbox>
@@ -184,13 +184,13 @@
 
         <grid id="cronExpressionGrid" style="margin: 5px 0 5px 0;">
             <columns>
-                <column label="${i18n:_('Seconds')}" width="75px;"/>
-                <column label="${i18n:_('Minutes')}" width="75px;"/>
-                <column label="${i18n:_('Hours')}" width="75px;"/>
-                <column label="${i18n:_('Day of month')}" width="85px;"/>
-                <column label="${i18n:_('Month')}" width="75px;"/>
-                <column label="${i18n:_('Day of week')}" width="85px;"/>
-                <column label="${i18n:_('Year')}" width="75px;"/>
+                <column label="${i18n:_t('Seconds')}" width="75px;"/>
+                <column label="${i18n:_t('Minutes')}" width="75px;"/>
+                <column label="${i18n:_t('Hours')}" width="75px;"/>
+                <column label="${i18n:_t('Day of month')}" width="85px;"/>
+                <column label="${i18n:_t('Month')}" width="75px;"/>
+                <column label="${i18n:_t('Day of week')}" width="85px;"/>
+                <column label="${i18n:_t('Year')}" width="75px;"/>
             </columns>
 
             <rows>
@@ -207,7 +207,7 @@
 
         </grid>
 
-        <button onClick="controller.updateCronExpression();" label="${i18n:_('OK')}" sclass="add-button" />
-        <button onClick="controller.cancelPopup();" label="${i18n:_('Cancel')}" sclass="add-button"/>
+        <button onClick="controller.updateCronExpression();" label="${i18n:_t('OK')}" sclass="add-button" />
+        <button onClick="controller.cancelPopup();" label="${i18n:_t('Cancel')}" sclass="add-button"/>
     </popup>
 </window>

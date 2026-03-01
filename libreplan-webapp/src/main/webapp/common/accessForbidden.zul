@@ -17,7 +17,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<?page title="${i18n:_('LibrePlan: Access Forbidden')}" ?>
+<?page title="${i18n:_t('LibrePlan: Access Forbidden')}" ?>
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/libreplan.css"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/libreplan_zk.css"?>
@@ -35,14 +35,14 @@
         <vbox apply="org.libreplan.web.error.PageForErrorOnEvent"
             sclass="errorbox">
 
-            <label value="${i18n:_('You do not have permissions to access to this page.')}" />
+            <label value="${i18n:_t('You do not have permissions to access to this page.')}" />
 
-            <label value="${i18n:_('Please try to contact with any administrator in order to review your permissions in LibrePlan.')}" />
+            <label value="${i18n:_t('Please try to contact with any administrator in order to review your permissions in LibrePlan.')}" />
 
             <hbox>
-                <label value="${i18n:_('Click the following link to return to home page: ')}" />
+                <label value="${i18n:_t('Click the following link to return to home page: ')}" />
                 <n:a href="${contextPath}/">
-                    <label value="${i18n:_('Go to init')}" />
+                    <label value="${i18n:_t('Go to init')}" />
                 </n:a>
             </hbox>
 

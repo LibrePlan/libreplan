@@ -19,35 +19,35 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<?page title="${i18n:_('Print configuration')}"?>
+<?page title="${i18n:_t('Print configuration')}"?>
 <?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n"?>
 <zk>
 
-    <window border="none" title="${i18n:_('Print configuration')}"
+    <window border="none" title="${i18n:_t('Print configuration')}"
         closable="true" id="printConfigurationWindow" width="300px">
         <groupbox style="padding:10px; margin:10px;">
-            <caption label="${i18n:_('Export options')}" />
+            <caption label="${i18n:_t('Export options')}" />
             <vbox>
-                <checkbox id="print_labels" label="${i18n:_('Show labels')}" checked="true" />
+                <checkbox id="print_labels" label="${i18n:_t('Show labels')}" checked="true" />
                 <checkbox id="print_resources"
-                    label="${i18n:_('Show resource assignments')}" checked="true"  />
+                    label="${i18n:_t('Show resource assignments')}" checked="true"  />
                 <checkbox id="print_expanded"
-                    label="${i18n:_('Expand taskgroups')}" checked="true"  />
+                    label="${i18n:_t('Expand taskgroups')}" checked="true"  />
                 <checkbox id="print_shrinked"
-                    label="${i18n:_('Shrink to fit page width')}" checked="true" disabled="true" visible="false"/>
+                    label="${i18n:_t('Shrink to fit page width')}" checked="true" disabled="true" visible="false"/>
                 <checkbox id="print_advances"
-                    label="${i18n:_('Show progress')}" checked="true"/>
+                    label="${i18n:_t('Show progress')}" checked="true"/>
                 <checkbox id="print_reported_hours"
-                    label="${i18n:_('Show all reported hours')}" checked="true"/>
+                    label="${i18n:_t('Show all reported hours')}" checked="true"/>
                 <checkbox id="print_money_cost_bar"
-                    label="${i18n:_('Show money cost bar')}" checked="true"/>
+                    label="${i18n:_t('Show money cost bar')}" checked="true"/>
             </vbox>
         </groupbox>
         <hbox>
-            <label style="color:#CCC;padding:5px;" value="${i18n:_('Please remember that only saved changes will be printed')}" />
+            <label style="color:#CCC;padding:5px;" value="${i18n:_t('Please remember that only saved changes will be printed')}" />
         </hbox>
-        <button id="printButton" label="${i18n:_('Print')}" sclass="save-button global-action"></button>
-        <button id="cancelPrintButton" label="${i18n:_('Cancel')}" sclass="cancel-button global-action" onClick="printConfigurationWindow.detach()"/>
+        <button id="printButton" label="${i18n:_t('Print')}" sclass="save-button global-action"></button>
+        <button id="cancelPrintButton" label="${i18n:_t('Cancel')}" sclass="cancel-button global-action" onClick="printConfigurationWindow.detach()"/>
     </window>
 
 </zk>

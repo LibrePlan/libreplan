@@ -20,7 +20,7 @@
 -->
 
 <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
-<?page title="${i18n:_('LibrePlan: Timesheet Lines List')}" id="work_report_admin_query"?>
+<?page title="${i18n:_t('LibrePlan: Timesheet Lines List')}" id="work_report_admin_query"?>
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
 <?link rel="shortcut icon" href="/common/img/favicon.ico" type="image/x-icon"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/libreplan.css"?>
@@ -29,14 +29,14 @@
 
 <zk>
     <window self="@{define(content)}" id="listQueryWindow"
-            title="${i18n:_('Timesheet Lines List')}"
+            title="${i18n:_t('Timesheet Lines List')}"
             apply="org.libreplan.web.workreports.WorkReportQueryController">
 
         <vbox id="messagesContainer"/>
 
         <groupbox closable="false">
 
-            <caption label="${i18n:_('Filter timesheet lines by')}" />
+            <caption label="${i18n:_t('Filter timesheet lines by')}" />
 
             <div align="center">
 
@@ -45,21 +45,21 @@
                     <hbox align="pack">
 
                         <!-- Resource -->
-                        <label value="${i18n:_('Resource')}"/>
+                        <label value="${i18n:_t('Resource')}"/>
                         <autocomplete id="filterResource" buttonVisible="true" finder="ResourceFinder"/>
 
                         <!-- Task -->
-                        <label value="${i18n:_('task')}"/>
+                        <label value="${i18n:_t('task')}"/>
                         <bandboxSearch id="bandboxFilterOrderElement" widthBandbox="285px" widthListbox="700px"
                                        finder="OrderElementBandboxFinder"
                                        model="@{controller.orderElements}"/>
 
                         <!-- From -->
-                        <label value="${i18n:_('from')}"/>
+                        <label value="${i18n:_t('from')}"/>
                         <datebox id="filterStartDateLine" constraint = "@{controller.checkConstraintStartDateLine}"/>
 
                         <!-- To -->
-                        <label value="${i18n:_('to')}"/>
+                        <label value="${i18n:_t('to')}"/>
                         <datebox id="filterFinishDateLine" constraint = "@{controller.checkConstraintFinishDateLine}"/>
                     </hbox>
 
@@ -67,25 +67,25 @@
                     <groupbox sclass="filter-more-options" mold="3d"  width="120px" open="false"
                               contentStyle="border: 1px solid #B2CCD9;">
 
-                        <caption label="${i18n:_('More options')}" sclass="more-options-label" />
+                        <caption label="${i18n:_t('More options')}" sclass="more-options-label" />
 
                         <hbox>
                             <!-- Hours Type -->
-                            <label value="${i18n:_('hours type')}"/>
+                            <label value="${i18n:_t('hours type')}"/>
                             <autocomplete id="filterHoursType" buttonVisible="true"
                                           finder="TypeOfWorkHoursFinder" width="100px"/>
 
                             <!-- Type -->
-                            <label value="${i18n:_('type')}"/>
-                            <combobox id="filterType" value="${i18n:_('All')}">
-                                <comboitem label="${i18n:_('All')}"/>
-                                <comboitem label="${i18n:_('Direct')}"/>
-                                <comboitem label="${i18n:_('Indirect')}"/>
+                            <label value="${i18n:_t('type')}"/>
+                            <combobox id="filterType" value="${i18n:_t('All')}">
+                                <comboitem label="${i18n:_t('All')}"/>
+                                <comboitem label="${i18n:_t('Direct')}"/>
+                                <comboitem label="${i18n:_t('Indirect')}"/>
                             </combobox>
                         </hbox>
                     </groupbox>
 
-                    <button label="${i18n:_('Filter')}" sclass="add-button"
+                    <button label="${i18n:_t('Filter')}" sclass="add-button"
                             onClick="controller.onApplyFilterWorkReportLines(event)"/>
                 </hbox>
             </div>
@@ -101,36 +101,36 @@
               sizedByContent="true" span="true">
 
             <columns sizable="true">
-                <column id="date" label="${i18n:_('Date')}" align="center" sort="auto(date)" sortDirection="ascending"/>
+                <column id="date" label="${i18n:_t('Date')}" align="center" sort="auto(date)" sortDirection="ascending"/>
 
-                <column id="resource" label="${i18n:_('Resource')}" align="center"
+                <column id="resource" label="${i18n:_t('Resource')}" align="center"
                         sort="auto(resource.shortDescription)" sortDirection="ascending"/>
 
-                <column id="projectCode" label="${i18n:_('Project Code')}" align="center"
+                <column id="projectCode" label="${i18n:_t('Project Code')}" align="center"
                         sort="auto(orderElement.order.code)" sortDirection="ascending"/>
 
-                <column id="projectName" label="${i18n:_('Project Name')}" align="center"
+                <column id="projectName" label="${i18n:_t('Project Name')}" align="center"
                         sort="auto(orderElement.order.name)" sortDirection="ascending"/>
 
-                <column id="taskCode" label="${i18n:_('Task Code')}" align="center"
+                <column id="taskCode" label="${i18n:_t('Task Code')}" align="center"
                         sort="auto(orderElement.code)" sortDirection="ascending"/>
 
-                <column id="taskName" label="${i18n:_('Task name')}" align="center"
+                <column id="taskName" label="${i18n:_t('Task name')}" align="center"
                         sort="auto(orderElement.name)" sortDirection="ascending"/>
 
-                <column id="startHour" label="${i18n:_('Start hour')}" align="center"
+                <column id="startHour" label="${i18n:_t('Start hour')}" align="center"
                         sort="auto(clockStart)" sortDirection="ascending"/>
 
-                <column id="finishHour" label="${i18n:_('Finish hour')}" align="center"
+                <column id="finishHour" label="${i18n:_t('Finish hour')}" align="center"
                         sort="auto(clockFinish)" sortDirection="ascending"/>
 
-                <column id="hours" label="${i18n:_('Hours')}" align="center"
+                <column id="hours" label="${i18n:_t('Hours')}" align="center"
                         sort="auto(effort)" sortDirection="ascending"/>
 
-                <column id="hourType" label="${i18n:_('Hours type')}" align="center"
+                <column id="hourType" label="${i18n:_t('Hours type')}" align="center"
                         sort="auto(typeOfWorkHours.name)" sortDirection="ascending"/>
 
-                <column label="${i18n:_('Timesheet')}" align="center"/>
+                <column label="${i18n:_t('Timesheet')}" align="center"/>
             </columns>
 
             <rows>
@@ -148,7 +148,7 @@
 
                     <button sclass="icono" image="/common/img/ico_editar1.png"
                             hoverImage="/common/img/ico_editar.png"
-                            tooltiptext="${i18n:_('Edit')}"
+                            tooltiptext="${i18n:_t('Edit')}"
                             onClick="controller.goToEditFormQuery(self.parent.value);">
                     </button>
                 </row>

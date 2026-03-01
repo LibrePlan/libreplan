@@ -18,7 +18,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<?page title="${i18n:_('LibrePlan: Materials')}" id="labelTypesList"?>
+<?page title="${i18n:_t('LibrePlan: Materials')}" id="labelTypesList"?>
 <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
 
@@ -32,7 +32,7 @@
 <zk>
     <window self="@{define(content)}"
             apply="org.libreplan.web.materials.MaterialsController"
-            title="${i18n:_('Materials')}" >
+            title="${i18n:_t('Materials')}" >
 
         <!-- Categories  -->
         <vbox width="100%">
@@ -40,14 +40,14 @@
             <vbox id="messagesContainer" />
 
             <groupbox closable="false">
-                <caption label="${i18n:_('Categories')}" />
+                <caption label="${i18n:_t('Categories')}" />
                 <hbox>
                     <textbox id="txtCategory" onOK="materialsController.addMaterialCategory()"
                              style="padding-bottom: 4px" />
-                    <button label="${i18n:_('Add')}"
+                    <button label="${i18n:_t('Add')}"
                             onClick="materialsController.addMaterialCategory()" sclass="add-button"/>
                     <separator spacing="20px" orient="vertical" />
-                    <button label="${i18n:_('Unselect')}"
+                    <button label="${i18n:_t('Unselect')}"
                             onClick="materialsController.clearSelectionCategoriesTree()" sclass="add-button"/>
                 </hbox>
 
@@ -58,10 +58,10 @@
                       itemRenderer="@{materialsController.materialCategoryRenderer}"
                       onSelect="materialsController.refreshMaterials()">
                     <treecols>
-                        <treecol label="${i18n:_('Name')}" />
-                        <treecol label="${i18n:_('Code')}" />
-                        <treecol label="${i18n:_('Generate code')}" width="100px" />
-                        <treecol label="${i18n:_('Operations')}" width="80px" />
+                        <treecol label="${i18n:_t('Name')}" />
+                        <treecol label="${i18n:_t('Code')}" />
+                        <treecol label="${i18n:_t('Generate code')}" width="100px" />
+                        <treecol label="${i18n:_t('Operations')}" width="80px" />
                     </treecols>
                 </tree>
             </groupbox>
@@ -71,30 +71,30 @@
         <vbox width="100%">
 
             <groupbox closable="false">
-                <caption id="materialsCaption" label="${i18n:_('List of materials for all categories (select one to filter)')}"/>
+                <caption id="materialsCaption" label="${i18n:_t('List of materials for all categories (select one to filter)')}"/>
                 <button id="btnAddMaterial"
-                        label="${i18n:_('New')}" sclass="add-button"
+                        label="${i18n:_t('New')}" sclass="add-button"
                         onClick="materialsController.addMaterialToMaterialCategory(categoriesTree.selectedItem)" />
                 <separator spacing="15px" orient="horizontal" />
                 <newdatasortablegrid id="gridMaterials"
                                      fixedLayout="true" mold="paging" pageSize="5"
                                      model="@{materialsController.materials}">
                     <columns>
-                        <newdatasortablecolumn label="${i18n:_('Code')}" />
-                        <newdatasortablecolumn label="${i18n:_('Description')}" />
-                        <newdatasortablecolumn label="${i18n:_('Unit price')}" />
-                        <newdatasortablecolumn label="${i18n:_('Unit type')}" />
-                        <newdatasortablecolumn label="${i18n:_('Category')}" />
-                        <newdatasortablecolumn label="${i18n:_('Disabled')}" width="80px" />
-                        <newdatasortablecolumn label="${i18n:_('Operations')}" width="80px" />
+                        <newdatasortablecolumn label="${i18n:_t('Code')}" />
+                        <newdatasortablecolumn label="${i18n:_t('Description')}" />
+                        <newdatasortablecolumn label="${i18n:_t('Unit price')}" />
+                        <newdatasortablecolumn label="${i18n:_t('Unit type')}" />
+                        <newdatasortablecolumn label="${i18n:_t('Category')}" />
+                        <newdatasortablecolumn label="${i18n:_t('Disabled')}" width="80px" />
+                        <newdatasortablecolumn label="${i18n:_t('Operations')}" width="80px" />
                     </columns>
                     <rows>
                         <row self="@{each='material'}" value="@{material}" >
                             <textbox id="code" value="@{material.code}" width="95%"
                                      disabled="@{material.category.codeAutogenerated}"
-                                     constraint="no empty:${i18n:_('cannot be empty')}" />
+                                     constraint="no empty:${i18n:_t('cannot be empty')}" />
                             <textbox value="@{material.description}" width="95%"
-                                     constraint="no empty:${i18n:_('cannot be empty')}" />
+                                     constraint="no empty:${i18n:_t('cannot be empty')}" />
                             <decimalbox value="@{material.defaultUnitPrice}"
                                         format="@{materialsController.moneyFormat}" />
                             <listbox mold="select"  model="@{materialsController.unitTypes}"
@@ -105,7 +105,7 @@
                             <button sclass="icono"
                                     image="/common/img/ico_borrar1.png"
                                     hoverImage="/common/img/ico_borrar.png"
-                                    tooltiptext="${i18n:_('Delete')}"
+                                    tooltiptext="${i18n:_t('Delete')}"
                                     onClick="materialsController.remove(self.parent.value)">
                             </button>
                         </row>
@@ -116,7 +116,7 @@
 
         <!-- Save button -->
         <button onClick="materialsController.saveAndContinue()"
-                label="${i18n:_('Save')}"
+                label="${i18n:_t('Save')}"
                 sclass="save-button global-action"/>
 
     </window>

@@ -26,22 +26,22 @@
 
     <hbox pack="center" sclass="legend-row">
         <n:div class="overload"/>
-        <n:label>${i18n:_('Overload')}</n:label>
+        <n:label>${i18n:_t('Overload')}</n:label>
     </hbox>
 
     <hbox pack="center" sclass="legend-row resources-full-load">
         <n:div class="full-load"/>
-        <n:label>${i18n:_('Load 100%')}</n:label>
+        <n:label>${i18n:_t('Load 100%')}</n:label>
     </hbox>
 
     <hbox pack="center" sclass="legend-row">
         <n:div class="capability"/>
-        <n:label>${i18n:_('Total capability')}</n:label>
+        <n:label>${i18n:_t('Total capability')}</n:label>
     </hbox>
 
     <hbox pack="center" sclass="legend-row">
         <n:div class="load" />
-        <n:label>${i18n:_('Assigned load')}</n:label>
+        <n:label>${i18n:_t('Assigned load')}</n:label>
     </hbox>
 
 </vbox>

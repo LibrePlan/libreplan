@@ -24,21 +24,21 @@
       width="100%">
 
 
-    <button label="${i18n:_('Add new configuration unit')}" sclass="add-button"
+    <button label="${i18n:_t('Add new configuration unit')}" sclass="add-button"
             onClick="configurationController.addConfigurationUnit();" />
 
     <grid model="@{configurationController.configurationUnits}" id="configurationUnitsGrid"
           sclass="remove-detailrow-background" width="1870px">
         <columns>
             <column width="31px"/>
-            <column label="${i18n:_('Name')}"
-                    tooltiptext="${i18n:_('Configuration unit name')}"
+            <column label="${i18n:_t('Name')}"
+                    tooltiptext="${i18n:_t('Configuration unit name')}"
                     width="400px"
                     sort="auto(name)" />
-            <column label="${i18n:_('Alpha')}"
+            <column label="${i18n:_t('Alpha')}"
                     width="715px"
-                    tooltiptext="${i18n:_('Human hours per machine working hour within configuration unit')}" />
-            <column label="${i18n:_('Operations')}"
+                    tooltiptext="${i18n:_t('Human hours per machine working hour within configuration unit')}" />
+            <column label="${i18n:_t('Operations')}"
                     width="552px"/>
         </columns>
 
@@ -47,7 +47,7 @@
             <row self="@{each='configurationUnit'}" value="@{configurationUnit}">
                 <detailrow>
                     <!-- Assigned resources -->
-                    <panel title="${i18n:_('Worker assignments')}" border="normal" style="margin-top:10px;">
+                    <panel title="${i18n:_t('Worker assignments')}" border="normal" style="margin-top:10px;">
                         <panelchildren style="padding:10px;">
 
                             <!--
@@ -59,15 +59,15 @@
                                           buttonVisible="true" width="300px"
                                           style="padding-bottom:10px;margin-top:10px;" />
 
-                            <button label="${i18n:_('Add new worker assignment')}" sclass="add-button"
+                            <button label="${i18n:_t('Add new worker assignment')}" sclass="add-button"
                                     onClick="configurationController.addWorkerAssignment(self.parent.parent.parent.parent.value,self)"/>
 
                             <grid model="@{configurationUnit.workerAssignments}" span="true">
                                 <columns >
-                                    <column hflex="1" label="${i18n:_('Name')}" />
-                                    <column hflex="1" label="${i18n:_('Start date')}" />
-                                    <column hflex="1" label="${i18n:_('End date')}" />
-                                    <column hflex="1" label="${i18n:_('Operations')}" />
+                                    <column hflex="1" label="${i18n:_t('Name')}" />
+                                    <column hflex="1" label="${i18n:_t('Start date')}" />
+                                    <column hflex="1" label="${i18n:_t('End date')}" />
+                                    <column hflex="1" label="${i18n:_t('Operations')}" />
                                 </columns>
                                 <rows>
                                     <row self="@{each='workerAssignment'}" value="@{workerAssignment}">
@@ -84,7 +84,7 @@
                                         <button sclass="icono"
                                                 image="/common/img/ico_borrar1.png"
                                                 hoverImage="/common/img/ico_borrar.png"
-                                                tooltiptext="${i18n:_('Delete')}"
+                                                tooltiptext="${i18n:_t('Delete')}"
                                                 onClick="configurationController.deleteWorkerAssignment(self.parent)">
                                         </button>
 
@@ -97,7 +97,7 @@
 
                     <!-- Assigned criteria -->
                     <textbox value="@{configurationUnit.id}" visible="false" />
-                    <panel title="${i18n:_('Criterion requirements')}" border="normal"
+                    <panel title="${i18n:_t('Criterion requirements')}" border="normal"
                            style="margin-top:10px; margin-bottom:15px;">
 
                         <panelchildren style="padding:10px;">
@@ -121,14 +121,14 @@
                                 </bandpopup>
                             </bandbox>
 
-                            <button label="${i18n:_('Add new criterion requirement')}" sclass="add-button"
+                            <button label="${i18n:_t('Add new criterion requirement')}" sclass="add-button"
                                     onClick="configurationController.addCriterionRequirement(self.parent.parent.parent.parent.value,self)" />
 
                             <grid sizedByContent="true"
                                   model="@{configurationUnit.requiredCriterions}" style="margin-top:10px;">
                                 <columns sizable="true">
-                                    <column label="${i18n:_('Name')}" />
-                                    <column label="${i18n:_('Operations')}" />
+                                    <column label="${i18n:_t('Name')}" />
+                                    <column label="${i18n:_t('Operations')}" />
                                 </columns>
                                 <rows>
                                     <row self="@{each='requirement'}" value="@{requirement}">
@@ -136,7 +136,7 @@
                                         <button sclass="icono"
                                                 image="/common/img/ico_borrar1.png"
                                                 hoverImage="/common/img/ico_borrar.png"
-                                                tooltiptext="${i18n:_('Delete')}"
+                                                tooltiptext="${i18n:_t('Delete')}"
                                                 onClick="configurationController.deleteRequiredCriterion(self.parent.value, self.parent.parent)">
                                         </button>
                                     </row>
@@ -146,13 +146,13 @@
                     </panel>
 
                 </detailrow>
-                <textbox value="@{configurationUnit.name}" constraint="no empty:${i18n:_('cannot be empty')}" />
+                <textbox value="@{configurationUnit.name}" constraint="no empty:${i18n:_t('cannot be empty')}" />
 
                 <textbox value="@{configurationUnit.alpha}"
-                         constraint="no zero,no empty,/[0-9][0-9]*(\.[0-9][0-9]?)?/:${i18n:_('must be a real positive number')}" />
+                         constraint="no zero,no empty,/[0-9][0-9]*(\.[0-9][0-9]?)?/:${i18n:_t('must be a real positive number')}" />
 
                 <button sclass="icono" image="/common/img/ico_borrar1.png" hoverImage="/common/img/ico_borrar.png"
-                        tooltiptext="${i18n:_('Delete')}"
+                        tooltiptext="${i18n:_t('Delete')}"
                         onClick="configurationController.deleteConfigurationUnit(self.parent)"/>
             </row>
         </rows>

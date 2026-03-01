@@ -25,7 +25,7 @@
 
     <tabbox>
         <tabs>
-            <tab label="${i18n:_('Profile data')}"/>
+            <tab label="${i18n:_t('Profile data')}"/>
         </tabs>
         <tabpanels>
             <tabpanel>
@@ -38,10 +38,10 @@
                         </columns>
                         <rows>
                             <row>
-                                <label value="${i18n:_('Name')}" />
+                                <label value="${i18n:_t('Name')}" />
                                 <textbox id="name"
                                          value="@{controller.profile.profileName}" width="300px"
-                                         constraint="no empty:${i18n:_('cannot be empty')}"
+                                         constraint="no empty:${i18n:_t('cannot be empty')}"
                                          onBlur="controller.updateWindowTitle()"  sclass="focus-element" />
                             </row>
                         </rows>
@@ -49,16 +49,16 @@
                 </vbox>
                 <!-- Associated UserRoles -->
                 <groupbox closable="false">
-                    <caption label="${i18n:_('Association with roles')}" />
+                    <caption label="${i18n:_t('Association with roles')}" />
                     <hbox align="center" sclass="report-margin">
                         <combobox id="userRolesCombo" autodrop="true"/>
-                        <button label="${i18n:_('Add role')}" sclass="add-button" onClick="controller.addSelectedRole()"/>
+                        <button label="${i18n:_t('Add role')}" sclass="add-button" onClick="controller.addSelectedRole()"/>
                     </hbox>
                     <grid id="listing" model="@{controller.roles}"
                           rowRenderer="@{controller.rolesRenderer}">
                         <columns sizable="true">
-                            <column label="${i18n:_('Role name')}" />
-                            <column label="${i18n:_('Actions')}" />
+                            <column label="${i18n:_t('Role name')}" />
+                            <column label="${i18n:_t('Actions')}" />
                         </columns>
                     </grid>
                 </groupbox>
@@ -67,10 +67,10 @@
     </tabbox>
 
     <button onClick="controller.saveAndExit();" autodisable="self"
-            label="${i18n:_('Save')}" sclass="save-button global-action" />
+            label="${i18n:_t('Save')}" sclass="save-button global-action" />
     <button onClick="controller.saveAndContinue();"
-            label="${i18n:_('Save &amp; Continue')}" sclass="saveandcontinue-button global-action" />
+            label="${i18n:_t('Save &amp; Continue')}" sclass="saveandcontinue-button global-action" />
     <button onClick="controller.cancelForm();"
-            label="${i18n:_('Cancel')}" sclass="cancel-button global-action" />
+            label="${i18n:_t('Cancel')}" sclass="cancel-button global-action" />
 
 </window>

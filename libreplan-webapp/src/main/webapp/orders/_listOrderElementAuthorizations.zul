@@ -23,14 +23,14 @@
       apply="org.libreplan.web.users.OrderAuthorizationController" width="100%">
 
     <!-- Profiles -->
-    <panel title="${i18n:_('Profiles authorization')}" border="normal" sclass="report-margin">
+    <panel title="${i18n:_t('Profiles authorization')}" border="normal" sclass="report-margin">
         <panelchildren>
             <hbox align="center" sclass="margin-border">
                 <autocomplete id="profileAutocomplete" constraint=""
                               autodrop="true" finder="ProfileFinder" />
-                <checkbox id="profileReadAuthCheckbox" label="${i18n:_('Read')}" />
-                <checkbox id="profileWriteAuthCheckbox" label="${i18n:_('Write')}" />
-                <button label="${i18n:_('Authorize')}" sclass="add-button"
+                <checkbox id="profileReadAuthCheckbox" label="${i18n:_t('Read')}" />
+                <checkbox id="profileWriteAuthCheckbox" label="${i18n:_t('Write')}" />
+                <button label="${i18n:_t('Authorize')}" sclass="add-button"
                         onClick="orderAuthorizationController.addOrderAuthorization(
                         profileAutocomplete.selectedItem, profileReadAuthCheckbox.checked,
                         profileWriteAuthCheckbox.checked);"/>
@@ -39,23 +39,23 @@
                   model="@{orderAuthorizationController.profileOrderAuthorizations}"
                   rowRenderer="@{orderAuthorizationController.orderAuthorizationRenderer}" >
                 <columns sizable="true">
-                    <column label="${i18n:_('Profile name')}" />
-                    <column label="${i18n:_('Permissions')}" />
-                    <column label="${i18n:_('Actions')}" />
+                    <column label="${i18n:_t('Profile name')}" />
+                    <column label="${i18n:_t('Permissions')}" />
+                    <column label="${i18n:_t('Actions')}" />
                 </columns>
             </grid>
         </panelchildren>
     </panel>
 
     <!-- Users -->
-    <panel title="${i18n:_('Users authorization')}" border="normal" sclass="report-margin">
+    <panel title="${i18n:_t('Users authorization')}" border="normal" sclass="report-margin">
         <panelchildren>
             <hbox align="center" sclass="margin-border">
                 <autocomplete id="usersAutocomplete" constraint=""
                               autodrop="true" finder="UserFinder" />
-                <checkbox id="userReadAuthCheckbox" label="${i18n:_('Read')}" />
-                <checkbox id="userWriteAuthCheckbox" label="${i18n:_('Write')}" />
-                <button label="${i18n:_('Authorize')}" sclass="add-button"
+                <checkbox id="userReadAuthCheckbox" label="${i18n:_t('Read')}" />
+                <checkbox id="userWriteAuthCheckbox" label="${i18n:_t('Write')}" />
+                <button label="${i18n:_t('Authorize')}" sclass="add-button"
                         onClick="orderAuthorizationController.addOrderAuthorization(
                         usersAutocomplete.selectedItem, userReadAuthCheckbox.checked,
                         userWriteAuthCheckbox.checked);"/>
@@ -63,9 +63,9 @@
             <grid id="usersAuthListing"
                   model="@{orderAuthorizationController.userOrderAuthorizations}">
                 <columns sizable="true">
-                    <column label="${i18n:_('Profile name')}" />
-                    <column label="${i18n:_('Permissions')}" />
-                    <column label="${i18n:_('Actions')}" />
+                    <column label="${i18n:_t('Profile name')}" />
+                    <column label="${i18n:_t('Permissions')}" />
+                    <column label="${i18n:_t('Actions')}" />
                 </columns>
                 <rows>
                     <row self="@{each='authorization'}" value="@{authorization}">
@@ -76,7 +76,7 @@
                                     onClick="orderAuthorizationController.
                                     removeOrderAuthorization(self.parent.parent.value);"
                                     hoverImage="/common/img/ico_borrar.png"
-                                    tooltiptext="${i18n:_('Delete')}" />
+                                    tooltiptext="${i18n:_t('Delete')}" />
                         </hbox>
                     </row>
                 </rows>

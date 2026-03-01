@@ -39,9 +39,9 @@
                 <center border="0" sclass="orderslayout-area">
                     <tabbox id="tabboxLog">
                         <tabs>
-                            <tab id="tabIssueLogs" label="${i18n:_('Issue logs')}" selected="true"
+                            <tab id="tabIssueLogs" label="${i18n:_t('Issue logs')}" selected="true"
                                  onClick = "logsController.setupIssueLogController();"/>
-                            <tab id="tabRiskLogs" label="${i18n:_('Risk logs')}"
+                            <tab id="tabRiskLogs" label="${i18n:_t('Risk logs')}"
                                  onClick = "logsController.setupRiskLogController();"/>
                         </tabs>
                         <tabpanels>

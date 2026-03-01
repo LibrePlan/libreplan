@@ -20,34 +20,34 @@
 -->
 
 <hbox align="center" sclass="filtering-area">
-    <label value="${i18n:_('Project')}"
-           tooltiptext="${i18n:_('Select required criteria set and press filter button')}"/>
+    <label value="${i18n:_t('Project')}"
+           tooltiptext="${i18n:_t('Select required criteria set and press filter button')}"/>
 
     <textbox id="filterProjectName" width="100px"
              onChange="orderFilterController.onApplyFilter()"
              onOK="orderFilterController.onApplyFilter()" />
 
-    <label value=" ${i18n:_('with')}" />
+    <label value=" ${i18n:_t('with')}" />
 
     <bandboxMultipleSearch id="bdFilters" widthBandbox="260px" widthListbox="550px"
                            finder="ordersMultipleFiltersFinder" onChange="orderFilterController.onApplyFilter()" />
 
-    <label value="${i18n:_('from')}"/>
+    <label value="${i18n:_t('from')}"/>
 
     <datebox id="filterStartDate" constraint = "@{orderFilterController.checkConstraintStartDate}"
              onChange="orderFilterController.onApplyFilter()"/>
 
-    <label value="${i18n:_('to')}"/>
+    <label value="${i18n:_t('to')}"/>
 
     <datebox id="filterFinishDate" constraint = "@{orderFilterController.checkConstraintFinishDate}"
              onChange="orderFilterController.onApplyFilter()"/>
 
-    <label value=" ${i18n:_('Exclude finished projects')}" />
+    <label value=" ${i18n:_t('Exclude finished projects')}" />
 
     <checkbox id="filterExcludeFinishedProject"
              onChange="orderFilterController.onApplyFilter()"/>
 
     <button mold="trendy" image="/common/img/ico_filter.png" style="margin-top: -4px"
-            tooltiptext="${i18n:_('Apply filtering to tasks satisfying required criteria')}"
+            tooltiptext="${i18n:_t('Apply filtering to tasks satisfying required criteria')}"
             onClick="orderFilterController.onApplyFilter()"/>
 </hbox>

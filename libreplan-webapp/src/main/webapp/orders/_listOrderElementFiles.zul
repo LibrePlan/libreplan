@@ -23,22 +23,22 @@
     <vbox id="messagesContainer">
     </vbox>
 
-    <button label="${i18n:_('Upload')}" disabled="@{orderFilesController.isUploadButtonDisabled}" sclass="add-button"
+    <button label="${i18n:_t('Upload')}" disabled="@{orderFilesController.isUploadButtonDisabled}" sclass="add-button"
             onClick="orderFilesController.upload();"/>
 
     <separator spacing="15px"/>
 
     <listbox id="filesList"
-             emptyMessage="${i18n:_('No files')}"
+             emptyMessage="${i18n:_t('No files')}"
              width="99%"
              visible="@{orderFilesController.isRepositoryExists}"
              itemRenderer="@{orderFilesController.filesRenderer}">
         <listhead>
-            <listheader label="${i18n:_('Name')}" width="62%"/>
-            <listheader label="${i18n:_('Type')}" width="7%"/>
-            <listheader label="${i18n:_('Upload date')}" width="11%"/>
-            <listheader label="${i18n:_('Uploaded by')}" width="13%"/>
-            <listheader label="${i18n:_('Operations')}" width="7%"/>
+            <listheader label="${i18n:_t('Name')}" width="62%"/>
+            <listheader label="${i18n:_t('Type')}" width="7%"/>
+            <listheader label="${i18n:_t('Upload date')}" width="11%"/>
+            <listheader label="${i18n:_t('Uploaded by')}" width="13%"/>
+            <listheader label="${i18n:_t('Operations')}" width="7%"/>
         </listhead>
     </listbox>
 </window>

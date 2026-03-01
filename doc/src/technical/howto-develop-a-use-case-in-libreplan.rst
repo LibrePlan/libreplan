@@ -589,7 +589,7 @@ content:
 
 ::
 
- <?page id="exceptionDayTypesList" title="${i18n:_('LibrePlan: Stretches Function Templates')}" ?>
+ <?page id="exceptionDayTypesList" title="${i18n:_t('LibrePlan: Stretches Function Templates')}" ?>
  <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
  <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
 
@@ -614,7 +614,7 @@ window to list (``list``) elements and another for editing them (``edit``).
 
 ::
 
- <?page id=”” title=”${i18n:_('LibrePlan: Exception Days')}” ?>
+ <?page id=”” title=”${i18n:_t('LibrePlan: Exception Days')}” ?>
 
 This line define that the document is a page.
 
@@ -932,15 +932,15 @@ following content:
 
 ::
 
-  <window id="${arg.id}" title="${i18n:_('Stretches Function Templates List')}">
+  <window id="${arg.id}" title="${i18n:_t('Stretches Function Templates List')}">
 
      <grid id="listStretchesFunctionTemplates"
          model="@{controller.stretchesFunctionTemplates}"
          mold="paging" pageSize="10" fixedLayout="true">
 
          <columns>
-             <column label="${i18n:_('Name')}" sort="auto(lower(name))" />
-             <column label="${i18n:_('Operations')}" />
+             <column label="${i18n:_t('Name')}" sort="auto(lower(name))" />
+             <column label="${i18n:_t('Operations')}" />
          </columns>
          <rows>
             <row self="@{each='stretchesFunctionTemplate'}"
@@ -950,18 +950,18 @@ following content:
                  <hbox>
                      <button sclass="icono" image="/common/img/ico_editar1.png"
                          hoverImage="/common/img/ico_editar.png"
-                         tooltiptext="${i18n:_('Edit')}"
+                         tooltiptext="${i18n:_t('Edit')}"
                          onClick="controller.goToEditForm(self.parent.parent.value)"/>
                      <button sclass="icono" image="/common/img/ico_borrar1.png"
                          hoverImage="/common/img/ico_borrar.png"
-                         tooltiptext="${i18n:_('Delete')}"
+                         tooltiptext="${i18n:_t('Delete')}"
                          onClick="controller.confirmDelete(self.parent.parent.value)"/>
                  </hbox>
              </row>
          </rows>
      </grid>
 
-     <button label="${i18n:_('Create')}" onClick="controller.goToCreateForm()"
+     <button label="${i18n:_t('Create')}" onClick="controller.goToCreateForm()"
          sclass="create-button global-action"/>
 
   </window>
@@ -981,7 +981,7 @@ list of ``StretchesFunctionTemplate`` from database.
 
 ::
 
-             <column label="${i18n:_('Name')}" sort="auto(lower(name))" />
+             <column label="${i18n:_t('Name')}" sort="auto(lower(name))" />
 
 Thanks to this custom component you are able to define that *Name* column will
 by sorted by default in ascending order.
@@ -1011,7 +1011,7 @@ This line will access to ``name`` attribute for entity
 
                      <button sclass="icono" image="/common/img/ico_editar1.png"
                          hoverImage="/common/img/ico_editar.png"
-                         tooltiptext="${i18n:_('Edit')}"
+                         tooltiptext="${i18n:_t('Edit')}"
                          onClick="controller.goToEditForm(self.parent.parent.value)"/>
 
 An edit button is added for each row, and ``onClick`` event is associated with a
@@ -1023,7 +1023,7 @@ implementation.
 
 ::
 
-     <button label="${i18n:_('Create')}" onClick="controller.goToCreateForm()"
+     <button label="${i18n:_t('Create')}" onClick="controller.goToCreateForm()"
          sclass="create-button global-action"/>
 
 The last part is another button which will call a different method on controller
@@ -1048,7 +1048,7 @@ edition process. The file will have the following content:
      <caption id="caption" sclass="caption-title" />
      <tabbox>
          <tabs>
-             <tab label="${i18n:_('Edit')}" />
+             <tab label="${i18n:_t('Edit')}" />
          </tabs>
          <tabpanels>
              <tabpanel>
@@ -1059,7 +1059,7 @@ edition process. The file will have the following content:
                      </columns>
                      <rows>
                          <row>
-                             <label value="${i18n:_('Name')}" />
+                             <label value="${i18n:_t('Name')}" />
                              <textbox id="tbName"
                                  value="@{controller.stretchesFunctionTemplate.name}"
                                  width="300px"
@@ -1069,17 +1069,17 @@ edition process. The file will have the following content:
                  </grid>
 
                  <groupbox closable="false">
-                     <caption label="${i18n:_('Stretches')}" />
+                     <caption label="${i18n:_t('Stretches')}" />
                      <vbox>
                          <hbox align="center">
-                             <label value="${i18n:_('New stretch:')}" />
-                             <label value="${i18n:_('Duration Percentage')}" />
+                             <label value="${i18n:_t('New stretch:')}" />
+                             <label value="${i18n:_t('Duration Percentage')}" />
                              <intbox id="durationPercentage" width="50px"
                                  value="0" onOK="controller.addStretchTemplate();" />
-                             <label value="${i18n:_('Progress Percentage')}" />
+                             <label value="${i18n:_t('Progress Percentage')}" />
                              <intbox id="progressPercentage" width="50px"
                                  value="0" onOK="controller.addStretchTemplate();" />
-                             <button id="add_new_stretch_template" label="${i18n:_('Add')}"
+                             <button id="add_new_stretch_template" label="${i18n:_t('Add')}"
                                  onClick="controller.addStretchTemplate();" />
                          </hbox>
                      </vbox>
@@ -1088,9 +1088,9 @@ edition process. The file will have the following content:
                          rowRenderer="@{controller.stretchTemplatesRenderer}"
                          mold="paging" pageSize="10" fixedLayout="true">
                          <columns>
-                             <column label="${i18n:_('Duration Percentage')}" />
-                             <column label="${i18n:_('Progress Percentage')}" />
-                             <column label="${i18n:_('Operations')}" />
+                             <column label="${i18n:_t('Duration Percentage')}" />
+                             <column label="${i18n:_t('Progress Percentage')}" />
+                             <column label="${i18n:_t('Operations')}" />
                          </columns>
                      </grid>
                  </groupbox>
@@ -1101,13 +1101,13 @@ edition process. The file will have the following content:
 
      <!-- Control buttons -->
      <button onClick="controller.saveAndExit()"
-         label="${i18n:_('Save')}"
+         label="${i18n:_t('Save')}"
          sclass="save-button global-action" />
      <button onClick="controller.saveAndContinue()"
-         label="${i18n:_('Save and Continue')}"
+         label="${i18n:_t('Save and Continue')}"
          sclass="save-button global-action" />
      <button onClick="controller.cancelForm()"
-         label="${i18n:_('Cancel')}"
+         label="${i18n:_t('Cancel')}"
          sclass="cancel-button global-action" />
 
  </window>
@@ -1116,7 +1116,7 @@ Now, let's take a look to the most important parts of the file.
 
 ::
 
-                             <label value="${i18n:_('Name')}" />
+                             <label value="${i18n:_t('Name')}" />
                              <textbox id="tbName"
                                  value="@{controller.stretchesFunctionTemplate.name}"
                                  width="300px"
@@ -1132,14 +1132,14 @@ method ``getName`` or ``setName`` of entity will be called as appropriate.
 
 ::
 
-                             <label value="${i18n:_('New stretch:')}" />
-                             <label value="${i18n:_('Duration Percentage')}" />
+                             <label value="${i18n:_t('New stretch:')}" />
+                             <label value="${i18n:_t('Duration Percentage')}" />
                              <intbox id="durationPercentage" width="50px"
                                  value="0" onOK="controller.addStretchTemplate();" />
-                             <label value="${i18n:_('Progress Percentage')}" />
+                             <label value="${i18n:_t('Progress Percentage')}" />
                              <intbox id="progressPercentage" width="50px"
                                  value="0" onOK="controller.addStretchTemplate();" />
-                             <button id="add_new_stretch_template" label="${i18n:_('Add')}"
+                             <button id="add_new_stretch_template" label="${i18n:_t('Add')}"
                                  onClick="controller.addStretchTemplate();" />
 
 In order to define new ``StretchTemplate`` for current entity, some fields are
@@ -1154,9 +1154,9 @@ operation.
                         rowRenderer="@{controller.stretchTemplatesRenderer}"
                         mold="paging" pageSize="10" fixedLayout="true">
                         <columns>
-                            <column label="${i18n:_('Duration Percentage')}" />
-                            <column label="${i18n:_('Progress Percentage')}" />
-                            <column label="${i18n:_('Operations')}" />
+                            <column label="${i18n:_t('Duration Percentage')}" />
+                            <column label="${i18n:_t('Progress Percentage')}" />
+                            <column label="${i18n:_t('Operations')}" />
                         </columns>
                     </grid>
 
@@ -2009,12 +2009,12 @@ ZK provides an easy way to add constraints to form fields. For example, in
 ``StretchesFunctionTemplate`` entity name can not be empty so you could add the
 following validation on ``_editStretchesFunctionTemplate.zul`` file::
 
-                            <label value="${i18n:_('Name')}" />
+                            <label value="${i18n:_t('Name')}" />
                             <textbox id="tbName"
                                 value="@{controller.stretchesFunctionTemplate.name}"
                                 width="300px"
                                 onBlur="controller.updateWindowTitle()"
-                                constraint="no empty:${i18n:_('cannot be empty')}" />
+                                constraint="no empty:${i18n:_t('cannot be empty')}" />
 
 Now, if users set an empty name, they will receive an error in a pop-up. However,
 if they click *Save* button, the request to sever will be sent and then they

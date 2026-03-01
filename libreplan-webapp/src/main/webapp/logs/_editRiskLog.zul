@@ -26,28 +26,28 @@
         </columns>
         <rows>
             <row>
-                <label value="${i18n:_('Code')}" />
+                <label value="${i18n:_t('Code')}" />
                 <textbox id="riskNumberTextBox" width="636px"
                          value="@{riskLogController.riskLog.code}" disabled="true"/>
             </row>
 
             <row>
-                <label value="${i18n:_('Project')}" />
+                <label value="${i18n:_t('Project')}" />
                 <bandboxSearch id="bdProjectRiskLog" widthBandbox="636px" widthListbox="636px"
-                               constraint="no empty:${i18n:_('cannot be empty')}"
+                               constraint="no empty:${i18n:_t('cannot be empty')}"
                                finder="OrderBandboxFinder"
                                model="@{riskLogController.orders}"
                                selectedElement="@{riskLogController.order}"/>
             </row>
 
             <row>
-                <label value="${i18n:_('Status')}" />
+                <label value="${i18n:_t('Status')}" />
                 <textbox value="@{riskLogController.riskLog.status}" width="636px" rows="1" multiline="false"
                          maxlength="512"/>
             </row>
 
             <row>
-                <label value="${i18n:_('Estimations')}" />
+                <label value="${i18n:_t('Estimations')}" />
                 <grid>
                     <columns>
                         <column width="110px"/>
@@ -59,21 +59,21 @@
                     </columns>
                     <rows>
                         <row>
-                            <label value="${i18n:_('Probability')}" />
+                            <label value="${i18n:_t('Probability')}" />
                             <listbox id="listRiskLogProbability" mold="select" rows="1" width="122px"
                                      model="@{riskLogController.lowMediumHighEnums}"
                                      selectedItem="@{riskLogController.riskLog.probability}"
                                      itemRenderer="@{riskLogController.lowMediumHighEnumRenderer}"
                                      onSelect="riskLogController.setUpdateScore()"/>
 
-                            <label value="${i18n:_('Impact')}" />
+                            <label value="${i18n:_t('Impact')}" />
                             <listbox id="listRiskLogImpact" mold="select" rows="1" width="122px"
                                      model="@{riskLogController.lowMediumHighEnums}"
                                      selectedItem="@{riskLogController.riskLog.impact}"
                                      itemRenderer="@{riskLogController.lowMediumHighEnumRenderer}"
                                      onSelect="riskLogController.setUpdateScore()" />
 
-                            <label value="${i18n:_('Risk score')}" />
+                            <label value="${i18n:_t('Risk score')}" />
                             <textbox id="riskScore" value="@{riskLogController.riskLog.riskScore}"
                                      width="75px"
                                      rows="1"
@@ -83,7 +83,7 @@
                 </grid>
             </row>
             <row>
-                <label value="${i18n:_('Creation info')}" />
+                <label value="${i18n:_t('Creation info')}" />
                 <grid>
                     <columns>
                         <column width="80px"/>
@@ -93,12 +93,12 @@
                     </columns>
                     <rows>
                         <row>
-                            <label value="${i18n:_('Date created')}" />
+                            <label value="${i18n:_t('Date created')}" />
                             <datebox id="dateCreatedBox" width="131px"
-                                     constraint="no empty:${i18n:_('cannot be empty')}"
+                                     constraint="no empty:${i18n:_t('cannot be empty')}"
                                      value="@{riskLogController.dateCreated}" />
 
-                            <label value="${i18n:_('Created by')}" />
+                            <label value="${i18n:_t('Created by')}" />
                             <bandboxSearch id="bdUserRiskLog" widthBandbox="315px" widthListbox="340px"
                                            finder="UserBandboxFinder"
                                            model="@{riskLogController.users}"
@@ -108,29 +108,29 @@
                 </grid>
             </row>
             <row>
-                <label value="${i18n:_('Description')}" />
+                <label value="${i18n:_t('Description')}" />
                 <textbox id="descriptionNameTextBox" width="636px" rows="3"
                          value="@{riskLogController.riskLog.description}" maxlength="1024"/>
             </row>
             <row>
-                <label value="${i18n:_('Counter measures (CM)')}" />
+                <label value="${i18n:_t('Counter measures (CM)')}" />
                 <textbox id="counterMeasuresTextbox" width="636px" rows="3"
                          value="@{riskLogController.riskLog.counterMeasures}" maxlength="1024"/>
             </row>
             <row>
-                <label value="${i18n:_('Risk Score After CM')}" />
+                <label value="${i18n:_t('Risk Score After CM')}" />
                 <listbox id="listRiskScores" mold="select" rows="1" width="135px"
                          model="@{riskLogController.riskScoreStatesEnums}"
                          selectedItem="@{riskLogController.riskLog.scoreAfterCM}"
                          itemRenderer="@{riskLogController.riskScoreStatesEnumRenderer}" />
             </row>
             <row>
-                <label value="${i18n:_('Contingency')}" />
+                <label value="${i18n:_t('Contingency')}" />
                 <textbox id="contingencyBox" width="636px" rows="3"
                          value="@{riskLogController.riskLog.contingency}" maxlength="1024"/>
             </row>
             <row>
-                <label value="${i18n:_('Prevention')}" />
+                <label value="${i18n:_t('Prevention')}" />
                 <grid>
                     <columns>
                         <column width="80px"/>
@@ -141,12 +141,12 @@
                     <rows>
                         <row>
 
-                            <label value="${i18n:_('Action When')}" />
+                            <label value="${i18n:_t('Action When')}" />
                             <datebox id="actionWhenDateBox" width="131px"
-                                     constraint="no empty:${i18n:_('cannot be empty')}"
+                                     constraint="no empty:${i18n:_t('cannot be empty')}"
                                      value="@{riskLogController.actionWhen}" />
 
-                            <label value="${i18n:_('Responsible')}" />
+                            <label value="${i18n:_t('Responsible')}" />
                             <textbox id="responsibleBox" width="315px" rows="1"
                                      value="@{riskLogController.riskLog.responsible}" maxlength="512"/>
                         </row>
@@ -154,7 +154,7 @@
                 </grid>
             </row>
             <row>
-                <label value="${i18n:_('Notes')}" />
+                <label value="${i18n:_t('Notes')}" />
                 <textbox value="@{riskLogController.riskLog.notes}" width="636px" rows="5" multiline="true"
                          maxlength="1024"/>
             </row>
@@ -162,12 +162,12 @@
     </grid>
     <!-- Control buttons -->
     <button onClick="riskLogController.saveAndExit()"
-            label="${i18n:_('Save')}"
+            label="${i18n:_t('Save')}"
             sclass="save-button global-action" />
     <button onClick="riskLogController.saveAndContinue()"
-            label="${i18n:_('Save and Continue')}"
+            label="${i18n:_t('Save and Continue')}"
             sclass="save-button global-action" />
     <button onClick="riskLogController.cancelForm()"
-            label="${i18n:_('Cancel')}"
+            label="${i18n:_t('Cancel')}"
             sclass="cancel-button global-action" />
 </window>

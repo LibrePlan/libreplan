@@ -17,25 +17,25 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<window id="winJiraSyncInfo" title="${i18n:_('LibrePlan: JIRA synchronization info')}"
+<window id="winJiraSyncInfo" title="${i18n:_t('LibrePlan: JIRA synchronization info')}"
     width="500px" border="normal" mode="modal">
     <div  height="250px" style="overflow:auto">
         <vbox>
-            <label value="${i18n:_('Synchronization order elements with JIRA issues was successful')}" sclass="remarked" if="${arg.syncOrderElementSuccess}"/>
+            <label value="${i18n:_t('Synchronization order elements with JIRA issues was successful')}" sclass="remarked" if="${arg.syncOrderElementSuccess}"/>
             <vbox if="${not arg.syncOrderElementSuccess}">
-                <label value="${i18n:_('Synchronization order elements with JIRA issues was not completed for the following reasons:')}" />
+                <label value="${i18n:_t('Synchronization order elements with JIRA issues was not completed for the following reasons:')}" />
                 <listbox model="${arg.syncOrderElementFailedReasons}"/>
             </vbox>
         </vbox>
         <separator spacing="10px"/>
         <vbox if="${arg.syncOrderElementSuccess}">
-            <label value="${i18n:_('Synchronization of timesheets was successful')}" sclass="remarked" if="${arg.syncTimesheetSuccess}"/>
+            <label value="${i18n:_t('Synchronization of timesheets was successful')}" sclass="remarked" if="${arg.syncTimesheetSuccess}"/>
             <vbox if="${not arg.syncTimesheetSuccess}">
-                <label value="${i18n:_('Synchronization of timesheets is not completed for the following reasons:')}" />
+                <label value="${i18n:_t('Synchronization of timesheets is not completed for the following reasons:')}" />
                 <listbox model="${arg.syncTimesheetFailedReasons}"/>
             </vbox>
         </vbox>
     </div>
-    <button id="closeBtn" label="${i18n:_('Close')}" onClick="winJiraSyncInfo.detach()"
+    <button id="closeBtn" label="${i18n:_t('Close')}" onClick="winJiraSyncInfo.detach()"
         sclass="cancel-button global-action"/>
 </window>

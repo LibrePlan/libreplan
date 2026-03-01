@@ -21,24 +21,24 @@
         pageSize="15" span="0" sizedByContent="false"
         rowRenderer="@{riskLogController.riskLogsRowRenderer}">
         <columns sizable="true">
-            <column label="${i18n:_('Code')}" sort="auto(lower(code))" />
-            <column label="${i18n:_('Projectname')}" visible="@{logsController.projectNameVisibility}" sort="auto(lower(order))" />
-            <column label="${i18n:_('Probability')}" sort="auto(lower(probability))"/>
-            <column label="${i18n:_('Impact')}" sort="auto(lower(impact))"/>
-            <column label="${i18n:_('Risk score')}" sort="auto(lower(riskScore))"/>
-            <column label="${i18n:_('Status')}" sort="auto(lower(status))"/>
-            <column label="${i18n:_('Description')}" sort="auto(lower(code))"/>
-            <column label="${i18n:_('Date created')}" sclass="date" hflex="min" sort="auto(lower(dateCreated))"/>
-            <column label="${i18n:_('CreatedBy')}" sort="auto(createdBy.loginName)" />
-            <column label="${i18n:_('Counter measures')}" sort="auto(counterMeasures)"/>
-            <column label="${i18n:_('New risk score')}" sort="auto(scoreAfterCM)"/>
-            <column label="${i18n:_('Contingency')}" sort="auto(contingency)"/>
-            <column label="${i18n:_('Responsible')}" sort="auto(responsible)"/>
-            <column label="${i18n:_('ActionWhen')}" sclass="date" hflex="min" sort="auto(lower(actionWhen))"/>
-            <column label="${i18n:_('Notes')}" hflex="min" sort="auto(notes)"/>
-            <column label="${i18n:_('Operations')}" sclass="operations" hflex="min"/>
+            <column label="${i18n:_t('Code')}" sort="auto(lower(code))" />
+            <column label="${i18n:_t('Projectname')}" visible="@{logsController.projectNameVisibility}" sort="auto(lower(order))" />
+            <column label="${i18n:_t('Probability')}" sort="auto(lower(probability))"/>
+            <column label="${i18n:_t('Impact')}" sort="auto(lower(impact))"/>
+            <column label="${i18n:_t('Risk score')}" sort="auto(lower(riskScore))"/>
+            <column label="${i18n:_t('Status')}" sort="auto(lower(status))"/>
+            <column label="${i18n:_t('Description')}" sort="auto(lower(code))"/>
+            <column label="${i18n:_t('Date created')}" sclass="date" hflex="min" sort="auto(lower(dateCreated))"/>
+            <column label="${i18n:_t('CreatedBy')}" sort="auto(createdBy.loginName)" />
+            <column label="${i18n:_t('Counter measures')}" sort="auto(counterMeasures)"/>
+            <column label="${i18n:_t('New risk score')}" sort="auto(scoreAfterCM)"/>
+            <column label="${i18n:_t('Contingency')}" sort="auto(contingency)"/>
+            <column label="${i18n:_t('Responsible')}" sort="auto(responsible)"/>
+            <column label="${i18n:_t('ActionWhen')}" sclass="date" hflex="min" sort="auto(lower(actionWhen))"/>
+            <column label="${i18n:_t('Notes')}" hflex="min" sort="auto(notes)"/>
+            <column label="${i18n:_t('Operations')}" sclass="operations" hflex="min"/>
         </columns>
     </grid>
      <button id="show_create_form" onClick='riskLogController.goToCreateForm()'
-             label="${i18n:_('Create')}" sclass="create-button global-action"/>
+             label="${i18n:_t('Create')}" sclass="create-button global-action"/>
 </window>

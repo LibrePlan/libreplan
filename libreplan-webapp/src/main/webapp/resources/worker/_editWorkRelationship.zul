@@ -22,9 +22,9 @@
 <window id="${arg.top_id}" title="${arg.title}">
     <grid id="edit">
         <columns>
-            <column label="${i18n:_('Starting date')}"/>
-            <column label="${i18n:_('Ending date')}"/>
-            <column label="${i18n:_('Relationship')}"/>
+            <column label="${i18n:_t('Starting date')}"/>
+            <column label="${i18n:_t('Ending date')}"/>
+            <column label="${i18n:_t('Relationship')}"/>
         </columns>
         <rows>
             <row>
@@ -42,7 +42,7 @@
         </rows>
       </grid>
     <button onClick="workRelationship.saveCriterionSatisfaction();"
-        label="${i18n:_('Save')}" sclass="save-button global-action" />
+        label="${i18n:_t('Save')}" sclass="save-button global-action" />
     <button onClick="controller.goToEditForm()"
-        label="${i18n:_('Cancel and return')}" sclass="cancel-button global-action" />
+        label="${i18n:_t('Cancel and return')}" sclass="cancel-button global-action" />
 </window>

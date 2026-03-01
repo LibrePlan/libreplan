@@ -19,7 +19,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <?component name="filter" inline="true" macroURI="../search/_resourceFilter.zul"?>
-<window id="listWindow" title="${i18n:_('Machines List')}">
+<window id="listWindow" title="${i18n:_t('Machines List')}">
     <separator bar="false" spacing="5px" orient="horizontal"/>
 
     <div align="right">
@@ -32,11 +32,11 @@
         rowRenderer="@{controller.machinesRenderer}"
         pageSize="10" fixedLayout="true" sclass="clickable-rows">
         <columns>
-            <newdatasortablecolumn label="${i18n:_('Name')}" sort="auto(lower(name))" sortDirection="ascending" />
-            <newdatasortablecolumn label="${i18n:_('Description')}" sort="auto(lower(description))" />
-            <newdatasortablecolumn label="${i18n:_('Code')}" sort="auto(lower(code))" />
-            <newdatasortablecolumn label="${i18n:_('Queue-based')}" sort="auto(limitingResource)" width="90px"/>
-            <newdatasortablecolumn label="${i18n:_('Operations')}" width="90px"/>
+            <newdatasortablecolumn label="${i18n:_t('Name')}" sort="auto(lower(name))" sortDirection="ascending" />
+            <newdatasortablecolumn label="${i18n:_t('Description')}" sort="auto(lower(description))" />
+            <newdatasortablecolumn label="${i18n:_t('Code')}" sort="auto(lower(code))" />
+            <newdatasortablecolumn label="${i18n:_t('Queue-based')}" sort="auto(limitingResource)" width="90px"/>
+            <newdatasortablecolumn label="${i18n:_t('Operations')}" width="90px"/>
         </columns>
     </newdatasortablegrid>
     <button id="show_create_form" onClick="controller.goToCreateForm();"

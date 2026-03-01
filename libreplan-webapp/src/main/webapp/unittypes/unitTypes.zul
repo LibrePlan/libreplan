@@ -18,7 +18,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<?page title="${i18n:_('LibrePlan: Material Units')}" id="unitTypes"?>
+<?page title="${i18n:_t('LibrePlan: Material Units')}" id="unitTypes"?>
 <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
 
@@ -38,9 +38,9 @@
         <vbox id="messagesContainer"/>
         <list top_id="listWindow"/>
         <edition top_id="editWindow"
-            save_button_label="${i18n:_('Save')}"
-            save_and_continue_button_label="${i18n:_('Save &amp; Continue')}"
-            cancel_button_label="${i18n:_('Cancel')}"
+            save_button_label="${i18n:_t('Save')}"
+            save_and_continue_button_label="${i18n:_t('Save &amp; Continue')}"
+            cancel_button_label="${i18n:_t('Cancel')}"
             />
     </window>
 </zk>

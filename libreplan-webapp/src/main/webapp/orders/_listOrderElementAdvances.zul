@@ -21,11 +21,11 @@
 <vbox id="${arg.id}" apply="org.libreplan.web.orders.ManageOrderElementAdvancesController" width="100%">
 
     <groupbox sclass="progress-assignments" closable="false">
-        <caption label="${i18n:_('Progress assignments')}" />
+        <caption label="${i18n:_t('Progress assignments')}" />
         <vbox id="messagesContainerAdvances" />
         <vbox align="left" width="100%">
             <hbox>
-                <button label="${i18n:_('Add new progress assignment')}"
+                <button label="${i18n:_t('Add new progress assignment')}"
                         sclass="add-button"
                         style="margin-bottom:5px;"
                         onClick="manageOrderElementAdvancesController.goToCreateLineAdvanceAssignment();">
@@ -41,24 +41,24 @@
                          pageSize="4">
 
                     <listhead sizable="true">
-                        <listheader label="${i18n:_('Type')}" tooltiptext="${i18n:_('Progress unit type')}" />
+                        <listheader label="${i18n:_t('Type')}" tooltiptext="${i18n:_t('Progress unit type')}" />
 
-                        <listheader label="${i18n:_('Max value')}" tooltiptext="${i18n:_('Maximum allowed value')}"
+                        <listheader label="${i18n:_t('Max value')}" tooltiptext="${i18n:_t('Maximum allowed value')}"
                                     width="105px" align="center"/>
 
-                        <listheader label="${i18n:_('Current value')}" width="100px" align="center"/>
+                        <listheader label="${i18n:_t('Current value')}" width="100px" align="center"/>
 
-                        <listheader label="${i18n:_('Percentage')}" width="90px" align="center"/>
+                        <listheader label="${i18n:_t('Percentage')}" width="90px" align="center"/>
 
-                        <listheader label="${i18n:_('Date')}" width="120px" align="center"/>
+                        <listheader label="${i18n:_t('Date')}" width="120px" align="center"/>
 
-                        <listheader label="${i18n:_('Spread')}" width="70px" align="center"/>
+                        <listheader label="${i18n:_t('Spread')}" width="70px" align="center"/>
 
-                        <listheader label="${i18n:_('Calculated')}" width="70px" align="center"/>
+                        <listheader label="${i18n:_t('Calculated')}" width="70px" align="center"/>
 
-                        <listheader label="${i18n:_('Show')}" width="60px" align="center"/>
+                        <listheader label="${i18n:_t('Show')}" width="60px" align="center"/>
 
-                        <listheader label="${i18n:_('Operations')}" width="130px" align="center"/>
+                        <listheader label="${i18n:_t('Operations')}" width="130px" align="center"/>
                     </listhead>
                 </listbox>
             </radiogroup>
@@ -77,10 +77,10 @@
                          onPaging="manageOrderElementAdvancesController.onPagingMeasurement();">
 
                     <listhead>
-                        <listheader label="${i18n:_('Value')}" width="100px" align="center"/>
-                        <listheader label="${i18n:_('Percentage')}" width="90px" align="center"/>
-                        <listheader label="${i18n:_('Date')}" width="120px" align="center"/>
-                        <listheader label="${i18n:_('Operations')}" width="98px" align="center"/>
+                        <listheader label="${i18n:_t('Value')}" width="100px" align="center"/>
+                        <listheader label="${i18n:_t('Percentage')}" width="90px" align="center"/>
+                        <listheader label="${i18n:_t('Date')}" width="120px" align="center"/>
+                        <listheader label="${i18n:_t('Operations')}" width="98px" align="center"/>
                     </listhead>
                 </listbox>
             </hbox>
@@ -94,13 +94,13 @@
                 Font lbfont = new Font(fontname, Font.PLAIN, 12); //for label
             </zscript>
 
-            <chart id="chart" title="${i18n:_('Progress Evolution')}"
+            <chart id="chart" title="${i18n:_t('Progress Evolution')}"
                    type="time_series" threeD="false"
                    model="@{manageOrderElementAdvancesController.chartData}"
                    titleFont="${tfont}"
                    xAxisFont="${lbfont}" xAxisTickFont="${lbfont}"
                    yAxisFont="${lbfont}" yAxisTickFont="${lbfont}"
-                   xAxis="${i18n:_('Date')}" yAxis= "${i18n:_('Value')}"
+                   xAxis="${i18n:_t('Date')}" yAxis= "${i18n:_t('Value')}"
                    paneColor="#FFFFFF" height="200" width="500"  />
         </hbox>
     </groupbox>

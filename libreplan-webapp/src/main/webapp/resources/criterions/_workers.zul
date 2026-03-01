@@ -23,14 +23,14 @@
  <grid model="@{controller.workers.workersForCurrentCriterion}"
   mold="paging" pageSize="10" apply="${controller.workers}">
   <columns>
-   <column label="${i18n:_('Operations')}" />
-   <column label="${i18n:_('Name')}" sort="auto(lower(firstName))" />
-   <column label="${i18n:_('Surname')}" sort="auto(lower(surname))" />
-   <column label="${i18n:_('ID')}" sort="auto(nif)" />
+   <column label="${i18n:_t('Operations')}" />
+   <column label="${i18n:_t('Name')}" sort="auto(lower(firstName))" />
+   <column label="${i18n:_t('Surname')}" sort="auto(lower(surname))" />
+   <column label="${i18n:_t('ID')}" sort="auto(nif)" />
   </columns>
   <rows>
    <row self="@{each='worker'}" value="@{worker}">
-    <button label="${i18n:_('Edit')}" onClick="controller.workers.goToEditPage(self.getParent().getValue());"></button>
+    <button label="${i18n:_t('Edit')}" onClick="controller.workers.goToEditPage(self.getParent().getValue());"></button>
     <label value="@{worker.firstName}" />
     <label value="@{worker.surname}" />
     <label value="@{worker.nif}" />
@@ -38,15 +38,15 @@
   </rows>
  </grid>
 
- <button id="adminButton" label="${i18n:_('Administration')}" disabled="@{controller.workers.changeAssignmentsDisabled}" onClick="controller.workers.showList(event);"></button>
+ <button id="adminButton" label="${i18n:_t('Administration')}" disabled="@{controller.workers.changeAssignmentsDisabled}" onClick="controller.workers.showList(event);"></button>
  <window visible="false"  id="workersWindow">
     <listbox id="list" model="@{controller.workers.allWorkers}" mold="paging" multiple="true" checkmark="true">
         <listhead>
-            <listheader label="${i18n:_('Name')}" sort="auto(surname)"></listheader>
+            <listheader label="${i18n:_t('Name')}" sort="auto(surname)"></listheader>
         </listhead>
     </listbox>
-    <button label="${i18n:_('Save')}" id="saveList"></button>
-    <button label="${i18n:_('Cancel')}" id="cancelList"></button>
+    <button label="${i18n:_t('Save')}" id="saveList"></button>
+    <button label="${i18n:_t('Cancel')}" id="cancelList"></button>
  </window>
  <button onClick="controller.cancel();"
   label="${arg.cancel_button_label}" />
