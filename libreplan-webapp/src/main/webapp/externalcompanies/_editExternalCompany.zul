@@ -78,7 +78,7 @@
                                 <hbox>
                                     <textbox id="appURI"
                                              value="@{controller.company.appURI}" width="500px" />
-                                    <label value="${i18n:__('Example: {0}', 'http://localhost:8080/libreplan/')}" />
+                                    <label value="${i18n:__t('Example: {0}', 'http://localhost:8080/libreplan/')}" />
                                 </hbox>
                             </row>
                             <row>

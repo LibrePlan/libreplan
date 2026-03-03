@@ -347,7 +347,7 @@
                                         <textbox id="ldapHost"
                                                  value="@{configurationController.ldapConfiguration.ldapHost}"
                                                  width="300px"/>
-                                        <label value="${i18n:__('Example: {0}', 'ldap://localhost')}" />
+                                        <label value="${i18n:__t('Example: {0}', 'ldap://localhost')}" />
                                     </hbox>
                                 </row>
 
@@ -358,7 +358,7 @@
                                                  value="@{configurationController.ldapConfiguration.ldapPort}"
                                                  width="300px"
                                                  maxlength="5"/>
-                                        <label value="${i18n:__('Example: {0}', '389')}" />
+                                        <label value="${i18n:__t('Example: {0}', '389')}" />
                                     </hbox>
                                 </row>
 
@@ -368,7 +368,7 @@
                                         <textbox id="ldapBase"
                                                  value="@{configurationController.ldapConfiguration.ldapBase}"
                                                  width="300px"/>
-                                        <label value="${i18n:__('Example: {0}', 'dc=example,dc=org')}" />
+                                        <label value="${i18n:__t('Example: {0}', 'dc=example,dc=org')}" />
                                     </hbox>
                                 </row>
 
@@ -378,7 +378,7 @@
                                         <textbox id="ldapUserDn"
                                                  value="@{configurationController.ldapConfiguration.ldapUserDn}"
                                                  width="300px"/>
-                                        <label value="${i18n:__('Example: {0}', 'cn=admin,dc=example,dc=org')}" />
+                                        <label value="${i18n:__t('Example: {0}', 'cn=admin,dc=example,dc=org')}" />
                                     </hbox>
                                 </row>
 
@@ -416,7 +416,7 @@
                                         <textbox id="ldapUserId"
                                                  value="@{configurationController.ldapConfiguration.ldapUserId}"
                                                  width="300px"/>
-                                        <label value="${i18n:__('Example: {0}', 'uid')}" />
+                                        <label value="${i18n:__t('Example: {0}', 'uid')}" />
                                     </hbox>
                                 </row>
 
@@ -458,7 +458,7 @@
                                                  value="@{configurationController.ldapConfiguration.ldapGroupPath}"
                                                  width="300px"
                                                  disabled="@{configurationController.ldapPropertyStrategy}" />
-                                        <label value="${i18n:__('Example: {0}', 'ou=groups')}" />
+                                        <label value="${i18n:__t('Example: {0}', 'ou=groups')}" />
                                         <label value="${i18n:_t('(If it is empty, a node strategy is used)')}" />
                                     </hbox>
                                 </row>
@@ -469,7 +469,7 @@
                                         <textbox id="ldapRoleProperty"
                                                  value="@{configurationController.ldapConfiguration.ldapRoleProperty}"
                                                  width="300px" />
-                                        <label value="${i18n:__('Example: {0}', 'member')}" />
+                                        <label value="${i18n:__t('Example: {0}', 'member')}" />
                                     </hbox>
                                 </row>
 
@@ -479,7 +479,7 @@
                                         <textbox id="ldapSearchQuery"
                                                  value="@{configurationController.ldapConfiguration.ldapSearchQuery}"
                                                  width="300px" />
-                                        <label value="${i18n:__('Example: {0}', 'uid=[USER_ID],ou=people,dc=example,dc=org')}" />
+                                        <label value="${i18n:__t('Example: {0}', 'uid=[USER_ID],ou=people,dc=example,dc=org')}" />
                                     </hbox>
                                 </row>
                             </rows>

@@ -28,7 +28,7 @@
 
         <vbox apply="org.libreplan.web.error.PageForErrorOnEvent" sclass="errorbox" width="800px">
 
-            <panel title="${i18n:__('Message - {0}', requestScope['javax.servlet.error.message'])}"
+            <panel title="${i18n:__t('Message - {0}', requestScope['javax.servlet.error.message'])}"
                    border="normal" style="overflow:auto">
 
                 <panelchildren>

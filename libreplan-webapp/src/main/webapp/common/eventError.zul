@@ -23,7 +23,7 @@
         width="800px" border="normal" mode="modal"
         apply="org.libreplan.web.error.PageForErrorOnEvent">
 
-    <panel title="${i18n:__('Message - {0}', requestScope['javax.servlet.error.message'])}"
+    <panel title="${i18n:__t('Message - {0}', requestScope['javax.servlet.error.message'])}"
            border="normal" style="overflow:auto">
 
         <panelchildren>
