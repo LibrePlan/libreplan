@@ -973,6 +973,25 @@
                 <version>3.5.1</version>
             </plugin>
 
+	    <!-- SBOM generation -->
+	    <plugin>
+                <groupId>org.cyclonedx</groupId>
+                <artifactId>cyclonedx-maven-plugin</artifactId>
+                <version>2.9.1</version>
+                <executions>
+                  <execution>
+                    <phase>package</phase>
+                    <goals>
+                      <goal>makeAggregateBom</goal>
+                    </goals>
+                  </execution>
+                </executions>
+                <configuration>
+                  <outputFormat>json</outputFormat>
+                  <outputName>bom</outputName>
+                </configuration>
+              </plugin>
+
         </plugins>
     </build>
 
