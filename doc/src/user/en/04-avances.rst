@@ -16,7 +16,7 @@ It's important to note the distinction between the hours assigned to a task or p
 
 The planning view allows you to compare these situations by using information about the progress made and the hours used. This chapter will explain how to enter information to monitor progress.
 
-The philosophy behind progress monitoring is based on users defining the level at which they want to monitor their projects. For example, if users want to monitor orders, they only need to enter information for level-1 elements. If they want more precise monitoring at the task level, they must enter progress information at lower levels. The system will then aggregate the data upward through the hierarchy.
+The philosophy behind progress monitoring is based on users defining the level at which they want to monitor their projects. For example, if users want to monitor projects, they only need to enter information for level-1 elements. If they want more precise monitoring at the task level, they must enter progress information at lower levels. The system will then aggregate the data upward through the hierarchy.
 
 Managing Progress Types
 =======================
@@ -59,11 +59,11 @@ Users can create new progress types as follows:
 Entering Progress Based on Type
 ===============================
 
-Progress is entered for order elements, but it can also be entered using a shortcut from the planning tasks. Users are responsible for deciding which progress type to associate with each order element.
+Progress is entered for project elements, but it can also be entered using a shortcut from the planning tasks. Users are responsible for deciding which progress type to associate with each project element.
 
-Users can enter a single, default progress type for the entire order.
+Users can enter a single, default progress type for the entire project.
 
-Before measuring progress, users must associate the chosen progress type with the order. For example, they might choose percentage progress to measure progress on the entire task or an agreed progress rate if progress measurements agreed upon with the client will be entered in the future.
+Before measuring progress, users must associate the chosen progress type with the project. For example, they might choose percentage progress to measure progress on the entire task or an agreed progress rate if progress measurements agreed upon with the client will be entered in the future.
 
 .. figure:: images/avance.png
    :scale: 40
@@ -77,10 +77,10 @@ To enter progress measurements:
 *   In the form that appears under the "Value" and "Date" fields, enter the absolute value of the measurement and the date of the measurement.
 *   The system automatically stores the entered data.
 
-Comparing Progress for an Order Element
-=======================================
+Comparing Progress for a Project Element
+=========================================
 
-Users can graphically compare the progress made on orders with the measurements taken. All progress types have a column with a check button ("Show"). When this button is selected, the progress chart of measurements taken is displayed for the order element.
+Users can graphically compare the progress made on projects with the measurements taken. All progress types have a column with a check button ("Show"). When this button is selected, the progress chart of measurements taken is displayed for the project element.
 
 .. figure:: images/contraste-avance.png
    :scale: 40

@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Kalendarze</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="kalendarze">
+<h1 class="title">Kalendarze</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#administracja-kalendarzami" id="toc-entry-1">Administracja Kalendarzami</a><ul>
+<li><a class="reference internal" href="#tworzenie-nowego-kalendarza" id="toc-entry-2">Tworzenie Nowego Kalendarza</a></li>
+<li><a class="reference internal" href="#tworzenie-kalendarzy-pochodnych" id="toc-entry-3">Tworzenie Kalendarzy Pochodnych</a></li>
+<li><a class="reference internal" href="#tworzenie-kalendarza-przez-kopiowanie" id="toc-entry-4">Tworzenie Kalendarza Przez Kopiowanie</a></li>
+<li><a class="reference internal" href="#domyslny-kalendarz" id="toc-entry-5">Domyślny Kalendarz</a></li>
+<li><a class="reference internal" href="#przypisywanie-kalendarza-do-zasobow" id="toc-entry-6">Przypisywanie Kalendarza do Zasobów</a></li>
+<li><a class="reference internal" href="#przypisywanie-kalendarzy-do-zamowien" id="toc-entry-7">Przypisywanie Kalendarzy do Zamówień</a></li>
+<li><a class="reference internal" href="#przypisywanie-kalendarzy-do-zadan" id="toc-entry-8">Przypisywanie Kalendarzy do Zadań</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>Kalendarze to jednostki w programie, które definiują zdolność roboczą zasobów. Kalendarz składa się z serii dni w roku, przy czym każdy dzień jest podzielony na dostępne godziny pracy.</p>
+<p>Na przykład dzień wolny może mieć 0 dostępnych godzin pracy. I odwrotnie, typowy dzień roboczy może mieć wyznaczone 8 godzin jako dostępny czas pracy.</p>
+<p>Istnieją dwa podstawowe sposoby definiowania liczby godzin pracy w ciągu dnia:</p>
+<ul class="simple">
+<li><strong>Według dnia tygodnia:</strong> Ta metoda ustawia standardową liczbę godzin pracy dla każdego dnia tygodnia. Na przykład poniedziałki zazwyczaj mają 8 godzin pracy.</li>
+<li><strong>Jako wyjątek:</strong> Ta metoda pozwala na konkretne odchylenia od standardowego harmonogramu dni tygodnia. Na przykład poniedziałek 30 stycznia może mieć 10 godzin pracy, zastępując standardowy harmonogram poniedziałku.</li>
+</ul>
+<div class="section" id="administracja-kalendarzami">
+<h1><a class="toc-backref" href="#toc-entry-1">Administracja Kalendarzami</a></h1>
+<p>System kalendarzy jest hierarchiczny, umożliwiając tworzenie kalendarzy bazowych, a następnie wyprowadzanie nowych kalendarzy z nich, tworząc strukturę drzewa. Kalendarz wyprowadzony z kalendarza wyższego poziomu dziedziczy jego harmonogramy dzienne i wyjątki, chyba że zostaną jawnie zmodyfikowane. Aby skutecznie zarządzać kalendarzami, ważne jest zrozumienie następujących koncepcji:</p>
+<ul class="simple">
+<li><strong>Niezależność dni:</strong> Każdy dzień jest traktowany niezależnie, a każdy rok ma własny zestaw dni. Na przykład jeśli 8 grudnia 2009 roku jest dniem wolnym, nie oznacza to automatycznie, że 8 grudnia 2010 roku jest również dniem wolnym.</li>
+<li><strong>Dni robocze oparte na dniach tygodnia:</strong> Standardowe dni robocze są oparte na dniach tygodnia. Na przykład jeśli poniedziałki zazwyczaj mają 8 godzin pracy, to wszystkie poniedziałki we wszystkich tygodniach wszystkich lat będą miały 8 dostępnych godzin, chyba że zostanie zdefiniowany wyjątek.</li>
+<li><strong>Wyjątki i okresy wyjątków:</strong> Możesz definiować wyjątki lub okresy wyjątków, aby odejść od standardowego harmonogramu dni tygodnia. Na przykład możesz określić jeden dzień lub zakres dni z inną liczbą dostępnych godzin pracy niż ogólna reguła dla tych dni tygodnia.</li>
+</ul>
+<div class="figure">
+<img alt="images/calendar-administration.png" src="images/calendar-administration.png" style="width: 443.5px; height: 146.0px;" />
+<p class="caption">Administracja kalendarzami</p>
+</div>
+<p>Administracja kalendarzami jest dostępna za pośrednictwem menu &quot;Administracja&quot;. Stamtąd użytkownicy mogą wykonywać następujące działania:</p>
+<ol class="arabic simple">
+<li>Tworzenie nowego kalendarza od podstaw.</li>
+<li>Tworzenie kalendarza wyprowadzonego z istniejącego.</li>
+<li>Tworzenie kalendarza jako kopii istniejącego.</li>
+<li>Edytowanie istniejącego kalendarza.</li>
+</ol>
+<div class="section" id="tworzenie-nowego-kalendarza">
+<h2><a class="toc-backref" href="#toc-entry-2">Tworzenie Nowego Kalendarza</a></h2>
+<p>Aby utworzyć nowy kalendarz, kliknij przycisk &quot;Utwórz&quot;. System wyświetli formularz, w którym możesz skonfigurować następujące elementy:</p>
+<ul class="simple">
+<li><strong>Wybierz zakładkę:</strong> Wybierz zakładkę, na której chcesz pracować:<ul>
+<li><strong>Oznaczanie wyjątków:</strong> Zdefiniuj wyjątki od standardowego harmonogramu.</li>
+<li><strong>Godziny pracy na dzień:</strong> Zdefiniuj standardowe godziny pracy dla każdego dnia tygodnia.</li>
+</ul>
+</li>
+<li><strong>Oznaczanie wyjątków:</strong> Jeśli wybierzesz opcję &quot;Oznaczanie wyjątków&quot;, możesz:<ul>
+<li>Wybrać konkretny dzień w kalendarzu.</li>
+<li>Wybrać typ wyjątku. Dostępne typy to: urlop, choroba, strajk, dzień wolny i pracujące święto.</li>
+<li>Wybrać datę zakończenia okresu wyjątku. (To pole nie musi być zmieniane dla wyjątków jednodniowych.)</li>
+<li>Zdefiniować liczbę godzin pracy w ciągu dni okresu wyjątku.</li>
+<li>Usuwać wcześniej zdefiniowane wyjątki.</li>
+</ul>
+</li>
+<li><strong>Godziny pracy na dzień:</strong> Jeśli wybierzesz opcję &quot;Godziny pracy na dzień&quot;, możesz:<ul>
+<li>Zdefiniować dostępne godziny pracy dla każdego dnia tygodnia (poniedziałek, wtorek, środa, czwartek, piątek, sobota i niedziela).</li>
+<li>Zdefiniować różne tygodniowe rozkłady godzin dla przyszłych okresów.</li>
+<li>Usuwać wcześniej zdefiniowane rozkłady godzin.</li>
+</ul>
+</li>
+</ul>
+<p>Te opcje umożliwiają użytkownikom pełne dostosowanie kalendarzy do ich konkretnych potrzeb. Kliknij przycisk &quot;Zapisz&quot;, aby zachować wszelkie zmiany wprowadzone w formularzu.</p>
+<div class="figure">
+<img alt="images/calendar-edition.png" src="images/calendar-edition.png" style="width: 443.0px; height: 234.5px;" />
+<p class="caption">Edytowanie kalendarzy</p>
+</div>
+<div class="figure">
+<img alt="images/calendar-exceptions.png" src="images/calendar-exceptions.png" style="width: 443.0px; height: 194.0px;" />
+<p class="caption">Dodawanie wyjątku do kalendarza</p>
+</div>
+</div>
+<div class="section" id="tworzenie-kalendarzy-pochodnych">
+<h2><a class="toc-backref" href="#toc-entry-3">Tworzenie Kalendarzy Pochodnych</a></h2>
+<p>Kalendarz pochodny jest tworzony na podstawie istniejącego kalendarza. Dziedziczy wszystkie cechy oryginalnego kalendarza, ale możesz go modyfikować, aby uwzględnić różne opcje.</p>
+<p>Typowym przypadkiem użycia kalendarzy pochodnych jest sytuacja, gdy masz ogólny kalendarz dla kraju, takiego jak Hiszpania, i musisz utworzyć kalendarz pochodny zawierający dodatkowe dni wolne specyficzne dla regionu, takiego jak Galicja.</p>
+<p>Ważne jest, aby pamiętać, że wszelkie zmiany wprowadzone w oryginalnym kalendarzu automatycznie zostaną przeniesione do kalendarza pochodnego, chyba że w kalendarzu pochodnym zdefiniowano konkretny wyjątek. Na przykład kalendarz Hiszpanii może mieć 8-godzinny dzień pracy 17 maja. Jednak kalendarz Galicji (kalendarz pochodny) może nie mieć godzin pracy tego samego dnia, ponieważ jest to regionalne święto. Jeśli kalendarz hiszpański zostanie później zmieniony na 4 dostępne godziny pracy dziennie przez tydzień 17 maja, kalendarz galicyjski również zmieni się na 4 dostępne godziny pracy na każdy dzień w tym tygodniu, z wyjątkiem 17 maja, który pozostanie dniem wolnym od pracy ze względu na zdefiniowany wyjątek.</p>
+<div class="figure">
+<img alt="images/calendar-create-derived.png" src="images/calendar-create-derived.png" style="width: 438.0px; height: 210.5px;" />
+<p class="caption">Tworzenie kalendarza pochodnego</p>
+</div>
+<p>Aby utworzyć kalendarz pochodny:</p>
+<ul class="simple">
+<li>Przejdź do menu <em>Administracja</em>.</li>
+<li>Kliknij opcję <em>Administracja kalendarzami</em>.</li>
+<li>Wybierz kalendarz, którego chcesz użyć jako podstawy dla kalendarza pochodnego, i kliknij przycisk &quot;Utwórz&quot;.</li>
+<li>System wyświetli formularz edycji z tymi samymi cechami co formularz używany do tworzenia kalendarza od podstaw, z tą różnicą, że proponowane wyjątki i godziny pracy na dzień tygodnia będą oparte na oryginalnym kalendarzu.</li>
+</ul>
+</div>
+<div class="section" id="tworzenie-kalendarza-przez-kopiowanie">
+<h2><a class="toc-backref" href="#toc-entry-4">Tworzenie Kalendarza Przez Kopiowanie</a></h2>
+<p>Skopiowany kalendarz jest dokładnym duplikatem istniejącego kalendarza. Dziedziczy wszystkie cechy oryginalnego kalendarza, ale możesz go niezależnie modyfikować.</p>
+<p>Kluczową różnicą między skopiowanym kalendarzem a kalendarzem pochodnym jest to, jak są one dotknięte zmianami w oryginale. Jeśli oryginalny kalendarz zostanie zmodyfikowany, skopiowany kalendarz pozostaje niezmieniony. Jednak kalendarze pochodne są dotknięte zmianami wprowadzonymi w oryginale, chyba że zostanie zdefiniowany wyjątek.</p>
+<p>Typowym przypadkiem użycia skopiowanych kalendarzy jest sytuacja, gdy masz kalendarz dla jednej lokalizacji, takiej jak &quot;Pontevedra,&quot; i potrzebujesz podobnego kalendarza dla innej lokalizacji, takiej jak &quot;A Coruña,&quot; gdzie większość cech jest taka sama. Jednak zmiany w jednym kalendarzu nie powinny wpływać na drugi.</p>
+<p>Aby utworzyć skopiowany kalendarz:</p>
+<ul class="simple">
+<li>Przejdź do menu <em>Administracja</em>.</li>
+<li>Kliknij opcję <em>Administracja kalendarzami</em>.</li>
+<li>Wybierz kalendarz, który chcesz skopiować, i kliknij przycisk &quot;Utwórz&quot;.</li>
+<li>System wyświetli formularz edycji z tymi samymi cechami co formularz używany do tworzenia kalendarza od podstaw, z tą różnicą, że proponowane wyjątki i godziny pracy na dzień tygodnia będą oparte na oryginalnym kalendarzu.</li>
+</ul>
+</div>
+<div class="section" id="domyslny-kalendarz">
+<h2><a class="toc-backref" href="#toc-entry-5">Domyślny Kalendarz</a></h2>
+<p>Jeden z istniejących kalendarzy może zostać wyznaczony jako domyślny kalendarz. Ten kalendarz zostanie automatycznie przypisany do każdej jednostki w systemie zarządzanej kalendarzami, chyba że zostanie określony inny kalendarz.</p>
+<p>Aby skonfigurować domyślny kalendarz:</p>
+<ul class="simple">
+<li>Przejdź do menu <em>Administracja</em>.</li>
+<li>Kliknij opcję <em>Konfiguracja</em>.</li>
+<li>W polu <em>Domyślny kalendarz</em> wybierz kalendarz, który chcesz użyć jako domyślny kalendarz programu.</li>
+<li>Kliknij <em>Zapisz</em>.</li>
+</ul>
+<div class="figure">
+<img alt="images/default-calendar.png" src="images/default-calendar.png" style="width: 332.0px; height: 158.5px;" />
+<p class="caption">Ustawianie domyślnego kalendarza</p>
+</div>
+</div>
+<div class="section" id="przypisywanie-kalendarza-do-zasobow">
+<h2><a class="toc-backref" href="#toc-entry-6">Przypisywanie Kalendarza do Zasobów</a></h2>
+<p>Zasoby mogą być aktywowane (tj. mieć dostępne godziny pracy) tylko wtedy, gdy mają przypisany kalendarz z ważnym okresem aktywacji. Jeśli żaden kalendarz nie jest przypisany do zasobu, domyślny kalendarz jest przypisywany automatycznie, z okresem aktywacji rozpoczynającym się w dniu startowym i bez daty wygaśnięcia.</p>
+<div class="figure">
+<img alt="images/resource-calendar.png" src="images/resource-calendar.png" style="width: 449.0px; height: 257.0px;" />
+<p class="caption">Kalendarz zasobu</p>
+</div>
+<p>Możesz jednak usunąć kalendarz, który był wcześniej przypisany do zasobu, i utworzyć nowy kalendarz oparty na istniejącym. Umożliwia to pełne dostosowanie kalendarzy dla poszczególnych zasobów.</p>
+<p>Aby przypisać kalendarz do zasobu:</p>
+<ul class="simple">
+<li>Przejdź do opcji <em>Edytuj zasoby</em>.</li>
+<li>Wybierz zasób i kliknij <em>Edytuj</em>.</li>
+<li>Wybierz zakładkę &quot;Kalendarz&quot;.</li>
+<li>Zostanie wyświetlony kalendarz wraz z jego wyjątkami, godzinami pracy na dzień i okresami aktywacji.</li>
+<li>Każda zakładka będzie miała następujące opcje:<ul>
+<li><strong>Wyjątki:</strong> Zdefiniuj wyjątki i okres, do którego się odnoszą, takie jak dni urlopowe, święta lub inne dni robocze.</li>
+<li><strong>Tydzień roboczy:</strong> Modyfikuj godziny pracy dla każdego dnia tygodnia (poniedziałek, wtorek itp.).</li>
+<li><strong>Okresy aktywacji:</strong> Twórz nowe okresy aktywacji odzwierciedlające daty rozpoczęcia i zakończenia umów związanych z zasobem. Patrz poniższy obraz.</li>
+</ul>
+</li>
+<li>Kliknij <em>Zapisz</em>, aby zachować informacje.</li>
+<li>Kliknij <em>Usuń</em>, jeśli chcesz zmienić kalendarz przypisany do zasobu.</li>
+</ul>
+<div class="figure">
+<img alt="images/new-resource-calendar.png" src="images/new-resource-calendar.png" style="width: 443.0px; height: 242.5px;" />
+<p class="caption">Przypisywanie nowego kalendarza do zasobu</p>
+</div>
+</div>
+<div class="section" id="przypisywanie-kalendarzy-do-zamowien">
+<h2><a class="toc-backref" href="#toc-entry-7">Przypisywanie Kalendarzy do Zamówień</a></h2>
+<p>Projekty mogą mieć inny kalendarz niż domyślny. Aby zmienić kalendarz dla zamówienia:</p>
+<ul class="simple">
+<li>Uzyskaj dostęp do listy zamówień w przeglądzie firmy.</li>
+<li>Edytuj dane zamówienie.</li>
+<li>Uzyskaj dostęp do zakładki &quot;Informacje ogólne&quot;.</li>
+<li>Wybierz kalendarz do przypisania z menu rozwijanego.</li>
+<li>Kliknij &quot;Zapisz&quot; lub &quot;Zapisz i kontynuuj.&quot;</li>
+</ul>
+</div>
+<div class="section" id="przypisywanie-kalendarzy-do-zadan">
+<h2><a class="toc-backref" href="#toc-entry-8">Przypisywanie Kalendarzy do Zadań</a></h2>
+<p>Podobnie jak w przypadku zasobów i zamówień, możesz przypisywać konkretne kalendarze do poszczególnych zadań. Umożliwia to definiowanie różnych kalendarzy dla konkretnych etapów projektu. Aby przypisać kalendarz do zadania:</p>
+<ul class="simple">
+<li>Uzyskaj dostęp do widoku planowania projektu.</li>
+<li>Kliknij prawym przyciskiem myszy zadanie, do którego chcesz przypisać kalendarz.</li>
+<li>Wybierz opcję &quot;Przypisz kalendarz&quot;.</li>
+<li>Wybierz kalendarz do przypisania do zadania.</li>
+<li>Kliknij <em>Akceptuj</em>.</li>
+</ul>
+</div>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Conectores</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="conectores">
+<h1 class="title">Conectores</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#configuracao" id="toc-entry-1">Configuração</a></li>
+<li><a class="reference internal" href="#conector-jira" id="toc-entry-2">Conector JIRA</a><ul>
+<li><a class="reference internal" href="#configuracao-1" id="toc-entry-3">Configuração</a></li>
+<li><a class="reference internal" href="#sincronizacao" id="toc-entry-4">Sincronização</a></li>
+<li><a class="reference internal" href="#agendamento" id="toc-entry-5">Agendamento</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#conector-tim-enterprise" id="toc-entry-6">Conector Tim Enterprise</a><ul>
+<li><a class="reference internal" href="#configuracao-2" id="toc-entry-7">Configuração</a></li>
+<li><a class="reference internal" href="#exportacao" id="toc-entry-8">Exportação</a></li>
+<li><a class="reference internal" href="#agendamento-da-exportacao" id="toc-entry-9">Agendamento da Exportação</a></li>
+<li><a class="reference internal" href="#importacao" id="toc-entry-10">Importação</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#conector-de-e-mail" id="toc-entry-11">Conector de E-mail</a><ul>
+<li><a class="reference internal" href="#configuracao-3" id="toc-entry-12">Configuração</a></li>
+<li><a class="reference internal" href="#editar-modelo-de-e-mail" id="toc-entry-13">Editar Modelo de E-mail</a></li>
+<li><a class="reference internal" href="#agendamento-de-e-mails" id="toc-entry-14">Agendamento de E-mails</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>Os conectores são aplicações cliente do <em>LibrePlan</em> que podem ser utilizadas para comunicar com servidores (web) para obter dados, processá-los e armazená-los. Actualmente, existem três conectores: o conector JIRA, o conector Tim Enterprise e o conector de E-mail.</p>
+<div class="section" id="configuracao">
+<h1><a class="toc-backref" href="#toc-entry-1">Configuração</a></h1>
+<p>Os conectores devem ser configurados correctamente antes de poderem ser utilizados. Podem ser configurados a partir do ecrã &quot;Configurações Principais&quot; no separador &quot;Conectores&quot;.</p>
+<p>O ecrã do conector inclui:</p>
+<ul class="simple">
+<li><strong>Lista pendente:</strong> Uma lista de conectores disponíveis.</li>
+<li><strong>Ecrã de edição de propriedades:</strong> Um formulário de edição de propriedades para o conector seleccionado.</li>
+<li><strong>Botão de teste de ligação:</strong> Um botão para testar a ligação com o conector.</li>
+</ul>
+<p>Seleccione o conector que pretende configurar na lista pendente de conectores. Será apresentado um formulário de editor de propriedades para o conector seleccionado. No formulário de editor de propriedades, pode alterar os valores das propriedades conforme necessário e testar as suas configurações usando o botão &quot;Testar ligação&quot;.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">As propriedades são configuradas com valores predefinidos. A propriedade mais importante é &quot;Activado&quot;. Por predefinição, está definido como &quot;N&quot;. Isto indica que o conector não será utilizado a menos que altere o valor para &quot;Y&quot; e guarde as alterações.</p>
+</div>
+</div>
+<div class="section" id="conector-jira">
+<h1><a class="toc-backref" href="#toc-entry-2">Conector JIRA</a></h1>
+<p>O JIRA é um sistema de rastreamento de problemas e projectos.</p>
+<p>O conector JIRA é uma aplicação que pode ser utilizada para solicitar dados do servidor web JIRA para problemas JIRA e processar a resposta. A solicitação é baseada em etiquetas JIRA. No JIRA, as etiquetas podem ser utilizadas para categorizar problemas. A solicitação é estruturada da seguinte forma: obter todos os problemas que são categorizados por este nome de etiqueta.</p>
+<p>O conector recebe a resposta, que neste caso são os problemas, e converte-os em &quot;Elementos de Encomenda&quot; e &quot;Folhas de Horas&quot; do <em>LibrePlan</em>.</p>
+<p>O <em>conector JIRA</em> deve ser configurado correctamente antes de poder ser utilizado.</p>
+<div class="section" id="configuracao-1">
+<h2><a class="toc-backref" href="#toc-entry-3">Configuração</a></h2>
+<p>No ecrã &quot;Configurações Principais&quot;, escolha o separador &quot;Conectores&quot;. No ecrã de conectores, seleccione o conector JIRA na lista pendente. Será então apresentado um ecrã de editor de propriedades.</p>
+<p>Neste ecrã, pode configurar os seguintes valores de propriedades:</p>
+<ul class="simple">
+<li><strong>Activado:</strong> Y/N, indicando se pretende utilizar o conector JIRA. O valor predefinido é &quot;N.&quot;</li>
+<li><strong>URL do servidor:</strong> O caminho absoluto para o servidor web JIRA.</li>
+<li><strong>Nome de utilizador e palavra-passe:</strong> As credenciais do utilizador para autorização.</li>
+<li><strong>Etiquetas JIRA: lista separada por vírgulas de etiquetas ou URL:</strong> Pode introduzir o URL da etiqueta ou uma lista de etiquetas separada por vírgulas.</li>
+<li><strong>Tipo de horas:</strong> O tipo de horas de trabalho. O valor predefinido é &quot;Predefinido.&quot;</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><strong>Etiquetas JIRA:</strong> Actualmente, o servidor web JIRA não suporta fornecer uma lista de todas as etiquetas disponíveis. Como solução alternativa, desenvolvemos um script PHP simples que realiza uma consulta SQL simples na base de dados JIRA para obter todas as etiquetas distintas. Pode utilizar este script PHP como &quot;URL de etiquetas JIRA&quot; ou introduzir as etiquetas que pretende como texto separado por vírgulas no campo &quot;Etiquetas JIRA&quot;.</p>
+</div>
+<p>Por fim, clique no botão &quot;Testar ligação&quot; para testar se consegue ligar-se ao servidor web JIRA e que as suas configurações estão correctas.</p>
+</div>
+<div class="section" id="sincronizacao">
+<h2><a class="toc-backref" href="#toc-entry-4">Sincronização</a></h2>
+<p>Na janela do projecto, em &quot;Dados gerais&quot;, pode iniciar a sincronização de elementos de encomenda com problemas JIRA.</p>
+<p>Clique no botão &quot;Sincronizar com JIRA&quot; para iniciar a sincronização.</p>
+<ul class="simple">
+<li>Se for a primeira vez, será apresentada uma janela pop-up (com uma lista de etiquetas com preenchimento automático). Nesta janela, pode seleccionar uma etiqueta para sincronizar e clicar no botão &quot;Iniciar sincronização&quot; para começar o processo de sincronização, ou clicar no botão &quot;Cancelar&quot; para o cancelar.</li>
+<li>Se uma etiqueta já estiver sincronizada, a última data de sincronização e a etiqueta serão apresentadas no ecrã JIRA. Neste caso, não será apresentada nenhuma janela pop-up para seleccionar uma etiqueta. Em vez disso, o processo de sincronização iniciará directamente para essa etiqueta (já sincronizada) apresentada.</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">A relação entre &quot;Encomenda&quot; e &quot;etiqueta&quot; é de um para um. Apenas uma etiqueta pode ser sincronizada com uma &quot;Encomenda.&quot;</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Após uma (re)sincronização bem-sucedida, as informações serão escritas na base de dados e o ecrã JIRA será actualizado com a última data de sincronização e etiqueta.</p>
+</div>
+<p>A (re)sincronização é realizada em duas fases:</p>
+<ul class="simple">
+<li><strong>Fase 1:</strong> Sincronização de elementos de encomenda, incluindo atribuição e medições de progresso.</li>
+<li><strong>Fase 2:</strong> Sincronização de folhas de horas.</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Se a Fase 1 falhar, a Fase 2 não será realizada e nenhuma informação será escrita na base de dados.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">As informações de sucesso ou falha serão apresentadas numa janela pop-up.</p>
+</div>
+<p>Após a conclusão bem-sucedida da sincronização, o resultado será apresentado no separador &quot;Estrutura de Decomposição do Trabalho (tarefas WBS)&quot; do ecrã &quot;Detalhes do Projecto&quot;. Nesta interface, há duas alterações em relação ao WBS padrão:</p>
+<ul class="simple">
+<li>A coluna &quot;Total de horas da tarefa&quot; é não modificável (apenas leitura) porque a sincronização é unidireccional. As horas das tarefas só podem ser actualizadas no servidor web JIRA.</li>
+<li>A coluna &quot;Código&quot; apresenta as chaves dos problemas JIRA e são também hiperligações para os problemas JIRA. Clique na chave desejada se pretender ir para o documento dessa chave (problema JIRA).</li>
+</ul>
+</div>
+<div class="section" id="agendamento">
+<h2><a class="toc-backref" href="#toc-entry-5">Agendamento</a></h2>
+<p>A ressincronização de problemas JIRA também pode ser realizada através do agendador. Aceda ao ecrã &quot;Agendamento de tarefas&quot;. Nesse ecrã, pode configurar uma tarefa JIRA para realizar a sincronização. A tarefa procura as últimas etiquetas sincronizadas na base de dados e ressincroniza-as em conformidade. Consulte também o Manual do Agendador.</p>
+</div>
+</div>
+<div class="section" id="conector-tim-enterprise">
+<h1><a class="toc-backref" href="#toc-entry-6">Conector Tim Enterprise</a></h1>
+<p>O Tim Enterprise é um produto holandês da Aenova. É uma aplicação web para a administração do tempo gasto em projectos e tarefas.</p>
+<p>O conector Tim é uma aplicação que pode ser utilizada para comunicar com o servidor Tim Enterprise para:</p>
+<ul class="simple">
+<li>Exportar todas as horas gastas por um trabalhador (utilizador) num projecto que poderiam ser registadas no Tim Enterprise.</li>
+<li>Importar todos os horários do trabalhador (utilizador) para planear o recurso de forma eficaz.</li>
+</ul>
+<p>O <em>conector Tim</em> deve ser configurado correctamente antes de poder ser utilizado.</p>
+<div class="section" id="configuracao-2">
+<h2><a class="toc-backref" href="#toc-entry-7">Configuração</a></h2>
+<p>No ecrã &quot;Configurações Principais&quot;, escolha o separador &quot;Conectores&quot;. No ecrã de conectores, seleccione o conector Tim na lista pendente. Será então apresentado um ecrã de editor de propriedades.</p>
+<p>Neste ecrã, pode configurar os seguintes valores de propriedades:</p>
+<ul class="simple">
+<li><strong>Activado:</strong> Y/N, indicando se pretende utilizar o conector Tim. O valor predefinido é &quot;N.&quot;</li>
+<li><strong>URL do servidor:</strong> O caminho absoluto para o servidor Tim Enterprise.</li>
+<li><strong>Nome de utilizador e palavra-passe:</strong> As credenciais do utilizador para autorização.</li>
+<li><strong>Número de dias de folha de horas para Tim:</strong> O número de dias anteriores que pretende exportar as folhas de horas.</li>
+<li><strong>Número de dias de horário do Tim:</strong> O número de dias futuros que pretende importar os horários.</li>
+<li><strong>Factor de produtividade:</strong> Horas de trabalho efectivas em percentagem. O valor predefinido é &quot;100%.&quot;</li>
+<li><strong>IDs de departamento para importar horário:</strong> IDs de departamentos separados por vírgulas.</li>
+</ul>
+<p>Por fim, clique no botão &quot;Testar ligação&quot; para testar se consegue ligar-se ao servidor Tim Enterprise e que as suas configurações estão correctas.</p>
+</div>
+<div class="section" id="exportacao">
+<h2><a class="toc-backref" href="#toc-entry-8">Exportação</a></h2>
+<p>Na janela do projecto, em &quot;Dados gerais&quot;, pode iniciar a exportação de folhas de horas para o servidor Tim Enterprise.</p>
+<p>Introduza o &quot;Código de produto Tim&quot; e clique no botão &quot;Exportar para Tim&quot; para iniciar a exportação.</p>
+<p>O conector Tim adiciona os seguintes campos juntamente com o código de produto:</p>
+<ul class="simple">
+<li>O nome completo do trabalhador/utilizador.</li>
+<li>A data em que o trabalhador trabalhou numa tarefa.</li>
+<li>O esforço, ou horas trabalhadas na tarefa.</li>
+<li>Uma opção que indica se o Tim Enterprise deve actualizar o registo ou inserir um novo.</li>
+</ul>
+<p>A resposta do Tim Enterprise contém apenas uma lista de IDs de registos (números inteiros). Isto dificulta a determinação do que correu mal, uma vez que a lista de respostas contém apenas números não relacionados com os campos da solicitação. Assume-se que a solicitação de exportação (registo no Tim) foi bem-sucedida se todas as entradas da lista não contiverem valores &quot;0&quot;. Caso contrário, a solicitação de exportação falhou para as entradas que contêm valores &quot;0&quot;. Por conseguinte, não é possível ver qual solicitação falhou, uma vez que as entradas da lista contêm apenas o valor &quot;0.&quot; A única forma de determinar isto é examinar o ficheiro de registo no servidor Tim Enterprise.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Após uma exportação bem-sucedida, as informações serão escritas na base de dados e o ecrã Tim será actualizado com a última data de exportação e código de produto.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">As informações de sucesso ou falha serão apresentadas numa janela pop-up.</p>
+</div>
+</div>
+<div class="section" id="agendamento-da-exportacao">
+<h2><a class="toc-backref" href="#toc-entry-9">Agendamento da Exportação</a></h2>
+<p>O processo de exportação também pode ser realizado através do agendador. Aceda ao ecrã &quot;Agendamento de Tarefas&quot;. Nesse ecrã, pode configurar uma tarefa de Exportação Tim. A tarefa procura as últimas folhas de horas exportadas na base de dados e reexporta-as em conformidade. Consulte também o manual do Agendador.</p>
+</div>
+<div class="section" id="importacao">
+<h2><a class="toc-backref" href="#toc-entry-10">Importação</a></h2>
+<p>A importação de horários só funciona com a ajuda do agendador. Não existe uma interface de utilizador concebida para isto, uma vez que não é necessária nenhuma entrada do utilizador. Aceda ao ecrã &quot;Agendamento de tarefas&quot; e configure uma tarefa de Importação Tim. A tarefa percorre todos os departamentos configurados nas propriedades do conector e importa todos os horários de cada departamento. Consulte também o Manual do Agendador.</p>
+<p>Para a importação, o conector Tim adiciona os seguintes campos na solicitação:</p>
+<ul class="simple">
+<li><strong>Período:</strong> O período (data de início - data de fim) para o qual pretende importar o horário. Pode ser fornecido como critério de filtro.</li>
+<li><strong>Departamento:</strong> O departamento para o qual pretende importar o horário. Os departamentos são configuráveis.</li>
+<li>Os campos em que está interessado (como informações de pessoa, CategoriaHorário, etc.) que o servidor Tim deve incluir na sua resposta.</li>
+</ul>
+<p>A resposta de importação contém os seguintes campos, que são suficientes para gerir os dias de excepção no <em>LibrePlan</em>:</p>
+<ul class="simple">
+<li><strong>Informações de pessoa:</strong> Nome e nome de rede.</li>
+<li><strong>Departamento:</strong> O departamento em que o trabalhador está a trabalhar.</li>
+<li><strong>Categoria de horário:</strong> Informações sobre a presença/ausência (Aanwzig/afwezig) do trabalhador e o motivo (tipo de excepção do <em>LibrePlan</em>) caso o trabalhador esteja ausente.</li>
+<li><strong>Data:</strong> A data em que o trabalhador está presente/ausente.</li>
+<li><strong>Hora:</strong> A hora de início da presença/ausência, por exemplo, 08:00.</li>
+<li><strong>Duração:</strong> O número de horas em que o trabalhador está presente/ausente.</li>
+</ul>
+<p>Ao converter a resposta de importação para &quot;Dia de excepção&quot; do <em>LibrePlan</em>, as seguintes traduções são tidas em conta:</p>
+<ul class="simple">
+<li>Se a categoria de horário contiver o nome &quot;Vakantie&quot;, será traduzida para &quot;RESOURCE HOLIDAY.&quot;</li>
+<li>A categoria de horário &quot;Feestdag&quot; será traduzida para &quot;BANK HOLIDAY.&quot;</li>
+<li>Todas as restantes, como &quot;Jus uren&quot;, &quot;PLB uren&quot;, etc., devem ser adicionadas manualmente aos &quot;Dias de Excepção do Calendário&quot;.</li>
+</ul>
+<p>Além disso, na resposta de importação, o horário é dividido em duas ou três partes por dia: por exemplo, horário-manhã, horário-tarde e horário-noite. No entanto, o <em>LibrePlan</em> permite apenas um &quot;Tipo de excepção&quot; por dia. O conector Tim é então responsável por fundir estas partes como um único tipo de excepção. Ou seja, a categoria de horário com a duração mais longa é assumida como o tipo de excepção válido, mas a duração total é a soma de todas as durações destas partes de categoria.</p>
+<p>Ao contrário do <em>LibrePlan</em>, no Tim Enterprise, a duração total em caso de o trabalhador estar de férias significa que o trabalhador não está disponível durante essa duração total. No entanto, no <em>LibrePlan</em>, se o trabalhador estiver de férias, a duração total deve ser zero. O conector Tim também trata desta tradução.</p>
+</div>
+</div>
+<div class="section" id="conector-de-e-mail">
+<h1><a class="toc-backref" href="#toc-entry-11">Conector de E-mail</a></h1>
+<p>O e-mail é um método de troca de mensagens digitais de um autor para um ou mais destinatários.</p>
+<p>O conector de e-mail pode ser utilizado para definir as propriedades de ligação do servidor SMTP (Simple Mail Transfer Protocol).</p>
+<p>O <em>conector de e-mail</em> deve ser configurado correctamente antes de poder ser utilizado.</p>
+<div class="section" id="configuracao-3">
+<h2><a class="toc-backref" href="#toc-entry-12">Configuração</a></h2>
+<p>No ecrã &quot;Configurações Principais&quot;, escolha o separador &quot;Conectores&quot;. No ecrã de conectores, seleccione o conector de E-mail na lista pendente. Será então apresentado um ecrã de editor de propriedades.</p>
+<p>Neste ecrã, pode configurar os seguintes valores de propriedades:</p>
+<ul class="simple">
+<li><strong>Activado:</strong> Y/N, indicando se pretende utilizar o conector de E-mail. O valor predefinido é &quot;N.&quot;</li>
+<li><strong>Protocolo:</strong> O tipo de protocolo SMTP.</li>
+<li><strong>Anfitrião:</strong> O caminho absoluto para o servidor SMTP.</li>
+<li><strong>Porta:</strong> A porta do servidor SMTP.</li>
+<li><strong>Endereço de origem:</strong> O endereço de e-mail do remetente da mensagem.</li>
+<li><strong>Nome de utilizador:</strong> O nome de utilizador para o servidor SMTP.</li>
+<li><strong>Palavra-passe:</strong> A palavra-passe para o servidor SMTP.</li>
+</ul>
+<p>Por fim, clique no botão &quot;Testar ligação&quot; para testar se consegue ligar-se ao servidor SMTP e que as suas configurações estão correctas.</p>
+</div>
+<div class="section" id="editar-modelo-de-e-mail">
+<h2><a class="toc-backref" href="#toc-entry-13">Editar Modelo de E-mail</a></h2>
+<p>Na janela do projecto, em &quot;Configuração&quot; e depois &quot;Editar Modelos de E-mail&quot;, pode modificar os modelos de e-mail para mensagens.</p>
+<p>Pode escolher:</p>
+<ul class="simple">
+<li><strong>Idioma do modelo:</strong></li>
+<li><strong>Tipo de modelo:</strong></li>
+<li><strong>Assunto do e-mail:</strong></li>
+<li><strong>Conteúdo do modelo:</strong></li>
+</ul>
+<p>É necessário especificar o idioma porque a aplicação web enviará e-mails aos utilizadores no idioma que escolheram nas suas preferências. É necessário escolher o tipo de modelo. O tipo é a função do utilizador, o que significa que este e-mail será enviado apenas aos utilizadores que estejam na função seleccionada (tipo). É necessário definir o assunto do e-mail. O assunto é um breve resumo do tópico da mensagem. É necessário definir o conteúdo do e-mail. Trata-se de qualquer informação que pretenda enviar ao utilizador. Existem também algumas palavras-chave que pode utilizar na mensagem; a aplicação web irá analisá-las e definir um novo valor em vez da palavra-chave.</p>
+</div>
+<div class="section" id="agendamento-de-e-mails">
+<h2><a class="toc-backref" href="#toc-entry-14">Agendamento de E-mails</a></h2>
+<p>O envio de e-mails só pode ser realizado através do agendador. Aceda a &quot;Configuração&quot; e depois ao ecrã &quot;Agendamento de Tarefas&quot;. Nesse ecrã, pode configurar uma tarefa de envio de e-mails. A tarefa obtém uma lista de notificações de e-mail, reúne dados e envia-os para o e-mail do utilizador. Consulte também o manual do Agendador.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">As informações de sucesso ou falha serão apresentadas numa janela pop-up.</p>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

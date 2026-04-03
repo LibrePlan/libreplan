@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Gestão de Custos</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="gestao-de-custos">
+<h1 class="title">Gestão de Custos</h1>
+
+<div class="contents topic" id="contents">
+<span id="costes"></span><p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#custos" id="toc-entry-1">Custos</a><ul>
+<li><a class="reference internal" href="#gestao-de-tipos-de-horas" id="toc-entry-2">Gestão de Tipos de Horas</a></li>
+<li><a class="reference internal" href="#categorias-de-custo" id="toc-entry-3">Categorias de Custo</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="custos">
+<h1><a class="toc-backref" href="#toc-entry-1">Custos</a></h1>
+<p>A gestão de custos permite aos utilizadores estimar os custos dos recursos utilizados num projecto. Para gerir custos, as seguintes entidades devem ser definidas:</p>
+<ul class="simple">
+<li><strong>Tipos de Horas:</strong> Indicam os tipos de horas trabalhadas por um recurso. Os utilizadores podem definir tipos de horas tanto para máquinas como para trabalhadores. Exemplos de tipos de horas incluem: &quot;Horas adicionais pagas a 20€ por hora.&quot; Os seguintes campos podem ser definidos para tipos de horas:<ul>
+<li><strong>Código:</strong> Código externo para o tipo de horas.</li>
+<li><strong>Nome:</strong> Nome do tipo de horas. Por exemplo, &quot;Adicional&quot;.</li>
+<li><strong>Taxa Predefinida:</strong> Taxa padrão básica para o tipo de horas.</li>
+<li><strong>Activação:</strong> Indica se o tipo de horas está activo ou não.</li>
+</ul>
+</li>
+<li><strong>Categorias de Custo:</strong> As categorias de custo definem os custos associados a diferentes tipos de horas durante períodos específicos (que podem ser indefinidos). Por exemplo, o custo das horas adicionais para trabalhadores qualificados de primeiro grau no ano seguinte é de 24€ por hora. As categorias de custo incluem:<ul>
+<li><strong>Nome:</strong> Nome da categoria de custo.</li>
+<li><strong>Activação:</strong> Indica se a categoria está activa ou não.</li>
+<li><strong>Lista de Tipos de Horas:</strong> Esta lista define os tipos de horas incluídos na categoria de custo. Especifica os períodos e as taxas para cada tipo de horas. Por exemplo, à medida que as taxas mudam, cada ano pode ser incluído nesta lista como um período de tipo de horas, com uma taxa horária específica para cada tipo de horas (que pode diferir da taxa horária predefinida para esse tipo de horas).</li>
+</ul>
+</li>
+</ul>
+<div class="section" id="gestao-de-tipos-de-horas">
+<h2><a class="toc-backref" href="#toc-entry-2">Gestão de Tipos de Horas</a></h2>
+<p>Os utilizadores devem seguir estes passos para registar tipos de horas:</p>
+<ul class="simple">
+<li>Seleccione &quot;Gerir tipos de horas trabalhadas&quot; no menu &quot;Administração&quot;.</li>
+<li>O programa apresenta uma lista dos tipos de horas existentes.</li>
+</ul>
+<div class="figure">
+<img alt="images/hour-type-list.png" src="images/hour-type-list.png" style="width: 443.09999999999997px; height: 81.19999999999999px;" />
+<p class="caption">Lista de Tipos de Horas</p>
+</div>
+<ul class="simple">
+<li>Clique em &quot;Editar&quot; ou &quot;Criar&quot;.</li>
+<li>O programa apresenta um formulário de edição de tipos de horas.</li>
+</ul>
+<div class="figure">
+<img alt="images/hour-type-edit.png" src="images/hour-type-edit.png" style="width: 428.5px; height: 106.5px;" />
+<p class="caption">Edição de Tipos de Horas</p>
+</div>
+<ul class="simple">
+<li>Os utilizadores podem introduzir ou alterar:<ul>
+<li>O nome do tipo de horas.</li>
+<li>O código do tipo de horas.</li>
+<li>A taxa predefinida.</li>
+<li>Activação/desactivação do tipo de horas.</li>
+</ul>
+</li>
+<li>Clique em &quot;Guardar&quot; ou &quot;Guardar e continuar&quot;.</li>
+</ul>
+</div>
+<div class="section" id="categorias-de-custo">
+<h2><a class="toc-backref" href="#toc-entry-3">Categorias de Custo</a></h2>
+<p>Os utilizadores devem seguir estes passos para registar categorias de custo:</p>
+<ul class="simple">
+<li>Seleccione &quot;Gerir categorias de custo&quot; no menu &quot;Administração&quot;.</li>
+<li>O programa apresenta uma lista das categorias existentes.</li>
+</ul>
+<div class="figure">
+<img alt="images/category-cost-list.png" src="images/category-cost-list.png" style="width: 431.5px; height: 94.5px;" />
+<p class="caption">Lista de Categorias de Custo</p>
+</div>
+<ul class="simple">
+<li>Clique no botão &quot;Editar&quot; ou &quot;Criar&quot;.</li>
+<li>O programa apresenta um formulário de edição de categorias de custo.</li>
+</ul>
+<div class="figure">
+<img alt="images/category-cost-edit.png" src="images/category-cost-edit.png" style="width: 434.5px; height: 169.0px;" />
+<p class="caption">Edição de Categorias de Custo</p>
+</div>
+<ul class="simple">
+<li>Os utilizadores introduzem ou alteram:<ul>
+<li>O nome da categoria de custo.</li>
+<li>A activação/desactivação da categoria de custo.</li>
+<li>A lista de tipos de horas incluídos na categoria. Todos os tipos de horas têm os seguintes campos:<ul>
+<li><strong>Tipo de Horas:</strong> Escolha um dos tipos de horas existentes no sistema. Se não existir nenhum, deve ser criado um tipo de horas (este processo é explicado na subsecção anterior).</li>
+<li><strong>Data de Início e Fim:</strong> As datas de início e fim (esta última é opcional) para o período que se aplica à categoria de custo.</li>
+<li><strong>Taxa Horária:</strong> A taxa horária para esta categoria específica.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Clique em &quot;Guardar&quot; ou &quot;Guardar e continuar&quot;.</li>
+</ul>
+<p>A atribuição de categorias de custo a recursos está descrita no capítulo sobre recursos. Vá à secção &quot;Recursos&quot;.</p>
+</div>
+</div>
+</div>
+</body>
+</html>

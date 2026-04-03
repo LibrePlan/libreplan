@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>资源管理</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="section-1">
+<h1 class="title">资源管理</h1>
+
+<div class="contents topic" id="contents">
+<span id="recursos"></span><p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#section-2" id="toc-entry-1">员工资源</a></li>
+<li><a class="reference internal" href="#section-3" id="toc-entry-2">机器资源</a></li>
+<li><a class="reference internal" href="#section-4" id="toc-entry-3">管理资源</a><ul>
+<li><a class="reference internal" href="#section-5" id="toc-entry-4">管理员工</a></li>
+<li><a class="reference internal" href="#section-6" id="toc-entry-5">管理机器</a></li>
+<li><a class="reference internal" href="#section-7" id="toc-entry-6">虚拟员工组</a></li>
+<li><a class="reference internal" href="#section-8" id="toc-entry-7">队列型资源</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>程序管理两种不同类型的资源：员工和机器。</p>
+<div class="section" id="section-2">
+<h1><a class="toc-backref" href="#toc-entry-1">员工资源</a></h1>
+<p>员工资源代表公司的员工。其主要特性包括：</p>
+<ul class="simple">
+<li>符合一个或多个通用或员工特定标准。</li>
+<li>可以特定分配给任务。</li>
+<li>可以通用分配给需要资源标准的任务。</li>
+<li>可以根据需要拥有默认或特定的日历。</li>
+</ul>
+</div>
+<div class="section" id="section-3">
+<h1><a class="toc-backref" href="#toc-entry-2">机器资源</a></h1>
+<p>机器资源代表公司的机械设备。其主要特性包括：</p>
+<ul class="simple">
+<li>符合一个或多个通用或机器特定标准。</li>
+<li>可以特定分配给任务。</li>
+<li>可以通用分配给需要机器标准的任务。</li>
+<li>可以根据需要拥有默认或特定的日历。</li>
+<li>程序包含一个配置界面，可以定义 <em>alpha</em> 值来表示机器/员工比率。<ul>
+<li><em>alpha</em> 值表示操作机器所需的员工时间量。例如，alpha 值为 0.5 意味着每 8 小时的机器运作需要 4 小时的员工时间。</li>
+<li>用户可以特定将 <em>alpha</em> 值分配给员工，指定该员工在该比例时间内操作机器。</li>
+<li>用户也可以基于标准进行通用分配，以便将使用百分比分配给符合该标准且有可用时间的所有资源。通用分配的工作方式与之前描述的任务通用分配类似。</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="section-4">
+<h1><a class="toc-backref" href="#toc-entry-3">管理资源</a></h1>
+<p>用户可以通过导航至「资源」部分在公司内创建、编辑和停用（但不能永久删除）员工和机器。此部分提供以下功能：</p>
+<ul class="simple">
+<li><strong>员工列表：</strong> 显示员工的编号列表，允许用户管理其详细信息。</li>
+<li><strong>机器列表：</strong> 显示机器的编号列表，允许用户管理其详细信息。</li>
+</ul>
+<div class="section" id="section-5">
+<h2><a class="toc-backref" href="#toc-entry-4">管理员工</a></h2>
+<p>员工管理通过前往「资源」部分，然后选择「员工列表」来访问。用户可以通过点击标准编辑图标来编辑列表中的任何员工。</p>
+<p>编辑员工时，用户可以访问以下选项卡：</p>
+<ol class="arabic">
+<li><p class="first"><strong>员工详细信息：</strong> 此选项卡允许用户编辑员工的基本识别详细信息：</p>
+<ul class="simple">
+<li>名字</li>
+<li>姓氏</li>
+<li>国家身份证件（DNI）</li>
+<li>队列型资源（见队列型资源章节）</li>
+</ul>
+<div class="figure">
+<img alt="images/worker-personal-data.png" src="images/worker-personal-data.png" style="width: 444.5px; height: 102.0px;" />
+<p class="caption">编辑员工个人详细信息</p>
+</div>
+</li>
+<li><p class="first"><strong>标准：</strong> 此选项卡用于配置员工符合的标准。用户可以分配任何他们认为合适的员工或通用标准。员工符合标准对于最大化程序功能至关重要。要分配标准：</p>
+<ol class="lowerroman simple">
+<li>点击「添加标准」按钮。</li>
+<li>搜索要添加的标准并选择最合适的一个。</li>
+<li>点击「添加」按钮。</li>
+<li>选择标准开始适用的开始日期。</li>
+<li>选择将标准应用于资源的结束日期。如果标准被认为是无限期的，此日期为可选。</li>
+</ol>
+<div class="figure">
+<img alt="images/worker-criterions.png" src="images/worker-criterions.png" style="width: 443.5px; height: 147.0px;" />
+<p class="caption">将标准与员工相关联</p>
+</div>
+</li>
+<li><p class="first"><strong>日历：</strong> 此选项卡允许用户为员工配置特定的日历。所有员工都分配了默认日历；但是，可以根据现有日历为每个员工分配特定的日历。</p>
+<div class="figure">
+<img alt="images/worker-calendar.png" src="images/worker-calendar.png" style="width: 442.5px; height: 247.0px;" />
+<p class="caption">资源的日历选项卡</p>
+</div>
+</li>
+<li><p class="first"><strong>成本类别：</strong> 此选项卡允许用户配置员工在给定期间符合的成本类别。此信息用于计算与员工相关的项目成本。</p>
+<div class="figure">
+<img alt="images/worker-costcategory.png" src="images/worker-costcategory.png" style="width: 443.0px; height: 129.0px;" />
+<p class="caption">资源的成本类别选项卡</p>
+</div>
+</li>
+</ol>
+<p>资源分配在「资源分配」部分说明。</p>
+</div>
+<div class="section" id="section-6">
+<h2><a class="toc-backref" href="#toc-entry-5">管理机器</a></h2>
+<p>机器在所有方面都被视为资源。因此，与员工类似，机器可以被管理并分配给任务。资源分配在「资源分配」部分涵盖，将说明机器的特定功能。</p>
+<p>机器从「资源」菜单项进行管理。此部分有一个称为「机器列表」的操作，显示公司的机器。用户可以从此列表编辑或删除机器。</p>
+<p>编辑机器时，系统显示一系列选项卡以管理不同的详细信息：</p>
+<ol class="arabic">
+<li><p class="first"><strong>机器详细信息：</strong> 此选项卡允许用户编辑机器的识别详细信息：</p>
+<ol class="lowerroman simple">
+<li>名称</li>
+<li>机器代码</li>
+<li>机器描述</li>
+</ol>
+<div class="figure">
+<img alt="images/machine-data.png" src="images/machine-data.png" style="width: 444.0px; height: 97.0px;" />
+<p class="caption">编辑机器详细信息</p>
+</div>
+</li>
+<li><p class="first"><strong>标准：</strong> 与员工资源一样，此选项卡用于添加机器符合的标准。可以为机器分配两种类型的标准：机器特定或通用。员工标准不能分配给机器。要分配标准：</p>
+<ol class="lowerroman simple">
+<li>点击「添加标准」按钮。</li>
+<li>搜索要添加的标准并选择最合适的一个。</li>
+<li>选择标准开始适用的开始日期。</li>
+<li>选择将标准应用于资源的结束日期。如果标准被认为是无限期的，此日期为可选。</li>
+<li>点击「保存并继续」按钮。</li>
+</ol>
+<div class="figure">
+<img alt="images/machine-criterions.png" src="images/machine-criterions.png" style="width: 444.0px; height: 140.0px;" />
+<p class="caption">为机器分配标准</p>
+</div>
+</li>
+<li><p class="first"><strong>日历：</strong> 此选项卡允许用户为机器配置特定的日历。所有机器都分配了默认日历；但是，可以根据现有日历为每台机器分配特定的日历。</p>
+<div class="figure">
+<img alt="images/machine-calendar.png" src="images/machine-calendar.png" style="width: 443.5px; height: 216.5px;" />
+<p class="caption">为机器分配日历</p>
+</div>
+</li>
+<li><p class="first"><strong>机器配置：</strong> 此选项卡允许用户配置机器与员工资源的比率。机器有一个 alpha 值，表示机器/员工比率。如前所述，alpha 值为 0.5 表示每个完整机器运作日需要 0.5 个员工。根据 alpha 值，一旦机器被分配给任务，系统会自动分配与机器相关联的员工。将员工与机器相关联可以通过两种方式完成：</p>
+<ol class="lowerroman simple">
+<li><strong>特定分配：</strong> 指定员工被分配给机器的日期范围。这是特定分配，因为当机器被排程时，系统会自动为员工分配工时。</li>
+<li><strong>通用分配：</strong> 指定必须由分配给机器的员工符合的标准。这建立了符合标准的员工的通用分配。</li>
+</ol>
+<div class="figure">
+<img alt="images/machine-configuration.png" src="images/machine-configuration.png" style="width: 442.5px; height: 231.5px;" />
+<p class="caption">机器配置</p>
+</div>
+</li>
+<li><p class="first"><strong>成本类别：</strong> 此选项卡允许用户配置机器在给定期间符合的成本类别。此信息用于计算与机器相关的项目成本。</p>
+<div class="figure">
+<img alt="images/machine-costcategory.png" src="images/machine-costcategory.png" style="width: 439.5px; height: 103.0px;" />
+<p class="caption">为机器分配成本类别</p>
+</div>
+</li>
+</ol>
+</div>
+<div class="section" id="section-7">
+<h2><a class="toc-backref" href="#toc-entry-6">虚拟员工组</a></h2>
+<p>程序允许用户创建虚拟员工组，这些不是真实员工，而是模拟人员。这些组使用户能够根据日历设置，模拟特定时间内生产能力增加的情况。</p>
+<p>虚拟员工组允许用户评估雇用和分配符合特定标准的人员将如何影响项目规划，从而帮助决策过程。</p>
+<p>创建虚拟员工组的选项卡与配置员工的选项卡相同：</p>
+<ul class="simple">
+<li>一般详细信息</li>
+<li>分配的标准</li>
+<li>日历</li>
+<li>关联工时</li>
+</ul>
+<p>虚拟员工组和实际员工之间的区别在于虚拟员工组有一个组名称和数量，代表组中真实人员的数量。还有一个注释字段，可以提供额外信息，例如哪个项目需要相当于虚拟员工组的招聘。</p>
+<div class="figure">
+<img alt="images/virtual-resources.png" src="images/virtual-resources.png" style="width: 424.5px; height: 109.0px;" />
+<p class="caption">虚拟资源</p>
+</div>
+</div>
+<div class="section" id="section-8">
+<h2><a class="toc-backref" href="#toc-entry-7">队列型资源</a></h2>
+<p>队列型资源是一种特定类型的生产要素，可以是未分配的或 100% 投入的。换句话说，它们不能在同一时间排程多于一个任务，也不能被过度分配。</p>
+<p>对于每个队列型资源，会自动创建一个队列。为这些资源排程的任务可以使用提供的分配方法进行特定管理，在任务和符合所需标准的队列之间建立自动分配，或者在队列之间移动任务。</p>
+</div>
+</div>
+</div>
+</body>
+</html>

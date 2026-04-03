@@ -1,0 +1,26 @@
+#################################
+LibrePlan: Gebruikersdocumentatie
+#################################
+
+.. image:: images/logo.png
+   :align: left
+
+Dit document bevat de benodigde hulp voor het gebruik van LibrePlan, de opensource webapplicatie voor projectplanning.
+
+Het document is verdeeld in drie hoofdonderdelen:
+
+Ten eerste, algemene doelstellingen en gedrag van de applicatie.
+
+Ten tweede, basisentiteiten om de minimale concepten te begrijpen die nodig zijn om LibrePlan te gebruiken.
+
+Ten slotte, een volledige procesbeschrijving voor het aanmaken van orders, projecten, projectplanning, resourcetoewijzing, voortgangsregistratie en resultaatextractie.
+
+.. topic:: Steun LibrePlan
+   :class: highlight
+
+   LibrePlan kan niet bestaan zonder uw steun. Lees `de donatiepagina <00-donations.html>`__ en overweeg ons te helpen de ontwikkeling voort te zetten.
+
+   .. raw:: html
+
+      <script src="https://opencollective.com/libreplan/donate/button.js" color="blue"></script>
+

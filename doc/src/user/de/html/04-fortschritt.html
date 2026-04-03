@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Fortschritt</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="fortschritt">
+<h1 class="title">Fortschritt</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#fortschrittstypen-verwalten" id="toc-entry-1">Fortschrittstypen verwalten</a></li>
+<li><a class="reference internal" href="#fortschritt-nach-typ-eingeben" id="toc-entry-2">Fortschritt nach Typ eingeben</a></li>
+<li><a class="reference internal" href="#fortschritt-fur-ein-auftragselement-vergleichen" id="toc-entry-3">Fortschritt für ein Auftragselement vergleichen</a></li>
+</ul>
+</div>
+<p>Der Projektfortschritt zeigt an, inwieweit die geschätzte Fertigstellungszeit des Projekts eingehalten wird. Der Aufgabenfortschritt zeigt an, inwieweit die Aufgabe gemäß ihrer geschätzten Fertigstellung abgeschlossen wird.</p>
+<p>Im Allgemeinen kann der Fortschritt nicht automatisch gemessen werden. Ein erfahrener Mitarbeiter oder eine Checkliste muss den Fertigstellungsgrad einer Aufgabe oder eines Projekts bestimmen.</p>
+<p>Es ist wichtig, den Unterschied zwischen den einer Aufgabe oder einem Projekt zugewiesenen Stunden und dem Fortschritt dieser Aufgabe oder dieses Projekts zu beachten. Obwohl die Anzahl der verwendeten Stunden mehr oder weniger als erwartet sein kann, kann das Projekt am überwachten Tag vor oder hinter seinem geschätzten Abschluss liegen. Aus diesen zwei Messungen können sich verschiedene Situationen ergeben:</p>
+<ul class="simple">
+<li><strong>Weniger Stunden verbraucht als erwartet, aber das Projekt liegt hinter dem Zeitplan:</strong> Der Fortschritt ist am überwachten Tag geringer als geschätzt.</li>
+<li><strong>Weniger Stunden verbraucht als erwartet, und das Projekt liegt vor dem Zeitplan:</strong> Der Fortschritt ist am überwachten Tag höher als geschätzt.</li>
+<li><strong>Mehr Stunden verbraucht als erwartet, und das Projekt liegt hinter dem Zeitplan:</strong> Der Fortschritt ist am überwachten Tag geringer als geschätzt.</li>
+<li><strong>Mehr Stunden verbraucht als erwartet, aber das Projekt liegt vor dem Zeitplan:</strong> Der Fortschritt ist am überwachten Tag höher als geschätzt.</li>
+</ul>
+<p>Die Planungsansicht ermöglicht es Ihnen, diese Situationen zu vergleichen, indem Sie Informationen über den erzielten Fortschritt und die verwendeten Stunden verwenden. In diesem Kapitel wird erläutert, wie Informationen zur Überwachung des Fortschritts eingegeben werden.</p>
+<p>Die Philosophie hinter der Fortschrittsüberwachung basiert darauf, dass Benutzer die Ebene definieren, auf der sie ihre Projekte überwachen möchten. Wenn Benutzer beispielsweise Aufträge überwachen möchten, müssen sie nur Informationen für Elemente der ersten Ebene eingeben. Wenn sie eine genauere Überwachung auf Aufgabenebene wünschen, müssen sie Fortschrittsinformationen auf niedrigeren Ebenen eingeben. Das System aggregiert die Daten dann aufwärts durch die Hierarchie.</p>
+<div class="section" id="fortschrittstypen-verwalten">
+<h1><a class="toc-backref" href="#toc-entry-1">Fortschrittstypen verwalten</a></h1>
+<p>Unternehmen haben unterschiedliche Bedürfnisse bei der Überwachung des Projektfortschritts, insbesondere der beteiligten Aufgaben. Daher enthält das System „Fortschrittstypen&quot;. Benutzer können verschiedene Fortschrittstypen definieren, um den Fortschritt einer Aufgabe zu messen. Eine Aufgabe kann beispielsweise als Prozentsatz gemessen werden, aber dieser Prozentsatz kann auch in Fortschritt in <em>Tonnen</em> basierend auf der Vereinbarung mit dem Kunden umgewandelt werden.</p>
+<p>Ein Fortschrittstyp hat einen Namen, einen Maximalwert und einen Präzisionswert:</p>
+<ul class="simple">
+<li><strong>Name:</strong> Ein beschreibender Name, den Benutzer beim Auswählen des Fortschrittstyps erkennen. Dieser Name sollte klar angeben, welche Art von Fortschritt gemessen wird.</li>
+<li><strong>Maximalwert:</strong> Der Maximalwert, der für eine Aufgabe oder ein Projekt als Gesamtfortschrittsmessung festgelegt werden kann.</li>
+<li><strong>Präzisionswert:</strong> Der für den Fortschrittstyp zulässige Inkrementwert. Wenn der Fortschritt in <em>Tonnen</em> beispielsweise in ganzen Zahlen gemessen werden soll, beträgt der Präzisionswert 1.</li>
+</ul>
+<p>Das System hat zwei Standard-Fortschrittstypen:</p>
+<ul class="simple">
+<li><strong>Prozentsatz:</strong> Ein allgemeiner Fortschrittstyp, der den Fortschritt eines Projekts oder einer Aufgabe basierend auf einem geschätzten Fertigstellungsprozentsatz misst.</li>
+<li><strong>Einheiten:</strong> Ein allgemeiner Fortschrittstyp, der den Fortschritt in Einheiten ohne Angabe des Einheitentyps misst.</li>
+</ul>
+<div class="figure">
+<img alt="images/tipos-avances.png" src="images/tipos-avances.png" style="width: 376.5px; height: 164.5px;" />
+<p class="caption">Verwaltung von Fortschrittstypen</p>
+</div>
+<p>Benutzer können neue Fortschrittstypen wie folgt erstellen:</p>
+<ul class="simple">
+<li>Gehen Sie zum Bereich „Verwaltung&quot;.</li>
+<li>Klicken Sie auf die Option „Fortschrittstypen verwalten&quot; im Menü der zweiten Ebene.</li>
+<li>Das System zeigt eine Liste vorhandener Fortschrittstypen an.</li>
+<li>Für jeden Fortschrittstyp können Benutzer:<ul>
+<li>Bearbeiten</li>
+<li>Löschen</li>
+</ul>
+</li>
+<li>Benutzer können dann einen neuen Fortschrittstyp erstellen.</li>
+<li>Beim Bearbeiten oder Erstellen eines Fortschrittstyps zeigt das System ein Formular mit folgenden Informationen an:<ul>
+<li>Name des Fortschrittstyps.</li>
+<li>Maximal zulässiger Wert für den Fortschrittstyp.</li>
+<li>Präzisionswert für den Fortschrittstyp.</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="fortschritt-nach-typ-eingeben">
+<h1><a class="toc-backref" href="#toc-entry-2">Fortschritt nach Typ eingeben</a></h1>
+<p>Fortschritt wird für Auftragselemente eingegeben, kann aber auch über eine Verknüpfung von den Planungsaufgaben eingegeben werden. Benutzer sind dafür verantwortlich, welchen Fortschrittstyp sie jedem Auftragselement zuordnen.</p>
+<p>Benutzer können einen einzigen Standard-Fortschrittstyp für den gesamten Auftrag eingeben.</p>
+<p>Bevor der Fortschritt gemessen wird, müssen Benutzer den gewählten Fortschrittstyp mit dem Auftrag verknüpfen.</p>
+<div class="figure">
+<img alt="images/avance.png" src="images/avance.png" style="width: 424.0px; height: 290.8px;" />
+<p class="caption">Fortschrittseingabe-Bildschirm mit grafischer Visualisierung</p>
+</div>
+<p>So geben Sie Fortschrittsmessungen ein:</p>
+<ul class="simple">
+<li>Wählen Sie den Fortschrittstyp aus, zu dem der Fortschritt hinzugefügt werden soll.
+*   Wenn kein Fortschrittstyp vorhanden ist, muss ein neuer erstellt werden.</li>
+<li>Geben Sie in dem Formular, das unter den Feldern „Wert&quot; und „Datum&quot; erscheint, den absoluten Wert der Messung und das Datum der Messung ein.</li>
+<li>Das System speichert die eingegebenen Daten automatisch.</li>
+</ul>
+</div>
+<div class="section" id="fortschritt-fur-ein-auftragselement-vergleichen">
+<h1><a class="toc-backref" href="#toc-entry-3">Fortschritt für ein Auftragselement vergleichen</a></h1>
+<p>Benutzer können den erzielten Fortschritt an Aufträgen grafisch mit den vorgenommenen Messungen vergleichen. Alle Fortschrittstypen haben eine Spalte mit einer Prüf-Schaltfläche („Anzeigen&quot;). Wenn diese Schaltfläche ausgewählt wird, wird das Fortschrittsdiagramm der vorgenommenen Messungen für das Auftragselement angezeigt.</p>
+<div class="figure">
+<img alt="images/contraste-avance.png" src="images/contraste-avance.png" style="width: 422.0px; height: 290.0px;" />
+<p class="caption">Vergleich mehrerer Fortschrittstypen</p>
+</div>
+</div>
+</div>
+</body>
+</html>

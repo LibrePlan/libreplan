@@ -39,4 +39,4 @@ To manage materials, users must follow these steps:
 
 *   Users complete the fields and click "Save."
 
-The assignment of materials to order elements is explained in the chapter on "Orders."
+The assignment of materials to project elements is explained in the chapter on "Projects."

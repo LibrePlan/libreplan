@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Configuració LDAP</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="configuracio-ldap">
+<h1 class="title">Configuració LDAP</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#activacio" id="toc-entry-1">Activació</a></li>
+<li><a class="reference internal" href="#configuracio" id="toc-entry-2">Configuració</a></li>
+<li><a class="reference internal" href="#autenticacio" id="toc-entry-3">Autenticació</a></li>
+<li><a class="reference internal" href="#autoritzacio" id="toc-entry-4">Autorització</a><ul>
+<li><a class="reference internal" href="#estrategia-de-grup" id="toc-entry-5">Estratègia de Grup</a></li>
+<li><a class="reference internal" href="#estrategia-de-propietat" id="toc-entry-6">Estratègia de Propietat</a></li>
+<li><a class="reference internal" href="#correspondencia-de-rols" id="toc-entry-7">Correspondència de Rols</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>Aquesta pantalla us permet establir una connexió amb LDAP per delegar
+l'autenticació i/o l'autorització.</p>
+<p>Està dividida en quatre àrees diferents, que s'expliquen a continuació:</p>
+<div class="section" id="activacio">
+<h1><a class="toc-backref" href="#toc-entry-1">Activació</a></h1>
+<p>Aquesta àrea s'utilitza per establir les propietats que determinen com <em>LibrePlan</em> utilitza
+LDAP.</p>
+<p>Si el camp <em>Habilitar l'autenticació LDAP</em> està marcat, <em>LibrePlan</em> consultarà
+LDAP cada vegada que un usuari intenti iniciar sessió a l'aplicació.</p>
+<p>El camp <em>Usar rols LDAP</em> marcat significa que s'estableix una correspondència entre els rols LDAP i els
+rols de LibrePlan. En conseqüència, els permisos d'un usuari a
+LibrePlan dependran dels rols que l'usuari tingui a LDAP.</p>
+</div>
+<div class="section" id="configuracio">
+<h1><a class="toc-backref" href="#toc-entry-2">Configuració</a></h1>
+<p>Aquesta secció conté els valors dels paràmetres per accedir a LDAP. <em>Base</em>, <em>UserDN</em> i
+<em>Contrasenya</em> són paràmetres que s'utilitzen per connectar-se a LDAP i cercar usuaris. Per tant,
+l'usuari especificat ha de tenir permís per realitzar aquesta operació a LDAP. A la
+part inferior d'aquesta secció, hi ha un botó per comprovar si és possible una connexió LDAP
+amb els paràmetres donats. És aconsellable provar la connexió abans de
+continuar la configuració.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Si el vostre LDAP està configurat per treballar amb autenticació anònima, podeu
+deixar els atributs <em>UserDN</em> i <em>Contrasenya</em> buits.</p>
+</div>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p>Pel que fa a la configuració d'<em>Active Directory (AD)</em>, el camp <em>Base</em> ha de ser la
+ubicació exacta on resideix l'usuari vinculat a AD.</p>
+<p class="last">Exemple: <tt class="docutils literal">ou=organizational_unit,dc=example,dc=org</tt></p>
+</div>
+</div>
+<div class="section" id="autenticacio">
+<h1><a class="toc-backref" href="#toc-entry-3">Autenticació</a></h1>
+<p>Aquí podeu configurar la propietat als nodes LDAP on s'ha de trobar el nom d'usuari
+donat. La propietat <em>UserId</em> s'ha d'omplir amb el nom de la
+propietat on s'emmagatzema el nom d'usuari a LDAP.</p>
+<p>La casella de verificació <em>Desar contrasenyes a la base de dades</em>, quan està marcada, significa que la
+contrasenya també s'emmagatzema a la base de dades de LibrePlan. D'aquesta manera, si LDAP és
+fora de línia o inaccessible, els usuaris LDAP poden autenticar-se contra la base de dades de LibrePlan.
+Si no està marcada, els usuaris LDAP només poden ser autenticats contra LDAP.</p>
+</div>
+<div class="section" id="autoritzacio">
+<h1><a class="toc-backref" href="#toc-entry-4">Autorització</a></h1>
+<p>Aquesta secció us permet definir una estratègia per fer coincidir els rols LDAP amb els rols de
+LibrePlan. La primera elecció és l'estratègia a utilitzar, depenent de la
+implementació de LDAP.</p>
+<div class="section" id="estrategia-de-grup">
+<h2><a class="toc-backref" href="#toc-entry-5">Estratègia de Grup</a></h2>
+<p>Quan s'utilitza aquesta estratègia, indica que LDAP té una estratègia de grups de rols.
+Això significa que els usuaris a LDAP són nodes que es troben directament sota una branca que
+representa el grup.</p>
+<p>L'exemple següent representa una estructura LDAP vàlida per usar l'estratègia de grup.</p>
+<ul>
+<li><p class="first">Estructura LDAP:</p>
+<pre class="literal-block">
+dc=example,dc=org
+|- ou=groups
+   |- cn=admins
+   |- cn=itpeople
+   |- cn=workers
+|- ou=people
+   |- uid=admin1
+   |- uid=it1
+   |- uid=it2
+   |- uid=worker1
+   |- uid=worker2
+   |- uid=worker3
+</pre>
+</li>
+</ul>
+<p>En aquest cas, cada grup tindrà un atribut, per exemple, anomenat <tt class="docutils literal">member</tt>,
+amb la llista d'usuaris que pertanyen al grup:</p>
+<ul class="simple">
+<li><tt class="docutils literal">cn=admins</tt>:<ul>
+<li><tt class="docutils literal">member: uid=admin1,ou=people,dc=example,dc=org</tt></li>
+<li><tt class="docutils literal">member: uid=it1,ou=people,dc=example,dc=org</tt></li>
+</ul>
+</li>
+<li><tt class="docutils literal">cn=itpeople</tt>:<ul>
+<li><tt class="docutils literal">member: uid=it1,ou=people,dc=example,dc=org</tt></li>
+<li><tt class="docutils literal">member: uid=it2,ou=people,dc=example,dc=org</tt></li>
+</ul>
+</li>
+<li><tt class="docutils literal">cn=workers</tt>:<ul>
+<li><tt class="docutils literal">member: uid=worker1,ou=people,dc=example,dc=org</tt></li>
+<li><tt class="docutils literal">member: uid=worker2,ou=people,dc=example,dc=org</tt></li>
+<li><tt class="docutils literal">member: uid=worker3,ou=people,dc=example,dc=org</tt></li>
+</ul>
+</li>
+</ul>
+<p>La configuració per a aquest cas és la següent:</p>
+<ul class="simple">
+<li>Estratègia de cerca de rols: <tt class="docutils literal">Estratègia de grup</tt></li>
+<li>Ruta del grup: <tt class="docutils literal">ou=groups</tt></li>
+<li>Propietat del rol: <tt class="docutils literal">member</tt></li>
+<li>Consulta de cerca de rols: <tt class="docutils literal"><span class="pre">uid=[USER_ID],ou=people,dc=example,dc=org</span></tt></li>
+</ul>
+<p>I, per exemple, si voleu fer coincidir alguns rols:</p>
+<ul class="simple">
+<li>Administració: <tt class="docutils literal">cn=admins;cn=itpeople</tt></li>
+<li>Lector de serveis web: <tt class="docutils literal">cn=itpeople</tt></li>
+<li>Escriptor de serveis web: <tt class="docutils literal">cn=itpeople</tt></li>
+<li>Lectura permesa de tots els projectes: <tt class="docutils literal">cn=admins</tt></li>
+<li>Edició permesa de tots els projectes: <tt class="docutils literal">cn=admins</tt></li>
+<li>Creació de projectes permesa: <tt class="docutils literal">cn=workers</tt></li>
+</ul>
+</div>
+<div class="section" id="estrategia-de-propietat">
+<h2><a class="toc-backref" href="#toc-entry-6">Estratègia de Propietat</a></h2>
+<p>Quan un administrador decideix utilitzar aquesta estratègia, indica que cada usuari
+és un node LDAP, i dins del node, hi ha una propietat que representa
+el grup o grups per a l'usuari. En aquest cas, la configuració no requereix el
+paràmetre <em>Ruta del grup</em>.</p>
+<p>L'exemple següent representa una estructura LDAP vàlida per usar l'estratègia de propietat.</p>
+<ul>
+<li><p class="first">Estructura LDAP:</p>
+<pre class="literal-block">
+dc=example,dc=org
+|- ou=people
+   |- uid=admin1
+   |- uid=it1
+   |- uid=it2
+   |- uid=worker1
+   |- uid=worker2
+   |- uid=worker3
+</pre>
+</li>
+</ul>
+<p><strong>Amb Atribut</strong></p>
+<p>En aquest cas, cada usuari tindrà un atribut, per exemple, anomenat <tt class="docutils literal">group</tt>,
+amb el nom del grup al qual pertany:</p>
+<ul class="simple">
+<li><tt class="docutils literal">uid=admin1</tt>:<ul>
+<li><tt class="docutils literal">group: admins</tt></li>
+</ul>
+</li>
+<li><tt class="docutils literal">uid=it1</tt>:<ul>
+<li><tt class="docutils literal">group: itpeople</tt></li>
+</ul>
+</li>
+<li><tt class="docutils literal">uid=it2</tt>:<ul>
+<li><tt class="docutils literal">group: itpeople</tt></li>
+</ul>
+</li>
+<li><tt class="docutils literal">uid=worker1</tt>:<ul>
+<li><tt class="docutils literal">group: workers</tt></li>
+</ul>
+</li>
+<li><tt class="docutils literal">uid=worker2</tt>:<ul>
+<li><tt class="docutils literal">group: workers</tt></li>
+</ul>
+</li>
+<li><tt class="docutils literal">uid=worker3</tt>:<ul>
+<li><tt class="docutils literal">group: workers</tt></li>
+</ul>
+</li>
+</ul>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Aquesta estratègia té una restricció: cada usuari només pot pertànyer a un grup.</p>
+</div>
+<p>La configuració per a aquest cas és la següent:</p>
+<ul class="simple">
+<li>Estratègia de cerca de rols: <tt class="docutils literal">Estratègia de propietat</tt></li>
+<li>Ruta del grup:</li>
+<li>Propietat del rol: <tt class="docutils literal">group</tt></li>
+<li>Consulta de cerca de rols: <tt class="docutils literal">[USER_ID]</tt></li>
+</ul>
+<p>I, per exemple, si voleu fer coincidir alguns rols:</p>
+<ul class="simple">
+<li>Administració: <tt class="docutils literal">admins;itpeople</tt></li>
+<li>Lector de serveis web: <tt class="docutils literal">itpeople</tt></li>
+<li>Escriptor de serveis web: <tt class="docutils literal">itpeople</tt></li>
+<li>Lectura permesa de tots els projectes: <tt class="docutils literal">admins</tt></li>
+<li>Edició permesa de tots els projectes: <tt class="docutils literal">admins</tt></li>
+<li>Creació de projectes permesa: <tt class="docutils literal">workers</tt></li>
+</ul>
+<p><strong>Per Identificador d'Usuari</strong></p>
+<p>Fins i tot podeu usar una solució alternativa per especificar els rols de LibrePlan directament als usuaris
+sense tenir un atribut a cada usuari LDAP.</p>
+<p>En aquest cas, especificareu quins usuaris tenen els diferents rols de LibrePlan
+per <tt class="docutils literal">uid</tt>.</p>
+<p>La configuració per a aquest cas és la següent:</p>
+<ul class="simple">
+<li>Estratègia de cerca de rols: <tt class="docutils literal">Estratègia de propietat</tt></li>
+<li>Ruta del grup:</li>
+<li>Propietat del rol: <tt class="docutils literal">uid</tt></li>
+<li>Consulta de cerca de rols: <tt class="docutils literal">[USER_ID]</tt></li>
+</ul>
+<p>I, per exemple, si voleu fer coincidir alguns rols:</p>
+<ul class="simple">
+<li>Administració: <tt class="docutils literal">admin1;it1</tt></li>
+<li>Lector de serveis web: <tt class="docutils literal">it1;it2</tt></li>
+<li>Escriptor de serveis web: <tt class="docutils literal">it1;it2</tt></li>
+<li>Lectura permesa de tots els projectes: <tt class="docutils literal">admin1</tt></li>
+<li>Edició permesa de tots els projectes: <tt class="docutils literal">admin1</tt></li>
+<li>Creació de projectes permesa: <tt class="docutils literal">worker1;worker2;worker3</tt></li>
+</ul>
+</div>
+<div class="section" id="correspondencia-de-rols">
+<h2><a class="toc-backref" href="#toc-entry-7">Correspondència de Rols</a></h2>
+<p>A la part inferior d'aquesta secció, hi ha una taula amb tots els rols de LibrePlan
+i un camp de text al costat de cada un. Això és per fer coincidir els rols. Per exemple,
+si un administrador decideix que el rol <em>Administració</em> de LibrePlan coincideix
+amb els rols <em>admin</em> i <em>administrators</em> de LDAP, el camp de text ha de contenir:
+&quot;<tt class="docutils literal">admin;administrators</tt>&quot;. El caràcter per separar els rols és &quot;<tt class="docutils literal">;</tt>&quot;.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Si voleu especificar que tots els usuaris o tots els grups tenen un permís, podeu
+usar un asterisc (<tt class="docutils literal">*</tt>) com a comodí per fer referència a ells. Per exemple, si
+voleu que tothom tingui el rol <em>Creació de projectes permesa</em>, configureu la
+correspondència de rols de la manera següent:</p>
+<ul class="last simple">
+<li>Creació de projectes permesa: <tt class="docutils literal">*</tt></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

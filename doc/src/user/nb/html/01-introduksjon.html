@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Introduksjon</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="introduksjon">
+<h1 class="title">Introduksjon</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#bedriftsoversikt-og-visningsbehandling" id="toc-entry-1">Bedriftsoversikt og visningsbehandling</a></li>
+<li><a class="reference internal" href="#hva-gjor-libreplan-nyttig" id="toc-entry-2">Hva gjør LibrePlan nyttig?</a></li>
+<li><a class="reference internal" href="#brukervennlighetskonvensjoner" id="toc-entry-3">Brukervennlighetskonvensjoner</a><ul>
+<li><a class="reference internal" href="#informasjon-om-skjemaer" id="toc-entry-4">Informasjon om skjemaer</a></li>
+<li><a class="reference internal" href="#standard-ikoner-og-knapper" id="toc-entry-5">Standard ikoner og knapper</a></li>
+<li><a class="reference internal" href="#faner" id="toc-entry-6">Faner</a></li>
+<li><a class="reference internal" href="#eksplisitte-handlinger-og-konteksthjelp" id="toc-entry-7">Eksplisitte handlinger og konteksthjelp</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>Dette dokumentet beskriver funksjonene i LibrePlan og gir brukere informasjon om hvordan de konfigurerer og bruker applikasjonen.</p>
+<p>LibrePlan er en åpen kildekode-webapplikasjon for prosjektplanlegging. Hovedmålet er å tilby en helhetlig løsning for prosjektledelse i bedrifter. For spesifikk informasjon om denne programvaren, ta kontakt med utviklingsteamet på <a class="reference external" href="http://www.libreplan.com/contact/">http://www.libreplan.com/contact/</a></p>
+<div class="figure">
+<img alt="images/company_view.png" src="images/company_view.png" style="width: 504.5px; height: 327.0px;" />
+<p class="caption">Bedriftsoversikt</p>
+</div>
+<div class="section" id="bedriftsoversikt-og-visningsbehandling">
+<h1><a class="toc-backref" href="#toc-entry-1">Bedriftsoversikt og visningsbehandling</a></h1>
+<p>Som vist på programmets hovedskjerm (se forrige skjermbilde) og i bedriftsoversikten, kan brukere se en liste over planlagte prosjekter. Dette gir dem innsikt i bedriftens overordnede status når det gjelder ordrer og ressursutnyttelse. Bedriftsoversikten tilbyr tre ulike visninger:</p>
+<ul>
+<li><p class="first"><strong>Planleggingsvisning:</strong> Denne visningen kombinerer to perspektiver:</p>
+<blockquote>
+<ul class="simple">
+<li><strong>Ordre- og tidssporing:</strong> Hvert prosjekt er representert med et Gantt-diagram som viser prosjektets start- og sluttdato. Denne informasjonen vises sammen med den avtalte fristen. Det gjøres deretter en sammenligning mellom den oppnådde fremdriftsprosenten og den faktiske tiden brukt på hvert prosjekt. Dette gir et klart bilde av bedriftens ytelse til enhver tid. Denne visningen er programmets standard startside.</li>
+<li><strong>Graf for bedriftens ressursutnyttelse:</strong> Denne grafen viser informasjon om ressursallokering på tvers av prosjekter og gir et sammendrag av hele bedriftens ressursbruk. Grønt indikerer at ressursallokeringen er under 100 % av kapasiteten. Den svarte linjen representerer den totale tilgjengelige ressurskapasiteten. Gult indikerer at ressursallokeringen overstiger 100 %. Det er mulig å ha underallokering totalt sett, mens man samtidig opplever overallokering for spesifikke ressurser.</li>
+</ul>
+</blockquote>
+</li>
+<li><p class="first"><strong>Ressursbelastningsvisning:</strong> Denne skjermen viser en liste over bedriftens arbeidere og deres spesifikke oppgavetildelinger, eller generiske tildelinger basert på definerte kriterier. For å åpne denne visningen, klikk på <em>Samlet ressursbelastning</em>. Se bildet nedenfor for et eksempel.</p>
+</li>
+<li><p class="first"><strong>Ordreadministrasjonsvisning:</strong> Denne skjermen viser en liste over bedriftens ordrer og lar brukere utføre følgende handlinger: filtrere, redigere, slette, visualisere planlegging eller opprette en ny ordre. For å åpne denne visningen, klikk på <em>Ordreliste</em>.</p>
+</li>
+</ul>
+<div class="figure">
+<img alt="images/resources_global.png" src="images/resources_global.png" style="width: 505.0px; height: 327.0px;" />
+<p class="caption">Ressursoversikt</p>
+</div>
+<div class="figure">
+<img alt="images/order_list.png" src="images/order_list.png" style="width: 506.0px; height: 293.5px;" />
+<p class="caption">Work Breakdown Structure</p>
+</div>
+<p>Visningsbehandlingen beskrevet ovenfor for bedriftsoversikten ligner svært mye på den som er tilgjengelig for et enkelt prosjekt. Et prosjekt kan åpnes på flere måter:</p>
+<ul class="simple">
+<li>Høyreklikk på Gantt-diagrammet for ordren og velg <em>Planlegg</em>.</li>
+<li>Gå til ordrelisten og klikk på Gantt-diagramikonet.</li>
+<li>Opprett en ny ordre og endre gjeldende ordrevisning.</li>
+</ul>
+<p>Programmet tilbyr følgende visninger for en ordre:</p>
+<ul class="simple">
+<li><strong>Planleggingsvisning:</strong> Denne visningen lar brukere visualisere oppgaveplanlegging, avhengigheter, milepæler og mer. Se avsnittet <em>Planlegging</em> for mer informasjon.</li>
+<li><strong>Ressursbelastningsvisning:</strong> Denne visningen lar brukere kontrollere den tildelte ressursbelastningen for et prosjekt. Fargekoden er konsistent med bedriftsoversikten: grønt for belastning under 100 %, gult for belastning lik 100 % og rødt for belastning over 100 %. Belastningen kan stamme fra en spesifikk oppgave eller et sett med kriterier (generisk allokering).</li>
+<li><strong>Ordreredigeringsvisning:</strong> Denne visningen lar brukere endre detaljene i ordren. Se avsnittet <em>Ordrer</em> for mer informasjon.</li>
+<li><strong>Avansert ressursallokeringsvisning:</strong> Denne visningen lar brukere allokere ressurser med avanserte alternativer, for eksempel å spesifisere timer per dag eller tildelte funksjoner som skal utføres. Se avsnittet <em>Ressursallokering</em> for mer informasjon.</li>
+</ul>
+</div>
+<div class="section" id="hva-gjor-libreplan-nyttig">
+<h1><a class="toc-backref" href="#toc-entry-2">Hva gjør LibrePlan nyttig?</a></h1>
+<p>LibrePlan er et generelt planleggingsverktøy utviklet for å håndtere utfordringer i industriell prosjektplanlegging som ikke var tilstrekkelig dekket av eksisterende verktøy. Utviklingen av LibrePlan var også motivert av ønsket om å tilby et gratis, åpen kildekode-basert og fullstendig nettbasert alternativ til proprietære planleggingsverktøy.</p>
+<p>Kjerneprinsippene som programmet er bygget på, er som følger:</p>
+<ul class="simple">
+<li><strong>Bedrifts- og flerprosjektoversikt:</strong> LibrePlan er spesielt utformet for å gi brukere informasjon om flere prosjekter som pågår i en bedrift. Det er derfor i bunn og grunn et flerprosjektprogram. Programmets fokus er ikke begrenset til enkeltprosjekter, selv om det også finnes spesifikke visninger for enkeltprosjekter.</li>
+<li><strong>Visningsbehandling:</strong> Bedriftsoversikten, eller flerprosjektvisningen, er ledsaget av ulike visninger av den lagrede informasjonen. For eksempel lar bedriftsoversikten brukere se ordrer og sammenligne statusen deres, se den samlede ressursbelastningen i bedriften og administrere ordrer. Brukere kan også åpne planleggingsvisningen, ressursbelastningsvisningen, den avanserte ressursallokeringsvisningen og ordreredigeringsvisningen for enkeltprosjekter.</li>
+<li><strong>Kriterier:</strong> Kriterier er en systemenhet som muliggjør klassifisering av både ressurser (menneskelige og maskinelle) og oppgaver. Ressurser må oppfylle bestemte kriterier, og oppgaver krever at spesifikke kriterier er oppfylt. Dette er en av programmets viktigste funksjoner, ettersom kriterier danner grunnlaget for generisk allokering og adresserer en betydelig utfordring i industrien: den tidkrevende naturen til personalressursstyring og vanskeligheten med langsiktige estimater for bedriftens belastning.</li>
+<li><strong>Ressurser:</strong> Det finnes to typer ressurser: menneskelige og maskinelle. Menneskelige ressurser er bedriftens arbeidere, brukt til planlegging, overvåking og kontroll av bedriftens arbeidsbelastning. Maskinressurser, avhengige av personene som betjener dem, fungerer på samme måte som menneskelige ressurser.</li>
+<li><strong>Ressursallokering:</strong> En nøkkelfunksjon i programmet er muligheten til å tildele ressurser på to måter: spesifikt og generisk. Generisk allokering er basert på kriteriene som kreves for å fullføre en oppgave, og må oppfylles av ressurser som er i stand til å møte disse kriteriene. For å forstå generisk allokering, se dette eksempelet: Ola Nordmann er sveiser. Vanligvis ville Ola Nordmann bli spesifikt tildelt en planlagt oppgave. LibrePlan tilbyr imidlertid muligheten til å velge en hvilken som helst sveiser i bedriften, uten å måtte spesifisere at Ola Nordmann er den tildelte personen.</li>
+<li><strong>Bedriftens belastningskontroll:</strong> Programmet gir enkel kontroll over bedriftens ressursbelastning. Denne kontrollen strekker seg til både mellom- og langsiktig, ettersom nåværende og fremtidige prosjekter kan administreres i programmet. LibrePlan tilbyr grafer som visuelt representerer ressursutnyttelsen.</li>
+<li><strong>Etiketter:</strong> Etiketter brukes til å kategorisere prosjektoppgaver. Med disse etikettene kan brukere gruppere oppgaver etter konsept, noe som gir mulighet for senere gjennomgang som gruppe eller etter filtrering.</li>
+<li><strong>Filtre:</strong> Fordi systemet naturlig inneholder elementer som merker eller karakteriserer oppgaver og ressurser, kan kriteriefiltre eller etiketter brukes. Dette er svært nyttig for å gjennomgå kategorisert informasjon eller generere spesifikke rapporter basert på kriterier eller etiketter.</li>
+<li><strong>Kalendere:</strong> Kalendere definerer de tilgjengelige produktive timene for ulike ressurser. Brukere kan opprette generelle bedriftskalendere eller definere mer spesifikke kalendere, noe som gir mulighet for å opprette kalendere for individuelle ressurser og oppgaver.</li>
+<li><strong>Ordrer og ordreelementer:</strong> Arbeid bestilt av klienter behandles som en ordre i applikasjonen, strukturert i ordreelementer. Ordren og dens elementer følger en hierarkisk struktur med <em>x</em> nivåer. Dette elementtreet danner grunnlaget for arbeidsplanlegging.</li>
+<li><strong>Fremdrift:</strong> Programmet kan håndtere ulike typer fremdrift. Et prosjekts fremdrift kan måles som en prosentandel, i enheter, mot det avtalte budsjettet og mer. Ansvaret for å bestemme hvilken type fremdrift som skal brukes til sammenligning på høyere prosjektnivåer, ligger hos planleggingssjefen.</li>
+<li><strong>Oppgaver:</strong> Oppgaver er de grunnleggende planleggingselementene i programmet. De brukes til å planlegge arbeid som skal utføres. Nøkkelkarakteristikker for oppgaver inkluderer: avhengigheter mellom oppgaver og det potensielle kravet om at spesifikke kriterier må være oppfylt før ressurser kan allokeres.</li>
+<li><strong>Arbeidsrapporter:</strong> Disse rapportene, innsendt av bedriftens arbeidere, beskriver timene som er arbeidet og oppgavene som er knyttet til disse timene. Denne informasjonen lar systemet beregne den faktiske tiden brukt på å fullføre en oppgave sammenlignet med budsjettert tid. Fremdrift kan deretter sammenlignes med de faktiske timene som er brukt.</li>
+</ul>
+<p>I tillegg til kjernefunksjonene tilbyr LibrePlan andre funksjoner som skiller det fra lignende programmer:</p>
+<ul class="simple">
+<li><strong>Integrasjon med ERP:</strong> Programmet kan direkte importere informasjon fra bedriftens ERP-systemer, inkludert ordrer, menneskelige ressurser, arbeidsrapporter og spesifikke kriterier.</li>
+<li><strong>Versjonsbehandling:</strong> Programmet kan håndtere flere planleggingsversjoner, mens det fortsatt lar brukere gjennomgå informasjonen fra hver versjon.</li>
+<li><strong>Historikkbehandling:</strong> Programmet sletter ikke informasjon; det merker den bare som ugyldig. Dette lar brukere gjennomgå historisk informasjon ved hjelp av datofiltre.</li>
+</ul>
+</div>
+<div class="section" id="brukervennlighetskonvensjoner">
+<h1><a class="toc-backref" href="#toc-entry-3">Brukervennlighetskonvensjoner</a></h1>
+<div class="section" id="informasjon-om-skjemaer">
+<h2><a class="toc-backref" href="#toc-entry-4">Informasjon om skjemaer</a></h2>
+<p>Før vi beskriver de ulike funksjonene knyttet til de viktigste modulene, må vi forklare den generelle navigasjonen og skjemaoppførselen.</p>
+<p>Det finnes i hovedsak tre typer redigeringsskjemaer:</p>
+<ul class="simple">
+<li><strong>Skjemaer med en *Tilbake*-knapp:</strong> Disse skjemaene er en del av en større kontekst, og endringene som gjøres, lagres i minnet. Endringene anvendes bare når brukeren eksplisitt lagrer alle detaljene på skjermen som skjemaet ble startet fra.</li>
+<li><strong>Skjemaer med *Lagre*- og *Lukk*-knapper:</strong> Disse skjemaene gir mulighet for to handlinger. Den første lagrer endringene og lukker det gjeldende vinduet. Den andre lukker vinduet uten å lagre endringer.</li>
+<li><strong>Skjemaer med *Lagre og fortsett*-, *Lagre*- og *Lukk*-knapper:</strong> Disse skjemaene gir mulighet for tre handlinger. Den første lagrer endringene og holder gjeldende skjema åpent. Den andre lagrer endringene og lukker skjemaet. Den tredje lukker vinduet uten å lagre endringer.</li>
+</ul>
+</div>
+<div class="section" id="standard-ikoner-og-knapper">
+<h2><a class="toc-backref" href="#toc-entry-5">Standard ikoner og knapper</a></h2>
+<ul class="simple">
+<li><strong>Redigering:</strong> Generelt kan poster i programmet redigeres ved å klikke på et ikon som ligner en blyant på en hvit notatbok.</li>
+<li><strong>Venstre innrykk:</strong> Disse operasjonene brukes vanligvis for elementer innenfor en trestruktur som må flyttes til et dypere nivå. Dette gjøres ved å klikke på ikonet som ligner en grønn pil som peker til høyre.</li>
+<li><strong>Høyre innrykk:</strong> Disse operasjonene brukes vanligvis for elementer innenfor en trestruktur som må flyttes til et høyere nivå. Dette gjøres ved å klikke på ikonet som ligner en grønn pil som peker til venstre.</li>
+<li><strong>Sletting:</strong> Brukere kan slette informasjon ved å klikke på søppelkasse-ikonet.</li>
+<li><strong>Søk:</strong> Forstørrelsesglass-ikonet indikerer at tekstfeltet til venstre for det brukes til å søke etter elementer.</li>
+</ul>
+</div>
+<div class="section" id="faner">
+<h2><a class="toc-backref" href="#toc-entry-6">Faner</a></h2>
+<p>Programmet bruker faner til å organisere skjemaer for innholdsredigering og administrasjon. Denne metoden brukes til å dele et omfattende skjema inn i ulike seksjoner, som er tilgjengelige ved å klikke på fanenavnene. De andre fanene beholder sin nåværende status. I alle tilfeller gjelder lagre- og avbryt-alternativene for alle delskjemaer i de ulike fanene.</p>
+</div>
+<div class="section" id="eksplisitte-handlinger-og-konteksthjelp">
+<h2><a class="toc-backref" href="#toc-entry-7">Eksplisitte handlinger og konteksthjelp</a></h2>
+<p>Programmet inneholder komponenter som gir ytterligere beskrivelser av elementer når musen holdes over dem i ett sekund. Handlingene brukeren kan utføre, er angitt på knappeetikettene, i hjelpetekstene tilknyttet dem, i navigasjonsmenyvalgene og i kontekstmenyer som vises ved høyreklikk i planleggingsområdet. Videre er det gitt snarveier for hovedoperasjonene, for eksempel dobbeltklikk på listede elementer eller bruk av tastaturhendelser med markøren og Enter-tasten for å legge til elementer ved navigering gjennom skjemaer.</p>
+</div>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Kostenbeheer</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="kostenbeheer">
+<h1 class="title">Kostenbeheer</h1>
+
+<div class="contents topic" id="contents">
+<span id="costes"></span><p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#kosten" id="toc-entry-1">Kosten</a><ul>
+<li><a class="reference internal" href="#uurtypes-beheren" id="toc-entry-2">Uurtypes beheren</a></li>
+<li><a class="reference internal" href="#kostencategorieen" id="toc-entry-3">Kostencategorieën</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="kosten">
+<h1><a class="toc-backref" href="#toc-entry-1">Kosten</a></h1>
+<p>Met kostenbeheer kunnen gebruikers de kosten schatten van resources die in een project worden gebruikt. Om kosten te beheren, moeten de volgende entiteiten worden gedefinieerd:</p>
+<ul class="simple">
+<li><strong>Uurtypes:</strong> Deze geven de soorten uren aan die door een resource worden gewerkt. Gebruikers kunnen uurtypes definiëren voor zowel machines als werknemers. Voorbeelden van uurtypes zijn: &quot;Extra uren betaald à €20 per uur.&quot; De volgende velden kunnen worden gedefinieerd voor uurtypes:<ul>
+<li><strong>Code:</strong> Externe code voor het uurtype.</li>
+<li><strong>Naam:</strong> Naam van het uurtype. Bijvoorbeeld &quot;Extra&quot;.</li>
+<li><strong>Standaardtarief:</strong> Basistarieftarief voor het uurtype.</li>
+<li><strong>Activering:</strong> Geeft aan of het uurtype actief is of niet.</li>
+</ul>
+</li>
+<li><strong>Kostencategorieën:</strong> Kostencategorieën definiëren de kosten die gekoppeld zijn aan verschillende uurtypes gedurende specifieke perioden (die onbepaald kunnen zijn). Bijvoorbeeld: de kosten van extra uren voor eersteklasse vakarbeiders in het volgende jaar zijn €24 per uur. Kostencategorieën bevatten:<ul>
+<li><strong>Naam:</strong> Naam van de kostencategorie.</li>
+<li><strong>Activering:</strong> Geeft aan of de categorie actief is of niet.</li>
+<li><strong>Lijst van uurtypes:</strong> Deze lijst definieert de uurtypes die zijn opgenomen in de kostencategorie. De perioden en tarieven voor elk uurtype worden hierin vastgelegd. Omdat tarieven veranderen, kan elk jaar worden opgenomen in deze lijst als een uurtype-periode, met een specifiek uurtarief voor elk uurtype (dat kan afwijken van het standaard uurtarief voor dat uurtype).</li>
+</ul>
+</li>
+</ul>
+<div class="section" id="uurtypes-beheren">
+<h2><a class="toc-backref" href="#toc-entry-2">Uurtypes beheren</a></h2>
+<p>Gebruikers moeten de volgende stappen volgen om uurtypes te registreren:</p>
+<ul class="simple">
+<li>Selecteer &quot;Gewerkte uurtypes beheren&quot; in het menu &quot;Beheer&quot;.</li>
+<li>Het programma toont een lijst van bestaande uurtypes.</li>
+</ul>
+<div class="figure">
+<img alt="images/hour-type-list.png" src="images/hour-type-list.png" style="width: 443.09999999999997px; height: 81.19999999999999px;" />
+<p class="caption">Lijst van uurtypes</p>
+</div>
+<ul class="simple">
+<li>Klik op &quot;Bewerken&quot; of &quot;Aanmaken&quot;.</li>
+<li>Het programma toont een bewerkingsformulier voor het uurtype.</li>
+</ul>
+<div class="figure">
+<img alt="images/hour-type-edit.png" src="images/hour-type-edit.png" style="width: 428.5px; height: 106.5px;" />
+<p class="caption">Uurtypes bewerken</p>
+</div>
+<ul class="simple">
+<li>Gebruikers kunnen het volgende invoeren of wijzigen:<ul>
+<li>De naam van het uurtype.</li>
+<li>De code van het uurtype.</li>
+<li>Het standaardtarief.</li>
+<li>Activering/deactivering van het uurtype.</li>
+</ul>
+</li>
+<li>Klik op &quot;Opslaan&quot; of &quot;Opslaan en doorgaan&quot;.</li>
+</ul>
+</div>
+<div class="section" id="kostencategorieen">
+<h2><a class="toc-backref" href="#toc-entry-3">Kostencategorieën</a></h2>
+<p>Gebruikers moeten de volgende stappen volgen om kostencategorieën te registreren:</p>
+<ul class="simple">
+<li>Selecteer &quot;Kostencategorieën beheren&quot; in het menu &quot;Beheer&quot;.</li>
+<li>Het programma toont een lijst van bestaande categorieën.</li>
+</ul>
+<div class="figure">
+<img alt="images/category-cost-list.png" src="images/category-cost-list.png" style="width: 431.5px; height: 94.5px;" />
+<p class="caption">Lijst van kostencategorieën</p>
+</div>
+<ul class="simple">
+<li>Klik op de knop &quot;Bewerken&quot; of &quot;Aanmaken&quot;.</li>
+<li>Het programma toont een bewerkingsformulier voor kostencategorieën.</li>
+</ul>
+<div class="figure">
+<img alt="images/category-cost-edit.png" src="images/category-cost-edit.png" style="width: 434.5px; height: 169.0px;" />
+<p class="caption">Kostencategorieën bewerken</p>
+</div>
+<ul class="simple">
+<li>Gebruikers voeren het volgende in of wijzigen het:<ul>
+<li>De naam van de kostencategorie.</li>
+<li>De activering/deactivering van de kostencategorie.</li>
+<li>De lijst van uurtypes die in de categorie zijn opgenomen. Alle uurtypes hebben de volgende velden:<ul>
+<li><strong>Uurtype:</strong> Kies een van de bestaande uurtypes in het systeem. Als er geen bestaan, moet een uurtype worden aangemaakt (dit proces wordt uitgelegd in de vorige subsectie).</li>
+<li><strong>Begin- en einddatum:</strong> De begin- en einddatum (de laatste is optioneel) voor de periode die van toepassing is op de kostencategorie.</li>
+<li><strong>Uurtarief:</strong> Het uurtarief voor deze specifieke categorie.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Klik op &quot;Opslaan&quot; of &quot;Opslaan en doorgaan&quot;.</li>
+</ul>
+<p>De toewijzing van kostencategorieën aan resources wordt beschreven in het hoofdstuk over resources. Ga naar de sectie &quot;Resources&quot;.</p>
+</div>
+</div>
+</div>
+</body>
+</html>

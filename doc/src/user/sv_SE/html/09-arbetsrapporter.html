@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Arbetsrapporter</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="arbetsrapporter">
+<h1 class="title">Arbetsrapporter</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#typer-av-arbetsrapporter" id="toc-entry-1">Typer av arbetsrapporter</a></li>
+<li><a class="reference internal" href="#lista-over-arbetsrapporter" id="toc-entry-2">Lista över arbetsrapporter</a></li>
+</ul>
+</div>
+<p>Arbetsrapporter möjliggör övervakning av de timmar som resurser ägnar åt de uppgifter som de är tilldelade.</p>
+<p>Programmet låter användare konfigurera nya formulär för att registrera ägnade timmar och ange de fält som de vill ska visas i dessa formulär. Detta möjliggör inkludering av rapporter från uppgifter utförda av arbetstagare och övervakning av arbetstagar­aktivitet.</p>
+<p>Innan användare kan lägga till poster för resurser måste de definiera minst en typ av arbetsrapport. Denna typ definierar rapportens struktur, inklusive alla rader som läggs till i den. Användare kan skapa så många typer av arbetsrapporter som behövs i systemet.</p>
+<div class="section" id="typer-av-arbetsrapporter">
+<h1><a class="toc-backref" href="#toc-entry-1">Typer av arbetsrapporter</a></h1>
+<p>En arbetsrapport består av en serie fält som är gemensamma för hela rapporten och en uppsättning arbetsrapportrader med specifika värden för de fält som definieras i varje rad. Till exempel är resurser och uppgifter gemensamma för alla rapporter. Det kan dock finnas andra nya fält, till exempel &quot;incidenter,&quot; som inte krävs i alla rapporttyper.</p>
+<p>Användare kan konfigurera olika typer av arbetsrapporter så att ett företag kan utforma sina rapporter för att möta sina specifika behov:</p>
+<div class="figure">
+<img alt="images/work-report-types.png" src="images/work-report-types.png" style="width: 326.8px; height: 91.60000000000001px;" />
+<p class="caption">Typer av arbetsrapporter</p>
+</div>
+<p>Administration av arbetsrapporttyper låter användare konfigurera dessa typer och lägga till nya textfält eller valfria taggar. På den första fliken för redigering av arbetsrapporttyper är det möjligt att konfigurera typen för de obligatoriska attributen (om de gäller hela rapporten eller anges på radnivå) och lägga till nya valfria fält.</p>
+<p>De obligatoriska fält som måste finnas i alla arbetsrapporter är följande:</p>
+<ul class="simple">
+<li><strong>Namn och kod:</strong> Identifieringsfält för arbetsrapporttypens namn och dess kod.</li>
+<li><strong>Datum:</strong> Fält för rapportens datum.</li>
+<li><strong>Resurs:</strong> Arbetstagare eller maskin som visas i rapporten eller arbetsrapportraden.</li>
+<li><strong>Orderelement:</strong> Kod för det orderelement som det utförda arbetet hänförs till.</li>
+<li><strong>Timhantering:</strong> Fastställer vilken timpolitik som ska användas, vilken kan vara:<ul>
+<li><strong>Enligt tilldelade timmar:</strong> Timmar hänförs baserat på tilldelade timmar.</li>
+<li><strong>Enligt start- och sluttider:</strong> Timmar beräknas baserat på start- och sluttider.</li>
+<li><strong>Enligt antalet timmar och start- och slutintervall:</strong> Avvikelser tillåts och antalet timmar har prioritet.</li>
+</ul>
+</li>
+</ul>
+<p>Användare kan lägga till nya fält i rapporterna:</p>
+<ul class="simple">
+<li><strong>Taggtyp:</strong> Användare kan begära att systemet visar en tagg när arbetsrapporten fylls i. Till exempel taggtypen klient, om användaren vill ange klienten för vem arbetet utfördes i varje rapport.</li>
+<li><strong>Fritextfält:</strong> Fält där text kan anges fritt i arbetsrapporten.</li>
+</ul>
+<div class="figure">
+<img alt="images/work-report-type.png" src="images/work-report-type.png" style="width: 397.5px; height: 227.0px;" />
+<p class="caption">Skapar en arbetsrapporttyp med anpassade fält</p>
+</div>
+<p>Användare kan konfigurera datum-, resurs- och orderelementfält att visas i rapportens huvud, vilket innebär att de gäller för hela rapporten, eller så kan de läggas till i var och en av raderna.</p>
+<p>Slutligen kan nya ytterligare textfält eller taggar läggas till de befintliga, i arbetsrapportens huvud eller i varje rad, med hjälp av fälten &quot;Ytterligare text&quot; respektive &quot;Taggtyp&quot;. Användare kan konfigurera i vilken ordning dessa element ska anges på fliken &quot;Hantering av ytterligare fält och taggar&quot;.</p>
+</div>
+<div class="section" id="lista-over-arbetsrapporter">
+<h1><a class="toc-backref" href="#toc-entry-2">Lista över arbetsrapporter</a></h1>
+<p>När formatet för rapporterna som ska ingå i systemet har konfigurerats kan användare ange uppgifterna i det skapade formuläret enligt strukturen som definieras i motsvarande arbetsrapporttyp. För att göra detta måste användare följa dessa steg:</p>
+<ul class="simple">
+<li>Klicka på knappen &quot;Ny arbetsrapport&quot; som är kopplad till önskad rapport från listan över arbetsrapporttyper.</li>
+<li>Programmet visar sedan rapporten baserad på konfigurationerna för typen. Se följande bild.</li>
+</ul>
+<div class="figure">
+<img alt="images/work-report-type.png" src="images/work-report-type.png" style="width: 397.5px; height: 227.0px;" />
+<p class="caption">Arbetsrapportstruktur baserad på typ</p>
+</div>
+<ul class="simple">
+<li>Välj alla fält som visas för rapporten:<ul>
+<li><strong>Resurs:</strong> Om rubriken har valts visas resursen bara en gång. Annars är det nödvändigt att välja en resurs för varje rad i rapporten.</li>
+<li><strong>Uppgiftskod:</strong> Kod för den uppgift som arbetsrapporten tilldelas. Precis som för övriga fält, om fältet finns i rubriken, anges värdet en gång eller så många gånger som behövs på rapportens rader.</li>
+<li><strong>Datum:</strong> Rapportens datum eller varje rads datum, beroende på om rubriken eller raden är konfigurerad.</li>
+<li><strong>Antal timmar:</strong> Antalet arbetstimmar i projektet.</li>
+<li><strong>Start- och sluttider:</strong> Start- och sluttider för arbetet för att beräkna definitiva arbetstimmar. Det här fältet visas bara vid timpolitiken &quot;Enligt start- och sluttider&quot; och &quot;Enligt antalet timmar och start- och slutintervall.&quot;</li>
+<li><strong>Typ av timmar:</strong> Gör det möjligt för användare att välja typ av timme, t.ex. &quot;Normal,&quot; &quot;Extra,&quot; etc.</li>
+</ul>
+</li>
+<li>Klicka på &quot;Spara&quot; eller &quot;Spara och fortsätt.&quot;</li>
+</ul>
+</div>
+</div>
+</body>
+</html>

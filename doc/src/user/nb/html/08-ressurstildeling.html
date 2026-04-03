@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Ressurstildeling</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="ressurstildeling">
+<h1 class="title">Ressurstildeling</h1>
+
+<div class="contents topic" id="contents">
+<span id="asigacion"></span><p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#spesifikk-tildeling" id="toc-entry-1">Spesifikk tildeling</a><ul>
+<li><a class="reference internal" href="#spesifikk-maskintildeling" id="toc-entry-2">Spesifikk maskintildeling</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#generisk-tildeling" id="toc-entry-3">Generisk tildeling</a><ul>
+<li><a class="reference internal" href="#generisk-maskintildeling" id="toc-entry-4">Generisk maskintildeling</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#avansert-tildeling" id="toc-entry-5">Avansert tildeling</a></li>
+</ul>
+</div>
+<p>Ressurstildeling er en av programmets viktigste funksjoner og kan utføres på to forskjellige måter:</p>
+<ul class="simple">
+<li>Spesifikk tildeling</li>
+<li>Generisk tildeling</li>
+</ul>
+<p>Begge typer tildeling forklares i de følgende avsnittene.</p>
+<p>For å utføre en av typene ressurstildeling kreves følgende trinn:</p>
+<ul class="simple">
+<li>Gå til planvisningen for en ordre.</li>
+<li>Høyreklikk på oppgaven som skal planlegges.</li>
+</ul>
+<div class="figure">
+<img alt="images/resource-assignment-planning.png" src="images/resource-assignment-planning.png" style="width: 459.0px; height: 151.5px;" />
+<p class="caption">Meny for ressurstildeling</p>
+</div>
+<ul class="simple">
+<li>Programmet viser en skjerm med følgende informasjon:<ul>
+<li><strong>Liste over kriterier som skal oppfylles:</strong> For hver timegruppe vises en liste over nødvendige kriterier.</li>
+<li><strong>Oppgaveinformasjon:</strong> Start- og sluttdato for oppgaven.</li>
+<li><strong>Type beregning:</strong> Systemet lar brukere velge strategi for beregning av tildelinger:<ul>
+<li><strong>Beregn antall timer:</strong> Beregner antall timer som kreves fra de tildelte ressursene, gitt en sluttdato og et antall ressurser per dag.</li>
+<li><strong>Beregn sluttdato:</strong> Beregner sluttdatoen for oppgaven basert på antall ressurser tildelt oppgaven og det totale antallet timer som kreves for å fullføre den.</li>
+<li><strong>Beregn antall ressurser:</strong> Beregner antall ressurser som kreves for å fullføre oppgaven innen en bestemt dato, gitt et kjent antall timer per ressurs.</li>
+</ul>
+</li>
+<li><strong>Anbefalt tildeling:</strong> Dette alternativet lar programmet samle kriteriene som skal oppfylles og det totale antallet timer fra alle timegrupper, og deretter anbefale en generisk tildeling. Hvis det finnes en tidligere tildeling, sletter systemet den og erstatter den med den nye.</li>
+<li><strong>Tildelinger:</strong> En liste over tildelinger som er gjort. Denne listen viser de generiske tildelingene (nummeret vil være listen over oppfylte kriterier, antall timer og ressurser per dag). Hver tildeling kan eksplisitt fjernes ved å klikke sletteknappen.</li>
+</ul>
+</li>
+</ul>
+<div class="figure">
+<img alt="images/resource-assignment.png" src="images/resource-assignment.png" style="width: 326.5px; height: 306.5px;" />
+<p class="caption">Ressurstildeling</p>
+</div>
+<ul class="simple">
+<li>Brukere velger &quot;Søk etter ressurser.&quot;</li>
+<li>Programmet viser en ny skjerm bestående av et kriterietre og en liste over arbeidere som oppfyller de valgte kriteriene til høyre:</li>
+</ul>
+<div class="figure">
+<img alt="images/resource-assignment-search.png" src="images/resource-assignment-search.png" style="width: 319.5px; height: 272.0px;" />
+<p class="caption">Søk etter ressurstildeling</p>
+</div>
+<ul class="simple">
+<li>Brukere kan velge:<ul>
+<li><strong>Spesifikk tildeling:</strong> Se avsnittet &quot;Spesifikk tildeling&quot; for detaljer om dette alternativet.</li>
+<li><strong>Generisk tildeling:</strong> Se avsnittet &quot;Generisk tildeling&quot; for detaljer om dette alternativet.</li>
+</ul>
+</li>
+<li>Brukere velger en liste over kriterier (generisk) eller en liste over arbeidere (spesifikk). Det kan gjøres flere valg ved å holde inne &quot;Ctrl&quot;-tasten mens man klikker på hver arbeider/hvert kriterium.</li>
+<li>Brukere klikker deretter på &quot;Velg&quot;-knappen. Det er viktig å huske at hvis en generisk tildeling ikke er valgt, må brukerne velge en arbeider eller maskin for å utføre tildelingen. Hvis en generisk tildeling er valgt, er det tilstrekkelig for brukerne å velge ett eller flere kriterier.</li>
+<li>Programmet viser deretter de valgte kriteriene eller ressurslisten i listen over tildelinger på den opprinnelige skjermen for ressurstildeling.</li>
+<li>Brukerne må velge timer eller ressurser per dag, avhengig av tildelingsmetoden som brukes i programmet.</li>
+</ul>
+<div class="section" id="spesifikk-tildeling">
+<h1><a class="toc-backref" href="#toc-entry-1">Spesifikk tildeling</a></h1>
+<p>Dette er den spesifikke tildelingen av en ressurs til en prosjektoppgave. Med andre ord bestemmer brukeren hvilken spesifikk arbeider (etter navn og etternavn) eller maskin som må tildeles til en oppgave.</p>
+<p>Spesifikk tildeling kan utføres på skjermen vist i dette bildet:</p>
+<div class="figure">
+<img alt="images/asignacion-especifica.png" src="images/asignacion-especifica.png" style="width: 334.0px; height: 216.0px;" />
+<p class="caption">Spesifikk ressurstildeling</p>
+</div>
+<p>Når en ressurs er spesifikt tildelt, oppretter programmet daglige tildelinger basert på prosentandelen av daglig tildelte ressurser valgt, etter å ha sammenlignet den med den tilgjengelige ressurskalenderen. For eksempel betyr en tildeling på 0,5 ressurser for en 32-timers oppgave at 4 timer per dag tildeles den spesifikke ressursen for å fullføre oppgaven (forutsatt en arbeidskalender på 8 timer per dag).</p>
+<div class="section" id="spesifikk-maskintildeling">
+<h2><a class="toc-backref" href="#toc-entry-2">Spesifikk maskintildeling</a></h2>
+<p>Spesifikk maskintildeling fungerer på samme måte som arbeidertildeling. Når en maskin tilordnes til en oppgave, lagrer systemet en spesifikk tildeling av timer for den valgte maskinen. Den viktigste forskjellen er at systemet søker i listen over tildelte arbeidere eller kriterier i det øyeblikket maskinen tildeles:</p>
+<ul class="simple">
+<li>Hvis maskinen har en liste over tildelte arbeidere, velger programmet blant de som kreves av maskinen, basert på den tildelte kalenderen. For eksempel, hvis maskinkalenderen er 16 timer per dag og ressurskalenderen er 8 timer, tildeles to ressurser fra listen over tilgjengelige ressurser.</li>
+<li>Hvis maskinen har ett eller flere tildelte kriterier, gjøres generiske tildelinger blant ressursene som oppfyller kriteriene som er tildelt maskinen.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="generisk-tildeling">
+<h1><a class="toc-backref" href="#toc-entry-3">Generisk tildeling</a></h1>
+<p>Generisk tildeling skjer når brukere ikke velger ressurser spesifikt, men overlater beslutningen til programmet, som fordeler belastningene blant selskapets tilgjengelige ressurser.</p>
+<div class="figure">
+<img alt="images/asignacion-xenerica.png" src="images/asignacion-xenerica.png" style="width: 311.0px; height: 59.0px;" />
+<p class="caption">Generisk ressurstildeling</p>
+</div>
+<p>Tildelingssystemet bruker følgende forutsetninger som grunnlag:</p>
+<ul class="simple">
+<li>Oppgaver har kriterier som kreves av ressurser.</li>
+<li>Ressurser er konfigurert til å oppfylle kriterier.</li>
+</ul>
+<p>Systemet feiler imidlertid ikke når kriterier ikke er tildelt, men når alle ressurser oppfyller ikke-kravet til kriterier.</p>
+<p>Den generiske tildelingsalgoritmen fungerer som følger:</p>
+<ul class="simple">
+<li>Alle ressurser og dager behandles som beholdere der daglige tildelinger av timer passer, basert på maksimal tildelingskapasitet i oppgavekalenderen.</li>
+<li>Systemet søker etter ressursene som oppfyller kriteriet.</li>
+<li>Systemet analyserer hvilke tildelinger som for øyeblikket har forskjellige ressurser som oppfyller kriterier.</li>
+<li>Ressursene som oppfyller kriteriene velges blant de som har tilstrekkelig tilgjengelighet.</li>
+<li>Hvis friere ressurser ikke er tilgjengelige, gjøres tildelinger til ressursene som har mindre tilgjengelighet.</li>
+<li>Overtildeling av ressurser begynner bare når alle ressursene som oppfyller de respektive kriteriene er 100% tildelt, inntil det totale beløpet som kreves for å utføre oppgaven er nådd.</li>
+</ul>
+<div class="section" id="generisk-maskintildeling">
+<h2><a class="toc-backref" href="#toc-entry-4">Generisk maskintildeling</a></h2>
+<p>Generisk maskintildeling fungerer på samme måte som arbeidertildeling. For eksempel, når en maskin tilordnes til en oppgave, lagrer systemet en generisk tildeling av timer for alle maskiner som oppfyller kriteriene, som beskrevet for ressurser generelt. I tillegg utfører systemet følgende prosedyre for maskiner:</p>
+<ul class="simple">
+<li>For alle maskiner valgt for generisk tildeling:<ul>
+<li>Den samler maskinens konfigurasjonsinformasjon: alfaverdi, tildelte arbeidere og kriterier.</li>
+<li>Hvis maskinen har en tildelt liste over arbeidere, velger programmet det antallet som kreves av maskinen, avhengig av den tildelte kalenderen. For eksempel, hvis maskinkalenderen er 16 timer per dag og ressurskalenderen er 8 timer, tildeler programmet to ressurser fra listen over tilgjengelige ressurser.</li>
+<li>Hvis maskinen har ett eller flere tildelte kriterier, gjør programmet generiske tildelinger blant ressursene som oppfyller kriteriene som er tildelt maskinen.</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="avansert-tildeling">
+<h1><a class="toc-backref" href="#toc-entry-5">Avansert tildeling</a></h1>
+<p>Avanserte tildelinger lar brukere utforme tildelinger som automatisk utføres av applikasjonen for å tilpasse dem. Denne prosedyren lar brukere manuelt velge de daglige timene som dedikeres av ressurser til tildelte oppgaver eller definere en funksjon som brukes på tildelingen.</p>
+<p>Trinnene for å håndtere avanserte tildelinger er:</p>
+<ul class="simple">
+<li>Gå til vinduet for avansert tildeling. Det er to måter å få tilgang til avanserte tildelinger på:<ul>
+<li>Gå til en spesifikk ordre og endre visningen til avansert tildeling. I dette tilfellet vil alle oppgavene i ordren og tildelte ressurser (spesifikke og generiske) vises.</li>
+<li>Gå til vinduet for ressurstildeling ved å klikke på &quot;Avansert tildeling&quot;-knappen. I dette tilfellet vil tildelingene som viser ressursene (generiske og spesifikke) tildelt til en oppgave vises.</li>
+</ul>
+</li>
+</ul>
+<div class="figure">
+<img alt="images/advance-assignment.png" src="images/advance-assignment.png" style="width: 459.0px; height: 294.3px;" />
+<p class="caption">Avansert ressurstildeling</p>
+</div>
+<ul class="simple">
+<li>Brukere kan velge ønsket zoomnivå:<ul>
+<li><strong>Zoomnivåer større enn én dag:</strong> Hvis brukere endrer den tildelte timeverdien til en uke, måned, fire-måneds- eller seks-månedersperiode, distribuerer systemet timene lineært over alle dager i hele den valgte perioden.</li>
+<li><strong>Daglig zoom:</strong> Hvis brukere endrer den tildelte timeverdien til en dag, gjelder disse timene bare den dagen. Følgelig kan brukere bestemme hvor mange timer de vil tildele per dag til oppgaveressurser.</li>
+</ul>
+</li>
+<li>Brukere kan velge å utforme en avansert tildelingsfunksjon. For å gjøre dette må brukerne:<ul>
+<li>Velge funksjonen fra utvalglisten som vises ved siden av hver ressurs og klikke på &quot;Konfigurer&quot;.</li>
+<li>Systemet viser et nytt vindu hvis den valgte funksjonen trenger spesifikk konfigurasjon. Støttede funksjoner:<ul>
+<li><strong>Segmenter:</strong> En funksjon som lar brukere definere segmenter der en polynomfunksjon brukes. Funksjonen per segment konfigureres som følger:<ul>
+<li><strong>Dato:</strong> Datoen segmentet avsluttes. Hvis den følgende verdien (lengde) er fastsatt, beregnes datoen; alternativt beregnes lengden.</li>
+<li><strong>Definere lengden på hvert segment:</strong> Angir hvilken prosentandel av oppgavens varighet som kreves for segmentet.</li>
+<li><strong>Definere mengden arbeid:</strong> Angir hvilken arbeidsmengdeprosentandel som forventes å bli fullført i dette segmentet. Mengden arbeid må være inkrementell. For eksempel, hvis det er et 10%-segment, må det neste være større (for eksempel 20%).</li>
+<li><strong>Segmentgrafer og akkumulerte belastninger.</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Brukere klikker deretter på &quot;Godta.&quot;</li>
+<li>Programmet lagrer funksjonen og bruker den på de daglige ressurstildelingene.</li>
+</ul>
+</li>
+</ul>
+<div class="figure">
+<img alt="images/stretches.png" src="images/stretches.png" style="width: 428.8px; height: 233.20000000000002px;" />
+<p class="caption">Konfigurasjon av segmentfunksjonen</p>
+</div>
+</div>
+</div>
+</body>
+</html>

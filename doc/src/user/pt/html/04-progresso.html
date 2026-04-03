@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Progresso</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="progresso">
+<h1 class="title">Progresso</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#gestao-de-tipos-de-progresso" id="toc-entry-1">Gestão de Tipos de Progresso</a></li>
+<li><a class="reference internal" href="#introducao-de-progresso-por-tipo" id="toc-entry-2">Introdução de Progresso por Tipo</a></li>
+<li><a class="reference internal" href="#comparacao-de-progresso-para-um-elemento-de-encomenda" id="toc-entry-3">Comparação de Progresso para um Elemento de Encomenda</a></li>
+</ul>
+</div>
+<p>O progresso do projecto indica o grau em que o tempo estimado de conclusão do projecto está a ser cumprido. O progresso da tarefa indica o grau em que a tarefa está a ser concluída de acordo com a sua conclusão estimada.</p>
+<p>Geralmente, o progresso não pode ser medido automaticamente. Um membro da equipa com experiência ou uma lista de verificação deve determinar o grau de conclusão de uma tarefa ou projecto.</p>
+<p>É importante notar a distinção entre as horas atribuídas a uma tarefa ou projecto e o progresso dessa tarefa ou projecto. Embora o número de horas utilizadas possa ser mais ou menos do que o esperado, o projecto pode estar adiantado ou atrasado em relação à sua conclusão estimada no dia monitorizado. Várias situações podem surgir destas duas medições:</p>
+<ul class="simple">
+<li><strong>Menos horas consumidas do que o esperado, mas o projecto está atrasado:</strong> O progresso é inferior ao estimado para o dia monitorizado.</li>
+<li><strong>Menos horas consumidas do que o esperado, e o projecto está adiantado:</strong> O progresso é superior ao estimado para o dia monitorizado.</li>
+<li><strong>Mais horas consumidas do que o esperado, e o projecto está atrasado:</strong> O progresso é inferior ao estimado para o dia monitorizado.</li>
+<li><strong>Mais horas consumidas do que o esperado, mas o projecto está adiantado:</strong> O progresso é superior ao estimado para o dia monitorizado.</li>
+</ul>
+<p>A vista de planeamento permite comparar estas situações utilizando informações sobre o progresso efectuado e as horas utilizadas. Este capítulo explicará como introduzir informações para monitorizar o progresso.</p>
+<p>A filosofia subjacente à monitorização do progresso baseia-se no facto de os utilizadores definirem o nível ao qual pretendem monitorizar os seus projectos. Por exemplo, se os utilizadores pretendem monitorizar encomendas, apenas precisam de introduzir informações para elementos de nível 1. Se pretenderem uma monitorização mais precisa ao nível da tarefa, devem introduzir informações de progresso em níveis inferiores. O sistema irá então agregar os dados para cima através da hierarquia.</p>
+<div class="section" id="gestao-de-tipos-de-progresso">
+<h1><a class="toc-backref" href="#toc-entry-1">Gestão de Tipos de Progresso</a></h1>
+<p>As empresas têm necessidades variadas ao monitorizar o progresso do projecto, nomeadamente as tarefas envolvidas. Por isso, o sistema inclui &quot;tipos de progresso&quot;. Os utilizadores podem definir diferentes tipos de progresso para medir o progresso de uma tarefa. Por exemplo, uma tarefa pode ser medida em percentagem, mas esta percentagem também pode ser traduzida em progresso em <em>Toneladas</em> com base no acordo com o cliente.</p>
+<p>Um tipo de progresso tem um nome, um valor máximo e um valor de precisão:</p>
+<ul class="simple">
+<li><strong>Nome:</strong> Um nome descritivo que os utilizadores reconhecerão ao seleccionar o tipo de progresso. Este nome deve indicar claramente que tipo de progresso está a ser medido.</li>
+<li><strong>Valor Máximo:</strong> O valor máximo que pode ser estabelecido para uma tarefa ou projecto como medição total do progresso. Por exemplo, se estiver a trabalhar com <em>Toneladas</em> e o máximo normal for 4000 toneladas, e nenhuma tarefa requerer nunca mais de 4000 toneladas de qualquer material, então 4000 seria o valor máximo.</li>
+<li><strong>Valor de Precisão:</strong> O valor de incremento permitido para o tipo de progresso. Por exemplo, se o progresso em <em>Toneladas</em> deve ser medido em números inteiros, o valor de precisão seria 1. A partir daí, apenas números inteiros podem ser introduzidos como medições de progresso (por exemplo, 1, 2, 300).</li>
+</ul>
+<p>O sistema tem dois tipos de progresso predefinidos:</p>
+<ul class="simple">
+<li><strong>Percentagem:</strong> Um tipo de progresso geral que mede o progresso de um projecto ou tarefa com base numa percentagem de conclusão estimada. Por exemplo, uma tarefa está 30% concluída dos 100% estimados para um dia específico.</li>
+<li><strong>Unidades:</strong> Um tipo de progresso geral que mede o progresso em unidades sem especificar o tipo de unidade. Por exemplo, uma tarefa envolve a criação de 3000 unidades, e o progresso é de 500 unidades do total de 3000.</li>
+</ul>
+<div class="figure">
+<img alt="images/tipos-avances.png" src="images/tipos-avances.png" style="width: 376.5px; height: 164.5px;" />
+<p class="caption">Administração de Tipos de Progresso</p>
+</div>
+<p>Os utilizadores podem criar novos tipos de progresso da seguinte forma:</p>
+<ul class="simple">
+<li>Vá à secção &quot;Administração&quot;.</li>
+<li>Clique na opção &quot;Gerir tipos de progresso&quot; no menu de segundo nível.</li>
+<li>O sistema apresentará uma lista dos tipos de progresso existentes.</li>
+<li>Para cada tipo de progresso, os utilizadores podem:<ul>
+<li>Editar</li>
+<li>Eliminar</li>
+</ul>
+</li>
+<li>Os utilizadores podem então criar um novo tipo de progresso.</li>
+<li>Ao editar ou criar um tipo de progresso, o sistema apresenta um formulário com as seguintes informações:<ul>
+<li>Nome do tipo de progresso.</li>
+<li>Valor máximo permitido para o tipo de progresso.</li>
+<li>Valor de precisão para o tipo de progresso.</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="introducao-de-progresso-por-tipo">
+<h1><a class="toc-backref" href="#toc-entry-2">Introdução de Progresso por Tipo</a></h1>
+<p>O progresso é introduzido para elementos de encomenda, mas também pode ser introduzido usando um atalho a partir das tarefas de planeamento. Os utilizadores são responsáveis por decidir qual tipo de progresso associar a cada elemento de encomenda.</p>
+<p>Os utilizadores podem introduzir um único tipo de progresso predefinido para toda a encomenda.</p>
+<p>Antes de medir o progresso, os utilizadores devem associar o tipo de progresso escolhido à encomenda. Por exemplo, podem escolher o progresso em percentagem para medir o progresso em toda a tarefa ou uma taxa de progresso acordada se as medições de progresso acordadas com o cliente forem introduzidas no futuro.</p>
+<div class="figure">
+<img alt="images/avance.png" src="images/avance.png" style="width: 424.0px; height: 290.8px;" />
+<p class="caption">Ecrã de Introdução de Progresso com Visualização Gráfica</p>
+</div>
+<p>Para introduzir medições de progresso:</p>
+<ul class="simple">
+<li>Seleccione o tipo de progresso ao qual o progresso será adicionado.
+*   Se não existir nenhum tipo de progresso, deve ser criado um novo.</li>
+<li>No formulário que aparece sob os campos &quot;Valor&quot; e &quot;Data&quot;, introduza o valor absoluto da medição e a data da medição.</li>
+<li>O sistema armazena automaticamente os dados introduzidos.</li>
+</ul>
+</div>
+<div class="section" id="comparacao-de-progresso-para-um-elemento-de-encomenda">
+<h1><a class="toc-backref" href="#toc-entry-3">Comparação de Progresso para um Elemento de Encomenda</a></h1>
+<p>Os utilizadores podem comparar graficamente o progresso efectuado nas encomendas com as medições realizadas. Todos os tipos de progresso têm uma coluna com um botão de verificação (&quot;Mostrar&quot;). Quando este botão é seleccionado, é apresentado o gráfico de progresso das medições efectuadas para o elemento de encomenda.</p>
+<div class="figure">
+<img alt="images/contraste-avance.png" src="images/contraste-avance.png" style="width: 422.0px; height: 290.0px;" />
+<p class="caption">Comparação de Vários Tipos de Progresso</p>
+</div>
+</div>
+</div>
+</body>
+</html>

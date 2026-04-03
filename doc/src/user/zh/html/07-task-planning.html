@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>任務規劃</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="section-1">
+<h1 class="title">任務規劃</h1>
+
+<div class="contents topic" id="contents">
+<span id="planificacion"></span><p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#section-2" id="toc-entry-1">任務規劃</a><ul>
+<li><a class="reference internal" href="#section-3" id="toc-entry-2">規劃檢視</a></li>
+<li><a class="reference internal" href="#section-4" id="toc-entry-3">資源負載檢視</a></li>
+<li><a class="reference internal" href="#section-5" id="toc-entry-4">專案清單檢視</a></li>
+<li><a class="reference internal" href="#section-6" id="toc-entry-5">進階分配檢視</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="section-2">
+<h1><a class="toc-backref" href="#toc-entry-1">任務規劃</a></h1>
+<p>LibrePlan 中的規劃是貫穿整個使用者指南描述的過程，其中關於專案和資源分配的章節尤為重要。本章描述在專案和甘特圖正確設定後的基本規劃程序。</p>
+<div class="figure">
+<img alt="images/planning-view.png" src="images/planning-view.png" style="width: 354.2px; height: 229.24999999999997px;" />
+<p class="caption">工作規劃檢視</p>
+</div>
+<p>與公司概覽一樣，專案規劃檢視根據正在分析的資訊分為幾個檢視。特定專案可用的檢視包括：</p>
+<ul class="simple">
+<li>規劃檢視</li>
+<li>資源負載檢視</li>
+<li>專案清單檢視</li>
+<li>進階分配檢視</li>
+</ul>
+<div class="section" id="section-3">
+<h2><a class="toc-backref" href="#toc-entry-2">規劃檢視</a></h2>
+<p>規劃檢視結合了三種不同的角度：</p>
+<ul class="simple">
+<li><strong>專案規劃：</strong> 專案規劃以甘特圖形式顯示在程式的右上方。此檢視允許使用者臨時移動任務、在任務之間指定相依性、定義里程碑以及建立限制。</li>
+<li><strong>資源負載：</strong> 資源負載檢視位於畫面右下方，根據分配顯示資源可用性，而非任務的分配情況。此檢視中顯示的資訊如下：<ul>
+<li><strong>紫色區域：</strong> 表示資源負載低於其容量的 100%。</li>
+<li><strong>綠色區域：</strong> 表示由於資源被規劃用於另一個專案，資源負載低於 100%。</li>
+<li><strong>橙色區域：</strong> 表示由於目前專案，資源負載超過 100%。</li>
+<li><strong>黃色區域：</strong> 表示由於其他專案，資源負載超過 100%。</li>
+</ul>
+</li>
+<li><strong>圖表檢視和實獲值指標：</strong> 可以從「實獲值」索引標籤查看。產生的圖表基於實獲值技術，指標針對專案的每個工作日計算。計算的指標包括：<ul>
+<li><strong>BCWS（計劃工作的預算成本）：</strong> 截至某日期的計劃工時數的累積時間函數。在任務的計劃開始時為 0，在結束時等於計劃工時總數。與所有累積圖表一樣，它將始終增加。任務的函數是截至計算日期每日分配的總和。此函數在所有時間都有值，前提是已分配資源。</li>
+<li><strong>ACWP（已執行工作的實際成本）：</strong> 截至某日期工作報告中報告工時的累積時間函數。此函數在任務的第一份工作報告日期之前只有 0 的值，隨著時間流逝和工作報告工時的增加，其值將繼續增加。在最後一份工作報告日期之後沒有值。</li>
+<li><strong>BCWP（已執行工作的預算成本）：</strong> 包含將任務進度乘以估計完成任務所需工作量的結果值的累積時間函數。隨著時間流逝，此函數的值增加，進度值也增加。進度乘以所有任務的估計工時總數。BCWP 值是正在計算的任務的值的總和。進度在設定時被彙總。</li>
+<li><strong>CV（成本差異）：</strong> CV = BCWP - ACWP</li>
+<li><strong>SV（排程差異）：</strong> SV = BCWP - BCWS</li>
+<li><strong>BAC（完工預算）：</strong> BAC = max (BCWS)</li>
+<li><strong>EAC（完工估算）：</strong> EAC = (ACWP / BCWP) * BAC</li>
+<li><strong>VAC（完工差異）：</strong> VAC = BAC - EAC</li>
+<li><strong>ETC（完工尚需估算）：</strong> ETC = EAC - ACWP</li>
+<li><strong>CPI（成本績效指數）：</strong> CPI = BCWP / ACWP</li>
+<li><strong>SPI（排程績效指數）：</strong> SPI = BCWP / BCWS</li>
+</ul>
+</li>
+</ul>
+<p>在專案規劃檢視中，使用者可以執行以下操作：</p>
+<ul class="simple">
+<li><strong>分配相依性：</strong> 在任務上按右鍵，選擇「新增相依性」，然後將滑鼠指標拖曳到應分配相依性的任務。<ul>
+<li>要更改相依性類型，在相依性上按右鍵並選擇所需的類型。</li>
+</ul>
+</li>
+<li><strong>建立新里程碑：</strong> 點擊要在其之前新增里程碑的任務，然後選擇「新增里程碑」選項。里程碑可以透過用滑鼠指標選擇里程碑並將其拖曳到所需位置來移動。</li>
+<li><strong>在不干擾相依性的情況下移動任務：</strong> 在任務主體上按右鍵並將其拖曳到所需位置。如果沒有限制或相依性被違反，系統將更新資源對任務的每日分配，並將任務放置在選定的日期。</li>
+<li><strong>分配限制：</strong> 點擊相關任務並選擇「任務屬性」選項。將出現一個帶有可修改的「限制」欄位的彈出視窗。限制可能與相依性衝突，這就是為什麼每個專案都指定相依性是否優先於限制。可以建立的限制包括：<ul>
+<li><strong>儘早開始：</strong> 表示任務必須儘快開始。</li>
+<li><strong>不早於：</strong> 表示任務不得在某個日期之前開始。</li>
+<li><strong>在特定日期開始：</strong> 表示任務必須在特定日期開始。</li>
+</ul>
+</li>
+</ul>
+<p>規劃檢視還提供幾個作為查看選項的程序：</p>
+<ul class="simple">
+<li><strong>縮放等級：</strong> 使用者可以選擇所需的縮放等級。有幾個縮放等級：年度、四個月、月度、每週和每日。</li>
+<li><strong>搜尋篩選器：</strong> 使用者可以根據標籤或標準篩選任務。</li>
+<li><strong>關鍵路徑：</strong> 由於使用 <em>Dijkstra</em> 演算法計算圖上的路徑，關鍵路徑被實現。可以透過點擊查看選項中的「關鍵路徑」按鈕來查看。</li>
+<li><strong>顯示標籤：</strong> 使使用者能夠查看分配給專案中任務的標籤，可以在螢幕上查看或列印。</li>
+<li><strong>顯示資源：</strong> 使使用者能夠查看分配給專案中任務的資源，可以在螢幕上查看或列印。</li>
+<li><strong>列印：</strong> 使使用者能夠列印正在查看的甘特圖。</li>
+</ul>
+</div>
+<div class="section" id="section-4">
+<h2><a class="toc-backref" href="#toc-entry-3">資源負載檢視</a></h2>
+<p>資源負載檢視提供資源清單，其中包含產生工作量的任務或標準的清單。每個任務或標準都以甘特圖形式顯示，以便可以看到負載的開始和結束日期。根據資源的負載是高於還是低於 100% 顯示不同的顏色：</p>
+<ul class="simple">
+<li><strong>綠色：</strong> 負載低於 100%</li>
+<li><strong>橙色：</strong> 100% 負載</li>
+<li><strong>紅色：</strong> 負載超過 100%</li>
+</ul>
+<div class="figure">
+<img alt="images/resource-load.png" src="images/resource-load.png" style="width: 353.5px; height: 228.89999999999998px;" />
+<p class="caption">特定專案的資源負載檢視</p>
+</div>
+<p>如果將滑鼠指標放在資源的甘特圖上，將顯示員工的負載百分比。</p>
+</div>
+<div class="section" id="section-5">
+<h2><a class="toc-backref" href="#toc-entry-4">專案清單檢視</a></h2>
+<p>專案清單檢視允許使用者存取專案編輯和刪除選項。請參閱「專案」章節以了解更多資訊。</p>
+</div>
+<div class="section" id="section-6">
+<h2><a class="toc-backref" href="#toc-entry-5">進階分配檢視</a></h2>
+<p>進階分配檢視在「資源分配」章節中詳細說明。</p>
+</div>
+</div>
+</div>
+</body>
+</html>

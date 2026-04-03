@@ -39,5 +39,5 @@ Para administrar materiales:
 
 * El usuario llena los campos y presiona en el botón "Guardar".
 
-La asignación de materiales a elementos de pedidos se explica en el capítulo de "Pedidos".
+La asignación de materiales a elementos de proyectos se explica en el capítulo de "Proyectos".
 

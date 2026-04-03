@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Criteris</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="criteris">
+<h1 class="title">Criteris</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#administracio-de-criteris" id="toc-entry-1">Administració de criteris</a></li>
+</ul>
+</div>
+<p>Els criteris són elements del programa que s'utilitzen per categoritzar tant els recursos com les tasques. Les tasques requereixen criteris específics, i els recursos han de complir aquests criteris.</p>
+<p>Aquí hi ha un exemple de com s'utilitzen els criteris: a un recurs se li assigna el criteri &quot;soldador&quot; (és a dir, el recurs compleix la categoria &quot;soldador&quot;) i una tasca requereix el criteri &quot;soldador&quot; per completar-se. En conseqüència, quan s'assignen recursos a tasques mitjançant l'assignació genèrica (en oposició a l'assignació específica), es tindran en compte els treballadors amb el criteri &quot;soldador&quot;. Per obtenir més informació sobre els diferents tipus d'assignació, consulteu el capítol sobre assignació de recursos.</p>
+<p>El programa permet diverses operacions amb criteris:</p>
+<ul class="simple">
+<li>Administració de criteris</li>
+<li>Assignació de criteris a recursos</li>
+<li>Assignació de criteris a tasques</li>
+<li>Filtrar entitats basant-se en criteris. Les tasques i els elements de comanda es poden filtrar per criteris per realitzar diverses operacions dins del programa.</li>
+</ul>
+<p>Aquesta secció només explicarà la primera funció, l'administració de criteris. Els dos tipus d'assignació es tractaran més endavant: l'assignació de recursos al capítol &quot;Gestió de Recursos&quot; i el filtratge al capítol &quot;Planificació de Tasques&quot;.</p>
+<div class="section" id="administracio-de-criteris">
+<h1><a class="toc-backref" href="#toc-entry-1">Administració de criteris</a></h1>
+<p>L'administració de criteris és accessible a través del menú d'administració:</p>
+<div class="figure">
+<img alt="images/menu.png" src="images/menu.png" style="width: 227.5px; height: 15.5px;" />
+<p class="caption">Pestanyes del menú de primer nivell</p>
+</div>
+<p>L'operació específica per gestionar criteris és <em>Gestionar criteris</em>. Aquesta operació us permet llistar els criteris disponibles al sistema.</p>
+<div class="figure">
+<img alt="images/lista-criterios.png" src="images/lista-criterios.png" style="width: 300.0px; height: 154.0px;" />
+<p class="caption">Llista de criteris</p>
+</div>
+<p>Podeu accedir al formulari de creació/edició de criteris fent clic al botó <em>Crear</em>. Per editar un criteri existent, feu clic a la icona d'edició.</p>
+<div class="figure">
+<img alt="images/edicion-criterio.png" src="images/edicion-criterio.png" style="width: 446.5px; height: 279.0px;" />
+<p class="caption">Edició de criteris</p>
+</div>
+<p>El formulari d'edició de criteris, tal com es mostra a la imatge anterior, us permet realitzar les operacions següents:</p>
+<ul class="simple">
+<li><strong>Editar el nom del criteri.</strong></li>
+<li><strong>Especificar si es poden assignar múltiples valors simultàniament o només un valor per al tipus de criteri seleccionat.</strong> Per exemple, un recurs podria complir dos criteris, &quot;soldador&quot; i &quot;torner&quot;.</li>
+<li><strong>Especificar el tipus de criteri:</strong><ul>
+<li><strong>Genèric:</strong> Un criteri que es pot utilitzar tant per a màquines com per a treballadors.</li>
+<li><strong>Treballador:</strong> Un criteri que només es pot utilitzar per a treballadors.</li>
+<li><strong>Màquina:</strong> Un criteri que només es pot utilitzar per a màquines.</li>
+</ul>
+</li>
+<li><strong>Indicar si el criteri és jeràrquic.</strong> De vegades, els criteris han de ser tractats jeràrquicament. Per exemple, l'assignació d'un criteri a un element no l'assigna automàticament als elements derivats d'ell. Un exemple clar d'un criteri jeràrquic és la &quot;ubicació&quot;. Per exemple, una persona designada amb la ubicació &quot;Galícia&quot; també pertanyerà a &quot;Espanya&quot;.</li>
+<li><strong>Indicar si el criteri és autoritzat.</strong> Aquesta és la manera en què els usuaris desactiven els criteris. Un cop s'ha creat un criteri i s'ha utilitzat en dades històriques, no es pot modificar. En comptes d'això, es pot desactivar per evitar que aparegui en les llistes de selecció.</li>
+<li><strong>Descriure el criteri.</strong></li>
+<li><strong>Afegir nous valors.</strong> Un camp d'entrada de text amb el botó <em>Nou criteri</em> es troba a la segona part del formulari.</li>
+<li><strong>Editar els noms dels valors de criteris existents.</strong></li>
+<li><strong>Moure valors de criteris amunt o avall a la llista de valors de criteris actuals.</strong></li>
+<li><strong>Eliminar un valor de criteri de la llista.</strong></li>
+</ul>
+<p>El formulari d'administració de criteris segueix el comportament del formulari descrit a la introducció, oferint tres accions: <em>Desa</em>, <em>Desa i tanca</em> i <em>Tanca</em>.</p>
+</div>
+</div>
+</body>
+</html>

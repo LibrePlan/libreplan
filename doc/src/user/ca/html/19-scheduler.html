@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Planificador</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="planificador">
+<h1 class="title">Planificador</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#vista-de-llista-de-planificacio-de-treballs" id="toc-entry-1">Vista de llista de planificació de treballs</a></li>
+<li><a class="reference internal" href="#afegir-o-editar-un-treball" id="toc-entry-2">Afegir o editar un treball</a><ul>
+<li><a class="reference internal" href="#finestra-emergent-de-l-expressio-cron" id="toc-entry-3">Finestra emergent de l'expressió cron</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#eliminar-un-treball" id="toc-entry-4">Eliminar un treball</a></li>
+<li><a class="reference internal" href="#iniciar-un-treball-manualment" id="toc-entry-5">Iniciar un treball manualment</a></li>
+</ul>
+</div>
+<p>El planificador està dissenyat per planificar treballs de manera dinàmica. S'ha desenvolupat usant el <em>Spring Framework Quartz scheduler</em>.</p>
+<p>Per usar aquest planificador de manera efectiva, primer cal crear els treballs (treballs Quartz) que s'han de planificar. Després, aquests treballs es poden afegir a la base de dades, ja que tots els treballs a planificar s'emmagatzemen a la base de dades.</p>
+<p>Quan el planificador s'inicia, llegeix de la base de dades els treballs que cal planificar o desplanificar i els planifica o elimina en conseqüència. Posteriorment, els treballs es poden afegir, actualitzar o eliminar de manera dinàmica usant la interfície d'usuari <tt class="docutils literal">Planificació de treballs</tt>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">El planificador s'inicia quan s'inicia l'aplicació web LibrePlan i s'atura quan l'aplicació s'atura.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Aquest planificador admet únicament <tt class="docutils literal">expressions cron</tt> per planificar treballs.</p>
+</div>
+<p>Els criteris que el planificador usa per planificar o eliminar treballs quan s'inicia són els següents:</p>
+<p>Per a tots els treballs:</p>
+<ul class="simple">
+<li>Planificar<ul>
+<li>El treball té un <em>Connector</em>, el <em>Connector</em> està activat i el treball té permís per ser planificat.</li>
+<li>El treball no té <em>Connector</em> i té permís per ser planificat.</li>
+</ul>
+</li>
+<li>Eliminar<ul>
+<li>El treball té un <em>Connector</em> i el <em>Connector</em> no està activat.</li>
+<li>El treball té un <em>Connector</em>, el <em>Connector</em> està activat, però el treball no té permís per ser planificat.</li>
+<li>El treball no té <em>Connector</em> i no té permís per ser planificat.</li>
+</ul>
+</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Els treballs no es poden replanificar ni desplanificar si s'estan executant en aquell moment.</p>
+</div>
+<div class="section" id="vista-de-llista-de-planificacio-de-treballs">
+<h1><a class="toc-backref" href="#toc-entry-1">Vista de llista de planificació de treballs</a></h1>
+<p>La vista <tt class="docutils literal">Llista de planificació de treballs</tt> permet als usuaris:</p>
+<ul class="simple">
+<li>Afegir un nou treball.</li>
+<li>Editar un treball existent.</li>
+<li>Eliminar un treball.</li>
+<li>Iniciar un procés manualment.</li>
+</ul>
+</div>
+<div class="section" id="afegir-o-editar-un-treball">
+<h1><a class="toc-backref" href="#toc-entry-2">Afegir o editar un treball</a></h1>
+<p>Des de la vista <tt class="docutils literal">Llista de planificació de treballs</tt>, feu clic a:</p>
+<ul class="simple">
+<li><tt class="docutils literal">Crear</tt> per afegir un nou treball, o</li>
+<li><tt class="docutils literal">Editar</tt> per modificar el treball seleccionat.</li>
+</ul>
+<p>Ambdues accions obriran un <tt class="docutils literal">formulari</tt> de creació/edició de treball. El <tt class="docutils literal">formulari</tt> mostra les propietats següents:</p>
+<ul class="simple">
+<li>Camps:<ul>
+<li><strong>Grup de treballs:</strong> El nom del grup de treballs.</li>
+<li><strong>Nom del treball:</strong> El nom del treball.</li>
+<li><strong>Expressió cron:</strong> Un camp de només lectura amb un botó <tt class="docutils literal">Editar</tt> per obrir la finestra d'entrada de l'<tt class="docutils literal">expressió cron</tt>.</li>
+<li><strong>Nom de la classe del treball:</strong> Una <tt class="docutils literal">llista desplegable</tt> per seleccionar el treball (un treball existent).</li>
+<li><strong>Connector:</strong> Una <tt class="docutils literal">llista desplegable</tt> per seleccionar un connector. No és obligatori.</li>
+<li><strong>Planificar:</strong> Una casella de selecció per indicar si cal planificar aquest treball.</li>
+</ul>
+</li>
+<li>Botons:<ul>
+<li><strong>Desar:</strong> Per desar o actualitzar un treball tant a la base de dades com al planificador. L'usuari torna llavors a la <tt class="docutils literal">vista Llista de planificació de treballs</tt>.</li>
+<li><strong>Desar i continuar:</strong> Igual que &quot;Desar&quot;, però l'usuari no torna a la <tt class="docutils literal">vista Llista de planificació de treballs</tt>.</li>
+<li><strong>Cancel·lar:</strong> No es desa res i l'usuari torna a la <tt class="docutils literal">vista Llista de planificació de treballs</tt>.</li>
+</ul>
+</li>
+<li>I una secció d'ajuda sobre la sintaxi de les expressions cron.</li>
+</ul>
+<div class="section" id="finestra-emergent-de-l-expressio-cron">
+<h2><a class="toc-backref" href="#toc-entry-3">Finestra emergent de l'expressió cron</a></h2>
+<p>Per introduir correctament l'<tt class="docutils literal">expressió cron</tt>, s'usa un formulari emergent d'<tt class="docutils literal">expressió cron</tt>. En aquest formulari, podeu introduir l'<tt class="docutils literal">expressió cron</tt> desitjada. Vegeu també l'ajuda sobre l'<tt class="docutils literal">expressió cron</tt>. Si introduïu una <tt class="docutils literal">expressió cron</tt> no vàlida, se us notificarà immediatament.</p>
+</div>
+</div>
+<div class="section" id="eliminar-un-treball">
+<h1><a class="toc-backref" href="#toc-entry-4">Eliminar un treball</a></h1>
+<p>Feu clic al botó <tt class="docutils literal">Eliminar</tt> per suprimir el treball tant de la base de dades com del planificador. Es mostrarà l'èxit o el fracàs d'aquesta acció.</p>
+</div>
+<div class="section" id="iniciar-un-treball-manualment">
+<h1><a class="toc-backref" href="#toc-entry-5">Iniciar un treball manualment</a></h1>
+<p>Com a alternativa a esperar que el treball s'executi segons la planificació, podeu fer clic en aquest botó per iniciar el procés directament. Posteriorment, la informació sobre l'èxit o el fracàs es mostrarà en una <tt class="docutils literal">finestra emergent</tt>.</p>
+</div>
+</div>
+</body>
+</html>

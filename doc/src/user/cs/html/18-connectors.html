@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Konektory</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="konektory">
+<h1 class="title">Konektory</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#konfigurace" id="toc-entry-1">Konfigurace</a></li>
+<li><a class="reference internal" href="#konektor-jira" id="toc-entry-2">Konektor JIRA</a><ul>
+<li><a class="reference internal" href="#konfigurace-1" id="toc-entry-3">Konfigurace</a></li>
+<li><a class="reference internal" href="#synchronizace" id="toc-entry-4">Synchronizace</a></li>
+<li><a class="reference internal" href="#planovani" id="toc-entry-5">Plánování</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#konektor-tim-enterprise" id="toc-entry-6">Konektor Tim Enterprise</a><ul>
+<li><a class="reference internal" href="#konfigurace-2" id="toc-entry-7">Konfigurace</a></li>
+<li><a class="reference internal" href="#export" id="toc-entry-8">Export</a></li>
+<li><a class="reference internal" href="#planovani-exportu" id="toc-entry-9">Plánování exportu</a></li>
+<li><a class="reference internal" href="#import" id="toc-entry-10">Import</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#e-mailovy-konektor" id="toc-entry-11">E-mailový konektor</a><ul>
+<li><a class="reference internal" href="#konfigurace-3" id="toc-entry-12">Konfigurace</a></li>
+<li><a class="reference internal" href="#uprava-sablony-e-mailu" id="toc-entry-13">Úprava šablony e-mailu</a></li>
+<li><a class="reference internal" href="#planovani-e-mailu" id="toc-entry-14">Plánování e-mailů</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>Konektory jsou klientské aplikace <em>LibrePlan</em>, které lze použít ke komunikaci s (webovými) servery za účelem načítání dat, jejich zpracování a ukládání. V současné době existují tři konektory: konektor JIRA, konektor Tim Enterprise a e-mailový konektor.</p>
+<div class="section" id="konfigurace">
+<h1><a class="toc-backref" href="#toc-entry-1">Konfigurace</a></h1>
+<p>Konektory musí být před použitím správně nakonfigurovány. Lze je nakonfigurovat na obrazovce „Hlavní nastavení&quot; pod záložkou „Konektory&quot;.</p>
+<p>Obrazovka konektoru zahrnuje:</p>
+<ul class="simple">
+<li><strong>Rozevírací seznam:</strong> Seznam dostupných konektorů.</li>
+<li><strong>Obrazovka pro úpravu vlastností:</strong> Formulář pro úpravu vlastností vybraného konektoru.</li>
+<li><strong>Tlačítko pro testování připojení:</strong> Tlačítko pro otestování připojení ke konektoru.</li>
+</ul>
+<p>Ze rozevíracího seznamu konektorů vyberte konektor, který chcete konfigurovat. Zobrazí se formulář editoru vlastností pro vybraný konektor. Ve formuláři editoru vlastností můžete podle potřeby měnit hodnoty vlastností a testovat konfigurace pomocí tlačítka „Testovat připojení&quot;.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Vlastnosti jsou nakonfigurovány s výchozími hodnotami. Nejdůležitější vlastností je „Aktivováno&quot;. Ve výchozím nastavení je nastavena na „N&quot;. To znamená, že konektor nebude použit, pokud hodnotu nezměníte na „Y&quot; a změny neuložíte.</p>
+</div>
+</div>
+<div class="section" id="konektor-jira">
+<h1><a class="toc-backref" href="#toc-entry-2">Konektor JIRA</a></h1>
+<p>JIRA je systém pro sledování problémů a projektů.</p>
+<p>Konektor JIRA je aplikace, která lze použít k vyžádání dat webového serveru JIRA pro problémy JIRA a zpracování odpovědi. Požadavek je založen na štítcích JIRA. V JIRA lze štítky použít ke kategorizaci problémů. Požadavek je strukturován takto: načíst všechny problémy kategorizované tímto názvem štítku.</p>
+<p>Konektor přijme odpověď, která jsou v tomto případě problémy, a převede je na „Prvky zakázek&quot; a „Výkazy práce&quot; <em>LibrePlan</em>.</p>
+<p><em>Konektor JIRA</em> musí být před použitím správně nakonfigurován.</p>
+<div class="section" id="konfigurace-1">
+<h2><a class="toc-backref" href="#toc-entry-3">Konfigurace</a></h2>
+<p>Na obrazovce „Hlavní nastavení&quot; zvolte záložku „Konektory&quot;. Na obrazovce konektorů vyberte konektor JIRA z rozevíracího seznamu. Poté se zobrazí obrazovka editoru vlastností.</p>
+<p>Na této obrazovce můžete nakonfigurovat následující hodnoty vlastností:</p>
+<ul class="simple">
+<li><strong>Aktivováno:</strong> Y/N, označující, zda chcete použít konektor JIRA. Výchozí hodnota je „N&quot;.</li>
+<li><strong>URL serveru:</strong> Absolutní cesta k webovému serveru JIRA.</li>
+<li><strong>Uživatelské jméno a heslo:</strong> Přihlašovací údaje uživatele pro autorizaci.</li>
+<li><strong>Štítky JIRA: seznam štítků oddělených čárkou nebo URL:</strong> Můžete zadat buď URL štítku nebo seznam štítků oddělených čárkami.</li>
+<li><strong>Typ hodin:</strong> Typ pracovních hodin. Výchozí hodnota je „Výchozí&quot;.</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><strong>Štítky JIRA:</strong> V současné době webový server JIRA nepodporuje poskytování seznamu všech dostupných štítků. Jako alternativní řešení jsme vyvinuli jednoduchý PHP skript, který provádí jednoduchý SQL dotaz v databázi JIRA pro načtení všech různých štítků. Můžete buď použít tento PHP skript jako „URL štítků JIRA&quot; nebo zadat požadované štítky jako text oddělený čárkami v poli „Štítky JIRA&quot;.</p>
+</div>
+<p>Nakonec klikněte na tlačítko „Testovat připojení&quot; pro ověření, zda se můžete připojit k webovému serveru JIRA a zda jsou vaše konfigurace správné.</p>
+</div>
+<div class="section" id="synchronizace">
+<h2><a class="toc-backref" href="#toc-entry-4">Synchronizace</a></h2>
+<p>Z okna projektu pod „Obecná data&quot; můžete zahájit synchronizaci prvků zakázky s problémy JIRA.</p>
+<p>Kliknutím na tlačítko „Synchronizovat s JIRA&quot; zahájíte synchronizaci.</p>
+<ul class="simple">
+<li>Pokud se jedná o první synchronizaci, zobrazí se vyskakovací okno (s automaticky doplněným seznamem štítků). V tomto okně můžete vybrat štítek pro synchronizaci a kliknout na tlačítko „Zahájit synchronizaci&quot; pro spuštění procesu synchronizace nebo kliknout na tlačítko „Zrušit&quot; pro jeho zrušení.</li>
+<li>Pokud je štítek již synchronizován, na obrazovce JIRA se zobrazí datum poslední synchronizace a štítek. V tomto případě se nezobrazí vyskakovací okno pro výběr štítku. Místo toho se proces synchronizace spustí přímo pro zobrazený (již synchronizovaný) štítek.</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Vztah mezi „Zakázkou&quot; a „štítkem&quot; je jedna ku jedné. Pouze jeden štítek lze synchronizovat s jednou „Zakázkou&quot;.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Po úspěšné (re)synchronizaci budou informace zapsány do databáze a obrazovka JIRA bude aktualizována datem poslední synchronizace a štítkem.</p>
+</div>
+<p>(Re)synchronizace probíhá ve dvou fázích:</p>
+<ul class="simple">
+<li><strong>Fáze 1:</strong> Synchronizace prvků zakázky, včetně přiřazení postupu a měření.</li>
+<li><strong>Fáze 2:</strong> Synchronizace výkazů práce.</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Pokud fáze 1 selže, fáze 2 nebude provedena a žádné informace nebudou zapsány do databáze.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Informace o úspěchu nebo selhání budou zobrazeny ve vyskakovacím okně.</p>
+</div>
+<p>Po úspěšném dokončení synchronizace bude výsledek zobrazen na záložce „Struktura rozdělení práce (úkoly WBS)&quot; obrazovky „Podrobnosti projektu&quot;. V tomto rozhraní existují dvě změny oproti standardní WBS:</p>
+<ul class="simple">
+<li>Sloupec „Celkové hodiny úkolu&quot; je neupravitelný (pouze pro čtení), protože synchronizace je jednosměrná. Hodiny úkolu lze aktualizovat pouze na webovém serveru JIRA.</li>
+<li>Sloupec „Kód&quot; zobrazuje klíče problémů JIRA a jsou také hypertextovými odkazy na problémy JIRA. Kliknutím na požadovaný klíč přejdete na dokument pro daný klíč (problém JIRA).</li>
+</ul>
+</div>
+<div class="section" id="planovani">
+<h2><a class="toc-backref" href="#toc-entry-5">Plánování</a></h2>
+<p>Resynchronizaci problémů JIRA lze také provést prostřednictvím plánovače. Přejděte na obrazovku „Plánování úloh&quot;. Na této obrazovce můžete nakonfigurovat úlohu JIRA pro provedení synchronizace. Úloha vyhledá poslední synchronizované štítky v databázi a podle toho je resynchronizuje. Viz také příručka plánovače.</p>
+</div>
+</div>
+<div class="section" id="konektor-tim-enterprise">
+<h1><a class="toc-backref" href="#toc-entry-6">Konektor Tim Enterprise</a></h1>
+<p>Tim Enterprise je nizozemský produkt od společnosti Aenova. Jedná se o webovou aplikaci pro správu času stráveného na projektech a úkolech.</p>
+<p>Konektor Tim je aplikace, která lze použít ke komunikaci se serverem Tim Enterprise za účelem:</p>
+<ul class="simple">
+<li>Exportu všech hodin strávených pracovníkem (uživatelem) na projektu, které by mohly být registrovány v Tim Enterprise.</li>
+<li>Importu všech rozvrhů pracovníka (uživatele) pro efektivní plánování zdrojů.</li>
+</ul>
+<p><em>Konektor Tim</em> musí být před použitím správně nakonfigurován.</p>
+<div class="section" id="konfigurace-2">
+<h2><a class="toc-backref" href="#toc-entry-7">Konfigurace</a></h2>
+<p>Na obrazovce „Hlavní nastavení&quot; zvolte záložku „Konektory&quot;. Na obrazovce konektorů vyberte konektor Tim z rozevíracího seznamu. Poté se zobrazí obrazovka editoru vlastností.</p>
+<p>Na této obrazovce můžete nakonfigurovat následující hodnoty vlastností:</p>
+<ul class="simple">
+<li><strong>Aktivováno:</strong> Y/N, označující, zda chcete použít konektor Tim. Výchozí hodnota je „N&quot;.</li>
+<li><strong>URL serveru:</strong> Absolutní cesta k serveru Tim Enterprise.</li>
+<li><strong>Uživatelské jméno a heslo:</strong> Přihlašovací údaje uživatele pro autorizaci.</li>
+<li><strong>Počet dní výkazů práce do Tim:</strong> Počet dní zpět, za které chcete exportovat výkazy práce.</li>
+<li><strong>Počet dní rozvrhu z Tim:</strong> Počet dní dopředu, za které chcete importovat rozvrhy.</li>
+<li><strong>Faktor produktivity:</strong> Efektivní pracovní hodiny v procentech. Výchozí hodnota je „100 %&quot;.</li>
+<li><strong>ID oddělení pro import rozvrhu:</strong> ID oddělení oddělená čárkami.</li>
+</ul>
+<p>Nakonec klikněte na tlačítko „Testovat připojení&quot; pro ověření, zda se můžete připojit k serveru Tim Enterprise a zda jsou vaše konfigurace správné.</p>
+</div>
+<div class="section" id="export">
+<h2><a class="toc-backref" href="#toc-entry-8">Export</a></h2>
+<p>Z okna projektu pod „Obecná data&quot; můžete zahájit export výkazů práce na server Tim Enterprise.</p>
+<p>Zadejte „Kód produktu Tim&quot; a kliknutím na tlačítko „Exportovat do Tim&quot; zahájíte export.</p>
+<p>Konektor Tim přidává spolu s kódem produktu následující pole:</p>
+<ul class="simple">
+<li>Celé jméno pracovníka/uživatele.</li>
+<li>Datum, kdy pracovník pracoval na úkolu.</li>
+<li>Úsilí nebo odpracované hodiny na úkolu.</li>
+<li>Možnost označující, zda má Tim Enterprise aktualizovat registraci nebo vložit novou.</li>
+</ul>
+<p>Odpověď Tim Enterprise obsahuje pouze seznam ID záznamů (celá čísla). To ztěžuje zjišťování, co se pokazilo, protože seznam odpovědí obsahuje pouze čísla nesouvisející s poli požadavku. Požadavek na export (registrace v Tim) se předpokládá úspěšným, pokud všechny položky seznamu neobsahují hodnoty „0&quot;. Jinak požadavek na export selhal pro ty položky, které obsahují hodnoty „0&quot;. Proto nelze zjistit, který požadavek selhal, protože položky seznamu obsahují pouze hodnotu „0&quot;. Jediným způsobem, jak to zjistit, je prozkoumat soubor protokolu na serveru Tim Enterprise.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Po úspěšném exportu budou informace zapsány do databáze a obrazovka Tim bude aktualizována datem posledního exportu a kódem produktu.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Informace o úspěchu nebo selhání budou zobrazeny ve vyskakovacím okně.</p>
+</div>
+</div>
+<div class="section" id="planovani-exportu">
+<h2><a class="toc-backref" href="#toc-entry-9">Plánování exportu</a></h2>
+<p>Proces exportu lze také provést prostřednictvím plánovače. Přejděte na obrazovku „Plánování úloh&quot;. Na této obrazovce můžete nakonfigurovat úlohu exportu Tim. Úloha vyhledá poslední exportované výkazy práce v databázi a podle toho je znovu exportuje. Viz také příručka plánovače.</p>
+</div>
+<div class="section" id="import">
+<h2><a class="toc-backref" href="#toc-entry-10">Import</a></h2>
+<p>Import rozvrhů funguje pouze s pomocí plánovače. Pro tuto funkci není navrženo žádné uživatelské rozhraní, protože od uživatele nejsou vyžadovány žádné vstupy. Přejděte na obrazovku „Plánování úloh&quot; a nakonfigurujte úlohu importu Tim. Úloha prochází všemi odděleními nakonfigurovanými ve vlastnostech konektoru a importuje všechny rozvrhy pro každé oddělení. Viz také příručka plánovače.</p>
+<p>Pro import konektor Tim přidává v požadavku následující pole:</p>
+<ul class="simple">
+<li><strong>Období:</strong> Období (datum od - datum do), pro které chcete importovat rozvrh. Toto lze poskytnout jako kritérium filtru.</li>
+<li><strong>Oddělení:</strong> Oddělení, pro které chcete importovat rozvrh. Oddělení jsou konfigurovatelná.</li>
+<li>Pole, která vás zajímají (jako informace o osobě, kategorie rozvrhu atd.), která by měl server Tim zahrnout do své odpovědi.</li>
+</ul>
+<p>Odpověď importu obsahuje následující pole, která jsou dostatečná pro správu výjimečných dní v <em>LibrePlan</em>:</p>
+<ul class="simple">
+<li><strong>Informace o osobě:</strong> Jméno a síťové jméno.</li>
+<li><strong>Oddělení:</strong> Oddělení, ve kterém pracovník pracuje.</li>
+<li><strong>Kategorie rozvrhu:</strong> Informace o přítomnosti/nepřítomnosti (Aanwezig/afwezig) pracovníka a důvod (typ výjimky <em>LibrePlan</em>) v případě nepřítomnosti pracovníka.</li>
+<li><strong>Datum:</strong> Datum přítomnosti/nepřítomnosti pracovníka.</li>
+<li><strong>Čas:</strong> Čas zahájení přítomnosti/nepřítomnosti, například 08:00.</li>
+<li><strong>Trvání:</strong> Počet hodin přítomnosti/nepřítomnosti pracovníka.</li>
+</ul>
+<p>Při převodu odpovědi importu na „Výjimečný den&quot; <em>LibrePlan</em> jsou zohledněny následující překlady:</p>
+<ul class="simple">
+<li>Pokud kategorie rozvrhu obsahuje název „Vakantie&quot;, bude přeložena jako „DOVOLENÁ ZDROJE&quot;.</li>
+<li>Kategorie rozvrhu „Feestdag&quot; bude přeložena jako „STÁTNÍ SVÁTEK&quot;.</li>
+<li>Všechny ostatní, jako „Jus uren&quot;, „PLB uren&quot; atd., by měly být přidány do „Výjimečných dní kalendáře&quot; ručně.</li>
+</ul>
+<p>Navíc v odpovědi importu je rozvrh rozdělen na dvě nebo tři části za den: například rozvrh-ráno, rozvrh-odpoledne a rozvrh-večer. <em>LibrePlan</em> však umožňuje pouze jeden „Typ výjimky&quot; za den. Konektor Tim je pak zodpovědný za sloučení těchto částí do jednoho typu výjimky. To znamená, že kategorie rozvrhu s nejvyšší dobou trvání je považována za platný typ výjimky, ale celková doba trvání je součtem všech dob trvání těchto částí kategorie.</p>
+<p>Na rozdíl od <em>LibrePlan</em>, v Tim Enterprise celková doba trvání v případě, kdy je pracovník na dovolené, znamená, že pracovník není po tuto celkovou dobu k dispozici. Avšak v <em>LibrePlan</em>, pokud je pracovník na dovolené, celková doba trvání by měla být nulová. Konektor Tim tento překlad také zpracovává.</p>
+</div>
+</div>
+<div class="section" id="e-mailovy-konektor">
+<h1><a class="toc-backref" href="#toc-entry-11">E-mailový konektor</a></h1>
+<p>E-mail je metoda výměny digitálních zpráv od autora jednomu nebo více příjemcům.</p>
+<p>E-mailový konektor lze použít k nastavení vlastností připojení serveru Simple Mail Transfer Protocol (SMTP).</p>
+<p><em>E-mailový konektor</em> musí být před použitím správně nakonfigurován.</p>
+<div class="section" id="konfigurace-3">
+<h2><a class="toc-backref" href="#toc-entry-12">Konfigurace</a></h2>
+<p>Na obrazovce „Hlavní nastavení&quot; zvolte záložku „Konektory&quot;. Na obrazovce konektorů vyberte e-mailový konektor z rozevíracího seznamu. Poté se zobrazí obrazovka editoru vlastností.</p>
+<p>Na této obrazovce můžete nakonfigurovat následující hodnoty vlastností:</p>
+<ul class="simple">
+<li><strong>Aktivováno:</strong> Y/N, označující, zda chcete použít e-mailový konektor. Výchozí hodnota je „N&quot;.</li>
+<li><strong>Protokol:</strong> Typ protokolu SMTP.</li>
+<li><strong>Hostitel:</strong> Absolutní cesta k serveru SMTP.</li>
+<li><strong>Port:</strong> Port serveru SMTP.</li>
+<li><strong>Adresa odesílatele:</strong> E-mailová adresa odesílatele zprávy.</li>
+<li><strong>Uživatelské jméno:</strong> Uživatelské jméno pro server SMTP.</li>
+<li><strong>Heslo:</strong> Heslo pro server SMTP.</li>
+</ul>
+<p>Nakonec klikněte na tlačítko „Testovat připojení&quot; pro ověření, zda se můžete připojit k serveru SMTP a zda jsou vaše konfigurace správné.</p>
+</div>
+<div class="section" id="uprava-sablony-e-mailu">
+<h2><a class="toc-backref" href="#toc-entry-13">Úprava šablony e-mailu</a></h2>
+<p>Z okna projektu pod „Konfigurace&quot; a poté „Upravit šablony e-mailů&quot; můžete upravovat šablony e-mailů pro zprávy.</p>
+<p>Můžete zvolit:</p>
+<ul class="simple">
+<li><strong>Jazyk šablony:</strong></li>
+<li><strong>Typ šablony:</strong></li>
+<li><strong>Předmět e-mailu:</strong></li>
+<li><strong>Obsah šablony:</strong></li>
+</ul>
+<p>Musíte zadat jazyk, protože webová aplikace bude posílat e-maily uživatelům v jazyce, který si zvolili ve svých preferencích. Musíte zvolit typ šablony. Typ je role uživatele, což znamená, že tento e-mail bude odeslán pouze uživatelům, kteří jsou ve vybrané roli (typu). Musíte nastavit předmět e-mailu. Předmět je stručné shrnutí tématu zprávy. Musíte nastavit obsah e-mailu. Toto jsou veškeré informace, které chcete odeslat uživateli. Existují také některá klíčová slova, která můžete ve zprávě použít; webová aplikace je zpracuje a místo klíčového slova nastaví novou hodnotu.</p>
+</div>
+<div class="section" id="planovani-e-mailu">
+<h2><a class="toc-backref" href="#toc-entry-14">Plánování e-mailů</a></h2>
+<p>Odesílání e-mailů lze provést pouze prostřednictvím plánovače. Přejděte na „Konfigurace&quot; a poté na obrazovku „Plánování úloh&quot;. Na této obrazovce můžete nakonfigurovat úlohu odesílání e-mailů. Úloha vezme seznam e-mailových oznámení, shromáždí data a odešle je na e-mail uživatele. Viz také příručka plánovače.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Informace o úspěchu nebo selhání budou zobrazeny ve vyskakovacím okně.</p>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

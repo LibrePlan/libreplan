@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Planlegger</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="planlegger">
+<h1 class="title">Planlegger</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#listevisning-for-jobbplanlegging" id="toc-entry-1">Listevisning for jobbplanlegging</a></li>
+<li><a class="reference internal" href="#legg-til-eller-rediger-jobb" id="toc-entry-2">Legg til eller rediger jobb</a><ul>
+<li><a class="reference internal" href="#popup-for-cron-uttrykk" id="toc-entry-3">Popup for cron-uttrykk</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#fjern-jobb" id="toc-entry-4">Fjern jobb</a></li>
+<li><a class="reference internal" href="#start-jobb-manuelt" id="toc-entry-5">Start jobb manuelt</a></li>
+</ul>
+</div>
+<p>Planleggeren er utformet for å planlegge jobber dynamisk. Den er utviklet ved hjelp av <em>Spring Framework Quartz scheduler</em>.</p>
+<p>For å bruke denne planleggeren effektivt må jobbene (Quartz-jobber) som skal planlegges opprettes først. Deretter kan disse jobbene legges til i databasen, ettersom alle jobber som skal planlegges lagres i databasen.</p>
+<p>Når planleggeren starter, leser den jobbene som skal planlegges eller avplanlegges fra databasen og planlegger eller fjerner dem deretter. Etterpå kan jobber legges til, oppdateres eller fjernes dynamisk ved hjelp av brukergrensesnittet <tt class="docutils literal">Jobbplanlegging</tt>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Planleggeren starter når LibrePlan-webapplikasjonen starter og stopper når applikasjonen stopper.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Denne planleggeren støtter bare <tt class="docutils literal"><span class="pre">cron-uttrykk</span></tt> for å planlegge jobber.</p>
+</div>
+<p>Kriteriene som planleggeren bruker for å planlegge eller fjerne jobber når den starter er som følger:</p>
+<p>For alle jobber:</p>
+<ul class="simple">
+<li>Planlegg<ul>
+<li>Jobben har en <em>Kobling</em>, og <em>Koblingen</em> er aktivert, og jobben er tillatt å planlegges.</li>
+<li>Jobben har ingen <em>Kobling</em> og er tillatt å planlegges.</li>
+</ul>
+</li>
+<li>Fjern<ul>
+<li>Jobben har en <em>Kobling</em>, og <em>Koblingen</em> er ikke aktivert.</li>
+<li>Jobben har en <em>Kobling</em>, og <em>Koblingen</em> er aktivert, men jobben er ikke tillatt å planlegges.</li>
+<li>Jobben har ingen <em>Kobling</em> og er ikke tillatt å planlegges.</li>
+</ul>
+</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Jobber kan ikke omplanlegges eller avplanlegges hvis de kjører for øyeblikket.</p>
+</div>
+<div class="section" id="listevisning-for-jobbplanlegging">
+<h1><a class="toc-backref" href="#toc-entry-1">Listevisning for jobbplanlegging</a></h1>
+<p>Listevisningen <tt class="docutils literal">Jobbplanlegging</tt> lar brukerne:</p>
+<ul class="simple">
+<li>Legge til en ny jobb.</li>
+<li>Redigere en eksisterende jobb.</li>
+<li>Fjerne en jobb.</li>
+<li>Starte en prosess manuelt.</li>
+</ul>
+</div>
+<div class="section" id="legg-til-eller-rediger-jobb">
+<h1><a class="toc-backref" href="#toc-entry-2">Legg til eller rediger jobb</a></h1>
+<p>Fra listevisningen <tt class="docutils literal">Jobbplanlegging</tt>, klikk:</p>
+<ul class="simple">
+<li><tt class="docutils literal">Opprett</tt> for å legge til en ny jobb, eller</li>
+<li><tt class="docutils literal">Rediger</tt> for å endre den valgte jobben.</li>
+</ul>
+<p>Begge handlingene vil åpne et opprett/rediger <tt class="docutils literal">jobbskjema</tt>. <tt class="docutils literal">Skjemaet</tt> viser følgende egenskaper:</p>
+<ul class="simple">
+<li>Felt:<ul>
+<li><strong>Jobbgruppe:</strong> Navnet på jobbgruppen.</li>
+<li><strong>Jobbnavn:</strong> Navnet på jobben.</li>
+<li><strong>Cron-uttrykk:</strong> Et skrivebeskyttet felt med en <tt class="docutils literal">Rediger</tt>-knapp for å åpne inndatavinduet for <tt class="docutils literal"><span class="pre">cron-uttrykk</span></tt>.</li>
+<li><strong>Jobbklassenavn:</strong> En <tt class="docutils literal">nedtrekksliste</tt> for å velge jobben (en eksisterende jobb).</li>
+<li><strong>Kobling:</strong> En <tt class="docutils literal">nedtrekksliste</tt> for å velge en kobling. Dette er ikke obligatorisk.</li>
+<li><strong>Planlegg:</strong> En avmerkingsboks for å angi om denne jobben skal planlegges.</li>
+</ul>
+</li>
+<li>Knapper:<ul>
+<li><strong>Lagre:</strong> For å lagre eller oppdatere en jobb i både databasen og planleggeren. Brukeren returneres deretter til <tt class="docutils literal">Listevisning for jobbplanlegging</tt>.</li>
+<li><strong>Lagre og fortsett:</strong> Det samme som &quot;Lagre,&quot; men brukeren returneres ikke til <tt class="docutils literal">Listevisning for jobbplanlegging</tt>.</li>
+<li><strong>Avbryt:</strong> Ingenting lagres, og brukeren returneres til <tt class="docutils literal">Listevisning for jobbplanlegging</tt>.</li>
+</ul>
+</li>
+<li>Og en hjelpeseksjon om syntaks for cron-uttrykk.</li>
+</ul>
+<div class="section" id="popup-for-cron-uttrykk">
+<h2><a class="toc-backref" href="#toc-entry-3">Popup for cron-uttrykk</a></h2>
+<p>For å angi <tt class="docutils literal"><span class="pre">cron-uttrykket</span></tt> korrekt brukes et popup-skjema for <tt class="docutils literal"><span class="pre">cron-uttrykk</span></tt>. I dette skjemaet kan du angi ønsket <tt class="docutils literal"><span class="pre">cron-uttrykk</span></tt>. Se også hjelpeteksten om <tt class="docutils literal"><span class="pre">cron-uttrykket</span></tt>. Hvis du angir et ugyldig <tt class="docutils literal"><span class="pre">cron-uttrykk</span></tt>, vil du bli varslet umiddelbart.</p>
+</div>
+</div>
+<div class="section" id="fjern-jobb">
+<h1><a class="toc-backref" href="#toc-entry-4">Fjern jobb</a></h1>
+<p>Klikk på knappen <tt class="docutils literal">Fjern</tt> for å slette jobben fra både databasen og planleggeren. Suksessen eller feilen ved denne handlingen vil vises.</p>
+</div>
+<div class="section" id="start-jobb-manuelt">
+<h1><a class="toc-backref" href="#toc-entry-5">Start jobb manuelt</a></h1>
+<p>Som et alternativ til å vente på at jobben kjøres som planlagt, kan du klikke på denne knappen for å starte prosessen direkte. Etterpå vil suksess- eller feilinformasjonen vises i et <tt class="docutils literal"><span class="pre">popup-vindu</span></tt>.</p>
+</div>
+</div>
+</body>
+</html>

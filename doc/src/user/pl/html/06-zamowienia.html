@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Zamówienia i Elementy Zamówień</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="zamowienia-i-elementy-zamowien">
+<h1 class="title">Zamówienia i Elementy Zamówień</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#zamowienia" id="toc-entry-1">Zamówienia</a></li>
+<li><a class="reference internal" href="#edytowanie-elementow-zamowien" id="toc-entry-2">Edytowanie Elementów Zamówień</a><ul>
+<li><a class="reference internal" href="#edytowanie-informacji-o-elemencie-zamowienia" id="toc-entry-3">Edytowanie Informacji o Elemencie Zamówienia</a></li>
+<li><a class="reference internal" href="#przegladanie-godzin-przypisanych-do-elementow-zamowien" id="toc-entry-4">Przeglądanie Godzin Przypisanych do Elementów Zamówień</a></li>
+<li><a class="reference internal" href="#zarzadzanie-postepem-elementow-zamowien" id="toc-entry-5">Zarządzanie Postępem Elementów Zamówień</a></li>
+<li><a class="reference internal" href="#zarzadzanie-etykietami-zamowien" id="toc-entry-6">Zarządzanie Etykietami Zamówień</a></li>
+<li><a class="reference internal" href="#zarzadzanie-kryteriami-wymaganymi-przez-element-zamowienia-i-grupy-godzin" id="toc-entry-7">Zarządzanie Kryteriami Wymaganymi przez Element Zamówienia i Grupy Godzin</a></li>
+<li><a class="reference internal" href="#zarzadzanie-materialami" id="toc-entry-8">Zarządzanie Materiałami</a></li>
+<li><a class="reference internal" href="#zarzadzanie-formularzami-jakosci" id="toc-entry-9">Zarządzanie Formularzami Jakości</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>Zamówienia reprezentują pracę do wykonania przez użytkowników programu. Każde zamówienie odpowiada projektowi, który firma zaoferuje swoim klientom.</p>
+<p>Zamówienie składa się z jednego lub więcej elementów zamówienia. Każdy element zamówienia reprezentuje konkretną część pracy do wykonania i definiuje, jak praca nad zamówieniem powinna być planowana i realizowana. Elementy zamówień są zorganizowane hierarchicznie, bez ograniczeń co do głębokości hierarchii. Ta hierarchiczna struktura umożliwia dziedziczenie pewnych funkcji, takich jak etykiety.</p>
+<p>Poniższe sekcje opisują operacje, które użytkownicy mogą wykonywać na zamówieniach i elementach zamówień.</p>
+<div class="section" id="zamowienia">
+<h1><a class="toc-backref" href="#toc-entry-1">Zamówienia</a></h1>
+<p>Zamówienie reprezentuje projekt lub pracę zlecone firmie przez klienta. Zamówienie identyfikuje projekt w planowaniu firmy. W odróżnieniu od kompleksowych programów zarządzania, LibrePlan wymaga jedynie pewnych kluczowych danych dla zamówienia. Dane te to:</p>
+<ul class="simple">
+<li><strong>Nazwa zamówienia:</strong> Nazwa zamówienia.</li>
+<li><strong>Kod zamówienia:</strong> Unikalny kod zamówienia.</li>
+<li><strong>Całkowita wartość zamówienia:</strong> Całkowita wartość finansowa zamówienia.</li>
+<li><strong>Szacowana data rozpoczęcia:</strong> Planowana data rozpoczęcia zamówienia.</li>
+<li><strong>Data zakończenia:</strong> Planowana data zakończenia zamówienia.</li>
+<li><strong>Osoba odpowiedzialna:</strong> Osoba odpowiedzialna za zamówienie.</li>
+<li><strong>Opis:</strong> Opis zamówienia.</li>
+<li><strong>Przypisany kalendarz:</strong> Kalendarz powiązany z zamówieniem.</li>
+<li><strong>Automatyczne generowanie kodów:</strong> Ustawienie nakazujące systemowi automatyczne generowanie kodów dla elementów zamówień i grup godzin.</li>
+<li><strong>Preferencja między zależnościami a ograniczeniami:</strong> Użytkownicy mogą wybrać, czy zależności czy ograniczenia mają priorytet w przypadku konfliktów.</li>
+</ul>
+<p>Jednak pełne zamówienie zawiera również inne powiązane jednostki:</p>
+<ul class="simple">
+<li><strong>Godziny przypisane do zamówienia:</strong> Całkowite godziny przydzielone do zamówienia.</li>
+<li><strong>Postęp przypisany do zamówienia:</strong> Osiągnięty postęp w zamówieniu.</li>
+<li><strong>Etykiety:</strong> Etykiety przypisane do zamówienia.</li>
+<li><strong>Kryteria przypisane do zamówienia:</strong> Kryteria powiązane z zamówieniem.</li>
+<li><strong>Materiały:</strong> Materiały wymagane dla zamówienia.</li>
+<li><strong>Formularze jakości:</strong> Formularze jakości powiązane z zamówieniem.</li>
+</ul>
+<p>Tworzenie lub edytowanie zamówienia można wykonać z kilku miejsc w programie:</p>
+<ul class="simple">
+<li><strong>Z &quot;Listy zamówień&quot; w przeglądzie firmy:</strong><ul>
+<li><strong>Edytowanie:</strong> Kliknij przycisk edycji dla żądanego zamówienia.</li>
+<li><strong>Tworzenie:</strong> Kliknij &quot;Nowe zamówienie.&quot;</li>
+</ul>
+</li>
+<li><strong>Z zamówienia na wykresie Gantta:</strong> Przełącz na widok szczegółów zamówienia.</li>
+</ul>
+<p>Użytkownicy mają dostęp do następujących zakładek podczas edytowania zamówienia:</p>
+<ul>
+<li><p class="first"><strong>Edytowanie szczegółów zamówienia:</strong> Ten ekran umożliwia użytkownikom edytowanie podstawowych danych zamówienia:</p>
+<ul class="simple">
+<li>Nazwa</li>
+<li>Kod</li>
+<li>Szacowana data rozpoczęcia</li>
+<li>Data zakończenia</li>
+<li>Osoba odpowiedzialna</li>
+<li>Klient</li>
+<li>Opis</li>
+</ul>
+<div class="figure">
+<img alt="images/order-edition.png" src="images/order-edition.png" style="width: 429.0px; height: 227.5px;" />
+<p class="caption">Edytowanie zamówień</p>
+</div>
+</li>
+<li><p class="first"><strong>Lista elementów zamówienia:</strong> Ten ekran umożliwia użytkownikom wykonywanie kilku operacji na elementach zamówień:</p>
+<ul class="simple">
+<li>Tworzenie nowych elementów zamówień.</li>
+<li>Awansowanie elementu zamówienia o jeden poziom wyżej w hierarchii.</li>
+<li>Degradowanie elementu zamówienia o jeden poziom niżej w hierarchii.</li>
+<li>Wcięcie elementu zamówienia (przenoszenie go w dół hierarchii).</li>
+<li>Cofnięcie wcięcia elementu zamówienia (przenoszenie go w górę hierarchii).</li>
+<li>Filtrowanie elementów zamówień.</li>
+<li>Usuwanie elementów zamówień.</li>
+<li>Przenoszenie elementu w hierarchii przez przeciąganie i upuszczanie.</li>
+</ul>
+<div class="figure">
+<img alt="images/order-elements-list.png" src="images/order-elements-list.png" style="width: 496.8px; height: 107.60000000000001px;" />
+<p class="caption">Lista elementów zamówienia</p>
+</div>
+</li>
+<li><p class="first"><strong>Przypisane godziny:</strong> Ten ekran wyświetla całkowite godziny przypisane do projektu, grupując godziny wprowadzone w elementach zamówień.</p>
+<div class="figure">
+<img alt="images/order-assigned-hours.png" src="images/order-assigned-hours.png" style="width: 432.0px; height: 202.5px;" />
+<p class="caption">Przypisywanie godzin atrybuowanych do zamówienia przez pracowników</p>
+</div>
+</li>
+<li><p class="first"><strong>Postęp:</strong> Ten ekran umożliwia użytkownikom przypisywanie typów postępu i wprowadzanie pomiarów postępu dla zamówienia. Patrz sekcja &quot;Postęp&quot; w celu uzyskania szczegółowych informacji.</p>
+</li>
+<li><p class="first"><strong>Etykiety:</strong> Ten ekran umożliwia użytkownikom przypisywanie etykiet do zamówienia i przeglądanie wcześniej przypisanych etykiet bezpośrednich i pośrednich. Patrz następna sekcja dotycząca edytowania elementów zamówień, aby uzyskać szczegółowy opis zarządzania etykietami.</p>
+<div class="figure">
+<img alt="images/order-labels.png" src="images/order-labels.png" style="width: 402.5px; height: 180.95px;" />
+<p class="caption">Etykiety zamówienia</p>
+</div>
+</li>
+<li><p class="first"><strong>Kryteria:</strong> Ten ekran umożliwia użytkownikom przypisywanie kryteriów, które będą miały zastosowanie do wszystkich zadań w zamówieniu. Kryteria te zostaną automatycznie zastosowane do wszystkich elementów zamówień, z wyjątkiem tych, które zostały jawnie unieważnione. Grupy godzin elementów zamówień, pogrupowane według kryteriów, mogą być również przeglądane, umożliwiając użytkownikom identyfikację kryteriów wymaganych dla zamówienia.</p>
+<div class="figure">
+<img alt="images/order-criterions.png" src="images/order-criterions.png" style="width: 423.5px; height: 261.5px;" />
+<p class="caption">Kryteria zamówienia</p>
+</div>
+</li>
+<li><p class="first"><strong>Materiały:</strong> Ten ekran umożliwia użytkownikom przypisywanie materiałów do zamówień. Materiały można wybierać z dostępnych kategorii materiałów w programie. Materiałami zarządza się w następujący sposób:</p>
+<ul class="simple">
+<li>Wybierz zakładkę &quot;Szukaj materiały&quot; na dole ekranu.</li>
+<li>Wprowadź tekst do wyszukiwania materiałów lub wybierz kategorie, dla których chcesz znaleźć materiały.</li>
+<li>System filtruje wyniki.</li>
+<li>Wybierz żądane materiały (można wybrać wiele materiałów, naciskając klawisz &quot;Ctrl&quot;).</li>
+<li>Kliknij &quot;Przypisz.&quot;</li>
+<li>System wyświetla listę materiałów już przypisanych do zamówienia.</li>
+<li>Wybierz jednostki i status do przypisania do zamówienia.</li>
+<li>Kliknij &quot;Zapisz&quot; lub &quot;Zapisz i kontynuuj.&quot;</li>
+<li>Aby zarządzać odbiorem materiałów, kliknij &quot;Podziel&quot;, aby zmienić status częściowej ilości materiału.</li>
+</ul>
+<div class="figure">
+<img alt="images/order-material.png" src="images/order-material.png" style="width: 430.0px; height: 204.0px;" />
+<p class="caption">Materiały powiązane z zamówieniem</p>
+</div>
+</li>
+<li><p class="first"><strong>Jakość:</strong> Użytkownicy mogą przypisać formularz jakości do zamówienia. Ten formularz jest następnie wypełniany w celu zapewnienia, że pewne działania powiązane z zamówieniem zostały wykonane. Patrz następna sekcja dotycząca edytowania elementów zamówień, aby uzyskać szczegółowe informacje na temat zarządzania formularzami jakości.</p>
+<div class="figure">
+<img alt="images/order-quality.png" src="images/order-quality.png" style="width: 428.0px; height: 259.0px;" />
+<p class="caption">Formularz jakości powiązany z zamówieniem</p>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="edytowanie-elementow-zamowien">
+<h1><a class="toc-backref" href="#toc-entry-2">Edytowanie Elementów Zamówień</a></h1>
+<p>Elementy zamówień są edytowane z zakładki &quot;Lista elementów zamówienia&quot; przez kliknięcie ikony edycji. Otwiera to nowy ekran, na którym użytkownicy mogą:</p>
+<ul class="simple">
+<li>Edytować informacje o elemencie zamówienia.</li>
+<li>Przeglądać godziny przypisane do elementów zamówień.</li>
+<li>Zarządzać postępem elementów zamówień.</li>
+<li>Zarządzać etykietami zamówień.</li>
+<li>Zarządzać kryteriami wymaganymi przez element zamówienia.</li>
+<li>Zarządzać materiałami.</li>
+<li>Zarządzać formularzami jakości.</li>
+</ul>
+<p>Poniższe podsekcje szczegółowo opisują każdą z tych operacji.</p>
+<div class="section" id="edytowanie-informacji-o-elemencie-zamowienia">
+<h2><a class="toc-backref" href="#toc-entry-3">Edytowanie Informacji o Elemencie Zamówienia</a></h2>
+<p>Edytowanie informacji o elemencie zamówienia obejmuje modyfikowanie następujących szczegółów:</p>
+<ul class="simple">
+<li><strong>Nazwa elementu zamówienia:</strong> Nazwa elementu zamówienia.</li>
+<li><strong>Kod elementu zamówienia:</strong> Unikalny kod elementu zamówienia.</li>
+<li><strong>Data rozpoczęcia:</strong> Planowana data rozpoczęcia elementu zamówienia.</li>
+<li><strong>Szacowana data zakończenia:</strong> Planowana data zakończenia elementu zamówienia.</li>
+<li><strong>Całkowite godziny:</strong> Całkowite godziny przydzielone do elementu zamówienia. Godziny te mogą być obliczane na podstawie dodanych grup godzin lub wprowadzane bezpośrednio. Jeśli są wprowadzane bezpośrednio, godziny muszą być rozdzielone między grupy godzin, a nowa grupa godzin musi zostać utworzona, jeśli procenty nie odpowiadają początkowym procentom.</li>
+<li><strong>Grupy godzin:</strong> Do elementu zamówienia można dodać jedną lub więcej grup godzin. <strong>Celem tych grup godzin</strong> jest zdefiniowanie wymagań dla zasobów, które zostaną przypisane do wykonania pracy.</li>
+<li><strong>Kryteria:</strong> Można dodać kryteria, które muszą być spełnione, aby umożliwić generyczne przypisanie dla elementu zamówienia.</li>
+</ul>
+<div class="figure">
+<img alt="images/order-element-edition.png" src="images/order-element-edition.png" style="width: 477.5px; height: 345.0px;" />
+<p class="caption">Edytowanie elementów zamówień</p>
+</div>
+</div>
+<div class="section" id="przegladanie-godzin-przypisanych-do-elementow-zamowien">
+<h2><a class="toc-backref" href="#toc-entry-4">Przeglądanie Godzin Przypisanych do Elementów Zamówień</a></h2>
+<p>Zakładka &quot;Przypisane godziny&quot; umożliwia użytkownikom przeglądanie raportów pracy powiązanych z elementem zamówienia i sprawdzenie, ile z szacowanych godzin zostało już zrealizowanych.</p>
+<div class="figure">
+<img alt="images/order-element-hours.png" src="images/order-element-hours.png" style="width: 478.5px; height: 344.5px;" />
+<p class="caption">Godziny przypisane do elementów zamówień</p>
+</div>
+<p>Ekran jest podzielony na dwie części:</p>
+<ul class="simple">
+<li><strong>Lista raportów pracy:</strong> Użytkownicy mogą przeglądać listę raportów pracy powiązanych z elementem zamówienia, w tym datę i godzinę, zasób oraz liczbę godzin poświęconych na zadanie.</li>
+<li><strong>Wykorzystanie szacowanych godzin:</strong> System oblicza całkowitą liczbę godzin poświęconych na zadanie i porównuje je z szacowanymi godzinami.</li>
+</ul>
+</div>
+<div class="section" id="zarzadzanie-postepem-elementow-zamowien">
+<h2><a class="toc-backref" href="#toc-entry-5">Zarządzanie Postępem Elementów Zamówień</a></h2>
+<p>Wprowadzanie typów postępu i zarządzanie postępem elementów zamówień jest opisane w rozdziale &quot;Postęp&quot;.</p>
+</div>
+<div class="section" id="zarzadzanie-etykietami-zamowien">
+<h2><a class="toc-backref" href="#toc-entry-6">Zarządzanie Etykietami Zamówień</a></h2>
+<p>Etykiety, opisane w rozdziale o etykietach, umożliwiają użytkownikom kategoryzowanie elementów zamówień. Umożliwia to użytkownikom grupowanie informacji o planowaniu lub zamówieniach na podstawie tych etykiet.</p>
+<p>Użytkownicy mogą przypisywać etykiety bezpośrednio do elementu zamówienia lub do elementu zamówienia na wyższym poziomie w hierarchii. Po przypisaniu etykiety którąkolwiek z tych metod, element zamówienia i powiązane zadanie planowania są skojarzone z etykietą i mogą być używane do późniejszego filtrowania.</p>
+<div class="figure">
+<img alt="images/order-element-tags.png" src="images/order-element-tags.png" style="width: 476.5px; height: 344.0px;" />
+<p class="caption">Przypisywanie etykiet dla elementów zamówień</p>
+</div>
+<p>Jak pokazano na obrazie, użytkownicy mogą wykonywać następujące działania z zakładki <strong>Etykiety</strong>:</p>
+<ul class="simple">
+<li><strong>Przeglądanie odziedziczonych etykiet:</strong> Przeglądaj etykiety powiązane z elementem zamówienia, które zostały odziedziczone z elementu zamówienia na wyższym poziomie. Zadanie planowania powiązane z każdym elementem zamówienia ma te same powiązane etykiety.</li>
+<li><strong>Przeglądanie bezpośrednio przypisanych etykiet:</strong> Przeglądaj etykiety bezpośrednio powiązane z elementem zamówienia przy użyciu formularza przypisania dla etykiet niższego poziomu.</li>
+<li><strong>Przypisywanie istniejących etykiet:</strong> Przypisuj etykiety wyszukując je wśród dostępnych etykiet w formularzu poniżej listy etykiet bezpośrednich. Aby wyszukać etykietę, kliknij ikonę lupy lub wprowadź pierwsze litery etykiety w polu tekstowym, aby wyświetlić dostępne opcje.</li>
+<li><strong>Tworzenie i przypisywanie nowych etykiet:</strong> Twórz nowe etykiety powiązane z istniejącym typem etykiety z tego formularza. Aby to zrobić, wybierz typ etykiety i wprowadź wartość etykiety dla wybranego typu. System automatycznie tworzy etykietę i przypisuje ją do elementu zamówienia po kliknięciu &quot;Utwórz i przypisz&quot;.</li>
+</ul>
+</div>
+<div class="section" id="zarzadzanie-kryteriami-wymaganymi-przez-element-zamowienia-i-grupy-godzin">
+<h2><a class="toc-backref" href="#toc-entry-7">Zarządzanie Kryteriami Wymaganymi przez Element Zamówienia i Grupy Godzin</a></h2>
+<p>Zarówno zamówienie, jak i element zamówienia mogą mieć przypisane kryteria, które muszą być spełnione, aby praca mogła być wykonana. Kryteria mogą być bezpośrednie lub pośrednie:</p>
+<ul class="simple">
+<li><strong>Kryteria bezpośrednie:</strong> Są one przypisywane bezpośrednio do elementu zamówienia. Są to kryteria wymagane przez grupy godzin w elemencie zamówienia.</li>
+<li><strong>Kryteria pośrednie:</strong> Są one przypisywane do elementów zamówień na wyższych poziomach hierarchii i są dziedziczone przez edytowany element.</li>
+</ul>
+<p>Oprócz wymaganych kryteriów można zdefiniować jedną lub więcej grup godzin będących częścią elementu zamówienia. Zależy to od tego, czy element zamówienia zawiera inne elementy zamówień jako węzły podrzędne, czy też jest węzłem liścia. W pierwszym przypadku informacje o godzinach i grupach godzin mogą być tylko przeglądane. Węzły liścia mogą być jednak edytowane. Węzły liścia działają w następujący sposób:</p>
+<ul class="simple">
+<li>System tworzy domyślną grupę godzin powiązaną z elementem zamówienia. Szczegóły, które można modyfikować dla grupy godzin, to:<ul>
+<li><strong>Kod:</strong> Kod dla grupy godzin (jeśli nie jest generowany automatycznie).</li>
+<li><strong>Typ kryterium:</strong> Użytkownicy mogą wybrać przypisanie kryterium maszynowego lub pracowniczego.</li>
+<li><strong>Liczba godzin:</strong> Liczba godzin w grupie godzin.</li>
+<li><strong>Lista kryteriów:</strong> Kryteria do zastosowania do grupy godzin. Aby dodać nowe kryteria, kliknij &quot;Dodaj kryterium&quot; i wybierz jedno z wyszukiwarki, która pojawia się po kliknięciu przycisku.</li>
+</ul>
+</li>
+<li>Użytkownicy mogą dodawać nowe grupy godzin z różnymi cechami niż poprzednie grupy godzin. Na przykład element zamówienia może wymagać spawacza (30 godzin) i malarza (40 godzin).</li>
+</ul>
+<div class="figure">
+<img alt="images/order-element-criterion.png" src="images/order-element-criterion.png" style="width: 476.0px; height: 344.0px;" />
+<p class="caption">Przypisywanie kryteriów do elementów zamówień</p>
+</div>
+</div>
+<div class="section" id="zarzadzanie-materialami">
+<h2><a class="toc-backref" href="#toc-entry-8">Zarządzanie Materiałami</a></h2>
+<p>Materiałami zarządza się w projektach jako lista powiązana z każdym elementem zamówienia lub zamówieniem ogólnie. Lista materiałów zawiera następujące pola:</p>
+<ul class="simple">
+<li><strong>Kod:</strong> Kod materiału.</li>
+<li><strong>Data:</strong> Data powiązana z materiałem.</li>
+<li><strong>Jednostki:</strong> Wymagana liczba jednostek.</li>
+<li><strong>Typ jednostki:</strong> Typ jednostki używany do pomiaru materiału.</li>
+<li><strong>Cena jednostkowa:</strong> Cena za jednostkę.</li>
+<li><strong>Cena całkowita:</strong> Cena całkowita (obliczana przez pomnożenie ceny jednostkowej przez liczbę jednostek).</li>
+<li><strong>Kategoria:</strong> Kategoria, do której należy materiał.</li>
+<li><strong>Status:</strong> Status materiału (np. Otrzymany, Zamówiony, Oczekujący, W trakcie realizacji, Anulowany).</li>
+</ul>
+<p>Praca z materiałami odbywa się w następujący sposób:</p>
+<ul class="simple">
+<li>Wybierz zakładkę &quot;Materiały&quot; na elemencie zamówienia.</li>
+<li>System wyświetla dwie podzakładki: &quot;Materiały&quot; i &quot;Szukaj materiały.&quot;</li>
+<li>Jeśli element zamówienia nie ma przypisanych materiałów, pierwsza zakładka będzie pusta.</li>
+<li>Kliknij &quot;Szukaj materiały&quot; w lewej dolnej części okna.</li>
+<li>System wyświetla listę dostępnych kategorii i powiązanych materiałów.</li>
+</ul>
+<div class="figure">
+<img alt="images/order-element-material-search.png" src="images/order-element-material-search.png" style="width: 476.0px; height: 343.0px;" />
+<p class="caption">Wyszukiwanie materiałów</p>
+</div>
+<ul class="simple">
+<li>Wybierz kategorie, aby zawęzić wyszukiwanie materiałów.</li>
+<li>System wyświetla materiały należące do wybranych kategorii.</li>
+<li>Z listy materiałów wybierz materiały do przypisania do elementu zamówienia.</li>
+<li>Kliknij &quot;Przypisz.&quot;</li>
+<li>System wyświetla wybraną listę materiałów na zakładce &quot;Materiały&quot; z nowymi polami do wypełnienia.</li>
+</ul>
+<div class="figure">
+<img alt="images/order-element-material-assign.png" src="images/order-element-material-assign.png" style="width: 475.5px; height: 341.5px;" />
+<p class="caption">Przypisywanie materiałów do elementów zamówień</p>
+</div>
+<ul class="simple">
+<li>Wybierz jednostki, status i datę dla przypisanych materiałów.</li>
+</ul>
+<p>W celu późniejszego monitorowania materiałów możliwa jest zmiana statusu grupy jednostek otrzymanego materiału. Odbywa się to w następujący sposób:</p>
+<ul class="simple">
+<li>Kliknij przycisk &quot;Podziel&quot; na liście materiałów po prawej stronie każdego wiersza.</li>
+<li>Wybierz liczbę jednostek, na które należy podzielić wiersz.</li>
+<li>Program wyświetla dwa wiersze z podzielonym materiałem.</li>
+<li>Zmień status wiersza zawierającego materiał.</li>
+</ul>
+<p>Zaletą tego narzędzia podziału jest możliwość odbierania częściowych dostaw materiału bez konieczności czekania na całą dostawę, aby oznaczyć ją jako otrzymaną.</p>
+</div>
+<div class="section" id="zarzadzanie-formularzami-jakosci">
+<h2><a class="toc-backref" href="#toc-entry-9">Zarządzanie Formularzami Jakości</a></h2>
+<p>Niektóre elementy zamówień wymagają certyfikacji, że pewne zadania zostały ukończone, zanim będą mogły zostać oznaczone jako zakończone. Dlatego program ma formularze jakości, składające się z listy pytań uznawanych za ważne, jeśli zostaną pozytywnie odpowiedziane.</p>
+<p>Ważne jest, aby pamiętać, że formularz jakości musi być wcześniej utworzony, aby mógł zostać przypisany do elementu zamówienia.</p>
+<p>Aby zarządzać formularzami jakości:</p>
+<ul>
+<li><p class="first">Przejdź do zakładki &quot;Formularze jakości&quot;.</p>
+<div class="figure">
+<img alt="images/order-element-quality.png" src="images/order-element-quality.png" style="width: 475.5px; height: 343.5px;" />
+<p class="caption">Przypisywanie formularzy jakości do elementów zamówień</p>
+</div>
+</li>
+<li><p class="first">Program ma wyszukiwarkę formularzy jakości. Istnieją dwa typy formularzy jakości: według elementu lub według procentu.</p>
+<ul class="simple">
+<li><strong>Element:</strong> Każdy element jest niezależny.</li>
+<li><strong>Procent:</strong> Każde pytanie zwiększa postęp elementu zamówienia o pewien procent. Procenty muszą sumować się do 100%.</li>
+</ul>
+</li>
+<li><p class="first">Wybierz jeden z formularzy utworzonych w interfejsie administracyjnym i kliknij &quot;Przypisz.&quot;</p>
+</li>
+<li><p class="first">Program przypisuje wybrany formularz z listy formularzy przypisanych do elementu zamówienia.</p>
+</li>
+<li><p class="first">Kliknij przycisk &quot;Edytuj&quot; na elemencie zamówienia.</p>
+</li>
+<li><p class="first">Program wyświetla pytania z formularza jakości na dolnej liście.</p>
+</li>
+<li><p class="first">Zaznacz pytania, które zostały ukończone jako osiągnięte.</p>
+<ul class="simple">
+<li>Jeśli formularz jakości jest oparty na procentach, pytania są odpowiadane w kolejności.</li>
+<li>Jeśli formularz jakości jest oparty na elementach, pytania mogą być odpowiadane w dowolnej kolejności.</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</body>
+</html>

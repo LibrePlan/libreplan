@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Planner</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="planner">
+<h1 class="title">Planner</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#lijstweergave-taakplanning" id="toc-entry-1">Lijstweergave taakplanning</a></li>
+<li><a class="reference internal" href="#taak-toevoegen-of-bewerken" id="toc-entry-2">Taak toevoegen of bewerken</a><ul>
+<li><a class="reference internal" href="#pop-up-voor-cron-expressies" id="toc-entry-3">Pop-up voor cron-expressies</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#taak-verwijderen" id="toc-entry-4">Taak verwijderen</a></li>
+<li><a class="reference internal" href="#taak-handmatig-starten" id="toc-entry-5">Taak handmatig starten</a></li>
+</ul>
+</div>
+<p>De planner is ontworpen om taken dynamisch in te plannen. Hij is ontwikkeld met behulp van de <em>Spring Framework Quartz-planner</em>.</p>
+<p>Om deze planner effectief te gebruiken, moeten de taken (Quartz-taken) die gepland moeten worden eerst worden aangemaakt. Vervolgens kunnen deze taken aan de database worden toegevoegd, omdat alle in te plannen taken in de database worden opgeslagen.</p>
+<p>Wanneer de planner start, leest hij de in te plannen of uit te plannen taken uit de database en plant of verwijdert ze dienovereenkomstig. Daarna kunnen taken dynamisch worden toegevoegd, bijgewerkt of verwijderd via de gebruikersinterface <tt class="docutils literal">Taakplanning</tt>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">De planner start wanneer de LibrePlan-webapplicatie start en stopt wanneer de applicatie stopt.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Deze planner ondersteunt alleen <tt class="docutils literal"><span class="pre">cron-expressies</span></tt> voor het plannen van taken.</p>
+</div>
+<p>De criteria die de planner gebruikt om taken in te plannen of te verwijderen wanneer hij start, zijn als volgt:</p>
+<p>Voor alle taken:</p>
+<ul class="simple">
+<li>Inplannen<ul>
+<li>Taak heeft een <em>Connector</em>, en de <em>Connector</em> is geactiveerd, en de taak mag worden ingepland.</li>
+<li>Taak heeft geen <em>Connector</em> en mag worden ingepland.</li>
+</ul>
+</li>
+<li>Verwijderen<ul>
+<li>Taak heeft een <em>Connector</em>, en de <em>Connector</em> is niet geactiveerd.</li>
+<li>Taak heeft een <em>Connector</em>, en de <em>Connector</em> is geactiveerd, maar de taak mag niet worden ingepland.</li>
+<li>Taak heeft geen <em>Connector</em> en mag niet worden ingepland.</li>
+</ul>
+</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Taken kunnen niet opnieuw worden ingepland of worden verwijderd als ze momenteel worden uitgevoerd.</p>
+</div>
+<div class="section" id="lijstweergave-taakplanning">
+<h1><a class="toc-backref" href="#toc-entry-1">Lijstweergave taakplanning</a></h1>
+<p>De lijstweergave <tt class="docutils literal">Taakplanning</tt> stelt gebruikers in staat om:</p>
+<ul class="simple">
+<li>Een nieuwe taak toe te voegen.</li>
+<li>Een bestaande taak te bewerken.</li>
+<li>Een taak te verwijderen.</li>
+<li>Een proces handmatig te starten.</li>
+</ul>
+</div>
+<div class="section" id="taak-toevoegen-of-bewerken">
+<h1><a class="toc-backref" href="#toc-entry-2">Taak toevoegen of bewerken</a></h1>
+<p>Klik vanuit de lijstweergave <tt class="docutils literal">Taakplanning</tt> op:</p>
+<ul class="simple">
+<li><tt class="docutils literal">Aanmaken</tt> om een nieuwe taak toe te voegen, of</li>
+<li><tt class="docutils literal">Bewerken</tt> om de geselecteerde taak te wijzigen.</li>
+</ul>
+<p>Beide acties openen een formulier <tt class="docutils literal">taak aanmaken/bewerken</tt>. Het <tt class="docutils literal">formulier</tt> toont de volgende eigenschappen:</p>
+<ul class="simple">
+<li>Velden:<ul>
+<li><strong>Taakgroep:</strong> De naam van de taakgroep.</li>
+<li><strong>Taaknaam:</strong> De naam van de taak.</li>
+<li><strong>Cron-expressie:</strong> Een alleen-lezen veld met een knop <tt class="docutils literal">Bewerken</tt> om het invoervenster voor de <tt class="docutils literal"><span class="pre">cron-expressie</span></tt> te openen.</li>
+<li><strong>Naam taakklasse:</strong> Een <tt class="docutils literal">vervolgkeuzelijst</tt> om de taak te selecteren (een bestaande taak).</li>
+<li><strong>Connector:</strong> Een <tt class="docutils literal">vervolgkeuzelijst</tt> om een connector te selecteren. Dit is niet verplicht.</li>
+<li><strong>Plannen:</strong> Een selectievakje om aan te geven of deze taak moet worden ingepland.</li>
+</ul>
+</li>
+<li>Knoppen:<ul>
+<li><strong>Opslaan:</strong> Om een taak in zowel de database als de planner op te slaan of bij te werken. De gebruiker wordt daarna teruggebracht naar de <tt class="docutils literal">lijstweergave Taakplanning</tt>.</li>
+<li><strong>Opslaan en doorgaan:</strong> Hetzelfde als &quot;Opslaan&quot;, maar de gebruiker wordt niet teruggebracht naar de <tt class="docutils literal">lijstweergave Taakplanning</tt>.</li>
+<li><strong>Annuleren:</strong> Er wordt niets opgeslagen en de gebruiker wordt teruggebracht naar de <tt class="docutils literal">lijstweergave Taakplanning</tt>.</li>
+</ul>
+</li>
+<li>En een sectie met hints over de syntaxis van cron-expressies.</li>
+</ul>
+<div class="section" id="pop-up-voor-cron-expressies">
+<h2><a class="toc-backref" href="#toc-entry-3">Pop-up voor cron-expressies</a></h2>
+<p>Om de <tt class="docutils literal"><span class="pre">cron-expressie</span></tt> correct in te voeren, wordt een pop-upformulier voor <tt class="docutils literal"><span class="pre">cron-expressies</span></tt> gebruikt. In dit formulier kunt u de gewenste <tt class="docutils literal"><span class="pre">cron-expressie</span></tt> invoeren. Zie ook de hint over de <tt class="docutils literal"><span class="pre">cron-expressie</span></tt>. Als u een ongeldige <tt class="docutils literal"><span class="pre">cron-expressie</span></tt> invoert, wordt u hiervan onmiddellijk op de hoogte gesteld.</p>
+</div>
+</div>
+<div class="section" id="taak-verwijderen">
+<h1><a class="toc-backref" href="#toc-entry-4">Taak verwijderen</a></h1>
+<p>Klik op de knop <tt class="docutils literal">Verwijderen</tt> om de taak te verwijderen uit zowel de database als de planner. Het succes of de mislukking van deze actie wordt weergegeven.</p>
+</div>
+<div class="section" id="taak-handmatig-starten">
+<h1><a class="toc-backref" href="#toc-entry-5">Taak handmatig starten</a></h1>
+<p>Als alternatief voor het wachten tot de taak wordt uitgevoerd zoals gepland, kunt u op deze knop klikken om het proces direct te starten. Daarna wordt de informatie over succes of mislukking weergegeven in een <tt class="docutils literal"><span class="pre">pop-upvenster</span></tt>.</p>
+</div>
+</div>
+</body>
+</html>

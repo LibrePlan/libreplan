@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Kriterier</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="kriterier">
+<h1 class="title">Kriterier</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#kriterieadministration" id="toc-entry-1">Kriterieadministration</a></li>
+</ul>
+</div>
+<p>Kriterier är element som används i programmet för att kategorisera både resurser och uppgifter. Uppgifter kräver specifika kriterier och resurser måste uppfylla dessa kriterier.</p>
+<p>Här är ett exempel på hur kriterier används: En resurs tilldelas kriteriet &quot;svetsare&quot; (vilket innebär att resursen uppfyller kategorin &quot;svetsare&quot;), och en uppgift kräver kriteriet &quot;svetsare&quot; för att slutföras. Följaktligen, när resurser tilldelas uppgifter med generisk tilldelning (till skillnad från specifik tilldelning), kommer medarbetare med kriteriet &quot;svetsare&quot; att beaktas. För mer information om de olika typerna av tilldelning, se kapitlet om resurstilldelning.</p>
+<p>Programmet tillåter flera operationer som rör kriterier:</p>
+<ul class="simple">
+<li>Kriteriadsministration</li>
+<li>Tilldela kriterier till resurser</li>
+<li>Tilldela kriterier till uppgifter</li>
+<li>Filtrera entiteter baserat på kriterier. Uppgifter och beställningsobjekt kan filtreras efter kriterier för att utföra olika operationer i programmet.</li>
+</ul>
+<p>Det här avsnittet förklarar bara den första funktionen, kriterieadministration. De två typerna av tilldelning täcks senare: resurstilldelning i kapitlet &quot;Resurshantering&quot; och filtrering i kapitlet &quot;Uppgiftsplanering&quot;.</p>
+<div class="section" id="kriterieadministration">
+<h1><a class="toc-backref" href="#toc-entry-1">Kriterieadministration</a></h1>
+<p>Kriterieadministration kan nås via administreringsmenyn:</p>
+<div class="figure">
+<img alt="images/menu.png" src="images/menu.png" style="width: 227.5px; height: 15.5px;" />
+<p class="caption">Flikar i menyn på första nivån</p>
+</div>
+<p>Den specifika operationen för att hantera kriterier är <em>Hantera kriterier</em>. Med denna operation kan du lista de kriterier som finns i systemet.</p>
+<div class="figure">
+<img alt="images/lista-criterios.png" src="images/lista-criterios.png" style="width: 300.0px; height: 154.0px;" />
+<p class="caption">Lista över kriterier</p>
+</div>
+<p>Du kan komma åt formuläret för att skapa/redigera kriterier genom att klicka på knappen <em>Skapa</em>. För att redigera ett befintligt kriterium, klicka på redigeringsikonen.</p>
+<div class="figure">
+<img alt="images/edicion-criterio.png" src="images/edicion-criterio.png" style="width: 446.5px; height: 279.0px;" />
+<p class="caption">Redigering av kriterier</p>
+</div>
+<p>Formuläret för redigering av kriterier, som visas i föregående bild, låter dig utföra följande operationer:</p>
+<ul class="simple">
+<li><strong>Redigera kriteriets namn.</strong></li>
+<li><strong>Ange om flera värden kan tilldelas samtidigt eller bara ett värde för den valda kriterietypen.</strong> En resurs kan till exempel uppfylla två kriterier: &quot;svetsare&quot; och &quot;svarvare&quot;.</li>
+<li><strong>Ange kriterietypen:</strong><ul>
+<li><strong>Generisk:</strong> Ett kriterium som kan användas för både maskiner och medarbetare.</li>
+<li><strong>Medarbetare:</strong> Ett kriterium som bara kan användas för medarbetare.</li>
+<li><strong>Maskin:</strong> Ett kriterium som bara kan användas för maskiner.</li>
+</ul>
+</li>
+<li><strong>Ange om kriteriet är hierarkiskt.</strong> Ibland behöver kriterier behandlas hierarkiskt. Till exempel innebär tilldelning av ett kriterium till ett element inte att det automatiskt tilldelas element som härleds från det. Ett tydligt exempel på ett hierarkiskt kriterium är &quot;plats&quot;. En person som är utsedd med platsen &quot;Galicien&quot; tillhör till exempel också &quot;Spanien&quot;.</li>
+<li><strong>Ange om kriteriet är auktoriserat.</strong> Det här är hur användare inaktiverar kriterier. När ett kriterium har skapats och använts i historiska data kan det inte ändras. Istället kan det inaktiveras för att förhindra att det visas i urvalslistor.</li>
+<li><strong>Beskriva kriteriet.</strong></li>
+<li><strong>Lägga till nya värden.</strong> Ett textinmatningsfält med knappen <em>Nytt kriterium</em> finns i formulärets andra del.</li>
+<li><strong>Redigera namnen på befintliga kriterievärden.</strong></li>
+<li><strong>Flytta kriterievärden uppåt eller nedåt i listan över aktuella kriterievärden.</strong></li>
+<li><strong>Ta bort ett kriterievärde från listan.</strong></li>
+</ul>
+<p>Formuläret för kriterieadministration följer formulärbeteendet som beskrivs i introduktionen och erbjuder tre åtgärder: <em>Spara</em>, <em>Spara och stäng</em> och <em>Stäng</em>.</p>
+</div>
+</div>
+</body>
+</html>

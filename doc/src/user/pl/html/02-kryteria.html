@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Kryteria</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="kryteria">
+<h1 class="title">Kryteria</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#administracja-kryteriami" id="toc-entry-1">Administracja Kryteriami</a></li>
+</ul>
+</div>
+<p>Kryteria to elementy używane w programie do kategoryzowania zarówno zasobów, jak i zadań. Zadania wymagają spełnienia konkretnych kryteriów, a zasoby muszą spełniać te kryteria.</p>
+<p>Oto przykład użycia kryteriów: Zasób otrzymuje kryterium &quot;spawacz&quot; (co oznacza, że zasób spełnia kategorię &quot;spawacz&quot;), a zadanie wymaga spełnienia kryterium &quot;spawacz&quot;. W rezultacie, gdy zasoby są przydzielane do zadań przy użyciu przypisania generycznego (w przeciwieństwie do przypisania konkretnego), brani pod uwagę będą pracownicy spełniający kryterium &quot;spawacz&quot;. Więcej informacji na temat różnych typów przypisań można znaleźć w rozdziale dotyczącym alokacji zasobów.</p>
+<p>Program pozwala na kilka operacji obejmujących kryteria:</p>
+<ul class="simple">
+<li>Administracja kryteriami</li>
+<li>Przypisywanie kryteriów do zasobów</li>
+<li>Przypisywanie kryteriów do zadań</li>
+<li>Filtrowanie jednostek na podstawie kryteriów. Zadania i elementy zamówień mogą być filtrowane według kryteriów w celu wykonywania różnych operacji w programie.</li>
+</ul>
+<p>W tej sekcji zostanie wyjaśniona tylko pierwsza funkcja, administracja kryteriami. Dwa typy przypisań zostaną omówione później: alokacja zasobów w rozdziale &quot;Zarządzanie zasobami&quot; oraz filtrowanie w rozdziale &quot;Planowanie zadań&quot;.</p>
+<div class="section" id="administracja-kryteriami">
+<h1><a class="toc-backref" href="#toc-entry-1">Administracja Kryteriami</a></h1>
+<p>Administracja kryteriami jest dostępna za pośrednictwem menu administracji:</p>
+<div class="figure">
+<img alt="images/menu.png" src="images/menu.png" style="width: 227.5px; height: 15.5px;" />
+<p class="caption">Zakładki menu pierwszego poziomu</p>
+</div>
+<p>Konkretna operacja do zarządzania kryteriami to <em>Zarządzaj kryteriami</em>. Ta operacja umożliwia wyświetlenie listy kryteriów dostępnych w systemie.</p>
+<div class="figure">
+<img alt="images/lista-criterios.png" src="images/lista-criterios.png" style="width: 300.0px; height: 154.0px;" />
+<p class="caption">Lista kryteriów</p>
+</div>
+<p>Możesz uzyskać dostęp do formularza tworzenia/edycji kryterium, klikając przycisk <em>Utwórz</em>. Aby edytować istniejące kryterium, kliknij ikonę edycji.</p>
+<div class="figure">
+<img alt="images/edicion-criterio.png" src="images/edicion-criterio.png" style="width: 446.5px; height: 279.0px;" />
+<p class="caption">Edytowanie kryteriów</p>
+</div>
+<p>Formularz edycji kryteriów, jak pokazano na poprzednim obrazie, umożliwia wykonywanie następujących operacji:</p>
+<ul class="simple">
+<li><strong>Edytowanie nazwy kryterium.</strong></li>
+<li><strong>Określanie, czy wiele wartości może być przypisanych jednocześnie, czy tylko jedna wartość dla wybranego typu kryterium.</strong> Na przykład zasób może spełniać dwa kryteria: &quot;spawacz&quot; i &quot;operator tokarki.&quot;</li>
+<li><strong>Określanie typu kryterium:</strong><ul>
+<li><strong>Ogólne:</strong> Kryterium, które może być używane zarówno dla maszyn, jak i pracowników.</li>
+<li><strong>Pracownik:</strong> Kryterium, które może być używane tylko dla pracowników.</li>
+<li><strong>Maszyna:</strong> Kryterium, które może być używane tylko dla maszyn.</li>
+</ul>
+</li>
+<li><strong>Wskazywanie, czy kryterium jest hierarchiczne.</strong> Czasami kryteria muszą być traktowane hierarchicznie. Na przykład przypisanie kryterium do elementu nie przypisuje go automatycznie do elementów z niego pochodzących. Wyraźnym przykładem hierarchicznego kryterium jest &quot;lokalizacja.&quot; Na przykład osoba oznaczona jako należąca do &quot;Galicji&quot; będzie również należeć do &quot;Hiszpanii.&quot;</li>
+<li><strong>Wskazywanie, czy kryterium jest autoryzowane.</strong> W ten sposób użytkownicy dezaktywują kryteria. Gdy kryterium zostało już utworzone i użyte w danych historycznych, nie można go zmienić. Zamiast tego można je dezaktywować, aby nie pojawiało się na listach wyboru.</li>
+<li><strong>Opisywanie kryterium.</strong></li>
+<li><strong>Dodawanie nowych wartości.</strong> Pole wprowadzania tekstu z przyciskiem <em>Nowe kryterium</em> znajduje się w drugiej części formularza.</li>
+<li><strong>Edytowanie nazw istniejących wartości kryteriów.</strong></li>
+<li><strong>Przesuwanie wartości kryteriów w górę lub w dół na liście bieżących wartości kryteriów.</strong></li>
+<li><strong>Usuwanie wartości kryterium z listy.</strong></li>
+</ul>
+<p>Formularz administracji kryteriami jest zgodny z zachowaniem formularzy opisanym we wprowadzeniu i oferuje trzy akcje: <em>Zapisz</em>, <em>Zapisz i zamknij</em> oraz <em>Zamknij</em>.</p>
+</div>
+</div>
+</body>
+</html>

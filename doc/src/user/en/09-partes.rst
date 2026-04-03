@@ -28,7 +28,7 @@ The mandatory fields that must appear in all work reports are as follows:
 *   **Name and Code:** Identification fields for the name of the work report type and its code.
 *   **Date:** Field for the date of the report.
 *   **Resource:** Worker or machine appearing on the report or work report line.
-*   **Order Element:** Code for the order element to which the performed work is attributed.
+*   **Project Element:** Code for the project element to which the performed work is attributed.
 *   **Hour Management:** Determines the hour attribution policy to be used, which can be:
 
     *   **According to Assigned Hours:** Hours are attributed based on the assigned hours.
@@ -45,7 +45,7 @@ Users can add new fields to the reports:
 
    Creating a Work Report Type with Personalized Fields
 
-Users can configure date, resource, and order element fields to appear in the header of the report, which means they apply to the entire report, or they can be added to each of the rows.
+Users can configure date, resource, and project element fields to appear in the header of the report, which means they apply to the entire report, or they can be added to each of the rows.
 
 Finally, new additional text fields or tags can be added to the existing ones, in the work report header or in each line, by using the "Additional text" and "Tag type" fields, respectively. Users can configure the order in which these elements are to be entered in the "Management of additional fields and tags" tab.
 

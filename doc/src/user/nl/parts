@@ -1,0 +1,13 @@
+#
+# First word:
+#   Identifier of the section to include. It cannot contain spaces. For
+#   a section named “foo”, a file “foo/foo.rst” must exist.
+#
+# Rest of the line:
+#   Free form text for specifying who is in charge. It will be passed to
+#   docutils as-is, so you can add markup if needed.
+#
+#
+
+01-introducion      Jeroen Baten (jeroen@libreplan.dev)
+

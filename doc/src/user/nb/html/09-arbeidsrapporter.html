@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Arbeidsrapporter</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="arbeidsrapporter">
+<h1 class="title">Arbeidsrapporter</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#arbeidsrapporttyper" id="toc-entry-1">Arbeidsrapporttyper</a></li>
+<li><a class="reference internal" href="#arbeidsrapportliste" id="toc-entry-2">Arbeidsrapportliste</a></li>
+</ul>
+</div>
+<p>Arbeidsrapporter gjør det mulig å overvåke timene som ressurser dedikerer til oppgavene de er tildelt.</p>
+<p>Programmet lar brukere konfigurere nye skjemaer for å registrere dedikerte timer, og spesifisere feltene de ønsker skal vises i disse skjemaene. Dette gjør det mulig å innarbeide rapporter fra oppgaver utført av arbeidere og overvåke arbeideraktivitet.</p>
+<p>Før brukere kan legge til oppføringer for ressurser, må de definere minst én arbeidsrapporttype. Denne typen definerer strukturen til rapporten, inkludert alle radene som legges til den. Brukere kan opprette så mange arbeidsrapporttyper som nødvendig i systemet.</p>
+<div class="section" id="arbeidsrapporttyper">
+<h1><a class="toc-backref" href="#toc-entry-1">Arbeidsrapporttyper</a></h1>
+<p>En arbeidsrapport består av en serie felt som er felles for hele rapporten og et sett med arbeidsrapportlinjer med spesifikke verdier for feltene som er definert i hver rad. For eksempel er ressurser og oppgaver felles for alle rapporter. Det kan imidlertid finnes andre nye felt, som &quot;hendelser&quot;, som ikke er påkrevd i alle rapporttyper.</p>
+<p>Brukere kan konfigurere forskjellige arbeidsrapporttyper slik at et selskap kan utforme sine rapporter for å møte sine spesifikke behov:</p>
+<div class="figure">
+<img alt="images/work-report-types.png" src="images/work-report-types.png" style="width: 326.8px; height: 91.60000000000001px;" />
+<p class="caption">Arbeidsrapporttyper</p>
+</div>
+<p>Administrasjonen av arbeidsrapporttyper lar brukere konfigurere disse typene og legge til nye tekstfelt eller valgfrie koder. I den første fanen for redigering av arbeidsrapporttyper er det mulig å konfigurere typen for de obligatoriske attributtene (om de gjelder hele rapporten eller er spesifisert på linjenivå) og legge til nye valgfrie felt.</p>
+<p>De obligatoriske feltene som må vises i alle arbeidsrapporter er som følger:</p>
+<ul class="simple">
+<li><strong>Navn og kode:</strong> Identifikasjonsfelt for arbeidsrapporttypens navn og kode.</li>
+<li><strong>Dato:</strong> Felt for rapportens dato.</li>
+<li><strong>Ressurs:</strong> Arbeider eller maskin som vises i rapporten eller arbeidsrapportlinjen.</li>
+<li><strong>Ordreelement:</strong> Kode for ordreelementet som det utførte arbeidet tilskrives.</li>
+<li><strong>Timehåndtering:</strong> Bestemmer timeatribusjonspolicyen som skal brukes, som kan være:<ul>
+<li><strong>I henhold til tildelte timer:</strong> Timer tilskrives basert på de tildelte timene.</li>
+<li><strong>I henhold til start- og sluttider:</strong> Timer beregnes basert på start- og sluttider.</li>
+<li><strong>I henhold til antall timer og start- og sluttintervall:</strong> Avvik er tillatt, og antall timer har prioritet.</li>
+</ul>
+</li>
+</ul>
+<p>Brukere kan legge til nye felt i rapportene:</p>
+<ul class="simple">
+<li><strong>Kodetype:</strong> Brukere kan be systemet om å vise en kode når de fyller ut arbeidsrapporten. For eksempel klientkodetypen, hvis brukeren ønsker å angi klienten som arbeidet ble utført for i hver rapport.</li>
+<li><strong>Frie felt:</strong> Felt der tekst kan skrives inn fritt i arbeidsrapporten.</li>
+</ul>
+<div class="figure">
+<img alt="images/work-report-type.png" src="images/work-report-type.png" style="width: 397.5px; height: 227.0px;" />
+<p class="caption">Opprette en arbeidsrapporttype med personaliserte felt</p>
+</div>
+<p>Brukere kan konfigurere dato-, ressurs- og ordreelementfelt til å vises i rapporthodet, noe som betyr at de gjelder for hele rapporten, eller de kan legges til i hver av radene.</p>
+<p>Til slutt kan nye tilleggstekstfelt eller koder legges til de eksisterende, i arbeidsrapporthodet eller i hver linje, ved å bruke henholdsvis feltene &quot;Tilleggstekst&quot; og &quot;Kodetype&quot;. Brukere kan konfigurere rekkefølgen som disse elementene skal angis i, i fanen &quot;Håndtering av tilleggsfelt og koder&quot;.</p>
+</div>
+<div class="section" id="arbeidsrapportliste">
+<h1><a class="toc-backref" href="#toc-entry-2">Arbeidsrapportliste</a></h1>
+<p>Når formatet på rapportene som skal innarbeides i systemet er konfigurert, kan brukere angi detaljene i det opprettede skjemaet i henhold til strukturen som er definert i den tilsvarende arbeidsrapporttypen. For å gjøre dette må brukerne følge disse trinnene:</p>
+<ul class="simple">
+<li>Klikk på &quot;Ny arbeidsrapport&quot;-knappen tilknyttet ønsket rapport fra listen over arbeidsrapporttyper.</li>
+<li>Programmet viser deretter rapporten basert på konfigurasjonene gitt for typen. Se det følgende bildet.</li>
+</ul>
+<div class="figure">
+<img alt="images/work-report-type.png" src="images/work-report-type.png" style="width: 397.5px; height: 227.0px;" />
+<p class="caption">Struktur for arbeidsrapporten basert på type</p>
+</div>
+<ul class="simple">
+<li>Velg alle feltene som vises for rapporten:<ul>
+<li><strong>Ressurs:</strong> Hvis hodet er valgt, vises ressursen bare én gang. Alternativt, for hver linje i rapporten, er det nødvendig å velge en ressurs.</li>
+<li><strong>Oppgavekode:</strong> Kode for oppgaven som arbeidsrapporten tilordnes. I likhet med resten av feltene, hvis feltet er i hodet, angis verdien én gang eller så mange ganger som nødvendig på linjene i rapporten.</li>
+<li><strong>Dato:</strong> Dato for rapporten eller hver linje, avhengig av om hodet eller linjen er konfigurert.</li>
+<li><strong>Antall timer:</strong> Antall arbeidstimer i prosjektet.</li>
+<li><strong>Start- og sluttider:</strong> Start- og sluttider for arbeidet for å beregne endelige arbeidstimer. Dette feltet vises bare i tilfelle timeatribusjonsretningslinjene &quot;I henhold til start- og sluttider&quot; og &quot;I henhold til antall timer og start- og sluttintervall&quot;.</li>
+<li><strong>Timetype:</strong> Lar brukere velge timetype, f.eks. &quot;Normal&quot;, &quot;Ekstraordinær&quot; osv.</li>
+</ul>
+</li>
+<li>Klikk &quot;Lagre&quot; eller &quot;Lagre og fortsett.&quot;</li>
+</ul>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Kritéria</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="kriteria">
+<h1 class="title">Kritéria</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#sprava-kriterii" id="toc-entry-1">Správa kritérií</a></li>
+</ul>
+</div>
+<p>Kritéria jsou prvky, které se v programu používají ke kategorizaci zdrojů i úkolů. Úkoly vyžadují splnění konkrétních kritérií a zdroje musí tato kritéria splňovat.</p>
+<p>Zde je příklad použití kritérií: zdroji je přiřazeno kritérium &quot;svářeč&quot; (což znamená, že zdroj splňuje kategorii &quot;svářeč&quot;) a úkol vyžaduje kritérium &quot;svářeč&quot; pro dokončení. V důsledku toho, když jsou zdroje přidělovány úkolům pomocí obecného přidělování (na rozdíl od konkrétního přidělování), budou zvažováni pracovníci s kritériem &quot;svářeč&quot;. Více informací o různých typech přidělování naleznete v kapitole o přidělování zdrojů.</p>
+<p>Program umožňuje několik operací zahrnujících kritéria:</p>
+<ul class="simple">
+<li>Správa kritérií</li>
+<li>Přiřazení kritérií zdrojům</li>
+<li>Přiřazení kritérií úkolům</li>
+<li>Filtrování entit na základě kritérií. Úkoly a prvky zakázky lze filtrovat podle kritérií pro provádění různých operací v programu.</li>
+</ul>
+<p>Tato sekce vysvětlí pouze první funkci, správu kritérií. Dva typy přidělování budou popsány později: přidělování zdrojů v kapitole &quot;Správa zdrojů&quot; a filtrování v kapitole &quot;Plánování úkolů&quot;.</p>
+<div class="section" id="sprava-kriterii">
+<h1><a class="toc-backref" href="#toc-entry-1">Správa kritérií</a></h1>
+<p>Správa kritérií je přístupná přes menu správy:</p>
+<div class="figure">
+<img alt="images/menu.png" src="images/menu.png" style="width: 227.5px; height: 15.5px;" />
+<p class="caption">Záložky nabídky první úrovně</p>
+</div>
+<p>Konkrétní operace pro správu kritérií je <em>Spravovat kritéria</em>. Tato operace umožňuje zobrazit seznam kritérií dostupných v systému.</p>
+<div class="figure">
+<img alt="images/lista-criterios.png" src="images/lista-criterios.png" style="width: 300.0px; height: 154.0px;" />
+<p class="caption">Seznam kritérií</p>
+</div>
+<p>K formuláři pro vytvoření/editaci kritéria lze přistoupit kliknutím na tlačítko <em>Vytvořit</em>. Pro úpravu stávajícího kritéria klikněte na ikonu editace.</p>
+<div class="figure">
+<img alt="images/edicion-criterio.png" src="images/edicion-criterio.png" style="width: 446.5px; height: 279.0px;" />
+<p class="caption">Úprava kritérií</p>
+</div>
+<p>Formulář pro editaci kritérií, jak je znázorněno na předchozím obrázku, umožňuje provádět následující operace:</p>
+<ul class="simple">
+<li><strong>Editovat název kritéria.</strong></li>
+<li><strong>Určit, zda lze přiřadit více hodnot současně nebo pouze jednu hodnotu pro vybraný typ kritéria.</strong> Například zdroj by mohl splňovat dvě kritéria, &quot;svářeč&quot; a &quot;soustružník&quot;.</li>
+<li><strong>Určit typ kritéria:</strong><ul>
+<li><strong>Obecný:</strong> Kritérium, které lze použít jak pro stroje, tak pro pracovníky.</li>
+<li><strong>Pracovník:</strong> Kritérium, které lze použít pouze pro pracovníky.</li>
+<li><strong>Stroj:</strong> Kritérium, které lze použít pouze pro stroje.</li>
+</ul>
+</li>
+<li><strong>Uvést, zda je kritérium hierarchické.</strong> Někdy je třeba zacházet s kritérii hierarchicky. Například přiřazení kritéria prvku ho automaticky nepřiřadí prvkům, které z něj vycházejí. Jasným příkladem hierarchického kritéria je &quot;umístění&quot;. Například osoba označená umístěním &quot;Galicie&quot; bude také patřit do &quot;Španělska&quot;.</li>
+<li><strong>Uvést, zda je kritérium autorizováno.</strong> Takto uživatelé deaktivují kritéria. Jakmile bylo kritérium vytvořeno a použito v historických datech, nelze jej změnit. Místo toho jej lze deaktivovat, aby se nezobrazovalo ve výběrových seznamech.</li>
+<li><strong>Popsat kritérium.</strong></li>
+<li><strong>Přidat nové hodnoty.</strong> Pole pro zadání textu s tlačítkem <em>Nové kritérium</em> se nachází v druhé části formuláře.</li>
+<li><strong>Upravit názvy stávajících hodnot kritérií.</strong></li>
+<li><strong>Přesouvat hodnoty kritérií nahoru nebo dolů v seznamu aktuálních hodnot kritérií.</strong></li>
+<li><strong>Odebrat hodnotu kritéria ze seznamu.</strong></li>
+</ul>
+<p>Formulář pro správu kritérií se řídí chováním formuláře popsaným v úvodu a nabízí tři akce: <em>Uložit</em>, <em>Uložit a zavřít</em> a <em>Zavřít</em>.</p>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Aufgabenplanung</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="aufgabenplanung">
+<h1 class="title">Aufgabenplanung</h1>
+
+<div class="contents topic" id="contents">
+<span id="planificacion"></span><p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#aufgabenplanung-1" id="toc-entry-1">Aufgabenplanung</a><ul>
+<li><a class="reference internal" href="#planungsansicht" id="toc-entry-2">Planungsansicht</a></li>
+<li><a class="reference internal" href="#ressourcenauslastungsansicht" id="toc-entry-3">Ressourcenauslastungsansicht</a></li>
+<li><a class="reference internal" href="#auftragslistenansicht" id="toc-entry-4">Auftragslistenansicht</a></li>
+<li><a class="reference internal" href="#erweiterte-zuweisungsansicht" id="toc-entry-5">Erweiterte Zuweisungsansicht</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="aufgabenplanung-1">
+<h1><a class="toc-backref" href="#toc-entry-1">Aufgabenplanung</a></h1>
+<p>Die Planung in LibrePlan ist ein Prozess, der im gesamten Benutzerhandbuch beschrieben wurde, wobei die Kapitel zu Aufträgen und Ressourcenzuweisung besonders wichtig sind. Dieses Kapitel beschreibt die grundlegenden Planungsverfahren, nachdem der Auftrag und die Gantt-Diagramme ordnungsgemäß konfiguriert wurden.</p>
+<div class="figure">
+<img alt="images/planning-view.png" src="images/planning-view.png" style="width: 354.2px; height: 229.24999999999997px;" />
+<p class="caption">Arbeitsplanungsansicht</p>
+</div>
+<p>Wie bei der Unternehmensübersicht ist die Projektplanungsansicht in mehrere Ansichten unterteilt, basierend auf den zu analysierenden Informationen. Die für ein bestimmtes Projekt verfügbaren Ansichten sind:</p>
+<ul class="simple">
+<li>Planungsansicht</li>
+<li>Ressourcenauslastungsansicht</li>
+<li>Auftragslistenansicht</li>
+<li>Erweiterte Zuweisungsansicht</li>
+</ul>
+<div class="section" id="planungsansicht">
+<h2><a class="toc-backref" href="#toc-entry-2">Planungsansicht</a></h2>
+<p>Die Planungsansicht kombiniert drei verschiedene Perspektiven:</p>
+<ul class="simple">
+<li><strong>Projektplanung:</strong> Die Projektplanung wird im oberen rechten Teil des Programms als Gantt-Diagramm angezeigt. Diese Ansicht ermöglicht es Benutzern, Aufgaben vorübergehend zu verschieben, Abhängigkeiten zwischen ihnen zuzuweisen, Meilensteine zu definieren und Einschränkungen festzulegen.</li>
+<li><strong>Ressourcenauslastung:</strong> Die Ressourcenauslastungsansicht im unteren rechten Teil des Bildschirms zeigt die Ressourcenverfügbarkeit basierend auf Zuweisungen. Die in dieser Ansicht angezeigten Informationen sind:<ul>
+<li><strong>Lila Bereich:</strong> Zeigt eine Ressourcenauslastung unter 100 % ihrer Kapazität an.</li>
+<li><strong>Grüner Bereich:</strong> Zeigt eine Ressourcenauslastung unter 100 % an, weil die Ressource für ein anderes Projekt geplant ist.</li>
+<li><strong>Orangefarbener Bereich:</strong> Zeigt eine Ressourcenauslastung über 100 % als Folge des aktuellen Projekts an.</li>
+<li><strong>Gelber Bereich:</strong> Zeigt eine Ressourcenauslastung über 100 % als Folge anderer Projekte an.</li>
+</ul>
+</li>
+<li><strong>Diagrammansicht und Earned-Value-Indikatoren:</strong> Diese können über die Registerkarte „Earned Value&quot; angezeigt werden. Die berechneten Indikatoren sind:<ul>
+<li><strong>BCWS (Budgeted Cost of Work Scheduled):</strong> Die kumulative Zeitfunktion für die Anzahl der bis zu einem bestimmten Datum geplanten Stunden.</li>
+<li><strong>ACWP (Actual Cost of Work Performed):</strong> Die kumulative Zeitfunktion für die in Arbeitsberichten bis zu einem bestimmten Datum gemeldeten Stunden.</li>
+<li><strong>BCWP (Budgeted Cost of Work Performed):</strong> Die kumulative Zeitfunktion, die den Ergebniswert der Multiplikation des Aufgabenfortschritts mit der Menge der Arbeit enthält, die für die Fertigstellung der Aufgabe geschätzt wurde.</li>
+<li><strong>CV (Cost Variance):</strong> CV = BCWP - ACWP</li>
+<li><strong>SV (Schedule Variance):</strong> SV = BCWP - BCWS</li>
+<li><strong>BAC (Budget at Completion):</strong> BAC = max (BCWS)</li>
+<li><strong>EAC (Estimate at Completion):</strong> EAC = (ACWP / BCWP) * BAC</li>
+<li><strong>VAC (Variance at Completion):</strong> VAC = BAC - EAC</li>
+<li><strong>ETC (Estimate to Complete):</strong> ETC = EAC - ACWP</li>
+<li><strong>CPI (Cost Performance Index):</strong> CPI = BCWP / ACWP</li>
+<li><strong>SPI (Schedule Performance Index):</strong> SPI = BCWP / BCWS</li>
+</ul>
+</li>
+</ul>
+<p>In der Projektplanungsansicht können Benutzer die folgenden Aktionen ausführen:</p>
+<ul class="simple">
+<li><strong>Abhängigkeiten zuweisen:</strong> Klicken Sie mit der rechten Maustaste auf eine Aufgabe, wählen Sie „Abhängigkeit hinzufügen&quot; und ziehen Sie den Mauszeiger zur Aufgabe, der die Abhängigkeit zugewiesen werden soll.<ul>
+<li>Um den Typ der Abhängigkeit zu ändern, klicken Sie mit der rechten Maustaste auf die Abhängigkeit und wählen Sie den gewünschten Typ.</li>
+</ul>
+</li>
+<li><strong>Einen neuen Meilenstein erstellen:</strong> Klicken Sie auf die Aufgabe, vor der der Meilenstein hinzugefügt werden soll, und wählen Sie die Option „Meilenstein hinzufügen&quot;.</li>
+<li><strong>Aufgaben ohne Beeinträchtigung von Abhängigkeiten verschieben:</strong> Klicken Sie mit der rechten Maustaste auf den Aufgabenkörper und ziehen Sie ihn an die gewünschte Position.</li>
+<li><strong>Einschränkungen zuweisen:</strong> Klicken Sie auf die betreffende Aufgabe und wählen Sie die Option „Aufgabeneigenschaften&quot;. Die Einschränkungen, die festgelegt werden können, sind:<ul>
+<li><strong>So früh wie möglich:</strong> Zeigt an, dass die Aufgabe so früh wie möglich beginnen muss.</li>
+<li><strong>Nicht früher als:</strong> Zeigt an, dass die Aufgabe nicht vor einem bestimmten Datum beginnen darf.</li>
+<li><strong>Beginnen an einem bestimmten Datum:</strong> Zeigt an, dass die Aufgabe an einem bestimmten Datum beginnen muss.</li>
+</ul>
+</li>
+</ul>
+<p>Die Planungsansicht bietet auch verschiedene Verfahren, die als Anzeigeoptionen funktionieren:</p>
+<ul class="simple">
+<li><strong>Zoomstufe:</strong> Benutzer können die gewünschte Zoomstufe wählen. Es gibt mehrere Zoomstufen: jährlich, viermonatlich, monatlich, wöchentlich und täglich.</li>
+<li><strong>Suchfilter:</strong> Benutzer können Aufgaben nach Etiketten oder Kriterien filtern.</li>
+<li><strong>Kritischer Pfad:</strong> Als Ergebnis der Verwendung des <em>Dijkstra</em>-Algorithmus zur Berechnung von Pfaden in Graphen wurde der kritische Pfad implementiert.</li>
+<li><strong>Etiketten anzeigen:</strong> Ermöglicht Benutzern, die den Aufgaben in einem Projekt zugewiesenen Etiketten anzuzeigen.</li>
+<li><strong>Ressourcen anzeigen:</strong> Ermöglicht Benutzern, die den Aufgaben in einem Projekt zugewiesenen Ressourcen anzuzeigen.</li>
+<li><strong>Drucken:</strong> Ermöglicht Benutzern, das angezeigte Gantt-Diagramm zu drucken.</li>
+</ul>
+</div>
+<div class="section" id="ressourcenauslastungsansicht">
+<h2><a class="toc-backref" href="#toc-entry-3">Ressourcenauslastungsansicht</a></h2>
+<p>Die Ressourcenauslastungsansicht bietet eine Liste von Ressourcen, die eine Liste von Aufgaben oder Kriterien enthält, die Arbeitslasten generieren. Eine andere Farbe wird angezeigt, je nachdem, ob die Ressource eine Last hat, die höher oder niedriger als 100 % ist:</p>
+<ul class="simple">
+<li><strong>Grün:</strong> Last unter 100 %</li>
+<li><strong>Orange:</strong> 100 % Last</li>
+<li><strong>Rot:</strong> Last über 100 %</li>
+</ul>
+<div class="figure">
+<img alt="images/resource-load.png" src="images/resource-load.png" style="width: 353.5px; height: 228.89999999999998px;" />
+<p class="caption">Ressourcenauslastungsansicht für einen bestimmten Auftrag</p>
+</div>
+</div>
+<div class="section" id="auftragslistenansicht">
+<h2><a class="toc-backref" href="#toc-entry-4">Auftragslistenansicht</a></h2>
+<p>Die Auftragslistenansicht ermöglicht Benutzern, auf die Optionen zum Bearbeiten und Löschen von Aufträgen zuzugreifen. Weitere Informationen finden Sie im Kapitel „Aufträge&quot;.</p>
+</div>
+<div class="section" id="erweiterte-zuweisungsansicht">
+<h2><a class="toc-backref" href="#toc-entry-5">Erweiterte Zuweisungsansicht</a></h2>
+<p>Die Erweiterte Zuweisungsansicht wird im Kapitel „Ressourcenzuweisung&quot; ausführlich erläutert.</p>
+</div>
+</div>
+</div>
+</body>
+</html>

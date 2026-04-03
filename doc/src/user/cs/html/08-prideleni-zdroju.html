@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Přiřazení zdrojů</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="prirazeni-zdroju">
+<h1 class="title">Přiřazení zdrojů</h1>
+
+<div class="contents topic" id="contents">
+<span id="asigacion"></span><p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#specificke-prirazeni" id="toc-entry-1">Specifické přiřazení</a><ul>
+<li><a class="reference internal" href="#specificke-prirazeni-stroju" id="toc-entry-2">Specifické přiřazení strojů</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#genericke-prirazeni" id="toc-entry-3">Generické přiřazení</a><ul>
+<li><a class="reference internal" href="#genericke-prirazeni-stroju" id="toc-entry-4">Generické přiřazení strojů</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#pokrocile-prirazeni" id="toc-entry-5">Pokročilé přiřazení</a></li>
+</ul>
+</div>
+<p>Přiřazení zdrojů je jednou z nejdůležitějších funkcí programu a lze jej provést dvěma různými způsoby:</p>
+<ul class="simple">
+<li>Specifické přiřazení</li>
+<li>Generické přiřazení</li>
+</ul>
+<p>Oba typy přiřazení jsou vysvětleny v následujících sekcích.</p>
+<p>Chcete-li provést libovolný typ přiřazení zdrojů, je nutné provést následující kroky:</p>
+<ul class="simple">
+<li>Přejděte do plánovacího zobrazení objednávky.</li>
+<li>Klikněte pravým tlačítkem myši na úkol, který má být naplánován.</li>
+</ul>
+<div class="figure">
+<img alt="images/resource-assignment-planning.png" src="images/resource-assignment-planning.png" style="width: 459.0px; height: 151.5px;" />
+<p class="caption">Nabídka přiřazení zdrojů</p>
+</div>
+<ul class="simple">
+<li>Program zobrazí obrazovku s následujícími informacemi:<ul>
+<li><strong>Seznam kritérií ke splnění:</strong> Pro každou skupinu hodin se zobrazí seznam požadovaných kritérií.</li>
+<li><strong>Informace o úkolu:</strong> Datum zahájení a ukončení úkolu.</li>
+<li><strong>Typ výpočtu:</strong> Systém umožňuje uživatelům zvolit strategii pro výpočet přiřazení:<ul>
+<li><strong>Výpočet počtu hodin:</strong> Vypočítá počet hodin potřebných od přiřazených zdrojů s ohledem na datum ukončení a počet zdrojů za den.</li>
+<li><strong>Výpočet data ukončení:</strong> Vypočítá datum ukončení úkolu na základě počtu zdrojů přiřazených k úkolu a celkového počtu hodin potřebných k dokončení úkolu.</li>
+<li><strong>Výpočet počtu zdrojů:</strong> Vypočítá počet zdrojů potřebných k dokončení úkolu do konkrétního data s ohledem na známý počet hodin na jeden zdroj.</li>
+</ul>
+</li>
+<li><strong>Doporučené přiřazení:</strong> Tato možnost umožňuje programu shromáždit kritéria ke splnění a celkový počet hodin ze všech skupin hodin a poté doporučit generické přiřazení. Pokud existuje předchozí přiřazení, systém jej odstraní a nahradí novým.</li>
+<li><strong>Přiřazení:</strong> Seznam provedených přiřazení. Tento seznam zobrazuje generická přiřazení (číslo bude seznam splněných kritérií a počet hodin a zdrojů za den). Každé přiřazení lze explicitně odstranit kliknutím na tlačítko odstranění.</li>
+</ul>
+</li>
+</ul>
+<div class="figure">
+<img alt="images/resource-assignment.png" src="images/resource-assignment.png" style="width: 326.5px; height: 306.5px;" />
+<p class="caption">Přiřazení zdrojů</p>
+</div>
+<ul class="simple">
+<li>Uživatelé vyberou „Hledat zdroje.&quot;</li>
+<li>Program zobrazí novou obrazovku tvořenou stromem kritérií a seznamem pracovníků, kteří splňují vybraná kritéria, na pravé straně:</li>
+</ul>
+<div class="figure">
+<img alt="images/resource-assignment-search.png" src="images/resource-assignment-search.png" style="width: 319.5px; height: 272.0px;" />
+<p class="caption">Vyhledávání přiřazení zdrojů</p>
+</div>
+<ul class="simple">
+<li>Uživatelé mohou vybrat:<ul>
+<li><strong>Specifické přiřazení:</strong> Podrobnosti o této možnosti viz sekce „Specifické přiřazení.&quot;</li>
+<li><strong>Generické přiřazení:</strong> Podrobnosti o této možnosti viz sekce „Generické přiřazení.&quot;</li>
+</ul>
+</li>
+<li>Uživatelé vyberou seznam kritérií (generické) nebo seznam pracovníků (specifické). Vícenásobný výběr lze provést stisknutím klávesy „Ctrl&quot; při kliknutí na každého pracovníka/kritérium.</li>
+<li>Uživatelé poté kliknou na tlačítko „Vybrat&quot;. Je důležité mít na paměti, že pokud není vybráno generické přiřazení, uživatelé musí zvolit pracovníka nebo stroj pro provedení přiřazení. Pokud je vybráno generické přiřazení, stačí, když uživatelé zvolí jedno nebo více kritérií.</li>
+<li>Program poté zobrazí vybraná kritéria nebo seznam zdrojů v seznamu přiřazení na původní obrazovce přiřazení zdrojů.</li>
+<li>Uživatelé musí zvolit hodiny nebo zdroje za den v závislosti na metodě přiřazení používané v programu.</li>
+</ul>
+<div class="section" id="specificke-prirazeni">
+<h1><a class="toc-backref" href="#toc-entry-1">Specifické přiřazení</a></h1>
+<p>Jedná se o specifické přiřazení zdroje k úkolu projektu. Jinými slovy, uživatel rozhoduje, který konkrétní pracovník (podle jména a příjmení) nebo stroj musí být přiřazen k úkolu.</p>
+<p>Specifické přiřazení lze provést na obrazovce zobrazené na tomto obrázku:</p>
+<div class="figure">
+<img alt="images/asignacion-especifica.png" src="images/asignacion-especifica.png" style="width: 334.0px; height: 216.0px;" />
+<p class="caption">Specifické přiřazení zdrojů</p>
+</div>
+<p>Když je zdroj specificky přiřazen, program vytvoří denní přiřazení na základě vybraného procenta denně přiřazených zdrojů po porovnání s dostupným kalendářem zdrojů. Například přiřazení 0,5 zdrojů pro úkol o 32 hodinách znamená, že konkrétnímu zdroji je přiřazeno 4 hodiny denně k dokončení úkolu (při předpokladu pracovního kalendáře 8 hodin denně).</p>
+<div class="section" id="specificke-prirazeni-stroju">
+<h2><a class="toc-backref" href="#toc-entry-2">Specifické přiřazení strojů</a></h2>
+<p>Specifické přiřazení strojů funguje stejně jako přiřazení pracovníků. Když je stroj přiřazen k úkolu, systém uloží specifické přiřazení hodin pro zvolený stroj. Hlavní rozdíl spočívá v tom, že systém prohledá seznam přiřazených pracovníků nebo kritérií v okamžiku přiřazení stroje:</p>
+<ul class="simple">
+<li>Pokud má stroj seznam přiřazených pracovníků, program vybírá z těch, které stroj vyžaduje na základě přiřazeného kalendáře. Například pokud je kalendář stroje 16 hodin denně a kalendář zdroje je 8 hodin, jsou ze seznamu dostupných zdrojů přiřazeny dva zdroje.</li>
+<li>Pokud má stroj přiřazeno jedno nebo více kritérií, jsou generická přiřazení provedena z řad zdrojů, které splňují kritéria přiřazená stroji.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="genericke-prirazeni">
+<h1><a class="toc-backref" href="#toc-entry-3">Generické přiřazení</a></h1>
+<p>Generické přiřazení nastane, když uživatelé nezvolí zdroje konkrétně, ale přenechají rozhodnutí programu, který rozděluje zatížení mezi dostupné zdroje společnosti.</p>
+<div class="figure">
+<img alt="images/asignacion-xenerica.png" src="images/asignacion-xenerica.png" style="width: 311.0px; height: 59.0px;" />
+<p class="caption">Generické přiřazení zdrojů</p>
+</div>
+<p>Systém přiřazení vychází z následujících předpokladů:</p>
+<ul class="simple">
+<li>Úkoly mají kritéria, která jsou vyžadována od zdrojů.</li>
+<li>Zdroje jsou konfigurovány tak, aby splňovaly kritéria.</li>
+</ul>
+<p>Systém však selže ne tehdy, když kritéria nebyla přiřazena, ale tehdy, když všechny zdroje splňují nepožadování kritérií.</p>
+<p>Algoritmus generického přiřazení funguje takto:</p>
+<ul class="simple">
+<li>Všechny zdroje a dny jsou považovány za kontejnery, do nichž se vejdou denní přiřazení hodin na základě maximální kapacity přiřazení v kalendáři úkolu.</li>
+<li>Systém vyhledá zdroje, které splňují kritérium.</li>
+<li>Systém analyzuje, která přiřazení mají v současné době různé zdroje splňující kritéria.</li>
+<li>Zdroje, které splňují kritéria, jsou vybrány z těch, které mají dostatečnou dostupnost.</li>
+<li>Pokud nejsou k dispozici volnější zdroje, přiřazení se provede zdrojům, které mají menší dostupnost.</li>
+<li>Přetížení zdrojů začne až tehdy, když jsou všechny zdroje splňující příslušná kritéria přiřazeny na 100 %, dokud není dosaženo celkového potřebného množství pro provedení úkolu.</li>
+</ul>
+<div class="section" id="genericke-prirazeni-stroju">
+<h2><a class="toc-backref" href="#toc-entry-4">Generické přiřazení strojů</a></h2>
+<p>Generické přiřazení strojů funguje stejně jako přiřazení pracovníků. Například když je stroj přiřazen k úkolu, systém uloží generické přiřazení hodin pro všechny stroje, které splňují kritéria, jak je popsáno pro zdroje obecně. Navíc systém pro stroje provede následující postup:</p>
+<ul class="simple">
+<li>Pro všechny stroje zvolené pro generické přiřazení:<ul>
+<li>Shromáždí konfigurační informace stroje: hodnotu alfa, přiřazené pracovníky a kritéria.</li>
+<li>Pokud má stroj přiřazený seznam pracovníků, program vybere počet vyžadovaný strojem v závislosti na přiřazeném kalendáři. Například pokud je kalendář stroje 16 hodin denně a kalendář zdroje je 8 hodin, program přiřadí dva zdroje ze seznamu dostupných zdrojů.</li>
+<li>Pokud má stroj přiřazeno jedno nebo více kritérií, program provede generická přiřazení z řad zdrojů, které splňují kritéria přiřazená stroji.</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="pokrocile-prirazeni">
+<h1><a class="toc-backref" href="#toc-entry-5">Pokročilé přiřazení</a></h1>
+<p>Pokročilá přiřazení umožňují uživatelům navrhnout přiřazení, která aplikace automaticky provede a personalizuje. Tento postup umožňuje uživatelům ručně zvolit denní hodiny věnované zdroji přiřazeným úkolům nebo definovat funkci, která se na přiřazení aplikuje.</p>
+<p>Postup pro správu pokročilých přiřazení je následující:</p>
+<ul class="simple">
+<li>Přejděte do okna pokročilého přiřazení. Pokročilá přiřazení lze zobrazit dvěma způsoby:<ul>
+<li>Přejděte na konkrétní objednávku a změňte zobrazení na pokročilé přiřazení. V tomto případě se zobrazí všechny úkoly objednávky a přiřazené zdroje (specifické a generické).</li>
+<li>Přejděte do okna přiřazení zdrojů kliknutím na tlačítko „Pokročilé přiřazení.&quot; V tomto případě se zobrazí přiřazení ukazující zdroje (generické a specifické) přiřazené k úkolu.</li>
+</ul>
+</li>
+</ul>
+<div class="figure">
+<img alt="images/advance-assignment.png" src="images/advance-assignment.png" style="width: 459.0px; height: 294.3px;" />
+<p class="caption">Pokročilé přiřazení zdrojů</p>
+</div>
+<ul class="simple">
+<li>Uživatelé mohou zvolit požadovanou úroveň přiblížení:<ul>
+<li><strong>Úrovně přiblížení větší než jeden den:</strong> Pokud uživatelé změní přiřazenou hodnotu hodin na týden, měsíc, čtyřměsíční nebo šestiměsíční období, systém rovnoměrně distribuuje hodiny přes všechny dny zvoleného období.</li>
+<li><strong>Denní přiblížení:</strong> Pokud uživatelé změní přiřazenou hodnotu hodin na den, tyto hodiny se vztahují pouze na tento den. V důsledku toho mohou uživatelé rozhodnout, kolik hodin chtějí denně přiřadit zdrojům úkolu.</li>
+</ul>
+</li>
+<li>Uživatelé mohou navrhnout funkci pokročilého přiřazení. K tomu uživatelé musí:<ul>
+<li>Vybrat funkci ze seznamu výběru, který se zobrazí vedle každého zdroje, a kliknout na „Konfigurovat.&quot;</li>
+<li>Systém zobrazí nové okno, pokud je potřeba zvolené funkci konkrétně konfigurovat. Podporované funkce:<ul>
+<li><strong>Segmenty:</strong> Funkce, která umožňuje uživatelům definovat segmenty, na které je aplikována polynomiální funkce. Funkce na segment je konfigurována takto:<ul>
+<li><strong>Datum:</strong> Datum, kdy segment končí. Pokud je stanovena následující hodnota (délka), datum se vypočítá; alternativně se vypočítá délka.</li>
+<li><strong>Definice délky každého segmentu:</strong> Udává, jaké procento trvání úkolu je pro segment požadováno.</li>
+<li><strong>Definice množství práce:</strong> Udává, jaké procento pracovního zatížení se očekává v tomto segmentu. Množství práce musí být přírůstkové. Například pokud existuje segment 10 %, další musí být větší (například 20 %).</li>
+<li><strong>Grafy segmentů a kumulativních zatížení.</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Uživatelé poté kliknou na „Přijmout.&quot;</li>
+<li>Program uloží funkci a aplikuje ji na denní přiřazení zdrojů.</li>
+</ul>
+</li>
+</ul>
+<div class="figure">
+<img alt="images/stretches.png" src="images/stretches.png" style="width: 428.8px; height: 233.20000000000002px;" />
+<p class="caption">Konfigurace funkce segmentů</p>
+</div>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,27 @@
+#########################
+LibrePlan: 使用者說明文件
+#########################
+
+.. image:: images/logo.png
+   :align: left
+
+本文件包含使用 LibrePlan 所需的說明，LibrePlan 是一款用於專案規劃的開源網頁應用程式。
+
+文件分為三個主要部分：
+
+第一部分，全域目標與整體行為。
+
+第二部分，了解使用 LibrePlan 所需最低概念的基本實體。
+
+最後，建立訂單、專案、專案規劃、資源分配、進度登錄與結果提取的完整流程說明。
+
+.. topic:: 請支持 LibrePlan
+   :class: highlight
+
+   LibrePlan 無法在沒有您支持的情況下存在。請閱讀 `捐款頁面 <00-donations.html>`__ 並考慮幫助我們繼續開發。
+
+   .. raw:: html
+
+      <script src="https://opencollective.com/libreplan/donate/button.js" color="blue"></script>
+
+

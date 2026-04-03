@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Planowanie Zadań</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="planowanie-zadan">
+<h1 class="title">Planowanie Zadań</h1>
+
+<div class="contents topic" id="contents">
+<span id="planificacion"></span><p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#planowanie-zadan-1" id="toc-entry-1">Planowanie Zadań</a><ul>
+<li><a class="reference internal" href="#widok-planowania" id="toc-entry-2">Widok Planowania</a></li>
+<li><a class="reference internal" href="#widok-obciazenia-zasobow" id="toc-entry-3">Widok Obciążenia Zasobów</a></li>
+<li><a class="reference internal" href="#widok-listy-zamowien" id="toc-entry-4">Widok Listy Zamówień</a></li>
+<li><a class="reference internal" href="#widok-zaawansowanego-przypisania" id="toc-entry-5">Widok Zaawansowanego Przypisania</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="planowanie-zadan-1">
+<h1><a class="toc-backref" href="#toc-entry-1">Planowanie Zadań</a></h1>
+<p>Planowanie w LibrePlan to proces opisany w całym podręczniku użytkownika, przy czym rozdziały dotyczące zamówień i przypisania zasobów są szczególnie ważne. Ten rozdział opisuje podstawowe procedury planowania po prawidłowym skonfigurowaniu zamówień i wykresów Gantta.</p>
+<div class="figure">
+<img alt="images/planning-view.png" src="images/planning-view.png" style="width: 354.2px; height: 229.24999999999997px;" />
+<p class="caption">Widok planowania pracy</p>
+</div>
+<p>Podobnie jak w przypadku przeglądu firmy, widok planowania projektu jest podzielony na kilka widoków na podstawie analizowanych informacji. Widoki dostępne dla konkretnego projektu to:</p>
+<ul class="simple">
+<li>Widok planowania</li>
+<li>Widok obciążenia zasobów</li>
+<li>Widok listy zamówień</li>
+<li>Widok zaawansowanego przypisania</li>
+</ul>
+<div class="section" id="widok-planowania">
+<h2><a class="toc-backref" href="#toc-entry-2">Widok Planowania</a></h2>
+<p>Widok planowania łączy trzy różne perspektywy:</p>
+<ul class="simple">
+<li><strong>Planowanie projektu:</strong> Planowanie projektu jest wyświetlane w prawej górnej części programu jako wykres Gantta. Ten widok umożliwia użytkownikom tymczasowe przenoszenie zadań, przypisywanie zależności między nimi, definiowanie kamieni milowych i ustanawianie ograniczeń.</li>
+<li><strong>Obciążenie zasobów:</strong> Widok obciążenia zasobów, zlokalizowany w prawej dolnej części ekranu, pokazuje dostępność zasobów na podstawie przypisań, w przeciwieństwie do przypisań dokonanych do zadań. Informacje wyświetlane w tym widoku są następujące:<ul>
+<li><strong>Obszar fioletowy:</strong> Wskazuje obciążenie zasobu poniżej 100% jego pojemności.</li>
+<li><strong>Obszar zielony:</strong> Wskazuje obciążenie zasobu poniżej 100%, wynikające z zaplanowania zasobu do innego projektu.</li>
+<li><strong>Obszar pomarańczowy:</strong> Wskazuje obciążenie zasobu powyżej 100% w wyniku bieżącego projektu.</li>
+<li><strong>Obszar żółty:</strong> Wskazuje obciążenie zasobu powyżej 100% w wyniku innych projektów.</li>
+</ul>
+</li>
+<li><strong>Widok wykresu i wskaźniki wartości wypracowanej:</strong> Można je przeglądać z zakładki &quot;Wartość wypracowana&quot;. Wygenerowany wykres jest oparty na technice wartości wypracowanej, a wskaźniki są obliczane dla każdego dnia roboczego projektu. Obliczane wskaźniki to:<ul>
+<li><strong>BCWS (Budgeted Cost of Work Scheduled):</strong> Skumulowana funkcja czasu dla liczby zaplanowanych godzin do określonej daty. Będzie wynosić 0 na początku planowanego zadania i być równa całkowitej liczbie zaplanowanych godzin na końcu. Jak w przypadku wszystkich skumulowanych wykresów, zawsze będzie rosnąć. Funkcja dla zadania to suma dziennych przypisań do daty obliczenia. Ta funkcja ma wartości dla wszystkich momentów, pod warunkiem że zasoby zostały przypisane.</li>
+<li><strong>ACWP (Actual Cost of Work Performed):</strong> Skumulowana funkcja czasu dla godzin zgłoszonych w raportach pracy do określonej daty. Ta funkcja będzie mieć wartość 0 tylko przed datą pierwszego raportu pracy zadania, a jej wartość będzie nadal rosnąć z upływem czasu i dodawaniem godzin z raportów pracy. Nie będzie mieć wartości po dacie ostatniego raportu pracy.</li>
+<li><strong>BCWP (Budgeted Cost of Work Performed):</strong> Skumulowana funkcja czasu zawierająca wynikową wartość mnożenia postępu zadania przez ilość pracy, którą szacowano dla ukończenia zadania. Wartości tej funkcji rosną z upływem czasu, podobnie jak wartości postępu. Postęp jest mnożony przez całkowitą liczbę szacowanych godzin dla wszystkich zadań. Wartość BCWP to suma wartości dla obliczanych zadań. Postęp jest sumowany, gdy jest skonfigurowany.</li>
+<li><strong>CV (Odchylenie kosztów):</strong> CV = BCWP - ACWP</li>
+<li><strong>SV (Odchylenie harmonogramu):</strong> SV = BCWP - BCWS</li>
+<li><strong>BAC (Budżet przy zakończeniu):</strong> BAC = max (BCWS)</li>
+<li><strong>EAC (Szacunek przy zakończeniu):</strong> EAC = (ACWP / BCWP) * BAC</li>
+<li><strong>VAC (Odchylenie przy zakończeniu):</strong> VAC = BAC - EAC</li>
+<li><strong>ETC (Szacunek do zakończenia):</strong> ETC = EAC - ACWP</li>
+<li><strong>CPI (Wskaźnik efektywności kosztowej):</strong> CPI = BCWP / ACWP</li>
+<li><strong>SPI (Wskaźnik efektywności harmonogramu):</strong> SPI = BCWP / BCWS</li>
+</ul>
+</li>
+</ul>
+<p>W widoku planowania projektu użytkownicy mogą wykonywać następujące działania:</p>
+<ul class="simple">
+<li><strong>Przypisywanie zależności:</strong> Kliknij prawym przyciskiem myszy zadanie, wybierz &quot;Dodaj zależność&quot; i przeciągnij wskaźnik myszy do zadania, do którego należy przypisać zależność.<ul>
+<li>Aby zmienić typ zależności, kliknij prawym przyciskiem myszy zależność i wybierz żądany typ.</li>
+</ul>
+</li>
+<li><strong>Tworzenie nowego kamienia milowego:</strong> Kliknij zadanie, przed którym ma zostać dodany kamień milowy, i wybierz opcję &quot;Dodaj kamień milowy&quot;. Kamienie milowe można przenosić, wybierając kamień milowy wskaźnikiem myszy i przeciągając go w żądane miejsce.</li>
+<li><strong>Przenoszenie zadań bez zakłócania zależności:</strong> Kliknij prawym przyciskiem myszy treść zadania i przeciągnij ją do żądanego miejsca. Jeśli żadne ograniczenia ani zależności nie zostaną naruszone, system zaktualizuje dzienne przypisanie zasobów do zadania i umieści zadanie we wybranej dacie.</li>
+<li><strong>Przypisywanie ograniczeń:</strong> Kliknij dane zadanie i wybierz opcję &quot;Właściwości zadania&quot;. Pojawi się okno podręczne z polem &quot;Ograniczenia&quot;, które można modyfikować. Ograniczenia mogą kolidować z zależnościami, dlatego każde zamówienie określa, czy zależności mają priorytet nad ograniczeniami. Ograniczenia, które można ustanowić, to:<ul>
+<li><strong>Jak najwcześniej:</strong> Wskazuje, że zadanie musi się rozpocząć jak najwcześniej.</li>
+<li><strong>Nie wcześniej niż:</strong> Wskazuje, że zadanie nie może się rozpocząć przed określoną datą.</li>
+<li><strong>Rozpocznij w określonym dniu:</strong> Wskazuje, że zadanie musi się rozpocząć w określonym dniu.</li>
+</ul>
+</li>
+</ul>
+<p>Widok planowania oferuje również kilka procedur, które funkcjonują jako opcje wyświetlania:</p>
+<ul class="simple">
+<li><strong>Poziom powiększenia:</strong> Użytkownicy mogą wybrać żądany poziom powiększenia. Dostępnych jest kilka poziomów powiększenia: roczny, czteromiesięczny, miesięczny, tygodniowy i dzienny.</li>
+<li><strong>Filtry wyszukiwania:</strong> Użytkownicy mogą filtrować zadania na podstawie etykiet lub kryteriów.</li>
+<li><strong>Ścieżka krytyczna:</strong> W wyniku użycia algorytmu <em>Dijkstry</em> do obliczania ścieżek na grafach zaimplementowano ścieżkę krytyczną. Można ją przeglądać, klikając przycisk &quot;Ścieżka krytyczna&quot; w opcjach wyświetlania.</li>
+<li><strong>Pokaż etykiety:</strong> Umożliwia użytkownikom przeglądanie etykiet przypisanych do zadań w projekcie, które można przeglądać na ekranie lub drukować.</li>
+<li><strong>Pokaż zasoby:</strong> Umożliwia użytkownikom przeglądanie zasobów przypisanych do zadań w projekcie, które można przeglądać na ekranie lub drukować.</li>
+<li><strong>Drukowanie:</strong> Umożliwia użytkownikom drukowanie przeglądanego wykresu Gantta.</li>
+</ul>
+</div>
+<div class="section" id="widok-obciazenia-zasobow">
+<h2><a class="toc-backref" href="#toc-entry-3">Widok Obciążenia Zasobów</a></h2>
+<p>Widok obciążenia zasobów zapewnia listę zasobów zawierającą listę zadań lub kryteriów, które generują obciążenia pracą. Każde zadanie lub kryterium jest wyświetlane jako wykres Gantta, dzięki czemu można zobaczyć daty rozpoczęcia i zakończenia obciążenia. Wyświetlany jest różny kolor zależnie od tego, czy zasób ma obciążenie wyższe czy niższe niż 100%:</p>
+<ul class="simple">
+<li><strong>Zielony:</strong> Obciążenie niższe niż 100%</li>
+<li><strong>Pomarańczowy:</strong> 100% obciążenia</li>
+<li><strong>Czerwony:</strong> Obciążenie powyżej 100%</li>
+</ul>
+<div class="figure">
+<img alt="images/resource-load.png" src="images/resource-load.png" style="width: 353.5px; height: 228.89999999999998px;" />
+<p class="caption">Widok obciążenia zasobów dla konkretnego zamówienia</p>
+</div>
+<p>Jeśli wskaźnik myszy zostanie umieszczony na wykresie Gantta zasobu, zostanie wyświetlony procent obciążenia dla pracownika.</p>
+</div>
+<div class="section" id="widok-listy-zamowien">
+<h2><a class="toc-backref" href="#toc-entry-4">Widok Listy Zamówień</a></h2>
+<p>Widok listy zamówień umożliwia użytkownikom dostęp do opcji edytowania i usuwania zamówień. Patrz rozdział &quot;Zamówienia&quot; w celu uzyskania dodatkowych informacji.</p>
+</div>
+<div class="section" id="widok-zaawansowanego-przypisania">
+<h2><a class="toc-backref" href="#toc-entry-5">Widok Zaawansowanego Przypisania</a></h2>
+<p>Widok zaawansowanego przypisania jest szczegółowo wyjaśniony w rozdziale &quot;Przypisanie zasobów&quot;.</p>
+</div>
+</div>
+</div>
+</body>
+</html>

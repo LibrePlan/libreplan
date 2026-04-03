@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Schemaläggare</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="schemalaggare">
+<h1 class="title">Schemaläggare</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#listvy-for-jobbschemalaggning" id="toc-entry-1">Listvy för jobbschemaläggning</a></li>
+<li><a class="reference internal" href="#lagg-till-eller-redigera-jobb" id="toc-entry-2">Lägg till eller redigera jobb</a><ul>
+<li><a class="reference internal" href="#popup-fonster-for-cron-uttryck" id="toc-entry-3">Popup-fönster för cron-uttryck</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#ta-bort-jobb" id="toc-entry-4">Ta bort jobb</a></li>
+<li><a class="reference internal" href="#starta-jobb-manuellt" id="toc-entry-5">Starta jobb manuellt</a></li>
+</ul>
+</div>
+<p>Schemaläggaren är utformad för att schemalägga jobb dynamiskt. Den är utvecklad med <em>Spring Framework Quartz scheduler</em>.</p>
+<p>För att använda schemaläggaren effektivt måste de jobb (Quartz-jobb) som ska schemaläggas skapas först. Dessa jobb kan sedan läggas till i databasen, eftersom alla jobb som ska schemaläggas lagras i databasen.</p>
+<p>När schemaläggaren startar läser den de jobb som ska schemaläggas eller avschemalägas från databasen och schemalägger eller tar bort dem. Därefter kan jobb läggas till, uppdateras eller tas bort dynamiskt via användargränssnittet <tt class="docutils literal">Jobbschemaläggning</tt>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Schemaläggaren startar när LibrePlan-webbapplikationen startar och stoppas när applikationen stoppas.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Denna schemaläggare stöder bara <tt class="docutils literal"><span class="pre">cron-uttryck</span></tt> för att schemalägga jobb.</p>
+</div>
+<p>Kriterierna som schemaläggaren använder för att schemalägga eller ta bort jobb när den startar är följande:</p>
+<p>För alla jobb:</p>
+<ul class="simple">
+<li>Schemalägg<ul>
+<li>Jobbet har en <em>Anslutning</em>, och <em>Anslutningen</em> är aktiverad, och jobbet tillåts att schemaläggas.</li>
+<li>Jobbet har ingen <em>Anslutning</em> och tillåts att schemaläggas.</li>
+</ul>
+</li>
+<li>Ta bort<ul>
+<li>Jobbet har en <em>Anslutning</em>, och <em>Anslutningen</em> är inte aktiverad.</li>
+<li>Jobbet har en <em>Anslutning</em>, och <em>Anslutningen</em> är aktiverad, men jobbet tillåts inte att schemaläggas.</li>
+<li>Jobbet har ingen <em>Anslutning</em> och tillåts inte att schemaläggas.</li>
+</ul>
+</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Jobb kan inte omschemalägas eller avschemalägas om de för närvarande körs.</p>
+</div>
+<div class="section" id="listvy-for-jobbschemalaggning">
+<h1><a class="toc-backref" href="#toc-entry-1">Listvy för jobbschemaläggning</a></h1>
+<p>Listvyn <tt class="docutils literal">Jobbschemaläggning</tt> gör det möjligt för användare att:</p>
+<ul class="simple">
+<li>Lägga till ett nytt jobb.</li>
+<li>Redigera ett befintligt jobb.</li>
+<li>Ta bort ett jobb.</li>
+<li>Starta en process manuellt.</li>
+</ul>
+</div>
+<div class="section" id="lagg-till-eller-redigera-jobb">
+<h1><a class="toc-backref" href="#toc-entry-2">Lägg till eller redigera jobb</a></h1>
+<p>Från listvyn <tt class="docutils literal">Jobbschemaläggning</tt> klickar du på:</p>
+<ul class="simple">
+<li><tt class="docutils literal">Skapa</tt> för att lägga till ett nytt jobb, eller</li>
+<li><tt class="docutils literal">Redigera</tt> för att ändra det valda jobbet.</li>
+</ul>
+<p>Båda åtgärderna öppnar ett <tt class="docutils literal">jobbformulär</tt> för att skapa/redigera. <tt class="docutils literal">Formuläret</tt> visar följande egenskaper:</p>
+<ul class="simple">
+<li>Fält:<ul>
+<li><strong>Jobbgrupp:</strong> Jobbgruppens namn.</li>
+<li><strong>Jobbnamn:</strong> Jobbets namn.</li>
+<li><strong>Cron-uttryck:</strong> Ett skrivskyddat fält med en <tt class="docutils literal">Redigera</tt>-knapp för att öppna inmatningsfönstret för <tt class="docutils literal"><span class="pre">cron-uttryck</span></tt>.</li>
+<li><strong>Jobbklassnamn:</strong> En <tt class="docutils literal">nedrullningslista</tt> för att välja jobbet (ett befintligt jobb).</li>
+<li><strong>Anslutning:</strong> En <tt class="docutils literal">nedrullningslista</tt> för att välja en anslutning. Det här är inte obligatoriskt.</li>
+<li><strong>Schema:</strong> En kryssruta som anger om jobbet ska schemaläggas.</li>
+</ul>
+</li>
+<li>Knappar:<ul>
+<li><strong>Spara:</strong> Sparar eller uppdaterar ett jobb i både databasen och schemaläggaren. Användaren återgår sedan till <tt class="docutils literal">Listvyn för jobbschemaläggning</tt>.</li>
+<li><strong>Spara och fortsätt:</strong> Samma som &quot;Spara,&quot; men användaren återgår inte till <tt class="docutils literal">Listvyn för jobbschemaläggning</tt>.</li>
+<li><strong>Avbryt:</strong> Ingenting sparas och användaren återgår till <tt class="docutils literal">Listvyn för jobbschemaläggning</tt>.</li>
+</ul>
+</li>
+<li>Och ett tippsavsnitt om syntaxen för cron-uttryck.</li>
+</ul>
+<div class="section" id="popup-fonster-for-cron-uttryck">
+<h2><a class="toc-backref" href="#toc-entry-3">Popup-fönster för cron-uttryck</a></h2>
+<p>För att ange <tt class="docutils literal"><span class="pre">cron-uttrycket</span></tt> korrekt används ett popup-formulär för <tt class="docutils literal"><span class="pre">cron-uttryck</span></tt>. I det här formuläret kan du ange det önskade <tt class="docutils literal"><span class="pre">cron-uttrycket</span></tt>. Se även tipset om <tt class="docutils literal"><span class="pre">cron-uttrycket</span></tt>. Om du anger ett ogiltigt <tt class="docutils literal"><span class="pre">cron-uttryck</span></tt> meddelas du omedelbart.</p>
+</div>
+</div>
+<div class="section" id="ta-bort-jobb">
+<h1><a class="toc-backref" href="#toc-entry-4">Ta bort jobb</a></h1>
+<p>Klicka på knappen <tt class="docutils literal">Ta bort</tt> för att radera jobbet från både databasen och schemaläggaren. Resultatet av den här åtgärden (lyckad eller misslyckad) visas.</p>
+</div>
+<div class="section" id="starta-jobb-manuellt">
+<h1><a class="toc-backref" href="#toc-entry-5">Starta jobb manuellt</a></h1>
+<p>Som ett alternativ till att vänta på att jobbet ska köras enligt schemat kan du klicka på den här knappen för att starta processen direkt. Därefter visas information om lyckad eller misslyckad åtgärd i ett <tt class="docutils literal"><span class="pre">popup-fönster</span></tt>.</p>
+</div>
+</div>
+</body>
+</html>

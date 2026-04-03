@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Inleiding</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="inleiding">
+<h1 class="title">Inleiding</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#bedrijfsoverzicht-en-weergavebeheer" id="toc-entry-1">Bedrijfsoverzicht en Weergavebeheer</a></li>
+<li><a class="reference internal" href="#wat-maakt-libreplan-nuttig" id="toc-entry-2">Wat Maakt LibrePlan Nuttig?</a></li>
+<li><a class="reference internal" href="#gebruiksconventies" id="toc-entry-3">Gebruiksconventies</a><ul>
+<li><a class="reference internal" href="#informatie-over-formulieren" id="toc-entry-4">Informatie Over Formulieren</a></li>
+<li><a class="reference internal" href="#standaardpictogrammen-en-knoppen" id="toc-entry-5">Standaardpictogrammen en -knoppen</a></li>
+<li><a class="reference internal" href="#tabbladen" id="toc-entry-6">Tabbladen</a></li>
+<li><a class="reference internal" href="#expliciete-acties-en-contexthulp" id="toc-entry-7">Expliciete Acties en Contexthulp</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>Dit document beschrijft de functies van LibrePlan en biedt gebruikersinformatie over het configureren en gebruiken van de applicatie.</p>
+<p>LibrePlan is een open-source webapplicatie voor projectplanning. Het primaire doel is het bieden van een uitgebreide oplossing voor projectbeheer in bedrijven. Voor specifieke informatie over deze software kunt u contact opnemen met het ontwikkelteam op <a class="reference external" href="http://www.libreplan.com/contact/">http://www.libreplan.com/contact/</a></p>
+<div class="figure">
+<img alt="images/company_view.png" src="images/company_view.png" style="width: 504.5px; height: 327.0px;" />
+<p class="caption">Bedrijfsoverzicht</p>
+</div>
+<div class="section" id="bedrijfsoverzicht-en-weergavebeheer">
+<h1><a class="toc-backref" href="#toc-entry-1">Bedrijfsoverzicht en Weergavebeheer</a></h1>
+<p>Zoals te zien op het hoofdscherm van het programma (zie de vorige schermafbeelding) en het bedrijfsoverzicht, kunnen gebruikers een lijst van geplande projecten bekijken. Dit stelt hen in staat de algemene status van het bedrijf te begrijpen wat betreft orders en gebruik van middelen. Het bedrijfsoverzicht biedt drie verschillende weergaven:</p>
+<ul>
+<li><p class="first"><strong>Planningsweergave:</strong> Deze weergave combineert twee perspectieven:</p>
+<blockquote>
+<ul class="simple">
+<li><strong>Order- en tijdbewaking:</strong> Elk project wordt weergegeven door een Gantt-diagram, dat de start- en einddatum van het project aangeeft. Deze informatie wordt naast de overeengekomen deadline weergegeven. Vervolgens wordt een vergelijking gemaakt tussen het behaalde voortgangspercentage en de werkelijke tijd die aan elk project is besteed. Dit biedt op elk moment een duidelijk beeld van de prestaties van het bedrijf. Deze weergave is de standaard startpagina van het programma.</li>
+<li><strong>Grafiek voor bedrijfsresourcegebruik:</strong> Deze grafiek toont informatie over resourcetoewijzing over projecten heen en biedt een samenvatting van het resourcegebruik van het gehele bedrijf. Groen geeft aan dat de resourcetoewijzing onder 100% van de capaciteit ligt. De zwarte lijn vertegenwoordigt de totale beschikbare resourcecapaciteit. Geel geeft aan dat de resourcetoewijzing boven 100% ligt. Het is mogelijk dat er overall onderbelasting is terwijl tegelijkertijd overbelasting optreedt voor specifieke resources.</li>
+</ul>
+</blockquote>
+</li>
+<li><p class="first"><strong>Resourcebelastingweergave:</strong> Dit scherm toont een lijst van de medewerkers van het bedrijf en hun specifieke taaktoewijzingen, of generieke toewijzingen op basis van gedefinieerde criteria. Klik op <em>Totale belasting van resources</em> om deze weergave te openen. Zie de volgende afbeelding voor een voorbeeld.</p>
+</li>
+<li><p class="first"><strong>Orderbeheersweergave:</strong> Dit scherm toont een lijst van bedrijfsorders en stelt gebruikers in staat de volgende acties uit te voeren: filteren, bewerken, verwijderen, planning visualiseren of een nieuwe order aanmaken. Klik op <em>Orderlijst</em> om deze weergave te openen.</p>
+</li>
+</ul>
+<div class="figure">
+<img alt="images/resources_global.png" src="images/resources_global.png" style="width: 505.0px; height: 327.0px;" />
+<p class="caption">Resourceoverzicht</p>
+</div>
+<div class="figure">
+<img alt="images/order_list.png" src="images/order_list.png" style="width: 506.0px; height: 293.5px;" />
+<p class="caption">Werkstructuur</p>
+</div>
+<p>Het hierboven beschreven weergavebeheer voor het bedrijfsoverzicht lijkt sterk op het beheer dat beschikbaar is voor een enkel project. Een project kan op verschillende manieren worden geopend:</p>
+<ul class="simple">
+<li>Klik met de rechtermuisknop op het Gantt-diagram voor de order en selecteer <em>Plannen</em>.</li>
+<li>Open de orderlijst en klik op het Gantt-diagrampictogram.</li>
+<li>Maak een nieuwe order aan en verander de huidige orderweergave.</li>
+</ul>
+<p>Het programma biedt de volgende weergaven voor een order:</p>
+<ul class="simple">
+<li><strong>Planningsweergave:</strong> Deze weergave stelt gebruikers in staat taakplanning, afhankelijkheden, mijlpalen en meer te visualiseren. Zie de sectie <em>Planning</em> voor meer details.</li>
+<li><strong>Resourcebelastingweergave:</strong> Deze weergave stelt gebruikers in staat de aangewezen resourcebelasting voor een project te controleren. De kleurcodering is consistent met het bedrijfsoverzicht: groen voor een belasting van minder dan 100%, geel voor een belasting van precies 100% en rood voor een belasting van meer dan 100%. De belasting kan afkomstig zijn van een specifieke taak of een reeks criteria (generieke toewijzing).</li>
+<li><strong>Orderbewerking:</strong> Deze weergave stelt gebruikers in staat de details van de order te wijzigen. Zie de sectie <em>Orders</em> voor meer informatie.</li>
+<li><strong>Geavanceerde resourcetoewijzingweergave:</strong> Deze weergave stelt gebruikers in staat resources toe te wijzen met geavanceerde opties, zoals het specificeren van uren per dag of de toe te wijzen functies. Zie de sectie <em>Resourcetoewijzing</em> voor meer informatie.</li>
+</ul>
+</div>
+<div class="section" id="wat-maakt-libreplan-nuttig">
+<h1><a class="toc-backref" href="#toc-entry-2">Wat Maakt LibrePlan Nuttig?</a></h1>
+<p>LibrePlan is een algemeen planningshulpmiddel ontwikkeld om uitdagingen in industriële projectplanning aan te pakken die niet adequaat werden gedekt door bestaande hulpmiddelen. De ontwikkeling van LibrePlan werd ook gemotiveerd door de wens om een gratis, open-source en volledig webgebaseerd alternatief te bieden voor propriëtaire planningshulpmiddelen.</p>
+<p>De kernconcepten die het programma ondersteunen zijn als volgt:</p>
+<ul class="simple">
+<li><strong>Bedrijfs- en multi-projectoverzicht:</strong> LibrePlan is specifiek ontworpen om gebruikers informatie te bieden over meerdere projecten die binnen een bedrijf worden uitgevoerd. Daarom is het inherent een multi-projectprogramma. De focus van het programma is niet beperkt tot individuele projecten, hoewel specifieke weergaven voor individuele projecten ook beschikbaar zijn.</li>
+<li><strong>Weergavebeheer:</strong> Het bedrijfsoverzicht, of de multi-projectweergave, gaat gepaard met verschillende weergaven van de opgeslagen informatie. Het bedrijfsoverzicht stelt gebruikers bijvoorbeeld in staat orders te bekijken en hun status te vergelijken, de algehele resourcebelasting van het bedrijf te bekijken en orders te beheren. Gebruikers kunnen ook de planningsweergave, resourcebelastingweergave, geavanceerde resourcetoewijzingweergave en orderbewerkingsweergave voor individuele projecten openen.</li>
+<li><strong>Criteria:</strong> Criteria zijn een systeementiteit die de classificatie van zowel resources (menselijk en machine) als taken mogelijk maakt. Resources moeten aan bepaalde criteria voldoen en taken vereisen dat specifieke criteria worden vervuld. Dit is een van de belangrijkste functies van het programma, omdat criteria de basis vormen van generieke toewijzing en een significante uitdaging in de industrie aanpakken: de tijdrovende aard van menselijk resourcebeheer en de moeilijkheid van langetermijnschattingen van bedrijfsbelasting.</li>
+<li><strong>Resources:</strong> Er zijn twee soorten resources: menselijk en machine. Menselijke resources zijn de medewerkers van het bedrijf, gebruikt voor planning, bewaking en controle van de werkbelasting van het bedrijf. Machineresources, afhankelijk van de mensen die ze bedienen, functioneren op dezelfde manier als menselijke resources.</li>
+<li><strong>Resourcetoewijzing:</strong> Een belangrijk kenmerk van het programma is de mogelijkheid om resources op twee manieren aan te wijzen: specifiek en generiek. Generieke toewijzing is gebaseerd op de criteria die nodig zijn om een taak te voltooien en moet worden vervuld door resources die aan die criteria kunnen voldoen. Om generieke toewijzing te begrijpen, overweeg dit voorbeeld: Jan Jansen is een lasser. Normaal gesproken zou Jan Jansen specifiek worden toegewezen aan een geplande taak. LibrePlan biedt echter de optie om elke lasser binnen het bedrijf te selecteren, zonder dat hoeft te worden gespecificeerd dat Jan Jansen de toegewezen persoon is.</li>
+<li><strong>Bedrijfsbelastingsbeheer:</strong> Het programma maakt eenvoudig beheer van de resourcebelasting van het bedrijf mogelijk. Dit beheer strekt zich uit tot zowel de middellange als de lange termijn, omdat huidige en toekomstige projecten binnen het programma kunnen worden beheerd. LibrePlan biedt grafieken die het resourcegebruik visueel weergeven.</li>
+<li><strong>Labels:</strong> Labels worden gebruikt om projecttaken te categoriseren. Met deze labels kunnen gebruikers taken groeperen op concept, waardoor ze later als groep of na filtering kunnen worden bekeken.</li>
+<li><strong>Filters:</strong> Omdat het systeem van nature elementen bevat die taken en resources labelen of kenmerken, kunnen criteriafilters of labels worden gebruikt. Dit is zeer nuttig voor het beoordelen van gecategoriseerde informatie of het genereren van specifieke rapporten op basis van criteria of labels.</li>
+<li><strong>Kalenders:</strong> Kalenders definiëren de beschikbare productieve uren voor verschillende resources. Gebruikers kunnen algemene bedrijfskalenders aanmaken of meer specifieke kalenders definiëren, wat het aanmaken van kalenders voor individuele resources en taken mogelijk maakt.</li>
+<li><strong>Orders en orderelementen:</strong> Werk dat door klanten wordt aangevraagd, wordt binnen de applicatie behandeld als een order, gestructureerd in orderelementen. De order en zijn elementen volgen een hiërarchische structuur met <em>x</em> niveaus. Deze elementenboom vormt de basis voor werkplanning.</li>
+<li><strong>Voortgang:</strong> Het programma kan verschillende soorten voortgang beheren. De voortgang van een project kan worden gemeten als percentage, in eenheden, ten opzichte van het overeengekomen budget en meer. De verantwoordelijkheid voor het bepalen welk type voortgang gebruikt wordt voor vergelijking op hogere projectniveaus ligt bij de planningsbeheerder.</li>
+<li><strong>Taken:</strong> Taken zijn de fundamentele planningselementen binnen het programma. Ze worden gebruikt om te plannen welk werk uitgevoerd moet worden. Belangrijke kenmerken van taken zijn: afhankelijkheden tussen taken en de mogelijke vereiste dat aan specifieke criteria moet worden voldaan voordat resources kunnen worden toegewezen.</li>
+<li><strong>Werkrapporten:</strong> Deze rapporten, ingediend door de medewerkers van het bedrijf, bevatten details over de gewerkte uren en de taken die aan die uren zijn gekoppeld. Deze informatie stelt het systeem in staat de werkelijk bestede tijd voor het voltooien van een taak te berekenen in vergelijking met de geplande tijd. Voortgang kan vervolgens worden vergeleken met de werkelijk gebruikte uren.</li>
+</ul>
+<p>Naast de kernfuncties biedt LibrePlan andere functies die het onderscheiden van vergelijkbare programma's:</p>
+<ul class="simple">
+<li><strong>Integratie met ERP:</strong> Het programma kan direct informatie importeren van bedrijfs-ERP-systemen, inclusief orders, menselijke resources, werkrapporten en specifieke criteria.</li>
+<li><strong>Versiebeheer:</strong> Het programma kan meerdere planningsversies beheren, terwijl het gebruikers nog steeds toestaat de informatie van elke versie te bekijken.</li>
+<li><strong>Geschiedenisbeheer:</strong> Het programma verwijdert geen informatie; het markeert die alleen als ongeldig. Dit stelt gebruikers in staat historische informatie te bekijken met behulp van datumfilters.</li>
+</ul>
+</div>
+<div class="section" id="gebruiksconventies">
+<h1><a class="toc-backref" href="#toc-entry-3">Gebruiksconventies</a></h1>
+<div class="section" id="informatie-over-formulieren">
+<h2><a class="toc-backref" href="#toc-entry-4">Informatie Over Formulieren</a></h2>
+<p>Voordat we de verschillende functies beschrijven die verband houden met de belangrijkste modules, moeten we de algemene navigatie en het gedrag van formulieren uitleggen.</p>
+<p>Er zijn in essentie drie soorten bewerkingsformulieren:</p>
+<ul class="simple">
+<li><strong>Formulieren met een *Terug*-knop:</strong> Deze formulieren maken deel uit van een grotere context en de gemaakte wijzigingen worden in het geheugen opgeslagen. De wijzigingen worden pas toegepast wanneer de gebruiker expliciet alle details opslaat op het scherm waaruit het formulier afkomstig is.</li>
+<li><strong>Formulieren met *Opslaan* en *Sluiten*-knoppen:</strong> Deze formulieren staan twee acties toe. De eerste slaat de wijzigingen op en sluit het huidige venster. De tweede sluit het venster zonder wijzigingen op te slaan.</li>
+<li><strong>Formulieren met *Opslaan en doorgaan*, *Opslaan* en *Sluiten*-knoppen:</strong> Deze formulieren staan drie acties toe. De eerste slaat de wijzigingen op en houdt het huidige formulier open. De tweede slaat de wijzigingen op en sluit het formulier. De derde sluit het venster zonder wijzigingen op te slaan.</li>
+</ul>
+</div>
+<div class="section" id="standaardpictogrammen-en-knoppen">
+<h2><a class="toc-backref" href="#toc-entry-5">Standaardpictogrammen en -knoppen</a></h2>
+<ul class="simple">
+<li><strong>Bewerken:</strong> In het algemeen kunnen records in het programma worden bewerkt door op een pictogram te klikken dat eruitziet als een potlood op een wit notitieboekje.</li>
+<li><strong>Inspringen naar rechts:</strong> Deze bewerkingen worden over het algemeen gebruikt voor elementen binnen een boomstructuur die naar een dieper niveau moeten worden verplaatst. Dit wordt gedaan door op het pictogram te klikken dat eruitziet als een groene pijl die naar rechts wijst.</li>
+<li><strong>Inspringen naar links:</strong> Deze bewerkingen worden over het algemeen gebruikt voor elementen binnen een boomstructuur die naar een hoger niveau moeten worden verplaatst. Dit wordt gedaan door op het pictogram te klikken dat eruitziet als een groene pijl die naar links wijst.</li>
+<li><strong>Verwijderen:</strong> Gebruikers kunnen informatie verwijderen door op het prullenbakpictogram te klikken.</li>
+<li><strong>Zoeken:</strong> Het vergrootglaspictogram geeft aan dat het tekstveld ernaast wordt gebruikt voor het zoeken naar elementen.</li>
+</ul>
+</div>
+<div class="section" id="tabbladen">
+<h2><a class="toc-backref" href="#toc-entry-6">Tabbladen</a></h2>
+<p>Het programma gebruikt tabbladen om bewerkings- en beheerformulieren voor inhoud te organiseren. Deze methode wordt gebruikt om een uitgebreid formulier op te delen in verschillende secties, toegankelijk door op de namen van de tabbladen te klikken. De andere tabbladen behouden hun huidige status. In alle gevallen zijn de opslaan- en annuleeropties van toepassing op alle subformulieren binnen de verschillende tabbladen.</p>
+</div>
+<div class="section" id="expliciete-acties-en-contexthulp">
+<h2><a class="toc-backref" href="#toc-entry-7">Expliciete Acties en Contexthulp</a></h2>
+<p>Het programma bevat componenten die aanvullende beschrijvingen van elementen bieden wanneer de muis er een seconde overheen beweegt. De acties die de gebruiker kan uitvoeren, worden aangegeven op de knoplabels, in de bijbehorende helpteksten, in de navigatiemenuopties en in de contextmenu's die verschijnen bij rechtsklikken in het plannergebied. Bovendien worden snelkoppelingen geboden voor de belangrijkste bewerkingen, zoals dubbelklikken op vermelde elementen of het gebruik van toetsgebeurtenissen met de cursor en de Enter-toets om elementen toe te voegen bij het navigeren door formulieren.</p>
+</div>
+</div>
+</div>
+</body>
+</html>

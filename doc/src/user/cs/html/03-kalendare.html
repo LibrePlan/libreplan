@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Kalendáře</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="kalendare">
+<h1 class="title">Kalendáře</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#sprava-kalendaru" id="toc-entry-1">Správa kalendářů</a><ul>
+<li><a class="reference internal" href="#vytvoreni-noveho-kalendare" id="toc-entry-2">Vytvoření nového kalendáře</a></li>
+<li><a class="reference internal" href="#vytvareni-odvozenych-kalendaru" id="toc-entry-3">Vytváření odvozených kalendářů</a></li>
+<li><a class="reference internal" href="#vytvoreni-kalendare-kopirovanim" id="toc-entry-4">Vytvoření kalendáře kopírováním</a></li>
+<li><a class="reference internal" href="#vychozi-kalendar" id="toc-entry-5">Výchozí kalendář</a></li>
+<li><a class="reference internal" href="#prirazeni-kalendare-zdrojum" id="toc-entry-6">Přiřazení kalendáře zdrojům</a></li>
+<li><a class="reference internal" href="#prirazeni-kalendaru-zakazkam" id="toc-entry-7">Přiřazení kalendářů zakázkám</a></li>
+<li><a class="reference internal" href="#prirazeni-kalendaru-ukolum" id="toc-entry-8">Přiřazení kalendářů úkolům</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>Kalendáře jsou entity v programu, které definují pracovní kapacitu zdrojů. Kalendář se skládá z řady dní v průběhu roku, přičemž každý den je rozdělen na dostupné pracovní hodiny.</p>
+<p>Například státní svátek může mít 0 dostupných pracovních hodin. Naopak typický pracovní den může mít 8 hodin označených jako dostupný pracovní čas.</p>
+<p>Existují dva hlavní způsoby definování počtu pracovních hodin v daném dni:</p>
+<ul class="simple">
+<li><strong>Podle dne v týdnu:</strong> Tato metoda stanoví standardní počet pracovních hodin pro každý den v týdnu. Například pondělky mohou mít standardně 8 pracovních hodin.</li>
+<li><strong>Výjimkou:</strong> Tato metoda umožňuje specifické odchylky od standardního rozvrhu pro den v týdnu. Například pondělí 30. ledna může mít 10 pracovních hodin, čímž přepíše standardní pondělní rozvrh.</li>
+</ul>
+<div class="section" id="sprava-kalendaru">
+<h1><a class="toc-backref" href="#toc-entry-1">Správa kalendářů</a></h1>
+<p>Systém kalendářů je hierarchický a umožňuje vytváření základních kalendářů a odvozování nových kalendářů z nich, čímž vzniká stromová struktura. Kalendář odvozený z nadřazeného kalendáře zdědí jeho denní rozvrhy a výjimky, pokud nebyly explicitně změněny. Pro efektivní správu kalendářů je důležité pochopit následující pojmy:</p>
+<ul class="simple">
+<li><strong>Nezávislost dní:</strong> Každý den je zpracováván nezávisle a každý rok má svou vlastní sadu dní. Například pokud je 8. prosince 2009 státní svátek, neznamená to automaticky, že 8. prosince 2010 je také státním svátkem.</li>
+<li><strong>Pracovní dny podle dne v týdnu:</strong> Standardní pracovní dny jsou založeny na dnech v týdnu. Například pokud mají pondělky standardně 8 pracovních hodin, pak všechna pondělí ve všech týdnech všech let budou mít 8 dostupných hodin, pokud není definována výjimka.</li>
+<li><strong>Výjimky a období výjimek:</strong> Lze definovat výjimky nebo období výjimek pro odchylku od standardního rozvrhu pro den v týdnu. Například můžete zadat jeden den nebo rozsah dní s jiným počtem dostupných pracovních hodin, než je obecné pravidlo pro tyto dny v týdnu.</li>
+</ul>
+<div class="figure">
+<img alt="images/calendar-administration.png" src="images/calendar-administration.png" style="width: 443.5px; height: 146.0px;" />
+<p class="caption">Správa kalendářů</p>
+</div>
+<p>Správa kalendářů je přístupná přes menu &quot;Správa&quot;. Odtud mohou uživatelé provádět následující akce:</p>
+<ol class="arabic simple">
+<li>Vytvořit nový kalendář od základů.</li>
+<li>Vytvořit kalendář odvozený z existujícího.</li>
+<li>Vytvořit kalendář jako kopii existujícího.</li>
+<li>Upravit existující kalendář.</li>
+</ol>
+<div class="section" id="vytvoreni-noveho-kalendare">
+<h2><a class="toc-backref" href="#toc-entry-2">Vytvoření nového kalendáře</a></h2>
+<p>Pro vytvoření nového kalendáře klikněte na tlačítko &quot;Vytvořit&quot;. Systém zobrazí formulář, kde můžete konfigurovat následující:</p>
+<ul class="simple">
+<li><strong>Vyberte záložku:</strong> Zvolte záložku, na které chcete pracovat:<ul>
+<li><strong>Označení výjimek:</strong> Definujte výjimky ze standardního rozvrhu.</li>
+<li><strong>Pracovní hodiny za den:</strong> Definujte standardní pracovní hodiny pro každý den v týdnu.</li>
+</ul>
+</li>
+<li><strong>Označení výjimek:</strong> Pokud vyberete možnost &quot;Označení výjimek&quot;, můžete:<ul>
+<li>Vybrat konkrétní den v kalendáři.</li>
+<li>Vybrat typ výjimky. Dostupné typy jsou: dovolená, nemoc, stávka, státní svátek a pracovní svátek.</li>
+<li>Vybrat datum ukončení období výjimky. (Toto pole nemusíte měnit pro jednodnevní výjimky.)</li>
+<li>Definovat počet pracovních hodin během dní období výjimky.</li>
+<li>Odstranit dříve definované výjimky.</li>
+</ul>
+</li>
+<li><strong>Pracovní hodiny za den:</strong> Pokud vyberete možnost &quot;Pracovní hodiny za den&quot;, můžete:<ul>
+<li>Definovat dostupné pracovní hodiny pro každý den v týdnu (pondělí, úterý, středa, čtvrtek, pátek, sobota a neděle).</li>
+<li>Definovat různá týdenní hodinová rozdělení pro budoucí období.</li>
+<li>Odstranit dříve definovaná hodinová rozdělení.</li>
+</ul>
+</li>
+</ul>
+<p>Tyto možnosti umožňují uživatelům plně přizpůsobit kalendáře jejich konkrétním potřebám. Klikněte na tlačítko &quot;Uložit&quot; pro uložení všech změn provedených ve formuláři.</p>
+<div class="figure">
+<img alt="images/calendar-edition.png" src="images/calendar-edition.png" style="width: 443.0px; height: 234.5px;" />
+<p class="caption">Úprava kalendářů</p>
+</div>
+<div class="figure">
+<img alt="images/calendar-exceptions.png" src="images/calendar-exceptions.png" style="width: 443.0px; height: 194.0px;" />
+<p class="caption">Přidání výjimky do kalendáře</p>
+</div>
+</div>
+<div class="section" id="vytvareni-odvozenych-kalendaru">
+<h2><a class="toc-backref" href="#toc-entry-3">Vytváření odvozených kalendářů</a></h2>
+<p>Odvozený kalendář je vytvořen na základě existujícího kalendáře. Dědí všechny funkce původního kalendáře, ale můžete jej upravit tak, aby zahrnoval různé možnosti.</p>
+<p>Běžným případem použití odvozených kalendářů je situace, kdy máte obecný kalendář pro zemi, jako je Španělsko, a potřebujete vytvořit odvozený kalendář pro zahrnutí dalších státních svátků specifických pro region, jako je Galicie.</p>
+<p>Je důležité si uvědomit, že jakékoli změny provedené v původním kalendáři se automaticky přenesou do odvozeného kalendáře, pokud v odvozeném kalendáři není definována specifická výjimka. Například španělský kalendář může mít 8hodinový pracovní den 17. května. Galicijský kalendář (odvozený kalendář) však nemusí mít ten den žádné pracovní hodiny, protože je to regionální státní svátek. Pokud se španělský kalendář později změní tak, aby měl 4 dostupné pracovní hodiny za den pro týden 17. května, galicijský kalendář se také změní na 4 dostupné pracovní hodiny pro každý den v tom týdnu, s výjimkou 17. května, který zůstane nepracovním dnem kvůli definované výjimce.</p>
+<div class="figure">
+<img alt="images/calendar-create-derived.png" src="images/calendar-create-derived.png" style="width: 438.0px; height: 210.5px;" />
+<p class="caption">Vytvoření odvozeného kalendáře</p>
+</div>
+<p>Pro vytvoření odvozeného kalendáře:</p>
+<ul class="simple">
+<li>Přejděte do menu <em>Správa</em>.</li>
+<li>Klikněte na možnost <em>Správa kalendářů</em>.</li>
+<li>Vyberte kalendář, který chcete použít jako základ pro odvozený kalendář, a klikněte na tlačítko &quot;Vytvořit&quot;.</li>
+<li>Systém zobrazí editační formulář se stejnými vlastnostmi jako formulář použitý k vytvoření kalendáře od základů, s tím rozdílem, že navrhované výjimky a pracovní hodiny za den v týdnu budou vycházet z původního kalendáře.</li>
+</ul>
+</div>
+<div class="section" id="vytvoreni-kalendare-kopirovanim">
+<h2><a class="toc-backref" href="#toc-entry-4">Vytvoření kalendáře kopírováním</a></h2>
+<p>Zkopírovaný kalendář je přesným duplikátem existujícího kalendáře. Dědí všechny funkce původního kalendáře, ale můžete jej upravovat nezávisle.</p>
+<p>Klíčový rozdíl mezi zkopírovaným kalendářem a odvozeným kalendářem spočívá v tom, jak jsou ovlivněny změnami v originálu. Pokud je původní kalendář upraven, zkopírovaný kalendář zůstane nezměněn. Odvozené kalendáře jsou však ovlivněny změnami provedenými v originálu, pokud není definována výjimka.</p>
+<p>Běžným případem použití zkopírovaných kalendářů je situace, kdy máte kalendář pro jedno místo, například &quot;Pontevedra&quot;, a potřebujete podobný kalendář pro jiné místo, například &quot;A Coruña&quot;, kde jsou většina funkcí stejná. Změny v jednom kalendáři by však neměly ovlivnit druhý.</p>
+<p>Pro vytvoření zkopírovaného kalendáře:</p>
+<ul class="simple">
+<li>Přejděte do menu <em>Správa</em>.</li>
+<li>Klikněte na možnost <em>Správa kalendářů</em>.</li>
+<li>Vyberte kalendář, který chcete kopírovat, a klikněte na tlačítko &quot;Vytvořit&quot;.</li>
+<li>Systém zobrazí editační formulář se stejnými vlastnostmi jako formulář použitý k vytvoření kalendáře od základů, s tím rozdílem, že navrhované výjimky a pracovní hodiny za den v týdnu budou vycházet z původního kalendáře.</li>
+</ul>
+</div>
+<div class="section" id="vychozi-kalendar">
+<h2><a class="toc-backref" href="#toc-entry-5">Výchozí kalendář</a></h2>
+<p>Jeden z existujících kalendářů může být označen jako výchozí kalendář. Tento kalendář bude automaticky přiřazen všem entitám v systému, které jsou spravovány s kalendáři, pokud není zadán jiný kalendář.</p>
+<p>Nastavení výchozího kalendáře:</p>
+<ul class="simple">
+<li>Přejděte do menu <em>Správa</em>.</li>
+<li>Klikněte na možnost <em>Konfigurace</em>.</li>
+<li>V poli <em>Výchozí kalendář</em> vyberte kalendář, který chcete použít jako výchozí kalendář programu.</li>
+<li>Klikněte na <em>Uložit</em>.</li>
+</ul>
+<div class="figure">
+<img alt="images/default-calendar.png" src="images/default-calendar.png" style="width: 332.0px; height: 158.5px;" />
+<p class="caption">Nastavení výchozího kalendáře</p>
+</div>
+</div>
+<div class="section" id="prirazeni-kalendare-zdrojum">
+<h2><a class="toc-backref" href="#toc-entry-6">Přiřazení kalendáře zdrojům</a></h2>
+<p>Zdroje mohou být aktivovány (tj. mít dostupné pracovní hodiny) pouze tehdy, pokud mají přiřazený kalendář s platným aktivačním obdobím. Pokud není zdroji přiřazen žádný kalendář, výchozí kalendář je přiřazen automaticky, s aktivačním obdobím, které začíná od data zahájení a nemá datum vypršení platnosti.</p>
+<div class="figure">
+<img alt="images/resource-calendar.png" src="images/resource-calendar.png" style="width: 449.0px; height: 257.0px;" />
+<p class="caption">Kalendář zdroje</p>
+</div>
+<p>Kalendář, který byl dříve přiřazen zdroji, však můžete odstranit a vytvořit nový kalendář na základě existujícího. To umožňuje úplné přizpůsobení kalendářů pro jednotlivé zdroje.</p>
+<p>Pro přiřazení kalendáře zdroji:</p>
+<ul class="simple">
+<li>Přejděte na možnost <em>Upravit zdroje</em>.</li>
+<li>Vyberte zdroj a klikněte na <em>Upravit</em>.</li>
+<li>Vyberte záložku &quot;Kalendář&quot;.</li>
+<li>Zobrazí se kalendář spolu s jeho výjimkami, pracovními hodinami za den a aktivačními obdobími.</li>
+<li>Každá záložka bude mít následující možnosti:<ul>
+<li><strong>Výjimky:</strong> Definujte výjimky a období, na která se vztahují, jako jsou dovolené, státní svátky nebo různé pracovní dny.</li>
+<li><strong>Pracovní týden:</strong> Upravte pracovní hodiny pro každý den v týdnu (pondělí, úterý atd.).</li>
+<li><strong>Aktivační období:</strong> Vytvořte nová aktivační období pro zohlednění počátečních a koncových dat smluv přidružených ke zdroji. Viz následující obrázek.</li>
+</ul>
+</li>
+<li>Klikněte na <em>Uložit</em> pro uložení informací.</li>
+<li>Klikněte na <em>Odstranit</em>, pokud chcete změnit kalendář přiřazený zdroji.</li>
+</ul>
+<div class="figure">
+<img alt="images/new-resource-calendar.png" src="images/new-resource-calendar.png" style="width: 443.0px; height: 242.5px;" />
+<p class="caption">Přiřazení nového kalendáře zdroji</p>
+</div>
+</div>
+<div class="section" id="prirazeni-kalendaru-zakazkam">
+<h2><a class="toc-backref" href="#toc-entry-7">Přiřazení kalendářů zakázkám</a></h2>
+<p>Projekty mohou mít jiný kalendář než výchozí kalendář. Změna kalendáře zakázky:</p>
+<ul class="simple">
+<li>Vstupte do seznamu zakázek v přehledu společnosti.</li>
+<li>Upravte příslušnou zakázku.</li>
+<li>Vstupte na záložku &quot;Obecné informace&quot;.</li>
+<li>Z rozevírací nabídky vyberte kalendář, který chcete přiřadit.</li>
+<li>Klikněte na &quot;Uložit&quot; nebo &quot;Uložit a pokračovat&quot;.</li>
+</ul>
+</div>
+<div class="section" id="prirazeni-kalendaru-ukolum">
+<h2><a class="toc-backref" href="#toc-entry-8">Přiřazení kalendářů úkolům</a></h2>
+<p>Podobně jako u zdrojů a zakázek můžete přiřadit konkrétní kalendáře jednotlivým úkolům. To umožňuje definovat různé kalendáře pro konkrétní fáze projektu. Pro přiřazení kalendáře úkolu:</p>
+<ul class="simple">
+<li>Vstupte do zobrazení plánování projektu.</li>
+<li>Klikněte pravým tlačítkem myši na úkol, kterému chcete přiřadit kalendář.</li>
+<li>Vyberte možnost &quot;Přiřadit kalendář&quot;.</li>
+<li>Vyberte kalendář, který chcete přiřadit úkolu.</li>
+<li>Klikněte na <em>Přijmout</em>.</li>
+</ul>
+</div>
+</div>
+</div>
+</body>
+</html>

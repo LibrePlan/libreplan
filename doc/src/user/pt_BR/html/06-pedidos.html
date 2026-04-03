@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Pedidos e Elementos de Pedido</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="pedidos-e-elementos-de-pedido">
+<h1 class="title">Pedidos e Elementos de Pedido</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#pedidos" id="toc-entry-1">Pedidos</a></li>
+<li><a class="reference internal" href="#edicao-de-elementos-de-pedido" id="toc-entry-2">Edição de Elementos de Pedido</a><ul>
+<li><a class="reference internal" href="#edicao-de-informacoes-sobre-o-elemento-de-pedido" id="toc-entry-3">Edição de Informações sobre o Elemento de Pedido</a></li>
+<li><a class="reference internal" href="#visualizacao-de-horas-atribuidas-a-elementos-de-pedido" id="toc-entry-4">Visualização de Horas Atribuídas a Elementos de Pedido</a></li>
+<li><a class="reference internal" href="#gerenciamento-do-progresso-de-elementos-de-pedido" id="toc-entry-5">Gerenciamento do Progresso de Elementos de Pedido</a></li>
+<li><a class="reference internal" href="#gerenciamento-de-etiquetas-de-pedido" id="toc-entry-6">Gerenciamento de Etiquetas de Pedido</a></li>
+<li><a class="reference internal" href="#gerenciamento-de-criterios-requeridos-pelo-elemento-de-pedido-e-grupos-de-horas" id="toc-entry-7">Gerenciamento de Critérios Requeridos pelo Elemento de Pedido e Grupos de Horas</a></li>
+<li><a class="reference internal" href="#gerenciamento-de-materiais" id="toc-entry-8">Gerenciamento de Materiais</a></li>
+<li><a class="reference internal" href="#gerenciamento-de-formularios-de-qualidade" id="toc-entry-9">Gerenciamento de Formulários de Qualidade</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>Os pedidos representam o trabalho a ser executado pelos usuários do programa. Cada pedido corresponde a um projeto que a empresa oferecerá aos seus clientes.</p>
+<p>Um pedido consiste em um ou mais elementos de pedido. Cada elemento de pedido representa uma parte específica do trabalho a ser realizado e define como o trabalho no pedido deve ser planejado e executado. Os elementos de pedido são organizados hierarquicamente, sem limitações na profundidade da hierarquia. Essa estrutura hierárquica permite a herança de determinadas características, como etiquetas.</p>
+<p>As seções a seguir descrevem as operações que os usuários podem realizar com pedidos e elementos de pedido.</p>
+<div class="section" id="pedidos">
+<h1><a class="toc-backref" href="#toc-entry-1">Pedidos</a></h1>
+<p>Um pedido representa um projeto ou trabalho solicitado por um cliente à empresa. O pedido identifica o projeto no planejamento da empresa. Ao contrário de programas de gerenciamento abrangentes, o LibrePlan apenas requer determinados detalhes chave para um pedido. Esses detalhes são:</p>
+<ul class="simple">
+<li><strong>Nome do Pedido:</strong> O nome do pedido.</li>
+<li><strong>Código do Pedido:</strong> Um código único para o pedido.</li>
+<li><strong>Valor Total do Pedido:</strong> O valor financeiro total do pedido.</li>
+<li><strong>Data de Início Estimada:</strong> A data de início planejada para o pedido.</li>
+<li><strong>Data de Fim:</strong> A data de conclusão planejada para o pedido.</li>
+<li><strong>Responsável:</strong> O indivíduo responsável pelo pedido.</li>
+<li><strong>Descrição:</strong> Uma descrição do pedido.</li>
+<li><strong>Calendário Atribuído:</strong> O calendário associado ao pedido.</li>
+<li><strong>Geração Automática de Códigos:</strong> Uma configuração para instruir o sistema a gerar automaticamente códigos para elementos de pedido e grupos de horas.</li>
+<li><strong>Preferência entre Dependências e Restrições:</strong> Os usuários podem escolher se as dependências ou restrições têm prioridade em caso de conflitos.</li>
+</ul>
+<p>No entanto, um pedido completo também inclui outras entidades associadas:</p>
+<ul class="simple">
+<li><strong>Horas Atribuídas ao Pedido:</strong> O total de horas alocadas ao pedido.</li>
+<li><strong>Progresso Atribuído ao Pedido:</strong> O progresso feito no pedido.</li>
+<li><strong>Etiquetas:</strong> Etiquetas atribuídas ao pedido.</li>
+<li><strong>Critérios Atribuídos ao Pedido:</strong> Critérios associados ao pedido.</li>
+<li><strong>Materiais:</strong> Materiais necessários para o pedido.</li>
+<li><strong>Formulários de Qualidade:</strong> Formulários de qualidade associados ao pedido.</li>
+</ul>
+<p>Criar ou editar um pedido pode ser feito a partir de vários locais no programa:</p>
+<ul class="simple">
+<li><strong>A partir da &quot;Lista de Pedidos&quot; na Visão Geral da Empresa:</strong><ul>
+<li><strong>Editar:</strong> Clique no botão de edição no pedido desejado.</li>
+<li><strong>Criar:</strong> Clique em &quot;Novo pedido&quot;.</li>
+</ul>
+</li>
+<li><strong>A partir de um Pedido no Diagrama de Gantt:</strong> Mude para a visualização de detalhes do pedido.</li>
+</ul>
+<p>Os usuários podem acessar as seguintes abas ao editar um pedido:</p>
+<ul>
+<li><p class="first"><strong>Edição dos Detalhes do Pedido:</strong> Esta tela permite aos usuários editar os detalhes básicos do pedido:</p>
+<ul class="simple">
+<li>Nome</li>
+<li>Código</li>
+<li>Data de Início Estimada</li>
+<li>Data de Fim</li>
+<li>Responsável</li>
+<li>Cliente</li>
+<li>Descrição</li>
+</ul>
+<div class="figure">
+<img alt="images/order-edition.png" src="images/order-edition.png" style="width: 429.0px; height: 227.5px;" />
+<p class="caption">Edição de Pedidos</p>
+</div>
+</li>
+<li><p class="first"><strong>Lista de Elementos de Pedido:</strong> Esta tela permite aos usuários realizar várias operações em elementos de pedido:</p>
+<ul class="simple">
+<li>Criar novos elementos de pedido.</li>
+<li>Promover um elemento de pedido um nível acima na hierarquia.</li>
+<li>Rebaixar um elemento de pedido um nível abaixo na hierarquia.</li>
+<li>Recuar um elemento de pedido (movê-lo para baixo na hierarquia).</li>
+<li>Avançar um elemento de pedido (movê-lo para cima na hierarquia).</li>
+<li>Filtrar elementos de pedido.</li>
+<li>Excluir elementos de pedido.</li>
+<li>Mover um elemento dentro da hierarquia por arrastar e soltar.</li>
+</ul>
+<div class="figure">
+<img alt="images/order-elements-list.png" src="images/order-elements-list.png" style="width: 496.8px; height: 107.60000000000001px;" />
+<p class="caption">Lista de Elementos de Pedido</p>
+</div>
+</li>
+<li><p class="first"><strong>Horas Atribuídas:</strong> Esta tela exibe o total de horas atribuídas ao projeto, agrupando as horas inseridas nos elementos de pedido.</p>
+<div class="figure">
+<img alt="images/order-assigned-hours.png" src="images/order-assigned-hours.png" style="width: 432.0px; height: 202.5px;" />
+<p class="caption">Atribuição de Horas ao Projeto pelos Trabalhadores</p>
+</div>
+</li>
+<li><p class="first"><strong>Progresso:</strong> Esta tela permite aos usuários atribuir tipos de progresso e inserir medições de progresso para o pedido. Consulte a seção &quot;Progresso&quot; para mais detalhes.</p>
+</li>
+<li><p class="first"><strong>Etiquetas:</strong> Esta tela permite aos usuários atribuir etiquetas a um pedido e ver as etiquetas diretas e indiretas previamente atribuídas. Consulte a seção a seguir sobre edição de elementos de pedido para uma descrição detalhada do gerenciamento de etiquetas.</p>
+<div class="figure">
+<img alt="images/order-labels.png" src="images/order-labels.png" style="width: 402.5px; height: 180.95px;" />
+<p class="caption">Etiquetas de Pedido</p>
+</div>
+</li>
+<li><p class="first"><strong>Critérios:</strong> Esta tela permite aos usuários atribuir critérios que se aplicarão a todas as tarefas do pedido. Esses critérios serão automaticamente aplicados a todos os elementos de pedido, exceto os que foram explicitamente invalidados. Os grupos de horas dos elementos de pedido, que são agrupados por critérios, também podem ser visualizados, permitindo aos usuários identificar os critérios necessários para um pedido.</p>
+<div class="figure">
+<img alt="images/order-criterions.png" src="images/order-criterions.png" style="width: 423.5px; height: 261.5px;" />
+<p class="caption">Critérios de Pedido</p>
+</div>
+</li>
+<li><p class="first"><strong>Materiais:</strong> Esta tela permite aos usuários atribuir materiais a pedidos. Os materiais podem ser selecionados a partir das categorias de materiais disponíveis no programa. Os materiais são gerenciados da seguinte forma:</p>
+<ul class="simple">
+<li>Selecione a aba &quot;Pesquisar materiais&quot; na parte inferior da tela.</li>
+<li>Digite texto para pesquisar materiais ou selecione as categorias para as quais deseja encontrar materiais.</li>
+<li>O sistema filtra os resultados.</li>
+<li>Selecione os materiais desejados (múltiplos materiais podem ser selecionados pressionando a tecla &quot;Ctrl&quot;).</li>
+<li>Clique em &quot;Atribuir&quot;.</li>
+<li>O sistema exibe a lista de materiais já atribuídos ao pedido.</li>
+<li>Selecione as unidades e o status a atribuir ao pedido.</li>
+<li>Clique em &quot;Salvar&quot; ou &quot;Salvar e continuar&quot;.</li>
+<li>Para gerenciar o recebimento de materiais, clique em &quot;Dividir&quot; para alterar o status de uma quantidade parcial de material.</li>
+</ul>
+<div class="figure">
+<img alt="images/order-material.png" src="images/order-material.png" style="width: 430.0px; height: 204.0px;" />
+<p class="caption">Materiais Associados a um Pedido</p>
+</div>
+</li>
+<li><p class="first"><strong>Qualidade:</strong> Os usuários podem atribuir um formulário de qualidade ao pedido. Esse formulário é então preenchido para garantir que determinadas atividades associadas ao pedido sejam realizadas. Consulte a seção a seguir sobre edição de elementos de pedido para detalhes sobre o gerenciamento de formulários de qualidade.</p>
+<div class="figure">
+<img alt="images/order-quality.png" src="images/order-quality.png" style="width: 428.0px; height: 259.0px;" />
+<p class="caption">Formulário de Qualidade Associado ao Pedido</p>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="edicao-de-elementos-de-pedido">
+<h1><a class="toc-backref" href="#toc-entry-2">Edição de Elementos de Pedido</a></h1>
+<p>Os elementos de pedido são editados a partir da aba &quot;Lista de elementos de pedido&quot; clicando no ícone de edição. Isso abre uma nova tela onde os usuários podem:</p>
+<ul class="simple">
+<li>Editar informações sobre o elemento de pedido.</li>
+<li>Ver horas atribuídas a elementos de pedido.</li>
+<li>Gerenciar o progresso de elementos de pedido.</li>
+<li>Gerenciar etiquetas de pedido.</li>
+<li>Gerenciar critérios requeridos pelo elemento de pedido.</li>
+<li>Gerenciar materiais.</li>
+<li>Gerenciar formulários de qualidade.</li>
+</ul>
+<p>As subseções a seguir descrevem cada uma dessas operações em detalhe.</p>
+<div class="section" id="edicao-de-informacoes-sobre-o-elemento-de-pedido">
+<h2><a class="toc-backref" href="#toc-entry-3">Edição de Informações sobre o Elemento de Pedido</a></h2>
+<p>A edição de informações sobre o elemento de pedido inclui a modificação dos seguintes detalhes:</p>
+<ul class="simple">
+<li><strong>Nome do Elemento de Pedido:</strong> O nome do elemento de pedido.</li>
+<li><strong>Código do Elemento de Pedido:</strong> Um código único para o elemento de pedido.</li>
+<li><strong>Data de Início:</strong> A data de início planejada do elemento de pedido.</li>
+<li><strong>Data de Fim Estimada:</strong> A data de conclusão planejada do elemento de pedido.</li>
+<li><strong>Total de Horas:</strong> O total de horas alocadas ao elemento de pedido. Essas horas podem ser calculadas a partir dos grupos de horas adicionados ou inseridas diretamente. Se inseridas diretamente, as horas devem ser distribuídas entre os grupos de horas, e um novo grupo de horas criado se as porcentagens não corresponderem às porcentagens iniciais.</li>
+<li><strong>Grupos de Horas:</strong> Um ou mais grupos de horas podem ser adicionados ao elemento de pedido. <strong>O objetivo desses grupos de horas</strong> é definir os requisitos para os recursos que serão atribuídos para realizar o trabalho.</li>
+<li><strong>Critérios:</strong> Podem ser adicionados critérios que devem ser cumpridos para possibilitar a atribuição genérica para o elemento de pedido.</li>
+</ul>
+<div class="figure">
+<img alt="images/order-element-edition.png" src="images/order-element-edition.png" style="width: 477.5px; height: 345.0px;" />
+<p class="caption">Edição de Elementos de Pedido</p>
+</div>
+</div>
+<div class="section" id="visualizacao-de-horas-atribuidas-a-elementos-de-pedido">
+<h2><a class="toc-backref" href="#toc-entry-4">Visualização de Horas Atribuídas a Elementos de Pedido</a></h2>
+<p>A aba &quot;Horas atribuídas&quot; permite aos usuários ver os relatórios de trabalho associados a um elemento de pedido e verificar quantas das horas estimadas já foram concluídas.</p>
+<div class="figure">
+<img alt="images/order-element-hours.png" src="images/order-element-hours.png" style="width: 478.5px; height: 344.5px;" />
+<p class="caption">Horas Atribuídas a Elementos de Pedido</p>
+</div>
+<p>A tela está dividida em duas partes:</p>
+<ul class="simple">
+<li><strong>Lista de Relatórios de Trabalho:</strong> Os usuários podem ver a lista de relatórios de trabalho associados ao elemento de pedido, incluindo a data e hora, recurso e número de horas dedicadas à tarefa.</li>
+<li><strong>Utilização das Horas Estimadas:</strong> O sistema calcula o número total de horas dedicadas à tarefa e compara com as horas estimadas.</li>
+</ul>
+</div>
+<div class="section" id="gerenciamento-do-progresso-de-elementos-de-pedido">
+<h2><a class="toc-backref" href="#toc-entry-5">Gerenciamento do Progresso de Elementos de Pedido</a></h2>
+<p>A inserção de tipos de progresso e o gerenciamento do progresso de elementos de pedido estão descritos no capítulo &quot;Progresso&quot;.</p>
+</div>
+<div class="section" id="gerenciamento-de-etiquetas-de-pedido">
+<h2><a class="toc-backref" href="#toc-entry-6">Gerenciamento de Etiquetas de Pedido</a></h2>
+<p>As etiquetas, conforme descrito no capítulo sobre etiquetas, permitem aos usuários categorizar elementos de pedido. Isso permite aos usuários agrupar informações de planejamento ou pedido com base nessas etiquetas.</p>
+<p>Os usuários podem atribuir etiquetas diretamente a um elemento de pedido ou a um elemento de pedido de nível superior na hierarquia. Uma vez atribuída uma etiqueta por qualquer um dos métodos, o elemento de pedido e a tarefa de planejamento relacionada são associados à etiqueta e podem ser utilizados para filtragem subsequente.</p>
+<div class="figure">
+<img alt="images/order-element-tags.png" src="images/order-element-tags.png" style="width: 476.5px; height: 344.0px;" />
+<p class="caption">Atribuição de Etiquetas para Elementos de Pedido</p>
+</div>
+<p>Conforme mostrado na imagem, os usuários podem realizar as seguintes ações a partir da aba <strong>Etiquetas</strong>:</p>
+<ul class="simple">
+<li><strong>Ver Etiquetas Herdadas:</strong> Ver etiquetas associadas ao elemento de pedido que foram herdadas de um elemento de pedido de nível superior. A tarefa de planejamento associada a cada elemento de pedido tem as mesmas etiquetas associadas.</li>
+<li><strong>Ver Etiquetas Diretamente Atribuídas:</strong> Ver etiquetas diretamente associadas ao elemento de pedido utilizando o formulário de atribuição para etiquetas de nível inferior.</li>
+<li><strong>Atribuir Etiquetas Existentes:</strong> Atribuir etiquetas pesquisando-as entre as etiquetas disponíveis no formulário abaixo da lista de etiquetas diretas. Para pesquisar uma etiqueta, clique no ícone da lupa ou digite as primeiras letras da etiqueta na caixa de texto para exibir as opções disponíveis.</li>
+<li><strong>Criar e Atribuir Novas Etiquetas:</strong> Criar novas etiquetas associadas a um tipo de etiqueta existente a partir deste formulário. Para isso, selecione um tipo de etiqueta e insira o valor da etiqueta para o tipo selecionado. O sistema cria automaticamente a etiqueta e a atribui ao elemento de pedido quando &quot;Criar e atribuir&quot; é clicado.</li>
+</ul>
+</div>
+<div class="section" id="gerenciamento-de-criterios-requeridos-pelo-elemento-de-pedido-e-grupos-de-horas">
+<h2><a class="toc-backref" href="#toc-entry-7">Gerenciamento de Critérios Requeridos pelo Elemento de Pedido e Grupos de Horas</a></h2>
+<p>Tanto um pedido quanto um elemento de pedido podem ter critérios atribuídos que devem ser cumpridos para o trabalho ser realizado. Os critérios podem ser diretos ou indiretos:</p>
+<ul class="simple">
+<li><strong>Critérios Diretos:</strong> São atribuídos diretamente ao elemento de pedido. São critérios requeridos pelos grupos de horas no elemento de pedido.</li>
+<li><strong>Critérios Indiretos:</strong> São atribuídos a elementos de pedido de nível superior na hierarquia e são herdados pelo elemento que está sendo editado.</li>
+</ul>
+<p>Além dos critérios requeridos, podem ser definidos um ou mais grupos de horas que fazem parte do elemento de pedido. Isso depende de o elemento de pedido conter outros elementos de pedido como nós filhos ou ser um nó folha. No primeiro caso, as informações sobre horas e grupos de horas só podem ser visualizadas. No entanto, os nós folha podem ser editados. Os nós folha funcionam da seguinte forma:</p>
+<ul class="simple">
+<li>O sistema cria um grupo de horas padrão associado ao elemento de pedido. Os detalhes que podem ser modificados para um grupo de horas são:<ul>
+<li><strong>Código:</strong> O código para o grupo de horas (se não gerado automaticamente).</li>
+<li><strong>Tipo de Critério:</strong> Os usuários podem escolher atribuir um critério de máquina ou trabalhador.</li>
+<li><strong>Número de Horas:</strong> O número de horas no grupo de horas.</li>
+<li><strong>Lista de Critérios:</strong> Os critérios a aplicar ao grupo de horas. Para adicionar novos critérios, clique em &quot;Adicionar critério&quot; e selecione um no mecanismo de pesquisa que aparece após clicar no botão.</li>
+</ul>
+</li>
+<li>Os usuários podem adicionar novos grupos de horas com características diferentes dos grupos de horas anteriores. Por exemplo, um elemento de pedido pode requerer um soldador (30 horas) e um pintor (40 horas).</li>
+</ul>
+<div class="figure">
+<img alt="images/order-element-criterion.png" src="images/order-element-criterion.png" style="width: 476.0px; height: 344.0px;" />
+<p class="caption">Atribuição de Critérios a Elementos de Pedido</p>
+</div>
+</div>
+<div class="section" id="gerenciamento-de-materiais">
+<h2><a class="toc-backref" href="#toc-entry-8">Gerenciamento de Materiais</a></h2>
+<p>Os materiais são gerenciados em projetos como uma lista associada a cada elemento de pedido ou a um pedido em geral. A lista de materiais inclui os seguintes campos:</p>
+<ul class="simple">
+<li><strong>Código:</strong> O código do material.</li>
+<li><strong>Data:</strong> A data associada ao material.</li>
+<li><strong>Unidades:</strong> O número de unidades necessário.</li>
+<li><strong>Tipo de Unidade:</strong> O tipo de unidade utilizado para medir o material.</li>
+<li><strong>Preço por Unidade:</strong> O preço por unidade.</li>
+<li><strong>Preço Total:</strong> O preço total (calculado multiplicando o preço por unidade pelo número de unidades).</li>
+<li><strong>Categoria:</strong> A categoria à qual o material pertence.</li>
+<li><strong>Status:</strong> O status do material (por exemplo, Recebido, Solicitado, Pendente, Em processamento, Cancelado).</li>
+</ul>
+<p>O trabalho com materiais é feito da seguinte forma:</p>
+<ul class="simple">
+<li>Selecione a aba &quot;Materiais&quot; em um elemento de pedido.</li>
+<li>O sistema exibe duas subabas: &quot;Materiais&quot; e &quot;Pesquisar materiais&quot;.</li>
+<li>Se o elemento de pedido não tiver materiais atribuídos, a primeira aba estará vazia.</li>
+<li>Clique em &quot;Pesquisar materiais&quot; na parte inferior esquerda da janela.</li>
+<li>O sistema exibe a lista de categorias disponíveis e materiais associados.</li>
+</ul>
+<div class="figure">
+<img alt="images/order-element-material-search.png" src="images/order-element-material-search.png" style="width: 476.0px; height: 343.0px;" />
+<p class="caption">Pesquisa de Materiais</p>
+</div>
+<ul class="simple">
+<li>Selecione categorias para refinar a pesquisa de materiais.</li>
+<li>O sistema exibe os materiais que pertencem às categorias selecionadas.</li>
+<li>Na lista de materiais, selecione os materiais a atribuir ao elemento de pedido.</li>
+<li>Clique em &quot;Atribuir&quot;.</li>
+<li>O sistema exibe a lista selecionada de materiais na aba &quot;Materiais&quot; com novos campos a preencher.</li>
+</ul>
+<div class="figure">
+<img alt="images/order-element-material-assign.png" src="images/order-element-material-assign.png" style="width: 475.5px; height: 341.5px;" />
+<p class="caption">Atribuição de Materiais a Elementos de Pedido</p>
+</div>
+<ul class="simple">
+<li>Selecione as unidades, status e data para os materiais atribuídos.</li>
+</ul>
+<p>Para o acompanhamento subsequente de materiais, é possível alterar o status de um grupo de unidades do material recebido. Isso é feito da seguinte forma:</p>
+<ul class="simple">
+<li>Clique no botão &quot;Dividir&quot; na lista de materiais à direita de cada linha.</li>
+<li>Selecione o número de unidades para dividir a linha.</li>
+<li>O programa exibe duas linhas com o material dividido.</li>
+<li>Altere o status da linha que contém o material.</li>
+</ul>
+<p>A vantagem de utilizar essa ferramenta de divisão é a capacidade de receber entregas parciais de material sem ter que esperar pela entrega total para marcá-la como recebida.</p>
+</div>
+<div class="section" id="gerenciamento-de-formularios-de-qualidade">
+<h2><a class="toc-backref" href="#toc-entry-9">Gerenciamento de Formulários de Qualidade</a></h2>
+<p>Alguns elementos de pedido requerem a certificação de que determinadas tarefas foram concluídas antes de poderem ser marcados como completos. Por isso, o programa tem formulários de qualidade, que consistem em uma lista de questões que são consideradas importantes se respondidas positivamente.</p>
+<p>É importante notar que um formulário de qualidade deve ser criado previamente para ser atribuído a um elemento de pedido.</p>
+<p>Para gerenciar formulários de qualidade:</p>
+<ul>
+<li><p class="first">Vá à aba &quot;Formulários de qualidade&quot;.</p>
+<div class="figure">
+<img alt="images/order-element-quality.png" src="images/order-element-quality.png" style="width: 475.5px; height: 343.5px;" />
+<p class="caption">Atribuição de Formulários de Qualidade a Elementos de Pedido</p>
+</div>
+</li>
+<li><p class="first">O programa tem um mecanismo de pesquisa para formulários de qualidade. Existem dois tipos de formulários de qualidade: por elemento ou por porcentagem.</p>
+<ul class="simple">
+<li><strong>Elemento:</strong> Cada elemento é independente.</li>
+<li><strong>Porcentagem:</strong> Cada questão aumenta o progresso do elemento de pedido por uma porcentagem. As porcentagens devem poder somar 100%.</li>
+</ul>
+</li>
+<li><p class="first">Selecione um dos formulários criados na interface de administração e clique em &quot;Atribuir&quot;.</p>
+</li>
+<li><p class="first">O programa atribui o formulário escolhido da lista de formulários atribuídos ao elemento de pedido.</p>
+</li>
+<li><p class="first">Clique no botão &quot;Editar&quot; no elemento de pedido.</p>
+</li>
+<li><p class="first">O programa exibe as questões do formulário de qualidade na lista inferior.</p>
+</li>
+<li><p class="first">Marque as questões que foram concluídas como alcançadas.</p>
+<ul class="simple">
+<li>Se o formulário de qualidade se basear em porcentagens, as questões são respondidas em ordem.</li>
+<li>Se o formulário de qualidade se basear em elementos, as questões podem ser respondidas em qualquer ordem.</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</body>
+</html>

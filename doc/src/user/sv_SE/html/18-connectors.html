@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Anslutningar</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="anslutningar">
+<h1 class="title">Anslutningar</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#konfiguration" id="toc-entry-1">Konfiguration</a></li>
+<li><a class="reference internal" href="#jira-anslutning" id="toc-entry-2">JIRA-anslutning</a><ul>
+<li><a class="reference internal" href="#konfiguration-1" id="toc-entry-3">Konfiguration</a></li>
+<li><a class="reference internal" href="#synkronisering" id="toc-entry-4">Synkronisering</a></li>
+<li><a class="reference internal" href="#schemalaggning" id="toc-entry-5">Schemaläggning</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#tim-enterprise-anslutning" id="toc-entry-6">Tim Enterprise-anslutning</a><ul>
+<li><a class="reference internal" href="#konfiguration-2" id="toc-entry-7">Konfiguration</a></li>
+<li><a class="reference internal" href="#export" id="toc-entry-8">Export</a></li>
+<li><a class="reference internal" href="#schemalagd-export" id="toc-entry-9">Schemalagd export</a></li>
+<li><a class="reference internal" href="#import" id="toc-entry-10">Import</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#e-postanslutning" id="toc-entry-11">E-postanslutning</a><ul>
+<li><a class="reference internal" href="#konfiguration-3" id="toc-entry-12">Konfiguration</a></li>
+<li><a class="reference internal" href="#redigera-e-postmall" id="toc-entry-13">Redigera e-postmall</a></li>
+<li><a class="reference internal" href="#schemalaggning-av-e-postmeddelanden" id="toc-entry-14">Schemaläggning av e-postmeddelanden</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>Anslutningar är <em>LibrePlan</em>-klientapplikationer som kan användas för att kommunicera med (webb)servrar för att hämta data, bearbeta den och lagra den. För närvarande finns det tre anslutningar: JIRA-anslutningen, Tim Enterprise-anslutningen och e-postanslutningen.</p>
+<div class="section" id="konfiguration">
+<h1><a class="toc-backref" href="#toc-entry-1">Konfiguration</a></h1>
+<p>Anslutningar måste konfigureras korrekt innan de kan användas. De kan konfigureras från skärmen &quot;Huvudinställningar&quot; under fliken &quot;Anslutningar&quot;.</p>
+<p>Anslutningsskärmen innehåller:</p>
+<ul class="simple">
+<li><strong>Nedrullningslista:</strong> En lista över tillgängliga anslutningar.</li>
+<li><strong>Skärm för redigering av egenskaper:</strong> Ett formulär för redigering av egenskaper för den valda anslutningen.</li>
+<li><strong>Knappen Testa anslutning:</strong> En knapp för att testa anslutningen med anslutningsenheten.</li>
+</ul>
+<p>Välj den anslutning du vill konfigurera från nedrullningslistan. Ett formulär för redigering av egenskaper för den valda anslutningen visas. I formuläret kan du ändra egenskapsvärden efter behov och testa dina konfigurationer med knappen &quot;Testa anslutning&quot;.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Egenskaperna är konfigurerade med standardvärden. Den viktigaste egenskapen är &quot;Aktiverad.&quot; Som standard är den inställd på &quot;N.&quot; Det indikerar att anslutningen inte kommer att användas om du inte ändrar värdet till &quot;Y&quot; och sparar ändringarna.</p>
+</div>
+</div>
+<div class="section" id="jira-anslutning">
+<h1><a class="toc-backref" href="#toc-entry-2">JIRA-anslutning</a></h1>
+<p>JIRA är ett system för ärendehantering och projektspårning.</p>
+<p>JIRA-anslutningen är en applikation som kan användas för att begära data från JIRA-webbservern om JIRA-ärenden och bearbeta svaret. Begäran baseras på JIRA-etiketter. I JIRA kan etiketter användas för att kategorisera ärenden. Begäran är strukturerad enligt följande: hämta alla ärenden som kategoriseras med detta etikettnamn.</p>
+<p>Anslutningen tar emot svaret, som i det här fallet är ärendena, och konverterar dem till <em>LibrePlan</em>-&quot;Orderelement&quot; och &quot;Tidrapporter.&quot;</p>
+<p><em>JIRA-anslutningen</em> måste konfigureras korrekt innan den kan användas.</p>
+<div class="section" id="konfiguration-1">
+<h2><a class="toc-backref" href="#toc-entry-3">Konfiguration</a></h2>
+<p>Från skärmen &quot;Huvudinställningar&quot; väljer du fliken &quot;Anslutningar&quot;. På anslutningsskärmen väljer du JIRA-anslutningen från nedrullningslistan. En skärm för redigering av egenskaper visas sedan.</p>
+<p>På den här skärmen kan du konfigurera följande egenskapsvärden:</p>
+<ul class="simple">
+<li><strong>Aktiverad:</strong> Y/N, anger om du vill använda JIRA-anslutningen. Standardvärdet är &quot;N.&quot;</li>
+<li><strong>Server-URL:</strong> Den absoluta sökvägen till JIRA-webbservern.</li>
+<li><strong>Användarnamn och lösenord:</strong> Användaruppgifter för auktorisering.</li>
+<li><strong>JIRA-etiketter: kommaseparerad lista med etiketter eller URL:</strong> Du kan antingen ange etikettens URL eller en kommaseparerad lista med etiketter.</li>
+<li><strong>Timtyp:</strong> Typen av arbetstimmar. Standardvärdet är &quot;Default.&quot;</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><strong>JIRA-etiketter:</strong> För närvarande stöder inte JIRA-webbservern att tillhandahålla en lista över alla tillgängliga etiketter. Som en lösning har vi utvecklat ett enkelt PHP-skript som utför en enkel SQL-fråga i JIRA-databasen för att hämta alla unika etiketter. Du kan antingen använda detta PHP-skript som &quot;JIRA-etikett-URL&quot; eller ange de etiketter du vill ha som kommaseparerad text i fältet &quot;JIRA-etiketter&quot;.</p>
+</div>
+<p>Klicka slutligen på knappen &quot;Testa anslutning&quot; för att kontrollera att du kan ansluta till JIRA-webbservern och att dina konfigurationer är korrekta.</p>
+</div>
+<div class="section" id="synkronisering">
+<h2><a class="toc-backref" href="#toc-entry-4">Synkronisering</a></h2>
+<p>Från projektfönstret, under &quot;Allmänna data,&quot; kan du starta synkronisering av orderelement med JIRA-ärenden.</p>
+<p>Klicka på knappen &quot;Synkronisera med JIRA&quot; för att starta synkroniseringen.</p>
+<ul class="simple">
+<li>Om det är första gången visas ett popup-fönster (med en automatiskt ifylld lista med etiketter). I det här fönstret kan du välja en etikett att synkronisera med och klicka på knappen &quot;Starta synkronisering&quot; för att påbörja synkroniseringsprocessen, eller klicka på knappen &quot;Avbryt&quot; för att avbryta den.</li>
+<li>Om en etikett redan är synkroniserad visas det senaste synkroniseringsdatumet och etiketten på JIRA-skärmen. I det här fallet visas inget popup-fönster för val av etikett. I stället startar synkroniseringsprocessen direkt för den visade (redan synkroniserade) etiketten.</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Förhållandet mellan &quot;Order&quot; och &quot;etikett&quot; är ett-till-ett. Endast en etikett kan synkroniseras med en &quot;Order.&quot;</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Vid lyckad (om)synkronisering skrivs informationen till databasen och JIRA-skärmen uppdateras med det senaste synkroniseringsdatumet och etiketten.</p>
+</div>
+<p>(Om)synkronisering utförs i två faser:</p>
+<ul class="simple">
+<li><strong>Fas 1:</strong> Synkronisering av orderelement, inklusive framstegsuppgifter och mätningar.</li>
+<li><strong>Fas 2:</strong> Synkronisering av tidrapporter.</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Om Fas 1 misslyckas utförs inte Fas 2 och ingen information skrivs till databasen.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Informationen om lyckad eller misslyckad åtgärd visas i ett popup-fönster.</p>
+</div>
+<p>Vid lyckad synkronisering visas resultatet på fliken &quot;Projektstruktur (WBS-uppgifter)&quot; på skärmen &quot;Projektdetaljer&quot;. I det här användargränssnittet finns två skillnader från standard-WBS:</p>
+<ul class="simple">
+<li>Kolumnen &quot;Totala uppgiftstimmar&quot; är inte modifierbar (skrivskyddad) eftersom synkroniseringen är envägs. Uppgiftstimmar kan bara uppdateras på JIRA-webbservern.</li>
+<li>Kolumnen &quot;Kod&quot; visar JIRA-ärendenycklarna, och de är också hyperlänkar till JIRA-ärendena. Klicka på önskad nyckel om du vill gå till dokumentet för den nyckeln (JIRA-ärende).</li>
+</ul>
+</div>
+<div class="section" id="schemalaggning">
+<h2><a class="toc-backref" href="#toc-entry-5">Schemaläggning</a></h2>
+<p>Omsynkronisering av JIRA-ärenden kan också utföras via schemaläggaren. Gå till skärmen &quot;Jobbschemaläggning&quot;. På den skärmen kan du konfigurera ett JIRA-jobb för att utföra synkronisering. Jobbet söker efter de senast synkroniserade etiketterna i databasen och synkroniserar om dem. Se även Schemaläggarmanualen.</p>
+</div>
+</div>
+<div class="section" id="tim-enterprise-anslutning">
+<h1><a class="toc-backref" href="#toc-entry-6">Tim Enterprise-anslutning</a></h1>
+<p>Tim Enterprise är en nederländsk produkt från Aenova. Det är en webbaserad applikation för administration av tid som läggs på projekt och uppgifter.</p>
+<p>Tim-anslutningen är en applikation som kan användas för att kommunicera med Tim Enterprise-servern för att:</p>
+<ul class="simple">
+<li>Exportera alla timmar som en anställd (användare) har lagt på ett projekt och som kan registreras i Tim Enterprise.</li>
+<li>Importera alla scheman för den anställde (användaren) för att planera resursen effektivt.</li>
+</ul>
+<p><em>Tim-anslutningen</em> måste konfigureras korrekt innan den kan användas.</p>
+<div class="section" id="konfiguration-2">
+<h2><a class="toc-backref" href="#toc-entry-7">Konfiguration</a></h2>
+<p>Från skärmen &quot;Huvudinställningar&quot; väljer du fliken &quot;Anslutningar&quot;. På anslutningsskärmen väljer du Tim-anslutningen från nedrullningslistan. En skärm för redigering av egenskaper visas sedan.</p>
+<p>På den här skärmen kan du konfigurera följande egenskapsvärden:</p>
+<ul class="simple">
+<li><strong>Aktiverad:</strong> Y/N, anger om du vill använda Tim-anslutningen. Standardvärdet är &quot;N.&quot;</li>
+<li><strong>Server-URL:</strong> Den absoluta sökvägen till Tim Enterprise-servern.</li>
+<li><strong>Användarnamn och lösenord:</strong> Användaruppgifter för auktorisering.</li>
+<li><strong>Antal dagar tidrapport till Tim:</strong> Antalet dagar bakåt som du vill exportera tidrapporter för.</li>
+<li><strong>Antal dagar schema från Tim:</strong> Antalet dagar framåt som du vill importera scheman för.</li>
+<li><strong>Produktivitetsfaktor:</strong> Effektiva arbetstimmar i procent. Standardvärdet är &quot;100%.&quot;</li>
+<li><strong>Avdelnings-ID för import av schema:</strong> Kommaseparerade avdelnings-ID.</li>
+</ul>
+<p>Klicka slutligen på knappen &quot;Testa anslutning&quot; för att kontrollera att du kan ansluta till Tim Enterprise-servern och att dina konfigurationer är korrekta.</p>
+</div>
+<div class="section" id="export">
+<h2><a class="toc-backref" href="#toc-entry-8">Export</a></h2>
+<p>Från projektfönstret, under &quot;Allmänna data,&quot; kan du starta export av tidrapporter till Tim Enterprise-servern.</p>
+<p>Ange &quot;Tim-produktkod&quot; och klicka på knappen &quot;Exportera till Tim&quot; för att starta exporten.</p>
+<p>Tim-anslutningen lägger till följande fält tillsammans med produktkoden:</p>
+<ul class="simple">
+<li>Den anställdes/användarens fullständiga namn.</li>
+<li>Det datum då den anställde arbetade med en uppgift.</li>
+<li>Insatsen, eller antalet timmar som arbetats med uppgiften.</li>
+<li>Ett alternativ som anger om Tim Enterprise ska uppdatera registreringen eller infoga en ny.</li>
+</ul>
+<p>Tim Enterprise-svaret innehåller bara en lista med post-ID (heltal). Det gör det svårt att avgöra vad som gick fel, eftersom svarslistan bara innehåller siffror som inte är relaterade till fälten i begäran. Exportbegäran (registrering i Tim) antas ha lyckats om inga av listposterna innehåller &quot;0&quot;-värden. Annars har exportbegäran misslyckats för de poster som innehåller &quot;0&quot;-värden. Du kan därför inte se vilken begäran som misslyckades, eftersom listposterna bara innehåller värdet &quot;0.&quot; Det enda sättet att avgöra detta är att undersöka loggfilen på Tim Enterprise-servern.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Vid lyckad export skrivs informationen till databasen och Tim-skärmen uppdateras med det senaste exportdatumet och produktkoden.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Informationen om lyckad eller misslyckad åtgärd visas i ett popup-fönster.</p>
+</div>
+</div>
+<div class="section" id="schemalagd-export">
+<h2><a class="toc-backref" href="#toc-entry-9">Schemalagd export</a></h2>
+<p>Exportprocessen kan också utföras via schemaläggaren. Gå till skärmen &quot;Jobbschemaläggning&quot;. På den skärmen kan du konfigurera ett Tim Export-jobb. Jobbet söker efter de senast exporterade tidrapporterna i databasen och exporterar om dem. Se även Schemaläggarmanualen.</p>
+</div>
+<div class="section" id="import">
+<h2><a class="toc-backref" href="#toc-entry-10">Import</a></h2>
+<p>Import av scheman fungerar bara med hjälp av schemaläggaren. Det finns inget användargränssnitt utformat för detta, eftersom ingen inmatning krävs från användaren. Gå till skärmen &quot;Jobbschemaläggning&quot; och konfigurera ett Tim Import-jobb. Jobbet loopar igenom alla avdelningar som konfigurerats i anslutningsegenskaperna och importerar alla scheman för varje avdelning. Se även Schemaläggarmanualen.</p>
+<p>För import lägger Tim-anslutningen till följande fält i begäran:</p>
+<ul class="simple">
+<li><strong>Period:</strong> Perioden (datum från - datum till) för vilken du vill importera schemat. Det här kan anges som ett filterkriterium.</li>
+<li><strong>Avdelning:</strong> Avdelningen för vilken du vill importera schemat. Avdelningar är konfigurerbara.</li>
+<li>Fälten du är intresserad av (som personinfo, SchemakategoriCategory, osv.) som Tim-servern ska inkludera i sitt svar.</li>
+</ul>
+<p>Importsvaret innehåller följande fält, vilka är tillräckliga för att hantera undantagsdagar i <em>LibrePlan</em>:</p>
+<ul class="simple">
+<li><strong>Personinfo:</strong> Namn och nätverksnamn.</li>
+<li><strong>Avdelning:</strong> Avdelningen som den anställde arbetar i.</li>
+<li><strong>Schemakategori:</strong> Information om närvaro/frånvaro (Aanwzig/afwezig) för den anställde och anledningen (<em>LibrePlan</em> undantagstyp) om den anställde är frånvarande.</li>
+<li><strong>Datum:</strong> Det datum då den anställde är närvarande/frånvarande.</li>
+<li><strong>Tid:</strong> Starttiden för närvaro/frånvaro, till exempel 08:00.</li>
+<li><strong>Varaktighet:</strong> Antalet timmar som den anställde är närvarande/frånvarande.</li>
+</ul>
+<p>Vid konvertering av importsvaret till <em>LibrePlan</em>:s &quot;Undantagsdag&quot; beaktas följande översättningar:</p>
+<ul class="simple">
+<li>Om schemakategorin innehåller namnet &quot;Vakantie&quot; översätts det till &quot;RESOURCE HOLIDAY.&quot;</li>
+<li>Schemakategorin &quot;Feestdag&quot; översätts till &quot;BANK HOLIDAY.&quot;</li>
+<li>Alla övriga, som &quot;Jus uren,&quot; &quot;PLB uren,&quot; osv., bör läggas till i &quot;Kalenderundantagsdagar&quot; manuellt.</li>
+</ul>
+<p>Dessutom är schemat i importsvaret uppdelat i två eller tre delar per dag: till exempel schema-morgon, schema-eftermiddag och schema-kväll. <em>LibrePlan</em> tillåter dock bara en &quot;Undantagstyp&quot; per dag. Tim-anslutningen ansvarar då för att slå samman dessa delar till en undantagstyp. Det vill säga att schemakategorin med längst varaktighet antas vara en giltig undantagstyp, men den totala varaktigheten är summan av alla varaktigheter för dessa kategoridelar.</p>
+<p>Till skillnad från <em>LibrePlan</em> innebär den totala varaktigheten i Tim Enterprise när en anställd är på semester att den anställde inte är tillgänglig under denna totala varaktighet. I <em>LibrePlan</em> ska dock den totala varaktigheten vara noll om den anställde är på semester. Tim-anslutningen hanterar även denna översättning.</p>
+</div>
+</div>
+<div class="section" id="e-postanslutning">
+<h1><a class="toc-backref" href="#toc-entry-11">E-postanslutning</a></h1>
+<p>E-post är en metod för att utbyta digitala meddelanden från en avsändare till en eller flera mottagare.</p>
+<p>E-postanslutningen kan användas för att ange anslutningsegenskaper för SMTP-servern (Simple Mail Transfer Protocol).</p>
+<p><em>E-postanslutningen</em> måste konfigureras korrekt innan den kan användas.</p>
+<div class="section" id="konfiguration-3">
+<h2><a class="toc-backref" href="#toc-entry-12">Konfiguration</a></h2>
+<p>Från skärmen &quot;Huvudinställningar&quot; väljer du fliken &quot;Anslutningar&quot;. På anslutningsskärmen väljer du E-postanslutningen från nedrullningslistan. En skärm för redigering av egenskaper visas sedan.</p>
+<p>På den här skärmen kan du konfigurera följande egenskapsvärden:</p>
+<ul class="simple">
+<li><strong>Aktiverad:</strong> Y/N, anger om du vill använda E-postanslutningen. Standardvärdet är &quot;N.&quot;</li>
+<li><strong>Protokoll:</strong> Typen av SMTP-protokoll.</li>
+<li><strong>Värd:</strong> Den absoluta sökvägen till SMTP-servern.</li>
+<li><strong>Port:</strong> Porten för SMTP-servern.</li>
+<li><strong>Från-adress:</strong> E-postadressen för meddelandets avsändare.</li>
+<li><strong>Användarnamn:</strong> Användarnamnet för SMTP-servern.</li>
+<li><strong>Lösenord:</strong> Lösenordet för SMTP-servern.</li>
+</ul>
+<p>Klicka slutligen på knappen &quot;Testa anslutning&quot; för att kontrollera att du kan ansluta till SMTP-servern och att dina konfigurationer är korrekta.</p>
+</div>
+<div class="section" id="redigera-e-postmall">
+<h2><a class="toc-backref" href="#toc-entry-13">Redigera e-postmall</a></h2>
+<p>Från projektfönstret, under &quot;Konfiguration&quot; och sedan &quot;Redigera e-postmallar,&quot; kan du ändra e-postmallarna för meddelanden.</p>
+<p>Du kan välja:</p>
+<ul class="simple">
+<li><strong>Mallspråk:</strong></li>
+<li><strong>Malltyp:</strong></li>
+<li><strong>E-postämne:</strong></li>
+<li><strong>Mallinnehåll:</strong></li>
+</ul>
+<p>Du måste ange språket eftersom webbapplikationen skickar e-postmeddelanden till användare på det språk de har valt i sina inställningar. Du måste välja malltypen. Typen är användarrollen, vilket innebär att det här e-postmeddelandet bara skickas till användare som är i den valda rollen (typen). Du måste ange e-postämnet. Ämnet är en kort sammanfattning av meddelandets ämne. Du måste ange e-postinnehållet. Det är vilken information som helst som du vill skicka till användaren. Det finns också några nyckelord som du kan använda i meddelandet; webbapplikationen tolkar dem och anger ett nytt värde i stället för nyckelordet.</p>
+</div>
+<div class="section" id="schemalaggning-av-e-postmeddelanden">
+<h2><a class="toc-backref" href="#toc-entry-14">Schemaläggning av e-postmeddelanden</a></h2>
+<p>Sändning av e-postmeddelanden kan bara utföras via schemaläggaren. Gå till &quot;Konfiguration,&quot; sedan skärmen &quot;Jobbschemaläggning&quot;. På den skärmen kan du konfigurera ett e-postsändningsjobb. Jobbet tar en lista med e-postmeddelanden, samlar in data och skickar det till användarens e-postadress. Se även Schemaläggarmanualen.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Informationen om lyckad eller misslyckad åtgärd visas i ett popup-fönster.</p>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

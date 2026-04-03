@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Avanzamento</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="avanzamento">
+<h1 class="title">Avanzamento</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#gestione-dei-tipi-di-avanzamento" id="toc-entry-1">Gestione dei Tipi di Avanzamento</a></li>
+<li><a class="reference internal" href="#inserimento-dell-avanzamento-per-tipo" id="toc-entry-2">Inserimento dell'Avanzamento per Tipo</a></li>
+<li><a class="reference internal" href="#confronto-dell-avanzamento-per-un-elemento-d-ordine" id="toc-entry-3">Confronto dell'Avanzamento per un Elemento d'Ordine</a></li>
+</ul>
+</div>
+<p>L'avanzamento del progetto indica il grado in cui si sta rispettando il tempo di completamento stimato del progetto. L'avanzamento delle attività indica il grado in cui l'attività viene completata secondo il suo completamento stimato.</p>
+<p>In generale, l'avanzamento non può essere misurato automaticamente. Un membro del personale con esperienza o una lista di controllo deve determinare il grado di completamento di un'attività o di un progetto.</p>
+<p>È importante notare la distinzione tra le ore assegnate a un'attività o a un progetto e l'avanzamento di quell'attività o progetto. Mentre il numero di ore utilizzate può essere superiore o inferiore alle aspettative, il progetto può essere in anticipo o in ritardo rispetto al suo completamento stimato nel giorno monitorato. Da queste due misurazioni possono derivare diverse situazioni:</p>
+<ul class="simple">
+<li><strong>Meno ore consumate del previsto, ma il progetto è in ritardo:</strong> L'avanzamento è inferiore a quello stimato per il giorno monitorato.</li>
+<li><strong>Meno ore consumate del previsto e il progetto è in anticipo:</strong> L'avanzamento è superiore a quello stimato per il giorno monitorato.</li>
+<li><strong>Più ore consumate del previsto e il progetto è in ritardo:</strong> L'avanzamento è inferiore a quello stimato per il giorno monitorato.</li>
+<li><strong>Più ore consumate del previsto, ma il progetto è in anticipo:</strong> L'avanzamento è superiore a quello stimato per il giorno monitorato.</li>
+</ul>
+<p>La vista di pianificazione consente di confrontare queste situazioni utilizzando informazioni sull'avanzamento effettuato e le ore utilizzate. Questo capitolo spiegherà come inserire le informazioni per monitorare l'avanzamento.</p>
+<p>La filosofia alla base del monitoraggio dell'avanzamento si basa sul fatto che gli utenti definiscono il livello al quale desiderano monitorare i loro progetti. Ad esempio, se gli utenti desiderano monitorare gli ordini, devono solo inserire le informazioni per gli elementi di primo livello. Se desiderano un monitoraggio più preciso a livello di attività, devono inserire le informazioni sull'avanzamento a livelli inferiori. Il sistema aggregherà poi i dati verso l'alto attraverso la gerarchia.</p>
+<div class="section" id="gestione-dei-tipi-di-avanzamento">
+<h1><a class="toc-backref" href="#toc-entry-1">Gestione dei Tipi di Avanzamento</a></h1>
+<p>Le aziende hanno esigenze diverse nel monitorare l'avanzamento dei progetti, in particolare le attività coinvolte. Pertanto, il sistema include i &quot;tipi di avanzamento&quot;. Gli utenti possono definire diversi tipi di avanzamento per misurare l'avanzamento di un'attività. Ad esempio, un'attività può essere misurata in percentuale, ma questa percentuale può anche essere tradotta in avanzamento in <em>Tonnellate</em> in base all'accordo con il cliente.</p>
+<p>Un tipo di avanzamento ha un nome, un valore massimo e un valore di precisione:</p>
+<ul class="simple">
+<li><strong>Nome:</strong> Un nome descrittivo che gli utenti riconosceranno quando selezionano il tipo di avanzamento. Questo nome dovrebbe indicare chiaramente che tipo di avanzamento viene misurato.</li>
+<li><strong>Valore Massimo:</strong> Il valore massimo che può essere stabilito per un'attività o un progetto come misurazione dell'avanzamento totale. Ad esempio, se si lavora con le <em>Tonnellate</em> e il massimo normale è 4000 tonnellate, e nessuna attività richiederà mai più di 4000 tonnellate di qualsiasi materiale, allora 4000 sarebbe il valore massimo.</li>
+<li><strong>Valore di Precisione:</strong> Il valore di incremento consentito per il tipo di avanzamento. Ad esempio, se l'avanzamento in <em>Tonnellate</em> deve essere misurato in numeri interi, il valore di precisione sarebbe 1. Da quel momento in poi, solo numeri interi possono essere inseriti come misurazioni dell'avanzamento (ad es. 1, 2, 300).</li>
+</ul>
+<p>Il sistema ha due tipi di avanzamento predefiniti:</p>
+<ul class="simple">
+<li><strong>Percentuale:</strong> Un tipo di avanzamento generale che misura l'avanzamento di un progetto o di un'attività in base a una percentuale di completamento stimata. Ad esempio, un'attività è completata al 30% su un 100% stimato per un giorno specifico.</li>
+<li><strong>Unità:</strong> Un tipo di avanzamento generale che misura l'avanzamento in unità senza specificare il tipo di unità. Ad esempio, un'attività prevede la creazione di 3000 unità e l'avanzamento è di 500 unità sul totale di 3000.</li>
+</ul>
+<div class="figure">
+<img alt="images/tipos-avances.png" src="images/tipos-avances.png" style="width: 376.5px; height: 164.5px;" />
+<p class="caption">Amministrazione dei Tipi di Avanzamento</p>
+</div>
+<p>Gli utenti possono creare nuovi tipi di avanzamento come segue:</p>
+<ul class="simple">
+<li>Andare alla sezione &quot;Amministrazione&quot;.</li>
+<li>Fare clic sull'opzione &quot;Gestisci tipi di avanzamento&quot; nel menu di secondo livello.</li>
+<li>Il sistema visualizzerà un elenco dei tipi di avanzamento esistenti.</li>
+<li>Per ogni tipo di avanzamento, gli utenti possono:<ul>
+<li>Modificare</li>
+<li>Eliminare</li>
+</ul>
+</li>
+<li>Gli utenti possono quindi creare un nuovo tipo di avanzamento.</li>
+<li>Quando si modifica o si crea un tipo di avanzamento, il sistema visualizza un modulo con le seguenti informazioni:<ul>
+<li>Nome del tipo di avanzamento.</li>
+<li>Valore massimo consentito per il tipo di avanzamento.</li>
+<li>Valore di precisione per il tipo di avanzamento.</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="inserimento-dell-avanzamento-per-tipo">
+<h1><a class="toc-backref" href="#toc-entry-2">Inserimento dell'Avanzamento per Tipo</a></h1>
+<p>L'avanzamento viene inserito per gli elementi d'ordine, ma può anche essere inserito tramite un collegamento rapido dalle attività di pianificazione. Gli utenti sono responsabili di decidere quale tipo di avanzamento associare a ciascun elemento d'ordine.</p>
+<p>Gli utenti possono inserire un unico tipo di avanzamento predefinito per l'intero ordine.</p>
+<p>Prima di misurare l'avanzamento, gli utenti devono associare il tipo di avanzamento scelto all'ordine. Ad esempio, potrebbero scegliere l'avanzamento percentuale per misurare l'avanzamento sull'intera attività o un tasso di avanzamento concordato se le misurazioni di avanzamento concordate con il cliente verranno inserite in futuro.</p>
+<div class="figure">
+<img alt="images/avance.png" src="images/avance.png" style="width: 424.0px; height: 290.8px;" />
+<p class="caption">Schermata di Inserimento dell'Avanzamento con Visualizzazione Grafica</p>
+</div>
+<p>Per inserire le misurazioni dell'avanzamento:</p>
+<ul class="simple">
+<li>Selezionare il tipo di avanzamento a cui verrà aggiunto l'avanzamento.
+*   Se non esiste alcun tipo di avanzamento, ne deve essere creato uno nuovo.</li>
+<li>Nel modulo che appare sotto i campi &quot;Valore&quot; e &quot;Data&quot;, inserire il valore assoluto della misurazione e la data della misurazione.</li>
+<li>Il sistema memorizza automaticamente i dati inseriti.</li>
+</ul>
+</div>
+<div class="section" id="confronto-dell-avanzamento-per-un-elemento-d-ordine">
+<h1><a class="toc-backref" href="#toc-entry-3">Confronto dell'Avanzamento per un Elemento d'Ordine</a></h1>
+<p>Gli utenti possono confrontare graficamente l'avanzamento effettuato sugli ordini con le misurazioni effettuate. Tutti i tipi di avanzamento hanno una colonna con un pulsante di selezione (&quot;Mostra&quot;). Quando questo pulsante è selezionato, il grafico dell'avanzamento delle misurazioni effettuate viene visualizzato per l'elemento d'ordine.</p>
+<div class="figure">
+<img alt="images/contraste-avance.png" src="images/contraste-avance.png" style="width: 422.0px; height: 290.0px;" />
+<p class="caption">Confronto di Diversi Tipi di Avanzamento</p>
+</div>
+</div>
+</div>
+</body>
+</html>

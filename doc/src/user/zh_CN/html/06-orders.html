@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>项目与项目元素</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="section-1">
+<h1 class="title">项目与项目元素</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#section-2" id="toc-entry-1">项目</a></li>
+<li><a class="reference internal" href="#section-3" id="toc-entry-2">编辑项目元素</a><ul>
+<li><a class="reference internal" href="#section-4" id="toc-entry-3">编辑项目元素的信息</a></li>
+<li><a class="reference internal" href="#section-5" id="toc-entry-4">查看归因于项目元素的工时</a></li>
+<li><a class="reference internal" href="#section-6" id="toc-entry-5">管理项目元素的进度</a></li>
+<li><a class="reference internal" href="#section-7" id="toc-entry-6">管理项目标签</a></li>
+<li><a class="reference internal" href="#section-8" id="toc-entry-7">管理项目元素和工时组所需的标准</a></li>
+<li><a class="reference internal" href="#section-9" id="toc-entry-8">管理材料</a></li>
+<li><a class="reference internal" href="#section-10" id="toc-entry-9">管理质量表单</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>项目代表程序用户要执行的工作。每个项目对应公司将提供给其客户的一个项目。</p>
+<p>项目由一个或多个项目元素组成。每个项目元素代表要完成的工作的特定部分，并定义项目上的工作应如何规划和执行。项目元素按层次结构组织，对层次结构的深度没有限制。这种层次结构允许继承某些功能，例如标签。</p>
+<p>以下各节描述用户可以对项目和项目元素执行的操作。</p>
+<div class="section" id="section-2">
+<h1><a class="toc-backref" href="#toc-entry-1">项目</a></h1>
+<p>项目代表客户向公司请求的项目或工作。项目在公司的规划中识别项目。与全面管理程序不同，LibrePlan 只需要项目的某些关键详细信息。这些详细信息包括：</p>
+<ul class="simple">
+<li><strong>项目名称：</strong> 项目的名称。</li>
+<li><strong>项目代码：</strong> 项目的唯一代码。</li>
+<li><strong>项目总金额：</strong> 项目的总财务价值。</li>
+<li><strong>估计开始日期：</strong> 项目的计划开始日期。</li>
+<li><strong>结束日期：</strong> 项目的计划完成日期。</li>
+<li><strong>负责人：</strong> 负责项目的个人。</li>
+<li><strong>描述：</strong> 项目的描述。</li>
+<li><strong>分配的日历：</strong> 与项目相关联的日历。</li>
+<li><strong>自动生成代码：</strong> 指示系统自动为项目元素和工时组生成代码的设置。</li>
+<li><strong>依赖关系和限制之间的优先顺序：</strong> 用户可以选择在发生冲突时依赖关系或限制哪个优先。</li>
+</ul>
+<p>但是，完整的项目还包括其他相关实体：</p>
+<ul class="simple">
+<li><strong>分配给项目的工时：</strong> 分配给项目的总工时。</li>
+<li><strong>归因于项目的进度：</strong> 项目上取得的进度。</li>
+<li><strong>标签：</strong> 分配给项目的标签。</li>
+<li><strong>分配给项目的标准：</strong> 与项目相关联的标准。</li>
+<li><strong>材料：</strong> 项目所需的材料。</li>
+<li><strong>质量表单：</strong> 与项目相关联的质量表单。</li>
+</ul>
+<p>创建或编辑项目可以从程序中的多个位置完成：</p>
+<ul class="simple">
+<li><strong>从公司概览中的「项目列表」：</strong><ul>
+<li><strong>编辑：</strong> 在所需项目上点击编辑按钮。</li>
+<li><strong>创建：</strong> 点击「新项目」。</li>
+</ul>
+</li>
+<li><strong>从甘特图中的项目：</strong> 切换至项目详细信息视图。</li>
+</ul>
+<p>编辑项目时，用户可以访问以下选项卡：</p>
+<ul>
+<li><p class="first"><strong>编辑项目详细信息：</strong> 此界面允许用户编辑基本项目详细信息：</p>
+<ul class="simple">
+<li>名称</li>
+<li>代码</li>
+<li>估计开始日期</li>
+<li>结束日期</li>
+<li>负责人</li>
+<li>客户</li>
+<li>描述</li>
+</ul>
+<div class="figure">
+<img alt="images/order-edition.png" src="images/order-edition.png" style="width: 429.0px; height: 227.5px;" />
+<p class="caption">编辑项目</p>
+</div>
+</li>
+<li><p class="first"><strong>项目元素列表：</strong> 此界面允许用户对项目元素执行多项操作：</p>
+<ul class="simple">
+<li>创建新的项目元素。</li>
+<li>在层次结构中将项目元素提升一个层级。</li>
+<li>在层次结构中将项目元素降低一个层级。</li>
+<li>缩进项目元素（在层次结构中向下移动）。</li>
+<li>取消缩进项目元素（在层次结构中向上移动）。</li>
+<li>筛选项目元素。</li>
+<li>删除项目元素。</li>
+<li>通过拖放在层次结构中移动元素。</li>
+</ul>
+<div class="figure">
+<img alt="images/order-elements-list.png" src="images/order-elements-list.png" style="width: 496.8px; height: 107.60000000000001px;" />
+<p class="caption">项目元素列表</p>
+</div>
+</li>
+<li><p class="first"><strong>分配的工时：</strong> 此界面显示归因于项目的总工时，将项目元素中输入的工时进行分组。</p>
+<div class="figure">
+<img alt="images/order-assigned-hours.png" src="images/order-assigned-hours.png" style="width: 432.0px; height: 202.5px;" />
+<p class="caption">按员工分配归因于项目的工时</p>
+</div>
+</li>
+<li><p class="first"><strong>进度：</strong> 此界面允许用户为项目分配进度类型并输入进度测量值。请参阅「进度」部分以了解更多详情。</p>
+</li>
+<li><p class="first"><strong>标签：</strong> 此界面允许用户为项目分配标签，并查看之前分配的直接和间接标签。请参阅以下关于编辑项目元素的部分，以了解标签管理的详细说明。</p>
+<div class="figure">
+<img alt="images/order-labels.png" src="images/order-labels.png" style="width: 402.5px; height: 180.95px;" />
+<p class="caption">项目标签</p>
+</div>
+</li>
+<li><p class="first"><strong>标准：</strong> 此界面允许用户分配将适用于项目内所有任务的标准。这些标准将自动应用于所有项目元素，但已明确无效的那些元素除外。项目元素的工时组（按标准分组）也可以查看，让用户能够识别项目所需的标准。</p>
+<div class="figure">
+<img alt="images/order-criterions.png" src="images/order-criterions.png" style="width: 423.5px; height: 261.5px;" />
+<p class="caption">项目标准</p>
+</div>
+</li>
+<li><p class="first"><strong>材料：</strong> 此界面允许用户为项目分配材料。材料可以从程序中的可用材料类别中选择。材料的管理方式如下：</p>
+<ul class="simple">
+<li>选择界面底部的「搜索材料」选项卡。</li>
+<li>输入文字以搜索材料，或选择您要查找材料的类别。</li>
+<li>系统筛选结果。</li>
+<li>选择所需材料（可以按住「Ctrl」键选择多个材料）。</li>
+<li>点击「指定」。</li>
+<li>系统显示已分配给项目的材料列表。</li>
+<li>选择要分配给项目的单位和状态。</li>
+<li>点击「保存」或「保存并继续」。</li>
+<li>要管理材料的收货情况，请点击「分割」以更改部分材料数量的状态。</li>
+</ul>
+<div class="figure">
+<img alt="images/order-material.png" src="images/order-material.png" style="width: 430.0px; height: 204.0px;" />
+<p class="caption">与项目相关联的材料</p>
+</div>
+</li>
+<li><p class="first"><strong>质量：</strong> 用户可以为项目分配质量表单。然后完成此表单以确保执行与项目相关联的某些活动。请参阅以下关于编辑项目元素的部分，以了解管理质量表单的详情。</p>
+<div class="figure">
+<img alt="images/order-quality.png" src="images/order-quality.png" style="width: 428.0px; height: 259.0px;" />
+<p class="caption">与项目相关联的质量表单</p>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="section-3">
+<h1><a class="toc-backref" href="#toc-entry-2">编辑项目元素</a></h1>
+<p>项目元素通过点击编辑图标从「项目元素列表」选项卡进行编辑。这将打开一个新界面，用户可以在其中：</p>
+<ul class="simple">
+<li>编辑项目元素的信息。</li>
+<li>查看归因于项目元素的工时。</li>
+<li>管理项目元素的进度。</li>
+<li>管理项目标签。</li>
+<li>管理项目元素所需的标准。</li>
+<li>管理材料。</li>
+<li>管理质量表单。</li>
+</ul>
+<p>以下各节详细描述这些操作中的每一个。</p>
+<div class="section" id="section-4">
+<h2><a class="toc-backref" href="#toc-entry-3">编辑项目元素的信息</a></h2>
+<p>编辑项目元素的信息包括修改以下详细信息：</p>
+<ul>
+<li><p class="first"><strong>项目元素名称：</strong> 项目元素的名称。</p>
+</li>
+<li><p class="first"><strong>项目元素代码：</strong> 项目元素的唯一代码。</p>
+</li>
+<li><p class="first"><strong>开始日期：</strong> 项目元素的计划开始日期。</p>
+</li>
+<li><p class="first"><strong>估计结束日期：</strong> 项目元素的计划完成日期。</p>
+</li>
+<li><p class="first"><strong>总工时：</strong> 分配给项目元素的总工时。这些工时可以从添加的工时组计算，也可以直接输入。如果直接输入，工时必须在工时组之间分配，如果百分比与初始百分比不匹配，则需要创建新的工时组。</p>
+</li>
+<li><p class="first"><strong>工时组：</strong> 可以向项目元素添加一个或多个工时组。<a href="#system-message-1"><span class="problematic" id="problematic-1">**</span></a>这些工时组的目的**是定义将被分配执行工作的资源要求。</p>
+<div class="system-message" id="system-message-1">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">06-orders.rst</tt>, line 151); <em><a href="#problematic-1">backlink</a></em></p>
+<p>Inline strong start-string without end-string.</p>
+</div>
+</li>
+<li><p class="first"><strong>标准：</strong> 可以添加必须满足的标准，以启用项目元素的通用分配。</p>
+</li>
+</ul>
+<div class="figure">
+<img alt="images/order-element-edition.png" src="images/order-element-edition.png" style="width: 477.5px; height: 345.0px;" />
+<p class="caption">编辑项目元素</p>
+</div>
+</div>
+<div class="section" id="section-5">
+<h2><a class="toc-backref" href="#toc-entry-4">查看归因于项目元素的工时</a></h2>
+<p>「分配工时」选项卡允许用户查看与项目元素相关联的工作报告，并查看估计工时中已完成的数量。</p>
+<div class="figure">
+<img alt="images/order-element-hours.png" src="images/order-element-hours.png" style="width: 478.5px; height: 344.5px;" />
+<p class="caption">分配给项目元素的工时</p>
+</div>
+<p>界面分为两部分：</p>
+<ul class="simple">
+<li><strong>工作报告列表：</strong> 用户可以查看与项目元素相关联的工作报告列表，包括日期和时间、资源以及用于任务的工时数。</li>
+<li><strong>估计工时的使用情况：</strong> 系统计算用于任务的总工时，并将其与估计工时进行比较。</li>
+</ul>
+</div>
+<div class="section" id="section-6">
+<h2><a class="toc-backref" href="#toc-entry-5">管理项目元素的进度</a></h2>
+<p>输入进度类型和管理项目元素进度在「进度」章节中描述。</p>
+</div>
+<div class="section" id="section-7">
+<h2><a class="toc-backref" href="#toc-entry-6">管理项目标签</a></h2>
+<p>如标签章节所述，标签允许用户对项目元素进行分类。这使用户能够根据这些标签对规划或项目信息进行分组。</p>
+<p>用户可以直接将标签分配给项目元素，或分配给层次结构中较高层级的项目元素。使用任一方法分配标签后，项目元素和相关规划任务都会与标签相关联，并可用于后续筛选。</p>
+<div class="figure">
+<img alt="images/order-element-tags.png" src="images/order-element-tags.png" style="width: 476.5px; height: 344.0px;" />
+<p class="caption">为项目元素分配标签</p>
+</div>
+<p>如图所示，用户可以从 <strong>标签</strong> 选项卡执行以下操作：</p>
+<ul class="simple">
+<li><strong>查看继承的标签：</strong> 查看与项目元素相关联的标签，这些标签是从较高层级的项目元素继承的。与每个项目元素相关联的规划任务具有相同的相关标签。</li>
+<li><strong>查看直接分配的标签：</strong> 查看使用较低层级标签的分配表单直接与项目元素相关联的标签。</li>
+<li><strong>分配现有标签：</strong> 在直接标签列表下方的表单中搜索可用标签来分配标签。要搜索标签，请点击放大镜图标，或在文字框中输入标签的前几个字母以显示可用选项。</li>
+<li><strong>创建并分配新标签：</strong> 从此表单创建与现有标签类型相关联的新标签。为此，选择一个标签类型并输入所选类型的标签值。点击「创建并分配」时，系统自动创建标签并将其分配给项目元素。</li>
+</ul>
+</div>
+<div class="section" id="section-8">
+<h2><a class="toc-backref" href="#toc-entry-7">管理项目元素和工时组所需的标准</a></h2>
+<p>项目和项目元素都可以分配必须满足才能执行工作的标准。标准可以是直接的或间接的：</p>
+<ul class="simple">
+<li><strong>直接标准：</strong> 这些是直接分配给项目元素的标准。它们是项目元素上的工时组所需的标准。</li>
+<li><strong>间接标准：</strong> 这些是分配给层次结构中较高层级项目元素的标准，并由正在编辑的元素继承。</li>
+</ul>
+<p>除了所需标准外，还可以定义作为项目元素一部分的一个或多个工时组。这取决于项目元素是否包含其他项目元素作为子节点，或者它是否是叶节点。在第一种情况下，只能查看工时和工时组的信息。但是，叶节点可以编辑。叶节点的工作方式如下：</p>
+<ul class="simple">
+<li>系统创建一个与项目元素相关联的默认工时组。工时组可以修改的详细信息包括：<ul>
+<li><strong>代码：</strong> 工时组的代码（如果不是自动生成的）。</li>
+<li><strong>标准类型：</strong> 用户可以选择分配机器或员工标准。</li>
+<li><strong>工时数：</strong> 工时组中的工时数。</li>
+<li><strong>标准列表：</strong> 要应用于工时组的标准。要添加新标准，请点击「添加标准」并从点击按钮后出现的搜索引擎中选择一个。</li>
+</ul>
+</li>
+<li>用户可以添加具有与之前工时组不同特性的新工时组。例如，一个项目元素可能需要焊接工（30 小时）和油漆工（40 小时）。</li>
+</ul>
+<div class="figure">
+<img alt="images/order-element-criterion.png" src="images/order-element-criterion.png" style="width: 476.0px; height: 344.0px;" />
+<p class="caption">为项目元素分配标准</p>
+</div>
+</div>
+<div class="section" id="section-9">
+<h2><a class="toc-backref" href="#toc-entry-8">管理材料</a></h2>
+<p>材料在项目中以与每个项目元素或项目相关联的列表进行管理。材料列表包含以下字段：</p>
+<ul class="simple">
+<li><strong>代码：</strong> 材料代码。</li>
+<li><strong>日期：</strong> 与材料相关联的日期。</li>
+<li><strong>单位：</strong> 所需单位数。</li>
+<li><strong>单位类型：</strong> 用于衡量材料的单位类型。</li>
+<li><strong>单位价格：</strong> 每单位价格。</li>
+<li><strong>总价格：</strong> 总价格（通过将单位价格乘以单位数计算）。</li>
+<li><strong>类别：</strong> 材料所属的类别。</li>
+<li><strong>状态：</strong> 材料的状态（例如，已收到、已请求、待处理、处理中、已取消）。</li>
+</ul>
+<p>使用材料的步骤如下：</p>
+<ul class="simple">
+<li>在项目元素上选择「材料」选项卡。</li>
+<li>系统显示两个子选项卡：「材料」和「搜索材料」。</li>
+<li>如果项目元素没有分配材料，第一个选项卡将为空。</li>
+<li>点击窗口左下部分的「搜索材料」。</li>
+<li>系统显示可用类别和相关材料的列表。</li>
+</ul>
+<div class="figure">
+<img alt="images/order-element-material-search.png" src="images/order-element-material-search.png" style="width: 476.0px; height: 343.0px;" />
+<p class="caption">搜索材料</p>
+</div>
+<ul class="simple">
+<li>选择类别以细化材料搜索。</li>
+<li>系统显示属于所选类别的材料。</li>
+<li>从材料列表中，选择要分配给项目元素的材料。</li>
+<li>点击「指定」。</li>
+<li>系统在「材料」选项卡上显示选定的材料列表，并提供新的字段供完成。</li>
+</ul>
+<div class="figure">
+<img alt="images/order-element-material-assign.png" src="images/order-element-material-assign.png" style="width: 475.5px; height: 341.5px;" />
+<p class="caption">为项目元素分配材料</p>
+</div>
+<ul class="simple">
+<li>选择分配材料的单位、状态和日期。</li>
+</ul>
+<p>对于后续的材料监控，可以更改一组已收到材料单位的状态。操作如下：</p>
+<ul class="simple">
+<li>点击材料列表中每行右侧的「分割」按钮。</li>
+<li>选择将行分割成的单位数。</li>
+<li>程序显示两行，材料已被分割。</li>
+<li>更改包含材料的行的状态。</li>
+</ul>
+<p>使用此分割工具的优点是能够接收材料的部分交货，而无需等待整个交货才能将其标记为已收到。</p>
+</div>
+<div class="section" id="section-10">
+<h2><a class="toc-backref" href="#toc-entry-9">管理质量表单</a></h2>
+<p>某些项目元素需要认证某些任务已完成，才能将其标记为完成。这就是程序具有质量表单的原因，质量表单由一份问题列表组成，如果答案为肯定则认为这些问题很重要。</p>
+<p>重要的是要注意，质量表单必须事先创建才能分配给项目元素。</p>
+<p>要管理质量表单：</p>
+<ul>
+<li><p class="first">前往「质量表单」选项卡。</p>
+<div class="figure">
+<img alt="images/order-element-quality.png" src="images/order-element-quality.png" style="width: 475.5px; height: 343.5px;" />
+<p class="caption">为项目元素分配质量表单</p>
+</div>
+</li>
+<li><p class="first">程序有一个质量表单搜索引擎。有两种类型的质量表单：按元素或按百分比。</p>
+<ul class="simple">
+<li><strong>元素：</strong> 每个元素是独立的。</li>
+<li><strong>百分比：</strong> 每个问题将项目元素的进度增加一个百分比。这些百分比必须能够加起来达到 100%。</li>
+</ul>
+</li>
+<li><p class="first">选择在管理界面中创建的其中一个表单，然后点击「指定」。</p>
+</li>
+<li><p class="first">程序从分配给项目元素的表单列表中分配所选表单。</p>
+</li>
+<li><p class="first">点击项目元素上的「编辑」按钮。</p>
+</li>
+<li><p class="first">程序在下方列表中显示质量表单的问题。</p>
+</li>
+<li><p class="first">将已完成的问题标记为已达成。</p>
+<ul class="simple">
+<li>如果质量表单基于百分比，则问题按顺序回答。</li>
+<li>如果质量表单基于元素，则问题可以以任何顺序回答。</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</body>
+</html>

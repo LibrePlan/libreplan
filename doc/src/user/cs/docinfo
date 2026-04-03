@@ -1,0 +1,26 @@
+##################################
+LibrePlan: Uživatelská dokumentace
+##################################
+
+.. image:: images/logo.png
+   :align: left
+
+Tento dokument obsahuje nápovědu potřebnou pro používání LibrePlan, open-source webové aplikace pro plánování projektů.
+
+Dokument je rozdělen do tří hlavních částí:
+
+Za prvé, globální cíle a chování aplikace.
+
+Za druhé, základní entity pro pochopení minimálních konceptů potřebných k používání LibrePlan.
+
+Za třetí, úplný popis procesů pro vytváření zakázek, projektů, plánování projektů, přidělování zdrojů, zadávání pokroku a extrakci výsledků.
+
+.. topic:: Prosím, podpořte LibrePlan
+   :class: highlight
+
+   LibrePlan nemůže existovat bez vaší podpory. Prosím, přečtěte si `stránku s dary <00-donations.html>`__ a zvažte pomoc nám s pokračováním vývoje.
+
+   .. raw:: html
+
+      <script src="https://opencollective.com/libreplan/donate/button.js" color="blue"></script>
+

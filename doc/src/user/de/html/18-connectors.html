@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Konnektoren</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="konnektoren">
+<h1 class="title">Konnektoren</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#konfiguration" id="toc-entry-1">Konfiguration</a></li>
+<li><a class="reference internal" href="#jira-konnektor" id="toc-entry-2">JIRA-Konnektor</a><ul>
+<li><a class="reference internal" href="#konfiguration-1" id="toc-entry-3">Konfiguration</a></li>
+<li><a class="reference internal" href="#synchronisation" id="toc-entry-4">Synchronisation</a></li>
+<li><a class="reference internal" href="#zeitplanung" id="toc-entry-5">Zeitplanung</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#tim-enterprise-konnektor" id="toc-entry-6">Tim Enterprise-Konnektor</a><ul>
+<li><a class="reference internal" href="#konfiguration-2" id="toc-entry-7">Konfiguration</a></li>
+<li><a class="reference internal" href="#export" id="toc-entry-8">Export</a></li>
+<li><a class="reference internal" href="#export-zeitplanung" id="toc-entry-9">Export-Zeitplanung</a></li>
+<li><a class="reference internal" href="#import" id="toc-entry-10">Import</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#e-mail-konnektor" id="toc-entry-11">E-Mail-Konnektor</a><ul>
+<li><a class="reference internal" href="#konfiguration-3" id="toc-entry-12">Konfiguration</a></li>
+<li><a class="reference internal" href="#e-mail-vorlage-bearbeiten" id="toc-entry-13">E-Mail-Vorlage bearbeiten</a></li>
+<li><a class="reference internal" href="#e-mails-zeitplanen" id="toc-entry-14">E-Mails zeitplanen</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>Konnektoren sind <em>LibrePlan</em>-Clientanwendungen, die zur Kommunikation mit (Web-)Servern verwendet werden können, um Daten abzurufen, zu verarbeiten und zu speichern. Derzeit gibt es drei Konnektoren: den JIRA-Konnektor, den Tim Enterprise-Konnektor und den E-Mail-Konnektor.</p>
+<div class="section" id="konfiguration">
+<h1><a class="toc-backref" href="#toc-entry-1">Konfiguration</a></h1>
+<p>Konnektoren müssen ordnungsgemäß konfiguriert werden, bevor sie verwendet werden können. Sie können über den Bildschirm &quot;Haupteinstellungen&quot; unter der Registerkarte &quot;Konnektoren&quot; konfiguriert werden.</p>
+<p>Der Konnektoren-Bildschirm umfasst:</p>
+<ul class="simple">
+<li><strong>Dropdown-Liste:</strong> Eine Liste der verfügbaren Konnektoren.</li>
+<li><strong>Eigenschaftenbearbeitungsbildschirm:</strong> Ein Eigenschaftenbearbeitungsformular für den ausgewählten Konnektor.</li>
+<li><strong>Schaltfläche &quot;Verbindung testen&quot;:</strong> Eine Schaltfläche zum Testen der Verbindung mit dem Konnektor.</li>
+</ul>
+<p>Wählen Sie den zu konfigurierenden Konnektor aus der Dropdown-Liste aus. Ein Eigenschaftenbearbeitungsformular für den ausgewählten Konnektor wird angezeigt. Im Eigenschaftenbearbeitungsformular können Sie die Eigenschaftswerte nach Bedarf ändern und Ihre Konfigurationen mit der Schaltfläche &quot;Verbindung testen&quot; testen.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Die Eigenschaften sind mit Standardwerten konfiguriert. Die wichtigste Eigenschaft ist &quot;Aktiviert&quot;. Standardmäßig ist sie auf &quot;N&quot; gesetzt. Dies bedeutet, dass der Konnektor nicht verwendet wird, bis Sie den Wert auf &quot;J&quot; ändern und die Änderungen speichern.</p>
+</div>
+</div>
+<div class="section" id="jira-konnektor">
+<h1><a class="toc-backref" href="#toc-entry-2">JIRA-Konnektor</a></h1>
+<p>JIRA ist ein System zur Verfolgung von Vorgängen und Projekten.</p>
+<p>Der JIRA-Konnektor ist eine Anwendung, mit der JIRA-Webserverdaten für JIRA-Vorgänge abgerufen und die Antwort verarbeitet werden kann. Die Anfrage basiert auf JIRA-Labels. In JIRA können Labels zur Kategorisierung von Vorgängen verwendet werden. Die Anfrage ist wie folgt strukturiert: Alle Vorgänge abrufen, die durch diesen Label-Namen kategorisiert sind.</p>
+<p>Der Konnektor empfängt die Antwort – in diesem Fall die Vorgänge – und konvertiert sie in <em>LibrePlan</em>-„Auftragselelemente&quot; und „Stundenzettel&quot;.</p>
+<p>Der <em>JIRA-Konnektor</em> muss ordnungsgemäß konfiguriert werden, bevor er verwendet werden kann.</p>
+<div class="section" id="konfiguration-1">
+<h2><a class="toc-backref" href="#toc-entry-3">Konfiguration</a></h2>
+<p>Wählen Sie im Bildschirm &quot;Haupteinstellungen&quot; die Registerkarte &quot;Konnektoren&quot;. Wählen Sie im Konnektoren-Bildschirm den JIRA-Konnektor aus der Dropdown-Liste aus. Daraufhin wird ein Eigenschaftenbearbeitungsbildschirm angezeigt.</p>
+<p>In diesem Bildschirm können Sie die folgenden Eigenschaftswerte konfigurieren:</p>
+<ul class="simple">
+<li><strong>Aktiviert:</strong> J/N, gibt an, ob Sie den JIRA-Konnektor verwenden möchten. Der Standardwert ist &quot;N.&quot;</li>
+<li><strong>Server-URL:</strong> Der absolute Pfad zum JIRA-Webserver.</li>
+<li><strong>Benutzername und Passwort:</strong> Die Benutzeranmeldeinformationen für die Autorisierung.</li>
+<li><strong>JIRA-Labels: kommagetrennte Liste von Labels oder URL:</strong> Sie können entweder die Label-URL oder eine kommagetrennte Liste von Labels eingeben.</li>
+<li><strong>Stundentyp:</strong> Die Art der Arbeitsstunden. Der Standardwert ist &quot;Standard.&quot;</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><strong>JIRA-Labels:</strong> Derzeit unterstützt der JIRA-Webserver keine Bereitstellung einer Liste aller verfügbaren Labels. Als Umgehungslösung haben wir ein einfaches PHP-Skript entwickelt, das eine einfache SQL-Abfrage in der JIRA-Datenbank durchführt, um alle eindeutigen Labels abzurufen. Sie können dieses PHP-Skript entweder als &quot;JIRA-Labels-URL&quot; verwenden oder die gewünschten Labels als kommagetrennten Text im Feld &quot;JIRA-Labels&quot; eingeben.</p>
+</div>
+<p>Klicken Sie abschließend auf die Schaltfläche &quot;Verbindung testen&quot;, um zu prüfen, ob Sie eine Verbindung zum JIRA-Webserver herstellen können und Ihre Konfigurationen korrekt sind.</p>
+</div>
+<div class="section" id="synchronisation">
+<h2><a class="toc-backref" href="#toc-entry-4">Synchronisation</a></h2>
+<p>Im Projektfenster unter &quot;Allgemeine Daten&quot; können Sie die Synchronisation von Auftragselementen mit JIRA-Vorgängen starten.</p>
+<p>Klicken Sie auf die Schaltfläche &quot;Mit JIRA synchronisieren&quot;, um die Synchronisation zu starten.</p>
+<ul class="simple">
+<li>Wenn dies das erste Mal ist, wird ein Popup-Fenster (mit einer automatisch vervollständigten Liste von Labels) angezeigt. In diesem Fenster können Sie ein Label auswählen, mit dem synchronisiert werden soll, und auf &quot;Synchronisation starten&quot; klicken, um den Synchronisationsprozess zu beginnen, oder auf &quot;Abbrechen&quot;, um ihn abzubrechen.</li>
+<li>Wenn ein Label bereits synchronisiert ist, werden das zuletzt synchronisierte Datum und das Label im JIRA-Bildschirm angezeigt. In diesem Fall wird kein Popup-Fenster zur Auswahl eines Labels angezeigt. Stattdessen beginnt der Synchronisationsprozess direkt für das angezeigte (bereits synchronisierte) Label.</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Die Beziehung zwischen &quot;Auftrag&quot; und &quot;Label&quot; ist eins-zu-eins. Nur ein Label kann mit einem &quot;Auftrag&quot; synchronisiert werden.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Nach erfolgreicher (Re-)Synchronisation werden die Informationen in die Datenbank geschrieben und der JIRA-Bildschirm mit dem zuletzt synchronisierten Datum und Label aktualisiert.</p>
+</div>
+<p>Die (Re-)Synchronisation wird in zwei Phasen durchgeführt:</p>
+<ul class="simple">
+<li><strong>Phase 1:</strong> Synchronisation der Auftragselelemente, einschließlich Fortschrittszuweisung und -messungen.</li>
+<li><strong>Phase 2:</strong> Synchronisation der Stundenzettel.</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Wenn Phase 1 fehlschlägt, wird Phase 2 nicht durchgeführt und keine Informationen in die Datenbank geschrieben.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Die Erfolgs- oder Fehlerinformation wird in einem Popup-Fenster angezeigt.</p>
+</div>
+<p>Nach erfolgreichem Abschluss der Synchronisation wird das Ergebnis in der Registerkarte &quot;Projektstrukturplan (PSP-Aufgaben)&quot; des Bildschirms &quot;Projektdetails&quot; angezeigt. In dieser Benutzeroberfläche gibt es zwei Änderungen gegenüber dem Standard-PSP:</p>
+<ul class="simple">
+<li>Die Spalte &quot;Gesamte Aufgabenstunden&quot; ist nicht änderbar (schreibgeschützt), da die Synchronisation einseitig ist. Aufgabenstunden können nur im JIRA-Webserver aktualisiert werden.</li>
+<li>Die Spalte &quot;Code&quot; zeigt die JIRA-Vorgangsschlüssel an, die auch Hyperlinks zu den JIRA-Vorgängen sind. Klicken Sie auf den gewünschten Schlüssel, wenn Sie zum Dokument für diesen Schlüssel (JIRA-Vorgang) wechseln möchten.</li>
+</ul>
+</div>
+<div class="section" id="zeitplanung">
+<h2><a class="toc-backref" href="#toc-entry-5">Zeitplanung</a></h2>
+<p>Die Neusynchronisation von JIRA-Vorgängen kann auch über den Scheduler durchgeführt werden. Gehen Sie zum Bildschirm &quot;Auftragsplanung&quot;. Dort können Sie einen JIRA-Auftrag zur Synchronisation konfigurieren. Der Auftrag sucht nach den zuletzt synchronisierten Labels in der Datenbank und synchronisiert sie entsprechend neu. Siehe auch das Scheduler-Handbuch.</p>
+</div>
+</div>
+<div class="section" id="tim-enterprise-konnektor">
+<h1><a class="toc-backref" href="#toc-entry-6">Tim Enterprise-Konnektor</a></h1>
+<p>Tim Enterprise ist ein niederländisches Produkt von Aenova. Es ist eine webbasierte Anwendung zur Verwaltung der auf Projekte und Aufgaben aufgewendeten Zeit.</p>
+<p>Der Tim-Konnektor ist eine Anwendung, die zur Kommunikation mit dem Tim Enterprise-Server verwendet werden kann, um:</p>
+<ul class="simple">
+<li>Alle von einem Mitarbeiter (Benutzer) für ein Projekt aufgewendeten Stunden zu exportieren, die in Tim Enterprise erfasst werden könnten.</li>
+<li>Alle Dienstpläne des Mitarbeiters (Benutzers) zu importieren, um die Ressource effektiv zu planen.</li>
+</ul>
+<p>Der <em>Tim-Konnektor</em> muss ordnungsgemäß konfiguriert werden, bevor er verwendet werden kann.</p>
+<div class="section" id="konfiguration-2">
+<h2><a class="toc-backref" href="#toc-entry-7">Konfiguration</a></h2>
+<p>Wählen Sie im Bildschirm &quot;Haupteinstellungen&quot; die Registerkarte &quot;Konnektoren&quot;. Wählen Sie im Konnektoren-Bildschirm den Tim-Konnektor aus der Dropdown-Liste aus. Daraufhin wird ein Eigenschaftenbearbeitungsbildschirm angezeigt.</p>
+<p>In diesem Bildschirm können Sie die folgenden Eigenschaftswerte konfigurieren:</p>
+<ul class="simple">
+<li><strong>Aktiviert:</strong> J/N, gibt an, ob Sie den Tim-Konnektor verwenden möchten. Der Standardwert ist &quot;N.&quot;</li>
+<li><strong>Server-URL:</strong> Der absolute Pfad zum Tim Enterprise-Server.</li>
+<li><strong>Benutzername und Passwort:</strong> Die Benutzeranmeldeinformationen für die Autorisierung.</li>
+<li><strong>Anzahl der Tage für den Stundenzettel-Export nach Tim:</strong> Die Anzahl der Tage rückwärts, für die Sie Stundenzettel exportieren möchten.</li>
+<li><strong>Anzahl der Tage für den Dienstplan-Import aus Tim:</strong> Die Anzahl der Tage vorwärts, für die Sie Dienstpläne importieren möchten.</li>
+<li><strong>Produktivitätsfaktor:</strong> Effektive Arbeitsstunden in Prozent. Der Standardwert ist &quot;100%.&quot;</li>
+<li><strong>Abteilungs-IDs für den Dienstplan-Import:</strong> Kommagetrennte Abteilungs-IDs.</li>
+</ul>
+<p>Klicken Sie abschließend auf die Schaltfläche &quot;Verbindung testen&quot;, um zu prüfen, ob Sie eine Verbindung zum Tim Enterprise-Server herstellen können und Ihre Konfigurationen korrekt sind.</p>
+</div>
+<div class="section" id="export">
+<h2><a class="toc-backref" href="#toc-entry-8">Export</a></h2>
+<p>Im Projektfenster unter &quot;Allgemeine Daten&quot; können Sie den Export von Stundenzetteln zum Tim Enterprise-Server starten.</p>
+<p>Geben Sie den &quot;Tim-Produktcode&quot; ein und klicken Sie auf die Schaltfläche &quot;Nach Tim exportieren&quot;, um den Export zu starten.</p>
+<p>Der Tim-Konnektor fügt zusammen mit dem Produktcode die folgenden Felder hinzu:</p>
+<ul class="simple">
+<li>Den vollständigen Namen des Mitarbeiters/Benutzers.</li>
+<li>Das Datum, an dem der Mitarbeiter an einer Aufgabe gearbeitet hat.</li>
+<li>Den Aufwand bzw. die für die Aufgabe geleisteten Stunden.</li>
+<li>Eine Option, die angibt, ob Tim Enterprise die Registrierung aktualisieren oder eine neue einfügen soll.</li>
+</ul>
+<p>Die Tim Enterprise-Antwort enthält nur eine Liste von Datensatz-IDs (ganzzahlige Werte). Damit ist es schwierig festzustellen, was schiefgelaufen ist, da die Antwortliste nur Zahlen enthält, die nicht mit den Anforderungsfeldern in Beziehung stehen. Die Exportanfrage (Registrierung in Tim) gilt als erfolgreich, wenn alle Listeneinträge keine &quot;0&quot;-Werte enthalten. Andernfalls ist die Exportanfrage für die Einträge mit &quot;0&quot;-Werten fehlgeschlagen. Daher können Sie nicht sehen, welche Anfrage fehlgeschlagen ist, da die Listeneinträge nur den Wert &quot;0&quot; enthalten. Die einzige Möglichkeit, dies zu ermitteln, besteht darin, die Protokolldatei auf dem Tim Enterprise-Server zu prüfen.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Nach erfolgreichem Export werden die Informationen in die Datenbank geschrieben und der Tim-Bildschirm mit dem zuletzt exportierten Datum und Produktcode aktualisiert.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Die Erfolgs- oder Fehlerinformation wird in einem Popup-Fenster angezeigt.</p>
+</div>
+</div>
+<div class="section" id="export-zeitplanung">
+<h2><a class="toc-backref" href="#toc-entry-9">Export-Zeitplanung</a></h2>
+<p>Der Exportprozess kann auch über den Scheduler durchgeführt werden. Gehen Sie zum Bildschirm &quot;Auftragsplanung&quot;. Dort können Sie einen Tim-Exportauftrag konfigurieren. Der Auftrag sucht nach den zuletzt exportierten Stundenzetteln in der Datenbank und exportiert sie entsprechend neu. Siehe auch das Scheduler-Handbuch.</p>
+</div>
+<div class="section" id="import">
+<h2><a class="toc-backref" href="#toc-entry-10">Import</a></h2>
+<p>Der Import von Dienstplänen funktioniert nur mithilfe des Schedulers. Es gibt keine Benutzeroberfläche dafür, da keine Eingaben vom Benutzer erforderlich sind. Gehen Sie zum Bildschirm &quot;Auftragsplanung&quot; und konfigurieren Sie einen Tim-Importauftrag. Der Auftrag durchläuft alle in den Konnektor-Eigenschaften konfigurierten Abteilungen und importiert alle Dienstpläne für jede Abteilung. Siehe auch das Scheduler-Handbuch.</p>
+<p>Beim Import fügt der Tim-Konnektor folgende Felder in die Anfrage ein:</p>
+<ul class="simple">
+<li><strong>Zeitraum:</strong> Der Zeitraum (Datum von – Datum bis), für den Sie den Dienstplan importieren möchten. Dieser kann als Filterkriterium angegeben werden.</li>
+<li><strong>Abteilung:</strong> Die Abteilung, für die Sie den Dienstplan importieren möchten. Abteilungen sind konfigurierbar.</li>
+<li>Die interessierenden Felder (wie Personeninformation, Dienstplankategorie usw.), die der Tim-Server in seine Antwort einbeziehen soll.</li>
+</ul>
+<p>Die Importantwort enthält die folgenden Felder, die zur Verwaltung der Ausnahmetage in <em>LibrePlan</em> ausreichend sind:</p>
+<ul class="simple">
+<li><strong>Personeninformation:</strong> Name und Netzwerkname.</li>
+<li><strong>Abteilung:</strong> Die Abteilung, in der der Mitarbeiter tätig ist.</li>
+<li><strong>Dienstplankategorie:</strong> Informationen zur An-/Abwesenheit (Aanwzig/afwezig) des Mitarbeiters und zum Grund (<em>LibrePlan</em>-Ausnahmetyp) bei Abwesenheit des Mitarbeiters.</li>
+<li><strong>Datum:</strong> Das Datum, an dem der Mitarbeiter anwesend/abwesend ist.</li>
+<li><strong>Uhrzeit:</strong> Die Startzeit der Anwesenheit/Abwesenheit, z. B. 08:00.</li>
+<li><strong>Dauer:</strong> Die Anzahl der Stunden, in denen der Mitarbeiter anwesend/abwesend ist.</li>
+</ul>
+<p>Bei der Konvertierung der Importantwort in <em>LibrePlan</em>'s „Ausnahmetag&quot; werden folgende Übersetzungen berücksichtigt:</p>
+<ul class="simple">
+<li>Wenn die Dienstplankategorie den Namen &quot;Vakantie&quot; enthält, wird sie als &quot;URLAUBSTAG&quot; übersetzt.</li>
+<li>Die Dienstplankategorie &quot;Feestdag&quot; wird als &quot;FEIERTAG&quot; übersetzt.</li>
+<li>Alle übrigen Kategorien wie &quot;Jus uren,&quot; &quot;PLB uren&quot; usw. müssen manuell zu den &quot;Kalenderausnahmetagen&quot; hinzugefügt werden.</li>
+</ul>
+<p>Darüber hinaus ist der Dienstplan in der Importantwort in zwei oder drei Teile pro Tag unterteilt: zum Beispiel Dienstplan-Morgen, Dienstplan-Nachmittag und Dienstplan-Abend. <em>LibrePlan</em> erlaubt jedoch nur einen &quot;Ausnahmetyp&quot; pro Tag. Der Tim-Konnektor ist dann dafür verantwortlich, diese Teile zu einem Ausnahmetyp zusammenzuführen. Das heißt, die Dienstplankategorie mit der längsten Dauer wird als gültiger Ausnahmetyp angenommen, aber die Gesamtdauer ist die Summe aller Dauern dieser Kategorieteile.</p>
+<p>Im Gegensatz zu <em>LibrePlan</em> bedeutet in Tim Enterprise die Gesamtdauer im Urlaubsfall, dass der Mitarbeiter für diese Gesamtdauer nicht verfügbar ist. In <em>LibrePlan</em> hingegen sollte die Gesamtdauer bei Urlaub des Mitarbeiters null sein. Der Tim-Konnektor übernimmt auch diese Übersetzung.</p>
+</div>
+</div>
+<div class="section" id="e-mail-konnektor">
+<h1><a class="toc-backref" href="#toc-entry-11">E-Mail-Konnektor</a></h1>
+<p>E-Mail ist eine Methode zum Austausch digitaler Nachrichten von einem Autor an einen oder mehrere Empfänger.</p>
+<p>Der E-Mail-Konnektor kann verwendet werden, um Verbindungseigenschaften für einen SMTP-Server (Simple Mail Transfer Protocol) festzulegen.</p>
+<p>Der <em>E-Mail-Konnektor</em> muss ordnungsgemäß konfiguriert werden, bevor er verwendet werden kann.</p>
+<div class="section" id="konfiguration-3">
+<h2><a class="toc-backref" href="#toc-entry-12">Konfiguration</a></h2>
+<p>Wählen Sie im Bildschirm &quot;Haupteinstellungen&quot; die Registerkarte &quot;Konnektoren&quot;. Wählen Sie im Konnektoren-Bildschirm den E-Mail-Konnektor aus der Dropdown-Liste aus. Daraufhin wird ein Eigenschaftenbearbeitungsbildschirm angezeigt.</p>
+<p>In diesem Bildschirm können Sie die folgenden Eigenschaftswerte konfigurieren:</p>
+<ul class="simple">
+<li><strong>Aktiviert:</strong> J/N, gibt an, ob Sie den E-Mail-Konnektor verwenden möchten. Der Standardwert ist &quot;N.&quot;</li>
+<li><strong>Protokoll:</strong> Die Art des SMTP-Protokolls.</li>
+<li><strong>Host:</strong> Der absolute Pfad zum SMTP-Server.</li>
+<li><strong>Port:</strong> Der Port des SMTP-Servers.</li>
+<li><strong>Absenderadresse:</strong> Die E-Mail-Adresse des Nachrichtenabsenders.</li>
+<li><strong>Benutzername:</strong> Der Benutzername für den SMTP-Server.</li>
+<li><strong>Passwort:</strong> Das Passwort für den SMTP-Server.</li>
+</ul>
+<p>Klicken Sie abschließend auf die Schaltfläche &quot;Verbindung testen&quot;, um zu prüfen, ob Sie eine Verbindung zum SMTP-Server herstellen können und Ihre Konfigurationen korrekt sind.</p>
+</div>
+<div class="section" id="e-mail-vorlage-bearbeiten">
+<h2><a class="toc-backref" href="#toc-entry-13">E-Mail-Vorlage bearbeiten</a></h2>
+<p>Im Projektfenster unter &quot;Konfiguration&quot; und dann &quot;E-Mail-Vorlagen bearbeiten&quot; können Sie die E-Mail-Vorlagen für Nachrichten ändern.</p>
+<p>Sie können wählen:</p>
+<ul class="simple">
+<li><strong>Vorlagensprache:</strong></li>
+<li><strong>Vorlagentyp:</strong></li>
+<li><strong>E-Mail-Betreff:</strong></li>
+<li><strong>Vorlageninhalt:</strong></li>
+</ul>
+<p>Sie müssen die Sprache angeben, da die Webanwendung E-Mails an Benutzer in der Sprache sendet, die sie in ihren Einstellungen gewählt haben. Sie müssen den Vorlagentyp auswählen. Der Typ ist die Benutzerrolle, d. h., diese E-Mail wird nur an Benutzer gesendet, die die ausgewählte Rolle (den Typ) besitzen. Sie müssen den E-Mail-Betreff festlegen. Der Betreff ist eine kurze Zusammenfassung des Themas der Nachricht. Sie müssen den E-Mail-Inhalt festlegen. Dies sind beliebige Informationen, die Sie an den Benutzer senden möchten. Es gibt auch einige Schlüsselwörter, die Sie in der Nachricht verwenden können; die Webanwendung verarbeitet sie und setzt anstelle des Schlüsselworts einen neuen Wert.</p>
+</div>
+<div class="section" id="e-mails-zeitplanen">
+<h2><a class="toc-backref" href="#toc-entry-14">E-Mails zeitplanen</a></h2>
+<p>Das Senden von E-Mails kann nur über den Scheduler durchgeführt werden. Gehen Sie zu &quot;Konfiguration&quot; und dann zum Bildschirm &quot;Auftragsplanung&quot;. Dort können Sie einen E-Mail-Sendeauftrag konfigurieren. Der Auftrag nimmt eine Liste von E-Mail-Benachrichtigungen, sammelt Daten und sendet sie an die E-Mail-Adresse des Benutzers. Siehe auch das Scheduler-Handbuch.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Die Erfolgs- oder Fehlerinformation wird in einem Popup-Fenster angezeigt.</p>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

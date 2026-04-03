@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Gestió de recursos</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="gestio-de-recursos">
+<h1 class="title">Gestió de recursos</h1>
+
+<div class="contents topic" id="contents">
+<span id="recursos"></span><p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#recursos-de-personal" id="toc-entry-1">Recursos de personal</a></li>
+<li><a class="reference internal" href="#recursos-de-maquines" id="toc-entry-2">Recursos de màquines</a></li>
+<li><a class="reference internal" href="#gestio-de-recursos-1" id="toc-entry-3">Gestió de recursos</a><ul>
+<li><a class="reference internal" href="#gestio-de-treballadors" id="toc-entry-4">Gestió de treballadors</a></li>
+<li><a class="reference internal" href="#gestio-de-maquines" id="toc-entry-5">Gestió de màquines</a></li>
+<li><a class="reference internal" href="#grups-de-treballadors-virtuals" id="toc-entry-6">Grups de treballadors virtuals</a></li>
+<li><a class="reference internal" href="#recursos-basats-en-cua" id="toc-entry-7">Recursos basats en cua</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>El programa gestiona dos tipus diferenciats de recursos: personal i màquines.</p>
+<div class="section" id="recursos-de-personal">
+<h1><a class="toc-backref" href="#toc-entry-1">Recursos de personal</a></h1>
+<p>Els recursos de personal representen els treballadors de l'empresa. Les seves característiques clau són:</p>
+<ul class="simple">
+<li>Compleixen un o més criteris genèrics o específics de treballadors.</li>
+<li>Poden ser assignats específicament a una tasca.</li>
+<li>Poden ser assignats genèricament a una tasca que requereixi un criteri de recursos.</li>
+<li>Poden tenir un calendari predeterminat o específic, segons sigui necessari.</li>
+</ul>
+</div>
+<div class="section" id="recursos-de-maquines">
+<h1><a class="toc-backref" href="#toc-entry-2">Recursos de màquines</a></h1>
+<p>Els recursos de màquines representen la maquinària de l'empresa. Les seves característiques clau són:</p>
+<ul class="simple">
+<li>Compleixen un o més criteris genèrics o específics de màquines.</li>
+<li>Poden ser assignats específicament a una tasca.</li>
+<li>Poden ser assignats genèricament a una tasca que requereixi un criteri de màquines.</li>
+<li>Poden tenir un calendari predeterminat o específic, segons sigui necessari.</li>
+<li>El programa inclou una pantalla de configuració on es pot definir un valor <em>alfa</em> per representar la proporció màquina/treballador.<ul>
+<li>El valor <em>alfa</em> indica la quantitat de temps de treballador necessari per operar la màquina. Per exemple, un valor alfa de 0,5 significa que cada 8 hores de funcionament de la màquina requereix 4 hores del temps d'un treballador.</li>
+<li>Els usuaris poden assignar un valor <em>alfa</em> específicament a un treballador, designant-lo per operar la màquina durant aquell percentatge de temps.</li>
+<li>Els usuaris també poden fer una assignació genèrica basada en un criteri, de manera que s'assigna un percentatge d'ús a tots els recursos que compleixen aquell criteri i disposen de temps lliure. L'assignació genèrica funciona de manera similar a l'assignació genèrica per a tasques, tal com es descriu anteriorment.</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="gestio-de-recursos-1">
+<h1><a class="toc-backref" href="#toc-entry-3">Gestió de recursos</a></h1>
+<p>Els usuaris poden crear, editar i desactivar (però no eliminar permanentment) treballadors i màquines dins de l'empresa navegant a la secció &quot;Recursos&quot;. Aquesta secció proporciona les funcionalitats següents:</p>
+<ul class="simple">
+<li><strong>Llista de treballadors:</strong> Mostra una llista numerada de treballadors, permetent als usuaris gestionar els seus detalls.</li>
+<li><strong>Llista de màquines:</strong> Mostra una llista numerada de màquines, permetent als usuaris gestionar els seus detalls.</li>
+</ul>
+<div class="section" id="gestio-de-treballadors">
+<h2><a class="toc-backref" href="#toc-entry-4">Gestió de treballadors</a></h2>
+<p>La gestió de treballadors s'accedeix anant a la secció &quot;Recursos&quot; i seleccionant &quot;Llista de treballadors&quot;. Els usuaris poden editar qualsevol treballador de la llista fent clic a la icona d'edició estàndard.</p>
+<p>En editar un treballador, els usuaris poden accedir a les pestanyes següents:</p>
+<ol class="arabic">
+<li><p class="first"><strong>Detalls del treballador:</strong> Aquesta pestanya permet als usuaris editar els detalls d'identificació bàsica del treballador:</p>
+<ul class="simple">
+<li>Nom</li>
+<li>Cognoms</li>
+<li>Document d'identitat nacional (DNI)</li>
+<li>Recurs basat en cua (vegeu la secció sobre Recursos basats en cua)</li>
+</ul>
+<div class="figure">
+<img alt="images/worker-personal-data.png" src="images/worker-personal-data.png" style="width: 444.5px; height: 102.0px;" />
+<p class="caption">Edició de dades personals dels treballadors</p>
+</div>
+</li>
+<li><p class="first"><strong>Criteris:</strong> Aquesta pestanya s'utilitza per configurar els criteris que compleix un treballador. Els usuaris poden assignar qualsevol criteri de treballador o genèric que considerin adequat. És crucial que els treballadors compleixin criteris per maximitzar la funcionalitat del programa. Per assignar criteris:</p>
+<ol class="lowerroman simple">
+<li>Feu clic al botó &quot;Afegir criteris&quot;.</li>
+<li>Cerqueu el criteri a afegir i seleccioneu el més adequat.</li>
+<li>Feu clic al botó &quot;Afegir&quot;.</li>
+<li>Seleccioneu la data d'inici quan el criteri és aplicable.</li>
+<li>Seleccioneu la data de fi per aplicar el criteri al recurs. Aquesta data és opcional si el criteri es considera indefinit.</li>
+</ol>
+<div class="figure">
+<img alt="images/worker-criterions.png" src="images/worker-criterions.png" style="width: 443.5px; height: 147.0px;" />
+<p class="caption">Associació de criteris amb treballadors</p>
+</div>
+</li>
+<li><p class="first"><strong>Calendari:</strong> Aquesta pestanya permet als usuaris configurar un calendari específic per al treballador. Tots els treballadors tenen un calendari predeterminat assignat; no obstant això, és possible assignar un calendari específic a cada treballador basat en un calendari existent.</p>
+<div class="figure">
+<img alt="images/worker-calendar.png" src="images/worker-calendar.png" style="width: 442.5px; height: 247.0px;" />
+<p class="caption">Pestanya de calendari d'un recurs</p>
+</div>
+</li>
+<li><p class="first"><strong>Categoria de costos:</strong> Aquesta pestanya permet als usuaris configurar la categoria de costos que compleix un treballador durant un període determinat. Aquesta informació s'utilitza per calcular els costos associats a un treballador en un projecte.</p>
+<div class="figure">
+<img alt="images/worker-costcategory.png" src="images/worker-costcategory.png" style="width: 443.0px; height: 129.0px;" />
+<p class="caption">Pestanya de categoria de costos d'un recurs</p>
+</div>
+</li>
+</ol>
+<p>L'assignació de recursos s'explica a la secció &quot;Assignació de recursos&quot;.</p>
+</div>
+<div class="section" id="gestio-de-maquines">
+<h2><a class="toc-backref" href="#toc-entry-5">Gestió de màquines</a></h2>
+<p>Les màquines es tracten com a recursos a tots els efectes. Per tant, de manera similar als treballadors, les màquines es poden gestionar i assignar a tasques. L'assignació de recursos es tracta a la secció &quot;Assignació de recursos&quot;, que explicarà les característiques específiques de les màquines.</p>
+<p>Les màquines es gestionen des de l'entrada del menú &quot;Recursos&quot;. Aquesta secció té una operació anomenada &quot;Llista de màquines&quot;, que mostra les màquines de l'empresa. Els usuaris poden editar o eliminar una màquina d'aquesta llista.</p>
+<p>En editar màquines, el sistema mostra una sèrie de pestanyes per gestionar detalls diversos:</p>
+<ol class="arabic">
+<li><p class="first"><strong>Detalls de la màquina:</strong> Aquesta pestanya permet als usuaris editar els detalls d'identificació de la màquina:</p>
+<ol class="lowerroman simple">
+<li>Nom</li>
+<li>Codi de la màquina</li>
+<li>Descripció de la màquina</li>
+</ol>
+<div class="figure">
+<img alt="images/machine-data.png" src="images/machine-data.png" style="width: 444.0px; height: 97.0px;" />
+<p class="caption">Edició dels detalls de la màquina</p>
+</div>
+</li>
+<li><p class="first"><strong>Criteris:</strong> Com passa amb els recursos de treballadors, aquesta pestanya s'utilitza per afegir criteris que compleix la màquina. Es poden assignar dos tipus de criteris a les màquines: específics de màquines o genèrics. No es poden assignar criteris de treballadors a les màquines. Per assignar criteris:</p>
+<ol class="lowerroman simple">
+<li>Feu clic al botó &quot;Afegir criteris&quot;.</li>
+<li>Cerqueu el criteri a afegir i seleccioneu el més adequat.</li>
+<li>Seleccioneu la data d'inici quan el criteri és aplicable.</li>
+<li>Seleccioneu la data de fi per aplicar el criteri al recurs. Aquesta data és opcional si el criteri es considera indefinit.</li>
+<li>Feu clic al botó &quot;Desa i continua&quot;.</li>
+</ol>
+<div class="figure">
+<img alt="images/machine-criterions.png" src="images/machine-criterions.png" style="width: 444.0px; height: 140.0px;" />
+<p class="caption">Assignació de criteris a màquines</p>
+</div>
+</li>
+<li><p class="first"><strong>Calendari:</strong> Aquesta pestanya permet als usuaris configurar un calendari específic per a la màquina. Totes les màquines tenen un calendari predeterminat assignat; no obstant això, és possible assignar un calendari específic a cada màquina basat en un calendari existent.</p>
+<div class="figure">
+<img alt="images/machine-calendar.png" src="images/machine-calendar.png" style="width: 443.5px; height: 216.5px;" />
+<p class="caption">Assignació de calendaris a màquines</p>
+</div>
+</li>
+<li><p class="first"><strong>Configuració de la màquina:</strong> Aquesta pestanya permet als usuaris configurar la proporció de màquines respecte als recursos de treballadors. Una màquina té un valor alfa que indica la proporció màquina/treballador. Tal com s'ha esmentat anteriorment, un valor alfa de 0,5 indica que es requereix 0,5 persones per cada dia complet de funcionament de la màquina. A partir del valor alfa, el sistema assigna automàticament els treballadors associats a la màquina un cop s'assigna la màquina a una tasca. Associar un treballador a una màquina es pot fer de dues maneres:</p>
+<ol class="lowerroman simple">
+<li><strong>Assignació específica:</strong> Assigneu un rang de dates durant el qual el treballador és assignat a la màquina. Aquesta és una assignació específica, ja que el sistema assigna automàticament hores al treballador quan es programa la màquina.</li>
+<li><strong>Assignació genèrica:</strong> Assigneu criteris que han de complir els treballadors assignats a la màquina. Això crea una assignació genèrica dels treballadors que compleixen els criteris.</li>
+</ol>
+<div class="figure">
+<img alt="images/machine-configuration.png" src="images/machine-configuration.png" style="width: 442.5px; height: 231.5px;" />
+<p class="caption">Configuració de màquines</p>
+</div>
+</li>
+<li><p class="first"><strong>Categoria de costos:</strong> Aquesta pestanya permet als usuaris configurar la categoria de costos que compleix una màquina durant un període determinat. Aquesta informació s'utilitza per calcular els costos associats a una màquina en un projecte.</p>
+<div class="figure">
+<img alt="images/machine-costcategory.png" src="images/machine-costcategory.png" style="width: 439.5px; height: 103.0px;" />
+<p class="caption">Assignació de categories de costos a màquines</p>
+</div>
+</li>
+</ol>
+</div>
+<div class="section" id="grups-de-treballadors-virtuals">
+<h2><a class="toc-backref" href="#toc-entry-6">Grups de treballadors virtuals</a></h2>
+<p>El programa permet als usuaris crear grups de treballadors virtuals, que no són treballadors reals sinó personal simulat. Aquests grups permeten als usuaris modelar l'augment de la capacitat de producció en moments específics, basant-se en la configuració del calendari.</p>
+<p>Els grups de treballadors virtuals permeten als usuaris avaluar com la planificació del projecte es veuria afectada per la contractació i l'assignació de personal que compleixi criteris específics, ajudant així en la presa de decisions.</p>
+<p>Les pestanyes per crear grups de treballadors virtuals són les mateixes que les de configuració dels treballadors:</p>
+<ul class="simple">
+<li>Detalls generals</li>
+<li>Criteris assignats</li>
+<li>Calendaris</li>
+<li>Hores associades</li>
+</ul>
+<p>La diferència entre els grups de treballadors virtuals i els treballadors reals és que els grups de treballadors virtuals tenen un nom per al grup i una quantitat, que representa el nombre de persones reals del grup. Hi ha també un camp per a comentaris, on es pot proporcionar informació addicional, com ara quin projecte requeriria la contractació equivalent al grup de treballadors virtuals.</p>
+<div class="figure">
+<img alt="images/virtual-resources.png" src="images/virtual-resources.png" style="width: 424.5px; height: 109.0px;" />
+<p class="caption">Recursos virtuals</p>
+</div>
+</div>
+<div class="section" id="recursos-basats-en-cua">
+<h2><a class="toc-backref" href="#toc-entry-7">Recursos basats en cua</a></h2>
+<p>Els recursos basats en cua són un tipus específic d'element productiu que pot estar sense assignar o tenir una dedicació del 100%. En altres paraules, no poden tenir més d'una tasca programada al mateix temps, ni poden ser sobreassignats.</p>
+<p>Per a cada recurs basat en cua, es crea automàticament una cua. Les tasques programades per a aquests recursos es poden gestionar específicament mitjançant els mètodes d'assignació proporcionats, creant assignacions automàtiques entre tasques i cues que coincideixin amb els criteris requerits, o movent tasques entre cues.</p>
+</div>
+</div>
+</div>
+</body>
+</html>

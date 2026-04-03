@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Plánovač</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="planovac">
+<h1 class="title">Plánovač</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#zobrazeni-seznamu-planovani-uloh" id="toc-entry-1">Zobrazení seznamu plánování úloh</a></li>
+<li><a class="reference internal" href="#pridat-nebo-upravit-ulohu" id="toc-entry-2">Přidat nebo upravit úlohu</a><ul>
+<li><a class="reference internal" href="#vyskakovaci-okno-vyrazu-cron" id="toc-entry-3">Vyskakovací okno výrazu cron</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#odebrat-ulohu" id="toc-entry-4">Odebrat úlohu</a></li>
+<li><a class="reference internal" href="#spustit-ulohu-rucne" id="toc-entry-5">Spustit úlohu ručně</a></li>
+</ul>
+</div>
+<p>Plánovač je navržen pro dynamické plánování úloh. Je vyvinut pomocí <em>Spring Framework Quartz scheduler</em>.</p>
+<p>Pro efektivní použití tohoto plánovače musí být nejprve vytvořeny úlohy (úlohy Quartz), které mají být naplánovány. Tyto úlohy pak lze přidat do databáze, protože všechny úlohy, které mají být naplánovány, jsou uloženy v databázi.</p>
+<p>Když se plánovač spustí, načte z databáze úlohy, které mají být naplánovány nebo odstraněny ze seznamu plánovaných, a podle toho je naplánuje nebo odstraní. Poté lze úlohy dynamicky přidávat, aktualizovat nebo odstraňovat pomocí uživatelského rozhraní <tt class="docutils literal">Plánování úloh</tt>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Plánovač se spustí při spuštění webové aplikace LibrePlan a zastaví se při zastavení aplikace.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Tento plánovač podporuje pro plánování úloh pouze <tt class="docutils literal">výrazy cron</tt>.</p>
+</div>
+<p>Kritéria, která plánovač používá při svém spuštění pro naplánování nebo odstranění úloh, jsou následující:</p>
+<p>Pro všechny úlohy:</p>
+<ul class="simple">
+<li>Naplánovat<ul>
+<li>Úloha má <em>konektor</em> a <em>konektor</em> je aktivován a úloha smí být naplánována.</li>
+<li>Úloha nemá <em>konektor</em> a smí být naplánována.</li>
+</ul>
+</li>
+<li>Odstranit<ul>
+<li>Úloha má <em>konektor</em> a <em>konektor</em> není aktivován.</li>
+<li>Úloha má <em>konektor</em> a <em>konektor</em> je aktivován, ale úloha nesmí být naplánována.</li>
+<li>Úloha nemá <em>konektor</em> a nesmí být naplánována.</li>
+</ul>
+</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Úlohy nelze přeplánovat ani odebrat ze seznamu plánovaných, pokud jsou právě spuštěny.</p>
+</div>
+<div class="section" id="zobrazeni-seznamu-planovani-uloh">
+<h1><a class="toc-backref" href="#toc-entry-1">Zobrazení seznamu plánování úloh</a></h1>
+<p>Zobrazení <tt class="docutils literal">Seznam plánování úloh</tt> umožňuje uživatelům:</p>
+<ul class="simple">
+<li>Přidat novou úlohu.</li>
+<li>Upravit existující úlohu.</li>
+<li>Odebrat úlohu.</li>
+<li>Spustit proces ručně.</li>
+</ul>
+</div>
+<div class="section" id="pridat-nebo-upravit-ulohu">
+<h1><a class="toc-backref" href="#toc-entry-2">Přidat nebo upravit úlohu</a></h1>
+<p>Z pohledu <tt class="docutils literal">Seznamu plánování úloh</tt> klikněte na:</p>
+<ul class="simple">
+<li><tt class="docutils literal">Vytvořit</tt> pro přidání nové úlohy, nebo</li>
+<li><tt class="docutils literal">Upravit</tt> pro úpravu vybrané úlohy.</li>
+</ul>
+<p>Obě akce otevřou formulář pro vytvoření/úpravu <tt class="docutils literal">úlohy</tt>. <tt class="docutils literal">Formulář</tt> zobrazuje následující vlastnosti:</p>
+<ul class="simple">
+<li>Pole:<ul>
+<li><strong>Skupina úloh:</strong> Název skupiny úloh.</li>
+<li><strong>Název úlohy:</strong> Název úlohy.</li>
+<li><strong>Výraz cron:</strong> Pole pouze pro čtení s tlačítkem <tt class="docutils literal">Upravit</tt> pro otevření vstupního okna <tt class="docutils literal">výrazu cron</tt>.</li>
+<li><strong>Název třídy úlohy:</strong> <tt class="docutils literal">Rozevírací seznam</tt> pro výběr úlohy (existující úlohy).</li>
+<li><strong>Konektor:</strong> <tt class="docutils literal">Rozevírací seznam</tt> pro výběr konektoru. Není povinné.</li>
+<li><strong>Naplánovat:</strong> Zaškrtávací políčko pro označení, zda tuto úlohu naplánovat.</li>
+</ul>
+</li>
+<li>Tlačítka:<ul>
+<li><strong>Uložit:</strong> Pro uložení nebo aktualizaci úlohy v databázi i v plánovači. Uživatel je poté přesměrován zpět do <tt class="docutils literal">Zobrazení seznamu plánování úloh</tt>.</li>
+<li><strong>Uložit a pokračovat:</strong> Stejné jako „Uložit&quot;, ale uživatel není přesměrován zpět do <tt class="docutils literal">Zobrazení seznamu plánování úloh</tt>.</li>
+<li><strong>Zrušit:</strong> Nic se neuloží a uživatel je přesměrován zpět do <tt class="docutils literal">Zobrazení seznamu plánování úloh</tt>.</li>
+</ul>
+</li>
+<li>A část s nápovědou ohledně syntaxe výrazu cron.</li>
+</ul>
+<div class="section" id="vyskakovaci-okno-vyrazu-cron">
+<h2><a class="toc-backref" href="#toc-entry-3">Vyskakovací okno výrazu cron</a></h2>
+<p>Pro správné zadání <tt class="docutils literal">výrazu cron</tt> se používá vyskakovací formulář <tt class="docutils literal">výrazu cron</tt>. V tomto formuláři můžete zadat požadovaný <tt class="docutils literal">výraz cron</tt>. Viz také nápověda k <tt class="docutils literal">výrazu cron</tt>. Pokud zadáte neplatný <tt class="docutils literal">výraz cron</tt>, budete o tom okamžitě upozorněni.</p>
+</div>
+</div>
+<div class="section" id="odebrat-ulohu">
+<h1><a class="toc-backref" href="#toc-entry-4">Odebrat úlohu</a></h1>
+<p>Kliknutím na tlačítko <tt class="docutils literal">Odebrat</tt> smažete úlohu z databáze i z plánovače. Úspěch nebo selhání této akce bude zobrazeno.</p>
+</div>
+<div class="section" id="spustit-ulohu-rucne">
+<h1><a class="toc-backref" href="#toc-entry-5">Spustit úlohu ručně</a></h1>
+<p>Jako alternativu k čekání na spuštění úlohy podle plánu můžete kliknutím na toto tlačítko spustit proces přímo. Poté budou informace o úspěchu nebo selhání zobrazeny ve <tt class="docutils literal">vyskakovacím okně</tt>.</p>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Planejamento de Tarefas</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="planejamento-de-tarefas">
+<h1 class="title">Planejamento de Tarefas</h1>
+
+<div class="contents topic" id="contents">
+<span id="planificacion"></span><p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#planejamento-de-tarefas-1" id="toc-entry-1">Planejamento de Tarefas</a><ul>
+<li><a class="reference internal" href="#visualizacao-de-planejamento" id="toc-entry-2">Visualização de Planejamento</a></li>
+<li><a class="reference internal" href="#visualizacao-de-carga-de-recursos" id="toc-entry-3">Visualização de Carga de Recursos</a></li>
+<li><a class="reference internal" href="#visualizacao-de-lista-de-pedidos" id="toc-entry-4">Visualização de Lista de Pedidos</a></li>
+<li><a class="reference internal" href="#visualizacao-de-atribuicao-avancada" id="toc-entry-5">Visualização de Atribuição Avançada</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="planejamento-de-tarefas-1">
+<h1><a class="toc-backref" href="#toc-entry-1">Planejamento de Tarefas</a></h1>
+<p>O planejamento no LibrePlan é um processo descrito ao longo do guia do usuário, sendo os capítulos sobre pedidos e atribuição de recursos particularmente importantes. Este capítulo descreve os procedimentos básicos de planejamento após os diagramas de Gantt e pedidos estarem corretamente configurados.</p>
+<div class="figure">
+<img alt="images/planning-view.png" src="images/planning-view.png" style="width: 354.2px; height: 229.24999999999997px;" />
+<p class="caption">Visualização de Planejamento do Trabalho</p>
+</div>
+<p>Assim como na visão geral da empresa, a visualização de planejamento do projeto está dividida em várias visualizações com base nas informações que estão sendo analisadas. As visualizações disponíveis para um projeto específico são:</p>
+<ul class="simple">
+<li>Visualização de Planejamento</li>
+<li>Visualização de Carga de Recursos</li>
+<li>Visualização de Lista de Pedidos</li>
+<li>Visualização de Atribuição Avançada</li>
+</ul>
+<div class="section" id="visualizacao-de-planejamento">
+<h2><a class="toc-backref" href="#toc-entry-2">Visualização de Planejamento</a></h2>
+<p>A Visualização de Planejamento combina três perspectivas diferentes:</p>
+<ul class="simple">
+<li><strong>Planejamento do Projeto:</strong> O planejamento do projeto é exibido na parte superior direita do programa como um diagrama de Gantt. Esta visualização permite aos usuários mover temporariamente tarefas, atribuir dependências entre elas, definir marcos e estabelecer restrições.</li>
+<li><strong>Carga de Recursos:</strong> A visualização de Carga de Recursos, localizada na parte inferior direita da tela, mostra a disponibilidade de recursos com base nas atribuições, em oposição às atribuições feitas a tarefas. As informações exibidas nesta visualização são as seguintes:<ul>
+<li><strong>Área Roxa:</strong> Indica uma carga de recursos abaixo de 100% de sua capacidade.</li>
+<li><strong>Área Verde:</strong> Indica uma carga de recursos abaixo de 100%, resultante do recurso estar planejado para outro projeto.</li>
+<li><strong>Área Laranja:</strong> Indica uma carga de recursos superior a 100% como resultado do projeto atual.</li>
+<li><strong>Área Amarela:</strong> Indica uma carga de recursos superior a 100% como resultado de outros projetos.</li>
+</ul>
+</li>
+<li><strong>Visualização de Gráfico e Indicadores de Valor Agregado:</strong> Estes podem ser visualizados a partir da aba &quot;Valor Agregado&quot;. O gráfico gerado baseia-se na técnica de valor agregado, e os indicadores são calculados para cada dia útil do projeto. Os indicadores calculados são:<ul>
+<li><strong>BCWS (Custo Orçado do Trabalho Programado):</strong> A função de tempo cumulativa para o número de horas planejadas até uma determinada data. Será 0 no início planejado da tarefa e igual ao número total de horas planejadas no final. Como em todos os gráficos cumulativos, sempre aumentará. A função para uma tarefa será a soma das atribuições diárias até a data de cálculo. Esta função tem valores para todos os momentos, desde que os recursos tenham sido atribuídos.</li>
+<li><strong>ACWP (Custo Real do Trabalho Realizado):</strong> A função de tempo cumulativa para as horas registradas em relatórios de trabalho até uma determinada data. Esta função só terá um valor de 0 antes da data do primeiro relatório de trabalho da tarefa, e seu valor continuará a aumentar à medida que o tempo passa e as horas dos relatórios de trabalho são adicionadas. Não terá valor após a data do último relatório de trabalho.</li>
+<li><strong>BCWP (Custo Orçado do Trabalho Realizado):</strong> A função de tempo cumulativa que inclui o valor resultante de multiplicar o progresso da tarefa pela quantidade de trabalho que se estimou ser necessária para sua conclusão. Os valores desta função aumentam à medida que o tempo passa, assim como os valores de progresso. O progresso é multiplicado pelo número total de horas estimadas para todas as tarefas. O valor BCWP é a soma dos valores para as tarefas que estão sendo calculadas. O progresso é totalizado quando está configurado.</li>
+<li><strong>CV (Variação de Custo):</strong> CV = BCWP - ACWP</li>
+<li><strong>SV (Variação de Cronograma):</strong> SV = BCWP - BCWS</li>
+<li><strong>BAC (Orçamento na Conclusão):</strong> BAC = máx (BCWS)</li>
+<li><strong>EAC (Estimativa na Conclusão):</strong> EAC = (ACWP / BCWP) * BAC</li>
+<li><strong>VAC (Variação na Conclusão):</strong> VAC = BAC - EAC</li>
+<li><strong>ETC (Estimativa para Concluir):</strong> ETC = EAC - ACWP</li>
+<li><strong>CPI (Índice de Desempenho de Custos):</strong> CPI = BCWP / ACWP</li>
+<li><strong>SPI (Índice de Desempenho de Cronograma):</strong> SPI = BCWP / BCWS</li>
+</ul>
+</li>
+</ul>
+<p>Na visualização de planejamento do projeto, os usuários podem realizar as seguintes ações:</p>
+<ul class="simple">
+<li><strong>Atribuir Dependências:</strong> Clique com o botão direito em uma tarefa, escolha &quot;Adicionar dependência&quot; e arraste o ponteiro do mouse para a tarefa à qual a dependência deve ser atribuída.<ul>
+<li>Para alterar o tipo de dependência, clique com o botão direito na dependência e escolha o tipo desejado.</li>
+</ul>
+</li>
+<li><strong>Criar um Novo Marco:</strong> Clique na tarefa antes da qual o marco deve ser adicionado e selecione a opção &quot;Adicionar marco&quot;. Os marcos podem ser movidos selecionando o marco com o ponteiro do mouse e arrastando-o para a posição desejada.</li>
+<li><strong>Mover Tarefas sem Perturbar Dependências:</strong> Clique com o botão direito no corpo da tarefa e arraste-a para a posição desejada. Se nenhuma restrição ou dependência for violada, o sistema atualizará a atribuição diária de recursos à tarefa e colocará a tarefa na data selecionada.</li>
+<li><strong>Atribuir Restrições:</strong> Clique na tarefa em questão e selecione a opção &quot;Propriedades da tarefa&quot;. Uma janela pop-up aparecerá com um campo &quot;Restrições&quot; que pode ser modificado. As restrições podem conflitar com as dependências, razão pela qual cada pedido especifica se as dependências têm prioridade sobre as restrições. As restrições que podem ser estabelecidas são:<ul>
+<li><strong>O mais cedo possível:</strong> Indica que a tarefa deve começar o mais cedo possível.</li>
+<li><strong>Não antes de:</strong> Indica que a tarefa não deve começar antes de uma determinada data.</li>
+<li><strong>Começar em uma data específica:</strong> Indica que a tarefa deve começar em uma data específica.</li>
+</ul>
+</li>
+</ul>
+<p>A visualização de planejamento também oferece vários procedimentos que funcionam como opções de visualização:</p>
+<ul class="simple">
+<li><strong>Nível de Zoom:</strong> Os usuários podem escolher o nível de zoom desejado. Existem vários níveis de zoom: anual, quadrimestral, mensal, semanal e diário.</li>
+<li><strong>Filtros de Pesquisa:</strong> Os usuários podem filtrar tarefas com base em etiquetas ou critérios.</li>
+<li><strong>Caminho Crítico:</strong> Como resultado do uso do algoritmo <em>Dijkstra</em> para calcular caminhos em grafos, o caminho crítico foi implementado. Ele pode ser visualizado clicando no botão &quot;Caminho crítico&quot; nas opções de visualização.</li>
+<li><strong>Mostrar Etiquetas:</strong> Permite aos usuários ver as etiquetas atribuídas às tarefas em um projeto, que podem ser visualizadas na tela ou impressas.</li>
+<li><strong>Mostrar Recursos:</strong> Permite aos usuários ver os recursos atribuídos às tarefas em um projeto, que podem ser visualizados na tela ou impressos.</li>
+<li><strong>Imprimir:</strong> Permite aos usuários imprimir o diagrama de Gantt que está sendo visualizado.</li>
+</ul>
+</div>
+<div class="section" id="visualizacao-de-carga-de-recursos">
+<h2><a class="toc-backref" href="#toc-entry-3">Visualização de Carga de Recursos</a></h2>
+<p>A Visualização de Carga de Recursos fornece uma lista de recursos que contém uma lista de tarefas ou critérios que geram cargas de trabalho. Cada tarefa ou critério é mostrado como um diagrama de Gantt para que as datas de início e fim da carga possam ser vistas. Uma cor diferente é mostrada dependendo de a carga do recurso ser superior ou inferior a 100%:</p>
+<ul class="simple">
+<li><strong>Verde:</strong> Carga inferior a 100%</li>
+<li><strong>Laranja:</strong> Carga de 100%</li>
+<li><strong>Vermelho:</strong> Carga superior a 100%</li>
+</ul>
+<div class="figure">
+<img alt="images/resource-load.png" src="images/resource-load.png" style="width: 353.5px; height: 228.89999999999998px;" />
+<p class="caption">Visualização de Carga de Recursos para um Pedido Específico</p>
+</div>
+<p>Se o ponteiro do mouse for colocado sobre o diagrama de Gantt do recurso, a porcentagem de carga para o trabalhador será mostrada.</p>
+</div>
+<div class="section" id="visualizacao-de-lista-de-pedidos">
+<h2><a class="toc-backref" href="#toc-entry-4">Visualização de Lista de Pedidos</a></h2>
+<p>A Visualização de Lista de Pedidos permite aos usuários acessar as opções de edição e exclusão de pedidos. Consulte o capítulo &quot;Pedidos&quot; para mais informações.</p>
+</div>
+<div class="section" id="visualizacao-de-atribuicao-avancada">
+<h2><a class="toc-backref" href="#toc-entry-5">Visualização de Atribuição Avançada</a></h2>
+<p>A Visualização de Atribuição Avançada é explicada em profundidade no capítulo &quot;Atribuição de Recursos&quot;.</p>
+</div>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Sestava celkových odpracovaných hodin podle zdroje v měsíci</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="sestava-celkovych-odpracovanych-hodin-podle-zdroje-v-mesici">
+<h1 class="title">Sestava celkových odpracovaných hodin podle zdroje v měsíci</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#ucel" id="toc-entry-1">Účel</a></li>
+<li><a class="reference internal" href="#vstupni-parametry-a-filtry" id="toc-entry-2">Vstupní parametry a filtry</a></li>
+<li><a class="reference internal" href="#vystup" id="toc-entry-3">Výstup</a><ul>
+<li><a class="reference internal" href="#zahlavi" id="toc-entry-4">Záhlaví</a></li>
+<li><a class="reference internal" href="#zapati" id="toc-entry-5">Zápatí</a></li>
+<li><a class="reference internal" href="#telo" id="toc-entry-6">Tělo</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="ucel">
+<h1><a class="toc-backref" href="#toc-entry-1">Účel</a></h1>
+<p>Tato sestava poskytuje celkový počet hodin odpracovaných každým zdrojem v daném měsíci. Tyto informace mohou být užitečné pro stanovení přesčasů pracovníků nebo, v závislosti na organizaci, počtu hodin, za které má být každý zdroj odměněn.</p>
+<p>Aplikace sleduje pracovní výkazy jak pro pracovníky, tak pro stroje. U strojů sestava sčítá počet hodin jejich provozu v průběhu měsíce.</p>
+</div>
+<div class="section" id="vstupni-parametry-a-filtry">
+<h1><a class="toc-backref" href="#toc-entry-2">Vstupní parametry a filtry</a></h1>
+<p>Pro vygenerování této sestavy musí uživatelé zadat rok a měsíc, pro které chtějí načíst celkový počet hodin odpracovaných každým zdrojem.</p>
+</div>
+<div class="section" id="vystup">
+<h1><a class="toc-backref" href="#toc-entry-3">Výstup</a></h1>
+<p>Výstupní formát je následující:</p>
+<div class="section" id="zahlavi">
+<h2><a class="toc-backref" href="#toc-entry-4">Záhlaví</a></h2>
+<p>Záhlaví sestavy zobrazuje:</p>
+<blockquote>
+<ul class="simple">
+<li><em>Rok</em>, ke kterému se data v sestavě vztahují.</li>
+<li><em>Měsíc</em>, ke kterému se data v sestavě vztahují.</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="zapati">
+<h2><a class="toc-backref" href="#toc-entry-5">Zápatí</a></h2>
+<p>Zápatí zobrazuje datum, kdy byla sestava vygenerována.</p>
+</div>
+<div class="section" id="telo">
+<h2><a class="toc-backref" href="#toc-entry-6">Tělo</a></h2>
+<p>Datová část sestavy se skládá z jedné tabulky se dvěma sloupci:</p>
+<blockquote>
+<ul class="simple">
+<li>Jeden sloupec označený <strong>Název</strong> pro název zdroje.</li>
+<li>Jeden sloupec označený <strong>Hodiny</strong> s celkovým počtem hodin odpracovaných zdrojem v daném řádku.</li>
+</ul>
+</blockquote>
+<p>Na konci je řádek, který agreguje celkový počet hodin odpracovaných všemi zdroji ve zadaném <em>měsíci</em> a <em>roce</em>.</p>
+</div>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Connectors</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="connectors">
+<h1 class="title">Connectors</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#configuracio" id="toc-entry-1">Configuració</a></li>
+<li><a class="reference internal" href="#connector-jira" id="toc-entry-2">Connector JIRA</a><ul>
+<li><a class="reference internal" href="#configuracio-1" id="toc-entry-3">Configuració</a></li>
+<li><a class="reference internal" href="#sincronitzacio" id="toc-entry-4">Sincronització</a></li>
+<li><a class="reference internal" href="#planificacio" id="toc-entry-5">Planificació</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#connector-tim-enterprise" id="toc-entry-6">Connector Tim Enterprise</a><ul>
+<li><a class="reference internal" href="#configuracio-2" id="toc-entry-7">Configuració</a></li>
+<li><a class="reference internal" href="#exportacio" id="toc-entry-8">Exportació</a></li>
+<li><a class="reference internal" href="#planificacio-de-l-exportacio" id="toc-entry-9">Planificació de l'Exportació</a></li>
+<li><a class="reference internal" href="#importacio" id="toc-entry-10">Importació</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#connector-de-correu-electronic" id="toc-entry-11">Connector de Correu Electrònic</a><ul>
+<li><a class="reference internal" href="#configuracio-3" id="toc-entry-12">Configuració</a></li>
+<li><a class="reference internal" href="#editar-plantilla-de-correu-electronic" id="toc-entry-13">Editar Plantilla de Correu Electrònic</a></li>
+<li><a class="reference internal" href="#planificacio-de-correus-electronics" id="toc-entry-14">Planificació de Correus Electrònics</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>Els connectors són aplicacions client de <em>LibrePlan</em> que es poden usar per comunicar-se amb servidors (web) per recuperar dades, processar-les i emmagatzemar-les. Actualment, hi ha tres connectors: el connector JIRA, el connector Tim Enterprise i el connector de correu electrònic.</p>
+<div class="section" id="configuracio">
+<h1><a class="toc-backref" href="#toc-entry-1">Configuració</a></h1>
+<p>Els connectors s'han de configurar correctament abans de poder-los usar. Es poden configurar des de la pantalla &quot;Configuració principal&quot; sota la pestanya &quot;Connectors.&quot;</p>
+<p>La pantalla del connector inclou:</p>
+<ul class="simple">
+<li><strong>Llista desplegable:</strong> Una llista de connectors disponibles.</li>
+<li><strong>Pantalla d'edició de propietats:</strong> Un formulari d'edició de propietats per al connector seleccionat.</li>
+<li><strong>Botó de prova de connexió:</strong> Un botó per provar la connexió amb el connector.</li>
+</ul>
+<p>Seleccioneu el connector que voleu configurar de la llista desplegable de connectors. Es mostrarà un formulari d'editor de propietats per al connector seleccionat. Al formulari d'editor de propietats, podeu canviar els valors de les propietats segons sigui necessari i provar les vostres configuracions usant el botó &quot;Provar connexió.&quot;</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Les propietats estan configurades amb valors per defecte. La propietat més important és &quot;Activat.&quot; Per defecte, s'estableix en &quot;N.&quot; Això indica que el connector no s'usarà tret que canvieu el valor a &quot;Y&quot; i deseu els canvis.</p>
+</div>
+</div>
+<div class="section" id="connector-jira">
+<h1><a class="toc-backref" href="#toc-entry-2">Connector JIRA</a></h1>
+<p>JIRA és un sistema de seguiment d'incidències i projectes.</p>
+<p>El connector JIRA és una aplicació que es pot usar per sol·licitar dades del servidor web JIRA per a les incidències JIRA i processar la resposta. La sol·licitud es basa en etiquetes JIRA. A JIRA, les etiquetes es poden usar per categoritzar les incidències. La sol·licitud s'estructura de la manera següent: recuperar totes les incidències categoritzades per aquest nom d'etiqueta.</p>
+<p>El connector rep la resposta, que en aquest cas són les incidències, i les converteix en &quot;Elements de comanda&quot; i &quot;Fulls de temps&quot; de <em>LibrePlan</em>.</p>
+<p>El <em>connector JIRA</em> s'ha de configurar correctament abans de poder-lo usar.</p>
+<div class="section" id="configuracio-1">
+<h2><a class="toc-backref" href="#toc-entry-3">Configuració</a></h2>
+<p>Des de la pantalla &quot;Configuració principal&quot;, trieu la pestanya &quot;Connectors.&quot; A la pantalla de connectors, seleccioneu el connector JIRA de la llista desplegable. Llavors es mostrarà una pantalla d'editor de propietats.</p>
+<p>En aquesta pantalla, podeu configurar els valors de propietat següents:</p>
+<ul class="simple">
+<li><strong>Activat:</strong> Y/N, indicant si voleu usar el connector JIRA. El valor per defecte és &quot;N.&quot;</li>
+<li><strong>URL del servidor:</strong> La ruta absoluta al servidor web JIRA.</li>
+<li><strong>Nom d'usuari i contrasenya:</strong> Les credencials d'usuari per a l'autorització.</li>
+<li><strong>Etiquetes JIRA: llista d'etiquetes separades per comes o URL:</strong> Podeu introduir l'URL de l'etiqueta o una llista d'etiquetes separades per comes.</li>
+<li><strong>Tipus d'hores:</strong> El tipus d'hores de treball. El valor per defecte és &quot;Per defecte.&quot;</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><strong>Etiquetes JIRA:</strong> Actualment, el servidor web JIRA no admet proporcionar una llista de totes les etiquetes disponibles. Com a solució alternativa, hem desenvolupat un script PHP senzill que realitza una consulta SQL senzilla a la base de dades JIRA per obtenir totes les etiquetes diferents. Podeu usar aquest script PHP com a &quot;URL d'etiquetes JIRA&quot; o introduir les etiquetes que voleu com a text separat per comes al camp &quot;Etiquetes JIRA.&quot;</p>
+</div>
+<p>Finalment, feu clic al botó &quot;Provar connexió&quot; per provar si podeu connectar-vos al servidor web JIRA i que les vostres configuracions siguin correctes.</p>
+</div>
+<div class="section" id="sincronitzacio">
+<h2><a class="toc-backref" href="#toc-entry-4">Sincronització</a></h2>
+<p>Des de la finestra del projecte, sota &quot;Dades generals&quot;, podeu iniciar la sincronització dels elements de comanda amb les incidències JIRA.</p>
+<p>Feu clic al botó &quot;Sincronitzar amb JIRA&quot; per iniciar la sincronització.</p>
+<ul class="simple">
+<li>Si és la primera vegada, es mostrarà una finestra emergent (amb una llista d'etiquetes autocompletada). En aquesta finestra, podeu seleccionar una etiqueta per sincronitzar i fer clic al botó &quot;Iniciar sincronització&quot; per iniciar el procés de sincronització, o fer clic al botó &quot;Cancel·lar&quot; per cancel·lar-lo.</li>
+<li>Si una etiqueta ja està sincronitzada, la data de l'última sincronització i l'etiqueta es mostraran a la pantalla JIRA. En aquest cas, no es mostrarà cap finestra emergent per seleccionar una etiqueta. En canvi, el procés de sincronització s'iniciarà directament per a aquesta etiqueta (ja sincronitzada) que es mostra.</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">La relació entre &quot;Comanda&quot; i &quot;etiqueta&quot; és d'un a un. Només es pot sincronitzar una etiqueta amb una &quot;Comanda.&quot;</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Quan la (re)sincronització és exitosa, la informació s'escriurà a la base de dades, i la pantalla JIRA s'actualitzarà amb la data i l'etiqueta de l'última sincronització.</p>
+</div>
+<p>La (re)sincronització es realitza en dues fases:</p>
+<ul class="simple">
+<li><strong>Fase 1:</strong> Sincronització dels elements de comanda, inclosa l'assignació i les mesures de progrés.</li>
+<li><strong>Fase 2:</strong> Sincronització dels fulls de temps.</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Si la Fase 1 falla, la Fase 2 no es realitzarà, i cap informació s'escriurà a la base de dades.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">La informació sobre l'èxit o el fracàs es mostrarà en una finestra emergent.</p>
+</div>
+<p>Quan es completa la sincronització exitosament, el resultat es mostrarà a la pestanya &quot;Estructura de Desglossament del Treball (tasques WBS)&quot; de la pantalla &quot;Detalls del projecte.&quot; En aquesta interfície d'usuari, hi ha dos canvis respecte al WBS estàndard:</p>
+<ul class="simple">
+<li>La columna &quot;Total d'hores de la tasca&quot; no és modificable (només lectura) perquè la sincronització és unidireccional. Les hores de la tasca només es poden actualitzar al servidor web JIRA.</li>
+<li>La columna &quot;Codi&quot; mostra les claus de les incidències JIRA, i també són hiperenllaços a les incidències JIRA. Feu clic a la clau desitjada si voleu anar al document per a aquella clau (incidència JIRA).</li>
+</ul>
+</div>
+<div class="section" id="planificacio">
+<h2><a class="toc-backref" href="#toc-entry-5">Planificació</a></h2>
+<p>La resincronització de les incidències JIRA també es pot realitzar a través del planificador. Aneu a la pantalla &quot;Planificació de treballs.&quot; En aquella pantalla, podeu configurar un treball JIRA per realitzar la sincronització. El treball cerca les últimes etiquetes sincronitzades a la base de dades i les resincronitza en conseqüència. Consulteu també el Manual del Planificador.</p>
+</div>
+</div>
+<div class="section" id="connector-tim-enterprise">
+<h1><a class="toc-backref" href="#toc-entry-6">Connector Tim Enterprise</a></h1>
+<p>Tim Enterprise és un producte holandès d'Aenova. És una aplicació web per a l'administració del temps dedicat a projectes i tasques.</p>
+<p>El connector Tim és una aplicació que es pot usar per comunicar-se amb el servidor Tim Enterprise per:</p>
+<ul class="simple">
+<li>Exportar totes les hores dedicades per un treballador (usuari) a un projecte que podrien registrar-se a Tim Enterprise.</li>
+<li>Importar tots els torns del treballador (usuari) per planificar el recurs de manera eficient.</li>
+</ul>
+<p>El <em>connector Tim</em> s'ha de configurar correctament abans de poder-lo usar.</p>
+<div class="section" id="configuracio-2">
+<h2><a class="toc-backref" href="#toc-entry-7">Configuració</a></h2>
+<p>Des de la pantalla &quot;Configuració principal&quot;, trieu la pestanya &quot;Connectors.&quot; A la pantalla de connectors, seleccioneu el connector Tim de la llista desplegable. Llavors es mostrarà una pantalla d'editor de propietats.</p>
+<p>En aquesta pantalla, podeu configurar els valors de propietat següents:</p>
+<ul class="simple">
+<li><strong>Activat:</strong> Y/N, indicant si voleu usar el connector Tim. El valor per defecte és &quot;N.&quot;</li>
+<li><strong>URL del servidor:</strong> La ruta absoluta al servidor Tim Enterprise.</li>
+<li><strong>Nom d'usuari i contrasenya:</strong> Les credencials d'usuari per a l'autorització.</li>
+<li><strong>Nombre de dies de full de temps a Tim:</strong> El nombre de dies enrere que voleu exportar els fulls de temps.</li>
+<li><strong>Nombre de dies de torns des de Tim:</strong> El nombre de dies endavant que voleu importar els torns.</li>
+<li><strong>Factor de productivitat:</strong> Hores de treball efectives en percentatge. El valor per defecte és &quot;100%.&quot;</li>
+<li><strong>IDs de departament per importar torns:</strong> IDs de departament separats per comes.</li>
+</ul>
+<p>Finalment, feu clic al botó &quot;Provar connexió&quot; per provar si podeu connectar-vos al servidor Tim Enterprise i que les vostres configuracions siguin correctes.</p>
+</div>
+<div class="section" id="exportacio">
+<h2><a class="toc-backref" href="#toc-entry-8">Exportació</a></h2>
+<p>Des de la finestra del projecte, sota &quot;Dades generals&quot;, podeu iniciar l'exportació dels fulls de temps al servidor Tim Enterprise.</p>
+<p>Introduïu el &quot;Codi de producte Tim&quot; i feu clic al botó &quot;Exportar a Tim&quot; per iniciar l'exportació.</p>
+<p>El connector Tim afegeix els camps següents juntament amb el codi de producte:</p>
+<ul class="simple">
+<li>El nom complet del treballador/usuari.</li>
+<li>La data en què el treballador va treballar en una tasca.</li>
+<li>L'esforç, o hores treballades en la tasca.</li>
+<li>Una opció que indica si Tim Enterprise ha d'actualitzar el registre o inserir-ne un de nou.</li>
+</ul>
+<p>La resposta de Tim Enterprise conté només una llista d'IDs de registre (enters). Això fa difícil determinar què ha anat malament, ja que la llista de respostes conté només números no relacionats amb els camps de la sol·licitud. La sol·licitud d'exportació (registre a Tim) es considera exitosa si totes les entrades de la llista no contenen valors &quot;0.&quot; En cas contrari, la sol·licitud d'exportació ha fallat per a les entrades que contenen valors &quot;0.&quot; Per tant, no podeu veure quina sol·licitud ha fallat, ja que les entrades de la llista contenen només el valor &quot;0.&quot; L'única manera de determinar-ho és examinar el fitxer de registre al servidor Tim Enterprise.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Quan l'exportació és exitosa, la informació s'escriurà a la base de dades, i la pantalla Tim s'actualitzarà amb la data i el codi de producte de l'última exportació.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">La informació sobre l'èxit o el fracàs es mostrarà en una finestra emergent.</p>
+</div>
+</div>
+<div class="section" id="planificacio-de-l-exportacio">
+<h2><a class="toc-backref" href="#toc-entry-9">Planificació de l'Exportació</a></h2>
+<p>El procés d'exportació també es pot realitzar a través del planificador. Aneu a la pantalla &quot;Planificació de treballs.&quot; En aquella pantalla, podeu configurar un treball d'exportació Tim. El treball cerca els últims fulls de temps exportats a la base de dades i els reexporta en conseqüència. Consulteu també el manual del Planificador.</p>
+</div>
+<div class="section" id="importacio">
+<h2><a class="toc-backref" href="#toc-entry-10">Importació</a></h2>
+<p>La importació de torns només funciona amb l'ajuda del planificador. No hi ha cap interfície d'usuari dissenyada per a això, ja que no cal cap entrada de l'usuari. Aneu a la pantalla &quot;Planificació de treballs&quot; i configureu un treball d'importació Tim. El treball itera per tots els departaments configurats a les propietats del connector i importa tots els torns per a cada departament. Consulteu també el Manual del Planificador.</p>
+<p>Per a la importació, el connector Tim afegeix els camps següents a la sol·licitud:</p>
+<ul class="simple">
+<li><strong>Període:</strong> El període (data d'inici - data de fi) per al qual voleu importar el torn. Això es pot proporcionar com a criteri de filtre.</li>
+<li><strong>Departament:</strong> El departament per al qual voleu importar el torn. Els departaments es poden configurar.</li>
+<li>Els camps que us interessen (com ara informació de persona, RosterCategory, etc.) que el servidor Tim ha d'incloure a la seva resposta.</li>
+</ul>
+<p>La resposta d'importació conté els camps següents, que són suficients per gestionar els dies d'excepció a <em>LibrePlan</em>:</p>
+<ul class="simple">
+<li><strong>Informació de la persona:</strong> Nom i nom de xarxa.</li>
+<li><strong>Departament:</strong> El departament en què treballa el treballador.</li>
+<li><strong>Categoria de torn:</strong> Informació sobre la presència/absència (Aanwzig/afwezig) del treballador i el motiu (tipus d'excepció de <em>LibrePlan</em>) en cas que el treballador estigui absent.</li>
+<li><strong>Data:</strong> La data en què el treballador és present/absent.</li>
+<li><strong>Hora:</strong> L'hora d'inici de la presència/absència, per exemple, 08:00.</li>
+<li><strong>Durada:</strong> El nombre d'hores que el treballador és present/absent.</li>
+</ul>
+<p>En convertir la resposta d'importació a &quot;Dia d'excepció&quot; de <em>LibrePlan</em>, es tenen en compte les traduccions següents:</p>
+<ul class="simple">
+<li>Si la categoria de torn conté el nom &quot;Vakantie,&quot; es traduirà a &quot;VACANCES DEL RECURS.&quot;</li>
+<li>La categoria de torn &quot;Feestdag&quot; es traduirà a &quot;DIA FESTIU.&quot;</li>
+<li>Tota la resta, com &quot;Jus uren,&quot; &quot;PLB uren,&quot; etc., s'hauria d'afegir manualment als &quot;Dies d'excepció del calendari.&quot;</li>
+</ul>
+<p>A més, a la resposta d'importació, el torn es divideix en dues o tres parts per dia: per exemple, torn-matí, torn-tarda i torn-nit. Tanmateix, <em>LibrePlan</em> permet només un &quot;Tipus d'excepció&quot; per dia. El connector Tim és llavors responsable de fusionar aquestes parts com un tipus d'excepció. És a dir, la categoria de torn amb la durada més llarga es considera un tipus d'excepció vàlid, però la durada total és la suma de totes les durades d'aquestes parts de categoria.</p>
+<p>Al contrari de <em>LibrePlan</em>, a Tim Enterprise, la durada total en el cas que el treballador estigui de vacances significa que el treballador no és disponible per a aquella durada total. Tanmateix, a <em>LibrePlan</em>, si el treballador és de vacances, la durada total hauria de ser zero. El connector Tim també gestiona aquesta traducció.</p>
+</div>
+</div>
+<div class="section" id="connector-de-correu-electronic">
+<h1><a class="toc-backref" href="#toc-entry-11">Connector de Correu Electrònic</a></h1>
+<p>El correu electrònic és un mètode d'intercanvi de missatges digitals d'un autor a un o més destinataris.</p>
+<p>El connector de correu electrònic es pot usar per establir les propietats de connexió del servidor de Protocol Simple de Transferència de Correu (SMTP).</p>
+<p>El <em>connector de correu electrònic</em> s'ha de configurar correctament abans de poder-lo usar.</p>
+<div class="section" id="configuracio-3">
+<h2><a class="toc-backref" href="#toc-entry-12">Configuració</a></h2>
+<p>Des de la pantalla &quot;Configuració principal&quot;, trieu la pestanya &quot;Connectors.&quot; A la pantalla de connectors, seleccioneu el connector de correu electrònic de la llista desplegable. Llavors es mostrarà una pantalla d'editor de propietats.</p>
+<p>En aquesta pantalla, podeu configurar els valors de propietat següents:</p>
+<ul class="simple">
+<li><strong>Activat:</strong> Y/N, indicant si voleu usar el connector de correu electrònic. El valor per defecte és &quot;N.&quot;</li>
+<li><strong>Protocol:</strong> El tipus de protocol SMTP.</li>
+<li><strong>Amfitrió:</strong> La ruta absoluta al servidor SMTP.</li>
+<li><strong>Port:</strong> El port del servidor SMTP.</li>
+<li><strong>Adreça del remitent:</strong> L'adreça de correu electrònic del remitent del missatge.</li>
+<li><strong>Nom d'usuari:</strong> El nom d'usuari per al servidor SMTP.</li>
+<li><strong>Contrasenya:</strong> La contrasenya per al servidor SMTP.</li>
+</ul>
+<p>Finalment, feu clic al botó &quot;Provar connexió&quot; per provar si podeu connectar-vos al servidor SMTP i que les vostres configuracions siguin correctes.</p>
+</div>
+<div class="section" id="editar-plantilla-de-correu-electronic">
+<h2><a class="toc-backref" href="#toc-entry-13">Editar Plantilla de Correu Electrònic</a></h2>
+<p>Des de la finestra del projecte, sota &quot;Configuració&quot; i després &quot;Editar plantilles de correu electrònic,&quot; podeu modificar les plantilles de correu electrònic per als missatges.</p>
+<p>Podeu triar:</p>
+<ul class="simple">
+<li><strong>Idioma de la plantilla:</strong></li>
+<li><strong>Tipus de plantilla:</strong></li>
+<li><strong>Assumpte del correu electrònic:</strong></li>
+<li><strong>Continguts de la plantilla:</strong></li>
+</ul>
+<p>Cal especificar l'idioma perquè l'aplicació web enviarà correus electrònics als usuaris en l'idioma que han triat a les seves preferències. Cal triar el tipus de plantilla. El tipus és el rol d'usuari, que significa que aquest correu electrònic s'enviarà només als usuaris que estiguin al rol seleccionat (tipus). Cal establir l'assumpte del correu electrònic. L'assumpte és un breu resum del tema del missatge. Cal establir el contingut del correu electrònic. Es tracta de qualsevol informació que voleu enviar a l'usuari. També hi ha algunes paraules clau que podeu usar al missatge; l'aplicació web les analitzarà i establirà un nou valor en lloc de la paraula clau.</p>
+</div>
+<div class="section" id="planificacio-de-correus-electronics">
+<h2><a class="toc-backref" href="#toc-entry-14">Planificació de Correus Electrònics</a></h2>
+<p>L'enviament de correus electrònics només es pot realitzar a través del planificador. Aneu a &quot;Configuració,&quot; i després a la pantalla &quot;Planificació de treballs.&quot; En aquella pantalla, podeu configurar un treball d'enviament de correus electrònics. El treball pren una llista de notificacions de correu electrònic, reuneix dades i les envia al correu electrònic de l'usuari. Consulteu també el manual del Planificador.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">La informació sobre l'èxit o el fracàs es mostrarà en una finestra emergent.</p>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

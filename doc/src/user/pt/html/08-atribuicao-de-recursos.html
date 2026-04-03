@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Atribuição de Recursos</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="atribuicao-de-recursos">
+<h1 class="title">Atribuição de Recursos</h1>
+
+<div class="contents topic" id="contents">
+<span id="asigacion"></span><p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#atribuicao-especifica" id="toc-entry-1">Atribuição Específica</a><ul>
+<li><a class="reference internal" href="#atribuicao-especifica-de-maquinas" id="toc-entry-2">Atribuição Específica de Máquinas</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#atribuicao-generica" id="toc-entry-3">Atribuição Genérica</a><ul>
+<li><a class="reference internal" href="#atribuicao-generica-de-maquinas" id="toc-entry-4">Atribuição Genérica de Máquinas</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#atribuicao-avancada" id="toc-entry-5">Atribuição Avançada</a></li>
+</ul>
+</div>
+<p>A atribuição de recursos é uma das funcionalidades mais importantes do programa e pode ser efectuada de duas formas diferentes:</p>
+<ul class="simple">
+<li>Atribuição específica</li>
+<li>Atribuição genérica</li>
+</ul>
+<p>Ambos os tipos de atribuição são explicados nas secções seguintes.</p>
+<p>Para efectuar qualquer tipo de atribuição de recursos, são necessários os seguintes passos:</p>
+<ul class="simple">
+<li>Vá à vista de planeamento de uma encomenda.</li>
+<li>Clique com o botão direito na tarefa a ser planeada.</li>
+</ul>
+<div class="figure">
+<img alt="images/resource-assignment-planning.png" src="images/resource-assignment-planning.png" style="width: 459.0px; height: 151.5px;" />
+<p class="caption">Menu de Atribuição de Recursos</p>
+</div>
+<ul class="simple">
+<li>O programa apresenta um ecrã com as seguintes informações:<ul>
+<li><strong>Lista de Critérios a Cumprir:</strong> Para cada grupo de horas, é mostrada uma lista de critérios necessários.</li>
+<li><strong>Informações da Tarefa:</strong> As datas de início e fim da tarefa.</li>
+<li><strong>Tipo de Cálculo:</strong> O sistema permite aos utilizadores escolher a estratégia para calcular atribuições:<ul>
+<li><strong>Calcular Número de Horas:</strong> Calcula o número de horas necessárias dos recursos atribuídos, dada uma data de fim e um número de recursos por dia.</li>
+<li><strong>Calcular Data de Fim:</strong> Calcula a data de fim da tarefa com base no número de recursos atribuídos à tarefa e no número total de horas necessárias para concluir a tarefa.</li>
+<li><strong>Calcular Número de Recursos:</strong> Calcula o número de recursos necessários para terminar a tarefa numa data específica, dado um número conhecido de horas por recurso.</li>
+</ul>
+</li>
+<li><strong>Atribuição Recomendada:</strong> Esta opção permite ao programa recolher os critérios a cumprir e o número total de horas de todos os grupos de horas, e depois recomendar uma atribuição genérica. Se existir uma atribuição prévia, o sistema elimina-a e substitui-a pela nova.</li>
+<li><strong>Atribuições:</strong> Uma lista de atribuições que foram efectuadas. Esta lista mostra as atribuições genéricas (o número será a lista de critérios cumpridos, e o número de horas e recursos por dia). Cada atribuição pode ser explicitamente removida clicando no botão de eliminar.</li>
+</ul>
+</li>
+</ul>
+<div class="figure">
+<img alt="images/resource-assignment.png" src="images/resource-assignment.png" style="width: 326.5px; height: 306.5px;" />
+<p class="caption">Atribuição de Recursos</p>
+</div>
+<ul class="simple">
+<li>Os utilizadores seleccionam &quot;Pesquisar recursos&quot;.</li>
+<li>O programa apresenta um novo ecrã composto por uma árvore de critérios e uma lista de trabalhadores que cumprem os critérios seleccionados à direita:</li>
+</ul>
+<div class="figure">
+<img alt="images/resource-assignment-search.png" src="images/resource-assignment-search.png" style="width: 319.5px; height: 272.0px;" />
+<p class="caption">Pesquisa de Atribuição de Recursos</p>
+</div>
+<ul class="simple">
+<li>Os utilizadores podem seleccionar:<ul>
+<li><strong>Atribuição Específica:</strong> Consulte a secção &quot;Atribuição Específica&quot; para detalhes sobre esta opção.</li>
+<li><strong>Atribuição Genérica:</strong> Consulte a secção &quot;Atribuição Genérica&quot; para detalhes sobre esta opção.</li>
+</ul>
+</li>
+<li>Os utilizadores seleccionam uma lista de critérios (genérico) ou uma lista de trabalhadores (específico). Podem ser feitas múltiplas selecções premindo a tecla &quot;Ctrl&quot; enquanto se clica em cada trabalhador/critério.</li>
+<li>Os utilizadores clicam então no botão &quot;Seleccionar&quot;. É importante lembrar que se uma atribuição genérica não for seleccionada, os utilizadores devem escolher um trabalhador ou máquina para efectuar a atribuição. Se uma atribuição genérica for seleccionada, é suficiente para os utilizadores escolherem um ou mais critérios.</li>
+<li>O programa apresenta então os critérios seleccionados ou a lista de recursos na lista de atribuições no ecrã de atribuição de recursos original.</li>
+<li>Os utilizadores devem escolher as horas ou recursos por dia, dependendo do método de atribuição utilizado no programa.</li>
+</ul>
+<div class="section" id="atribuicao-especifica">
+<h1><a class="toc-backref" href="#toc-entry-1">Atribuição Específica</a></h1>
+<p>Esta é a atribuição específica de um recurso a uma tarefa do projecto. Por outras palavras, o utilizador decide qual trabalhador específico (por nome e apelido) ou máquina deve ser atribuído a uma tarefa.</p>
+<p>A atribuição específica pode ser efectuada no ecrã mostrado nesta imagem:</p>
+<div class="figure">
+<img alt="images/asignacion-especifica.png" src="images/asignacion-especifica.png" style="width: 334.0px; height: 216.0px;" />
+<p class="caption">Atribuição Específica de Recursos</p>
+</div>
+<p>Quando um recurso é especificamente atribuído, o programa cria atribuições diárias com base na percentagem de recursos diários atribuídos seleccionada, após comparação com o calendário de recursos disponível. Por exemplo, uma atribuição de 0,5 recursos para uma tarefa de 32 horas significa que são atribuídas 4 horas por dia ao recurso específico para concluir a tarefa (assumindo um calendário de trabalho de 8 horas por dia).</p>
+<div class="section" id="atribuicao-especifica-de-maquinas">
+<h2><a class="toc-backref" href="#toc-entry-2">Atribuição Específica de Máquinas</a></h2>
+<p>A atribuição específica de máquinas funciona da mesma forma que a atribuição de trabalhadores. Quando uma máquina é atribuída a uma tarefa, o sistema armazena uma atribuição específica de horas para a máquina escolhida. A principal diferença é que o sistema pesquisa a lista de trabalhadores ou critérios atribuídos no momento em que a máquina é atribuída:</p>
+<ul class="simple">
+<li>Se a máquina tiver uma lista de trabalhadores atribuídos, o programa escolhe os que são necessários pela máquina, com base no calendário atribuído. Por exemplo, se o calendário da máquina é de 16 horas por dia e o calendário do recurso é de 8 horas, dois recursos são atribuídos da lista de recursos disponíveis.</li>
+<li>Se a máquina tiver um ou mais critérios atribuídos, são efectuadas atribuições genéricas de entre os recursos que cumprem os critérios atribuídos à máquina.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="atribuicao-generica">
+<h1><a class="toc-backref" href="#toc-entry-3">Atribuição Genérica</a></h1>
+<p>A atribuição genérica ocorre quando os utilizadores não escolhem recursos especificamente, mas deixam a decisão ao programa, que distribui as cargas pelos recursos disponíveis da empresa.</p>
+<div class="figure">
+<img alt="images/asignacion-xenerica.png" src="images/asignacion-xenerica.png" style="width: 311.0px; height: 59.0px;" />
+<p class="caption">Atribuição Genérica de Recursos</p>
+</div>
+<p>O sistema de atribuição utiliza os seguintes pressupostos como base:</p>
+<ul class="simple">
+<li>As tarefas têm critérios que são requeridos dos recursos.</li>
+<li>Os recursos estão configurados para cumprir critérios.</li>
+</ul>
+<p>No entanto, o sistema não falha quando os critérios não foram atribuídos, mas quando todos os recursos cumprem a não-exigência de critérios.</p>
+<p>O algoritmo de atribuição genérica funciona da seguinte forma:</p>
+<ul class="simple">
+<li>Todos os recursos e dias são tratados como contentores onde cabem atribuições diárias de horas, com base na capacidade máxima de atribuição no calendário da tarefa.</li>
+<li>O sistema pesquisa os recursos que cumprem o critério.</li>
+<li>O sistema analisa quais as atribuições que têm actualmente diferentes recursos que cumprem critérios.</li>
+<li>Os recursos que cumprem os critérios são escolhidos de entre os que têm disponibilidade suficiente.</li>
+<li>Se não estiverem disponíveis recursos mais livres, são efectuadas atribuições aos recursos que têm menos disponibilidade.</li>
+<li>A sobre-atribuição de recursos só começa quando todos os recursos que cumprem os respectivos critérios estão 100% atribuídos, até ser atingida a quantidade total necessária para efectuar a tarefa.</li>
+</ul>
+<div class="section" id="atribuicao-generica-de-maquinas">
+<h2><a class="toc-backref" href="#toc-entry-4">Atribuição Genérica de Máquinas</a></h2>
+<p>A atribuição genérica de máquinas funciona da mesma forma que a atribuição de trabalhadores. Por exemplo, quando uma máquina é atribuída a uma tarefa, o sistema armazena uma atribuição genérica de horas para todas as máquinas que cumprem os critérios, conforme descrito para os recursos em geral. No entanto, adicionalmente, o sistema efectua o seguinte procedimento para máquinas:</p>
+<ul class="simple">
+<li>Para todas as máquinas escolhidas para atribuição genérica:<ul>
+<li>Recolhe as informações de configuração da máquina: valor alfa, trabalhadores atribuídos e critérios.</li>
+<li>Se a máquina tiver uma lista atribuída de trabalhadores, o programa escolhe o número requerido pela máquina, dependendo do calendário atribuído. Por exemplo, se o calendário da máquina é de 16 horas por dia e o calendário do recurso é de 8 horas, o programa atribui dois recursos da lista de recursos disponíveis.</li>
+<li>Se a máquina tiver um ou mais critérios atribuídos, o programa efectua atribuições genéricas de entre os recursos que cumprem os critérios atribuídos à máquina.</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="atribuicao-avancada">
+<h1><a class="toc-backref" href="#toc-entry-5">Atribuição Avançada</a></h1>
+<p>As atribuições avançadas permitem aos utilizadores conceber atribuições que são automaticamente efectuadas pela aplicação para as personalizar. Este procedimento permite aos utilizadores escolher manualmente as horas diárias dedicadas pelos recursos às tarefas atribuídas ou definir uma função que é aplicada à atribuição.</p>
+<p>Os passos a seguir para gerir atribuições avançadas são:</p>
+<ul class="simple">
+<li>Vá à janela de atribuição avançada. Existem duas formas de aceder às atribuições avançadas:<ul>
+<li>Vá a uma encomenda específica e altere a vista para atribuição avançada. Neste caso, serão mostradas todas as tarefas da encomenda e os recursos atribuídos (específicos e genéricos).</li>
+<li>Vá à janela de atribuição de recursos clicando no botão &quot;Atribuição avançada&quot;. Neste caso, serão mostradas as atribuições que mostram os recursos (genéricos e específicos) atribuídos a uma tarefa.</li>
+</ul>
+</li>
+</ul>
+<div class="figure">
+<img alt="images/advance-assignment.png" src="images/advance-assignment.png" style="width: 459.0px; height: 294.3px;" />
+<p class="caption">Atribuição Avançada de Recursos</p>
+</div>
+<ul class="simple">
+<li>Os utilizadores podem escolher o nível de zoom desejado:<ul>
+<li><strong>Níveis de Zoom Superiores a Um Dia:</strong> Se os utilizadores alterarem o valor de horas atribuídas para um período semanal, mensal, quadrimestral ou semestral, o sistema distribui as horas linearmente por todos os dias ao longo do período escolhido.</li>
+<li><strong>Zoom Diário:</strong> Se os utilizadores alterarem o valor de horas atribuídas para um dia, essas horas apenas se aplicam a esse dia. Consequentemente, os utilizadores podem decidir quantas horas pretendem atribuir por dia aos recursos da tarefa.</li>
+</ul>
+</li>
+<li>Os utilizadores podem optar por conceber uma função de atribuição avançada. Para tal, os utilizadores devem:<ul>
+<li>Escolher a função da lista de selecção que aparece ao lado de cada recurso e clicar em &quot;Configurar&quot;.</li>
+<li>O sistema apresenta uma nova janela se a função escolhida precisar de ser especificamente configurada. Funções suportadas:<ul>
+<li><strong>Segmentos:</strong> Uma função que permite aos utilizadores definir segmentos aos quais é aplicada uma função polinomial. A função por segmento é configurada da seguinte forma:<ul>
+<li><strong>Data:</strong> A data na qual o segmento termina. Se o valor seguinte (comprimento) for estabelecido, a data é calculada; caso contrário, o comprimento é calculado.</li>
+<li><strong>Definir o Comprimento de Cada Segmento:</strong> Indica que percentagem da duração da tarefa é necessária para o segmento.</li>
+<li><strong>Definir a Quantidade de Trabalho:</strong> Indica que percentagem da carga de trabalho se espera que seja concluída neste segmento. A quantidade de trabalho deve ser incremental. Por exemplo, se houver um segmento de 10%, o seguinte deve ser maior (por exemplo, 20%).</li>
+<li><strong>Gráficos de Segmentos e Cargas Acumuladas.</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Os utilizadores clicam então em &quot;Aceitar&quot;.</li>
+<li>O programa armazena a função e aplica-a às atribuições diárias de recursos.</li>
+</ul>
+</li>
+</ul>
+<div class="figure">
+<img alt="images/stretches.png" src="images/stretches.png" style="width: 428.8px; height: 233.20000000000002px;" />
+<p class="caption">Configuração da Função de Segmentos</p>
+</div>
+</div>
+</div>
+</body>
+</html>

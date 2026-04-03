@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Postęp</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="postep">
+<h1 class="title">Postęp</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#zarzadzanie-typami-postepu" id="toc-entry-1">Zarządzanie Typami Postępu</a></li>
+<li><a class="reference internal" href="#wprowadzanie-postepu-na-podstawie-typu" id="toc-entry-2">Wprowadzanie Postępu na Podstawie Typu</a></li>
+<li><a class="reference internal" href="#porownywanie-postepu-dla-elementu-zamowienia" id="toc-entry-3">Porównywanie Postępu dla Elementu Zamówienia</a></li>
+</ul>
+</div>
+<p>Postęp projektu wskazuje, w jakim stopniu szacowany czas ukończenia projektu jest dotrzymywany. Postęp zadania wskazuje, w jakim stopniu zadanie jest realizowane zgodnie z szacowanym ukończeniem.</p>
+<p>Ogólnie rzecz biorąc, postęp nie może być mierzony automatycznie. Pracownik z doświadczeniem lub lista kontrolna musi określić stopień ukończenia zadania lub projektu.</p>
+<p>Ważne jest, aby zauważyć różnicę między godzinami przypisanymi do zadania lub projektu a postępem tego zadania lub projektu. Chociaż liczba wykorzystanych godzin może być większa lub mniejsza niż oczekiwano, projekt może być przed lub za szacowanym ukończeniem w monitorowanym dniu. Z tych dwóch pomiarów mogą wyniknąć różne sytuacje:</p>
+<ul class="simple">
+<li><strong>Mniej godzin zużytych niż oczekiwano, ale projekt jest opóźniony:</strong> Postęp jest niższy niż szacowany na monitorowany dzień.</li>
+<li><strong>Mniej godzin zużytych niż oczekiwano i projekt jest przed harmonogramem:</strong> Postęp jest wyższy niż szacowany na monitorowany dzień.</li>
+<li><strong>Więcej godzin zużytych niż oczekiwano i projekt jest opóźniony:</strong> Postęp jest niższy niż szacowany na monitorowany dzień.</li>
+<li><strong>Więcej godzin zużytych niż oczekiwano, ale projekt jest przed harmonogramem:</strong> Postęp jest wyższy niż szacowany na monitorowany dzień.</li>
+</ul>
+<p>Widok planowania umożliwia porównanie tych sytuacji przy użyciu informacji o osiągniętym postępie i wykorzystanych godzinach. W tym rozdziale wyjaśniono, jak wprowadzać informacje w celu monitorowania postępu.</p>
+<p>Filozofia monitorowania postępu opiera się na tym, że użytkownicy definiują poziom, na którym chcą monitorować swoje projekty. Na przykład jeśli użytkownicy chcą monitorować zamówienia, muszą wprowadzać informacje tylko dla elementów poziomu 1. Jeśli chcą dokładniejszego monitorowania na poziomie zadania, muszą wprowadzać informacje o postępie na niższych poziomach. System następnie agreguje dane w górę przez hierarchię.</p>
+<div class="section" id="zarzadzanie-typami-postepu">
+<h1><a class="toc-backref" href="#toc-entry-1">Zarządzanie Typami Postępu</a></h1>
+<p>Firmy mają różnorodne potrzeby w zakresie monitorowania postępu projektu, w szczególności zaangażowanych zadań. Dlatego system zawiera &quot;typy postępu.&quot; Użytkownicy mogą definiować różne typy postępu do mierzenia postępu zadania. Na przykład zadanie może być mierzone jako procent, ale ten procent może być również przeliczony na postęp w <em>tonach</em> na podstawie umowy z klientem.</p>
+<p>Typ postępu ma nazwę, wartość maksymalną i wartość precyzji:</p>
+<ul class="simple">
+<li><strong>Nazwa:</strong> Opisowa nazwa, którą użytkownicy rozpoznają podczas wybierania typu postępu. Ta nazwa powinna wyraźnie wskazywać, jaki rodzaj postępu jest mierzony.</li>
+<li><strong>Wartość maksymalna:</strong> Maksymalna wartość, jaka może być ustalona dla zadania lub projektu jako całkowita miara postępu. Na przykład jeśli pracujesz z <em>tonami</em>, a normalne maksimum wynosi 4000 ton i żadne zadanie nigdy nie będzie wymagać więcej niż 4000 ton jakiegokolwiek materiału, to 4000 byłoby wartością maksymalną.</li>
+<li><strong>Wartość precyzji:</strong> Dozwolona wartość przyrostu dla typu postępu. Na przykład jeśli postęp w <em>tonach</em> ma być mierzony w liczbach całkowitych, wartość precyzji wynosi 1. Od tego momentu tylko liczby całkowite mogą być wprowadzane jako miary postępu (np. 1, 2, 300).</li>
+</ul>
+<p>System ma dwa domyślne typy postępu:</p>
+<ul class="simple">
+<li><strong>Procent:</strong> Ogólny typ postępu, który mierzy postęp projektu lub zadania na podstawie szacowanego procentu ukończenia. Na przykład zadanie jest ukończone w 30% z 100% szacowanych na konkretny dzień.</li>
+<li><strong>Jednostki:</strong> Ogólny typ postępu, który mierzy postęp w jednostkach bez określania typu jednostki. Na przykład zadanie obejmuje tworzenie 3000 jednostek, a postęp wynosi 500 jednostek z łącznej liczby 3000.</li>
+</ul>
+<div class="figure">
+<img alt="images/tipos-avances.png" src="images/tipos-avances.png" style="width: 376.5px; height: 164.5px;" />
+<p class="caption">Administracja typami postępu</p>
+</div>
+<p>Użytkownicy mogą tworzyć nowe typy postępu w następujący sposób:</p>
+<ul class="simple">
+<li>Przejdź do sekcji &quot;Administracja&quot;.</li>
+<li>Kliknij opcję &quot;Zarządzaj typami postępu&quot; w menu drugiego poziomu.</li>
+<li>System wyświetli listę istniejących typów postępu.</li>
+<li>Dla każdego typu postępu użytkownicy mogą:<ul>
+<li>Edytować</li>
+<li>Usuwać</li>
+</ul>
+</li>
+<li>Użytkownicy mogą następnie utworzyć nowy typ postępu.</li>
+<li>Podczas edytowania lub tworzenia typu postępu system wyświetla formularz z następującymi informacjami:<ul>
+<li>Nazwa typu postępu.</li>
+<li>Maksymalna dozwolona wartość dla typu postępu.</li>
+<li>Wartość precyzji dla typu postępu.</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="wprowadzanie-postepu-na-podstawie-typu">
+<h1><a class="toc-backref" href="#toc-entry-2">Wprowadzanie Postępu na Podstawie Typu</a></h1>
+<p>Postęp jest wprowadzany dla elementów zamówień, ale może być również wprowadzany za pomocą skrótu z zadań planowania. Użytkownicy są odpowiedzialni za decydowanie, który typ postępu należy powiązać z każdym elementem zamówienia.</p>
+<p>Użytkownicy mogą wprowadzić jeden domyślny typ postępu dla całego zamówienia.</p>
+<p>Przed pomiarem postępu użytkownicy muszą powiązać wybrany typ postępu z zamówieniem. Na przykład mogą wybrać postęp procentowy do mierzenia postępu całego zadania lub uzgodniony wskaźnik postępu, jeśli w przyszłości będą wprowadzane pomiary postępu uzgodnione z klientem.</p>
+<div class="figure">
+<img alt="images/avance.png" src="images/avance.png" style="width: 424.0px; height: 290.8px;" />
+<p class="caption">Ekran wprowadzania postępu z graficzną wizualizacją</p>
+</div>
+<p>Aby wprowadzać pomiary postępu:</p>
+<ul class="simple">
+<li>Wybierz typ postępu, do którego zostanie dodany postęp.
+*   Jeśli nie istnieje żaden typ postępu, należy utworzyć nowy.</li>
+<li>W formularzu, który pojawia się pod polami &quot;Wartość&quot; i &quot;Data&quot;, wprowadź wartość bezwzględną pomiaru i datę pomiaru.</li>
+<li>System automatycznie przechowuje wprowadzone dane.</li>
+</ul>
+</div>
+<div class="section" id="porownywanie-postepu-dla-elementu-zamowienia">
+<h1><a class="toc-backref" href="#toc-entry-3">Porównywanie Postępu dla Elementu Zamówienia</a></h1>
+<p>Użytkownicy mogą graficznie porównać postęp osiągnięty w zamówieniach z wykonanymi pomiarami. Wszystkie typy postępu mają kolumnę z przyciskiem wyboru (&quot;Pokaż&quot;). Gdy ten przycisk jest zaznaczony, dla elementu zamówienia jest wyświetlany wykres postępu wykonanych pomiarów.</p>
+<div class="figure">
+<img alt="images/contraste-avance.png" src="images/contraste-avance.png" style="width: 422.0px; height: 290.0px;" />
+<p class="caption">Porównanie kilku typów postępu</p>
+</div>
+</div>
+</div>
+</body>
+</html>

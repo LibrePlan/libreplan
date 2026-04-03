@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Rapport: Totalt antal timmar per resurs och månad</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="rapport-totalt-antal-timmar-per-resurs-och-manad">
+<h1 class="title">Rapport: Totalt antal timmar per resurs och månad</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#syfte" id="toc-entry-1">Syfte</a></li>
+<li><a class="reference internal" href="#inparametrar-och-filter" id="toc-entry-2">Inparametrar och filter</a></li>
+<li><a class="reference internal" href="#utdata" id="toc-entry-3">Utdata</a><ul>
+<li><a class="reference internal" href="#rubrik" id="toc-entry-4">Rubrik</a></li>
+<li><a class="reference internal" href="#sidfot" id="toc-entry-5">Sidfot</a></li>
+<li><a class="reference internal" href="#brodtext" id="toc-entry-6">Brödtext</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="syfte">
+<h1><a class="toc-backref" href="#toc-entry-1">Syfte</a></h1>
+<p>Denna rapport ger det totala antalet timmar som arbetats av varje resurs under en given månad. Denna information kan vara användbar för att fastställa övertid för arbetare eller, beroende på organisationen, antalet timmar som varje resurs ska ersättas för.</p>
+<p>Programmet spårar arbetsrapporter för både arbetare och maskiner. För maskiner summerar rapporten antalet timmar de var i drift under månaden.</p>
+</div>
+<div class="section" id="inparametrar-och-filter">
+<h1><a class="toc-backref" href="#toc-entry-2">Inparametrar och filter</a></h1>
+<p>För att generera denna rapport måste användare ange det år och den månad för vilka de vill hämta det totala antalet timmar som arbetats av varje resurs.</p>
+</div>
+<div class="section" id="utdata">
+<h1><a class="toc-backref" href="#toc-entry-3">Utdata</a></h1>
+<p>Utdataformatet är följande:</p>
+<div class="section" id="rubrik">
+<h2><a class="toc-backref" href="#toc-entry-4">Rubrik</a></h2>
+<p>Rapportrubriken visar:</p>
+<blockquote>
+<ul class="simple">
+<li>Det <em>år</em> som data i rapporten avser.</li>
+<li>Den <em>månad</em> som data i rapporten avser.</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="sidfot">
+<h2><a class="toc-backref" href="#toc-entry-5">Sidfot</a></h2>
+<p>Sidfoten visar det datum då rapporten genererades.</p>
+</div>
+<div class="section" id="brodtext">
+<h2><a class="toc-backref" href="#toc-entry-6">Brödtext</a></h2>
+<p>Datasektionen i rapporten består av en enda tabell med två kolumner:</p>
+<blockquote>
+<ul class="simple">
+<li>En kolumn med etiketten <strong>Namn</strong> för resursens namn.</li>
+<li>En kolumn med etiketten <strong>Timmar</strong> med det totala antalet timmar som arbetats av resursen i den raden.</li>
+</ul>
+</blockquote>
+<p>Det finns en sista rad som aggregerar det totala antalet timmar som arbetats av alla resurser under den specificerade <em>månaden</em> och <em>året</em>.</p>
+</div>
+</div>
+</div>
+</body>
+</html>

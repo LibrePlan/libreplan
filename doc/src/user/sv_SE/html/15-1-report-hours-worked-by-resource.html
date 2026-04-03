@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Rapport: Arbetade timmar per resurs</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="rapport-arbetade-timmar-per-resurs">
+<h1 class="title">Rapport: Arbetade timmar per resurs</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#syfte" id="toc-entry-1">Syfte</a></li>
+<li><a class="reference internal" href="#inparametrar-och-filter" id="toc-entry-2">Inparametrar och filter</a></li>
+<li><a class="reference internal" href="#utdata" id="toc-entry-3">Utdata</a><ul>
+<li><a class="reference internal" href="#rubrik" id="toc-entry-4">Rubrik</a></li>
+<li><a class="reference internal" href="#sidfot" id="toc-entry-5">Sidfot</a></li>
+<li><a class="reference internal" href="#brodtext" id="toc-entry-6">Brödtext</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="syfte">
+<h1><a class="toc-backref" href="#toc-entry-1">Syfte</a></h1>
+<p>Denna rapport extraherar en lista över uppgifter och den tid som resurser har ägnat åt dem inom en specificerad period. Flera filter gör det möjligt för användare att förfina frågan för att endast få den önskade informationen och utesluta irrelevanta data.</p>
+</div>
+<div class="section" id="inparametrar-och-filter">
+<h1><a class="toc-backref" href="#toc-entry-2">Inparametrar och filter</a></h1>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt><strong>Datum</strong>.</dt>
+<dd><ul class="first last">
+<li><em>Typ</em>: Valfritt.</li>
+<li><dl class="first docutils">
+<dt><em>Två datumfält</em>:</dt>
+<dd><ul class="first last">
+<li><em>Startdatum:</em> Detta är det tidigaste datumet för arbetsrapporter som ska inkluderas. Arbetsrapporter med datum tidigare än <em>Startdatum</em> exkluderas. Om denna parameter lämnas tom filtreras inte arbetsrapporter efter <em>Startdatum</em>.</li>
+<li><em>Slutdatum:</em> Detta är det senaste datumet för arbetsrapporter som ska inkluderas. Arbetsrapporter med datum senare än <em>Slutdatum</em> exkluderas. Om denna parameter lämnas tom filtreras inte arbetsrapporter efter <em>Slutdatum</em>.</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><strong>Filtrera efter arbetare:</strong>
+*   <em>Typ:</em> Valfritt.
+*   <em>Hur det fungerar:</em> Du kan välja en eller flera arbetare för att begränsa arbetsrapporterna till den tid som spårats av dessa specifika arbetare. Sök efter en arbetare i selektorn och klicka på knappen <em>Lägg till</em> för att lägga till den som filter. Om detta filter lämnas tomt hämtas arbetsrapporter oavsett arbetare.</li>
+<li><strong>Filtrera efter etiketter:</strong>
+*   <em>Typ:</em> Valfritt.
+*   <em>Hur det fungerar:</em> Du kan lägga till en eller flera etiketter som filter genom att söka efter dem i selektorn och klicka på knappen <em>Lägg till</em>. Dessa etiketter används för att välja vilka uppgifter som ska inkluderas i resultaten vid beräkning av timmar dedikerade till dem. Detta filter kan tillämpas på tidrapporter, uppgifter, båda eller ingen.</li>
+<li><strong>Filtrera efter kriterier:</strong>
+*   <em>Typ:</em> Valfritt.
+*   <em>Hur det fungerar:</em> Du kan välja ett eller flera kriterier genom att söka efter dem i selektorn och sedan klicka på knappen <em>Lägg till</em>. Dessa kriterier används för att välja resurser som uppfyller minst ett av dem. Rapporten visar all tid dedikerad av resurser som uppfyller ett av de valda kriterierna.</li>
+</ul>
+</div>
+<div class="section" id="utdata">
+<h1><a class="toc-backref" href="#toc-entry-3">Utdata</a></h1>
+<div class="section" id="rubrik">
+<h2><a class="toc-backref" href="#toc-entry-4">Rubrik</a></h2>
+<p>Rapportrubriken visar de filter som konfigurerades och tillämpades på den aktuella rapporten.</p>
+</div>
+<div class="section" id="sidfot">
+<h2><a class="toc-backref" href="#toc-entry-5">Sidfot</a></h2>
+<p>Datumet då rapporten genererades anges i sidfoten.</p>
+</div>
+<div class="section" id="brodtext">
+<h2><a class="toc-backref" href="#toc-entry-6">Brödtext</a></h2>
+<p>Rapportens brödtext består av flera grupper av information.</p>
+<ul>
+<li><p class="first">Den första aggregeringsnivån är per resurs. All tid dedikerad av en resurs visas tillsammans under rubriken. Varje resurs identifieras av:</p>
+<ul class="simple">
+<li><em>Arbetare:</em> Efternamn, Förnamn.</li>
+<li><em>Maskin:</em> Namn.</li>
+</ul>
+<p>En sammanfattningsrad visar det totala antalet timmar som arbetats av resursen.</p>
+</li>
+<li><p class="first">Den andra grupperingsnivån är per <em>datum</em>. Alla rapporter från en specifik resurs på samma datum visas tillsammans.</p>
+<p>En sammanfattningsrad visar det totala antalet timmar som arbetats av resursen det datumet.</p>
+</li>
+<li><p class="first">Den sista nivån listar arbetsrapporterna för arbetaren den dagen. Den information som visas för varje arbetsrapportrad är:</p>
+<ul class="simple">
+<li><em>Uppgiftskod:</em> Koden för uppgiften som de spårade timmarna tillskrivs.</li>
+<li><em>Uppgiftsnamn:</em> Namnet på uppgiften som de spårade timmarna tillskrivs.</li>
+<li><em>Starttid:</em> Detta är valfritt. Det är den tid då resursen började arbeta med uppgiften.</li>
+<li><em>Sluttid:</em> Detta är valfritt. Det är den tid då resursen slutade arbeta med uppgiften det specificerade datumet.</li>
+<li><em>Textfält:</em> Detta är valfritt. Om arbetsrapportraden har textfält visas de ifyllda värdena här. Formatet är: &lt;Textfältets namn&gt;:&lt;Värde&gt;</li>
+<li><em>Etiketter:</em> Detta beror på om arbetsrapportmodellen har ett etikettfält i sin definition. Om det finns flera etiketter visas de i samma kolumn. Formatet är: &lt;Etikettypens namn&gt;:&lt;Etikettens värde&gt;</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</body>
+</html>

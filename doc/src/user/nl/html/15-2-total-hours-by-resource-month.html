@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Rapport totaal gewerkte uren per resource per maand</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="rapport-totaal-gewerkte-uren-per-resource-per-maand">
+<h1 class="title">Rapport totaal gewerkte uren per resource per maand</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#doel" id="toc-entry-1">Doel</a></li>
+<li><a class="reference internal" href="#invoerparameters-en-filters" id="toc-entry-2">Invoerparameters en filters</a></li>
+<li><a class="reference internal" href="#uitvoer" id="toc-entry-3">Uitvoer</a><ul>
+<li><a class="reference internal" href="#koptekst" id="toc-entry-4">Koptekst</a></li>
+<li><a class="reference internal" href="#voettekst" id="toc-entry-5">Voettekst</a></li>
+<li><a class="reference internal" href="#hoofdtekst" id="toc-entry-6">Hoofdtekst</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="doel">
+<h1><a class="toc-backref" href="#toc-entry-1">Doel</a></h1>
+<p>Dit rapport geeft het totale aantal uren dat elke resource in een bepaalde maand heeft gewerkt. Deze informatie kan nuttig zijn voor het bepalen van overuren van werknemers of, afhankelijk van de organisatie, het aantal uren waarvoor elke resource moet worden gecompenseerd.</p>
+<p>De applicatie houdt urenbriefjes bij voor zowel werknemers als machines. Voor machines telt het rapport het aantal uren dat ze gedurende de maand in bedrijf waren.</p>
+</div>
+<div class="section" id="invoerparameters-en-filters">
+<h1><a class="toc-backref" href="#toc-entry-2">Invoerparameters en filters</a></h1>
+<p>Om dit rapport te genereren, moeten gebruikers het jaar en de maand opgeven waarvoor ze het totale aantal gewerkte uren per resource willen ophalen.</p>
+</div>
+<div class="section" id="uitvoer">
+<h1><a class="toc-backref" href="#toc-entry-3">Uitvoer</a></h1>
+<p>Het uitvoerformaat is als volgt:</p>
+<div class="section" id="koptekst">
+<h2><a class="toc-backref" href="#toc-entry-4">Koptekst</a></h2>
+<p>De koptekst van het rapport toont:</p>
+<blockquote>
+<ul class="simple">
+<li>Het <em>jaar</em> waarop de gegevens in het rapport betrekking hebben.</li>
+<li>De <em>maand</em> waarop de gegevens in het rapport betrekking hebben.</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="voettekst">
+<h2><a class="toc-backref" href="#toc-entry-5">Voettekst</a></h2>
+<p>De voettekst toont de datum waarop het rapport is gegenereerd.</p>
+</div>
+<div class="section" id="hoofdtekst">
+<h2><a class="toc-backref" href="#toc-entry-6">Hoofdtekst</a></h2>
+<p>Het gedeelte met gegevens van het rapport bestaat uit één tabel met twee kolommen:</p>
+<blockquote>
+<ul class="simple">
+<li>Een kolom met het label <strong>Naam</strong> voor de naam van de resource.</li>
+<li>Een kolom met het label <strong>Uren</strong> met het totale aantal uren dat door de resource in die rij is gewerkt.</li>
+</ul>
+</blockquote>
+<p>Er is een laatste rij die het totale aantal uren aggregeert dat door alle resources is gewerkt tijdens de opgegeven <em>maand</em> en <em>jaar</em>.</p>
+</div>
+</div>
+</div>
+</body>
+</html>

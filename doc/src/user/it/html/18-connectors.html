@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Connettori</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="connettori">
+<h1 class="title">Connettori</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#configurazione" id="toc-entry-1">Configurazione</a></li>
+<li><a class="reference internal" href="#connettore-jira" id="toc-entry-2">Connettore JIRA</a><ul>
+<li><a class="reference internal" href="#configurazione-1" id="toc-entry-3">Configurazione</a></li>
+<li><a class="reference internal" href="#sincronizzazione" id="toc-entry-4">Sincronizzazione</a></li>
+<li><a class="reference internal" href="#pianificazione" id="toc-entry-5">Pianificazione</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#connettore-tim-enterprise" id="toc-entry-6">Connettore Tim Enterprise</a><ul>
+<li><a class="reference internal" href="#configurazione-2" id="toc-entry-7">Configurazione</a></li>
+<li><a class="reference internal" href="#esportazione" id="toc-entry-8">Esportazione</a></li>
+<li><a class="reference internal" href="#pianificazione-dell-esportazione" id="toc-entry-9">Pianificazione dell'esportazione</a></li>
+<li><a class="reference internal" href="#importazione" id="toc-entry-10">Importazione</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#connettore-e-mail" id="toc-entry-11">Connettore E-mail</a><ul>
+<li><a class="reference internal" href="#configurazione-3" id="toc-entry-12">Configurazione</a></li>
+<li><a class="reference internal" href="#modifica-del-modello-e-mail" id="toc-entry-13">Modifica del modello e-mail</a></li>
+<li><a class="reference internal" href="#pianificazione-delle-e-mail" id="toc-entry-14">Pianificazione delle e-mail</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>I connettori sono applicazioni client di <em>LibrePlan</em> che possono essere utilizzate per comunicare con server (web) al fine di recuperare dati, elaborarli e memorizzarli. Attualmente esistono tre connettori: il connettore JIRA, il connettore Tim Enterprise e il connettore E-mail.</p>
+<div class="section" id="configurazione">
+<h1><a class="toc-backref" href="#toc-entry-1">Configurazione</a></h1>
+<p>I connettori devono essere configurati correttamente prima di poter essere utilizzati. Possono essere configurati dalla schermata &quot;Impostazioni principali&quot; nella scheda &quot;Connettori&quot;.</p>
+<p>La schermata del connettore comprende:</p>
+<ul class="simple">
+<li><strong>Elenco a discesa:</strong> Un elenco dei connettori disponibili.</li>
+<li><strong>Schermata di modifica proprietà:</strong> Un modulo di modifica delle proprietà per il connettore selezionato.</li>
+<li><strong>Pulsante di test connessione:</strong> Un pulsante per testare la connessione con il connettore.</li>
+</ul>
+<p>Selezionare il connettore da configurare dall'elenco a discesa dei connettori. Verrà visualizzato un modulo di modifica delle proprietà per il connettore selezionato. Nel modulo di modifica delle proprietà è possibile modificare i valori delle proprietà secondo le necessità e testare le configurazioni utilizzando il pulsante &quot;Test connessione&quot;.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Le proprietà sono configurate con valori predefiniti. La proprietà più importante è &quot;Attivato&quot;. Per impostazione predefinita è impostata su &quot;N&quot;. Ciò indica che il connettore non verrà utilizzato a meno che non si modifichi il valore in &quot;Y&quot; e si salvino le modifiche.</p>
+</div>
+</div>
+<div class="section" id="connettore-jira">
+<h1><a class="toc-backref" href="#toc-entry-2">Connettore JIRA</a></h1>
+<p>JIRA è un sistema di tracciamento di problemi e progetti.</p>
+<p>Il connettore JIRA è un'applicazione che può essere utilizzata per richiedere dati dal server web JIRA relativi ai problemi JIRA ed elaborare la risposta. La richiesta si basa sulle etichette JIRA. In JIRA, le etichette possono essere usate per categorizzare i problemi. La richiesta è strutturata come segue: recupera tutti i problemi categorizzati da questo nome di etichetta.</p>
+<p>Il connettore riceve la risposta, che in questo caso sono i problemi, e li converte in &quot;Elementi ordine&quot; e &quot;Fogli ore&quot; di <em>LibrePlan</em>.</p>
+<p>Il <em>connettore JIRA</em> deve essere configurato correttamente prima di poter essere utilizzato.</p>
+<div class="section" id="configurazione-1">
+<h2><a class="toc-backref" href="#toc-entry-3">Configurazione</a></h2>
+<p>Dalla schermata &quot;Impostazioni principali&quot;, scegliere la scheda &quot;Connettori&quot;. Nella schermata dei connettori, selezionare il connettore JIRA dall'elenco a discesa. Verrà quindi visualizzata una schermata di modifica delle proprietà.</p>
+<p>In questa schermata è possibile configurare i seguenti valori delle proprietà:</p>
+<ul class="simple">
+<li><strong>Attivato:</strong> Y/N, indica se si desidera utilizzare il connettore JIRA. Il valore predefinito è &quot;N&quot;.</li>
+<li><strong>URL del server:</strong> Il percorso assoluto al server web JIRA.</li>
+<li><strong>Nome utente e password:</strong> Le credenziali utente per l'autorizzazione.</li>
+<li><strong>Etichette JIRA: elenco separato da virgole di etichette o URL:</strong> È possibile inserire l'URL dell'etichetta o un elenco di etichette separate da virgole.</li>
+<li><strong>Tipo di ore:</strong> Il tipo di ore lavorative. Il valore predefinito è &quot;Default&quot;.</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><strong>Etichette JIRA:</strong> Attualmente il server web JIRA non supporta la fornitura di un elenco di tutte le etichette disponibili. Come soluzione alternativa, è stato sviluppato un semplice script PHP che esegue una semplice query SQL nel database JIRA per recuperare tutte le etichette distinte. È possibile utilizzare questo script PHP come &quot;URL etichette JIRA&quot; oppure inserire le etichette desiderate come testo separato da virgole nel campo &quot;Etichette JIRA&quot;.</p>
+</div>
+<p>Infine, fare clic sul pulsante &quot;Test connessione&quot; per verificare che sia possibile connettersi al server web JIRA e che le configurazioni siano corrette.</p>
+</div>
+<div class="section" id="sincronizzazione">
+<h2><a class="toc-backref" href="#toc-entry-4">Sincronizzazione</a></h2>
+<p>Dalla finestra del progetto, in &quot;Dati generali&quot;, è possibile avviare la sincronizzazione degli elementi ordine con i problemi JIRA.</p>
+<p>Fare clic sul pulsante &quot;Sincronizza con JIRA&quot; per avviare la sincronizzazione.</p>
+<ul class="simple">
+<li>Se è la prima volta, verrà visualizzata una finestra a comparsa (con un elenco di etichette completato automaticamente). In questa finestra è possibile selezionare un'etichetta con cui sincronizzare e fare clic sul pulsante &quot;Avvia sincronizzazione&quot; per avviare il processo di sincronizzazione, oppure fare clic sul pulsante &quot;Annulla&quot; per annullarlo.</li>
+<li>Se un'etichetta è già sincronizzata, l'ultima data di sincronizzazione e l'etichetta verranno visualizzate nella schermata JIRA. In questo caso, non verrà visualizzata alcuna finestra a comparsa per la selezione di un'etichetta. Al contrario, il processo di sincronizzazione inizierà direttamente per quella etichetta visualizzata (già sincronizzata).</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">La relazione tra &quot;Ordine&quot; ed &quot;etichetta&quot; è uno a uno. È possibile sincronizzare una sola etichetta con un &quot;Ordine&quot;.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">In caso di (ri)sincronizzazione avvenuta con successo, le informazioni verranno scritte nel database e la schermata JIRA verrà aggiornata con l'ultima data di sincronizzazione e l'etichetta.</p>
+</div>
+<p>La (ri)sincronizzazione viene eseguita in due fasi:</p>
+<ul class="simple">
+<li><strong>Fase 1:</strong> Sincronizzazione degli elementi ordine, inclusi assegnazione e misurazioni dei progressi.</li>
+<li><strong>Fase 2:</strong> Sincronizzazione dei fogli ore.</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Se la Fase 1 non riesce, la Fase 2 non verrà eseguita e nessuna informazione verrà scritta nel database.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Le informazioni sul successo o sull'errore verranno visualizzate in una finestra a comparsa.</p>
+</div>
+<p>Al completamento con successo della sincronizzazione, il risultato verrà visualizzato nella scheda &quot;Work Breakdown Structure (attività WBS)&quot; della schermata &quot;Dettagli progetto&quot;. In questa interfaccia, ci sono due modifiche rispetto alla WBS standard:</p>
+<ul class="simple">
+<li>La colonna &quot;Ore totali attività&quot; non è modificabile (sola lettura) perché la sincronizzazione è unidirezionale. Le ore delle attività possono essere aggiornate solo nel server web JIRA.</li>
+<li>La colonna &quot;Codice&quot; mostra le chiavi dei problemi JIRA, che sono anche collegamenti ipertestuali ai problemi JIRA. Fare clic sulla chiave desiderata per accedere al documento corrispondente (problema JIRA).</li>
+</ul>
+</div>
+<div class="section" id="pianificazione">
+<h2><a class="toc-backref" href="#toc-entry-5">Pianificazione</a></h2>
+<p>La risincronizzazione dei problemi JIRA può essere eseguita anche tramite il pianificatore. Andare alla schermata &quot;Pianificazione dei job&quot;. In quella schermata è possibile configurare un job JIRA per eseguire la sincronizzazione. Il job cerca le ultime etichette sincronizzate nel database e le risincronizza di conseguenza. Vedere anche il Manuale del pianificatore.</p>
+</div>
+</div>
+<div class="section" id="connettore-tim-enterprise">
+<h1><a class="toc-backref" href="#toc-entry-6">Connettore Tim Enterprise</a></h1>
+<p>Tim Enterprise è un prodotto olandese di Aenova. È un'applicazione web per l'amministrazione del tempo dedicato a progetti e attività.</p>
+<p>Il connettore Tim è un'applicazione che può essere utilizzata per comunicare con il server Tim Enterprise per:</p>
+<ul class="simple">
+<li>Esportare tutte le ore dedicate da un lavoratore (utente) a un progetto che potrebbero essere registrate in Tim Enterprise.</li>
+<li>Importare tutti i turni del lavoratore (utente) per pianificare la risorsa in modo efficace.</li>
+</ul>
+<p>Il <em>connettore Tim</em> deve essere configurato correttamente prima di poter essere utilizzato.</p>
+<div class="section" id="configurazione-2">
+<h2><a class="toc-backref" href="#toc-entry-7">Configurazione</a></h2>
+<p>Dalla schermata &quot;Impostazioni principali&quot;, scegliere la scheda &quot;Connettori&quot;. Nella schermata dei connettori, selezionare il connettore Tim dall'elenco a discesa. Verrà quindi visualizzata una schermata di modifica delle proprietà.</p>
+<p>In questa schermata è possibile configurare i seguenti valori delle proprietà:</p>
+<ul class="simple">
+<li><strong>Attivato:</strong> Y/N, indica se si desidera utilizzare il connettore Tim. Il valore predefinito è &quot;N&quot;.</li>
+<li><strong>URL del server:</strong> Il percorso assoluto al server Tim Enterprise.</li>
+<li><strong>Nome utente e password:</strong> Le credenziali utente per l'autorizzazione.</li>
+<li><strong>Numero di giorni del foglio ore verso Tim:</strong> Il numero di giorni precedenti per cui si desidera esportare i fogli ore.</li>
+<li><strong>Numero di giorni del turno da Tim:</strong> Il numero di giorni successivi per cui si desidera importare i turni.</li>
+<li><strong>Fattore di produttività:</strong> Ore lavorative effettive in percentuale. Il valore predefinito è &quot;100%&quot;.</li>
+<li><strong>ID reparto per importare il turno:</strong> ID dei reparti separati da virgole.</li>
+</ul>
+<p>Infine, fare clic sul pulsante &quot;Test connessione&quot; per verificare che sia possibile connettersi al server Tim Enterprise e che le configurazioni siano corrette.</p>
+</div>
+<div class="section" id="esportazione">
+<h2><a class="toc-backref" href="#toc-entry-8">Esportazione</a></h2>
+<p>Dalla finestra del progetto, in &quot;Dati generali&quot;, è possibile avviare l'esportazione dei fogli ore verso il server Tim Enterprise.</p>
+<p>Inserire il &quot;Codice prodotto Tim&quot; e fare clic sul pulsante &quot;Esporta verso Tim&quot; per avviare l'esportazione.</p>
+<p>Il connettore Tim aggiunge i seguenti campi insieme al codice prodotto:</p>
+<ul class="simple">
+<li>Il nome completo del lavoratore/utente.</li>
+<li>La data in cui il lavoratore ha lavorato su un'attività.</li>
+<li>Lo sforzo, ovvero le ore lavorate sull'attività.</li>
+<li>Un'opzione che indica se Tim Enterprise deve aggiornare la registrazione o inserirne una nuova.</li>
+</ul>
+<p>La risposta di Tim Enterprise contiene solo un elenco di ID record (numeri interi). Questo rende difficile determinare cosa è andato storto, poiché l'elenco di risposta contiene solo numeri non correlati ai campi della richiesta. Si presume che la richiesta di esportazione (registrazione in Tim) abbia avuto successo se tutte le voci dell'elenco non contengono valori &quot;0&quot;. In caso contrario, la richiesta di esportazione è fallita per le voci che contengono valori &quot;0&quot;. Pertanto, non è possibile vedere quale richiesta è fallita, poiché le voci dell'elenco contengono solo il valore &quot;0&quot;. L'unico modo per determinarlo è esaminare il file di log sul server Tim Enterprise.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">In caso di esportazione avvenuta con successo, le informazioni verranno scritte nel database e la schermata Tim verrà aggiornata con l'ultima data di esportazione e il codice prodotto.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Le informazioni sul successo o sull'errore verranno visualizzate in una finestra a comparsa.</p>
+</div>
+</div>
+<div class="section" id="pianificazione-dell-esportazione">
+<h2><a class="toc-backref" href="#toc-entry-9">Pianificazione dell'esportazione</a></h2>
+<p>Il processo di esportazione può essere eseguito anche tramite il pianificatore. Andare alla schermata &quot;Pianificazione dei job&quot;. In quella schermata è possibile configurare un job di esportazione Tim. Il job cerca gli ultimi fogli ore esportati nel database e li riesporta di conseguenza. Vedere anche il Manuale del pianificatore.</p>
+</div>
+<div class="section" id="importazione">
+<h2><a class="toc-backref" href="#toc-entry-10">Importazione</a></h2>
+<p>L'importazione dei turni funziona solo con l'ausilio del pianificatore. Non è disponibile un'interfaccia utente per questo, poiché non è necessario alcun input dall'utente. Andare alla schermata &quot;Pianificazione dei job&quot; e configurare un job di importazione Tim. Il job scorre tutti i reparti configurati nelle proprietà del connettore e importa tutti i turni per ciascun reparto. Vedere anche il Manuale del pianificatore.</p>
+<p>Per l'importazione, il connettore Tim aggiunge i seguenti campi nella richiesta:</p>
+<ul class="simple">
+<li><strong>Periodo:</strong> Il periodo (dalla data - alla data) per cui si desidera importare il turno. Può essere fornito come criterio di filtro.</li>
+<li><strong>Reparto:</strong> Il reparto per cui si desidera importare il turno. I reparti sono configurabili.</li>
+<li>I campi di interesse (come informazioni sulla persona, categoria del turno, ecc.) che il server Tim deve includere nella risposta.</li>
+</ul>
+<p>La risposta all'importazione contiene i seguenti campi, sufficienti per gestire i giorni di eccezione in <em>LibrePlan</em>:</p>
+<ul class="simple">
+<li><strong>Informazioni sulla persona:</strong> Nome e nome di rete.</li>
+<li><strong>Reparto:</strong> Il reparto in cui lavora il lavoratore.</li>
+<li><strong>Categoria del turno:</strong> Informazioni sulla presenza/assenza (Aanwzig/afwezig) del lavoratore e il motivo (tipo di eccezione di <em>LibrePlan</em>) in caso di assenza del lavoratore.</li>
+<li><strong>Data:</strong> La data in cui il lavoratore è presente/assente.</li>
+<li><strong>Ora:</strong> L'ora di inizio della presenza/assenza, ad esempio 08:00.</li>
+<li><strong>Durata:</strong> Il numero di ore in cui il lavoratore è presente/assente.</li>
+</ul>
+<p>Convertendo la risposta all'importazione in &quot;Giorno di eccezione&quot; di <em>LibrePlan</em>, vengono prese in considerazione le seguenti traduzioni:</p>
+<ul class="simple">
+<li>Se la categoria del turno contiene il nome &quot;Vakantie&quot;, verrà tradotta in &quot;FERIE DELLA RISORSA&quot;.</li>
+<li>La categoria del turno &quot;Feestdag&quot; verrà tradotta in &quot;FESTIVITÀ&quot;.</li>
+<li>Tutte le altre, come &quot;Jus uren&quot;, &quot;PLB uren&quot;, ecc., devono essere aggiunte manualmente ai &quot;Giorni di eccezione del calendario&quot;.</li>
+</ul>
+<p>Inoltre, nella risposta all'importazione, il turno è diviso in due o tre parti al giorno: ad esempio, turno mattina, turno pomeriggio e turno sera. Tuttavia, <em>LibrePlan</em> consente un solo &quot;Tipo di eccezione&quot; al giorno. Il connettore Tim è quindi responsabile di unire queste parti in un unico tipo di eccezione. Vale a dire, la categoria del turno con la durata maggiore è considerata il tipo di eccezione valido, ma la durata totale è la somma di tutte le durate di queste parti della categoria.</p>
+<p>Contrariamente a <em>LibrePlan</em>, in Tim Enterprise la durata totale in caso di ferie del lavoratore indica che il lavoratore non è disponibile per quella durata totale. Tuttavia, in <em>LibrePlan</em>, se il lavoratore è in ferie, la durata totale deve essere zero. Il connettore Tim gestisce anche questa conversione.</p>
+</div>
+</div>
+<div class="section" id="connettore-e-mail">
+<h1><a class="toc-backref" href="#toc-entry-11">Connettore E-mail</a></h1>
+<p>L'e-mail è un metodo di scambio di messaggi digitali da un autore a uno o più destinatari.</p>
+<p>Il connettore E-mail può essere utilizzato per impostare le proprietà di connessione al server SMTP (Simple Mail Transfer Protocol).</p>
+<p>Il <em>connettore E-mail</em> deve essere configurato correttamente prima di poter essere utilizzato.</p>
+<div class="section" id="configurazione-3">
+<h2><a class="toc-backref" href="#toc-entry-12">Configurazione</a></h2>
+<p>Dalla schermata &quot;Impostazioni principali&quot;, scegliere la scheda &quot;Connettori&quot;. Nella schermata dei connettori, selezionare il connettore E-mail dall'elenco a discesa. Verrà quindi visualizzata una schermata di modifica delle proprietà.</p>
+<p>In questa schermata è possibile configurare i seguenti valori delle proprietà:</p>
+<ul class="simple">
+<li><strong>Attivato:</strong> Y/N, indica se si desidera utilizzare il connettore E-mail. Il valore predefinito è &quot;N&quot;.</li>
+<li><strong>Protocollo:</strong> Il tipo di protocollo SMTP.</li>
+<li><strong>Host:</strong> Il percorso assoluto al server SMTP.</li>
+<li><strong>Porta:</strong> La porta del server SMTP.</li>
+<li><strong>Indirizzo mittente:</strong> L'indirizzo e-mail del mittente del messaggio.</li>
+<li><strong>Nome utente:</strong> Il nome utente per il server SMTP.</li>
+<li><strong>Password:</strong> La password per il server SMTP.</li>
+</ul>
+<p>Infine, fare clic sul pulsante &quot;Test connessione&quot; per verificare che sia possibile connettersi al server SMTP e che le configurazioni siano corrette.</p>
+</div>
+<div class="section" id="modifica-del-modello-e-mail">
+<h2><a class="toc-backref" href="#toc-entry-13">Modifica del modello e-mail</a></h2>
+<p>Dalla finestra del progetto, in &quot;Configurazione&quot; e poi &quot;Modifica modelli e-mail&quot;, è possibile modificare i modelli e-mail per i messaggi.</p>
+<p>È possibile scegliere:</p>
+<ul class="simple">
+<li><strong>Lingua del modello:</strong></li>
+<li><strong>Tipo di modello:</strong></li>
+<li><strong>Oggetto dell'e-mail:</strong></li>
+<li><strong>Contenuto del modello:</strong></li>
+</ul>
+<p>È necessario specificare la lingua perché l'applicazione web invierà e-mail agli utenti nella lingua che hanno scelto nelle loro preferenze. È necessario scegliere il tipo di modello. Il tipo corrisponde al ruolo utente, il che significa che questa e-mail verrà inviata solo agli utenti che ricoprono il ruolo selezionato (tipo). È necessario impostare l'oggetto dell'e-mail. L'oggetto è un breve riassunto dell'argomento del messaggio. È necessario impostare il contenuto dell'e-mail. Queste sono le informazioni che si desidera inviare all'utente. Esistono anche alcune parole chiave che è possibile utilizzare nel messaggio; l'applicazione web le analizzerà e imposterà un nuovo valore al posto della parola chiave.</p>
+</div>
+<div class="section" id="pianificazione-delle-e-mail">
+<h2><a class="toc-backref" href="#toc-entry-14">Pianificazione delle e-mail</a></h2>
+<p>L'invio di e-mail può essere eseguito solo tramite il pianificatore. Andare a &quot;Configurazione&quot;, quindi alla schermata &quot;Pianificazione dei job&quot;. In quella schermata è possibile configurare un job di invio e-mail. Il job prende un elenco di notifiche e-mail, raccoglie dati e li invia all'e-mail dell'utente. Vedere anche il Manuale del pianificatore.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Le informazioni sul successo o sull'errore verranno visualizzate in una finestra a comparsa.</p>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

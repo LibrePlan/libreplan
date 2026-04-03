@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Resurshantering</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="resurshantering">
+<h1 class="title">Resurshantering</h1>
+
+<div class="contents topic" id="contents">
+<span id="recursos"></span><p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#personalresurser" id="toc-entry-1">Personalresurser</a></li>
+<li><a class="reference internal" href="#maskinresurser" id="toc-entry-2">Maskinresurser</a></li>
+<li><a class="reference internal" href="#hantera-resurser" id="toc-entry-3">Hantera resurser</a><ul>
+<li><a class="reference internal" href="#hantera-medarbetare" id="toc-entry-4">Hantera medarbetare</a></li>
+<li><a class="reference internal" href="#hantera-maskiner" id="toc-entry-5">Hantera maskiner</a></li>
+<li><a class="reference internal" href="#virtuella-medarbetargrupper" id="toc-entry-6">Virtuella medarbetargrupper</a></li>
+<li><a class="reference internal" href="#kobaserade-resurser" id="toc-entry-7">Köbaserade resurser</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>Programmet hanterar två distinkta typer av resurser: personal och maskiner.</p>
+<div class="section" id="personalresurser">
+<h1><a class="toc-backref" href="#toc-entry-1">Personalresurser</a></h1>
+<p>Personalresurser representerar företagets medarbetare. Deras viktigaste egenskaper är:</p>
+<ul class="simple">
+<li>De uppfyller ett eller flera generiska kriterier eller medarbetarspecifika kriterier.</li>
+<li>De kan specifikt tilldelas en uppgift.</li>
+<li>De kan generiskt tilldelas en uppgift som kräver ett resurskreterium.</li>
+<li>De kan ha en standard- eller specifik kalender efter behov.</li>
+</ul>
+</div>
+<div class="section" id="maskinresurser">
+<h1><a class="toc-backref" href="#toc-entry-2">Maskinresurser</a></h1>
+<p>Maskinresurser representerar företagets maskiner. Deras viktigaste egenskaper är:</p>
+<ul class="simple">
+<li>De uppfyller ett eller flera generiska kriterier eller maskinspecifika kriterier.</li>
+<li>De kan specifikt tilldelas en uppgift.</li>
+<li>De kan generiskt tilldelas en uppgift som kräver ett maskinkriterium.</li>
+<li>De kan ha en standard- eller specifik kalender efter behov.</li>
+<li>Programmet innehåller en konfigurationsskärm där ett <em>alpha</em>-värde kan definieras för att representera maskin/medarbetare-förhållandet.<ul>
+<li><em>Alpha</em>-värdet indikerar den mängd medarbetartid som krävs för att driva maskinen. Till exempel innebär ett alpha-värde på 0,5 att varje 8 timmars maskindrift kräver 4 timmars medarbetartid.</li>
+<li>Användare kan tilldela ett <em>alpha</em>-värde specifikt till en medarbetare och därigenom ange att den medarbetaren driver maskinen under den procentandelen av tiden.</li>
+<li>Användare kan också göra en generisk tilldelning baserat på ett kriterium, så att en procentandel av användningen tilldelas alla resurser som uppfyller det kriteriet och har tillgänglig tid. Generisk tilldelning fungerar på liknande sätt som generisk tilldelning för uppgifter, enligt ovan.</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="hantera-resurser">
+<h1><a class="toc-backref" href="#toc-entry-3">Hantera resurser</a></h1>
+<p>Användare kan skapa, redigera och inaktivera (men inte permanent ta bort) medarbetare och maskiner inom företaget genom att navigera till avsnittet &quot;Resurser&quot;. Det här avsnittet tillhandahåller följande funktioner:</p>
+<ul class="simple">
+<li><strong>Lista över medarbetare:</strong> Visar en numrerad lista över medarbetare, vilket gör att användare kan hantera deras uppgifter.</li>
+<li><strong>Lista över maskiner:</strong> Visar en numrerad lista över maskiner, vilket gör att användare kan hantera deras uppgifter.</li>
+</ul>
+<div class="section" id="hantera-medarbetare">
+<h2><a class="toc-backref" href="#toc-entry-4">Hantera medarbetare</a></h2>
+<p>Medarbetarhantering nås genom att gå till avsnittet &quot;Resurser&quot; och sedan välja &quot;Lista över medarbetare.&quot; Användare kan redigera alla medarbetare i listan genom att klicka på standardredigeringsikonen.</p>
+<p>När en medarbetare redigeras kan användare komma åt följande flikar:</p>
+<ol class="arabic">
+<li><p class="first"><strong>Medarbetaruppgifter:</strong> Den här fliken låter användare redigera medarbetarens grundläggande identifieringsuppgifter:</p>
+<ul class="simple">
+<li>Förnamn</li>
+<li>Efternamn</li>
+<li>Nationellt ID-dokument (DNI)</li>
+<li>Köbaserad resurs (se avsnittet om köbaserade resurser)</li>
+</ul>
+<div class="figure">
+<img alt="images/worker-personal-data.png" src="images/worker-personal-data.png" style="width: 444.5px; height: 102.0px;" />
+<p class="caption">Redigera medarbetares personliga uppgifter</p>
+</div>
+</li>
+<li><p class="first"><strong>Kriterier:</strong> Den här fliken används för att konfigurera de kriterier som en medarbetare uppfyller. Användare kan tilldela alla medarbetar- eller generiska kriterier de anser lämpliga. Det är avgörande att medarbetare uppfyller kriterier för att maximera programmets funktionalitet. För att tilldela kriterier:</p>
+<ol class="lowerroman simple">
+<li>Klicka på knappen &quot;Lägg till kriterier&quot;.</li>
+<li>Sök efter kriteriet som ska läggas till och välj det mest lämpliga.</li>
+<li>Klicka på knappen &quot;Lägg till&quot;.</li>
+<li>Välj startdatumet då kriteriet börjar gälla.</li>
+<li>Välj slutdatumet för tillämpning av kriteriet på resursen. Det här datumet är valfritt om kriteriet anses vara på obestämd tid.</li>
+</ol>
+<div class="figure">
+<img alt="images/worker-criterions.png" src="images/worker-criterions.png" style="width: 443.5px; height: 147.0px;" />
+<p class="caption">Associera kriterier med medarbetare</p>
+</div>
+</li>
+<li><p class="first"><strong>Kalender:</strong> Den här fliken låter användare konfigurera en specifik kalender för medarbetaren. Alla medarbetare har en standardkalender tilldelad; det är dock möjligt att tilldela en specifik kalender till varje medarbetare baserat på en befintlig kalender.</p>
+<div class="figure">
+<img alt="images/worker-calendar.png" src="images/worker-calendar.png" style="width: 442.5px; height: 247.0px;" />
+<p class="caption">Kalenderfliken för en resurs</p>
+</div>
+</li>
+<li><p class="first"><strong>Kostnadskategori:</strong> Den här fliken låter användare konfigurera den kostnadskategori som en medarbetare uppfyller under en given period. Den här informationen används för att beräkna kostnaderna associerade med en medarbetare i ett projekt.</p>
+<div class="figure">
+<img alt="images/worker-costcategory.png" src="images/worker-costcategory.png" style="width: 443.0px; height: 129.0px;" />
+<p class="caption">Fliken kostnadskategori för en resurs</p>
+</div>
+</li>
+</ol>
+<p>Resurstilldelning förklaras i avsnittet &quot;Resurstilldelning&quot;.</p>
+</div>
+<div class="section" id="hantera-maskiner">
+<h2><a class="toc-backref" href="#toc-entry-5">Hantera maskiner</a></h2>
+<p>Maskiner behandlas som resurser i alla syften. Därför, precis som medarbetare, kan maskiner hanteras och tilldelas uppgifter. Resurstilldelning täcks i avsnittet &quot;Resurstilldelning&quot;, som förklarar de specifika funktionerna hos maskiner.</p>
+<p>Maskiner hanteras från menyposten &quot;Resurser&quot;. Det här avsnittet har en operation som kallas &quot;Maskinlista&quot;, som visar företagets maskiner. Användare kan redigera eller ta bort en maskin från den här listan.</p>
+<p>När maskiner redigeras visar systemet en serie flikar för att hantera olika detaljer:</p>
+<ol class="arabic">
+<li><p class="first"><strong>Maskinuppgifter:</strong> Den här fliken låter användare redigera maskinens identifieringsuppgifter:</p>
+<ol class="lowerroman simple">
+<li>Namn</li>
+<li>Maskinkod</li>
+<li>Beskrivning av maskinen</li>
+</ol>
+<div class="figure">
+<img alt="images/machine-data.png" src="images/machine-data.png" style="width: 444.0px; height: 97.0px;" />
+<p class="caption">Redigera maskinuppgifter</p>
+</div>
+</li>
+<li><p class="first"><strong>Kriterier:</strong> Precis som med medarbetarresurser används den här fliken för att lägga till kriterier som maskinen uppfyller. Två typer av kriterier kan tilldelas maskiner: maskinspecifika eller generiska. Medarbetarkriterier kan inte tilldelas maskiner. För att tilldela kriterier:</p>
+<ol class="lowerroman simple">
+<li>Klicka på knappen &quot;Lägg till kriterier&quot;.</li>
+<li>Sök efter kriteriet som ska läggas till och välj det mest lämpliga.</li>
+<li>Välj startdatumet då kriteriet börjar gälla.</li>
+<li>Välj slutdatumet för tillämpning av kriteriet på resursen. Det här datumet är valfritt om kriteriet anses vara på obestämd tid.</li>
+<li>Klicka på knappen &quot;Spara och fortsätt&quot;.</li>
+</ol>
+<div class="figure">
+<img alt="images/machine-criterions.png" src="images/machine-criterions.png" style="width: 444.0px; height: 140.0px;" />
+<p class="caption">Tilldela kriterier till maskiner</p>
+</div>
+</li>
+<li><p class="first"><strong>Kalender:</strong> Den här fliken låter användare konfigurera en specifik kalender för maskinen. Alla maskiner har en standardkalender tilldelad; det är dock möjligt att tilldela en specifik kalender till varje maskin baserat på en befintlig kalender.</p>
+<div class="figure">
+<img alt="images/machine-calendar.png" src="images/machine-calendar.png" style="width: 443.5px; height: 216.5px;" />
+<p class="caption">Tilldela kalendrar till maskiner</p>
+</div>
+</li>
+<li><p class="first"><strong>Maskinkonfiguration:</strong> Den här fliken låter användare konfigurera förhållandet mellan maskiner och medarbetarresurser. En maskin har ett alpha-värde som indikerar maskin/medarbetare-förhållandet. Som nämnts tidigare indikerar ett alpha-värde på 0,5 att 0,5 personer krävs för varje hel dag av maskindrift. Baserat på alpha-värdet tilldelar systemet automatiskt medarbetare som är associerade med maskinen när maskinen tilldelas en uppgift. Att associera en medarbetare med en maskin kan göras på två sätt:</p>
+<ol class="lowerroman simple">
+<li><strong>Specifik tilldelning:</strong> Tilldela ett datumintervall under vilket medarbetaren tilldelas maskinen. Det här är en specifik tilldelning, eftersom systemet automatiskt tilldelar timmar till medarbetaren när maskinen är schemalagd.</li>
+<li><strong>Generisk tilldelning:</strong> Tilldela kriterier som måste uppfyllas av medarbetare som tilldelas maskinen. Detta skapar en generisk tilldelning av medarbetare som uppfyller kriterierna.</li>
+</ol>
+<div class="figure">
+<img alt="images/machine-configuration.png" src="images/machine-configuration.png" style="width: 442.5px; height: 231.5px;" />
+<p class="caption">Konfiguration av maskiner</p>
+</div>
+</li>
+<li><p class="first"><strong>Kostnadskategori:</strong> Den här fliken låter användare konfigurera den kostnadskategori som en maskin uppfyller under en given period. Den här informationen används för att beräkna kostnaderna associerade med en maskin i ett projekt.</p>
+<div class="figure">
+<img alt="images/machine-costcategory.png" src="images/machine-costcategory.png" style="width: 439.5px; height: 103.0px;" />
+<p class="caption">Tilldela kostnadskategorier till maskiner</p>
+</div>
+</li>
+</ol>
+</div>
+<div class="section" id="virtuella-medarbetargrupper">
+<h2><a class="toc-backref" href="#toc-entry-6">Virtuella medarbetargrupper</a></h2>
+<p>Programmet låter användare skapa virtuella medarbetargrupper, som inte är verkliga medarbetare utan simulerad personal. Dessa grupper gör det möjligt för användare att modellera ökad produktionskapacitet vid specifika tidpunkter, baserat på kalenderinställningar.</p>
+<p>Virtuella medarbetargrupper låter användare bedöma hur projektplanering skulle påverkas av att anställa och tilldela personal som uppfyller specifika kriterier, vilket hjälper i beslutsprocessen.</p>
+<p>Flikarna för att skapa virtuella medarbetargrupper är desamma som för konfigurering av medarbetare:</p>
+<ul class="simple">
+<li>Allmänna uppgifter</li>
+<li>Tilldelade kriterier</li>
+<li>Kalendrar</li>
+<li>Associerade timmar</li>
+</ul>
+<p>Skillnaden mellan virtuella medarbetargrupper och faktiska medarbetare är att virtuella medarbetargrupper har ett namn för gruppen och ett antal, som representerar antalet verkliga personer i gruppen. Det finns också ett fält för kommentarer, där ytterligare information kan ges, till exempel vilket projekt som skulle kräva anställning som är likvärdig med den virtuella medarbetargruppen.</p>
+<div class="figure">
+<img alt="images/virtual-resources.png" src="images/virtual-resources.png" style="width: 424.5px; height: 109.0px;" />
+<p class="caption">Virtuella resurser</p>
+</div>
+</div>
+<div class="section" id="kobaserade-resurser">
+<h2><a class="toc-backref" href="#toc-entry-7">Köbaserade resurser</a></h2>
+<p>Köbaserade resurser är en specifik typ av produktivt element som antingen kan vara otilldelade eller ha 100% engagemang. Med andra ord kan de inte ha mer än en uppgift schemalagd samtidigt och kan inte vara övertilldelade.</p>
+<p>För varje köbaserad resurs skapas automatiskt en kö. Uppgifterna som schemalagts för dessa resurser kan hanteras specifikt med hjälp av de tillhandahållna tilldelningsmetoderna, skapa automatiska tilldelningar mellan uppgifter och köer som matchar de nödvändiga kriterierna, eller genom att flytta uppgifter mellan köer.</p>
+</div>
+</div>
+</div>
+</body>
+</html>

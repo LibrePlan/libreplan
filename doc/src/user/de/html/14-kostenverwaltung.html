@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Kostenverwaltung</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="kostenverwaltung">
+<h1 class="title">Kostenverwaltung</h1>
+
+<div class="contents topic" id="contents">
+<span id="costes"></span><p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#kosten" id="toc-entry-1">Kosten</a><ul>
+<li><a class="reference internal" href="#stundenarten-verwalten" id="toc-entry-2">Stundenarten verwalten</a></li>
+<li><a class="reference internal" href="#kostenkategorien" id="toc-entry-3">Kostenkategorien</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="kosten">
+<h1><a class="toc-backref" href="#toc-entry-1">Kosten</a></h1>
+<p>Die Kostenverwaltung ermöglicht Benutzern, die Kosten der in einem Projekt eingesetzten Ressourcen zu schätzen. Zur Verwaltung von Kosten müssen folgende Entitäten definiert werden:</p>
+<ul class="simple">
+<li><strong>Stundenarten:</strong> Diese geben die Arten von Stunden an, die eine Ressource arbeitet. Benutzer können Stundenarten sowohl für Maschinen als auch für Mitarbeiter definieren. Beispiele für Stundenarten sind: „Zusatzstunden zu 20 € pro Stunde.&quot; Folgende Felder können für Stundenarten definiert werden:<ul>
+<li><strong>Code:</strong> Externer Code für die Stundenart.</li>
+<li><strong>Name:</strong> Name der Stundenart. Zum Beispiel „Zusatzstunden&quot;.</li>
+<li><strong>Standardsatz:</strong> Grundlegender Standardsatz für die Stundenart.</li>
+<li><strong>Aktivierung:</strong> Gibt an, ob die Stundenart aktiv ist oder nicht.</li>
+</ul>
+</li>
+<li><strong>Kostenkategorien:</strong> Kostenkategorien definieren die Kosten, die mit verschiedenen Stundenarten während bestimmter Zeiträume (die unbegrenzt sein können) verbunden sind. Beispielsweise betragen die Kosten für Zusatzstunden für Facharbeiter der ersten Klasse im folgenden Jahr 24 € pro Stunde. Kostenkategorien umfassen:<ul>
+<li><strong>Name:</strong> Name der Kostenkategorie.</li>
+<li><strong>Aktivierung:</strong> Gibt an, ob die Kategorie aktiv ist oder nicht.</li>
+<li><strong>Liste der Stundenarten:</strong> Diese Liste definiert die in der Kostenkategorie enthaltenen Stundenarten. Sie gibt die Zeiträume und Sätze für jede Stundenart an. Zum Beispiel können bei sich ändernden Sätzen die einzelnen Jahre als Stundenart-Zeitraum in dieser Liste aufgeführt werden, mit einem bestimmten Stundensatz für jede Stundenart (der vom Standardstundensatz für diese Stundenart abweichen kann).</li>
+</ul>
+</li>
+</ul>
+<div class="section" id="stundenarten-verwalten">
+<h2><a class="toc-backref" href="#toc-entry-2">Stundenarten verwalten</a></h2>
+<p>Benutzer müssen folgende Schritte ausführen, um Stundenarten zu registrieren:</p>
+<ul class="simple">
+<li>Wählen Sie im Menü „Verwaltung&quot; die Option „Geleistete Stundenarten verwalten&quot;.</li>
+<li>Das Programm zeigt eine Liste der vorhandenen Stundenarten an.</li>
+</ul>
+<div class="figure">
+<img alt="images/hour-type-list.png" src="images/hour-type-list.png" style="width: 443.09999999999997px; height: 81.19999999999999px;" />
+<p class="caption">Liste der Stundenarten</p>
+</div>
+<ul class="simple">
+<li>Klicken Sie auf „Bearbeiten&quot; oder „Erstellen&quot;.</li>
+<li>Das Programm zeigt ein Bearbeitungsformular für Stundenarten an.</li>
+</ul>
+<div class="figure">
+<img alt="images/hour-type-edit.png" src="images/hour-type-edit.png" style="width: 428.5px; height: 106.5px;" />
+<p class="caption">Stundenarten bearbeiten</p>
+</div>
+<ul class="simple">
+<li>Benutzer können folgendes eingeben oder ändern:<ul>
+<li>Den Namen der Stundenart.</li>
+<li>Den Code der Stundenart.</li>
+<li>Den Standardsatz.</li>
+<li>Die Aktivierung/Deaktivierung der Stundenart.</li>
+</ul>
+</li>
+<li>Klicken Sie auf „Speichern&quot; oder „Speichern und weiter&quot;.</li>
+</ul>
+</div>
+<div class="section" id="kostenkategorien">
+<h2><a class="toc-backref" href="#toc-entry-3">Kostenkategorien</a></h2>
+<p>Benutzer müssen folgende Schritte ausführen, um Kostenkategorien zu registrieren:</p>
+<ul class="simple">
+<li>Wählen Sie im Menü „Verwaltung&quot; die Option „Kostenkategorien verwalten&quot;.</li>
+<li>Das Programm zeigt eine Liste der vorhandenen Kategorien an.</li>
+</ul>
+<div class="figure">
+<img alt="images/category-cost-list.png" src="images/category-cost-list.png" style="width: 431.5px; height: 94.5px;" />
+<p class="caption">Liste der Kostenkategorien</p>
+</div>
+<ul class="simple">
+<li>Klicken Sie auf die Schaltfläche „Bearbeiten&quot; oder „Erstellen&quot;.</li>
+<li>Das Programm zeigt ein Bearbeitungsformular für Kostenkategorien an.</li>
+</ul>
+<div class="figure">
+<img alt="images/category-cost-edit.png" src="images/category-cost-edit.png" style="width: 434.5px; height: 169.0px;" />
+<p class="caption">Kostenkategorien bearbeiten</p>
+</div>
+<ul class="simple">
+<li>Benutzer geben folgendes ein oder ändern es:<ul>
+<li>Den Namen der Kostenkategorie.</li>
+<li>Die Aktivierung/Deaktivierung der Kostenkategorie.</li>
+<li>Die Liste der in der Kategorie enthaltenen Stundenarten. Alle Stundenarten haben folgende Felder:<ul>
+<li><strong>Stundenart:</strong> Wählen Sie eine der im System vorhandenen Stundenarten aus. Falls keine vorhanden sind, muss eine Stundenart erstellt werden (dieser Vorgang wird im vorherigen Unterabschnitt erläutert).</li>
+<li><strong>Start- und Enddatum:</strong> Das Start- und Enddatum (letzteres ist optional) für den Zeitraum, der für die Kostenkategorie gilt.</li>
+<li><strong>Stundensatz:</strong> Der Stundensatz für diese spezifische Kategorie.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Klicken Sie auf „Speichern&quot; oder „Speichern und weiter&quot;.</li>
+</ul>
+<p>Die Zuweisung von Kostenkategorien zu Ressourcen wird im Kapitel über Ressourcen beschrieben. Gehen Sie zum Abschnitt „Ressourcen&quot;.</p>
+</div>
+</div>
+</div>
+</body>
+</html>

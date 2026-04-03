@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Projectdashboard</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="projectdashboard">
+<h1 class="title">Projectdashboard</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#voortgangsprestatie-indicatoren" id="toc-entry-1">Voortgangsprestatie-indicatoren</a><ul>
+<li><a class="reference internal" href="#voortgangspercentage-van-het-project" id="toc-entry-2">Voortgangspercentage van het project</a></li>
+<li><a class="reference internal" href="#taakstatus" id="toc-entry-3">Taakstatus</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#kostenindicatoren" id="toc-entry-4">Kostenindicatoren</a></li>
+<li><a class="reference internal" href="#resources" id="toc-entry-5">Resources</a><ul>
+<li><a class="reference internal" href="#histogram-voor-geschatte-afwijking-bij-voltooide-taken" id="toc-entry-6">Histogram voor geschatte afwijking bij voltooide taken</a></li>
+<li><a class="reference internal" href="#overurenratio" id="toc-entry-7">Overurenratio</a></li>
+<li><a class="reference internal" href="#beschikbaarheidsratio" id="toc-entry-8">Beschikbaarheidsratio</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#tijd" id="toc-entry-9">Tijd</a><ul>
+<li><a class="reference internal" href="#vroeg-of-laat-voltooide-taken" id="toc-entry-10">Vroeg of laat voltooide taken</a></li>
+<li><a class="reference internal" href="#deadline-overschrijdingen" id="toc-entry-11">Deadline-overschrijdingen</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>Het projectdashboard is een <em>LibrePlan</em>-perspectief dat een set <strong>KPI's (Key Performance Indicators)</strong> bevat om de prestaties van een project te beoordelen op het gebied van:</p>
+<blockquote>
+<ul class="simple">
+<li>Werkvoortgang</li>
+<li>Kosten</li>
+<li>Status van toegewezen resources</li>
+<li>Tijdsbeperkingen</li>
+</ul>
+</blockquote>
+<div class="section" id="voortgangsprestatie-indicatoren">
+<h1><a class="toc-backref" href="#toc-entry-1">Voortgangsprestatie-indicatoren</a></h1>
+<p>Er worden twee indicatoren berekend: het voortgangspercentage van het project en de taakstatus.</p>
+<div class="section" id="voortgangspercentage-van-het-project">
+<h2><a class="toc-backref" href="#toc-entry-2">Voortgangspercentage van het project</a></h2>
+<p>Dit diagram toont de algehele voortgang van een project en vergelijkt deze met de verwachte voortgang op basis van het <em>Gantt</em>-diagram.</p>
+<p>De voortgang wordt weergegeven door twee balken:</p>
+<blockquote>
+<ul class="simple">
+<li><em>Huidige voortgang:</em> De huidige voortgang op basis van de genomen metingen.</li>
+<li><em>Verwachte voortgang:</em> De voortgang die het project op dit punt zou moeten hebben bereikt, volgens het projectplan.</li>
+</ul>
+</blockquote>
+<p>Beweeg de muiscursor over de balk om de werkelijk gemeten waarde voor elke balk te bekijken.</p>
+<p>De algehele projectvoortgang wordt geschat met behulp van verschillende methoden, omdat er geen enkele universeel correcte aanpak is:</p>
+<blockquote>
+<ul class="simple">
+<li><strong>Verspreidende voortgang:</strong> Dit is het voortgangstype dat is ingesteld als de verspreidende voortgang op projectniveau. In dit geval is er geen manier om een verwachte waarde te berekenen en wordt alleen de huidige balk weergegeven.</li>
+<li><strong>Op basis van alle taaknuren:</strong> De voortgang van alle projecttaken wordt gemiddeld om de algehele waarde te berekenen. Dit is een gewogen gemiddelde dat rekening houdt met het aantal uren dat aan elke taak is toegewezen.</li>
+<li><strong>Op basis van kritiek-pad-uren:</strong> De voortgang van taken die behoren tot een van de kritieke paden van het project wordt gemiddeld om de algehele waarde te verkrijgen. Dit is een gewogen gemiddelde dat rekening houdt met de totale toegewezen uren voor elke betrokken taak.</li>
+<li><strong>Op basis van kritiek-pad-duur:</strong> De voortgang van taken die behoren tot een van de kritieke paden wordt gemiddeld met een gewogen gemiddelde, maar dit keer rekening houdend met de duur van elke betrokken taak in plaats van de toegewezen uren.</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="taakstatus">
+<h2><a class="toc-backref" href="#toc-entry-3">Taakstatus</a></h2>
+<p>Een cirkeldiagram toont het percentage projecttaken in verschillende staten. De gedefinieerde staten zijn:</p>
+<blockquote>
+<ul class="simple">
+<li><strong>Voltooid:</strong> Voltooide taken, geïdentificeerd door een voortgangswaarde van 100%.</li>
+<li><strong>Bezig:</strong> Taken die momenteel worden uitgevoerd. Deze taken hebben een voortgangswaarde anders dan 0% of 100%, of er is enige werktijd bijgehouden.</li>
+<li><strong>Gereed om te starten:</strong> Taken met 0% voortgang, geen bijgehouden tijd, waarbij alle <em>FINISH_TO_START</em>-afhankelijke taken <em>voltooid</em> zijn, en alle <em>START_TO_START</em>-afhankelijke taken <em>voltooid</em> of <em>bezig</em> zijn.</li>
+<li><strong>Geblokkeerd:</strong> Taken met 0% voortgang, geen bijgehouden tijd, en met voorgaande afhankelijke taken die noch <em>bezig</em> zijn noch de status <em>gereed om te starten</em> hebben.</li>
+</ul>
+</blockquote>
+</div>
+</div>
+<div class="section" id="kostenindicatoren">
+<h1><a class="toc-backref" href="#toc-entry-4">Kostenindicatoren</a></h1>
+<p>Er worden verschillende <em>Earned Value Management</em>-kostenindicatoren berekend:</p>
+<blockquote>
+<ul>
+<li><p class="first"><strong>CV (Kostenafwijking):</strong> Het verschil tussen de <em>Earned Value-curve</em> en de <em>Werkelijke kostencurve</em> op het huidige moment. Positieve waarden wijzen op een voordeel en negatieve waarden op een verlies.</p>
+</li>
+<li><p class="first"><strong>ACWP (Werkelijke kosten van uitgevoerd werk):</strong> Het totale aantal bijgehouden uren in het project op het huidige moment.</p>
+</li>
+<li><p class="first"><strong>CPI (Kostenprestatie-index):</strong> De verhouding <em>Earned Value / Werkelijke kosten</em>.</p>
+<blockquote>
+<ul class="simple">
+<li>&gt; 100 is gunstig, wat aangeeft dat het project onder het budget ligt.</li>
+<li>= 100 is ook gunstig, wat aangeeft dat de kosten precies conform het plan zijn.</li>
+<li>&lt; 100 is ongunstig, wat aangeeft dat de kosten voor het voltooien van het werk hoger zijn dan gepland.</li>
+</ul>
+</blockquote>
+</li>
+<li><p class="first"><strong>ETC (Schatting om te voltooien):</strong> De resterende tijd om het project te voltooien.</p>
+</li>
+<li><p class="first"><strong>BAC (Budget bij voltooiing):</strong> Het totale hoeveelheid werk dat is toegewezen in het projectplan.</p>
+</li>
+<li><p class="first"><strong>EAC (Schatting bij voltooiing):</strong> De projectie van de manager van de totale kosten bij projectvoltooiing, op basis van de <em>CPI</em>.</p>
+</li>
+<li><p class="first"><strong>VAC (Afwijking bij voltooiing):</strong> Het verschil tussen de <em>BAC</em> en de <em>EAC</em>.</p>
+<blockquote>
+<ul class="simple">
+<li>&lt; 0 geeft aan dat het project boven het budget ligt.</li>
+<li>&gt; 0 geeft aan dat het project onder het budget ligt.</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="resources">
+<h1><a class="toc-backref" href="#toc-entry-5">Resources</a></h1>
+<p>Om het project vanuit het perspectief van resources te analyseren, worden twee ratio's en een histogram verstrekt.</p>
+<div class="section" id="histogram-voor-geschatte-afwijking-bij-voltooide-taken">
+<h2><a class="toc-backref" href="#toc-entry-6">Histogram voor geschatte afwijking bij voltooide taken</a></h2>
+<p>Dit histogram berekent de afwijking tussen het aantal uren dat is toegewezen aan de projecttaken en het werkelijke aantal uren dat daaraan is besteed.</p>
+<p>De afwijking wordt berekend als een percentage voor alle voltooide taken, en de berekende afwijkingen worden weergegeven in een histogram. De verticale as toont het aantal taken binnen elk afwijkingsinterval. Er worden zes afwijkingsintervallen dynamisch berekend.</p>
+</div>
+<div class="section" id="overurenratio">
+<h2><a class="toc-backref" href="#toc-entry-7">Overurenratio</a></h2>
+<p>Deze ratio vat de overbelasting samen van resources die zijn toegewezen aan de projecttaken. Het wordt berekend met de formule: <strong>overurenratio = overbelasting / (belasting + overbelasting)</strong>.</p>
+<blockquote>
+<ul class="simple">
+<li>= 0 is gunstig, wat aangeeft dat de resources niet overbelast zijn.</li>
+<li>&gt; 0 is ongunstig, wat aangeeft dat de resources overbelast zijn.</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="beschikbaarheidsratio">
+<h2><a class="toc-backref" href="#toc-entry-8">Beschikbaarheidsratio</a></h2>
+<p>Deze ratio vat de vrije capaciteit samen van de resources die momenteel zijn toegewezen aan het project. Het meet dus de beschikbaarheid van de resources om meer toewijzingen te ontvangen zonder overbelast te raken. Het wordt berekend als: <strong>beschikbaarheidsratio = (1 - belasting/capaciteit) * 100</strong></p>
+<blockquote>
+<ul class="simple">
+<li>Mogelijke waarden liggen tussen 0% (volledig toegewezen) en 100% (niet toegewezen).</li>
+</ul>
+</blockquote>
+</div>
+</div>
+<div class="section" id="tijd">
+<h1><a class="toc-backref" href="#toc-entry-9">Tijd</a></h1>
+<p>Er zijn twee diagrammen opgenomen: een histogram voor de tijdsafwijking in de eindtijd van projecttaken en een cirkeldiagram voor deadline-overschrijdingen.</p>
+<div class="section" id="vroeg-of-laat-voltooide-taken">
+<h2><a class="toc-backref" href="#toc-entry-10">Vroeg of laat voltooide taken</a></h2>
+<p>Deze berekening bepaalt het verschil in dagen tussen de geplande eindtijd voor projecttaken en hun werkelijke eindtijd. De geplande voltooiingsdatum wordt overgenomen uit het <em>Gantt</em>-diagram, en de werkelijke einddatum wordt overgenomen uit de laatste bijgehouden tijd voor de taak.</p>
+<p>De vertraging of het voordeel bij taakvoltooi­ing wordt weergegeven in een histogram. De verticale as toont het aantal taken met een waarde voor het aantal voor-/achterloopdagen dat overeenkomt met het intervalvak op de horizontale as. Er worden zes dynamische taakvoltooi­ingsafwijkingsintervallen berekend.</p>
+<blockquote>
+<ul class="simple">
+<li>Negatieve waarden betekenen vroeger dan gepland voltooien.</li>
+<li>Positieve waarden betekenen later dan gepland voltooien.</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="deadline-overschrijdingen">
+<h2><a class="toc-backref" href="#toc-entry-11">Deadline-overschrijdingen</a></h2>
+<p>In deze sectie wordt de marge ten opzichte van de projectdeadline berekend, indien ingesteld. Bovendien toont een cirkeldiagram het percentage taken dat zijn deadline haalt. Er zijn drie soorten waarden opgenomen in het diagram:</p>
+<blockquote>
+<ul class="simple">
+<li>Percentage taken zonder geconfigureerde deadline.</li>
+<li>Percentage voltooide taken met een werkelijke einddatum later dan hun deadline. De werkelijke einddatum wordt overgenomen uit de laatste bijgehouden tijd voor de taak.</li>
+<li>Percentage voltooide taken met een werkelijke einddatum eerder dan hun deadline.</li>
+</ul>
+</blockquote>
+</div>
+</div>
+</div>
+</body>
+</html>

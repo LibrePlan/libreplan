@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Projectes i elements de projecte</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="projectes-i-elements-de-projecte">
+<h1 class="title">Projectes i elements de projecte</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#projectes" id="toc-entry-1">Projectes</a></li>
+<li><a class="reference internal" href="#edicio-d-elements-de-comanda" id="toc-entry-2">Edició d'elements de comanda</a><ul>
+<li><a class="reference internal" href="#edicio-d-informacio-sobre-l-element-de-comanda" id="toc-entry-3">Edició d'informació sobre l'element de comanda</a></li>
+<li><a class="reference internal" href="#visualitzacio-d-hores-atribuides-als-elements-de-comanda" id="toc-entry-4">Visualització d'hores atribuïdes als elements de comanda</a></li>
+<li><a class="reference internal" href="#gestio-del-progres-dels-elements-de-comanda" id="toc-entry-5">Gestió del progrés dels elements de comanda</a></li>
+<li><a class="reference internal" href="#gestio-d-etiquetes-de-la-comanda" id="toc-entry-6">Gestió d'etiquetes de la comanda</a></li>
+<li><a class="reference internal" href="#gestio-de-criteris-requerits-per-l-element-de-comanda-i-grups-d-hores" id="toc-entry-7">Gestió de criteris requerits per l'element de comanda i grups d'hores</a></li>
+<li><a class="reference internal" href="#gestio-de-materials" id="toc-entry-8">Gestió de materials</a></li>
+<li><a class="reference internal" href="#gestio-de-formularis-de-qualitat" id="toc-entry-9">Gestió de formularis de qualitat</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>Els projectes representen el treball a realitzar pels usuaris del programa. Cada projecte correspon a un projecte que l'empresa oferirà als seus clients.</p>
+<p>Un projecte consta d'un o més elements de projecte. Cada element de projecte representa una part específica del treball a realitzar i defineix com s'ha de planificar i executar el treball del projecte. Els elements de projecte s'organitzen jeràrquicament, sense limitacions en la profunditat de la jerarquia. Aquesta estructura jeràrquica permet l'herència de determinades característiques, com ara les etiquetes.</p>
+<p>Les seccions següents descriuen les operacions que els usuaris poden realitzar amb projectes i elements de projecte.</p>
+<div class="section" id="projectes">
+<h1><a class="toc-backref" href="#toc-entry-1">Projectes</a></h1>
+<p>Un projecte representa un projecte o treball sol·licitat per un client a l'empresa. El projecte identifica el projecte dins la planificació de l'empresa. A diferència dels programes de gestió integrals, LibrePlan només requereix certs detalls clau per a un projecte. Aquests detalls són:</p>
+<ul class="simple">
+<li><strong>Nom del projecte:</strong> El nom del projecte.</li>
+<li><strong>Codi del projecte:</strong> Un codi únic per al projecte.</li>
+<li><strong>Import total del projecte:</strong> El valor econòmic total del projecte.</li>
+<li><strong>Data d'inici estimada:</strong> La data d'inici planificada del projecte.</li>
+<li><strong>Data de fi:</strong> La data de finalització planificada del projecte.</li>
+<li><strong>Persona responsable:</strong> La persona responsable del projecte.</li>
+<li><strong>Descripció:</strong> Una descripció del projecte.</li>
+<li><strong>Calendari assignat:</strong> El calendari associat al projecte.</li>
+<li><strong>Generació automàtica de codis:</strong> Un paràmetre per indicar al sistema que generi automàticament codis per als elements de projecte i grups d'hores.</li>
+<li><strong>Preferència entre dependències i restriccions:</strong> Els usuaris poden triar si les dependències o les restriccions tenen prioritat en cas de conflicte.</li>
+</ul>
+<p>No obstant això, un projecte complet també inclou altres entitats associades:</p>
+<ul class="simple">
+<li><strong>Hores assignades al projecte:</strong> El total d'hores assignades al projecte.</li>
+<li><strong>Progrés atribuït al projecte:</strong> El progrés realitzat al projecte.</li>
+<li><strong>Etiquetes:</strong> Etiquetes assignades al projecte.</li>
+<li><strong>Criteris assignats al projecte:</strong> Criteris associats al projecte.</li>
+<li><strong>Materials:</strong> Materials necessaris per al projecte.</li>
+<li><strong>Formularis de qualitat:</strong> Formularis de qualitat associats al projecte.</li>
+</ul>
+<p>La creació o edició d'un projecte es pot fer des de diverses ubicacions dins del programa:</p>
+<ul class="simple">
+<li><strong>Des de la &quot;Llista de projectes&quot; a la vista general de l'empresa:</strong><ul>
+<li><strong>Editar:</strong> Feu clic al botó d'edició del projecte desitjat.</li>
+<li><strong>Crear:</strong> Feu clic a &quot;Nou projecte&quot;.</li>
+</ul>
+</li>
+<li><strong>Des d'un projecte al diagrama de Gantt:</strong> Canvieu a la vista de detalls del projecte.</li>
+</ul>
+<p>Els usuaris poden accedir a les pestanyes següents en editar un projecte:</p>
+<ul>
+<li><p class="first"><strong>Editar detalls del projecte:</strong> Aquesta pantalla permet als usuaris editar els detalls bàsics del projecte:</p>
+<ul class="simple">
+<li>Nom</li>
+<li>Codi</li>
+<li>Data d'inici estimada</li>
+<li>Data de fi</li>
+<li>Persona responsable</li>
+<li>Client</li>
+<li>Descripció</li>
+</ul>
+<div class="figure">
+<img alt="images/order-edition.png" src="images/order-edition.png" style="width: 429.0px; height: 227.5px;" />
+<p class="caption">Edició de projectes</p>
+</div>
+</li>
+<li><p class="first"><strong>Llista d'elements de projecte:</strong> Aquesta pantalla permet als usuaris realitzar diverses operacions sobre els elements de projecte:</p>
+<ul class="simple">
+<li>Crear nous elements de projecte.</li>
+<li>Promoure un element de projecte un nivell amunt a la jerarquia.</li>
+<li>Degradar un element de projecte un nivell avall a la jerarquia.</li>
+<li>Sagnar un element de projecte (moure'l avall a la jerarquia).</li>
+<li>Dessagnar un element de projecte (moure'l amunt a la jerarquia).</li>
+<li>Filtrar elements de projecte.</li>
+<li>Eliminar elements de projecte.</li>
+<li>Moure un element dins de la jerarquia arrossegant i deixant anar.</li>
+</ul>
+<div class="figure">
+<img alt="images/order-elements-list.png" src="images/order-elements-list.png" style="width: 496.8px; height: 107.60000000000001px;" />
+<p class="caption">Llista d'elements de projecte</p>
+</div>
+</li>
+<li><p class="first"><strong>Hores assignades:</strong> Aquesta pantalla mostra el total d'hores atribuïdes al projecte, agrupant les hores introduïdes als elements de projecte.</p>
+<div class="figure">
+<img alt="images/order-assigned-hours.png" src="images/order-assigned-hours.png" style="width: 432.0px; height: 202.5px;" />
+<p class="caption">Assignació d'hores atribuïdes a la comanda per treballadors</p>
+</div>
+</li>
+<li><p class="first"><strong>Progrés:</strong> Aquesta pantalla permet als usuaris assignar tipus de progrés i introduir mesures de progrés per a la comanda. Consulteu la secció &quot;Progrés&quot; per a més detalls.</p>
+</li>
+<li><p class="first"><strong>Etiquetes:</strong> Aquesta pantalla permet als usuaris assignar etiquetes a una comanda i veure les etiquetes directes i indirectes prèviament assignades. Consulteu la secció sobre edició d'elements de comanda per a una descripció detallada de la gestió d'etiquetes.</p>
+<div class="figure">
+<img alt="images/order-labels.png" src="images/order-labels.png" style="width: 402.5px; height: 180.95px;" />
+<p class="caption">Etiquetes de la comanda</p>
+</div>
+</li>
+<li><p class="first"><strong>Criteris:</strong> Aquesta pantalla permet als usuaris assignar criteris que s'aplicaran a totes les tasques dins de la comanda. Aquests criteris s'aplicaran automàticament a tots els elements de comanda, excepte els que hagin estat explícitament invalidats. Els grups d'hores dels elements de comanda, que s'agrupen per criteris, també es poden visualitzar, permetent als usuaris identificar els criteris necessaris per a una comanda.</p>
+<div class="figure">
+<img alt="images/order-criterions.png" src="images/order-criterions.png" style="width: 423.5px; height: 261.5px;" />
+<p class="caption">Criteris de la comanda</p>
+</div>
+</li>
+<li><p class="first"><strong>Materials:</strong> Aquesta pantalla permet als usuaris assignar materials a les comandes. Els materials es poden seleccionar de les categories de materials disponibles al programa. Els materials es gestionen de la manera següent:</p>
+<ul class="simple">
+<li>Seleccioneu la pestanya &quot;Cercar materials&quot; a la part inferior de la pantalla.</li>
+<li>Introduïu text per cercar materials o seleccioneu les categories per a les quals voleu trobar materials.</li>
+<li>El sistema filtra els resultats.</li>
+<li>Seleccioneu els materials desitjats (es poden seleccionar múltiples materials prement la tecla &quot;Ctrl&quot;).</li>
+<li>Feu clic a &quot;Assignar&quot;.</li>
+<li>El sistema mostra la llista de materials ja assignats a la comanda.</li>
+<li>Seleccioneu les unitats i l'estat a assignar a la comanda.</li>
+<li>Feu clic a &quot;Desa&quot; o &quot;Desa i continua&quot;.</li>
+<li>Per gestionar la recepció de materials, feu clic a &quot;Dividir&quot; per canviar l'estat d'una quantitat parcial de material.</li>
+</ul>
+<div class="figure">
+<img alt="images/order-material.png" src="images/order-material.png" style="width: 430.0px; height: 204.0px;" />
+<p class="caption">Materials associats a una comanda</p>
+</div>
+</li>
+<li><p class="first"><strong>Qualitat:</strong> Els usuaris poden assignar un formulari de qualitat a la comanda. Aquest formulari es completa aleshores per garantir que certes activitats associades a la comanda s'han dut a terme. Consulteu la secció sobre edició d'elements de comanda per a detalls sobre la gestió de formularis de qualitat.</p>
+<div class="figure">
+<img alt="images/order-quality.png" src="images/order-quality.png" style="width: 428.0px; height: 259.0px;" />
+<p class="caption">Formulari de qualitat associat a la comanda</p>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="edicio-d-elements-de-comanda">
+<h1><a class="toc-backref" href="#toc-entry-2">Edició d'elements de comanda</a></h1>
+<p>Els elements de comanda s'editen des de la pestanya &quot;Llista d'elements de comanda&quot; fent clic a la icona d'edició. Això obre una nova pantalla on els usuaris poden:</p>
+<ul class="simple">
+<li>Editar informació sobre l'element de comanda.</li>
+<li>Veure les hores atribuïdes als elements de comanda.</li>
+<li>Gestionar el progrés dels elements de comanda.</li>
+<li>Gestionar les etiquetes de la comanda.</li>
+<li>Gestionar els criteris requerits per l'element de comanda.</li>
+<li>Gestionar materials.</li>
+<li>Gestionar formularis de qualitat.</li>
+</ul>
+<p>Les subseccions següents descriuen cadascuna d'aquestes operacions en detall.</p>
+<div class="section" id="edicio-d-informacio-sobre-l-element-de-comanda">
+<h2><a class="toc-backref" href="#toc-entry-3">Edició d'informació sobre l'element de comanda</a></h2>
+<p>L'edició d'informació sobre l'element de comanda inclou la modificació dels detalls següents:</p>
+<ul class="simple">
+<li><strong>Nom de l'element de comanda:</strong> El nom de l'element de comanda.</li>
+<li><strong>Codi de l'element de comanda:</strong> Un codi únic per a l'element de comanda.</li>
+<li><strong>Data d'inici:</strong> La data d'inici planificada de l'element de comanda.</li>
+<li><strong>Data de fi estimada:</strong> La data de finalització planificada de l'element de comanda.</li>
+<li><strong>Total d'hores:</strong> El total d'hores assignades a l'element de comanda. Aquestes hores es poden calcular a partir dels grups d'hores afegits o introduir-se directament. Si s'introdueixen directament, les hores s'han de distribuir entre els grups d'hores, i s'ha de crear un nou grup d'hores si els percentatges no coincideixen amb els percentatges inicials.</li>
+<li><strong>Grups d'hores:</strong> Es poden afegir un o més grups d'hores a l'element de comanda. <strong>El propòsit d'aquests grups d'hores</strong> és definir els requisits per als recursos que s'assignaran per realitzar el treball.</li>
+<li><strong>Criteris:</strong> Es poden afegir criteris que s'han de complir per habilitar l'assignació genèrica per a l'element de comanda.</li>
+</ul>
+<div class="figure">
+<img alt="images/order-element-edition.png" src="images/order-element-edition.png" style="width: 477.5px; height: 345.0px;" />
+<p class="caption">Edició d'elements de comanda</p>
+</div>
+</div>
+<div class="section" id="visualitzacio-d-hores-atribuides-als-elements-de-comanda">
+<h2><a class="toc-backref" href="#toc-entry-4">Visualització d'hores atribuïdes als elements de comanda</a></h2>
+<p>La pestanya &quot;Hores assignades&quot; permet als usuaris veure els parts de treball associats a un element de comanda i veure quantes de les hores estimades ja s'han completat.</p>
+<div class="figure">
+<img alt="images/order-element-hours.png" src="images/order-element-hours.png" style="width: 478.5px; height: 344.5px;" />
+<p class="caption">Hores assignades als elements de comanda</p>
+</div>
+<p>La pantalla es divideix en dues parts:</p>
+<ul class="simple">
+<li><strong>Llista de parts de treball:</strong> Els usuaris poden veure la llista de parts de treball associats a l'element de comanda, incloent la data i l'hora, el recurs i el nombre d'hores dedicades a la tasca.</li>
+<li><strong>Ús d'hores estimades:</strong> El sistema calcula el nombre total d'hores dedicades a la tasca i les compara amb les hores estimades.</li>
+</ul>
+</div>
+<div class="section" id="gestio-del-progres-dels-elements-de-comanda">
+<h2><a class="toc-backref" href="#toc-entry-5">Gestió del progrés dels elements de comanda</a></h2>
+<p>La introducció de tipus de progrés i la gestió del progrés dels elements de comanda es descriu al capítol &quot;Progrés&quot;.</p>
+</div>
+<div class="section" id="gestio-d-etiquetes-de-la-comanda">
+<h2><a class="toc-backref" href="#toc-entry-6">Gestió d'etiquetes de la comanda</a></h2>
+<p>Les etiquetes, tal com es descriu al capítol sobre etiquetes, permeten als usuaris categoritzar els elements de comanda. Això permet als usuaris agrupar informació de planificació o de comanda basant-se en aquestes etiquetes.</p>
+<p>Els usuaris poden assignar etiquetes directament a un element de comanda o a un element de comanda de nivell superior a la jerarquia. Un cop s'assigna una etiqueta mitjançant qualsevol dels dos mètodes, l'element de comanda i la tasca de planificació relacionada s'associen a l'etiqueta i es poden utilitzar per a filtrats posteriors.</p>
+<div class="figure">
+<img alt="images/order-element-tags.png" src="images/order-element-tags.png" style="width: 476.5px; height: 344.0px;" />
+<p class="caption">Assignació d'etiquetes per a elements de comanda</p>
+</div>
+<p>Tal com es mostra a la imatge, els usuaris poden realitzar les accions següents des de la pestanya <strong>Etiquetes</strong>:</p>
+<ul class="simple">
+<li><strong>Veure etiquetes heretades:</strong> Veure les etiquetes associades a l'element de comanda que han estat heretades d'un element de comanda de nivell superior. La tasca de planificació associada a cada element de comanda té les mateixes etiquetes associades.</li>
+<li><strong>Veure etiquetes assignades directament:</strong> Veure les etiquetes directament associades a l'element de comanda mitjançant el formulari d'assignació d'etiquetes de nivell inferior.</li>
+<li><strong>Assignar etiquetes existents:</strong> Assignar etiquetes cercant-les entre les etiquetes disponibles al formulari que hi ha sota la llista d'etiquetes directes. Per cercar una etiqueta, feu clic a la icona de lupa o introduïu les primeres lletres de l'etiqueta al quadre de text per mostrar les opcions disponibles.</li>
+<li><strong>Crear i assignar noves etiquetes:</strong> Crear noves etiquetes associades a un tipus d'etiqueta existent des d'aquest formulari. Per fer-ho, seleccioneu un tipus d'etiqueta i introduïu el valor de l'etiqueta per al tipus seleccionat. El sistema crea automàticament l'etiqueta i l'assigna a l'element de comanda en fer clic a &quot;Crear i assignar&quot;.</li>
+</ul>
+</div>
+<div class="section" id="gestio-de-criteris-requerits-per-l-element-de-comanda-i-grups-d-hores">
+<h2><a class="toc-backref" href="#toc-entry-7">Gestió de criteris requerits per l'element de comanda i grups d'hores</a></h2>
+<p>Tant una comanda com un element de comanda poden tenir criteris assignats que s'han de complir perquè es dugui a terme el treball. Els criteris poden ser directes o indirectes:</p>
+<ul class="simple">
+<li><strong>Criteris directes:</strong> S'assignen directament a l'element de comanda. Són criteris requerits pels grups d'hores de l'element de comanda.</li>
+<li><strong>Criteris indirectes:</strong> S'assignen a elements de comanda de nivell superior a la jerarquia i s'hereten per l'element que s'edita.</li>
+</ul>
+<p>A més dels criteris requerits, es pot definir un o més grups d'hores que formen part de l'element de comanda. Això depèn de si l'element de comanda conté altres elements de comanda com a nodes fills o si és un node fulla. En el primer cas, la informació sobre les hores i els grups d'hores només es pot visualitzar. No obstant això, els nodes fulla es poden editar. Els nodes fulla funcionen de la manera següent:</p>
+<ul class="simple">
+<li>El sistema crea un grup d'hores per defecte associat a l'element de comanda. Els detalls que es poden modificar per a un grup d'hores són:<ul>
+<li><strong>Codi:</strong> El codi del grup d'hores (si no es genera automàticament).</li>
+<li><strong>Tipus de criteri:</strong> Els usuaris poden triar assignar un criteri de màquina o de treballador.</li>
+<li><strong>Nombre d'hores:</strong> El nombre d'hores del grup d'hores.</li>
+<li><strong>Llista de criteris:</strong> Els criteris a aplicar al grup d'hores. Per afegir nous criteris, feu clic a &quot;Afegir criteri&quot; i seleccioneu-ne un del motor de cerca que apareix després de fer clic al botó.</li>
+</ul>
+</li>
+<li>Els usuaris poden afegir nous grups d'hores amb característiques diferents dels grups d'hores anteriors. Per exemple, un element de comanda podria requerir un soldador (30 hores) i un pintor (40 hores).</li>
+</ul>
+<div class="figure">
+<img alt="images/order-element-criterion.png" src="images/order-element-criterion.png" style="width: 476.0px; height: 344.0px;" />
+<p class="caption">Assignació de criteris a elements de comanda</p>
+</div>
+</div>
+<div class="section" id="gestio-de-materials">
+<h2><a class="toc-backref" href="#toc-entry-8">Gestió de materials</a></h2>
+<p>Els materials es gestionen en projectes com una llista associada a cada element de comanda o a una comanda en general. La llista de materials inclou els camps següents:</p>
+<ul class="simple">
+<li><strong>Codi:</strong> El codi del material.</li>
+<li><strong>Data:</strong> La data associada al material.</li>
+<li><strong>Unitats:</strong> El nombre d'unitats requerides.</li>
+<li><strong>Tipus d'unitat:</strong> El tipus d'unitat utilitzat per mesurar el material.</li>
+<li><strong>Preu unitari:</strong> El preu per unitat.</li>
+<li><strong>Preu total:</strong> El preu total (calculat multiplicant el preu unitari pel nombre d'unitats).</li>
+<li><strong>Categoria:</strong> La categoria a la qual pertany el material.</li>
+<li><strong>Estat:</strong> L'estat del material (p. ex., Rebut, Sol·licitat, Pendent, En procés, Cancel·lat).</li>
+</ul>
+<p>El treball amb materials es fa de la manera següent:</p>
+<ul class="simple">
+<li>Seleccioneu la pestanya &quot;Materials&quot; en un element de comanda.</li>
+<li>El sistema mostra dues subpestanyes: &quot;Materials&quot; i &quot;Cercar materials&quot;.</li>
+<li>Si l'element de comanda no té materials assignats, la primera pestanya estarà buida.</li>
+<li>Feu clic a &quot;Cercar materials&quot; a la part inferior esquerra de la finestra.</li>
+<li>El sistema mostra la llista de categories disponibles i materials associats.</li>
+</ul>
+<div class="figure">
+<img alt="images/order-element-material-search.png" src="images/order-element-material-search.png" style="width: 476.0px; height: 343.0px;" />
+<p class="caption">Cerca de materials</p>
+</div>
+<ul class="simple">
+<li>Seleccioneu categories per refinar la cerca de materials.</li>
+<li>El sistema mostra els materials que pertanyen a les categories seleccionades.</li>
+<li>De la llista de materials, seleccioneu els materials a assignar a l'element de comanda.</li>
+<li>Feu clic a &quot;Assignar&quot;.</li>
+<li>El sistema mostra la llista de materials seleccionats a la pestanya &quot;Materials&quot; amb nous camps a completar.</li>
+</ul>
+<div class="figure">
+<img alt="images/order-element-material-assign.png" src="images/order-element-material-assign.png" style="width: 475.5px; height: 341.5px;" />
+<p class="caption">Assignació de materials a elements de comanda</p>
+</div>
+<ul class="simple">
+<li>Seleccioneu les unitats, l'estat i la data per als materials assignats.</li>
+</ul>
+<p>Per al seguiment posterior dels materials, és possible canviar l'estat d'un grup d'unitats del material rebut. Això es fa de la manera següent:</p>
+<ul class="simple">
+<li>Feu clic al botó &quot;Dividir&quot; a la llista de materials a la dreta de cada fila.</li>
+<li>Seleccioneu el nombre d'unitats en les quals dividir la fila.</li>
+<li>El programa mostra dues files amb el material dividit.</li>
+<li>Canvieu l'estat de la fila que conté el material.</li>
+</ul>
+<p>L'avantatge d'utilitzar aquesta eina de divisió és la capacitat de rebre lliuraments parcials de material sense haver d'esperar el lliurament complet per marcar-lo com a rebut.</p>
+</div>
+<div class="section" id="gestio-de-formularis-de-qualitat">
+<h2><a class="toc-backref" href="#toc-entry-9">Gestió de formularis de qualitat</a></h2>
+<p>Alguns elements de comanda requereixen la certificació que certes tasques s'han completat abans que es puguin marcar com a completes. Per això el programa té formularis de qualitat, que consisteixen en una llista de preguntes que es consideren importants si es responen positivament.</p>
+<p>És important tenir en compte que s'ha de crear prèviament un formulari de qualitat per poder assignar-lo a un element de comanda.</p>
+<p>Per gestionar formularis de qualitat:</p>
+<ul>
+<li><p class="first">Aneu a la pestanya &quot;Formularis de qualitat&quot;.</p>
+<div class="figure">
+<img alt="images/order-element-quality.png" src="images/order-element-quality.png" style="width: 475.5px; height: 343.5px;" />
+<p class="caption">Assignació de formularis de qualitat a elements de comanda</p>
+</div>
+</li>
+<li><p class="first">El programa té un motor de cerca per a formularis de qualitat. Hi ha dos tipus de formularis de qualitat: per element o per percentatge.</p>
+<ul class="simple">
+<li><strong>Element:</strong> Cada element és independent.</li>
+<li><strong>Percentatge:</strong> Cada pregunta augmenta el progrés de l'element de comanda en un percentatge. Els percentatges han de poder sumar el 100%.</li>
+</ul>
+</li>
+<li><p class="first">Seleccioneu un dels formularis creats a la interfície d'administració i feu clic a &quot;Assignar&quot;.</p>
+</li>
+<li><p class="first">El programa assigna el formulari escollit de la llista de formularis assignats a l'element de comanda.</p>
+</li>
+<li><p class="first">Feu clic al botó &quot;Editar&quot; de l'element de comanda.</p>
+</li>
+<li><p class="first">El programa mostra les preguntes del formulari de qualitat a la llista inferior.</p>
+</li>
+<li><p class="first">Marqueu com a assolides les preguntes que s'han completat.</p>
+<ul class="simple">
+<li>Si el formulari de qualitat es basa en percentatges, les preguntes es responen en ordre.</li>
+<li>Si el formulari de qualitat es basa en elements, les preguntes es poden respondre en qualsevol ordre.</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</body>
+</html>

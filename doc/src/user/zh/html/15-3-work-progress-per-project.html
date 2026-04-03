@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>每專案工作與進度報告</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="section-1">
+<h1 class="title">每專案工作與進度報告</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#section-2" id="toc-entry-1">目的</a></li>
+<li><a class="reference internal" href="#section-3" id="toc-entry-2">輸入參數與篩選器</a></li>
+<li><a class="reference internal" href="#section-4" id="toc-entry-3">輸出</a><ul>
+<li><a class="reference internal" href="#section-5" id="toc-entry-4">標題</a></li>
+<li><a class="reference internal" href="#section-6" id="toc-entry-5">頁尾</a></li>
+<li><a class="reference internal" href="#section-7" id="toc-entry-6">內文</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="section-2">
+<h1><a class="toc-backref" href="#toc-entry-1">目的</a></h1>
+<p>本報告提供專案狀態的概覽，同時考量進度和成本。</p>
+<p>它分析每個專案的當前進度，並將其與計劃進度及已完成的工作進行比較。</p>
+<p>報告還顯示與專案成本相關的幾個比率，將當前表現與計劃表現進行比較。</p>
+</div>
+<div class="section" id="section-3">
+<h1><a class="toc-backref" href="#toc-entry-2">輸入參數與篩選器</a></h1>
+<p>有幾個必填參數：</p>
+<blockquote>
+<ul class="simple">
+<li><strong>參考日期：</strong> 這是用於比較專案計劃狀態與實際表現的參考日期。<em>此欄位的預設值為當前日期</em>。</li>
+<li><strong>進度類型：</strong> 這是用於衡量專案進度的進度類型。應用程式允許同時以不同進度類型衡量一個專案。使用者在下拉選單中選擇的類型用於計算報告資料。<em>進度類型*的預設值為*spread</em>，這是一種特殊進度類型，使用為每個WBS元素設定的首選進度衡量方法。</li>
+</ul>
+</blockquote>
+<p>選填參數為：</p>
+<blockquote>
+<ul class="simple">
+<li><strong>開始日期：</strong> 這是要納入報告的專案的最早開始日期。若此欄位留空，則專案沒有最早開始日期限制。</li>
+<li><strong>結束日期：</strong> 這是要納入報告的專案的最晚結束日期。在*結束日期*之後完成的所有專案將被排除。</li>
+<li><strong>依專案篩選：</strong> 此篩選器允許使用者選擇要納入報告的特定專案。若篩選器中未新增任何專案，報告將包含資料庫中的所有專案。提供可搜尋的下拉選單以尋找所需專案。透過點擊*新增*按鈕將專案新增至篩選器。</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="section-4">
+<h1><a class="toc-backref" href="#toc-entry-3">輸出</a></h1>
+<p>輸出格式如下：</p>
+<div class="section" id="section-5">
+<h2><a class="toc-backref" href="#toc-entry-4">標題</a></h2>
+<p>報告頁首顯示以下欄位：</p>
+<blockquote>
+<ul class="simple">
+<li><strong>開始日期：</strong> 篩選的開始日期。若報告未依此欄位篩選，則不顯示。</li>
+<li><strong>結束日期：</strong> 篩選的結束日期。若報告未依此欄位篩選，則不顯示。</li>
+<li><strong>進度類型：</strong> 報告所用的進度類型。</li>
+<li><strong>專案：</strong> 表示報告所生成的篩選專案。當報告包含滿足其他篩選條件的所有專案時，將顯示字串*全部*。</li>
+<li><strong>參考日期：</strong> 為報告選擇的必填輸入參考日期。</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="section-6">
+<h2><a class="toc-backref" href="#toc-entry-5">頁尾</a></h2>
+<p>頁尾顯示報告生成的日期。</p>
+</div>
+<div class="section" id="section-7">
+<h2><a class="toc-backref" href="#toc-entry-6">內文</a></h2>
+<p>報告內文由根據輸入篩選器選擇的專案清單組成。</p>
+<p>篩選器透過新增條件來運作，但由日期篩選器（<em>開始日期</em>、<em>結束日期</em>）和*依專案篩選*組成的集合除外。在此情況下，若填入了一個或兩個日期篩選器且*依專案篩選*有選定專案清單，後者篩選器優先。這意味著報告中包含的專案是由*依專案篩選*提供的專案，無論日期篩選器如何。</p>
+<p>需要注意的是，報告中的進度以單位的分數計算，範圍在0到1之間。</p>
+<p>對於選定納入報告輸出的每個專案，顯示以下資訊：</p>
+<blockquote>
+<ul class="simple">
+<li><em>專案名稱</em>。</li>
+<li><dl class="first docutils">
+<dt><em>總工時</em>。透過加總每個任務的工時來顯示專案的總工時。顯示兩種類型的總工時：</dt>
+<dd><ul class="first last">
+<li><em>估計（TE）</em>。這是專案WBS中所有估計工時的總和。代表完成專案的估計總工時。</li>
+<li><em>計劃（TP）</em>。在*LibrePlan*中，可能有兩個不同的數量：任務的估計工時（最初估計完成任務所需的工時）和計劃工時（計劃中分配用於完成任務的工時）。計劃工時可以等於、少於或大於估計工時，並在後期階段（分配操作）中確定。因此，專案的計劃總工時是其所有任務分配工時的總和。</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>進度</em>。顯示在參考日期時，每個專案指定進度類型整體進度的三個測量值：</dt>
+<dd><ul class="first last">
+<li><em>測量（PM）</em>。這是考量報告輸入參數中*參考日期*之前進度測量的整體進度。所有任務均被納入考量，總和按每個任務的工時加權。</li>
+<li><em>歸因（PI）</em>。這是假設工作以已完成任務工時相同速度繼續的進度。若任務Y工時中已完成X工時，則整體歸因進度被視為X/Y。</li>
+<li><em>計劃（PP）</em>。這是根據計劃排程，在參考日期時專案的整體進度。若一切完全按計劃進行，則測量進度應與計劃進度相同。</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>截至目前的工時</em>。有兩個欄位從兩個角度顯示截至參考日期的工時數：</dt>
+<dd><ul class="first last">
+<li><em>計劃（HP）</em>。此數字是截至*參考日期*，分配給專案中任何任務的工時之和。</li>
+<li><em>實際（HR）</em>。此數字是截至*參考日期*，專案中任何任務的工時報告中所報告工時的總和。</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>差異</em>。在此標題下，有幾個與成本相關的指標：</dt>
+<dd><ul class="first last">
+<li><em>成本</em>。這是考量測量進度所花費工時與截至參考日期已完成工時之間的差異。公式為：<em>PM*TP - HR</em>。</li>
+<li><em>計劃</em>。這是根據整體測量專案進度所花費工時與截至*參考日期*計劃工時之間的差異。它衡量時間上的優勢或延遲。公式為：<em>PM*TP - HP</em>。</li>
+<li><em>成本比率</em>。透過將*PM*除以*PI*來計算。若大於1，表示專案此時盈利。若小於1，表示專案正在虧損。</li>
+<li><em>計劃比率</em>。透過將*PM*除以*PP*來計算。若大於1，表示專案進度超前。若小於1，表示專案進度落後。</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</blockquote>
+</div>
+</div>
+</div>
+</body>
+</html>

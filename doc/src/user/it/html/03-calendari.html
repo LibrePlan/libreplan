@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Calendari</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="calendari">
+<h1 class="title">Calendari</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#amministrazione-dei-calendari" id="toc-entry-1">Amministrazione dei Calendari</a><ul>
+<li><a class="reference internal" href="#creazione-di-un-nuovo-calendario" id="toc-entry-2">Creazione di un Nuovo Calendario</a></li>
+<li><a class="reference internal" href="#creazione-di-calendari-derivati" id="toc-entry-3">Creazione di Calendari Derivati</a></li>
+<li><a class="reference internal" href="#creazione-di-un-calendario-per-copia" id="toc-entry-4">Creazione di un Calendario per Copia</a></li>
+<li><a class="reference internal" href="#calendario-predefinito" id="toc-entry-5">Calendario Predefinito</a></li>
+<li><a class="reference internal" href="#assegnazione-di-un-calendario-alle-risorse" id="toc-entry-6">Assegnazione di un Calendario alle Risorse</a></li>
+<li><a class="reference internal" href="#assegnazione-di-calendari-agli-ordini" id="toc-entry-7">Assegnazione di Calendari agli Ordini</a></li>
+<li><a class="reference internal" href="#assegnazione-di-calendari-alle-attivita" id="toc-entry-8">Assegnazione di Calendari alle Attività</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>I calendari sono entità all'interno del programma che definiscono la capacità lavorativa delle risorse. Un calendario è composto da una serie di giorni nell'arco dell'anno, con ogni giorno diviso in ore lavorative disponibili.</p>
+<p>Ad esempio, un giorno festivo potrebbe avere 0 ore lavorative disponibili. Al contrario, una tipica giornata lavorativa potrebbe avere 8 ore designate come tempo di lavoro disponibile.</p>
+<p>Esistono due modi principali per definire il numero di ore lavorative in un giorno:</p>
+<ul class="simple">
+<li><strong>Per Giorno della Settimana:</strong> Questo metodo stabilisce un numero standard di ore lavorative per ogni giorno della settimana. Ad esempio, il lunedì potrebbe normalmente avere 8 ore lavorative.</li>
+<li><strong>Per Eccezione:</strong> Questo metodo consente deviazioni specifiche dallo standard del giorno della settimana. Ad esempio, il lunedì 30 gennaio potrebbe avere 10 ore lavorative, sostituendo il normale orario del lunedì.</li>
+</ul>
+<div class="section" id="amministrazione-dei-calendari">
+<h1><a class="toc-backref" href="#toc-entry-1">Amministrazione dei Calendari</a></h1>
+<p>Il sistema dei calendari è gerarchico e consente di creare calendari base e poi derivare nuovi calendari da essi, formando una struttura ad albero. Un calendario derivato da un calendario di livello superiore erediterà i suoi orari giornalieri e le eccezioni, a meno che non vengano esplicitamente modificati. Per gestire efficacemente i calendari, è importante comprendere i seguenti concetti:</p>
+<ul class="simple">
+<li><strong>Indipendenza dei Giorni:</strong> Ogni giorno è trattato in modo indipendente e ogni anno ha il suo insieme di giorni. Ad esempio, se l'8 dicembre 2009 è un giorno festivo, ciò non significa automaticamente che l'8 dicembre 2010 sia anch'esso un giorno festivo.</li>
+<li><strong>Giorni Lavorativi Basati sui Giorni della Settimana:</strong> I giorni lavorativi standard si basano sui giorni della settimana. Ad esempio, se il lunedì normalmente ha 8 ore lavorative, allora tutti i lunedì di tutte le settimane di tutti gli anni avranno 8 ore disponibili, a meno che non venga definita un'eccezione.</li>
+<li><strong>Eccezioni e Periodi di Eccezione:</strong> È possibile definire eccezioni o periodi di eccezione per deviare dalla pianificazione standard dei giorni della settimana. Ad esempio, è possibile specificare un singolo giorno o un intervallo di giorni con un numero diverso di ore lavorative disponibili rispetto alla regola generale per quei giorni della settimana.</li>
+</ul>
+<div class="figure">
+<img alt="images/calendar-administration.png" src="images/calendar-administration.png" style="width: 443.5px; height: 146.0px;" />
+<p class="caption">Amministrazione dei Calendari</p>
+</div>
+<p>L'amministrazione dei calendari è accessibile tramite il menu &quot;Amministrazione&quot;. Da lì, gli utenti possono eseguire le seguenti azioni:</p>
+<ol class="arabic simple">
+<li>Creare un nuovo calendario da zero.</li>
+<li>Creare un calendario derivato da uno esistente.</li>
+<li>Creare un calendario come copia di uno esistente.</li>
+<li>Modificare un calendario esistente.</li>
+</ol>
+<div class="section" id="creazione-di-un-nuovo-calendario">
+<h2><a class="toc-backref" href="#toc-entry-2">Creazione di un Nuovo Calendario</a></h2>
+<p>Per creare un nuovo calendario, fare clic sul pulsante &quot;Crea&quot;. Il sistema visualizzerà un modulo in cui è possibile configurare quanto segue:</p>
+<ul class="simple">
+<li><strong>Selezionare la Scheda:</strong> Scegliere la scheda su cui si desidera lavorare:<ul>
+<li><strong>Marcatura delle Eccezioni:</strong> Definire le eccezioni alla pianificazione standard.</li>
+<li><strong>Ore Lavorative per Giorno:</strong> Definire le ore lavorative standard per ogni giorno della settimana.</li>
+</ul>
+</li>
+<li><strong>Marcatura delle Eccezioni:</strong> Se si seleziona l'opzione &quot;Marcatura delle Eccezioni&quot;, è possibile:<ul>
+<li>Selezionare un giorno specifico nel calendario.</li>
+<li>Selezionare il tipo di eccezione. I tipi disponibili sono: festività, malattia, sciopero, giorno festivo nazionale e festività lavorativa.</li>
+<li>Selezionare la data di fine del periodo di eccezione. (Questo campo non ha bisogno di essere modificato per le eccezioni di un singolo giorno.)</li>
+<li>Definire il numero di ore lavorative durante i giorni del periodo di eccezione.</li>
+<li>Eliminare le eccezioni precedentemente definite.</li>
+</ul>
+</li>
+<li><strong>Ore Lavorative per Giorno:</strong> Se si seleziona l'opzione &quot;Ore Lavorative per Giorno&quot;, è possibile:<ul>
+<li>Definire le ore lavorative disponibili per ogni giorno della settimana (lunedì, martedì, mercoledì, giovedì, venerdì, sabato e domenica).</li>
+<li>Definire diverse distribuzioni orarie settimanali per periodi futuri.</li>
+<li>Eliminare le distribuzioni orarie precedentemente definite.</li>
+</ul>
+</li>
+</ul>
+<p>Queste opzioni consentono agli utenti di personalizzare completamente i calendari in base alle loro esigenze specifiche. Fare clic sul pulsante &quot;Salva&quot; per salvare le modifiche apportate al modulo.</p>
+<div class="figure">
+<img alt="images/calendar-edition.png" src="images/calendar-edition.png" style="width: 443.0px; height: 234.5px;" />
+<p class="caption">Modifica dei Calendari</p>
+</div>
+<div class="figure">
+<img alt="images/calendar-exceptions.png" src="images/calendar-exceptions.png" style="width: 443.0px; height: 194.0px;" />
+<p class="caption">Aggiunta di un'Eccezione a un Calendario</p>
+</div>
+</div>
+<div class="section" id="creazione-di-calendari-derivati">
+<h2><a class="toc-backref" href="#toc-entry-3">Creazione di Calendari Derivati</a></h2>
+<p>Un calendario derivato viene creato sulla base di un calendario esistente. Eredita tutte le caratteristiche del calendario originale, ma è possibile modificarlo per includere opzioni diverse.</p>
+<p>Un caso d'uso comune per i calendari derivati è quando si dispone di un calendario generale per un paese, come la Spagna, e si ha la necessità di creare un calendario derivato per includere ulteriori festività specifiche di una regione, come la Galizia.</p>
+<p>È importante notare che qualsiasi modifica apportata al calendario originale si propagherà automaticamente al calendario derivato, a meno che non sia stata definita un'eccezione specifica nel calendario derivato. Ad esempio, il calendario spagnolo potrebbe prevedere una giornata lavorativa di 8 ore il 17 maggio. Tuttavia, il calendario della Galizia (un calendario derivato) potrebbe non prevedere ore lavorative quello stesso giorno perché è un giorno festivo regionale. Se in seguito il calendario spagnolo viene modificato per avere 4 ore lavorative disponibili al giorno per la settimana del 17 maggio, anche il calendario della Galizia cambierà per avere 4 ore lavorative disponibili per ogni giorno di quella settimana, ad eccezione del 17 maggio, che rimarrà un giorno non lavorativo a causa dell'eccezione definita.</p>
+<div class="figure">
+<img alt="images/calendar-create-derived.png" src="images/calendar-create-derived.png" style="width: 438.0px; height: 210.5px;" />
+<p class="caption">Creazione di un Calendario Derivato</p>
+</div>
+<p>Per creare un calendario derivato:</p>
+<ul class="simple">
+<li>Andare al menu <em>Amministrazione</em>.</li>
+<li>Fare clic sull'opzione <em>Amministrazione dei calendari</em>.</li>
+<li>Selezionare il calendario che si desidera utilizzare come base per il calendario derivato e fare clic sul pulsante &quot;Crea&quot;.</li>
+<li>Il sistema visualizzerà un modulo di modifica con le stesse caratteristiche del modulo utilizzato per creare un calendario da zero, ad eccezione del fatto che le eccezioni proposte e le ore lavorative per giorno della settimana si baseranno sul calendario originale.</li>
+</ul>
+</div>
+<div class="section" id="creazione-di-un-calendario-per-copia">
+<h2><a class="toc-backref" href="#toc-entry-4">Creazione di un Calendario per Copia</a></h2>
+<p>Un calendario copiato è un duplicato esatto di un calendario esistente. Eredita tutte le caratteristiche del calendario originale, ma è possibile modificarlo in modo indipendente.</p>
+<p>La differenza principale tra un calendario copiato e un calendario derivato sta nel modo in cui vengono influenzati dalle modifiche all'originale. Se il calendario originale viene modificato, il calendario copiato rimane invariato. I calendari derivati, invece, sono influenzati dalle modifiche apportate all'originale, a meno che non venga definita un'eccezione.</p>
+<p>Un caso d'uso comune per i calendari copiati è quando si dispone di un calendario per una posizione, come &quot;Pontevedra&quot;, e si ha la necessità di un calendario simile per un'altra posizione, come &quot;A Coruña&quot;, dove la maggior parte delle caratteristiche è la stessa. Tuttavia, le modifiche a un calendario non dovrebbero influenzare l'altro.</p>
+<p>Per creare un calendario copiato:</p>
+<ul class="simple">
+<li>Andare al menu <em>Amministrazione</em>.</li>
+<li>Fare clic sull'opzione <em>Amministrazione dei calendari</em>.</li>
+<li>Selezionare il calendario che si desidera copiare e fare clic sul pulsante &quot;Crea&quot;.</li>
+<li>Il sistema visualizzerà un modulo di modifica con le stesse caratteristiche del modulo utilizzato per creare un calendario da zero, ad eccezione del fatto che le eccezioni proposte e le ore lavorative per giorno della settimana si baseranno sul calendario originale.</li>
+</ul>
+</div>
+<div class="section" id="calendario-predefinito">
+<h2><a class="toc-backref" href="#toc-entry-5">Calendario Predefinito</a></h2>
+<p>Uno dei calendari esistenti può essere designato come calendario predefinito. Questo calendario verrà assegnato automaticamente a qualsiasi entità nel sistema gestita con calendari, a meno che non venga specificato un calendario diverso.</p>
+<p>Per impostare un calendario predefinito:</p>
+<ul class="simple">
+<li>Andare al menu <em>Amministrazione</em>.</li>
+<li>Fare clic sull'opzione <em>Configurazione</em>.</li>
+<li>Nel campo <em>Calendario predefinito</em>, selezionare il calendario che si desidera utilizzare come calendario predefinito del programma.</li>
+<li>Fare clic su <em>Salva</em>.</li>
+</ul>
+<div class="figure">
+<img alt="images/default-calendar.png" src="images/default-calendar.png" style="width: 332.0px; height: 158.5px;" />
+<p class="caption">Impostazione di un Calendario Predefinito</p>
+</div>
+</div>
+<div class="section" id="assegnazione-di-un-calendario-alle-risorse">
+<h2><a class="toc-backref" href="#toc-entry-6">Assegnazione di un Calendario alle Risorse</a></h2>
+<p>Le risorse possono essere attivate (ovvero avere ore lavorative disponibili) solo se dispongono di un calendario assegnato con un periodo di attivazione valido. Se a una risorsa non viene assegnato alcun calendario, viene assegnato automaticamente il calendario predefinito, con un periodo di attivazione che inizia alla data di inizio e non ha data di scadenza.</p>
+<div class="figure">
+<img alt="images/resource-calendar.png" src="images/resource-calendar.png" style="width: 449.0px; height: 257.0px;" />
+<p class="caption">Calendario della Risorsa</p>
+</div>
+<p>Tuttavia, è possibile eliminare il calendario precedentemente assegnato a una risorsa e creare un nuovo calendario basato su uno esistente. Ciò consente una personalizzazione completa dei calendari per le singole risorse.</p>
+<p>Per assegnare un calendario a una risorsa:</p>
+<ul class="simple">
+<li>Andare all'opzione <em>Modifica risorse</em>.</li>
+<li>Selezionare una risorsa e fare clic su <em>Modifica</em>.</li>
+<li>Selezionare la scheda &quot;Calendario&quot;.</li>
+<li>Verranno visualizzati il calendario, le sue eccezioni, le ore lavorative per giorno e i periodi di attivazione.</li>
+<li>Ogni scheda avrà le seguenti opzioni:<ul>
+<li><strong>Eccezioni:</strong> Definire le eccezioni e il periodo a cui si applicano, come festività, giorni festivi nazionali o giorni lavorativi diversi.</li>
+<li><strong>Settimana Lavorativa:</strong> Modificare le ore lavorative per ogni giorno della settimana (lunedì, martedì, ecc.).</li>
+<li><strong>Periodi di Attivazione:</strong> Creare nuovi periodi di attivazione per riflettere le date di inizio e fine dei contratti associati alla risorsa. Vedere l'immagine seguente.</li>
+</ul>
+</li>
+<li>Fare clic su <em>Salva</em> per memorizzare le informazioni.</li>
+<li>Fare clic su <em>Elimina</em> se si desidera modificare il calendario assegnato a una risorsa.</li>
+</ul>
+<div class="figure">
+<img alt="images/new-resource-calendar.png" src="images/new-resource-calendar.png" style="width: 443.0px; height: 242.5px;" />
+<p class="caption">Assegnazione di un Nuovo Calendario a una Risorsa</p>
+</div>
+</div>
+<div class="section" id="assegnazione-di-calendari-agli-ordini">
+<h2><a class="toc-backref" href="#toc-entry-7">Assegnazione di Calendari agli Ordini</a></h2>
+<p>I progetti possono avere un calendario diverso da quello predefinito. Per modificare il calendario di un ordine:</p>
+<ul class="simple">
+<li>Accedere all'elenco degli ordini nella panoramica aziendale.</li>
+<li>Modificare l'ordine in questione.</li>
+<li>Accedere alla scheda &quot;Informazioni generali&quot;.</li>
+<li>Selezionare il calendario da assegnare dal menu a discesa.</li>
+<li>Fare clic su &quot;Salva&quot; o &quot;Salva e continua&quot;.</li>
+</ul>
+</div>
+<div class="section" id="assegnazione-di-calendari-alle-attivita">
+<h2><a class="toc-backref" href="#toc-entry-8">Assegnazione di Calendari alle Attività</a></h2>
+<p>Analogamente alle risorse e agli ordini, è possibile assegnare calendari specifici alle singole attività. Ciò consente di definire calendari diversi per fasi specifiche di un progetto. Per assegnare un calendario a un'attività:</p>
+<ul class="simple">
+<li>Accedere alla vista di pianificazione di un progetto.</li>
+<li>Fare clic con il pulsante destro del mouse sull'attività a cui si desidera assegnare un calendario.</li>
+<li>Selezionare l'opzione &quot;Assegna calendario&quot;.</li>
+<li>Selezionare il calendario da assegnare all'attività.</li>
+<li>Fare clic su <em>Accetta</em>.</li>
+</ul>
+</div>
+</div>
+</div>
+</body>
+</html>

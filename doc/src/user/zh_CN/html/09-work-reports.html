@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>工作报告</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="section-1">
+<h1 class="title">工作报告</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#section-2" id="toc-entry-1">工作报告类型</a></li>
+<li><a class="reference internal" href="#section-3" id="toc-entry-2">工作报告列表</a></li>
+</ul>
+</div>
+<p>工作报告使人们能够监控资源投入到其被分配的任务的工时。</p>
+<p>程序允许用户配置用于输入投入工时的新表单，指定他们希望在这些表单中出现的字段。这允许纳入员工执行任务的报告，以及监控员工活动。</p>
+<p>在用户可以为资源添加条目之前，他们必须定义至少一种工作报告类型。此类型定义报告的结构，包括添加到其中的所有行。用户可以在系统中根据需要创建任意数量的工作报告类型。</p>
+<div class="section" id="section-2">
+<h1><a class="toc-backref" href="#toc-entry-1">工作报告类型</a></h1>
+<p>工作报告由一系列对整个报告通用的字段和一组具有每行定义的字段的特定值的工作报告行组成。例如，资源和任务对所有报告通用。但是，可能有其他新字段，例如「事件」，这在所有报告类型中都不是必需的。</p>
+<p>用户可以配置不同的工作报告类型，以便公司可以设计其报告以满足其特定需求：</p>
+<div class="figure">
+<img alt="images/work-report-types.png" src="images/work-report-types.png" style="width: 326.8px; height: 91.60000000000001px;" />
+<p class="caption">工作报告类型</p>
+</div>
+<p>工作报告类型的管理允许用户配置这些类型并添加新的文本字段或可选标签。在编辑工作报告类型的第一个选项卡中，可以为必填属性（无论它们适用于整个报告还是在行级别指定）配置类型，并添加新的可选字段。</p>
+<p>所有工作报告中必须出现的必填字段如下：</p>
+<ul class="simple">
+<li><strong>名称和代码：</strong> 工作报告类型名称及其代码的识别字段。</li>
+<li><strong>日期：</strong> 报告日期的字段。</li>
+<li><strong>资源：</strong> 出现在报告或工作报告行上的员工或机器。</li>
+<li><strong>项目元素：</strong> 所执行工作被归因到的项目元素的代码。</li>
+<li><strong>工时管理：</strong> 决定要使用的工时归因政策，可以是：<ul>
+<li><strong>根据分配工时：</strong> 工时根据分配的工时进行归因。</li>
+<li><strong>根据开始和完成时间：</strong> 工时根据开始和完成时间计算。</li>
+<li><strong>根据工时数和开始/完成范围：</strong> 允许差异，工时数优先。</li>
+</ul>
+</li>
+</ul>
+<p>用户可以向报告添加新字段：</p>
+<ul class="simple">
+<li><strong>标签类型：</strong> 用户可以请求系统在完成工作报告时显示标签。例如，客户标签类型，如果用户希望在每份报告中输入执行工作的客户。</li>
+<li><strong>自由字段：</strong> 可以在工作报告中自由输入文本的字段。</li>
+</ul>
+<div class="figure">
+<img alt="images/work-report-type.png" src="images/work-report-type.png" style="width: 397.5px; height: 227.0px;" />
+<p class="caption">创建具有个性化字段的工作报告类型</p>
+</div>
+<p>用户可以配置日期、资源和项目元素字段出现在报告标题中，这意味着它们适用于整个报告，或者它们可以添加到每一行。</p>
+<p>最后，可以使用「附加文本」和「标签类型」字段，分别在工作报告标题或每行中，向现有字段添加新的附加文本字段或标签。用户可以在「管理附加字段和标签」选项卡中配置这些元素的输入顺序。</p>
+</div>
+<div class="section" id="section-3">
+<h1><a class="toc-backref" href="#toc-entry-2">工作报告列表</a></h1>
+<p>一旦要纳入系统的报告格式配置完成，用户可以根据对应工作报告类型中定义的结构，在创建的表单中输入详细信息。为此，用户需要遵循以下步骤：</p>
+<ul class="simple">
+<li>从工作报告类型列表中，点击与所需报告相关联的「新工作报告」按钮。</li>
+<li>程序然后根据为类型提供的配置显示报告。见下图。</li>
+</ul>
+<div class="figure">
+<img alt="images/work-report-type.png" src="images/work-report-type.png" style="width: 397.5px; height: 227.0px;" />
+<p class="caption">基于类型的工作报告结构</p>
+</div>
+<ul class="simple">
+<li>选择报告所示的所有字段：<ul>
+<li><strong>资源：</strong> 如果选择了标题，资源只显示一次。或者，对于报告的每一行，都需要选择一个资源。</li>
+<li><strong>任务代码：</strong> 正在分配工作报告的任务的代码。与其他字段类似，如果字段在标题中，则在报告行中输入一次或根据需要输入多次。</li>
+<li><strong>日期：</strong> 报告或每行的日期，取决于标题或行是否已配置。</li>
+<li><strong>工时数：</strong> 项目中的工作工时数。</li>
+<li><strong>开始和完成时间：</strong> 工作的开始和完成时间，以计算确定的工作时数。此字段仅在工时分配政策为「根据开始和完成时间」和「根据工时数和开始/完成范围」的情况下出现。</li>
+<li><strong>工时类型：</strong> 使用户能够选择工时类型，例如「正常」、「加班」等。</li>
+</ul>
+</li>
+<li>点击「保存」或「保存并继续」。</li>
+</ul>
+</div>
+</div>
+</body>
+</html>

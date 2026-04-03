@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Koblinger</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="koblinger">
+<h1 class="title">Koblinger</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#konfigurasjon" id="toc-entry-1">Konfigurasjon</a></li>
+<li><a class="reference internal" href="#jira-kobling" id="toc-entry-2">JIRA-kobling</a><ul>
+<li><a class="reference internal" href="#konfigurasjon-1" id="toc-entry-3">Konfigurasjon</a></li>
+<li><a class="reference internal" href="#synkronisering" id="toc-entry-4">Synkronisering</a></li>
+<li><a class="reference internal" href="#planlegging" id="toc-entry-5">Planlegging</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#tim-enterprise-kobling" id="toc-entry-6">Tim Enterprise-kobling</a><ul>
+<li><a class="reference internal" href="#konfigurasjon-2" id="toc-entry-7">Konfigurasjon</a></li>
+<li><a class="reference internal" href="#eksport" id="toc-entry-8">Eksport</a></li>
+<li><a class="reference internal" href="#planlegging-av-eksport" id="toc-entry-9">Planlegging av eksport</a></li>
+<li><a class="reference internal" href="#import" id="toc-entry-10">Import</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#e-postkobling" id="toc-entry-11">E-postkobling</a><ul>
+<li><a class="reference internal" href="#konfigurasjon-3" id="toc-entry-12">Konfigurasjon</a></li>
+<li><a class="reference internal" href="#rediger-e-postmal" id="toc-entry-13">Rediger e-postmal</a></li>
+<li><a class="reference internal" href="#planlegging-av-e-poster" id="toc-entry-14">Planlegging av e-poster</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>Koblinger er <em>LibrePlan</em>-klientapplikasjoner som kan brukes til å kommunisere med (web)servere for å hente data, behandle det og lagre det. For øyeblikket finnes det tre koblinger: JIRA-koblingen, Tim Enterprise-koblingen og e-postkoblingen.</p>
+<div class="section" id="konfigurasjon">
+<h1><a class="toc-backref" href="#toc-entry-1">Konfigurasjon</a></h1>
+<p>Koblinger må konfigureres riktig før de kan brukes. De kan konfigureres fra skjermen &quot;Hovedinnstillinger&quot; under fanen &quot;Koblinger&quot;.</p>
+<p>Koblingsbildet inkluderer:</p>
+<ul class="simple">
+<li><strong>Nedtrekksliste:</strong> En liste over tilgjengelige koblinger.</li>
+<li><strong>Egenskapsredigeringsskjerm:</strong> Et egenskapsredigeringsskjema for den valgte koblingen.</li>
+<li><strong>Test tilkobling-knapp:</strong> En knapp for å teste tilkoblingen med koblingen.</li>
+</ul>
+<p>Velg koblingen du vil konfigurere fra nedtrekkslisten over koblinger. Et egenskapsredigeringsskjema for den valgte koblingen vil vises. I egenskapsredigeringsskjemaet kan du endre egenskapsverdiene etter behov og teste konfigurasjonene ved hjelp av knappen &quot;Test tilkobling&quot;.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Egenskapene er konfigurert med standardverdier. Den viktigste egenskapen er &quot;Aktivert.&quot; Som standard er den satt til &quot;N.&quot; Dette indikerer at koblingen ikke vil bli brukt med mindre du endrer verdien til &quot;Y&quot; og lagrer endringene.</p>
+</div>
+</div>
+<div class="section" id="jira-kobling">
+<h1><a class="toc-backref" href="#toc-entry-2">JIRA-kobling</a></h1>
+<p>JIRA er et system for sporings av saker og prosjekter.</p>
+<p>JIRA-koblingen er en applikasjon som kan brukes til å anmode om data fra JIRA-webserveren for JIRA-saker og behandle svaret. Forespørselen er basert på JIRA-etiketter. I JIRA kan etiketter brukes til å kategorisere saker. Forespørselen er strukturert som følger: hent alle saker som er kategorisert med dette etikettnavnet.</p>
+<p>Koblingen mottar svaret, som i dette tilfellet er sakene, og konverterer dem til <em>LibrePlan</em>-«Ordreelementer» og «Timelister».</p>
+<p><em>JIRA-koblingen</em> må konfigureres riktig før den kan brukes.</p>
+<div class="section" id="konfigurasjon-1">
+<h2><a class="toc-backref" href="#toc-entry-3">Konfigurasjon</a></h2>
+<p>Fra skjermen &quot;Hovedinnstillinger&quot;, velg fanen &quot;Koblinger&quot;. I koblingsbildet, velg JIRA-koblingen fra nedtrekkslisten. Et egenskapsredigeringsbilde vil deretter vises.</p>
+<p>I dette bildet kan du konfigurere følgende egenskapsverdier:</p>
+<ul class="simple">
+<li><strong>Aktivert:</strong> J/N, som indikerer om du ønsker å bruke JIRA-koblingen. Standarden er &quot;N.&quot;</li>
+<li><strong>Server-URL:</strong> Den absolutte banen til JIRA-webserveren.</li>
+<li><strong>Brukernavn og passord:</strong> Brukerlegitimasjon for autorisasjon.</li>
+<li><strong>JIRA-etiketter: kommaseparert liste over etiketter eller URL:</strong> Du kan enten angi etikett-URL eller en kommaseparert liste over etiketter.</li>
+<li><strong>Timetype:</strong> Typen arbeidstimer. Standarden er &quot;Default.&quot;</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><strong>JIRA-etiketter:</strong> For øyeblikket støtter ikke JIRA-webserveren å gi en liste over alle tilgjengelige etiketter. Som en løsning har vi utviklet et enkelt PHP-skript som utfører en enkel SQL-spørring i JIRA-databasen for å hente alle distinkte etiketter. Du kan enten bruke dette PHP-skriptet som &quot;JIRA-etiketter-URL&quot; eller angi etikettene du ønsker som kommaseparert tekst i feltet &quot;JIRA-etiketter&quot;.</p>
+</div>
+<p>Til slutt klikker du på knappen &quot;Test tilkobling&quot; for å teste om du kan koble til JIRA-webserveren og at konfigurasjonene dine er korrekte.</p>
+</div>
+<div class="section" id="synkronisering">
+<h2><a class="toc-backref" href="#toc-entry-4">Synkronisering</a></h2>
+<p>Fra prosjektvinduet, under &quot;Generelle data,&quot; kan du starte synkronisering av ordreelementer med JIRA-saker.</p>
+<p>Klikk på knappen &quot;Synkroniser med JIRA&quot; for å starte synkroniseringen.</p>
+<ul class="simple">
+<li>Hvis dette er første gang, vil et popup-vindu (med en automatisk utfylt liste over etiketter) vises. I dette vinduet kan du velge en etikett å synkronisere med og klikke på knappen &quot;Start synkronisering&quot; for å starte synkroniseringsprosessen, eller klikke på &quot;Avbryt&quot;-knappen for å avbryte den.</li>
+<li>Hvis en etikett allerede er synkronisert, vil den siste synkroniseringsdatoen og etiketten vises i JIRA-bildet. I dette tilfellet vises ikke et popup-vindu for å velge en etikett. I stedet vil synkroniseringsprosessen starte direkte for den viste (allerede synkroniserte) etiketten.</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Forholdet mellom &quot;Ordre&quot; og &quot;etikett&quot; er én-til-én. Bare én etikett kan synkroniseres med én &quot;Ordre.&quot;</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Ved vellykket (re)synkronisering vil informasjonen bli skrevet til databasen, og JIRA-bildet vil bli oppdatert med den siste synkroniseringsdatoen og etiketten.</p>
+</div>
+<p>(Re)synkronisering utføres i to faser:</p>
+<ul class="simple">
+<li><strong>Fase 1:</strong> Synkronisering av ordreelementer, inkludert fremdriftstildeling og målinger.</li>
+<li><strong>Fase 2:</strong> Synkronisering av timelister.</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Hvis Fase 1 mislykkes, vil ikke Fase 2 utføres, og ingen informasjon vil bli skrevet til databasen.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Suksess- eller feilinformasjonen vil vises i et popup-vindu.</p>
+</div>
+<p>Etter vellykket fullføring av synkronisering vil resultatet vises i fanen &quot;Work Breakdown Structure (WBS-oppgaver)&quot; i bildet &quot;Prosjektdetaljer&quot;. I dette brukergrensesnittet er det to endringer fra standard WBS:</p>
+<ul class="simple">
+<li>Kolonnen &quot;Totale oppgavetimer&quot; er uredigerbar (skrivebeskyttet) fordi synkroniseringen er enveis. Oppgavetimer kan bare oppdateres på JIRA-webserveren.</li>
+<li>Kolonnen &quot;Kode&quot; viser JIRA-saksnøkler, og de er også hyperkoblinger til JIRA-sakene. Klikk på ønsket nøkkel hvis du vil gå til dokumentet for den nøkkelen (JIRA-sak).</li>
+</ul>
+</div>
+<div class="section" id="planlegging">
+<h2><a class="toc-backref" href="#toc-entry-5">Planlegging</a></h2>
+<p>Resynkronisering av JIRA-saker kan også utføres gjennom planleggeren. Gå til bildet &quot;Jobbplanlegging&quot;. I det bildet kan du konfigurere en JIRA-jobb for å utføre synkronisering. Jobben søker etter de sist synkroniserte etikettene i databasen og resynkroniserer dem deretter. Se også Planlegger-håndboken.</p>
+</div>
+</div>
+<div class="section" id="tim-enterprise-kobling">
+<h1><a class="toc-backref" href="#toc-entry-6">Tim Enterprise-kobling</a></h1>
+<p>Tim Enterprise er et nederlandsk produkt fra Aenova. Det er en nettbasert applikasjon for administrasjon av tid brukt på prosjekter og oppgaver.</p>
+<p>Tim-koblingen er en applikasjon som kan brukes til å kommunisere med Tim Enterprise-serveren for å:</p>
+<ul class="simple">
+<li>Eksportere alle timer brukt av en arbeider (bruker) på et prosjekt som kan registreres i Tim Enterprise.</li>
+<li>Importere alle rostrene til arbeideren (brukeren) for å planlegge ressursen effektivt.</li>
+</ul>
+<p><em>Tim-koblingen</em> må konfigureres riktig før den kan brukes.</p>
+<div class="section" id="konfigurasjon-2">
+<h2><a class="toc-backref" href="#toc-entry-7">Konfigurasjon</a></h2>
+<p>Fra skjermen &quot;Hovedinnstillinger&quot;, velg fanen &quot;Koblinger&quot;. I koblingsbildet, velg Tim-koblingen fra nedtrekkslisten. Et egenskapsredigeringsbilde vil deretter vises.</p>
+<p>I dette bildet kan du konfigurere følgende egenskapsverdier:</p>
+<ul class="simple">
+<li><strong>Aktivert:</strong> J/N, som indikerer om du ønsker å bruke Tim-koblingen. Standarden er &quot;N.&quot;</li>
+<li><strong>Server-URL:</strong> Den absolutte banen til Tim Enterprise-serveren.</li>
+<li><strong>Brukernavn og passord:</strong> Brukerlegitimasjon for autorisasjon.</li>
+<li><strong>Antall dager timelisteeksport til Tim:</strong> Antall dager tilbake du vil eksportere timelistene.</li>
+<li><strong>Antall dager rosterimport fra Tim:</strong> Antall dager fremover du vil importere rostrene.</li>
+<li><strong>Produktivitetsfaktor:</strong> Effektive arbeidstimer i prosent. Standarden er &quot;100%.&quot;</li>
+<li><strong>Avdelings-ID-er for rosterimport:</strong> Kommaseparerte avdelings-ID-er.</li>
+</ul>
+<p>Til slutt klikker du på knappen &quot;Test tilkobling&quot; for å teste om du kan koble til Tim Enterprise-serveren og at konfigurasjonene dine er korrekte.</p>
+</div>
+<div class="section" id="eksport">
+<h2><a class="toc-backref" href="#toc-entry-8">Eksport</a></h2>
+<p>Fra prosjektvinduet, under &quot;Generelle data,&quot; kan du starte eksport av timelister til Tim Enterprise-serveren.</p>
+<p>Angi &quot;Tim-produktkode&quot; og klikk på knappen &quot;Eksporter til Tim&quot; for å starte eksporten.</p>
+<p>Tim-koblingen legger til følgende felt sammen med produktkoden:</p>
+<ul class="simple">
+<li>Arbeiderens/brukerens fulle navn.</li>
+<li>Datoen arbeideren arbeidet på en oppgave.</li>
+<li>Innsatsen, eller timer arbeidet på oppgaven.</li>
+<li>Et alternativ som angir om Tim Enterprise skal oppdatere registreringen eller sette inn en ny.</li>
+</ul>
+<p>Tim Enterprise-svaret inneholder bare en liste over post-ID-er (heltall). Dette gjør det vanskelig å avgjøre hva som gikk galt, ettersom svarlisten bare inneholder tall som ikke er relatert til forespørselfeltene. Eksportforespørselen (registrering i Tim) antas å ha lyktes hvis alle listeoppføringene ikke inneholder &quot;0&quot;-verdier. Ellers har eksportforespørselen mislyktes for de oppføringene som inneholder &quot;0&quot;-verdier. Derfor kan du ikke se hvilken forespørsel som mislyktes, ettersom listeoppføringene bare inneholder verdien &quot;0.&quot; Den eneste måten å fastslå dette på er å undersøke loggfilen på Tim Enterprise-serveren.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Etter vellykket eksport vil informasjonen bli skrevet til databasen, og Tim-bildet vil bli oppdatert med den siste eksportdatoen og produktkoden.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Suksess- eller feilinformasjonen vil vises i et popup-vindu.</p>
+</div>
+</div>
+<div class="section" id="planlegging-av-eksport">
+<h2><a class="toc-backref" href="#toc-entry-9">Planlegging av eksport</a></h2>
+<p>Eksportprosessen kan også utføres gjennom planleggeren. Gå til bildet &quot;Jobbplanlegging&quot;. I det bildet kan du konfigurere en Tim eksport-jobb. Jobben søker etter de sist eksporterte timelistene i databasen og re-eksporterer dem deretter. Se også Planlegger-håndboken.</p>
+</div>
+<div class="section" id="import">
+<h2><a class="toc-backref" href="#toc-entry-10">Import</a></h2>
+<p>Import av rostre fungerer bare ved hjelp av planleggeren. Det finnes ikke noe brukergrensesnitt designet for dette, ettersom ingen inndata er nødvendig fra brukeren. Gå til bildet &quot;Jobbplanlegging&quot; og konfigurer en Tim import-jobb. Jobben går gjennom alle avdelinger konfigurert i koblingens egenskaper og importerer alle rostre for hver avdeling. Se også Planlegger-håndboken.</p>
+<p>For import legger Tim-koblingen til følgende felt i forespørselen:</p>
+<ul class="simple">
+<li><strong>Periode:</strong> Perioden (dato fra - dato til) du vil importere rosteret for. Dette kan angis som et filterkriterium.</li>
+<li><strong>Avdeling:</strong> Avdelingen du vil importere rosteret for. Avdelinger er konfigurerbare.</li>
+<li>Feltene du er interessert i (som Personinfo, RosterCategory, osv.) som Tim-serveren skal inkludere i svaret.</li>
+</ul>
+<p>Importsvaret inneholder følgende felt, som er tilstrekkelig for å administrere unntaksdager i <em>LibrePlan</em>:</p>
+<ul class="simple">
+<li><strong>Personinfo:</strong> Navn og nettverksnavn.</li>
+<li><strong>Avdeling:</strong> Avdelingen arbeideren jobber i.</li>
+<li><strong>Rosterkategori:</strong> Informasjon om tilstedeværelse/fravær (Aanwzig/afwezig) for arbeideren og årsaken (<em>LibrePlan</em>-unntakstype) i tilfelle arbeideren er fraværende.</li>
+<li><strong>Dato:</strong> Datoen arbeideren er tilstede/fraværende.</li>
+<li><strong>Tid:</strong> Starttidspunktet for tilstedeværelse/fravær, for eksempel 08:00.</li>
+<li><strong>Varighet:</strong> Antall timer arbeideren er tilstede/fraværende.</li>
+</ul>
+<p>Ved konvertering av importsvaret til <a href="#system-message-1"><span class="problematic" id="problematic-1">*</span></a>LibrePlan*s «Unntaksdag» tas følgende oversettelser i betraktning:</p>
+<div class="system-message" id="system-message-1">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">18-connectors.rst</tt>, line 175); <em><a href="#problematic-1">backlink</a></em></p>
+Inline emphasis start-string without end-string.</div>
+<ul class="simple">
+<li>Hvis rosterkategorien inneholder navnet &quot;Vakantie,&quot; vil det bli oversatt til &quot;RESOURCE HOLIDAY.&quot;</li>
+<li>Rosterkategorien &quot;Feestdag&quot; vil bli oversatt til &quot;BANK HOLIDAY.&quot;</li>
+<li>Alle de øvrige, som &quot;Jus uren,&quot; &quot;PLB uren,&quot; osv., bør legges til i &quot;Kalenderunntaksdager&quot; manuelt.</li>
+</ul>
+<p>Dessuten er rosteret i importsvaret delt inn i to eller tre deler per dag: for eksempel roster-morgen, roster-ettermiddag og roster-kveld. Men <em>LibrePlan</em> tillater bare én «Unntakstype» per dag. Tim-koblingen er da ansvarlig for å slå sammen disse delene som én unntakstype. Det vil si at rosterkategorien med lengst varighet anses å være en gyldig unntakstype, men den totale varigheten er summen av alle varighetene for disse kategoridelene.</p>
+<p>I motsetning til <em>LibrePlan</em>, betyr total varighet i Tim Enterprise i tilfelle arbeideren er på ferie at arbeideren ikke er tilgjengelig for den totale varigheten. Men i <em>LibrePlan</em>, hvis arbeideren er på ferie, bør den totale varigheten være null. Tim-koblingen håndterer også denne oversettelsen.</p>
+</div>
+</div>
+<div class="section" id="e-postkobling">
+<h1><a class="toc-backref" href="#toc-entry-11">E-postkobling</a></h1>
+<p>E-post er en metode for utveksling av digitale meldinger fra en avsender til én eller flere mottakere.</p>
+<p>E-postkoblingen kan brukes til å angi tilkoblingsegenskaper for Simple Mail Transfer Protocol (SMTP)-serveren.</p>
+<p><em>E-postkoblingen</em> må konfigureres riktig før den kan brukes.</p>
+<div class="section" id="konfigurasjon-3">
+<h2><a class="toc-backref" href="#toc-entry-12">Konfigurasjon</a></h2>
+<p>Fra skjermen &quot;Hovedinnstillinger&quot;, velg fanen &quot;Koblinger&quot;. I koblingsbildet, velg e-postkoblingen fra nedtrekkslisten. Et egenskapsredigeringsbilde vil deretter vises.</p>
+<p>I dette bildet kan du konfigurere følgende egenskapsverdier:</p>
+<ul class="simple">
+<li><strong>Aktivert:</strong> J/N, som indikerer om du ønsker å bruke e-postkoblingen. Standarden er &quot;N.&quot;</li>
+<li><strong>Protokoll:</strong> Typen SMTP-protokoll.</li>
+<li><strong>Vert:</strong> Den absolutte banen til SMTP-serveren.</li>
+<li><strong>Port:</strong> Porten til SMTP-serveren.</li>
+<li><strong>Fra-adresse:</strong> E-postadressen til meldingsavsenderen.</li>
+<li><strong>Brukernavn:</strong> Brukernavnet for SMTP-serveren.</li>
+<li><strong>Passord:</strong> Passordet for SMTP-serveren.</li>
+</ul>
+<p>Til slutt klikker du på knappen &quot;Test tilkobling&quot; for å teste om du kan koble til SMTP-serveren og at konfigurasjonene dine er korrekte.</p>
+</div>
+<div class="section" id="rediger-e-postmal">
+<h2><a class="toc-backref" href="#toc-entry-13">Rediger e-postmal</a></h2>
+<p>Fra prosjektvinduet, under &quot;Konfigurasjon&quot; og deretter &quot;Rediger e-postmaler,&quot; kan du endre e-postmalene for meldinger.</p>
+<p>Du kan velge:</p>
+<ul class="simple">
+<li><strong>Malspråk:</strong></li>
+<li><strong>Maltype:</strong></li>
+<li><strong>E-postemne:</strong></li>
+<li><strong>Malinnhold:</strong></li>
+</ul>
+<p>Du må angi språket fordi webapplikasjonen sender e-poster til brukere på det språket de har valgt i innstillingene sine. Du må velge maltypen. Typen er brukerrollen, noe som betyr at denne e-posten kun sendes til brukere som har den valgte rollen (typen). Du må angi e-postemnet. Emnet er et kort sammendrag av temaet for meldingen. Du må angi e-postinnholdet. Dette er all informasjon du vil sende til brukeren. Det er også noen nøkkelord du kan bruke i meldingen; webapplikasjonen vil parse dem og angi en ny verdi i stedet for nøkkelordet.</p>
+</div>
+<div class="section" id="planlegging-av-e-poster">
+<h2><a class="toc-backref" href="#toc-entry-14">Planlegging av e-poster</a></h2>
+<p>Sending av e-poster kan bare utføres gjennom planleggeren. Gå til &quot;Konfigurasjon,&quot; deretter bildet &quot;Jobbplanlegging&quot;. I det bildet kan du konfigurere en jobb for sending av e-post. Jobben tar en liste over e-postvarsler, samler data og sender det til brukerens e-post. Se også Planlegger-håndboken.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Suksess- eller feilinformasjonen vil vises i et popup-vindu.</p>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

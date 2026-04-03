@@ -1,0 +1,27 @@
+########################
+LibrePlan: 用户说明文档
+########################
+
+.. image:: images/logo.png
+   :align: left
+
+本文档包含使用 LibrePlan 所需的帮助说明，LibrePlan 是一款用于项目规划的开源网页应用程序。
+
+文档分为三个主要部分：
+
+第一部分，全局目标与整体行为。
+
+第二部分，了解使用 LibrePlan 所需最低概念的基本实体。
+
+最后，创建订单、项目、项目规划、资源分配、进度录入与结果提取的完整流程说明。
+
+.. topic:: 请支持 LibrePlan
+   :class: highlight
+
+   LibrePlan 没有您的支持将无法继续存在。请阅读 `捐款页面 <00-donations.html>`__ 并考虑帮助我们继续开发。
+
+   .. raw:: html
+
+      <script src="https://opencollective.com/libreplan/donate/button.js" color="blue"></script>
+
+

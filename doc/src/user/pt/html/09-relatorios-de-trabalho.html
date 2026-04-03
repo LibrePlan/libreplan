@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Relatórios de Trabalho</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="relatorios-de-trabalho">
+<h1 class="title">Relatórios de Trabalho</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#tipos-de-relatorios-de-trabalho" id="toc-entry-1">Tipos de Relatórios de Trabalho</a></li>
+<li><a class="reference internal" href="#lista-de-relatorios-de-trabalho" id="toc-entry-2">Lista de Relatórios de Trabalho</a></li>
+</ul>
+</div>
+<p>Os relatórios de trabalho permitem a monitorização das horas que os recursos dedicam às tarefas às quais estão atribuídos.</p>
+<p>O programa permite aos utilizadores configurar novos formulários para introdução de horas dedicadas, especificando os campos que pretendem que apareçam nesses formulários. Isto permite a incorporação de relatórios de tarefas realizadas por trabalhadores e a monitorização da actividade dos trabalhadores.</p>
+<p>Antes de os utilizadores poderem adicionar entradas para recursos, devem definir pelo menos um tipo de relatório de trabalho. Este tipo define a estrutura do relatório, incluindo todas as linhas que lhe são adicionadas. Os utilizadores podem criar tantos tipos de relatórios de trabalho quantos necessários no sistema.</p>
+<div class="section" id="tipos-de-relatorios-de-trabalho">
+<h1><a class="toc-backref" href="#toc-entry-1">Tipos de Relatórios de Trabalho</a></h1>
+<p>Um relatório de trabalho consiste numa série de campos comuns a todo o relatório e num conjunto de linhas de relatório de trabalho com valores específicos para os campos definidos em cada linha. Por exemplo, recursos e tarefas são comuns a todos os relatórios. No entanto, podem existir outros novos campos, como &quot;incidentes&quot;, que não são necessários em todos os tipos de relatórios.</p>
+<p>Os utilizadores podem configurar diferentes tipos de relatórios de trabalho para que uma empresa possa conceber os seus relatórios de acordo com as suas necessidades específicas:</p>
+<div class="figure">
+<img alt="images/work-report-types.png" src="images/work-report-types.png" style="width: 326.8px; height: 91.60000000000001px;" />
+<p class="caption">Tipos de Relatórios de Trabalho</p>
+</div>
+<p>A administração de tipos de relatórios de trabalho permite aos utilizadores configurar estes tipos e adicionar novos campos de texto ou etiquetas opcionais. No primeiro separador para edição de tipos de relatórios de trabalho, é possível configurar o tipo para os atributos obrigatórios (se se aplicam a todo o relatório ou se são especificados ao nível da linha) e adicionar novos campos opcionais.</p>
+<p>Os campos obrigatórios que devem aparecer em todos os relatórios de trabalho são os seguintes:</p>
+<ul class="simple">
+<li><strong>Nome e Código:</strong> Campos de identificação para o nome do tipo de relatório de trabalho e o seu código.</li>
+<li><strong>Data:</strong> Campo para a data do relatório.</li>
+<li><strong>Recurso:</strong> Trabalhador ou máquina que aparece no relatório ou linha de relatório de trabalho.</li>
+<li><strong>Elemento de Encomenda:</strong> Código do elemento de encomenda ao qual o trabalho efectuado é atribuído.</li>
+<li><strong>Gestão de Horas:</strong> Determina a política de atribuição de horas a usar, que pode ser:<ul>
+<li><strong>De acordo com as Horas Atribuídas:</strong> As horas são atribuídas com base nas horas atribuídas.</li>
+<li><strong>De acordo com as Horas de Início e Fim:</strong> As horas são calculadas com base nos horários de início e fim.</li>
+<li><strong>De acordo com o Número de Horas e o Intervalo de Início e Fim:</strong> São permitidas discrepâncias, e o número de horas tem prioridade.</li>
+</ul>
+</li>
+</ul>
+<p>Os utilizadores podem adicionar novos campos aos relatórios:</p>
+<ul class="simple">
+<li><strong>Tipo de Etiqueta:</strong> Os utilizadores podem solicitar ao sistema que apresente uma etiqueta ao preencher o relatório de trabalho. Por exemplo, o tipo de etiqueta cliente, se o utilizador desejar introduzir o cliente para quem o trabalho foi realizado em cada relatório.</li>
+<li><strong>Campos Livres:</strong> Campos onde o texto pode ser introduzido livremente no relatório de trabalho.</li>
+</ul>
+<div class="figure">
+<img alt="images/work-report-type.png" src="images/work-report-type.png" style="width: 397.5px; height: 227.0px;" />
+<p class="caption">Criar um Tipo de Relatório de Trabalho com Campos Personalizados</p>
+</div>
+<p>Os utilizadores podem configurar os campos de data, recurso e elemento de encomenda para aparecerem no cabeçalho do relatório, o que significa que se aplicam a todo o relatório, ou podem ser adicionados a cada uma das linhas.</p>
+<p>Por fim, novos campos de texto adicionais ou etiquetas podem ser adicionados aos existentes, no cabeçalho do relatório de trabalho ou em cada linha, utilizando os campos &quot;Texto adicional&quot; e &quot;Tipo de etiqueta&quot;, respectivamente. Os utilizadores podem configurar a ordem em que estes elementos devem ser introduzidos no separador &quot;Gestão de campos adicionais e etiquetas&quot;.</p>
+</div>
+<div class="section" id="lista-de-relatorios-de-trabalho">
+<h1><a class="toc-backref" href="#toc-entry-2">Lista de Relatórios de Trabalho</a></h1>
+<p>Após a configuração do formato dos relatórios a incorporar no sistema, os utilizadores podem introduzir os detalhes no formulário criado de acordo com a estrutura definida no tipo de relatório de trabalho correspondente. Para tal, os utilizadores precisam de seguir estes passos:</p>
+<ul class="simple">
+<li>Clique no botão &quot;Novo relatório de trabalho&quot; associado ao relatório desejado na lista de tipos de relatórios de trabalho.</li>
+<li>O programa apresenta então o relatório com base nas configurações fornecidas para o tipo. Veja a imagem seguinte.</li>
+</ul>
+<div class="figure">
+<img alt="images/work-report-type.png" src="images/work-report-type.png" style="width: 397.5px; height: 227.0px;" />
+<p class="caption">Estrutura do Relatório de Trabalho Baseada no Tipo</p>
+</div>
+<ul class="simple">
+<li>Seleccione todos os campos mostrados para o relatório:<ul>
+<li><strong>Recurso:</strong> Se o cabeçalho tiver sido escolhido, o recurso é mostrado apenas uma vez. Alternativamente, para cada linha do relatório, é necessário escolher um recurso.</li>
+<li><strong>Código da Tarefa:</strong> Código da tarefa à qual o relatório de trabalho está a ser atribuído. À semelhança dos restantes campos, se o campo estiver no cabeçalho, o valor é introduzido uma vez ou tantas vezes quantas necessárias nas linhas do relatório.</li>
+<li><strong>Data:</strong> Data do relatório ou de cada linha, dependendo de o cabeçalho ou a linha estar configurado.</li>
+<li><strong>Número de Horas:</strong> O número de horas de trabalho no projecto.</li>
+<li><strong>Horas de Início e Fim:</strong> Horas de início e fim do trabalho para calcular as horas de trabalho definitivas. Este campo só aparece no caso das políticas de atribuição de horas &quot;De acordo com as Horas de Início e Fim&quot; e &quot;De acordo com o Número de Horas e o Intervalo de Início e Fim&quot;.</li>
+<li><strong>Tipo de Horas:</strong> Permite aos utilizadores escolher o tipo de hora, por exemplo, &quot;Normal&quot;, &quot;Extraordinária&quot;, etc.</li>
+</ul>
+</li>
+<li>Clique em &quot;Guardar&quot; ou &quot;Guardar e continuar&quot;.</li>
+</ul>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Voortgang</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="voortgang">
+<h1 class="title">Voortgang</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#voortgangstypen-beheren" id="toc-entry-1">Voortgangstypen Beheren</a></li>
+<li><a class="reference internal" href="#voortgang-invoeren-op-basis-van-type" id="toc-entry-2">Voortgang Invoeren op Basis van Type</a></li>
+<li><a class="reference internal" href="#voortgang-vergelijken-voor-een-orderelement" id="toc-entry-3">Voortgang Vergelijken voor een Orderelement</a></li>
+</ul>
+</div>
+<p>Projectvoortgang geeft aan in welke mate de geschatte voltooitijd van het project wordt gehaald. Taakvoortgang geeft aan in welke mate de taak wordt voltooid volgens de geschatte voltooiing.</p>
+<p>Over het algemeen kan voortgang niet automatisch worden gemeten. Een ervaren medewerker of een checklist moet de mate van voltooiing voor een taak of project bepalen.</p>
+<p>Het is belangrijk het onderscheid te maken tussen de uren die aan een taak of project zijn toegewezen en de voortgang van die taak of dat project. Hoewel het aantal gebruikte uren meer of minder kan zijn dan verwacht, kan het project voor of achter lopen op de geschatte voltooiing op de bewaakde dag. Verschillende situaties kunnen uit deze twee metingen voortvloeien:</p>
+<ul class="simple">
+<li><strong>Minder uren verbruikt dan verwacht, maar het project loopt achter op schema:</strong> De voortgang is lager dan geschat voor de bewaakde dag.</li>
+<li><strong>Minder uren verbruikt dan verwacht, en het project loopt voor op schema:</strong> De voortgang is hoger dan geschat voor de bewaakde dag.</li>
+<li><strong>Meer uren verbruikt dan verwacht, en het project loopt achter op schema:</strong> De voortgang is lager dan geschat voor de bewaakde dag.</li>
+<li><strong>Meer uren verbruikt dan verwacht, maar het project loopt voor op schema:</strong> De voortgang is hoger dan geschat voor de bewaakde dag.</li>
+</ul>
+<p>De planningsweergave stelt u in staat deze situaties te vergelijken door gebruik te maken van informatie over de geboekte voortgang en de gebruikte uren. In dit hoofdstuk wordt uitgelegd hoe u informatie kunt invoeren om voortgang te bewaken.</p>
+<p>De filosofie achter voortgangsbewaking is gebaseerd op het feit dat gebruikers het niveau definiëren waarop ze hun projecten willen bewaken. Als gebruikers bijvoorbeeld orders willen bewaken, hoeven ze alleen informatie in te voeren voor elementen op niveau 1. Als ze nauwkeurigere bewaking op taakniveau willen, moeten ze voortgangsinformatie invoeren op lagere niveaus. Het systeem aggregeert de gegevens vervolgens omhoog door de hiërarchie.</p>
+<div class="section" id="voortgangstypen-beheren">
+<h1><a class="toc-backref" href="#toc-entry-1">Voortgangstypen Beheren</a></h1>
+<p>Bedrijven hebben uiteenlopende behoeften bij het bewaken van projectvoortgang, met name de betrokken taken. Daarom bevat het systeem &quot;voortgangstypen.&quot; Gebruikers kunnen verschillende voortgangstypen definiëren om de voortgang van een taak te meten. Een taak kan bijvoorbeeld worden gemeten als percentage, maar dit percentage kan ook worden vertaald naar voortgang in <em>tonnen</em> op basis van de overeenkomst met de klant.</p>
+<p>Een voortgangstype heeft een naam, een maximumwaarde en een precisiewaarde:</p>
+<ul class="simple">
+<li><strong>Naam:</strong> Een beschrijvende naam die gebruikers herkennen wanneer ze het voortgangstype selecteren. Deze naam moet duidelijk aangeven welk soort voortgang wordt gemeten.</li>
+<li><strong>Maximumwaarde:</strong> De maximumwaarde die kan worden vastgesteld voor een taak of project als de totale voortgangsmeting. Als u bijvoorbeeld werkt met <em>tonnen</em> en het normale maximum 4000 ton is, en geen taak ooit meer dan 4000 ton van een materiaal vereist, dan is 4000 de maximumwaarde.</li>
+<li><strong>Precisiewaarde:</strong> De toegestane incrementele waarde voor het voortgangstype. Als de voortgang in <em>tonnen</em> in hele getallen moet worden gemeten, is de precisiewaarde 1. Vanaf dat moment kunnen alleen hele getallen worden ingevoerd als voortgangsmetingen (bijv. 1, 2, 300).</li>
+</ul>
+<p>Het systeem heeft twee standaard voortgangstypen:</p>
+<ul class="simple">
+<li><strong>Percentage:</strong> Een algemeen voortgangstype dat de voortgang van een project of taak meet op basis van een geschat voltooiingspercentage. Een taak is bijvoorbeeld 30% voltooid van de 100% die voor een specifieke dag is geschat.</li>
+<li><strong>Eenheden:</strong> Een algemeen voortgangstype dat voortgang in eenheden meet zonder het type eenheid te specificeren. Een taak omvat bijvoorbeeld het aanmaken van 3000 eenheden, en de voortgang is 500 eenheden van het totaal van 3000.</li>
+</ul>
+<div class="figure">
+<img alt="images/tipos-avances.png" src="images/tipos-avances.png" style="width: 376.5px; height: 164.5px;" />
+<p class="caption">Beheer van voortgangstypen</p>
+</div>
+<p>Gebruikers kunnen als volgt nieuwe voortgangstypen aanmaken:</p>
+<ul class="simple">
+<li>Ga naar het gedeelte &quot;Beheer&quot;.</li>
+<li>Klik op de optie &quot;Voortgangstypen beheren&quot; in het menu op het tweede niveau.</li>
+<li>Het systeem toont een lijst van bestaande voortgangstypen.</li>
+<li>Voor elk voortgangstype kunnen gebruikers:<ul>
+<li>Bewerken</li>
+<li>Verwijderen</li>
+</ul>
+</li>
+<li>Gebruikers kunnen vervolgens een nieuw voortgangstype aanmaken.</li>
+<li>Bij het bewerken of aanmaken van een voortgangstype toont het systeem een formulier met de volgende informatie:<ul>
+<li>Naam van het voortgangstype.</li>
+<li>Maximaal toegestane waarde voor het voortgangstype.</li>
+<li>Precisiewaarde voor het voortgangstype.</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="voortgang-invoeren-op-basis-van-type">
+<h1><a class="toc-backref" href="#toc-entry-2">Voortgang Invoeren op Basis van Type</a></h1>
+<p>Voortgang wordt ingevoerd voor orderelementen, maar kan ook worden ingevoerd via een snelkoppeling vanuit de planningstaken. Gebruikers zijn verantwoordelijk voor het beslissen welk voortgangstype ze koppelen aan elk orderelement.</p>
+<p>Gebruikers kunnen een enkel, standaard voortgangstype invoeren voor de gehele order.</p>
+<p>Voordat voortgang wordt gemeten, moeten gebruikers het gekozen voortgangstype koppelen aan de order. Ze kunnen bijvoorbeeld kiezen voor percentage voortgang om voortgang op de gehele taak te meten of een overeengekomen voortgangspercentage als voortgangsmetingen die zijn overeengekomen met de klant in de toekomst worden ingevoerd.</p>
+<div class="figure">
+<img alt="images/avance.png" src="images/avance.png" style="width: 424.0px; height: 290.8px;" />
+<p class="caption">Voortgangsinvoerscherm met grafische visualisatie</p>
+</div>
+<p>Om voortgangsmetingen in te voeren:</p>
+<ul class="simple">
+<li>Selecteer het voortgangstype waaraan de voortgang wordt toegevoegd.
+*   Als er geen voortgangstype bestaat, moet er een nieuw worden aangemaakt.</li>
+<li>Voer in het formulier dat verschijnt onder de velden &quot;Waarde&quot; en &quot;Datum&quot; de absolute waarde van de meting en de datum van de meting in.</li>
+<li>Het systeem slaat de ingevoerde gegevens automatisch op.</li>
+</ul>
+</div>
+<div class="section" id="voortgang-vergelijken-voor-een-orderelement">
+<h1><a class="toc-backref" href="#toc-entry-3">Voortgang Vergelijken voor een Orderelement</a></h1>
+<p>Gebruikers kunnen grafisch de geboekte voortgang op orders vergelijken met de genomen metingen. Alle voortgangstypen hebben een kolom met een selectieknop (&quot;Tonen&quot;). Wanneer deze knop is geselecteerd, wordt de voortgangsgrafiek van de genomen metingen weergegeven voor het orderelement.</p>
+<div class="figure">
+<img alt="images/contraste-avance.png" src="images/contraste-avance.png" style="width: 422.0px; height: 290.0px;" />
+<p class="caption">Vergelijking van meerdere voortgangstypen</p>
+</div>
+</div>
+</div>
+</body>
+</html>

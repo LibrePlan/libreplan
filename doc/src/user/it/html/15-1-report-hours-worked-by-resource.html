@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Rapporto delle Ore Lavorate per Risorsa</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="rapporto-delle-ore-lavorate-per-risorsa">
+<h1 class="title">Rapporto delle Ore Lavorate per Risorsa</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#scopo" id="toc-entry-1">Scopo</a></li>
+<li><a class="reference internal" href="#parametri-di-input-e-filtri" id="toc-entry-2">Parametri di Input e Filtri</a></li>
+<li><a class="reference internal" href="#output" id="toc-entry-3">Output</a><ul>
+<li><a class="reference internal" href="#intestazione" id="toc-entry-4">Intestazione</a></li>
+<li><a class="reference internal" href="#pie-di-pagina" id="toc-entry-5">Piè di Pagina</a></li>
+<li><a class="reference internal" href="#corpo" id="toc-entry-6">Corpo</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="scopo">
+<h1><a class="toc-backref" href="#toc-entry-1">Scopo</a></h1>
+<p>Questo rapporto estrae un elenco di attività e il tempo che le risorse hanno dedicato ad esse in un periodo specificato. Diversi filtri consentono agli utenti di affinare la query per ottenere solo le informazioni desiderate ed escludere i dati superflui.</p>
+</div>
+<div class="section" id="parametri-di-input-e-filtri">
+<h1><a class="toc-backref" href="#toc-entry-2">Parametri di Input e Filtri</a></h1>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt><strong>Date</strong>.</dt>
+<dd><ul class="first last">
+<li><em>Tipo</em>: Facoltativo.</li>
+<li><dl class="first docutils">
+<dt><em>Due campi data</em>:</dt>
+<dd><ul class="first last">
+<li><em>Data di Inizio:</em> È la data più antica per i rapporti di lavoro da includere. I rapporti di lavoro con date precedenti alla <em>Data di Inizio</em> sono esclusi. Se questo parametro viene lasciato vuoto, i rapporti di lavoro non vengono filtrati per <em>Data di Inizio</em>.</li>
+<li><em>Data di Fine:</em> È la data più recente per i rapporti di lavoro da includere. I rapporti di lavoro con date successive alla <em>Data di Fine</em> sono esclusi. Se questo parametro viene lasciato vuoto, i rapporti di lavoro non vengono filtrati per <em>Data di Fine</em>.</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><strong>Filtro per Lavoratori:</strong>
+*   <em>Tipo:</em> Facoltativo.
+*   <em>Come funziona:</em> È possibile selezionare uno o più lavoratori per limitare i rapporti di lavoro al tempo tracciato da quei specifici lavoratori. Per aggiungere un lavoratore come filtro, cercarlo nel selettore e fare clic sul pulsante <em>Aggiungi</em>. Se questo filtro viene lasciato vuoto, i rapporti di lavoro vengono recuperati indipendentemente dal lavoratore.</li>
+<li><strong>Filtro per Etichette:</strong>
+*   <em>Tipo:</em> Facoltativo.
+*   <em>Come funziona:</em> È possibile aggiungere una o più etichette da utilizzare come filtri cercandole nel selettore e facendo clic sul pulsante <em>Aggiungi</em>. Queste etichette vengono utilizzate per selezionare le attività da includere nei risultati durante il calcolo delle ore dedicate ad esse. Questo filtro può essere applicato ai fogli presenze, alle attività, a entrambi o a nessuno dei due.</li>
+<li><strong>Filtro per Criteri:</strong>
+*   <em>Tipo:</em> Facoltativo.
+*   <em>Come funziona:</em> È possibile selezionare uno o più criteri cercandoli nel selettore e quindi facendo clic sul pulsante <em>Aggiungi</em>. Questi criteri vengono utilizzati per selezionare le risorse che soddisfano almeno uno di essi. Il rapporto mostrerà tutto il tempo dedicato dalle risorse che soddisfano uno dei criteri selezionati.</li>
+</ul>
+</div>
+<div class="section" id="output">
+<h1><a class="toc-backref" href="#toc-entry-3">Output</a></h1>
+<div class="section" id="intestazione">
+<h2><a class="toc-backref" href="#toc-entry-4">Intestazione</a></h2>
+<p>L'intestazione del rapporto visualizza i filtri configurati e applicati al rapporto corrente.</p>
+</div>
+<div class="section" id="pie-di-pagina">
+<h2><a class="toc-backref" href="#toc-entry-5">Piè di Pagina</a></h2>
+<p>La data in cui il rapporto è stato generato è elencata nel piè di pagina.</p>
+</div>
+<div class="section" id="corpo">
+<h2><a class="toc-backref" href="#toc-entry-6">Corpo</a></h2>
+<p>Il corpo del rapporto è composto da diversi gruppi di informazioni.</p>
+<ul>
+<li><p class="first">Il primo livello di aggregazione è per risorsa. Tutto il tempo dedicato da una risorsa viene mostrato insieme sotto l'intestazione. Ogni risorsa è identificata da:</p>
+<ul class="simple">
+<li><em>Lavoratore:</em> Cognome, Nome.</li>
+<li><em>Macchina:</em> Nome.</li>
+</ul>
+<p>Una riga di riepilogo mostra il numero totale di ore lavorate dalla risorsa.</p>
+</li>
+<li><p class="first">Il secondo livello di raggruppamento è per <em>data</em>. Tutti i rapporti di una risorsa specifica nella stessa data vengono mostrati insieme.</p>
+<p>Una riga di riepilogo mostra il numero totale di ore lavorate dalla risorsa in quella data.</p>
+</li>
+<li><p class="first">Il livello finale elenca i rapporti di lavoro del lavoratore in quel giorno. Le informazioni visualizzate per ogni riga del rapporto di lavoro sono:</p>
+<ul class="simple">
+<li><em>Codice Attività:</em> Il codice dell'attività a cui sono attribuite le ore tracciate.</li>
+<li><em>Nome Attività:</em> Il nome dell'attività a cui sono attribuite le ore tracciate.</li>
+<li><em>Ora di Inizio:</em> Facoltativo. È l'ora in cui la risorsa ha iniziato a lavorare sull'attività.</li>
+<li><em>Ora di Fine:</em> Facoltativo. È l'ora in cui la risorsa ha terminato di lavorare sull'attività nella data specificata.</li>
+<li><em>Campi di Testo:</em> Facoltativo. Se la riga del rapporto di lavoro ha campi di testo, i valori inseriti vengono mostrati qui. Il formato è: &lt;Nome del campo di testo&gt;:&lt;Valore&gt;</li>
+<li><em>Etichette:</em> Dipende dal fatto che il modello del rapporto di lavoro abbia un campo etichetta nella sua definizione. Se ci sono più etichette, vengono mostrate nella stessa colonna. Il formato è: &lt;Nome del tipo di etichetta&gt;:&lt;Valore dell'etichetta&gt;</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</body>
+</html>

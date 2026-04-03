@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Oppgaveplanlegging</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="oppgaveplanlegging">
+<h1 class="title">Oppgaveplanlegging</h1>
+
+<div class="contents topic" id="contents">
+<span id="planificacion"></span><p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#oppgaveplanlegging-1" id="toc-entry-1">Oppgaveplanlegging</a><ul>
+<li><a class="reference internal" href="#planleggingsvisning" id="toc-entry-2">Planleggingsvisning</a></li>
+<li><a class="reference internal" href="#ressursbelastningsvisning" id="toc-entry-3">Ressursbelastningsvisning</a></li>
+<li><a class="reference internal" href="#ordrelistevisning" id="toc-entry-4">Ordrelistevisning</a></li>
+<li><a class="reference internal" href="#avansert-tildelingsvisning" id="toc-entry-5">Avansert tildelingsvisning</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="oppgaveplanlegging-1">
+<h1><a class="toc-backref" href="#toc-entry-1">Oppgaveplanlegging</a></h1>
+<p>Planlegging i LibrePlan er en prosess som er beskrevet gjennom hele brukerhåndboken, der kapitlene om ordrer og ressurstildeling er særlig viktige. Dette kapitlet beskriver de grunnleggende planleggingsprosedyrene etter at ordren og Gantt-diagrammene er riktig konfigurert.</p>
+<div class="figure">
+<img alt="images/planning-view.png" src="images/planning-view.png" style="width: 354.2px; height: 229.24999999999997px;" />
+<p class="caption">Visning av arbeidsplanlegging</p>
+</div>
+<p>Som med bedriftsoversikten er prosjektplanleggingsvisningen delt inn i flere visninger basert på informasjonen som analyseres. Visningene som er tilgjengelige for et spesifikt prosjekt, er:</p>
+<ul class="simple">
+<li>Planleggingsvisning</li>
+<li>Ressursbelastningsvisning</li>
+<li>Ordrelistevisning</li>
+<li>Avansert tildelingsvisning</li>
+</ul>
+<div class="section" id="planleggingsvisning">
+<h2><a class="toc-backref" href="#toc-entry-2">Planleggingsvisning</a></h2>
+<p>Planleggingsvisningen kombinerer tre ulike perspektiver:</p>
+<ul class="simple">
+<li><strong>Prosjektplanlegging:</strong> Prosjektplanlegging vises i øvre høyre del av programmet som et Gantt-diagram. Denne visningen lar brukere flytte oppgaver midlertidig, tildele avhengigheter mellom dem, definere milepæler og etablere restriksjoner.</li>
+<li><strong>Ressursbelastning:</strong> Ressursbelastningsvisningen, som er plassert i nedre høyre del av skjermen, viser ressursstilgjengelighet basert på tildelinger, i motsetning til tildelingene som er gjort til oppgaver. Informasjonen som vises i denne visningen, er som følger:<ul>
+<li><strong>Lilla område:</strong> Indikerer en ressursbelastning under 100 % av kapasiteten.</li>
+<li><strong>Grønt område:</strong> Indikerer en ressursbelastning under 100 %, som følge av at ressursen er planlagt for et annet prosjekt.</li>
+<li><strong>Oransje område:</strong> Indikerer en ressursbelastning over 100 % som følge av det gjeldende prosjektet.</li>
+<li><strong>Gult område:</strong> Indikerer en ressursbelastning over 100 % som følge av andre prosjekter.</li>
+</ul>
+</li>
+<li><strong>Grafvisning og indikatorer for opptjent verdi:</strong> Disse kan vises fra fanen &quot;Opptjent verdi&quot;. Den genererte grafen er basert på teknikken for opptjent verdi, og indikatorene beregnes for hver arbeidsdag i prosjektet. De beregnede indikatorene er:<ul>
+<li><strong>BCWS (Budsjettert kostnad for planlagt arbeid):</strong> Den kumulative tidsfunksjonen for antall planlagte timer til en bestemt dato. Den vil være 0 ved den planlagte starten på oppgaven og lik det totale antallet planlagte timer på slutten. Som med alle kumulative grafer vil den alltid øke. Funksjonen for en oppgave vil være summen av de daglige tildelingene til beregningsdatoen. Denne funksjonen har verdier for alle tider, forutsatt at ressurser er tildelt.</li>
+<li><strong>ACWP (Faktisk kostnad for utført arbeid):</strong> Den kumulative tidsfunksjonen for timene rapportert i arbeidsrapporter til en bestemt dato. Denne funksjonen vil bare ha en verdi på 0 før datoen for oppgavens første arbeidsrapport, og verdien vil fortsette å øke etter hvert som tid går og arbeidsrapporttimer legges til. Den vil ikke ha noen verdi etter datoen for den siste arbeidsrapporten.</li>
+<li><strong>BCWP (Budsjettert kostnad for utført arbeid):</strong> Den kumulative tidsfunksjonen som inkluderer den resulterende verdien av å multiplisere oppgavefremdriften med mengden arbeid som oppgaven ble estimert å kreve for fullføring. Verdiene for denne funksjonen øker etter hvert som tid går, det samme gjelder fremdriftsverdier. Fremdriften multipliseres med det totale antallet estimerte timer for alle oppgaver. BCWP-verdien er summen av verdiene for oppgavene som beregnes. Fremdriften summeres når den er konfigurert.</li>
+<li><strong>CV (Kostvarians):</strong> CV = BCWP - ACWP</li>
+<li><strong>SV (Planleggingsvarians):</strong> SV = BCWP - BCWS</li>
+<li><strong>BAC (Budsjett ved fullføring):</strong> BAC = maks (BCWS)</li>
+<li><strong>EAC (Estimat ved fullføring):</strong> EAC = (ACWP / BCWP) * BAC</li>
+<li><strong>VAC (Varians ved fullføring):</strong> VAC = BAC - EAC</li>
+<li><strong>ETC (Estimat for å fullføre):</strong> ETC = EAC - ACWP</li>
+<li><strong>CPI (Kostnadsytelsesindeks):</strong> CPI = BCWP / ACWP</li>
+<li><strong>SPI (Planleggingsytelsesindeks):</strong> SPI = BCWP / BCWS</li>
+</ul>
+</li>
+</ul>
+<p>I prosjektplanleggingsvisningen kan brukere utføre følgende handlinger:</p>
+<ul class="simple">
+<li><strong>Tildele avhengigheter:</strong> Høyreklikk på en oppgave, velg &quot;Legg til avhengighet&quot; og dra musepekeren til oppgaven som avhengigheten skal tildeles til.<ul>
+<li>For å endre avhengighetstypen, høyreklikk på avhengigheten og velg ønsket type.</li>
+</ul>
+</li>
+<li><strong>Opprette en ny milepæl:</strong> Klikk på oppgaven som milepælen skal legges til foran, og velg alternativet &quot;Legg til milepæl&quot;. Milepæler kan flyttes ved å velge milepælen med musepekeren og dra den til ønsket posisjon.</li>
+<li><strong>Flytte oppgaver uten å forstyrre avhengigheter:</strong> Høyreklikk på oppgavens kropp og dra den til ønsket posisjon. Hvis ingen restriksjoner eller avhengigheter brytes, vil systemet oppdatere den daglige tildelingen av ressurser til oppgaven og plassere oppgaven på den valgte datoen.</li>
+<li><strong>Tildele restriksjoner:</strong> Klikk på den aktuelle oppgaven og velg alternativet &quot;Oppgaveegenskaper&quot;. Et popup-vindu vises med et &quot;Restriksjoner&quot;-felt som kan endres. Restriksjoner kan komme i konflikt med avhengigheter, og det er derfor hver ordre angir om avhengigheter har prioritet over restriksjoner. Restriksjonene som kan etableres, er:<ul>
+<li><strong>Så tidlig som mulig:</strong> Indikerer at oppgaven må starte så tidlig som mulig.</li>
+<li><strong>Ikke før:</strong> Indikerer at oppgaven ikke må starte før en bestemt dato.</li>
+<li><strong>Start på en bestemt dato:</strong> Indikerer at oppgaven må starte på en bestemt dato.</li>
+</ul>
+</li>
+</ul>
+<p>Planleggingsvisningen tilbyr også flere prosedyrer som fungerer som visningsalternativer:</p>
+<ul class="simple">
+<li><strong>Zoomnivå:</strong> Brukere kan velge ønsket zoomnivå. Det finnes flere zoomnivåer: årlig, firemånedlig, månedlig, ukentlig og daglig.</li>
+<li><strong>Søkefiltre:</strong> Brukere kan filtrere oppgaver basert på etiketter eller kriterier.</li>
+<li><strong>Kritisk sti:</strong> Som et resultat av å bruke <em>Dijkstra</em>-algoritmen til å beregne stier på grafer, ble den kritiske stien implementert. Den kan vises ved å klikke på &quot;Kritisk sti&quot;-knappen i visningsalternativene.</li>
+<li><strong>Vis etiketter:</strong> Gjør det mulig for brukere å se etikettene som er tildelt oppgaver i et prosjekt, som kan vises på skjermen eller skrives ut.</li>
+<li><strong>Vis ressurser:</strong> Gjør det mulig for brukere å se ressursene som er tildelt oppgaver i et prosjekt, som kan vises på skjermen eller skrives ut.</li>
+<li><strong>Skriv ut:</strong> Gjør det mulig for brukere å skrive ut Gantt-diagrammet som vises.</li>
+</ul>
+</div>
+<div class="section" id="ressursbelastningsvisning">
+<h2><a class="toc-backref" href="#toc-entry-3">Ressursbelastningsvisning</a></h2>
+<p>Ressursbelastningsvisningen gir en liste over ressurser som inneholder en liste over oppgaver eller kriterier som genererer arbeidsbelastninger. Hver oppgave eller kriterium vises som et Gantt-diagram slik at start- og sluttdatoene for belastningen kan ses. En annen farge vises avhengig av om ressursen har en belastning som er høyere eller lavere enn 100 %:</p>
+<ul class="simple">
+<li><strong>Grønt:</strong> Belastning lavere enn 100 %</li>
+<li><strong>Oransje:</strong> 100 % belastning</li>
+<li><strong>Rødt:</strong> Belastning over 100 %</li>
+</ul>
+<div class="figure">
+<img alt="images/resource-load.png" src="images/resource-load.png" style="width: 353.5px; height: 228.89999999999998px;" />
+<p class="caption">Ressursbelastningsvisning for en spesifikk ordre</p>
+</div>
+<p>Hvis musepekeren plasseres på ressursens Gantt-diagram, vises belastningsprosenten for arbeideren.</p>
+</div>
+<div class="section" id="ordrelistevisning">
+<h2><a class="toc-backref" href="#toc-entry-4">Ordrelistevisning</a></h2>
+<p>Ordrelistevisningen gir brukere tilgang til alternativene for å redigere og slette ordrer. Se kapitlet &quot;Ordrer&quot; for mer informasjon.</p>
+</div>
+<div class="section" id="avansert-tildelingsvisning">
+<h2><a class="toc-backref" href="#toc-entry-5">Avansert tildelingsvisning</a></h2>
+<p>Den avanserte tildelingsvisningen er grundig forklart i kapitlet &quot;Ressurstildeling&quot;.</p>
+</div>
+</div>
+</div>
+</body>
+</html>
