@@ -248,3 +248,23 @@ pre.literal-block {
   border: 1px solid #dfdfdf;
   border-left: 0.25em solid #dfdfdf
 }
+
+div.topic.highlight {
+  margin: 1em 0;
+  padding: 0.6em 1em;
+  background: #fff8e1;
+  border: 1px solid #f9a825;
+  border-left: 4px solid #f9a825;
+}
+
+div.topic.highlight .topic-title {
+  margin: 0 0 0.5em 0;
+  padding-bottom: 0.35em;
+  border-bottom: 1px solid #f9a825;
+  font-weight: bold;
+}
+
+div.topic.highlight p {
+  margin: 0.5em 0;
+}
+

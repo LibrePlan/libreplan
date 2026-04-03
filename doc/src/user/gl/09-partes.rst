@@ -28,7 +28,7 @@ Os campos obrigatorios que deben figurar en todos os partes de traballo son os s
 * Nome e código: Campos identificativos do nome do tipo de parte de traballo e código do mesmo.
 * Data: Campo de data á que corresponde o parte
 * Recurso: Traballador ou máquina que figura no parte ou liña de parte de traballo.
-* Elemento de pedido: Código do elemento de pedido ó que imputar as horas do traballo realizado
+* Elemento de proxecto: Código do elemento de proxecto ó que imputar as horas do traballo realizado
 * Xestión de horas: Determina a política de imputación de horas a levar a cabo, a cal pode ser:
    * Por número de horas asignadas
    * Por horas de comezo e fin
@@ -45,7 +45,7 @@ Existe a posibilidade de engadir novos campos ós partes:
    Creación de tipo de parte de traballo con campos personalizados
 
 
-Para os campos de data, recurso e elemento de pedido, poden configurarse se figuran na cabeceira do parte e polo tanto son globais ó mesmo, ou se son engadidos en cada unha das filas.
+Para os campos de data, recurso e elemento de proxecto, poden configurarse se figuran na cabeceira do parte e polo tanto son globais ó mesmo, ou se son engadidos en cada unha das filas.
 
 Finalmente, poden engadirse novos campos de texto adicionais ou etiquetas ás existentes no sistema, tanto para a cabeceira dos partes de traballo como en cada unha das liñas, mediante os campos de Texto Complementario e Tipos de etiquetas, respectivamente. Na pestana de Xestión de campos adicionais e etiquetas, o usuario pode configurar a orde na que introducir ditos elementos nos partes de traballo.
 
