@@ -15,6 +15,15 @@ Za druhé, základní entity pro pochopení minimálních konceptů potřebných
 
 Za třetí, úplný popis procesů pro vytváření zakázek, projektů, plánování projektů, přidělování zdrojů, zadávání pokroku a extrakci výsledků.
 
+.. topic:: Prosím, podpořte LibrePlan
+   :class: highlight
+
+   LibrePlan nemůže existovat bez vaší podpory. Prosím, přečtěte si `stránku s dary <00-donations.html>`__ a zvažte pomoc nám s pokračováním vývoje.
+
+   .. raw:: html
+
+      <script src="https://opencollective.com/libreplan/donate/button.js" color="blue"></script>
+
 
 #. `Podpora LibrePlan — Dary <00-donations.html>`__
 #. `Úvod <01-uvod.html>`__
@@ -22,7 +31,7 @@ Za třetí, úplný popis procesů pro vytváření zakázek, projektů, plánov
 #. `Kalendáře <03-kalendare.html>`__
 #. `Pokrok <04-pokrok.html>`__
 #. `Správa zdrojů <05-sprava-zdroju.html>`__
-#. `Projekty a prvky projektů <06-zakazky.html>`__
+#. `Projekty a prvky projektů <06-projekty.html>`__
 #. `Plánování úkolů <07-planovani-ukolu.html>`__
 #. `Přiřazení zdrojů <08-prideleni-zdroju.html>`__
 #. `Pracovní výkazy <09-pracovni-vykazy.html>`__

@@ -16,7 +16,7 @@
 <ul class="simple">
 <li><a class="reference internal" href="#sprava-typu-pokroku" id="toc-entry-1">Správa typů pokroku</a></li>
 <li><a class="reference internal" href="#zadavani-pokroku-podle-typu" id="toc-entry-2">Zadávání pokroku podle typu</a></li>
-<li><a class="reference internal" href="#porovnani-pokroku-prvku-zakazky" id="toc-entry-3">Porovnání pokroku prvku zakázky</a></li>
+<li><a class="reference internal" href="#porovnani-pokroku-prvku-projektu" id="toc-entry-3">Porovnání pokroku prvku projektu</a></li>
 </ul>
 </div>
 <p>Pokrok projektu udává míru, do jaké je splňován odhadovaný čas dokončení projektu. Pokrok úkolu udává míru, do jaké je úkol dokončován podle jeho odhadovaného splnění.</p>
@@ -29,7 +29,7 @@
 <li><strong>Spotřebováno více hodin, než se očekávalo, ale projekt je před plánem:</strong> Pokrok je vyšší, než bylo odhadnuto pro sledovaný den.</li>
 </ul>
 <p>Zobrazení plánování umožňuje porovnat tyto situace pomocí informací o dosaženém pokroku a použitých hodinách. Tato kapitola vysvětlí, jak zadávat informace pro sledování pokroku.</p>
-<p>Filozofie sledování pokroku je založena na tom, že uživatelé definují úroveň, na které chtějí sledovat své projekty. Například pokud chtějí uživatelé sledovat zakázky, stačí zadat informace pouze pro prvky 1. úrovně. Pokud chtějí přesnější sledování na úrovni úkolu, musí zadávat informace o pokroku na nižších úrovních. Systém poté agreguje data směrem nahoru hierarchií.</p>
+<p>Filozofie sledování pokroku je založena na tom, že uživatelé definují úroveň, na které chtějí sledovat své projekty. Například pokud chtějí uživatelé sledovat projekty, stačí zadat informace pouze pro prvky 1. úrovně. Pokud chtějí přesnější sledování na úrovni úkolu, musí zadávat informace o pokroku na nižších úrovních. Systém poté agreguje data směrem nahoru hierarchií.</p>
 <div class="section" id="sprava-typu-pokroku">
 <h1><a class="toc-backref" href="#toc-entry-1">Správa typů pokroku</a></h1>
 <p>Firmy mají různé potřeby při sledování pokroku projektu, zejména zapojených úkolů. Proto systém obsahuje &quot;typy pokroku&quot;. Uživatelé mohou definovat různé typy pokroku pro měření pokroku úkolu. Například úkol lze měřit jako procento, ale toto procento lze také převést na pokrok v <em>Tunách</em> na základě dohody s klientem.</p>
@@ -69,9 +69,9 @@
 </div>
 <div class="section" id="zadavani-pokroku-podle-typu">
 <h1><a class="toc-backref" href="#toc-entry-2">Zadávání pokroku podle typu</a></h1>
-<p>Pokrok se zadává pro prvky zakázky, ale lze jej také zadat pomocí zkratky z plánovacích úkolů. Uživatelé jsou zodpovědní za rozhodnutí, který typ pokroku přiřadí každému prvku zakázky.</p>
-<p>Uživatelé mohou zadat jediný výchozí typ pokroku pro celou zakázku.</p>
-<p>Před měřením pokroku musí uživatelé přiřadit zvolený typ pokroku k zakázce. Například mohou zvolit procentuální pokrok pro měření pokroku celého úkolu nebo dohodnutou míru pokroku, pokud budou v budoucnu zadávána měření pokroku dohodnutá s klientem.</p>
+<p>Pokrok se zadává pro prvky projektu, ale lze jej také zadat pomocí zkratky z plánovacích úkolů. Uživatelé jsou zodpovědní za rozhodnutí, který typ pokroku přiřadí každému prvku projektu.</p>
+<p>Uživatelé mohou zadat jediný výchozí typ pokroku pro celý projekt.</p>
+<p>Před měřením pokroku musí uživatelé přiřadit zvolený typ pokroku k projektu. Například mohou zvolit procentuální pokrok pro měření pokroku celého úkolu nebo dohodnutou míru pokroku, pokud budou v budoucnu zadávána měření pokroku dohodnutá s klientem.</p>
 <div class="figure">
 <img alt="images/avance.png" src="images/avance.png" style="width: 424.0px; height: 290.8px;" />
 <p class="caption">Obrazovka pro zadávání pokroku s grafickou vizualizací</p>
@@ -84,9 +84,9 @@
 <li>Systém automaticky uloží zadaná data.</li>
 </ul>
 </div>
-<div class="section" id="porovnani-pokroku-prvku-zakazky">
-<h1><a class="toc-backref" href="#toc-entry-3">Porovnání pokroku prvku zakázky</a></h1>
-<p>Uživatelé mohou graficky porovnávat dosažený pokrok na zakázkách s provedenými měřeními. Všechny typy pokroku mají sloupec s tlačítkem zaškrtnutí (&quot;Zobrazit&quot;). Při výběru tohoto tlačítka se pro prvek zakázky zobrazí graf pokroku provedených měření.</p>
+<div class="section" id="porovnani-pokroku-prvku-projektu">
+<h1><a class="toc-backref" href="#toc-entry-3">Porovnání pokroku prvku projektu</a></h1>
+<p>Uživatelé mohou graficky porovnávat dosažený pokrok na projektech s provedenými měřeními. Všechny typy pokroku mají sloupec s tlačítkem zaškrtnutí (&quot;Zobrazit&quot;). Při výběru tohoto tlačítka se pro prvek projektu zobrazí graf pokroku provedených měření.</p>
 <div class="figure">
 <img alt="images/contraste-avance.png" src="images/contraste-avance.png" style="width: 422.0px; height: 290.0px;" />
 <p class="caption">Porovnání několika typů pokroku</p>

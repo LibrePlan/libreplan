@@ -15,6 +15,15 @@ Em segundo lugar, as entidades básicas para compreender os conceitos mínimos n
 
 Por fim, a descrição completa dos processos de criação de pedidos, projetos, planejamento de projetos, atribuição de recursos, registro de avanços e extração de resultados.
 
+.. topic:: Por favor, apoie o LibrePlan
+   :class: highlight
+
+   O LibrePlan não pode existir sem o seu apoio. Por favor, leia `a página de doações <00-donations.html>`__ e considere nos ajudar a continuar o desenvolvimento.
+
+   .. raw:: html
+
+      <script src="https://opencollective.com/libreplan/donate/button.js" color="blue"></script>
+
 
 #. `Apoiar o LibrePlan — Doações <00-donations.html>`__
 #. `Introdução <01-introducao.html>`__
@@ -22,7 +31,7 @@ Por fim, a descrição completa dos processos de criação de pedidos, projetos,
 #. `Calendários <03-calendarios.html>`__
 #. `Progresso <04-progresso.html>`__
 #. `Gerenciamento de Recursos <05-gerenciamento-de-recursos.html>`__
-#. `Pedidos e Elementos de Pedido <06-pedidos.html>`__
+#. `Projetos e Elementos de Projeto <06-projetos.html>`__
 #. `Planejamento de Tarefas <07-planejamento-de-tarefas.html>`__
 #. `Atribuição de Recursos <08-atribuicao-de-recursos.html>`__
 #. `Relatórios de Trabalho <09-relatorios-de-trabalho.html>`__

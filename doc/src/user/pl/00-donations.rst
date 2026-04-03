@@ -120,4 +120,13 @@ w funkcje, to ciągła inwestycja czasu i wiedzy specjalistycznej.
 Twoja darowizna — niezależnie od jej wielkości — pomaga umożliwić tę pracę.
 Dziękujemy.
 
+.. topic:: Prosimy, wesprzyj LibrePlan
+   :class: highlight
+
+   LibrePlan nie może istnieć bez Twojego wsparcia. Prosimy, przeczytaj `stronę darowizn <00-donations.html>`__ i rozważ pomoc nam w kontynuowaniu rozwoju.
+
+   .. raw:: html
+
+      <script src="https://opencollective.com/libreplan/donate/button.js" color="blue"></script>
+
 .. figure:: images/logos.png

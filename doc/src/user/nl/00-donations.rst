@@ -119,4 +119,13 @@ voortdurende investering van tijd en expertise.
 Uw donatie — hoe groot of klein ook — helpt dat werk mogelijk te maken.
 Dank u wel.
 
+.. topic:: Steun LibrePlan
+   :class: highlight
+
+   LibrePlan kan niet bestaan zonder uw steun. Lees `de donatiepagina <00-donations.html>`__ en overweeg ons te helpen de ontwikkeling voort te zetten.
+
+   .. raw:: html
+
+      <script src="https://opencollective.com/libreplan/donate/button.js" color="blue"></script>
+
 .. figure:: images/logos.png

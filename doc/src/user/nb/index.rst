@@ -15,6 +15,15 @@ For det andre, grunnleggende enheter for å forstå minimumskonseptene for bruk 
 
 Til slutt, en fullstendig prosessbeskrivelse for å opprette ordrer, prosjekter, prosjektplanlegging, ressurstildeling, fremdriftsregistrering og resultatuttak.
 
+.. topic:: Vennligst støtt LibrePlan
+   :class: highlight
+
+   LibrePlan kan ikke eksistere uten din støtte. Vennligst les `donasjonssiden <00-donations.html>`__ og vurder å hjelpe oss med å fortsette utviklingen.
+
+   .. raw:: html
+
+      <script src="https://opencollective.com/libreplan/donate/button.js" color="blue"></script>
+
 
 #. `Støtte LibrePlan — Donasjoner <00-donations.html>`__
 #. `Introduksjon <01-introduksjon.html>`__
@@ -22,7 +31,7 @@ Til slutt, en fullstendig prosessbeskrivelse for å opprette ordrer, prosjekter,
 #. `Kalendere <03-kalendere.html>`__
 #. `Fremdrift <04-fremdrift.html>`__
 #. `Ressursbehandling <05-ressursbehandling.html>`__
-#. `Ordrer og ordreelementer <06-ordrer.html>`__
+#. `Prosjekter og prosjektelementer <06-prosjekter.html>`__
 #. `Oppgaveplanlegging <07-oppgaveplanlegging.html>`__
 #. `Ressurstildeling <08-ressurstildeling.html>`__
 #. `Arbeidsrapporter <09-arbeidsrapporter.html>`__

@@ -56,7 +56,7 @@
 <h1><a class="toc-backref" href="#toc-entry-2">JIRA-connector</a></h1>
 <p>JIRA is een systeem voor het bijhouden van problemen en projecten.</p>
 <p>De JIRA-connector is een applicatie die kan worden gebruikt om gegevens van de JIRA-webserver op te vragen voor JIRA-problemen en de reactie te verwerken. Het verzoek is gebaseerd op JIRA-labels. In JIRA kunnen labels worden gebruikt om problemen te categoriseren. Het verzoek is als volgt gestructureerd: haal alle problemen op die zijn gecategoriseerd door deze labelnaam.</p>
-<p>De connector ontvangt de reactie, in dit geval de problemen, en converteert ze naar <em>LibrePlan</em>-&quot;Orderelementen&quot; en &quot;Urenstaten&quot;.</p>
+<p>De connector ontvangt de reactie, in dit geval de problemen, en converteert ze naar <em>LibrePlan</em>-&quot;Projectelementen&quot; en &quot;Urenstaten&quot;.</p>
 <p>De <em>JIRA-connector</em> moet correct worden geconfigureerd voordat deze kan worden gebruikt.</p>
 <div class="section" id="configuratie-1">
 <h2><a class="toc-backref" href="#toc-entry-3">Configuratie</a></h2>
@@ -77,7 +77,7 @@
 </div>
 <div class="section" id="synchronisatie">
 <h2><a class="toc-backref" href="#toc-entry-4">Synchronisatie</a></h2>
-<p>Vanuit het projectvenster, onder &quot;Algemene gegevens,&quot; kunt u beginnen met het synchroniseren van orderelementen met JIRA-problemen.</p>
+<p>Vanuit het projectvenster, onder &quot;Algemene gegevens,&quot; kunt u beginnen met het synchroniseren van projectelementen met JIRA-problemen.</p>
 <p>Klik op de knop &quot;Synchroniseren met JIRA&quot; om de synchronisatie te starten.</p>
 <ul class="simple">
 <li>Als dit de eerste keer is, wordt er een pop-upvenster weergegeven (met een automatisch aangevulde lijst van labels). In dit venster kunt u een label selecteren om mee te synchroniseren en op de knop &quot;Synchronisatie starten&quot; klikken om het synchronisatieproces te beginnen, of op de knop &quot;Annuleren&quot; klikken om het te annuleren.</li>
@@ -85,7 +85,7 @@
 </ul>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">De relatie tussen &quot;Order&quot; en &quot;label&quot; is één-op-één. Er kan slechts één label worden gesynchroniseerd met één &quot;Order.&quot;</p>
+<p class="last">De relatie tussen &quot;Project&quot; en &quot;label&quot; is één-op-één. Er kan slechts één label worden gesynchroniseerd met één &quot;Project.&quot;</p>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -93,7 +93,7 @@
 </div>
 <p>(Her)synchronisatie wordt uitgevoerd in twee fasen:</p>
 <ul class="simple">
-<li><strong>Fase 1:</strong> Synchroniseren van orderelementen, inclusief voortgangstoewijzing en -metingen.</li>
+<li><strong>Fase 1:</strong> Synchroniseren van projectelementen, inclusief voortgangstoewijzing en -metingen.</li>
 <li><strong>Fase 2:</strong> Synchroniseren van urenstaten.</li>
 </ul>
 <div class="admonition note">

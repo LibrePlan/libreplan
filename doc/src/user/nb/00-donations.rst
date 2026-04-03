@@ -115,4 +115,13 @@ investering av tid og ekspertise.
 
 Din donasjon — uansett størrelse — bidrar til å gjøre dette arbeidet mulig. Takk.
 
+.. topic:: Vennligst støtt LibrePlan
+   :class: highlight
+
+   LibrePlan kan ikke eksistere uten din støtte. Vennligst les `donasjonssiden <00-donations.html>`__ og vurder å hjelpe oss med å fortsette utviklingen.
+
+   .. raw:: html
+
+      <script src="https://opencollective.com/libreplan/donate/button.js" color="blue"></script>
+
 .. figure:: images/logos.png

@@ -115,4 +115,13 @@ investicí času a odborných znalostí.
 
 Váš dar — ať velký nebo malý — pomáhá tuto práci umožnit. Děkujeme.
 
+.. topic:: Prosím, podpořte LibrePlan
+   :class: highlight
+
+   LibrePlan nemůže existovat bez vaší podpory. Prosím, přečtěte si `stránku s dary <00-donations.html>`__ a zvažte pomoc nám s pokračováním vývoje.
+
+   .. raw:: html
+
+      <script src="https://opencollective.com/libreplan/donate/button.js" color="blue"></script>
+
 .. figure:: images/logos.png

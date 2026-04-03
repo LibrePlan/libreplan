@@ -16,7 +16,7 @@
 <ul class="simple">
 <li><a class="reference internal" href="#hantera-framstegstyper" id="toc-entry-1">Hantera framstegstyper</a></li>
 <li><a class="reference internal" href="#ange-framsteg-baserat-pa-typ" id="toc-entry-2">Ange framsteg baserat på typ</a></li>
-<li><a class="reference internal" href="#jamfora-framsteg-for-ett-bestallningselement" id="toc-entry-3">Jämföra framsteg för ett beställningselement</a></li>
+<li><a class="reference internal" href="#jamfora-framsteg-for-ett-projektelement" id="toc-entry-3">Jämföra framsteg för ett projektelement</a></li>
 </ul>
 </div>
 <p>Projektframsteg indikerar i vilken grad den beräknade färdigställandetiden för projektet uppfylls. Uppgiftsframsteg indikerar i vilken grad uppgiften slutförs enligt sin beräknade tid för färdigställande.</p>
@@ -29,7 +29,7 @@
 <li><strong>Fler timmar förbrukade än förväntat, men projektet är i förväg:</strong> Framstegen är högre än beräknat för den övervakade dagen.</li>
 </ul>
 <p>Planeringsvyn låter dig jämföra dessa situationer med hjälp av information om de framsteg som gjorts och de timmar som använts. Det här kapitlet förklarar hur man anger information för att övervaka framsteg.</p>
-<p>Filosofin bakom framstegsövervakning baseras på att användare definierar den nivå på vilken de vill övervaka sina projekt. Om användare till exempel vill övervaka beställningar behöver de bara ange information för element på nivå 1. Om de vill ha mer exakt övervakning på uppgiftsnivå måste de ange framstegsinformation på lägre nivåer. Systemet aggregerar sedan data uppåt genom hierarkin.</p>
+<p>Filosofin bakom framstegsövervakning baseras på att användare definierar den nivå på vilken de vill övervaka sina projekt. Om användare till exempel vill övervaka projekt behöver de bara ange information för element på nivå 1. Om de vill ha mer exakt övervakning på uppgiftsnivå måste de ange framstegsinformation på lägre nivåer. Systemet aggregerar sedan data uppåt genom hierarkin.</p>
 <div class="section" id="hantera-framstegstyper">
 <h1><a class="toc-backref" href="#toc-entry-1">Hantera framstegstyper</a></h1>
 <p>Företag har varierande behov när de övervakar projektframsteg, särskilt de inblandade uppgifterna. Därför innehåller systemet &quot;framstegstyper.&quot; Användare kan definiera olika framstegstyper för att mäta en uppgifts framsteg. En uppgift kan till exempel mätas som en procentandel, men denna procentandel kan också översättas till framsteg i <em>ton</em> baserat på avtalet med klienten.</p>
@@ -69,9 +69,9 @@
 </div>
 <div class="section" id="ange-framsteg-baserat-pa-typ">
 <h1><a class="toc-backref" href="#toc-entry-2">Ange framsteg baserat på typ</a></h1>
-<p>Framsteg anges för beställningselement, men det kan också anges med en genväg från planeringsuppgifterna. Användare ansvarar för att bestämma vilken framstegstyp som ska associeras med varje beställningselement.</p>
-<p>Användare kan ange en enda, standardframstegstyp för hela beställningen.</p>
-<p>Innan framsteg mäts måste användare associera den valda framstegstypen med beställningen. De kan till exempel välja procentframsteg för att mäta framsteg på hela uppgiften eller en avtalad framstegstakt om framstegsmätningar som överenskommits med klienten ska anges i framtiden.</p>
+<p>Framsteg anges för projektelement, men det kan också anges med en genväg från planeringsuppgifterna. Användare ansvarar för att bestämma vilken framstegstyp som ska associeras med varje projektelement.</p>
+<p>Användare kan ange en enda, standardframstegstyp för hela projektet.</p>
+<p>Innan framsteg mäts måste användare associera den valda framstegstypen med projektet. De kan till exempel välja procentframsteg för att mäta framsteg på hela uppgiften eller en avtalad framstegstakt om framstegsmätningar som överenskommits med klienten ska anges i framtiden.</p>
 <div class="figure">
 <img alt="images/avance.png" src="images/avance.png" style="width: 424.0px; height: 290.8px;" />
 <p class="caption">Skärm för framstegsregistrering med grafisk visualisering</p>
@@ -84,9 +84,9 @@
 <li>Systemet lagrar automatiskt de angivna uppgifterna.</li>
 </ul>
 </div>
-<div class="section" id="jamfora-framsteg-for-ett-bestallningselement">
-<h1><a class="toc-backref" href="#toc-entry-3">Jämföra framsteg för ett beställningselement</a></h1>
-<p>Användare kan grafiskt jämföra de framsteg som gjorts på beställningar med de mätningar som tagits. Alla framstegstyper har en kolumn med en kryssknapp (&quot;Visa&quot;). När den här knappen är markerad visas framstegsdiagrammet för mätningar tagna för beställningselementet.</p>
+<div class="section" id="jamfora-framsteg-for-ett-projektelement">
+<h1><a class="toc-backref" href="#toc-entry-3">Jämföra framsteg för ett projektelement</a></h1>
+<p>Användare kan grafiskt jämföra de framsteg som gjorts på projekt med de mätningar som tagits. Alla framstegstyper har en kolumn med en kryssknapp (&quot;Visa&quot;). När den här knappen är markerad visas framstegsdiagrammet för mätningar tagna för projektelementet.</p>
 <div class="figure">
 <img alt="images/contraste-avance.png" src="images/contraste-avance.png" style="width: 422.0px; height: 290.0px;" />
 <p class="caption">Jämförelse av flera framstegstyper</p>

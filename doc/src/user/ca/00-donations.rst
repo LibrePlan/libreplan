@@ -117,4 +117,13 @@ contínua de temps i coneixement.
 
 La vostra donació — gran o petita — ajuda a fer possible aquesta feina. Gràcies.
 
+.. topic:: Si us plau, doneu suport a LibrePlan
+   :class: highlight
+
+   LibrePlan no pot existir sense el vostre suport. Si us plau, llegiu `la pàgina de donacions <00-donations.html>`__ i considereu ajudar-nos a continuar el desenvolupament.
+
+   .. raw:: html
+
+      <script src="https://opencollective.com/libreplan/donate/button.js" color="blue"></script>
+
 .. figure:: images/logos.png

@@ -15,6 +15,16 @@ För det andra, grundläggande entiteter för att förstå de minimala koncept s
 
 Slutligen, en fullständig processbeskrivning för att skapa beställningar, projekt, projektplanering, resurstilldelning, framstegsregistrering och resultatuttag.
 
+.. topic:: Vänligen stöd LibrePlan
+   :class: highlight
+
+   LibrePlan kan inte existera utan ditt stöd. Vänligen läs `donationssidan <00-donations.html>`__ och överväg att hjälpa oss att fortsätta utvecklingen.
+
+   .. raw:: html
+
+      <script src="https://opencollective.com/libreplan/donate/button.js" color="blue"></script>
+
+
 
 #. `Stödja LibrePlan — Donationer <00-donations.html>`__
 #. `Introduktion <01-introduktion.html>`__
@@ -22,7 +32,7 @@ Slutligen, en fullständig processbeskrivning för att skapa beställningar, pro
 #. `Kalendrar <03-kalendrar.html>`__
 #. `Framsteg <04-framsteg.html>`__
 #. `Resurshantering <05-resurshantering.html>`__
-#. `Beställningar och beställningselement <06-bestallningar.html>`__
+#. `Projekt och projektelement <06-projekt.html>`__
 #. `Uppgiftsplanering <07-uppgiftsplanering.html>`__
 #. `Resurstilldelning <08-resurstilldelning.html>`__
 #. `Arbetsrapporter <09-arbetsrapporter.html>`__

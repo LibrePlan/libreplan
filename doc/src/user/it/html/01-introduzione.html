@@ -33,19 +33,19 @@
 </div>
 <div class="section" id="panoramica-aziendale-e-gestione-delle-viste">
 <h1><a class="toc-backref" href="#toc-entry-1">Panoramica Aziendale e Gestione delle Viste</a></h1>
-<p>Come mostrato nella schermata principale del programma (si veda la schermata precedente) e nella panoramica aziendale, gli utenti possono visualizzare un elenco dei progetti pianificati. Ciò consente loro di comprendere lo stato generale dell'azienda riguardo agli ordini e all'utilizzo delle risorse. La panoramica aziendale offre tre viste distinte:</p>
+<p>Come mostrato nella schermata principale del programma (si veda la schermata precedente) e nella panoramica aziendale, gli utenti possono visualizzare un elenco dei progetti pianificati. Ciò consente loro di comprendere lo stato generale dell'azienda riguardo ai progetti e all'utilizzo delle risorse. La panoramica aziendale offre tre viste distinte:</p>
 <ul>
 <li><p class="first"><strong>Vista Pianificazione:</strong> Questa vista combina due prospettive:</p>
 <blockquote>
 <ul class="simple">
-<li><strong>Monitoraggio degli Ordini e del Tempo:</strong> Ogni progetto è rappresentato da un diagramma di Gantt, che indica le date di inizio e fine del progetto. Queste informazioni vengono visualizzate insieme alla scadenza concordata. Viene quindi effettuato un confronto tra la percentuale di avanzamento raggiunta e il tempo effettivamente dedicato a ciascun progetto. Questo fornisce un quadro chiaro delle prestazioni aziendali in qualsiasi momento. Questa vista è la pagina iniziale predefinita del programma.</li>
+<li><strong>Monitoraggio dei Progetti e del Tempo:</strong> Ogni progetto è rappresentato da un diagramma di Gantt, che indica le date di inizio e fine del progetto. Queste informazioni vengono visualizzate insieme alla scadenza concordata. Viene quindi effettuato un confronto tra la percentuale di avanzamento raggiunta e il tempo effettivamente dedicato a ciascun progetto. Questo fornisce un quadro chiaro delle prestazioni aziendali in qualsiasi momento. Questa vista è la pagina iniziale predefinita del programma.</li>
 <li><strong>Grafico dell'Utilizzo delle Risorse Aziendali:</strong> Questo grafico visualizza informazioni sull'allocazione delle risorse tra i progetti, fornendo un riepilogo dell'utilizzo delle risorse dell'intera azienda. Il verde indica che l'allocazione delle risorse è inferiore al 100% della capacità. La linea nera rappresenta la capacità totale delle risorse disponibili. Il giallo indica che l'allocazione delle risorse supera il 100%. È possibile avere una sotto-allocazione complessiva pur avendo contemporaneamente una sovra-allocazione per risorse specifiche.</li>
 </ul>
 </blockquote>
 </li>
 <li><p class="first"><strong>Vista Carico Risorse:</strong> Questa schermata visualizza un elenco dei lavoratori dell'azienda e le loro specifiche assegnazioni di attività, o assegnazioni generiche basate su criteri definiti. Per accedere a questa vista, fare clic su <em>Carico globale delle risorse</em>. Vedere l'immagine seguente per un esempio.</p>
 </li>
-<li><p class="first"><strong>Vista Amministrazione Ordini:</strong> Questa schermata visualizza un elenco degli ordini aziendali, consentendo agli utenti di eseguire le seguenti azioni: filtrare, modificare, eliminare, visualizzare la pianificazione o creare un nuovo ordine. Per accedere a questa vista, fare clic su <em>Elenco ordini</em>.</p>
+<li><p class="first"><strong>Vista Amministrazione Progetti:</strong> Questa schermata visualizza un elenco dei progetti aziendali, consentendo agli utenti di eseguire le seguenti azioni: filtrare, modificare, eliminare, visualizzare la pianificazione o creare un nuovo progetto. Per accedere a questa vista, fare clic su <em>Elenco progetti</em>.</p>
 </li>
 </ul>
 <div class="figure">
@@ -58,15 +58,15 @@
 </div>
 <p>La gestione delle viste descritta sopra per la panoramica aziendale è molto simile alla gestione disponibile per un singolo progetto. A un progetto si può accedere in diversi modi:</p>
 <ul class="simple">
-<li>Fare clic con il pulsante destro del mouse sul diagramma di Gantt dell'ordine e selezionare <em>Pianifica</em>.</li>
-<li>Accedere all'elenco degli ordini e fare clic sull'icona del diagramma di Gantt.</li>
-<li>Creare un nuovo ordine e modificare la vista dell'ordine corrente.</li>
+<li>Fare clic con il pulsante destro del mouse sul diagramma di Gantt del progetto e selezionare <em>Pianifica</em>.</li>
+<li>Accedere all'elenco dei progetti e fare clic sull'icona del diagramma di Gantt.</li>
+<li>Creare un nuovo progetto e modificare la vista del progetto corrente.</li>
 </ul>
-<p>Il programma offre le seguenti viste per un ordine:</p>
+<p>Il programma offre le seguenti viste per un progetto:</p>
 <ul class="simple">
 <li><strong>Vista Pianificazione:</strong> Questa vista consente agli utenti di visualizzare la pianificazione delle attività, le dipendenze, le pietre miliari e altro ancora. Consultare la sezione <em>Pianificazione</em> per ulteriori dettagli.</li>
 <li><strong>Vista Carico Risorse:</strong> Questa vista consente agli utenti di verificare il carico di risorse designato per un progetto. Il codice colore è coerente con la panoramica aziendale: verde per un carico inferiore al 100%, giallo per un carico pari al 100% e rosso per un carico superiore al 100%. Il carico può derivare da un'attività specifica o da un insieme di criteri (assegnazione generica).</li>
-<li><strong>Vista Modifica Ordine:</strong> Questa vista consente agli utenti di modificare i dettagli dell'ordine. Consultare la sezione <em>Ordini</em> per ulteriori informazioni.</li>
+<li><strong>Vista Modifica Progetto:</strong> Questa vista consente agli utenti di modificare i dettagli del progetto. Consultare la sezione <em>Progetti</em> per ulteriori informazioni.</li>
 <li><strong>Vista Allocazione Avanzata delle Risorse:</strong> Questa vista consente agli utenti di allocare risorse con opzioni avanzate, come la specifica delle ore per giorno o delle funzioni allocate da svolgere. Consultare la sezione <em>Allocazione delle risorse</em> per ulteriori informazioni.</li>
 </ul>
 </div>
@@ -76,7 +76,7 @@
 <p>I concetti fondamentali alla base del programma sono i seguenti:</p>
 <ul class="simple">
 <li><strong>Panoramica Aziendale e Multi-progetto:</strong> LibrePlan è specificamente progettato per fornire agli utenti informazioni su più progetti in corso all'interno di un'azienda. È quindi intrinsecamente un programma multi-progetto. L'attenzione del programma non è limitata ai singoli progetti, sebbene siano disponibili anche viste specifiche per i singoli progetti.</li>
-<li><strong>Gestione delle Viste:</strong> La panoramica aziendale, o vista multi-progetto, è accompagnata da varie viste delle informazioni memorizzate. Ad esempio, la panoramica aziendale consente agli utenti di visualizzare gli ordini e confrontarne lo stato, vedere il carico complessivo delle risorse aziendali e gestire gli ordini. Gli utenti possono anche accedere alla vista pianificazione, alla vista carico risorse, alla vista allocazione avanzata delle risorse e alla vista modifica ordine per i singoli progetti.</li>
+<li><strong>Gestione delle Viste:</strong> La panoramica aziendale, o vista multi-progetto, è accompagnata da varie viste delle informazioni memorizzate. Ad esempio, la panoramica aziendale consente agli utenti di visualizzare i progetti e confrontarne lo stato, vedere il carico complessivo delle risorse aziendali e gestire i progetti. Gli utenti possono anche accedere alla vista pianificazione, alla vista carico risorse, alla vista allocazione avanzata delle risorse e alla vista modifica progetto per i singoli progetti.</li>
 <li><strong>Criteri:</strong> I criteri sono un'entità di sistema che consente la classificazione sia delle risorse (umane e meccaniche) che delle attività. Le risorse devono soddisfare determinati criteri e le attività richiedono che vengano soddisfatti criteri specifici. Questa è una delle funzionalità più importanti del programma, poiché i criteri costituiscono la base dell'allocazione generica e affrontano una sfida significativa nel settore: la natura dispendiosa in termini di tempo della gestione delle risorse umane e la difficoltà delle stime del carico aziendale a lungo termine.</li>
 <li><strong>Risorse:</strong> Esistono due tipi di risorse: umane e meccaniche. Le risorse umane sono i lavoratori dell'azienda, utilizzati per pianificare, monitorare e controllare il carico di lavoro dell'azienda. Le risorse meccaniche, dipendenti dalle persone che le operano, funzionano in modo simile alle risorse umane.</li>
 <li><strong>Allocazione delle Risorse:</strong> Una caratteristica chiave del programma è la capacità di designare le risorse in due modi: specificamente e genericamente. L'allocazione generica si basa sui criteri necessari per completare un'attività e deve essere soddisfatta dalle risorse in grado di soddisfare tali criteri. Per comprendere l'allocazione generica, si consideri questo esempio: Mario Rossi è un saldatore. Tipicamente, Mario Rossi verrebbe specificamente assegnato a un'attività pianificata. Tuttavia, LibrePlan offre la possibilità di selezionare qualsiasi saldatore all'interno dell'azienda, senza la necessità di specificare che Mario Rossi è la persona assegnata.</li>
@@ -84,14 +84,14 @@
 <li><strong>Etichette:</strong> Le etichette vengono utilizzate per categorizzare le attività del progetto. Con queste etichette, gli utenti possono raggruppare le attività per concetto, consentendo una revisione successiva come gruppo o dopo il filtraggio.</li>
 <li><strong>Filtri:</strong> Poiché il sistema include naturalmente elementi che etichettano o caratterizzano attività e risorse, è possibile utilizzare filtri per criteri o etichette. Questo è molto utile per rivedere le informazioni categorizzate o generare report specifici basati su criteri o etichette.</li>
 <li><strong>Calendari:</strong> I calendari definiscono le ore produttive disponibili per le diverse risorse. Gli utenti possono creare calendari aziendali generali o definire calendari più specifici, consentendo la creazione di calendari per singole risorse e attività.</li>
-<li><strong>Ordini ed Elementi d'Ordine:</strong> Il lavoro richiesto dai clienti viene trattato come un ordine all'interno dell'applicazione, strutturato in elementi d'ordine. L'ordine e i suoi elementi seguono una struttura gerarchica con <em>x</em> livelli. Questo albero di elementi costituisce la base per la pianificazione del lavoro.</li>
+<li><strong>Progetti ed Elementi del Progetto:</strong> Il lavoro richiesto dai clienti viene trattato come un progetto all'interno dell'applicazione, strutturato in elementi del progetto. Il progetto e i suoi elementi seguono una struttura gerarchica con <em>x</em> livelli. Questo albero di elementi costituisce la base per la pianificazione del lavoro.</li>
 <li><strong>Avanzamento:</strong> Il programma può gestire vari tipi di avanzamento. L'avanzamento di un progetto può essere misurato come percentuale, in unità, rispetto al budget concordato e altro ancora. La responsabilità di determinare quale tipo di avanzamento utilizzare per il confronto ai livelli superiori del progetto spetta al responsabile della pianificazione.</li>
 <li><strong>Attività:</strong> Le attività sono gli elementi di pianificazione fondamentali all'interno del programma. Vengono utilizzate per pianificare il lavoro da svolgere. Le caratteristiche principali delle attività includono: le dipendenze tra attività e il potenziale requisito che vengano soddisfatti criteri specifici prima che le risorse possano essere allocate.</li>
 <li><strong>Rapporti di Lavoro:</strong> Questi rapporti, inviati dai lavoratori dell'azienda, descrivono in dettaglio le ore lavorate e le attività associate a quelle ore. Queste informazioni consentono al sistema di calcolare il tempo effettivo impiegato per completare un'attività rispetto al tempo preventivato. L'avanzamento può quindi essere confrontato con le ore effettive utilizzate.</li>
 </ul>
 <p>Oltre alle funzioni principali, LibrePlan offre altre funzionalità che lo distinguono da programmi simili:</p>
 <ul class="simple">
-<li><strong>Integrazione con ERP:</strong> Il programma può importare direttamente le informazioni dai sistemi ERP aziendali, inclusi ordini, risorse umane, rapporti di lavoro e criteri specifici.</li>
+<li><strong>Integrazione con ERP:</strong> Il programma può importare direttamente le informazioni dai sistemi ERP aziendali, inclusi progetti, risorse umane, rapporti di lavoro e criteri specifici.</li>
 <li><strong>Gestione delle Versioni:</strong> Il programma può gestire più versioni di pianificazione, pur consentendo agli utenti di rivedere le informazioni di ciascuna versione.</li>
 <li><strong>Gestione della Cronologia:</strong> Il programma non elimina le informazioni; le contrassegna semplicemente come non valide. Ciò consente agli utenti di rivedere le informazioni storiche utilizzando filtri per data.</li>
 </ul>

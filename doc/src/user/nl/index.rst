@@ -15,6 +15,15 @@ Ten tweede, basisentiteiten om de minimale concepten te begrijpen die nodig zijn
 
 Ten slotte, een volledige procesbeschrijving voor het aanmaken van orders, projecten, projectplanning, resourcetoewijzing, voortgangsregistratie en resultaatextractie.
 
+.. topic:: Steun LibrePlan
+   :class: highlight
+
+   LibrePlan kan niet bestaan zonder uw steun. Lees `de donatiepagina <00-donations.html>`__ en overweeg ons te helpen de ontwikkeling voort te zetten.
+
+   .. raw:: html
+
+      <script src="https://opencollective.com/libreplan/donate/button.js" color="blue"></script>
+
 
 #. `LibrePlan ondersteunen — Donaties <00-donations.html>`__
 #. `Inleiding <01-inleiding.html>`__
@@ -22,7 +31,7 @@ Ten slotte, een volledige procesbeschrijving voor het aanmaken van orders, proje
 #. `Kalenders <03-kalenders.html>`__
 #. `Voortgang <04-voortgang.html>`__
 #. `Resourcebeheer <05-resourcebeheer.html>`__
-#. `Orders en Orderelementen <06-orders.html>`__
+#. `Projecten en Projectelementen <06-projecten.html>`__
 #. `Taakplanning <07-taakplanning.html>`__
 #. `Resourcetoewijzing <08-resourcetoewijzing.html>`__
 #. `Werkrapporten <09-werkrapporten.html>`__

@@ -95,4 +95,14 @@ Med över **331 800 rader källkod** fördelade på mer än 2 300 filer och 22 s
 
 Din donation — hur stor eller liten som helst — hjälper till att göra det arbetet möjligt. Tack.
 
+.. topic:: Vänligen stöd LibrePlan
+   :class: highlight
+
+   LibrePlan kan inte existera utan ditt stöd. Vänligen läs `donationssidan <00-donations.html>`__ och överväg att hjälpa oss att fortsätta utvecklingen.
+
+   .. raw:: html
+
+      <script src="https://opencollective.com/libreplan/donate/button.js" color="blue"></script>
+
+
 .. figure:: images/logos.png

@@ -16,7 +16,7 @@
 <ul class="simple">
 <li><a class="reference internal" href="#zarzadzanie-typami-postepu" id="toc-entry-1">Zarządzanie Typami Postępu</a></li>
 <li><a class="reference internal" href="#wprowadzanie-postepu-na-podstawie-typu" id="toc-entry-2">Wprowadzanie Postępu na Podstawie Typu</a></li>
-<li><a class="reference internal" href="#porownywanie-postepu-dla-elementu-zamowienia" id="toc-entry-3">Porównywanie Postępu dla Elementu Zamówienia</a></li>
+<li><a class="reference internal" href="#porownywanie-postepu-dla-elementu-projektu" id="toc-entry-3">Porównywanie Postępu dla Elementu Projektu</a></li>
 </ul>
 </div>
 <p>Postęp projektu wskazuje, w jakim stopniu szacowany czas ukończenia projektu jest dotrzymywany. Postęp zadania wskazuje, w jakim stopniu zadanie jest realizowane zgodnie z szacowanym ukończeniem.</p>
@@ -29,7 +29,7 @@
 <li><strong>Więcej godzin zużytych niż oczekiwano, ale projekt jest przed harmonogramem:</strong> Postęp jest wyższy niż szacowany na monitorowany dzień.</li>
 </ul>
 <p>Widok planowania umożliwia porównanie tych sytuacji przy użyciu informacji o osiągniętym postępie i wykorzystanych godzinach. W tym rozdziale wyjaśniono, jak wprowadzać informacje w celu monitorowania postępu.</p>
-<p>Filozofia monitorowania postępu opiera się na tym, że użytkownicy definiują poziom, na którym chcą monitorować swoje projekty. Na przykład jeśli użytkownicy chcą monitorować zamówienia, muszą wprowadzać informacje tylko dla elementów poziomu 1. Jeśli chcą dokładniejszego monitorowania na poziomie zadania, muszą wprowadzać informacje o postępie na niższych poziomach. System następnie agreguje dane w górę przez hierarchię.</p>
+<p>Filozofia monitorowania postępu opiera się na tym, że użytkownicy definiują poziom, na którym chcą monitorować swoje projekty. Na przykład jeśli użytkownicy chcą monitorować projekty, muszą wprowadzać informacje tylko dla elementów poziomu 1. Jeśli chcą dokładniejszego monitorowania na poziomie zadania, muszą wprowadzać informacje o postępie na niższych poziomach. System następnie agreguje dane w górę przez hierarchię.</p>
 <div class="section" id="zarzadzanie-typami-postepu">
 <h1><a class="toc-backref" href="#toc-entry-1">Zarządzanie Typami Postępu</a></h1>
 <p>Firmy mają różnorodne potrzeby w zakresie monitorowania postępu projektu, w szczególności zaangażowanych zadań. Dlatego system zawiera &quot;typy postępu.&quot; Użytkownicy mogą definiować różne typy postępu do mierzenia postępu zadania. Na przykład zadanie może być mierzone jako procent, ale ten procent może być również przeliczony na postęp w <em>tonach</em> na podstawie umowy z klientem.</p>
@@ -69,9 +69,9 @@
 </div>
 <div class="section" id="wprowadzanie-postepu-na-podstawie-typu">
 <h1><a class="toc-backref" href="#toc-entry-2">Wprowadzanie Postępu na Podstawie Typu</a></h1>
-<p>Postęp jest wprowadzany dla elementów zamówień, ale może być również wprowadzany za pomocą skrótu z zadań planowania. Użytkownicy są odpowiedzialni za decydowanie, który typ postępu należy powiązać z każdym elementem zamówienia.</p>
-<p>Użytkownicy mogą wprowadzić jeden domyślny typ postępu dla całego zamówienia.</p>
-<p>Przed pomiarem postępu użytkownicy muszą powiązać wybrany typ postępu z zamówieniem. Na przykład mogą wybrać postęp procentowy do mierzenia postępu całego zadania lub uzgodniony wskaźnik postępu, jeśli w przyszłości będą wprowadzane pomiary postępu uzgodnione z klientem.</p>
+<p>Postęp jest wprowadzany dla elementów projektów, ale może być również wprowadzany za pomocą skrótu z zadań planowania. Użytkownicy są odpowiedzialni za decydowanie, który typ postępu należy powiązać z każdym elementem projektu.</p>
+<p>Użytkownicy mogą wprowadzić jeden domyślny typ postępu dla całego projektu.</p>
+<p>Przed pomiarem postępu użytkownicy muszą powiązać wybrany typ postępu z projektem. Na przykład mogą wybrać postęp procentowy do mierzenia postępu całego zadania lub uzgodniony wskaźnik postępu, jeśli w przyszłości będą wprowadzane pomiary postępu uzgodnione z klientem.</p>
 <div class="figure">
 <img alt="images/avance.png" src="images/avance.png" style="width: 424.0px; height: 290.8px;" />
 <p class="caption">Ekran wprowadzania postępu z graficzną wizualizacją</p>
@@ -84,9 +84,9 @@
 <li>System automatycznie przechowuje wprowadzone dane.</li>
 </ul>
 </div>
-<div class="section" id="porownywanie-postepu-dla-elementu-zamowienia">
-<h1><a class="toc-backref" href="#toc-entry-3">Porównywanie Postępu dla Elementu Zamówienia</a></h1>
-<p>Użytkownicy mogą graficznie porównać postęp osiągnięty w zamówieniach z wykonanymi pomiarami. Wszystkie typy postępu mają kolumnę z przyciskiem wyboru (&quot;Pokaż&quot;). Gdy ten przycisk jest zaznaczony, dla elementu zamówienia jest wyświetlany wykres postępu wykonanych pomiarów.</p>
+<div class="section" id="porownywanie-postepu-dla-elementu-projektu">
+<h1><a class="toc-backref" href="#toc-entry-3">Porównywanie Postępu dla Elementu Projektu</a></h1>
+<p>Użytkownicy mogą graficznie porównać postęp osiągnięty w projektach z wykonanymi pomiarami. Wszystkie typy postępu mają kolumnę z przyciskiem wyboru (&quot;Pokaż&quot;). Gdy ten przycisk jest zaznaczony, dla elementu projektu jest wyświetlany wykres postępu wykonanych pomiarów.</p>
 <div class="figure">
 <img alt="images/contraste-avance.png" src="images/contraste-avance.png" style="width: 422.0px; height: 290.0px;" />
 <p class="caption">Porównanie kilku typów postępu</p>

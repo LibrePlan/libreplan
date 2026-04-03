@@ -15,6 +15,15 @@ LibrePlan: مستندات کاربری
 
 در پایان، توضیح کامل فرایندهای ایجاد سفارش‌ها، پروژه‌ها، برنامه‌ریزی پروژه، تخصیص منابع، ثبت پیشرفت و استخراج نتایج.
 
+.. topic:: لطفاً از LibrePlan حمایت کنید
+   :class: highlight
+
+   LibrePlan بدون حمایت شما نمی‌تواند وجود داشته باشد. لطفاً `صفحه اهدا <00-donations.html>`__ را بخوانید و در نظر بگیرید که به ما در ادامه توسعه کمک کنید.
+
+   .. raw:: html
+
+      <script src="https://opencollective.com/libreplan/donate/button.js" color="blue"></script>
+
 
 #. `حمایت از LibrePlan — کمک مالی <00-donations.html>`__
 #. `مقدمه <01-introduction.html>`__
@@ -22,7 +31,7 @@ LibrePlan: مستندات کاربری
 #. `تقویم‌ها <03-calendars.html>`__
 #. `پیشرفت <04-progress.html>`__
 #. `مدیریت منابع <05-resource-management.html>`__
-#. `سفارشات و عناصر سفارش <06-orders.html>`__
+#. `پروژه‌ها و عناصر پروژه <06-projects.html>`__
 #. `برنامه‌ریزی وظایف <07-task-planning.html>`__
 #. `تخصیص منابع <08-resource-assignment.html>`__
 #. `گزارش‌های کاری <09-work-reports.html>`__

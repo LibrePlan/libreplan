@@ -15,6 +15,16 @@ LibrePlan: 使用者說明文件
 
 最後，建立訂單、專案、專案規劃、資源分配、進度登錄與結果提取的完整流程說明。
 
+.. topic:: 請支持 LibrePlan
+   :class: highlight
+
+   LibrePlan 無法在沒有您支持的情況下存在。請閱讀 `捐款頁面 <00-donations.html>`__ 並考慮幫助我們繼續開發。
+
+   .. raw:: html
+
+      <script src="https://opencollective.com/libreplan/donate/button.js" color="blue"></script>
+
+
 
 #. `支持 LibrePlan — 捐款 <00-donations.html>`__
 #. `簡介 <01-introduction.html>`__
@@ -22,7 +32,7 @@ LibrePlan: 使用者說明文件
 #. `行事曆 <03-calendars.html>`__
 #. `進度 <04-progress.html>`__
 #. `資源管理 <05-resource-management.html>`__
-#. `專案與專案元素 <06-orders.html>`__
+#. `專案與專案元素 <06-projects.html>`__
 #. `任務規劃 <07-task-planning.html>`__
 #. `資源分配 <08-resource-assignment.html>`__
 #. `工作報告 <09-work-reports.html>`__

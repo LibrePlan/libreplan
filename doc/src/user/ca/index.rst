@@ -15,6 +15,15 @@ En segon lloc, les entitats bàsiques per comprendre els conceptes mínims per u
 
 Finalment, la descripció completa dels processos per crear comandes, projectes, planificació de projectes, assignació de recursos, imputació d'avanços i extracció de resultats.
 
+.. topic:: Si us plau, doneu suport a LibrePlan
+   :class: highlight
+
+   LibrePlan no pot existir sense el vostre suport. Si us plau, llegiu `la pàgina de donacions <00-donations.html>`__ i considereu ajudar-nos a continuar el desenvolupament.
+
+   .. raw:: html
+
+      <script src="https://opencollective.com/libreplan/donate/button.js" color="blue"></script>
+
 
 #. `Suport a LibrePlan — Donacions <00-donations.html>`__
 #. `Introducció <01-introduccio.html>`__
@@ -22,7 +31,7 @@ Finalment, la descripció completa dels processos per crear comandes, projectes,
 #. `Calendaris <03-calendaris.html>`__
 #. `Progrés <04-progres.html>`__
 #. `Gestió de recursos <05-gestio-de-recursos.html>`__
-#. `Projectes i elements de projecte <06-comandes.html>`__
+#. `Projectes i elements de projecte <06-projectes.html>`__
 #. `Planificació de tasques <07-planificacio-de-tasques.html>`__
 #. `Assignació de Recursos <08-assignacio-de-recursos.html>`__
 #. `Informes de Treball <09-informes-de-treball.html>`__

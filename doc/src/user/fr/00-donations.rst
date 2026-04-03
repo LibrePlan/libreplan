@@ -116,4 +116,13 @@ investissement continu en temps et en expertise.
 
 Votre don — quelle que soit sa taille — contribue à rendre ce travail possible. Merci.
 
+.. topic:: Soutenez LibrePlan
+   :class: highlight
+
+   LibrePlan ne peut pas exister sans votre soutien. Veuillez lire `la page des dons <00-donations.html>`__ et envisagez de nous aider à poursuivre le développement.
+
+   .. raw:: html
+
+      <script src="https://opencollective.com/libreplan/donate/button.js" color="blue"></script>
+
 .. figure:: images/logos.png

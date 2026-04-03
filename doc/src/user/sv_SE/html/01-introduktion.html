@@ -33,19 +33,19 @@
 </div>
 <div class="section" id="foretagsoversikt-och-vyhantering">
 <h1><a class="toc-backref" href="#toc-entry-1">Företagsöversikt och vyhantering</a></h1>
-<p>Som visas på programmets huvudskärm (se föregående skärmdump) och i företagsöversikten kan användare se en lista över planerade projekt. Detta gör att de kan förstå företagets övergripande status avseende beställningar och resursutnyttjande. Företagsöversikten erbjuder tre distinkta vyer:</p>
+<p>Som visas på programmets huvudskärm (se föregående skärmdump) och i företagsöversikten kan användare se en lista över planerade projekt. Detta gör att de kan förstå företagets övergripande status avseende projekt och resursutnyttjande. Företagsöversikten erbjuder tre distinkta vyer:</p>
 <ul>
 <li><p class="first"><strong>Planeringsvy:</strong> Denna vy kombinerar två perspektiv:</p>
 <blockquote>
 <ul class="simple">
-<li><strong>Beställnings- och tidsspårning:</strong> Varje projekt representeras av ett Gantt-diagram som anger projektets start- och slutdatum. Denna information visas tillsammans med det överenskomna slutdatumet. En jämförelse görs sedan mellan uppnådd framstegsandel och den faktiska tid som lagts på varje projekt. Detta ger en tydlig bild av företagets prestanda vid varje given tidpunkt. Denna vy är programmets standardstartsida.</li>
+<li><strong>Projekts- och tidsspårning:</strong> Varje projekt representeras av ett Gantt-diagram som anger projektets start- och slutdatum. Denna information visas tillsammans med det överenskomna slutdatumet. En jämförelse görs sedan mellan uppnådd framstegsandel och den faktiska tid som lagts på varje projekt. Detta ger en tydlig bild av företagets prestanda vid varje given tidpunkt. Denna vy är programmets standardstartsida.</li>
 <li><strong>Diagram över företagets resursutnyttjande:</strong> Det här diagrammet visar information om resursfördelning mellan projekt och ger en sammanfattning av hela företagets resursanvändning. Grönt indikerar att resursfördelningen är under 100% av kapaciteten. Den svarta linjen representerar den totala tillgängliga resurskapaciteten. Gult indikerar att resursfördelningen överstiger 100%. Det är möjligt att ha underutnyttjande totalt sett och samtidigt uppleva överutnyttjande för specifika resurser.</li>
 </ul>
 </blockquote>
 </li>
 <li><p class="first"><strong>Resursbelastningsvy:</strong> Den här skärmen visar en lista över företagets medarbetare och deras specifika uppgiftstilldelningar eller generiska tilldelningar baserade på definierade kriterier. För att komma åt denna vy, klicka på <em>Övergripande resursbelastning</em>. Se följande bild för ett exempel.</p>
 </li>
-<li><p class="first"><strong>Beställningsadministrationsvy:</strong> Den här skärmen visar en lista över företagets beställningar och låter användare utföra följande åtgärder: filtrera, redigera, ta bort, visualisera planering eller skapa en ny beställning. För att komma åt denna vy, klicka på <em>Beställningslista</em>.</p>
+<li><p class="first"><strong>Projektsadministrationsvy:</strong> Den här skärmen visar en lista över företagets projekt och låter användare utföra följande åtgärder: filtrera, redigera, ta bort, visualisera planering eller skapa en ny projekt. För att komma åt denna vy, klicka på <em>Projektslista</em>.</p>
 </li>
 </ul>
 <div class="figure">
@@ -58,15 +58,15 @@
 </div>
 <p>Vyhanteringen som beskrivs ovan för företagsöversikten liknar mycket den hantering som finns tillgänglig för ett enskilt projekt. Ett projekt kan nås på flera sätt:</p>
 <ul class="simple">
-<li>Högerklicka på Gantt-diagrammet för beställningen och välj <em>Plan</em>.</li>
-<li>Gå till beställningslistan och klicka på Gantt-diagramikonen.</li>
-<li>Skapa en ny beställning och ändra den aktuella beställningsvyn.</li>
+<li>Högerklicka på Gantt-diagrammet för projekten och välj <em>Plan</em>.</li>
+<li>Gå till projektslistan och klicka på Gantt-diagramikonen.</li>
+<li>Skapa en ny projekt och ändra den aktuella projektsvyn.</li>
 </ul>
-<p>Programmet erbjuder följande vyer för en beställning:</p>
+<p>Programmet erbjuder följande vyer för en projekt:</p>
 <ul class="simple">
 <li><strong>Planeringsvy:</strong> Den här vyn låter användare visualisera uppgiftsplanering, beroenden, milstolpar och mer. Se avsnittet <em>Planering</em> för ytterligare detaljer.</li>
 <li><strong>Resursbelastningsvy:</strong> Den här vyn låter användare kontrollera den avsedda resursbelastningen för ett projekt. Färgkoden stämmer överens med företagsöversikten: grönt för en belastning under 100%, gult för en belastning lika med 100% och rött för en belastning över 100%. Belastningen kan ha sitt ursprung i en specifik uppgift eller en uppsättning kriterier (generisk tilldelning).</li>
-<li><strong>Beställningsredigeringsvy:</strong> Den här vyn låter användare ändra detaljerna för beställningen. Se avsnittet <em>Beställningar</em> för mer information.</li>
+<li><strong>Projektsredigeringsvy:</strong> Den här vyn låter användare ändra detaljerna för projekten. Se avsnittet <em>Projekt</em> för mer information.</li>
 <li><strong>Avancerad resurstilldelningsvy:</strong> Den här vyn låter användare tilldela resurser med avancerade alternativ, till exempel att ange timmar per dag eller de tilldelade funktioner som ska utföras. Se avsnittet <em>Resurstilldelning</em> för mer information.</li>
 </ul>
 </div>
@@ -76,7 +76,7 @@
 <p>Kärnkoncepten som ligger till grund för programmet är följande:</p>
 <ul class="simple">
 <li><strong>Företags- och flerprojektöversikt:</strong> LibrePlan är specifikt utformat för att ge användare information om flera projekt som genomförs inom ett företag. Det är därför i grunden ett flerprojektprogram. Programmets fokus är inte begränsat till enskilda projekt, även om specifika vyer för enskilda projekt också finns tillgängliga.</li>
-<li><strong>Vyhantering:</strong> Företagsöversikten eller flerprojektvyn åtföljs av olika vyer av den lagrade informationen. Till exempel låter företagsöversikten användare visa beställningar och jämföra deras status, visa företagets övergripande resursbelastning och hantera beställningar. Användare kan också komma åt planeringsvy, resursbelastningsvy, avancerad resurstilldelningsvy och beställningsredigeringsvy för enskilda projekt.</li>
+<li><strong>Vyhantering:</strong> Företagsöversikten eller flerprojektvyn åtföljs av olika vyer av den lagrade informationen. Till exempel låter företagsöversikten användare visa projekt och jämföra deras status, visa företagets övergripande resursbelastning och hantera projekt. Användare kan också komma åt planeringsvy, resursbelastningsvy, avancerad resurstilldelningsvy och projektsredigeringsvy för enskilda projekt.</li>
 <li><strong>Kriterier:</strong> Kriterier är en systemenhet som möjliggör klassificering av både resurser (mänskliga och maskinella) och uppgifter. Resurser måste uppfylla vissa kriterier, och uppgifter kräver att specifika kriterier uppfylls. Detta är en av programmets viktigaste funktioner, eftersom kriterier utgör grunden för generisk tilldelning och hanterar en viktig utmaning i branschen: den tidskrävande karaktären av hantering av mänskliga resurser och svårigheten med långsiktiga företagsbelastningsuppskattningar.</li>
 <li><strong>Resurser:</strong> Det finns två typer av resurser: mänskliga och maskinella. Mänskliga resurser är företagets medarbetare, som används för planering, övervakning och kontroll av företagets arbetsbelastning. Maskinresurser, beroende av de människor som driver dem, fungerar på liknande sätt som mänskliga resurser.</li>
 <li><strong>Resurstilldelning:</strong> En nyckelfunktion i programmet är möjligheten att tilldela resurser på två sätt: specifikt och generiskt. Generisk tilldelning baseras på de kriterier som krävs för att slutföra en uppgift och måste uppfyllas av resurser som kan möta dessa kriterier. För att förstå generisk tilldelning, tänk på detta exempel: Johan Svensson är en svetsare. Vanligtvis skulle Johan Svensson specifikt tilldelas en planerad uppgift. LibrePlan erbjuder dock möjligheten att välja vilken svetsare som helst inom företaget, utan att behöva specificera att Johan Svensson är den tilldelade personen.</li>
@@ -84,14 +84,14 @@
 <li><strong>Etiketter:</strong> Etiketter används för att kategorisera projektuppgifter. Med dessa etiketter kan användare gruppera uppgifter efter koncept, vilket möjliggör senare granskning som en grupp eller efter filtrering.</li>
 <li><strong>Filter:</strong> Eftersom systemet naturligtvis innehåller element som etiketterar eller karakteriserar uppgifter och resurser kan kriteriefilter eller etiketter användas. Detta är mycket användbart för att granska kategoriserad information eller generera specifika rapporter baserade på kriterier eller etiketter.</li>
 <li><strong>Kalendrar:</strong> Kalendrar definierar tillgängliga produktiva timmar för olika resurser. Användare kan skapa allmänna företagskalendrar eller definiera mer specifika kalendrar, vilket möjliggör skapandet av kalendrar för enskilda resurser och uppgifter.</li>
-<li><strong>Beställningar och beställningselement:</strong> Arbete som begärs av klienter behandlas som en beställning i applikationen, strukturerad i beställningselement. Beställningen och dess element följer en hierarkisk struktur med <em>x</em> nivåer. Detta elementträd bildar grunden för arbetsplanering.</li>
+<li><strong>Projekt och projektelement:</strong> Arbete som begärs av klienter behandlas som en projekt i applikationen, strukturerad i projektelement. Projekten och dess element följer en hierarkisk struktur med <em>x</em> nivåer. Detta elementträd bildar grunden för arbetsplanering.</li>
 <li><strong>Framsteg:</strong> Programmet kan hantera olika typer av framsteg. Ett projekts framsteg kan mätas som en procentandel, i enheter, mot den överenskomna budgeten och mer. Ansvaret för att bestämma vilken typ av framsteg som ska användas för jämförelse på högre projektnivåer ligger hos planeringschefen.</li>
 <li><strong>Uppgifter:</strong> Uppgifter är de grundläggande planeringselementen i programmet. De används för att schemalägga arbete som ska utföras. Viktiga egenskaper hos uppgifter inkluderar: beroenden mellan uppgifter och det potentiella kravet på att specifika kriterier uppfylls innan resurser kan tilldelas.</li>
 <li><strong>Arbetsrapporter:</strong> Dessa rapporter, inlämnade av företagets medarbetare, detaljerar de arbetade timmarna och de uppgifter som är kopplade till dessa timmar. Denna information gör att systemet kan beräkna den faktiska tid som krävs för att slutföra en uppgift jämfört med den budgeterade tiden. Framsteg kan sedan jämföras mot de faktiskt använda timmarna.</li>
 </ul>
 <p>Utöver kärnfunktionerna erbjuder LibrePlan andra funktioner som skiljer det från liknande program:</p>
 <ul class="simple">
-<li><strong>Integration med ERP:</strong> Programmet kan direkt importera information från företagets ERP-system, inklusive beställningar, mänskliga resurser, arbetsrapporter och specifika kriterier.</li>
+<li><strong>Integration med ERP:</strong> Programmet kan direkt importera information från företagets ERP-system, inklusive projekt, mänskliga resurser, arbetsrapporter och specifika kriterier.</li>
 <li><strong>Versionshantering:</strong> Programmet kan hantera flera planeringsversioner och låter samtidigt användare granska information från varje version.</li>
 <li><strong>Historikhantering:</strong> Programmet tar inte bort information; det markerar den bara som ogiltig. Detta gör att användare kan granska historisk information med hjälp av datumfilter.</li>
 </ul>

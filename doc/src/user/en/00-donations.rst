@@ -122,4 +122,12 @@ investment of time and expertise.
 Your donation — however large or small — helps make that work possible. Thank
 you.
 
+.. topic:: Please support LibrePlan
+   :class: highlight
+
+   LibrePlan cannot exist without your support. Please read `the donations page <00-donations.html>`__ and consider helping us to continue development.
+
+   .. raw:: html
+
+      <script src="https://opencollective.com/libreplan/donate/button.js" color="blue"></script>
 .. figure:: images/logos.png

@@ -116,5 +116,13 @@ contornos modernos e rico en funcionalidades é un investimento continuo de temp
 experiencia.
 
 A súa doazón — sexa grande ou pequena — axuda a que ese traballo sexa posible. Grazas.
+.. topic:: Por favor, apoia LibrePlan
+   :class: highlight
+
+   LibrePlan non pode existir sen o teu apoio. Por favor, le `a páxina de doazóns <00-donations.html>`__ e considera axudarnos a continuar o desenvolvemento.
+
+   .. raw:: html
+
+      <script src="https://opencollective.com/libreplan/donate/button.js" color="blue"></script>
 
 .. figure:: images/logos.png

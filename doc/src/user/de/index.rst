@@ -15,6 +15,15 @@ Zweitens, grundlegende Entitäten zum Verständnis der Mindestkonzepte für die 
 
 Abschließend eine vollständige Prozessbeschreibung zur Erstellung von Aufträgen, Projekten, Projektplanung, Ressourcenzuweisung, Fortschrittserfassung und Ergebnisauswertung.
 
+.. topic:: Bitte unterstützen Sie LibrePlan
+   :class: highlight
+
+   LibrePlan kann ohne Ihre Unterstützung nicht existieren. Bitte lesen Sie `die Spendenwebseite <00-donations.html>`__ und erwägen Sie, uns bei der Weiterentwicklung zu helfen.
+
+   .. raw:: html
+
+      <script src="https://opencollective.com/libreplan/donate/button.js" color="blue"></script>
+
 
 #. `LibrePlan unterstützen — Spenden <00-donations.html>`__
 #. `Einführung <01-einfuhrung.html>`__
@@ -22,7 +31,7 @@ Abschließend eine vollständige Prozessbeschreibung zur Erstellung von Aufträg
 #. `Kalender <03-kalender.html>`__
 #. `Fortschritt <04-fortschritt.html>`__
 #. `Ressourcenverwaltung <05-ressourcenverwaltung.html>`__
-#. `Projekte und Projektelemente <06-auftrage.html>`__
+#. `Projekte und Projektelemente <06-projekte.html>`__
 #. `Aufgabenplanung <07-aufgabenplanung.html>`__
 #. `Ressourcenzuweisung <08-ressourcenzuweisung.html>`__
 #. `Arbeitsberichte <09-arbeitsberichte.html>`__

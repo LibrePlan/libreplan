@@ -15,6 +15,15 @@ Po drugie, podstawowe encje niezbędne do zrozumienia minimalnych konceptów pot
 
 Na koniec, pełny opis procesów tworzenia zamówień, projektów, planowania projektów, przydzielania zasobów, rejestrowania postępów i ekstrakcji wyników.
 
+.. topic:: Prosimy, wesprzyj LibrePlan
+   :class: highlight
+
+   LibrePlan nie może istnieć bez Twojego wsparcia. Prosimy, przeczytaj `stronę darowizn <00-donations.html>`__ i rozważ pomoc nam w kontynuowaniu rozwoju.
+
+   .. raw:: html
+
+      <script src="https://opencollective.com/libreplan/donate/button.js" color="blue"></script>
+
 
 #. `Wspieranie LibrePlan — Darowizny <00-donations.html>`__
 #. `Wprowadzenie <01-wprowadzenie.html>`__
@@ -22,7 +31,7 @@ Na koniec, pełny opis procesów tworzenia zamówień, projektów, planowania pr
 #. `Kalendarze <03-kalendarze.html>`__
 #. `Postęp <04-postep.html>`__
 #. `Zarządzanie Zasobami <05-zarzadzanie-zasobami.html>`__
-#. `Zamówienia i Elementy Zamówień <06-zamowienia.html>`__
+#. `Projekty i Elementy Projektów <06-projekty.html>`__
 #. `Planowanie Zadań <07-planowanie-zadan.html>`__
 #. `Przydzielanie zasobów <08-przydzielanie-zasobow.html>`__
 #. `Raporty pracy <09-raporty-pracy.html>`__

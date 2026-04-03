@@ -15,6 +15,15 @@ LibrePlan: Документация пользователя
 
 Наконец, полное описание процессов создания заказов, проектов, планирования проектов, назначения ресурсов, учёта прогресса и извлечения результатов.
 
+.. topic:: Пожалуйста, поддержите LibrePlan
+   :class: highlight
+
+   LibrePlan не может существовать без вашей поддержки. Пожалуйста, прочитайте `страницу пожертвований <00-donations.html>`__ и рассмотрите возможность помочь нам продолжить разработку.
+
+   .. raw:: html
+
+      <script src="https://opencollective.com/libreplan/donate/button.js" color="blue"></script>
+
 
 #. `Поддержка LibrePlan — Пожертвования <00-donations.html>`__
 #. `Введение <01-introduction.html>`__
@@ -22,7 +31,7 @@ LibrePlan: Документация пользователя
 #. `Календари <03-calendars.html>`__
 #. `Прогресс <04-progress.html>`__
 #. `Управление ресурсами <05-resource-management.html>`__
-#. `Проекты и элементы проектов <06-orders.html>`__
+#. `Проекты и элементы проектов <06-projects.html>`__
 #. `Планирование задач <07-task-planning.html>`__
 #. `Назначение ресурсов <08-resource-assignment.html>`__
 #. `Рабочие отчёты <09-work-reports.html>`__

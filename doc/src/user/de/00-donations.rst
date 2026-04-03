@@ -122,4 +122,13 @@ Investition von Zeit und Fachwissen.
 Ihre Spende – egal wie groß oder klein – hilft, diese Arbeit zu ermöglichen.
 Vielen Dank.
 
+.. topic:: Bitte unterstützen Sie LibrePlan
+   :class: highlight
+
+   LibrePlan kann ohne Ihre Unterstützung nicht existieren. Bitte lesen Sie `die Spendenwebseite <00-donations.html>`__ und erwägen Sie, uns bei der Weiterentwicklung zu helfen.
+
+   .. raw:: html
+
+      <script src="https://opencollective.com/libreplan/donate/button.js" color="blue"></script>
+
 .. figure:: images/logos.png

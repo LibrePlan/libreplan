@@ -15,6 +15,15 @@ In secondo luogo, le entità di base per comprendere i concetti minimi necessari
 
 Infine, la descrizione completa dei processi per creare ordini, progetti, pianificazione di progetto, assegnazione delle risorse, registrazione degli avanzamenti ed estrazione dei risultati.
 
+.. topic:: Per favore, supporta LibrePlan
+   :class: highlight
+
+   LibrePlan non può esistere senza il tuo supporto. Per favore, leggi `la pagina delle donazioni <00-donations.html>`__ e considera di aiutarci a continuare lo sviluppo.
+
+   .. raw:: html
+
+      <script src="https://opencollective.com/libreplan/donate/button.js" color="blue"></script>
+
 
 #. `Supportare LibrePlan — Donazioni <00-donations.html>`__
 #. `Introduzione <01-introduzione.html>`__
@@ -22,7 +31,7 @@ Infine, la descrizione completa dei processi per creare ordini, progetti, pianif
 #. `Calendari <03-calendari.html>`__
 #. `Avanzamento <04-avanzamento.html>`__
 #. `Gestione delle Risorse <05-gestione-delle-risorse.html>`__
-#. `Ordini ed Elementi d'Ordine <06-ordini.html>`__
+#. `Progetti ed Elementi del Progetto <06-progetti.html>`__
 #. `Pianificazione delle Attività <07-pianificazione-delle-attivita.html>`__
 #. `Assegnazione delle Risorse <08-assegnazione-delle-risorse.html>`__
 #. `Rapporti di Lavoro <09-rapporti-di-lavoro.html>`__

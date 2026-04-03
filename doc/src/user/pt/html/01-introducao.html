@@ -33,19 +33,19 @@
 </div>
 <div class="section" id="visao-geral-da-empresa-e-gestao-de-vistas">
 <h1><a class="toc-backref" href="#toc-entry-1">Visão Geral da Empresa e Gestão de Vistas</a></h1>
-<p>Tal como mostrado no ecrã principal do programa (ver a imagem anterior) e na visão geral da empresa, os utilizadores podem ver uma lista de projectos planeados. Isto permite-lhes compreender o estado global da empresa no que respeita a encomendas e utilização de recursos. A visão geral da empresa oferece três vistas distintas:</p>
+<p>Tal como mostrado no ecrã principal do programa (ver a imagem anterior) e na visão geral da empresa, os utilizadores podem ver uma lista de projectos planeados. Isto permite-lhes compreender o estado global da empresa no que respeita a projetos e utilização de recursos. A visão geral da empresa oferece três vistas distintas:</p>
 <ul>
 <li><p class="first"><strong>Vista de Planeamento:</strong> Esta vista combina duas perspectivas:</p>
 <blockquote>
 <ul class="simple">
-<li><strong>Acompanhamento de Encomendas e Tempo:</strong> Cada projecto é representado por um diagrama de Gantt, indicando as datas de início e fim do projecto. Esta informação é apresentada juntamente com o prazo acordado. É então efectuada uma comparação entre a percentagem de progresso alcançado e o tempo efectivamente dedicado a cada projecto. Isto fornece uma imagem clara do desempenho da empresa em qualquer momento. Esta vista é a página de entrada predefinida do programa.</li>
+<li><strong>Acompanhamento de Projetos e Tempo:</strong> Cada projecto é representado por um diagrama de Gantt, indicando as datas de início e fim do projecto. Esta informação é apresentada juntamente com o prazo acordado. É então efectuada uma comparação entre a percentagem de progresso alcançado e o tempo efectivamente dedicado a cada projecto. Isto fornece uma imagem clara do desempenho da empresa em qualquer momento. Esta vista é a página de entrada predefinida do programa.</li>
 <li><strong>Gráfico de Utilização de Recursos da Empresa:</strong> Este gráfico apresenta informações sobre a alocação de recursos entre projectos, fornecendo um resumo da utilização de recursos de toda a empresa. O verde indica que a alocação de recursos está abaixo de 100% da capacidade. A linha preta representa a capacidade total de recursos disponível. O amarelo indica que a alocação de recursos excede 100%. É possível ter sub-alocação global e, simultaneamente, sobre-alocação para recursos específicos.</li>
 </ul>
 </blockquote>
 </li>
 <li><p class="first"><strong>Vista de Carga de Recursos:</strong> Este ecrã apresenta uma lista dos trabalhadores da empresa e as respectivas alocações de tarefas específicas, ou alocações genéricas baseadas em critérios definidos. Para aceder a esta vista, clique em <em>Carga global de recursos</em>. Veja a imagem seguinte para um exemplo.</p>
 </li>
-<li><p class="first"><strong>Vista de Administração de Encomendas:</strong> Este ecrã apresenta uma lista de encomendas da empresa, permitindo aos utilizadores efectuar as seguintes acções: filtrar, editar, eliminar, visualizar planeamento ou criar uma nova encomenda. Para aceder a esta vista, clique em <em>Lista de encomendas</em>.</p>
+<li><p class="first"><strong>Vista de Administração de Projetos:</strong> Este ecrã apresenta uma lista de projetos da empresa, permitindo aos utilizadores efectuar as seguintes acções: filtrar, editar, eliminar, visualizar planeamento ou criar uma nova projeto. Para aceder a esta vista, clique em <em>Lista de projetos</em>.</p>
 </li>
 </ul>
 <div class="figure">
@@ -58,15 +58,15 @@
 </div>
 <p>A gestão de vistas descrita acima para a visão geral da empresa é muito semelhante à gestão disponível para um projecto individual. Um projecto pode ser acedido de várias formas:</p>
 <ul class="simple">
-<li>Clique com o botão direito no diagrama de Gantt da encomenda e seleccione <em>Planear</em>.</li>
-<li>Aceda à lista de encomendas e clique no ícone do diagrama de Gantt.</li>
-<li>Crie uma nova encomenda e altere a vista de encomenda actual.</li>
+<li>Clique com o botão direito no diagrama de Gantt da projeto e seleccione <em>Planear</em>.</li>
+<li>Aceda à lista de projetos e clique no ícone do diagrama de Gantt.</li>
+<li>Crie uma nova projeto e altere a vista de projeto actual.</li>
 </ul>
-<p>O programa oferece as seguintes vistas para uma encomenda:</p>
+<p>O programa oferece as seguintes vistas para uma projeto:</p>
 <ul class="simple">
 <li><strong>Vista de Planeamento:</strong> Esta vista permite aos utilizadores visualizar o planeamento de tarefas, dependências, marcos e mais. Consulte a secção <em>Planeamento</em> para mais detalhes.</li>
 <li><strong>Vista de Carga de Recursos:</strong> Esta vista permite aos utilizadores verificar a carga de recursos designada para um projecto. O código de cores é consistente com a visão geral da empresa: verde para uma carga inferior a 100%, amarelo para uma carga igual a 100% e vermelho para uma carga superior a 100%. A carga pode ter origem numa tarefa específica ou num conjunto de critérios (alocação genérica).</li>
-<li><strong>Vista de Edição de Encomenda:</strong> Esta vista permite aos utilizadores modificar os detalhes da encomenda. Consulte a secção <em>Encomendas</em> para mais informações.</li>
+<li><strong>Vista de Edição de Projeto:</strong> Esta vista permite aos utilizadores modificar os detalhes da projeto. Consulte a secção <em>Projetos</em> para mais informações.</li>
 <li><strong>Vista de Alocação Avançada de Recursos:</strong> Esta vista permite aos utilizadores alocar recursos com opções avançadas, como especificar horas por dia ou as funções alocadas a serem desempenhadas. Consulte a secção <em>Alocação de recursos</em> para mais informações.</li>
 </ul>
 </div>
@@ -76,7 +76,7 @@
 <p>Os conceitos fundamentais que suportam o programa são os seguintes:</p>
 <ul class="simple">
 <li><strong>Visão Geral da Empresa e Multi-Projecto:</strong> O LibrePlan foi especificamente concebido para fornecer aos utilizadores informações sobre múltiplos projectos em curso numa empresa. Por isso, é inerentemente um programa multi-projecto. O foco do programa não se limita a projectos individuais, embora vistas específicas para projectos individuais também estejam disponíveis.</li>
-<li><strong>Gestão de Vistas:</strong> A visão geral da empresa, ou vista multi-projecto, é acompanhada de várias vistas da informação armazenada. Por exemplo, a visão geral da empresa permite aos utilizadores ver encomendas e comparar o seu estado, ver a carga global de recursos da empresa e gerir encomendas. Os utilizadores também podem aceder à vista de planeamento, vista de carga de recursos, vista de alocação avançada de recursos e vista de edição de encomenda para projectos individuais.</li>
+<li><strong>Gestão de Vistas:</strong> A visão geral da empresa, ou vista multi-projecto, é acompanhada de várias vistas da informação armazenada. Por exemplo, a visão geral da empresa permite aos utilizadores ver projetos e comparar o seu estado, ver a carga global de recursos da empresa e gerir projetos. Os utilizadores também podem aceder à vista de planeamento, vista de carga de recursos, vista de alocação avançada de recursos e vista de edição de projeto para projectos individuais.</li>
 <li><strong>Critérios:</strong> Os critérios são uma entidade do sistema que permite a classificação tanto de recursos (humanos e máquinas) como de tarefas. Os recursos devem satisfazer certos critérios, e as tarefas requerem que critérios específicos sejam cumpridos. Esta é uma das funcionalidades mais importantes do programa, pois os critérios formam a base da alocação genérica e respondem a um desafio significativo na indústria: a natureza morosa da gestão de recursos humanos e a dificuldade das estimativas de carga da empresa a longo prazo.</li>
 <li><strong>Recursos:</strong> Existem dois tipos de recursos: humanos e máquinas. Os recursos humanos são os trabalhadores da empresa, utilizados para planear, monitorizar e controlar a carga de trabalho da empresa. Os recursos máquina, dependentes das pessoas que os operam, funcionam de forma semelhante aos recursos humanos.</li>
 <li><strong>Alocação de Recursos:</strong> Uma funcionalidade chave do programa é a capacidade de designar recursos de duas formas: específica e genericamente. A alocação genérica baseia-se nos critérios necessários para concluir uma tarefa e deve ser cumprida por recursos capazes de satisfazer esses critérios. Para compreender a alocação genérica, considere este exemplo: João Silva é um soldador. Normalmente, João Silva seria especificamente atribuído a uma tarefa planeada. No entanto, o LibrePlan oferece a opção de seleccionar qualquer soldador da empresa, sem necessidade de especificar que João Silva é a pessoa designada.</li>
@@ -84,14 +84,14 @@
 <li><strong>Etiquetas:</strong> As etiquetas são utilizadas para categorizar as tarefas do projecto. Com estas etiquetas, os utilizadores podem agrupar tarefas por conceito, permitindo uma revisão posterior em grupo ou após filtragem.</li>
 <li><strong>Filtros:</strong> Como o sistema inclui naturalmente elementos que rotulam ou caracterizam tarefas e recursos, podem ser utilizados filtros de critérios ou etiquetas. Isto é muito útil para rever informação categorizada ou gerar relatórios específicos baseados em critérios ou etiquetas.</li>
 <li><strong>Calendários:</strong> Os calendários definem as horas produtivas disponíveis para os diferentes recursos. Os utilizadores podem criar calendários gerais da empresa ou definir calendários mais específicos, permitindo a criação de calendários para recursos individuais e tarefas.</li>
-<li><strong>Encomendas e Elementos de Encomenda:</strong> O trabalho solicitado pelos clientes é tratado como uma encomenda na aplicação, estruturada em elementos de encomenda. A encomenda e os seus elementos seguem uma estrutura hierárquica com <em>x</em> níveis. Esta árvore de elementos constitui a base para o planeamento do trabalho.</li>
+<li><strong>Projetos e Elementos de Projeto:</strong> O trabalho solicitado pelos clientes é tratado como uma projeto na aplicação, estruturada em elementos de projeto. A projeto e os seus elementos seguem uma estrutura hierárquica com <em>x</em> níveis. Esta árvore de elementos constitui a base para o planeamento do trabalho.</li>
 <li><strong>Progresso:</strong> O programa pode gerir vários tipos de progresso. O progresso de um projecto pode ser medido em percentagem, em unidades, em relação ao orçamento acordado e mais. A responsabilidade de determinar que tipo de progresso usar para comparação nos níveis superiores do projecto cabe ao gestor de planeamento.</li>
 <li><strong>Tarefas:</strong> As tarefas são os elementos fundamentais de planeamento do programa. São utilizadas para calendarizar o trabalho a realizar. As características principais das tarefas incluem: dependências entre tarefas e o potencial requisito de que critérios específicos sejam cumpridos antes de os recursos poderem ser alocados.</li>
 <li><strong>Relatórios de Trabalho:</strong> Estes relatórios, submetidos pelos trabalhadores da empresa, detalham as horas trabalhadas e as tarefas associadas a essas horas. Esta informação permite ao sistema calcular o tempo real necessário para concluir uma tarefa em comparação com o tempo orçamentado. O progresso pode então ser comparado com as horas reais utilizadas.</li>
 </ul>
 <p>Para além das funções principais, o LibrePlan oferece outras funcionalidades que o distinguem de programas semelhantes:</p>
 <ul class="simple">
-<li><strong>Integração com ERP:</strong> O programa pode importar directamente informações de sistemas ERP da empresa, incluindo encomendas, recursos humanos, relatórios de trabalho e critérios específicos.</li>
+<li><strong>Integração com ERP:</strong> O programa pode importar directamente informações de sistemas ERP da empresa, incluindo projetos, recursos humanos, relatórios de trabalho e critérios específicos.</li>
 <li><strong>Gestão de Versões:</strong> O programa pode gerir múltiplas versões de planeamento, permitindo ainda aos utilizadores rever as informações de cada versão.</li>
 <li><strong>Gestão de Histórico:</strong> O programa não elimina informação; apenas a marca como inválida. Isto permite aos utilizadores rever informação histórica utilizando filtros de data.</li>
 </ul>
