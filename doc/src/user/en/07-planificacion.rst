@@ -7,7 +7,7 @@ Task Planning
 Task Planning
 =============
 
-Planning in LibrePlan is a process that has been described throughout the user guide, with the chapters on orders and resource assignment being particularly important. This chapter describes the basic planning procedures after the order and Gantt charts have been properly configured.
+Planning in LibrePlan is a process that has been described throughout the user guide, with the chapters on projects and resource assignment being particularly important. This chapter describes the basic planning procedures after the project and Gantt charts have been properly configured.
 
 .. figure:: images/planning-view.png
    :scale: 35
@@ -18,7 +18,7 @@ As with the company overview, the project planning view is divided into several 
 
 *   Planning View
 *   Resource Load View
-*   Order List View
+*   Project List View
 *   Advanced Assignment View
 
 Planning View
@@ -56,7 +56,7 @@ In the project planning view, users can perform the following actions:
 
 *   **Creating a New Milestone:** Click the task before which the milestone is to be added and select the "Add milestone" option. Milestones can be moved by selecting the milestone with the mouse pointer and dragging it to the desired position.
 *   **Moving Tasks without Disturbing Dependencies:** Right-click the body of the task and drag it to the desired position. If no restrictions or dependencies are violated, the system will update the daily assignment of resources to the task and place the task on the selected date.
-*   **Assigning Restrictions:** Click the task in question and select the "Task properties" option. A pop-up window will appear with a "Restrictions" field that can be modified. Restrictions can conflict with dependencies, which is why each order specifies whether dependencies take priority over restrictions. The restrictions that can be established are:
+*   **Assigning Restrictions:** Click the task in question and select the "Task properties" option. A pop-up window will appear with a "Restrictions" field that can be modified. Restrictions can conflict with dependencies, which is why each project specifies whether dependencies take priority over restrictions. The restrictions that can be established are:
 
     *   **As Soon as Possible:** Indicates that the task must start as soon as possible.
     *   **Not Before:** Indicates that the task must not start before a certain date.
@@ -83,14 +83,14 @@ The Resource Load View provides a list of resources that contains a list of task
 .. figure:: images/resource-load.png
    :scale: 35
 
-   Resource Load View for a Specific Order
+   Resource Load View for a Specific Project
 
 If the mouse pointer is placed on the resource's Gantt chart, the load percentage for the worker will be shown.
 
-Order List View
----------------
+Project List View
+-----------------
 
-The Order List View allows users to access the order editing and deleting options. See the "Orders" chapter for more information.
+The Project List View allows users to access the project editing and deleting options. See the "Projects" chapter for more information.
 
 Advanced Assignment View
 ------------------------

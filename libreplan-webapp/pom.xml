@@ -120,14 +120,29 @@
                                         <copy todir="src/main/webapp/help/en" failonerror="false">
                                             <fileset dir="../doc/src/user/en/html"/>
                                         </copy>
+                                        <exec executable="make" failifexecutionfails="false">
+                                            <arg value="-C"/>
+                                            <arg value="../doc/src/user/ru/"/>
+                                            <arg value="html"/>
+                                        </exec>
                                         <copy todir="src/main/webapp/help/ru" failonerror="false">
-                                            <fileset dir="../doc/src/user/en/html"/>
+                                            <fileset dir="../doc/src/user/ru/html"/>
                                         </copy>
+                                        <exec executable="make" failifexecutionfails="false">
+                                            <arg value="-C"/>
+                                            <arg value="../doc/src/user/pt/"/>
+                                            <arg value="html"/>
+                                        </exec>
                                         <copy todir="src/main/webapp/help/pt" failonerror="false">
-                                            <fileset dir="../doc/src/user/en/html"/>
+                                            <fileset dir="../doc/src/user/pt/html"/>
                                         </copy>
+                                        <exec executable="make" failifexecutionfails="false">
+                                            <arg value="-C"/>
+                                            <arg value="../doc/src/user/it/"/>
+                                            <arg value="html"/>
+                                        </exec>
                                         <copy todir="src/main/webapp/help/it" failonerror="false">
-                                            <fileset dir="../doc/src/user/en/html"/>
+                                            <fileset dir="../doc/src/user/it/html"/>
                                         </copy>
                                         <exec executable="make" failifexecutionfails="false">
                                             <arg value="-C"/>
@@ -137,38 +152,93 @@
                                         <copy todir="src/main/webapp/help/fr" failonerror="false">
                                             <fileset dir="../doc/src/user/fr/html"/>
                                         </copy>
+                                        <exec executable="make" failifexecutionfails="false">
+                                            <arg value="-C"/>
+                                            <arg value="../doc/src/user/nl/"/>
+                                            <arg value="html"/>
+                                        </exec>
                                         <copy todir="src/main/webapp/help/nl" failonerror="false">
-                                            <fileset dir="../doc/src/user/en/html"/>
+                                            <fileset dir="../doc/src/user/nl/html"/>
                                         </copy>
+                                        <exec executable="make" failifexecutionfails="false">
+                                            <arg value="-C"/>
+                                            <arg value="../doc/src/user/pl/"/>
+                                            <arg value="html"/>
+                                        </exec>
                                         <copy todir="src/main/webapp/help/pl" failonerror="false">
-                                            <fileset dir="../doc/src/user/en/html"/>
+                                            <fileset dir="../doc/src/user/pl/html"/>
                                         </copy>
+                                        <exec executable="make" failifexecutionfails="false">
+                                            <arg value="-C"/>
+                                            <arg value="../doc/src/user/cs/"/>
+                                            <arg value="html"/>
+                                        </exec>
                                         <copy todir="src/main/webapp/help/cs" failonerror="false">
-                                            <fileset dir="../doc/src/user/en/html"/>
+                                            <fileset dir="../doc/src/user/cs/html"/>
                                         </copy>
+                                        <exec executable="make" failifexecutionfails="false">
+                                            <arg value="-C"/>
+                                            <arg value="../doc/src/user/de/"/>
+                                            <arg value="html"/>
+                                        </exec>
                                         <copy todir="src/main/webapp/help/de" failonerror="false">
-                                            <fileset dir="../doc/src/user/en/html"/>
+                                            <fileset dir="../doc/src/user/de/html"/>
                                         </copy>
+                                        <exec executable="make" failifexecutionfails="false">
+                                            <arg value="-C"/>
+                                            <arg value="../doc/src/user/ca/"/>
+                                            <arg value="html"/>
+                                        </exec>
                                         <copy todir="src/main/webapp/help/ca" failonerror="false">
-                                            <fileset dir="../doc/src/user/es/html"/>
+                                            <fileset dir="../doc/src/user/ca/html"/>
                                         </copy>
+                                        <exec executable="make" failifexecutionfails="false">
+                                            <arg value="-C"/>
+                                            <arg value="../doc/src/user/zh/"/>
+                                            <arg value="html"/>
+                                        </exec>
                                         <copy todir="src/main/webapp/help/zh" failonerror="false">
-                                            <fileset dir="../doc/src/user/en/html"/>
+                                            <fileset dir="../doc/src/user/zh/html"/>
                                         </copy>
+                                        <exec executable="make" failifexecutionfails="false">
+                                            <arg value="-C"/>
+                                            <arg value="../doc/src/user/nb/"/>
+                                            <arg value="html"/>
+                                        </exec>
                                         <copy todir="src/main/webapp/help/nb" failonerror="false">
-                                            <fileset dir="../doc/src/user/en/html"/>
+                                            <fileset dir="../doc/src/user/nb/html"/>
                                         </copy>
+                                        <exec executable="make" failifexecutionfails="false">
+                                            <arg value="-C"/>
+                                            <arg value="../doc/src/user/fa_IR/"/>
+                                            <arg value="html"/>
+                                        </exec>
                                         <copy todir="src/main/webapp/help/fa_IR" failonerror="false">
-                                          <fileset dir="../doc/src/user/en/html"/>
+                                            <fileset dir="../doc/src/user/fa_IR/html"/>
                                         </copy>
+                                        <exec executable="make" failifexecutionfails="false">
+                                            <arg value="-C"/>
+                                            <arg value="../doc/src/user/pt_BR/"/>
+                                            <arg value="html"/>
+                                        </exec>
                                         <copy todir="src/main/webapp/help/pt_BR" failonerror="false">
-                                          <fileset dir="../doc/src/user/en/html"/>
+                                            <fileset dir="../doc/src/user/pt_BR/html"/>
                                         </copy>
+                                        <exec executable="make" failifexecutionfails="false">
+                                            <arg value="-C"/>
+                                            <arg value="../doc/src/user/sv_SE/"/>
+                                            <arg value="html"/>
+                                        </exec>
                                         <copy todir="src/main/webapp/help/sv_SE" failonerror="false">
-                                          <fileset dir="../doc/src/user/en/html"/>
+                                            <fileset dir="../doc/src/user/sv_SE/html"/>
                                         </copy>
+                                        <exec executable="make" failifexecutionfails="false">
+                                            <arg value="-C"/>
+                                            <arg value="../doc/src/user/zh_CN/"/>
+                                            <arg value="html"/>
+                                        </exec>
                                         <copy todir="src/main/webapp/help/zh_CN" failonerror="false">
-                                          <fileset dir="../doc/src/user/en/html"/>
+                                            <fileset dir="../doc/src/user/zh_CN/html"/>
                                         </copy>
                                     </tasks>
                                 </configuration>
@@ -201,6 +271,76 @@
                                         <exec executable="make" failifexecutionfails="false">
                                             <arg value="-C"/>
                                             <arg value="../doc/src/user/fr/"/>
+                                            <arg value="clean"/>
+                                        </exec>
+                                        <exec executable="make" failifexecutionfails="false">
+                                            <arg value="-C"/>
+                                            <arg value="../doc/src/user/ca/"/>
+                                            <arg value="clean"/>
+                                        </exec>
+                                        <exec executable="make" failifexecutionfails="false">
+                                            <arg value="-C"/>
+                                            <arg value="../doc/src/user/cs/"/>
+                                            <arg value="clean"/>
+                                        </exec>
+                                        <exec executable="make" failifexecutionfails="false">
+                                            <arg value="-C"/>
+                                            <arg value="../doc/src/user/de/"/>
+                                            <arg value="clean"/>
+                                        </exec>
+                                        <exec executable="make" failifexecutionfails="false">
+                                            <arg value="-C"/>
+                                            <arg value="../doc/src/user/fa_IR/"/>
+                                            <arg value="clean"/>
+                                        </exec>
+                                        <exec executable="make" failifexecutionfails="false">
+                                            <arg value="-C"/>
+                                            <arg value="../doc/src/user/it/"/>
+                                            <arg value="clean"/>
+                                        </exec>
+                                        <exec executable="make" failifexecutionfails="false">
+                                            <arg value="-C"/>
+                                            <arg value="../doc/src/user/nb/"/>
+                                            <arg value="clean"/>
+                                        </exec>
+                                        <exec executable="make" failifexecutionfails="false">
+                                            <arg value="-C"/>
+                                            <arg value="../doc/src/user/nl/"/>
+                                            <arg value="clean"/>
+                                        </exec>
+                                        <exec executable="make" failifexecutionfails="false">
+                                            <arg value="-C"/>
+                                            <arg value="../doc/src/user/pl/"/>
+                                            <arg value="clean"/>
+                                        </exec>
+                                        <exec executable="make" failifexecutionfails="false">
+                                            <arg value="-C"/>
+                                            <arg value="../doc/src/user/pt/"/>
+                                            <arg value="clean"/>
+                                        </exec>
+                                        <exec executable="make" failifexecutionfails="false">
+                                            <arg value="-C"/>
+                                            <arg value="../doc/src/user/pt_BR/"/>
+                                            <arg value="clean"/>
+                                        </exec>
+                                        <exec executable="make" failifexecutionfails="false">
+                                            <arg value="-C"/>
+                                            <arg value="../doc/src/user/ru/"/>
+                                            <arg value="clean"/>
+                                        </exec>
+                                        <exec executable="make" failifexecutionfails="false">
+                                            <arg value="-C"/>
+                                            <arg value="../doc/src/user/sv_SE/"/>
+                                            <arg value="clean"/>
+                                        </exec>
+                                        <exec executable="make" failifexecutionfails="false">
+                                            <arg value="-C"/>
+                                            <arg value="../doc/src/user/zh/"/>
+                                            <arg value="clean"/>
+                                        </exec>
+                                        <exec executable="make" failifexecutionfails="false">
+                                            <arg value="-C"/>
+                                            <arg value="../doc/src/user/zh_CN/"/>
                                             <arg value="clean"/>
                                         </exec>
                                         <delete dir="src/main/webapp/help" failonerror="false" />

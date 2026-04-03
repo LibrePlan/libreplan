@@ -3,7 +3,7 @@ Labels
 
 .. contents::
 
-Labels are entities used in the program to conceptually organize tasks or order elements.
+Labels are entities used in the program to conceptually organize tasks or project elements.
 
 Labels are categorized according to label type. A label can only belong to one label type; however, users can create many similar labels belonging to different label types.
 
@@ -12,8 +12,8 @@ Label Types
 
 Label types are used to group the types of labels that users want to manage in the program. Here are some examples of possible label types:
 
-*   **Client:** Users may be interested in labeling tasks, orders, or order elements in relation to the client who requests them.
-*   **Area:** Users may be interested in labeling tasks, orders, or order elements in relation to the areas in which they are carried out.
+*   **Client:** Users may be interested in labeling tasks, projects, or project elements in relation to the client who requests them.
+*   **Area:** Users may be interested in labeling tasks, projects, or project elements in relation to the areas in which they are carried out.
 
 The administration of label types is managed from the "Administration" menu option. This is where users can edit label types, create new label types, and add labels to label types. Users can access the list of labels from this option.
 
@@ -46,10 +46,10 @@ Editing and creating labels share the same form. From this form, the user can as
 Labels
 ======
 
-Labels are entities that belong to a label type. These entities can be assigned to order elements. Assigning a label to an order element means that all the elements descending from this element will inherit the label to which they belong. Having an assigned label means that these entities can be filtered where searches can be carried out:
+Labels are entities that belong to a label type. These entities can be assigned to project elements. Assigning a label to a project element means that all the elements descending from this element will inherit the label to which they belong. Having an assigned label means that these entities can be filtered where searches can be carried out:
 
 *   Search for tasks in the Gantt chart.
-*   Search for order elements in the list of order elements.
+*   Search for project elements in the list of project elements.
 *   Filters for reports.
 
-The assignment of labels to order elements is covered in the chapter on orders.
+The assignment of labels to project elements is covered in the chapter on projects.

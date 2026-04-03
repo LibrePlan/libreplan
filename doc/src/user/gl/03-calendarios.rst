@@ -153,20 +153,20 @@ Para asignar un calendario a un recurso é necesario dar os seguintes pasos:
 
    Asignación de novo calendario a recurso
 
-Asignación de calendario a pedidos
-----------------------------------
+Asignación de calendario a proxectos
+------------------------------------
 
-Os proxectos poden dispor de un calendario diferente do calendario por defecto. Para cambiar o calendario do pedido é necesario:
+Os proxectos poden dispor de un calendario diferente do calendario por defecto. Para cambiar o calendario do proxecto é necesario:
 
-   * Acceder ó listado de pedidos dentro da vista global de empresa.
-   * Editar o pedido en cuestión.
+   * Acceder ó listado de proxectos dentro da vista global de empresa.
+   * Editar o proxecto en cuestión.
    * Acceder á pestana de "Datos xerais".
    * Seleccionar no despregable de selección o calendario que se desexa asignar.
    * Premer en "Gardar" ou "Gardar e Continuar".
 
 Asignación de calendario a tarefas
 ----------------------------------
-Do mesmo xeito que se permite asignar calendarios a recursos ou pedidos, é posible realizar a mesma operación para tarefas planificadas. Esta operación permite definir calendarios específicos para momentos concretos dun proxecto. Para realizar esta operación é necesario:
+Do mesmo xeito que se permite asignar calendarios a recursos ou proxectos, é posible realizar a mesma operación para tarefas planificadas. Esta operación permite definir calendarios específicos para momentos concretos dun proxecto. Para realizar esta operación é necesario:
 
    * Acceder á planificación de un proxecto.
    * Premer no botón dereito sobre a tarefa á que se desexa asignar calendario.

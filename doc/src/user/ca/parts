@@ -1,0 +1,32 @@
+#
+# First word:
+#   Identifier of the section to include. It cannot contain spaces. For
+#   a section named “foo”, a file “foo/foo.rst” must exist.
+#
+# Rest of the line:
+#   Free form text for specifying who is in charge. It will be passed to
+#   docutils as-is, so you can add markup if needed.
+#
+#
+
+01-introducion      Xavier Castaño (xcastanho@igalia.com)
+02-criterios        Xavier Castaño (xcastanho@igalia.com)
+03-calendarios      Xavier Castaño (xcastanho@igalia.com)
+04-avances          Xavier Castaño (xcastanho@igalia.com)
+05-recursos         Xavier Castaño (xcastanho@igalia.com)
+06-pedidos          Xavier Castaño (xcastanho@igalia.com)
+07-planificacion    Xavier Castaño (xcastanho@igalia.com)
+08-asignacion       Xavier Castaño (xcastanho@igalia.com)
+09-partes           Xavier Castaño (xcastanho@igalia.com)
+10-etiquetas        Xavier Castaño (xcastanho@igalia.com)
+11-materiales       Xavier Castaño (xcastanho@igalia.com)
+12-formularios-calidad       Xavier Castaño (xcastanho@igalia.com)
+13-usuarios         Xavier Castaño (xcastanho@igalia.com)
+14-custos           Xavier Castaño (xcastanho@igalia.com)
+15-informes         Xavier Castaño (xcastanho@igalia.com)
+16-ldap-authentication       Ignacio Diaz Teijido (ignacio.diaz@cafedered.com), Javier Moran Rua (jmoran@igalia.com)
+17-dashboards       Javier Moran Rua (jmoran@igalia.com)
+18-connectors       Miciele Ghiorghis (m.ghiorghis@antoniusziekenhuis.nl)
+19-scheduler        Miciele Ghiorghis (m.ghiorghis@antoniusziekenhuis.nl)
+20-acerca-de        Xavier Castaño (xcastanho@igalia.com)
+21-communications   Xavier Castaño (xcastanho@igalia.com)

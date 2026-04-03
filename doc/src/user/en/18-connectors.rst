@@ -29,7 +29,7 @@ JIRA is an issue and project tracking system.
 
 The JIRA connector is an application that can be used to request JIRA web server data for JIRA issues and process the response. The request is based on JIRA labels. In JIRA, labels can be used to categorize issues. The request is structured as follows: retrieve all issues that are categorized by this label name.
 
-The connector receives the response, which in this case is the issues, and converts them to *LibrePlan* "Order elements" and "Time sheets."
+The connector receives the response, which in this case is the issues, and converts them to *LibrePlan* "Project elements" and "Time sheets."
 
 The *JIRA connector* must be configured properly before it can be used.
 
@@ -55,7 +55,7 @@ Finally, click the "Test connection" button to test if you can connect to the JI
 Synchronization
 ---------------
 
-From the project window, under "General data," you can start synchronizing order elements with JIRA issues.
+From the project window, under "General data," you can start synchronizing project elements with JIRA issues.
 
 Click the "Sync with JIRA" button to start the synchronization.
 
@@ -65,7 +65,7 @@ Click the "Sync with JIRA" button to start the synchronization.
 
 .. NOTE::
 
-   The relationship between "Order" and "label" is one-to-one. Only one label can be synchronized with one "Order."
+   The relationship between "Project" and "label" is one-to-one. Only one label can be synchronized with one "Project."
 
 .. NOTE::
 
@@ -73,7 +73,7 @@ Click the "Sync with JIRA" button to start the synchronization.
 
 (Re)synchronization is performed in two phases:
 
-*   **Phase 1:** Synchronizing order elements, including progress assignment and measurements.
+*   **Phase 1:** Synchronizing project elements, including progress assignment and measurements.
 *   **Phase 2:** Synchronizing time sheets.
 
 .. NOTE::

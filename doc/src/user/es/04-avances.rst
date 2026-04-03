@@ -16,7 +16,7 @@ Cabe destacar que hay una diferencia importante entre el uso de horas asignadas 
 
 El contraste de estas posibles situaciones es posible realizarlo desde la propia planificación, utilizando información del grado de avance y por otro lado del grado de uso de horas. En este capítulo se tratará la introducción de la información para poder llevar un control del avance.
 
-La filosofía implantada en el proyecto para el control del avance está basada en que el usuario divida hasta el punto en el que desea el control de avances de sus proyectos. En consecuencia, si el usuario desea controlar a nivel de pedido, sólo debe introducir información en los elementos de nivel 1, cuando se desea poder disponer de un control más fino sobre las tareas, debe introducir información de avances en niveles inferiores, siendo el sistema que propaga hacia arriba en la jerarquía todos los datos.
+La filosofía implantada en el proyecto para el control del avance está basada en que el usuario divida hasta el punto en el que desea el control de avances de sus proyectos. En consecuencia, si el usuario desea controlar a nivel de proyecto, sólo debe introducir información en los elementos de nivel 1, cuando se desea poder disponer de un control más fino sobre las tareas, debe introducir información de avances en niveles inferiores, siendo el sistema que propaga hacia arriba en la jerarquía todos los datos.
 
 Gestión de tipos de avance
 ==========================
@@ -59,11 +59,11 @@ El usuario puede crear nuevos tipos de avance de la siguiente manera:
 Introducción de avances en base a tipo
 ======================================
 
-La introducción de los avances se realiza sobre los elementos de pedido, sin embargo, es posible hacerlo con un atajo desde las tareas de planificación. Es responsabilidad del usuario la decisión sobre qué tipos de avance desea asociar a cada elemento de pedido.
+La introducción de los avances se realiza sobre los elementos de proyecto, sin embargo, es posible hacerlo con un atajo desde las tareas de planificación. Es responsabilidad del usuario la decisión sobre qué tipos de avance desea asociar a cada elemento de proyecto.
 
-Es posible introducir un tipo de avance único y defectivo para todo un pedido.
+Es posible introducir un tipo de avance único y defectivo para todo un proyecto.
 
-Antes de poder realizar medidas de avance, es necesario asociar el tipo elegido al pedido, por ejemplo, un avance de tipo porcentaje para medir porcentualmente los avances realizados sobre el total de la tarea, o un avance de tipo pactado por se se quieren introducir a futuro mediciones de avances pactadas con el cliente.
+Antes de poder realizar medidas de avance, es necesario asociar el tipo elegido al proyecto, por ejemplo, un avance de tipo porcentaje para medir porcentualmente los avances realizados sobre el total de la tarea, o un avance de tipo pactado por se se quieren introducir a futuro mediciones de avances pactadas con el cliente.
 
 .. figure:: images/avance.png
    :scale: 40
@@ -80,10 +80,10 @@ Para introducir mediciones de avance es necesario realizar el siguiente:
 * El sistema almacena automáticamente los datos introducidos.
 
 
-Contraste de avances sobre un elemento del pedido
-=================================================
+Contraste de avances sobre un elemento del proyecto
+===================================================
 
-Es posible contrastar graficamente las evoluciones de los avances de los pedidos en base a las mediciones realizadas. Cada tipo de avance dispone de una columna con botones de chequeo (de título "Mostrar") el cual al ser marcado se muestra la gráfica de evoluciones de medidas realizadas sobre el elemento de pedido.
+Es posible contrastar graficamente las evoluciones de los avances de los proyectos en base a las mediciones realizadas. Cada tipo de avance dispone de una columna con botones de chequeo (de título "Mostrar") el cual al ser marcado se muestra la gráfica de evoluciones de medidas realizadas sobre el elemento de proyecto.
 
 .. figure:: images/contraste-avance.png
    :scale: 40

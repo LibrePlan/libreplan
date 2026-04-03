@@ -3,7 +3,7 @@ Etiquetas
 
 .. contents::
 
-As etiquetas son entidades que se utilizan na aplicación para a organización conceptualmente de tarefas ou elementos de pedido.
+As etiquetas son entidades que se utilizan na aplicación para a organización conceptualmente de tarefas ou elementos de proxecto.
 
 As etiquetas categorizanse segundo os tipos de etiquetas. Unha etiqueta só pertence a un tipo de etiqueta, sen embargo, nada impide crear tantas etiquetas similares que pertenzan a tipos de etiquetas diferentes.
 
@@ -12,8 +12,8 @@ Tipos de etiquetas
 
 Os tipos de etiquetas utilízanse para agrupar tipoloxías de etiquetas que os usuarios desexen xestionar na aplicación. Exemplos de tipos de etiquetas posibles:
 
-i. Cliente: O usuario podería estar interesado en etiquetar as tarefas, pedidos ou elementos de pedido en base ó cliente que os solicitou.
-ii. Zona: O usuario podería estar interesado en etiquetar as tarefas, pedidos ou elementos de pedido en base á zona na que se realizan.
+i. Cliente: O usuario podería estar interesado en etiquetar as tarefas, proxectos ou elementos de proxecto en base ó cliente que os solicitou.
+ii. Zona: O usuario podería estar interesado en etiquetar as tarefas, proxectos ou elementos de proxecto en base á zona na que se realizan.
 
 A administración de tipos de etiquetas xestionarase dende a opción de menú de "Administración". É dende esta opción, dende a que o usuario pode editar tipos de etiqueta, crear novos tipos de etiqueta ou engadir etiquetas a tipos de etiquetas. Dende dita operación pode accederse ó listado de etiquetas.
 
@@ -46,11 +46,11 @@ vii. O usuario preme en "Gardar" para gardar e saír ou "Gardar e Continuar" par
 Etiquetas
 =========
 
-As etiquetas son entidades que pertencen a un tipo de etiqueta. Estas entidades poden ser asignadas a elementos de pedido. O feito de asignar unha etiqueta a un elemento de pedido fai que todos os elementos descendentes dese elemento herden a etiqueta á que pertencen. O feito de contar con unha etiqueta asignada permite que eses elementos saian filtrados nos puntos nos que se ofrece a posibilidade de procura:
+As etiquetas son entidades que pertencen a un tipo de etiqueta. Estas entidades poden ser asignadas a elementos de proxecto. O feito de asignar unha etiqueta a un elemento de proxecto fai que todos os elementos descendentes dese elemento herden a etiqueta á que pertencen. O feito de contar con unha etiqueta asignada permite que eses elementos saian filtrados nos puntos nos que se ofrece a posibilidade de procura:
 
 i. Procura de tarefas no diagrama de Gantt.
-ii. Procura de elementos de pedido no listado de elementos de pedido.
+ii. Procura de elementos de proxecto no listado de elementos de proxecto.
 iii. Filtrados para informes.
 
-A asignación de etiquetas a elementos de pedido é cuberta no capítulo de pedidos.
+A asignación de etiquetas a elementos de proxecto é cuberta no capítulo de proxectos.
 

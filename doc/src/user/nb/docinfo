@@ -1,0 +1,26 @@
+##############################
+LibrePlan: Brukerdokumentasjon
+##############################
+
+.. image:: images/logo.png
+   :align: left
+
+Dette dokumentet inneholder nødvendig hjelp for å bruke LibrePlan, den åpen kildekode-baserte webapplikasjonen for prosjektplanlegging.
+
+Dokumentet er delt inn i tre hoveddeler:
+
+For det første, globale mål og generell atferd.
+
+For det andre, grunnleggende enheter for å forstå minimumskonseptene for bruk av LibrePlan.
+
+Til slutt, en fullstendig prosessbeskrivelse for å opprette ordrer, prosjekter, prosjektplanlegging, ressurstildeling, fremdriftsregistrering og resultatuttak.
+
+.. topic:: Vennligst støtt LibrePlan
+   :class: highlight
+
+   LibrePlan kan ikke eksistere uten din støtte. Vennligst les `donasjonssiden <00-donations.html>`__ og vurder å hjelpe oss med å fortsette utviklingen.
+
+   .. raw:: html
+
+      <script src="https://opencollective.com/libreplan/donate/button.js" color="blue"></script>
+

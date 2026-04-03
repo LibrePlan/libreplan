@@ -12,7 +12,7 @@ The program allows for several operations involving criteria:
 *   Criteria administration
 *   Assigning criteria to resources
 *   Assigning criteria to tasks
-*   Filtering entities based on criteria. Tasks and order items can be filtered by criteria to perform various operations within the program.
+*   Filtering entities based on criteria. Tasks and project elements can be filtered by criteria to perform various operations within the program.
 
 This section will only explain the first function, criteria administration. The two types of allocation will be covered later: resource allocation in the "Resource Management" chapter, and filtering in the "Task Planning" chapter.
 

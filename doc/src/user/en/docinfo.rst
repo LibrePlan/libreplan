@@ -1,0 +1,17 @@
+#############################
+LibrePlan: User documentation
+#############################
+
+.. image:: images/logo.png
+   :align: left
+
+Following document contains necessary help for using LibrePlan, the opensource web application for project planning.
+
+This document is divided in three main sections:
+
+First, global goals and behaviour.
+
+Second, basic entities to understand the minimum concepts to use LibrePlan.
+
+Finally, complete processes description to create orders, projects, project planning, resources assignment, advance assignment and result extraction.
+

@@ -1,0 +1,26 @@
+################################
+LibrePlan: Documentació d'usuari
+################################
+
+.. image:: images/logo.png
+   :align: left
+
+Aquest document conté l'ajuda necessària per utilitzar LibrePlan, l'aplicació web de codi obert per a la planificació de projectes.
+
+El document s'estructura en tres seccions principals:
+
+En primer lloc, els objectius globals i el comportament general.
+
+En segon lloc, les entitats bàsiques per comprendre els conceptes mínims per utilitzar LibrePlan.
+
+Finalment, la descripció completa dels processos per crear comandes, projectes, planificació de projectes, assignació de recursos, imputació d'avanços i extracció de resultats.
+
+.. topic:: Si us plau, doneu suport a LibrePlan
+   :class: highlight
+
+   LibrePlan no pot existir sense el vostre suport. Si us plau, llegiu `la pàgina de donacions <00-donations.html>`__ i considereu ajudar-nos a continuar el desenvolupament.
+
+   .. raw:: html
+
+      <script src="https://opencollective.com/libreplan/donate/button.js" color="blue"></script>
+
