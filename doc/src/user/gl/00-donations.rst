@@ -116,6 +116,7 @@ contornos modernos e rico en funcionalidades é un investimento continuo de temp
 experiencia.
 
 A súa doazón — sexa grande ou pequena — axuda a que ese traballo sexa posible. Grazas.
+
 .. topic:: Por favor, apoia LibrePlan
    :class: highlight
 
