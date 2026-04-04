@@ -1152,6 +1152,22 @@ public class ConfigurationController extends GenericForwardComposer {
      * Used in configuration.zul
      * Should be public!
      */
+    public boolean isAllowedToGatherUsageStatsEnabled() {
+        return configurationModel.isAllowedToGatherUsageStatsEnabled();
+    }
+
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
+    public void setAllowedToGatherUsageStatsEnabled(boolean allowedToGatherUsageStatsEnabled) {
+        configurationModel.setAllowedToGatherUsageStatsEnabled(allowedToGatherUsageStatsEnabled);
+    }
+
+    /**
+     * Used in configuration.zul
+     * Should be public!
+     */
     public Set<String> getCurrencies() {
         return configurationModel.getCurrencies();
     }
