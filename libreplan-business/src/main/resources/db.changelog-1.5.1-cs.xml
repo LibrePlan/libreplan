@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="add-email-templates-cs" author="jeroen">
+
+        <!-- type 0 = TEMPLATE_TASK_ASSIGNED_TO_RESOURCE, language 10 = CS_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="0"/>
+            <column name="language" valueNumeric="10"/>
+            <column name="content">Dobrý den {firstname},
+
+V aplikaci pro správu projektů LibrePlan byl přiřazen úkol uživateli {resource}.
+
+Projekt: {project}
+Úkol: {task}
+
+Více informací naleznete zde: {projecturl}
+
+Mějte skvělý den.
+Váš přátelský server pro správu projektů LibrePlan ze sousedství.</column>
+            <column name="subject">Byl vám přiřazen úkol</column>
+        </insert>
+
+        <!-- type 1 = TEMPLATE_RESOURCE_REMOVED_FROM_TASK, language 10 = CS_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="1"/>
+            <column name="language" valueNumeric="10"/>
+            <column name="content">Dobrý den {firstname}
+
+{resource} byl odebrán z úkolu v aplikaci pro správu projektů LibrePlan.
+
+Projekt: {project}
+Úkol: {task}
+
+Více informací naleznete zde: {projecturl}
+
+Mějte skvělý den.
+Váš přátelský server pro správu projektů LibrePlan ze sousedství.</column>
+            <column name="subject">{resource} byl odebrán z úkolu {task} v projektu {project}</column>
+        </insert>
+
+        <!-- type 2 = TEMPLATE_MILESTONE_REACHED, language 10 = CS_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="2"/>
+            <column name="language" valueNumeric="10"/>
+            <column name="content">Dobrý den {firstname}
+
+Dáváme vám na vědomí, že milník {task} byl dosažen v projektu {project}
+
+Projekt: {project}
+Úkol: {task}
+
+Mějte hezký den.
+Váš přátelský server pro správu projektů LibrePlan ze sousedství.</column>
+            <column name="subject">Byl dosažen milník {task}</column>
+        </insert>
+
+        <!-- type 3 = TEMPLATE_TODAY_TASK_SHOULD_START, language 10 = CS_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="3"/>
+            <column name="language" valueNumeric="10"/>
+            <column name="content">Dobrý den {firstname},
+
+Dáváme vám na vědomí, že úkol {task} v projektu {project} by měl začít přibližně nyní.
+
+Více informací naleznete na {projecturl}
+
+Mějte skvělý den.
+Váš přátelský server pro správu projektů LibrePlan ze sousedství.</column>
+            <column name="subject">Úkol {task} v projektu {project} by měl začít přibližně nyní</column>
+        </insert>
+
+        <!-- type 4 = TEMPLATE_TODAY_TASK_SHOULD_FINISH, language 10 = CS_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="4"/>
+            <column name="language" valueNumeric="10"/>
+            <column name="content">Dobrý den {firstname},
+
+Dáváme vám na vědomí, že úkol {task} v projektu {project} by měl být přibližně nyní dokončen.
+
+Pokud tomu tak není, informujte prosím vedoucího projektu.
+
+Více informací naleznete na {projecturl}
+
+Mějte skvělý den.
+Váš přátelský server pro správu projektů LibrePlan ze sousedství.</column>
+            <column name="subject">Úkol {task} v projektu {project} by měl být přibližně nyní dokončen.</column>
+        </insert>
+
+        <!-- type 5 = TEMPLATE_ENTER_DATA_IN_TIMESHEET, language 10 = CS_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="5"/>
+            <column name="language" valueNumeric="10"/>
+            <column name="content">Dobrý den {firstname},
+
+Mohli byste se prosím ujistit, že váš výkaz práce je aktuální?
+
+Pomáhá to organizaci řádně sledovat postup projektu.
+
+Buďme upřímní. Tuto práci nikdo opravdu rád nedělá.
+Ale je to prostě součást práce. Sledování stráveného času má dopad na fakturaci.
+A tedy na hospodářský výsledek, a tím i na kontinuitu společnosti a váš plat.
+
+Zvládnete to!
+
+Mějte skvělý den.
+Váš přátelský server pro správu projektů LibrePlan ze sousedství.</column>
+            <column name="subject">Prosíme, ujistěte se, že váš výkaz práce je aktuální.</column>
+        </insert>
+
+    </changeSet>
+
+</databaseChangeLog>

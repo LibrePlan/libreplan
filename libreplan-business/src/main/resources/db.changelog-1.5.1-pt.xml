@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="add-email-templates-pt" author="jeroen">
+
+        <!-- type 0 = TEMPLATE_TASK_ASSIGNED_TO_RESOURCE, language 5 = PT_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="0"/>
+            <column name="language" valueNumeric="5"/>
+            <column name="content">Olá {firstname},
+
+Uma tarefa foi atribuída a {resource} na aplicação de gestão de projetos LibrePlan.
+
+Projeto: {project}
+Tarefa: {task}
+
+Pode encontrar mais informações aqui: {projecturl}
+
+Tenha um dia fantástico.
+O seu amigável servidor de gestão de projetos LibrePlan da vizinhança.</column>
+            <column name="subject">Foi-lhe atribuída uma tarefa</column>
+        </insert>
+
+        <!-- type 1 = TEMPLATE_RESOURCE_REMOVED_FROM_TASK, language 5 = PT_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="1"/>
+            <column name="language" valueNumeric="5"/>
+            <column name="content">Olá {firstname}
+
+{resource} foi removido de uma tarefa na aplicação de gestão de projetos LibrePlan.
+
+Projeto: {project}
+Tarefa: {task}
+
+Pode encontrar mais informações aqui: {projecturl}
+
+Tenha um dia fantástico.
+O seu amigável servidor de gestão de projetos LibrePlan da vizinhança.</column>
+            <column name="subject">{resource} foi removido da tarefa {task} no projeto {project}</column>
+        </insert>
+
+        <!-- type 2 = TEMPLATE_MILESTONE_REACHED, language 5 = PT_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="2"/>
+            <column name="language" valueNumeric="5"/>
+            <column name="content">Olá {firstname}
+
+Informamos que o marco {task} foi atingido no projeto {project}
+
+Projeto: {project}
+Tarefa: {task}
+
+Tenha um bom dia.
+O seu amigável servidor de gestão de projetos LibrePlan da vizinhança.</column>
+            <column name="subject">O marco {task} foi atingido</column>
+        </insert>
+
+        <!-- type 3 = TEMPLATE_TODAY_TASK_SHOULD_START, language 5 = PT_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="3"/>
+            <column name="language" valueNumeric="5"/>
+            <column name="content">Olá {firstname},
+
+Informamos que a tarefa {task} no projeto {project} deve começar agora.
+
+Mais informações podem ser encontradas em {projecturl}
+
+Tenha um dia fantástico.
+O seu amigável servidor de gestão de projetos LibrePlan da vizinhança.</column>
+            <column name="subject">A tarefa {task} no projeto {project} deve começar agora</column>
+        </insert>
+
+        <!-- type 4 = TEMPLATE_TODAY_TASK_SHOULD_FINISH, language 5 = PT_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="4"/>
+            <column name="language" valueNumeric="5"/>
+            <column name="content">Olá {firstname},
+
+Informamos que a tarefa {task} no projeto {project} deve estar concluída agora.
+
+Se não for o caso, informe o líder do projeto.
+
+Mais informações podem ser encontradas em {projecturl}
+
+Tenha um dia fantástico.
+O seu amigável servidor de gestão de projetos LibrePlan da vizinhança.</column>
+            <column name="subject">A tarefa {task} no projeto {project} deve estar concluída agora.</column>
+        </insert>
+
+        <!-- type 5 = TEMPLATE_ENTER_DATA_IN_TIMESHEET, language 5 = PT_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="5"/>
+            <column name="language" valueNumeric="5"/>
+            <column name="content">Olá {firstname},
+
+Poderia certificar-se de que a sua folha de horas está atualizada?
+
+Ajuda a organização a acompanhar adequadamente o progresso do projeto.
+
+Sejamos honestos. Ninguém gosta realmente de fazer este trabalho.
+Mas faz simplesmente parte do trabalho. Acompanhar o tempo gasto tem impacto na faturação.
+E portanto no resultado final, e assim também na continuidade da empresa e no seu salário.
+
+Consegue fazer isso!
+
+Tenha um dia fantástico.
+O seu amigável servidor de gestão de projetos LibrePlan da vizinhança.</column>
+            <column name="subject">Por favor, certifique-se de que a sua folha de horas está atualizada.</column>
+        </insert>
+
+    </changeSet>
+
+</databaseChangeLog>

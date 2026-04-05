@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="add-email-templates-gl" author="jeroen">
+
+        <!-- type 0 = TEMPLATE_TASK_ASSIGNED_TO_RESOURCE, language 1 = GL_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="0"/>
+            <column name="language" valueNumeric="1"/>
+            <column name="content">Ola {firstname},
+
+Asignóuselle unha tarefa a {resource} na aplicación de xestión de proxectos LibrePlan.
+
+Proxecto: {project}
+Tarefa: {task}
+
+Podes atopar máis información aquí: {projecturl}
+
+Que teñas un día estupendo.
+O teu amable servidor de xestión de proxectos LibrePlan do barrio.</column>
+            <column name="subject">Asignóuselle unha tarefa</column>
+        </insert>
+
+        <!-- type 1 = TEMPLATE_RESOURCE_REMOVED_FROM_TASK, language 1 = GL_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="1"/>
+            <column name="language" valueNumeric="1"/>
+            <column name="content">Ola {firstname}
+
+{resource} foi eliminado dunha tarefa na aplicación de xestión de proxectos LibrePlan.
+
+Proxecto: {project}
+Tarefa: {task}
+
+Podes atopar máis información aquí: {projecturl}
+
+Que teñas un día estupendo.
+O teu amable servidor de xestión de proxectos LibrePlan do barrio.</column>
+            <column name="subject">{resource} foi eliminado da tarefa {task} no proxecto {project}</column>
+        </insert>
+
+        <!-- type 2 = TEMPLATE_MILESTONE_REACHED, language 1 = GL_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="2"/>
+            <column name="language" valueNumeric="1"/>
+            <column name="content">Ola {firstname}
+
+Comunicámosche que se acadou o fito {task} no proxecto {project}
+
+Proxecto: {project}
+Tarefa: {task}
+
+Que teñas un bo día.
+O teu amable servidor de xestión de proxectos LibrePlan do barrio.</column>
+            <column name="subject">Acadouse o fito {task}</column>
+        </insert>
+
+        <!-- type 3 = TEMPLATE_TODAY_TASK_SHOULD_START, language 1 = GL_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="3"/>
+            <column name="language" valueNumeric="1"/>
+            <column name="content">Ola {firstname},
+
+Comunicámosche que a tarefa {task} no proxecto {project} debería comezar aproximadamente agora.
+
+Podes atopar máis información en {projecturl}
+
+Que teñas un día estupendo.
+O teu amable servidor de xestión de proxectos LibrePlan do barrio.</column>
+            <column name="subject">A tarefa {task} no proxecto {project} debería comezar aproximadamente agora</column>
+        </insert>
+
+        <!-- type 4 = TEMPLATE_TODAY_TASK_SHOULD_FINISH, language 1 = GL_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="4"/>
+            <column name="language" valueNumeric="1"/>
+            <column name="content">Ola {firstname},
+
+Comunicámosche que a tarefa {task} no proxecto {project} debería estar rematada aproximadamente agora.
+
+Se non é o caso, por favor informa o xefe do proxecto.
+
+Podes atopar máis información en {projecturl}
+
+Que teñas un día estupendo.
+O teu amable servidor de xestión de proxectos LibrePlan do barrio.</column>
+            <column name="subject">A tarefa {task} no proxecto {project} debería estar rematada aproximadamente agora.</column>
+        </insert>
+
+        <!-- type 5 = TEMPLATE_ENTER_DATA_IN_TIMESHEET, language 1 = GL_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="5"/>
+            <column name="language" valueNumeric="1"/>
+            <column name="content">Ola {firstname},
+
+Poderías asegurarte de que a túa folla de horas está actualizada?
+
+Axuda á organización a facer un seguimento axeitado do progreso do proxecto.
+
+Seamos honestos. A ninguén lle gusta realmente facer este traballo.
+Pero é parte do traballo. Levar un rexistro do tempo dedicado ten impacto na facturación.
+E polo tanto no resultado final, e tamén na continuidade da empresa e o teu salario.
+
+Podes facelo!
+
+Que teñas un día estupendo.
+O teu amable servidor de xestión de proxectos LibrePlan do barrio.</column>
+            <column name="subject">Por favor, asegúrate de que a túa folla de horas está actualizada.</column>
+        </insert>
+
+    </changeSet>
+
+</databaseChangeLog>
