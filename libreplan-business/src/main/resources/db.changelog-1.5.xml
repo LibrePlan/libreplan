@@ -6,6 +6,7 @@
 
 
     <changeSet id="adding-email_template-table" author="vova/jeroen">
+        <validCheckSum>ANY</validCheckSum>
         <createTable tableName="email_template">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false" primaryKeyName="email_templates_pkey"/>
