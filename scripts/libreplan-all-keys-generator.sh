@@ -18,7 +18,7 @@ if [ ! -f $WEBAPP_KEYS ]
 fi
 ./gettext-keys-generator.pl -d $LIBREPLAN_WEBAPP -k $WEBAPP_KEYS 2> /dev/null
 ./gettext-keys-generator.pl --java -d $LIBREPLAN_BUSINESS -k $WEBAPP_KEYS 2> /dev/null
-find $LIBREPLAN_BUSINESS/src -name "*.java" -exec xgettext -j --from-code=utf-8 -k_ -o $WEBAPP_KEYS '{}' \;
+find $LIBREPLAN_BUSINESS/src -name "*.java" -exec xgettext -L java -j --from-code=utf-8 -k_t -o $WEBAPP_KEYS '{}' \;
 
 # Parse ganttzk java and zul
 cd $LIBREPLAN_GANTTZK
