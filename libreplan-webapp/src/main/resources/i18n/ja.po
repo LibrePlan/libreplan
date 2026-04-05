@@ -9244,3 +9244,7 @@ msgstr "成功した送信"
 #: libreplan-business/src/main/java/org/libreplan/business/settings/entities/Language.java:36
 msgid "Use browser language configuration"
 msgstr "ブラウザの言語設定を使用"
+
+#: libreplan-webapp/src/main/webapp/common/layout/login.zul
+msgid "version"
+msgstr "バージョン"

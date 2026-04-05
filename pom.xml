@@ -6,7 +6,7 @@
     <groupId>org.libreplan</groupId>
     <artifactId>libreplan</artifactId>
     <packaging>pom</packaging>
-    <version>1.6.0</version>
+    <version>Phoenix-rc1</version>
     <name>LibrePlan</name>
 
 

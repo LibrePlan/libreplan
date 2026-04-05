@@ -159,7 +159,7 @@
                     ${i18n:_t('Supported Chrome, Firefox, Safari and Epiphany browsers')}
                 </n:span>
                 <n:div style="float:right;color:green;font-size:10px;">
-                    v${project:version()}
+                    ${i18n:_t('version')}:${project:version()}
                 </n:div>
             </n:td>
         </n:tr>

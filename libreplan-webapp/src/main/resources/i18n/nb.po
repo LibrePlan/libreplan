@@ -9243,3 +9243,7 @@ msgstr "Suksess sendt"
 #: libreplan-business/src/main/java/org/libreplan/business/settings/entities/Language.java:36
 msgid "Use browser language configuration"
 msgstr "Bruk nettleserspråk konfigurasjon"
+
+#: libreplan-webapp/src/main/webapp/common/layout/login.zul
+msgid "version"
+msgstr "versjon"

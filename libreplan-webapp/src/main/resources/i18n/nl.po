@@ -9560,3 +9560,7 @@ msgstr "resterend"
 #: libreplan-webapp/src/main/webapp/common/configuration.zul:477
 msgid "Role search query"
 msgstr "Rol zoekvraag"
+
+#: libreplan-webapp/src/main/webapp/common/layout/login.zul
+msgid "version"
+msgstr "versie"

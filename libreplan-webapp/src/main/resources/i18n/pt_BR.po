@@ -9564,3 +9564,7 @@ msgstr "restante"
 #: libreplan-webapp/src/main/webapp/common/configuration.zul:477
 msgid "Role search query"
 msgstr "Consulta para busca de papeis"
+
+#: libreplan-webapp/src/main/webapp/common/layout/login.zul
+msgid "version"
+msgstr "versão"
