@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.libreplan</groupId>
         <artifactId>libreplan</artifactId>
-        <version>Phoenix-rc1</version>
+        <version>Phoenix-beta</version>
     </parent>
     <artifactId>libreplan-webapp</artifactId>
     <packaging>war</packaging>
