@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="add-email-templates-zh_CN" author="jeroen">
+
+        <!-- type 0 = TEMPLATE_TASK_ASSIGNED_TO_RESOURCE, language 13 = ZH_CN_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="0"/>
+            <column name="language" valueNumeric="13"/>
+            <column name="content">您好 {firstname}，
+
+在 LibrePlan 项目管理应用程序中，已向 {resource} 分配了一项任务。
+
+项目：{project}
+任务：{task}
+
+您可以在此处找到更多信息：{projecturl}
+
+祝您有美好的一天。
+您的友好的 LibrePlan 项目管理服务器。</column>
+            <column name="subject">您已被分配一项任务</column>
+        </insert>
+
+        <!-- type 1 = TEMPLATE_RESOURCE_REMOVED_FROM_TASK, language 13 = ZH_CN_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="1"/>
+            <column name="language" valueNumeric="13"/>
+            <column name="content">您好 {firstname}
+
+在 LibrePlan 项目管理应用程序中，{resource} 已从一项任务中移除。
+
+项目：{project}
+任务：{task}
+
+您可以在此处找到更多信息：{projecturl}
+
+祝您有美好的一天。
+您的友好的 LibrePlan 项目管理服务器。</column>
+            <column name="subject">{resource} 已从项目 {project} 的任务 {task} 中移除</column>
+        </insert>
+
+        <!-- type 2 = TEMPLATE_MILESTONE_REACHED, language 13 = ZH_CN_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="2"/>
+            <column name="language" valueNumeric="13"/>
+            <column name="content">您好 {firstname}
+
+特此通知您，项目 {project} 中的里程碑 {task} 已经达成。
+
+项目：{project}
+任务：{task}
+
+祝您有愉快的一天。
+您的友好的 LibrePlan 项目管理服务器。</column>
+            <column name="subject">已达到里程碑 {task}</column>
+        </insert>
+
+        <!-- type 3 = TEMPLATE_TODAY_TASK_SHOULD_START, language 13 = ZH_CN_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="3"/>
+            <column name="language" valueNumeric="13"/>
+            <column name="content">您好 {firstname}，
+
+特此通知您，项目 {project} 中的任务 {task} 现在应该开始了。
+
+更多信息请访问 {projecturl}
+
+祝您有美好的一天。
+您的友好的 LibrePlan 项目管理服务器。</column>
+            <column name="subject">项目 {project} 中的任务 {task} 现在应该开始了</column>
+        </insert>
+
+        <!-- type 4 = TEMPLATE_TODAY_TASK_SHOULD_FINISH, language 13 = ZH_CN_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="4"/>
+            <column name="language" valueNumeric="13"/>
+            <column name="content">您好 {firstname}，
+
+特此通知您，项目 {project} 中的任务 {task} 现在应该完成了。
+
+如果情况并非如此，请告知项目负责人。
+
+更多信息请访问 {projecturl}
+
+祝您有美好的一天。
+您的友好的 LibrePlan 项目管理服务器。</column>
+            <column name="subject">项目 {project} 中的任务 {task} 现在应该完成了。</column>
+        </insert>
+
+        <!-- type 5 = TEMPLATE_ENTER_DATA_IN_TIMESHEET, language 13 = ZH_CN_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="5"/>
+            <column name="language" valueNumeric="13"/>
+            <column name="content">您好 {firstname}，
+
+请您确保您的工时表是最新的，好吗？
+
+这有助于组织妥善跟踪项目进度。
+
+说实话，没有人真正喜欢做这项工作。
+但这只是工作的一部分。记录所花费的时间会影响计费。
+因此也会影响最终结果，进而影响公司的持续运营和您的薪资。
+
+您能做到的！
+
+祝您有美好的一天。
+您的友好的 LibrePlan 项目管理服务器。</column>
+            <column name="subject">请确保您的工时表是最新的。</column>
+        </insert>
+
+    </changeSet>
+
+</databaseChangeLog>

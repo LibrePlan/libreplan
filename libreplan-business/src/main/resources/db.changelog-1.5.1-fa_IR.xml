@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="add-email-templates-fa_IR" author="jeroen">
+
+        <!-- type 0 = TEMPLATE_TASK_ASSIGNED_TO_RESOURCE, language 15 = FA_IR_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="0"/>
+            <column name="language" valueNumeric="15"/>
+            <column name="content">سلام {firstname}،
+
+یک وظیفه در برنامه مدیریت پروژه LibrePlan به {resource} اختصاص داده شده است.
+
+پروژه: {project}
+وظیفه: {task}
+
+اطلاعات بیشتر را اینجا بیابید: {projecturl}
+
+روز فوق‌العاده‌ای داشته باشید.
+سرور مدیریت پروژه LibrePlan دوستانه‌ی شما.</column>
+            <column name="subject">یک وظیفه به شما اختصاص داده شده است</column>
+        </insert>
+
+        <!-- type 1 = TEMPLATE_RESOURCE_REMOVED_FROM_TASK, language 15 = FA_IR_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="1"/>
+            <column name="language" valueNumeric="15"/>
+            <column name="content">سلام {firstname}
+
+{resource} از یک وظیفه در برنامه مدیریت پروژه LibrePlan حذف شده است.
+
+پروژه: {project}
+وظیفه: {task}
+
+اطلاعات بیشتر را اینجا بیابید: {projecturl}
+
+روز فوق‌العاده‌ای داشته باشید.
+سرور مدیریت پروژه LibrePlan دوستانه‌ی شما.</column>
+            <column name="subject">{resource} از وظیفه {task} در پروژه {project} حذف شده است</column>
+        </insert>
+
+        <!-- type 2 = TEMPLATE_MILESTONE_REACHED, language 15 = FA_IR_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="2"/>
+            <column name="language" valueNumeric="15"/>
+            <column name="content">سلام {firstname}
+
+می‌خواهیم به شما اطلاع دهیم که نقطه عطف {task} در پروژه {project} به دست آمده است.
+
+پروژه: {project}
+وظیفه: {task}
+
+روز خوبی داشته باشید.
+سرور مدیریت پروژه LibrePlan دوستانه‌ی شما.</column>
+            <column name="subject">به نقطه عطف {task} رسیده‌ایم</column>
+        </insert>
+
+        <!-- type 3 = TEMPLATE_TODAY_TASK_SHOULD_START, language 15 = FA_IR_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="3"/>
+            <column name="language" valueNumeric="15"/>
+            <column name="content">سلام {firstname}،
+
+می‌خواهیم به شما اطلاع دهیم که وظیفه {task} در پروژه {project} باید اکنون شروع شود.
+
+اطلاعات بیشتر در {projecturl} موجود است.
+
+روز فوق‌العاده‌ای داشته باشید.
+سرور مدیریت پروژه LibrePlan دوستانه‌ی شما.</column>
+            <column name="subject">وظیفه {task} در پروژه {project} باید اکنون شروع شود</column>
+        </insert>
+
+        <!-- type 4 = TEMPLATE_TODAY_TASK_SHOULD_FINISH, language 15 = FA_IR_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="4"/>
+            <column name="language" valueNumeric="15"/>
+            <column name="content">سلام {firstname}،
+
+می‌خواهیم به شما اطلاع دهیم که وظیفه {task} در پروژه {project} باید اکنون به پایان رسیده باشد.
+
+اگر اینطور نیست، لطفاً مدیر پروژه را در جریان بگذارید.
+
+اطلاعات بیشتر در {projecturl} موجود است.
+
+روز فوق‌العاده‌ای داشته باشید.
+سرور مدیریت پروژه LibrePlan دوستانه‌ی شما.</column>
+            <column name="subject">وظیفه {task} در پروژه {project} باید اکنون به پایان رسیده باشد.</column>
+        </insert>
+
+        <!-- type 5 = TEMPLATE_ENTER_DATA_IN_TIMESHEET, language 15 = FA_IR_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="5"/>
+            <column name="language" valueNumeric="15"/>
+            <column name="content">سلام {firstname}،
+
+آیا می‌توانید اطمینان حاصل کنید که برگه زمانی شما به‌روز است؟
+
+این به سازمان کمک می‌کند تا پیشرفت پروژه را به درستی پیگیری کند.
+
+صادق باشیم. هیچ‌کس واقعاً این کار را دوست ندارد.
+اما این فقط بخشی از کار است. پیگیری زمان صرف‌شده بر صورتحساب تأثیر می‌گذارد.
+و بنابراین بر نتیجه نهایی، و در نتیجه بر تداوم شرکت و حقوق شما نیز تأثیر می‌گذارد.
+
+شما می‌توانید این کار را بکنید!
+
+روز فوق‌العاده‌ای داشته باشید.
+سرور مدیریت پروژه LibrePlan دوستانه‌ی شما.</column>
+            <column name="subject">لطفاً اطمینان حاصل کنید که برگه زمانی شما به‌روز است.</column>
+        </insert>
+
+    </changeSet>
+
+</databaseChangeLog>

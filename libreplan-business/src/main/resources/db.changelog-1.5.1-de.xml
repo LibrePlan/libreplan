@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="add-email-templates-de" author="jeroen">
+
+        <!-- type 0 = TEMPLATE_TASK_ASSIGNED_TO_RESOURCE, language 11 = DE_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="0"/>
+            <column name="language" valueNumeric="11"/>
+            <column name="content">Hallo {firstname},
+
+In der LibrePlan-Projektverwaltungsanwendung wurde {resource} eine Aufgabe zugewiesen.
+
+Projekt: {project}
+Aufgabe: {task}
+
+Weitere Informationen finden Sie hier: {projecturl}
+
+Haben Sie einen wunderbaren Tag.
+Ihr freundlicher LibrePlan-Projektverwaltungsserver aus der Nachbarschaft.</column>
+            <column name="subject">Ihnen wurde eine Aufgabe zugewiesen</column>
+        </insert>
+
+        <!-- type 1 = TEMPLATE_RESOURCE_REMOVED_FROM_TASK, language 11 = DE_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="1"/>
+            <column name="language" valueNumeric="11"/>
+            <column name="content">Hallo {firstname}
+
+{resource} wurde in der LibrePlan-Projektverwaltungsanwendung von einer Aufgabe entfernt.
+
+Projekt: {project}
+Aufgabe: {task}
+
+Weitere Informationen finden Sie hier: {projecturl}
+
+Haben Sie einen wunderbaren Tag.
+Ihr freundlicher LibrePlan-Projektverwaltungsserver aus der Nachbarschaft.</column>
+            <column name="subject">{resource} wurde von der Aufgabe {task} im Projekt {project} entfernt</column>
+        </insert>
+
+        <!-- type 2 = TEMPLATE_MILESTONE_REACHED, language 11 = DE_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="2"/>
+            <column name="language" valueNumeric="11"/>
+            <column name="content">Hallo {firstname}
+
+Wir möchten Sie darüber informieren, dass der Meilenstein {task} im Projekt {project} erreicht wurde.
+
+Projekt: {project}
+Aufgabe: {task}
+
+Haben Sie einen schönen Tag.
+Ihr freundlicher LibrePlan-Projektverwaltungsserver aus der Nachbarschaft.</column>
+            <column name="subject">Meilenstein {task} wurde erreicht</column>
+        </insert>
+
+        <!-- type 3 = TEMPLATE_TODAY_TASK_SHOULD_START, language 11 = DE_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="3"/>
+            <column name="language" valueNumeric="11"/>
+            <column name="content">Hallo {firstname},
+
+Wir möchten Sie darüber informieren, dass die Aufgabe {task} im Projekt {project} jetzt beginnen sollte.
+
+Weitere Informationen finden Sie unter {projecturl}
+
+Haben Sie einen wunderbaren Tag.
+Ihr freundlicher LibrePlan-Projektverwaltungsserver aus der Nachbarschaft.</column>
+            <column name="subject">Aufgabe {task} im Projekt {project} sollte jetzt beginnen</column>
+        </insert>
+
+        <!-- type 4 = TEMPLATE_TODAY_TASK_SHOULD_FINISH, language 11 = DE_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="4"/>
+            <column name="language" valueNumeric="11"/>
+            <column name="content">Hallo {firstname},
+
+Wir möchten Sie darüber informieren, dass die Aufgabe {task} im Projekt {project} jetzt abgeschlossen sein sollte.
+
+Falls dies nicht der Fall ist, informieren Sie bitte den Projektleiter.
+
+Weitere Informationen finden Sie unter {projecturl}
+
+Haben Sie einen wunderbaren Tag.
+Ihr freundlicher LibrePlan-Projektverwaltungsserver aus der Nachbarschaft.</column>
+            <column name="subject">Aufgabe {task} im Projekt {project} sollte jetzt abgeschlossen sein.</column>
+        </insert>
+
+        <!-- type 5 = TEMPLATE_ENTER_DATA_IN_TIMESHEET, language 11 = DE_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="5"/>
+            <column name="language" valueNumeric="11"/>
+            <column name="content">Hallo {firstname},
+
+Könnten Sie bitte sicherstellen, dass Ihre Zeiterfassung aktuell ist?
+
+Dies hilft der Organisation, den Projektfortschritt angemessen zu verfolgen.
+
+Seien wir ehrlich. Niemand macht diese Arbeit wirklich gerne.
+Aber es ist nun einmal Teil der Arbeit. Die Erfassung der aufgewendeten Zeit hat Auswirkungen auf die Abrechnung.
+Und damit auf das Ergebnis und somit auch auf die Kontinuität des Unternehmens und Ihr Gehalt.
+
+Sie schaffen das!
+
+Haben Sie einen wunderbaren Tag.
+Ihr freundlicher LibrePlan-Projektverwaltungsserver aus der Nachbarschaft.</column>
+            <column name="subject">Bitte stellen Sie sicher, dass Ihre Zeiterfassung aktuell ist.</column>
+        </insert>
+
+    </changeSet>
+
+</databaseChangeLog>

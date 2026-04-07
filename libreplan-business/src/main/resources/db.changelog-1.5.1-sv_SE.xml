@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="add-email-templates-sv_SE" author="jeroen">
+
+        <!-- type 0 = TEMPLATE_TASK_ASSIGNED_TO_RESOURCE, language 18 = SV_SE_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="0"/>
+            <column name="language" valueNumeric="18"/>
+            <column name="content">Hej {firstname},
+
+En uppgift har tilldelats {resource} i projekthanteringsapplikationen LibrePlan.
+
+Projekt: {project}
+Uppgift: {task}
+
+Du hittar mer information här: {projecturl}
+
+Ha en fantastisk dag.
+Din vänliga LibrePlan-projekthanteringsserver från grannskapet.</column>
+            <column name="subject">En uppgift har tilldelats dig</column>
+        </insert>
+
+        <!-- type 1 = TEMPLATE_RESOURCE_REMOVED_FROM_TASK, language 18 = SV_SE_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="1"/>
+            <column name="language" valueNumeric="18"/>
+            <column name="content">Hej {firstname}
+
+{resource} har tagits bort från en uppgift i projekthanteringsapplikationen LibrePlan.
+
+Projekt: {project}
+Uppgift: {task}
+
+Du hittar mer information här: {projecturl}
+
+Ha en fantastisk dag.
+Din vänliga LibrePlan-projekthanteringsserver från grannskapet.</column>
+            <column name="subject">{resource} har tagits bort från uppgiften {task} i projektet {project}</column>
+        </insert>
+
+        <!-- type 2 = TEMPLATE_MILESTONE_REACHED, language 18 = SV_SE_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="2"/>
+            <column name="language" valueNumeric="18"/>
+            <column name="content">Hej {firstname}
+
+Vi vill informera dig om att milstolpen {task} har uppnåtts i projektet {project}
+
+Projekt: {project}
+Uppgift: {task}
+
+Ha en trevlig dag.
+Din vänliga LibrePlan-projekthanteringsserver från grannskapet.</column>
+            <column name="subject">Milstolpen {task} har uppnåtts</column>
+        </insert>
+
+        <!-- type 3 = TEMPLATE_TODAY_TASK_SHOULD_START, language 18 = SV_SE_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="3"/>
+            <column name="language" valueNumeric="18"/>
+            <column name="content">Hej {firstname},
+
+Vi vill informera dig om att uppgiften {task} i projektet {project} bör börja ungefär nu.
+
+Mer information finns på {projecturl}
+
+Ha en fantastisk dag.
+Din vänliga LibrePlan-projekthanteringsserver från grannskapet.</column>
+            <column name="subject">Uppgiften {task} i projektet {project} bör börja ungefär nu</column>
+        </insert>
+
+        <!-- type 4 = TEMPLATE_TODAY_TASK_SHOULD_FINISH, language 18 = SV_SE_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="4"/>
+            <column name="language" valueNumeric="18"/>
+            <column name="content">Hej {firstname},
+
+Vi vill informera dig om att uppgiften {task} i projektet {project} bör vara klar ungefär nu.
+
+Om så inte är fallet, vänligen informera projektledaren om detta.
+
+Mer information finns på {projecturl}
+
+Ha en fantastisk dag.
+Din vänliga LibrePlan-projekthanteringsserver från grannskapet.</column>
+            <column name="subject">Uppgiften {task} i projektet {project} bör vara klar ungefär nu.</column>
+        </insert>
+
+        <!-- type 5 = TEMPLATE_ENTER_DATA_IN_TIMESHEET, language 18 = SV_SE_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="5"/>
+            <column name="language" valueNumeric="18"/>
+            <column name="content">Hej {firstname},
+
+Kan du vänligen se till att din tidrapport är uppdaterad?
+
+Det hjälper organisationen att hålla god koll på projektframstegen.
+
+Vi ska vara ärliga. Ingen tycker egentligen om att göra det här arbetet.
+Men det är bara en del av jobbet. Att hålla koll på nedlagd tid påverkar faktureringen.
+Och därmed resultatet, och alltså även företagets kontinuitet och din lön.
+
+Du klarar det!
+
+Ha en fantastisk dag.
+Din vänliga LibrePlan-projekthanteringsserver från grannskapet.</column>
+            <column name="subject">Vänligen se till att din tidrapport är uppdaterad.</column>
+        </insert>
+
+    </changeSet>
+
+</databaseChangeLog>

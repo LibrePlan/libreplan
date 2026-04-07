@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="add-email-templates-nb" author="jeroen">
+
+        <!-- type 0 = TEMPLATE_TASK_ASSIGNED_TO_RESOURCE, language 14 = NB_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="0"/>
+            <column name="language" valueNumeric="14"/>
+            <column name="content">Hei {firstname},
+
+En oppgave har blitt tildelt {resource} i LibrePlan prosjektstyringsapplikasjonen.
+
+Prosjekt: {project}
+Oppgave: {task}
+
+Du finner mer informasjon her: {projecturl}
+
+Ha en flott dag.
+Din vennlige LibrePlan prosjektstyringsserver fra nabolaget.</column>
+            <column name="subject">Du har fått tildelt en oppgave</column>
+        </insert>
+
+        <!-- type 1 = TEMPLATE_RESOURCE_REMOVED_FROM_TASK, language 14 = NB_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="1"/>
+            <column name="language" valueNumeric="14"/>
+            <column name="content">Hei {firstname}
+
+{resource} er fjernet fra en oppgave i LibrePlan prosjektstyringsapplikasjonen.
+
+Prosjekt: {project}
+Oppgave: {task}
+
+Du finner mer informasjon her: {projecturl}
+
+Ha en flott dag.
+Din vennlige LibrePlan prosjektstyringsserver fra nabolaget.</column>
+            <column name="subject">{resource} er fjernet fra oppgaven {task} i prosjektet {project}</column>
+        </insert>
+
+        <!-- type 2 = TEMPLATE_MILESTONE_REACHED, language 14 = NB_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="2"/>
+            <column name="language" valueNumeric="14"/>
+            <column name="content">Hei {firstname}
+
+Vi vil gjerne informere deg om at milepæl {task} er nådd i prosjektet {project}
+
+Prosjekt: {project}
+Oppgave: {task}
+
+Ha en fin dag.
+Din vennlige LibrePlan prosjektstyringsserver fra nabolaget.</column>
+            <column name="subject">Milepæl {task} er nådd</column>
+        </insert>
+
+        <!-- type 3 = TEMPLATE_TODAY_TASK_SHOULD_START, language 14 = NB_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="3"/>
+            <column name="language" valueNumeric="14"/>
+            <column name="content">Hei {firstname},
+
+Vi vil gjerne informere deg om at oppgaven {task} i prosjektet {project} bør begynne omtrent nå.
+
+Mer informasjon finner du på {projecturl}
+
+Ha en flott dag.
+Din vennlige LibrePlan prosjektstyringsserver fra nabolaget.</column>
+            <column name="subject">Oppgaven {task} i prosjektet {project} bør begynne omtrent nå</column>
+        </insert>
+
+        <!-- type 4 = TEMPLATE_TODAY_TASK_SHOULD_FINISH, language 14 = NB_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="4"/>
+            <column name="language" valueNumeric="14"/>
+            <column name="content">Hei {firstname},
+
+Vi vil gjerne informere deg om at oppgaven {task} i prosjektet {project} bør være ferdig omtrent nå.
+
+Hvis det ikke er tilfellet, vennligst informer prosjektlederen om dette.
+
+Mer informasjon finner du på {projecturl}
+
+Ha en flott dag.
+Din vennlige LibrePlan prosjektstyringsserver fra nabolaget.</column>
+            <column name="subject">Oppgaven {task} i prosjektet {project} bør være ferdig omtrent nå.</column>
+        </insert>
+
+        <!-- type 5 = TEMPLATE_ENTER_DATA_IN_TIMESHEET, language 14 = NB_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="5"/>
+            <column name="language" valueNumeric="14"/>
+            <column name="content">Hei {firstname},
+
+Kan du vennligst sørge for at timelisten din er oppdatert?
+
+Det hjelper organisasjonen med å holde god oversikt over prosjektfremdriften.
+
+La oss være ærlige. Ingen liker egentlig å gjøre dette arbeidet.
+Men det er bare en del av jobben. Å holde styr på tidsbruk har innvirkning på fakturering.
+Og dermed på bunnlinjen, og slik også på selskapets kontinuitet og din lønn.
+
+Du klarer det!
+
+Ha en flott dag.
+Din vennlige LibrePlan prosjektstyringsserver fra nabolaget.</column>
+            <column name="subject">Vennligst sørg for at timelisten din er oppdatert.</column>
+        </insert>
+
+    </changeSet>
+
+</databaseChangeLog>

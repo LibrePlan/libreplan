@@ -9532,3 +9532,521 @@ msgstr ""
 msgid "Tim last sync"
 msgstr ""
 
+#: libreplan-business/src/main/java/org/libreplan/business/resources/entities/Resource.java:1130
+msgid "criterion satisfaction codes must be unique inside a resource"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/calendars/entities/CalendarExceptionTypeColor.java:30
+msgid "red (default)"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/calendars/entities/CalendarExceptionTypeColor.java:31
+msgid "green"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/calendars/entities/CalendarExceptionTypeColor.java:32
+msgid "blue"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/calendars/entities/CalendarExceptionTypeColor.java:33
+msgid "cyan"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/calendars/entities/CalendarExceptionTypeColor.java:34
+msgid "magenta"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/calendars/entities/CalendarExceptionTypeColor.java:35
+msgid "yellow"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/calendars/entities/CalendarExceptionTypeColor.java:36
+msgid "black"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/calendars/entities/CalendarExceptionTypeColor.java:37
+msgid "orange"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/calendars/entities/CalendarExceptionTypeColor.java:38
+msgid "purple"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/calendars/entities/Capacity.java:173
+msgid "unlimited"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/externalcompanies/entities/CommunicationType.java:31
+msgid "New project"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/externalcompanies/entities/CommunicationType.java:32
+msgid "Progress Update"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/externalcompanies/entities/CommunicationType.java:33
+msgid "Update Delivering Date"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/externalcompanies/entities/CommunicationType.java:34
+msgid "End date update"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/materials/entities/MaterialStatusEnum.java:32
+msgid "RECEIVED"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/materials/entities/MaterialStatusEnum.java:33
+msgid "PENDING"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/materials/entities/MaterialStatusEnum.java:34
+msgid "ORDERED"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/materials/entities/MaterialStatusEnum.java:35
+msgid "PROCESSING"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/materials/entities/MaterialStatusEnum.java:36
+msgid "CANCELED"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/orders/entities/OrderElement.java:752
+#: libreplan-business/src/main/java/org/libreplan/business/orders/entities/OrderLineGroup.java:972
+msgid "Cannot spread two progress in the same task"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/orders/entities/OrderElement.java:774
+#: libreplan-business/src/main/java/org/libreplan/business/orders/entities/OrderElement.java:795
+msgid "Duplicate Progress Assignment For Task"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/orders/entities/OrderElement.java:1104
+msgid "Quality form already exists"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/orders/entities/SchedulingState.java:366
+msgid "Fully scheduled"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/orders/entities/SchedulingState.java:368
+msgid "Partially scheduled"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/orders/entities/SchedulingState.java:370
+msgid "Unscheduled"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/orders/entities/SchedulingState.java:376
+msgid "F"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/orders/entities/SchedulingState.java:378
+msgid "P"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/orders/entities/SchedulingState.java:380
+msgid "U"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/orders/entities/CriterionRequirementHandler.java:539
+msgid "The criterion already exists into another task"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/orders/entities/HoursGroup.java:209
+msgid "Total percentage should be less than 100%"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/common/entities/PersonalTimesheetsPeriodicityEnum.java:35
+msgid "Monthly"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/common/entities/PersonalTimesheetsPeriodicityEnum.java:66
+msgid "Twice-monthly"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/common/entities/PersonalTimesheetsPeriodicityEnum.java:123
+msgid "Weekly"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/common/entities/PredefinedConnectorProperties.java:34
+msgid "Activated"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/common/entities/PredefinedConnectorProperties.java:35
+msgid "Server URL"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/common/entities/PredefinedConnectorProperties.java:40
+msgid "Number of days timesheet to Tim"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/common/entities/PredefinedConnectorProperties.java:41
+msgid "Number of days roster from Tim"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/common/entities/PredefinedConnectorProperties.java:42
+msgid "Productivity factor"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/common/entities/PredefinedConnectorProperties.java:43
+msgid "Department IDs to import toster"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/common/entities/PredefinedConnectorProperties.java:46
+msgid "JIRA labels: comma-separated list of labels or URL"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/common/entities/PredefinedConnectorProperties.java:55
+msgid "Protocol"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/common/entities/PredefinedConnectorProperties.java:58
+msgid "From address (no reply)"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/common/entities/PredefinedConnectorProperties.java:59
+msgid "Username (optional)"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/common/entities/PredefinedConnectorProperties.java:60
+msgid "Password (optional)"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/common/entities/ProgressType.java:37
+msgid "Progress with all tasks by hours"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/common/entities/ProgressType.java:38
+msgid "Progress with critical path tasks by hours"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/common/entities/ProgressType.java:39
+msgid "Progress with critical path tasks by duration"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/common/daos/EntitySequenceDAO.java:75
+msgid "Entity Sequence cannot be deleted. Entity Sequence already in use"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/planner/entities/SubcontractState.java:32
+msgid "Pending initial send"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/planner/entities/SubcontractState.java:33
+msgid "Pending update delivering date"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/planner/entities/SubcontractState.java:34
+msgid "Failed sent"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/planner/entities/SubcontractState.java:34
+msgid "Failed update"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/planner/entities/SubcontractState.java:35
+msgid "Success sent"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/planner/entities/PositionConstraintType.java:32
+msgid "as soon as possible"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/planner/entities/PositionConstraintType.java:39
+msgid "start not earlier than"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/planner/entities/PositionConstraintType.java:46
+msgid "start in fixed date"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/planner/entities/PositionConstraintType.java:58
+msgid "as late as possible"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/planner/entities/PositionConstraintType.java:65
+msgid "finish not later than"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/planner/entities/TaskStatusEnum.java:29
+msgid "In progress"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/planner/entities/TaskStatusEnum.java:30
+msgid "Pending"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/planner/entities/TaskStatusEnum.java:31
+msgid "Blocked"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/planner/entities/TaskStatusEnum.java:32
+msgid "Ready to start"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/planner/entities/allocationalgorithms/ResourcesPerDayModification.java:95
+msgid "There are no days available due to not satisfying the criteria."
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/planner/entities/allocationalgorithms/ResourcesPerDayModification.java:103
+msgid "Maybe the criteria are not satisfied in those days."
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/planner/entities/allocationalgorithms/ResourcesPerDayModification.java:175
+msgid "Resource is not available from task's start"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/planner/entities/allocationalgorithms/ResourcesPerDayModification.java:180
+msgid "Resource is not available according to task's calendar"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/planner/entities/StretchesFunction.java:426
+msgid "Stretches must sum 100%"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/planner/entities/TaskDeadlineViolationStatusEnum.java:35
+msgid "Deadline violated"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/planner/entities/AssignmentFunction.java:73
+msgid "Flat"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/planner/entities/AssignmentFunction.java:75
+msgid "Stretches"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/planner/entities/AssignmentFunction.java:76
+msgid "Interpolation"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/planner/entities/AssignmentFunction.java:77
+msgid "Sigmoid"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/planner/limiting/entities/LimitingResourceQueueDependency.java:170
+msgid "A queue dependency has to have an origin different from destiny"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/planner/limiting/entities/QueuePosition.java:53
+msgid "Hour should be between 0 and 23"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/logs/entities/IssueTypeEnum.java:13
+msgid "Problem or concern"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/logs/entities/IssueTypeEnum.java:13
+msgid "Request for change"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/logs/entities/IssueTypeEnum.java:13
+msgid "Off specification"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/logs/entities/RiskScoreStatesEnum.java:11
+msgid "0"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/logs/entities/RiskScoreStatesEnum.java:11
+msgid "1"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/logs/entities/RiskScoreStatesEnum.java:11
+msgid "2"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/logs/entities/RiskScoreStatesEnum.java:11
+msgid "3"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/logs/entities/RiskScoreStatesEnum.java:11
+msgid "4"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/logs/entities/RiskScoreStatesEnum.java:11
+msgid "6"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/logs/entities/RiskScoreStatesEnum.java:11
+msgid "9"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/templates/entities/OrderLineTemplate.java:166
+msgid "Line"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/resources/entities/Criterion.java:202
+msgid "[generic all machines]"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/resources/entities/ResourceEnum.java:30
+msgid "WORKER"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/resources/entities/ResourceEnum.java:31
+msgid "MACHINE"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/qualityforms/entities/QualityFormType.java:30
+msgid "by percentage"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/qualityforms/entities/QualityFormType.java:30
+msgid "by items"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/workreports/entities/HoursManagementEnum.java:31
+msgid "Number of assigned hours"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/workreports/entities/HoursManagementEnum.java:32
+msgid "Number of hours calculated by clock"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/workreports/entities/HoursManagementEnum.java:33
+msgid "Number of assigned hours and time"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/workreports/entities/PositionInWorkReportEnum.java:34
+msgid "heading"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/workreports/entities/PositionInWorkReportEnum.java:34
+msgid "line"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/settings/entities/Language.java:36
+msgid "Use browser language configuration"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/email/entities/EmailTemplateEnum.java:34
+msgid "Task assigned to resource"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/email/entities/EmailTemplateEnum.java:35
+msgid "Resource removed from task"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/email/entities/EmailTemplateEnum.java:36
+msgid "Milestone reached"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/email/entities/EmailTemplateEnum.java:37
+msgid "Task should start"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/email/entities/EmailTemplateEnum.java:38
+msgid "Task should finish"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/email/entities/EmailTemplateEnum.java:39
+msgid "Enter data in timesheet"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/users/entities/OrderAuthorizationType.java:33
+msgid "Read authorization"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/users/entities/OrderAuthorizationType.java:34
+msgid "Write authorization"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/users/entities/User.java:373
+msgid "Database"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/users/entities/User.java:374
+msgid "LDAP"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/users/entities/UserRole.java:39
+msgid "Web service reader"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/users/entities/UserRole.java:40
+msgid "Web service writer"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/users/entities/UserRole.java:41
+msgid "Web service subcontractor operations"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/users/entities/UserRole.java:44
+msgid "Read all projects"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/users/entities/UserRole.java:45
+msgid "Edit all projects"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/users/entities/UserRole.java:46
+msgid "Create projects"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/users/entities/UserRole.java:54
+msgid "Import projects"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/users/entities/UserRole.java:81
+msgid "Hours Worked Per Resource Report"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/users/entities/UserRole.java:82
+msgid "Total Worked Hours By Resource In A Month Report"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/users/entities/UserRole.java:83
+msgid "Work And Progress Per Project Report"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/users/entities/UserRole.java:84
+msgid "Work And Progress Per Task Report"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/users/entities/UserRole.java:85
+msgid "Estimated/Planned Hours Per Task Report"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/users/entities/UserRole.java:86
+msgid "Project Costs Report"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/users/entities/UserRole.java:87
+msgid "Task Scheduling Status In Project Report"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/users/entities/UserRole.java:88
+msgid "Materials Needed At Date Report"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/users/entities/UserRole.java:92
+msgid "Use files for order"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/users/entities/UserRole.java:94
+msgid "Email: task assigned to resource"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/users/entities/UserRole.java:95
+msgid "Email: resource removed from task"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/users/entities/UserRole.java:96
+msgid "Email: milestone reached"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/users/entities/UserRole.java:97
+msgid "Email: task should finish"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/users/entities/UserRole.java:98
+msgid "Email: task should start"
+msgstr ""
+
+#: libreplan-business/src/main/java/org/libreplan/business/users/entities/UserRole.java:99
+msgid "Email: timesheet data missing"
+msgstr ""
+
