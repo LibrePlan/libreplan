@@ -5,7 +5,7 @@ Maintainer: Adrian Perez <aperez@igalia.com>
 Build-Depends: debhelper (>= 7.0.50), maven, python-docutils,
  gettext (>= 0.17), default-jdk
 Standards-Version: 3.8.4
-Homepage: http://www.libreplan.com/
+Homepage: https://www.libreplan.dev/
 
 Package: libreplan
 Architecture: any
