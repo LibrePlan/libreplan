@@ -8722,7 +8722,7 @@ msgstr "total deve ser maior ou igual a 0"
 
 #: libreplan-webapp/src/main/webapp/dashboard/_dashboardforglobal.zul:32
 msgid "Pipeline"
-msgstr "Gasoduto"
+msgstr "Tubulação"
 
 #: libreplan-webapp/src/main/webapp/planner/editTask.zul:60
 msgid "Task properties"

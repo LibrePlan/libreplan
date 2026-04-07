@@ -9241,3 +9241,7 @@ msgstr "Suksess sendt"
 #: libreplan-business/src/main/java/org/libreplan/business/settings/entities/Language.java:36
 msgid "Use browser language configuration"
 msgstr "Bruk nettleserspråk konfigurasjon"
+
+#: libreplan-webapp/src/main/webapp/dashboard/_dashboardforglobal.zul:32
+msgid "Pipeline"
+msgstr "Rørledning"

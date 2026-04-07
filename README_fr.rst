@@ -113,7 +113,7 @@ Page web
 --------
 
 Vous pourrez trouver plus d'informations concernant *LibrePlan* sur
-http://www.libreplan.com/.
+https://www.libreplan.dev/.
 
 Pour les informations relatives au développement de *LibrePlan*, vous pouvez aller sur le wiki sur
 https://wiki.libreplan.dev/.

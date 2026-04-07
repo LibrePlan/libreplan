@@ -9246,3 +9246,7 @@ msgstr "Envío exitoso"
 #: libreplan-business/src/main/java/org/libreplan/business/settings/entities/Language.java:36
 msgid "Use browser language configuration"
 msgstr "Utilizar a configuración de idioma do navegador"
+
+#: libreplan-webapp/src/main/webapp/dashboard/_dashboardforglobal.zul:32
+msgid "Pipeline"
+msgstr "Tubería"
