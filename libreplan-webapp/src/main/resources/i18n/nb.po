@@ -5460,10 +5460,8 @@ msgid "LDAP Roles (separated by ;)"
 msgstr "LDAP Roller (atskilt med;)"
 
 #: libreplan-webapp/src/main/webapp/common/configuration.zul:129
-msgid ""
-"Help the project developers to collect information about which LibrePlan "
-"version you are using"
-msgstr "Hjelp prosjektutviklere å samle inn informasjon om hvilke LibrePlan versjon du bruker"
+msgid "Allow collection of anonymous statistics to help us improve LibrePlan"
+msgstr "Tillat innsamling av anonym statistikk for å hjelpe oss med å forbedre LibrePlan"
 
 #: org/libreplan/web/resources/worker/WorkerCRUDController.java:190
 msgid "Not bound"

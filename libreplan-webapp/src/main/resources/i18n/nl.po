@@ -5391,12 +5391,8 @@ msgid "Inherited exception"
 msgstr "Georven uitzondering"
 
 #: libreplan-webapp/src/main/webapp/common/configuration.zul:150
-msgid ""
-"Help the project developers to collect information about which LibrePlan "
-"version you are using"
-msgstr ""
-"Help de ontwikkelaars van LibrePlan bij het verzamelen van informatie over "
-"welke versie u gebruikt"
+msgid "Allow collection of anonymous statistics to help us improve LibrePlan"
+msgstr "Sta het verzamelen van anonieme statistieken toe om ons te helpen LibrePlan te verbeteren"
 
 #: org/libreplan/web/orders/ManageOrderElementAdvancesController.java:1179
 msgid ""

@@ -5498,10 +5498,8 @@ msgid "Delivery dates requested by customer. "
 msgstr "按客户要求交货日期。"
 
 #: libreplan-webapp/src/main/webapp/common/configuration.zul:128
-msgid ""
-"Help the project developers to collect information about which LibrePlan "
-"version you are using"
-msgstr "帮助项目开发商LibrePlan版本，你使用的是收集信息"
+msgid "Allow collection of anonymous statistics to help us improve LibrePlan"
+msgstr "允許收集匿名統計資料，幫助我們改善LibrePlan"
 
 #: libreplan-webapp/src/main/webapp/resources/worker/worker.zul:22
 msgid "LibrePlan: Workers"
