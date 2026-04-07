@@ -6,7 +6,7 @@ Introduction
 L'objet de ce document est de décrire les fonctionnalités de LibrePlan et de fournir à l'utilisateur les informations nécessaires pour configurer et utiliser l'application.
 
 LibrePlan est une application web Open Source destinée à la planification de projets. Son objet premier consiste à fournir une solution complète pour la gestion des projets d'une compagnie.
-Pour tout renseignement plus spécifique dont vous pourriez avoir besoin sur ce logiciel, merci de contacter l'équipe de développement sur http://www.libreplan.com/contact/
+Pour tout renseignement plus spécifique dont vous pourriez avoir besoin sur ce logiciel, merci de contacter l'équipe de développement sur https://www.libreplan.dev/contact/
 
 
 .. figure:: images/company_view.png

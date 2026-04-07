@@ -8572,3 +8572,6 @@ msgstr "任务应该完成"
 msgid "Enter data in timesheet"
 msgstr "在工时表中输入数据"
 
+#: libreplan-webapp/src/main/webapp/dashboard/_dashboardforglobal.zul:32
+msgid "Pipeline"
+msgstr "管道"

@@ -228,5 +228,5 @@ Develop LibrePlan in Eclipse using MySQL
   to set at least the first two: ``dev`` and ``mysql``.
 
 
-.. _LibrePlan: http://www.libreplan.com/
+.. _LibrePlan: https://www.libreplan.dev/
 .. _Eclipse: http://www.eclipse.org

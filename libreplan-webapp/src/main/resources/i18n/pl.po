@@ -9271,3 +9271,6 @@ msgstr "Zadanie powinno się zakończyć"
 msgid "Enter data in timesheet"
 msgstr "Wprowadź dane do karty czasu pracy"
 
+#: libreplan-webapp/src/main/webapp/dashboard/_dashboardforglobal.zul:32
+msgid "Pipeline"
+msgstr "Rurociąg"

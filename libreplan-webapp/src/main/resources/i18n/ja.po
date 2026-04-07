@@ -9269,3 +9269,6 @@ msgstr "タスクを完了する必要があります"
 msgid "Enter data in timesheet"
 msgstr "タイムシートにデータを入力してください"
 
+#: libreplan-webapp/src/main/webapp/dashboard/_dashboardforglobal.zul:32
+msgid "Pipeline"
+msgstr "パイプライン"

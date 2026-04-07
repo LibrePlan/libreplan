@@ -9268,3 +9268,6 @@ msgstr "Oppgaven bør avsluttes"
 msgid "Enter data in timesheet"
 msgstr "Fyll inn data i timelisten"
 
+#: libreplan-webapp/src/main/webapp/dashboard/_dashboardforglobal.zul:32
+msgid "Pipeline"
+msgstr "Rørledning"

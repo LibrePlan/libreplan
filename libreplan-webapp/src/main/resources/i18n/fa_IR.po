@@ -9270,3 +9270,6 @@ msgstr "وظیفه باید پایان یابد"
 msgid "Enter data in timesheet"
 msgstr "اطلاعات را در برگه زمانی وارد کنید"
 
+#: libreplan-webapp/src/main/webapp/dashboard/_dashboardforglobal.zul:32
+msgid "Pipeline"
+msgstr "خط لوله"

@@ -9277,3 +9277,6 @@ msgstr "Задача должна завершиться"
 msgid "Enter data in timesheet"
 msgstr "Введите данные в табель учёта рабочего времени"
 
+#: libreplan-webapp/src/main/webapp/dashboard/_dashboardforglobal.zul:32
+msgid "Pipeline"
+msgstr "Трубопровод"

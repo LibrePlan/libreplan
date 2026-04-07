@@ -2638,7 +2638,7 @@ developing new web services. For each web service, some test scripts are
 provided in order to check implementation.
 
 
-.. _LibrePlan: http://www.libreplan.com/
+.. _LibrePlan: https://www.libreplan.dev/
 .. _CRUD: http://en.wikipedia.org/wiki/Create,_read,_update_and_delete
 .. _Hibernate: http://www.hibernate.org/
 .. _`Optimistic Locking`: http://en.wikipedia.org/wiki/Optimistic_locking

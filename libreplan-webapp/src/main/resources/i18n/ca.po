@@ -9270,3 +9270,6 @@ msgstr "La tasca hauria d'acabar"
 msgid "Enter data in timesheet"
 msgstr "Introduïu dades al full d'hores"
 
+#: libreplan-webapp/src/main/webapp/dashboard/_dashboardforglobal.zul:32
+msgid "Pipeline"
+msgstr "Canonada"

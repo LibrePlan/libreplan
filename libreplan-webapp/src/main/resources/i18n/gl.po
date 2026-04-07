@@ -9273,3 +9273,6 @@ msgstr "A tarefa debería rematar"
 msgid "Enter data in timesheet"
 msgstr "Introducir datos na folla de horas"
 
+#: libreplan-webapp/src/main/webapp/dashboard/_dashboardforglobal.zul:32
+msgid "Pipeline"
+msgstr "Tubería"

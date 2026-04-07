@@ -148,7 +148,7 @@ public class DashboardTabCreator {
             }
 
         };
-        return new CreatedOnDemandTab(_t("Dashboard"), "global-dashboard",
+        return new CreatedOnDemandTab(_t("Pipeline"), "global-dashboard",
                 componentCreator) {
 
             @Override
@@ -157,7 +157,7 @@ public class DashboardTabCreator {
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(getSchedulingLabel()));
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-                breadcrumbs.appendChild(new Label(_t("Dashboard")));
+                breadcrumbs.appendChild(new Label(_t("Pipeline")));
             }
         };
 
