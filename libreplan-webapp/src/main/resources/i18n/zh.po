@@ -8548,6 +8548,9 @@ msgstr "关键路径任务的持续时间的研究进展"
 msgid "Entity Sequence cannot be deleted. Entity Sequence already in use"
 msgstr "实体序列不能被删除。已在使用中的实体序列"
 
+#: libreplan-webapp/src/main/webapp/common/layout/login.zul
+msgid "version"
+msgstr "版本"
 #: libreplan-webapp/src/main/webapp/dashboard/_dashboardforglobal.zul:32
 msgid "Pipeline"
 msgstr "管道"

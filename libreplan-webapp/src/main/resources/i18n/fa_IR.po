@@ -9246,6 +9246,9 @@ msgstr "ارسال موفقیت آمیز"
 msgid "Use browser language configuration"
 msgstr "از پیکربندی زبانی مرورگر استفاده نمایید"
 
+#: libreplan-webapp/src/main/webapp/common/layout/login.zul
+msgid "version"
+msgstr "نسخه"
 #: libreplan-webapp/src/main/webapp/dashboard/_dashboardforglobal.zul:32
 msgid "Pipeline"
 msgstr "خط لوله"

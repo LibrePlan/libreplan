@@ -9246,6 +9246,9 @@ msgstr "Enviament correcte"
 msgid "Use browser language configuration"
 msgstr "Utilitzar configuració d'idioma del navegador"
 
+#: libreplan-webapp/src/main/webapp/common/layout/login.zul
+msgid "version"
+msgstr "versió"
 #: libreplan-webapp/src/main/webapp/dashboard/_dashboardforglobal.zul:32
 msgid "Pipeline"
 msgstr "Canonada"

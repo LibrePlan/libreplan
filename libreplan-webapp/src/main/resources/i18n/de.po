@@ -9641,3 +9641,7 @@ msgstr "verbleiben"
 #: libreplan-webapp/src/main/webapp/common/configuration.zul:477
 msgid "Role search query"
 msgstr "Rollensuchbegriff"
+
+#: libreplan-webapp/src/main/webapp/common/layout/login.zul
+msgid "version"
+msgstr "Version"
