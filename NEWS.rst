@@ -735,7 +735,7 @@ Highlights:
 * A custom Mobile Application has been developed. This is a tool to allow
   LibrePlan users to access the tasks they are assigned to, from any project,
   report worked hours and check their progresses from a mobile device.
-  http://www.libreplan.com/download/mobile-application/
+  https://www.libreplan.dev/download/mobile-application/
   You can download this application for free to any of the currently supported
   platforms, and configure it to connect to your LibrePlan installation to start
   using it.
@@ -3406,7 +3406,7 @@ decided by the community, we are remarking that LibrePlan is a generic purpose
 planning tool, suitable to many sectors.
 
 Besides, with this new version, the project has a new image and a revamped
-website that you can visit at http://www.libreplan.com/
+website that you can visit at https://www.libreplan.dev/
 
 This new major version comes with important new features apart from all the
 bugfixing done since the 1.1 major release. Among the new features, these are

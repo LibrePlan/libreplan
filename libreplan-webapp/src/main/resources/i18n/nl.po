@@ -8721,7 +8721,7 @@ msgstr "totaal moet groter dan of gelijk aan nul zijn"
 
 #: libreplan-webapp/src/main/webapp/dashboard/_dashboardforglobal.zul:32
 msgid "Pipeline"
-msgstr "Pipeline"
+msgstr "Pijplijn"
 
 #: libreplan-webapp/src/main/webapp/planner/editTask.zul:60
 msgid "Task properties"

@@ -9248,3 +9248,6 @@ msgstr "Použít nastavení jazyka prohlížeče"
 #: libreplan-webapp/src/main/webapp/common/layout/login.zul
 msgid "version"
 msgstr "verze"
+#: libreplan-webapp/src/main/webapp/dashboard/_dashboardforglobal.zul:32
+msgid "Pipeline"
+msgstr "Potrubí"

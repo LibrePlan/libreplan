@@ -9250,3 +9250,6 @@ msgstr "Utilizar a configuração de idioma do navegador"
 #: libreplan-webapp/src/main/webapp/common/layout/login.zul
 msgid "version"
 msgstr "versão"
+#: libreplan-webapp/src/main/webapp/dashboard/_dashboardforglobal.zul:32
+msgid "Pipeline"
+msgstr "Tubagem"

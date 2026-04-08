@@ -9250,3 +9250,6 @@ msgstr "Użyj konfiguracji języka przeglądarki"
 #: libreplan-webapp/src/main/webapp/common/layout/login.zul
 msgid "version"
 msgstr "wersja"
+#: libreplan-webapp/src/main/webapp/dashboard/_dashboardforglobal.zul:32
+msgid "Pipeline"
+msgstr "Rurociąg"

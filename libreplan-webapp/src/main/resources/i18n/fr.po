@@ -8839,7 +8839,7 @@ msgstr "le total doit être supérieur ou égal à 0"
 
 #: libreplan-webapp/src/main/webapp/dashboard/_dashboardforglobal.zul:32
 msgid "Pipeline"
-msgstr "File"
+msgstr "Conduite"
 
 #: libreplan-webapp/src/main/webapp/planner/editTask.zul:60
 msgid "Task properties"

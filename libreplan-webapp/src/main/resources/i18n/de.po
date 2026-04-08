@@ -8796,7 +8796,7 @@ msgstr "Gesamt muss größer als oder gleich 0 sein"
 
 #: libreplan-webapp/src/main/webapp/dashboard/_dashboardforglobal.zul:32
 msgid "Pipeline"
-msgstr "Pipeline"
+msgstr "Rohrleitung"
 
 #: libreplan-webapp/src/main/webapp/planner/editTask.zul:60
 msgid "Task properties"
