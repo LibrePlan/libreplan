@@ -9253,6 +9253,30 @@ msgstr "Успешная отправка"
 msgid "Use browser language configuration"
 msgstr "Использовать настройки языка из браузера"
 
+#: libreplan-business/src/main/java/org/libreplan/business/email/entities/EmailTemplateEnum.java:34
+msgid "Task assigned to resource"
+msgstr "Задача назначена ресурсу"
+
+#: libreplan-business/src/main/java/org/libreplan/business/email/entities/EmailTemplateEnum.java:35
+msgid "Resource removed from task"
+msgstr "Ресурс удалён из задачи"
+
+#: libreplan-business/src/main/java/org/libreplan/business/email/entities/EmailTemplateEnum.java:36
+msgid "Milestone reached"
+msgstr "Веха достигнута"
+
+#: libreplan-business/src/main/java/org/libreplan/business/email/entities/EmailTemplateEnum.java:37
+msgid "Task should start"
+msgstr "Задача должна начаться"
+
+#: libreplan-business/src/main/java/org/libreplan/business/email/entities/EmailTemplateEnum.java:38
+msgid "Task should finish"
+msgstr "Задача должна завершиться"
+
+#: libreplan-business/src/main/java/org/libreplan/business/email/entities/EmailTemplateEnum.java:39
+msgid "Enter data in timesheet"
+msgstr "Введите данные в табель учёта рабочего времени"
+
 #: libreplan-webapp/src/main/webapp/dashboard/_dashboardforglobal.zul:32
 msgid "Pipeline"
 msgstr "Трубопровод"

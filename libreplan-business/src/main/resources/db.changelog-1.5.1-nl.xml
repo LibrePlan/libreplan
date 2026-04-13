@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="add-email-templates-nl" author="jeroen">
+
+        <!-- type 0 = TEMPLATE_TASK_ASSIGNED_TO_RESOURCE, language 8 = NL_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="0"/>
+            <column name="language" valueNumeric="8"/>
+            <column name="content">Hallo {firstname},
+
+Er is een taak toegewezen aan {resource} in de LibrePlan projectbeheerapplicatie.
+
+Project: {project}
+Taak: {task}
+
+Meer informatie is hier te vinden: {projecturl}
+
+Heb een geweldige dag.
+Je vriendelijke LibrePlan projectbeheerserver uit de buurt.</column>
+            <column name="subject">Er is een taak aan je toegewezen</column>
+        </insert>
+
+        <!-- type 1 = TEMPLATE_RESOURCE_REMOVED_FROM_TASK, language 8 = NL_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="1"/>
+            <column name="language" valueNumeric="8"/>
+            <column name="content">Hallo {firstname}
+
+{resource} is verwijderd van een taak in de LibrePlan projectbeheerapplicatie.
+
+Project: {project}
+Taak: {task}
+
+Meer informatie is hier te vinden: {projecturl}
+
+Heb een geweldige dag.
+Je vriendelijke LibrePlan projectbeheerserver uit de buurt.</column>
+            <column name="subject">{resource} is verwijderd van taak {task} in project {project}</column>
+        </insert>
+
+        <!-- type 2 = TEMPLATE_MILESTONE_REACHED, language 8 = NL_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="2"/>
+            <column name="language" valueNumeric="8"/>
+            <column name="content">Hallo {firstname}
+
+Hierbij laten we je weten dat mijlpaal {task} is bereikt in project {project}
+
+Project: {project}
+Taak: {task}
+
+Heb een fijne dag.
+Je vriendelijke LibrePlan projectbeheerserver uit de buurt.</column>
+            <column name="subject">Mijlpaal {task} is bereikt</column>
+        </insert>
+
+        <!-- type 3 = TEMPLATE_TODAY_TASK_SHOULD_START, language 8 = NL_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="3"/>
+            <column name="language" valueNumeric="8"/>
+            <column name="content">Hallo {firstname},
+
+Hierbij laten we je weten dat taak {task} in project {project} nu zou moeten beginnen.
+
+Meer informatie is te vinden op {projecturl}
+
+Heb een geweldige dag.
+Je vriendelijke LibrePlan projectbeheerserver uit de buurt.</column>
+            <column name="subject">Taak {task} in project {project} zou nu moeten beginnen</column>
+        </insert>
+
+        <!-- type 4 = TEMPLATE_TODAY_TASK_SHOULD_FINISH, language 8 = NL_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="4"/>
+            <column name="language" valueNumeric="8"/>
+            <column name="content">Hallo {firstname},
+
+Hierbij laten we je weten dat taak {task} in project {project} nu afgerond zou moeten zijn.
+
+Als dat niet het geval is, informeer dan de projectleider hierover.
+
+Meer informatie is te vinden op {projecturl}
+
+Heb een geweldige dag.
+Je vriendelijke LibrePlan projectbeheerserver uit de buurt.</column>
+            <column name="subject">Taak {task} in project {project} zou nu afgerond moeten zijn.</column>
+        </insert>
+
+        <!-- type 5 = TEMPLATE_ENTER_DATA_IN_TIMESHEET, language 8 = NL_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="5"/>
+            <column name="language" valueNumeric="8"/>
+            <column name="content">Hallo {firstname},
+
+Kun je er alsjeblieft voor zorgen dat je urenstaat up-to-date is?
+
+Het helpt de organisatie om de projectvoortgang goed bij te houden.
+
+Laten we eerlijk zijn. Niemand doet dit werk echt graag.
+Maar het is nu eenmaal onderdeel van het werk. Het bijhouden van bestede tijd heeft impact op de facturatie.
+En dus op het eindresultaat, en daarmee ook op de continuïteit van het bedrijf en jouw salaris.
+
+Jij kunt het!
+
+Heb een geweldige dag.
+Je vriendelijke LibrePlan projectbeheerserver uit de buurt.</column>
+            <column name="subject">Zorg er alsjeblieft voor dat je urenstaat up-to-date is.</column>
+        </insert>
+
+    </changeSet>
+
+</databaseChangeLog>

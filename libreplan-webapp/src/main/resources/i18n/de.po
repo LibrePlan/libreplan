@@ -9641,3 +9641,28 @@ msgstr "verbleiben"
 #: libreplan-webapp/src/main/webapp/common/configuration.zul:477
 msgid "Role search query"
 msgstr "Rollensuchbegriff"
+
+#: libreplan-business/src/main/java/org/libreplan/business/email/entities/EmailTemplateEnum.java:34
+msgid "Task assigned to resource"
+msgstr "Aufgabe einer Ressource zugewiesen"
+
+#: libreplan-business/src/main/java/org/libreplan/business/email/entities/EmailTemplateEnum.java:35
+msgid "Resource removed from task"
+msgstr "Ressource von der Aufgabe entfernt"
+
+#: libreplan-business/src/main/java/org/libreplan/business/email/entities/EmailTemplateEnum.java:36
+msgid "Milestone reached"
+msgstr "Meilenstein erreicht"
+
+#: libreplan-business/src/main/java/org/libreplan/business/email/entities/EmailTemplateEnum.java:37
+msgid "Task should start"
+msgstr "Aufgabe sollte beginnen"
+
+#: libreplan-business/src/main/java/org/libreplan/business/email/entities/EmailTemplateEnum.java:38
+msgid "Task should finish"
+msgstr "Aufgabe sollte enden"
+
+#: libreplan-business/src/main/java/org/libreplan/business/email/entities/EmailTemplateEnum.java:39
+msgid "Enter data in timesheet"
+msgstr "Daten in Zeiterfassung eingeben"
+

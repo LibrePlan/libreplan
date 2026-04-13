@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="add-email-templates-ru" author="jeroen">
+
+        <!-- type 0 = TEMPLATE_TASK_ASSIGNED_TO_RESOURCE, language 4 = RU_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="0"/>
+            <column name="language" valueNumeric="4"/>
+            <column name="content">Здравствуйте, {firstname},
+
+Задача была назначена {resource} в приложении управления проектами LibrePlan.
+
+Проект: {project}
+Задача: {task}
+
+Дополнительную информацию можно найти здесь: {projecturl}
+
+Хорошего вам дня.
+Ваш дружелюбный сервер управления проектами LibrePlan.</column>
+            <column name="subject">Вам назначена задача</column>
+        </insert>
+
+        <!-- type 1 = TEMPLATE_RESOURCE_REMOVED_FROM_TASK, language 4 = RU_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="1"/>
+            <column name="language" valueNumeric="4"/>
+            <column name="content">Здравствуйте, {firstname}
+
+{resource} был удалён из задачи в приложении управления проектами LibrePlan.
+
+Проект: {project}
+Задача: {task}
+
+Дополнительную информацию можно найти здесь: {projecturl}
+
+Хорошего вам дня.
+Ваш дружелюбный сервер управления проектами LibrePlan.</column>
+            <column name="subject">{resource} удалён из задачи {task} в проекте {project}</column>
+        </insert>
+
+        <!-- type 2 = TEMPLATE_MILESTONE_REACHED, language 4 = RU_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="2"/>
+            <column name="language" valueNumeric="4"/>
+            <column name="content">Здравствуйте, {firstname}
+
+Сообщаем вам, что веха {task} достигнута в проекте {project}
+
+Проект: {project}
+Задача: {task}
+
+Хорошего вам дня.
+Ваш дружелюбный сервер управления проектами LibrePlan.</column>
+            <column name="subject">Веха {task} достигнута</column>
+        </insert>
+
+        <!-- type 3 = TEMPLATE_TODAY_TASK_SHOULD_START, language 4 = RU_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="3"/>
+            <column name="language" valueNumeric="4"/>
+            <column name="content">Здравствуйте, {firstname},
+
+Сообщаем вам, что задача {task} в проекте {project} должна начаться примерно сейчас.
+
+Дополнительную информацию можно найти по адресу {projecturl}
+
+Хорошего вам дня.
+Ваш дружелюбный сервер управления проектами LibrePlan.</column>
+            <column name="subject">Задача {task} в проекте {project} должна начаться примерно сейчас</column>
+        </insert>
+
+        <!-- type 4 = TEMPLATE_TODAY_TASK_SHOULD_FINISH, language 4 = RU_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="4"/>
+            <column name="language" valueNumeric="4"/>
+            <column name="content">Здравствуйте, {firstname},
+
+Сообщаем вам, что задача {task} в проекте {project} должна быть завершена примерно сейчас.
+
+Если это не так, пожалуйста, сообщите об этом руководителю проекта.
+
+Дополнительную информацию можно найти по адресу {projecturl}
+
+Хорошего вам дня.
+Ваш дружелюбный сервер управления проектами LibrePlan.</column>
+            <column name="subject">Задача {task} в проекте {project} должна быть завершена примерно сейчас.</column>
+        </insert>
+
+        <!-- type 5 = TEMPLATE_ENTER_DATA_IN_TIMESHEET, language 4 = RU_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="5"/>
+            <column name="language" valueNumeric="4"/>
+            <column name="content">Здравствуйте, {firstname},
+
+Не могли бы вы убедиться, что ваш табель рабочего времени актуален?
+
+Это помогает организации должным образом отслеживать прогресс проекта.
+
+Будем честны. Никто по-настоящему не любит выполнять эту работу.
+Но это просто часть работы. Учёт затраченного времени влияет на выставление счетов.
+А значит на итоговый результат, и тем самым на стабильность компании и ваш заработок.
+
+Вы справитесь!
+
+Хорошего вам дня.
+Ваш дружелюбный сервер управления проектами LibrePlan.</column>
+            <column name="subject">Пожалуйста, убедитесь, что ваш табель рабочего времени актуален.</column>
+        </insert>
+
+    </changeSet>
+
+</databaseChangeLog>

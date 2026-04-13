@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="add-email-templates-ja" author="jeroen">
+
+        <!-- type 0 = TEMPLATE_TASK_ASSIGNED_TO_RESOURCE, language 16 = JA_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="0"/>
+            <column name="language" valueNumeric="16"/>
+            <column name="content">こんにちは {firstname}、
+
+LibrePlanプロジェクト管理アプリケーションで{resource}にタスクが割り当てられました。
+
+プロジェクト: {project}
+タスク: {task}
+
+詳細はこちらをご覧ください: {projecturl}
+
+素晴らしい一日をお過ごしください。
+ご近所のLibrePlanプロジェクト管理サーバーより。</column>
+            <column name="subject">タスクが割り当てられました</column>
+        </insert>
+
+        <!-- type 1 = TEMPLATE_RESOURCE_REMOVED_FROM_TASK, language 16 = JA_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="1"/>
+            <column name="language" valueNumeric="16"/>
+            <column name="content">こんにちは {firstname}
+
+LibrePlanプロジェクト管理アプリケーションで{resource}がタスクから削除されました。
+
+プロジェクト: {project}
+タスク: {task}
+
+詳細はこちらをご覧ください: {projecturl}
+
+素晴らしい一日をお過ごしください。
+ご近所のLibrePlanプロジェクト管理サーバーより。</column>
+            <column name="subject">{resource}がプロジェクト{project}のタスク{task}から削除されました</column>
+        </insert>
+
+        <!-- type 2 = TEMPLATE_MILESTONE_REACHED, language 16 = JA_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="2"/>
+            <column name="language" valueNumeric="16"/>
+            <column name="content">こんにちは {firstname}
+
+プロジェクト{project}でマイルストーン{task}に到達したことをお知らせします。
+
+プロジェクト: {project}
+タスク: {task}
+
+良い一日をお過ごしください。
+ご近所のLibrePlanプロジェクト管理サーバーより。</column>
+            <column name="subject">マイルストーン{task}に到達しました</column>
+        </insert>
+
+        <!-- type 3 = TEMPLATE_TODAY_TASK_SHOULD_START, language 16 = JA_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="3"/>
+            <column name="language" valueNumeric="16"/>
+            <column name="content">こんにちは {firstname}、
+
+プロジェクト{project}のタスク{task}はそろそろ開始する予定であることをお知らせします。
+
+詳細は{projecturl}をご覧ください。
+
+素晴らしい一日をお過ごしください。
+ご近所のLibrePlanプロジェクト管理サーバーより。</column>
+            <column name="subject">プロジェクト{project}のタスク{task}はそろそろ開始する予定です</column>
+        </insert>
+
+        <!-- type 4 = TEMPLATE_TODAY_TASK_SHOULD_FINISH, language 16 = JA_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="4"/>
+            <column name="language" valueNumeric="16"/>
+            <column name="content">こんにちは {firstname}、
+
+プロジェクト{project}のタスク{task}はそろそろ完了する予定であることをお知らせします。
+
+そうでない場合は、プロジェクトリーダーにご連絡ください。
+
+詳細は{projecturl}をご覧ください。
+
+素晴らしい一日をお過ごしください。
+ご近所のLibrePlanプロジェクト管理サーバーより。</column>
+            <column name="subject">プロジェクト{project}のタスク{task}はそろそろ完了する予定です。</column>
+        </insert>
+
+        <!-- type 5 = TEMPLATE_ENTER_DATA_IN_TIMESHEET, language 16 = JA_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="5"/>
+            <column name="language" valueNumeric="16"/>
+            <column name="content">こんにちは {firstname}、
+
+タイムシートを最新の状態に保つようにしていただけますか？
+
+プロジェクトの進捗状況を適切に把握するために組織の助けになります。
+
+正直に言いましょう。この作業が好きな人は誰もいません。
+でも、それは仕事の一部です。費やした時間を記録することは請求に影響します。
+そして最終的な結果、ひいては会社の継続性とあなたの給与にも影響します。
+
+あなたならできます！
+
+素晴らしい一日をお過ごしください。
+ご近所のLibrePlanプロジェクト管理サーバーより。</column>
+            <column name="subject">タイムシートを最新の状態に保つようにしてください。</column>
+        </insert>
+
+    </changeSet>
+
+</databaseChangeLog>
