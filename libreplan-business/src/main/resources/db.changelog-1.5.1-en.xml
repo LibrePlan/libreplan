@@ -24,7 +24,7 @@ Task: {task}
 You can find more info here: {projecturl}
 
 Have an awesome day.
-Your friendly neighboorhoud LibrePlan project management server.</column>
+Your friendly neighborhoud LibrePlan project management server.</column>
             <column name="subject">A task has been assigned to you</column>
         </insert>
 
@@ -42,7 +42,7 @@ Task: {task}
 You can find more info here: {projecturl}
 
 Have an awesome day.
-Your friendly neighboorhoud LibrePlan project management server.</column>
+Your friendly neighborhoud LibrePlan project management server.</column>
             <column name="subject">{resource} has been removed from task {task} in project {project}</column>
         </insert>
 
@@ -54,16 +54,16 @@ Your friendly neighboorhoud LibrePlan project management server.</column>
 
 Could you please ensure that your timesheet is up to date?
 
-It helps the organization keep a descent track of project progress.
+It helps the organization keep a decent track of project progress.
 
 Let's be honest. Nobody really likes to do this work.
-But it's just part of the job. Keeping track of time spend has impact on billing.
+But it's just part of the job. Keeping track of time spent has impact on billing.
 And thus on the bottom line, and so also the continuity of the company and your salary.
 
 You can do it!
 
 Have an awesome day.
-Your friendly neighboorhoud LibrePlan project management server.</column>
+Your friendly neighborhoud LibrePlan project management server.</column>
             <column name="subject">Please ensure your timesheet is up to date.</column>
         </insert>
 
@@ -76,10 +76,10 @@ Your friendly neighboorhoud LibrePlan project management server.</column>
 This is to let you know that milestone {task} has been reached in project {project}
 
 Project: {project}
-Task:{task}
+Task: {task}
 
 Have a nice day.
-Your friendly neighboorhoud LibrePlan project management server.</column>
+Your friendly neighborhoud LibrePlan project management server.</column>
             <column name="subject">Milestone {task} has been reached</column>
         </insert>
 
@@ -94,7 +94,7 @@ This is to let you know that task {task} in project {project} should begin about
 More info can be found at {projecturl}
 
 Have an awesome day.
-Your friendly neighboorhoud LibrePlan project management server.</column>
+Your friendly neighborhoud LibrePlan project management server.</column>
             <column name="subject">Task {task} in project {project} should begin about now</column>
         </insert>
 
@@ -111,7 +111,7 @@ If that is not the case, please inform the project leader of this.
 More info can be found at {projecturl}
 
 Have an awesome day.
-Your friendly neighboorhoud LibrePlan project management server.</column>
+Your friendly neighborhoud LibrePlan project management server.</column>
             <column name="subject">Task {task} in project {project} should be finished just about now.</column>
         </insert>
 
