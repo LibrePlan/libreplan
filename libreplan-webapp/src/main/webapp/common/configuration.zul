@@ -147,7 +147,7 @@
                                             tooltiptext="${i18n:_t('Enable/Disable warning about new LibrePlan versions available')}"
                                             checked="@{configurationController.checkNewVersionEnabled}" />
                                     <checkbox
-                                            label="${i18n:_t('Allow collection of anonymous statistics to help us improve LibrePlan"')}"
+                                            label="${i18n:_t('Allow collection of anonymous statistics to help us improve LibrePlan')}"
                                             tooltiptext="${i18n:_t('Check this option if you would like to send feedback to LibrePlan developers about program usage')}"
                                             checked="@{configurationController.allowedToGatherUsageStatsEnabled}"/>
                                 </vbox>
