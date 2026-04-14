@@ -277,7 +277,6 @@ public class GatheredUsageStats {
             dataOutputStream.flush();
             dataOutputStream.close();
 
-            // No needed code, but it is not working without it
             int responseCode = connection.getResponseCode();
             LOG.info("Usage stats sent to " + url + " — HTTP " + responseCode);
 
