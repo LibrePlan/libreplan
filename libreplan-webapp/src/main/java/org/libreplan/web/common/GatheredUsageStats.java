@@ -261,7 +261,7 @@ public class GatheredUsageStats {
             URL url = new URL(properties.getProperty("statsPage"));
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
-            connection.setRequestProperty("Content-Type", "application/x-www-urlencoded");
+            connection.setRequestProperty("Content-Type", "application/json");
             connection.setRequestProperty("Content-Language", "en-GB");
             connection.setRequestProperty("Content-Length", Integer.toString(json.toJSONString().getBytes().length));
             connection.setUseCaches(false);
