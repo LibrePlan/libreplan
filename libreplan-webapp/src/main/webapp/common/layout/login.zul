@@ -174,19 +174,21 @@
             </n:td>
         </n:tr>
 
+        <!-- BEGIN_DONATIONS -->
         <n:tr>
             <n:td height="100">
                 <n:div align="left">
-                    <n:p><n:strong>${i18n:_t('Did you know LibrePlan is funded only by donations, from people like you?')}</n:strong></n:p>
-                    <n:p>${i18n:_t('We don’t show advertisements or sell your data.')} 
-                    <n:strong>${i18n:_t('Ever!')}</n:strong> 
-		       ${i18n:_t('But')} <n:strong>
-                       ${i18n:_t('without you, LibrePlan can’t exist.')}</n:strong></n:p>
-                    <n:p>${i18n:_t('Giving a gift today means LibrePlan continues to remain available and in active development tomorrow!')}</n:p>
+                    <n:p><n:strong>${i18n:_t(‘Did you know LibrePlan is funded only by donations, from people like you?’)}</n:strong></n:p>
+                    <n:p>${i18n:_t(‘We don’t show advertisements or sell your data.’)}
+                    <n:strong>${i18n:_t(‘Ever!’)}</n:strong>
+		       ${i18n:_t(‘But’)} <n:strong>
+                       ${i18n:_t(‘without you, LibrePlan can’t exist.’)}</n:strong></n:p>
+                    <n:p>${i18n:_t(‘Giving a gift today means LibrePlan continues to remain available and in active development tomorrow!’)}</n:p>
                     <n:p><n:script src="https://opencollective.com/libreplan/donate/button.js" color="blue"></n:script></n:p>
                 </n:div>
             </n:td>
         </n:tr>
+        <!-- END_DONATIONS -->
 
     </n:table>
 
