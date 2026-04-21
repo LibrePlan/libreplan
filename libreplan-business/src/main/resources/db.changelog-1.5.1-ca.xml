@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="add-email-templates-ca" author="jeroen">
+
+        <!-- type 0 = TEMPLATE_TASK_ASSIGNED_TO_RESOURCE, language 12 = CA_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="0"/>
+            <column name="language" valueNumeric="12"/>
+            <column name="content">Hola {firstname},
+
+S'ha assignat una tasca a {resource} a l'aplicació de gestió de projectes LibrePlan.
+
+Projecte: {project}
+Tasca: {task}
+
+Podeu trobar més informació aquí: {projecturl}
+
+Que tingueu un dia fantàstic.
+El vostre amable servidor de gestió de projectes LibrePlan de barri.</column>
+            <column name="subject">Se t'ha assignat una tasca</column>
+        </insert>
+
+        <!-- type 1 = TEMPLATE_RESOURCE_REMOVED_FROM_TASK, language 12 = CA_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="1"/>
+            <column name="language" valueNumeric="12"/>
+            <column name="content">Hola {firstname}
+
+{resource} ha estat eliminat d'una tasca a l'aplicació de gestió de projectes LibrePlan.
+
+Projecte: {project}
+Tasca: {task}
+
+Podeu trobar més informació aquí: {projecturl}
+
+Que tingueu un dia fantàstic.
+El vostre amable servidor de gestió de projectes LibrePlan de barri.</column>
+            <column name="subject">{resource} ha estat eliminat de la tasca {task} al projecte {project}</column>
+        </insert>
+
+        <!-- type 2 = TEMPLATE_MILESTONE_REACHED, language 12 = CA_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="2"/>
+            <column name="language" valueNumeric="12"/>
+            <column name="content">Hola {firstname}
+
+Us informem que s'ha assolit la fita {task} al projecte {project}
+
+Projecte: {project}
+Tasca: {task}
+
+Que tingueu un bon dia.
+El vostre amable servidor de gestió de projectes LibrePlan de barri.</column>
+            <column name="subject">S'ha assolit la fita {task}</column>
+        </insert>
+
+        <!-- type 3 = TEMPLATE_TODAY_TASK_SHOULD_START, language 12 = CA_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="3"/>
+            <column name="language" valueNumeric="12"/>
+            <column name="content">Hola {firstname},
+
+Us informem que la tasca {task} al projecte {project} hauria de començar aproximadament ara.
+
+Podeu trobar més informació a {projecturl}
+
+Que tingueu un dia fantàstic.
+El vostre amable servidor de gestió de projectes LibrePlan de barri.</column>
+            <column name="subject">La tasca {task} al projecte {project} hauria de començar aproximadament ara</column>
+        </insert>
+
+        <!-- type 4 = TEMPLATE_TODAY_TASK_SHOULD_FINISH, language 12 = CA_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="4"/>
+            <column name="language" valueNumeric="12"/>
+            <column name="content">Hola {firstname},
+
+Us informem que la tasca {task} al projecte {project} hauria d'estar acabada aproximadament ara.
+
+Si no és el cas, si us plau informeu el responsable del projecte.
+
+Podeu trobar més informació a {projecturl}
+
+Que tingueu un dia fantàstic.
+El vostre amable servidor de gestió de projectes LibrePlan de barri.</column>
+            <column name="subject">La tasca {task} al projecte {project} hauria d'estar acabada aproximadament ara.</column>
+        </insert>
+
+        <!-- type 5 = TEMPLATE_ENTER_DATA_IN_TIMESHEET, language 12 = CA_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="5"/>
+            <column name="language" valueNumeric="12"/>
+            <column name="content">Hola {firstname},
+
+Podríeu assegurar-vos que el vostre full d'hores està actualitzat?
+
+Ajuda l'organització a fer un seguiment adequat del progrés del projecte.
+
+Siguem honestos. A ningú li agrada realment fer aquesta feina.
+Però és part de la feina. Fer un seguiment del temps dedicat té impacte en la facturació.
+I per tant en el resultat final, i també en la continuïtat de l'empresa i el vostre salari.
+
+Podeu fer-ho!
+
+Que tingueu un dia fantàstic.
+El vostre amable servidor de gestió de projectes LibrePlan de barri.</column>
+            <column name="subject">Si us plau, assegureu-vos que el vostre full d'hores està actualitzat.</column>
+        </insert>
+
+    </changeSet>
+
+</databaseChangeLog>

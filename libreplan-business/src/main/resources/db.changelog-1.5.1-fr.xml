@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="add-email-templates-fr" author="jeroen">
+
+        <!-- type 0 = TEMPLATE_TASK_ASSIGNED_TO_RESOURCE, language 7 = FR_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="0"/>
+            <column name="language" valueNumeric="7"/>
+            <column name="content">Bonjour {firstname},
+
+Une tâche a été assignée à {resource} dans l'application de gestion de projets LibrePlan.
+
+Projet : {project}
+Tâche : {task}
+
+Vous pouvez trouver plus d'informations ici : {projecturl}
+
+Passez une excellente journée.
+Votre serveur de gestion de projets LibrePlan de quartier.</column>
+            <column name="subject">Une tâche vous a été assignée</column>
+        </insert>
+
+        <!-- type 1 = TEMPLATE_RESOURCE_REMOVED_FROM_TASK, language 7 = FR_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="1"/>
+            <column name="language" valueNumeric="7"/>
+            <column name="content">Bonjour {firstname}
+
+{resource} a été retiré d'une tâche dans l'application de gestion de projets LibrePlan.
+
+Projet : {project}
+Tâche : {task}
+
+Vous pouvez trouver plus d'informations ici : {projecturl}
+
+Passez une excellente journée.
+Votre serveur de gestion de projets LibrePlan de quartier.</column>
+            <column name="subject">{resource} a été retiré de la tâche {task} dans le projet {project}</column>
+        </insert>
+
+        <!-- type 2 = TEMPLATE_MILESTONE_REACHED, language 7 = FR_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="2"/>
+            <column name="language" valueNumeric="7"/>
+            <column name="content">Bonjour {firstname}
+
+Nous vous informons que le jalon {task} a été atteint dans le projet {project}
+
+Projet : {project}
+Tâche : {task}
+
+Bonne journée.
+Votre serveur de gestion de projets LibrePlan de quartier.</column>
+            <column name="subject">Le jalon {task} a été atteint</column>
+        </insert>
+
+        <!-- type 3 = TEMPLATE_TODAY_TASK_SHOULD_START, language 7 = FR_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="3"/>
+            <column name="language" valueNumeric="7"/>
+            <column name="content">Bonjour {firstname},
+
+Nous vous informons que la tâche {task} dans le projet {project} devrait commencer maintenant.
+
+Plus d'informations disponibles sur {projecturl}
+
+Passez une excellente journée.
+Votre serveur de gestion de projets LibrePlan de quartier.</column>
+            <column name="subject">La tâche {task} dans le projet {project} devrait commencer maintenant</column>
+        </insert>
+
+        <!-- type 4 = TEMPLATE_TODAY_TASK_SHOULD_FINISH, language 7 = FR_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="4"/>
+            <column name="language" valueNumeric="7"/>
+            <column name="content">Bonjour {firstname},
+
+Nous vous informons que la tâche {task} dans le projet {project} devrait être terminée maintenant.
+
+Si ce n'est pas le cas, veuillez en informer le chef de projet.
+
+Plus d'informations disponibles sur {projecturl}
+
+Passez une excellente journée.
+Votre serveur de gestion de projets LibrePlan de quartier.</column>
+            <column name="subject">La tâche {task} dans le projet {project} devrait être terminée maintenant.</column>
+        </insert>
+
+        <!-- type 5 = TEMPLATE_ENTER_DATA_IN_TIMESHEET, language 7 = FR_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="5"/>
+            <column name="language" valueNumeric="7"/>
+            <column name="content">Bonjour {firstname},
+
+Pourriez-vous vous assurer que votre feuille de temps est à jour ?
+
+Cela aide l'organisation à suivre correctement l'avancement du projet.
+
+Soyons honnêtes. Personne n'aime vraiment faire ce travail.
+Mais c'est simplement une partie du travail. Suivre le temps passé a un impact sur la facturation.
+Et donc sur le résultat final, et ainsi sur la pérennité de l'entreprise et votre salaire.
+
+Vous pouvez le faire !
+
+Passez une excellente journée.
+Votre serveur de gestion de projets LibrePlan de quartier.</column>
+            <column name="subject">Veuillez vous assurer que votre feuille de temps est à jour.</column>
+        </insert>
+
+    </changeSet>
+
+</databaseChangeLog>

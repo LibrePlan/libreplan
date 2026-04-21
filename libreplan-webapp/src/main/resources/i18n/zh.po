@@ -8547,3 +8547,31 @@ msgstr "关键路径任务的持续时间的研究进展"
 #: libreplan-business/src/main/java/org/libreplan/business/common/daos/EntitySequenceDAO.java:82
 msgid "Entity Sequence cannot be deleted. Entity Sequence already in use"
 msgstr "实体序列不能被删除。已在使用中的实体序列"
+
+#: libreplan-business/src/main/java/org/libreplan/business/email/entities/EmailTemplateEnum.java:34
+msgid "Task assigned to resource"
+msgstr "任务已分配给资源"
+
+#: libreplan-business/src/main/java/org/libreplan/business/email/entities/EmailTemplateEnum.java:35
+msgid "Resource removed from task"
+msgstr "资源已从任务中移除"
+
+#: libreplan-business/src/main/java/org/libreplan/business/email/entities/EmailTemplateEnum.java:36
+msgid "Milestone reached"
+msgstr "里程碑已达成"
+
+#: libreplan-business/src/main/java/org/libreplan/business/email/entities/EmailTemplateEnum.java:37
+msgid "Task should start"
+msgstr "任务应该开始"
+
+#: libreplan-business/src/main/java/org/libreplan/business/email/entities/EmailTemplateEnum.java:38
+msgid "Task should finish"
+msgstr "任务应该完成"
+
+#: libreplan-business/src/main/java/org/libreplan/business/email/entities/EmailTemplateEnum.java:39
+msgid "Enter data in timesheet"
+msgstr "在工时表中输入数据"
+
+#: libreplan-webapp/src/main/webapp/dashboard/_dashboardforglobal.zul:32
+msgid "Pipeline"
+msgstr "管道"

@@ -9244,3 +9244,31 @@ msgstr "成功した送信"
 #: libreplan-business/src/main/java/org/libreplan/business/settings/entities/Language.java:36
 msgid "Use browser language configuration"
 msgstr "ブラウザの言語設定を使用"
+
+#: libreplan-business/src/main/java/org/libreplan/business/email/entities/EmailTemplateEnum.java:34
+msgid "Task assigned to resource"
+msgstr "タスクがリソースに割り当てられました"
+
+#: libreplan-business/src/main/java/org/libreplan/business/email/entities/EmailTemplateEnum.java:35
+msgid "Resource removed from task"
+msgstr "リソースがタスクから削除されました"
+
+#: libreplan-business/src/main/java/org/libreplan/business/email/entities/EmailTemplateEnum.java:36
+msgid "Milestone reached"
+msgstr "マイルストーンに到達しました"
+
+#: libreplan-business/src/main/java/org/libreplan/business/email/entities/EmailTemplateEnum.java:37
+msgid "Task should start"
+msgstr "タスクを開始する必要があります"
+
+#: libreplan-business/src/main/java/org/libreplan/business/email/entities/EmailTemplateEnum.java:38
+msgid "Task should finish"
+msgstr "タスクを完了する必要があります"
+
+#: libreplan-business/src/main/java/org/libreplan/business/email/entities/EmailTemplateEnum.java:39
+msgid "Enter data in timesheet"
+msgstr "タイムシートにデータを入力してください"
+
+#: libreplan-webapp/src/main/webapp/dashboard/_dashboardforglobal.zul:32
+msgid "Pipeline"
+msgstr "パイプライン"

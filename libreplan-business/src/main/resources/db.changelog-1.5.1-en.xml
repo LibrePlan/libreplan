@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="replace-english-email-templates" author="jeroen">
+
+        <delete tableName="email_template">
+            <where>language = 3</where>
+        </delete>
+
+        <!-- type 0 = TEMPLATE_TASK_ASSIGNED_TO_RESOURCE, language 3 = ENGLISH_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="0"/>
+            <column name="language" valueNumeric="3"/>
+            <column name="content">Hello {firstname},
+
+A task has been assigned to {resource} in the LibrePlan project management application.
+
+Project: {project}
+Task: {task}
+
+You can find more info here: {projecturl}
+
+Have an awesome day.
+Your friendly neighborhoud LibrePlan project management server.</column>
+            <column name="subject">A task has been assigned to you</column>
+        </insert>
+
+        <!-- type 1 = TEMPLATE_RESOURCE_REMOVED_FROM_TASK, language 3 = ENGLISH_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="1"/>
+            <column name="language" valueNumeric="3"/>
+            <column name="content">Hello {firstname}
+
+{resource} has been removed from a task in the LibrePlan project management application.
+
+Project: {project}
+Task: {task}
+
+You can find more info here: {projecturl}
+
+Have an awesome day.
+Your friendly neighborhoud LibrePlan project management server.</column>
+            <column name="subject">{resource} has been removed from task {task} in project {project}</column>
+        </insert>
+
+        <!-- type 5 = TEMPLATE_ENTER_DATA_IN_TIMESHEET, language 3 = ENGLISH_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="5"/>
+            <column name="language" valueNumeric="3"/>
+            <column name="content">Hello {firstname},
+
+Could you please ensure that your timesheet is up to date?
+
+It helps the organization keep a decent track of project progress.
+
+Let's be honest. Nobody really likes to do this work.
+But it's just part of the job. Keeping track of time spent has impact on billing.
+And thus on the bottom line, and so also the continuity of the company and your salary.
+
+You can do it!
+
+Have an awesome day.
+Your friendly neighborhoud LibrePlan project management server.</column>
+            <column name="subject">Please ensure your timesheet is up to date.</column>
+        </insert>
+
+        <!-- type 2 = TEMPLATE_MILESTONE_REACHED, language 3 = ENGLISH_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="2"/>
+            <column name="language" valueNumeric="3"/>
+            <column name="content">Hi {firstname}
+
+This is to let you know that milestone {task} has been reached in project {project}
+
+Project: {project}
+Task: {task}
+
+Have a nice day.
+Your friendly neighborhoud LibrePlan project management server.</column>
+            <column name="subject">Milestone {task} has been reached</column>
+        </insert>
+
+        <!-- type 3 = TEMPLATE_TODAY_TASK_SHOULD_START, language 3 = ENGLISH_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="3"/>
+            <column name="language" valueNumeric="3"/>
+            <column name="content">Hi {firstname},
+
+This is to let you know that task {task} in project {project} should begin about now.
+
+More info can be found at {projecturl}
+
+Have an awesome day.
+Your friendly neighborhoud LibrePlan project management server.</column>
+            <column name="subject">Task {task} in project {project} should begin about now</column>
+        </insert>
+
+        <!-- type 4 = TEMPLATE_TODAY_TASK_SHOULD_FINISH, language 3 = ENGLISH_LANGUAGE -->
+        <insert tableName="email_template">
+            <column name="type" valueNumeric="4"/>
+            <column name="language" valueNumeric="3"/>
+            <column name="content">Hi {firstname},
+
+This is to let you know that task {task} in project {project} should be finished about now.
+
+If that is not the case, please inform the project leader of this.
+
+More info can be found at {projecturl}
+
+Have an awesome day.
+Your friendly neighborhoud LibrePlan project management server.</column>
+            <column name="subject">Task {task} in project {project} should be finished just about now.</column>
+        </insert>
+
+    </changeSet>
+
+</databaseChangeLog>

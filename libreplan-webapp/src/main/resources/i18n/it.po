@@ -8778,7 +8778,7 @@ msgstr "il totale dev'essere uguale o maggiore di 0"
 
 #: libreplan-webapp/src/main/webapp/dashboard/_dashboardforglobal.zul:32
 msgid "Pipeline"
-msgstr "Coda"
+msgstr "Condotta"
 
 #: libreplan-webapp/src/main/webapp/planner/editTask.zul:60
 msgid "Task properties"
@@ -9622,3 +9622,28 @@ msgstr "rimaste"
 #: libreplan-webapp/src/main/webapp/common/configuration.zul:477
 msgid "Role search query"
 msgstr "Query di ricerca per il ruolo"
+
+#: libreplan-business/src/main/java/org/libreplan/business/email/entities/EmailTemplateEnum.java:34
+msgid "Task assigned to resource"
+msgstr "Attività assegnata alla risorsa"
+
+#: libreplan-business/src/main/java/org/libreplan/business/email/entities/EmailTemplateEnum.java:35
+msgid "Resource removed from task"
+msgstr "Risorsa rimossa dall'attività"
+
+#: libreplan-business/src/main/java/org/libreplan/business/email/entities/EmailTemplateEnum.java:36
+msgid "Milestone reached"
+msgstr "Traguardo raggiunto"
+
+#: libreplan-business/src/main/java/org/libreplan/business/email/entities/EmailTemplateEnum.java:37
+msgid "Task should start"
+msgstr "L'attività dovrebbe iniziare"
+
+#: libreplan-business/src/main/java/org/libreplan/business/email/entities/EmailTemplateEnum.java:38
+msgid "Task should finish"
+msgstr "L'attività dovrebbe terminare"
+
+#: libreplan-business/src/main/java/org/libreplan/business/email/entities/EmailTemplateEnum.java:39
+msgid "Enter data in timesheet"
+msgstr "Inserire i dati nel foglio presenze"
+

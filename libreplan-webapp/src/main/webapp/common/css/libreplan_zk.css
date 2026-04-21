@@ -1079,7 +1079,7 @@ span.z-dottree-line {
 }
 .perspective.global-dashboard,
 .perspective-active.global-dashboard{
-    background-image: url(../img/ico_global-dashboard.png);
+    background-image: url(../img/ico_global-pipeline.png);
     background-repeat: no-repeat;
     background-position: 18px 10px;
 }

@@ -13,5 +13,23 @@
     <include file="db.changelog-1.4.xml"/>
     <include file="db.changelog-1.4.1.xml"/>
     <include file="db.changelog-1.5.xml"/>
+    <include file="db.changelog-1.5.1-en.xml"/>
+    <include file="db.changelog-1.5.1-gl.xml"/>
+    <include file="db.changelog-1.5.1-es.xml"/>
+    <include file="db.changelog-1.5.1-ru.xml"/>
+    <include file="db.changelog-1.5.1-pt.xml"/>
+    <include file="db.changelog-1.5.1-it.xml"/>
+    <include file="db.changelog-1.5.1-fr.xml"/>
+    <include file="db.changelog-1.5.1-nl.xml"/>
+    <include file="db.changelog-1.5.1-pl.xml"/>
+    <include file="db.changelog-1.5.1-cs.xml"/>
+    <include file="db.changelog-1.5.1-de.xml"/>
+    <include file="db.changelog-1.5.1-ca.xml"/>
+    <include file="db.changelog-1.5.1-zh_CN.xml"/>
+    <include file="db.changelog-1.5.1-nb.xml"/>
+    <include file="db.changelog-1.5.1-fa_IR.xml"/>
+    <include file="db.changelog-1.5.1-ja.xml"/>
+    <include file="db.changelog-1.5.1-pt_BR.xml"/>
+    <include file="db.changelog-1.5.1-sv_SE.xml"/>
     <include file="db.changelog-1.6.xml"/>
 </databaseChangeLog>

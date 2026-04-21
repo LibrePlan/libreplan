@@ -211,8 +211,8 @@
                                     <n:span>
                                         ${templateCtrl.versionMessage}
                                         <n:strong>
-                                            <n:a href="http://www.libreplan.com/download/" target="_blank">
-                                                http://www.libreplan.com/download/
+                                            <n:a href="https://www.libreplan.dev/download/" target="_blank">
+                                                https://www.libreplan.dev/download/
                                             </n:a>
                                         </n:strong>
                                     </n:span>
