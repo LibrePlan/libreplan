@@ -240,6 +240,14 @@
                                         <copy todir="src/main/webapp/help/zh_CN" failonerror="false">
                                             <fileset dir="../doc/src/user/zh_CN/html"/>
                                         </copy>
+                                        <exec executable="make" failifexecutionfails="false">
+                                            <arg value="-C"/>
+                                            <arg value="../doc/src/user/uk/"/>
+                                            <arg value="html"/>
+                                        </exec>
+                                        <copy todir="src/main/webapp/help/uk" failonerror="false">
+                                            <fileset dir="../doc/src/user/uk/html"/>
+                                        </copy>
                                     </tasks>
                                 </configuration>
                             </execution>
@@ -341,6 +349,11 @@
                                         <exec executable="make" failifexecutionfails="false">
                                             <arg value="-C"/>
                                             <arg value="../doc/src/user/zh_CN/"/>
+                                            <arg value="clean"/>
+                                        </exec>
+                                        <exec executable="make" failifexecutionfails="false">
+                                            <arg value="-C"/>
+                                            <arg value="../doc/src/user/uk/"/>
                                             <arg value="clean"/>
                                         </exec>
                                         <delete dir="src/main/webapp/help" failonerror="false" />
