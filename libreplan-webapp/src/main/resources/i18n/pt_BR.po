@@ -5101,7 +5101,7 @@ msgstr "foi realizado com sucesso"
 #: libreplan-webapp/src/main/webapp/common/layout/_customMenu.zul:82
 #: libreplan-webapp/src/main/webapp/common/layout/login.zul:65
 msgid "en"
-msgstr "pt-BR"
+msgstr "pt_BR"
 
 #: libreplan-webapp/src/main/webapp/logs/_listRiskLog.zul:26
 #: libreplan-webapp/src/main/webapp/logs/_editRiskLog.zul:62

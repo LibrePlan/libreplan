@@ -5131,7 +5131,7 @@ msgstr ""
 #: libreplan-webapp/src/main/webapp/common/layout/login.zul:59
 #: libreplan-webapp/src/main/webapp/resources/search/allocation_selector.zul:118
 msgid "en"
-msgstr ""
+msgstr "sv_SE"
 
 #: libreplan-webapp/src/main/webapp/common/access_forbidden.zul:40
 msgid ""

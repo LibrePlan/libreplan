@@ -13,7 +13,7 @@ Both types of assignment are explained in the following sections.
 
 To perform either type of resource assignment, the following steps are necessary:
 
-*   Go to the planning view of an order.
+*   Go to the planning view of a project.
 *   Right-click on the task to be planned.
 
 .. figure:: images/resource-assignment-planning.png
@@ -124,7 +124,7 @@ The steps to follow to manage advanced assignments are:
 
 *   Go to the advanced assignment window. There are two ways to access advanced assignments:
 
-    *   Go to a specific order and change the view to advanced assignment. In this case, all the tasks on the order and assigned resources (specific and generic) will be shown.
+    *   Go to a specific project and change the view to advanced assignment. In this case, all the tasks on the project and assigned resources (specific and generic) will be shown.
     *   Go to the resource assignment window by clicking the "Advanced assignment" button. In this case, the assignments that show the resources (generic and specific) assigned to a task will be shown.
 
 .. figure:: images/advance-assignment.png

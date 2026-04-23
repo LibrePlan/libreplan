@@ -13,3 +13,12 @@ Il comporte trois parties principales :
 * les informations principales des concepts de base nécessaires pour utiliser LibrePlan;
 * le mode d'emploi complet permettant de créer des projets, de les planifier, de leur affecter des ressources, y compris de manière avancée et de produire des rapports.
 
+.. topic:: Soutenez LibrePlan
+   :class: highlight
+
+   LibrePlan ne peut pas exister sans votre soutien. Veuillez lire `la page des dons <00-donations.html>`__ et envisagez de nous aider à poursuivre le développement.
+
+   .. raw:: html
+
+      <script src="https://opencollective.com/libreplan/donate/button.js" color="blue"></script>
+

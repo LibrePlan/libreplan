@@ -14,3 +14,12 @@ First, global goals and behaviour.
 Second, basic entities to understand the minimum concepts to use LibrePlan.
 
 Finally, complete processes description to create orders, projects, project planning, resources assignment, advance assignment and result extraction.
+
+.. topic:: Please support LibrePlan
+   :class: highlight
+
+   LibrePlan cannot exist without your support. Please read `the donations page <00-donations.html>`__ and consider helping us to continue development.
+
+   .. raw:: html
+
+      <script src="https://opencollective.com/libreplan/donate/button.js" color="blue"></script>

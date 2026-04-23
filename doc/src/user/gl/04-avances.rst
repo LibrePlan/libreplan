@@ -16,7 +16,7 @@ Cabe destacar que hai unha diferencia importante entre a uso de horas asignadas 
 
 O contraste de estas posibles situacións é posible realizalo dende a propia planificación, utilizando información do grao de avance e por outro lado do grao de uso de horas. Neste capítulo tratarase a introdución da información para poder levar un control do avance.
 
-A filosofía implantada no proxecto para o control do avance está baseada en que o usuario divida ata o punto no que desexa o control de avances dos seus proxectos. En consecuencia, se o usuario desexa controlar a nivel de pedido, só debe introducir información nos elementos de nivel 1, cando se desexa poder dispoñer de un control máis fino sobre as tarefas, debe introducir información de avances en niveis inferiores, sendo o sistema que propaga cara arriba na xerarquía todos os datos.
+A filosofía implantada no proxecto para o control do avance está baseada en que o usuario divida ata o punto no que desexa o control de avances dos seus proxectos. En consecuencia, se o usuario desexa controlar a nivel de proxecto, só debe introducir información nos elementos de nivel 1, cando se desexa poder dispoñer de un control máis fino sobre as tarefas, debe introducir información de avances en niveis inferiores, sendo o sistema que propaga cara arriba na xerarquía todos os datos.
 
 Xestión de tipos de avance
 ==========================
@@ -60,11 +60,11 @@ O usuario pode crear novos tipos de avance do seguinte xeito:
 Introdución de avances en base a tipo
 =====================================
 
-A introdución dos avances realízase sobre os elementos de pedido, sen embargo, é posible facelo con un atallo dende as tarefas de planificación. É responsabilidade do usuario da aplicación a decisión sobre que tipos de avance desexa asociar a cada elemento de pedido.
+A introdución dos avances realízase sobre os elementos de proxecto, sen embargo, é posible facelo con un atallo dende as tarefas de planificación. É responsabilidade do usuario da aplicación a decisión sobre que tipos de avance desexa asociar a cada elemento de proxecto.
 
-É posible introducir un tipo de avance único e defectivo para todo un pedido.
+É posible introducir un tipo de avance único e defectivo para todo un proxecto.
 
-Antes de poder realizar medidas de avance, é necesario asociar o tipo elixido ó pedido, por exemplo, un avance de tipo porcentaxe para medir porcentualmente os avances realizados sobre o total da tarefa, ou un avance de tipo pactado por se se queren introducir a futuro medicións de avances pactadas co cliente.
+Antes de poder realizar medidas de avance, é necesario asociar o tipo elixido ó proxecto, por exemplo, un avance de tipo porcentaxe para medir porcentualmente os avances realizados sobre o total da tarefa, ou un avance de tipo pactado por se se queren introducir a futuro medicións de avances pactadas co cliente.
 
 .. figure:: images/avance.png
    :scale: 40
@@ -82,10 +82,10 @@ Para introducir medicións de avance é necesario realizar o seguinte:
 
 
 
-Contraste de avances sobre un elemento do pedido
-================================================
+Contraste de avances sobre un elemento do proxecto
+==================================================
 
-É posible contrastar graficamente as evolucións dos avances dos pedidos en base ás medicións realizadas. Cada tipo de avance dispón dunha columna con botóns de chequeo (de título "Amosar") o cal ó ser marcado se amosa a gráfica de evolucións de medidas realizadas sobre o elemento de pedido.
+É posible contrastar graficamente as evolucións dos avances dos proxectos en base ás medicións realizadas. Cada tipo de avance dispón dunha columna con botóns de chequeo (de título "Amosar") o cal ó ser marcado se amosa a gráfica de evolucións de medidas realizadas sobre o elemento de proxecto.
 
 .. figure:: images/contraste-avance.png
    :scale: 40

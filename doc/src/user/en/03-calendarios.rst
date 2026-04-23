@@ -155,13 +155,13 @@ To assign a calendar to a resource:
 
    Assigning a New Calendar to a Resource
 
-Assigning Calendars to Orders
------------------------------
+Assigning Calendars to Projects
+--------------------------------
 
-Projects can have a different calendar than the default calendar. To change the calendar for an order:
+Projects can have a different calendar than the default calendar. To change the calendar for a project:
 
-*   Access the order list in the company overview.
-*   Edit the order in question.
+*   Access the project list in the company overview.
+*   Edit the project in question.
 *   Access the "General information" tab.
 *   Select the calendar to be assigned from the drop-down menu.
 *   Click "Save" or "Save and continue."
@@ -169,7 +169,7 @@ Projects can have a different calendar than the default calendar. To change the 
 Assigning Calendars to Tasks
 ----------------------------
 
-Similar to resources and orders, you can assign specific calendars to individual tasks. This allows you to define different calendars for specific stages of a project. To assign a calendar to a task:
+Similar to resources and projects, you can assign specific calendars to individual tasks. This allows you to define different calendars for specific stages of a project. To assign a calendar to a task:
 
 *   Access the planning view of a project.
 *   Right-click the task to which you want to assign a calendar.

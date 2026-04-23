@@ -13,7 +13,7 @@ Cada una de las asignaciones es explicada en las siguientes secciones.
 
 Para realizar cualquiera de las dos asignaciones de recursos es necesario dar los siguientes pasos:
 
-* Acceder a la planificación de un pedido.
+* Acceder a la planificación de un proyecto.
 * Presionar con el botón derecho sobre la tarea que se desea planificar.
 
 .. figure:: images/resource-assignment-planning.png
@@ -130,7 +130,7 @@ Para gestionar la asignación avanzada los pasos a dar son los siguientes:
 
 * Acceder a la ventana de asignación avanzada. Existen dos modos de acceder a la asignación avanzada:
 
-   * Accediendo a un pedido concreto y cambiar de perspectiva para asignación avanzada. En este caso se mostrarán todas las tareas del pedido y los recursos asignados (tanto específicos cómo genéricos).
+   * Accediendo a un proyecto concreto y cambiar de perspectiva para asignación avanzada. En este caso se mostrarán todas las tareas del proyecto y los recursos asignados (tanto específicos cómo genéricos).
    * Accediendo a la asignación de recursos y presionando en el botón "Asignación avanzada". En este caso se mostrarán las asignaciones de la tarea para la que se está asignando recursos (se muestran tanto las genéricas como las específicas).
 
 .. figure:: images/advance-assignment.png

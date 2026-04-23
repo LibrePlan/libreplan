@@ -8,7 +8,7 @@ Planificación de tareas
 Planificación de tareas
 ========================
 
-La planificación en "LibrePlan" es un proceso que se describe a lo largo de todos los capítulos del documento de usuario, entre los cuales destacan los capítulos de pedidos y de asignación de recursos. En este capítulo se tratan las operaciones básicas de planificación, una vez el pedido está correctamente configurado y la interacción con los diagramas de Gantt.
+La planificación en "LibrePlan" es un proceso que se describe a lo largo de todos los capítulos del documento de usuario, entre los cuales destacan los capítulos de proyectos y de asignación de recursos. En este capítulo se tratan las operaciones básicas de planificación, una vez el proyecto está correctamente configurado y la interacción con los diagramas de Gantt.
 
 .. figure:: images/planning-view.png
    :scale: 35
@@ -19,7 +19,7 @@ Tal y como sucede con la vista global de la empresa, la vista de planificación 
 
 * Vista de planificación
 * Vista de carga de recursos
-* Vista de listado de pedidos
+* Vista de listado de proyectos
 * Vista de asignación avanzada
 
 Vista de planificación
@@ -56,7 +56,7 @@ Dentro de la planificación del proyecto el usuario puede realizar las siguiente
 
    * Crear nuevo hito. Pulsar sobre la tarea anterior al hitoque se desea añadir y seleccionar la operación "Añadir hito". Los hitos pueden ser movidos selecionando con el puntero sobre la tarea y arrastrando con el ratón el hito a la posición deseada.
    * Mover tareas sin violar dependencias. Presionar con el ratón sobre el cuerpo de la tarea y sin soltar el ratón, arrastrar la tarea hacia la posición en la que se desea colocar. Si no se violan restricciones o dependencias el sistema actualiza las asignaciones de recursos diarias a la tarea y coloca la tarea en la fecha seleccionada.
-   * Asignar restricciones. Presionar sobre la tarea en cuestión y seleccionar la operación "Propiedades de la tarea". Aparecerá un *pop-up* con un campo modificable que es "Restricciones". Las restricciones pueden entrar en conflicto con las dependencias, por lo que será en cada pedido donde se indique si las dependencias tienen prioridad o no sobre las restricciones. Las que se pueden establecer son:
+   * Asignar restricciones. Presionar sobre la tarea en cuestión y seleccionar la operación "Propiedades de la tarea". Aparecerá un *pop-up* con un campo modificable que es "Restricciones". Las restricciones pueden entrar en conflicto con las dependencias, por lo que será en cada proyecto donde se indique si las dependencias tienen prioridad o no sobre las restricciones. Las que se pueden establecer son:
 
       * *Tan pronto como sea posible*: Indica que la tarea debe comenzar tan pronto como sea posible.
       * *No antes de*. Indica que la tarea no debe comenzar antes de una fecha.
@@ -83,13 +83,13 @@ La vista de carga de recursos ofrece una lista de recursos que contiene una list
 .. figure:: images/resource-load.png
    :scale: 35
 
-   Vista de carga de recursos para un pedido concreto
+   Vista de carga de recursos para un proyecto concreto
 
 Si se coloca el ratón sobre una zona del diagrama de Gantt de un recurso se mostrará el porcentaje de carga del trabajador en ese momento dado.
 
-Vista de listado de pedidos
----------------------------
-La vista de listado de pedidos permite acceder a la edición y borrado de pedidos. Ver el capítulo de "Pedidos".
+Vista de listado de proyectos
+-----------------------------
+La vista de listado de proyectos permite acceder a la edición y borrado de proyectos. Ver el capítulo de "Proyectos".
 
 
 Vista de asignación avanzada

@@ -14,3 +14,12 @@ En primer lugar se describen los objetivos principales de la aplicación, compor
 A continuación se introducen las entidades básicas que será necesario conocer para utilizar las funcionalidades de LibrePlan.
 
 Finalmente, se detallan los procesos completos de creación de pedidos, proyectos, planificación de proyectos, asignación de recursos, imputación de avances y extracción de resultados.
+
+.. topic:: Por favor, apoya LibrePlan
+   :class: highlight
+
+   LibrePlan no puede existir sin tu apoyo. Por favor, lee `la página de donaciones <00-donations.html>`__ y considera ayudarnos a continuar el desarrollo.
+
+   .. raw:: html
+
+      <script src="https://opencollective.com/libreplan/donate/button.js" color="blue"></script>
