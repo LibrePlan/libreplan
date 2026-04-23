@@ -1,8 +1,8 @@
-# SOME DESCRIPTIVE TITLE.
+# Ukrainian translation for LibrePlan.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
+# Translators:
 msgid ""
 msgstr ""
 "Project-Id-Version: LibrePlan\n"
