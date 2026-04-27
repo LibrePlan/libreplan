@@ -574,6 +574,16 @@ public class ConfigurationModel implements IConfigurationModel {
         configuration.setCheckNewVersionEnabled(checkNewVersionEnabled);
     }
 
+    @Override
+    public boolean isAllowedToGatherUsageStatsEnabled() {
+        return configuration.isAllowedToGatherUsageStatsEnabled();
+    }
+
+    @Override
+    public void setAllowedToGatherUsageStatsEnabled(boolean allowedToGatherUsageStatsEnabled) {
+        configuration.setAllowToGatherUsageStatsEnabled(allowedToGatherUsageStatsEnabled);
+    }
+
     private static Map<String, String> getAllCurrencies() {
         Map<String, String> currencies = new TreeMap<>();
         for (Locale locale : Locale.getAvailableLocales()) {

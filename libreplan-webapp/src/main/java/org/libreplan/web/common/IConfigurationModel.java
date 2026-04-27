@@ -149,6 +149,10 @@ public interface IConfigurationModel {
 
     void setCheckNewVersionEnabled(boolean checkNewVersionEnabled);
 
+    boolean isAllowedToGatherUsageStatsEnabled();
+
+    void setAllowedToGatherUsageStatsEnabled(boolean allowedToGatherUsageStatsEnabled);
+
     Boolean getGenerateCodeForExpenseSheets();
 
     void setGenerateCodeForExpenseSheets(Boolean generateCodeForExpenseSheets);

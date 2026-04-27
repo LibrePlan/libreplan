@@ -133,8 +133,8 @@ msgstr ""
 msgid "Show/Hide labels"
 msgstr ""
 
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:81
-msgid "Flatten/Unflatten tree"
+#: org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:88
+msgid "Generic allocation criteria"
 msgstr ""
 
 #: org/zkoss/ganttz/DependencyList.java:66
@@ -149,9 +149,8 @@ msgstr ""
 msgid "Show money cost bar"
 msgstr ""
 
-#: org/zkoss/ganttz/LeftTasksTreeRow.java:273
-#: org/zkoss/ganttz/LeftTasksTreeRow.java:280
-msgid "and no later than"
+#: org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:82
+msgid "Day"
 msgstr ""
 
 #: org/zkoss/ganttz/LeftTasksTreeRow.java:272
@@ -163,8 +162,8 @@ msgstr ""
 msgid "Show critical path"
 msgstr ""
 
-#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:50
-msgid "Page"
+#: org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:34
+msgid "Year"
 msgstr ""
 
 #: org/zkoss/ganttz/TaskList.java:298
@@ -199,8 +198,8 @@ msgstr ""
 msgid "Hide money cost bar"
 msgstr ""
 
-#: org/zkoss/ganttz/Planner.java:648
-msgid "Hide critical path"
+#: org/zkoss/ganttz/data/resourceload/TimeLineRole.java:57
+msgid "Worker"
 msgstr ""
 
 #: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:63
@@ -227,8 +226,8 @@ msgstr ""
 msgid "showing criteria"
 msgstr ""
 
-#: org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:86
-msgid "Resources"
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:71
+msgid "Show/Hide resources"
 msgstr ""
 
 #: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:138

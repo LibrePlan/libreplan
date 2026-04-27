@@ -553,8 +553,9 @@ msgstr ""
 msgid "Week {0}"
 msgstr ""
 
-#: org/libreplan/web/advance/AdvanceTypeCRUDController.java:75
-msgid "Value is not valid, the precision value must not be empty"
+#: libreplan-webapp/src/main/webapp/common/layout/_customMenu.zul:83
+#: libreplan-webapp/src/main/webapp/common/layout/login.zul:66
+msgid "Help"
 msgstr ""
 
 #: org/libreplan/web/resources/worker/CriterionsMachineController.java:238
@@ -2533,8 +2534,8 @@ msgstr ""
 msgid "Access to the system"
 msgstr ""
 
-#: org/libreplan/web/planner/limiting/allocation/LimitingResourceAllocationModel.java:222
-msgid "All resources must be queue-based"
+#: org/libreplan/web/orders/TreeElementOperationsController.java:52
+msgid "Please select a task"
 msgstr ""
 
 #: libreplan-webapp/src/main/webapp/resources/machine/_machineConfigurationUnits.zul:35
@@ -4647,8 +4648,10 @@ msgstr ""
 msgid "Length"
 msgstr ""
 
-#: org/libreplan/web/common/CustomMenuController.java:329
-msgid "Workers"
+#: org/libreplan/web/common/CustomMenuController.java:468
+#: libreplan-webapp/src/main/webapp/common/configuration.zul:335
+#: libreplan-webapp/src/main/webapp/resources/machine/_editMachine.zul:33
+msgid "Configuration"
 msgstr ""
 
 #: org/libreplan/web/planner/company/CompanyPlanningModel.java:388
@@ -5953,8 +5956,8 @@ msgstr ""
 msgid "Task finished"
 msgstr ""
 
-#: org/libreplan/web/logs/IssueLogCRUDController.java:410
-msgid "issuelog-number"
+#: org/libreplan/web/planner/order/OrderPlanningController.java:311
+msgid "filtering"
 msgstr ""
 
 #: org/libreplan/web/workreports/WorkReportCRUDController.java:1640
@@ -8135,9 +8138,9 @@ msgstr ""
 msgid "Advanced search"
 msgstr ""
 
-#: org/libreplan/web/calendars/BaseCalendarCRUDController.java:344
-#: org/libreplan/web/common/Util.java:687
-msgid "Remove"
+#: org/libreplan/web/orders/JiraSynchronizationController.java:175
+#: org/libreplan/web/orders/JiraSynchronizationController.java:222
+msgid "Failed: {0}"
 msgstr ""
 
 #: libreplan-webapp/src/main/webapp/common/accessForbidden.zul:20

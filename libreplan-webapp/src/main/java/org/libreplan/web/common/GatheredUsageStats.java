@@ -17,6 +17,9 @@ import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zkplus.spring.SpringUtil;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,6 +43,8 @@ import java.util.Properties;
  */
 
 public class GatheredUsageStats {
+
+    private static final Log LOG = LogFactory.getLog(GatheredUsageStats.class);
 
     private IUserDAO userDAO;
 
@@ -256,15 +261,15 @@ public class GatheredUsageStats {
             URL url = new URL(properties.getProperty("statsPage"));
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
-            connection.setRequestProperty("Content-Type", "application/x-www-urlencoded");
+            connection.setRequestProperty("Content-Type", "application/json");
             connection.setRequestProperty("Content-Language", "en-GB");
             connection.setRequestProperty("Content-Length", Integer.toString(json.toJSONString().getBytes().length));
             connection.setUseCaches(false);
             connection.setDoInput(true);
             connection.setDoOutput(true);
 
-            // If the connection lasts > 2 sec throw Exception
-            connection.setConnectTimeout(2000);
+            // If the connection lasts > 6 sec throw Exception
+            connection.setConnectTimeout(6000);
 
             // Send request
             DataOutputStream dataOutputStream = new DataOutputStream(connection.getOutputStream());
@@ -272,10 +277,11 @@ public class GatheredUsageStats {
             dataOutputStream.flush();
             dataOutputStream.close();
 
-            // No needed code, but it is not working without it
-            connection.getInputStream();
+            int responseCode = connection.getResponseCode();
+            LOG.info("Usage stats sent to " + url + " — HTTP " + responseCode);
 
-        } catch (IOException ignored) {
+        } catch (IOException e) {
+            LOG.warn("Failed to send usage stats: " + e.getMessage());
         } finally {
             if ( connection != null ) {
                 connection.disconnect();
