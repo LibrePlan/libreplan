@@ -9276,3 +9276,39 @@ msgstr "Introducir datos na folla de horas"
 #: libreplan-webapp/src/main/webapp/dashboard/_dashboardforglobal.zul:32
 msgid "Pipeline"
 msgstr "Tubería"
+
+#: org/libreplan/web/logs/IssueLogCRUDController.java:278
+msgid "Identified"
+msgstr "Identificado"
+
+#: org/libreplan/web/logs/IssueLogCRUDController.java:279
+msgid "Under Analysis"
+msgstr "En análise"
+
+#: org/libreplan/web/logs/IssueLogCRUDController.java:280
+msgid "Accepted Deviation"
+msgstr "Desviación aceptada"
+
+#: org/libreplan/web/logs/IssueLogCRUDController.java:281
+msgid "Change Requested"
+msgstr "Cambio solicitado"
+
+#: org/libreplan/web/logs/IssueLogCRUDController.java:282
+msgid "Correction Planned"
+msgstr "Corrección planificada"
+
+#: org/libreplan/web/logs/IssueLogCRUDController.java:283
+msgid "In Correction"
+msgstr "En corrección"
+
+#: org/libreplan/web/logs/IssueLogCRUDController.java:284
+msgid "Verification Pending"
+msgstr "Verificación pendente"
+
+#: org/libreplan/web/logs/IssueLogCRUDController.java:285
+msgid "Resolved (Compliant)"
+msgstr "Resolto (Conforme)"
+
+#: org/libreplan/web/logs/IssueLogCRUDController.java:286
+msgid "Closed (Accepted as-is)"
+msgstr "Pechado (Aceptado tal como está)"

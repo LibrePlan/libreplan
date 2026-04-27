@@ -9270,3 +9270,39 @@ msgstr ""
 #: libreplan-webapp/src/main/webapp/dashboard/_dashboardforglobal.zul:32
 msgid "Pipeline"
 msgstr ""
+
+#: org/libreplan/web/logs/IssueLogCRUDController.java:278
+msgid "Identified"
+msgstr "Ідентифіковано"
+
+#: org/libreplan/web/logs/IssueLogCRUDController.java:279
+msgid "Under Analysis"
+msgstr "На аналізі"
+
+#: org/libreplan/web/logs/IssueLogCRUDController.java:280
+msgid "Accepted Deviation"
+msgstr "Прийняте відхилення"
+
+#: org/libreplan/web/logs/IssueLogCRUDController.java:281
+msgid "Change Requested"
+msgstr "Запитана зміна"
+
+#: org/libreplan/web/logs/IssueLogCRUDController.java:282
+msgid "Correction Planned"
+msgstr "Заплановано виправлення"
+
+#: org/libreplan/web/logs/IssueLogCRUDController.java:283
+msgid "In Correction"
+msgstr "У процесі виправлення"
+
+#: org/libreplan/web/logs/IssueLogCRUDController.java:284
+msgid "Verification Pending"
+msgstr "Очікує перевірки"
+
+#: org/libreplan/web/logs/IssueLogCRUDController.java:285
+msgid "Resolved (Compliant)"
+msgstr "Вирішено (Відповідає)"
+
+#: org/libreplan/web/logs/IssueLogCRUDController.java:286
+msgid "Closed (Accepted as-is)"
+msgstr "Закрито (Прийнято як є)"

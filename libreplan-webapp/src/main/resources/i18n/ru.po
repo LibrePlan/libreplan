@@ -9280,3 +9280,39 @@ msgstr "Введите данные в табель учёта рабочего 
 #: libreplan-webapp/src/main/webapp/dashboard/_dashboardforglobal.zul:32
 msgid "Pipeline"
 msgstr "Трубопровод"
+
+#: org/libreplan/web/logs/IssueLogCRUDController.java:278
+msgid "Identified"
+msgstr "Идентифицировано"
+
+#: org/libreplan/web/logs/IssueLogCRUDController.java:279
+msgid "Under Analysis"
+msgstr "На анализе"
+
+#: org/libreplan/web/logs/IssueLogCRUDController.java:280
+msgid "Accepted Deviation"
+msgstr "Принятое отклонение"
+
+#: org/libreplan/web/logs/IssueLogCRUDController.java:281
+msgid "Change Requested"
+msgstr "Запрошено изменение"
+
+#: org/libreplan/web/logs/IssueLogCRUDController.java:282
+msgid "Correction Planned"
+msgstr "Запланирована коррекция"
+
+#: org/libreplan/web/logs/IssueLogCRUDController.java:283
+msgid "In Correction"
+msgstr "В процессе коррекции"
+
+#: org/libreplan/web/logs/IssueLogCRUDController.java:284
+msgid "Verification Pending"
+msgstr "Ожидает проверки"
+
+#: org/libreplan/web/logs/IssueLogCRUDController.java:285
+msgid "Resolved (Compliant)"
+msgstr "Решено (Соответствует)"
+
+#: org/libreplan/web/logs/IssueLogCRUDController.java:286
+msgid "Closed (Accepted as-is)"
+msgstr "Закрыто (Принято как есть)"

@@ -9589,3 +9589,39 @@ msgstr "A tarefa deve terminar"
 msgid "Enter data in timesheet"
 msgstr "Inserir dados na planilha de horas"
 
+
+#: org/libreplan/web/logs/IssueLogCRUDController.java:278
+msgid "Identified"
+msgstr "Identificado"
+
+#: org/libreplan/web/logs/IssueLogCRUDController.java:279
+msgid "Under Analysis"
+msgstr "Em análise"
+
+#: org/libreplan/web/logs/IssueLogCRUDController.java:280
+msgid "Accepted Deviation"
+msgstr "Desvio aceito"
+
+#: org/libreplan/web/logs/IssueLogCRUDController.java:281
+msgid "Change Requested"
+msgstr "Mudança solicitada"
+
+#: org/libreplan/web/logs/IssueLogCRUDController.java:282
+msgid "Correction Planned"
+msgstr "Correção planejada"
+
+#: org/libreplan/web/logs/IssueLogCRUDController.java:283
+msgid "In Correction"
+msgstr "Em correção"
+
+#: org/libreplan/web/logs/IssueLogCRUDController.java:284
+msgid "Verification Pending"
+msgstr "Verificação pendente"
+
+#: org/libreplan/web/logs/IssueLogCRUDController.java:285
+msgid "Resolved (Compliant)"
+msgstr "Resolvido (Conforme)"
+
+#: org/libreplan/web/logs/IssueLogCRUDController.java:286
+msgid "Closed (Accepted as-is)"
+msgstr "Fechado (Aceito como está)"
