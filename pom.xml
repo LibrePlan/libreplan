@@ -210,7 +210,7 @@
             <dependency>
                 <groupId>com.libreplan.java.zk.components</groupId>
                 <artifactId>jasperreportcomponent</artifactId>
-                <version>1.1</version>
+                <version>1.2</version>
             </dependency>
 
             <!-- Javax Annotation API (required for Java 9+) -->
