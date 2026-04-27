@@ -57,7 +57,7 @@
             placement: 'outside',
         },
         render: function(data, params) {
-            params = jQuery.parseJSON(params);
+            params = JSON.parse(params);
             if (params['title'] !== undefined) {
                 this.title = params['title'];
             }
@@ -70,7 +70,7 @@
             if (params['series'] !== undefined) {
                 this.series = params['series'];
             }
-            data = jQuery.parseJSON(data);
+            data = JSON.parse(data);
             this.plot = $.jqplot(this.id, data, this);
             this.attachTooltip();
         },
