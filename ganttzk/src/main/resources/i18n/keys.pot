@@ -120,6 +120,10 @@ msgstr ""
 msgid "Print"
 msgstr ""
 
+#: org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:88
+msgid "Generic allocation criteria"
+msgstr ""
+
 #: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:63
 msgid "Show/Hide critical path"
 msgstr ""
@@ -136,6 +140,10 @@ msgstr ""
 msgid "Show money cost bar"
 msgstr ""
 
+#: org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:82
+msgid "Day"
+msgstr ""
+
 #: org/zkoss/ganttz/DependencyList.java:236
 msgid "Set End-End"
 msgstr ""
@@ -146,6 +154,10 @@ msgstr ""
 
 #: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:88
 msgid "Show/Hide progress"
+msgstr ""
+
+#: org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:34
+msgid "Year"
 msgstr ""
 
 #: org/zkoss/ganttz/data/resourceload/TimeLineRole.java:58
@@ -183,6 +195,10 @@ msgstr ""
 
 #: org/zkoss/ganttz/data/resourceload/TimeLineRole.java:59
 msgid "Task"
+msgstr ""
+
+#: org/zkoss/ganttz/data/resourceload/TimeLineRole.java:57
+msgid "Worker"
 msgstr ""
 
 #: org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:70
@@ -223,8 +239,8 @@ msgstr ""
 msgid "Set End-Start"
 msgstr ""
 
-#: org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:86
-msgid "Resources"
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:71
+msgid "Show/Hide resources"
 msgstr ""
 
 #: org/zkoss/ganttz/Planner.java:698
