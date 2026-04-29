@@ -168,18 +168,6 @@
         ]]>
     </n:script>
 
-    <!-- $.browser removed in jQuery 1.9; $.isFunction removed in jQuery 4.0; jqplot 1.0.4 references both -->
-    <n:script type="text/javascript">
-        <![CDATA[
-            if (!jQuery.browser) {
-                jQuery.browser = { msie: false, version: 0 };
-            }
-            if (!jQuery.isFunction) {
-                jQuery.isFunction = function(obj) { return typeof obj === 'function'; };
-            }
-        ]]>
-    </n:script>
-
     <n:script type="text/javascript">
         <![CDATA[
             ${jquery_jqplot_min_js}
