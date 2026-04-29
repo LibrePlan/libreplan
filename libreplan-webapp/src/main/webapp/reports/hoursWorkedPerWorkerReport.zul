@@ -36,8 +36,7 @@
 
     <window self="@{define(content)}"
             apply="org.libreplan.web.reports.HoursWorkedPerWorkerController"
-            title="${i18n:_t('Hours Worked Per Resource')}"
-            border="normal" >
+            title="${i18n:_t('Hours Worked Per Resource')}">
 
         <!-- Select dates -->
 

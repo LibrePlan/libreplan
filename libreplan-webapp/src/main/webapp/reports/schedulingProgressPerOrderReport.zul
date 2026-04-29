@@ -36,8 +36,7 @@
 
     <window self="@{define(content)}"
             apply="org.libreplan.web.reports.SchedulingProgressPerOrderController"
-            title="${i18n:_t('Work And Progress Per Project')}"
-            border="normal" >
+            title="${i18n:_t('Work And Progress Per Project')}">
 
         <!-- Select dates -->
         <panel title="${i18n:_t('Date')}" border="normal" style="overflow:auto" sclass="report-margin">
