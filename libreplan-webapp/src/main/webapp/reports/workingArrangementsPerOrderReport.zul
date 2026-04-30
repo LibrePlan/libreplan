@@ -36,8 +36,7 @@
 
     <window self="@{define(content)}"
             apply="org.libreplan.web.reports.WorkingArrangementsPerOrderController"
-            title="${i18n:_t('Task Scheduling Status In Project')}"
-            border="normal" >
+            title="${i18n:_t('Task Scheduling Status In Project')}">
 
         <!-- Select orders -->
         <panel title="${i18n:_t('Filter by projects')}"

@@ -33,8 +33,7 @@
 
     <window self="@{define(content)}"
             apply="org.libreplan.web.reports.ProjectStatusReportController"
-            title="${i18n:_t('Project Status Report')}"
-            border="normal" >
+            title="${i18n:_t('Project Status Report')}">
 
         <vbox id="messagesContainer" />
 

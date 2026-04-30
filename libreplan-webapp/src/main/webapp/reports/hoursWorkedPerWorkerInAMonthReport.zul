@@ -36,8 +36,7 @@
 
     <window self="@{define(content)}"
             apply="org.libreplan.web.reports.HoursWorkedPerWorkerInAMonthController"
-            title="${i18n:_t('Total Worked Hours By Resource In A Month')}"
-            border="normal" >
+            title="${i18n:_t('Total Worked Hours By Resource In A Month')}">
 
         <!-- Select workers -->
         <panel title="${i18n:_t('Filter by month')}" border="normal" style="overflow:auto" sclass="report-margin">

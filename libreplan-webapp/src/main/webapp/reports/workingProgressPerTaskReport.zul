@@ -36,8 +36,7 @@
 
     <window self="@{define(content)}"
             apply="org.libreplan.web.reports.WorkingProgressPerTaskController"
-            title="${i18n:_t('Work And Progress Per Task')}"
-            border="normal" >
+            title="${i18n:_t('Work And Progress Per Task')}">
 
         <!-- Select deadline date -->
         <panel title="${i18n:_t('Date')}" border="normal" style="overflow:auto" sclass="report-margin">

@@ -36,8 +36,7 @@
 
     <window self="@{define(content)}"
             apply="org.libreplan.web.reports.TimeLineRequiredMaterialController"
-            title="${i18n:_t('Materials Needed At Date')}"
-            border="normal">
+            title="${i18n:_t('Materials Needed At Date')}">
         <hbox>
             <div>
                 <!-- Select dates -->
