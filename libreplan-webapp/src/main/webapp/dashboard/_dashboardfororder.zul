@@ -168,15 +168,6 @@
         ]]>
     </n:script>
 
-    <!-- $.browser was removed in jQuery 1.9; jqplot 1.0.4 still references it -->
-    <n:script type="text/javascript">
-        <![CDATA[
-            if (!jQuery.browser) {
-                jQuery.browser = { msie: false, version: 0 };
-            }
-        ]]>
-    </n:script>
-
     <n:script type="text/javascript">
         <![CDATA[
             ${jquery_jqplot_min_js}

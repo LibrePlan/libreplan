@@ -57,7 +57,7 @@
             placement: 'outside',
         },
         render: function(data, params) {
-            params = jQuery.parseJSON(params);
+            params = JSON.parse(params);
             if (params['title'] !== undefined) {
                 this.title = params['title'];
             }
@@ -70,13 +70,13 @@
             if (params['series'] !== undefined) {
                 this.series = params['series'];
             }
-            data = jQuery.parseJSON(data);
+            data = JSON.parse(data);
             this.plot = $.jqplot(this.id, data, this);
             this.attachTooltip();
         },
         attachTooltip: function() {
             var node = $('#' + this.id);
-            node.bind('jqplotDataHighlight',
+            node.on('jqplotDataHighlight',
                 function (ev, seriesIndex, pointIndex, data) {
                     var x = ev.pageX - node.offset().left;
                     var y = ev.pageY - node.offset().top;
@@ -88,12 +88,12 @@
                     tooltip.fadeIn('slow');
                 }
             );
-            node.bind('jqplotDataUnhighlight',
+            node.on('jqplotDataUnhighlight',
                 function (ev) {
                     $('.tooltip').remove();
                 }
             );
-            node.mousemove(function(ev) {
+            node.on('mousemove', function(ev) {
                 var x = ev.pageX - node.offset().left;
                 var y = ev.pageY - node.offset().top;
                 $('.tooltip').css({'top': y, 'left': x, 'position': 'absolute'})
