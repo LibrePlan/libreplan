@@ -14,6 +14,7 @@ LibrePlan Team
 Previous Team Members
 ---------------------
 
+* Tristan Ramseyer <t@ramseyer.email>
 * Vova Perebykivskyi <vova@libreplan-enterprise.com>
 * Paul Luchyn <ddiamondbbackk@gmail.com>
 * Edwin Zuijdendorp <edwin@zuydendorp.nl>
