@@ -397,12 +397,14 @@ public class IssueLogCRUDController extends BaseCRUDController<IssueLog> {
     }
 
     public Order getOrder() {
-        if (!LogsController.getProjectNameVisibility()){
-            this.getIssueLog().setOrder(LogsController.getOrder());
-            return getIssueLog().getOrder();
+        IssueLog issueLog = getIssueLog();
+        if (issueLog == null) {
+            return null;
         }
-        else
-            return getIssueLog().getOrder();
+        if (!LogsController.getProjectNameVisibility()) {
+            issueLog.setOrder(LogsController.getOrder());
+        }
+        return issueLog.getOrder();
     }
 
     @Override

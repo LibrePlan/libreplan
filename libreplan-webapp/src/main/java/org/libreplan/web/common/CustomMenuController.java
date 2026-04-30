@@ -307,6 +307,16 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
                     _t("Queue-based Resources"),
                     () -> globalView.goToLimitingResources(),
                     "01-introducion.html"));
+
+            planningItems.add(subItem(
+                    _t("Logs"),
+                    () -> globalView.goToLogs(),
+                    ""));
+
+            planningItems.add(subItem(
+                    _t("Pipeline"),
+                    () -> globalView.goToPipeline(),
+                    ""));
         }
 
         if ( SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_TEMPLATES) ) {

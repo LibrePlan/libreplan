@@ -377,14 +377,17 @@ public class RiskLogCRUDController extends BaseCRUDController<RiskLog> {
 
     public Order getOrder() {
         if (!LogsController.getProjectNameVisibility()) {
+            if (getRiskLog() == null) {
+                return null;
+            }
             getRiskLog().setOrder(LogsController.getOrder());
-
             return getRiskLog().getOrder();
-
         } else {
+            if (riskLogModel.getRiskLog() == null) {
+                return null;
+            }
             return riskLogModel.getRiskLog().getOrder();
         }
-
     }
 
     @Override

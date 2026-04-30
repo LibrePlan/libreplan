@@ -26,7 +26,7 @@
     <div height="100%" style="overflow:visible">
         <div height="30px" sclass="toolbar-box" />
 
-        <window id="wnd" self="@{define(content)}" vflex="1">
+        <window id="wnd" vflex="1">
             <tabbox width="100%">
                 <tabs>
                     <tab label="${i18n:_t('Pipeline')}"/>

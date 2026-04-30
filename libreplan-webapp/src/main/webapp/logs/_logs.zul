@@ -27,14 +27,14 @@
     ]]>
     </zscript>
 
-    <div self="@{define(content)}" height="100%" style="overflow:visible">
+    <div height="100%" style="overflow:visible">
         <style src="/dashboard/css/dashboard.css" dynamic="true" />
 
         <div height="30px" sclass="toolbar-box">
             <hbox id="logsFilter" visible="false" />
         </div>
 
-        <window self="@{define(content)}" id="logWindow" apply="${logsController}" vflex="1">
+        <window id="logWindow" apply="${logsController}" vflex="1">
             <borderlayout sclass="orderslayout" height="100%">
                 <center border="0" sclass="orderslayout-area">
                     <tabbox id="tabboxLog">

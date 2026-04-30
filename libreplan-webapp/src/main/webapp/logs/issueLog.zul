@@ -24,7 +24,7 @@
 <?component name="edit" inline="true" macroURI="_editIssueLog.zul"?>
 
 <zk>
-    <window self="@{define(content)}" id="issueLogWindow" apply="org.libreplan.web.logs.IssueLogCRUDController">
+    <window id="issueLogWindow" apply="org.libreplan.web.logs.IssueLogCRUDController">
         <vbox id="messagesContainer" />
         <list id="listWindow" />
         <edit id="editWindow" />
