@@ -7,16 +7,18 @@ LibrePlan Team
 --------------
 
 * Jeroen Baten <jeroen@libreplan-enterprise.com>
-* Edwin Zuijdendorp <edwin@zuydendorp.nl>
-* Bjørn Vos <bjorn@libreplan-enterprise.com>
+* Santiago Borrazás <santiago@borrazas.org>
 * Philippe Poumaroux <philippe.poumaroux@free.fr>
-* Vova Perebykivskyi <vova@libreplan-enterprise.com>
-* Paul Luchyn <ddiamondbbackk@gmail.com>
 
 
 Previous Team Members
 ---------------------
 
+* Tristan Ramseyer <t@ramseyer.email>
+* Vova Perebykivskyi <vova@libreplan-enterprise.com>
+* Paul Luchyn <ddiamondbbackk@gmail.com>
+* Edwin Zuijdendorp <edwin@zuydendorp.nl>
+* Bjørn Vos <bjorn@libreplan-enterprise.com>
 * Jacobo Aragunde Pérez <jaragunde@igalia.com>
 * Xavier Castaño García <xcastanho@igalia.com>
 * Ignacio Díaz Teijido <ignacio.diaz@cafedered.es>
@@ -63,6 +65,7 @@ Translators
 * [ru] Pavel Rudensky <prudensky@gmail.com>
 * [zh] Swanson Chan <lacidophilin@yahoo.com>
 * [nb] Kent Thoresen <kt@norwegianoceanpower.com>
+* [all] Claude AI from Anthropic
 
 
 Contributors
