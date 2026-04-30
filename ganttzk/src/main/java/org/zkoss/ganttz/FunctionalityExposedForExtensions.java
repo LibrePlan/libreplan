@@ -524,7 +524,7 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
         Checkbox reportedHours = (Checkbox) parent.getFellow("print_reported_hours");
         Checkbox moneyCostBar = (Checkbox) parent.getFellow("print_money_cost_bar");
 
-        parameters.put("extension", ".png");
+        parameters.put("extension", ".pdf");
 
         if ( expanded.isChecked() ) {
             parameters.put("expanded", "all");
