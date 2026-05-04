@@ -256,6 +256,7 @@ public class IssueLogCRUDController extends BaseCRUDController<IssueLog> {
      */
     public ArrayList<String> getIssueStatusEnum() {
         ArrayList<String> result = new ArrayList<>();
+	// Request for change
         if (getIssueLog().getType() == IssueTypeEnum.REQUEST_FOR_CHANGE){
             result.add(_t("Must have"));
             result.add(_t("Should have"));
@@ -264,6 +265,7 @@ public class IssueLogCRUDController extends BaseCRUDController<IssueLog> {
 
             return result;
         }
+	// Problem or concern
         if (getIssueLog().getType() == IssueTypeEnum.PROBLEM_OR_CONCERN) {
             result.add(_t("Minor"));
             result.add(_t("Significant"));
@@ -272,10 +274,16 @@ public class IssueLogCRUDController extends BaseCRUDController<IssueLog> {
 
             return result;
         }
-
-        result.add(_t("Low"));
-        result.add(_t("Medium"));
-        result.add(_t("High"));
+	// Off specification
+	result.add(_t("Identified"));
+	result.add(_t("Under Analysis"));
+	result.add(_t("Accepted Deviation"));
+	result.add(_t("Change Requested"));
+	result.add(_t("Correction Planned"));
+	result.add(_t("In Correction"));
+	result.add(_t("Verification Pending"));
+	result.add(_t("Resolved (Compliant)"));
+	result.add(_t("Closed (Accepted as-is)"));
         return result;
     }
 
