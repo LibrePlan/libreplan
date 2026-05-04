@@ -376,18 +376,14 @@ public class RiskLogCRUDController extends BaseCRUDController<RiskLog> {
     }
 
     public Order getOrder() {
-        if (!LogsController.getProjectNameVisibility()) {
-            if (getRiskLog() == null) {
-                return null;
-            }
-            getRiskLog().setOrder(LogsController.getOrder());
-            return getRiskLog().getOrder();
-        } else {
-            if (riskLogModel.getRiskLog() == null) {
-                return null;
-            }
-            return riskLogModel.getRiskLog().getOrder();
+        RiskLog riskLog = getRiskLog();
+        if (riskLog == null) {
+            return null;
         }
+        if (!LogsController.getProjectNameVisibility()) {
+            riskLog.setOrder(LogsController.getOrder());
+        }
+        return riskLog.getOrder();
     }
 
     @Override
