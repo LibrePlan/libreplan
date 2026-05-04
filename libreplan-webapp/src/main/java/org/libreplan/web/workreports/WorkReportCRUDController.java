@@ -675,6 +675,7 @@ public class WorkReportCRUDController
     @Override
     public void goToCreateForm(WorkReportType workReportType) {
         if ( workReportType.isPersonalTimesheetsType() ) {
+            personalTimesheetsBandboxSearch.setModel(workReportModel.getBoundWorkers());
             personalTimesheetsPopup.open(listTypeToAssign);
         } else {
             cameBackList = false;
