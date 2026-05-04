@@ -391,13 +391,13 @@ public class MultipleTabsPlannerController implements Composer, IGlobalViewEntry
 
         tabsConfiguration
                 .add(visibleOnlyAtOrderMode(advancedAllocationTab))
-                .add(tabWithNameReloading(dashboardTab, typeChanged));
+                .add(tabWithNameReloading(logsTab, typeChanged));
 
         if (isMontecarloVisible) {
             tabsConfiguration.add(visibleOnlyAtOrderMode(monteCarloTab));
         }
 
-        tabsConfiguration.add(tabWithNameReloading(logsTab, typeChanged));
+        tabsConfiguration.add(tabWithNameReloading(dashboardTab, typeChanged));
 
         return tabsConfiguration;
     }
@@ -596,6 +596,17 @@ public class MultipleTabsPlannerController implements Composer, IGlobalViewEntry
                 orderPlanningController.getAdvanceAssignmentPlanningController());
 
         getTabsRegistry().show(planningTab, changeModeTo(order));
+    }
+
+    @Override
+    public void goToLogs() {
+        LogsController.goToGlobalMode();
+        getTabsRegistry().show(logsTab);
+    }
+
+    @Override
+    public void goToPipeline() {
+        getTabsRegistry().show(dashboardTab);
     }
 
     private IBeforeShowAction changeModeTo(final Order order) {

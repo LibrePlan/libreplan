@@ -75,4 +75,10 @@ public interface IGlobalViewEntryPoints {
     @EntryPoint({"order","task"})
     void goToAdvanceTask(Order order,TaskElement task);
 
+    @EntryPoint("logs")
+    void goToLogs();
+
+    @EntryPoint("pipeline")
+    void goToPipeline();
+
 }
